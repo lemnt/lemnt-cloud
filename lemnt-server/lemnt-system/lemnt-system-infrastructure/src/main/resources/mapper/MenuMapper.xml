@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.system.infrastructure.auth.mapper.MenuMapper">
+
+    <resultMap type="com.lemnt.system.infrastructure.auth.dataobject.MenuDO" id="SysMenuResult">
+        <id property="menuId" column="menu_id"/>
+        <result property="menuName" column="menu_name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="path" column="path"/>
+        <result property="component" column="component"/>
+        <result property="query" column="query"/>
+        <result property="routeName" column="route_name"/>
+        <result property="isFrame" column="is_frame"/>
+        <result property="isCache" column="is_cache"/>
+        <result property="menuType" column="menu_type"/>
+        <result property="visible" column="visible"/>
+        <result property="status" column="status"/>
+        <result property="perms" column="perms"/>
+        <result property="icon" column="icon"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectMenuVo">
+        menu_id, menu_name, parent_id, order_num, path, component, `query`, route_name, is_frame, is_cache,
+        menu_type, visible, status, IFNULL(perms,'') AS perms, icon, create_time
+    </sql>
+
+    <select id="selectMenuList" parameterType="com.lemnt.system.domain.auth.model.Menu" resultMap="SysMenuResult">
+        SELECT
+        <include refid="selectMenuVo"/>
+        FROM sys_menu
+        <where>
+            <if test="menuName != null and menuName != ''">
+                AND menu_name LIKE CONCAT('%', #{menuName}, '%')
+            </if>
+            <if test="visible != null and visible != ''">
+                AND visible = #{visible}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY parent_id, order_num
+    </select>
+
+    <select id="selectMenuTreeAll" resultMap="SysMenuResult">
+        SELECT DISTINCT m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.route_name, m.visible,
+        m.status, IFNULL(m.perms,'') AS perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time
+        FROM sys_menu m
+        WHERE m.menu_type IN ('M', 'C') AND m.status = '1'
+        ORDER BY m.parent_id, m.order_num
+    </select>
+
+    <select id="selectMenuListByUserId" parameterType="com.lemnt.system.domain.auth.model.Menu" resultMap="SysMenuResult">
+        SELECT DISTINCT m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.route_name,
+        m.visible, m.status, IFNULL(m.perms,'') AS perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num,
+        m.create_time
+        FROM sys_menu m
+        LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id
+        LEFT JOIN sys_user_role ur ON rm.role_id = ur.role_id
+        LEFT JOIN sys_role ro ON ur.role_id = ro.role_id
+        LEFT JOIN sys_user u ON ur.user_id = u.user_id
+        WHERE u.user_id = #{userId}
+        <if test="menuName != null and menuName != ''">
+            AND m.menu_name LIKE CONCAT('%', #{menuName}, '%')
+        </if>
+        <if test="visible != null and visible != ''">
+            AND m.visible = #{visible}
+        </if>
+        <if test="status != null and status != ''">
+            AND m.status = #{status}
+        </if>
+        ORDER BY m.parent_id, m.order_num
+    </select>
+
+    <select id="selectMenuTreeByUserId" parameterType="Long" resultMap="SysMenuResult">
+        SELECT DISTINCT m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.route_name, m.visible,
+        m.status, IFNULL(m.perms,'') AS perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time
+        FROM sys_menu m
+        LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id
+        LEFT JOIN sys_user_role ur ON rm.role_id = ur.role_id
+        LEFT JOIN sys_role ro ON ur.role_id = ro.role_id
+        LEFT JOIN sys_user u ON ur.user_id = u.user_id
+        WHERE u.user_id = #{userId} AND m.menu_type IN ('M', 'C') AND m.status = '1' AND ro.status = '1'
+        ORDER BY m.parent_id, m.order_num
+    </select>
+
+    <select id="selectMenuListByRoleId" resultType="Long">
+        SELECT m.menu_id
+        FROM sys_menu m
+        LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id
+        WHERE rm.role_id = #{roleId}
+        AND m.menu_id NOT IN (SELECT m.parent_id FROM sys_menu m INNER JOIN sys_role_menu rm ON m.menu_id =
+        rm.menu_id AND rm.role_id = #{roleId})
+        ORDER BY m.parent_id, m.order_num
+    </select>
+
+    <select id="selectMenuPerms" resultType="String">
+        SELECT DISTINCT m.perms
+        FROM sys_menu m
+        LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id
+        LEFT JOIN sys_user_role ur ON rm.role_id = ur.role_id
+    </select>
+
+    <select id="selectMenuPermsByUserId" parameterType="Long" resultType="String">
+        SELECT DISTINCT m.perms
+        FROM sys_menu m
+        LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id
+        LEFT JOIN sys_user_role ur ON rm.role_id = ur.role_id
+        LEFT JOIN sys_role r ON r.role_id = ur.role_id
+        WHERE m.status = '1' AND r.status = '1' AND ur.user_id = #{userId}
+    </select>
+
+    <select id="selectMenuPermsByRoleId" parameterType="Long" resultType="String">
+        SELECT DISTINCT m.perms
+        FROM sys_menu m
+        LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id
+        WHERE m.status = '1' AND rm.role_id = #{roleId}
+    </select>
+
+    <select id="hasChildByMenuId" resultType="Integer">
+        SELECT COUNT(1) FROM sys_menu WHERE parent_id = #{menuId}
+    </select>
+
+    <select id="checkMenuNameUnique" resultMap="SysMenuResult">
+        SELECT
+        <include refid="selectMenuVo"/>
+        FROM sys_menu
+        WHERE menu_name = #{menuName} AND parent_id = #{parentId}
+        <if test="excludeMenuId != null">
+            AND menu_id != #{excludeMenuId}
+        </if>
+        LIMIT 1
+    </select>
+
+    <select id="selectMenusByPathOrRouteName" resultMap="SysMenuResult">
+        SELECT
+        <include refid="selectMenuVo"/>
+        FROM sys_menu
+        WHERE menu_type IN ('M', 'C') AND (path = #{path} OR path = #{routeName} OR route_name = #{path} OR route_name =
+        #{routeName})
+    </select>
+
+    <update id="updateMenuSort" parameterType="com.lemnt.system.infrastructure.auth.dataobject.MenuDO">
+        UPDATE sys_menu SET order_num = #{orderNum} WHERE menu_id = #{menuId}
+    </update>
+</mapper>

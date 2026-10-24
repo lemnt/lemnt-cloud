@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.lemnt</groupId>
+        <artifactId>lemnt-system</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>lemnt-system-infrastructure</artifactId>
+    <packaging>jar</packaging>
+
+    <description>system 基础设施层</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-oss</artifactId>
+        </dependency>
+        <!-- OkHttp 5 的 okhttp 为多平台元数据，MinIO 需要显式引入 JVM 实现。 -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp-jvm</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-system-domain</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-infrastructure</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-datasource</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-datascope</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-mybatis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-redis</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

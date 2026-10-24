@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.system.infrastructure.org.mapper.PostMapper">
+
+    <resultMap type="com.lemnt.system.infrastructure.org.dataobject.PostDO" id="SysPostResult">
+        <id property="postId" column="post_id"/>
+        <result property="postCode" column="post_code"/>
+        <result property="postName" column="post_name"/>
+        <result property="postSort" column="post_sort"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectPostVo">
+        post_id, post_code, post_name, post_sort, status, create_by, create_time, update_by, update_time, remark
+    </sql>
+
+    <select id="selectPage" resultMap="SysPostResult">
+        SELECT
+        <include refid="selectPostVo"/>
+        FROM sys_post
+        <where>
+            <if test="qry.postCode != null and qry.postCode != ''">
+                AND post_code LIKE CONCAT('%', #{qry.postCode}, '%')
+            </if>
+            <if test="qry.status != null and qry.status != ''">
+                AND status = #{qry.status}
+            </if>
+            <if test="qry.postName != null and qry.postName != ''">
+                AND post_name LIKE CONCAT('%', #{qry.postName}, '%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 保留：关联查询 -->
+    <select id="selectPostListByUserId" parameterType="Long" resultType="Long">
+        SELECT p.post_id
+        FROM sys_post p
+        LEFT JOIN sys_user_post up ON up.post_id = p.post_id
+        LEFT JOIN sys_user u ON u.user_id = up.user_id
+        WHERE u.user_id = #{userId}
+    </select>
+
+    <!-- 保留：关联查询 -->
+    <select id="selectPostsByUserName" parameterType="String" resultMap="SysPostResult">
+        SELECT p.post_id, p.post_name, p.post_code
+        FROM sys_post p
+        LEFT JOIN sys_user_post up ON up.post_id = p.post_id
+        LEFT JOIN sys_user u ON u.user_id = up.user_id
+        WHERE u.user_name = #{userName}
+    </select>
+
+</mapper>

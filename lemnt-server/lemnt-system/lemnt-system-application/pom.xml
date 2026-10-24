@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.lemnt</groupId>
+        <artifactId>lemnt-system</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>lemnt-system-application</artifactId>
+    <packaging>jar</packaging>
+
+    <description>system 应用层</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-application</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-system-domain</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-system-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-log</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-async</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-dubbo</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>

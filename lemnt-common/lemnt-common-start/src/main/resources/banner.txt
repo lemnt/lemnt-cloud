@@ -1,0 +1,8 @@
+    欢迎使用 Lemnt-Cloud 脚手架，邮箱: reawei@qq.com
+
+ :: JDK                        : ${java.version}
+ :: Spring Application Name    : ${spring.application.name}
+ :: Spring Boot                : ${spring-boot.version}
+ :: Spring Cloud               : ${spring-cloud.version}
+ :: Spring Cloud Alibaba       : ${spring-cloud-alibaba.version}
+

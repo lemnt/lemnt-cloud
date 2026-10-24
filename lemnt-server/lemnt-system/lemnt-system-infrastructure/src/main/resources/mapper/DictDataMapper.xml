@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.system.infrastructure.config.mapper.DictDataMapper">
+
+    <resultMap type="com.lemnt.system.infrastructure.config.dataobject.DictDataDO" id="SysDictDataResult">
+        <id property="dictCode" column="dict_code"/>
+        <result property="dictSort" column="dict_sort"/>
+        <result property="dictLabel" column="dict_label"/>
+        <result property="dictValue" column="dict_value"/>
+        <result property="dictType" column="dict_type"/>
+        <result property="cssClass" column="css_class"/>
+        <result property="listClass" column="list_class"/>
+        <result property="isDefault" column="is_default"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectDictDataVo">
+        dict_code, dict_sort, dict_label, dict_value, dict_type, css_class, list_class, is_default, status,
+        create_by, create_time, remark
+    </sql>
+
+    <select id="selectPage" resultMap="SysDictDataResult">
+        SELECT
+        <include refid="selectDictDataVo"/>
+        FROM sys_dict_data
+        <where>
+            <if test="qry.dictType != null and qry.dictType != ''">
+                AND dict_type = #{qry.dictType}
+            </if>
+            <if test="qry.dictLabel != null and qry.dictLabel != ''">
+                AND dict_label LIKE CONCAT('%', #{qry.dictLabel}, '%')
+            </if>
+            <if test="qry.status != null and qry.status != ''">
+                AND status = #{qry.status}
+            </if>
+        </where>
+        ORDER BY dict_sort ASC
+    </select>
+</mapper>

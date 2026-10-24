@@ -1,0 +1,123 @@
+package com.lemnt.system.api.domain.bo;
+
+import com.lemnt.common.api.domain.bo.BaseBO;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
+import java.io.Serial;
+import java.time.LocalDateTime;
+
+
+/**
+ * 操作日志记录表 oper_log
+ *
+ * @author wangxx
+ */
+@Data
+@Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
+public class OperLogBo extends BaseBO {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 日志主键
+     */
+    private Long operId;
+
+    /**
+     * 操作模块
+     */
+    private String title;
+
+    /**
+     * 业务名称（其它 新增 修改 删除）
+     */
+    private String businessName;
+
+    /**
+     * 业务类型（0其它 1新增 2修改 3删除）
+     */
+    private Integer businessType;
+
+    /**
+     * 业务类型数组
+     */
+    private Integer[] businessTypes;
+
+    /**
+     * 请求方法
+     */
+    private String method;
+
+    /**
+     * 请求方式
+     */
+    private String requestMethod;
+
+    /**
+     * 操作类别（0其它 1后台用户 2手机端用户）
+     */
+    private Integer operatorType;
+
+    /**
+     * 操作人员
+     */
+    private String operName;
+
+    /**
+     * 部门名称
+     */
+    private String deptName;
+
+    /**
+     * 请求url
+     */
+    private String operUrl;
+
+    /**
+     * 操作地址
+     */
+    private String operIp;
+
+    /**
+     * 请求参数
+     */
+    private String operParam;
+
+    /**
+     * 返回参数
+     */
+    private String jsonResult;
+
+    /**
+     * 操作状态（1正常 2异常）
+     */
+    private Integer status;
+
+    /**
+     * 错误消息
+     */
+    private String errorMsg;
+
+    /**
+     * 操作时间
+     */
+    private LocalDateTime operTime;
+
+    /**
+     * 消耗时间
+     */
+    private Long costTime;
+
+    /**
+     * 开始时间
+     */
+    private LocalDateTime beginTime;
+
+    /**
+     * 结束时间
+     */
+    private LocalDateTime endTime;
+}

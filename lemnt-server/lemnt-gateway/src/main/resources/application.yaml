@@ -1,0 +1,47 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: lemnt-gateway
+  profiles:
+    active: @profile.active@
+  cloud:
+    nacos:
+      username: ${NACOS_USERNAME:nacos}
+      password: ${NACOS_PASSWORD:123456}
+      discovery:
+        server-addr: ${NACOS_HOST:127.0.0.1}:${NACOS_PORT:8848}
+        namespace: @profile.active@
+        group: DEFAULT_GROUP
+        watch-delay: 5000
+      config:
+        server-addr: ${NACOS_HOST:127.0.0.1}:${NACOS_PORT:8848}
+        namespace: @profile.active@
+        group: DEFAULT_GROUP
+        file-extension: yaml
+        refresh-enabled: true
+
+    sentinel:
+      eager: true
+      transport:
+        dashboard: ${SENTINEL_DASHBOARD:127.0.0.1:8718}
+      datasource:
+        ds1:
+          nacos:
+            server-addr: ${NACOS_HOST:127.0.0.1}:${NACOS_PORT:8848}
+            dataId: sentinel-lemnt-gateway
+            groupId: DEFAULT_GROUP
+            data-type: json
+            rule-type: gw-flow
+  config:
+    import:
+      - optional:nacos:lemnt-common.yaml?namespace=@profile.active@&group=DEFAULT_GROUP
+      - optional:nacos:lemnt-gateway.yaml?namespace=@profile.active@&group=DEFAULT_GROUP
+
+  main:
+    web-application-type: reactive
+
+resttemplate:
+  sentinel:
+    enabled: false

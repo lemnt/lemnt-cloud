@@ -1,0 +1,2 @@
+com.lemnt.common.mybatis.config.MybatisPlusConfig
+com.lemnt.common.mybatis.handler.MyMetaObjectHandler

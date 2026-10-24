@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.system.infrastructure.log.mapper.OperLogMapper">
+
+    <resultMap type="com.lemnt.system.infrastructure.log.dataobject.OperLogDO" id="SysOperLogResult">
+        <id property="operId" column="oper_id"/>
+        <result property="title" column="title"/>
+        <result property="businessType" column="business_type"/>
+        <result property="method" column="method"/>
+        <result property="requestMethod" column="request_method"/>
+        <result property="operatorType" column="operator_type"/>
+        <result property="operName" column="oper_name"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="operUrl" column="oper_url"/>
+        <result property="operIp" column="oper_ip"/>
+        <result property="operParam" column="oper_param"/>
+        <result property="jsonResult" column="json_result"/>
+        <result property="status" column="status"/>
+        <result property="errorMsg" column="error_msg"/>
+        <result property="operTime" column="oper_time"/>
+        <result property="costTime" column="cost_time"/>
+    </resultMap>
+
+    <sql id="selectOperLogVo">
+        oper_id, title, business_type, method, request_method, operator_type, oper_name, dept_name,
+        oper_url, oper_ip, oper_param, json_result, status, error_msg, oper_time, cost_time
+    </sql>
+
+    <select id="selectPage" resultMap="SysOperLogResult">
+        SELECT
+        <include refid="selectOperLogVo"/>
+        FROM sys_oper_log
+        <where>
+            <if test="qry.operIp != null and qry.operIp != ''">
+                AND oper_ip LIKE CONCAT('%', #{qry.operIp}, '%')
+            </if>
+            <if test="qry.title != null and qry.title != ''">
+                AND title LIKE CONCAT('%', #{qry.title}, '%')
+            </if>
+            <if test="qry.businessType != null">
+                AND business_type = #{qry.businessType}
+            </if>
+            <if test="qry.businessTypes != null and qry.businessTypes.length &gt; 0">
+                AND business_type IN
+                <foreach collection="qry.businessTypes" item="businessType" open="(" separator="," close=")">
+                    #{businessType}
+                </foreach>
+            </if>
+            <if test="qry.status != null">
+                AND status = #{qry.status}
+            </if>
+            <if test="qry.operName != null and qry.operName != ''">
+                AND oper_name LIKE CONCAT('%', #{qry.operName}, '%')
+            </if>
+            <if test="qry.beginTime != null">
+                AND oper_time &gt;= #{qry.beginTime}
+            </if>
+            <if test="qry.endTime != null">
+                AND oper_time &lt;= #{qry.endTime}
+            </if>
+        </where>
+        ORDER BY oper_id DESC
+    </select>
+
+    <update id="cleanOperLog">
+        TRUNCATE TABLE sys_oper_log
+    </update>
+
+</mapper>

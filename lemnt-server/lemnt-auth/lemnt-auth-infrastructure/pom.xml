@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.lemnt</groupId>
+        <artifactId>lemnt-auth</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>lemnt-auth-infrastructure</artifactId>
+    <description>认证授权 Infrastructure 层</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-auth-domain</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-infrastructure</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-system-client</artifactId>
+        </dependency>
+    </dependencies>
+</project>

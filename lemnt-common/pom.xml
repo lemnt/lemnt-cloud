@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.lemnt</groupId>
+        <artifactId>lemnt-dependencies</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../lemnt-dependencies/pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>lemnt-common</artifactId>
+    <packaging>pom</packaging>
+
+    <description>lemnt-common通用模块</description>
+
+    <modules>
+        <module>lemnt-common-log</module>
+        <module>lemnt-common-core</module>
+        <module>lemnt-common-redis</module>
+        <module>lemnt-common-swagger</module>
+        <module>lemnt-common-security</module>
+        <module>lemnt-common-sensitive</module>
+        <module>lemnt-common-datascope</module>
+        <module>lemnt-common-datasource</module>
+        <module>lemnt-common-oss</module>
+        <module>lemnt-common-excel</module>
+        <module>lemnt-common-mybatis</module>
+        <module>lemnt-common-dubbo</module>
+        <module>lemnt-common-job</module>
+        <module>lemnt-common-lock</module>
+        <module>lemnt-common-mq</module>
+        <module>lemnt-common-kafka</module>
+        <module>lemnt-common-async</module>
+        <module>lemnt-common-snowflake</module>
+        <module>lemnt-common-client</module>
+        <module>lemnt-common-domain</module>
+        <module>lemnt-common-application</module>
+        <module>lemnt-common-infrastructure</module>
+        <module>lemnt-common-adapter</module>
+        <module>lemnt-common-start</module>
+    </modules>
+
+</project>

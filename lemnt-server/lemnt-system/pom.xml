@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.lemnt</groupId>
+        <artifactId>lemnt-server</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>lemnt-system-client</module>
+        <module>lemnt-system-adapter</module>
+        <module>lemnt-system-application</module>
+        <module>lemnt-system-domain</module>
+        <module>lemnt-system-infrastructure</module>
+        <module>lemnt-system-start</module>
+    </modules>
+
+    <artifactId>lemnt-system</artifactId>
+    <packaging>pom</packaging>
+
+    <description>系统模块</description>
+
+    <properties>
+        <system.okhttp.version>5.3.2</system.okhttp.version>
+        <system.okio.version>3.16.4</system.okio.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- MinIO 与 RocketMQ/OTel 引入不同 OkHttp，统一 JVM 实现及匹配的 Okio，避免运行时链接错误。 -->
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${system.okhttp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp-jvm</artifactId>
+                <version>${system.okhttp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okio</groupId>
+                <artifactId>okio</artifactId>
+                <version>${system.okio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okio</groupId>
+                <artifactId>okio-jvm</artifactId>
+                <version>${system.okio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-system-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-system-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-system-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-system-infrastructure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-system-adapter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

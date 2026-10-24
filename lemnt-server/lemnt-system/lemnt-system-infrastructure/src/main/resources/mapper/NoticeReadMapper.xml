@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.system.infrastructure.notice.mapper.NoticeReadMapper">
+
+    <insert id="insertReadRecords">
+        INSERT INTO sys_notice_read (notice_id, user_id, read_time)
+        VALUES
+        <foreach collection="records" item="record" separator=",">
+            (#{record.noticeId}, #{record.userId}, #{record.readTime})
+        </foreach>
+        ON DUPLICATE KEY UPDATE read_time = read_time
+    </insert>
+
+    <!-- 查询未读数量：正常状态公告 减去 当前用户已读数 -->
+    <select id="selectUnreadCount" resultType="int">
+        SELECT COUNT(*) FROM sys_notice n
+        WHERE n.status = '1' AND NOT exists (SELECT 1 FROM sys_notice_read r WHERE r.notice_id = n.notice_id AND
+        r.user_id = #{userId})
+    </select>
+
+    <!-- 查询带已读状态的公告列表 -->
+    <select id="selectNoticeListWithReadStatus" resultType="com.lemnt.system.domain.notice.model.Notice">
+        SELECT
+        n.notice_id AS noticeId,
+        n.notice_title AS noticeTitle,
+        n.notice_type AS noticeType,
+        n.status,
+        n.create_by AS createBy,
+        n.create_time AS createTime,
+        CASE WHEN r.notice_id IS NULL THEN 0 ELSE 1 END AS isRead
+        FROM sys_notice n
+        LEFT JOIN sys_notice_read r
+        ON r.notice_id = n.notice_id AND r.user_id = #{userId}
+        WHERE n.status = '1'
+        ORDER BY n.notice_id DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 查询已阅读某公告的用户列表 -->
+    <select id="selectPageReadUsers" resultType="com.lemnt.system.domain.notice.model.NoticeReadUser">
+        SELECT
+        u.user_id AS userId,
+        u.user_name AS userName,
+        u.nick_name AS nickName,
+        d.dept_name AS deptName,
+        u.phonenumber AS phonenumber,
+        r.read_time AS readTime
+        FROM sys_notice_read r
+        INNER JOIN sys_user u ON u.user_id = r.user_id AND u.del_flag = '0'
+        LEFT JOIN sys_dept d ON d.dept_id = u.dept_id
+        WHERE r.notice_id = #{noticeId}
+        <if test="searchValue != null and searchValue != ''">
+            AND (
+            u.user_name LIKE CONCAT('%', #{searchValue}, '%')
+            OR u.nick_name LIKE CONCAT('%', #{searchValue}, '%')
+            )
+        </if>
+        ORDER BY r.read_time DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.lemnt</groupId>
+    <artifactId>lemnt-dependencies</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <packaging>pom</packaging>
+
+    <description>框架统一依赖管理</description>
+
+    <properties>
+        <java.version>17</java.version>
+        <lemnt.version>${project.version}</lemnt.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring-boot.version>4.1.0</spring-boot.version>
+        <spring-cloud.version>2025.1.2</spring-cloud.version>
+        <spring-cloud-alibaba.version>2025.1.0.0</spring-cloud-alibaba.version>
+        <hutool.version>5.8.47</hutool.version>
+        <spring-boot-admin.version>4.1.2</spring-boot-admin.version>
+        <lombok.version>1.18.46</lombok.version>
+        <kaptcha.version>2.3.3</kaptcha.version>
+        <dubbo.version>3.3.6</dubbo.version>
+        <mybatis-plus.version>3.5.17</mybatis-plus.version>
+        <commons-io.version>2.22.0</commons-io.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
+        <commons-text.version>1.15.0</commons-text.version>
+        <fastjson2.version>2.0.65</fastjson2.version>
+        <jjwt.version>0.13.0</jjwt.version>
+        <minio.version>8.5.17</minio.version>
+        <easyexcel.version>4.0.3</easyexcel.version>
+        <poi.version>5.5.1</poi.version>
+        <springdoc.version>3.1.1</springdoc.version>
+        <swagger.version>2.2.54</swagger.version>
+        <transmittable-thread-local.version>2.14.5</transmittable-thread-local.version>
+        <xxl-job.version>3.4.2</xxl-job.version>
+        <lock4j.version>2.2.7</lock4j.version>
+        <redisson.version>4.7.0</redisson.version>
+        <dynamic-ds.version>4.5.0</dynamic-ds.version>
+        <logstash.version>9.0</logstash.version>
+        <rocketmq.version>2.3.6</rocketmq.version>
+    </properties>
+
+    <!-- 依赖声明 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- MinIO 和 Kafka 运行时需要 Snappy，覆盖导入 BOM 的 optional 标记。 -->
+            <dependency>
+                <groupId>org.xerial.snappy</groupId>
+                <artifactId>snappy-java</artifactId>
+                <version>1.1.10.7</version>
+                <optional>false</optional>
+            </dependency>
+            <!-- SpringBoot 依赖配置 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- SpringCloud 微服务 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- SpringCloud Alibaba 微服务 -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- mybatis-plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-bom</artifactId>
+                <version>${mybatis-plus.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Hutool -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-bom</artifactId>
+                <version>${hutool.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Dubbo 依赖配置 -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-bom</artifactId>
+                <version>${dubbo.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>lock4j-redisson-spring-boot-starter</artifactId>
+                <version>${lock4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+
+            <!-- Springdoc webmvc 依赖配置 -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webflux-api</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+
+            <!-- 验证码 -->
+            <dependency>
+                <groupId>pro.fessional</groupId>
+                <artifactId>kaptcha</artifactId>
+                <version>${kaptcha.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
+            </dependency>
+
+            <!-- io常用工具类 -->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${commons-text.version}</version>
+            </dependency>
+
+            <!-- excel工具 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+
+            <!-- JSON 解析器和生成器 -->
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson2.version}</version>
+            </dependency>
+
+            <!-- JWT -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+
+            <!-- 线程传递值 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>transmittable-thread-local</artifactId>
+                <version>${transmittable-thread-local.version}</version>
+            </dependency>
+
+            <!-- Dynamic DataSource -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot4-starter</artifactId>
+                <version>${dynamic-ds.version}</version>
+            </dependency>
+
+            <!-- xxl-job-core -->
+            <dependency>
+                <groupId>com.xuxueli</groupId>
+                <artifactId>xxl-job-core</artifactId>
+                <version>${xxl-job.version}</version>
+            </dependency>
+
+            <!-- logstash -->
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logstash.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>${rocketmq.version}</version>
+            </dependency>
+
+            <!-- 核心模块 -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-core</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-async</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- 接口模块 -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-swagger</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- 安全模块 -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-security</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- 数据脱敏 -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-sensitive</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- 权限范围 -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-datascope</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- 多数据源 -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-datasource</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- 日志记录 -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-log</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- 缓存服务 -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-redis</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- 雪花服务 -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-snowflake</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- oss 文件服务 -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-oss</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- excel 文件服务 -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-excel</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- Lock锁 -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-lock</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- mybatis -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-mybatis</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- Dubbo -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-dubbo</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- JOB -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-job</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- Mq -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-mq</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- Kafka -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-kafka</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- adapter -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-adapter</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- API 模块 -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-client</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- application -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-application</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- domain -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-domain</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- infrastructure -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-infrastructure</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- start -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-common-start</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+
+            <!-- 系统接口（新架构） -->
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-system-client</artifactId>
+                <version>${lemnt.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+        <!-- 阿里云镜像（备用） -->
+        <repository>
+            <id>aliyun</id>
+            <name>aliyun nexus</name>
+            <url>https://maven.aliyun.com/repository/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <!-- 阿里云镜像（备用） -->
+        <pluginRepository>
+            <id>aliyun</id>
+            <name>aliyun nexus</name>
+            <url>https://maven.aliyun.com/repository/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>xdb/**</exclude>
+                </excludes>
+                <filtering>true</filtering>
+            </resource>
+
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.xdb</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.6.2</version>
+                <executions>
+                    <execution>
+                        <id>enforce-java-version</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[17,18)</version>
+                                    <message>本项目必须使用 Java 17 构建。</message>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <parameters>true</parameters>
+                    <release>${java.version}</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.18.0</version>
+                <configuration>
+                    <processAllModules>true</processAllModules>
+                    <allowSnapshots>true</allowSnapshots>
+                    <generateBackupPoms>true</generateBackupPoms>
+                    <processParent>true</processParent>
+                </configuration>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <profile.active>dev</profile.active>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <profile.active>test</profile.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>uat</id>
+            <properties>
+                <profile.active>uat</profile.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profile.active>prod</profile.active>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>

@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.system.infrastructure.config.mapper.DictTypeMapper">
+
+    <resultMap type="com.lemnt.system.infrastructure.config.dataobject.DictTypeDO" id="SysDictTypeResult">
+        <id property="dictId" column="dict_id"/>
+        <result property="dictName" column="dict_name"/>
+        <result property="dictType" column="dict_type"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectDictTypeVo">
+        dict_id, dict_name, dict_type, status, create_by, create_time, update_by, update_time, remark
+    </sql>
+
+    <select id="selectPage" resultMap="SysDictTypeResult">
+        SELECT
+        <include refid="selectDictTypeVo"/>
+        FROM sys_dict_type
+        <where>
+            <if test="qry.dictName != null and qry.dictName != ''">
+                AND dict_name LIKE CONCAT('%', #{qry.dictName}, '%')
+            </if>
+            <if test="qry.status != null and qry.status != ''">
+                AND status = #{qry.status}
+            </if>
+            <if test="qry.dictType != null and qry.dictType != ''">
+                AND dict_type LIKE CONCAT('%', #{qry.dictType}, '%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

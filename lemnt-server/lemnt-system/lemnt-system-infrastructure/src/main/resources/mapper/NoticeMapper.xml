@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.system.infrastructure.notice.mapper.NoticeMapper">
+
+    <resultMap type="com.lemnt.system.infrastructure.notice.dataobject.NoticeDO" id="SysNoticeResult">
+        <id property="noticeId" column="notice_id"/>
+        <result property="noticeTitle" column="notice_title"/>
+        <result property="noticeType" column="notice_type"/>
+        <result property="noticeContent" column="notice_content"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectNoticeVo">
+        notice_id, notice_title, notice_type, notice_content, status, create_by, create_time, update_by,
+        update_time, remark
+    </sql>
+
+    <select id="selectPage" resultMap="SysNoticeResult">
+        SELECT
+        <include refid="selectNoticeVo"/>
+        FROM sys_notice
+        <where>
+            <if test="qry.noticeTitle != null and qry.noticeTitle != ''">
+                AND notice_title LIKE CONCAT('%', #{qry.noticeTitle}, '%')
+            </if>
+            <if test="qry.noticeType != null and qry.noticeType != ''">
+                AND notice_type = #{qry.noticeType}
+            </if>
+            <if test="qry.createBy != null and qry.createBy != ''">
+                AND create_by LIKE CONCAT('%', #{qry.createBy}, '%')
+            </if>
+        </where>
+        ORDER BY notice_id DESC
+    </select>
+
+</mapper>
