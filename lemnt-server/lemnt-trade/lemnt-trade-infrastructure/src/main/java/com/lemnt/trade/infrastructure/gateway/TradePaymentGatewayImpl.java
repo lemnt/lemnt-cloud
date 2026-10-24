@@ -9,6 +9,7 @@ import com.lemnt.trade.infrastructure.mapper.TradePaymentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import java.math.BigDecimal;
 
 @Component
 @RequiredArgsConstructor
@@ -17,15 +18,20 @@ public class TradePaymentGatewayImpl implements TradePaymentGateway {
 
     @Override
     public PaymentRecord findByPaymentNo(String paymentNo) {
-        TradePaymentDO row = mapper.selectOne(Wrappers.lambdaQuery(TradePaymentDO.class)
-                .eq(TradePaymentDO::getPaymentNo, paymentNo).last("LIMIT 1"));
-        return toRecord(row);
+        return toRecord(mapper.selectOne(Wrappers.lambdaQuery(TradePaymentDO.class)
+                .eq(TradePaymentDO::getPaymentNo, paymentNo).last("LIMIT 1")));
+    }
+
+    @Override
+    public PaymentRecord findByOrderNoAndChannel(String orderNo, String channel) {
+        return toRecord(mapper.selectOne(Wrappers.lambdaQuery(TradePaymentDO.class)
+                .eq(TradePaymentDO::getOrderNo, orderNo).eq(TradePaymentDO::getChannel, channel)
+                .last("LIMIT 1")));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public PaymentRecord createWaiting(String paymentNo, String orderNo, String channel,
-                                       java.math.BigDecimal amount) {
+    public PaymentRecord createWaiting(String paymentNo, String orderNo, String channel, BigDecimal amount) {
         TradePaymentDO row = new TradePaymentDO().setPaymentNo(paymentNo).setOrderNo(orderNo)
                 .setChannel(channel).setAmount(amount).setStatus("WAITING");
         mapper.insert(row);
