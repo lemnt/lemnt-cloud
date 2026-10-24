@@ -1,0 +1,42 @@
+.shell:global(.app-shell) :global(.ant-layout-sider.ant-pro-sider) {
+  background: #fff;
+  box-shadow: 2px 0 12px rgb(15 23 42 / 3%);
+}
+
+.shell :global(.ant-pro-sider-logo .anticon) {
+  color: #1677ff;
+}
+
+.menuPopup:global(.ant-menu-submenu-popup) :global(.ant-menu) {
+  background: #fff;
+}
+
+.shell :global(.ant-pro-sider .ant-menu-submenu-selected > .ant-menu-submenu-title),
+.menuPopup :global(.ant-menu-submenu-selected > .ant-menu-submenu-title) {
+  color: #1677ff;
+}
+
+.sessionState {
+  display: grid;
+  min-height: 100dvh;
+  padding: 24px;
+  place-items: center;
+  background: var(--ant-color-bg-layout);
+}
+
+.loadingContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+
+.loadingContent .loadingTitle {
+  margin: 16px 0 32px;
+}
+
+.loadingContent .loadingDescription {
+  margin: 20px 0 0;
+}

@@ -1,0 +1,234 @@
+.ant-modal .admin-overlay-container {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 64px);
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--ant-color-border-secondary, #e8edf4);
+  border-radius: 14px;
+  box-shadow: 0 24px 80px rgb(15 23 42 / 18%);
+}
+.ant-modal .admin-overlay-container .admin-overlay-header {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 24px 56px 22px 24px;
+  border-bottom: 1px solid var(--ant-color-border-secondary, #e8edf4);
+  background: var(--ant-color-bg-container, #fff);
+}
+.ant-modal .admin-overlay-container .admin-overlay-close {
+  top: 22px;
+  inset-inline-end: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+.ant-modal .admin-overlay-container .admin-overlay-body {
+  min-height: 0;
+  padding: 24px;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.ant-modal .admin-overlay-container .admin-overlay-footer {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 16px 24px;
+  border-top: 1px solid var(--ant-color-border-secondary, #e8edf4);
+  background: var(--ant-color-fill-quaternary, #fafbfd);
+}
+.admin-overlay-footer .ant-btn,
+.admin-drawer-footer .ant-btn {
+  min-width: 88px;
+  height: 36px;
+}
+.admin-overlay-footer .ant-space {
+  gap: 12px;
+}
+.admin-form-modal {
+  max-width: calc(100vw - 32px);
+}
+.admin-dialog-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.admin-dialog-icon {
+  display: grid;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: var(--ant-color-primary-bg, #edf5ff);
+  color: var(--ant-color-primary, #1677ff);
+  font-size: 20px;
+  place-items: center;
+}
+.admin-dialog-heading {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 26px;
+  overflow-wrap: anywhere;
+}
+.admin-dialog-description {
+  margin: 5px 0 0;
+  color: var(--ant-color-text-secondary, #718098);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.7;
+}
+.admin-form-modal .ant-form-item {
+  margin-bottom: 22px;
+}
+.admin-form-modal .ant-form-item-label > label {
+  font-size: 13px;
+  font-weight: 500;
+}
+.admin-form-modal .ant-input-number,
+.admin-form-modal .ant-picker {
+  width: 100%;
+}
+.admin-form-modal .ant-form-item-explain,
+.admin-form-modal .ant-form-item-extra {
+  margin-top: 4px;
+  font-size: 12px;
+}
+.admin-form-modal .ant-form > .ant-form-item:last-child {
+  margin-bottom: 0;
+}
+.admin-form-modal .ant-alert {
+  margin-bottom: 20px;
+}
+.admin-overlay-body .ant-table-thead > tr > th {
+  background: var(--ant-color-fill-tertiary, #f2f5f9);
+  font-size: 13px;
+}
+.admin-overlay-body .ant-table-wrapper {
+  margin-top: 16px;
+  overflow: auto;
+}
+.admin-overlay-container:has(.ant-modal-confirm-body-wrapper) {
+  border-radius: 12px;
+}
+.ant-modal-confirm .admin-overlay-container {
+  padding: 28px;
+}
+.ant-modal-confirm .admin-overlay-container .ant-modal-body {
+  padding: 0;
+}
+.ant-modal-confirm .ant-modal-confirm-title {
+  font-size: 17px;
+  line-height: 1.6;
+}
+.ant-modal-confirm .ant-modal-confirm-content {
+  margin-top: 10px;
+  color: var(--ant-color-text-secondary, #718098);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.ant-modal-confirm .ant-modal-confirm-btns {
+  padding-top: 20px;
+  border-top: 1px solid var(--ant-color-border-secondary, #e8edf4);
+}
+.ant-modal-confirm .ant-modal-confirm-btns .ant-btn {
+  min-width: 88px;
+  height: 36px;
+}
+.admin-popconfirm .ant-popconfirm-message-title {
+  font-weight: 600;
+}
+.admin-popconfirm .ant-popconfirm-buttons {
+  margin-top: 16px;
+}
+.admin-popconfirm .ant-btn {
+  min-width: 64px;
+}
+.admin-drawer-container {
+  border-inline-start: 1px solid var(--ant-color-border-secondary, #e8edf4);
+}
+.ant-drawer .admin-drawer-container .admin-drawer-header {
+  padding: 24px;
+  border-bottom: 1px solid var(--ant-color-border-secondary, #e8edf4);
+}
+.admin-drawer-header .ant-drawer-title {
+  font-size: 18px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.admin-drawer-header .ant-drawer-header-title {
+  flex-direction: row-reverse;
+}
+.admin-drawer-header .ant-drawer-close {
+  width: 32px;
+  height: 32px;
+  margin-inline-start: 16px;
+  margin-inline-end: 0;
+  border-radius: 8px;
+}
+.ant-drawer .admin-drawer-container .admin-drawer-body {
+  padding: 24px;
+  background: var(--ant-color-bg-layout, #f5f7fa);
+  overscroll-behavior: contain;
+}
+.admin-drawer-body > .ant-space {
+  width: 100%;
+}
+.admin-drawer-body .ant-descriptions {
+  padding: 20px;
+  border: 1px solid var(--ant-color-border-secondary, #e8edf4);
+  border-radius: 10px;
+  background: var(--ant-color-bg-container, #fff);
+}
+.admin-drawer-body .ant-descriptions-item-label {
+  color: var(--ant-color-text-secondary, #718098);
+  font-size: 13px;
+}
+.admin-drawer-body .ant-descriptions-item-content {
+  overflow-wrap: anywhere;
+}
+.admin-drawer-body .ant-alert {
+  margin-bottom: 16px;
+}
+.ant-drawer .admin-drawer-container .admin-drawer-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-top: 1px solid var(--ant-color-border-secondary, #e8edf4);
+  background: var(--ant-color-bg-container, #fff);
+}
+@media (max-width: 767px) {
+  .ant-modal .admin-overlay-container {
+    max-height: calc(100dvh - 32px);
+    border-radius: 12px;
+  }
+  .ant-modal .admin-overlay-container .admin-overlay-header {
+    padding: 20px 52px 18px 16px;
+  }
+  .ant-modal .admin-overlay-container .admin-overlay-body {
+    padding: 20px 16px;
+  }
+  .ant-modal .admin-overlay-container .admin-overlay-footer {
+    padding: 14px 16px;
+  }
+  .admin-dialog-title {
+    gap: 10px;
+  }
+  .admin-dialog-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+  .admin-dialog-heading {
+    font-size: 17px;
+  }
+  .ant-modal-confirm .admin-overlay-container {
+    padding: 24px 20px;
+  }
+  .ant-drawer .admin-drawer-container .admin-drawer-header,
+  .ant-drawer .admin-drawer-container .admin-drawer-body,
+  .ant-drawer .admin-drawer-container .admin-drawer-footer {
+    padding: 20px 16px;
+  }
+  .admin-drawer-body .ant-descriptions {
+    padding: 16px;
+  }
+}

@@ -44,3 +44,13 @@ Desktop.ini
 *.swp
 *.swo
 *~
+
+# 前端依赖、构建产物和测试报告
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# 前端共享的接口前缀配置
+!/lemnt-ui/.env.development
+!/lemnt-ui/.env.production

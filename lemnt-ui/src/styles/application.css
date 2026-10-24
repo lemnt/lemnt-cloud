@@ -1,0 +1,66 @@
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+.application {
+  min-height: 100vh;
+  color: var(--ant-color-text);
+  background: var(--ant-color-bg-layout);
+}
+
+.color-weak {
+  filter: invert(80%);
+}
+
+.app-shell .ant-pro-layout-content {
+  min-height: calc(100dvh - 160px);
+}
+
+.application .ant-pro-global-footer-copyright {
+  color: var(--ant-color-text-tertiary);
+  font-size: 12px;
+}
+
+.app-shell .ant-pro-layout-bg-list {
+  background-image:
+    radial-gradient(ellipse at 100% 85%, rgb(22 119 255 / 4%), transparent 35%),
+    radial-gradient(ellipse at 10% 100%, rgb(22 119 255 / 3%), transparent 30%);
+}
+
+.app-shell .ant-pro-table-search,
+.app-shell .ant-pro-table-list .ant-card,
+.app-shell .ant-pro-page-container-children-container > .ant-card {
+  border-radius: var(--ant-border-radius-lg);
+}
+
+.app-shell .ant-pro-table-search {
+  margin-bottom: 16px;
+}
+
+.app-shell .ant-pro-table-list .ant-card {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 3%);
+}
+
+.app-shell .ant-pro-table-list-toolbar-title {
+  font-size: 16px;
+}
+
+.app-shell .ant-pro-table-list-toolbar {
+  padding-block: 16px;
+}
+
+.app-shell .ant-pro-page-container-children-container {
+  min-width: 0;
+}
+
+@media (max-width: 575px) {
+  .app-shell .ant-pro-page-container-children-container {
+    padding-inline: 12px;
+  }
+}

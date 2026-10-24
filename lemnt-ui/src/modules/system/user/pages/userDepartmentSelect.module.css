@@ -1,0 +1,49 @@
+.popup {
+  max-width: calc(100vw - 32px);
+  padding: 6px;
+  overflow: hidden;
+  border-radius: 12px;
+}
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px 12px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--department-border);
+  color: var(--department-primary);
+}
+.node {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-block: 3px;
+}
+.node > :global(.anticon) {
+  color: var(--department-primary);
+}
+.branch {
+  font-weight: 600;
+}
+.count {
+  padding-inline: 6px;
+  border-radius: 10px;
+  background: var(--department-fill);
+  color: var(--department-secondary);
+  font-size: 12px;
+  line-height: 20px;
+}
+.popup :global(.ant-select-tree-treenode) {
+  padding-block: 2px;
+}
+.popup :global(.ant-select-tree-node-content-wrapper) {
+  min-height: 30px;
+  border-radius: 6px;
+}
+.hint {
+  margin-top: 6px;
+  padding: 10px;
+  border-top: 1px solid var(--department-border);
+  color: var(--department-secondary);
+  font-size: 12px;
+}

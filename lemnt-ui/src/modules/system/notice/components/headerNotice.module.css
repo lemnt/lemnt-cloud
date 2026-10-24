@@ -1,0 +1,20 @@
+.list {
+  width: 320px;
+  max-width: calc(100vw - 48px);
+}
+
+.title {
+  padding-inline: 0;
+  height: auto;
+  white-space: normal;
+  text-align: left;
+}
+
+.panel {
+  width: 100%;
+}
+
+.item {
+  padding-block: 12px;
+  border-bottom: 1px solid var(--ant-color-split);
+}

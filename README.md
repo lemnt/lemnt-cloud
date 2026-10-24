@@ -9,6 +9,7 @@
 ```text
 lemnt-cloud
 ├── pom.xml                     聚合构建入口
+├── lemnt-ui                    React 管理前端
 ├── lemnt-dependencies          统一依赖版本、构建插件和环境配置
 ├── lemnt-common                通用组件
 │   ├── lemnt-common-core        基础工具与通用常量
@@ -36,6 +37,8 @@ lemnt-cloud
 
 | 技术 | 版本 / 用途 |
 | --- | --- |
+| 前端 | React 19、TypeScript、Vite 8、Ant Design 6、Pro Components |
+| 前端运行环境 | Node.js >=22.13.0 且 <23、Yarn 1.22.22 |
 | Java | 17，构建规则限定 Java 17 |
 | Spring Boot | 4.1.0 |
 | Spring Cloud | 2025.1.2 |
@@ -159,6 +162,42 @@ java -jar lemnt-server/lemnt-open/lemnt-open-start/target/lemnt-open-start.jar
 | lemnt-open | 9300 |
 
 检查服务日志及 Nacos 注册状态，确认服务处于同一命名空间。网关路由配置位于 Nacos，配置包使用 `/auth/**`、`/system/**`、`/open/**` 前缀转发请求。
+
+## 前端运行与部署
+
+前端工程位于 [lemnt-ui](lemnt-ui)，独立使用 yarn 构建，不参与 Maven 聚合构建。
+
+```bash
+cd lemnt-ui
+yarn install --frozen-lockfile
+yarn dev
+```
+
+开发地址默认为 `http://localhost:5173`。`.env.development` 使用 `VITE_APP_BASE_API=/dev-api`，Vite 将 `/dev-api` 请求转发到 `http://localhost:8080`，并移除该前缀。先启动后端网关及其依赖服务；如果网关改了端口，同步修改 `lemnt-ui/vite.config.ts` 中的代理目标。
+
+生产构建：
+
+```bash
+cd lemnt-ui
+yarn build
+```
+
+产物位于 `lemnt-ui/dist`。生产接口前缀为 `/prod-api`，需要由部署层反向代理至网关，并移除该前缀；Vite 开发代理不会进入生产构建。静态站点还需配置前端路由回退到 `index.html`。
+
+共享的 `.env.development` 和 `.env.production` 仅配置接口前缀，可纳入版本管理；私有本地配置使用 `.env.local` 等忽略文件。`VITE_*` 变量会暴露给浏览器，不应存放密钥。
+
+前端验证命令：
+
+```bash
+cd lemnt-ui
+yarn typecheck
+yarn lint
+yarn format:check
+yarn test
+yarn build
+```
+
+前端已移除广告业务页面、路由、菜单编排、投放报表及广告主身份字段，首页提供基于授权菜单的快捷入口。本次整理不修改数据库中的菜单和业务数据。静态构建不等于完成真实登录、权限及系统接口联调。前端规范见 [lemnt-ui/AGENTS.md](lemnt-ui/AGENTS.md)。
 
 ## Docker
 

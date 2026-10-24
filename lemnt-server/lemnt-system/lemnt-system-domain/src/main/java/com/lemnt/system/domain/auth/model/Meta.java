@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * 路由显示信息
  *
- * @author ruoyi
+ * @author wangxx
  */
 @Data
 public class Meta implements Serializable {

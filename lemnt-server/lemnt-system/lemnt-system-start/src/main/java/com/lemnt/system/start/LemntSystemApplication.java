@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 /**
  * 系统模块
  *
- * @author ruoyi
+ * @author wangxx
  */
 @EnableAsync
 @EnableDubbo(scanBasePackages = "com.lemnt.system")
