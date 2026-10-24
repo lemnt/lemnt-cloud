@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 数据权限过滤注解
+ * 数据权限过滤注解，标注在实际执行 SQL 的 Mapper 方法上，由 MyBatis 拦截器读取。
  *
  * @author wangxx
  */

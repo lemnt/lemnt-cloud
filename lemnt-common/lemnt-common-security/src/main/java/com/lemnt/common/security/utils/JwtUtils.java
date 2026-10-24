@@ -29,7 +29,7 @@ public class JwtUtils {
     }
 
     /**
-     * 从数据声明生成令牌
+     * 从数据声明生成令牌，不设置固定 exp；有效期由 Redis 滑动会话控制。
      *
      * @param claims 数据声明
      * @return 令牌

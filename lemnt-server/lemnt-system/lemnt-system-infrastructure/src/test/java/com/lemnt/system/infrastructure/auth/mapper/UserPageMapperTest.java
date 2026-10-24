@@ -30,7 +30,7 @@ class UserPageMapperTest {
         String sql = statement.getBoundSql(Map.of("qry", query)).getSql();
 
         assertThat(sql).contains("d.dept_name", "LEFT JOIN sys_dept d", "u.del_flag = '0'",
-                "u.user_name LIKE", "FIND_IN_SET", "AND u.user_id = 2");
+                "u.user_name LIKE", "FIND_IN_SET").doesNotContain("AND u.user_id = 2");
     }
 
     @Test

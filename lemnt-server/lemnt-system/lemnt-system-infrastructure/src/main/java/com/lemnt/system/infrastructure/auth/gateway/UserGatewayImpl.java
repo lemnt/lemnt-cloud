@@ -10,7 +10,6 @@ import com.lemnt.system.infrastructure.auth.mapper.UserRoleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import com.lemnt.common.core.constant.CacheConstants;
-import com.lemnt.common.datascope.annotation.DataScope;
 import com.lemnt.common.redis.service.RedisStringService;
 import com.lemnt.system.domain.auth.model.User;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
@@ -39,7 +38,6 @@ public class UserGatewayImpl implements UserGateway {
     private final RedisStringService redisStringService;
 
     @Override
-    @DataScope(deptAlias = "d", userAlias = "u")
     public PageResult<User> selectPage(User user, PageQry pageQry) {
         Page<User> page = new Page<>(pageQry.getPageNum(), pageQry.getPageSize());
         IPage<User> result = userMapper.selectPage(page, user);
@@ -47,7 +45,6 @@ public class UserGatewayImpl implements UserGateway {
     }
 
     @Override
-    @DataScope(deptAlias = "d", userAlias = "u")
     public PageResult<User> selectAllocatedList(User user, PageQry pageQry) {
         Page<UserDO> page = new Page<>(pageQry.getPageNum(), pageQry.getPageSize());
         IPage<UserDO> result = userMapper.selectAllocatedList(page, user);
@@ -55,7 +52,6 @@ public class UserGatewayImpl implements UserGateway {
     }
 
     @Override
-    @DataScope(deptAlias = "d", userAlias = "u")
     public PageResult<User> selectUnallocatedList(User user, PageQry pageQry) {
         Page<UserDO> page = new Page<>(pageQry.getPageNum(), pageQry.getPageSize());
         IPage<UserDO> result = userMapper.selectUnallocatedList(page, user);

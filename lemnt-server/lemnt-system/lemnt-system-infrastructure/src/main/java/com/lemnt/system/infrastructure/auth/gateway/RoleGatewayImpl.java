@@ -8,7 +8,6 @@ import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.system.infrastructure.auth.mapper.RoleMenuMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import com.lemnt.common.datascope.annotation.DataScope;
 import com.lemnt.system.domain.auth.model.Role;
 import com.lemnt.system.domain.auth.gateway.RoleGateway;
 import com.lemnt.system.infrastructure.auth.converter.RoleConverter;
@@ -35,7 +34,6 @@ public class RoleGatewayImpl implements RoleGateway {
     private final RoleMenuMapper roleMenuMapper;
 
     @Override
-    @DataScope(deptAlias = "d")
     public PageResult<Role> selectPage(Role role, PageQry pageQry) {
         Page<RoleDO> page = new Page<>(pageQry.getPageNum(), pageQry.getPageSize());
         IPage<RoleDO> result = roleMapper.selectPage(page, role);
@@ -43,7 +41,6 @@ public class RoleGatewayImpl implements RoleGateway {
     }
 
     @Override
-    @DataScope(deptAlias = "d")
     public List<Role> selectRoleList(Role role) {
         return RoleConverter.toEntityList(roleMapper.selectRoleList(role));
     }
@@ -77,7 +74,6 @@ public class RoleGatewayImpl implements RoleGateway {
     }
 
     @Override
-    @DataScope(deptAlias = "d")
     public List<Role> selectRoleAll() {
         return RoleConverter.toEntityList(roleMapper.selectRoleAll());
     }

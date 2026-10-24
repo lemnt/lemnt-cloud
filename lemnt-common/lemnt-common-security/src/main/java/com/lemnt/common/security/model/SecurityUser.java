@@ -35,12 +35,12 @@ public class SecurityUser implements Serializable {
     private String username;
 
     /**
-     * 登录时间
+     * 会话最近签发或续期时间，Unix 毫秒时间戳
      */
     private Long loginTime;
 
     /**
-     * 过期时间
+     * 当前会话过期时间，Unix 毫秒时间戳，与 Redis TTL 对应
      */
     private Long expireTime;
 

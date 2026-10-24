@@ -5,7 +5,6 @@ import java.util.List;
 import com.lemnt.system.infrastructure.auth.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import com.lemnt.common.datascope.annotation.DataScope;
 import com.lemnt.system.domain.org.model.Dept;
 import com.lemnt.system.domain.org.gateway.DeptGateway;
 import com.lemnt.system.infrastructure.org.converter.DeptConverter;
@@ -25,7 +24,6 @@ public class DeptGatewayImpl implements DeptGateway {
     private final UserMapper userMapper;
 
     @Override
-    @DataScope(deptAlias = "d")
     public List<Dept> selectDeptList(Dept dept) {
         List<DeptDO> doList = deptMapper.selectDeptList(dept);
         return DeptConverter.toEntityList(doList);

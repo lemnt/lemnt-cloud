@@ -45,8 +45,6 @@
             AND DATE_FORMAT(r.create_time,'%Y%m%d') &gt;= DATE_FORMAT(#{qry.beginTime},'%Y%m%d')
             AND DATE_FORMAT(r.create_time,'%Y%m%d') &lt;= DATE_FORMAT(#{qry.endTime},'%Y%m%d')
         </if>
-        <!-- 数据范围过滤 -->
-        ${qry.dataScope}
     </select>
 
     <select id="selectRoleList" resultMap="SysRoleResult">
@@ -68,8 +66,6 @@
             AND DATE_FORMAT(r.create_time,'%Y%m%d') &gt;= DATE_FORMAT(#{qry.beginTime},'%Y%m%d')
             AND DATE_FORMAT(r.create_time,'%Y%m%d') &lt;= DATE_FORMAT(#{qry.endTime},'%Y%m%d')
         </if>
-        <!-- 数据范围过滤 -->
-        ${qry.dataScope}
     </select>
 
     <select id="selectRolePermissionByUserId" parameterType="Long" resultMap="SysRoleResult">
@@ -80,7 +76,6 @@
     <select id="selectRoleAll" resultMap="SysRoleResult">
         <include refid="selectRole"/>
         WHERE r.del_flag = '0'
-        ${qry.dataScope}
     </select>
 
     <select id="selectRoleListByUserId" parameterType="Long" resultType="Long">

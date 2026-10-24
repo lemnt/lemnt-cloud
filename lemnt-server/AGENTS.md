@@ -515,12 +515,16 @@ Bean。 **密钥缺失或不足 64 字节时应用启动直接失败**（HS512 �
 - 配置键：`security.token.secret`，或环境变量 `SECURITY_TOKEN_SECRET`
 - **lemnt-auth（签发）与 lemnt-gateway（校验）必须配置同一个密钥**，否则所有令牌校验失败
 - 密钥轮换会使所有已登录用户立即失效
-- 令牌 **不携带 `exp` 声明**，有效期由 Redis 会话控制（30 天 TTL，剩余不足 120 分钟时自动续期）。网关每次请求都校验
-  Redis，登出即删除会话键
+- 令牌 **不携带 `exp` 声明**，有效期由 Redis 会话控制（30 天 TTL，即 2592000 秒）。网关每次请求都校验
+  Redis；后端用户上下文拦截器在剩余不超过 120 分钟（7200 秒）时续期至 30 天，登出即删除会话键
+- Redis TTL 与登录响应 `expires_in`（HTTP 字段 `expiresIn`）统一使用秒；该响应值表示本次签发的会话时长，
+  后续自动续期以 Redis 会话为准，不是 JWT 的固定到期时间。`loginTime` / `expireTime` 为 Unix 毫秒时间戳
 
 ### 数据权限
 
-查询方法上标注 `@DataScope` 后，`CustomDataPermissionHandler` 按角色 `sys_role.data_scope` 动态改写 SQL 的 WHERE 条件：
+在实际执行 SQL 的 Mapper 方法上标注 `@DataScope`（不能标在 Gateway 实现方法上），
+`CustomDataPermissionHandler` 根据 MyBatis 的 mappedStatementId 读取 Mapper 及其继承方法上的注解，
+按角色 `sys_role.data_scope` 动态改写 SQL 的 WHERE 条件：
 
 | 值 | 含义         | 生成的条件                                                                                   |
 |----|--------------|----------------------------------------------------------------------------------------------|
@@ -532,6 +536,9 @@ Bean。 **密钥缺失或不足 64 字节时应用启动直接失败**（HS512 �
 
 - 多角色时各数据范围取 **并集**；任一角色为「全部数据」则不过滤
 - 部门/用户维度分别依赖注解的 `deptAlias` / `userAlias`， **未配置对应别名时该维度不生成条件**（避免多表关联下列名歧义）
+- 无可用角色或无法生成任何有效范围条件时返回零条记录；未获取登录用户上下文时拒绝查询
+- 数据权限拦截器必须位于分页拦截器之前，确保查询记录与分页总数使用同一范围；XML 不再拼接 `${dataScope}` SQL 片段
+- SQL 集成测试使用生产 Mapper/XML、实际拦截器链和 H2 MySQL 模式；`FIND_IN_SET` 由测试别名模拟，仍需在目标 MySQL 验证方言行为
 
 ### 数据库脚本（sql 目录）
 

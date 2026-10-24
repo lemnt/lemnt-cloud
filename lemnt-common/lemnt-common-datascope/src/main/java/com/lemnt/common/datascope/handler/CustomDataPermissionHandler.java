@@ -64,13 +64,14 @@ public class CustomDataPermissionHandler implements DataPermissionHandler {
     public Expression getSqlSegment(Expression where, String mappedStatementId) {
         Class<?> clazz = Class.forName(mappedStatementId.substring(0, mappedStatementId.lastIndexOf(StringPool.DOT)));
         String methodName = mappedStatementId.substring(mappedStatementId.lastIndexOf(StringPool.DOT) + 1);
-        Method[] methods = clazz.getDeclaredMethods();
+        // mappedStatementId 属于 Mapper；同时检查继承方法，避免漏读父接口注解。
+        Method[] methods = clazz.getMethods();
         for (Method method : methods) {
             if (method.getName().equals(methodName)) {
                 DataScope annotation = method.getAnnotation(DataScope.class);
-                // 如果没有注解，直接返回
+                // 同名重载（如 BaseMapper.selectPage）可能没有注解，继续查找实际查询方法。
                 if (Objects.isNull(annotation)) {
-                    return where;
+                    continue;
                 }
                 SecurityUser loginUser = SecurityUtils.getLoginUser();
                 if (Objects.isNull(loginUser)) {

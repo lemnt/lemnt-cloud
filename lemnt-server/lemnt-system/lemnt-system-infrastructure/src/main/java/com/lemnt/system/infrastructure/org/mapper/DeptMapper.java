@@ -1,5 +1,6 @@
 package com.lemnt.system.infrastructure.org.mapper;
 
+import com.lemnt.common.datascope.annotation.DataScope;
 import com.lemnt.system.domain.org.model.Dept;
 import com.lemnt.system.infrastructure.org.dataobject.DeptDO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -25,6 +26,7 @@ public interface DeptMapper extends BaseMapper<DeptDO> {
      * @param dept 部门信息
      * @return 部门信息集合
      */
+    @DataScope(deptAlias = "d")
     List<DeptDO> selectDeptList(Dept dept);
 
     /**

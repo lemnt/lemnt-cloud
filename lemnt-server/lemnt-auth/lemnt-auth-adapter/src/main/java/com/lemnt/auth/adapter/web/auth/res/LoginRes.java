@@ -13,7 +13,7 @@ public record LoginRes(
         @Schema(description = "JWT 访问令牌", example = "eyJhbGciOiJIUzUxMiJ9...",
                 requiredMode = Schema.RequiredMode.REQUIRED)
         String accessToken,
-        @Schema(description = "令牌有效期，单位：分钟", example = "30",
+        @Schema(description = "本次签发的会话有效秒数（30 天）；后续自动续期以 Redis 会话为准", example = "2592000",
                 requiredMode = Schema.RequiredMode.REQUIRED)
         Long expiresIn
 ) implements Serializable {

@@ -1,5 +1,7 @@
 package com.lemnt.common.core.constant;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * 缓存常量信息
  *
@@ -17,14 +19,14 @@ public class CacheConstants {
      */
     public final static String GLOBAL_PREFIX = DEF_PREFIX + "global:";
     /**
-     * 缓存有效期，默认720（分钟）
+     * 登录会话有效期：30 天，单位秒，与 Redis TTL 和 expires_in 一致
      */
-    public final static long EXPIRATION = 24 * 60 * 30;
+    public final static long TOKEN_TTL_SECONDS = TimeUnit.DAYS.toSeconds(30);
 
     /**
-     * 缓存刷新时间，默认120（分钟）
+     * 登录会话续期阈值：剩余不超过 120 分钟时续期，单位秒
      */
-    public final static long REFRESH_TIME = 120;
+    public final static long TOKEN_REFRESH_THRESHOLD_SECONDS = TimeUnit.MINUTES.toSeconds(120);
 
     /**
      * 密码最大错误次数

@@ -268,6 +268,20 @@ class CustomDataPermissionHandlerTest {
                 .setStatus(UserConstants.ROLE_NORMAL);
     }
 
+    @Test
+    @DisplayName("Mapper 继承的方法也应读取数据权限注解")
+    void inheritedMapperMethodShouldFilter() {
+        login(100L, 10L, role(1L, "3"));
+
+        Expression result = handler.getSqlSegment(null, ChildMapper.class.getName() + ".withBothAlias");
+
+        assertThat(result).isNotNull();
+        assertThat(result.toString()).contains("d.dept_id = 10");
+    }
+
+    interface ChildMapper extends TestMapper {
+    }
+
     private static void login(Long userId, Long deptId, SecurityRole... roles) {
         SecurityUserDetail detail = new SecurityUserDetail()
                 .setUserId(userId)

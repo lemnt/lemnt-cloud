@@ -1,6 +1,10 @@
 server:
   port: 8080
 
+gateway:
+  cors:
+    allowed-origins: ${GATEWAY_CORS_ALLOWED_ORIGINS:}
+
 spring:
   application:
     name: lemnt-gateway

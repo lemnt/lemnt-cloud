@@ -1,5 +1,6 @@
 package com.lemnt.system.infrastructure.auth.mapper;
 
+import com.lemnt.common.datascope.annotation.DataScope;
 import com.lemnt.system.domain.auth.model.User;
 import com.lemnt.system.infrastructure.auth.dataobject.UserDO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -28,6 +29,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
      * @param user 用户信息
      * @return 分页结果
      */
+    @DataScope(deptAlias = "d", userAlias = "u")
     IPage<User> selectPage(Page<User> page, @Param("qry") User user);
 
     /**
@@ -36,6 +38,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
      * @param user 用户信息
      * @return 用户列表
      */
+    @DataScope(deptAlias = "d", userAlias = "u")
     IPage<UserDO> selectAllocatedList(Page<UserDO> page, @Param("qry") User user);
 
     /**
@@ -44,6 +47,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
      * @param user 用户信息
      * @return 用户列表
      */
+    @DataScope(deptAlias = "d", userAlias = "u")
     IPage<UserDO> selectUnallocatedList(Page<UserDO> page, @Param("qry") User user);
 
     /**

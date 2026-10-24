@@ -1,5 +1,6 @@
 package com.lemnt.system.infrastructure.auth.mapper;
 
+import com.lemnt.common.datascope.annotation.DataScope;
 import com.lemnt.system.domain.auth.model.Role;
 import com.lemnt.system.infrastructure.auth.dataobject.RoleDO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -26,6 +27,7 @@ public interface RoleMapper extends BaseMapper<RoleDO> {
      * @param role 角色信息
      * @return 分页结果
      */
+    @DataScope(deptAlias = "d")
     IPage<RoleDO> selectPage(Page<RoleDO> page, @Param("qry") Role role);
 
     /**
@@ -34,6 +36,7 @@ public interface RoleMapper extends BaseMapper<RoleDO> {
      * @param role
      * @return
      */
+    @DataScope(deptAlias = "d")
     List<RoleDO> selectRoleList(@Param("qry") Role role);
 
     /**
@@ -49,6 +52,7 @@ public interface RoleMapper extends BaseMapper<RoleDO> {
      *
      * @return 角色列表
      */
+    @DataScope(deptAlias = "d")
     List<RoleDO> selectRoleAll();
 
     /**

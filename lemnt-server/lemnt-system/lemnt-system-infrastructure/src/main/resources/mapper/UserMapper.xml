@@ -114,8 +114,6 @@
             FIND_IN_SET(#{qry.deptId},
             ancestors) ))
         </if>
-        <!-- 数据范围过滤 -->
-        ${qry.dataScope}
     </select>
 
     <select id="selectAllocatedList" parameterType="com.lemnt.system.domain.auth.model.User" resultMap="SysUserResult">
@@ -131,8 +129,6 @@
         <if test="qry.phonenumber != null and qry.phonenumber != ''">
             AND u.phonenumber LIKE CONCAT('%', #{qry.phonenumber}, '%')
         </if>
-        <!-- 数据范围过滤 -->
-        ${qry.dataScope}
     </select>
 
     <select id="selectUnallocatedList" parameterType="com.lemnt.system.domain.auth.model.User" resultMap="SysUserResult">
@@ -150,8 +146,6 @@
         <if test="qry.phonenumber != null and qry.phonenumber != ''">
             AND u.phonenumber LIKE CONCAT('%', #{qry.phonenumber}, '%')
         </if>
-        <!-- 数据范围过滤 -->
-        ${qry.dataScope}
     </select>
 
     <select id="selectUserByUserName" parameterType="String" resultMap="UserResult">

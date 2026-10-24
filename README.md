@@ -116,10 +116,15 @@ Nacos 3.x 默认使用 `8080` 作为控制台端口，`8848` 作为服务主端�
 | `NACOS_USERNAME` | Nacos 用户名 |
 | `NACOS_PASSWORD` | Nacos 密码 |
 | `SECURITY_TOKEN_SECRET` | JWT 签名密钥，UTF-8 编码至少 64 字节 |
+| `GATEWAY_CORS_ALLOWED_ORIGINS` | 网关允许的前端跨域来源，多个来源用英文逗号分隔；默认不允许跨域 |
 
 认证服务与网关必须使用相同 JWT 密钥。缺失或长度不足会导致相关服务启动失败。也可通过配置项 `security.token.secret` 提供密钥；不要将实际密钥提交到仓库。
 
 在终端或 IDE 启动配置中设置环境变量。项目未配置自动读取 `.env` 文件。
+
+登录会话有效期统一为 30 天（2592000 秒），Redis TTL 与登录响应 `expiresIn`（通用 Token 服务字段 `expires_in`）均使用秒。响应值表示本次签发的会话时长；后端处理认证请求时，剩余不超过 120 分钟（7200 秒）会续期至 30 天，后续有效期以 Redis 会话为准。JWT 不设置固定 `exp`，Redis 会话过期或登出删除后即失效。内部 `loginTime` / `expireTime` 分别为最近签发或续期时间、当前到期时间，使用 Unix 毫秒时间戳。原 `expiresIn` 使用分钟，调用方如有倒计时或过期换算，需要同步改为秒。
+
+前端直接跨域访问网关时，设置 `GATEWAY_CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173`；生产环境替换为实际前端来源（协议、主机及端口，不含路径）。也可通过网关配置项 `gateway.cors.allowed-origins` 设置白名单。允许携带凭据，不允许使用 `*`；预检显式允许 `Authorization`、`Content-Type`、`Accept` 请求头。使用 Vite 代理或同源反向代理时无需为前端开启跨域。
 
 ### 4. 构建
 

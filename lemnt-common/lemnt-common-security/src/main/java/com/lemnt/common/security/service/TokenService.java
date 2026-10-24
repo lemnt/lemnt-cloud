@@ -40,16 +40,8 @@ public class TokenService {
         this.jwtUtils = jwtUtils;
     }
 
-    protected static final long MILLIS_SECOND = 1000;
-
-    protected static final long MILLIS_MINUTE = 60 * MILLIS_SECOND;
-
-    private final static long TOKEN_EXPIRE_TIME = CacheConstants.EXPIRATION;
-
-    private final static Long TOKEN_REFRESH_THRESHOLD_MINUTES = CacheConstants.REFRESH_TIME * MILLIS_MINUTE;
-
     /**
-     * 创建令牌
+     * 创建令牌，expires_in 为本次签发的会话有效秒数；后续续期由 Redis 会话控制。
      */
     public Map<String, Object> createToken(SecurityUser securityUser) {
         String token = snowflakeUtils.generateStr();
@@ -69,7 +61,7 @@ public class TokenService {
 
         Map<String, Object> rspMap = new HashMap<>();
         rspMap.put("access_token", jwtUtils.createToken(claimsMap));
-        rspMap.put("expires_in", TOKEN_EXPIRE_TIME);
+        rspMap.put("expires_in", CacheConstants.TOKEN_TTL_SECONDS);
         return rspMap;
     }
 
@@ -145,24 +137,24 @@ public class TokenService {
     }
 
     /**
-     * 验证令牌有效期，相差不足120分钟，自动刷新缓存
+     * 验证会话有效期，剩余不超过 120 分钟时自动续期；时间戳单位为毫秒。
      */
     public void verifySecurityUser(SecurityUser securityUser) {
         long expireTime = securityUser.getExpireTime();
         long currentTime = System.currentTimeMillis();
-        if (expireTime - currentTime <= TOKEN_REFRESH_THRESHOLD_MINUTES) {
+        if (expireTime - currentTime <= TimeUnit.SECONDS.toMillis(CacheConstants.TOKEN_REFRESH_THRESHOLD_SECONDS)) {
             refreshToken(securityUser);
         }
     }
 
     /**
-     * 刷新令牌有效期
+     * 将会话续期为 30 天，Redis TTL 使用秒，过期时间使用毫秒时间戳。
      */
     public void refreshToken(SecurityUser securityUser) {
         securityUser.setLoginTime(System.currentTimeMillis());
-        securityUser.setExpireTime(securityUser.getLoginTime() + TOKEN_EXPIRE_TIME * MILLIS_MINUTE);
+        securityUser.setExpireTime(securityUser.getLoginTime() + TimeUnit.SECONDS.toMillis(CacheConstants.TOKEN_TTL_SECONDS));
         String userKey = getTokenKey(securityUser.getToken());
-        redisStringService.setObj(userKey, securityUser, TOKEN_EXPIRE_TIME, TimeUnit.MINUTES);
+        redisStringService.setObj(userKey, securityUser, CacheConstants.TOKEN_TTL_SECONDS, TimeUnit.SECONDS);
     }
 
     private String getTokenKey(String token) {
