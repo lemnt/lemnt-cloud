@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS member_user (
+ id BIGINT NOT NULL AUTO_INCREMENT,
+ member_no VARCHAR(40) NOT NULL,
+ nickname VARCHAR(80) NOT NULL,
+ mobile VARCHAR(24) NULL,
+ email VARCHAR(254) NULL,
+ avatar VARCHAR(500) NULL,
+ status TINYINT NOT NULL DEFAULT 1,
+ points BIGINT NOT NULL DEFAULT 0,
+ create_by VARCHAR(64) NULL, create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ update_by VARCHAR(64) NULL, update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ PRIMARY KEY(id), UNIQUE KEY uk_member_no(member_no), UNIQUE KEY uk_member_mobile(mobile), UNIQUE KEY uk_member_email(email), KEY idx_member_status(status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会员基础信息';
