@@ -8,7 +8,6 @@
         <groupId>com.lemnt</groupId>
         <artifactId>lemnt-dependencies</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../lemnt-dependencies/pom.xml</relativePath>
     </parent>
 
     <artifactId>lemnt-server</artifactId>
