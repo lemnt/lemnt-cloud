@@ -8,6 +8,7 @@ import com.lemnt.system.application.file.executor.FileUploadCmdExe;
 import com.lemnt.system.domain.file.model.UploadFile;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -19,6 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class FileControllerTest {
@@ -48,12 +50,19 @@ class FileControllerTest {
         var mvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler()).build();
         mvc.perform(multipart("/files/upload"))
-                .andExpect(jsonPath("$.code").value(500))
-                .andExpect(jsonPath("$.msg").value("上传文件不能为空"));
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.status").value(422))
+                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
+                .andExpect(jsonPath("$.detail").value("上传文件不能为空"))
+                .andExpect(jsonPath("$.errors[0].pointer").value("/file"));
         mvc.perform(multipart("/files/upload")
                         .file(new MockMultipartFile("file", "empty.png", "image/png", new byte[0])))
-                .andExpect(jsonPath("$.code").value(500))
-                .andExpect(jsonPath("$.msg").value("上传文件不能为空"));
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.status").value(422))
+                .andExpect(jsonPath("$.code").value("BUSINESS_RULE_VIOLATION"))
+                .andExpect(jsonPath("$.detail").value("上传文件不能为空"));
     }
 
     @Test

@@ -218,7 +218,7 @@ docker build -t lemnt-auth:local lemnt-server/lemnt-auth
 mvn test
 ```
 
-当前整理阶段已验证根聚合工程可编译打包。最近一次完整测试中，文件上传测试 `FileControllerTest.shouldRejectMissingAndEmptyFileBeforeStorage` 存在错误码断言失败：预期数字错误码，实际为 `VALIDATION_ERROR`。完整测试尚未全部通过。
+当前整理阶段已验证根聚合工程可编译打包，后端 171 项测试全部通过。文件上传校验测试已按现有 Problem Details 响应断言 HTTP 状态、错误码及错误详情。
 
 打包成功不代表已完成真实部署验收；Nacos 3.2.1 连接、数据库、中间件、登录和接口权限等运行流程仍需在目标环境验证。
 
