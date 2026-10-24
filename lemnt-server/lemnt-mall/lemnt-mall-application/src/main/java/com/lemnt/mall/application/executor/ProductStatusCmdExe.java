@@ -1,0 +1,3 @@
+package com.lemnt.mall.application.executor;
+import com.lemnt.mall.domain.gateway.ProductGateway;import com.lemnt.mall.domain.model.Product;import lombok.RequiredArgsConstructor;import org.springframework.stereotype.Component;import org.springframework.transaction.annotation.Transactional;
+@Component @RequiredArgsConstructor public class ProductStatusCmdExe {private final ProductGateway gateway;@Transactional(rollbackFor=Exception.class) public boolean execute(Long id,boolean onShelf){Product p=gateway.findById(id);if(p==null)throw new IllegalArgumentException("商品不存在");String status=onShelf?"ON_SHELF":"OFF_SHELF";return gateway.updateStatus(id,status);}}
