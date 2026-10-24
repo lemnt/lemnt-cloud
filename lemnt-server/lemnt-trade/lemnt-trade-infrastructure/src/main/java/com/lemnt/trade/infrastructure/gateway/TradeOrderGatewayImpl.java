@@ -1,6 +1,65 @@
 package com.lemnt.trade.infrastructure.gateway;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;import com.lemnt.trade.domain.gateway.TradeOrderGateway;import com.lemnt.trade.domain.model.*;import com.lemnt.trade.infrastructure.dataobject.*;import com.lemnt.trade.infrastructure.mapper.*;import lombok.RequiredArgsConstructor;import org.springframework.stereotype.Component;import org.springframework.transaction.annotation.Transactional;import java.util.List;
-@Component @RequiredArgsConstructor public class TradeOrderGatewayImpl implements TradeOrderGateway {private final TradeOrderMapper orders;private final TradeOrderItemMapper items;
- @Transactional(rollbackFor=Exception.class) public TradeOrder save(TradeOrder o){TradeOrderDO d=new TradeOrderDO().setOrderNo(o.orderNo()).setMemberId(o.memberId()).setTotalAmount(o.totalAmount()).setStatus(o.status());orders.insert(d);for(TradeOrderItem i:o.items())items.insert(new TradeOrderItemDO().setOrderId(d.getId()).setProductId(i.productId()).setProductCode(i.productCode()).setProductName(i.productName()).setUnitPrice(i.unitPrice()).setQuantity(i.quantity()).setLineAmount(i.lineAmount()));return new TradeOrder(d.getId(),d.getOrderNo(),d.getMemberId(),d.getTotalAmount(),d.getStatus(),o.items(),d.getCreateTime());}
- public TradeOrder findByOrderNo(String no){TradeOrderDO d=orders.selectOne(Wrappers.lambdaQuery(TradeOrderDO.class).eq(TradeOrderDO::getOrderNo,no).last("LIMIT 1"));if(d==null)return null;List<TradeOrderItem> lines=items.selectList(Wrappers.lambdaQuery(TradeOrderItemDO.class).eq(TradeOrderItemDO::getOrderId,d.getId()).orderByAsc(TradeOrderItemDO::getId)).stream().map(i->new TradeOrderItem(i.getProductId(),i.getProductCode(),i.getProductName(),i.getUnitPrice(),i.getQuantity(),i.getLineAmount())).toList();return new TradeOrder(d.getId(),d.getOrderNo(),d.getMemberId(),d.getTotalAmount(),d.getStatus(),lines,d.getCreateTime());}
+
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.lemnt.trade.domain.gateway.TradeOrderGateway;
+import com.lemnt.trade.domain.model.TradeOrder;
+import com.lemnt.trade.domain.model.TradeOrderItem;
+import com.lemnt.trade.infrastructure.dataobject.TradeOrderDO;
+import com.lemnt.trade.infrastructure.dataobject.TradeOrderItemDO;
+import com.lemnt.trade.infrastructure.mapper.TradeOrderItemMapper;
+import com.lemnt.trade.infrastructure.mapper.TradeOrderMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Component
+@RequiredArgsConstructor
+public class TradeOrderGatewayImpl implements TradeOrderGateway {
+    private final TradeOrderMapper orders;
+    private final TradeOrderItemMapper items;
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public TradeOrder save(TradeOrder order) {
+        TradeOrderDO row = new TradeOrderDO().setOrderNo(order.orderNo()).setMemberId(order.memberId())
+                .setTotalAmount(order.totalAmount()).setStatus(order.status());
+        orders.insert(row);
+        for (TradeOrderItem item : order.items()) {
+            items.insert(new TradeOrderItemDO().setOrderId(row.getId()).setProductId(item.productId())
+                    .setProductCode(item.productCode()).setProductName(item.productName())
+                    .setUnitPrice(item.unitPrice()).setQuantity(item.quantity()).setLineAmount(item.lineAmount()));
+        }
+        return new TradeOrder(row.getId(), row.getOrderNo(), row.getMemberId(), row.getTotalAmount(),
+                row.getStatus(), order.items(), row.getCreateTime());
+    }
+
+    @Override
+    public TradeOrder findByOrderNo(String orderNo) {
+        TradeOrderDO row = orders.selectOne(Wrappers.lambdaQuery(TradeOrderDO.class)
+                .eq(TradeOrderDO::getOrderNo, orderNo).last("LIMIT 1"));
+        if (row == null) return null;
+        List<TradeOrderItem> lines = items.selectList(Wrappers.lambdaQuery(TradeOrderItemDO.class)
+                .eq(TradeOrderItemDO::getOrderId, row.getId()).orderByAsc(TradeOrderItemDO::getId))
+                .stream().map(item -> new TradeOrderItem(item.getProductId(), item.getProductCode(),
+                        item.getProductName(), item.getUnitPrice(), item.getQuantity(), item.getLineAmount())).toList();
+        return new TradeOrder(row.getId(), row.getOrderNo(), row.getMemberId(), row.getTotalAmount(),
+                row.getStatus(), lines, row.getCreateTime());
+    }
+
+    @Override
+    public boolean transitionStatus(String orderNo, String expectedStatus, String targetStatus) {
+        return orders.transitionStatus(orderNo, expectedStatus, targetStatus) == 1;
+    }
+
+    @Override
+    public List<TradeOrder> findPendingPaymentCreatedBefore(LocalDateTime deadline, int limit) {
+        return orders.selectList(Wrappers.lambdaQuery(TradeOrderDO.class)
+                .eq(TradeOrderDO::getStatus, "PENDING_PAYMENT")
+                .lt(TradeOrderDO::getCreateTime, deadline)
+                .orderByAsc(TradeOrderDO::getCreateTime).last("LIMIT " + Math.max(1, Math.min(limit, 500))))
+                .stream().map(row -> new TradeOrder(row.getId(), row.getOrderNo(), row.getMemberId(),
+                        row.getTotalAmount(), row.getStatus(), List.of(), row.getCreateTime())).toList();
+    }
 }
