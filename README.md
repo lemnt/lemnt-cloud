@@ -226,4 +226,4 @@ mvn test
 
 开发前阅读 [项目规范](lemnt-server/AGENTS.md)，保持微服务与 CQRS/DDD 分层。新增 SDK 可参考 [demo-sdk](lemnt-server/lemnt-third-sdk/demo-sdk/README.md)。提交变更前检查构建、相关测试及 `git diff --check`，不要提交构建产物、本地配置或凭据。
 
-许可证见 [LICENSE](lemnt-server/LICENSE)，保留已有版权声明。
+许可证见 [LICENSE](LICENSE)，保留已有版权声明。
