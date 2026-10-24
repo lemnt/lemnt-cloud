@@ -2,13 +2,12 @@
 
 基于 Spring Cloud 的通用微服务开发框架，保留 CQRS/DDD 分层，提供统一网关、认证、系统管理及公共组件，作为业务系统的开发底座。
 
-当前仓库为 Java 后端工程，不包含管理前端。第三方 SDK 仅保留一个通用 HTTP 调用示例。
+当前仓库包含 Java 后端工程和 React 管理前端。第三方 SDK 仅保留一个通用 HTTP 调用示例。
 
 ## 项目结构
 
 ```text
 lemnt-cloud
-├── pom.xml                     聚合构建入口
 ├── lemnt-ui                    React 管理前端
 ├── lemnt-dependencies          统一依赖版本、构建插件和环境配置
 ├── lemnt-common                通用组件
@@ -124,19 +123,21 @@ Nacos 3.x 默认使用 `8080` 作为控制台端口，`8848` 作为服务主端�
 
 ### 4. 构建
 
-在仓库根目录执行：
+仓库根目录不提供聚合 `pom.xml`。在仓库根目录按顺序执行，先将依赖管理和公共组件安装到本地 Maven 仓库，再构建服务：
 
 ```bash
-mvn clean package -DskipTests
+mvn -f lemnt-dependencies/pom.xml clean install -DskipTests
+mvn -f lemnt-common/pom.xml clean install -DskipTests
+mvn -f lemnt-server/pom.xml clean package -DskipTests
 ```
 
-构建指定服务及其依赖：
+完成依赖管理和公共组件安装后，构建指定服务及其在服务工程内的依赖：
 
 ```bash
-mvn -pl lemnt-server/lemnt-system/lemnt-system-start -am package -DskipTests
+mvn -f lemnt-server/pom.xml -pl lemnt-system/lemnt-system-start -am package -DskipTests
 ```
 
-默认构建环境为 `dev`，另有 `test`、`uat`、`prod`，例如 `mvn clean package -Ptest -DskipTests`。当前配置通过 Maven 替换 `@profile.active@`，同时用于 Spring Profile 和 Nacos 命名空间；切换环境时应按目标 Profile 重新构建。
+默认构建环境为 `dev`，另有 `test`、`uat`、`prod`，例如 `mvn -f lemnt-server/pom.xml clean package -Ptest -DskipTests`。当前配置通过 Maven 替换 `@profile.active@`，同时用于 Spring Profile 和 Nacos 命名空间；切换环境时，上述各步均应使用相同的目标 Profile 重新构建。
 
 ### 5. 启动服务
 
@@ -212,13 +213,14 @@ docker build -t lemnt-auth:local lemnt-server/lemnt-auth
 
 ## 测试与验证
 
-执行测试：
+完成依赖管理和公共组件安装后，在仓库根目录分别执行公共组件和服务测试：
 
 ```bash
-mvn test
+mvn -f lemnt-common/pom.xml test
+mvn -f lemnt-server/pom.xml test
 ```
 
-当前整理阶段已验证根聚合工程可编译打包，后端 171 项测试全部通过。文件上传校验测试已按现有 Problem Details 响应断言 HTTP 状态、错误码及错误详情。
+移除根聚合 POM 后的分步构建与测试尚未重新执行。文件上传校验测试已按现有 Problem Details 响应断言 HTTP 状态、错误码及错误详情。
 
 打包成功不代表已完成真实部署验收；Nacos 3.2.1 连接、数据库、中间件、登录和接口权限等运行流程仍需在目标环境验证。
 
