@@ -1,0 +1,3 @@
+package com.lemnt.member.adapter.rpc;
+import com.lemnt.member.client.MemberClient;import com.lemnt.member.client.dto.MemberProfileDTO;import com.lemnt.member.domain.gateway.MemberGateway;import com.lemnt.member.domain.model.Member;import lombok.RequiredArgsConstructor;import org.apache.dubbo.config.annotation.DubboService;
+@DubboService @RequiredArgsConstructor public class MemberClientImpl implements MemberClient {private final MemberGateway gateway;public MemberProfileDTO findById(Long id){Member m=gateway.findById(id);return m==null?null:new MemberProfileDTO(m.id(),m.memberNo(),m.nickname(),m.status());}}
