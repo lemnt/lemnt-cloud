@@ -1,0 +1,7 @@
+package com.lemnt.mall.adapter.web;
+import com.lemnt.common.core.domain.R;import com.lemnt.common.security.annotation.RequiresPermissions;import com.lemnt.mall.application.cmd.ProductCreateCmd;import com.lemnt.mall.application.executor.ProductCreateCmdExe;import com.lemnt.mall.domain.model.Product;import jakarta.validation.Valid;import jakarta.validation.constraints.DecimalMin;import jakarta.validation.constraints.Min;import jakarta.validation.constraints.NotBlank;import jakarta.validation.constraints.NotNull;import lombok.RequiredArgsConstructor;import org.springframework.web.bind.annotation.*;import java.math.BigDecimal;
+@RestController @RequestMapping("/mall/products") @RequiredArgsConstructor public class ProductController {private final ProductCreateCmdExe createExe;
+ public record CreateReq(@NotBlank String productCode,@NotBlank String name,String description,String mainImage,@NotNull @DecimalMin("0.01") BigDecimal price,@NotNull @Min(0) Integer stock){}
+ public record ProductRes(Long id,String productCode,String name,BigDecimal price,Integer stock,String status){static ProductRes from(Product p){return new ProductRes(p.id(),p.productCode(),p.name(),p.price(),p.stock(),p.status());}}
+ @PostMapping @RequiresPermissions("mall:product:add") public R<ProductRes> create(@Valid @RequestBody CreateReq req){Product p=createExe.execute(new ProductCreateCmd(req.productCode(),req.name(),req.description(),req.mainImage(),req.price(),req.stock()));return R.ok(ProductRes.from(p));}
+}
