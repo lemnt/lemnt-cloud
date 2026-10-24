@@ -33,7 +33,8 @@ import java.util.stream.Collectors;
  *
  * <p>部门维度与用户维度的过滤分别依赖注解上的 {@link DataScope#deptAlias()} 与
  * {@link DataScope#userAlias()}。未配置对应别名时不生成该维度的条件：此时无法确定列
- * 属于哪张表，强行拼接裸列名会在多表关联查询中造成列名歧义。</p>
+ * 属于哪张表，强行拼接裸列名会在多表关联查询中造成列名歧义。无可用角色或无法生成
+ * 任何有效范围条件时，追加恒假条件，确保查询返回零条记录。</p>
  *
  * <p>注意：{@link DataScope#permission()} 当前未参与过滤计算。</p>
  *
@@ -97,14 +98,14 @@ public class CustomDataPermissionHandler implements DataPermissionHandler {
     private Expression dataScopeFilter(DataScope annotation, Expression where, SecurityUser loginUser) {
         SecurityUserDetail user = loginUser.getDetail();
         if (Objects.isNull(user) || Objects.isNull(user.getRoles()) || user.getRoles().isEmpty()) {
-            return where;
+            return denyAll(where);
         }
         // 停用角色不参与数据权限计算
         List<SecurityRole> roles = user.getRoles().stream()
                 .filter(role -> !Objects.equals(role.getStatus(), UserConstants.ROLE_DISABLE))
                 .collect(Collectors.toList());
         if (roles.isEmpty()) {
-            return where;
+            return denyAll(where);
         }
         // 任一角色拥有全部数据权限，无需过滤
         boolean hasAllScope = roles.stream()
@@ -139,15 +140,24 @@ public class CustomDataPermissionHandler implements DataPermissionHandler {
                     break;
             }
         }
-        // 数据范围无法用当前注解表达，保持原查询条件不做过滤
+        // 未知范围或缺少必要上下文、别名时，不允许退化为无限制查询
         if (conditions.isEmpty()) {
-            return where;
+            return denyAll(where);
         }
         Expression appendExpression = CCJSqlParserUtil.parseCondExpression("(" + String.join(" OR ", conditions) + ")");
         if (Objects.isNull(where)) {
             return appendExpression;
         }
         return new AndExpression(where, appendExpression);
+    }
+
+    /**
+     * 无有效数据授权时追加恒假条件；括起原条件，避免其中的 OR 绕过限制。
+     */
+    @SneakyThrows
+    private Expression denyAll(Expression where) {
+        return CCJSqlParserUtil.parseCondExpression(
+                Objects.isNull(where) ? "1 = 0" : "(" + where + ") AND 1 = 0");
     }
 
     /**

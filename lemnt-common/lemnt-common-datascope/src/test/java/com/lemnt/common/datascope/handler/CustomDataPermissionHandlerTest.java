@@ -139,64 +139,70 @@ class CustomDataPermissionHandlerTest {
     }
 
     @Test
-    @DisplayName("用户无角色时不做过滤")
-    void withoutRoleShouldNotFilter() {
+    @DisplayName("用户无角色时返回零条记录")
+    void withoutRoleShouldDeny() {
         login(100L, 10L);
 
         Expression result = handler.getSqlSegment(null, METHOD_PREFIX + "withBothAlias");
 
-        assertThat(result).isNull();
+        assertThat(result).isNotNull();
+        assertThat(result.toString()).isEqualTo("1 = 0");
     }
 
     @Test
-    @DisplayName("停用角色不参与数据权限计算")
-    void disabledRoleShouldNotFilter() {
+    @DisplayName("角色全部停用时返回零条记录")
+    void disabledRoleShouldDeny() {
         SecurityRole disabled = role(1L, "3").setStatus(UserConstants.ROLE_DISABLE);
         login(100L, 10L, disabled);
 
         Expression result = handler.getSqlSegment(null, METHOD_PREFIX + "withBothAlias");
 
-        assertThat(result).isNull();
+        assertThat(result).isNotNull();
+        assertThat(result.toString()).isEqualTo("1 = 0");
     }
 
     @Test
-    @DisplayName("仅本人权限但注解缺少 userAlias：不生成条件且不抛异常")
-    void selfScopeWithoutUserAliasShouldNotThrow() {
+    @DisplayName("仅本人权限缺少 userAlias 时返回零条记录")
+    void selfScopeWithoutUserAliasShouldDeny() {
         login(100L, 10L, role(1L, "5"));
 
         Expression result = handler.getSqlSegment(null, METHOD_PREFIX + "withDeptAliasOnly");
 
-        assertThat(result).isNull();
+        assertThat(result).isNotNull();
+        assertThat(result.toString()).isEqualTo("1 = 0");
     }
 
     @Test
-    @DisplayName("部门权限但注解缺少 deptAlias：不生成条件且不抛异常")
-    void deptScopeWithoutDeptAliasShouldNotThrow() {
+    @DisplayName("部门权限缺少 deptAlias 时返回零条记录")
+    void deptScopeWithoutDeptAliasShouldDeny() {
         login(100L, 10L, role(1L, "3"));
 
         Expression result = handler.getSqlSegment(null, METHOD_PREFIX + "withUserAliasOnly");
 
-        assertThat(result).isNull();
+        assertThat(result).isNotNull();
+        assertThat(result.toString()).isEqualTo("1 = 0");
     }
 
     @Test
-    @DisplayName("服务端用户没有部门时，部门类权限不生成条件")
-    void deptScopeWithoutDeptIdShouldNotFilter() {
+    @DisplayName("部门权限缺少部门信息时返回零条记录")
+    void deptScopeWithoutDeptIdShouldDeny() {
         login(100L, null, role(1L, "3"));
 
         Expression result = handler.getSqlSegment(null, METHOD_PREFIX + "withBothAlias");
 
-        assertThat(result).isNull();
+        assertThat(result).isNotNull();
+        assertThat(result.toString()).isEqualTo("1 = 0");
     }
 
     @Test
-    @DisplayName("无法识别的数据范围值不做过滤")
-    void unknownScopeShouldNotFilter() {
+    @DisplayName("无法识别的数据范围值返回零条记录")
+    void unknownScopeShouldDeny() {
         login(100L, 10L, role(1L, "9"));
 
         Expression result = handler.getSqlSegment(null, METHOD_PREFIX + "withBothAlias");
 
-        assertThat(result).isNull();
+        assertThat(result).isNotNull();
+        assertThat(result.toString()).isEqualTo("1 = 0");
     }
 
     @Test
@@ -211,6 +217,48 @@ class CustomDataPermissionHandlerTest {
         assertThat(result.toString())
                 .contains("u.status = '1'")
                 .contains("d.dept_id = 10");
+    }
+
+    @Test
+    @DisplayName("用户详情缺失时返回零条记录")
+    void missingDetailShouldDeny() {
+        SecurityContextHolder.set(SecurityConstants.LOGIN_USER, new SecurityUser().setUserId(100L));
+
+        Expression result = handler.getSqlSegment(null, METHOD_PREFIX + "withBothAlias");
+
+        assertThat(result.toString()).isEqualTo("1 = 0");
+    }
+
+    @Test
+    @DisplayName("角色列表缺失时返回零条记录")
+    void nullRolesShouldDeny() {
+        login(100L, 10L);
+        com.lemnt.common.security.utils.SecurityUtils.getLoginUser().getDetail().setRoles(null);
+
+        Expression result = handler.getSqlSegment(null, METHOD_PREFIX + "withBothAlias");
+
+        assertThat(result.toString()).isEqualTo("1 = 0");
+    }
+
+    @Test
+    @DisplayName("无角色且原条件包含 OR 时，拒绝条件覆盖整个查询")
+    void denialShouldConstrainEntireWhere() {
+        login(100L, 10L);
+
+        Expression result = handler.getSqlSegment(parse("u.status = '1' OR u.user_id = 200"),
+                METHOD_PREFIX + "withBothAlias");
+
+        assertThat(result.toString()).isEqualTo("(u.status = '1' OR u.user_id = 200) AND 1 = 0");
+    }
+
+    @Test
+    @DisplayName("停用角色的全部权限不能覆盖有效角色的本人权限")
+    void disabledAllScopeShouldNotOverrideSelfScope() {
+        login(100L, 10L, role(1L, "1").setStatus(UserConstants.ROLE_DISABLE), role(2L, "5"));
+
+        Expression result = handler.getSqlSegment(null, METHOD_PREFIX + "withBothAlias");
+
+        assertThat(result.toString()).contains("u.user_id = 100");
     }
 
     private static SecurityRole role(Long roleId, String dataScope) {
