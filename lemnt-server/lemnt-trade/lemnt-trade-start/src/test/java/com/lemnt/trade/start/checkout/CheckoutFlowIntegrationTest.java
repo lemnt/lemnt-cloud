@@ -1354,4 +1354,47 @@ class CheckoutFlowIntegrationTest {
         assertFalse(settlements.abandoned(1L, value.id()));
         assertNotNull(placement.submitSettlement(1L, value.id(), "A", settlements));
     }
+
+    @Test
+    void memberPaymentStatusReflectsVerifiedLocalPaymentAcrossFulfillment() {
+        var order = paidOrder(null);
+        var query =
+                new com.lemnt.trade.application.checkout.executor.MemberPaymentStatusQueryExe(
+                        orders, payments);
+        var key =
+                new com.lemnt.trade.application.checkout.qry.MemberPaymentStatusQry(
+                        1L, order.orderNo());
+        assertEquals("SUCCESS", query.execute(key).localPaymentStatus());
+        assertFalse(query.execute(key).channelVerified());
+        worker().execute(50);
+        fulfillmentService.ship(shipment(order.orderNo()));
+        assertEquals("SHIPPED", query.execute(key).orderStatus());
+        fulfillmentService.receive(order.orderNo());
+        assertEquals("COMPLETED", query.execute(key).orderStatus());
+        assertEquals("SUCCESS", query.execute(key).localPaymentStatus());
+        assertNull(
+                query.execute(
+                        new com.lemnt.trade.application.checkout.qry.MemberPaymentStatusQry(
+                                2L, order.orderNo())));
+    }
+
+    @Test
+    void inconsistentPersistedPaymentIsReportedWithoutChangingOrderOrInventory() throws Exception {
+        var order = paidOrder(null);
+        var stock = mall.findById(sku).stock();
+        sql(
+                tradeSource,
+                "UPDATE trade_payment SET amount=0.01 WHERE order_no='" + order.orderNo() + "'");
+        var query =
+                new com.lemnt.trade.application.checkout.executor.MemberPaymentStatusQueryExe(
+                        orders, payments);
+        assertEquals(
+                "RECONCILE_REQUIRED",
+                query.execute(
+                                new com.lemnt.trade.application.checkout.qry.MemberPaymentStatusQry(
+                                        1L, order.orderNo()))
+                        .localPaymentStatus());
+        assertEquals("PAID", orders.findByOrderNo(order.orderNo()).status());
+        assertEquals(stock, mall.findById(sku).stock());
+    }
 }

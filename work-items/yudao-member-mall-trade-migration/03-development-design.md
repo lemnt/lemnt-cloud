@@ -143,3 +143,7 @@ One cart snapshot can have several cached settlement IDs. The settlement-ID mapp
 ## Durable abandonment fence
 
 Add POST /trade/app/checkout/abandon with settlement/request identity. Same member lock serializes with cached submit: existing order returns unchanged; no order persists member/settlement tombstone. Submit checks marker before Redis. V7 composite primary key scopes the fence to member and prevents affecting another owner. No Redis access, order close/refund or inventory mutation in abandon. Client requires confirmation and valid server result before clearing exactly the inspected v2 record; keep unknown outcomes. V2 local-only discard prohibited, legacy v1 manual workflow retained without touching v2. Deploy all submit instances with the fence after V7; no marker purge added.
+
+## Owned local payment report
+
+Add member-scoped GET /trade/app/orders/{orderNo}/payment, query local order/payment records with ownership checked before payment reads. Explicit local states and fixed channelVerified=false; anomalies require reconciliation. No provider calls, writes, stock release or safe-close inference. Keep existing Qry/executor/gateway and DTO/Res layers. Native page displays local-only label and validates ID/state/decimal strings; account switch clears report. Prepay/authenticated provider query still pending, no fake SDK success.

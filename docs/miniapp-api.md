@@ -29,3 +29,7 @@ Tests exercise malformed/missing tokens, no/ambiguous verifier denial, active-me
 ## Cached settlement contract update
 
 App quote now creates a Redis-backed settlement and returns settlementId/expiresAt with the server quote. App checkout now accepts only settlementId/requestNo. Prior quoteToken/productIds submit schema above is superseded for consumers. See [cached-settlement-api.md](cached-settlement-api.md); admin compatibility contracts are unchanged.
+
+## Local payment record query
+
+GET /trade/app/orders/{orderNo}/payment is now implemented as a member-scoped **local** status query with channelVerified=false, not a real provider query. Prepay remains unimplemented. See miniapp-local-payment-status.md; local WAITING must not authorize closing/releasing inventory.

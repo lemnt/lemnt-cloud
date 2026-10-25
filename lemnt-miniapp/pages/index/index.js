@@ -1,9 +1,10 @@
 const config = require('../../config');
+const { decodePaymentStatus } = require('../../services/paymentStatus');
 const { couponId, ownedCoupons } = require('../../services/coupons');
 const { createTradeClient } = require('../../services/trade');
 const { createCheckoutFlow } = require('../../services/checkoutFlow');
 Page({
-  data: { ready: config.memberApiReady, loading: false, error: '', rows: [], quote: null, receipt: null, pending: false, coupons: [], selectedCoupon: null },
+  data: { ready: config.memberApiReady, loading: false, error: '', rows: [], quote: null, receipt: null, payment: null, pending: false, coupons: [], selectedCoupon: null },
   onLoad() {
     const session = () => getApp().globalData.memberSession;
     this.client = createTradeClient({
@@ -22,7 +23,7 @@ Page({
     try { await run(member); }
     catch (error) {
       if (member !== getApp().globalData.memberSession?.memberId) {
-        this.setData({ rows: [], quote: null, receipt: null, pending: false, coupons: [], selectedCoupon: null });
+        this.setData({ rows: [], quote: null, receipt: null, payment: null, pending: false, coupons: [], selectedCoupon: null });
         this.quoteInput = null; this.rowsMember = null; this.quoteMember = null; this.receiptMember = null;
       }
       this.setData({ error: error.message || '请求失败，请重试' });
@@ -66,7 +67,7 @@ Page({
     try {
       const receipt = await this.flow.submit(this.quoteInput);
       this.receiptMember = member;
-      this.setData({ receipt, pending: false, quote: null }); this.quoteInput = null;
+      this.setData({ receipt, payment: null, pending: false, quote: null }); this.quoteInput = null;
     } catch (error) { this.setData({ pending: !!this.flow.pending() }); throw error; }
   }); },
   changeCart(event) { return this.action(async member => {
@@ -100,7 +101,15 @@ Page({
     const result = await this.client.order(no);
     if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换，请重新加载');
     if (!result || result.orderNo !== no || !['RESERVING','PENDING_PAYMENT','PAID','SHIPPED','COMPLETED','CLOSED'].includes(result.status) || typeof result.payableAmount !== 'string' || !/^\d+\.\d{2}$/.test(result.payableAmount)) throw new Error('订单响应不合法');
-    this.setData({ receipt: result });
+    this.setData({ receipt: result, payment: null });
+  }); },
+  refreshLocalPayment() { return this.action(async member => {
+    if (!this.data.receipt || member !== this.receiptMember) throw new Error('请先找回本人订单');
+    const no = this.data.receipt.orderNo;
+    this.setData({payment:null});
+    const raw = await this.client.paymentStatus(no);
+    if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换，请重新加载');
+    this.setData({payment:decodePaymentStatus(raw,no)});
   }); },
   loadCoupons() { return this.action(async member => {
     if (this.flow.pending()) throw new Error('存在未确认结算，不能更换优惠券');
@@ -121,7 +130,7 @@ Page({
   recoverPending() { return this.action(async member => {
     const receipt = await this.flow.recover();
     this.receiptMember = member;this.quoteInput = null;
-    this.setData({receipt,pending:!!this.flow.pending(),quote:null});
+    this.setData({receipt,payment:null,pending:!!this.flow.pending(),quote:null});
   }); },
   abandonPending() { return this.action(async member => {
     const confirm = await new Promise((resolve,reject) => wx.showModal({title:'终止未完成提单',content:'尚未生成订单时阻止后续提单；若订单已生成将找回原订单，不会自动关闭订单。确认继续？',success:resolve,fail:reject}));
@@ -129,7 +138,7 @@ Page({
     if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换');
     const result = await this.flow.abandon(true);
     this.quoteInput=null;this.receiptMember=result.order?member:null;
-    this.setData({pending:false,quote:null,receipt:result.order||null});
+    this.setData({pending:false,quote:null,receipt:result.order||null,payment:null});
   }); },
   resetPending() { return this.action(async member => {
     const result = await new Promise((resolve,reject) => wx.showModal({title:'仅清除本机记录',content:'请先核验原订单。清除不会取消服务端订单；重新结算可能另建订单。确认已核验，仍要清除？',success:resolve,fail:reject}));
@@ -137,5 +146,5 @@ Page({
     if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换');
     this.flow.discard(true);this.quoteInput=null;this.setData({pending:!!this.flow.pending(),quote:null});
   }); },
-  onHide() { this.setData({ rows: [], coupons: [], selectedCoupon: null, quote: null, receipt: null, error: '' }); this.quoteInput = null; },
+  onHide() { this.setData({ rows: [], coupons: [], selectedCoupon: null, quote: null, receipt: null, payment: null, error: '' }); this.quoteInput = null; },
 });
