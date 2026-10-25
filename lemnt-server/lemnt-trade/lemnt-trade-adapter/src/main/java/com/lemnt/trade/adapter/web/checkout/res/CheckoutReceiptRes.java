@@ -7,7 +7,7 @@ import java.io.Serializable;
 public record CheckoutReceiptRes(
         @Schema(description = "订单号") String orderNo,
         @Schema(description = "后台授权操作的目标会员编号，不是当前后台用户ID") Long memberId,
-        @Schema(description = "订单RESERVING/PENDING_PAYMENT/PAID/CLOSED，优惠券AVAILABLE/LOCKED/USED")
+        @Schema(description = "订单状态：RESERVING/PENDING_PAYMENT/PAID/SHIPPED/COMPLETED/CLOSED")
                 String status,
         @Schema(description = "商品原金额，元") java.math.BigDecimal originalAmount,
         @Schema(description = "优惠金额，元") java.math.BigDecimal discountAmount,

@@ -1,6 +1,6 @@
 # Development design
 
-v3 · 2026-10-25 · code-software-engineer. Inputs: 01-intake.md v1, existing trade code at a476b90; server AGENTS.md. Reference read: code-software-engineer/references/development-design.md and references/java.md.
+v4 · 2026-10-25 · code-software-engineer. Inputs: 01-intake.md v1, existing trade code at a476b90; server AGENTS.md. Reference read: code-software-engineer/references/development-design.md and references/java.md.
 
 ## Reliability slice
 
@@ -92,3 +92,18 @@ Checkout hardening: preview returns a canonical quoteToken over immutable item i
 UI state and deployment inputs: operator-scoped persisted checkout intents retain member/SKU/coupon/quoteToken/requestNo until a known receipt. Restored invalid storage is an explicit error, never silently overwritten. New menu seed creates trade/coupon/index and trade/cart/index without role grants; /trade/** gateway snippet preserves its prefix. Coupon/date form serialization follows the installed Pro Components dateFormatter='string' default and the actual Jackson yyyy-MM-dd HH:mm:ss contract verified by MVC tests. Coupon use/release and exact payment/order amount invariants are tested within real local transactions, and all stock transitions lock product then reservation.
 
 Time-zone hardening: newly saved trade orders explicitly use the trade DB creation/update timestamp, matching database-clock expiry. Integration tests open trade sessions in UTC independently of the JVM/mall defaults. Existing pre-migration timestamps are not guessed or rewritten; operators must check their configured historic time-zone assumptions during rollout.
+
+
+## Fulfillment / refund-request slice v4 (base a3c88f1)
+
+Preserve v3 at a3c88f1. Add admin order list/detail, shipment registration, receipt confirmation and pre-shipment full-refund request/rejection inside existing trade layers. This does not implement actual carrier status queries or payment-channel refunds.
+
+- Paid is not sufficient to ship: all stock-confirmation RPCs must succeed and a durable inventory-confirmation marker must exist. Paid Outbox retries accept PAID/SHIPPED/COMPLETED so an expired lease cannot strand an event after a legitimate shipment. Marker creation is idempotent and local; there is no public endpoint that can forge it. V5 backfills markers only from recorded DELIVERED paid events for PAID orders; operators must review historic integrity.
+- Shipping acquires the order lock, requires PAID + confirmed inventory + no active refund request, and atomically persists immutable recipient/carrier/tracking snapshots and PAID -> SHIPPED. A stable requestNo/fingerprint makes same-payload retries idempotent; mismatched reuse/duplicate shipment rejects. Personal recipient fields are absent from order list summaries and require detail permission.
+- Admin receipt confirmation transitions SHIPPED -> COMPLETED with database time, atomically updating shipment receipt time. Duplicate confirmation returns the original result. This is an admin recorded acknowledgement, not a claim of verified carrier delivery.
+- Full-refund requests are limited to PAID/pre-shipment orders with exactly one matching successful local payment. Amount/payment identifiers are copied from the server; no client amount is accepted. REQUESTED is not refunded and causes no channel transfer, restock or coupon return. One active request/order is enforced, and its existence blocks shipment. REQUESTED -> REJECTED with a decision reason removes that block. Real execution/approval, post-shipment returns, partial refunds and coupon reversal remain pending.
+- Lock order is trade order first, then shipment/refund rows. Concurrent ship vs refund resolves under that lock. Existing payment amount/coupon invariants remain intact. No changes to main, deployed services, real payments or role grants.
+
+New additive trade V5 tables: trade_inventory_confirmation, trade_shipment and trade_refund_request (unique active_order_no, unique order/request key). No existing IDs or prices are rewritten. Admin HTTP under /trade/admin/orders and /trade/admin/refund-requests, permissions trade:fulfillment:list/query/ship/receive and trade:refund:list/query/request/reject. Bounded paging 1..100, explicit status filters and full Req/Res contracts documented in docs/trade-fulfillment-api.md. UI reuses existing admin/table/modal design; actual browser QA remains separate.
+
+Verify stock-confirmation gating, paid-event lease retry after shipping, duplicate/mismatched shipment, receipt idempotency, concurrent ship/refund, matching payment amounts, active-request uniqueness and rejection. Exercise actual production SQL/local transaction proxies; distinguish tests from real payment/carrier behavior.

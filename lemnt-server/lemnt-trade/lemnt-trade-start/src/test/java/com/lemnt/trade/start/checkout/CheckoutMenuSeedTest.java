@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CheckoutMenuSeedTest {
     @Test
-    void repeatedSeedCreatesOnlyTwoPagesAndOneOfEachPermissionWithoutRoleWrites() throws Exception {
+    void repeatedSeedsCreateFourPagesAndUniquePermissionsWithoutRoleWrites() throws Exception {
         var source = new JdbcDataSource();
         source.setURL("jdbc:h2:mem:trade_menu_" + UUID.randomUUID() + ";MODE=MySQL");
         try (var c = source.getConnection();
@@ -23,13 +23,29 @@ class CheckoutMenuSeedTest {
             var script = new ClassPathResource("setup-sql/V20261025__trade_checkout_menu.sql");
             ScriptUtils.executeSqlScript(c, script);
             ScriptUtils.executeSqlScript(c, script);
+            ScriptUtils.executeSqlScript(
+                    c, new ClassPathResource("setup-sql/V20261025__trade_fulfillment_menu.sql"));
+            ScriptUtils.executeSqlScript(
+                    c, new ClassPathResource("setup-sql/V20261025__trade_fulfillment_menu.sql"));
             try (var r = s.executeQuery("SELECT COUNT(*) FROM sys_menu WHERE menu_type='C'")) {
                 r.next();
-                assertEquals(2, r.getInt(1));
+                assertEquals(4, r.getInt(1));
             }
             try (var r =
                     s.executeQuery(
                             "SELECT COUNT(*) FROM sys_menu WHERE perms='trade:checkout:create'")) {
+                r.next();
+                assertEquals(1, r.getInt(1));
+            }
+            try (var r =
+                    s.executeQuery(
+                            "SELECT COUNT(*) FROM sys_menu WHERE perms='trade:fulfillment:ship'")) {
+                r.next();
+                assertEquals(1, r.getInt(1));
+            }
+            try (var r =
+                    s.executeQuery(
+                            "SELECT COUNT(*) FROM sys_menu WHERE perms='trade:refund:reject'")) {
                 r.next();
                 assertEquals(1, r.getInt(1));
             }

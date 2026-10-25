@@ -129,6 +129,8 @@ export function decodeReceipt(value: unknown): CheckoutReceipt {
     row.status !== 'RESERVING' &&
     row.status !== 'PENDING_PAYMENT' &&
     row.status !== 'PAID' &&
+    row.status !== 'SHIPPED' &&
+    row.status !== 'COMPLETED' &&
     row.status !== 'CLOSED'
   )
     throw new Error('未知结算状态');

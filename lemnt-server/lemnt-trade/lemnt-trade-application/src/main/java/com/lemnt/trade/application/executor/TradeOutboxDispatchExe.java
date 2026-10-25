@@ -61,10 +61,12 @@ public class TradeOutboxDispatchExe {
                 lifecycle.reservationSucceeded(order.orderNo());
             }
             case "TRADE_ORDER_PAID" -> {
-                if (!"PAID".equals(order.status()))
+                if (!java.util.Set.of("PAID", "SHIPPED", "COMPLETED").contains(order.status()))
                     throw new IllegalStateException("Order not paid");
+                if (order.items().isEmpty()) throw new IllegalStateException("已支付订单没有明细");
                 order.items()
                         .forEach(item -> catalog.confirmStock(order.orderNo(), item.productId()));
+                lifecycle.inventoryConfirmed(order.orderNo());
             }
             case "TRADE_ORDER_CLOSED" -> {
                 if (!"CLOSED".equals(order.status()))

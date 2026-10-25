@@ -13,6 +13,7 @@ public class CheckoutLifecycleService {
     private final TradeOrderGateway orders;
     private final TradeOutboxGateway outbox;
     private final CheckoutGateway checkout;
+    private final com.lemnt.trade.domain.fulfillment.gateway.FulfillmentGateway fulfillment;
 
     @Transactional(rollbackFor = Exception.class)
     public void reservationSucceeded(String orderNo) {
@@ -34,5 +35,14 @@ public class CheckoutLifecycleService {
         checkout.releaseCoupon(orderNo);
         outbox.append(
                 UUID.randomUUID().toString(), "TRADE_ORDER", orderNo, "TRADE_ORDER_CLOSED", "{}");
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void inventoryConfirmed(String orderNo) {
+        var order = orders.findByOrderNoForUpdate(orderNo);
+        if (order == null
+                || !java.util.Set.of("PAID", "SHIPPED", "COMPLETED").contains(order.status()))
+            throw new IllegalStateException("订单状态不允许确认库存");
+        fulfillment.confirmInventory(orderNo, orders.databaseNow());
     }
 }

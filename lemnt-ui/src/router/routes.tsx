@@ -6,6 +6,10 @@ export const pages: Record<string, ComponentType> = {
   'mall/brand/index': lazy(() => import('../modules/mall/catalog/pages/BrandPage')),
   'mall/spu/index': lazy(() => import('../modules/mall/catalog/pages/SpuPage')),
   'trade/coupon/index': lazy(() => import('../modules/trade/checkout/pages/CouponTemplatePage')),
+  'trade/order/index': lazy(
+    () => import('../modules/trade/fulfillment/pages/OrderFulfillmentPage'),
+  ),
+  'trade/refund/index': lazy(() => import('../modules/trade/fulfillment/pages/RefundRequestPage')),
   'trade/cart/index': lazy(() => import('../modules/trade/checkout/pages/MemberCartPage')),
   'home/index': lazy(() => import('../modules/home/pages/HomePage')),
   'system/operlog/index': lazy(() => import('../modules/system/log/pages/OperationLogPage')),

@@ -29,3 +29,16 @@ Input: design v3, existing catalog/system pages and actual checkout Req/Res. Int
 - Empty/loading/failure states are explicit; save failures preserve form data; write success is separated from refresh failure. Existing labeled forms/modal keyboard/focus rules apply; mobile tables use horizontal scrolling.
 
 UI Design: COMPLETE baseline for implementation. Assets: COMPLETE/N/A (existing library assets). Checkout implementation and verification are recorded in 05-development.md and 06-test.md. Visual QA remains BLOCKED by the previously observed runtime Unix socket restriction; no screenshots or browser interaction PASS are claimed.
+
+## Order fulfillment UI baseline v3
+
+Input: design v4 and actual fulfillment Req/Res. Reference: prototype/fulfillment-admin.html. Reuse PageContainer, ProTable, AdminModalForm, Ant Design Drawer/Descriptions and TanStack Query; no dependencies or binary assets.
+
+- Order page: exact order number and status filters; paged non-PII rows with amount, state, stock-confirmed flag, pending refund flag and tracking number. Detail drawer requires query permission and loads recipient information only on demand. Explicit error/retry/empty/loading states.
+- Ship modal: carrier, tracking, recipient/name/phone/address; stable requestNo for the open operation, same request key retained on failure. Do not persist recipient information in local/session storage. Only PAID + confirmed + no active refund rows offer shipping. Server repeats all guards under order lock.
+- Receive: SHIPPED rows, Popconfirm, pending indicator; server preserves original received time on retry. List refresh after writes; refresh error must not turn a committed write into apparent failure.
+- Refund request: PAID row, reason only, no client amount; explicit warning that recording a request does not execute a payment-channel refund. Queue has REQUESTED/REJECTED filters, full amount and reason, rejection modal with reason. No approve/refund-success control. Active request blocks shipping. Stable requestNo for request modal.
+- All reads/actions gated by shared permission hook; menu seed assigns no roles. Unknown server states and malformed amounts rejected by decoders. Existing checkout view accepts SHIPPED/COMPLETED.
+- Modal close discards local operation; reopening creates a new key. Server one-shipment and one-active-refund constraints prevent duplicates across reloads; unknown outcomes instruct refresh before opening another operation. No claim of cross-session exact-retry support for PII forms.
+
+UI Design COMPLETE baseline; assets COMPLETE/N/A. Actual browser visual/interaction QA remains blocked by the runtime restriction already recorded in catalog evidence.

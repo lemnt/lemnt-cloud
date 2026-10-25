@@ -1,28 +1,30 @@
 # Test report
 
-v3 · 2026-10-25 · engineering self-review. Inputs: design v3/UI baseline v2, candidate identified by this report's commit. Prior reports/evidence remain at aaa69ec. Environment: OpenJDK 17.0.20, Maven 3.9.11, two independent H2 MySQL-mode databases, Node 22.13.0 and Yarn 1.22.22.
+v4 · 2026-10-25 · engineering self-review. Inputs: design v4/UI baseline v3, code snapshot in evidence/fulfillment/source-snapshot.json. Base a3c88f1. OpenJDK 17.0.20/Maven 3.9.11; Node 22.13.0/Yarn 1.22.22. Prior evidence remains historical.
 
-| Check | Result | Evidence / limit |
+| Check | Result | Evidence/limit |
 | --- | --- | --- |
-| Full Maven verify, 71 reactor projects | PASS | evidence/checkout/maven-reactor.txt |
-| Available backend suites | PASS | 283 tests, zero failures/errors/skips; maven-tests.json |
-| Exact money, percent semantics/cap/rounding, validity, zero quote, template rules | PASS | CheckoutRulesTest, 5 cases |
-| Cancel-before-reserve tombstone, stable quantity, concurrent duplicate reserve/cancel, batch availability | PASS | Additional CatalogPersistenceTest cases; actual mall gateway transaction/SQL |
-| Cart/coupon/order/payment transactional chain across two databases | PASS | CheckoutFlowIntegrationTest, 18 cases; actual local transaction proxies, test RPC bridge |
-| Post-commit lost reserve response, worker restart and cancellation fencing | PASS | Same integration suite; bridge injects an exception after actual mall commit |
-| Outbox write failure rolls back order, coupon and checkout before inventory debit | PASS | Same suite; database CHECK fault injection |
-| Concurrent identical request and concurrent coupon quota/spend | PASS | Same suite; real database locks/unique constraints |
-| Ownership, selected state, expiry/disable, changed quote token, zero-placement rejection | PASS | Same suite; zero quote remains supported, zero order is rejected explicitly |
-| Cart edits and delete/re-add preserved | PASS | Same suite, persisted cart ID/version conditions |
-| Separate timeout batches and UTC database creation/expiry clock | PASS | Same suite; blocked pending payments do not starve reservation recovery |
-| Coupon-state and order/payment-amount corruption rolls back payment | PASS | Same suite, database fault injection; not a signature verification test |
-| HTTP validation, permission declarations, IDs/money/date serialization | PASS | CheckoutHttpContractTest, 4 cases; actual Jackson customizer, standalone MVC (not deployed authentication) |
-| Repeatable menu seed without role writes | PASS | CheckoutMenuSeedTest, 1 case on system-menu column fixture |
-| React typecheck/lint/format:check/build | PASS | evidence/checkout/react-verification.txt |
-| React API/decoder/intent storage tests | PASS | 148 tests, 29 files; same evidence |
-| Browser interaction / Visual QA | NOT RUN | Previous runtime Unix socket restriction; evidence/checkout/browser-status.json. No new interactions/screenshots claimed |
-| Target MySQL migration/isolation/locking | NOT RUN | H2 is not MySQL verification; V4 production script exercised locally, prior V3 represented by fixture |
-| Running Nacos/Dubbo/gateway/roles/real payment channel | NOT RUN | Test bridge and permission declarations do not prove deployed integration |
-| Full delivery/refund lifecycle and member authentication | NOT RUN | Still pending implementation |
+| Full root Maven verify, 71 reactor projects | PASS | evidence/fulfillment/maven-reactor.txt |
+| Available backend suites | PASS | 296 tests, zero failures/errors/skips; maven-tests.json |
+| Actual checkout/reservation/payment/fulfillment SQL and transactions | PASS | CheckoutFlowIntegrationTest, 28 cases, isolated trade/mall H2 DBs and production gateways/mappers |
+| Stock confirmation RPC ambiguity blocks shipping, idempotent recovery | PASS | Exception injected after actual mall confirmation commit; no marker until successful response |
+| Lost Outbox acknowledgement followed by shipping and lease expiry/retry | PASS | Persisted marker permits shipment; retry in SHIPPED confirms without duplicate stock deduction |
+| Shipping/receipt immutable replay and changed-content rejection | PASS | Original shippedAt/receivedAt retained; request mismatch rejects |
+| Shipment/receipt records roll back with failed order transition | PASS | Actual transaction rollback with injected transition failure |
+| Refund copies discounted payable; blocks shipment; rejection permits fulfillment | PASS | No stock/payment/coupon mutation inferred as refund success |
+| Refund key conflicts, one active request and reject/re-request behavior | PASS | Actual DB unique keys and order serialization |
+| Concurrent shipping vs refund | PASS | Two threads, actual DB locks; exactly one succeeds |
+| Inconsistent or multiple successful payments | PASS | Refund registration refuses and inserts nothing |
+| V5 historical backfill | PASS | Actual V5 script run against delivered and undelivered paid-event fixtures; only delivered marked |
+| HTTP validation, exact money, permission declarations, no list recipient PII | PASS | FulfillmentHttpContractTest, 3 standalone MVC tests; not deployed authorization |
+| Menu seeds repeated without duplicate pages/permissions | PASS | CheckoutMenuSeedTest on system-menu fixture; no role table exists in fixture |
+| Frontend typecheck/lint/format:check/build | PASS | evidence/fulfillment/react-verification.txt; existing vendor chunk warning |
+| Frontend API, boundary decoder, action gates and checkout status regression | PASS | 155 tests in 31 files; includes 7 new cases |
+| Browser interaction / Visual QA | NOT RUN | Prior Unix socket restriction; browser-status.json; no screenshots or interaction PASS claimed |
+| Target MySQL migration/isolation/backfill | NOT RUN | H2 is local evidence, not MySQL; V3 represented by existing compatible fixture |
+| Live Nacos/Dubbo/gateway/security roles | NOT RUN | RPC bridge and declared permissions are not deployed verification |
+| Real payment signature/query/close/refund execution | NOT RUN | Provider integration remains incomplete; REQUESTED does not mean refunded |
 
-Recommendation: keep Draft; no production-ready or user-acceptance claim. Self-review is not independent QA. Positive local tests do not replace real channel signatures, network failure testing or browser accessibility/visual verification.
+Initial verification failures were corrected: generated Res package mismatch; test checked-exception declarations; duplicate-payment fixture needed a different channel; missing-shipment assertion type; retry fixture used PENDING instead of actual FAILED; lint rejected intentional imprecise numeric literal, replaced with runtime Number conversion. No tests were removed or disabled. The stable final root verification and UI checks above passed after fixes.
+
+Keep Draft. Engineering self-review is not independent QA or user acceptance. No production-ready claim.

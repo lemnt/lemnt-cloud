@@ -34,3 +34,16 @@ it('报价必须含令牌；订单状态与金额不得被未知字段或数值�
     decodeReceipt({ ...quote, orderNo: 'TR1', memberId: 1, status: 'UNKNOWN' }),
   ).toThrow();
 });
+
+it('结算回执能读取履约后的发货和完成状态', () => {
+  const receipt = {
+    items: [],
+    originalAmount: '20.00',
+    discountAmount: '0.00',
+    payableAmount: '20.00',
+    orderNo: 'TR1',
+    memberId: 1,
+  };
+  expect(decodeReceipt({ ...receipt, status: 'SHIPPED' }).status).toBe('SHIPPED');
+  expect(decodeReceipt({ ...receipt, status: 'COMPLETED' }).status).toBe('COMPLETED');
+});

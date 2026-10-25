@@ -551,4 +551,8 @@ Bean Validation/MVC rejects malformed request fields, missing quoteToken, invali
 - Rollback requires stopping workers and new checkout traffic; old code does not understand RESERVING or coupon locks. Drain/recover pending intents before any binary rollback. Keep checkout/order/stock ledger rows for reconciliation.
 
 ## Deliberate remaining scope
-Member authentication/self-service, zero-payable orders, product-scoped/relative-validity coupons, repeated per-template claims, coupon return on refunds, customer addresses/shipping/receipt confirmation/after-sales/refunds, real provider prepay/query/signature adapters, and member/trade analytics remain pending. Lists above 1000 coupon instances/templates require paging rather than silent truncation. New UI monetary inputs are bounded to 99,999,999,999.99 yuan for numeric editing; server-side amounts remain exact strings.
+Member authentication/self-service, zero-payable orders, product-scoped/relative-validity coupons, repeated per-template claims, coupon return on refunds, member address book, carrier integration, split shipments, after-sales/refund execution, real provider prepay/query/signature adapters, and member/trade analytics remain pending. Lists above 1000 coupon instances/templates require paging rather than silent truncation. New UI monetary inputs are bounded to 99,999,999,999.99 yuan for numeric editing; server-side amounts remain exact strings.
+
+## Fulfillment continuation
+
+Current order states also include SHIPPED and COMPLETED. See [trade-fulfillment-api.md](trade-fulfillment-api.md) for inventory confirmation gates, admin shipment/receipt and pre-shipment refund requests. Refund requests do not mark a payment refunded or return inventory/coupons.

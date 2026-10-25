@@ -9,6 +9,11 @@ import com.lemnt.mall.infrastructure.gateway.ProductGatewayImpl;
 import com.lemnt.mall.infrastructure.mapper.ProductMapper;
 import com.lemnt.mall.infrastructure.mapper.StockReservationMapper;
 import com.lemnt.trade.application.checkout.cmd.*;
+import com.lemnt.trade.application.fulfillment.cmd.*;
+import com.lemnt.trade.application.fulfillment.service.OrderFulfillmentService;
+import com.lemnt.trade.domain.fulfillment.gateway.FulfillmentGateway;
+import com.lemnt.trade.infrastructure.fulfillment.gateway.FulfillmentGatewayImpl;
+import com.lemnt.trade.infrastructure.fulfillment.mapper.FulfillmentMapper;
 import com.lemnt.trade.application.checkout.qry.CheckoutQuoteQry;
 import com.lemnt.trade.application.checkout.service.*;
 import com.lemnt.trade.application.executor.*;
@@ -43,6 +48,8 @@ class CheckoutFlowIntegrationTest {
     JdbcDataSource tradeSource, mallSource;
     Connection tradeSchema, mallSchema;
     CheckoutGateway checkout;
+    FulfillmentGateway fulfillment;
+    OrderFulfillmentService fulfillmentService;
     TradeOrderGateway orders;
     TradeOutboxGateway outbox;
     TradePaymentGateway payments;
@@ -55,6 +62,7 @@ class CheckoutFlowIntegrationTest {
     ProductCatalogGateway bridge;
     Long sku;
     boolean loseNextReserveResponse;
+    boolean loseNextConfirmResponse;
     Map<String, String> quoteTokens = new HashMap<>();
 
     JdbcDataSource source() {
@@ -114,10 +122,13 @@ class CheckoutFlowIntegrationTest {
                 mallSchema, new ClassPathResource("mall-sql/V1__mall_product.sql"));
         ScriptUtils.executeSqlScript(
                 mallSchema, new ClassPathResource("mall-sql/V2__mall_catalog.sql"));
+        ScriptUtils.executeSqlScript(
+                tradeSchema, new ClassPathResource("trade-sql/V5__order_fulfillment.sql"));
         var trade =
                 template(
                         tradeSource,
                         CheckoutMapper.class,
+                        FulfillmentMapper.class,
                         TradeOrderMapper.class,
                         TradeOrderItemMapper.class,
                         TradeOutboxMapper.class,
@@ -194,6 +205,10 @@ class CheckoutFlowIntegrationTest {
 
                     public void confirmStock(String no, Long id) {
                         mall.confirmStock(no, id);
+                        if (loseNextConfirmResponse) {
+                            loseNextConfirmResponse = false;
+                            throw new IllegalStateException("确认库存已提交但RPC响应丢失");
+                        }
                     }
                 };
         var member = new CheckoutMemberService(id -> new MemberSnapshot(id, 1));
@@ -201,7 +216,16 @@ class CheckoutFlowIntegrationTest {
                 tx(
                         new OrderPlacementService(checkout, orders, outbox, bridge, member),
                         tradeSource);
-        lifecycle = tx(new CheckoutLifecycleService(orders, outbox, checkout), tradeSource);
+        fulfillment =
+                tx(
+                        new FulfillmentGatewayImpl(trade.getMapper(FulfillmentMapper.class)),
+                        tradeSource);
+        fulfillmentService =
+                tx(new OrderFulfillmentService(orders, payments, fulfillment), tradeSource);
+        lifecycle =
+                tx(
+                        new CheckoutLifecycleService(orders, outbox, checkout, fulfillment),
+                        tradeSource);
         closer =
                 tx(
                         new TradeOrderCloseCmdExe(orders, outbox, payments, p -> false, checkout),
@@ -636,5 +660,343 @@ class CheckoutFlowIntegrationTest {
         } finally {
             pool.shutdownNow();
         }
+    }
+
+    TradeOrder paidOrder(Long coupon) {
+        var order = place("FULFILL", coupon);
+        worker().execute(50);
+        var payment = paymentCreate.execute(order.orderNo(), "ALIPAY");
+        notify.execute(
+                new VerifiedPaymentNotification(
+                        payment.paymentNo(),
+                        order.orderNo(),
+                        "ALIPAY",
+                        "CH-F",
+                        order.totalAmount(),
+                        "N-F"));
+        return orders.findByOrderNo(order.orderNo());
+    }
+
+    ShipmentCreateCmd shipment(String no) {
+        return new ShipmentCreateCmd(no, "SHIP-1", "SF", "TRACK-1", "测试收件人", "13800000000", "测试地址");
+    }
+
+    @Test
+    void shippingRequiresAllStockConfirmedAndReceiptReplaysKeepOriginalTimes() throws Exception {
+        var order = paidOrder(null);
+        assertFalse(fulfillment.inventoryConfirmed(order.orderNo()));
+        assertThrows(
+                IllegalStateException.class,
+                () -> fulfillmentService.ship(shipment(order.orderNo())));
+        assertEquals(0, count("trade_shipment"));
+        assertEquals(1, worker().execute(50));
+        assertTrue(fulfillment.inventoryConfirmed(order.orderNo()));
+        var shipped = fulfillmentService.ship(shipment(order.orderNo()));
+        assertEquals(shipped, fulfillmentService.ship(shipment(order.orderNo())));
+        assertEquals("SHIPPED", orders.findByOrderNo(order.orderNo()).status());
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        fulfillmentService.ship(
+                                new ShipmentCreateCmd(
+                                        order.orderNo(),
+                                        "SHIP-1",
+                                        "SF",
+                                        "DIFFERENT",
+                                        "测试收件人",
+                                        "13800000000",
+                                        "测试地址")));
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        fulfillmentService.requestRefund(
+                                new RefundRequestCmd(order.orderNo(), "R1", "申请")));
+        var received = fulfillmentService.receive(order.orderNo());
+        assertNotNull(received.receivedAt());
+        assertEquals(received, fulfillmentService.receive(order.orderNo()));
+        assertEquals(received, fulfillmentService.ship(shipment(order.orderNo())));
+        assertEquals("COMPLETED", orders.findByOrderNo(order.orderNo()).status());
+        assertEquals(8, mall.findById(sku).stock());
+    }
+
+    @Test
+    void refundRequestCopiesDiscountedPaymentAndBlocksShippingUntilRejected() throws Exception {
+        var coupon = checkout.issue(1L, campaign(10, new BigDecimal("3.00")).id());
+        var order = paidOrder(coupon.id());
+        worker().execute(50);
+        var cmd = new RefundRequestCmd(order.orderNo(), "R1", "不再需要");
+        var request = fulfillmentService.requestRefund(cmd);
+        assertEquals(new BigDecimal("17.00"), request.amount());
+        assertEquals("REQUESTED", request.status());
+        assertEquals(request, fulfillmentService.requestRefund(cmd));
+        assertTrue(fulfillment.activeRefund(order.orderNo()));
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        fulfillmentService.requestRefund(
+                                new RefundRequestCmd(order.orderNo(), "R1", "不同原因")));
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        fulfillmentService.requestRefund(
+                                new RefundRequestCmd(order.orderNo(), "R2", "第二申请")));
+        assertThrows(
+                IllegalStateException.class,
+                () -> fulfillmentService.ship(shipment(order.orderNo())));
+        assertEquals("PAID", orders.findByOrderNo(order.orderNo()).status());
+        assertEquals("SUCCESS", payments.findByPaymentNo(request.paymentNo()).status());
+        assertEquals("USED", checkout.coupon(1L, coupon.id(), false).status());
+        assertEquals(8, mall.findById(sku).stock());
+        var rejected =
+                fulfillmentService.rejectRefund(new RefundRejectCmd(request.refundNo(), "核验后驳回"));
+        assertEquals("REJECTED", rejected.status());
+        assertEquals(
+                rejected,
+                fulfillmentService.rejectRefund(new RefundRejectCmd(request.refundNo(), "核验后驳回")));
+        assertEquals(rejected, fulfillmentService.requestRefund(cmd));
+        assertFalse(fulfillment.activeRefund(order.orderNo()));
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        fulfillmentService.rejectRefund(
+                                new RefundRejectCmd(request.refundNo(), "改写审核")));
+        fulfillmentService.ship(shipment(order.orderNo()));
+    }
+
+    @Test
+    void rejectedRequestAllowsNewKeyButNeverReopensOriginalRequest() throws Exception {
+        var order = paidOrder(null);
+        var first =
+                fulfillmentService.requestRefund(new RefundRequestCmd(order.orderNo(), "R1", "原因"));
+        fulfillmentService.rejectRefund(new RefundRejectCmd(first.refundNo(), "驳回"));
+        var second =
+                fulfillmentService.requestRefund(
+                        new RefundRequestCmd(order.orderNo(), "R2", "补充材料"));
+        assertNotEquals(first.refundNo(), second.refundNo());
+        assertEquals("REQUESTED", second.status());
+        assertEquals(2, count("trade_refund_request"));
+    }
+
+    @Test
+    void refundRequiresExactlyOneMatchingSuccessfulPayment() throws Exception {
+        var order = paidOrder(null);
+        sql(
+                tradeSource,
+                "UPDATE trade_payment SET amount=1.00 WHERE order_no='" + order.orderNo() + "'");
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        fulfillmentService.requestRefund(
+                                new RefundRequestCmd(order.orderNo(), "R1", "原因")));
+        sql(
+                tradeSource,
+                "UPDATE trade_payment SET amount=20.00 WHERE order_no='" + order.orderNo() + "'");
+        sql(
+                tradeSource,
+                "INSERT INTO trade_payment(payment_no,order_no,channel,amount,status)"
+                        + " VALUES('DUP','"
+                        + order.orderNo()
+                        + "','WECHAT',20.00,'SUCCESS')");
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        fulfillmentService.requestRefund(
+                                new RefundRequestCmd(order.orderNo(), "R1", "原因")));
+        assertEquals(0, count("trade_refund_request"));
+    }
+
+    @Test
+    void concurrentShipmentAndRefundSerializeOnOrderAndCannotBothWin() throws Exception {
+        var order = paidOrder(null);
+        worker().execute(50);
+        var start = new CountDownLatch(1);
+        var pool = Executors.newFixedThreadPool(2);
+        try {
+            Callable<Boolean> ship =
+                    () -> {
+                        start.await();
+                        try {
+                            fulfillmentService.ship(shipment(order.orderNo()));
+                            return true;
+                        } catch (IllegalStateException ex) {
+                            return false;
+                        }
+                    };
+            Callable<Boolean> refund =
+                    () -> {
+                        start.await();
+                        try {
+                            fulfillmentService.requestRefund(
+                                    new RefundRequestCmd(order.orderNo(), "R1", "原因"));
+                            return true;
+                        } catch (IllegalStateException ex) {
+                            return false;
+                        }
+                    };
+            var a = pool.submit(ship);
+            var b = pool.submit(refund);
+            start.countDown();
+            assertNotEquals(a.get(15, TimeUnit.SECONDS), b.get(15, TimeUnit.SECONDS));
+            assertNotEquals(
+                    fulfillment.shipment(order.orderNo()) != null,
+                    fulfillment.activeRefund(order.orderNo()));
+        } finally {
+            pool.shutdownNow();
+        }
+    }
+
+    @Test
+    void paidOutboxRetryAfterLostAcknowledgementStillWorksAfterShipping() throws Exception {
+        var order = paidOrder(null);
+        TradeOutboxGateway lostAck =
+                new TradeOutboxGateway() {
+                    public void append(
+                            String id, String type, String no, String event, String payload) {
+                        outbox.append(id, type, no, event, payload);
+                    }
+
+                    public List<OutboxEvent> pending(int limit) {
+                        return outbox.pending(limit);
+                    }
+
+                    public boolean claim(String id, String token) {
+                        return outbox.claim(id, token);
+                    }
+
+                    public boolean delivered(String id, String token) {
+                        return false;
+                    }
+
+                    public boolean failed(String id, String token, int attempt) {
+                        return outbox.failed(id, token, attempt);
+                    }
+
+                    public boolean replayDead(String id) {
+                        return outbox.replayDead(id);
+                    }
+                };
+        assertEquals(0, new TradeOutboxDispatchExe(lostAck, orders, bridge, lifecycle).execute(50));
+        assertTrue(fulfillment.inventoryConfirmed(order.orderNo()));
+        fulfillmentService.ship(shipment(order.orderNo()));
+        sql(
+                tradeSource,
+                "UPDATE trade_outbox SET lease_until=TIMESTAMP '2000-01-01 00:00:00' WHERE"
+                        + " status='PROCESSING'");
+        assertEquals(1, worker().execute(50));
+        assertEquals("SHIPPED", orders.findByOrderNo(order.orderNo()).status());
+        assertEquals(8, mall.findById(sku).stock());
+        assertEquals(1, count("trade_inventory_confirmation"));
+    }
+
+    @Test
+    void readQueriesExposeAccuratePagingAndValidation() {
+        var order = paidOrder(null);
+        worker().execute(50);
+        var request =
+                fulfillmentService.requestRefund(new RefundRequestCmd(order.orderNo(), "R1", "原因"));
+        var pages =
+                new com.lemnt.trade.application.fulfillment.executor.OrderPageQueryExe(fulfillment);
+        var page =
+                pages.execute(
+                        new com.lemnt.trade.application.fulfillment.qry.OrderPageQry(
+                                order.orderNo(), "PAID", 1, 20));
+        assertEquals(1, page.total());
+        assertTrue(page.records().get(0).activeRefund());
+        assertTrue(page.records().get(0).inventoryConfirmed());
+        var refunds =
+                new com.lemnt.trade.application.fulfillment.executor.RefundPageQueryExe(
+                        fulfillment);
+        assertEquals(
+                request.refundNo(),
+                refunds.execute(
+                                new com.lemnt.trade.application.fulfillment.qry.RefundPageQry(
+                                        order.orderNo(), "REQUESTED", 1, 20))
+                        .records()
+                        .get(0)
+                        .refundNo());
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        pages.execute(
+                                new com.lemnt.trade.application.fulfillment.qry.OrderPageQry(
+                                        null, "REFUNDED", 1, 20)));
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        refunds.execute(
+                                new com.lemnt.trade.application.fulfillment.qry.RefundPageQry(
+                                        null, null, 0, 20)));
+        assertThrows(
+                IllegalArgumentException.class, () -> fulfillmentService.receive(order.orderNo()));
+    }
+
+    @Test
+    void ambiguousStockConfirmCannotUnlockShipmentUntilRetryReturnsSuccess() throws Exception {
+        var order = paidOrder(null);
+        loseNextConfirmResponse = true;
+        assertEquals(0, worker().execute(50));
+        assertFalse(fulfillment.inventoryConfirmed(order.orderNo()));
+        assertThrows(
+                IllegalStateException.class,
+                () -> fulfillmentService.ship(shipment(order.orderNo())));
+        sql(
+                tradeSource,
+                "UPDATE trade_outbox SET next_attempt_at=TIMESTAMP '2000-01-01 00:00:00' WHERE"
+                        + " status='FAILED'");
+        assertEquals(1, worker().execute(50));
+        assertTrue(fulfillment.inventoryConfirmed(order.orderNo()));
+        fulfillmentService.ship(shipment(order.orderNo()));
+        assertEquals(8, mall.findById(sku).stock());
+    }
+
+    @Test
+    void shipmentAndReceiveRecordsRollbackWhenOrderTransitionFails() {
+        var order = paidOrder(null);
+        worker().execute(50);
+        var failure =
+                org.mockito.Mockito.mock(
+                        TradeOrderGateway.class, org.mockito.AdditionalAnswers.delegatesTo(orders));
+        org.mockito.Mockito.doReturn(false)
+                .when(failure)
+                .transitionStatus(order.orderNo(), "PAID", "SHIPPED");
+        var failing = tx(new OrderFulfillmentService(failure, payments, fulfillment), tradeSource);
+        assertThrows(IllegalStateException.class, () -> failing.ship(shipment(order.orderNo())));
+        assertNull(fulfillment.shipment(order.orderNo()));
+        assertEquals("PAID", orders.findByOrderNo(order.orderNo()).status());
+        fulfillmentService.ship(shipment(order.orderNo()));
+        org.mockito.Mockito.doReturn(false)
+                .when(failure)
+                .transitionStatus(order.orderNo(), "SHIPPED", "COMPLETED");
+        assertThrows(IllegalStateException.class, () -> failing.receive(order.orderNo()));
+        assertNull(fulfillment.shipment(order.orderNo()).receivedAt());
+        assertEquals("SHIPPED", orders.findByOrderNo(order.orderNo()).status());
+    }
+
+    @Test
+    void v5BackfillOnlyTrustsDeliveredPaidEvents() throws Exception {
+        var delivered = paidOrder(null);
+        worker().execute(50);
+        checkout.saveCart(1L, sku, 1, true);
+        var unconfirmed = place("SECOND-UNCONFIRMED", null);
+        worker().execute(50);
+        var payment = paymentCreate.execute(unconfirmed.orderNo(), "ALIPAY");
+        notify.execute(
+                new VerifiedPaymentNotification(
+                        payment.paymentNo(),
+                        unconfirmed.orderNo(),
+                        "ALIPAY",
+                        "CH-SECOND",
+                        unconfirmed.totalAmount(),
+                        "N-SECOND"));
+        assertTrue(fulfillment.inventoryConfirmed(delivered.orderNo()));
+        assertFalse(fulfillment.inventoryConfirmed(unconfirmed.orderNo()));
+        sql(tradeSource, "DROP TABLE trade_refund_request");
+        sql(tradeSource, "DROP TABLE trade_shipment");
+        sql(tradeSource, "DROP TABLE trade_inventory_confirmation");
+        ScriptUtils.executeSqlScript(
+                tradeSchema, new ClassPathResource("trade-sql/V5__order_fulfillment.sql"));
+        assertTrue(fulfillment.inventoryConfirmed(delivered.orderNo()));
+        assertFalse(fulfillment.inventoryConfirmed(unconfirmed.orderNo()));
+        assertEquals(1, count("trade_inventory_confirmation"));
     }
 }

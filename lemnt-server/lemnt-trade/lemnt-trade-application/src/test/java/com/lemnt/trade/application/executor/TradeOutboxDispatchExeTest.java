@@ -20,17 +20,12 @@ class TradeOutboxDispatchExeTest {
     TradeOrderGateway orders = mock(TradeOrderGateway.class);
     ProductCatalogGateway catalog = mock(ProductCatalogGateway.class);
     TradeOutboxDispatchExe dispatcher;
+    com.lemnt.trade.application.checkout.service.CheckoutLifecycleService lifecycle =
+            mock(com.lemnt.trade.application.checkout.service.CheckoutLifecycleService.class);
 
     @BeforeEach
     void setUp() {
-        dispatcher =
-                new TradeOutboxDispatchExe(
-                        outbox,
-                        orders,
-                        catalog,
-                        mock(
-                                com.lemnt.trade.application.checkout.service
-                                        .CheckoutLifecycleService.class));
+        dispatcher = new TradeOutboxDispatchExe(outbox, orders, catalog, lifecycle);
     }
 
     private TradeOrder order(String status) {
@@ -60,7 +55,9 @@ class TradeOutboxDispatchExeTest {
 
         when(outbox.delivered(anyString(), anyString())).thenReturn(true);
         assertEquals(1, dispatcher.execute(5));
-        verify(catalog).confirmStock("TR1", 5L);
+        var sequence = inOrder(catalog, lifecycle);
+        sequence.verify(catalog).confirmStock("TR1", 5L);
+        sequence.verify(lifecycle).inventoryConfirmed("TR1");
         verify(outbox).delivered(eq("E1"), anyString());
     }
 
@@ -88,6 +85,7 @@ class TradeOutboxDispatchExeTest {
         assertEquals(0, dispatcher.execute(5));
         verify(outbox).failed(eq("E3"), anyString(), eq(1));
         verify(outbox, never()).delivered(eq("E3"), anyString());
+        verify(lifecycle, never()).inventoryConfirmed(anyString());
     }
 
     @Test

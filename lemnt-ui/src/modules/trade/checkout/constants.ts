@@ -12,6 +12,8 @@ export const checkoutStatusEnum = {
   RESERVING: { text: '库存确认中' },
   PENDING_PAYMENT: { text: '待支付' },
   PAID: { text: '已支付' },
+  SHIPPED: { text: '已发货' },
+  COMPLETED: { text: '已完成' },
   CLOSED: { text: '已关闭' },
 };
 export const MAX_COUPON_AMOUNT = 99999999999.99;

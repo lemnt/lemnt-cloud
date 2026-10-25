@@ -1,6 +1,7 @@
 export type CouponKind = 'FIXED' | 'PERCENT';
 export type CouponStatus = 'AVAILABLE' | 'LOCKED' | 'USED';
-export type CheckoutStatus = 'RESERVING' | 'PENDING_PAYMENT' | 'PAID' | 'CLOSED';
+export type CheckoutStatus =
+  'RESERVING' | 'PENDING_PAYMENT' | 'PAID' | 'SHIPPED' | 'COMPLETED' | 'CLOSED';
 export interface CartItem {
   id: string;
   productId: string;
