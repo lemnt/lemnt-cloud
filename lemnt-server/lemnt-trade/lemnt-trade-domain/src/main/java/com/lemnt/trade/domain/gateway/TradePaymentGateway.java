@@ -8,5 +8,7 @@ public interface TradePaymentGateway {
     PaymentRecord findByPaymentNo(String paymentNo);
     PaymentRecord findByOrderNoAndChannel(String orderNo, String channel);
     PaymentRecord createWaiting(String paymentNo, String orderNo, String channel, BigDecimal amount);
+    java.util.List<PaymentRecord> findByOrderNo(String orderNo);
+    boolean markClosed(String paymentNo);
     boolean markSuccess(VerifiedPaymentNotification notification);
 }

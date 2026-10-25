@@ -45,3 +45,13 @@ Review and apply SQL through the normal migration process in a test database fir
 3. 交易与商品跨服务事务仍需端到端故障注入测试（库存 RPC 超时、重复回调、关单与支付竞态）。
 4. 尚无真实支付宝/微信预支付和已验签回调适配器。禁止对外公开未经验签的通知入口。
 5. 为了便于审阅，交易模块保留在 Draft PR，不应直接合并部署。
+
+## 2026-10-25 verified reliability continuation
+
+- Root `mvn verify` now aggregates the existing modules; corrected six missing Lombok dependencies and explicit parent paths.
+- Outbox claims now have unique lease tokens, database-clock deadlines, due-before-limit selection, 10-attempt exhaustion, exponential retry delays and DEAD recovery. Apply `V3__outbox_delivery_lease.sql` with old workers stopped.
+- `POST /trade/outbox/{eventId}/replay` requires `trade:outbox:replay`; see [recovery/API contract](trade-outbox-api.md).
+- Payment create, notify and close acquire the same order row lock. Close requires every waiting intent to be atomically closed by its provider; missing/ambiguous adapters refuse close. No concrete provider adapter is installed by this slice.
+- Verified locally: all 71 Maven reactor projects; 227 tests, zero failures/errors/skips. Evidence: `work-items/yudao-member-mall-trade-migration/evidence/`.
+- Earlier statements that Maven tests were never run are historical and superseded by that evidence. Earlier unfenced/unbounded Outbox and unconditional-close warnings describe the old implementation, now replaced.
+- Still not production-ready: MySQL migration/concurrency, real channels/signatures, late refunds, Dubbo fault injection and complete business/React migration remain unverified or unimplemented. Tests with mocks/H2 do not establish live service correctness.

@@ -44,6 +44,18 @@ public class TradePaymentGatewayImpl implements TradePaymentGateway {
                 notification.amount(), notification.channelTradeNo(), notification.notifyId()) == 1;
     }
 
+    @Override
+    public java.util.List<PaymentRecord> findByOrderNo(String orderNo) {
+        return mapper.selectList(Wrappers.lambdaQuery(TradePaymentDO.class)
+                .eq(TradePaymentDO::getOrderNo, orderNo).orderByAsc(TradePaymentDO::getId))
+                .stream().map(this::toRecord).toList();
+    }
+
+    @Override
+    public boolean markClosed(String paymentNo) {
+        return mapper.markClosed(paymentNo) == 1;
+    }
+
     private PaymentRecord toRecord(TradePaymentDO row) {
         return row == null ? null : new PaymentRecord(row.getId(), row.getPaymentNo(), row.getOrderNo(),
                 row.getChannel(), row.getChannelTradeNo(), row.getAmount(), row.getStatus(), row.getNotifyId());

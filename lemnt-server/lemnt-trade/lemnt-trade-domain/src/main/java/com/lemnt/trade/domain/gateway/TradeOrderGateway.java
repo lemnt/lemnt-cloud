@@ -7,6 +7,7 @@ import java.util.List;
 public interface TradeOrderGateway {
     TradeOrder save(TradeOrder order);
     TradeOrder findByOrderNo(String orderNo);
+    TradeOrder findByOrderNoForUpdate(String orderNo);
     boolean transitionStatus(String orderNo, String expectedStatus, String targetStatus);
     List<TradeOrder> findPendingPaymentCreatedBefore(LocalDateTime deadline, int limit);
 }

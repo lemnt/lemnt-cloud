@@ -49,6 +49,16 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     }
 
     @Override
+    public TradeOrder findByOrderNoForUpdate(String orderNo) {
+        // Caller must own a transaction. Lock header before reading payment rows.
+        TradeOrderDO row = orders.selectOne(Wrappers.lambdaQuery(TradeOrderDO.class)
+                .eq(TradeOrderDO::getOrderNo, orderNo).last("FOR UPDATE"));
+        if (row == null) return null;
+        return new TradeOrder(row.getId(), row.getOrderNo(), row.getMemberId(), row.getTotalAmount(),
+                row.getStatus(), List.of(), row.getCreateTime());
+    }
+
+    @Override
     public boolean transitionStatus(String orderNo, String expectedStatus, String targetStatus) {
         return orders.transitionStatus(orderNo, expectedStatus, targetStatus) == 1;
     }

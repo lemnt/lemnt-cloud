@@ -22,4 +22,7 @@ public class TradeOutboxDO extends BaseDO {
     private String payload;
     private String status;
     private Integer retryCount;
+    private String leaseToken;
+    private java.time.LocalDateTime leaseUntil;
+    private java.time.LocalDateTime nextAttemptAt;
 }

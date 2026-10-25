@@ -1,6 +1,5 @@
 package com.lemnt.trade.infrastructure.gateway;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.lemnt.trade.domain.gateway.TradeOutboxGateway;
 import com.lemnt.trade.domain.model.OutboxEvent;
 import com.lemnt.trade.infrastructure.dataobject.TradeOutboxDO;
@@ -24,18 +23,30 @@ public class TradeOutboxGatewayImpl implements TradeOutboxGateway {
     @Override
     public List<OutboxEvent> pending(int limit) {
         int batch = Math.max(1, Math.min(100, limit));
-        return mapper.selectList(Wrappers.lambdaQuery(TradeOutboxDO.class)
-                .and(q -> q.eq(TradeOutboxDO::getStatus, "NEW")
-                        .or().eq(TradeOutboxDO::getStatus, "FAILED")
-                        .or().eq(TradeOutboxDO::getStatus, "PROCESSING"))
-                .orderByAsc(TradeOutboxDO::getId).last("LIMIT " + batch))
+        mapper.exhaust();
+        return mapper.pending(batch)
                 .stream().map(row -> new OutboxEvent(row.getEventId(), row.getAggregateNo(),
                         row.getEventType(), row.getPayload(), row.getRetryCount())).toList();
     }
 
-    @Override public boolean claim(String id) { return mapper.claim(id) == 1; }
-    @Override public void delivered(String id) {
-        if (mapper.delivered(id) != 1) throw new IllegalStateException("Outbox ack failed: " + id);
+    @Override
+    public boolean claim(String id, String token) {
+        return mapper.claim(id, token) == 1;
     }
-    @Override public void failed(String id) { mapper.failed(id); }
+
+    @Override
+    public boolean delivered(String id, String token) {
+        return mapper.delivered(id, token) == 1;
+    }
+
+    @Override
+    public boolean failed(String id, String token, int attempt) {
+        long delay = Math.min(3600L, 30L << Math.max(0, Math.min(7, attempt - 1)));
+        return mapper.failed(id, token, delay) == 1;
+    }
+
+    @Override
+    public boolean replayDead(String id) {
+        return mapper.replayDead(id) == 1;
+    }
 }

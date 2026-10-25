@@ -32,6 +32,8 @@ public class PaymentNotifyCmdExe {
             throw new IllegalArgumentException("支付通知参数不合法");
         }
 
+        TradeOrder order = orders.findByOrderNoForUpdate(notification.orderNo());
+        if (order == null) throw new IllegalArgumentException("订单不存在");
         PaymentRecord payment = payments.findByPaymentNo(notification.paymentNo());
         if (payment == null) throw new IllegalArgumentException("支付单不存在");
         if (!payment.orderNo().equals(notification.orderNo())
@@ -42,15 +44,12 @@ public class PaymentNotifyCmdExe {
 
         if ("SUCCESS".equals(payment.status())) {
             // Same payment callback is idempotent; mismatched replay is rejected.
-            if (payment.notifyId() != null && payment.notifyId().equals(notification.notifyId())
-                    && payment.channelTradeNo() != null
+            if (payment.channelTradeNo() != null
                     && payment.channelTradeNo().equals(notification.channelTradeNo())) return;
             throw new IllegalStateException("支付单已成功，但收到不同的重复通知");
         }
         if (!"WAITING".equals(payment.status())) throw new IllegalStateException("支付单状态不允许完成");
 
-        TradeOrder order = orders.findByOrderNo(notification.orderNo());
-        if (order == null) throw new IllegalArgumentException("订单不存在");
         if (!"PENDING_PAYMENT".equals(order.status())) {
             throw new IllegalStateException("订单已关闭或已支付，不能再确认支付");
         }

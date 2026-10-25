@@ -27,7 +27,7 @@ public class TradePaymentCreateCmdExe {
         if (!SUPPORTED_CHANNELS.contains(normalizedChannel)) {
             throw new IllegalArgumentException("暂不支持该支付渠道");
         }
-        TradeOrder order = orders.findByOrderNo(orderNo.trim());
+        TradeOrder order = orders.findByOrderNoForUpdate(orderNo.trim());
         if (order == null) throw new IllegalArgumentException("订单不存在");
         if (!"PENDING_PAYMENT".equals(order.status())) {
             throw new IllegalStateException("只有待支付订单可以创建支付单");

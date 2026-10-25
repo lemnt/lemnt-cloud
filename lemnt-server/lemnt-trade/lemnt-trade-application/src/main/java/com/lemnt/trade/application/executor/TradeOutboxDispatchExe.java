@@ -6,6 +6,7 @@ import com.lemnt.trade.domain.gateway.TradeOutboxGateway;
 import com.lemnt.trade.domain.model.OutboxEvent;
 import com.lemnt.trade.domain.model.TradeOrder;
 import lombok.RequiredArgsConstructor;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -25,13 +26,13 @@ public class TradeOutboxDispatchExe {
     public int execute(int batchSize) {
         int processed = 0;
         for (OutboxEvent event : outbox.pending(batchSize)) {
-            if (!outbox.claim(event.eventId())) continue;
+            String token = UUID.randomUUID().toString();
+            if (!outbox.claim(event.eventId(), token)) continue;
             try {
                 process(event);
-                outbox.delivered(event.eventId());
-                processed++;
+                if (outbox.delivered(event.eventId(), token)) processed++;
             } catch (Exception ex) {
-                outbox.failed(event.eventId());
+                outbox.failed(event.eventId(), token, event.retryCount() + 1);
                 LOG.error("Outbox delivery failed, eventId={}, orderNo={}",
                         event.eventId(), event.aggregateNo(), ex);
             }
