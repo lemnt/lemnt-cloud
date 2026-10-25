@@ -32,3 +32,7 @@ Keep Draft. Engineering self-review is not independent QA or user acceptance. No
 ## Payment replay hardening continuation
 
 Successful payment notifications now require order PAID/SHIPPED/COMPLETED before acknowledging a replay. RESERVING/PENDING_PAYMENT/CLOSED are reconciliation errors, with no payment/order/Outbox writes. Added two regression cases; full root Maven verify passed: 71 projects, 298 tests, zero failures/errors/skips. Evidence: evidence/payment-replay/verify.txt. No UI change or frontend rerun. Real provider signature/close/refund adapters remain pending; no production-ready claim.
+
+## Miniapp project boundary
+
+Added independent lemnt-miniapp native bootstrap/client. Node 22 built-in test runner: 5 tests PASS (no-member/no-ready prevents transport, app paths only, identity/amount fields excluded, stable checkout payload retries, prepay/status separation, invalid input and HTTP/business failures). JSON and JavaScript syntax checked. Backend/React unchanged in this slice, not rerun. WeChat developer-tool compilation, visual QA, real login, deployed /trade/app APIs and real payment NOT RUN/NOT IMPLEMENTED; project is a bootstrap, not consumer migration completion.
