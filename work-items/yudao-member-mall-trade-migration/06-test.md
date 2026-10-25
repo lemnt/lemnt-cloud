@@ -56,3 +56,9 @@ Added owned-coupon loading, AVAILABLE selection and explicit no-coupon choice. V
 ## Cached settlement verification
 
 Full root Maven verify: 71 projects,317 tests,zero failures/errors/skips. Added six transactional integration cases (suite now35): cache-eviction replay/different-key duplicate rejection, owner/expiry, cached quantity with later cart edit preservation, price-change rejection, concurrent different requests, bind-failure rollback/retry. Three infrastructure tests cover actual immutable serialization and Redis mock NX/TTL/miss/failure. One HTTP test covers old payload rejection and session-derived identity with cached submit. Miniapp22 tests PASS, including old-v1 protection and explicit scoped reset; JS/JSON syntax checked. Evidence: evidence/cached-settlement/. Live Redis/MySQL/Nacos, member verifier, real payment and WeChat compiler/device/visual checks NOT RUN. React unchanged/not rerun.
+
+## Request-ledger recovery continuation
+
+Added authenticated member-scoped GET /trade/app/checkout/requests/{requestNo}. Queries durable ledger/order with ownership checks, not Redis or placement. Supports cached and legacy records. Miniapp recovers by original key and removes only unchanged inspected record after valid receipt; uncertain results, switched member and changed local record preserve intent. Recovering v1 preserves coexisting v2. Lookup miss is not proof of cancellation.
+
+Full root Maven verify:71 projects,320 tests,zero failures/errors/skips. Three new backend cases:actual cached/legacy request recovery and HTTP identity boundary. Five new miniapp tests,27 total PASS; JS/JSON checks PASS. Evidence: evidence/request-recovery/. Real identity/provider/runtime/device checks remain pending; readiness false,PR Draft. React unchanged/not rerun.

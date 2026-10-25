@@ -37,3 +37,9 @@ test('参数、HTTP错误和业务错误不能当作成功', async () => {
     await assert.rejects(setup({ request: async () => response }).client.cart());
   }
 });
+
+test('按请求查回只走当前会员路径，不发送结算快照或重提单',async()=>{
+ const {client,calls}=setup();await client.checkoutRequest('R1');
+ assert.equal(calls[0].url,'https://example.test/trade/app/checkout/requests/R1');assert.equal(calls[0].method,'GET');assert.equal(calls[0].data,undefined);
+ assert.throws(()=>client.checkoutRequest(''));assert.throws(()=>client.checkoutRequest('x'.repeat(65)));
+});

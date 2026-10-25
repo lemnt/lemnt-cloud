@@ -49,3 +49,9 @@ Old clients submitting quoteToken/productIds to app checkout fail validation. Co
 Apply additive trade V6 after V1..V5 before enabling the new app API. Trade now directly depends on existing lemnt-common-redis and requires configured Redis (`spring.data.redis.*` via Nacos/environment); no standalone cache module is duplicated. Redis cache serialization uses existing RedisSerializer. No live SQL, Nacos or Redis configuration was changed.
 
 Tests cover actual serializer round-trip, mocked Redis NX/TTL/failure/miss, actual H2 V6/mappers/transactions for concurrent consume, replay after eviction, owner/expiry rejection, cached quantity, price change and rollback. These are not a live Redis/MySQL/Nacos/WeChat verification. Member identity verifier still has no production implementation, so consumer requests remain denied by default and miniapp readiness stays false. Real payment is still pending.
+
+## Recover by original request
+
+`GET /trade/app/checkout/requests/{requestNo}` returns the current member's CheckoutReceiptRes when a committed request ledger/order exists. Requires independent member session; no member ID input. It checks both ledger and order ownership. This is read-only and does not use Redis or create/retry orders. Both cached and legacy request-ledger records can be recovered. Missing or foreign requests return the same application failure; that failure does **not** prove a queued/in-flight request was cancelled or can no longer create an order.
+
+Miniapp “按原请求找回订单” checks local v1 first, otherwise v2. Only a valid receipt removes the exact inspected local record; unknown results, session switches or changed local records leave it intact. Recovering a legacy record does not remove a coexisting v2 record. This supports upgrade reconciliation without resubmitting old payloads or blindly discarding them. Local-reset remains explicitly confirmed and is never automatic recovery.

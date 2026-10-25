@@ -14,6 +14,7 @@ public class SettlementService {
     private final OrderPlacementService placement;
     private final SettlementGateway settlements;
     private final CheckoutGateway checkout;
+    private final com.lemnt.trade.domain.gateway.TradeOrderGateway orders;
 
     public com.lemnt.trade.application.checkout.dto.SettlementDTO create(CheckoutQuoteQry query) {
         var value = placement.prepareSettlement(query);
@@ -25,5 +26,15 @@ public class SettlementService {
     public CheckoutReceiptDTO submit(Long memberId, String id, String requestNo) {
         var order = placement.submitSettlement(memberId, id, requestNo, settlements);
         return CheckoutDTOConverter.receipt(checkout.receipt(order.orderNo()), order);
+    }
+
+    public CheckoutReceiptDTO findByRequest(Long memberId, String requestNo) {
+        com.lemnt.trade.domain.checkout.model.CheckoutRules.id(memberId);
+        String key = com.lemnt.trade.domain.checkout.model.CheckoutRules.text(requestNo, 64);
+        var record = checkout.findRequest(memberId, key);
+        if (record == null || !memberId.equals(record.memberId())) return null;
+        var order = orders.findByOrderNo(record.orderNo());
+        if (order == null || !memberId.equals(order.memberId())) return null;
+        return CheckoutDTOConverter.receipt(record, order);
     }
 }

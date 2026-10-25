@@ -131,3 +131,7 @@ Added owned-coupon loading, AVAILABLE selection and explicit no-coupon choice. V
 ## Cached settlement migration
 
 User requires server-generated cached settlement and cached-snapshot order placement. Consumer quote becomes generate/cache (15-minute immutable snapshot, NX), submit accepts settlementId/requestNo only. Preserve six layers using SettlementGateway, existing RedisSerializer/StringRedisTemplate and new V6 durable settlement-order mapping. Member row locking plus primary-key association enforces one consume; request replay precedes cache read, so cache loss does not destroy confirmed-order recovery. No pre-commit Redis delete; TTL cleanup only. Current eligibility revalidation rejects changed pricing without changing cache-derived order fields. Client v2 intent preserves only ID/key and protects unresolved v1 migration. See docs/cached-settlement-api.md. Admin legacy compatibility retained explicitly; no new module.
+
+## Request-ledger recovery
+
+Add member-scoped read-only request lookup at GET /trade/app/checkout/requests/{requestNo}. Resolve request ledger and order ownership in application service; no Redis/placement call and no client member ID. Client recovers v1/v2 records by original request key, clears only the unchanged verified record after a valid receipt, preserves uncertain results/session changes. Missing lookup never means cancellation. This removes need to blindly resubmit or discard legacy payloads during cached-contract upgrades; no new DB schema or module.

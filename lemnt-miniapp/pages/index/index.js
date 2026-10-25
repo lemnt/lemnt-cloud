@@ -118,6 +118,11 @@ Page({
     if (id && (this.couponsMember !== member || !this.data.coupons.some(c => c.id === id && c.status === 'AVAILABLE'))) throw new Error('优惠券不可选择，请刷新');
     this.quoteInput = null; this.setData({ selectedCoupon: id, quote: null });
   }); },
+  recoverPending() { return this.action(async member => {
+    const receipt = await this.flow.recover();
+    this.receiptMember = member;this.quoteInput = null;
+    this.setData({receipt,pending:!!this.flow.pending(),quote:null});
+  }); },
   resetPending() { return this.action(async member => {
     const result = await new Promise((resolve,reject) => wx.showModal({title:'仅清除本机记录',content:'请先核验原订单。清除不会取消服务端订单；重新结算可能另建订单。确认已核验，仍要清除？',success:resolve,fail:reject}));
     if (!result.confirm) return;

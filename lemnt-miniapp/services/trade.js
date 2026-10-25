@@ -42,6 +42,10 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     },
     order: orderNo => call('/orders/' + order(orderNo)),
     prepay: orderNo => call('/orders/' + order(orderNo) + '/prepay', 'POST'),
+    checkoutRequest: requestNo => {
+      if (typeof requestNo !== 'string' || !requestNo.trim() || requestNo.length > 64) throw new Error('请求编号不合法');
+      return call('/checkout/requests/' + encodeURIComponent(requestNo));
+    },
     paymentStatus: orderNo => call('/orders/' + order(orderNo) + '/payment'),
   };
 }

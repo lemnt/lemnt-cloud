@@ -1159,4 +1159,31 @@ class CheckoutFlowIntegrationTest {
         assertNotNull(settlementCache.get(value.id()));
         assertNotNull(placement.submitSettlement(1L, value.id(), "S1", settlements));
     }
+
+    @Test
+    void cachedRequestRecoveryIsOwnerScopedAndIndependentOfCache() {
+        var value = settlement();
+        var order = placement.submitSettlement(1L, value.id(), "RECOVER", settlements);
+        settlementCache.clear();
+        var cache =
+                org.mockito.Mockito.mock(
+                        com.lemnt.trade.domain.checkout.gateway.SettlementGateway.class);
+        var service =
+                new com.lemnt.trade.application.checkout.service.SettlementService(
+                        placement, cache, checkout, orders);
+        assertEquals(order.orderNo(), service.findByRequest(1L, "RECOVER").orderNo());
+        assertNull(service.findByRequest(2L, "RECOVER"));
+        assertNull(service.findByRequest(1L, "MISSING"));
+        org.mockito.Mockito.verifyNoInteractions(cache);
+    }
+
+    @Test
+    void legacyRequestRecoveryDoesNotCreateAnotherOrder() throws Exception {
+        var order = place("LEGACY-RECOVER", null);
+        var service =
+                new com.lemnt.trade.application.checkout.service.SettlementService(
+                        placement, settlements, checkout, orders);
+        assertEquals(order.orderNo(), service.findByRequest(1L, "LEGACY-RECOVER").orderNo());
+        assertEquals(1, count("trade_order"));
+    }
 }

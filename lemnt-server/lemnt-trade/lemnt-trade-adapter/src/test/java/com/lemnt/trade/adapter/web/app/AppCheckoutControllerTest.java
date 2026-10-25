@@ -119,4 +119,32 @@ class AppCheckoutControllerTest {
         verify(cached).submit(7L, "12345678-1234-1234-1234-123456789abc", "R1");
         verifyNoInteractions(legacy);
     }
+
+    @Test
+    void requestRecoveryUsesAuthenticatedMemberNotCallerIdentity() throws Exception {
+        var session = mock(MemberSessionService.class);
+        when(session.requireMember("Bearer member")).thenReturn(7L);
+        var cached = mock(com.lemnt.trade.application.checkout.service.SettlementService.class);
+        var controller =
+                new AppCheckoutController(
+                        session,
+                        mock(CartListQueryExe.class),
+                        mock(CartSaveCmdExe.class),
+                        mock(CartDeleteCmdExe.class),
+                        mock(CouponListQueryExe.class),
+                        mock(CheckoutQuoteQueryExe.class),
+                        mock(CheckoutSubmitCmdExe.class),
+                        mock(CheckoutReceiptQueryExe.class),
+                        cached);
+        MockMvcBuilders.standaloneSetup(controller)
+                .build()
+                .perform(
+                        get("/trade/app/checkout/requests/R1")
+                                .header("Authorization", "Bearer member")
+                                .header("memberId", "999")
+                                .param("memberId", "999"))
+                .andExpect(status().isOk());
+        verify(cached).findByRequest(7L, "R1");
+        verify(cached, never()).findByRequest(999L, "R1");
+    }
 }

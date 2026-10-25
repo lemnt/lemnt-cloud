@@ -37,3 +37,29 @@ test('仅明确确认后可清除当前会员本机记录，不影响其他会�
  const flow=createCheckoutFlow({storage:{get:k=>values.get(k),remove:k=>values.delete(k)},currentMember:()=> '1'});
  assert.throws(()=>flow.discard(false));assert.equal(values.size,3);flow.discard(true);assert.equal(values.size,1);assert.ok(values.has('lemnt.checkout.v2.2'));
 });
+
+test('原请求查回订单不重新提交，并支持旧版记录',async()=>{
+ for(const version of ['v1','v2']){
+ const key='lemnt.checkout.'+version+'.1';const values=new Map([[key,{requestNo:'OLD'}]]);let submitted=0;
+ const flow=createCheckoutFlow({storage:{get:k=>values.get(k),remove:k=>values.delete(k)},currentMember:()=> '1',client:{checkout:async()=>submitted++,checkoutRequest:async key=>{assert.equal(key,'OLD');return {orderNo:'TR1',status:'PAID',payableAmount:'10.00'};}}});
+ assert.equal((await flow.recover()).orderNo,'TR1');assert.equal(values.size,0);assert.equal(submitted,0);
+ }
+});
+test('查无结果或响应不合法不会删除待核验请求',async()=>{
+ const values=new Map([['lemnt.checkout.v2.1',{requestNo:'R1'}]]);
+ const flow=createCheckoutFlow({storage:{get:k=>values.get(k),remove:k=>values.delete(k)},currentMember:()=> '1',client:{checkoutRequest:async()=>null}});
+ await assert.rejects(flow.recover());assert.equal(values.size,1);
+});
+test('查回期间换号或本机请求变化时保留记录',async()=>{
+ for(const kind of ['member','record']){
+ let member='1';const key='lemnt.checkout.v2.1';const values=new Map([[key,{requestNo:'R1'}]]);
+ const flow=createCheckoutFlow({storage:{get:k=>values.get(k),remove:k=>values.delete(k)},currentMember:()=>member,client:{checkoutRequest:async()=>{if(kind==='member')member='2';else values.set(key,{requestNo:'R2'});return {orderNo:'TR1',status:'PAID',payableAmount:'10.00'};}}});
+ await assert.rejects(flow.recover());assert.equal(values.size,1);
+ }
+});
+
+test('找回旧版请求不会清除并存的新版请求',async()=>{
+ const values=new Map([['lemnt.checkout.v1.1',{requestNo:'OLD'}],['lemnt.checkout.v2.1',{requestNo:'NEW',settlementId:'12345678-1234-1234-1234-123456789abc'}]]);
+ const flow=createCheckoutFlow({storage:{get:k=>values.get(k),remove:k=>values.delete(k)},currentMember:()=> '1',client:{checkoutRequest:async()=>({orderNo:'TR1',status:'PAID',payableAmount:'10.00'})}});
+ await flow.recover();assert.equal(flow.pending().requestNo,'NEW');assert.equal(values.size,1);
+});

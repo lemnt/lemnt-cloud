@@ -12,6 +12,25 @@ function createCheckoutFlow({ storage, currentMember, client, newRequestNo }) {
     return { settlementId: value.settlementId, requestNo: value.requestNo };
   }
   return {
+    async recover() {
+      if (busy) throw new Error('正在处理请求');
+      busy = true;
+      try {
+        const member = currentMember();
+        if (typeof member !== 'string' || !/^[1-9]\d{0,18}$/.test(member)) throw new Error('请先完成会员登录');
+        const legacyKey = 'lemnt.checkout.v1.' + member;
+        const key = storage.get(legacyKey) ? legacyKey : 'lemnt.checkout.v2.' + member;
+        const saved = storage.get(key);
+        if (!saved || typeof saved.requestNo !== 'string' || !saved.requestNo.trim() || saved.requestNo.length > 64) throw new Error('没有可核验的本机请求编号');
+        const before = JSON.stringify(saved);
+        const result = await client.checkoutRequest(saved.requestNo);
+        if (currentMember() !== member) throw new Error('会员已切换，原记录已保留');
+        if (!result || typeof result.orderNo !== 'string' || !result.orderNo || !['RESERVING','PENDING_PAYMENT','PAID','SHIPPED','COMPLETED','CLOSED'].includes(result.status) || typeof result.payableAmount !== 'string' || !/^\d+\.\d{2}$/.test(result.payableAmount)) throw new Error('未能确认订单，已保留原请求');
+        if (JSON.stringify(storage.get(key)) !== before) throw new Error('本机请求已变化，请重新核验');
+        storage.remove(key);
+        return result;
+      } finally { busy = false; }
+    },
     discard(acknowledged) {
       if (acknowledged !== true || busy) throw new Error('须先核验原订单，且不能在提交期间清除');
       const member = currentMember();

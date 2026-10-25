@@ -103,4 +103,16 @@ public class AppCheckoutController {
         var value = receipt.execute(memberId, orderNo);
         return value == null ? R.fail("订单不存在") : R.ok(CheckoutResConverter.checkoutReceipt(value));
     }
+
+    @GetMapping("/checkout/requests/{requestNo}")
+    @Operation(summary = "按本人提单请求编号找回订单，不依赖结算缓存；查无结果不代表请求已取消")
+    public R<CheckoutReceiptRes> recover(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @PathVariable String requestNo) {
+        Long memberId = sessions.requireMember(token);
+        var value = settlements.findByRequest(memberId, requestNo);
+        return value == null
+                ? R.fail("暂未查到订单，请保留原请求重试或继续核验")
+                : R.ok(CheckoutResConverter.checkoutReceipt(value));
+    }
 }
