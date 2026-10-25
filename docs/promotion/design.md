@@ -3,7 +3,7 @@
 需求ID：yudao-member-mall-trade-migration · 设计版本 promotion-v1 · 2026-10-25（Asia/Shanghai）
 责任：code-software-engineer。源码基线：20ec7bd1b9de1d4d8665093009d08846997645c2，分支 feat/yudao-member-mall-trade-migration。
 
-**状态：promotion-v1设计已交付；T1纯Java内核已实现，尚未接入业务运行链路。** T1范围和实测证据见[implementation.md](implementation.md)。T2..T7仍PLANNED，本文拟新增HTTP接口、表及配置尚未实现/执行。Schema校验不代表Java实现、数据库集成或生产验收；原392/169/69为设计前历史基线。
+**状态：promotion-v1设计已交付；T1内核及T2内部版本/次数持久化已实现，尚未接入业务运行链路。** T1范围和实测证据见[implementation.md](implementation.md)。T2见[persistence.md](persistence.md)；T3..T7仍PLANNED。V9已生成但未在目标环境执行，拟定HTTP接口、T4订单计价表及运行配置仍未实现。Schema校验不代表Java实现、数据库集成或生产验收；原392/169/69为设计前历史基线。
 
 输入：用户同意先统一促销设计与契约，再实现核心购买闭环；仓库AGENTS.md、现有计价/结算/Outbox/退款源码、docs/cached-settlement-api.md与storefront-marketing-api.md。结构参考已读取的 code-software-engineer/references/development-design.md、api-documentation.md、java.md。原型输入：既有结算及优惠券页面，无新的促销配置原型；UI字段映射见下文，正式UI实现前补充对应交互基线。没有复制芋道全量营销实现，也不声称规则与其完全一致。
 
@@ -217,6 +217,8 @@ PromotionUsage状态HELD→USED或HELD→RELEASED，终态幂等；一个订单�
 
 ### 8.1 锁顺序与事务
 
+T2保守实现采用root FOR UPDATE替代下述共享锁，且维护所有global counter；同一活动写入串行，未宣称吞吐能力。内部usage先锁实际订单并要求外层事务；会员账户/券/Outbox整体集成仍待T4/T5。锁查询刷新/绕过MyBatis缓存，降低会员限额使用当前锁读。
+
 - 新单：member account → coupon row → coupon template → campaign root共享锁（ID升序）→有限global counter → member counter → usage写入/订单新增。
 - 已有订单生命周期：order FOR UPDATE → coupon row → campaign root共享锁 → global counter → member counter → usage FOR UPDATE。不再反向获取member account。
 - 发布/暂停：campaign root排他锁 → global counter；不获取coupon或order锁，不锁单个会员账户。修改上限在root排他锁下校验全部现有计数。
@@ -224,7 +226,7 @@ PromotionUsage状态HELD→USED或HELD→RELEASED，终态幂等；一个订单�
 
 ## 9. 数据模型和迁移草案
 
-下列仅为设计，**没有生成/执行V9迁移SQL**，实施前核实当前最新迁移号再分配，避免并发开发撞号。
+T2在核实V8后生成V9：root/version/scope/counter/member_counter/usage/admin_request及usage_event共8表，只在隔离H2执行。order_pricing/item_pricing/order_discount仍为T4设计，未生成；目标MySQL/线上未执行。
 
 | 拟表/变更 | 唯一键/索引及内容 | 说明 |
 | --- | --- | --- |
@@ -237,7 +239,8 @@ PromotionUsage状态HELD→USED或HELD→RELEASED，终态幂等；一个订单�
 | trade_order_pricing | order_no PK/FK；协议、算法、指纹、总价、规则快照 | 只有V2新单写；历史缺失不补假数据 |
 | trade_order_item_pricing | PK(order_no,product_id)；gross/两类discount/payable、Q、单位base+extra | 与原订单行对照；金额总和一致 |
 | trade_order_discount | UNIQUE(order_no,stage,source_id)；root/version或coupon/template与ruleHash | 解释来源及订单归因 |
-| trade_promotion_admin_request | PK(operator_id,request_no)；action/fingerprint/result | 发布重试及乐观锁结果回放 |
+| trade_promotion_admin_request | PK(operator_id,request_no)；action/fingerprint/result和创建/完成时间 | 发布重试及原始结果回放 |
+| trade_promotion_usage_event（T2审计） | UNIQUE(order_no,root_id,target_state)；usage FK | HELD及终态追加原因/数据库时间 |
 
 新金额列用BIGINT非负检查；中间计算BigInteger不入库。原order/items/checkout DECIMAL元列保留并精确转换，一笔V2订单两种表示必须等值。V6/V7/V8表复用，不重建券/购物车/Outbox。约束/索引、并发CAS及rollback须经真实Mapper/H2与目标MySQL双验证。
 
@@ -258,12 +261,12 @@ PromotionUsage状态HELD→USED或HELD→RELEASED，终态幂等；一个订单�
 
 ## 11. 实施任务与验收矩阵
 
-T1纯领域代码已实现，实测状态见implementation.md；T2..T7为PLANNED。依赖顺序T1→T2→T3→T4→T5→T6；T7验收跨全链路，无循环依赖。
+T1/T2代码已实现，证据见implementation.md/persistence.md；T3..T7为PLANNED。依赖顺序T1→T2→T3→T4→T5→T6；T7验收跨全链路，无循环依赖。
 
 | 任务 | 拟新增/修改路径 | 前置 | 验收及风险 |
 | --- | --- | --- | --- |
 | T1纯领域计价（已实现） | trade-domain/.../promotion/；存量CheckoutRules保持 | 本设计/契约 | P系列：算例、long边界、随机守恒、排列不变、legacy差分；不依赖DB |
-| T2持久版本/次数 | trade-infrastructure/.../promotion/、trade/sql/后续迁移 | T1 | D/R系列：真实SQL、发布并发、限额、不降至已用以下、事务回滚 |
+| T2持久版本/次数（内部服务已实现） | trade-infrastructure/.../promotion/、trade/sql/后续迁移 | T1 | D/R系列：真实SQL、发布并发、限额、不降至已用以下、事务回滚 |
 | T3权威事实/管理API | mall-client/application/dubbo + trade-adapter/application promotion | T2 | C/A系列：SPU事实/批量限额/不存在、权限、Schema、管理员重试 |
 | T4缓存结算V2 | 新SettlementV2Gateway + OrderPlacementService/SettlementService分离适配 | T3 | S系列：隔离缓存、请求先查DB、价格变更、购物车跨协议、栅栏/Redis失败 |
 | T5生命周期/补偿 | PaymentNotifyCmdExe、TradeOrderCloseCmdExe、CheckoutLifecycleService、Outbox调度（存量修改） | T4 | R系列：锁顺序、支付/关闭竞态、失联保留、终态幂等、补偿审计 |
@@ -278,6 +281,6 @@ T1纯领域代码已实现，实测状态见implementation.md；T2..T7为PLANNED
 
 ## 12. 当前验证与交接
 
-原设计提交534048e仅校验草稿/报价/提单Schema、JSON示例、算例分摊与源码引用，历史证据见evidence/promotion-design。本次T1纯Java内核及Maven证据另见implementation.md和evidence/promotion-kernel；不将独立Python设计检查冒充Java运行测试。新增迁移、V2业务集成和真实联调仍未完成。
+原设计提交534048e仅校验草稿/报价/提单Schema、JSON示例、算例分摊与源码引用，历史证据见evidence/promotion-design。本次T1纯Java内核及Maven证据另见implementation.md和evidence/promotion-kernel；不将独立Python设计检查冒充Java运行测试。T2最新持久化/事务结果见persistence.md及evidence/promotion-persistence；V9仅生成并在隔离H2验证，V2业务集成和真实联调仍未完成。
 
-后续从T2持久化/计次继续，无需重新选择框架或等待无关营销模块。API文档见api.md，Schema只是拟定契约；下游code QA按上面矩阵验收。真实支付、退款、订单收货地址、零元单等原迁移缺口没有被本设计关闭。保留Draft PR，无main修改、merge、部署或线上迁移。
+后续从T3权威事实RPC/管理API继续，无需重新选择框架或等待无关营销模块。API文档见api.md，Schema只是拟定契约；下游code QA按上面矩阵验收。真实支付、退款、订单收货地址、零元单等原迁移缺口没有被本设计关闭。保留Draft PR，无main修改、merge、部署或线上迁移。

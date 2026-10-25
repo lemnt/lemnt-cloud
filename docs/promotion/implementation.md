@@ -3,7 +3,7 @@
 需求ID：yudao-member-mall-trade-migration；版本 promotion-v1/T1；2026-10-25（Asia/Shanghai）。
 责任：code-software-engineer。输入：534048e 的 [promotion-v1 设计](design.md)、23个固定算例和仓库六层规范。
 
-**已完成纯Java领域计价内核与测试，尚未接入实际结算。** T2..T7仍PLANNED。没有新增HTTP接口、数据库迁移、运行开关、Spring Bean或应用依赖；[api.md](api.md)的11个入口仍是拟定契约。原有V1报价、缓存提单、支付/关闭/Outbox行为不变。
+**已完成纯Java领域计价内核与测试，尚未接入实际结算。** T2后续交付见[persistence.md](persistence.md)，T3..T7仍PLANNED；本页431项是T1历史验证。没有新增HTTP接口、数据库迁移、运行开关、Spring Bean或应用依赖；[api.md](api.md)的11个入口仍是拟定契约。原有V1报价、缓存提单、支付/关闭/Outbox行为不变。
 
 ## 文件与职责
 
@@ -75,6 +75,6 @@ React/小程序未改动，本轮NOT RERUN；169/69仅为历史结果。目标My
 
 ## 后续与回滚
 
-T1可交code QA/人工按P系列验收；下一步T2持久化不可变版本、root跨版本使用计数和事务/并发测试。T3权威事实RPC与管理API、T4缓存结算V2、T5支付/关闭/补偿、T6页面、T7真实集成仍未完成。计价只输出结果，不占用次数，不写缓存，不创建订单；提单仍须从服务端缓存生成订单并重新核验，不能静默重新定价。
+T1可交code QA/人工按P系列验收；T2后续持久化交付见persistence.md；下一步T3权威事实RPC/管理API。T3权威事实RPC与管理API、T4缓存结算V2、T5支付/关闭/补偿、T6页面、T7真实集成仍未完成。计价只输出结果，不占用次数，不写缓存，不创建订单；提单仍须从服务端缓存生成订单并重新核验，不能静默重新定价。
 
 目前没有生产调用者，回滚可删除T1新增类及测试资源配置，无数据迁移。保留迁移分支和Draft PR；不修改main、不merge、不部署。
