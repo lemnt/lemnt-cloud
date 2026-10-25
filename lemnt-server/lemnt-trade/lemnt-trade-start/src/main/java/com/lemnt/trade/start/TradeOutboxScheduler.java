@@ -3,7 +3,6 @@ package com.lemnt.trade.start;
 import com.lemnt.trade.application.executor.TradeOutboxDispatchExe;
 import com.lemnt.trade.application.executor.TradeOrderCloseCmdExe;
 import com.lemnt.trade.domain.gateway.TradeOrderGateway;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -16,13 +15,20 @@ import java.time.LocalDateTime;
  * A production payment channel must confirm expiry and absence of successful payments before closing.
  */
 @Component
-@RequiredArgsConstructor
 @ConditionalOnProperty(name = "lemnt.trade.scheduler.enabled", havingValue = "true")
 public class TradeOutboxScheduler {
     private static final Logger LOG = LoggerFactory.getLogger(TradeOutboxScheduler.class);
     private final TradeOutboxDispatchExe dispatcher;
     private final TradeOrderCloseCmdExe closer;
     private final TradeOrderGateway orders;
+
+    public TradeOutboxScheduler(TradeOutboxDispatchExe dispatcher,
+                                TradeOrderCloseCmdExe closer,
+                                TradeOrderGateway orders) {
+        this.dispatcher = dispatcher;
+        this.closer = closer;
+        this.orders = orders;
+    }
 
     @Scheduled(fixedDelayString = "${lemnt.trade.scheduler.outbox-delay-ms:10000}")
     public void dispatch() {
