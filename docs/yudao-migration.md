@@ -55,3 +55,11 @@ Review and apply SQL through the normal migration process in a test database fir
 - Verified locally: all 71 Maven reactor projects; 227 tests, zero failures/errors/skips. Evidence: `work-items/yudao-member-mall-trade-migration/evidence/`.
 - Earlier statements that Maven tests were never run are historical and superseded by that evidence. Earlier unfenced/unbounded Outbox and unconditional-close warnings describe the old implementation, now replaced.
 - Still not production-ready: MySQL migration/concurrency, real channels/signatures, late refunds, Dubbo fault injection and complete business/React migration remain unverified or unimplemented. Tests with mocks/H2 do not establish live service correctness.
+
+## 2026-10-25 catalog / React continuation
+
+- Existing mall_product IDs are preserved as SKU IDs. Added SPU + initial variants, two-level category/brand administration, canonical property combinations and transactional delta inventory ledger. Snapshot/reservation paths check parent/taxonomy availability; previous reservations remain recoverable.
+- React component registry now includes mall/category/index, mall/brand/index and mall/spu/index. Actual Jackson amount/large-ID serialization is handled without precision loss. No new npm dependency or lockfile changes.
+- Additive setup inputs: mall V2 SQL, system `V20261025__mall_catalog_menu.sql` (no role grants), and `docs/config/mall-gateway-route.yaml` (no StripPrefix). See [catalog API/rollout](mall-catalog-api.md).
+- Latest local verification: 71 Maven projects, 253 backend tests and 141 frontend tests; typecheck/lint/format/build passed. Evidence: work-items/yudao-member-mall-trade-migration/evidence/catalog/.
+- Browser visual/interaction verification is BLOCKED by the runtime Unix socket restriction. Target MySQL, live Dubbo/Nacos/gateway and real channels were not exercised. Catalog is an adaptation with documented limits, not a full Yudao port. Cart/coupons/full order lifecycle/member-trade UI remain pending; retain Draft.

@@ -1,4 +1,4 @@
-package com.lemnt.mall.adapter.rpc;
+package com.lemnt.mall.application.dubbo;
 
 import com.lemnt.mall.client.ProductCatalogClient;
 import com.lemnt.mall.client.dto.ProductSnapshotDTO;
@@ -14,8 +14,9 @@ public class ProductCatalogClientImpl implements ProductCatalogClient {
 
     @Override
     public ProductSnapshotDTO findOnShelf(Long id) {
-        Product p = gateway.findById(id);
-        return p == null || !"ON_SHELF".equals(p.status()) ? null
+        Product p = gateway.findSellableById(id);
+        return p == null || !"ON_SHELF".equals(p.status())
+                ? null
                 : new ProductSnapshotDTO(p.id(), p.productCode(), p.name(), p.price(), p.stock());
     }
 

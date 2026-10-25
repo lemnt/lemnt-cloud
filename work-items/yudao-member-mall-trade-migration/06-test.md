@@ -1,22 +1,25 @@
 # Test report
 
-v1 · 2026-10-25 · humanflow-code self-review. Input: design v1 and working candidate recorded by this report's commit. Environment: OpenJDK 17.0.20, Maven 3.9.11, local H2 MySQL mode, mocked remote gateways.
+v2 · 2026-10-25 · engineering self-review. Inputs: design v2 and UI baseline v1; candidate identified by the commit containing this report. v1 evidence is preserved at commit 372ce71. Environment: OpenJDK 17.0.20, Maven 3.9.11, H2 MySQL mode, Node 22.13.0, Yarn 1.22.22.
 
 | Check | Result | Evidence / limit |
 | --- | --- | --- |
-| Root reactor verify, all 71 projects | PASS | evidence/maven-reactor.txt |
-| All available Maven suites | PASS | 227 tests, 0 failures/errors/skips; evidence/maven-tests.json |
-| Dispatcher success/failure/claim arbitration/partial retry/stale acknowledgement | PASS | TradeOutboxDispatchExeTest, 6 cases |
-| Payment duplicate/mismatch/status change/event sequencing | PASS | PaymentNotifyCmdExeTest, 4 cases; mock boundaries, not transaction integration |
-| Order close rejects unknown/provider failures and sequences close | PASS | TradeOrderCloseCmdExeTest, 4 cases; mock boundaries |
-| Retry exhaustion, expired ownership, due queue eligibility, DEAD replay | PASS | TradeOutboxMapperTest, 4 cases; actual production mapper SQL on H2 |
-| Missing/ambiguous provider rejects close | PASS | PaymentChannelCloseGatewayImplTest, 2 cases |
-| Replay validation and conditional outcome | PASS | TradeOutboxReplayCmdExeTest, 2 cases |
-| Whitespace/conflict check | PASS | git diff --check |
-| Real MySQL V3 migration and concurrent transactions | NOT RUN | No test MySQL supplied; H2 mapper tests are not MySQL verification |
-| Cross-service Dubbo stock RPC failure injection | NOT RUN | No running service stack |
-| HTTP authentication/permission and replay endpoint routing | NOT RUN | Source has RequiresPermissions; no deployed gateway verification |
-| Real signed payment callback, provider query/close | BLOCKED | Concrete adapter/configuration absent; no public callback exposed |
-| React visual QA and end-to-end checkout | NOT RUN | Requested frontend migration still pending |
+| Complete Maven reactor verify, 71 projects | PASS | evidence/catalog/maven-reactor.txt |
+| Available Maven suites | PASS | 253 tests, zero failures/errors/skips; maven-tests.json |
+| SPU variants, canonical keys, money precision, invalid drafts | PASS | CatalogRulesTest, 5 cases |
+| Category levels/reparenting, enabled ancestors, paging, stock validation | PASS | CatalogExecutorsTest, 5 cases |
+| HTTP pagination defaults, Bean Validation, normalized string IDs/amounts, declared permission annotations | PASS | CatalogHttpContractTest, 4 cases; standalone MVC is not deployed authentication verification |
+| Actual JacksonConfig serialization of decimal/large Long/null omission | PASS | CatalogSerializationTest, 1 case |
+| Additive migration preserving pre-existing ID/stock/price | PASS | CatalogPersistenceTest on H2, production migration scripts |
+| Atomic SPU/SKU rollback, sellability gates, idempotent confirm/release, inventory idempotency/overflow/concurrency, metadata/list behavior | PASS | CatalogPersistenceTest, 10 cases including migration; real gateway transaction proxies and production mappers |
+| Menu seed repeatability | PASS | CatalogMenuSeedTest, 1 case; system-menu column fixture, no role-grant table touched |
+| React typecheck, lint, format:check | PASS | evidence/catalog/react-verification.txt |
+| Frontend unit/API decoder tests | PASS | 141 tests, 26 files, same evidence |
+| Frontend optimized build | PASS | Same evidence; existing large vendor chunk warning remains |
+| Browser interaction / desktop-mobile visual QA | BLOCKED | Chrome launch failed on socket() Operation not permitted; browser-status.json. Smoke script exists but no interactions executed |
+| MySQL migration/concurrent transactions | NOT RUN | H2 is not target MySQL verification |
+| Running Nacos/Dubbo registration / gateway auth / live HTTP-to-DB chain | NOT RUN | No running service stack or target configuration supplied |
+| Real payment provider signatures/query/close/refund | NOT RUN | Still unimplemented concrete adapters |
+| Cart/coupon/full lifecycle and corresponding trade UI | NOT RUN | Scope still pending |
 
-Self-review is not an independent reviewer or user acceptance. Recommendation: retain Draft, do not deploy as production-ready. No credentials or real payments used. No real channel unpaid guarantee is claimed by mock tests.
+Self-review is not independent QA or user acceptance. Recommendation: keep Draft and do not deploy as production-ready. UI Design and Assets baseline completion is distinct from browser Visual QA; implementation/build evidence does not substitute for it.

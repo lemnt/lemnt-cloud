@@ -24,32 +24,53 @@ public class ProductGatewayImpl implements ProductGateway {
     }
 
     @Override
+    public Product findSellableById(Long id) {
+        return toDomain(mapper.findSellableById(id));
+    }
+
+    @Override
     public Product findByCode(String code) {
         if (code == null || code.isBlank()) return null;
-        return toDomain(mapper.selectOne(Wrappers.lambdaQuery(ProductDO.class)
-                .eq(ProductDO::getProductCode, code.trim()).last("LIMIT 1")));
+        return toDomain(
+                mapper.selectOne(
+                        Wrappers.lambdaQuery(ProductDO.class)
+                                .eq(ProductDO::getProductCode, code.trim())
+                                .last("LIMIT 1")));
     }
 
     @Override
     public Product save(Product p) {
-        ProductDO d = new ProductDO().setProductCode(p.productCode()).setName(p.name())
-                .setDescription(p.description()).setMainImage(p.mainImage()).setPrice(p.price())
-                .setStock(p.stock()).setStatus(p.status());
+        ProductDO d =
+                new ProductDO()
+                        .setProductCode(p.productCode())
+                        .setName(p.name())
+                        .setDescription(p.description())
+                        .setMainImage(p.mainImage())
+                        .setPrice(p.price())
+                        .setStock(p.stock())
+                        .setStatus(p.status());
         mapper.insert(d);
         return toDomain(d);
     }
 
     @Override
     public boolean updateStatus(Long id, String status) {
-        return mapper.update(null, Wrappers.lambdaUpdate(ProductDO.class).eq(ProductDO::getId, id)
-                .set(ProductDO::getStatus, status)) == 1;
+        return mapper.update(
+                        null,
+                        Wrappers.lambdaUpdate(ProductDO.class)
+                                .eq(ProductDO::getId, id)
+                                .set(ProductDO::getStatus, status))
+                == 1;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean reserveStock(String reservationNo, Long productId, Integer quantity) {
-        if (reservationNo == null || reservationNo.isBlank() || productId == null
-                || quantity == null || quantity <= 0) {
+        if (reservationNo == null
+                || reservationNo.isBlank()
+                || productId == null
+                || quantity == null
+                || quantity <= 0) {
             throw new IllegalArgumentException("库存预占参数不合法");
         }
         StockReservationDO existing = findReservation(reservationNo, productId);
@@ -57,13 +78,18 @@ public class ProductGatewayImpl implements ProductGateway {
             if (!quantity.equals(existing.getQuantity())) {
                 throw new IllegalStateException("同一预占单号不能使用不同的商品数量");
             }
-            return "RESERVED".equals(existing.getStatus()) || "CONFIRMED".equals(existing.getStatus());
+            return "RESERVED".equals(existing.getStatus())
+                    || "CONFIRMED".equals(existing.getStatus());
         }
 
         // Conditional SQL prevents stock from going negative under concurrent requests.
         if (mapper.reserveStock(productId, quantity) != 1) return false;
-        StockReservationDO reservation = new StockReservationDO().setReservationNo(reservationNo.trim())
-                .setProductId(productId).setQuantity(quantity).setStatus("RESERVED");
+        StockReservationDO reservation =
+                new StockReservationDO()
+                        .setReservationNo(reservationNo.trim())
+                        .setProductId(productId)
+                        .setQuantity(quantity)
+                        .setStatus("RESERVED");
         try {
             reservations.insert(reservation);
         } catch (DuplicateKeyException duplicate) {
@@ -112,14 +138,25 @@ public class ProductGatewayImpl implements ProductGateway {
 
     private StockReservationDO findReservation(String reservationNo, Long productId) {
         if (reservationNo == null || reservationNo.isBlank() || productId == null) return null;
-        return reservations.selectOne(Wrappers.lambdaQuery(StockReservationDO.class)
-                .eq(StockReservationDO::getReservationNo, reservationNo.trim())
-                .eq(StockReservationDO::getProductId, productId).last("LIMIT 1"));
+        return reservations.selectOne(
+                Wrappers.lambdaQuery(StockReservationDO.class)
+                        .eq(StockReservationDO::getReservationNo, reservationNo.trim())
+                        .eq(StockReservationDO::getProductId, productId)
+                        .last("LIMIT 1"));
     }
 
     private Product toDomain(ProductDO d) {
-        return d == null ? null : new Product(d.getId(), d.getProductCode(), d.getName(),
-                d.getDescription(), d.getMainImage(), d.getPrice(), d.getStock(),
-                d.getStatus(), d.getCreateTime());
+        return d == null
+                ? null
+                : new Product(
+                        d.getId(),
+                        d.getProductCode(),
+                        d.getName(),
+                        d.getDescription(),
+                        d.getMainImage(),
+                        d.getPrice(),
+                        d.getStock(),
+                        d.getStatus(),
+                        d.getCreateTime());
     }
 }
