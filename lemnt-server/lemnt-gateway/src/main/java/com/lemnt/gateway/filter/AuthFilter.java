@@ -33,12 +33,11 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 @Component
 public class AuthFilter implements GlobalFilter, Ordered {
     // 排除过滤的 uri 地址，nacos自行添加
-    @Autowired
-    private IgnoreWhiteProperties ignoreWhite;
-    @Autowired
-    private RedisStringService redisStringService;
-    @Autowired
-    private JwtUtils jwtUtils;
+    @Autowired private IgnoreWhiteProperties ignoreWhite;
+    @Autowired private RedisStringService redisStringService;
+    @Autowired private JwtUtils jwtUtils;
+
+    @Autowired private MemberRequestSecurity memberSecurity;
 
     private static final String OPEN_API_PREFIX = "/open";
 
@@ -46,6 +45,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, @NonNull GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String path = getOriginalPath(exchange, request);
+        if (MemberRequestSecurity.memberPath(path))
+            return memberSecurity.filter(exchange, path, chain);
         // 开放平台路径跳过
         if (path.startsWith(OPEN_API_PREFIX)) {
             return chain.filter(exchange);
@@ -84,9 +85,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         return chain.filter(exchange.mutate().request(builder.build()).build());
     }
 
-    /**
-     * 是否登录
-     */
+    /** 是否登录 */
     private boolean isLogin(String userKey) {
         return redisStringService.hasKey(CacheConstants.LOGIN_TOKEN_KEY + userKey);
     }
@@ -107,9 +106,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         mutate.header(name, valueEncode);
     }
 
-    /**
-     * 获取请求token
-     */
+    /** 获取请求token */
     private String getToken(ServerHttpRequest request) {
         String token = request.getHeaders().getFirst(SecurityConstants.AUTHORIZATION_HEADER);
         // 如果前端设置了令牌前缀，则裁剪掉前缀
@@ -119,9 +116,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         return token;
     }
 
-    /**
-     * StripPrefix 执行后仍使用进入网关时的完整路径匹配白名单。
-     */
+    /** StripPrefix 执行后仍使用进入网关时的完整路径匹配白名单。 */
     private String getOriginalPath(ServerWebExchange exchange, ServerHttpRequest request) {
         Set<URI> originalUrls = exchange.getAttribute(GATEWAY_ORIGINAL_REQUEST_URL_ATTR);
         if (originalUrls == null || originalUrls.isEmpty()) {

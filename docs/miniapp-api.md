@@ -33,3 +33,8 @@ App quote now creates a Redis-backed settlement and returns settlementId/expires
 ## Local payment record query
 
 GET /trade/app/orders/{orderNo}/payment is now implemented as a member-scoped **local** status query with channelVerified=false, not a real provider query. Prepay remains unimplemented. See miniapp-local-payment-status.md; local WAITING must not authorize closing/releasing inventory.
+
+
+## Member authority implementation update
+
+Member password/SMS/WeChat Mini/MP authority and authoritative Dubbo verifier are now implemented in the existing member module. Prior statements that no verifier exists describe the earlier scaffold. See [member-api.md](member-api.md) for endpoints, V2/V3 SQL, gateway route and credential requirements. This does not enable the native client automatically: memberApiReady remains false until deployment/provider/device verification. Trade still resolves member identity from its independent token, never admin headers.

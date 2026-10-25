@@ -1,0 +1,12 @@
+# Merge into reviewed gateway Nacos route configuration. Preserve /member and /members prefixes.
+# Not applied to a running gateway by this change.
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: lemnt-member
+              uri: lb://lemnt-member
+              predicates:
+                - Path=/member/**,/members/**
