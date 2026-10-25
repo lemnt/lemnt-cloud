@@ -28,3 +28,7 @@ v4 · 2026-10-25 · engineering self-review. Inputs: design v4/UI baseline v3, c
 Initial verification failures were corrected: generated Res package mismatch; test checked-exception declarations; duplicate-payment fixture needed a different channel; missing-shipment assertion type; retry fixture used PENDING instead of actual FAILED; lint rejected intentional imprecise numeric literal, replaced with runtime Number conversion. No tests were removed or disabled. The stable final root verification and UI checks above passed after fixes.
 
 Keep Draft. Engineering self-review is not independent QA or user acceptance. No production-ready claim.
+
+## Payment replay hardening continuation
+
+Successful payment notifications now require order PAID/SHIPPED/COMPLETED before acknowledging a replay. RESERVING/PENDING_PAYMENT/CLOSED are reconciliation errors, with no payment/order/Outbox writes. Added two regression cases; full root Maven verify passed: 71 projects, 298 tests, zero failures/errors/skips. Evidence: evidence/payment-replay/verify.txt. No UI change or frontend rerun. Real provider signature/close/refund adapters remain pending; no production-ready claim.

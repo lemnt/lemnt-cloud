@@ -51,6 +51,8 @@ public class PaymentNotifyCmdExe {
             throw new IllegalStateException("支付单金额与订单应付金额不一致");
 
         if ("SUCCESS".equals(payment.status())) {
+            if (!java.util.Set.of("PAID", "SHIPPED", "COMPLETED").contains(order.status()))
+                throw new IllegalStateException("成功支付与订单状态不一致，请先对账");
             // Same payment callback is idempotent; mismatched replay is rejected.
             if (payment.channelTradeNo() != null
                     && payment.channelTradeNo().equals(notification.channelTradeNo())) return;

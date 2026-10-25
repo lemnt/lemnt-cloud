@@ -41,6 +41,7 @@ class PaymentNotifyCmdExeTest {
     @Test
     void sameSuccessfulChannelTransactionIsIdempotentWithNewNotificationId() {
         payment("SUCCESS", "CHANNEL1", BigDecimal.TEN);
+        orderStatus("PAID");
         notifier.execute(notice);
         verify(payments, never()).markSuccess(any());
         verifyNoInteractions(outbox);
@@ -80,6 +81,34 @@ class PaymentNotifyCmdExeTest {
         payment("WAITING", null, BigDecimal.TEN);
         when(payments.markSuccess(notice)).thenReturn(true);
         assertThrows(IllegalStateException.class, () -> notifier.execute(notice));
+        verifyNoInteractions(outbox);
+    }
+
+    void orderStatus(String status) {
+        when(orders.findByOrderNoForUpdate("TR1"))
+                .thenReturn(new TradeOrder(1L, "TR1", 2L, BigDecimal.TEN, status, List.of(), null));
+    }
+
+    @Test
+    void successfulReplayRejectsInconsistentOrderStatesWithoutSideEffects() {
+        payment("SUCCESS", "CHANNEL1", BigDecimal.TEN);
+        for (String status : List.of("RESERVING", "PENDING_PAYMENT", "CLOSED")) {
+            orderStatus(status);
+            assertThrows(IllegalStateException.class, () -> notifier.execute(notice));
+        }
+        verify(payments, never()).markSuccess(any());
+        verify(orders, never()).transitionStatus(anyString(), anyString(), anyString());
+        verifyNoInteractions(outbox);
+    }
+
+    @Test
+    void successfulReplayRemainsIdempotentAfterShippingAndReceipt() {
+        payment("SUCCESS", "CHANNEL1", BigDecimal.TEN);
+        for (String status : List.of("SHIPPED", "COMPLETED")) {
+            orderStatus(status);
+            notifier.execute(notice);
+        }
+        verify(payments, never()).markSuccess(any());
         verifyNoInteractions(outbox);
     }
 }
