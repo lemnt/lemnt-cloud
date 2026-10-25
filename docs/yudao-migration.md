@@ -27,3 +27,21 @@ This branch adapts the business boundaries to lemnt-cloud's Java 17, Spring Boot
 - `lemnt-server/lemnt-trade/sql/V1__trade_order.sql`
 
 Review and apply SQL through the normal migration process in a test database first.
+
+
+## 第二阶段：订单库存与支付可靠性基础（尚未生产验证）
+
+- 商品域新增 `mall_stock_reservation` 幂等台账，支持库存预占、确认及释放。
+- 交易域新增 `trade_payment`、`trade_outbox` 表。
+- 支付成功和订单关单会在本地事务中写入 Outbox，库存远程 RPC 在独立执行器中处理。
+- `TradeOutboxDispatchExe` 通过数据库抢占处理事件；其行为按至少一次交付设计，库存 RPC 必须保持幂等。
+- 交易启动模块提供可选定时调度器，默认关闭（需显式配置 `lemnt.trade.scheduler.enabled=true`）。
+- 新增 Outbox 调度的单元测试代码，但尚未执行测试或验证 Maven 构建。
+
+### 上线前阻断项
+
+1. 不要直接启用自动超时关单。必须先接入支付渠道的主动查询与对账，避免支付回调延迟导致已付款订单被关单。
+2. Outbox 当前基于超时状态抢占处理事件；还需要明确租约所有权、最大重试和人工补偿策略，避免慢任务跨租约重复执行。
+3. 交易与商品跨服务事务仍需端到端故障注入测试（库存 RPC 超时、重复回调、关单与支付竞态）。
+4. 尚无真实支付宝/微信预支付和已验签回调适配器。禁止对外公开未经验签的通知入口。
+5. 为了便于审阅，交易模块保留在 Draft PR，不应直接合并部署。
