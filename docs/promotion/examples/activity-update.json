@@ -1,0 +1,30 @@
+{
+  "requestNo": "ADMIN-edit-001",
+  "expectedRevision": 1,
+  "draft": {
+    "name": "指定商品满25减1元",
+    "type": "FULL_REDUCTION",
+    "scope": {
+      "kind": "SKU_IDS",
+      "ids": [
+        "101",
+        "102"
+      ]
+    },
+    "audience": "ALL_AUTHENTICATED",
+    "couponPolicy": "ALLOW_ONE",
+    "priority": 10,
+    "startsAtEpochMs": "1792886400000",
+    "endsAtEpochMs": "1793491200000",
+    "globalUseLimit": "10000",
+    "memberUseLimit": "2",
+    "rule": {
+      "tiers": [
+        {
+          "thresholdFen": "2500",
+          "discountFen": "100"
+        }
+      ]
+    }
+  }
+}

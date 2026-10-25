@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lemnt:promotion:design:admin-result",
+  "title": "admin-result（拟定，尚未实现）",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "正整数ID，以字符串传递",
+      "pattern": "^[1-9][0-9]{0,18}$",
+      "format": "int64-positive"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647,
+      "description": "操作完成后的根修订号"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "PUBLISHED",
+        "PAUSED",
+        "ARCHIVED"
+      ],
+      "description": "持久状态；窗口阶段另算"
+    },
+    "activeVersion": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647,
+          "description": "当前已发布版本"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "revision",
+    "state",
+    "activeVersion"
+  ],
+  "additionalProperties": false
+}

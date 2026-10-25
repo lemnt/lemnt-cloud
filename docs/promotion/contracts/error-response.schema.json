@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lemnt:promotion:design:error-response",
+  "title": "error-response（拟定，尚未实现）",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "integer",
+      "minimum": 400,
+      "maximum": 599,
+      "description": "与新协议HTTP错误码一致，旧协议不改"
+    },
+    "msg": {
+      "type": "string",
+      "description": "安全提示，不含内部规则/SQL/他人身份",
+      "minLength": 1
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "errorCode": {
+          "type": "string",
+          "description": "稳定业务错误码",
+          "pattern": "^[A-Z][A-Z0-9_]+$"
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "FIX_INPUT",
+            "KEEP_INTENT_AND_RECOVER",
+            "ABANDON_THEN_REQUOTE",
+            "REFRESH_ADMIN",
+            "LOGIN",
+            "VIEW_LEGACY_ORDER"
+          ],
+          "description": "客户端下一步"
+        },
+        "correlationId": {
+          "type": "string",
+          "description": "服务端关联号，无凭证/个人资料",
+          "minLength": 1,
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "errorCode",
+        "retryable",
+        "action",
+        "correlationId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "code",
+    "msg",
+    "data"
+  ],
+  "additionalProperties": false
+}

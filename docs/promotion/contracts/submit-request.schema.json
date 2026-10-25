@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lemnt:promotion:design:submit-request",
+  "title": "submit-request（拟定，尚未实现）",
+  "type": "object",
+  "properties": {
+    "settlementId": {
+      "type": "string",
+      "description": "服务端结算UUID",
+      "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
+    "requestNo": {
+      "type": "string",
+      "description": "幂等请求编号，重试不可改变",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"
+    }
+  },
+  "required": [
+    "settlementId",
+    "requestNo"
+  ],
+  "additionalProperties": false
+}

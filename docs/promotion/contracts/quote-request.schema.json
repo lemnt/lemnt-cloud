@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lemnt:promotion:design:quote-request",
+  "title": "quote-request（拟定，尚未实现）",
+  "type": "object",
+  "properties": {
+    "productIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "正整数ID，以字符串传递",
+        "pattern": "^[1-9][0-9]{0,18}$",
+        "format": "int64-positive"
+      },
+      "minItems": 1,
+      "maxItems": 100,
+      "uniqueItems": true
+    },
+    "couponId": {
+      "anyOf": [
+        {
+          "type": "string",
+          "description": "正整数ID，以字符串传递",
+          "pattern": "^[1-9][0-9]{0,18}$",
+          "format": "int64-positive"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "promotionMode": {
+      "type": "string",
+      "enum": [
+        "BEST",
+        "NONE"
+      ],
+      "description": "BEST在指定券约束下择优；NONE不参与订单活动"
+    }
+  },
+  "required": [
+    "productIds",
+    "couponId",
+    "promotionMode"
+  ],
+  "additionalProperties": false
+}

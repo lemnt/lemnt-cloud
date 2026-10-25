@@ -1,0 +1,1311 @@
+{
+  "status": "DESIGN_VECTORS_NOT_RUNTIME_TESTS",
+  "algorithmVersion": "promo-1",
+  "vectors": [
+    {
+      "id": "P01-no-discount",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1001",
+            "quantity": 1
+          },
+          {
+            "productId": "102",
+            "spuId": "12",
+            "unitPriceFen": "2002",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [],
+        "coupon": null,
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "3003",
+        "campaignDiscountFen": "0",
+        "couponDiscountFen": "0",
+        "payableFen": "3003",
+        "selectedCampaignId": null,
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "0",
+            "couponDiscountFen": "0",
+            "payableFen": "1001"
+          },
+          {
+            "productId": "102",
+            "campaignDiscountFen": "0",
+            "couponDiscountFen": "0",
+            "payableFen": "2002"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P02-campaign-then-coupon",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1001",
+            "quantity": 1
+          },
+          {
+            "productId": "102",
+            "spuId": "12",
+            "unitPriceFen": "2002",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "2500",
+                  "discountFen": "100"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": {
+          "id": "5",
+          "kind": "PERCENT",
+          "thresholdFen": "2800",
+          "payRateBps": 8000,
+          "maxDiscountFen": null
+        },
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "3003",
+        "campaignDiscountFen": "100",
+        "couponDiscountFen": "580",
+        "payableFen": "2323",
+        "selectedCampaignId": "9",
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "33",
+            "couponDiscountFen": "193",
+            "payableFen": "775"
+          },
+          {
+            "productId": "102",
+            "campaignDiscountFen": "67",
+            "couponDiscountFen": "387",
+            "payableFen": "1548"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P03-threshold-removes-combination-not-coupon",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1001",
+            "quantity": 1
+          },
+          {
+            "productId": "102",
+            "spuId": "12",
+            "unitPriceFen": "2002",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "2500",
+                  "discountFen": "100"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": {
+          "id": "5",
+          "kind": "PERCENT",
+          "thresholdFen": "3000",
+          "payRateBps": 8000,
+          "maxDiscountFen": null
+        },
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "3003",
+        "campaignDiscountFen": "0",
+        "couponDiscountFen": "600",
+        "payableFen": "2403",
+        "selectedCampaignId": null,
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "0",
+            "couponDiscountFen": "200",
+            "payableFen": "801"
+          },
+          {
+            "productId": "102",
+            "campaignDiscountFen": "0",
+            "couponDiscountFen": "400",
+            "payableFen": "1602"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P04-explicit-coupon-excludes-exclusive",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1001",
+            "quantity": 1
+          },
+          {
+            "productId": "102",
+            "spuId": "12",
+            "unitPriceFen": "2002",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "EXCLUSIVE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "0",
+                  "discountFen": "1000"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": {
+          "id": "5",
+          "kind": "PERCENT",
+          "thresholdFen": "0",
+          "payRateBps": 8000,
+          "maxDiscountFen": null
+        },
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "3003",
+        "campaignDiscountFen": "0",
+        "couponDiscountFen": "600",
+        "payableFen": "2403",
+        "selectedCampaignId": null,
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "0",
+            "couponDiscountFen": "200",
+            "payableFen": "801"
+          },
+          {
+            "productId": "102",
+            "campaignDiscountFen": "0",
+            "couponDiscountFen": "400",
+            "payableFen": "1602"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P05-no-coupon-allows-exclusive",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1001",
+            "quantity": 1
+          },
+          {
+            "productId": "102",
+            "spuId": "12",
+            "unitPriceFen": "2002",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "EXCLUSIVE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "0",
+                  "discountFen": "1000"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": null,
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "3003",
+        "campaignDiscountFen": "1000",
+        "couponDiscountFen": "0",
+        "payableFen": "2003",
+        "selectedCampaignId": "9",
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "333",
+            "couponDiscountFen": "0",
+            "payableFen": "668"
+          },
+          {
+            "productId": "102",
+            "campaignDiscountFen": "667",
+            "couponDiscountFen": "0",
+            "payableFen": "1335"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P06-discount-floor-not-payable-floor",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "101",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [],
+        "coupon": {
+          "id": "5",
+          "kind": "PERCENT",
+          "thresholdFen": "0",
+          "payRateBps": 8000,
+          "maxDiscountFen": null
+        },
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "101",
+        "campaignDiscountFen": "0",
+        "couponDiscountFen": "20",
+        "payableFen": "81",
+        "selectedCampaignId": null,
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "0",
+            "couponDiscountFen": "20",
+            "payableFen": "81"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P07-capped-percentage",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "101",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "ORDER_DISCOUNT",
+            "rule": {
+              "thresholdFen": "0",
+              "payRateBps": 5000,
+              "maxDiscountFen": "30"
+            }
+          }
+        ],
+        "coupon": null,
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "101",
+        "campaignDiscountFen": "30",
+        "couponDiscountFen": "0",
+        "payableFen": "71",
+        "selectedCampaignId": "9",
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "30",
+            "couponDiscountFen": "0",
+            "payableFen": "71"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P08-highest-tier-single-use",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1000",
+            "quantity": 3
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "2000",
+                  "discountFen": "100"
+                },
+                {
+                  "thresholdFen": "3000",
+                  "discountFen": "400"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": null,
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "3000",
+        "campaignDiscountFen": "400",
+        "couponDiscountFen": "0",
+        "payableFen": "2600",
+        "selectedCampaignId": "9",
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "400",
+            "couponDiscountFen": "0",
+            "payableFen": "2600"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P09-sku-scope-then-global-coupon",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1001",
+            "quantity": 1
+          },
+          {
+            "productId": "102",
+            "spuId": "12",
+            "unitPriceFen": "2002",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "SKU_IDS",
+              "ids": [
+                "101"
+              ]
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "1000",
+                  "discountFen": "200"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": {
+          "id": "5",
+          "kind": "PERCENT",
+          "thresholdFen": "0",
+          "payRateBps": 8000,
+          "maxDiscountFen": null
+        },
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "3003",
+        "campaignDiscountFen": "200",
+        "couponDiscountFen": "560",
+        "payableFen": "2243",
+        "selectedCampaignId": "9",
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "200",
+            "couponDiscountFen": "160",
+            "payableFen": "641"
+          },
+          {
+            "productId": "102",
+            "campaignDiscountFen": "0",
+            "couponDiscountFen": "400",
+            "payableFen": "1602"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P10-spu-scope-from-facts",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1001",
+            "quantity": 1
+          },
+          {
+            "productId": "102",
+            "spuId": "12",
+            "unitPriceFen": "2002",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "SPU_IDS",
+              "ids": [
+                "11"
+              ]
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "1000",
+                  "discountFen": "200"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": null,
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "3003",
+        "campaignDiscountFen": "200",
+        "couponDiscountFen": "0",
+        "payableFen": "2803",
+        "selectedCampaignId": "9",
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "200",
+            "couponDiscountFen": "0",
+            "payableFen": "801"
+          },
+          {
+            "productId": "102",
+            "campaignDiscountFen": "0",
+            "couponDiscountFen": "0",
+            "payableFen": "2002"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P11-tie-priority-before-id",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1001",
+            "quantity": 1
+          },
+          {
+            "productId": "102",
+            "spuId": "12",
+            "unitPriceFen": "2002",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "8",
+            "version": 1,
+            "priority": 1,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "2500",
+                  "discountFen": "100"
+                }
+              ]
+            }
+          },
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 20,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "2500",
+                  "discountFen": "100"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": null,
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "3003",
+        "campaignDiscountFen": "100",
+        "couponDiscountFen": "0",
+        "payableFen": "2903",
+        "selectedCampaignId": "9",
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "33",
+            "couponDiscountFen": "0",
+            "payableFen": "968"
+          },
+          {
+            "productId": "102",
+            "campaignDiscountFen": "67",
+            "couponDiscountFen": "0",
+            "payableFen": "1935"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P12-tie-numeric-id-not-lexical",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1001",
+            "quantity": 1
+          },
+          {
+            "productId": "102",
+            "spuId": "12",
+            "unitPriceFen": "2002",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "10",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "2500",
+                  "discountFen": "100"
+                }
+              ]
+            }
+          },
+          {
+            "id": "2",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "2500",
+                  "discountFen": "100"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": null,
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "3003",
+        "campaignDiscountFen": "100",
+        "couponDiscountFen": "0",
+        "payableFen": "2903",
+        "selectedCampaignId": "2",
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "33",
+            "couponDiscountFen": "0",
+            "payableFen": "968"
+          },
+          {
+            "productId": "102",
+            "campaignDiscountFen": "67",
+            "couponDiscountFen": "0",
+            "payableFen": "1935"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P13-equal-price-prefers-no-extra-resource",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "4",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "0",
+                  "discountFen": "1"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": {
+          "id": "5",
+          "kind": "PERCENT",
+          "thresholdFen": "0",
+          "payRateBps": 5000,
+          "maxDiscountFen": null
+        },
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "4",
+        "campaignDiscountFen": "0",
+        "couponDiscountFen": "2",
+        "payableFen": "2",
+        "selectedCampaignId": null,
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "0",
+            "couponDiscountFen": "2",
+            "payableFen": "2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P14-zero-price-is-displayed-not-replaced",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "100",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "0",
+                  "discountFen": "100"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": null,
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "100",
+        "campaignDiscountFen": "100",
+        "couponDiscountFen": "0",
+        "payableFen": "0",
+        "selectedCampaignId": "9",
+        "submittable": false,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "100",
+            "couponDiscountFen": "0",
+            "payableFen": "0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P15-zero-coupon-caps-at-gross",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "100",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [],
+        "coupon": {
+          "id": "5",
+          "kind": "FIXED",
+          "thresholdFen": "0",
+          "fixedAmountFen": "200"
+        },
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "100",
+        "campaignDiscountFen": "0",
+        "couponDiscountFen": "100",
+        "payableFen": "0",
+        "selectedCampaignId": null,
+        "submittable": false,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "0",
+            "couponDiscountFen": "100",
+            "payableFen": "0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P16-input-order-does-not-change-allocation",
+      "input": {
+        "lines": [
+          {
+            "productId": "102",
+            "spuId": "12",
+            "unitPriceFen": "2002",
+            "quantity": 1
+          },
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1001",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "2500",
+                  "discountFen": "100"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": {
+          "id": "5",
+          "kind": "PERCENT",
+          "thresholdFen": "2800",
+          "payRateBps": 8000,
+          "maxDiscountFen": null
+        },
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "3003",
+        "campaignDiscountFen": "100",
+        "couponDiscountFen": "580",
+        "payableFen": "2323",
+        "selectedCampaignId": "9",
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "33",
+            "couponDiscountFen": "193",
+            "payableFen": "775"
+          },
+          {
+            "productId": "102",
+            "campaignDiscountFen": "67",
+            "couponDiscountFen": "387",
+            "payableFen": "1548"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P17-selected-coupon-baseline-ineligible",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1001",
+            "quantity": 1
+          },
+          {
+            "productId": "102",
+            "spuId": "12",
+            "unitPriceFen": "2002",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "2500",
+                  "discountFen": "100"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": {
+          "id": "5",
+          "kind": "PERCENT",
+          "thresholdFen": "4000",
+          "payRateBps": 8000,
+          "maxDiscountFen": null
+        },
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "errorCode": "COUPON_NOT_ELIGIBLE"
+      }
+    },
+    {
+      "id": "P18-long-overflow-rejected",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "9223372036854775807",
+            "quantity": 2
+          }
+        ],
+        "campaigns": [],
+        "coupon": null,
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "errorCode": "AMOUNT_OUT_OF_RANGE"
+      }
+    },
+    {
+      "id": "P19-basis-point-precision",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1001",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "ORDER_DISCOUNT",
+            "rule": {
+              "thresholdFen": "0",
+              "payRateBps": 7500,
+              "maxDiscountFen": null
+            }
+          }
+        ],
+        "coupon": null,
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "1001",
+        "campaignDiscountFen": "250",
+        "couponDiscountFen": "0",
+        "payableFen": "751",
+        "selectedCampaignId": "9",
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "250",
+            "couponDiscountFen": "0",
+            "payableFen": "751"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P20-none-mode-keeps-original-price",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1001",
+            "quantity": 1
+          },
+          {
+            "productId": "102",
+            "spuId": "12",
+            "unitPriceFen": "2002",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "EXCLUSIVE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "0",
+                  "discountFen": "1000"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": null,
+        "promotionMode": "NONE"
+      },
+      "expected": {
+        "originalFen": "3003",
+        "campaignDiscountFen": "0",
+        "couponDiscountFen": "0",
+        "payableFen": "3003",
+        "selectedCampaignId": null,
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "0",
+            "couponDiscountFen": "0",
+            "payableFen": "1001"
+          },
+          {
+            "productId": "102",
+            "campaignDiscountFen": "0",
+            "couponDiscountFen": "0",
+            "payableFen": "2002"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P21-zero-line-with-positive-order",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1",
+            "quantity": 1
+          },
+          {
+            "productId": "102",
+            "spuId": "12",
+            "unitPriceFen": "100",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "SKU_IDS",
+              "ids": [
+                "101"
+              ]
+            },
+            "type": "FULL_REDUCTION",
+            "rule": {
+              "tiers": [
+                {
+                  "thresholdFen": "0",
+                  "discountFen": "1"
+                }
+              ]
+            }
+          }
+        ],
+        "coupon": null,
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "101",
+        "campaignDiscountFen": "1",
+        "couponDiscountFen": "0",
+        "payableFen": "100",
+        "selectedCampaignId": "9",
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "1",
+            "couponDiscountFen": "0",
+            "payableFen": "0"
+          },
+          {
+            "productId": "102",
+            "campaignDiscountFen": "0",
+            "couponDiscountFen": "0",
+            "payableFen": "100"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P22-big-intermediate-product-remains-exact",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "9223372036854775807",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [
+          {
+            "id": "9",
+            "version": 1,
+            "priority": 10,
+            "couponPolicy": "ALLOW_ONE",
+            "scope": {
+              "kind": "ALL",
+              "ids": []
+            },
+            "type": "ORDER_DISCOUNT",
+            "rule": {
+              "thresholdFen": "0",
+              "payRateBps": 5000,
+              "maxDiscountFen": null
+            }
+          }
+        ],
+        "coupon": null,
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "originalFen": "9223372036854775807",
+        "campaignDiscountFen": "4611686018427387903",
+        "couponDiscountFen": "0",
+        "payableFen": "4611686018427387904",
+        "selectedCampaignId": "9",
+        "submittable": true,
+        "lines": [
+          {
+            "productId": "101",
+            "campaignDiscountFen": "4611686018427387903",
+            "couponDiscountFen": "0",
+            "payableFen": "4611686018427387904"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P23-zero-benefit-coupon-is-not-consumed",
+      "input": {
+        "lines": [
+          {
+            "productId": "101",
+            "spuId": "11",
+            "unitPriceFen": "1",
+            "quantity": 1
+          }
+        ],
+        "campaigns": [],
+        "coupon": {
+          "id": "5",
+          "kind": "PERCENT",
+          "thresholdFen": "0",
+          "payRateBps": 9900,
+          "maxDiscountFen": null
+        },
+        "promotionMode": "BEST"
+      },
+      "expected": {
+        "errorCode": "COUPON_NOT_ELIGIBLE"
+      }
+    }
+  ]
+}

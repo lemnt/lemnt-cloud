@@ -1,16 +1,15 @@
 # Yudao migration continuation
 
-- Version v4, 2026-10-25; owner humanflow-code/code-software-engineer.
-- Branch feat/yudao-member-mall-trade-migration; latest slice base a3c88f1524adc2d67812c1b581bde272b2572d77. No main edits, merge or deploy.
-- Goal remains Java 17 / Boot 4.1 / Dubbo / Nacos / existing six-layer DDD modules.
-- Current slice: durable stock-confirmation gate, immutable shipping/receipt, pre-shipment full-refund request/rejection and React order/refund pages implemented and locally verified. Refund request is not refund execution.
-- Inputs: intake v1, design v4, UI/assets baseline v3 and prototype/fulfillment-admin.html. Delivery 05-development.md v4; test report 06-test.md v4.
-- Evidence/fulfillment/: 71 Maven projects, 296 backend tests; UI checks/build and 155 tests PASS. Catalog/checkout evidence retained as historical. Browser Visual QA NOT RUN.
-- API/setup: ../../docs/trade-fulfillment-api.md, trade V5 and additive system menu seed. Actual V5 backfill tested locally against H2; no live SQL/config or role changes.
-- Stop old consumers before V5/new worker; review stock integrity before historical backfill. All readers/consumers must understand SHIPPED/COMPLETED. Prior mall batch/cancel, V4 ledger/tombstone rollout requirements remain.
-- Remaining: real payment/refund adapters, member self-service/auth/address book, carrier/split fulfillment and full after-sales, plus target MySQL/live service/security/browser validation. Catalog/coupon limitations remain documented.
-- Next: payment-provider integration and isolated runtime verification. User acceptance pending; no production readiness inferred.
-- PR https://github.com/lemnt/lemnt-cloud/pull/1 remains Draft.
+- Current source base:20ec7bd;branch feat/yudao-member-mall-trade-migration;PR[#1](https://github.com/lemnt/lemnt-cloud/pull/1) remains Draft.
+- Latest delivery: **promotion-v1 design only** (2026-10-25 Asia/Shanghai), per user agreement. [Design](../../docs/promotion/design.md),[proposed API](../../docs/promotion/api.md),[design index](../../docs/promotion/README.md).
+- First phase: one order campaign plus one explicit coupon,deterministic fen allocation,versioned cached settlement,transactional usage/compensation and compatibility. Java17/Boot4.1/Dubbo/Nacos and existing six layers remain.
+- Status: T1..T7 PLANNED;runtime engine NOT IMPLEMENTED;new SQL NOT GENERATED. Design Schema/examples/arithmetic/source checks PASS;[evidence](evidence/promotion-design/).
+- Last runtime verification:71 Maven projects/392 backend tests,169 React tests,69 native tests;historical evidence/storefront/. No new runtime test PASS claimed for this design-only slice.
+- Existing member/admin/native,storefront/coupon/cart/cached checkout/outbox/fulfillment slices are retained;real provider payment/refund,order-time addresses and broader marketing remain incomplete.
+- Browser/native compiler/device and live MySQL/Redis/Nacos/Dubbo/provider verification remain NOT RUN. Keep readiness false;no main edit,merge,deployment/live migration.
+- Next: implement T1 pure domain kernel and Java tests,then follow design dependencies. Design delivery is not user acceptance of an implemented engine.
+
+The following entries preserve historical slice results;their missing-feature statements must be read at that slice's version.
 
 Latest continuation: Redis cached consumer settlement generation and ID-only submission implemented; V6 durable association, member-scoped replay and six new transaction cases. Current verification317 backend tests/22 miniapp tests PASS; see evidence/cached-settlement and docs/cached-settlement-api.md. Admin legacy protocol unchanged, real member auth/provider/runtime validation pending.
 
