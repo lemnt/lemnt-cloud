@@ -43,4 +43,12 @@ public class SettlementGatewayImpl implements SettlementGateway {
     public void bind(Long memberId, String id, String orderNo) {
         mapper.bind(memberId, id, orderNo);
     }
+
+    public boolean abandoned(Long memberId, String id) {
+        return mapper.abandoned(memberId, id) > 0;
+    }
+
+    public void abandon(Long memberId, String id) {
+        mapper.abandon(memberId, id);
+    }
 }

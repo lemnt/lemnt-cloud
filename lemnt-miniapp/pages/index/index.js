@@ -123,11 +123,19 @@ Page({
     this.receiptMember = member;this.quoteInput = null;
     this.setData({receipt,pending:!!this.flow.pending(),quote:null});
   }); },
+  abandonPending() { return this.action(async member => {
+    const confirm = await new Promise((resolve,reject) => wx.showModal({title:'终止未完成提单',content:'尚未生成订单时阻止后续提单；若订单已生成将找回原订单，不会自动关闭订单。确认继续？',success:resolve,fail:reject}));
+    if (!confirm.confirm) return;
+    if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换');
+    const result = await this.flow.abandon(true);
+    this.quoteInput=null;this.receiptMember=result.order?member:null;
+    this.setData({pending:false,quote:null,receipt:result.order||null});
+  }); },
   resetPending() { return this.action(async member => {
     const result = await new Promise((resolve,reject) => wx.showModal({title:'仅清除本机记录',content:'请先核验原订单。清除不会取消服务端订单；重新结算可能另建订单。确认已核验，仍要清除？',success:resolve,fail:reject}));
     if (!result.confirm) return;
     if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换');
-    this.flow.discard(true);this.quoteInput=null;this.setData({pending:false,quote:null});
+    this.flow.discard(true);this.quoteInput=null;this.setData({pending:!!this.flow.pending(),quote:null});
   }); },
   onHide() { this.setData({ rows: [], coupons: [], selectedCoupon: null, quote: null, receipt: null, error: '' }); this.quoteInput = null; },
 });

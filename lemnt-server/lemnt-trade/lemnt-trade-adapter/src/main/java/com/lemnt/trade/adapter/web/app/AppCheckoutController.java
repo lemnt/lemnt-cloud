@@ -115,4 +115,15 @@ public class AppCheckoutController {
                 ? R.fail("暂未查到订单，请保留原请求重试或继续核验")
                 : R.ok(CheckoutResConverter.checkoutReceipt(value));
     }
+
+    @PostMapping("/checkout/abandon")
+    @Operation(summary = "终止尚未完成的提单；已生成订单则返回原订单，不执行关单")
+    public R<com.lemnt.trade.adapter.web.app.res.SettlementAbandonRes> abandon(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @Valid @RequestBody com.lemnt.trade.adapter.web.app.req.SettlementSubmitReq req) {
+        Long memberId = sessions.requireMember(token);
+        return R.ok(
+                com.lemnt.trade.adapter.web.app.converter.SettlementResConverter.abandon(
+                        settlements.abandon(memberId, req.settlementId(), req.requestNo())));
+    }
 }

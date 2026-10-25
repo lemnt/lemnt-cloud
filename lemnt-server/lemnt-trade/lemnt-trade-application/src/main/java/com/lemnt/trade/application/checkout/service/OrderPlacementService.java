@@ -236,6 +236,7 @@ public class OrderPlacementService {
         if (previous != null) return previous;
         String used = settlements.orderNo(memberId, id);
         if (used != null) throw new IllegalStateException("结算单已用于其他提单请求，请查询原订单");
+        if (settlements.abandoned(memberId, id)) throw new IllegalStateException("结算提单已终止，请重新结算");
         members.requireActive(memberId);
         var snapshot = settlements.cached(id);
         if (snapshot == null
@@ -256,5 +257,31 @@ public class OrderPlacementService {
         var order = persist(memberId, key, fingerprint, quote, snapshot.references());
         settlements.bind(memberId, id, order.orderNo());
         return order;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public TradeOrder abandonSettlement(
+            Long memberId,
+            String settlementId,
+            String requestNo,
+            com.lemnt.trade.domain.checkout.gateway.SettlementGateway settlements) {
+        CheckoutRules.id(memberId);
+        String key = CheckoutRules.text(requestNo, 64);
+        String id = CheckoutRules.text(settlementId, 36);
+        if (!id.matches("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"))
+            throw new IllegalArgumentException("结算单编号不合法");
+        checkout.lockMember(memberId);
+        members.requireActive(memberId);
+        var previous = existing(memberId, key, CheckoutRules.fingerprint("SETTLEMENT:" + id));
+        if (previous != null) return previous;
+        String used = settlements.orderNo(memberId, id);
+        if (used != null) {
+            var order = orders.findByOrderNo(used);
+            if (order == null || !memberId.equals(order.memberId()))
+                throw new IllegalStateException("结算关联记录不一致");
+            return order;
+        }
+        settlements.abandon(memberId, id);
+        return null;
     }
 }

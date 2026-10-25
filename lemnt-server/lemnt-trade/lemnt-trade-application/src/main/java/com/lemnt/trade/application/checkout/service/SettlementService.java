@@ -37,4 +37,14 @@ public class SettlementService {
         if (order == null || !memberId.equals(order.memberId())) return null;
         return CheckoutDTOConverter.receipt(record, order);
     }
+
+    public com.lemnt.trade.application.checkout.dto.SettlementAbandonDTO abandon(
+            Long memberId, String id, String requestNo) {
+        var order = placement.abandonSettlement(memberId, id, requestNo, settlements);
+        return new com.lemnt.trade.application.checkout.dto.SettlementAbandonDTO(
+                order == null,
+                order == null
+                        ? null
+                        : CheckoutDTOConverter.receipt(checkout.receipt(order.orderNo()), order));
+    }
 }

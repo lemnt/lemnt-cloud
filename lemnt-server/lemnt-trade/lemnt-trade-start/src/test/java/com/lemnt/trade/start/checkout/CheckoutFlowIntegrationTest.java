@@ -129,6 +129,8 @@ class CheckoutFlowIntegrationTest {
                 tradeSchema, new ClassPathResource("trade-sql/V5__order_fulfillment.sql"));
         ScriptUtils.executeSqlScript(
                 tradeSchema, new ClassPathResource("trade-sql/V6__settlement_order.sql"));
+        ScriptUtils.executeSqlScript(
+                tradeSchema, new ClassPathResource("trade-sql/V7__settlement_abandon.sql"));
         var trade =
                 template(
                         tradeSource,
@@ -145,6 +147,14 @@ class CheckoutFlowIntegrationTest {
                         com.lemnt.trade.infrastructure.checkout.mapper.SettlementMapper.class);
         settlements =
                 new com.lemnt.trade.domain.checkout.gateway.SettlementGateway() {
+                    public boolean abandoned(Long memberId, String id) {
+                        return settlementMapper.abandoned(memberId, id) > 0;
+                    }
+
+                    public void abandon(Long memberId, String id) {
+                        settlementMapper.abandon(memberId, id);
+                    }
+
                     public void cache(Settlement value) {
                         settlementCache.put(value.id(), value);
                     }
@@ -1225,5 +1235,123 @@ class CheckoutFlowIntegrationTest {
         assertTrue(closer.execute(order.orderNo()));
         worker().execute(50);
         assertNotNull(placement.submitSettlement(1L, second.id(), "VERSION-B", settlements));
+    }
+
+    @Test
+    void abandonBeforeSubmitFencesAllDelayedRequestKeysAndReplays() throws Exception {
+        var value = settlement();
+        assertNull(placement.abandonSettlement(1L, value.id(), "A", settlements));
+        assertNull(placement.abandonSettlement(1L, value.id(), "A", settlements));
+        assertThrows(
+                IllegalStateException.class,
+                () -> placement.submitSettlement(1L, value.id(), "A", settlements));
+        assertThrows(
+                IllegalStateException.class,
+                () -> placement.submitSettlement(1L, value.id(), "B", settlements));
+        assertEquals(0, count("trade_order"));
+        assertEquals(1, count("trade_settlement_abandon"));
+    }
+
+    @Test
+    void abandonAfterSubmitReturnsOriginalOrderWithoutClosingIt() throws Exception {
+        var value = settlement();
+        var order = placement.submitSettlement(1L, value.id(), "A", settlements);
+        settlementCache.clear();
+        assertEquals(
+                order.orderNo(),
+                placement.abandonSettlement(1L, value.id(), "A", settlements).orderNo());
+        assertEquals(
+                order.orderNo(),
+                placement.abandonSettlement(1L, value.id(), "B", settlements).orderNo());
+        assertEquals("RESERVING", orders.findByOrderNo(order.orderNo()).status());
+        assertEquals(0, count("trade_settlement_abandon"));
+    }
+
+    @Test
+    void abandonMarkerIsScopedToMemberAndCannotFenceAnotherOwner() {
+        var value = settlement();
+        assertNull(placement.abandonSettlement(2L, value.id(), "A", settlements));
+        assertFalse(settlements.abandoned(1L, value.id()));
+        assertNotNull(placement.submitSettlement(1L, value.id(), "A", settlements));
+    }
+
+    @Test
+    void concurrentSubmitAndAbandonHaveOneDurableOutcome() throws Exception {
+        var value = settlement();
+        var pool = Executors.newFixedThreadPool(2);
+        var start = new CountDownLatch(1);
+        try {
+            var submit =
+                    pool.submit(
+                            () -> {
+                                start.await();
+                                try {
+                                    return placement.submitSettlement(
+                                            1L, value.id(), "A", settlements);
+                                } catch (IllegalStateException ex) {
+                                    return null;
+                                }
+                            });
+            var abandon =
+                    pool.submit(
+                            () -> {
+                                start.await();
+                                return placement.abandonSettlement(
+                                        1L, value.id(), "A", settlements);
+                            });
+            start.countDown();
+            var order = submit.get(15, TimeUnit.SECONDS);
+            var result = abandon.get(15, TimeUnit.SECONDS);
+            if (order == null) {
+                assertNull(result);
+                assertEquals(0, count("trade_order"));
+                assertEquals(1, count("trade_settlement_abandon"));
+            } else {
+                assertNotNull(result);
+                assertEquals(order.orderNo(), result.orderNo());
+                assertEquals(1, count("trade_order"));
+                assertEquals(0, count("trade_settlement_abandon"));
+            }
+        } finally {
+            pool.shutdownNow();
+        }
+    }
+
+    @Test
+    void abandonWorksWithoutRedisAccess() {
+        var value = settlement();
+        var gateway =
+                org.mockito.Mockito.mock(
+                        com.lemnt.trade.domain.checkout.gateway.SettlementGateway.class,
+                        org.mockito.AdditionalAnswers.delegatesTo(settlements));
+        org.mockito.Mockito.doThrow(new IllegalStateException("Redis down"))
+                .when(gateway)
+                .cached(org.mockito.ArgumentMatchers.anyString());
+        assertNull(placement.abandonSettlement(1L, value.id(), "A", gateway));
+        org.mockito.Mockito.verify(gateway, org.mockito.Mockito.never())
+                .cached(org.mockito.ArgumentMatchers.anyString());
+    }
+
+    @Test
+    void abandonWriteFailureRollsBackMarkerAndAllowsOriginalSubmit() {
+        var value = settlement();
+        var gateway =
+                org.mockito.Mockito.mock(
+                        com.lemnt.trade.domain.checkout.gateway.SettlementGateway.class,
+                        org.mockito.AdditionalAnswers.delegatesTo(settlements));
+        org.mockito.Mockito.doAnswer(
+                        call -> {
+                            settlements.abandon(call.getArgument(0), call.getArgument(1));
+                            throw new IllegalStateException("commit failure");
+                        })
+                .when(gateway)
+                .abandon(
+                        org.mockito.ArgumentMatchers.anyLong(),
+                        org.mockito.ArgumentMatchers.anyString());
+        assertThrows(
+                IllegalStateException.class,
+                () -> placement.abandonSettlement(1L, value.id(), "A", gateway));
+        assertFalse(settlements.abandoned(1L, value.id()));
+        assertNotNull(placement.submitSettlement(1L, value.id(), "A", settlements));
     }
 }

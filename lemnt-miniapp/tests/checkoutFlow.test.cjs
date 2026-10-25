@@ -35,7 +35,7 @@ test('旧版未确认记录不能被新版结算静默覆盖',async()=>{
 test('仅明确确认后可清除当前会员本机记录，不影响其他会员',()=>{
  const values=new Map([['lemnt.checkout.v1.1',{}],['lemnt.checkout.v2.1',{}],['lemnt.checkout.v2.2',{}]]);
  const flow=createCheckoutFlow({storage:{get:k=>values.get(k),remove:k=>values.delete(k)},currentMember:()=> '1'});
- assert.throws(()=>flow.discard(false));assert.equal(values.size,3);flow.discard(true);assert.equal(values.size,1);assert.ok(values.has('lemnt.checkout.v2.2'));
+ assert.throws(()=>flow.discard(false));assert.equal(values.size,3);flow.discard(true);assert.equal(values.size,2);assert.ok(values.has('lemnt.checkout.v2.1'));assert.ok(values.has('lemnt.checkout.v2.2'));assert.throws(()=>flow.discard(true));
 });
 
 test('原请求查回订单不重新提交，并支持旧版记录',async()=>{
@@ -62,4 +62,19 @@ test('找回旧版请求不会清除并存的新版请求',async()=>{
  const values=new Map([['lemnt.checkout.v1.1',{requestNo:'OLD'}],['lemnt.checkout.v2.1',{requestNo:'NEW',settlementId:'12345678-1234-1234-1234-123456789abc'}]]);
  const flow=createCheckoutFlow({storage:{get:k=>values.get(k),remove:k=>values.delete(k)},currentMember:()=> '1',client:{checkoutRequest:async()=>({orderNo:'TR1',status:'PAID',payableAmount:'10.00'})}});
  await flow.recover();assert.equal(flow.pending().requestNo,'NEW');assert.equal(values.size,1);
+});
+
+test('服务端确认终止或找回订单后才删除新版记录',async()=>{
+ for(const result of [{abandoned:true},{abandoned:false,order:{orderNo:'TR1',status:'RESERVING',payableAmount:'10.00'}}]){
+ const key='lemnt.checkout.v2.1';const values=new Map([[key,{settlementId:'12345678-1234-1234-1234-123456789abc',requestNo:'R1'}]]);
+ const flow=createCheckoutFlow({storage:{get:k=>values.get(k),remove:k=>values.delete(k)},currentMember:()=> '1',client:{abandonCheckout:async()=>result}});
+ assert.equal(await flow.abandon(true),result);assert.equal(values.size,0);
+ }
+});
+test('终止响应丢失、格式不明或换号都保留请求',async()=>{
+ for(const kind of ['network','invalid','member']){
+ let member='1';const key='lemnt.checkout.v2.1';const values=new Map([[key,{settlementId:'12345678-1234-1234-1234-123456789abc',requestNo:'R1'}]]);
+ const flow=createCheckoutFlow({storage:{get:k=>values.get(k),remove:k=>values.delete(k)},currentMember:()=>member,client:{abandonCheckout:async()=>{if(kind==='network')throw Error('lost');if(kind==='member')member='2';return kind==='invalid'?{abandoned:false}:{abandoned:true};}}});
+ await assert.rejects(flow.abandon(true));assert.equal(values.size,1);
+ }
 });

@@ -31,12 +31,25 @@ function createCheckoutFlow({ storage, currentMember, client, newRequestNo }) {
         return result;
       } finally { busy = false; }
     },
+    async abandon(acknowledged) {
+      if (acknowledged !== true || busy) throw new Error('请确认终止，且不能在请求处理中操作');
+      busy = true;
+      try {
+        const key = scope();const saved = storage.get(key);const intent = validate(saved);const before = JSON.stringify(saved);
+        const result = await client.abandonCheckout(intent);
+        if (scope() !== key || JSON.stringify(storage.get(key)) !== before) throw new Error('会员或本机请求已变化，记录已保留');
+        const order = result && result.order;
+        const validOrder = order && typeof order.orderNo === 'string' && order.orderNo && ['RESERVING','PENDING_PAYMENT','PAID','SHIPPED','COMPLETED','CLOSED'].includes(order.status) && typeof order.payableAmount === 'string' && /^\d+\.\d{2}$/.test(order.payableAmount);
+        if (!result || !((result.abandoned === true && order == null) || (result.abandoned === false && validOrder))) throw new Error('终止结果未确认，请保留原请求继续核验');
+        storage.remove(key);return result;
+      } finally { busy = false; }
+    },
     discard(acknowledged) {
       if (acknowledged !== true || busy) throw new Error('须先核验原订单，且不能在提交期间清除');
       const member = currentMember();
       if (typeof member !== 'string' || !/^[1-9]\d{0,18}$/.test(member)) throw new Error('请先完成会员登录');
+      if (!storage.get('lemnt.checkout.v1.' + member) && storage.get('lemnt.checkout.v2.' + member)) throw new Error('新版提单必须由服务端确认终止，不能仅清除本机记录');
       storage.remove('lemnt.checkout.v1.' + member);
-      storage.remove('lemnt.checkout.v2.' + member);
     },
     pending() { const saved = storage.get(scope()); return saved ? copy(validate(saved)) : null; },
     async submit(input) {

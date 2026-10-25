@@ -16,4 +16,14 @@ public interface SettlementMapper {
             @Param("memberId") Long memberId,
             @Param("id") String id,
             @Param("orderNo") String orderNo);
+
+    @Select(
+            "SELECT COUNT(*) FROM trade_settlement_abandon WHERE member_id=#{memberId} AND"
+                + " settlement_id=#{id}")
+    int abandoned(@Param("memberId") Long memberId, @Param("id") String id);
+
+    @Insert(
+            "INSERT INTO trade_settlement_abandon(member_id,settlement_id)"
+                + " VALUES(#{memberId},#{id}) ON DUPLICATE KEY UPDATE settlement_id=settlement_id")
+    int abandon(@Param("memberId") Long memberId, @Param("id") String id);
 }

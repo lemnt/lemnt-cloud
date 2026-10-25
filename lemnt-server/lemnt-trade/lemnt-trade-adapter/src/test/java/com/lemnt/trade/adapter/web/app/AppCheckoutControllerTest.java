@@ -147,4 +147,37 @@ class AppCheckoutControllerTest {
         verify(cached).findByRequest(7L, "R1");
         verify(cached, never()).findByRequest(999L, "R1");
     }
+
+    @Test
+    void abandonUsesSessionMemberAndOnlySettlementIdentity() throws Exception {
+        var session = mock(MemberSessionService.class);
+        when(session.requireMember("Bearer member")).thenReturn(7L);
+        var cached = mock(com.lemnt.trade.application.checkout.service.SettlementService.class);
+        when(cached.abandon(7L, "12345678-1234-1234-1234-123456789abc", "R1"))
+                .thenReturn(
+                        new com.lemnt.trade.application.checkout.dto.SettlementAbandonDTO(
+                                true, null));
+        var controller =
+                new AppCheckoutController(
+                        session,
+                        mock(CartListQueryExe.class),
+                        mock(CartSaveCmdExe.class),
+                        mock(CartDeleteCmdExe.class),
+                        mock(CouponListQueryExe.class),
+                        mock(CheckoutQuoteQueryExe.class),
+                        mock(CheckoutSubmitCmdExe.class),
+                        mock(CheckoutReceiptQueryExe.class),
+                        cached);
+        MockMvcBuilders.standaloneSetup(controller)
+                .build()
+                .perform(
+                        post("/trade/app/checkout/abandon")
+                                .header("Authorization", "Bearer member")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        "{\"settlementId\":\"12345678-1234-1234-1234-123456789abc\",\"requestNo\":\"R1\",\"memberId\":999}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.abandoned").value(true));
+        verify(cached).abandon(7L, "12345678-1234-1234-1234-123456789abc", "R1");
+    }
 }

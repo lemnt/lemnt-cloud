@@ -42,6 +42,10 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     },
     order: orderNo => call('/orders/' + order(orderNo)),
     prepay: orderNo => call('/orders/' + order(orderNo) + '/prepay', 'POST'),
+    abandonCheckout: input => {
+      if (!input || typeof input.settlementId !== 'string' || !/^[a-f0-9-]{36}$/.test(input.settlementId) || typeof input.requestNo !== 'string' || !input.requestNo.trim() || input.requestNo.length > 64) throw new Error('结算单编号或请求编号不合法');
+      return call('/checkout/abandon','POST',{settlementId:input.settlementId,requestNo:input.requestNo});
+    },
     checkoutRequest: requestNo => {
       if (typeof requestNo !== 'string' || !requestNo.trim() || requestNo.length > 64) throw new Error('请求编号不合法');
       return call('/checkout/requests/' + encodeURIComponent(requestNo));

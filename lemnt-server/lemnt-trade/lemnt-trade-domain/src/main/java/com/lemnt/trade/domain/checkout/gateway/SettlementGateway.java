@@ -9,5 +9,9 @@ public interface SettlementGateway {
 
     String orderNo(Long memberId, String id);
 
+    boolean abandoned(Long memberId, String id);
+
+    void abandon(Long memberId, String id);
+
     void bind(Long memberId, String id, String orderNo);
 }

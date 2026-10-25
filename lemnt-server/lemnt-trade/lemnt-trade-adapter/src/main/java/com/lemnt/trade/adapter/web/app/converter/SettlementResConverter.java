@@ -18,4 +18,10 @@ public final class SettlementResConverter {
                 q.payableAmount(),
                 q.couponId());
     }
+
+    public static com.lemnt.trade.adapter.web.app.res.SettlementAbandonRes abandon(
+            com.lemnt.trade.application.checkout.dto.SettlementAbandonDTO value) {
+        return new com.lemnt.trade.adapter.web.app.res.SettlementAbandonRes(
+                value.abandoned(), CheckoutResConverter.checkoutReceipt(value.order()));
+    }
 }
