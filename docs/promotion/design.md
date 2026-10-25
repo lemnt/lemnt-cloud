@@ -3,7 +3,7 @@
 需求ID：yudao-member-mall-trade-migration · 设计版本 promotion-v1 · 2026-10-25（Asia/Shanghai）
 责任：code-software-engineer。源码基线：20ec7bd1b9de1d4d8665093009d08846997645c2，分支 feat/yudao-member-mall-trade-migration。
 
-**状态：设计交付，未实现运行时引擎。** 本目录的拟新增路径、接口、表及配置均不代表已存在或已执行。算例/Schema校验不是Java实现、数据库集成或生产验收。现有392项后端、169项React、69项小程序测试为基线历史结果，不是本设计的实现证据。
+**状态：promotion-v1设计已交付；T1纯Java内核已实现，尚未接入业务运行链路。** T1范围和实测证据见[implementation.md](implementation.md)。T2..T7仍PLANNED，本文拟新增HTTP接口、表及配置尚未实现/执行。Schema校验不代表Java实现、数据库集成或生产验收；原392/169/69为设计前历史基线。
 
 输入：用户同意先统一促销设计与契约，再实现核心购买闭环；仓库AGENTS.md、现有计价/结算/Outbox/退款源码、docs/cached-settlement-api.md与storefront-marketing-api.md。结构参考已读取的 code-software-engineer/references/development-design.md、api-documentation.md、java.md。原型输入：既有结算及优惠券页面，无新的促销配置原型；UI字段映射见下文，正式UI实现前补充对应交互基线。没有复制芋道全量营销实现，也不声称规则与其完全一致。
 
@@ -258,11 +258,11 @@ PromotionUsage状态HELD→USED或HELD→RELEASED，终态幂等；一个订单�
 
 ## 11. 实施任务与验收矩阵
 
-全部状态为PLANNED，当前只完成设计。依赖顺序T1→T2→T3→T4→T5→T6；T7验收跨全链路，无循环依赖。
+T1纯领域代码已实现，实测状态见implementation.md；T2..T7为PLANNED。依赖顺序T1→T2→T3→T4→T5→T6；T7验收跨全链路，无循环依赖。
 
 | 任务 | 拟新增/修改路径 | 前置 | 验收及风险 |
 | --- | --- | --- | --- |
-| T1纯领域计价 | trade-domain/.../promotion/；存量CheckoutRules保持 | 本设计/契约 | P系列：算例、long边界、随机守恒、排列不变、legacy差分；不依赖DB |
+| T1纯领域计价（已实现） | trade-domain/.../promotion/；存量CheckoutRules保持 | 本设计/契约 | P系列：算例、long边界、随机守恒、排列不变、legacy差分；不依赖DB |
 | T2持久版本/次数 | trade-infrastructure/.../promotion/、trade/sql/后续迁移 | T1 | D/R系列：真实SQL、发布并发、限额、不降至已用以下、事务回滚 |
 | T3权威事实/管理API | mall-client/application/dubbo + trade-adapter/application promotion | T2 | C/A系列：SPU事实/批量限额/不存在、权限、Schema、管理员重试 |
 | T4缓存结算V2 | 新SettlementV2Gateway + OrderPlacementService/SettlementService分离适配 | T3 | S系列：隔离缓存、请求先查DB、价格变更、购物车跨协议、栅栏/Redis失败 |
@@ -278,6 +278,6 @@ PromotionUsage状态HELD→USED或HELD→RELEASED，终态幂等；一个订单�
 
 ## 12. 当前验证与交接
 
-本轮仅校验机器可读草稿/报价/提单Schema、JSON示例、算例分摊与选择以及源码引用存在性；命令/结果见本目录validation和原work-item/evidence/promotion-design。运行时Java实现/新增迁移/完整Maven重新验证/真实联调均NOT RUN（无运行时代码变更）。
+原设计提交534048e仅校验草稿/报价/提单Schema、JSON示例、算例分摊与源码引用，历史证据见evidence/promotion-design。本次T1纯Java内核及Maven证据另见implementation.md和evidence/promotion-kernel；不将独立Python设计检查冒充Java运行测试。新增迁移、V2业务集成和真实联调仍未完成。
 
-后续可直接从T1开始，无需重新选择框架或等待无关营销模块。API文档见api.md，Schema只是拟定契约；下游code QA按上面矩阵验收。真实支付、退款、订单收货地址、零元单等原迁移缺口没有被本设计关闭。保留Draft PR，无main修改、merge、部署或线上迁移。
+后续从T2持久化/计次继续，无需重新选择框架或等待无关营销模块。API文档见api.md，Schema只是拟定契约；下游code QA按上面矩阵验收。真实支付、退款、订单收货地址、零元单等原迁移缺口没有被本设计关闭。保留Draft PR，无main修改、merge、部署或线上迁移。

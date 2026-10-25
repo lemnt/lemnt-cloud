@@ -1,0 +1,59 @@
+[
+  {
+    "suite": "com.lemnt.trade.domain.promotion.PromotionPricingTest",
+    "tests": 16,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      "yuanConversionAndOrderSumRejectPrecisionNegativesAndOverflow",
+      "zeroActivityDoesNotHoldResourceAndZeroPayRemainsVisible",
+      "twoThousandAllocationsMatchIndependentRationalOracle",
+      "noneRetainsCouponAndZeroBenefitCombinationCannotConsumeIt",
+      "equalVersionsUseSmallerVersionAndExtremePrioritiesCannotOverflow",
+      "windowsAreLeftClosedRightOpenAndNonmatchingCampaignsDoNotCount",
+      "randomizedFullPricingConservesMoneyAndStableUnitPartitionsUnderPermutation",
+      "allocationHandlesNumericTiesZeroWeightsAndLongIntermediate",
+      "legacyPercentageAndFixedDiscountsMatchActualJavaRules",
+      "scopeAndCartBoundaryLimitsAreInclusiveAndRejectNulls",
+      "matchedCandidateLimitRejectsRatherThanTruncating",
+      "disabledAndMalformedLegacyTemplatesFailClosed",
+      "malformedRulesScopesLinesAndDuplicateVersionsReject",
+      "inputSnapshotsAreDefensiveAndOutputCollectionsCannotBeMutated",
+      "sameSpuSkusShareScopedDiscountWithoutTouchingOtherSpus",
+      "legacyCouponOwnershipStatusTemplateAndWindowRejectWithoutDroppingSelection"
+    ]
+  },
+  {
+    "suite": "com.lemnt.trade.domain.promotion.PromotionVectorsTest",
+    "tests": 23,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors",
+      "canonicalVectors"
+    ]
+  }
+]

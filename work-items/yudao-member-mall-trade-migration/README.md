@@ -1,13 +1,11 @@
 # Yudao migration continuation
 
-- Current source base:20ec7bd;branch feat/yudao-member-mall-trade-migration;PR[#1](https://github.com/lemnt/lemnt-cloud/pull/1) remains Draft.
-- Latest delivery: **promotion-v1 design only** (2026-10-25 Asia/Shanghai), per user agreement. [Design](../../docs/promotion/design.md),[proposed API](../../docs/promotion/api.md),[design index](../../docs/promotion/README.md).
-- First phase: one order campaign plus one explicit coupon,deterministic fen allocation,versioned cached settlement,transactional usage/compensation and compatibility. Java17/Boot4.1/Dubbo/Nacos and existing six layers remain.
-- Status: T1..T7 PLANNED;runtime engine NOT IMPLEMENTED;new SQL NOT GENERATED. Design Schema/examples/arithmetic/source checks PASS;[evidence](evidence/promotion-design/).
-- Last runtime verification:71 Maven projects/392 backend tests,169 React tests,69 native tests;historical evidence/storefront/. No new runtime test PASS claimed for this design-only slice.
-- Existing member/admin/native,storefront/coupon/cart/cached checkout/outbox/fulfillment slices are retained;real provider payment/refund,order-time addresses and broader marketing remain incomplete.
-- Browser/native compiler/device and live MySQL/Redis/Nacos/Dubbo/provider verification remain NOT RUN. Keep readiness false;no main edit,merge,deployment/live migration.
-- Next: implement T1 pure domain kernel and Java tests,then follow design dependencies. Design delivery is not user acceptance of an implemented engine.
+- Current source base:534048e;branch feat/yudao-member-mall-trade-migration;PR[#1](https://github.com/lemnt/lemnt-cloud/pull/1) remains Draft.
+- Latest delivery: **promotion-v1/T1 pure Java pricing kernel** (2026-10-25 Asia/Shanghai), per user continuation. [Implementation](../../docs/promotion/implementation.md),[design](../../docs/promotion/design.md),[proposed API](../../docs/promotion/api.md).
+- T1 IMPLEMENTED: FULL_REDUCTION/ORDER_DISCOUNT,ALL/SPU/SKU,explicit legacy coupon constraint,integer-fen/basis-point arithmetic,deterministic selection and largest-remainder stage allocation,unit payable partition,zero-pay preview guard and exact legacy adapter. Existing trade-domain reused;no new module/dependency.
+- PASS: full71-project Maven verify,431 backend tests,zero failures/errors/skips;39 new promotion tests (23 canonical vectors+16 suites),including2000 allocation properties,500 complete pricing/permutation cases,1500 percentage+1500 fixed comparisons against actual legacy Java. Design attachment check still PASS;[evidence](evidence/promotion-kernel/).
+- T2..T7 PLANNED. Kernel has no runtime caller/bean;11 proposed HTTP routes,new SQL,quota/version persistence,V2 cached settlement,lifecycle integration and UI are not implemented by T1. Existing V1 unchanged. Next:T2 activity versions/counters/transaction tests.
+- React/native unchanged and NOT RERUN this slice;169/69 remain historical results. Live MySQL/Redis/Nacos/Dubbo/provider,browser/native compiler/device NOT RUN. Readiness false;no production claim,main edit,merge,deployment/live migration.
 
 The following entries preserve historical slice results;their missing-feature statements must be read at that slice's version.
 

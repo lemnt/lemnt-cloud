@@ -284,8 +284,9 @@ def main():
         "rejectedSchemaExamples":len(negative),"rejectedCrossFieldDrafts":len(bad_drafts),
         "goldenPricingVectors":len(vectors),"allocationPropertyCases":2000,
         "legacyPercentageParityCases":1500,"sourceFilesChecked":len(sources["files"]),
-        "runtimeJavaEngine":"NOT IMPLEMENTED","newSqlMigration":"NOT GENERATED",
-        "mavenReactNativeRerun":"NOT RUN: no runtime source change",
+        "runtimeJavaEngine":"NOT ASSESSED: see ../implementation.md",
+        "newSqlMigration":"NOT ASSESSED BY DESIGN CHECKER",
+        "mavenReactNativeRerun":"NOT ASSESSED BY DESIGN CHECKER",
         "liveIntegration":"NOT RUN"
     },ensure_ascii=False,indent=2))
 
