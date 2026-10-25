@@ -48,6 +48,9 @@ class CheckoutFlowIntegrationTest {
     JdbcDataSource tradeSource, mallSource;
     Connection tradeSchema, mallSchema;
     CheckoutGateway checkout;
+    com.lemnt.trade.domain.checkout.gateway.SettlementGateway settlements;
+    java.util.Map<String, Settlement> settlementCache =
+            new java.util.concurrent.ConcurrentHashMap<>();
     FulfillmentGateway fulfillment;
     OrderFulfillmentService fulfillmentService;
     TradeOrderGateway orders;
@@ -124,16 +127,40 @@ class CheckoutFlowIntegrationTest {
                 mallSchema, new ClassPathResource("mall-sql/V2__mall_catalog.sql"));
         ScriptUtils.executeSqlScript(
                 tradeSchema, new ClassPathResource("trade-sql/V5__order_fulfillment.sql"));
+        ScriptUtils.executeSqlScript(
+                tradeSchema, new ClassPathResource("trade-sql/V6__settlement_order.sql"));
         var trade =
                 template(
                         tradeSource,
                         CheckoutMapper.class,
+                        com.lemnt.trade.infrastructure.checkout.mapper.SettlementMapper.class,
                         FulfillmentMapper.class,
                         TradeOrderMapper.class,
                         TradeOrderItemMapper.class,
                         TradeOutboxMapper.class,
                         TradePaymentMapper.class);
         var products = template(mallSource, ProductMapper.class, StockReservationMapper.class);
+        var settlementMapper =
+                trade.getMapper(
+                        com.lemnt.trade.infrastructure.checkout.mapper.SettlementMapper.class);
+        settlements =
+                new com.lemnt.trade.domain.checkout.gateway.SettlementGateway() {
+                    public void cache(Settlement value) {
+                        settlementCache.put(value.id(), value);
+                    }
+
+                    public Settlement cached(String id) {
+                        return settlementCache.get(id);
+                    }
+
+                    public String orderNo(Long memberId, String id) {
+                        return settlementMapper.orderNo(memberId, id);
+                    }
+
+                    public void bind(Long memberId, String id, String no) {
+                        settlementMapper.bind(memberId, id, no);
+                    }
+                };
         checkout = tx(new CheckoutGatewayImpl(trade.getMapper(CheckoutMapper.class)), tradeSource);
         orders =
                 tx(
@@ -1009,5 +1036,127 @@ class CheckoutFlowIntegrationTest {
         assertEquals(order.orderNo(), query.execute(1L, order.orderNo()).orderNo());
         assertNull(query.execute(2L, order.orderNo()));
         assertNull(query.execute(1L, "MISSING"));
+    }
+
+    Settlement settlement() {
+        var value = placement.prepareSettlement(new CheckoutQuoteQry(1L, List.of(sku), null));
+        settlements.cache(value);
+        return value;
+    }
+
+    @Test
+    void settlementRetrySurvivesCacheEvictionAndRejectsAnotherRequest() throws Exception {
+        var value = settlement();
+        var order = placement.submitSettlement(1L, value.id(), "S1", settlements);
+        settlementCache.clear();
+        assertEquals(
+                order.orderNo(),
+                placement.submitSettlement(1L, value.id(), "S1", settlements).orderNo());
+        assertThrows(
+                IllegalStateException.class,
+                () -> placement.submitSettlement(1L, value.id(), "S2", settlements));
+        assertEquals(1, count("trade_order"));
+        assertEquals(1, count("trade_settlement_order"));
+    }
+
+    @Test
+    void settlementRequiresOwnerAndUnexpiredCache() throws Exception {
+        var value = settlement();
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> placement.submitSettlement(2L, value.id(), "S1", settlements));
+        settlementCache.put(
+                value.id(),
+                new Settlement(
+                        value.id(),
+                        1L,
+                        value.quote(),
+                        value.references(),
+                        java.time.Instant.now().minusSeconds(1)));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> placement.submitSettlement(1L, value.id(), "S1", settlements));
+        assertEquals(0, count("trade_order"));
+    }
+
+    @Test
+    void settlementUsesCachedQuantityAndPreservesLaterCartEdits() {
+        var value = settlement();
+        checkout.saveCart(1L, sku, 3, true);
+        var order = placement.submitSettlement(1L, value.id(), "S1", settlements);
+        assertEquals(2, orders.findByOrderNo(order.orderNo()).items().get(0).quantity());
+        worker().execute(50);
+        assertEquals(3, checkout.cart(1L).get(0).quantity());
+    }
+
+    @Test
+    void settlementRejectsChangedPriceWithoutMutatingSnapshotOrOrder() throws Exception {
+        var value = settlement();
+        sql(mallSource, "UPDATE mall_product SET price=99.00 WHERE id=" + sku);
+        assertThrows(
+                IllegalStateException.class,
+                () -> placement.submitSettlement(1L, value.id(), "S1", settlements));
+        assertEquals(
+                new BigDecimal("20.00"), settlementCache.get(value.id()).quote().payableAmount());
+        assertEquals(0, count("trade_order"));
+        assertEquals(0, count("trade_settlement_order"));
+    }
+
+    @Test
+    void concurrentDifferentKeysCannotConsumeSettlementTwice() throws Exception {
+        var value = settlement();
+        var pool = Executors.newFixedThreadPool(2);
+        var start = new CountDownLatch(1);
+        try {
+            java.util.function.Function<String, Boolean> submit =
+                    key -> {
+                        try {
+                            placement.submitSettlement(1L, value.id(), key, settlements);
+                            return true;
+                        } catch (IllegalStateException ex) {
+                            return false;
+                        }
+                    };
+            var a =
+                    pool.submit(
+                            () -> {
+                                start.await();
+                                return submit.apply("A");
+                            });
+            var b =
+                    pool.submit(
+                            () -> {
+                                start.await();
+                                return submit.apply("B");
+                            });
+            start.countDown();
+            assertNotEquals(a.get(15, TimeUnit.SECONDS), b.get(15, TimeUnit.SECONDS));
+            assertEquals(1, count("trade_order"));
+        } finally {
+            pool.shutdownNow();
+        }
+    }
+
+    @Test
+    void settlementBindingFailureRollsBackOrderCheckoutAndOutbox() throws Exception {
+        var value = settlement();
+        var failing =
+                org.mockito.Mockito.mock(
+                        com.lemnt.trade.domain.checkout.gateway.SettlementGateway.class,
+                        org.mockito.AdditionalAnswers.delegatesTo(settlements));
+        org.mockito.Mockito.doThrow(new IllegalStateException("bind failed"))
+                .when(failing)
+                .bind(
+                        org.mockito.ArgumentMatchers.anyLong(),
+                        org.mockito.ArgumentMatchers.anyString(),
+                        org.mockito.ArgumentMatchers.anyString());
+        assertThrows(
+                IllegalStateException.class,
+                () -> placement.submitSettlement(1L, value.id(), "S1", failing));
+        assertEquals(0, count("trade_order"));
+        assertEquals(0, count("trade_checkout"));
+        assertEquals(0, count("trade_outbox"));
+        assertNotNull(settlementCache.get(value.id()));
+        assertNotNull(placement.submitSettlement(1L, value.id(), "S1", settlements));
     }
 }

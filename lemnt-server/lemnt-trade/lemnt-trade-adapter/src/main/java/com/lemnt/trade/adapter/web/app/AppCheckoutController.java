@@ -27,6 +27,7 @@ public class AppCheckoutController {
     private final CheckoutQuoteQueryExe quote;
     private final CheckoutSubmitCmdExe checkout;
     private final CheckoutReceiptQueryExe receipt;
+    private final com.lemnt.trade.application.checkout.service.SettlementService settlements;
 
     @ExceptionHandler(SecurityException.class)
     @ResponseStatus(org.springframework.http.HttpStatus.UNAUTHORIZED)
@@ -73,24 +74,24 @@ public class AppCheckoutController {
 
     @PostMapping("/checkout/quote")
     @Operation(summary = "当前会员结算预览，服务端计价")
-    public R<CheckoutQuoteRes> quote(
+    public R<com.lemnt.trade.adapter.web.app.res.SettlementRes> quote(
             @RequestHeader(value = "Authorization", required = false) String token,
             @Valid @RequestBody CheckoutQuoteReq req) {
         Long memberId = sessions.requireMember(token);
         return R.ok(
-                CheckoutResConverter.checkoutQuote(
-                        quote.execute(CheckoutReqConverter.quote(memberId, req))));
+                com.lemnt.trade.adapter.web.app.converter.SettlementResConverter.convert(
+                        settlements.create(CheckoutReqConverter.quote(memberId, req))));
     }
 
     @PostMapping("/checkout")
     @Operation(summary = "当前会员幂等下单，不接受客户端金额")
     public R<CheckoutReceiptRes> checkout(
             @RequestHeader(value = "Authorization", required = false) String token,
-            @Valid @RequestBody CheckoutSubmitReq req) {
+            @Valid @RequestBody com.lemnt.trade.adapter.web.app.req.SettlementSubmitReq req) {
         Long memberId = sessions.requireMember(token);
         return R.ok(
                 CheckoutResConverter.checkoutReceipt(
-                        checkout.execute(CheckoutReqConverter.checkout(memberId, req))));
+                        settlements.submit(memberId, req.settlementId(), req.requestNo())));
     }
 
     @GetMapping("/orders/{orderNo}")

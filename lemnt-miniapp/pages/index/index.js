@@ -53,10 +53,10 @@ Page({
     const request = { productIds, ...(selectedCoupon ? { couponId: selectedCoupon } : {}) };
     const quote = await this.client.quote(request);
     if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换，请重新加载');
-    if (!quote || !/^[a-f0-9]{64}$/.test(quote.quoteToken) || ['originalAmount','discountAmount','payableAmount'].some(key => typeof quote[key] !== 'string' || !/^\d+\.\d{2}$/.test(quote[key]))) throw new Error('报价响应不合法');
+    if (!quote || typeof quote.settlementId !== 'string' || !/^[a-f0-9-]{36}$/.test(quote.settlementId) || ['originalAmount','discountAmount','payableAmount'].some(key => typeof quote[key] !== 'string' || !/^\d+\.\d{2}$/.test(quote[key]))) throw new Error('报价响应不合法');
     if ((quote.couponId == null ? null : couponId(quote.couponId)) !== selectedCoupon) throw new Error('报价优惠券与所选不一致');
     this.quoteMember = member;
-    this.quoteInput = { ...request, quoteToken: quote.quoteToken };
+    this.quoteInput = { settlementId: quote.settlementId };
     this.setData({ quote });
   }); },
   submit() { return this.action(async member => {
@@ -117,6 +117,12 @@ Page({
     const id = value === '' ? null : couponId(value);
     if (id && (this.couponsMember !== member || !this.data.coupons.some(c => c.id === id && c.status === 'AVAILABLE'))) throw new Error('优惠券不可选择，请刷新');
     this.quoteInput = null; this.setData({ selectedCoupon: id, quote: null });
+  }); },
+  resetPending() { return this.action(async member => {
+    const result = await new Promise((resolve,reject) => wx.showModal({title:'仅清除本机记录',content:'请先核验原订单。清除不会取消服务端订单；重新结算可能另建订单。确认已核验，仍要清除？',success:resolve,fail:reject}));
+    if (!result.confirm) return;
+    if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换');
+    this.flow.discard(true);this.quoteInput=null;this.setData({pending:false,quote:null});
   }); },
   onHide() { this.setData({ rows: [], coupons: [], selectedCoupon: null, quote: null, receipt: null, error: '' }); this.quoteInput = null; },
 });

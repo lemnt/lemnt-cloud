@@ -200,4 +200,59 @@ public class OrderPlacementService {
                 price(cmd.memberId(), quantities, cmd.couponId(), true),
                 List.of());
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public com.lemnt.trade.domain.checkout.model.Settlement prepareSettlement(
+            CheckoutQuoteQry query) {
+        members.requireActive(query.memberId());
+        checkout.lockMember(query.memberId());
+        var ids = selectedIds(query.productIds());
+        var rows = selectedCart(query.memberId(), ids);
+        var quantities = new TreeMap<Long, Integer>();
+        rows.forEach(row -> quantities.put(row.productId(), row.quantity()));
+        var quote = price(query.memberId(), quantities, query.couponId(), false);
+        return new Settlement(
+                UUID.randomUUID().toString(),
+                query.memberId(),
+                quote,
+                rows.stream().map(row -> new CartReference(row.id(), row.version())).toList(),
+                java.time.Instant.now().plusSeconds(900));
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public TradeOrder submitSettlement(
+            Long memberId,
+            String settlementId,
+            String requestNo,
+            com.lemnt.trade.domain.checkout.gateway.SettlementGateway settlements) {
+        CheckoutRules.id(memberId);
+        String key = CheckoutRules.text(requestNo, 64);
+        String id = CheckoutRules.text(settlementId, 36);
+        if (!id.matches("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"))
+            throw new IllegalArgumentException("结算单编号不合法");
+        checkout.lockMember(memberId);
+        String fingerprint = CheckoutRules.fingerprint("SETTLEMENT:" + id);
+        var previous = existing(memberId, key, fingerprint);
+        if (previous != null) return previous;
+        String used = settlements.orderNo(memberId, id);
+        if (used != null) throw new IllegalStateException("结算单已用于其他提单请求，请查询原订单");
+        members.requireActive(memberId);
+        var snapshot = settlements.cached(id);
+        if (snapshot == null
+                || !memberId.equals(snapshot.memberId())
+                || !id.equals(snapshot.id())
+                || !snapshot.expiresAt().isAfter(java.time.Instant.now()))
+            throw new IllegalArgumentException("结算单不存在或已失效，请重新结算");
+        if (snapshot.references().stream().anyMatch(ref -> checkout.cartInCheckout(ref.cartId())))
+            throw new IllegalStateException("商品正在结算");
+        var quote = snapshot.quote();
+        var quantities = new TreeMap<Long, Integer>();
+        quote.items().forEach(item -> quantities.put(item.productId(), item.quantity()));
+        var current = price(memberId, quantities, quote.couponId(), true);
+        if (!CheckoutRules.quoteToken(current).equals(CheckoutRules.quoteToken(quote)))
+            throw new IllegalStateException("商品或优惠条件已变化，请重新结算");
+        var order = persist(memberId, key, fingerprint, quote, snapshot.references());
+        settlements.bind(memberId, id, order.orderNo());
+        return order;
+    }
 }

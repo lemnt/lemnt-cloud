@@ -25,3 +25,7 @@ The gateway's existing admin authentication chain is unchanged. Independent memb
 ## Local validation coverage
 
 Tests exercise malformed/missing tokens, no/ambiguous verifier denial, active-member validation, session-derived identity instead of spoofed request headers/query, and foreign order concealment. An actual two-database checkout fixture verifies owner can read its receipt while another member cannot. They do not prove live gateway/authentication or real payment behavior.
+
+## Cached settlement contract update
+
+App quote now creates a Redis-backed settlement and returns settlementId/expiresAt with the server quote. App checkout now accepts only settlementId/requestNo. Prior quoteToken/productIds submit schema above is superseded for consumers. See [cached-settlement-api.md](cached-settlement-api.md); admin compatibility contracts are unchanged.

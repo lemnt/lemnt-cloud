@@ -11,3 +11,5 @@
 - Remaining: real payment/refund adapters, member self-service/auth/address book, carrier/split fulfillment and full after-sales, plus target MySQL/live service/security/browser validation. Catalog/coupon limitations remain documented.
 - Next: payment-provider integration and isolated runtime verification. User acceptance pending; no production readiness inferred.
 - PR https://github.com/lemnt/lemnt-cloud/pull/1 remains Draft.
+
+Latest continuation: Redis cached consumer settlement generation and ID-only submission implemented; V6 durable association, member-scoped replay and six new transaction cases. Current verification317 backend tests/22 miniapp tests PASS; see evidence/cached-settlement and docs/cached-settlement-api.md. Admin legacy protocol unchanged, real member auth/provider/runtime validation pending.

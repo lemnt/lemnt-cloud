@@ -37,8 +37,8 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     coupons: () => call('/coupons'),
     quote: input => call('/checkout/quote', 'POST', quoteData(input)),
     checkout: input => {
-      if (!input || typeof input.requestNo !== 'string' || !input.requestNo.trim() || input.requestNo.length > 64 || !/^[a-f0-9]{64}$/.test(input.quoteToken)) throw new Error('结算请求编号或报价令牌不合法');
-      return call('/checkout', 'POST', { ...quoteData(input), requestNo: input.requestNo, quoteToken: input.quoteToken });
+      if (!input || typeof input.requestNo !== 'string' || !input.requestNo.trim() || input.requestNo.length > 64 || typeof input.settlementId !== 'string' || !/^[a-f0-9-]{36}$/.test(input.settlementId)) throw new Error('结算单编号或请求编号不合法');
+      return call('/checkout', 'POST', { settlementId: input.settlementId, requestNo: input.requestNo });
     },
     order: orderNo => call('/orders/' + order(orderNo)),
     prepay: orderNo => call('/orders/' + order(orderNo) + '/prepay', 'POST'),

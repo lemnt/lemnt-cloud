@@ -20,10 +20,10 @@ test('只调用用户端路径，忽略伪造会员和金额字段', async () =>
 });
 test('结算重试保留原编号和令牌，不发送客户端金额', async () => {
   const { client, calls } = setup();
-  const input = { productIds: ['5'], requestNo: 'R1', quoteToken: 'a'.repeat(64), memberId: '999', payableAmount: '0.01' };
+  const input = { productIds: ['5'], requestNo: 'R1', settlementId: '12345678-1234-1234-1234-123456789abc', memberId: '999', payableAmount: '0.01' };
   await client.checkout(input); await client.checkout(input);
   assert.deepEqual(calls[0].data, calls[1].data);
-  assert.deepEqual(Object.keys(calls[0].data).sort(), ['productIds', 'quoteToken', 'requestNo']);
+  assert.deepEqual(Object.keys(calls[0].data).sort(), ['requestNo', 'settlementId']);
 });
 test('预支付只发送订单编号；支付结果从服务端查询', async () => {
   const { client, calls } = setup(); await client.prepay('TR1'); await client.paymentStatus('TR1');
