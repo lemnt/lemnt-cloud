@@ -1186,4 +1186,44 @@ class CheckoutFlowIntegrationTest {
         assertEquals(order.orderNo(), service.findByRequest(1L, "LEGACY-RECOVER").orderNo());
         assertEquals(1, count("trade_order"));
     }
+
+    @Test
+    void differentSettlementsCannotReuseConsumedCartVersionAfterReservationCompletes()
+            throws Exception {
+        var first = settlement();
+        var second = settlement();
+        placement.submitSettlement(1L, first.id(), "VERSION-A", settlements);
+        worker().execute(50);
+        assertTrue(checkout.cart(1L).isEmpty());
+        assertThrows(
+                IllegalStateException.class,
+                () -> placement.submitSettlement(1L, second.id(), "VERSION-B", settlements));
+        assertEquals(1, count("trade_order"));
+    }
+
+    @Test
+    void editedCartDoesNotMakeOldVersionReusableButNewPreviewCanPurchase() throws Exception {
+        var first = settlement();
+        var second = settlement();
+        checkout.saveCart(1L, sku, 3, true);
+        placement.submitSettlement(1L, first.id(), "VERSION-A", settlements);
+        worker().execute(50);
+        assertEquals(3, checkout.cart(1L).get(0).quantity());
+        assertThrows(
+                IllegalStateException.class,
+                () -> placement.submitSettlement(1L, second.id(), "VERSION-B", settlements));
+        var fresh = settlement();
+        assertNotNull(placement.submitSettlement(1L, fresh.id(), "VERSION-C", settlements));
+        assertEquals(2, count("trade_order"));
+    }
+
+    @Test
+    void closedOrderAllowsUnconsumedAlternateSettlementToRetry() {
+        var first = settlement();
+        var second = settlement();
+        var order = placement.submitSettlement(1L, first.id(), "VERSION-A", settlements);
+        assertTrue(closer.execute(order.orderNo()));
+        worker().execute(50);
+        assertNotNull(placement.submitSettlement(1L, second.id(), "VERSION-B", settlements));
+    }
 }

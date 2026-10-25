@@ -12,7 +12,7 @@ public interface CheckoutMapper {
 
     @Insert(
             "INSERT INTO trade_checkout_account(member_id) VALUES(#{memberId}) ON DUPLICATE KEY"
-                + " UPDATE member_id=member_id")
+                    + " UPDATE member_id=member_id")
     int ensureMember(Long memberId);
 
     @Select("SELECT member_id FROM trade_checkout_account WHERE member_id=#{memberId} FOR UPDATE")
@@ -20,8 +20,13 @@ public interface CheckoutMapper {
 
     @Select(
             "SELECT COUNT(*) FROM trade_checkout_cart c JOIN trade_order o ON o.order_no=c.order_no"
-                + " WHERE c.cart_id=#{id} AND o.status='RESERVING'")
+                    + " WHERE c.cart_id=#{id} AND o.status='RESERVING'")
     int cartInCheckout(Long id);
+
+    @Select(
+            "SELECT COUNT(*) FROM trade_checkout_cart c JOIN trade_order o ON o.order_no=c.order_no"
+                + " WHERE c.cart_id=#{cartId} AND c.cart_version=#{version} AND o.status!='CLOSED'")
+    int cartVersionConsumed(@Param("cartId") Long cartId, @Param("version") long version);
 
     @Select("SELECT * FROM trade_cart WHERE member_id=#{memberId} ORDER BY id LIMIT 201")
     List<CartDO> cart(Long memberId);
@@ -31,13 +36,13 @@ public interface CheckoutMapper {
 
     @Insert(
             "INSERT INTO trade_cart(member_id,product_id,quantity,selected,version)"
-                + " VALUES(#{memberId},#{productId},#{quantity},#{selected},0)")
+                    + " VALUES(#{memberId},#{productId},#{quantity},#{selected},0)")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertCart(CartDO row);
 
     @Update(
             "UPDATE trade_cart SET quantity=#{quantity},selected=#{selected},version=version+1"
-                + " WHERE id=#{id} AND member_id=#{memberId}")
+                    + " WHERE id=#{id} AND member_id=#{memberId}")
     int updateCart(CartDO row);
 
     @Delete("DELETE FROM trade_cart WHERE member_id=#{memberId} AND product_id=#{productId}")
@@ -45,7 +50,7 @@ public interface CheckoutMapper {
 
     @Delete(
             "DELETE FROM trade_cart WHERE member_id=#{memberId} AND id=#{id} AND"
-                + " version=#{version}")
+                    + " version=#{version}")
     int consumeCart(
             @Param("memberId") Long memberId, @Param("id") Long id, @Param("version") long version);
 
@@ -70,8 +75,8 @@ public interface CheckoutMapper {
 
     @Update(
             "UPDATE trade_coupon_template SET issued_count=issued_count+1 WHERE id=#{id} AND"
-                + " enabled=TRUE AND valid_from<=CURRENT_TIMESTAMP AND"
-                + " valid_until>CURRENT_TIMESTAMP AND issued_count<total_count")
+                    + " enabled=TRUE AND valid_from<=CURRENT_TIMESTAMP AND"
+                    + " valid_until>CURRENT_TIMESTAMP AND issued_count<total_count")
     int takeQuota(Long id);
 
     @Select("SELECT * FROM trade_coupon WHERE member_id=#{memberId} ORDER BY id DESC LIMIT 1001")
@@ -88,13 +93,13 @@ public interface CheckoutMapper {
 
     @Insert(
             "INSERT INTO trade_coupon(template_id,member_id,status)"
-                + " VALUES(#{templateId},#{memberId},'AVAILABLE')")
+                    + " VALUES(#{templateId},#{memberId},'AVAILABLE')")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertCoupon(CouponDO row);
 
     @Update(
             "UPDATE trade_coupon SET status='LOCKED',order_no=#{orderNo} WHERE id=#{id} AND"
-                + " member_id=#{memberId} AND status='AVAILABLE'")
+                    + " member_id=#{memberId} AND status='AVAILABLE'")
     int lockCoupon(
             @Param("memberId") Long memberId,
             @Param("id") Long id,
@@ -105,7 +110,7 @@ public interface CheckoutMapper {
 
     @Update(
             "UPDATE trade_coupon SET status='AVAILABLE',order_no=NULL WHERE order_no=#{orderNo} AND"
-                + " status='LOCKED'")
+                    + " status='LOCKED'")
     int releaseCoupon(String orderNo);
 
     @Select("SELECT * FROM trade_checkout WHERE member_id=#{memberId} AND request_no=#{requestNo}")
@@ -122,7 +127,7 @@ public interface CheckoutMapper {
 
     @Insert(
             "INSERT INTO trade_checkout_cart(order_no,cart_id,cart_version)"
-                + " VALUES(#{orderNo},#{cartId},#{cartVersion})")
+                    + " VALUES(#{orderNo},#{cartId},#{cartVersion})")
     int insertReference(CheckoutCartDO row);
 
     @Select("SELECT * FROM trade_checkout_cart WHERE order_no=#{orderNo} ORDER BY cart_id")

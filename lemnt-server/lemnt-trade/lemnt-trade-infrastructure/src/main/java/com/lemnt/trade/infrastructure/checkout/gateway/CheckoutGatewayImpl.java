@@ -28,6 +28,11 @@ public class CheckoutGatewayImpl implements CheckoutGateway {
     }
 
     @Override
+    public boolean cartVersionConsumed(CartReference reference) {
+        return mapper.cartVersionConsumed(reference.cartId(), reference.cartVersion()) > 0;
+    }
+
+    @Override
     public boolean cartInCheckout(Long cartId) {
         return mapper.cartInCheckout(cartId) > 0;
     }

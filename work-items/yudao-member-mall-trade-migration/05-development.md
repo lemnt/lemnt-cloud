@@ -54,3 +54,9 @@ Miniapp v2 intent stores only settlement ID/key and blocks unresolved v1 records
 Added authenticated member-scoped GET /trade/app/checkout/requests/{requestNo}. Queries durable ledger/order with ownership checks, not Redis or placement. Supports cached and legacy records. Miniapp recovers by original key and removes only unchanged inspected record after valid receipt; uncertain results, switched member and changed local record preserve intent. Recovering v1 preserves coexisting v2. Lookup miss is not proof of cancellation.
 
 Full root Maven verify:71 projects,320 tests,zero failures/errors/skips. Three new backend cases:actual cached/legacy request recovery and HTTP identity boundary. Five new miniapp tests,27 total PASS; JS/JSON checks PASS. Evidence: evidence/request-recovery/. Real identity/provider/runtime/device checks remain pending; readiness false,PR Draft. React unchanged/not rerun.
+
+## Cross-settlement cart-version guard
+
+Fixed reusing the same cart ID/version through another cached settlement after the first order leaves RESERVING. Query existing ledger for non-CLOSED consumption under member lock; preserve original request replay and cart-ID reservation guard. New cart versions and CLOSED-order retries remain allowed. Existing index/tables reused,no migration/module.
+
+Two regression assertions reproduced placement succeeding before fix. After synchronizing remote35ba60c and preserving request recovery,full71-project verify and323 tests PASS,zero failures/errors/skips; integration suite40 cases. Three new cases cover consumed removed cart,later edited cart/new version,and closed-order retry. Miniapp27 tests PASS as merge smoke;React unchanged/not rerun. Evidence/cart-version/. Live MySQL/Redis/identity/provider/device validation remains pending;keep Draft.

@@ -245,6 +245,8 @@ public class OrderPlacementService {
             throw new IllegalArgumentException("结算单不存在或已失效，请重新结算");
         if (snapshot.references().stream().anyMatch(ref -> checkout.cartInCheckout(ref.cartId())))
             throw new IllegalStateException("商品正在结算");
+        if (snapshot.references().stream().anyMatch(checkout::cartVersionConsumed))
+            throw new IllegalStateException("购物车版本已用于未关闭订单，请查询原订单或重新结算");
         var quote = snapshot.quote();
         var quantities = new TreeMap<Long, Integer>();
         quote.items().forEach(item -> quantities.put(item.productId(), item.quantity()));

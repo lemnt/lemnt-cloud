@@ -135,3 +135,7 @@ User requires server-generated cached settlement and cached-snapshot order place
 ## Request-ledger recovery
 
 Add member-scoped read-only request lookup at GET /trade/app/checkout/requests/{requestNo}. Resolve request ledger and order ownership in application service; no Redis/placement call and no client member ID. Client recovers v1/v2 records by original request key, clears only the unchanged verified record after a valid receipt, preserves uncertain results/session changes. Missing lookup never means cancellation. This removes need to blindly resubmit or discard legacy payloads during cached-contract upgrades; no new DB schema or module.
+
+## Cart-version consumption invariant
+
+One cart snapshot can have several cached settlement IDs. The settlement-ID mapping alone does not prevent another settlement from reusing that cart version after the first order leaves RESERVING. Add a gateway query over existing trade_checkout_cart and trade_order records: cart_id + cart_version referenced by any non-CLOSED order is consumed. Check it under the existing member lock before cached placement; original-request replay still precedes this check. Keep the existing cart-ID RESERVING guard for concurrent edits/versions. CLOSED orders release this version for another settlement; newer cart versions remain independently purchasable. Reuse existing cart-ID index/tables, no migration/module needed. Regressions cover removed cart, preserved edited cart and closed-order retry.

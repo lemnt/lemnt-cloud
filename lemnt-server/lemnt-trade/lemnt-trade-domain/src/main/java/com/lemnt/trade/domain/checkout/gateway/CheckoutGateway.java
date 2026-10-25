@@ -13,6 +13,8 @@ public interface CheckoutGateway {
 
     boolean cartInCheckout(Long cartId);
 
+    boolean cartVersionConsumed(CartReference reference);
+
     CartLine saveCart(Long memberId, Long productId, int quantity, boolean selected);
 
     boolean deleteCart(Long memberId, Long productId);
