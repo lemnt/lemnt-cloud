@@ -999,4 +999,15 @@ class CheckoutFlowIntegrationTest {
         assertFalse(fulfillment.inventoryConfirmed(unconfirmed.orderNo()));
         assertEquals(1, count("trade_inventory_confirmation"));
     }
+
+    @Test
+    void consumerReceiptChecksOwnerAgainstPersistedOrderAndCheckout() {
+        var order = place("APP-OWNER", null);
+        var query =
+                new com.lemnt.trade.application.checkout.executor.CheckoutReceiptQueryExe(
+                        checkout, orders);
+        assertEquals(order.orderNo(), query.execute(1L, order.orderNo()).orderNo());
+        assertNull(query.execute(2L, order.orderNo()));
+        assertNull(query.execute(1L, "MISSING"));
+    }
 }

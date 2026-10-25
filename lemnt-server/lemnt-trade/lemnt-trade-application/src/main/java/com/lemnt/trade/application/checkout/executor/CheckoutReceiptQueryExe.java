@@ -18,4 +18,14 @@ public class CheckoutReceiptQueryExe {
         String key = CheckoutRules.text(orderNo, 40);
         return CheckoutDTOConverter.receipt(checkout.receipt(key), orders.findByOrderNo(key));
     }
+
+    public CheckoutReceiptDTO execute(Long memberId, String orderNo) {
+        CheckoutRules.id(memberId);
+        String key = CheckoutRules.text(orderNo, 40);
+        var order = orders.findByOrderNo(key);
+        if (order == null || !memberId.equals(order.memberId())) return null;
+        var record = checkout.receipt(key);
+        if (record == null || !memberId.equals(record.memberId())) return null;
+        return CheckoutDTOConverter.receipt(record, order);
+    }
 }

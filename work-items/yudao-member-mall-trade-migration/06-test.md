@@ -36,3 +36,7 @@ Successful payment notifications now require order PAID/SHIPPED/COMPLETED before
 ## Miniapp project boundary
 
 Added independent lemnt-miniapp native bootstrap/client. Node 22 built-in test runner: 5 tests PASS (no-member/no-ready prevents transport, app paths only, identity/amount fields excluded, stable checkout payload retries, prepay/status separation, invalid input and HTTP/business failures). JSON and JavaScript syntax checked. Backend/React unchanged in this slice, not rerun. WeChat developer-tool compilation, visual QA, real login, deployed /trade/app APIs and real payment NOT RUN/NOT IMPLEMENTED; project is a bootstrap, not consumer migration completion.
+
+## Consumer backend boundary verification
+
+Full root Maven verify: 71 projects SUCCESS, 307 tests, zero failures/errors/skips. Added member-session service tests (2), fail-closed authority adapter tests (2), HTTP/session-boundary tests (3), foreign receipt unit test (1), persisted checkout ownership integration test (1). Existing two-database fixture now has 29 cases. Miniapp client tests 5 PASS. React unchanged, not rerun. Evidence: evidence/app-boundary/verify.txt. Real member login/token-audience authority, gateway integration, WeChat tools/devices and provider payment remain unimplemented/unverified; all /trade/app operations deny access by default with no verifier.

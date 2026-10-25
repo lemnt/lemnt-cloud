@@ -6,7 +6,7 @@
 
 ## 接口边界
 
-以下是待后端实现的契约，不是已部署接口：
+以下契约未部署。购物车、券、结算及订单回执已添加后端入口，但默认没有会员会话验证器，因此拒绝所有请求；预支付和支付查询仍待实现：
 
 | 方法 | 路径 | 输入 |
 | --- | --- | --- |
@@ -31,3 +31,11 @@
 3. 实现真实微信预支付和回调验签，响应签名支付参数；客户端 wx.requestPayment 返回成功只代表客户端调用结果，最终状态必须查询服务器。当前项目没有虚构支付参数或调用假成功。
 4. 结算 UI 必须在发出请求前持久化会员会话隔离的不可变 requestNo/quoteToken/商品载荷，未知结果用原载荷重试；退出/换号不得重放另一个会员的请求。当前服务客户端只接受调用方提供的稳定编号，尚未提供完整结算页面和持久化工作流。
 5. 配置合法 HTTPS 请求域名、AppID 和 config.js，完成开发者工具/真机验证后才打开 memberApiReady。不得为了调试关闭域名校验后宣称可发布。
+
+## 后端入口接入状态
+
+AppCheckoutController 已提供 GET/PUT/DELETE cart、GET coupons、POST checkout/quote、POST checkout、GET orders/{orderNo}。GET orders 当前返回 CheckoutReceiptRes，不是物流详情；非本人或不存在统一返回订单不存在。金额及字段见 docs/trade-checkout-api.md。
+
+所有入口调用独立 MemberSessionService，只读取 Authorization Bearer，不接受 memberId。MemberSessionGatewayImpl 必须有且仅有一个可信 MemberSessionVerifier；目前没有任何真实实现，默认返回未授权。接口不能通过打开 memberApiReady 获得登录能力。Verifier 必须验证会员令牌的 audience、过期及撤销状态，并拒绝后台令牌；尚未进行该真实身份系统的联调。不要以返回固定会员ID的实现接入部署。
+
+现有网关身份链仍服务于后台，尚需实现会员路由的独立验证；本批未改白名单或部署路由。保持 memberApiReady=false。

@@ -26,3 +26,7 @@ Still pending: real prepay/query/atomic-close/signature/refund channel adapters 
 ## Payment replay hardening continuation
 
 Successful payment notifications now require order PAID/SHIPPED/COMPLETED before acknowledging a replay. RESERVING/PENDING_PAYMENT/CLOSED are reconciliation errors, with no payment/order/Outbox writes. Added two regression cases; full root Maven verify passed: 71 projects, 298 tests, zero failures/errors/skips. Evidence: evidence/payment-replay/verify.txt. No UI change or frontend rerun. Real provider signature/close/refund adapters remain pending; no production-ready claim.
+
+## Miniapp consumer entry points
+
+Added /trade/app cart/coupons/quote/checkout/order-receipt controller using existing application executors and converters. MemberSessionService resolves an independent member session through a domain gateway then validates active membership. Infrastructure has an integration port but no real session verifier: requests fail closed by default. No admin user-ID fallback, no memberId request identity, no gateway bypass, no fake login/prepay. Order receipt checks order and checkout record ownership. See docs/miniapp-api.md. Backend consumer identity/provider integration and end-to-end purchase remain pending; keep miniapp memberApiReady false.
