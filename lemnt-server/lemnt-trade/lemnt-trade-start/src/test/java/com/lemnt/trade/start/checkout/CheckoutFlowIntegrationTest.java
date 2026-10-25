@@ -48,6 +48,7 @@ class CheckoutFlowIntegrationTest {
     JdbcDataSource tradeSource, mallSource;
     Connection tradeSchema, mallSchema;
     CheckoutGateway checkout;
+    com.lemnt.trade.application.store.service.StorefrontService store;
     com.lemnt.trade.domain.checkout.gateway.SettlementGateway settlements;
     java.util.Map<String, Settlement> settlementCache =
             new java.util.concurrent.ConcurrentHashMap<>();
@@ -131,10 +132,13 @@ class CheckoutFlowIntegrationTest {
                 tradeSchema, new ClassPathResource("trade-sql/V6__settlement_order.sql"));
         ScriptUtils.executeSqlScript(
                 tradeSchema, new ClassPathResource("trade-sql/V7__settlement_abandon.sql"));
+        ScriptUtils.executeSqlScript(
+                tradeSchema, new ClassPathResource("trade-sql/V8__storefront_marketing.sql"));
         var trade =
                 template(
                         tradeSource,
                         CheckoutMapper.class,
+                        com.lemnt.trade.infrastructure.store.mapper.StorefrontMapper.class,
                         com.lemnt.trade.infrastructure.checkout.mapper.SettlementMapper.class,
                         FulfillmentMapper.class,
                         TradeOrderMapper.class,
@@ -249,6 +253,18 @@ class CheckoutFlowIntegrationTest {
                     }
                 };
         var member = new CheckoutMemberService(id -> new MemberSnapshot(id, 1));
+        store =
+                tx(
+                        new com.lemnt.trade.application.store.service.StorefrontService(
+                                new com.lemnt.trade.infrastructure.store.gateway
+                                        .StorefrontGatewayImpl(
+                                        trade.getMapper(
+                                                com.lemnt.trade.infrastructure.store.mapper
+                                                        .StorefrontMapper.class)),
+                                checkout,
+                                member,
+                                bridge),
+                        tradeSource);
         placement =
                 tx(
                         new OrderPlacementService(checkout, orders, outbox, bridge, member),
@@ -1396,5 +1412,236 @@ class CheckoutFlowIntegrationTest {
                         .localPaymentStatus());
         assertEquals("PAID", orders.findByOrderNo(order.orderNo()).status());
         assertEquals(stock, mall.findById(sku).stock());
+    }
+
+    @Test
+    void publicClaimDefaultsClosedAndDoesNotExposePrivateTemplates() {
+        var t = campaign(2, new BigDecimal("2.00"));
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        store.claim(
+                                new com.lemnt.trade.application.store.cmd.CouponClaimCmd(
+                                        1L, t.id())));
+        assertEquals(
+                0,
+                store.offers(new com.lemnt.trade.application.store.qry.PromotionPageQry(1L, 1, 20))
+                        .total());
+        store.publicClaim(
+                new com.lemnt.trade.application.store.cmd.CouponPublicClaimCmd(t.id(), true));
+        assertEquals(
+                1,
+                store.offers(new com.lemnt.trade.application.store.qry.PromotionPageQry(1L, 1, 20))
+                        .total());
+        var c = store.claim(new com.lemnt.trade.application.store.cmd.CouponClaimCmd(1L, t.id()));
+        assertEquals(
+                c.id(),
+                store.claim(new com.lemnt.trade.application.store.cmd.CouponClaimCmd(1L, t.id()))
+                        .id());
+        assertEquals(1, checkout.template(t.id()).issuedCount());
+        store.publicClaim(
+                new com.lemnt.trade.application.store.cmd.CouponPublicClaimCmd(t.id(), false));
+        assertEquals(
+                c.id(),
+                store.claim(new com.lemnt.trade.application.store.cmd.CouponClaimCmd(1L, t.id()))
+                        .id());
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        store.claim(
+                                new com.lemnt.trade.application.store.cmd.CouponClaimCmd(
+                                        2L, t.id())));
+        var wallet =
+                store.wallet(new com.lemnt.trade.application.store.qry.PromotionPageQry(1L, 1, 20));
+        assertEquals(1, wallet.total());
+        assertTrue(wallet.records().get(0).usable());
+        assertFalse(wallet.records().get(0).claimable());
+        assertEquals(
+                0,
+                store.wallet(new com.lemnt.trade.application.store.qry.PromotionPageQry(2L, 1, 20))
+                        .total());
+    }
+
+    @Test
+    void publicClaimConcurrentQuotaHasExactlyOneWinner() throws Exception {
+        var t = campaign(1, BigDecimal.ONE);
+        store.publicClaim(
+                new com.lemnt.trade.application.store.cmd.CouponPublicClaimCmd(t.id(), true));
+        var pool = Executors.newFixedThreadPool(2);
+        var start = new CountDownLatch(1);
+        try {
+            var tasks = new ArrayList<Future<Boolean>>();
+            for (long member : List.of(1L, 2L)) {
+                tasks.add(
+                        pool.submit(
+                                () -> {
+                                    start.await();
+                                    try {
+                                        store.claim(
+                                                new com.lemnt.trade.application.store.cmd
+                                                        .CouponClaimCmd(member, t.id()));
+                                        return true;
+                                    } catch (IllegalStateException ex) {
+                                        return false;
+                                    }
+                                }));
+            }
+            start.countDown();
+            assertNotEquals(
+                    tasks.get(0).get(10, TimeUnit.SECONDS), tasks.get(1).get(10, TimeUnit.SECONDS));
+            assertEquals(1, checkout.template(t.id()).issuedCount());
+        } finally {
+            pool.shutdownNow();
+        }
+    }
+
+    @Test
+    void expiredAndDisabledCouponsStayInWalletButCannotBeClaimedOrUsed() throws Exception {
+        var t = campaign(3, BigDecimal.ONE);
+        store.publicClaim(
+                new com.lemnt.trade.application.store.cmd.CouponPublicClaimCmd(t.id(), true));
+        store.claim(new com.lemnt.trade.application.store.cmd.CouponClaimCmd(1L, t.id()));
+        checkout.enableTemplate(t.id(), false);
+        assertEquals(
+                0,
+                store.offers(new com.lemnt.trade.application.store.qry.PromotionPageQry(1L, 1, 20))
+                        .total());
+        assertFalse(
+                store.wallet(new com.lemnt.trade.application.store.qry.PromotionPageQry(1L, 1, 20))
+                        .records()
+                        .get(0)
+                        .usable());
+        checkout.enableTemplate(t.id(), true);
+        try (var st = tradeSchema.createStatement()) {
+            st.execute(
+                    "UPDATE trade_coupon_template SET"
+                        + " valid_until=DATEADD('MINUTE',-1,CURRENT_TIMESTAMP) WHERE id="
+                            + t.id());
+        }
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        store.claim(
+                                new com.lemnt.trade.application.store.cmd.CouponClaimCmd(
+                                        2L, t.id())));
+        assertFalse(
+                store.wallet(new com.lemnt.trade.application.store.qry.PromotionPageQry(1L, 1, 20))
+                        .records()
+                        .get(0)
+                        .usable());
+    }
+
+    @Test
+    void cartAdditionIsIncrementalIdempotentAndDoesNotResurrectConsumedRows() {
+        var cmd = new com.lemnt.trade.application.store.cmd.CartAddCmd(1L, sku, 3, "ADD-1");
+        assertEquals(5, store.add(cmd).resultingQuantity());
+        assertEquals(5, store.add(cmd).resultingQuantity());
+        assertEquals(5, checkout.cart(1L).get(0).quantity());
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        store.add(
+                                new com.lemnt.trade.application.store.cmd.CartAddCmd(
+                                        1L, sku, 2, "ADD-1")));
+        checkout.deleteCart(1L, sku);
+        assertEquals(5, store.add(cmd).resultingQuantity());
+        assertTrue(checkout.cart(1L).isEmpty());
+        assertEquals(
+                3,
+                store.add(new com.lemnt.trade.application.store.cmd.CartAddCmd(2L, sku, 3, "ADD-1"))
+                        .resultingQuantity());
+    }
+
+    @Test
+    void additionLedgerFailureRollsBackIncrementAndRetry() throws Exception {
+        try (var st = tradeSchema.createStatement()) {
+            st.execute(
+                    "ALTER TABLE trade_cart_add_request ADD CONSTRAINT reject_add"
+                        + " CHECK(quantity<3)");
+        }
+        var cmd = new com.lemnt.trade.application.store.cmd.CartAddCmd(1L, sku, 3, "ADD-ROLLBACK");
+        assertThrows(RuntimeException.class, () -> store.add(cmd));
+        assertEquals(2, checkout.cart(1L).get(0).quantity());
+        try (var st = tradeSchema.createStatement()) {
+            st.execute("ALTER TABLE trade_cart_add_request DROP CONSTRAINT reject_add");
+        }
+        assertEquals(5, store.add(cmd).resultingQuantity());
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        store.add(
+                                new com.lemnt.trade.application.store.cmd.CartAddCmd(
+                                        1L, sku, 6, "ADD-OVER")));
+        assertEquals(5, checkout.cart(1L).get(0).quantity());
+    }
+
+    @Test
+    void concurrentSameAdditionHasOneIncrement() throws Exception {
+        var cmd = new com.lemnt.trade.application.store.cmd.CartAddCmd(1L, sku, 3, "ADD-RACE");
+        var pool = Executors.newFixedThreadPool(2);
+        var start = new CountDownLatch(1);
+        try {
+            Callable<Integer> task =
+                    () -> {
+                        start.await();
+                        return store.add(cmd).resultingQuantity();
+                    };
+            var a = pool.submit(task);
+            var b = pool.submit(task);
+            start.countDown();
+            assertEquals(5, a.get(10, TimeUnit.SECONDS));
+            assertEquals(5, b.get(10, TimeUnit.SECONDS));
+            assertEquals(5, checkout.cart(1L).get(0).quantity());
+        } finally {
+            pool.shutdownNow();
+        }
+    }
+
+    @Test
+    void couponInsertFailureRollsBackQuotaThenRetrySucceeds() throws Exception {
+        var t = campaign(3, BigDecimal.ONE);
+        store.publicClaim(
+                new com.lemnt.trade.application.store.cmd.CouponPublicClaimCmd(t.id(), true));
+        try (var st = tradeSchema.createStatement()) {
+            st.execute("ALTER TABLE trade_coupon ADD CONSTRAINT reject_claim CHECK(member_id<2)");
+        }
+        var c = new com.lemnt.trade.application.store.cmd.CouponClaimCmd(2L, t.id());
+        assertThrows(RuntimeException.class, () -> store.claim(c));
+        assertEquals(0, checkout.template(t.id()).issuedCount());
+        try (var st = tradeSchema.createStatement()) {
+            st.execute("ALTER TABLE trade_coupon DROP CONSTRAINT reject_claim");
+        }
+        assertEquals(2L, store.claim(c).memberId());
+        assertEquals(1, checkout.template(t.id()).issuedCount());
+    }
+
+    @Test
+    void distinctConcurrentAdditionsAreAccumulated() throws Exception {
+        var pool = Executors.newFixedThreadPool(2);
+        var start = new CountDownLatch(1);
+        try {
+            var a =
+                    pool.submit(
+                            () -> {
+                                start.await();
+                                return store.add(
+                                        new com.lemnt.trade.application.store.cmd.CartAddCmd(
+                                                1L, sku, 2, "DISTINCT-1"));
+                            });
+            var b =
+                    pool.submit(
+                            () -> {
+                                start.await();
+                                return store.add(
+                                        new com.lemnt.trade.application.store.cmd.CartAddCmd(
+                                                1L, sku, 3, "DISTINCT-2"));
+                            });
+            start.countDown();
+            a.get(10, TimeUnit.SECONDS);
+            b.get(10, TimeUnit.SECONDS);
+            assertEquals(7, checkout.cart(1L).get(0).quantity());
+        } finally {
+            pool.shutdownNow();
+        }
     }
 }

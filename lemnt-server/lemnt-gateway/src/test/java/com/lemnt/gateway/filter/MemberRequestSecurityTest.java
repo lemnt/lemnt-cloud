@@ -165,4 +165,51 @@ class MemberRequestSecurityTest {
         assertFalse(MemberRequestSecurity.memberPath("/member/application"));
         assertFalse(MemberRequestSecurity.memberPath("/trade/admin/orders"));
     }
+
+    @Test
+    void publicCatalogReadsStripIdentityButNeverAllowWritesOrAdminRoutes() {
+        var filter =
+                new MemberRequestSecurity(
+                        token -> {
+                            fail("no catalog authority lookup");
+                            return null;
+                        });
+        for (String path :
+                new String[] {
+                    "/mall/app/categories", "/mall/app/products", "/mall/app/products/1"
+                }) {
+            var called = new AtomicBoolean();
+            var ex = exchange(HttpMethod.GET, path, null);
+            filter.filter(
+                            ex,
+                            path,
+                            clean -> {
+                                called.set(true);
+                                assertNull(
+                                        clean.getRequest()
+                                                .getHeaders()
+                                                .getFirst(SecurityConstants.HEADER_USER_ID));
+                                return Mono.empty();
+                            })
+                    .block();
+            assertTrue(called.get());
+        }
+        for (String path :
+                new String[] {
+                    "/mall/app/products/0", "/mall/app/products/1/edit", "/mall/app/products"
+                }) {
+            var ex = exchange(HttpMethod.POST, path, null);
+            filter.filter(
+                            ex,
+                            path,
+                            clean -> {
+                                fail("public write");
+                                return Mono.empty();
+                            })
+                    .block();
+            assertTrue(ex.getResponse().getBodyAsString().block().contains("401"));
+        }
+        assertTrue(MemberRequestSecurity.memberPath("/mall/app/products"));
+        assertFalse(MemberRequestSecurity.memberPath("/mall/spus"));
+    }
 }

@@ -7,6 +7,7 @@ import {
   decodeQuote,
   decodeReceipt,
   decodeBoolean,
+  positiveId,
 } from '../checkoutDecoders';
 import type {
   CartSaveRequest,
@@ -105,4 +106,24 @@ export async function getCheckoutReceipt(orderNo: string) {
   return decodeReceipt(
     (await request<unknown>({ url: `/trade/admin/checkouts/${encodeURIComponent(orderNo)}` })).data,
   );
+}
+
+export async function getPublicCouponTemplates() {
+  return decodeArray(
+    (await request<unknown>({ url: '/trade/admin/coupon-templates/public-claim' })).data,
+    positiveId,
+  );
+}
+export async function setCouponPublicClaim(id: string, enabled: boolean) {
+  const result = decodeBoolean(
+    (
+      await request<unknown>({
+        url: `/trade/admin/coupon-templates/${positiveId(id)}/public-claim`,
+        method: 'PUT',
+        data: { enabled },
+      })
+    ).data,
+  );
+  if (!result) throw new Error('公开领取设置未确认成功');
+  return result;
 }

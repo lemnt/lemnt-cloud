@@ -55,3 +55,18 @@ it('预览及发券使用后台目标会员路径，并保留明确的券实例�
   });
   expect((await issueCoupon('1', '2')).id).toBe('8');
 });
+
+it('公开领券设置与模板启用开关分离，默认不推断开放', async () => {
+  const api = await import('./checkoutApi');
+  mockedRequest.mockResolvedValueOnce({ data: ['3', 7] });
+  expect(await api.getPublicCouponTemplates()).toEqual(['3', '7']);
+  mockedRequest.mockResolvedValueOnce({ data: true });
+  await api.setCouponPublicClaim('3', true);
+  expect(mockedRequest).toHaveBeenLastCalledWith({
+    url: '/trade/admin/coupon-templates/3/public-claim',
+    method: 'PUT',
+    data: { enabled: true },
+  });
+  mockedRequest.mockResolvedValueOnce({ data: false });
+  await expect(api.setCouponPublicClaim('3', false)).rejects.toThrow('未确认');
+});

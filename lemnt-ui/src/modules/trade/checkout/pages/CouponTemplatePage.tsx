@@ -18,6 +18,8 @@ import {
   createCouponTemplate,
   enableCouponTemplate,
   issueCoupon,
+  getPublicCouponTemplates,
+  setCouponPublicClaim,
 } from '../api/checkoutApi';
 import { positiveId } from '../checkoutDecoders';
 import { checkoutKeys } from '../hooks/checkoutKeys';
@@ -35,6 +37,15 @@ export default function CouponTemplatePage() {
     queryFn: getCouponTemplates,
     enabled: can('trade:coupon-template:list'),
   });
+  const publicClaims = useQuery({
+    queryKey: checkoutKeys.publicClaims(),
+    queryFn: getPublicCouponTemplates,
+    enabled: can('trade:coupon-template:list'),
+  });
+  const publish = useMutation({
+    mutationFn: ({ id, enabled }: { id: string; enabled: boolean }) =>
+      setCouponPublicClaim(id, enabled),
+  });
   const create = useMutation({ mutationFn: createCouponTemplate });
   const enable = useMutation({
     mutationFn: ({ id, enabled }: { id: string; enabled: boolean }) =>
@@ -46,7 +57,7 @@ export default function CouponTemplatePage() {
   });
   async function refresh() {
     try {
-      await client.invalidateQueries({ queryKey: checkoutKeys.all });
+      await client.invalidateQueries({ queryKey: checkoutKeys.all }, { throwOnError: true });
     } catch (reason) {
       message.warning(`已保存，但刷新失败：${String(reason)}`);
     }
@@ -54,6 +65,15 @@ export default function CouponTemplatePage() {
   const columns: ProColumns<CouponTemplate>[] = [
     { title: '编号', dataIndex: 'id' },
     { title: '编码', dataIndex: 'code' },
+    {
+      title: '会员自助领取',
+      renderText: (_, row) =>
+        publicClaims.isSuccess
+          ? publicClaims.data.includes(row.id)
+            ? '已开放'
+            : '未开放'
+          : '读取未完成',
+    },
     { title: '名称', dataIndex: 'name' },
     { title: '类型', dataIndex: 'kind', valueEnum: couponKindEnum },
     { title: '门槛（元）', dataIndex: 'threshold' },
@@ -72,6 +92,32 @@ export default function CouponTemplatePage() {
       title: '操作',
       valueType: 'option',
       render: (_, row) => [
+        can('trade:coupon-template:edit') && publicClaims.isSuccess && (
+          <Popconfirm
+            key="public"
+            title={
+              publicClaims.data.includes(row.id)
+                ? '关闭会员自助领取？已领券不受此开关影响。'
+                : '开放会员自助领取？仍受模板启用、有效期、名额与每人限领规则约束。'
+            }
+            onConfirm={async () => {
+              try {
+                await publish.mutateAsync({
+                  id: row.id,
+                  enabled: !publicClaims.data.includes(row.id),
+                });
+                message.success('公开领取设置已保存');
+                await refresh();
+              } catch (e) {
+                message.error(String(e));
+              }
+            }}
+          >
+            <Button type="link" disabled={publish.isPending}>
+              {publicClaims.data.includes(row.id) ? '关闭自助领取' : '开放自助领取'}
+            </Button>
+          </Popconfirm>
+        ),
         can('trade:coupon:issue') && (
           <Button
             key="issue"
@@ -117,6 +163,13 @@ export default function CouponTemplatePage() {
         type="info"
         title="后台授权操作；每会员每模板限一张。发放与兑换均核验有效期，规则创建后不能修改。"
       />
+      {publicClaims.isError && (
+        <Alert
+          type="error"
+          title="公开领取设置读取失败，操作已禁止"
+          action={<Button onClick={() => publicClaims.refetch()}>重试</Button>}
+        />
+      )}
       {templates.isError && (
         <Alert
           type="error"

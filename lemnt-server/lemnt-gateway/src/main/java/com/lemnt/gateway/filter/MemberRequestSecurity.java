@@ -28,7 +28,9 @@ public class MemberRequestSecurity {
                     "/member/app/auth/create-weixin-jsapi-signature");
 
     public static boolean memberPath(String path) {
-        return path.equals("/member/app")
+        return path.equals("/mall/app")
+                || path.startsWith("/mall/app/")
+                || path.equals("/member/app")
                 || path.startsWith("/member/app/")
                 || path.equals("/trade/app")
                 || path.startsWith("/trade/app/");
@@ -59,7 +61,11 @@ public class MemberRequestSecurity {
                                 })
                         .build();
         var clean = exchange.mutate().request(request).build();
-        if ((request.getMethod() == HttpMethod.POST && PUBLIC_POST.contains(path))
+        if ((request.getMethod() == HttpMethod.GET
+                        && (path.equals("/mall/app/categories")
+                                || path.equals("/mall/app/products")
+                                || path.matches("/mall/app/products/[1-9][0-9]{0,18}")))
+                || (request.getMethod() == HttpMethod.POST && PUBLIC_POST.contains(path))
                 || (request.getMethod() == HttpMethod.PUT
                         && path.equals("/member/app/user/reset-password"))
                 || (request.getMethod() == HttpMethod.GET

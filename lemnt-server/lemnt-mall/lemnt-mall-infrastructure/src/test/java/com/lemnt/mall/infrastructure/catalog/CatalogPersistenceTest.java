@@ -32,6 +32,7 @@ class CatalogPersistenceTest {
     CatalogGateway catalog;
     ProductGateway products;
     CatalogMapper mapper;
+    com.lemnt.mall.domain.store.gateway.StoreCatalogGateway store;
     Long categoryId;
     Long brandId;
 
@@ -60,6 +61,7 @@ class CatalogPersistenceTest {
         bean.setConfiguration(config);
         var factory = bean.getObject();
         config.addMapper(CatalogMapper.class);
+        config.addMapper(com.lemnt.mall.infrastructure.store.mapper.StoreCatalogMapper.class);
         config.addMapper(ProductMapper.class);
         config.addMapper(StockReservationMapper.class);
         var template = new SqlSessionTemplate(factory);
@@ -71,6 +73,14 @@ class CatalogPersistenceTest {
                                 template.getMapper(ProductMapper.class),
                                 template.getMapper(StockReservationMapper.class)),
                         ProductGateway.class);
+        store =
+                transactional(
+                        new com.lemnt.mall.infrastructure.store.gateway.StoreCatalogGatewayImpl(
+                                template.getMapper(
+                                        com.lemnt.mall.infrastructure.store.mapper
+                                                .StoreCatalogMapper.class),
+                                catalog),
+                        com.lemnt.mall.domain.store.gateway.StoreCatalogGateway.class);
         categoryId =
                 catalog.saveCategory(new Category(null, null, "category", null, 0, "ENABLED")).id();
         brandId = catalog.saveBrand(new Brand(null, "brand", null, null, 0, "ENABLED")).id();
@@ -351,5 +361,81 @@ class CatalogPersistenceTest {
                                 List.of())));
         assertEquals(5, catalog.spu(spu.id()).skus().get(0).stock());
         assertTrue(catalog.page(new CatalogFilter("missing", null, 0, 10)).records().isEmpty());
+    }
+
+    @Test
+    void publicCatalogHidesOffShelfAndDisabledTaxonomyAndBrand() {
+        var spu = create("PUBLIC", draft("a", 3));
+        var f = new com.lemnt.mall.domain.store.model.StoreFilter(null, null, 0, 20);
+        assertEquals(0, store.count(f));
+        assertNull(store.product(spu.id()));
+        catalog.shelf(spu.id(), true);
+        assertEquals(1, store.count(f));
+        assertTrue(store.products(f).get(0).available());
+        assertEquals(1, store.product(spu.id()).skus().size());
+        catalog.saveCategory(new Category(categoryId, null, "category", null, 0, "DISABLED"));
+        assertEquals(0, store.count(f));
+        assertNull(store.product(spu.id()));
+        assertTrue(store.categories().isEmpty());
+        catalog.saveCategory(new Category(categoryId, null, "category", null, 0, "ENABLED"));
+        catalog.saveBrand(new Brand(brandId, "brand", null, null, 0, "DISABLED"));
+        assertEquals(0, store.count(f));
+        assertNull(store.product(spu.id()));
+    }
+
+    @Test
+    void publicCatalogFiltersAncestorAndSearchWithBoundedPriceRange() throws Exception {
+        Long parent = categoryId;
+        categoryId =
+                catalog.saveCategory(new Category(null, parent, "child", null, 1, "ENABLED")).id();
+        var first = draft("a", 0);
+        var second =
+                new CatalogSku(
+                        null,
+                        null,
+                        "b",
+                        "other",
+                        new BigDecimal("12.50"),
+                        3,
+                        null,
+                        Map.of("颜色", "b"),
+                        "ON_SHELF");
+        var spu = create("RANGE", first, second);
+        catalog.shelf(spu.id(), true);
+        var f = new com.lemnt.mall.domain.store.model.StoreFilter("goods", parent, 0, 1);
+        assertEquals(1, store.count(f));
+        assertEquals(new BigDecimal("10.00"), store.products(f).get(0).minPrice());
+        assertEquals(new BigDecimal("12.50"), store.products(f).get(0).maxPrice());
+        assertEquals(
+                0,
+                store.count(
+                        new com.lemnt.mall.domain.store.model.StoreFilter("missing", null, 0, 20)));
+        catalog.saveCategory(new Category(parent, null, "parent", null, 0, "DISABLED"));
+        assertTrue(store.categories().isEmpty());
+        assertNull(store.product(spu.id()));
+        assertEquals(0, store.count(f));
+    }
+
+    @Test
+    void publicCatalogKeepsOutOfStockProductsButRemovesHiddenSkus() throws Exception {
+        var spu = create("SOLD", draft("a", 0), draft("b", 0));
+        catalog.shelf(spu.id(), true);
+        assertFalse(
+                store.products(new com.lemnt.mall.domain.store.model.StoreFilter(null, null, 0, 20))
+                        .get(0)
+                        .available());
+        try (var st = schemaConnection.createStatement()) {
+            st.execute(
+                    "UPDATE mall_product SET status='OFF_SHELF' WHERE id="
+                            + spu.skus().get(0).id());
+        }
+        assertEquals(1, store.product(spu.id()).skus().size());
+        try (var st = schemaConnection.createStatement()) {
+            st.execute("UPDATE mall_product SET status='OFF_SHELF'");
+        }
+        assertNull(store.product(spu.id()));
+        assertEquals(
+                0,
+                store.count(new com.lemnt.mall.domain.store.model.StoreFilter(null, null, 0, 20)));
     }
 }

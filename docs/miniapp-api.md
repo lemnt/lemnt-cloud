@@ -38,3 +38,8 @@ GET /trade/app/orders/{orderNo}/payment is now implemented as a member-scoped **
 ## Member authority implementation update
 
 Member password/SMS/WeChat Mini/MP authority and authoritative Dubbo verifier are now implemented in the existing member module. Prior statements that no verifier exists describe the earlier scaffold. See [member-api.md](member-api.md) for endpoints, V2/V3 SQL, gateway route and credential requirements. This does not enable the native client automatically: memberApiReady remains false until deployment/provider/device verification. Trade still resolves member identity from its independent token, never admin headers.
+
+
+## Storefront/coupon continuation v7
+
+New public mall/app product/category browsing and authenticated coupon-center/wallet/claim plus idempotent cart-add routes are documented in [storefront-marketing-api.md](storefront-marketing-api.md). Native startup now uses the product listing; existing cart/settlement routes remain. Trade V8 and strict gateway read rules are required; readiness remains false. Public template claim defaults closed, separately controlled by admin. This is not full migration of seconds sale/group-buy/bargain/stacking or provider payment.
