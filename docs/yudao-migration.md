@@ -63,3 +63,12 @@ Review and apply SQL through the normal migration process in a test database fir
 - Additive setup inputs: mall V2 SQL, system `V20261025__mall_catalog_menu.sql` (no role grants), and `docs/config/mall-gateway-route.yaml` (no StripPrefix). See [catalog API/rollout](mall-catalog-api.md).
 - Latest local verification: 71 Maven projects, 253 backend tests and 141 frontend tests; typecheck/lint/format/build passed. Evidence: work-items/yudao-member-mall-trade-migration/evidence/catalog/.
 - Browser visual/interaction verification is BLOCKED by the runtime Unix socket restriction. Target MySQL, live Dubbo/Nacos/gateway and real channels were not exercised. Catalog is an adaptation with documented limits, not a full Yudao port. Cart/coupons/full order lifecycle/member-trade UI remain pending; retain Draft.
+
+## 2026-10-25 durable checkout / coupon continuation
+
+- Added admin member-cart management, fixed/percent coupon templates/issuance and server-priced cart preview/checkout. Member self-service identity is not fabricated from admin sessions.
+- Order creation now commits RESERVING + item snapshots + optional coupon lock + checkout key/pricing + reserve intent before any inventory RPC. Outbox finalizes only after all holds succeed; cancellation tombstones fence delayed holds. Separate DB-clock timeout batches protect reservation recovery from blocked payment queries.
+- Quote tokens reject changes after preview; member-scoped idempotency preserves original pricing. Coupon quota/ownership/lock/use/release and exact order/payment invariants are transactional. Versioned cart cleanup preserves concurrent edits and delete/re-add.
+- React trade/coupon/index and trade/cart/index use existing components and persist unknown-outcome requests for exact retry. No new npm dependencies. Zero-pay orders, real payment providers and full shipping/refund lifecycle remain pending.
+- Setup/rollout API contract: [trade-checkout-api.md](trade-checkout-api.md). Deploy the new mall RPC provider before trade workers; apply trade V4 and reviewed system menu/gateway inputs. No live configuration, role grant or migration executed.
+- Latest verification: 71 Maven reactor projects; 283 backend tests and 148 frontend tests, zero test failures. Typecheck/lint/format/build passed. Two-DB transaction/fault-injection tests are not live Dubbo/MySQL/channel verification. Browser interaction/Visual QA was not rerun after the earlier socket restriction; keep Draft.

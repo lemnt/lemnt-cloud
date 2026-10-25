@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 /**
- * Application boundary for a notification already authenticated by a concrete channel adapter.
- * Do not bind this executor directly to an unauthenticated HTTP callback.
+ * Application boundary for a notification already authenticated by a concrete channel adapter. Do
+ * not bind this executor directly to an unauthenticated HTTP callback.
  */
 @Component
 @RequiredArgsConstructor
@@ -22,12 +22,17 @@ public class PaymentNotifyCmdExe {
     private final TradePaymentGateway payments;
     private final TradeOrderGateway orders;
     private final TradeOutboxGateway outbox;
+    private final com.lemnt.trade.domain.checkout.gateway.CheckoutGateway checkout;
 
     @Transactional(rollbackFor = Exception.class)
     public void execute(VerifiedPaymentNotification notification) {
-        if (notification == null || blank(notification.paymentNo()) || blank(notification.orderNo())
-                || blank(notification.channel()) || blank(notification.channelTradeNo())
-                || blank(notification.notifyId()) || notification.amount() == null
+        if (notification == null
+                || blank(notification.paymentNo())
+                || blank(notification.orderNo())
+                || blank(notification.channel())
+                || blank(notification.channelTradeNo())
+                || blank(notification.notifyId())
+                || notification.amount() == null
                 || notification.amount().signum() <= 0) {
             throw new IllegalArgumentException("支付通知参数不合法");
         }
@@ -41,6 +46,9 @@ public class PaymentNotifyCmdExe {
                 || payment.amount().compareTo(notification.amount()) != 0) {
             throw new IllegalArgumentException("支付通知与本地支付单不匹配");
         }
+
+        if (order.totalAmount().compareTo(payment.amount()) != 0)
+            throw new IllegalStateException("支付单金额与订单应付金额不一致");
 
         if ("SUCCESS".equals(payment.status())) {
             // Same payment callback is idempotent; mismatched replay is rejected.
@@ -58,12 +66,20 @@ public class PaymentNotifyCmdExe {
             throw new IllegalStateException("订单状态已变化，请重试");
         }
 
+        checkout.useCoupon(order.orderNo());
+
         // Payment and outbox event commit in the same trade database transaction.
         String eventId = UUID.randomUUID().toString();
-        String payload = "{\"orderNo\":\"" + order.orderNo() + "\",\"paymentNo\":\""
-                + notification.paymentNo() + "\"}";
+        String payload =
+                "{\"orderNo\":\""
+                        + order.orderNo()
+                        + "\",\"paymentNo\":\""
+                        + notification.paymentNo()
+                        + "\"}";
         outbox.append(eventId, "TRADE_ORDER", order.orderNo(), "TRADE_ORDER_PAID", payload);
     }
 
-    private boolean blank(String value) { return value == null || value.isBlank(); }
+    private boolean blank(String value) {
+        return value == null || value.isBlank();
+    }
 }

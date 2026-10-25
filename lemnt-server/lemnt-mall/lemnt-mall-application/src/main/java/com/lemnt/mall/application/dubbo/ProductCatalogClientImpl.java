@@ -21,6 +21,21 @@ public class ProductCatalogClientImpl implements ProductCatalogClient {
     }
 
     @Override
+    public java.util.List<ProductSnapshotDTO> findOnShelfBatch(java.util.List<Long> ids) {
+        return gateway.findSellableByIds(ids).stream()
+                .map(
+                        p ->
+                                new ProductSnapshotDTO(
+                                        p.id(), p.productCode(), p.name(), p.price(), p.stock()))
+                .toList();
+    }
+
+    @Override
+    public void cancelReservation(String reservationNo, Long id, Integer quantity) {
+        gateway.cancelReservation(reservationNo, id, quantity);
+    }
+
+    @Override
     public boolean reserveStock(String reservationNo, Long id, Integer quantity) {
         return gateway.reserveStock(reservationNo, id, quantity);
     }

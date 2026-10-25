@@ -1,6 +1,6 @@
 # Development design
 
-v2 · 2026-10-25 · code-software-engineer. Inputs: 01-intake.md v1, existing trade code at a476b90; server AGENTS.md. Reference read: code-software-engineer/references/development-design.md and references/java.md.
+v3 · 2026-10-25 · code-software-engineer. Inputs: 01-intake.md v1, existing trade code at a476b90; server AGENTS.md. Reference read: code-software-engineer/references/development-design.md and references/java.md.
 
 ## Reliability slice
 
@@ -58,3 +58,37 @@ React management will reuse existing Ant Design/ProTable/ModalForm/Query pattern
 Serialization/UI clarification: actual JacksonConfig serializes BigDecimal as strings and large Long as strings, omitting nulls. The catalog API decoders normalize IDs to strings and preserve price strings; form edit is bounded to 99,999,999,999.99 yuan and refuses unsafe larger amounts. Actual serializer tests cover this contract. UI source uses existing components and no new dependency/lockfile. Menu seed and pass-through gateway snippet are additive deployment inputs, not applied changes. Browser smoke launch is blocked by the runtime Unix socket restriction; do not claim visual/interaction PASS.
 
 Startup review found migrated start classes lacked the explicit Dubbo and MyBatis scanning used by lemnt-system. Add EnableDubbo for each migrated service root and MapperScan on its infrastructure package filtered by @Mapper; this covers both legacy direct mapper packages and the new catalog mapper subpackage. This repairs startup wiring configuration; a successful compile still does not prove Nacos/Dubbo runtime registration.
+
+
+## Checkout slice v3 (base aaa69ec)
+
+v2 is preserved at aaa69ec. Inputs: existing trade/order/Outbox code and Yudao 8db9153 CartDO, CouponDO and CouponTemplateDO. Reuse existing modules, reservation ledger, order aggregates and dispatcher. New backend/UI contracts are admin operations on a specified member; no public member identity is inferred from an admin userId or accepted as trusted consumer identity.
+
+### Reliability prerequisite and order placement
+
+Current synchronous preoccupation can leak inventory on an ambiguous RPC result before local commit. Persist order/items, checkout request, optional coupon lock and TRADE_ORDER_RESERVE in one trade transaction, with status RESERVING. Existing order-create delegates to the same placement service; optional legacy requestNo is generated when absent. Cart checkout requires an explicit idempotency key, with member-scoped payload fingerprint validation. Retry returns the original order and immutable pricing snapshot, never reprices or debits again.
+
+The outbox worker reserves all items using stable order/product keys. It finalizes RESERVING -> PENDING_PAYMENT only after all reserves succeed. Stock rejection closes the order locally and appends TRADE_ORDER_CLOSED. Unknown RPC failures retry through the existing bounded lease worker. Abandoned RESERVING orders are closed after 30 minutes by the optional scheduler, even if a reserve event is DEAD. No payment intent is allowed during RESERVING.
+
+Mall gains cancelReservation(orderNo,productId,quantity): a terminal RELEASED tombstone is inserted if reservation has not arrived; an existing reserved row releases stock; a confirmed row rejects cancellation. All inventory state transitions lock the product before the reservation row and validate immutable quantity. This makes delayed reserve-vs-cancel races safe and treats unattempted SKU releases as idempotent. Closed events cancel every intended item, including an RPC whose response was lost. New mall providers must be deployed before the new trade consumer; do not mix old dispatcher behavior with RESERVING orders.
+
+### Cart and coupons
+
+- Cart keeps unique member/SKU rows with generated IDs, quantities 1..999, selected flag and monotonic version per surviving row. Per-member account locks serialize edits/checkout; maximum 200 lines. Reads use a batch catalog RPC, report unavailable SKUs explicitly, and never persist stale prices.
+- Checkout uses 1..100 explicit selected SKU IDs; prices/names/quantities come from server snapshots and owned cart rows. Saved cart ID/version references are deleted only after inventory reservation succeeds; concurrent edits or delete/re-add are preserved.
+- Coupon templates are immutable except enabled state; fixed yuan discount or pay-percent semantics (80 means pay 80%, i.e. 8折), optional percent discount cap, threshold, fixed validity interval and bounded total issuance. One instance per member/template. Issuance counter and instance commit atomically; idempotent retries do not consume another quota.
+- Coupon states AVAILABLE -> LOCKED -> USED; order close/reservation failure releases LOCKED back to AVAILABLE. Expired or disabled templates cannot be newly redeemed. An already locked order retains its priced discount until success/close. Member ownership, threshold, time and state are revalidated while locking the coupon. Coupon mutation joins order/payment local transactions. No stacking, product-specific scope, relative-date validity, unlimited issuance or refund return in this slice.
+- Pricing uses exact decimal yuan, positive server prices and cents precision; discount is capped at gross and percent discounts round down to cents. Quote can show zero payable; placement explicitly rejects zero-payable orders because the existing payment/order schema requires positive totals. No hidden minimum charge is invented. Store original/discount/payable and coupon ID for audit; line snapshots are gross.
+
+### Contracts, tasks and verification
+
+New domain checkout models/gateway; application Cmd/DTO/converters/services/executors; infrastructure DO/mappers/gateway; adapter Req/Res/converters with RequiresPermissions. Admin routes under /trade/admin: member cart GET/PUT/DELETE, member coupon issue/list, coupon-template GET/POST/enable, member quote/checkout POST, checkout receipt GET; original /trade/orders remains and returns RESERVING initially. HTTP documentation: docs/trade-checkout-api.md. Real authenticated member checkout is still blocked on member authentication integration.
+
+Task order: mall cancellation/batch contract + tests; cart/coupon persistence/rules + tests; placement/outbox/close/payment integration + transaction/race/failure tests; admin HTTP and React coupon/cart/quote/checkout UI; final Maven/frontend verification and same Draft PR. Test actual migration SQL/transaction proxies in H2, separating target-MySQL/live-Dubbo checks. Cover duplicate requests, reused-key mismatches, concurrent coupon quota, ownership, expired/locked coupons, delayed reserve cancellation and cart version preservation. Keep actual browser and real channel results separate; no invented PASS.
+
+Checkout hardening: preview returns a canonical quoteToken over immutable item identities/quantities/prices/names and coupon totals; submit requires the same token and rejects changed quotes before order creation. The token is also part of the member-scoped request fingerprint. Active RESERVING references prevent a different request from settling the same cart rows twice. Pending-payment and RESERVING expiry batches are separate to prevent unavailable payment adapters starving reservation recovery; cutoff uses the trade database clock. Coupon use/release checks the persisted checkout lock invariant in the same payment/close transaction; payment amount must equal order payable, not merely the local payment record.
+
+
+UI state and deployment inputs: operator-scoped persisted checkout intents retain member/SKU/coupon/quoteToken/requestNo until a known receipt. Restored invalid storage is an explicit error, never silently overwritten. New menu seed creates trade/coupon/index and trade/cart/index without role grants; /trade/** gateway snippet preserves its prefix. Coupon/date form serialization follows the installed Pro Components dateFormatter='string' default and the actual Jackson yyyy-MM-dd HH:mm:ss contract verified by MVC tests. Coupon use/release and exact payment/order amount invariants are tested within real local transactions, and all stock transitions lock product then reservation.
+
+Time-zone hardening: newly saved trade orders explicitly use the trade DB creation/update timestamp, matching database-clock expiry. Integration tests open trade sessions in UTC independently of the JVM/mall defaults. Existing pre-migration timestamps are not guessed or rewritten; operators must check their configured historic time-zone assumptions during rollout.

@@ -21,41 +21,97 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     private final TradeOrderItemMapper items;
 
     @Override
+    public LocalDateTime databaseNow() {
+        return orders.databaseNow();
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public TradeOrder save(TradeOrder order) {
-        TradeOrderDO row = new TradeOrderDO().setOrderNo(order.orderNo()).setMemberId(order.memberId())
-                .setTotalAmount(order.totalAmount()).setStatus(order.status());
+        TradeOrderDO row =
+                new TradeOrderDO()
+                        .setOrderNo(order.orderNo())
+                        .setMemberId(order.memberId())
+                        .setTotalAmount(order.totalAmount())
+                        .setStatus(order.status());
+        // Expiry uses the database clock; do not fill order creation from a possibly different JVM
+        // zone.
+        row.setCreateTime(orders.databaseNow());
+        row.setUpdateTime(row.getCreateTime());
         orders.insert(row);
         for (TradeOrderItem item : order.items()) {
-            items.insert(new TradeOrderItemDO().setOrderId(row.getId()).setProductId(item.productId())
-                    .setProductCode(item.productCode()).setProductName(item.productName())
-                    .setUnitPrice(item.unitPrice()).setQuantity(item.quantity()).setLineAmount(item.lineAmount()));
+            items.insert(
+                    new TradeOrderItemDO()
+                            .setOrderId(row.getId())
+                            .setProductId(item.productId())
+                            .setProductCode(item.productCode())
+                            .setProductName(item.productName())
+                            .setUnitPrice(item.unitPrice())
+                            .setQuantity(item.quantity())
+                            .setLineAmount(item.lineAmount()));
         }
-        return new TradeOrder(row.getId(), row.getOrderNo(), row.getMemberId(), row.getTotalAmount(),
-                row.getStatus(), order.items(), row.getCreateTime());
+        return new TradeOrder(
+                row.getId(),
+                row.getOrderNo(),
+                row.getMemberId(),
+                row.getTotalAmount(),
+                row.getStatus(),
+                order.items(),
+                row.getCreateTime());
     }
 
     @Override
     public TradeOrder findByOrderNo(String orderNo) {
-        TradeOrderDO row = orders.selectOne(Wrappers.lambdaQuery(TradeOrderDO.class)
-                .eq(TradeOrderDO::getOrderNo, orderNo).last("LIMIT 1"));
+        TradeOrderDO row =
+                orders.selectOne(
+                        Wrappers.lambdaQuery(TradeOrderDO.class)
+                                .eq(TradeOrderDO::getOrderNo, orderNo)
+                                .last("LIMIT 1"));
         if (row == null) return null;
-        List<TradeOrderItem> lines = items.selectList(Wrappers.lambdaQuery(TradeOrderItemDO.class)
-                .eq(TradeOrderItemDO::getOrderId, row.getId()).orderByAsc(TradeOrderItemDO::getId))
-                .stream().map(item -> new TradeOrderItem(item.getProductId(), item.getProductCode(),
-                        item.getProductName(), item.getUnitPrice(), item.getQuantity(), item.getLineAmount())).toList();
-        return new TradeOrder(row.getId(), row.getOrderNo(), row.getMemberId(), row.getTotalAmount(),
-                row.getStatus(), lines, row.getCreateTime());
+        List<TradeOrderItem> lines =
+                items
+                        .selectList(
+                                Wrappers.lambdaQuery(TradeOrderItemDO.class)
+                                        .eq(TradeOrderItemDO::getOrderId, row.getId())
+                                        .orderByAsc(TradeOrderItemDO::getId))
+                        .stream()
+                        .map(
+                                item ->
+                                        new TradeOrderItem(
+                                                item.getProductId(),
+                                                item.getProductCode(),
+                                                item.getProductName(),
+                                                item.getUnitPrice(),
+                                                item.getQuantity(),
+                                                item.getLineAmount()))
+                        .toList();
+        return new TradeOrder(
+                row.getId(),
+                row.getOrderNo(),
+                row.getMemberId(),
+                row.getTotalAmount(),
+                row.getStatus(),
+                lines,
+                row.getCreateTime());
     }
 
     @Override
     public TradeOrder findByOrderNoForUpdate(String orderNo) {
         // Caller must own a transaction. Lock header before reading payment rows.
-        TradeOrderDO row = orders.selectOne(Wrappers.lambdaQuery(TradeOrderDO.class)
-                .eq(TradeOrderDO::getOrderNo, orderNo).last("FOR UPDATE"));
+        TradeOrderDO row =
+                orders.selectOne(
+                        Wrappers.lambdaQuery(TradeOrderDO.class)
+                                .eq(TradeOrderDO::getOrderNo, orderNo)
+                                .last("FOR UPDATE"));
         if (row == null) return null;
-        return new TradeOrder(row.getId(), row.getOrderNo(), row.getMemberId(), row.getTotalAmount(),
-                row.getStatus(), List.of(), row.getCreateTime());
+        return new TradeOrder(
+                row.getId(),
+                row.getOrderNo(),
+                row.getMemberId(),
+                row.getTotalAmount(),
+                row.getStatus(),
+                List.of(),
+                row.getCreateTime());
     }
 
     @Override
@@ -65,11 +121,33 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
 
     @Override
     public List<TradeOrder> findPendingPaymentCreatedBefore(LocalDateTime deadline, int limit) {
-        return orders.selectList(Wrappers.lambdaQuery(TradeOrderDO.class)
-                .eq(TradeOrderDO::getStatus, "PENDING_PAYMENT")
-                .lt(TradeOrderDO::getCreateTime, deadline)
-                .orderByAsc(TradeOrderDO::getCreateTime).last("LIMIT " + Math.max(1, Math.min(limit, 500))))
-                .stream().map(row -> new TradeOrder(row.getId(), row.getOrderNo(), row.getMemberId(),
-                        row.getTotalAmount(), row.getStatus(), List.of(), row.getCreateTime())).toList();
+        return expired("PENDING_PAYMENT", deadline, limit);
+    }
+
+    @Override
+    public List<TradeOrder> findReservingCreatedBefore(LocalDateTime deadline, int limit) {
+        return expired("RESERVING", deadline, limit);
+    }
+
+    private List<TradeOrder> expired(String status, LocalDateTime deadline, int limit) {
+        return orders
+                .selectList(
+                        Wrappers.lambdaQuery(TradeOrderDO.class)
+                                .eq(TradeOrderDO::getStatus, status)
+                                .lt(TradeOrderDO::getCreateTime, deadline)
+                                .orderByAsc(TradeOrderDO::getCreateTime)
+                                .last("LIMIT " + Math.max(1, Math.min(limit, 500))))
+                .stream()
+                .map(
+                        row ->
+                                new TradeOrder(
+                                        row.getId(),
+                                        row.getOrderNo(),
+                                        row.getMemberId(),
+                                        row.getTotalAmount(),
+                                        row.getStatus(),
+                                        List.of(),
+                                        row.getCreateTime()))
+                .toList();
     }
 }

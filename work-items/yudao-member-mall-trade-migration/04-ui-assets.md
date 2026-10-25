@@ -1,6 +1,6 @@
-# Catalog admin UI baseline
+# Migration admin UI baseline
 
-v1 · 2026-10-25 · code-software-engineer. Input: development design v2; existing PostPage, DeptPage, AdminModalForm, usePermission and router registry. Backend contract: Catalog Req/Res and docs/mall-catalog-api.md (being synchronized with implementation).
+v2 · 2026-10-25 · code-software-engineer. Input: development design v2; existing PostPage, DeptPage, AdminModalForm, usePermission and router registry. Backend contract: Catalog Req/Res and docs/mall-catalog-api.md (being synchronized with implementation).
 
 UI Design: COMPLETE as an implementation baseline. Interactive layout reference: `prototype/catalog-admin.html` v1. Production component/spacing/color baseline is the existing Ant Design/ProTable/PostPage/AdminModalForm implementation, not new bespoke styling. The HTML is a labeled design reference with sample/empty states, not live service integration.
 
@@ -13,4 +13,19 @@ UI Design: COMPLETE as an implementation baseline. Interactive layout reference:
 
 Assets: COMPLETE/N/A for new binary assets. Reuse installed Ant Design controls and the existing AdminModalForm EditOutlined icon through its existing import. No new fonts, photos, illustrations, SVGs or third-party assets are introduced; no placeholders count as product data.
 
-Implementation: pending. Visual QA: NOT RUN until the UI is built and compared to this baseline. Backend end-to-end service and permissions verification is separately recorded, not inferred from browser mocks.
+Catalog implementation/verification references: 05-development.md and 06-test.md. Actual browser Visual QA remains unverified; UI design and asset baseline completion is not an interaction PASS.
+
+
+## Checkout / coupon UI baseline v2
+
+Input: design v3, existing catalog/system pages and actual checkout Req/Res. Interactive reference: prototype/checkout-admin.html. No new binary assets, icons, fonts or dependencies; use existing PageContainer/ProTable/AdminModalForm/Ant Design controls and TanStack Query. The existing catalog baseline remains valid.
+
+- Coupon template page: real template list with code/name/type/threshold/discount/validity/quota/enabled columns; create modal with fixed or percent parameters; enable/disable confirmation; issue modal specifying a target member ID and template. No auto-selected consumer identity or role assumptions.
+- Member cart/checkout page: explicitly labeled admin operation; positive member-ID search, real cart rows with fresh sellability/stock/price, quantity and selected-state edit modal, confirmed delete. Coupons show owned AVAILABLE instances and template labels where template:list is granted. Selection changes invalidate the preview.
+- Quote pane displays server original/discount/payable strings. Submit always uses server-side repricing; this is not a price guarantee. Zero-payable preview disables submission and explains that zero-pay orders are not implemented.
+- Before submitting, persist the immutable requestNo/member/SKU/coupon payload in operator-scoped browser storage. Unknown outcomes retain this payload and allow exact retry; edits/member changes are disabled while an intent is unresolved. An explicit confirmed local reset explains it does not cancel a possibly created server order. Storage failure prevents an unsafe untracked submission.
+- Receipt pane shows orderNo and actual RESERVING/PENDING_PAYMENT/PAID/CLOSED state with explicit refresh, no fake payment button. During RESERVING, another request is disallowed for the same cart rows. Successful refresh invalidates cart/coupon caches; failures preserve data and report errors.
+- Read/action gates use usePermission. Need new system menu entries and pass-through /trade/** gateway route, supplied as reviewed setup inputs without assigning roles.
+- Empty/loading/failure states are explicit; save failures preserve form data; write success is separated from refresh failure. Existing labeled forms/modal keyboard/focus rules apply; mobile tables use horizontal scrolling.
+
+UI Design: COMPLETE baseline for implementation. Assets: COMPLETE/N/A (existing library assets). Checkout implementation and verification are recorded in 05-development.md and 06-test.md. Visual QA remains BLOCKED by the previously observed runtime Unix socket restriction; no screenshots or browser interaction PASS are claimed.

@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * At-least-once outbox processor. All inventory methods MUST be idempotent.
- * Future MQ integration can publish these events and move inventory handling to a consumer.
+ * At-least-once outbox processor. All inventory methods MUST be idempotent. Future MQ integration
+ * can publish these events and move inventory handling to a consumer.
  */
 @Component
 @RequiredArgsConstructor
@@ -22,6 +22,7 @@ public class TradeOutboxDispatchExe {
     private final TradeOutboxGateway outbox;
     private final TradeOrderGateway orders;
     private final ProductCatalogGateway catalog;
+    private final com.lemnt.trade.application.checkout.service.CheckoutLifecycleService lifecycle;
 
     public int execute(int batchSize) {
         int processed = 0;
@@ -33,8 +34,11 @@ public class TradeOutboxDispatchExe {
                 if (outbox.delivered(event.eventId(), token)) processed++;
             } catch (Exception ex) {
                 outbox.failed(event.eventId(), token, event.retryCount() + 1);
-                LOG.error("Outbox delivery failed, eventId={}, orderNo={}",
-                        event.eventId(), event.aggregateNo(), ex);
+                LOG.error(
+                        "Outbox delivery failed, eventId={}, orderNo={}",
+                        event.eventId(),
+                        event.aggregateNo(),
+                        ex);
             }
         }
         return processed;
@@ -42,17 +46,40 @@ public class TradeOutboxDispatchExe {
 
     private void process(OutboxEvent event) {
         TradeOrder order = orders.findByOrderNo(event.aggregateNo());
-        if (order == null) throw new IllegalStateException("Order not found: " + event.aggregateNo());
+        if (order == null)
+            throw new IllegalStateException("Order not found: " + event.aggregateNo());
         switch (event.eventType()) {
+            case "TRADE_ORDER_RESERVE" -> {
+                if (!"RESERVING".equals(order.status())) return;
+                if (order.items().isEmpty()) throw new IllegalStateException("预占订单没有明细");
+                for (var item : order.items()) {
+                    if (!catalog.reserveStock(order.orderNo(), item.productId(), item.quantity())) {
+                        lifecycle.reservationFailed(order.orderNo());
+                        return;
+                    }
+                }
+                lifecycle.reservationSucceeded(order.orderNo());
+            }
             case "TRADE_ORDER_PAID" -> {
-                if (!"PAID".equals(order.status())) throw new IllegalStateException("Order not paid");
-                order.items().forEach(item -> catalog.confirmStock(order.orderNo(), item.productId()));
+                if (!"PAID".equals(order.status()))
+                    throw new IllegalStateException("Order not paid");
+                order.items()
+                        .forEach(item -> catalog.confirmStock(order.orderNo(), item.productId()));
             }
             case "TRADE_ORDER_CLOSED" -> {
-                if (!"CLOSED".equals(order.status())) throw new IllegalStateException("Order not closed");
-                order.items().forEach(item -> catalog.releaseStock(order.orderNo(), item.productId()));
+                if (!"CLOSED".equals(order.status()))
+                    throw new IllegalStateException("Order not closed");
+                order.items()
+                        .forEach(
+                                item ->
+                                        catalog.cancelReservation(
+                                                order.orderNo(),
+                                                item.productId(),
+                                                item.quantity()));
             }
-            default -> throw new IllegalArgumentException("Unsupported outbox event: " + event.eventType());
+            default ->
+                    throw new IllegalArgumentException(
+                            "Unsupported outbox event: " + event.eventType());
         }
     }
 }

@@ -1,0 +1,12 @@
+# Merge this entry into existing Nacos lemnt-gateway.yaml routes; do not replace other routes.
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: lemnt-trade
+              uri: lb://lemnt-trade
+              predicates:
+                - Path=/trade/**
+              # No StripPrefix: trade controllers already include /trade.

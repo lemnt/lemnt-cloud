@@ -13,6 +13,16 @@ public interface ProductMapper extends BaseMapper<ProductDO> {
                 + " s.status='ON_SHELF' AND c.status='ENABLED' AND b.status='ENABLED' AND"
                 + " (c.parent_id IS NULL OR parent.status='ENABLED')))";
 
+    @Select("SELECT * FROM mall_product WHERE id=#{id} FOR UPDATE")
+    ProductDO lockById(Long id);
+
+    @Select(
+            "<script>SELECT * FROM mall_product WHERE status='ON_SHELF' AND "
+                    + SELLABLE
+                    + " AND id IN <foreach collection='ids' item='id' open='(' separator=','"
+                    + " close=')'>#{id}</foreach></script>")
+    java.util.List<ProductDO> findSellableByIds(@Param("ids") java.util.List<Long> ids);
+
     @Select("SELECT * FROM mall_product WHERE id=#{id} AND status='ON_SHELF' AND " + SELLABLE)
     ProductDO findSellableById(Long id);
 

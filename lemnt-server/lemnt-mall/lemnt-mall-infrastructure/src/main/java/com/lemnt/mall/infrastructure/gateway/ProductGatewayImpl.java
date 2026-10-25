@@ -8,7 +8,6 @@ import com.lemnt.mall.infrastructure.dataobject.StockReservationDO;
 import com.lemnt.mall.infrastructure.mapper.ProductMapper;
 import com.lemnt.mall.infrastructure.mapper.StockReservationMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,85 +63,106 @@ public class ProductGatewayImpl implements ProductGateway {
     }
 
     @Override
+    public java.util.List<Product> findSellableByIds(java.util.List<Long> ids) {
+        if (ids == null || ids.size() > 200 || ids.stream().anyMatch(id -> id == null || id <= 0)) {
+            throw new IllegalArgumentException("商品批量编号不合法");
+        }
+        if (ids.isEmpty()) return java.util.List.of();
+        return mapper.findSellableByIds(ids.stream().distinct().toList()).stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
+    private String reservationKey(String value, Long productId) {
+        if (value == null
+                || value.isBlank()
+                || value.trim().length() > 40
+                || productId == null
+                || productId <= 0) {
+            throw new IllegalArgumentException("库存预占编号不合法");
+        }
+        return value.trim();
+    }
+
+    private StockReservationDO lockReservation(String key, Long productId) {
+        if (mapper.lockById(productId) == null) throw new IllegalArgumentException("商品不存在");
+        return reservations.selectOne(
+                Wrappers.lambdaQuery(StockReservationDO.class)
+                        .eq(StockReservationDO::getReservationNo, key)
+                        .eq(StockReservationDO::getProductId, productId)
+                        .last("FOR UPDATE"));
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean reserveStock(String reservationNo, Long productId, Integer quantity) {
-        if (reservationNo == null
-                || reservationNo.isBlank()
-                || productId == null
-                || quantity == null
-                || quantity <= 0) {
-            throw new IllegalArgumentException("库存预占参数不合法");
-        }
-        StockReservationDO existing = findReservation(reservationNo, productId);
+        String key = reservationKey(reservationNo, productId);
+        if (quantity == null || quantity <= 0) throw new IllegalArgumentException("预占数量不合法");
+        var existing = lockReservation(key, productId);
         if (existing != null) {
-            if (!quantity.equals(existing.getQuantity())) {
-                throw new IllegalStateException("同一预占单号不能使用不同的商品数量");
-            }
+            if (!quantity.equals(existing.getQuantity()))
+                throw new IllegalStateException("预占数量不允许变化");
             return "RESERVED".equals(existing.getStatus())
                     || "CONFIRMED".equals(existing.getStatus());
         }
-
-        // Conditional SQL prevents stock from going negative under concurrent requests.
         if (mapper.reserveStock(productId, quantity) != 1) return false;
-        StockReservationDO reservation =
+        reservations.insert(
                 new StockReservationDO()
-                        .setReservationNo(reservationNo.trim())
+                        .setReservationNo(key)
                         .setProductId(productId)
                         .setQuantity(quantity)
-                        .setStatus("RESERVED");
-        try {
-            reservations.insert(reservation);
-        } catch (DuplicateKeyException duplicate) {
-            // The transaction must roll back the stock decrement. The caller may retry;
-            // the next request will observe the durable reservation and be idempotent.
-            throw duplicate;
-        }
+                        .setStatus("RESERVED"));
         return true;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void releaseStock(String reservationNo, Long productId) {
-        StockReservationDO reservation = findReservation(reservationNo, productId);
-        if (reservation == null) throw new IllegalStateException("库存预占记录不存在，无法释放");
-        if ("RELEASED".equals(reservation.getStatus())) return;
-        if ("CONFIRMED".equals(reservation.getStatus())) {
-            throw new IllegalStateException("已确认的库存预占不能直接释放");
-        }
-        if (reservations.releaseReservation(reservationNo, productId) == 1) {
-            if (mapper.releaseStock(productId, reservation.getQuantity()) != 1) {
-                throw new IllegalStateException("库存回补失败");
-            }
+    public void cancelReservation(String reservationNo, Long productId, Integer quantity) {
+        String key = reservationKey(reservationNo, productId);
+        if (quantity == null || quantity <= 0) throw new IllegalArgumentException("预占数量不合法");
+        var row = lockReservation(key, productId);
+        if (row == null) {
+            // Terminal cancellation prevents a delayed RPC from reserving after order close.
+            reservations.insert(
+                    new StockReservationDO()
+                            .setReservationNo(key)
+                            .setProductId(productId)
+                            .setQuantity(quantity)
+                            .setStatus("RELEASED"));
             return;
         }
-        StockReservationDO latest = findReservation(reservationNo, productId);
-        if (latest != null && "RELEASED".equals(latest.getStatus())) return;
-        throw new IllegalStateException("库存释放状态冲突");
+        if (!quantity.equals(row.getQuantity())) throw new IllegalStateException("取消数量与预占不符");
+        releaseLocked(key, productId, row);
+    }
+
+    private void releaseLocked(String key, Long productId, StockReservationDO row) {
+        if ("RELEASED".equals(row.getStatus())) return;
+        if (!"RESERVED".equals(row.getStatus())) throw new IllegalStateException("已确认的库存不能直接释放");
+        if (reservations.releaseReservation(key, productId) != 1
+                || mapper.releaseStock(productId, row.getQuantity()) != 1) {
+            throw new IllegalStateException("库存释放失败");
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void releaseStock(String reservationNo, Long productId) {
+        String key = reservationKey(reservationNo, productId);
+        var row = lockReservation(key, productId);
+        if (row == null) throw new IllegalStateException("库存预占记录不存在");
+        releaseLocked(key, productId, row);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void confirmStock(String reservationNo, Long productId) {
-        StockReservationDO reservation = findReservation(reservationNo, productId);
-        if (reservation == null) throw new IllegalStateException("库存预占记录不存在，无法确认");
-        if ("CONFIRMED".equals(reservation.getStatus())) return;
-        if (!"RESERVED".equals(reservation.getStatus())) {
-            throw new IllegalStateException("已释放的库存预占不能确认");
-        }
-        if (reservations.confirmReservation(reservationNo, productId) != 1) {
-            StockReservationDO latest = findReservation(reservationNo, productId);
-            if (latest != null && "CONFIRMED".equals(latest.getStatus())) return;
-            throw new IllegalStateException("库存确认状态冲突");
-        }
-    }
-
-    private StockReservationDO findReservation(String reservationNo, Long productId) {
-        if (reservationNo == null || reservationNo.isBlank() || productId == null) return null;
-        return reservations.selectOne(
-                Wrappers.lambdaQuery(StockReservationDO.class)
-                        .eq(StockReservationDO::getReservationNo, reservationNo.trim())
-                        .eq(StockReservationDO::getProductId, productId)
-                        .last("LIMIT 1"));
+        String key = reservationKey(reservationNo, productId);
+        var row = lockReservation(key, productId);
+        if (row == null) throw new IllegalStateException("库存预占记录不存在");
+        if ("CONFIRMED".equals(row.getStatus())) return;
+        if (!"RESERVED".equals(row.getStatus())) throw new IllegalStateException("已取消预占不能确认");
+        if (reservations.confirmReservation(key, productId) != 1)
+            throw new IllegalStateException("库存确认失败");
     }
 
     private Product toDomain(ProductDO d) {

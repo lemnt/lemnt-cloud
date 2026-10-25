@@ -11,13 +11,35 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ProductCatalogGatewayImpl implements ProductCatalogGateway {
-    @DubboReference(check = false)
+    @DubboReference(check = false, timeout = 3000, retries = 0)
     private ProductCatalogClient client;
 
     @Override
     public ProductSnapshot findOnShelf(Long productId) {
         ProductSnapshotDTO p = client.findOnShelf(productId);
-        return p == null ? null : new ProductSnapshot(p.id(), p.productCode(), p.name(), p.price(), p.stock());
+        return p == null
+                ? null
+                : new ProductSnapshot(p.id(), p.productCode(), p.name(), p.price(), p.stock());
+    }
+
+    @Override
+    public java.util.Map<Long, ProductSnapshot> findOnShelfBatch(java.util.List<Long> ids) {
+        return client.findOnShelfBatch(ids).stream()
+                .collect(
+                        java.util.stream.Collectors.toMap(
+                                ProductSnapshotDTO::id,
+                                p ->
+                                        new ProductSnapshot(
+                                                p.id(),
+                                                p.productCode(),
+                                                p.name(),
+                                                p.price(),
+                                                p.stock())));
+    }
+
+    @Override
+    public void cancelReservation(String reservationNo, Long productId, Integer quantity) {
+        client.cancelReservation(reservationNo, productId, quantity);
     }
 
     @Override

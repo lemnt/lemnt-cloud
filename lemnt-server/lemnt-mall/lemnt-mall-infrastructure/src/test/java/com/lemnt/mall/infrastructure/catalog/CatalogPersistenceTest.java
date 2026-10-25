@@ -298,6 +298,42 @@ class CatalogPersistenceTest {
     }
 
     @Test
+    void cancellationTombstoneFencesDelayedReserveAndValidatesQuantity() {
+        var spu = create("SP1", draft("A", 5));
+        Long sku = spu.skus().get(0).id();
+        catalog.shelf(spu.id(), true);
+        assertEquals(1, products.findSellableByIds(List.of(sku)).size());
+        products.cancelReservation(" CANCEL ", sku, 2);
+        assertFalse(products.reserveStock("CANCEL", sku, 2));
+        products.cancelReservation("CANCEL", sku, 2);
+        assertThrows(IllegalStateException.class, () -> products.reserveStock("CANCEL", sku, 3));
+        assertThrows(IllegalStateException.class, () -> products.confirmStock("CANCEL", sku));
+        assertEquals(5, products.findById(sku).stock());
+    }
+
+    @Test
+    void concurrentDuplicateReservesAndCancelNeverDoubleDebitOrLeakInventory() throws Exception {
+        var spu = create("SP1", draft("A", 5));
+        Long sku = spu.skus().get(0).id();
+        catalog.shelf(spu.id(), true);
+        var pool = Executors.newFixedThreadPool(6);
+        try {
+            List<Callable<Boolean>> tasks = new ArrayList<>();
+            for (int i = 0; i < 6; i++) tasks.add(() -> products.reserveStock("DUP", sku, 2));
+            for (var result : pool.invokeAll(tasks)) assertTrue(result.get());
+            assertEquals(3, products.findById(sku).stock());
+            var cancel = pool.submit(() -> products.cancelReservation("DUP", sku, 2));
+            var retry = pool.submit(() -> products.reserveStock("DUP", sku, 2));
+            cancel.get();
+            retry.get();
+            assertFalse(products.reserveStock("DUP", sku, 2));
+            assertEquals(5, products.findById(sku).stock());
+        } finally {
+            pool.shutdownNow();
+        }
+    }
+
+    @Test
     void pagingAndMetadataChangesNeverReplaceSkuInventory() {
         var spu = create("SP1", draft("A", 5));
         assertEquals(1, catalog.page(new CatalogFilter("goods", null, 0, 10)).total());

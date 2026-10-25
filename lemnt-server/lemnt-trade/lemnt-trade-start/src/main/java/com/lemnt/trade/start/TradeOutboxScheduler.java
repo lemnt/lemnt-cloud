@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 /**
- * Enable only on designated worker nodes; multi-instance arbitration is done by outbox claim.
- * A production payment channel must confirm expiry and absence of successful payments before closing.
+ * Enable only on designated worker nodes; multi-instance arbitration is done by outbox claim. A
+ * production payment channel must confirm expiry and absence of successful payments before closing.
  */
 @Component
 @ConditionalOnProperty(name = "lemnt.trade.scheduler.enabled", havingValue = "true")
@@ -22,9 +22,10 @@ public class TradeOutboxScheduler {
     private final TradeOrderCloseCmdExe closer;
     private final TradeOrderGateway orders;
 
-    public TradeOutboxScheduler(TradeOutboxDispatchExe dispatcher,
-                                TradeOrderCloseCmdExe closer,
-                                TradeOrderGateway orders) {
+    public TradeOutboxScheduler(
+            TradeOutboxDispatchExe dispatcher,
+            TradeOrderCloseCmdExe closer,
+            TradeOrderGateway orders) {
         this.dispatcher = dispatcher;
         this.closer = closer;
         this.orders = orders;
@@ -37,8 +38,12 @@ public class TradeOutboxScheduler {
 
     @Scheduled(fixedDelayString = "${lemnt.trade.scheduler.close-delay-ms:60000}")
     public void closeExpired() {
-        LocalDateTime cutoff = LocalDateTime.now().minusMinutes(30);
-        for (var order : orders.findPendingPaymentCreatedBefore(cutoff, 50)) {
+        LocalDateTime cutoff = orders.databaseNow().minusMinutes(30);
+        for (var order :
+                java.util.stream.Stream.concat(
+                                orders.findReservingCreatedBefore(cutoff, 50).stream(),
+                                orders.findPendingPaymentCreatedBefore(cutoff, 50).stream())
+                        .toList()) {
             try {
                 closer.execute(order.orderNo());
             } catch (RuntimeException ex) {

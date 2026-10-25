@@ -13,19 +13,29 @@ class PaymentNotifyCmdExeTest {
     final TradePaymentGateway payments = mock(TradePaymentGateway.class);
     final TradeOrderGateway orders = mock(TradeOrderGateway.class);
     final TradeOutboxGateway outbox = mock(TradeOutboxGateway.class);
-    final PaymentNotifyCmdExe notifier = new PaymentNotifyCmdExe(payments, orders, outbox);
-    final VerifiedPaymentNotification notice = new VerifiedPaymentNotification(
-            "PAY1", "TR1", "ALIPAY", "CHANNEL1", BigDecimal.TEN, "NOTICE2");
+    final PaymentNotifyCmdExe notifier =
+            new PaymentNotifyCmdExe(
+                    payments,
+                    orders,
+                    outbox,
+                    mock(com.lemnt.trade.domain.checkout.gateway.CheckoutGateway.class));
+    final VerifiedPaymentNotification notice =
+            new VerifiedPaymentNotification(
+                    "PAY1", "TR1", "ALIPAY", "CHANNEL1", BigDecimal.TEN, "NOTICE2");
 
     @BeforeEach
     void setup() {
-        when(orders.findByOrderNoForUpdate("TR1")).thenReturn(new TradeOrder(1L, "TR1", 2L,
-                BigDecimal.TEN, "PENDING_PAYMENT", List.of(), null));
+        when(orders.findByOrderNoForUpdate("TR1"))
+                .thenReturn(
+                        new TradeOrder(
+                                1L, "TR1", 2L, BigDecimal.TEN, "PENDING_PAYMENT", List.of(), null));
     }
 
     void payment(String status, String tradeNo, BigDecimal amount) {
-        when(payments.findByPaymentNo("PAY1")).thenReturn(new PaymentRecord(1L, "PAY1", "TR1",
-                "ALIPAY", tradeNo, amount, status, "NOTICE1"));
+        when(payments.findByPaymentNo("PAY1"))
+                .thenReturn(
+                        new PaymentRecord(
+                                1L, "PAY1", "TR1", "ALIPAY", tradeNo, amount, status, "NOTICE1"));
     }
 
     @Test
@@ -56,7 +66,13 @@ class PaymentNotifyCmdExeTest {
         sequence.verify(payments).findByPaymentNo("PAY1");
         sequence.verify(payments).markSuccess(notice);
         sequence.verify(orders).transitionStatus("TR1", "PENDING_PAYMENT", "PAID");
-        sequence.verify(outbox).append(anyString(), eq("TRADE_ORDER"), eq("TR1"), eq("TRADE_ORDER_PAID"), anyString());
+        sequence.verify(outbox)
+                .append(
+                        anyString(),
+                        eq("TRADE_ORDER"),
+                        eq("TR1"),
+                        eq("TRADE_ORDER_PAID"),
+                        anyString());
     }
 
     @Test

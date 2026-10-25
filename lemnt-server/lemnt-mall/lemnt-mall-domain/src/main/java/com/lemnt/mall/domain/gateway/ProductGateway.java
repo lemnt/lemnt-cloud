@@ -7,6 +7,10 @@ public interface ProductGateway {
 
     Product findSellableById(Long id);
 
+    java.util.List<Product> findSellableByIds(java.util.List<Long> ids);
+
+    void cancelReservation(String reservationNo, Long productId, Integer quantity);
+
     Product findByCode(String code);
 
     Product save(Product product);
