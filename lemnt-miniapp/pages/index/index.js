@@ -1,8 +1,9 @@
 const config = require('../../config');
+const { couponId, ownedCoupons } = require('../../services/coupons');
 const { createTradeClient } = require('../../services/trade');
 const { createCheckoutFlow } = require('../../services/checkoutFlow');
 Page({
-  data: { ready: config.memberApiReady, loading: false, error: '', rows: [], quote: null, receipt: null, pending: false },
+  data: { ready: config.memberApiReady, loading: false, error: '', rows: [], quote: null, receipt: null, pending: false, coupons: [], selectedCoupon: null },
   onLoad() {
     const session = () => getApp().globalData.memberSession;
     this.client = createTradeClient({
@@ -21,7 +22,7 @@ Page({
     try { await run(member); }
     catch (error) {
       if (member !== getApp().globalData.memberSession?.memberId) {
-        this.setData({ rows: [], quote: null, receipt: null, pending: false });
+        this.setData({ rows: [], quote: null, receipt: null, pending: false, coupons: [], selectedCoupon: null });
         this.quoteInput = null; this.rowsMember = null; this.quoteMember = null; this.receiptMember = null;
       }
       this.setData({ error: error.message || '请求失败，请重试' });
@@ -44,13 +45,18 @@ Page({
   preview() { return this.action(async member => {
     if (member !== this.rowsMember) throw new Error("会员已切换，请重新加载购物车");
     if (this.flow.pending()) throw new Error('存在未确认的提交，请先重试原请求');
+    this.quoteInput = null; this.setData({ quote: null });
     const productIds = this.data.rows.filter(row => row.selected && row.sellable).map(row => row.productId);
     if (!productIds.length) throw new Error('购物车中没有已选且可售的商品');
-    const quote = await this.client.quote({ productIds });
+    const selectedCoupon = this.data.selectedCoupon;
+    if (selectedCoupon && (this.couponsMember !== member || !this.data.coupons.some(c => c.id === selectedCoupon && c.status === 'AVAILABLE'))) throw new Error('请重新加载并选择本人优惠券');
+    const request = { productIds, ...(selectedCoupon ? { couponId: selectedCoupon } : {}) };
+    const quote = await this.client.quote(request);
     if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换，请重新加载');
     if (!quote || !/^[a-f0-9]{64}$/.test(quote.quoteToken) || ['originalAmount','discountAmount','payableAmount'].some(key => typeof quote[key] !== 'string' || !/^\d+\.\d{2}$/.test(quote[key]))) throw new Error('报价响应不合法');
+    if ((quote.couponId == null ? null : couponId(quote.couponId)) !== selectedCoupon) throw new Error('报价优惠券与所选不一致');
     this.quoteMember = member;
-    this.quoteInput = { productIds, quoteToken: quote.quoteToken };
+    this.quoteInput = { ...request, quoteToken: quote.quoteToken };
     this.setData({ quote });
   }); },
   submit() { return this.action(async member => {
@@ -96,5 +102,21 @@ Page({
     if (!result || result.orderNo !== no || !['RESERVING','PENDING_PAYMENT','PAID','SHIPPED','COMPLETED','CLOSED'].includes(result.status) || typeof result.payableAmount !== 'string' || !/^\d+\.\d{2}$/.test(result.payableAmount)) throw new Error('订单响应不合法');
     this.setData({ receipt: result });
   }); },
-  onHide() { this.setData({ rows: [], quote: null, receipt: null, error: '' }); this.quoteInput = null; },
+  loadCoupons() { return this.action(async member => {
+    if (this.flow.pending()) throw new Error('存在未确认结算，不能更换优惠券');
+    this.quoteInput = null; this.couponsMember = null;
+    this.setData({ coupons: [], selectedCoupon: null, quote: null });
+    const rows = await this.client.coupons();
+    if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换，请重新加载');
+    const coupons = ownedCoupons(rows, member);
+    this.couponsMember = member; this.setData({ coupons });
+  }); },
+  chooseCoupon(event) { return this.action(async member => {
+    if (this.flow.pending()) throw new Error('存在未确认结算，不能更换优惠券');
+    const value = event.currentTarget.dataset.id;
+    const id = value === '' ? null : couponId(value);
+    if (id && (this.couponsMember !== member || !this.data.coupons.some(c => c.id === id && c.status === 'AVAILABLE'))) throw new Error('优惠券不可选择，请刷新');
+    this.quoteInput = null; this.setData({ selectedCoupon: id, quote: null });
+  }); },
+  onHide() { this.setData({ rows: [], coupons: [], selectedCoupon: null, quote: null, receipt: null, error: '' }); this.quoteInput = null; },
 });

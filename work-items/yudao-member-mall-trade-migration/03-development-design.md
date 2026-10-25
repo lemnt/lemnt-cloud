@@ -123,3 +123,7 @@ Added cart display, selected-sellable item preview and submit UI on native index
 ## Native cart editing and order refresh
 
 Added quantity +/- (1..999), selected toggle, confirmed delete and manual receipt refresh. Check durable pending checkout before mutations; invalidate quote before uncertain writes; false deletion is failure. Session switch clears stale page data. Receipt refresh accepts only matching order ID, known status and decimal string amount. Six new page behavior tests, 15 total Node tests PASS; JS/JSON syntax checked. No backend or React changes, those checks not rerun. No native compiler/device/visual validation; member auth/provider still pending and default business switch remains disabled.
+
+## Miniapp coupon selection
+
+Added owned-coupon loading, AVAILABLE selection and explicit no-coupon choice. Validate owner/status/ID precision/duplicate records. Invalidate quote before coupon changes and before each preview request; validate quote coupon matches selection and carry same ID into submit intent. Pending checkout prevents coupon changes. UI only shows ID/status because coupon API has no rule metadata; server preview remains authoritative. Five new behavior/decoder tests; 20 Node tests PASS plus JS/JSON syntax checks. Backend and React unchanged/not rerun. Member auth/provider/native compiler/device/visual tests remain pending; business readiness remains false.

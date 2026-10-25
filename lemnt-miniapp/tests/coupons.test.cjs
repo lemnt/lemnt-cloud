@@ -1,0 +1,14 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');
+const {ownedCoupons}=require('../services/coupons');
+let definition;global.Page=value=>definition=value;require('../pages/index/index');
+function page(){global.getApp=()=>({globalData:{memberSession:{memberId:'1'}}});return {...definition,data:{...definition.data,coupons:[],rows:[{productId:'5',selected:true,sellable:true}],quote:{payableAmount:'20.00'}},rowsMember:'1',flow:{pending:()=>null},setData(v){Object.assign(this.data,v);}};}
+const raw={id:8,templateId:3,memberId:1,status:'AVAILABLE'};
+test('券归属、状态及长ID校验，不把锁定券当作可用券',()=>{
+ assert.equal(ownedCoupons([raw],'1')[0].id,'8');assert.equal(ownedCoupons([{...raw,status:'LOCKED'}],'1')[0].status,'LOCKED');
+ for(const row of [{...raw,memberId:2},{...raw,status:'UNKNOWN'},{...raw,id:9007199254740992}])assert.throws(()=>ownedCoupons([row],'1'));
+ assert.throws(()=>ownedCoupons([raw,raw],'1'));
+});
+test('选券及不使用券都废弃旧报价',async()=>{const p=page();p.client={coupons:async()=>[raw]};await p.loadCoupons();p.data.quote={};await p.chooseCoupon({currentTarget:{dataset:{id:'8'}}});assert.equal(p.data.selectedCoupon,'8');assert.equal(p.data.quote,null);await p.chooseCoupon({currentTarget:{dataset:{id:''}}});assert.equal(p.data.selectedCoupon,null);});
+test('未确认结算不能刷新或换券',async()=>{const p=page();p.flow.pending=()=>({requestNo:'R1'});p.data.selectedCoupon='8';let calls=0;p.client={coupons:async()=>{calls++;return[];}};await p.loadCoupons();await p.chooseCoupon({currentTarget:{dataset:{id:''}}});assert.equal(calls,0);assert.equal(p.data.selectedCoupon,'8');});
+test('报价发送所选券，并保存同一券用于下单',async()=>{const p=page();p.couponsMember='1';p.data.coupons=ownedCoupons([raw],'1');p.data.selectedCoupon='8';let request;p.client={quote:async data=>{request=data;return {couponId:8,quoteToken:'a'.repeat(64),originalAmount:'20.00',discountAmount:'3.00',payableAmount:'17.00'};}};await p.preview();assert.equal(request.couponId,'8');assert.equal(p.quoteInput.couponId,'8');assert.equal(p.data.quote.payableAmount,'17.00');});
+test('锁定券不可选，服务端返回其他券不能接受报价',async()=>{const p=page();p.couponsMember='1';p.data.coupons=ownedCoupons([{...raw,status:'LOCKED'}],'1');await p.chooseCoupon({currentTarget:{dataset:{id:'8'}}});assert.equal(p.data.selectedCoupon,null);p.client={quote:async()=>({couponId:8,quoteToken:'a'.repeat(64),originalAmount:'20.00',discountAmount:'3.00',payableAmount:'17.00'})};await p.preview();assert.match(p.data.error,/不一致/);assert.equal(p.data.quote,null);assert.equal(p.quoteInput,null);});
