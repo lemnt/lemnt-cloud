@@ -40,3 +40,7 @@ Added independent lemnt-miniapp native bootstrap/client. Node 22 built-in test r
 ## Consumer backend boundary verification
 
 Full root Maven verify: 71 projects SUCCESS, 307 tests, zero failures/errors/skips. Added member-session service tests (2), fail-closed authority adapter tests (2), HTTP/session-boundary tests (3), foreign receipt unit test (1), persisted checkout ownership integration test (1). Existing two-database fixture now has 29 cases. Miniapp client tests 5 PASS. React unchanged, not rerun. Evidence: evidence/app-boundary/verify.txt. Real member login/token-audience authority, gateway integration, WeChat tools/devices and provider payment remain unimplemented/unverified; all /trade/app operations deny access by default with no verifier.
+
+## Miniapp checkout workflow continuation
+
+Added cart display, selected-sellable item preview and submit UI on native index page. Exact displayed amount strings; no fake payment. Durable member-scoped immutable checkout intent saved before request; storage failure aborts transport, unknown/malformed response keeps intent, retry ignores new input, duplicate click rejected and session switch prevents original result exposure. Page binds loaded cart and quote to current member. No cart editing/coupon selector or receipt polling UI yet. Business readiness remains false. Node tests 9 PASS; JS syntax/JSON checks PASS. Backend/React unchanged, not rerun. WeChat WXML/developer-tool/device/visual tests NOT RUN.

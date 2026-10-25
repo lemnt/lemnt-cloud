@@ -39,3 +39,9 @@ AppCheckoutController 已提供 GET/PUT/DELETE cart、GET coupons、POST checkou
 所有入口调用独立 MemberSessionService，只读取 Authorization Bearer，不接受 memberId。MemberSessionGatewayImpl 必须有且仅有一个可信 MemberSessionVerifier；目前没有任何真实实现，默认返回未授权。接口不能通过打开 memberApiReady 获得登录能力。Verifier 必须验证会员令牌的 audience、过期及撤销状态，并拒绝后台令牌；尚未进行该真实身份系统的联调。不要以返回固定会员ID的实现接入部署。
 
 现有网关身份链仍服务于后台，尚需实现会员路由的独立验证；本批未改白名单或部署路由。保持 memberApiReady=false。
+
+## 购物车和结算页面续迁
+
+首页现可在真实会员接通后加载购物车、预览已选可售商品并提交订单。此版本只展示购物车，不提供增删改数量/选中操作或选券 UI。会员切换后必须重新加载和预览。提交前按 memberSession.memberId 隔离保存不可变 requestNo/quoteToken/商品载荷，不保存令牌；未知结果用原请求重试，不能自动丢弃损坏记录或生成新请求。仅响应具备合法订单号/状态/金额后清理请求。
+
+页面仍默认关闭，会员登录/支付/微信开发者工具及真机验证未完成。服务端仍拒绝没有真实会员会话验证器的请求。Node 内置测试当前共9项通过，不代表原生 WXML 编译或实际下单通过。

@@ -30,3 +30,7 @@ Successful payment notifications now require order PAID/SHIPPED/COMPLETED before
 ## Miniapp consumer entry points
 
 Added /trade/app cart/coupons/quote/checkout/order-receipt controller using existing application executors and converters. MemberSessionService resolves an independent member session through a domain gateway then validates active membership. Infrastructure has an integration port but no real session verifier: requests fail closed by default. No admin user-ID fallback, no memberId request identity, no gateway bypass, no fake login/prepay. Order receipt checks order and checkout record ownership. See docs/miniapp-api.md. Backend consumer identity/provider integration and end-to-end purchase remain pending; keep miniapp memberApiReady false.
+
+## Miniapp checkout workflow continuation
+
+Added cart display, selected-sellable item preview and submit UI on native index page. Exact displayed amount strings; no fake payment. Durable member-scoped immutable checkout intent saved before request; storage failure aborts transport, unknown/malformed response keeps intent, retry ignores new input, duplicate click rejected and session switch prevents original result exposure. Page binds loaded cart and quote to current member. No cart editing/coupon selector or receipt polling UI yet. Business readiness remains false. Node tests 9 PASS; JS syntax/JSON checks PASS. Backend/React unchanged, not rerun. WeChat WXML/developer-tool/device/visual tests NOT RUN.
