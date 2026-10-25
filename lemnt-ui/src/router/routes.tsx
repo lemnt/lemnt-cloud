@@ -2,6 +2,24 @@ import { lazy, type ComponentType } from 'react';
 
 /** 后端 component 仅作为注册键使用，不执行任意路径导入。 */
 export const pages: Record<string, ComponentType> = {
+  'member/user/index': lazy(() => import('../modules/member/account/pages/MemberUserPage')),
+  'member/level/index': lazy(() =>
+    import('../modules/member/account/pages/MemberMetadataPage').then((m) => ({
+      default: m.MemberLevelPage,
+    })),
+  ),
+  'member/group/index': lazy(() =>
+    import('../modules/member/account/pages/MemberMetadataPage').then((m) => ({
+      default: m.MemberGroupPage,
+    })),
+  ),
+  'member/tag/index': lazy(() =>
+    import('../modules/member/account/pages/MemberMetadataPage').then((m) => ({
+      default: m.MemberTagPage,
+    })),
+  ),
+  'member/record/index': lazy(() => import('../modules/member/account/pages/MemberRecordPage')),
+  'member/config/index': lazy(() => import('../modules/member/account/pages/MemberConfigPage')),
   'mall/category/index': lazy(() => import('../modules/mall/catalog/pages/CategoryPage')),
   'mall/brand/index': lazy(() => import('../modules/mall/catalog/pages/BrandPage')),
   'mall/spu/index': lazy(() => import('../modules/mall/catalog/pages/SpuPage')),

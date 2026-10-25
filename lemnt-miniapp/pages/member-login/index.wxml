@@ -1,0 +1,13 @@
+<view class="container">
+ <view class="card"><view class="title">会员登录</view><view class="description">使用会员账号登录，首次短信或微信验证后将自动创建会员。</view>
+ <view wx:if="!ready" class="notice">会员服务暂未启用，请联系服务方。</view>
+ <view class="row"><button size="mini" data-mode="password" bindtap="changeMode" disabled="{{loading}}">密码登录</button><button size="mini" data-mode="sms" bindtap="changeMode" disabled="{{loading}}">短信登录</button><button size="mini" data-mode="reset" bindtap="changeMode" disabled="{{loading}}">找回密码</button></view>
+ <label class="field">手机号<input type="text" maxlength="21" value="{{mobile}}" data-field="mobile" bindinput="input" placeholder="请输入手机号" disabled="{{loading}}"/></label>
+ <label wx:if="{{mode !== 'password'}}" class="field">验证码<input type="number" maxlength="6" value="{{code}}" data-field="code" bindinput="input" placeholder="6位短信验证码" disabled="{{loading}}"/></label>
+ <button wx:if="{{mode !== 'password'}}" bindtap="sendCode" disabled="{{loading || cooldown > 0 || !ready}}">{{cooldown > 0 ? cooldown + '秒后重发' : '发送验证码'}}</button>
+ <label wx:if="{{mode !== 'sms'}}" class="field">{{mode === 'reset' ? '新密码' : '密码'}}<input password="{{true}}" value="{{password}}" data-field="password" bindinput="input" placeholder="至少10字符，最多72字节" disabled="{{loading}}"/></label>
+ <button type="primary" bindtap="submit" loading="{{loading}}" disabled="{{loading || !ready}}">{{mode === 'reset' ? '重置密码' : '登录'}}</button>
+ <view class="description">微信登录会请求手机号授权，仅用于验证会员身份。</view><button open-type="getPhoneNumber" bindgetphonenumber="wechat" disabled="{{loading || !ready}}">微信手机号登录</button>
+ <view wx:if="{{error}}" class="error">{{error}}</view><view wx:if="{{success}}" class="success">{{success}}</view>
+ </view>
+</view>

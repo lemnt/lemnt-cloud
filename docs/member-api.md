@@ -2,6 +2,8 @@
 
 版本 v5，2026-10-25；基础提交 8eac9f6。参考 YunaiV/yudao-cloud `8db9153bfe6bdc03baf93b74e244a2e74477c5c4` 的 member 控制器。本文按代码静态核对生成；JSON/curl 均为构造示例，供应商与部署环境尚未实测。设计依据见 work-items/yudao-member-mall-trade-migration/03-development-design.md。模板参考 code-software-engineer/references/api-documentation.md。
 
+当前会员后台与小程序页面见 [member-pages.md](member-pages.md)。下文关于 API 切片未包含界面的说明保留为 v5 历史边界；v6 已新增页面，真实联调仍待验证。
+
 ## 边界与运行
 
 - `/member/app/**` 由小程序消费，会员 ID 来自独立 Bearer 会话；禁止把管理员身份当会员。`/member/admin/**` 为后台接口，使用现有管理员权限机制。旧 `/members/register` 现在要求 `member:user:create`，不再匿名注册。后台创建资料不自动设置密码或签发会话。

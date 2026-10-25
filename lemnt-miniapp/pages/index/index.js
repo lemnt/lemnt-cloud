@@ -16,6 +16,12 @@ Page({
       storage: { get: key => wx.getStorageSync(key), set: (key,value) => wx.setStorageSync(key,value), remove: key => wx.removeStorageSync(key) },
       newRequestNo: () => 'MINI-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2) });
   },
+  onShow() {
+    this.setData({ rows: [], quote: null, receipt: null, payment: null, pending: false, coupons: [], selectedCoupon: null });
+    this.quoteInput = null; this.rowsMember = null; this.quoteMember = null; this.receiptMember = null;
+    try { this.setData({ pending: !!(this.flow && this.flow.pending()) }); }
+    catch (error) { this.setData({ error: error.message || "未确认结算读取失败，请保留记录并重试" }); }
+  },
   async action(run) {
     if (this.data.loading) return;
     this.setData({ loading: true, error: '' });

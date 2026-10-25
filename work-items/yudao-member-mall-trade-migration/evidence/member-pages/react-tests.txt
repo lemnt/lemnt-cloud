@@ -1,0 +1,15 @@
+yarn run v1.22.22
+$ vitest run
+
+ RUN  v5.0.3 /workspace/scratch/a93805a8b87c/lemnt-cloud/lemnt-ui
+
+
+ Test Files  34 passed (34)
+      Tests  168 passed (168)
+   Start at  06:33:19
+   Duration  2.27s (import 57%, transform 28%, tests 11%, worker 4%)
+
+    Isolate  34 workers spawned · ~109ms startup each (spawn + environment, per file)
+             at least ~420ms faster with isolate: false — reuses workers across files instead of one per file
+
+Done in 2.60s.
