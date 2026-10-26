@@ -6,6 +6,8 @@ spring:
       server:
         webflux:
           routes:
+            # Java MemberAuthRouteConfiguration 已注册以下精确认证路由。
+            # 此处仅列出 member 常规路由，不重复配置同名认证路由。
             - id: lemnt-member
               uri: lb://lemnt-member
               predicates:

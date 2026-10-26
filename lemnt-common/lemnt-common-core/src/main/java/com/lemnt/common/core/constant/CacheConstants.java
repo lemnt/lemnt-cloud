@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
  * @author wangxx
  */
 public class CacheConstants {
-
     /**
      * 默认缓存前缀
      */

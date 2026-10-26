@@ -6,6 +6,13 @@ package com.lemnt.common.security.constant;
  * @author wangxx
  */
 public class SecurityConstants {
+    /** 服务端签发的登录身份类型，会员与后台不可互用。 */
+    public static final String USER_TYPE = "user_type";
+    /** 后台用户身份类型。 */
+    public static final String ADMIN_USER_TYPE = "admin";
+    /** 小程序会员身份类型。 */
+    public static final String MEMBER_USER_TYPE = "member";
+
     /**
      * 用户ID字段
      */

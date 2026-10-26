@@ -24,6 +24,9 @@ public class SecurityUser implements Serializable {
      */
     private String token;
 
+    /** 登录身份类型，历史后台会话默认为 admin。 */
+    private String userType;
+
     /**
      * 用户名id
      */
