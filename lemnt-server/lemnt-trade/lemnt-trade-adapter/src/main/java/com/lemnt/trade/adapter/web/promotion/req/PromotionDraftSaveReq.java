@@ -1,0 +1,15 @@
+package com.lemnt.trade.adapter.web.promotion.req;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+
+@Schema(description = "PromotionDraftSaveReq")
+public record PromotionDraftSaveReq(
+        @Schema(description = "管理员幂等编号")
+                @NotNull
+                @Pattern(regexp = "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$")
+                String requestNo,
+        @Schema(description = "预期修订号，从0开始") @NotNull @Min(0) Integer expectedRevision,
+        @Schema(description = "完整草稿") @NotNull @Valid PromotionDraftReq draft)
+        implements java.io.Serializable {}

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:lemnt:promotion:design:activity-publish",
-  "title": "activity-publish（拟定，尚未实现）",
+  "title": "activity-publish（T3后台本地验证；V2购买链路未接入）",
   "type": "object",
   "properties": {
     "requestNo": {
@@ -11,7 +11,7 @@
     },
     "expectedRevision": {
       "type": "integer",
-      "minimum": 1,
+      "minimum": 0,
       "maximum": 2147483647,
       "description": "当前修订号"
     }

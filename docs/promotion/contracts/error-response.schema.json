@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:lemnt:promotion:design:error-response",
-  "title": "error-response（拟定，尚未实现）",
+  "title": "error-response（T3后台本地验证；V2购买链路未接入）",
   "type": "object",
   "properties": {
     "code": {

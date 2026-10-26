@@ -1,13 +1,12 @@
 # Yudao migration continuation
 
-- Base83810ab;branch feat/yudao-member-mall-trade-migration;PR[#1](https://github.com/lemnt/lemnt-cloud/pull/1) Draft.
-- Latest:promotion-v1/T2 internal version/usage persistence,2026-10-26 Asia/Shanghai. [Implementation](../../docs/promotion/persistence.md),[design](../../docs/promotion/design.md).
-- Workspace maintenance removed the unpublished localT2 commit and caches before push. Reconstructed from agreed design and freshly tested;old455 evidence is not reused.
-- IMPLEMENTED:V9 eight additive tables,mutable drafts/insert-only published versions/scope/root+member counters/order usage/audit/admin receipts;create/save/publish/pause/resume/archive;replay before revision;cross-version limits;transactional HELD→USED/RELEASED with actual order-state gates and MANDATORY outer transaction.
-- PASS fresh full Maven verify:71 projects/455 tests/0 failures/errors/skips;24 new actual SQL/transaction/race/rollback cases. T1 sources and14 original baseline hashes unchanged;design checks PASS. [Evidence](evidence/promotion-persistence/).
-- Root exclusive/global locks serialize same-activity writes;current member maximum and lock queries flush/bypass cache. No throughput claim. V9 executed only isolated H2 V1+V9 fixture,not target MySQL/live/full upgrade rehearsal.
-- T3..T7 PLANNED:authoritative mall RPC/admin API,V2 cached checkout,worker/payment/close/compensation integration and pages. Eleven proposed HTTP endpoints still not implemented. Next:T3.
-- React/native unchanged NOT RERUN;169/69 historical. Target MySQL/Redis/Nacos/Dubbo/providers/browser/native compiler/device NOT RUN. Keep Draft/readiness false;no main edit,merge,deployment/live migration.
+- Base35fc8ec;branch feat/yudao-member-mall-trade-migration;PR[#1](https://github.com/lemnt/lemnt-cloud/pull/1) remains Draft.
+- Latest:promotion-v1/T3 authoritative facts RPC and six admin HTTP endpoints,2026-10-26 Asia/Shanghai. [Implementation](../../docs/promotion/management.md),[contracts](../../docs/promotion/api.md),[design](../../docs/promotion/design.md).
+- New independent PromotionCatalogClient methods for bounded trusted SKU/SPU/price/stock/hash and static scope existence;legacy ProductCatalogClient unchanged. Provider visibility/price and consumer protocol/data/error checks;no price fallback. Stock excluded from hash. First create/save/publish validate scope after successful receipt replay;retries survive provider failure.
+- Six protected admin routes:create,draft,publish,state,detail,page. Explicit real admin SecurityUser operator/permission/expiry;unknown/duplicate/trailing/coerced JSON rejected only in new requests;0-based int32 revisions aligned with T2;safe matching HTTP/R.code errors. Req→Cmd/Qry→Executor→DTO→Res and no application→infrastructure dependency. Permission seed supplied,not run/no grants/no nonexistent page.
+- PASS full root Maven:71 projects/481 tests/0 failures/errors/skips;26 added (3 actual mall SQL,3 provider,5 consumer,14 HTTP+trade SQL,1 seed). Original455 retained. Design attachment validation and T1/14 baseline source hashes PASS;[evidence](evidence/promotion-management/).
+- MockMvc security context and scope test bridge are not live gateway/Redis/Dubbo/provider evidence. Target MySQL/Redis/Nacos/Dubbo/providers/browser/native tool/device NOT RUN. React/native unchanged NOT RERUN (169/69 historical).
+- T4..T7 PLANNED:server-cached V2 pricing and ID-only submission/order snapshots,worker/payment-close/Outbox/compensation integration,pages and live verification. Five V2 routes not implemented;V1 unchanged. Next:T4 cached settlement. Keep readiness false/Draft;no main edit,merge,deployment/live SQL/role grants.
 
 The following entries preserve historical slice results;their missing-feature statements must be read at that slice's version.
 

@@ -4,6 +4,10 @@ import com.lemnt.trade.domain.promotion.model.*;
 
 /** Transactional primitives. Caller owns the documented order and resource transaction. */
 public interface PromotionGateway {
+    java.util.List<PromotionAdminReceipt> page(PromotionFilter filter);
+
+    long count(PromotionFilter filter);
+
     long nowEpochMs();
 
     String draftHash(PromotionDraft draft);

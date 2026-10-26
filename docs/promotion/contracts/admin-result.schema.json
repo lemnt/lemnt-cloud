@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:lemnt:promotion:design:admin-result",
-  "title": "admin-result（拟定，尚未实现）",
+  "title": "admin-result（T3后台本地验证；V2购买链路未接入）",
   "type": "object",
   "properties": {
     "id": {
@@ -12,7 +12,7 @@
     },
     "revision": {
       "type": "integer",
-      "minimum": 1,
+      "minimum": 0,
       "maximum": 2147483647,
       "description": "操作完成后的根修订号"
     },

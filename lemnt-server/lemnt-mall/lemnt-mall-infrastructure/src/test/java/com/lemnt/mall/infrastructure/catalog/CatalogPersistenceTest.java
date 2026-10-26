@@ -33,6 +33,7 @@ class CatalogPersistenceTest {
     ProductGateway products;
     CatalogMapper mapper;
     com.lemnt.mall.domain.store.gateway.StoreCatalogGateway store;
+    com.lemnt.mall.domain.promotion.gateway.PromotionCatalogGateway promotion;
     Long categoryId;
     Long brandId;
 
@@ -61,11 +62,18 @@ class CatalogPersistenceTest {
         bean.setConfiguration(config);
         var factory = bean.getObject();
         config.addMapper(CatalogMapper.class);
+        config.addMapper(
+                com.lemnt.mall.infrastructure.promotion.mapper.PromotionCatalogMapper.class);
         config.addMapper(com.lemnt.mall.infrastructure.store.mapper.StoreCatalogMapper.class);
         config.addMapper(ProductMapper.class);
         config.addMapper(StockReservationMapper.class);
         var template = new SqlSessionTemplate(factory);
         mapper = template.getMapper(CatalogMapper.class);
+        promotion =
+                new com.lemnt.mall.infrastructure.promotion.gateway.PromotionCatalogGatewayImpl(
+                        template.getMapper(
+                                com.lemnt.mall.infrastructure.promotion.mapper
+                                        .PromotionCatalogMapper.class));
         catalog = transactional(new CatalogGatewayImpl(mapper), CatalogGateway.class);
         products =
                 transactional(
@@ -437,5 +445,69 @@ class CatalogPersistenceTest {
         assertEquals(
                 0,
                 store.count(new com.lemnt.mall.domain.store.model.StoreFilter(null, null, 0, 20)));
+    }
+
+    @Test
+    void promotionFactsUseRealSpuAndExactPriceAndKeepZeroStock() throws Exception {
+        var spu = create("PROMO", draft("P1", 0), draft("P2", 8));
+        catalog.shelf(spu.id(), true);
+        var ids = spu.skus().stream().map(CatalogSku::id).toList();
+        var facts = promotion.facts(ids);
+        assertEquals(2, facts.size());
+        assertEquals(spu.id().longValue(), facts.get(0).spuId());
+        assertEquals(1000, facts.get(0).unitPriceFen());
+        assertEquals(0, facts.get(0).availableStock());
+        var hash = facts.get(1).hash();
+        try (var st = schemaConnection.createStatement()) {
+            st.execute("UPDATE mall_product SET stock=7 WHERE id=" + ids.get(1));
+        }
+        assertEquals(hash, promotion.facts(ids).get(1).hash());
+        try (var st = schemaConnection.createStatement()) {
+            st.execute("UPDATE mall_product SET price=10.01 WHERE id=" + ids.get(1));
+        }
+        assertNotEquals(hash, promotion.facts(ids).get(1).hash());
+        assertEquals(1001, promotion.facts(ids).get(1).unitPriceFen());
+    }
+
+    @Test
+    void promotionFactsHideDisabledTaxonomyAndOffShelfSku() throws Exception {
+        var spu = create("PROMO", draft("P1", 2), draft("P2", 8));
+        catalog.shelf(spu.id(), true);
+        var ids = spu.skus().stream().map(CatalogSku::id).toList();
+        try (var st = schemaConnection.createStatement()) {
+            st.execute("UPDATE mall_product SET status='OFF_SHELF' WHERE id=" + ids.get(0));
+        }
+        assertEquals(1, promotion.facts(ids).size());
+        try (var st = schemaConnection.createStatement()) {
+            st.execute("UPDATE mall_brand SET status='DISABLED' WHERE id=" + brandId);
+        }
+        assertTrue(promotion.facts(ids).isEmpty());
+        try (var st = schemaConnection.createStatement()) {
+            st.execute("UPDATE mall_brand SET status='ENABLED' WHERE id=" + brandId);
+            st.execute("UPDATE mall_category SET status='DISABLED' WHERE id=" + categoryId);
+        }
+        assertTrue(promotion.facts(ids).isEmpty());
+        assertEquals(ids, promotion.existingSkuIds(ids));
+        assertEquals(List.of(spu.id()), promotion.existingSpuIds(List.of(spu.id())));
+    }
+
+    @Test
+    void promotionFactsRejectOverflowAndLegacyUnmappedSku() throws Exception {
+        var legacy =
+                products.save(
+                        com.lemnt.mall.domain.model.Product.create(
+                                "OLD", "old", null, null, BigDecimal.ONE, 2));
+        products.updateStatus(legacy.id(), "ON_SHELF");
+        assertTrue(promotion.facts(List.of(legacy.id())).isEmpty());
+        var spu = create("PROMO", draft("P1", 2));
+        catalog.shelf(spu.id(), true);
+        long sku = spu.skus().get(0).id();
+        try (var st = schemaConnection.createStatement()) {
+            st.execute("UPDATE mall_product SET price=99999999999999999.99 WHERE id=" + sku);
+        }
+        assertThrows(ArithmeticException.class, () -> promotion.facts(List.of(sku)));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> promotion.facts(java.util.Collections.nCopies(101, sku)));
     }
 }

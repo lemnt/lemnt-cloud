@@ -3,7 +3,7 @@
 需求ID：yudao-member-mall-trade-migration · 设计版本 promotion-v1 · 2026-10-25（Asia/Shanghai）
 责任：code-software-engineer。源码基线：20ec7bd1b9de1d4d8665093009d08846997645c2，分支 feat/yudao-member-mall-trade-migration。
 
-**状态：promotion-v1设计已交付；T1内核及T2内部版本/次数持久化已实现，尚未接入业务运行链路。** T1范围和实测证据见[implementation.md](implementation.md)。T2见[persistence.md](persistence.md)；T3..T7仍PLANNED。V9已生成但未在目标环境执行，拟定HTTP接口、T4订单计价表及运行配置仍未实现。Schema校验不代表Java实现、数据库集成或生产验收；原392/169/69为设计前历史基线。
+**状态：promotion-v1设计已交付；T1计价、T2持久化及T3事实RPC/管理API已实现，尚未接入业务运行链路。** T1范围和实测证据见[implementation.md](implementation.md)。T2见[persistence.md](persistence.md)；T3见[management.md](management.md)，T4..T7仍PLANNED。V9已生成但未在目标环境执行，六个管理HTTP入口已实现；T4订单计价表、V2入口及运行配置仍未实现。Schema校验不代表Java实现、数据库集成或生产验收；原392/169/69为设计前历史基线。
 
 输入：用户同意先统一促销设计与契约，再实现核心购买闭环；仓库AGENTS.md、现有计价/结算/Outbox/退款源码、docs/cached-settlement-api.md与storefront-marketing-api.md。结构参考已读取的 code-software-engineer/references/development-design.md、api-documentation.md、java.md。原型输入：既有结算及优惠券页面，无新的促销配置原型；UI字段映射见下文，正式UI实现前补充对应交互基线。没有复制芋道全量营销实现，也不声称规则与其完全一致。
 
@@ -261,13 +261,13 @@ T2在核实V8后生成V9：root/version/scope/counter/member_counter/usage/admin
 
 ## 11. 实施任务与验收矩阵
 
-T1/T2代码已实现，证据见implementation.md/persistence.md；T3..T7为PLANNED。依赖顺序T1→T2→T3→T4→T5→T6；T7验收跨全链路，无循环依赖。
+T1/T2/T3代码已实现，证据见implementation.md/persistence.md/management.md；T4..T7为PLANNED。依赖顺序T1→T2→T3→T4→T5→T6；T7验收跨全链路，无循环依赖。
 
 | 任务 | 拟新增/修改路径 | 前置 | 验收及风险 |
 | --- | --- | --- | --- |
 | T1纯领域计价（已实现） | trade-domain/.../promotion/；存量CheckoutRules保持 | 本设计/契约 | P系列：算例、long边界、随机守恒、排列不变、legacy差分；不依赖DB |
 | T2持久版本/次数（内部服务已实现） | trade-infrastructure/.../promotion/、trade/sql/后续迁移 | T1 | D/R系列：真实SQL、发布并发、限额、不降至已用以下、事务回滚 |
-| T3权威事实/管理API | mall-client/application/dubbo + trade-adapter/application promotion | T2 | C/A系列：SPU事实/批量限额/不存在、权限、Schema、管理员重试 |
+| T3权威事实/管理API（已实现本地验证） | mall-client/application/dubbo + trade-adapter/application promotion | T2 | C/A系列：SPU事实/批量限额/不存在、权限、Schema、管理员重试 |
 | T4缓存结算V2 | 新SettlementV2Gateway + OrderPlacementService/SettlementService分离适配 | T3 | S系列：隔离缓存、请求先查DB、价格变更、购物车跨协议、栅栏/Redis失败 |
 | T5生命周期/补偿 | PaymentNotifyCmdExe、TradeOrderCloseCmdExe、CheckoutLifecycleService、Outbox调度（存量修改） | T4 | R系列：锁顺序、支付/关闭竞态、失联保留、终态幂等、补偿审计 |
 | T6界面及合同 | lemnt-ui trade/promotion；miniapp结算/优惠明细 | T4/T5 | 真实字段、选券不静默丢弃、0元/冲突、账号切换、可访问性/原生编译 |
@@ -283,4 +283,4 @@ T1/T2代码已实现，证据见implementation.md/persistence.md；T3..T7为PLAN
 
 原设计提交534048e仅校验草稿/报价/提单Schema、JSON示例、算例分摊与源码引用，历史证据见evidence/promotion-design。本次T1纯Java内核及Maven证据另见implementation.md和evidence/promotion-kernel；不将独立Python设计检查冒充Java运行测试。T2最新持久化/事务结果见persistence.md及evidence/promotion-persistence；V9仅生成并在隔离H2验证，V2业务集成和真实联调仍未完成。
 
-后续从T3权威事实RPC/管理API继续，无需重新选择框架或等待无关营销模块。API文档见api.md，Schema只是拟定契约；下游code QA按上面矩阵验收。真实支付、退款、订单收货地址、零元单等原迁移缺口没有被本设计关闭。保留Draft PR，无main修改、merge、部署或线上迁移。
+后续从T4缓存结算V2继续，无需重新选择框架或等待无关营销模块。API文档见api.md，Schema只是拟定契约；下游code QA按上面矩阵验收。真实支付、退款、订单收货地址、零元单等原迁移缺口没有被本设计关闭。保留Draft PR，无main修改、merge、部署或线上迁移。

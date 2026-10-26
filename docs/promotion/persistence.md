@@ -55,3 +55,6 @@ PromotionUsageService强制MANDATORY外层事务：后续调用者须把订单�
 24项真实SQL/事务测试覆盖版本/hash/范围、原始回执和修订、全局/会员最后额度、跨版本限额、降额与占用竞争、暂停/恢复/归档/到期、重复终态及支付/关闭互斥、后续写入和审计失败的回滚、外层事务要求、损坏JSON/hash、CHECK/FK。**本次恢复后完整根Maven verify PASS：71项目、455项测试、0失败/错误/跳过**。新增24项；T1和原回归均保留通过。证据及实际命令见[验证目录](../../work-items/yudao-member-mall-trade-migration/evidence/promotion-persistence/)，含测试名、输出摘要和23个新源码/SQL哈希；不是沿用历史结果。
 
 H2不是目标MySQL锁/排序规则/时间精度验收。MySQL/Redis/Nacos/Dubbo/支付渠道、浏览器/原生编译/设备仍NOT RUN，React/小程序未修改、未重跑。下一步T3权威事实RPC和管理API；T4 V2缓存提单、T5生命周期/补偿、T6页面和T7真实集成待实现。回滚保留版本/计数/usage/审计，未来V2订单存在后保留支持这些资源的worker。PR保持Draft，不宣称生产可用。
+
+
+后续T3事实RPC及六个管理HTTP入口已实现，最新状态与证据见[management.md](management.md)。本页原阶段测试数量和限制保留为历史，不代表后续阶段仍未实现。

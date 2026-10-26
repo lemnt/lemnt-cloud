@@ -1,0 +1,13 @@
+package com.lemnt.trade.adapter.web.promotion.req;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.*;
+
+@Schema(description = "PromotionPublishReq")
+public record PromotionPublishReq(
+        @Schema(description = "管理员幂等编号")
+                @NotNull
+                @Pattern(regexp = "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$")
+                String requestNo,
+        @Schema(description = "预期修订号") @NotNull @Min(0) Integer expectedRevision)
+        implements java.io.Serializable {}

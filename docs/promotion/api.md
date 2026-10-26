@@ -1,10 +1,11 @@
-# 促销引擎拟定接口契约
+# 促销引擎接口契约与实施状态
 
-promotion-v1 · 2026-10-25 · 基础20ec7bd。**以下均为拟新增接口，尚未实现、部署或HTTP实测。** 当前接口不会因本文档自动改变。行为依据[设计](design.md)，机器契约在contracts/，样例在examples/。六列请求/三列响应表沿用code-software-engineer接口模板。
+promotion-v1/T3 · 2026-10-26 · 实施基础35fc8ec。**第1..6项管理接口已实现并通过本地HTTP/SQL测试；第7..11项V2接口仍是拟定契约。** 未部署或生产HTTP实测。详见[management.md](management.md)。行为依据[设计](design.md)，机器契约在contracts/，样例在examples/。六列请求/三列响应表沿用code-software-engineer接口模板。
 
 ## 协议与验证
 
 - 旧/trade/app/checkout及其Redis v1保持；V2显式选择新协议，不能混用缓存、算法或请求键。身份取会话，价格/活动ID/会员ID不接受客户端决定。V2缓存及后续表均只是设计。
+- revision/expectedRevision为0..2147483647 JSON整数，初始0；旧Schema minimum1已按T2实际修正。
 - ID、整数分、epoch毫秒用十进制字符串，范围0..9223372036854775807，ID/epoch须大于0；quantity/revision/version为JSON整数。优惠比例按基点，8000是支付80%。金额不以小数元传输；UI格式化时不可转double。
 - 未知字段、未支持玩法/人群/范围必须400拒绝。Schema additionalProperties=false只是契约，实施须采用并测试专用严格反序列化/未知字段校验，不能假设record或Spring默认会拒绝。自定义int64格式与跨字段校验由服务端领域层再次执行。
 - 活动有效窗口左闭右开、epoch UTC；既有优惠券DATETIME按旧DB时钟保留。所有示例是构造数据，不是任何真实用户、活动或HTTP结果。
@@ -23,11 +24,11 @@ promotion-v1 · 2026-10-25 · 基础20ec7bd。**以下均为拟新增接口，�
 
 请求方式：`POST`
 
-权限：`trade:promotion:create`；管理权限码尚未创建/授权。
+权限：`trade:promotion:create`；权限定义脚本已提供，未执行或授予角色。
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- | --- |
-| Authorization | string | 是 | Header | 无 | Bearer会员或管理员令牌，按入口隔离 |
+| Authorization | string | 是 | Header | 无 | Bearer管理员令牌，会员令牌不可用 |
 | requestNo | string | 是 | Body | 无 | 幂等请求编号，重试不可改变 |
 | code | string | 是 | Body | 无 | 活动唯一编码，不可修改 |
 | draft | object | 是 | Body | 无 | 完整字段见模型表及Schema |
@@ -51,9 +52,9 @@ curl --request POST 'https://<API_HOST>/trade/admin/promotions' --header 'Author
   "code": 200,
   "data": {
     "id": "9",
-    "revision": 2,
-    "state": "PUBLISHED",
-    "activeVersion": 1
+    "revision": 0,
+    "state": "DRAFT",
+    "activeVersion": null
   }
 }
 ```
@@ -66,14 +67,14 @@ curl --request POST 'https://<API_HOST>/trade/admin/promotions' --header 'Author
 
 请求方式：`PUT`
 
-权限：`trade:promotion:update`；管理权限码尚未创建/授权。
+权限：`trade:promotion:update`；权限定义脚本已提供，未执行或授予角色。
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- | --- |
-| Authorization | string | 是 | Header | 无 | Bearer会员或管理员令牌，按入口隔离 |
+| Authorization | string | 是 | Header | 无 | Bearer管理员令牌，会员令牌不可用 |
 | id | string | 是 | Path | 无 | 正整数活动ID |
 | requestNo | string | 是 | Body | 无 | 幂等请求编号，重试不可改变 |
-| expectedRevision | integer | 是 | Body | 无 | 读取到的当前修订号 |
+| expectedRevision | integer | 是 | Body | 无 | 读取到的当前修订号，0..2147483647 |
 | draft | object | 是 | Body | 无 | 完整字段见模型表及Schema |
 
 | 响应参数 | 类型 | 说明 |
@@ -110,14 +111,14 @@ curl --request PUT 'https://<API_HOST>/trade/admin/promotions/9/draft' --header 
 
 请求方式：`POST`
 
-权限：`trade:promotion:publish`；管理权限码尚未创建/授权。
+权限：`trade:promotion:publish`；权限定义脚本已提供，未执行或授予角色。
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- | --- |
-| Authorization | string | 是 | Header | 无 | Bearer会员或管理员令牌，按入口隔离 |
+| Authorization | string | 是 | Header | 无 | Bearer管理员令牌，会员令牌不可用 |
 | id | string | 是 | Path | 无 | 正整数活动ID |
 | requestNo | string | 是 | Body | 无 | 幂等请求编号，重试不可改变 |
-| expectedRevision | integer | 是 | Body | 无 | 当前修订号 |
+| expectedRevision | integer | 是 | Body | 无 | 当前修订号，0..2147483647 |
 
 | 响应参数 | 类型 | 说明 |
 | --- | --- | --- |
@@ -153,14 +154,14 @@ curl --request POST 'https://<API_HOST>/trade/admin/promotions/9/publish' --head
 
 请求方式：`PUT`
 
-权限：`trade:promotion:state`；管理权限码尚未创建/授权。
+权限：`trade:promotion:state`；权限定义脚本已提供，未执行或授予角色。
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- | --- |
-| Authorization | string | 是 | Header | 无 | Bearer会员或管理员令牌，按入口隔离 |
+| Authorization | string | 是 | Header | 无 | Bearer管理员令牌，会员令牌不可用 |
 | id | string | 是 | Path | 无 | 正整数活动ID |
 | requestNo | string | 是 | Body | 无 | 幂等请求编号，重试不可改变 |
-| expectedRevision | integer | 是 | Body | 无 | 当前修订号 |
+| expectedRevision | integer | 是 | Body | 无 | 当前修订号，0..2147483647 |
 | action | string | 是 | Body | 无 | 状态操作 |
 
 | 响应参数 | 类型 | 说明 |
@@ -197,11 +198,11 @@ curl --request PUT 'https://<API_HOST>/trade/admin/promotions/9/state' --header 
 
 请求方式：`GET`
 
-权限：`trade:promotion:query`；管理权限码尚未创建/授权。
+权限：`trade:promotion:query`；权限定义脚本已提供，未执行或授予角色。
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- | --- |
-| Authorization | string | 是 | Header | 无 | Bearer会员或管理员令牌，按入口隔离 |
+| Authorization | string | 是 | Header | 无 | Bearer管理员令牌，会员令牌不可用 |
 | id | string | 是 | Path | 无 | 正整数活动ID |
 
 | 响应参数 | 类型 | 说明 |
@@ -267,11 +268,11 @@ curl --request GET 'https://<API_HOST>/trade/admin/promotions/9' --header 'Autho
 
 请求方式：`GET`
 
-权限：`trade:promotion:list`；管理权限码尚未创建/授权。
+权限：`trade:promotion:list`；权限定义脚本已提供，未执行或授予角色。
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- | --- |
-| Authorization | string | 是 | Header | 无 | Bearer会员或管理员令牌，按入口隔离 |
+| Authorization | string | 是 | Header | 无 | Bearer管理员令牌，会员令牌不可用 |
 | pageNum | integer | 否 | Query | 1 | 1..1000000 |
 | pageSize | integer | 否 | Query | 20 | 1..100 |
 | state | string | 否 | Query | 无 | DRAFT/PUBLISHED/PAUSED/ARCHIVED |
@@ -932,7 +933,9 @@ curl --request GET 'https://<API_HOST>/trade/app/v2/orders/TRDESIGN001/pricing' 
 | data.action | string | 客户端下一步 |
 | data.correlationId | string | 服务端关联号，无凭证/个人资料 |
 
-## 错误与客户端动作（拟）
+## 错误与客户端动作
+
+已实现后台错误表见[management.md](management.md#当前管理错误http与rcode一致)：401 ADMIN_LOGIN_REQUIRED、404 PROMOTION_NOT_FOUND、409状态/限额/编码冲突、500 PROMOTION_INTERNAL_ERROR及503后台REFRESH_ADMIN。下表中V2购买链路部分仍为拟定，不能视为已部署行为。
 
 | HTTP/R.code | data.errorCode | retryable / action | 含义 |
 | --- | --- | --- | --- |

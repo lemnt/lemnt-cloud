@@ -79,7 +79,7 @@ class PromotionPersistenceIntegrationTest {
         c.addMapper(PromotionMapper.class);
         mapper = new SqlSessionTemplate(factory).getMapper(PromotionMapper.class);
         gateway = proxy(new PromotionGatewayImpl(mapper));
-        admin = proxy(new PromotionAdministrationService(gateway));
+        admin = proxy(new PromotionAdministrationService(gateway, scopeFacts()));
         usage = proxy(new PromotionUsageService(gateway));
         now = tx(() -> gateway.nowEpochMs());
     }
@@ -88,6 +88,16 @@ class PromotionPersistenceIntegrationTest {
     void cleanup() throws Exception {
         jdbc.execute("DROP ALL OBJECTS");
         schema.close();
+    }
+
+    private com.lemnt.trade.domain.promotion.gateway.PromotionCatalogFactsGateway scopeFacts() {
+        return new com.lemnt.trade.domain.promotion.gateway.PromotionCatalogFactsGateway() {
+            public java.util.List<CatalogPricingFacts> facts(java.util.List<Long> ids) {
+                throw new UnsupportedOperationException("Not used in T2 fixture");
+            }
+
+            public void validateScope(PromotionScope scope) {}
+        };
     }
 
     private String request() {
@@ -122,7 +132,7 @@ class PromotionPersistenceIntegrationTest {
     private void order(String n, long m) {
         jdbc.update(
                 "INSERT INTO trade_order(order_no,member_id,total_amount,status)"
-                    + " VALUES(?,?,1.00,'RESERVING')",
+                        + " VALUES(?,?,1.00,'RESERVING')",
                 n,
                 m);
     }
@@ -180,7 +190,7 @@ class PromotionPersistenceIntegrationTest {
                 0,
                 count(
                         "SELECT COUNT(*) FROM trade_promotion_admin_request WHERE"
-                            + " request_no='STALE'"));
+                                + " request_no='STALE'"));
     }
 
     @Test
@@ -195,8 +205,8 @@ class PromotionPersistenceIntegrationTest {
                 2,
                 count(
                         "SELECT COUNT(*) FROM trade_promotion_admin_request WHERE"
-                            + " created_at_epoch_ms>0 AND"
-                            + " completed_at_epoch_ms>=created_at_epoch_ms"));
+                                + " created_at_epoch_ms>0 AND"
+                                + " completed_at_epoch_ms>=created_at_epoch_ms"));
     }
 
     @Test
@@ -546,7 +556,7 @@ class PromotionPersistenceIntegrationTest {
                                 return now + 7200000;
                             }
                         });
-        var lateAdmin = proxy(new PromotionAdministrationService(advanced));
+        var lateAdmin = proxy(new PromotionAdministrationService(advanced, scopeFacts()));
         var lateUsage = proxy(new PromotionUsageService(advanced));
         var live = publish(create(null, null));
         order("O2", 2);

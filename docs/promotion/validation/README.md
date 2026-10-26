@@ -21,3 +21,6 @@ PYTHONPATH=/tmp/promotion-schema-validation python docs/promotion/validation/val
 source-baseline.json记录20ec7bd的实际文件。未来修改这些源文件会触发基线失配，应重新核对设计和迁移影响，不要为了通过而静默删除检查。Schema的custom format必须启用；默认JSON Schema实现可能忽略未知格式，服务端仍要执行long精确转换和领域校验。
 
 PASS仅指设计附件。Java引擎、SQL迁移、Spring请求反序列化、并发事务、Maven/React/native完整回归和真实环境验证都不由此证明；T1 Java实现与验证见[implementation.md](../implementation.md)，T2持久化见[persistence.md](../persistence.md)，T3..T7仍PLANNED。历史设计证据保留原文；当前脚本不再输出关于运行时代码是否存在的硬编码结论。实际输出保存在work-items/yudao-member-mall-trade-migration/evidence/promotion-design/，无生产可用性声明。
+
+
+后续T3事实RPC及六个管理HTTP入口已实现，最新状态与证据见[management.md](../management.md)。本页原阶段测试数量和限制保留为历史，不代表后续阶段仍未实现。

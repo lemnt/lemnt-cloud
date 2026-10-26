@@ -5,6 +5,21 @@ import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface PromotionMapper {
+    String FILTER =
+            "<where><if test='state != null'>state=#{state}</if><if test='code != null'> AND"
+                    + " code=#{code}</if></where>";
+
+    @Select(
+            "<script>SELECT id,state,revision,active_version,last_version FROM trade_promotion_root"
+                    + " "
+                    + FILTER
+                    + " ORDER BY id DESC LIMIT #{limit} OFFSET #{offset}</script>")
+    java.util.List<PromotionRootDO> page(
+            com.lemnt.trade.domain.promotion.model.PromotionFilter filter);
+
+    @Select("<script>SELECT COUNT(*) FROM trade_promotion_root " + FILTER + "</script>")
+    long count(com.lemnt.trade.domain.promotion.model.PromotionFilter filter);
+
     @Select("SELECT UNIX_TIMESTAMP(CURRENT_TIMESTAMP(3))*1000.0")
     long nowEpochMs();
 
@@ -21,7 +36,7 @@ public interface PromotionMapper {
 
     @Select(
             "SELECT * FROM trade_promotion_admin_request WHERE operator_id=#{operator} AND"
-                + " request_no=#{request} FOR UPDATE")
+                    + " request_no=#{request} FOR UPDATE")
     @Options(flushCache = Options.FlushCachePolicy.TRUE, useCache = false)
     PromotionRequestDO lockRequest(
             @Param("operator") long operator, @Param("request") String request);
@@ -37,7 +52,7 @@ public interface PromotionMapper {
 
     @Insert(
             "INSERT INTO trade_promotion_root(code,draft_json,created_by,updated_by)"
-                + " VALUES(#{row.code},#{row.draftJson},#{operator},#{operator})")
+                    + " VALUES(#{row.code},#{row.draftJson},#{operator},#{operator})")
     @Options(useGeneratedKeys = true, keyProperty = "row.id")
     int insertRoot(@Param("row") PromotionRootDO row, @Param("operator") long operator);
 
@@ -68,7 +83,7 @@ public interface PromotionMapper {
 
     @Insert(
             "INSERT INTO trade_promotion_scope(root_id,version,type,target_id)"
-                + " VALUES(#{root},#{version},#{type},#{target})")
+                    + " VALUES(#{root},#{version},#{type},#{target})")
     int insertScope(
             @Param("root") long root,
             @Param("version") int version,
@@ -84,38 +99,38 @@ public interface PromotionMapper {
 
     @Select(
             "SELECT held_count+used_count FROM trade_promotion_member_counter WHERE root_id=#{id}"
-                + " ORDER BY held_count+used_count DESC,member_id LIMIT 1 FOR UPDATE")
+                    + " ORDER BY held_count+used_count DESC,member_id LIMIT 1 FOR UPDATE")
     @Options(flushCache = Options.FlushCachePolicy.TRUE, useCache = false)
     Long largestMemberUsage(long id);
 
     @Update(
             "UPDATE trade_promotion_counter SET global_limit=#{global},member_limit=#{member} WHERE"
-                + " root_id=#{root}")
+                    + " root_id=#{root}")
     int setLimits(
             @Param("root") long root, @Param("global") Long global, @Param("member") Long member);
 
     @Insert(
             "INSERT INTO trade_promotion_member_counter(root_id,member_id)"
-                + " VALUES(#{root},#{member}) ON DUPLICATE KEY UPDATE member_id=member_id")
+                    + " VALUES(#{root},#{member}) ON DUPLICATE KEY UPDATE member_id=member_id")
     int ensureMemberCounter(@Param("root") long root, @Param("member") long member);
 
     @Select(
             "SELECT * FROM trade_promotion_member_counter WHERE root_id=#{root} AND"
-                + " member_id=#{member} FOR UPDATE")
+                    + " member_id=#{member} FOR UPDATE")
     @Options(flushCache = Options.FlushCachePolicy.TRUE, useCache = false)
     PromotionCounterDO lockMemberCounter(@Param("root") long root, @Param("member") long member);
 
     @Update(
             "UPDATE trade_promotion_counter SET held_count=held_count+1 WHERE root_id=#{root} AND"
-                + " held_count<9223372036854775807-used_count AND (global_limit IS NULL OR"
-                + " held_count+used_count<global_limit)")
+                    + " held_count<9223372036854775807-used_count AND (global_limit IS NULL OR"
+                    + " held_count+used_count<global_limit)")
     int takeGlobal(long root);
 
     @Update(
             "UPDATE trade_promotion_member_counter SET held_count=held_count+1 WHERE"
-                + " root_id=#{root} AND member_id=#{member} AND"
-                + " held_count<9223372036854775807-used_count AND (#{limit} IS NULL OR"
-                + " held_count+used_count<#{limit})")
+                    + " root_id=#{root} AND member_id=#{member} AND"
+                    + " held_count<9223372036854775807-used_count AND (#{limit} IS NULL OR"
+                    + " held_count+used_count<#{limit})")
     int takeMember(
             @Param("root") long root, @Param("member") long member, @Param("limit") Long limit);
 
@@ -125,7 +140,7 @@ public interface PromotionMapper {
 
     @Select(
             "SELECT * FROM trade_promotion_usage WHERE order_no=#{order} AND root_id=#{root} FOR"
-                + " UPDATE")
+                    + " UPDATE")
     @Options(flushCache = Options.FlushCachePolicy.TRUE, useCache = false)
     PromotionUsageDO lockUsage(@Param("order") String order, @Param("root") long root);
 
@@ -149,7 +164,7 @@ public interface PromotionMapper {
 
     @Update(
             "UPDATE trade_promotion_usage SET state=#{target},updated_at_epoch_ms=#{now} WHERE"
-                + " order_no=#{order} AND root_id=#{root} AND state='HELD'")
+                    + " order_no=#{order} AND root_id=#{root} AND state='HELD'")
     int finishUsage(
             @Param("order") String order,
             @Param("root") long root,

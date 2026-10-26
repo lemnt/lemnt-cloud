@@ -18,6 +18,23 @@ public class PromotionGatewayImpl implements PromotionGateway {
         this.mapper = mapper;
     }
 
+    public java.util.List<PromotionAdminReceipt> page(PromotionFilter filter) {
+        return mapper.page(filter).stream()
+                .map(
+                        r ->
+                                new PromotionAdminReceipt(
+                                        r.getId(),
+                                        r.getRevision(),
+                                        PromotionRoot.State.valueOf(r.getState()),
+                                        r.getActiveVersion(),
+                                        r.getLastVersion()))
+                .toList();
+    }
+
+    public long count(PromotionFilter filter) {
+        return mapper.count(filter);
+    }
+
     public long nowEpochMs() {
         return mapper.nowEpochMs();
     }

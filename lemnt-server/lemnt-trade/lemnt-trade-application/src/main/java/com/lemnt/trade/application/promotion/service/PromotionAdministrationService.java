@@ -1,6 +1,7 @@
 package com.lemnt.trade.application.promotion.service;
 
 import com.lemnt.trade.domain.promotion.gateway.PromotionGateway;
+import com.lemnt.trade.domain.promotion.gateway.PromotionCatalogFactsGateway;
 import com.lemnt.trade.domain.promotion.model.*;
 import com.lemnt.trade.domain.checkout.model.CheckoutRules;
 import org.springframework.stereotype.Service;
@@ -12,9 +13,11 @@ import static com.lemnt.trade.domain.promotion.model.PromotionPersistenceExcepti
 @Transactional
 public class PromotionAdministrationService {
     private final PromotionGateway gateway;
+    private final PromotionCatalogFactsGateway facts;
 
-    public PromotionAdministrationService(PromotionGateway g) {
+    public PromotionAdministrationService(PromotionGateway g, PromotionCatalogFactsGateway facts) {
         gateway = g;
+        this.facts = facts;
     }
 
     public PromotionAdminReceipt create(long o, String q, String code, PromotionDraft d) {
@@ -27,6 +30,7 @@ public class PromotionAdministrationService {
                         "CREATE",
                         CheckoutRules.fingerprint("CREATE|" + code + "|" + gateway.draftHash(d)));
         if (replay != null) return replay;
+        facts.validateScope(d.scope());
         var r = gateway.createRoot(code, d, o);
         return complete(o, q, r);
     }
@@ -44,12 +48,13 @@ public class PromotionAdministrationService {
                                 "DRAFT|" + id + "|" + rev + "|" + gateway.draftHash(d)));
         if (replay != null) return replay;
         var r = editable(id, rev);
+        facts.validateScope(d.scope());
         var next =
                 new PromotionRoot(
                         id,
                         r.code(),
                         r.state(),
-                        Math.incrementExact(rev),
+                        nextRevision(rev),
                         r.activeVersion(),
                         r.lastVersion(),
                         d);
@@ -66,6 +71,7 @@ public class PromotionAdministrationService {
         var d = r.draft();
         long now = gateway.nowEpochMs();
         if (d.endsAtEpochMs() <= now) throw error(PROMOTION_STATE_CONFLICT);
+        facts.validateScope(d.scope());
         var c = gateway.lockCounter(id);
         if (d.globalUseLimit() != null && c.held() + c.used() > d.globalUseLimit()
                 || d.memberUseLimit() != null
@@ -84,13 +90,7 @@ public class PromotionAdministrationService {
         gateway.setLimits(id, d.globalUseLimit(), d.memberUseLimit());
         var next =
                 new PromotionRoot(
-                        id,
-                        r.code(),
-                        PromotionRoot.State.PUBLISHED,
-                        Math.incrementExact(rev),
-                        v,
-                        v,
-                        d);
+                        id, r.code(), PromotionRoot.State.PUBLISHED, nextRevision(rev), v, v, d);
         gateway.saveRoot(next, rev, o);
         return complete(o, q, next);
     }
@@ -118,7 +118,7 @@ public class PromotionAdministrationService {
                         id,
                         r.code(),
                         target,
-                        Math.incrementExact(rev),
+                        nextRevision(rev),
                         r.activeVersion(),
                         r.lastVersion(),
                         r.draft());
@@ -144,6 +144,11 @@ public class PromotionAdministrationService {
         if (r.revision() != rev) throw error(PROMOTION_REVISION_CONFLICT);
         if (r.state() == PromotionRoot.State.ARCHIVED) throw error(PROMOTION_STATE_CONFLICT);
         return r;
+    }
+
+    private static int nextRevision(long revision) {
+        if (revision >= Integer.MAX_VALUE) throw error(PROMOTION_REVISION_CONFLICT);
+        return Math.toIntExact(revision + 1);
     }
 
     private static String fingerprint(String a, long id, long rev) {
