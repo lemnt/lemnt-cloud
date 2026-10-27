@@ -1,8 +1,11 @@
 package com.lemnt.trade.infrastructure.mapper;
 
+import com.lemnt.trade.infrastructure.outbox.mapper.TradeOutboxMapper;
+
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.h2.jdbcx.JdbcDataSource;
@@ -13,10 +16,12 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** Executes production mapper SQL; H2 does not replace required MySQL integration verification. */
+/**
+ * Executes production mapper SQL; H2 does not replace required MySQL integration verification.
+ */
 class TradeOutboxMapperTest {
     JdbcDataSource dataSource;
-    org.apache.ibatis.session.SqlSessionFactory factory;
+    SqlSessionFactory factory;
 
     @BeforeEach
     void setup() throws Exception {

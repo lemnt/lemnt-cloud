@@ -1,3 +1,0 @@
-package com.lemnt.trade.infrastructure.dataobject;
-import com.baomidou.mybatisplus.annotation.IdType;import com.baomidou.mybatisplus.annotation.TableId;import com.baomidou.mybatisplus.annotation.TableName;import com.lemnt.common.infrastructure.domain.BaseDO;import lombok.Data;import lombok.EqualsAndHashCode;import lombok.experimental.Accessors;import java.math.BigDecimal;
-@Data @EqualsAndHashCode(callSuper=true) @Accessors(chain=true) @TableName("trade_order") public class TradeOrderDO extends BaseDO {@TableId(type=IdType.AUTO)private Long id;private String orderNo;private Long memberId;private BigDecimal totalAmount;private String status;}

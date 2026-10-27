@@ -1,10 +1,10 @@
 package com.lemnt.system.infrastructure.auth.converter;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.lemnt.system.domain.auth.model.User;
 import com.lemnt.system.infrastructure.auth.dataobject.UserDO;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户对象转换器
@@ -12,7 +12,6 @@ import com.lemnt.system.infrastructure.auth.dataobject.UserDO;
  * @author wangxx
  */
 public class UserConverter {
-
     /**
      * DO → Entity
      */

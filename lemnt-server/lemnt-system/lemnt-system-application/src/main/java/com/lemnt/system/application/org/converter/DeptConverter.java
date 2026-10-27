@@ -1,10 +1,10 @@
 package com.lemnt.system.application.org.converter;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.lemnt.system.application.org.dto.DeptDTO;
 import com.lemnt.system.domain.org.model.Dept;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 部门组装器

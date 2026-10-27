@@ -1,10 +1,10 @@
 package com.lemnt.system.adapter.web.log.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.lemnt.system.adapter.web.log.res.OperLogRes;
 import com.lemnt.system.application.log.dto.OperLogDTO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 操作日志响应对象组装器
@@ -12,7 +12,6 @@ import com.lemnt.system.application.log.dto.OperLogDTO;
  * @author wangxx
  */
 public class OperLogResConverter {
-
     /**
      * OperLogDTO → OperLogInfoRes
      */

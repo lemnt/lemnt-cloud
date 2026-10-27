@@ -1,1 +1,34 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"><modelVersion>4.0.0</modelVersion><parent><groupId>com.lemnt</groupId><artifactId>lemnt-mall</artifactId><version>1.0.0-SNAPSHOT</version></parent><artifactId>lemnt-mall-domain</artifactId><dependencies><dependency><groupId>com.lemnt</groupId><artifactId>lemnt-mall-client</artifactId><version>1.0.0-SNAPSHOT</version></dependency><dependency><groupId>com.lemnt</groupId><artifactId>lemnt-common-core</artifactId><version>1.0.0-SNAPSHOT</version></dependency><dependency><groupId>com.lemnt</groupId><artifactId>lemnt-common-domain</artifactId><version>1.0.0-SNAPSHOT</version></dependency><dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency></dependencies></project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.lemnt</groupId>
+        <artifactId>lemnt-mall</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>lemnt-mall-domain</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-domain</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <testResources>
+            <testResource><directory>src/test/resources</directory></testResource>
+            <testResource>
+                <directory>${project.basedir}/../../../docs/promotion</directory>
+                <targetPath>promotion</targetPath>
+                <includes><include>pricing-vectors.json</include></includes>
+            </testResource>
+        </testResources>
+    </build>
+</project>

@@ -1,5 +1,8 @@
 package com.lemnt.mall.application.store.dto;
 
+/**
+ * 门店商品数据传输对象。
+ */
 public record StoreProductDTO(
         Long id,
         String name,
@@ -8,4 +11,5 @@ public record StoreProductDTO(
         String image,
         String minPrice,
         String maxPrice,
-        boolean available) {}
+        boolean available
+) implements java.io.Serializable {}

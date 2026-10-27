@@ -3,6 +3,8 @@ package com.lemnt.system.adapter.web.auth.converter;
 import com.lemnt.system.adapter.web.auth.req.MenuAddReq;
 import com.lemnt.system.adapter.web.auth.req.MenuListReq;
 import com.lemnt.system.adapter.web.auth.req.MenuUpdateReq;
+import com.lemnt.system.adapter.web.auth.req.SystemMenuListReq;
+import com.lemnt.system.adapter.web.auth.req.SystemMenuTreeSelectReq;
 import com.lemnt.system.application.auth.cmd.MenuAddCmd;
 import com.lemnt.system.application.auth.cmd.MenuUpdateCmd;
 import com.lemnt.system.application.auth.qry.MenuListQry;
@@ -13,7 +15,6 @@ import com.lemnt.system.application.auth.qry.MenuListQry;
  * @author wangxx
  */
 public class MenuReqConverter {
-
     public static MenuAddCmd toCmd(MenuAddReq req) {
         return new MenuAddCmd(
                 req.menuName(),
@@ -54,6 +55,30 @@ public class MenuReqConverter {
     }
 
     public static MenuListQry toQry(MenuListReq req, Long userId) {
+        if (req == null) {
+            return null;
+        }
+        return new MenuListQry(
+                req.menuName(),
+                req.status(),
+                req.visible(),
+                userId
+        );
+    }
+
+    public static MenuListQry toQry(SystemMenuListReq req, Long userId) {
+        if (req == null) {
+            return null;
+        }
+        return new MenuListQry(
+                req.menuName(),
+                req.status(),
+                req.visible(),
+                userId
+        );
+    }
+
+    public static MenuListQry toQry(SystemMenuTreeSelectReq req, Long userId) {
         if (req == null) {
             return null;
         }

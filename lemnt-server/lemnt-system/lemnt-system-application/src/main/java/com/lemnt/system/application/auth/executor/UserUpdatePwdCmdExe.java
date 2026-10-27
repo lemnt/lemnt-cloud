@@ -1,11 +1,13 @@
 package com.lemnt.system.application.auth.executor;
 
-import com.lemnt.system.application.auth.cmd.UserPwdUpdateCmd;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.common.security.utils.SecurityUtils;
+import com.lemnt.system.application.auth.cmd.UserPwdUpdateCmd;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
 import com.lemnt.system.domain.auth.model.User;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 用户修改个人密码命令执行器
@@ -15,9 +17,7 @@ import com.lemnt.system.domain.auth.model.User;
 @Component
 @RequiredArgsConstructor
 public class UserUpdatePwdCmdExe {
-
     private final UserGateway userGateway;
-
     public Boolean execute(UserPwdUpdateCmd cmd) {
         String username = SecurityUtils.getUsername();
         User user = userGateway.selectUserByUserName(username);

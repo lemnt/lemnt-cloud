@@ -1,4 +1,4 @@
-import type { CheckoutStatus, CheckoutItem } from '../checkout/types';
+import type { CheckoutStatus, CheckoutItem } from '../../mall/checkout/types';
 export interface Page<T> {
   records: T[];
   total: number;

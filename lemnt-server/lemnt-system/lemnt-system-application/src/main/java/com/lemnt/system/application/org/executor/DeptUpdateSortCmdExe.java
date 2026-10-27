@@ -1,11 +1,13 @@
 package com.lemnt.system.application.org.executor;
 
-import lombok.RequiredArgsConstructor;
+import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.system.domain.org.gateway.DeptGateway;
+import com.lemnt.system.domain.org.model.Dept;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import com.lemnt.common.core.exception.ServiceException;
-import com.lemnt.system.domain.org.model.Dept;
-import com.lemnt.system.domain.org.gateway.DeptGateway;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 

@@ -1,24 +1,20 @@
 package com.lemnt.system.infrastructure.auth.gateway;
 
-import java.util.*;
-
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
-import com.lemnt.system.infrastructure.auth.mapper.RoleMenuMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import com.lemnt.system.domain.auth.model.Role;
 import com.lemnt.system.domain.auth.gateway.RoleGateway;
+import com.lemnt.system.domain.auth.model.Role;
 import com.lemnt.system.infrastructure.auth.converter.RoleConverter;
-import com.lemnt.system.infrastructure.auth.dataobject.RoleDeptDO;
 import com.lemnt.system.infrastructure.auth.dataobject.RoleDO;
-import com.lemnt.system.infrastructure.auth.dataobject.RoleMenuDO;
 import com.lemnt.system.infrastructure.auth.mapper.RoleMapper;
-import com.lemnt.system.infrastructure.auth.mapper.RoleDeptMapper;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.*;
 
 /**
  * 角色管理 Gateway 实现
@@ -28,10 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class RoleGatewayImpl implements RoleGateway {
-
     private final RoleMapper roleMapper;
-    private final RoleDeptMapper roleDeptMapper;
-    private final RoleMenuMapper roleMenuMapper;
 
     @Override
     public PageResult<Role> selectPage(Role role, PageQry pageQry) {
@@ -112,6 +105,7 @@ public class RoleGatewayImpl implements RoleGateway {
     public Boolean insertRole(Role role) {
         RoleDO roleDO = RoleConverter.toDO(role);
         int rows = roleMapper.insert(roleDO);
+
         // 回填自增主键到 Entity，供调用方获取 roleId
         if (rows > 0) {
             role.setRoleId(roleDO.getRoleId());
@@ -129,62 +123,4 @@ public class RoleGatewayImpl implements RoleGateway {
         return roleMapper.deleteByIds(roleIds) > 0;
     }
 
-    @Override
-    public Boolean deleteRoleMenuByRoleId(Long roleId) {
-        return roleMenuMapper.deleteRoleMenuByRoleId(roleId) > 0;
-    }
-
-    @Override
-    public Boolean deleteRoleMenu(List<Long> ids) {
-        return roleMenuMapper.deleteRoleMenu(ids) > 0;
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Boolean insertRoleMenus(Long roleId, List<Long> menuIds) {
-        if (CollUtil.isEmpty(menuIds)) {
-            return true;
-        }
-        List<RoleMenuDO> list = new ArrayList<>();
-        for (Long menuId : menuIds) {
-            RoleMenuDO rm = new RoleMenuDO();
-            rm.setRoleId(roleId);
-            rm.setMenuId(menuId);
-            list.add(rm);
-        }
-        roleMenuMapper.insert(list);
-        return true;
-    }
-
-    @Override
-    public Boolean deleteRoleDeptByRoleId(Long roleId) {
-        return roleDeptMapper.deleteRoleDeptByRoleId(roleId) > 0;
-    }
-
-    @Override
-    public Boolean deleteRoleDept(List<Long> ids) {
-        return roleDeptMapper.deleteRoleDept(ids) > 0;
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Boolean insertRoleDepts(Long roleId, List<Long> deptIds) {
-        if (CollUtil.isEmpty(deptIds)) {
-            return true;
-        }
-        List<RoleDeptDO> list = new ArrayList<>();
-        for (Long deptId : deptIds) {
-            RoleDeptDO rd = new RoleDeptDO();
-            rd.setRoleId(roleId);
-            rd.setDeptId(deptId);
-            list.add(rd);
-        }
-        roleDeptMapper.insert(list);
-        return true;
-    }
-
-    @Override
-    public Long selectCountRoleDeptByDeptId(Long deptId) {
-        return roleDeptMapper.selectCountRoleDeptByDeptId(deptId);
-    }
 }

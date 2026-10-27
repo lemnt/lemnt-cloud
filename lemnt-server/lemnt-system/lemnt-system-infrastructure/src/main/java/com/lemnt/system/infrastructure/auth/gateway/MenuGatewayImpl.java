@@ -1,13 +1,15 @@
 package com.lemnt.system.infrastructure.auth.gateway;
 
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import com.lemnt.system.domain.auth.model.Menu;
 import com.lemnt.system.domain.auth.gateway.MenuGateway;
+import com.lemnt.system.domain.auth.model.Menu;
 import com.lemnt.system.infrastructure.auth.converter.MenuConverter;
 import com.lemnt.system.infrastructure.auth.mapper.MenuMapper;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * 菜单网关实现 — infrastructure 层适配器
@@ -17,7 +19,6 @@ import com.lemnt.system.infrastructure.auth.mapper.MenuMapper;
 @Component
 @RequiredArgsConstructor
 public class MenuGatewayImpl implements MenuGateway {
-
     private final MenuMapper menuMapper;
 
     @Override

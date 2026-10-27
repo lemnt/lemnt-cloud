@@ -2,8 +2,9 @@ package com.lemnt.system.domain.auth.service;
 
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.core.utils.StringUtils;
-import com.lemnt.system.domain.auth.model.User;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
+import com.lemnt.system.domain.auth.model.User;
+
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -13,7 +14,6 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public class UserDomainService {
-
     private final UserGateway userGateway;
 
     /**

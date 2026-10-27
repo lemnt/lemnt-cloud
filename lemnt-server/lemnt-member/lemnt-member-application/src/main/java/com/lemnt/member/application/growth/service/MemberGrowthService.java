@@ -1,0 +1,324 @@
+package com.lemnt.member.application.growth.service;
+
+import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.member.domain.growth.gateway.MemberAssetRecordGateway;
+import com.lemnt.member.domain.growth.gateway.MemberConfigGateway;
+import com.lemnt.member.domain.growth.gateway.MemberLevelGateway;
+import com.lemnt.member.domain.growth.gateway.MemberLevelRecordGateway;
+import com.lemnt.member.domain.growth.gateway.MemberSignConfigGateway;
+import com.lemnt.member.domain.growth.gateway.MemberSignRecordGateway;
+import com.lemnt.member.domain.growth.model.AssetRecord;
+import com.lemnt.member.domain.growth.model.Config;
+import com.lemnt.member.domain.growth.model.Level;
+import com.lemnt.member.domain.growth.model.LevelRecord;
+import com.lemnt.member.domain.growth.model.SignConfig;
+import com.lemnt.member.domain.growth.model.SignRecord;
+import com.lemnt.member.domain.shared.model.MemberRules;
+import com.lemnt.member.domain.user.gateway.MemberUserGateway;
+import com.lemnt.member.domain.user.model.Member;
+
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.Set;
+
+/** 会员成长权益应用编排，保证签到、资产流水及等级变更原子性。 */
+@Component
+@RequiredArgsConstructor
+public class MemberGrowthService {
+
+    private final MemberAssetRecordGateway memberAssetRecordGateway;
+    private final MemberConfigGateway memberConfigGateway;
+    private final MemberLevelGateway memberLevelGateway;
+    private final MemberLevelRecordGateway memberLevelRecordGateway;
+    private final MemberSignConfigGateway memberSignConfigGateway;
+    private final MemberSignRecordGateway memberSignRecordGateway;
+    private final MemberUserGateway memberUserGateway;
+
+    private Member lock(Long id) {
+        MemberRules.id(id);
+        var value = memberUserGateway.lockById(id);
+        if (value == null) {
+            throw new ServiceException("会员不存在", 400);
+        }
+        return value;
+    }
+
+    private Member active(Long id) {
+        var value = lock(id);
+        if (!Integer.valueOf(1).equals(value.status())) {
+            throw new ServiceException("会员已停用", 401);
+        }
+        return value;
+    }
+
+    /**
+     * 在会员行锁内核对业务幂等键，更新余额、流水和自动升级记录。
+     * 由调整、等级分配或签到的外层事务统一提交，奖励失败时一并回滚。
+     */
+    private AssetRecord adjust(
+            Long memberId,
+            String type,
+            long delta,
+            String bizType,
+            String key,
+            String reason,
+            boolean allowZero,
+            boolean autoLevel) {
+        var user = lock(memberId);
+        if (!Set.of("POINT", "EXPERIENCE").contains(type)) {
+            throw new ServiceException("资产类型不合法", 400);
+        }
+        bizType = MemberRules.text(bizType, 40);
+        key = MemberRules.text(key, 64);
+        reason = MemberRules.text(reason, 500);
+        var previous = memberAssetRecordGateway.assetRequest(memberId, type, bizType, key);
+        if (previous != null) {
+            if (previous.delta() != delta || !previous.reason().equals(reason)) {
+                throw new ServiceException("业务编号已用于不同内容", 409);
+            }
+            return previous;
+        }
+        if (delta == 0 && !allowZero) {
+            throw new ServiceException("变更量不能为0", 400);
+        }
+        long balance =
+                Math.addExact("POINT".equals(type) ? user.points() : user.experience(), delta);
+        if (balance < 0) {
+            throw new ServiceException("余额不足", 400);
+        }
+        memberUserGateway.balance(memberId, type, balance);
+        var record =
+                new AssetRecord(
+                        null,
+                        memberId,
+                        type,
+                        delta,
+                        balance,
+                        bizType,
+                        key,
+                        reason,
+                        memberUserGateway.now()
+                );
+        memberAssetRecordGateway.assetSave(record);
+        if (autoLevel && "EXPERIENCE".equals(type)) {
+            var best =
+                    memberLevelGateway.levels().stream()
+                    .filter(v -> v.status() == 1 && v.experience() <= balance)
+                    .max(Comparator.comparing(Level::level))
+                    .orElse(null);
+            if (best != null && !Objects.equals(best.id(), user.levelId())) {
+                memberUserGateway.assignLevel(memberId, best.id());
+                memberLevelRecordGateway.levelRecord(
+                        new LevelRecord(
+                                null, memberId, best.id(), balance, reason, memberUserGateway.now()));
+            }
+        }
+        return memberAssetRecordGateway.assetRequest(memberId, type, bizType, key);
+    }
+
+    /**
+     * 调整资产。
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public AssetRecord adjustAsset(
+            Long memberId, String type, long delta, String requestNo, String reason) {
+        return adjust(memberId, type, delta, "ADMIN", requestNo, reason, false, true);
+    }
+
+    /**
+     * 分配等级。
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean assignLevel(Long memberId, Long levelId, String requestNo, String reason) {
+        var user = lock(memberId);
+        String key = MemberRules.text(requestNo, 64);
+        String audit =
+                MemberRules.text("[level=" + levelId + "] " + MemberRules.text(reason, 450), 500);
+        var previous = memberAssetRecordGateway.assetRequest(memberId, "EXPERIENCE", "ADMIN_LEVEL", key);
+        if (previous != null) {
+            if (!audit.equals(previous.reason())) {
+                throw new ServiceException("业务编号已用于不同等级操作", 409);
+            }
+            return true;
+        }
+        Level level = levelId == null ? null : memberLevelGateway.level(MemberRules.id(levelId));
+        if (levelId != null && (level == null || level.status() != 1)) {
+            throw new ServiceException("等级不存在或已停用", 400);
+        }
+        long target = level == null ? 0 : level.experience();
+        adjust(
+                memberId,
+                "EXPERIENCE",
+                target - user.experience(),
+                "ADMIN_LEVEL",
+                key,
+                audit,
+                true,
+                false);
+        memberUserGateway.assignLevel(memberId, levelId);
+        memberLevelRecordGateway.levelRecord(
+                new LevelRecord(null, memberId, levelId, target, audit, memberUserGateway.now()));
+        return true;
+    }
+
+    /**
+     * 保存等级。
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Long saveLevel(Level v) {
+        memberConfigGateway.lockCatalog();
+        if (v.id() != null && memberLevelGateway.level(MemberRules.id(v.id())) == null) {
+            throw new ServiceException("等级不存在", 400);
+        }
+        String name = MemberRules.text(v.name(), 80);
+        if (v.level() == null
+                || v.level() < 1
+                || v.experience() == null
+                || v.experience() < 1
+                || v.discountPercent() == null
+                || v.discountPercent() < 0
+                || v.discountPercent() > 100
+                || v.status() == null
+                || (v.status() != 0 && v.status() != 1)) {
+            throw new ServiceException("等级参数不合法", 400);
+        }
+        for (var old : memberLevelGateway.levels()) {
+            if (!Objects.equals(old.id(), v.id())) {
+                if (old.name().equals(name)
+                        || old.level().equals(v.level())
+                        || (old.level() < v.level() && old.experience() >= v.experience())
+                        || (old.level() > v.level() && old.experience() <= v.experience())) {
+                    throw new ServiceException("等级名称、序号或经验门槛冲突", 400);
+                }
+            }
+        }
+        return memberLevelGateway.levelSave(
+                new Level(
+                        v.id(),
+                        name,
+                        v.level(),
+                        v.experience(),
+                        v.discountPercent(),
+                        MemberRules.optional(v.icon(), 500),
+                        MemberRules.optional(v.backgroundUrl(), 500),
+                        v.status()));
+    }
+
+    /**
+     * 删除等级。
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteLevel(Long id) {
+        return memberLevelGateway.levelDelete(MemberRules.id(id));
+    }
+
+    /**
+     * 保存签到配置。
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean saveSignConfig(SignConfig v) {
+        if (v.day() == null
+                || v.day() < 1
+                || v.day() > 366
+                || v.point() == null
+                || v.point() < 0
+                || v.experience() == null
+                || v.experience() < 0
+                || (v.point() == 0 && v.experience() == 0)
+                || v.status() == null
+                || (v.status() != 0 && v.status() != 1)) {
+            throw new ServiceException("签到配置不合法", 400);
+        }
+        memberSignConfigGateway.signConfigSave(v);
+        return true;
+    }
+
+    /**
+     * 删除签到配置。
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteSignConfig(Integer day) {
+        if (day == null || day < 1) {
+            throw new ServiceException("天数不合法", 400);
+        }
+        return memberSignConfigGateway.signConfigDelete(day);
+    }
+
+    /**
+     * 签到。
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public SignRecord sign(Long memberId) {
+        active(memberId);
+        var today = memberUserGateway.now().toLocalDate();
+        var previous = memberSignRecordGateway.signDate(memberId, today);
+        if (previous != null) {
+            return previous;
+        }
+        var configs = memberSignConfigGateway.signConfigs().stream().filter(v -> v.status() == 1).toList();
+        if (configs.isEmpty()) {
+            throw new ServiceException("签到规则未启用", 409);
+        }
+        int max = configs.stream().mapToInt(SignConfig::day).max().orElse(1);
+        var last = memberSignRecordGateway.lastSign(memberId);
+        int day = last != null && last.signDate().equals(today.minusDays(1)) ? last.day() + 1 : 1;
+        if (day > max) {
+            day = 1;
+        }
+        final int current = day;
+        var config =
+                configs.stream()
+                .filter(v -> v.day() == current)
+                .findFirst()
+                .orElse(new SignConfig(day, 0L, 0L, 1));
+        memberSignRecordGateway.signSave(
+                new SignRecord(null, memberId, today, day, config.point(), config.experience()));
+        if (config.point() > 0) {
+            adjust(
+                    memberId,
+                    "POINT",
+                    config.point(),
+                    "SIGN_IN",
+                    today.toString(),
+                    "每日签到",
+                    false,
+                    true);
+        }
+        if (config.experience() > 0) {
+            adjust(
+                    memberId,
+                    "EXPERIENCE",
+                    config.experience(),
+                    "SIGN_IN",
+                    today.toString(),
+                    "每日签到",
+                    false,
+                    true);
+        }
+        return memberSignRecordGateway.signDate(memberId, today);
+    }
+
+    /**
+     * 保存配置。
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean saveConfig(Config v) {
+        if (v.pointTradeDeductEnable() == null
+                || v.pointTradeDeductUnitPrice() == null
+                || v.pointTradeDeductUnitPrice() < 0
+                || v.pointTradeDeductMaxPrice() == null
+                || v.pointTradeDeductMaxPrice() < 0
+                || v.pointTradeGivePoint() == null
+                || v.pointTradeGivePoint() < 0
+                || (v.pointTradeDeductEnable() && v.pointTradeDeductUnitPrice() == 0)) {
+            throw new ServiceException("积分配置不合法", 400);
+        }
+        memberConfigGateway.configSave(v);
+        return true;
+    }
+}

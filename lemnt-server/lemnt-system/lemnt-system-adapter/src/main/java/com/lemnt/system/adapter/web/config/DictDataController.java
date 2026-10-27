@@ -1,12 +1,23 @@
 package com.lemnt.system.adapter.web.config;
 
-import java.util.List;
-
+import com.lemnt.common.core.domain.R;
 import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.common.log.annotation.Log;
+import com.lemnt.common.log.enums.BusinessType;
+import com.lemnt.common.security.annotation.RequiresPermissions;
+import com.lemnt.system.adapter.web.config.converter.DictDataReqConverter;
+import com.lemnt.system.adapter.web.config.converter.DictDataResConverter;
+import com.lemnt.system.adapter.web.config.req.DictDataAddReq;
+import com.lemnt.system.adapter.web.config.req.DictDataUpdateReq;
+import com.lemnt.system.adapter.web.config.res.SystemDictDataDictTypeRes;
+import com.lemnt.system.adapter.web.config.res.SystemDictDataGetInfoRes;
+import com.lemnt.system.adapter.web.config.res.SystemDictDataListRes;
+import com.lemnt.system.application.config.dto.DictDataDTO;
 import com.lemnt.system.application.config.executor.*;
+import com.lemnt.system.application.config.qry.DictDataPageQry;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,17 +27,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.lemnt.common.core.domain.R;
-import com.lemnt.common.log.annotation.Log;
-import com.lemnt.common.log.enums.BusinessType;
-import com.lemnt.common.security.annotation.RequiresPermissions;
-import com.lemnt.system.adapter.web.config.converter.DictDataReqConverter;
-import com.lemnt.system.adapter.web.config.converter.DictDataResConverter;
-import com.lemnt.system.adapter.web.config.req.DictDataAddReq;
-import com.lemnt.system.adapter.web.config.req.DictDataUpdateReq;
-import com.lemnt.system.adapter.web.config.res.DictDataRes;
-import com.lemnt.system.application.config.dto.DictDataDTO;
-import com.lemnt.system.application.config.qry.DictDataPageQry;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * 数据字典数据信息操作处理
@@ -38,7 +42,6 @@ import com.lemnt.system.application.config.qry.DictDataPageQry;
 @RequestMapping("/dictionary-data")
 @RequiredArgsConstructor
 public class DictDataController {
-
     private final DictDataPageQueryExe dictDataPageQueryExe;
     private final DictDataDetailQueryExe dictDataDetailQueryExe;
     private final DictDataAddCmdExe dictDataAddCmdExe;
@@ -50,21 +53,21 @@ public class DictDataController {
     @Operation(summary = "查询字典数据列表")
     @RequiresPermissions("system:dict:list")
     @GetMapping
-    public R<DictDataRes> list(DictDataPageQry qry) {
+    public R<SystemDictDataListRes> list(DictDataPageQry qry) {
         PageResult<DictDataDTO> result = dictDataPageQueryExe.execute(qry);
-        return R.page(DictDataResConverter.toResList(result.getRecords()), result.getTotal());
+        return R.page(DictDataResConverter.toResListToSystemDictDataListRes(result.getRecords()), result.getTotal());
     }
 
     @Operation(summary = "查询字典数据详细")
     @GetMapping(value = "/{dictCode}")
-    public R<DictDataRes> getInfo(@PathVariable Long dictCode) {
-        return R.ok(DictDataResConverter.toRes(dictDataDetailQueryExe.execute(dictCode)));
+    public R<SystemDictDataGetInfoRes> getInfo(@PathVariable Long dictCode) {
+        return R.ok(DictDataResConverter.toResToSystemDictDataGetInfoRes(dictDataDetailQueryExe.execute(dictCode)));
     }
 
     @Operation(summary = "根据字典类型查询字典数据信息")
     @GetMapping(value = "/type/{dictType}")
-    public R<List<DictDataRes>> dictType(@PathVariable String dictType) {
-        return R.ok(DictDataResConverter.toResList(dictDataListQueryExe.execute(dictType)));
+    public R<List<SystemDictDataDictTypeRes>> dictType(@PathVariable String dictType) {
+        return R.ok(DictDataResConverter.toResListToSystemDictDataDictTypeRes(dictDataListQueryExe.execute(dictType)));
     }
 
     @Operation(summary = "新增字典数据")

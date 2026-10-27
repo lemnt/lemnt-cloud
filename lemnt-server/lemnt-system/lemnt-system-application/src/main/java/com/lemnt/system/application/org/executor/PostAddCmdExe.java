@@ -1,12 +1,14 @@
 package com.lemnt.system.application.org.executor;
 
-import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.common.core.exception.ServiceException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.system.application.org.cmd.PostAddCmd;
-import com.lemnt.system.domain.org.model.Post;
 import com.lemnt.system.domain.org.gateway.PostGateway;
+import com.lemnt.system.domain.org.model.Post;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 新增岗位命令执行器
@@ -17,7 +19,6 @@ import com.lemnt.system.domain.org.gateway.PostGateway;
 @RequiredArgsConstructor
 public class PostAddCmdExe {
     private final PostGateway postGateway;
-
     public Boolean execute(PostAddCmd cmd) {
         // 停用岗位也占用编码，重复时禁止写入。
         if (postGateway.checkPostCodeUnique(cmd.postCode()) != null) {

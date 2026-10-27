@@ -9,10 +9,7 @@ import {
 import type { PageQuery, ShipmentRequest, RefundCreateRequest } from '../types';
 const orderPath = (no: string) => `/trade/admin/orders/${encodeURIComponent(no)}`;
 export async function getOrders(params: PageQuery) {
-  return decodePage(
-    (await request<unknown>({ url: '/trade/admin/orders', params })).data,
-    decodeOrder,
-  );
+  return decodePage(await request<unknown>({ url: '/trade/admin/orders', params }), decodeOrder);
 }
 export async function getOrder(no: string) {
   return decodeDetail((await request<unknown>({ url: orderPath(no) })).data);
@@ -35,7 +32,7 @@ export async function requestRefund(no: string, data: RefundCreateRequest) {
 }
 export async function getRefunds(params: PageQuery) {
   return decodePage(
-    (await request<unknown>({ url: '/trade/admin/refund-requests', params })).data,
+    await request<unknown>({ url: '/trade/admin/refund-requests', params }),
     decodeRefund,
   );
 }

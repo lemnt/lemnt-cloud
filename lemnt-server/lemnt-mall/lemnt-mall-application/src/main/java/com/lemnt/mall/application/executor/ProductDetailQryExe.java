@@ -1,3 +1,0 @@
-package com.lemnt.mall.application.executor;
-import com.lemnt.mall.domain.gateway.ProductGateway;import com.lemnt.mall.domain.model.Product;import lombok.RequiredArgsConstructor;import org.springframework.stereotype.Component;
-@Component @RequiredArgsConstructor public class ProductDetailQryExe {private final ProductGateway gateway;public Product execute(Long id){if(id==null||id<=0)throw new IllegalArgumentException("商品ID不合法");return gateway.findById(id);}}

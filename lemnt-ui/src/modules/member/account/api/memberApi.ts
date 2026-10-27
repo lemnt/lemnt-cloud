@@ -25,12 +25,10 @@ import type {
 const user = (id: string) => `/member/admin/users/${memberId(id)}`;
 export async function getMembers(q: MemberPageQuery) {
   return decodePage(
-    (
-      await request<unknown>({
-        url: '/member/admin/users',
-        params: { mobile: q.mobile, pageNum: q.pageNum, pageSize: q.pageSize },
-      })
-    ).data,
+    await request<unknown>({
+      url: '/member/admin/users',
+      params: { mobile: q.mobile, pageNum: q.pageNum, pageSize: q.pageSize },
+    }),
     decodeProfile,
   );
 }
@@ -174,16 +172,14 @@ export async function deleteMetadata(kind: MetadataKind, id: string) {
 }
 export async function getMemberRecords(kind: RecordKind, q: MemberPageQuery) {
   return decodePage(
-    (
-      await request<unknown>({
-        url: '/member/admin/' + kind,
-        params: {
-          memberId: q.memberId ? memberId(q.memberId) : undefined,
-          pageNum: q.pageNum,
-          pageSize: q.pageSize,
-        },
-      })
-    ).data,
+    await request<unknown>({
+      url: '/member/admin/' + kind,
+      params: {
+        memberId: q.memberId ? memberId(q.memberId) : undefined,
+        pageNum: q.pageNum,
+        pageSize: q.pageSize,
+      },
+    }),
     (v) => decodeRecord(v, kind),
   );
 }

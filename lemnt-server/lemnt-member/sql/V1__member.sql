@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS member_user (
  member_no VARCHAR(40) NOT NULL,
  nickname VARCHAR(80) NOT NULL,
  mobile VARCHAR(24) NULL,
+ password VARCHAR(100) NULL COMMENT '密码哈希',
  email VARCHAR(254) NULL,
  avatar VARCHAR(500) NULL,
  status TINYINT NOT NULL DEFAULT 1,

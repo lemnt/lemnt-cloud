@@ -1,6 +1,7 @@
 package com.lemnt.system.adapter.web.notice.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -13,18 +14,18 @@ import java.time.LocalDateTime;
 @Schema(description = "通知公告分页查询条件")
 public record NoticePageReq(
         /**
-         * 公告标题
-         */
+ * 公告标题
+ */
         @Schema(description = "公告标题")
         String noticeTitle,
         /**
-         * 公告类型（1通知 2公告）
-         */
+ * 公告类型（1通知 2公告）
+ */
         @Schema(description = "公告类型（1通知 2公告）")
         String noticeType,
         /**
-         * 公告状态（1正常 2关闭）
-         */
+ * 公告状态（1正常 2关闭）
+ */
         @Schema(description = "公告状态（1正常 2关闭）")
         @Pattern(regexp = "[12]", message = "状态值只能为1或2")
         String status,
@@ -37,7 +38,6 @@ public record NoticePageReq(
         @Schema(description = "结束时间")
         LocalDateTime endTime
 ) implements Serializable {
-
     public NoticePageReq {
         pageNum = pageNum == null ? 1 : pageNum;
         pageSize = pageSize == null ? 10 : pageSize;

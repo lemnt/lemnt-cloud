@@ -26,8 +26,8 @@ it('记录类型隔离与分页结构校验', () => {
   expect(() =>
     decodeRecord({ id: 1, memberId: 2, assetType: 'EXPERIENCE' }, 'point-records'),
   ).toThrow('类型不匹配');
-  expect(() => decodePage({ records: null, total: 1 }, decodeProfile)).toThrow();
-  expect(() => decodePage({ records: [], total: -1 }, decodeProfile)).toThrow();
+  expect(() => decodePage({ rows: null, total: 1 }, decodeProfile)).toThrow();
+  expect(() => decodePage({ rows: [], total: -1 }, decodeProfile)).toThrow();
 });
 it('地址默认值必须为boolean，配置不接受数字开关', () => {
   expect(() => decodeAddress({ defaultStatus: 'false' })).toThrow();

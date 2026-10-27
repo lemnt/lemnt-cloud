@@ -3,8 +3,10 @@ package com.lemnt.system.application.log.executor;
 import com.lemnt.system.application.log.converter.OperLogConverter;
 import com.lemnt.system.application.log.dto.OperLogDTO;
 import com.lemnt.system.domain.log.gateway.OperLogGateway;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 操作日志详情查询执行器
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class OperLogDetailQueryExe {
-
     private final OperLogGateway operLogGateway;
 
     /**

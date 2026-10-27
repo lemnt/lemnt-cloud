@@ -1,6 +1,7 @@
 package com.lemnt.system.domain.auth.model;
 
 import com.lemnt.system.domain.org.model.Dept;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -145,7 +146,6 @@ public class User implements Serializable {
      * 结束时间（查询用）
      */
     private LocalDateTime endTime;
-
     public boolean isAdmin() {
         return Objects.equals(this.userId, 1L);
     }

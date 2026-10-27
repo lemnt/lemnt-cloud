@@ -1,20 +1,20 @@
 package com.lemnt.system.infrastructure.notice.mapper;
 
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.system.domain.notice.model.Notice;
 import com.lemnt.system.domain.notice.model.NoticeReadUser;
 import com.lemnt.system.infrastructure.notice.dataobject.NoticeDO;
 import com.lemnt.system.infrastructure.notice.dataobject.NoticeReadDO;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
-
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
+import cn.hutool.core.collection.CollUtil;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * NoticeRead 数据层
@@ -23,7 +23,6 @@ import java.util.Map;
  */
 @Mapper
 public interface NoticeReadMapper extends BaseMapper<NoticeReadDO> {
-
     /**
      * 主键由数据库生成；重复标记同一用户同一公告时保留首次阅读记录。
      */
@@ -66,7 +65,9 @@ public interface NoticeReadMapper extends BaseMapper<NoticeReadDO> {
      * @param searchValue 搜索值
      * @return 已读用户列表
      */
-    IPage<NoticeReadUser> selectPageReadUsers(Page<NoticeDO> page, @Param("noticeId") Long noticeId, @Param("searchValue") String searchValue);
+    IPage<NoticeReadUser> selectPageReadUsers(Page<NoticeDO> page,
+            @Param("noticeId") Long noticeId,
+            @Param("searchValue") String searchValue);
 
     /**
      * 公告删除时清理对应已读记录

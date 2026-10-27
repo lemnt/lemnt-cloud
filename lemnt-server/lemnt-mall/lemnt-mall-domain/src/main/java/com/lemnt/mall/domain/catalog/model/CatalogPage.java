@@ -1,3 +1,11 @@
 package com.lemnt.mall.domain.catalog.model;
 
-public record CatalogPage(java.util.List<CatalogSpu> records, long total) {}
+import java.util.List;
+
+/**
+ * 目录分页。
+ */
+public record CatalogPage(
+        List<CatalogSpu> records,
+        long total
+) {}

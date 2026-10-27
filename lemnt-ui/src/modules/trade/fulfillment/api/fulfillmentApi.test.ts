@@ -69,7 +69,7 @@ it('收货请求没有客户端时间，分页筛选不丢失', async () => {
     url: '/trade/admin/orders/TR1/receive',
     method: 'POST',
   });
-  mockedRequest.mockResolvedValueOnce({ data: { records: [], total: 0 } });
+  mockedRequest.mockResolvedValueOnce({ rows: [], total: 0 });
   await getOrders({ status: 'SHIPPED', pageNum: 2, pageSize: 20 });
   expect(mockedRequest).toHaveBeenLastCalledWith({
     url: '/trade/admin/orders',

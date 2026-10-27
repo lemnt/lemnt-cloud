@@ -1,3 +1,11 @@
 package com.lemnt.trade.domain.fulfillment.model;
 
-public record RefundPage(java.util.List<RefundRequest> records, long total) {}
+import java.util.List;
+
+/**
+ * 退款分页。
+ */
+public record RefundPage(
+        List<RefundRequest> records,
+        long total
+) {}

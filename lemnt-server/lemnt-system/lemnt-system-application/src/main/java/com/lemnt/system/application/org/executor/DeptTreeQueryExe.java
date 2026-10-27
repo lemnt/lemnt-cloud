@@ -1,14 +1,16 @@
 package com.lemnt.system.application.org.executor;
 
-import java.util.List;
-
 import com.lemnt.system.application.org.qry.DeptListQry;
-import com.lemnt.system.domain.auth.model.TreeSelect;
 import com.lemnt.system.application.org.service.TreeDeptService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import com.lemnt.system.domain.auth.model.TreeSelect;
 import com.lemnt.system.domain.org.gateway.DeptGateway;
 import com.lemnt.system.domain.org.model.Dept;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * 部门树查询执行器
@@ -18,7 +20,6 @@ import com.lemnt.system.domain.org.model.Dept;
 @Component
 @RequiredArgsConstructor
 public class DeptTreeQueryExe {
-
     private final DeptGateway deptGateway;
     private final TreeDeptService treeDeptService;
 

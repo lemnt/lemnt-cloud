@@ -1,15 +1,16 @@
 package com.lemnt.system.application.org.executor;
 
-import com.lemnt.common.core.domain.R;
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.core.utils.StringUtils;
 import com.lemnt.common.security.utils.SecurityUtils;
-import com.lemnt.system.domain.org.model.Dept;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.system.application.org.converter.DeptConverter;
 import com.lemnt.system.application.org.dto.DeptDTO;
 import com.lemnt.system.domain.org.gateway.DeptGateway;
+import com.lemnt.system.domain.org.model.Dept;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 部门详情查询执行器

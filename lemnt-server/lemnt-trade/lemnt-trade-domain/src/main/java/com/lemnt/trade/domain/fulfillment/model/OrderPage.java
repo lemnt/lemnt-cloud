@@ -1,3 +1,11 @@
 package com.lemnt.trade.domain.fulfillment.model;
 
-public record OrderPage(java.util.List<OrderSummary> records, long total) {}
+import java.util.List;
+
+/**
+ * 订单分页。
+ */
+public record OrderPage(
+        List<OrderSummary> records,
+        long total
+) {}

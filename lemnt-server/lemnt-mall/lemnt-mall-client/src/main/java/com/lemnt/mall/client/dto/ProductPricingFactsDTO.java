@@ -1,5 +1,10 @@
 package com.lemnt.mall.client.dto;
 
+import java.io.Serializable;
+
+/**
+ * 商品计价事实数据传输对象。
+ */
 public record ProductPricingFactsDTO(
         String factsProtocol,
         Long skuId,
@@ -8,5 +13,5 @@ public record ProductPricingFactsDTO(
         String name,
         long unitPriceFen,
         int availableStock,
-        String factsHash)
-        implements java.io.Serializable {}
+        String factsHash
+) implements Serializable {}

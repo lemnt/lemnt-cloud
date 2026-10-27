@@ -1,10 +1,12 @@
 package com.lemnt.system.infrastructure.auth.dataobject;
 
 import com.lemnt.common.infrastructure.domain.BaseDO;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -19,7 +21,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("sys_role")
 public class RoleDO extends BaseDO {
-
     /**
      * 角色ID
      */
@@ -45,8 +46,6 @@ public class RoleDO extends BaseDO {
      * 数据范围
      */
     private String dataScope;
-
-
 
     /**
      * 角色状态（1正常 2停用）

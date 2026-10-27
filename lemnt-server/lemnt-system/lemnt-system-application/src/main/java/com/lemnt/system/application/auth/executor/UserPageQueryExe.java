@@ -2,13 +2,15 @@ package com.lemnt.system.application.auth.executor;
 
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.system.application.auth.converter.UserConverter;
 import com.lemnt.system.application.auth.dto.UserDTO;
 import com.lemnt.system.application.auth.qry.UserPageQry;
-import com.lemnt.system.domain.auth.model.User;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
+import com.lemnt.system.domain.auth.model.User;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 用户列表查询执行器

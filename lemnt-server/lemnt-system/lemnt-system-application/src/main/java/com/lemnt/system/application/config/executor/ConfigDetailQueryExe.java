@@ -1,10 +1,12 @@
 package com.lemnt.system.application.config.executor;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.system.application.config.converter.ConfigConverter;
 import com.lemnt.system.application.config.dto.ConfigDTO;
 import com.lemnt.system.domain.config.gateway.ConfigGateway;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 参数配置详情查询执行器

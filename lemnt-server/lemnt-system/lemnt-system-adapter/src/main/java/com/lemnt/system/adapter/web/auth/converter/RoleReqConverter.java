@@ -1,6 +1,8 @@
 package com.lemnt.system.adapter.web.auth.converter;
 
 import com.lemnt.system.adapter.web.auth.req.*;
+import com.lemnt.system.adapter.web.auth.req.SystemRoleUserCancelAuthUserAllReq;
+import com.lemnt.system.adapter.web.auth.req.SystemRoleUserCancelAuthUserReq;
 import com.lemnt.system.application.auth.cmd.RoleAddCmd;
 import com.lemnt.system.application.auth.cmd.RoleAuthCancelCmd;
 import com.lemnt.system.application.auth.cmd.RoleAuthCmd;
@@ -15,7 +17,6 @@ import com.lemnt.system.application.auth.qry.RolePageQry;
  * @author wangxx
  */
 public class RoleReqConverter {
-
     public static RoleAddCmd toCmd(RoleAddReq req) {
         return new RoleAddCmd(
                 req.roleName(),
@@ -81,6 +82,22 @@ public class RoleReqConverter {
                 item.pageSize(),
                 item.beginTime(),
                 item.endTime()
+        );
+    }
+
+    public static RoleAuthCancelCmd toAuthCancelCmd(SystemRoleUserCancelAuthUserReq req) {
+        return new RoleAuthCancelCmd(
+                req.roleId(),
+                req.userId(),
+                req.userIds()
+        );
+    }
+
+    public static RoleAuthCancelCmd toAuthCancelCmd(SystemRoleUserCancelAuthUserAllReq req) {
+        return new RoleAuthCancelCmd(
+                req.roleId(),
+                req.userId(),
+                req.userIds()
         );
     }
 }

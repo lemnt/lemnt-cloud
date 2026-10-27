@@ -1,6 +1,7 @@
 package com.lemnt.system.domain.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Data;
 
 import java.io.Serial;

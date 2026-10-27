@@ -1,53 +1,83 @@
 package com.lemnt.mall.infrastructure.catalog.converter;
 
-import com.lemnt.mall.domain.catalog.model.*;
-import com.lemnt.mall.infrastructure.catalog.dataobject.*;
-import java.util.*;
+import com.lemnt.mall.domain.catalog.model.Brand;
+import com.lemnt.mall.domain.catalog.model.CatalogRules;
+import com.lemnt.mall.domain.catalog.model.CatalogSku;
+import com.lemnt.mall.domain.catalog.model.CatalogSpu;
+import com.lemnt.mall.domain.catalog.model.Category;
+import com.lemnt.mall.domain.catalog.model.StockAdjustment;
+import com.lemnt.mall.infrastructure.catalog.dataobject.BrandDO;
+import com.lemnt.mall.infrastructure.catalog.dataobject.CategoryDO;
+import com.lemnt.mall.infrastructure.catalog.dataobject.SkuDO;
+import com.lemnt.mall.infrastructure.catalog.dataobject.SkuPropertyDO;
+import com.lemnt.mall.infrastructure.catalog.dataobject.SpuDO;
+import com.lemnt.mall.infrastructure.catalog.dataobject.StockAdjustmentDO;
 
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+/**
+ * 目录转换器。
+ */
 public final class CatalogConverter {
     private CatalogConverter() {}
 
+    /**
+     * 分类。
+     */
     public static Category category(CategoryDO row) {
         return row == null
-                ? null
-                : new Category(
-                        row.getId(),
-                        row.getParentId(),
-                        row.getName(),
-                        row.getPicUrl(),
-                        row.getSort(),
-                        row.getStatus());
+        ? null
+        : new Category(
+                row.getId(),
+                row.getParentId(),
+                row.getName(),
+                row.getPicUrl(),
+                row.getSort(),
+                row.getStatus());
     }
 
+    /**
+     * 品牌。
+     */
     public static Brand brand(BrandDO row) {
         return row == null
-                ? null
-                : new Brand(
-                        row.getId(),
-                        row.getName(),
-                        row.getPicUrl(),
-                        row.getDescription(),
-                        row.getSort(),
-                        row.getStatus());
+        ? null
+        : new Brand(
+                row.getId(),
+                row.getName(),
+                row.getPicUrl(),
+                row.getDescription(),
+                row.getSort(),
+                row.getStatus());
     }
 
+    /**
+     * 商品SPU。
+     */
     public static CatalogSpu spu(SpuDO row, List<CatalogSku> skus) {
         return row == null
-                ? null
-                : new CatalogSpu(
-                        row.getId(),
-                        row.getCode(),
-                        row.getName(),
-                        row.getCategoryId(),
-                        row.getBrandId(),
-                        row.getDescription(),
-                        row.getImage(),
-                        row.getStatus(),
-                        skus);
+        ? null
+        : new CatalogSpu(
+                row.getId(),
+                row.getCode(),
+                row.getName(),
+                row.getCategoryId(),
+                row.getBrandId(),
+                row.getDescription(),
+                row.getImage(),
+                row.getStatus(),
+                skus);
     }
 
+    /**
+     * 商品SKU。
+     */
     public static CatalogSku sku(SkuDO row, List<SkuPropertyDO> properties) {
-        if (row == null) return null;
+        if (row == null) {
+            return null;
+        }
         Map<String, String> values = new TreeMap<>();
         properties.forEach(p -> values.put(p.getPropertyName(), p.getPropertyValue()));
         return new CatalogSku(
@@ -62,17 +92,23 @@ public final class CatalogConverter {
                 row.getStatus());
     }
 
+    /**
+     * 调整。
+     */
     public static StockAdjustment adjustment(StockAdjustmentDO row) {
         return row == null
-                ? null
-                : new StockAdjustment(
-                        row.getRequestNo(),
-                        row.getProductId(),
-                        row.getDelta(),
-                        row.getReason(),
-                        row.getResultingStock());
+        ? null
+        : new StockAdjustment(
+                row.getRequestNo(),
+                row.getProductId(),
+                row.getDelta(),
+                row.getReason(),
+                row.getResultingStock());
     }
 
+    /**
+     * 分类。
+     */
     public static CategoryDO category(Category value) {
         var row = new CategoryDO();
         row.setId(value.id());
@@ -84,6 +120,9 @@ public final class CatalogConverter {
         return row;
     }
 
+    /**
+     * 品牌。
+     */
     public static BrandDO brand(Brand value) {
         var row = new BrandDO();
         row.setId(value.id());
@@ -95,6 +134,9 @@ public final class CatalogConverter {
         return row;
     }
 
+    /**
+     * 商品SPU。
+     */
     public static SpuDO spu(CatalogSpu value) {
         var row = new SpuDO();
         row.setId(value.id());
@@ -108,6 +150,9 @@ public final class CatalogConverter {
         return row;
     }
 
+    /**
+     * 商品SKU。
+     */
     public static SkuDO sku(CatalogSku value) {
         var row = new SkuDO();
         row.setId(value.id());

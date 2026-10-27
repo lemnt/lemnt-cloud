@@ -1,41 +1,48 @@
 package com.lemnt.trade.application.executor;
 
-import com.lemnt.trade.domain.gateway.*;
-import com.lemnt.trade.domain.model.*;
+import com.lemnt.trade.application.order.service.OrderPersistenceService;
+import com.lemnt.trade.application.payment.executor.PaymentNotifyCmdExe;
+import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
+import com.lemnt.trade.domain.order.model.TradeOrder;
+import com.lemnt.trade.domain.outbox.gateway.TradeOutboxGateway;
+import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.trade.domain.payment.model.PaymentRecord;
+import com.lemnt.trade.domain.payment.model.VerifiedPaymentNotification;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.math.BigDecimal;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class PaymentNotifyCmdExeTest {
+
     final TradePaymentGateway payments = mock(TradePaymentGateway.class);
-    final TradeOrderGateway orders = mock(TradeOrderGateway.class);
+    final OrderPersistenceService orderPersistenceService = mock(OrderPersistenceService.class);
+    TradeOrderGateway tradeOrderGateway = mock(TradeOrderGateway.class);
     final TradeOutboxGateway outbox = mock(TradeOutboxGateway.class);
     final PaymentNotifyCmdExe notifier =
-            new PaymentNotifyCmdExe(
-                    payments,
-                    orders,
-                    outbox,
-                    mock(com.lemnt.trade.domain.checkout.gateway.CheckoutGateway.class));
+    new PaymentNotifyCmdExe(orderPersistenceService, tradeOrderGateway, payments, outbox);
     final VerifiedPaymentNotification notice =
-            new VerifiedPaymentNotification(
-                    "PAY1", "TR1", "ALIPAY", "CHANNEL1", BigDecimal.TEN, "NOTICE2");
+    new VerifiedPaymentNotification(
+            "PAY1", "TR1", "ALIPAY", "CHANNEL1", BigDecimal.TEN, "NOTICE2");
 
     @BeforeEach
     void setup() {
-        when(orders.findByOrderNoForUpdate("TR1"))
-                .thenReturn(
-                        new TradeOrder(
-                                1L, "TR1", 2L, BigDecimal.TEN, "PENDING_PAYMENT", List.of(), null));
+        when(orderPersistenceService.findByOrderNoForUpdate("TR1"))
+            .thenReturn(
+                new TradeOrder(
+                1L, "TR1", 2L, BigDecimal.TEN, "PENDING_PAYMENT", List.of(), null));
     }
 
     void payment(String status, String tradeNo, BigDecimal amount) {
         when(payments.findByPaymentNo("PAY1"))
-                .thenReturn(
-                        new PaymentRecord(
-                                1L, "PAY1", "TR1", "ALIPAY", tradeNo, amount, status, "NOTICE1"));
+            .thenReturn(
+                new PaymentRecord(
+                1L, "PAY1", "TR1", "ALIPAY", tradeNo, amount, status, "NOTICE1"));
     }
 
     @Test
@@ -60,20 +67,20 @@ class PaymentNotifyCmdExeTest {
     void successWritesPaymentOrderAndInventoryEventInOrder() {
         payment("WAITING", null, BigDecimal.TEN);
         when(payments.markSuccess(notice)).thenReturn(true);
-        when(orders.transitionStatus("TR1", "PENDING_PAYMENT", "PAID")).thenReturn(true);
+        when(tradeOrderGateway.transitionStatus("TR1", "PENDING_PAYMENT", "PAID")).thenReturn(true);
         notifier.execute(notice);
-        var sequence = inOrder(orders, payments, outbox);
-        sequence.verify(orders).findByOrderNoForUpdate("TR1");
+        var sequence = inOrder(tradeOrderGateway, orderPersistenceService, payments, outbox);
+        sequence.verify(orderPersistenceService).findByOrderNoForUpdate("TR1");
         sequence.verify(payments).findByPaymentNo("PAY1");
         sequence.verify(payments).markSuccess(notice);
-        sequence.verify(orders).transitionStatus("TR1", "PENDING_PAYMENT", "PAID");
+        sequence.verify(tradeOrderGateway).transitionStatus("TR1", "PENDING_PAYMENT", "PAID");
         sequence.verify(outbox)
-                .append(
-                        anyString(),
-                        eq("TRADE_ORDER"),
-                        eq("TR1"),
-                        eq("TRADE_ORDER_PAID"),
-                        anyString());
+            .append(
+                anyString(),
+                eq("TRADE_ORDER"),
+                eq("TR1"),
+                eq("TRADE_ORDER_PAID"),
+                anyString());
     }
 
     @Test
@@ -85,8 +92,8 @@ class PaymentNotifyCmdExeTest {
     }
 
     void orderStatus(String status) {
-        when(orders.findByOrderNoForUpdate("TR1"))
-                .thenReturn(new TradeOrder(1L, "TR1", 2L, BigDecimal.TEN, status, List.of(), null));
+        when(orderPersistenceService.findByOrderNoForUpdate("TR1"))
+            .thenReturn(new TradeOrder(1L, "TR1", 2L, BigDecimal.TEN, status, List.of(), null));
     }
 
     @Test
@@ -97,7 +104,7 @@ class PaymentNotifyCmdExeTest {
             assertThrows(IllegalStateException.class, () -> notifier.execute(notice));
         }
         verify(payments, never()).markSuccess(any());
-        verify(orders, never()).transitionStatus(anyString(), anyString(), anyString());
+        verify(tradeOrderGateway, never()).transitionStatus(anyString(), anyString(), anyString());
         verifyNoInteractions(outbox);
     }
 

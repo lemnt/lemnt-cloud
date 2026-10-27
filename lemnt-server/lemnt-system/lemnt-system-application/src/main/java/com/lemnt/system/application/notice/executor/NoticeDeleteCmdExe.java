@@ -2,8 +2,10 @@ package com.lemnt.system.application.notice.executor;
 
 import com.lemnt.system.domain.notice.gateway.NoticeGateway;
 import com.lemnt.system.domain.notice.gateway.NoticeReadGateway;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -16,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NoticeDeleteCmdExe {
     private final NoticeGateway noticeGateway;
-
     private final NoticeReadGateway noticeReadGateway;
 
     /**

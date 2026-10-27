@@ -1,3 +1,0 @@
-package com.lemnt.trade.application.executor;
-import com.lemnt.trade.domain.gateway.TradeOrderGateway;import com.lemnt.trade.domain.model.TradeOrder;import lombok.RequiredArgsConstructor;import org.springframework.stereotype.Component;
-@Component @RequiredArgsConstructor public class TradeOrderDetailQryExe {private final TradeOrderGateway gateway;public TradeOrder execute(String no){if(no==null||no.isBlank())throw new IllegalArgumentException("订单号不能为空");return gateway.findByOrderNo(no.trim());}}

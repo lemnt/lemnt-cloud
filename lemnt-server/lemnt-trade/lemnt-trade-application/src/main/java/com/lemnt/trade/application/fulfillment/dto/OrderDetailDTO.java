@@ -1,11 +1,20 @@
 package com.lemnt.trade.application.fulfillment.dto;
 
+import com.lemnt.trade.application.fulfillment.dto.OrderItemDTO;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+/**
+ * 订单详情数据传输对象。
+ */
 public record OrderDetailDTO(
         String orderNo,
         Long memberId,
-        java.math.BigDecimal totalAmount,
+        BigDecimal totalAmount,
         String status,
         boolean inventoryConfirmed,
         boolean activeRefund,
-        java.util.List<com.lemnt.trade.application.checkout.dto.CheckoutItemDTO> items,
-        ShipmentDTO shipment) {}
+        List<OrderItemDTO> items,
+        ShipmentDTO shipment
+) implements java.io.Serializable {}

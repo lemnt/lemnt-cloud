@@ -1,24 +1,29 @@
 package com.lemnt.trade.application.checkout;
 
-import com.lemnt.trade.application.checkout.executor.MemberPaymentStatusQueryExe;
-import com.lemnt.trade.application.checkout.qry.MemberPaymentStatusQry;
-import com.lemnt.trade.domain.gateway.*;
-import com.lemnt.trade.domain.model.*;
+import com.lemnt.trade.application.payment.executor.MemberPaymentStatusQueryExe;
+import com.lemnt.trade.application.payment.qry.MemberPaymentStatusQry;
+import com.lemnt.trade.application.order.service.OrderPersistenceService;
+import com.lemnt.trade.domain.order.model.TradeOrder;
+import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.trade.domain.payment.model.PaymentRecord;
+
+import org.junit.jupiter.api.Test;
+
 import java.math.BigDecimal;
 import java.util.List;
-import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class MemberPaymentStatusQueryTest {
-    final TradeOrderGateway orders = mock(TradeOrderGateway.class);
+    final OrderPersistenceService orderPersistenceService = mock(OrderPersistenceService.class);
     final TradePaymentGateway payments = mock(TradePaymentGateway.class);
-    final MemberPaymentStatusQueryExe query = new MemberPaymentStatusQueryExe(orders, payments);
+    final MemberPaymentStatusQueryExe query = new MemberPaymentStatusQueryExe(orderPersistenceService, payments);
 
     void order(String state, Long member) {
-        when(orders.findByOrderNo("TR1"))
-                .thenReturn(
-                        new TradeOrder(1L, "TR1", member, BigDecimal.TEN, state, List.of(), null));
+        when(orderPersistenceService.findByOrderNo("TR1"))
+            .thenReturn(
+                new TradeOrder(1L, "TR1", member, BigDecimal.TEN, state, List.of(), null));
     }
 
     PaymentRecord payment(String state, BigDecimal amount) {
@@ -66,12 +71,12 @@ class MemberPaymentStatusQueryTest {
         order("PAID", 7L);
         for (var records :
                 List.of(
-                        List.<PaymentRecord>of(),
-                        List.of(payment("SUCCESS", BigDecimal.ONE)),
-                        List.of(payment("UNKNOWN", BigDecimal.TEN)),
-                        List.of(
-                                payment("SUCCESS", BigDecimal.TEN),
-                                payment("SUCCESS", BigDecimal.TEN)))) {
+                List.<PaymentRecord>of(),
+                List.of(payment("SUCCESS", BigDecimal.ONE)),
+                List.of(payment("UNKNOWN", BigDecimal.TEN)),
+                List.of(
+                payment("SUCCESS", BigDecimal.TEN),
+                payment("SUCCESS", BigDecimal.TEN)))) {
             when(payments.findByOrderNo("TR1")).thenReturn(records);
             assertEquals("RECONCILE_REQUIRED", status());
         }

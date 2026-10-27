@@ -1,11 +1,10 @@
 package com.lemnt.system.api.domain.dto;
 
 import com.lemnt.common.api.domain.dto.BaseDTO;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
-import java.io.Serializable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +18,6 @@ import java.util.List;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 public class UserInfoDTO extends BaseDTO {
-
     /**
      * 用户ID
      */

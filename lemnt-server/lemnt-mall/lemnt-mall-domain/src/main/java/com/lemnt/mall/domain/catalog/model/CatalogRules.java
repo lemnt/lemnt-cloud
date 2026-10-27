@@ -1,15 +1,28 @@
 package com.lemnt.mall.domain.catalog.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.HexFormat;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
-/** Pure rules shared by HTTP, RPC and future import use cases. */
+/**
+ * Pure rules shared by HTTP, RPC and future import use cases.
+ */
 public final class CatalogRules {
     private CatalogRules() {}
 
+    /**
+     * 文本。
+     */
     public static String text(String value, int maximum, String label) {
         if (value == null || value.isBlank() || value.trim().length() > maximum) {
             throw new IllegalArgumentException(label + "不合法");
@@ -17,15 +30,28 @@ public final class CatalogRules {
         return value.trim();
     }
 
+    /**
+     * 可选。
+     */
     public static String optional(String value, int maximum) {
-        if (value != null && value.length() > maximum) throw new IllegalArgumentException("字段过长");
+        if (value != null && value.length() > maximum) {
+            throw new IllegalArgumentException("字段过长");
+        }
         return value;
     }
 
+    /**
+     * 编号。
+     */
     public static void id(Long id) {
-        if (id == null || id <= 0) throw new IllegalArgumentException("编号不合法");
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("编号不合法");
+        }
     }
 
+    /**
+     * 状态。
+     */
     public static String status(String status) {
         if (!Set.of("ENABLED", "DISABLED").contains(status == null ? "" : status)) {
             throw new IllegalArgumentException("状态只能为 ENABLED 或 DISABLED");
@@ -33,53 +59,69 @@ public final class CatalogRules {
         return status;
     }
 
+    /**
+     * 价格。
+     */
     public static BigDecimal price(BigDecimal amount) {
         if (amount == null || amount.signum() <= 0 || amount.precision() - amount.scale() > 17) {
             throw new IllegalArgumentException("价格必须大于0且不超过DECIMAL(19,2)");
         }
         try {
-            return amount.setScale(2, java.math.RoundingMode.UNNECESSARY);
+            return amount.setScale(2, RoundingMode.UNNECESSARY);
         } catch (ArithmeticException ex) {
             throw new IllegalArgumentException("价格最多两位小数", ex);
         }
     }
 
+    /**
+     * 配置属性。
+     */
     public static Map<String, String> properties(Map<String, String> properties) {
-        if (properties == null) return Map.of();
-        if (properties.size() > 10) throw new IllegalArgumentException("最多10项规格");
+        if (properties == null) {
+            return Map.of();
+        }
+        if (properties.size() > 10) {
+            throw new IllegalArgumentException("最多10项规格");
+        }
         var result = new TreeMap<String, String>();
         properties.forEach(
                 (key, value) -> {
-                    String normalized = text(key, 64, "规格名称");
-                    if (result.put(normalized, text(value, 100, "规格值")) != null) {
-                        throw new IllegalArgumentException("规格名称重复");
-                    }
-                });
+            String normalized = text(key, 64, "规格名称");
+            if (result.put(normalized, text(value, 100, "规格值")) != null) {
+                throw new IllegalArgumentException("规格名称重复");
+            }
+        });
         return Collections.unmodifiableMap(result);
     }
 
+    /**
+     * 规格组合键。
+     */
     public static String variantKey(Map<String, String> properties) {
         StringBuilder canonical = new StringBuilder();
         new TreeMap<>(properties(properties))
-                .forEach(
-                        (key, value) ->
-                                canonical
-                                        .append(key.length())
-                                        .append(':')
-                                        .append(key)
-                                        .append(value.length())
-                                        .append(':')
-                                        .append(value));
+            .forEach(
+                (key, value) ->
+                canonical
+                .append(key.length())
+                .append(':')
+                .append(key)
+                .append(value.length())
+                .append(':')
+                .append(value));
         try {
             return HexFormat.of()
-                    .formatHex(
-                            MessageDigest.getInstance("SHA-256")
-                                    .digest(canonical.toString().getBytes(StandardCharsets.UTF_8)));
+                .formatHex(
+                    MessageDigest.getInstance("SHA-256")
+                    .digest(canonical.toString().getBytes(StandardCharsets.UTF_8)));
         } catch (NoSuchAlgorithmException impossible) {
             throw new IllegalStateException(impossible);
         }
     }
 
+    /**
+     * 新商品SPU。
+     */
     public static CatalogSpu newSpu(CatalogSpu input) {
         if (input == null || input.skus().isEmpty() || input.skus().size() > 100) {
             throw new IllegalArgumentException("商品必须包含1至100个SKU");
@@ -105,15 +147,15 @@ public final class CatalogRules {
             names = props.keySet();
             skus.add(
                     new CatalogSku(
-                            null,
-                            null,
-                            code,
-                            text(sku.name(), 200, "SKU名称"),
-                            price(sku.price()),
-                            sku.stock(),
-                            optional(sku.image(), 500),
-                            props,
-                            "ON_SHELF"));
+                    null,
+                    null,
+                    code,
+                    text(sku.name(), 200, "SKU名称"),
+                    price(sku.price()),
+                    sku.stock(),
+                    optional(sku.image(), 500),
+                    props,
+                    "ON_SHELF"));
         }
         return new CatalogSpu(
                 null,

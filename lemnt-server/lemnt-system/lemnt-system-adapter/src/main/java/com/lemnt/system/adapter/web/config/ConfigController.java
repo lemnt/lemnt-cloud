@@ -1,9 +1,28 @@
 package com.lemnt.system.adapter.web.config;
 
+import com.lemnt.common.core.domain.R;
+import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.common.log.annotation.Log;
+import com.lemnt.common.log.enums.BusinessType;
+import com.lemnt.common.security.annotation.RequiresPermissions;
+import com.lemnt.system.adapter.web.config.converter.ConfigReqConverter;
+import com.lemnt.system.adapter.web.config.converter.ConfigResConverter;
+import com.lemnt.system.adapter.web.config.req.ConfigAddReq;
 import com.lemnt.system.adapter.web.config.req.ConfigPageReq;
+import com.lemnt.system.adapter.web.config.req.ConfigUpdateReq;
+import com.lemnt.system.adapter.web.config.res.SystemConfigGetConfigKeyRes;
+import com.lemnt.system.adapter.web.config.res.SystemConfigGetInfoRes;
+import com.lemnt.system.adapter.web.config.res.SystemConfigListRes;
+import com.lemnt.system.application.config.dto.ConfigDTO;
+import com.lemnt.system.application.config.executor.ConfigAddCmdExe;
+import com.lemnt.system.application.config.executor.ConfigCacheRefreshCmdExe;
+import com.lemnt.system.application.config.executor.ConfigDeleteCmdExe;
+import com.lemnt.system.application.config.executor.ConfigDetailQueryExe;
+import com.lemnt.system.application.config.executor.ConfigPageQueryExe;
+import com.lemnt.system.application.config.executor.ConfigUpdateCmdExe;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,23 +32,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.lemnt.common.domain.model.PageResult;
-import com.lemnt.common.core.domain.R;
-import com.lemnt.common.log.annotation.Log;
-import com.lemnt.common.log.enums.BusinessType;
-import com.lemnt.common.security.annotation.RequiresPermissions;
-import com.lemnt.system.adapter.web.config.converter.ConfigReqConverter;
-import com.lemnt.system.adapter.web.config.converter.ConfigResConverter;
-import com.lemnt.system.adapter.web.config.req.ConfigAddReq;
-import com.lemnt.system.adapter.web.config.req.ConfigUpdateReq;
-import com.lemnt.system.adapter.web.config.res.ConfigRes;
-import com.lemnt.system.application.config.dto.ConfigDTO;
-import com.lemnt.system.application.config.executor.ConfigAddCmdExe;
-import com.lemnt.system.application.config.executor.ConfigDeleteCmdExe;
-import com.lemnt.system.application.config.executor.ConfigDetailQueryExe;
-import com.lemnt.system.application.config.executor.ConfigPageQueryExe;
-import com.lemnt.system.application.config.executor.ConfigCacheRefreshCmdExe;
-import com.lemnt.system.application.config.executor.ConfigUpdateCmdExe;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -43,7 +47,6 @@ import java.util.List;
 @RequestMapping("/configurations")
 @RequiredArgsConstructor
 public class ConfigController {
-
     private final ConfigPageQueryExe configPageQueryExe;
     private final ConfigDetailQueryExe configDetailQueryExe;
     private final ConfigAddCmdExe configAddCmdExe;
@@ -54,23 +57,23 @@ public class ConfigController {
     @Operation(summary = "获取参数配置列表")
     @RequiresPermissions("system:config:list")
     @GetMapping
-    public R<ConfigRes> list(ConfigPageReq req) {
+    public R<SystemConfigListRes> list(ConfigPageReq req) {
         PageResult<ConfigDTO> result = configPageQueryExe.execute(ConfigReqConverter.toQry(req));
-        return R.page(ConfigResConverter.toResList(result.getRecords()), result.getTotal());
+        return R.page(ConfigResConverter.toResListToSystemConfigListRes(result.getRecords()), result.getTotal());
     }
 
     @Operation(summary = "根据参数编号获取详细信息")
     @RequiresPermissions("system:config:query")
     @GetMapping(value = "/{configId}")
-    public R<ConfigRes> getInfo(@PathVariable Long configId) {
-        return R.ok(ConfigResConverter.toRes(configDetailQueryExe.executeById(configId)));
+    public R<SystemConfigGetInfoRes> getInfo(@PathVariable Long configId) {
+        return R.ok(ConfigResConverter.toResToSystemConfigGetInfoRes(configDetailQueryExe.executeById(configId)));
     }
 
     @Operation(summary = "根据参数键名查询参数值")
     @RequiresPermissions("system:config:query")
     @GetMapping(value = "/config-key/{configKey}")
-    public R<ConfigRes> getConfigKey(@PathVariable String configKey) {
-        return R.ok(ConfigResConverter.toRes(configDetailQueryExe.executeByKey(configKey)));
+    public R<SystemConfigGetConfigKeyRes> getConfigKey(@PathVariable String configKey) {
+        return R.ok(ConfigResConverter.toResToSystemConfigGetConfigKeyRes(configDetailQueryExe.executeByKey(configKey)));
     }
 
     @Operation(summary = "新增参数配置")

@@ -1,3 +1,11 @@
 package com.lemnt.mall.client.bo;
 
-public record PricingFactsBatchBo(java.util.List<Long> skuIds) implements java.io.Serializable {}
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * 计价事实批量远程参数。
+ */
+public record PricingFactsBatchBo(
+        List<Long> skuIds
+) implements Serializable {}

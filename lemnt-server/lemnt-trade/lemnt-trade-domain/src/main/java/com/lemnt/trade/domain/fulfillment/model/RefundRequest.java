@@ -1,14 +1,21 @@
 package com.lemnt.trade.domain.fulfillment.model;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+/**
+ * 退款请求。
+ */
 public record RefundRequest(
         String refundNo,
         String orderNo,
         String requestNo,
         Long memberId,
         String paymentNo,
-        java.math.BigDecimal amount,
+        BigDecimal amount,
         String reason,
         String status,
         String decisionReason,
-        java.time.LocalDateTime requestedAt,
-        java.time.LocalDateTime decidedAt) {}
+        LocalDateTime requestedAt,
+        LocalDateTime decidedAt
+) {}

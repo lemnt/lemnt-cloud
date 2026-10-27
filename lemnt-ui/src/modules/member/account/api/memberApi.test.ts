@@ -66,7 +66,7 @@ it('标签和分组按实际请求契约清空', async () => {
   });
 });
 it('记录查询只发送有界分页和会员筛选', async () => {
-  mockedRequest.mockResolvedValue({ data: { records: [], total: 0 } });
+  mockedRequest.mockResolvedValue({ code: 200, rows: [], total: 0 });
   await api.getMemberRecords('signin-records', {
     memberId: '9',
     pageNum: 2,

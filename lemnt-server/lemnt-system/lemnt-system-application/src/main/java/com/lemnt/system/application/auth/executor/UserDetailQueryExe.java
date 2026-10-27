@@ -1,21 +1,23 @@
 package com.lemnt.system.application.auth.executor;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.system.application.auth.converter.RoleConverter;
 import com.lemnt.system.application.auth.converter.UserDetailConverter;
 import com.lemnt.system.application.auth.dto.UserDetailDTO;
 import com.lemnt.system.application.org.converter.PostConverter;
-import com.lemnt.system.domain.auth.model.User;
-import com.lemnt.system.domain.org.gateway.PostGateway;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import com.lemnt.system.domain.auth.model.Role;
 import com.lemnt.system.domain.auth.gateway.RoleGateway;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
+import com.lemnt.system.domain.auth.model.Role;
+import com.lemnt.system.domain.auth.model.User;
+import com.lemnt.system.domain.org.gateway.PostGateway;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 用户详情查询执行器
@@ -25,7 +27,6 @@ import com.lemnt.system.domain.auth.gateway.UserGateway;
 @Component
 @RequiredArgsConstructor
 public class UserDetailQueryExe {
-
     private final UserGateway userGateway;
     private final RoleGateway roleGateway;
     private final PostGateway postGateway;

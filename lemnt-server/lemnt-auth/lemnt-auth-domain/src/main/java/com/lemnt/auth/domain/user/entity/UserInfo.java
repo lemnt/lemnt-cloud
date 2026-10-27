@@ -1,6 +1,7 @@
 package com.lemnt.auth.domain.user.entity;
 
 import com.lemnt.auth.domain.user.gateway.PasswordEncoderGateway;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -17,7 +18,6 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 public class UserInfo implements Serializable {
-
     @Serial
     private static final long serialVersionUID = 6586525147787663980L;
 

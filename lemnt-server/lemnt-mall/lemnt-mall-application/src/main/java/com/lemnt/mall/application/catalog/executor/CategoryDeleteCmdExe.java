@@ -1,19 +1,25 @@
 package com.lemnt.mall.application.catalog.executor;
 
-import com.lemnt.mall.application.catalog.cmd.*;
-import com.lemnt.mall.application.catalog.dto.*;
-import com.lemnt.mall.domain.catalog.gateway.CatalogGateway;
-import com.lemnt.mall.domain.catalog.model.*;
+import com.lemnt.mall.domain.catalog.gateway.CategoryGateway;
+import com.lemnt.mall.domain.catalog.model.CatalogRules;
+
 import org.springframework.stereotype.Component;
+
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 分类删除命令执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class CategoryDeleteCmdExe {
-    private final CatalogGateway gateway;
+    private final CategoryGateway categoryGateway;
 
+    /**
+     * 执行分类删除命令。
+     */
     public boolean execute(Long id) {
         CatalogRules.id(id);
-        return gateway.deleteCategory(id);
+        return categoryGateway.deleteCategory(id);
     }
 }

@@ -1,9 +1,14 @@
 package com.lemnt.trade.infrastructure.payment;
 
-import com.lemnt.trade.domain.model.PaymentRecord;
+import com.lemnt.trade.domain.payment.model.PaymentRecord;
+import com.lemnt.trade.infrastructure.payment.payment.PaymentChannelCloseClient;
+import com.lemnt.trade.infrastructure.payment.payment.PaymentChannelCloseGatewayImpl;
+
 import org.junit.jupiter.api.Test;
+
 import java.math.BigDecimal;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

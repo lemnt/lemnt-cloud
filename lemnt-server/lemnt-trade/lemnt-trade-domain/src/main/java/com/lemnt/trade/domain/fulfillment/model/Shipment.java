@@ -1,5 +1,10 @@
 package com.lemnt.trade.domain.fulfillment.model;
 
+import java.time.LocalDateTime;
+
+/**
+ * 发货。
+ */
 public record Shipment(
         String orderNo,
         String requestNo,
@@ -9,5 +14,6 @@ public record Shipment(
         String recipientName,
         String phone,
         String address,
-        java.time.LocalDateTime shippedAt,
-        java.time.LocalDateTime receivedAt) {}
+        LocalDateTime shippedAt,
+        LocalDateTime receivedAt
+) {}

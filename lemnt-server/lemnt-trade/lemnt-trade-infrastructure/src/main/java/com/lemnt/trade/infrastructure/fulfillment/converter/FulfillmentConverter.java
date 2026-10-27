@@ -1,27 +1,40 @@
 package com.lemnt.trade.infrastructure.fulfillment.converter;
 
-import com.lemnt.trade.domain.fulfillment.model.*;
-import com.lemnt.trade.infrastructure.fulfillment.dataobject.*;
+import com.lemnt.trade.domain.fulfillment.model.OrderSummary;
+import com.lemnt.trade.domain.fulfillment.model.RefundRequest;
+import com.lemnt.trade.domain.fulfillment.model.Shipment;
+import com.lemnt.trade.infrastructure.fulfillment.dataobject.OrderSummaryDO;
+import com.lemnt.trade.infrastructure.fulfillment.dataobject.RefundRequestDO;
+import com.lemnt.trade.infrastructure.fulfillment.dataobject.ShipmentDO;
 
+/**
+ * 履约转换器。
+ */
 public final class FulfillmentConverter {
     private FulfillmentConverter() {}
 
+    /**
+     * 发货。
+     */
     public static Shipment shipment(ShipmentDO row) {
         return row == null
-                ? null
-                : new Shipment(
-                        row.getOrderNo(),
-                        row.getRequestNo(),
-                        row.getFingerprint(),
-                        row.getCarrierCode(),
-                        row.getTrackingNo(),
-                        row.getRecipientName(),
-                        row.getPhone(),
-                        row.getAddress(),
-                        row.getShippedAt(),
-                        row.getReceivedAt());
+        ? null
+        : new Shipment(
+                row.getOrderNo(),
+                row.getRequestNo(),
+                row.getFingerprint(),
+                row.getCarrierCode(),
+                row.getTrackingNo(),
+                row.getRecipientName(),
+                row.getPhone(),
+                row.getAddress(),
+                row.getShippedAt(),
+                row.getReceivedAt());
     }
 
+    /**
+     * 发货。
+     */
     public static ShipmentDO shipment(Shipment value) {
         var row = new ShipmentDO();
         row.setOrderNo(value.orderNo());
@@ -37,23 +50,29 @@ public final class FulfillmentConverter {
         return row;
     }
 
+    /**
+     * 退款请求。
+     */
     public static RefundRequest refundRequest(RefundRequestDO row) {
         return row == null
-                ? null
-                : new RefundRequest(
-                        row.getRefundNo(),
-                        row.getOrderNo(),
-                        row.getRequestNo(),
-                        row.getMemberId(),
-                        row.getPaymentNo(),
-                        row.getAmount(),
-                        row.getReason(),
-                        row.getStatus(),
-                        row.getDecisionReason(),
-                        row.getRequestedAt(),
-                        row.getDecidedAt());
+        ? null
+        : new RefundRequest(
+                row.getRefundNo(),
+                row.getOrderNo(),
+                row.getRequestNo(),
+                row.getMemberId(),
+                row.getPaymentNo(),
+                row.getAmount(),
+                row.getReason(),
+                row.getStatus(),
+                row.getDecisionReason(),
+                row.getRequestedAt(),
+                row.getDecidedAt());
     }
 
+    /**
+     * 退款请求。
+     */
     public static RefundRequestDO refundRequest(RefundRequest value) {
         var row = new RefundRequestDO();
         row.setRefundNo(value.refundNo());
@@ -70,20 +89,23 @@ public final class FulfillmentConverter {
         return row;
     }
 
+    /**
+     * 订单汇总。
+     */
     public static OrderSummary orderSummary(OrderSummaryDO row) {
         return row == null
-                ? null
-                : new OrderSummary(
-                        row.getOrderNo(),
-                        row.getMemberId(),
-                        row.getTotalAmount(),
-                        row.getStatus(),
-                        row.getCreateTime(),
-                        Boolean.TRUE.equals(row.getInventoryConfirmed()),
-                        Boolean.TRUE.equals(row.getActiveRefund()),
-                        row.getCarrierCode(),
-                        row.getTrackingNo(),
-                        row.getShippedAt(),
-                        row.getReceivedAt());
+        ? null
+        : new OrderSummary(
+                row.getOrderNo(),
+                row.getMemberId(),
+                row.getTotalAmount(),
+                row.getStatus(),
+                row.getCreateTime(),
+                Boolean.TRUE.equals(row.getInventoryConfirmed()),
+                Boolean.TRUE.equals(row.getActiveRefund()),
+                row.getCarrierCode(),
+                row.getTrackingNo(),
+                row.getShippedAt(),
+                row.getReceivedAt());
     }
 }

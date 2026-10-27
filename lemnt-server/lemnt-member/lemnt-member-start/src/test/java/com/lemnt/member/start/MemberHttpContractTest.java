@@ -1,65 +1,117 @@
 package com.lemnt.member.start;
 
-import com.lemnt.member.adapter.web.account.*;
-import com.lemnt.member.application.account.service.MemberAuthService;
-import com.lemnt.member.application.account.executor.*;
-import com.lemnt.member.application.account.qry.AddressListQry;
+import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.common.security.constant.SecurityConstants;
+import com.lemnt.common.security.handler.GlobalExceptionHandler;
+import com.lemnt.common.security.interceptor.HeaderInterceptor;
+import com.lemnt.common.security.utils.SecurityUtils;
+import com.lemnt.member.adapter.app.address.AppMemberAddressController;
+import com.lemnt.member.adapter.app.growth.AppMemberExperienceRecordController;
+import com.lemnt.member.adapter.app.growth.AppMemberPointRecordController;
+import com.lemnt.member.adapter.app.growth.AppMemberSignRecordController;
+import com.lemnt.member.application.address.executor.MemberAddressDefaultQueryExe;
+import com.lemnt.member.application.address.executor.MemberAddressDeleteCmdExe;
+import com.lemnt.member.application.address.executor.MemberAddressDetailQueryExe;
+import com.lemnt.member.application.address.executor.MemberAddressListQueryExe;
+import com.lemnt.member.application.address.executor.MemberAddressSaveCmdExe;
+import com.lemnt.member.application.address.qry.AddressListQry;
+import com.lemnt.member.application.growth.executor.MemberAssetRecordPageQueryExe;
+import com.lemnt.member.application.growth.executor.MemberLevelListQueryExe;
+import com.lemnt.member.application.growth.executor.MemberSignConfigListQueryExe;
+import com.lemnt.member.application.growth.executor.MemberSignCreateCmdExe;
+import com.lemnt.member.application.growth.executor.MemberSignRecordPageQueryExe;
+import com.lemnt.member.application.growth.executor.MemberSignSummaryQueryExe;
+import com.lemnt.member.application.growth.qry.AssetRecordPageQry;
+import com.lemnt.member.application.growth.qry.SignRecordPageQry;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class MemberHttpContractTest {
     @Test
-    void accountIdentityComesFromTokenAndRejectsMissingSession() throws Exception {
-        var auth = mock(MemberAuthService.class);
-        var commands = mock(MemberAccountCmdExe.class);
-        var queries = mock(MemberAccountQueryExe.class);
-        when(auth.require("Bearer member")).thenReturn(7L);
-        when(auth.require(null)).thenThrow(new SecurityException("会员会话无效"));
-        when(queries.execute(new AddressListQry(7L))).thenReturn(java.util.List.of());
-        var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new AppMemberAddressController(auth, commands, queries))
-                        .setControllerAdvice(new MemberAccountExceptionHandler())
-                        .build();
-        mvc.perform(
-                        get("/member/app/addresses")
-                                .header("Authorization", "Bearer member")
-                                .header("memberId", "999"))
+    void accountIdentityComesFromGatewayContextWithoutTokenAuthentication() throws Exception {
+        var delete = mock(MemberAddressDeleteCmdExe.class);
+        var save = mock(MemberAddressSaveCmdExe.class);
+        var detail = mock(MemberAddressDetailQueryExe.class);
+        var queries = mock(MemberAddressListQueryExe.class);
+        var defaults = mock(MemberAddressDefaultQueryExe.class);
+        when(queries.execute(new AddressListQry(7L))).thenReturn(List.of());
+        var mvc = MockMvcBuilders.standaloneSetup(
+                new AppMemberAddressController(delete, detail, queries, save, defaults))
+                .addInterceptors(new HeaderInterceptor())
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
+        mvc.perform(get("/app/addresses")
+                .header(SecurityConstants.HEADER_USER_ID, "7")
+                .header("memberId", "999"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isArray());
         verify(queries).execute(new AddressListQry(7L));
-        mvc.perform(get("/member/app/addresses")).andExpect(status().isUnauthorized());
-        verifyNoInteractions(commands);
+        assertEquals(0L, SecurityUtils.getUserId(), "请求结束必须清理会员身份上下文");
+        verifyNoInteractions(delete, save, detail, defaults);
     }
 
     @Test
-    void malformedSocialLoginCannotReachProviderAndUnconfiguredProviderIs503() throws Exception {
-        var auth = mock(MemberAuthService.class);
-        var commands = mock(MemberExternalCmdExe.class);
-        var queries = mock(MemberExternalQueryExe.class);
-        var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new AppMemberExternalController(auth, commands, queries))
-                        .setControllerAdvice(new MemberAccountExceptionHandler())
-                        .build();
-        mvc.perform(
-                        post("/member/app/auth/social-login")
-                                .contentType("application/json")
-                                .content(
-                                        "{\"provider\":\"WECHAT_MINI\",\"loginCode\":\"\",\"state\":\"\"}"))
-                .andExpect(status().isBadRequest());
-        verifyNoInteractions(commands);
-        when(commands.execute(any(com.lemnt.member.application.account.cmd.SocialLoginCmd.class)))
-                .thenThrow(new UnsupportedOperationException());
-        mvc.perform(
-                        post("/member/app/auth/social-login")
-                                .contentType("application/json")
-                                .content(
-                                        "{\"provider\":\"WECHAT_MINI\",\"loginCode\":\"code\",\"state\":\"state\"}"))
-                .andExpect(status().isServiceUnavailable())
-                .andExpect(jsonPath("$.msg").value("所需会员外部服务尚未配置"));
+    void businessFailuresUseGlobalProblemResponse() throws Exception {
+        var queries = mock(MemberAddressListQueryExe.class);
+        var mvc = MockMvcBuilders.standaloneSetup(new AppMemberAddressController(
+                mock(MemberAddressDeleteCmdExe.class), mock(MemberAddressDetailQueryExe.class),
+                queries, mock(MemberAddressSaveCmdExe.class), mock(MemberAddressDefaultQueryExe.class)))
+                .addInterceptors(new HeaderInterceptor())
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
+        for (int code : new int[] {400, 409}) {
+            doThrow(new ServiceException("会员业务校验失败", code))
+                    .when(queries).execute(new AddressListQry(7L));
+            mvc.perform(get("/app/addresses").header(SecurityConstants.HEADER_USER_ID, "7"))
+                    .andExpect(status().is(code))
+                    .andExpect(content().contentTypeCompatibleWith("application/problem+json"))
+                    .andExpect(jsonPath("$.status").value(code))
+                    .andExpect(jsonPath("$.code").value("BUSINESS_RULE_VIOLATION"))
+                    .andExpect(jsonPath("$.detail").value("会员业务校验失败"));
+        }
+    }
+    @Test
+    void recordPageInputsKeepIndependentDefaultsValidationAndAssetTypes() throws Exception {
+        var assets = mock(MemberAssetRecordPageQueryExe.class);
+        var signs = mock(MemberSignRecordPageQueryExe.class);
+        when(assets.execute(new AssetRecordPageQry(7L, "POINT", 1, 20)))
+                .thenReturn(new PageResult<>(List.of(), 0));
+        when(assets.execute(new AssetRecordPageQry(7L, "EXPERIENCE", 3, 25)))
+                .thenReturn(new PageResult<>(List.of(), 0));
+        when(signs.execute(new SignRecordPageQry(7L, 2, 15)))
+                .thenReturn(new PageResult<>(List.of(), 0));
+        var mvc = MockMvcBuilders.standaloneSetup(new AppMemberSignRecordController(
+                mock(MemberSignCreateCmdExe.class), mock(MemberSignSummaryQueryExe.class), signs),
+                new AppMemberPointRecordController(assets), new AppMemberExperienceRecordController(assets))
+                .addInterceptors(new HeaderInterceptor())
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
+        for (String uri : new String[] {
+                "/app/growths/signin/records?pageNum=2&pageSize=15",
+                "/app/growths/point-records",
+                "/app/growths/experience-records?pageNum=3&pageSize=25"}) {
+            mvc.perform(get(uri).header(SecurityConstants.HEADER_USER_ID, "7"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.rows").isArray());
+        }
+        for (String path : new String[] {"signin/records", "point-records", "experience-records"}) {
+            for (String query : new String[] {"?pageSize=101", "?pageNum=0"}) {
+                mvc.perform(get("/app/growths/" + path + query).header(SecurityConstants.HEADER_USER_ID, "7"))
+                        .andExpect(status().isUnprocessableEntity());
+            }
+        }
+        verify(assets).execute(new AssetRecordPageQry(7L, "POINT", 1, 20));
+        verify(assets).execute(new AssetRecordPageQry(7L, "EXPERIENCE", 3, 25));
+        verify(signs).execute(new SignRecordPageQry(7L, 2, 15));
+        verifyNoMoreInteractions(assets, signs);
     }
 }

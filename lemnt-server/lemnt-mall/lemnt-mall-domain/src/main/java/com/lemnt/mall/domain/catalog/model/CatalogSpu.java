@@ -1,5 +1,10 @@
 package com.lemnt.mall.domain.catalog.model;
 
+import java.util.List;
+
+/**
+ * 目录商品SPU。
+ */
 public record CatalogSpu(
         Long id,
         String code,
@@ -9,8 +14,12 @@ public record CatalogSpu(
         String description,
         String image,
         String status,
-        java.util.List<CatalogSku> skus) {
+        List<CatalogSku> skus
+) {
+    /**
+     * 创建目录商品SPU实例。
+     */
     public CatalogSpu {
-        skus = skus == null ? java.util.List.of() : java.util.List.copyOf(skus);
+        skus = skus == null ? List.of() : List.copyOf(skus);
     }
 }

@@ -8,6 +8,14 @@ lemnt-cloud 是一个基于 **Spring Cloud 微服务架构** 的通用开发框�
 
 ---
 
+### 接口适配层分包
+
+- `adapter.app`：小程序接口及专用请求、响应和转换类。
+- `adapter.web`：后台管理接口及专用请求、响应和转换类。
+- `adapter.shared`：两端共用的适配对象、转换类与异常处理。
+
+包结构与身份认证分别管理：网关仍按接口路径选择会员会话或后台会话，接口 URL 保持既有契约。会员与后台均复用公共 TokenService/JwtUtils 与 Redis，两端统一使用 LOGIN_TOKEN_KEY + userKey，通过 user_type 校验隔离身份；统一由 AuthFilter 鉴权，网关不引入 Dubbo。
+
 ## 二、模块结构
 
 ```

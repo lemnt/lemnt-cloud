@@ -1,3 +1,13 @@
 package com.lemnt.mall.application.catalog.cmd;
 
-public record SkuUpdateCmd(Long id, String name, java.math.BigDecimal price, String image) {}
+import java.math.BigDecimal;
+
+/**
+ * 商品SKU更新命令。
+ */
+public record SkuUpdateCmd(
+        Long id,
+        String name,
+        BigDecimal price,
+        String image
+) implements java.io.Serializable {}

@@ -1,6 +1,7 @@
 package com.lemnt.system.adapter.web.auth.res;
 
 import com.lemnt.system.adapter.web.org.res.PostRes;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
@@ -25,7 +26,6 @@ public record UserDetailRes(
         @Schema(description = "岗位列表")
         List<PostRes> posts
 ) implements Serializable {
-
     /**
      * 用户详情信息
      */

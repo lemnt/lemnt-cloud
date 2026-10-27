@@ -1,3 +1,11 @@
 package com.lemnt.mall.application.store.qry;
 
-public record StorePageQry(String name, Long categoryId, int pageNum, int pageSize) {}
+/**
+ * 门店分页查询。
+ */
+public record StorePageQry(
+        String name,
+        Long categoryId,
+        int pageNum,
+        int pageSize
+) implements java.io.Serializable {}

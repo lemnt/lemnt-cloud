@@ -1,0 +1,39 @@
+package com.lemnt.trade.infrastructure.inventory.gateway;
+
+import com.lemnt.mall.client.ProductCatalogClient;
+import com.lemnt.trade.domain.inventory.gateway.InventoryGateway;
+
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+/**
+ * 商品目录领域网关实现。
+ */
+@Component
+@RequiredArgsConstructor
+public class InventoryGatewayImpl implements InventoryGateway {
+    @DubboReference(check = false, timeout = 3000, retries = 0)
+    private ProductCatalogClient client;
+
+    @Override
+    public void cancelReservation(String reservationNo, Long productId, Integer quantity) {
+        client.cancelReservation(reservationNo, productId, quantity);
+    }
+
+    @Override
+    public boolean reserveStock(String reservationNo, Long productId, Integer quantity) {
+        return client.reserveStock(reservationNo, productId, quantity);
+    }
+
+    @Override
+    public void releaseStock(String reservationNo, Long productId) {
+        client.releaseStock(reservationNo, productId);
+    }
+
+    @Override
+    public void confirmStock(String reservationNo, Long productId) {
+        client.confirmStock(reservationNo, productId);
+    }
+}

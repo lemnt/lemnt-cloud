@@ -1,11 +1,10 @@
 package com.lemnt.system.adapter.web.file.req;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.io.Serializable;
 import jakarta.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /** multipart 上传请求。 */
 @Schema(description = "统一文件上传请求")

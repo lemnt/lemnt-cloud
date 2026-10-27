@@ -1,10 +1,12 @@
 package com.lemnt.system.infrastructure.auth.mapper;
 
-import cn.hutool.core.collection.CollUtil;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lemnt.system.infrastructure.auth.dataobject.RoleMenuDO;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.apache.ibatis.annotations.Mapper;
+
+import cn.hutool.core.collection.CollUtil;
 
 import java.util.List;
 
@@ -15,7 +17,6 @@ import java.util.List;
  */
 @Mapper
 public interface RoleMenuMapper extends BaseMapper<RoleMenuDO> {
-
     /**
      * 查询菜单使用数量
      *

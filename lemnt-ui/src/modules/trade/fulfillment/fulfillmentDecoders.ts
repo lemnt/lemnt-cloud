@@ -1,5 +1,5 @@
-import { positiveId } from '../checkout/checkoutDecoders';
-import type { CheckoutStatus, CheckoutItem } from '../checkout/types';
+import { positiveId } from '../../mall/checkout/checkoutDecoders';
+import type { CheckoutStatus, CheckoutItem } from '../../mall/checkout/types';
 import type { Page, OrderSummary, OrderDetail, Shipment, RefundRequest } from './types';
 function object(v: unknown): Record<string, unknown> {
   if (!v || typeof v !== 'object' || Array.isArray(v)) throw new Error('履约接口对象格式不合法');
@@ -40,8 +40,8 @@ function state(v: unknown): CheckoutStatus {
 }
 export function decodePage<T>(v: unknown, decode: (v: unknown) => T): Page<T> {
   const r = object(v);
-  if (!Array.isArray(r.records)) throw new Error('缺少分页列表');
-  return { records: r.records.map(decode), total: integer(r.total) };
+  if (!Array.isArray(r.rows)) throw new Error('缺少分页列表');
+  return { records: r.rows.map(decode), total: integer(r.total) };
 }
 function common(r: Record<string, unknown>) {
   return {

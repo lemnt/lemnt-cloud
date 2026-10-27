@@ -1,10 +1,12 @@
 package com.lemnt.system.application.log.executor;
 
 import com.lemnt.system.application.log.cmd.LogininforAddCmd;
-import com.lemnt.system.domain.log.model.Logininfor;
 import com.lemnt.system.domain.log.gateway.LogininforGateway;
-import lombok.RequiredArgsConstructor;
+import com.lemnt.system.domain.log.model.Logininfor;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 新增登录日志命令执行器
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class LogininforAddCmdExe {
-
     private final LogininforGateway logininforGateway;
 
     /**

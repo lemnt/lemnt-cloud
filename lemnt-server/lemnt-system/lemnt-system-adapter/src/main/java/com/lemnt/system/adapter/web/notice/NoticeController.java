@@ -1,64 +1,55 @@
 package com.lemnt.system.adapter.web.notice;
 
-import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.common.core.domain.R;
+import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.common.log.annotation.Log;
 import com.lemnt.common.log.enums.BusinessType;
 import com.lemnt.common.security.annotation.RequiresPermissions;
 import com.lemnt.common.security.utils.SecurityUtils;
-import com.lemnt.system.adapter.web.notice.converter.NoticeReadResConverter;
 import com.lemnt.system.adapter.web.notice.converter.NoticeReqConverter;
 import com.lemnt.system.adapter.web.notice.converter.NoticeResConverter;
 import com.lemnt.system.adapter.web.notice.req.*;
-import com.lemnt.system.adapter.web.notice.res.NoticeReadUserRes;
-import com.lemnt.system.adapter.web.notice.res.NoticeRes;
 import com.lemnt.system.adapter.web.notice.res.NoticeTopRes;
+import com.lemnt.system.adapter.web.notice.res.SystemNoticeGetInfoRes;
+import com.lemnt.system.adapter.web.notice.res.SystemNoticeListRes;
 import com.lemnt.system.application.notice.dto.NoticeDTO;
-import com.lemnt.system.application.notice.dto.NoticeReadUserDTO;
 import com.lemnt.system.application.notice.executor.*;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 import java.util.Map;
 
-/**
- * 公告 信息操作处理
- *
- * @author wangxx
- */
+/** 通知公告接口。 */
 @Tag(name = "通知公告")
 @RestController
 @RequestMapping("/notices")
 @RequiredArgsConstructor
 public class NoticeController {
-
     private final NoticePageQueryExe noticePageQueryExe;
-    private final NoticeReadUserPageQueryExe noticeReadUserPageQueryExe;
     private final NoticeDetailQueryExe noticeDetailQueryExe;
     private final NoticeAddCmdExe noticeAddCmdExe;
     private final NoticeUpdateCmdExe noticeUpdateCmdExe;
     private final NoticeDeleteCmdExe noticeDeleteCmdExe;
     private final NoticeTopListQueryExe noticeTopListQueryExe;
-    private final NoticeMarkReadCmdExe noticeMarkReadCmdExe;
-    private final NoticeMarkReadAllCmdExe noticeMarkReadAllCmdExe;
 
     @Operation(summary = "获取通知公告列表")
     @RequiresPermissions("system:notice:list")
     @GetMapping
-    public R<NoticeRes> list(@Validated NoticePageReq req) {
+    public R<SystemNoticeListRes> list(@Validated NoticePageReq req) {
         PageResult<NoticeDTO> result = noticePageQueryExe.execute(NoticeReqConverter.toQry(req));
-        return R.page(NoticeResConverter.toResList(result.getRecords()), result.getTotal());
+        return R.page(NoticeResConverter.toResListToSystemNoticeListRes(result.getRecords()), result.getTotal());
     }
 
     @Operation(summary = "根据通知公告编号获取详细信息")
     @GetMapping(value = "/{noticeId}")
-    public R<NoticeRes> getInfo(@PathVariable Long noticeId) {
-        return R.ok(NoticeResConverter.toRes(noticeDetailQueryExe.execute(noticeId)));
+    public R<SystemNoticeGetInfoRes> getInfo(@PathVariable Long noticeId) {
+        return R.ok(NoticeResConverter.toResToSystemNoticeGetInfoRes(noticeDetailQueryExe.execute(noticeId)));
     }
 
     @Operation(summary = "首页顶部公告列表")
@@ -71,14 +62,6 @@ public class NoticeController {
                 NoticeResConverter.toResList((List<NoticeDTO>) result.get("list")),
                 (Integer) result.get("unreadCount"));
         return R.ok(res);
-    }
-
-    @Operation(summary = "已读用户列表数据")
-    @RequiresPermissions("system:notice:list")
-    @GetMapping("/read-users")
-    public R<NoticeReadUserRes> readUsersList(NoticeReadUsersPageReq req) {
-        PageResult<NoticeReadUserDTO> result = noticeReadUserPageQueryExe.execute(NoticeReqConverter.toQry(req));
-        return R.page(NoticeReadResConverter.toResList(result.getRecords()), result.getTotal());
     }
 
     @Operation(summary = "新增通知公告")
@@ -95,20 +78,6 @@ public class NoticeController {
     @PutMapping
     public R<Boolean> edit(@Validated @RequestBody NoticeUpdateReq req) {
         return R.ok(noticeUpdateCmdExe.execute(NoticeReqConverter.toCmd(req)));
-    }
-
-    @Operation(summary = "标记公告已读")
-    @PostMapping("/mark-read")
-    public R<Boolean> markRead(@RequestParam Long noticeId) {
-        Long userId = SecurityUtils.getUserId();
-        return R.ok(noticeMarkReadCmdExe.execute(noticeId, userId));
-    }
-
-    @Operation(summary = "批量标记已读")
-    @PostMapping("/mark-read-all")
-    public R<Boolean> markReadAll(@RequestBody NoticeMarkReadAllReq req) {
-        Long userId = SecurityUtils.getUserId();
-        return R.ok(noticeMarkReadAllCmdExe.execute(userId, req.ids()));
     }
 
     @Operation(summary = "删除通知公告")

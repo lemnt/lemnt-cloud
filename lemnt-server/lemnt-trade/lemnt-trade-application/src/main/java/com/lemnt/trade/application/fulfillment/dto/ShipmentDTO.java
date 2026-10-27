@@ -1,5 +1,10 @@
 package com.lemnt.trade.application.fulfillment.dto;
 
+import java.time.LocalDateTime;
+
+/**
+ * 发货数据传输对象。
+ */
 public record ShipmentDTO(
         String orderNo,
         String requestNo,
@@ -8,5 +13,6 @@ public record ShipmentDTO(
         String recipientName,
         String phone,
         String address,
-        java.time.LocalDateTime shippedAt,
-        java.time.LocalDateTime receivedAt) {}
+        LocalDateTime shippedAt,
+        LocalDateTime receivedAt
+) implements java.io.Serializable {}

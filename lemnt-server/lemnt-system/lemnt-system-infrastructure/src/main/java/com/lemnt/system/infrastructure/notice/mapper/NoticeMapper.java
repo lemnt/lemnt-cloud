@@ -2,14 +2,12 @@ package com.lemnt.system.infrastructure.notice.mapper;
 
 import com.lemnt.system.domain.notice.model.Notice;
 import com.lemnt.system.infrastructure.notice.dataobject.NoticeDO;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * Notice 数据层
@@ -18,7 +16,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface NoticeMapper extends BaseMapper<NoticeDO> {
-
     /**
      * 分页查询公告列表
      *

@@ -10,7 +10,6 @@ import com.lemnt.system.api.domain.dto.UserInfoRoleDTO;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 登录对象转换器
@@ -19,7 +18,6 @@ import java.util.Set;
  * @date 2026-01-06
  */
 public class LoginUserConverter {
-
     /**
      * LoginUserDTO → LoginUser
      *
@@ -32,7 +30,6 @@ public class LoginUserConverter {
         }
 
         LoginUser loginUser = new LoginUser();
-
         loginUser.setToken(item.getToken());
         loginUser.setUserId(item.getUserId());
         loginUser.setUsername(item.getUsername());
@@ -40,7 +37,6 @@ public class LoginUserConverter {
         loginUser.setExpireTime(item.getExpireTime());
         loginUser.setIpaddr(item.getIpaddr());
         loginUser.setRoleKey(item.getRoleKey());
-
         if (item.getPermissions() != null) {
             loginUser.setPermissions(new LinkedHashSet<>(item.getPermissions()));
         }
@@ -48,7 +44,6 @@ public class LoginUserConverter {
             loginUser.setRoles(new LinkedHashSet<>(item.getRoles()));
         }
         loginUser.setDetail(toUserInfo(item.getDetail()));
-
         return loginUser;
     }
 
@@ -61,7 +56,6 @@ public class LoginUserConverter {
         }
 
         UserInfo userInfo = new UserInfo();
-
         userInfo.setUserId(dto.getUserId());
         userInfo.setDeptId(dto.getDeptId());
         userInfo.setUserName(dto.getUserName());
@@ -76,7 +70,6 @@ public class LoginUserConverter {
         userInfo.setLoginDate(dto.getLoginDate());
         userInfo.setPwdUpdateDate(dto.getPwdUpdateDate());
         userInfo.setRoles(toUserInfoRoleList(dto.getRoles()));
-
         return userInfo;
     }
 
@@ -89,14 +82,12 @@ public class LoginUserConverter {
         }
 
         UserInfoRole role = new UserInfoRole();
-
         role.setRoleId(dto.getRoleId());
         role.setRoleName(dto.getRoleName());
         role.setRoleKey(dto.getRoleKey());
         role.setRoleSort(dto.getRoleSort());
         role.setDataScope(dto.getDataScope());
         role.setStatus(dto.getStatus());
-
         return role;
     }
 
@@ -115,4 +106,3 @@ public class LoginUserConverter {
         return result;
     }
 }
-

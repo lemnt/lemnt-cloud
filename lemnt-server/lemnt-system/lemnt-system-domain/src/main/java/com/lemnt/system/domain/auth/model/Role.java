@@ -49,8 +49,6 @@ public class Role implements Serializable {
      */
     private String dataScope;
 
-
-
     /**
      * 角色状态（1正常 2停用）
      */
@@ -100,7 +98,6 @@ public class Role implements Serializable {
      * 结束时间（查询用）
      */
     private LocalDateTime endTime;
-
     public boolean isAdmin() {
         return isAdmin(this.roleId);
     }

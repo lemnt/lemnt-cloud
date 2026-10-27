@@ -28,8 +28,8 @@ it('精确金额和长ID保持字符串，已发货与完成状态可读取', ()
   expect(() => decodeOrder({ ...order, status: 'REFUNDED' })).toThrow();
 });
 it('分页及退款状态不能将未知值误作已退款', () => {
-  expect(() => decodePage({ records: [], total: -1 }, decodeOrder)).toThrow();
-  expect(() => decodePage({ records: null, total: 0 }, decodeOrder)).toThrow();
+  expect(() => decodePage({ rows: [], total: -1 }, decodeOrder)).toThrow();
+  expect(() => decodePage({ rows: null, total: 0 }, decodeOrder)).toThrow();
   const r = {
     refundNo: 'RF1',
     orderNo: 'TR1',

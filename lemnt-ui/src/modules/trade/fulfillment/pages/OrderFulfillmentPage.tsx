@@ -22,8 +22,8 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AdminModalForm } from '@/shared/components/AdminModalForm';
 import { usePermission } from '@/shared/hooks/usePermission';
-import { checkoutStatusEnum } from '../../checkout/constants';
-import { checkoutKeys } from '../../checkout/hooks/checkoutKeys';
+import { checkoutStatusEnum } from '../../../mall/checkout/constants';
+import { checkoutKeys } from '../../../mall/checkout/hooks/checkoutKeys';
 import { canShip, canRequestRefund, fulfillmentKeys } from '../constants';
 import { getOrders, getOrder, shipOrder, receiveOrder, requestRefund } from '../api/fulfillmentApi';
 import type { OrderSummary, PageQuery, ShipmentRequest, RefundCreateRequest } from '../types';

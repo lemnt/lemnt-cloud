@@ -1,1 +1,40 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"><modelVersion>4.0.0</modelVersion><parent><groupId>com.lemnt</groupId><artifactId>lemnt-member</artifactId><version>1.0.0-SNAPSHOT</version></parent><artifactId>lemnt-member-adapter</artifactId><dependencies><dependency><groupId>com.lemnt</groupId><artifactId>lemnt-member-application</artifactId><version>1.0.0-SNAPSHOT</version></dependency><dependency><groupId>com.lemnt</groupId><artifactId>lemnt-member-domain</artifactId><version>1.0.0-SNAPSHOT</version></dependency><dependency><groupId>com.lemnt</groupId><artifactId>lemnt-member-client</artifactId><version>1.0.0-SNAPSHOT</version></dependency><dependency><groupId>com.lemnt</groupId><artifactId>lemnt-common-adapter</artifactId><version>1.0.0-SNAPSHOT</version></dependency><dependency><groupId>com.lemnt</groupId><artifactId>lemnt-common-security</artifactId><version>1.0.0-SNAPSHOT</version></dependency><dependency><groupId>com.lemnt</groupId><artifactId>lemnt-common-swagger</artifactId><version>1.0.0-SNAPSHOT</version></dependency><dependency><groupId>com.lemnt</groupId><artifactId>lemnt-common-dubbo</artifactId><version>1.0.0-SNAPSHOT</version></dependency><dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-validation</artifactId></dependency><dependency><groupId>org.projectlombok</groupId><artifactId>lombok</artifactId><scope>provided</scope></dependency></dependencies></project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.lemnt</groupId>
+        <artifactId>lemnt-member</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>lemnt-member-adapter</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-member-application</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-adapter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-swagger</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

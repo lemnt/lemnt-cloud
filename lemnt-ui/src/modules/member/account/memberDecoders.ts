@@ -58,10 +58,10 @@ export function decodeProfile(raw: unknown): MemberProfile {
 }
 export function decodePage<T>(raw: unknown, decode: (v: unknown) => T): MemberPage<T> {
   const v = object(raw);
-  if (!Array.isArray(v.records)) throw Error('会员分页响应不合法');
+  if (!Array.isArray(v.rows)) throw Error('会员分页响应不合法');
   const total = integer(v.total);
   if (total < 0) throw Error('会员分页总数不合法');
-  return { records: v.records.map(decode), total };
+  return { records: v.rows.map(decode), total };
 }
 export function decodeMetadata(raw: unknown, kind: MetadataKind): MemberMetadata {
   const v = object(raw);

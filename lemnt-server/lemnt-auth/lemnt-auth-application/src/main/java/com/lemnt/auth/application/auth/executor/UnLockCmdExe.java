@@ -7,9 +7,11 @@ import com.lemnt.auth.domain.user.gateway.UserGateway;
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.core.utils.StringUtils;
 import com.lemnt.common.security.utils.SecurityUtils;
+
+import org.springframework.stereotype.Component;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -22,11 +24,10 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class UnLockCmdExe {
-
     private final UserGateway userGateway;
-
     public Boolean execute(UnLockCmd cmd) {
         String username = SecurityUtils.getUsername();
+
         // 或密码为空 错误
         if (StringUtils.isEmpty(cmd.password())) {
             throw new ServiceException("密码不能为空");

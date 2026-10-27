@@ -1,5 +1,12 @@
 package com.lemnt.mall.application.catalog.cmd;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 商品SPU创建命令。
+ */
 public record SpuCreateCmd(
         String code,
         String name,
@@ -7,12 +14,18 @@ public record SpuCreateCmd(
         Long brandId,
         String description,
         String image,
-        java.util.List<SkuDraft> skus) {
+        List<SkuDraft> skus
+) implements java.io.Serializable {
+    /**
+     * 商品商品SKU草稿。
+     */
     public record SkuDraft(
             String code,
             String name,
-            java.math.BigDecimal price,
+            BigDecimal price,
             Integer stock,
             String image,
-            java.util.Map<String, String> properties) {}
+            Map<String,
+            String> properties
+    ) {}
 }

@@ -318,16 +318,6 @@ export default function MemberUserPage() {
             }
           }}
         >
-          {['password', 'edit'].includes(action.kind) && (
-            <Alert
-              type="warning"
-              title={
-                action.kind === 'password'
-                  ? '重置后该会员所有登录会话失效。'
-                  : '停用将撤销该会员所有登录会话。'
-              }
-            />
-          )}
           {frozen && (
             <Alert
               type="warning"

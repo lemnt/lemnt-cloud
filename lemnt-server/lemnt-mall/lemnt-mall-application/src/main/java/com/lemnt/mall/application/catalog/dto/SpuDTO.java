@@ -1,5 +1,10 @@
 package com.lemnt.mall.application.catalog.dto;
 
+import java.util.List;
+
+/**
+ * 商品SPU数据传输对象。
+ */
 public record SpuDTO(
         Long id,
         String code,
@@ -9,4 +14,5 @@ public record SpuDTO(
         String description,
         String image,
         String status,
-        java.util.List<SkuDTO> skus) {}
+        List<SkuDTO> skus
+) implements java.io.Serializable {}

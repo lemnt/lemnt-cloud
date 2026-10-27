@@ -49,10 +49,3 @@ spring:
 resttemplate:
   sentinel:
     enabled: false
-
-# Member-session authority, no admin-token fallback.
-dubbo:
-  application:
-    name: lemnt-gateway-consumer
-  registry:
-    address: nacos://${NACOS_HOST:127.0.0.1}:${NACOS_PORT:8848}?namespace=@profile.active@&group=DEFAULT_GROUP&username=${NACOS_USERNAME:nacos}&password=${NACOS_PASSWORD:123456}

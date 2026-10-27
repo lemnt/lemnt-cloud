@@ -2,7 +2,9 @@ package com.lemnt.system.domain.auth.model;
 
 import com.lemnt.common.core.constant.UserConstants;
 import com.lemnt.system.domain.org.model.Dept;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Data;
 
 import java.io.Serial;
@@ -41,9 +43,7 @@ public class TreeSelect implements Serializable {
      */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TreeSelect> children;
-
     public TreeSelect() {
-
     }
 
     public TreeSelect(Dept dept) {

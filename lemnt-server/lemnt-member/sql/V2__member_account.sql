@@ -3,7 +3,6 @@ ALTER TABLE member_user ADD level_id BIGINT NULL;
 ALTER TABLE member_user ADD group_id BIGINT NULL;
 ALTER TABLE member_user ADD sex INT NULL;
 ALTER TABLE member_user ADD birthday DATE NULL;
-CREATE TABLE member_credential(member_id BIGINT PRIMARY KEY,password_hash VARCHAR(100) NOT NULL,FOREIGN KEY(member_id) REFERENCES member_user(id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 CREATE TABLE member_session(id VARCHAR(36) PRIMARY KEY,member_id BIGINT NOT NULL,access_hash VARCHAR(64) NOT NULL UNIQUE,refresh_hash VARCHAR(64) NOT NULL UNIQUE,expires_at DATETIME NOT NULL,refresh_expires_at DATETIME NOT NULL,FOREIGN KEY(member_id) REFERENCES member_user(id),KEY idx_member_session_owner(member_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 CREATE TABLE member_address(id BIGINT AUTO_INCREMENT PRIMARY KEY,member_id BIGINT NOT NULL,name VARCHAR(80) NOT NULL,mobile VARCHAR(24) NOT NULL,area_id BIGINT NOT NULL,detail_address VARCHAR(500) NOT NULL,default_status BOOLEAN NOT NULL DEFAULT FALSE,FOREIGN KEY(member_id) REFERENCES member_user(id),KEY idx_member_address_owner(member_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 CREATE TABLE member_level(id BIGINT AUTO_INCREMENT PRIMARY KEY,name VARCHAR(80) NOT NULL UNIQUE,level INT NOT NULL UNIQUE,experience BIGINT NOT NULL UNIQUE,discount_percent INT NOT NULL,icon VARCHAR(500),background_url VARCHAR(500),status INT NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

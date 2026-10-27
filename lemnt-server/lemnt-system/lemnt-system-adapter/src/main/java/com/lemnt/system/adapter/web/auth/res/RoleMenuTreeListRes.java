@@ -1,6 +1,5 @@
 package com.lemnt.system.adapter.web.auth.res;
 
-import com.lemnt.system.domain.auth.model.TreeSelect;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;

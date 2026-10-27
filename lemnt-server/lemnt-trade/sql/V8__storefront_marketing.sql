@@ -1,2 +1,0 @@
-CREATE TABLE trade_coupon_public_claim(template_id BIGINT PRIMARY KEY,enabled BOOLEAN NOT NULL DEFAULT FALSE,FOREIGN KEY(template_id) REFERENCES trade_coupon_template(id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-CREATE TABLE trade_cart_add_request(member_id BIGINT NOT NULL,request_no VARCHAR(64) NOT NULL,product_id BIGINT NOT NULL,quantity INT NOT NULL,cart_id BIGINT NOT NULL,result_quantity INT NOT NULL,selected BOOLEAN NOT NULL,cart_version BIGINT NOT NULL,PRIMARY KEY(member_id,request_no)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

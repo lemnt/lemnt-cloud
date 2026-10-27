@@ -1,9 +1,16 @@
 package com.lemnt.mall.domain.catalog;
 
-import com.lemnt.mall.domain.catalog.model.*;
+import com.lemnt.mall.domain.catalog.model.CatalogRules;
+import com.lemnt.mall.domain.catalog.model.CatalogSku;
+import com.lemnt.mall.domain.catalog.model.CatalogSpu;
+
 import org.junit.jupiter.api.Test;
+
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CatalogRulesTest {
@@ -38,13 +45,13 @@ class CatalogRulesTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () ->
-                        CatalogRules.newSpu(
-                                spu(sku("A", Map.of("颜色", "红")), sku(" A ", Map.of("颜色", "蓝")))));
+                CatalogRules.newSpu(
+                spu(sku("A", Map.of("颜色", "红")), sku(" A ", Map.of("颜色", "蓝")))));
         assertThrows(
                 IllegalArgumentException.class,
                 () ->
-                        CatalogRules.newSpu(
-                                spu(sku("A", Map.of("颜色", "红")), sku("B", Map.of("尺寸", "M")))));
+                CatalogRules.newSpu(
+                spu(sku("A", Map.of("颜色", "红")), sku("B", Map.of("尺寸", "M")))));
     }
 
     @Test

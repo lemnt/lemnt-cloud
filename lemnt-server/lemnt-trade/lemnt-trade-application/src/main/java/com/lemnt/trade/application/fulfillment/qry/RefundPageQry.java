@@ -1,3 +1,11 @@
 package com.lemnt.trade.application.fulfillment.qry;
 
-public record RefundPageQry(String orderNo, String status, int pageNum, int pageSize) {}
+/**
+ * 退款分页查询。
+ */
+public record RefundPageQry(
+        String orderNo,
+        String status,
+        int pageNum,
+        int pageSize
+) implements java.io.Serializable {}

@@ -1,15 +1,16 @@
 package com.lemnt.system.infrastructure.org.gateway;
 
-import java.util.List;
-
-import com.lemnt.system.infrastructure.auth.mapper.UserMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import com.lemnt.system.domain.org.model.Dept;
 import com.lemnt.system.domain.org.gateway.DeptGateway;
+import com.lemnt.system.domain.org.model.Dept;
 import com.lemnt.system.infrastructure.org.converter.DeptConverter;
 import com.lemnt.system.infrastructure.org.dataobject.DeptDO;
 import com.lemnt.system.infrastructure.org.mapper.DeptMapper;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * 部门管理 Gateway 实现
@@ -19,9 +20,7 @@ import com.lemnt.system.infrastructure.org.mapper.DeptMapper;
 @Component
 @RequiredArgsConstructor
 public class DeptGatewayImpl implements DeptGateway {
-
     private final DeptMapper deptMapper;
-    private final UserMapper userMapper;
 
     @Override
     public List<Dept> selectDeptList(Dept dept) {
@@ -52,11 +51,6 @@ public class DeptGatewayImpl implements DeptGateway {
     @Override
     public Boolean hasChildByDeptId(Long deptId) {
         return deptMapper.hasChildByDeptId(deptId) > 0;
-    }
-
-    @Override
-    public Boolean checkDeptExistUser(Long deptId) {
-        return userMapper.checkDeptExistUser(deptId) > 0;
     }
 
     @Override
