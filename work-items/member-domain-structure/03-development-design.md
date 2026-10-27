@@ -46,3 +46,12 @@ member 各层类型和变量不带 Admin，原 /member/admin 路径、权限和�
 2. 对齐 system 的单数聚合 + List/Page/Detail 命名，统一 application Cmd/Qry/DTO 序列化、DTO与领域/DO转换、接口实现@Override和中文注释；不把没有审计列的表强行套入BaseDO。
 3. client 保留现有 MemberUserClient/getByMemberId 和 DTO 字段，不变更 RPC 协议；补齐契约、序列化和独立转换。移除 domain 对 client 的无用依赖，由 application 直接依赖 client，保证领域不耦合远程契约。
 4. 用会员真实MyBatis/H2筛选、详情类型隔离、边界和事务测试，RPC消费者trade编译与测试验证；追加源码依赖/命名检查和接口/SQL快照核对。修改后不提交。
+
+
+## 按表存储边界与按业务 Controller 拆分
+
+- Gateway、GatewayImpl、Mapper 按 12 张当前使用的会员表一一对应。同表读写归并，跨表编排继续保留在 application service/executor；会员余额、等级、分组字段写入 member_user 对应组件，凭证写入 member_credential 对应组件。
+- 删除混合的 MemberGrowthGateway/Mapper、MemberUserQueryGateway/Mapper、MemberGrowthQueryGateway/Mapper；各表分页和普通列表 Mapper 使用不同方法名，避免 MyBatis 按方法名注册语句时发生重载冲突。
+- adapter 顶层保留 app/web，下面按 user/address/growth 放置接口。小程序成长接口按等级、签到配置、签到、积分流水、经验流水拆分；会员档案与密码分开。后台会员资料与密码、等级分配、分组分配、标签关联、地址、积分、经验及各类记录分开，配置与全局流水也按业务拆开。
+- 以本轮开始时工作区的 67 个 HTTP 操作为基准，保留路径、HTTP 方法、权限、独立 Req/Res、统一 R.page；保留 MemberUserClient 的 RPC 契约。本轮不修订原有路径前缀。
+- 用全部 Controller 同时注册的 Spring MVC 测试检测重复映射，并比对拆分前的路由/权限快照；用真实 MyBatis/H2 与事务测试验证存储拆分。SQL 注解逐条快照比对，SQL 内容不变。

@@ -71,3 +71,25 @@ member-start、gateway、trade-start 及依赖 clean verify 共 312 项通过，
 member-start、auth-start 及依赖 Java17 离线 clean verify 共 63 项通过，失败/错误/跳过均为0，其中 auth 独立认证集成测试6项、member业务集成测试15项。证据：[干净构建](evidence/password-executors-clean-verify.log)、[测试统计](evidence/password-executors-tests.json)。没有引入新的密码抽象，没有提交代码。
 
 额外复核：仅选择 member-start 及其自身依赖执行离线 clean test-compile，BUILD SUCCESS，构建依赖中不再包含 auth。见[独立测试编译](evidence/member-independent-test-compile.log)。
+
+
+## 按数据库表与接口业务职责拆分（2026-10-26）
+
+Gateway/实现/Mapper 形成 12 组按表对应组件，移除原混合的成长与查询存储组件。member_user 的资产余额、等级、分组更新归 User 组件；凭证、标签关联、配置和各类流水归对应表组件。跨表编排仍由 application 负责，原事务、锁、幂等、回滚逻辑保留。合并时发现 MyBatis 不支持按重载签名区分语句，已给同表普通查询/分页查询使用不同 Mapper 方法名。
+
+将混合 Controller 按业务职责拆分为 30 个：小程序会员资料、密码、地址、等级、签到配置、签到、积分流水、经验流水；后台将会员资料与密码、等级分配、分组分配、标签关联、地址、积分、经验、各类记录分开，配置和全局记录也按业务分开。adapter 顶层继续只有 app/web，其下保持 user/address/growth；新增的成长与地址 Controller 放回各自域。
+
+验证结果：
+
+- Java 17 离线 member-start、trade-start 及依赖 clean verify 成功，合计 245 项测试，失败/错误/跳过均为 0；其中 member-start 22 项。
+- 新增 MemberControllerMappingTest，将全部 30 个 Controller 同时注册到 Spring MVC，验证无映射冲突，并与拆分前 67 个操作的 HTTP 方法、路径、权限快照逐条比对。
+- 会员真实 MyBatis/H2 继续覆盖分页筛选、详情隔离、密码、并发、幂等和事务回滚，RPC 投影与 trade 消费者测试通过。
+- 12 组 Gateway/实现/Mapper 一一对应，每个实现只依赖对应表 Mapper；68 条 SQL 注解与拆分前完全一致。
+- git diff --check 通过。未提交、部署或执行数据库变更；未做部署环境 MySQL/Redis/Nacos/Dubbo 联调，本轮未重新执行前端测试。
+
+证据：[最终构建](evidence/table-controller-clean-verify.log)、[按表组件核对](evidence/table-gateway-audit.json)、[HTTP 路由和权限快照](evidence/business-controller-routes.json)。
+
+
+## 其他模块同规范扩展（2026-10-27）
+
+已覆盖 auth/system/mall/trade/open 的各层、Gateway/Mapper 按表划分与 HTTP 入口职责整理。最终全量后端 clean verify 433 项通过，后台 169 项、小程序 69 项通过，后台类型、格式、lint 与构建检查通过。详见 [其他模块交付](06-other-modules.md)。

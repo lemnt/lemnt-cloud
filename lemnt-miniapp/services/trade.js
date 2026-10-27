@@ -14,7 +14,9 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     if (response.statusCode !== 200 || !response.data || response.data.code !== 200) {
       throw new Error(response.data && response.data.msg || '请求失败，请查询订单结果后重试');
     }
-    return response.data.data;
+    return path === '/coupon-center' || path === '/coupon-wallet'
+      ? { records: response.data.rows, total: response.data.total }
+      : response.data.data;
   }
   function id(value) {
     if (typeof value !== 'string' || !/^[1-9]\d{0,18}$/.test(value)) throw new Error('商品编号须为正整数字符串');
