@@ -1,5 +1,7 @@
 # 促销 T3：权威事实 RPC 与管理接口
 
+2026-10-27：促销引擎与持久化已迁到 mall，目录事实本地读取；当前边界以 [商城与交易服务边界](../mall-trade-boundary.md) 为准。
+
 需求ID：yudao-member-mall-trade-migration；promotion-v1/T3；2026-10-26（Asia/Shanghai）；责任：code-software-engineer。输入35fc8ec、T1/T2和promotion-v1设计。Java17/Boot4.1/Dubbo/Nacos与原六层保留，无新模块或运行依赖。
 
 **已实现六个后台管理入口和独立商城事实RPC；尚未接入V2购买链路或页面。** 管理权限定义脚本只作为文件交付，未执行、未授予角色。V9仍须在目标环境审核/验证后部署；本次没有main修改、merge、部署或线上SQL。
@@ -68,12 +70,12 @@ validateScope结果构造示例（请求中12不存在）：
 
 | 方法/地址 | 权限 | 实际操作 |
 | --- | --- | --- |
-| POST /trade/admin/promotions | trade:promotion:create | 创建DRAFT，revision0 |
-| PUT /trade/admin/promotions/{id}/draft | trade:promotion:update | 保存完整草稿，expectedRevision与requestNo |
-| POST /trade/admin/promotions/{id}/publish | trade:promotion:publish | 复核范围、发布不可变版本、不重置次数 |
-| PUT /trade/admin/promotions/{id}/state | trade:promotion:state | PAUSE/RESUME/ARCHIVE |
-| GET /trade/admin/promotions/{id} | trade:promotion:query | 当前草稿、activeRule、状态和DB时间阶段 |
-| GET /trade/admin/promotions | trade:promotion:list | pageNum/pageSize默认1/20，范围1..1000000/1..100；精确state/code过滤 |
+| POST /trade/admin/promotions | mall:promotion:create | 创建DRAFT，revision0 |
+| PUT /trade/admin/promotions/{id}/draft | mall:promotion:update | 保存完整草稿，expectedRevision与requestNo |
+| POST /trade/admin/promotions/{id}/publish | mall:promotion:publish | 复核范围、发布不可变版本、不重置次数 |
+| PUT /trade/admin/promotions/{id}/state | mall:promotion:state | PAUSE/RESUME/ARCHIVE |
+| GET /trade/admin/promotions/{id} | mall:promotion:query | 当前草稿、activeRule、状态和DB时间阶段 |
+| GET /trade/admin/promotions | mall:promotion:list | pageNum/pageSize默认1/20，范围1..1000000/1..100；精确state/code过滤 |
 
 操作者来自已认证且未过期的管理员SecurityUser.userId，忽略请求头中的user-id；不能用会员会话或单独伪造ID替代。RequiresPermissions与显式检查保留，读权限不隐含写/列表权限。请求不接收operatorId/memberId/客户端价格。没有新增租户/部门模型；促销是现有管理员功能权限下的全局数据。
 
@@ -81,7 +83,7 @@ revision/expectedRevision采用0..2147483647 JSON整数；T2初始0沿用，Sche
 
 四种mutation Req独享PromotionJsonConverter（WebMvcConfigurer注册在普通转换器前）：1MiB body上限，拒绝重复键/未知字段/尾随JSON/标量强制转换；规则严格按类型要求字段，nullable上限也必须出现。其他接口/Jackson不改变。分页拒绝未知或重复参数，查询及分页SQL参数化、有界且稳定排序；不返回完整内部hash/计数/usage或身份信息。
 
-trade_permission脚本：lemnt-server/sql/V20261026__trade_promotion_permissions.sql。六个隐藏F权限条目挂既有trade目录，不新建C页面路由、不覆盖已有配置、不授予角色；按项目方式审核后分配角色。没有虚构React页面已存在。
+trade_permission脚本：lemnt-server/sql/V20261026__mall_promotion_permissions.sql。六个隐藏F权限条目挂既有trade目录，不新建C页面路由、不覆盖已有配置、不授予角色；按项目方式审核后分配角色。没有虚构React页面已存在。
 
 ## 当前管理错误（HTTP与R.code一致）
 

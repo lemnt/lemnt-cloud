@@ -1,8 +1,10 @@
 # Admin cart, coupon and checkout API
+
+当前服务归属与独立事务说明见 [商城与交易服务边界](mall-trade-boundary.md)。下述接口由 mall 提供；支付及订单履约仍在 trade。
 v1 · 2026-10-25 · design v3. Source-checked contracts; examples are constructed, not live gateway/payment evidence.
 
 ## Boundary and serialization
-All routes are **permission-protected admin operations on a specified target member**, not member self-service. Do not treat the admin userId as a memberId. No new consumer authentication is implemented. IDs accept positive Long-compatible values; actual Jackson returns safe Long as numbers and large Long as strings. UI normalizes IDs to strings. BigDecimal responses are exact strings; null properties are omitted. Validity uses the trade database clock/time zone and left-closed/right-open intervals. Inputs shown as strings are accepted by the actual application mapper.
+All routes are **permission-protected admin operations on a specified target member**, not member self-service. Do not treat the admin userId as a memberId. No new consumer authentication is implemented. IDs accept positive Long-compatible values; actual Jackson returns safe Long as numbers and large Long as strings. UI normalizes IDs to strings. BigDecimal responses are exact strings; null properties are omitted. Validity uses the mall database clock/time zone and left-closed/right-open intervals. Inputs shown as strings are accepted by the actual application mapper.
 
 R envelope: code integer (200 application success), optional msg string, data object/array/boolean. Unused null data/rows/total fields are omitted. Empty arrays are preserved. False does not mean a successful mutation; clients must check it.
 
@@ -83,7 +85,7 @@ R envelope: code integer (200 application success), optional msg string, data ob
 | items[] | CheckoutItem | Complete nested schema above, including prices, quantities and line gross amounts |
 
 ## 1. Read member cart
-Address: `/trade/admin/members/{memberId}/cart`. Method: `GET`. Permission: `trade:cart:query`.
+Address: `/mall/admin/members/{memberId}/cart`. Method: `GET`. Permission: `mall:cart:query`.
 
 | Parameter | Type | Required | Location | Default | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -119,11 +121,11 @@ Constructed response:
 
 Constructed request (replace host/token/quote token):
 ```bash
-curl -X GET 'https://<API_HOST>/trade/admin/members/1/cart' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
+curl -X GET 'https://<API_HOST>/mall/admin/members/1/cart' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
 ```
 
 ## 2. Set cart item
-Address: `/trade/admin/members/{memberId}/cart/{productId}`. Method: `PUT`. Permission: `trade:cart:edit`.
+Address: `/mall/admin/members/{memberId}/cart/{productId}`. Method: `PUT`. Permission: `mall:cart:edit`.
 
 | Parameter | Type | Required | Location | Default | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -160,12 +162,12 @@ Constructed response:
 
 Constructed request (replace host/token/quote token):
 ```bash
-curl -X PUT 'https://<API_HOST>/trade/admin/members/1/cart/5' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>' \
+curl -X PUT 'https://<API_HOST>/mall/admin/members/1/cart/5' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>' \
   -H 'Content-Type: application/json' --data '{"quantity":2,"selected":true}'
 ```
 
 ## 3. Delete cart item
-Address: `/trade/admin/members/{memberId}/cart/{productId}`. Method: `DELETE`. Permission: `trade:cart:edit`.
+Address: `/mall/admin/members/{memberId}/cart/{productId}`. Method: `DELETE`. Permission: `mall:cart:edit`.
 
 | Parameter | Type | Required | Location | Default | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -189,11 +191,11 @@ Constructed response:
 
 Constructed request (replace host/token/quote token):
 ```bash
-curl -X DELETE 'https://<API_HOST>/trade/admin/members/1/cart/5' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
+curl -X DELETE 'https://<API_HOST>/mall/admin/members/1/cart/5' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
 ```
 
 ## 4. List coupon templates
-Address: `/trade/admin/coupon-templates`. Method: `GET`. Permission: `trade:coupon-template:list`.
+Address: `/mall/admin/coupon-templates`. Method: `GET`. Permission: `mall:coupon-template:list`.
 
 | Parameter | Type | Required | Location | Default | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -230,11 +232,11 @@ Constructed response:
 
 Constructed request (replace host/token/quote token):
 ```bash
-curl -X GET 'https://<API_HOST>/trade/admin/coupon-templates' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
+curl -X GET 'https://<API_HOST>/mall/admin/coupon-templates' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
 ```
 
 ## 5. Create coupon template
-Address: `/trade/admin/coupon-templates`. Method: `POST`. Permission: `trade:coupon-template:add`.
+Address: `/mall/admin/coupon-templates`. Method: `POST`. Permission: `mall:coupon-template:add`.
 
 | Parameter | Type | Required | Location | Default | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -278,12 +280,12 @@ Constructed response:
 
 Constructed request (replace host/token/quote token):
 ```bash
-curl -X POST 'https://<API_HOST>/trade/admin/coupon-templates' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>' \
+curl -X POST 'https://<API_HOST>/mall/admin/coupon-templates' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>' \
   -H 'Content-Type: application/json' --data '{"code":"C1","name":"满20减3","kind":"FIXED","threshold":"20.00","fixedAmount":"3.00","totalCount":100,"validFrom":"2026-10-25 00:00:00","validUntil":"2026-11-25 00:00:00"}'
 ```
 
 ## 6. Enable or disable template
-Address: `/trade/admin/coupon-templates/{id}/enabled`. Method: `PUT`. Permission: `trade:coupon-template:edit`.
+Address: `/mall/admin/coupon-templates/{id}/enabled`. Method: `PUT`. Permission: `mall:coupon-template:edit`.
 
 | Parameter | Type | Required | Location | Default | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -307,12 +309,12 @@ Constructed response:
 
 Constructed request (replace host/token/quote token):
 ```bash
-curl -X PUT 'https://<API_HOST>/trade/admin/coupon-templates/2/enabled' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>' \
+curl -X PUT 'https://<API_HOST>/mall/admin/coupon-templates/2/enabled' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>' \
   -H 'Content-Type: application/json' --data '{"enabled":false}'
 ```
 
 ## 7. Issue coupon to member
-Address: `/trade/admin/members/{memberId}/coupons/{templateId}`. Method: `POST`. Permission: `trade:coupon:issue`.
+Address: `/mall/admin/members/{memberId}/coupons/{templateId}`. Method: `POST`. Permission: `mall:coupon:issue`.
 
 | Parameter | Type | Required | Location | Default | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -341,11 +343,11 @@ Constructed response:
 
 Constructed request (replace host/token/quote token):
 ```bash
-curl -X POST 'https://<API_HOST>/trade/admin/members/1/coupons/2' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
+curl -X POST 'https://<API_HOST>/mall/admin/members/1/coupons/2' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
 ```
 
 ## 8. List member coupons
-Address: `/trade/admin/members/{memberId}/coupons`. Method: `GET`. Permission: `trade:coupon:list`.
+Address: `/mall/admin/members/{memberId}/coupons`. Method: `GET`. Permission: `mall:coupon:list`.
 
 | Parameter | Type | Required | Location | Default | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -375,11 +377,11 @@ Constructed response:
 
 Constructed request (replace host/token/quote token):
 ```bash
-curl -X GET 'https://<API_HOST>/trade/admin/members/1/coupons' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
+curl -X GET 'https://<API_HOST>/mall/admin/members/1/coupons' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
 ```
 
 ## 9. Preview checkout
-Address: `/trade/admin/members/{memberId}/checkout/quote`. Method: `POST`. Permission: `trade:checkout:quote`.
+Address: `/mall/admin/members/{memberId}/checkout/quote`. Method: `POST`. Permission: `mall:checkout:quote`.
 
 | Parameter | Type | Required | Location | Default | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -420,12 +422,12 @@ Constructed response:
 
 Constructed request (replace host/token/quote token):
 ```bash
-curl -X POST 'https://<API_HOST>/trade/admin/members/1/checkout/quote' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>' \
+curl -X POST 'https://<API_HOST>/mall/admin/members/1/checkout/quote' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>' \
   -H 'Content-Type: application/json' --data '{"productIds":["5"],"couponId":"8"}'
 ```
 
 ## 10. Submit checkout
-Address: `/trade/admin/members/{memberId}/checkout`. Method: `POST`. Permission: `trade:checkout:create`.
+Address: `/mall/admin/members/{memberId}/checkout`. Method: `POST`. Permission: `mall:checkout:create`.
 
 | Parameter | Type | Required | Location | Default | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -470,12 +472,12 @@ Constructed response:
 
 Constructed request (replace host/token/quote token):
 ```bash
-curl -X POST 'https://<API_HOST>/trade/admin/members/1/checkout' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>' \
+curl -X POST 'https://<API_HOST>/mall/admin/members/1/checkout' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>' \
   -H 'Content-Type: application/json' --data '{"requestNo":"checkout-example-001","productIds":["5"],"couponId":"8","quoteToken":"<ACTUAL_QUOTE_TOKEN_FROM_PREVIEW>"}'
 ```
 
 ## 11. Read checkout receipt
-Address: `/trade/admin/checkouts/{orderNo}`. Method: `GET`. Permission: `trade:checkout:query`.
+Address: `/mall/admin/checkouts/{orderNo}`. Method: `GET`. Permission: `mall:checkout:query`.
 
 | Parameter | Type | Required | Location | Default | Meaning |
 | --- | --- | --- | --- | --- | --- |
@@ -516,42 +518,42 @@ Constructed response:
 
 Constructed request (replace host/token/quote token):
 ```bash
-curl -X GET 'https://<API_HOST>/trade/admin/checkouts/TR_SAMPLE' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
+curl -X GET 'https://<API_HOST>/mall/admin/checkouts/TR_SAMPLE' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>'
 ```
 
 ## Pricing and request semantics
-- Cart holds 1..999 units per SKU, up to 200 distinct rows/member. It does not reserve stock. Saving an unavailable SKU is allowed only to deselect an existing row; adding/selecting unavailable SKUs is rejected. Server reads use a bounded batch catalog RPC; a failed RPC is an error, not an empty cart.
+- Cart holds 1..999 units per SKU, up to 200 distinct rows/member. It does not reserve stock. Saving an unavailable SKU is allowed only to deselect an existing row; adding/selecting unavailable SKUs is rejected. Server reads use the local mall catalog in a bounded batch; query failure is an error, not an empty cart.
 - Checkout selects 1..100 distinct owned, selected SKU IDs. The server reads actual quantities and current catalog prices. No client price/amount is trusted. SKU rows already referenced by a RESERVING checkout cannot be submitted again with a new key.
 - Quote original/discount/payable are exact yuan. FIXED discounts cap at gross; PERCENT uses pay-percent semantics (80 means 8折), discount rounds down to cents and respects its optional cap. No coupon stacking or per-product scope is implemented.
 - Quote token covers stable item quantities/prices/names and coupon totals. Submit requires the exact preview token and rejects any changed quote before persisting the order. The token is not an authentication/signature mechanism; the server still computes all amounts and eligibility. It is included in the member-scoped idempotency fingerprint.
 - Same member + requestNo + same product IDs/coupon/token returns the original order/pricing even after cart deletion or catalog repricing. Reused key with different contents rejects. Never replace the key after an unknown network result; retry the original payload. UI persists this payload in operator-scoped browser storage before sending. Storage failure prevents submission. Local reset does not cancel a possibly created order and requires explicit confirmation.
 - A valid quote may show zero payable; placement **explicitly rejects zero-payable orders** because free-order/payment support is not implemented. It does not silently add a minimum charge.
-- Immutable templates support fixed date windows, bounded quota and one instance/member/template. Dates are in the trade DB time zone, not a guessed browser zone. Enable/disable affects new issue/redemption only; existing locked orders keep their snapshot. Expired/disabled coupons are rejected during fresh checkout; AVAILABLE alone is not a guarantee of eligibility.
+- Immutable templates support fixed date windows, bounded quota and one instance/member/template. Dates are in the mall DB time zone, not a guessed browser zone. Enable/disable affects new issue/redemption only; existing locked orders keep their snapshot. Expired/disabled coupons are rejected during fresh checkout; AVAILABLE alone is not a guarantee of eligibility.
 
 ## Reservation and coupon state transitions
-1. A local trade transaction commits RESERVING order/items, checkout fingerprint/pricing, optional LOCKED coupon, cart-version references and TRADE_ORDER_RESERVE. No remote stock mutation precedes this commit.
-2. Outbox reserves each intended SKU using stable order/product keys. Only after all succeed does a local transaction enter PENDING_PAYMENT and conditionally consume unchanged cart row IDs/versions. Later edits or delete/re-add survive.
-3. A definitive stock rejection creates CLOSED + release intent and returns the locked coupon to AVAILABLE in one transaction. Unknown RPC results use the existing bounded retry/DEAD worker. Separate 30-minute RESERVING timeout recovery prevents blocked payment queries starving these orders.
-4. The new mall cancelReservation RPC releases existing reservations or writes RELEASED tombstones for unattempted/missing ones; delayed reserve calls cannot recreate stock holds. Confirmed inventory cannot be cancelled with this method.
-5. Payment success still requires a verified provider adapter. In the local notification transaction, payment/order amount invariants and coupon LOCKED ownership are checked, then coupon becomes USED and paid inventory-confirmation intent is written. Close releases coupons only under consistent checkout ownership.
+1. Mall commits the request association, optional LOCKED coupon and cart-version references. It then submits the confirmed server snapshot via TradeOrderClient; trade atomically saves RESERVING order/items and TRADE_ORDER_RESERVE. No remote stock mutation precedes the trade commit.
+2. The trade Outbox reserves each SKU with stable order/product keys. Once all succeed, trade enters PENDING_PAYMENT and notifies mall to consume unchanged cart versions. Mall failures retain the event for retry, including when the order already entered PENDING_PAYMENT.
+3. Definitive stock rejection closes the trade order and writes a CLOSED event. That event releases reservations and the mall coupon in independently committed, idempotent operations. Unknown results use the existing bounded retry/DEAD worker.
+4. Payment notification validates the local payment/order invariants and commits PAID plus its event. Mall then validates and uses the locked coupon. Mall failure does not undo an already committed payment; the failed event remains retriable. Close callbacks likewise release only the matching order's coupon.
+5. These are two local database transactions with retriable RPC delivery. They are not one cross-service transaction. See [the current service boundary](mall-trade-boundary.md).
 
 ## Legacy order creation compatibility change
-Existing `POST /trade/orders` remains admin permission `trade:order:create`. Its request now optionally includes `requestNo` (<=64 characters) and owned `couponId`. It delegates to the same durable reservation flow and **returns RESERVING initially**, not immediate PENDING_PAYMENT. Clients must query order state and must not attempt payment during RESERVING. Omitting requestNo generates a legacy key and therefore cannot make independent HTTP retries idempotent. Existing order/item IDs and normal order detail shapes are preserved.
+Existing `POST /mall/orders` remains admin permission `mall:order:create`. Its request now optionally includes `requestNo` (<=64 characters) and owned `couponId`. It delegates to the same durable reservation flow and **returns RESERVING initially**, not immediate PENDING_PAYMENT. Clients must query order state and must not attempt payment during RESERVING. Omitting requestNo generates a legacy key and therefore cannot make independent HTTP retries idempotent. Existing order/item IDs and normal order detail shapes are preserved.
 
 ## Error / empty-state contract
 Bean Validation/MVC rejects malformed request fields, missing quoteToken, invalid quantities/IDs and bad date formats before executor calls (tested). Domain rule failures, reused-key conflicts, foreign/locked/expired coupons, stock shortages and storage/RPC faults use the existing global error envelope. Deployed gateway authentication/error status behavior is NOT RUN; standalone permission-annotation tests do not prove live authentication. A missing receipt returns existing R.fail; an empty list returns data:[]. No new error envelope is invented.
 
 ## Setup and recovery
-- Stop old trade workers. Apply trade V4 after V1/V2/V3; apply no destructive down migration. New mall provider batch/cancellation RPC methods must be deployed **before** the new trade worker. Do not mix the old closed-event consumer with new RESERVING orders: the old release API cannot tombstone unattempted rows.
+- Stop old shopping writes and workers. Apply the mall table/data migration described in mall-trade-boundary.md; do not apply a destructive down migration. New mall provider batch/cancellation RPC methods must be deployed **before** the new trade worker. Do not mix the old closed-event consumer with new RESERVING orders: the old release API cannot tombstone unattempted rows.
 - Merge `docs/config/trade-gateway-route.yaml` into existing Nacos routes without StripPrefix, then verify admin authentication/permissions and real Dubbo behavior. The snippet is not applied by this PR.
-- Apply `lemnt-server/sql/V20261025__trade_checkout_menu.sql` to the system DB via reviewed migration tooling. It inserts trade/coupon/index and trade/cart/index menu entries and action permissions, without granting roles or overwriting existing menus. Assign least-privilege roles explicitly.
+- Apply `lemnt-server/sql/V20261025__mall_checkout_menu.sql` to the system DB via reviewed migration tooling. It inserts mall/coupon/index and mall/cart/index menu entries and action permissions, without granting roles or overwriting existing menus. Assign least-privilege roles explicitly.
 - Enable the existing optional trade scheduler only on reviewed workers. Separate bounded RESERVING and PENDING_PAYMENT expiry scans use the database clock. A missing real payment adapter leaves pending-payment orders open; it must never infer unpaid from absent callbacks.
 - After repair, replay DEAD reservation/close/paid intents through the existing permission-protected Outbox replay API. Closed reservation intents become harmless; cancellation events must still complete. Tombstones must be retained while old RPCs/retries may arrive.
-- Target MySQL/live Nacos/Dubbo/real-channel/browser validation remains necessary. H2 tests use actual new V4 and production gateways against two isolated DBs; the pre-existing V3 schema is represented with a dialect-compatible fixture, not claimed as an executed MySQL migration.
+- Target MySQL/live Nacos/Dubbo/real-channel/browser validation remains necessary. H2 tests use actual mall schemas and production gateways against two isolated DBs; the pre-existing V3 schema is represented with a dialect-compatible fixture, not claimed as an executed MySQL migration.
 - Rollback requires stopping workers and new checkout traffic; old code does not understand RESERVING or coupon locks. Drain/recover pending intents before any binary rollback. Keep checkout/order/stock ledger rows for reconciliation.
 
 ## Deliberate remaining scope
-Member authentication/self-service, zero-payable orders, product-scoped/relative-validity coupons, repeated per-template claims, coupon return on refunds, member address book, carrier integration, split shipments, after-sales/refund execution, real provider prepay/query/signature adapters, and member/trade analytics remain pending. Lists above 1000 coupon instances/templates require paging rather than silent truncation. New UI monetary inputs are bounded to 99,999,999,999.99 yuan for numeric editing; server-side amounts remain exact strings.
+Zero-payable orders, product-scoped/relative-validity coupons, repeated per-template claims, coupon return on refunds, member address book, carrier integration, split shipments, after-sales/refund execution, real provider prepay/query/signature adapters, and member/trade analytics remain pending. Lists above 1000 coupon instances/templates require paging rather than silent truncation. New UI monetary inputs are bounded to 99,999,999,999.99 yuan for numeric editing; server-side amounts remain exact strings.
 
 ## Fulfillment continuation
 

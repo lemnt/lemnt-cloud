@@ -1,5 +1,7 @@
 # 统一促销引擎开发设计
 
+**归属修订（2026-10-27）：** 以下为原阶段设计记录。同交易库事务、订单行锁及 trade 目录/表名的描述不再代表当前实现。当前引擎、版本、次数及使用记录归 mall，独立本地事务，通过交易服务查询订单；详见 [商城与交易服务边界](../mall-trade-boundary.md)。尚未实现的促销购买接入仍保持原状态。
+
 需求ID：yudao-member-mall-trade-migration · 设计版本 promotion-v1 · 2026-10-25（Asia/Shanghai）
 责任：code-software-engineer。源码基线：20ec7bd1b9de1d4d8665093009d08846997645c2，分支 feat/yudao-member-mall-trade-migration。
 

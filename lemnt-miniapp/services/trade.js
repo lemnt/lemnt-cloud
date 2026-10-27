@@ -6,7 +6,7 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     const token = getMemberToken();
     if (!token) throw new Error('请先完成会员登录');
     const response = await request({
-      url: baseUrl.replace(/\/$/, '') + '/trade/app' + path,
+      url: baseUrl.replace(/\/$/, '') + (/\/orders\/[^/]+\/(?:prepay|payment)$/.test(path) ? '/trade/app' : '/mall/app') + path,
       method, data, timeout: 15000,
       header: { Authorization: `Bearer ${token}` },
     });

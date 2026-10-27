@@ -1,12 +1,14 @@
 # 小程序商品与优惠券营销接口
 
+当前服务归属与独立事务说明见 [商城与交易服务边界](mall-trade-boundary.md)。下述接口由 mall 提供；支付及订单履约仍在 trade。
+
 v7 · 2026-10-25 · 基础957c75a。依据本仓库实际控制器、Req/Res、SQL和事务实现；格式参考 code-software-engineer/references/api-documentation.md。下列JSON和curl均为构造示例，不代表已部署HTTP或供应商实测。
 
 ## 范围与权限
 
 - 公开 GET `/mall/app/categories`、`/mall/app/products`、`/mall/app/products/{id}`；网关仅按精确方法/路径放行并清除伪造身份头，不放行管理接口或写操作。复用保留 `/mall` 前缀的既有网关路由。
 - 商品须SPU/SKU上架、分类/父分类与品牌启用、价格为正；缺货商品仍可浏览，available仅代表存在有库存的在售规格。详情隐藏下架规格。不返回内部SKU编码和后台状态。分类上限1000，超限明确拒绝而非静默截断；分类筛选支持父分类及直接子分类。搜索参数绑定SQL，不由客户端传状态。
-- 私有 `/trade/app/**` 使用独立会员Bearer会话；memberId只由服务端验证，不接受请求体、查询或伪造身份头决定用户。后台公开领取设置沿用现有管理员令牌及权限。无需新角色权限码，未自动授予角色。
+- 私有 `/mall/app/**` 使用独立会员Bearer会话；memberId只由服务端验证，不接受请求体、查询或伪造身份头决定用户。后台公开领取设置沿用现有管理员令牌及权限。无需新角色权限码，未自动授予角色。
 - 优惠券现有模板默认不允许自行领取。后台须显式开放public-claim，并且模板启用、当前处在有效期、配额未满；每会员每模板最多一张。已领取重试返回原券，即使此后关闭公开领取或模板停用也不重复发放。关闭公开领取不影响已发券；停用模板会阻止新兑换，既有锁定订单按既有规则处理。
 - 优惠券有效期左闭右开，使用交易数据库时钟。钱包返回持有券及完整规则、couponStatus和当前usable；AVAILABLE不等于可用，过期/未生效/停用均不可用。claimable/usable只代表查询时状态，结算仍复核金额、归属、规则和锁定状态。
 - 增量加购quantity是本次增加量，不覆盖已有数量；总数不超过999和当次可用库存。requestNo在会员范围内幂等，相同请求返回首次数量快照；同编号不同商品或数量拒绝。购物车条目之后删除或被订单消费，原请求重放也不会重建。加购不预留库存，结算和下单再次核验。
@@ -167,9 +169,9 @@ curl --request GET 'https://<API_HOST>/mall/app/products/1'
 
 ### 4. 已开启公开领取的模板ID；不代表当前可领取
 
-接口地址：`/trade/admin/coupon-templates/public-claim`
+接口地址：`/mall/admin/coupon-templates/public-claim`
 请求方式：`GET`
-权限：`trade:coupon-template:list`
+权限：`mall:coupon-template:list`
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- | --- |
@@ -184,7 +186,7 @@ curl --request GET 'https://<API_HOST>/mall/app/products/1'
 请求示例（构造）：
 
 ```bash
-curl --request GET 'https://<API_HOST>/trade/admin/coupon-templates/public-claim' --header 'Authorization: Bearer <TOKEN>'
+curl --request GET 'https://<API_HOST>/mall/admin/coupon-templates/public-claim' --header 'Authorization: Bearer <TOKEN>'
 ```
 
 成功响应（构造）：
@@ -202,9 +204,9 @@ curl --request GET 'https://<API_HOST>/trade/admin/coupon-templates/public-claim
 
 ### 5. 开启或关闭会员自助领取；现有模板默认关闭
 
-接口地址：`/trade/admin/coupon-templates/{id}/public-claim`
+接口地址：`/mall/admin/coupon-templates/{id}/public-claim`
 请求方式：`PUT`
-权限：`trade:coupon-template:edit`
+权限：`mall:coupon-template:edit`
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- | --- |
@@ -221,7 +223,7 @@ curl --request GET 'https://<API_HOST>/trade/admin/coupon-templates/public-claim
 请求示例（构造）：
 
 ```bash
-curl --request PUT 'https://<API_HOST>/trade/admin/coupon-templates/3/public-claim' --header 'Authorization: Bearer <TOKEN>' --header 'Content-Type: application/json' --data '{"enabled": true}'
+curl --request PUT 'https://<API_HOST>/mall/admin/coupon-templates/3/public-claim' --header 'Authorization: Bearer <TOKEN>' --header 'Content-Type: application/json' --data '{"enabled": true}'
 ```
 
 成功响应（构造）：
@@ -237,7 +239,7 @@ curl --request PUT 'https://<API_HOST>/trade/admin/coupon-templates/3/public-cla
 
 ### 6. 本人可见的公开领券中心
 
-接口地址：`/trade/app/coupon-center`
+接口地址：`/mall/app/coupon-center`
 请求方式：`GET`
 权限：`独立会员会话`
 
@@ -256,7 +258,7 @@ curl --request PUT 'https://<API_HOST>/trade/admin/coupon-templates/3/public-cla
 请求示例（构造）：
 
 ```bash
-curl --request GET 'https://<API_HOST>/trade/app/coupon-center?pageNum=1&pageSize=20' --header 'Authorization: Bearer <TOKEN>'
+curl --request GET 'https://<API_HOST>/mall/app/coupon-center?pageNum=1&pageSize=20' --header 'Authorization: Bearer <TOKEN>'
 ```
 
 成功响应（构造）：
@@ -293,7 +295,7 @@ curl --request GET 'https://<API_HOST>/trade/app/coupon-center?pageNum=1&pageSiz
 
 ### 7. 本人优惠券及服务端当前可用状态
 
-接口地址：`/trade/app/coupon-wallet`
+接口地址：`/mall/app/coupon-wallet`
 请求方式：`GET`
 权限：`独立会员会话`
 
@@ -312,7 +314,7 @@ curl --request GET 'https://<API_HOST>/trade/app/coupon-center?pageNum=1&pageSiz
 请求示例（构造）：
 
 ```bash
-curl --request GET 'https://<API_HOST>/trade/app/coupon-wallet?pageNum=1&pageSize=20' --header 'Authorization: Bearer <TOKEN>'
+curl --request GET 'https://<API_HOST>/mall/app/coupon-wallet?pageNum=1&pageSize=20' --header 'Authorization: Bearer <TOKEN>'
 ```
 
 成功响应（构造）：
@@ -351,7 +353,7 @@ curl --request GET 'https://<API_HOST>/trade/app/coupon-wallet?pageNum=1&pageSiz
 
 ### 8. 本人领取公开优惠券，每模板限一张，重复返回原券
 
-接口地址：`/trade/app/coupon-center/{templateId}/claim`
+接口地址：`/mall/app/coupon-center/{templateId}/claim`
 请求方式：`POST`
 权限：`独立会员会话`
 
@@ -369,7 +371,7 @@ curl --request GET 'https://<API_HOST>/trade/app/coupon-wallet?pageNum=1&pageSiz
 请求示例（构造）：
 
 ```bash
-curl --request POST 'https://<API_HOST>/trade/app/coupon-center/3/claim' --header 'Authorization: Bearer <TOKEN>'
+curl --request POST 'https://<API_HOST>/mall/app/coupon-center/3/claim' --header 'Authorization: Bearer <TOKEN>'
 ```
 
 成功响应（构造）：
@@ -390,7 +392,7 @@ curl --request POST 'https://<API_HOST>/trade/app/coupon-center/3/claim' --heade
 
 ### 9. 会员范围内幂等增量加购，返回首次结果快照
 
-接口地址：`/trade/app/cart/{productId}/add`
+接口地址：`/mall/app/cart/{productId}/add`
 请求方式：`POST`
 权限：`独立会员会话`
 
@@ -410,7 +412,7 @@ curl --request POST 'https://<API_HOST>/trade/app/coupon-center/3/claim' --heade
 请求示例（构造）：
 
 ```bash
-curl --request POST 'https://<API_HOST>/trade/app/cart/7/add' --header 'Authorization: Bearer <TOKEN>' --header 'Content-Type: application/json' --data '{"quantity": 2, "requestNo": "ADD-demo-001"}'
+curl --request POST 'https://<API_HOST>/mall/app/cart/7/add' --header 'Authorization: Bearer <TOKEN>' --header 'Content-Type: application/json' --data '{"quantity": 2, "requestNo": "ADD-demo-001"}'
 ```
 
 成功响应（构造）：
@@ -574,7 +576,7 @@ curl --request POST 'https://<API_HOST>/trade/app/cart/7/add' --header 'Authoriz
 
 小程序加购先在本机会员专属lemnt.cart-add.v1.<memberId>保存非个人信息意图，确认读回后才发请求；未知结果保留同一requestNo与载荷。存储失败、会员切换、回执错配不丢弃意图；原请求重试忽略新输入。已确认后只删除核对过的同一记录，清理失败仍可重放原请求。新加购在存在未确认结算时拒绝，原加购回执重试仍允许。不可删除服务端幂等账本来解除本机未知结果。
 
-先审阅并执行trade/sql/V8__storefront_marketing.sql（已有V1至V7之后），增加公开领取设置和加购请求账本。脚本未在运行库执行且不可重复执行。现有模板不填公开设置，默认为关闭。新端点和网关规则应一起部署；旧管理接口保留。退回旧服务前停止新客户端写入并保留加购/结算记录，未知请求需核验，不提供删账本的破坏性回滚。小程序配置仍memberApiReady=false，真实环境核验后再由部署人员启用。
+先审阅并执行mall/sql/V14__storefront_marketing.sql（商城既有表与 V10/V12/V13 之后），增加公开领取设置和加购请求账本。脚本未在运行库执行且不可重复执行。现有模板不填公开设置，默认为关闭。新端点和网关规则应一起部署；旧管理接口保留。退回旧服务前停止新客户端写入并保留加购/结算记录，未知请求需核验，不提供删账本的破坏性回滚。小程序配置仍memberApiReady=false，真实环境核验后再由部署人员启用。
 
 本轮仅补齐商品浏览/加购和优惠券营销链路。秒杀、拼团、砍价、优惠叠加/相对有效期/退款返券、后续SKU新增删除、属性字典、运费模板和评价仍未迁移完成。会员等级/积分尚未接入订单计价；真实支付、微信/短信及MySQL/Redis/Nacos/Dubbo/浏览器/原生设备验收不因本轮测试而变成已完成。
 

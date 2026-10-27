@@ -14,7 +14,7 @@ test('默认关闭；没有会员登录态时不请求网络', async () => {
 test('只调用用户端路径，忽略伪造会员和金额字段', async () => {
   const { client, calls } = setup();
   await client.saveCart('5', { quantity: 2, selected: false, memberId: '999', price: '0.01' });
-  assert.equal(calls[0].url, 'https://example.test/trade/app/cart/5');
+  assert.equal(calls[0].url, 'https://example.test/mall/app/cart/5');
   assert.deepEqual(calls[0].data, { quantity: 2, selected: false });
   assert.equal(calls[0].header.Authorization, 'Bearer member-token');
 });
@@ -40,11 +40,11 @@ test('参数、HTTP错误和业务错误不能当作成功', async () => {
 
 test('按请求查回只走当前会员路径，不发送结算快照或重提单',async()=>{
  const {client,calls}=setup();await client.checkoutRequest('R1');
- assert.equal(calls[0].url,'https://example.test/trade/app/checkout/requests/R1');assert.equal(calls[0].method,'GET');assert.equal(calls[0].data,undefined);
+ assert.equal(calls[0].url,'https://example.test/mall/app/checkout/requests/R1');assert.equal(calls[0].method,'GET');assert.equal(calls[0].data,undefined);
  assert.throws(()=>client.checkoutRequest(''));assert.throws(()=>client.checkoutRequest('x'.repeat(65)));
 });
 
 test('终止请求只传结算单编号和原请求号，不发送会员或订单状态',async()=>{
  const {client,calls}=setup();await client.abandonCheckout({settlementId:'12345678-1234-1234-1234-123456789abc',requestNo:'R1',memberId:'999',status:'CLOSED'});
- assert.equal(calls[0].url,'https://example.test/trade/app/checkout/abandon');assert.deepEqual(calls[0].data,{settlementId:'12345678-1234-1234-1234-123456789abc',requestNo:'R1'});
+ assert.equal(calls[0].url,'https://example.test/mall/app/checkout/abandon');assert.deepEqual(calls[0].data,{settlementId:'12345678-1234-1234-1234-123456789abc',requestNo:'R1'});
 });

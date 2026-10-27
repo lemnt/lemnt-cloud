@@ -1,5 +1,7 @@
 # 促销引擎接口契约与实施状态
 
+2026-10-27：促销引擎与持久化已迁到 mall，目录事实本地读取；当前边界以 [商城与交易服务边界](../mall-trade-boundary.md) 为准。
+
 promotion-v1/T3 · 2026-10-26 · 实施基础35fc8ec。**第1..6项管理接口已实现并通过本地HTTP/SQL测试；第7..11项V2接口仍是拟定契约。** 未部署或生产HTTP实测。详见[management.md](management.md)。行为依据[设计](design.md)，机器契约在contracts/，样例在examples/。六列请求/三列响应表沿用code-software-engineer接口模板。
 
 ## 协议与验证
@@ -24,7 +26,7 @@ promotion-v1/T3 · 2026-10-26 · 实施基础35fc8ec。**第1..6项管理接口�
 
 请求方式：`POST`
 
-权限：`trade:promotion:create`；权限定义脚本已提供，未执行或授予角色。
+权限：`mall:promotion:create`；权限定义脚本已提供，未执行或授予角色。
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- | --- |
@@ -67,7 +69,7 @@ curl --request POST 'https://<API_HOST>/trade/admin/promotions' --header 'Author
 
 请求方式：`PUT`
 
-权限：`trade:promotion:update`；权限定义脚本已提供，未执行或授予角色。
+权限：`mall:promotion:update`；权限定义脚本已提供，未执行或授予角色。
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- | --- |
@@ -111,7 +113,7 @@ curl --request PUT 'https://<API_HOST>/trade/admin/promotions/9/draft' --header 
 
 请求方式：`POST`
 
-权限：`trade:promotion:publish`；权限定义脚本已提供，未执行或授予角色。
+权限：`mall:promotion:publish`；权限定义脚本已提供，未执行或授予角色。
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- | --- |
@@ -154,7 +156,7 @@ curl --request POST 'https://<API_HOST>/trade/admin/promotions/9/publish' --head
 
 请求方式：`PUT`
 
-权限：`trade:promotion:state`；权限定义脚本已提供，未执行或授予角色。
+权限：`mall:promotion:state`；权限定义脚本已提供，未执行或授予角色。
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- | --- |
@@ -198,7 +200,7 @@ curl --request PUT 'https://<API_HOST>/trade/admin/promotions/9/state' --header 
 
 请求方式：`GET`
 
-权限：`trade:promotion:query`；权限定义脚本已提供，未执行或授予角色。
+权限：`mall:promotion:query`；权限定义脚本已提供，未执行或授予角色。
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- | --- |
@@ -268,7 +270,7 @@ curl --request GET 'https://<API_HOST>/trade/admin/promotions/9' --header 'Autho
 
 请求方式：`GET`
 
-权限：`trade:promotion:list`；权限定义脚本已提供，未执行或授予角色。
+权限：`mall:promotion:list`；权限定义脚本已提供，未执行或授予角色。
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 | --- | --- | --- | --- | --- | --- |
