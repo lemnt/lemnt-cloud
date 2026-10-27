@@ -12,7 +12,7 @@
 | POST | /mall/app/coupon-center/{templateId}/claim | 领取公开优惠券 |
 | GET | /mall/app/coupon-wallet | 本人券包分页 |
 | POST | /mall/app/checkout/quote | 创建仅缓存 Redis 的结算单 |
-| POST | /mall/app/checkout | 按 settlementId/requestNo 提交缓存快照到交易服务 |
+| POST | /mall/app/checkout | 按 settlementId/requestNo 同步提交，完成核券锁券及预占库存后返回 |
 | POST | /mall/app/checkout/abandon | 终止未接受的请求或返回原订单 |
 | GET | /mall/app/checkout/requests/{requestNo} | 找回本人提单结果 |
 | GET | /mall/app/orders/{orderNo} | 本人结算回执 |

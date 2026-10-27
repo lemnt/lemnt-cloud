@@ -1,6 +1,6 @@
 # Trade fulfillment API
 
-v1 · 2026-10-25 · actual Req/Res + Java 17 implementation. Examples are constructed contract examples, not deployed HTTP captures.
+v3 · 2026-10-27 · actual Req/Res + Java 17 implementation. Examples are constructed contract examples, not deployed HTTP captures.
 
 Admin authentication/permissions use the existing security stack. Paths retain `/trade` through the gateway. This is administrative fulfillment, not a member self-service identity boundary. No role grants are included.
 
@@ -8,11 +8,11 @@ Admin authentication/permissions use the existing security stack. Paths retain `
 
 ## States and guarantees
 
-`RESERVING -> PENDING_PAYMENT -> PAID -> SHIPPED -> COMPLETED`. Existing reservation/payment close paths end in CLOSED. This slice introduces no REFUNDED state. All stock confirmation calls must return successfully before the consumer persists a confirmation marker. Shipment requires PAID + marker + no active refund. Marker persistence precedes Outbox acknowledgement: after an acknowledgement loss, paid-event retries remain valid for SHIPPED/COMPLETED and inventory operations remain idempotent.
+`RESERVING -> PENDING_PAYMENT -> PAID -> SHIPPED -> COMPLETED`. Existing reservation/payment close paths end in CLOSED. Successful full-order payment refunds move PAID to REFUNDED; see payment-management-api.md. All stock confirmation calls must return successfully before the consumer persists a confirmation marker. Shipment requires PAID + marker + no active refund. Payment post-processing is synchronous and idempotent for PAID/SHIPPED/COMPLETED; replay after REFUNDED preserves the payment fact without confirming stock or coupons again. No Outbox is used.
 
 Shipping, receipt, refund registration and rejection serialize on the same order row and join one local trade transaction. A shipment is one immutable whole-order record, not split shipments or editable tracking. There is no carrier API/tracking-event integration or automatic receipt. Shipping recipient fields are captured by the admin at shipment time; they are not an authenticated member address book or an order-creation address snapshot.
 
-Refund registration supports only **pre-shipment full-order requests**. Exactly one matching successful payment must exist. Server copies member/payment/payable amount; callers cannot choose the amount. REQUESTED blocks shipping; REJECTED releases that block. Registration/rejection never calls a provider, marks a payment refunded, replenishes stock, or returns coupons. Outstanding requests need operational follow-up until a real provider refund workflow exists. Do not treat a request as a completed refund or use rejection to represent an external refund.
+The legacy refund-registration endpoint supports **pre-shipment full-order requests**. New item-based partial refunds and post-shipment return/refund flows are documented in order-after-sale-logistics-api.md. Exactly one matching successful payment must exist. Server copies member/payment/payable amount; callers cannot choose the amount. REQUESTED/REFUNDING block shipping; REJECTED releases that block. REFUNDED is completed only after a verified payment refund. Registration/rejection never calls a provider, marks a payment refunded, replenishes stock, or returns coupons. The payment-refund orchestration is documented in payment-management-api.md; real channel adapters remain unconnected. Do not treat a request as a completed refund or use rejection to represent an external refund.
 
 ## Endpoints
 
@@ -27,7 +27,7 @@ Refund registration supports only **pre-shipment full-order requests**. Exactly 
 | GET /trade/admin/refund-requests/{refundNo} | trade:refund:query | refundNo path | RefundRequestRes |
 | POST /trade/admin/refund-requests/{refundNo}/reject | trade:refund:reject | RefundRejectReq JSON | RefundRequestRes |
 
-Order/refund identifiers are trimmed nonblank text, maximum 40 characters. Pagination defaults to pageNum=1/pageSize=20, accepts 1..1,000,000 and 1..100 respectively. orderNo is an exact filter (blank means all). Order status accepts the six states above; refund status accepts REQUESTED/REJECTED. Unknown status rejects. Missing detail returns application failure, not a fabricated empty order. Order list excludes recipient name, phone and address; separately permitted detail loads them on demand. Apply PII retention, audit and access rules through the deployment's existing admin controls; no new retention automation is implemented.
+Order/refund identifiers are trimmed nonblank text, maximum 40 characters. Pagination defaults to pageNum=1/pageSize=20, accepts 1..1,000,000 and 1..100 respectively. orderNo is an exact filter (blank means all). Order status also accepts REFUNDED; after-sale status also accepts AWAITING_RETURN/RETURNED/WAIT_REFUND/RETURN_REJECTED for the item-based workflow. Unknown status rejects. Missing detail returns application failure, not a fabricated empty order. Order list excludes recipient name, phone and address; separately permitted detail loads them on demand. Apply PII retention, audit and access rules through the deployment's existing admin controls; no new retention automation is implemented.
 
 ## Request schemas
 
@@ -131,7 +131,7 @@ All command strings are required, trimmed and nonblank. Limits: requestNo 64; ca
 | paymentNo | String | 成功支付编号 |
 | amount | java.math.BigDecimal | 整单申请金额，人民币元；不是已退款金额 |
 | reason | String | 申请原因 |
-| status | String | 申请状态：REQUESTED待处理（不是已退款），REJECTED已驳回 |
+| status | String | 申请状态：REQUESTED待处理、REJECTED已驳回、REFUNDING退款中、REFUNDED已退款 |
 | decisionReason | String | 驳回原因 |
 | requestedAt | java.time.LocalDateTime | 申请时间 |
 | decidedAt | java.time.LocalDateTime | 驳回时间 |
@@ -189,7 +189,7 @@ Content-Type: application/json
 {"reason":"核验后驳回，已与申请人确认"}
 ```
 
-Same order/requestNo + same reason returns the original request, including its current REJECTED state. Changed reason with the same key rejects. Only one active request per order; following a rejection, an explicit new key may register a new request. Rejection retries require the same decision reason and preserve original decidedAt. No execute/approve/refund-success API is exposed.
+Same order/requestNo + same reason returns the original request, including its current REJECTED state. Changed reason with the same key rejects. Only one active request per order; following a rejection, an explicit new key may register a new request. Rejection retries require the same decision reason and preserve original decidedAt. The separate permission-protected payment-refund endpoint initiates or synchronizes the reverse payment transaction; see payment-management-api.md.
 
 ## Setup and compatibility
 

@@ -1,0 +1,8 @@
+# 合并到 trade 的既有 Nacos 配置，不替换其他配置。本示例未自动发布。
+rocketmq:
+  name-server: ${ROCKETMQ_NAME_SERVER}
+  producer:
+    group: lemnt-trade-order-producer
+# topic: trade-order-rollback-topic
+# consumer group: trade-order-rollback-consumer-group
+# 仅处理库存与优惠券统一回滚；下单预占与支付核销使用同步 RPC。

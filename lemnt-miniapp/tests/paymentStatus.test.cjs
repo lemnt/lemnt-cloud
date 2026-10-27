@@ -6,3 +6,5 @@ let definition;global.Page=v=>definition=v;require('../pages/index/index');
 function page(){let member='1';global.getApp=()=>({globalData:{memberSession:{memberId:member}}});return {p:{...definition,data:{...definition.data,receipt:{orderNo:'TR1'}},receiptMember:'1',setData(v){Object.assign(this.data,v);}},switchMember:()=>member='2'};}
 test('查询本地支付记录不改变订单或调用支付操作',async()=>{const {p}=page();p.client={paymentStatus:async()=>value};await p.refreshLocalPayment();assert.equal(p.data.payment.localPaymentStatus,'WAITING');assert.deepEqual(p.data.receipt,{orderNo:'TR1'});});
 test('支付查询途中换号时清空旧数据',async()=>{const {p,switchMember}=page();p.client={paymentStatus:async()=>{switchMember();return value;}};await p.refreshLocalPayment();assert.equal(p.data.payment,null);assert.equal(p.data.receipt,null);});
+
+test('已退款订单仍展示原支付成功事实并保留订单退款状态',()=>{const result=decodePaymentStatus({...value,orderStatus:'REFUNDED',localPaymentStatus:'SUCCESS'},'TR1');assert.equal(result.orderStatus,'REFUNDED');assert.equal(result.localPaymentStatus,'SUCCESS');assert.equal(result.channelVerified,false);});

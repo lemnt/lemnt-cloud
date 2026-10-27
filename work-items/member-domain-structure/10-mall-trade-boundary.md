@@ -1,5 +1,7 @@
 # 商城与交易服务归属调整
 
+后续同步下单及移除 Outbox 的调整见 [同步调用与统一补偿](11-sync-order-rollback.md)。本页是此前阶段的实现与测试记录。
+
 2026-10-27，承接 Mapper/DO 规范调整。购物车、优惠券、结算和促销引擎的 Adapter、Application、Domain、Infrastructure、相关测试迁入 mall。交易保留订单、支付及订单履约/事务消息。
 
 当前设计与部署步骤见 [服务边界](../../docs/mall-trade-boundary.md)，结算接口见 [Redis 结算单](../../docs/cached-settlement-api.md)。

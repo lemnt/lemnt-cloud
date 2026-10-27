@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-27",
+  "java": 17,
+  "backend": {
+    "full_clean_verify": "passed",
+    "reactor_modules": 71,
+    "suites": 94,
+    "tests": 482,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "final_mall_trade_test": "passed"
+  },
+  "ui": {
+    "tests": 170,
+    "failures": 0,
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "build": "passed"
+  },
+  "coverage": [
+    "catalog states and stock reservation rollback",
+    "dictionary reference protection and legacy backfill",
+    "brand pagination beyond prior list limit",
+    "batch detail ordering",
+    "completed order ownership and concurrent comment retry",
+    "HTTP validation and gateway member identity",
+    "route permission mappings",
+    "permission migration repeatability and role preservation"
+  ],
+  "not_executed": [
+    "real MySQL migration",
+    "deployed service HTTP acceptance",
+    "new management page browser acceptance"
+  ],
+  "committed": false,
+  "pushed": false
+}

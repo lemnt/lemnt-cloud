@@ -25,3 +25,5 @@ CLOSED is a payment-record report, not an instruction to close the order. WAITIN
 Query runs through application Qry -> executor -> domain gateways -> infrastructure; DTO -> Res converter preserves boundaries. Miniapp explicitly labels local-only data, rejects unknown/malformed/cross-order responses, preserves decimal strings and clears account-specific results on session switch. It does not call wx.requestPayment or display fabricated channel success.
 
 No schema/dependency change. Actual identity verifier and real provider adapters remain absent; readiness stays false. Tests are local mocks/H2 and native-page behavior tests, not live gateway/payment/WeChat compiler/device/visual validation.
+
+2026-10-27 补充：订单退款成功后 orderStatus 可以是 REFUNDED；原支付单仍为 SUCCESS，逆向退款单独记录于支付退单。本地支付状态不等同于净收款状态，仍不声称已核验真实渠道。

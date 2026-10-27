@@ -25,7 +25,7 @@ function createCheckoutFlow({ storage, currentMember, client, newRequestNo }) {
         const before = JSON.stringify(saved);
         const result = await client.checkoutRequest(saved.requestNo);
         if (currentMember() !== member) throw new Error('会员已切换，原记录已保留');
-        if (!result || typeof result.orderNo !== 'string' || !result.orderNo || !['RESERVING','PENDING_PAYMENT','PAID','SHIPPED','COMPLETED','CLOSED'].includes(result.status) || typeof result.payableAmount !== 'string' || !/^\d+\.\d{2}$/.test(result.payableAmount)) throw new Error('未能确认订单，已保留原请求');
+        if (!result || typeof result.orderNo !== 'string' || !result.orderNo || !['RESERVING','PENDING_PAYMENT','PAID','SHIPPED','COMPLETED','CLOSED','REFUNDED'].includes(result.status) || typeof result.payableAmount !== 'string' || !/^\d+\.\d{2}$/.test(result.payableAmount)) throw new Error('未能确认订单，已保留原请求');
         if (JSON.stringify(storage.get(key)) !== before) throw new Error('本机请求已变化，请重新核验');
         storage.remove(key);
         return result;
@@ -39,7 +39,7 @@ function createCheckoutFlow({ storage, currentMember, client, newRequestNo }) {
         const result = await client.abandonCheckout(intent);
         if (scope() !== key || JSON.stringify(storage.get(key)) !== before) throw new Error('会员或本机请求已变化，记录已保留');
         const order = result && result.order;
-        const validOrder = order && typeof order.orderNo === 'string' && order.orderNo && ['RESERVING','PENDING_PAYMENT','PAID','SHIPPED','COMPLETED','CLOSED'].includes(order.status) && typeof order.payableAmount === 'string' && /^\d+\.\d{2}$/.test(order.payableAmount);
+        const validOrder = order && typeof order.orderNo === 'string' && order.orderNo && ['RESERVING','PENDING_PAYMENT','PAID','SHIPPED','COMPLETED','CLOSED','REFUNDED'].includes(order.status) && typeof order.payableAmount === 'string' && /^\d+\.\d{2}$/.test(order.payableAmount);
         if (!result || !((result.abandoned === true && order == null) || (result.abandoned === false && validOrder))) throw new Error('终止结果未确认，请保留原请求继续核验');
         storage.remove(key);return result;
       } finally { busy = false; }
@@ -64,7 +64,7 @@ function createCheckoutFlow({ storage, currentMember, client, newRequestNo }) {
         const result = await client.checkout(copy(intent));
         if (scope() !== key) throw new Error('会员已切换，原会员的结算记录已保留');
         if (!result || typeof result.orderNo !== 'string' || !result.orderNo ||
-          !['RESERVING','PENDING_PAYMENT','PAID','SHIPPED','COMPLETED','CLOSED'].includes(result.status) ||
+          !['RESERVING','PENDING_PAYMENT','PAID','SHIPPED','COMPLETED','CLOSED','REFUNDED'].includes(result.status) ||
           typeof result.payableAmount !== 'string' || !/^\d+\.\d{2}$/.test(result.payableAmount)) throw new Error('订单响应无法确认，已保留请求，请用原请求重试');
         storage.remove(key);
         return result;
