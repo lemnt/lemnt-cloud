@@ -1,0 +1,2784 @@
+{
+  "date": "2026-10-28",
+  "referenceCommit": "8db9153bfe6bdc03baf93b74e244a2e74477c5c4",
+  "referenceRepo": "https://github.com/YunaiV/yudao-cloud",
+  "localControllers": [
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/cart/AppCartAdditionController.java",
+      "operations": [
+        "设置当前会员购物车最终数量"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/app\")"
+        ],
+        [
+          "PostMapping",
+          "\"/cart/{productId}/add\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/cart/AppCartController.java",
+      "operations": [
+        "查询当前会员购物车",
+        "更新当前会员购物车，不接受客户端价格或会员身份",
+        "删除当前会员购物车条目"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/app\")"
+        ],
+        [
+          "GetMapping",
+          "\"/cart\")"
+        ],
+        [
+          "PutMapping",
+          "\"/cart/{productId}\")"
+        ],
+        [
+          "DeleteMapping",
+          "\"/cart/{productId}\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/coupon/AppCouponCenterController.java",
+      "operations": [
+        "本人可见的公开领券中心",
+        "本人优惠券及服务端当前可用状态",
+        "本人领取公开优惠券，每模板限一张，重复返回原券"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/app\")"
+        ],
+        [
+          "GetMapping",
+          "\"/coupon-center\")"
+        ],
+        [
+          "GetMapping",
+          "\"/coupon-wallet\")"
+        ],
+        [
+          "PostMapping",
+          "\"/coupon-center/{templateId}/claim\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/coupon/AppCouponController.java",
+      "operations": [
+        "当前会员持有的优惠券"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/app\")"
+        ],
+        [
+          "GetMapping",
+          "\"/coupons\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppCategoryController.java",
+      "operations": [
+        "公开启用分类"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/app\")"
+        ],
+        [
+          "GetMapping",
+          "\"/categories\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppCommentController.java",
+      "operations": [
+        "评价本人已完成订单内商品"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/app/comments\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppProductController.java",
+      "operations": [
+        "公开在售商品分页，服务端价格区间",
+        "公开在售商品详情；不存在及隐藏均为null"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/app\")"
+        ],
+        [
+          "GetMapping",
+          "\"/products\")"
+        ],
+        [
+          "GetMapping",
+          "\"/products/{id}\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/settlement/AppOrderController.java",
+      "operations": [
+        "查询本人订单结算回执，他人订单与不存在统一返回不存在",
+        "按本人提单请求编号找回订单，不依赖结算缓存；查无结果不代表请求已取消"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/app\")"
+        ],
+        [
+          "GetMapping",
+          "\"/orders/{orderNo}\")"
+        ],
+        [
+          "GetMapping",
+          "\"/checkout/requests/{requestNo}\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/settlement/AppSettlementController.java",
+      "operations": [
+        "当前会员结算预览，服务端计价",
+        "当前会员幂等下单，不接受客户端金额",
+        "终止尚未完成的提单；已生成订单则返回原订单，不执行关单"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/app\")"
+        ],
+        [
+          "PostMapping",
+          "\"/checkout/quote\")"
+        ],
+        [
+          "PostMapping",
+          "\"/checkout\")"
+        ],
+        [
+          "PostMapping",
+          "\"/checkout/abandon\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/cart/CartController.java",
+      "operations": [
+        "查看目标会员购物车，刷新服务器商品信息",
+        "设置目标会员SKU数量及选中状态，不预占库存",
+        "删除目标会员购物车条目"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/admin/members/{memberId}/cart\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{productId}\")"
+        ],
+        [
+          "DeleteMapping",
+          "\"/{productId}\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponController.java",
+      "operations": [
+        "为目标会员发券，每人每模板限一张，同次重试幂等",
+        "查看目标会员优惠券，超过1000条时拒绝截断"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/admin\")"
+        ],
+        [
+          "PostMapping",
+          "\"/members/{memberId}/coupons/{templateId}\")"
+        ],
+        [
+          "GetMapping",
+          "\"/members/{memberId}/coupons\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponTemplateController.java",
+      "operations": [
+        "查询模板，超过1000条时拒绝截断",
+        "创建规则不可变的优惠券模板",
+        "启停新发放与新兑换，不影响已锁定订单"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/admin\")"
+        ],
+        [
+          "GetMapping",
+          "\"/coupon-templates\")"
+        ],
+        [
+          "PostMapping",
+          "\"/coupon-templates\")"
+        ],
+        [
+          "PutMapping",
+          "\"/coupon-templates/{id}/enabled\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/PublicCouponController.java",
+      "operations": [
+        "已开启公开领取的模板ID；不代表当前可领取",
+        "开启或关闭会员自助领取；现有模板默认关闭"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/admin/coupon-templates\")"
+        ],
+        [
+          "GetMapping",
+          "\"/public-claim\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/public-claim\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/BrandController.java",
+      "operations": [
+        "查询列表，超过1000条时拒绝截断",
+        "查询详情",
+        "创建",
+        "修改",
+        "删除未被引用的记录"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/brands\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "DeleteMapping",
+          "\"/{id}\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/BrandQueryController.java",
+      "operations": [
+        "品牌分页",
+        "启用品牌选择查询"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/brands\")"
+        ],
+        [
+          "GetMapping",
+          "\"/page\")"
+        ],
+        [
+          "GetMapping",
+          "\"/simple\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CategoryController.java",
+      "operations": [
+        "查询列表，超过1000条时拒绝截断",
+        "查询详情",
+        "创建",
+        "修改",
+        "删除未被引用的记录"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/categories\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "DeleteMapping",
+          "\"/{id}\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CategoryTreeController.java",
+      "operations": [
+        "分类树"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/categories\")"
+        ],
+        [
+          "GetMapping",
+          "\"/tree\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CommentController.java",
+      "operations": [
+        "商品评价分页",
+        "商品评价详情",
+        "商家回复评价",
+        "显示或隐藏商品评价"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/comments\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/reply\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/visible\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductController.java",
+      "operations": [
+        "创建商品基础记录",
+        "商品基础详情",
+        "商品基础上下架"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/products\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/shelf\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSkuController.java",
+      "operations": [
+        "修改SKU资料，不修改编码或规格组合"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/skus\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSkuManagementController.java",
+      "operations": [
+        "追加商品SKU",
+        "SKU分页",
+        "SKU详情",
+        "SKU上下架",
+        "删除SKU"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall\")"
+        ],
+        [
+          "PostMapping",
+          "\"/spus/{spuId}/skus\")"
+        ],
+        [
+          "GetMapping",
+          "\"/skus\")"
+        ],
+        [
+          "GetMapping",
+          "\"/skus/{id}\")"
+        ],
+        [
+          "PutMapping",
+          "\"/skus/{id}/shelf\")"
+        ],
+        [
+          "DeleteMapping",
+          "\"/skus/{id}\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecController.java",
+      "operations": [
+        "新增规格字典",
+        "修改规格字典",
+        "删除未引用规格字典",
+        "规格字典详情",
+        "规格字典分页",
+        "规格字典选择查询"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/specs\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "DeleteMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "GetMapping",
+          "\"/simple\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecValueController.java",
+      "operations": [
+        "新增规格字典",
+        "修改规格字典",
+        "删除未引用规格字典",
+        "规格字典详情",
+        "规格字典分页",
+        "规格字典选择查询"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/spec-values\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "DeleteMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "GetMapping",
+          "\"/simple\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuController.java",
+      "operations": [
+        "分页查询SPU，SKU请查询详情",
+        "查询SPU与全部SKU详情",
+        "原子创建SPU及SKU",
+        "修改SPU资料，不修改SKU库存",
+        "上下架SPU"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/spus\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/shelf\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuManagementController.java",
+      "operations": [
+        "商品放入回收站",
+        "恢复回收站商品",
+        "删除回收站商品",
+        "商品状态统计",
+        "上架商品选择查询",
+        "批量商品详情"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/spus\")"
+        ],
+        [
+          "PostMapping",
+          "\"/{id}/recycle\")"
+        ],
+        [
+          "PostMapping",
+          "\"/{id}/restore\")"
+        ],
+        [
+          "DeleteMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "GetMapping",
+          "\"/count\")"
+        ],
+        [
+          "GetMapping",
+          "\"/simple\")"
+        ],
+        [
+          "GetMapping",
+          "\"/batch\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/StockAdjustmentController.java",
+      "operations": [
+        "幂等增减可用库存"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/skus\")"
+        ],
+        [
+          "PostMapping",
+          "\"/{id}/stock\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/StockAdjustmentQueryController.java",
+      "operations": [
+        "SKU库存调整历史"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/skus\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}/stock-records\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java",
+      "operations": [
+        "创建活动草稿",
+        "保存完整活动草稿",
+        "发布不可变活动版本",
+        "暂停、恢复或归档活动",
+        "活动草稿及当前发布版本详情",
+        "活动分页摘要"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/promotion/discount-activities\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/draft\")"
+        ],
+        [
+          "PostMapping",
+          "\"/{id}/publish\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/state\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/PromotionController.java",
+      "operations": [
+        "创建活动草稿",
+        "保存完整活动草稿",
+        "发布不可变活动版本",
+        "暂停、恢复或归档活动",
+        "活动草稿及当前发布版本详情",
+        "活动分页摘要"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/admin/promotions\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/draft\")"
+        ],
+        [
+          "PostMapping",
+          "\"/{id}/publish\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/state\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java",
+      "operations": [
+        "创建活动草稿",
+        "保存完整活动草稿",
+        "发布不可变活动版本",
+        "暂停、恢复或归档活动",
+        "活动草稿及当前发布版本详情",
+        "活动分页摘要"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/promotion/reward-activities\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/draft\")"
+        ],
+        [
+          "PostMapping",
+          "\"/{id}/publish\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/state\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/settlement/MallOrderPlacementController.java",
+      "operations": [],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/orders\")"
+        ]
+      ]
+    },
+    {
+      "module": "mall",
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/settlement/SettlementQuoteController.java",
+      "operations": [
+        "服务端重新计价的结算预览，不锁券也不预占库存",
+        "幂等提交结算，返回RESERVING，Outbox确认库存后方可支付",
+        "查询结算原始金额、优惠及当前订单状态"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/mall/admin\")"
+        ],
+        [
+          "PostMapping",
+          "\"/members/{memberId}/checkout/quote\")"
+        ],
+        [
+          "PostMapping",
+          "\"/members/{memberId}/checkout\")"
+        ],
+        [
+          "GetMapping",
+          "\"/checkouts/{orderNo}\")"
+        ]
+      ]
+    },
+    {
+      "module": "trade",
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/payment/AppPaymentController.java",
+      "operations": [
+        "查询本人订单本地支付状态，当前不核验真实支付渠道"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/trade/app/orders\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{orderNo}/payment\")"
+        ]
+      ]
+    },
+    {
+      "module": "trade",
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+      "operations": [
+        "确认售后原路退款",
+        "可售后商品额度",
+        "申请商品售后",
+        "商品售后分页",
+        "商品售后详情",
+        "同意商品售后",
+        "拒绝商品售后",
+        "登记退货运单",
+        "确认退货收货",
+        "拒绝退货收货"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/trade/admin\")"
+        ],
+        [
+          "PostMapping",
+          "\"/after-sales/{no}/refund\")"
+        ],
+        [
+          "GetMapping",
+          "\"/orders/{orderNo}/after-sale-items\")"
+        ],
+        [
+          "PostMapping",
+          "\"/orders/{orderNo}/after-sales\")"
+        ],
+        [
+          "GetMapping",
+          "\"/after-sales\")"
+        ],
+        [
+          "GetMapping",
+          "\"/after-sales/{no}\")"
+        ],
+        [
+          "PostMapping",
+          "\"/after-sales/{no}/agree\")"
+        ],
+        [
+          "PostMapping",
+          "\"/after-sales/{no}/reject\")"
+        ],
+        [
+          "PostMapping",
+          "\"/after-sales/{no}/return\")"
+        ],
+        [
+          "PostMapping",
+          "\"/after-sales/{no}/receive\")"
+        ],
+        [
+          "PostMapping",
+          "\"/after-sales/{no}/refuse\")"
+        ]
+      ]
+    },
+    {
+      "module": "trade",
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/FulfillmentOrderController.java",
+      "operations": [
+        "分页查询订单，不含收件人信息",
+        "订单详情，含收件人信息"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/trade/admin/orders\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{orderNo}\")"
+        ]
+      ]
+    },
+    {
+      "module": "trade",
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/OrderRefundRequestController.java",
+      "operations": [
+        "登记发货前整单退款申请，不执行渠道退款，不标记已退款"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/trade/admin/orders\")"
+        ],
+        [
+          "PostMapping",
+          "\"/{orderNo}/refund-requests\")"
+        ]
+      ]
+    },
+    {
+      "module": "trade",
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/RefundRequestController.java",
+      "operations": [
+        "分页查询退款申请，申请不代表已退款",
+        "查询退款申请详情",
+        "驳回退款申请并允许订单继续履约"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/trade/admin/refund-requests\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{refundNo}\")"
+        ],
+        [
+          "PostMapping",
+          "\"/{refundNo}/reject\")"
+        ]
+      ]
+    },
+    {
+      "module": "trade",
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/ShipmentController.java",
+      "operations": [
+        "已支付且库存确认完成后登记发货，幂等且物流不可改写",
+        "后台登记收货，重复请求返回原收货时间"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/trade/admin/orders\")"
+        ],
+        [
+          "PostMapping",
+          "\"/{orderNo}/shipment\")"
+        ],
+        [
+          "PostMapping",
+          "\"/{orderNo}/receive\")"
+        ]
+      ]
+    },
+    {
+      "module": "trade",
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderCloseController.java",
+      "operations": [
+        "关闭未支付订单并提交统一库存及券补偿"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/trade/admin/orders\")"
+        ],
+        [
+          "PostMapping",
+          "\"/{orderNo}/close\")"
+        ]
+      ]
+    },
+    {
+      "module": "trade",
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderManagementController.java",
+      "operations": [
+        "订单管理统计",
+        "订单备注查询",
+        "修改订单备注"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/trade/admin/orders\")"
+        ],
+        [
+          "GetMapping",
+          "\"/summary\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{orderNo}/remark\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{orderNo}/remark\")"
+        ]
+      ]
+    },
+    {
+      "module": "trade",
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/TradeOrderController.java",
+      "operations": [
+        "查询订单详情"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/trade/orders\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{orderNo}\")"
+        ]
+      ]
+    },
+    {
+      "module": "trade",
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payment/PaymentChannelController.java",
+      "operations": [
+        "查询支持的支付渠道"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/trade/admin/payment-channels\")"
+        ]
+      ]
+    },
+    {
+      "module": "trade",
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payment/PaymentController.java",
+      "operations": [
+        "分页查询支付单",
+        "查询支付单详情"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/trade/admin/payments\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{no}\")"
+        ]
+      ]
+    },
+    {
+      "module": "trade",
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paymentrefund/AfterSalePaymentRefundController.java",
+      "operations": [
+        "根据售后单发起或同步原支付退款交易"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/trade/admin/refund-requests\")"
+        ],
+        [
+          "PostMapping",
+          "\"/{afterSaleNo}/payment-refund\")"
+        ]
+      ]
+    },
+    {
+      "module": "trade",
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paymentrefund/PaymentRefundController.java",
+      "operations": [
+        "分页查询支付退款交易",
+        "查询支付退款交易详情"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/trade/admin/payment-refunds\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{no}\")"
+        ]
+      ]
+    },
+    {
+      "module": "trade",
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/shipment/ShipmentQueryController.java",
+      "operations": [
+        "物流单分页",
+        "物流单详情",
+        "物流轨迹查询"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/trade/admin/shipments\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{orderNo}\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{orderNo}/tracks\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/address/AppMemberAddressController.java",
+      "operations": [
+        "本人地址列表",
+        "本人默认地址",
+        "本人地址详情，不存在和他人地址均为空",
+        "新增本人地址，最多20个",
+        "更新本人地址，默认地址修改串行化",
+        "删除本人地址"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/app/addresses\")"
+        ],
+        [
+          "GetMapping",
+          "\"/default\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "DeleteMapping",
+          "\"/{id}\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/growth/AppMemberExperienceRecordController.java",
+      "operations": [
+        "本人经验流水分页"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/app/growths\")"
+        ],
+        [
+          "GetMapping",
+          "\"/experience-records\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/growth/AppMemberLevelController.java",
+      "operations": [
+        "已启用会员等级"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/app/growths\")"
+        ],
+        [
+          "GetMapping",
+          "\"/levels\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/growth/AppMemberPointRecordController.java",
+      "operations": [
+        "本人积分流水分页"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/app/growths\")"
+        ],
+        [
+          "GetMapping",
+          "\"/point-records\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/growth/AppMemberSignConfigController.java",
+      "operations": [
+        "已启用签到规则"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/app/growths\")"
+        ],
+        [
+          "GetMapping",
+          "\"/signin/config\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/growth/AppMemberSignRecordController.java",
+      "operations": [
+        "本人签到汇总",
+        "数据库日期每日幂等签到，积分与经验同事务发放",
+        "本人签到记录分页"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/app/growths\")"
+        ],
+        [
+          "GetMapping",
+          "\"/signin/summary\")"
+        ],
+        [
+          "PostMapping",
+          "\"/signin\")"
+        ],
+        [
+          "GetMapping",
+          "\"/signin/records\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/user/AppMemberPasswordController.java",
+      "operations": [
+        "验证原密码并修改"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/app/users\")"
+        ],
+        [
+          "PutMapping",
+          "\"/user/password\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/user/AppMemberUserController.java",
+      "operations": [
+        "当前会员资料",
+        "更新本人资料，不接受会员ID、手机号、积分、等级或状态"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/app/users\")"
+        ],
+        [
+          "GetMapping",
+          "\"/user\")"
+        ],
+        [
+          "PutMapping",
+          "\"/user\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/address/MemberUserAddressController.java",
+      "operations": [
+        "后台查看会员地址簿，包含个人信息"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/member-users\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}/addresses\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberExperienceRecordController.java",
+      "operations": [
+        "experience-records分页",
+        "experience-records详情"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/member/admin\")"
+        ],
+        [
+          "GetMapping",
+          "\"/experience-records\")"
+        ],
+        [
+          "GetMapping",
+          "\"/experience-records/{id}\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberLevelController.java",
+      "operations": [
+        "Level列表",
+        "Level详情",
+        "创建Level",
+        "修改Level",
+        "删除未被会员使用的Level",
+        "Level简洁列表"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/growth/levels\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "DeleteMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "GetMapping",
+          "\"/list-all-simple\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberLevelRecordController.java",
+      "operations": [
+        "level-records分页",
+        "level-records详情"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/member/admin\")"
+        ],
+        [
+          "GetMapping",
+          "\"/level-records\")"
+        ],
+        [
+          "GetMapping",
+          "\"/level-records/{id}\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberPointConfigController.java",
+      "operations": [
+        "积分交易配置，交易应用另行接入",
+        "保存积分交易配置"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/growths\")"
+        ],
+        [
+          "GetMapping",
+          "\"/config\")"
+        ],
+        [
+          "PutMapping",
+          "\"/config\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberPointRecordController.java",
+      "operations": [
+        "point-records分页",
+        "point-records详情"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/member/admin\")"
+        ],
+        [
+          "GetMapping",
+          "\"/point-records\")"
+        ],
+        [
+          "GetMapping",
+          "\"/point-records/{id}\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberSignConfigController.java",
+      "operations": [
+        "所有签到规则",
+        "按签到天数创建或更新规则，1启用0停用",
+        "删除指定天数规则，历史奖励保留",
+        "指定签到天数规则"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/growths\")"
+        ],
+        [
+          "GetMapping",
+          "\"/signin-configs\")"
+        ],
+        [
+          "PutMapping",
+          "\"/signin-configs\")"
+        ],
+        [
+          "DeleteMapping",
+          "\"/signin-configs/{day}\")"
+        ],
+        [
+          "GetMapping",
+          "\"/signin-configs/{day}\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberSignRecordController.java",
+      "operations": [
+        "signin-records分页"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/member/admin\")"
+        ],
+        [
+          "GetMapping",
+          "\"/signin-records\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberUserExperienceController.java",
+      "operations": [
+        "幂等变更会员experience，余额不能为负",
+        "会员experience流水分页"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/member-users\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/experience\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}/experience-records\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberUserLevelController.java",
+      "operations": [
+        "调整等级及对应经验，幂等业务编号"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/member-users\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/level\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberUserLevelRecordController.java",
+      "operations": [
+        "等级变更记录分页"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/member-users\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}/level-records\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberUserPointController.java",
+      "operations": [
+        "幂等变更会员points，余额不能为负",
+        "会员points流水分页"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/member-users\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/points\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}/points-records\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberUserSignRecordController.java",
+      "operations": [
+        "会员签到记录分页"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/member-users\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}/signin-records\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberController.java",
+      "operations": [
+        "创建会员",
+        "会员详情"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/members\")"
+        ],
+        [
+          "PostMapping",
+          "\"/register\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberGroupController.java",
+      "operations": [
+        "Group列表",
+        "Group详情",
+        "创建Group",
+        "修改Group",
+        "删除未被会员使用的Group",
+        "Group简洁列表"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/groups\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "DeleteMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "GetMapping",
+          "\"/list-all-simple\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberGroupQueryController.java",
+      "operations": [
+        "groups/page分页"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/groups\")"
+        ],
+        [
+          "GetMapping",
+          "\"/groups/page\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberTagController.java",
+      "operations": [
+        "Tag列表",
+        "Tag详情",
+        "创建Tag",
+        "修改Tag",
+        "删除未被会员使用的Tag",
+        "Tag简洁列表"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/tags\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "DeleteMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "GetMapping",
+          "\"/list-all-simple\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberTagQueryController.java",
+      "operations": [
+        "tags/page分页"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/groups\")"
+        ],
+        [
+          "GetMapping",
+          "\"/tags/page\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberUserController.java",
+      "operations": [
+        "后台创建会员，不验证联系信息且不签发会话",
+        "会员分页，手机号精确筛选",
+        "会员详情",
+        "后台更新资料和状态，校验会员状态"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/member-users\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberUserGroupController.java",
+      "operations": [
+        "分配或清空分组"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/member-users\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/group\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberUserPasswordController.java",
+      "operations": [
+        "后台重置密码"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/member-users\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/password\")"
+        ]
+      ]
+    },
+    {
+      "module": "member",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberUserTagController.java",
+      "operations": [
+        "会员标签编号",
+        "设置标签集合，空集合清空"
+      ],
+      "mappings": [
+        [
+          "RequestMapping",
+          "\"/member-users\")"
+        ],
+        [
+          "GetMapping",
+          "\"/{id}/tags\")"
+        ],
+        [
+          "PutMapping",
+          "\"/{id}/tags\")"
+        ]
+      ]
+    }
+  ],
+  "referenceControllers": [
+    {
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/brand/ProductBrandController.java",
+      "operations": [
+        "创建品牌",
+        "更新品牌",
+        "删除品牌",
+        "获得品牌",
+        "获取品牌精简信息列表",
+        "获得品牌分页",
+        "获得品牌列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/category/ProductCategoryController.java",
+      "operations": [
+        "创建商品分类",
+        "更新商品分类",
+        "删除商品分类",
+        "获得商品分类",
+        "获得商品分类列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/comment/ProductCommentController.java",
+      "operations": [
+        "获得商品评价分页",
+        "获得商品评价",
+        "显示 / 隐藏评论",
+        "商家回复",
+        "添加自评"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/favorite/ProductFavoriteController.java",
+      "operations": [
+        "获得商品收藏分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/history/ProductBrowseHistoryController.java",
+      "operations": [
+        "获得商品浏览记录分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/property/ProductPropertyController.java",
+      "operations": [
+        "创建属性项",
+        "更新属性项",
+        "删除属性项",
+        "获得属性项",
+        "获得属性项分页",
+        "获得属性项精简列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/property/ProductPropertyValueController.java",
+      "operations": [
+        "创建属性值",
+        "更新属性值",
+        "删除属性值",
+        "获得属性值",
+        "获得属性值分页",
+        "获得属性值精简列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/spu/ProductSpuController.java",
+      "operations": [
+        "创建商品 SPU",
+        "更新商品 SPU",
+        "更新商品 SPU Status",
+        "删除商品 SPU",
+        "获得商品 SPU 明细",
+        "获得商品 SPU 精简列表",
+        "获得商品 SPU 详情列表",
+        "获得商品 SPU 分页",
+        "获得商品 SPU 分页 tab count（支持按 name/categoryId/createTime 筛选）",
+        "导出商品"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/category/AppCategoryController.java",
+      "operations": [
+        "获得商品分类列表",
+        "获得商品分类列表，指定编号"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/comment/AppProductCommentController.java",
+      "operations": [
+        "获得商品评价分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/favorite/AppFavoriteController.java",
+      "operations": [
+        "添加商品收藏",
+        "取消单个商品收藏",
+        "获得商品收藏分页",
+        "检查是否收藏过商品",
+        "获得商品收藏数量"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/history/AppProductBrowseHistoryController.java",
+      "operations": [
+        "删除商品浏览记录",
+        "清空商品浏览记录",
+        "获得商品浏览记录分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/spu/AppProductSpuController.java",
+      "operations": [
+        "获得商品 SPU 列表",
+        "获得商品 SPU 分页",
+        "获得商品 SPU 明细"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/ArticleCategoryController.java",
+      "operations": [
+        "创建文章分类",
+        "更新文章分类",
+        "删除文章分类",
+        "获得文章分类",
+        "获取文章分类精简信息列表",
+        "获得文章分类分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/ArticleController.java",
+      "operations": [
+        "创建文章管理",
+        "更新文章管理",
+        "删除文章管理",
+        "获得文章管理",
+        "获得文章管理分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/banner/BannerController.java",
+      "operations": [
+        "创建 Banner",
+        "更新 Banner",
+        "删除 Banner",
+        "获得 Banner",
+        "获得 Banner 分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/bargain/BargainActivityController.java",
+      "operations": [
+        "创建砍价活动",
+        "更新砍价活动",
+        "关闭砍价活动",
+        "删除砍价活动",
+        "获得砍价活动",
+        "获得砍价活动分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/bargain/BargainHelpController.java",
+      "operations": [
+        "获得砍价助力分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/bargain/BargainRecordController.java",
+      "operations": [
+        "获得砍价记录分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/combination/CombinationActivityController.java",
+      "operations": [
+        "创建拼团活动",
+        "更新拼团活动",
+        "关闭拼团活动",
+        "删除拼团活动",
+        "获得拼团活动",
+        "获得拼团活动列表，基于活动编号数组",
+        "获得拼团活动分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/combination/CombinationRecordController.java",
+      "operations": [
+        "获得拼团记录分页",
+        "获得拼团记录的概要信息"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/coupon/CouponController.java",
+      "operations": [
+        "回收优惠劵",
+        "获得优惠劵分页",
+        "获得优惠劵",
+        "发送优惠劵"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/coupon/CouponTemplateController.java",
+      "operations": [
+        "创建优惠劵模板",
+        "更新优惠劵模板",
+        "更新优惠劵模板状态",
+        "删除优惠劵模板",
+        "获得优惠劵模板",
+        "获得优惠劵模板分页",
+        "获得优惠劵模板列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/discount/DiscountActivityController.java",
+      "operations": [
+        "创建限时折扣活动",
+        "更新限时折扣活动",
+        "关闭限时折扣活动",
+        "删除限时折扣活动",
+        "获得限时折扣活动",
+        "获得限时折扣活动分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/diy/DiyPageController.java",
+      "operations": [
+        "创建装修页面",
+        "更新装修页面",
+        "删除装修页面",
+        "获得装修页面",
+        "获得装修页面列表",
+        "获得装修页面分页",
+        "获得装修页面属性",
+        "更新装修页面属性"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/diy/DiyTemplateController.java",
+      "operations": [
+        "创建装修模板",
+        "更新装修模板",
+        "使用装修模板",
+        "删除装修模板",
+        "获得装修模板",
+        "获得装修模板分页",
+        "获得装修模板属性",
+        "更新装修模板属性"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/kefu/KeFuConversationController.java",
+      "operations": [
+        "获得客服会话",
+        "置顶/取消置顶客服会话",
+        "删除客服会话",
+        "获得客服会话列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/kefu/KeFuMessageController.java",
+      "operations": [
+        "发送客服消息",
+        "更新客服消息已读状态",
+        "获得客服消息列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/point/PointActivityController.java",
+      "operations": [
+        "创建积分商城活动",
+        "更新积分商城活动",
+        "关闭积分商城活动",
+        "删除积分商城活动",
+        "获得积分商城活动",
+        "获得积分商城活动分页",
+        "获得积分商城活动列表，基于活动编号数组"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/reward/RewardActivityController.java",
+      "operations": [
+        "创建满减送活动",
+        "更新满减送活动",
+        "关闭满减送活动",
+        "删除满减送活动",
+        "获得满减送活动",
+        "获得满减送活动分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/seckill/SeckillActivityController.java",
+      "operations": [
+        "创建秒杀活动",
+        "更新秒杀活动",
+        "关闭秒杀活动",
+        "删除秒杀活动",
+        "获得秒杀活动",
+        "获得秒杀活动分页",
+        "获得秒杀活动列表，基于活动编号数组"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/seckill/SeckillConfigController.java",
+      "operations": [
+        "创建秒杀时段",
+        "更新秒杀时段",
+        "修改时段配置状态",
+        "删除秒杀时段",
+        "获得秒杀时段",
+        "获得所有秒杀时段列表",
+        "获得所有开启状态的秒杀时段精简列表",
+        "获得秒杀时间段分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/activity/AppActivityController.java",
+      "operations": [
+        "获得单个商品，进行中的拼团、秒杀、砍价活动信息"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/article/AppArticleCategoryController.java",
+      "operations": [
+        "获得文章分类列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/article/AppArticleController.java",
+      "operations": [
+        "获得文章详情列表",
+        "获得文章详情分页",
+        "获得文章详情",
+        "增加文章浏览量"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/banner/AppBannerController.java",
+      "operations": [
+        "获得 banner 列表",
+        "增加 Banner 点击量"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/bargain/AppBargainActivityController.java",
+      "operations": [
+        "获得砍价活动列表",
+        "获得砍价活动分页",
+        "获得砍价活动详情"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/bargain/AppBargainHelpController.java",
+      "operations": [
+        "创建砍价助力",
+        "获得砍价助力列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/bargain/AppBargainRecordController.java",
+      "operations": [
+        "获得砍价记录的概要信息",
+        "获得砍价记录的明细",
+        "获得砍价记录的分页",
+        "创建砍价记录"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/combination/AppCombinationActivityController.java",
+      "operations": [
+        "获得拼团活动分页",
+        "获得拼团活动列表，基于活动编号数组",
+        "获得拼团活动明细"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/combination/AppCombinationRecordController.java",
+      "operations": [
+        "获得拼团记录的概要信息",
+        "获得最近 n 条拼团记录（团长发起的）",
+        "获得我的拼团记录分页",
+        "获得拼团记录明细"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/coupon/AppCouponController.java",
+      "operations": [
+        "领取优惠劵",
+        "我的优惠劵列表",
+        "获得优惠劵",
+        "获得未使用的优惠劵数量"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/coupon/AppCouponTemplateController.java",
+      "operations": [
+        "获得优惠劵模版",
+        "获得优惠劵模版列表",
+        "获得优惠劵模版列表",
+        "获得优惠劵模版分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/diy/AppDiyPageController.java",
+      "operations": [
+        "获得装修页面"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/diy/AppDiyTemplateController.java",
+      "operations": [
+        "使用中的装修模板",
+        "获得装修模板"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/kefu/AppKeFuMessageController.java",
+      "operations": [
+        "发送客服消息",
+        "更新客服消息已读状态",
+        "获得客服消息列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/point/AppPointActivityController.java",
+      "operations": [
+        "获得积分商城活动分页",
+        "获得积分商城活动明细",
+        "获得积分商城活动列表，基于活动编号数组"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/reward/AppRewardActivityController.java",
+      "operations": [
+        "获得满减送活动"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/seckill/AppSeckillActivityController.java",
+      "operations": [
+        "获得当前秒杀活动",
+        "获得秒杀活动分页",
+        "获得秒杀活动明细",
+        "获得秒杀活动列表，基于活动编号数组"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/seckill/AppSeckillConfigController.java",
+      "operations": [
+        "获得秒杀时间段列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/member/MemberStatisticsController.java",
+      "operations": [
+        "获得会员统计（实时统计）",
+        "获得会员分析数据",
+        "按照省份，获得会员统计列表",
+        "按照性别，获得会员统计列表",
+        "按照终端，获得会员统计列表",
+        "获得用户数量对照",
+        "获得会员注册数量列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/pay/PayStatisticsController.java",
+      "operations": [
+        "获取充值金额"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/product/ProductStatisticsController.java",
+      "operations": [
+        "获得商品统计分析",
+        "获得商品统计明细（日期维度）",
+        "导出获得商品统计明细 Excel（日期维度）",
+        "获得商品统计排行榜分页（商品维度）"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/trade/TradeStatisticsController.java",
+      "operations": [
+        "获得交易统计",
+        "获得交易状况统计",
+        "获得交易状况明细",
+        "导出获得交易状况明细 Excel",
+        "获得交易订单数量",
+        "获得交易订单数量",
+        "获得订单量趋势统计"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/aftersale/AfterSaleController.java",
+      "operations": [
+        "获得售后订单分页",
+        "获得售后订单详情",
+        "同意售后",
+        "拒绝售后",
+        "确认收货",
+        "拒绝收货",
+        "确认退款",
+        "更新售后订单为已退款"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/brokerage/BrokerageRecordController.java",
+      "operations": [
+        "获得佣金记录",
+        "获得佣金记录分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/brokerage/BrokerageUserController.java",
+      "operations": [
+        "创建分销用户",
+        "修改推广员",
+        "清除推广员",
+        "修改推广资格",
+        "获得分销用户",
+        "获得分销用户分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/brokerage/BrokerageWithdrawController.java",
+      "operations": [
+        "通过申请",
+        "驳回申请",
+        "获得佣金提现",
+        "获得佣金提现分页",
+        "更新佣金提现的转账结果"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/config/TradeConfigController.java",
+      "operations": [
+        "更新交易中心配置",
+        "获得交易中心配置"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/delivery/DeliveryExpressController.java",
+      "operations": [
+        "创建快递公司",
+        "更新快递公司",
+        "删除快递公司",
+        "获得快递公司",
+        "获取快递公司精简信息列表",
+        "获得快递公司分页",
+        "导出快递公司 Excel"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/delivery/DeliveryExpressTemplateController.java",
+      "operations": [
+        "创建快递运费模板",
+        "更新快递运费模板",
+        "删除快递运费模板",
+        "获得快递运费模板",
+        "获得快递运费模板列表",
+        "获取快递模版精简信息列表",
+        "获得快递运费模板分页"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/delivery/DeliveryPickUpStoreController.java",
+      "operations": [
+        "创建自提门店",
+        "更新自提门店",
+        "删除自提门店",
+        "获得自提门店",
+        "获得自提门店精简信息列表",
+        "获得自提门店列表",
+        "获得自提门店分页",
+        "绑定自提店员"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/order/TradeOrderController.java",
+      "operations": [
+        "获得交易订单分页",
+        "获得交易订单统计",
+        "获得交易订单详情",
+        "获得交易订单的物流轨迹",
+        "订单发货",
+        "订单备注",
+        "订单调价",
+        "修改订单收货地址",
+        "订单核销",
+        "订单核销",
+        "查询核销码对应的订单"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/aftersale/AppAfterSaleController.java",
+      "operations": [
+        "获得售后分页",
+        "获得售后订单",
+        "申请售后",
+        "退回货物",
+        "取消售后"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/aftersale/AppAfterSaleLogController.java",
+      "operations": [
+        "获得售后日志列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/brokerage/AppBrokerageRecordController.java",
+      "operations": [
+        "获得分销记录分页",
+        "获得商品的分销金额"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/brokerage/AppBrokerageUserController.java",
+      "operations": [
+        "获得个人分销信息",
+        "绑定推广员",
+        "获得个人分销统计",
+        "获得分销用户排行分页（基于用户量）",
+        "获得分销用户排行分页（基于佣金）",
+        "获得下级分销统计分页",
+        "获得分销用户排行（基于佣金）"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/brokerage/AppBrokerageWithdrawController.java",
+      "operations": [
+        "获得分销提现分页",
+        "获得佣金提现",
+        "创建分销提现"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/cart/AppCartController.java",
+      "operations": [
+        "添加购物车商品",
+        "更新购物车商品数量",
+        "更新购物车商品选中",
+        "重置购物车商品",
+        "删除购物车商品",
+        "查询用户在购物车中的商品数量",
+        "查询用户的购物车列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/config/AppTradeConfigController.java",
+      "operations": [
+        "获得交易配置"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/delivery/AppDeliverExpressController.java",
+      "operations": [
+        "获得快递公司列表"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/delivery/AppDeliverPickUpStoreController.java",
+      "operations": [
+        "获得自提门店列表",
+        "获得自提门店"
+      ]
+    },
+    {
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/order/AppTradeOrderController.java",
+      "operations": [
+        "获得订单结算信息",
+        "获得商品结算信息",
+        "创建订单",
+        "更新订单为已支付",
+        "获得交易订单",
+        "获得交易订单的物流轨迹",
+        "获得交易订单分页",
+        "获得交易订单数量",
+        "确认交易订单收货",
+        "取消交易订单",
+        "删除交易订单",
+        "获得交易订单项",
+        "创建交易订单项的评价"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/address/AddressController.java",
+      "operations": [
+        "获得用户收件地址列表"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/config/MemberConfigController.java",
+      "operations": [
+        "保存会员配置",
+        "获得会员配置"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/group/MemberGroupController.java",
+      "operations": [
+        "创建用户分组",
+        "更新用户分组",
+        "删除用户分组",
+        "获得用户分组",
+        "获取会员分组精简信息列表",
+        "获得用户分组分页"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberExperienceRecordController.java",
+      "operations": [
+        "获得会员经验记录",
+        "获得会员经验记录分页"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberLevelController.java",
+      "operations": [
+        "创建会员等级",
+        "更新会员等级",
+        "删除会员等级",
+        "获得会员等级",
+        "获取会员等级精简信息列表",
+        "获得会员等级列表"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberLevelRecordController.java",
+      "operations": [
+        "获得会员等级记录",
+        "获得会员等级记录分页"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/point/MemberPointRecordController.java",
+      "operations": [
+        "获得用户积分记录分页"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/signin/MemberSignInConfigController.java",
+      "operations": [
+        "创建签到规则",
+        "更新签到规则",
+        "删除签到规则",
+        "获得签到规则",
+        "获得签到规则列表"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/signin/MemberSignInRecordController.java",
+      "operations": [
+        "获得签到记录分页"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/tag/MemberTagController.java",
+      "operations": [
+        "创建会员标签",
+        "更新会员标签",
+        "删除会员标签",
+        "获得会员标签",
+        "获取会员标签精简信息列表",
+        "获得会员标签列表",
+        "获得会员标签分页"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/MemberUserController.java",
+      "operations": [
+        "更新会员用户",
+        "更新会员用户等级",
+        "更新会员用户积分",
+        "获得会员用户",
+        "获得会员用户分页"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/address/AppAddressController.java",
+      "operations": [
+        "创建用户收件地址",
+        "更新用户收件地址",
+        "删除用户收件地址",
+        "获得用户收件地址",
+        "获得默认的用户收件地址",
+        "获得用户收件地址列表"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/auth/AppAuthController.java",
+      "operations": [
+        "使用手机 + 密码登录",
+        "登出系统",
+        "刷新令牌",
+        "使用手机 + 验证码登录",
+        "发送手机验证码",
+        "校验手机验证码",
+        "社交授权的跳转",
+        "社交快捷登录，使用 code 授权码",
+        "微信小程序的一键登录",
+        "创建微信 JS SDK 初始化所需的签名"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/level/AppMemberExperienceRecordController.java",
+      "operations": [
+        "获得会员经验记录分页"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/level/AppMemberLevelController.java",
+      "operations": [
+        "获得会员等级列表"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/point/AppMemberPointRecordController.java",
+      "operations": [
+        "获得用户积分记录分页"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/signin/AppMemberSignInConfigController.java",
+      "operations": [
+        "获得签到规则列表"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/signin/AppMemberSignInRecordController.java",
+      "operations": [
+        "获得个人签到统计",
+        "签到",
+        "获得签到记录分页"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/social/AppSocialUserController.java",
+      "operations": [
+        "社交绑定，使用 code 授权码",
+        "取消社交绑定",
+        "获得社交用户",
+        "获得微信小程序码(base64 image)",
+        "获得微信小程订阅模板列表"
+      ]
+    },
+    {
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/user/AppMemberUserController.java",
+      "operations": [
+        "获得基本信息",
+        "修改基本信息",
+        "修改用户手机",
+        "基于微信小程序的授权码，修改用户手机",
+        "修改用户密码",
+        "重置密码"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/app/PayAppController.java",
+      "operations": [
+        "创建支付应用信息",
+        "更新支付应用信息",
+        "更新支付应用状态",
+        "删除支付应用信息",
+        "获得支付应用信息",
+        "获得支付应用信息分页",
+        "获得应用列表"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/channel/PayChannelController.java",
+      "operations": [
+        "创建支付渠道 ",
+        "更新支付渠道 ",
+        "删除支付渠道 ",
+        "获得支付渠道",
+        "获得指定应用的支付渠道列表",
+        "获得指定应用的开启的支付渠道编码列表"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/demo/PayDemoOrderController.java",
+      "operations": [
+        "创建示例订单",
+        "获得示例订单分页",
+        "更新示例订单为已支付",
+        "发起示例订单的退款",
+        "更新示例订单为已退款"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/demo/PayDemoWithdrawController.java",
+      "operations": [
+        "创建示例提现单",
+        "提现单转账",
+        "获得示例提现单分页",
+        "更新示例提现单的转账状态"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/notify/PayNotifyController.java",
+      "operations": [
+        "支付渠道的统一【支付】回调",
+        "支付渠道的统一【退款】回调",
+        "支付渠道的统一【转账】回调",
+        "获得回调通知的明细",
+        "获得回调通知分页"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/order/PayOrderController.java",
+      "operations": [
+        "获得支付订单",
+        "获得支付订单详情",
+        "提交支付订单",
+        "获得支付订单分页",
+        "导出支付订单 Excel"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/refund/PayRefundController.java",
+      "operations": [
+        "获得退款订单",
+        "获得退款订单分页",
+        "导出退款订单 Excel"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/transfer/PayTransferController.java",
+      "operations": [
+        "获得转账订单",
+        "获得转账订单分页",
+        "导出转账订单 Excel"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletController.java",
+      "operations": [
+        "获得用户钱包明细",
+        "获得会员钱包分页",
+        "更新会员用户余额"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletRechargeController.java",
+      "operations": [
+        "更新钱包充值为已充值",
+        "发起钱包充值退款",
+        "更新钱包充值为已退款"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletRechargePackageController.java",
+      "operations": [
+        "创建钱包充值套餐",
+        "更新钱包充值套餐",
+        "删除钱包充值套餐",
+        "获得钱包充值套餐",
+        "获得钱包充值套餐分页"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletTransactionController.java",
+      "operations": [
+        "获得钱包流水分页"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/channel/AppPayChannelController.java",
+      "operations": [
+        "获得指定应用的开启的支付渠道编码列表"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/order/AppPayOrderController.java",
+      "operations": [
+        "获得支付订单",
+        "提交支付订单"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/transfer/AppPayTransferController.java",
+      "operations": [
+        "同步转账单"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletController.java",
+      "operations": [
+        "获取钱包"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletRechargeController.java",
+      "operations": [
+        "创建钱包充值记录（发起充值）",
+        "获得钱包充值记录分页"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletRechargePackageController.java",
+      "operations": [
+        "获得钱包充值套餐列表"
+      ]
+    },
+    {
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletTransactionController.java",
+      "operations": [
+        "获得钱包流水分页",
+        "获得钱包流水统计"
+      ]
+    }
+  ],
+  "method": "Static code comparison, no runtime acceptance, no automated equivalence assertion"
+}

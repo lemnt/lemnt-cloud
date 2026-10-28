@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | GET /trade/admin/orders | trade:fulfillment:list | 原有订单分页 |
 | GET /trade/admin/orders/{orderNo} | trade:fulfillment:query | 原有订单详情 |
-| POST /trade/admin/orders/{orderNo}/close | trade:order:close | 复用现有关单，已支付订单不允许关闭；事务提交后发送库存与券统一补偿 |
+| POST /trade/app/orders/{orderNo}/cancel | 本人会员 | 本人取消未支付订单；后台手工关单按芋道范围退役，系统超时关单仍保留 |
 | GET /trade/admin/orders/summary | trade:order:summary | 按可空的精确 orderNo 查询四项统计 |
 | GET /trade/admin/orders/{orderNo}/remark | trade:order:query | 后台备注 |
 | PUT /trade/admin/orders/{orderNo}/remark | trade:order:remark | remark 必填、最多500字，空字符串清除 |

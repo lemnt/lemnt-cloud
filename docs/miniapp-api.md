@@ -1,12 +1,14 @@
 # 小程序商城与交易接口
 
+> 2026-10-28 配送贯通批次：商品配送字段、地址必填结算、订单运费快照与发货冻结地址见 [配送结算接口变更](delivery-checkout-api.md)。本批已将运费接入下单金额；原文中“尚未接入”的说明仅代表上一批次状态。
+
 购物接口由 mall 提供，支付接口由 trade 提供。auth 签发会员令牌，gateway 校验并透传用户身份；不接收客户端 memberId 作为身份，不在业务服务重复认证 token。接口使用统一 R，金额使用精确字符串。
 
 | 方法 | 路径 | 作用 |
 | --- | --- | --- |
 | GET | /mall/app/cart | 本人购物车 |
 | PUT/DELETE | /mall/app/cart/{productId} | 保存/删除本人购物车条目 |
-| POST | /mall/app/cart/{productId}/add | 带请求号的幂等增量加购 |
+| POST | /mall/app/cart/{productId}/add | 设置购物车最终数量 |
 | GET | /mall/app/coupons | 本人优惠券 |
 | GET | /mall/app/coupon-center | 可领取券分页 |
 | POST | /mall/app/coupon-center/{templateId}/claim | 领取公开优惠券 |

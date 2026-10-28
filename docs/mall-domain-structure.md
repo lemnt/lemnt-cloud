@@ -7,7 +7,7 @@
 | 域 | 职责 |
 | --- | --- |
 | `product` | 商品、分类、品牌、SPU/SKU、规格及规格值、评价、库存调整及预占 |
-| `cart` | 购物车、增量加购、加购幂等记录及购物车版本 |
+| `cart` | 购物车、最终数量设置及购物车版本 |
 | `settlement` | 结算报价、Redis 结算单、提交幂等回执、购物车版本引用、订单远程调用及支付后的券状态编排 |
 | `coupon` | 优惠券模板、签发、公开领取、会员券包、用券规则及券状态持久化 |
 | `promotion` | 促销草稿与发布版本、计价引擎、适用范围、次数约束和使用记录 |
@@ -35,7 +35,7 @@
 
 ## SQL 与部署
 
-新库初始化 V10 不再创建 mall_checkout_account，跨库购物数据迁移模板不再迁移这一技术表，现有购物/促销数据迁移表数从 18 调整为 17。其他业务表、主键及数据不变。
+新库初始化 V10 不再创建 mall_checkout_account，跨库购物数据迁移模板不再迁移这一技术表，当前辅助表合并、活动拆分和存量升级要求见 [表结构整理](mall-schema-consolidation.md)。旧辅助数据需要先完成缓存迁移，不能直接删除。
 
 已有库的清理脚本是 `lemnt-server/lemnt-mall/sql/upgrade/remove_checkout_account.sql`。先确认 Redis 和基础锁配置可用，停止旧版本写入，完成所有商城实例切换后再执行；数据库行锁版本与新分布式锁版本不可混合运行。此脚本未自动执行，现有数据库没有被修改。
 
@@ -44,3 +44,9 @@
 原有 HTTP 路由、权限和字段兼容性通过契约及映射测试验证；真实 Mapper、服务和事务的 H2 MySQL 模式回归覆盖加购、领券、结算、库存预占、支付核销、异步补偿及并发幂等。
 
 新增锁测试验证提交后释放、回滚释放、同事务重复获取、嵌套新事务、获取失败和无事务拒绝。跨域集成用真实 LockTemplate 与生产锁 Gateway，仅以本地重入锁替代 Redis 传输。未连接真实 Redis 验证网络故障或看门狗续期，未执行真实 MySQL 清理或部署端到端验收。
+
+## MyBatis Plus 与 XML 约定
+
+普通 CRUD 直接复用 BaseMapper，在各域 GatewayImpl 中使用 Lambda 条件，不为现有能力重新命名包装 Mapper 方法。联合主键用完整条件，更新保留业务状态和版本约束。字段增减使用 MyBatis Plus 提供的 Lambda 增减方法。
+
+跨表查询、复杂原子约束、upsert、数据库时间和需要控制查询缓存的行锁语句集中在 `infrastructure/src/main/resources/mapper/*.xml`，Java Mapper 只声明必要的自定义语句接口。XML 平铺目录兼容既有 `classpath:/mapper/**.xml` 配置；行锁关闭查询缓存。没有使用 JPA。

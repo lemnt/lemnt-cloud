@@ -1,9 +1,9 @@
-const config=require('../../config');const {createTradeClient}=require('../../services/trade');const {decodeOffers,decodeClaim}=require('../../services/storefront');
+const config=require('../../config');const {createTradeClient}=require('../../services/trade');const {decodeOffers,decodeWallet,decodeClaim}=require('../../services/storefront');
 Page({data:{ready:config.memberApiReady,loading:false,error:'',success:'',loggedIn:false,mode:'center',rows:[],pageNum:1,total:0},
  onLoad(options){if(options.mode==='wallet')this.setData({mode:'wallet'});this.client=createTradeClient({baseUrl:config.apiBaseUrl,ready:config.memberApiReady,getMemberToken:()=>getApp().globalData.memberSession?.accessToken,request:o=>new Promise((resolve,reject)=>wx.request({...o,success:resolve,fail:()=>reject(Error('请求未确认，请刷新核验'))}))});},
  onShow(){this.setData({loggedIn:!!getApp().globalData.memberSession,rows:[],total:0,pageNum:1,error:'',success:''});if(this.data.loggedIn&&this.data.ready)return this.reload();},
  async run(work){if(this.data.loading)return;this.setData({loading:true,error:'',success:''});const token=getApp().globalData.memberSession?.accessToken;try{await work();}catch(e){this.setData({error:e.message||'优惠券读取失败'});}finally{if(token!==getApp().globalData.memberSession?.accessToken)this.setData({rows:[],total:0,loggedIn:!!getApp().globalData.memberSession});this.setData({loading:false});}},
- async read(pageNum){const raw=await(this.data.mode==='center'?this.client.couponCenter(pageNum):this.client.couponWallet(pageNum));const result=decodeOffers(raw);this.setData({rows:result.records,total:result.total,pageNum});},
+ async read(pageNum){const raw=await(this.data.mode==='center'?this.client.couponCenter(pageNum):this.client.couponWallet(pageNum));const result=this.data.mode==='wallet'?decodeWallet(raw):decodeOffers(raw);this.setData({rows:result.records,total:result.total,pageNum});},
  reload(){return this.run(()=>this.read(this.data.pageNum));},
  mode(e){return this.run(async()=>{const mode=e.currentTarget.dataset.mode;if(!['center','wallet'].includes(mode))throw Error('页面类型不合法');this.setData({mode,rows:[],total:0,pageNum:1});await this.read(1);});},
  page(e){return this.run(async()=>{const next=this.data.pageNum+Number(e.currentTarget.dataset.delta);if(next<1||(next-1)*20>=this.data.total)return;await this.read(next);});},

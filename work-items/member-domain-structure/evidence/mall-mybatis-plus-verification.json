@@ -1,0 +1,214 @@
+{
+  "date": "2026-10-27",
+  "scope": "mall persistence layer, with trade integration regression",
+  "base_mapper_count": 27,
+  "removed_default_crud_wrappers": 54,
+  "removed_simple_annotation_methods": 25,
+  "java_sql_annotations_remaining": 0,
+  "mapper_default_methods_remaining": 0,
+  "xml_mapper_count": 17,
+  "xml_statement_count": 36,
+  "xml_location": "classpath:/mapper/**.xml",
+  "loading_test": "MapperXmlLoadingTest passed; production location, every custom binding, inherited CRUD and lock cache metadata",
+  "jpa_references": false,
+  "http_routes_and_permissions_changed": false,
+  "ddl_changed": false,
+  "backend": {
+    "java": 17,
+    "clean_verify": "passed",
+    "modules": 71,
+    "suites": 96,
+    "tests": 489,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "runtime_limits": [
+    "H2 MySQL mode rather than actual MySQL",
+    "no deployed Redis, Dubbo or HTTP end-to-end acceptance"
+  ],
+  "commit": false,
+  "push": false,
+  "custom_statements": [
+    {
+      "mapper": "PromotionRequestMapper",
+      "id": "ensureRequest",
+      "kind": "insert"
+    },
+    {
+      "mapper": "PromotionRequestMapper",
+      "id": "lockRequest",
+      "kind": "select"
+    },
+    {
+      "mapper": "PromotionRequestMapper",
+      "id": "completeRequest",
+      "kind": "update"
+    },
+    {
+      "mapper": "ProductSkuMapper",
+      "id": "adjustStock",
+      "kind": "update"
+    },
+    {
+      "mapper": "ProductSkuMapper",
+      "id": "facts",
+      "kind": "select"
+    },
+    {
+      "mapper": "ProductSkuMapper",
+      "id": "lockById",
+      "kind": "select"
+    },
+    {
+      "mapper": "ProductSkuMapper",
+      "id": "findSellableByIds",
+      "kind": "select"
+    },
+    {
+      "mapper": "ProductSkuMapper",
+      "id": "findSellableById",
+      "kind": "select"
+    },
+    {
+      "mapper": "ProductSkuMapper",
+      "id": "reserveStock",
+      "kind": "update"
+    },
+    {
+      "mapper": "CouponTemplateMapper",
+      "id": "lockTemplate",
+      "kind": "select"
+    },
+    {
+      "mapper": "CouponTemplateMapper",
+      "id": "takeQuota",
+      "kind": "update"
+    },
+    {
+      "mapper": "CouponTemplateMapper",
+      "id": "offers",
+      "kind": "select"
+    },
+    {
+      "mapper": "CouponTemplateMapper",
+      "id": "offerCount",
+      "kind": "select"
+    },
+    {
+      "mapper": "CouponTemplateMapper",
+      "id": "now",
+      "kind": "select"
+    },
+    {
+      "mapper": "CouponPublicClaimMapper",
+      "id": "setClaimable",
+      "kind": "insert"
+    },
+    {
+      "mapper": "PromotionUsageMapper",
+      "id": "lockUsage",
+      "kind": "select"
+    },
+    {
+      "mapper": "PromotionMemberCounterMapper",
+      "id": "largestMemberUsage",
+      "kind": "select"
+    },
+    {
+      "mapper": "PromotionMemberCounterMapper",
+      "id": "ensureMemberCounter",
+      "kind": "insert"
+    },
+    {
+      "mapper": "PromotionMemberCounterMapper",
+      "id": "lockMemberCounter",
+      "kind": "select"
+    },
+    {
+      "mapper": "PromotionMemberCounterMapper",
+      "id": "takeMember",
+      "kind": "update"
+    },
+    {
+      "mapper": "CouponMapper",
+      "id": "lockCouponRow",
+      "kind": "select"
+    },
+    {
+      "mapper": "ProductSpuMapper",
+      "id": "lockSpu",
+      "kind": "select"
+    },
+    {
+      "mapper": "ProductSpuMapper",
+      "id": "products",
+      "kind": "select"
+    },
+    {
+      "mapper": "ProductSpuMapper",
+      "id": "storeCatalogCount",
+      "kind": "select"
+    },
+    {
+      "mapper": "ProductSpuMapper",
+      "id": "visible",
+      "kind": "select"
+    },
+    {
+      "mapper": "ProductCommentMapper",
+      "id": "lock",
+      "kind": "select"
+    },
+    {
+      "mapper": "ProductSkuSpecMapper",
+      "id": "propertiesBySpu",
+      "kind": "select"
+    },
+    {
+      "mapper": "ProductSpecValueMapper",
+      "id": "lock",
+      "kind": "select"
+    },
+    {
+      "mapper": "PromotionCounterMapper",
+      "id": "lockCounter",
+      "kind": "select"
+    },
+    {
+      "mapper": "PromotionCounterMapper",
+      "id": "takeGlobal",
+      "kind": "update"
+    },
+    {
+      "mapper": "ProductSpecMapper",
+      "id": "lock",
+      "kind": "select"
+    },
+    {
+      "mapper": "CategoryMapper",
+      "id": "storeCatalogCategories",
+      "kind": "select"
+    },
+    {
+      "mapper": "SettlementRecordMapper",
+      "id": "now",
+      "kind": "select"
+    },
+    {
+      "mapper": "PromotionRootMapper",
+      "id": "nowEpochMs",
+      "kind": "select"
+    },
+    {
+      "mapper": "PromotionRootMapper",
+      "id": "lockRoot",
+      "kind": "select"
+    },
+    {
+      "mapper": "SettlementAbandonMapper",
+      "id": "abandon",
+      "kind": "insert"
+    }
+  ]
+}

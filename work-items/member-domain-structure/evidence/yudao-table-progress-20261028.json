@@ -1,0 +1,215 @@
+{
+  "date": "2026-10-28",
+  "referenceRoot": "/Users/wangxx/demo/yudao-cloud",
+  "referenceTables": 74,
+  "localTables": 39,
+  "mappedReferenceTables": 29,
+  "mappedLocalTables": 28,
+  "missing": [
+    "pay_app",
+    "pay_channel",
+    "pay_demo_order",
+    "pay_demo_withdraw",
+    "pay_notify_log",
+    "pay_notify_task",
+    "pay_order_extension",
+    "pay_transfer",
+    "pay_wallet",
+    "pay_wallet_recharge",
+    "pay_wallet_recharge_package",
+    "pay_wallet_transaction",
+    "product_browse_history",
+    "product_favorite",
+    "product_statistics",
+    "promotion_article",
+    "promotion_article_category",
+    "promotion_banner",
+    "promotion_bargain_activity",
+    "promotion_bargain_help",
+    "promotion_bargain_record",
+    "promotion_combination_activity",
+    "promotion_combination_product",
+    "promotion_combination_record",
+    "promotion_diy_page",
+    "promotion_diy_template",
+    "promotion_kefu_conversation",
+    "promotion_kefu_message",
+    "promotion_point_activity",
+    "promotion_point_product",
+    "promotion_seckill_activity",
+    "promotion_seckill_config",
+    "promotion_seckill_product",
+    "trade_after_sale_log",
+    "trade_brokerage_record",
+    "trade_brokerage_user",
+    "trade_brokerage_withdraw",
+    "trade_config",
+    "trade_delivery_express",
+    "trade_delivery_express_template",
+    "trade_delivery_express_template_charge",
+    "trade_delivery_express_template_free",
+    "trade_delivery_pick_up_store",
+    "trade_order_log",
+    "trade_statistics"
+  ],
+  "missingBusinessTables": 43,
+  "missingDemoTables": 2,
+  "localUnmatched": [
+    "mall_product_sku_spec",
+    "mall_product_stock_reservation",
+    "member_login_attempt",
+    "member_session",
+    "member_sms_budget",
+    "member_sms_challenge",
+    "member_social_binding",
+    "member_social_state",
+    "member_tag_link",
+    "trade_inventory_confirmation",
+    "trade_shipment"
+  ],
+  "mapping": {
+    "mall_product_category": [
+      "product_category"
+    ],
+    "mall_product_brand": [
+      "product_brand"
+    ],
+    "mall_product_spu": [
+      "product_spu"
+    ],
+    "mall_product_sku": [
+      "product_sku"
+    ],
+    "mall_product_spec": [
+      "product_property"
+    ],
+    "mall_product_spec_value": [
+      "product_property_value"
+    ],
+    "mall_product_comment": [
+      "product_comment"
+    ],
+    "mall_cart": [
+      "trade_cart"
+    ],
+    "mall_coupon_template": [
+      "promotion_coupon_template"
+    ],
+    "mall_coupon": [
+      "promotion_coupon"
+    ],
+    "mall_promotion_reward_activity": [
+      "promotion_reward_activity"
+    ],
+    "mall_promotion_discount_activity": [
+      "promotion_discount_activity"
+    ],
+    "mall_promotion_discount_product": [
+      "promotion_discount_product"
+    ],
+    "trade_order": [
+      "trade_order"
+    ],
+    "trade_order_item": [
+      "trade_order_item"
+    ],
+    "trade_refund_request": [
+      "trade_after_sale"
+    ],
+    "trade_payment": [
+      "pay_order"
+    ],
+    "trade_payment_refund": [
+      "pay_refund"
+    ],
+    "member_user": [
+      "member_user"
+    ],
+    "member_address": [
+      "member_address"
+    ],
+    "member_level": [
+      "member_level"
+    ],
+    "member_group": [
+      "member_group"
+    ],
+    "member_tag": [
+      "member_tag"
+    ],
+    "member_asset_record": [
+      "member_point_record",
+      "member_experience_record"
+    ],
+    "member_level_record": [
+      "member_level_record"
+    ],
+    "member_sign_config": [
+      "member_sign_in_config"
+    ],
+    "member_sign_record": [
+      "member_sign_in_record"
+    ],
+    "member_config": [
+      "member_config"
+    ]
+  },
+  "scope": "DO and initialization SQL comparison; not live database inspection",
+  "stage": "delivery-foundation",
+  "initializationTables": 44,
+  "addedTables": [
+    "trade_config",
+    "trade_delivery_express",
+    "trade_delivery_express_template",
+    "trade_delivery_express_template_charge",
+    "trade_delivery_express_template_free"
+  ],
+  "remainingWithoutCorrespondingTable": [
+    "pay_app",
+    "pay_channel",
+    "pay_demo_order",
+    "pay_demo_withdraw",
+    "pay_notify_log",
+    "pay_notify_task",
+    "pay_order_extension",
+    "pay_transfer",
+    "pay_wallet",
+    "pay_wallet_recharge",
+    "pay_wallet_recharge_package",
+    "pay_wallet_transaction",
+    "product_browse_history",
+    "product_favorite",
+    "product_statistics",
+    "promotion_article",
+    "promotion_article_category",
+    "promotion_banner",
+    "promotion_bargain_activity",
+    "promotion_bargain_help",
+    "promotion_bargain_record",
+    "promotion_combination_activity",
+    "promotion_combination_product",
+    "promotion_combination_record",
+    "promotion_diy_page",
+    "promotion_diy_template",
+    "promotion_kefu_conversation",
+    "promotion_kefu_message",
+    "promotion_point_activity",
+    "promotion_point_product",
+    "promotion_seckill_activity",
+    "promotion_seckill_config",
+    "promotion_seckill_product",
+    "trade_after_sale_log",
+    "trade_brokerage_record",
+    "trade_brokerage_user",
+    "trade_brokerage_withdraw",
+    "trade_delivery_pick_up_store",
+    "trade_order_log",
+    "trade_statistics"
+  ],
+  "remainingBusinessTables": 38,
+  "remainingDemoTables": 2,
+  "deliveryJoinedToOrderPricing": true,
+  "realDatabaseMigrationExecuted": false,
+  "deliveryEvidence": "delivery-checkout-verification.json",
+  "deliveryScope": "ordinary express, local persistence and controlled RPC/channel boundaries"
+}

@@ -6,13 +6,13 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     const token = getMemberToken();
     if (!token) throw new Error('请先完成会员登录');
     const response = await request({
-      url: baseUrl.replace(/\/$/, '') + (/\/orders\/[^/]+\/(?:prepay|payment)$/.test(path) ? '/trade/app' : '/mall/app') + path,
+      url: baseUrl.replace(/\/$/, '') + (/\/orders\/[^/]+\/(?:prepay|payment|cancel|receive)$/.test(path) ? '/trade/app' : '/mall/app') + path,
       method, data, timeout: 15000,
       header: { Authorization: `Bearer ${token}` },
     });
     if (getMemberToken() !== token) throw new Error('会员已切换，请重新操作');
     if (response.statusCode !== 200 || !response.data || response.data.code !== 200) {
-      throw new Error(response.data && response.data.msg || '请求失败，请查询订单结果后重试');
+      throw new Error(response.data && (response.data.detail || response.data.msg) || '请求失败，请查询订单结果后重试');
     }
     return path === '/coupon-center' || path === '/coupon-wallet'
       ? { records: response.data.rows, total: response.data.total }
@@ -24,7 +24,8 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
   }
   function quoteData(input) {
     if (!input || !Array.isArray(input.productIds) || !input.productIds.length) throw new Error('请选择商品');
-    return { productIds: input.productIds.map(id), ...(input.couponId ? { couponId: id(input.couponId) } : {}) };
+    if (input.pointStatus !== undefined && typeof input.pointStatus !== 'boolean') throw new Error('积分选择不合法');
+    return { addressId: id(input.addressId), ...(input.pointStatus === undefined ? {} : { pointStatus: input.pointStatus }), productIds: input.productIds.map(id), ...(input.couponId ? { couponId: id(input.couponId) } : {}) };
   }
   function order(value) {
     if (typeof value !== 'string' || !value.trim() || value.length > 40) throw new Error('订单编号不合法');
@@ -41,10 +42,6 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     couponCenter: pageNum => call('/coupon-center','GET',{pageNum,pageSize:20}),
     couponWallet: pageNum => call('/coupon-wallet','GET',{pageNum,pageSize:20}),
     claimCoupon: templateId => call('/coupon-center/'+id(templateId)+'/claim','POST'),
-    addCart: (productId,input) => {
-      if(!input || !Number.isInteger(input.quantity) || input.quantity<1 || input.quantity>999 || typeof input.requestNo!=='string' || !input.requestNo.trim() || input.requestNo.length>64) throw new Error('加购参数不合法');
-      return call('/cart/'+id(productId)+'/add','POST',{quantity:input.quantity,requestNo:input.requestNo});
-    },
     quote: input => call('/checkout/quote', 'POST', quoteData(input)),
     checkout: input => {
       if (!input || typeof input.requestNo !== 'string' || !input.requestNo.trim() || input.requestNo.length > 64 || typeof input.settlementId !== 'string' || !/^[a-f0-9-]{36}$/.test(input.settlementId)) throw new Error('结算单编号或请求编号不合法');
@@ -61,6 +58,8 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
       return call('/checkout/requests/' + encodeURIComponent(requestNo));
     },
     paymentStatus: orderNo => call('/orders/' + order(orderNo) + '/payment'),
+    cancelOrder: orderNo => call('/orders/' + order(orderNo) + '/cancel', 'POST'),
+    receiveOrder: orderNo => call('/orders/' + order(orderNo) + '/receive', 'POST'),
   };
 }
 module.exports = { createTradeClient };

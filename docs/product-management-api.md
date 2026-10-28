@@ -1,5 +1,9 @@
 # 商品管理接口补齐
 
+> 2026-10-28 配送贯通批次：商品配送字段、地址必填结算、订单运费快照与发货冻结地址见 [配送结算接口变更](delivery-checkout-api.md)。本批已将运费接入下单金额；原文中“尚未接入”的说明仅代表上一批次状态。
+
+> 2026-10-28 业务收敛变更见 [当前接口变更](yudao-alignment-api.md)。本文中的旧兼容入口、独立 SKU 写接口及发布版本机制已退役。
+
 参考芋道商品管理的分类、品牌、SPU、SKU、规格字典和评价管理能力，按当前项目的分层、权限和库存边界实现。此文档记录后端接口交付；新增管理页面尚未交付。
 
 ## 命名与边界
@@ -7,14 +11,14 @@
 | 业务对象 | Java 命名 | 持久化 |
 | --- | --- | --- |
 | 通用商品 | `Product` | 保留现有通用商品契约 |
-| 商品款式 | `ProductSpu` | 现有 `mall_spu` |
-| 可销售规格组合 | `ProductSku` | 现有 `mall_product` |
+| 商品款式 | `ProductSpu` | 现有 `mall_product_spu` |
+| 可销售规格组合 | `ProductSku` | 现有 `mall_product_sku` |
 | 商品规格 | `ProductSpec` | 新增 `mall_product_spec` |
 | 商品规格值 | `ProductSpecValue` | 新增 `mall_product_spec_value` |
-| SKU 规格快照 | `ProductSkuSpecDO` | 现有 `mall_sku_property` |
+| SKU 规格快照 | `ProductSkuSpecDO` | 现有 `mall_product_sku_spec` |
 | 商品评价 | `ProductComment` | 新增 `mall_product_comment` |
 
-颜色、尺码等参与 SKU 组合的内容属于规格；材质等描述信息属于属性，后续业务落地时使用 `ProductAttribute` / `ProductAttributeValue`，本次不增加占位模型或表。SKU 的 `ProductSkuGateway`、`ProductSkuMapper`、`ProductSkuDO` 统一对应 `mall_product`，删除原重复 SKU 数据投影。既有商品接口地址、SKU `properties` 字段及规格快照表保留兼容。
+颜色、尺码等参与 SKU 组合的内容属于规格；材质等描述信息属于属性，后续业务落地时使用 `ProductAttribute` / `ProductAttributeValue`，本次不增加占位模型或表。SKU 的 `ProductSkuGateway`、`ProductSkuMapper`、`ProductSkuDO` 统一对应 `mall_product_sku`，删除原重复 SKU 数据投影。既有商品接口地址、SKU `properties` 字段及规格快照表保留兼容。
 
 Adapter 按 app/web 后再分域；请求和响应按接口独立定义，分页统一使用 `R.page`。分类、品牌、规格、评价与库存统一归入 product 域，分别维护各自的应用逻辑；数据库访问遵循按表 Gateway、MyBatis Plus Mapper 和 DO。
 

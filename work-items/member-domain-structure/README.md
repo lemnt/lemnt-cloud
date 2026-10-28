@@ -6,3 +6,16 @@
 - [实现与验证](05-development.md)
 
 保留既有 app/web、认证位于 auth、公共 TokenService/LOGIN_TOKEN_KEY、网关无 Dubbo、无会员全设备会话索引的决定。
+
+- [商城复刻基线](22-mall-replication-baseline.md)
+- [配送基础批次设计](23-delivery-foundation-design.md)
+- [配送基础批次交付](24-delivery-foundation-delivery.md)
+- [配送管理接口](../../docs/trade-delivery-api.md)
+
+- [配送结算贯通设计](25-delivery-checkout-design.md)
+- [配送结算贯通交付](26-delivery-checkout-delivery.md)
+- [配送结算接口](../../docs/delivery-checkout-api.md)
+
+- [完整迁移设计与清单](27-full-migration-design.md)
+- [优惠券快照迁移设计](28-full-coupon-design.md)
+- [优惠券当前接口](../../docs/coupon-migration-api.md)

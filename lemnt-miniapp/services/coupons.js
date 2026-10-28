@@ -7,7 +7,7 @@ function ownedCoupons(rows, member) {
   if (!Array.isArray(rows)) throw new Error('优惠券响应格式不合法');
   const seen = new Set();
   return rows.map(row => {
-    if (!row || couponId(row.memberId) !== member || !['AVAILABLE','LOCKED','USED'].includes(row.status)) throw new Error('优惠券归属或状态不合法');
+    if (!row || couponId(row.memberId) !== member || !['AVAILABLE','LOCKED','USED','EXPIRED'].includes(row.status)) throw new Error('优惠券归属或状态不合法');
     const id = couponId(row.id);
     if (seen.has(id)) throw new Error('优惠券记录重复');
     seen.add(id);

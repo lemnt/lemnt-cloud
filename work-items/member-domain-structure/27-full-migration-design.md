@@ -1,0 +1,28 @@
+# 商城完整代码迁移设计与执行清单
+
+2026-10-28 v3，责任 code-software-engineer。用户最新要求“迁移完整代码”，取代此前只完成单批次就结束的范围。参考本地yudao-cloud mall/member/pay完整源码；源文件SHA见evidence/full-migration-manifest.json。参考技能development-design.md/api-documentation.md/java.md及项目AGENTS.md，沿用已确认system风格、六层CQRS、独立Req/Res、逐表Gateway/Mapper/DO、MyBatisPlus/Lambda/XML/resultMap。
+
+完成标准：对应业务表/字段、状态机、事务/幂等、接口、调用方、后台/小程序页面或任务消费者和相关验证同时交付；不以复制源文件、建空表、生成CRUD或构建通过代替完整迁移。真实渠道SDK按已确认要求后置，演示表及已明确去掉的会员短信微信不纳入；不运行真实数据库迁移、不commit/push。用户已提供完整后台源码 `/Users/wangxx/demo/yudao-ui-admin-vue3/`，以其页面、表单、操作、权限及 API 为后台迁移对照，保留当前 React 技术栈；源文件 SHA 和逐项状态见 `evidence/full-frontend-migration-manifest.json`。App 端参考已由用户补充为 `/Users/wangxx/demo/yudao-mall-uniapp/`（uni-app，包含页面、接口和共享组件）；以其商品、购物车、结算、支付、售后、会员及营销交互核对当前客户端迁移，源文件 SHA 和状态见 `evidence/full-app-migration-manifest.json`。参考项目支持多端不代表当前项目已通过 iOS/Android/H5/小程序运行验证；各端分别记录。已明确移除的短信、微信认证不因参考源码存在而恢复，真实渠道 SDK 仍后置。
+
+## 依赖顺序与任务
+
+|任务|范围|主要路径|依赖|验收|
+|---|---|---|---|---|
+|F01|完整券模板、持券快照、范围/有效期/限领/撤回/过期|mall各层coupon及SQL、营销和结算调用|现有商品会员配送链路|模板修改不改已发券、并发限领、有效期和范围计价|
+|F02|完整订单/售后字段、操作日志、调价/改址/取消/收货/评价状态|trade各层order/aftersale/fulfillment及SQL|F01|状态转换事务日志一致、重复调用不重复日志、售后额度|
+|F03|商品资料/规格/评价完整、收藏/足迹|mall各层product、app/web及页面|现有product|快照/评价维度、收藏幂等、足迹分页和清理|
+|F04|会员资料/审计及积分经验/等级流水对齐，清理旧认证表引用|member各层及auth调用、SQL、页面|现有member|资料和流水一致、余额与等级、密码及地址隔离|
+|F05|支付应用/渠道/支付尝试/通知任务及日志、订单退款完整关联|trade payment/paymentrefund/notification|F02|支付/退款状态、可靠通知重试、未接渠道明确失败|
+|F06|收藏及配置/快递/模板后台、自提门店和下单核销|trade delivery与mall结算、UI|F02/F03|配送方式校验、门店启用及核销权限|
+|F07|秒杀、拼团、砍价、积分商城及订单处理器/任务|mall promotion子域、trade订单RPC及页面|F01/F02/F03|活动库存/限购、参团到期、助力、积分回退及重试|
+|F08|分销关系、佣金、冻结解冻、提现及退款回退|mall promotion.brokerage、trade回调|F02/F05|绑定模式、佣金金额、重复回调、冻结和提现状态|
+|F09|钱包、账户流水、充值/套餐、转账|trade payment.wallet/payment.transfer及页面|F05|余额不可负、并发幂等、充值退款和冻结转账|
+|F10|文章/分类、轮播、装修模板/页面、客服消息会话|mall promotion各子域及app/web/UI|F03/F04|发布/启停、模板启用、消息归属及未读和推送|
+|F11|商品/交易统计任务与页面|mall product统计、trade统计|F02/F03/F08/F09|原事实口径、按天重算幂等、退款与赠送不重复|
+|F12|全面接口/表/字段/任务/页面对照、淘汰兼容残留、发布脚本及回归|全模块、UI、miniapp、docs|F01-F11|逐项标记PASS/未验证，闭环后再做lemnt定制|
+
+每项独立更新设计细节、实际变更及验证。跨服务只走client契约，Gateway隐藏RPC；订单下单仍同步预占库存和锁券，支付后核券，关闭异步统一回滚；不引入outbox。金额沿用当前元/精确BigDecimal边界并明确参考分单位转换；不以同名字段直接替换不同含义。新表按实际业务域归属映射，不照搬会违反既有服务边界的名字。
+
+## 当前起点与风险
+
+起点44张当前初始化表，参考仍缺38张业务表（另2演示不迁）；已有模型的券快照、订单/售后、商品会员字段仍不完整。上轮245项受影响后端、162前端、74小程序测试是回归起点，不证明本轮完整迁移已完成。服务端参考是源码目录，无Git提交标识，以内容哈希追踪。当前不具备真实MySQL/Redis/Dubbo及供应商端到端验收环境，分层报告测试证据。
