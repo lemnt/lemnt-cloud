@@ -29,7 +29,9 @@ public final class SettlementDTOConverter {
                 value.deliveryPrice(),
                 value.spuId(),
                 value.spuName(),
-                value.properties(),
+                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
+                        new SettlementItemDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 value.picUrl());
     }
 

@@ -44,7 +44,9 @@ public final class AfterSaleResConverter {
                 value.skuId(),
                 value.spuId(),
                 value.spuName(),
-                value.properties(),
+                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
+                        new AfterSaleCreateRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 value.picUrl());
     }
 
@@ -75,7 +77,9 @@ public final class AfterSaleResConverter {
                 value.skuId(),
                 value.spuId(),
                 value.spuName(),
-                value.properties(),
+                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
+                        new AfterSalePageRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 value.picUrl());
     }
 
@@ -106,7 +110,9 @@ public final class AfterSaleResConverter {
                 value.skuId(),
                 value.spuId(),
                 value.spuName(),
-                value.properties(),
+                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
+                        new AfterSaleDetailRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 value.picUrl());
     }
 
@@ -137,7 +143,9 @@ public final class AfterSaleResConverter {
                 value.skuId(),
                 value.spuId(),
                 value.spuName(),
-                value.properties(),
+                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
+                        new AfterSaleAgreeRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 value.picUrl());
     }
 
@@ -168,7 +176,9 @@ public final class AfterSaleResConverter {
                 value.skuId(),
                 value.spuId(),
                 value.spuName(),
-                value.properties(),
+                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
+                        new AfterSaleRejectRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 value.picUrl());
     }
 
@@ -199,7 +209,9 @@ public final class AfterSaleResConverter {
                 value.skuId(),
                 value.spuId(),
                 value.spuName(),
-                value.properties(),
+                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
+                        new AfterSaleReturnRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 value.picUrl());
     }
 
@@ -230,7 +242,9 @@ public final class AfterSaleResConverter {
                 value.skuId(),
                 value.spuId(),
                 value.spuName(),
-                value.properties(),
+                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
+                        new AfterSaleReceiveRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 value.picUrl());
     }
 
@@ -261,7 +275,9 @@ public final class AfterSaleResConverter {
                 value.skuId(),
                 value.spuId(),
                 value.spuName(),
-                value.properties(),
+                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
+                        new AfterSaleRefuseRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 value.picUrl());
     }
     /** 转换可售后商品额度。 */
@@ -274,7 +290,9 @@ public final class AfterSaleResConverter {
                 value.refundableAmount(),
                 value.spuId(),
                 value.spuName(),
-                value.properties(),
+                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
+                        new AfterSaleItemRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 value.picUrl());
     }
 }

@@ -21,7 +21,9 @@ public final class TradeOrderResConverter {
                 item.lineAmount(),
                 item.spuId(),
                 item.spuName(),
-                item.properties(),
+                item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
+                        new TradeOrderItemRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 item.picUrl())).toList());
     }
 }

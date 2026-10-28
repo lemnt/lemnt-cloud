@@ -17,9 +17,10 @@ import {
   getDeliveryTemplates,
 } from '../api/catalogApi';
 import { catalogKeys } from '../hooks/catalogKeys';
-import { editablePrice, parseSkuProperties, requireWriteSuccess } from '../catalogValidation';
+import { editablePrice, selectedSpecIds, requireWriteSuccess } from '../catalogValidation';
 import { MAX_STOCK, MAX_EDITABLE_PRICE } from '../constants';
 import type { Spu } from '../types';
+import { SkuSpecFields } from './SkuSpecFields';
 
 interface SkuFormValues {
   weight?: string;
@@ -30,7 +31,7 @@ interface SkuFormValues {
   price: number;
   stock: number;
   image?: string;
-  propertiesJson?: string;
+  specSelections?: { propertyId?: string; valueId?: string }[];
 }
 interface SpuFormValues {
   deliveryTypes: number[];
@@ -67,6 +68,29 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
     queryFn: getDeliveryTemplates,
     enabled: open && can('trade:delivery-template:query'),
   });
+  function skuPayload(sku: SkuFormValues) {
+    const original = value?.skus.find((row) => row.id === sku.id);
+    if (
+      original &&
+      original.specValueIds == null &&
+      Object.keys(original.properties).length &&
+      !sku.specSelections?.length
+    ) {
+      throw new Error('旧规格尚未关联，请选择对应字典后保存');
+    }
+    return {
+      id: sku.id,
+      code: sku.code,
+      name: sku.name,
+      price: sku.price,
+      stock: sku.stock,
+      image: sku.image,
+      weight: sku.weight,
+      volume: sku.volume,
+      properties: {},
+      specValueIds: selectedSpecIds(sku.specSelections),
+    };
+  }
   const save = useMutation<unknown, Error, SpuFormValues>({
     mutationFn: async (values) => {
       if (value) {
@@ -80,20 +104,14 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
               brandId: values.brandId,
               description: values.description,
               image: values.image,
-              skus: values.skus.map(({ propertiesJson, ...sku }) => ({
-                ...sku,
-                properties: parseSkuProperties(propertiesJson),
-              })),
+              skus: values.skus.map(skuPayload),
             })
           ).data,
         );
       } else {
         await createSpu({
           ...values,
-          skus: values.skus.map(({ propertiesJson, ...sku }) => ({
-            ...sku,
-            properties: parseSkuProperties(propertiesJson),
-          })),
+          skus: values.skus.map(skuPayload),
         });
       }
     },
@@ -102,7 +120,9 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
     can(value ? 'mall:spu:edit' : 'mall:spu:add') &&
     can('mall:category:list') &&
     can('mall:brand:list') &&
-    can('trade:delivery-template:query');
+    can('trade:delivery-template:query') &&
+    can('mall:spec:query') &&
+    can('mall:spec-value:query');
   const referenceError = categories.error ?? brands.error ?? templates.error;
   return (
     <AdminModalForm<SpuFormValues>
@@ -119,15 +139,20 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
               description: value.description ?? undefined,
               image: value.image ?? undefined,
               skus: value.skus.map((sku) => ({
-                ...sku,
+                id: sku.id,
+                code: sku.code,
+                name: sku.name,
+                stock: sku.stock,
+                specSelections: Object.entries(sku.specValueIds ?? {}).map(
+                  ([propertyId, valueId]) => ({ propertyId, valueId }),
+                ),
                 price: editablePrice(sku.price),
                 weight: sku.weight ?? undefined,
                 volume: sku.volume ?? undefined,
                 image: sku.image ?? undefined,
-                propertiesJson: JSON.stringify(sku.properties),
               })),
             }
-          : { deliveryTypes: [1], skus: [{ stock: 0, propertiesJson: '{}' }] }
+          : { deliveryTypes: [1], skus: [{ stock: 0, specSelections: [] }] }
       }
       modalProps={{ destroyOnHidden: true, maskClosable: false }}
       submitter={{
@@ -155,7 +180,9 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
         }
       }}
     >
-      {!canSave && <Alert type="warning" title="需要商品写入、分类/品牌列表及运费模板查询权限" />}
+      {!canSave && (
+        <Alert type="warning" title="需要商品写入、分类/品牌列表、运费模板及规格字典查询权限" />
+      )}
       {referenceError && (
         <Alert
           type="error"
@@ -208,6 +235,9 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
       />
       <ProFormText name="image" label="主图 URL" rules={[{ max: 500 }]} />
       <ProFormTextArea name="description" label="商品描述" rules={[{ max: 65535 }]} />
+      {value?.skus.some(
+        (sku) => sku.specValueIds == null && Object.keys(sku.properties).length > 0,
+      ) && <Alert type="warning" title="旧商品规格尚未关联字典，请为各SKU选择对应规格后保存" />}
       <ProFormList
         name="skus"
         label="SKU（规格名称须一致，每个组合唯一）"
@@ -216,52 +246,47 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
         copyIconProps={false}
         creatorButtonProps={{ creatorButtonText: '新增 SKU' }}
       >
-        <ProFormText name="id" hidden />
-        <ProFormText name="code" label="SKU 编码" rules={[{ required: true }, { max: 64 }]} />
-        <ProFormText name="name" label="SKU 名称" rules={[{ required: true }, { max: 200 }]} />
-        <ProFormDigit
-          name="price"
-          label="销售价（元）"
-          min={0.01}
-          max={MAX_EDITABLE_PRICE}
-          fieldProps={{ precision: 2 }}
-          rules={[{ required: true }]}
-        />
-        <ProFormDigit
-          name="stock"
-          label="初始可用库存"
-          min={0}
-          max={MAX_STOCK}
-          fieldProps={{ precision: 0 }}
-          rules={[{ required: true }]}
-        />
-        <ProFormDigit
-          name="weight"
-          label="重量（千克，按重量计费时必填）"
-          min={0}
-          max={999999999999}
-          fieldProps={{ precision: 6, stringMode: true }}
-        />
-        <ProFormDigit
-          name="volume"
-          label="体积（立方米，按体积计费时必填）"
-          min={0}
-          max={999999999999}
-          fieldProps={{ precision: 6, stringMode: true }}
-        />
-        <ProFormText name="image" label="SKU 图片 URL" rules={[{ max: 500 }]} />
-        <ProFormTextArea
-          name="propertiesJson"
-          label="规格 JSON（无规格填 {}）"
-          placeholder={'{"颜色":"红色","尺寸":"M"}'}
-          rules={[
-            {
-              validator: async (_, text: string | undefined) => {
-                parseSkuProperties(text);
-              },
-            },
-          ]}
-        />
+        {(field) => (
+          <>
+            <ProFormText name="id" hidden />
+            <ProFormText name="code" label="SKU 编码" rules={[{ required: true }, { max: 64 }]} />
+            <ProFormText name="name" label="SKU 名称" rules={[{ required: true }, { max: 200 }]} />
+            <ProFormDigit
+              name="price"
+              label="销售价（元）"
+              min={0.01}
+              max={MAX_EDITABLE_PRICE}
+              fieldProps={{ precision: 2 }}
+              rules={[{ required: true }]}
+            />
+            <ProFormDigit
+              name="stock"
+              label="初始可用库存"
+              min={0}
+              max={MAX_STOCK}
+              fieldProps={{ precision: 0 }}
+              rules={[{ required: true }]}
+            />
+            <ProFormDigit
+              name="weight"
+              label="重量（千克，按重量计费时必填）"
+              min={0}
+              max={999999999999}
+              fieldProps={{ precision: 6, stringMode: true }}
+            />
+            <ProFormDigit
+              name="volume"
+              label="体积（立方米，按体积计费时必填）"
+              min={0}
+              max={999999999999}
+              fieldProps={{ precision: 6, stringMode: true }}
+            />
+            <ProFormText name="image" label="SKU 图片 URL" rules={[{ max: 500 }]} />
+            {can('mall:spec:query') && can('mall:spec-value:query') && (
+              <SkuSpecFields skuIndex={field.name} />
+            )}
+          </>
+        )}
       </ProFormList>
     </AdminModalForm>
   );

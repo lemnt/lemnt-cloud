@@ -1,4 +1,4 @@
-import { positiveId } from '../../mall/checkout/checkoutDecoders';
+import { decodeProperties, positiveId } from '../../mall/checkout/checkoutDecoders';
 import type { CheckoutStatus, CheckoutItem } from '../../mall/checkout/types';
 import type { Page, OrderSummary, OrderDetail, Shipment, RefundRequest } from './types';
 function object(v: unknown): Record<string, unknown> {
@@ -14,16 +14,10 @@ function optional(v: unknown) {
 }
 /** 只接受实际保存的规格映射；历史缺失保持为空。 */
 function productSnapshot(row: Record<string, unknown>) {
-  let properties: Record<string, string> | null = null;
-  if (row.properties != null) {
-    properties = Object.fromEntries(
-      Object.entries(object(row.properties)).map(([key, value]) => [key, text(value)]),
-    );
-  }
   return {
     spuId: row.spuId == null ? null : positiveId(row.spuId),
     spuName: optional(row.spuName),
-    properties,
+    properties: decodeProperties(row.properties),
     picUrl: optional(row.picUrl),
   };
 }

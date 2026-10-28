@@ -1,0 +1,77 @@
+import { ProFormGroup, ProFormList, ProFormSelect } from '@ant-design/pro-components';
+import { App, Form } from 'antd';
+import {
+  getSpecOptions,
+  getSpecValueOptions,
+  getSpecOption,
+  getSpecValueOption,
+} from '../api/catalogApi';
+
+/** 每个SKU选取已有字典编号，不允许在商品编辑时临时创建同名规格。 */
+export function SkuSpecFields({ skuIndex }: { skuIndex: number }) {
+  return (
+    <ProFormList
+      name="specSelections"
+      label="商品规格（无规格时不添加）"
+      max={10}
+      copyIconProps={false}
+      creatorButtonProps={{ creatorButtonText: '添加规格' }}
+    >
+      {(field) => <SpecChoice skuIndex={skuIndex} specIndex={field.name} />}
+    </ProFormList>
+  );
+}
+function SpecChoice({ skuIndex, specIndex }: { skuIndex: number; specIndex: number }) {
+  const form = Form.useFormInstance();
+  const { message } = App.useApp();
+  const path = ['skus', skuIndex, 'specSelections', specIndex];
+  const propertyId = Form.useWatch([...path, 'propertyId'], form) as string | undefined;
+  const valueId = Form.useWatch([...path, 'valueId'], form) as string | undefined;
+  async function options(kind: 'spec' | 'value', keyword?: string) {
+    try {
+      const rows =
+        kind === 'spec'
+          ? await getSpecOptions(keyword)
+          : propertyId
+            ? await getSpecValueOptions(propertyId, keyword)
+            : [];
+      const selected = kind === 'spec' ? propertyId : valueId;
+      if (selected && !rows.some((row) => row.id === selected))
+        rows.unshift(
+          kind === 'spec' ? await getSpecOption(selected) : await getSpecValueOption(selected),
+        );
+      return rows.map((row) => ({ label: row.name, value: row.id }));
+    } catch (error) {
+      message.error(`规格读取失败：${String(error)}`);
+      throw error;
+    }
+  }
+  return (
+    <ProFormGroup>
+      <ProFormSelect
+        name="propertyId"
+        label="规格"
+        showSearch
+        debounceTime={300}
+        params={{ selected: propertyId }}
+        request={({ keyWords }) => options('spec', keyWords)}
+        fieldProps={{
+          filterOption: false,
+          onChange: () => form.setFieldValue([...path, 'valueId'], undefined),
+        }}
+        rules={[{ required: true }]}
+      />
+      <ProFormSelect
+        name="valueId"
+        label="规格值"
+        showSearch
+        disabled={!propertyId}
+        debounceTime={300}
+        params={{ propertyId, selected: valueId }}
+        request={({ keyWords }) => options('value', keyWords)}
+        fieldProps={{ filterOption: false }}
+        rules={[{ required: true }]}
+      />
+    </ProFormGroup>
+  );
+}

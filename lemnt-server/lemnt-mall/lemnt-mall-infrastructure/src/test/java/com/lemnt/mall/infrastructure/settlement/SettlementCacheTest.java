@@ -34,7 +34,7 @@ class SettlementCacheTest {
                 new BigDecimal("10.00"),
                 2,
                 new BigDecimal("20.00"), new BigDecimal("20.00"), BigDecimal.ZERO,
-                8L, "原商品", java.util.Map.of("颜色", "黑色"), "https://example.com/original.png")),
+                8L, "原商品", List.of(new SettlementItem.Property(3L, "颜色", 7L, "黑色")), "https://example.com/original.png")),
                 new BigDecimal("20.00"),
                 new BigDecimal("0.00"),
                 new BigDecimal("20.00"),
@@ -78,7 +78,7 @@ class SettlementCacheTest {
         gateway.cache(value);
         var ttl = ArgumentCaptor.forClass(Duration.class);
         verify(values)
-            .setIfAbsent(eq("mall:settlement:v3:" + value.id()), anyString(), ttl.capture());
+            .setIfAbsent(eq("mall:settlement:v4:" + value.id()), anyString(), ttl.capture());
         assertTrue(ttl.getValue().getSeconds() > 890 && ttl.getValue().getSeconds() <= 900);
         when(values.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(false);
         assertThrows(IllegalStateException.class, () -> gateway.cache(value));
@@ -150,9 +150,36 @@ class SettlementCacheTest {
 
     private String token(java.util.Map<String, String> properties, String image) {
         var item = new SettlementItem(5L, "SKU", "name", BigDecimal.TEN, 1, BigDecimal.TEN,
-                BigDecimal.TEN, BigDecimal.ZERO, 8L, "SPU", properties, image);
+                BigDecimal.TEN, BigDecimal.ZERO, 8L, "SPU", properties == null ? null : properties.entrySet().stream()
+                        .map(entry -> new SettlementItem.Property(null, entry.getKey(), null, entry.getValue())).toList(), image);
         return com.lemnt.mall.domain.settlement.model.SettlementRules.quoteToken(
                 new SettlementQuote(List.of(item), BigDecimal.TEN, BigDecimal.ZERO, BigDecimal.TEN, null));
     }
 
+
+    @Test
+    void oldBoundSubmissionRestoresNamesAndPreservesOriginalOrderAndRequest() {
+        var snapshot = snapshot();
+        var order = new com.lemnt.mall.domain.settlement.model.SettlementOrder(null, "OLD-ORDER", 1L,
+                snapshot.quote().payableAmount(), "PENDING", snapshot.quote().items(), null);
+        var record = new com.lemnt.mall.domain.settlement.model.SettlementRecord("OLD-ORDER", 1L, "OLD-REQUEST",
+                "OLD-HASH", snapshot.quote().originalAmount(), snapshot.quote().discountAmount(),
+                snapshot.quote().payableAmount(), null, snapshot.references());
+        var codec = new Fastjson2RedisSerializer();
+        var json = com.alibaba.fastjson2.JSON.parseObject(codec.serialize(
+                new com.lemnt.mall.domain.settlement.model.SettlementSubmission(order, record)));
+        json.getJSONObject("order").getJSONArray("items").getJSONObject(0)
+                .put("properties", com.alibaba.fastjson2.JSON.parseObject("{\"颜色\":\"黑色\"}"));
+        var redis = mock(StringRedisTemplate.class);
+        ValueOperations<String, String> values = mock(ValueOperations.class);
+        when(redis.opsForValue()).thenReturn(values);
+        when(values.get("mall:{settlement}:v2:submission:OLD-ORDER")).thenReturn(json.toJSONString());
+        var restored = new SettlementGatewayImpl(redis, codec).submission("OLD-ORDER");
+        assertEquals("OLD-ORDER", restored.order().orderNo());
+        assertEquals("OLD-REQUEST", restored.record().requestNo());
+        assertEquals("OLD-HASH", restored.record().fingerprint());
+        assertEquals(List.of(new SettlementItem.Property(null, "颜色", null, "黑色")),
+                restored.order().items().get(0).properties());
+        verify(values, never()).set(anyString(), anyString());
+    }
 }

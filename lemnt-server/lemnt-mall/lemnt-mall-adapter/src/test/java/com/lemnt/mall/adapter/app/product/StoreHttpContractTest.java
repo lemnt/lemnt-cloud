@@ -72,7 +72,7 @@ class StoreHttpContractTest {
                 "10.00",
                 3,
                 null,
-                Map.of("颜色", "红")))));
+                Map.of("颜色", "红"), Map.of(2L, 3L)))));
 
         var mvc = MockMvcBuilders.standaloneSetup(new Object[] {
                 new AppCategoryController(storeCategoryListQueryExe),
@@ -82,6 +82,7 @@ class StoreHttpContractTest {
         mvc.perform(get("/mall/app/products/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.skus[0].properties.颜色").value("红"))
+                .andExpect(jsonPath("$.data.skus[0].specValueIds.2").value(3))
                 .andExpect(jsonPath("$.data.code").doesNotExist())
                 .andExpect(jsonPath("$.data.skus[0].code").doesNotExist());
 

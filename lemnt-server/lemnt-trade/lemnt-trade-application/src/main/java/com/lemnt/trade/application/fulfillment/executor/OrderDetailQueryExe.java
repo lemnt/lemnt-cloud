@@ -50,7 +50,9 @@ public class OrderDetailQueryExe {
                 item.lineAmount(),
                 item.spuId(),
                 item.spuName(),
-                item.properties(),
+                item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
+                        new com.lemnt.trade.application.fulfillment.dto.OrderItemDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 item.picUrl()))
                 .toList(),
                 FulfillmentDTOConverter.shipment(shipmentGateway.shipment(no)));

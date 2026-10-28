@@ -30,8 +30,14 @@ public record ProductSpuCreateCmd(
             String image,
             Map<String, String> properties,
             BigDecimal weight,
-            BigDecimal volume
+            BigDecimal volume,
+            Map<Long, Long> specValueIds
     ) {
+        /** 旧调用没有字典关联。 */
+        public ProductSkuDraft(String code, String name, BigDecimal price, Integer stock, String image,
+                Map<String, String> properties, BigDecimal weight, BigDecimal volume) {
+            this(code, name, price, stock, image, properties, weight, volume, null);
+        }
         /** 旧商品草稿尚未配置重量和体积。 */
         public ProductSkuDraft(String code, String name, BigDecimal price, Integer stock, String image,
                 Map<String, String> properties) {

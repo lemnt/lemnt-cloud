@@ -1,6 +1,5 @@
 package com.lemnt.trade.adapter.web.fulfillment.res;
 
-import java.util.Map;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -29,12 +28,12 @@ public record OrderItemRes(
         @Schema(description = "下单时商品SPU名称")
         String spuName,
         @Schema(description = "下单时规格名称和值，历史未记录与空规格区分")
-        Map<String, String> properties,
+        java.util.List<Property> properties,
         @Schema(description = "下单时商品图片")
         String picUrl
 ) implements Serializable {
     public OrderItemRes {
-        properties = properties == null ? null : Map.copyOf(properties);
+        properties = properties == null ? null : java.util.List.copyOf(properties);
     }
 
     /** 历史未保存商品元数据，保持为空，不查询现值补历史。 */
@@ -58,4 +57,17 @@ public record OrderItemRes(
                 null,
                 null);
     }
+
+    /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
+    @Schema(description = "商品规格快照")
+    public record Property(
+            @Schema(description = "规格项编号，历史未关联时为空")
+            Long propertyId,
+            @Schema(description = "保存时规格名称")
+            String propertyName,
+            @Schema(description = "规格值编号，历史未关联时为空")
+            Long valueId,
+            @Schema(description = "保存时规格值名称")
+            String valueName
+    ) implements java.io.Serializable {}
 }

@@ -71,10 +71,21 @@ public class TradeOrderClientImpl implements TradeOrderClient {
             if ((item.spuId() != null && item.spuId() <= 0)
                     || (item.spuName() != null && (item.spuName().isBlank() || item.spuName().length() > 200))
                     || (item.picUrl() != null && item.picUrl().length() > 1024)
-                    || (item.properties() != null && item.properties().entrySet().stream().anyMatch(entry ->
-                            entry.getKey().isBlank() || entry.getKey().length() > 64
-                                    || entry.getValue().isBlank() || entry.getValue().length() > 100))) {
+                    || (item.properties() != null && item.properties().stream().anyMatch(property ->
+                            property.propertyName() == null || property.propertyName().isBlank() || property.propertyName().length() > 64
+                                    || property.valueName() == null || property.valueName().isBlank() || property.valueName().length() > 100
+                                    || ((property.propertyId() == null) != (property.valueId() == null))
+                                    || (property.propertyId() != null && (property.propertyId() <= 0 || property.valueId() <= 0))))) {
                 throw new IllegalArgumentException("商品规格快照不合法");
+            }
+        }
+        for (var item : value.items()) {
+            if (item.properties() != null && (item.properties().size() > 10
+                    || item.properties().stream().map(property -> property.propertyName()).distinct().count() != item.properties().size()
+                    || item.properties().stream().filter(property -> property.propertyId() != null)
+                            .map(property -> property.propertyId()).distinct().count()
+                            != item.properties().stream().filter(property -> property.propertyId() != null).count())) {
+                throw new IllegalArgumentException("商品规格重复或超过10项");
             }
         }
         if (value.items().stream().anyMatch(item -> item.payAmount() != null)
@@ -106,7 +117,9 @@ public class TradeOrderClientImpl implements TradeOrderClient {
                 item.deliveryPrice(),
                 item.spuId(),
                 item.spuName(),
-                item.properties(),
+                item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
+                        new TradeOrderItem.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 item.picUrl())).toList(), null, value.usePoint(), value.givePoint(), fromDelivery(value.delivery()));
         try {
             submissions.create(order);
@@ -141,7 +154,9 @@ public class TradeOrderClientImpl implements TradeOrderClient {
                 item.deliveryPrice(),
                 item.spuId(),
                 item.spuName(),
-                item.properties(),
+                item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
+                        new OrderItemDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 item.picUrl())).toList(), value.createTime(), value.usePoint(), value.givePoint(), toDelivery(value.delivery()));
     }
 

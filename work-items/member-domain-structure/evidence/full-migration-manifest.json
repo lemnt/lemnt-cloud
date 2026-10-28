@@ -551,8 +551,9 @@
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/service/sku/ProductSkuServiceImpl.java",
       "sha256": "fd41100dd68bfc520ed6a54bbd72ea0abd6e32adb802047dbdef4102fd79d6d8",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductCatalogService.java",
+      "note": "已按字典编号验证SKU规格存在/归属、同规格集合及重复组合，见36；现HTTP仍为名值映射加ID映射，源完整Property列表合同待贯通。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/service/sku/ProductSkuService.java",
@@ -7594,5 +7595,5 @@
     "member SMS/WeChat auth per previous explicit constraint"
   ],
   "architecture": "existing lemnt six-layer CQRS, per-table BaseMapper/Gateway and XML resultMap",
-  "progressNote": "F01/F02已有可运行纵向链路，不等于完整迁移完成；当前补充订单/售后商品快照，详见34交付；结构化规格ID及其余业务仍待迁移。"
+  "progressNote": "F01/F02持续迁移，尚未完成：34原订单名值快照、36商品规格字典ID关联已形成可运行链路；Property列表跨结算/订单仍待贯通，业务缺表仍36张。"
 }

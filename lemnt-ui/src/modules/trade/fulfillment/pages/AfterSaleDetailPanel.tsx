@@ -67,8 +67,8 @@ export default function AfterSaleDetailPanel({ no }: { no: string }) {
               children:
                 detail.data.properties == null
                   ? '未记录'
-                  : Object.entries(detail.data.properties)
-                      .map(([name, value]) => `${name}：${value}`)
+                  : detail.data.properties
+                      .map((property) => `${property.propertyName}：${property.valueName}`)
                       .join('；') || '无规格',
             },
             {

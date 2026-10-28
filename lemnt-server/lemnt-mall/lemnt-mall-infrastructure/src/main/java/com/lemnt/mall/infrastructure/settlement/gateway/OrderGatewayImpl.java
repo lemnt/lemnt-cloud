@@ -33,7 +33,9 @@ public class OrderGatewayImpl implements OrderGateway {
                 item.deliveryPrice(),
                 item.spuId(),
                 item.spuName(),
-                item.properties(),
+                item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
+                        new OrderItemDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 item.picUrl())).toList(), order.usePoint(), order.givePoint(), toDelivery(order.delivery()))));
     }
 
@@ -55,7 +57,9 @@ public class OrderGatewayImpl implements OrderGateway {
                 item.deliveryPrice(),
                 item.spuId(),
                 item.spuName(),
-                item.properties(),
+                item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
+                        new SettlementItem.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 item.picUrl())).toList(), value.createTime(), value.usePoint(), value.givePoint(), fromDelivery(value.delivery()));
     }
 

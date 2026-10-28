@@ -43,9 +43,12 @@ ALTER TABLE mall_product_sku ADD CONSTRAINT fk_mall_product_spu FOREIGN KEY(spu_
 ALTER TABLE mall_product_sku ADD CONSTRAINT uk_mall_sku_variant UNIQUE(spu_id,variant_key);
 CREATE TABLE mall_product_sku_spec (
  product_id BIGINT NOT NULL,
+ property_id BIGINT NULL,
+ value_id BIGINT NULL,
  property_name VARCHAR(64) NOT NULL,
  property_value VARCHAR(100) NOT NULL,
  PRIMARY KEY(product_id,property_name),
+ KEY idx_mall_sku_spec_identity(property_id,value_id),
  CONSTRAINT fk_mall_sku_property FOREIGN KEY(product_id) REFERENCES mall_product_sku(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 -- 独立库存调整台账已移除，SKU库存随SPU保存。

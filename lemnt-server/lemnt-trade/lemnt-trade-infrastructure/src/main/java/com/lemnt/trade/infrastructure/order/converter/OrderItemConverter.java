@@ -5,7 +5,6 @@ import com.alibaba.fastjson2.TypeReference;
 import com.lemnt.trade.domain.order.model.TradeOrderItem;
 import com.lemnt.trade.infrastructure.order.dataobject.TradeOrderItemDO;
 import java.util.Map;
-import java.util.TreeMap;
 
 /** 订单项只读取落库快照，不回查当前商品。 */
 public final class OrderItemConverter {
@@ -25,7 +24,7 @@ public final class OrderItemConverter {
                 .setDeliveryPrice(value.deliveryPrice())
                 .setSpuId(value.spuId())
                 .setSpuName(value.spuName())
-                .setProperties(value.properties() == null ? null : JSON.toJSONString(new TreeMap<>(value.properties())))
+                .setProperties(value.properties() == null ? null : JSON.toJSONString(value.properties()))
                 .setPicUrl(value.picUrl());
     }
 
@@ -33,11 +32,22 @@ public final class OrderItemConverter {
     public static TradeOrderItem toModel(TradeOrderItemDO row) {
         return new TradeOrderItem(row.getProductId(), row.getProductCode(), row.getProductName(), row.getUnitPrice(),
                 row.getQuantity(), row.getLineAmount(), row.getPayAmount(), row.getDeliveryPrice(), row.getSpuId(),
-                row.getSpuName(), properties(row.getProperties()), row.getPicUrl());
+                row.getSpuName(),
+                properties(row.getProperties()) == null ? null : properties(row.getProperties()).stream().map(snapshotProperty ->
+                        new TradeOrderItem.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(), row.getPicUrl());
     }
 
     /** 区分历史NULL和已知空规格。 */
-    public static Map<String, String> properties(String json) {
-        return json == null ? null : JSON.parseObject(json, new TypeReference<Map<String, String>>() {});
+    public static java.util.List<TradeOrderItem.Property> properties(String json) {
+        if (json == null) {
+            return null;
+        }
+        if (json.stripLeading().startsWith("{")) {
+            var legacy = JSON.parseObject(json, new TypeReference<Map<String, String>>() {});
+            return legacy.entrySet().stream().sorted(Map.Entry.comparingByKey())
+                    .map(entry -> new TradeOrderItem.Property(null, entry.getKey(), null, entry.getValue())).toList();
+        }
+        return JSON.parseArray(json, TradeOrderItem.Property.class);
     }
 }

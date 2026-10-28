@@ -227,8 +227,8 @@ export default function OrderFulfillmentPage() {
                   render: (_, row) =>
                     row.properties == null
                       ? '未记录'
-                      : Object.entries(row.properties)
-                          .map(([name, value]) => `${name}：${value}`)
+                      : row.properties
+                          .map((property) => `${property.propertyName}：${property.valueName}`)
                           .join('；') || '无规格',
                 },
                 { title: '单价（元）', dataIndex: 'unitPrice' },

@@ -26,6 +26,8 @@ public record ProductSkuAddRes(
         @Schema(description = "规格快照")
         Map<String, String> properties,
         @Schema(description = "ON_SHELF或OFF_SHELF")
-        String status
+        String status,
+        @Schema(description = "规格编号到规格值编号，旧未关联记录为null")
+        Map<Long, Long> specValueIds
 ) implements Serializable {
 }

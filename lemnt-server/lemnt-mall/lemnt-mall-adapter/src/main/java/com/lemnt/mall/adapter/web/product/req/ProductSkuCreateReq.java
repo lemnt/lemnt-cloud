@@ -47,5 +47,8 @@ public record ProductSkuCreateReq(
         String>
         properties,
         @Schema(description = "重量，千克") @DecimalMin("0") BigDecimal weight,
-        @Schema(description = "体积，立方米") @DecimalMin("0") BigDecimal volume
+        @Schema(description = "体积，立方米") @DecimalMin("0") BigDecimal volume,
+        @Schema(description = "规格编号到规格值编号，名称由服务端字典读取")
+        @Size(max = 10)
+        Map<@jakarta.validation.constraints.Positive Long, @NotNull @jakarta.validation.constraints.Positive Long> specValueIds
 ) implements Serializable {}

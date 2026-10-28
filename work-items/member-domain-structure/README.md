@@ -32,3 +32,7 @@
 - [原订单商品快照设计](33-order-product-snapshot-design.md)
 - [商品快照交付与验证](34-order-product-snapshot-delivery.md)
 - [订单与售后快照接口](../../docs/order-product-snapshot-api.md)
+
+- [商品规格字典关联设计](35-product-spec-identity-design.md)
+- [规格字典关联交付](36-product-spec-identity-delivery.md)
+- [规格关联接口](../../docs/product-spec-identity-api.md)

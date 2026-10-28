@@ -69,7 +69,9 @@ public class AfterSaleService {
                 whole ? BigDecimal.ZERO.setScale(2) : allocated.get(line.id()).subtract(amount),
                 line.spuId(),
                 line.spuName(),
-                line.properties(),
+                line.properties() == null ? null : line.properties().stream().map(snapshotProperty ->
+                        new AfterSaleItemDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 line.picUrl());
         }).toList();
     }
@@ -148,7 +150,9 @@ public class AfterSaleService {
                 quota.productId(),
                 quota.spuId(),
                 quota.spuName(),
-                quota.properties(),
+                quota.properties() == null ? null : quota.properties().stream().map(snapshotProperty ->
+                        new AfterSale.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 quota.picUrl());
         afterSales.saveAfterSale(value);
         var saved = afterSales.afterSale(value.refundNo());
@@ -305,7 +309,9 @@ public class AfterSaleService {
                 value.skuId(),
                 value.spuId(),
                 value.spuName(),
-                value.properties(),
+                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
+                        new AfterSale.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 value.picUrl());
         if (!afterSales.updateAfterSale(result, value.status())) {
             throw new IllegalStateException("售后状态已变化");

@@ -185,7 +185,7 @@ public final class ProductCatalogValidation {
                     sku.stock(),
                     optional(sku.image(), 500),
                     props,
-                    "ON_SHELF", sku.weight(), sku.volume()));
+                    "ON_SHELF", sku.weight(), sku.volume(), sku.specValueIds()));
         }
         return new ProductSpu(
                 null,

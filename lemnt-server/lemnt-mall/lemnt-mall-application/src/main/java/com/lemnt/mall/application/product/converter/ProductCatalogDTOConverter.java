@@ -60,7 +60,7 @@ public final class ProductCatalogDTOConverter {
                 value.stock(),
                 value.image(),
                 value.properties(),
-                value.status(), value.weight(), value.volume());
+                value.status(), value.weight(), value.volume(), value.specValueIds());
     }
 
     /**

@@ -22,6 +22,9 @@ public class ProductSkuSpecDO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long productId;
+    /** 字典关联，旧行保持为空。 */
+    private Long propertyId;
+    private Long valueId;
     private String propertyName;
     private String propertyValue;
 }

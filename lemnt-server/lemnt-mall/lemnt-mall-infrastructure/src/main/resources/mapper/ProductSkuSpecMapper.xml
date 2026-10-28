@@ -5,6 +5,8 @@
     <resultMap id="ProductSkuSpecResult" type="com.lemnt.mall.infrastructure.product.dataobject.ProductSkuSpecDO" autoMapping="false">
         <id property="productId" column="product_id"/>
         <id property="propertyName" column="property_name"/>
+        <result property="propertyId" column="property_id"/>
+        <result property="valueId" column="value_id"/>
         <result property="propertyValue" column="property_value"/>
     </resultMap>
 

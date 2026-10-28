@@ -33,8 +33,16 @@ public record ProductSkuRes(
         @Schema(description = "重量，千克")
         BigDecimal weight,
         @Schema(description = "体积，立方米")
-        BigDecimal volume
+        BigDecimal volume,
+        @Schema(description = "规格编号到规格值编号，null表示历史未关联")
+        Map<Long, Long> specValueIds
 ) implements Serializable {
+    /** 旧调用未提供字典关联，不推断历史编号。 */
+    public ProductSkuRes(Long id, Long spuId, String code, String name, BigDecimal price, Integer stock,
+            String image, Map<String, String> properties, String status, BigDecimal weight, BigDecimal volume) {
+        this(id, spuId, code, name, price, stock, image, properties, status, weight, volume, null);
+    }
+
     /** 历史快照缺少配送字段，读取时保留未配置状态。 */
     public ProductSkuRes(
             Long id,

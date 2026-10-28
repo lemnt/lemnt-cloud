@@ -83,3 +83,42 @@ export async function getDeliveryTemplates(): Promise<{ id: string; name: string
     return { id: decodeId(row.id), name: row.name };
   });
 }
+
+/** 规格选择使用原字典接口；关键字可搜索首屏之外的选项。 */
+export async function getSpecOptions(name?: string): Promise<{ id: string; name: string }[]> {
+  return decodeList(
+    (await request<unknown>({ url: '/mall/specs/simple', params: { name, limit: 100 } })).data,
+    specOption,
+  );
+}
+export async function getSpecValueOptions(
+  specId: string,
+  name?: string,
+): Promise<{ id: string; name: string }[]> {
+  return decodeList(
+    (
+      await request<unknown>({
+        url: '/mall/spec-values/simple',
+        params: { specId, name, limit: 100 },
+      })
+    ).data,
+    specOption,
+  );
+}
+export async function getSpecOption(id: string) {
+  return specOption(
+    (await request<unknown>({ url: `/mall/specs/${encodeURIComponent(id)}` })).data,
+  );
+}
+export async function getSpecValueOption(id: string) {
+  return specOption(
+    (await request<unknown>({ url: `/mall/spec-values/${encodeURIComponent(id)}` })).data,
+  );
+}
+function specOption(value: unknown): { id: string; name: string } {
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new Error('规格选项格式不合法');
+  const row = value as Record<string, unknown>;
+  if (typeof row.name !== 'string') throw new Error('规格名称不合法');
+  return { id: decodeId(row.id), name: row.name };
+}

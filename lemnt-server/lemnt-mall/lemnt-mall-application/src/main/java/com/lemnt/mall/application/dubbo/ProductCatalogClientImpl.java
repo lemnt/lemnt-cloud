@@ -35,7 +35,10 @@ public class ProductCatalogClientImpl implements ProductCatalogClient {
     /** 远程输出与结算读取相同的可信目录快照。 */
     private ProductSnapshotDTO toDTO(ProductSnapshot value) {
         return value == null ? null : new ProductSnapshotDTO(value.id(), value.productCode(), value.name(), value.price(),
-                value.stock(), value.spuId(), value.spuName(), value.properties(), value.picUrl());
+                value.stock(), value.spuId(), value.spuName(),
+                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
+                        new ProductSnapshotDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(), value.picUrl());
     }
 
     @Override

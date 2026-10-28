@@ -33,7 +33,7 @@ public class ProductCatalogGatewayImpl implements ProductCatalogGateway {
     @Override
     public Map<Long, ProductSnapshot> findOnShelfBatch(List<Long> ids) {
         var sellable = productSkuGateway.findSellableByIds(ids);
-        var properties = productSkuSpecGateway.propertiesBySkuIds(ids);
+        var properties = productSkuSpecGateway.specsBySkuIds(ids);
         var skus = productSkuGateway.byIds(ids).stream().collect(Collectors.toMap(row -> row.id(), row -> row));
         var spuIds = skus.values().stream().map(row -> row.spuId()).filter(Objects::nonNull).distinct().toList();
         var spus = productSpuGateway.findSpus(spuIds).stream().collect(Collectors.toMap(row -> row.id(), row -> row));
@@ -44,7 +44,11 @@ public class ProductCatalogGatewayImpl implements ProductCatalogGateway {
                     spu == null ? List.of() : spu.deliveryTypes(), spu == null ? null : spu.deliveryTemplateId(),
                     sku == null ? null : sku.weight(), sku == null ? null : sku.volume(),
                     sku == null ? null : sku.spuId(), spu == null ? null : spu.name(),
-                    properties.getOrDefault(value.id(), Map.of()),
+                properties.getOrDefault(value.id(), List.of()).stream()
+                            .sorted(java.util.Comparator.comparing(row -> row.propertyName())).toList() == null ? null : properties.getOrDefault(value.id(), List.of()).stream()
+                            .sorted(java.util.Comparator.comparing(row -> row.propertyName())).toList().stream().map(snapshotProperty ->
+                        new ProductSnapshot.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                     sku != null && sku.image() != null && !sku.image().isBlank()
                             ? sku.image() : spu == null ? null : spu.image());
         }));

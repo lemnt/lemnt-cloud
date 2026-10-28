@@ -82,3 +82,23 @@ it('配送模板及重量体积保留精确字符串，拒绝未知配送方式'
   expect(() => decodeSpu({ ...product, deliveryTypes: [3] })).toThrow();
   expect(() => decodeSku({ ...sku, weight: 1.25 })).toThrow();
 });
+
+it('SKU规格编号关联区分历史未关联与空规格，拒绝失真编号', () => {
+  const row = {
+    id: '1',
+    code: 'A',
+    name: '商品',
+    price: '10.00',
+    stock: 1,
+    properties: { 颜色: '红色' },
+    status: 'ON_SHELF',
+  };
+  expect(decodeSku(row).specValueIds).toBeNull();
+  expect(decodeSku({ ...row, specValueIds: {} }).specValueIds).toEqual({});
+  expect(
+    decodeSku({ ...row, specValueIds: { '9223372036854775807': '9223372036854775806' } })
+      .specValueIds,
+  ).toEqual({ '9223372036854775807': '9223372036854775806' });
+  expect(() => decodeSku({ ...row, specValueIds: { '1': 9007199254740992 } })).toThrow();
+  expect(() => decodeSku({ ...row, specValueIds: [] })).toThrow();
+});

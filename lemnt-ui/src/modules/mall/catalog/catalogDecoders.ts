@@ -93,6 +93,15 @@ export function decodeSku(value: unknown): Sku {
     volume: optionalQuantity(row.volume),
     image: optionalText(row.image),
     properties,
+    specValueIds:
+      row.specValueIds == null
+        ? null
+        : Object.fromEntries(
+            Object.entries(record(row.specValueIds)).map(([key, value]) => [
+              decodeId(key),
+              decodeId(value),
+            ]),
+          ),
     status: shelfStatus(row.status),
   };
 }

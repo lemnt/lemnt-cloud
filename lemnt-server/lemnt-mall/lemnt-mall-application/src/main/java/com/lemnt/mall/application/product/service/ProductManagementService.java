@@ -6,6 +6,7 @@ import com.lemnt.mall.domain.product.gateway.ProductSpuGateway;
 import com.lemnt.mall.domain.product.gateway.StockReservationGateway;
 import com.lemnt.mall.domain.product.model.ProductCatalogValidation;
 import com.lemnt.mall.domain.product.model.ProductSku;
+import com.lemnt.mall.domain.product.model.ProductSkuSpec;
 import com.lemnt.mall.domain.product.model.ProductSpu;
 
 import org.springframework.stereotype.Component;
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /** 商品回收和SKU增删编排，保留订单、预占和评价使用的历史编号。 */
@@ -38,12 +38,13 @@ public class ProductManagementService {
         var parents = productSpuGateway.findSpus(requested).stream()
                 .collect(Collectors.toMap(ProductSpu::id, value -> value));
         var children = productSkuGateway.skusBySpuIds(requested);
-        var properties = productSkuSpecGateway.propertiesBySkuIds(children.stream().map(ProductSku::id).toList());
-        var grouped = children.stream().map(value -> new ProductSku(value.id(), value.spuId(), value.code(),
-            value.name(),
-                value.price(), value.stock(), value.image(), properties.getOrDefault(value.id(),
-                    Map.of()), value.status(), value.weight(), value.volume()))
-                .collect(Collectors.groupingBy(ProductSku::spuId));
+        var specs = productSkuSpecGateway.specsBySkuIds(children.stream().map(ProductSku::id).toList());
+        var grouped = children.stream().map(value -> {
+            var rows = specs.getOrDefault(value.id(), List.of());
+            return new ProductSku(value.id(), value.spuId(), value.code(), value.name(), value.price(), value.stock(),
+                    value.image(), ProductSkuSpec.names(rows), value.status(), value.weight(), value.volume(),
+                    ProductSkuSpec.identities(rows));
+        }).collect(Collectors.groupingBy(ProductSku::spuId));
         return requested.stream().filter(parents::containsKey).map(id -> {
             var value = parents.get(id);
             return new ProductSpu(value.id(), value.code(), value.name(), value.categoryId(), value.brandId(),

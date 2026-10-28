@@ -58,7 +58,7 @@ public class ProductSpecService {
             if (old == null) {
                 throw new IllegalArgumentException("规格不存在");
             }
-            if (!old.name().equals(normalized) && productSkuSpecGateway.referenced(old.name(), null)) {
+            if (!old.name().equals(normalized) && productSkuSpecGateway.referenced(old.id(), null, old.name(), null)) {
                 throw new IllegalStateException("规格已用于SKU，不能修改名称");
             }
         }
@@ -80,7 +80,7 @@ public class ProductSpecService {
         }
         if (old != null) {
             old = productSpecValueGateway.lock(id);
-            if (!old.name().equals(normalized) && productSkuSpecGateway.referenced(parent.name(), old.name())) {
+            if (!old.name().equals(normalized) && productSkuSpecGateway.referenced(parent.id(), old.id(), parent.name(), old.name())) {
                 throw new IllegalStateException("规格值已用于SKU，不能修改名称");
             }
         }
@@ -96,7 +96,7 @@ public class ProductSpecService {
             return false;
         }
         if (productSpecValueGateway.page(new ProductSpecFilter(null, id, 1, 1)).getTotal() > 0
-                || productSkuSpecGateway.referenced(old.name(), null)) {
+                || productSkuSpecGateway.referenced(old.id(), null, old.name(), null)) {
             throw new IllegalStateException("规格仍包含规格值或被SKU引用");
         }
         return productSpecGateway.delete(id);
@@ -115,7 +115,7 @@ public class ProductSpecService {
         if (old == null) {
             return false;
         }
-        if (productSkuSpecGateway.referenced(parent.name(), old.name())) {
+        if (productSkuSpecGateway.referenced(parent.id(), old.id(), parent.name(), old.name())) {
             throw new IllegalStateException("规格值仍被SKU引用");
         }
         return productSpecValueGateway.delete(id);

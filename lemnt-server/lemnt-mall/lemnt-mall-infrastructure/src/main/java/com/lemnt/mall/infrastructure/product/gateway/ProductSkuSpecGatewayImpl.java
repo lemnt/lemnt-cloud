@@ -1,6 +1,7 @@
 package com.lemnt.mall.infrastructure.product.gateway;
 
 import com.lemnt.mall.domain.product.gateway.ProductSkuSpecGateway;
+import com.lemnt.mall.domain.product.model.ProductSkuSpec;
 import com.lemnt.mall.infrastructure.product.dataobject.ProductSkuSpecDO;
 import com.lemnt.mall.infrastructure.product.mapper.ProductSkuSpecMapper;
 
@@ -9,69 +10,54 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.stream.Collectors;
 
-/** mall_product_sku_spec 表（SKU规格快照）持久化实现。 */
+/** mall_product_sku_spec表持久化，编号与名称一次读取。 */
 @Component
 @RequiredArgsConstructor
 public class ProductSkuSpecGatewayImpl implements ProductSkuSpecGateway {
     private final ProductSkuSpecMapper productSkuSpecMapper;
 
     @Override
-    public Map<Long, Map<String, String>> propertiesBySkuIds(List<Long> ids) {
-        var result = new HashMap<Long, Map<String, String>>();
-        if (ids.isEmpty()) {
-            return result;
-        }
-        productSkuSpecMapper.selectList(Wrappers.lambdaQuery(ProductSkuSpecDO.class)
-                .in(ProductSkuSpecDO::getProductId, ids)).forEach(row -> result
-                        .computeIfAbsent(row.getProductId(), key -> new TreeMap<>())
-                        .put(row.getPropertyName(), row.getPropertyValue()));
-        return result;
+    public Map<Long, List<ProductSkuSpec>> specsBySkuIds(List<Long> ids) {
+        return ids.isEmpty() ? Map.of() : grouped(productSkuSpecMapper.selectList(
+                Wrappers.lambdaQuery(ProductSkuSpecDO.class).in(ProductSkuSpecDO::getProductId, ids)));
     }
 
     @Override
-    public boolean referenced(String name, String value) {
-        return productSkuSpecMapper.selectCount(Wrappers.lambdaQuery(ProductSkuSpecDO.class)
-                .eq(ProductSkuSpecDO::getPropertyName, name).eq(value != null, ProductSkuSpecDO::getPropertyValue,
-                    value)) > 0;
+    public Map<Long, List<ProductSkuSpec>> specsBySpu(Long id) {
+        return grouped(productSkuSpecMapper.propertiesBySpu(id));
     }
 
-    /** 读取单个 SKU 的属性。 */
-    @Override
-    public Map<String, String> properties(Long id) {
-        var values = new TreeMap<String, String>();
-        productSkuSpecMapper.selectList(Wrappers.<ProductSkuSpecDO>lambdaQuery()
-                .eq(ProductSkuSpecDO::getProductId, id)
-                .orderByAsc(ProductSkuSpecDO::getPropertyName))
-                .forEach(row -> values.put(row.getPropertyName(), row.getPropertyValue()));
-        return values;
+    private Map<Long, List<ProductSkuSpec>> grouped(List<ProductSkuSpecDO> rows) {
+        return rows.stream().collect(Collectors.groupingBy(ProductSkuSpecDO::getProductId,
+                Collectors.mapping(row -> new ProductSkuSpec(row.getPropertyId(), row.getPropertyName(),
+                        row.getValueId(), row.getPropertyValue()), Collectors.toList())));
     }
 
-    /** 批量读取商品所有 SKU 的属性。 */
-    @Override
-    public Map<Long, Map<String, String>> propertiesBySpu(Long id) {
-        var values = new HashMap<Long, Map<String, String>>();
-        productSkuSpecMapper.propertiesBySpu(id).forEach(row -> values.computeIfAbsent(row.getProductId(),
-                key -> new TreeMap<>()).put(row.getPropertyName(),
-                row.getPropertyValue()));
-        return values;
-    }
-
-    /** 保存 SKU 的属性集合。 */
     @Override
     public void saveProperties(Long id, Map<String, String> values) {
-        productSkuSpecMapper.delete(Wrappers.<ProductSkuSpecDO>lambdaQuery()
-                .eq(ProductSkuSpecDO::getProductId, id));
-        values.forEach((name, value) -> {
-                var row = new ProductSkuSpecDO();
-                row.setProductId(id);
-                row.setPropertyName(name);
-                row.setPropertyValue(value);
-                productSkuSpecMapper.insert(row);
-                });
+        saveSpecs(id, values.entrySet().stream().map(entry ->
+                new ProductSkuSpec(null, entry.getKey(), null, entry.getValue())).toList());
+    }
+
+    @Override
+    public void saveSpecs(Long id, List<ProductSkuSpec> values) {
+        productSkuSpecMapper.delete(Wrappers.lambdaQuery(ProductSkuSpecDO.class).eq(ProductSkuSpecDO::getProductId, id));
+        values.forEach(value -> productSkuSpecMapper.insert(new ProductSkuSpecDO().setProductId(id)
+                .setPropertyId(value.propertyId()).setValueId(value.valueId())
+                .setPropertyName(value.propertyName()).setPropertyValue(value.valueName())));
+    }
+
+    @Override
+    public boolean referenced(Long propertyId, Long valueId, String name, String value) {
+        return productSkuSpecMapper.selectCount(Wrappers.lambdaQuery(ProductSkuSpecDO.class)
+                .and(query -> query.eq(ProductSkuSpecDO::getPropertyId, propertyId)
+                        .eq(valueId != null, ProductSkuSpecDO::getValueId, valueId)
+                        .or(legacy -> legacy.isNull(ProductSkuSpecDO::getPropertyId)
+                                .eq(ProductSkuSpecDO::getPropertyName, name)
+                                .eq(value != null, ProductSkuSpecDO::getPropertyValue, value)))) > 0;
     }
 }

@@ -47,7 +47,7 @@ public class StoreProductDetailQueryExe {
                 money(s.price()),
                 s.stock(),
                 s.image(),
-                s.properties()))
+                s.properties(), s.specValueIds()))
                 .toList());
     }
 }

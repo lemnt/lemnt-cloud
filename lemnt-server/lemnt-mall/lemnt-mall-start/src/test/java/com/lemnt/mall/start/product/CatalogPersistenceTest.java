@@ -557,4 +557,93 @@ class CatalogPersistenceTest {
         assertEquals(0, updated.skus().get(0).volume().compareTo(new BigDecimal("0.25")));
     }
 
+
+    /** 编号与名称逐项配对，不能依赖Map遍历顺序。 */
+    @Test
+    void dictionaryIdentitiesPersistWithCanonicalNamesAndProtectReferences() {
+        var service = components.get(ProductSpecService.class);
+        var color = service.create(new ProductSpecCreateCmd("颜色字典", null));
+        var size = service.create(new ProductSpecCreateCmd("尺寸字典", null));
+        var red = service.createValue(new ProductSpecValueCreateCmd(color.id(), "红色", null));
+        var large = service.createValue(new ProductSpecValueCreateCmd(size.id(), "大号", null));
+        var ids = Map.of(color.id(), red.id(), size.id(), large.id());
+        var saved = catalogService.createSpu(identitySpu("LINKED", identitySku("A", ids)));
+        var sku = catalogService.sku(saved.skus().get(0).id());
+        assertEquals(ids, sku.specValueIds());
+        assertEquals(Map.of("颜色字典", "红色", "尺寸字典", "大号"), sku.properties());
+        assertEquals(ids, catalogService.spu(saved.id()).skus().get(0).specValueIds());
+        assertEquals(ids, components.get(ProductManagementService.class).batchDetails(List.of(saved.id()))
+                .get(0).skus().get(0).specValueIds());
+        assertThrows(IllegalStateException.class, () -> service.deleteValue(red.id()));
+        assertThrows(IllegalStateException.class, () -> service.updateValue(
+                new ProductSpecValueUpdateCmd(red.id(), "已改名", null)));
+    }
+
+    /** 错误归属、未知编号、SKU规格项不一致全部拒绝，并且不创建半个商品。 */
+    @Test
+    void invalidDictionarySelectionIsRejectedBeforeAnyProductWrite() throws Exception {
+        var service = components.get(ProductSpecService.class);
+        var a = service.create(new ProductSpecCreateCmd("规格甲", null));
+        var b = service.create(new ProductSpecCreateCmd("规格乙", null));
+        var option = service.createValue(new ProductSpecValueCreateCmd(a.id(), "值甲", null));
+        long before = count("mall_product_spu");
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class, () -> catalogService.createSpu(
+                identitySpu("WRONG", identitySku("A", Map.of(b.id(), option.id())))));
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class, () -> catalogService.createSpu(
+                identitySpu("MISSING", identitySku("A", Map.of(a.id(), Long.MAX_VALUE)))));
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class, () -> catalogService.createSpu(
+                identitySpu("MIXED", identitySku("A", Map.of(a.id(), option.id())), identitySku("B", Map.of()))));
+        var forged = new ProductSku(null, null, "FORGED", "sku", BigDecimal.TEN, 1, null,
+                Map.of("规格甲", "伪造"), "ON_SHELF", null, null, Map.of(a.id(), option.id()));
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class, () -> catalogService.createSpu(identitySpu("FORGED", forged)));
+        assertEquals(before, count("mall_product_spu"));
+        assertEquals(0, count("mall_product_sku_spec"));
+    }
+
+    /** 历史同名数据不推断字典编号，只有显式选择后才建立关联。 */
+    @Test
+    void legacyPropertiesRemainUnlinkedUntilExplicitSelectionAndUpdateReplacesIdentity() {
+        var legacy = create("LEGACY-IDENTITY", draft("旧值", 5));
+        var id = legacy.skus().get(0).id();
+        assertNull(catalogService.sku(id).specValueIds());
+        var service = components.get(ProductSpecService.class);
+        var spec = service.create(new ProductSpecCreateCmd("颜色", null));
+        var value = service.createValue(new ProductSpecValueCreateCmd(spec.id(), "旧值", null));
+        assertNull(catalogService.sku(id).specValueIds());
+        var ids = Map.of(spec.id(), value.id());
+        var linked = new ProductSku(id, legacy.id(), "旧值", "sku", BigDecimal.TEN, 5, null, Map.of(),
+                "ON_SHELF", null, null, ids);
+        assertTrue(catalogService.updateSpu(new ProductSpu(legacy.id(), legacy.code(), legacy.name(), categoryId,
+                brandId, null, null, legacy.status(), List.of(linked))));
+        assertEquals(ids, catalogService.sku(id).specValueIds());
+        assertEquals(Map.of("颜色", "旧值"), catalogService.sku(id).properties());
+    }
+
+    private ProductSku identitySku(String code, Map<Long, Long> ids) {
+        return new ProductSku(null, null, code, "sku", BigDecimal.TEN, 5, null, Map.of(),
+                "ON_SHELF", null, null, ids);
+    }
+
+    private ProductSpu identitySpu(String code, ProductSku... skus) {
+        return new ProductSpu(null, code, "关联商品", categoryId, brandId, null, null, null, List.of(skus));
+    }
+
+    /** 第二个SKU写入失败时，主体、首个SKU及字典关系一起回滚。 */
+    @Test
+    void dictionaryIdentityWritesRollBackWithWholeProductOnLaterSkuFailure() throws Exception {
+        var service = components.get(ProductSpecService.class);
+        var spec = service.create(new ProductSpecCreateCmd("回滚规格", null));
+        var first = service.createValue(new ProductSpecValueCreateCmd(spec.id(), "甲", null));
+        var second = service.createValue(new ProductSpecValueCreateCmd(spec.id(), "乙", null));
+        try (var statement = schemaConnection.createStatement()) {
+            statement.execute("ALTER TABLE mall_product_sku ADD CONSTRAINT reject_second_spec CHECK(product_code <> 'SECOND-FAIL')");
+        }
+        assertThrows(RuntimeException.class, () -> catalogService.createSpu(identitySpu("ROLLBACK-SPEC",
+                identitySku("FIRST", Map.of(spec.id(), first.id())),
+                identitySku("SECOND-FAIL", Map.of(spec.id(), second.id())))));
+        assertEquals(0, count("mall_product_spu"));
+        assertEquals(0, count("mall_product_sku"));
+        assertEquals(0, count("mall_product_sku_spec"));
+        assertNotNull(service.createValue(new ProductSpecValueCreateCmd(spec.id(), "丙", null)));
+    }
 }

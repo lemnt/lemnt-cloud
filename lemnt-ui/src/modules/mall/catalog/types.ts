@@ -32,6 +32,7 @@ export interface BrandSaveRequest {
   status: TaxonomyStatus;
 }
 export interface Sku {
+  specValueIds?: Record<string, string> | null;
   weight: string | null;
   volume: string | null;
   id: string;
@@ -64,6 +65,7 @@ export interface SpuQuery {
   pageSize?: number;
 }
 export interface SkuCreateRequest {
+  specValueIds?: Record<string, string>;
   weight?: string;
   volume?: string;
   code: string;

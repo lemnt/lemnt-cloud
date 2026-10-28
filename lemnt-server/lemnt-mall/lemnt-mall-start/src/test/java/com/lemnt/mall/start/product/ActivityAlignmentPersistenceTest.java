@@ -93,7 +93,7 @@ class ActivityAlignmentPersistenceTest {
         var red = spu.skus().get(0);
         var blue = spu.skus().get(1);
         var items = List.of(new SettlementItem(red.id(), red.code(), red.name(), red.price(), 3, new BigDecimal("30.00"),
-                null, BigDecimal.ZERO, spu.id(), spu.name(), java.util.Map.of("颜色", "红色"), "original.png"),
+                null, BigDecimal.ZERO, spu.id(), spu.name(), List.of(new SettlementItem.Property(null, "颜色", null, "红色")), "original.png"),
                 new SettlementItem(blue.id(), blue.code(), blue.name(), blue.price(), 2, new BigDecimal("20.00")));
         var template = new CouponTemplate(2L, "C", "减3", "FIXED", BigDecimal.ZERO, new BigDecimal("3.00"),
                 null, null, 100, 1, now.minusDays(1), now.plusDays(1), true);
@@ -105,7 +105,7 @@ class ActivityAlignmentPersistenceTest {
         assertEquals(new BigDecimal("13.00"), quote.discountAmount());
         assertEquals(new BigDecimal("20.19"), quote.items().get(0).payAmount());
         assertEquals(spu.id(), quote.items().get(0).spuId());
-        assertEquals(java.util.Map.of("颜色", "红色"), quote.items().get(0).properties());
+        assertEquals(List.of(new SettlementItem.Property(null, "颜色", null, "红色")), quote.items().get(0).properties());
         assertEquals("original.png", quote.items().get(0).picUrl());
         assertEquals(quote.payableAmount(), quote.items().stream().map(SettlementItem::payAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add));

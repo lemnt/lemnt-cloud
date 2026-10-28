@@ -70,10 +70,16 @@ export interface Coupon {
   status: CouponStatus;
   orderNo: string | null;
 }
+export interface CheckoutProperty {
+  propertyId: string | null;
+  propertyName: string;
+  valueId: string | null;
+  valueName: string;
+}
 export interface CheckoutItem {
   spuId?: string | null;
   spuName?: string | null;
-  properties?: Record<string, string> | null;
+  properties?: CheckoutProperty[] | null;
   picUrl?: string | null;
   productId: string;
   productCode: string;

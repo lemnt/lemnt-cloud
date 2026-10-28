@@ -55,11 +55,17 @@ export type RefundStatus =
   | 'REFUNDING'
   | 'REFUNDED'
   | 'CANCELLED';
+export interface RefundProperty {
+  propertyId: string | null;
+  propertyName: string;
+  valueId: string | null;
+  valueName: string;
+}
 export interface RefundRequest {
   skuId?: string | null;
   spuId?: string | null;
   spuName?: string | null;
-  properties?: Record<string, string> | null;
+  properties?: RefundProperty[] | null;
   picUrl?: string | null;
   refundNo: string;
   orderNo: string;

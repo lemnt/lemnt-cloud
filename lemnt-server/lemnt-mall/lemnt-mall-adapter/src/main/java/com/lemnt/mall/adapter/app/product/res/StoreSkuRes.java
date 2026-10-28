@@ -22,5 +22,7 @@ public record StoreSkuRes(
         String image,
         @Schema(description = "规格属性名到值的映射")
         Map<String,
-        String> properties
+        String> properties,
+        @Schema(description = "规格编号到规格值编号，旧未关联记录为null")
+        Map<Long, Long> specValueIds
 ) implements Serializable {}

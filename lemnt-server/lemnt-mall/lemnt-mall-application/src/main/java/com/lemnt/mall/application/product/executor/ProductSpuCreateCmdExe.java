@@ -5,7 +5,6 @@ import com.lemnt.mall.application.product.converter.ProductCatalogDTOConverter;
 import com.lemnt.mall.application.product.dto.ProductSpuDTO;
 import com.lemnt.mall.application.product.service.ProductCatalogService;
 import com.lemnt.mall.application.product.service.ProductValidationService;
-import com.lemnt.mall.domain.product.model.ProductCatalogValidation;
 import com.lemnt.mall.domain.product.model.ProductSku;
 import com.lemnt.mall.domain.product.model.ProductSpu;
 
@@ -50,10 +49,9 @@ public class ProductSpuCreateCmdExe {
                 s.stock(),
                 s.image(),
                 s.properties(),
-                null, s.weight(), s.volume()))
+                null, s.weight(), s.volume(), s.specValueIds()))
                 .toList();
         var value =
-                ProductCatalogValidation.newSpu(
                 new ProductSpu(
                 null,
                 cmd.code(),
@@ -63,7 +61,7 @@ public class ProductSpuCreateCmdExe {
                 cmd.description(),
                 cmd.image(),
                 null,
-                drafts, cmd.deliveryTypes(), cmd.deliveryTemplateId()));
+                drafts, cmd.deliveryTypes(), cmd.deliveryTemplateId());
         catalogValidationService.enabledReferences(value.categoryId(), value.brandId());
         return ProductCatalogDTOConverter.spu(catalogService.createSpu(value));
     }

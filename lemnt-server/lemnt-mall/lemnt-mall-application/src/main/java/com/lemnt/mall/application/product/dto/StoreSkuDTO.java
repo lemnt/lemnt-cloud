@@ -12,5 +12,6 @@ public record StoreSkuDTO(
         int stock,
         String image,
         Map<String,
-        String> properties
+        String> properties,
+        Map<Long, Long> specValueIds
 ) implements java.io.Serializable {}

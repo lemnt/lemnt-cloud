@@ -39,7 +39,7 @@ public final class StoreResConverter {
         return v == null
                 ? null
                 : new StoreSkuRes(
-                v.id(), v.name(), v.price(), v.stock(), v.image(), v.properties());
+                v.id(), v.name(), v.price(), v.stock(), v.image(), v.properties(), v.specValueIds());
     }
 
     /**

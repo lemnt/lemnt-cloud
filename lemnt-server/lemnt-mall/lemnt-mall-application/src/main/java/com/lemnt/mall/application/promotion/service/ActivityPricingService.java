@@ -131,7 +131,9 @@ public class ActivityPricingService {
                 java.math.BigDecimal.ZERO.setScale(2),
                 i.spuId(),
                 i.spuName(),
-                i.properties(),
+                i.properties() == null ? null : i.properties().stream().map(snapshotProperty ->
+                        new SettlementItem.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 i.picUrl())).toList();
         return new SettlementQuote(pricedItems, original, original.subtract(paid), paid,
                 coupon == null ? null : coupon.id(), usePoint, givePoint);

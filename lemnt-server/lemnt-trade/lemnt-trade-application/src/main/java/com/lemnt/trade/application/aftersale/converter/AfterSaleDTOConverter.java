@@ -35,7 +35,9 @@ public final class AfterSaleDTOConverter {
                 value.skuId(),
                 value.spuId(),
                 value.spuName(),
-                value.properties(),
+                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
+                        new AfterSaleDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 value.picUrl());
     }
 }

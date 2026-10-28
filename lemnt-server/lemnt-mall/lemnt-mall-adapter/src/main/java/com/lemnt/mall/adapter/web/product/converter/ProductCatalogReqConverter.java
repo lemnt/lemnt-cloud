@@ -60,7 +60,7 @@ public final class ProductCatalogReqConverter {
                 s.price(),
                 s.stock(),
                 s.image(),
-                s.properties(), s.weight(), s.volume()))
+                s.properties(), s.weight(), s.volume(), s.specValueIds()))
                 .toList(), req.deliveryTypes(), req.deliveryTemplateId());
     }
 
@@ -72,7 +72,7 @@ public final class ProductCatalogReqConverter {
                 id, req.name(), req.categoryId(), req.brandId(), req.description(), req.image(),
                 req.skus().stream().map(sku -> new ProductSku(
                         sku.id(), id, sku.code(), sku.name(), sku.price(), sku.stock(), sku.image(),
-                        sku.properties(), "ON_SHELF", sku.weight(), sku.volume())).toList(), req.deliveryTypes(), req.deliveryTemplateId());
+                        sku.properties(), "ON_SHELF", sku.weight(), sku.volume(), sku.specValueIds())).toList(), req.deliveryTypes(), req.deliveryTemplateId());
     }
 
     /**

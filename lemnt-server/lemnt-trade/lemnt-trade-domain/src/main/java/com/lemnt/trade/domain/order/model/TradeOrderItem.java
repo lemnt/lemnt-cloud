@@ -1,6 +1,5 @@
 package com.lemnt.trade.domain.order.model;
 
-import java.util.Map;
 
 import java.math.BigDecimal;
 
@@ -18,7 +17,7 @@ public record TradeOrderItem(
         BigDecimal deliveryPrice,
         Long spuId,
         String spuName,
-        Map<String, String> properties,
+        java.util.List<Property> properties,
         String picUrl
 ) {
     /** 历史未保存商品元数据，保持为空，不查询现值补历史。 */
@@ -48,7 +47,7 @@ public record TradeOrderItem(
     }
 
     public TradeOrderItem {
-        properties = properties == null ? null : Map.copyOf(properties);
+        properties = properties == null ? null : java.util.List.copyOf(properties);
         deliveryPrice = deliveryPrice == null ? BigDecimal.ZERO.setScale(2) : deliveryPrice;
     }
 
@@ -70,4 +69,12 @@ public record TradeOrderItem(
             BigDecimal payAmount) {
         this(productId, productCode, productName, unitPrice, quantity, lineAmount, payAmount, BigDecimal.ZERO.setScale(2));
     }
+
+    /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
+    public record Property(
+            Long propertyId,
+            String propertyName,
+            Long valueId,
+            String valueName
+    ) implements java.io.Serializable {}
 }

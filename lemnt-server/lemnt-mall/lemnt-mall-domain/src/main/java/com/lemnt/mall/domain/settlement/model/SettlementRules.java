@@ -94,9 +94,14 @@ public final class SettlementRules {
                 value.append("|properties:null");
             } else {
                 value.append("|properties:").append(item.properties().size());
-                new java.util.TreeMap<>(item.properties()).forEach((name, propertyValue) -> {
-                    appendSnapshotText(value, name);
-                    appendSnapshotText(value, propertyValue);
+                item.properties().stream().sorted(java.util.Comparator
+                        .comparing(SettlementItem.Property::propertyName)
+                        .thenComparing(property -> property.propertyId(), java.util.Comparator.nullsFirst(Long::compareTo))
+                        .thenComparing(SettlementItem.Property::valueName)).forEach(property -> {
+                    value.append("|propertyId:").append(property.propertyId());
+                    appendSnapshotText(value, property.propertyName());
+                    value.append("|valueId:").append(property.valueId());
+                    appendSnapshotText(value, property.valueName());
                 });
             }
         }
