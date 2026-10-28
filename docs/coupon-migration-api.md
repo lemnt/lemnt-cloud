@@ -61,8 +61,8 @@ curl -X POST 'https://<API_HOST>/mall/admin/coupon-templates' \
 
 | 接口地址 | 请求方式 | 接口权限码 | 说明 |
 |---|---|---|---|
-| `/mall/admin/coupon-templates/{id}` | DELETE | mall:coupon-template:edit | 逻辑删除，不撤销已领券 |
-| `/mall/admin/members/{memberId}/coupons/{couponId}` | DELETE | mall:coupon:issue | 仅AVAILABLE、EXPIRED可撤回；LOCKED、USED拒绝 |
+| `/mall/admin/coupon-templates/{id}` | DELETE | mall:coupon-template:remove | 逻辑删除，不撤销已领券 |
+| `/mall/admin/members/{memberId}/coupons/{couponId}` | DELETE | mall:coupon:remove | 仅AVAILABLE、EXPIRED可撤回；LOCKED、USED拒绝 |
 
 | 参数名 | 类型 | 必填 | 位置 | 默认值 | 说明 |
 |---|---|---|---|---|---|
@@ -171,3 +171,5 @@ curl 'https://<API_HOST>/mall/admin/coupons?memberId=1&status=USED&pageNum=1&pag
 | rows[].terms及全部子字段 | object | 与第4节持券规则字段含义相同，使用本接口独立Res；旧快照缺失时可缺失，须先升级数据 |
 
 无效筛选返回422，数据库逻辑删除的券不计入分页总数；当前模板停用/删除不隐藏原持券记录。
+
+删除模板与撤回券分别使用 `mall:coupon-template:remove`、`mall:coupon:remove`，不把编辑或发放权限自动扩展为删除权限。菜单脚本只增加按钮定义，不自动授予任何角色。

@@ -3017,8 +3017,10 @@
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/dal/dataobject/order/TradeOrderLogDO.java",
       "sha256": "d5ee8882609485721a2ceff45a4061a0d729e0e4c038abe6ac6ba19d8df6afd6",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/dataobject/OrderLogDO.java",
+      "note": "已接创建/支付/发货/收货/取消/全额售后；后续调价/改址/评价随对应业务继续迁移",
+      "evidence": "migration-coupon-order-verification.json"
     },
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/dal/dataobject/order/TradeOrderDO.java",
@@ -4499,8 +4501,10 @@
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/service/coupon/CouponServiceImpl.java",
       "sha256": "1b88f2fc4b28e51253b40ec8dcc3cc24cf822db9c15bdca7a573b1693db8d799",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/coupon/service/CouponIssuanceService.java",
+      "note": "领券、持券、生命周期、计价已迁移并本地验证；批量发放、注册触发与App查询尚未全部迁移",
+      "evidence": "migration-coupon-order-verification.json"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/service/coupon/CouponTemplateService.java",
@@ -4811,14 +4815,18 @@
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/dataobject/coupon/CouponDO.java",
       "sha256": "1c364b5f3b2360ce368ae7843138291822ac8279327677e682bd4c1131d1c87c",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/coupon/dataobject/CouponDO.java",
+      "note": "规则快照、限领与有效期已落库；金额/状态/订单关联字段与源项目仍有明确映射差异",
+      "evidence": "migration-coupon-order-verification.json"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/dataobject/coupon/CouponTemplateDO.java",
       "sha256": "52c840bd76320f0f918e55cc2167a57c62b7141a4f86d6c5f27bf75cb2fc3b50",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/coupon/dataobject/CouponTemplateDO.java",
+      "note": "范围、限领、相对日期和使用计数已补；保留元单位及既有字段别名，遗留code仍待收敛",
+      "evidence": "migration-coupon-order-verification.json"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/dataobject/discount/DiscountActivityDO.java",
@@ -7581,5 +7589,6 @@
     "pay demo tables",
     "member SMS/WeChat auth per previous explicit constraint"
   ],
-  "architecture": "existing lemnt six-layer CQRS, per-table BaseMapper/Gateway and XML resultMap"
+  "architecture": "existing lemnt six-layer CQRS, per-table BaseMapper/Gateway and XML resultMap",
+  "progressNote": "F01/F02已有可运行纵向链路，不等于完整迁移完成；待办以27设计及30交付记录为准。"
 }

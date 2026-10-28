@@ -1,6 +1,7 @@
 # 商城复刻缺表清单
 
-> 2026-10-28 后续配送贯通已完成本地验证：商品模板/重量体积、本人地址、运费结算、订单冻结地址及部分退款见 [配送结算接口](delivery-checkout-api.md)。仍缺38张业务表；未做真实环境和渠道验收。
+> 2026-10-28 完整迁移批次新增 `trade_order_log` 并贯通真实订单操作，初始化表当前45张，仍无对应表为39张（37业务+2演示）；优惠券快照与规则及订单日志见 [优惠券接口](coupon-migration-api.md)、[操作日志接口](order-operation-log-api.md)。有表不代表完整功能已迁移。
+> 2026-10-28 后续配送贯通已完成本地验证：商品模板/重量体积、本人地址、运费结算、订单冻结地址及部分退款见 [配送结算接口](delivery-checkout-api.md)。配送批次时仍缺38张业务表，当前剩余以本页最上方更新为准；未做真实环境和渠道验收。
 
 > 2026-10-28 配送基础批次：V7 新增 trade_config、trade_delivery_express、trade_delivery_express_template、trade_delivery_express_template_charge、trade_delivery_express_template_free 共5张表，已配管理接口与计价服务。初始化表现为44张，参考无对应表从45降至40（38业务+2演示）。下文74/39/45是原始盘点基线；有表不代表结算链路或页面已完成。接口及当前边界见 [配送基础接口](trade-delivery-api.md)。
 
@@ -124,7 +125,7 @@
 | member_point_record、member_experience_record | member_asset_record | 两类流水合并；字段和业务语义须恢复，不算两张真正缺失表 |
 | product_property、product_property_value | mall_product_spec、mall_product_spec_value | 用户指定规格命名差异；不要重复创建同一业务表 |
 | trade_cart | mall_cart | 服务归属和命名差异，SPU/SKU 关联及字段仍有差异 |
-| promotion_coupon_template、promotion_coupon | mall_coupon_template、mall_coupon | 模板规则与持券快照不完整 |
+| promotion_coupon_template、promotion_coupon | mall_coupon_template、mall_coupon | 已补完整业务规则快照；部分App查询与注册触发仍在迁移 |
 
 完整 28 组映射和字段差异见 [字段对比](yudao-database-field-comparison.md)。
 

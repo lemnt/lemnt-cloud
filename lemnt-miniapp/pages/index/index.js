@@ -139,8 +139,32 @@ Page({
     const no = this.data.receipt.orderNo;
     const result = await this.client.order(no);
     if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换，请重新加载');
-    if (!result || result.orderNo !== no || !['RESERVING','PENDING_PAYMENT','PAID','SHIPPED','COMPLETED','CLOSED'].includes(result.status) || typeof result.payableAmount !== 'string' || !/^\d+\.\d{2}$/.test(result.payableAmount)) throw new Error('订单响应不合法');
+    if (!result || result.orderNo !== no || !['RESERVING','PENDING_PAYMENT','PAID','SHIPPED','COMPLETED','CLOSED','REFUNDED'].includes(result.status) || typeof result.payableAmount !== 'string' || !/^\d+\.\d{2}$/.test(result.payableAmount)) throw new Error('订单响应不合法');
     this.setData({ receipt: result, payment: null });
+  }); },
+  cancelOrder() { return this.operateOrder('cancel'); },
+  receiveOrder() { return this.operateOrder('receive'); },
+  operateOrder(kind) { return this.action(async member => {
+    const receipt = this.data.receipt;
+    if (!receipt || member !== this.receiptMember) throw new Error('请先查询本人订单');
+    const cancel = kind === 'cancel';
+    if (cancel ? !['RESERVING','PENDING_PAYMENT'].includes(receipt.status) : receipt.status !== 'SHIPPED') throw new Error('订单状态不允许此操作，请刷新核验');
+    const confirmation = await new Promise((resolve,reject) => wx.showModal({ title: cancel ? '取消订单' : '确认收货', content: cancel ? '确认取消该未支付订单？' : '确认已收到商品？', success:resolve, fail:reject }));
+    if (!confirmation.confirm) return;
+    if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换，请重新加载');
+    const result = cancel ? await this.client.cancelOrder(receipt.orderNo) : await this.client.receiveOrder(receipt.orderNo);
+    if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换，请重新加载');
+    if (result !== true) throw new Error('操作未确认，请先刷新订单核验');
+    this.setData({ receipt: {...receipt,status:cancel?'CLOSED':'COMPLETED'}, payment:null });
+    try {
+      const current = await this.client.order(receipt.orderNo);
+      if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换，请重新加载');
+      if (!current || current.orderNo !== receipt.orderNo || current.status !== (cancel?'CLOSED':'COMPLETED')) throw new Error('订单结果不一致');
+      this.setData({ receipt:current });
+    } catch (error) {
+      if (member !== getApp().globalData.memberSession?.memberId) throw error;
+      this.setData({ error:'操作已确认，订单刷新失败：'+error.message });
+    }
   }); },
   refreshLocalPayment() { return this.action(async member => {
     if (!this.data.receipt || member !== this.receiptMember) throw new Error('请先找回本人订单');

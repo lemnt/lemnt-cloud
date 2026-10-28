@@ -19,3 +19,8 @@
 - [完整迁移设计与清单](27-full-migration-design.md)
 - [优惠券快照迁移设计](28-full-coupon-design.md)
 - [优惠券当前接口](../../docs/coupon-migration-api.md)
+
+- [订单日志迁移设计](29-order-log-design.md)
+- [订单日志及本人操作接口](../../docs/order-operation-log-api.md)
+
+- [优惠券与订单日志实现及验证](30-coupon-order-delivery.md)

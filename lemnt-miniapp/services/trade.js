@@ -6,7 +6,7 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     const token = getMemberToken();
     if (!token) throw new Error('请先完成会员登录');
     const response = await request({
-      url: baseUrl.replace(/\/$/, '') + (/\/orders\/[^/]+\/(?:prepay|payment|cancel|receive)$/.test(path) ? '/trade/app' : '/mall/app') + path,
+      url: baseUrl.replace(/\/$/, '') + ((/\/orders\/[^/]+\/(?:prepay|payment|cancel|receive)$/.test(path) || path.startsWith('/after-sales/')) ? '/trade/app' : '/mall/app') + path,
       method, data, timeout: 15000,
       header: { Authorization: `Bearer ${token}` },
     });
@@ -59,6 +59,7 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     },
     paymentStatus: orderNo => call('/orders/' + order(orderNo) + '/payment'),
     cancelOrder: orderNo => call('/orders/' + order(orderNo) + '/cancel', 'POST'),
+    cancelAfterSale: no => call('/after-sales/' + order(no) + '/cancel', 'POST'),
     receiveOrder: orderNo => call('/orders/' + order(orderNo) + '/receive', 'POST'),
   };
 }

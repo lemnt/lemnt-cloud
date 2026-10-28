@@ -203,13 +203,27 @@
     "trade_brokerage_user",
     "trade_brokerage_withdraw",
     "trade_delivery_pick_up_store",
-    "trade_order_log",
     "trade_statistics"
   ],
-  "remainingBusinessTables": 38,
+  "remainingBusinessTables": 37,
   "remainingDemoTables": 2,
   "deliveryJoinedToOrderPricing": true,
   "realDatabaseMigrationExecuted": false,
   "deliveryEvidence": "delivery-checkout-verification.json",
-  "deliveryScope": "ordinary express, local persistence and controlled RPC/channel boundaries"
+  "deliveryScope": "ordinary express, local persistence and controlled RPC/channel boundaries",
+  "currentLocalTables": 45,
+  "orderLogBatch": {
+    "table": "trade_order_log",
+    "schema": "lemnt-server/lemnt-trade/sql/V8__order_log.sql",
+    "flows": [
+      "create",
+      "pay",
+      "ship",
+      "receive",
+      "cancel",
+      "full_refund"
+    ],
+    "historicalLogsBackfilled": false,
+    "realDatabaseMigrationExecuted": false
+  }
 }

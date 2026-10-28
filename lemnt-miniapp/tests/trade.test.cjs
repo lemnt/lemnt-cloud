@@ -48,3 +48,7 @@ test('终止请求只传结算单编号和原请求号，不发送会员或订�
  const {client,calls}=setup();await client.abandonCheckout({settlementId:'12345678-1234-1234-1234-123456789abc',requestNo:'R1',memberId:'999',status:'CLOSED'});
  assert.equal(calls[0].url,'https://example.test/mall/app/checkout/abandon');assert.deepEqual(calls[0].data,{settlementId:'12345678-1234-1234-1234-123456789abc',requestNo:'R1'});
 });
+
+test('会员取消和收货仅发送订单路径，不传管理员或会员身份字段',async()=>{const {client,calls}=setup();await client.cancelOrder('TR1');await client.receiveOrder('TR1');assert.equal(calls[0].url,'https://example.test/trade/app/orders/TR1/cancel');assert.equal(calls[1].url,'https://example.test/trade/app/orders/TR1/receive');assert.equal(calls[0].method,'POST');assert.equal(calls[1].method,'POST');assert.equal(calls[0].data,undefined);assert.equal(calls[1].data,undefined);});
+
+test('取消售后使用本人交易接口，只发送售后单号路径',async()=>{const {client,calls}=setup();await client.cancelAfterSale('RF1');assert.equal(calls[0].url,'https://example.test/trade/app/after-sales/RF1/cancel');assert.equal(calls[0].method,'POST');assert.equal(calls[0].data,undefined);assert.equal(calls[0].header.Authorization,'Bearer member-token');});
