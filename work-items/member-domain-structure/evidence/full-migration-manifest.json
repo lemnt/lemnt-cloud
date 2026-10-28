@@ -3012,8 +3012,9 @@
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/dal/dataobject/order/TradeOrderItemDO.java",
       "sha256": "cd8bbcb623ad8a85ad8fc5079db1df007a4a8f2c3344eed52008db92b68243f0",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/dataobject/TradeOrderItemDO.java",
+      "note": "已贯通SPU/SKU、名称/值规格Map和图片；源Property字典ID、其他金额及状态字段尚未全迁移，见34。"
     },
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/dal/dataobject/order/TradeOrderLogDO.java",
@@ -3065,7 +3066,7 @@
       "sha256": "f26310fd4dc417a8f8ddbdb864ee8402ba5061940e37ca8f9c433f56d70bab96",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/aftersale/dataobject/AfterSaleDO.java",
-      "note": "标准表/主键、日志与取消链路已实现；源字段仍未全量对齐，见after-sale-fields-20261028.json"
+      "note": "售后读取原订单商品快照并保存；规格Property ID和其他申请资料字段仍待迁移，见34。"
     },
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/dal/dataobject/cart/CartDO.java",
@@ -7593,5 +7594,5 @@
     "member SMS/WeChat auth per previous explicit constraint"
   ],
   "architecture": "existing lemnt six-layer CQRS, per-table BaseMapper/Gateway and XML resultMap",
-  "progressNote": "F01/F02已有可运行纵向链路，不等于完整迁移完成；待办以27设计及30交付记录为准。"
+  "progressNote": "F01/F02已有可运行纵向链路，不等于完整迁移完成；当前补充订单/售后商品快照，详见34交付；结构化规格ID及其余业务仍待迁移。"
 }

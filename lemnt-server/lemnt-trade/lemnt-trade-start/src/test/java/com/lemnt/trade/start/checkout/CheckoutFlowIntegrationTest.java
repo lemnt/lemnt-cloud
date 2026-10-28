@@ -967,6 +967,8 @@ class CheckoutFlowIntegrationTest {
     void deliveryQuotePersistsRecipientAndFreightAndPartialRefundUsesFrozenPaidLine() throws Exception {
         deliveryPointGift = true;
         configureDeliveryProduct();
+        sql(mallSource, "INSERT INTO mall_product_sku_spec(product_id,property_name,property_value) VALUES("
+                + sku + ",'尺码','L')");
         cartService.saveCart(1L, sku, 2, true);
         var service = new com.lemnt.mall.application.settlement.service.SettlementService(
                 checkoutService, orderRpc, placement, settlements);
@@ -980,6 +982,8 @@ class CheckoutFlowIntegrationTest {
         assertEquals("原始地址", saved.delivery().receiverDetailAddress());
         assertEquals(new BigDecimal("6.50"), saved.items().get(0).deliveryPrice());
         assertEquals(saved.totalAmount(), saved.items().get(0).payAmount());
+        assertEquals("快递商品", saved.items().get(0).spuName());
+        assertEquals(Map.of("尺码", "L"), saved.items().get(0).properties());
         deliveryAddress = new com.lemnt.member.client.dto.MemberAddressDTO(
                 7L, 1L, "新收件人", "13800000000", 110101L, "修改后的地址");
         assertEquals(receipt, service.submit(1L, cached.settlementId(), "DELIVERY-ORDER"));
@@ -2574,6 +2578,14 @@ class CheckoutFlowIntegrationTest {
         assertEquals("评价商品", item.spuName());
         assertEquals(Map.of("颜色", "黑色"), item.properties());
         assertEquals("https://example.com/old.png", item.picUrl());
+        var changedItem = new com.lemnt.trade.domain.order.model.TradeOrderItem(item.productId(), item.productCode(),
+                item.productName(), item.unitPrice(), item.quantity(), item.lineAmount(), item.payAmount(),
+                item.deliveryPrice(), item.spuId(), item.spuName(), item.properties(), "https://example.com/forged.png");
+        var changedOrder = new com.lemnt.trade.domain.order.model.TradeOrder(order.id(), order.orderNo(), order.memberId(),
+                order.totalAmount(), order.status(), List.of(changedItem), order.createTime(), order.usePoint(),
+                order.givePoint(), order.delivery());
+        assertThrows(IllegalStateException.class, () -> tradeComponents
+                .get(com.lemnt.trade.application.order.service.OrderSubmissionService.class).create(changedOrder));
         sql(mallSource, "UPDATE mall_product_spu SET name='已改商品' WHERE id=" + spuId);
         sql(mallSource, "UPDATE mall_product_sku SET main_image='https://example.com/new.png' WHERE id=" + sku);
         sql(mallSource, "UPDATE mall_product_sku_spec SET property_value='白色' WHERE product_id=" + sku);
@@ -2597,8 +2609,9 @@ class CheckoutFlowIntegrationTest {
         var token = SettlementRules.quoteToken(placement.quote(new SettlementQuoteQry(1L, List.of(sku), null)));
         sql(mallSource, "INSERT INTO mall_product_sku_spec(product_id,property_name,property_value) VALUES("
                 + sku + ",'颜色','新规格')");
-        assertThrows(RuntimeException.class, () -> placement.checkoutCart(
+        var failure = assertThrows(IllegalStateException.class, () -> placement.checkoutCart(
                 new SettlementOrderSubmitCmd(1L, "CHANGED-SPEC", List.of(sku), null, token)));
+        assertEquals("价格或数量已变化，请重新预览并确认", failure.getMessage());
         assertEquals(0, count("trade_order"));
     }
 

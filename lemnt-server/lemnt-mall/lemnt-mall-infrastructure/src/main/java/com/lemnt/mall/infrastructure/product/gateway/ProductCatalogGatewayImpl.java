@@ -1,5 +1,7 @@
 package com.lemnt.mall.infrastructure.product.gateway;
 
+import com.lemnt.mall.domain.product.gateway.ProductSkuSpecGateway;
+
 import com.lemnt.mall.domain.product.gateway.ProductCatalogGateway;
 import com.lemnt.mall.domain.product.gateway.ProductSkuGateway;
 import com.lemnt.mall.domain.product.gateway.ProductSpuGateway;
@@ -21,7 +23,7 @@ public class ProductCatalogGatewayImpl implements ProductCatalogGateway {
     private final ProductSkuGateway productSkuGateway;
 
     private final ProductSpuGateway productSpuGateway;
-    private final com.lemnt.mall.domain.product.gateway.ProductSkuSpecGateway productSkuSpecGateway;
+    private final ProductSkuSpecGateway productSkuSpecGateway;
 
     @Override
     public ProductSnapshot findOnShelf(Long id) {
@@ -43,7 +45,8 @@ public class ProductCatalogGatewayImpl implements ProductCatalogGateway {
                     sku == null ? null : sku.weight(), sku == null ? null : sku.volume(),
                     sku == null ? null : sku.spuId(), spu == null ? null : spu.name(),
                     properties.getOrDefault(value.id(), Map.of()),
-                    sku != null && sku.image() != null && !sku.image().isBlank() ? sku.image() : spu == null ? null : spu.image());
+                    sku != null && sku.image() != null && !sku.image().isBlank()
+                            ? sku.image() : spu == null ? null : spu.image());
         }));
     }
 }

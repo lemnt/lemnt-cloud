@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-28",
+  "scope": "F02原订单商品快照贯通，完整迁移仍未完成",
+  "backend": {
+    "status": "PASS",
+    "tests": 265,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cleanVerifyLog": "/tmp/snapshot-final-verify.log",
+    "finalVerifyLog": "/tmp/snapshot-verified.log"
+  },
+  "react": {
+    "status": "PASS",
+    "tests": 167,
+    "testLog": "/tmp/snapshot-ui-tests-final.log",
+    "typeAndBuildLog": "/tmp/snapshot-ui-build.log",
+    "lintLog": "/tmp/snapshot-ui-lint.log",
+    "formatLog": "/tmp/snapshot-ui-format.log"
+  },
+  "miniapp": {
+    "status": "PASS",
+    "tests": 81,
+    "log": "/tmp/snapshot-miniapp-tests.log"
+  },
+  "localInitTables": 46,
+  "remainingBusinessTablesWithoutCorrespondingTable": 36,
+  "realDatabaseMigrationExecuted": false,
+  "browserOrDeviceEndToEndRun": false,
+  "realChannelSdkIntegrated": false,
+  "agentCommitted": false,
+  "agentPushed": false,
+  "observedHEADAtStart": "1396834b98f72d8fe872d742ca7aa8bb1e41eb6b",
+  "observedHEADAtEnd": "d4b359e2b40442adda5639129494cc706fff1f85",
+  "headNote": "工作区被外部更新，本代理没有执行git提交；验证基于最终工作区",
+  "remainingDifferences": [
+    "properties是规格名称/值Map，未包含源Property的propertyId/valueId",
+    "订单其余金额/状态和售后申请资料仍待迁移",
+    "36张业务缺表及完整App页面未完成"
+  ],
+  "fileSHA256": {
+    "lemnt-server/lemnt-trade/sql/V1__trade_order.sql": "5fe0b92bd2c589d0662d2533a344d47186fa4653782f674df6ec899f4aae3e45",
+    "lemnt-server/lemnt-trade/sql/V5__order_fulfillment.sql": "97ad63892e557addf29830c3fa51bb72441dec62d8e9fa4a9fba104188e3bac6",
+    "lemnt-server/lemnt-trade/sql/upgrade/order_product_snapshot.sql": "5bfba2ebfd127290d4832da0814db1026d3fd37c87efe3ab6ea670c0a7a8aa16",
+    "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/converter/OrderItemConverter.java": "fa90d0f6fadab552cada6f275f906a0dfb6d02d69f2aecc248218232a1376eb2",
+    "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/aftersale/converter/AfterSaleConverter.java": "61f5cba21424398649295eac76beca7540f933cf819774af473cb21c7e94c612",
+    "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutFlowIntegrationTest.java": "e00847443fa5e0ed5ac2002e6597dcbfb13ee3566b163e9cdf7111b1df66ed2b",
+    "lemnt-ui/src/modules/trade/fulfillment/fulfillmentDecoders.ts": "1513de53e4510ee0b067027c54834cc6f5bfc3d7d024378ea79d8a3f1cd68f43"
+  },
+  "sourceSHA256": {
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/dal/dataobject/order/TradeOrderItemDO.java": "cd8bbcb623ad8a85ad8fc5079db1df007a4a8f2c3344eed52008db92b68243f0",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/dal/dataobject/aftersale/AfterSaleDO.java": "f26310fd4dc417a8f8ddbdb864ee8402ba5061940e37ca8f9c433f56d70bab96"
+  }
+}

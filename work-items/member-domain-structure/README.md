@@ -28,3 +28,7 @@
 - [售后标准表与日志设计](31-aftersale-log-design.md)
 - [售后迁移交付与验证](32-aftersale-log-delivery.md)
 - [售后当前接口](../../docs/after-sale-log-api.md)
+
+- [原订单商品快照设计](33-order-product-snapshot-design.md)
+- [商品快照交付与验证](34-order-product-snapshot-delivery.md)
+- [订单与售后快照接口](../../docs/order-product-snapshot-api.md)

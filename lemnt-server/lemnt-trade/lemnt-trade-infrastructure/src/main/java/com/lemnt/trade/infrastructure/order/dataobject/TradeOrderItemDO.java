@@ -1,5 +1,7 @@
 package com.lemnt.trade.infrastructure.order.dataobject;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+
 import com.lemnt.common.infrastructure.domain.BaseDO;
 
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -24,7 +26,7 @@ public class TradeOrderItemDO extends BaseDO {
     private Long id;
     private Long orderId;
     /** 既有Java productId明确对应SKU，只存sku_id一列。 */
-    @com.baomidou.mybatisplus.annotation.TableField("sku_id")
+    @TableField("sku_id")
     private Long productId;
     /** 下单时SPU编号及名称。 */
     private Long spuId;

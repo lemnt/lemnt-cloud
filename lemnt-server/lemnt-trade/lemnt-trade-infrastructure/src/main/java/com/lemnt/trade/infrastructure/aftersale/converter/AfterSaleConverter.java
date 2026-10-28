@@ -1,5 +1,13 @@
 package com.lemnt.trade.infrastructure.aftersale.converter;
 
+import java.util.TreeMap;
+
+import java.util.Map;
+
+import com.alibaba.fastjson2.TypeReference;
+
+import com.alibaba.fastjson2.JSON;
+
 import com.lemnt.trade.domain.aftersale.model.AfterSale;
 import com.lemnt.trade.infrastructure.aftersale.dataobject.AfterSaleDO;
 
@@ -16,8 +24,8 @@ public final class AfterSaleConverter {
                 value.getReturnCarrierCode(), value.getReturnTrackingNo(), value.getRequestedAt(), value.getDecidedAt(),
                 value.getReturnShippedAt(), value.getReturnReceivedAt(), value.getId(), value.getOrderId(),
                 value.getRefundTime(), value.getAuditUserId(), value.getSkuId(), value.getSpuId(), value.getSpuName(),
-                value.getProperties() == null ? null : com.alibaba.fastjson2.JSON.parseObject(value.getProperties(),
-                        new com.alibaba.fastjson2.TypeReference<java.util.Map<String, String>>() {}), value.getPicUrl());
+                value.getProperties() == null ? null : JSON.parseObject(value.getProperties(),
+                        new TypeReference<Map<String, String>>() {}), value.getPicUrl());
     }
 
     /** 转换售后写入字段。 */
@@ -30,7 +38,8 @@ public final class AfterSaleConverter {
                 .setSkuId(value.skuId())
                 .setSpuId(value.spuId())
                 .setSpuName(value.spuName())
-                .setProperties(value.properties() == null ? null : com.alibaba.fastjson2.JSON.toJSONString(new java.util.TreeMap<>(value.properties())))
+                .setProperties(value.properties() == null ? null
+                        : JSON.toJSONString(new TreeMap<>(value.properties())))
                 .setPicUrl(value.picUrl())
                 .setRefundNo(value.refundNo())
                 .setOrderNo(value.orderNo())
