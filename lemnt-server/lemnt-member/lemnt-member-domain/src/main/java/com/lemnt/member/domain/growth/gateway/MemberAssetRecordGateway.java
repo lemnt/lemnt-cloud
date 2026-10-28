@@ -42,4 +42,6 @@ public interface MemberAssetRecordGateway {
      * 查询会员资产记录详情。
      */
     AssetRecord assetsDetail(Long id);
+    /** 同一订单已发生的售后资产回退量，调用方持有会员行锁。 */
+    long tradeReturns(Long memberId, String assetType, String bizType, String orderNo);
 }

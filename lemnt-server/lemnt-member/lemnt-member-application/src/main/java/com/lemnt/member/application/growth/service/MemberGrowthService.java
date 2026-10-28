@@ -111,11 +111,12 @@ public class MemberGrowthService {
                     .filter(v -> v.status() == 1 && v.experience() <= balance)
                     .max(Comparator.comparing(Level::level))
                     .orElse(null);
-            if (best != null && !Objects.equals(best.id(), user.levelId())) {
-                memberUserGateway.assignLevel(memberId, best.id());
+            Long nextLevelId = best == null ? null : best.id();
+            if (!Objects.equals(nextLevelId, user.levelId())) {
+                memberUserGateway.assignLevel(memberId, nextLevelId);
                 memberLevelRecordGateway.levelRecord(
                         new LevelRecord(
-                                null, memberId, best.id(), balance, reason, memberUserGateway.now()));
+                                null, memberId, nextLevelId, balance, reason, memberUserGateway.now()));
             }
         }
         return memberAssetRecordGateway.assetRequest(memberId, type, bizType, key);
@@ -320,5 +321,82 @@ public class MemberGrowthService {
         }
         memberConfigGateway.configSave(v);
         return true;
+    }
+    /** 订单创建、支付、关闭和售后资产写入同一会员事务，重复回调按业务编号核对。 */
+    @Transactional(rollbackFor = Exception.class)
+    public void tradeAsset(com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd cmd) {
+        if (cmd == null || cmd.usePoint() < 0 || cmd.givePoint() < 0 || cmd.paidFen() <= 0
+                || cmd.refundFen() < 0 || cmd.refundFen() > cmd.paidFen()) {
+            throw new ServiceException("交易权益参数不合法", 400);
+        }
+        String orderNo = MemberRules.text(cmd.orderNo(), 40);
+        var member = lock(cmd.memberId());
+        String reason = "订单权益:" + cmd.usePoint() + ":" + cmd.givePoint() + ":" + cmd.paidFen();
+        switch (cmd.operation()) {
+            case "CREATE" -> {
+                if (memberAssetRecordGateway.assetRequest(cmd.memberId(), "POINT", "TRADE_CLOSED", orderNo) != null) {
+                    throw new ServiceException("订单已经关闭，不能再抵扣积分", 409);
+                }
+                if (cmd.usePoint() > 0) {
+                    adjust(cmd.memberId(), "POINT", -cmd.usePoint(), "TRADE_USE", orderNo, reason, false, false);
+                }
+            }
+            case "PAID" -> {
+                if (cmd.usePoint() > 0 && memberAssetRecordGateway.assetRequest(
+                        cmd.memberId(), "POINT", "TRADE_USE", orderNo) == null) {
+                    throw new ServiceException("订单抵扣积分尚未确认", 409);
+                }
+                if (cmd.givePoint() > 0) {
+                    adjust(cmd.memberId(), "POINT", cmd.givePoint(), "TRADE_GIVE", orderNo, reason, false, false);
+                }
+                adjust(cmd.memberId(), "EXPERIENCE", cmd.paidFen(), "TRADE_EXPERIENCE", orderNo, reason, false, true);
+            }
+            case "CLOSED" -> {
+                // 零变更终态记录阻止迟到的创建调用，不增加技术表。
+                adjust(cmd.memberId(), "POINT", 0, "TRADE_CLOSED", orderNo, reason, true, false);
+                var used = memberAssetRecordGateway.assetRequest(cmd.memberId(), "POINT", "TRADE_USE", orderNo);
+                if (used != null) {
+                    adjust(cmd.memberId(), "POINT", -used.delta(), "TRADE_USE_CANCEL", orderNo, reason, false, false);
+                }
+            }
+            case "REFUND" -> {
+                String refundNo = MemberRules.text(cmd.refundNo(), 40);
+                String key = MemberRules.text(orderNo + ":" + refundNo, 64);
+                String refundReason = reason + ":" + cmd.refundFen() + ":" + cmd.fullRefund();
+                returnTradeAsset(cmd.memberId(), "POINT", "TRADE_USE", "TRADE_USE_RETURN", orderNo,
+                        key, cmd.refundFen(), cmd.paidFen(), cmd.fullRefund(), false, refundReason);
+                returnTradeAsset(cmd.memberId(), "POINT", "TRADE_GIVE", "TRADE_GIVE_RETURN", orderNo,
+                        key, cmd.refundFen(), cmd.paidFen(), cmd.fullRefund(), true, refundReason);
+                returnTradeAsset(cmd.memberId(), "EXPERIENCE", "TRADE_EXPERIENCE", "TRADE_EXPERIENCE_RETURN",
+                        orderNo, key, cmd.refundFen(), cmd.paidFen(), cmd.fullRefund(), true, refundReason);
+            }
+            default -> throw new ServiceException("交易权益操作不合法", 400);
+        }
+    }
+
+    /** 按已记录的原始权益回退；最终整单退款处理分次取整尾差，不回退其他订单权益。 */
+    private void returnTradeAsset(Long memberId, String type, String originalType, String returnType,
+            String orderNo, String key, long refundedFen, long paidFen, boolean fullRefund,
+            boolean reclaim, String reason) {
+        var previous = memberAssetRecordGateway.assetRequest(memberId, type, returnType, key);
+        if (previous != null) {
+            if (!reason.equals(previous.reason())) { throw new ServiceException("售后权益内容不一致", 409); }
+            return;
+        }
+        var original = memberAssetRecordGateway.assetRequest(memberId, type, originalType, orderNo);
+        if (original == null) { return; }
+        long total = Math.abs(original.delta());
+        long returned = Math.abs(memberAssetRecordGateway.tradeReturns(memberId, type, returnType, orderNo));
+        if (returned > total) { throw new ServiceException("历史权益回退超过原记录", 409); }
+        long planned = fullRefund ? total - returned : java.math.BigInteger.valueOf(total)
+                .multiply(java.math.BigInteger.valueOf(refundedFen)).divide(java.math.BigInteger.valueOf(paidFen))
+                .longValueExact();
+        long delta = Math.min(total - returned, planned);
+        if (reclaim) {
+            var user = lock(memberId);
+            // 已使用的赠送权益不产生负余额，也不阻塞原支付退款。
+            delta = -Math.min(delta, "POINT".equals(type) ? user.points() : user.experience());
+        }
+        adjust(memberId, type, delta, returnType, key, reason, true, "EXPERIENCE".equals(type));
     }
 }

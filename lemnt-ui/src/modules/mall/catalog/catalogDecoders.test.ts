@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { decodeCategory, decodeId, decodeList, decodeSku } from './catalogDecoders';
+import { decodeCategory, decodeId, decodeList, decodeSku, decodeSpu } from './catalogDecoders';
 import { editablePrice } from './catalogValidation';
 it('兼容服务端的长整型序列化，并拒绝已经丢失精度的数值编号', () => {
   expect(decodeId(42)).toBe('42');
@@ -25,4 +25,60 @@ it('保留服务端 BigDecimal 字符串，不静默转成浮点金额', () => {
 });
 it('缺少列表字段时明确失败，不能伪装成空列表', () => {
   expect(() => decodeList(undefined, decodeCategory)).toThrow();
+});
+
+it('回收站只用于 SPU，SKU 和已删除商品不能作为正常商品返回', () => {
+  const spu = {
+    id: 1,
+    code: 'P1',
+    name: '商品',
+    categoryId: 1,
+    brandId: 1,
+    status: 'RECYCLED',
+    skus: [],
+  };
+  expect(decodeSpu(spu).status).toBe('RECYCLED');
+  expect(() => decodeSpu({ ...spu, status: 'DELETED' })).toThrow();
+  const sku = {
+    id: 1,
+    code: 'S1',
+    name: '规格',
+    price: '1.00',
+    stock: 0,
+    properties: {},
+    status: 'RECYCLED',
+  };
+  expect(() => decodeSku(sku)).toThrow();
+});
+
+it('配送模板及重量体积保留精确字符串，拒绝未知配送方式', () => {
+  const sku = {
+    id: 1,
+    spuId: 2,
+    code: 'SKU',
+    name: '规格',
+    price: '10.00',
+    stock: 2,
+    status: 'ON_SHELF',
+    properties: {},
+    weight: '1.250000',
+    volume: '0.125000',
+  };
+  const product = {
+    id: 2,
+    code: 'SPU',
+    name: '商品',
+    categoryId: 1,
+    brandId: 1,
+    status: 'ON_SHELF',
+    skus: [sku],
+    deliveryTypes: [1],
+    deliveryTemplateId: '99',
+  };
+  const value = decodeSpu(product);
+  expect(value.deliveryTemplateId).toBe('99');
+  expect(value.skus[0].weight).toBe('1.250000');
+  expect(value.skus[0].volume).toBe('0.125000');
+  expect(() => decodeSpu({ ...product, deliveryTypes: [3] })).toThrow();
+  expect(() => decodeSku({ ...sku, weight: 1.25 })).toThrow();
 });

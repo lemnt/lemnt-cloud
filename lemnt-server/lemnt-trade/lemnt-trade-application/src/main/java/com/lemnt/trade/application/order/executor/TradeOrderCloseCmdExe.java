@@ -1,71 +1,36 @@
 package com.lemnt.trade.application.order.executor;
 
-import com.lemnt.trade.application.order.service.OrderPersistenceService;
-import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
-import com.lemnt.trade.domain.order.model.TradeOrder;
-import com.lemnt.trade.domain.outbox.gateway.TradeOutboxGateway;
-import com.lemnt.trade.domain.payment.gateway.PaymentChannelCloseGateway;
-import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.trade.domain.order.model.TradeOperator;
+
+
+import com.lemnt.trade.application.order.service.OrderCloseService;
+import com.lemnt.trade.application.order.service.OrderRemoteService;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.Set;
-import java.util.UUID;
-
-/**
- * 交易订单关闭命令执行器。
- */
+/** 关单本地事务提交后，异步发送库存与优惠券统一回滚补偿。 */
 @Component
 @RequiredArgsConstructor
 public class TradeOrderCloseCmdExe {
-    private final OrderPersistenceService orderPersistenceService;
-    private final TradeOrderGateway tradeOrderGateway;
-    private final TradeOutboxGateway outbox;
-    private final TradePaymentGateway payments;
-    private final PaymentChannelCloseGateway channels;
+    private final OrderCloseService orders;
+    private final OrderRemoteService remotes;
 
-    /**
-     * Close the order and durably record the inventory release in one local transaction. No remote
-     * inventory call is made before the transaction commits.
-     */
-    @Transactional(rollbackFor = Exception.class)
+    /** 关闭本地订单事务结束后再提交统一补偿消息。 */
     public boolean execute(String orderNo) {
-        if (orderNo == null || orderNo.isBlank()) {
-            throw new IllegalArgumentException("订单号不能为空");
-        }
-        TradeOrder order = orderPersistenceService.findByOrderNoForUpdate(orderNo);
-        if (order == null) {
-            throw new IllegalArgumentException("订单不存在");
-        }
-        if ("CLOSED".equals(order.status())) {
-            return true;
-        }
-        if (!Set.of("PENDING_PAYMENT", "RESERVING").contains(order.status())) {
+        if (!orders.execute(orderNo)) {
             return false;
         }
-        for (var payment : payments.findByOrderNo(orderNo)) {
-            if ("CLOSED".equals(payment.status())) {
-                continue;
-            }
-            if (!"WAITING".equals(payment.status()) || !channels.closeUnpaid(payment)) {
-                return false;
-            }
-            if (!payments.markClosed(payment.paymentNo())) {
-                throw new IllegalStateException("支付单状态变化，请重试关单");
-            }
-        }
-        if (!tradeOrderGateway.transitionStatus(orderNo, order.status(), "CLOSED")) {
+        remotes.closed(orderNo);
+        return true;
+    }
+    /** 本人取消未支付订单，事务提交后发送统一回滚补偿。 */
+    public boolean executeForMember(Long memberId, String orderNo) {
+        if (!orders.execute(orderNo, TradeOperator.member(memberId))) {
             return false;
         }
-        outbox.append(
-                UUID.randomUUID().toString(),
-                "TRADE_ORDER",
-                orderNo,
-                "TRADE_ORDER_CLOSED",
-                "{\"orderNo\":\"" + orderNo + "\"}");
+        remotes.closed(orderNo);
         return true;
     }
 }

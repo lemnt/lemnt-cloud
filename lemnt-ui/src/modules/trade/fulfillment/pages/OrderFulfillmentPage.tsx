@@ -1,5 +1,6 @@
 import styles from '../fulfillment.module.css';
 import { useState } from 'react';
+import OrderLogPanel from './OrderLogPanel';
 import {
   PageContainer,
   ProTable,
@@ -7,27 +8,16 @@ import {
   ProFormTextArea,
   type ProColumns,
 } from '@ant-design/pro-components';
-import {
-  Alert,
-  App,
-  Button,
-  Drawer,
-  Descriptions,
-  Popconfirm,
-  Result,
-  Space,
-  Spin,
-  Table,
-} from 'antd';
+import { Alert, App, Button, Drawer, Descriptions, Result, Space, Spin, Table, Image } from 'antd';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AdminModalForm } from '@/shared/components/AdminModalForm';
 import { usePermission } from '@/shared/hooks/usePermission';
 import { checkoutStatusEnum } from '../../../mall/checkout/constants';
 import { checkoutKeys } from '../../../mall/checkout/hooks/checkoutKeys';
-import { canShip, canRequestRefund, fulfillmentKeys } from '../constants';
-import { getOrders, getOrder, shipOrder, receiveOrder, requestRefund } from '../api/fulfillmentApi';
-import type { OrderSummary, PageQuery, ShipmentRequest, RefundCreateRequest } from '../types';
-type Operation = { kind: 'ship' | 'refund'; orderNo: string; requestNo: string };
+import { canShip, fulfillmentKeys } from '../constants';
+import { getOrders, getOrder, shipOrder } from '../api/fulfillmentApi';
+import type { OrderSummary, PageQuery, ShipmentRequest } from '../types';
+type Operation = { kind: 'ship'; orderNo: string; requestNo: string };
 export default function OrderFulfillmentPage() {
   const { can } = usePermission();
   const { message } = App.useApp();
@@ -49,11 +39,6 @@ export default function OrderFulfillmentPage() {
   const ship = useMutation({
     mutationFn: ({ no, data }: { no: string; data: ShipmentRequest }) => shipOrder(no, data),
   });
-  const refund = useMutation({
-    mutationFn: ({ no, data }: { no: string; data: RefundCreateRequest }) =>
-      requestRefund(no, data),
-  });
-  const receive = useMutation({ mutationFn: receiveOrder });
   async function refresh() {
     try {
       await Promise.all([
@@ -100,36 +85,6 @@ export default function OrderFulfillmentPage() {
           >
             发货
           </Button>
-        ),
-        can('trade:refund:request') && canRequestRefund(row) && (
-          <Button
-            key="refund"
-            type="link"
-            onClick={() =>
-              setOperation({ kind: 'refund', orderNo: row.orderNo, requestNo: crypto.randomUUID() })
-            }
-          >
-            申请退款
-          </Button>
-        ),
-        can('trade:fulfillment:receive') && row.status === 'SHIPPED' && (
-          <Popconfirm
-            key="receive"
-            title="确认已核实收件人收货？此操作将完成订单。"
-            onConfirm={async () => {
-              try {
-                await receive.mutateAsync(row.orderNo);
-                message.success('已登记收货');
-                await refresh();
-              } catch (error) {
-                message.error(String(error));
-              }
-            }}
-          >
-            <Button type="link" loading={receive.isPending} disabled={receive.isPending}>
-              登记收货
-            </Button>
-          </Popconfirm>
         ),
       ],
     },
@@ -256,12 +211,32 @@ export default function OrderFulfillmentPage() {
               pagination={false}
               dataSource={detail.data.items}
               columns={[
+                {
+                  title: '下单图片',
+                  render: (_, row) =>
+                    row.picUrl && /^https?:\/\//i.test(row.picUrl) ? (
+                      <Image width={48} src={row.picUrl} />
+                    ) : (
+                      '未记录'
+                    ),
+                },
                 { title: '商品', dataIndex: 'productName' },
+                { title: 'SPU', render: (_, row) => row.spuName ?? '未记录' },
+                {
+                  title: '下单规格',
+                  render: (_, row) =>
+                    row.properties == null
+                      ? '未记录'
+                      : Object.entries(row.properties)
+                          .map(([name, value]) => `${name}：${value}`)
+                          .join('；') || '无规格',
+                },
                 { title: '单价（元）', dataIndex: 'unitPrice' },
                 { title: '数量', dataIndex: 'quantity' },
                 { title: '原始小计（元）', dataIndex: 'lineAmount' },
               ]}
             />
+            <OrderLogPanel orderNo={detail.data.orderNo} />
           </>
         )}
       </Drawer>
@@ -311,68 +286,20 @@ export default function OrderFulfillmentPage() {
           />
           <ProFormText
             name="recipientName"
-            label="收件人姓名"
-            rules={[{ required: true, whitespace: true }]}
+            label="历史订单补填收件人（新订单使用下单快照）"
+            rules={[{ whitespace: true }]}
             fieldProps={{ maxLength: 100 }}
           />
           <ProFormText
             name="phone"
             label="联系电话"
-            rules={[
-              { required: true },
-              { pattern: /^[+0-9() -]{5,32}$/, message: '请输入合法联系电话' },
-            ]}
+            rules={[{ pattern: /^[+0-9() -]{5,32}$/, message: '请输入合法联系电话' }]}
             fieldProps={{ maxLength: 32 }}
           />
           <ProFormTextArea
             name="address"
             label="详细地址"
-            rules={[{ required: true, whitespace: true }]}
-            fieldProps={{ maxLength: 500, showCount: true }}
-          />
-        </AdminModalForm>
-      )}
-      {operation?.kind === 'refund' && (
-        <AdminModalForm<{ reason: string }>
-          key={operation.requestNo}
-          title="登记整单退款申请"
-          description="仅限发货前整单申请，金额由服务端取实际支付金额。登记后禁止发货。"
-          open
-          onOpenChange={(open) => {
-            if (!open) setOperation(undefined);
-          }}
-          modalProps={{
-            destroyOnHidden: true,
-            maskClosable: !refund.isPending,
-            closable: !refund.isPending,
-            keyboard: !refund.isPending,
-          }}
-          loading={refund.isPending}
-          onFinish={async (values) => {
-            try {
-              await refund.mutateAsync({
-                no: operation.orderNo,
-                data: { requestNo: operation.requestNo, reason: values.reason },
-              });
-              message.success('申请已登记，尚未执行退款');
-              setOperation(undefined);
-              await refresh();
-              return true;
-            } catch (error) {
-              message.error(String(error));
-              return false;
-            }
-          }}
-        >
-          <Alert
-            title="本功能不会执行渠道退款，也不会回补库存或返还优惠券。请在退款申请队列跟进。"
-            type="warning"
-            showIcon
-          />
-          <ProFormTextArea
-            name="reason"
-            label="退款申请原因"
-            rules={[{ required: true, whitespace: true }]}
+            rules={[{ whitespace: true }]}
             fieldProps={{ maxLength: 500, showCount: true }}
           />
         </AdminModalForm>

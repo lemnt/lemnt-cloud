@@ -26,4 +26,14 @@ public class TradeOrderDO extends BaseDO {
     private Long memberId;
     private BigDecimal totalAmount;
     private String status;
+    private String remark;
+    private Long usePoint;
+    private Long givePoint;
+    private Long addressId;
+    private Integer deliveryType;
+    private String receiverName;
+    private String receiverMobile;
+    private Long receiverAreaId;
+    private String receiverDetailAddress;
+    private BigDecimal deliveryPrice;
 }

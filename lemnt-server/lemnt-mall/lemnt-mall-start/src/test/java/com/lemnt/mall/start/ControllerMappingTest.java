@@ -44,17 +44,25 @@ class ControllerMappingTest {
             }
         });
         var expected = new TreeSet<>(Arrays.asList("""
-                DELETE /mall/admin/members/{memberId}/cart/{productId} mall:cart:edit
+                GET /mall/promotion/reward-activities mall:promotion:list
+                GET /mall/promotion/reward-activities/{id} mall:promotion:query
+                POST /mall/promotion/reward-activities mall:promotion:create
+                PUT /mall/promotion/reward-activities/{id} mall:promotion:update
+                PUT /mall/promotion/reward-activities/{id}/close mall:promotion:update
+                DELETE /mall/promotion/reward-activities/{id} mall:promotion:delete
+                GET /mall/promotion/discount-activities mall:promotion:list
+                GET /mall/promotion/discount-activities/{id} mall:promotion:query
+                POST /mall/promotion/discount-activities mall:promotion:create
+                PUT /mall/promotion/discount-activities/{id} mall:promotion:update
+                PUT /mall/promotion/discount-activities/{id}/close mall:promotion:update
+                DELETE /mall/promotion/discount-activities/{id} mall:promotion:delete
                 DELETE /mall/app/cart/{productId}
                 DELETE /mall/brands/{id} mall:brand:remove
                 DELETE /mall/categories/{id} mall:category:remove
-                GET /mall/admin/checkouts/{orderNo} mall:checkout:query
+                GET /mall/admin/coupons mall:coupon:list
                 GET /mall/admin/coupon-templates mall:coupon-template:list
                 GET /mall/admin/coupon-templates/public-claim mall:coupon-template:list
-                GET /mall/admin/members/{memberId}/cart mall:cart:query
                 GET /mall/admin/members/{memberId}/coupons mall:coupon:list
-                GET /mall/admin/promotions mall:promotion:list
-                GET /mall/admin/promotions/{id} mall:promotion:query
                 GET /mall/app/cart
                 GET /mall/app/categories
                 GET /mall/app/checkout/requests/{requestNo}
@@ -68,39 +76,53 @@ class ControllerMappingTest {
                 GET /mall/brands/{id} mall:brand:query
                 GET /mall/categories mall:category:list
                 GET /mall/categories/{id} mall:category:query
-                GET /mall/products/{id} mall:product:query
+                DELETE /mall/specs/{id} mall:spec:remove
+                DELETE /mall/spec-values/{id} mall:spec-value:remove
+                DELETE /mall/spus/{id} mall:spu:remove
+                GET /mall/specs mall:spec:list
+                GET /mall/specs/simple mall:spec:query
+                GET /mall/specs/{id} mall:spec:query
+                GET /mall/spec-values mall:spec-value:list
+                GET /mall/spec-values/simple mall:spec-value:query
+                GET /mall/spec-values/{id} mall:spec-value:query
+                GET /mall/spus/count mall:spu:list
+                GET /mall/spus/simple mall:spu:query
+                GET /mall/spus/batch mall:spu:query
+                GET /mall/brands/page mall:brand:list
+                GET /mall/brands/simple mall:brand:query
+                GET /mall/categories/tree mall:category:list
+                GET /mall/comments mall:comment:list
+                GET /mall/comments/{id} mall:comment:query
+                POST /mall/specs mall:spec:add
+                POST /mall/spec-values mall:spec-value:add
+                POST /mall/spus/{id}/recycle mall:spu:edit
+                POST /mall/spus/{id}/restore mall:spu:edit
+                POST /mall/app/comments
+                PUT /mall/specs/{id} mall:spec:edit
+                PUT /mall/spec-values/{id} mall:spec-value:edit
+                PUT /mall/comments/{id}/reply mall:comment:reply
+                PUT /mall/comments/{id}/visible mall:comment:edit
                 GET /mall/spus mall:spu:list
                 GET /mall/spus/{id} mall:spu:query
                 POST /mall/admin/coupon-templates mall:coupon-template:add
-                POST /mall/admin/members/{memberId}/checkout mall:checkout:create
-                POST /mall/admin/members/{memberId}/checkout/quote mall:checkout:quote
                 POST /mall/admin/members/{memberId}/coupons/{templateId} mall:coupon:issue
-                POST /mall/admin/promotions mall:promotion:create
-                POST /mall/admin/promotions/{id}/publish mall:promotion:publish
-                POST /mall/app/cart/{productId}/add
                 POST /mall/app/checkout
                 POST /mall/app/checkout/abandon
                 POST /mall/app/checkout/quote
                 POST /mall/app/coupon-center/{templateId}/claim
                 POST /mall/brands mall:brand:add
                 POST /mall/categories mall:category:add
-                POST /mall/orders mall:order:create
-                POST /mall/products mall:product:add
-                POST /mall/skus/{id}/stock mall:sku:stock
                 POST /mall/spus mall:spu:add
+                PUT /mall/admin/coupon-templates/{id} mall:coupon-template:edit
+                DELETE /mall/admin/coupon-templates/{id} mall:coupon-template:remove
+                DELETE /mall/admin/members/{memberId}/coupons/{couponId} mall:coupon:remove
                 PUT /mall/admin/coupon-templates/{id}/enabled mall:coupon-template:edit
                 PUT /mall/admin/coupon-templates/{id}/public-claim mall:coupon-template:edit
-                PUT /mall/admin/members/{memberId}/cart/{productId} mall:cart:edit
-                PUT /mall/admin/promotions/{id}/draft mall:promotion:update
-                PUT /mall/admin/promotions/{id}/state mall:promotion:state
                 PUT /mall/app/cart/{productId}
                 PUT /mall/brands/{id} mall:brand:edit
                 PUT /mall/categories/{id} mall:category:edit
-                PUT /mall/products/{id}/shelf mall:product:edit
-                PUT /mall/skus/{id} mall:sku:edit
                 PUT /mall/spus/{id} mall:spu:edit
                 PUT /mall/spus/{id}/shelf mall:spu:edit
-
                 """.split("\n")));
         // 文本块会移除行尾空格，空权限与带权限的路由统一去掉行尾空白。
         var normalized = new TreeSet<String>();

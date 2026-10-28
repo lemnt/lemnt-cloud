@@ -32,7 +32,7 @@ class PromotionPermissionSeedTest {
                     Map.of(
                     "SELECT COUNT(*) FROM sys_menu WHERE perms LIKE"
                     + " 'mall:promotion:%'",
-                    6,
+                    5,
                     "SELECT COUNT(*) FROM sys_menu WHERE menu_type='C'",
                     0,
                     "SELECT COUNT(*) FROM sys_role_menu",

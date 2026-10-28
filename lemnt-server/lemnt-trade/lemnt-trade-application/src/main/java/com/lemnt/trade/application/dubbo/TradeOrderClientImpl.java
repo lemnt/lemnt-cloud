@@ -1,12 +1,15 @@
 package com.lemnt.trade.application.dubbo;
 
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
+import com.lemnt.trade.application.order.service.OrderRemoteService;
 import com.lemnt.trade.application.order.service.OrderSubmissionService;
 import com.lemnt.trade.client.TradeOrderClient;
 import com.lemnt.trade.client.bo.OrderCreateBo;
 import com.lemnt.trade.client.dto.OrderDTO;
+import com.lemnt.trade.client.dto.OrderDeliveryDTO;
 import com.lemnt.trade.client.dto.OrderItemDTO;
 import com.lemnt.trade.domain.order.model.TradeOrder;
+import com.lemnt.trade.domain.order.model.TradeOrderDelivery;
 import com.lemnt.trade.domain.order.model.TradeOrderItem;
 
 import org.apache.dubbo.config.annotation.DubboService;
@@ -22,40 +25,102 @@ import java.math.BigDecimal;
 public class TradeOrderClientImpl implements TradeOrderClient {
     private final OrderSubmissionService submissions;
     private final OrderPersistenceService orders;
+    private final OrderRemoteService remotes;
 
     @Override
     public OrderDTO create(OrderCreateBo value) {
+        if (value != null && (value.usePoint() < 0 || value.givePoint() < 0)
+        ) {
+            throw new IllegalArgumentException("订单积分不能为负数");
+        }
         if (value == null || value.orderNo() == null || !value.orderNo().matches("[A-Za-z0-9_-]{1,40}")
                 || value.memberId() == null || value.memberId() <= 0 || value.totalAmount() == null
                 || value.totalAmount().signum() <= 0 || value.totalAmount().scale() > 2
-                || value.items() == null || value.items().isEmpty() || value.items().size() > 100) {
+                || value.items() == null || value.items().isEmpty() || value.items().size() > 100
+        ) {
             throw new IllegalArgumentException("订单快照不合法");
         }
-        for (var item : value.items()) {
+        var delivery = value.delivery();
+        if (delivery != null && (delivery.addressId() == null || delivery.addressId() <= 0
+                || !Integer.valueOf(1).equals(delivery.deliveryType())
+                || delivery.receiverName() == null || delivery.receiverName().isBlank() || delivery.receiverName().length() > 100
+                || delivery.receiverMobile() == null || !delivery.receiverMobile().matches("[+0-9() -]{5,32}")
+                || delivery.receiverAreaId() == null || delivery.receiverAreaId() <= 0
+                || delivery.receiverDetailAddress() == null || delivery.receiverDetailAddress().isBlank()
+                || delivery.receiverDetailAddress().length() > 500 || delivery.deliveryPrice() == null
+                || delivery.deliveryPrice().signum() < 0 || delivery.deliveryPrice().scale() > 2)
+        ) {
+            throw new IllegalArgumentException("订单收件快照不合法");
+        }
+        for (var item : value.items()
+        ) {
             if (item == null || item.productId() == null || item.productId() <= 0
+                    || item.deliveryPrice() == null || item.deliveryPrice().signum() < 0
+                    || item.deliveryPrice().scale() > 2
                     || item.quantity() == null || item.quantity() < 1 || item.quantity() > 999
                     || item.unitPrice() == null || item.unitPrice().signum() <= 0
                     || item.unitPrice().scale() > 2 || item.lineAmount() == null
                     || item.unitPrice().multiply(BigDecimal.valueOf(item.quantity()))
-                            .compareTo(item.lineAmount()) != 0) {
+                            .compareTo(item.lineAmount()) != 0
+            ) {
                 throw new IllegalArgumentException("订单明细快照不合法");
             }
         }
+        // 商品元数据由商城报价生成，历史缺失字段允许为空，已有字段必须符合落库约束。
+        for (var item : value.items()) {
+            if ((item.spuId() != null && item.spuId() <= 0)
+                    || (item.spuName() != null && (item.spuName().isBlank() || item.spuName().length() > 200))
+                    || (item.picUrl() != null && item.picUrl().length() > 1024)
+                    || (item.properties() != null && item.properties().entrySet().stream().anyMatch(entry ->
+                            entry.getKey().isBlank() || entry.getKey().length() > 64
+                                    || entry.getValue().isBlank() || entry.getValue().length() > 100))) {
+                throw new IllegalArgumentException("商品规格快照不合法");
+            }
+        }
+        if (value.items().stream().anyMatch(item -> item.payAmount() != null)
+        ) {
+            if (value.items().stream().anyMatch(item -> item.payAmount() == null
+                    || item.payAmount().signum() < 0 || item.payAmount().scale() > 2
+                    || item.payAmount().compareTo(item.lineAmount().add(item.deliveryPrice())) > 0)
+                    || value.items().stream().map(OrderItemDTO::payAmount)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add).compareTo(value.totalAmount()) != 0
+            ) {
+                throw new IllegalArgumentException("商品行实付与订单总金额不一致");
+            }
+        }
+        var deliveryTotal = value.items().stream().map(OrderItemDTO::deliveryPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        if (deliveryTotal.compareTo(delivery == null ? BigDecimal.ZERO : delivery.deliveryPrice()) != 0
+                || (delivery != null && value.items().stream().anyMatch(item -> item.payAmount() == null))
+        ) {
+            throw new IllegalArgumentException("订单运费分摊不一致");
+        }
         var order = new TradeOrder(null, value.orderNo(), value.memberId(), value.totalAmount(),
                 "RESERVING", value.items().stream().map(item -> new TradeOrderItem(item.productId(),
-                        item.productCode(), item.productName(), item.unitPrice(), item.quantity(),
-                        item.lineAmount())).toList(), null);
+                item.productCode(),
+                item.productName(),
+                item.unitPrice(),
+                item.quantity(),
+                item.lineAmount(),
+                item.payAmount(),
+                item.deliveryPrice(),
+                item.spuId(),
+                item.spuName(),
+                item.properties(),
+                item.picUrl())).toList(), null, value.usePoint(), value.givePoint(), fromDelivery(value.delivery()));
         try {
-            return to(submissions.create(order));
-        } catch (DuplicateKeyException exception) {
-            // 并发首次提交由订单号唯一键仲裁，失败事务结束后读取已提交结果。
+            submissions.create(order);
+        } catch (DuplicateKeyException exception
+        ) {
             var previous = orders.findByOrderNo(order.orderNo());
-            if (previous == null) {
+            if (previous == null
+            ) {
                 throw exception;
             }
             submissions.requireSame(previous, order);
-            return to(previous);
         }
+        remotes.reserve(order.orderNo());
+        return to(orders.findByOrderNo(order.orderNo()));
     }
 
     @Override
@@ -66,7 +131,33 @@ public class TradeOrderClientImpl implements TradeOrderClient {
     private OrderDTO to(TradeOrder value) {
         return value == null ? null : new OrderDTO(value.id(), value.orderNo(), value.memberId(),
                 value.totalAmount(), value.status(), value.items().stream().map(item ->
-                        new OrderItemDTO(item.productId(), item.productCode(), item.productName(),
-                                item.unitPrice(), item.quantity(), item.lineAmount())).toList(), value.createTime());
+                        new OrderItemDTO(item.productId(),
+                item.productCode(),
+                item.productName(),
+                item.unitPrice(),
+                item.quantity(),
+                item.lineAmount(),
+                item.payAmount(),
+                item.deliveryPrice(),
+                item.spuId(),
+                item.spuName(),
+                item.properties(),
+                item.picUrl())).toList(), value.createTime(), value.usePoint(), value.givePoint(), toDelivery(value.delivery()));
+    }
+
+    private TradeOrderDelivery fromDelivery(
+            OrderDeliveryDTO value
+    ) {
+        return value == null ? null : new TradeOrderDelivery(value.addressId(),
+                value.deliveryType(), value.receiverName(), value.receiverMobile(), value.receiverAreaId(),
+                value.receiverDetailAddress(), value.deliveryPrice());
+    }
+
+    private OrderDeliveryDTO toDelivery(
+            TradeOrderDelivery value
+    ) {
+        return value == null ? null : new OrderDeliveryDTO(value.addressId(),
+                value.deliveryType(), value.receiverName(), value.receiverMobile(), value.receiverAreaId(),
+                value.receiverDetailAddress(), value.deliveryPrice());
     }
 }

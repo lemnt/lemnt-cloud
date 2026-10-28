@@ -44,17 +44,50 @@ class ControllerMappingTest {
             }
         });
         var expected = new TreeSet<>(Arrays.asList("""
+                GET /trade/admin/config trade:config:query
+                PUT /trade/admin/config trade:config:update
+                POST /trade/admin/delivery/expresses trade:delivery-express:create
+                PUT /trade/admin/delivery/expresses/{id} trade:delivery-express:update
+                DELETE /trade/admin/delivery/expresses/{id} trade:delivery-express:delete
+                GET /trade/admin/delivery/expresses/{id} trade:delivery-express:query
+                GET /trade/admin/delivery/expresses trade:delivery-express:list
+                GET /trade/admin/delivery/expresses/simple trade:delivery-express:query
+                POST /trade/admin/delivery/templates trade:delivery-template:create
+                PUT /trade/admin/delivery/templates/{id} trade:delivery-template:update
+                DELETE /trade/admin/delivery/templates/{id} trade:delivery-template:delete
+                GET /trade/admin/delivery/templates/{id} trade:delivery-template:query
+                GET /trade/admin/delivery/templates trade:delivery-template:list
+                GET /trade/admin/delivery/templates/simple trade:delivery-template:query
+                GET /trade/admin/payment-channels trade:payment-channel:list
+                GET /trade/admin/payments trade:payment:list
+                GET /trade/admin/payments/{no} trade:payment:query
+                GET /trade/admin/payment-refunds trade:payment-refund:list
+                GET /trade/admin/payment-refunds/{no} trade:payment-refund:query
+                GET /trade/admin/shipments trade:shipment:list
+                GET /trade/admin/shipments/{orderNo} trade:shipment:query
+                GET /trade/admin/shipments/{orderNo}/tracks trade:shipment:track
+                GET /trade/admin/orders/{orderNo}/after-sale-items trade:after-sale:query
+                POST /trade/admin/orders/{orderNo}/after-sales trade:after-sale:create
+                GET /trade/admin/after-sales trade:after-sale:list
+                GET /trade/admin/after-sales/{no} trade:after-sale:query
+                GET /trade/admin/after-sales/{no}/logs trade:after-sale:query
+                POST /trade/app/after-sales/{no}/cancel
+                POST /trade/admin/after-sales/{no}/agree trade:after-sale:agree
+                POST /trade/admin/after-sales/{no}/reject trade:after-sale:reject
+                POST /trade/admin/after-sales/{no}/return trade:after-sale:return
+                POST /trade/admin/after-sales/{no}/receive trade:after-sale:receive
+                POST /trade/admin/after-sales/{no}/refuse trade:after-sale:refuse
+                POST /trade/admin/after-sales/{no}/refund trade:after-sale:refund
+                GET /trade/admin/orders/summary trade:order:summary
+                GET /trade/admin/orders/{orderNo}/remark trade:order:query
+                PUT /trade/admin/orders/{orderNo}/remark trade:order:remark
                 GET /trade/admin/orders trade:fulfillment:list
                 GET /trade/admin/orders/{orderNo} trade:fulfillment:query
-                GET /trade/admin/refund-requests trade:refund:list
-                GET /trade/admin/refund-requests/{refundNo} trade:refund:query
+                GET /trade/admin/orders/{orderNo}/logs trade:fulfillment:query
+                POST /trade/app/orders/{orderNo}/cancel
+                POST /trade/app/orders/{orderNo}/receive
                 GET /trade/app/orders/{orderNo}/payment
-                GET /trade/orders/{orderNo} trade:order:query
-                POST /trade/admin/orders/{orderNo}/receive trade:fulfillment:receive
-                POST /trade/admin/orders/{orderNo}/refund-requests trade:refund:request
                 POST /trade/admin/orders/{orderNo}/shipment trade:fulfillment:ship
-                POST /trade/admin/refund-requests/{refundNo}/reject trade:refund:reject
-                POST /trade/outbox/{eventId}/replay trade:outbox:replay
 
                 """.split("\n")));
         // 文本块会移除行尾空格，空权限与带权限的路由统一去掉行尾空白。

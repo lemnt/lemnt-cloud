@@ -16,11 +16,14 @@ import { usePermission } from '@/shared/hooks/usePermission';
 import {
   getCouponTemplates,
   createCouponTemplate,
+  updateCouponTemplate,
+  deleteCouponTemplate,
   enableCouponTemplate,
   issueCoupon,
   getPublicCouponTemplates,
   setCouponPublicClaim,
 } from '../api/checkoutApi';
+import { getCategoryList, getSpuList } from '../../catalog/api/catalogApi';
 import { positiveId } from '../checkoutDecoders';
 import { checkoutKeys } from '../hooks/checkoutKeys';
 import { couponKindEnum, couponKindOptions, MAX_COUPON_AMOUNT } from '../constants';
@@ -31,6 +34,7 @@ export default function CouponTemplatePage() {
   const { message } = App.useApp();
   const client = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<CouponTemplate>();
   const [issuing, setIssuing] = useState<CouponTemplate>();
   const templates = useQuery({
     queryKey: checkoutKeys.templates(),
@@ -84,14 +88,55 @@ export default function CouponTemplatePage() {
           ? `减 ${row.fixedAmount} 元`
           : `支付 ${row.discountPercent}%${row.discountLimit ? `，最多减 ${row.discountLimit} 元` : ''}`,
     },
-    { title: '已发 / 总量', renderText: (_, row) => `${row.issuedCount} / ${row.totalCount}` },
-    { title: '生效时间', dataIndex: 'validFrom' },
+    {
+      title: '已发 / 总量',
+      renderText: (_, row) =>
+        `${row.issuedCount} / ${row.totalCount === -1 ? '不限' : row.totalCount}`,
+    },
+    {
+      title: '有效期',
+      renderText: (_, row) =>
+        row.validityType === 'TERM'
+          ? `领取 ${row.fixedStartTerm} 天后生效，有效 ${row.fixedEndTerm} 天`
+          : `${row.validFrom} 至 ${row.validUntil}`,
+    },
     { title: '过期时间', dataIndex: 'validUntil' },
     { title: '启用', renderText: (_, row) => (row.enabled ? '是' : '否') },
     {
       title: '操作',
       valueType: 'option',
       render: (_, row) => [
+        can('mall:coupon-template:edit') && (
+          <Button
+            key="edit"
+            type="link"
+            onClick={() => {
+              setEditing(row);
+              setOpen(true);
+            }}
+          >
+            修改
+          </Button>
+        ),
+        can('mall:coupon-template:remove') && (
+          <Popconfirm
+            key="delete"
+            title="删除模板？已发券继续有效。"
+            onConfirm={async () => {
+              try {
+                await deleteCouponTemplate(row.id);
+                message.success('已删除');
+                await refresh();
+              } catch (e) {
+                message.error(String(e));
+              }
+            }}
+          >
+            <Button type="link" danger>
+              删除
+            </Button>
+          </Popconfirm>
+        ),
         can('mall:coupon-template:edit') && publicClaims.isSuccess && (
           <Popconfirm
             key="public"
@@ -122,7 +167,7 @@ export default function CouponTemplatePage() {
           <Button
             key="issue"
             type="link"
-            disabled={!row.enabled || issue.isPending}
+            disabled={!row.enabled || row.takeType !== 'ADMIN' || issue.isPending}
             onClick={() => setIssuing(row)}
           >
             发放给会员
@@ -131,11 +176,7 @@ export default function CouponTemplatePage() {
         can('mall:coupon-template:edit') && (
           <Popconfirm
             key="enable"
-            title={
-              row.enabled
-                ? '停用后禁止新发放及新兑换，已锁定订单继续有效。确认停用？'
-                : '确认启用？'
-            }
+            title={row.enabled ? '停用后禁止新发放，会员已领券继续有效。确认停用？' : '确认启用？'}
             onConfirm={async () => {
               try {
                 if (!(await enable.mutateAsync({ id: row.id, enabled: !row.enabled })))
@@ -161,7 +202,7 @@ export default function CouponTemplatePage() {
     <PageContainer title="优惠券模板与发放">
       <Alert
         type="info"
-        title="后台授权操作；每会员每模板限一张。发放与兑换均核验有效期，规则创建后不能修改。"
+        title="后台授权操作；领取次数、适用范围和有效期按模板配置；已发券保留领取时的权益。"
       />
       {publicClaims.isError && (
         <Alert
@@ -187,7 +228,14 @@ export default function CouponTemplatePage() {
         scroll={{ x: 1200 }}
         toolBarRender={() => [
           can('mall:coupon-template:add') && (
-            <Button key="add" type="primary" onClick={() => setOpen(true)}>
+            <Button
+              key="add"
+              type="primary"
+              onClick={() => {
+                setEditing(undefined);
+                setOpen(true);
+              }}
+            >
               新建模板
             </Button>
           ),
@@ -195,14 +243,31 @@ export default function CouponTemplatePage() {
       />
       <AdminModalForm<CouponTemplateCreateRequest>
         key={String(open)}
-        title="新建优惠券模板"
+        title={editing ? '修改优惠券模板' : '新建优惠券模板'}
         open={open}
         onOpenChange={setOpen}
-        initialValues={{ kind: 'FIXED', threshold: 0, totalCount: 100 }}
+        initialValues={
+          editing ?? {
+            kind: 'FIXED',
+            threshold: 0,
+            totalCount: 100,
+            takeType: 'ADMIN',
+            takeLimitCount: 1,
+            productScope: 'ALL',
+            productScopeValues: [],
+            validityType: 'DATE',
+            fixedStartTerm: 0,
+            fixedEndTerm: 7,
+          }
+        }
         modalProps={{ destroyOnHidden: true, maskClosable: false }}
         submitter={{ submitButtonProps: { loading: create.isPending } }}
         onFinish={async (values) => {
-          if (create.isPending || !can('mall:coupon-template:add')) return false;
+          if (
+            create.isPending ||
+            !can(editing ? 'mall:coupon-template:edit' : 'mall:coupon-template:add')
+          )
+            return false;
           const payload: CouponTemplateCreateRequest = {
             ...values,
             fixedAmount: values.kind === 'FIXED' ? values.fixedAmount : undefined,
@@ -210,8 +275,9 @@ export default function CouponTemplatePage() {
             discountLimit: values.kind === 'PERCENT' ? values.discountLimit : undefined,
           };
           try {
-            await create.mutateAsync(payload);
-            message.success('模板已创建');
+            if (editing) await updateCouponTemplate(editing.id, payload);
+            else await create.mutateAsync(payload);
+            message.success('模板已保存');
             setOpen(false);
             await refresh();
             return true;
@@ -254,7 +320,7 @@ export default function CouponTemplatePage() {
                   name="discountPercent"
                   label="支付百分比（80表示8折）"
                   min={1}
-                  max={99}
+                  max={100}
                   fieldProps={{ precision: 0 }}
                   rules={[{ required: true }]}
                 />
@@ -271,22 +337,110 @@ export default function CouponTemplatePage() {
         </ProFormDependency>
         <ProFormDigit
           name="totalCount"
-          label="总发放数量"
-          min={1}
-          max={1000000}
+          label="总发放数量（-1不限）"
+          min={-1}
           fieldProps={{ precision: 0 }}
           rules={[{ required: true }]}
         />
-        <ProFormDateTimePicker
-          name="validFrom"
-          label="生效时间（数据库时区）"
+        <ProFormText name="description" label="使用说明" rules={[{ max: 500 }]} />
+        <ProFormSelect
+          name="takeType"
+          label="领取方式"
+          options={[
+            { label: '会员领取', value: 'USER' },
+            { label: '后台发放', value: 'ADMIN' },
+          ]}
           rules={[{ required: true }]}
         />
-        <ProFormDateTimePicker
-          name="validUntil"
-          label="过期时间（右开边界）"
+        <ProFormDigit
+          name="takeLimitCount"
+          label="每人限领（-1不限）"
+          min={-1}
+          fieldProps={{ precision: 0 }}
+          rules={[
+            { required: true },
+            {
+              validator: (_, v) =>
+                v === -1 || v > 0 ? Promise.resolve() : Promise.reject(new Error('填写正整数或-1')),
+            },
+          ]}
+        />
+        <ProFormSelect
+          name="productScope"
+          label="适用范围"
+          options={[
+            { label: '全部商品', value: 'ALL' },
+            { label: '指定SPU', value: 'SPU_IDS' },
+            { label: '指定分类', value: 'CATEGORY_IDS' },
+          ]}
           rules={[{ required: true }]}
         />
+        <ProFormDependency name={['productScope']}>
+          {({ productScope }) =>
+            productScope !== 'ALL' && (
+              <ProFormSelect
+                key={productScope}
+                name="productScopeValues"
+                label={productScope === 'SPU_IDS' ? '适用商品' : '适用分类'}
+                mode="multiple"
+                showSearch
+                debounceTime={300}
+                request={async ({ keyWords }) =>
+                  productScope === 'CATEGORY_IDS'
+                    ? (await getCategoryList()).map((row) => ({ label: row.name, value: row.id }))
+                    : (await getSpuList({ name: keyWords, pageNum: 1, pageSize: 100 })).data.map(
+                        (row) => ({ label: row.name, value: row.id }),
+                      )
+                }
+                rules={[{ required: true }]}
+              />
+            )
+          }
+        </ProFormDependency>
+        <ProFormSelect
+          name="validityType"
+          label="有效期类型"
+          options={[
+            { label: '固定日期', value: 'DATE' },
+            { label: '领取后生效', value: 'TERM' },
+          ]}
+          rules={[{ required: true }]}
+        />
+        <ProFormDependency name={['validityType']}>
+          {({ validityType }) =>
+            validityType === 'TERM' ? (
+              <>
+                <ProFormDigit
+                  name="fixedStartTerm"
+                  label="领取后生效天数"
+                  min={0}
+                  fieldProps={{ precision: 0 }}
+                  rules={[{ required: true }]}
+                />
+                <ProFormDigit
+                  name="fixedEndTerm"
+                  label="生效后有效天数"
+                  min={1}
+                  fieldProps={{ precision: 0 }}
+                  rules={[{ required: true }]}
+                />
+              </>
+            ) : (
+              <>
+                <ProFormDateTimePicker
+                  name="validFrom"
+                  label="生效时间（数据库时区）"
+                  rules={[{ required: true }]}
+                />
+                <ProFormDateTimePicker
+                  name="validUntil"
+                  label="过期时间（右开边界）"
+                  rules={[{ required: true }]}
+                />
+              </>
+            )
+          }
+        </ProFormDependency>
       </AdminModalForm>
       <AdminModalForm<{ memberId: string }>
         key={issuing?.id ?? 'issue'}

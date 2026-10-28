@@ -72,7 +72,6 @@ public class MemberUserService {
         memberUserGateway.updateProfile(
                 new Member(
                         id,
-                        old.memberNo(),
                         name,
                         old.mobile(),
                         mail,

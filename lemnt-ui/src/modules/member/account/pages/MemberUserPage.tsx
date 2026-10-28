@@ -16,16 +16,13 @@ import * as api from '../api/memberApi';
 import { memberKeys, memberStatusOptions } from '../types';
 import type { MemberProfile, MemberProfileValues, MemberPageQuery, MemberAddress } from '../types';
 
-type ActionKind =
-  'create' | 'edit' | 'password' | 'points' | 'experience' | 'level' | 'group' | 'tags';
+type ActionKind = 'edit' | 'points' | 'level' | 'group' | 'tags';
 interface Action {
   kind: ActionKind;
   row?: MemberProfile;
   requestNo: string;
 }
 interface Values extends MemberProfileValues {
-  mobile: string;
-  password: string;
   delta: number;
   reason: string;
   levelId?: string;
@@ -33,21 +30,15 @@ interface Values extends MemberProfileValues {
   tagIds?: string[];
 }
 const labels: Record<ActionKind, string> = {
-  create: '创建会员',
   edit: '编辑资料',
-  password: '重置密码',
   points: '调整积分',
-  experience: '调整经验',
   level: '调整等级',
   group: '设置分组',
   tags: '设置标签',
 };
 const permissions: Record<ActionKind, string> = {
-  create: 'member:user:create',
   edit: 'member:user:update',
-  password: 'member:user:reset-password',
   points: 'member:user:update-point',
-  experience: 'member:user:update-level',
   level: 'member:user:update-level',
   group: 'member:user:update',
   tags: 'member:user:update',
@@ -100,14 +91,9 @@ export default function MemberUserPage() {
       if (!can(permissions[operation.kind])) throw Error('没有操作权限');
       const id = operation.row?.id;
       switch (operation.kind) {
-        case 'create':
-          return api.createMember(v);
         case 'edit':
           return api.updateMember(id!, v);
-        case 'password':
-          return api.resetMemberPassword(id!, v.password);
         case 'points':
-        case 'experience':
           return api.adjustMember(id!, operation.kind, {
             delta: v.delta,
             reason: v.reason,
@@ -135,7 +121,7 @@ export default function MemberUserPage() {
         ? can('member:group:query')
         : can('member:tag:query');
   const columns: ProColumns<MemberProfile>[] = [
-    { title: '会员编号', dataIndex: 'memberNo', search: false },
+    { title: '会员编号', dataIndex: 'id', search: false },
     { title: '昵称', dataIndex: 'nickname', search: false },
     { title: '手机号', dataIndex: 'mobile' },
     {
@@ -156,7 +142,7 @@ export default function MemberUserPage() {
           <Button type="link" onClick={() => setDetail(row.id)}>
             详情
           </Button>
-          {(['edit', 'password', 'points', 'experience', 'level', 'group', 'tags'] as ActionKind[])
+          {(['edit', 'points', 'level', 'group', 'tags'] as ActionKind[])
             .filter((k) => can(permissions[k]))
             .map((k) => (
               <Button key={k} type="link" onClick={() => open(k, row)}>
@@ -198,13 +184,6 @@ export default function MemberUserPage() {
           total: users.data?.total ?? 0,
           onChange: (pageNum, pageSize) => setQuery({ ...query, pageNum, pageSize }),
         }}
-        toolBarRender={() => [
-          can(permissions.create) && (
-            <Button key="create" type="primary" onClick={() => open('create')}>
-              创建会员
-            </Button>
-          ),
-        ]}
       />
       <Drawer
         title="会员详情"
@@ -225,7 +204,7 @@ export default function MemberUserPage() {
           <Descriptions
             column={1}
             items={[
-              ['会员编号', profile.data.memberNo],
+              ['会员编号', profile.data.id],
               ['昵称', profile.data.nickname],
               ['手机', profile.data.mobile],
               ['邮箱', profile.data.email],
@@ -300,7 +279,7 @@ export default function MemberUserPage() {
           onFinish={async (values) => {
             if (mutation.isPending) return false;
             const v = frozen ?? values;
-            if (['points', 'experience', 'level'].includes(action.kind)) setFrozen({ ...v });
+            if (['points', 'level'].includes(action.kind)) setFrozen({ ...v });
             try {
               await mutation.mutateAsync({ operation: action, v });
               message.success('已保存');
@@ -335,16 +314,9 @@ export default function MemberUserPage() {
           {action.kind === 'tags' && selectedTags.isError && (
             <Alert type="error" title="原有标签读取失败，禁止覆盖" />
           )}
-          {['create', 'edit'].includes(action.kind) && (
+          {action.kind === 'edit' && (
             <>
               <ProFormText name="nickname" label="昵称" rules={[{ required: true }, { max: 80 }]} />
-              {action.kind === 'create' && (
-                <ProFormText
-                  name="mobile"
-                  label="手机号"
-                  rules={[{ required: true }, { pattern: /^\+?\d{7,20}$/ }]}
-                />
-              )}
               <ProFormText name="email" label="邮箱" rules={[{ type: 'email' }, { max: 254 }]} />
               <ProFormText
                 name="avatar"
@@ -373,23 +345,7 @@ export default function MemberUserPage() {
               )}
             </>
           )}
-          {action.kind === 'password' && (
-            <ProFormText.Password
-              name="password"
-              label="新密码"
-              rules={[
-                { required: true },
-                { min: 10 },
-                {
-                  validator: (_, v) =>
-                    !v || new TextEncoder().encode(v).length <= 72
-                      ? Promise.resolve()
-                      : Promise.reject(Error('密码不能超过72字节')),
-                },
-              ]}
-            />
-          )}
-          {['points', 'experience'].includes(action.kind) && (
+          {['points'].includes(action.kind) && (
             <ProFormDigit
               name="delta"
               label="本次变更量（负数扣减）"
@@ -399,7 +355,7 @@ export default function MemberUserPage() {
               rules={[{ required: true }]}
             />
           )}
-          {['points', 'experience', 'level'].includes(action.kind) && (
+          {['points', 'level'].includes(action.kind) && (
             <ProFormText
               name="reason"
               label="调整原因"

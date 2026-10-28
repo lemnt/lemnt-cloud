@@ -4,7 +4,7 @@ import com.lemnt.trade.application.fulfillment.converter.FulfillmentDTOConverter
 import com.lemnt.trade.application.fulfillment.dto.OrderDetailDTO;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
 import com.lemnt.trade.domain.fulfillment.gateway.InventoryConfirmationGateway;
-import com.lemnt.trade.domain.fulfillment.gateway.RefundRequestGateway;
+import com.lemnt.trade.domain.aftersale.gateway.AfterSaleGateway;
 import com.lemnt.trade.domain.fulfillment.gateway.ShipmentGateway;
 import com.lemnt.trade.domain.order.model.OrderRules;
 
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderDetailQueryExe {
     private final InventoryConfirmationGateway inventoryConfirmationGateway;
     private final OrderPersistenceService orderPersistenceService;
-    private final RefundRequestGateway refundRequestGateway;
+    private final AfterSaleGateway refundRequestGateway;
     private final ShipmentGateway shipmentGateway;
 
     /**
@@ -42,9 +42,16 @@ public class OrderDetailQueryExe {
                 refundRequestGateway.activeRefund(no),
                 order.items().stream()
                 .map(
-                item -> new com.lemnt.trade.application.fulfillment.dto.OrderItemDTO(
-                        item.productId(), item.productCode(), item.productName(),
-                        item.unitPrice(), item.quantity(), item.lineAmount()))
+                item -> new com.lemnt.trade.application.fulfillment.dto.OrderItemDTO(item.productId(),
+                item.productCode(),
+                item.productName(),
+                item.unitPrice(),
+                item.quantity(),
+                item.lineAmount(),
+                item.spuId(),
+                item.spuName(),
+                item.properties(),
+                item.picUrl()))
                 .toList(),
                 FulfillmentDTOConverter.shipment(shipmentGateway.shipment(no)));
     }

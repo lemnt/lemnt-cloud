@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.trade.infrastructure.aftersale.mapper.AfterSaleMapper">
+    <resultMap id="AfterSaleResult" type="com.lemnt.trade.infrastructure.aftersale.dataobject.AfterSaleDO" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="refundNo" column="refund_no"/>
+        <result property="orderId" column="order_id"/>
+        <result property="skuId" column="sku_id"/>
+        <result property="spuId" column="spu_id"/>
+        <result property="spuName" column="spu_name"/>
+        <result property="properties" column="properties"/>
+        <result property="picUrl" column="pic_url"/>
+        <result property="refundTime" column="refund_time"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="requestNo" column="request_no"/>
+        <result property="memberId" column="member_id"/>
+        <result property="paymentNo" column="payment_no"/>
+        <result property="amount" column="amount"/>
+        <result property="reason" column="reason"/>
+        <result property="status" column="status"/>
+        <result property="decisionReason" column="decision_reason"/>
+        <result property="requestedAt" column="requested_at"/>
+        <result property="decidedAt" column="decided_at"/>
+        <result property="activeOrderNo" column="active_order_no"/>
+        <result property="orderItemId" column="order_item_id"/>
+        <result property="quantity" column="quantity"/>
+        <result property="type" column="type"/>
+        <result property="returnCarrierCode" column="return_carrier_code"/>
+        <result property="returnTrackingNo" column="return_tracking_no"/>
+        <result property="returnShippedAt" column="return_shipped_at"/>
+        <result property="returnReceivedAt" column="return_received_at"/>
+        <result property="deleted" column="deleted"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="auditUserId" column="audit_user_id"/>
+    </resultMap>
+    <select id="lockByNo" resultMap="AfterSaleResult" flushCache="true" useCache="false">
+        SELECT * FROM trade_after_sale WHERE refund_no=#{no} AND deleted=FALSE FOR UPDATE
+    </select>
+</mapper>

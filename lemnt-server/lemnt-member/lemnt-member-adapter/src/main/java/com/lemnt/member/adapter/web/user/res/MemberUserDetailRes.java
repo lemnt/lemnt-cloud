@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 public record MemberUserDetailRes(
         @Schema(description = "记录编号")
         Long id,
-        @Schema(description = "会员业务编号")
-        String memberNo,
         @Schema(description = "昵称")
         String nickname,
         @Schema(description = "手机号")

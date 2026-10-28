@@ -1,5 +1,6 @@
 export type TaxonomyStatus = 'ENABLED' | 'DISABLED';
 export type ShelfStatus = 'ON_SHELF' | 'OFF_SHELF';
+export type SpuStatus = ShelfStatus | 'RECYCLED';
 export interface Category {
   id: string;
   parentId: string | null;
@@ -31,6 +32,8 @@ export interface BrandSaveRequest {
   status: TaxonomyStatus;
 }
 export interface Sku {
+  weight: string | null;
+  volume: string | null;
   id: string;
   spuId: string | null;
   code: string;
@@ -42,6 +45,8 @@ export interface Sku {
   status: ShelfStatus;
 }
 export interface Spu {
+  deliveryTypes: number[];
+  deliveryTemplateId: string | null;
   id: string;
   code: string;
   name: string;
@@ -49,16 +54,18 @@ export interface Spu {
   brandId: string;
   description: string | null;
   image: string | null;
-  status: ShelfStatus;
+  status: SpuStatus;
   skus: Sku[];
 }
 export interface SpuQuery {
   name?: string;
-  status?: ShelfStatus;
+  status?: SpuStatus;
   pageNum?: number;
   pageSize?: number;
 }
 export interface SkuCreateRequest {
+  weight?: string;
+  volume?: string;
   code: string;
   name: string;
   price: number;
@@ -67,6 +74,8 @@ export interface SkuCreateRequest {
   properties: Record<string, string>;
 }
 export interface SpuCreateRequest {
+  deliveryTypes: number[];
+  deliveryTemplateId?: string;
   code: string;
   name: string;
   categoryId: string;
@@ -76,21 +85,14 @@ export interface SpuCreateRequest {
   skus: SkuCreateRequest[];
 }
 export interface SpuUpdateRequest {
+  deliveryTypes: number[];
+  deliveryTemplateId?: string;
+  skus: (SkuCreateRequest & { id?: string })[];
   name: string;
   categoryId: string;
   brandId: string;
   description?: string;
   image?: string;
-}
-export interface SkuUpdateRequest {
-  name: string;
-  price: number;
-  image?: string;
-}
-export interface StockAdjustRequest {
-  requestNo: string;
-  delta: number;
-  reason: string;
 }
 export interface StockAdjustment {
   requestNo: string;

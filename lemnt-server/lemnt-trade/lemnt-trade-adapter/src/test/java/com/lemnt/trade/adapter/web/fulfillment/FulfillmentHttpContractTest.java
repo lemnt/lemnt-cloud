@@ -3,16 +3,11 @@ package com.lemnt.trade.adapter.web.fulfillment;
 import com.lemnt.common.security.annotation.RequiresPermissions;
 import com.lemnt.common.start.config.JacksonConfig;
 import com.lemnt.trade.adapter.web.fulfillment.FulfillmentOrderController;
-import com.lemnt.trade.adapter.web.fulfillment.OrderRefundRequestController;
 import com.lemnt.trade.adapter.web.fulfillment.ShipmentController;
-import com.lemnt.trade.application.fulfillment.cmd.RefundRequestCmd;
 import com.lemnt.trade.application.fulfillment.dto.OrderPageDTO;
 import com.lemnt.trade.application.fulfillment.dto.OrderSummaryDTO;
-import com.lemnt.trade.application.fulfillment.dto.RefundRequestDTO;
 import com.lemnt.trade.application.fulfillment.executor.OrderDetailQueryExe;
 import com.lemnt.trade.application.fulfillment.executor.OrderPageQueryExe;
-import com.lemnt.trade.application.fulfillment.executor.OrderReceiveCmdExe;
-import com.lemnt.trade.application.fulfillment.executor.RefundRequestCmdExe;
 import com.lemnt.trade.application.fulfillment.executor.ShipmentCreateCmdExe;
 
 import org.junit.jupiter.api.Test;
@@ -45,8 +40,7 @@ class FulfillmentHttpContractTest {
         var controller =
         new Object[] {
                 new FulfillmentOrderController(page, mock(OrderDetailQueryExe.class)),
-                new ShipmentController(ship, mock(OrderReceiveCmdExe.class)),
-                new OrderRefundRequestController(mock(RefundRequestCmdExe.class))
+                new ShipmentController(ship)
         };
         var mvc =
         MockMvcBuilders.standaloneSetup(controller)
@@ -62,42 +56,7 @@ class FulfillmentHttpContractTest {
         verifyNoInteractions(page, ship);
     }
 
-    @Test
-    void refundBoundaryAcceptsOnlyRequestIdentityAndReasonAndReturnsExactMoney() throws Exception {
-        var refund = mock(RefundRequestCmdExe.class);
-        when(refund.execute(any()))
-            .thenReturn(
-                new RefundRequestDTO(
-                "RF1",
-                "TR1",
-                "R1",
-                1L,
-                "PAY1",
-                new BigDecimal("17.00"),
-                "原因",
-                "REQUESTED",
-                null,
-                LocalDateTime.of(2026, 10, 25, 10, 0),
-                null));
-        var controller =
-        new Object[] {
-                new FulfillmentOrderController(mock(OrderPageQueryExe.class), mock(OrderDetailQueryExe.class)),
-                new ShipmentController(mock(ShipmentCreateCmdExe.class), mock(OrderReceiveCmdExe.class)),
-                new OrderRefundRequestController(refund)
-        };
-        var mvc =
-        MockMvcBuilders.standaloneSetup(controller)
-            .setMessageConverters(converter())
-            .build();
-        mvc.perform(
-                post("/trade/admin/orders/TR1/refund-requests")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"requestNo\":\"R1\",\"reason\":\"原因\"}"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.amount").value("17.00"))
-            .andExpect(jsonPath("$.data.status").value("REQUESTED"));
-        verify(refund).execute(new RefundRequestCmd("TR1", "R1", "原因"));
-    }
+
 
     @Test
     void orderListHasNoRecipientFieldsAndAllHttpActionsDeclarePermissions() throws Exception {
@@ -122,8 +81,7 @@ class FulfillmentHttpContractTest {
         var controller =
         new Object[] {
                 new FulfillmentOrderController(page, mock(OrderDetailQueryExe.class)),
-                new ShipmentController(mock(ShipmentCreateCmdExe.class), mock(OrderReceiveCmdExe.class)),
-                new OrderRefundRequestController(mock(RefundRequestCmdExe.class))
+                new ShipmentController(mock(ShipmentCreateCmdExe.class))
         };
         var mvc =
         MockMvcBuilders.standaloneSetup(controller)
@@ -136,7 +94,7 @@ class FulfillmentHttpContractTest {
             .andExpect(jsonPath("$.rows[0].phone").doesNotExist())
             .andExpect(jsonPath("$.rows[0].address").doesNotExist());
         for (var type :
-                List.of(FulfillmentOrderController.class, ShipmentController.class, OrderRefundRequestController.class, RefundRequestController.class)) {
+                List.of(FulfillmentOrderController.class, ShipmentController.class)) {
             for (var method : type.getDeclaredMethods()) {
                 if (Modifier.isPublic(method.getModifiers())) {
                     assertNotNull(

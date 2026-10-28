@@ -1,7 +1,7 @@
 export type CouponKind = 'FIXED' | 'PERCENT';
-export type CouponStatus = 'AVAILABLE' | 'LOCKED' | 'USED';
+export type CouponStatus = 'AVAILABLE' | 'LOCKED' | 'USED' | 'EXPIRED';
 export type CheckoutStatus =
-  'RESERVING' | 'PENDING_PAYMENT' | 'PAID' | 'SHIPPED' | 'COMPLETED' | 'CLOSED';
+  'RESERVING' | 'PENDING_PAYMENT' | 'PAID' | 'SHIPPED' | 'COMPLETED' | 'CLOSED' | 'REFUNDED';
 export interface CartItem {
   id: string;
   productId: string;
@@ -29,11 +29,29 @@ export interface CouponTemplate {
   discountLimit: string | null;
   totalCount: number;
   issuedCount: number;
-  validFrom: string;
-  validUntil: string;
+  validFrom: string | null;
+  validUntil: string | null;
   enabled: boolean;
+  description?: string | null;
+  takeType?: 'USER' | 'ADMIN' | 'REGISTER';
+  takeLimitCount?: number;
+  productScope?: 'ALL' | 'SPU_IDS' | 'CATEGORY_IDS';
+  productScopeValues?: string[];
+  validityType?: 'DATE' | 'TERM';
+  fixedStartTerm?: number | null;
+  fixedEndTerm?: number | null;
+  useCount?: number;
 }
 export interface CouponTemplateCreateRequest {
+  description?: string | null;
+  takeType?: 'USER' | 'ADMIN' | 'REGISTER';
+  takeLimitCount?: number;
+  productScope?: 'ALL' | 'SPU_IDS' | 'CATEGORY_IDS';
+  productScopeValues?: string[];
+  validityType?: 'DATE' | 'TERM';
+  fixedStartTerm?: number | null;
+  fixedEndTerm?: number | null;
+
   code: string;
   name: string;
   kind: CouponKind;
@@ -42,8 +60,8 @@ export interface CouponTemplateCreateRequest {
   discountPercent?: number;
   discountLimit?: number;
   totalCount: number;
-  validFrom: string;
-  validUntil: string;
+  validFrom: string | null;
+  validUntil: string | null;
 }
 export interface Coupon {
   id: string;
@@ -53,6 +71,10 @@ export interface Coupon {
   orderNo: string | null;
 }
 export interface CheckoutItem {
+  spuId?: string | null;
+  spuName?: string | null;
+  properties?: Record<string, string> | null;
+  picUrl?: string | null;
   productId: string;
   productCode: string;
   productName: string;
@@ -83,4 +105,18 @@ export interface CheckoutSubmitRequest extends CheckoutQuoteRequest {
 }
 export interface CheckoutIntent extends CheckoutSubmitRequest {
   memberId: string;
+}
+
+export interface CouponManagementRecord extends Coupon {
+  terms: {
+    name: string;
+    threshold: string;
+    fixedAmount: string | null;
+    discountPercent: number | null;
+    discountLimit: string | null;
+    kind: CouponKind;
+    validFrom: string;
+    validUntil: string;
+  } | null;
+  useTime: string | null;
 }

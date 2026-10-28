@@ -16,7 +16,6 @@ public final class MemberUserResConverter {
                 ? null
                 : new ProfileRes(
                         v.id(),
-                        v.memberNo(),
                         v.nickname(),
                         v.mobile(),
                         v.email(),

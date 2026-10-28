@@ -17,7 +17,6 @@ public final class MemberConverter {
                 ? null
                 : new Member(
                         row.getId(),
-                        row.getMemberNo(),
                         row.getNickname(),
                         row.getMobile(),
                         row.getEmail(),
@@ -38,7 +37,7 @@ public final class MemberConverter {
     public static MemberDO toDO(Member value) {
         var row = new MemberDO();
         row.setId(value.id());
-        row.setMemberNo(value.memberNo());
+
         row.setNickname(value.nickname());
         row.setMobile(value.mobile());
         row.setEmail(value.email());

@@ -54,5 +54,10 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-mq</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

@@ -6,4 +6,8 @@ import java.io.Serializable;
 public record StockReservation(String reservationNo,
         Long productId,
         Integer quantity,
-        String status) implements Serializable {}
+        String status, String sourceNo) implements Serializable {
+    public StockReservation(String reservationNo, Long productId, Integer quantity, String status) {
+        this(reservationNo, productId, quantity, status, null);
+    }
+}

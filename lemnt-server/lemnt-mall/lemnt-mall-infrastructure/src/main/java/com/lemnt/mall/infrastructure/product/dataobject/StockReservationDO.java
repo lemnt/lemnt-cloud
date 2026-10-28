@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@TableName("mall_stock_reservation")
+@TableName("mall_product_stock_reservation")
 public class StockReservationDO extends BaseDO {
     @TableId(type = IdType.AUTO)
     private Long id;
@@ -24,4 +24,6 @@ public class StockReservationDO extends BaseDO {
     private Long productId;
     private Integer quantity;
     private String status;
+    /** 售后回补关联的原预占订单号。 */
+    private String sourceNo;
 }

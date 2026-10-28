@@ -14,7 +14,6 @@ import {
 import type {
   MemberPageQuery,
   MemberProfileValues,
-  MemberCreateValues,
   MetadataKind,
   MetadataValues,
   RecordKind,
@@ -47,34 +46,14 @@ function profile(v: MemberProfileValues) {
     status: v.status,
   };
 }
-export async function createMember(v: MemberCreateValues) {
-  return decodeProfile(
-    (
-      await request<unknown>({
-        url: '/member/admin/users',
-        method: 'POST',
-        data: {
-          nickname: v.nickname,
-          mobile: v.mobile,
-          email: v.email || null,
-          avatar: v.avatar || null,
-        },
-      })
-    ).data,
-  );
-}
+
 export async function updateMember(id: string, v: MemberProfileValues) {
   return confirmed(
     (await request<unknown>({ url: user(id), method: 'PUT', data: profile(v) })).data,
   );
 }
-export async function resetMemberPassword(id: string, password: string) {
-  return confirmed(
-    (await request<unknown>({ url: user(id) + '/password', method: 'PUT', data: { password } }))
-      .data,
-  );
-}
-export async function adjustMember(id: string, kind: 'points' | 'experience', v: MemberAdjustment) {
+
+export async function adjustMember(id: string, kind: 'points', v: MemberAdjustment) {
   return decodeRecord(
     (
       await request<unknown>({

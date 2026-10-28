@@ -76,4 +76,14 @@ public class MemberAssetRecordGatewayImpl implements MemberAssetRecordGateway {
     public AssetRecord assetsDetail(Long id) {
         return AssetRecordConverter.toEntity(memberAssetRecordMapper.assetsDetail(id));
     }
+    @Override
+    public long tradeReturns(Long memberId, String assetType, String bizType, String orderNo) {
+        return memberAssetRecordMapper.selectList(com.baomidou.mybatisplus.core.toolkit.Wrappers
+                .<com.lemnt.member.infrastructure.growth.dataobject.AssetRecordDO>lambdaQuery()
+                .eq(com.lemnt.member.infrastructure.growth.dataobject.AssetRecordDO::getMemberId, memberId)
+                .eq(com.lemnt.member.infrastructure.growth.dataobject.AssetRecordDO::getAssetType, assetType)
+                .eq(com.lemnt.member.infrastructure.growth.dataobject.AssetRecordDO::getBizType, bizType)
+                .likeRight(com.lemnt.member.infrastructure.growth.dataobject.AssetRecordDO::getBizNo, orderNo + ":"))
+                .stream().mapToLong(row -> row.getDelta()).sum();
+    }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.mall.infrastructure.product.mapper.ProductSpecMapper">
+
+    <resultMap id="ProductSpecResult" type="com.lemnt.mall.infrastructure.product.dataobject.ProductSpecDO" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="lock" resultMap="ProductSpecResult" flushCache="true"
+            useCache="false">
+        SELECT * FROM mall_product_spec WHERE id=#{id} FOR UPDATE
+    </select>
+</mapper>

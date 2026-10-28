@@ -3,6 +3,7 @@ package com.lemnt.trade.application.payment.executor;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
 import com.lemnt.trade.domain.order.model.TradeOrder;
 import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.trade.domain.payment.model.PaymentChannel;
 import com.lemnt.trade.domain.payment.model.PaymentRecord;
 
 import org.springframework.stereotype.Component;
@@ -11,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Locale;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -21,7 +21,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TradePaymentCreateCmdExe {
     private final OrderPersistenceService orderPersistenceService;
-    private static final Set<String> SUPPORTED_CHANNELS = Set.of("ALIPAY", "WECHAT");
     private final TradePaymentGateway tradePaymentGateway;
 
     /**
@@ -33,7 +32,9 @@ public class TradePaymentCreateCmdExe {
             throw new IllegalArgumentException("订单号和支付渠道不能为空");
         }
         String normalizedChannel = channel.trim().toUpperCase(Locale.ROOT);
-        if (!SUPPORTED_CHANNELS.contains(normalizedChannel)) {
+        try {
+            PaymentChannel.valueOf(normalizedChannel);
+        } catch (IllegalArgumentException exception) {
             throw new IllegalArgumentException("暂不支持该支付渠道");
         }
         TradeOrder order = orderPersistenceService.findByOrderNoForUpdate(orderNo.trim());

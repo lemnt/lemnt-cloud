@@ -2,6 +2,7 @@ package com.lemnt.trade.infrastructure.order.mapper;
 
 import com.lemnt.trade.domain.fulfillment.model.FulfillmentFilter;
 import com.lemnt.trade.infrastructure.fulfillment.dataobject.OrderSummaryDO;
+import com.lemnt.trade.infrastructure.order.dataobject.OrderTotalDO;
 import com.lemnt.trade.infrastructure.order.dataobject.TradeOrderDO;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -16,6 +17,11 @@ import java.util.List;
 /** TradeOrder 表数据访问接口。 */
 @Mapper
 public interface TradeOrderMapper extends BaseMapper<TradeOrderDO> {
+    /** 聚合订单表，避免拉取全部订单到内存。 */
+    @Select("<script>SELECT COUNT(*) AS order_count, COALESCE(SUM(total_amount),0) AS order_pay_price"
+            + " FROM trade_order <if test='orderNo != null'>WHERE order_no=#{orderNo}</if></script>")
+    OrderTotalDO total(@Param("orderNo") String orderNo);
+
     String Fulfillment_ORDER_FILTER = "<where><if test='orderNo != null'>o.order_no=#{orderNo}</if><if test='status !="
             + " null'>AND o.status=#{status}</if></where>";
 
@@ -25,8 +31,8 @@ public interface TradeOrderMapper extends BaseMapper<TradeOrderDO> {
     @Select(
             "<script>SELECT o.order_no,o.member_id,o.total_amount,o.status,o.create_time, CASE WHEN"
             + " c.order_no IS NULL THEN FALSE ELSE TRUE END AS inventory_confirmed,"
-            + " EXISTS(SELECT 1 FROM trade_refund_request r WHERE r.active_order_no=o.order_no"
-            + " AND r.status='REQUESTED') AS active_refund,"
+            + " EXISTS(SELECT 1 FROM trade_after_sale r WHERE r.order_no=o.order_no"
+            + " AND r.status IN ('REQUESTED','AWAITING_RETURN','RETURNED','WAIT_REFUND','REFUNDING')) AS active_refund,"
             + " s.carrier_code,s.tracking_no,s.shipped_at,s.received_at FROM trade_order o LEFT"
             + " JOIN trade_inventory_confirmation c ON c.order_no=o.order_no LEFT JOIN"
             + " trade_shipment s ON s.order_no=o.order_no "

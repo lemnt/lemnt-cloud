@@ -17,10 +17,8 @@ import com.lemnt.member.application.growth.qry.LevelRecordDetailQry;
 import com.lemnt.member.application.growth.qry.SignRecordAllPageQry;
 import com.lemnt.member.application.growth.service.MemberGrowthService;
 import com.lemnt.member.application.user.cmd.PasswordChangeCmd;
-import com.lemnt.member.application.user.cmd.PasswordResetCmd;
 import com.lemnt.member.application.user.executor.MemberGroupPageQueryExe;
 import com.lemnt.member.application.user.executor.MemberPasswordChangeCmdExe;
-import com.lemnt.member.application.user.executor.MemberPasswordResetCmdExe;
 import com.lemnt.member.application.user.executor.MemberTagPageQueryExe;
 import com.lemnt.member.application.user.qry.GroupPageQry;
 import com.lemnt.member.application.user.qry.TagPageQry;
@@ -109,7 +107,6 @@ class MemberAccountIntegrationTest {
     MemberUserService userService;
     MemberAddressService addressService;
     MemberGrowthService growthService;
-    MemberPasswordResetCmdExe passwordReset;
     MemberPasswordChangeCmdExe passwordChange;
     Long id, other;
     MemberGroupPageQueryExe memberGroupPageQueryExe;
@@ -183,7 +180,6 @@ class MemberAccountIntegrationTest {
         userService = tx(new MemberUserService(memberGroupGateway, memberTagGateway, memberTagLinkGateway, memberUserGateway));
         addressService = tx(new MemberAddressService(memberUserGateway, memberAddressGateway));
         growthService = tx(new MemberGrowthService(memberAssetRecordGateway, memberConfigGateway, memberLevelGateway, memberLevelRecordGateway, memberSignConfigGateway, memberSignRecordGateway, memberUserGateway));
-        passwordReset = tx(new MemberPasswordResetCmdExe(memberUserGateway));
         passwordChange = tx(new MemberPasswordChangeCmdExe(memberUserGateway));
         memberGroupPageQueryExe = new MemberGroupPageQueryExe(memberGroupGateway);
         memberTagPageQueryExe = new MemberTagPageQueryExe(memberTagGateway);
@@ -192,8 +188,8 @@ class MemberAccountIntegrationTest {
         memberSignRecordAllPageQueryExe = new MemberSignRecordAllPageQueryExe(memberSignRecordGateway);
         memberAssetRecordDetailQueryExe = new MemberAssetRecordDetailQueryExe(memberAssetRecordGateway);
         memberLevelRecordDetailQueryExe = new MemberLevelRecordDetailQueryExe(memberLevelRecordGateway);
-        id = memberUserGateway.save(Member.register("M1", "one", "13800000001", null, null)).id();
-        other = memberUserGateway.save(Member.register("M2", "two", "13800000002", null, null)).id();
+        id = memberUserGateway.save(new Member(null, "one", "13800000001", null, null, 1, 0L, 0L, null, null, null, null, null)).id();
+        other = memberUserGateway.save(new Member(null, "two", "13800000002", null, null, 1, 0L, 0L, null, null, null, null, null)).id();
     }
 
     @AfterEach
@@ -221,10 +217,9 @@ class MemberAccountIntegrationTest {
 
     @Test
     void memberClientKeepsItsReadOnlyProjectionAndMissingMemberContract() {
-        var client = new MemberUserClientImpl(memberUserGateway);
+        var client = new MemberUserClientImpl(memberUserGateway, memberLevelGateway);
         var member = client.getByMemberId(id);
         assertEquals(id, member.id());
-        assertEquals("M1", member.memberNo());
         assertEquals("one", member.nickname());
         assertEquals(1, member.status());
         userService.profileUpdate(id, "one", null, null, null, null, 0);
@@ -246,7 +241,7 @@ class MemberAccountIntegrationTest {
     void passwordMaintenanceUpdatesMemberUserAfterVerifyingOldPassword() {
         assertBusinessException(401,
                 () -> passwordChange.execute(new PasswordChangeCmd(id, "missing-password", "New-password-2026")));
-        passwordReset.execute(new PasswordResetCmd(id, "Member-password-2026"));
+        memberUserGateway.updatePassword(id, com.lemnt.common.security.utils.SecurityUtils.encryptPassword("Member-password-2026"));
         assertTrue(SecurityUtils.matchesPassword("Member-password-2026", memberUserGateway.findPasswordByMemberId(id)));
         assertBusinessException(401,
                 () -> passwordChange.execute(new PasswordChangeCmd(id, "wrong-password", "New-password-2026")));
@@ -254,6 +249,17 @@ class MemberAccountIntegrationTest {
         passwordChange.execute(new PasswordChangeCmd(id, "Member-password-2026", "New-password-2026"));
         assertTrue(SecurityUtils.matchesPassword("New-password-2026", memberUserGateway.findPasswordByMemberId(id)));
         assertFalse(SecurityUtils.matchesPassword("Member-password-2026", memberUserGateway.findPasswordByMemberId(id)));
+    }
+
+    @Test
+    void addressRpcOnlyReturnsTheOwnerAddressFromProductionGateway() {
+        var saved = addressService.saveAddress(address(id, null, true));
+        var client = new com.lemnt.member.application.dubbo.MemberAddressClientImpl(memberAddressGateway);
+        assertEquals(id, client.get(id, saved.id()).memberId());
+        assertEquals("测试地址", client.get(id, saved.id()).detailAddress());
+        assertNull(client.get(other, saved.id()));
+        assertNull(client.get(id, Long.MAX_VALUE));
+        assertNull(client.get(null, saved.id()));
     }
 
     @Test
@@ -515,10 +521,10 @@ class MemberAccountIntegrationTest {
     /** 数据库读取留在会员服务，RPC 结果不在诊断文本泄露密码。 */
     @Test
     void memberUserClientReadsExistingStorageAndTracksCurrentStatus() {
-        passwordReset.execute(new PasswordResetCmd(id, "Member-password-2026"));
+        memberUserGateway.updatePassword(id, com.lemnt.common.security.utils.SecurityUtils.encryptPassword("Member-password-2026"));
         com.lemnt.member.client.MemberUserClient client = tx(
                 (com.lemnt.member.client.MemberUserClient) new com.lemnt.member.application.dubbo.MemberUserClientImpl(
-                        memberUserGateway));
+                        memberUserGateway, memberLevelGateway));
         var login = client.getByMobile("13800000001");
         assertEquals(id, login.memberId());
         assertTrue(SecurityUtils.matchesPassword("Member-password-2026", login.passwordHash()));
@@ -528,5 +534,60 @@ class MemberAccountIntegrationTest {
         userService.profileUpdate(id, "one", null, null, null, null, 0);
         assertEquals(0, client.getByMemberId(id).status());
         assertNull(client.getByMemberId(Long.MAX_VALUE));
+    }
+    /** 下单抵扣、支付赠送、分次退款回退都使用原订单事实，回调重复不改变资产。 */
+    @Test
+    void tradeAssetsAreIdempotentAndRefundReturnsOnlyOriginalOrderBenefits() {
+        growthService.adjustAsset(id, "POINT", 100, "SEED", "初始化");
+        var create = new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                id, "CREATE", "ORDER", null, 20, 10, 1000, 0, false);
+        growthService.tradeAsset(create);
+        growthService.tradeAsset(create);
+        assertEquals(80L, memberUserGateway.findById(id).points());
+        var paid = new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                id, "PAID", "ORDER", null, 20, 10, 1000, 0, false);
+        growthService.tradeAsset(paid);
+        growthService.tradeAsset(paid);
+        assertEquals(90L, memberUserGateway.findById(id).points());
+        assertEquals(1000L, memberUserGateway.findById(id).experience());
+        var first = new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                id, "REFUND", "ORDER", "FIRST", 20, 10, 1000, 500, false);
+        growthService.tradeAsset(first);
+        growthService.tradeAsset(first);
+        assertEquals(95L, memberUserGateway.findById(id).points());
+        assertEquals(500L, memberUserGateway.findById(id).experience());
+        growthService.tradeAsset(new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                id, "REFUND", "ORDER", "LAST", 20, 10, 1000, 500, true));
+        assertEquals(100L, memberUserGateway.findById(id).points());
+        assertEquals(0L, memberUserGateway.findById(id).experience());
+    }
+
+    /** 未成功扣减不能通过关单获得积分，终态会拒绝迟到的抵扣。 */
+    @Test
+    void closedTradeDoesNotCreditUndeductedPointsAndRejectsLateCreate() {
+        var create = new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                id, "CREATE", "CLOSED", null, 20, 0, 1000, 0, false);
+        assertThrows(ServiceException.class, () -> growthService.tradeAsset(create));
+        growthService.tradeAsset(new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                id, "CLOSED", "CLOSED", null, 20, 0, 1000, 0, false));
+        assertEquals(0L, memberUserGateway.findById(id).points());
+        growthService.adjustAsset(id, "POINT", 100, "SEED", "初始化");
+        assertThrows(ServiceException.class, () -> growthService.tradeAsset(create));
+        assertEquals(100L, memberUserGateway.findById(id).points());
+    }
+
+    /** 赠送积分已使用时不产生负余额，重复退款也不扣除后来获得的积分。 */
+    @Test
+    void refundCannotCreateNegativeBalanceOrReclaimFutureUnrelatedPoints() {
+        growthService.tradeAsset(new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                id, "PAID", "SPENT", null, 0, 10, 1000, 0, false));
+        growthService.adjustAsset(id, "POINT", -10, "SPEND", "使用积分");
+        var refund = new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                id, "REFUND", "SPENT", "REFUND", 0, 10, 1000, 1000, true);
+        growthService.tradeAsset(refund);
+        assertEquals(0L, memberUserGateway.findById(id).points());
+        growthService.adjustAsset(id, "POINT", 5, "OTHER", "其他业务奖励");
+        growthService.tradeAsset(refund);
+        assertEquals(5L, memberUserGateway.findById(id).points());
     }
 }

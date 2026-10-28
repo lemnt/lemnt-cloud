@@ -1,20 +1,15 @@
 package com.lemnt.member.adapter.web.user.converter;
 
 import com.lemnt.member.adapter.web.user.req.GroupAssignReq;
-import com.lemnt.member.adapter.web.user.req.MemberCreateReq;
 import com.lemnt.member.adapter.web.user.req.MemberGroupCreateReq;
 import com.lemnt.member.adapter.web.user.req.MemberGroupUpdateReq;
 import com.lemnt.member.adapter.web.user.req.MemberProfileUpdateReq;
-import com.lemnt.member.adapter.web.user.req.MemberRegisterReq;
 import com.lemnt.member.adapter.web.user.req.MemberTagCreateReq;
 import com.lemnt.member.adapter.web.user.req.MemberTagUpdateReq;
 import com.lemnt.member.adapter.web.user.req.MemberUserPageReq;
-import com.lemnt.member.adapter.web.user.req.PasswordResetReq;
 import com.lemnt.member.adapter.web.user.req.TagsAssignReq;
 import com.lemnt.member.application.user.cmd.GroupAssignCmd;
 import com.lemnt.member.application.user.cmd.GroupSaveCmd;
-import com.lemnt.member.application.user.cmd.MemberRegisterCmd;
-import com.lemnt.member.application.user.cmd.PasswordResetCmd;
 import com.lemnt.member.application.user.cmd.MemberUpdateCmd;
 import com.lemnt.member.application.user.cmd.TagSaveCmd;
 import com.lemnt.member.application.user.cmd.TagsAssignCmd;
@@ -23,10 +18,6 @@ import com.lemnt.member.application.user.qry.MemberPageQry;
 /** 会员资料转换器。 */
 public final class MemberUserReqConverter {
 
-    /** 转换兼容入口的会员注册请求。 */
-    public static MemberRegisterCmd toRegisterCmd(MemberRegisterReq req) {
-        return new MemberRegisterCmd(req.nickname(), req.mobile(), req.email(), req.avatar());
-    }
 
     private MemberUserReqConverter() {}
 
@@ -52,20 +43,7 @@ public final class MemberUserReqConverter {
         return new TagsAssignCmd(id, r.tagIds());
     }
 
-    /**
-     * 更新会员密码凭证。
-     */
-    public static PasswordResetCmd password(Long id, PasswordResetReq r) {
-        return new PasswordResetCmd(id, r.password());
-    }
 
-    /**
-     * 创建。
-     */
-    public static MemberRegisterCmd create(MemberCreateReq r) {
-        return new MemberRegisterCmd(
-                r.nickname(), r.mobile(), r.email(), r.avatar());
-    }
 
     /**
      * 分组。

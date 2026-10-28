@@ -4,6 +4,12 @@ import com.lemnt.mall.domain.product.model.StockReservation;
 
 /** StockReservation 表领域存储接口。 */
 public interface StockReservationGateway {
+    /** 原订单同 SKU 已退款回补数量。 */
+    int returnedQuantity(String orderNo, Long productId);
+
+    /** 预占中的SKU不能删除，确认或释放后的历史记录保留。 */
+    boolean hasActive(Long productId);
+
     /** 锁定已存在的预占记录。 */
     StockReservation lock(String key, Long productId);
 

@@ -20,7 +20,6 @@ public final class MemberUserDTOConverter {
                 ? null
                 : new MemberDTO(
                         v.id(),
-                        v.memberNo(),
                         v.nickname(),
                         v.mobile(),
                         v.email(),

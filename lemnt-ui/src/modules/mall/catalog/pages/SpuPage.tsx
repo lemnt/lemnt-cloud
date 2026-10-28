@@ -10,7 +10,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usePermission } from '@/shared/hooks/usePermission';
 import { getSpuList, getSpuDetail, updateSpuShelf } from '../api/catalogApi';
 import { catalogKeys } from '../hooks/catalogKeys';
-import { shelfStatusEnum } from '../constants';
+import { spuStatusEnum } from '../constants';
 import { requireWriteSuccess } from '../catalogValidation';
 import { SpuEditor } from '../components/SpuEditor';
 import { SpuDetailDrawer } from '../components/SpuDetailDrawer';
@@ -56,7 +56,7 @@ export default function SpuPage() {
     { title: '商品名称', dataIndex: 'name' },
     { title: '分类编号', dataIndex: 'categoryId', search: false },
     { title: '品牌编号', dataIndex: 'brandId', search: false },
-    { title: '状态', dataIndex: 'status', valueEnum: shelfStatusEnum },
+    { title: '状态', dataIndex: 'status', valueEnum: spuStatusEnum },
     {
       title: '操作',
       valueType: 'option',
@@ -66,12 +66,12 @@ export default function SpuPage() {
             详情与库存
           </Button>
         ),
-        can('mall:spu:edit') && can('mall:spu:query') && (
+        can('mall:spu:edit') && can('mall:spu:query') && row.status !== 'RECYCLED' && (
           <Button key="edit" type="link" disabled={isOpening} onClick={() => edit(row.id)}>
             修改
           </Button>
         ),
-        can('mall:spu:edit') && (
+        can('mall:spu:edit') && row.status !== 'RECYCLED' && (
           <Popconfirm
             key="shelf"
             title={row.status === 'ON_SHELF' ? '确认下架？已预占订单仍可继续处理。' : '确认上架？'}

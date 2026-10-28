@@ -12,6 +12,11 @@
     <dependencies>
         <dependency>
             <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-lock</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
             <artifactId>lemnt-mall-domain</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>

@@ -1,83 +1,23 @@
--- 同一 MySQL 实例跨库迁移模板：替换 ${TRADE_DATABASE}/${MALL_DATABASE} 为已核对的真实库名。
--- 停止旧版购物车、结算及促销写入，先在商城库执行对应 V10/V12/V13/V14/V15 建表脚本。
--- 目标表必须为空；冲突直接报错，不覆盖数据。保持所有业务主键与订单号。
--- 仅复制数据，不删除交易库旧表；本模板未自动执行，不支持直接用于不同实例。
+-- 同一 MySQL 实例跨库迁移模板；先替换并核对 ${TRADE_DATABASE}/${MALL_DATABASE}。
+-- 目标为当前商城新结构（先执行 V1/V2/V10/V14/V15/V16），目标业务表必须为空。
+-- 停止旧版购物、结算及促销写入，先迁移结算和促销请求缓存，参见 docs/mall-schema-consolidation.md。
+-- 仅复制数据库事实，源表保留；不能将 SQL 文件当成缓存迁移工具。
+-- MySQL 客户端不得使用 --force，任一报错必须停止并 ROLLBACK。
+SET @mall_original_time_zone=@@session.time_zone;
+SET time_zone='+00:00';
 START TRANSACTION;
-INSERT INTO `${MALL_DATABASE}`.`mall_checkout_account` (`member_id`)
- SELECT `member_id` FROM `${TRADE_DATABASE}`.`trade_checkout_account`;
 INSERT INTO `${MALL_DATABASE}`.`mall_cart` (`id`,`member_id`,`product_id`,`quantity`,`selected`,`version`)
  SELECT `id`,`member_id`,`product_id`,`quantity`,`selected`,`version` FROM `${TRADE_DATABASE}`.`trade_cart`;
 INSERT INTO `${MALL_DATABASE}`.`mall_coupon_template` (`id`,`code`,`name`,`kind`,`threshold`,`fixed_amount`,`discount_percent`,`discount_limit`,`total_count`,`issued_count`,`valid_from`,`valid_until`,`enabled`)
  SELECT `id`,`code`,`name`,`kind`,`threshold`,`fixed_amount`,`discount_percent`,`discount_limit`,`total_count`,`issued_count`,`valid_from`,`valid_until`,`enabled` FROM `${TRADE_DATABASE}`.`trade_coupon_template`;
 INSERT INTO `${MALL_DATABASE}`.`mall_coupon` (`id`,`template_id`,`member_id`,`status`,`order_no`)
  SELECT `id`,`template_id`,`member_id`,`status`,`order_no` FROM `${TRADE_DATABASE}`.`trade_coupon`;
-INSERT INTO `${MALL_DATABASE}`.`mall_checkout` (`order_no`,`member_id`,`request_no`,`fingerprint`,`original_amount`,`discount_amount`,`payable_amount`,`coupon_id`)
- SELECT `order_no`,`member_id`,`request_no`,`fingerprint`,`original_amount`,`discount_amount`,`payable_amount`,`coupon_id` FROM `${TRADE_DATABASE}`.`trade_checkout`;
-INSERT INTO `${MALL_DATABASE}`.`mall_checkout_cart` (`order_no`,`cart_id`,`cart_version`)
- SELECT `order_no`,`cart_id`,`cart_version` FROM `${TRADE_DATABASE}`.`trade_checkout_cart`;
-INSERT INTO `${MALL_DATABASE}`.`mall_settlement_order` (`settlement_id`,`member_id`,`order_no`)
- SELECT `settlement_id`,`member_id`,`order_no` FROM `${TRADE_DATABASE}`.`trade_settlement_order`;
-INSERT INTO `${MALL_DATABASE}`.`mall_settlement_abandon` (`member_id`,`settlement_id`,`create_time`)
- SELECT `member_id`,`settlement_id`,`create_time` FROM `${TRADE_DATABASE}`.`trade_settlement_abandon`;
-INSERT INTO `${MALL_DATABASE}`.`mall_coupon_public_claim` (`template_id`,`enabled`)
- SELECT `template_id`,`enabled` FROM `${TRADE_DATABASE}`.`trade_coupon_public_claim`;
-INSERT INTO `${MALL_DATABASE}`.`mall_cart_add_request` (`member_id`,`request_no`,`product_id`,`quantity`,`cart_id`,`result_quantity`,`selected`,`cart_version`)
- SELECT `member_id`,`request_no`,`product_id`,`quantity`,`cart_id`,`result_quantity`,`selected`,`cart_version` FROM `${TRADE_DATABASE}`.`trade_cart_add_request`;
-INSERT INTO `${MALL_DATABASE}`.`mall_promotion_root` (`id`,`code`,`state`,`revision`,`active_version`,`last_version`,`draft_json`,`created_by`,`updated_by`)
- SELECT `id`,`code`,'DRAFT',`revision`,NULL,`last_version`,`draft_json`,`created_by`,`updated_by` FROM `${TRADE_DATABASE}`.`trade_promotion_root`;
-INSERT INTO `${MALL_DATABASE}`.`mall_promotion_version` (`root_id`,`version`,`draft_json`,`rule_hash`,`algorithm_version`,`starts_at_epoch_ms`,`ends_at_epoch_ms`,`operator_id`,`published_at_epoch_ms`)
- SELECT `root_id`,`version`,`draft_json`,`rule_hash`,`algorithm_version`,`starts_at_epoch_ms`,`ends_at_epoch_ms`,`operator_id`,`published_at_epoch_ms` FROM `${TRADE_DATABASE}`.`trade_promotion_version`;
-INSERT INTO `${MALL_DATABASE}`.`mall_promotion_scope` (`root_id`,`version`,`type`,`target_id`)
- SELECT `root_id`,`version`,`type`,`target_id` FROM `${TRADE_DATABASE}`.`trade_promotion_scope`;
-INSERT INTO `${MALL_DATABASE}`.`mall_promotion_counter` (`root_id`,`held_count`,`used_count`,`global_limit`,`member_limit`)
- SELECT `root_id`,`held_count`,`used_count`,`global_limit`,`member_limit` FROM `${TRADE_DATABASE}`.`trade_promotion_counter`;
-INSERT INTO `${MALL_DATABASE}`.`mall_promotion_member_counter` (`root_id`,`member_id`,`held_count`,`used_count`)
- SELECT `root_id`,`member_id`,`held_count`,`used_count` FROM `${TRADE_DATABASE}`.`trade_promotion_member_counter`;
-INSERT INTO `${MALL_DATABASE}`.`mall_promotion_usage` (`order_no`,`root_id`,`version`,`member_id`,`discount_fen`,`rule_hash`,`state`,`created_at_epoch_ms`,`updated_at_epoch_ms`)
- SELECT `order_no`,`root_id`,`version`,`member_id`,`discount_fen`,`rule_hash`,`state`,`created_at_epoch_ms`,`updated_at_epoch_ms` FROM `${TRADE_DATABASE}`.`trade_promotion_usage`;
-INSERT INTO `${MALL_DATABASE}`.`mall_promotion_usage_event` (`id`,`order_no`,`root_id`,`from_state`,`target_state`,`reason`,`occurred_at_epoch_ms`)
- SELECT `id`,`order_no`,`root_id`,`from_state`,`target_state`,`reason`,`occurred_at_epoch_ms` FROM `${TRADE_DATABASE}`.`trade_promotion_usage_event`;
-INSERT INTO `${MALL_DATABASE}`.`mall_promotion_admin_request` (`operator_id`,`request_no`,`action`,`fingerprint`,`created_at_epoch_ms`,`completed_at_epoch_ms`,`result_id`,`result_revision`,`result_state`,`result_active_version`,`result_last_version`)
- SELECT `operator_id`,`request_no`,`action`,`fingerprint`,`created_at_epoch_ms`,`completed_at_epoch_ms`,`result_id`,`result_revision`,`result_state`,`result_active_version`,`result_last_version` FROM `${TRADE_DATABASE}`.`trade_promotion_admin_request`;
--- 版本数据存在后再恢复发布状态，满足促销根与活动版本的本地外键。
-UPDATE `${MALL_DATABASE}`.mall_promotion_root t JOIN `${TRADE_DATABASE}`.trade_promotion_root s ON s.id=t.id
- SET t.active_version=s.active_version,t.state=s.state;
-COMMIT;
-
--- 每张表逐项对比总数后再切流；不把总数相同作为内容一致的唯一证据。
-SELECT 'mall_checkout_account' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_checkout_account`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_checkout_account`) AS target_count;
-SELECT 'mall_cart' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_cart`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_cart`) AS target_count;
-SELECT 'mall_coupon_template' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_coupon_template`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_coupon_template`) AS target_count;
-SELECT 'mall_coupon' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_coupon`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_coupon`) AS target_count;
-SELECT 'mall_checkout' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_checkout`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_checkout`) AS target_count;
-SELECT 'mall_checkout_cart' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_checkout_cart`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_checkout_cart`) AS target_count;
-SELECT 'mall_settlement_order' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_settlement_order`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_settlement_order`) AS target_count;
-SELECT 'mall_settlement_abandon' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_settlement_abandon`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_settlement_abandon`) AS target_count;
-SELECT 'mall_coupon_public_claim' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_coupon_public_claim`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_coupon_public_claim`) AS target_count;
-SELECT 'mall_cart_add_request' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_cart_add_request`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_cart_add_request`) AS target_count;
-SELECT 'mall_promotion_root' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_promotion_root`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_promotion_root`) AS target_count;
-SELECT 'mall_promotion_version' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_promotion_version`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_promotion_version`) AS target_count;
-SELECT 'mall_promotion_scope' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_promotion_scope`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_promotion_scope`) AS target_count;
-SELECT 'mall_promotion_counter' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_promotion_counter`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_promotion_counter`) AS target_count;
-SELECT 'mall_promotion_member_counter' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_promotion_member_counter`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_promotion_member_counter`) AS target_count;
-SELECT 'mall_promotion_usage' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_promotion_usage`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_promotion_usage`) AS target_count;
-SELECT 'mall_promotion_usage_event' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_promotion_usage_event`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_promotion_usage_event`) AS target_count;
-SELECT 'mall_promotion_admin_request' AS table_name,(SELECT COUNT(*) FROM `${TRADE_DATABASE}`.`trade_promotion_admin_request`) AS source_count,
- (SELECT COUNT(*) FROM `${MALL_DATABASE}`.`mall_promotion_admin_request`) AS target_count;
+UPDATE `${MALL_DATABASE}`.mall_coupon_template t
+ LEFT JOIN `${TRADE_DATABASE}`.trade_coupon_public_claim c ON c.template_id=t.id
+SET t.take_type=IF(COALESCE(c.enabled,FALSE),'USER','MANUAL');
+-- 促销不自动复制：旧整单折扣与新 SKU 折扣无法无损转换。
+-- 源活动及版本/使用历史保留归档，核对后按新活动接口重新配置；不得自动启用。
+-- 同一连接核对购物车、券模板和会员券数量与状态后，人工选择 COMMIT 或 ROLLBACK。
+-- COMMIT;
+-- ROLLBACK;
+-- 完成后恢复本连接时区：SET time_zone=@mall_original_time_zone;

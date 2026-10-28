@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.mall.infrastructure.product.mapper.ProductCommentMapper">
+
+    <resultMap id="ProductCommentResult" type="com.lemnt.mall.infrastructure.product.dataobject.ProductCommentDO" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="spuId" column="spu_id"/>
+        <result property="skuId" column="sku_id"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="memberId" column="member_id"/>
+        <result property="score" column="score"/>
+        <result property="content" column="content"/>
+        <result property="visible" column="visible"/>
+        <result property="replyContent" column="reply_content"/>
+        <result property="replyUserId" column="reply_user_id"/>
+        <result property="replyTime" column="reply_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="lock" resultMap="ProductCommentResult"
+            flushCache="true" useCache="false">
+        SELECT * FROM mall_product_comment WHERE id=#{id} FOR UPDATE
+    </select>
+</mapper>

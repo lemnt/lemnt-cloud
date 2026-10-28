@@ -1,6 +1,5 @@
 export interface MemberProfile {
   id: string;
-  memberNo: string;
   nickname: string;
   mobile: string | null;
   email: string | null;

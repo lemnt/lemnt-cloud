@@ -61,9 +61,12 @@
                 <targetPath>setup-sql</targetPath>
                 <includes>
                     <include>V20261025__mall_checkout_menu.sql</include>
+                    <include>V20261028__trade_delivery_permissions.sql</include>
                     <include>V20261027__mall_shopping_ownership.sql</include>
                     <include>V20261025__trade_fulfillment_menu.sql</include>
                     <include>V20261026__mall_promotion_permissions.sql</include>
+                    <include>V20261027__trade_payment_management_permissions.sql</include>
+                    <include>V20261027__trade_fulfillment_management_permissions.sql</include>
                 </includes>
             </testResource>
         </testResources>

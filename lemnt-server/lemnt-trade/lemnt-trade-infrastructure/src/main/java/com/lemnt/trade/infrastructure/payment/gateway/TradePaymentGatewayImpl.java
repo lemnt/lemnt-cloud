@@ -1,12 +1,15 @@
 package com.lemnt.trade.infrastructure.payment.gateway;
 
 import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.trade.domain.payment.model.PaymentFilter;
+import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.trade.domain.payment.model.PaymentRecord;
 import com.lemnt.trade.domain.payment.model.VerifiedPaymentNotification;
 import com.lemnt.trade.infrastructure.payment.dataobject.TradePaymentDO;
 import com.lemnt.trade.infrastructure.payment.mapper.TradePaymentMapper;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +25,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TradePaymentGatewayImpl implements TradePaymentGateway {
     private final TradePaymentMapper tradePaymentMapper;
+
+    @Override
+    public PageResult<PaymentRecord> page(PaymentFilter filter) {
+        var page = tradePaymentMapper.selectPage(new Page<>(filter.pageNum(), filter.pageSize()),
+                Wrappers.lambdaQuery(TradePaymentDO.class)
+                        .eq(filter.paymentNo() != null, TradePaymentDO::getPaymentNo, filter.paymentNo())
+                        .eq(filter.orderNo() != null, TradePaymentDO::getOrderNo, filter.orderNo())
+                        .eq(filter.channel() != null, TradePaymentDO::getChannel, filter.channel())
+                        .eq(filter.status() != null, TradePaymentDO::getStatus, filter.status())
+                        .orderByDesc(TradePaymentDO::getId));
+        return PageResult.of(page.getRecords().stream().map(this::toRecord).toList(), page.getTotal());
+    }
 
     @Override
     public PaymentRecord findByPaymentNo(String paymentNo) {

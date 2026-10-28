@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.mall.infrastructure.coupon.mapper.CouponMapper">
+
+    <resultMap id="CouponResult" type="com.lemnt.mall.infrastructure.coupon.dataobject.CouponDO" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="templateId" column="template_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="status" column="status"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="takeType" column="take_type"/>
+        <result property="kind" column="kind"/>
+        <result property="threshold" column="threshold"/>
+        <result property="fixedAmount" column="fixed_amount"/>
+        <result property="discountPercent" column="discount_percent"/>
+        <result property="discountLimit" column="discount_limit"/>
+        <result property="productScope" column="product_scope"/>
+        <result property="productScopeValues" column="product_scope_values"/>
+        <result property="validFrom" column="valid_from"/>
+        <result property="validUntil" column="valid_until"/>
+        <result property="useTime" column="use_time"/>
+        <result property="deleted" column="deleted"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="lockCouponRow" resultMap="CouponResult"
+            flushCache="true" useCache="false">
+        SELECT * FROM mall_coupon WHERE member_id=#{memberId} AND id=#{id} AND deleted=FALSE FOR UPDATE
+    </select>
+    <select id="now" resultType="java.time.LocalDateTime">SELECT CURRENT_TIMESTAMP</select>
+</mapper>

@@ -41,7 +41,7 @@ public class MemberPaymentStatusQueryExe {
         boolean waiting = records.stream().anyMatch(p -> "WAITING".equals(p.status()));
         boolean paid =
                 order.status() != null
-                && Set.of("PAID", "SHIPPED", "COMPLETED").contains(order.status());
+                && Set.of("PAID", "SHIPPED", "COMPLETED", "REFUNDED").contains(order.status());
         boolean invalid =
                 order.status() == null
                 || !Set.of(
@@ -50,6 +50,7 @@ public class MemberPaymentStatusQueryExe {
                 "PAID",
                 "SHIPPED",
                 "COMPLETED",
+                "REFUNDED",
         "CLOSED")
                 .contains(order.status())
                 || records.stream()

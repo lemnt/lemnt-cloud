@@ -91,9 +91,16 @@ public final class FulfillmentResConverter {
                 v.status(),
                 v.inventoryConfirmed(),
                 v.activeRefund(),
-                v.items().stream().map(item -> new com.lemnt.trade.adapter.web.fulfillment.res.OrderItemRes(
-                        item.productId(), item.productCode(), item.productName(),
-                        item.unitPrice(), item.quantity(), item.lineAmount())).toList(),
+                v.items().stream().map(item -> new com.lemnt.trade.adapter.web.fulfillment.res.OrderItemRes(item.productId(),
+                item.productCode(),
+                item.productName(),
+                item.unitPrice(),
+                item.quantity(),
+                item.lineAmount(),
+                item.spuId(),
+                item.spuName(),
+                item.properties(),
+                item.picUrl())).toList(),
                 shipment(v.shipment()));
     }
 

@@ -281,6 +281,17 @@ Dubbo 接口 → Bo/DTO 独立设计
 
 ---
 
+## MyBatis Plus 持久化规范
+
+- Mapper 按数据库表继承 `BaseMapper<DO>`；已有的插入、按主键查询、更新、删除方法直接复用，不再新增同义方法或默认包装方法。
+- 普通条件查询、分页及更新在 GatewayImpl 中使用 Lambda 条件构造器；支持的字段增减使用 `setIncrBy` / `setDecrBy`，保留原有状态和并发约束。
+- 多表关联、复杂限额条件、数据库函数、原子 upsert 等无法清晰使用 Lambda 表达的操作放在 Mapper XML；不在 Java 注解或字符串常量中编写 SQL，也不通过 `apply` / `setSql` 拼接复杂 SQL。
+- 带行锁的查询在 XML 明确关闭查询缓存并刷新本地缓存，避免用缓存结果代替实际加锁。
+- XML 沿用 `src/main/resources/mapper/` 根目录，兼容现有配置扫描路径；联合主键使用完整 Lambda 条件，不为使用按 ID 方法虚构主键。
+- 使用 MyBatis Plus，不引入 JPA、EntityManager 或 JpaRepository。
+
+---
+
 ## 领域层规范
 
 ### 分层依赖

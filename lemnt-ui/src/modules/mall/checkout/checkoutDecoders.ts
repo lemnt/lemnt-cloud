@@ -1,6 +1,7 @@
 import type {
   CartItem,
   Coupon,
+  CouponManagementRecord,
   CouponTemplate,
   CheckoutItem,
   CheckoutQuote,
@@ -79,14 +80,32 @@ export function decodeTemplate(value: unknown): CouponTemplate {
     discountLimit: optionalMoney(row.discountLimit),
     totalCount: integer(row.totalCount),
     issuedCount: integer(row.issuedCount),
-    validFrom: text(row.validFrom),
-    validUntil: text(row.validUntil),
+    validFrom: optionalText(row.validFrom),
+    validUntil: optionalText(row.validUntil),
     enabled: bool(row.enabled),
+    description: optionalText(row.description),
+    takeType: row.takeType === 'USER' || row.takeType === 'REGISTER' ? row.takeType : 'ADMIN',
+    takeLimitCount: row.takeLimitCount == null ? 1 : integer(row.takeLimitCount),
+    productScope:
+      row.productScope === 'SPU_IDS' || row.productScope === 'CATEGORY_IDS'
+        ? row.productScope
+        : 'ALL',
+    productScopeValues:
+      row.productScopeValues == null ? [] : decodeArray(row.productScopeValues, positiveId),
+    validityType: row.validityType === 'TERM' ? 'TERM' : 'DATE',
+    fixedStartTerm: row.fixedStartTerm == null ? null : integer(row.fixedStartTerm),
+    fixedEndTerm: row.fixedEndTerm == null ? null : integer(row.fixedEndTerm),
+    useCount: row.useCount == null ? 0 : integer(row.useCount),
   };
 }
 export function decodeCoupon(value: unknown): Coupon {
   const row = object(value);
-  if (row.status !== 'AVAILABLE' && row.status !== 'LOCKED' && row.status !== 'USED')
+  if (
+    row.status !== 'AVAILABLE' &&
+    row.status !== 'LOCKED' &&
+    row.status !== 'USED' &&
+    row.status !== 'EXPIRED'
+  )
     throw new Error('未知优惠券状态');
   return {
     id: positiveId(row.id),
@@ -99,6 +118,15 @@ export function decodeCoupon(value: unknown): Coupon {
 function decodeItem(value: unknown): CheckoutItem {
   const row = object(value);
   return {
+    spuId: row.spuId == null ? null : positiveId(row.spuId),
+    spuName: optionalText(row.spuName),
+    properties:
+      row.properties == null
+        ? null
+        : Object.fromEntries(
+            Object.entries(object(row.properties)).map(([key, value]) => [key, text(value)]),
+          ),
+    picUrl: optionalText(row.picUrl),
     productId: positiveId(row.productId),
     productCode: text(row.productCode),
     productName: text(row.productName),
@@ -131,7 +159,8 @@ export function decodeReceipt(value: unknown): CheckoutReceipt {
     row.status !== 'PAID' &&
     row.status !== 'SHIPPED' &&
     row.status !== 'COMPLETED' &&
-    row.status !== 'CLOSED'
+    row.status !== 'CLOSED' &&
+    row.status !== 'REFUNDED'
   )
     throw new Error('未知结算状态');
   return {
@@ -143,4 +172,28 @@ export function decodeReceipt(value: unknown): CheckoutReceipt {
 }
 export function decodeBoolean(value: unknown): boolean {
   return bool(value);
+}
+
+/** 后台发券记录读取持券自身规则。 */
+export function decodeCouponManagementRecord(value: unknown): CouponManagementRecord {
+  const row = object(value);
+  const terms = row.terms == null ? null : object(row.terms);
+  if (terms && terms.kind !== 'FIXED' && terms.kind !== 'PERCENT') throw new Error('未知持券类型');
+  return {
+    ...decodeCoupon(value),
+    useTime: optionalText(row.useTime),
+    terms:
+      terms == null
+        ? null
+        : {
+            name: text(terms.name),
+            kind: terms.kind as 'FIXED' | 'PERCENT',
+            threshold: money(terms.threshold),
+            fixedAmount: optionalMoney(terms.fixedAmount),
+            discountPercent: terms.discountPercent == null ? null : integer(terms.discountPercent),
+            discountLimit: optionalMoney(terms.discountLimit),
+            validFrom: text(terms.validFrom),
+            validUntil: text(terms.validUntil),
+          },
+  };
 }

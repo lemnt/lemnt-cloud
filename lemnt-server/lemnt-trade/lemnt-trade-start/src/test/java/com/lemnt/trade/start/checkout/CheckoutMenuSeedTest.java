@@ -29,6 +29,22 @@ class CheckoutMenuSeedTest {
                     c, new ClassPathResource("setup-sql/V20261025__trade_fulfillment_menu.sql"));
             ScriptUtils.executeSqlScript(
                     c, new ClassPathResource("setup-sql/V20261025__trade_fulfillment_menu.sql"));
+            var paymentPermissions = new ClassPathResource(
+                    "setup-sql/V20261027__trade_payment_management_permissions.sql");
+            ScriptUtils.executeSqlScript(c, paymentPermissions);
+            ScriptUtils.executeSqlScript(c, paymentPermissions);
+            try (var rows = s.executeQuery("SELECT COUNT(*) FROM sys_menu WHERE perms LIKE 'trade:payment%'")) {
+                rows.next();
+                assertEquals(6, rows.getInt(1));
+            }
+            var fulfillmentPermissions = new ClassPathResource(
+                    "setup-sql/V20261027__trade_fulfillment_management_permissions.sql");
+            ScriptUtils.executeSqlScript(c, fulfillmentPermissions);
+            ScriptUtils.executeSqlScript(c, fulfillmentPermissions);
+            try (var rows = s.executeQuery("SELECT COUNT(*) FROM sys_menu WHERE perms LIKE 'trade:after-sale:%'")) {
+                rows.next();
+                assertEquals(9, rows.getInt(1));
+            }
             try (var r = s.executeQuery("SELECT COUNT(*) FROM sys_menu WHERE menu_type='C'")) {
                 r.next();
                 assertEquals(4, r.getInt(1));

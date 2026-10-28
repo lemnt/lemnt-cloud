@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 商品目录领域网关实现。
+ * 商城库存同步远程接口实现。
  */
 @Component
 @RequiredArgsConstructor
@@ -18,18 +18,8 @@ public class InventoryGatewayImpl implements InventoryGateway {
     private ProductCatalogClient client;
 
     @Override
-    public void cancelReservation(String reservationNo, Long productId, Integer quantity) {
-        client.cancelReservation(reservationNo, productId, quantity);
-    }
-
-    @Override
     public boolean reserveStock(String reservationNo, Long productId, Integer quantity) {
         return client.reserveStock(reservationNo, productId, quantity);
-    }
-
-    @Override
-    public void releaseStock(String reservationNo, Long productId) {
-        client.releaseStock(reservationNo, productId);
     }
 
     @Override

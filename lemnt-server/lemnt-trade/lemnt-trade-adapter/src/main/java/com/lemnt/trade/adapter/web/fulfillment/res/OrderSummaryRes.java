@@ -17,7 +17,7 @@ public record OrderSummaryRes(
         Long memberId,
         @Schema(description = "应付金额，人民币元")
         BigDecimal totalAmount,
-        @Schema(description = "订单状态：RESERVING/PENDING_PAYMENT/PAID/SHIPPED/COMPLETED/CLOSED")
+        @Schema(description = "订单状态：RESERVING/PENDING_PAYMENT/PAID/SHIPPED/COMPLETED/CLOSED/REFUNDED")
         String status,
         @Schema(description = "订单创建时间")
         LocalDateTime createTime,

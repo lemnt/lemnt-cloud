@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.trade.infrastructure.delivery.mapper.DeliveryExpressTemplateFreeMapper">
+    <resultMap id="DeliveryExpressTemplateFreeMap" type="com.lemnt.trade.infrastructure.delivery.dataobject.DeliveryExpressTemplateFreeDO">
+        <id property="id" column="id"/>
+        <result property="templateId" column="template_id"/>
+        <result property="areaIds" column="area_ids"/>
+        <result property="freePrice" column="free_price"/>
+        <result property="freeCount" column="free_count"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deleted" column="deleted"/>
+    </resultMap>
+</mapper>

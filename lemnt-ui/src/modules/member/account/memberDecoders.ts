@@ -41,7 +41,6 @@ export function decodeProfile(raw: unknown): MemberProfile {
   const v = object(raw);
   return {
     id: memberId(v.id),
-    memberNo: text(v.memberNo),
     nickname: text(v.nickname),
     mobile: nullableText(v.mobile),
     email: nullableText(v.email),

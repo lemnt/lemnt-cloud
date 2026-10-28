@@ -59,6 +59,22 @@ export function decodeBrand(value: unknown): Brand {
     status: taxonomyStatus(row.status),
   };
 }
+function optionalQuantity(value: unknown): string | null {
+  if (value == null) return null;
+  const result = text(value);
+  if (!/^\d+(?:\.\d{1,6})?$/.test(result)) throw new Error('重量或体积响应不合法');
+  return result;
+}
+function deliveryTypes(value: unknown): number[] {
+  if (value == null) return [];
+  if (
+    !Array.isArray(value) ||
+    value.some((item) => item !== 1 && item !== 2) ||
+    new Set(value).size !== value.length
+  )
+    throw new Error('配送方式响应不合法');
+  return value as number[];
+}
 export function decodeSku(value: unknown): Sku {
   const row = record(value);
   const price = text(row.price);
@@ -73,6 +89,8 @@ export function decodeSku(value: unknown): Sku {
     name: text(row.name),
     price,
     stock: integer(row.stock),
+    weight: optionalQuantity(row.weight),
+    volume: optionalQuantity(row.volume),
     image: optionalText(row.image),
     properties,
     status: shelfStatus(row.status),
@@ -84,11 +102,13 @@ export function decodeSpu(value: unknown): Spu {
     id: decodeId(row.id),
     code: text(row.code),
     name: text(row.name),
+    deliveryTypes: deliveryTypes(row.deliveryTypes),
+    deliveryTemplateId: row.deliveryTemplateId == null ? null : decodeId(row.deliveryTemplateId),
     categoryId: decodeId(row.categoryId),
     brandId: decodeId(row.brandId),
     description: optionalText(row.description),
     image: optionalText(row.image),
-    status: shelfStatus(row.status),
+    status: row.status === 'RECYCLED' ? 'RECYCLED' : shelfStatus(row.status),
     skus: decodeList(row.skus, decodeSku),
   };
 }

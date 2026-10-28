@@ -1,9 +1,11 @@
 package com.lemnt.trade.application.order.service;
 
+import com.lemnt.trade.domain.order.model.TradeOperator;
+
+
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
 import com.lemnt.trade.domain.fulfillment.gateway.InventoryConfirmationGateway;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
-import com.lemnt.trade.domain.outbox.gateway.TradeOutboxGateway;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * 结算生命周期服务。
@@ -22,7 +23,7 @@ public class OrderLifecycleService {
     private final InventoryConfirmationGateway inventoryConfirmationGateway;
     private final OrderPersistenceService orderPersistenceService;
     private final TradeOrderGateway tradeOrderGateway;
-    private final TradeOutboxGateway tradeOutboxGateway;
+    private final OrderLogService logs;
 
     /**
      * 库存预留成功。
@@ -56,8 +57,7 @@ public class OrderLifecycleService {
         if (!tradeOrderGateway.transitionStatus(orderNo, "RESERVING", "CLOSED")) {
             throw new IllegalStateException("订单状态冲突");
         }
-        tradeOutboxGateway.append(
-                UUID.randomUUID().toString(), "TRADE_ORDER", orderNo, "TRADE_ORDER_CLOSED", "{}");
+        logs.record(order, "RESERVING", "CLOSED", 41, TradeOperator.system(), "库存预占失败，系统取消订单");
     }
 
     /**

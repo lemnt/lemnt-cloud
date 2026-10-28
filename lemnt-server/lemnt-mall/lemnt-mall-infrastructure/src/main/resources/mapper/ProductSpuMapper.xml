@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.mall.infrastructure.product.mapper.ProductSpuMapper">
+
+    <resultMap id="ProductSpuResult" type="com.lemnt.mall.infrastructure.product.dataobject.ProductSpuDO" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="brandId" column="brand_id"/>
+        <result property="description" column="description"/>
+        <result property="image" column="image"/>
+        <result property="status" column="status"/>
+        <result property="deliveryTypes" column="delivery_types"/>
+        <result property="deliveryTemplateId" column="delivery_template_id"/>
+    </resultMap>
+
+    <resultMap id="StoreProductResult" type="com.lemnt.mall.infrastructure.product.dataobject.StoreProductDO" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="brandId" column="brand_id"/>
+        <result property="image" column="image"/>
+        <result property="minPrice" column="min_price"/>
+        <result property="maxPrice" column="max_price"/>
+        <result property="available" column="available"/>
+    </resultMap>
+
+    <sql id="storeCatalogJoins">
+        FROM mall_product_spu s JOIN mall_product_category c ON c.id=s.category_id LEFT JOIN mall_product_category parent ON
+        parent.id=c.parent_id JOIN mall_product_brand b ON b.id=s.brand_id
+    </sql>
+
+    <sql id="storeCatalogVisible">
+        s.status='ON_SHELF' AND c.status='ENABLED' AND (c.parent_id IS NULL OR parent.status='ENABLED') AND
+        b.status='ENABLED' AND EXISTS(SELECT 1 FROM mall_product_sku p WHERE p.spu_id=s.id AND
+        p.status='ON_SHELF' AND p.price>0)
+    </sql>
+
+    <sql id="storeCatalogFilter">
+        <if test='categoryId != null'>AND (c.id=#{categoryId} OR c.parent_id=#{categoryId})</if><if
+        test='name != null'>AND s.name LIKE CONCAT('%',#{name},'%')</if>
+    </sql>
+
+    <select id="lockSpu" resultMap="ProductSpuResult"
+            flushCache="true" useCache="false">
+        SELECT * FROM mall_product_spu WHERE id=#{id} FOR UPDATE
+    </select>
+
+    <select id="products" resultMap="StoreProductResult">
+        SELECT s.id,s.name,s.category_id,s.brand_id,s.image,(SELECT MIN(p.price) FROM mall_product_sku p WHERE
+        p.spu_id=s.id AND p.status='ON_SHELF' AND p.price>0) AS min_price,(SELECT MAX(p.price) FROM
+        mall_product_sku p WHERE p.spu_id=s.id AND p.status='ON_SHELF' AND p.price>0) AS max_price,EXISTS(SELECT
+        1 FROM mall_product_sku p WHERE p.spu_id=s.id AND p.status='ON_SHELF' AND p.price>0 AND p.stock>0) AS
+        available<include refid="storeCatalogJoins"/> WHERE <include refid="storeCatalogVisible"/><include
+        refid="storeCatalogFilter"/> ORDER BY s.id DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="storeCatalogCount" resultType="java.lang.Long">
+        SELECT COUNT(*)<include refid="storeCatalogJoins"/> WHERE <include
+        refid="storeCatalogVisible"/><include refid="storeCatalogFilter"/>
+    </select>
+
+    <select id="visible" resultType="java.lang.Long">
+        SELECT s.id<include refid="storeCatalogJoins"/> WHERE s.id=#{id} AND <include refid="storeCatalogVisible"/>
+    </select>
+</mapper>

@@ -23,12 +23,12 @@ export const pages: Record<string, ComponentType> = {
   'mall/category/index': lazy(() => import('../modules/mall/catalog/pages/CategoryPage')),
   'mall/brand/index': lazy(() => import('../modules/mall/catalog/pages/BrandPage')),
   'mall/spu/index': lazy(() => import('../modules/mall/catalog/pages/SpuPage')),
+  'mall/coupon/records': lazy(() => import('../modules/mall/checkout/pages/CouponRecordPage')),
   'mall/coupon/index': lazy(() => import('../modules/mall/checkout/pages/CouponTemplatePage')),
   'trade/order/index': lazy(
     () => import('../modules/trade/fulfillment/pages/OrderFulfillmentPage'),
   ),
   'trade/refund/index': lazy(() => import('../modules/trade/fulfillment/pages/RefundRequestPage')),
-  'mall/cart/index': lazy(() => import('../modules/mall/checkout/pages/MemberCartPage')),
   'home/index': lazy(() => import('../modules/home/pages/HomePage')),
   'system/operlog/index': lazy(() => import('../modules/system/log/pages/OperationLogPage')),
   'system/logininfor/index': lazy(() => import('../modules/system/log/pages/LoginLogPage')),

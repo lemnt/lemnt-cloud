@@ -5,9 +5,7 @@ import com.lemnt.common.security.annotation.RequiresPermissions;
 import com.lemnt.trade.adapter.web.fulfillment.converter.FulfillmentReqConverter;
 import com.lemnt.trade.adapter.web.fulfillment.converter.FulfillmentResConverter;
 import com.lemnt.trade.adapter.web.fulfillment.req.ShipmentCreateReq;
-import com.lemnt.trade.adapter.web.fulfillment.res.TradeShipmentReceiveRes;
 import com.lemnt.trade.adapter.web.fulfillment.res.TradeShipmentShipRes;
-import com.lemnt.trade.application.fulfillment.executor.OrderReceiveCmdExe;
 import com.lemnt.trade.application.fulfillment.executor.ShipmentCreateCmdExe;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,7 +27,6 @@ import jakarta.validation.Valid;
 @RequiredArgsConstructor
 public class ShipmentController {
     private final ShipmentCreateCmdExe shipmentCreateCmdExe;
-    private final OrderReceiveCmdExe orderReceiveCmdExe;
 
     @PostMapping("/{orderNo}/shipment")
     @Operation(summary = "已支付且库存确认完成后登记发货，幂等且物流不可改写")
@@ -39,12 +36,5 @@ public class ShipmentController {
         return R.ok(
                 FulfillmentResConverter.shipmentToTradeShipmentShipRes(
                 shipmentCreateCmdExe.execute(FulfillmentReqConverter.shipment(orderNo, req))));
-    }
-
-    @PostMapping("/{orderNo}/receive")
-    @Operation(summary = "后台登记收货，重复请求返回原收货时间")
-    @RequiresPermissions("trade:fulfillment:receive")
-    public R<TradeShipmentReceiveRes> receive(@PathVariable String orderNo) {
-        return R.ok(FulfillmentResConverter.shipmentToTradeShipmentReceiveRes(orderReceiveCmdExe.execute(orderNo)));
     }
 }

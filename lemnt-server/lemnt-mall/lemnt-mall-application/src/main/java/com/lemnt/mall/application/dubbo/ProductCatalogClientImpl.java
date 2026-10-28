@@ -3,8 +3,8 @@ package com.lemnt.mall.application.dubbo;
 import com.lemnt.mall.application.product.service.ProductInventoryService;
 import com.lemnt.mall.client.ProductCatalogClient;
 import com.lemnt.mall.client.dto.ProductSnapshotDTO;
-import com.lemnt.mall.domain.product.gateway.ProductGateway;
-import com.lemnt.mall.domain.product.model.Product;
+import com.lemnt.mall.domain.product.gateway.ProductCatalogGateway;
+import com.lemnt.mall.domain.product.model.ProductSnapshot;
 
 import org.apache.dubbo.config.annotation.DubboService;
 
@@ -18,25 +18,24 @@ import java.util.List;
 @DubboService
 @RequiredArgsConstructor
 public class ProductCatalogClientImpl implements ProductCatalogClient {
-    private final ProductGateway productGateway;
+    private final ProductCatalogGateway productCatalogGateway;
     private final ProductInventoryService productInventoryService;
 
     @Override
     public ProductSnapshotDTO findOnShelf(Long id) {
-        Product p = productGateway.findSellableById(id);
-        return p == null || !"ON_SHELF".equals(p.status())
-                ? null
-                : new ProductSnapshotDTO(p.id(), p.productCode(), p.name(), p.price(), p.stock());
+        return toDTO(productCatalogGateway.findOnShelf(id));
     }
 
     @Override
     public List<ProductSnapshotDTO> findOnShelfBatch(List<Long> ids) {
-        return productGateway.findSellableByIds(ids).stream()
-                .map(
-                p ->
-                new ProductSnapshotDTO(
-                p.id(), p.productCode(), p.name(), p.price(), p.stock()))
-                .toList();
+        var values = productCatalogGateway.findOnShelfBatch(ids);
+        return ids.stream().map(values::get).filter(java.util.Objects::nonNull).map(this::toDTO).toList();
+    }
+
+    /** 远程输出与结算读取相同的可信目录快照。 */
+    private ProductSnapshotDTO toDTO(ProductSnapshot value) {
+        return value == null ? null : new ProductSnapshotDTO(value.id(), value.productCode(), value.name(), value.price(),
+                value.stock(), value.spuId(), value.spuName(), value.properties(), value.picUrl());
     }
 
     @Override

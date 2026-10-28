@@ -1,9 +1,9 @@
 import {
+  decodeId,
   decodeCategory,
   decodeBrand,
   decodeSpu,
   decodeList,
-  decodeStockAdjustment,
   decodeTotal,
 } from '../catalogDecoders';
 import { request } from '@/api/request';
@@ -16,8 +16,6 @@ import type {
   SpuQuery,
   SpuCreateRequest,
   SpuUpdateRequest,
-  SkuUpdateRequest,
-  StockAdjustRequest,
 } from '../types';
 export async function getCategoryList(): Promise<Category[]> {
   return decodeList((await request<unknown>({ url: '/mall/categories' })).data, decodeCategory);
@@ -74,10 +72,14 @@ export function updateSpu(id: string, data: SpuUpdateRequest) {
 export function updateSpuShelf(id: string, onShelf: boolean) {
   return request<boolean>({ url: `/mall/spus/${id}/shelf`, method: 'PUT', data: { onShelf } });
 }
-export function updateSku(id: string, data: SkuUpdateRequest) {
-  return request<boolean>({ url: `/mall/skus/${id}`, method: 'PUT', data });
-}
-export async function adjustSkuStock(id: string, data: StockAdjustRequest) {
-  const result = await request<unknown>({ url: `/mall/skus/${id}/stock`, method: 'POST', data });
-  return { ...result, data: decodeStockAdjustment(result.data) };
+
+/** 读取交易服务运费模板选择项，不在商城伪造模板列表。 */
+export async function getDeliveryTemplates(): Promise<{ id: string; name: string }[]> {
+  const response = await request<unknown>({ url: '/trade/admin/delivery/templates/simple' });
+  return decodeList(response.data, (value) => {
+    if (!value || typeof value !== 'object') throw new Error('运费模板响应不合法');
+    const row = value as Record<string, unknown>;
+    if (typeof row.name !== 'string') throw new Error('运费模板名称不合法');
+    return { id: decodeId(row.id), name: row.name };
+  });
 }

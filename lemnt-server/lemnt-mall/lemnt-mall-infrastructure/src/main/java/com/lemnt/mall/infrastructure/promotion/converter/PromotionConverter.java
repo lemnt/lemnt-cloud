@@ -1,224 +1,92 @@
 package com.lemnt.mall.infrastructure.promotion.converter;
 
-import com.lemnt.mall.domain.checkout.model.CheckoutRules;
-import com.lemnt.mall.domain.promotion.model.DiscountRule;
-import com.lemnt.mall.domain.promotion.model.PricingException;
-import com.lemnt.mall.domain.promotion.model.PromotionDraft;
-import com.lemnt.mall.domain.promotion.model.PromotionRoot;
-import com.lemnt.mall.domain.promotion.model.PromotionScope;
-import com.lemnt.mall.domain.promotion.model.PromotionUsage;
-import com.lemnt.mall.domain.promotion.model.PromotionVersion;
-import com.lemnt.mall.domain.promotion.model.PublishedPromotion;
-import com.lemnt.mall.infrastructure.promotion.dataobject.PromotionRootDO;
-import com.lemnt.mall.infrastructure.promotion.dataobject.PromotionUsageDO;
-import com.lemnt.mall.infrastructure.promotion.dataobject.PromotionVersionDO;
+import com.lemnt.mall.domain.promotion.model.DiscountActivity;
+import com.lemnt.mall.domain.promotion.model.DiscountProduct;
+import com.lemnt.mall.domain.promotion.model.RewardActivity;
+import com.lemnt.mall.domain.promotion.model.RewardRule;
+import com.lemnt.mall.infrastructure.promotion.dataobject.DiscountActivityDO;
+import com.lemnt.mall.infrastructure.promotion.dataobject.DiscountProductDO;
+import com.lemnt.mall.infrastructure.promotion.dataobject.RewardActivityDO;
 
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.json.JsonMapper;
+import com.alibaba.fastjson2.JSON;
 
-import java.util.List;
-
-/**
- * Closed internal document; not HTTP JSON and no polymorphic type activation.
- */
+/** 活动领域对象与表结构转换。 */
 public final class PromotionConverter {
     private PromotionConverter() {}
 
-    private static final JsonMapper JSON =
-    JsonMapper.builder().enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).build();
-
-    /**
-     * 文档。
-     */
-    public record Document(
-            String name,
-            String scopeKind,
-            List<Long> ids,
-            String ruleKind,
-            List<Tier> tiers,
-            Long thresholdFen,
-            Integer payRateBps,
-            Long maxDiscountFen,
-            String couponPolicy,
-            int priority,
-            long startsAtEpochMs,
-            long endsAtEpochMs,
-            Long globalUseLimit,
-            Long memberUseLimit
-    ) {}
-
-    /**
-     * 阶梯。
-     */
-    public record Tier(
-            long thresholdFen,
-            long discountFen
-    ) {}
-
-    /**
-     * 编码。
-     */
-    public static String encode(PromotionDraft d) {
-        var p = d.rule() instanceof DiscountRule.Percentage percent ? percent : null;
-        var t =
-        d.rule() instanceof DiscountRule.FullReduction f
-        ? f.tiers().stream()
-            .map(x -> new Tier(x.thresholdFen(), x.discountFen()))
-            .toList()
-        : null;
-        return JSON.writeValueAsString(
-                new Document(
-                d.name(),
-                d.scope().kind().name(),
-                d.scope().ids(),
-                p == null ? "FULL_REDUCTION" : "ORDER_DISCOUNT",
-                t,
-                p == null ? null : p.thresholdFen(),
-                p == null ? null : p.payRateBps(),
-                p == null ? null : p.maxDiscountFen(),
-                d.couponPolicy().name(),
-                d.priority(),
-                d.startsAtEpochMs(),
-                d.endsAtEpochMs(),
-                d.globalUseLimit(),
-                d.memberUseLimit()));
+    public static RewardActivity model(RewardActivityDO row) {
+        if (row == null) { return null; }
+        return new RewardActivity(
+                row.getId(),
+                row.getName(),
+                row.getStatus(),
+                row.getStartTime(),
+                row.getEndTime(),
+                row.getRemark(),
+                row.getConditionType(),
+                row.getProductScope(),
+                JSON.parseArray(row.getProductScopeValuesJson(), Long.class),
+                JSON.parseArray(row.getRulesJson(), RewardRule.class));
     }
 
-    /**
-     * 解码。
-     */
-    public static PromotionDraft decode(String text) {
-        if (text == null || text.length() > 1048576) {
-            throw new IllegalStateException("Invalid stored promotion document");
-        }
-        var d = JSON.readValue(text, Document.class);
-        DiscountRule rule;
-        if ("FULL_REDUCTION".equals(d.ruleKind())) {
-            PricingException.require(
-                    d.tiers() != null
-                    && d.thresholdFen() == null
-                    && d.payRateBps() == null
-                    && d.maxDiscountFen() == null);
-            rule =
-            new DiscountRule.FullReduction(
-                    d.tiers().stream()
-                    .map(
-                    t ->
-                    new DiscountRule.Tier(
-                    t.thresholdFen(), t.discountFen()))
-                    .toList());
-        } else if ("ORDER_DISCOUNT".equals(d.ruleKind())) {
-            PricingException.require(
-                    d.tiers() == null && d.thresholdFen() != null && d.payRateBps() != null);
-            rule =
-            new DiscountRule.Percentage(
-                    d.thresholdFen(), d.payRateBps(), d.maxDiscountFen());
-        } else {
-            throw new IllegalStateException("Unknown stored promotion rule");
-        }
-        return new PromotionDraft(
-                d.name(),
-                new PromotionScope(PromotionScope.Kind.valueOf(d.scopeKind()), d.ids()),
-                rule,
-                PromotionVersion.CouponPolicy.valueOf(d.couponPolicy()),
-                d.priority(),
-                d.startsAtEpochMs(),
-                d.endsAtEpochMs(),
-                d.globalUseLimit(),
-                d.memberUseLimit());
+    public static RewardActivityDO row(RewardActivity value) {
+        var row = new RewardActivityDO();
+        row.setId(value.id());
+        row.setName(value.name());
+        row.setStatus(value.status());
+        row.setStartTime(value.startTime());
+        row.setEndTime(value.endTime());
+        row.setRemark(value.remark());
+        row.setConditionType(value.conditionType());
+        row.setProductScope(value.productScope());
+        row.setProductScopeValuesJson(JSON.toJSONString(value.productScopeValues()));
+        row.setRulesJson(JSON.toJSONString(value.rules()));
+        return row;
     }
 
-    /**
-     * 摘要。
-     */
-    public static String hash(PromotionDraft d) {
-        return CheckoutRules.fingerprint("promo-1|" + encode(d));
+    public static DiscountActivity model(DiscountActivityDO row) {
+        if (row == null) { return null; }
+        return new DiscountActivity(
+                row.getId(),
+                row.getName(),
+                row.getStatus(),
+                row.getStartTime(),
+                row.getEndTime(),
+                row.getRemark());
     }
 
-    /**
-     * 根节点。
-     */
-    public static PromotionRoot root(PromotionRootDO r) {
-        return r == null
-        ? null
-        : new PromotionRoot(
-                r.getId(),
-                r.getCode(),
-                PromotionRoot.State.valueOf(r.getState()),
-                r.getRevision(),
-                r.getActiveVersion(),
-                r.getLastVersion(),
-                decode(r.getDraftJson()));
+    public static DiscountActivityDO row(DiscountActivity value) {
+        var row = new DiscountActivityDO();
+        row.setId(value.id());
+        row.setName(value.name());
+        row.setStatus(value.status());
+        row.setStartTime(value.startTime());
+        row.setEndTime(value.endTime());
+        row.setRemark(value.remark());
+        return row;
     }
 
-    /**
-     * 转换为持久化数据对象。
-     */
-    public static PromotionRootDO row(PromotionRoot r) {
-        var d = new PromotionRootDO();
-        d.setId(r.id());
-        d.setCode(r.code());
-        d.setState(r.state().name());
-        d.setRevision(r.revision());
-        d.setActiveVersion(r.activeVersion());
-        d.setLastVersion(r.lastVersion());
-        d.setDraftJson(encode(r.draft()));
-        return d;
+    public static DiscountProduct model(DiscountProductDO row) {
+        if (row == null) { return null; }
+        return new DiscountProduct(
+                row.getId(),
+                row.getActivityId(),
+                row.getSpuId(),
+                row.getSkuId(),
+                row.getDiscountType(),
+                row.getDiscountPercent(),
+                row.getDiscountPrice());
     }
 
-    /**
-     * 版本。
-     */
-    public static PublishedPromotion version(PromotionVersionDO r) {
-        if (r == null) {
-            return null;
-        }
-        var d = decode(r.getDraftJson());
-        if (!"promo-1".equals(r.getAlgorithmVersion())
-                || !CheckoutRules.fingerprint(r.getRootId() + ":" + r.getVersion() + ":" + hash(d))
-                .equals(r.getRuleHash())
-                || d.startsAtEpochMs() != r.getStartsAtEpochMs()
-                || d.endsAtEpochMs() != r.getEndsAtEpochMs()) {
-            throw new IllegalStateException("Stored promotion integrity mismatch");
-        }
-        return new PublishedPromotion(
-                r.getRootId(),
-                r.getVersion(),
-                d,
-                r.getRuleHash(),
-                r.getAlgorithmVersion(),
-                r.getOperatorId(),
-                r.getPublishedAtEpochMs());
-    }
-
-    /**
-     * 使用。
-     */
-    public static PromotionUsage usage(PromotionUsageDO r) {
-        return r == null
-        ? null
-        : new PromotionUsage(
-                r.getOrderNo(),
-                r.getRootId(),
-                r.getVersion(),
-                r.getMemberId(),
-                r.getDiscountFen(),
-                r.getRuleHash(),
-                PromotionUsage.State.valueOf(r.getState()));
-    }
-
-    /**
-     * 转换为持久化数据对象。
-     */
-    public static PromotionUsageDO row(PromotionUsage u) {
-        var r = new PromotionUsageDO();
-        r.setOrderNo(u.orderNo());
-        r.setRootId(u.rootId());
-        r.setVersion(u.version());
-        r.setMemberId(u.memberId());
-        r.setDiscountFen(u.discountFen());
-        r.setRuleHash(u.ruleHash());
-        r.setState(u.state().name());
-        return r;
+    public static DiscountProductDO row(DiscountProduct value) {
+        var row = new DiscountProductDO();
+        row.setId(value.id());
+        row.setActivityId(value.activityId());
+        row.setSpuId(value.spuId());
+        row.setSkuId(value.skuId());
+        row.setDiscountType(value.discountType());
+        row.setDiscountPercent(value.discountPercent());
+        row.setDiscountPrice(value.discountPrice());
+        return row;
     }
 }

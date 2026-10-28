@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.trade.infrastructure.delivery.mapper.DeliveryExpressTemplateMapper">
+    <resultMap id="DeliveryExpressTemplateMap" type="com.lemnt.trade.infrastructure.delivery.dataobject.DeliveryExpressTemplateDO">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="chargeMode" column="charge_mode"/>
+        <result property="sort" column="sort"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deleted" column="deleted"/>
+    </resultMap>
+    <select id="lockById" resultMap="DeliveryExpressTemplateMap" useCache="false" flushCache="true">
+        SELECT * FROM trade_delivery_express_template WHERE id = #{id} AND deleted = 0 FOR UPDATE
+    </select>
+</mapper>

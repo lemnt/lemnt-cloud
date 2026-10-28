@@ -25,7 +25,7 @@ public record RefundRequestRes(
         BigDecimal amount,
         @Schema(description = "申请原因")
         String reason,
-        @Schema(description = "申请状态：REQUESTED待处理（不是已退款），REJECTED已驳回")
+        @Schema(description = "售后状态：REQUESTED待处理、REJECTED已驳回、REFUNDING退款中、REFUNDED已退款")
         String status,
         @Schema(description = "驳回原因")
         String decisionReason,

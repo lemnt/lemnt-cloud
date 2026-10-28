@@ -73,7 +73,6 @@ class MemberControllerMappingTest {
                 GET /member-users member:user:query
                 GET /member-users/{id} member:user:query
                 GET /member-users/{id}/addresses member:address:query
-                GET /member-users/{id}/experience-records member:experience-record:query
                 GET /member-users/{id}/level-records member:level-record:query
                 GET /member-users/{id}/points-records member:point-record:query
                 GET /member-users/{id}/signin-records member:sign-in-record:query
@@ -85,7 +84,6 @@ class MemberControllerMappingTest {
                 GET /member/admin/point-records member:point:query
                 GET /member/admin/point-records/{id} member:point:query
                 GET /member/admin/signin-records member:signin:query
-                GET /members/{id} member:query
                 GET /tags member:tag:query
                 GET /tags/list-all-simple member:tag:query
                 GET /tags/{id} member:tag:query
@@ -93,8 +91,6 @@ class MemberControllerMappingTest {
                 POST /app/growths/signin
                 POST /groups member:group:create
                 POST /growth/levels member:level:create
-                POST /member-users member:user:create
-                POST /members/register member:user:create
                 POST /tags member:tag:create
                 PUT /app/addresses/{id}
                 PUT /app/users/user
@@ -104,10 +100,8 @@ class MemberControllerMappingTest {
                 PUT /growths/config member:config:update
                 PUT /growths/signin-configs member:sign-in-config:update
                 PUT /member-users/{id} member:user:update
-                PUT /member-users/{id}/experience member:user:update-level
                 PUT /member-users/{id}/group member:user:update
                 PUT /member-users/{id}/level member:user:update-level
-                PUT /member-users/{id}/password member:user:reset-password
                 PUT /member-users/{id}/points member:user:update-point
                 PUT /member-users/{id}/tags member:user:update
                 PUT /tags/{id} member:tag:update

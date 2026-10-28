@@ -1,6 +1,8 @@
 package com.lemnt.trade.domain.payment.gateway;
 
 import com.lemnt.trade.domain.payment.model.PaymentRecord;
+import com.lemnt.trade.domain.payment.model.PaymentFilter;
+import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.trade.domain.payment.model.VerifiedPaymentNotification;
 
 import java.math.BigDecimal;
@@ -10,6 +12,9 @@ import java.util.List;
  * 交易支付领域网关。
  */
 public interface TradePaymentGateway {
+    /** 按条件分页查询支付单。 */
+    PageResult<PaymentRecord> page(PaymentFilter filter);
+
     /**
      * 查找按支付编号。
      */

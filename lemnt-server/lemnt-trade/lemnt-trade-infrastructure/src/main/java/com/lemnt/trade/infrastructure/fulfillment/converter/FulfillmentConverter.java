@@ -4,7 +4,7 @@ import com.lemnt.trade.domain.fulfillment.model.OrderSummary;
 import com.lemnt.trade.domain.fulfillment.model.RefundRequest;
 import com.lemnt.trade.domain.fulfillment.model.Shipment;
 import com.lemnt.trade.infrastructure.fulfillment.dataobject.OrderSummaryDO;
-import com.lemnt.trade.infrastructure.fulfillment.dataobject.RefundRequestDO;
+import com.lemnt.trade.infrastructure.aftersale.dataobject.AfterSaleDO;
 import com.lemnt.trade.infrastructure.fulfillment.dataobject.ShipmentDO;
 
 /**
@@ -53,7 +53,7 @@ public final class FulfillmentConverter {
     /**
      * 退款请求。
      */
-    public static RefundRequest refundRequest(RefundRequestDO row) {
+    public static RefundRequest refundRequest(AfterSaleDO row) {
         return row == null
         ? null
         : new RefundRequest(
@@ -73,8 +73,8 @@ public final class FulfillmentConverter {
     /**
      * 退款请求。
      */
-    public static RefundRequestDO refundRequest(RefundRequest value) {
-        var row = new RefundRequestDO();
+    public static AfterSaleDO refundRequest(RefundRequest value) {
+        var row = new AfterSaleDO();
         row.setRefundNo(value.refundNo());
         row.setOrderNo(value.orderNo());
         row.setRequestNo(value.requestNo());

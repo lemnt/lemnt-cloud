@@ -3,8 +3,10 @@ package com.lemnt.trade.infrastructure.order.gateway;
 import com.lemnt.trade.domain.fulfillment.model.FulfillmentFilter;
 import com.lemnt.trade.domain.fulfillment.model.OrderPage;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
+import com.lemnt.trade.domain.order.model.OrderTotal;
 import com.lemnt.trade.domain.order.model.TradeOrder;
 import com.lemnt.trade.infrastructure.fulfillment.converter.FulfillmentConverter;
+import com.lemnt.trade.infrastructure.order.converter.OrderDeliveryConverter;
 import com.lemnt.trade.infrastructure.order.dataobject.TradeOrderDO;
 import com.lemnt.trade.infrastructure.order.mapper.TradeOrderMapper;
 
@@ -22,6 +24,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TradeOrderGatewayImpl implements TradeOrderGateway {
     private final TradeOrderMapper tradeOrderMapper;
+
+    @Override
+    public OrderTotal total(String orderNo) {
+        var value = tradeOrderMapper.total(orderNo);
+        return new OrderTotal(value.orderCount(), value.orderPayPrice());
+    }
+
+    @Override
+    public String remark(String orderNo) {
+        var value = tradeOrderMapper.selectOne(Wrappers.lambdaQuery(TradeOrderDO.class)
+                .eq(TradeOrderDO::getOrderNo, orderNo));
+        return value == null ? null : value.getRemark();
+    }
+
+    @Override
+    public boolean updateRemark(String orderNo, String remark) {
+        return tradeOrderMapper.update(null, Wrappers.lambdaUpdate(TradeOrderDO.class)
+                .eq(TradeOrderDO::getOrderNo, orderNo).set(TradeOrderDO::getRemark, remark)) == 1;
+    }
 
     @Override
     /**
@@ -55,7 +76,8 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     }
 
     private static void one(int n) {
-        if (n != 1) {
+        if (n != 1
+        ) {
             throw new IllegalStateException("Promotion persistence CAS/integrity failure");
         }
     }
@@ -68,13 +90,14 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 new TradeOrderDO()
                 .setOrderNo(order.orderNo())
                 .setMemberId(order.memberId())
-                .setTotalAmount(order.totalAmount())
+                .setTotalAmount(order.totalAmount()).setUsePoint(order.usePoint()).setGivePoint(order.givePoint())
                 .setStatus(order.status());
 
         // Expiry uses the database clock; do not fill order creation from a possibly different JVM
         // zone.
         row.setCreateTime(tradeOrderMapper.databaseNow());
         row.setUpdateTime(row.getCreateTime());
+        OrderDeliveryConverter.fill(order.delivery(), row);
         tradeOrderMapper.insert(row);
         return new TradeOrder(
                 row.getId(),
@@ -83,7 +106,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 row.getTotalAmount(),
                 row.getStatus(),
                 order.items(),
-                row.getCreateTime());
+                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row));
     }
 
     /** 读取订单主体。 */
@@ -94,7 +117,8 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 Wrappers.lambdaQuery(TradeOrderDO.class)
                 .eq(TradeOrderDO::getOrderNo, orderNo)
                 .last("LIMIT 1"));
-        if (row == null) {
+        if (row == null
+        ) {
             return null;
         }
         return new TradeOrder(
@@ -104,7 +128,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 row.getTotalAmount(),
                 row.getStatus(),
                 List.of(),
-                row.getCreateTime());
+                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row));
     }
 
     /** 锁定订单主体。 */
@@ -116,7 +140,8 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 Wrappers.lambdaQuery(TradeOrderDO.class)
                 .eq(TradeOrderDO::getOrderNo, orderNo)
                 .last("FOR UPDATE"));
-        if (row == null) {
+        if (row == null
+        ) {
             return null;
         }
         return new TradeOrder(
@@ -126,7 +151,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 row.getTotalAmount(),
                 row.getStatus(),
                 List.of(),
-                row.getCreateTime());
+                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row));
     }
 
     private List<TradeOrder> expired(String status, LocalDateTime deadline, int limit) {
@@ -147,7 +172,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 row.getTotalAmount(),
                 row.getStatus(),
                 List.of(),
-                row.getCreateTime()))
+                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row)))
                 .toList();
     }
 }

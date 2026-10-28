@@ -22,6 +22,11 @@ public final class TableTestComponents {
         this.source = source;
     }
 
+    /** 注册测试传输组件，不替代业务实现。 */
+    public <T> void register(Class<T> type, T value) {
+        components.put(type, value);
+    }
+
     public <T> T get(Class<T> type) {
         if (components.containsKey(type)) { return type.cast(components.get(type)); }
         if (type.getSimpleName().endsWith("Mapper")) { return session.getMapper(type); }

@@ -24,8 +24,6 @@ public class MemberDO extends BaseDO {
     @TableId(type = IdType.AUTO)
     /** 主键编号。 */
     private Long id;
-    /** 会员业务编号。 */
-    private String memberNo;
     /** 昵称。 */
     private String nickname;
     /** 手机号。 */

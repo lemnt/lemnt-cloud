@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberUserClientImpl implements MemberUserClient {
 
     private final MemberUserGateway memberUserGateway;
+    private final com.lemnt.member.domain.growth.gateway.MemberLevelGateway memberLevelGateway;
 
     /**
      * 根据会员编号查询跨服务基础资料。
@@ -29,7 +30,9 @@ public class MemberUserClientImpl implements MemberUserClient {
         if (member == null) {
             return null;
         }
-        return new MemberUserDTO(member.id(), member.memberNo(), member.nickname(), member.status());
+        var level = member.levelId() == null ? null : memberLevelGateway.level(member.levelId());
+        int percent = level == null || !Integer.valueOf(1).equals(level.status()) ? 100 : level.discountPercent();
+        return new MemberUserDTO(member.id(), member.nickname(), member.status(), percent, member.points());
     }
 
     /** 锁定会员行，在同一事务内读取会员资料和密码。 */

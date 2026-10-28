@@ -1,5 +1,9 @@
 package com.lemnt.trade.adapter.web.fulfillment.converter;
 
+import com.lemnt.common.security.utils.SecurityUtils;
+import com.lemnt.trade.domain.order.model.TradeOperator;
+
+
 import com.lemnt.trade.adapter.web.fulfillment.req.OrderPageReq;
 import com.lemnt.trade.adapter.web.fulfillment.req.RefundPageReq;
 import com.lemnt.trade.adapter.web.fulfillment.req.RefundRejectReq;
@@ -28,7 +32,7 @@ public final class FulfillmentReqConverter {
                 r.trackingNo(),
                 r.recipientName(),
                 r.phone(),
-                r.address());
+                r.address(), TradeOperator.administrator(SecurityUtils.getUserId()));
     }
 
     /**

@@ -44,6 +44,7 @@ public class OrderPageQueryExe {
                 "PAID",
                 "SHIPPED",
                 "COMPLETED",
+                "REFUNDED",
         "CLOSED")
                 .contains(status)) {
             throw new IllegalArgumentException("状态参数不合法");

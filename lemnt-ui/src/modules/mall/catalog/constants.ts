@@ -7,3 +7,5 @@ export const shelfStatusEnum = { ON_SHELF: { text: '已上架' }, OFF_SHELF: { t
 export const MAX_STOCK = 2147483647;
 
 export const MAX_EDITABLE_PRICE = 99999999999.99;
+
+export const spuStatusEnum = { ...shelfStatusEnum, RECYCLED: { text: '回收站' } };
