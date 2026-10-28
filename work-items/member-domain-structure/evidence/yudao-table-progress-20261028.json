@@ -198,20 +198,19 @@
     "promotion_seckill_activity",
     "promotion_seckill_config",
     "promotion_seckill_product",
-    "trade_after_sale_log",
     "trade_brokerage_record",
     "trade_brokerage_user",
     "trade_brokerage_withdraw",
     "trade_delivery_pick_up_store",
     "trade_statistics"
   ],
-  "remainingBusinessTables": 37,
+  "remainingBusinessTables": 36,
   "remainingDemoTables": 2,
   "deliveryJoinedToOrderPricing": true,
   "realDatabaseMigrationExecuted": false,
   "deliveryEvidence": "delivery-checkout-verification.json",
   "deliveryScope": "ordinary express, local persistence and controlled RPC/channel boundaries",
-  "currentLocalTables": 45,
+  "currentLocalTables": 46,
   "orderLogBatch": {
     "table": "trade_order_log",
     "schema": "lemnt-server/lemnt-trade/sql/V8__order_log.sql",
@@ -224,6 +223,13 @@
       "full_refund"
     ],
     "historicalLogsBackfilled": false,
+    "realDatabaseMigrationExecuted": false
+  },
+  "afterSaleBatch": {
+    "table": "trade_after_sale",
+    "renamedFrom": "trade_refund_request",
+    "logTable": "trade_after_sale_log",
+    "sourceFieldsFullyAligned": false,
     "realDatabaseMigrationExecuted": false
   }
 }

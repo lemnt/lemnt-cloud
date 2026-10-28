@@ -943,20 +943,23 @@
     {
       "source": "src/views/mall/trade/afterSale/detail/index.vue",
       "sha256": "f6965bd9080a5c3b575df46a9c7f9d63f829a76acfd486ef33318ac3abdeab9d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/fulfillment/pages/RefundRequestPage.tsx",
+      "note": "详情/日志、同意/拒绝/收货/拒收/退款已接；完整源字段和实际浏览器验收尚未全部完成"
     },
     {
       "source": "src/views/mall/trade/afterSale/form/AfterSaleDisagreeForm.vue",
       "sha256": "dc0d82bce28b6491631f74cf5df5e183fb9c7773daf6a91fd6592b2838d7c436",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/fulfillment/pages/RefundRequestPage.tsx",
+      "note": "详情/日志、同意/拒绝/收货/拒收/退款已接；完整源字段和实际浏览器验收尚未全部完成"
     },
     {
       "source": "src/views/mall/trade/afterSale/index.vue",
       "sha256": "c734cb7e269ff7dca721abcbd90b4d32c8b2866e4263d0239eae050d1e01bc60",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/fulfillment/pages/RefundRequestPage.tsx",
+      "note": "详情/日志、同意/拒绝/收货/拒收/退款已接；完整源字段和实际浏览器验收尚未全部完成"
     },
     {
       "source": "src/views/mall/trade/brokerage/record/index.vue",

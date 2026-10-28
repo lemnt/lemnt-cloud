@@ -2717,8 +2717,9 @@
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/service/aftersale/AfterSaleServiceImpl.java",
       "sha256": "96ab6198e24aa3cc3e395d31b24e60271652169f4ccd47b4ec4e1ab819430b29",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/aftersale/service/AfterSaleService.java",
+      "note": "标准表/主键、日志与取消链路已实现；源字段仍未全量对齐，见after-sale-fields-20261028.json"
     },
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/service/aftersale/AfterSaleLogServiceImpl.java",
@@ -3055,14 +3056,16 @@
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/dal/dataobject/aftersale/AfterSaleLogDO.java",
       "sha256": "d9f8f8597446a1e01e6175462daae206d6541e987b0039117e53750bea41c53e",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/aftersale/dataobject/AfterSaleLogDO.java",
+      "note": "标准表/主键、日志与取消链路已实现；源字段仍未全量对齐，见after-sale-fields-20261028.json"
     },
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/dal/dataobject/aftersale/AfterSaleDO.java",
       "sha256": "f26310fd4dc417a8f8ddbdb864ee8402ba5061940e37ca8f9c433f56d70bab96",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/aftersale/dataobject/AfterSaleDO.java",
+      "note": "标准表/主键、日志与取消链路已实现；源字段仍未全量对齐，见after-sale-fields-20261028.json"
     },
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/dal/dataobject/cart/CartDO.java",

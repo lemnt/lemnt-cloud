@@ -1,5 +1,6 @@
 # 三模块数据库字段与本地芋道对比
 
+> 2026-10-28 售后增量：标准表/数值主键、orderId/auditUserId/refundTime/BaseDO审计及操作日志已迁移；当前完整列、字段别名/单位/状态差异和未补字段见 [售后字段证据](../work-items/member-domain-structure/evidence/after-sale-fields-20261028.json)，不代表全部源字段已对齐。
 > 2026-10-28 更新：券模板与持券已补限领、范围、相对日期、规则快照、核销时间、BaseDO审计及逻辑删除；新增真实订单操作日志。下文为之前的全量字段盘点，券及日志当前列与尚存差异见 [本批证据](../work-items/member-domain-structure/evidence/coupon-order-fields-20261028.json)，不能继续将持券视为仅ID/状态。
 日期：2026-10-28。结论：现有代码完成了部分流程收敛，数据库业务模型仍有显著差异，不能称为已复刻芋道商城。
 

@@ -762,8 +762,9 @@
     {
       "source": "sheep/api/trade/afterSale.js",
       "sha256": "46c088fb7332c288e827c8a1454e4217c3b92bab9b32fa62f2b772d1667225b5",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-miniapp/services/trade.js",
+      "note": "本批仅对接本人取消售后；完整App售后查询/申请/退货页面及接口继续迁移"
     },
     {
       "source": "sheep/api/trade/brokerage.js",
