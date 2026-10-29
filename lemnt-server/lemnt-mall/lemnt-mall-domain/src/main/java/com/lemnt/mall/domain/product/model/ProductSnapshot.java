@@ -1,6 +1,5 @@
 package com.lemnt.mall.domain.product.model;
 
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -19,11 +18,11 @@ public record ProductSnapshot(
         BigDecimal volume,
         Long spuId,
         String spuName,
-        java.util.List<Property> properties,
+        List<Property> properties,
         String picUrl
 ) {
     public ProductSnapshot {
-        properties = properties == null ? null : java.util.List.copyOf(properties);
+        properties = properties == null ? null : List.copyOf(properties);
     }
 
     /** 历史未保存商品元数据，保持为空，不查询现值补历史。 */

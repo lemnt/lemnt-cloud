@@ -16,10 +16,6 @@ CREATE TABLE mall_product_spec_value (
  UNIQUE KEY uk_mall_product_spec_value(spec_id,name),
  CONSTRAINT fk_mall_product_spec_value FOREIGN KEY(spec_id) REFERENCES mall_product_spec(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
--- 历史规格只补充到选择字典，不改写SKU属性或规格组合键。
-INSERT INTO mall_product_spec(name) SELECT DISTINCT property_name FROM mall_product_sku_spec;
-INSERT INTO mall_product_spec_value(spec_id,name)
- SELECT DISTINCT p.id,s.property_value FROM mall_product_sku_spec s JOIN mall_product_spec p ON p.name=s.property_name;
 CREATE TABLE mall_product_comment (
  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
  spu_id BIGINT NOT NULL,

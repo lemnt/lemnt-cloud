@@ -510,8 +510,9 @@
     {
       "source": "pages/public/richtext.vue",
       "sha256": "3ed418af94b95cf8009bfaf07e9804da6831358687167ee6c1a35e5bc56adc4c",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/article",
+      "note": "原生文章详情id/title、公开传输及独立浏览计数；另提供分类分页入口。非uni-app逐像素复刻，未真机验收"
     },
     {
       "source": "pages/public/setting.vue",
@@ -540,14 +541,16 @@
     {
       "source": "pages/user/goods-collect.vue",
       "sha256": "c3723c0b4682fffb393fb6895ad1f81cf44bc7753d7eadffb6a87c3f2659b404",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/favorites",
+      "note": "原生小程序适配列表、分页、当前页选择、单条/批量移除，足迹清空；非源Vue样式复刻，未真机验收"
     },
     {
       "source": "pages/user/goods-log.vue",
       "sha256": "83d3c226e58d0762a8b6fc0cdc824e1df7d4b925c7de9fa8795bd9475cf0ea96",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/browse-history",
+      "note": "原生小程序适配列表、分页、当前页选择、单条/批量移除，足迹清空；非源Vue样式复刻，未真机验收"
     },
     {
       "source": "pages/user/goods_details_store/index.vue",
@@ -702,8 +705,9 @@
     {
       "source": "sheep/api/promotion/article.js",
       "sha256": "8ff2dd27f76c1580ee85d90299d9af858d1bb69d036627cf0aba5b6a96aabc4d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-miniapp/services/articles.js",
+      "note": "原生文章详情id/title、公开传输及独立浏览计数；另提供分类分页入口。非uni-app逐像素复刻，未真机验收"
     },
     {
       "source": "sheep/api/promotion/combination.js",

@@ -165,16 +165,16 @@ public final class ProductCatalogValidation {
                 throw new ServiceException("商品重量或体积不合法", 400);
             }
             String code = text(sku.code(), 64, "SKU编码");
-            Map<String, String> props = properties(sku.properties());
+            List<ProductSkuSpec> props = validatedProperties(sku.properties());
             if (!codes.add(code) || !variants.add(variantKey(props))
             ) {
                 throw new IllegalArgumentException("SKU编码或规格组合重复");
             }
-            if (names != null && !names.equals(props.keySet())
+            if (names != null && !names.equals(props.stream().map(ProductSkuSpec::propertyName).collect(java.util.stream.Collectors.toSet()))
             ) {
                 throw new IllegalArgumentException("同一商品的SKU必须使用相同的规格名称");
             }
-            names = props.keySet();
+            names = props.stream().map(ProductSkuSpec::propertyName).collect(java.util.stream.Collectors.toSet());
             skus.add(
                     new ProductSku(
                     sku.id(),
@@ -184,8 +184,9 @@ public final class ProductCatalogValidation {
                     price(sku.price()),
                     sku.stock(),
                     optional(sku.image(), 500),
-                    props,
-                    "ON_SHELF", sku.weight(), sku.volume(), sku.specValueIds()));
+                props == null ? null : props.stream().map(property ->
+                        new com.lemnt.mall.domain.product.model.ProductSkuSpec(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                    "ON_SHELF", sku.weight(), sku.volume()));
         }
         return new ProductSpu(
                 null,
@@ -208,5 +209,28 @@ public final class ProductCatalogValidation {
             throw new IllegalArgumentException("商品编号集合不合法");
         }
         return ids.stream().sorted().toList();
+    }
+
+    /** 列表保留编号关联，校验名称和值及重复规格项。 */
+    public static List<ProductSkuSpec> validatedProperties(List<ProductSkuSpec> values) {
+        if (values == null || values.size() > 10) {
+            throw new IllegalArgumentException("SKU规格不合法");
+        }
+        var names = new HashSet<String>();
+        var ids = new HashSet<Long>();
+        return values.stream().map(value -> {
+            String name = text(value.propertyName(), 64, "规格名称");
+            String option = text(value.valueName(), 100, "规格值");
+            if (!names.add(name) || ((value.propertyId() == null) != (value.valueId() == null))
+                    || (value.propertyId() != null && (value.propertyId() <= 0 || value.valueId() <= 0 || !ids.add(value.propertyId())))) {
+                throw new IllegalArgumentException("SKU规格重复或编号不合法");
+            }
+            return new ProductSkuSpec(value.propertyId(), name, value.valueId(), option);
+        }).toList();
+    }
+
+    /** 延续存量变体键，避免仅调整合同就改变已有唯一键。 */
+    public static String variantKey(List<ProductSkuSpec> values) {
+        return variantKey(ProductSkuSpec.names(validatedProperties(values)));
     }
 }

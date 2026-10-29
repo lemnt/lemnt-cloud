@@ -2,7 +2,7 @@ package com.lemnt.mall.application.product.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.List;
 
 /**
  * 商品SKU数据传输对象。
@@ -15,30 +15,21 @@ public record ProductSkuDTO(
         BigDecimal price,
         Integer stock,
         String image,
-        Map<String,
-        String> properties,
+        List<Property> properties,
         String status,
         BigDecimal weight,
-        BigDecimal volume,
-        Map<Long, Long> specValueIds
+        BigDecimal volume
 ) implements Serializable {
-    /** 旧调用未提供字典关联，不推断历史编号。 */
+    /** 缺少配送字段的规格列表。 */
     public ProductSkuDTO(Long id, Long spuId, String code, String name, BigDecimal price, Integer stock,
-            String image, Map<String, String> properties, String status, BigDecimal weight, BigDecimal volume) {
-        this(id, spuId, code, name, price, stock, image, properties, status, weight, volume, null);
-    }
-
-    /** 历史快照缺少配送字段，读取时保留未配置状态。 */
-    public ProductSkuDTO(
-            Long id,
-            Long spuId,
-            String code,
-            String name,
-            BigDecimal price,
-            Integer stock,
-            String image,
-            Map<String, String> properties,
-            String status) {
+            String image, List<Property> properties, String status) {
         this(id, spuId, code, name, price, stock, image, properties, status, null, null);
     }
+    /** 编号与名称保持一一对应。 */
+    public record Property(
+            Long propertyId,
+            String propertyName,
+            Long valueId,
+            String valueName
+    ) implements java.io.Serializable {}
 }

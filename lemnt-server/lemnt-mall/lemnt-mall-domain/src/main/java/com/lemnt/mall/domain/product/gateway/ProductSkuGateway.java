@@ -79,7 +79,13 @@ public interface ProductSkuGateway {
     /** 读取单个 SKU。 */
     ProductSku catalogSku(Long id);
 
-    /** 保存 SKU 主体，属性由属性表组件维护。 */
+    /** 保存SKU主体及规格JSON。 */
     ProductSku insertSku(ProductSku value);
+
+    /** 同步规格项或规格值名称，只修改当前SKU。 */
+    void renameProperty(Long propertyId, String name);
+
+    /** 同步规格值名称，保留SKU编号和已有订单快照。 */
+    void renamePropertyValue(Long valueId, String name);
 
 }

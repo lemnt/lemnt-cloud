@@ -1,12 +1,10 @@
 package com.lemnt.mall.application.product.service;
 
 import com.lemnt.mall.domain.product.gateway.ProductSkuGateway;
-import com.lemnt.mall.domain.product.gateway.ProductSkuSpecGateway;
 import com.lemnt.mall.domain.product.gateway.ProductSpuGateway;
 import com.lemnt.mall.domain.product.gateway.StockReservationGateway;
 import com.lemnt.mall.domain.product.model.ProductCatalogValidation;
 import com.lemnt.mall.domain.product.model.ProductSku;
-import com.lemnt.mall.domain.product.model.ProductSkuSpec;
 import com.lemnt.mall.domain.product.model.ProductSpu;
 
 import org.springframework.stereotype.Component;
@@ -23,7 +21,6 @@ import java.util.stream.Collectors;
 public class ProductManagementService {
     private final ProductSpuGateway productSpuGateway;
     private final ProductSkuGateway productSkuGateway;
-    private final ProductSkuSpecGateway productSkuSpecGateway;
     private final StockReservationGateway stockReservationGateway;
     private final ProductCatalogService catalogService;
 
@@ -38,13 +35,7 @@ public class ProductManagementService {
         var parents = productSpuGateway.findSpus(requested).stream()
                 .collect(Collectors.toMap(ProductSpu::id, value -> value));
         var children = productSkuGateway.skusBySpuIds(requested);
-        var specs = productSkuSpecGateway.specsBySkuIds(children.stream().map(ProductSku::id).toList());
-        var grouped = children.stream().map(value -> {
-            var rows = specs.getOrDefault(value.id(), List.of());
-            return new ProductSku(value.id(), value.spuId(), value.code(), value.name(), value.price(), value.stock(),
-                    value.image(), ProductSkuSpec.names(rows), value.status(), value.weight(), value.volume(),
-                    ProductSkuSpec.identities(rows));
-        }).collect(Collectors.groupingBy(ProductSku::spuId));
+        var grouped = children.stream().collect(Collectors.groupingBy(ProductSku::spuId));
         return requested.stream().filter(parents::containsKey).map(id -> {
             var value = parents.get(id);
             return new ProductSpu(value.id(), value.code(), value.name(), value.categoryId(), value.brandId(),

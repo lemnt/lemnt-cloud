@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.List;
 
 /**
  * 商品SKU创建请求。
@@ -39,18 +39,27 @@ public record ProductSkuSaveReq(
         @Schema(description = "SKU图片URL")
         @Size(max = 500)
         String image,
-        @Schema(description = "规格名到规格值的映射，最多10项")
+        @Schema(description = "规格对象列表，最多10项")
         @Size(max = 10)
-        Map<@NotBlank
-        @Size(max = 64)
-        String,
-        @NotBlank
-        @Size(max = 100)
-        String>
-        properties,
+        @NotNull
+        List<@NotNull @jakarta.validation.Valid Property> properties,
         @Schema(description = "重量，千克") @DecimalMin("0") BigDecimal weight,
-        @Schema(description = "体积，立方米") @DecimalMin("0") BigDecimal volume,
-        @Schema(description = "规格编号到规格值编号，名称由服务端字典读取")
-        @Size(max = 10)
-        Map<@jakarta.validation.constraints.Positive Long, @NotNull @jakarta.validation.constraints.Positive Long> specValueIds
-) implements Serializable {}
+        @Schema(description = "体积，立方米") @DecimalMin("0") BigDecimal volume
+) implements Serializable {
+    /** 编号与名称保持一一对应。 */
+    @Schema(description = "商品规格")
+    public record Property(
+            @Schema(description = "规格项编号")
+            @NotNull @jakarta.validation.constraints.Positive
+            Long propertyId,
+            @Schema(description = "规格名称，写入时可省略")
+            @Size(max = 64)
+            String propertyName,
+            @Schema(description = "规格值编号")
+            @NotNull @jakarta.validation.constraints.Positive
+            Long valueId,
+            @Schema(description = "规格值名称，写入时可省略")
+            @Size(max = 100)
+            String valueName
+    ) implements java.io.Serializable {}
+}

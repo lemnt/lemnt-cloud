@@ -6,5 +6,5 @@ function clear(page){page.setData({profile:null,rows:[],records:[],summary:null,
 async function run(page,work){if(page.data.loading)return;page.setData({loading:true,error:'',success:''});const before=current()?.accessToken;try{await work();}catch(e){if(before!==current()?.accessToken)clear(page);page.setData({error:e.message||'操作失败，请重试'});}finally{if(before!==current()?.accessToken)clear(page);page.setData({loading:false});}}
 function input(event){return event.detail.value;}
 function login(){wx.navigateTo({url:'/pages/member-login/index'});}
-function go(event){const page=event.currentTarget.dataset.page;if(['member','member-addresses','member-benefits'].includes(page))wx.navigateTo({url:'/pages/'+page+'/index'});}
+function go(event){const page=event.currentTarget.dataset.page;if(['member','member-addresses','member-benefits','favorites','browse-history'].includes(page))wx.navigateTo({url:'/pages/'+page+'/index'});}
 module.exports={attach,run,clear,current,input,login,go,ready:config.memberApiReady};

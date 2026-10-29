@@ -24,14 +24,18 @@ public final class ProductManagementResConverter {
     /** 转换SKU新增响应。 */
     public static ProductSkuAddRes skuAdd(ProductSkuDTO value) {
         return new ProductSkuAddRes(value.id(), value.spuId(), value.code(), value.name(), value.price(), value.stock(),
-            value.image(), value.properties(), value.status(), value.specValueIds());
+            value.image(),
+                value.properties() == null ? null : value.properties().stream().map(property ->
+                        new ProductSkuAddRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(), value.status());
     }
 
     /** 转换SKU详情响应。 */
     public static ProductSkuDetailRes skuDetail(ProductSkuDTO value) {
         return new ProductSkuDetailRes(value.id(), value.spuId(), value.code(), value.name(), value.price(),
             value.stock(),
-            value.image(), value.properties(), value.status(), value.specValueIds());
+            value.image(),
+                value.properties() == null ? null : value.properties().stream().map(property ->
+                        new ProductSkuDetailRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(), value.status());
     }
 
     /** 转换SKU分页响应。 */
@@ -77,7 +81,9 @@ public final class ProductManagementResConverter {
     /** 批量接口的SKU独立响应。 */
     public static ProductSpuBatchSkuRes batchSku(ProductSkuDTO value) {
         return new ProductSpuBatchSkuRes(value.id(), value.spuId(), value.code(), value.name(), value.price(),
-            value.stock(), value.image(), value.properties(), value.status(), value.weight(), value.volume(), value.specValueIds());
+            value.stock(), value.image(),
+                value.properties() == null ? null : value.properties().stream().map(property ->
+                        new ProductSpuBatchSkuRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(), value.status(), value.weight(), value.volume());
     }
 
 }

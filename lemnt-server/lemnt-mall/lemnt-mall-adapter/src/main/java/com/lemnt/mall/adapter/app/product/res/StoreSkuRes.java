@@ -3,7 +3,7 @@ package com.lemnt.mall.adapter.app.product.res;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.List;
 
 /**
  * 门店商品SKU响应。
@@ -20,9 +20,19 @@ public record StoreSkuRes(
         int stock,
         @Schema(description = "image")
         String image,
-        @Schema(description = "规格属性名到值的映射")
-        Map<String,
-        String> properties,
-        @Schema(description = "规格编号到规格值编号，旧未关联记录为null")
-        Map<Long, Long> specValueIds
-) implements Serializable {}
+        @Schema(description = "规格对象列表")
+        List<Property> properties
+) implements Serializable {
+    /** 编号与名称保持一一对应。 */
+    @Schema(description = "商品规格")
+    public record Property(
+            @Schema(description = "规格项编号")
+            Long propertyId,
+            @Schema(description = "规格名称，写入时可省略")
+            String propertyName,
+            @Schema(description = "规格值编号")
+            Long valueId,
+            @Schema(description = "规格值名称，写入时可省略")
+            String valueName
+    ) implements java.io.Serializable {}
+}

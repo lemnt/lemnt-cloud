@@ -4,7 +4,7 @@ import com.lemnt.mall.application.product.cmd.ProductSpecCreateCmd;
 import com.lemnt.mall.application.product.cmd.ProductSpecUpdateCmd;
 import com.lemnt.mall.application.product.cmd.ProductSpecValueCreateCmd;
 import com.lemnt.mall.application.product.cmd.ProductSpecValueUpdateCmd;
-import com.lemnt.mall.domain.product.gateway.ProductSkuSpecGateway;
+import com.lemnt.mall.domain.product.gateway.ProductSkuGateway;
 import com.lemnt.mall.domain.product.gateway.ProductSpecGateway;
 import com.lemnt.mall.domain.product.gateway.ProductSpecValueGateway;
 import com.lemnt.mall.domain.product.model.ProductCatalogValidation;
@@ -17,13 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 规格字典维护，SKU已有字符串快照不随字典变更改写。 */
+/** 规格字典维护，同步当前SKU名称，原订单快照保持不变。 */
 @Component
 @RequiredArgsConstructor
 public class ProductSpecService {
     private final ProductSpecGateway productSpecGateway;
     private final ProductSpecValueGateway productSpecValueGateway;
-    private final ProductSkuSpecGateway productSkuSpecGateway;
+    private final ProductSkuGateway productSkuGateway;
 
     /** 创建规格项。 */
     @Transactional(rollbackFor = Exception.class)
@@ -49,7 +49,7 @@ public class ProductSpecService {
         return saveValue(cmd.id(), null, cmd.name(), cmd.remark());
     }
 
-    /** 创建或修改规格项，引用后的名称保持稳定。 */
+    /** 创建或修改规格项，改名同步当前SKU。 */
     private ProductSpec save(Long id, String name, String remark) {
         String normalized = ProductCatalogValidation.text(name, 64, "规格名称");
         if (id != null) {
@@ -58,11 +58,10 @@ public class ProductSpecService {
             if (old == null) {
                 throw new IllegalArgumentException("规格不存在");
             }
-            if (!old.name().equals(normalized) && productSkuSpecGateway.referenced(old.id(), null, old.name(), null)) {
-                throw new IllegalStateException("规格已用于SKU，不能修改名称");
-            }
         }
-        return productSpecGateway.save(new ProductSpec(id, normalized, ProductCatalogValidation.optional(remark, 500)));
+        var result = productSpecGateway.save(new ProductSpec(id, normalized, ProductCatalogValidation.optional(remark, 500)));
+        if (id != null) { productSkuGateway.renameProperty(id, normalized); }
+        return result;
     }
 
     /** 创建或修改规格值，规格归属创建后不能更换。 */
@@ -80,14 +79,13 @@ public class ProductSpecService {
         }
         if (old != null) {
             old = productSpecValueGateway.lock(id);
-            if (!old.name().equals(normalized) && productSkuSpecGateway.referenced(parent.id(), old.id(), parent.name(), old.name())) {
-                throw new IllegalStateException("规格值已用于SKU，不能修改名称");
-            }
         }
-        return productSpecValueGateway.save(new ProductSpecValue(id, parentId, normalized, ProductCatalogValidation.optional(remark, 500)));
+        var result = productSpecValueGateway.save(new ProductSpecValue(id, parentId, normalized, ProductCatalogValidation.optional(remark, 500)));
+        if (id != null) { productSkuGateway.renamePropertyValue(id, normalized); }
+        return result;
     }
 
-    /** 规格包含子值或存在SKU快照引用时不能删除。 */
+    /** 规格仍有子值时不可删除，已有SKU保留历史内容。 */
     @Transactional(rollbackFor = Exception.class)
     public boolean delete(Long id) {
         ProductCatalogValidation.id(id);
@@ -95,14 +93,13 @@ public class ProductSpecService {
         if (old == null) {
             return false;
         }
-        if (productSpecValueGateway.page(new ProductSpecFilter(null, id, 1, 1)).getTotal() > 0
-                || productSkuSpecGateway.referenced(old.id(), null, old.name(), null)) {
-            throw new IllegalStateException("规格仍包含规格值或被SKU引用");
+        if (productSpecValueGateway.page(new ProductSpecFilter(null, id, 1, 1)).getTotal() > 0) {
+            throw new IllegalStateException("规格仍包含规格值");
         }
         return productSpecGateway.delete(id);
     }
 
-    /** 未被SKU引用的规格值才可删除。 */
+    /** 删除规格值不擦除SKU快照。 */
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteValue(Long id) {
         ProductCatalogValidation.id(id);
@@ -114,9 +111,6 @@ public class ProductSpecService {
         old = productSpecValueGateway.lock(id);
         if (old == null) {
             return false;
-        }
-        if (productSkuSpecGateway.referenced(parent.id(), old.id(), parent.name(), old.name())) {
-            throw new IllegalStateException("规格值仍被SKU引用");
         }
         return productSpecValueGateway.delete(id);
     }

@@ -5,6 +5,7 @@ import { usePermission } from '@/shared/hooks/usePermission';
 import { getSpuDetail } from '../api/catalogApi';
 import { catalogKeys } from '../hooks/catalogKeys';
 import { shelfStatusEnum } from '../constants';
+import ProductInteractionPanels from './ProductInteractionPanels';
 import type { Sku } from '../types';
 
 export function SpuDetailDrawer({ id, onClose }: { id?: string; onClose: () => void }) {
@@ -20,8 +21,8 @@ export function SpuDetailDrawer({ id, onClose }: { id?: string; onClose: () => v
     {
       title: '规格',
       renderText: (_, row) =>
-        Object.entries(row.properties)
-          .map(([name, value]) => `${name}：${value}`)
+        row.properties
+          .map((property) => `${property.propertyName}：${property.valueName}`)
           .join(' / ') || '无规格',
     },
     { title: '价格（元）', dataIndex: 'price' },
@@ -54,6 +55,7 @@ export function SpuDetailDrawer({ id, onClose }: { id?: string; onClose: () => v
               { title: '状态', dataIndex: 'status', valueEnum: shelfStatusEnum },
             ]}
           />
+          <ProductInteractionPanels spuId={query.data.id} />
           <ProTable<Sku>
             rowKey="id"
             search={false}

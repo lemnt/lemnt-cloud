@@ -23,7 +23,9 @@ class ProductPermissionSeedTest {
                     + "create_by VARCHAR(64),create_time TIMESTAMP)");
             statement.execute("CREATE TABLE sys_role_menu(role_id BIGINT,menu_id BIGINT)");
             var script = new ClassPathResource("setup-sql/V20261027__product_management_permissions.sql");
+            var interactionScript = new ClassPathResource("setup-sql/V20261029__product_interaction_permissions.sql");
             ScriptUtils.executeSqlScript(connection, script);
+            ScriptUtils.executeSqlScript(connection, interactionScript);
             try (var rows = statement.executeQuery("SELECT COUNT(*) FROM sys_menu")) {
                 rows.next();
                 assertEquals(0, rows.getInt(1));
@@ -32,9 +34,11 @@ class ProductPermissionSeedTest {
             statement.execute("INSERT INTO sys_role_menu VALUES(7,1)");
             ScriptUtils.executeSqlScript(connection, script);
             ScriptUtils.executeSqlScript(connection, script);
+            ScriptUtils.executeSqlScript(connection, interactionScript);
+            ScriptUtils.executeSqlScript(connection, interactionScript);
             try (var rows = statement.executeQuery("SELECT COUNT(*) FROM sys_menu WHERE menu_type='F'")) {
                 rows.next();
-                assertEquals(20, rows.getInt(1));
+                assertEquals(22, rows.getInt(1));
             }
             try (var rows = statement.executeQuery("SELECT COUNT(*) FROM sys_menu WHERE menu_type='C'")) {
                 rows.next();

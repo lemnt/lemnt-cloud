@@ -967,8 +967,7 @@ class CheckoutFlowIntegrationTest {
     void deliveryQuotePersistsRecipientAndFreightAndPartialRefundUsesFrozenPaidLine() throws Exception {
         deliveryPointGift = true;
         configureDeliveryProduct();
-        sql(mallSource, "INSERT INTO mall_product_sku_spec(product_id,property_name,property_value) VALUES("
-                + sku + ",'尺码','L')");
+        skuProperties(List.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(null, "尺码", null, "L")));
         cartService.saveCart(1L, sku, 2, true);
         var service = new com.lemnt.mall.application.settlement.service.SettlementService(
                 checkoutService, orderRpc, placement, settlements);
@@ -2577,8 +2576,9 @@ class CheckoutFlowIntegrationTest {
         var originalSpu = catalog.spu(spuId);
         var originalSku = originalSpu.skus().get(0);
         var linked = new com.lemnt.mall.domain.product.model.ProductSku(originalSku.id(), spuId, originalSku.code(),
-                originalSku.name(), originalSku.price(), originalSku.stock(), originalSku.image(), Map.of(),
-                originalSku.status(), originalSku.weight(), originalSku.volume(), Map.of(spec.id(), option.id()));
+                originalSku.name(), originalSku.price(), originalSku.stock(), originalSku.image(),
+                List.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(spec.id(), null, option.id(), null)),
+                originalSku.status(), originalSku.weight(), originalSku.volume());
         catalog.updateSpu(new com.lemnt.mall.domain.product.model.ProductSpu(spuId, originalSpu.code(), originalSpu.name(),
                 originalSpu.categoryId(), originalSpu.brandId(), originalSpu.description(), originalSpu.image(),
                 originalSpu.status(), List.of(linked), originalSpu.deliveryTypes(), originalSpu.deliveryTemplateId()));
@@ -2602,7 +2602,9 @@ class CheckoutFlowIntegrationTest {
                 .get(com.lemnt.trade.application.order.service.OrderSubmissionService.class).create(changedOrder));
         sql(mallSource, "UPDATE mall_product_spu SET name='已改商品' WHERE id=" + spuId);
         sql(mallSource, "UPDATE mall_product_sku SET main_image='https://example.com/new.png' WHERE id=" + sku);
-        sql(mallSource, "UPDATE mall_product_sku_spec SET property_value='白色' WHERE product_id=" + sku);
+        dict.update(new com.lemnt.mall.application.product.cmd.ProductSpecUpdateCmd(spec.id(), "色彩", null));
+        dict.updateValue(new com.lemnt.mall.application.product.cmd.ProductSpecValueUpdateCmd(option.id(), "白色", null));
+        assertEquals("白色", catalog.sku(sku).properties().get(0).valueName());
         assertEquals(item, orderPersistenceService.findByOrderNo(order.orderNo()).items().get(0));
         var service = tradeComponents.get(AfterSaleService.class);
         var sale = service.create(itemRefund(order.orderNo(), "SNAPSHOT", 1, "REFUND_ONLY"));
@@ -2624,8 +2626,7 @@ class CheckoutFlowIntegrationTest {
     void changedSpecsInvalidateQuoteBeforeAnyOrderIsWritten() throws Exception {
         useCatalogSkuForReview();
         var token = SettlementRules.quoteToken(placement.quote(new SettlementQuoteQry(1L, List.of(sku), null)));
-        sql(mallSource, "INSERT INTO mall_product_sku_spec(product_id,property_name,property_value) VALUES("
-                + sku + ",'颜色','新规格')");
+        skuProperties(List.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(null, "颜色", null, "新规格")));
         var failure = assertThrows(IllegalStateException.class, () -> placement.checkoutCart(
                 new SettlementOrderSubmitCmd(1L, "CHANGED-SPEC", List.of(sku), null, token)));
         assertEquals("价格或数量已变化，请重新预览并确认", failure.getMessage());
@@ -2637,16 +2638,22 @@ class CheckoutFlowIntegrationTest {
     @Test
     void changingOnlySpecIdsRejectsOldQuoteAndCreatesNoOrder() throws Exception {
         useCatalogSkuForReview();
-        sql(mallSource, "INSERT INTO mall_product_sku_spec(product_id,property_name,property_value) VALUES("
-                + sku + ",'颜色','黑色')");
+        skuProperties(List.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(null, "颜色", null, "黑色")));
         var token = SettlementRules.quoteToken(placement.quote(new SettlementQuoteQry(1L, List.of(sku), null)));
         var dict = mallComponents.get(com.lemnt.mall.application.product.service.ProductSpecService.class);
         var spec = dict.create(new com.lemnt.mall.application.product.cmd.ProductSpecCreateCmd("颜色", null));
         var option = dict.createValue(new com.lemnt.mall.application.product.cmd.ProductSpecValueCreateCmd(spec.id(), "黑色", null));
-        sql(mallSource, "UPDATE mall_product_sku_spec SET property_id=" + spec.id() + ",value_id=" + option.id()
-                + " WHERE product_id=" + sku);
+        skuProperties(List.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(spec.id(), "颜色", option.id(), "黑色")));
         assertThrows(IllegalStateException.class, () -> placement.checkoutCart(new SettlementOrderSubmitCmd(
                 1L, "CHANGED-SPEC-ID", List.of(sku), null, token)));
         assertEquals(0, count("trade_order"));
+    }
+
+    private void skuProperties(List<com.lemnt.mall.domain.product.model.ProductSkuSpec> properties) {
+        mallComponents.get(com.lemnt.mall.infrastructure.product.mapper.ProductSkuMapper.class).update(null,
+                com.baomidou.mybatisplus.core.toolkit.Wrappers.lambdaUpdate(com.lemnt.mall.infrastructure.product.dataobject.ProductSkuDO.class)
+                        .eq(com.lemnt.mall.infrastructure.product.dataobject.ProductSkuDO::getId, sku)
+                        .set(com.lemnt.mall.infrastructure.product.dataobject.ProductSkuDO::getProperties,
+                                com.alibaba.fastjson2.JSON.toJSONString(properties)));
     }
 }

@@ -26,12 +26,15 @@ public class TradeOrderItemGatewayImpl implements TradeOrderItemGateway {
                 .lambdaQuery(TradeOrderItemDO.class)
                 .eq(TradeOrderItemDO::getOrderId, orderId)
                 .orderByAsc(TradeOrderItemDO::getId))
-                .stream().map(row -> new OrderRefundItem(row.getId(), row.getProductId(), row.getProductName(),
+                .stream().map(row -> {
+                    var properties = OrderItemConverter.properties(row.getProperties());
+                    return new OrderRefundItem(row.getId(), row.getProductId(), row.getProductName(),
                         row.getQuantity(), row.getLineAmount(), row.getPayAmount(), row.getDeliveryPrice(), row.getSpuId(),
                         row.getSpuName(),
-                OrderItemConverter.properties(row.getProperties()) == null ? null : OrderItemConverter.properties(row.getProperties()).stream().map(snapshotProperty ->
+                properties == null ? null : properties.stream().map(snapshotProperty ->
                         new OrderRefundItem.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(), row.getPicUrl())).toList();
+                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(), row.getPicUrl());
+                }).toList();
     }
 
     /** 保存订单的明细集合。 */

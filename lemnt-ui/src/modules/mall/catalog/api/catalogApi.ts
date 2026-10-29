@@ -122,3 +122,58 @@ function specOption(value: unknown): { id: string; name: string } {
   if (typeof row.name !== 'string') throw new Error('规格名称不合法');
   return { id: decodeId(row.id), name: row.name };
 }
+
+/** 商品详情下的独立只读收藏记录。 */
+export async function getProductFavorites(params: {
+  spuId: string;
+  userId?: string;
+  pageNum: number;
+  pageSize: number;
+}) {
+  const result = await request<unknown>({ url: '/mall/product-favorites', params });
+  return {
+    data: decodeList(result.rows, interactionRecord),
+    total: decodeTotal(result.total),
+    success: true,
+  };
+}
+/** 足迹隐藏状态必须保留false，不能当作未传。 */
+export async function getProductBrowseHistory(params: {
+  spuId: string;
+  userId?: string;
+  userDeleted?: boolean;
+  pageNum: number;
+  pageSize: number;
+}) {
+  const result = await request<unknown>({ url: '/mall/product-browse-history', params });
+  return {
+    data: decodeList(result.rows, (value) => {
+      const row = value as Record<string, unknown>;
+      if (!row || typeof row.userDeleted !== 'boolean') throw new Error('足迹隐藏状态不合法');
+      return { ...interactionRecord(value), userDeleted: row.userDeleted };
+    }),
+    total: decodeTotal(result.total),
+    success: true,
+  };
+}
+function interactionRecord(value: unknown): import('../types').ProductFavoriteRecord {
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new Error('商品记录格式不合法');
+  const row = value as Record<string, unknown>;
+  if (
+    typeof row.createTime !== 'string' ||
+    (row.spuName != null && typeof row.spuName !== 'string') ||
+    (row.picUrl != null && typeof row.picUrl !== 'string') ||
+    (row.price != null && (typeof row.price !== 'string' || !/^\d+\.\d{2}$/.test(row.price)))
+  )
+    throw new Error('商品记录字段不合法');
+  return {
+    id: decodeId(row.id),
+    userId: decodeId(row.userId),
+    spuId: decodeId(row.spuId),
+    spuName: (row.spuName as string | null) ?? null,
+    picUrl: (row.picUrl as string | null) ?? null,
+    price: (row.price as string | null) ?? null,
+    createTime: row.createTime,
+  };
+}

@@ -8,14 +8,11 @@ import com.lemnt.mall.domain.product.model.ProductSpu;
 import com.lemnt.mall.infrastructure.product.dataobject.BrandDO;
 import com.lemnt.mall.infrastructure.product.dataobject.CategoryDO;
 import com.lemnt.mall.infrastructure.product.dataobject.ProductSkuDO;
-import com.lemnt.mall.infrastructure.product.dataobject.ProductSkuSpecDO;
 import com.lemnt.mall.infrastructure.product.dataobject.ProductSpuDO;
 
 import com.alibaba.fastjson2.JSON;
 
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * 目录转换器。
@@ -74,13 +71,12 @@ public final class ProductCatalogConverter {
     /**
      * 商品SKU。
      */
-    public static ProductSku sku(ProductSkuDO row, List<ProductSkuSpecDO> properties) {
+    public static ProductSku sku(ProductSkuDO row) {
         if (row == null
         ) {
             return null;
         }
-        Map<String, String> values = new TreeMap<>();
-        properties.forEach(p -> values.put(p.getPropertyName(), p.getPropertyValue()));
+        var values = properties(row.getProperties());
         return new ProductSku(
                 row.getId(),
                 row.getSpuId(),
@@ -89,7 +85,8 @@ public final class ProductCatalogConverter {
                 row.getPrice(),
                 row.getStock(),
                 row.getMainImage(),
-                values,
+                values == null ? null : values.stream().map(property ->
+                        new com.lemnt.mall.domain.product.model.ProductSkuSpec(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
                 row.getStatus(), row.getWeight(), row.getVolume());
     }
 
@@ -150,11 +147,17 @@ public final class ProductCatalogConverter {
         row.setName(value.name());
         row.setPrice(value.price());
         row.setStock(value.stock());
+        row.setProperties(JSON.toJSONString(value.properties()));
         row.setMainImage(value.image());
         row.setStatus(value.status());
         row.setVariantKey(ProductCatalogValidation.variantKey(value.properties()));
         row.setWeight(value.weight());
         row.setVolume(value.volume());
         return row;
+    }
+
+    /** SKU规格仅从其JSON读取，不补字典现值或猜测旧编号。 */
+    public static List<com.lemnt.mall.domain.product.model.ProductSkuSpec> properties(String json) {
+        return json == null ? List.of() : JSON.parseArray(json, com.lemnt.mall.domain.product.model.ProductSkuSpec.class);
     }
 }

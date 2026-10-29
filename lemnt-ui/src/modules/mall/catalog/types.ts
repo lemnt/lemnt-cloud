@@ -31,8 +31,13 @@ export interface BrandSaveRequest {
   sort: number;
   status: TaxonomyStatus;
 }
+export interface SkuProperty {
+  propertyId: string | null;
+  propertyName: string;
+  valueId: string | null;
+  valueName: string;
+}
 export interface Sku {
-  specValueIds?: Record<string, string> | null;
   weight: string | null;
   volume: string | null;
   id: string;
@@ -42,7 +47,7 @@ export interface Sku {
   price: string;
   stock: number;
   image: string | null;
-  properties: Record<string, string>;
+  properties: SkuProperty[];
   status: ShelfStatus;
 }
 export interface Spu {
@@ -65,7 +70,6 @@ export interface SpuQuery {
   pageSize?: number;
 }
 export interface SkuCreateRequest {
-  specValueIds?: Record<string, string>;
   weight?: string;
   volume?: string;
   code: string;
@@ -73,7 +77,7 @@ export interface SkuCreateRequest {
   price: number;
   stock: number;
   image?: string;
-  properties: Record<string, string>;
+  properties: { propertyId: string; valueId: string }[];
 }
 export interface SpuCreateRequest {
   deliveryTypes: number[];
@@ -102,4 +106,24 @@ export interface StockAdjustment {
   delta: number;
   reason: string;
   resultingStock: number;
+}
+
+export interface ProductFavoriteRecord {
+  id: string;
+  userId: string;
+  spuId: string;
+  spuName: string | null;
+  picUrl: string | null;
+  price: string | null;
+  createTime: string;
+}
+export interface ProductBrowseHistoryRecord {
+  id: string;
+  userId: string;
+  spuId: string;
+  spuName: string | null;
+  picUrl: string | null;
+  price: string | null;
+  createTime: string;
+  userDeleted: boolean;
 }

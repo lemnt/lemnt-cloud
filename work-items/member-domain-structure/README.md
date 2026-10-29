@@ -36,3 +36,16 @@
 - [商品规格字典关联设计](35-product-spec-identity-design.md)
 - [规格字典关联交付](36-product-spec-identity-delivery.md)
 - [规格关联接口](../../docs/product-spec-identity-api.md)
+
+- [完整规格快照列表设计](37-property-snapshot-list-design.md)
+- [规格列表贯通交付](38-property-snapshot-list-delivery.md)
+
+- [商品规格列表合同设计](39-product-property-contract-design.md)
+- [商品规格合同收敛交付](40-product-property-contract-delivery.md)
+
+- [SKU规格存储合并设计](41-sku-property-storage-design.md)
+- [SKU JSON存储合并交付](42-sku-property-storage-delivery.md)
+
+- [商品收藏与浏览足迹设计](43-product-interaction-design.md)
+- [商品收藏与浏览足迹交付](44-product-interaction-delivery.md)
+- [商品收藏与足迹接口](../../docs/product-interaction-api.md)

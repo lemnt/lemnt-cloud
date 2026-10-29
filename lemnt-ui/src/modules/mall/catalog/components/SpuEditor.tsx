@@ -17,7 +17,7 @@ import {
   getDeliveryTemplates,
 } from '../api/catalogApi';
 import { catalogKeys } from '../hooks/catalogKeys';
-import { editablePrice, selectedSpecIds, requireWriteSuccess } from '../catalogValidation';
+import { editablePrice, selectedProperties, requireWriteSuccess } from '../catalogValidation';
 import { MAX_STOCK, MAX_EDITABLE_PRICE } from '../constants';
 import type { Spu } from '../types';
 import { SkuSpecFields } from './SkuSpecFields';
@@ -31,7 +31,12 @@ interface SkuFormValues {
   price: number;
   stock: number;
   image?: string;
-  specSelections?: { propertyId?: string; valueId?: string }[];
+  specSelections?: {
+    propertyId?: string;
+    valueId?: string;
+    propertyName?: string;
+    valueName?: string;
+  }[];
 }
 interface SpuFormValues {
   deliveryTypes: number[];
@@ -72,8 +77,9 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
     const original = value?.skus.find((row) => row.id === sku.id);
     if (
       original &&
-      original.specValueIds == null &&
-      Object.keys(original.properties).length &&
+      original.properties.some(
+        (property) => property.propertyId == null || property.valueId == null,
+      ) &&
       !sku.specSelections?.length
     ) {
       throw new Error('旧规格尚未关联，请选择对应字典后保存');
@@ -87,8 +93,7 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
       image: sku.image,
       weight: sku.weight,
       volume: sku.volume,
-      properties: {},
-      specValueIds: selectedSpecIds(sku.specSelections),
+      properties: selectedProperties(sku.specSelections),
     };
   }
   const save = useMutation<unknown, Error, SpuFormValues>({
@@ -143,9 +148,14 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
                 code: sku.code,
                 name: sku.name,
                 stock: sku.stock,
-                specSelections: Object.entries(sku.specValueIds ?? {}).map(
-                  ([propertyId, valueId]) => ({ propertyId, valueId }),
-                ),
+                specSelections: sku.properties
+                  .filter((property) => property.propertyId != null && property.valueId != null)
+                  .map((property) => ({
+                    propertyId: property.propertyId!,
+                    propertyName: property.propertyName,
+                    valueId: property.valueId!,
+                    valueName: property.valueName,
+                  })),
                 price: editablePrice(sku.price),
                 weight: sku.weight ?? undefined,
                 volume: sku.volume ?? undefined,
@@ -235,8 +245,8 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
       />
       <ProFormText name="image" label="主图 URL" rules={[{ max: 500 }]} />
       <ProFormTextArea name="description" label="商品描述" rules={[{ max: 65535 }]} />
-      {value?.skus.some(
-        (sku) => sku.specValueIds == null && Object.keys(sku.properties).length > 0,
+      {value?.skus.some((sku) =>
+        sku.properties.some((property) => property.propertyId == null || property.valueId == null),
       ) && <Alert type="warning" title="旧商品规格尚未关联字典，请为各SKU选择对应规格后保存" />}
       <ProFormList
         name="skus"

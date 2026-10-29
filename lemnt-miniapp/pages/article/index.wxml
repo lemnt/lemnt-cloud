@@ -1,0 +1,11 @@
+<view class="container">
+  <view wx:if="{{!ready}}">服务暂未启用</view>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+  <button bindtap="load" loading="{{loading}}" disabled="{{loading || !ready}}">重新加载正文</button>
+  <block wx:if="{{article}}">
+    <view class="title">{{article.title}}</view><view>{{article.author || ''}} · {{article.createTime}}</view><view>浏览 {{article.browseCount}}</view>
+    <view wx:if="{{countError}}" class="notice">{{countError}}</view>
+    <rich-text nodes="{{article.content}}"/>
+    <button wx:if="{{article.spuId}}" bindtap="product" disabled="{{loading}}">查看关联商品</button>
+  </block><view wx:elif="{{!loading &amp;&amp; !error}}">文章不存在</view>
+</view>

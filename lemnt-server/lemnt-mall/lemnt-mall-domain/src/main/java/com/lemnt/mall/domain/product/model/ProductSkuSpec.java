@@ -13,13 +13,4 @@ public record ProductSkuSpec(Long propertyId, String propertyName, Long valueId,
         return result;
     }
 
-    /** 任一旧行缺少编号时整组未知，不通过名称猜测。 */
-    public static Map<Long, Long> identities(List<ProductSkuSpec> values) {
-        if (values.stream().anyMatch(value -> value.propertyId() == null || value.valueId() == null)) {
-            return null;
-        }
-        var result = new TreeMap<Long, Long>();
-        values.forEach(value -> result.put(value.propertyId(), value.valueId()));
-        return result;
-    }
 }

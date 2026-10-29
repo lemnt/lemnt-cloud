@@ -1,7 +1,5 @@
 package com.lemnt.mall.infrastructure.product.gateway;
 
-import com.lemnt.mall.domain.product.gateway.ProductSkuSpecGateway;
-
 import com.lemnt.mall.domain.product.gateway.ProductCatalogGateway;
 import com.lemnt.mall.domain.product.gateway.ProductSkuGateway;
 import com.lemnt.mall.domain.product.gateway.ProductSpuGateway;
@@ -23,7 +21,6 @@ public class ProductCatalogGatewayImpl implements ProductCatalogGateway {
     private final ProductSkuGateway productSkuGateway;
 
     private final ProductSpuGateway productSpuGateway;
-    private final ProductSkuSpecGateway productSkuSpecGateway;
 
     @Override
     public ProductSnapshot findOnShelf(Long id) {
@@ -33,22 +30,21 @@ public class ProductCatalogGatewayImpl implements ProductCatalogGateway {
     @Override
     public Map<Long, ProductSnapshot> findOnShelfBatch(List<Long> ids) {
         var sellable = productSkuGateway.findSellableByIds(ids);
-        var properties = productSkuSpecGateway.specsBySkuIds(ids);
         var skus = productSkuGateway.byIds(ids).stream().collect(Collectors.toMap(row -> row.id(), row -> row));
         var spuIds = skus.values().stream().map(row -> row.spuId()).filter(Objects::nonNull).distinct().toList();
         var spus = productSpuGateway.findSpus(spuIds).stream().collect(Collectors.toMap(row -> row.id(), row -> row));
         return sellable.stream().collect(Collectors.toMap(value -> value.id(), value -> {
             var sku = skus.get(value.id());
             var spu = sku == null ? null : spus.get(sku.spuId());
+            var properties = sku == null ? List.<ProductSnapshot.Property>of() : sku.properties().stream()
+                    .sorted(java.util.Comparator.comparing(property -> property.propertyName()))
+                    .map(property -> new ProductSnapshot.Property(property.propertyId(), property.propertyName(),
+                            property.valueId(), property.valueName())).toList();
             return new ProductSnapshot(value.id(), value.productCode(), value.name(), value.price(), value.stock(),
                     spu == null ? List.of() : spu.deliveryTypes(), spu == null ? null : spu.deliveryTemplateId(),
                     sku == null ? null : sku.weight(), sku == null ? null : sku.volume(),
                     sku == null ? null : sku.spuId(), spu == null ? null : spu.name(),
-                properties.getOrDefault(value.id(), List.of()).stream()
-                            .sorted(java.util.Comparator.comparing(row -> row.propertyName())).toList() == null ? null : properties.getOrDefault(value.id(), List.of()).stream()
-                            .sorted(java.util.Comparator.comparing(row -> row.propertyName())).toList().stream().map(snapshotProperty ->
-                        new ProductSnapshot.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
+                    properties,
                     sku != null && sku.image() != null && !sku.image().isBlank()
                             ? sku.image() : spu == null ? null : spu.image());
         }));

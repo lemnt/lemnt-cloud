@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.List;
 
 /** 下架商品追加SKU请求。 */
 @Schema(description = "下架商品追加SKU请求")
@@ -37,6 +37,23 @@ public record ProductSkuAddReq(
         String image,
         @Schema(description = "最多10项规格")
         @Size(max = 10)
-        Map<String, String> properties
+        @NotNull
+        List<@NotNull @jakarta.validation.Valid Property> properties
 ) implements Serializable {
+    /** 编号与名称保持一一对应。 */
+    @Schema(description = "商品规格")
+    public record Property(
+            @Schema(description = "规格项编号")
+            @NotNull @jakarta.validation.constraints.Positive
+            Long propertyId,
+            @Schema(description = "规格名称，写入时可省略")
+            @Size(max = 64)
+            String propertyName,
+            @Schema(description = "规格值编号")
+            @NotNull @jakarta.validation.constraints.Positive
+            Long valueId,
+            @Schema(description = "规格值名称，写入时可省略")
+            @Size(max = 100)
+            String valueName
+    ) implements java.io.Serializable {}
 }

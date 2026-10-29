@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.TypeReference;
 import com.lemnt.trade.domain.order.model.TradeOrderItem;
 import com.lemnt.trade.infrastructure.order.dataobject.TradeOrderItemDO;
 import java.util.Map;
+import java.util.List;
 
 /** 订单项只读取落库快照，不回查当前商品。 */
 public final class OrderItemConverter {
@@ -33,13 +34,11 @@ public final class OrderItemConverter {
         return new TradeOrderItem(row.getProductId(), row.getProductCode(), row.getProductName(), row.getUnitPrice(),
                 row.getQuantity(), row.getLineAmount(), row.getPayAmount(), row.getDeliveryPrice(), row.getSpuId(),
                 row.getSpuName(),
-                properties(row.getProperties()) == null ? null : properties(row.getProperties()).stream().map(snapshotProperty ->
-                        new TradeOrderItem.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(), row.getPicUrl());
+                properties(row.getProperties()), row.getPicUrl());
     }
 
     /** 区分历史NULL和已知空规格。 */
-    public static java.util.List<TradeOrderItem.Property> properties(String json) {
+    public static List<TradeOrderItem.Property> properties(String json) {
         if (json == null) {
             return null;
         }

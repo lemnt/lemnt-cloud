@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.List;
 
 /**
  * 商品SKU响应。
@@ -25,35 +25,30 @@ public record ProductSkuRes(
         Integer stock,
         @Schema(description = "图片URL")
         String image,
-        @Schema(description = "SKU规格映射")
-        Map<String,
-        String> properties,
+        @Schema(description = "SKU规格列表")
+        List<Property> properties,
         @Schema(description = "状态")
         String status,
         @Schema(description = "重量，千克")
         BigDecimal weight,
         @Schema(description = "体积，立方米")
-        BigDecimal volume,
-        @Schema(description = "规格编号到规格值编号，null表示历史未关联")
-        Map<Long, Long> specValueIds
+        BigDecimal volume
 ) implements Serializable {
-    /** 旧调用未提供字典关联，不推断历史编号。 */
+    /** 缺少配送字段的规格列表。 */
     public ProductSkuRes(Long id, Long spuId, String code, String name, BigDecimal price, Integer stock,
-            String image, Map<String, String> properties, String status, BigDecimal weight, BigDecimal volume) {
-        this(id, spuId, code, name, price, stock, image, properties, status, weight, volume, null);
-    }
-
-    /** 历史快照缺少配送字段，读取时保留未配置状态。 */
-    public ProductSkuRes(
-            Long id,
-            Long spuId,
-            String code,
-            String name,
-            BigDecimal price,
-            Integer stock,
-            String image,
-            Map<String, String> properties,
-            String status) {
+            String image, List<Property> properties, String status) {
         this(id, spuId, code, name, price, stock, image, properties, status, null, null);
     }
+    /** 编号与名称保持一一对应。 */
+    @Schema(description = "商品规格")
+    public record Property(
+            @Schema(description = "规格项编号")
+            Long propertyId,
+            @Schema(description = "规格名称，写入时可省略")
+            String propertyName,
+            @Schema(description = "规格值编号")
+            Long valueId,
+            @Schema(description = "规格值名称，写入时可省略")
+            String valueName
+    ) implements java.io.Serializable {}
 }

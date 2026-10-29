@@ -48,8 +48,9 @@ public class ProductSpuCreateCmdExe {
                 s.price(),
                 s.stock(),
                 s.image(),
-                s.properties(),
-                null, s.weight(), s.volume(), s.specValueIds()))
+                s.properties() == null ? null : s.properties().stream().map(property ->
+                        new com.lemnt.mall.domain.product.model.ProductSkuSpec(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                null, s.weight(), s.volume()))
                 .toList();
         var value =
                 new ProductSpu(

@@ -39,7 +39,9 @@ public final class StoreResConverter {
         return v == null
                 ? null
                 : new StoreSkuRes(
-                v.id(), v.name(), v.price(), v.stock(), v.image(), v.properties(), v.specValueIds());
+                v.id(), v.name(), v.price(), v.stock(), v.image(),
+                v.properties() == null ? null : v.properties().stream().map(property ->
+                        new StoreSkuRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList());
     }
 
     /**

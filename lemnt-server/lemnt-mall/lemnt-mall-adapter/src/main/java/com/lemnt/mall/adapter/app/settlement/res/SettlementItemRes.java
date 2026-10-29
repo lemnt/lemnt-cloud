@@ -1,5 +1,6 @@
 package com.lemnt.mall.adapter.app.settlement.res;
 
+import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -32,12 +33,12 @@ public record SettlementItemRes(
         @Schema(description = "下单时商品SPU名称")
         String spuName,
         @Schema(description = "下单时规格名称和值，历史未记录与空规格区分")
-        java.util.List<Property> properties,
+        List<Property> properties,
         @Schema(description = "下单时商品图片")
         String picUrl
 ) implements Serializable {
     public SettlementItemRes {
-        properties = properties == null ? null : java.util.List.copyOf(properties);
+        properties = properties == null ? null : List.copyOf(properties);
     }
 
     /** 历史未保存商品元数据，保持为空，不查询现值补历史。 */

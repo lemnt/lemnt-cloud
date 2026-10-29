@@ -3,7 +3,6 @@ package com.lemnt.mall.application.product.cmd;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 商品SPU创建命令。
@@ -22,27 +21,14 @@ public record ProductSpuCreateCmd(
     /**
      * 商品商品SKU草稿。
      */
-    public record ProductSkuDraft(
-            String code,
-            String name,
-            BigDecimal price,
-            Integer stock,
-            String image,
-            Map<String, String> properties,
-            BigDecimal weight,
-            BigDecimal volume,
-            Map<Long, Long> specValueIds
-    ) {
-        /** 旧调用没有字典关联。 */
+    public record ProductSkuDraft(String code, String name, BigDecimal price, Integer stock, String image,
+            List<Property> properties, BigDecimal weight, BigDecimal volume) {
+        /** 未配置配送参数的草稿。 */
         public ProductSkuDraft(String code, String name, BigDecimal price, Integer stock, String image,
-                Map<String, String> properties, BigDecimal weight, BigDecimal volume) {
-            this(code, name, price, stock, image, properties, weight, volume, null);
-        }
-        /** 旧商品草稿尚未配置重量和体积。 */
-        public ProductSkuDraft(String code, String name, BigDecimal price, Integer stock, String image,
-                Map<String, String> properties) {
+                List<Property> properties) {
             this(code, name, price, stock, image, properties, null, null);
         }
+        public record Property(Long propertyId, String propertyName, Long valueId, String valueName) {}
     }
 
     /** 历史快照缺少配送字段，读取时保留未配置状态。 */

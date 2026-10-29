@@ -66,9 +66,9 @@ public class ProductSpecValueController {
         return R.ok(ProductSpecValueResConverter.update(productSpecValueUpdateCmdExe.execute(ProductSpecValueReqConverter.update(id, req))));
     }
 
-    /** 删除未引用字典。 */
+    /** 删除规格值并保留SKU快照。 */
     @DeleteMapping("/{id}")
-    @Operation(summary = "删除未引用规格字典")
+    @Operation(summary = "删除规格值并保留SKU快照")
     @RequiresPermissions("mall:spec-value:remove")
     public R<Boolean> delete(@PathVariable Long id) {
         return R.ok(productSpecValueDeleteCmdExe.execute(id));

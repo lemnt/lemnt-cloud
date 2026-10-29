@@ -2,7 +2,6 @@ package com.lemnt.mall.application.product.service;
 
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.mall.domain.product.gateway.ProductSkuGateway;
-import com.lemnt.mall.domain.product.gateway.ProductSkuSpecGateway;
 import com.lemnt.mall.domain.product.gateway.ProductSpecGateway;
 import com.lemnt.mall.domain.product.gateway.ProductSpecValueGateway;
 import com.lemnt.mall.domain.product.gateway.ProductSpuGateway;
@@ -22,10 +21,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 /** ProductCatalogService 跨表应用编排，保持原有事务和锁顺序。 */
@@ -34,7 +30,6 @@ import java.util.TreeSet;
 public class ProductCatalogService {
     private final ProductSpuGateway productSpuGateway;
     private final ProductSkuGateway productSkuGateway;
-    private final ProductSkuSpecGateway productSkuSpecGateway;
     private final StockReservationGateway stockReservationGateway;
     private final ProductSpecGateway productSpecGateway;
     private final ProductSpecValueGateway productSpecValueGateway;
@@ -46,16 +41,15 @@ public class ProductCatalogService {
         var saved = productSpuGateway.insertSpu(value);
         for (var sku : value.skus()
         ) {
-            var child = productSkuGateway.insertSku(new ProductSku(null,
+            productSkuGateway.insertSku(new ProductSku(null,
                     saved.id(),
                     sku.code(),
                     sku.name(),
                     sku.price(),
                     sku.stock(),
                     sku.image(),
-                    sku.properties(),
-                    sku.status(), sku.weight(), sku.volume(), sku.specValueIds()));
-            saveProperties(child.id(), sku);
+                sku.properties(),
+                    sku.status(), sku.weight(), sku.volume()));
         }
         return spu(saved.id());
     }
@@ -82,8 +76,8 @@ public class ProductCatalogService {
             if (sku.id() == null
             ) {
                 var saved = productSkuGateway.insertSku(new ProductSku(null, value.id(), sku.code(),
-                        sku.name(), sku.price(), sku.stock(), sku.image(), sku.properties(), "ON_SHELF", sku.weight(), sku.volume(), sku.specValueIds()));
-                saveProperties(saved.id(), sku);
+                        sku.name(), sku.price(), sku.stock(), sku.image(),
+                sku.properties(), "ON_SHELF", sku.weight(), sku.volume()));
             } else {
                 var old = existing.stream().filter(item -> item.id().equals(sku.id())).findFirst()
                         .orElseThrow(() -> new IllegalArgumentException("SKU 不属于当前商品"));
@@ -93,11 +87,11 @@ public class ProductCatalogService {
                 }
                 productSkuGateway.lockById(sku.id());
                 if (!productSkuGateway.updateSku(new ProductSku(sku.id(), value.id(), sku.code(), sku.name(),
-                        sku.price(), sku.stock(), sku.image(), sku.properties(), "ON_SHELF", sku.weight(), sku.volume(), sku.specValueIds()))
+                        sku.price(), sku.stock(), sku.image(),
+                sku.properties(), "ON_SHELF", sku.weight(), sku.volume()))
                 ) {
                     throw new IllegalStateException("SKU 保存失败");
                 }
-                saveProperties(sku.id(), sku);
             }
         }
         for (var old : existing
@@ -123,23 +117,13 @@ public class ProductCatalogService {
         ) {
             return null;
         }
-        var specs = productSkuSpecGateway.specsBySpu(id);
-        var skus = productSkuGateway.catalogSkus(id).stream().map(sku -> {
-            var rows = specs.getOrDefault(sku.id(), List.of());
-            return withProperties(sku, ProductSkuSpec.names(rows), ProductSkuSpec.identities(rows));
-        }).toList();
-        return withSkus(value, skus);
+        return withSkus(value, productSkuGateway.catalogSkus(id));
     }
 
     /** 组合 SKU 主体和属性。 */
     @Transactional(readOnly = true)
     public ProductSku sku(Long id) {
-        var value = productSkuGateway.catalogSku(id);
-        if (value == null) {
-            return null;
-        }
-        var rows = productSkuSpecGateway.specsBySkuIds(List.of(id)).getOrDefault(id, List.of());
-        return withProperties(value, ProductSkuSpec.names(rows), ProductSkuSpec.identities(rows));
+        return productSkuGateway.catalogSku(id);
     }
 
 /** 小程序只展示当前可见、价格有效的商品与 SKU。 */
@@ -166,7 +150,7 @@ public class ProductCatalogService {
                 skus, value.deliveryTypes(), value.deliveryTemplateId());
     }
 
-    private ProductSku withProperties(ProductSku value, Map<String, String> properties, Map<Long, Long> ids) {
+    private ProductSku withProperties(ProductSku value, List<ProductSkuSpec> properties) {
         return new ProductSku(value.id(),
                 value.spuId(),
                 value.code(),
@@ -174,82 +158,64 @@ public class ProductCatalogService {
                 value.price(),
                 value.stock(),
                 value.image(),
-                properties,
-                value.status(), value.weight(), value.volume(), ids);
+                properties == null ? null : properties.stream().map(property ->
+                        new com.lemnt.mall.domain.product.model.ProductSkuSpec(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                value.status(), value.weight(), value.volume());
     }
 
-    /** 先按编号锁字典再解析名称，避免规格删除与商品写入交错。 */
+    /** 按编号锁字典，直接生成含编号及名称的规格列表。 */
     private ProductSpu resolveProperties(ProductSpu value) {
         if (value == null || value.skus().isEmpty() || value.skus().size() > 100
                 || value.skus().stream().anyMatch(Objects::isNull)) {
             throw new ServiceException("商品SKU不合法", 400);
         }
-        var ids = new TreeSet<Long>();
+        var all = value.skus().stream().flatMap(sku -> sku.properties().stream()).toList();
+        if (value.skus().stream().anyMatch(sku -> sku.properties().size() > 10)
+                || all.stream().anyMatch(property -> (property.propertyId() == null) != (property.valueId() == null)
+                        || (property.propertyId() != null && (property.propertyId() <= 0 || property.valueId() <= 0)))) {
+            throw new ServiceException("商品规格编号不合法", 400);
+        }
+        boolean linked = all.stream().anyMatch(property -> property.propertyId() != null);
+        if (!linked) {
+            return value; // 存量名值资料只用于内部读取/兼容入口，HTTP请求必须提供编号。
+        }
+        if (all.stream().anyMatch(property -> property.propertyId() == null)) {
+            throw new ServiceException("同一商品SKU必须选取相同规格项", 400);
+        }
+        var expected = value.skus().get(0).properties().stream().map(ProductSkuSpec::propertyId)
+                .collect(java.util.stream.Collectors.toSet());
         for (var sku : value.skus()) {
-            if (sku.specValueIds() != null) {
-                if (sku.specValueIds().size() > 10 || sku.specValueIds().entrySet().stream().anyMatch(entry ->
-                        entry.getKey() <= 0 || entry.getValue() <= 0)) {
-                    throw new ServiceException("商品规格编号不合法", 400);
-                }
-                ids.addAll(sku.specValueIds().keySet());
+            var selected = sku.properties().stream().map(ProductSkuSpec::propertyId)
+                    .collect(java.util.stream.Collectors.toSet());
+            if (selected.size() != sku.properties().size() || !selected.equals(expected)) {
+                throw new ServiceException("SKU规格重复或规格项集合不一致", 400);
             }
         }
         var specs = new HashMap<Long, ProductSpec>();
-        ids.forEach(id -> {
+        new TreeSet<>(all.stream().map(ProductSkuSpec::propertyId).toList()).forEach(id -> {
             var spec = productSpecGateway.lock(id);
-            if (spec == null) {
-                throw new ServiceException("商品规格不存在", 400);
-            }
+            if (spec == null) { throw new ServiceException("商品规格不存在", 400); }
             specs.put(id, spec);
         });
-        var valueIds = new TreeSet<Long>();
-        value.skus().stream().filter(sku -> sku.specValueIds() != null)
-                .forEach(sku -> valueIds.addAll(sku.specValueIds().values()));
         var options = new HashMap<Long, ProductSpecValue>();
-        valueIds.forEach(id -> {
+        new TreeSet<>(all.stream().map(ProductSkuSpec::valueId).toList()).forEach(id -> {
             var option = productSpecValueGateway.lock(id);
-            if (option == null) {
-                throw new ServiceException("商品规格值不存在", 400);
-            }
+            if (option == null) { throw new ServiceException("商品规格值不存在", 400); }
             options.put(id, option);
         });
-        boolean linked = value.skus().stream().anyMatch(sku -> sku.specValueIds() != null);
-        Set<Long> expected = linked ? value.skus().stream().filter(sku -> sku.specValueIds() != null)
-                .findFirst().orElseThrow().specValueIds().keySet() : null;
-        var skus = value.skus().stream().map(sku -> {
-            if (linked && (sku.specValueIds() == null || !sku.specValueIds().keySet().equals(expected))) {
-                throw new ServiceException("同一商品SKU必须选取相同规格项", 400);
+        var skus = value.skus().stream().map(sku -> withProperties(sku, sku.properties().stream().map(property -> {
+            var spec = specs.get(property.propertyId());
+            var option = options.get(property.valueId());
+            if (!spec.id().equals(option.specId())) {
+                throw new ServiceException("规格值不属于所选规格项", 400);
             }
-            if (sku.specValueIds() == null) {
-                return sku;
-            }
-            var names = new TreeMap<String, String>();
-            sku.specValueIds().forEach((id, optionId) -> {
-                var option = options.get(optionId);
-                if (!id.equals(option.specId())) {
-                    throw new ServiceException("规格值不属于所选规格项", 400);
-                }
-                names.put(specs.get(id).name(), option.name());
-            });
-            if (!sku.properties().isEmpty() && !sku.properties().equals(names)) {
+            if ((property.propertyName() != null && !spec.name().equals(property.propertyName()))
+                    || (property.valueName() != null && !option.name().equals(property.valueName()))) {
                 throw new ServiceException("规格名称和值必须与字典一致", 400);
             }
-            return withProperties(sku, names, sku.specValueIds());
-        }).toList();
+            return new ProductSkuSpec(spec.id(), spec.name(), option.id(), option.name());
+        }).toList())).toList();
         return withSkus(value, skus);
     }
 
-    /** 字典锁持有至事务结束，保存编号和对应名称，禁止依赖Map迭代顺序配对。 */
-    private void saveProperties(Long skuId, ProductSku sku) {
-        if (sku.specValueIds() == null) {
-            productSkuSpecGateway.saveProperties(skuId, sku.properties());
-            return;
-        }
-        var values = sku.specValueIds().entrySet().stream().map(entry -> {
-            var spec = productSpecGateway.find(entry.getKey());
-            return new ProductSkuSpec(entry.getKey(), spec.name(),
-                    entry.getValue(), sku.properties().get(spec.name()));
-        }).toList();
-        productSkuSpecGateway.saveSpecs(skuId, values);
-    }
 }

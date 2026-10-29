@@ -113,3 +113,6 @@ code成功200，data为确认布尔值。取消后该售后不再占用可售后
 新库执行V5/V6/V9初始化。已拥有上一版trade_refund_request与trade_payment_refund的旧库，停写备份后审核执行`sql/upgrade/after_sale_identity_and_log.sql`，再执行V9创建日志。不能混用新初始化与旧升级顺序。原业务单号保留唯一并重建支付退款外键；orderId精确回填，createTime取已存在的申请时刻；refundTime仅从唯一成功支付退款记录的update_time取本地确认事实，缺事实保持空；auditUserId及历史updateTime不猜测。日志不回填虚构历史。新代码和旧表不能混跑，回退需要停写恢复备份。
 
 未执行真实库升级，未接真实渠道或完成浏览器/真机验收。完整源售后字段仍有缺口：申请描述与凭证、原订单完整SPU/规格/图片快照、pay_refund_id及logistics_id数值关联等继续迁移。本批不查询当前商品冒充历史快照，也不把数值主键/日志完成说成源项目全部字段已复刻。
+
+
+商品快照更新：properties现为四字段规格对象列表，编号来自原订单项，历史缺失编号保持为空。详情及全部处理响应的合同见 [订单及售后快照接口](order-product-snapshot-api.md)。

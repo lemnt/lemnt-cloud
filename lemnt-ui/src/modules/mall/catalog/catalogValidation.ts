@@ -12,10 +12,11 @@ export function editablePrice(price: string): number {
 }
 
 /** 编号按字符串传递，拒绝重复规格项，名称由服务端字典决定。 */
-export function selectedSpecIds(
+export function selectedProperties(
   rows: { propertyId?: string; valueId?: string }[] | undefined,
-): Record<string, string> {
-  const result: Record<string, string> = {};
+): { propertyId: string; valueId: string }[] {
+  const result: { propertyId: string; valueId: string }[] = [];
+  const selected = new Set<string>();
   if ((rows?.length ?? 0) > 10) throw new Error('每个SKU最多10项规格');
   for (const row of rows ?? []) {
     if (
@@ -25,8 +26,9 @@ export function selectedSpecIds(
       !/^[1-9]\d*$/.test(row.valueId)
     )
       throw new Error('请选择规格及规格值');
-    if (Object.hasOwn(result, row.propertyId)) throw new Error('同一个SKU不能重复选择规格项');
-    result[row.propertyId] = row.valueId;
+    if (selected.has(row.propertyId)) throw new Error('同一个SKU不能重复选择规格项');
+    selected.add(row.propertyId);
+    result.push({ propertyId: row.propertyId, valueId: row.valueId });
   }
   return result;
 }

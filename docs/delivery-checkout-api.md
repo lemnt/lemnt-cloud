@@ -167,3 +167,6 @@ Content-Type: application/json
 新库使用已更新的商城V1/V2、交易V1及配送V7；存量库分别演练 `lemnt-mall/sql/upgrade/delivery_checkout_columns.sql`、`lemnt-trade/sql/upgrade/delivery_checkout_columns.sql`。旧商品需显式补配送方式和模板，不自动指定模板。旧订单新收件列保持NULL，历史行运费为0。
 
 预览Redis键升级到 `mall:settlement:v2:`，旧无地址预览自然失效，客户端必须重新预览；提交回执的30天恢复索引保持原命名，不清除未确认订单。前后端需同步发布。真实数据库未执行变更，未部署，未做供应商端到端验收，未提交或推送。
+
+
+规格快照更新：结算商品行properties现为propertyId/propertyName/valueId/valueName对象列表，报价指纹包含编号，配送分摊保留完整列表，具体合同见 [商品快照接口](order-product-snapshot-api.md)。

@@ -95,32 +95,37 @@
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/favorite/AppFavoriteController.java",
       "sha256": "1eedcc658607f165abdc30c3ab6db00e054e6c74b486b47cf47e091309ba382b",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/favorite/vo/AppFavoriteReqVO.java",
       "sha256": "1381ea2d05ea7377068cd734d73b5a410421e109179b353bb7e04b493b758f8a",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/favorite/vo/AppFavoritePageReqVO.java",
       "sha256": "755c1662277c4d6c119ae08c425fa1171acac3c8bb05beb6ee732e98778bf73c",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/favorite/vo/AppFavoriteBatchReqVO.java",
       "sha256": "c24437995d3af26860965cc7cad01f87974182d73c05fab316f88b5153fb81e4",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/favorite/vo/AppFavoriteRespVO.java",
       "sha256": "40b90deaee36b31f75c0fbaa9d6e4c51d093004e921e793bc3676fa70e48a988",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/spu/AppProductSpuController.java",
@@ -149,26 +154,30 @@
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/history/AppProductBrowseHistoryController.java",
       "sha256": "21a5bc7212fad7078cb98e80229d9e5f8525bab93f258f96e3eb9d699378e766",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/history/vo/AppProductBrowseHistoryRespVO.java",
       "sha256": "30ea12619f1871311d652c9dff128298dfca9cb35cf05b283ee2d4ed5174cecb",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/history/vo/AppProductBrowseHistoryPageReqVO.java",
       "sha256": "1c591812f42538e829b24703e5808670c9daba057748a991b100578087d0afae",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/history/vo/AppProductBrowseHistoryDeleteReqVO.java",
       "sha256": "2023139e7b2b5cc6dbb46cf95ab16910e1c010715a1122d7d2329dc0b3bcf093",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/category/ProductCategoryController.java",
@@ -329,32 +338,37 @@
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/favorite/ProductFavoriteController.java",
       "sha256": "541044ad7d355bbfffafd7d4923f0bc4f7e3c70b4ee25ab8b502a40f504e0736",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/favorite/vo/ProductFavoriteBaseVO.java",
       "sha256": "cd8aa605ca4637a3ab462ba4f5ff4caa2e0967e50d7c84c0489caeb0817aee20",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/favorite/vo/ProductFavoriteReqVO.java",
       "sha256": "a3d3b40437cd0363d161a3ade9c15dd689671d4efa87d1e5acde0e84df36ff6d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/favorite/vo/ProductFavoriteRespVO.java",
       "sha256": "2f077de7cd41371d36d05c8cc17c88976a3e55dd24eeccc6eddaf4c32bf13674",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/favorite/vo/ProductFavoritePageReqVO.java",
       "sha256": "d717c9ac06a644bae7079a1f7e0e048d2ac00109b3d8ac231f3945a4a029cc2b",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/spu/ProductSpuController.java",
@@ -407,20 +421,23 @@
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/history/ProductBrowseHistoryController.java",
       "sha256": "a395267f6817a3399751da5d7375e736763c14e985adc6d114680eee1610bb5e",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/history/vo/ProductBrowseHistoryRespVO.java",
       "sha256": "92dc6a5811db3e5b458c65c3d340505cf2b3c328803fd1cb534971571198cc43",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/history/vo/ProductBrowseHistoryPageReqVO.java",
       "sha256": "f099815743e00034ed6b9a10967453715a51a1bdb587c8f2a594ceba58d0df6a",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/api/package-info.java",
@@ -515,14 +532,16 @@
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/service/favorite/ProductFavoriteServiceImpl.java",
       "sha256": "11d533f2f3a4f304606b83bd9aa252660a453269a44dc1dc53eada373ae28c45",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/service/favorite/ProductFavoriteService.java",
       "sha256": "a20a02bb080ff8c509b5760331ba76dfff8f9c8683577967f74180a266e97a70",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/service/spu/ProductSpuServiceImpl.java",
@@ -539,21 +558,23 @@
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/service/history/ProductBrowseHistoryService.java",
       "sha256": "1c0719a88a5ecefb2b671ac50c2dbe77052981e4a3f5e00b89494e42dad49715",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/service/history/ProductBrowseHistoryServiceImpl.java",
       "sha256": "b9ff01af5e1d67be0289ea459a146416649e8c86ed677b39ae70978b11103bdb",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/service/sku/ProductSkuServiceImpl.java",
       "sha256": "fd41100dd68bfc520ed6a54bbd72ea0abd6e32adb802047dbdef4102fd79d6d8",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductCatalogService.java",
-      "note": "已按字典编号验证SKU规格存在/归属、同规格集合及重复组合，见36；现HTTP仍为名值映射加ID映射，源完整Property列表合同待贯通。"
+      "note": "SKU JSON规格及字典改名同步当前SKU已贯通，不修改原订单/售后；其他源商品逻辑仍待迁移，见42。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/service/sku/ProductSkuService.java",
@@ -594,8 +615,9 @@
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/mysql/favorite/ProductFavoriteMapper.java",
       "sha256": "dc3ac752f5023a1e9082d0bb95f01135ce1ea6fac4ffe095a35020f4b04db114",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/mysql/spu/ProductSpuMapper.java",
@@ -606,8 +628,9 @@
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/mysql/history/ProductBrowseHistoryMapper.java",
       "sha256": "ae186a13b5ac725549e51344cf2fa16691c27af2e7c1fde99818bdcc39fce9c3",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/mysql/sku/ProductSkuMapper.java",
@@ -648,8 +671,9 @@
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/dataobject/favorite/ProductFavoriteDO.java",
       "sha256": "9db78890534d5ad0cbf88a2d466bd1c7fd09630420ee5e639d1bc2de1467e487",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/dataobject/spu/ProductSpuDO.java",
@@ -660,14 +684,16 @@
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/dataobject/history/ProductBrowseHistoryDO.java",
       "sha256": "922d3d4b5371743dd9a3f6d3718e798fa2aaed96f73cd90bed9b2b6bf268df6c",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/dataobject/sku/ProductSkuDO.java",
       "sha256": "2147cfebf1cf5ed70b883109e2ff58ca20f8b030bfac122f1e7f91d142181fd6",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/product/dataobject/ProductSkuDO.java",
+      "note": "properties四字段列表已随SKU保存至JSON文本列，旧额外关系表已从初始化和运行时代码移除；源物理列DDL未提供，其他字段仍待迁移，见42。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/convert/comment/ProductCommentConvert.java",
@@ -684,8 +710,9 @@
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/convert/favorite/ProductFavoriteConvert.java",
       "sha256": "ee472d22b1b7cda42535652ecfb9610a94d98fe5c160a2e803c9c8322d1beabb",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "商品收藏/足迹业务按当前分层迁移；两表、独立HTTP合同、权限及真实存储边界测试已接入；接口和源字段差异见 docs/product-interaction-api.md，未完成全量源字段或部署验收"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/convert/spu/ProductSpuConvert.java",
@@ -3015,7 +3042,7 @@
       "sha256": "cd8bbcb623ad8a85ad8fc5079db1df007a4a8f2c3344eed52008db92b68243f0",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/dataobject/TradeOrderItemDO.java",
-      "note": "已贯通SPU/SKU、名称/值规格Map和图片；源Property字典ID、其他金额及状态字段尚未全迁移，见34。"
+      "note": "已贯通SPU/SKU、四字段properties列表及图片，兼容旧名值JSON；其余源金额、状态和其他字段仍待迁移，见38。"
     },
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/dal/dataobject/order/TradeOrderLogDO.java",
@@ -3067,7 +3094,7 @@
       "sha256": "f26310fd4dc417a8f8ddbdb864ee8402ba5061940e37ca8f9c433f56d70bab96",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/aftersale/dataobject/AfterSaleDO.java",
-      "note": "售后读取原订单商品快照并保存；规格Property ID和其他申请资料字段仍待迁移，见34。"
+      "note": "已保存原订单商品的四字段Property列表及图片；源其他申请资料与状态/字段仍待迁移，见38。"
     },
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/dal/dataobject/cart/CartDO.java",
@@ -3516,32 +3543,37 @@
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/article/AppArticleCategoryController.java",
       "sha256": "eaf6a0bd264f94757b25c55a9c9cfdc42483c92b8ffd80dc86aa55dbc496e253",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/article/AppArticleController.java",
       "sha256": "419dc5c67f0cf332f419bde27e6ecf4cc3348ee47307ba64389435dd9a6c6f4d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/article/vo/category/AppArticleCategoryRespVO.java",
       "sha256": "a6f54f3fd8f61d0268c5feee8cedffe224e3efdec5b2752af6dab065aa30f1db",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/article/vo/article/AppArticlePageReqVO.java",
       "sha256": "492d632f693ad5697a57c72871e2d9febdcfd2d4cb1c17a846b504f59eb7437d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/article/vo/article/AppArticleRespVO.java",
       "sha256": "563239be19837b48549a4dc159880a594e76099f69ddbd613b0d6503d7bd8ddf",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/banner/AppBannerController.java",
@@ -4170,80 +4202,93 @@
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/ArticleController.java",
       "sha256": "cd3b996c0e582ce1a0fb38e1e5bf73703aaf67a2686d4be1e2952fbb8b8d9337",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/ArticleCategoryController.java",
       "sha256": "7f4a071efb0ec62253ea32f6f6fc5fce776723d22ec843ee11570da1f870138a",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/category/ArticleCategoryUpdateReqVO.java",
       "sha256": "8270af59155e358c5801e9254aa95ec3613913f145203359c05c62b29c1222c0",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/category/ArticleCategoryBaseVO.java",
       "sha256": "fd3f0c2201a14c8b7e218c6f3fb65f5fffc6144d671b18199bd1186b353868b7",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/category/ArticleCategoryPageReqVO.java",
       "sha256": "fb0d4a494eaba912fd30ba1536ab0d9805cc1fb47a7b795547f9b6053d2961e8",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/category/ArticleCategorySimpleRespVO.java",
       "sha256": "d5f0b749317284093cf9d682ab42b3ec8fb45de6a244d7605af9e091c0320fd6",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/category/ArticleCategoryCreateReqVO.java",
       "sha256": "2e46d4c66a60dc463e49072178ce3fca96b0877c60c1dc28c22003ed91dd097e",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/category/ArticleCategoryRespVO.java",
       "sha256": "5f9aae2e01522db3d4fe3c3159333a024a85a74f57fff0e31997e62b28c9d4c9",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/article/ArticleRespVO.java",
       "sha256": "68108eabae66600d59ade2565e80089d7a0dfa3a180554c6895a7c5d673b6fb2",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/article/ArticlePageReqVO.java",
       "sha256": "b1d9ae5bcd2fdfb24d89b46bc8d01f4a2e475e2ea68400032497599cdc7b6703",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/article/ArticleBaseVO.java",
       "sha256": "d8bbe754bc28472e42e4a7d0445259cf7cc595a26656021ff4edf0370b12a15b",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/article/ArticleCreateReqVO.java",
       "sha256": "a49ae5f68abec66b28aa423c5c44a571a8eb76f7af332b748e3da7e987f47ff2",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/article/ArticleUpdateReqVO.java",
       "sha256": "98cc26bcab336797069ba4ed2dd35f8e73450ce0c94e3ddeaabe5859fdc6ab21",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/banner/BannerController.java",
@@ -4568,26 +4613,30 @@
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/service/article/ArticleCategoryServiceImpl.java",
       "sha256": "77dbb929a9136d7d12a496586e4d7e97271e72e60ccb4816dc20d5c6955c6d8d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/service/article/ArticleService.java",
       "sha256": "6a46e4344a78d59b3522d73685905639855c03b06d873aec444a37a4d221e03d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/service/article/ArticleCategoryService.java",
       "sha256": "bfc2f893bdc006144db07dd13794c53a0e88c869c3cca8affb096e017003ca6c",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/service/article/ArticleServiceImpl.java",
       "sha256": "dba6fb0b84b98ae82cb1e4b91478d49670473eb1b9b0313a7fb345fe9f82e253",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/service/banner/BannerService.java",
@@ -4724,14 +4773,16 @@
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/mysql/article/ArticleCategoryMapper.java",
       "sha256": "9234c54a750561bda9579e47ef5098102014ee325d4b959458b1f5b94d192be3",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/mysql/article/ArticleMapper.java",
       "sha256": "08e343b8fb962bf69a7e7f76448d7e516aaac40f6cb8f917556b9c7ebc3df84e",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/mysql/banner/BannerMapper.java",
@@ -4866,14 +4917,16 @@
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/dataobject/article/ArticleDO.java",
       "sha256": "67c435de4ba4a0a0883bca30d61e1c57e430b974a3dd35660b20686a5e7dd722",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/dataobject/article/ArticleCategoryDO.java",
       "sha256": "3e0bca42e73e690a6e3fcbb0d2b939f9cffe71e3d99bd788fa3e3d51120a1425",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/dataobject/banner/BannerDO.java",
@@ -4950,14 +5003,16 @@
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/convert/article/ArticleConvert.java",
       "sha256": "517572d36994bfeec10f5f9af17a7cedb0a9dc33d2625154c186053d03829a9e",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/convert/article/ArticleCategoryConvert.java",
       "sha256": "d78b7bb7064d280c4ea5c4b32148d765eca334122dea07a92db672ba0347a54d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/convert/banner/BannerConvert.java",
@@ -7595,5 +7650,5 @@
     "member SMS/WeChat auth per previous explicit constraint"
   ],
   "architecture": "existing lemnt six-layer CQRS, per-table BaseMapper/Gateway and XML resultMap",
-  "progressNote": "F01/F02持续迁移，尚未完成：34原订单名值快照、36商品规格字典ID关联已形成可运行链路；Property列表跨结算/订单仍待贯通，业务缺表仍36张。"
+  "progressNote": "持续迁移尚未完成：42将SKU规格合并为SKU JSON，移除额外规格关系表，字典改名同步当前SKU而不改历史订单；初始化45表，业务缺表仍36张。"
 }

@@ -5,6 +5,7 @@ import com.lemnt.mall.domain.settlement.gateway.SettlementGateway;
 import com.lemnt.mall.domain.settlement.model.Settlement;
 import com.lemnt.mall.domain.settlement.model.SettlementRecord;
 import com.lemnt.mall.domain.settlement.model.SettlementSubmission;
+import com.lemnt.mall.infrastructure.settlement.converter.SettlementSubmissionConverter;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -81,7 +82,7 @@ public class SettlementGatewayImpl implements SettlementGateway {
     @Override
     public SettlementSubmission submission(String orderNo) {
         var json = redis.opsForValue().get(PREFIX + "submission:" + orderNo);
-        return json == null ? null : serializer.deserialize(com.lemnt.mall.infrastructure.settlement.converter.SettlementSubmissionConverter.normalize(json), SettlementSubmission.class);
+        return json == null ? null : serializer.deserialize(SettlementSubmissionConverter.normalize(json), SettlementSubmission.class);
     }
 
     /** 请求索引只指向同一份提交内容。 */

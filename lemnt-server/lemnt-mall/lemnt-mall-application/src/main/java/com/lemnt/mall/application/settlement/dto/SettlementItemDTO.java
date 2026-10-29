@@ -1,5 +1,6 @@
 package com.lemnt.mall.application.settlement.dto;
 
+import java.util.List;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -18,11 +19,11 @@ public record SettlementItemDTO(
         BigDecimal deliveryPrice,
         Long spuId,
         String spuName,
-        java.util.List<Property> properties,
+        List<Property> properties,
         String picUrl
 ) implements Serializable {
     public SettlementItemDTO {
-        properties = properties == null ? null : java.util.List.copyOf(properties);
+        properties = properties == null ? null : List.copyOf(properties);
     }
 
     /** 历史未保存商品元数据，保持为空，不查询现值补历史。 */

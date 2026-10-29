@@ -2,11 +2,11 @@ package com.lemnt.trade.infrastructure.aftersale.converter;
 
 
 
-
 import com.alibaba.fastjson2.JSON;
 
 import com.lemnt.trade.domain.aftersale.model.AfterSale;
 import com.lemnt.trade.infrastructure.aftersale.dataobject.AfterSaleDO;
+import com.lemnt.trade.infrastructure.order.converter.OrderItemConverter;
 
 /** 售后表持久化转换。 */
 public final class AfterSaleConverter {
@@ -15,13 +15,17 @@ public final class AfterSaleConverter {
 
     /** 转换完整售后信息。 */
     public static AfterSale toModel(AfterSaleDO value) {
-        return value == null ? null : new AfterSale(value.getRefundNo(), value.getOrderNo(), value.getRequestNo(),
+        if (value == null) {
+            return null;
+        }
+        var properties = OrderItemConverter.properties(value.getProperties());
+        return new AfterSale(value.getRefundNo(), value.getOrderNo(), value.getRequestNo(),
                 value.getMemberId(), value.getPaymentNo(), value.getOrderItemId(), value.getQuantity(), value.getType(),
                 value.getAmount(), value.getReason(), value.getStatus(), value.getDecisionReason(),
                 value.getReturnCarrierCode(), value.getReturnTrackingNo(), value.getRequestedAt(), value.getDecidedAt(),
                 value.getReturnShippedAt(), value.getReturnReceivedAt(), value.getId(), value.getOrderId(),
                 value.getRefundTime(), value.getAuditUserId(), value.getSkuId(), value.getSpuId(), value.getSpuName(),
-                com.lemnt.trade.infrastructure.order.converter.OrderItemConverter.properties(value.getProperties()) == null ? null : com.lemnt.trade.infrastructure.order.converter.OrderItemConverter.properties(value.getProperties()).stream().map(snapshotProperty ->
+                properties == null ? null : properties.stream().map(snapshotProperty ->
                         new AfterSale.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
                                 snapshotProperty.valueId(), snapshotProperty.valueName())).toList(), value.getPicUrl());
     }

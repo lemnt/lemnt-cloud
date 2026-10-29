@@ -36,10 +36,20 @@ function SpecChoice({ skuIndex, specIndex }: { skuIndex: number; specIndex: numb
             ? await getSpecValueOptions(propertyId, keyword)
             : [];
       const selected = kind === 'spec' ? propertyId : valueId;
-      if (selected && !rows.some((row) => row.id === selected))
+      if (selected && !rows.some((row) => row.id === selected)) {
+        // 已保存名称是编辑快照；字典值删除后仍能展示它并选择替代值，不伪造当前字典状态。
+        const savedName = form.getFieldValue([
+          ...path,
+          kind === 'spec' ? 'propertyName' : 'valueName',
+        ]);
         rows.unshift(
-          kind === 'spec' ? await getSpecOption(selected) : await getSpecValueOption(selected),
+          typeof savedName === 'string' && savedName
+            ? { id: selected, name: savedName }
+            : kind === 'spec'
+              ? await getSpecOption(selected)
+              : await getSpecValueOption(selected),
         );
+      }
       return rows.map((row) => ({ label: row.name, value: row.id }));
     } catch (error) {
       message.error(`规格读取失败：${String(error)}`);
@@ -57,7 +67,11 @@ function SpecChoice({ skuIndex, specIndex }: { skuIndex: number; specIndex: numb
         request={({ keyWords }) => options('spec', keyWords)}
         fieldProps={{
           filterOption: false,
-          onChange: () => form.setFieldValue([...path, 'valueId'], undefined),
+          onChange: () => {
+            form.setFieldValue([...path, 'valueId'], undefined);
+            form.setFieldValue([...path, 'propertyName'], undefined);
+            form.setFieldValue([...path, 'valueName'], undefined);
+          },
         }}
         rules={[{ required: true }]}
       />

@@ -79,9 +79,25 @@ export function decodeSku(value: unknown): Sku {
   const row = record(value);
   const price = text(row.price);
   if (!/^\d+\.\d{2}$/.test(price)) throw new Error('商品接口金额必须为两位小数字符串');
-  const properties = Object.fromEntries(
-    Object.entries(record(row.properties)).map(([key, item]) => [key, text(item)]),
-  );
+  const properties = Array.isArray(row.properties)
+    ? row.properties.map((item) => {
+        const property = record(item);
+        const propertyId = property.propertyId == null ? null : decodeId(property.propertyId);
+        const valueId = property.valueId == null ? null : decodeId(property.valueId);
+        if ((propertyId == null) !== (valueId == null)) throw new Error('规格编号必须成对');
+        return {
+          propertyId,
+          propertyName: text(property.propertyName),
+          valueId,
+          valueName: text(property.valueName),
+        };
+      })
+    : Object.entries(record(row.properties)).map(([propertyName, value]) => ({
+        propertyId: null,
+        propertyName,
+        valueId: null,
+        valueName: text(value),
+      }));
   return {
     id: decodeId(row.id),
     spuId: row.spuId == null ? null : decodeId(row.spuId),
@@ -93,15 +109,6 @@ export function decodeSku(value: unknown): Sku {
     volume: optionalQuantity(row.volume),
     image: optionalText(row.image),
     properties,
-    specValueIds:
-      row.specValueIds == null
-        ? null
-        : Object.fromEntries(
-            Object.entries(record(row.specValueIds)).map(([key, value]) => [
-              decodeId(key),
-              decodeId(value),
-            ]),
-          ),
     status: shelfStatus(row.status),
   };
 }

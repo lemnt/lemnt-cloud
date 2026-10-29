@@ -6,6 +6,7 @@ import com.lemnt.mall.domain.product.model.Product;
 import com.lemnt.mall.domain.product.model.ProductCatalogValidation;
 import com.lemnt.mall.domain.product.model.ProductSku;
 import com.lemnt.mall.domain.product.model.ProductSkuFilter;
+import com.lemnt.mall.domain.product.model.ProductSkuSpec;
 import com.lemnt.mall.infrastructure.product.converter.ProductCatalogConverter;
 import com.lemnt.mall.infrastructure.product.dataobject.ProductSkuDO;
 import com.lemnt.mall.infrastructure.product.mapper.ProductSkuMapper;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
 
 /** Product 表持久化实现。 */
 @Component
@@ -32,7 +32,7 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
             return List.of();
         }
         return productSkuMapper.selectByIds(ids).stream()
-                .map(row -> ProductCatalogConverter.sku(row, List.of())).toList();
+                .map(row -> ProductCatalogConverter.sku(row)).toList();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
         }
         return productSkuMapper.selectList(Wrappers.<ProductSkuDO>lambdaQuery()
                 .in(ProductSkuDO::getSpuId, ids).ne(ProductSkuDO::getStatus, "DELETED").orderByAsc(ProductSkuDO::getId))
-                .stream().map(row -> ProductCatalogConverter.sku(row, List.of())).toList();
+                .stream().map(row -> ProductCatalogConverter.sku(row)).toList();
     }
 
     @Override
@@ -56,9 +56,7 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
                 .like(filter.name() != null, ProductSkuDO::getName, filter.name())
                 .eq(filter.status() != null, ProductSkuDO::getStatus, filter.status())
                 .orderByDesc(ProductSkuDO::getId));
-        return PageResult.of(page.getRecords().stream().map(row -> new ProductSku(
-                row.getId(), row.getSpuId(), row.getProductCode(), row.getName(), row.getPrice(), row.getStock(),
-                row.getMainImage(), Map.of(), row.getStatus(), row.getWeight(), row.getVolume())).toList(), page.getTotal());
+        return PageResult.of(page.getRecords().stream().map(ProductCatalogConverter::sku).toList(), page.getTotal());
     }
 
     @Override
@@ -81,6 +79,7 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
         return productSkuMapper.update(new ProductSkuDO(), Wrappers.<ProductSkuDO>lambdaUpdate()
                 .set(ProductSkuDO::getName, row.getName()).set(ProductSkuDO::getPrice, row.getPrice())
                 .set(ProductSkuDO::getMainImage, row.getMainImage())
+                .set(ProductSkuDO::getProperties, row.getProperties())
                 .set(ProductSkuDO::getStock, row.getStock())
                 .set(ProductSkuDO::getWeight, row.getWeight())
                 .set(ProductSkuDO::getVolume, row.getVolume())
@@ -117,6 +116,7 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
     public Product save(Product p) {
         ProductSkuDO d =
                 new ProductSkuDO()
+                .setProperties("[]")
                 .setProductCode(p.productCode())
                 .setName(p.name())
                 .setDescription(p.description())
@@ -205,22 +205,58 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
         return productSkuMapper.selectList(Wrappers.<ProductSkuDO>lambdaQuery()
                 .eq(ProductSkuDO::getSpuId, spuId).ne(ProductSkuDO::getStatus, "DELETED")
                 .orderByAsc(ProductSkuDO::getId))
-                .stream().map(row -> ProductCatalogConverter.sku(row, List.of())).toList();
+                .stream().map(row -> ProductCatalogConverter.sku(row)).toList();
     }
 
     /** 读取单个 SKU。 */
     @Override
     public ProductSku catalogSku(Long id) {
-        return ProductCatalogConverter.sku(productSkuMapper.selectById(id), List.of());
+        return ProductCatalogConverter.sku(productSkuMapper.selectById(id));
     }
 
-    /** 保存 SKU 主体，属性由属性表组件维护。 */
+    /** 保存SKU主体及规格JSON。 */
     @Override
     public ProductSku insertSku(ProductSku value) {
         var row = ProductCatalogConverter.sku(value);
         productSkuMapper.insert(row);
-        return ProductCatalogConverter.sku(row, List.of());
+        return ProductCatalogConverter.sku(row);
     }
 
     /** 按原有边界校验调整库存。 */
+
+    /** 字典改名仅同步当前SKU，按编号锁后重读，价格库存保持原值。 */
+    @Override
+    public void renameProperty(Long propertyId, String name) {
+        renameProperties(propertyId, name, false);
+    }
+
+    @Override
+    public void renamePropertyValue(Long valueId, String name) {
+        renameProperties(valueId, name, true);
+    }
+
+    private void renameProperties(Long propertyId, String name, boolean valueName) {
+        java.util.function.Predicate<ProductSkuSpec> matches = property -> valueName
+                ? propertyId.equals(property.valueId()) : propertyId.equals(property.propertyId());
+        var candidates = productSkuMapper.selectList(Wrappers.lambdaQuery(ProductSkuDO.class)
+                .select(ProductSkuDO::getId, ProductSkuDO::getProperties).isNotNull(ProductSkuDO::getProperties)
+                .ne(ProductSkuDO::getStatus, "DELETED").orderByAsc(ProductSkuDO::getId));
+        for (var candidate : candidates) {
+            if (ProductCatalogConverter.properties(candidate.getProperties()).stream().noneMatch(matches)) { continue; }
+            var row = productSkuMapper.lockById(candidate.getId());
+            if (row == null || "DELETED".equals(row.getStatus())) { continue; }
+            var old = ProductCatalogConverter.properties(row.getProperties());
+            var updated = old.stream().map(property -> {
+                return matches.test(property) ? new ProductSkuSpec(property.propertyId(),
+                        valueName ? property.propertyName() : name, property.valueId(),
+                        valueName ? name : property.valueName()) : property;
+            }).toList();
+            if (!old.equals(updated)) {
+                productSkuMapper.update(null, Wrappers.lambdaUpdate(ProductSkuDO.class)
+                        .eq(ProductSkuDO::getId, row.getId())
+                        .set(ProductSkuDO::getProperties, com.alibaba.fastjson2.JSON.toJSONString(updated))
+                        .set(ProductSkuDO::getVariantKey, ProductCatalogValidation.variantKey(updated)));
+            }
+        }
+    }
 }

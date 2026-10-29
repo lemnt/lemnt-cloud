@@ -66,9 +66,9 @@ public class ProductSpecController {
         return R.ok(ProductSpecResConverter.update(productSpecUpdateCmdExe.execute(ProductSpecReqConverter.update(id, req))));
     }
 
-    /** 删除未引用字典。 */
+    /** 删除无子值的规格项。 */
     @DeleteMapping("/{id}")
-    @Operation(summary = "删除未引用规格字典")
+    @Operation(summary = "删除无子值的规格项")
     @RequiresPermissions("mall:spec:remove")
     public R<Boolean> delete(@PathVariable Long id) {
         return R.ok(productSpecDeleteCmdExe.execute(id));

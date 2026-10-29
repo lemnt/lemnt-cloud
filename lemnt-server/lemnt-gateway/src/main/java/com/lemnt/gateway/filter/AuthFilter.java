@@ -92,7 +92,12 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (method == HttpMethod.POST) {
             return PUBLIC_APP_POST_PATHS.contains(path);
         }
-        return method == HttpMethod.GET && (path.equals("/mall/app/categories")
+        return (method == HttpMethod.PUT && path.matches("/mall/app/articles/[1-9][0-9]{0,18}/browse-count"))
+                || method == HttpMethod.GET && (path.equals("/mall/app/article-categories")
+                || path.equals("/mall/app/articles")
+                || path.equals("/mall/app/articles/recommended")
+                || path.equals("/mall/app/articles/detail")
+                || path.equals("/mall/app/categories")
                 || path.equals("/mall/app/products")
                 || path.matches("/mall/app/products/[1-9][0-9]{0,18}"));
     }

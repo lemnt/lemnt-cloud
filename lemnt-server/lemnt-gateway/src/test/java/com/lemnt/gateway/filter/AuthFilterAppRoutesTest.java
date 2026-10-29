@@ -52,6 +52,11 @@ class AuthFilterAppRoutesTest {
                 {"POST", "/member/app/auth/login"},
                 {"POST", "/member/app/auth/refresh-token"},
                 {"POST", "/member/app/auth/logout"},
+                {"GET", "/mall/app/article-categories"},
+                {"GET", "/mall/app/articles"},
+                {"GET", "/mall/app/articles/detail"},
+                {"GET", "/mall/app/articles/recommended"},
+                {"PUT", "/mall/app/articles/1/browse-count"},
                 {"GET", "/mall/app/categories"},
                 {"GET", "/mall/app/products"},
                 {"GET", "/mall/app/products/1"}}) {
@@ -79,6 +84,11 @@ class AuthFilterAppRoutesTest {
                 {"POST", "/member/app/user/reset-password"},
                 {"POST", "/member/app/auth/login/extra"},
                 {"GET", "/member/app/user"},
+                {"POST", "/mall/app/articles"},
+                {"DELETE", "/mall/app/articles/1"},
+                {"PUT", "/mall/app/articles/0/browse-count"},
+                {"PUT", "/mall/app/articles/1/browse-count/extra"},
+                {"GET", "/mall/app/articles/private"},
                 {"GET", "/mall/app/products/0"},
                 {"GET", "/mall/app/products/1/edit"},
                 {"POST", "/mall/app/products"}}) {
