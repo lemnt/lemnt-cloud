@@ -71,8 +71,12 @@ public class ProductCommentGatewayImpl implements ProductCommentGateway {
                 .eq(filter.memberId() != null, ProductCommentDO::getMemberId, filter.memberId())
                 .eq(filter.score() != null, ProductCommentDO::getScore, filter.score())
                 .eq(filter.visible() != null, ProductCommentDO::getVisible, filter.visible())
-                .isNotNull(Boolean.TRUE.equals(filter.replied()), ProductCommentDO::getReplyContent)
-                .isNull(Boolean.FALSE.equals(filter.replied()), ProductCommentDO::getReplyContent)
+                .eq(filter.replied() != null, ProductCommentDO::getReplyStatus, filter.replied())
+                .like(filter.userNickname() != null, ProductCommentDO::getUserNickname, filter.userNickname())
+                .eq(filter.orderId() != null, ProductCommentDO::getOrderId, filter.orderId())
+                .like(filter.spuName() != null, ProductCommentDO::getSpuName, filter.spuName())
+                .ge(filter.createTimeStart() != null, ProductCommentDO::getCreateTime, filter.createTimeStart())
+                .le(filter.createTimeEnd() != null, ProductCommentDO::getCreateTime, filter.createTimeEnd())
                 .orderByDesc(ProductCommentDO::getId));
         return PageResult.of(page.getRecords().stream().map(ProductCommentConverter::toModel).toList(),
             page.getTotal());

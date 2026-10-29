@@ -37,6 +37,11 @@ export interface ProductCommentQuery {
   score?: number;
   visible?: boolean;
   replied?: boolean;
+  userNickname?: string;
+  orderId?: string;
+  spuName?: string;
+  createTimeStart?: string;
+  createTimeEnd?: string;
   pageNum: number;
   pageSize: number;
 }

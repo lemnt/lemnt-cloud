@@ -66,16 +66,15 @@ export default function CommentPage() {
     { title: '评价编号', dataIndex: 'id', search: false },
     { title: 'SPU编号', dataIndex: 'spuId' },
     { title: '会员编号', dataIndex: 'memberId' },
+    { title: '订单ID', dataIndex: 'orderId' },
     {
       title: '商品快照',
       dataIndex: 'spuName',
-      search: false,
       renderText: (value) => value ?? '未记录',
     },
     {
       title: '会员昵称快照',
       dataIndex: 'userNickname',
-      search: false,
       renderText: (value) => value ?? '未记录',
     },
     {
@@ -110,6 +109,18 @@ export default function CommentPage() {
       render: (_, row) => (row.replyStatus ? '是' : '否'),
     },
     { title: '评价时间', dataIndex: 'createTime', search: false },
+    {
+      title: '评价时间范围',
+      dataIndex: 'createTimeRange',
+      hideInTable: true,
+      valueType: 'dateTimeRange',
+      search: {
+        transform: (value: string[]) => ({
+          createTimeStart: value[0]?.replace(' ', 'T'),
+          createTimeEnd: value[1]?.replace(' ', 'T'),
+        }),
+      },
+    },
     {
       title: '操作',
       valueType: 'option',
@@ -166,6 +177,11 @@ export default function CommentPage() {
         pagination={{ defaultPageSize: 20, showSizeChanger: true, pageSizeOptions: [20, 50, 100] }}
         request={async (params) => {
           const query: ProductCommentQuery = {
+            userNickname: params.userNickname?.trim() || undefined,
+            orderId: params.orderId || undefined,
+            spuName: params.spuName?.trim() || undefined,
+            createTimeStart: params.createTimeStart,
+            createTimeEnd: params.createTimeEnd,
             spuId: params.spuId || undefined,
             memberId: params.memberId || undefined,
             score:

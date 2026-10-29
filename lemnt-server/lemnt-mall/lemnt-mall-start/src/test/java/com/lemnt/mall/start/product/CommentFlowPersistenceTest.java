@@ -97,7 +97,7 @@ class CommentFlowPersistenceTest {
     }
 
     @Test
-    void retriesUseSavedFullContentAndDoNotNeedNewMemberOrOrderReads() {
+    void retriesUseSavedFullContentAndDoNotNeedNewMemberReads() {
         completed("S2"); var original=cmd("S2",5,4,false); var saved=comments.create(original);
         memberUnavailable=true; orders.clear();
         assertEquals(saved, comments.create(original));
@@ -186,6 +186,91 @@ class CommentFlowPersistenceTest {
         completed("RPC-FAIL");memberUnavailable=true;
         assertThrows(IllegalStateException.class,()->comments.create(cmd("RPC-FAIL",5,5,false)));
         assertNull(fixture.components.get(ProductCommentGateway.class).findByOrderItem(itemIds.get("RPC-FAIL")));
+    }
+
+    private com.lemnt.mall.application.product.cmd.CommentSaveCmd verified(CommentCreateCmd input, Long itemId, boolean unique, boolean allowCreate) {
+        return new com.lemnt.mall.application.product.cmd.CommentSaveCmd(input.memberId(),input.orderNo(),input.skuId(),10L,itemId,
+                spuId,"购买时商品","https://example.test/old.png",List.of(new com.lemnt.mall.application.product.cmd.CommentSaveCmd.Property(8L,"颜色",9L,"红色")),
+                unique,allowCreate,input.score(),input.content(),input.descriptionScores(),input.benefitScores(),input.anonymous(),input.picUrls());
+    }
+
+    @Test
+    void verifiedLegacyLinkPreservesUnknownHistoryAndRefusesAmbiguousOrDeletedLegacyRows() throws Exception {
+        completed("OLD");completed("AMBIG");completed("DELETED");
+        var gateway=fixture.components.get(ProductCommentGateway.class);
+        var old=gateway.save(new ProductComment(null,spuId,skuId,"OLD",1L,5,"旧评价",true,null,null,null,null));
+        memberUnavailable=true;
+        var input=new CommentCreateCmd(1L,"OLD",skuId,5,"旧评价");
+        var bound=comments.saveVerified(verified(input,itemIds.get("OLD"),true,true));
+        assertEquals(old.id(),bound.id());assertEquals(itemIds.get("OLD"),bound.orderItemId());assertEquals(10L,bound.orderId());
+        assertNull(bound.descriptionScores());assertNull(bound.userNickname());assertNull(bound.skuProperties());
+        assertEquals(bound,comments.saveVerified(verified(input,itemIds.get("OLD"),true,false)));
+        var ambiguous=gateway.save(new ProductComment(null,spuId,skuId,"AMBIG",1L,5,"旧评价",true,null,null,null,null));
+        assertEquals(409,assertThrows(ServiceException.class,()->comments.saveVerified(verified(new CommentCreateCmd(1L,"AMBIG",skuId,5,"旧评价"),itemIds.get("AMBIG"),false,true))).getCode());
+        assertNull(gateway.find(ambiguous.id()).orderItemId());
+        var deleted=gateway.save(new ProductComment(null,spuId,skuId,"DELETED",1L,5,"旧评价",true,null,null,null,null));
+        try(var statement=fixture.schemaConnection.createStatement()){statement.execute("UPDATE mall_product_comment SET deleted=TRUE WHERE id="+deleted.id());}
+        assertEquals(409,assertThrows(ServiceException.class,()->comments.saveVerified(verified(new CommentCreateCmd(1L,"DELETED",skuId,5,"旧评价"),itemIds.get("DELETED"),true,true))).getCode());
+    }
+
+    @Test
+    void privateStorageIsUniqueByActualItemRatherThanSkuAndCannotCreateForAnAlreadyCommentedItem() {
+        var first=comments.saveVerified(verified(new CommentCreateCmd(1L,"SAME-SKU",skuId,5,"第一行"),1001L,false,true));
+        var second=comments.saveVerified(verified(new CommentCreateCmd(1L,"SAME-SKU",skuId,4,"第二行"),1002L,false,true));
+        assertNotEquals(first.id(),second.id());assertEquals(1001L,first.orderItemId());assertEquals(1002L,second.orderItemId());
+        assertEquals(first,comments.saveVerified(verified(new CommentCreateCmd(1L,"SAME-SKU",skuId,5,"第一行"),1001L,false,false)));
+        assertEquals(409,assertThrows(ServiceException.class,()->comments.saveVerified(verified(new CommentCreateCmd(1L,"SAME-SKU",skuId,5,"不应创建"),1003L,false,false))).getCode());
+    }
+
+    @Test
+    void adminFiltersUseStoredSnapshotsReplyFlagAndInclusiveTimeBoundaries() throws Exception {
+        completed("FILTER");
+        var saved = comments.create(cmd("FILTER", 5, 4, false));
+        try (var statement = fixture.schemaConnection.createStatement()) {
+            statement.execute("UPDATE mall_product_comment SET create_time='2026-10-29 10:00:00', reply_content='旧正文', reply_status=false WHERE id=" + saved.id());
+        }
+        var query = fixture.components.get(com.lemnt.mall.application.product.executor.CommentPageQueryExe.class);
+        var time = LocalDateTime.of(2026, 10, 29, 10, 0);
+        var filter = new com.lemnt.mall.application.product.qry.CommentPageQry(spuId, 1L, 4, true, false,
+                1, 20, "  实昵称  ", 10L, "买时商", time, time);
+        assertEquals(1, query.execute(filter).getTotal());
+        assertEquals(0, query.execute(new com.lemnt.mall.application.product.qry.CommentPageQry(null, null, null,
+                null, true, 1, 20)).getTotal());
+        assertEquals(0, query.execute(new com.lemnt.mall.application.product.qry.CommentPageQry(null, null, null,
+                null, null, 1, 20, null, 11L, null, null, null)).getTotal());
+        assertEquals(0, query.execute(new com.lemnt.mall.application.product.qry.CommentPageQry(null, null, null,
+                null, null, 1, 20, null, null, null, time.plusSeconds(1), null)).getTotal());
+        assertThrows(ServiceException.class, () -> query.execute(new com.lemnt.mall.application.product.qry.CommentPageQry(
+                null, null, null, null, null, 1, 20, null, null, null, time.plusSeconds(1), time)));
+        assertEquals(1, query.execute(new com.lemnt.mall.application.product.qry.CommentPageQry(null, null, null,
+                null, null, 1, 20)).getTotal());
+        try (var statement = fixture.schemaConnection.createStatement()) {
+            statement.execute("UPDATE mall_product_comment SET deleted=true WHERE id=" + saved.id());
+        }
+        assertEquals(0, query.execute(new com.lemnt.mall.application.product.qry.CommentPageQry(null, null, null,
+                null, null, 1, 20)).getTotal());
+    }
+
+    @Test
+    void adminHttpBindsIndependentFilterFieldsAndRejectsInvalidRanges() throws Exception {
+        completed("FILTER-HTTP");
+        comments.create(cmd("FILTER-HTTP", 5, 4, false));
+        var builder = tools.jackson.databind.json.JsonMapper.builder();
+        new com.lemnt.common.start.config.JacksonConfig().customizer().customize(builder);
+        var mvc = org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(
+                fixture.components.get(com.lemnt.mall.adapter.web.product.CommentController.class))
+                .setControllerAdvice(new com.lemnt.common.security.handler.GlobalExceptionHandler())
+                .setMessageConverters(new org.springframework.http.converter.json.JacksonJsonHttpMessageConverter(builder.build())).build();
+        // 仅验证HTTP绑定和业务响应，standalone不代表网关或权限切面的部署验收。
+        mvc.perform(get("/mall/comments").param("userNickname", "真实").param("spuName", "购买时")
+                .param("orderId", "10").param("replied", "false")
+                .param("createTimeStart", "2026-01-01T00:00:00").param("createTimeEnd", "2027-01-01T00:00:00"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.total").value(1));
+        mvc.perform(get("/mall/comments").param("orderId", "-1")).andExpect(status().is(422));
+        mvc.perform(get("/mall/comments").param("createTimeStart", "invalid")).andExpect(status().is(422));
+        mvc.perform(get("/mall/comments").param("createTimeStart", "2027-01-01T00:00:00")
+                .param("createTimeEnd", "2026-01-01T00:00:00")).andExpect(status().isBadRequest());
+        mvc.perform(get("/mall/comments").param("userNickname", "字".repeat(256))).andExpect(status().is(422));
     }
 
 }

@@ -85,9 +85,15 @@ Page({
       )
         throw Error("只能评价本人已完成订单商品");
       const line = order.items.find(
-        (item) => id(item.productId) === this.skuId,
+        (item) =>
+          id(item.productId) === this.skuId &&
+          (!this.requestedOrderItemId ||
+            id(item.orderItemId) === this.requestedOrderItemId),
       );
       if (!line) throw Error("商品不在当前订单中");
+      this.orderItemId = id(line.orderItemId);
+      if (line.commentStatus === true && !this.pending)
+        throw Error("该订单项已评价");
       this.setData({
         eligible: true,
         productName: line.productName || "",
@@ -119,6 +125,7 @@ Page({
     const payload = this.pending || {
       orderNo: this.orderNo,
       skuId: this.skuId,
+      orderItemId: this.orderItemId,
       descriptionScores: Number(this.data.descriptionScores),
       benefitScores: Number(this.data.benefitScores),
       content: this.data.content,
@@ -131,6 +138,7 @@ Page({
     try {
       if (this.ownerToken !== getApp().globalData.memberSession?.accessToken)
         throw Error("会员已切换，请从本人订单重新进入");
+      if (!this.orderItemId) throw Error("请先核验真实订单项信息");
       const result = await this.client.create(payload);
       this.pending = null;
       this.setData({

@@ -30,8 +30,21 @@ public class CommentPageQueryExe {
         if (qry.memberId() != null) {
             ProductCatalogValidation.id(qry.memberId());
         }
+        if (qry.orderId() != null) {
+            ProductCatalogValidation.id(qry.orderId());
+        }
+        if ((qry.createTimeStart() != null && qry.createTimeEnd() != null && qry.createTimeStart().isAfter(qry.createTimeEnd()))
+                || (qry.userNickname() != null && qry.userNickname().length() > 255)
+                || (qry.spuName() != null && qry.spuName().length() > 255)) {
+            throw new com.lemnt.common.core.exception.ServiceException("评价筛选名称或时间范围不合法", 400);
+        }
         var page = productCommentGateway.page(new CommentFilter(qry.spuId(), qry.memberId(), qry.score(), qry.visible(),
-                qry.replied(), qry.pageNum(), qry.pageSize()));
+                qry.replied(), qry.pageNum(), qry.pageSize(), text(qry.userNickname()), qry.orderId(),
+                text(qry.spuName()), qry.createTimeStart(), qry.createTimeEnd()));
         return PageResult.of(page.getRecords().stream().map(CommentDTOConverter::toDTO).toList(), page.getTotal());
+    }
+    /** 空白搜索词不构造模糊查询。 */
+    private String text(String value) {
+        return value == null || value.isBlank() ? null : value.trim();
     }
 }

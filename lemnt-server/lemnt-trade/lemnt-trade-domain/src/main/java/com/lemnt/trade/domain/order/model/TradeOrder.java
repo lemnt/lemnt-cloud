@@ -19,7 +19,7 @@ public record TradeOrder(
         long givePoint,
         TradeOrderDelivery delivery,
         Boolean commentStatus,
-        java.time.LocalDateTime finishTime
+        LocalDateTime finishTime
 ) {
     /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
     public TradeOrder(

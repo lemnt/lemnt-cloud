@@ -2674,4 +2674,135 @@ class CheckoutFlowIntegrationTest {
                         .set(com.lemnt.mall.infrastructure.product.dataobject.ProductSkuDO::getProperties,
                                 com.alibaba.fastjson2.JSON.toJSONString(properties)));
     }
+    @Test
+    void commentsUseRealItemIdsAndOnlyAllItemsFinishTheOrderAndLogOnce() throws Exception {
+        var order = completedReviewOrderWithTwoItems();
+        assertEquals(2,order.items().size());assertFalse(order.commentStatus());
+        assertTrue(order.items().stream().allMatch(line -> line.orderItemId()!=null && Boolean.FALSE.equals(line.commentStatus())));
+        var comments=mallComponents.get(ProductCommentService.class);
+        var a=order.items().get(0);var b=order.items().get(1);
+        var first=new CommentCreateCmd(1L,order.orderNo(),a.productId(),null,"第一项",5,4,false,List.of(),a.orderItemId());
+        var saved=comments.create(first);assertEquals(a.orderItemId(),saved.orderItemId());
+        assertFalse(orderRpc.findByOrderNo(order.orderNo()).commentStatus());
+        assertEquals(1,orderRpc.findByOrderNo(order.orderNo()).items().stream().filter(line->Boolean.TRUE.equals(line.commentStatus())).count());
+        assertEquals(404,assertThrows(com.lemnt.common.core.exception.ServiceException.class,()->comments.create(
+                new CommentCreateCmd(1L,order.orderNo(),a.productId(),5,"伪造行",null,null,false,List.of(),b.orderItemId()))).getCode());
+        comments.create(new CommentCreateCmd(1L,order.orderNo(),b.productId(),5,"第二项",null,null,false,List.of(),b.orderItemId()));
+        var finished=orderRpc.findByOrderNo(order.orderNo());assertTrue(finished.commentStatus());assertNotNull(finished.finishTime());
+        comments.create(first);
+        assertEquals(finished.finishTime(),orderRpc.findByOrderNo(order.orderNo()).finishTime());
+        var logs=tradeComponents.get(com.lemnt.trade.domain.order.gateway.OrderLogGateway.class).byOrderId(order.id());
+        assertEquals(1,logs.stream().filter(log->log.operateType()==33).count());
+        // 数据库ID/后续评价状态不能破坏原订单购买事实的幂等比较。
+        tradeComponents.get(com.lemnt.trade.application.order.service.OrderSubmissionService.class).requireSame(
+                orderPersistenceService.findByOrderNo(order.orderNo()),new com.lemnt.trade.domain.order.model.TradeOrder(null,
+                        order.orderNo(),order.memberId(),order.totalAmount(),"RESERVING",orderPersistenceService.findByOrderNo(order.orderNo()).items().stream().map(line->
+                        new com.lemnt.trade.domain.order.model.TradeOrderItem(line.productId(),line.productCode(),line.productName(),line.unitPrice(),
+                                line.quantity(),line.lineAmount(),line.payAmount(),line.deliveryPrice(),line.spuId(),line.spuName(),line.properties(),line.picUrl())).toList(),
+                        null,order.usePoint(),order.givePoint(),orderPersistenceService.findByOrderNo(order.orderNo()).delivery()));
+        var detail=tradeComponents.get(com.lemnt.trade.application.fulfillment.executor.OrderDetailQueryExe.class).execute(order.orderNo());
+        assertTrue(detail.commentStatus());assertEquals(finished.finishTime(),detail.finishTime());
+        assertEquals(a.orderItemId(),detail.items().get(0).orderItemId());
+    }
+
+    @Test
+    void committedRemoteCommentWithLostResponseIsRepairedByOriginalRetry() throws Exception {
+        useCatalogSkuForReview();var order=paidOrder(null);fulfillmentService.ship(shipment(order.orderNo()));fulfillmentService.receive(order.orderNo());
+        var line=orderRpc.findByOrderNo(order.orderNo()).items().get(0);
+        var cmd=new CommentCreateCmd(1L,order.orderNo(),line.productId(),null,"丢响应",5,4,true,List.of(),line.orderItemId());
+        loseNextCommentResponse=true;
+        assertThrows(IllegalStateException.class,()->mallComponents.get(ProductCommentService.class).create(cmd));
+        var stored=mallComponents.get(ProductCommentGateway.class).findByOrderItem(line.orderItemId());assertNotNull(stored);
+        assertFalse(orderRpc.findByOrderNo(order.orderNo()).items().get(0).commentStatus());
+        var repaired=mallComponents.get(ProductCommentService.class).create(cmd);assertEquals(stored.id(),repaired.id());
+        assertTrue(orderRpc.findByOrderNo(order.orderNo()).commentStatus());
+        assertEquals(1,tradeComponents.get(com.lemnt.trade.domain.order.gateway.OrderLogGateway.class).byOrderId(order.id()).stream().filter(log->log.operateType()==33).count());
+        assertEquals(1,count("mall_product_comment"));
+    }
+
+    @Test
+    void localCommentStateFailureRollsBackFlagsAndLogButOriginalRetryKeepsRemoteId() throws Exception {
+        useCatalogSkuForReview();var order=paidOrder(null);fulfillmentService.ship(shipment(order.orderNo()));fulfillmentService.receive(order.orderNo());
+        var line=orderRpc.findByOrderNo(order.orderNo()).items().get(0);
+        var cmd=new CommentCreateCmd(1L,order.orderNo(),line.productId(),5,"事务修复",null,null,false,List.of(),line.orderItemId());
+        sql(tradeSource,"ALTER TABLE trade_order ADD CONSTRAINT reject_review_done CHECK(comment_status IS NULL OR comment_status=FALSE)");
+        assertThrows(RuntimeException.class,()->mallComponents.get(ProductCommentService.class).create(cmd));
+        var saved=mallComponents.get(ProductCommentGateway.class).findByOrderItem(line.orderItemId());assertNotNull(saved);
+        assertFalse(orderRpc.findByOrderNo(order.orderNo()).commentStatus());
+        assertFalse(orderRpc.findByOrderNo(order.orderNo()).items().get(0).commentStatus());
+        assertEquals(0,tradeComponents.get(com.lemnt.trade.domain.order.gateway.OrderLogGateway.class).byOrderId(order.id()).stream().filter(log->log.operateType()==33).count());
+        sql(tradeSource,"ALTER TABLE trade_order DROP CONSTRAINT reject_review_done");
+        assertEquals(saved.id(),mallComponents.get(ProductCommentService.class).create(cmd).id());
+        var finished=orderRpc.findByOrderNo(order.orderNo());assertTrue(finished.commentStatus());assertNotNull(finished.finishTime());
+        assertEquals(1,count("mall_product_comment"));
+    }
+
+    private SettlementOrder completedReviewOrderWithTwoItems() {
+        useCatalogSkuForReview();
+        var firstSku = sku;
+        var catalog = mallComponents.get(com.lemnt.mall.application.product.service.ProductCatalogService.class);
+        var spuGateway = mallComponents.get(com.lemnt.mall.domain.product.gateway.ProductSpuGateway.class);
+        var firstSpu = spuGateway.findSpu(productSkuGateway.catalogSku(firstSku).spuId());
+        var second = catalog.createSpu(com.lemnt.mall.domain.product.model.ProductCatalogValidation.newSpu(
+                new ProductSpu(null,"COMMENT-TWO","第二评价商品",firstSpu.categoryId(),firstSpu.brandId(),null,null,null,
+                        List.of(new ProductSku(null,null,"COMMENT-SKU-TWO","第二规格",BigDecimal.TEN,10,null,Map.of(),null)))));
+        spuGateway.shelf(second.id(),true);
+        Long secondSku = second.skus().get(0).id();
+        cartService.saveCart(1L, secondSku, 1, true);
+        var ids = List.of(firstSku,secondSku);
+        var quote = placement.quote(new SettlementQuoteQry(1L,ids,null));
+        var created = placement.checkoutCart(new SettlementOrderSubmitCmd(1L,"REVIEW-TWO",ids,null,SettlementRules.quoteToken(quote)));
+        worker().execute(50);
+        var payment = paymentCreate.execute(created.orderNo(),"ALIPAY");
+        notify.execute(new VerifiedPaymentNotification(payment.paymentNo(),created.orderNo(),"ALIPAY","CH-C",created.totalAmount(),"N-C"));
+        fulfillmentService.ship(shipment(created.orderNo()));fulfillmentService.receive(created.orderNo());
+        return orderRpc.findByOrderNo(created.orderNo());
+    }
+
+    @Test
+    void concurrentDifferentItemReviewsConvergeAndCreateOneCompletionLog() throws Exception {
+        var order=completedReviewOrderWithTwoItems();
+        var service=mallComponents.get(ProductCommentService.class);
+        var pool=java.util.concurrent.Executors.newFixedThreadPool(2);
+        try {
+            var requests=order.items().stream().map(line->pool.submit(()->service.create(new CommentCreateCmd(1L,
+                    order.orderNo(),line.productId(),null,"并发评价",5,4,false,List.of(),line.orderItemId())))).toList();
+            var ids=new java.util.HashSet<Long>();
+            for(var request:requests)ids.add(request.get(10,java.util.concurrent.TimeUnit.SECONDS).id());
+            assertEquals(2,ids.size());
+        } finally { pool.shutdownNow(); }
+        assertTrue(orderRpc.findByOrderNo(order.orderNo()).commentStatus());
+        assertEquals(2,count("mall_product_comment"));
+        assertEquals(1,tradeComponents.get(com.lemnt.trade.domain.order.gateway.OrderLogGateway.class).byOrderId(order.id()).stream().filter(log->log.operateType()==33).count());
+    }
+
+    @Test
+    void historicalUnknownFlagsAreNotFakedFalseAndKnownLegacyReviewBindsRealItem() throws Exception {
+        useCatalogSkuForReview();var order=paidOrder(null);fulfillmentService.ship(shipment(order.orderNo()));fulfillmentService.receive(order.orderNo());
+        var actual=orderRpc.findByOrderNo(order.orderNo());var line=actual.items().get(0);
+        sql(tradeSource,"UPDATE trade_order SET comment_status=NULL WHERE id="+order.id());
+        sql(tradeSource,"UPDATE trade_order_item SET comment_status=NULL WHERE order_id="+order.id());
+        assertNull(orderRpc.findByOrderNo(order.orderNo()).commentStatus());assertNull(orderRpc.findByOrderNo(order.orderNo()).items().get(0).commentStatus());
+        var old=mallComponents.get(ProductCommentGateway.class).save(new com.lemnt.mall.domain.product.model.ProductComment(null,
+                productSkuGateway.catalogSku(sku).spuId(),sku,order.orderNo(),1L,5,"旧购买评价",true,null,null,null,null));
+        var repaired=mallComponents.get(ProductCommentService.class).create(new CommentCreateCmd(1L,order.orderNo(),sku,5,"旧购买评价"));
+        assertEquals(old.id(),repaired.id());assertEquals(line.orderItemId(),repaired.orderItemId());assertEquals(order.id(),repaired.orderId());
+        assertNull(repaired.spuName());assertNull(repaired.descriptionScores());assertNull(repaired.userNickname());
+        assertTrue(orderRpc.findByOrderNo(order.orderNo()).commentStatus());
+    }
+
+    @Test
+    void submittedItemIdsAndReviewFlagsCannotForgeDatabaseGeneratedMetadata() throws Exception {
+        useCatalogSkuForReview();var parent=productSkuGateway.catalogSku(sku).spuId();
+        var fakeLine = new com.lemnt.trade.domain.order.model.TradeOrderItem(sku, "COMMENT-SKU", "购买商品", BigDecimal.TEN, 1,
+                BigDecimal.TEN, BigDecimal.TEN, BigDecimal.ZERO, parent, "购买商品", List.of(), null, 999999L, true);
+        var fake = new com.lemnt.trade.domain.order.model.TradeOrder(null, "META-FORGE", 1L, BigDecimal.TEN,
+                "RESERVING", List.of(fakeLine), null, 0L, 0L, null, true, java.time.LocalDateTime.of(2000, 1, 1, 0, 0));
+        // 直接验证交易持久化边界，避免绕过结算回执校验构造无效 RPC 下单请求。
+        tradeComponents.get(com.lemnt.trade.application.order.service.OrderSubmissionService.class).create(fake);
+        var saved = orderRpc.findByOrderNo(fake.orderNo());
+        assertNotEquals(999999L,saved.items().get(0).orderItemId());assertNotNull(saved.items().get(0).orderItemId());
+        assertFalse(saved.items().get(0).commentStatus());assertFalse(saved.commentStatus());assertNull(saved.finishTime());
+    }
+
 }

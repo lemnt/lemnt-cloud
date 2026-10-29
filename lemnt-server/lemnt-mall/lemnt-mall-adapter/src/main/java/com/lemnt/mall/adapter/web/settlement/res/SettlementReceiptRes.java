@@ -1,5 +1,7 @@
 package com.lemnt.mall.adapter.web.settlement.res;
 
+import java.time.LocalDateTime;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
@@ -28,7 +30,7 @@ public record SettlementReceiptRes(
         @Schema(description = "商品价格和数量快照")
         List<SettlementItemRes> items,
         @Schema(description = "订单是否全部已评价，未知为空") Boolean commentStatus,
-        @Schema(description = "全部评价完成时间，未确认时为空") java.time.LocalDateTime finishTime
+        @Schema(description = "全部评价完成时间，未确认时为空") LocalDateTime finishTime
 ) implements Serializable {
     /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
     public SettlementReceiptRes(

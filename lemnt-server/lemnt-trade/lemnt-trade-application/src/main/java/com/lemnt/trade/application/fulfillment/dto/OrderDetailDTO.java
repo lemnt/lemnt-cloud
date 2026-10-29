@@ -1,5 +1,7 @@
 package com.lemnt.trade.application.fulfillment.dto;
 
+import java.time.LocalDateTime;
+
 import com.lemnt.trade.application.fulfillment.dto.OrderItemDTO;
 
 import java.math.BigDecimal;
@@ -18,7 +20,7 @@ public record OrderDetailDTO(
         List<OrderItemDTO> items,
         ShipmentDTO shipment,
         Boolean commentStatus,
-        java.time.LocalDateTime finishTime
+        LocalDateTime finishTime
 ) implements java.io.Serializable {
     /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
     public OrderDetailDTO(

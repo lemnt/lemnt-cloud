@@ -1,5 +1,7 @@
 package com.lemnt.mall.application.settlement.dto;
 
+import java.time.LocalDateTime;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,7 +20,7 @@ public record SettlementReceiptDTO(
         List<SettlementItemDTO> items,
         SettlementDeliveryDTO delivery,
         Boolean commentStatus,
-        java.time.LocalDateTime finishTime
+        LocalDateTime finishTime
 ) implements Serializable {
     /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
     public SettlementReceiptDTO(

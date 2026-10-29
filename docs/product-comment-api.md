@@ -1,6 +1,6 @@
 # 商品评价接口
 
-2026-10-29。本批迁移评价多维评分、图片/匿名、会员与订单商品快照、公开查询、后台管理及小程序调用。沿用当前服务边界，订单以orderNo+SKU定位；源orderItemId、订单评价标记联动、虚拟评价创建、照片上传/相机选择及统计/导出仍未迁移，不能视为芋道评价功能已全量完成。
+2026-10-29。本批迁移评价多维评分、图片/匿名、会员与订单商品快照、公开查询、后台管理及小程序调用。订单项编号和订单评价标记联动已接入，见[订单项评价联动](order-item-comment-api.md)；虚拟评价创建、自动评价、照片上传/相机选择及统计/导出仍未迁移，不能视为芋道评价功能已全量完成。
 
 以下为按当前代码核对的构造示例，非部署HTTP实测。成功仍使用R；空值按NON_NULL省略，空数组和false保留。安全范围内Long为JSON数字，长编号为字符串；客户端统一保存字符串。响应日期格式yyyy-MM-dd HH:mm:ss，无附加时区。错误为统一RFC9457 Problem Details、application/problem+json。
 
@@ -16,6 +16,11 @@
 |score|integer|否|Query|无|1至5精确匹配|
 |visible|boolean|否|Query|无|false表示隐藏，未传不过滤|
 |replied|boolean|否|Query|无|false表示未回复，未传不过滤|
+|userNickname|string|否|Query|无|评价人昵称快照模糊匹配，最多255字，空白忽略|
+|orderId|integer或string|否|Query|无|真实交易订单ID，正数，不是订单号|
+|spuName|string|否|Query|无|购买商品名称快照模糊匹配，最多255字，空白忽略|
+|createTimeStart|string|否|Query|无|创建时间起，ISO本地时间，例如2026-10-29T00:00:00，包含边界|
+|createTimeEnd|string|否|Query|无|创建时间止，包含边界，可单独提供|
 |pageNum|integer|否|Query|1|1至1000000|
 |pageSize|integer|否|Query|20|1至100|
 
@@ -428,13 +433,15 @@ curl -X POST 'https://<API_HOST>/mall/app/comments' -H 'Authorization: Bearer <M
 }
 ```
 
+分页时间范围倒置返回400业务错误，非法日期、负数订单ID及超长名称返回422。所有已提供条件同时生效；昵称和商品名查评价保存的历史快照，不用当前商品/会员名补值。`replied`匹配存储的`reply_status`，不以回复正文是否为空判断。后台新增输入及时间范围控件，响应结构不变。
+
 ## 7. 存储与业务语义
 
 仅扩展mall_product_comment，不新增表。新字段：description_scores、benefit_scores、pic_urls、anonymous、user_nickname、user_avatar、order_id、spu_name、sku_pic_url、sku_properties、reply_status、deleted。JSON在基础设施String DO和Converter之间转换，不把Jackson依赖带入domain/application。锁XML有完整resultMap；MyBatis Plus逻辑删除与visible前台显隐分别处理。
 
 综合评分=floor((描述评分+服务评分)/2)。旧客户端仅传score时，明确将它作为两项相同的本次输入；存量记录的两项评分、图片、匿名、昵称头像和商品快照未知时保持空，不从综合分或当前资料反推。存量升级仅根据已存在reply_content回填reply_status。默认新记录可见、未回复，保存时资料取真实远程会员和原订单快照；旧订单缺商品快照的名称/图片/规格不补当前值。
 
-同一订单SKU唯一，逻辑删除后仍保留此购买已评价事实，不能重新投稿。相同身份及完整评价内容重试返回原ID，即使会员RPC随后不可用，也先核验已存结果；评分维度、图片顺序、匿名标记或正文变化返回409，不能改写原评价。订单归属/状态/SKU不符返回400；无会员身份401；会员或评价不存在404。网络未知结果不能假设成功或修改输入后重新投稿，原请求可重试核验。
+同一真实订单项唯一，逻辑删除后仍保留此购买已评价事实，不能重新投稿。相同身份及完整评价内容重试返回原ID，即使会员RPC随后不可用，也先核验已存结果；评分维度、图片顺序、匿名标记或正文变化返回409，不能改写原评价。订单归属/状态/SKU不符返回400；无会员身份401；会员或评价不存在404。网络未知结果不能假设成功或修改输入后重新投稿，原请求可重试核验。
 
 回复只取当前管理员，保存回复内容、操作者、时间及replyStatus；相同回复重试保留首次时间。匿名仅限制公开展示，后台按权限可查看保存时昵称头像。公开响应省略会员ID、订单编号、订单ID、回复管理员ID，不复用后台响应。
 

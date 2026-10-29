@@ -1,5 +1,7 @@
 package com.lemnt.trade.infrastructure.order.dataobject;
 
+import java.time.LocalDateTime;
+
 import com.lemnt.common.infrastructure.domain.BaseDO;
 
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -28,7 +30,7 @@ public class TradeOrderDO extends BaseDO {
     private String status;
     private String remark;
     private Boolean commentStatus;
-    private java.time.LocalDateTime finishTime;
+    private LocalDateTime finishTime;
     private Long usePoint;
     private Long givePoint;
     private Long addressId;

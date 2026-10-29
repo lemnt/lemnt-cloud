@@ -162,3 +162,38 @@ it('完整规格列表保留长编号，部分缺号不能伪装为合法规格'
     }),
   ).toThrow();
 });
+it('履约详情保留真实订单项与评价状态，旧记录不猜测未评价', () => {
+  const item = {
+    productId: 7,
+    productCode: 'SKU',
+    productName: '商品',
+    unitPrice: '10.00',
+    quantity: 1,
+    lineAmount: '10.00',
+    orderItemId: '9223372036854775807',
+    commentStatus: false,
+  };
+  const detail = decodeDetail({
+    ...order,
+    status: 'COMPLETED',
+    commentStatus: true,
+    finishTime: '2026-10-29 10:00:00',
+    items: [item],
+    shipment: null,
+  });
+  expect(detail.commentStatus).toBe(true);
+  expect(detail.finishTime).toBe('2026-10-29 10:00:00');
+  expect(detail.items[0].orderItemId).toBe('9223372036854775807');
+  expect(detail.items[0].commentStatus).toBe(false);
+  const old = decodeDetail({
+    ...order,
+    items: [{ ...item, orderItemId: undefined, commentStatus: undefined }],
+    shipment: null,
+  });
+  expect(old.commentStatus).toBeUndefined();
+  expect(old.items[0].orderItemId).toBeUndefined();
+  expect(old.items[0].commentStatus).toBeUndefined();
+  expect(() =>
+    decodeDetail({ ...order, items: [{ ...item, commentStatus: 'false' }], shipment: null }),
+  ).toThrow();
+});

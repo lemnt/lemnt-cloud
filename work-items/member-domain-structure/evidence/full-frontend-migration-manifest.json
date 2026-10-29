@@ -89,7 +89,7 @@
       "sha256": "8a5f420c701154f84950073c51afcad46f859e56d1dcfbe663b127de39fa4f8a",
       "state": "in_progress",
       "target": "lemnt-ui/src/modules/mall/catalog/pages/CommentPage.tsx",
-      "note": "React评价分页、详情、图片、回复、显隐及既有筛选已接入；源虚拟创建、额外筛选/导出等未迁移，不是完整Vue页面复刻，未浏览器验收"
+      "note": "后台评价分页、详情、回复、显隐及源昵称/订单ID/商品名/创建时间范围筛选已接入；其他操作缺口保留，见51-comment-filter-delivery.md"
     },
     {
       "source": "src/views/mall/product/property/PropertyForm.vue",

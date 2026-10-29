@@ -63,3 +63,25 @@ it('真实业务原因通过Problem Details呈现，错误不能变成空页', a
   mockedRequest.mockResolvedValue({ total: 0 });
   await expect(api.getComments({ pageNum: 1, pageSize: 20 })).rejects.toThrow();
 });
+it('评价订单项ID保留真实长编号，旧记录不以SKU补造', () => {
+  expect(api.decodeComment({ ...row, orderItemId: '9223372036854775807' }).orderItemId).toBe(
+    '9223372036854775807',
+  );
+  expect(api.decodeComment(row).orderItemId).toBeNull();
+});
+
+it('组合评价筛选保留真实订单长ID、时间边界与未回复false', async () => {
+  mockedRequest.mockResolvedValue({ rows: [], total: 0 });
+  const query = {
+    pageNum: 1,
+    pageSize: 20,
+    orderId: '9223372036854775807',
+    userNickname: '会员',
+    spuName: '购买商品',
+    replied: false,
+    createTimeStart: '2026-10-29T00:00:00',
+    createTimeEnd: '2026-10-29T23:59:59',
+  };
+  await api.getComments(query);
+  expect(mockedRequest).toHaveBeenCalledWith({ url: '/mall/comments', params: query });
+});

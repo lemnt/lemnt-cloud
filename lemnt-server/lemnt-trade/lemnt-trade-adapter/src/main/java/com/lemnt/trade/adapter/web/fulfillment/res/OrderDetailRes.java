@@ -1,5 +1,7 @@
 package com.lemnt.trade.adapter.web.fulfillment.res;
 
+import java.time.LocalDateTime;
+
 import com.lemnt.trade.adapter.web.fulfillment.res.OrderItemRes;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,7 +32,7 @@ public record OrderDetailRes(
         @Schema(description = "物流记录，包含收件人信息，仅详情权限可见")
         ShipmentRes shipment,
         @Schema(description = "是否全部完成评价，历史未知为空") Boolean commentStatus,
-        @Schema(description = "全部评价确认完成时间，可空") java.time.LocalDateTime finishTime
+        @Schema(description = "全部评价确认完成时间，可空") LocalDateTime finishTime
 ) implements Serializable {
     /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
     public OrderDetailRes(
