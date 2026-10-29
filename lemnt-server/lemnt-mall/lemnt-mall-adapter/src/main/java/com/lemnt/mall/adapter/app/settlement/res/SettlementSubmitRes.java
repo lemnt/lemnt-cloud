@@ -28,8 +28,25 @@ public record SettlementSubmitRes(
         @Schema(description = "商品价格和数量快照")
         List<SettlementItemRes> items,
         @Schema(description = "已冻结的配送快照")
-        SettlementDeliveryRes delivery
+        SettlementDeliveryRes delivery,
+        @Schema(description = "订单是否全部已评价，未知为空") Boolean commentStatus,
+        @Schema(description = "全部评价完成时间，未确认时为空") java.time.LocalDateTime finishTime
 ) implements Serializable {
+    /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
+    public SettlementSubmitRes(
+            String orderNo,
+            Long memberId,
+            String status,
+            BigDecimal originalAmount,
+            BigDecimal discountAmount,
+            BigDecimal payableAmount,
+            Long couponId,
+            List<SettlementItemRes> items,
+            SettlementDeliveryRes delivery
+    ) {
+        this(orderNo, memberId, status, originalAmount, discountAmount, payableAmount, couponId, items, delivery, null, null);
+    }
+
     /** 历史快照缺少配送字段，读取时保留未配置状态。 */
     public SettlementSubmitRes(
             String orderNo,

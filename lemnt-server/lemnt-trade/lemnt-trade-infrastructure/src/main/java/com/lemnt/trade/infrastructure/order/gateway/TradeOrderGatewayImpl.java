@@ -91,7 +91,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 .setOrderNo(order.orderNo())
                 .setMemberId(order.memberId())
                 .setTotalAmount(order.totalAmount()).setUsePoint(order.usePoint()).setGivePoint(order.givePoint())
-                .setStatus(order.status());
+                .setStatus(order.status()).setCommentStatus(false);
 
         // Expiry uses the database clock; do not fill order creation from a possibly different JVM
         // zone.
@@ -106,7 +106,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 row.getTotalAmount(),
                 row.getStatus(),
                 order.items(),
-                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row));
+                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row), row.getCommentStatus(), row.getFinishTime());
     }
 
     /** 读取订单主体。 */
@@ -128,7 +128,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 row.getTotalAmount(),
                 row.getStatus(),
                 List.of(),
-                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row));
+                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row), row.getCommentStatus(), row.getFinishTime());
     }
 
     /** 锁定订单主体。 */
@@ -151,7 +151,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 row.getTotalAmount(),
                 row.getStatus(),
                 List.of(),
-                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row));
+                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row), row.getCommentStatus(), row.getFinishTime());
     }
 
     private List<TradeOrder> expired(String status, LocalDateTime deadline, int limit) {
@@ -172,7 +172,13 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 row.getTotalAmount(),
                 row.getStatus(),
                 List.of(),
-                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row)))
+                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row), row.getCommentStatus(), row.getFinishTime()))
                 .toList();
+    }
+    @Override
+    public boolean updateCommentState(com.lemnt.trade.domain.order.model.OrderCommentState value) {
+        return tradeOrderMapper.update(null, Wrappers.lambdaUpdate(TradeOrderDO.class)
+                .eq(TradeOrderDO::getId, value.orderId()).set(TradeOrderDO::getCommentStatus, value.commentStatus())
+                .set(TradeOrderDO::getFinishTime, value.finishTime())) == 1;
     }
 }

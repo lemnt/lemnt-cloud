@@ -122,6 +122,8 @@ function decodeItem(value: unknown): CheckoutItem {
     spuName: optionalText(row.spuName),
     properties: decodeProperties(row.properties),
     picUrl: optionalText(row.picUrl),
+    ...(row.orderItemId == null ? {} : { orderItemId: positiveId(row.orderItemId) }),
+    ...(row.commentStatus == null ? {} : { commentStatus: reviewStatus(row.commentStatus) }),
     productId: positiveId(row.productId),
     productCode: text(row.productCode),
     productName: text(row.productName),
@@ -160,6 +162,8 @@ export function decodeReceipt(value: unknown): CheckoutReceipt {
     throw new Error('未知结算状态');
   return {
     ...decodePricing(value),
+    ...(row.commentStatus == null ? {} : { commentStatus: reviewStatus(row.commentStatus) }),
+    ...(row.finishTime == null ? {} : { finishTime: text(row.finishTime) }),
     orderNo: text(row.orderNo),
     memberId: positiveId(row.memberId),
     status: row.status,
@@ -217,4 +221,9 @@ export function decodeProperties(value: unknown): import('./types').CheckoutProp
       valueName: text(row.valueName),
     };
   });
+}
+
+function reviewStatus(value: unknown): boolean {
+  if (typeof value !== 'boolean') throw new Error('评价状态不合法');
+  return value;
 }

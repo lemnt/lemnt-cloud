@@ -196,8 +196,27 @@ export default function CommentPage() {
               column={2}
               columns={[
                 { title: '订单号', dataIndex: 'orderNo' },
+                { title: '订单项编号', dataIndex: 'orderItemId' },
                 { title: '会员编号', dataIndex: 'memberId' },
                 { title: '昵称快照', dataIndex: 'userNickname' },
+                {
+                  title: '会员头像',
+                  render: () =>
+                    safeImage(detail.userAvatar) ? (
+                      <Image src={safeImage(detail.userAvatar)} width={80} />
+                    ) : (
+                      '未记录'
+                    ),
+                },
+                {
+                  title: '原商品图片',
+                  render: () =>
+                    safeImage(detail.skuPicUrl) ? (
+                      <Image src={safeImage(detail.skuPicUrl)} width={100} />
+                    ) : (
+                      '未记录'
+                    ),
+                },
                 {
                   title: '是否匿名',
                   render: () =>
@@ -263,6 +282,7 @@ export default function CommentPage() {
           }
         }}
       >
+        <p>{replying?.content}</p>
         <ProFormTextArea
           name="content"
           label="回复内容"

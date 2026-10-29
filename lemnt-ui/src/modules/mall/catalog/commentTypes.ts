@@ -4,6 +4,7 @@ export interface ProductCommentRecord {
   skuId: string;
   orderNo: string;
   orderId: string | null;
+  orderItemId: string | null;
   memberId: string;
   score: number;
   descriptionScores: number | null;

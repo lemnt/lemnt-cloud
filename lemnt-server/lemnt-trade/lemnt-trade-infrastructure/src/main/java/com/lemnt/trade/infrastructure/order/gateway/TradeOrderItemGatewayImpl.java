@@ -53,4 +53,10 @@ public class TradeOrderItemGatewayImpl implements TradeOrderItemGateway {
                 .eq(TradeOrderItemDO::getOrderId, orderId)
                 .orderByAsc(TradeOrderItemDO::getId)).stream().map(OrderItemConverter::toModel).toList();
     }
+    @Override
+    public boolean markCommented(Long orderId, Long orderItemId) {
+        return tradeOrderItemMapper.update(null, Wrappers.lambdaUpdate(TradeOrderItemDO.class)
+                .eq(TradeOrderItemDO::getId, orderItemId).eq(TradeOrderItemDO::getOrderId, orderId)
+                .set(TradeOrderItemDO::getCommentStatus, true)) == 1;
+    }
 }

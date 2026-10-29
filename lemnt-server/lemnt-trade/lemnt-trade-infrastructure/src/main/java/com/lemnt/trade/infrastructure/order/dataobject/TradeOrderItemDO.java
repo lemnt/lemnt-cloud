@@ -25,6 +25,7 @@ public class TradeOrderItemDO extends BaseDO {
     @TableId(type = IdType.AUTO)
     private Long id;
     private Long orderId;
+    private Boolean commentStatus;
     /** 既有Java productId明确对应SKU，只存sku_id一列。 */
     @TableField("sku_id")
     private Long productId;

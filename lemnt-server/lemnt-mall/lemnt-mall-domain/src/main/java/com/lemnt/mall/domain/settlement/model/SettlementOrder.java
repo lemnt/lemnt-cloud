@@ -18,8 +18,26 @@ public record SettlementOrder(
         LocalDateTime createTime,
         long usePoint,
         long givePoint,
-        SettlementDelivery delivery
+        SettlementDelivery delivery,
+        Boolean commentStatus,
+        java.time.LocalDateTime finishTime
 ) implements Serializable {
+    /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
+    public SettlementOrder(
+            Long id,
+            String orderNo,
+            Long memberId,
+            BigDecimal totalAmount,
+            String status,
+            List<SettlementItem> items,
+            LocalDateTime createTime,
+            long usePoint,
+            long givePoint,
+            SettlementDelivery delivery
+    ) {
+        this(id, orderNo, memberId, totalAmount, status, items, createTime, usePoint, givePoint, delivery, null, null);
+    }
+
     /**
      * 创建结算单实例。
      */

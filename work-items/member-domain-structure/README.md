@@ -51,3 +51,7 @@
 - [商品收藏与足迹接口](../../docs/product-interaction-api.md)
 
 - [文章相关迁移范围调整](45-article-scope-adjustment.md)
+
+- [商品评价链路设计](46-product-comment-design.md)
+- [商品评价链路交付](47-product-comment-delivery.md)
+- [商品评价当前接口](../../docs/product-comment-api.md)

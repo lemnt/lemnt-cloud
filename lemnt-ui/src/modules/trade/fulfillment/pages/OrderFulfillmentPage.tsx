@@ -167,6 +167,21 @@ export default function OrderFulfillmentPage() {
                 },
                 { key: 'amount', label: '应付金额', children: `${detail.data.totalAmount} 元` },
                 {
+                  key: 'comment',
+                  label: '全部评价',
+                  children:
+                    detail.data.commentStatus === true
+                      ? '已完成'
+                      : detail.data.commentStatus === false
+                        ? '未完成'
+                        : '未记录',
+                },
+                {
+                  key: 'finish',
+                  label: '评价完成时间',
+                  children: detail.data.finishTime ?? '未记录',
+                },
+                {
                   key: 'stock',
                   label: '库存确认',
                   children: detail.data.inventoryConfirmed ? '完成' : '未完成',
@@ -219,6 +234,16 @@ export default function OrderFulfillmentPage() {
                     ) : (
                       '未记录'
                     ),
+                },
+                { title: '订单项编号', dataIndex: 'orderItemId' },
+                {
+                  title: '评价状态',
+                  render: (_, row) =>
+                    row.commentStatus === true
+                      ? '已评价'
+                      : row.commentStatus === false
+                        ? '未评价'
+                        : '未记录',
                 },
                 { title: '商品', dataIndex: 'productName' },
                 { title: 'SPU', render: (_, row) => row.spuName ?? '未记录' },

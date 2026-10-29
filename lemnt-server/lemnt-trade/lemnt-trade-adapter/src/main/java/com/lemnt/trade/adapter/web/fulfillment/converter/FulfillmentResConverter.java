@@ -102,8 +102,8 @@ public final class FulfillmentResConverter {
                 item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
                         new com.lemnt.trade.adapter.web.fulfillment.res.OrderItemRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
                                 snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
-                item.picUrl())).toList(),
-                shipment(v.shipment()));
+                item.picUrl(), item.orderItemId(), item.commentStatus())).toList(),
+                shipment(v.shipment()), v.commentStatus(), v.finishTime());
     }
 
     /**

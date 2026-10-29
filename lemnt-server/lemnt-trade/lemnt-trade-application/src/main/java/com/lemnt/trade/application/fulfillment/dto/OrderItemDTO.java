@@ -17,8 +17,26 @@ public record OrderItemDTO(
         Long spuId,
         String spuName,
         List<Property> properties,
-        String picUrl
+        String picUrl,
+        Long orderItemId,
+        Boolean commentStatus
 ) implements java.io.Serializable {
+    /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
+    public OrderItemDTO(
+            Long productId,
+            String productCode,
+            String productName,
+            BigDecimal unitPrice,
+            Integer quantity,
+            BigDecimal lineAmount,
+            Long spuId,
+            String spuName,
+            List<Property> properties,
+            String picUrl
+    ) {
+        this(productId, productCode, productName, unitPrice, quantity, lineAmount, spuId, spuName, properties, picUrl, null, null);
+    }
+
     public OrderItemDTO {
         properties = properties == null ? null : List.copyOf(properties);
     }

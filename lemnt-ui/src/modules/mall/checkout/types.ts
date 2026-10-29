@@ -77,6 +77,8 @@ export interface CheckoutProperty {
   valueName: string;
 }
 export interface CheckoutItem {
+  orderItemId?: string | null;
+  commentStatus?: boolean | null;
   spuId?: string | null;
   spuName?: string | null;
   properties?: CheckoutProperty[] | null;
@@ -97,6 +99,8 @@ export interface CheckoutQuote {
   couponId: string | null;
 }
 export interface CheckoutReceipt extends Omit<CheckoutQuote, 'quoteToken'> {
+  commentStatus?: boolean | null;
+  finishTime?: string | null;
   orderNo: string;
   memberId: string;
   status: CheckoutStatus;

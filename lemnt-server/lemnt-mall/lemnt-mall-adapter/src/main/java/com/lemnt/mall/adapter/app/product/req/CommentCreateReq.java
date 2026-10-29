@@ -1,5 +1,7 @@
 package com.lemnt.mall.adapter.app.product.req;
 
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.validation.constraints.Max;
@@ -21,7 +23,7 @@ public record CommentCreateReq(
         @NotNull
         @Positive
         Long skuId,
-        @Schema(description = "评分，1至5")
+        @Schema(description = "兼容旧单分输入，1至5；提供两项评分时可省略")
         @Min(1)
         @Max(5)
         Integer score,
@@ -33,6 +35,7 @@ public record CommentCreateReq(
         @Schema(description = "服务评分，1至5；与描述评分一起提供") @Min(1) @Max(5) Integer benefitScores,
         @Schema(description = "是否匿名，默认false") Boolean anonymous,
         @Schema(description = "最多9张HTTPS图片地址") @Size(max = 9)
-        java.util.List<@NotBlank @Size(max = 1024) @jakarta.validation.constraints.Pattern(regexp = "https://[^\\s]+") String> picUrls
+        List<@NotBlank @Size(max = 1024) @jakarta.validation.constraints.Pattern(regexp = "https://[^\\s]+") String> picUrls,
+        @Schema(description = "真实订单项编号，新页面传入；不可用SKU代替") @Positive Long orderItemId
 ) implements Serializable {
 }

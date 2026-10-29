@@ -40,6 +40,13 @@ public class OrderGatewayImpl implements OrderGateway {
     }
 
     @Override
+    public Long createComment(com.lemnt.mall.domain.product.model.CommentOrderRequest value) {
+        return client.createComment(new com.lemnt.trade.client.bo.OrderCommentCreateBo(value.memberId(),
+                value.orderNo(), value.skuId(), value.orderItemId(), value.score(), value.content(),
+                value.descriptionScores(), value.benefitScores(), value.anonymous(), value.picUrls()));
+    }
+
+    @Override
     public SettlementOrder findByOrderNo(String orderNo) {
         return from(client.getByOrderNo(orderNo));
     }
@@ -60,7 +67,7 @@ public class OrderGatewayImpl implements OrderGateway {
                 item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
                         new SettlementItem.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
                                 snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
-                item.picUrl())).toList(), value.createTime(), value.usePoint(), value.givePoint(), fromDelivery(value.delivery()));
+                item.picUrl(), item.orderItemId(), item.commentStatus())).toList(), value.createTime(), value.usePoint(), value.givePoint(), fromDelivery(value.delivery()), value.commentStatus(), value.finishTime());
     }
 
     private OrderDeliveryDTO toDelivery(

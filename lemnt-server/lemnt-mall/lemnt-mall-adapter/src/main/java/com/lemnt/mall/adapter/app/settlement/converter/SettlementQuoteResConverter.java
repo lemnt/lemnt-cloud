@@ -33,7 +33,7 @@ public final class SettlementQuoteResConverter {
                 value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
                         new SettlementItemRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
                                 snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
-                value.picUrl());
+                value.picUrl(), value.orderItemId(), value.commentStatus());
     }
 
     /**
@@ -50,7 +50,7 @@ public final class SettlementQuoteResConverter {
                 value.discountAmount(),
                 value.payableAmount(),
                 value.couponId(),
-                value.items().stream().map(SettlementQuoteResConverter::checkoutItem).toList(), delivery(value.delivery()));
+                value.items().stream().map(SettlementQuoteResConverter::checkoutItem).toList(), delivery(value.delivery()), value.commentStatus(), value.finishTime());
     }
 
     /**
@@ -67,7 +67,7 @@ public final class SettlementQuoteResConverter {
                 value.discountAmount(),
                 value.payableAmount(),
                 value.couponId(),
-                value.items().stream().map(SettlementQuoteResConverter::checkoutItem).toList(), delivery(value.delivery()));
+                value.items().stream().map(SettlementQuoteResConverter::checkoutItem).toList(), delivery(value.delivery()), value.commentStatus(), value.finishTime());
     }
 
     /**
@@ -84,7 +84,7 @@ public final class SettlementQuoteResConverter {
                 value.discountAmount(),
                 value.payableAmount(),
                 value.couponId(),
-                value.items().stream().map(SettlementQuoteResConverter::checkoutItem).toList(), delivery(value.delivery()));
+                value.items().stream().map(SettlementQuoteResConverter::checkoutItem).toList(), delivery(value.delivery()), value.commentStatus(), value.finishTime());
     }
 
     /**
@@ -101,7 +101,7 @@ public final class SettlementQuoteResConverter {
                 value.discountAmount(),
                 value.payableAmount(),
                 value.couponId(),
-                value.items().stream().map(SettlementQuoteResConverter::checkoutItem).toList(), delivery(value.delivery()));
+                value.items().stream().map(SettlementQuoteResConverter::checkoutItem).toList(), delivery(value.delivery()), value.commentStatus(), value.finishTime());
     }
 
     /** HTTP 只返回已经校验会员归属的收件快照。 */

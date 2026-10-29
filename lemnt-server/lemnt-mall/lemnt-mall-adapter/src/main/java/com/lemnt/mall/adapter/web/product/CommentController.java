@@ -1,6 +1,7 @@
 package com.lemnt.mall.adapter.web.product;
 
 import com.lemnt.common.core.domain.R;
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.mall.adapter.web.product.res.CommentVisibleRes;
 import com.lemnt.common.security.annotation.RequiresPermissions;
 import com.lemnt.common.security.utils.SecurityUtils;
@@ -57,7 +58,10 @@ public class CommentController {
     @RequiresPermissions("mall:comment:query")
     public R<CommentDetailRes> detail(@PathVariable Long id) {
         var value = commentDetailQueryExe.execute(id);
-        return value == null ? R.fail("评价不存在") : R.ok(CommentResConverter.detail(value));
+        if (value == null) {
+            throw new ServiceException("评价不存在", 404);
+        }
+        return R.ok(CommentResConverter.detail(value));
     }
 
     /** 商家回复只使用当前管理员身份。 */

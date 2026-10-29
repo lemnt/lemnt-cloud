@@ -4,6 +4,7 @@ import com.lemnt.common.infrastructure.domain.BaseDO;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
@@ -37,8 +38,11 @@ public class ProductCommentDO extends BaseDO {
     private String userNickname;
     private String userAvatar;
     private Long orderId;
+    private Long orderItemId;
     private String spuName;
     private String skuPicUrl;
     private String skuProperties;
     private Boolean replyStatus;
+    @TableLogic
+    private Boolean deleted;
 }

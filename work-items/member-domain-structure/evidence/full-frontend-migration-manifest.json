@@ -74,19 +74,22 @@
       "source": "src/views/mall/product/comment/CommentForm.vue",
       "sha256": "77d85039e9fec6acebcf4923a14960fa95b155b62fc9f7ce3ac10d70a3fb9485",
       "state": "pending",
-      "target": null
+      "target": null,
+      "note": "源虚拟评价创建表单仍待迁移，本批仅真实订单评价链路"
     },
     {
       "source": "src/views/mall/product/comment/ReplyForm.vue",
       "sha256": "bbaa1087d08751f34a38786c31ee1293f2d4c979e630172a2db776bb90cbcc85",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/CommentPage.tsx",
+      "note": "React评价分页、详情、图片、回复、显隐及既有筛选已接入；源虚拟创建、额外筛选/导出等未迁移，不是完整Vue页面复刻，未浏览器验收"
     },
     {
       "source": "src/views/mall/product/comment/index.vue",
       "sha256": "8a5f420c701154f84950073c51afcad46f859e56d1dcfbe663b127de39fa4f8a",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/CommentPage.tsx",
+      "note": "React评价分页、详情、图片、回复、显隐及既有筛选已接入；源虚拟创建、额外筛选/导出等未迁移，不是完整Vue页面复刻，未浏览器验收"
     },
     {
       "source": "src/views/mall/product/property/PropertyForm.vue",
@@ -1142,8 +1145,9 @@
     {
       "source": "src/api/mall/product/comment.ts",
       "sha256": "6be78aae8c6d436f96b4aa2a7fc4563a2aa780cf807696b30187f8aed65d5c02",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/CommentPage.tsx",
+      "note": "React评价分页、详情、图片、回复、显隐及既有筛选已接入；源虚拟创建、额外筛选/导出等未迁移，不是完整Vue页面复刻，未浏览器验收"
     },
     {
       "source": "src/api/mall/product/favorite.ts",

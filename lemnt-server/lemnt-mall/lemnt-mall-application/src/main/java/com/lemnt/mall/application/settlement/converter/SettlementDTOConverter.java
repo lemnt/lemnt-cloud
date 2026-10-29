@@ -32,7 +32,7 @@ public final class SettlementDTOConverter {
                 value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
                         new SettlementItemDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
                                 snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
-                value.picUrl());
+                value.picUrl(), value.orderItemId(), value.commentStatus());
     }
 
     /**
@@ -62,7 +62,7 @@ public final class SettlementDTOConverter {
                 value.discountAmount(),
                 value.payableAmount(),
                 value.couponId(),
-                order.items().stream().map(SettlementDTOConverter::item).toList(), delivery(order.delivery()));
+                order.items().stream().map(SettlementDTOConverter::item).toList(), delivery(order.delivery()), order.commentStatus(), order.finishTime());
     }
 
     /** 转换服务端冻结的收件快照。 */

@@ -15,7 +15,13 @@ class OrderProductSnapshotTest {
         var item = item(properties);
         properties.clear();
         assertEquals("黑色", item.properties().get(0).valueName());
-        assertEquals(item, OrderItemConverter.toModel(OrderItemConverter.toDO(9L, item)));
+        var row = OrderItemConverter.toDO(9L, item);
+        assertNull(row.getId());
+        assertFalse(row.getCommentStatus());
+        row.setId(77L);
+        assertEquals(new TradeOrderItem(item.productId(), item.productCode(), item.productName(), item.unitPrice(),
+                item.quantity(), item.lineAmount(), item.payAmount(), item.deliveryPrice(), item.spuId(), item.spuName(),
+                item.properties(), item.picUrl(), 77L, false), OrderItemConverter.toModel(row));
         assertThrows(UnsupportedOperationException.class, () -> item.properties().clear());
     }
 

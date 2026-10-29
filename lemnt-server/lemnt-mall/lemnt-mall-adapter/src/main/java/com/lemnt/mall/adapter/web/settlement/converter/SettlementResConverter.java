@@ -29,7 +29,7 @@ public final class SettlementResConverter {
                 value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
                         new SettlementItemRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
                                 snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
-                value.picUrl());
+                value.picUrl(), value.orderItemId(), value.commentStatus());
     }
 
     /**
@@ -61,7 +61,7 @@ public final class SettlementResConverter {
                 value.discountAmount(),
                 value.payableAmount(),
                 value.couponId(),
-                value.items().stream().map(SettlementResConverter::checkoutItem).toList());
+                value.items().stream().map(SettlementResConverter::checkoutItem).toList(), value.commentStatus(), value.finishTime());
     }
 
     /**

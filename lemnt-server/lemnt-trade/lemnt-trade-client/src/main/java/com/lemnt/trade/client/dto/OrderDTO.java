@@ -18,8 +18,26 @@ public record OrderDTO(
         LocalDateTime createTime,
         long usePoint,
         long givePoint,
-        OrderDeliveryDTO delivery
+        OrderDeliveryDTO delivery,
+        Boolean commentStatus,
+        java.time.LocalDateTime finishTime
 ) implements Serializable {
+    /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
+    public OrderDTO(
+            Long id,
+            String orderNo,
+            Long memberId,
+            BigDecimal totalAmount,
+            String status,
+            List<OrderItemDTO> items,
+            LocalDateTime createTime,
+            long usePoint,
+            long givePoint,
+            OrderDeliveryDTO delivery
+    ) {
+        this(id, orderNo, memberId, totalAmount, status, items, createTime, usePoint, givePoint, delivery, null, null);
+    }
+
     /**
      * 创建交易订单实例。
      */

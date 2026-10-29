@@ -26,5 +26,21 @@ public record SettlementReceiptRes(
         @Schema(description = "优惠券实例编号，未选择时省略")
         Long couponId,
         @Schema(description = "商品价格和数量快照")
-        List<SettlementItemRes> items
-) implements Serializable {}
+        List<SettlementItemRes> items,
+        @Schema(description = "订单是否全部已评价，未知为空") Boolean commentStatus,
+        @Schema(description = "全部评价完成时间，未确认时为空") java.time.LocalDateTime finishTime
+) implements Serializable {
+    /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
+    public SettlementReceiptRes(
+            String orderNo,
+            Long memberId,
+            String status,
+            BigDecimal originalAmount,
+            BigDecimal discountAmount,
+            BigDecimal payableAmount,
+            Long couponId,
+            List<SettlementItemRes> items
+    ) {
+        this(orderNo, memberId, status, originalAmount, discountAmount, payableAmount, couponId, items, null, null);
+    }
+}

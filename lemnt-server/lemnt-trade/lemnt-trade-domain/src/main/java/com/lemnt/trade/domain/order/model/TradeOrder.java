@@ -17,8 +17,26 @@ public record TradeOrder(
         LocalDateTime createTime,
         long usePoint,
         long givePoint,
-        TradeOrderDelivery delivery
+        TradeOrderDelivery delivery,
+        Boolean commentStatus,
+        java.time.LocalDateTime finishTime
 ) {
+    /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
+    public TradeOrder(
+            Long id,
+            String orderNo,
+            Long memberId,
+            BigDecimal totalAmount,
+            String status,
+            List<TradeOrderItem> items,
+            LocalDateTime createTime,
+            long usePoint,
+            long givePoint,
+            TradeOrderDelivery delivery
+    ) {
+        this(id, orderNo, memberId, totalAmount, status, items, createTime, usePoint, givePoint, delivery, null, null);
+    }
+
     /**
      * 创建交易订单实例。
      */

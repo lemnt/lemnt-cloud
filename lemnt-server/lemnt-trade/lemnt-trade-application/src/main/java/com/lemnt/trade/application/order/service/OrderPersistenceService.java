@@ -38,7 +38,7 @@ public class OrderPersistenceService {
                 value.totalAmount(),
                 value.status(),
                 tradeOrderItemGateway.items(value.id()),
-                value.createTime(), value.usePoint(), value.givePoint(), value.delivery());
+                value.createTime(), value.usePoint(), value.givePoint(), value.delivery(), value.commentStatus(), value.finishTime());
     }
 
     /** 按原顺序锁定订单主体，调用方持有事务。 */

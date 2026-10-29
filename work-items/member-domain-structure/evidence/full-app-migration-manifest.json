@@ -222,20 +222,23 @@
     {
       "source": "pages/goods/comment/add.vue",
       "sha256": "96511797eb9491f383acadf8855731c7221ccb59e4c3d0e92aa6f0bd90d7596c",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/comment-create",
+      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收"
     },
     {
       "source": "pages/goods/comment/list.vue",
       "sha256": "3f13d1ae51be84f40f4bec8ecc9b2e63ada7bd64d8dd962bc52f65eaa32d99e7",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/comments",
+      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收"
     },
     {
       "source": "pages/goods/components/detail/comment-item.vue",
       "sha256": "6cdd50991336043adf6193b03c0080135d1f4567d3091ce2694d1abae56ad56f",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/comments",
+      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收"
     },
     {
       "source": "pages/goods/components/detail/detail-activity-tip.vue",
@@ -258,8 +261,9 @@
     {
       "source": "pages/goods/components/detail/detail-comment-card.vue",
       "sha256": "7c3c5f2dabc9e7364a391273047a3ff669cc77447daeb5634c4f27db96cbfc6f",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/comments",
+      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收"
     },
     {
       "source": "pages/goods/components/detail/detail-content-card.vue",
@@ -675,8 +679,9 @@
     {
       "source": "sheep/api/product/comment.js",
       "sha256": "57750f53b3c5eeefd598f501d6a8ffaf9b63ef9e6197124ad91fd0f7e95cada1",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/comments",
+      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收"
     },
     {
       "source": "sheep/api/product/favorite.js",

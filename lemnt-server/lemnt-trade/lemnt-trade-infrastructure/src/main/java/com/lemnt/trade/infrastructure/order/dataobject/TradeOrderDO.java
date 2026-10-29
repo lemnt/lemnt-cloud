@@ -27,6 +27,8 @@ public class TradeOrderDO extends BaseDO {
     private BigDecimal totalAmount;
     private String status;
     private String remark;
+    private Boolean commentStatus;
+    private java.time.LocalDateTime finishTime;
     private Long usePoint;
     private Long givePoint;
     private Long addressId;

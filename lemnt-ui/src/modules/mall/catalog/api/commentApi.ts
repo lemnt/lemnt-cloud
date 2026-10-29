@@ -37,6 +37,7 @@ export function decodeComment(value: unknown): ProductCommentRecord {
     skuId: decodeId(row.skuId),
     orderNo: text(row.orderNo),
     orderId: optionalId(row.orderId),
+    orderItemId: optionalId(row.orderItemId),
     memberId: decodeId(row.memberId),
     score: score(row.score),
     descriptionScores: row.descriptionScores == null ? null : score(row.descriptionScores),
@@ -74,7 +75,7 @@ async function call<T>(task: () => Promise<T>): Promise<T> {
     return await task();
   } catch (reason) {
     if (isAxiosError(reason) && typeof reason.response?.data?.detail === 'string')
-      throw Error(reason.response.data.detail);
+      throw new Error(reason.response.data.detail, { cause: reason });
     throw reason;
   }
 }

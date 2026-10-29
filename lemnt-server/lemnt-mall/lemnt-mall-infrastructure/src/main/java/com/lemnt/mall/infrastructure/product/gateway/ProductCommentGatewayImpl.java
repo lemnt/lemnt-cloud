@@ -1,5 +1,7 @@
 package com.lemnt.mall.infrastructure.product.gateway;
 
+import com.lemnt.mall.domain.product.model.PublicCommentFilter;
+
 import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.mall.domain.product.gateway.ProductCommentGateway;
 import com.lemnt.mall.domain.product.model.CommentFilter;
@@ -31,8 +33,11 @@ public class ProductCommentGatewayImpl implements ProductCommentGateway {
 
     @Override
     public ProductComment findByOrderSku(String orderNo, Long skuId) {
-        return ProductCommentConverter.toModel(productCommentMapper.selectOne(Wrappers.lambdaQuery(ProductCommentDO.class)
-                .eq(ProductCommentDO::getOrderNo, orderNo).eq(ProductCommentDO::getSkuId, skuId)));
+        var legacy = productCommentMapper.legacyForLink(orderNo, skuId);
+        if (legacy.size() > 1 || legacy.stream().anyMatch(value -> Boolean.TRUE.equals(value.getDeleted()))) {
+            throw new com.lemnt.common.core.exception.ServiceException("旧评价已删除或归属不唯一，不能重复投稿", 409);
+        }
+        return legacy.isEmpty() ? null : ProductCommentConverter.toModel(legacy.get(0));
     }
 
     @Override
@@ -73,7 +78,7 @@ public class ProductCommentGatewayImpl implements ProductCommentGateway {
             page.getTotal());
     }
     @Override
-    public PageResult<ProductComment> pageVisible(com.lemnt.mall.domain.product.model.PublicCommentFilter filter) {
+    public PageResult<ProductComment> pageVisible(PublicCommentFilter filter) {
         var query = Wrappers.lambdaQuery(ProductCommentDO.class)
                 .eq(ProductCommentDO::getSpuId, filter.spuId()).eq(ProductCommentDO::getVisible, true)
                 .ge(filter.type() == 1, ProductCommentDO::getScore, 4)
@@ -82,5 +87,19 @@ public class ProductCommentGatewayImpl implements ProductCommentGateway {
                 .orderByDesc(ProductCommentDO::getCreateTime).orderByDesc(ProductCommentDO::getId);
         var result = productCommentMapper.selectPage(new Page<>(filter.pageNum(), filter.pageSize()), query);
         return PageResult.of(result.getRecords().stream().map(ProductCommentConverter::toModel).toList(), result.getTotal());
+    }
+    @Override
+    public ProductComment findByOrderItem(Long orderItemId) {
+        return ProductCommentConverter.toModel(productCommentMapper.selectOne(Wrappers.lambdaQuery(ProductCommentDO.class)
+                .eq(ProductCommentDO::getOrderItemId, orderItemId)));
+    }
+
+    @Override
+    public boolean bindOrderItem(com.lemnt.mall.domain.product.model.CommentOrderLink value) {
+        return productCommentMapper.update(null, Wrappers.lambdaUpdate(ProductCommentDO.class)
+                .eq(ProductCommentDO::getId, value.commentId())
+                .and(query -> query.isNull(ProductCommentDO::getOrderItemId).or().eq(ProductCommentDO::getOrderItemId, value.orderItemId()))
+                .and(query -> query.isNull(ProductCommentDO::getOrderId).or().eq(ProductCommentDO::getOrderId, value.orderId()))
+                .set(ProductCommentDO::getOrderItemId, value.orderItemId()).set(ProductCommentDO::getOrderId, value.orderId())) == 1;
     }
 }

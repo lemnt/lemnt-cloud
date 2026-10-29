@@ -148,6 +148,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * bridge; this is not a Nacos/Dubbo runtime or real payment-channel test.
  */
 class CheckoutFlowIntegrationTest {
+    boolean loseNextCommentResponse;
+
     TableTestComponents tradeComponents, mallComponents;
     ProductSkuGateway productSkuGateway;
     ProductInventoryService productInventoryService;
@@ -348,20 +350,25 @@ class CheckoutFlowIntegrationTest {
         Mockito.when(refundClient.channel()).thenReturn("ALIPAY");
         tradeComponents.register(PaymentRefundChannelGateway.class,
                 new PaymentRefundChannelGatewayImpl(List.of(refundClient)));
+        var commentBridge = new com.lemnt.trade.infrastructure.order.gateway.OrderCommentGatewayImpl();
+        tradeComponents.register(com.lemnt.trade.domain.order.gateway.OrderCommentGateway.class, commentBridge);
         var provider = new com.lemnt.trade.application.dubbo.TradeOrderClientImpl(
                 tradeComponents.get(com.lemnt.trade.application.order.service.OrderSubmissionService.class),
-                tradeComponents.get(OrderPersistenceService.class), null);
+                tradeComponents.get(OrderPersistenceService.class), null, tradeComponents.get(com.lemnt.trade.application.order.service.OrderCommentService.class));
         var client = new com.lemnt.trade.client.TradeOrderClient() {
             public com.lemnt.trade.client.dto.OrderDTO create(com.lemnt.trade.client.bo.OrderCreateBo value) {
                 var actual = new com.lemnt.trade.application.dubbo.TradeOrderClientImpl(
                         tradeComponents.get(com.lemnt.trade.application.order.service.OrderSubmissionService.class),
-                        orderPersistenceService, remotes);
+                        orderPersistenceService, remotes, tradeComponents.get(com.lemnt.trade.application.order.service.OrderCommentService.class));
                 var saved = actual.create(value);
                 if (loseNextOrderResponse) {
                     loseNextOrderResponse = false;
                     throw new IllegalStateException("交易订单已提交，但 RPC 响应丢失");
                 }
                 return saved;
+            }
+            public Long createComment(com.lemnt.trade.client.bo.OrderCommentCreateBo value) {
+                return provider.createComment(value);
             }
             public com.lemnt.trade.client.dto.OrderDTO getByOrderNo(String no) {
                 return provider.getByOrderNo(no);
@@ -371,6 +378,16 @@ class CheckoutFlowIntegrationTest {
         org.springframework.test.util.ReflectionTestUtils.setField(orderAdapter, "client", client);
         orderRpc = orderAdapter;
         mallComponents.register(com.lemnt.mall.domain.settlement.gateway.OrderGateway.class, orderRpc);
+        var commentProvider = new com.lemnt.mall.application.dubbo.ProductCommentClientImpl(mallComponents.get(ProductCommentService.class));
+        com.lemnt.mall.client.ProductCommentClient commentClient = value -> {
+            Long id = commentProvider.saveVerified(value);
+            if (loseNextCommentResponse) {
+                loseNextCommentResponse = false;
+                throw new IllegalStateException("评价已保存，但RPC响应丢失");
+            }
+            return id;
+        };
+        org.springframework.test.util.ReflectionTestUtils.setField(commentBridge, "client", commentClient);
 
         productSkuGateway = mallComponents.get(ProductSkuGateway.class);
         productInventoryService = mallComponents.get(ProductInventoryService.class);
@@ -2383,7 +2400,7 @@ class CheckoutFlowIntegrationTest {
             var b = pool.submit(() -> service.create(cmd));
             assertEquals(a.get(10, TimeUnit.SECONDS).id(), b.get(10, TimeUnit.SECONDS).id());
         } finally { pool.shutdownNow(); }
-        assertNotNull(mallComponents.get(ProductCommentGateway.class).findByOrderSku(order.orderNo(), sku));
+        assertNotNull(mallComponents.get(ProductCommentGateway.class).findByOrderItem(orderRpc.findByOrderNo(order.orderNo()).items().stream().filter(item -> item.productId().equals(sku)).findFirst().orElseThrow().orderItemId()));
     }
 
     @Test

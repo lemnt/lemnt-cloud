@@ -1,6 +1,6 @@
 package com.lemnt.mall.domain.member.model;
 
-/** 结算所需会员状态、等级折扣和积分余额。 */
+/** 会员状态、等级折扣、积分余额及合法公开资料快照。 */
 public record MemberSnapshot(Long id, Integer status, Integer discountPercent, Long points, String nickname, String avatar) {
     public MemberSnapshot(Long id, Integer status, Integer discountPercent, Long points) {
         this(id, status, discountPercent, points, null, null);

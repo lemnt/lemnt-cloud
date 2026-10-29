@@ -210,4 +210,13 @@ Page({
     this.flow.discard(true);this.quoteInput=null;this.setData({pending:!!this.flow.pending(),quote:null});
   }); },
   onHide() { this.setData({ rows: [], coupons: [], selectedCoupon: null, pointStatus: false, addresses: [], selectedAddress: null, quote: null, receipt: null, payment: null, error: '' }); this.quoteInput = null; },
+  comment(event) {
+    if (this.data.loading || this.data.receipt?.status !== 'COMPLETED') return;
+    if (!event.currentTarget.dataset.itemId) { this.setData({error:'订单项信息未就绪，请刷新订单'}); return; }
+    if (this.receiptMember !== getApp().globalData.memberSession?.memberId) {
+      this.setData({error:'会员已切换，请先查询本人订单'});
+      return;
+    }
+    wx.navigateTo({url:'/pages/comment-create/index?orderNo='+encodeURIComponent(this.data.receipt.orderNo)+'&skuId='+encodeURIComponent(event.currentTarget.dataset.id)+'&orderItemId='+encodeURIComponent(event.currentTarget.dataset.itemId)});
+  },
 });

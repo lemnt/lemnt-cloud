@@ -18,7 +18,7 @@ public final class ProductCommentConverter {
                 row.getReplyUserId(), row.getReplyTime(), row.getCreateTime(), row.getDescriptionScores(),
                 row.getBenefitScores(), pictures(row.getPicUrls()), row.getAnonymous(), row.getUserNickname(),
                 row.getUserAvatar(), row.getOrderId(), row.getSpuName(), row.getSkuPicUrl(),
-                properties(row.getSkuProperties()), Boolean.TRUE.equals(row.getReplyStatus()));
+                properties(row.getSkuProperties()), Boolean.TRUE.equals(row.getReplyStatus()), row.getOrderItemId());
     }
 
     /** 创建不接受客户端设置商家回复、可见性或会员商品快照。 */
@@ -28,7 +28,7 @@ public final class ProductCommentConverter {
                 .setDescriptionScores(value.descriptionScores()).setBenefitScores(value.benefitScores())
                 .setPicUrls(value.picUrls() == null ? null : JSON.writeValueAsString(value.picUrls()))
                 .setAnonymous(value.anonymous()).setUserNickname(value.userNickname()).setUserAvatar(value.userAvatar())
-                .setOrderId(value.orderId()).setSpuName(value.spuName()).setSkuPicUrl(value.skuPicUrl())
+                .setOrderId(value.orderId()).setOrderItemId(value.orderItemId()).setSpuName(value.spuName()).setSkuPicUrl(value.skuPicUrl())
                 .setSkuProperties(value.skuProperties() == null ? null : JSON.writeValueAsString(value.skuProperties()))
                 .setReplyStatus(false);
     }

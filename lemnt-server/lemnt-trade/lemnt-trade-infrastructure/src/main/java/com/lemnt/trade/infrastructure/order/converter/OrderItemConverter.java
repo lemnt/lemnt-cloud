@@ -15,6 +15,7 @@ public final class OrderItemConverter {
     public static TradeOrderItemDO toDO(Long orderId, TradeOrderItem value) {
         return new TradeOrderItemDO()
                 .setOrderId(orderId)
+                .setCommentStatus(false)
                 .setProductId(value.productId())
                 .setProductCode(value.productCode())
                 .setProductName(value.productName())
@@ -34,7 +35,7 @@ public final class OrderItemConverter {
         return new TradeOrderItem(row.getProductId(), row.getProductCode(), row.getProductName(), row.getUnitPrice(),
                 row.getQuantity(), row.getLineAmount(), row.getPayAmount(), row.getDeliveryPrice(), row.getSpuId(),
                 row.getSpuName(),
-                properties(row.getProperties()), row.getPicUrl());
+                properties(row.getProperties()), row.getPicUrl(), row.getId(), row.getCommentStatus());
     }
 
     /** 区分历史NULL和已知空规格。 */

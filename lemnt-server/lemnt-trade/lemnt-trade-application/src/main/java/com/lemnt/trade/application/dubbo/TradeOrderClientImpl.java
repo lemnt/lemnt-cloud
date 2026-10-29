@@ -26,6 +26,7 @@ public class TradeOrderClientImpl implements TradeOrderClient {
     private final OrderSubmissionService submissions;
     private final OrderPersistenceService orders;
     private final OrderRemoteService remotes;
+    private final com.lemnt.trade.application.order.service.OrderCommentService comments;
 
     @Override
     public OrderDTO create(OrderCreateBo value) {
@@ -137,6 +138,13 @@ public class TradeOrderClientImpl implements TradeOrderClient {
     }
 
     @Override
+    public Long createComment(com.lemnt.trade.client.bo.OrderCommentCreateBo value) {
+        return comments.create(new com.lemnt.trade.application.order.cmd.OrderCommentCreateCmd(value.memberId(),
+                value.orderNo(), value.skuId(), value.orderItemId(), value.score(), value.content(),
+                value.descriptionScores(), value.benefitScores(), value.anonymous(), value.picUrls()));
+    }
+
+    @Override
     public OrderDTO getByOrderNo(String orderNo) {
         return to(orders.findByOrderNo(orderNo));
     }
@@ -157,7 +165,7 @@ public class TradeOrderClientImpl implements TradeOrderClient {
                 item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
                         new OrderItemDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
                                 snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
-                item.picUrl())).toList(), value.createTime(), value.usePoint(), value.givePoint(), toDelivery(value.delivery()));
+                item.picUrl(), item.orderItemId(), item.commentStatus())).toList(), value.createTime(), value.usePoint(), value.givePoint(), toDelivery(value.delivery()), value.commentStatus(), value.finishTime());
     }
 
     private TradeOrderDelivery fromDelivery(

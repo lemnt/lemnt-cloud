@@ -4,7 +4,7 @@
 
 ## 现状与本批目标
 
-现有mall_product_comment仅单评分/正文，缺公开分页和实际调用页面，创建从当前SKU取SPU。补描述/服务评分、匿名、图片、会员昵称头像快照、订单编号及商品快照；原score维持现有字段，采用源floor((descriptionScores+benefitScores)/2)计算，公开页只显示visible=true，按好评>=4、中评=3、差评<3过滤。仅扩展既有表，不新增辅助表。
+现有mall_product_comment仅单评分/正文，缺公开分页和实际调用页面，创建从当前SKU取SPU。补描述/服务评分、匿名、图片、会员昵称头像快照、订单编号及商品快照；原score维持现有字段，采用源floor((descriptionScores+benefitScores)/2)计算，公开页只显示visible=true，按好评>=4、中评=3、差评<3过滤。仅扩展既有表，不新增辅助表；逻辑删除字段沿源通过MyBatis Plus过滤，visible仍独立表示前台显隐，不新增删除接口。
 
 写入会员只取网关上下文、必须本人COMPLETED订单内SKU；订单商品已存快照优先使用，不以当前商品改名或删除覆盖历史。旧订单无快照的字段保留null；不伪造orderItemId。当前交易明细模型使用订单+SKU定位、未向client暴露独立行ID，本批保留这一边界，源订单项ID及订单评价标记联动仍待迁移。会员资料从现有MemberUserClient读取并扩展avatar，复用同一查询，不新建专用会员接口。失败不落评价，重试先比对已保存全部评价内容，不能改写已评商品。
 
@@ -27,3 +27,5 @@ HTTP创建新增descriptionScores/benefitScores、anonymous和picUrls（最多9�
 4. 接口文档、源清单与交付证据→受影响Maven clean verify、UI typecheck/lint/format/test/build、miniapp测试、diff检查。
 
 源虚拟评价创建、订单项ID及评价状态联动、照片上传、本批未完成的源字段不能标迁移完成。真实MySQL/Redis/Dubbo/部署HTTP/浏览器/真机分别标NOT RUN。SQL只生成，不执行真实库升级、不commit/push，不更改用户已有暂存状态。
+
+原型核对补充：已读取源ReplyForm.vue、App add.vue/list.vue；源App批量循环订单项投稿、图片上传、8条上拉分页，本批适配为当前单SKU入口、HTTPS地址填写及20条标准分页。源orderItemId/订单标记及批量页面后续仍待迁移。源后台额外昵称/商品名称/订单ID/创建时间筛选和导出不因本批已有基本管理页就标完成。

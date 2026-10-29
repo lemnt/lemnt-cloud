@@ -13,6 +13,9 @@ public interface TradeOrderItemGateway {
     /** 保存订单的明细集合。 */
     void saveItems(Long orderId, List<TradeOrderItem> items);
 
+    /** 只修改真实所属订单项的评价状态。 */
+    boolean markCommented(Long orderId, Long orderItemId);
+
     /** 读取订单明细。 */
     List<TradeOrderItem> items(Long orderId);
 }

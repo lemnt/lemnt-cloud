@@ -2,7 +2,7 @@ package com.lemnt.mall.application.product.executor;
 
 import com.lemnt.mall.application.product.cmd.CommentVisibleCmd;
 import com.lemnt.mall.domain.product.gateway.ProductCommentGateway;
-import com.lemnt.mall.domain.product.model.ProductCatalogValidation;
+import com.lemnt.common.core.exception.ServiceException;
 
 import org.springframework.stereotype.Component;
 
@@ -16,10 +16,12 @@ public class CommentVisibleCmdExe {
 
     /** 显示状态不影响评价正文和评分。 */
     public boolean execute(CommentVisibleCmd cmd) {
-        if (cmd == null) {
-            throw new IllegalArgumentException("显示设置不能为空");
+        if (cmd == null || cmd.id() == null || cmd.id() <= 0) {
+            throw new ServiceException("评价编号不合法", 400);
         }
-        ProductCatalogValidation.id(cmd.id());
-        return productCommentGateway.visible(cmd.id(), cmd.visible());
+        if (!productCommentGateway.visible(cmd.id(), cmd.visible())) {
+            throw new ServiceException("评价不存在", 404);
+        }
+        return true;
     }
 }

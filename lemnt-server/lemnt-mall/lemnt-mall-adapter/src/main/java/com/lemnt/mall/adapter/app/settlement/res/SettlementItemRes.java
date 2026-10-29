@@ -35,8 +35,28 @@ public record SettlementItemRes(
         @Schema(description = "下单时规格名称和值，历史未记录与空规格区分")
         List<Property> properties,
         @Schema(description = "下单时商品图片")
-        String picUrl
+        String picUrl,
+        @Schema(description = "真实订单明细主键，报价和旧快照未知为空") Long orderItemId,
+        @Schema(description = "订单项是否已评价，旧记录未知为空") Boolean commentStatus
 ) implements Serializable {
+    /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
+    public SettlementItemRes(
+            Long productId,
+            String productCode,
+            String productName,
+            BigDecimal unitPrice,
+            Integer quantity,
+            BigDecimal lineAmount,
+            BigDecimal payAmount,
+            BigDecimal deliveryPrice,
+            Long spuId,
+            String spuName,
+            List<Property> properties,
+            String picUrl
+    ) {
+        this(productId, productCode, productName, unitPrice, quantity, lineAmount, payAmount, deliveryPrice, spuId, spuName, properties, picUrl, null, null);
+    }
+
     public SettlementItemRes {
         properties = properties == null ? null : List.copyOf(properties);
     }

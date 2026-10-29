@@ -44,6 +44,9 @@ public interface TradeOrderGateway {
      */
     List<TradeOrder> findPendingPaymentCreatedBefore(LocalDateTime deadline, int limit);
 
+    /** 调用方已持有订单锁，保存真实评价汇总状态。 */
+    boolean updateCommentState(com.lemnt.trade.domain.order.model.OrderCommentState value);
+
     /** 保存订单主体，明细由应用层编排。 */
     TradeOrder saveHeader(TradeOrder order);
 

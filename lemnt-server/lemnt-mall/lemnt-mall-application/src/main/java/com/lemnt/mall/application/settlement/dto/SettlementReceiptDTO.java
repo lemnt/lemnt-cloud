@@ -16,8 +16,25 @@ public record SettlementReceiptDTO(
         BigDecimal payableAmount,
         Long couponId,
         List<SettlementItemDTO> items,
-        SettlementDeliveryDTO delivery
+        SettlementDeliveryDTO delivery,
+        Boolean commentStatus,
+        java.time.LocalDateTime finishTime
 ) implements Serializable {
+    /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
+    public SettlementReceiptDTO(
+            String orderNo,
+            Long memberId,
+            String status,
+            BigDecimal originalAmount,
+            BigDecimal discountAmount,
+            BigDecimal payableAmount,
+            Long couponId,
+            List<SettlementItemDTO> items,
+            SettlementDeliveryDTO delivery
+    ) {
+        this(orderNo, memberId, status, originalAmount, discountAmount, payableAmount, couponId, items, delivery, null, null);
+    }
+
     /** 历史快照缺少配送字段，读取时保留未配置状态。 */
     public SettlementReceiptDTO(
             String orderNo,

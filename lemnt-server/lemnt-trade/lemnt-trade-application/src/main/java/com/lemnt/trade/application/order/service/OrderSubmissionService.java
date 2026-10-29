@@ -35,9 +35,17 @@ public class OrderSubmissionService {
                 || previous.totalAmount().compareTo(order.totalAmount()) != 0
                 || previous.usePoint() != order.usePoint() || previous.givePoint() != order.givePoint()
                 || !Objects.equals(previous.delivery(), order.delivery())
-                || !previous.items().equals(order.items())
+                || !purchaseItems(previous.items()).equals(purchaseItems(order.items()))
         ) {
             throw new IllegalStateException("订单号已用于不同的订单内容");
         }
+    }
+    /** 数据库主键及评价状态不属于原购买快照，不能影响下单原请求重试。 */
+    private java.util.List<com.lemnt.trade.domain.order.model.TradeOrderItem> purchaseItems(
+            java.util.List<com.lemnt.trade.domain.order.model.TradeOrderItem> values) {
+        return values.stream().map(item -> new com.lemnt.trade.domain.order.model.TradeOrderItem(
+                item.productId(), item.productCode(), item.productName(), item.unitPrice(), item.quantity(),
+                item.lineAmount(), item.payAmount(), item.deliveryPrice(), item.spuId(), item.spuName(),
+                item.properties(), item.picUrl())).toList();
     }
 }

@@ -19,8 +19,28 @@ public record TradeOrderItem(
         Long spuId,
         String spuName,
         List<Property> properties,
-        String picUrl
+        String picUrl,
+        Long orderItemId,
+        Boolean commentStatus
 ) {
+    /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
+    public TradeOrderItem(
+            Long productId,
+            String productCode,
+            String productName,
+            BigDecimal unitPrice,
+            Integer quantity,
+            BigDecimal lineAmount,
+            BigDecimal payAmount,
+            BigDecimal deliveryPrice,
+            Long spuId,
+            String spuName,
+            List<Property> properties,
+            String picUrl
+    ) {
+        this(productId, productCode, productName, unitPrice, quantity, lineAmount, payAmount, deliveryPrice, spuId, spuName, properties, picUrl, null, null);
+    }
+
     /** 历史未保存商品元数据，保持为空，不查询现值补历史。 */
     public TradeOrderItem(
             Long productId,

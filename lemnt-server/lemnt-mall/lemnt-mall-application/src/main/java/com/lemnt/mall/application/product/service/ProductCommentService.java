@@ -25,46 +25,82 @@ public class ProductCommentService {
     private final OrderGateway orderGateway;
     private final MemberLookupGateway memberLookupGateway;
 
-    /** 原内容重试先核验保存结果；数据库唯一约束处理并发相同提交。 */
+    /** 兼容HTTP入口委托交易持锁核验，只有两侧状态确认后才返回成功。 */
     public ProductComment create(CommentCreateCmd cmd) {
-        require(cmd != null, "评价不能为空", 400);
-        require(cmd.memberId() != null && cmd.memberId() > 0, "请先登录", 401);
-        require(cmd.skuId() != null && cmd.skuId() > 0, "SKU编号不合法", 400);
-        require(cmd.orderNo() != null && !cmd.orderNo().isBlank() && cmd.orderNo().length() <= 40, "订单编号不合法", 400);
+        validateIdentity(cmd);
         var input = normalize(cmd);
-        String orderNo = cmd.orderNo().trim();
-        var existing = productCommentGateway.findByOrderSku(orderNo, cmd.skuId());
+        Long id = orderGateway.createComment(new com.lemnt.mall.domain.product.model.CommentOrderRequest(
+                cmd.memberId(), cmd.orderNo().trim(), cmd.skuId(), cmd.orderItemId(), cmd.score(), input.content(),
+                cmd.descriptionScores(), cmd.benefitScores(), input.anonymous(), input.pictures()));
+        require(id != null && id > 0, "评价结果未确认", 503);
+        var saved = productCommentGateway.find(id);
+        require(saved != null && cmd.memberId().equals(saved.memberId()) && cmd.skuId().equals(saved.skuId())
+                && cmd.orderNo().trim().equals(saved.orderNo())
+                && (cmd.orderItemId() == null || cmd.orderItemId().equals(saved.orderItemId())), "评价结果未确认", 503);
+        return saved;
+    }
+
+    /** 私有RPC只接收交易已验证的订单事实，不回查持锁中的交易订单。 */
+    public ProductComment saveVerified(com.lemnt.mall.application.product.cmd.CommentSaveCmd purchase) {
+        require(purchase != null && purchase.orderId() != null && purchase.orderId() > 0
+                && purchase.orderItemId() != null && purchase.orderItemId() > 0, "真实订单项信息缺失", 400);
+        var cmd = new CommentCreateCmd(purchase.memberId(), purchase.orderNo(), purchase.skuId(), purchase.score(),
+                purchase.content(), purchase.descriptionScores(), purchase.benefitScores(), purchase.anonymous(), purchase.picUrls(), purchase.orderItemId());
+        validateIdentity(cmd);
+        var input = normalize(cmd);
+        var existing = productCommentGateway.findByOrderItem(purchase.orderItemId());
         if (existing != null) {
+            require(purchase.orderId().equals(existing.orderId()), "评价订单项归属不一致", 409);
             return requireSame(existing, cmd, input);
         }
-        var order = orderGateway.findByOrderNo(orderNo);
-        require(order != null && cmd.memberId().equals(order.memberId()) && "COMPLETED".equals(order.status()),
-                "只能评价本人已完成订单内的商品", 400);
-        var line = order.items().stream().filter(item -> cmd.skuId().equals(item.productId())).findFirst().orElse(null);
-        require(line != null, "只能评价本人已完成订单内的商品", 400);
-        var sku = line.spuId() == null ? productSkuGateway.catalogSku(cmd.skuId()) : null;
-        Long spuId = line.spuId() != null ? line.spuId() : sku == null ? null : sku.spuId();
+        var legacy = productCommentGateway.findByOrderSku(cmd.orderNo().trim(), cmd.skuId());
+        if (legacy != null) {
+            require(purchase.uniqueSku(), "历史评价无法唯一定位订单项", 409);
+            requireSame(legacy, cmd, input);
+            try {
+                require(productCommentGateway.bindOrderItem(new com.lemnt.mall.domain.product.model.CommentOrderLink(
+                        legacy.id(), purchase.orderId(), purchase.orderItemId())), "评价订单项绑定冲突", 409);
+                return productCommentGateway.find(legacy.id());
+            } catch (DuplicateKeyException conflict) {
+                return winner(purchase.orderItemId(), cmd, input);
+            }
+        }
+        require(purchase.allowCreate(), "订单项已经评价，不能重新投稿", 409);
+        var sku = purchase.spuId() == null ? productSkuGateway.catalogSku(cmd.skuId()) : null;
+        Long spuId = purchase.spuId() != null ? purchase.spuId() : sku == null ? null : sku.spuId();
         require(spuId != null, "订单商品标识不存在", 400);
         var member = memberLookupGateway.findById(cmd.memberId());
         require(member != null && cmd.memberId().equals(member.id()), "会员资料不存在", 404);
-        var properties = line.properties() == null ? null : line.properties().stream().map(property ->
+        var properties = purchase.properties() == null ? null : purchase.properties().stream().map(property ->
                 new ProductComment.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList();
         try {
-            return productCommentGateway.save(new ProductComment(null, spuId, cmd.skuId(), orderNo, cmd.memberId(), input.score(),
+            return productCommentGateway.save(new ProductComment(null, spuId, cmd.skuId(), cmd.orderNo().trim(), cmd.memberId(), input.score(),
                     input.content(), true, null, null, null, null,
                     input.description(), input.benefit(), input.pictures(), input.anonymous(), member.nickname(), member.avatar(),
-                    order.id(), line.spuName(), line.picUrl(), properties, false));
-        } catch (DuplicateKeyException exception) {
-            var winner = productCommentGateway.findByOrderSku(orderNo, cmd.skuId());
-            if (winner == null) {
-                throw exception;
-            }
-            return requireSame(winner, cmd, input);
+                    purchase.orderId(), purchase.spuName(), purchase.skuPicUrl(), properties, false, purchase.orderItemId()));
+        } catch (DuplicateKeyException conflict) {
+            return winner(purchase.orderItemId(), cmd, input);
         }
     }
 
+    private ProductComment winner(Long orderItemId, CommentCreateCmd cmd, Input input) {
+        var saved = productCommentGateway.findByOrderItem(orderItemId);
+        require(saved != null, "该订单商品已评价，不能重复评价", 409);
+        return requireSame(saved, cmd, input);
+    }
+
+    private void validateIdentity(CommentCreateCmd cmd) {
+        require(cmd != null, "评价不能为空", 400);
+        require(cmd.memberId() != null && cmd.memberId() > 0, "请先登录", 401);
+        require(cmd.skuId() != null && cmd.skuId() > 0, "SKU编号不合法", 400);
+        require(cmd.orderNo() != null && !cmd.orderNo().isBlank() && cmd.orderNo().length() <= 40
+                && (cmd.orderItemId() == null || cmd.orderItemId() > 0), "订单或订单项编号不合法", 400);
+    }
+
     private ProductComment requireSame(ProductComment value, CommentCreateCmd cmd, Input input) {
-        require(cmd.memberId().equals(value.memberId()), "只能评价本人已完成订单内的商品", 400);
+        require(cmd.memberId().equals(value.memberId()) && cmd.skuId().equals(value.skuId())
+                && cmd.orderNo().trim().equals(value.orderNo())
+                && (value.orderItemId() == null || cmd.orderItemId() == null || cmd.orderItemId().equals(value.orderItemId())), "只能评价本人已完成订单内的商品", 400);
         boolean sameDimensions = value.descriptionScores() == null && value.benefitScores() == null
                 ? cmd.descriptionScores() == null && cmd.benefitScores() == null
                 : Objects.equals(value.descriptionScores(), input.description()) && Objects.equals(value.benefitScores(), input.benefit());

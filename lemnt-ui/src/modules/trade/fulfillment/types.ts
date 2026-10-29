@@ -43,6 +43,8 @@ export interface OrderDetail extends Pick<
   'orderNo' | 'memberId' | 'totalAmount' | 'status' | 'inventoryConfirmed' | 'activeRefund'
 > {
   items: CheckoutItem[];
+  commentStatus?: boolean | null;
+  finishTime?: string | null;
   shipment: Shipment | null;
 }
 export type RefundStatus =

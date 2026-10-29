@@ -1,5 +1,15 @@
 package com.lemnt.mall.adapter.app.product;
 
+import com.lemnt.mall.adapter.app.product.req.CommentPageReq;
+
+import com.lemnt.mall.adapter.app.product.res.CommentPageRes;
+
+import com.lemnt.mall.application.product.executor.CommentPublicPageQueryExe;
+
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import org.springframework.web.bind.annotation.GetMapping;
+
 import com.lemnt.common.core.domain.R;
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.mall.adapter.app.product.converter.CommentReqConverter;
@@ -26,13 +36,13 @@ import jakarta.validation.Valid;
 @RequiredArgsConstructor
 public class AppCommentController {
     private final CommentCreateCmdExe commentCreateCmdExe;
-    private final com.lemnt.mall.application.product.executor.CommentPublicPageQueryExe commentPublicPageQueryExe;
+    private final CommentPublicPageQueryExe commentPublicPageQueryExe;
 
     /** 公开查询当前商品可见评价，不接受其他会员或后台过滤条件。 */
-    @org.springframework.web.bind.annotation.GetMapping
+    @GetMapping
     @Operation(summary = "商品公开评价分页")
-    public R<com.lemnt.mall.adapter.app.product.res.CommentPageRes> page(
-            @Valid @org.springframework.web.bind.annotation.ModelAttribute com.lemnt.mall.adapter.app.product.req.CommentPageReq req) {
+    public R<CommentPageRes> page(
+            @Valid @ModelAttribute CommentPageReq req) {
         var result = commentPublicPageQueryExe.execute(CommentReqConverter.page(req));
         return R.page(result.getRecords().stream().map(CommentResConverter::page).toList(), result.getTotal());
     }

@@ -92,6 +92,8 @@ function item(v: unknown): CheckoutItem {
   const r = object(v);
   return {
     ...productSnapshot(r),
+    ...(r.orderItemId == null ? {} : { orderItemId: positiveId(r.orderItemId) }),
+    ...(r.commentStatus == null ? {} : { commentStatus: bool(r.commentStatus) }),
     productId: positiveId(r.productId),
     productCode: text(r.productCode),
     productName: text(r.productName),
@@ -106,6 +108,8 @@ export function decodeDetail(v: unknown): OrderDetail {
   return {
     ...common(r),
     items: r.items.map(item),
+    ...(r.commentStatus == null ? {} : { commentStatus: bool(r.commentStatus) }),
+    ...(r.finishTime == null ? {} : { finishTime: text(r.finishTime) }),
     shipment: r.shipment == null ? null : decodeShipment(r.shipment),
   };
 }

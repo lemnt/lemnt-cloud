@@ -16,5 +16,21 @@ public record OrderDetailDTO(
         boolean inventoryConfirmed,
         boolean activeRefund,
         List<OrderItemDTO> items,
-        ShipmentDTO shipment
-) implements java.io.Serializable {}
+        ShipmentDTO shipment,
+        Boolean commentStatus,
+        java.time.LocalDateTime finishTime
+) implements java.io.Serializable {
+    /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
+    public OrderDetailDTO(
+            String orderNo,
+            Long memberId,
+            BigDecimal totalAmount,
+            String status,
+            boolean inventoryConfirmed,
+            boolean activeRefund,
+            List<OrderItemDTO> items,
+            ShipmentDTO shipment
+    ) {
+        this(orderNo, memberId, totalAmount, status, inventoryConfirmed, activeRefund, items, shipment, null, null);
+    }
+}

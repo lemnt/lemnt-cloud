@@ -17,7 +17,7 @@ public final class CommentResConverter {
                 value.anonymous(), value.userNickname(), value.userAvatar(), value.orderId(), value.spuName(), value.skuPicUrl(),
                 value.skuProperties() == null ? null : value.skuProperties().stream().map(property ->
                         new CommentPageRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
-                value.replyStatus());
+                value.replyStatus(), value.orderItemId());
     }
 
     /** 转换详情接口响应。 */
@@ -27,7 +27,7 @@ public final class CommentResConverter {
                 value.anonymous(), value.userNickname(), value.userAvatar(), value.orderId(), value.spuName(), value.skuPicUrl(),
                 value.skuProperties() == null ? null : value.skuProperties().stream().map(property ->
                         new CommentDetailRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
-                value.replyStatus());
+                value.replyStatus(), value.orderItemId());
     }
 
     /** 转换回复接口响应。 */
@@ -37,6 +37,6 @@ public final class CommentResConverter {
                 value.anonymous(), value.userNickname(), value.userAvatar(), value.orderId(), value.spuName(), value.skuPicUrl(),
                 value.skuProperties() == null ? null : value.skuProperties().stream().map(property ->
                         new CommentReplyRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
-                value.replyStatus());
+                value.replyStatus(), value.orderItemId());
     }
 }

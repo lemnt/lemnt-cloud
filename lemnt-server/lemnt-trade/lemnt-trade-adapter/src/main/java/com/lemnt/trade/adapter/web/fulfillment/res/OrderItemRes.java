@@ -31,8 +31,26 @@ public record OrderItemRes(
         @Schema(description = "下单时规格名称和值，历史未记录与空规格区分")
         List<Property> properties,
         @Schema(description = "下单时商品图片")
-        String picUrl
+        String picUrl,
+        @Schema(description = "真实订单项主键") Long orderItemId,
+        @Schema(description = "评价状态，历史未知为空") Boolean commentStatus
 ) implements Serializable {
+    /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
+    public OrderItemRes(
+            Long productId,
+            String productCode,
+            String productName,
+            BigDecimal unitPrice,
+            Integer quantity,
+            BigDecimal lineAmount,
+            Long spuId,
+            String spuName,
+            List<Property> properties,
+            String picUrl
+    ) {
+        this(productId, productCode, productName, unitPrice, quantity, lineAmount, spuId, spuName, properties, picUrl, null, null);
+    }
+
     public OrderItemRes {
         properties = properties == null ? null : List.copyOf(properties);
     }
