@@ -24,6 +24,9 @@ public interface ProductCommentGateway {
     /** 更新是否展示。 */
     boolean visible(Long id, boolean visible);
 
+    /** 公开分页固定可见，仅按商品及评分组查询。 */
+    PageResult<ProductComment> pageVisible(com.lemnt.mall.domain.product.model.PublicCommentFilter filter);
+
     /** 后台分页。 */
     PageResult<ProductComment> page(CommentFilter filter);
 }

@@ -19,6 +19,6 @@ public class MemberLookupGatewayImpl implements MemberLookupGateway {
     @Override
     public MemberSnapshot findById(Long memberId) {
         MemberUserDTO member = memberUserClient.getByMemberId(memberId);
-        return member == null ? null : new MemberSnapshot(member.id(), member.status(), member.discountPercent(), member.points());
+        return member == null ? null : new MemberSnapshot(member.id(), member.status(), member.discountPercent(), member.points(), member.nickname(), member.avatar());
     }
 }

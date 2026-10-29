@@ -3543,37 +3543,37 @@
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/article/AppArticleCategoryController.java",
       "sha256": "eaf6a0bd264f94757b25c55a9c9cfdc42483c92b8ffd80dc86aa55dbc496e253",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/article/AppArticleController.java",
       "sha256": "419dc5c67f0cf332f419bde27e6ecf4cc3348ee47307ba64389435dd9a6c6f4d",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/article/vo/category/AppArticleCategoryRespVO.java",
       "sha256": "a6f54f3fd8f61d0268c5feee8cedffe224e3efdec5b2752af6dab065aa30f1db",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/article/vo/article/AppArticlePageReqVO.java",
       "sha256": "492d632f693ad5697a57c72871e2d9febdcfd2d4cb1c17a846b504f59eb7437d",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/article/vo/article/AppArticleRespVO.java",
       "sha256": "563239be19837b48549a4dc159880a594e76099f69ddbd613b0d6503d7bd8ddf",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/banner/AppBannerController.java",
@@ -4202,93 +4202,93 @@
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/ArticleController.java",
       "sha256": "cd3b996c0e582ce1a0fb38e1e5bf73703aaf67a2686d4be1e2952fbb8b8d9337",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/ArticleCategoryController.java",
       "sha256": "7f4a071efb0ec62253ea32f6f6fc5fce776723d22ec843ee11570da1f870138a",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/category/ArticleCategoryUpdateReqVO.java",
       "sha256": "8270af59155e358c5801e9254aa95ec3613913f145203359c05c62b29c1222c0",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/category/ArticleCategoryBaseVO.java",
       "sha256": "fd3f0c2201a14c8b7e218c6f3fb65f5fffc6144d671b18199bd1186b353868b7",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/category/ArticleCategoryPageReqVO.java",
       "sha256": "fb0d4a494eaba912fd30ba1536ab0d9805cc1fb47a7b795547f9b6053d2961e8",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/category/ArticleCategorySimpleRespVO.java",
       "sha256": "d5f0b749317284093cf9d682ab42b3ec8fb45de6a244d7605af9e091c0320fd6",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/category/ArticleCategoryCreateReqVO.java",
       "sha256": "2e46d4c66a60dc463e49072178ce3fca96b0877c60c1dc28c22003ed91dd097e",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/category/ArticleCategoryRespVO.java",
       "sha256": "5f9aae2e01522db3d4fe3c3159333a024a85a74f57fff0e31997e62b28c9d4c9",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/article/ArticleRespVO.java",
       "sha256": "68108eabae66600d59ade2565e80089d7a0dfa3a180554c6895a7c5d673b6fb2",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/article/ArticlePageReqVO.java",
       "sha256": "b1d9ae5bcd2fdfb24d89b46bc8d01f4a2e475e2ea68400032497599cdc7b6703",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/article/ArticleBaseVO.java",
       "sha256": "d8bbe754bc28472e42e4a7d0445259cf7cc595a26656021ff4edf0370b12a15b",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/article/ArticleCreateReqVO.java",
       "sha256": "a49ae5f68abec66b28aa423c5c44a571a8eb76f7af332b748e3da7e987f47ff2",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/vo/article/ArticleUpdateReqVO.java",
       "sha256": "98cc26bcab336797069ba4ed2dd35f8e73450ce0c94e3ddeaabe5859fdc6ab21",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/banner/BannerController.java",
@@ -4613,30 +4613,30 @@
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/service/article/ArticleCategoryServiceImpl.java",
       "sha256": "77dbb929a9136d7d12a496586e4d7e97271e72e60ccb4816dc20d5c6955c6d8d",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/service/article/ArticleService.java",
       "sha256": "6a46e4344a78d59b3522d73685905639855c03b06d873aec444a37a4d221e03d",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/service/article/ArticleCategoryService.java",
       "sha256": "bfc2f893bdc006144db07dd13794c53a0e88c869c3cca8affb096e017003ca6c",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/service/article/ArticleServiceImpl.java",
       "sha256": "dba6fb0b84b98ae82cb1e4b91478d49670473eb1b9b0313a7fb345fe9f82e253",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/service/banner/BannerService.java",
@@ -4773,16 +4773,16 @@
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/mysql/article/ArticleCategoryMapper.java",
       "sha256": "9234c54a750561bda9579e47ef5098102014ee325d4b959458b1f5b94d192be3",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/mysql/article/ArticleMapper.java",
       "sha256": "08e343b8fb962bf69a7e7f76448d7e516aaac40f6cb8f917556b9c7ebc3df84e",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/mysql/banner/BannerMapper.java",
@@ -4917,16 +4917,16 @@
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/dataobject/article/ArticleDO.java",
       "sha256": "67c435de4ba4a0a0883bca30d61e1c57e430b974a3dd35660b20686a5e7dd722",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/dataobject/article/ArticleCategoryDO.java",
       "sha256": "3e0bca42e73e690a6e3fcbb0d2b939f9cffe71e3d99bd788fa3e3d51120a1425",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/dal/dataobject/banner/BannerDO.java",
@@ -5003,16 +5003,16 @@
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/convert/article/ArticleConvert.java",
       "sha256": "517572d36994bfeec10f5f9af17a7cedb0a9dc33d2625154c186053d03829a9e",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/convert/article/ArticleCategoryConvert.java",
       "sha256": "d78b7bb7064d280c4ea5c4b32148d765eca334122dea07a92db672ba0347a54d",
-      "state": "in_progress",
-      "target": "lemnt-server/lemnt-mall",
-      "note": "文章与分类两表及分层业务迁移；后台维护、App查询/标题详情/原子浏览增量，保留源文章公开状态规则；未部署验收，字段与适配见docs/promotion-article-api.md"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/convert/banner/BannerConvert.java",

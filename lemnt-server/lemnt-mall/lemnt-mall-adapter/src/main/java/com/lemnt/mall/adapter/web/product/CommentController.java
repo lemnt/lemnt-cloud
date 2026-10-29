@@ -1,6 +1,7 @@
 package com.lemnt.mall.adapter.web.product;
 
 import com.lemnt.common.core.domain.R;
+import com.lemnt.mall.adapter.web.product.res.CommentVisibleRes;
 import com.lemnt.common.security.annotation.RequiresPermissions;
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.mall.adapter.web.product.converter.CommentReqConverter;
@@ -72,7 +73,7 @@ public class CommentController {
     @PutMapping("/{id}/visible")
     @Operation(summary = "显示或隐藏商品评价")
     @RequiresPermissions("mall:comment:edit")
-    public R<Boolean> visible(@PathVariable Long id, @Valid @RequestBody CommentVisibleReq req) {
-        return R.ok(commentVisibleCmdExe.execute(CommentReqConverter.visible(id, req)));
+    public R<CommentVisibleRes> visible(@PathVariable Long id, @Valid @RequestBody CommentVisibleReq req) {
+        return R.ok(new CommentVisibleRes(commentVisibleCmdExe.execute(CommentReqConverter.visible(id, req))));
     }
 }

@@ -48,7 +48,8 @@ public class ProductCommentGatewayImpl implements ProductCommentGateway {
                 .eq(ProductCommentDO::getId, value.id())
                 .set(ProductCommentDO::getReplyContent, value.replyContent())
                 .set(ProductCommentDO::getReplyUserId, value.replyUserId())
-                .set(ProductCommentDO::getReplyTime, value.replyTime())) == 1;
+                .set(ProductCommentDO::getReplyTime, value.replyTime())
+                .set(ProductCommentDO::getReplyStatus, true)) == 1;
     }
 
     @Override
@@ -70,5 +71,16 @@ public class ProductCommentGatewayImpl implements ProductCommentGateway {
                 .orderByDesc(ProductCommentDO::getId));
         return PageResult.of(page.getRecords().stream().map(ProductCommentConverter::toModel).toList(),
             page.getTotal());
+    }
+    @Override
+    public PageResult<ProductComment> pageVisible(com.lemnt.mall.domain.product.model.PublicCommentFilter filter) {
+        var query = Wrappers.lambdaQuery(ProductCommentDO.class)
+                .eq(ProductCommentDO::getSpuId, filter.spuId()).eq(ProductCommentDO::getVisible, true)
+                .ge(filter.type() == 1, ProductCommentDO::getScore, 4)
+                .eq(filter.type() == 2, ProductCommentDO::getScore, 3)
+                .lt(filter.type() == 3, ProductCommentDO::getScore, 3)
+                .orderByDesc(ProductCommentDO::getCreateTime).orderByDesc(ProductCommentDO::getId);
+        var result = productCommentMapper.selectPage(new Page<>(filter.pageNum(), filter.pageSize()), query);
+        return PageResult.of(result.getRecords().stream().map(ProductCommentConverter::toModel).toList(), result.getTotal());
     }
 }

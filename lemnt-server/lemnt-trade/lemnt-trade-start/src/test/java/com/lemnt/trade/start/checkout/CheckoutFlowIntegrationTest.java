@@ -324,6 +324,7 @@ class CheckoutFlowIntegrationTest {
         tradeComponents.get(com.lemnt.trade.domain.delivery.gateway.DeliveryExpressGateway.class).insert(
                 new com.lemnt.trade.domain.delivery.model.DeliveryExpress(null, "SF", "顺丰", null, 0, 0));
         mallComponents = new TableTestComponents(products, mallSource);
+        mallComponents.register(com.lemnt.mall.domain.member.gateway.MemberLookupGateway.class, id -> new MemberSnapshot(id, 1));
         mallComponents.register(com.lemnt.mall.domain.member.gateway.MemberTradeGateway.class, new com.lemnt.mall.domain.member.gateway.MemberTradeGateway() {
             public com.lemnt.mall.domain.member.model.MemberPointConfig config() {
                 return new com.lemnt.mall.domain.member.model.MemberPointConfig(deliveryPointGift, 1, 0, 2);
@@ -2332,19 +2333,19 @@ class CheckoutFlowIntegrationTest {
         var order = paidOrder(null);
         var comments = mallComponents.get(ProductCommentService.class);
         var cmd = new CommentCreateCmd(1L, order.orderNo(), sku, 5, "真实评价");
-        assertThrows(IllegalArgumentException.class, () -> comments.create(cmd));
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class, () -> comments.create(cmd));
         fulfillmentService.ship(shipment(order.orderNo()));
         fulfillmentService.receive(order.orderNo());
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
                 () -> comments.create(new CommentCreateCmd(2L, order.orderNo(), sku, 5, "他人订单")));
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
                 () -> comments.create(new CommentCreateCmd(1L, order.orderNo(), sku + 999, 5, "错误商品")));
         var saved = comments.create(cmd);
         assertEquals(1L, saved.memberId());
         assertEquals(saved, comments.create(cmd));
-        assertThrows(IllegalStateException.class,
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
                 () -> comments.create(new CommentCreateCmd(1L, order.orderNo(), sku, 1, "更改原评价")));
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
                 () -> comments.create(new CommentCreateCmd(1L, order.orderNo(), sku, 6, "错误评分")));
     }
 

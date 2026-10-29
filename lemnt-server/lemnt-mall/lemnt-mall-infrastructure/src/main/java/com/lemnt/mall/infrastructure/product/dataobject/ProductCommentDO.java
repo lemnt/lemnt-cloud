@@ -30,4 +30,15 @@ public class ProductCommentDO extends BaseDO {
     private String replyContent;
     private Long replyUserId;
     private LocalDateTime replyTime;
+    private Integer descriptionScores;
+    private Integer benefitScores;
+    private String picUrls;
+    private Boolean anonymous;
+    private String userNickname;
+    private String userAvatar;
+    private Long orderId;
+    private String spuName;
+    private String skuPicUrl;
+    private String skuProperties;
+    private Boolean replyStatus;
 }

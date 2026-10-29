@@ -1,6 +1,6 @@
 # 商城完整代码迁移设计与执行清单
 
-2026-10-28 v3，责任 code-software-engineer。用户最新要求“迁移完整代码”，取代此前只完成单批次就结束的范围。参考本地yudao-cloud mall/member/pay完整源码；源文件SHA见evidence/full-migration-manifest.json。参考技能development-design.md/api-documentation.md/java.md及项目AGENTS.md，沿用已确认system风格、六层CQRS、独立Req/Res、逐表Gateway/Mapper/DO、MyBatisPlus/Lambda/XML/resultMap。
+2026-10-29 v4（范围调整，原v3实现记录保留），责任 code-software-engineer。用户最新要求“迁移完整代码”，取代此前只完成单批次就结束的范围。参考本地yudao-cloud mall/member/pay完整源码；源文件SHA见evidence/full-migration-manifest.json。参考技能development-design.md/api-documentation.md/java.md及项目AGENTS.md，沿用已确认system风格、六层CQRS、独立Req/Res、逐表Gateway/Mapper/DO、MyBatisPlus/Lambda/XML/resultMap。
 
 完成标准：对应业务表/字段、状态机、事务/幂等、接口、调用方、后台/小程序页面或任务消费者和相关验证同时交付；不以复制源文件、建空表、生成CRUD或构建通过代替完整迁移。真实渠道SDK按已确认要求后置，演示表及已明确去掉的会员短信微信不纳入；不运行真实数据库迁移、不commit/push。用户已提供完整后台源码 `/Users/wangxx/demo/yudao-ui-admin-vue3/`，以其页面、表单、操作、权限及 API 为后台迁移对照，保留当前 React 技术栈；源文件 SHA 和逐项状态见 `evidence/full-frontend-migration-manifest.json`。App 端参考已由用户补充为 `/Users/wangxx/demo/yudao-mall-uniapp/`（uni-app，包含页面、接口和共享组件）；以其商品、购物车、结算、支付、售后、会员及营销交互核对当前客户端迁移，源文件 SHA 和状态见 `evidence/full-app-migration-manifest.json`。参考项目支持多端不代表当前项目已通过 iOS/Android/H5/小程序运行验证；各端分别记录。已明确移除的短信、微信认证不因参考源码存在而恢复，真实渠道 SDK 仍后置。
 
@@ -17,7 +17,7 @@
 |F07|秒杀、拼团、砍价、积分商城及订单处理器/任务|mall promotion子域、trade订单RPC及页面|F01/F02/F03|活动库存/限购、参团到期、助力、积分回退及重试|
 |F08|分销关系、佣金、冻结解冻、提现及退款回退|mall promotion.brokerage、trade回调|F02/F05|绑定模式、佣金金额、重复回调、冻结和提现状态|
 |F09|钱包、账户流水、充值/套餐、转账|trade payment.wallet/payment.transfer及页面|F05|余额不可负、并发幂等、充值退款和冻结转账|
-|F10|文章/分类、轮播、装修模板/页面、客服消息会话|mall promotion各子域及app/web/UI|F03/F04|发布/启停、模板启用、消息归属及未读和推送|
+|F10|轮播、装修模板/页面、客服消息会话|mall promotion各子域及app/web/UI|F03/F04|发布/启停、模板启用、消息归属及未读和推送|
 |F11|商品/交易统计任务与页面|mall product统计、trade统计|F02/F03/F08/F09|原事实口径、按天重算幂等、退款与赠送不重复|
 |F12|全面接口/表/字段/任务/页面对照、淘汰兼容残留、发布脚本及回归|全模块、UI、miniapp、docs|F01-F11|逐项标记PASS/未验证，闭环后再做lemnt定制|
 
@@ -34,3 +34,7 @@ F01进行中：规则快照、限领/无限量、DATE/TERM、商品范围计价�
 2026-10-28 后续F02批次已将售后迁为标准表/数值主键并接入日志、本人取消与后台处理；当前46张初始化表，仍缺36张业务表。完整源字段和App交互尚未完成，见32-aftersale-log-delivery.md。
 
 2026-10-29 F03批次：收藏、浏览足迹两表及独立各层代码、后台只读查询和小程序操作已接入。收藏按源报重复冲突，足迹重访恢复、上限100、批量隐藏/清空；复用基础锁及事务，详情登录后受保护记录。SKU辅助规格表已合并后当前47张初始化表，仍有34张参考业务表无对应表，另2演示不纳入。后端282、React172、小程序93项测试通过，非真实数据库或端到端验收。具体差异与证据见44-product-interaction-delivery.md。
+
+## 2026-10-29 用户范围调整
+
+用户明确“不需要迁移文章相关代码”。文章及文章分类不再迁移；本轮已撤回对应后端各层、两张SQL表、菜单权限、网关公开路由、后台/小程序页面及接口文档。源清单标 excluded_by_user，不将其算作已迁移或继续补齐的缺口。保留已交付的商品收藏和浏览足迹。当前初始化仍47张表，参考未对应业务表34张，其中文章相关2张明确排除；当前范围尚需迁移32张业务表，另2演示表仍排除。详见45-article-scope-adjustment.md。

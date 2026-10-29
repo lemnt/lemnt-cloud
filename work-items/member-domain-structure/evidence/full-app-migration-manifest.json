@@ -510,9 +510,9 @@
     {
       "source": "pages/public/richtext.vue",
       "sha256": "3ed418af94b95cf8009bfaf07e9804da6831358687167ee6c1a35e5bc56adc4c",
-      "state": "in_progress",
-      "target": "lemnt-miniapp/pages/article",
-      "note": "原生文章详情id/title、公开传输及独立浏览计数；另提供分类分页入口。非uni-app逐像素复刻，未真机验收"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "pages/public/setting.vue",
@@ -705,9 +705,9 @@
     {
       "source": "sheep/api/promotion/article.js",
       "sha256": "8ff2dd27f76c1580ee85d90299d9af858d1bb69d036627cf0aba5b6a96aabc4d",
-      "state": "in_progress",
-      "target": "lemnt-miniapp/services/articles.js",
-      "note": "原生文章详情id/title、公开传输及独立浏览计数；另提供分类分页入口。非uni-app逐像素复刻，未真机验收"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "sheep/api/promotion/combination.js",

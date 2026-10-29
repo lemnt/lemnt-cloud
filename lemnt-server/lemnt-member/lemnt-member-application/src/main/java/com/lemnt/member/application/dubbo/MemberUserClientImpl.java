@@ -32,7 +32,7 @@ public class MemberUserClientImpl implements MemberUserClient {
         }
         var level = member.levelId() == null ? null : memberLevelGateway.level(member.levelId());
         int percent = level == null || !Integer.valueOf(1).equals(level.status()) ? 100 : level.discountPercent();
-        return new MemberUserDTO(member.id(), member.nickname(), member.status(), percent, member.points());
+        return new MemberUserDTO(member.id(), member.nickname(), member.status(), percent, member.points(), member.avatar());
     }
 
     /** 锁定会员行，在同一事务内读取会员资料和密码。 */

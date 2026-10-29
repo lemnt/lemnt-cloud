@@ -2,10 +2,7 @@ import { lazy, type ComponentType } from 'react';
 
 /** 后端 component 仅作为注册键使用，不执行任意路径导入。 */
 export const pages: Record<string, ComponentType> = {
-  'mall/article/index': lazy(() => import('../modules/mall/promotion/article/pages/ArticlePage')),
-  'mall/article-category/index': lazy(
-    () => import('../modules/mall/promotion/article/pages/ArticleCategoryPage'),
-  ),
+  'mall/comment/index': lazy(() => import('../modules/mall/catalog/pages/CommentPage')),
   'member/user/index': lazy(() => import('../modules/member/account/pages/MemberUserPage')),
   'member/level/index': lazy(() =>
     import('../modules/member/account/pages/MemberMetadataPage').then((m) => ({

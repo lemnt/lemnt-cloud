@@ -9,9 +9,7 @@
     "pages/product/index",
     "pages/coupons/index",
     "pages/favorites/index",
-    "pages/browse-history/index",
-    "pages/articles/index",
-    "pages/article/index"
+    "pages/browse-history/index"
   ],
   "window": {
     "navigationBarTitleText": "lemnt 商城",

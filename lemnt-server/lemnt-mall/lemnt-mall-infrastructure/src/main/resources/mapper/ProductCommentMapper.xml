@@ -14,6 +14,17 @@
         <result property="replyContent" column="reply_content"/>
         <result property="replyUserId" column="reply_user_id"/>
         <result property="replyTime" column="reply_time"/>
+        <result property="descriptionScores" column="description_scores"/>
+        <result property="benefitScores" column="benefit_scores"/>
+        <result property="picUrls" column="pic_urls"/>
+        <result property="anonymous" column="anonymous"/>
+        <result property="userNickname" column="user_nickname"/>
+        <result property="userAvatar" column="user_avatar"/>
+        <result property="orderId" column="order_id"/>
+        <result property="spuName" column="spu_name"/>
+        <result property="skuPicUrl" column="sku_pic_url"/>
+        <result property="skuProperties" column="sku_properties"/>
+        <result property="replyStatus" column="reply_status"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>
         <result property="updateBy" column="update_by"/>

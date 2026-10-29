@@ -44,22 +44,6 @@ class ControllerMappingTest {
             }
         });
         var expected = new TreeSet<>(Arrays.asList("""
-                GET /mall/promotion/articles mall:article:list
-                POST /mall/promotion/articles mall:article:create
-                GET /mall/promotion/articles/{id:[1-9][0-9]*} mall:article:query
-                PUT /mall/promotion/articles/{id:[1-9][0-9]*} mall:article:update
-                DELETE /mall/promotion/articles/{id:[1-9][0-9]*} mall:article:delete
-                GET /mall/promotion/article-categories mall:article-category:list
-                POST /mall/promotion/article-categories mall:article-category:create
-                GET /mall/promotion/article-categories/{id:[1-9][0-9]*} mall:article-category:query
-                PUT /mall/promotion/article-categories/{id:[1-9][0-9]*} mall:article-category:update
-                DELETE /mall/promotion/article-categories/{id:[1-9][0-9]*} mall:article-category:delete
-                GET /mall/promotion/article-categories/enabled mall:article-category:list
-                GET /mall/app/articles
-                GET /mall/app/articles/detail
-                GET /mall/app/articles/recommended
-                PUT /mall/app/articles/{id:[1-9][0-9]*}/browse-count
-                GET /mall/app/article-categories
                 GET /mall/promotion/reward-activities mall:promotion:list
                 GET /mall/promotion/reward-activities/{id} mall:promotion:query
                 POST /mall/promotion/reward-activities mall:promotion:create
@@ -124,6 +108,7 @@ class ControllerMappingTest {
                 POST /mall/spec-values mall:spec-value:add
                 POST /mall/spus/{id}/recycle mall:spu:edit
                 POST /mall/spus/{id}/restore mall:spu:edit
+                GET /mall/app/comments
                 POST /mall/app/comments
                 PUT /mall/specs/{id} mall:spec:edit
                 PUT /mall/spec-values/{id} mall:spec-value:edit

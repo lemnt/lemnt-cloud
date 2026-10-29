@@ -86,7 +86,7 @@ class ProductManagementHttpTest {
         var create = mock(CommentCreateCmdExe.class);
         when(create.execute(any())).thenReturn(new ProductCommentDTO(1L, 3L, 9L, "TR1", 7L, 5, "真实评价",
                 true, null, null, null, null));
-        var mvc = MockMvcBuilders.standaloneSetup(new AppCommentController(create))
+        var mvc = MockMvcBuilders.standaloneSetup(new AppCommentController(create, mock(com.lemnt.mall.application.product.executor.CommentPublicPageQueryExe.class)))
                 .addInterceptors(new HeaderInterceptor()).setMessageConverters(converter()).build();
         mvc.perform(post("/mall/app/comments").header(SecurityConstants.HEADER_USER_ID, "7")
                         .contentType(MediaType.APPLICATION_JSON)

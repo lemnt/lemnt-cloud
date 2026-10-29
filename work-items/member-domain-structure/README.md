@@ -49,3 +49,5 @@
 - [商品收藏与浏览足迹设计](43-product-interaction-design.md)
 - [商品收藏与浏览足迹交付](44-product-interaction-delivery.md)
 - [商品收藏与足迹接口](../../docs/product-interaction-api.md)
+
+- [文章相关迁移范围调整](45-article-scope-adjustment.md)

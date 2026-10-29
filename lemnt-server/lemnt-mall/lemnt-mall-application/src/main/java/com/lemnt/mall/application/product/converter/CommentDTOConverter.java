@@ -12,6 +12,11 @@ public final class CommentDTOConverter {
     public static ProductCommentDTO toDTO(ProductComment value) {
         return value == null ? null : new ProductCommentDTO(value.id(), value.spuId(), value.skuId(), value.orderNo(),
                 value.memberId(), value.score(), value.content(), value.visible(), value.replyContent(),
-                value.replyUserId(), value.replyTime(), value.createTime());
+                value.replyUserId(), value.replyTime(), value.createTime(),
+                value.descriptionScores(), value.benefitScores(), value.picUrls(), value.anonymous(),
+                value.userNickname(), value.userAvatar(), value.orderId(), value.spuName(), value.skuPicUrl(),
+                value.skuProperties() == null ? null : value.skuProperties().stream().map(property ->
+                        new ProductCommentDTO.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                value.replyStatus());
     }
 }

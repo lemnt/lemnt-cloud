@@ -199,30 +199,30 @@
     {
       "source": "src/views/mall/promotion/article/ArticleForm.vue",
       "sha256": "b85b1a31e1717d2a983864b9b30fb08c8c8b415907a78e67055ee8c43ef9c4b5",
-      "state": "in_progress",
-      "target": "lemnt-ui/src/modules/mall/promotion/article",
-      "note": "React适配文章与分类维护、筛选false/0、图片上传、富文本/详情；不是源Vue样式逐像素复刻，未浏览器验收"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "src/views/mall/promotion/article/category/ArticleCategoryForm.vue",
       "sha256": "509f7f6f35056e8f28e673c91a111d976ec7df2f0a75813b4d01007e2c29ce73",
-      "state": "in_progress",
-      "target": "lemnt-ui/src/modules/mall/promotion/article",
-      "note": "React适配文章与分类维护、筛选false/0、图片上传、富文本/详情；不是源Vue样式逐像素复刻，未浏览器验收"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "src/views/mall/promotion/article/category/index.vue",
       "sha256": "8b4b42399ed69d767847b47647dc350453fd9f7c6c4e6d3529c7feaa3de95912",
-      "state": "in_progress",
-      "target": "lemnt-ui/src/modules/mall/promotion/article",
-      "note": "React适配文章与分类维护、筛选false/0、图片上传、富文本/详情；不是源Vue样式逐像素复刻，未浏览器验收"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "src/views/mall/promotion/article/index.vue",
       "sha256": "30fbcb3833beb07b7ed4c1b84f5ecb796a0c77f105b9929408d93541f155179f",
-      "state": "in_progress",
-      "target": "lemnt-ui/src/modules/mall/promotion/article",
-      "note": "React适配文章与分类维护、筛选false/0、图片上传、富文本/详情；不是源Vue样式逐像素复刻，未浏览器验收"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "src/views/mall/promotion/banner/BannerForm.vue",
@@ -1173,15 +1173,16 @@
     {
       "source": "src/api/mall/promotion/article/index.ts",
       "sha256": "6a8a76ac504bfd6c9432eb1e9c3b52bd0d8ea45cfd93acb740ff7c9d22e186fa",
-      "state": "in_progress",
-      "target": "lemnt-ui/src/modules/mall/promotion/article",
-      "note": "React适配文章与分类维护、筛选false/0、图片上传、富文本/详情；不是源Vue样式逐像素复刻，未浏览器验收"
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
     },
     {
       "source": "src/api/mall/promotion/articleCategory/index.ts",
       "sha256": "058d88d152b986e2e4c11547588a06416b036c89375f6c0d09f8905c1157053c",
-      "state": "pending",
-      "target": null
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章分类管理一并排除"
     },
     {
       "source": "src/api/mall/promotion/banner/index.ts",

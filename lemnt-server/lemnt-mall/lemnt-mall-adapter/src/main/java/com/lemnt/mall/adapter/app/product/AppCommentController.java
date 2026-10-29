@@ -26,6 +26,16 @@ import jakarta.validation.Valid;
 @RequiredArgsConstructor
 public class AppCommentController {
     private final CommentCreateCmdExe commentCreateCmdExe;
+    private final com.lemnt.mall.application.product.executor.CommentPublicPageQueryExe commentPublicPageQueryExe;
+
+    /** 公开查询当前商品可见评价，不接受其他会员或后台过滤条件。 */
+    @org.springframework.web.bind.annotation.GetMapping
+    @Operation(summary = "商品公开评价分页")
+    public R<com.lemnt.mall.adapter.app.product.res.CommentPageRes> page(
+            @Valid @org.springframework.web.bind.annotation.ModelAttribute com.lemnt.mall.adapter.app.product.req.CommentPageReq req) {
+        var result = commentPublicPageQueryExe.execute(CommentReqConverter.page(req));
+        return R.page(result.getRecords().stream().map(CommentResConverter::page).toList(), result.getTotal());
+    }
 
     /** 只允许本人完成订单的SKU，令牌由网关统一校验。 */
     @PostMapping

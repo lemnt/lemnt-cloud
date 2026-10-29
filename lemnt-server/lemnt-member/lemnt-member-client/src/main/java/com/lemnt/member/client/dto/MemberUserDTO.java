@@ -14,8 +14,13 @@ public record MemberUserDTO(
         String nickname,
         Integer status,
         Integer discountPercent,
-        Long points
+        Long points,
+        String avatar
 ) implements Serializable {
+    public MemberUserDTO(Long id, String nickname, Integer status, Integer discountPercent, Long points) {
+        this(id, nickname, status, discountPercent, points, null);
+    }
+
     public MemberUserDTO(Long id, String nickname, Integer status) {
         this(id, nickname, status, 100, 0L);
     }
