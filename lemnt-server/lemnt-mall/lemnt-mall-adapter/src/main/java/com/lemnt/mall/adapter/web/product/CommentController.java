@@ -38,10 +38,22 @@ import jakarta.validation.Valid;
 @RequestMapping("/mall/comments")
 @RequiredArgsConstructor
 public class CommentController {
+    private final com.lemnt.mall.application.product.executor.CommentSelfCreateCmdExe commentSelfCreateCmdExe;
     private final CommentPageQueryExe commentPageQueryExe;
     private final CommentDetailQueryExe commentDetailQueryExe;
     private final CommentReplyCmdExe commentReplyCmdExe;
     private final CommentVisibleCmdExe commentVisibleCmdExe;
+
+    /** 后台自评没有会员购买关系，不进入交易评价编排。 */
+    @org.springframework.web.bind.annotation.PostMapping
+    @Operation(summary = "添加后台自评")
+    @RequiresPermissions("mall:comment:create")
+    public R<com.lemnt.mall.adapter.web.product.res.CommentSelfCreateRes> create(
+            @Valid @RequestBody com.lemnt.mall.adapter.web.product.req.CommentSelfCreateReq req) {
+        var id = commentSelfCreateCmdExe.execute(new com.lemnt.mall.application.product.cmd.CommentSelfCreateCmd(
+                req.userNickname(), req.userAvatar(), req.skuId(), req.descriptionScores(), req.benefitScores(), req.content(), req.picUrls()));
+        return R.ok(new com.lemnt.mall.adapter.web.product.res.CommentSelfCreateRes(id));
+    }
 
     /** 分页查询含隐藏内容的后台评价。 */
     @GetMapping

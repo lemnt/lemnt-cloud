@@ -1,3 +1,9 @@
+const {
+  createImageClient,
+  selectImages,
+  pictureUrls,
+  removePicture,
+} = require("../../services/images");
 const config = require("../../config");
 const { createCommentClient } = require("../../services/comments");
 const { createTradeClient } = require("../../services/trade");
@@ -17,6 +23,7 @@ Page({
     benefitScores: "5",
     content: "",
     pictures: "",
+    imageUrls: [],
     anonymous: false,
   },
   onLoad(options) {
@@ -64,6 +71,7 @@ Page({
         eligible: false,
         content: "",
         pictures: "",
+        imageUrls: [],
         error: "会员已切换，请从本人订单重新进入",
         pending: false,
         submitted: false,
@@ -113,11 +121,90 @@ Page({
         name,
       )
     )
-      this.setData({ [name]: event.detail.value });
+      this.setData({
+        [name]: event.detail.value,
+        ...(name === "pictures"
+          ? { imageUrls: pictureUrls(event.detail.value) }
+          : {}),
+      });
   },
   anonymous(event) {
     if (!this.data.loading && !this.data.pending && !this.data.submitted)
       this.setData({ anonymous: event.detail.value });
+  },
+  previewImages(event) {
+    if (this.ownerToken !== getApp().globalData.memberSession?.accessToken)
+      return;
+    const urls = pictureUrls(this.data.pictures),
+      current = event.currentTarget.dataset.url;
+    if (urls.includes(current)) wx.previewImage({ urls, current });
+  },
+  removeImage(event) {
+    if (
+      this.data.loading ||
+      this.data.pending ||
+      this.data.submitted ||
+      this.ownerToken !== getApp().globalData.memberSession?.accessToken
+    )
+      return;
+    const pictures = removePicture(
+      this.data.pictures,
+      event.currentTarget.dataset.url,
+    );
+    this.setData({ pictures, imageUrls: pictureUrls(pictures) });
+  },
+  async uploadImages() {
+    if (
+      this.data.loading ||
+      this.data.pending ||
+      this.data.submitted ||
+      !this.data.eligible
+    )
+      return;
+    const original = this.data.pictures
+      .split(/\r?\n/)
+      .map((v) => v.trim())
+      .filter(Boolean);
+    if (original.length >= 9) return;
+    this.setData({ loading: true, error: "" });
+    try {
+      if (this.ownerToken !== getApp().globalData.memberSession?.accessToken)
+        throw Error("请重新进入本人订单");
+      const client = createImageClient({
+        baseUrl: config.apiBaseUrl,
+        getMemberToken: () =>
+          this.ownerToken === getApp().globalData.memberSession?.accessToken
+            ? this.ownerToken
+            : null,
+        uploadFile: (options) =>
+          new Promise((resolve, reject) =>
+            wx.uploadFile({
+              ...options,
+              success: resolve,
+              fail: () => reject(Error("上传结果未确认，请核对后重选")),
+            }),
+          ),
+      });
+      await selectImages({
+        count: 9 - original.length,
+        client,
+        append: (url) => {
+          if (
+            this.ownerToken !== getApp().globalData.memberSession?.accessToken
+          )
+            throw Error("会员已切换");
+          original.push(url);
+          this.setData({
+            pictures: original.join("\n"),
+            imageUrls: [...original],
+          });
+        },
+      });
+    } catch (error) {
+      this.setData({ error: error.message });
+    } finally {
+      this.setData({ loading: false });
+    }
   },
   async submit() {
     if (this.data.loading || !this.data.eligible || this.data.submitted) return;

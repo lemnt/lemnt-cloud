@@ -61,6 +61,31 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     }
 
     @Override
+    public List<String> commentExpired(LocalDateTime cutoff, int limit) {
+        return tradeOrderMapper.selectList(expired(cutoff).orderByAsc(TradeOrderDO::getReceiveTime)
+                .orderByAsc(TradeOrderDO::getId).last("LIMIT " + Math.min(100, Math.max(1, limit))))
+                .stream().map(TradeOrderDO::getOrderNo).toList();
+    }
+    @Override
+    public boolean commentExpired(String orderNo, LocalDateTime cutoff) {
+        return tradeOrderMapper.selectCount(expired(cutoff).eq(TradeOrderDO::getOrderNo, orderNo)) == 1;
+    }
+    private com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<TradeOrderDO> expired(LocalDateTime cutoff) {
+        return Wrappers.lambdaQuery(TradeOrderDO.class).eq(TradeOrderDO::getStatus, "COMPLETED")
+                .eq(TradeOrderDO::getCommentStatus, false).lt(TradeOrderDO::getReceiveTime, cutoff);
+    }
+
+    /** 收货时间与完成状态同一条条件更新，不覆盖已有收货事实。 */
+    @Override
+    public boolean completeReceipt(String orderNo, LocalDateTime receivedAt) {
+        return tradeOrderMapper.update(null, Wrappers.lambdaUpdate(TradeOrderDO.class)
+                .eq(TradeOrderDO::getOrderNo, orderNo).eq(TradeOrderDO::getStatus, "SHIPPED")
+                .isNull(TradeOrderDO::getReceiveTime)
+                .set(TradeOrderDO::getStatus, "COMPLETED").set(TradeOrderDO::getReceiveTime, receivedAt)
+                .set(TradeOrderDO::getUpdateTime, receivedAt)) == 1;
+    }
+
+    @Override
     public boolean transitionStatus(String orderNo, String expectedStatus, String targetStatus) {
         return tradeOrderMapper.transitionStatus(orderNo, expectedStatus, targetStatus) == 1;
     }

@@ -35,10 +35,10 @@ export function decodeComment(value: unknown): ProductCommentRecord {
     id: decodeId(row.id),
     spuId: decodeId(row.spuId),
     skuId: decodeId(row.skuId),
-    orderNo: text(row.orderNo),
+    orderNo: optionalText(row.orderNo),
     orderId: optionalId(row.orderId),
     orderItemId: optionalId(row.orderItemId),
-    memberId: decodeId(row.memberId),
+    memberId: row.memberId === 0 || row.memberId === '0' ? '0' : decodeId(row.memberId),
     score: score(row.score),
     descriptionScores: row.descriptionScores == null ? null : score(row.descriptionScores),
     benefitScores: row.benefitScores == null ? null : score(row.benefitScores),
@@ -113,5 +113,21 @@ export async function setCommentVisible(id: string, visible: boolean) {
       data: { visible },
     });
     if (object(result.data).success !== true) throw Error('显隐修改未确认，请刷新核验');
+  });
+}
+
+/** 后台自评不接收会员或订单编号。 */
+export async function createSelfComment(data: {
+  userNickname: string;
+  userAvatar: string;
+  skuId: string;
+  descriptionScores: number;
+  benefitScores: number;
+  content: string;
+  picUrls: string[];
+}) {
+  return call(async () => {
+    const result = await request<unknown>({ url: '/mall/comments', method: 'POST', data });
+    return decodeId(object(result.data).id);
   });
 }

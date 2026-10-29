@@ -85,3 +85,24 @@ it('组合评价筛选保留真实订单长ID、时间边界与未回复false', 
   await api.getComments(query);
   expect(mockedRequest).toHaveBeenCalledWith({ url: '/mall/comments', params: query });
 });
+
+it('后台自评只发送编辑字段，不伪造订单或会员编号', async () => {
+  mockedRequest.mockResolvedValue({ data: { id: '9223372036854775807' } });
+  const data = {
+    skuId: '3',
+    userNickname: '展示昵称',
+    userAvatar: 'https://example.test/a.png',
+    descriptionScores: 5,
+    benefitScores: 4,
+    content: '自评',
+    picUrls: [],
+  };
+  expect(await api.createSelfComment(data)).toBe('9223372036854775807');
+  expect(mockedRequest).toHaveBeenCalledWith({ url: '/mall/comments', method: 'POST', data });
+});
+
+it('后台自评没有订单号，会员0保持源语义', () => {
+  const result = api.decodeComment({ ...row, orderNo: null, memberId: 0 });
+  expect(result.orderNo).toBeNull();
+  expect(result.memberId).toBe('0');
+});

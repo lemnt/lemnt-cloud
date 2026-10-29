@@ -79,21 +79,21 @@
       "sha256": "e54fa16ed9eb9dbd547f87bad2f623b55c7c67e302cda8bf7e6bc0728163ee4f",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/comment/vo/AppProductCommentRespVO.java",
       "sha256": "00d7a8b7d70f6952894082edef74c8cb5a20619f91981a03a569f08bbaa7fdb1",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/comment/vo/AppCommentPageReqVO.java",
       "sha256": "17e1f0f3b6c0463a4aa20ab5c47280d8fc96116784becf5896186f310ef52316",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/favorite/AppFavoriteController.java",
@@ -259,42 +259,42 @@
       "sha256": "7e13dd110e97f62d4652153266c58888e8358238a2387eb7e929761a003255a6",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/comment/vo/ProductCommentRespVO.java",
       "sha256": "d299653515502806df29dc9f148a35cb5b45dfdd08d9e7abf4099fb0db34e3b1",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/comment/vo/ProductCommentPageReqVO.java",
       "sha256": "eb01d10941a573fa0b97940d627be6cd775c1a1a8122f1aadc33036cef984b18",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "后台昵称/订单ID/商品名称/创建时间范围/回复状态筛选已迁移，独立Req/Qry/Filter及Lambda查询；评价统计导出、虚拟创建及自动评价等仍待迁移。见51-comment-filter-delivery.md"
+      "note": "后台昵称/订单ID/商品名称/创建时间范围/回复状态筛选已迁移，独立Req/Qry/Filter及Lambda查询；评价统计导出、虚拟创建及自动评价等仍待迁移。见51-comment-filter-delivery.md；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/comment/vo/ProductCommentCreateReqVO.java",
       "sha256": "b0e1ee0cf180659ba7666a232f214e65518e5ebc5cd36e7564337cacde642fc6",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "后台自评已迁移，会员0且不关联订单，表单头像与图片地址输入；上传未迁移。见54-comment-self-delivery.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/comment/vo/ProductCommentUpdateVisibleReqVO.java",
       "sha256": "4ea56d36b23a9065aee7e4ccc198df120bc2d097f0cf5c0beb9ebf89f09f9888",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/comment/vo/ProductCommentReplyReqVO.java",
       "sha256": "aac4a3c52d47138ac0d409dc47fe5eb6980c925640517e1776a052bb22b6e161",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/brand/ProductBrandController.java",
@@ -465,7 +465,7 @@
       "sha256": "6e6fd4276e7ca2bb99bd9d94f4f85ce29e202458b37e775ee09c2f4bdc4356f6",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/api/spu/ProductSpuApiImpl.java",
@@ -520,14 +520,14 @@
       "sha256": "e661f70535b1d0ca396a9a02d3e60e2bd8b093bbabdd374344a41097c1a1213d",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "后台昵称/订单ID/商品名称/创建时间范围/回复状态筛选已迁移，独立Req/Qry/Filter及Lambda查询；评价统计导出、虚拟创建及自动评价等仍待迁移。见51-comment-filter-delivery.md"
+      "note": "后台昵称/订单ID/商品名称/创建时间范围/回复状态筛选已迁移，独立Req/Qry/Filter及Lambda查询；评价统计导出、虚拟创建及自动评价等仍待迁移。见51-comment-filter-delivery.md；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/service/comment/ProductCommentService.java",
       "sha256": "2044f1017858b5a2854ef78254411b1a6aa258973fe9a3079c915fda086c9ee0",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/service/brand/ProductBrandServiceImpl.java",
@@ -617,7 +617,7 @@
       "sha256": "e56d78006e173ce57e9cc60a687f21775b4000979ef76a0d6d5752f2bc1bf005",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "后台昵称/订单ID/商品名称/创建时间范围/回复状态筛选已迁移，独立Req/Qry/Filter及Lambda查询；评价统计导出、虚拟创建及自动评价等仍待迁移。见51-comment-filter-delivery.md"
+      "note": "后台昵称/订单ID/商品名称/创建时间范围/回复状态筛选已迁移，独立Req/Qry/Filter及Lambda查询；评价统计导出、虚拟创建及自动评价等仍待迁移。见51-comment-filter-delivery.md；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/mysql/brand/ProductBrandMapper.java",
@@ -674,7 +674,7 @@
       "sha256": "df2829989b536af028fe8a02725f477690f73ffa69c1cce766962daeb6f2632b",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/dataobject/brand/ProductBrandDO.java",
@@ -714,7 +714,7 @@
       "sha256": "6d3a1047e93f2bc740a3f0bf24431209f99fa894ddc334a539ac4140510dea9e",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "后台自评已迁移，会员0且不关联订单，表单头像与图片地址输入；上传未迁移。见54-comment-self-delivery.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/convert/brand/ProductBrandConvert.java",
@@ -1860,8 +1860,9 @@
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/order/vo/item/AppTradeOrderItemCommentCreateReqVO.java",
       "sha256": "c0d50eae002cc811388c73a12542b2a258b29f80f11255e2dc558738e85a49d1",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-mall",
+      "note": "后台自评已迁移，会员0且不关联订单，表单头像与图片地址输入；上传未迁移。见54-comment-self-delivery.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/brokerage/AppBrokerageRecordController.java",
@@ -2550,8 +2551,9 @@
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/job/order/TradeOrderAutoCommentJob.java",
       "sha256": "12d0115c8915651b9bd0ada8c7023f83daa454cfbf1d80e6a1cbe40796c662c3",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-trade",
+      "note": "会员评价和系统到期评价调度已迁移，默认7天，真实receive_time，34日志及重试修复；其他订单方法逐项保留核对。见58-system-comment-delivery.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/job/order/TradeOrderAutoReceiveJob.java",
@@ -2588,7 +2590,7 @@
       "sha256": "8ea9b31d19285dfa11401cbaaa877fb66e4ee1754eeb5ce7bf99e10b555f9c43",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-trade",
-      "note": "本人订单项评价、真实行ID、行/整单状态、完成时间及33号日志已迁移；自动评价及其他源方法仍未完整迁移。见49-order-item-comment-delivery.md"
+      "note": "会员评价和系统到期评价调度已迁移，默认7天，真实receive_time，34日志及重试修复；其他订单方法逐项保留核对。见58-system-comment-delivery.md"
     },
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/service/order/TradeOrderQueryService.java",
@@ -5065,14 +5067,14 @@
       "sha256": "a58df1070e96d792e0f8b421657546ae6ee430d51ada036dcf7c5b7718d6ab0c",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-api/src/main/java/cn/iocoder/yudao/module/product/enums/comment/ProductCommentScoresEnum.java",
       "sha256": "51cd318449e3d21cad16d0749d04c091518fd78992b0f5135c35c113066bcb50",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-api/src/main/java/cn/iocoder/yudao/module/product/enums/spu/ProductSpuStatusEnum.java",
@@ -5103,14 +5105,14 @@
       "sha256": "a53a6d7d9fe3f2198c2badd883a1d62d7a4a8c3d0fab2ea47131fbae459f032b",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-api/src/main/java/cn/iocoder/yudao/module/product/api/comment/dto/ProductCommentCreateReqDTO.java",
       "sha256": "51096038330f42ef6fc67defc3695a46c435be88968a138cddc4e592d88409ff",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-mall",
-      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "本批迁移两项评分/图片/匿名/会员与订单商品快照/公开可见分页/回复与显隐；保留当前orderNo+SKU边界，源独立orderItemId、虚拟创建及其他筛选统计未完成；见docs/product-comment-api.md；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "yudao-module-mall/yudao-module-product-api/src/main/java/cn/iocoder/yudao/module/product/api/spu/ProductSpuApi.java",

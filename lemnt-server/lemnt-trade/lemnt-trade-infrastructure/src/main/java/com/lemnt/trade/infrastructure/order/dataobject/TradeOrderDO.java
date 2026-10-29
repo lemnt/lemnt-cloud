@@ -31,6 +31,7 @@ public class TradeOrderDO extends BaseDO {
     private String remark;
     private Boolean commentStatus;
     private LocalDateTime finishTime;
+    private LocalDateTime receiveTime;
     private Long usePoint;
     private Long givePoint;
     private Long addressId;

@@ -2,7 +2,7 @@ export interface ProductCommentRecord {
   id: string;
   spuId: string;
   skuId: string;
-  orderNo: string;
+  orderNo: string | null;
   orderId: string | null;
   orderItemId: string | null;
   memberId: string;

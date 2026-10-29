@@ -101,6 +101,7 @@ class ControllerMappingTest {
                 POST /departments system:dept:add
                 POST /dictionary-data system:dict:add
                 POST /dictionary-types system:dict:add
+                POST /files/app/upload
                 POST /files/upload
                 POST /menus system:menu:add
                 POST /notices system:notice:add

@@ -42,12 +42,23 @@ public class ProductCommentService {
 
     /** 私有RPC只接收交易已验证的订单事实，不回查持锁中的交易订单。 */
     public ProductComment saveVerified(com.lemnt.mall.application.product.cmd.CommentSaveCmd purchase) {
+        return savePurchase(purchase, false);
+    }
+    /** 独立私有系统入口，不能由会员HTTP输入开启空正文模式。 */
+    public ProductComment saveSystem(com.lemnt.mall.application.product.cmd.CommentSaveCmd purchase) {
+        require(purchase != null && Integer.valueOf(5).equals(purchase.score())
+                && Integer.valueOf(5).equals(purchase.descriptionScores()) && Integer.valueOf(5).equals(purchase.benefitScores())
+                && "".equals(purchase.content()) && Boolean.FALSE.equals(purchase.anonymous())
+                && purchase.picUrls() != null && purchase.picUrls().isEmpty(), "系统评价参数不合法", 400);
+        return savePurchase(purchase, true);
+    }
+    private ProductComment savePurchase(com.lemnt.mall.application.product.cmd.CommentSaveCmd purchase, boolean system) {
         require(purchase != null && purchase.orderId() != null && purchase.orderId() > 0
                 && purchase.orderItemId() != null && purchase.orderItemId() > 0, "真实订单项信息缺失", 400);
         var cmd = new CommentCreateCmd(purchase.memberId(), purchase.orderNo(), purchase.skuId(), purchase.score(),
                 purchase.content(), purchase.descriptionScores(), purchase.benefitScores(), purchase.anonymous(), purchase.picUrls(), purchase.orderItemId());
         validateIdentity(cmd);
-        var input = normalize(cmd);
+        var input = normalize(cmd, system);
         var existing = productCommentGateway.findByOrderItem(purchase.orderItemId());
         if (existing != null) {
             require(purchase.orderId().equals(existing.orderId()), "评价订单项归属不一致", 409);
@@ -112,7 +123,8 @@ public class ProductCommentService {
     }
 
     /** 两项评分取平均向下取整；旧单分输入明确作为两项相同分数。 */
-    private Input normalize(CommentCreateCmd cmd) {
+    private Input normalize(CommentCreateCmd cmd) { return normalize(cmd, false); }
+    private Input normalize(CommentCreateCmd cmd, boolean system) {
         Integer description = cmd.descriptionScores();
         Integer benefit = cmd.benefitScores();
         if (description == null && benefit == null) {
@@ -123,7 +135,7 @@ public class ProductCommentService {
                 && benefit != null && benefit >= 1 && benefit <= 5, "描述和服务评分必须为1至5分", 400);
         int score = (description + benefit) / 2;
         require(cmd.score() == null || cmd.score() == score, "综合评分必须与两项评分一致", 400);
-        require(cmd.content() != null && !cmd.content().isBlank() && cmd.content().length() <= 1000, "评价正文不合法", 400);
+        require(cmd.content() != null && (system || !cmd.content().isBlank()) && cmd.content().length() <= 1000, "评价正文不合法", 400);
         var pictures = cmd.picUrls() == null ? List.<String>of() : cmd.picUrls();
         require(pictures.size() <= 9 && pictures.stream().allMatch(url -> url != null && url.length() <= 1024
                 && url.matches("https://[^\\s]+")), "评价图片最多9张且须为HTTPS地址", 400);

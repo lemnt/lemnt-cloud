@@ -61,6 +61,29 @@ public class OrderCommentService {
         return commentId;
     }
 
+    /** 调度任务逐单调用，持锁后二次核验期限；失败由下一轮原内容修复。 */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean createSystem(String orderNo, java.time.LocalDateTime cutoff) {
+        var order = orders.lockHeader(orderNo);
+        if (order == null || !orders.commentExpired(orderNo, cutoff)) { return false; }
+        var lines = items.items(order.id());
+        for (var line : lines) {
+            if (!Boolean.FALSE.equals(line.commentStatus())) { continue; }
+            var verified = new VerifiedOrderComment(order.memberId(), order.orderNo(), line.productId(), order.id(), line.orderItemId(),
+                    line.spuId(), line.spuName(), line.picUrl(), line.properties() == null ? null : line.properties().stream().map(v ->
+                    new VerifiedOrderComment.Property(v.propertyId(), v.propertyName(), v.valueId(), v.valueName())).toList(),
+                    lines.stream().filter(v -> v.productId().equals(line.productId())).count() == 1,
+                    true, 5, "", 5, 5, false, java.util.List.of());
+            Long id = comments.saveSystem(verified);
+            require(id != null && id > 0 && items.markCommented(order.id(), line.orderItemId()), "系统评价结果未确认", 503);
+        }
+        var current = items.items(order.id());
+        if (current.isEmpty() || !current.stream().allMatch(v -> Boolean.TRUE.equals(v.commentStatus()))) { return false; }
+        require(orders.updateCommentState(new OrderCommentState(order.id(), true, orders.databaseNow())), "系统评价状态冲突", 409);
+        logs.record(order, order.status(), order.status(), 34, TradeOperator.system(), "到期未评价，系统自动评价");
+        return true;
+    }
+
     private void require(boolean value, String message, int code) {
         if (!value) {
             throw new ServiceException(message, code);

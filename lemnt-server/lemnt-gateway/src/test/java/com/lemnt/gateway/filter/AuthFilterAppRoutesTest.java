@@ -80,6 +80,7 @@ class AuthFilterAppRoutesTest {
                 {"POST", "/member/app/user/reset-password"},
                 {"POST", "/member/app/auth/login/extra"},
                 {"GET", "/member/app/user"},
+                {"POST", "/files/app/upload"},
                 {"POST", "/mall/app/comments"},
                 {"GET", "/mall/app/comments/1"},
                 {"GET", "/mall/app/products/0"},
@@ -101,7 +102,7 @@ class AuthFilterAppRoutesTest {
                 .setUsername("admin").setRoles(Set.of("admin"));
         when(tokenService.getSecurityUser("token", "member")).thenReturn(member);
         when(tokenService.getSecurityUser("token", "admin")).thenReturn(admin);
-        for (String path : Set.of("/member/app/user", "/trade/app/cart", "/mall/app/private")) {
+        for (String path : Set.of("/files/app/upload", "/member/app/user", "/trade/app/cart", "/mall/app/private")) {
             filter.filter(exchange("GET", path, "token"), clean -> {
                 assertEquals("7", clean.getRequest().getHeaders().getFirst(SecurityConstants.HEADER_USER_ID));
                 assertNull(clean.getRequest().getHeaders().getFirst(SecurityConstants.HEADER_USER_KEY));
@@ -114,7 +115,7 @@ class AuthFilterAppRoutesTest {
             assertEquals("8", clean.getRequest().getHeaders().getFirst(SecurityConstants.HEADER_USER_ID));
             return Mono.empty();
         }).block();
-        verify(tokenService, times(3)).getSecurityUser("token", "member");
+        verify(tokenService, times(4)).getSecurityUser("token", "member");
         verify(tokenService).getSecurityUser("token", "admin");
     }
 

@@ -102,6 +102,7 @@ class ControllerMappingTest {
                 GET /mall/brands/page mall:brand:list
                 GET /mall/brands/simple mall:brand:query
                 GET /mall/categories/tree mall:category:list
+                POST /mall/comments mall:comment:create
                 GET /mall/comments mall:comment:list
                 GET /mall/comments/{id} mall:comment:query
                 POST /mall/specs mall:spec:add

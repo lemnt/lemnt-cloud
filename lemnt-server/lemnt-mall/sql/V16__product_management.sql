@@ -20,7 +20,7 @@ CREATE TABLE mall_product_comment (
  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
  spu_id BIGINT NOT NULL,
  sku_id BIGINT NOT NULL,
- order_no VARCHAR(40) NOT NULL,
+ order_no VARCHAR(40) NULL,
  order_item_id BIGINT NULL,
  member_id BIGINT NOT NULL,
  score INT NOT NULL,

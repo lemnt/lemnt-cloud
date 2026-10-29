@@ -34,6 +34,12 @@ public interface TradeOrderGateway {
      */
     boolean transitionStatus(String orderNo, String expectedStatus, String targetStatus);
 
+    /** 同时确认收货状态和真实收货时间，调用方持有订单锁。 */
+    boolean completeReceipt(String orderNo, LocalDateTime receivedAt);
+    /** 有界扫描及持锁后重新核验到期条件。 */
+    List<String> commentExpired(LocalDateTime cutoff, int limit);
+    boolean commentExpired(String orderNo, LocalDateTime cutoff);
+
     /**
      * 查找库存预留中且按创建时间筛选之前。
      */

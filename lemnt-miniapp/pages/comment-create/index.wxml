@@ -5,7 +5,7 @@
     <label>描述评分（1至5）<input type="number" value="{{descriptionScores}}" data-field="descriptionScores" bindinput="input" disabled="{{loading || pending || submitted}}"/></label>
     <label>服务评分（1至5）<input type="number" value="{{benefitScores}}" data-field="benefitScores" bindinput="input" disabled="{{loading || pending || submitted}}"/></label>
     <label>评价正文<textarea maxlength="1000" value="{{content}}" data-field="content" bindinput="input" disabled="{{loading || pending || submitted}}"/></label>
-    <label>图片HTTPS地址（可选，每行一个，最多9张）<textarea maxlength="9300" value="{{pictures}}" data-field="pictures" bindinput="input" disabled="{{loading || pending || submitted}}"/></label>
+    <button bindtap="uploadImages" disabled="{{loading || pending || submitted}}">相册 / 拍照上传图片</button><view wx:for="{{imageUrls}}" wx:key="index"><image src="{{item}}" mode="aspectFit" data-url="{{item}}" bindtap="previewImages"/><button size="mini" data-url="{{item}}" bindtap="removeImage" disabled="{{loading || pending || submitted}}">移除图片</button></view><label>图片HTTPS地址（可选，每行一个，最多9张）<textarea maxlength="9300" value="{{pictures}}" data-field="pictures" bindinput="input" disabled="{{loading || pending || submitted}}"/></label>
     <view>匿名评价<switch checked="{{anonymous}}" bindchange="anonymous" disabled="{{loading || pending || submitted}}"/></view>
     <button bindtap="submit" loading="{{loading}}" disabled="{{loading || submitted}}">{{pending ? '重试原评价核验结果' : '提交评价'}}</button>
     <button wx:if="{{spuId}}" bindtap="comments" disabled="{{loading}}">查看商品公开评价</button>

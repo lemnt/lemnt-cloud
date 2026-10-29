@@ -468,3 +468,11 @@ HTTP字段校验失败422，缺必填spuId/type、图片超过9项或地址含�
 后台React商品评价页支持真实分页、详情、图片、回复、显隐及false筛选；小程序商品详情连接公开评价，完成订单商品连接评价创建页，并再次读取服务端订单核验归属状态和SKU。提交结果未知时冻结原输入，原请求核验后才显示保存成功；换号清理私人输入并拒绝旧响应。图片当前通过HTTPS地址填写，尚未迁移源拍照/上传SDK。
 
 真实MySQL、Redis/Dubbo、部署网关HTTP、浏览器及真机端到端未验证；H2存储/控制器测试和前端回归不能替代这些验收。
+
+## 后台自评（2026-10-29补充）
+
+POST `/mall/comments`，权限 `mall:comment:create`。独立请求字段：userNickname（必填非空，80字）、userAvatar（必填HTTPS，1024字符）、skuId（正ID）、descriptionScores/benefitScores（各1-5整数）、content（非空，1000字）、picUrls（可选，最多9个HTTPS地址，每项1024字符）。响应 `R.data={id}`，失败使用统一Problem Details，HTTP字段错误422，业务参数400，SKU/SPU不存在404。
+
+按源后台自评语义：memberId=0，不代表真实会员；orderNo、orderId、orderItemId为空。非匿名、可见、未回复；评分平均向下取整，商品名称/图片/规格为创建时真实商品快照。不会更新真实订单评价状态。每次明确创建是新记录，无内容去重；网络结果未知先查询核对，禁止自动重发。
+
+旧库需要生成的mall `sql/upgrade/product_comment_self.sql`放开order_no空值；新版初始化已包含。新权限脚本 `lemnt-server/sql/V20261029__product_comment_self_permission.sql`只创建按钮，不授予角色。真实库均未执行。后台头像/评价图片仍填HTTPS地址，上传另行迁移。

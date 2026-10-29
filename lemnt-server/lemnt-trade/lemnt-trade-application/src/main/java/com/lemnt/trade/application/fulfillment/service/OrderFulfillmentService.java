@@ -150,8 +150,9 @@ public class OrderFulfillmentService {
         ) {
             throw new IllegalStateException("订单状态不允许确认收货");
         }
-        if (!shipmentGateway.receive(orderNo, tradeOrderGateway.databaseNow())
-                || !tradeOrderGateway.transitionStatus(orderNo, "SHIPPED", "COMPLETED")
+        var receivedAt = tradeOrderGateway.databaseNow();
+        if (!shipmentGateway.receive(orderNo, receivedAt)
+                || !tradeOrderGateway.completeReceipt(orderNo, receivedAt)
         ) {
             throw new IllegalStateException("收货状态冲突");
         }

@@ -4,4 +4,6 @@ import com.lemnt.trade.domain.order.model.VerifiedOrderComment;
 public interface OrderCommentGateway {
     /** 同步保存已验证购买的评价。 */
     Long saveVerified(VerifiedOrderComment value);
+    /** 私有系统到期评价。 */
+    Long saveSystem(VerifiedOrderComment value);
 }

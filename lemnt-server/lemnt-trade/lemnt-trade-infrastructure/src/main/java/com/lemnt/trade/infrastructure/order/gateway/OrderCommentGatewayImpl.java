@@ -12,9 +12,15 @@ public class OrderCommentGatewayImpl implements OrderCommentGateway {
     private ProductCommentClient client;
     @Override
     public Long saveVerified(VerifiedOrderComment value) {
-        return client.saveVerified(new ProductCommentSaveBo(value.memberId(), value.orderNo(), value.skuId(), value.orderId(), value.orderItemId(), value.spuId(),
+        return save(value, false);
+    }
+    @Override
+    public Long saveSystem(VerifiedOrderComment value) { return save(value, true); }
+    private Long save(VerifiedOrderComment value, boolean system) {
+        var bo = new ProductCommentSaveBo(value.memberId(), value.orderNo(), value.skuId(), value.orderId(), value.orderItemId(), value.spuId(),
                 value.spuName(), value.skuPicUrl(), value.properties() == null ? null : value.properties().stream().map(property ->
                         new ProductCommentSaveBo.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
-                value.uniqueSku(), value.allowCreate(), value.score(), value.content(), value.descriptionScores(), value.benefitScores(), value.anonymous(), value.picUrls()));
+                value.uniqueSku(), value.allowCreate(), value.score(), value.content(), value.descriptionScores(), value.benefitScores(), value.anonymous(), value.picUrls());
+        return system ? client.saveSystem(bo) : client.saveVerified(bo);
     }
 }

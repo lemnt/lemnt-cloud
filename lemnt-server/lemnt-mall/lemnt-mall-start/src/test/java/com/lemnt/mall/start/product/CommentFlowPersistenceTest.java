@@ -273,4 +273,22 @@ class CommentFlowPersistenceTest {
         mvc.perform(get("/mall/comments").param("userNickname", "字".repeat(256))).andExpect(status().is(422));
     }
 
+    @Test
+    void selfCommentUsesSourceZeroMemberAndNoOrderAndRealProductSnapshot() {
+        memberUnavailable = true;
+        var executor = fixture.components.get(com.lemnt.mall.application.product.executor.CommentSelfCreateCmdExe.class);
+        var input = new com.lemnt.mall.application.product.cmd.CommentSelfCreateCmd("自评昵称", "https://example.test/a.png",
+                skuId, 5, 4, "后台自评", List.of());
+        var id = executor.execute(input);
+        var row = fixture.components.get(ProductCommentGateway.class).find(id);
+        assertEquals(0L, row.memberId()); assertNull(row.orderNo()); assertNull(row.orderId()); assertNull(row.orderItemId());
+        assertEquals(4, row.score()); assertEquals(spuId, row.spuId()); assertTrue(row.visible()); assertFalse(row.anonymous());
+        assertNotNull(row.spuName()); assertFalse(row.replyStatus());
+        assertNotEquals(id, executor.execute(input)); // 明确的新创建，不伪称内容幂等。
+        assertThrows(ServiceException.class, () -> executor.execute(new com.lemnt.mall.application.product.cmd.CommentSelfCreateCmd(
+                "昵称", "https://example.test/a.png", Long.MAX_VALUE, 5, 5, "自评", List.of())));
+        assertThrows(ServiceException.class, () -> executor.execute(new com.lemnt.mall.application.product.cmd.CommentSelfCreateCmd(
+                "昵称", "http://example.test/a.png", skuId, 5, 5, "自评", List.of())));
+    }
+
 }

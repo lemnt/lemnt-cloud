@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-29",
+  "scope": "收货时间迁移；非完整自动评价",
+  "commandScope": "trade-start及其依赖 Maven offline verify",
+  "tradeTests": 155,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "verified": [
+    "物流与订单相同收货时间",
+    "重复收货幂等",
+    "状态失败时物流与订单时间回滚"
+  ],
+  "notRun": [
+    "真实MySQL升级",
+    "自动评价任务",
+    "部署HTTP",
+    "前端（未改动）"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-trade/sql/V1__trade_order.sql": "d1e95e1a817cfd63b228a7af46d9b5d0c45c501f2bddd6ddf49af4f1d103670d",
+    "lemnt-server/lemnt-trade/sql/upgrade/order_receive_time.sql": "9fa0eb90fa22be165beb7543e456eccc6f5e988ac9075aa6b8f11226c28fdf23",
+    "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/gateway/TradeOrderGateway.java": "852e6346b1461b35c3688af30c76a400390d4bffe4802f2a2a42e7a48672ff5f",
+    "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/dataobject/TradeOrderDO.java": "1d7e7176f11513351bcad475350f7ec5a4a939115d636f1298be5b0be14a40e3",
+    "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/gateway/TradeOrderGatewayImpl.java": "f7b497b1761deece7ac3ff4e82f3dd33db2bf06787ae5dcf92cd4151aa5c2d48",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/service/OrderFulfillmentService.java": "53602e469e246d20aa3d6824f75d5d1fa32adc2a6733ace9469cae6c19fe5951",
+    "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutFlowIntegrationTest.java": "3f9ed1aeb370429a8065d63696fdb3c091e5c407d98f7e871f035790ea77b9b6",
+    "/tmp/order-receive-time-verify.log": "8e28e79674723f0d7e95c004e9f4aa37ad9e66ea65f8dbf66438c480fc357086"
+  }
+}

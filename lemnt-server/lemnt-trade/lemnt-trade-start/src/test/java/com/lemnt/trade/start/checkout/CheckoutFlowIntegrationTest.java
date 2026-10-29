@@ -379,13 +379,20 @@ class CheckoutFlowIntegrationTest {
         orderRpc = orderAdapter;
         mallComponents.register(com.lemnt.mall.domain.settlement.gateway.OrderGateway.class, orderRpc);
         var commentProvider = new com.lemnt.mall.application.dubbo.ProductCommentClientImpl(mallComponents.get(ProductCommentService.class));
-        com.lemnt.mall.client.ProductCommentClient commentClient = value -> {
+        com.lemnt.mall.client.ProductCommentClient commentClient = new com.lemnt.mall.client.ProductCommentClient() {
+            public Long saveSystem(com.lemnt.mall.client.bo.ProductCommentSaveBo value) {
+                Long id = commentProvider.saveSystem(value);
+                if (loseNextCommentResponse) { loseNextCommentResponse=false; throw new IllegalStateException("系统评价已保存响应丢失"); }
+                return id;
+            }
+            public Long saveVerified(com.lemnt.mall.client.bo.ProductCommentSaveBo value) {
             Long id = commentProvider.saveVerified(value);
             if (loseNextCommentResponse) {
                 loseNextCommentResponse = false;
                 throw new IllegalStateException("评价已保存，但RPC响应丢失");
             }
             return id;
+            }
         };
         org.springframework.test.util.ReflectionTestUtils.setField(commentBridge, "client", commentClient);
 
@@ -1099,6 +1106,8 @@ class CheckoutFlowIntegrationTest {
         rejectAfterSale(new RefundRejectCmd(postShipmentSale.refundNo(), "本用例继续验证收货"));
         var received = fulfillmentService.receive(order.orderNo());
         assertNotNull(received.receivedAt());
+        assertEquals(received.receivedAt(), tradeComponents.get(com.lemnt.trade.infrastructure.order.mapper.TradeOrderMapper.class)
+                .selectById(order.id()).getReceiveTime());
         assertEquals(received, fulfillmentService.receive(order.orderNo()));
         assertEquals(received, fulfillmentService.ship(shipment(order.orderNo())));
         assertEquals("COMPLETED", orderPersistenceService.findByOrderNo(order.orderNo()).status());
@@ -1306,9 +1315,11 @@ class CheckoutFlowIntegrationTest {
         fulfillmentService.ship(shipment(order.orderNo()));
         Mockito.doReturn(false)
             .when(failure)
-            .transitionStatus(order.orderNo(), "SHIPPED", "COMPLETED");
+            .completeReceipt(Mockito.eq(order.orderNo()), Mockito.any());
         assertThrows(IllegalStateException.class, () -> failing.receive(order.orderNo()));
         assertNull(shipmentGateway.shipment(order.orderNo()).receivedAt());
+        assertNull(tradeComponents.get(com.lemnt.trade.infrastructure.order.mapper.TradeOrderMapper.class)
+                .selectById(order.id()).getReceiveTime());
         assertEquals("SHIPPED", orderPersistenceService.findByOrderNo(order.orderNo()).status());
     }
 
@@ -2803,6 +2814,41 @@ class CheckoutFlowIntegrationTest {
         var saved = orderRpc.findByOrderNo(fake.orderNo());
         assertNotEquals(999999L,saved.items().get(0).orderItemId());assertNotNull(saved.items().get(0).orderItemId());
         assertFalse(saved.items().get(0).commentStatus());assertFalse(saved.commentStatus());assertNull(saved.finishTime());
+    }
+
+    @Test
+    void systemCommentRequiresExpiredReceiptAndKeepsOneCompletionLog() {
+        var order = completedReviewOrderWithTwoItems();
+        var service = tradeComponents.get(com.lemnt.trade.application.order.service.OrderCommentService.class);
+        var time = tradeOrderGateway.databaseNow();
+        assertFalse(service.createSystem(order.orderNo(), time.minusDays(7)));
+        assertTrue(service.createSystem(order.orderNo(), time.plusDays(1)));
+        assertFalse(service.createSystem(order.orderNo(), time.plusDays(1)));
+        var saved = orderRpc.findByOrderNo(order.orderNo());
+        assertTrue(saved.commentStatus());
+        var finish = saved.finishTime();
+        assertEquals(1, tradeComponents.get(com.lemnt.trade.domain.order.gateway.OrderLogGateway.class)
+                .byOrderId(order.id()).stream().filter(v -> v.operateType() == 34).count());
+        for (var line : saved.items()) {
+            var comment = mallComponents.get(com.lemnt.mall.domain.product.gateway.ProductCommentGateway.class).findByOrderItem(line.orderItemId());
+            assertEquals("", comment.content()); assertEquals(5, comment.score()); assertFalse(comment.anonymous());
+        }
+        assertEquals(finish, orderRpc.findByOrderNo(order.orderNo()).finishTime());
+    }
+
+    @Test
+    void systemOriginalRetryRepairsRemoteCommitAfterLostResponse() {
+        var order = completedReviewOrderWithTwoItems();
+        var service = tradeComponents.get(com.lemnt.trade.application.order.service.OrderCommentService.class);
+        var cutoff = tradeOrderGateway.databaseNow().plusDays(1);
+        loseNextCommentResponse = true;
+        assertThrows(IllegalStateException.class, () -> service.createSystem(order.orderNo(), cutoff));
+        assertFalse(orderRpc.findByOrderNo(order.orderNo()).commentStatus());
+        var first = order.items().get(0).orderItemId();
+        var comments = mallComponents.get(com.lemnt.mall.domain.product.gateway.ProductCommentGateway.class);
+        var remoteId = comments.findByOrderItem(first).id();
+        assertTrue(service.createSystem(order.orderNo(), cutoff));
+        assertEquals(remoteId, comments.findByOrderItem(first).id());
     }
 
 }

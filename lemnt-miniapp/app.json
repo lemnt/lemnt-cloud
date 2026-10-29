@@ -11,7 +11,8 @@
     "pages/favorites/index",
     "pages/browse-history/index",
     "pages/comments/index",
-    "pages/comment-create/index"
+    "pages/comment-create/index",
+    "pages/order-comment/index"
   ],
   "window": {
     "navigationBarTitleText": "lemnt 商城",

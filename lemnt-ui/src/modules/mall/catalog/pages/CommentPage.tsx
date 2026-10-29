@@ -3,6 +3,8 @@ import {
   PageContainer,
   ProTable,
   ProFormTextArea,
+  ProFormText,
+  ProFormDigit,
   ProDescriptions,
   type ActionType,
   type ProColumns,
@@ -29,6 +31,9 @@ export default function CommentPage() {
   const client = useQueryClient();
   const action = useRef<ActionType | undefined>(undefined);
   const operation = useRef(false);
+  const [creating, setCreating] = useState(false);
+  const [createPending, setCreatePending] = useState(false);
+  const [createUnknown, setCreateUnknown] = useState(false);
   const [error, setError] = useState('');
   const [detail, setDetail] = useState<ProductCommentRecord>();
   const [replying, setReplying] = useState<ProductCommentRecord>();
@@ -65,7 +70,11 @@ export default function CommentPage() {
   const columns: ProColumns<ProductCommentRecord>[] = [
     { title: '评价编号', dataIndex: 'id', search: false },
     { title: 'SPU编号', dataIndex: 'spuId' },
-    { title: '会员编号', dataIndex: 'memberId' },
+    {
+      title: '会员编号',
+      dataIndex: 'memberId',
+      renderText: (value) => (value === '0' ? '后台自评' : value),
+    },
     { title: '订单ID', dataIndex: 'orderId' },
     {
       title: '商品快照',
@@ -170,6 +179,22 @@ export default function CommentPage() {
     <PageContainer title="商品评价">
       {error ? <Alert type="error" showIcon message={error} /> : null}
       <ProTable<ProductCommentRecord>
+        toolBarRender={() =>
+          can('mall:comment:create')
+            ? [
+                <Button
+                  key="create"
+                  type="primary"
+                  onClick={() => {
+                    setCreateUnknown(false);
+                    setCreating(true);
+                  }}
+                >
+                  添加自评
+                </Button>,
+              ]
+            : []
+        }
         columns={columns}
         actionRef={action}
         rowKey="id"
@@ -204,6 +229,97 @@ export default function CommentPage() {
           }
         }}
       />
+      <AdminModalForm<{
+        userNickname: string;
+        userAvatar: string;
+        skuId: string;
+        descriptionScores: number;
+        benefitScores: number;
+        content: string;
+        pictures?: string;
+      }>
+        title="添加后台自评"
+        open={creating}
+        onOpenChange={setCreating}
+        loading={createPending}
+        modalProps={{ destroyOnHidden: true, maskClosable: false }}
+        onFinish={async (values) => {
+          if (operation.current || createUnknown) return false;
+          const picUrls = values.pictures?.split(/\s+/).filter(Boolean) ?? [];
+          if (picUrls.length > 9 || picUrls.some((url) => !/^https:\/\/[^\s]+$/.test(url))) {
+            message.error('最多9张图片，填写HTTPS地址');
+            return false;
+          }
+          operation.current = true;
+          setCreatePending(true);
+          try {
+            await api.createSelfComment({
+              userNickname: values.userNickname,
+              userAvatar: values.userAvatar,
+              skuId: values.skuId,
+              descriptionScores: values.descriptionScores,
+              benefitScores: values.benefitScores,
+              content: values.content,
+              picUrls,
+            });
+            setCreating(false);
+            message.success('自评已创建');
+            try {
+              await refresh();
+            } catch {
+              message.warning('已创建，刷新失败，请手动刷新');
+            }
+            return true;
+          } catch (reason) {
+            setCreateUnknown(true);
+            message.error('创建未确认，请先关闭并查询评价列表核对，勿重复提交：' + String(reason));
+            return false;
+          } finally {
+            operation.current = false;
+            setCreatePending(false);
+          }
+        }}
+      >
+        <p>后台自评不关联真实会员、订单，也不更新订单评价状态。</p>
+        {createUnknown ? <Alert type="warning" message="结果未确认，请先查询列表核对" /> : null}
+        <ProFormText
+          name="skuId"
+          label="SKU编号"
+          rules={[{ required: true, pattern: /^[1-9]\d*$/ }]}
+        />
+        <ProFormText
+          name="userNickname"
+          label="评价人昵称"
+          rules={[{ required: true, whitespace: true, max: 80 }]}
+        />
+        <ProFormText
+          name="userAvatar"
+          label="头像HTTPS地址"
+          rules={[{ required: true, pattern: /^https:\/\/[^\s]+$/, max: 1024 }]}
+        />
+        <ProFormDigit
+          name="descriptionScores"
+          label="描述评分"
+          min={1}
+          max={5}
+          fieldProps={{ precision: 0 }}
+          rules={[{ required: true }]}
+        />
+        <ProFormDigit
+          name="benefitScores"
+          label="服务评分"
+          min={1}
+          max={5}
+          fieldProps={{ precision: 0 }}
+          rules={[{ required: true }]}
+        />
+        <ProFormTextArea
+          name="content"
+          label="评价内容"
+          rules={[{ required: true, whitespace: true, max: 1000 }]}
+        />
+        <ProFormTextArea name="pictures" label="图片HTTPS地址（每行一项，最多9张）" />
+      </AdminModalForm>
       <Drawer title="评价详情" open={!!detail} onClose={() => setDetail(undefined)} width={760}>
         {detail ? (
           <>

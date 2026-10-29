@@ -223,22 +223,22 @@
       "source": "pages/goods/comment/add.vue",
       "sha256": "96511797eb9491f383acadf8855731c7221ccb59e4c3d0e92aa6f0bd90d7596c",
       "state": "in_progress",
-      "target": "lemnt-miniapp/pages/comment-create",
-      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "target": "lemnt-miniapp/pages/order-comment/index",
+      "note": "同页多商品逐项评价及相册/拍照上传已接入微信原生页，复用system文件服务；地址删除使用原图片输入，跨端/真机、真实OSS及路由部署未验收。见62-comment-upload-delivery.md；64补齐当前表单附件预览/移除及提交同步；真机与跨端验收待完成。"
     },
     {
       "source": "pages/goods/comment/list.vue",
       "sha256": "3f13d1ae51be84f40f4bec8ecc9b2e63ada7bd64d8dd962bc52f65eaa32d99e7",
       "state": "in_progress",
       "target": "lemnt-miniapp/pages/comments",
-      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "pages/goods/components/detail/comment-item.vue",
       "sha256": "6cdd50991336043adf6193b03c0080135d1f4567d3091ce2694d1abae56ad56f",
       "state": "in_progress",
       "target": "lemnt-miniapp/pages/comments",
-      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "pages/goods/components/detail/detail-activity-tip.vue",
@@ -263,7 +263,7 @@
       "sha256": "7c3c5f2dabc9e7364a391273047a3ff669cc77447daeb5634c4f27db96cbfc6f",
       "state": "in_progress",
       "target": "lemnt-miniapp/pages/comments",
-      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "pages/goods/components/detail/detail-content-card.vue",
@@ -681,7 +681,7 @@
       "sha256": "57750f53b3c5eeefd598f501d6a8ffaf9b63ef9e6197124ad91fd0f7e95cada1",
       "state": "in_progress",
       "target": "lemnt-miniapp/pages/comments",
-      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。"
+      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
     },
     {
       "source": "sheep/api/product/favorite.js",
