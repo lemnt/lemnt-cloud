@@ -17,11 +17,11 @@ public final class SignRecordConverter {
                 ? null
                 : new SignRecord(
                         row.getId(),
-                        row.getMemberId(),
+                        row.getUserId(),
                         row.getSignDate(),
-                        row.getSigninDay(),
+                        row.getDay(),
                         row.getPoint(),
-                        row.getExperience(),row.getNickname());
+                        row.getExperience(), row.getNickname(), row.getCreateTime());
     }
 
     /**
@@ -30,11 +30,13 @@ public final class SignRecordConverter {
     public static SignRecordDO toDO(SignRecord value) {
         var row = new SignRecordDO();
         row.setId(value.id());
-        row.setMemberId(value.memberId());
+        row.setUserId(value.memberId());
         row.setSignDate(value.signDate());
-        row.setSigninDay(value.day());
+        row.setDay(value.day());
         row.setPoint(value.point());
         row.setExperience(value.experience());
+        row.setCreateTime(value.createTime());
+        row.setUpdateTime(value.createTime());
         return row;
     }
 }

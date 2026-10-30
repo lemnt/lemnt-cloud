@@ -17,11 +17,15 @@ public final class LevelRecordConverter {
                 ? null
                 : new LevelRecord(
                         row.getId(),
-                        row.getMemberId(),
+                        row.getUserId(),
                         row.getLevelId(),
+                        row.getUserExperience(),
+                        row.getRemark(),
+                        row.getCreateTime(),
+                        row.getLevel(),
+                        row.getDiscountPercent(),
                         row.getExperience(),
-                        row.getReason(),
-                        row.getCreateTime());
+                        row.getDescription());
     }
 
     /**
@@ -30,11 +34,16 @@ public final class LevelRecordConverter {
     public static LevelRecordDO toDO(LevelRecord value) {
         var row = new LevelRecordDO();
         row.setId(value.id());
-        row.setMemberId(value.memberId());
+        row.setUserId(value.memberId());
         row.setLevelId(value.levelId());
-        row.setExperience(value.experience());
-        row.setReason(value.reason());
+        row.setUserExperience(value.experience());
+        row.setExperience(value.recordExperience());
+        row.setLevel(value.level());
+        row.setDiscountPercent(value.discountPercent());
+        row.setDescription(value.description());
+        row.setRemark(value.reason());
         row.setCreateTime(value.createTime());
+        row.setUpdateTime(value.createTime());
         return row;
     }
 }

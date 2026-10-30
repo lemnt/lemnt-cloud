@@ -1,6 +1,7 @@
 package com.lemnt.member.application.growth.executor;
 
 import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.member.application.growth.converter.MemberGrowthDTOConverter;
 import com.lemnt.member.application.growth.dto.LevelRecordDTO;
 import com.lemnt.member.application.growth.qry.LevelRecordAllPageQry;
@@ -25,8 +26,15 @@ public class MemberLevelRecordAllPageQueryExe {
         if (qry.memberId() != null) {
             MemberRules.id(qry.memberId());
         }
+        if (qry.levelId() != null) {
+            MemberRules.id(qry.levelId());
+        }
+        if (qry.startTime() != null && qry.endTime() != null && qry.startTime().isAfter(qry.endTime())) {
+            throw new ServiceException("开始时间不能晚于结束时间", 400);
+        }
         var filter = new LevelRecordPageFilter(qry.memberId(),
-                (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize());
+                (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize(),
+                qry.levelId(), qry.startTime(), qry.endTime());
         return new PageResult<>(
                 memberLevelRecordGateway.levels(filter).stream().map(MemberGrowthDTOConverter::toLevelRecordDTO).toList(),
                 memberLevelRecordGateway.levelsCount(filter));

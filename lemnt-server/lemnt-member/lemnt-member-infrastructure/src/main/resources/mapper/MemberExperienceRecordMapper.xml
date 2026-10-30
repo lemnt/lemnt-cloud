@@ -13,6 +13,11 @@
   <if test="f.memberId != null">p.user_id=#{f.memberId}</if>
   <if test="f.nickname != null">AND m.nickname LIKE CONCAT('%',#{f.nickname},'%')</if>
   <if test="f.bizType != null">AND p.biz_code=#{f.bizType}</if>
+  <if test="f.bizNo != null">AND p.biz_id=#{f.bizNo}</if>
+  <if test="f.experienceBizType != null">AND p.biz_type=#{f.experienceBizType}</if>
+  <if test="f.title != null">AND p.title=#{f.title}</if>
+  <if test="f.startTime != null">AND p.create_time &gt;= #{f.startTime}</if>
+  <if test="f.endTime != null">AND p.create_time &lt;= #{f.endTime}</if>
  </where></sql>
  <select id="page" resultMap="ExperienceMap">SELECT p.*,m.nickname FROM member_experience_record p LEFT JOIN member_user m ON m.id=p.user_id
  <include refid="Conditions"/> ORDER BY p.id DESC LIMIT #{f.limit} OFFSET #{f.offset}</select>

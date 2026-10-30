@@ -112,4 +112,20 @@ class MemberHttpContractTest {
         verify(signs).execute(new SignRecordPageQry(7L, 2, 15));
         verifyNoMoreInteractions(assets, signs);
     }
+    /** false必须绑定为支出，外部memberId不能替换网关会员身份。 */
+    @Test
+    void appPointFiltersKeepFalseAndTrustedMemberId() throws Exception {
+        var assets = mock(MemberAssetRecordPageQueryExe.class);
+        var start = java.time.LocalDateTime.of(2026, 10, 30, 10, 0);
+        var expected = new AssetRecordPageQry(7L, "POINT", 1, 20, false, start, start.plusHours(1));
+        when(assets.execute(expected)).thenReturn(new PageResult<>(List.of(), 0));
+        var mvc = MockMvcBuilders.standaloneSetup(new AppMemberPointRecordController(assets))
+                .addInterceptors(new HeaderInterceptor()).setControllerAdvice(new GlobalExceptionHandler()).build();
+        mvc.perform(get("/app/growths/point-records").header(SecurityConstants.HEADER_USER_ID, "7")
+                .param("memberId", "999").param("addStatus", "false")
+                .param("startTime", "2026-10-30 10:00:00").param("endTime", "2026-10-30 11:00:00"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.rows").isArray());
+        verify(assets).execute(expected);
+        assertEquals(0L, SecurityUtils.getUserId());
+    }
 }

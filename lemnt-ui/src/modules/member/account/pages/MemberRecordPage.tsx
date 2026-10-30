@@ -4,7 +4,13 @@ import { Alert, Button, Result, Select } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { usePermission } from '@/shared/hooks/usePermission';
 import { getMemberRecords } from '../api/memberApi';
-import { memberKeys, recordPermissions, recordLabels, pointBusinessTypeEnum } from '../types';
+import {
+  memberKeys,
+  recordPermissions,
+  recordLabels,
+  pointBusinessTypeEnum,
+  experienceBusinessTypeEnum,
+} from '../types';
 import type { RecordKind, MemberPageQuery, MemberRecord } from '../types';
 export default function MemberRecordPage() {
   const { can } = usePermission();
@@ -28,14 +34,28 @@ export default function MemberRecordPage() {
     ...(kind === 'signin-records'
       ? [
           { title: '日期', dataIndex: 'signDate', search: false },
-          { title: '周期天数', dataIndex: 'day', search: false },
+          {
+            title: '连续第几天',
+            dataIndex: 'day',
+            valueType: 'digit' as const,
+            fieldProps: { min: 1, precision: 0 },
+          },
+          { title: '签到时间', dataIndex: 'createTime', search: false },
           { title: '奖励积分', dataIndex: 'point', search: false },
           { title: '奖励经验', dataIndex: 'experience', search: false },
         ]
       : kind === 'level-records'
         ? [
             { title: '等级ID', dataIndex: 'levelId' },
-            { title: '经验', dataIndex: 'experience' },
+            { title: '变更后会员经验', dataIndex: 'experience' },
+            { title: '变更时等级', dataIndex: 'level' },
+            { title: '变更时折扣', dataIndex: 'discountPercent' },
+            {
+              title: '记录经验值',
+              dataIndex: 'recordExperience',
+              tooltip: '手工调整为本次经验增减；自动升级为目标等级经验门槛',
+            },
+            { title: '描述快照', dataIndex: 'description' },
             { title: '原因', dataIndex: 'reason' },
             { title: '时间', dataIndex: 'createTime' },
           ]
@@ -54,7 +74,12 @@ export default function MemberRecordPage() {
               : []),
             ...(kind === 'experience-records'
               ? [
-                  { title: '经验源类型', dataIndex: 'experienceBizType' },
+                  {
+                    title: '经验业务类型',
+                    dataIndex: 'experienceBizType',
+                    valueType: 'select' as const,
+                    valueEnum: experienceBusinessTypeEnum,
+                  },
                   { title: '经验标题', dataIndex: 'title' },
                   { title: '经验描述', dataIndex: 'description' },
                 ]
@@ -68,8 +93,23 @@ export default function MemberRecordPage() {
           ]
     ).map((c) => ({
       ...c,
-      search: kind === 'point-records' && ['bizType', 'pointBizType'].includes(c.dataIndex),
+      search:
+        (kind === 'signin-records' && c.dataIndex === 'day') ||
+        (kind === 'level-records' && c.dataIndex === 'levelId') ||
+        (kind === 'point-records' && ['bizType', 'pointBizType', 'title'].includes(c.dataIndex)) ||
+        (kind === 'experience-records' &&
+          ['experienceBizType', 'bizNo', 'title'].includes(c.dataIndex)),
     })),
+    ...(['experience-records', 'level-records', 'signin-records'].includes(kind)
+      ? [
+          {
+            title: '创建时间范围',
+            dataIndex: 'createTimeRange',
+            valueType: 'dateTimeRange' as const,
+            hideInTable: true,
+          },
+        ]
+      : []),
   ];
   if (!allowed.length) return <Result status="403" title="没有会员记录查询权限" />;
   return (
@@ -80,7 +120,7 @@ export default function MemberRecordPage() {
         options={allowed.map((value) => ({ value, label: recordLabels[value] }))}
         onChange={(value) => {
           setSelected(value);
-          setQuery({ ...query, pageNum: 1 });
+          setQuery({ pageNum: 1, pageSize: query.pageSize });
         }}
       />
       {rows.isError && (
@@ -92,6 +132,8 @@ export default function MemberRecordPage() {
         />
       )}
       <ProTable<MemberRecord>
+        key={kind}
+        dateFormatter="string"
         rowKey="id"
         columns={columns}
         dataSource={rows.data?.records ?? []}
@@ -111,6 +153,34 @@ export default function MemberRecordPage() {
                 : undefined,
             bizType:
               kind === 'point-records' && typeof v.bizType === 'string' ? v.bizType : undefined,
+            experienceBizType:
+              kind === 'experience-records' &&
+              v.experienceBizType != null &&
+              v.experienceBizType !== ''
+                ? Number(v.experienceBizType)
+                : undefined,
+            bizNo:
+              kind === 'experience-records' && typeof v.bizNo === 'string' ? v.bizNo : undefined,
+            title:
+              ['point-records', 'experience-records'].includes(kind) && typeof v.title === 'string'
+                ? v.title
+                : undefined,
+            startTime:
+              ['experience-records', 'level-records', 'signin-records'].includes(kind) &&
+              Array.isArray(v.createTimeRange)
+                ? v.createTimeRange[0]
+                : undefined,
+            endTime:
+              ['experience-records', 'level-records', 'signin-records'].includes(kind) &&
+              Array.isArray(v.createTimeRange)
+                ? v.createTimeRange[1]
+                : undefined,
+            day:
+              kind === 'signin-records' && v.day != null && v.day !== ''
+                ? Number(v.day)
+                : undefined,
+            levelId:
+              kind === 'level-records' && typeof v.levelId === 'string' ? v.levelId : undefined,
             memberId: typeof v.memberId === 'string' ? v.memberId : undefined,
           })
         }

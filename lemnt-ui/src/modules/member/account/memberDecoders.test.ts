@@ -138,3 +138,38 @@ it('经验编号0保持有效，标题来自经验快照且不借积分类型', 
   expect(value.title).toBe('管理员调整');
   expect(value.pointBizType).toBeUndefined();
 });
+
+it('等级流水区分会员经验和源记录经验，未知配置不按当前等级补造', () => {
+  const row = {
+    id: '1',
+    memberId: '9',
+    levelId: '2',
+    experience: 150,
+    reason: '原因',
+    createTime: '2026-10-30 11:00:00',
+  };
+  const old = decodeRecord(row, 'level-records');
+  expect(old.experience).toBe(150);
+  expect(old.recordExperience).toBeUndefined();
+  const value = decodeRecord(
+    {
+      ...row,
+      level: 1,
+      discountPercent: 90,
+      recordExperience: 100,
+      description: '管理员调整为：Gold',
+    },
+    'level-records',
+  );
+  expect(value.experience).toBe(150);
+  expect(value.recordExperience).toBe(100);
+  expect(value.discountPercent).toBe(90);
+});
+
+it('签到真实时间仅在已知时展示，不由业务日期补造', () => {
+  const row = { id: '1', memberId: '9', signDate: '2026-10-29', day: 1, point: 5, experience: 2 };
+  expect(decodeRecord({ ...row, createTime: null }, 'signin-records').createTime).toBeUndefined();
+  expect(
+    decodeRecord({ ...row, createTime: '2026-10-29 10:00:00' }, 'signin-records').createTime,
+  ).toBe('2026-10-29 10:00:00');
+});

@@ -61,3 +61,12 @@ PointRecordDO、ExperienceRecordDO继承本项目BaseDO，不再自定义createT
 新流水保留业务传入的数据库createTime，将初始updateTime设为同一事件时间；操作者使用既有MyMetaObjectHandler及安全上下文，缺少用户名时system表示服务执行身份，不反推会员姓名。幂等原请求返回旧记录，不更新审计。未修改公共填充器或引入流水修改/删除能力。
 
 新库V4/V5含可空审计列；已有独立表仅在确认列缺失后执行upgrade/ledger_audit_fields.sql，不能对新版初始化重复执行。旧数据及旧表copy保持未知NULL，不回填当前用户或时间。真实库脚本未执行。源deleted字段及不可变账本的逻辑删除语义本批未引入，不能把基础审计对齐当成源所有基类字段完整迁移。
+
+
+## 积分标题与本人记录筛选（2026-10-30）
+
+后台GET `/member/admin/point-records`增加title（可选、最多255字），按源SQL包含匹配标题快照；与memberId、昵称、pointBizType及兼容业务码条件组合。无历史标题的记录不借用原因字段参与匹配。后台源没有编号/时间筛选，本批不增加。
+
+App GET `/app/growths/point-records`（网关对外member/app/point-records）独立PointRecordPageReq新增addStatus、startTime/endTime。addStatus=true只查point>0、false只查point<0、不填查全部（含既有零流水）；false不能被当作未填。时间格式yyyy-MM-dd HH:mm:ss，闭区间且可单边，逆序返回400。pageNum/pageSize继续默认1/20，统一分页rows/total不变。身份只取网关会员上下文，外部memberId不生效；这些条件不借给经验接口。
+
+小程序积分页收入/支出切换及日期筛选已接通，开始日期扩为00:00:00、结束日期扩为23:59:59。修改日期是草稿，点击筛选后应用；翻页、刷新和签到后的记录刷新保留已应用条件，重置及切换记录类型清空。服务只发送白名单字段，不把外部会员编号带入查询。尚未在微信开发者工具或部署环境验收，Node页面测试不能代表真实端到端成功。

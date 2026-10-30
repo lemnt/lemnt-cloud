@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.time.LocalDate;
 import java.util.List;
 
-/** member_sign_record 表数据访问接口。 */
+/** member_sign_in_record 表数据访问接口。 */
 @Mapper
 public interface MemberSignRecordMapper extends BaseMapper<SignRecordDO> {
 
@@ -20,7 +20,7 @@ public interface MemberSignRecordMapper extends BaseMapper<SignRecordDO> {
      */
     default SignRecordDO signDate(Long memberId, LocalDate date) {
         return this.selectOne(Wrappers.<SignRecordDO>lambdaQuery()
-                .eq(SignRecordDO::getMemberId, memberId)
+                .eq(SignRecordDO::getUserId, memberId)
                 .eq(SignRecordDO::getSignDate, date));
     }
 
@@ -29,16 +29,9 @@ public interface MemberSignRecordMapper extends BaseMapper<SignRecordDO> {
      */
     default SignRecordDO lastSign(Long memberId) {
         return this.selectOne(Wrappers.<SignRecordDO>lambdaQuery()
-                .eq(SignRecordDO::getMemberId, memberId)
+                .eq(SignRecordDO::getUserId, memberId)
                 .orderByDesc(SignRecordDO::getSignDate)
                 .last("LIMIT 1"));
-    }
-
-    /**
-     * 签到保存。
-     */
-    default int signSave(SignRecordDO value) {
-        return this.insert(value);
     }
 
     /**
@@ -50,7 +43,7 @@ public interface MemberSignRecordMapper extends BaseMapper<SignRecordDO> {
             int limit) {
         return this.selectPage(new Page<>((long) offset / limit + 1, limit, false),
                 Wrappers.<SignRecordDO>lambdaQuery()
-                .eq(SignRecordDO::getMemberId, memberId)
+                .eq(SignRecordDO::getUserId, memberId)
                 .orderByDesc(SignRecordDO::getId)).getRecords();
     }
 
@@ -59,7 +52,7 @@ public interface MemberSignRecordMapper extends BaseMapper<SignRecordDO> {
      */
     default long signCount(Long memberId) {
         return this.selectCount(Wrappers.<SignRecordDO>lambdaQuery()
-                .eq(SignRecordDO::getMemberId, memberId));
+                .eq(SignRecordDO::getUserId, memberId));
     }
 
     /**

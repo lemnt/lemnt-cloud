@@ -110,6 +110,7 @@ export function decodeRecord(raw: unknown, kind: RecordKind): MemberRecord {
       ...base,
       ...(v.nickname == null ? {} : { nickname: text(v.nickname) }),
       signDate: text(v.signDate),
+      ...(v.createTime == null ? {} : { createTime: text(v.createTime) }),
       day: integer(v.day),
       point: integer(v.point),
       experience: integer(v.experience),
@@ -118,6 +119,10 @@ export function decodeRecord(raw: unknown, kind: RecordKind): MemberRecord {
     return {
       ...base,
       levelId: nullableId(v.levelId),
+      ...(v.level == null ? {} : { level: integer(v.level) }),
+      ...(v.discountPercent == null ? {} : { discountPercent: integer(v.discountPercent) }),
+      ...(v.recordExperience == null ? {} : { recordExperience: integer(v.recordExperience) }),
+      ...(v.description == null ? {} : { description: text(v.description) }),
       experience: integer(v.experience),
       reason: text(v.reason),
       createTime: text(v.createTime),

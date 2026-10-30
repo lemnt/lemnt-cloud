@@ -5269,7 +5269,7 @@
       "sha256": "0765a80bec782d103a01ded1badba4af6183f54e7280446f4b2a68d23d410868",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-member",
-      "note": "后台积分当前昵称/会员/业务类型组合筛选已迁移，源数值枚举、title及表字段完整对齐仍未完成。见78-point-record-filter-delivery.md；82已补pointBizType数值筛选和中文选项，旧NULL不推断；最终bizType命名/独立表仍待迁移。"
+      "note": "后台标题包含和App方向/时间筛选接入，兼容HTTP/应用契约待收敛，见100"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/user/AppMemberUserController.java",
@@ -5418,8 +5418,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/level/AppMemberExperienceRecordController.java",
       "sha256": "7db187d42573bf187332a3ea75aa877951703f294e06596feee3d962fe181639",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "经验后台筛选及源枚举查询已接入，现有兼容接口/投影仍待收敛，见96"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/level/vo/experience/AppMemberExperienceRecordRespVO.java",
@@ -5516,7 +5517,7 @@
       "sha256": "106f679da5ac4babb49e1bc5d1909c17824c1640ed0cd1257eef5e6e15759b2a",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-member",
-      "note": "后台积分当前昵称/会员/业务类型组合筛选已迁移，源数值枚举、title及表字段完整对齐仍未完成。见78-point-record-filter-delivery.md；82已补pointBizType数值筛选和中文选项，旧NULL不推断；最终bizType命名/独立表仍待迁移。"
+      "note": "后台标题包含和App方向/时间筛选接入，兼容HTTP/应用契约待收敛，见100"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/MemberUserController.java",
@@ -5575,8 +5576,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/signin/vo/record/MemberSignInRecordPageReqVO.java",
       "sha256": "01f34fcbd1dbee2569f2fcdc62fd444ea6d8a8c55d9df56206e02f0bd84f4596",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "源表字段/时间及后台天数日期筛选接入，sign_date兼容与源deleted等未收敛，见102"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/signin/vo/record/MemberSignInRecordRespVO.java",
@@ -5635,8 +5637,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberLevelRecordController.java",
       "sha256": "6fdc32bd77b8d788f4d46eea27947b69557ae5055318e639e846a057beba3184",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "等级记录编号/时间筛选及Lambda查询接入，当前兼容路由/字段仍待最终收敛，见98"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberLevelController.java",
@@ -5647,8 +5650,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberExperienceRecordController.java",
       "sha256": "f1cbb4092e2b35b484bd126e1a75bbb43f667d5568b035626a29b636236fce93",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "经验后台筛选及源枚举查询已接入，现有兼容接口/投影仍待收敛，见96"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/vo/experience/MemberExperienceRecordRespVO.java",
@@ -5659,8 +5663,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/vo/experience/MemberExperienceRecordPageReqVO.java",
       "sha256": "74b3998fd192710eb0a49fdd6864d9ffbfa6be6d68545f785fc335cd6065c001",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "经验后台筛选及源枚举查询已接入，现有兼容接口/投影仍待收敛，见96"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/vo/experience/MemberExperienceRecordBaseVO.java",
@@ -5671,8 +5676,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/vo/record/MemberLevelRecordPageReqVO.java",
       "sha256": "f2cd999fbf4203f47fe6d5488e24a0bc1542b5fa9236d36ffeae3748a0ada280",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "等级记录编号/时间筛选及Lambda查询接入，当前兼容路由/字段仍待最终收敛，见98"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/vo/record/MemberLevelRecordRespVO.java",
@@ -5937,8 +5943,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/level/MemberLevelServiceImpl.java",
       "sha256": "371f3b27c1724c8d9f4875bc96e58e49255c2792ce6e010ee72ee29b04432d80",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "等级变更快照、旧结构升级及自动无匹配保留规则已接入；零变更/退款入口等仍待收敛，见94"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/level/MemberLevelService.java",
@@ -5993,7 +6000,7 @@
       "sha256": "42d7c7afddd2a56aaf682c30fbdb8e4ad647bc2f4c95854c9e91541421712b88",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-member",
-      "note": "84已切独立member_point_record及逐表DO/Mapper/XML/Gateway，保留ID和原键，源审计/最终数值HTTP契约及兼容字段收敛仍未完成。"
+      "note": "后台标题包含和App方向/时间筛选接入，兼容HTTP/应用契约待收敛，见100"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/user/MemberUserMapper.java",
@@ -6006,7 +6013,7 @@
       "sha256": "73217cae430be522cc9faa2449056e60e1be28c3867a87b13ec6a638fcb1f37d",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-member",
-      "note": "后台签到记录当前昵称筛选/展示、组合分页及count已迁移；主流程差异保留单独核对。见76-sign-record-nickname-delivery.md"
+      "note": "源表字段/时间及后台天数日期筛选接入，sign_date兼容与源deleted等未收敛，见102"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/signin/MemberSignInConfigMapper.java",
@@ -6031,13 +6038,14 @@
       "sha256": "7dc7e535fe0d6fc2f69581edaca95e9e2bebc714cc41619bd76586d6dce1a032",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-member",
-      "note": "86独立经验表/DO/Mapper/XML/Gateway及明确源元数据已接入；审计列/最终HTTP契约与兼容收敛未完成。"
+      "note": "经验后台筛选及源枚举查询已接入，现有兼容接口/投影仍待收敛，见96"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/level/MemberLevelRecordMapper.java",
       "sha256": "e72506c81f30e001cd517943feb1a30afce79e583cbb19a340cefd8ee46da7c8",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "等级记录编号/时间筛选及Lambda查询接入，当前兼容路由/字段仍待最终收敛，见98"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/tag/MemberTagMapper.java",
@@ -6074,8 +6082,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/signin/MemberSignInRecordDO.java",
       "sha256": "c36d3f7111ec7104519d217adb394ae09f266b36c0d286de3f73417d1f5ff2f5",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "源表字段/时间及后台天数日期筛选接入，sign_date兼容与源deleted等未收敛，见102"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/signin/MemberSignInConfigDO.java",
@@ -6098,8 +6107,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/level/MemberLevelRecordDO.java",
       "sha256": "8f8c4503732bf85842a0c47f1623e539bbafe56ca80e8b462e378f75b825d728",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "等级变更快照、旧结构升级及自动无匹配保留规则已接入；零变更/退款入口等仍待收敛，见94"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/level/MemberExperienceRecordDO.java",
@@ -6171,8 +6181,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/convert/level/MemberLevelRecordConvert.java",
       "sha256": "b122add728f981f98430b5d56c3581e2f7ebb9cb940ba7c8b18764d55fad83e7",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "等级变更快照、旧结构升级及自动无匹配保留规则已接入；零变更/退款入口等仍待收敛，见94"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/convert/level/MemberLevelConvert.java",
@@ -6215,7 +6226,7 @@
       "sha256": "09d9c558b64881fae45ac4d571dbe33f5f345ed46da0d08e7357b10c6bde6fe1",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-member",
-      "note": "86独立经验表/DO/Mapper/XML/Gateway及明确源元数据已接入；审计列/最终HTTP契约与兼容收敛未完成。"
+      "note": "经验后台筛选及源枚举查询已接入，现有兼容接口/投影仍待收敛，见96"
     },
     {
       "source": "yudao-module-member/yudao-module-member-api/src/main/java/cn/iocoder/yudao/module/member/enums/point/MemberPointBizTypeEnum.java",

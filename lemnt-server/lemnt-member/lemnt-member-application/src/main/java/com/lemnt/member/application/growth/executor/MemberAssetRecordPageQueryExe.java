@@ -32,8 +32,16 @@ public class MemberAssetRecordPageQueryExe {
         if (!Set.of("POINT", "EXPERIENCE").contains(qry.assetType())) {
             throw new ServiceException("资产类型不合法", 400);
         }
+        if (!"POINT".equals(qry.assetType())
+                && (qry.addStatus() != null || qry.startTime() != null || qry.endTime() != null)) {
+            throw new ServiceException("积分筛选不能用于其他资产", 400);
+        }
+        if (qry.startTime() != null && qry.endTime() != null && qry.startTime().isAfter(qry.endTime())) {
+            throw new ServiceException("开始时间不能晚于结束时间", 400);
+        }
         var filter=new com.lemnt.member.domain.growth.model.AssetRecordPageFilter(qry.memberId(),qry.assetType(),
-                (qry.pageNum()-1)*qry.pageSize(),qry.pageSize());
+                (qry.pageNum()-1)*qry.pageSize(),qry.pageSize(),null,null,null,null,null,null,
+                qry.startTime(),qry.endTime(),qry.addStatus());
         var records="POINT".equals(qry.assetType()) ? pointRecords.page(filter) : experienceRecords.page(filter);
         var total="POINT".equals(qry.assetType()) ? pointRecords.count(filter) : experienceRecords.count(filter);
         return new PageResult<>(records.stream().map(MemberGrowthDTOConverter::toAssetRecordDTO).toList(),total);

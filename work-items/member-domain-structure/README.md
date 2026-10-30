@@ -121,3 +121,21 @@
 
 - [流水基础审计设计](89-ledger-audit-design.md)
 - [流水基础审计交付](90-ledger-audit-delivery.md)
+
+- [等级记录快照设计](91-level-record-snapshot-design.md)
+- [等级记录快照交付](92-level-record-snapshot-delivery.md)
+
+- [等级自动变更规则设计](93-level-transition-design.md)
+- [等级自动变更规则交付](94-level-transition-delivery.md)
+
+- [经验流水筛选设计](95-experience-record-filter-design.md)
+- [经验流水筛选交付](96-experience-record-filter-delivery.md)
+
+- [等级记录筛选设计](97-level-record-filter-design.md)
+- [等级记录筛选交付](98-level-record-filter-delivery.md)
+
+- [积分记录剩余筛选设计](99-point-record-filter-design.md)
+- [积分记录剩余筛选交付](100-point-record-filter-delivery.md)
+
+- [签到记录时间及筛选设计](101-sign-record-time-design.md)
+- [签到记录时间及筛选交付](102-sign-record-time-delivery.md)

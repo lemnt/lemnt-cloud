@@ -3,6 +3,7 @@ package com.lemnt.member.adapter.app.growth.res;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * 签到记录响应。
@@ -19,6 +20,8 @@ public record AppMemberGrowthSignRes(
         Integer day,
         @Schema(description = "奖励积分")
         Long point,
-        @Schema(description = "经验值或等级升级门槛")
-        Long experience
+        @Schema(description = "奖励经验")
+        Long experience,
+        @Schema(description = "真实签到时间，旧记录可能为空")
+        LocalDateTime createTime
 ) implements Serializable {}

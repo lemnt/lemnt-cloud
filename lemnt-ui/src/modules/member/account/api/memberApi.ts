@@ -153,8 +153,16 @@ export async function deleteMetadata(kind: MetadataKind, id: string) {
   );
 }
 export async function getMemberRecords(kind: RecordKind, q: MemberPageQuery) {
+  if (kind === 'signin-records' && q.day !== undefined && (!Number.isInteger(q.day) || q.day < 1))
+    throw Error('签到天数必须为正整数');
   if (kind === 'point-records' && q.pointBizType !== undefined && !Number.isInteger(q.pointBizType))
     throw Error('积分业务类型必须为整数');
+  if (
+    kind === 'experience-records' &&
+    q.experienceBizType !== undefined &&
+    !Number.isInteger(q.experienceBizType)
+  )
+    throw Error('经验业务类型必须为整数');
   return decodePage(
     await request<unknown>({
       url: '/member/admin/' + kind,
@@ -166,6 +174,26 @@ export async function getMemberRecords(kind: RecordKind, q: MemberPageQuery) {
         ...(kind === 'point-records' && q.bizType?.trim() ? { bizType: q.bizType.trim() } : {}),
         ...(kind === 'point-records' && q.pointBizType !== undefined
           ? { pointBizType: q.pointBizType }
+          : {}),
+        ...(kind === 'point-records' && q.title?.trim() ? { title: q.title.trim() } : {}),
+        ...(kind === 'experience-records'
+          ? {
+              experienceBizType: q.experienceBizType,
+              bizNo: q.bizNo?.trim() || undefined,
+              title: q.title?.trim() || undefined,
+              startTime: q.startTime || undefined,
+              endTime: q.endTime || undefined,
+            }
+          : {}),
+        ...(kind === 'signin-records'
+          ? { day: q.day, startTime: q.startTime || undefined, endTime: q.endTime || undefined }
+          : {}),
+        ...(kind === 'level-records'
+          ? {
+              levelId: q.levelId ? memberId(q.levelId) : undefined,
+              startTime: q.startTime || undefined,
+              endTime: q.endTime || undefined,
+            }
           : {}),
         pageNum: q.pageNum,
         pageSize: q.pageSize,

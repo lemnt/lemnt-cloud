@@ -14,6 +14,11 @@
   <if test="f.nickname != null">AND m.nickname LIKE CONCAT('%',#{f.nickname},'%')</if>
   <if test="f.bizType != null">AND p.biz_code=#{f.bizType}</if>
   <if test="f.pointBizType != null">AND p.biz_type=#{f.pointBizType}</if>
+  <if test="f.title != null">AND p.title LIKE CONCAT('%',#{f.title},'%')</if>
+  <if test="f.startTime != null">AND p.create_time &gt;= #{f.startTime}</if>
+  <if test="f.endTime != null">AND p.create_time &lt;= #{f.endTime}</if>
+  <if test="f.addStatus != null and f.addStatus">AND p.point &gt; 0</if>
+  <if test="f.addStatus != null and !f.addStatus">AND p.point &lt; 0</if>
  </where></sql>
  <select id="page" resultMap="PointMap">SELECT p.*,m.nickname FROM member_point_record p LEFT JOIN member_user m ON m.id=p.user_id
  <include refid="Conditions"/> ORDER BY p.id DESC LIMIT #{f.limit} OFFSET #{f.offset}</select>

@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serial;
-import java.io.Serializable;
+import com.lemnt.common.infrastructure.domain.BaseDO;
 import java.time.LocalDate;
 
 /**
@@ -18,8 +18,8 @@ import java.time.LocalDate;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("member_sign_record")
-public class SignRecordDO implements Serializable {
+@TableName("member_sign_in_record")
+public class SignRecordDO extends BaseDO {
     /** 后台查询关联的当前昵称，不写签到表。 */
     @com.baomidou.mybatisplus.annotation.TableField(exist=false)
     private String nickname;
@@ -32,11 +32,12 @@ public class SignRecordDO implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id;
     /** 会员编号。 */
-    private Long memberId;
+    private Long userId;
     /** 签到日期。 */
     private LocalDate signDate;
     /** 连续签到周期内的天数。 */
-    private Integer signinDay;
+    @com.baomidou.mybatisplus.annotation.TableField("`day`")
+    private Integer day;
     /** 奖励积分。 */
     private Long point;
     /** 经验值。 */

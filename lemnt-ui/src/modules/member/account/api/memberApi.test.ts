@@ -156,3 +156,101 @@ it('积分数值类型按数字发送，经验查询不会继承', async () => {
     api.getMemberRecords('point-records', { pageNum: 1, pageSize: 20, pointBizType: 1.5 }),
   ).rejects.toThrow('整数');
 });
+
+it('经验筛选完整发送，类型0有效且不污染积分查询', async () => {
+  mockedRequest.mockResolvedValue({ rows: [], total: 0 });
+  const filters = {
+    pageNum: 2,
+    pageSize: 1,
+    experienceBizType: 0,
+    bizNo: ' E1 ',
+    title: ' 管理员调整 ',
+    startTime: '2026-10-30 00:00:00',
+    endTime: '2026-10-30 23:59:59',
+  };
+  await api.getMemberRecords('experience-records', filters);
+  expect(mockedRequest.mock.calls[0][0].params).toMatchObject({
+    ...filters,
+    bizNo: 'E1',
+    title: '管理员调整',
+  });
+  await api.getMemberRecords('point-records', filters);
+  expect(mockedRequest.mock.calls[1][0].params).not.toHaveProperty('experienceBizType');
+  expect(mockedRequest.mock.calls[1][0].params).not.toHaveProperty('startTime');
+  expect(mockedRequest.mock.calls[1][0].params).not.toHaveProperty('bizNo');
+});
+
+it('经验类型拒绝非整数且保持未筛选时不默认类型0', async () => {
+  await expect(
+    api.getMemberRecords('experience-records', {
+      pageNum: 1,
+      pageSize: 20,
+      experienceBizType: 0.5,
+    }),
+  ).rejects.toThrow('整数');
+  expect(mockedRequest).not.toHaveBeenCalled();
+  mockedRequest.mockResolvedValue({ rows: [], total: 0 });
+  await api.getMemberRecords('experience-records', { pageNum: 1, pageSize: 20 });
+  expect(mockedRequest.mock.calls[0][0].params.experienceBizType).toBeUndefined();
+});
+
+it('等级筛选保留大编号字符串与时间，隔离于经验和积分', async () => {
+  mockedRequest.mockResolvedValue({ rows: [], total: 0 });
+  const filters = {
+    pageNum: 2,
+    pageSize: 1,
+    memberId: '9',
+    levelId: '9007199254740993',
+    startTime: '2026-10-30 10:00:00',
+    endTime: '2026-10-30 11:00:00',
+  };
+  await api.getMemberRecords('level-records', filters);
+  expect(mockedRequest.mock.calls[0][0].params).toMatchObject(filters);
+  await api.getMemberRecords('experience-records', filters);
+  expect(mockedRequest.mock.calls[1][0].params).not.toHaveProperty('levelId');
+  await api.getMemberRecords('point-records', filters);
+  expect(mockedRequest.mock.calls[2][0].params).not.toHaveProperty('levelId');
+  expect(mockedRequest.mock.calls[2][0].params).not.toHaveProperty('startTime');
+});
+
+it('等级筛选拒绝非正编号，未填写时不默认一个等级', async () => {
+  await expect(
+    api.getMemberRecords('level-records', { pageNum: 1, pageSize: 20, levelId: '0' }),
+  ).rejects.toThrow('标识');
+  expect(mockedRequest).not.toHaveBeenCalled();
+  mockedRequest.mockResolvedValue({ rows: [], total: 0 });
+  await api.getMemberRecords('level-records', { pageNum: 1, pageSize: 20 });
+  expect(mockedRequest.mock.calls[0][0].params.levelId).toBeUndefined();
+});
+
+it('积分标题按包含匹配传参，空白不筛选且等级不接收标题', async () => {
+  mockedRequest.mockResolvedValue({ rows: [], total: 0 });
+  await api.getMemberRecords('point-records', { pageNum: 1, pageSize: 20, title: ' 管理员 ' });
+  expect(mockedRequest.mock.calls[0][0].params.title).toBe('管理员');
+  await api.getMemberRecords('point-records', { pageNum: 1, pageSize: 20, title: '  ' });
+  expect(mockedRequest.mock.calls[1][0].params).not.toHaveProperty('title');
+  await api.getMemberRecords('level-records', { pageNum: 1, pageSize: 20, title: '管理员' });
+  expect(mockedRequest.mock.calls[2][0].params).not.toHaveProperty('title');
+});
+
+it('签到天数及真实时间参数不传给积分和等级', async () => {
+  mockedRequest.mockResolvedValue({ rows: [], total: 0 });
+  const filters = {
+    pageNum: 2,
+    pageSize: 1,
+    day: 3,
+    nickname: ' 会员 ',
+    startTime: '2026-10-29 10:00:00',
+    endTime: '2026-10-30 11:00:00',
+  };
+  await api.getMemberRecords('signin-records', filters);
+  expect(mockedRequest.mock.calls[0][0].params).toMatchObject({ ...filters, nickname: '会员' });
+  await api.getMemberRecords('point-records', filters);
+  expect(mockedRequest.mock.calls[1][0].params).not.toHaveProperty('day');
+  expect(mockedRequest.mock.calls[1][0].params).not.toHaveProperty('startTime');
+  await api.getMemberRecords('level-records', filters);
+  expect(mockedRequest.mock.calls[2][0].params).not.toHaveProperty('day');
+  await expect(
+    api.getMemberRecords('signin-records', { pageNum: 1, pageSize: 20, day: 0 }),
+  ).rejects.toThrow('正整数');
+});

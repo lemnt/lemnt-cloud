@@ -577,8 +577,9 @@
     {
       "source": "pages/user/wallet/score.vue",
       "sha256": "dbfda114c0a8ef86ac29f34c948c9291e3bcbbdd11efab1c78ee55785f67b0df",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/member-benefits",
+      "note": "积分方向和日期筛选/跨页已迁移至原生页，微信端尚未验收，见100"
     },
     {
       "source": "sheep/api/index.js",
@@ -613,8 +614,9 @@
     {
       "source": "sheep/api/member/point.js",
       "sha256": "6b81f791d67118b4db78a850c14fd20c1e7d3f742d8ff3fb2a05b330a8828d93",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/member-benefits",
+      "note": "积分方向和日期筛选/跨页已迁移至原生页，微信端尚未验收，见100"
     },
     {
       "source": "sheep/api/member/signin.js",

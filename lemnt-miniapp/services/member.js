@@ -135,11 +135,11 @@ function createMemberClient({
       throw Error("响应不属于当前会员");
     return v;
   }
-  async function page(path, pageNum, kind) {
+  async function page(path, pageNum, kind, filters = {}) {
     if (!Number.isSafeInteger(pageNum) || pageNum < 1)
       throw Error("页码不合法");
     const raw = object(
-      await call(path, "GET", { pageNum, pageSize: 20 }, true, undefined, true),
+      await call(path, "GET", { ...filters, pageNum, pageSize: 20 }, true, undefined, true),
     );
     return {
       total: integer(raw.total),
@@ -151,6 +151,7 @@ function createMemberClient({
           ? {
               ...value,
               signDate: text(v.signDate),
+              ...(v.createTime == null ? {} : { createTime: text(v.createTime) }),
               day: integer(v.day),
               point: integer(v.point),
               experience: integer(v.experience),
@@ -287,11 +288,28 @@ function createMemberClient({
           experience: integer(v.experience),
           day: integer(v.day),
           signDate: text(v.signDate),
+              ...(v.createTime == null ? {} : { createTime: text(v.createTime) }),
         });
       }),
-    records: (kind, pageNum) => {
+    records: (kind, pageNum, filters = {}) => {
       if (!["points", "experience", "signin"].includes(kind))
         throw Error("记录类型不合法");
+      const query = {};
+      if (kind === "points") {
+        if (filters.addStatus != null) {
+          if (typeof filters.addStatus !== "boolean") throw Error("积分方向不合法");
+          query.addStatus = filters.addStatus;
+        }
+        for (const key of ["startTime", "endTime"]) {
+          if (filters[key]) {
+            if (typeof filters[key] !== "string" || !/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(filters[key]))
+              throw Error("积分时间格式不合法");
+            query[key] = filters[key];
+          }
+        }
+        if (query.startTime && query.endTime && query.startTime > query.endTime)
+          throw Error("开始时间不能晚于结束时间");
+      }
       return page(
         kind === "points"
           ? "/point-records"
@@ -300,6 +318,7 @@ function createMemberClient({
             : "/signin/records",
         pageNum,
         kind === "signin" ? "sign" : "asset",
+        query,
       );
     },
   };

@@ -24,6 +24,9 @@ public record MemberRecordPointRecordsReq(
         @Schema(description = "源积分业务枚举编号")
         @Min(1) @Max(23)
         Integer pointBizType,
+        @Schema(description = "积分标题包含匹配")
+        @Size(max = 255)
+        String title,
         @Schema(description = "页码，默认1")
         @Min(1)
         @Max(1000000)

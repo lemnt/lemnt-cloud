@@ -57,7 +57,7 @@ public final class MemberGrowthResConverter {
         return v == null
                 ? null
                 : new AppMemberGrowthSignRes(
-                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience());
+                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience(), v.createTime());
     }
 
     /**
@@ -67,7 +67,7 @@ public final class MemberGrowthResConverter {
         return v == null
                 ? null
                 : new AppMemberGrowthSignsRes(
-                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience());
+                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience(), v.createTime());
     }
 
     /**

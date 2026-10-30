@@ -84,3 +84,15 @@ F01进行中：规则快照、限领/无限量、DATE/TERM、商品范围计价�
 2026-10-30 F04泛化MemberAssetRecordGateway及Impl已退役，成长编排与查询直接依赖逐表Point/ExperienceGateway；无新路由Service。应用共享投影/最终HTTP契约仍保留，见88-asset-gateway-retirement-delivery.md。
 
 2026-10-30 F04积分/经验DO复用本地BaseDO并补审计列、XML映射；新行取上下文、重试不变，历史不回填。源deleted/最终HTTP字段契约等仍待收敛，见90-ledger-audit-delivery.md。
+
+2026-10-30 F04等级记录补变更时等级/折扣及源记录经验值，旧余额列保留并单独映射；手工差值与自动门槛按源路径区分，历史未知NULL。340后端/197前端测试通过，自动无匹配等级状态机差异仍待迁移，见92-level-record-snapshot-delivery.md。
+
+2026-10-30 F04自动无匹配等级保留规则已对齐，匹配低等级仍降级，经验超额扣减余额归零但保留请求流水。344项后端verify通过；源零变更、退款入口等差异尚存，见94-level-transition-delivery.md。
+
+2026-10-30 F04经验流水后台接入源业务编号/类型/标题/时间筛选及React控件，移除经验Req无效name/status。348项后端与199项前端测试通过，接口/统一分页未改；真实HTTP及泛化投影等未完成，见96-experience-record-filter-delivery.md。
+
+2026-10-30 F04等级记录接入等级编号及时间筛选，去掉无效name/status；单表Lambda共用条件，重复CRUD直接BaseMapper。352后端/201前端测试通过，真实部署HTTP和会员域其他差异未完成，见98-level-record-filter-delivery.md。
+
+2026-10-30 F04积分后台标题包含查询、App收入/支出及时间查询和小程序控件接通。356后端/202前端/122小程序测试通过；真实HTTP及微信端未验收，兼容契约等差异未完成，见100-point-record-filter-delivery.md。
+
+2026-10-30 F04签到记录统一源表/字段并补真实时间、基础审计及天数/时间筛选，旧未知时间保持NULL；React/小程序展示贯通。360后端/204前端/123小程序测试通过，真实库升级未执行，源签到规则等差异仍在，见102-sign-record-time-delivery.md。

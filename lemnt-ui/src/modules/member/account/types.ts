@@ -39,9 +39,16 @@ export interface MemberPage<T> {
 export interface MemberPageQuery {
   mobile?: string;
   memberId?: string;
+  levelId?: string;
+  day?: number;
   nickname?: string;
   bizType?: string;
   pointBizType?: number;
+  experienceBizType?: number;
+  bizNo?: string;
+  title?: string;
+  startTime?: string;
+  endTime?: string;
   name?: string;
   status?: number;
   pageNum: number;
@@ -73,6 +80,9 @@ export interface MemberAddress {
 export type RecordKind =
   'point-records' | 'experience-records' | 'level-records' | 'signin-records';
 export interface MemberRecord {
+  level?: number;
+  discountPercent?: number;
+  recordExperience?: number;
   experienceBizType?: number;
   pointBizType?: number;
   title?: string;
@@ -147,4 +157,15 @@ export const pointBusinessTypeEnum = {
   21: { text: '订单积分奖励' },
   22: { text: '订单积分奖励（整单取消）' },
   23: { text: '订单积分奖励（单个退款）' },
+};
+
+/** 芋道经验枚举，查询支持全部源类型，未知历史值不默认归管理员。 */
+export const experienceBusinessTypeEnum = {
+  0: { text: '管理员调整' },
+  1: { text: '邀新奖励' },
+  4: { text: '签到奖励' },
+  5: { text: '抽奖奖励' },
+  11: { text: '下单奖励' },
+  12: { text: '下单奖励（整单取消）' },
+  13: { text: '下单奖励（单个退款）' },
 };

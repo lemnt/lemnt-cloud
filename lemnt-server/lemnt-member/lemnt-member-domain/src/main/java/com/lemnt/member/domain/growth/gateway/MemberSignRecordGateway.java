@@ -6,7 +6,7 @@ import com.lemnt.member.domain.growth.model.SignRecordPageFilter;
 import java.time.LocalDate;
 import java.util.List;
 
-/** member_sign_record 表领域存储网关。 */
+/** member_sign_in_record 表领域存储网关。 */
 public interface MemberSignRecordGateway {
 
     /**

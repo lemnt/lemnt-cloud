@@ -22,7 +22,7 @@ public final class MemberGrowthReqConverter {
     public static AssetRecordPageQry toPointRecordPageQry(Long memberId, PointRecordPageReq req) {
         return new AssetRecordPageQry(memberId, "POINT",
                 req.pageNum() == null ? 1 : req.pageNum(),
-                req.pageSize() == null ? 20 : req.pageSize());
+                req.pageSize() == null ? 20 : req.pageSize(), req.addStatus(), req.startTime(), req.endTime());
     }
 
     /** 转换本人经验记录分页请求，资产类型由接口确定。 */

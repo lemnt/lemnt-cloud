@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
-/** member_sign_record 表持久化实现。 */
+/** member_sign_in_record 表持久化实现。 */
 @Component
 @RequiredArgsConstructor
 public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
@@ -41,7 +41,7 @@ public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
      */
     @Override
     public void signSave(SignRecord value) {
-        memberSignRecordMapper.signSave(SignRecordConverter.toDO(value));
+        memberSignRecordMapper.insert(SignRecordConverter.toDO(value));
     }
 
     /**

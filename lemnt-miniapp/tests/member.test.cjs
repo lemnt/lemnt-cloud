@@ -272,3 +272,37 @@ test("经验类型0与经验标题独立展示，不借积分编号", async () =
   const value=(await c.records("experience",1)).records[0];
   assert.equal(value.experienceBizType,0);assert.equal(value.title,"管理员调整");assert.equal(value.pointBizType,undefined);assert.equal(value.reason,"经验原因");
 });
+
+test("积分方向false和日期白名单传递，经验不继承积分筛选", async () => {
+  const calls = [];
+  const client = createMemberClient({
+    request: async (q) => { calls.push(q); return { statusCode: 200, data: { code: 200, rows: [], total: 0 } }; },
+    baseUrl: "https://api.example.test", ready: true, getSession: () => token(), setSession: () => {},
+  });
+  await client.records("points", 2, { addStatus: false, startTime: "2026-10-30 00:00:00", endTime: "2026-10-30 23:59:59", memberId: "999" });
+  assert.deepEqual(calls[0].data, { addStatus: false, startTime: "2026-10-30 00:00:00", endTime: "2026-10-30 23:59:59", pageNum: 2, pageSize: 20 });
+  await client.records("experience", 1, { addStatus: false, startTime: "2026-10-30 00:00:00" });
+  assert.deepEqual(calls[1].data, { pageNum: 1, pageSize: 20 });
+  await client.records("points", 1);
+  assert.equal(Object.hasOwn(calls[2].data, "addStatus"), false);
+});
+
+test("积分方向和逆序日期非法时不发请求", () => {
+  let calls = 0;
+  const client = createMemberClient({ request: async () => { calls++; }, baseUrl: "https://api.example.test", ready: true, getSession: () => token(), setSession: () => {} });
+  assert.throws(() => client.records("points", 1, { addStatus: "false" }), /方向/);
+  assert.throws(() => client.records("points", 1, { startTime: "2026-10-31 00:00:00", endTime: "2026-10-30 23:59:59" }), /不能晚于/);
+  assert.throws(() => client.records("points", 1, { startTime: "bad" }), /时间格式/);
+  assert.equal(calls, 0);
+});
+
+test("签到未知时间不由业务日期补造，真实时间独立展示", async () => {
+  let time = null;
+  const client = createMemberClient({
+    request: async () => ({ statusCode: 200, data: { code: 200, rows: [{ id: 1, memberId: 1, signDate: "2026-10-29", day: 1, point: 5, experience: 2, createTime: time }], total: 1 } }),
+    baseUrl: "https://api.example.test", ready: true, getSession: () => token(), setSession: () => {},
+  });
+  assert.equal((await client.records("signin", 1)).records[0].createTime, undefined);
+  time = "2026-10-29 10:00:00";
+  assert.equal((await client.records("signin", 1)).records[0].createTime, time);
+});

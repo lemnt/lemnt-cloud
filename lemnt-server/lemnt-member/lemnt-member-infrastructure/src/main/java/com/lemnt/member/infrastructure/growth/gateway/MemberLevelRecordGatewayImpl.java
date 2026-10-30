@@ -24,7 +24,7 @@ public class MemberLevelRecordGatewayImpl implements MemberLevelRecordGateway {
      */
     @Override
     public void levelRecord(LevelRecord value) {
-        memberLevelRecordMapper.levelRecord(LevelRecordConverter.toDO(value));
+        memberLevelRecordMapper.insert(LevelRecordConverter.toDO(value));
     }
 
     /**
@@ -32,9 +32,7 @@ public class MemberLevelRecordGatewayImpl implements MemberLevelRecordGateway {
      */
     @Override
     public List<LevelRecord> levelRecords(Long memberId, int offset, int limit) {
-        return memberLevelRecordMapper.levelRecords(memberId, offset, limit).stream()
-                .map(LevelRecordConverter::toEntity)
-                .toList();
+        return levels(new LevelRecordPageFilter(memberId, offset, limit));
     }
 
     /**
@@ -42,7 +40,7 @@ public class MemberLevelRecordGatewayImpl implements MemberLevelRecordGateway {
      */
     @Override
     public long levelRecordCount(Long memberId) {
-        return memberLevelRecordMapper.levelRecordCount(memberId);
+        return levelsCount(new LevelRecordPageFilter(memberId, 0, 1));
     }
 
     /**
@@ -66,6 +64,6 @@ public class MemberLevelRecordGatewayImpl implements MemberLevelRecordGateway {
      */
     @Override
     public LevelRecord levelsDetail(Long id) {
-        return LevelRecordConverter.toEntity(memberLevelRecordMapper.levelsDetail(id));
+        return LevelRecordConverter.toEntity(memberLevelRecordMapper.selectById(id));
     }
 }

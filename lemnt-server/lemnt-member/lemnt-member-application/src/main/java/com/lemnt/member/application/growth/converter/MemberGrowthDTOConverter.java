@@ -67,7 +67,7 @@ public final class MemberGrowthDTOConverter {
         return v == null
                 ? null
                 : new SignRecordDTO(
-                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience(),v.nickname());
+                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience(), v.nickname(), v.createTime());
     }
 
     /**
@@ -82,7 +82,11 @@ public final class MemberGrowthDTOConverter {
                         v.levelId(),
                         v.experience(),
                         v.reason(),
-                        v.createTime());
+                        v.createTime(),
+                        v.level(),
+                        v.discountPercent(),
+                        v.recordExperience(),
+                        v.description());
     }
 
     /**

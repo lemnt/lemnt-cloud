@@ -40,8 +40,12 @@ public class MemberAssetRecordAllPageQueryExe {
         if (qry.pointBizType()!=null && (!"POINT".equals(qry.assetType())
                 || !com.lemnt.member.domain.growth.model.PointRecordMetadata.supported(qry.pointBizType())))
             throw new ServiceException("积分业务类型不合法",400);
+        if (qry.title() != null && (qry.title().length() > 255 || !"POINT".equals(qry.assetType()))) {
+            throw new ServiceException("积分标题筛选不合法", 400);
+        }
+        var title = qry.title() == null || qry.title().isBlank() ? null : qry.title().trim();
         var filter = new AssetRecordPageFilter(qry.memberId(), qry.assetType(),
-                (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize(),nickname,bizType,qry.pointBizType());
+                (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize(),nickname,bizType,qry.pointBizType(),null,null,title,null,null);
         return new PageResult<>(
                 ("POINT".equals(qry.assetType()) ? pointRecords.page(filter) : experienceRecords.page(filter)).stream().map(MemberGrowthDTOConverter::toAssetRecordDTO).toList(),
                 ("POINT".equals(qry.assetType()) ? pointRecords.count(filter) : experienceRecords.count(filter)));

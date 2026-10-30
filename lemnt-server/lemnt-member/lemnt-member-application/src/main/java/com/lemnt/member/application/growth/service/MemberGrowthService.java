@@ -115,7 +115,10 @@ public class MemberGrowthService {
         }
         long balance =
                 Math.addExact("POINT".equals(type) ? user.points() : user.experience(), delta);
-        if (balance < 0) {
+        // 经验按源规则扣至零，流水仍保留请求变更量；积分继续校验余额。
+        if ("EXPERIENCE".equals(type)) {
+            balance = Math.max(balance, 0);
+        } else if (balance < 0) {
             throw new ServiceException("余额不足", 400);
         }
         memberUserGateway.balance(memberId, type, balance);
@@ -135,17 +138,27 @@ public class MemberGrowthService {
                 );
         saveAsset(record);
         if (autoLevel && "EXPERIENCE".equals(type)) {
+            long userExperience = balance;
             var best =
                     memberLevelGateway.levels().stream()
-                    .filter(v -> v.status() == 1 && v.experience() <= balance)
+                    .filter(v -> v.status() == 1 && v.experience() <= userExperience)
                     .max(Comparator.comparing(Level::level))
                     .orElse(null);
-            Long nextLevelId = best == null ? null : best.id();
-            if (!Objects.equals(nextLevelId, user.levelId())) {
-                memberUserGateway.assignLevel(memberId, nextLevelId);
+            // 无匹配的启用等级时保留原等级，仅明确匹配到不同等级才变更。
+            if (best != null && !Objects.equals(best.id(), user.levelId())) {
+                memberUserGateway.assignLevel(memberId, best.id());
                 memberLevelRecordGateway.levelRecord(
                         new LevelRecord(
-                                null, memberId, nextLevelId, balance, reason, memberUserGateway.now()));
+                                null,
+                                memberId,
+                                best.id(),
+                                balance,
+                                reason,
+                                memberUserGateway.now(),
+                                best.level(),
+                                best.discountPercent(),
+                                best.experience(),
+                                null));
             }
         }
         return assetRequest(memberId, type, bizType, key);
@@ -192,7 +205,17 @@ public class MemberGrowthService {
                 false);
         memberUserGateway.assignLevel(memberId, levelId);
         memberLevelRecordGateway.levelRecord(
-                new LevelRecord(null, memberId, levelId, target, audit, memberUserGateway.now()));
+                new LevelRecord(
+                        null,
+                        memberId,
+                        levelId,
+                        target,
+                        audit,
+                        memberUserGateway.now(),
+                        level == null ? null : level.level(),
+                        level == null ? null : level.discountPercent(),
+                        target - user.experience(),
+                        level == null ? "管理员取消了等级" : "管理员调整为：" + level.name()));
         return true;
     }
 
@@ -285,7 +308,9 @@ public class MemberGrowthService {
     @Transactional(rollbackFor = Exception.class)
     public SignRecord sign(Long memberId) {
         active(memberId);
-        var today = memberUserGateway.now().toLocalDate();
+        // 与签到表DATETIME秒精度一致，避免数据库舍入事件时间跨秒。
+        var now = memberUserGateway.now().withNano(0);
+        var today = now.toLocalDate();
         var previous = memberSignRecordGateway.signDate(memberId, today);
         if (previous != null) {
             return previous;
@@ -307,7 +332,7 @@ public class MemberGrowthService {
                 .findFirst()
                 .orElse(new SignConfig(day, 0L, 0L, 1));
         memberSignRecordGateway.signSave(
-                new SignRecord(null, memberId, today, day, config.point(), config.experience()));
+                new SignRecord(null, memberId, today, day, config.point(), config.experience(), null, now));
         if (config.point() > 0) {
             adjust(
                     memberId,

@@ -8,10 +8,17 @@ import com.lemnt.member.application.dubbo.MemberUserClientImpl;
 import com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe;
 import com.lemnt.member.application.growth.executor.MemberAssetRecordDetailQueryExe;
 import com.lemnt.member.application.growth.executor.MemberLevelRecordAllPageQueryExe;
+import com.lemnt.member.application.growth.executor.MemberExperienceRecordAllPageQueryExe;
+import com.lemnt.member.application.growth.qry.ExperienceRecordAllPageQry;
+import java.time.LocalDateTime;
 import com.lemnt.member.application.growth.executor.MemberLevelRecordDetailQueryExe;
 import com.lemnt.member.application.growth.executor.MemberSignRecordAllPageQueryExe;
 import com.lemnt.member.application.growth.qry.AssetRecordAllPageQry;
 import com.lemnt.member.application.growth.qry.AssetRecordDetailQry;
+import com.lemnt.member.application.growth.qry.SignRecordAllPageQry;
+import com.lemnt.member.domain.growth.model.SignRecord;
+import com.lemnt.member.application.growth.qry.AssetRecordPageQry;
+import com.lemnt.member.application.growth.executor.MemberAssetRecordPageQueryExe;
 import com.lemnt.member.application.growth.qry.LevelRecordAllPageQry;
 import com.lemnt.member.application.growth.qry.LevelRecordDetailQry;
 import com.lemnt.member.application.growth.qry.SignRecordAllPageQry;
@@ -383,7 +390,7 @@ class MemberAccountIntegrationTest {
         assertEquals(first, growthService.sign(id));
         assertEquals(10, memberUserGateway.findById(id).points());
         assertEquals(2, memberUserGateway.findById(id).experience());
-        assertEquals(1, count("member_sign_record"));
+        assertEquals(1, count("member_sign_in_record"));
         assertEquals(1, count("member_experience_record"));
         assertEquals(1, count("member_point_record"));
     }
@@ -410,7 +417,7 @@ class MemberAccountIntegrationTest {
                 + " CHECK(experience<0)");
         assertThrows(Exception.class, () -> growthService.sign(id));
         assertEquals(0, count("member_point_record"));
-        assertEquals(0, count("member_sign_record"));
+        assertEquals(0, count("member_sign_in_record"));
         assertEquals(0, memberUserGateway.findById(id).points());
         assertEquals(0, count("member_experience_record"));
     }
@@ -848,4 +855,278 @@ class MemberAccountIntegrationTest {
         } finally { com.lemnt.common.security.context.SecurityContextHolder.remove(); }
     }
 
+    @org.junit.jupiter.api.Test
+    void levelConfigurationSnapshotsSurviveLaterChangesAndManualReplay() throws Exception {
+        var level=growthService.saveLevel(new Level(null,"Gold",1,100L,90,null,null,1));
+        growthService.assignLevel(id,level,"SNAPSHOT-LEVEL","原原因");
+        var first=memberLevelRecordGateway.levelRecords(id,0,20).get(0);
+        assertEquals(1,first.level());assertEquals(90,first.discountPercent());assertEquals(100L,first.recordExperience());assertEquals(100L,first.experience());
+        assertEquals("管理员调整为：Gold",first.description());
+        sql("UPDATE member_level SET name='Changed',level=2,experience=200,discount_percent=80 WHERE id="+level);
+        growthService.assignLevel(id,level,"SNAPSHOT-LEVEL","原原因");
+        assertEquals(1,memberLevelRecordGateway.levelRecords(id,0,20).size());
+        assertEquals(first,memberLevelRecordGateway.levelRecords(id,0,20).get(0));
+        growthService.assignLevel(id,null,"CANCEL-SNAPSHOT","取消原因");
+        var cancelled=memberLevelRecordGateway.levelRecords(id,0,20).get(0);
+        assertEquals(-100L,cancelled.recordExperience());assertNull(cancelled.discountPercent());assertEquals("管理员取消了等级",cancelled.description());assertEquals(0L,cancelled.experience());
+    }
+    @org.junit.jupiter.api.Test
+    void legacyLevelUpgradeKeepsMemberExperienceAndDoesNotInferCurrentConfiguration() throws Exception {
+        var level=growthService.saveLevel(new Level(null,"Current",1,100L,90,null,null,1));
+        sql("DROP TABLE member_level_record");
+        sql("CREATE TABLE member_level_record(id BIGINT PRIMARY KEY,member_id BIGINT,level_id BIGINT,experience BIGINT NOT NULL,reason VARCHAR(500),create_time DATETIME)");
+        sql("INSERT INTO member_level_record VALUES(900,"+id+","+level+",7,'旧原因',CURRENT_TIMESTAMP)");
+        ScriptUtils.executeSqlScript(schema,new ClassPathResource("member-sql/upgrade/level_record_snapshot.sql"));
+        var old=memberLevelRecordGateway.levelsDetail(900L);
+        assertEquals(7L,old.experience());assertEquals("旧原因",old.reason());assertNull(old.recordExperience());assertNull(old.level());assertNull(old.discountPercent());
+    }
+
+    @org.junit.jupiter.api.Test
+    void automaticLevelRecordStoresThresholdSeparatelyFromMemberExperience() {
+        growthService.saveLevel(new Level(null,"Gold",1,100L,90,null,null,1));
+        growthService.adjustAsset(id,"EXPERIENCE",150,"AUTO-LEVEL-SNAPSHOT","经验奖励");
+        var record=memberLevelRecordGateway.levelRecords(id,0,20).get(0);
+        assertEquals(150L,record.experience());assertEquals(100L,record.recordExperience());
+        assertEquals(1,record.level());assertEquals(90,record.discountPercent());assertNull(record.description());
+    }
+
+    /** 低于最低门槛只更新经验，不按当前空匹配取消等级。 */
+    @Test
+    void experienceBelowLowestThresholdKeepsExistingLevel() {
+        var level = growthService.saveLevel(new Level(null, "Gold", 1, 100L, 90, null, null, 1));
+        growthService.assignLevel(id, level, "KEEP-LEVEL", "分配");
+        growthService.adjustAsset(id, "EXPERIENCE", -99, "BELOW-LEVEL", "扣减");
+        assertEquals(1L, memberUserGateway.findById(id).experience());
+        assertEquals(level, memberUserGateway.findById(id).levelId());
+        assertEquals(1, memberLevelRecordGateway.levelRecordCount(id));
+    }
+
+    /** 所有配置停用或不存在时保留原等级，后续恢复仍可正常计算。 */
+    @Test
+    void missingEnabledLevelConfigurationKeepsExistingLevel() throws Exception {
+        var level = growthService.saveLevel(new Level(null, "Gold", 1, 100L, 90, null, null, 1));
+        growthService.assignLevel(id, level, "DISABLED-LEVEL", "分配");
+        sql("UPDATE member_level SET status=0 WHERE id=" + level);
+        growthService.adjustAsset(id, "EXPERIENCE", 10, "DISABLED-EXPERIENCE", "奖励");
+        assertEquals(level, memberUserGateway.findById(id).levelId());
+        assertEquals(1, memberLevelRecordGateway.levelRecordCount(id));
+        assertEquals(110L, memberUserGateway.findById(id).experience());
+    }
+
+    /** 匹配低等级时正常降级，同等级内经验变化不增加等级流水。 */
+    @Test
+    void experienceDowngradesOnlyToMatchingEnabledLevel() {
+        var bronze = growthService.saveLevel(new Level(null, "Bronze", 1, 10L, 95, null, null, 1));
+        var gold = growthService.saveLevel(new Level(null, "Gold", 2, 100L, 90, null, null, 1));
+        growthService.assignLevel(id, gold, "DOWNGRADE-LEVEL", "分配");
+        growthService.adjustAsset(id, "EXPERIENCE", -50, "DOWNGRADE-EXPERIENCE", "扣减");
+        assertEquals(bronze, memberUserGateway.findById(id).levelId());
+        var record = memberLevelRecordGateway.levelRecords(id, 0, 20).get(0);
+        assertEquals(50L, record.experience());
+        assertEquals(10L, record.recordExperience());
+        assertEquals(1, record.level());
+        growthService.adjustAsset(id, "EXPERIENCE", 1, "SAME-LEVEL", "奖励");
+        assertEquals(2, memberLevelRecordGateway.levelRecordCount(id));
+    }
+
+    /** 经验可超额扣至零，重试按原请求值比对，积分不沿用经验规则。 */
+    @Test
+    void experienceDeductionFloorsBalanceAndReplaysOriginalDelta() {
+        growthService.adjustAsset(id, "EXPERIENCE", 5, "FLOOR-ADD", "奖励");
+        var record = growthService.adjustAsset(id, "EXPERIENCE", -10, "FLOOR-SUBTRACT", "扣减");
+        assertEquals(-10L, record.delta());
+        assertEquals(0L, record.balance());
+        assertEquals(0L, memberUserGateway.findById(id).experience());
+        assertEquals(record, growthService.adjustAsset(id, "EXPERIENCE", -10, "FLOOR-SUBTRACT", "扣减"));
+        assertBusinessException(409, () -> growthService.adjustAsset(id, "EXPERIENCE", -9, "FLOOR-SUBTRACT", "扣减"));
+        assertBusinessException(400, () -> growthService.adjustAsset(id, "POINT", -1, "FLOOR-POINT", "扣减"));
+    }
+    /** 源筛选使用实际快照，精确匹配与分页总数共用条件，历史NULL只在未筛选时可见。 */
+    @Test
+    void experienceSourceFiltersShareCountAndKeepTypeZeroAndUnknownDistinct() throws Exception {
+        growthService.adjustAsset(id, "EXPERIENCE", 5, "FILTER-E1", "原因1");
+        growthService.adjustAsset(id, "EXPERIENCE", 6, "FILTER-E2", "原因2");
+        growthService.adjustAsset(other, "EXPERIENCE", 7, "FILTER-OTHER", "其他会员");
+        experienceRecords.save(new com.lemnt.member.domain.growth.model.AssetRecord(
+                null, id, "EXPERIENCE", 1L, 12L, "ADMIN", "FILTER-OLD", "旧记录", memberUserGateway.now()));
+        sql("UPDATE member_experience_record SET create_time='2026-10-30 10:00:00' WHERE biz_id='FILTER-E1'");
+        sql("UPDATE member_experience_record SET create_time='2026-10-30 11:00:00' WHERE biz_id='FILTER-E2'");
+        var start = LocalDateTime.of(2026, 10, 30, 10, 0);
+        var end = start.plusHours(1);
+        var query = new MemberExperienceRecordAllPageQueryExe(experienceRecords);
+        var first = query.execute(new ExperienceRecordAllPageQry(id, 1, 1, null, 0, "管理员调整", start, end));
+        var second = query.execute(new ExperienceRecordAllPageQry(id, 2, 1, null, 0, "管理员调整", start, end));
+        assertEquals(2, first.getTotal());
+        assertEquals(2, second.getTotal());
+        assertEquals("FILTER-E2", first.getRecords().get(0).bizNo());
+        assertEquals("FILTER-E1", second.getRecords().get(0).bizNo());
+        assertEquals(0, first.getRecords().get(0).experienceBizType());
+        assertEquals(1, query.execute(new ExperienceRecordAllPageQry(id, 1, 20, " FILTER-E1 ", 0, " 管理员调整 ", start, end)).getTotal());
+        assertEquals(0, query.execute(new ExperienceRecordAllPageQry(id, 1, 20, "FILTER-E", 0, null, null, null)).getTotal());
+        assertEquals(0, query.execute(new ExperienceRecordAllPageQry(id, 1, 20, null, 0, "管理员", null, null)).getTotal());
+        assertEquals(3, query.execute(new ExperienceRecordAllPageQry(id, 1, 20, null, null, null, null, null)).getTotal());
+        assertEquals(0, query.execute(new ExperienceRecordAllPageQry(id, 1, 20, "FILTER-OLD", 0, null, null, null)).getTotal());
+        assertEquals(1, query.execute(new ExperienceRecordAllPageQry(id, 1, 20, null, 0, null, end, null)).getTotal());
+        assertEquals(1, query.execute(new ExperienceRecordAllPageQry(id, 1, 20, null, 0, null, null, start)).getTotal());
+        assertEquals(0, query.execute(new ExperienceRecordAllPageQry(id, 1, 20, null, 4, null, null, null)).getTotal());
+    }
+
+    /** 时间和类型在应用入口统一校验，允许查询尚无写入路径的源枚举。 */
+    @Test
+    void experienceFiltersRejectInvalidRangesAndAcceptAllSourceTypes() {
+        var query = new MemberExperienceRecordAllPageQueryExe(experienceRecords);
+        var now = LocalDateTime.now();
+        assertBusinessException(400, () -> query.execute(new ExperienceRecordAllPageQry(id, 1, 20, null, 2, null, null, null)));
+        assertBusinessException(400, () -> query.execute(new ExperienceRecordAllPageQry(id, 1, 20, null, null, null, now, now.minusSeconds(1))));
+        for (int type : new int[] {0, 1, 4, 5, 11, 12, 13}) {
+            assertEquals(0, query.execute(new ExperienceRecordAllPageQry(id, 1, 20, null, type, null, null, null)).getTotal());
+        }
+    }
+    /** 等级筛选读取记录编号，取消记录和其他会员不混入，时间两端均包含。 */
+    @Test
+    void levelRecordFiltersShareCountAndPreserveCancellationHistory() throws Exception {
+        var bronze = growthService.saveLevel(new Level(null, "Bronze", 1, 10L, 95, null, null, 1));
+        var gold = growthService.saveLevel(new Level(null, "Gold", 2, 100L, 90, null, null, 1));
+        growthService.assignLevel(id, gold, "LEVEL-FILTER-A", "第一次");
+        growthService.assignLevel(id, bronze, "LEVEL-FILTER-B", "降级");
+        growthService.assignLevel(id, gold, "LEVEL-FILTER-C", "第二次");
+        growthService.assignLevel(id, null, "LEVEL-FILTER-CANCEL", "取消");
+        growthService.assignLevel(other, gold, "LEVEL-FILTER-OTHER", "其他会员");
+        sql("UPDATE member_level_record SET create_time='2026-10-30 10:30:00'");
+        var goldRows = memberLevelRecordGateway.levelRecords(id, 0, 20).stream()
+                .filter(v -> gold.equals(v.levelId())).toList();
+        sql("UPDATE member_level_record SET create_time='2026-10-30 10:00:00' WHERE id=" + goldRows.get(1).id());
+        sql("UPDATE member_level_record SET create_time='2026-10-30 11:00:00' WHERE id=" + goldRows.get(0).id());
+        var start = LocalDateTime.of(2026, 10, 30, 10, 0);
+        var end = start.plusHours(1);
+        var first = memberLevelRecordAllPageQueryExe.execute(new LevelRecordAllPageQry(id, 1, 1, gold, start, end));
+        var second = memberLevelRecordAllPageQueryExe.execute(new LevelRecordAllPageQry(id, 2, 1, gold, start, end));
+        assertEquals(2, first.getTotal());
+        assertEquals(2, second.getTotal());
+        assertEquals(goldRows.get(0).id(), first.getRecords().get(0).id());
+        assertEquals(goldRows.get(1).id(), second.getRecords().get(0).id());
+        assertEquals(4, memberLevelRecordAllPageQueryExe.execute(new LevelRecordAllPageQry(id, 1, 20)).getTotal());
+        assertEquals(3, memberLevelRecordAllPageQueryExe.execute(new LevelRecordAllPageQry(null, 1, 20, gold, start, end)).getTotal());
+        assertEquals(1, memberLevelRecordAllPageQueryExe.execute(new LevelRecordAllPageQry(id, 1, 20, gold, end, null)).getTotal());
+        assertEquals(1, memberLevelRecordAllPageQueryExe.execute(new LevelRecordAllPageQry(id, 1, 20, gold, null, start)).getTotal());
+        assertNull(memberLevelRecordGateway.levelRecords(id, 0, 1).get(0).levelId());
+        assertEquals(0, memberLevelRecordAllPageQueryExe.execute(new LevelRecordAllPageQry(id, 1, 20, Long.MAX_VALUE, null, null)).getTotal());
+        assertNotNull(memberLevelRecordGateway.levelsDetail(goldRows.get(0).id()));
+    }
+
+    /** 校验发生在应用入口，内部调用同样不能绕过编号和时间约束。 */
+    @Test
+    void levelRecordFiltersRejectInvalidIdAndReversedTime() {
+        var now = LocalDateTime.now();
+        assertBusinessException(400, () -> memberLevelRecordAllPageQueryExe.execute(new LevelRecordAllPageQry(id, 1, 20, 0L, null, null)));
+        assertBusinessException(400, () -> memberLevelRecordAllPageQueryExe.execute(new LevelRecordAllPageQry(id, 1, 20, null, now, now.minusSeconds(1))));
+    }
+    /** 积分标题按源包含匹配，不能用原因替代缺失的历史标题。 */
+    @Test
+    void pointTitleFilterCombinesWithMemberNicknameAndType() {
+        growthService.adjustAsset(id, "POINT", 5, "TITLE-P1", "原原因");
+        growthService.adjustAsset(id, "POINT", 2, "TITLE-P2", "原原因");
+        growthService.adjustAsset(other, "POINT", 3, "TITLE-OTHER", "原原因");
+        pointRecords.save(new com.lemnt.member.domain.growth.model.AssetRecord(
+                null, id, "POINT", 1L, 8L, "ADMIN", "TITLE-OLD", "管理员修改", memberUserGateway.now()));
+        var first = memberAssetRecordAllPageQueryExe.execute(new AssetRecordAllPageQry("POINT", id, 1, 1, "one", "ADMIN", 2, " 管理 "));
+        var second = memberAssetRecordAllPageQueryExe.execute(new AssetRecordAllPageQry("POINT", id, 2, 1, "one", "ADMIN", 2, "管理"));
+        assertEquals(2, first.getTotal());
+        assertEquals(2, second.getTotal());
+        assertEquals("TITLE-P2", first.getRecords().get(0).bizNo());
+        assertEquals("TITLE-P1", second.getRecords().get(0).bizNo());
+        assertEquals(0, memberAssetRecordAllPageQueryExe.execute(new AssetRecordAllPageQry("POINT", id, 1, 20, null, null, null, "不存在")).getTotal());
+        assertEquals(3, memberAssetRecordAllPageQueryExe.execute(new AssetRecordAllPageQry("POINT", id, 1, 20)).getTotal());
+    }
+
+    /** 收入、支出、零流水及日期边界独立判断，始终限制当前会员。 */
+    @Test
+    void appPointDirectionAndTimeFiltersKeepFalseAndMemberOwnership() throws Exception {
+        growthService.adjustAsset(id, "POINT", 10, "DIRECTION-P1", "收入1");
+        growthService.adjustAsset(id, "POINT", -3, "DIRECTION-P2", "支出");
+        growthService.adjustAsset(id, "POINT", 2, "DIRECTION-P3", "收入2");
+        growthService.adjustAsset(other, "POINT", 3, "DIRECTION-OTHER", "其他会员");
+        pointRecords.save(new com.lemnt.member.domain.growth.model.AssetRecord(
+                null, id, "POINT", 0L, 9L, "TRADE_CLOSED", "DIRECTION-ZERO", "旧零流水", memberUserGateway.now()));
+        sql("UPDATE member_point_record SET create_time='2026-10-30 10:30:00'");
+        sql("UPDATE member_point_record SET create_time='2026-10-30 10:00:00' WHERE biz_id='DIRECTION-P1'");
+        sql("UPDATE member_point_record SET create_time='2026-10-30 11:00:00' WHERE biz_id='DIRECTION-P3'");
+        var start = LocalDateTime.of(2026, 10, 30, 10, 0);
+        var end = start.plusHours(1);
+        var query = new MemberAssetRecordPageQueryExe(pointRecords, experienceRecords);
+        var income = query.execute(new AssetRecordPageQry(id, "POINT", 1, 1, true, start, end));
+        var incomeNext = query.execute(new AssetRecordPageQry(id, "POINT", 2, 1, true, start, end));
+        var expense = query.execute(new AssetRecordPageQry(id, "POINT", 1, 20, false, start, end));
+        assertEquals(2, income.getTotal());
+        assertEquals(2, incomeNext.getTotal());
+        assertEquals("DIRECTION-P3", income.getRecords().get(0).bizNo());
+        assertEquals("DIRECTION-P1", incomeNext.getRecords().get(0).bizNo());
+        assertEquals(1, expense.getTotal());
+        assertEquals(-3L, expense.getRecords().get(0).delta());
+        assertEquals(4, query.execute(new AssetRecordPageQry(id, "POINT", 1, 20, null, start, end)).getTotal());
+        assertEquals(1, query.execute(new AssetRecordPageQry(id, "POINT", 1, 20, true, end, null)).getTotal());
+        assertEquals(1, query.execute(new AssetRecordPageQry(id, "POINT", 1, 20, true, null, start)).getTotal());
+        assertBusinessException(400, () -> query.execute(new AssetRecordPageQry(id, "POINT", 1, 20, false, end, start)));
+        assertBusinessException(400, () -> query.execute(new AssetRecordPageQry(id, "EXPERIENCE", 1, 20, false, null, null)));
+    }
+    /** 同一次数据库事件同时确定签到日期和审计时间，重试不改变时间。 */
+    @Test
+    void signEventTimeAndAuditRemainStableOnReplay() {
+        growthService.saveSignConfig(new SignConfig(1, 10L, 2L, 1));
+        var before = memberUserGateway.now().withNano(0);
+        var first = growthService.sign(id);
+        var after = memberUserGateway.now().withNano(0);
+        assertNotNull(first.createTime());
+        assertFalse(first.createTime().isBefore(before));
+        assertFalse(first.createTime().isAfter(after));
+        assertEquals(first.signDate(), first.createTime().toLocalDate());
+        assertEquals(first, growthService.sign(id));
+        var row = template.getMapper(MemberSignRecordMapper.class).selectById(first.id());
+        assertEquals(first.createTime(), row.getCreateTime());
+        assertEquals(row.getCreateTime(), row.getUpdateTime());
+    }
+
+    /** 真实时间和连续天数共同过滤，旧NULL时间不按业务日期补造。 */
+    @Test
+    void signDayAndTimeFiltersShareCountAndExcludeUnknownTimes() throws Exception {
+        var start = LocalDateTime.of(2026, 10, 29, 10, 0);
+        var end = LocalDateTime.of(2026, 10, 30, 11, 0);
+        memberSignRecordGateway.signSave(new SignRecord(null, id, start.toLocalDate(), 1, 1L, 0L, null, start));
+        memberSignRecordGateway.signSave(new SignRecord(null, id, end.toLocalDate(), 1, 2L, 0L, null, end));
+        memberSignRecordGateway.signSave(new SignRecord(null, id, start.minusDays(1).toLocalDate(), 2, 3L, 0L, null, start.minusDays(1)));
+        memberSignRecordGateway.signSave(new SignRecord(null, other, end.toLocalDate(), 1, 4L, 0L, null, end));
+        sql("INSERT INTO member_sign_in_record(user_id,sign_date,`day`,point,experience) VALUES(" + id + ",'2026-10-27',1,1,0)");
+        var first = memberSignRecordAllPageQueryExe.execute(new SignRecordAllPageQry(id, 1, 1, "one", 1, start, end));
+        var second = memberSignRecordAllPageQueryExe.execute(new SignRecordAllPageQry(id, 2, 1, "one", 1, start, end));
+        assertEquals(2, first.getTotal());
+        assertEquals(2, second.getTotal());
+        assertEquals(end, first.getRecords().get(0).createTime());
+        assertEquals(start, second.getRecords().get(0).createTime());
+        assertEquals(3, memberSignRecordAllPageQueryExe.execute(new SignRecordAllPageQry(id, 1, 20, null, 1, null, null)).getTotal());
+        assertEquals(1, memberSignRecordAllPageQueryExe.execute(new SignRecordAllPageQry(id, 1, 20, null, 1, end, null)).getTotal());
+        assertEquals(1, memberSignRecordAllPageQueryExe.execute(new SignRecordAllPageQry(id, 1, 20, null, 1, null, start)).getTotal());
+        assertEquals(0, memberSignRecordAllPageQueryExe.execute(new SignRecordAllPageQry(id, 1, 20, "two", 1, start, end)).getTotal());
+        assertBusinessException(400, () -> memberSignRecordAllPageQueryExe.execute(new SignRecordAllPageQry(id, 1, 20, null, 0, null, null)));
+        assertBusinessException(400, () -> memberSignRecordAllPageQueryExe.execute(new SignRecordAllPageQry(id, 1, 20, null, 1, end, start)));
+    }
+
+    /** 旧表升级保存业务日期和奖励，未知真实时间/操作者保持NULL。 */
+    @Test
+    void legacySignUpgradeRenamesSourceFieldsWithoutInventingTime() throws Exception {
+        sql("DROP TABLE member_sign_in_record");
+        sql("CREATE TABLE member_sign_record(id BIGINT PRIMARY KEY,member_id BIGINT NOT NULL,sign_date DATE NOT NULL,signin_day INT NOT NULL,point BIGINT NOT NULL,experience BIGINT NOT NULL,UNIQUE(member_id,sign_date))");
+        sql("INSERT INTO member_sign_record VALUES(900," + id + ",'2026-10-29',3,5,2)");
+        ScriptUtils.executeSqlScript(schema, new ClassPathResource("member-sql/upgrade/sign_record_time.sql"));
+        var old = memberSignRecordGateway.signDate(id, java.time.LocalDate.of(2026, 10, 29));
+        assertEquals(900L, old.id());
+        assertEquals(3, old.day());
+        assertEquals(5L, old.point());
+        assertEquals(2L, old.experience());
+        assertNull(old.createTime());
+        var row = template.getMapper(MemberSignRecordMapper.class).selectById(900L);
+        assertNull(row.getCreateBy());
+        assertNull(row.getUpdateBy());
+        assertNull(row.getUpdateTime());
+        assertEquals(1, memberSignRecordAllPageQueryExe.execute(new SignRecordAllPageQry(id, 1, 20)).getTotal());
+    }
 }
