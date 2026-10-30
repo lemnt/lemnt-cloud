@@ -25,4 +25,6 @@ public class MemberAccountGatewayImpl implements MemberAccountGateway {
         var member = memberUserClient.getByMemberId(memberId);
         return member == null ? null : member.status();
     }
+    @Override
+    public void recordLogin(Long memberId, String loginIp) { memberUserClient.recordLogin(memberId,loginIp); }
 }

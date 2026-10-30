@@ -33,7 +33,7 @@ public final class MemberGrowthDTOConverter {
                         v.bizType(),
                         v.bizNo(),
                         v.reason(),
-                        v.createTime());
+                        v.createTime(),v.nickname(),v.pointBizType(),v.title(),v.description());
     }
 
     /**
@@ -67,7 +67,7 @@ public final class MemberGrowthDTOConverter {
         return v == null
                 ? null
                 : new SignRecordDTO(
-                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience());
+                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience(),v.nickname());
     }
 
     /**

@@ -95,7 +95,7 @@ public final class MemberUserResConverter {
                         v.groupId(),
                         v.sex(),
                         v.birthday(),
-                        v.createTime());
+                        v.createTime(), v.mark(), v.name(), v.areaId(), v.loginDate(),v.loginIp());
     }
 
     /**
@@ -117,7 +117,7 @@ public final class MemberUserResConverter {
                         v.groupId(),
                         v.sex(),
                         v.birthday(),
-                        v.createTime());
+                        v.createTime(), v.mark(), v.name(), v.areaId(), v.loginDate(),v.loginIp());
     }
 
 

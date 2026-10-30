@@ -26,5 +26,13 @@ public record MemberRecordPointRecordsRes(
         @Schema(description = "原因")
         String reason,
         @Schema(description = "数据库时间")
-        LocalDateTime createTime
+        LocalDateTime createTime,
+        @Schema(description = "当前会员昵称")
+        String nickname,
+        @Schema(description = "源积分枚举编号，未知为空")
+        Integer pointBizType,
+        @Schema(description = "积分标题快照")
+        String title,
+        @Schema(description = "积分描述快照")
+        String description
 ) implements Serializable {}

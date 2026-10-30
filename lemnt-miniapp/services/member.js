@@ -116,7 +116,11 @@ function createMemberClient({
       throw Error("登录已失效，请重新登录");
     }
     if (response.statusCode !== 200 || response.data?.code !== 200)
-      throw Error(response.data?.detail || response.data?.msg || "会员请求未确认成功，请刷新核验");
+      throw Error(
+        response.data?.detail ||
+          response.data?.msg ||
+          "会员请求未确认成功，请刷新核验",
+      );
     return fullResponse ? response.data : response.data.data;
   }
   async function login(path, data) {
@@ -134,7 +138,9 @@ function createMemberClient({
   async function page(path, pageNum, kind) {
     if (!Number.isSafeInteger(pageNum) || pageNum < 1)
       throw Error("页码不合法");
-    const raw = object(await call(path, "GET", { pageNum, pageSize: 20 }, true, undefined, true));
+    const raw = object(
+      await call(path, "GET", { pageNum, pageSize: 20 }, true, undefined, true),
+    );
     return {
       total: integer(raw.total),
       records: list(raw.rows, (v) => {
@@ -153,6 +159,15 @@ function createMemberClient({
               ...value,
               delta: integer(v.delta),
               balance: integer(v.balance),
+              ...(v.assetType === "POINT" && v.pointBizType != null
+                ? { pointBizType: integer(v.pointBizType) }
+                : {}),
+              ...(v.assetType === "POINT" && v.title != null
+                ? { title: text(v.title) }
+                : {}),
+              ...(v.assetType === "POINT" && v.description != null
+                ? { description: text(v.description) }
+                : {}),
               reason: text(v.reason),
               createTime: text(v.createTime),
             };

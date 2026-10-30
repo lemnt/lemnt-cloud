@@ -106,7 +106,7 @@ public final class MemberGrowthResConverter {
         return v == null
                 ? null
                 : new MemberRecordSigninRecordsRes(
-                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience());
+                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience(),v.nickname());
     }
 
     /**
@@ -196,7 +196,7 @@ public final class MemberGrowthResConverter {
                         v.bizType(),
                         v.bizNo(),
                         v.reason(),
-                        v.createTime());
+                        v.createTime(),v.nickname(),v.pointBizType(),v.title(),v.description());
     }
 
     /**
@@ -214,7 +214,7 @@ public final class MemberGrowthResConverter {
                         v.bizType(),
                         v.bizNo(),
                         v.reason(),
-                        v.createTime());
+                        v.createTime(),v.pointBizType(),v.title(),v.description());
     }
 
     /**

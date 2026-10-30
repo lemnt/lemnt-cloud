@@ -37,11 +37,22 @@ function status(v: unknown): number {
 function nullableId(v: unknown): string | null {
   return v == null ? null : memberId(v);
 }
+/** 地区编号沿用源表有符号INT范围，不作为名称展示。 */
+function areaId(value: unknown) {
+  const result = integer(value);
+  if (result <= 0 || result > 2147483647) throw Error('地区编号不合法');
+  return result;
+}
 export function decodeProfile(raw: unknown): MemberProfile {
   const v = object(raw);
   return {
     id: memberId(v.id),
     nickname: text(v.nickname),
+    ...(v.loginDate == null ? {} : { loginDate: text(v.loginDate) }),
+    ...(v.loginIp == null ? {} : { loginIp: text(v.loginIp) }),
+    ...(v.mark == null ? {} : { mark: text(v.mark) }),
+    ...(v.name == null ? {} : { name: text(v.name) }),
+    ...(v.areaId == null ? {} : { areaId: areaId(v.areaId) }),
     mobile: nullableText(v.mobile),
     email: nullableText(v.email),
     avatar: nullableText(v.avatar),
@@ -97,6 +108,7 @@ export function decodeRecord(raw: unknown, kind: RecordKind): MemberRecord {
   if (kind === 'signin-records')
     return {
       ...base,
+      ...(v.nickname == null ? {} : { nickname: text(v.nickname) }),
       signDate: text(v.signDate),
       day: integer(v.day),
       point: integer(v.point),
@@ -114,6 +126,14 @@ export function decodeRecord(raw: unknown, kind: RecordKind): MemberRecord {
     throw Error('会员资产类型不匹配');
   return {
     ...base,
+    ...(kind === 'point-records' && v.pointBizType != null
+      ? { pointBizType: integer(v.pointBizType) }
+      : {}),
+    ...(kind === 'point-records' && v.title != null ? { title: text(v.title) } : {}),
+    ...(kind === 'point-records' && v.description != null
+      ? { description: text(v.description) }
+      : {}),
+    ...(kind === 'point-records' && v.nickname != null ? { nickname: text(v.nickname) } : {}),
     delta: integer(v.delta),
     balance: integer(v.balance),
     assetType: text(v.assetType),

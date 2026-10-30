@@ -4,7 +4,7 @@ import { Alert, Button, Result, Select } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { usePermission } from '@/shared/hooks/usePermission';
 import { getMemberRecords } from '../api/memberApi';
-import { memberKeys, recordPermissions, recordLabels } from '../types';
+import { memberKeys, recordPermissions, recordLabels, pointBusinessTypeEnum } from '../types';
 import type { RecordKind, MemberPageQuery, MemberRecord } from '../types';
 export default function MemberRecordPage() {
   const { can } = usePermission();
@@ -22,12 +22,15 @@ export default function MemberRecordPage() {
   const columns: ProColumns<MemberRecord>[] = [
     { title: '记录ID', dataIndex: 'id', search: false },
     { title: '会员ID', dataIndex: 'memberId' },
+    ...(['signin-records', 'point-records'].includes(kind)
+      ? [{ title: '会员昵称', dataIndex: 'nickname' }]
+      : []),
     ...(kind === 'signin-records'
       ? [
-          { title: '日期', dataIndex: 'signDate' },
-          { title: '周期天数', dataIndex: 'day' },
-          { title: '奖励积分', dataIndex: 'point' },
-          { title: '奖励经验', dataIndex: 'experience' },
+          { title: '日期', dataIndex: 'signDate', search: false },
+          { title: '周期天数', dataIndex: 'day', search: false },
+          { title: '奖励积分', dataIndex: 'point', search: false },
+          { title: '奖励经验', dataIndex: 'experience', search: false },
         ]
       : kind === 'level-records'
         ? [
@@ -37,14 +40,29 @@ export default function MemberRecordPage() {
             { title: '时间', dataIndex: 'createTime' },
           ]
         : [
+            ...(kind === 'point-records'
+              ? [
+                  {
+                    title: '业务类型',
+                    dataIndex: 'pointBizType',
+                    valueType: 'select' as const,
+                    valueEnum: pointBusinessTypeEnum,
+                  },
+                  { title: '积分标题', dataIndex: 'title' },
+                  { title: '积分描述', dataIndex: 'description' },
+                ]
+              : []),
             { title: '变更量', dataIndex: 'delta' },
             { title: '变更后余额', dataIndex: 'balance' },
-            { title: '业务类型', dataIndex: 'bizType' },
+            { title: '原业务码', dataIndex: 'bizType' },
             { title: '业务编号', dataIndex: 'bizNo' },
             { title: '原因', dataIndex: 'reason' },
             { title: '时间', dataIndex: 'createTime' },
           ]
-    ).map((c) => ({ ...c, search: false })),
+    ).map((c) => ({
+      ...c,
+      search: kind === 'point-records' && ['bizType', 'pointBizType'].includes(c.dataIndex),
+    })),
   ];
   if (!allowed.length) return <Result status="403" title="没有会员记录查询权限" />;
   return (
@@ -76,6 +94,16 @@ export default function MemberRecordPage() {
           setQuery({
             ...query,
             pageNum: 1,
+            nickname:
+              ['signin-records', 'point-records'].includes(kind) && typeof v.nickname === 'string'
+                ? v.nickname
+                : undefined,
+            pointBizType:
+              kind === 'point-records' && v.pointBizType != null && v.pointBizType !== ''
+                ? Number(v.pointBizType)
+                : undefined,
+            bizType:
+              kind === 'point-records' && typeof v.bizType === 'string' ? v.bizType : undefined,
             memberId: typeof v.memberId === 'string' ? v.memberId : undefined,
           })
         }

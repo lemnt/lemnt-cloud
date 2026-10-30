@@ -21,7 +21,7 @@ public final class SignRecordConverter {
                         row.getSignDate(),
                         row.getSigninDay(),
                         row.getPoint(),
-                        row.getExperience());
+                        row.getExperience(),row.getNickname());
     }
 
     /**

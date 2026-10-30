@@ -12,5 +12,11 @@ public record SignRecordDTO(
         LocalDate signDate,
         Integer day,
         Long point,
-        Long experience
-) implements Serializable {}
+        Long experience,
+        String nickname
+) implements Serializable {
+    /** 无昵称的既有签到投影保持兼容。 */
+    public SignRecordDTO(Long id,Long memberId,LocalDate signDate,Integer day,Long point,Long experience) {
+        this(id,memberId,signDate,day,point,experience,null);
+    }
+}

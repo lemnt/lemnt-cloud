@@ -20,6 +20,10 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @TableName("member_asset_record")
 public class AssetRecordDO implements Serializable {
+    /** 当前会员昵称关联值，不写资产表。 */
+    @com.baomidou.mybatisplus.annotation.TableField(exist=false)
+    private String nickname;
+
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -37,6 +41,10 @@ public class AssetRecordDO implements Serializable {
     private Long balance;
     /** 业务来源类型。 */
     private String bizType;
+    /** 已确认的源积分枚举与写入时展示快照。 */
+    private Integer pointBizType;
+    private String title;
+    private String description;
     /** 业务幂等编号。 */
     private String bizNo;
     /** 变更原因。 */

@@ -147,4 +147,19 @@ class AuthFilterAppRoutesTest {
         assertTrue(reached.get());
         verifyNoInteractions(tokenService);
     }
+    @Test
+    void loginAuditHeaderUsesObservedPeerAndDiscardsSpoofedHeaders() {
+        var request=MockServerHttpRequest.post("/member/app/auth/login")
+                .remoteAddress(new java.net.InetSocketAddress("203.0.113.7",1234))
+                .header("X-Lemnt-Login-Ip","198.51.100.99").header("X-Forwarded-For","198.51.100.99").build();
+        filter.filter(MockServerWebExchange.from(request),clean->{
+            assertEquals("203.0.113.7",clean.getRequest().getHeaders().getFirst("X-Lemnt-Login-Ip"));
+            return Mono.empty();
+        }).block();
+        var unknown=MockServerHttpRequest.post("/member/app/auth/login").header("X-Lemnt-Login-Ip","198.51.100.99").build();
+        filter.filter(MockServerWebExchange.from(unknown),clean->{
+            assertNull(clean.getRequest().getHeaders().getFirst("X-Lemnt-Login-Ip"));return Mono.empty();
+        }).block();
+    }
+
 }

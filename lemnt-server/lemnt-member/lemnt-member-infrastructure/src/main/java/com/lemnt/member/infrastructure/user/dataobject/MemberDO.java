@@ -24,8 +24,18 @@ public class MemberDO extends BaseDO {
     @TableId(type = IdType.AUTO)
     /** 主键编号。 */
     private Long id;
+    /** 最近成功登录时间，历史未知保持空。 */
+    private java.time.LocalDateTime loginDate;
+    /** 网关观察到的登录连接IP，不推断代理链终端。 */
+    private String loginIp;
     /** 昵称。 */
     private String nickname;
+    /** 后台内部备注，不作为会员端或认证资料返回。 */
+    private String mark;
+    /** 真实姓名，仅后台维护。 */
+    private String name;
+    /** 所在地区编号。 */
+    private Integer areaId;
     /** 手机号。 */
     private String mobile;
     /** 使用项目默认算法保存的密码哈希，不在诊断信息中输出。 */

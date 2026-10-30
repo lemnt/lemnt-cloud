@@ -60,6 +60,9 @@ public interface MemberUserMapper extends BaseMapper<MemberDO> {
     default int profileUpdate(MemberDO value) {
         return this.update(null, Wrappers.<MemberDO>lambdaUpdate()
                 .set(MemberDO::getNickname, value.getNickname())
+                .set(MemberDO::getMark, value.getMark())
+                .set(MemberDO::getName, value.getName())
+                .set(MemberDO::getAreaId, value.getAreaId())
                 .set(MemberDO::getEmail, value.getEmail())
                 .set(MemberDO::getAvatar, value.getAvatar())
                 .set(MemberDO::getStatus, value.getStatus())

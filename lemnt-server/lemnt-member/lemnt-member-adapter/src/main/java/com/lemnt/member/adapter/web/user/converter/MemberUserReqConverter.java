@@ -26,7 +26,7 @@ public final class MemberUserReqConverter {
      */
     public static MemberUpdateCmd profile(Long id, MemberProfileUpdateReq r) {
         return new MemberUpdateCmd(
-                id, r.nickname(), r.email(), r.avatar(), r.sex(), r.birthday(), r.status());
+                id, r.nickname(), r.email(), r.avatar(), r.sex(), r.birthday(), r.status(), r.mark(), r.name(), r.areaId());
     }
 
     /**

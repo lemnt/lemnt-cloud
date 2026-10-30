@@ -6,5 +6,8 @@ import java.io.Serializable;
 public record SignRecordAllPageQry(
         Long memberId,
         int pageNum,
-        int pageSize
-) implements Serializable {}
+        int pageSize,
+        String nickname
+) implements Serializable {
+    public SignRecordAllPageQry(Long memberId,int pageNum,int pageSize) {this(memberId,pageNum,pageSize,null);}
+}

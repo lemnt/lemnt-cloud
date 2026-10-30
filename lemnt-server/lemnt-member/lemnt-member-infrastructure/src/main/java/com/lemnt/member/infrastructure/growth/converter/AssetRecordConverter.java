@@ -24,7 +24,7 @@ public final class AssetRecordConverter {
                         row.getBizType(),
                         row.getBizNo(),
                         row.getReason(),
-                        row.getCreateTime());
+                        row.getCreateTime(),row.getNickname(),row.getPointBizType(),row.getTitle(),row.getDescription());
     }
 
     /**
@@ -38,6 +38,9 @@ public final class AssetRecordConverter {
         row.setDelta(value.delta());
         row.setBalance(value.balance());
         row.setBizType(value.bizType());
+        row.setPointBizType(value.pointBizType());
+        row.setTitle(value.title());
+        row.setDescription(value.description());
         row.setBizNo(value.bizNo());
         row.setReason(value.reason());
         row.setCreateTime(value.createTime());

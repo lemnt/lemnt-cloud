@@ -20,5 +20,7 @@ public record MemberRecordSigninRecordsRes(
         @Schema(description = "奖励积分")
         Long point,
         @Schema(description = "经验值或等级升级门槛")
-        Long experience
+        Long experience,
+        @Schema(description = "当前会员昵称，可空")
+        String nickname
 ) implements Serializable {}

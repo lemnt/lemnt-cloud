@@ -85,7 +85,7 @@ public final class MemberGrowthResConverter {
                         v.bizType(),
                         v.bizNo(),
                         v.reason(),
-                        v.createTime());
+                        v.createTime(),v.pointBizType(),v.title(),v.description());
     }
 
     /**

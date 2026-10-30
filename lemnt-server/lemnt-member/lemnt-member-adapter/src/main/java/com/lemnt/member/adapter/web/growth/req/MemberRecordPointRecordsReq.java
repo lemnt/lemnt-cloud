@@ -15,13 +15,15 @@ public record MemberRecordPointRecordsReq(
         @Schema(description = "可选会员ID；未填查询所有会员")
         @Positive
         Long memberId,
-        @Schema(description = "名称包含匹配")
-        @Size(max = 100)
-        String name,
-        @Schema(description = "状态：0禁用，1启用")
-        @Min(0)
-        @Max(1)
-        Integer status,
+        @Schema(description = "当前会员昵称包含匹配")
+        @Size(max=80)
+        String nickname,
+        @Schema(description = "当前业务类型字符串精确匹配")
+        @Size(max=40)
+        String bizType,
+        @Schema(description = "源积分业务枚举编号")
+        @Min(1) @Max(23)
+        Integer pointBizType,
         @Schema(description = "页码，默认1")
         @Min(1)
         @Max(1000000)

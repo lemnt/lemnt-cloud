@@ -25,6 +25,6 @@ public class MemberUpdateCmdExe {
                 cmd.avatar(),
                 cmd.sex(),
                 cmd.birthday(),
-                cmd.status());
+                cmd.status(), cmd.mark(), cmd.name(), cmd.areaId());
     }
 }

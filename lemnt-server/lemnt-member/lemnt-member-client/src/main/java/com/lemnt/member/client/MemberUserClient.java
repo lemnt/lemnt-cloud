@@ -17,4 +17,8 @@ public interface MemberUserClient {
     /** 按手机号读取认证中心所需的登录资料，会员不存在时返回 null。 */
     MemberLoginInfoDTO getByMobile(String mobile);
 
+    /** 认证成功后记录登录时间，失败不能作为成功登录返回。 */
+    default void recordLogin(Long memberId) { recordLogin(memberId,null); }
+    /** 同时写入本次连接IP，未知保持空。 */
+    void recordLogin(Long memberId, String loginIp);
 }

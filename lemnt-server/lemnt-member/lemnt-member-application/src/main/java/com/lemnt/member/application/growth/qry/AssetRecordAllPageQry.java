@@ -7,5 +7,20 @@ public record AssetRecordAllPageQry(
         String assetType,
         Long memberId,
         int pageNum,
-        int pageSize
-) implements Serializable {}
+        int pageSize,
+        String nickname,
+        String bizType,
+        Integer pointBizType
+) implements Serializable {
+    public AssetRecordAllPageQry(String assetType,
+        Long memberId,
+        int pageNum,
+        int pageSize,
+        String nickname,
+        String bizType) {this(assetType, memberId, pageNum, pageSize, nickname, bizType,null);}
+
+    public AssetRecordAllPageQry(String assetType,
+        Long memberId,
+        int pageNum,
+        int pageSize) {this(assetType, memberId, pageNum, pageSize,null,null,null);}
+}

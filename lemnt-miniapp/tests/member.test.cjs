@@ -64,7 +64,10 @@ test("登录规范化ID并仅保留会员令牌；密码不进入会话", async 
   }));
   await x.c.passwordLogin("13800000002", "Example-password-2026");
   assert.deepEqual(x.get(), token("2", "b"));
-  assert.deepEqual(x.calls[0].data, { mobile: "13800000002", password: "Example-password-2026" });
+  assert.deepEqual(x.calls[0].data, {
+    mobile: "13800000002",
+    password: "Example-password-2026",
+  });
 });
 test("刷新不确定时清除旧会话且不重试", async () => {
   const x = client(async () => {
@@ -160,9 +163,18 @@ test("HTTP401或网关业务401均清除当前会话，绝不重试写入", asyn
 test("统一问题响应保留业务错误提示", async () => {
   let session = token();
   const c = createMemberClient({
-    request: async () => ({statusCode: 409, data: {status: 409, code: "BUSINESS_RULE_VIOLATION", detail: "签到规则未启用"}}),
-    baseUrl: "https://example.test", ready: true,
-    getSession: () => session, setSession: value => session = value,
+    request: async () => ({
+      statusCode: 409,
+      data: {
+        status: 409,
+        code: "BUSINESS_RULE_VIOLATION",
+        detail: "签到规则未启用",
+      },
+    }),
+    baseUrl: "https://example.test",
+    ready: true,
+    getSession: () => session,
+    setSession: (value) => (session = value),
   });
   await assert.rejects(c.sign(), /签到规则未启用/);
   assert.notEqual(session, null);
@@ -173,17 +185,84 @@ test("会员分页读取统一rows和total，积分经验签到路径保持隔�
     request: async (q) => {
       calls.push(q);
       const sign = q.url.includes("/signin/");
-      return {statusCode: 200, data: {code: 200, data: null, rows: [sign
-        ? {id: 1, memberId: 1, signDate: "2026-10-26", day: 1, point: 2, experience: 3}
-        : {id: 1, memberId: 1, delta: 2, balance: 5, reason: "奖励", createTime: "2026-10-26T10:00:00"}], total: 1}};
+      return {
+        statusCode: 200,
+        data: {
+          code: 200,
+          data: null,
+          rows: [
+            sign
+              ? {
+                  id: 1,
+                  memberId: 1,
+                  signDate: "2026-10-26",
+                  day: 1,
+                  point: 2,
+                  experience: 3,
+                }
+              : {
+                  id: 1,
+                  memberId: 1,
+                  delta: 2,
+                  balance: 5,
+                  reason: "奖励",
+                  createTime: "2026-10-26T10:00:00",
+                },
+          ],
+          total: 1,
+        },
+      };
     },
-    baseUrl: "https://api.example.test", ready: true,
-    getSession: () => token(), setSession: () => {},
+    baseUrl: "https://api.example.test",
+    ready: true,
+    getSession: () => token(),
+    setSession: () => {},
   });
   for (const kind of ["points", "experience", "signin"]) {
     const page = await c.records(kind, 1);
     assert.equal(page.total, 1);
     assert.equal(page.records[0].memberId, "1");
   }
-  assert.deepEqual(calls.map(q => q.url.split("/member/app")[1]), ["/point-records", "/experience-records", "/signin/records"]);
+  assert.deepEqual(
+    calls.map((q) => q.url.split("/member/app")[1]),
+    ["/point-records", "/experience-records", "/signin/records"],
+  );
+});
+test("积分标题描述与原因分离，历史和经验不套用积分元数据", async () => {
+  let row = {
+    id: 1,
+    memberId: 1,
+    assetType: "POINT",
+    delta: 10,
+    balance: 10,
+    reason: "人工原因",
+    createTime: "2026-10-30 08:00:00",
+    pointBizType: 2,
+    title: "管理员修改",
+    description: "管理员修改 10 积分",
+  };
+  const c = createMemberClient({
+    request: async () => ({
+      statusCode: 200,
+      data: { code: 200, rows: [row], total: 1 },
+    }),
+    baseUrl: "https://api.example.test",
+    ready: true,
+    getSession: () => token(),
+    setSession: () => {},
+  });
+  const point = (await c.records("points", 1)).records[0];
+  assert.equal(point.title, "管理员修改");
+  assert.equal(point.reason, "人工原因");
+  assert.equal(point.pointBizType, 2);
+  row = { ...row, assetType: "EXPERIENCE" };
+  assert.equal((await c.records("experience", 1)).records[0].title, undefined);
+  row = {
+    ...row,
+    assetType: "POINT",
+    title: null,
+    description: null,
+    pointBizType: null,
+  };
+  assert.equal((await c.records("points", 1)).records[0].title, undefined);
 });

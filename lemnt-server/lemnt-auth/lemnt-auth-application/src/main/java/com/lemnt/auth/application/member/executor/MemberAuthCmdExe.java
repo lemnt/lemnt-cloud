@@ -24,7 +24,8 @@ public class MemberAuthCmdExe {
      * 校验会员密码并签发独立会话。
      */
     public MemberTokenDTO execute(AuthLoginCmd cmd) {
-        return result(memberAuthenticationService.login(cmd.mobile(), cmd.password()));
+        return result(cmd.loginIp() == null ? memberAuthenticationService.login(cmd.mobile(), cmd.password())
+                : memberAuthenticationService.login(cmd.mobile(), cmd.password(), cmd.loginIp()));
     }
 
     /**

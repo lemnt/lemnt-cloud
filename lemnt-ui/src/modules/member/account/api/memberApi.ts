@@ -21,11 +21,11 @@ import type {
   MemberPointConfig,
   MemberSignConfig,
 } from '../types';
-const user = (id: string) => `/member/admin/users/${memberId(id)}`;
+const user = (id: string) => `/member-users/${memberId(id)}`;
 export async function getMembers(q: MemberPageQuery) {
   return decodePage(
     await request<unknown>({
-      url: '/member/admin/users',
+      url: '/member-users',
       params: { mobile: q.mobile, pageNum: q.pageNum, pageSize: q.pageSize },
     }),
     decodeProfile,
@@ -39,6 +39,9 @@ export async function getMember(id: string) {
 function profile(v: MemberProfileValues) {
   return {
     nickname: v.nickname,
+    ...(v.mark === undefined ? {} : { mark: v.mark }),
+    ...(v.name === undefined ? {} : { name: v.name }),
+    ...(v.areaId === undefined ? {} : { areaId: v.areaId }),
     email: v.email || null,
     avatar: v.avatar || null,
     sex: v.sex ?? null,
@@ -150,11 +153,20 @@ export async function deleteMetadata(kind: MetadataKind, id: string) {
   );
 }
 export async function getMemberRecords(kind: RecordKind, q: MemberPageQuery) {
+  if (kind === 'point-records' && q.pointBizType !== undefined && !Number.isInteger(q.pointBizType))
+    throw Error('积分业务类型必须为整数');
   return decodePage(
     await request<unknown>({
       url: '/member/admin/' + kind,
       params: {
         memberId: q.memberId ? memberId(q.memberId) : undefined,
+        ...(['signin-records', 'point-records'].includes(kind) && q.nickname?.trim()
+          ? { nickname: q.nickname.trim() }
+          : {}),
+        ...(kind === 'point-records' && q.bizType?.trim() ? { bizType: q.bizType.trim() } : {}),
+        ...(kind === 'point-records' && q.pointBizType !== undefined
+          ? { pointBizType: q.pointBizType }
+          : {}),
         pageNum: q.pageNum,
         pageSize: q.pageSize,
       },

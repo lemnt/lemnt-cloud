@@ -23,6 +23,15 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
     /**
      * 获取数据库当前时间。
      */
+    /** 登录审计不通过资料更新覆盖其他字段。 */
+    @Override
+    public void recordLogin(Long memberId, java.time.LocalDateTime loginDate, String loginIp) {
+        memberUserMapper.update(null, com.baomidou.mybatisplus.core.toolkit.Wrappers.lambdaUpdate(com.lemnt.member.infrastructure.user.dataobject.MemberDO.class)
+                .eq(com.lemnt.member.infrastructure.user.dataobject.MemberDO::getId, memberId)
+                .set(com.lemnt.member.infrastructure.user.dataobject.MemberDO::getLoginDate, loginDate)
+                .set(com.lemnt.member.infrastructure.user.dataobject.MemberDO::getLoginIp, loginIp));
+    }
+
     @Override
     public LocalDateTime now() {
         return memberUserMapper.now();

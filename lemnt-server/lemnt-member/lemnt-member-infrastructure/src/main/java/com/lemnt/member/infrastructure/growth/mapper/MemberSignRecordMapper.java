@@ -65,18 +65,7 @@ public interface MemberSignRecordMapper extends BaseMapper<SignRecordDO> {
     /**
      * 查询签到记录。
      */
-    default List<SignRecordDO> signsPage(SignRecordPageFilter f) {
-        return this.selectPage(new Page<>((long) f.offset() / f.limit() + 1, f.limit(), false),
-                Wrappers.<SignRecordDO>lambdaQuery()
-                .eq(f.memberId() != null, SignRecordDO::getMemberId, f.memberId())
-                .orderByDesc(SignRecordDO::getId)).getRecords();
-    }
-
-    /**
-     * 查询签到记录数量。
-     */
-    default long signsCount(SignRecordPageFilter f) {
-        return this.selectCount(Wrappers.<SignRecordDO>lambdaQuery()
-                .eq(f.memberId() != null, SignRecordDO::getMemberId, f.memberId()));
-    }
+    List<SignRecordDO> signsPage(@org.apache.ibatis.annotations.Param("f") SignRecordPageFilter f);
+    /** 总数与关联分页使用相同条件。 */
+    long signsCount(@org.apache.ibatis.annotations.Param("f") SignRecordPageFilter f);
 }

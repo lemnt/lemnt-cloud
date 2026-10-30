@@ -4,5 +4,8 @@ package com.lemnt.member.domain.growth.model;
 public record SignRecordPageFilter(
         Long memberId,
         int offset,
-        int limit
-) {}
+        int limit,
+        String nickname
+) {
+    public SignRecordPageFilter(Long memberId,int offset,int limit) {this(memberId,offset,limit,null);}
+}

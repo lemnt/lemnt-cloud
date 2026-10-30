@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.member.infrastructure.growth.mapper.MemberSignRecordMapper">
+  <resultMap id="SignRecordMap" type="com.lemnt.member.infrastructure.growth.dataobject.SignRecordDO">
+    <id column="id" property="id"/><result column="member_id" property="memberId"/>
+    <result column="sign_date" property="signDate"/><result column="signin_day" property="signinDay"/>
+    <result column="point" property="point"/><result column="experience" property="experience"/>
+    <result column="nickname" property="nickname"/>
+  </resultMap>
+  <sql id="Conditions">
+    <where>
+      <if test="f.memberId != null">s.member_id=#{f.memberId}</if>
+      <if test="f.nickname != null">AND m.nickname LIKE CONCAT('%',#{f.nickname},'%')</if>
+    </where>
+  </sql>
+  <select id="signsPage" resultMap="SignRecordMap">
+    SELECT s.id,s.member_id,s.sign_date,s.signin_day,s.point,s.experience,m.nickname
+    FROM member_sign_record s LEFT JOIN member_user m ON m.id=s.member_id
+    <include refid="Conditions"/> ORDER BY s.id DESC LIMIT #{f.limit} OFFSET #{f.offset}
+  </select>
+  <select id="signsCount" resultType="long">
+    SELECT COUNT(*) FROM member_sign_record s LEFT JOIN member_user m ON m.id=s.member_id
+    <include refid="Conditions"/>
+  </select>
+</mapper>

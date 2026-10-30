@@ -59,6 +59,7 @@ class ControllerMappingTest {
                 DELETE /posts/{postIds} system:post:remove
                 DELETE /roles/{roleIds} system:role:remove
                 DELETE /users/{userIds} system:user:remove
+                GET /areas/tree
                 GET /configurations system:config:list
                 GET /configurations/config-key/{configKey} system:config:query
                 GET /configurations/{configId} system:config:query

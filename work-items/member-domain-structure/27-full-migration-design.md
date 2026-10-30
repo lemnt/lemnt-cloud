@@ -58,3 +58,21 @@ F01进行中：规则快照、限领/无限量、DATE/TERM、商品范围计价�
 2026-10-29评价图片选择上传已接入单项/多商品页，复用system文件存储、会员独立路由与网关身份，system133/gateway32/小程序112测试通过；真实OSS、路由发布及真机待验收。见62-comment-upload-delivery.md。
 
 2026-10-29评价图片预览/移除已接入单项及整单页，保持提交附件一致和未知结果冻结；116项小程序测试通过，未真机验收。见64-comment-image-interaction-delivery.md。
+
+2026-10-29 F04会员后台备注字段及独立web契约/表单已接入，App与认证不返回内部备注；同步修正后台会员资料/member-users调用路径。其他会员字段仍待迁移，见66-member-mark-delivery.md。
+
+2026-10-29 F04会员后台姓名/地区编号字段贯通且App/认证不暴露，旧会员更新保留；后台地区名称解析与选择器尚未完成。相关318后端及186前端测试通过，见68-member-identity-delivery.md。
+
+2026-10-29 F04后台地区选择和名称展示已接入，system使用源CSV提供地区树，名称由前端真实路径派生；member服务端areaName及注册登录审计仍待迁移。详见70-member-area-delivery.md。
+
+2026-10-29 F04成功登录时间由member数据库写入，auth会话成功后RPC记录且审计失败尝试撤销，后台可查；相关322后端/190前端测试通过。可信IP及注册来源未迁移，见72-member-login-audit-delivery.md。
+
+2026-10-29 F04登录连接IP已从网关remoteAddress经内部头/auth/RPC到member落库并后台展示；不解析客户端转发头，可信代理链和注册来源仍未完成。详见74-member-login-ip-delivery.md。
+
+2026-10-29 F04后台签到记录昵称筛选/当前昵称展示已接入，独立请求去掉未生效name/status，XML关联及统一分页count；源签到主流程本批不变。见76-sign-record-nickname-delivery.md。
+
+2026-10-30 F04后台积分流水昵称/业务类型组合筛选与当前昵称展示已接入，签到昵称搜索控件修正；会员35/React193项测试通过。源数值业务枚举、积分title和表字段完整对齐仍未完成，见78-point-record-filter-delivery.md。
+
+2026-10-30 F04积分源编号/标题/描述写入快照已接入明确业务映射，原幂等业务码保留；后台及小程序展示，旧值不回填。源积分表及数值筛选契约最终替换仍待迁移，见80-point-record-metadata-delivery.md。
+
+2026-10-30 F04积分源数值类型筛选已接入pointBizType，中文枚举选择及原业务码组合，历史NULL不推断；源独立积分表及最终字段契约仍待迁移。见82-point-numeric-filter-delivery.md。

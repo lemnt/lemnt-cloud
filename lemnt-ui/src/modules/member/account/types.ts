@@ -1,6 +1,9 @@
 export interface MemberProfile {
   id: string;
   nickname: string;
+  mark?: string | null;
+  name?: string | null;
+  areaId?: number | null;
   mobile: string | null;
   email: string | null;
   avatar: string | null;
@@ -12,9 +15,14 @@ export interface MemberProfile {
   sex: number | null;
   birthday: string | null;
   createTime: string | null;
+  loginDate?: string | null;
+  loginIp?: string | null;
 }
 export interface MemberProfileValues {
   nickname: string;
+  mark?: string | null;
+  name?: string | null;
+  areaId?: number | null;
   email?: string | null;
   avatar?: string | null;
   sex?: number | null;
@@ -31,6 +39,9 @@ export interface MemberPage<T> {
 export interface MemberPageQuery {
   mobile?: string;
   memberId?: string;
+  nickname?: string;
+  bizType?: string;
+  pointBizType?: number;
   name?: string;
   status?: number;
   pageNum: number;
@@ -62,6 +73,10 @@ export interface MemberAddress {
 export type RecordKind =
   'point-records' | 'experience-records' | 'level-records' | 'signin-records';
 export interface MemberRecord {
+  pointBizType?: number;
+  title?: string;
+  description?: string;
+  nickname?: string | null;
   id: string;
   memberId: string;
   delta?: number;
@@ -119,4 +134,16 @@ export const recordLabels: Record<RecordKind, string> = {
   'experience-records': '经验流水',
   'level-records': '等级记录',
   'signin-records': '签到记录',
+};
+
+/** 芋道积分业务枚举；保留尚无当前写入来源的整单奖励取消。 */
+export const pointBusinessTypeEnum = {
+  1: { text: '签到' },
+  2: { text: '管理员修改' },
+  11: { text: '订单积分抵扣' },
+  12: { text: '订单积分抵扣（整单取消）' },
+  13: { text: '订单积分抵扣（单个退款）' },
+  21: { text: '订单积分奖励' },
+  22: { text: '订单积分奖励（整单取消）' },
+  23: { text: '订单积分奖励（单个退款）' },
 };

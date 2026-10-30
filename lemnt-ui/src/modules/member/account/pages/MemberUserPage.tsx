@@ -1,10 +1,13 @@
+import { getAreas, areaOptions, areaName } from '@/modules/system/area/api/areaApi';
 import { useState } from 'react';
 import {
   PageContainer,
   ProTable,
   ProFormText,
+  ProFormTextArea,
   ProFormDigit,
   ProFormSelect,
+  ProFormTreeSelect,
   ProFormDatePicker,
   type ProColumns,
 } from '@ant-design/pro-components';
@@ -55,6 +58,12 @@ export default function MemberUserPage() {
     queryKey: memberKeys.users(query),
     queryFn: () => api.getMembers(query),
     enabled: can('member:user:query'),
+  });
+  const areas = useQuery({
+    queryKey: ['system-area-tree'],
+    queryFn: getAreas,
+    enabled: can('member:user:query'),
+    staleTime: Infinity,
   });
   const profile = useQuery({
     queryKey: memberKeys.detail(detail),
@@ -206,12 +215,27 @@ export default function MemberUserPage() {
             items={[
               ['会员编号', profile.data.id],
               ['昵称', profile.data.nickname],
+              ['后台备注', profile.data.mark ?? '未记录'],
+              ['真实姓名', profile.data.name ?? '未记录'],
+              [
+                '地区',
+                profile.data.areaId == null
+                  ? '未记录'
+                  : areas.isPending
+                    ? `地区加载中（${profile.data.areaId}）`
+                    : areas.isError
+                      ? `地区加载失败（${profile.data.areaId}）`
+                      : (areaName(areas.data ?? [], profile.data.areaId) ??
+                        `未识别地区（${profile.data.areaId}）`),
+              ],
               ['手机', profile.data.mobile],
               ['邮箱', profile.data.email],
               ['生日', profile.data.birthday],
               ['积分', profile.data.points],
               ['经验', profile.data.experience],
               ['创建时间', profile.data.createTime],
+              ['最近成功登录', profile.data.loginDate ?? '未记录'],
+              ['登录连接IP', profile.data.loginIp ?? '未记录'],
             ].map(([label, children]) => ({
               key: String(label),
               label,
@@ -317,6 +341,27 @@ export default function MemberUserPage() {
           {action.kind === 'edit' && (
             <>
               <ProFormText name="nickname" label="昵称" rules={[{ required: true }, { max: 80 }]} />
+              <ProFormText name="name" label="真实姓名" rules={[{ max: 30 }]} />
+              <ProFormTreeSelect
+                name="areaId"
+                label="地区（留空保留原值）"
+                disabled={!areas.isSuccess}
+                fieldProps={{
+                  treeData: areaOptions(areas.data ?? []),
+                  showSearch: true,
+                  treeNodeFilterProp: 'title',
+                  loading: areas.isFetching,
+                }}
+              />
+              {areas.isError ? (
+                <Alert
+                  type="error"
+                  message="地区加载失败，未修改原地区"
+                  action={<Button onClick={() => areas.refetch()}>重试</Button>}
+                />
+              ) : null}
+
+              <ProFormTextArea name="mark" label="后台备注" rules={[{ max: 255 }]} />
               <ProFormText name="email" label="邮箱" rules={[{ type: 'email' }, { max: 254 }]} />
               <ProFormText
                 name="avatar"

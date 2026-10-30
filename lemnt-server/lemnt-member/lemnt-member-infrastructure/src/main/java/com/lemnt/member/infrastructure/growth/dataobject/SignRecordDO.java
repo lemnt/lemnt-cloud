@@ -20,6 +20,10 @@ import java.time.LocalDate;
 @Accessors(chain = true)
 @TableName("member_sign_record")
 public class SignRecordDO implements Serializable {
+    /** 后台查询关联的当前昵称，不写签到表。 */
+    @com.baomidou.mybatisplus.annotation.TableField(exist=false)
+    private String nickname;
+
 
     @Serial
     private static final long serialVersionUID = 1L;

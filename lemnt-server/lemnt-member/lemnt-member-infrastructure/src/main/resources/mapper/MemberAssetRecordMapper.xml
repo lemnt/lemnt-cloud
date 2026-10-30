@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.member.infrastructure.growth.mapper.MemberAssetRecordMapper">
+  <resultMap id="AssetMap" type="com.lemnt.member.infrastructure.growth.dataobject.AssetRecordDO">
+    <id column="id" property="id"/><result column="member_id" property="memberId"/>
+    <result column="asset_type" property="assetType"/><result column="delta" property="delta"/>
+    <result column="balance" property="balance"/><result column="biz_type" property="bizType"/>
+    <result column="biz_no" property="bizNo"/><result column="reason" property="reason"/>
+    <result column="create_time" property="createTime"/><result column="nickname" property="nickname"/>
+    <result column="point_biz_type" property="pointBizType"/><result column="title" property="title"/><result column="description" property="description"/>
+  </resultMap>
+  <sql id="Conditions"><where>
+    a.asset_type=#{f.assetType}
+    <if test="f.memberId != null">AND a.member_id=#{f.memberId}</if>
+    <if test="f.nickname != null">AND m.nickname LIKE CONCAT('%',#{f.nickname},'%')</if>
+    <if test="f.bizType != null">AND a.biz_type=#{f.bizType}</if>
+    <if test="f.pointBizType != null">AND a.point_biz_type=#{f.pointBizType}</if>
+  </where></sql>
+  <select id="assetsPage" resultMap="AssetMap">
+    SELECT a.*,m.nickname FROM member_asset_record a LEFT JOIN member_user m ON m.id=a.member_id
+    <include refid="Conditions"/> ORDER BY a.id DESC LIMIT #{f.limit} OFFSET #{f.offset}
+  </select>
+  <select id="assetsCount" resultType="long">
+    SELECT COUNT(*) FROM member_asset_record a LEFT JOIN member_user m ON m.id=a.member_id <include refid="Conditions"/>
+  </select>
+</mapper>

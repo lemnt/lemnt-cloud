@@ -37,7 +37,10 @@ public class MemberAuthenticationService {
 
 
     /** 会员与后台使用不同重试键，按现有登录安全策略控制失败次数。 */
-    public MemberToken login(String mobile, String password) {
+    public MemberToken login(String mobile, String password) { return login(mobile,password,null); }
+
+    /** IP只由网关连接信息传入，不解析客户端代理链。 */
+    public MemberToken login(String mobile, String password, String loginIp) {
         String phone = mobile(mobile);
         if (password == null || password.getBytes(StandardCharsets.UTF_8).length > 72) {
             throw new SecurityException("手机号或密码错误");
@@ -54,7 +57,14 @@ public class MemberAuthenticationService {
             throw new SecurityException("手机号或密码错误");
         }
         loginSecurityGateway.clearRetryCount(retryKey);
-        return memberTokenGateway.create(account.memberId(), account.mobile());
+        var token=memberTokenGateway.create(account.memberId(), account.mobile());
+        try { if(loginIp == null) memberAccountGateway.recordLogin(account.memberId());
+              else memberAccountGateway.recordLogin(account.memberId(),loginIp); }
+        catch (RuntimeException error) {
+            memberTokenGateway.logout(token.accessToken());
+            throw error;
+        }
+        return token;
     }
 
     /** 会员是否启用由认证服务根据查询结果判断，不增加远程判断接口。 */

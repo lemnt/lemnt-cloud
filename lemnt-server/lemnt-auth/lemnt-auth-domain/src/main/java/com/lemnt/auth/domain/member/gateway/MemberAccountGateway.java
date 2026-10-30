@@ -9,4 +9,8 @@ public interface MemberAccountGateway {
 
     /** 查询会员状态，会员不存在时返回 null。 */
     Integer findStatusByMemberId(Long memberId);
+    /** 成功签发后由会员服务记录数据库登录时间。 */
+    default void recordLogin(Long memberId) { recordLogin(memberId,null); }
+    /** 同时写入本次连接IP，未知保持空。 */
+    void recordLogin(Long memberId, String loginIp);
 }

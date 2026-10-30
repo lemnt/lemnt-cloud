@@ -17,7 +17,7 @@ public final class MemberReqConverter {
     public static AssetRecordAllPageQry toPageQry(String assetType, MemberRecordPointRecordsReq req) {
         return new AssetRecordAllPageQry(assetType, req.memberId(),
                 req.pageNum() == null ? 1 : req.pageNum(),
-                req.pageSize() == null ? 20 : req.pageSize());
+                req.pageSize() == null ? 20 : req.pageSize(),req.nickname(),req.bizType(),req.pointBizType());
     }
 
     /** 转换资产流水分页请求。 */
@@ -38,6 +38,6 @@ public final class MemberReqConverter {
     public static SignRecordAllPageQry toSignRecordPageQry(MemberRecordSigninRecordsReq req) {
         return new SignRecordAllPageQry(req.memberId(),
                 req.pageNum() == null ? 1 : req.pageNum(),
-                req.pageSize() == null ? 20 : req.pageSize());
+                req.pageSize() == null ? 20 : req.pageSize(),req.nickname());
     }
 }

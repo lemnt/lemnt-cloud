@@ -26,5 +26,14 @@ public record MemberProfileUpdateReq(
         @Schema(description = "出生日期")
         LocalDate birthday,
         @Schema(description = "状态：1启用，0停用")
-        Integer status
+        Integer status,
+        @Schema(description = "后台内部备注，省略保留，空串清除")
+        @Size(max = 255)
+        String mark,
+        @Schema(description = "真实姓名，省略保留，空串清除")
+        @Size(max = 30)
+        String name,
+        @Schema(description = "地区编号，省略保留")
+        @jakarta.validation.constraints.Positive
+        Integer areaId
 ) implements Serializable {}

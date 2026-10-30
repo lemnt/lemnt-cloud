@@ -63,22 +63,9 @@ public interface MemberAssetRecordMapper extends BaseMapper<AssetRecordDO> {
     /**
      * 查询会员资产记录。
      */
-    default List<AssetRecordDO> assetsPage(AssetRecordPageFilter f) {
-        return this.selectPage(new Page<>((long) f.offset() / f.limit() + 1, f.limit(), false),
-                Wrappers.<AssetRecordDO>lambdaQuery()
-                .eq(f.memberId() != null, AssetRecordDO::getMemberId, f.memberId())
-                .eq(AssetRecordDO::getAssetType, f.assetType())
-                .orderByDesc(AssetRecordDO::getId)).getRecords();
-    }
-
-    /**
-     * 查询会员资产记录数量。
-     */
-    default long assetsCount(AssetRecordPageFilter f) {
-        return this.selectCount(Wrappers.<AssetRecordDO>lambdaQuery()
-                .eq(f.memberId() != null, AssetRecordDO::getMemberId, f.memberId())
-                .eq(AssetRecordDO::getAssetType, f.assetType()));
-    }
+    List<AssetRecordDO> assetsPage(@org.apache.ibatis.annotations.Param("f") AssetRecordPageFilter f);
+    /** 使用相同关联条件统计。 */
+    long assetsCount(@org.apache.ibatis.annotations.Param("f") AssetRecordPageFilter f);
 
     /**
      * 查询会员资产记录详情。

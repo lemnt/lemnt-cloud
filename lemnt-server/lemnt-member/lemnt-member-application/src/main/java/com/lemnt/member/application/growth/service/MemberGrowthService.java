@@ -92,6 +92,7 @@ public class MemberGrowthService {
             throw new ServiceException("余额不足", 400);
         }
         memberUserGateway.balance(memberId, type, balance);
+        var metadata=com.lemnt.member.domain.growth.model.PointRecordMetadata.from(type,bizType,delta);
         var record =
                 new AssetRecord(
                         null,
@@ -102,7 +103,7 @@ public class MemberGrowthService {
                         bizType,
                         key,
                         reason,
-                        memberUserGateway.now()
+                        memberUserGateway.now(),null,metadata.type(),metadata.title(),metadata.description()
                 );
         memberAssetRecordGateway.assetSave(record);
         if (autoLevel && "EXPERIENCE".equals(type)) {

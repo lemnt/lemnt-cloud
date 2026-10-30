@@ -5267,8 +5267,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/point/vo/AppMemberPointRecordPageReqVO.java",
       "sha256": "0765a80bec782d103a01ded1badba4af6183f54e7280446f4b2a68d23d410868",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "后台积分当前昵称/会员/业务类型组合筛选已迁移，源数值枚举、title及表字段完整对齐仍未完成。见78-point-record-filter-delivery.md；82已补pointBizType数值筛选和中文选项，旧NULL不推断；最终bizType命名/独立表仍待迁移。"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/user/AppMemberUserController.java",
@@ -5513,8 +5514,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/point/vo/recrod/MemberPointRecordPageReqVO.java",
       "sha256": "106f679da5ac4babb49e1bc5d1909c17824c1640ed0cd1257eef5e6e15759b2a",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "后台积分当前昵称/会员/业务类型组合筛选已迁移，源数值枚举、title及表字段完整对齐仍未完成。见78-point-record-filter-delivery.md；82已补pointBizType数值筛选和中文选项，旧NULL不推断；最终bizType命名/独立表仍待迁移。"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/MemberUserController.java",
@@ -5855,8 +5857,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/point/MemberPointRecordServiceImpl.java",
       "sha256": "5123ee144f88472ed0b4a9d7e246b99fd14fae3cbd9b6862382fd721f47c3e8f",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "已补明确业务源编号/标题/描述写入快照；原字符串幂等码保留，源独立积分表及最终数值bizType契约/筛选未替换。见80-point-record-metadata-delivery.md"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/point/MemberPointRecordService.java",
@@ -5897,8 +5900,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/signin/MemberSignInRecordServiceImpl.java",
       "sha256": "030cba6293a7f648de888016659e299215d044cb69b18ca3d2939e9b05b443df",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "后台签到记录当前昵称筛选/展示、组合分页及count已迁移；主流程差异保留单独核对。见76-sign-record-nickname-delivery.md"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/address/AddressServiceImpl.java",
@@ -5987,8 +5991,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/point/MemberPointRecordMapper.java",
       "sha256": "42d7c7afddd2a56aaf682c30fbdb8e4ad647bc2f4c95854c9e91541421712b88",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "后台积分当前昵称/会员/业务类型组合筛选已迁移，源数值枚举、title及表字段完整对齐仍未完成。见78-point-record-filter-delivery.md；82已补pointBizType数值筛选和中文选项，旧NULL不推断；最终bizType命名/独立表仍待迁移。"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/user/MemberUserMapper.java",
@@ -5999,8 +6004,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/signin/MemberSignInRecordMapper.java",
       "sha256": "73217cae430be522cc9faa2449056e60e1be28c3867a87b13ec6a638fcb1f37d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "后台签到记录当前昵称筛选/展示、组合分页及count已迁移；主流程差异保留单独核对。见76-sign-record-nickname-delivery.md"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/signin/MemberSignInConfigMapper.java",
@@ -6053,14 +6059,16 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/point/MemberPointRecordDO.java",
       "sha256": "1ae3ec3908f660598192ae6044336acf8fc32828ec684f08b926199f4102a9a1",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "已补明确业务源编号/标题/描述写入快照；原字符串幂等码保留，源独立积分表及最终数值bizType契约/筛选未替换。见80-point-record-metadata-delivery.md"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/user/MemberUserDO.java",
       "sha256": "eec3dd54b9fe8988088e313fd13020508ff25d432d1214ccb57076589cbe52d7",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "后台mark/name/areaId按源字段迁移，App/认证不增加；地区名称解析、地区选择器及注册登录审计仍待迁移。见68-member-identity-delivery.md；70已补后台地区树选择及前端路径名称，member API areaName仍未新增。；72已补成功loginDate、auth至member写动作及后台展示，可信IP/注册终端仍缺。；74补网关观察的loginIp及后台展示，未实现代理链终端解析；注册来源仍缺。"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/signin/MemberSignInRecordDO.java",
@@ -6209,8 +6217,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-api/src/main/java/cn/iocoder/yudao/module/member/enums/point/MemberPointBizTypeEnum.java",
       "sha256": "3d4e4968ae08f03f00c3e34bb9433013cc30e36e81d95eee0a9120805fba038d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "已补明确业务源编号/标题/描述写入快照；原字符串幂等码保留，源独立积分表及最终数值bizType契约/筛选未替换。见80-point-record-metadata-delivery.md"
     },
     {
       "source": "yudao-module-member/yudao-module-member-api/src/main/java/cn/iocoder/yudao/module/member/api/package-info.java",
@@ -7663,6 +7672,13 @@
       "sha256": "55ccf35baaf1a89ba2e60d79f4cab3843127a2d4e08afe9eeaf4694cf059df7a",
       "state": "pending",
       "target": null
+    },
+    {
+      "source": "yudao-framework/yudao-spring-boot-starter-biz-ip/src/main/resources/area.csv",
+      "sha256": "9dc101f0b4a0358b77d2d318e7b953426eb8693a7020f099ab508a732e068c1a",
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-system/lemnt-system-infrastructure/src/main/resources/area/area.csv",
+      "note": "资源原样迁移；中国地区树及后台选择已接入。IP定位未迁移，见70-member-area-delivery.md"
     }
   ],
   "completionRule": "business behavior + persistence + interface/caller + tests, not copied files or empty CRUD",

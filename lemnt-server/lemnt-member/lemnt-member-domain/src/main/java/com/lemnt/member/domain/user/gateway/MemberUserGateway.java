@@ -13,6 +13,9 @@ public interface MemberUserGateway {
      */
     LocalDateTime now();
 
+    /** 写入数据库确认的成功登录时间。 */
+    void recordLogin(Long memberId, LocalDateTime loginDate, String loginIp);
+
     /**
      * 根据会员编号读取完整资料。
      */

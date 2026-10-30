@@ -28,7 +28,7 @@ public final class MemberConverter {
                         row.getGroupId(),
                         row.getSex(),
                         row.getBirthday(),
-                        row.getCreateTime());
+                        row.getCreateTime(), row.getMark(), row.getName(), row.getAreaId(), row.getLoginDate(),row.getLoginIp());
     }
 
     /**
@@ -39,6 +39,9 @@ public final class MemberConverter {
         row.setId(value.id());
 
         row.setNickname(value.nickname());
+        row.setMark(value.mark());
+        row.setName(value.name());
+        row.setAreaId(value.areaId());
         row.setMobile(value.mobile());
         row.setEmail(value.email());
         row.setAvatar(value.avatar());

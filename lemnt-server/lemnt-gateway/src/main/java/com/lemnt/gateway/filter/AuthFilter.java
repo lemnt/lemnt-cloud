@@ -104,8 +104,13 @@ public class AuthFilter implements GlobalFilter, Ordered {
             for (String header : Set.of(SecurityConstants.HEADER_USER_ID, SecurityConstants.HEADER_USER_KEY,
                     SecurityConstants.HEADER_USER_NAME, SecurityConstants.HEADER_ROLE_KEY,
                     SecurityConstants.HEADER_ROLE_PERMISSION, SecurityConstants.HEADER_LOGIN_USER,
-                    "X-Member-Id", "memberId")) {
+                    "X-Lemnt-Login-Ip", "X-Member-Id", "memberId")) {
                 headers.remove(header);
+            }
+            // 仅使用连接对端，不信任客户端转发头；代理链需要另行配置。
+            var remote=exchange.getRequest().getRemoteAddress();
+            if(remote != null && remote.getAddress() != null) {
+                headers.set("X-Lemnt-Login-Ip",remote.getAddress().getHostAddress().split("%",2)[0]);
             }
         }).build();
         return exchange.mutate().request(request).build();

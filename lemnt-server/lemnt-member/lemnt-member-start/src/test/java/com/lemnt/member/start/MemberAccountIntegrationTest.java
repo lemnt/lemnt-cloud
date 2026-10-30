@@ -152,6 +152,7 @@ class MemberAccountIntegrationTest {
         var bean = new MybatisSqlSessionFactoryBean();
         bean.setDataSource(source);
         bean.setConfiguration(config);
+        bean.setMapperLocations(new org.springframework.core.io.support.PathMatchingResourcePatternResolver().getResources("classpath*:mapper/Member*RecordMapper.xml"));
         bean.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
         var factory = bean.getObject();
         config.addMapper(MemberAddressMapper.class);
@@ -159,11 +160,11 @@ class MemberAccountIntegrationTest {
         config.addMapper(MemberGroupMapper.class);
         config.addMapper(MemberTagMapper.class);
         config.addMapper(MemberTagLinkMapper.class);
-        config.addMapper(MemberAssetRecordMapper.class);
+        if (!config.hasMapper(MemberAssetRecordMapper.class)) config.addMapper(MemberAssetRecordMapper.class);
         config.addMapper(MemberLevelMapper.class);
         config.addMapper(MemberLevelRecordMapper.class);
         config.addMapper(MemberSignConfigMapper.class);
-        config.addMapper(MemberSignRecordMapper.class);
+        if (!config.hasMapper(MemberSignRecordMapper.class)) config.addMapper(MemberSignRecordMapper.class);
         config.addMapper(MemberConfigMapper.class);
         var template = new SqlSessionTemplate(factory);
         memberUserGateway = new MemberUserGatewayImpl(template.getMapper(MemberUserMapper.class));
@@ -509,12 +510,12 @@ class MemberAccountIntegrationTest {
         assertEquals(
                 1,
                 memberSignRecordAllPageQueryExe.execute(
-                new SignRecordAllPageQry(null, 1, 20))
+                new com.lemnt.member.application.growth.qry.SignRecordAllPageQry(null, 1, 20))
                 .getTotal());
         assertEquals(
                 0,
                 memberSignRecordAllPageQueryExe.execute(
-                new SignRecordAllPageQry(other, 1, 20))
+                new com.lemnt.member.application.growth.qry.SignRecordAllPageQry(other, 1, 20))
                 .getTotal());
     }
 
@@ -590,4 +591,179 @@ class MemberAccountIntegrationTest {
         growthService.tradeAsset(refund);
         assertEquals(5L, memberUserGateway.findById(id).points());
     }
+    @org.junit.jupiter.api.Test
+    void internalMarkPersistsClearsAndIsExcludedFromMemberContracts() {
+        userService.profileUpdate(id, "one", null, null, null, null, null, "仅后台可见");
+        assertEquals("仅后台可见", memberUserGateway.findById(id).mark());
+        userService.profileUpdate(id, "new", null, null, null, null, null);
+        assertEquals("仅后台可见", memberUserGateway.findById(id).mark());
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+                () -> userService.profileUpdate(id, "new", null, null, null, null, null, "字".repeat(256)));
+        assertEquals("仅后台可见", memberUserGateway.findById(id).mark());
+        userService.profileUpdate(id, "new", null, null, null, null, null, "");
+        assertEquals("", memberUserGateway.findById(id).mark());
+        for (Class<?> contract : java.util.List.of(
+                com.lemnt.member.adapter.app.user.req.ProfileUpdateReq.class,
+                com.lemnt.member.adapter.app.user.res.ProfileRes.class)) {
+            assertFalse(java.util.Arrays.stream(contract.getRecordComponents()).anyMatch(v -> v.getName().equals("mark")));
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void backendIdentityFieldsPreserveOnMemberUpdateAndValidateBeforeWrite() {
+        userService.profileUpdate(id, "one", null, null, null, null, null, null, "真实姓名", 110101);
+        assertEquals("真实姓名", memberUserGateway.findById(id).name());
+        assertEquals(110101, memberUserGateway.findById(id).areaId());
+        userService.profileUpdate(id, "本人修改昵称", null, null, null, null, null);
+        assertEquals("真实姓名", memberUserGateway.findById(id).name());
+        assertEquals(110101, memberUserGateway.findById(id).areaId());
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+                () -> userService.profileUpdate(id, "不得写入", null, null, null, null, null, null, "字".repeat(31), 110101));
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+                () -> userService.profileUpdate(id, "不得写入", null, null, null, null, null, null, "姓名", 0));
+        assertEquals("本人修改昵称", memberUserGateway.findById(id).nickname());
+        userService.profileUpdate(id, "one", null, null, null, null, null, null, "", null);
+        assertEquals("", memberUserGateway.findById(id).name());
+        assertEquals(110101, memberUserGateway.findById(id).areaId());
+        for (Class<?> contract : java.util.List.of(com.lemnt.member.adapter.app.user.req.ProfileUpdateReq.class,
+                com.lemnt.member.adapter.app.user.res.ProfileRes.class)) {
+            assertFalse(java.util.Arrays.stream(contract.getRecordComponents()).anyMatch(v -> v.getName().equals("name") || v.getName().equals("areaId")));
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void loginTimeUsesMemberDatabaseAndOrdinaryProfileUpdateCannotClearIt() {
+        com.lemnt.member.client.MemberUserClient client=tx((com.lemnt.member.client.MemberUserClient) new com.lemnt.member.application.dubbo.MemberUserClientImpl(memberUserGateway,memberLevelGateway));
+        assertNull(memberUserGateway.findById(id).loginDate());
+        var before=memberUserGateway.now();
+        client.recordLogin(id);
+        var logged=memberUserGateway.findById(id).loginDate();
+        assertNotNull(logged);assertFalse(logged.isBefore(before.withNano(0)));
+        userService.profileUpdate(id,"one",null,null,null,null,null);
+        assertEquals(logged,memberUserGateway.findById(id).loginDate());
+        userService.profileUpdate(id,"one",null,null,null,null,0);
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,()->client.recordLogin(id));
+        assertEquals(logged,memberUserGateway.findById(id).loginDate());
+    }
+
+    @org.junit.jupiter.api.Test
+    void loginIpAndTimeAreSavedTogetherAndUnknownDoesNotReusePreviousIp() {
+        com.lemnt.member.client.MemberUserClient client=tx((com.lemnt.member.client.MemberUserClient)new com.lemnt.member.application.dubbo.MemberUserClientImpl(memberUserGateway,memberLevelGateway));
+        client.recordLogin(id,"203.0.113.7");
+        assertEquals("203.0.113.7",memberUserGateway.findById(id).loginIp());
+        assertNotNull(memberUserGateway.findById(id).loginDate());
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,()->client.recordLogin(id,"example.com"));
+        assertEquals("203.0.113.7",memberUserGateway.findById(id).loginIp());
+        client.recordLogin(id,null);
+        assertNull(memberUserGateway.findById(id).loginIp());
+    }
+
+    @org.junit.jupiter.api.Test
+    void signRecordNicknameFilterAndPageTotalUseSameRealJoinedRecords() {
+        var today=memberUserGateway.now().toLocalDate();
+        memberSignRecordGateway.signSave(new com.lemnt.member.domain.growth.model.SignRecord(null,id,today,1,1L,0L));
+        memberSignRecordGateway.signSave(new com.lemnt.member.domain.growth.model.SignRecord(null,other,today,1,2L,0L));
+        var query=new com.lemnt.member.application.growth.executor.MemberSignRecordAllPageQueryExe(memberSignRecordGateway);
+        var page=query.execute(new com.lemnt.member.application.growth.qry.SignRecordAllPageQry(null,1,1,"o"));
+        assertEquals(2,page.getTotal());assertEquals(1,page.getRecords().size());
+        assertEquals("two",page.getRecords().get(0).nickname());
+        assertEquals(1,query.execute(new com.lemnt.member.application.growth.qry.SignRecordAllPageQry(id,1,20,"one")).getTotal());
+        assertEquals(0,query.execute(new com.lemnt.member.application.growth.qry.SignRecordAllPageQry(id,1,20,"two")).getTotal());
+        assertEquals(0,query.execute(new com.lemnt.member.application.growth.qry.SignRecordAllPageQry(null,1,20,"无匹配")).getTotal());
+        userService.profileUpdate(id,"改名",null,null,null,null,null);
+        var renamed=query.execute(new com.lemnt.member.application.growth.qry.SignRecordAllPageQry(null,1,20,"改名"));
+        assertEquals(1,renamed.getTotal());assertEquals("改名",renamed.getRecords().get(0).nickname());
+    }
+
+    @org.junit.jupiter.api.Test
+    void signNicknameHttpBindingUsesIndependentCriterionAndReturnsCurrentNickname() throws Exception {
+        memberSignRecordGateway.signSave(new com.lemnt.member.domain.growth.model.SignRecord(null,id,memberUserGateway.now().toLocalDate(),1,1L,0L));
+        var query=new com.lemnt.member.application.growth.executor.MemberSignRecordAllPageQueryExe(memberSignRecordGateway);
+        var mvc=org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(
+                new com.lemnt.member.adapter.web.growth.MemberSignRecordController(query))
+                .setControllerAdvice(new com.lemnt.common.security.handler.GlobalExceptionHandler()).build();
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/member/admin/signin-records").param("nickname","one"))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.total").value(1))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.rows[0].nickname").value("one"));
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/member/admin/signin-records").param("nickname","字".repeat(81)))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().is(422));
+    }
+
+    @org.junit.jupiter.api.Test
+    void pointNicknameBusinessTypeAndMemberFilterShareCountAndExcludeExperience() {
+        var now=memberUserGateway.now();
+        memberAssetRecordGateway.assetSave(new com.lemnt.member.domain.growth.model.AssetRecord(null,id,"POINT",1L,1L,"ADMIN","F1","调整",now));
+        memberAssetRecordGateway.assetSave(new com.lemnt.member.domain.growth.model.AssetRecord(null,other,"POINT",2L,2L,"SIGN_IN","F2","签到",now));
+        memberAssetRecordGateway.assetSave(new com.lemnt.member.domain.growth.model.AssetRecord(null,id,"EXPERIENCE",3L,3L,"ADMIN","F3","经验",now));
+        var query=new com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe(memberAssetRecordGateway);
+        var all=query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",null,1,1,"o",null));
+        assertEquals(2,all.getTotal());assertEquals(1,all.getRecords().size());assertEquals("two",all.getRecords().get(0).nickname());
+        var filtered=query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",id,1,20,"one","ADMIN"));
+        assertEquals(1,filtered.getTotal());assertEquals("POINT",filtered.getRecords().get(0).assetType());
+        assertEquals(0,query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",id,1,20,"one","SIGN_IN")).getTotal());
+        assertEquals(0,query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",null,1,20,"无匹配",null)).getTotal());
+        assertEquals(0L,memberUserGateway.findById(id).points());
+    }
+
+    @org.junit.jupiter.api.Test
+    void pointFilterHttpBindsNicknameAndBusinessTypeAndRejectsOversize() throws Exception {
+        memberAssetRecordGateway.assetSave(new com.lemnt.member.domain.growth.model.AssetRecord(null,id,"POINT",1L,1L,"ADMIN","H1","调整",memberUserGateway.now()));
+        var mvc=org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(
+                new com.lemnt.member.adapter.web.growth.MemberPointRecordController(
+                        new com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe(memberAssetRecordGateway),
+                        new com.lemnt.member.application.growth.executor.MemberAssetRecordDetailQueryExe(memberAssetRecordGateway)))
+                .setControllerAdvice(new com.lemnt.common.security.handler.GlobalExceptionHandler()).build();
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/member/admin/point-records")
+                .param("nickname","one").param("bizType","ADMIN").param("memberId",id.toString()))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.total").value(1))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.rows[0].nickname").value("one"));
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/member/admin/point-records")
+                .param("bizType","字".repeat(41))).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().is(422));
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/member/admin/point-records")
+                .param("pointBizType","2")).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.total").value(0));
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/member/admin/point-records")
+                .param("pointBizType","3")).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isBadRequest());
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/member/admin/point-records")
+                .param("pointBizType","invalid")).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().is(422));
+
+    }
+
+    @org.junit.jupiter.api.Test
+    void pointMetadataIsSavedOnceAndReasonRemainsIndependent() {
+        var first=growthService.adjustAsset(id,"POINT",10,"META-1","人工原因");
+        assertEquals(2,first.pointBizType());assertEquals("管理员修改",first.title());
+        assertEquals("管理员修改 10 积分",first.description());assertEquals("人工原因",first.reason());
+        var repeated=growthService.adjustAsset(id,"POINT",10,"META-1","人工原因");
+        assertEquals(first,repeated);assertEquals(10L,memberUserGateway.findById(id).points());
+        var experience=growthService.adjustAsset(id,"EXPERIENCE",3,"META-EXP","经验原因");
+        assertNull(experience.pointBizType());assertNull(experience.title());assertNull(experience.description());
+        var read=memberAssetRecordGateway.assetsDetail(first.id());
+        assertEquals(first.title(),read.title());assertEquals(first.description(),read.description());
+    }
+    @org.junit.jupiter.api.Test
+    void sourcePointEnumMappingDoesNotInventUnknownOrInternalMarkerMetadata() {
+        var codes=java.util.Map.of("SIGN_IN",1,"ADMIN",2,"TRADE_USE",11,"TRADE_USE_CANCEL",12,"TRADE_USE_RETURN",13,"TRADE_GIVE",21,"TRADE_GIVE_RETURN",23);
+        codes.forEach((code,number)->assertEquals(number,com.lemnt.member.domain.growth.model.PointRecordMetadata.from("POINT",code,10).type()));
+        assertNull(com.lemnt.member.domain.growth.model.PointRecordMetadata.from("POINT","TRADE_CLOSED",0).type());
+        assertNull(com.lemnt.member.domain.growth.model.PointRecordMetadata.from("EXPERIENCE","ADMIN",10).type());
+        assertNull(com.lemnt.member.domain.growth.model.PointRecordMetadata.from("POINT","UNKNOWN",10).type());
+    }
+
+    @org.junit.jupiter.api.Test
+    void numericPointFilterMatchesSavedMetadataAndKeepsLegacyUnknownOnlyWhenUnfiltered() {
+        growthService.adjustAsset(id,"POINT",10,"NUMERIC-1","新流水");
+        memberAssetRecordGateway.assetSave(new com.lemnt.member.domain.growth.model.AssetRecord(null,id,"POINT",1L,11L,"ADMIN","LEGACY","旧流水",memberUserGateway.now()));
+        var query=new com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe(memberAssetRecordGateway);
+        assertEquals(2,query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",id,1,20)).getTotal());
+        var result=query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",id,1,1,"one","ADMIN",2));
+        assertEquals(1,result.getTotal());assertEquals(1,result.getRecords().size());assertEquals(2,result.getRecords().get(0).pointBizType());
+        assertEquals(0,query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",id,1,20,null,"SIGN_IN",2)).getTotal());
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,()->query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",id,1,20,null,null,3)));
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,()->query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("EXPERIENCE",id,1,20,null,null,2)));
+        assertEquals(0,query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",id,1,20,null,null,22)).getTotal());
+    }
+
 }

@@ -31,8 +31,15 @@ public class MemberAssetRecordAllPageQueryExe {
         if (!Set.of("POINT", "EXPERIENCE").contains(qry.assetType())) {
             throw new ServiceException("资产类型不合法", 400);
         }
+        if ((qry.nickname()!=null && qry.nickname().length()>80) || (qry.bizType()!=null && qry.bizType().length()>40))
+            throw new ServiceException("积分筛选条件超长",400);
+        var nickname=qry.nickname()==null || qry.nickname().isBlank()? null:qry.nickname().trim();
+        var bizType=qry.bizType()==null || qry.bizType().isBlank()? null:qry.bizType().trim();
+        if (qry.pointBizType()!=null && (!"POINT".equals(qry.assetType())
+                || !com.lemnt.member.domain.growth.model.PointRecordMetadata.supported(qry.pointBizType())))
+            throw new ServiceException("积分业务类型不合法",400);
         var filter = new AssetRecordPageFilter(qry.memberId(), qry.assetType(),
-                (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize());
+                (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize(),nickname,bizType,qry.pointBizType());
         return new PageResult<>(
                 memberAssetRecordGateway.assets(filter).stream().map(MemberGrowthDTOConverter::toAssetRecordDTO).toList(),
                 memberAssetRecordGateway.assetsCount(filter));

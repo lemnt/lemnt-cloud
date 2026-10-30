@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /** 使用 RPC 边界和真实公共密码/令牌组件，认证中心测试不启动数据库。 */
 class MemberAuthenticationIntegrationTest {
     MemberAuthenticationService auth;
+    MemberAccountGateway accounts;
     TokenService tokenService;
     JwtUtils jwtUtils;
     final Map<String, SecurityUser> cachedSessions = new ConcurrentHashMap<>();
@@ -68,7 +69,7 @@ class MemberAuthenticationIntegrationTest {
             retryCounts.remove(invocation.getArgument(0));
             return null;
         }).when(redis).delete(ArgumentMatchers.anyString());
-        var accounts = Mockito.mock(MemberAccountGateway.class);
+        accounts = Mockito.mock(MemberAccountGateway.class);
         Mockito.when(accounts.findByMobile("13800000001")).thenAnswer(invocation ->
                 new MemberLoginInfo(id, "13800000001", status.get(), passwordHash.get()));
         Mockito.when(accounts.findStatusByMemberId(id)).thenAnswer(invocation -> status.get());
@@ -207,6 +208,38 @@ class MemberAuthenticationIntegrationTest {
 
         assertNotNull(auth.login("13800000001", "Member-password-2026"));
 
+    }
+
+    @Test
+    void successfulLoginAuditsOnceButRefreshAndWrongPasswordDoNot() {
+        var token=login();
+        auth.refresh(token.accessToken());
+        assertThrows(SecurityException.class,()->auth.login("13800000001","wrong"));
+        Mockito.verify(accounts,Mockito.times(1)).recordLogin(id);
+    }
+    @Test
+    void auditFailureRevokesNewSharedSessionBeforeReturningFailure() {
+        Mockito.doThrow(new IllegalStateException("审计RPC失败")).when(accounts).recordLogin(id);
+        assertThrows(IllegalStateException.class,()->login());
+        assertTrue(cachedSessions.isEmpty());
+    }
+    @Test
+    void failedTokenCreationDoesNotWriteLoginAudit() {
+        var tokens=Mockito.mock(com.lemnt.auth.domain.member.gateway.MemberTokenGateway.class);
+        Mockito.when(tokens.create(id,"13800000001")).thenThrow(new IllegalStateException("会话写入失败"));
+        var security=Mockito.mock(com.lemnt.auth.domain.user.gateway.LoginSecurityGateway.class);
+        setPassword(id,"Member-password-2026");
+        var service=new MemberAuthenticationService(accounts,new PasswordEncoderGatewayImpl(),security,tokens);
+        assertThrows(IllegalStateException.class,()->service.login("13800000001","Member-password-2026"));
+        Mockito.verify(accounts,Mockito.never()).recordLogin(id);
+    }
+
+    @Test
+    void successfulLoginPassesObservedIpOnlyAfterTokenCreation() {
+        setPassword(id,"Member-password-2026");
+        var token=auth.login("13800000001","Member-password-2026","203.0.113.7");
+        assertEquals(id,auth.authenticate(token.accessToken()));
+        Mockito.verify(accounts).recordLogin(id,"203.0.113.7");
     }
 
 }

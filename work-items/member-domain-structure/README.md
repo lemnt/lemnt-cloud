@@ -82,3 +82,30 @@
 
 - [评价图片交互设计](63-comment-image-interaction-design.md)
 - [评价图片交互交付](64-comment-image-interaction-delivery.md)
+
+- [会员后台备注设计](65-member-mark-design.md)
+- [会员后台备注交付](66-member-mark-delivery.md)
+
+- [会员姓名地区设计](67-member-identity-design.md)
+- [会员姓名地区交付](68-member-identity-delivery.md)
+
+- [会员地区选择设计](69-member-area-design.md)
+- [会员地区选择交付](70-member-area-delivery.md)
+
+- [会员登录审计时间设计](71-member-login-audit-design.md)
+- [会员登录审计时间交付](72-member-login-audit-delivery.md)
+
+- [会员登录连接IP设计](73-member-login-ip-design.md)
+- [会员登录连接IP交付](74-member-login-ip-delivery.md)
+
+- [后台签到昵称筛选设计](75-sign-record-nickname-design.md)
+- [后台签到昵称筛选交付](76-sign-record-nickname-delivery.md)
+
+- [后台积分流水筛选设计](77-point-record-filter-design.md)
+- [后台积分流水筛选交付](78-point-record-filter-delivery.md)
+
+- [积分业务元数据快照设计](79-point-record-metadata-design.md)
+- [积分业务元数据快照交付](80-point-record-metadata-delivery.md)
+
+- [积分数值类型筛选设计](81-point-numeric-filter-design.md)
+- [积分数值类型筛选交付](82-point-numeric-filter-delivery.md)

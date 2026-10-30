@@ -35,5 +35,15 @@ public record MemberUserDetailRes(
         @Schema(description = "出生日期")
         LocalDate birthday,
         @Schema(description = "数据库时间")
-        LocalDateTime createTime
+        LocalDateTime createTime,
+        @Schema(description = "后台内部备注")
+        String mark,
+        @Schema(description = "真实姓名")
+        String name,
+        @Schema(description = "地区编号，未知不补造名称")
+        Integer areaId,
+        @Schema(description = "最近成功登录时间")
+        LocalDateTime loginDate,
+        @Schema(description = "网关观察到的登录连接IP")
+        String loginIp
 ) implements Serializable {}

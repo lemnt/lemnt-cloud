@@ -74,4 +74,14 @@ class AppMemberAuthControllerTest {
                 .content("{\"mobile\":\"invalid\",\"password\":\"password\"}"))
             .andExpect(status().isBadRequest());
     }
+    @Test
+    void trustedGatewayHeaderBecomesLoginAuditContext() throws Exception {
+        when(service.login("13800000001","Member-password-2026","203.0.113.7"))
+                .thenReturn(new MemberToken(7L,"member.jwt.signature",2592000L));
+        mvc.perform(post("/member/app/auth/login").header("X-Lemnt-Login-Ip","203.0.113.7")
+                .contentType(MediaType.APPLICATION_JSON).content("{\"mobile\":\"13800000001\",\"password\":\"Member-password-2026\"}"))
+                .andExpect(status().isOk());
+        verify(service).login("13800000001","Member-password-2026","203.0.113.7");
+    }
+
 }

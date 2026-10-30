@@ -11,5 +11,11 @@ public record SignRecord(
         LocalDate signDate,
         Integer day,
         Long point,
-        Long experience
-) {}
+        Long experience,
+        String nickname
+) {
+    /** 无昵称的既有签到投影保持兼容。 */
+    public SignRecord(Long id,Long memberId,LocalDate signDate,Integer day,Long point,Long experience) {
+        this(id,memberId,signDate,day,point,experience,null);
+    }
+}

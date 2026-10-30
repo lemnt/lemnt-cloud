@@ -31,7 +31,7 @@ public final class MemberUserDTOConverter {
                         v.groupId(),
                         v.sex(),
                         v.birthday(),
-                        v.createTime());
+                        v.createTime(), v.mark(), v.name(), v.areaId(), v.loginDate(),v.loginIp());
     }
 
     /**

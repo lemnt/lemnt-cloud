@@ -49,6 +49,23 @@ public class MemberUserService {
             Integer sex,
             LocalDate birthday,
             Integer status) {
+        return profileUpdate(id, nickname, email, avatar, sex, birthday, status, null);
+    }
+
+    /** 后台备注与资料同事务维护；省略保留，空字符串清除。 */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean profileUpdate(Long id, String nickname, String email, String avatar, Integer sex,
+            LocalDate birthday, Integer status, String mark) {
+        return profileUpdate(id, nickname, email, avatar, sex, birthday, status, mark, null, null);
+    }
+
+    /** 后台维护姓名地区；会员调用省略后保留旧值。 */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean profileUpdate(Long id, String nickname, String email, String avatar, Integer sex,
+            LocalDate birthday, Integer status, String mark, String realName, Integer areaId) {
+        if ((realName != null && realName.length() > 30) || (areaId != null && areaId <= 0))
+            throw new ServiceException("姓名或地区不合法", 400);
+        if (mark != null && mark.length() > 255) throw new ServiceException("会员备注不能超过255字", 400);
         var old = lock(id);
         String name = MemberRules.text(nickname, 80);
         String mail = MemberRules.optional(email, 254);
@@ -83,7 +100,8 @@ public class MemberUserService {
                         old.groupId(),
                         sex,
                         birthday,
-                        old.createTime()));
+                        old.createTime(), mark == null ? old.mark() : mark,
+                        realName == null ? old.name() : realName, areaId == null ? old.areaId() : areaId));
         return true;
     }
 
