@@ -5,7 +5,8 @@ import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.member.application.growth.converter.MemberGrowthDTOConverter;
 import com.lemnt.member.application.growth.dto.AssetRecordDTO;
 import com.lemnt.member.application.growth.qry.AssetRecordAllPageQry;
-import com.lemnt.member.domain.growth.gateway.MemberAssetRecordGateway;
+import com.lemnt.member.domain.growth.gateway.MemberPointRecordGateway;
+import com.lemnt.member.domain.growth.gateway.MemberExperienceRecordGateway;
 import com.lemnt.member.domain.growth.model.AssetRecordPageFilter;
 import com.lemnt.member.domain.shared.model.MemberRules;
 
@@ -20,7 +21,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class MemberAssetRecordAllPageQueryExe {
 
-    private final MemberAssetRecordGateway memberAssetRecordGateway;
+    private final MemberPointRecordGateway pointRecords;
+    private final MemberExperienceRecordGateway experienceRecords;
 
     /** 查询资产流水分页，沿用资源归属和分页约束。 */
     public PageResult<AssetRecordDTO> execute(AssetRecordAllPageQry qry) {
@@ -41,7 +43,7 @@ public class MemberAssetRecordAllPageQueryExe {
         var filter = new AssetRecordPageFilter(qry.memberId(), qry.assetType(),
                 (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize(),nickname,bizType,qry.pointBizType());
         return new PageResult<>(
-                memberAssetRecordGateway.assets(filter).stream().map(MemberGrowthDTOConverter::toAssetRecordDTO).toList(),
-                memberAssetRecordGateway.assetsCount(filter));
+                ("POINT".equals(qry.assetType()) ? pointRecords.page(filter) : experienceRecords.page(filter)).stream().map(MemberGrowthDTOConverter::toAssetRecordDTO).toList(),
+                ("POINT".equals(qry.assetType()) ? pointRecords.count(filter) : experienceRecords.count(filter)));
     }
 }

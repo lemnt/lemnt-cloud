@@ -73,6 +73,7 @@ export interface MemberAddress {
 export type RecordKind =
   'point-records' | 'experience-records' | 'level-records' | 'signin-records';
 export interface MemberRecord {
+  experienceBizType?: number;
   pointBizType?: number;
   title?: string;
   description?: string;

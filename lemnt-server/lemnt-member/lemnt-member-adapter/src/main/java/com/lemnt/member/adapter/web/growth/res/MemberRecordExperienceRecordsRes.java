@@ -26,5 +26,11 @@ public record MemberRecordExperienceRecordsRes(
         @Schema(description = "原因")
         String reason,
         @Schema(description = "数据库时间")
-        LocalDateTime createTime
+        LocalDateTime createTime,
+        @Schema(description = "源经验类型，0为管理员调整")
+        Integer experienceBizType,
+        @Schema(description = "经验标题快照")
+        String title,
+        @Schema(description = "经验描述快照")
+        String description
 ) implements Serializable {}

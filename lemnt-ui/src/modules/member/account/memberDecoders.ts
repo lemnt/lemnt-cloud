@@ -129,11 +129,20 @@ export function decodeRecord(raw: unknown, kind: RecordKind): MemberRecord {
     ...(kind === 'point-records' && v.pointBizType != null
       ? { pointBizType: integer(v.pointBizType) }
       : {}),
-    ...(kind === 'point-records' && v.title != null ? { title: text(v.title) } : {}),
-    ...(kind === 'point-records' && v.description != null
+    ...((kind === 'point-records' ||
+      (kind === 'experience-records' && v.experienceBizType != null)) &&
+    v.title != null
+      ? { title: text(v.title) }
+      : {}),
+    ...((kind === 'point-records' ||
+      (kind === 'experience-records' && v.experienceBizType != null)) &&
+    v.description != null
       ? { description: text(v.description) }
       : {}),
     ...(kind === 'point-records' && v.nickname != null ? { nickname: text(v.nickname) } : {}),
+    ...(kind === 'experience-records' && v.experienceBizType != null
+      ? { experienceBizType: integer(v.experienceBizType) }
+      : {}),
     delta: integer(v.delta),
     balance: integer(v.balance),
     assetType: text(v.assetType),

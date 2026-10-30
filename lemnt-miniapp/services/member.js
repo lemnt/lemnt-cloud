@@ -157,15 +157,24 @@ function createMemberClient({
             }
           : {
               ...value,
+              ...(v.assetType === "EXPERIENCE" && v.experienceBizType != null
+                ? { experienceBizType: integer(v.experienceBizType) }
+                : {}),
               delta: integer(v.delta),
               balance: integer(v.balance),
               ...(v.assetType === "POINT" && v.pointBizType != null
                 ? { pointBizType: integer(v.pointBizType) }
                 : {}),
-              ...(v.assetType === "POINT" && v.title != null
+              ...((v.assetType === "POINT" ||
+                (v.assetType === "EXPERIENCE" &&
+                  v.experienceBizType != null)) &&
+              v.title != null
                 ? { title: text(v.title) }
                 : {}),
-              ...(v.assetType === "POINT" && v.description != null
+              ...((v.assetType === "POINT" ||
+                (v.assetType === "EXPERIENCE" &&
+                  v.experienceBizType != null)) &&
+              v.description != null
                 ? { description: text(v.description) }
                 : {}),
               reason: text(v.reason),

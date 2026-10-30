@@ -33,7 +33,7 @@ public final class MemberGrowthDTOConverter {
                         v.bizType(),
                         v.bizNo(),
                         v.reason(),
-                        v.createTime(),v.nickname(),v.pointBizType(),v.title(),v.description());
+                        v.createTime(),v.nickname(),v.pointBizType(),v.title(),v.description(),v.experienceBizType());
     }
 
     /**

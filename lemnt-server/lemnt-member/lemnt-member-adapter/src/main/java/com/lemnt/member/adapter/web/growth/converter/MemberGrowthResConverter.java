@@ -232,7 +232,7 @@ public final class MemberGrowthResConverter {
                         v.bizType(),
                         v.bizNo(),
                         v.reason(),
-                        v.createTime());
+                        v.createTime(),v.experienceBizType(),v.title(),v.description());
     }
 
     /**
@@ -250,7 +250,7 @@ public final class MemberGrowthResConverter {
                         v.bizType(),
                         v.bizNo(),
                         v.reason(),
-                        v.createTime());
+                        v.createTime(),v.experienceBizType(),v.title(),v.description());
     }
 
     /**

@@ -109,3 +109,15 @@
 
 - [积分数值类型筛选设计](81-point-numeric-filter-design.md)
 - [积分数值类型筛选交付](82-point-numeric-filter-delivery.md)
+
+- [积分独立表设计](83-point-table-design.md)
+- [积分独立表交付](84-point-table-delivery.md)
+
+- [经验独立表设计](85-experience-table-design.md)
+- [经验独立表交付](86-experience-table-delivery.md)
+
+- [泛化资产网关退役设计](87-asset-gateway-retirement-design.md)
+- [泛化资产网关退役交付](88-asset-gateway-retirement-delivery.md)
+
+- [流水基础审计设计](89-ledger-audit-design.md)
+- [流水基础审计交付](90-ledger-audit-delivery.md)

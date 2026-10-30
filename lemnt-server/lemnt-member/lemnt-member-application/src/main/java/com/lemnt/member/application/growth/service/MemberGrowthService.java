@@ -1,7 +1,8 @@
 package com.lemnt.member.application.growth.service;
 
 import com.lemnt.common.core.exception.ServiceException;
-import com.lemnt.member.domain.growth.gateway.MemberAssetRecordGateway;
+import com.lemnt.member.domain.growth.gateway.MemberPointRecordGateway;
+import com.lemnt.member.domain.growth.gateway.MemberExperienceRecordGateway;
 import com.lemnt.member.domain.growth.gateway.MemberConfigGateway;
 import com.lemnt.member.domain.growth.gateway.MemberLevelGateway;
 import com.lemnt.member.domain.growth.gateway.MemberLevelRecordGateway;
@@ -31,13 +32,39 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class MemberGrowthService {
 
-    private final MemberAssetRecordGateway memberAssetRecordGateway;
+    private final MemberPointRecordGateway pointRecords;
+    private final MemberExperienceRecordGateway experienceRecords;
     private final MemberConfigGateway memberConfigGateway;
     private final MemberLevelGateway memberLevelGateway;
     private final MemberLevelRecordGateway memberLevelRecordGateway;
     private final MemberSignConfigGateway memberSignConfigGateway;
     private final MemberSignRecordGateway memberSignRecordGateway;
     private final MemberUserGateway memberUserGateway;
+
+    /** 应用编排直接选择逐表网关，不保留泛化领域存储接口。 */
+    private AssetRecord assetRequest(Long memberId,String type,String code,String bizNo) {
+        return switch(type) {
+            case "POINT" -> pointRecords.request(memberId,code,bizNo);
+            case "EXPERIENCE" -> experienceRecords.request(memberId,code,bizNo);
+            default -> throw new ServiceException("资产类型不合法",400);
+        };
+    }
+    /** 已持会员锁，写入对应账本并参加外层事务。 */
+    private void saveAsset(AssetRecord record) {
+        switch(record.assetType()) {
+            case "POINT" -> pointRecords.save(record);
+            case "EXPERIENCE" -> experienceRecords.save(record);
+            default -> throw new ServiceException("资产类型不合法",400);
+        }
+    }
+    /** 退款累计只查询原权益所属账本。 */
+    private long tradeReturns(Long memberId,String type,String code,String orderNo) {
+        return switch(type) {
+            case "POINT" -> pointRecords.returned(memberId,code,orderNo);
+            case "EXPERIENCE" -> experienceRecords.returned(memberId,code,orderNo);
+            default -> throw new ServiceException("资产类型不合法",400);
+        };
+    }
 
     private Member lock(Long id) {
         MemberRules.id(id);
@@ -76,7 +103,7 @@ public class MemberGrowthService {
         bizType = MemberRules.text(bizType, 40);
         key = MemberRules.text(key, 64);
         reason = MemberRules.text(reason, 500);
-        var previous = memberAssetRecordGateway.assetRequest(memberId, type, bizType, key);
+        var previous = assetRequest(memberId, type, bizType, key);
         if (previous != null) {
             if (previous.delta() != delta || !previous.reason().equals(reason)) {
                 throw new ServiceException("业务编号已用于不同内容", 409);
@@ -93,6 +120,7 @@ public class MemberGrowthService {
         }
         memberUserGateway.balance(memberId, type, balance);
         var metadata=com.lemnt.member.domain.growth.model.PointRecordMetadata.from(type,bizType,delta);
+        var expMetadata=com.lemnt.member.domain.growth.model.ExperienceRecordMetadata.from(type,bizType,delta);
         var record =
                 new AssetRecord(
                         null,
@@ -103,9 +131,9 @@ public class MemberGrowthService {
                         bizType,
                         key,
                         reason,
-                        memberUserGateway.now(),null,metadata.type(),metadata.title(),metadata.description()
+                        memberUserGateway.now(),null,metadata.type(),"POINT".equals(type)?metadata.title():expMetadata.title(),"POINT".equals(type)?metadata.description():expMetadata.description(),expMetadata.type()
                 );
-        memberAssetRecordGateway.assetSave(record);
+        saveAsset(record);
         if (autoLevel && "EXPERIENCE".equals(type)) {
             var best =
                     memberLevelGateway.levels().stream()
@@ -120,7 +148,7 @@ public class MemberGrowthService {
                                 null, memberId, nextLevelId, balance, reason, memberUserGateway.now()));
             }
         }
-        return memberAssetRecordGateway.assetRequest(memberId, type, bizType, key);
+        return assetRequest(memberId, type, bizType, key);
     }
 
     /**
@@ -141,7 +169,7 @@ public class MemberGrowthService {
         String key = MemberRules.text(requestNo, 64);
         String audit =
                 MemberRules.text("[level=" + levelId + "] " + MemberRules.text(reason, 450), 500);
-        var previous = memberAssetRecordGateway.assetRequest(memberId, "EXPERIENCE", "ADMIN_LEVEL", key);
+        var previous = assetRequest(memberId, "EXPERIENCE", "ADMIN_LEVEL", key);
         if (previous != null) {
             if (!audit.equals(previous.reason())) {
                 throw new ServiceException("业务编号已用于不同等级操作", 409);
@@ -335,7 +363,7 @@ public class MemberGrowthService {
         String reason = "订单权益:" + cmd.usePoint() + ":" + cmd.givePoint() + ":" + cmd.paidFen();
         switch (cmd.operation()) {
             case "CREATE" -> {
-                if (memberAssetRecordGateway.assetRequest(cmd.memberId(), "POINT", "TRADE_CLOSED", orderNo) != null) {
+                if (assetRequest(cmd.memberId(), "POINT", "TRADE_CLOSED", orderNo) != null) {
                     throw new ServiceException("订单已经关闭，不能再抵扣积分", 409);
                 }
                 if (cmd.usePoint() > 0) {
@@ -343,7 +371,7 @@ public class MemberGrowthService {
                 }
             }
             case "PAID" -> {
-                if (cmd.usePoint() > 0 && memberAssetRecordGateway.assetRequest(
+                if (cmd.usePoint() > 0 && assetRequest(
                         cmd.memberId(), "POINT", "TRADE_USE", orderNo) == null) {
                     throw new ServiceException("订单抵扣积分尚未确认", 409);
                 }
@@ -355,7 +383,7 @@ public class MemberGrowthService {
             case "CLOSED" -> {
                 // 零变更终态记录阻止迟到的创建调用，不增加技术表。
                 adjust(cmd.memberId(), "POINT", 0, "TRADE_CLOSED", orderNo, reason, true, false);
-                var used = memberAssetRecordGateway.assetRequest(cmd.memberId(), "POINT", "TRADE_USE", orderNo);
+                var used = assetRequest(cmd.memberId(), "POINT", "TRADE_USE", orderNo);
                 if (used != null) {
                     adjust(cmd.memberId(), "POINT", -used.delta(), "TRADE_USE_CANCEL", orderNo, reason, false, false);
                 }
@@ -379,15 +407,15 @@ public class MemberGrowthService {
     private void returnTradeAsset(Long memberId, String type, String originalType, String returnType,
             String orderNo, String key, long refundedFen, long paidFen, boolean fullRefund,
             boolean reclaim, String reason) {
-        var previous = memberAssetRecordGateway.assetRequest(memberId, type, returnType, key);
+        var previous = assetRequest(memberId, type, returnType, key);
         if (previous != null) {
             if (!reason.equals(previous.reason())) { throw new ServiceException("售后权益内容不一致", 409); }
             return;
         }
-        var original = memberAssetRecordGateway.assetRequest(memberId, type, originalType, orderNo);
+        var original = assetRequest(memberId, type, originalType, orderNo);
         if (original == null) { return; }
         long total = Math.abs(original.delta());
-        long returned = Math.abs(memberAssetRecordGateway.tradeReturns(memberId, type, returnType, orderNo));
+        long returned = Math.abs(tradeReturns(memberId, type, returnType, orderNo));
         if (returned > total) { throw new ServiceException("历史权益回退超过原记录", 409); }
         long planned = fullRefund ? total - returned : java.math.BigInteger.valueOf(total)
                 .multiply(java.math.BigInteger.valueOf(refundedFen)).divide(java.math.BigInteger.valueOf(paidFen))

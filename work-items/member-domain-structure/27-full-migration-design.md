@@ -76,3 +76,11 @@ F01进行中：规则快照、限领/无限量、DATE/TERM、商品范围计价�
 2026-10-30 F04积分源编号/标题/描述写入快照已接入明确业务映射，原幂等业务码保留；后台及小程序展示，旧值不回填。源积分表及数值筛选契约最终替换仍待迁移，见80-point-record-metadata-delivery.md。
 
 2026-10-30 F04积分源数值类型筛选已接入pointBizType，中文枚举选择及原业务码组合，历史NULL不推断；源独立积分表及最终字段契约仍待迁移。见82-point-numeric-filter-delivery.md。
+
+2026-10-30 F04积分已独立至member_point_record，按表DO/Mapper/Gateway，原资产接口暂作应用兼容路由；经验仍旧表。旧库复制脚本保留ID且不删归档，真实升级未执行；最终字段/审计/经验拆分仍待迁移。见84-point-table-delivery.md。
+
+2026-10-30 F04经验已独立到member_experience_record，源经验元数据及后台/App展示贯通；旧泛化表实现移除，新库不再建旧表，老库归档保留。335后端/196React/118小程序通过；源完整审计/最终HTTP契约和兼容收敛仍待迁移，见86-experience-table-delivery.md。
+
+2026-10-30 F04泛化MemberAssetRecordGateway及Impl已退役，成长编排与查询直接依赖逐表Point/ExperienceGateway；无新路由Service。应用共享投影/最终HTTP契约仍保留，见88-asset-gateway-retirement-delivery.md。
+
+2026-10-30 F04积分/经验DO复用本地BaseDO并补审计列、XML映射；新行取上下文、重试不变，历史不回填。源deleted/最终HTTP字段契约等仍待收敛，见90-ledger-audit-delivery.md。

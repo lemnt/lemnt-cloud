@@ -25,7 +25,8 @@ import com.lemnt.member.application.user.qry.TagPageQry;
 import com.lemnt.member.application.user.service.MemberUserService;
 import com.lemnt.member.domain.address.gateway.MemberAddressGateway;
 import com.lemnt.member.domain.address.model.Address;
-import com.lemnt.member.domain.growth.gateway.MemberAssetRecordGateway;
+import com.lemnt.member.domain.growth.gateway.MemberPointRecordGateway;
+import com.lemnt.member.domain.growth.gateway.MemberExperienceRecordGateway;
 import com.lemnt.member.domain.growth.gateway.MemberConfigGateway;
 import com.lemnt.member.domain.growth.gateway.MemberLevelGateway;
 import com.lemnt.member.domain.growth.gateway.MemberLevelRecordGateway;
@@ -42,13 +43,11 @@ import com.lemnt.member.domain.user.model.Member;
 import com.lemnt.member.domain.user.model.Tag;
 import com.lemnt.member.infrastructure.address.gateway.MemberAddressGatewayImpl;
 import com.lemnt.member.infrastructure.address.mapper.MemberAddressMapper;
-import com.lemnt.member.infrastructure.growth.gateway.MemberAssetRecordGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberConfigGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberLevelGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberLevelRecordGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberSignConfigGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberSignRecordGatewayImpl;
-import com.lemnt.member.infrastructure.growth.mapper.MemberAssetRecordMapper;
 import com.lemnt.member.infrastructure.growth.mapper.MemberConfigMapper;
 import com.lemnt.member.infrastructure.growth.mapper.MemberLevelMapper;
 import com.lemnt.member.infrastructure.growth.mapper.MemberLevelRecordMapper;
@@ -96,7 +95,8 @@ class MemberAccountIntegrationTest {
     MemberTagGateway memberTagGateway;
     MemberTagLinkGateway memberTagLinkGateway;
     MemberAddressGateway memberAddressGateway;
-    MemberAssetRecordGateway memberAssetRecordGateway;
+    MemberPointRecordGateway pointRecords;
+    MemberExperienceRecordGateway experienceRecords;
     MemberLevelGateway memberLevelGateway;
     MemberLevelRecordGateway memberLevelRecordGateway;
     MemberSignConfigGateway memberSignConfigGateway;
@@ -106,6 +106,7 @@ class MemberAccountIntegrationTest {
     Connection schema;
     MemberUserService userService;
     MemberAddressService addressService;
+    SqlSessionTemplate template;
     MemberGrowthService growthService;
     MemberPasswordChangeCmdExe passwordChange;
     Long id, other;
@@ -144,6 +145,8 @@ class MemberAccountIntegrationTest {
         ScriptUtils.executeSqlScript(schema, new ClassPathResource("member-sql/V1__member.sql"));
         ScriptUtils.executeSqlScript(
                 schema, new ClassPathResource("member-sql/V2__member_account.sql"));
+        ScriptUtils.executeSqlScript(schema,new ClassPathResource("member-sql/V4__member_point_record.sql"));
+        ScriptUtils.executeSqlScript(schema,new ClassPathResource("member-sql/V5__member_experience_record.sql"));
         var config = new MybatisConfiguration();
         var interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
@@ -160,19 +163,19 @@ class MemberAccountIntegrationTest {
         config.addMapper(MemberGroupMapper.class);
         config.addMapper(MemberTagMapper.class);
         config.addMapper(MemberTagLinkMapper.class);
-        if (!config.hasMapper(MemberAssetRecordMapper.class)) config.addMapper(MemberAssetRecordMapper.class);
         config.addMapper(MemberLevelMapper.class);
         config.addMapper(MemberLevelRecordMapper.class);
         config.addMapper(MemberSignConfigMapper.class);
         if (!config.hasMapper(MemberSignRecordMapper.class)) config.addMapper(MemberSignRecordMapper.class);
         config.addMapper(MemberConfigMapper.class);
-        var template = new SqlSessionTemplate(factory);
+        template = new SqlSessionTemplate(factory);
         memberUserGateway = new MemberUserGatewayImpl(template.getMapper(MemberUserMapper.class));
         memberGroupGateway = new MemberGroupGatewayImpl(template.getMapper(MemberGroupMapper.class));
         memberTagGateway = new MemberTagGatewayImpl(template.getMapper(MemberTagMapper.class));
         memberTagLinkGateway = new MemberTagLinkGatewayImpl(template.getMapper(MemberTagLinkMapper.class));
         memberAddressGateway = new MemberAddressGatewayImpl(template.getMapper(MemberAddressMapper.class));
-        memberAssetRecordGateway = new MemberAssetRecordGatewayImpl(template.getMapper(MemberAssetRecordMapper.class));
+        pointRecords=new com.lemnt.member.infrastructure.growth.gateway.MemberPointRecordGatewayImpl(template.getMapper(com.lemnt.member.infrastructure.growth.mapper.MemberPointRecordMapper.class));
+        experienceRecords=new com.lemnt.member.infrastructure.growth.gateway.MemberExperienceRecordGatewayImpl(template.getMapper(com.lemnt.member.infrastructure.growth.mapper.MemberExperienceRecordMapper.class));
         memberLevelGateway = new MemberLevelGatewayImpl(template.getMapper(MemberLevelMapper.class));
         memberLevelRecordGateway = new MemberLevelRecordGatewayImpl(template.getMapper(MemberLevelRecordMapper.class));
         memberSignConfigGateway = new MemberSignConfigGatewayImpl(template.getMapper(MemberSignConfigMapper.class));
@@ -180,14 +183,14 @@ class MemberAccountIntegrationTest {
         memberConfigGateway = new MemberConfigGatewayImpl(template.getMapper(MemberConfigMapper.class));
         userService = tx(new MemberUserService(memberGroupGateway, memberTagGateway, memberTagLinkGateway, memberUserGateway));
         addressService = tx(new MemberAddressService(memberUserGateway, memberAddressGateway));
-        growthService = tx(new MemberGrowthService(memberAssetRecordGateway, memberConfigGateway, memberLevelGateway, memberLevelRecordGateway, memberSignConfigGateway, memberSignRecordGateway, memberUserGateway));
+        growthService = tx(new MemberGrowthService(pointRecords,experienceRecords, memberConfigGateway, memberLevelGateway, memberLevelRecordGateway, memberSignConfigGateway, memberSignRecordGateway, memberUserGateway));
         passwordChange = tx(new MemberPasswordChangeCmdExe(memberUserGateway));
         memberGroupPageQueryExe = new MemberGroupPageQueryExe(memberGroupGateway);
         memberTagPageQueryExe = new MemberTagPageQueryExe(memberTagGateway);
-        memberAssetRecordAllPageQueryExe = new MemberAssetRecordAllPageQueryExe(memberAssetRecordGateway);
+        memberAssetRecordAllPageQueryExe = new MemberAssetRecordAllPageQueryExe(pointRecords,experienceRecords);
         memberLevelRecordAllPageQueryExe = new MemberLevelRecordAllPageQueryExe(memberLevelRecordGateway);
         memberSignRecordAllPageQueryExe = new MemberSignRecordAllPageQueryExe(memberSignRecordGateway);
-        memberAssetRecordDetailQueryExe = new MemberAssetRecordDetailQueryExe(memberAssetRecordGateway);
+        memberAssetRecordDetailQueryExe = new MemberAssetRecordDetailQueryExe(pointRecords,experienceRecords);
         memberLevelRecordDetailQueryExe = new MemberLevelRecordDetailQueryExe(memberLevelRecordGateway);
         id = memberUserGateway.save(new Member(null, "one", "13800000001", null, null, 1, 0L, 0L, null, null, null, null, null)).id();
         other = memberUserGateway.save(new Member(null, "two", "13800000002", null, null, 1, 0L, 0L, null, null, null, null, null)).id();
@@ -321,7 +324,7 @@ class MemberAccountIntegrationTest {
             var b = pool.submit(() -> growthService.adjustAsset(id, "POINT", 10, "R1", "奖励"));
             assertEquals(a.get(15, TimeUnit.SECONDS).id(), b.get(15, TimeUnit.SECONDS).id());
             assertEquals(10, memberUserGateway.findById(id).points());
-            assertEquals(1, count("member_asset_record"));
+            assertEquals(1, count("member_point_record"));
         } finally {
             pool.shutdownNow();
         }
@@ -333,9 +336,9 @@ class MemberAccountIntegrationTest {
         assertThrows(
                 ArithmeticException.class,
                 () -> growthService.adjustAsset(id, "POINT", 1, "R1", "overflow"));
-        assertEquals(0, count("member_asset_record"));
+        assertEquals(0, count("member_point_record"));
         sql("UPDATE member_user SET points=0 WHERE id=" + id);
-        sql("ALTER TABLE member_asset_record ADD CONSTRAINT injected_failure CHECK(delta<0)");
+        sql("ALTER TABLE member_point_record ADD CONSTRAINT injected_failure CHECK(point<0)");
         assertThrows(Exception.class, () -> growthService.adjustAsset(id, "POINT", 1, "R2", "rollback"));
         assertEquals(0, memberUserGateway.findById(id).points());
     }
@@ -381,7 +384,8 @@ class MemberAccountIntegrationTest {
         assertEquals(10, memberUserGateway.findById(id).points());
         assertEquals(2, memberUserGateway.findById(id).experience());
         assertEquals(1, count("member_sign_record"));
-        assertEquals(2, count("member_asset_record"));
+        assertEquals(1, count("member_experience_record"));
+        assertEquals(1, count("member_point_record"));
     }
 
     @Test
@@ -402,12 +406,13 @@ class MemberAccountIntegrationTest {
     void failedExperienceLedgerRollsBackSignAndPoints() throws Exception {
         growthService.saveSignConfig(new SignConfig(1, 10L, 2L, 1));
         sql(
-                "ALTER TABLE member_asset_record ADD CONSTRAINT reject_experience"
-                + " CHECK(asset_type!='EXPERIENCE')");
+                "ALTER TABLE member_experience_record ADD CONSTRAINT reject_experience"
+                + " CHECK(experience<0)");
         assertThrows(Exception.class, () -> growthService.sign(id));
+        assertEquals(0, count("member_point_record"));
         assertEquals(0, count("member_sign_record"));
         assertEquals(0, memberUserGateway.findById(id).points());
-        assertEquals(0, count("member_asset_record"));
+        assertEquals(0, count("member_experience_record"));
     }
 
     @Test
@@ -465,10 +470,10 @@ class MemberAccountIntegrationTest {
                 new AssetRecordAllPageQry("POINT", id, 1, 20));
         assertEquals(1, mine.getTotal());
         assertEquals(id, mine.getRecords().get(0).memberId());
-        assertNull(
-                memberAssetRecordDetailQueryExe.execute(
-                new AssetRecordDetailQry(
-                "EXPERIENCE", mine.getRecords().get(0).id())));
+        var experienceDetail=memberAssetRecordDetailQueryExe.execute(new AssetRecordDetailQry("EXPERIENCE",mine.getRecords().get(0).id()));
+        assertNotNull(experienceDetail);assertEquals("EXPERIENCE",experienceDetail.assetType());assertEquals(3L,experienceDetail.delta());
+        var pointDetail=memberAssetRecordDetailQueryExe.execute(new AssetRecordDetailQry("POINT",mine.getRecords().get(0).id()));
+        assertEquals("POINT",pointDetail.assetType());assertEquals(mine.getRecords().get(0).delta(),pointDetail.delta());
         assertBusinessException(400,
                 () ->
                 memberAssetRecordAllPageQueryExe.execute(
@@ -693,10 +698,10 @@ class MemberAccountIntegrationTest {
     @org.junit.jupiter.api.Test
     void pointNicknameBusinessTypeAndMemberFilterShareCountAndExcludeExperience() {
         var now=memberUserGateway.now();
-        memberAssetRecordGateway.assetSave(new com.lemnt.member.domain.growth.model.AssetRecord(null,id,"POINT",1L,1L,"ADMIN","F1","调整",now));
-        memberAssetRecordGateway.assetSave(new com.lemnt.member.domain.growth.model.AssetRecord(null,other,"POINT",2L,2L,"SIGN_IN","F2","签到",now));
-        memberAssetRecordGateway.assetSave(new com.lemnt.member.domain.growth.model.AssetRecord(null,id,"EXPERIENCE",3L,3L,"ADMIN","F3","经验",now));
-        var query=new com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe(memberAssetRecordGateway);
+        pointRecords.save(new com.lemnt.member.domain.growth.model.AssetRecord(null,id,"POINT",1L,1L,"ADMIN","F1","调整",now));
+        pointRecords.save(new com.lemnt.member.domain.growth.model.AssetRecord(null,other,"POINT",2L,2L,"SIGN_IN","F2","签到",now));
+        experienceRecords.save(new com.lemnt.member.domain.growth.model.AssetRecord(null,id,"EXPERIENCE",3L,3L,"ADMIN","F3","经验",now));
+        var query=new com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe(pointRecords,experienceRecords);
         var all=query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",null,1,1,"o",null));
         assertEquals(2,all.getTotal());assertEquals(1,all.getRecords().size());assertEquals("two",all.getRecords().get(0).nickname());
         var filtered=query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",id,1,20,"one","ADMIN"));
@@ -708,11 +713,11 @@ class MemberAccountIntegrationTest {
 
     @org.junit.jupiter.api.Test
     void pointFilterHttpBindsNicknameAndBusinessTypeAndRejectsOversize() throws Exception {
-        memberAssetRecordGateway.assetSave(new com.lemnt.member.domain.growth.model.AssetRecord(null,id,"POINT",1L,1L,"ADMIN","H1","调整",memberUserGateway.now()));
+        pointRecords.save(new com.lemnt.member.domain.growth.model.AssetRecord(null,id,"POINT",1L,1L,"ADMIN","H1","调整",memberUserGateway.now()));
         var mvc=org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(
                 new com.lemnt.member.adapter.web.growth.MemberPointRecordController(
-                        new com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe(memberAssetRecordGateway),
-                        new com.lemnt.member.application.growth.executor.MemberAssetRecordDetailQueryExe(memberAssetRecordGateway)))
+                        new com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe(pointRecords,experienceRecords),
+                        new com.lemnt.member.application.growth.executor.MemberAssetRecordDetailQueryExe(pointRecords,experienceRecords)))
                 .setControllerAdvice(new com.lemnt.common.security.handler.GlobalExceptionHandler()).build();
         mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/member/admin/point-records")
                 .param("nickname","one").param("bizType","ADMIN").param("memberId",id.toString()))
@@ -739,8 +744,8 @@ class MemberAccountIntegrationTest {
         var repeated=growthService.adjustAsset(id,"POINT",10,"META-1","人工原因");
         assertEquals(first,repeated);assertEquals(10L,memberUserGateway.findById(id).points());
         var experience=growthService.adjustAsset(id,"EXPERIENCE",3,"META-EXP","经验原因");
-        assertNull(experience.pointBizType());assertNull(experience.title());assertNull(experience.description());
-        var read=memberAssetRecordGateway.assetsDetail(first.id());
+        assertNull(experience.pointBizType());assertEquals(0,experience.experienceBizType());assertEquals("管理员调整",experience.title());
+        var read=pointRecords.detail(first.id());
         assertEquals(first.title(),read.title());assertEquals(first.description(),read.description());
     }
     @org.junit.jupiter.api.Test
@@ -755,8 +760,8 @@ class MemberAccountIntegrationTest {
     @org.junit.jupiter.api.Test
     void numericPointFilterMatchesSavedMetadataAndKeepsLegacyUnknownOnlyWhenUnfiltered() {
         growthService.adjustAsset(id,"POINT",10,"NUMERIC-1","新流水");
-        memberAssetRecordGateway.assetSave(new com.lemnt.member.domain.growth.model.AssetRecord(null,id,"POINT",1L,11L,"ADMIN","LEGACY","旧流水",memberUserGateway.now()));
-        var query=new com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe(memberAssetRecordGateway);
+        pointRecords.save(new com.lemnt.member.domain.growth.model.AssetRecord(null,id,"POINT",1L,11L,"ADMIN","LEGACY","旧流水",memberUserGateway.now()));
+        var query=new com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe(pointRecords,experienceRecords);
         assertEquals(2,query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",id,1,20)).getTotal());
         var result=query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",id,1,1,"one","ADMIN",2));
         assertEquals(1,result.getTotal());assertEquals(1,result.getRecords().size());assertEquals(2,result.getRecords().get(0).pointBizType());
@@ -764,6 +769,83 @@ class MemberAccountIntegrationTest {
         assertThrows(com.lemnt.common.core.exception.ServiceException.class,()->query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",id,1,20,null,null,3)));
         assertThrows(com.lemnt.common.core.exception.ServiceException.class,()->query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("EXPERIENCE",id,1,20,null,null,2)));
         assertEquals(0,query.execute(new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry("POINT",id,1,20,null,null,22)).getTotal());
+    }
+
+    @org.junit.jupiter.api.Test
+    void legacyPointCopyPreservesIdsUnknownMetadataAndOriginalRequestReplay() throws Exception {
+        // 模拟未拆表旧库，保留源POINT归档；新库检查约束不允许此写入。
+        createLegacyAssetTable();
+        sql("INSERT INTO member_asset_record(id,member_id,asset_type,delta,balance,biz_type,biz_no,reason,create_time) VALUES(900,"+id+",'POINT',7,7,'ADMIN','OLD-POINT','旧原因',CURRENT_TIMESTAMP)");
+        sql("UPDATE member_user SET points=7 WHERE id="+id);
+        ScriptUtils.executeSqlScript(schema,new ClassPathResource("member-sql/upgrade/point_record_split.sql"));
+        var copied=pointRecords.request(id,"ADMIN","OLD-POINT");
+        var copiedAudit=template.getMapper(com.lemnt.member.infrastructure.growth.mapper.MemberPointRecordMapper.class).selectById(copied.id());
+        assertNull(copiedAudit.getCreateBy());assertNull(copiedAudit.getUpdateBy());assertNull(copiedAudit.getUpdateTime());
+        assertEquals(900L,copied.id());assertNull(experienceRecords.detail(copied.id()));assertNull(copied.pointBizType());assertNull(copied.title());assertEquals("旧原因",copied.reason());
+        assertEquals(1,pointRecords.count(new com.lemnt.member.domain.growth.model.AssetRecordPageFilter(id,"POINT",0,1)));assertEquals(1,count("member_asset_record"));
+        assertEquals(copied,growthService.adjustAsset(id,"POINT",7,"OLD-POINT","旧原因"));
+        assertEquals(7L,memberUserGateway.findById(id).points());assertEquals(1,count("member_point_record"));
+    }
+
+    /** 仅迁移测试构造旧库表，新库初始化不保留泛化流水表。 */
+    private void createLegacyAssetTable() throws Exception {
+        sql("CREATE TABLE member_asset_record(id BIGINT PRIMARY KEY,member_id BIGINT,asset_type VARCHAR(16),delta BIGINT,balance BIGINT,biz_type VARCHAR(40),biz_no VARCHAR(64),reason VARCHAR(500),create_time DATETIME,point_biz_type INT,title VARCHAR(255),description VARCHAR(500))");
+    }
+
+    @org.junit.jupiter.api.Test
+    void experienceHasOwnSourceMetadataAndRetryDoesNotRepeatGrowth() {
+        var first=growthService.adjustAsset(id,"EXPERIENCE",5,"EXP-META","经验原因");
+        assertNull(first.pointBizType());assertEquals(0,first.experienceBizType());assertEquals("管理员调整",first.title());
+        assertEquals("管理员调整获得 5 经验",first.description());assertEquals("经验原因",first.reason());
+        assertEquals(first,growthService.adjustAsset(id,"EXPERIENCE",5,"EXP-META","经验原因"));
+        assertEquals(5L,memberUserGateway.findById(id).experience());
+        assertEquals(4,com.lemnt.member.domain.growth.model.ExperienceRecordMetadata.from("EXPERIENCE","SIGN_IN",2).type());
+        assertEquals(11,com.lemnt.member.domain.growth.model.ExperienceRecordMetadata.from("EXPERIENCE","TRADE_EXPERIENCE",2).type());
+        assertEquals(13,com.lemnt.member.domain.growth.model.ExperienceRecordMetadata.from("EXPERIENCE","TRADE_EXPERIENCE_RETURN",-2).type());
+        assertNull(com.lemnt.member.domain.growth.model.ExperienceRecordMetadata.from("EXPERIENCE","UNKNOWN",2).type());
+    }
+    @org.junit.jupiter.api.Test
+    void legacyExperienceCopyKeepsOriginalIdAndUnknownMetadataAndReplay() throws Exception {
+        createLegacyAssetTable();
+        sql("INSERT INTO member_asset_record(id,member_id,asset_type,delta,balance,biz_type,biz_no,reason,create_time) VALUES(900,"+id+",'EXPERIENCE',7,7,'ADMIN','OLD-EXP','旧经验',CURRENT_TIMESTAMP)");
+        sql("UPDATE member_user SET experience=7 WHERE id="+id);
+        ScriptUtils.executeSqlScript(schema,new ClassPathResource("member-sql/upgrade/experience_record_split.sql"));
+        var copied=experienceRecords.request(id,"ADMIN","OLD-EXP");
+        assertEquals(900L,copied.id());assertNull(copied.experienceBizType());assertNull(copied.title());
+        assertNull(pointRecords.detail(900L));
+        assertEquals(copied,growthService.adjustAsset(id,"EXPERIENCE",7,"OLD-EXP","旧经验"));
+        assertEquals(7L,memberUserGateway.findById(id).experience());assertEquals(1,count("member_experience_record"));
+        assertEquals(1,count("member_asset_record"));
+    }
+
+    @org.junit.jupiter.api.Test
+    void typedLedgersRejectMisroutedWritesAndQueriesRejectUnknownType() {
+        var now=memberUserGateway.now();
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,()->pointRecords.save(
+                new com.lemnt.member.domain.growth.model.AssetRecord(null,id,"EXPERIENCE",1L,1L,"ADMIN","WRONG","错误",now)));
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,()->experienceRecords.save(
+                new com.lemnt.member.domain.growth.model.AssetRecord(null,id,"POINT",1L,1L,"ADMIN","WRONG","错误",now)));
+        assertEquals(0,pointRecords.count(new com.lemnt.member.domain.growth.model.AssetRecordPageFilter(id,"POINT",0,1)));
+        assertEquals(0,experienceRecords.count(new com.lemnt.member.domain.growth.model.AssetRecordPageFilter(id,"EXPERIENCE",0,1)));
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,()->memberAssetRecordDetailQueryExe.execute(new AssetRecordDetailQry("UNKNOWN",1L)));
+    }
+
+    @org.junit.jupiter.api.Test
+    void ledgerAuditUsesExistingContextAndStableDatabaseEventTimeOnReplay() {
+        com.lemnt.common.security.context.SecurityContextHolder.setUserName("audit-operator");
+        try {
+            var point=growthService.adjustAsset(id,"POINT",3,"AUDIT-P","原因");
+            var experience=growthService.adjustAsset(id,"EXPERIENCE",4,"AUDIT-E","原因");
+            var pointRow=template.getMapper(com.lemnt.member.infrastructure.growth.mapper.MemberPointRecordMapper.class).selectById(point.id());
+            var expRow=template.getMapper(com.lemnt.member.infrastructure.growth.mapper.MemberExperienceRecordMapper.class).selectById(experience.id());
+            assertEquals("audit-operator",pointRow.getCreateBy());assertEquals("audit-operator",pointRow.getUpdateBy());
+            assertEquals(pointRow.getCreateTime(),pointRow.getUpdateTime());
+            assertEquals("audit-operator",expRow.getCreateBy());assertEquals(expRow.getCreateTime(),expRow.getUpdateTime());
+            com.lemnt.common.security.context.SecurityContextHolder.setUserName("retry-operator");
+            growthService.adjustAsset(id,"POINT",3,"AUDIT-P","原因");
+            var replay=template.getMapper(com.lemnt.member.infrastructure.growth.mapper.MemberPointRecordMapper.class).selectById(point.id());
+            assertEquals(pointRow.getUpdateTime(),replay.getUpdateTime());assertEquals("audit-operator",replay.getUpdateBy());
+        } finally { com.lemnt.common.security.context.SecurityContextHolder.remove(); }
     }
 
 }

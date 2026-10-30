@@ -52,6 +52,13 @@ export default function MemberRecordPage() {
                   { title: '积分描述', dataIndex: 'description' },
                 ]
               : []),
+            ...(kind === 'experience-records'
+              ? [
+                  { title: '经验源类型', dataIndex: 'experienceBizType' },
+                  { title: '经验标题', dataIndex: 'title' },
+                  { title: '经验描述', dataIndex: 'description' },
+                ]
+              : []),
             { title: '变更量', dataIndex: 'delta' },
             { title: '变更后余额', dataIndex: 'balance' },
             { title: '原业务码', dataIndex: 'bizType' },

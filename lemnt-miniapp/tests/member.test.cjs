@@ -266,3 +266,9 @@ test("积分标题描述与原因分离，历史和经验不套用积分元数�
   };
   assert.equal((await c.records("points", 1)).records[0].title, undefined);
 });
+test("经验类型0与经验标题独立展示，不借积分编号", async () => {
+  const row={id:1,memberId:1,assetType:"EXPERIENCE",delta:5,balance:5,reason:"经验原因",createTime:"2026-10-30 10:00:00",experienceBizType:0,title:"管理员调整",description:"管理员调整获得 5 经验"};
+  const c=createMemberClient({request:async()=>({statusCode:200,data:{code:200,rows:[row],total:1}}),baseUrl:"https://api.example.test",ready:true,getSession:()=>token(),setSession:()=>{}});
+  const value=(await c.records("experience",1)).records[0];
+  assert.equal(value.experienceBizType,0);assert.equal(value.title,"管理员调整");assert.equal(value.pointBizType,undefined);assert.equal(value.reason,"经验原因");
+});

@@ -18,7 +18,8 @@ public record AssetRecord(
         String nickname,
         Integer pointBizType,
         String title,
-        String description
+        String description,
+        Integer experienceBizType
 ) {
     public AssetRecord(Long id,
         Long memberId,
@@ -29,7 +30,21 @@ public record AssetRecord(
         String bizNo,
         String reason,
         LocalDateTime createTime,
-        String nickname) {this(id, memberId, assetType, delta, balance, bizType, bizNo, reason, createTime, nickname,null,null,null);}
+        String nickname,
+        Integer pointBizType,
+        String title,
+        String description) {this(id, memberId, assetType, delta, balance, bizType, bizNo, reason, createTime, nickname, pointBizType, title, description,null);}
+
+    public AssetRecord(Long id,
+        Long memberId,
+        String assetType,
+        Long delta,
+        Long balance,
+        String bizType,
+        String bizNo,
+        String reason,
+        LocalDateTime createTime,
+        String nickname) {this(id, memberId, assetType, delta, balance, bizType, bizNo, reason, createTime, nickname,null,null,null,null);}
 
     /** 不带昵称的既有资产投影兼容。 */
     public AssetRecord(Long id,
@@ -40,5 +55,5 @@ public record AssetRecord(
         String bizType,
         String bizNo,
         String reason,
-        LocalDateTime createTime) {this(id, memberId, assetType, delta, balance, bizType, bizNo, reason, createTime,null, null, null, null);}
+        LocalDateTime createTime) {this(id, memberId, assetType, delta, balance, bizType, bizNo, reason, createTime,null, null, null, null,null);}
 }

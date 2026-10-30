@@ -5,7 +5,8 @@ import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.member.application.growth.converter.MemberGrowthDTOConverter;
 import com.lemnt.member.application.growth.dto.AssetRecordDTO;
 import com.lemnt.member.application.growth.qry.AssetRecordPageQry;
-import com.lemnt.member.domain.growth.gateway.MemberAssetRecordGateway;
+import com.lemnt.member.domain.growth.gateway.MemberPointRecordGateway;
+import com.lemnt.member.domain.growth.gateway.MemberExperienceRecordGateway;
 import com.lemnt.member.domain.shared.model.MemberRules;
 
 import org.springframework.stereotype.Component;
@@ -19,7 +20,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class MemberAssetRecordPageQueryExe {
 
-    private final MemberAssetRecordGateway memberAssetRecordGateway;
+    private final MemberPointRecordGateway pointRecords;
+    private final MemberExperienceRecordGateway experienceRecords;
 
     /**
      * 执行查询会员资产记录分页查询。
@@ -30,15 +32,10 @@ public class MemberAssetRecordPageQueryExe {
         if (!Set.of("POINT", "EXPERIENCE").contains(qry.assetType())) {
             throw new ServiceException("资产类型不合法", 400);
         }
-        return new PageResult<>(
-                memberAssetRecordGateway.assets(
-                        qry.memberId(),
-                        qry.assetType(),
-                        (qry.pageNum() - 1) * qry.pageSize(),
-                        qry.pageSize())
-                .stream()
-                .map(MemberGrowthDTOConverter::toAssetRecordDTO)
-                .toList(),
-                memberAssetRecordGateway.assetCount(qry.memberId(), qry.assetType()));
+        var filter=new com.lemnt.member.domain.growth.model.AssetRecordPageFilter(qry.memberId(),qry.assetType(),
+                (qry.pageNum()-1)*qry.pageSize(),qry.pageSize());
+        var records="POINT".equals(qry.assetType()) ? pointRecords.page(filter) : experienceRecords.page(filter);
+        var total="POINT".equals(qry.assetType()) ? pointRecords.count(filter) : experienceRecords.count(filter);
+        return new PageResult<>(records.stream().map(MemberGrowthDTOConverter::toAssetRecordDTO).toList(),total);
     }
 }

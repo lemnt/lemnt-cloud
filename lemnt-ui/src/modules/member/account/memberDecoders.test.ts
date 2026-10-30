@@ -117,3 +117,24 @@ it('积分标题描述独立于原因，历史未知不补造，经验不借用�
     ).title,
   ).toBeUndefined();
 });
+
+it('经验编号0保持有效，标题来自经验快照且不借积分类型', () => {
+  const row = {
+    id: '1',
+    memberId: '9',
+    assetType: 'EXPERIENCE',
+    delta: 5,
+    balance: 5,
+    bizType: 'ADMIN',
+    bizNo: 'E1',
+    reason: '原因',
+    createTime: '2026-10-30 09:00:00',
+    experienceBizType: 0,
+    title: '管理员调整',
+    description: '管理员调整获得 5 经验',
+  };
+  const value = decodeRecord(row, 'experience-records');
+  expect(value.experienceBizType).toBe(0);
+  expect(value.title).toBe('管理员调整');
+  expect(value.pointBizType).toBeUndefined();
+});
