@@ -1,5 +1,25 @@
 package com.lemnt.member.start;
 
+import com.lemnt.common.security.context.SecurityContextHolder;
+import com.lemnt.common.security.constant.SecurityConstants;
+import com.lemnt.common.security.interceptor.HeaderInterceptor;
+import com.lemnt.common.security.handler.GlobalExceptionHandler;
+import com.lemnt.member.adapter.app.address.AppMemberAddressController;
+import com.lemnt.member.application.address.executor.MemberAddressDeleteCmdExe;
+import com.lemnt.member.application.address.executor.MemberAddressDetailQueryExe;
+import com.lemnt.member.application.address.executor.MemberAddressListQueryExe;
+import com.lemnt.member.application.address.executor.MemberAddressSaveCmdExe;
+import com.lemnt.member.application.address.executor.MemberAddressDefaultQueryExe;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.http.MediaType;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
 import com.lemnt.common.security.utils.SecurityUtils;
@@ -1725,7 +1745,7 @@ class MemberAccountIntegrationTest {
     @Test
     void addressAuditTracksOnlyChangedDefaultsAndKeepsOtherOwnersUntouched() throws Exception {
         var mapper = template.getMapper(MemberAddressMapper.class);
-        com.lemnt.common.security.context.SecurityContextHolder.setUserName("address-creator");
+        SecurityContextHolder.setUserName("address-creator");
         try {
             var first = addressService.saveAddress(address(id, null, true));
             var next = addressService.saveAddress(address(id, null, false));
@@ -1735,7 +1755,7 @@ class MemberAccountIntegrationTest {
             assertEquals("address-creator", original.getCreateBy());
             assertNotNull(original.getCreateTime());
             sql("UPDATE member_address SET update_time='2020-01-01 00:00:00',update_by='old-editor'");
-            com.lemnt.common.security.context.SecurityContextHolder.setUserName("address-editor");
+            SecurityContextHolder.setUserName("address-editor");
             addressService.saveAddress(address(id, next.id(), true));
             var cleared = mapper.selectById(first.id());
             var selected = mapper.selectById(next.id());
@@ -1744,14 +1764,14 @@ class MemberAccountIntegrationTest {
             assertEquals("address-editor", selected.getUpdateBy());
             assertEquals(original.getCreateBy(), cleared.getCreateBy());
             assertEquals(original.getCreateTime(), cleared.getCreateTime());
-            assertTrue(cleared.getUpdateTime().isAfter(java.time.LocalDateTime.of(2020, 1, 1, 0, 0)));
+            assertTrue(cleared.getUpdateTime().isAfter(LocalDateTime.of(2020, 1, 1, 0, 0)));
             assertEquals("old-editor", mapper.selectById(ordinary.id()).getUpdateBy());
             assertEquals("old-editor", mapper.selectById(foreign.id()).getUpdateBy());
             assertTrue(mapper.selectById(foreign.id()).getDefaultStatus());
             assertEquals(next.id(), memberAddressGateway.defaultAddress(id).id());
             assertEquals(foreign.id(), memberAddressGateway.defaultAddress(other).id());
         } finally {
-            com.lemnt.common.security.context.SecurityContextHolder.remove();
+            SecurityContextHolder.remove();
         }
     }
 
@@ -1811,38 +1831,38 @@ class MemberAccountIntegrationTest {
     /** 真实H2保存和默认查询贯通HTTP，本人上下文不接受外部属主覆盖。 */
     @Test
     void addressHttpUsesOwnerContextAndUnifiedMissingResponse() throws Exception {
-        var controller = new com.lemnt.member.adapter.app.address.AppMemberAddressController(
-                new com.lemnt.member.application.address.executor.MemberAddressDeleteCmdExe(addressService),
-                new com.lemnt.member.application.address.executor.MemberAddressDetailQueryExe(memberAddressGateway),
-                new com.lemnt.member.application.address.executor.MemberAddressListQueryExe(memberAddressGateway),
-                new com.lemnt.member.application.address.executor.MemberAddressSaveCmdExe(addressService),
-                new com.lemnt.member.application.address.executor.MemberAddressDefaultQueryExe(memberAddressGateway));
-        var mvc = org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(controller)
-                .addInterceptors(new com.lemnt.common.security.interceptor.HeaderInterceptor())
-                .setControllerAdvice(new com.lemnt.common.security.handler.GlobalExceptionHandler()).build();
-        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/app/addresses")
-                .header(com.lemnt.common.security.constant.SecurityConstants.HEADER_USER_ID, id.toString())
-                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+        var controller = new AppMemberAddressController(
+                new MemberAddressDeleteCmdExe(addressService),
+                new MemberAddressDetailQueryExe(memberAddressGateway),
+                new MemberAddressListQueryExe(memberAddressGateway),
+                new MemberAddressSaveCmdExe(addressService),
+                new MemberAddressDefaultQueryExe(memberAddressGateway));
+        var mvc = MockMvcBuilders.standaloneSetup(controller)
+                .addInterceptors(new HeaderInterceptor())
+                .setControllerAdvice(new GlobalExceptionHandler()).build();
+        mvc.perform(post("/app/addresses")
+                .header(SecurityConstants.HEADER_USER_ID, id.toString())
+                .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"memberId\":" + other + ",\"name\":\"HTTP\",\"mobile\":\"13800000003\",\"areaId\":110101,\"detailAddress\":\"HTTP address\",\"defaultStatus\":true}"))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data.memberId").value(id.intValue()));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.memberId").value(id.intValue()));
         assertTrue(memberAddressGateway.addresses(other).isEmpty());
         var selected = memberAddressGateway.defaultAddress(id);
-        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/app/addresses/default")
+        mvc.perform(get("/app/addresses/default")
                 .param("memberId", other.toString())
-                .header(com.lemnt.common.security.constant.SecurityConstants.HEADER_USER_ID, id.toString()))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data.id").value(selected.id().intValue()));
-        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/app/addresses/" + selected.id())
-                .header(com.lemnt.common.security.constant.SecurityConstants.HEADER_USER_ID, other.toString()))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isNotFound())
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content().contentTypeCompatibleWith("application/problem+json"))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.status").value(404));
-        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/app/addresses/" + selected.id())
-                .header(com.lemnt.common.security.constant.SecurityConstants.HEADER_USER_ID, id.toString()))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data").value(true));
-        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/app/addresses/default")
-                .header(com.lemnt.common.security.constant.SecurityConstants.HEADER_USER_ID, id.toString()))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data").doesNotExist());
+                .header(SecurityConstants.HEADER_USER_ID, id.toString()))
+                .andExpect(jsonPath("$.data.id").value(selected.id().intValue()));
+        mvc.perform(delete("/app/addresses/" + selected.id())
+                .header(SecurityConstants.HEADER_USER_ID, other.toString()))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith("application/problem+json"))
+                .andExpect(jsonPath("$.status").value(404));
+        mvc.perform(delete("/app/addresses/" + selected.id())
+                .header(SecurityConstants.HEADER_USER_ID, id.toString()))
+                .andExpect(jsonPath("$.data").value(true));
+        mvc.perform(get("/app/addresses/default")
+                .header(SecurityConstants.HEADER_USER_ID, id.toString()))
+                .andExpect(jsonPath("$.data").doesNotExist());
     }
 
 }

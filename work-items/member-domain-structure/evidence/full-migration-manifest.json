@@ -5385,8 +5385,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/address/AppAddressController.java",
       "sha256": "17b7138e5773f2b1814df9fd2d9e4fc5ae49dcdc7a933543d73179d76540fe89",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "124地址移除额外20条限制，归属写入错误/默认切换审计及user_id/BaseDO迁移；BaseMapper/Lambda逐表存储，最终展示契约及基础逻辑删除差异继续核对"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/address/vo/AppAddressBaseVO.java",
@@ -5934,8 +5935,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/address/AddressServiceImpl.java",
       "sha256": "a9ceedd32a822361829c066e606d8d76778838ac484b35caaf82309b6860ee5d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "124地址移除额外20条限制，归属写入错误/默认切换审计及user_id/BaseDO迁移；BaseMapper/Lambda逐表存储，最终展示契约及基础逻辑删除差异继续核对"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/address/AddressService.java",
@@ -6049,8 +6051,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/address/MemberAddressMapper.java",
       "sha256": "2008b0d2a6b691646c6702007befe093f7c189d754b23b1dfb9eec7bf3780c49",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "124地址移除额外20条限制，归属写入错误/默认切换审计及user_id/BaseDO迁移；BaseMapper/Lambda逐表存储，最终展示契约及基础逻辑删除差异继续核对"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/level/MemberLevelMapper.java",
@@ -6125,8 +6128,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/address/MemberAddressDO.java",
       "sha256": "12aaafd5e03cda7e3692c8b200d8f363567bb2a6b0e680e0a6a4729b7d035b3b",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "124地址移除额外20条限制，归属写入错误/默认切换审计及user_id/BaseDO迁移；BaseMapper/Lambda逐表存储，最终展示契约及基础逻辑删除差异继续核对"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/level/MemberLevelDO.java",

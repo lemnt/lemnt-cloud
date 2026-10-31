@@ -169,3 +169,6 @@
 
 - [同等级手工调整设计](121-member-level-noop-design.md)
 - [同等级手工调整交付](122-member-level-noop-delivery.md)
+
+- [收货地址源逻辑收敛设计](123-member-address-alignment-design.md)
+- [收货地址源逻辑收敛交付](124-member-address-alignment-delivery.md)

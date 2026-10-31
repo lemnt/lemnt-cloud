@@ -116,3 +116,5 @@ F01进行中：规则快照、限领/无限量、DATE/TERM、商品范围计价�
 2026-10-31 F04后台停用经auth同步撤销会员会话、刷新防复活，复用公共key且无token集合索引，gateway保持无Dubbo。402业务测试、34网关、29公共安全测试通过；真实Redis/RPC部署未验收，见120-member-disable-session-delivery.md。
 
 2026-10-31 F04手工目标等级未变化时按源无操作，保留经验且不制造经验/等级流水，并发验证通过。405业务/34网关/29公共安全测试通过，修复既有新增Redis测试MockMaker不稳定问题，无HTTP/DDL变化，见122-member-level-noop-delivery.md。
+
+2026-10-31 F04地址按源移除20条限制、归属写错误/默认切换审计收敛，user_id与BaseDO升级脚本及BaseMapper逐表存储接通。410业务/34网关/29公共安全/123小程序测试通过；真实库升级未执行，见124-member-address-alignment-delivery.md。

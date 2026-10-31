@@ -12,7 +12,7 @@
 - `/member/app/**` 由小程序消费，Bearer令牌统一在网关校验，会员 ID 从网关写入的用户头进入公共安全上下文；禁止把管理员身份当会员。`/member/admin/**` 为后台接口，使用现有管理员权限机制。旧 `/members/register` 现在要求 `member:user:create`，不再匿名注册。后台创建资料不自动设置密码或签发会话。
 - 密码登录只接受手机号，沿用公共 SecurityUtils 的 BCrypt 默认配置，最短10字符、最长72 UTF-8字节。未知账号执行虚拟密码比对。每个手机号连续5次失败后15分钟窗口拒绝登录。
 - 会员与后台复用 TokenService/JwtUtils 的 JWT + Redis 机制；会员签名与缓存对象的 user_type 为 member，两端统一复用 LOGIN_TOKEN_KEY + userKey，不能跨身份访问。会话有效期30天（2592000秒），刷新使用同一访问JWT续期；不再签发 refreshToken。注销仅撤销当前会话，不再维护全设备会话索引；改密、重置不删除其他已有会话。会员业务仍保留自身的停用状态校验，恢复启用后仍未过期的原会话可能再次可用。旧 mbr_a_/mbr_r_ 令牌失效，需要重新登录。
-- 地址最多20条，写操作锁会员；默认地址在事务内切换，他人地址详情返回 null。积分/经验变更使用 requestNo 幂等，重试须保持 delta/reason，余额不可负、不可溢出。等级变更记录经验重置；签到奖励与流水同事务，每数据库日一次，周期按启用规则最大天数循环。
+- 地址按源逻辑不额外限制20条，写操作锁会员；默认地址在事务内切换，他人地址详情返回 null。积分/经验变更使用 requestNo 幂等，重试须保持 delta/reason，余额不可负、不可溢出。等级变更记录经验重置；签到奖励与流水同事务，每数据库日一次，周期按启用规则最大天数循环。
 - 状态采用 lemnt 1启用/0禁用（区别于参考项目）。金额配置为整数分，积分交易配置已用于结算抵扣与按实付赠送，抵扣单位价格为分、每单抵扣上限为积分数。数据库日期决定签到和限流日界；部署须统一时区。LocalDate 为 yyyy-MM-dd，LocalDateTime 按现有 Jackson yyyy-MM-dd HH:mm:ss。
 - 新库先审阅并依次执行 member/sql/V1__member.sql、V2__member_account.sql；已有 V1 库只执行 V2。V2 非重复执行脚本，不能重跑。这里未执行线上迁移，不能靠删表回滚。
 - member 不再通过 MemberSessionClient 或本地会话服务重复校验 token；应用接口使用 SecurityUtils.getUserId() 读取网关传递的身份。业务服务须通过内部网络限制直连，外部请求统一经过网关；网关先清理客户端身份头，再注入会员 ID，会员请求不传后台 userKey。
@@ -2888,7 +2888,7 @@ curl --request GET 'https://<API_HOST>/member/app/addresses/1' --header 'Authori
 适用错误：缺失或无效凭证401；参数400；状态或重复业务冲突409。
 
 
-### 63. 新增本人地址，最多20个
+### 63. 新增本人地址
 
 接口地址：`/member/app/addresses`  
 请求方式：`POST`  
