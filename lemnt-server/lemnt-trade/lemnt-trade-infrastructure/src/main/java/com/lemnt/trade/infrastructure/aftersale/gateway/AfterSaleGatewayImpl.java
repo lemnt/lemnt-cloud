@@ -30,6 +30,7 @@ public class AfterSaleGatewayImpl implements AfterSaleGateway {
         var page = mapper.selectPage(new Page<>((long) filter.offset() / filter.limit() + 1, filter.limit()),
                 Wrappers.<AfterSaleDO>lambdaQuery().eq(filter.orderNo() != null, AfterSaleDO::getOrderNo, filter.orderNo())
                         .eq(filter.status() != null, AfterSaleDO::getStatus, filter.status())
+                        .eq(filter.memberId() != null, AfterSaleDO::getMemberId, filter.memberId())
                         .orderByDesc(AfterSaleDO::getRequestedAt).orderByDesc(AfterSaleDO::getId));
         return PageResult.of(page.getRecords().stream().map(AfterSaleConverter::toModel).toList(), page.getTotal());
     }

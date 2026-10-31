@@ -1,0 +1,30 @@
+<view class="container">
+ <view wx:if="{{!ready}}" class="notice">会员服务暂未启用。</view>
+ <view wx:if="{{error}}" class="error">{{error}}</view>
+ <button wx:if="{{!loggedIn}}" bindtap="login">会员登录</button>
+ <block wx:if="{{loggedIn}}">
+  <scroll-view scroll-x class="tabs">
+   <view wx:for="{{tabs}}" wx:key="label" class="tab {{index === active ? 'active' : ''}}" data-index="{{index}}" bindtap="switchTab">{{item.label}}<text wx:if="{{counts[index]}}">({{counts[index]}})</text></view>
+  </scroll-view>
+  <button bindtap="reload" disabled="{{loading}}">刷新</button>
+  <view wx:if="{{!records.length}}" class="description">暂无订单</view>
+  <view wx:for="{{records}}" wx:key="orderNo" class="card">
+   <view class="list-row"><text>{{item.orderNo}}</text><text class="status">{{item.statusLabel}}</text></view>
+   <view wx:for="{{item.items}}" wx:for-item="row" wx:key="orderItemId" class="list-row">
+    <image wx:if="{{row.picUrl}}" src="{{row.picUrl}}" class="thumb" mode="aspectFill"/>
+    <text class="item-name">{{row.spuName || row.productName}} ×{{row.quantity}}</text>
+    <text>￥{{row.lineAmount}}</text>
+   </view>
+   <view class="list-row">实付 ￥{{item.totalAmount}}<text wx:if="{{item.activeRefund}}" class="tag">售后中</text></view>
+   <view class="row">
+    <button size="mini" data-order="{{item.orderNo}}" bindtap="goDetail">详情</button>
+    <button wx:if="{{item.canCancel}}" size="mini" data-order="{{item.orderNo}}" bindtap="cancel">取消订单</button>
+    <button wx:if="{{item.canReceive}}" size="mini" data-order="{{item.orderNo}}" bindtap="receive">确认收货</button>
+    <button wx:if="{{item.canComment}}" size="mini" data-order="{{item.orderNo}}" bindtap="goComment">去评价</button>
+    <button wx:if="{{item.canAfterSale}}" size="mini" data-order="{{item.orderNo}}" bindtap="goAfterSale">申请售后</button>
+   </view>
+  </view>
+  <view wx:if="{{hasMore}}" class="description">已显示 {{records.length}} / {{total}}</view>
+  <view class="row"><navigator url="/pages/member/index">会员中心</navigator><navigator url="/pages/index/index" open-type="reLaunch">返回商城</navigator></view>
+ </block>
+</view>

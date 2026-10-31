@@ -1,0 +1,19 @@
+<view class="container">
+ <view wx:if="{{!ready}}" class="notice">会员服务暂未启用。</view>
+ <view wx:if="{{error}}" class="error">{{error}}</view>
+ <button wx:if="{{!loggedIn}}" bindtap="login">会员登录</button>
+ <block wx:if="{{loggedIn}}">
+  <button bindtap="reload" disabled="{{loading}}">刷新</button>
+  <view wx:if="{{!records.length}}" class="description">暂无售后记录</view>
+  <view wx:for="{{records}}" wx:key="refundNo" class="card">
+   <view class="list-row"><text>{{item.refundNo}}</text><text class="status">{{item.statusLabel}}</text></view>
+   <view class="list-row">订单 {{item.orderNo}}</view>
+   <view class="list-row">{{item.spuName || item.productName}} ×{{item.quantity}}</view>
+   <view class="list-row">退款 ￥{{item.amount}}</view>
+   <view class="list-row" wx:if="{{item.reason}}">原因：{{item.reason}}</view>
+   <button size="mini" data-no="{{item.refundNo}}" bindtap="goDetail">查看详情</button>
+  </view>
+  <view wx:if="{{hasMore}}" class="description">已显示 {{records.length}} / {{total}}</view>
+  <view class="row"><navigator url="/pages/order-list/index">订单中心</navigator><navigator url="/pages/member/index">会员中心</navigator></view>
+ </block>
+</view>

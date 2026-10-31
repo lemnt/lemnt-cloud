@@ -1,0 +1,39 @@
+<view class="container">
+ <view wx:if="{{!ready}}" class="notice">会员服务暂未启用。</view>
+ <view wx:if="{{error}}" class="error">{{error}}</view>
+ <button wx:if="{{!loggedIn}}" bindtap="login">会员登录</button>
+ <block wx:if="{{loggedIn}}">
+  <view wx:if="{{order}}" class="card">
+   <view class="title">订单 {{order.orderNo}}</view>
+   <view class="list-row">状态：{{order.statusLabel}}<text wx:if="{{order.activeRefund}}" class="tag">售后中</text></view>
+   <view class="list-row" wx:if="{{order.createTime}}">下单时间：{{order.createTime}}</view>
+   <view class="list-row">实付 ￥{{order.totalAmount}}</view>
+   <view wx:for="{{order.items}}" wx:for-item="row" wx:key="orderItemId" class="list-row">
+    <image wx:if="{{row.picUrl}}" src="{{row.picUrl}}" class="thumb" mode="aspectFill"/>
+    <text class="item-name">{{row.spuName || row.productName}} ×{{row.quantity}}</text>
+    <text>￥{{row.lineAmount}}</text>
+    <view class="description" wx:if="{{row.properties && row.properties.length}}">规格：<text wx:for="{{row.properties}}" wx:for-item="p" wx:key="valueId">{{p.propertyName}} {{p.valueName}} </text></view>
+   </view>
+   <view class="row">
+    <button wx:if="{{order.canCancel}}" size="mini" bindtap="cancel">取消订单</button>
+    <button wx:if="{{order.canReceive}}" size="mini" bindtap="receive">确认收货</button>
+    <button wx:if="{{order.canComment}}" size="mini" bindtap="goComment">去评价</button>
+    <button wx:if="{{order.canAfterSale}}" size="mini" bindtap="goAfterSale">申请售后</button>
+   </view>
+  </view>
+  <view wx:if="{{order && order.shipment}}" class="card">
+   <view class="subtitle">物流信息</view>
+   <view class="list-row">{{order.shipment.carrierCode}} {{order.shipment.trackingNo}}</view>
+   <view class="list-row">{{order.shipment.recipientName}} {{order.shipment.phone}}</view>
+   <view class="list-row">{{order.shipment.address}}</view>
+   <view class="list-row" wx:if="{{order.shipment.shippedAt}}">发货：{{order.shipment.shippedAt}}</view>
+   <view class="list-row" wx:if="{{order.shipment.receivedAt}}">收货：{{order.shipment.receivedAt}}</view>
+   <button bindtap="toggleTracks" disabled="{{loading}}">{{showTracks ? '收起轨迹' : '查看物流轨迹'}}</button>
+   <view wx:if="{{showTracks}}">
+    <view wx:if="{{!tracks.length}}" class="description">暂无轨迹</view>
+    <view wx:for="{{tracks}}" wx:key="time" class="list-row">{{item.time}} {{item.description}}</view>
+   </view>
+  </view>
+  <navigator url="/pages/order-list/index">返回订单列表</navigator>
+ </block>
+</view>

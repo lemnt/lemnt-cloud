@@ -2,6 +2,7 @@ package com.lemnt.trade.infrastructure.order.mapper;
 
 import com.lemnt.trade.domain.fulfillment.model.FulfillmentFilter;
 import com.lemnt.trade.infrastructure.fulfillment.dataobject.OrderSummaryDO;
+import com.lemnt.trade.infrastructure.order.dataobject.OrderStatusCountDO;
 import com.lemnt.trade.infrastructure.order.dataobject.OrderTotalDO;
 import com.lemnt.trade.infrastructure.order.dataobject.TradeOrderDO;
 
@@ -22,8 +23,12 @@ public interface TradeOrderMapper extends BaseMapper<TradeOrderDO> {
             + " FROM trade_order <if test='orderNo != null'>WHERE order_no=#{orderNo}</if></script>")
     OrderTotalDO total(@Param("orderNo") String orderNo);
 
-    String Fulfillment_ORDER_FILTER = "<where><if test='orderNo != null'>o.order_no=#{orderNo}</if><if test='status !="
-            + " null'>AND o.status=#{status}</if></where>";
+    String Fulfillment_ORDER_FILTER = "<where>"
+            + "<if test='orderNo != null'>o.order_no=#{orderNo}</if>"
+            + "<if test='status != null'>AND o.status=#{status}</if>"
+            + "<if test='commentStatus != null'>AND o.comment_status=#{commentStatus}</if>"
+            + "<if test='memberId != null'>AND o.member_id=#{memberId}</if>"
+            + "</where>";
 
     /**
      * 查询订单。
@@ -45,6 +50,11 @@ public interface TradeOrderMapper extends BaseMapper<TradeOrderDO> {
      */
     @Select("<script>SELECT COUNT(*) FROM trade_order o " + Fulfillment_ORDER_FILTER + "</script>")
     long orderCount(FulfillmentFilter filter);
+
+    /** 会员本人订单按状态与评价状态分组计数。 */
+    @Select("SELECT status, comment_status, COUNT(*) AS cnt FROM trade_order"
+            + " WHERE member_id=#{memberId} GROUP BY status, comment_status")
+    List<OrderStatusCountDO> memberStatusCounts(@Param("memberId") Long memberId);
 
     /**
      * 数据库当前时间。

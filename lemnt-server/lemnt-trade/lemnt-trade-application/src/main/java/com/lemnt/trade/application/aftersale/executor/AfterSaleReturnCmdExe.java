@@ -25,4 +25,9 @@ public class AfterSaleReturnCmdExe {
         return AfterSaleDTOConverter.toDTO(service.registerReturn(value,
                 TradeOperator.administrator(operatorId)));
     }
+
+    /** 会员本人登记退货运单，领域层再次核验售后归属与阶段。 */
+    public AfterSaleDTO executeForMember(AfterSaleReturnCmd value, Long memberId) {
+        return AfterSaleDTOConverter.toDTO(service.registerReturn(value, TradeOperator.member(memberId)));
+    }
 }

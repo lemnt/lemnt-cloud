@@ -32,7 +32,7 @@ public class AfterSalePageQueryExe {
                 "RETURN_REJECTED", "REFUNDING", "REFUNDED", "CANCELLED").contains(status)) {
             throw new IllegalArgumentException("售后状态不合法");
         }
-        var page = afterSales.afterSalePage(new AfterSaleFilter(no, status,
+        var page = afterSales.afterSalePage(new AfterSaleFilter(no, status, null,
                 (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize()));
         return PageResult.of(page.getRecords().stream().map(AfterSaleDTOConverter::toDTO).toList(), page.getTotal());
     }

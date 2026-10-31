@@ -2,6 +2,7 @@ package com.lemnt.trade.domain.order.gateway;
 
 import com.lemnt.trade.domain.fulfillment.model.FulfillmentFilter;
 import com.lemnt.trade.domain.fulfillment.model.OrderPage;
+import com.lemnt.trade.domain.order.model.OrderStatusCount;
 import com.lemnt.trade.domain.order.model.OrderTotal;
 import com.lemnt.trade.domain.order.model.TradeOrder;
 
@@ -23,6 +24,9 @@ public interface TradeOrderGateway {
      * 查询订单。
      */
     OrderPage orders(FulfillmentFilter filter);
+
+    /** 按状态与评价状态统计会员本人订单数量。 */
+    List<OrderStatusCount> memberStatusCounts(Long memberId);
 
     /**
      * 数据库当前时间。

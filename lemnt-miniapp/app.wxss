@@ -15,4 +15,12 @@ button { margin: 16rpx 0; }
 .notice { color: #805900; background: #fff7df; padding: 20rpx; margin-bottom: 20rpx; }
 .success { color: #237a46; margin: 20rpx 0; }
 .list-row { padding: 20rpx 0; border-bottom: 1rpx solid #eee; }
+.list-row.selected { background: #eef6ff; }
 navigator { padding: 24rpx; color: #1262bc; text-align: center; }
+.tabs { white-space: nowrap; margin-bottom: 16rpx; }
+.tab { display: inline-block; padding: 16rpx 24rpx; color: #555; }
+.tab.active { color: #1262bc; font-weight: 600; border-bottom: 4rpx solid #1262bc; }
+.status { color: #1262bc; float: right; }
+.tag { margin-left: 16rpx; color: #b42318; border: 1rpx solid #b42318; border-radius: 8rpx; padding: 0 8rpx; font-size: 24rpx; }
+.thumb { width: 96rpx; height: 96rpx; border-radius: 8rpx; margin-right: 16rpx; vertical-align: middle; }
+.item-name { display: inline-block; max-width: 60%; vertical-align: middle; }

@@ -25,4 +25,9 @@ public class AfterSaleCreateCmdExe {
         return AfterSaleDTOConverter.toDTO(service.create(value,
                 TradeOperator.administrator(operatorId)));
     }
+
+    /** 会员本人申请，领域层再次核验订单归属。 */
+    public AfterSaleDTO executeForMember(AfterSaleCreateCmd value, Long memberId) {
+        return AfterSaleDTOConverter.toDTO(service.create(value, TradeOperator.member(memberId)));
+    }
 }

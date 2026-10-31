@@ -3,6 +3,7 @@ package com.lemnt.trade.infrastructure.order.gateway;
 import com.lemnt.trade.domain.fulfillment.model.FulfillmentFilter;
 import com.lemnt.trade.domain.fulfillment.model.OrderPage;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
+import com.lemnt.trade.domain.order.model.OrderStatusCount;
 import com.lemnt.trade.domain.order.model.OrderTotal;
 import com.lemnt.trade.domain.order.model.TradeOrder;
 import com.lemnt.trade.infrastructure.fulfillment.converter.FulfillmentConverter;
@@ -58,6 +59,14 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     @Override
     public LocalDateTime databaseNow() {
         return tradeOrderMapper.databaseNow();
+    }
+
+    /** 按状态与评价状态统计会员本人订单数量。 */
+    @Override
+    public List<OrderStatusCount> memberStatusCounts(Long memberId) {
+        return tradeOrderMapper.memberStatusCounts(memberId).stream()
+                .map(row -> new OrderStatusCount(row.getStatus(), row.getCommentStatus(), row.getCnt()))
+                .toList();
     }
 
     @Override

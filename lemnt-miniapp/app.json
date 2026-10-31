@@ -12,7 +12,12 @@
     "pages/browse-history/index",
     "pages/comments/index",
     "pages/comment-create/index",
-    "pages/order-comment/index"
+    "pages/order-comment/index",
+    "pages/order-list/index",
+    "pages/order-detail/index",
+    "pages/after-sale-list/index",
+    "pages/after-sale-create/index",
+    "pages/after-sale-detail/index"
   ],
   "window": {
     "navigationBarTitleText": "lemnt 商城",

@@ -54,6 +54,8 @@ public class OrderPageQueryExe {
                 new FulfillmentFilter(
                 no,
                 status,
+                null,
+                null,
                 (query.pageNum() - 1) * query.pageSize(),
                 query.pageSize()));
         return new OrderPageDTO(

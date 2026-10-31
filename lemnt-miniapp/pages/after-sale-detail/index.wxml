@@ -1,0 +1,29 @@
+<view class="container">
+ <view wx:if="{{!ready}}" class="notice">会员服务暂未启用。</view>
+ <view wx:if="{{error}}" class="error">{{error}}</view>
+ <button wx:if="{{!loggedIn}}" bindtap="login">会员登录</button>
+ <block wx:if="{{loggedIn}}">
+  <view wx:if="{{sale}}" class="card">
+   <view class="title">售后 {{sale.refundNo}}</view>
+   <view class="list-row">状态：<text class="status">{{sale.statusLabel}}</text></view>
+   <view class="list-row">订单 {{sale.orderNo}}</view>
+   <view class="list-row">{{sale.spuName}} ×{{sale.quantity}}</view>
+   <view class="list-row">方式：{{sale.typeLabel}}　退款 ￥{{sale.amount}}</view>
+   <view class="list-row" wx:if="{{sale.reason}}">申请原因：{{sale.reason}}</view>
+   <view class="list-row" wx:if="{{sale.decisionReason}}">处理说明：{{sale.decisionReason}}</view>
+   <view class="list-row" wx:if="{{sale.requestedAt}}">申请时间：{{sale.requestedAt}}</view>
+   <view class="list-row" wx:if="{{sale.returnCarrierCode}}">退货物流：{{sale.returnCarrierCode}} {{sale.returnTrackingNo}}</view>
+   <view class="list-row" wx:if="{{sale.refundTime}}">退款时间：{{sale.refundTime}}</view>
+   <view class="row">
+    <button wx:if="{{sale.canReturn}}" size="mini" bindtap="toggleReturn">{{showReturn ? '收起' : '登记退货物流'}}</button>
+    <button wx:if="{{sale.canCancel}}" size="mini" bindtap="cancel">取消售后</button>
+   </view>
+   <view wx:if="{{showReturn && sale.canReturn}}">
+    <label class="field">快递公司<input value="{{carrier}}" maxlength="40" bindinput="inputCarrier" disabled="{{loading}}" placeholder="如 SF"/></label>
+    <label class="field">快递单号<input value="{{tracking}}" maxlength="100" bindinput="inputTracking" disabled="{{loading}}"/></label>
+    <button type="primary" bindtap="submitReturn" disabled="{{loading}}">提交退货物流</button>
+   </view>
+  </view>
+  <view class="row"><navigator url="/pages/after-sale-list/index">售后中心</navigator><navigator url="/pages/order-list/index">订单中心</navigator></view>
+ </block>
+</view>

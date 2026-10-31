@@ -1,0 +1,32 @@
+<view class="container">
+ <view wx:if="{{!ready}}" class="notice">会员服务暂未启用。</view>
+ <view wx:if="{{error}}" class="error">{{error}}</view>
+ <button wx:if="{{!loggedIn}}" bindtap="login">会员登录</button>
+ <block wx:if="{{loggedIn}}">
+  <view class="card">
+   <view class="title">申请售后</view>
+   <view class="list-row">订单 {{orderNo}}</view>
+   <view wx:if="{{!items.length}}" class="description">该订单暂无可售后商品</view>
+   <view wx:for="{{items}}" wx:key="orderItemId" class="list-row {{index === selectedIndex ? 'selected' : ''}}" data-index="{{index}}" bindtap="select">
+    <text>{{item.spuName || item.productName}} ×{{item.quantity}}</text>
+    <view class="description">可退 {{item.refundableQuantity}} 件 / ￥{{item.refundableAmount}}</view>
+    <view class="description" wx:if="{{item.refundableQuantity <= 0}}">已无可售后数量</view>
+   </view>
+  </view>
+  <view class="card" wx:if="{{selectedIndex >= 0}}">
+   <view class="list-row">售后数量
+    <view class="row">
+     <button size="mini" data-kind="minus" bindtap="changeQuantity">-</button>
+     <text>{{quantity}}</text>
+     <button size="mini" data-kind="plus" bindtap="changeQuantity">+</button>
+    </view>
+   </view>
+   <picker mode="selector" range="{{typeLabels}}" value="{{typeIndex}}" bindchange="changeType">
+    <view class="field">售后方式：{{typeLabels[typeIndex]}}（点击选择）</view>
+   </picker>
+   <label class="field">申请原因<textarea value="{{reason}}" maxlength="500" bindinput="inputReason" disabled="{{loading}}" placeholder="请描述售后原因"></textarea></label>
+   <button type="primary" bindtap="submit" disabled="{{loading}}">提交申请</button>
+  </view>
+  <view class="row"><navigator url="/pages/order-list/index">返回订单列表</navigator><navigator url="/pages/after-sale-list/index">售后中心</navigator></view>
+ </block>
+</view>
