@@ -1,6 +1,6 @@
 # 后台支付渠道、支付单和支付退单
 
-2026-10-27。范围按用户定义：支付配置展示支持渠道；支付退单是已有订单售后单触发的逆向支付交易。参考芋道支付退款和售后分工，按本项目 Adapter → Application → Domain / Infrastructure 结构实现。消费流程不增加后台页面。
+2026-10-27。范围按用户定义：支付配置展示支持渠道；支付退单是已有订单售后单触发的逆向支付交易。参考芋道支付退款和售后分工，按本项目 Adapter → Application → Domain / Infrastructure 结构实现。支付与退款创建仍由订单、售后流程发起，后台提供只读管理页面。
 
 ## 接口
 
@@ -51,3 +51,9 @@
 - [芋道 PayChannelController](https://gitee.com/zhijiantianya/yudao-cloud/blob/master/yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/channel/PayChannelController.java)：原项目有完整渠道管理；本项目按用户要求仅展示支持渠道，未搬入商户应用和渠道配置 CRUD。
 
 参考源码通过 Gitee raw 下载核对；下载内容的 SHA256 留在工作项证据中。引用分支可能更新，本轮未全量复制原工程。
+
+## 2026-10-31 后台页面
+
+已注册trade/payment/index、trade/payment-refund/index、trade/payment-channel/index三页。支付单可按支付单号/订单号/渠道/状态查询，支付退单按售后单/原支付单/状态查询，详情权限与列表权限独立。支持渠道只展示编码名称，按已确认范围不新增密钥或启用配置表单，不表示渠道SDK已接通。页面保留trade前缀，实际路径与上表Controller一致。
+
+执行V20261031__trade_payment_menu.sql新增菜单后按既有权限流程授权；脚本可重入且不自动授予角色。本次只在H2测试，未执行真实库。新增前端合同/权限测试和已有4项HTTP契约、1项菜单测试通过；浏览器联调和部署验收仍待完成。

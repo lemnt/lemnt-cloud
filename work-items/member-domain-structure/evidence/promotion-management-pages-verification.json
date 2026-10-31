@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-31",
+  "batch": "129",
+  "scope": "reward and discount management pages, existing API, additive menu seed",
+  "backendFocusedTests": {
+    "PromotionMenuSeedTest": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "ActivityAlignmentPersistenceTest": {
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "backendTestTotal": 10,
+  "react": {
+    "tests": 232,
+    "files": 37,
+    "passed": true
+  },
+  "checks": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "format:check": "passed",
+    "build": "passed with existing chunk warning",
+    "diffCheck": "passed"
+  },
+  "logs": [
+    "/tmp/promotion-management-backend.log",
+    "/tmp/promotion-ui-tests.log",
+    "/tmp/promotion-ui-typecheck.log",
+    "/tmp/promotion-ui-lint.log",
+    "/tmp/promotion-ui-format.log",
+    "/tmp/promotion-ui-build.log"
+  ],
+  "testCoverage": [
+    "actual two API paths and status zero, safe long IDs",
+    "exact big decimal adjacent thresholds, integer count conditions and ascending rules",
+    "fold-to-basis-points and mode field exclusion, duplicate SKU rejection",
+    "read/create/update/close/delete response and payload contracts",
+    "page permission denial, create/delete visibility and closed state",
+    "two distinct menu component registrations",
+    "H2 menu seed repeated twice, existing name and role binding preserved",
+    "existing real Mapper/transaction activity business tests rerun"
+  ],
+  "limitations": [
+    "Frontend component tests use SSR; no browser interaction or live service integration executed",
+    "No provider implementation or data model changes; full backend and miniapp suites not repeated",
+    "Menu SQL only tested against H2, not run on real system database; role grants not changed",
+    "Reward gift coupons/points/free-shipping and other source rule gaps remain unavailable and not advertised",
+    "No commit/push/deployment"
+  ]
+}

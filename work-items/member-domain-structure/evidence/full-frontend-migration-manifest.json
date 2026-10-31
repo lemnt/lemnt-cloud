@@ -374,20 +374,23 @@
     {
       "source": "src/views/mall/promotion/discountActivity/DiscountActivityForm.vue",
       "sha256": "2c5b151fbd58e73e03f09f0067607eb63a351615fc142136f07f1aa4963b33a2",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/promotion",
+      "note": "129两类独立管理入口、现有规则/商品选择、API/权限/状态操作及菜单接入；源赠送规则、完整时间筛选等后端差异与浏览器联调仍待完成"
     },
     {
       "source": "src/views/mall/promotion/discountActivity/discountActivity.data.ts",
       "sha256": "b9ace06b7ad6e2c9c90917ab5707bfe005a335564c59cb033d7275948c453e86",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/promotion",
+      "note": "129两类独立管理入口、现有规则/商品选择、API/权限/状态操作及菜单接入；源赠送规则、完整时间筛选等后端差异与浏览器联调仍待完成"
     },
     {
       "source": "src/views/mall/promotion/discountActivity/index.vue",
       "sha256": "0278aa3a0d09027f00242dd401154b4e4353eba6c1f609cacbe35fdc6da46720",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/promotion",
+      "note": "129两类独立管理入口、现有规则/商品选择、API/权限/状态操作及菜单接入；源赠送规则、完整时间筛选等后端差异与浏览器联调仍待完成"
     },
     {
       "source": "src/views/mall/promotion/diy/page/DiyPageForm.vue",
@@ -836,26 +839,30 @@
     {
       "source": "src/views/mall/promotion/rewardActivity/RewardForm.vue",
       "sha256": "c4baef27104e65afd667215572c930624c67dbd857a74b93d88c92fbb017ceca",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/promotion",
+      "note": "129两类独立管理入口、现有规则/商品选择、API/权限/状态操作及菜单接入；源赠送规则、完整时间筛选等后端差异与浏览器联调仍待完成"
     },
     {
       "source": "src/views/mall/promotion/rewardActivity/components/RewardRule.vue",
       "sha256": "ab16a2b37a4451144026a1aabf98833e8591b5721b75157610038563c670de0d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/promotion",
+      "note": "129两类独立管理入口、现有规则/商品选择、API/权限/状态操作及菜单接入；源赠送规则、完整时间筛选等后端差异与浏览器联调仍待完成"
     },
     {
       "source": "src/views/mall/promotion/rewardActivity/components/RewardRuleCouponSelect.vue",
       "sha256": "9f39153bc39f6d246c7602d26b75b13f21369890ef3716535d113d0fe2d78009",
       "state": "pending",
-      "target": null
+      "target": null,
+      "note": "赠券选择器未迁移，现有后端赠券规则尚未接通；129只交付现有满减/折扣规则管理"
     },
     {
       "source": "src/views/mall/promotion/rewardActivity/index.vue",
       "sha256": "10fa41607de8fb50a9318572b4e6dec74db8f6f45701916bbcfbdcc62e55171b",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/promotion",
+      "note": "129两类独立管理入口、现有规则/商品选择、API/权限/状态操作及菜单接入；源赠送规则、完整时间筛选等后端差异与浏览器联调仍待完成"
     },
     {
       "source": "src/views/mall/promotion/seckill/activity/SeckillActivityForm.vue",
@@ -1709,8 +1716,9 @@
     {
       "source": "src/views/pay/order/index.vue",
       "sha256": "cf972f6bb14cb4ab63a23f0ce9df9ed27c62906025f0d6395938615f706247ea",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/payment",
+      "note": "129已有支付单/支付退单分页筛选及详情管理页面和权限/菜单；创建仍走订单售后，源完整筛选导出及浏览器部署联调尚未完成"
     },
     {
       "source": "src/views/pay/refund/RefundDetail.vue",
@@ -1721,8 +1729,9 @@
     {
       "source": "src/views/pay/refund/index.vue",
       "sha256": "7c9e32f24ab08cef99126203e4510ab17a09a4274203811709bced21003ece3c",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/payment",
+      "note": "129已有支付单/支付退单分页筛选及详情管理页面和权限/菜单；创建仍走订单售后，源完整筛选导出及浏览器部署联调尚未完成"
     },
     {
       "source": "src/views/pay/transfer/TransferDetail.vue",

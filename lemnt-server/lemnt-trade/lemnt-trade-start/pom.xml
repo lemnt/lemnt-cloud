@@ -66,6 +66,7 @@
                     <include>V20261025__trade_fulfillment_menu.sql</include>
                     <include>V20261026__mall_promotion_permissions.sql</include>
                     <include>V20261027__trade_payment_management_permissions.sql</include>
+                    <include>V20261031__trade_payment_menu.sql</include>
                     <include>V20261027__trade_fulfillment_management_permissions.sql</include>
                 </includes>
             </testResource>
