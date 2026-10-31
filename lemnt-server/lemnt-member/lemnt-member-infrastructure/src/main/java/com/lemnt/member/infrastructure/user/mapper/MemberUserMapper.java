@@ -4,9 +4,9 @@ import com.lemnt.member.infrastructure.user.dataobject.MemberDO;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Param;
+import com.lemnt.member.domain.user.model.MemberPageFilter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,44 +15,17 @@ import java.util.List;
 @Mapper
 public interface MemberUserMapper extends BaseMapper<MemberDO> {
 
-    /**
-     * 获取数据库当前时间。
-     */
-    @Select("SELECT CURRENT_TIMESTAMP")
+    /** 真实数据库时间，不由应用时钟推算。 */
     LocalDateTime now();
 
-    /**
-     * 根据会员编号读取完整资料。
-     */
-    default MemberDO profile(Long id) {
-        return this.selectOne(Wrappers.<MemberDO>lambdaQuery()
-                .eq(MemberDO::getId, id));
-    }
+    /** 锁定会员行，原有写操作序列化不变。 */
+    MemberDO lock(@Param("id") Long id);
 
-    /**
-     * 锁定会员资料，串行化同一会员的写操作。
-     */
-    @Select("SELECT * FROM member_user WHERE id=#{id} FOR UPDATE")
-    MemberDO lock(Long id);
+    /** 参数化标签EXISTS及资料组合分页。 */
+    List<MemberDO> profiles(@Param("f") MemberPageFilter filter);
 
-    /**
-     * 查询会员资料。
-     */
-    default List<MemberDO> profiles(
-            String mobile, int offset, int limit) {
-        return this.selectPage(new Page<>((long) offset / limit + 1, limit, false),
-                Wrappers.<MemberDO>lambdaQuery()
-                .eq(mobile != null, MemberDO::getMobile, mobile)
-                .orderByDesc(MemberDO::getId)).getRecords();
-    }
-
-    /**
-     * 统计符合手机号筛选条件的会员数量。
-     */
-    default long profileCount(String mobile) {
-        return this.selectCount(Wrappers.<MemberDO>lambdaQuery()
-                .eq(mobile != null, MemberDO::getMobile, mobile));
-    }
+    /** 与资料分页使用同一条件，不重复计算标签命中。 */
+    long profileCount(@Param("f") MemberPageFilter filter);
 
     /**
      * 更新会员可维护资料，保留资产与关联数据。
@@ -60,6 +33,7 @@ public interface MemberUserMapper extends BaseMapper<MemberDO> {
     default int profileUpdate(MemberDO value) {
         return this.update(null, Wrappers.<MemberDO>lambdaUpdate()
                 .set(MemberDO::getNickname, value.getNickname())
+                .set(MemberDO::getMobile, value.getMobile())
                 .set(MemberDO::getMark, value.getMark())
                 .set(MemberDO::getName, value.getName())
                 .set(MemberDO::getAreaId, value.getAreaId())

@@ -123,6 +123,26 @@ class TokenServiceTest {
         verify(redis, never()).delete(CacheConstants.LOGIN_TOKEN_KEY + "other-session");
     }
 
+    /** 续期必须使用原子存在性更新，已删除会话不得重新创建。 */
+    @Test
+    void refreshExistingSessionUsesConditionalWriteAndRejectsMissingKey() {
+        SecurityUser user = user();
+        org.junit.jupiter.api.Assertions.assertThrows(SecurityException.class, () -> service.refreshExistingToken(user));
+        when(redis.setObjIfPresent(CacheConstants.LOGIN_TOKEN_KEY + "session-1", user, SESSION_SECONDS, TimeUnit.SECONDS))
+                .thenReturn(true);
+        service.refreshExistingToken(user);
+        verify(redis, times(2)).setObjIfPresent(CacheConstants.LOGIN_TOKEN_KEY + "session-1", user, SESSION_SECONDS, TimeUnit.SECONDS);
+        verify(redis, never()).setObj(anyString(), any(), anyLong(), any());
+    }
+
+    /** 非法会员编号不会触发遍历公共会话。 */
+    @Test
+    void invalidMemberIdDoesNotScanSessionCache() {
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> service.revokeMemberSessions(null));
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> service.revokeMemberSessions(0L));
+        verifyNoInteractions(redis);
+    }
+
     private SecurityUser user() {
         return new SecurityUser().setToken("session-1").setRoles(Set.of("user"))
                 .setDetail(new SecurityUserDetail().setUserId(100L).setUserName("tester"));

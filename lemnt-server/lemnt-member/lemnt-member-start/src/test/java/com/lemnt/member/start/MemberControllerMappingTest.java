@@ -47,7 +47,7 @@ class MemberControllerMappingTest {
                 DELETE /app/addresses/{id}
                 DELETE /groups/{id} member:group:delete
                 DELETE /growth/levels/{id} member:level:delete
-                DELETE /growths/signin-configs/{day} member:sign-in-config:delete
+                DELETE /growths/signin-configs/{id} member:sign-in-config:delete
                 DELETE /tags/{id} member:tag:delete
                 GET /app/addresses
                 GET /app/addresses/default
@@ -60,16 +60,16 @@ class MemberControllerMappingTest {
                 GET /app/growths/signin/summary
                 GET /app/users/user
                 GET /groups member:group:query
-                GET /groups/groups/page member:group:query
+                GET /groups/page member:group:query
                 GET /groups/list-all-simple member:group:query
-                GET /groups/tags/page member:tag:query
+                GET /tags/page member:tag:query
                 GET /groups/{id} member:group:query
                 GET /growth/levels member:level:query
                 GET /growth/levels/list-all-simple member:level:query
                 GET /growth/levels/{id} member:level:query
                 GET /growths/config member:config:query
                 GET /growths/signin-configs member:sign-in-config:query
-                GET /growths/signin-configs/{day} member:sign-in-config:query
+                GET /growths/signin-configs/{id} member:sign-in-config:query
                 GET /member-users member:user:query
                 GET /member-users/{id} member:user:query
                 GET /member-users/{id}/addresses member:address:query
@@ -98,7 +98,8 @@ class MemberControllerMappingTest {
                 PUT /groups/{id} member:group:update
                 PUT /growth/levels/{id} member:level:update
                 PUT /growths/config member:config:update
-                PUT /growths/signin-configs member:sign-in-config:update
+                PUT /growths/signin-configs/{id} member:sign-in-config:update
+                POST /growths/signin-configs member:sign-in-config:create
                 PUT /member-users/{id} member:user:update
                 PUT /member-users/{id}/group member:user:update
                 PUT /member-users/{id}/level member:user:update-level

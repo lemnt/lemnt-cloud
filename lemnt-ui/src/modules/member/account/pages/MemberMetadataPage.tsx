@@ -13,7 +13,7 @@ import { AdminModalForm } from '@/shared/components/AdminModalForm';
 import { usePermission } from '@/shared/hooks/usePermission';
 import * as api from '../api/memberApi';
 import { memberKeys, memberStatusOptions } from '../types';
-import type { MemberMetadata, MetadataKind, MetadataValues } from '../types';
+import type { LevelFilterValues, MemberMetadata, MetadataKind, MetadataValues } from '../types';
 export function MemberMetadataPage({ kind }: { kind: MetadataKind }) {
   const { can } = usePermission();
   const { message } = App.useApp();
@@ -21,9 +21,18 @@ export function MemberMetadataPage({ kind }: { kind: MetadataKind }) {
   const label = kind === 'levels' ? '等级' : kind === 'groups' ? '分组' : '标签';
   const prefix = 'member:' + (kind === 'levels' ? 'level' : kind === 'groups' ? 'group' : 'tag');
   const [editing, setEditing] = useState<MemberMetadata | null>();
+  const [filters, setFilters] = useState<
+    LevelFilterValues & { startTime?: string; endTime?: string }
+  >({});
+  const [page, setPage] = useState({ pageNum: 1, pageSize: 20 });
   const rows = useQuery({
-    queryKey: memberKeys.metadata(kind),
-    queryFn: () => api.getMetadata(kind),
+    queryKey: [...memberKeys.metadata(kind), filters, page],
+    queryFn: async (): Promise<MemberMetadata[] | { records: MemberMetadata[]; total: number }> =>
+      kind === 'levels'
+        ? api.getMetadata(kind, filters)
+        : kind === 'groups'
+          ? api.getGroupPage({ ...filters, ...page })
+          : api.getTagPage({ ...filters, ...page }),
     enabled: can(prefix + ':query'),
   });
   const save = useMutation({
@@ -40,6 +49,17 @@ export function MemberMetadataPage({ kind }: { kind: MetadataKind }) {
   const columns: ProColumns<MemberMetadata>[] = [
     { title: 'ID', dataIndex: 'id' },
     { title: '名称', dataIndex: 'name' },
+    ...(kind !== 'levels'
+      ? [
+          { title: '创建时间', dataIndex: 'createTime', search: false },
+          {
+            title: '创建时间范围',
+            dataIndex: 'createTimeRange',
+            valueType: 'dateTimeRange' as const,
+            hideInTable: true,
+          },
+        ]
+      : []),
     ...(kind === 'levels'
       ? [
           { title: '等级序号', dataIndex: 'level' },
@@ -52,6 +72,8 @@ export function MemberMetadataPage({ kind }: { kind: MetadataKind }) {
           {
             title: '状态',
             dataIndex: 'status',
+            valueType: 'select' as const,
+            valueEnum: { 0: { text: '停用' }, 1: { text: '启用' } },
             renderText: (v: unknown) => (v === 1 ? '启用' : '停用'),
           },
         ]
@@ -100,9 +122,48 @@ export function MemberMetadataPage({ kind }: { kind: MetadataKind }) {
       )}
       <ProTable<MemberMetadata>
         rowKey="id"
-        search={false}
-        columns={columns}
-        dataSource={rows.data ?? []}
+        search={{}}
+        columns={columns.map((column) => ({
+          ...column,
+          search:
+            column.dataIndex === 'name' ||
+            (column.dataIndex === 'status' && kind !== 'tags') ||
+            column.dataIndex === 'createTimeRange',
+        }))}
+        dateFormatter="string"
+        onSubmit={(values) => {
+          setFilters({
+            name: typeof values.name === 'string' ? values.name : undefined,
+            status:
+              kind !== 'tags' && values.status != null && values.status !== ''
+                ? Number(values.status)
+                : undefined,
+            startTime:
+              kind !== 'levels' && Array.isArray(values.createTimeRange)
+                ? values.createTimeRange[0]
+                : undefined,
+            endTime:
+              kind !== 'levels' && Array.isArray(values.createTimeRange)
+                ? values.createTimeRange[1]
+                : undefined,
+          });
+          setPage({ ...page, pageNum: 1 });
+        }}
+        onReset={() => {
+          setFilters({});
+          setPage({ ...page, pageNum: 1 });
+        }}
+        dataSource={Array.isArray(rows.data) ? rows.data : (rows.data?.records ?? [])}
+        pagination={
+          kind === 'levels'
+            ? false
+            : {
+                current: page.pageNum,
+                pageSize: page.pageSize,
+                total: rows.data && !Array.isArray(rows.data) ? rows.data.total : 0,
+                onChange: (pageNum, pageSize) => setPage({ pageNum, pageSize }),
+              }
+        }
         loading={rows.isFetching}
         scroll={{ x: 800 }}
         toolBarRender={() => [

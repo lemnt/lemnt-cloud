@@ -40,8 +40,10 @@ public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
      * 签到保存。
      */
     @Override
-    public void signSave(SignRecord value) {
-        memberSignRecordMapper.insert(SignRecordConverter.toDO(value));
+    public Long signSave(SignRecord value) {
+        var row = SignRecordConverter.toDO(value);
+        memberSignRecordMapper.insert(row);
+        return row.getId();
     }
 
     /**

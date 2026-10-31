@@ -15,7 +15,7 @@ public final class GroupConverter {
     public static Group toEntity(GroupDO row) {
         return row == null
                 ? null
-                : new Group(row.getId(), row.getName(), row.getRemark(), row.getStatus());
+                : new Group(row.getId(), row.getName(), row.getRemark(), row.getStatus(), row.getCreateTime());
     }
 
     /**
@@ -27,6 +27,7 @@ public final class GroupConverter {
         row.setName(value.name());
         row.setRemark(value.remark());
         row.setStatus(value.status());
+        row.setCreateTime(value.createTime());
         return row;
     }
 }

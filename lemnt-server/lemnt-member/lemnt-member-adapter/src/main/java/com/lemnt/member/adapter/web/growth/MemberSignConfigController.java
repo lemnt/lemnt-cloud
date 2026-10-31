@@ -4,14 +4,16 @@ import com.lemnt.common.core.domain.R;
 import com.lemnt.common.security.annotation.RequiresPermissions;
 import com.lemnt.member.adapter.web.growth.converter.MemberGrowthReqConverter;
 import com.lemnt.member.adapter.web.growth.converter.MemberGrowthResConverter;
-import com.lemnt.member.adapter.web.growth.req.SignConfigSaveReq;
+import com.lemnt.member.adapter.web.growth.req.SignConfigCreateReq;
+import com.lemnt.member.adapter.web.growth.req.SignConfigUpdateReq;
 import com.lemnt.member.adapter.web.growth.res.MemberConfigDetailRes;
 import com.lemnt.member.adapter.web.growth.res.MemberConfigListRes;
 import com.lemnt.member.application.growth.cmd.SignConfigDeleteCmd;
 import com.lemnt.member.application.growth.executor.MemberSignConfigDeleteCmdExe;
 import com.lemnt.member.application.growth.executor.MemberSignConfigDetailQueryExe;
 import com.lemnt.member.application.growth.executor.MemberSignConfigListQueryExe;
-import com.lemnt.member.application.growth.executor.MemberSignConfigSaveCmdExe;
+import com.lemnt.member.application.growth.executor.MemberSignConfigCreateCmdExe;
+import com.lemnt.member.application.growth.executor.MemberSignConfigUpdateCmdExe;
 import com.lemnt.member.application.growth.qry.SignConfigDetailQry;
 import com.lemnt.member.application.growth.qry.SignConfigListQry;
 
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,7 +44,8 @@ public class MemberSignConfigController {
 
     private final MemberSignConfigDeleteCmdExe memberSignConfigDeleteCmdExe;
     private final MemberSignConfigDetailQueryExe memberSignConfigDetailQueryExe;
-    private final MemberSignConfigSaveCmdExe memberSignConfigSaveCmdExe;
+    private final MemberSignConfigCreateCmdExe memberSignConfigCreateCmdExe;
+    private final MemberSignConfigUpdateCmdExe memberSignConfigUpdateCmdExe;
     private final MemberSignConfigListQueryExe memberSignConfigListQueryExe;
 
     @GetMapping("/signin-configs")
@@ -54,24 +58,32 @@ public class MemberSignConfigController {
                 .toList());
     }
 
-    @PutMapping("/signin-configs")
-    @Operation(summary = "按签到天数创建或更新规则，1启用0停用")
+    @PostMapping("/signin-configs")
+    @Operation(summary = "新增签到规则，天数重复拒绝")
+    @RequiresPermissions("member:sign-in-config:create")
+    public R<Long> create(@Valid @RequestBody SignConfigCreateReq req) {
+        return R.ok(memberSignConfigCreateCmdExe.execute(MemberGrowthReqConverter.signConfig(req)));
+    }
+
+    @PutMapping("/signin-configs/{id}")
+    @Operation(summary = "按ID修改签到规则，允许调整天数")
     @RequiresPermissions("member:sign-in-config:update")
-    public R<Boolean> signConfig(@Valid @RequestBody SignConfigSaveReq req) {
-        return R.ok(memberSignConfigSaveCmdExe.execute(MemberGrowthReqConverter.signConfig(req)));
+    public R<Boolean> update(@PathVariable Long id, @Valid @RequestBody SignConfigUpdateReq req) {
+        return R.ok(memberSignConfigUpdateCmdExe.execute(MemberGrowthReqConverter.signConfig(id, req)));
     }
 
-    @DeleteMapping("/signin-configs/{day}")
-    @Operation(summary = "删除指定天数规则，历史奖励保留")
+    @DeleteMapping("/signin-configs/{id}")
+    @Operation(summary = "按ID删除规则，历史奖励保留")
     @RequiresPermissions("member:sign-in-config:delete")
-    public R<Boolean> delete(@PathVariable Integer day) {
-        return R.ok(memberSignConfigDeleteCmdExe.execute(new SignConfigDeleteCmd(day)));
+    public R<Boolean> delete(@PathVariable Long id) {
+        return R.ok(memberSignConfigDeleteCmdExe.execute(new SignConfigDeleteCmd(id)));
     }
 
-    @GetMapping("/signin-configs/{day}")
-    @Operation(summary = "指定签到天数规则")
+    @GetMapping("/signin-configs/{id}")
+    @Operation(summary = "按ID读取签到规则")
     @RequiresPermissions("member:sign-in-config:query")
-    public R<MemberConfigDetailRes> detail(@PathVariable Integer day) {
-        return R.ok(MemberGrowthResConverter.toMemberConfigDetailRes(memberSignConfigDetailQueryExe.execute(new SignConfigDetailQry(day))));
+    public R<MemberConfigDetailRes> detail(@PathVariable Long id) {
+        return R.ok(MemberGrowthResConverter.toMemberConfigDetailRes(
+                memberSignConfigDetailQueryExe.execute(new SignConfigDetailQry(id))));
     }
 }

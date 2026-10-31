@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-30",
+  "design": "103-sign-flow-design.md",
+  "backend": {
+    "member": {
+      "tests": 69,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "auth": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "mall": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "verified": [
+    "H2重复签到409及时间稳定",
+    "会员锁下并发仅一次成功/另一次409",
+    "积分经验奖励关联实际签到ID",
+    "最大启用周期与断签重置",
+    "当前规则停用零奖励/全停用拒绝",
+    "汇总今天/昨天/旧日/未来边界",
+    "既有奖励失败整体回滚"
+  ],
+  "notRun": [
+    "前端/小程序本批无改动未重跑",
+    "真实数据库及部署HTTP",
+    "微信开发者工具验收"
+  ],
+  "remaining": [
+    "签到配置ID CRUD与表结构迁移",
+    "业务日期兼容与源deleted"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/growth/gateway/MemberSignRecordGateway.java": "d3c0596a45b769a01c89d43a7090955a1a00ee3fd3cff48232dc69d830e86c61",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/gateway/MemberSignRecordGatewayImpl.java": "9da56e606a5988ec84e3e678d7c32ae6a90d2b8838e895e428dd37079f4be4e1",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/service/MemberGrowthService.java": "7640291cf6bb8ccbcc9eeb865b8eccfd284e94207732704c9f4c912c5d05310c",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/executor/MemberSignSummaryQueryExe.java": "5c1f1ae9a7957754d70a29c19d32ed1959c45ba7a3a2a7c9ef4a3ecff3369999",
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java": "df167bc227233c7acaf52b1e5f1a3ee69303cbf26a8180f39f67f5f5f9a37158",
+    "/tmp/sign-flow-final-verify.log": "5c43375e415ce8dd1516aa004c9621a0a76d02ce1aa958527fada6359337d6d3"
+  }
+}

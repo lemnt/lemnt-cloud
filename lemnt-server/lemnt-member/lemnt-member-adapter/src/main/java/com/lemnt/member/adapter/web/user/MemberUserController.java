@@ -8,9 +8,9 @@ import com.lemnt.member.adapter.web.user.req.MemberProfileUpdateReq;
 import com.lemnt.member.adapter.web.user.req.MemberUserPageReq;
 import com.lemnt.member.adapter.web.user.res.MemberUserDetailRes;
 import com.lemnt.member.adapter.web.user.res.MemberUserPageRes;
-import com.lemnt.member.application.user.executor.MemberDetailQueryExe;
-import com.lemnt.member.application.user.executor.MemberPageQueryExe;
-import com.lemnt.member.application.user.executor.MemberUpdateCmdExe;
+import com.lemnt.member.application.user.executor.MemberUserDetailQueryExe;
+import com.lemnt.member.application.user.executor.MemberUserPageQueryExe;
+import com.lemnt.member.application.user.executor.MemberUserUpdateCmdExe;
 import com.lemnt.member.application.user.qry.MemberDetailQry;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,9 +34,9 @@ import jakarta.validation.Valid;
 @RequiredArgsConstructor
 public class MemberUserController {
 
-    private final MemberDetailQueryExe memberDetailQueryExe;
-    private final MemberUpdateCmdExe memberUpdateCmdExe;
-    private final MemberPageQueryExe memberPageQueryExe;
+    private final MemberUserDetailQueryExe memberDetailQueryExe;
+    private final MemberUserUpdateCmdExe memberUpdateCmdExe;
+    private final MemberUserPageQueryExe memberPageQueryExe;
 
     @GetMapping
     @Operation(summary = "会员分页，手机号精确筛选")

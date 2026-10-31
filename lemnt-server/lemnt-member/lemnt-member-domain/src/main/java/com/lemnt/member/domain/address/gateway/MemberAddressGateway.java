@@ -17,6 +17,9 @@ public interface MemberAddressGateway {
      */
     Address address(Long memberId, Long id);
 
+    /** 查询本人的默认地址，不存在时返回null。 */
+    Address defaultAddress(Long memberId);
+
     /**
      * 保存地址。
      */
@@ -30,5 +33,5 @@ public interface MemberAddressGateway {
     /**
      * 清除默认地址。
      */
-    void clearDefaultAddress(Long memberId);
+    void clearDefaultAddress(Long memberId, Long excludedId);
 }

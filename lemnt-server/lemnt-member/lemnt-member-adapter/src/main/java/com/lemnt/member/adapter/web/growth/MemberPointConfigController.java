@@ -35,7 +35,7 @@ public class MemberPointConfigController {
     private final MemberConfigSaveCmdExe memberConfigSaveCmdExe;
 
     @GetMapping("/config")
-    @Operation(summary = "积分交易配置，交易应用另行接入")
+    @Operation(summary = "积分交易配置")
     @RequiresPermissions("member:config:query")
     public R<ConfigRes> config() {
         return R.ok(MemberGrowthResConverter.config(memberConfigDetailQueryExe.execute(new ConfigDetailQry())));

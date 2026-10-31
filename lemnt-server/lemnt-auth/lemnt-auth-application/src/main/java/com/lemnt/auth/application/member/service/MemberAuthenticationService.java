@@ -96,4 +96,10 @@ public class MemberAuthenticationService {
         memberTokenGateway.logout(authorization.substring(7));
         return true;
     }
+    /** 后台停用后撤销全部会话，仅操作令牌存储以避免回调会员事务。 */
+    public void revokeMemberSessions(Long memberId) {
+        if (memberId == null || memberId <= 0) throw new IllegalArgumentException("会员编号不合法");
+        memberTokenGateway.revokeMemberSessions(memberId);
+    }
+
 }

@@ -9,13 +9,13 @@ import java.io.Serializable;
  */
 @Schema(description = "ConfigSave请求")
 public record ConfigSaveReq(
-        @Schema(description = "积分抵扣开关，交易集成另行接入")
+        @Schema(description = "积分抵扣及按支付金额赠送积分开关")
         @NotNull
         Boolean pointTradeDeductEnable,
         @Schema(description = "每积分抵扣金额，分")
         @NotNull
         Integer pointTradeDeductUnitPrice,
-        @Schema(description = "积分抵扣金额上限，分")
+        @Schema(description = "每单抵扣积分上限，0不限")
         @NotNull
         Integer pointTradeDeductMaxPrice,
         @Schema(description = "每元赠送积分数")

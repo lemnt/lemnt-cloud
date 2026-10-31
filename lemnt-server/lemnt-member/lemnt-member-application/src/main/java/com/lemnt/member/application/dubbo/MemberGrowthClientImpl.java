@@ -6,6 +6,7 @@ import com.lemnt.member.client.dto.MemberPointConfigDTO;
 import com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd;
 import com.lemnt.member.application.growth.service.MemberGrowthService;
 import com.lemnt.member.domain.growth.gateway.MemberConfigGateway;
+import com.lemnt.common.core.exception.ServiceException;
 import org.apache.dubbo.config.annotation.DubboService;
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +20,9 @@ public class MemberGrowthClientImpl implements MemberGrowthClient {
     @Override
     public MemberPointConfigDTO getPointConfig() {
         var config = configGateway.config();
+        if (config == null) {
+            throw new ServiceException("会员积分配置未设置", 409);
+        }
         return new MemberPointConfigDTO(config.pointTradeDeductEnable(), config.pointTradeDeductUnitPrice(),
                 config.pointTradeDeductMaxPrice(), config.pointTradeGivePoint());
     }

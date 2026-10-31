@@ -1,4 +1,8 @@
 export interface MemberProfile {
+  tagIds?: string[];
+  tagNames?: string[];
+  levelName?: string | null;
+  groupName?: string | null;
   id: string;
   nickname: string;
   mark?: string | null;
@@ -19,6 +23,7 @@ export interface MemberProfile {
   loginIp?: string | null;
 }
 export interface MemberProfileValues {
+  mobile?: string | null;
   nickname: string;
   mark?: string | null;
   name?: string | null;
@@ -35,6 +40,20 @@ export interface MemberCreateValues extends MemberProfileValues {
 export interface MemberPage<T> {
   records: T[];
   total: number;
+}
+export interface MemberUserPageQuery {
+  mobile?: string;
+  email?: string;
+  nickname?: string;
+  levelId?: string;
+  groupId?: string;
+  tagIds?: string[];
+  loginStartTime?: string;
+  loginEndTime?: string;
+  createStartTime?: string;
+  createEndTime?: string;
+  pageNum: number;
+  pageSize: number;
 }
 export interface MemberPageQuery {
   mobile?: string;
@@ -55,6 +74,10 @@ export interface MemberPageQuery {
   pageSize: number;
 }
 export type MetadataKind = 'levels' | 'groups' | 'tags';
+export interface LevelFilterValues {
+  name?: string;
+  status?: number;
+}
 export interface MetadataValues {
   name: string;
   remark?: string | null;
@@ -65,7 +88,23 @@ export interface MetadataValues {
   icon?: string | null;
   backgroundUrl?: string | null;
 }
+export interface MemberGroupPageQuery {
+  name?: string;
+  status?: number;
+  startTime?: string;
+  endTime?: string;
+  pageNum: number;
+  pageSize: number;
+}
+export interface MemberTagPageQuery {
+  name?: string;
+  startTime?: string;
+  endTime?: string;
+  pageNum: number;
+  pageSize: number;
+}
 export interface MemberMetadata extends MetadataValues {
+  createTime?: string;
   id: string;
 }
 export interface MemberAddress {
@@ -109,11 +148,14 @@ export interface MemberPointConfig {
   pointTradeDeductMaxPrice: number;
   pointTradeGivePoint: number;
 }
-export interface MemberSignConfig {
+export interface MemberSignConfigValues {
   day: number;
   point: number;
   experience: number;
   status: number;
+}
+export interface MemberSignConfig extends MemberSignConfigValues {
+  id: string;
 }
 export interface MemberAdjustment {
   delta: number;
@@ -122,7 +164,7 @@ export interface MemberAdjustment {
 }
 export const memberKeys = {
   all: ['member-account'] as const,
-  users: (q: MemberPageQuery) => ['member-account', 'users', q] as const,
+  users: (q: MemberUserPageQuery) => ['member-account', 'users', q] as const,
   detail: (id?: string) => ['member-account', 'detail', id] as const,
   metadata: (kind: MetadataKind) => ['member-account', 'metadata', kind] as const,
   records: (kind: RecordKind, q: MemberPageQuery) =>

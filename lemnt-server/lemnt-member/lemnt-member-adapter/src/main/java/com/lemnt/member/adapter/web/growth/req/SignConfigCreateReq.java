@@ -7,15 +7,15 @@ import java.io.Serializable;
 /**
  * 签到配置保存请求。
  */
-@Schema(description = "SignConfigSave请求")
-public record SignConfigSaveReq(
+@Schema(description = "SignConfigCreate请求")
+public record SignConfigCreateReq(
         @Schema(description = "本轮连续签到第几天")
         @NotNull
         Integer day,
         @Schema(description = "奖励积分")
         @NotNull
         Long point,
-        @Schema(description = "经验值或等级升级门槛")
+        @Schema(description = "奖励经验")
         @NotNull
         Long experience,
         @Schema(description = "状态：1启用，0停用")

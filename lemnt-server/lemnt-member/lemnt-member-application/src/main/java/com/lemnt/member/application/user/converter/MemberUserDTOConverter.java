@@ -1,5 +1,7 @@
 package com.lemnt.member.application.user.converter;
 
+import java.util.List;
+
 import com.lemnt.member.application.user.dto.GroupDTO;
 import com.lemnt.member.application.user.dto.MemberDTO;
 import com.lemnt.member.application.user.dto.TagDTO;
@@ -38,13 +40,21 @@ public final class MemberUserDTOConverter {
      * 分组。
      */
     public static GroupDTO toGroupDTO(Group v) {
-        return v == null ? null : new GroupDTO(v.id(), v.name(), v.remark(), v.status());
+        return v == null ? null : new GroupDTO(v.id(), v.name(), v.remark(), v.status(), v.createTime());
     }
 
     /**
      * 标签。
      */
     public static TagDTO toTagDTO(Tag v) {
-        return v == null ? null : new TagDTO(v.id(), v.name(), v.remark());
+        return v == null ? null : new TagDTO(v.id(), v.name(), v.remark(), v.createTime());
+    }
+    /** 基础投影复制后附加当前关联名称，不改原DTO或历史快照。 */
+    public static MemberDTO withRelations(MemberDTO value, List<Long> tagIds,
+            List<String> tagNames, String levelName, String groupName) {
+        return new MemberDTO(value.id(), value.nickname(), value.mobile(), value.email(), value.avatar(), value.status(),
+                value.points(), value.experience(), value.levelId(), value.groupId(), value.sex(), value.birthday(),
+                value.createTime(), value.mark(), value.name(), value.areaId(), value.loginDate(), value.loginIp(),
+                tagIds, tagNames, levelName, groupName);
     }
 }

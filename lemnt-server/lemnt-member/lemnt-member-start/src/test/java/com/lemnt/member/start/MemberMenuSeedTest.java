@@ -48,6 +48,10 @@ class MemberMenuSeedTest {
                 r.next();
                 assertEquals(1, r.getInt(1));
             }
+            try (var r = s.executeQuery("SELECT COUNT(*) FROM sys_menu WHERE perms='member:sign-in-config:create'")) {
+                r.next();
+                assertEquals(1, r.getInt(1));
+            }
         }
     }
 }

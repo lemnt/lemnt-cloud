@@ -13,7 +13,7 @@ import { AdminModalForm } from '@/shared/components/AdminModalForm';
 import { usePermission } from '@/shared/hooks/usePermission';
 import * as api from '../api/memberApi';
 import { memberKeys, memberStatusOptions } from '../types';
-import type { MemberPointConfig, MemberSignConfig } from '../types';
+import type { MemberPointConfig, MemberSignConfig, MemberSignConfigValues } from '../types';
 export default function MemberConfigPage() {
   const { can } = usePermission();
   const { message } = App.useApp();
@@ -30,7 +30,10 @@ export default function MemberConfigPage() {
     enabled: can('member:sign-in-config:query'),
   });
   const save = useMutation({ mutationFn: api.savePointConfig });
-  const signSave = useMutation({ mutationFn: api.saveSignConfig });
+  const signSave = useMutation({
+    mutationFn: (values: MemberSignConfigValues): Promise<string | boolean> =>
+      editing ? api.updateSignConfig(editing.id, values) : api.createSignConfig(values),
+  });
   const remove = useMutation({ mutationFn: api.deleteSignConfig });
   async function refresh() {
     try {
@@ -46,7 +49,7 @@ export default function MemberConfigPage() {
       {can('member:config:query') && (
         <>
           <h2>积分交易配置</h2>
-          <Alert type="warning" title="此处保存会员配置；订单积分抵扣与赠送尚未接入交易流程。" />
+          <Alert type="info" title="积分抵扣与按实付赠送积分已接入结算；关闭开关将同时停用两者。" />
           {config.isError && (
             <Alert
               type="error"
@@ -54,10 +57,20 @@ export default function MemberConfigPage() {
               action={<Button onClick={() => config.refetch()}>重试</Button>}
             />
           )}
-          {config.data && (
+          {config.isSuccess && config.data === null && (
+            <Alert type="info" title="尚未设置积分配置，请填写并保存；当前表单只是未保存草稿。" />
+          )}
+          {config.isSuccess && (
             <ProForm<MemberPointConfig>
               key={JSON.stringify(config.data)}
-              initialValues={config.data}
+              initialValues={
+                config.data ?? {
+                  pointTradeDeductEnable: false,
+                  pointTradeDeductUnitPrice: 0,
+                  pointTradeDeductMaxPrice: 0,
+                  pointTradeGivePoint: 0,
+                }
+              }
               disabled={!can('member:config:update') || save.isPending}
               submitter={can('member:config:update') ? undefined : false}
               onFinish={async (v) => {
@@ -76,9 +89,9 @@ export default function MemberConfigPage() {
               <ProFormSwitch name="pointTradeDeductEnable" label="积分抵扣开关" />
               {(
                 [
-                  { name: 'pointTradeDeductUnitPrice', label: '积分抵扣单位价格（分）' },
-                  { name: 'pointTradeDeductMaxPrice', label: '抵扣上限（分）' },
-                  { name: 'pointTradeGivePoint', label: '每元赠送积分' },
+                  { name: 'pointTradeDeductUnitPrice', label: '每积分抵扣金额（分）' },
+                  { name: 'pointTradeDeductMaxPrice', label: '每单抵扣积分上限（0不限）' },
+                  { name: 'pointTradeGivePoint', label: '每支付1元赠送积分' },
                 ] as const
               ).map((v) => (
                 <ProFormDigit
@@ -106,7 +119,7 @@ export default function MemberConfigPage() {
             />
           )}
           <ProTable<MemberSignConfig>
-            rowKey="day"
+            rowKey="id"
             search={false}
             dataSource={signs.data ?? []}
             loading={signs.isFetching}
@@ -130,7 +143,7 @@ export default function MemberConfigPage() {
                         title="确认删除规则？历史奖励保留。"
                         onConfirm={async () => {
                           try {
-                            await remove.mutateAsync(v.day);
+                            await remove.mutateAsync(v.id);
                             message.success('已删除');
                             await refresh();
                           } catch (e) {
@@ -148,7 +161,7 @@ export default function MemberConfigPage() {
               },
             ]}
             toolBarRender={() => [
-              can('member:sign-in-config:update') && (
+              can('member:sign-in-config:create') && (
                 <Button key="add" type="primary" onClick={() => setEditing(null)}>
                   新增规则
                 </Button>
@@ -158,8 +171,8 @@ export default function MemberConfigPage() {
         </>
       )}
       {editing !== undefined && (
-        <AdminModalForm<MemberSignConfig>
-          key={editing?.day ?? 'new'}
+        <AdminModalForm<MemberSignConfigValues>
+          key={editing?.id ?? 'new'}
           title="签到规则"
           open
           onOpenChange={(v) => {
@@ -172,7 +185,11 @@ export default function MemberConfigPage() {
             resetButtonProps: { disabled: signSave.isPending },
           }}
           onFinish={async (v) => {
-            if (signSave.isPending || !can('member:sign-in-config:update')) return false;
+            if (
+              signSave.isPending ||
+              !can(editing ? 'member:sign-in-config:update' : 'member:sign-in-config:create')
+            )
+              return false;
             try {
               await signSave.mutateAsync(v);
               message.success('规则已保存');
@@ -185,13 +202,15 @@ export default function MemberConfigPage() {
             }
           }}
         >
-          <Alert type="info" title="相同天数保存会覆盖该天规则；周期为启用规则的最大天数。" />
+          <Alert
+            type="info"
+            title="每个天数仅允许一条规则；重复天数不会覆盖，周期为启用规则的最大天数。"
+          />
           <ProFormDigit
             name="day"
             label="周期天数"
             min={1}
             max={366}
-            disabled={!!editing}
             fieldProps={{ precision: 0 }}
             rules={[{ required: true }]}
           />

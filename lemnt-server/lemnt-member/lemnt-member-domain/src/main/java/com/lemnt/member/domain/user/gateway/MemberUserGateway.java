@@ -1,5 +1,7 @@
 package com.lemnt.member.domain.user.gateway;
 
+import com.lemnt.member.domain.user.model.MemberPageFilter;
+
 import com.lemnt.member.domain.user.model.Member;
 
 import java.time.LocalDateTime;
@@ -29,12 +31,12 @@ public interface MemberUserGateway {
     /**
      * 查询会员资料。
      */
-    List<Member> findPage(String mobile, int offset, int limit);
+    List<Member> findPage(MemberPageFilter filter);
 
     /**
-     * 统计符合手机号筛选条件的会员数量。
+     * 统计符合资料筛选条件的会员数量。
      */
-    long count(String mobile);
+    long count(MemberPageFilter filter);
 
     /**
      * 更新会员可维护资料，保留资产与关联数据。

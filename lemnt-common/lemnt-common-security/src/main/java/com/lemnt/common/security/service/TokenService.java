@@ -188,6 +188,30 @@ public class TokenService {
         redisStringService.setObj(userKey, securityUser, CacheConstants.TOKEN_TTL_SECONDS, TimeUnit.SECONDS);
     }
 
+    /** 认证中心按会员编号撤销会话，身份域隔离，不维护额外索引。 */
+    public void revokeMemberSessions(Long memberId) {
+        if (memberId == null || memberId <= 0) {
+            throw new IllegalArgumentException("会员编号不合法");
+        }
+        redisStringService.scan(CacheConstants.LOGIN_TOKEN_KEY + "*", key -> {
+            SecurityUser user = redisStringService.getObj(key, SecurityUser.class);
+            if (user != null && SecurityConstants.MEMBER_USER_TYPE.equals(user.getUserType())
+                    && memberId.equals(user.getUserId())) {
+                redisStringService.delete(key);
+            }
+        });
+    }
+
+    /** 仅续期仍存在的会话，不能恢复已撤销的会话。 */
+    public void refreshExistingToken(SecurityUser user) {
+        user.setLoginTime(System.currentTimeMillis());
+        user.setExpireTime(user.getLoginTime() + TimeUnit.SECONDS.toMillis(CacheConstants.TOKEN_TTL_SECONDS));
+        if (!redisStringService.setObjIfPresent(getTokenKey(user.getToken()), user,
+                CacheConstants.TOKEN_TTL_SECONDS, TimeUnit.SECONDS)) {
+            throw new SecurityException("登录会话已失效");
+        }
+    }
+
     private String getTokenKey(String token) {
         return CacheConstants.LOGIN_TOKEN_KEY + token;
     }

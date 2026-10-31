@@ -1,7 +1,13 @@
 package com.lemnt.member.infrastructure.user.gateway;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.lemnt.member.domain.user.gateway.MemberTagLinkGateway;
 import com.lemnt.member.infrastructure.user.mapper.MemberTagLinkMapper;
+import com.lemnt.member.infrastructure.user.dataobject.MemberTagLinkDO;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 import org.springframework.stereotype.Component;
 
@@ -33,5 +39,15 @@ public class MemberTagLinkGatewayImpl implements MemberTagLinkGateway {
         for (Long tag : tags) {
             memberTagLinkMapper.addTag(memberId, tag);
         }
+    }
+    /** 按会员和标签编号排序，返回稳定的当前绑定。 */
+    @Override
+    public Map<Long, List<Long>> memberTagsBatch(Collection<Long> memberIds) {
+        if (memberIds.isEmpty()) return java.util.Map.of();
+        return memberTagLinkMapper.selectList(Wrappers.<MemberTagLinkDO>lambdaQuery()
+                .in(MemberTagLinkDO::getMemberId, memberIds)
+                .orderByAsc(MemberTagLinkDO::getMemberId).orderByAsc(MemberTagLinkDO::getTagId))
+                .stream().collect(Collectors.groupingBy(MemberTagLinkDO::getMemberId,
+                        Collectors.mapping(MemberTagLinkDO::getTagId, Collectors.toList())));
     }
 }

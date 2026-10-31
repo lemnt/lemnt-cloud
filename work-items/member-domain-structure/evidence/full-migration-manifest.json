@@ -2527,8 +2527,9 @@
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/base/member/user/MemberUserRespVO.java",
       "sha256": "34c5d3f13913c6e68fca5e341d4f4e592ce2cd9d29bb534ec4c179ef48eb0096",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "后台声明关系字段批量返显及详情/分页贯通，注册IP/总积分等其他差异未完成，见116"
     },
     {
       "source": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/base/product/property/ProductPropertyValueDetailRespVO.java",
@@ -5274,8 +5275,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/user/AppMemberUserController.java",
       "sha256": "72cd6a2a8b6ba9bd412b0d9dc2fb27e6aebbd13ce005d0c43b9ba2b2f42028e1",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "后台声明关系字段批量返显及详情/分页贯通，注册IP/总积分等其他差异未完成，见116"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/user/vo/AppMemberUserUpdateReqVO.java",
@@ -5352,8 +5354,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/signin/AppMemberSignInConfigController.java",
       "sha256": "4e5549bf67a83611545ea2d18812ad453305aef70a75c2a6ecb596eb2f19b0cb",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "独立ID管理/天数唯一/真实升级验证已接入，源deleted与最终路由契约仍有项目差异，见106"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/signin/AppMemberSignInRecordController.java",
@@ -5412,8 +5415,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/level/AppMemberLevelController.java",
       "sha256": "0a1c8981338ad539e9abe6f881e3714c85d9796c44272dfbb39fcc28a2a863ea",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "等级管理筛选/基础审计/BaseMapper/使用中删除错误已收敛，源deleted及展示契约仍待补，见110"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/level/AppMemberExperienceRecordController.java",
@@ -5437,14 +5441,16 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/config/MemberConfigController.java",
       "sha256": "3f1889ae9b42bd971e77d5b8b4156ee805388c4fa1237e5209cebbc43089fc41",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "配置首次保存/首条ID/基础审计及管理调用接入，源deleted与最终路径仍有差异，见108"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/config/vo/MemberConfigSaveReqVO.java",
       "sha256": "47a18c6ecb61ddf6c45c668f49dd0c9850e203ad1382e18d16e365b626e8491d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "配置首次保存/首条ID/基础审计及管理调用接入，源deleted与最终路径仍有差异，见108"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/config/vo/MemberConfigBaseVO.java",
@@ -5461,8 +5467,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/group/MemberGroupController.java",
       "sha256": "e088a6fb4a018a389772ea63e102d45c4068cee099d3bc499b20af10c431377b",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "独立分页/时间审计/Mapper及错误收敛，源分组唯一与逻辑删除仍待核对，见112"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/group/vo/MemberGroupSimpleRespVO.java",
@@ -5473,8 +5480,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/group/vo/MemberGroupPageReqVO.java",
       "sha256": "3ae12be580e513873f3e85297a0fc66d6e440d0e796d13123d33de1376bc9565",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "独立分页/时间审计/Mapper及错误收敛，源分组唯一与逻辑删除仍待核对，见112"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/group/vo/MemberGroupRespVO.java",
@@ -5522,26 +5530,30 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/MemberUserController.java",
       "sha256": "dc1f40e1ae355669d22fcb74ec485be3e3937f7287cff6450b239829bfa22f92",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "后台声明关系字段批量返显及详情/分页贯通，注册IP/总积分等其他差异未完成，见116"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/vo/MemberUserPageReqVO.java",
       "sha256": "1634f329869cc09dfc0db9fc2917b2d0fb35327a6e6dcfe443249129a21aa08d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "会员列表全部源筛选及既有标签表OR查询接入，其他字段/最终契约差异仍待收敛，见114"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/vo/MemberUserRespVO.java",
       "sha256": "d8eacbbcf72e56024008a017dd85881ea402b66ea0c727ab4d370dfdffbb079f",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "后台等级分组标签批量返显已接入；注册IP等源字段继续核对。122核实累计积分totalPoint仅源VO声明且DO为TODO，无累计写入实现，不从余额/流水推算"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/vo/MemberUserUpdateReqVO.java",
       "sha256": "0d55a56f26b0f94d4b5f4c41e39701c0a5c2e23b5845cf5e27c2601684ff423f",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "118后台独立资料更新支持手机号及手机/邮箱占用校验，资产和App入口隔离；标签分组等级保持独立操作，Token撤销及其他源契约仍待收敛"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/vo/MemberUserUpdateLevelReqVO.java",
@@ -5552,8 +5564,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/vo/MemberUserBaseVO.java",
       "sha256": "7c01bd646962066e15bb761ecb15fb293ffe54fb9dbda2ba3cbd0d26b48bd94a",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "118后台独立资料更新支持手机号及手机/邮箱占用校验，资产和App入口隔离；标签分组等级保持独立操作，Token撤销及其他源契约仍待收敛"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/vo/MemberUserUpdatePointReqVO.java",
@@ -5564,8 +5577,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/signin/MemberSignInConfigController.java",
       "sha256": "38bd9a43ddfa437dec7135941ffc09de41a3034843cd96aad5cf20ffeb71265b",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "独立ID管理/天数唯一/真实升级验证已接入，源deleted与最终路由契约仍有项目差异，见106"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/signin/MemberSignInRecordController.java",
@@ -5644,8 +5658,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberLevelController.java",
       "sha256": "1b7209cfefd686448a087597c27c0ca1192f90b915b9736db21bf0d3884dfa21",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "等级管理筛选/基础审计/BaseMapper/使用中删除错误已收敛，源deleted及展示契约仍待补，见110"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberExperienceRecordController.java",
@@ -5707,8 +5722,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/vo/level/MemberLevelListReqVO.java",
       "sha256": "cdc8d785e676204f2bc5683f4b474fcaf893a48ea427b163709b34e666d7ee97",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "等级管理筛选/基础审计/BaseMapper/使用中删除错误已收敛，源deleted及展示契约仍待补，见110"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/vo/level/MemberLevelUpdateReqVO.java",
@@ -5731,8 +5747,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/tag/MemberTagController.java",
       "sha256": "9f5019b3b20ef0724124650b31b644ac02e6d34e68ba33e46e264bb153dd2d29",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "独立分页/时间审计/Mapper及错误收敛，源分组唯一与逻辑删除仍待核对，见112"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/tag/vo/MemberTagCreateReqVO.java",
@@ -5755,8 +5772,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/tag/vo/MemberTagPageReqVO.java",
       "sha256": "92f4c24839262aa10a9a8d785837ab87c4eb1dfb8caf60b3c05daa9621d8a82a",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "独立分页/时间审计/Mapper及错误收敛，源分组唯一与逻辑删除仍待核对，见112"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/tag/vo/MemberTagRespVO.java",
@@ -5833,8 +5851,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/config/MemberConfigServiceImpl.java",
       "sha256": "ba56ee3354773dd94290eb5fafaaee54a39c42ae9157839207beaa51585483e3",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "配置首次保存/首条ID/基础审计及管理调用接入，源deleted与最终路径仍有差异，见108"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/auth/MemberAuthService.java",
@@ -5876,8 +5895,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/user/MemberUserServiceImpl.java",
       "sha256": "6449ad44249f4aa73192162b1a8f1a954b241f807790a811565ce1d3526e84d4",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "118后台手机号及手机/邮箱占用校验；120按源停用后同步经auth撤销会员会话，gateway仍无Dubbo；标签分组等级保持专用入口，其他完整契约继续收敛"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/user/MemberUserService.java",
@@ -5900,15 +5920,16 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/signin/MemberSignInConfigServiceImpl.java",
       "sha256": "2253ef1a33bdc71ec848f0b8e019cf7b34c7fb80138d7df640e9152c8e87fcc6",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "独立ID管理/天数唯一/真实升级验证已接入，源deleted与最终路由契约仍有项目差异，见106"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/signin/MemberSignInRecordServiceImpl.java",
       "sha256": "030cba6293a7f648de888016659e299215d044cb69b18ca3d2939e9b05b443df",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-member",
-      "note": "后台签到记录当前昵称筛选/展示、组合分页及count已迁移；主流程差异保留单独核对。见76-sign-record-nickname-delivery.md"
+      "note": "签到执行/重复拒绝/奖励ID关联及周期回归已对齐，业务日期兼容及配置ID管理仍待迁移，见104"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/address/AddressServiceImpl.java",
@@ -5945,7 +5966,7 @@
       "sha256": "371f3b27c1724c8d9f4875bc96e58e49255c2792ce6e010ee72ee29b04432d80",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-member",
-      "note": "等级变更快照、旧结构升级及自动无匹配保留规则已接入；零变更/退款入口等仍待收敛，见94"
+      "note": "等级变更快照、旧结构升级及自动无匹配保留规则已接入；零变更/退款入口等仍待收敛，见94；122手工同等级调整按源无操作，保留经验且不制造流水；完整等级契约继续核对"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/level/MemberLevelService.java",
@@ -5986,14 +6007,16 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/config/MemberConfigMapper.java",
       "sha256": "4d6ff208c01e229d7acfa75819542e47dec5c8a5bd93a9459d48b9541f03f452",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "配置首次保存/首条ID/基础审计及管理调用接入，源deleted与最终路径仍有差异，见108"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/group/MemberGroupMapper.java",
       "sha256": "5d9b934c202d5cfcfb420deea887dbc189d3247a149c8e84e2bb14535dad58c8",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "独立分页/时间审计/Mapper及错误收敛，源分组唯一与逻辑删除仍待核对，见112"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/point/MemberPointRecordMapper.java",
@@ -6005,8 +6028,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/user/MemberUserMapper.java",
       "sha256": "4adeb8db798fd8aad8119d32401607fac67f6944ecdac9ea971b9547e7006945",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "会员列表全部源筛选及既有标签表OR查询接入，其他字段/最终契约差异仍待收敛，见114"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/signin/MemberSignInRecordMapper.java",
@@ -6018,8 +6042,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/signin/MemberSignInConfigMapper.java",
       "sha256": "62573a9bd7564c5820258cb53259f0f8425d54412ede75b116a2dd473b9d1479",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "独立ID管理/天数唯一/真实升级验证已接入，源deleted与最终路由契约仍有项目差异，见106"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/address/MemberAddressMapper.java",
@@ -6030,8 +6055,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/level/MemberLevelMapper.java",
       "sha256": "4dafe7becd689c341856f4977c9a71ccf68767520e10d4664a05e9a4a2bfbff0",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "等级管理筛选/基础审计/BaseMapper/使用中删除错误已收敛，源deleted及展示契约仍待补，见110"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/level/MemberExperienceRecordMapper.java",
@@ -6050,20 +6076,23 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/mysql/tag/MemberTagMapper.java",
       "sha256": "aa3aaa40cc15fec01a764afcd36892ab69d47c10792053a0272badc325b46164",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "独立分页/时间审计/Mapper及错误收敛，源分组唯一与逻辑删除仍待核对，见112"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/config/MemberConfigDO.java",
       "sha256": "70cf88e995ba083f8410a25bc0ed20c2bc86f5ecc0c2b3b9dc2efbab877146f3",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "配置首次保存/首条ID/基础审计及管理调用接入，源deleted与最终路径仍有差异，见108"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/group/MemberGroupDO.java",
       "sha256": "14a275d0bdf46e1271180cc4bcd623ba22090b6e34adbb510398cd72eb356ee3",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "独立分页/时间审计/Mapper及错误收敛，源分组唯一与逻辑删除仍待核对，见112"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/point/MemberPointRecordDO.java",
@@ -6089,8 +6118,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/signin/MemberSignInConfigDO.java",
       "sha256": "cc0e1376f4a1969853a0cfeca4f2d2898c63d17338c22c1d4d509aec9a7be763",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "独立ID管理/天数唯一/真实升级验证已接入，源deleted与最终路由契约仍有项目差异，见106"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/address/MemberAddressDO.java",
@@ -6101,8 +6131,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/level/MemberLevelDO.java",
       "sha256": "e6dfe27537b3aaf16eca04420ce6591805e093f539acfcf919a69a3da48111fb",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "等级管理筛选/基础审计/BaseMapper/使用中删除错误已收敛，源deleted及展示契约仍待补，见110"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/level/MemberLevelRecordDO.java",
@@ -6121,8 +6152,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/dal/dataobject/tag/MemberTagDO.java",
       "sha256": "25d8bd8078b04ead658f1aa6ec5e22c7f0049dcba63d0ceecd3828d65db474f0",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "独立分页/时间审计/Mapper及错误收敛，源分组唯一与逻辑删除仍待核对，见112"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/convert/package-info.java",
@@ -6157,20 +6189,23 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/convert/user/MemberUserConvert.java",
       "sha256": "9d63383b4548248dd1d1e3ca6c7decacbdeb358dc7553cf55a0bfa3c408d117d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "后台声明关系字段批量返显及详情/分页贯通，注册IP/总积分等其他差异未完成，见116"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/convert/signin/MemberSignInConfigConvert.java",
       "sha256": "62a4f262ae1873174c88e07c371509f4ceda48b5cc8d6ffed8a2c88db69ebe74",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "独立ID管理/天数唯一/真实升级验证已接入，源deleted与最终路由契约仍有项目差异，见106"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/convert/signin/MemberSignInRecordConvert.java",
       "sha256": "a4b40a90c3c69d48c07389b9707a36605d3d094ebb1ebb2cbdbe52433105e2eb",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "签到执行/重复拒绝/奖励ID关联及周期回归已对齐，业务日期兼容及配置ID管理仍待迁移，见104"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/convert/address/AddressConvert.java",

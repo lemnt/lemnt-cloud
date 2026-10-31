@@ -22,10 +22,6 @@ public class MemberAddressDefaultQueryExe {
      */
     public AddressDTO execute(AddressDefaultQry qry) {
         MemberRules.id(qry.memberId());
-        return memberAddressGateway.addresses(qry.memberId()).stream()
-                .filter(v -> Boolean.TRUE.equals(v.defaultStatus()))
-                .findFirst()
-                .map(MemberAddressDTOConverter::toAddressDTO)
-                .orElse(null);
+        return MemberAddressDTOConverter.toAddressDTO(memberAddressGateway.defaultAddress(qry.memberId()));
     }
 }

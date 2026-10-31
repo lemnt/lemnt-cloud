@@ -1,5 +1,7 @@
 package com.lemnt.member.adapter.web.user.res;
 
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -45,5 +47,13 @@ public record MemberUserPageRes(
         @Schema(description = "最近成功登录时间")
         LocalDateTime loginDate,
         @Schema(description = "网关观察到的登录连接IP")
-        String loginIp
+        String loginIp,
+        @Schema(description = "当前绑定标签编号")
+        List<Long> tagIds,
+        @Schema(description = "当前标签名称")
+        List<String> tagNames,
+        @Schema(description = "当前等级名称，未知可空")
+        String levelName,
+        @Schema(description = "当前分组名称，未知可空")
+        String groupName
 ) implements Serializable {}

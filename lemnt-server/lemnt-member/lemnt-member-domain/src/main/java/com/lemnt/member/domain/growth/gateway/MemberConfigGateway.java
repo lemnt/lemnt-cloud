@@ -6,11 +6,6 @@ import com.lemnt.member.domain.growth.model.Config;
 public interface MemberConfigGateway {
 
     /**
-     * 锁定会员配置行，串行化目录相关变更。
-     */
-    void lockCatalog();
-
-    /**
      * 配置。
      */
     Config config();

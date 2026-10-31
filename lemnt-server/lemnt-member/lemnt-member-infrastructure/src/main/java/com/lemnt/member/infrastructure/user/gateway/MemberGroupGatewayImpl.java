@@ -1,11 +1,16 @@
 package com.lemnt.member.infrastructure.user.gateway;
 
+import java.util.Collection;
+
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.member.domain.user.gateway.MemberGroupGateway;
 import com.lemnt.member.domain.user.model.Group;
 import com.lemnt.member.domain.user.model.GroupPageFilter;
 import com.lemnt.member.infrastructure.user.converter.GroupConverter;
 import com.lemnt.member.infrastructure.user.mapper.MemberGroupMapper;
+import com.lemnt.member.infrastructure.user.dataobject.GroupDO;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import org.springframework.dao.DuplicateKeyException;
 
 import org.springframework.stereotype.Component;
 
@@ -25,7 +30,7 @@ public class MemberGroupGatewayImpl implements MemberGroupGateway {
      */
     @Override
     public List<Group> groups() {
-        return memberGroupMapper.groups().stream().map(GroupConverter::toEntity).toList();
+        return memberGroupMapper.selectList(Wrappers.<GroupDO>lambdaQuery().orderByAsc(GroupDO::getId)).stream().map(GroupConverter::toEntity).toList();
     }
 
     /**
@@ -33,7 +38,7 @@ public class MemberGroupGatewayImpl implements MemberGroupGateway {
      */
     @Override
     public Group group(Long id) {
-        return GroupConverter.toEntity(memberGroupMapper.group(id));
+        return GroupConverter.toEntity(memberGroupMapper.selectById(id));
     }
 
     /**
@@ -42,11 +47,14 @@ public class MemberGroupGatewayImpl implements MemberGroupGateway {
     @Override
     public Long groupSave(Group value) {
         var row = GroupConverter.toDO(value);
-        if (value.id() == null) {
-            memberGroupMapper.groupInsert(row);
-        }
-        else if (memberGroupMapper.groupUpdate(row) != 1) {
-            throw new ServiceException("记录不存在", 409);
+        try {
+            if (value.id() == null) {
+                memberGroupMapper.insert(row);
+            } else if (memberGroupMapper.updateById(row) != 1) {
+                throw new ServiceException("记录不存在", 404);
+            }
+        } catch (DuplicateKeyException exception) {
+            throw new ServiceException("分组名称已存在", 409);
         }
         return row.getId();
     }
@@ -73,5 +81,12 @@ public class MemberGroupGatewayImpl implements MemberGroupGateway {
     @Override
     public long groupsCount(GroupPageFilter f) {
         return memberGroupMapper.groupsCount(f);
+    }
+    /** 批量关联返显，避免逐会员查询。 */
+    @Override
+    public List<Group> groupsByIds(Collection<Long> ids) {
+        if (ids.isEmpty()) return List.of();
+        return memberGroupMapper.selectList(Wrappers.<GroupDO>lambdaQuery().in(GroupDO::getId, ids))
+                .stream().map(GroupConverter::toEntity).toList();
     }
 }

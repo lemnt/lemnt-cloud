@@ -4,6 +4,7 @@ import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.member.domain.growth.gateway.MemberPointRecordGateway;
 import com.lemnt.member.domain.growth.gateway.MemberExperienceRecordGateway;
 import com.lemnt.member.domain.growth.gateway.MemberConfigGateway;
+import com.lemnt.member.domain.growth.gateway.MemberConfigLockGateway;
 import com.lemnt.member.domain.growth.gateway.MemberLevelGateway;
 import com.lemnt.member.domain.growth.gateway.MemberLevelRecordGateway;
 import com.lemnt.member.domain.growth.gateway.MemberSignConfigGateway;
@@ -35,6 +36,7 @@ public class MemberGrowthService {
     private final MemberPointRecordGateway pointRecords;
     private final MemberExperienceRecordGateway experienceRecords;
     private final MemberConfigGateway memberConfigGateway;
+    private final MemberConfigLockGateway configLocks;
     private final MemberLevelGateway memberLevelGateway;
     private final MemberLevelRecordGateway memberLevelRecordGateway;
     private final MemberSignConfigGateway memberSignConfigGateway;
@@ -189,6 +191,10 @@ public class MemberGrowthService {
             }
             return true;
         }
+        // 与源规则一致：等级未变化时保留经验，不生成经验或等级流水。
+        if (Objects.equals(user.levelId(), levelId)) {
+            return true;
+        }
         Level level = levelId == null ? null : memberLevelGateway.level(MemberRules.id(levelId));
         if (levelId != null && (level == null || level.status() != 1)) {
             throw new ServiceException("等级不存在或已停用", 400);
@@ -224,7 +230,7 @@ public class MemberGrowthService {
      */
     @Transactional(rollbackFor = Exception.class)
     public Long saveLevel(Level v) {
-        memberConfigGateway.lockCatalog();
+        configLocks.lockConfiguration();
         if (v.id() != null && memberLevelGateway.level(MemberRules.id(v.id())) == null) {
             throw new ServiceException("等级不存在", 400);
         }
@@ -267,39 +273,64 @@ public class MemberGrowthService {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteLevel(Long id) {
-        return memberLevelGateway.levelDelete(MemberRules.id(id));
-    }
-
-    /**
-     * 保存签到配置。
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public boolean saveSignConfig(SignConfig v) {
-        if (v.day() == null
-                || v.day() < 1
-                || v.day() > 366
-                || v.point() == null
-                || v.point() < 0
-                || v.experience() == null
-                || v.experience() < 0
-                || (v.point() == 0 && v.experience() == 0)
-                || v.status() == null
-                || (v.status() != 0 && v.status() != 1)) {
-            throw new ServiceException("签到配置不合法", 400);
+        configLocks.lockConfiguration();
+        MemberRules.id(id);
+        if (memberLevelGateway.level(id) == null) {
+            throw new ServiceException("等级不存在", 404);
         }
-        memberSignConfigGateway.signConfigSave(v);
+        if (!memberLevelGateway.levelDelete(id)) {
+            throw new ServiceException("等级下有会员，无法删除", 409);
+        }
         return true;
     }
 
-    /**
-     * 删除签到配置。
-     */
+    /** 创建规则，天数重复不能覆盖原奖励。 */
     @Transactional(rollbackFor = Exception.class)
-    public boolean deleteSignConfig(Integer day) {
-        if (day == null || day < 1) {
-            throw new ServiceException("天数不合法", 400);
+    public Long createSignConfig(SignConfig value) {
+        validateSignConfig(value);
+        if (memberSignConfigGateway.signConfigByDay(value.day()) != null) {
+            throw new ServiceException("签到天数已存在", 409);
         }
-        return memberSignConfigGateway.signConfigDelete(day);
+        return memberSignConfigGateway.create(new SignConfig(value.day(), value.point(), value.experience(), value.status()));
+    }
+
+    /** 修改规则可调整天数，但不能占用其他规则的天数。 */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateSignConfig(SignConfig value) {
+        MemberRules.id(value.id());
+        validateSignConfig(value);
+        if (memberSignConfigGateway.signConfig(value.id()) == null) {
+            throw new ServiceException("签到规则不存在", 404);
+        }
+        var existing = memberSignConfigGateway.signConfigByDay(value.day());
+        if (existing != null && !existing.id().equals(value.id())) {
+            throw new ServiceException("签到天数已存在", 409);
+        }
+        if (!memberSignConfigGateway.update(value)) {
+            throw new ServiceException("签到规则不存在", 404);
+        }
+        return true;
+    }
+
+    /** 校验规则内容，保留现有天数及奖励约束。 */
+    private void validateSignConfig(SignConfig v) {
+        if (v.day() == null || v.day() < 1 || v.day() > 366
+                || v.point() == null || v.point() < 0
+                || v.experience() == null || v.experience() < 0
+                || (v.point() == 0 && v.experience() == 0)
+                || v.status() == null || (v.status() != 0 && v.status() != 1)) {
+            throw new ServiceException("签到配置不合法", 400);
+        }
+    }
+
+    /** 按ID删除，不影响已发放的签到奖励。 */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteSignConfig(Long id) {
+        MemberRules.id(id);
+        if (!memberSignConfigGateway.signConfigDelete(id)) {
+            throw new ServiceException("签到规则不存在", 404);
+        }
+        return true;
     }
 
     /**
@@ -313,7 +344,7 @@ public class MemberGrowthService {
         var today = now.toLocalDate();
         var previous = memberSignRecordGateway.signDate(memberId, today);
         if (previous != null) {
-            return previous;
+            throw new ServiceException("今日已签到", 409);
         }
         var configs = memberSignConfigGateway.signConfigs().stream().filter(v -> v.status() == 1).toList();
         if (configs.isEmpty()) {
@@ -331,7 +362,7 @@ public class MemberGrowthService {
                 .filter(v -> v.day() == current)
                 .findFirst()
                 .orElse(new SignConfig(day, 0L, 0L, 1));
-        memberSignRecordGateway.signSave(
+        var signRecordId = memberSignRecordGateway.signSave(
                 new SignRecord(null, memberId, today, day, config.point(), config.experience(), null, now));
         if (config.point() > 0) {
             adjust(
@@ -339,7 +370,7 @@ public class MemberGrowthService {
                     "POINT",
                     config.point(),
                     "SIGN_IN",
-                    today.toString(),
+                    signRecordId.toString(),
                     "每日签到",
                     false,
                     true);
@@ -350,7 +381,7 @@ public class MemberGrowthService {
                     "EXPERIENCE",
                     config.experience(),
                     "SIGN_IN",
-                    today.toString(),
+                    signRecordId.toString(),
                     "每日签到",
                     false,
                     true);
@@ -363,6 +394,7 @@ public class MemberGrowthService {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean saveConfig(Config v) {
+        configLocks.lockConfiguration();
         if (v.pointTradeDeductEnable() == null
                 || v.pointTradeDeductUnitPrice() == null
                 || v.pointTradeDeductUnitPrice() < 0

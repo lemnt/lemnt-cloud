@@ -22,9 +22,14 @@ public class MemberLevelListQueryExe {
      * 执行查询等级查询。
      */
     public List<LevelDTO> execute(LevelListQry qry) {
-        return memberLevelGateway.levels().stream()
-                .filter(v -> !qry.enabledOnly() || v.status() == 1)
-                .map(MemberGrowthDTOConverter::toLevelDTO)
-                .toList();
+        if (qry.name() != null && qry.name().length() > 80) {
+            throw new com.lemnt.common.core.exception.ServiceException("等级名称不能超过80字", 400);
+        }
+        if (qry.status() != null && qry.status() != 0 && qry.status() != 1) {
+            throw new com.lemnt.common.core.exception.ServiceException("等级状态不合法", 400);
+        }
+        var name = qry.name() == null || qry.name().isBlank() ? null : qry.name().trim();
+        return memberLevelGateway.levels(name, qry.enabledOnly() ? 1 : qry.status()).stream()
+                .map(MemberGrowthDTOConverter::toLevelDTO).toList();
     }
 }

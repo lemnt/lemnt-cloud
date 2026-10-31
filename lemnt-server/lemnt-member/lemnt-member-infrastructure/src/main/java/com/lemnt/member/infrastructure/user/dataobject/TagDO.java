@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serial;
-import java.io.Serializable;
+import com.lemnt.common.infrastructure.domain.BaseDO;
 
 /**
  * 标签数据对象。
@@ -18,7 +18,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("member_tag")
-public class TagDO implements Serializable {
+public class TagDO extends BaseDO {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -29,5 +29,6 @@ public class TagDO implements Serializable {
     /** 名称。 */
     private String name;
     /** 备注。 */
+    @com.baomidou.mybatisplus.annotation.TableField(updateStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.ALWAYS)
     private String remark;
 }

@@ -2,34 +2,23 @@ package com.lemnt.member.infrastructure.growth.dataobject;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-
+import com.lemnt.common.infrastructure.domain.BaseDO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 
-import java.io.Serial;
-import java.io.Serializable;
-
-/**
- * 签到配置数据对象。
- */
+/** 签到规则，天数唯一但不再承担主键。 */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-@TableName("member_sign_config")
-public class SignConfigDO implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
-
-    /** 连续签到周期内的天数。 */
-    @TableId(type = IdType.INPUT)
-    private Integer signinDay;
-    /** 奖励积分。 */
+@TableName("member_sign_in_config")
+public class SignConfigDO extends BaseDO {
+    @TableId(type = IdType.AUTO)
+    private Long id;
+    @TableField("`day`")
+    private Integer day;
     private Long point;
-    /** 经验值。 */
     private Long experience;
-    /** 状态：0停用，1启用。 */
+    /** 1启用，0停用，沿本项目状态约定。 */
     private Integer status;
 }

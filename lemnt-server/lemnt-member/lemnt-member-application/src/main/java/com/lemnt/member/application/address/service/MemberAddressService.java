@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 会员收货地址应用编排，保持默认地址与数量约束的事务一致性。 */
+/** 会员收货地址应用编排，保持默认地址切换的事务一致性。 */
 @Component
 @RequiredArgsConstructor
 public class MemberAddressService {
@@ -53,13 +53,10 @@ public class MemberAddressService {
         }
         if (input.id() != null
                 && memberAddressGateway.address(input.memberId(), MemberRules.id(input.id())) == null) {
-            throw new ServiceException("地址不存在", 400);
-        }
-        if (input.id() == null && memberAddressGateway.addresses(input.memberId()).size() >= 20) {
-            throw new ServiceException("最多20个地址", 409);
+            throw new ServiceException("地址不存在", 404);
         }
         if (input.defaultStatus()) {
-            memberAddressGateway.clearDefaultAddress(input.memberId());
+            memberAddressGateway.clearDefaultAddress(input.memberId(), input.id());
         }
         Long id =
                 memberAddressGateway.saveAddress(
@@ -80,7 +77,10 @@ public class MemberAddressService {
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteAddress(Long memberId, Long id) {
         active(memberId);
-        return memberAddressGateway.deleteAddress(memberId, MemberRules.id(id));
+        if (!memberAddressGateway.deleteAddress(memberId, MemberRules.id(id))) {
+            throw new ServiceException("地址不存在", 404);
+        }
+        return true;
     }
 
 }

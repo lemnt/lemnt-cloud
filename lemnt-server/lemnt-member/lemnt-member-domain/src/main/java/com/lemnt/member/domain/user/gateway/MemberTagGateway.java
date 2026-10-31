@@ -1,5 +1,7 @@
 package com.lemnt.member.domain.user.gateway;
 
+import java.util.Collection;
+
 import com.lemnt.member.domain.user.model.Tag;
 import com.lemnt.member.domain.user.model.TagPageFilter;
 
@@ -37,4 +39,6 @@ public interface MemberTagGateway {
      * 查询标签数量。
      */
     long tagsCount(TagPageFilter filter);
+    /** 按真实关联ID批量读取，空集合不查表。 */
+    List<Tag> tagsByIds(Collection<Long> ids);
 }

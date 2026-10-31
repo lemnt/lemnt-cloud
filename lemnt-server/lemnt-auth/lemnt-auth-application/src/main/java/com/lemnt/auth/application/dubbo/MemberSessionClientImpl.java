@@ -8,7 +8,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 网关和业务服务仅依赖此只读会话校验接口。
+ * 认证中心会话契约实现，网关不依赖Dubbo。
  */
 @DubboService
 @RequiredArgsConstructor
@@ -21,4 +21,10 @@ public class MemberSessionClientImpl implements MemberSessionClient {
     public Long authenticate(String token) {
         return memberAuthenticationService.authenticate(token);
     }
+    /** 同步撤销会员会话，不回调会员数据库。 */
+    @Override
+    public void revokeMemberSessions(Long memberId) {
+        memberAuthenticationService.revokeMemberSessions(memberId);
+    }
+
 }

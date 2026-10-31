@@ -1,5 +1,7 @@
 package com.lemnt.member.infrastructure.user.gateway;
 
+import com.lemnt.member.domain.user.model.MemberPageFilter;
+
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.member.domain.user.gateway.MemberUserGateway;
 import com.lemnt.member.domain.user.model.Member;
@@ -7,6 +9,7 @@ import com.lemnt.member.infrastructure.user.converter.MemberConverter;
 import com.lemnt.member.infrastructure.user.mapper.MemberUserMapper;
 
 import org.springframework.stereotype.Component;
+import org.springframework.dao.DuplicateKeyException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,7 +45,7 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     @Override
     public Member findById(Long id) {
-        return MemberConverter.toEntity(memberUserMapper.profile(id));
+        return MemberConverter.toEntity(memberUserMapper.selectById(id));
     }
 
     /**
@@ -57,18 +60,18 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      * 查询会员资料。
      */
     @Override
-    public List<Member> findPage(String mobile, int offset, int limit) {
-        return memberUserMapper.profiles(mobile, offset, limit).stream()
+    public List<Member> findPage(MemberPageFilter filter) {
+        return memberUserMapper.profiles(filter).stream()
                 .map(MemberConverter::toEntity)
                 .toList();
     }
 
     /**
-     * 统计符合手机号筛选条件的会员数量。
+     * 统计符合资料筛选条件的会员数量。
      */
     @Override
-    public long count(String mobile) {
-        return memberUserMapper.profileCount(mobile);
+    public long count(MemberPageFilter filter) {
+        return memberUserMapper.profileCount(filter);
     }
 
     /**
@@ -76,7 +79,12 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     @Override
     public void updateProfile(Member value) {
-        memberUserMapper.profileUpdate(MemberConverter.toDO(value));
+        try {
+            memberUserMapper.profileUpdate(MemberConverter.toDO(value));
+        } catch (DuplicateKeyException e) {
+            // 并发修改以数据库手机号、邮箱唯一约束为准，不暴露SQL异常。
+            throw new ServiceException("手机号或邮箱已被使用", 409);
+        }
     }
 
     /**

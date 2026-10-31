@@ -17,7 +17,12 @@ import { AdminModalForm } from '@/shared/components/AdminModalForm';
 import { usePermission } from '@/shared/hooks/usePermission';
 import * as api from '../api/memberApi';
 import { memberKeys, memberStatusOptions } from '../types';
-import type { MemberProfile, MemberProfileValues, MemberPageQuery, MemberAddress } from '../types';
+import type {
+  MemberProfile,
+  MemberProfileValues,
+  MemberUserPageQuery,
+  MemberAddress,
+} from '../types';
 
 type ActionKind = 'edit' | 'points' | 'level' | 'group' | 'tags';
 interface Action {
@@ -46,11 +51,16 @@ const permissions: Record<ActionKind, string> = {
   group: 'member:user:update',
   tags: 'member:user:update',
 };
+/** 只展示已读取的真实标签名，区分未知与已知无绑定。 */
+function memberTagsText(profile: MemberProfile) {
+  if (profile.tagNames?.length) return profile.tagNames.join('、');
+  return profile.tagIds === undefined ? '未读取' : profile.tagIds.length ? '名称未记录' : '未设置';
+}
 export default function MemberUserPage() {
   const { can } = usePermission();
   const { message } = App.useApp();
   const cache = useQueryClient();
-  const [query, setQuery] = useState<MemberPageQuery>({ pageNum: 1, pageSize: 20 });
+  const [query, setQuery] = useState<MemberUserPageQuery>({ pageNum: 1, pageSize: 20 });
   const [detail, setDetail] = useState<string>();
   const [action, setAction] = useState<Action>();
   const [frozen, setFrozen] = useState<Values>();
@@ -78,17 +88,17 @@ export default function MemberUserPage() {
   const levels = useQuery({
     queryKey: memberKeys.metadata('levels'),
     queryFn: () => api.getMetadata('levels'),
-    enabled: action?.kind === 'level' && can('member:level:query'),
+    enabled: can('member:user:query') && can('member:level:query'),
   });
   const groups = useQuery({
     queryKey: memberKeys.metadata('groups'),
     queryFn: () => api.getMetadata('groups'),
-    enabled: action?.kind === 'group' && can('member:group:query'),
+    enabled: can('member:user:query') && can('member:group:query'),
   });
   const tags = useQuery({
     queryKey: memberKeys.metadata('tags'),
     queryFn: () => api.getMetadata('tags'),
-    enabled: action?.kind === 'tags' && can('member:tag:query'),
+    enabled: can('member:user:query') && can('member:tag:query'),
   });
   const selectedTags = useQuery({
     queryKey: [...memberKeys.detail(action?.row?.id), 'tags'],
@@ -131,7 +141,8 @@ export default function MemberUserPage() {
         : can('member:tag:query');
   const columns: ProColumns<MemberProfile>[] = [
     { title: '会员编号', dataIndex: 'id', search: false },
-    { title: '昵称', dataIndex: 'nickname', search: false },
+    { title: '昵称', dataIndex: 'nickname' },
+    { title: '邮箱', dataIndex: 'email' },
     { title: '手机号', dataIndex: 'mobile' },
     {
       title: '状态',
@@ -141,8 +152,57 @@ export default function MemberUserPage() {
     },
     { title: '积分', dataIndex: 'points', search: false },
     { title: '经验', dataIndex: 'experience', search: false },
-    { title: '等级ID', dataIndex: 'levelId', search: false },
-    { title: '分组ID', dataIndex: 'groupId', search: false },
+    {
+      title: '等级',
+      dataIndex: 'levelId',
+      renderText: (_, row) => row.levelName ?? (row.levelId ? `ID ${row.levelId}` : '未设置'),
+      valueType: 'select',
+      fieldProps: {
+        options: (levels.data ?? []).map((v) => ({ label: v.name, value: v.id })),
+        disabled: !can('member:level:query'),
+      },
+    },
+    {
+      title: '分组',
+      dataIndex: 'groupId',
+      renderText: (_, row) => row.groupName ?? (row.groupId ? `ID ${row.groupId}` : '未设置'),
+      valueType: 'select',
+      fieldProps: {
+        options: (groups.data ?? []).map((v) => ({ label: v.name, value: v.id })),
+        disabled: !can('member:group:query'),
+      },
+    },
+    {
+      title: '标签（任一命中）',
+      dataIndex: 'tagIds',
+      hideInTable: true,
+      valueType: 'select',
+      fieldProps: {
+        mode: 'multiple',
+        options: (tags.data ?? []).map((v) => ({ label: v.name, value: v.id })),
+        disabled: !can('member:tag:query'),
+      },
+    },
+    {
+      title: '会员标签',
+      dataIndex: 'tagNames',
+      search: false,
+      renderText: (_, row) => memberTagsText(row),
+    },
+    { title: '注册时间', dataIndex: 'createTime', search: false },
+    { title: '最后登录时间', dataIndex: 'loginDate', search: false },
+    {
+      title: '注册时间范围',
+      dataIndex: 'createRange',
+      hideInTable: true,
+      valueType: 'dateTimeRange',
+    },
+    {
+      title: '登录时间范围',
+      dataIndex: 'loginRange',
+      hideInTable: true,
+      valueType: 'dateTimeRange',
+    },
     {
       title: '操作',
       valueType: 'option',
@@ -179,11 +239,21 @@ export default function MemberUserPage() {
         dataSource={users.data?.records ?? []}
         loading={users.isFetching}
         scroll={{ x: 1400 }}
+        dateFormatter="string"
         onSubmit={(v) =>
           setQuery({
             ...query,
             pageNum: 1,
             mobile: typeof v.mobile === 'string' ? v.mobile : undefined,
+            email: typeof v.email === 'string' ? v.email : undefined,
+            nickname: typeof v.nickname === 'string' ? v.nickname : undefined,
+            levelId: typeof v.levelId === 'string' ? v.levelId : undefined,
+            groupId: typeof v.groupId === 'string' ? v.groupId : undefined,
+            tagIds: Array.isArray(v.tagIds) ? v.tagIds : undefined,
+            createStartTime: Array.isArray(v.createRange) ? v.createRange[0] : undefined,
+            createEndTime: Array.isArray(v.createRange) ? v.createRange[1] : undefined,
+            loginStartTime: Array.isArray(v.loginRange) ? v.loginRange[0] : undefined,
+            loginEndTime: Array.isArray(v.loginRange) ? v.loginRange[1] : undefined,
           })
         }
         onReset={() => setQuery({ pageNum: 1, pageSize: 20 })}
@@ -231,6 +301,17 @@ export default function MemberUserPage() {
               ['手机', profile.data.mobile],
               ['邮箱', profile.data.email],
               ['生日', profile.data.birthday],
+              [
+                '等级',
+                profile.data.levelName ??
+                  (profile.data.levelId ? `ID ${profile.data.levelId}` : '未设置'),
+              ],
+              [
+                '分组',
+                profile.data.groupName ??
+                  (profile.data.groupId ? `ID ${profile.data.groupId}` : '未设置'),
+              ],
+              ['会员标签', memberTagsText(profile.data)],
               ['积分', profile.data.points],
               ['经验', profile.data.experience],
               ['创建时间', profile.data.createTime],
@@ -340,6 +421,14 @@ export default function MemberUserPage() {
           )}
           {action.kind === 'edit' && (
             <>
+              <ProFormText
+                name="mobile"
+                label="手机号"
+                rules={[
+                  { required: true },
+                  { pattern: /^[+]?[0-9]{7,20}$/, message: '请输入有效手机号' },
+                ]}
+              />
               <ProFormText name="nickname" label="昵称" rules={[{ required: true }, { max: 80 }]} />
               <ProFormText name="name" label="真实姓名" rules={[{ max: 30 }]} />
               <ProFormTreeSelect

@@ -3,10 +3,12 @@ package com.lemnt.common.redis.service;
 import com.lemnt.common.redis.serializer.RedisSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 
 import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * Redis 工具类基类
@@ -71,4 +73,12 @@ public abstract class AbstractRedisService {
     public Set<String> keys(String pattern) {
         return redisTemplate.keys(pattern);
     }
+    /** 游标逐项处理匹配的key，避免KEYS阻塞和一次加载全部key。 */
+    public void scan(String pattern, Consumer<String> action) {
+        var options = ScanOptions.scanOptions().match(pattern).count(500).build();
+        try (var cursor = redisTemplate.scan(options)) {
+            cursor.forEachRemaining(action);
+        }
+    }
+
 }

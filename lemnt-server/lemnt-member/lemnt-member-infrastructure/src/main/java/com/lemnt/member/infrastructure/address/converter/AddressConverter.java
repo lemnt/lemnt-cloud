@@ -17,7 +17,7 @@ public final class AddressConverter {
                 ? null
                 : new Address(
                         row.getId(),
-                        row.getMemberId(),
+                        row.getUserId(),
                         row.getName(),
                         row.getMobile(),
                         row.getAreaId(),
@@ -31,7 +31,7 @@ public final class AddressConverter {
     public static AddressDO toDO(Address value) {
         var row = new AddressDO();
         row.setId(value.id());
-        row.setMemberId(value.memberId());
+        row.setUserId(value.memberId());
         row.setName(value.name());
         row.setMobile(value.mobile());
         row.setAreaId(value.areaId());

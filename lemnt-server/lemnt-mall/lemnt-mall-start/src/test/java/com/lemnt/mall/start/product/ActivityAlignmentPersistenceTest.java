@@ -176,4 +176,28 @@ class ActivityAlignmentPersistenceTest {
                 new com.lemnt.mall.domain.member.model.MemberPointConfig(true, 1, 0, 2));
         assertThrows(com.lemnt.common.core.exception.ServiceException.class, () -> service.price(items, null, now, 100, true, 1000));
     }
+    /** maxPrice历史字段实际表示积分数，单积分5分、最多2积分应只抵扣0.10元。 */
+    @Test
+    void pointCapIsPointCountAndDisabledSwitchAlsoStopsGift() {
+        var memberTrade = org.mockito.Mockito.mock(com.lemnt.mall.domain.member.gateway.MemberTradeGateway.class);
+        org.mockito.Mockito.when(memberTrade.config()).thenReturn(
+                new com.lemnt.mall.domain.member.model.MemberPointConfig(true, 5, 2, 3));
+        var service = new ActivityPricingService(memberTrade,
+                f.components.get(com.lemnt.mall.domain.promotion.gateway.DiscountActivityGateway.class),
+                f.components.get(com.lemnt.mall.domain.promotion.gateway.DiscountProductGateway.class),
+                f.components.get(com.lemnt.mall.domain.promotion.gateway.RewardActivityGateway.class),
+                f.productSkuGateway, f.productSpuGateway);
+        var item = new SettlementItem(spu.skus().get(0).id(), "SKU", "商品", new BigDecimal("10.00"), 1,
+                new BigDecimal("10.00"));
+        var enabled = service.price(List.of(item), null, now, 100, true, 100L);
+        assertEquals(2L, enabled.usePoint());
+        assertEquals(new BigDecimal("9.90"), enabled.payableAmount());
+        assertEquals(29L, enabled.givePoint());
+        org.mockito.Mockito.when(memberTrade.config()).thenReturn(
+                new com.lemnt.mall.domain.member.model.MemberPointConfig(false, 5, 2, 3));
+        var disabled = service.price(List.of(item), null, now, 100, true, 100L);
+        assertEquals(0L, disabled.usePoint());
+        assertEquals(0L, disabled.givePoint());
+        assertEquals(new BigDecimal("10.00"), disabled.payableAmount());
+    }
 }

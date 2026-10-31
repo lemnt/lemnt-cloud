@@ -2,7 +2,7 @@ package com.lemnt.member.adapter.web.user;
 
 import com.lemnt.common.core.domain.R;
 import com.lemnt.common.security.annotation.RequiresPermissions;
-import com.lemnt.member.adapter.web.growth.req.MemberCatalogQueryTagsPageReq;
+import com.lemnt.member.adapter.web.user.req.MemberCatalogQueryTagsPageReq;
 import com.lemnt.member.adapter.web.user.converter.MemberReqConverter;
 import com.lemnt.member.adapter.web.user.converter.MemberUserResConverter;
 import com.lemnt.member.adapter.web.user.res.MemberCatalogQueryTagsPageRes;
@@ -24,13 +24,13 @@ import jakarta.validation.Valid;
  */
 @Tag(name = "会员标签分页")
 @RestController
-@RequestMapping("/groups")
+@RequestMapping("/tags")
 @RequiredArgsConstructor
 public class MemberTagQueryController {
 
     private final MemberTagPageQueryExe memberTagPageQueryExe;
 
-    @GetMapping("/tags/page")
+    @GetMapping("/page")
     @Operation(summary = "tags/page分页")
     @RequiresPermissions("member:tag:query")
     public R<MemberCatalogQueryTagsPageRes> tagsPage(@Valid @ModelAttribute MemberCatalogQueryTagsPageReq req) {

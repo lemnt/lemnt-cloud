@@ -26,7 +26,8 @@ public class MemberSignSummaryQueryExe {
         var today = memberUserGateway.now().toLocalDate();
         var last = memberSignRecordGateway.lastSign(qry.memberId());
         int continuous =
-                last != null && !last.signDate().isBefore(today.minusDays(1)) ? last.day() : 0;
+                last != null && (last.signDate().equals(today) || last.signDate().equals(today.minusDays(1)))
+                        ? last.day() : 0;
         return new SignSummaryDTO(
                 memberSignRecordGateway.signCount(qry.memberId()),
                 continuous,

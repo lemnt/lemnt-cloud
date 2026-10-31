@@ -18,6 +18,6 @@ public class MemberSignConfigDeleteCmdExe {
      * 执行签到配置删除命令。
      */
     public Boolean execute(SignConfigDeleteCmd cmd) {
-        return memberGrowthService.deleteSignConfig(cmd.day());
+        return memberGrowthService.deleteSignConfig(cmd.id());
     }
 }

@@ -6,7 +6,8 @@ import com.lemnt.member.adapter.web.growth.req.MemberLevelCreateReq;
 import com.lemnt.member.adapter.web.growth.req.MemberLevelUpdateReq;
 import com.lemnt.member.adapter.web.growth.req.MemberUserExperienceReq;
 import com.lemnt.member.adapter.web.growth.req.MemberUserPointsReq;
-import com.lemnt.member.adapter.web.growth.req.SignConfigSaveReq;
+import com.lemnt.member.adapter.web.growth.req.SignConfigCreateReq;
+import com.lemnt.member.adapter.web.growth.req.SignConfigUpdateReq;
 import com.lemnt.member.adapter.web.user.req.MemberUserExperienceRecordsReq;
 import com.lemnt.member.adapter.web.user.req.MemberUserLevelRecordsReq;
 import com.lemnt.member.adapter.web.user.req.MemberUserPointsRecordsReq;
@@ -15,7 +16,8 @@ import com.lemnt.member.application.growth.cmd.AssetAdjustCmd;
 import com.lemnt.member.application.growth.cmd.ConfigSaveCmd;
 import com.lemnt.member.application.growth.cmd.LevelAssignCmd;
 import com.lemnt.member.application.growth.cmd.LevelSaveCmd;
-import com.lemnt.member.application.growth.cmd.SignConfigSaveCmd;
+import com.lemnt.member.application.growth.cmd.SignConfigCreateCmd;
+import com.lemnt.member.application.growth.cmd.SignConfigUpdateCmd;
 import com.lemnt.member.application.growth.qry.AssetRecordPageQry;
 import com.lemnt.member.application.growth.qry.LevelRecordsPageQry;
 import com.lemnt.member.application.growth.qry.SignRecordPageQry;
@@ -35,8 +37,13 @@ public final class MemberGrowthReqConverter {
     /**
      * 签到配置。
      */
-    public static SignConfigSaveCmd signConfig(SignConfigSaveReq r) {
-        return new SignConfigSaveCmd(r.day(), r.point(), r.experience(), r.status());
+    public static SignConfigCreateCmd signConfig(SignConfigCreateReq req) {
+        return new SignConfigCreateCmd(req.day(), req.point(), req.experience(), req.status());
+    }
+
+    /** 更新按可信路径ID定位，不接受天数充当ID。 */
+    public static SignConfigUpdateCmd signConfig(Long id, SignConfigUpdateReq req) {
+        return new SignConfigUpdateCmd(id, req.day(), req.point(), req.experience(), req.status());
     }
 
     /**

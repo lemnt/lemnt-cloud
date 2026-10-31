@@ -79,7 +79,7 @@ public class AppMemberAddressController {
     }
 
     @PostMapping
-    @Operation(summary = "新增本人地址，最多20个")
+    @Operation(summary = "新增本人地址")
     public R<AppMemberAddressCreateRes> create(
             @Valid @RequestBody AppMemberAddressCreateReq req) {
         return R.ok(

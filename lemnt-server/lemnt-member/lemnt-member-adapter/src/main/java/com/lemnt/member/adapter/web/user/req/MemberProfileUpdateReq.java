@@ -35,5 +35,8 @@ public record MemberProfileUpdateReq(
         String name,
         @Schema(description = "地区编号，省略保留")
         @jakarta.validation.constraints.Positive
-        Integer areaId
+        Integer areaId,
+        @Schema(description = "手机号，省略或null保留原值，空串不允许")
+        @Size(max = 24)
+        String mobile
 ) implements Serializable {}

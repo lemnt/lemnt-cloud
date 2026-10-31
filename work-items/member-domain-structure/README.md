@@ -139,3 +139,33 @@
 
 - [签到记录时间及筛选设计](101-sign-record-time-design.md)
 - [签到记录时间及筛选交付](102-sign-record-time-delivery.md)
+
+- [签到执行规则设计](103-sign-flow-design.md)
+- [签到执行规则交付](104-sign-flow-delivery.md)
+
+- [签到配置ID管理设计](105-sign-config-id-design.md)
+- [签到配置ID管理交付](106-sign-config-id-delivery.md)
+
+- [积分配置闭环设计](107-point-config-design.md)
+- [积分配置闭环交付](108-point-config-delivery.md)
+
+- [会员等级管理收敛设计](109-level-management-design.md)
+- [会员等级管理收敛交付](110-level-management-delivery.md)
+
+- [分组标签管理收敛设计](111-group-tag-management-design.md)
+- [分组标签管理收敛交付](112-group-tag-management-delivery.md)
+
+- [会员列表源筛选设计](113-member-user-filter-design.md)
+- [会员列表源筛选交付](114-member-user-filter-delivery.md)
+
+- [后台会员关系返显设计](115-member-user-relations-design.md)
+- [后台会员关系返显交付](116-member-user-relations-delivery.md)
+
+- [后台会员资料保存设计](117-member-user-update-design.md)
+- [后台会员资料保存交付](118-member-user-update-delivery.md)
+
+- [停用会员撤销会话设计](119-member-disable-session-design.md)
+- [停用会员撤销会话交付](120-member-disable-session-delivery.md)
+
+- [同等级手工调整设计](121-member-level-noop-design.md)
+- [同等级手工调整交付](122-member-level-noop-delivery.md)

@@ -8,26 +8,22 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import java.io.Serial;
-import java.io.Serializable;
+import com.lemnt.common.infrastructure.domain.BaseDO;
 
 /**
  * 地址数据对象。
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("member_address")
-public class AddressDO implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class AddressDO extends BaseDO {
 
     /** 主键编号。 */
     @TableId(type = IdType.AUTO)
     private Long id;
     /** 会员编号。 */
-    private Long memberId;
+    private Long userId;
     /** 名称。 */
     private String name;
     /** 手机号。 */

@@ -308,13 +308,13 @@ public final class MemberGrowthResConverter {
      * 签到配置。
      */
     public static MemberConfigListRes toMemberConfigListRes(SignConfigDTO v) {
-        return v == null ? null : new MemberConfigListRes(v.day(), v.point(), v.experience(), v.status());
+        return v == null ? null : new MemberConfigListRes(v.id(), v.day(), v.point(), v.experience(), v.status());
     }
 
     /**
      * 签到配置。
      */
     public static MemberConfigDetailRes toMemberConfigDetailRes(SignConfigDTO v) {
-        return v == null ? null : new MemberConfigDetailRes(v.day(), v.point(), v.experience(), v.status());
+        return v == null ? null : new MemberConfigDetailRes(v.id(), v.day(), v.point(), v.experience(), v.status());
     }
 }

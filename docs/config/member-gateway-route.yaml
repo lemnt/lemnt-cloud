@@ -11,4 +11,4 @@ spring:
             - id: lemnt-member
               uri: lb://lemnt-member
               predicates:
-                - Path=/member/**,/members/**
+                - Path=/member/**,/members/**,/growths/**,/growth/**,/groups/**,/tags/**,/member-users/**

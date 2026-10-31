@@ -10,7 +10,7 @@ import com.lemnt.member.adapter.web.user.req.MemberUserPageReq;
 import com.lemnt.member.adapter.web.user.req.TagsAssignReq;
 import com.lemnt.member.application.user.cmd.GroupAssignCmd;
 import com.lemnt.member.application.user.cmd.GroupSaveCmd;
-import com.lemnt.member.application.user.cmd.MemberUpdateCmd;
+import com.lemnt.member.application.user.cmd.MemberUserUpdateCmd;
 import com.lemnt.member.application.user.cmd.TagSaveCmd;
 import com.lemnt.member.application.user.cmd.TagsAssignCmd;
 import com.lemnt.member.application.user.qry.MemberPageQry;
@@ -24,9 +24,9 @@ public final class MemberUserReqConverter {
     /**
      * 资料。
      */
-    public static MemberUpdateCmd profile(Long id, MemberProfileUpdateReq r) {
-        return new MemberUpdateCmd(
-                id, r.nickname(), r.email(), r.avatar(), r.sex(), r.birthday(), r.status(), r.mark(), r.name(), r.areaId());
+    public static MemberUserUpdateCmd profile(Long id, MemberProfileUpdateReq r) {
+        return new MemberUserUpdateCmd(
+                id, r.nickname(), r.email(), r.avatar(), r.sex(), r.birthday(), r.status(), r.mark(), r.name(), r.areaId(), r.mobile());
     }
 
     /**
@@ -63,7 +63,9 @@ public final class MemberUserReqConverter {
      * 查询会员资料。
      */
     public static MemberPageQry profiles(MemberUserPageReq r) {
-        return new MemberPageQry(r.mobile(), (r.pageNum() == null ? 1 : r.pageNum()), (r.pageSize() == null ? 20 : r.pageSize()));
+        return new MemberPageQry(r.mobile(), r.email(), r.nickname(), r.levelId(), r.groupId(), r.tagIds(),
+                r.loginStartTime(), r.loginEndTime(), r.createStartTime(), r.createEndTime(),
+                r.pageNum() == null ? 1 : r.pageNum(), r.pageSize() == null ? 20 : r.pageSize());
     }
 
     /**

@@ -20,9 +20,9 @@ public interface MemberSignRecordGateway {
     SignRecord lastSign(Long memberId);
 
     /**
-     * 签到保存。
+     * 保存签到并返回生成编号，供奖励流水关联。
      */
-    void signSave(SignRecord value);
+    Long signSave(SignRecord value);
 
     /**
      * 查询签到记录。

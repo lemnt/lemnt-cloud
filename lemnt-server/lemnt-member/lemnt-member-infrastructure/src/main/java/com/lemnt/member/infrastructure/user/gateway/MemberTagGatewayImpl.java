@@ -1,11 +1,16 @@
 package com.lemnt.member.infrastructure.user.gateway;
 
+import java.util.Collection;
+
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.member.domain.user.gateway.MemberTagGateway;
 import com.lemnt.member.domain.user.model.Tag;
 import com.lemnt.member.domain.user.model.TagPageFilter;
 import com.lemnt.member.infrastructure.user.converter.TagConverter;
 import com.lemnt.member.infrastructure.user.mapper.MemberTagMapper;
+import com.lemnt.member.infrastructure.user.dataobject.TagDO;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import org.springframework.dao.DuplicateKeyException;
 
 import org.springframework.stereotype.Component;
 
@@ -25,7 +30,7 @@ public class MemberTagGatewayImpl implements MemberTagGateway {
      */
     @Override
     public List<Tag> tags() {
-        return memberTagMapper.tags().stream().map(TagConverter::toEntity).toList();
+        return memberTagMapper.selectList(Wrappers.<TagDO>lambdaQuery().orderByAsc(TagDO::getId)).stream().map(TagConverter::toEntity).toList();
     }
 
     /**
@@ -33,7 +38,7 @@ public class MemberTagGatewayImpl implements MemberTagGateway {
      */
     @Override
     public Tag tag(Long id) {
-        return TagConverter.toEntity(memberTagMapper.tag(id));
+        return TagConverter.toEntity(memberTagMapper.selectById(id));
     }
 
     /**
@@ -42,11 +47,14 @@ public class MemberTagGatewayImpl implements MemberTagGateway {
     @Override
     public Long tagSave(Tag value) {
         var row = TagConverter.toDO(value);
-        if (value.id() == null) {
-            memberTagMapper.tagInsert(row);
-        }
-        else if (memberTagMapper.tagUpdate(row) != 1) {
-            throw new ServiceException("记录不存在", 409);
+        try {
+            if (value.id() == null) {
+                memberTagMapper.insert(row);
+            } else if (memberTagMapper.updateById(row) != 1) {
+                throw new ServiceException("记录不存在", 404);
+            }
+        } catch (DuplicateKeyException exception) {
+            throw new ServiceException("标签名称已存在", 409);
         }
         return row.getId();
     }
@@ -73,5 +81,12 @@ public class MemberTagGatewayImpl implements MemberTagGateway {
     @Override
     public long tagsCount(TagPageFilter f) {
         return memberTagMapper.tagsCount(f);
+    }
+    /** 批量关联返显，避免逐会员查询。 */
+    @Override
+    public List<Tag> tagsByIds(Collection<Long> ids) {
+        if (ids.isEmpty()) return List.of();
+        return memberTagMapper.selectList(Wrappers.<TagDO>lambdaQuery().in(TagDO::getId, ids))
+                .stream().map(TagConverter::toEntity).toList();
     }
 }

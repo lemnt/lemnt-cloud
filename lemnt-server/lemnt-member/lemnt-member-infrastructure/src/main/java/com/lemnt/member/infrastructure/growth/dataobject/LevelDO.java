@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serial;
-import java.io.Serializable;
+import com.lemnt.common.infrastructure.domain.BaseDO;
 
 /**
  * 等级数据对象。
@@ -18,7 +18,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("member_level")
-public class LevelDO implements Serializable {
+public class LevelDO extends BaseDO {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -35,8 +35,10 @@ public class LevelDO implements Serializable {
     /** 折扣百分比，100表示原价。 */
     private Integer discountPercent;
     /** 等级图标地址。 */
+    @com.baomidou.mybatisplus.annotation.TableField(updateStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.ALWAYS)
     private String icon;
     /** 等级背景地址。 */
+    @com.baomidou.mybatisplus.annotation.TableField(updateStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.ALWAYS)
     private String backgroundUrl;
     /** 状态：0停用，1启用。 */
     private Integer status;

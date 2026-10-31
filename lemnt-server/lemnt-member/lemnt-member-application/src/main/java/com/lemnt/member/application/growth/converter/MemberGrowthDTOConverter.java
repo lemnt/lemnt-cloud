@@ -57,7 +57,7 @@ public final class MemberGrowthDTOConverter {
      * 签到配置。
      */
     public static SignConfigDTO toSignConfigDTO(SignConfig v) {
-        return v == null ? null : new SignConfigDTO(v.day(), v.point(), v.experience(), v.status());
+        return v == null ? null : new SignConfigDTO(v.id(), v.day(), v.point(), v.experience(), v.status());
     }
 
     /**

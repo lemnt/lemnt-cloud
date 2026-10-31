@@ -1,3 +1,4 @@
+import { decodeSignConfig } from './memberDecoders';
 import { expect, it } from 'vitest';
 import {
   decodePage,
@@ -172,4 +173,53 @@ it('签到真实时间仅在已知时展示，不由业务日期补造', () => {
   expect(
     decodeRecord({ ...row, createTime: '2026-10-29 10:00:00' }, 'signin-records').createTime,
   ).toBe('2026-10-29 10:00:00');
+});
+
+it('规则列表必须有真实ID，不能把天数当ID补齐', () => {
+  const row = { day: 7, point: 10, experience: 2, status: 1 };
+  expect(() => decodeSignConfig(row)).toThrow('标识');
+  expect(decodeSignConfig({ ...row, id: '99' })).toMatchObject({ id: '99', day: 7 });
+});
+
+it('分组标签历史创建时间不补造，真实时间单独解析', () => {
+  const group = { id: '1', name: 'VIP', remark: null, status: 0 };
+  expect(decodeMetadata({ ...group, createTime: null }, 'groups').createTime).toBeUndefined();
+  expect(
+    decodeMetadata(
+      { id: '2', name: 'active', remark: null, createTime: '2026-10-30 10:00:00' },
+      'tags',
+    ).createTime,
+  ).toBe('2026-10-30 10:00:00');
+});
+
+it('会员关系返显保留真实编号和名称，不从ID推名称', () => {
+  const row = {
+    id: '1',
+    nickname: 'member',
+    status: 1,
+    points: 0,
+    experience: 0,
+    levelId: '7',
+    groupId: '8',
+    tagIds: ['9007199254740993'],
+    tagNames: ['Active'],
+    levelName: 'Gold',
+    groupName: 'VIP',
+  };
+  expect(decodeProfile(row)).toMatchObject({
+    tagIds: ['9007199254740993'],
+    tagNames: ['Active'],
+    levelName: 'Gold',
+    groupName: 'VIP',
+  });
+  expect(decodeProfile({ ...row, levelName: null }).levelName).toBeNull();
+});
+
+it('会员未知关系与已读取无绑定分开，不默认造空标签', () => {
+  const row = { id: '1', nickname: 'member', status: 1, points: 0, experience: 0 };
+  expect(decodeProfile(row).tagIds).toBeUndefined();
+  expect(decodeProfile(row).tagNames).toBeUndefined();
+  expect(
+    decodeProfile({ ...row, tagIds: [], tagNames: [], levelName: null, groupName: null }),
+  ).toMatchObject({ tagIds: [], tagNames: [], levelName: null, groupName: null });
 });

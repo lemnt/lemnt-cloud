@@ -2,7 +2,7 @@ package com.lemnt.member.adapter.web.user;
 
 import com.lemnt.common.core.domain.R;
 import com.lemnt.common.security.annotation.RequiresPermissions;
-import com.lemnt.member.adapter.web.growth.req.MemberCatalogQueryGroupsPageReq;
+import com.lemnt.member.adapter.web.user.req.MemberCatalogQueryGroupsPageReq;
 import com.lemnt.member.adapter.web.user.converter.MemberReqConverter;
 import com.lemnt.member.adapter.web.user.converter.MemberUserResConverter;
 import com.lemnt.member.adapter.web.user.res.MemberCatalogQueryGroupsPageRes;
@@ -30,7 +30,7 @@ public class MemberGroupQueryController {
 
     private final MemberGroupPageQueryExe memberGroupPageQueryExe;
 
-    @GetMapping("/groups/page")
+    @GetMapping("/page")
     @Operation(summary = "groups/page分页")
     @RequiresPermissions("member:group:query")
     public R<MemberCatalogQueryGroupsPageRes> groupsPage(@Valid @ModelAttribute MemberCatalogQueryGroupsPageReq req) {

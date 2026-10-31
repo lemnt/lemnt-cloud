@@ -13,7 +13,7 @@ public final class TagConverter {
      * 转换为领域对象。
      */
     public static Tag toEntity(TagDO row) {
-        return row == null ? null : new Tag(row.getId(), row.getName(), row.getRemark());
+        return row == null ? null : new Tag(row.getId(), row.getName(), row.getRemark(), row.getCreateTime());
     }
 
     /**
@@ -24,6 +24,7 @@ public final class TagConverter {
         row.setId(value.id());
         row.setName(value.name());
         row.setRemark(value.remark());
+        row.setCreateTime(value.createTime());
         return row;
     }
 }

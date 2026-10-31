@@ -16,7 +16,7 @@ public final class SignConfigConverter {
         return row == null
                 ? null
                 : new SignConfig(
-                        row.getSigninDay(), row.getPoint(), row.getExperience(), row.getStatus());
+                        row.getId(), row.getDay(), row.getPoint(), row.getExperience(), row.getStatus());
     }
 
     /**
@@ -24,7 +24,8 @@ public final class SignConfigConverter {
      */
     public static SignConfigDO toDO(SignConfig value) {
         var row = new SignConfigDO();
-        row.setSigninDay(value.day());
+        row.setId(value.id());
+        row.setDay(value.day());
         row.setPoint(value.point());
         row.setExperience(value.experience());
         row.setStatus(value.status());

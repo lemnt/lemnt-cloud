@@ -26,8 +26,11 @@ public class MemberGroupPageQueryExe {
         if (qry.status() != null && qry.status() != 0 && qry.status() != 1) {
             throw new ServiceException("状态不合法", 400);
         }
+        if (qry.startTime() != null && qry.endTime() != null && qry.startTime().isAfter(qry.endTime())) {
+            throw new com.lemnt.common.core.exception.ServiceException("开始时间不能晚于结束时间", 400);
+        }
         var filter = new GroupPageFilter(MemberRules.optional(qry.name(), 100), qry.status(),
-                (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize());
+                (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize(), qry.startTime(), qry.endTime());
         return new PageResult<>(
                 memberGroupGateway.groups(filter).stream().map(MemberUserDTOConverter::toGroupDTO).toList(),
                 memberGroupGateway.groupsCount(filter));

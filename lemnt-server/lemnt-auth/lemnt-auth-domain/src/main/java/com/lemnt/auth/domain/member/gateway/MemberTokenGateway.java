@@ -22,4 +22,7 @@ public interface MemberTokenGateway {
      * 退出。
      */
     void logout(String accessToken);
+    /** 撤销指定会员的全部登录会话。 */
+    void revokeMemberSessions(Long memberId);
+
 }

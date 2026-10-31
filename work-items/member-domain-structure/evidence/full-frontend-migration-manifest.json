@@ -1461,8 +1461,9 @@
     {
       "source": "src/views/member/user/UserForm.vue",
       "sha256": "0e7b724157d4dd61da7a68f6200872a57754837de345b1c08a79ad4f1fb1146b",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/member/account/pages/MemberUserPage.tsx",
+      "note": "118资料编辑接通手机号，API白名单隔离资产和关系，保留独立分组标签等级入口；源整体表单契约未完全收敛"
     },
     {
       "source": "src/views/member/user/components/UserBalanceUpdateForm.vue",

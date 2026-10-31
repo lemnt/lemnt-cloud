@@ -1,44 +1,56 @@
 package com.lemnt.member.infrastructure.growth.gateway;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.member.domain.growth.gateway.MemberSignConfigGateway;
 import com.lemnt.member.domain.growth.model.SignConfig;
 import com.lemnt.member.infrastructure.growth.converter.SignConfigConverter;
+import com.lemnt.member.infrastructure.growth.dataobject.SignConfigDO;
 import com.lemnt.member.infrastructure.growth.mapper.MemberSignConfigMapper;
-
-import org.springframework.stereotype.Component;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/** member_sign_config 表持久化实现。 */
+/** 签到配置按ID管理，数据库唯一约束兜底并发天数冲突。 */
 @Component
 @RequiredArgsConstructor
 public class MemberSignConfigGatewayImpl implements MemberSignConfigGateway {
-
-    private final MemberSignConfigMapper memberSignConfigMapper;
-
-    /**
-     * 签到配置项。
-     */
+    private final MemberSignConfigMapper mapper;
     @Override
     public List<SignConfig> signConfigs() {
-        return memberSignConfigMapper.signConfigs().stream().map(SignConfigConverter::toEntity).toList();
+        return mapper.selectList(Wrappers.<SignConfigDO>lambdaQuery().orderByAsc(SignConfigDO::getDay))
+                .stream().map(SignConfigConverter::toEntity).toList();
     }
-
-    /**
-     * 签到配置保存。
-     */
     @Override
-    public void signConfigSave(SignConfig value) {
-        memberSignConfigMapper.signConfigSave(SignConfigConverter.toDO(value));
+    public SignConfig signConfig(Long id) {
+        return SignConfigConverter.toEntity(mapper.selectById(id));
     }
-
-    /**
-     * 签到配置删除。
-     */
     @Override
-    public boolean signConfigDelete(Integer day) {
-        return memberSignConfigMapper.signConfigDelete(day) == 1;
+    public SignConfig signConfigByDay(Integer day) {
+        return SignConfigConverter.toEntity(mapper.selectOne(Wrappers.<SignConfigDO>lambdaQuery().eq(SignConfigDO::getDay, day)));
+    }
+    @Override
+    public Long create(SignConfig value) {
+        var row = SignConfigConverter.toDO(value);
+        try {
+            mapper.insert(row);
+        } catch (DuplicateKeyException exception) {
+            throw new ServiceException("签到天数已存在", 409);
+        }
+        return row.getId();
+    }
+    @Override
+    public boolean update(SignConfig value) {
+        try {
+            return mapper.updateById(SignConfigConverter.toDO(value)) == 1;
+        } catch (DuplicateKeyException exception) {
+            throw new ServiceException("签到天数已存在", 409);
+        }
+    }
+    @Override
+    public boolean signConfigDelete(Long id) {
+        return mapper.deleteById(id) == 1;
     }
 }

@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+import com.lemnt.member.adapter.web.growth.req.MemberLevelListReq;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import java.util.List;
 
 /**
@@ -50,9 +52,9 @@ public class MemberLevelController {
     @GetMapping
     @Operation(summary = "Level列表")
     @RequiresPermissions("member:level:query")
-    public R<List<MemberLevelListRes>> list() {
+    public R<List<MemberLevelListRes>> list(@Valid @ModelAttribute MemberLevelListReq req) {
         return R.ok(
-                memberLevelListQueryExe.execute(new LevelListQry(false)).stream()
+                memberLevelListQueryExe.execute(new LevelListQry(false, req.name(), req.status())).stream()
                 .map(MemberGrowthResConverter::toMemberLevelListRes)
                 .toList());
     }

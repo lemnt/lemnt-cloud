@@ -69,6 +69,17 @@ class MemberAuthenticationIntegrationTest {
             retryCounts.remove(invocation.getArgument(0));
             return null;
         }).when(redis).delete(ArgumentMatchers.anyString());
+        Mockito.doAnswer(invocation -> {
+            java.util.function.Consumer<String> action = invocation.getArgument(1);
+            java.util.List.copyOf(cachedSessions.keySet()).forEach(action);
+            return null;
+        }).when(redis).scan(ArgumentMatchers.eq(CacheConstants.LOGIN_TOKEN_KEY + "*"), ArgumentMatchers.any());
+        Mockito.when(redis.setObjIfPresent(ArgumentMatchers.anyString(), ArgumentMatchers.any(),
+                ArgumentMatchers.anyLong(), ArgumentMatchers.any(TimeUnit.class))).thenAnswer(invocation -> {
+            String key = invocation.getArgument(0);
+            SecurityUser value = invocation.getArgument(1);
+            return cachedSessions.replace(key, value) != null;
+        });
         accounts = Mockito.mock(MemberAccountGateway.class);
         Mockito.when(accounts.findByMobile("13800000001")).thenAnswer(invocation ->
                 new MemberLoginInfo(id, "13800000001", status.get(), passwordHash.get()));
@@ -175,10 +186,11 @@ class MemberAuthenticationIntegrationTest {
     }
 
     @Test
-    void disabledMemberIsRejectedWhileCachedSessionSurvivesReenable() throws Exception {
+    void disabledMemberSessionsCannotReturnAfterReenable() throws Exception {
         var tokens = login();
 
         status.set(0);
+        new com.lemnt.auth.application.dubbo.MemberSessionClientImpl(auth).revokeMemberSessions(id);
 
         assertNull(auth.authenticate(tokens.accessToken()));
 
@@ -186,7 +198,8 @@ class MemberAuthenticationIntegrationTest {
 
         status.set(1);
 
-        assertEquals(id, auth.authenticate(tokens.accessToken()));
+        assertNull(auth.authenticate(tokens.accessToken()));
+        assertNotNull(login());
 
     }
 
@@ -240,6 +253,36 @@ class MemberAuthenticationIntegrationTest {
         var token=auth.login("13800000001","Member-password-2026","203.0.113.7");
         assertEquals(id,auth.authenticate(token.accessToken()));
         Mockito.verify(accounts).recordLogin(id,"203.0.113.7");
+    }
+
+    /** 多终端撤销后网关读取不到会话，同ID管理员及其他会员不受影响。 */
+    @Test
+    void revocationRemovesAllMemberSessionsWithoutAffectingOtherIdentityDomains() {
+        var first = login();
+        var second = login();
+        var admin = new SecurityUser().setUserId(id).setUserType("admin").setToken("admin");
+        var other = new SecurityUser().setUserId(id + 1).setUserType("member").setToken("other");
+        cachedSessions.put(CacheConstants.LOGIN_TOKEN_KEY + "admin", admin);
+        cachedSessions.put(CacheConstants.LOGIN_TOKEN_KEY + "other", other);
+        new com.lemnt.auth.application.dubbo.MemberSessionClientImpl(auth).revokeMemberSessions(id);
+        assertNull(tokenService.getSecurityUser(first.accessToken(), "member"));
+        assertNull(tokenService.getSecurityUser(second.accessToken(), "member"));
+        assertEquals(2, cachedSessions.size());
+        assertSame(admin, cachedSessions.get(CacheConstants.LOGIN_TOKEN_KEY + "admin"));
+        assertSame(other, cachedSessions.get(CacheConstants.LOGIN_TOKEN_KEY + "other"));
+        auth.revokeMemberSessions(id);
+        assertEquals(2, cachedSessions.size());
+    }
+
+    /** 模拟刷新已经读到旧对象、随后撤销完成，SET XX不得恢复旧会话。 */
+    @Test
+    void staleRefreshCannotResurrectRevokedSession() {
+        var token = login();
+        var stale = tokenService.getSecurityUser(token.accessToken(), "member");
+        auth.revokeMemberSessions(id);
+        assertThrows(SecurityException.class, () -> tokenService.refreshExistingToken(stale));
+        assertNull(tokenService.getSecurityUser(token.accessToken(), "member"));
+        assertTrue(cachedSessions.isEmpty());
     }
 
 }

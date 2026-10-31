@@ -116,4 +116,32 @@ class AuthFilterDomainTest {
         }).block();
         assertTrue(memberReached.get());
     }
+    /** auth删除公共会话后，网关无需Dubbo或重启即可拒绝旧会员token。 */
+    @Test
+    void revokedMemberTokenIsRejectedAtGateway() {
+        var reached = new AtomicBoolean();
+        filter.filter(request("/member/app/users/user", memberToken), exchange -> {
+            reached.set(true);
+            return Mono.empty();
+        }).block();
+        assertTrue(reached.get());
+        doAnswer(invocation -> {
+            java.util.function.Consumer<String> action = invocation.getArgument(1);
+            action.accept(CacheConstants.LOGIN_TOKEN_KEY + "member-session");
+            return null;
+        }).when(redis).scan(eq(CacheConstants.LOGIN_TOKEN_KEY + "*"), any());
+        doAnswer(invocation -> {
+            when(redis.getObj(CacheConstants.LOGIN_TOKEN_KEY + "member-session", SecurityUser.class)).thenReturn(null);
+            return null;
+        }).when(redis).delete(CacheConstants.LOGIN_TOKEN_KEY + "member-session");
+        var tokens = (TokenService) ReflectionTestUtils.getField(filter, "tokenService");
+        tokens.revokeMemberSessions(7L);
+        var exchange = request("/member/app/users/user", memberToken);
+        filter.filter(exchange, ignored -> {
+            fail("已撤销的会员会话不得进入业务服务");
+            return Mono.empty();
+        }).block();
+        assertTrue(exchange.getResponse().getBodyAsString().block().contains("401"));
+    }
+
 }

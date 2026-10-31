@@ -48,6 +48,10 @@ export function decodeProfile(raw: unknown): MemberProfile {
   return {
     id: memberId(v.id),
     nickname: text(v.nickname),
+    ...(v.tagIds == null ? {} : { tagIds: list(v.tagIds, memberId) }),
+    ...(v.tagNames == null ? {} : { tagNames: list(v.tagNames, text) }),
+    ...(v.levelName === undefined ? {} : { levelName: nullableText(v.levelName) }),
+    ...(v.groupName === undefined ? {} : { groupName: nullableText(v.groupName) }),
     ...(v.loginDate == null ? {} : { loginDate: text(v.loginDate) }),
     ...(v.loginIp == null ? {} : { loginIp: text(v.loginIp) }),
     ...(v.mark == null ? {} : { mark: text(v.mark) }),
@@ -75,7 +79,11 @@ export function decodePage<T>(raw: unknown, decode: (v: unknown) => T): MemberPa
 }
 export function decodeMetadata(raw: unknown, kind: MetadataKind): MemberMetadata {
   const v = object(raw);
-  const base = { id: memberId(v.id), name: text(v.name) };
+  const base = {
+    id: memberId(v.id),
+    name: text(v.name),
+    ...(v.createTime == null ? {} : { createTime: text(v.createTime) }),
+  };
   if (kind === 'tags') return { ...base, remark: nullableText(v.remark) };
   if (kind === 'groups')
     return { ...base, remark: nullableText(v.remark), status: status(v.status) };
@@ -170,6 +178,7 @@ export function decodeConfig(raw: unknown): MemberPointConfig {
 export function decodeSignConfig(raw: unknown): MemberSignConfig {
   const v = object(raw);
   return {
+    id: memberId(v.id),
     day: integer(v.day),
     point: integer(v.point),
     experience: integer(v.experience),

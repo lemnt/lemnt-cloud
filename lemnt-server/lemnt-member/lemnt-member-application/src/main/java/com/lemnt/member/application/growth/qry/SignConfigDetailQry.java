@@ -6,5 +6,5 @@ import java.io.Serializable;
  * 签到配置详情查询。
  */
 public record SignConfigDetailQry(
-        Integer day
+        Long id
 ) implements Serializable {}

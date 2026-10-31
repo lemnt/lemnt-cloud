@@ -1,8 +1,10 @@
 package com.lemnt.member.application.user.service;
 
 import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.member.application.user.cmd.MemberUserUpdateCmd;
 import com.lemnt.member.domain.shared.model.MemberRules;
 import com.lemnt.member.domain.user.gateway.MemberGroupGateway;
+import com.lemnt.member.domain.user.gateway.MemberAuthGateway;
 import com.lemnt.member.domain.user.gateway.MemberTagGateway;
 import com.lemnt.member.domain.user.gateway.MemberTagLinkGateway;
 import com.lemnt.member.domain.user.gateway.MemberUserGateway;
@@ -27,6 +29,7 @@ public class MemberUserService {
     private final MemberTagGateway memberTagGateway;
     private final MemberTagLinkGateway memberTagLinkGateway;
     private final MemberUserGateway memberUserGateway;
+    private final MemberAuthGateway memberAuthGateway;
 
     private Member lock(Long id) {
         MemberRules.id(id);
@@ -63,6 +66,24 @@ public class MemberUserService {
     @Transactional(rollbackFor = Exception.class)
     public boolean profileUpdate(Long id, String nickname, String email, String avatar, Integer sex,
             LocalDate birthday, Integer status, String mark, String realName, Integer areaId) {
+        return updateProfile(id, nickname, email, avatar, sex, birthday, status, mark, realName, areaId, null);
+    }
+
+    /** 后台允许维护手机号，App原命令不进入此入口。 */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateUser(MemberUserUpdateCmd cmd) {
+        updateProfile(cmd.memberId(), cmd.nickname(), cmd.email(), cmd.avatar(), cmd.sex(),
+                cmd.birthday(), cmd.status(), cmd.mark(), cmd.name(), cmd.areaId(), cmd.mobile());
+        if (Integer.valueOf(0).equals(cmd.status())) {
+            // 锁定会员资料期间只要求auth访问缓存，撤销失败则回滚本次保存。
+            memberAuthGateway.revokeSessions(cmd.memberId());
+        }
+        return true;
+    }
+
+    /** 锁定原资料后仅替换允许编辑的字段，凭据占用时整次保存失败。 */
+    private boolean updateProfile(Long id, String nickname, String email, String avatar, Integer sex,
+            LocalDate birthday, Integer status, String mark, String realName, Integer areaId, String mobile) {
         if ((realName != null && realName.length() > 30) || (areaId != null && areaId <= 0))
             throw new ServiceException("姓名或地区不合法", 400);
         if (mark != null && mark.length() > 255) throw new ServiceException("会员备注不能超过255字", 400);
@@ -70,6 +91,7 @@ public class MemberUserService {
         String name = MemberRules.text(nickname, 80);
         String mail = MemberRules.optional(email, 254);
         String image = MemberRules.optional(avatar, 500);
+        String phone = mobile == null ? old.mobile() : MemberRules.mobile(mobile);
         if (mail != null && !mail.matches("[^@\\s]+@[^@\\s]+\\.[^@\\s]+")) {
             throw new ServiceException("邮箱不合法", 400);
         }
@@ -86,11 +108,19 @@ public class MemberUserService {
         if (state != 0 && state != 1) {
             throw new ServiceException("状态不合法", 400);
         }
+        if (phone != null) {
+            var owner = memberUserGateway.findByMobile(phone);
+            if (owner != null && !id.equals(owner.id())) throw new ServiceException("手机号已被使用", 409);
+        }
+        if (mail != null) {
+            var owner = memberUserGateway.findByEmail(mail);
+            if (owner != null && !id.equals(owner.id())) throw new ServiceException("邮箱已被使用", 409);
+        }
         memberUserGateway.updateProfile(
                 new Member(
                         id,
                         name,
-                        old.mobile(),
+                        phone,
                         mail,
                         image,
                         state,
@@ -163,7 +193,10 @@ public class MemberUserService {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteGroup(Long id) {
-        return memberGroupGateway.groupDelete(MemberRules.id(id));
+        MemberRules.id(id);
+        if (memberGroupGateway.group(id) == null) throw new ServiceException("分组不存在", 404);
+        if (!memberGroupGateway.groupDelete(id)) throw new ServiceException("分组下有会员，无法删除", 409);
+        return true;
     }
 
     /**
@@ -186,6 +219,9 @@ public class MemberUserService {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteTag(Long id) {
-        return memberTagGateway.tagDelete(MemberRules.id(id));
+        MemberRules.id(id);
+        if (memberTagGateway.tag(id) == null) throw new ServiceException("标签不存在", 404);
+        if (!memberTagGateway.tagDelete(id)) throw new ServiceException("标签下有会员，无法删除", 409);
+        return true;
     }
 }

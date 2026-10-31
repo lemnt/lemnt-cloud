@@ -112,6 +112,7 @@ class MemberAccountIntegrationTest {
     JdbcDataSource source;
     Connection schema;
     MemberUserService userService;
+    com.lemnt.member.domain.user.gateway.MemberAuthGateway memberAuthGateway;
     MemberAddressService addressService;
     SqlSessionTemplate template;
     MemberGrowthService growthService;
@@ -162,15 +163,15 @@ class MemberAccountIntegrationTest {
         var bean = new MybatisSqlSessionFactoryBean();
         bean.setDataSource(source);
         bean.setConfiguration(config);
-        bean.setMapperLocations(new org.springframework.core.io.support.PathMatchingResourcePatternResolver().getResources("classpath*:mapper/Member*RecordMapper.xml"));
+        bean.setMapperLocations(new org.springframework.core.io.support.PathMatchingResourcePatternResolver().getResources("classpath*:mapper/Member*Mapper.xml"));
         bean.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
         var factory = bean.getObject();
         config.addMapper(MemberAddressMapper.class);
-        config.addMapper(MemberUserMapper.class);
-        config.addMapper(MemberGroupMapper.class);
-        config.addMapper(MemberTagMapper.class);
+        if (!config.hasMapper(MemberUserMapper.class)) config.addMapper(MemberUserMapper.class);
+        if (!config.hasMapper(MemberGroupMapper.class)) config.addMapper(MemberGroupMapper.class);
+        if (!config.hasMapper(MemberTagMapper.class)) config.addMapper(MemberTagMapper.class);
         config.addMapper(MemberTagLinkMapper.class);
-        config.addMapper(MemberLevelMapper.class);
+        if (!config.hasMapper(MemberLevelMapper.class)) config.addMapper(MemberLevelMapper.class);
         config.addMapper(MemberLevelRecordMapper.class);
         config.addMapper(MemberSignConfigMapper.class);
         if (!config.hasMapper(MemberSignRecordMapper.class)) config.addMapper(MemberSignRecordMapper.class);
@@ -188,9 +189,10 @@ class MemberAccountIntegrationTest {
         memberSignConfigGateway = new MemberSignConfigGatewayImpl(template.getMapper(MemberSignConfigMapper.class));
         memberSignRecordGateway = new MemberSignRecordGatewayImpl(template.getMapper(MemberSignRecordMapper.class));
         memberConfigGateway = new MemberConfigGatewayImpl(template.getMapper(MemberConfigMapper.class));
-        userService = tx(new MemberUserService(memberGroupGateway, memberTagGateway, memberTagLinkGateway, memberUserGateway));
+        memberAuthGateway = org.mockito.Mockito.mock(com.lemnt.member.domain.user.gateway.MemberAuthGateway.class);
+        userService = tx(new MemberUserService(memberGroupGateway, memberTagGateway, memberTagLinkGateway, memberUserGateway, memberAuthGateway));
         addressService = tx(new MemberAddressService(memberUserGateway, memberAddressGateway));
-        growthService = tx(new MemberGrowthService(pointRecords,experienceRecords, memberConfigGateway, memberLevelGateway, memberLevelRecordGateway, memberSignConfigGateway, memberSignRecordGateway, memberUserGateway));
+        growthService = tx(new MemberGrowthService(pointRecords,experienceRecords, memberConfigGateway, new MemberConfigLockTestSupport().gateway, memberLevelGateway, memberLevelRecordGateway, memberSignConfigGateway, memberSignRecordGateway, memberUserGateway));
         passwordChange = tx(new MemberPasswordChangeCmdExe(memberUserGateway));
         memberGroupPageQueryExe = new MemberGroupPageQueryExe(memberGroupGateway);
         memberTagPageQueryExe = new MemberTagPageQueryExe(memberTagGateway);
@@ -280,9 +282,9 @@ class MemberAccountIntegrationTest {
         assertFalse(memberAddressGateway.address(id, first.id()).defaultStatus());
         assertTrue(memberAddressGateway.address(id, second.id()).defaultStatus());
         assertNull(memberAddressGateway.address(other, first.id()));
-        assertBusinessException(400,
+        assertBusinessException(404,
                 () -> addressService.saveAddress(address(other, first.id(), true)));
-        assertFalse(addressService.deleteAddress(other, first.id()));
+        assertBusinessException(404, () -> addressService.deleteAddress(other, first.id()));
         assertEquals(2, memberAddressGateway.addresses(id).size());
     }
 
@@ -301,12 +303,13 @@ class MemberAccountIntegrationTest {
     }
 
     @Test
-    void addressLimitIsCheckedBeforeClearingExistingDefault() {
+    void addressCreationHasNoAdditionalTwentyItemLimit() {
         for (int n = 0; n < 20; n++) {
             addressService.saveAddress(address(id, null, n == 0));
         }
-        assertBusinessException(409, () -> addressService.saveAddress(address(id, null, true)));
-        assertEquals(20, memberAddressGateway.addresses(id).size());
+        var newest = addressService.saveAddress(address(id, null, true));
+        assertEquals(21, memberAddressGateway.addresses(id).size());
+        assertEquals(newest, memberAddressGateway.defaultAddress(id));
         assertEquals(1, memberAddressGateway.addresses(id).stream().filter(Address::defaultStatus).count());
     }
 
@@ -358,7 +361,7 @@ class MemberAccountIntegrationTest {
         assertEquals(1, memberLevelRecordGateway.levelRecordCount(id));
         assertBusinessException(400,
                 () -> growthService.saveLevel(new Level(null, "Silver", 2, 50L, 95, null, null, 1)));
-        assertFalse(growthService.deleteLevel(level));
+        assertBusinessException(409, () -> growthService.deleteLevel(level));
         growthService.assignLevel(id, null, "L1", "取消等级");
         assertNull(memberUserGateway.findById(id).levelId());
         assertEquals(0, memberUserGateway.findById(id).experience());
@@ -374,8 +377,8 @@ class MemberAccountIntegrationTest {
         Long tag = userService.saveTag(new Tag(null, "active", null));
         userService.assignGroup(id, group);
         userService.assignTags(id, List.of(tag));
-        assertFalse(userService.deleteGroup(group));
-        assertFalse(userService.deleteTag(tag));
+        assertBusinessException(409, () -> userService.deleteGroup(group));
+        assertBusinessException(409, () -> userService.deleteTag(tag));
         assertEquals(List.of(tag), memberTagLinkGateway.memberTags(id));
         userService.assignTags(id, List.of());
         userService.assignGroup(id, null);
@@ -384,25 +387,40 @@ class MemberAccountIntegrationTest {
     }
 
     @Test
-    void dailySignInIsIdempotentAndCreditsBothAssetsAtomically() throws Exception {
-        growthService.saveSignConfig(new SignConfig(1, 10L, 2L, 1));
+    void dailySignInRejectsDuplicatesAndCreditsBothAssetsAtomically() throws Exception {
+        growthService.createSignConfig(new SignConfig(1, 10L, 2L, 1));
         var first = growthService.sign(id);
-        assertEquals(first, growthService.sign(id));
+        assertBusinessException(409, () -> growthService.sign(id));
         assertEquals(10, memberUserGateway.findById(id).points());
         assertEquals(2, memberUserGateway.findById(id).experience());
         assertEquals(1, count("member_sign_in_record"));
         assertEquals(1, count("member_experience_record"));
         assertEquals(1, count("member_point_record"));
+        assertNotNull(pointRecords.request(id, "SIGN_IN", first.id().toString()));
+        assertNotNull(experienceRecords.request(id, "SIGN_IN", first.id().toString()));
+        assertEquals(first, memberSignRecordGateway.signDate(id, first.signDate()));
     }
 
     @Test
     void concurrentSignInAwardsOnce() throws Exception {
-        growthService.saveSignConfig(new SignConfig(1, 10L, 2L, 1));
+        growthService.createSignConfig(new SignConfig(1, 10L, 2L, 1));
         var pool = Executors.newFixedThreadPool(2);
         try {
-            var a = pool.submit(() -> growthService.sign(id));
-            var b = pool.submit(() -> growthService.sign(id));
-            assertEquals(a.get(15, TimeUnit.SECONDS).id(), b.get(15, TimeUnit.SECONDS).id());
+            java.util.concurrent.Callable<Object> attempt = () -> {
+                try {
+                    return growthService.sign(id);
+                } catch (ServiceException exception) {
+                    return exception;
+                }
+            };
+            var a = pool.submit(attempt);
+            var b = pool.submit(attempt);
+            var results = List.of(a.get(15, TimeUnit.SECONDS), b.get(15, TimeUnit.SECONDS));
+            assertEquals(1, results.stream().filter(SignRecord.class::isInstance).count());
+            var rejected = results.stream().filter(ServiceException.class::isInstance)
+                    .map(ServiceException.class::cast).toList();
+            assertEquals(1, rejected.size());
+            assertEquals(409, rejected.get(0).getCode());
             assertEquals(10, memberUserGateway.findById(id).points());
         } finally {
             pool.shutdownNow();
@@ -411,7 +429,7 @@ class MemberAccountIntegrationTest {
 
     @Test
     void failedExperienceLedgerRollsBackSignAndPoints() throws Exception {
-        growthService.saveSignConfig(new SignConfig(1, 10L, 2L, 1));
+        growthService.createSignConfig(new SignConfig(1, 10L, 2L, 1));
         sql(
                 "ALTER TABLE member_experience_record ADD CONSTRAINT reject_experience"
                 + " CHECK(experience<0)");
@@ -517,7 +535,7 @@ class MemberAccountIntegrationTest {
                 memberLevelRecordDetailQueryExe.execute(
                 new LevelRecordDetailQry(levels.getRecords().get(0).id()))
                 .memberId());
-        growthService.saveSignConfig(new SignConfig(1, 1L, 1L, 1));
+        growthService.createSignConfig(new SignConfig(1, 1L, 1L, 1));
         growthService.sign(id);
         assertEquals(
                 1,
@@ -1069,10 +1087,10 @@ class MemberAccountIntegrationTest {
         assertBusinessException(400, () -> query.execute(new AssetRecordPageQry(id, "POINT", 1, 20, false, end, start)));
         assertBusinessException(400, () -> query.execute(new AssetRecordPageQry(id, "EXPERIENCE", 1, 20, false, null, null)));
     }
-    /** 同一次数据库事件同时确定签到日期和审计时间，重试不改变时间。 */
+    /** 同一次数据库事件同时确定签到日期和审计时间，拒绝重复不改变时间。 */
     @Test
-    void signEventTimeAndAuditRemainStableOnReplay() {
-        growthService.saveSignConfig(new SignConfig(1, 10L, 2L, 1));
+    void signEventTimeAndAuditRemainStableAfterDuplicateRejection() {
+        growthService.createSignConfig(new SignConfig(1, 10L, 2L, 1));
         var before = memberUserGateway.now().withNano(0);
         var first = growthService.sign(id);
         var after = memberUserGateway.now().withNano(0);
@@ -1080,7 +1098,7 @@ class MemberAccountIntegrationTest {
         assertFalse(first.createTime().isBefore(before));
         assertFalse(first.createTime().isAfter(after));
         assertEquals(first.signDate(), first.createTime().toLocalDate());
-        assertEquals(first, growthService.sign(id));
+        assertBusinessException(409, () -> growthService.sign(id));
         var row = template.getMapper(MemberSignRecordMapper.class).selectById(first.id());
         assertEquals(first.createTime(), row.getCreateTime());
         assertEquals(row.getCreateTime(), row.getUpdateTime());
@@ -1129,4 +1147,702 @@ class MemberAccountIntegrationTest {
         assertNull(row.getUpdateTime());
         assertEquals(1, memberSignRecordAllPageQueryExe.execute(new SignRecordAllPageQry(id, 1, 20)).getTotal());
     }
+    /** 最大启用天数决定新一轮，停用的高天数不延长周期；断签重置到第一天。 */
+    @Test
+    void signCycleWrapAndInterruptedDaysFollowEnabledConfiguration() {
+        growthService.createSignConfig(new SignConfig(1, 5L, 0L, 1));
+        growthService.createSignConfig(new SignConfig(2, 10L, 0L, 1));
+        growthService.createSignConfig(new SignConfig(3, 99L, 0L, 0));
+        var now = memberUserGateway.now().withNano(0);
+        memberSignRecordGateway.signSave(new SignRecord(null, id, now.minusDays(1).toLocalDate(), 2, 10L, 0L, null, now.minusDays(1)));
+        memberSignRecordGateway.signSave(new SignRecord(null, other, now.minusDays(2).toLocalDate(), 2, 10L, 0L, null, now.minusDays(2)));
+        var wrapped = growthService.sign(id);
+        var interrupted = growthService.sign(other);
+        assertEquals(1, wrapped.day());
+        assertEquals(1, interrupted.day());
+        assertEquals(5L, wrapped.point());
+        assertEquals(5L, interrupted.point());
+        assertEquals(5L, memberUserGateway.findById(id).points());
+        assertEquals(5L, memberUserGateway.findById(other).points());
+    }
+
+    /** 连续天数缺少当天启用规则时仍记签到但不发奖励；无启用配置则明确拒绝。 */
+    @Test
+    void disabledCurrentDayDoesNotInventRewardsAndEmptyConfigurationRejects() throws Exception {
+        growthService.createSignConfig(new SignConfig(1, 5L, 0L, 1));
+        growthService.createSignConfig(new SignConfig(2, 99L, 99L, 0));
+        growthService.createSignConfig(new SignConfig(3, 10L, 0L, 1));
+        var yesterday = memberUserGateway.now().withNano(0).minusDays(1);
+        memberSignRecordGateway.signSave(new SignRecord(null, id, yesterday.toLocalDate(), 1, 5L, 0L, null, yesterday));
+        var signed = growthService.sign(id);
+        assertEquals(2, signed.day());
+        assertEquals(0L, signed.point());
+        assertEquals(0L, signed.experience());
+        assertNull(pointRecords.request(id, "SIGN_IN", signed.id().toString()));
+        assertNull(experienceRecords.request(id, "SIGN_IN", signed.id().toString()));
+        assertEquals(0L, memberUserGateway.findById(id).points());
+        sql("UPDATE member_sign_in_config SET status=0");
+        assertBusinessException(409, () -> growthService.sign(other));
+        assertEquals(0, memberSignRecordGateway.signCount(other));
+    }
+
+    /** 连续汇总只认今天和昨天，未来记录不能被当作连续签到。 */
+    @Test
+    void signSummaryMatchesTodayYesterdayAndRejectsFutureContinuity() throws Exception {
+        var now = memberUserGateway.now().withNano(0);
+        var recordId = memberSignRecordGateway.signSave(new SignRecord(null, id, now.plusDays(1).toLocalDate(), 3, 1L, 0L, null, now.plusDays(1)));
+        var summary = new com.lemnt.member.application.growth.executor.MemberSignSummaryQueryExe(memberSignRecordGateway, memberUserGateway);
+        for (int offset : new int[] {1, 0, -1, -2}) {
+            sql("UPDATE member_sign_in_record SET sign_date='" + now.plusDays(offset).toLocalDate() + "' WHERE id=" + recordId);
+            var result = summary.execute(new com.lemnt.member.application.growth.qry.SignSummaryQry(id));
+            assertEquals(1, result.totalDay());
+            assertEquals(offset == 0 || offset == -1 ? 3 : 0, result.continuousDay());
+            assertEquals(offset == 0, result.todaySignIn());
+        }
+    }
+    /** 新增不覆盖已有天数，修改和删除始终按记录ID。 */
+    @Test
+    void signConfigurationCrudUsesIdAndRejectsDuplicateDay() {
+        var first = growthService.createSignConfig(new SignConfig(1, 5L, 2L, 1));
+        var second = growthService.createSignConfig(new SignConfig(2, 10L, 0L, 1));
+        assertNotEquals(first, second);
+        assertBusinessException(409, () -> growthService.createSignConfig(new SignConfig(1, 99L, 99L, 1)));
+        assertEquals(5L, memberSignConfigGateway.signConfig(first).point());
+        growthService.updateSignConfig(new SignConfig(first, 3, 7L, 1L, 0));
+        assertNull(memberSignConfigGateway.signConfigByDay(1));
+        assertEquals(3, memberSignConfigGateway.signConfig(first).day());
+        assertBusinessException(409, () -> growthService.updateSignConfig(new SignConfig(first, 2, 99L, 0L, 1)));
+        assertEquals(7L, memberSignConfigGateway.signConfig(first).point());
+        assertBusinessException(404, () -> growthService.updateSignConfig(new SignConfig(Long.MAX_VALUE, 4, 1L, 0L, 1)));
+        assertTrue(growthService.deleteSignConfig(first));
+        assertNull(memberSignConfigGateway.signConfig(first));
+        assertBusinessException(404, () -> growthService.deleteSignConfig(first));
+        assertEquals(second, memberSignConfigGateway.signConfigs().get(0).id());
+        assertEquals(1, memberSignConfigGateway.signConfigs().size());
+    }
+
+    /** 直接并发插入验证数据库唯一约束及统一冲突，不能悄悄覆盖。 */
+    @Test
+    void concurrentSignConfigurationCreationHasOneWinner() throws Exception {
+        var pool = Executors.newFixedThreadPool(2);
+        try {
+            java.util.concurrent.Callable<Object> create = () -> {
+                try {
+                    return memberSignConfigGateway.create(new SignConfig(1, 5L, 0L, 1));
+                } catch (ServiceException exception) {
+                    return exception;
+                }
+            };
+            var a = pool.submit(create);
+            var b = pool.submit(create);
+            var results = List.of(a.get(15, TimeUnit.SECONDS), b.get(15, TimeUnit.SECONDS));
+            assertEquals(1, results.stream().filter(Long.class::isInstance).count());
+            var failures = results.stream().filter(ServiceException.class::isInstance).map(ServiceException.class::cast).toList();
+            assertEquals(1, failures.size());
+            assertEquals(409, failures.get(0).getCode());
+            assertEquals(1, memberSignConfigGateway.signConfigs().size());
+        } finally {
+            pool.shutdownNow();
+        }
+    }
+
+    /** 真实旧结构升级保留业务配置，生成的新ID仅作定位，不推算历史审计。 */
+    @Test
+    void legacySignConfigUpgradeAddsIdsAndKeepsUnknownAudit() throws Exception {
+        sql("DROP TABLE member_sign_in_config");
+        sql("CREATE TABLE member_sign_config(signin_day INT PRIMARY KEY,point BIGINT NOT NULL,experience BIGINT NOT NULL,status INT NOT NULL)");
+        sql("INSERT INTO member_sign_config VALUES(7,10,2,0),(3,5,0,1)");
+        ScriptUtils.executeSqlScript(schema, new ClassPathResource("member-sql/upgrade/sign_config_id.sql"));
+        var old = memberSignConfigGateway.signConfigByDay(7);
+        assertNotNull(old.id());
+        assertEquals(10L, old.point());
+        assertEquals(2L, old.experience());
+        assertEquals(0, old.status());
+        var row = template.getMapper(MemberSignConfigMapper.class).selectById(old.id());
+        assertNull(row.getCreateTime());
+        assertNull(row.getCreateBy());
+        assertNull(row.getUpdateTime());
+        assertNull(row.getUpdateBy());
+        var created = growthService.createSignConfig(new SignConfig(1, 1L, 0L, 1));
+        assertNotEquals(old.id(), created);
+        assertEquals(3, memberSignConfigGateway.signConfigs().size());
+    }
+    /** 空配置先能管理等级，再首次保存积分配置；更新按真实ID而不是固定1。 */
+    @Test
+    void missingPointConfigurationCanBeCreatedAndReadByTradeClient() throws Exception {
+        sql("DELETE FROM member_config");
+        assertNull(memberConfigGateway.config());
+        var client = new com.lemnt.member.application.dubbo.MemberGrowthClientImpl(growthService, memberConfigGateway);
+        assertBusinessException(409, () -> client.getPointConfig());
+        assertNotNull(growthService.saveLevel(new Level(null, "NoConfig", 1, 10L, 95, null, null, 1)));
+        var value = new com.lemnt.member.domain.growth.model.Config(true, 5, 2, 3);
+        assertTrue(growthService.saveConfig(value));
+        assertEquals(value, memberConfigGateway.config());
+        var external = client.getPointConfig();
+        assertEquals(5, external.unitPrice());
+        assertEquals(2, external.maxPoints());
+        assertEquals(3, external.givePerYuan());
+        assertTrue(growthService.saveConfig(new com.lemnt.member.domain.growth.model.Config(false, 0, 0, 0)));
+        assertEquals(1, count("member_config"));
+        assertFalse(memberConfigGateway.config().pointTradeDeductEnable());
+        assertBusinessException(400, () -> growthService.saveConfig(new com.lemnt.member.domain.growth.model.Config(true, 0, 2, 1)));
+        assertFalse(memberConfigGateway.config().pointTradeDeductEnable());
+    }
+
+    /** 并发首次保存由基础事务锁串行化，不生成两份配置。 */
+    @Test
+    void concurrentInitialPointConfigurationSaveCreatesOnlyOneRow() throws Exception {
+        sql("DELETE FROM member_config");
+        var pool = Executors.newFixedThreadPool(2);
+        try {
+            var a = pool.submit(() -> growthService.saveConfig(new com.lemnt.member.domain.growth.model.Config(true, 5, 2, 1)));
+            var b = pool.submit(() -> growthService.saveConfig(new com.lemnt.member.domain.growth.model.Config(true, 3, 4, 2)));
+            assertTrue(a.get(15, TimeUnit.SECONDS));
+            assertTrue(b.get(15, TimeUnit.SECONDS));
+            assertEquals(1, count("member_config"));
+        } finally {
+            pool.shutdownNow();
+        }
+    }
+
+    /** 旧配置ID与金额参数保持，新增审计未知NULL，后续修改只更新实际首条。 */
+    @Test
+    void legacyPointConfigurationUpgradePreservesRealIdAndAudit() throws Exception {
+        sql("DROP TABLE member_config");
+        sql("CREATE TABLE member_config(id INT PRIMARY KEY,point_trade_deduct_enable BOOLEAN NOT NULL,point_trade_deduct_unit_price INT NOT NULL,point_trade_deduct_max_price INT NOT NULL,point_trade_give_point INT NOT NULL)");
+        sql("INSERT INTO member_config VALUES(77,TRUE,5,2,3)");
+        ScriptUtils.executeSqlScript(schema, new ClassPathResource("member-sql/upgrade/point_config_audit.sql"));
+        var mapper = template.getMapper(MemberConfigMapper.class);
+        var original = mapper.selectById(77L);
+        assertNull(original.getCreateTime());
+        assertNull(original.getCreateBy());
+        assertNull(original.getUpdateTime());
+        assertEquals(5, memberConfigGateway.config().pointTradeDeductUnitPrice());
+        growthService.saveConfig(new com.lemnt.member.domain.growth.model.Config(true, 3, 4, 2));
+        assertEquals(3, mapper.selectById(77L).getPointTradeDeductUnitPrice());
+        assertNull(mapper.selectById(1L));
+        assertNull(mapper.selectById(77L).getCreateTime());
+        assertNotNull(mapper.selectById(77L).getUpdateTime());
+    }
+    /** 首次配置写入失败必须回滚，去掉故障约束后可以正常重新保存。 */
+    @Test
+    void failedInitialPointConfigurationWriteRollsBackAndCanRetry() throws Exception {
+        sql("DELETE FROM member_config");
+        sql("ALTER TABLE member_config ADD CONSTRAINT reject_config CHECK(point_trade_give_point<0)");
+        var value = new com.lemnt.member.domain.growth.model.Config(true, 5, 2, 3);
+        assertThrows(Exception.class, () -> growthService.saveConfig(value));
+        assertEquals(0, count("member_config"));
+        sql("ALTER TABLE member_config DROP CONSTRAINT reject_config");
+        assertTrue(growthService.saveConfig(value));
+        assertEquals(value, memberConfigGateway.config());
+        assertEquals(1, count("member_config"));
+    }
+    /** 等级名称/状态筛选与启用列表按源条件，清空图片仍通过BaseMapper保存。 */
+    @Test
+    void levelManagementFiltersAndNullableImagesUseRealRows() {
+        var bronze = growthService.saveLevel(new Level(null, "Bronze", 1, 10L, 95, "old-icon", "old-background", 1));
+        var gold = growthService.saveLevel(new Level(null, "Gold", 2, 100L, 90, null, null, 0));
+        var query = new com.lemnt.member.application.growth.executor.MemberLevelListQueryExe(memberLevelGateway);
+        var filtered = query.execute(new com.lemnt.member.application.growth.qry.LevelListQry(false, " Go ", 0));
+        assertEquals(1, filtered.size());
+        assertEquals(gold, filtered.get(0).id());
+        assertEquals(1, query.execute(new com.lemnt.member.application.growth.qry.LevelListQry(true)).size());
+        assertEquals(0, query.execute(new com.lemnt.member.application.growth.qry.LevelListQry(true, "Gold", null)).size());
+        assertBusinessException(400, () -> query.execute(new com.lemnt.member.application.growth.qry.LevelListQry(false, null, 2)));
+        var mapper = template.getMapper(MemberLevelMapper.class);
+        var created = mapper.selectById(bronze).getCreateTime();
+        assertNotNull(created);
+        growthService.saveLevel(new Level(bronze, "Bronze", 1, 10L, 95, null, null, 1));
+        var saved = mapper.selectById(bronze);
+        assertNull(saved.getIcon());
+        assertNull(saved.getBackgroundUrl());
+        assertEquals(created, saved.getCreateTime());
+        assertNotNull(saved.getUpdateTime());
+    }
+
+    /** 使用中等级明确拒绝，解除分配后可删除且历史快照不被删除。 */
+    @Test
+    void levelDeletionRejectsUsageAndKeepsHistoricalSnapshots() {
+        var level = growthService.saveLevel(new Level(null, "Gold", 1, 100L, 90, null, null, 1));
+        growthService.assignLevel(id, level, "DELETE-LEVEL-ASSIGN", "分配");
+        assertBusinessException(409, () -> growthService.deleteLevel(level));
+        assertNotNull(memberLevelGateway.level(level));
+        growthService.assignLevel(id, null, "DELETE-LEVEL-CANCEL", "取消");
+        assertTrue(growthService.deleteLevel(level));
+        assertNull(memberLevelGateway.level(level));
+        assertEquals(1, memberLevelRecordGateway.levelRecords(id, 0, 20).stream().filter(v -> level.equals(v.levelId())).count());
+        assertBusinessException(404, () -> growthService.deleteLevel(level));
+    }
+
+    /** 旧表审计升级只加未知NULL，不推断创建时间。 */
+    @Test
+    void legacyLevelAuditUpgradePreservesConfigurationAndUnknownHistory() throws Exception {
+        // 保留旧结构本就存在的唯一键及会员外键，只移除本批新增审计列。
+        sql("ALTER TABLE member_level DROP COLUMN create_time");
+        sql("ALTER TABLE member_level DROP COLUMN create_by");
+        sql("ALTER TABLE member_level DROP COLUMN update_time");
+        sql("ALTER TABLE member_level DROP COLUMN update_by");
+        sql("INSERT INTO member_level VALUES(900,'Old',1,100,90,'icon','background',1)");
+        ScriptUtils.executeSqlScript(schema, new ClassPathResource("member-sql/upgrade/level_audit_fields.sql"));
+        var mapper = template.getMapper(MemberLevelMapper.class);
+        var old = mapper.selectById(900L);
+        assertNull(old.getCreateTime());
+        assertNull(old.getCreateBy());
+        assertNull(old.getUpdateTime());
+        assertEquals(100L, memberLevelGateway.level(900L).experience());
+        growthService.saveLevel(new Level(900L, "Old", 1, 100L, 90, null, null, 1));
+        assertNull(mapper.selectById(900L).getCreateTime());
+        assertNotNull(mapper.selectById(900L).getUpdateTime());
+        assertNull(mapper.selectById(900L).getIcon());
+    }
+    /** 两种分页各用独立条件，时间端点/状态0与历史NULL均不混淆。 */
+    @Test
+    void groupAndTagPagesFilterRealCreationTimeWithConsistentCounts() throws Exception {
+        var g1 = userService.saveGroup(new Group(null, "G-one", null, 0));
+        var g2 = userService.saveGroup(new Group(null, "G-two", null, 0));
+        userService.saveGroup(new Group(null, "G-enabled", null, 1));
+        var t1 = userService.saveTag(new Tag(null, "T-one", null));
+        var t2 = userService.saveTag(new Tag(null, "T-two", null));
+        var start = LocalDateTime.of(2026, 10, 30, 10, 0);
+        var end = start.plusHours(1);
+        sql("UPDATE member_group SET create_time='2026-10-30 10:00:00' WHERE id=" + g1);
+        sql("UPDATE member_group SET create_time='2026-10-30 11:00:00' WHERE id=" + g2);
+        sql("UPDATE member_tag SET create_time='2026-10-30 10:00:00' WHERE id=" + t1);
+        sql("UPDATE member_tag SET create_time='2026-10-30 11:00:00' WHERE id=" + t2);
+        sql("INSERT INTO member_group(name,remark,status) VALUES('G-old',NULL,0)");
+        sql("INSERT INTO member_tag(name,remark) VALUES('T-old',NULL)");
+        var first = memberGroupPageQueryExe.execute(new GroupPageQry("G-", 0, 1, 1, start, end));
+        var second = memberGroupPageQueryExe.execute(new GroupPageQry("G-", 0, 2, 1, start, end));
+        assertEquals(2, first.getTotal());
+        assertEquals(2, second.getTotal());
+        assertEquals(g2, first.getRecords().get(0).id());
+        assertEquals(g1, second.getRecords().get(0).id());
+        assertEquals(end, first.getRecords().get(0).createTime());
+        var tags = memberTagPageQueryExe.execute(new TagPageQry("T-", 1, 1, start, end));
+        assertEquals(2, tags.getTotal());
+        assertEquals(t2, tags.getRecords().get(0).id());
+        assertEquals(3, memberGroupPageQueryExe.execute(new GroupPageQry("G-", 0, 1, 20)).getTotal());
+        assertEquals(3, memberTagPageQueryExe.execute(new TagPageQry("T-", 1, 20)).getTotal());
+        assertEquals(1, memberGroupPageQueryExe.execute(new GroupPageQry("G-", 0, 1, 20, end, null)).getTotal());
+        assertEquals(1, memberTagPageQueryExe.execute(new TagPageQry("T-", 1, 20, null, start)).getTotal());
+        assertBusinessException(400, () -> memberGroupPageQueryExe.execute(new GroupPageQry(null, null, 1, 20, end, start)));
+        assertBusinessException(400, () -> memberTagPageQueryExe.execute(new TagPageQry(null, 1, 20, end, start)));
+    }
+
+    /** 基础CRUD保留备注NULL语义，唯一冲突统一业务错误且不覆盖原行。 */
+    @Test
+    void groupAndTagCrudKeepNullableRemarkAndAuditOnConflict() {
+        var group = userService.saveGroup(new Group(null, "UniqueGroup", "备注", 1));
+        var tag = userService.saveTag(new Tag(null, "UniqueTag", "备注"));
+        var groupCreated = memberGroupGateway.group(group).createTime();
+        var tagCreated = memberTagGateway.tag(tag).createTime();
+        assertNotNull(groupCreated);
+        assertNotNull(tagCreated);
+        userService.saveGroup(new Group(group, "UniqueGroup", null, 0));
+        userService.saveTag(new Tag(tag, "UniqueTag", null));
+        assertNull(memberGroupGateway.group(group).remark());
+        assertNull(memberTagGateway.tag(tag).remark());
+        assertEquals(groupCreated, memberGroupGateway.group(group).createTime());
+        assertEquals(tagCreated, memberTagGateway.tag(tag).createTime());
+        assertBusinessException(409, () -> userService.saveGroup(new Group(null, "UniqueGroup", "不得覆盖", 1)));
+        assertBusinessException(409, () -> userService.saveTag(new Tag(null, "UniqueTag", "不得覆盖")));
+        assertBusinessException(404, () -> userService.deleteGroup(Long.MAX_VALUE));
+        assertBusinessException(404, () -> userService.deleteTag(Long.MAX_VALUE));
+    }
+
+    /** 升级保留分组/标签现有外键与唯一键，旧创建时间及操作者未知NULL。 */
+    @Test
+    void legacyGroupTagAuditUpgradePreservesUnknownTimeAndExistingConstraints() throws Exception {
+        for (String table : new String[] {"member_group", "member_tag"}) {
+            for (String column : new String[] {"create_time", "create_by", "update_time", "update_by"}) {
+                sql("ALTER TABLE " + table + " DROP COLUMN " + column);
+            }
+        }
+        sql("INSERT INTO member_group VALUES(900,'OldGroup','old',1)");
+        sql("INSERT INTO member_tag VALUES(901,'OldTag','old')");
+        ScriptUtils.executeSqlScript(schema, new ClassPathResource("member-sql/upgrade/group_tag_audit_fields.sql"));
+        assertNull(memberGroupGateway.group(900L).createTime());
+        assertNull(memberTagGateway.tag(901L).createTime());
+        userService.saveGroup(new Group(900L, "OldGroup", null, 1));
+        userService.saveTag(new Tag(901L, "OldTag", null));
+        assertNull(memberGroupGateway.group(900L).createTime());
+        assertNull(memberTagGateway.tag(901L).createTime());
+        assertNotNull(template.getMapper(MemberGroupMapper.class).selectById(900L).getUpdateTime());
+        assertNotNull(template.getMapper(MemberTagMapper.class).selectById(901L).getUpdateTime());
+        assertNull(template.getMapper(MemberGroupMapper.class).selectById(900L).getCreateBy());
+    }
+    /** 源列表按标签任一命中，命中多个标签不重复会员，组合条件与总数一致。 */
+    @Test
+    void memberUserFiltersMatchAnyTagAndKeepCombinedPageCount() throws Exception {
+        var level = growthService.saveLevel(new Level(null, "FilterLevel", 1, 100L, 90, null, null, 1));
+        var group = userService.saveGroup(new Group(null, "FilterGroup", null, 1));
+        var firstTag = userService.saveTag(new Tag(null, "FirstTag", null));
+        var secondTag = userService.saveTag(new Tag(null, "SecondTag", null));
+        userService.assignGroup(id, group);
+        userService.assignGroup(other, group);
+        growthService.assignLevel(id, level, "USER-FILTER-L1", "等级");
+        growthService.assignLevel(other, level, "USER-FILTER-L2", "等级");
+        userService.assignTags(id, List.of(firstTag, secondTag));
+        userService.assignTags(other, List.of(secondTag));
+        sql("UPDATE member_user SET nickname='会员一',email='one@shop.test',create_time='2026-10-30 10:00:00',login_date='2026-10-30 10:00:00' WHERE id=" + id);
+        sql("UPDATE member_user SET nickname='会员二',email='two@shop.test',create_time='2026-10-30 11:00:00',login_date='2026-10-30 11:00:00' WHERE id=" + other);
+        var start = LocalDateTime.of(2026, 10, 30, 10, 0);
+        var end = start.plusHours(1);
+        var query = new com.lemnt.member.application.user.executor.MemberPageQueryExe(memberUserGateway);
+        var first = query.execute(new com.lemnt.member.application.user.qry.MemberPageQry("138", " shop.test ", "会员", level, group,
+                List.of(firstTag, secondTag, firstTag), start, end, start, end, 1, 1));
+        var second = query.execute(new com.lemnt.member.application.user.qry.MemberPageQry("138", "shop.test", "会员", level, group,
+                List.of(firstTag, secondTag), start, end, start, end, 2, 1));
+        assertEquals(2, first.getTotal());
+        assertEquals(2, second.getTotal());
+        assertEquals(other, first.getRecords().get(0).id());
+        assertEquals(id, second.getRecords().get(0).id());
+        assertEquals(1, query.execute(new com.lemnt.member.application.user.qry.MemberPageQry(null, null, null, null, null,
+                List.of(firstTag), null, null, null, null, 1, 20)).getTotal());
+        assertEquals(2, query.execute(new com.lemnt.member.application.user.qry.MemberPageQry(null, null, null, null, null,
+                List.of(secondTag), null, null, null, null, 1, 20)).getTotal());
+        assertEquals(1, query.execute(new com.lemnt.member.application.user.qry.MemberPageQry(null, null, null, null, null,
+                null, end, null, null, null, 1, 20)).getTotal());
+        assertEquals(1, query.execute(new com.lemnt.member.application.user.qry.MemberPageQry(null, null, null, null, null,
+                null, null, null, null, start, 1, 20)).getTotal());
+    }
+
+    /** 空标签不筛选，NULL登录时间不匹配时间范围，非法条件在应用层拒绝。 */
+    @Test
+    void memberUserFilterHandlesEmptyTagsUnknownLoginAndInvalidValues() {
+        var query = new com.lemnt.member.application.user.executor.MemberPageQueryExe(memberUserGateway);
+        var now = memberUserGateway.now();
+        assertEquals(2, query.execute(new com.lemnt.member.application.user.qry.MemberPageQry("138", 1, 20)).getTotal());
+        assertEquals(2, query.execute(new com.lemnt.member.application.user.qry.MemberPageQry(null, null, null, null, null,
+                List.of(), null, null, null, null, 1, 20)).getTotal());
+        assertEquals(0, query.execute(new com.lemnt.member.application.user.qry.MemberPageQry(null, null, null, null, null,
+                List.of(Long.MAX_VALUE), null, null, null, null, 1, 20)).getTotal());
+        assertEquals(0, query.execute(new com.lemnt.member.application.user.qry.MemberPageQry(null, null, null, null, null,
+                null, now.minusDays(1), null, null, null, 1, 20)).getTotal());
+        assertBusinessException(400, () -> query.execute(new com.lemnt.member.application.user.qry.MemberPageQry(null, null, null, 0L, null,
+                null, null, null, null, null, 1, 20)));
+        assertBusinessException(400, () -> query.execute(new com.lemnt.member.application.user.qry.MemberPageQry(null, null, null, null, null,
+                List.of(0L), null, null, null, null, 1, 20)));
+        assertBusinessException(400, () -> query.execute(new com.lemnt.member.application.user.qry.MemberPageQry(null, null, null, null, null,
+                null, now, now.minusDays(1), null, null, 1, 20)));
+        assertBusinessException(400, () -> query.execute(new com.lemnt.member.application.user.qry.MemberPageQry(null, null, null, null, null,
+                null, null, null, now, now.minusDays(1), 1, 20)));
+    }
+    /** 后台分页和详情读取相同当前关系，改名即时返显且基础投影不被变异。 */
+    @Test
+    void memberRelationsAppearInPageAndDetailAndFollowCurrentMetadata() {
+        var level = growthService.saveLevel(new Level(null, "Gold", 1, 100L, 90, null, null, 1));
+        var group = userService.saveGroup(new Group(null, "VIP", null, 1));
+        var tag = userService.saveTag(new Tag(null, "Active", null));
+        growthService.assignLevel(id, level, "RELATION-LEVEL", "分配");
+        userService.assignGroup(id, group);
+        userService.assignTags(id, List.of(tag));
+        var relations = new com.lemnt.member.application.user.service.MemberUserRelationQueryService(
+                memberLevelGateway, memberGroupGateway, memberTagGateway, memberTagLinkGateway);
+        var baseQuery = new com.lemnt.member.application.user.executor.MemberDetailQueryExe(memberUserGateway);
+        var base = baseQuery.execute(new com.lemnt.member.application.user.qry.MemberDetailQry(id));
+        var detail = new com.lemnt.member.application.user.executor.MemberUserDetailQueryExe(baseQuery, relations);
+        var page = new com.lemnt.member.application.user.executor.MemberUserPageQueryExe(
+                new com.lemnt.member.application.user.executor.MemberPageQueryExe(memberUserGateway), relations)
+                .execute(new com.lemnt.member.application.user.qry.MemberPageQry(null, 1, 20));
+        var mine = page.getRecords().stream().filter(v -> id.equals(v.id())).findFirst().orElseThrow();
+        var read = detail.execute(new com.lemnt.member.application.user.qry.MemberDetailQry(id));
+        assertEquals(List.of(tag), read.tagIds());
+        assertEquals(List.of("Active"), read.tagNames());
+        assertEquals("Gold", read.levelName());
+        assertEquals("VIP", read.groupName());
+        assertEquals(read, mine);
+        assertNull(base.tagIds());
+        assertNull(base.levelName());
+        var unrelated = page.getRecords().stream().filter(v -> other.equals(v.id())).findFirst().orElseThrow();
+        assertEquals(List.of(), unrelated.tagIds());
+        assertEquals(List.of(), unrelated.tagNames());
+        assertNull(unrelated.levelName());
+        growthService.saveLevel(new Level(level, "NewGold", 1, 100L, 90, null, null, 1));
+        userService.saveGroup(new Group(group, "NewVIP", null, 1));
+        userService.saveTag(new Tag(tag, "NewActive", null));
+        var renamed = detail.execute(new com.lemnt.member.application.user.qry.MemberDetailQry(id));
+        assertEquals("NewGold", renamed.levelName());
+        assertEquals("NewVIP", renamed.groupName());
+        assertEquals(List.of("NewActive"), renamed.tagNames());
+        assertEquals("管理员调整为：Gold", memberLevelRecordGateway.levelRecords(id, 0, 20).get(0).description());
+        userService.assignTags(id, List.of());
+        userService.assignGroup(id, null);
+        growthService.assignLevel(id, null, "RELATION-CANCEL", "清空");
+        var cleared = detail.execute(new com.lemnt.member.application.user.qry.MemberDetailQry(id));
+        assertEquals(List.of(), cleared.tagIds());
+        assertNull(cleared.levelName());
+        assertNull(cleared.groupName());
+        assertNull(detail.execute(new com.lemnt.member.application.user.qry.MemberDetailQry(Long.MAX_VALUE)));
+    }
+    /** 后台改号仅更新资料，不覆盖密码、资产、关联或登录审计。 */
+    @Test
+    void webProfileCanChangeMobileWithoutOverwritingMemberState() {
+        var group = userService.saveGroup(new Group(null, "ProfileGroup", null, 1));
+        var tag = userService.saveTag(new Tag(null, "ProfileTag", null));
+        userService.assignGroup(id, group);
+        userService.assignTags(id, List.of(tag));
+        growthService.adjustAsset(id, "POINT", 5L, "profile-points", "测试");
+        memberUserGateway.updatePassword(id, "unchanged-hash");
+        var loginTime = java.time.LocalDateTime.of(2026, 10, 30, 12, 0);
+        memberUserGateway.recordLogin(id, loginTime, "127.0.0.1");
+        var before = memberUserGateway.findById(id);
+        assertTrue(userService.updateUser(new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                id, "Updated", "edit@example.com", null, 1, null, 1, "备注", "姓名", 110101, "+8613800000099")));
+        var after = memberUserGateway.findById(id);
+        assertNull(memberUserGateway.findByMobile(before.mobile()));
+        assertEquals(id, memberUserGateway.findByMobile("+8613800000099").id());
+        assertEquals("Updated", after.nickname());
+        assertEquals(before.points(), after.points());
+        assertEquals(before.experience(), after.experience());
+        assertEquals(before.levelId(), after.levelId());
+        assertEquals(group, after.groupId());
+        assertEquals(List.of(tag), memberTagLinkGateway.memberTags(id));
+        assertEquals("unchanged-hash", memberUserGateway.findPasswordByMemberId(id));
+        assertEquals(loginTime, after.loginDate());
+        assertEquals("127.0.0.1", after.loginIp());
+        // 同一会员继续使用当前手机号/邮箱，不应误判占用。
+        assertTrue(userService.updateUser(new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                id, "Updated", "edit@example.com", null, 1, null, 1, null, null, null, "+8613800000099")));
+        // 旧后台客户端及App都不能把手机号写空。
+        userService.updateUser(new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                id, "Legacy", "edit@example.com", null, null, null, null, null, null, null, null));
+        userService.profileUpdate(id, "App", "edit@example.com", null, null, null, null);
+        assertEquals("+8613800000099", memberUserGateway.findById(id).mobile());
+    }
+
+    /** 占用或非法手机号失败时，其他资料不能出现部分保存。 */
+    @Test
+    void occupiedOrInvalidCredentialsLeaveOriginalProfileIntact() {
+        userService.profileUpdate(other, "two", "occupied@example.com", null, null, null, null);
+        var before = memberUserGateway.findById(id);
+        assertBusinessException(409, () -> userService.updateUser(
+                new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(id, "不得保存", null,
+                        null, null, null, 0, "不得保存", null, null, memberUserGateway.findById(other).mobile())));
+        assertBusinessException(409, () -> userService.updateUser(
+                new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(id, "不得保存", "occupied@example.com",
+                        null, null, null, 0, "不得保存", null, null, "13800000099")));
+        assertBusinessException(400, () -> userService.updateUser(
+                new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(id, "不得保存", null,
+                        null, null, null, 0, "不得保存", null, null, "")));
+        assertEquals(before, memberUserGateway.findById(id));
+        assertNull(memberUserGateway.findByMobile("13800000099"));
+    }
+
+    /** 数据库唯一约束仍兜底同号码并发竞争，统一转换业务冲突。 */
+    @Test
+    void databaseUniqueConstraintRejectsCredentialCollision() {
+        var old = memberUserGateway.findById(id);
+        assertBusinessException(409, () -> memberUserGateway.updateProfile(new Member(
+                id, "不得保存", memberUserGateway.findById(other).mobile(), null, null, 0,
+                old.points(), old.experience(), old.levelId(), old.groupId(), null, null, old.createTime())));
+        assertEquals(old, memberUserGateway.findById(id));
+    }
+
+    /** 仅后台明确保存停用状态时同步要求auth撤销会话。 */
+    @Test
+    void disablingMemberRequestsRemoteSessionRevocationOnlyFromWebUpdate() {
+        userService.updateUser(new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                id, "disabled", null, null, null, null, 0, null, null, null, null));
+        assertEquals(0, memberUserGateway.findById(id).status());
+        org.mockito.Mockito.verify(memberAuthGateway).revokeSessions(id);
+        userService.updateUser(new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                id, "enabled", null, null, null, null, 1, null, null, null, null));
+        userService.profileUpdate(id, "App", null, null, null, null, null);
+        org.mockito.Mockito.verifyNoMoreInteractions(memberAuthGateway);
+    }
+
+    /** 认证中心撤销失败时，停用状态、改号和普通资料共同回滚。 */
+    @Test
+    void failedRemoteRevocationRollsBackEntireMemberUpdate() {
+        var before = memberUserGateway.findById(id);
+        org.mockito.Mockito.doThrow(new IllegalStateException("auth不可用"))
+                .when(memberAuthGateway).revokeSessions(id);
+        assertThrows(IllegalStateException.class, () -> userService.updateUser(
+                new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                        id, "不得保存", null, null, null, null, 0, "不得保存", null, null, "13800000099")));
+        assertEquals(before, memberUserGateway.findById(id));
+        assertNull(memberUserGateway.findByMobile("13800000099"));
+    }
+
+    /** 等级相同按源规则无操作，配置后来修改或停用不能重置会员经验。 */
+    @Test
+    void assigningCurrentLevelKeepsExperienceAndCreatesNoRecords() throws Exception {
+        var level = growthService.saveLevel(new Level(null, "Gold", 1, 100L, 90, null, null, 1));
+        growthService.adjustAsset(id, "EXPERIENCE", 150, "SAME-LEVEL-SEED", "经验奖励");
+        var before = memberUserGateway.findById(id);
+        long experienceRecords = count("member_experience_record");
+        long levelRecords = memberLevelRecordGateway.levelRecordCount(id);
+        assertTrue(growthService.assignLevel(id, level, "SAME-LEVEL-NEW", "保持等级"));
+        assertEquals(before, memberUserGateway.findById(id));
+        assertEquals(experienceRecords, count("member_experience_record"));
+        assertEquals(levelRecords, memberLevelRecordGateway.levelRecordCount(id));
+        sql("UPDATE member_level SET experience=200,status=0 WHERE id=" + level);
+        assertTrue(growthService.assignLevel(id, level, "SAME-LEVEL-DISABLED", "保持等级"));
+        assertEquals(before, memberUserGateway.findById(id));
+        assertEquals(experienceRecords, count("member_experience_record"));
+        assertEquals(levelRecords, memberLevelRecordGateway.levelRecordCount(id));
+    }
+
+    /** 没有等级的会员再次取消等级，不应抹掉已有经验或插入占位记录。 */
+    @Test
+    void cancellingAlreadyUnassignedLevelKeepsExperienceAndDoesNotConsumeRequest() throws Exception {
+        growthService.adjustAsset(id, "EXPERIENCE", 50, "UNASSIGNED-SEED", "经验奖励");
+        var before = memberUserGateway.findById(id);
+        assertNull(before.levelId());
+        assertTrue(growthService.assignLevel(id, null, "UNASSIGNED-NOOP", "保持无等级"));
+        assertEquals(before, memberUserGateway.findById(id));
+        assertEquals(1, count("member_experience_record"));
+        assertEquals(0, memberLevelRecordGateway.levelRecordCount(id));
+        var level = growthService.saveLevel(new Level(null, "Gold", 1, 100L, 90, null, null, 1));
+        assertTrue(growthService.assignLevel(id, level, "UNASSIGNED-NOOP", "实际调整"));
+        assertEquals(level, memberUserGateway.findById(id).levelId());
+        assertEquals(100L, memberUserGateway.findById(id).experience());
+        assertEquals(2, count("member_experience_record"));
+        assertEquals(1, memberLevelRecordGateway.levelRecordCount(id));
+    }
+
+    /** 同等级并发提交在原会员行锁内判断，不重置经验、不重复写流水。 */
+    @Test
+    void concurrentCurrentLevelRequestsAreNoops() throws Exception {
+        var level = growthService.saveLevel(new Level(null, "Gold", 1, 100L, 90, null, null, 1));
+        growthService.adjustAsset(id, "EXPERIENCE", 150, "CONCURRENT-LEVEL-SEED", "经验奖励");
+        var pool = Executors.newFixedThreadPool(2);
+        try {
+            var first = pool.submit(() -> growthService.assignLevel(id, level, "SAME-CONCURRENT-1", "保持等级"));
+            var second = pool.submit(() -> growthService.assignLevel(id, level, "SAME-CONCURRENT-2", "保持等级"));
+            assertTrue(first.get());
+            assertTrue(second.get());
+        } finally {
+            pool.shutdownNow();
+        }
+        assertEquals(150L, memberUserGateway.findById(id).experience());
+        assertEquals(1, count("member_experience_record"));
+        assertEquals(1, memberLevelRecordGateway.levelRecordCount(id));
+    }
+
+    /** 默认切换只更新真实变更的本人地址，保留原创建审计。 */
+    @Test
+    void addressAuditTracksOnlyChangedDefaultsAndKeepsOtherOwnersUntouched() throws Exception {
+        var mapper = template.getMapper(MemberAddressMapper.class);
+        com.lemnt.common.security.context.SecurityContextHolder.setUserName("address-creator");
+        try {
+            var first = addressService.saveAddress(address(id, null, true));
+            var next = addressService.saveAddress(address(id, null, false));
+            var ordinary = addressService.saveAddress(address(id, null, false));
+            var foreign = addressService.saveAddress(address(other, null, true));
+            var original = mapper.selectById(first.id());
+            assertEquals("address-creator", original.getCreateBy());
+            assertNotNull(original.getCreateTime());
+            sql("UPDATE member_address SET update_time='2020-01-01 00:00:00',update_by='old-editor'");
+            com.lemnt.common.security.context.SecurityContextHolder.setUserName("address-editor");
+            addressService.saveAddress(address(id, next.id(), true));
+            var cleared = mapper.selectById(first.id());
+            var selected = mapper.selectById(next.id());
+            assertFalse(cleared.getDefaultStatus());
+            assertEquals("address-editor", cleared.getUpdateBy());
+            assertEquals("address-editor", selected.getUpdateBy());
+            assertEquals(original.getCreateBy(), cleared.getCreateBy());
+            assertEquals(original.getCreateTime(), cleared.getCreateTime());
+            assertTrue(cleared.getUpdateTime().isAfter(java.time.LocalDateTime.of(2020, 1, 1, 0, 0)));
+            assertEquals("old-editor", mapper.selectById(ordinary.id()).getUpdateBy());
+            assertEquals("old-editor", mapper.selectById(foreign.id()).getUpdateBy());
+            assertTrue(mapper.selectById(foreign.id()).getDefaultStatus());
+            assertEquals(next.id(), memberAddressGateway.defaultAddress(id).id());
+            assertEquals(foreign.id(), memberAddressGateway.defaultAddress(other).id());
+        } finally {
+            com.lemnt.common.security.context.SecurityContextHolder.remove();
+        }
+    }
+
+    /** 旧属主列及未知审计迁移后保留原归属、默认标志、编号和外键。 */
+    @Test
+    void addressUpgradePreservesLegacyRowsAndLeavesUnknownAuditNull() throws Exception {
+        sql("DROP TABLE member_address");
+        sql("CREATE TABLE member_address(id BIGINT AUTO_INCREMENT PRIMARY KEY,member_id BIGINT NOT NULL,name VARCHAR(80) NOT NULL,mobile VARCHAR(24) NOT NULL,area_id BIGINT NOT NULL,detail_address VARCHAR(500) NOT NULL,default_status BOOLEAN NOT NULL DEFAULT FALSE,FOREIGN KEY(member_id) REFERENCES member_user(id),KEY idx_member_address_owner(member_id))");
+        sql("INSERT INTO member_address(id,member_id,name,mobile,area_id,detail_address,default_status) VALUES(900," + id + ",'old','13800000003',110101,'legacy',true)");
+        ScriptUtils.executeSqlScript(schema, new ClassPathResource("member-sql/upgrade/address_owner_audit.sql"));
+        var mapper = template.getMapper(MemberAddressMapper.class);
+        var old = mapper.selectById(900L);
+        assertEquals(id, old.getUserId());
+        assertTrue(old.getDefaultStatus());
+        assertEquals("legacy", old.getDetailAddress());
+        assertNull(old.getCreateBy());
+        assertNull(old.getCreateTime());
+        assertNull(old.getUpdateBy());
+        assertNull(old.getUpdateTime());
+        assertNull(memberAddressGateway.address(other, 900L));
+        assertEquals(900L, memberAddressGateway.defaultAddress(id).id());
+        var added = addressService.saveAddress(address(id, null, false));
+        assertNotEquals(900L, added.id());
+        assertNotNull(mapper.selectById(added.id()).getCreateTime());
+        assertThrows(Exception.class, () -> memberAddressGateway.saveAddress(address(Long.MAX_VALUE, null, false)));
+    }
+
+    /** 删除缺失/他人地址报相同错误，删除默认项不擅自把其他项设为默认。 */
+    @Test
+    void deletingAddressChecksOwnerAndDoesNotInventAnotherDefault() {
+        var ordinary = addressService.saveAddress(address(id, null, false));
+        assertNull(memberAddressGateway.defaultAddress(id));
+        var selected = addressService.saveAddress(address(id, null, true));
+        assertBusinessException(404, () -> addressService.deleteAddress(other, selected.id()));
+        assertBusinessException(404, () -> addressService.deleteAddress(id, Long.MAX_VALUE));
+        assertTrue(addressService.deleteAddress(id, selected.id()));
+        assertBusinessException(404, () -> addressService.deleteAddress(id, selected.id()));
+        assertNull(memberAddressGateway.defaultAddress(id));
+        assertNotNull(memberAddressGateway.address(id, ordinary.id()));
+        assertFalse(memberAddressGateway.address(id, ordinary.id()).defaultStatus());
+    }
+
+    /** 保存失败时，先前默认地址及其更新审计必须共同回滚。 */
+    @Test
+    void addressWriteFailureRollsBackDefaultAndAuditChanges() throws Exception {
+        var first = addressService.saveAddress(address(id, null, true));
+        var mapper = template.getMapper(MemberAddressMapper.class);
+        var before = mapper.selectById(first.id());
+        sql("ALTER TABLE member_address ADD CONSTRAINT address_test_failure CHECK (detail_address <> 'trigger-rollback')");
+        assertThrows(Exception.class, () -> addressService.saveAddress(new Address(null, id,
+                "收件人", "13800000003", 110101L, "trigger-rollback", true)));
+        assertEquals(before, mapper.selectById(first.id()));
+        assertEquals(1, memberAddressGateway.addresses(id).size());
+        assertEquals(first, memberAddressGateway.defaultAddress(id));
+    }
+
+    /** 真实H2保存和默认查询贯通HTTP，本人上下文不接受外部属主覆盖。 */
+    @Test
+    void addressHttpUsesOwnerContextAndUnifiedMissingResponse() throws Exception {
+        var controller = new com.lemnt.member.adapter.app.address.AppMemberAddressController(
+                new com.lemnt.member.application.address.executor.MemberAddressDeleteCmdExe(addressService),
+                new com.lemnt.member.application.address.executor.MemberAddressDetailQueryExe(memberAddressGateway),
+                new com.lemnt.member.application.address.executor.MemberAddressListQueryExe(memberAddressGateway),
+                new com.lemnt.member.application.address.executor.MemberAddressSaveCmdExe(addressService),
+                new com.lemnt.member.application.address.executor.MemberAddressDefaultQueryExe(memberAddressGateway));
+        var mvc = org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(controller)
+                .addInterceptors(new com.lemnt.common.security.interceptor.HeaderInterceptor())
+                .setControllerAdvice(new com.lemnt.common.security.handler.GlobalExceptionHandler()).build();
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/app/addresses")
+                .header(com.lemnt.common.security.constant.SecurityConstants.HEADER_USER_ID, id.toString())
+                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                .content("{\"memberId\":" + other + ",\"name\":\"HTTP\",\"mobile\":\"13800000003\",\"areaId\":110101,\"detailAddress\":\"HTTP address\",\"defaultStatus\":true}"))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data.memberId").value(id.intValue()));
+        assertTrue(memberAddressGateway.addresses(other).isEmpty());
+        var selected = memberAddressGateway.defaultAddress(id);
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/app/addresses/default")
+                .param("memberId", other.toString())
+                .header(com.lemnt.common.security.constant.SecurityConstants.HEADER_USER_ID, id.toString()))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data.id").value(selected.id().intValue()));
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/app/addresses/" + selected.id())
+                .header(com.lemnt.common.security.constant.SecurityConstants.HEADER_USER_ID, other.toString()))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isNotFound())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content().contentTypeCompatibleWith("application/problem+json"))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.status").value(404));
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/app/addresses/" + selected.id())
+                .header(com.lemnt.common.security.constant.SecurityConstants.HEADER_USER_ID, id.toString()))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data").value(true));
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/app/addresses/default")
+                .header(com.lemnt.common.security.constant.SecurityConstants.HEADER_USER_ID, id.toString()))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data").doesNotExist());
+    }
+
 }

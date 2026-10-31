@@ -46,7 +46,7 @@ public class MemberTokenGatewayImpl implements MemberTokenGateway {
         if (user == null) {
             throw new SecurityException("会员会话无效");
         }
-        tokenService.refreshToken(user);
+        tokenService.refreshExistingToken(user);
         return new MemberToken(user.getUserId(), accessToken, CacheConstants.TOKEN_TTL_SECONDS);
     }
 
@@ -54,4 +54,10 @@ public class MemberTokenGatewayImpl implements MemberTokenGateway {
     public void logout(String accessToken) {
         tokenService.delSecurityUser(accessToken, SecurityConstants.MEMBER_USER_TYPE);
     }
+    /** 复用公共缓存会话撤销，不访问会员数据库。 */
+    @Override
+    public void revokeMemberSessions(Long memberId) {
+        tokenService.revokeMemberSessions(memberId);
+    }
+
 }
