@@ -8,6 +8,7 @@
     "pages/member-benefits/index",
     "pages/member-wallet/index",
     "pages/wallet-recharge/index",
+    "pages/wallet-transfer/index",
     "pages/product/index",
     "pages/coupons/index",
     "pages/favorites/index",

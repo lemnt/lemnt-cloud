@@ -56,3 +56,69 @@ export interface ActivityFilter {
   pageNum: number;
   pageSize: number;
 }
+export interface SeckillConfig {
+  id: string;
+  name: string;
+  startTime: string;
+  endTime: string;
+  sliderPicUrls: string[];
+  status: 0 | 1;
+  activityCount: number;
+}
+export interface SeckillConfigSave {
+  name: string;
+  startTime: string;
+  endTime: string;
+  sliderPicUrls: string[];
+  status: 0 | 1;
+}
+export interface SeckillProductLine {
+  skuId: string;
+  seckillPrice: string;
+  stock: number;
+}
+export interface SeckillProduct extends SeckillProductLine {
+  id: string;
+  spuId: string;
+  activityStartTime: string;
+  activityEndTime: string;
+}
+export interface SeckillActivity {
+  id: string;
+  spuId: string;
+  spuName: string | null;
+  picUrl: string | null;
+  seckillPrice: string | null;
+  name: string;
+  status: 0 | 1;
+  remark: string | null;
+  startTime: string;
+  endTime: string;
+  sort: number;
+  configIds: string[];
+  totalLimitCount: number;
+  singleLimitCount: number;
+  stock: number;
+  totalStock: number;
+  products: SeckillProduct[];
+}
+export interface SeckillActivitySave {
+  spuId: string;
+  name: string;
+  remark: string | null;
+  startTime: string;
+  endTime: string;
+  sort: number;
+  configIds: string[];
+  totalLimitCount: number;
+  singleLimitCount: number;
+  products: SeckillProductLine[];
+}
+export interface SeckillActivityFilter {
+  name?: string;
+  status?: 0 | 1;
+  configId?: string;
+  pageNum: number;
+  pageSize: number;
+}
+

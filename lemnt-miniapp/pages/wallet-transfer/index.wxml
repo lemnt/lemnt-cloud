@@ -1,0 +1,25 @@
+<view class="container">
+ <view wx:if="{{!ready}}" class="notice">会员服务暂未启用。</view>
+ <view wx:if="{{error}}" class="error">{{error}}</view>
+ <button wx:if="{{!loggedIn}}" bindtap="login">会员登录</button>
+ <block wx:if="{{loggedIn}}">
+  <view class="card">
+   <view class="title">钱包转账</view>
+   <label class="field">转入会员编号<input value="{{toMemberId}}" type="number" bindinput="inputTo" disabled="{{loading}}" placeholder="对方会员编号"/></label>
+   <label class="field">转账金额（元）<input value="{{amount}}" type="digit" bindinput="inputAmount" disabled="{{loading}}" placeholder="如 10.00"/></label>
+   <label class="field">备注<textarea value="{{remark}}" maxlength="128" bindinput="inputRemark" disabled="{{loading}}"/></label>
+   <button type="primary" bindtap="submit" disabled="{{loading}}">确认转账</button>
+   <view class="description">转入方需先开通钱包；重复提交相同请求编号不会重复转账。</view>
+  </view>
+  <button bindtap="reload" disabled="{{loading}}">刷新记录</button>
+  <view wx:if="{{!records.length}}" class="description">暂无转账记录</view>
+  <view wx:for="{{records}}" wx:key="transferNo" class="card">
+   <view class="list-row"><text>{{item.transferNo}}</text><text class="status">{{item.statusLabel}}</text></view>
+   <view class="list-row">转出 {{item.fromMemberId}} → 转入 {{item.toMemberId}}</view>
+   <view class="list-row">金额 ￥{{item.amount}}</view>
+   <view class="list-row" wx:if="{{item.remark}}">备注：{{item.remark}}</view>
+  </view>
+  <view wx:if="{{hasMore}}" class="description">已显示 {{records.length}} / {{total}}</view>
+  <view class="row"><navigator url="/pages/member-wallet/index">我的钱包</navigator><navigator url="/pages/member/index">会员中心</navigator></view>
+ </block>
+</view>

@@ -201,3 +201,5 @@
 2026-10-31 第138批：会员钱包账户与流水。新增trade_member_wallet/transaction两表，行锁串行资金变更、业务幂等、冻结/解冻、后台人工调整与App查询；金额元DECIMAL(19,2)。trade全模块206项、前端277项、小程序138项测试通过；充值套餐/转账与真实环境联调未做，见[138-wallet-account-ledger-delivery.md](138-wallet-account-ledger-delivery.md)。
 
 2026-10-31 第139批：充值套餐与充值单。新增套餐与充值单两表、套餐CRUD、按套餐下单（requestNo幂等）、后台确认到账入钱包、退款出钱包；后台两页与小程序充值页。trade全模块215项、前端280项、小程序140项测试通过；真实渠道/异步退款与转账未做，见[139-wallet-recharge-delivery.md](139-wallet-recharge-delivery.md)。
+
+2026-10-31 第140批：钱包转账。新增转账表，钱包间同步互转（requestNo幂等、双钱包按编号升序加锁、双向TRANSFER流水）；后台只读转账页与小程序转账页。trade全模块222项、前端281项、小程序142项测试通过；真实渠道出款与异步状态未做，见[140-wallet-transfer-delivery.md](140-wallet-transfer-delivery.md)。

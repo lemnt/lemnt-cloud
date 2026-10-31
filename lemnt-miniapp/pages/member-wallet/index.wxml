@@ -10,6 +10,7 @@
    <view class="list-row">累计充值：￥{{wallet.totalRecharge}}</view>
    <view class="list-row">累计支出：￥{{wallet.totalExpense}}</view>
    <navigator url="/pages/wallet-recharge/index">去充值</navigator>
+   <navigator url="/pages/wallet-transfer/index">钱包转账</navigator>
   </view>
   <button bindtap="reload" disabled="{{loading}}">刷新</button>
   <view wx:if="{{!records.length}}" class="description">暂无余额流水</view>

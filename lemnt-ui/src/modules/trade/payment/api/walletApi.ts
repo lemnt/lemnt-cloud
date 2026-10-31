@@ -33,6 +33,25 @@ export interface WalletAdjustValues {
   amount: string;
   reason: string;
 }
+export interface WalletTransfer {
+  id: string;
+  transferNo: string;
+  requestNo: string;
+  fromWalletId: string;
+  fromMemberId: string;
+  toWalletId: string;
+  toMemberId: string;
+  amount: string;
+  remark: string | null;
+  status: 'SUCCESS';
+  createTime: string | null;
+}
+export interface WalletTransferFilter {
+  fromMemberId?: string;
+  toMemberId?: string;
+  pageNum: number;
+  pageSize: number;
+}
 
 function record(v: unknown): Record<string, unknown> {
   if (!v || typeof v !== 'object' || Array.isArray(v)) throw Error('钱包响应不合法');
@@ -98,6 +117,23 @@ function transaction(raw: unknown): WalletTransaction {
     createTime: optional(v.createTime),
   };
 }
+function transfer(raw: unknown): WalletTransfer {
+  const v = record(raw);
+  if (v.status !== 'SUCCESS') throw Error('转账状态不合法');
+  return {
+    id: idOf(v.id),
+    transferNo: text(v.transferNo),
+    requestNo: text(v.requestNo),
+    fromWalletId: idOf(v.fromWalletId),
+    fromMemberId: idOf(v.fromMemberId),
+    toWalletId: idOf(v.toWalletId),
+    toMemberId: idOf(v.toMemberId),
+    amount: money(v.amount),
+    remark: optional(v.remark),
+    status: 'SUCCESS',
+    createTime: optional(v.createTime),
+  };
+}
 
 export async function getWallets(q: WalletFilter) {
   const r = await request<unknown>({
@@ -133,5 +169,26 @@ export async function adjustWallet(memberId: string, v: WalletAdjustValues) {
         data: { requestNo, amount, reason },
       })
     ).data,
+  );
+}
+
+export async function getWalletTransfers(q: WalletTransferFilter) {
+  const r = await request<unknown>({
+    url: '/trade/admin/wallet-transfers',
+    params: {
+      fromMemberId: q.fromMemberId || undefined,
+      toMemberId: q.toMemberId || undefined,
+      pageNum: q.pageNum,
+      pageSize: q.pageSize,
+    },
+  });
+  return { records: array(r.rows).map(transfer), total: total(r.total) };
+}
+export async function getWalletTransfer(no: string) {
+  const value = text(no).trim();
+  if (!value) throw Error('转账单号不能为空');
+  return transfer(
+    (await request<unknown>({ url: '/trade/admin/wallet-transfers/' + encodeURIComponent(value) }))
+      .data,
   );
 }

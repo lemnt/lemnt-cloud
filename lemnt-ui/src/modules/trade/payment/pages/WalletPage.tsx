@@ -220,3 +220,114 @@ export function WalletPage() {
     </PageContainer>
   );
 }
+
+/** 钱包转账记录：只读查询转出/转入与金额。 */
+export function WalletTransferPage() {
+  const { can } = usePermission();
+  const prefix = 'trade:wallet-transfer';
+  const [filters, setFilters] = useState<{ fromMemberId?: string; toMemberId?: string }>({});
+  const [page, setPage] = useState({ pageNum: 1, pageSize: 20 });
+  const [selected, setSelected] = useState<string>();
+  const rows = useQuery({
+    queryKey: [prefix, filters, page],
+    queryFn: () => api.getWalletTransfers({ ...filters, ...page }),
+    enabled: can(prefix + ':list'),
+  });
+  const detail = useQuery({
+    queryKey: [prefix, 'detail', selected],
+    queryFn: () => api.getWalletTransfer(selected ?? ''),
+    enabled: !!selected && can(prefix + ':query'),
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+  const columns: ProColumns<api.WalletTransfer>[] = [
+    { title: '转账单号', dataIndex: 'transferNo', search: false },
+    { title: '转出会员', dataIndex: 'fromMemberId' },
+    { title: '转入会员', dataIndex: 'toMemberId' },
+    { title: '金额（元）', dataIndex: 'amount', search: false },
+    { title: '备注', dataIndex: 'remark', search: false, ellipsis: true },
+    { title: '状态', dataIndex: 'status', search: false },
+    { title: '创建时间', dataIndex: 'createTime', search: false },
+    {
+      title: '操作',
+      valueType: 'option',
+      render: (_, row) =>
+        can(prefix + ':query') && (
+          <Button type="link" onClick={() => setSelected(row.transferNo)}>
+            详情
+          </Button>
+        ),
+    },
+  ];
+  if (!can(prefix + ':list')) return <Result status="403" title="没有钱包转账列表权限" />;
+  const value = detail.data;
+  return (
+    <PageContainer title="钱包转账">
+      {rows.isError && (
+        <Alert
+          type="error"
+          title="列表读取失败"
+          description={String(rows.error)}
+          action={<Button onClick={() => rows.refetch()}>重试</Button>}
+        />
+      )}
+      <ProTable
+        options={{ reload: false }}
+        rowKey="id"
+        columns={columns}
+        dataSource={rows.data?.records ?? []}
+        loading={rows.isFetching}
+        scroll={{ x: 1000 }}
+        toolBarRender={() => [
+          <Button key="refresh" onClick={() => rows.refetch()}>
+            刷新
+          </Button>,
+        ]}
+        onSubmit={(v) => {
+          setFilters({
+            fromMemberId: typeof v.fromMemberId === 'string' ? v.fromMemberId : undefined,
+            toMemberId: typeof v.toMemberId === 'string' ? v.toMemberId : undefined,
+          });
+          setPage({ ...page, pageNum: 1 });
+        }}
+        onReset={() => {
+          setFilters({});
+          setPage({ ...page, pageNum: 1 });
+        }}
+        pagination={{
+          current: page.pageNum,
+          pageSize: page.pageSize,
+          total: rows.data?.total ?? 0,
+          onChange: (pageNum, pageSize) => setPage({ pageNum, pageSize }),
+        }}
+      />
+      <Drawer open={!!selected} title="转账详情" onClose={() => setSelected(undefined)} width={600}>
+        {detail.isFetching ? (
+          '正在读取…'
+        ) : detail.isError ? (
+          <Alert
+            type="error"
+            title="详情读取失败"
+            description={String(detail.error)}
+            action={<Button onClick={() => detail.refetch()}>重试</Button>}
+          />
+        ) : (
+          value && (
+            <Descriptions
+              column={1}
+              items={[
+                { key: 'no', label: '转账单号', children: value.transferNo },
+                { key: 'from', label: '转出会员', children: value.fromMemberId },
+                { key: 'to', label: '转入会员', children: value.toMemberId },
+                { key: 'amount', label: '金额（元）', children: value.amount },
+                { key: 'remark', label: '备注', children: value.remark || '—' },
+                { key: 'status', label: '状态', children: '成功' },
+                { key: 'time', label: '创建时间', children: value.createTime || '—' },
+              ]}
+            />
+          )
+        )}
+      </Drawer>
+    </PageContainer>
+  );
+}

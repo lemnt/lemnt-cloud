@@ -73,3 +73,30 @@ it('调整余额只提交请求编号、金额与原因', async () => {
     api.adjustWallet('1', { requestNo: '', amount: '1.00', reason: 'x' }),
   ).rejects.toThrow('请求编号');
 });
+
+it('钱包转账分页与详情严格解码', async () => {
+  const transfer = {
+    id: '5',
+    transferNo: 'TF1',
+    requestNo: 'REQ1',
+    fromWalletId: '10',
+    fromMemberId: '1',
+    toWalletId: '20',
+    toMemberId: '2',
+    amount: '10.00',
+    remark: '备注',
+    status: 'SUCCESS',
+    createTime: null,
+  };
+  mockedRequest.mockResolvedValue({ rows: [transfer], total: 1 });
+  const result = await api.getWalletTransfers({ fromMemberId: '1', pageNum: 2, pageSize: 20 });
+  expect(result.records[0]).toMatchObject({ transferNo: 'TF1', amount: '10.00', toMemberId: '2' });
+  expect(mockedRequest).toHaveBeenCalledWith({
+    url: '/trade/admin/wallet-transfers',
+    params: { fromMemberId: '1', pageNum: 2, pageSize: 20 },
+  });
+  mockedRequest.mockResolvedValue({ data: transfer });
+  expect((await api.getWalletTransfer('TF1')).transferNo).toBe('TF1');
+  mockedRequest.mockResolvedValue({ data: { ...transfer, status: 'FAILED' } });
+  await expect(api.getWalletTransfer('TF1')).rejects.toThrow('转账状态');
+});

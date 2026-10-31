@@ -56,6 +56,11 @@ export const pages: Record<string, ComponentType> = {
       default: m.WalletRechargePage,
     })),
   ),
+  'trade/wallet-transfer/index': lazy(() =>
+    import('../modules/trade/payment/pages/WalletPage').then((m) => ({
+      default: m.WalletTransferPage,
+    })),
+  ),
   'mall/promotion/reward-activity/index': lazy(() =>
     import('../modules/mall/promotion/pages/ActivityPage').then((m) => ({
       default: m.RewardActivityPage,

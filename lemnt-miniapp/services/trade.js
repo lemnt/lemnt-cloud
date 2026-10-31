@@ -19,7 +19,7 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     if (path === '/coupon-center' || path === '/coupon-wallet') {
       return { records: response.data.rows, total: response.data.total };
     }
-    if (service === 'trade' && (path === '/orders' || path === '/after-sales' || path === '/wallet/transactions' || path === '/wallet/recharges')) {
+    if (service === 'trade' && (path === '/orders' || path === '/after-sales' || path === '/wallet/transactions' || path === '/wallet/recharges' || path === '/wallet/transfers')) {
       return { records: response.data.rows || [], total: response.data.total || 0 };
     }
     return response.data.data;
@@ -98,6 +98,19 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
       return call('/wallet/recharges', 'POST', { packageId, requestNo }, 'trade');
     },
     myRecharges: input => call('/wallet/recharges', 'GET', page(input), 'trade'),
+
+    // 转账
+    walletTransfer: input => {
+      const toMemberId = input && input.toMemberId;
+      if (!Number.isSafeInteger(toMemberId) || toMemberId <= 0) throw new Error('转入会员编号不合法');
+      const amount = input && typeof input.amount === 'string' ? input.amount.trim() : '';
+      if (!/^\d{1,9}(\.\d{1,2})?$/.test(amount) || Number(amount) <= 0) throw new Error('转账金额不合法');
+      const requestNo = input && input.requestNo;
+      if (typeof requestNo !== 'string' || !requestNo.trim() || requestNo.length > 64) throw new Error('请求编号不合法');
+      const remark = input && typeof input.remark === 'string' && input.remark.trim() ? input.remark.trim() : undefined;
+      return call('/wallet/transfers', 'POST', { toMemberId, amount: Number(amount).toFixed(2), requestNo, ...(remark ? { remark } : {}) }, 'trade');
+    },
+    myTransfers: input => call('/wallet/transfers', 'GET', page(input), 'trade'),
 
     // 订单中心
     orderPage: input => {
