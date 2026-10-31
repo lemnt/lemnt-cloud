@@ -1,0 +1,27 @@
+<view class="container">
+ <view wx:if="{{!ready}}" class="notice">会员服务暂未启用。</view>
+ <view wx:if="{{error}}" class="error">{{error}}</view>
+ <button wx:if="{{!loggedIn}}" bindtap="login">会员登录</button>
+ <block wx:if="{{loggedIn}}">
+  <view class="card">
+   <view class="title">选择充值套餐</view>
+   <view wx:if="{{!packages.length}}" class="description">暂无可充值套餐</view>
+   <view wx:for="{{packages}}" wx:key="id" class="list-row {{selectedPackage && selectedPackage.id === item.id ? 'selected' : ''}}" data-index="{{index}}" bindtap="choosePackage">
+    <text>{{item.name}}</text>
+    <text class="status">支付 ￥{{item.payPrice}} · 到账 ￥{{item.total}}</text>
+    <view class="description" wx:if="{{item.bonusPrice !== '0.00'}}">含赠送 ￥{{item.bonusPrice}}</view>
+   </view>
+   <button type="primary" bindtap="recharge" disabled="{{loading || !selectedPackage}}">创建充值单</button>
+   <view class="description">真实支付渠道尚未接通；创建后由后台确认到账。</view>
+  </view>
+  <button bindtap="reload" disabled="{{loading}}">刷新</button>
+  <view wx:if="{{!recharges.length}}" class="description">暂无充值记录</view>
+  <view wx:for="{{recharges}}" wx:key="rechargeNo" class="card">
+   <view class="list-row"><text>{{item.rechargeNo}}</text><text class="status">{{item.statusLabel}}</text></view>
+   <view class="list-row">到账金额 ￥{{item.totalPrice}}</view>
+   <view class="list-row" wx:if="{{item.paidTime}}">到账时间 {{item.paidTime}}</view>
+  </view>
+  <view wx:if="{{hasMore}}" class="description">已显示 {{recharges.length}} / {{total}}</view>
+  <view class="row"><navigator url="/pages/member-wallet/index">我的钱包</navigator><navigator url="/pages/member/index">会员中心</navigator></view>
+ </block>
+</view>

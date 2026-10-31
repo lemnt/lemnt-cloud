@@ -6,6 +6,8 @@
     "pages/member-login/index",
     "pages/member-addresses/index",
     "pages/member-benefits/index",
+    "pages/member-wallet/index",
+    "pages/wallet-recharge/index",
     "pages/product/index",
     "pages/coupons/index",
     "pages/favorites/index",

@@ -109,6 +109,31 @@ class ControllerMappingTest {
                 GET /trade/admin/pay-channels/{id} trade:pay-channel:query
                 GET /trade/admin/pay-channels trade:pay-channel:list
                 GET /trade/admin/pay-channels/by-app/{appId} trade:pay-channel:query
+                GET /trade/admin/pay-notify-tasks trade:pay-notify:list
+                GET /trade/admin/pay-notify-tasks/{id} trade:pay-notify:query
+                POST /trade/admin/pay-notify-tasks/{id}/retry trade:pay-notify:retry
+                GET /trade/admin/wallets trade:wallet:list
+                GET /trade/admin/wallets/{memberId} trade:wallet:query
+                GET /trade/admin/wallets/{memberId}/transactions trade:wallet:query
+                POST /trade/admin/wallets/{memberId}/adjust trade:wallet:adjust
+                GET /trade/app/wallet
+                GET /trade/app/wallet/transactions
+                GET /trade/admin/recharge-packages trade:recharge-package:list
+                GET /trade/admin/recharge-packages/{id} trade:recharge-package:query
+                POST /trade/admin/recharge-packages trade:recharge-package:create
+                PUT /trade/admin/recharge-packages/{id} trade:recharge-package:update
+                DELETE /trade/admin/recharge-packages/{id} trade:recharge-package:remove
+                GET /trade/admin/wallet-recharges trade:wallet-recharge:list
+                GET /trade/admin/wallet-recharges/{rechargeNo} trade:wallet-recharge:query
+                POST /trade/admin/wallet-recharges/{rechargeNo}/confirm trade:wallet-recharge:confirm
+                POST /trade/admin/wallet-recharges/{rechargeNo}/refund trade:wallet-recharge:refund
+                GET /trade/app/recharge-packages
+                POST /trade/app/wallet/recharges
+                GET /trade/app/wallet/recharges
+                GET /trade/admin/wallet-transfers trade:wallet-transfer:list
+                GET /trade/admin/wallet-transfers/{transferNo} trade:wallet-transfer:query
+                POST /trade/app/wallet/transfers
+                GET /trade/app/wallet/transfers
 
                 """.split("\n")));
         // 文本块会移除行尾空格，空权限与带权限的路由统一去掉行尾空白。

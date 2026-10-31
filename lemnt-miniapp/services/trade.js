@@ -19,7 +19,7 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     if (path === '/coupon-center' || path === '/coupon-wallet') {
       return { records: response.data.rows, total: response.data.total };
     }
-    if (service === 'trade' && (path === '/orders' || path === '/after-sales')) {
+    if (service === 'trade' && (path === '/orders' || path === '/after-sales' || path === '/wallet/transactions' || path === '/wallet/recharges')) {
       return { records: response.data.rows || [], total: response.data.total || 0 };
     }
     return response.data.data;
@@ -78,6 +78,26 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     cancelOrder: orderNo => call('/orders/' + order(orderNo) + '/cancel', 'POST', undefined, 'trade'),
     receiveOrder: orderNo => call('/orders/' + order(orderNo) + '/receive', 'POST', undefined, 'trade'),
     cancelAfterSale: no => call('/after-sales/' + order(no) + '/cancel', 'POST', undefined, 'trade'),
+
+    // 钱包
+    wallet: () => call('/wallet', 'GET', undefined, 'trade'),
+    walletTransactions: input => {
+      const paging = page(input);
+      const bizType = input && typeof input.bizType === 'string' && input.bizType ? input.bizType : undefined;
+      if (bizType !== undefined && !['RECHARGE','RECHARGE_REFUND','PAYMENT','PAYMENT_REFUND','UPDATE_BALANCE','TRANSFER'].includes(bizType)) throw new Error('业务类型不合法');
+      return call('/wallet/transactions', 'GET', { ...paging, ...(bizType === undefined ? {} : { bizType }) }, 'trade');
+    },
+
+    // 充值
+    rechargePackages: () => call('/recharge-packages', 'GET', undefined, 'trade'),
+    createRecharge: input => {
+      const packageId = input && input.packageId;
+      if (!Number.isSafeInteger(packageId) || packageId <= 0) throw new Error('套餐编号不合法');
+      const requestNo = input && input.requestNo;
+      if (typeof requestNo !== 'string' || !requestNo.trim() || requestNo.length > 64) throw new Error('请求编号不合法');
+      return call('/wallet/recharges', 'POST', { packageId, requestNo }, 'trade');
+    },
+    myRecharges: input => call('/wallet/recharges', 'GET', page(input), 'trade'),
 
     // 订单中心
     orderPage: input => {

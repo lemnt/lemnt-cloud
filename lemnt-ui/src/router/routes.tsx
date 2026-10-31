@@ -38,6 +38,24 @@ export const pages: Record<string, ComponentType> = {
       default: m.PayChannelConfigPage,
     })),
   ),
+  'trade/pay-notify/index': lazy(() =>
+    import('../modules/trade/payment/pages/PayNotifyTaskPage').then((m) => ({
+      default: m.PayNotifyTaskPage,
+    })),
+  ),
+  'trade/wallet/index': lazy(() =>
+    import('../modules/trade/payment/pages/WalletPage').then((m) => ({ default: m.WalletPage })),
+  ),
+  'trade/recharge-package/index': lazy(() =>
+    import('../modules/trade/payment/pages/RechargePage').then((m) => ({
+      default: m.RechargePackagePage,
+    })),
+  ),
+  'trade/wallet-recharge/index': lazy(() =>
+    import('../modules/trade/payment/pages/RechargePage').then((m) => ({
+      default: m.WalletRechargePage,
+    })),
+  ),
   'mall/promotion/reward-activity/index': lazy(() =>
     import('../modules/mall/promotion/pages/ActivityPage').then((m) => ({
       default: m.RewardActivityPage,

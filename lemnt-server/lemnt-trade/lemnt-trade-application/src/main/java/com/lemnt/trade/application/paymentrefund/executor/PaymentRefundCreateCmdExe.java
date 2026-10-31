@@ -1,11 +1,12 @@
 package com.lemnt.trade.application.paymentrefund.executor;
 
+import com.lemnt.trade.application.payment.service.PayNotifyTaskService;
 import com.lemnt.trade.application.paymentrefund.converter.PaymentRefundDTOConverter;
 import com.lemnt.trade.application.paymentrefund.dto.PaymentRefundDTO;
 import com.lemnt.trade.application.paymentrefund.service.PaymentRefundService;
-import com.lemnt.trade.application.paymentrefund.service.RefundBenefitsService;
 import com.lemnt.trade.domain.order.model.TradeOperator;
 import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.trade.domain.payment.model.PayNotifyType;
 import com.lemnt.trade.domain.paymentrefund.gateway.PaymentRefundChannelGateway;
 
 import org.springframework.stereotype.Component;
@@ -19,9 +20,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PaymentRefundCreateCmdExe {
     private final PaymentRefundService service;
-    private final RefundBenefitsService benefits;
     private final TradePaymentGateway payments;
     private final PaymentRefundChannelGateway channels;
+    private final PayNotifyTaskService tasks;
 
     /** 单售后编号入参，退款金额和渠道全部取自服务端原单。 */
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -38,7 +39,7 @@ public class PaymentRefundCreateCmdExe {
     private PaymentRefundDTO execute(String afterSaleNo, TradeOperator operator) {
         var refund = service.prepare(afterSaleNo, operator);
         if ("SUCCESS".equals(refund.status())) {
-            benefits.complete(refund);
+            complete(refund);
             return PaymentRefundDTOConverter.toDTO(refund);
         }
         var payment = payments.findByPaymentNo(refund.paymentNo());
@@ -48,7 +49,17 @@ public class PaymentRefundCreateCmdExe {
             throw new IllegalStateException("原支付单与退款交易不一致，请先对账");
         }
         var result = service.complete(refund, channels.refund(refund, payment));
-        benefits.complete(result);
+        complete(result);
         return PaymentRefundDTOConverter.toDTO(result);
+    }
+
+    /** 退款成功后通过持久化任务回退权益；非成功状态没有下游权益可派发。 */
+    private void complete(com.lemnt.trade.domain.paymentrefund.model.PaymentRefund refund) {
+        if (!"SUCCESS".equals(refund.status())) {
+            return;
+        }
+        if (!tasks.enqueueAndAttempt(PayNotifyType.REFUND.name(), refund.refundNo(), refund.orderNo())) {
+            throw new IllegalStateException("退款后处理失败，已登记重试任务");
+        }
     }
 }

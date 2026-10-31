@@ -304,6 +304,7 @@ class CheckoutFlowIntegrationTest {
         ScriptUtils.executeSqlScript(tradeSchema, new ClassPathResource("trade-sql/V8__order_log.sql"));
         ScriptUtils.executeSqlScript(
                 tradeSchema, new ClassPathResource("trade-sql/V2__trade_payment.sql"));
+        ScriptUtils.executeSqlScript(tradeSchema, new ClassPathResource("trade-sql/V11__pay_notify_task.sql"));
         ScriptUtils.executeSqlScript(
                 mallSchema, new ClassPathResource("mall-sql/V10__cart_coupon_checkout.sql"));
         ScriptUtils.executeSqlScript(
@@ -492,10 +493,12 @@ class CheckoutFlowIntegrationTest {
         tradeComponents.register(com.lemnt.trade.domain.order.gateway.OrderBenefitsGateway.class, benefits);
         remotes = new com.lemnt.trade.application.order.service.OrderRemoteService(
                 orderPersistenceService, bridge, benefits, lifecycle, rollbackMessages);
+        tradeComponents.register(com.lemnt.trade.application.order.service.OrderRemoteService.class, remotes);
         closer =
                 new TradeOrderCloseCmdExe(tx(new com.lemnt.trade.application.order.service.OrderCloseService(orderPersistenceService, tradeOrderGateway, payments, p -> false, tradeComponents.get(com.lemnt.trade.application.order.service.OrderLogService.class)), tradeSource), remotes);
         paymentCreate = tx(new TradePaymentCreateCmdExe(tradeComponents.get(OrderPersistenceService.class), payments), tradeSource);
-        notify = new PaymentNotifyCmdExe(tx(new com.lemnt.trade.application.payment.service.PaymentNotificationService(orderPersistenceService, tradeOrderGateway, payments, tradeComponents.get(com.lemnt.trade.application.order.service.OrderLogService.class)), tradeSource), remotes);
+        notify = new PaymentNotifyCmdExe(tx(new com.lemnt.trade.application.payment.service.PaymentNotificationService(orderPersistenceService, tradeOrderGateway, payments, tradeComponents.get(com.lemnt.trade.application.order.service.OrderLogService.class)), tradeSource),
+                tradeComponents.get(com.lemnt.trade.application.payment.service.PayNotifyTaskService.class));
         cartService.saveCart(1L, sku, 2, true);
     }
 

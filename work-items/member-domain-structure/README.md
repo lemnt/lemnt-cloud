@@ -195,3 +195,9 @@
 2026-10-31 第135批：App订单中心与售后中心闭环。后端新增本人订单分页/状态数量/详情/物流轨迹、本人售后分页/详情/额度/申请/登记退货，SQL按member_id过滤且他人资源统一不存在；小程序新增订单列表、订单详情、售后列表、售后申请、售后详情五页。trade各模块174项、小程序136项测试通过；真实环境、收银台/渠道SDK与真机联调仍待完成，见[135-app-order-aftersale-center-delivery.md](135-app-order-aftersale-center-delivery.md)。
 
 2026-10-31 第136批：支付应用与支付渠道配置。新增trade_pay_app/trade_pay_channel两表及CRUD、后台两页与菜单种子；渠道config明文不出接口、留空保留原值、code限定ALIPAY/WECHAT。trade全模块185项、前端271项测试通过；支付通知任务/日志/重试涉及回调路径，留待下一批，见[136-pay-app-channel-delivery.md](136-pay-app-channel-delivery.md)。
+
+2026-10-31 第137批：支付通知任务/日志/重试。新增派发任务与尝试日志两表、CAS尝试与退避重试、调度器与后台查询/重发；PAY派发库存核券、REFUND派发权益回退，失败仍向上抛出并保留任务。trade全模块196项（含100项下单集成）、前端274项测试通过；调度默认关闭、真实渠道与部署联调未做，见[137-pay-notify-task-delivery.md](137-pay-notify-task-delivery.md)。
+
+2026-10-31 第138批：会员钱包账户与流水。新增trade_member_wallet/transaction两表，行锁串行资金变更、业务幂等、冻结/解冻、后台人工调整与App查询；金额元DECIMAL(19,2)。trade全模块206项、前端277项、小程序138项测试通过；充值套餐/转账与真实环境联调未做，见[138-wallet-account-ledger-delivery.md](138-wallet-account-ledger-delivery.md)。
+
+2026-10-31 第139批：充值套餐与充值单。新增套餐与充值单两表、套餐CRUD、按套餐下单（requestNo幂等）、后台确认到账入钱包、退款出钱包；后台两页与小程序充值页。trade全模块215项、前端280项、小程序140项测试通过；真实渠道/异步退款与转账未做，见[139-wallet-recharge-delivery.md](139-wallet-recharge-delivery.md)。

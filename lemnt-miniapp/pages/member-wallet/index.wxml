@@ -1,0 +1,25 @@
+<view class="container">
+ <view wx:if="{{!ready}}" class="notice">会员服务暂未启用。</view>
+ <view wx:if="{{error}}" class="error">{{error}}</view>
+ <button wx:if="{{!loggedIn}}" bindtap="login">会员登录</button>
+ <block wx:if="{{loggedIn}}">
+  <view wx:if="{{wallet}}" class="card">
+   <view class="title">我的钱包</view>
+   <view class="list-row">可用余额：￥{{wallet.balance}}</view>
+   <view class="list-row">冻结金额：￥{{wallet.freezePrice}}</view>
+   <view class="list-row">累计充值：￥{{wallet.totalRecharge}}</view>
+   <view class="list-row">累计支出：￥{{wallet.totalExpense}}</view>
+   <navigator url="/pages/wallet-recharge/index">去充值</navigator>
+  </view>
+  <button bindtap="reload" disabled="{{loading}}">刷新</button>
+  <view wx:if="{{!records.length}}" class="description">暂无余额流水</view>
+  <view wx:for="{{records}}" wx:key="transactionNo" class="card">
+   <view class="list-row"><text>{{item.title || item.bizType}}</text><text class="status">{{item.amount}}</text></view>
+   <view class="list-row">业务单号 {{item.bizNo}}</view>
+   <view class="list-row">交易后余额 ￥{{item.balanceAfter}}</view>
+   <view class="list-row" wx:if="{{item.createTime}}">{{item.createTime}}</view>
+  </view>
+  <view wx:if="{{hasMore}}" class="description">已显示 {{records.length}} / {{total}}</view>
+  <navigator url="/pages/member/index">返回会员中心</navigator>
+ </block>
+</view>
