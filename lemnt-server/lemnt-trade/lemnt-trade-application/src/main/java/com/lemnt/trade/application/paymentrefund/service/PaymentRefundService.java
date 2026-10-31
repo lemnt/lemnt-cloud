@@ -3,8 +3,10 @@ package com.lemnt.trade.application.paymentrefund.service;
 import com.lemnt.trade.application.aftersale.service.AfterSaleLogService;
 import com.lemnt.trade.application.order.service.OrderLogService;
 import com.lemnt.trade.domain.aftersale.gateway.AfterSaleGateway;
+import com.lemnt.trade.domain.aftersale.model.AfterSale;
 import com.lemnt.trade.domain.fulfillment.gateway.InventoryConfirmationGateway;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
+import com.lemnt.trade.domain.order.gateway.TradeOrderItemGateway;
 import com.lemnt.trade.domain.order.model.OrderRules;
 import com.lemnt.trade.domain.order.model.TradeOperator;
 import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
@@ -29,6 +31,7 @@ public class PaymentRefundService {
     private final TradeOrderGateway orders;
     private final AfterSaleGateway afterSales;
     private final TradePaymentGateway payments;
+    private final TradeOrderItemGateway items;
     private final PaymentRefundGateway refunds;
     private final InventoryConfirmationGateway inventoryConfirmation;
     private final OrderLogService logs;
@@ -61,6 +64,9 @@ public class PaymentRefundService {
         if (!inventoryConfirmation.inventoryConfirmed(order.orderNo())) {
             throw new IllegalStateException("支付后处理尚未完成，请先重试支付通知");
         }
+        if (order.totalAmount().signum() == 0) {
+            return zeroRefund(afterSale, order, operator);
+        }
         var successful = payments.findByOrderNo(order.orderNo()).stream()
                 .filter(payment -> "SUCCESS".equals(payment.status())).toList();
         if (successful.size() != 1 || !successful.get(0).paymentNo().equals(afterSale.paymentNo())
@@ -86,6 +92,45 @@ public class PaymentRefundService {
             throw new IllegalStateException("售后单状态已变化");
         }
         afterSaleLogs.record(afterSale, afterSale.status(), "REFUNDING", 30, operator, "发起原路退款");
+        return refund;
+    }
+
+    /** 零元订单无支付单，直接完成售后、订单退款并交由权益任务退回积分。 */
+    private PaymentRefund zeroRefund(com.lemnt.trade.domain.aftersale.model.AfterSale afterSale,
+            com.lemnt.trade.domain.order.model.TradeOrder order, TradeOperator operator) {
+        if (afterSale.amount().signum() != 0 || afterSale.paymentNo() != null
+                || !order.memberId().equals(afterSale.memberId())) {
+            throw new IllegalStateException("零元订单售后金额或会员不一致");
+        }
+        var refund = new PaymentRefund("PR" + UUID.randomUUID().toString().replace("-", "")
+                .toUpperCase(Locale.ROOT), afterSale.refundNo(), null, order.orderNo(), "POINT",
+                java.math.BigDecimal.ZERO.setScale(2), "SUCCESS", "POINTS");
+        refunds.save(refund);
+        if (!afterSales.startPaymentRefund(afterSale.refundNo())) {
+            throw new IllegalStateException("售后单状态已变化");
+        }
+        if (!afterSales.completePaymentRefund(afterSale.refundNo(), orders.databaseNow())) {
+            throw new IllegalStateException("退款成功状态写入冲突");
+        }
+        afterSaleLogs.record(afterSales.afterSale(afterSale.refundNo()), "REFUNDING", "REFUNDED", 31,
+                operator, "零元订单积分原路退回");
+        var line = items.refundItems(order.id()).stream()
+                .filter(item -> item.id().equals(afterSale.orderItemId()))
+                .findFirst().orElseThrow(() -> new IllegalStateException("售后商品不属于原订单"));
+        var refundedQuantity = afterSales.afterSales(order.orderNo()).stream()
+                .filter(item -> "REFUNDED".equals(item.status())
+                        && line.id().equals(item.orderItemId()))
+                .mapToInt(AfterSale::quantity).sum();
+        if (refundedQuantity >= line.quantity()) {
+            if (!orders.transitionStatus(order.orderNo(), order.status(), "REFUNDED")) {
+                throw new IllegalStateException("订单退款状态写入冲突");
+            }
+            logs.record(order, order.status(), "REFUNDED", 43, operator,
+                    "零元订单全部售后，自动取消订单");
+        } else {
+            logs.record(order, order.status(), order.status(), 44, operator,
+                    "零元订单部分售后，订单保留");
+        }
         return refund;
     }
 

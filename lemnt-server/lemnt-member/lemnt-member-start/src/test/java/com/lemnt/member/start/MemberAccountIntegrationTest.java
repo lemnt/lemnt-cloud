@@ -613,6 +613,28 @@ class MemberAccountIntegrationTest {
         assertEquals(0L, memberUserGateway.findById(id).experience());
     }
 
+    /** 零元兑换只扣/退积分，不产生经验和赠送积分。 */
+    @Test
+    void zeroCashPointOrderDeductsAndReturnsPointsWithoutExperience() {
+        growthService.adjustAsset(id, "POINT", 100, "SEED_ZERO", "初始化");
+        var create = new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                id, "CREATE", "ZERO", null, 50, 0, 0, 0, false);
+        growthService.tradeAsset(create);
+        assertEquals(50L, memberUserGateway.findById(id).points());
+        var paid = new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                id, "PAID", "ZERO", null, 50, 0, 0, 0, false);
+        growthService.tradeAsset(paid);
+        assertEquals(50L, memberUserGateway.findById(id).points());
+        assertEquals(0L, memberUserGateway.findById(id).experience());
+        growthService.tradeAsset(new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                id, "REFUND", "ZERO", "RF-ZERO-1", 50, 0, 0, 0, false, 25));
+        assertEquals(75L, memberUserGateway.findById(id).points());
+        growthService.tradeAsset(new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                id, "REFUND", "ZERO", "RF-ZERO-2", 50, 0, 0, 0, true, 25));
+        assertEquals(100L, memberUserGateway.findById(id).points());
+        assertEquals(0L, memberUserGateway.findById(id).experience());
+    }
+
     /** 未成功扣减不能通过关单获得积分，终态会拒绝迟到的抵扣。 */
     @Test
     void closedTradeDoesNotCreditUndeductedPointsAndRejectsLateCreate() {

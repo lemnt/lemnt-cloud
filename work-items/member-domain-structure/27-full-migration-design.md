@@ -150,3 +150,11 @@ F01进行中：规则快照、限领/无限量、DATE/TERM、商品范围计价�
 2026-10-31 第139批：充值套餐与充值单。新增套餐与充值单两表、套餐CRUD、按套餐下单（requestNo幂等）、后台确认到账入钱包、退款出钱包；后台两页与小程序充值页。trade全模块215项、前端280项、小程序140项测试通过；真实渠道/异步退款与转账未做，见[139-wallet-recharge-delivery.md](139-wallet-recharge-delivery.md)。
 
 2026-10-31 第140批：钱包转账。新增转账表，钱包间同步互转（requestNo幂等、双钱包按编号升序加锁、双向TRANSFER流水）；后台只读转账页与小程序转账页。trade全模块222项、前端281项、小程序142项测试通过；真实渠道出款与异步状态未做，见[140-wallet-transfer-delivery.md](140-wallet-transfer-delivery.md)。
+
+2026-10-31 第141批：促销运营四子域。新增秒杀（时段/活动/商品）、拼团（活动/商品/记录）、砍价（活动/记录/助力）、积分商城（活动/商品）共11张表；完成各子域后台CRUD与页面、小程序浏览/参团/助力/积分浏览页、活动时段冲突/库存/限购/并发助力/过期成团/虚拟成团等规则，并提供下单前校验与库存扣减/恢复服务。mall全模块154项、前端292项、小程序153项测试通过；活动下单与trade订单处理器、取消退款恢复及真实环境联调未完成，见[141-promotion-operations-delivery.md](141-promotion-operations-delivery.md)。
+
+2026-10-31 第142批：促销活动订单集成。新增活动订单映射与退款去重两表，四个活动下单接口，交易 reserved/paid/closed/refunded 回调接入活动库存预占/恢复、拼团支付建团、砍价订单绑定；活动订单只使用活动价，requestNo 幂等。mall全模块165项、前端292项、小程序155项测试通过；0元积分兑换、多SKU/非默认地址、拼团整单退款失败团及真实环境联调未完成，见[142-promotion-order-integration-delivery.md](142-promotion-order-integration-delivery.md)。
+
+2026-10-31 第143批：0元积分兑换与交易零支付。交易金额约束放宽到0且要求消耗积分，预占成功后自动转PAID并确认库存；活动订单允许0元快照；会员允许0现金实付的积分扣减/整单回退且不产生经验。mall 165项、trade 224项、member 118项、前端292项、小程序155项测试通过；支付单记录、零元订单按数量比例退款及真实环境联调未做，见[143-zero-cash-point-order-delivery.md](143-zero-cash-point-order-delivery.md)。
+
+2026-10-31 第144批：0元订单售后退款与积分回退。售后单/退款单允许无支付单和0金额，零元退款以POINT成功记录派发既有权益任务；商城恢复活动库存并置活动订单REFUNDED，会员整单退积分且无经验。trade 227项、mall 165项、member 118项、前端292项、小程序155项测试通过；零元部分退款及真实环境联调未做，见[144-zero-cash-aftersale-refund-delivery.md](144-zero-cash-aftersale-refund-delivery.md)。

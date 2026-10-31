@@ -30,6 +30,7 @@ public class MemberGrowthClientImpl implements MemberGrowthClient {
     @Override
     public void applyTrade(MemberTradeAssetBo v) {
         growth.tradeAsset(new MemberTradeAssetCmd(v.memberId(), v.operation(), v.orderNo(), v.refundNo(),
-                v.usePoint(), v.givePoint(), v.paidFen(), v.refundFen(), v.fullRefund()));
+                v.usePoint(), v.givePoint(), v.paidFen(), v.refundFen(), v.fullRefund(),
+                v.refundPoint()));
     }
 }

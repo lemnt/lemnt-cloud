@@ -61,6 +61,46 @@ public class OrderLifecycleService {
     }
 
     /**
+     * 库存已预占但商城同步回调失败：关闭订单，交由统一补偿恢复 SKU 库存与活动库存。
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void reservationCallbackFailed(String orderNo) {
+        var order = orderPersistenceService.findByOrderNoForUpdate(orderNo);
+        if (order == null) {
+            throw new IllegalArgumentException("订单不存在");
+        }
+        if (!"PENDING_PAYMENT".equals(order.status())) {
+            return;
+        }
+        if (!tradeOrderGateway.transitionStatus(orderNo, "PENDING_PAYMENT", "CLOSED")) {
+            throw new IllegalStateException("订单状态冲突");
+        }
+        logs.record(order, "PENDING_PAYMENT", "CLOSED", 41, TradeOperator.system(),
+                "商城预占回调失败，系统取消订单");
+    }
+
+    /**
+     * 零元订单无需支付渠道，库存与商城预占成功后直接进入已支付。
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void zeroPay(String orderNo) {
+        var order = orderPersistenceService.findByOrderNoForUpdate(orderNo);
+        if (order == null) {
+            throw new IllegalArgumentException("订单不存在");
+        }
+        if ("PAID".equals(order.status())) {
+            return;
+        }
+        if (!"PENDING_PAYMENT".equals(order.status())) {
+            throw new IllegalStateException("订单状态不允许零元支付");
+        }
+        if (!tradeOrderGateway.transitionStatus(orderNo, "PENDING_PAYMENT", "PAID")) {
+            throw new IllegalStateException("订单状态冲突");
+        }
+        logs.record(order, "PENDING_PAYMENT", "PAID", 42, TradeOperator.system(), "零元订单自动支付");
+    }
+
+    /**
      * 库存已确认。
      */
     @Transactional(rollbackFor = Exception.class)

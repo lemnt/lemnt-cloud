@@ -478,8 +478,10 @@ class CheckoutFlowIntegrationTest {
         tx(
                 new OrderLifecycleService(tradeComponents.get(InventoryConfirmationGateway.class), tradeComponents.get(OrderPersistenceService.class), tradeComponents.get(TradeOrderGateway.class), tradeComponents.get(com.lemnt.trade.application.order.service.OrderLogService.class)),
                 tradeSource);
+        var promotionOrders = Mockito.mock(com.lemnt.mall.application.promotion.service.PromotionOrderService.class);
+        mallComponents.register(com.lemnt.mall.application.promotion.service.PromotionOrderService.class, promotionOrders);
         var handler = tx(new com.lemnt.mall.application.dubbo.SettlementLifecycleClientImpl(
-                mallComponents.get(com.lemnt.mall.domain.member.gateway.MemberTradeGateway.class), checkoutService, orderRpc, productInventoryService), mallSource);
+                mallComponents.get(com.lemnt.mall.domain.member.gateway.MemberTradeGateway.class), checkoutService, orderRpc, productInventoryService, promotionOrders), mallSource);
         benefits = new com.lemnt.trade.domain.order.gateway.OrderBenefitsGateway() {
             public void verify(String no) { handler.verify(no); }
             public void reserved(String no) { handler.reserved(no); }

@@ -121,4 +121,162 @@ export interface SeckillActivityFilter {
   pageNum: number;
   pageSize: number;
 }
-
+export interface CombinationProductLine {
+  skuId: string;
+  combinationPrice: string;
+}
+export interface CombinationActivity {
+  id: string;
+  name: string;
+  spuId: string;
+  spuName: string | null;
+  picUrl: string | null;
+  combinationPrice: string | null;
+  totalLimitCount: number;
+  singleLimitCount: number;
+  startTime: string;
+  endTime: string;
+  userSize: number;
+  virtualGroup: boolean;
+  status: 0 | 1;
+  limitDuration: number;
+  products: CombinationProductLine[];
+}
+export interface CombinationActivitySave {
+  name: string;
+  spuId: string;
+  totalLimitCount: number;
+  singleLimitCount: number;
+  startTime: string;
+  endTime: string;
+  userSize: number;
+  virtualGroup: boolean;
+  limitDuration: number;
+  products: CombinationProductLine[];
+}
+export interface CombinationActivityFilter {
+  name?: string;
+  status?: 0 | 1;
+  spuId?: string;
+  pageNum: number;
+  pageSize: number;
+}
+export interface CombinationRecord {
+  id: string;
+  activityId: string;
+  combinationPrice: string;
+  spuId: string;
+  spuName: string;
+  picUrl: string | null;
+  skuId: string;
+  count: number;
+  userId: string;
+  nickname: string | null;
+  avatar: string | null;
+  headId: string;
+  status: 0 | 1 | 2;
+  orderId: string | null;
+  userSize: number;
+  userCount: number;
+  virtualGroup: boolean;
+  expireTime: string;
+  startTime: string;
+  endTime: string | null;
+}
+export interface BargainActivity {
+  id: string;
+  name: string;
+  startTime: string;
+  endTime: string;
+  status: 0 | 1;
+  spuId: string;
+  spuName: string | null;
+  picUrl: string | null;
+  skuPrice: string | null;
+  skuId: string;
+  bargainFirstPrice: string;
+  bargainMinPrice: string;
+  stock: number;
+  totalStock: number;
+  helpMaxCount: number;
+  bargainCount: number;
+  totalLimitCount: number;
+  randomMinPrice: string;
+  randomMaxPrice: string;
+  successCount: number;
+}
+export interface BargainActivitySave {
+  name: string;
+  startTime: string;
+  endTime: string;
+  spuId: string;
+  skuId: string;
+  bargainFirstPrice: string;
+  bargainMinPrice: string;
+  stock: number;
+  helpMaxCount: number;
+  bargainCount: number;
+  totalLimitCount: number;
+  randomMinPrice: string;
+  randomMaxPrice: string;
+}
+export interface BargainActivityFilter {
+  name?: string;
+  status?: 0 | 1;
+  pageNum: number;
+  pageSize: number;
+}
+export interface BargainRecord {
+  id: string;
+  userId: string;
+  activityId: string;
+  spuId: string;
+  spuName: string | null;
+  picUrl: string | null;
+  skuId: string;
+  bargainFirstPrice: string;
+  bargainPrice: string;
+  status: 1 | 2 | 3;
+  endTime: string | null;
+  orderId: string | null;
+}
+export interface BargainHelp {
+  id: string;
+  activityId: string;
+  recordId: string;
+  userId: string;
+  reducePrice: string;
+}
+export interface PointProductLine {
+  skuId: string;
+  exchangeCount: number;
+  point: number;
+  price: string;
+  stock: number;
+}
+export interface PointActivity {
+  id: string;
+  spuId: string;
+  spuName: string | null;
+  picUrl: string | null;
+  status: 0 | 1;
+  remark: string | null;
+  sort: number;
+  stock: number;
+  totalStock: number;
+  point: number | null;
+  price: string | null;
+  marketPrice: string | null;
+  products: (PointProductLine & { id: string; spuId: string })[];
+}
+export interface PointActivitySave {
+  spuId: string;
+  remark: string | null;
+  sort: number;
+  products: PointProductLine[];
+}
+export interface PointActivityFilter {
+  status?: 0 | 1;
+  pageNum: number;
+  pageSize: number;
+}

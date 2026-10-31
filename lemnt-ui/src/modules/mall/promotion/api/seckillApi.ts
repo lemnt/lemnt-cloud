@@ -169,7 +169,11 @@ export async function getSeckillActivity(id: string): Promise<SeckillActivity> {
   return activity(r.data);
 }
 export async function createSeckillActivity(payload: SeckillActivitySave) {
-  return request<number>({ url: '/mall/promotion/seckill-activities', method: 'post', data: payload });
+  return request<number>({
+    url: '/mall/promotion/seckill-activities',
+    method: 'post',
+    data: payload,
+  });
 }
 export async function updateSeckillActivity(id: string, payload: SeckillActivitySave) {
   return request<boolean>({
@@ -195,9 +199,11 @@ export function deleteSeckillActivity(id: string) {
 export function configPayload(v: SeckillConfigSave): SeckillConfigSave {
   const name = v.name?.trim();
   if (!name || name.length > 100) throw Error('时段名称不能为空且不超过100字');
-  if (!/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/.test(v.startTime) ||
+  if (
+    !/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/.test(v.startTime) ||
     !/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/.test(v.endTime) ||
-    v.endTime <= v.startTime)
+    v.endTime <= v.startTime
+  )
     throw Error('结束时间必须晚于开始时间');
   if (v.status !== 0 && v.status !== 1) throw Error('请选择时段状态');
   return {
@@ -212,9 +218,11 @@ export function configPayload(v: SeckillConfigSave): SeckillConfigSave {
 export function activityPayload(v: SeckillActivitySave): SeckillActivitySave {
   const name = v.name?.trim();
   if (!name || name.length > 100) throw Error('活动名称不能为空且不超过100字');
-  if (!/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(v.startTime) ||
+  if (
+    !/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(v.startTime) ||
     !/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(v.endTime) ||
-    v.endTime <= v.startTime)
+    v.endTime <= v.startTime
+  )
     throw Error('结束时间必须晚于开始时间');
   if (!Number.isSafeInteger(v.sort) || v.sort < 0) throw Error('排序必须为非负整数');
   if (!v.configIds?.length) throw Error('至少选择一个秒杀时段');

@@ -411,8 +411,8 @@ public class MemberGrowthService {
     /** 订单创建、支付、关闭和售后资产写入同一会员事务，重复回调按业务编号核对。 */
     @Transactional(rollbackFor = Exception.class)
     public void tradeAsset(com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd cmd) {
-        if (cmd == null || cmd.usePoint() < 0 || cmd.givePoint() < 0 || cmd.paidFen() <= 0
-                || cmd.refundFen() < 0 || cmd.refundFen() > cmd.paidFen()) {
+        if (cmd == null || cmd.usePoint() < 0 || cmd.givePoint() < 0 || cmd.paidFen() < 0
+                || cmd.refundFen() < 0 || cmd.refundFen() > cmd.paidFen() || cmd.refundPoint() < 0) {
             throw new ServiceException("交易权益参数不合法", 400);
         }
         String orderNo = MemberRules.text(cmd.orderNo(), 40);
@@ -435,7 +435,10 @@ public class MemberGrowthService {
                 if (cmd.givePoint() > 0) {
                     adjust(cmd.memberId(), "POINT", cmd.givePoint(), "TRADE_GIVE", orderNo, reason, false, false);
                 }
-                adjust(cmd.memberId(), "EXPERIENCE", cmd.paidFen(), "TRADE_EXPERIENCE", orderNo, reason, false, true);
+                if (cmd.paidFen() > 0) {
+                    adjust(cmd.memberId(), "EXPERIENCE", cmd.paidFen(), "TRADE_EXPERIENCE", orderNo, reason,
+                            false, true);
+                }
             }
             case "CLOSED" -> {
                 // 零变更终态记录阻止迟到的创建调用，不增加技术表。
@@ -450,11 +453,12 @@ public class MemberGrowthService {
                 String key = MemberRules.text(orderNo + ":" + refundNo, 64);
                 String refundReason = reason + ":" + cmd.refundFen() + ":" + cmd.fullRefund();
                 returnTradeAsset(cmd.memberId(), "POINT", "TRADE_USE", "TRADE_USE_RETURN", orderNo,
-                        key, cmd.refundFen(), cmd.paidFen(), cmd.fullRefund(), false, refundReason);
+                        key, cmd.refundFen(), cmd.paidFen(), cmd.fullRefund(), false, cmd.refundPoint(),
+                        refundReason);
                 returnTradeAsset(cmd.memberId(), "POINT", "TRADE_GIVE", "TRADE_GIVE_RETURN", orderNo,
-                        key, cmd.refundFen(), cmd.paidFen(), cmd.fullRefund(), true, refundReason);
+                        key, cmd.refundFen(), cmd.paidFen(), cmd.fullRefund(), true, 0L, refundReason);
                 returnTradeAsset(cmd.memberId(), "EXPERIENCE", "TRADE_EXPERIENCE", "TRADE_EXPERIENCE_RETURN",
-                        orderNo, key, cmd.refundFen(), cmd.paidFen(), cmd.fullRefund(), true, refundReason);
+                        orderNo, key, cmd.refundFen(), cmd.paidFen(), cmd.fullRefund(), true, 0L, refundReason);
             }
             default -> throw new ServiceException("交易权益操作不合法", 400);
         }
@@ -463,7 +467,7 @@ public class MemberGrowthService {
     /** 按已记录的原始权益回退；最终整单退款处理分次取整尾差，不回退其他订单权益。 */
     private void returnTradeAsset(Long memberId, String type, String originalType, String returnType,
             String orderNo, String key, long refundedFen, long paidFen, boolean fullRefund,
-            boolean reclaim, String reason) {
+            boolean reclaim, long explicitPoints, String reason) {
         var previous = assetRequest(memberId, type, returnType, key);
         if (previous != null) {
             if (!reason.equals(previous.reason())) { throw new ServiceException("售后权益内容不一致", 409); }
@@ -474,9 +478,16 @@ public class MemberGrowthService {
         long total = Math.abs(original.delta());
         long returned = Math.abs(tradeReturns(memberId, type, returnType, orderNo));
         if (returned > total) { throw new ServiceException("历史权益回退超过原记录", 409); }
-        long planned = fullRefund ? total - returned : java.math.BigInteger.valueOf(total)
-                .multiply(java.math.BigInteger.valueOf(refundedFen)).divide(java.math.BigInteger.valueOf(paidFen))
-                .longValueExact();
+        long planned;
+        if (paidFen == 0) {
+            // 零元订单由交易按数量比例计算本次退回积分，整单退款返回剩余全部积分。
+            planned = fullRefund ? total - returned
+                    : Math.min(Math.max(0L, explicitPoints), total - returned);
+        } else {
+            planned = java.math.BigInteger.valueOf(total)
+                    .multiply(java.math.BigInteger.valueOf(refundedFen))
+                    .divide(java.math.BigInteger.valueOf(paidFen)).longValueExact();
+        }
         long delta = Math.min(total - returned, planned);
         if (reclaim) {
             var user = lock(memberId);

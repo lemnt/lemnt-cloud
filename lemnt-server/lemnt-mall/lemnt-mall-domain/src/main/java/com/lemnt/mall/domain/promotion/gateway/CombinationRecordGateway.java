@@ -11,6 +11,9 @@ import java.util.List;
 public interface CombinationRecordGateway {
     CombinationRecord find(Long id);
 
+    /** 锁定团长记录，串行更新成团人数。 */
+    CombinationRecord lockById(Long id);
+
     CombinationRecord save(CombinationRecord value);
 
     /** 只更新状态、人数、结束时间和虚拟成团标记。 */
@@ -36,4 +39,7 @@ public interface CombinationRecordGateway {
 
     /** 参团用户总数。 */
     long userCount();
+
+    /** 活动已成团数量（仅团长记录）。 */
+    long successCount(Long activityId);
 }

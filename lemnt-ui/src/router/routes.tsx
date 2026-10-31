@@ -81,6 +81,31 @@ export const pages: Record<string, ComponentType> = {
       default: m.SeckillActivityPage,
     })),
   ),
+  'mall/promotion/combination-activity/index': lazy(() =>
+    import('../modules/mall/promotion/pages/CombinationPage').then((m) => ({
+      default: m.CombinationActivityPage,
+    })),
+  ),
+  'mall/promotion/combination-record/index': lazy(() =>
+    import('../modules/mall/promotion/pages/CombinationPage').then((m) => ({
+      default: m.CombinationRecordPage,
+    })),
+  ),
+  'mall/promotion/bargain-activity/index': lazy(() =>
+    import('../modules/mall/promotion/pages/BargainPage').then((m) => ({
+      default: m.BargainActivityPage,
+    })),
+  ),
+  'mall/promotion/bargain-record/index': lazy(() =>
+    import('../modules/mall/promotion/pages/BargainPage').then((m) => ({
+      default: m.BargainRecordPage,
+    })),
+  ),
+  'mall/promotion/point-activity/index': lazy(() =>
+    import('../modules/mall/promotion/pages/PointPage').then((m) => ({
+      default: m.PointActivityPage,
+    })),
+  ),
   'mall/comment/index': lazy(() => import('../modules/mall/catalog/pages/CommentPage')),
   'member/user/index': lazy(() => import('../modules/member/account/pages/MemberUserPage')),
   'member/level/index': lazy(() =>

@@ -36,7 +36,8 @@ public class TradeOrderClientImpl implements TradeOrderClient {
         }
         if (value == null || value.orderNo() == null || !value.orderNo().matches("[A-Za-z0-9_-]{1,40}")
                 || value.memberId() == null || value.memberId() <= 0 || value.totalAmount() == null
-                || value.totalAmount().signum() <= 0 || value.totalAmount().scale() > 2
+                || value.totalAmount().signum() < 0 || value.totalAmount().scale() > 2
+                || (value.totalAmount().signum() == 0 && value.usePoint() <= 0)
                 || value.items() == null || value.items().isEmpty() || value.items().size() > 100
         ) {
             throw new IllegalArgumentException("订单快照不合法");

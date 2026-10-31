@@ -118,18 +118,27 @@ public class AfterSaleService {
         }
         var amount = quota.refundableAmount().multiply(BigDecimal.valueOf(cmd.quantity()))
                 .divide(BigDecimal.valueOf(quota.refundableQuantity()), 2, RoundingMode.DOWN);
-        if (amount.signum() <= 0) {
-            throw new IllegalStateException("该数量对应的退款金额不足一分，请合并申请");
-        }
-        var successful = payments.findByOrderNo(no).stream().filter(value -> "SUCCESS".equals(value.status())).toList();
-        if (successful.size() != 1 || successful.get(0).amount().compareTo(order.totalAmount()) != 0) {
-            throw new IllegalStateException("订单成功支付记录不一致，请先对账");
+        String paymentNo = null;
+        if (order.totalAmount().signum() == 0) {
+            if (order.usePoint() <= 0 || amount.signum() != 0) {
+                throw new IllegalStateException("零元订单售后金额或积分不合法");
+            }
+        } else {
+            if (amount.signum() <= 0) {
+                throw new IllegalStateException("该数量对应的退款金额不足一分，请合并申请");
+            }
+            var successful = payments.findByOrderNo(no).stream()
+                    .filter(value -> "SUCCESS".equals(value.status())).toList();
+            if (successful.size() != 1 || successful.get(0).amount().compareTo(order.totalAmount()) != 0) {
+                throw new IllegalStateException("订单成功支付记录不一致，请先对账");
+            }
+            paymentNo = successful.get(0).paymentNo();
         }
         var value = new AfterSale("RF" + UUID.randomUUID().toString().replace("-", ""),
                 no,
                 key,
                 order.memberId(),
-                successful.get(0).paymentNo(),
+                paymentNo,
                 cmd.orderItemId(),
                 cmd.quantity(),
                 cmd.type(),

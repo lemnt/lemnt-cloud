@@ -1,5 +1,12 @@
 package com.lemnt.mall.adapter.app.promotion;
 
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
+import com.lemnt.mall.application.promotion.executor.PromotionOrderPlaceCmdExe;
+import com.lemnt.mall.adapter.app.promotion.res.AppPromotionOrderRes;
+import com.lemnt.mall.adapter.app.promotion.req.AppPromotionOrderCreateReq;
+import com.lemnt.mall.adapter.app.promotion.converter.AppPromotionOrderConverter;
+import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.common.core.domain.R;
 import com.lemnt.mall.adapter.app.promotion.converter.AppSeckillConverter;
 import com.lemnt.mall.adapter.app.promotion.req.AppSeckillPageReq;
@@ -34,6 +41,7 @@ public class AppSeckillController {
     private final SeckillAppConfigListQueryExe configs;
     private final SeckillNowQueryExe now;
     private final SeckillAppPageQueryExe page;
+    private final PromotionOrderPlaceCmdExe orderPlace;
     private final SeckillAppDetailQueryExe detail;
 
     @GetMapping("/configs")
@@ -60,5 +68,12 @@ public class AppSeckillController {
     @Operation(summary = "秒杀活动详情")
     public R<AppSeckillDetailRes> detail(@PathVariable Long id) {
         return R.ok(AppSeckillConverter.detail(detail.execute(id)));
+    }
+
+    @PostMapping("/orders")
+    @Operation(summary = "秒杀活动下单")
+    public R<AppPromotionOrderRes> order(@Valid @RequestBody AppPromotionOrderCreateReq req) {
+        return R.ok(AppPromotionOrderConverter.res(orderPlace.execute(
+                AppPromotionOrderConverter.cmd(SecurityUtils.getUserId(), "SECKILL", req))));
     }
 }

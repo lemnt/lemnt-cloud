@@ -29,6 +29,11 @@ public class CombinationRecordGatewayImpl implements CombinationRecordGateway {
     }
 
     @Override
+    public CombinationRecord lockById(Long id) {
+        return CombinationConverter.model(mapper.lockById(id));
+    }
+
+    @Override
     public CombinationRecord save(CombinationRecord value) {
         var row = CombinationConverter.row(value);
         if (row.getId() == null) { mapper.insert(row); } else { mapper.updateById(row); }
@@ -108,5 +113,13 @@ public class CombinationRecordGatewayImpl implements CombinationRecordGateway {
     @Override
     public long userCount() {
         return mapper.selectCount(Wrappers.<CombinationRecordDO>lambdaQuery());
+    }
+
+    @Override
+    public long successCount(Long activityId) {
+        return mapper.selectCount(Wrappers.<CombinationRecordDO>lambdaQuery()
+                .eq(CombinationRecordDO::getActivityId, activityId)
+                .eq(CombinationRecordDO::getHeadId, CombinationRecord.HEAD_ID_GROUP)
+                .eq(CombinationRecordDO::getStatus, 1));
     }
 }

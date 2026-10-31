@@ -1,0 +1,18 @@
+function obj(v){if(!v||typeof v!=='object'||Array.isArray(v))throw Error('积分商城响应格式不合法');return v;}
+function text(v){if(typeof v!=='string')throw Error('积分商城文本格式不合法');return v;}
+function id(v){const value=typeof v==='number'&&Number.isSafeInteger(v)?String(v):v;if(typeof value!=='string'||!/^[1-9]\d{0,18}$/.test(value)||BigInt(value)>9223372036854775807n)throw Error('积分商城编号不合法');return value;}
+function integer(v){if(typeof v!=='number'||!Number.isSafeInteger(v)||v<0)throw Error('积分商城数值格式不合法');return v;}
+function amount(v){if(typeof v!=='string'||!/^\d{1,17}\.\d{2}$/.test(v))throw Error('积分商城金额格式不合法');return v;}
+function list(v,decode){if(!Array.isArray(v))throw Error('积分商城列表格式不合法');return v.map(decode);}
+function product(v){obj(v);return {skuId:id(v.skuId),exchangeCount:integer(v.exchangeCount),point:integer(v.point),price:amount(v.price),stock:integer(v.stock)};}
+function activity(v){obj(v);if(v.status!==0&&v.status!==1)throw Error('积分商城活动状态不合法');return {id:id(v.id),spuId:id(v.spuId),spuName:v.spuName==null?'':text(v.spuName),picUrl:typeof v.picUrl==='string'&&/^https:\/\//.test(v.picUrl)?v.picUrl:'',status:v.status,stock:integer(v.stock),totalStock:integer(v.totalStock),point:v.point==null?null:integer(v.point),price:v.price==null?null:amount(v.price),marketPrice:v.marketPrice==null?null:amount(v.marketPrice),products:list(v.products,product)};}
+const orderRules=require('./promotionOrder');
+function createPointClient({request,baseUrl,getMemberToken,ready=false}){
+ async function call(path,data,method='GET',auth=false){if(!ready)throw Error('营销服务暂未启用');if(!/^https:\/\/[^/?#]+(?:\/[^?#]*)?$/.test(baseUrl))throw Error('请配置合法HTTPS服务地址');const header={};if(auth){const token=getMemberToken&&getMemberToken();if(!token)throw Error('请先完成会员登录');header.Authorization='Bearer '+token;}const r=await request({url:baseUrl.replace(/\/$/,'')+'/mall/app/point-mall'+path,method,data,header,timeout:15000});if(r.statusCode!==200||r.data?.code!==200)throw Error(r.data?.msg||'积分商城读取失败，请重试');return r.data;}
+ return {
+  activities:async q=>{if(!Number.isSafeInteger(q.pageNum)||q.pageNum<1)throw Error('页码不合法');const r=await call('/activities',{pageNum:q.pageNum,pageSize:20});return {records:list(r.rows,activity),total:integer(r.total)};},
+  activity:async key=>{const value=id(key);const r=await call('/activities/'+value);if(id(r.data.id)!==value)throw Error('积分商城活动编号不一致');return activity(r.data);},
+  order:async p=>{const r=await call('/orders',{activityId:orderRules.id(p.activityId),skuId:orderRules.id(p.skuId),quantity:orderRules.quantity(p.quantity),addressId:orderRules.addressId(p.addressId),requestNo:orderRules.requestNo(p.requestNo)},'POST',true);return orderRules.decodeOrder(r.data);},
+ };
+}
+module.exports={createPointClient};

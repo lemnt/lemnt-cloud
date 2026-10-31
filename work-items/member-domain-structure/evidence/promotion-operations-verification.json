@@ -1,0 +1,101 @@
+{
+  "batch": "141-promotion-operations",
+  "date": "2026-10-31",
+  "scope": ["A04 seckill", "A05 combination", "A06 bargain", "A07 point mall"],
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-mall/lemnt-mall-start -am test",
+    "javaVersion": "17.0.17",
+    "totals": {"classes": 39, "tests": 154, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-mall-domain": {"classes": 2, "tests": 10},
+      "lemnt-mall-application": {"classes": 3, "tests": 7},
+      "lemnt-mall-infrastructure": {"classes": 5, "tests": 18},
+      "lemnt-mall-adapter": {"classes": 8, "tests": 28},
+      "lemnt-mall-start": {"classes": 21, "tests": 91}
+    },
+    "newTests": [
+      "com.lemnt.mall.start.product.SeckillPersistenceTest (6, H2 production SQL/gateway)",
+      "com.lemnt.mall.start.product.CombinationPersistenceTest (4)",
+      "com.lemnt.mall.start.product.BargainPersistenceTest (4)",
+      "com.lemnt.mall.start.product.PointPersistenceTest (4)",
+      "com.lemnt.mall.start.promotion.SeckillMenuSeedTest (1)",
+      "com.lemnt.mall.start.promotion.CombinationMenuSeedTest (1)",
+      "com.lemnt.mall.start.promotion.BargainMenuSeedTest (1)",
+      "com.lemnt.mall.start.promotion.PointMenuSeedTest (1)"
+    ]
+  },
+  "ui": {
+    "command": "npm test / npm run typecheck / npx eslint src / npm run format:check",
+    "files": 54,
+    "tests": 292,
+    "failures": 0,
+    "newTests": [
+      "seckillApi.test.ts (3)",
+      "combinationApi.test.ts (3)",
+      "bargainApi.test.ts (3)",
+      "pointApi.test.ts (2)"
+    ],
+    "newPages": [
+      "mall/promotion/seckill-config/index",
+      "mall/promotion/seckill-activity/index",
+      "mall/promotion/combination-activity/index",
+      "mall/promotion/combination-record/index",
+      "mall/promotion/bargain-activity/index",
+      "mall/promotion/bargain-record/index",
+      "mall/promotion/point-activity/index"
+    ]
+  },
+  "miniapp": {
+    "command": "node --test tests/*.test.cjs",
+    "tests": 153,
+    "failures": 0,
+    "newTests": ["seckill.test.cjs (3)", "combination.test.cjs (3)", "bargain.test.cjs (3)", "point.test.cjs (2)"],
+    "newPages": [
+      "pages/seckill/index", "pages/seckill-detail/index",
+      "pages/combination/index", "pages/combination-detail/index", "pages/combination-records/index",
+      "pages/bargain/index", "pages/bargain-detail/index", "pages/bargain-records/index",
+      "pages/point-mall/index", "pages/point-mall-detail/index"
+    ]
+  },
+  "endpoints": {
+    "admin": [
+      "GET/POST/PUT/DELETE /mall/promotion/seckill-configs",
+      "GET/POST/PUT/DELETE /mall/promotion/seckill-activities",
+      "GET/POST/PUT/DELETE /mall/promotion/combination-activities",
+      "GET /mall/promotion/combination-records",
+      "GET/POST/PUT/DELETE /mall/promotion/bargain-activities",
+      "GET /mall/promotion/bargain-records",
+      "GET /mall/promotion/bargain-helps",
+      "GET/POST/PUT/DELETE /mall/promotion/point-activities"
+    ],
+    "app": [
+      "GET /mall/app/seckill/{configs,now,activities,activities/{id}}",
+      "GET /mall/app/combination/{activities,activities/{id},activities/{id}/heads,records,records/{id},summary}",
+      "GET/POST /mall/app/bargain/{activities,activities/{id},activities/{id}/records,records,records/{id},records/{id}/helps,helps}",
+      "GET /mall/app/point-mall/{activities,activities/{id}}"
+    ]
+  },
+  "invariants": [
+    "seckill config time ranges cannot overlap; product cannot join two enabled activities in the same slot",
+    "seckill stock decreases product then activity under activity row lock; restore skips deleted rows",
+    "combination group completes when member count reaches userSize; expired group fails or virtual-completes",
+    "bargain help uses conditional price update to prevent concurrent overwrite; self-help and duplicate help rejected",
+    "point activity stock is product stock sum; close disables product snapshots; exchange validates count and stock"
+  ],
+  "sql": [
+    "lemnt-server/lemnt-mall/sql/V18__promotion_seckill.sql",
+    "lemnt-server/lemnt-mall/sql/V19__promotion_combination.sql",
+    "lemnt-server/lemnt-mall/sql/V20__promotion_bargain.sql",
+    "lemnt-server/lemnt-mall/sql/V21__promotion_point.sql",
+    "lemnt-server/sql/V20261031__mall_seckill_menu.sql",
+    "lemnt-server/sql/V20261031__mall_combination_menu.sql",
+    "lemnt-server/sql/V20261031__mall_bargain_menu.sql",
+    "lemnt-server/sql/V20261031__mall_point_menu.sql"
+  ],
+  "deferred": [
+    "trade order type/activity fields and activity order creation/payment handlers",
+    "cancellation/refund restoration wiring for activity stock and points",
+    "wechat subscription messages, sharing cards, upload UI, anti-fraud controls",
+    "real MySQL/Redis/Nacos/gateway/browser/device verification"
+  ]
+}

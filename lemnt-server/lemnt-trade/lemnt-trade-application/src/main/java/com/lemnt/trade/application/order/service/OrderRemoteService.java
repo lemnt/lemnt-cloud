@@ -52,7 +52,35 @@ public class OrderRemoteService {
             }
             throw new IllegalStateException("订单状态已变化，不能完成下单");
         }
-        benefits.reserved(orderNo);
+        try {
+            benefits.reserved(orderNo);
+        } catch (RuntimeException exception) {
+            var latest = orders.findByOrderNo(orderNo);
+            if (latest != null && "PENDING_PAYMENT".equals(latest.status())) {
+                lifecycle.reservationCallbackFailed(orderNo);
+                closed(orderNo);
+            }
+            throw exception;
+        }
+        var completed = orders.findByOrderNo(orderNo);
+        if (completed != null && completed.totalAmount().signum() == 0) {
+            zeroPay(orderNo);
+        }
+    }
+
+    /** 零元订单在预占成功后直接支付并确认库存；重复调用保持幂等。 */
+    public void zeroPay(String orderNo) {
+        var order = orders.findByOrderNo(orderNo);
+        if (order == null || order.totalAmount().signum() != 0) {
+            return;
+        }
+        if ("PENDING_PAYMENT".equals(order.status())) {
+            lifecycle.zeroPay(orderNo);
+        }
+        var current = orders.findByOrderNo(orderNo);
+        if (current != null && "PAID".equals(current.status())) {
+            paid(orderNo);
+        }
     }
 
     /** 已支付状态先提交，再同步确认库存及核券；调用失败由原支付通知重试。 */

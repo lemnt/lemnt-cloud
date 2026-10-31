@@ -74,6 +74,47 @@ class ControllerMappingTest {
                 GET /mall/app/seckill/now
                 GET /mall/app/seckill/activities
                 GET /mall/app/seckill/activities/{id}
+                GET /mall/promotion/combination-activities mall:promotion:list
+                GET /mall/promotion/combination-activities/{id} mall:promotion:query
+                POST /mall/promotion/combination-activities mall:promotion:create
+                PUT /mall/promotion/combination-activities/{id} mall:promotion:update
+                PUT /mall/promotion/combination-activities/{id}/close mall:promotion:update
+                DELETE /mall/promotion/combination-activities/{id} mall:promotion:delete
+                GET /mall/promotion/combination-records mall:promotion:list
+                GET /mall/app/combination/activities
+                GET /mall/app/combination/activities/{id}
+                GET /mall/app/combination/activities/{id}/heads
+                GET /mall/app/combination/records
+                GET /mall/app/combination/records/{id}
+                GET /mall/app/combination/summary
+                GET /mall/promotion/bargain-activities mall:promotion:list
+                GET /mall/promotion/bargain-activities/{id} mall:promotion:query
+                POST /mall/promotion/bargain-activities mall:promotion:create
+                PUT /mall/promotion/bargain-activities/{id} mall:promotion:update
+                PUT /mall/promotion/bargain-activities/{id}/close mall:promotion:update
+                DELETE /mall/promotion/bargain-activities/{id} mall:promotion:delete
+                GET /mall/promotion/bargain-records mall:promotion:list
+                GET /mall/promotion/bargain-helps mall:promotion:list
+                GET /mall/app/bargain/activities
+                GET /mall/app/bargain/activities/{id}
+                GET /mall/app/bargain/activities/{id}/records
+                POST /mall/app/bargain/records
+                GET /mall/app/bargain/records
+                GET /mall/app/bargain/records/{id}
+                GET /mall/app/bargain/records/{id}/helps
+                POST /mall/app/bargain/helps
+                GET /mall/promotion/point-activities mall:promotion:list
+                GET /mall/promotion/point-activities/{id} mall:promotion:query
+                POST /mall/promotion/point-activities mall:promotion:create
+                PUT /mall/promotion/point-activities/{id} mall:promotion:update
+                PUT /mall/promotion/point-activities/{id}/close mall:promotion:update
+                DELETE /mall/promotion/point-activities/{id} mall:promotion:delete
+                GET /mall/app/point-mall/activities
+                GET /mall/app/point-mall/activities/{id}
+                POST /mall/app/seckill/orders
+                POST /mall/app/combination/orders
+                POST /mall/app/bargain/orders
+                POST /mall/app/point-mall/orders
                 DELETE /mall/app/cart/{productId}
                 DELETE /mall/brands/{id} mall:brand:remove
                 DELETE /mall/categories/{id} mall:category:remove

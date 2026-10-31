@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.mall.infrastructure.promotion.mapper.PointActivityMapper">
+
+    <select id="lockById" resultType="com.lemnt.mall.infrastructure.promotion.dataobject.PointActivityDO"
+            flushCache="true" useCache="false">
+        SELECT * FROM mall_promotion_point_activity WHERE id=#{id} FOR UPDATE
+    </select>
+</mapper>

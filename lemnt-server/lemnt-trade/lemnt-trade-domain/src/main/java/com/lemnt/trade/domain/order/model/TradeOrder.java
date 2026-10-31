@@ -62,9 +62,9 @@ public record TradeOrder(
         ) {
             throw new IllegalArgumentException("订单明细不能为空");
         }
-        if (totalAmount == null || totalAmount.compareTo(BigDecimal.ZERO) <= 0
+        if (totalAmount == null || totalAmount.signum() < 0
         ) {
-            throw new IllegalArgumentException("订单金额必须大于0");
+            throw new IllegalArgumentException("订单金额不能为负");
         }
         return new TradeOrder(null, orderNo, memberId, totalAmount, "PENDING_PAYMENT", items, null);
     }

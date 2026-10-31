@@ -1,0 +1,28 @@
+-- 活动订单与交易订单的对应关系；交易订单表不增加活动字段。
+CREATE TABLE mall_promotion_order (
+ id BIGINT NOT NULL PRIMARY KEY,
+ order_no VARCHAR(40) NOT NULL,
+ request_no VARCHAR(64) NOT NULL,
+ member_id BIGINT NOT NULL,
+ activity_type VARCHAR(16) NOT NULL,
+ activity_id BIGINT NOT NULL,
+ activity_record_id BIGINT NULL,
+ head_id BIGINT NULL,
+ sku_id BIGINT NOT NULL,
+ quantity INT NOT NULL,
+ activity_price DECIMAL(19,2) NOT NULL,
+ use_point BIGINT NOT NULL DEFAULT 0,
+ refunded_quantity INT NOT NULL DEFAULT 0,
+ status VARCHAR(16) NOT NULL DEFAULT 'CREATED',
+ failure_reason VARCHAR(500) NULL,
+ create_time DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ update_time DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+ UNIQUE KEY uk_promotion_order_no(order_no),
+ UNIQUE KEY uk_promotion_request(member_id,request_no),
+ KEY idx_promotion_order_activity(activity_type,activity_id),
+ CONSTRAINT chk_promotion_order_type CHECK(activity_type IN ('SECKILL','COMBINATION','BARGAIN','POINT')),
+ CONSTRAINT chk_promotion_order_status CHECK(status IN ('CREATED','RESERVED','PAID','CLOSED','REFUNDED','FAILED')),
+ CONSTRAINT chk_promotion_order_quantity CHECK(quantity>0),
+ CONSTRAINT chk_promotion_order_price CHECK(activity_price>=0),
+ CONSTRAINT chk_promotion_order_point CHECK(use_point>=0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

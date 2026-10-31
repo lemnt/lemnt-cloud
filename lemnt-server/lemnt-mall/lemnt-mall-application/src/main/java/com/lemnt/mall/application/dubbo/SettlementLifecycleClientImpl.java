@@ -1,6 +1,7 @@
 package com.lemnt.mall.application.dubbo;
 
 import com.lemnt.mall.application.product.service.ProductInventoryService;
+import com.lemnt.mall.application.promotion.service.PromotionOrderService;
 import com.lemnt.mall.application.settlement.service.SettlementRecordService;
 import com.lemnt.mall.client.CheckoutLifecycleClient;
 import com.lemnt.mall.client.bo.RefundStockBo;
@@ -28,6 +29,7 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
     private final SettlementRecordService settlementRecordService;
     private final OrderGateway orders;
     private final ProductInventoryService inventory;
+    private final PromotionOrderService promotionOrders;
 
     /**
      * 由交易服务在下单接口中同步调用，失败时不继续预占库存。
@@ -41,7 +43,7 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
                 .contains(order.status())) {
             throw new IllegalStateException("订单不能继续下单");
         }
-        applyMember(order, "CREATE", null, BigDecimal.ZERO);
+        applyMember(order, "CREATE", null, BigDecimal.ZERO, 0L);
     }
 
     @Override
@@ -55,6 +57,7 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
         if (!"CLOSED".equals(order.status())) {
             settlementRecordService.consumeCart(orderNo, order.memberId());
         }
+        promotionOrders.reserved(orderNo, order);
     }
 
     @Override
@@ -65,7 +68,8 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
             throw new IllegalStateException("订单未支付");
         }
         settlementRecordService.useCoupon(orderNo);
-        applyMember(order, "PAID", null, BigDecimal.ZERO);
+        applyMember(order, "PAID", null, BigDecimal.ZERO, 0L);
+        promotionOrders.paid(orderNo, order);
     }
 
     @Override
@@ -80,7 +84,8 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
             inventory.cancelReservation(orderNo, item.productId(), item.quantity());
         }
         settlementRecordService.releaseCoupon(orderNo);
-        applyMember(order, "CLOSED", null, BigDecimal.ZERO);
+        applyMember(order, "CLOSED", null, BigDecimal.ZERO, 0L);
+        promotionOrders.closed(orderNo);
     }
 
     @Override
@@ -102,17 +107,20 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
         if ("REFUNDED".equals(order.status())) {
             settlementRecordService.returnUsedCoupon(orderNo);
         }
-        applyMember(order, "REFUND", refundNo, refundAmount);
+        var promotionRefund = promotionOrders.refunded(orderNo, refundNo, order, items);
+        applyMember(order, "REFUND", refundNo, refundAmount,
+                promotionRefund == null ? 0L : promotionRefund.refundPoints());
     }
 
     /**
      * 只使用交易服务保存的原始积分与实付，禁止使用当前配置重算历史权益。
      */
     private void applyMember(SettlementOrder order, String operation,
-                             String refundNo, BigDecimal refundAmount) {
+                             String refundNo, BigDecimal refundAmount, long refundPoint) {
         memberTradeGateway.apply(new MemberTradeChange(order.memberId(),
                 operation, order.orderNo(), refundNo, order.usePoint(), order.givePoint(),
                 order.totalAmount().movePointRight(2).longValueExact(),
-                refundAmount.movePointRight(2).longValueExact(), "REFUNDED".equals(order.status())));
+                refundAmount.movePointRight(2).longValueExact(), "REFUNDED".equals(order.status()),
+                refundPoint));
     }
 }

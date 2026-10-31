@@ -27,6 +27,7 @@ public class MemberTradeGatewayImpl implements MemberTradeGateway {
     @Override
     public void apply(MemberTradeChange c) {
         client.applyTrade(new MemberTradeAssetBo(c.memberId(), c.operation(), c.orderNo(), c.refundNo(),
-                c.usePoint(), c.givePoint(), c.paidFen(), c.refundFen(), c.fullRefund()));
+                c.usePoint(), c.givePoint(), c.paidFen(), c.refundFen(), c.fullRefund(),
+                c.refundPoint()));
     }
 }

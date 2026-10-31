@@ -38,7 +38,7 @@ CREATE TABLE trade_after_sale (
  order_no VARCHAR(40) NOT NULL,
  request_no VARCHAR(64) NOT NULL,
  member_id BIGINT NOT NULL,
- payment_no VARCHAR(40) NOT NULL,
+ payment_no VARCHAR(40) NULL,
  amount DECIMAL(19,2) NOT NULL,
  reason VARCHAR(500) NOT NULL,
  status VARCHAR(20) NOT NULL DEFAULT 'REQUESTED',
@@ -62,6 +62,6 @@ CREATE TABLE trade_after_sale (
    OR (order_item_id IS NOT NULL AND quantity IS NOT NULL AND quantity>0)),
  CONSTRAINT chk_trade_refund_type CHECK(type IN ('REFUND_ONLY','RETURN_REFUND')),
  CONSTRAINT fk_trade_refund_payment FOREIGN KEY(payment_no) REFERENCES trade_payment(payment_no),
- CONSTRAINT chk_trade_refund_amount CHECK(amount>0),
+ CONSTRAINT chk_trade_refund_amount CHECK(amount>=0),
  CONSTRAINT chk_trade_refund_status CHECK(status IN ('REQUESTED','REJECTED','AWAITING_RETURN','RETURNED','WAIT_REFUND','RETURN_REJECTED','REFUNDING','REFUNDED','CANCELLED'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

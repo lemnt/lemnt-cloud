@@ -203,3 +203,11 @@
 2026-10-31 第139批：充值套餐与充值单。新增套餐与充值单两表、套餐CRUD、按套餐下单（requestNo幂等）、后台确认到账入钱包、退款出钱包；后台两页与小程序充值页。trade全模块215项、前端280项、小程序140项测试通过；真实渠道/异步退款与转账未做，见[139-wallet-recharge-delivery.md](139-wallet-recharge-delivery.md)。
 
 2026-10-31 第140批：钱包转账。新增转账表，钱包间同步互转（requestNo幂等、双钱包按编号升序加锁、双向TRANSFER流水）；后台只读转账页与小程序转账页。trade全模块222项、前端281项、小程序142项测试通过；真实渠道出款与异步状态未做，见[140-wallet-transfer-delivery.md](140-wallet-transfer-delivery.md)。
+
+2026-10-31 第141批：促销运营四子域（秒杀/拼团/砍价/积分商城）。新增11张活动/记录表，完成后台管理与小程序浏览/参团/助力/积分页、时段冲突、库存限购、并发助力、拼团过期/虚拟成团等规则。mall全模块154项、前端292项、小程序153项测试通过；活动下单与trade订单处理器、取消退款恢复及真实环境联调未做，见[141-promotion-operations-delivery.md](141-promotion-operations-delivery.md)。
+
+2026-10-31 第142批：促销活动订单集成。新增活动订单映射与退款去重两表、四个活动下单接口，交易生命周期回调接入活动库存预占/恢复、拼团支付建团、砍价订单绑定；mall全模块165项、前端292项、小程序155项测试通过。0元积分兑换、多SKU/非默认地址、拼团整单退款失败团及真实环境联调未做，见[142-promotion-order-integration-delivery.md](142-promotion-order-integration-delivery.md)。
+
+2026-10-31 第143批：0元积分兑换与交易零支付。交易允许0元订单（需消耗积分），库存与活动预占成功后自动PAID并确认库存；活动订单允许0元快照；会员0现金实付扣/退积分且不产生经验。mall 165项、trade 224项、member 118项、前端292项、小程序155项测试通过，见[143-zero-cash-point-order-delivery.md](143-zero-cash-point-order-delivery.md)。
+
+2026-10-31 第144批：0元订单售后退款与积分回退。售后/退款单允许无支付单和0金额，零元退款以POINT成功记录派发权益任务；商城恢复活动库存并置活动订单REFUNDED，会员整单退积分。trade 227项、mall 165项、member 118项、前端292项、小程序155项测试通过，见[144-zero-cash-aftersale-refund-delivery.md](144-zero-cash-aftersale-refund-delivery.md)。

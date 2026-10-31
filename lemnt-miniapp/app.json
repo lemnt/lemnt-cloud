@@ -22,7 +22,15 @@
     "pages/after-sale-create/index",
     "pages/after-sale-detail/index",
     "pages/seckill/index",
-    "pages/seckill-detail/index"
+    "pages/seckill-detail/index",
+    "pages/combination/index",
+    "pages/combination-detail/index",
+    "pages/combination-records/index",
+    "pages/bargain/index",
+    "pages/bargain-detail/index",
+    "pages/bargain-records/index",
+    "pages/point-mall/index",
+    "pages/point-mall-detail/index"
   ],
   "window": {
     "navigationBarTitleText": "lemnt 商城",

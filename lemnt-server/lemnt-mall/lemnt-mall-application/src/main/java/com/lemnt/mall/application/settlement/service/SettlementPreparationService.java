@@ -4,6 +4,7 @@ import com.lemnt.mall.application.member.service.MemberValidationService;
 import com.lemnt.mall.application.promotion.service.ActivityPricingService;
 import com.lemnt.mall.application.settlement.cmd.SettlementDirectCmd;
 import com.lemnt.mall.application.settlement.cmd.SettlementOrderSubmitCmd;
+import com.lemnt.mall.application.settlement.dto.SettlementPreparationResult;
 import com.lemnt.mall.application.settlement.qry.SettlementQuoteQry;
 import com.lemnt.mall.domain.cart.gateway.CartGateway;
 import com.lemnt.mall.domain.cart.model.CartLine;
@@ -35,6 +36,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 /**
  * 订单下单服务。
@@ -164,7 +166,18 @@ public class SettlementPreparationService {
             SettlementQuote quote,
             List<CartReference> references
     ) {
-        if (quote.payableAmount().signum() <= 0
+        return persist(memberId, requestNo, fingerprint, quote, false, references);
+    }
+
+    private SettlementOrder persist(
+            Long memberId,
+            String requestNo,
+            String fingerprint,
+            SettlementQuote quote,
+            boolean allowZero,
+            List<CartReference> references
+    ) {
+        if (!allowZero && quote.payableAmount().signum() <= 0
         ) {
             throw new IllegalArgumentException("当前暂不支持0元结算，请更换优惠券");
         }
@@ -203,11 +216,29 @@ public class SettlementPreparationService {
     }
 
     /**
+     * 活动订单准备：会员锁内复用请求编号，报价由调用方按活动规则生成。
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public SettlementPreparationResult preparePromotion(Long memberId, String requestNo, String fingerprint,
+            Supplier<SettlementQuote> quoteSupplier, List<CartReference> references) {
+        SettlementRules.id(memberId);
+        String key = SettlementRules.text(requestNo, 64);
+        memberLockGateway.lockMember(memberId);
+        var previous = existing(memberId, key, fingerprint);
+        if (previous != null) {
+            return new SettlementPreparationResult(previous, false);
+        }
+        memberValidationService.requireActive(memberId);
+        var quote = quoteSupplier.get();
+        return new SettlementPreparationResult(
+                persist(memberId, key, fingerprint, quote, true, references), true);
+    }
+
+    /**
      * 结算购物车。
      */
     @Transactional(rollbackFor = Exception.class)
-    public SettlementOrder checkoutCart(SettlementOrderSubmitCmd cmd) {
-        if (cmd == null
+    public SettlementOrder checkoutCart(SettlementOrderSubmitCmd cmd) {        if (cmd == null
         ) {
             throw new IllegalArgumentException("结算参数不能为空");
         }

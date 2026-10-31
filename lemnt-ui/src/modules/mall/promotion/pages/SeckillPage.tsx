@@ -100,7 +100,11 @@ export function SeckillConfigPage() {
       valueType: 'option',
       render: (_, row) => [
         can('mall:promotion:query') && (
-          <Button key="detail" type="link" onClick={() => setEditor({ id: row.id, readOnly: true })}>
+          <Button
+            key="detail"
+            type="link"
+            onClick={() => setEditor({ id: row.id, readOnly: true })}
+          >
             详情
           </Button>
         ),
@@ -110,13 +114,21 @@ export function SeckillConfigPage() {
           </Button>
         ),
         row.status === 0 && can('mall:promotion:update') && (
-          <Popconfirm key="close" title="关闭后该时段不再展示，确认关闭？" onConfirm={() => mutate(row.id, false)}>
-            <Button type="link" disabled={change.isPending}>关闭</Button>
+          <Popconfirm
+            key="close"
+            title="关闭后该时段不再展示，确认关闭？"
+            onConfirm={() => mutate(row.id, false)}
+          >
+            <Button type="link" disabled={change.isPending}>
+              关闭
+            </Button>
           </Popconfirm>
         ),
         row.status === 1 && can('mall:promotion:delete') && (
           <Popconfirm key="delete" title="确认删除该时段？" onConfirm={() => mutate(row.id, true)}>
-            <Button type="link" danger disabled={change.isPending}>删除</Button>
+            <Button type="link" danger disabled={change.isPending}>
+              删除
+            </Button>
           </Popconfirm>
         ),
       ],
@@ -137,8 +149,12 @@ export function SeckillConfigPage() {
   return (
     <PageContainer title="秒杀时段">
       {rows.isError && (
-        <Alert type="error" title="时段读取失败" description={String(rows.error)}
-          action={<Button onClick={() => rows.refetch()}>重试</Button>} />
+        <Alert
+          type="error"
+          title="时段读取失败"
+          description={String(rows.error)}
+          action={<Button onClick={() => rows.refetch()}>重试</Button>}
+        />
       )}
       <ProTable<SeckillConfig>
         options={{ reload: false }}
@@ -150,7 +166,12 @@ export function SeckillConfigPage() {
         onSubmit={(v) => {
           setFilters({
             name: typeof v.name === 'string' ? v.name : undefined,
-            status: v.status === 0 || v.status === '0' ? 0 : v.status === 1 || v.status === '1' ? 1 : undefined,
+            status:
+              v.status === 0 || v.status === '0'
+                ? 0
+                : v.status === 1 || v.status === '1'
+                  ? 1
+                  : undefined,
           });
           setPage({ ...page, pageNum: 1 });
         }}
@@ -165,9 +186,15 @@ export function SeckillConfigPage() {
           onChange: (pageNum, pageSize) => setPage({ pageNum, pageSize }),
         }}
         toolBarRender={() => [
-          <Button key="refresh" onClick={() => rows.refetch()} loading={rows.isFetching}>刷新</Button>,
+          <Button key="refresh" onClick={() => rows.refetch()} loading={rows.isFetching}>
+            刷新
+          </Button>,
           can('mall:promotion:create') && (
-            <Button key="new" type="primary" onClick={() => setEditor({ id: null, readOnly: false })}>
+            <Button
+              key="new"
+              type="primary"
+              onClick={() => setEditor({ id: null, readOnly: false })}
+            >
               新增时段
             </Button>
           ),
@@ -176,9 +203,15 @@ export function SeckillConfigPage() {
       {editor?.id && (detail.isFetching || detail.isError) && (
         <Modal open title="秒杀时段" footer={null} onCancel={() => setEditor(undefined)}>
           {detail.isError ? (
-            <Alert type="error" title="详情读取失败" description={String(detail.error)}
-              action={<Button onClick={() => detail.refetch()}>重试</Button>} />
-          ) : '正在读取详情…'}
+            <Alert
+              type="error"
+              title="详情读取失败"
+              description={String(detail.error)}
+              action={<Button onClick={() => detail.refetch()}>重试</Button>}
+            />
+          ) : (
+            '正在读取详情…'
+          )}
         </Modal>
       )}
       {editor && (!editor.id || (loaded && !detail.isFetching && !detail.isError)) && (
@@ -211,22 +244,43 @@ export function SeckillConfigPage() {
           }}
         >
           {!editable && loaded ? (
-            <Descriptions column={1} items={[
-              { key: 'name', label: '名称', children: loaded.name },
-              { key: 'time', label: '时间', children: `${loaded.startTime} - ${loaded.endTime}` },
-              { key: 'status', label: '状态', children: loaded.status === 0 ? '开启' : '关闭' },
-              { key: 'count', label: '关联活动', children: loaded.activityCount },
-            ]} />
+            <Descriptions
+              column={1}
+              items={[
+                { key: 'name', label: '名称', children: loaded.name },
+                { key: 'time', label: '时间', children: `${loaded.startTime} - ${loaded.endTime}` },
+                { key: 'status', label: '状态', children: loaded.status === 0 ? '开启' : '关闭' },
+                { key: 'count', label: '关联活动', children: loaded.activityCount },
+              ]}
+            />
           ) : (
             <>
-              <ProFormText name="name" label="时段名称" rules={[{ required: true }, { max: 100 }]} />
-              <ProFormText name="startTime" label="开始时间点" placeholder="HH:mm:ss"
-                rules={[{ required: true, pattern: /^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/ }]} />
-              <ProFormText name="endTime" label="结束时间点" placeholder="HH:mm:ss"
-                rules={[{ required: true, pattern: /^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/ }]} />
-              <ProFormSelect name="status" label="状态" options={[
-                { label: '开启', value: 0 }, { label: '关闭', value: 1 },
-              ]} rules={[{ required: true }]} />
+              <ProFormText
+                name="name"
+                label="时段名称"
+                rules={[{ required: true }, { max: 100 }]}
+              />
+              <ProFormText
+                name="startTime"
+                label="开始时间点"
+                placeholder="HH:mm:ss"
+                rules={[{ required: true, pattern: /^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/ }]}
+              />
+              <ProFormText
+                name="endTime"
+                label="结束时间点"
+                placeholder="HH:mm:ss"
+                rules={[{ required: true, pattern: /^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/ }]}
+              />
+              <ProFormSelect
+                name="status"
+                label="状态"
+                options={[
+                  { label: '开启', value: 0 },
+                  { label: '关闭', value: 1 },
+                ]}
+                rules={[{ required: true }]}
+              />
               <ProFormTextArea name="sliderPicUrlsText" label="轮播图地址（每行一个）" />
             </>
           )}
@@ -241,7 +295,9 @@ export function SeckillActivityPage() {
   const { can } = usePermission();
   const { message } = App.useApp();
   const cache = useQueryClient();
-  const [filters, setFilters] = useState<Pick<SeckillActivityFilter, 'name' | 'status' | 'configId'>>({});
+  const [filters, setFilters] = useState<
+    Pick<SeckillActivityFilter, 'name' | 'status' | 'configId'>
+  >({});
   const [page, setPage] = useState({ pageNum: 1, pageSize: 20 });
   const [editor, setEditor] = useState<{ id: string | null; readOnly: boolean }>();
   const rows = useQuery({
@@ -291,36 +347,71 @@ export function SeckillActivityPage() {
     { title: '活动名称', dataIndex: 'name' },
     { title: '商品', dataIndex: 'spuName', search: false },
     { title: '秒杀价', dataIndex: 'seckillPrice', search: false },
-    { title: '库存', dataIndex: 'stock', search: false, render: (_, row) => `${row.stock}/${row.totalStock}` },
     {
-      title: '状态', dataIndex: 'status', valueType: 'select',
+      title: '库存',
+      dataIndex: 'stock',
+      search: false,
+      render: (_, row) => `${row.stock}/${row.totalStock}`,
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      valueType: 'select',
       valueEnum: { 0: { text: '开启' }, 1: { text: '关闭' } },
     },
     {
-      title: '时段', dataIndex: 'configId', search: true, valueType: 'select',
-      fieldProps: { options: configs.data?.map((row) => ({ label: row.name, value: row.id })) ?? [] },
+      title: '时段',
+      dataIndex: 'configId',
+      search: true,
+      valueType: 'select',
+      fieldProps: {
+        options: configs.data?.map((row) => ({ label: row.name, value: row.id })) ?? [],
+      },
     },
     {
-      title: '活动时间', dataIndex: 'startTime', search: false,
+      title: '活动时间',
+      dataIndex: 'startTime',
+      search: false,
       render: (_, row) => `${row.startTime} 至 ${row.endTime}`,
     },
     {
-      title: '操作', valueType: 'option',
+      title: '操作',
+      valueType: 'option',
       render: (_, row) => [
         can('mall:promotion:query') && (
-          <Button key="detail" type="link" onClick={() => setEditor({ id: row.id, readOnly: true })}>详情</Button>
+          <Button
+            key="detail"
+            type="link"
+            onClick={() => setEditor({ id: row.id, readOnly: true })}
+          >
+            详情
+          </Button>
         ),
         row.status === 0 && can('mall:promotion:update') && (
-          <Button key="edit" type="link" onClick={() => setEditor({ id: row.id, readOnly: false })}>编辑</Button>
+          <Button key="edit" type="link" onClick={() => setEditor({ id: row.id, readOnly: false })}>
+            编辑
+          </Button>
         ),
         row.status === 0 && can('mall:promotion:update') && (
-          <Popconfirm key="close" title="关闭后不能重新开启，确认关闭？" onConfirm={() => mutate(row.id, false)}>
-            <Button type="link" disabled={change.isPending}>关闭</Button>
+          <Popconfirm
+            key="close"
+            title="关闭后不能重新开启，确认关闭？"
+            onConfirm={() => mutate(row.id, false)}
+          >
+            <Button type="link" disabled={change.isPending}>
+              关闭
+            </Button>
           </Popconfirm>
         ),
         row.status === 1 && can('mall:promotion:delete') && (
-          <Popconfirm key="delete" title="确认删除已关闭活动？" onConfirm={() => mutate(row.id, true)}>
-            <Button type="link" danger disabled={change.isPending}>删除</Button>
+          <Popconfirm
+            key="delete"
+            title="确认删除已关闭活动？"
+            onConfirm={() => mutate(row.id, true)}
+          >
+            <Button type="link" danger disabled={change.isPending}>
+              删除
+            </Button>
           </Popconfirm>
         ),
       ],
@@ -361,8 +452,12 @@ export function SeckillActivityPage() {
   return (
     <PageContainer title="秒杀活动">
       {rows.isError && (
-        <Alert type="error" title="活动读取失败" description={String(rows.error)}
-          action={<Button onClick={() => rows.refetch()}>重试</Button>} />
+        <Alert
+          type="error"
+          title="活动读取失败"
+          description={String(rows.error)}
+          action={<Button onClick={() => rows.refetch()}>重试</Button>}
+        />
       )}
       <ProTable<SeckillActivity>
         options={{ reload: false }}
@@ -374,7 +469,12 @@ export function SeckillActivityPage() {
         onSubmit={(v) => {
           setFilters({
             name: typeof v.name === 'string' ? v.name : undefined,
-            status: v.status === 0 || v.status === '0' ? 0 : v.status === 1 || v.status === '1' ? 1 : undefined,
+            status:
+              v.status === 0 || v.status === '0'
+                ? 0
+                : v.status === 1 || v.status === '1'
+                  ? 1
+                  : undefined,
             configId: typeof v.configId === 'string' ? v.configId : undefined,
           });
           setPage({ ...page, pageNum: 1 });
@@ -390,9 +490,15 @@ export function SeckillActivityPage() {
           onChange: (pageNum, pageSize) => setPage({ pageNum, pageSize }),
         }}
         toolBarRender={() => [
-          <Button key="refresh" onClick={() => rows.refetch()} loading={rows.isFetching}>刷新</Button>,
+          <Button key="refresh" onClick={() => rows.refetch()} loading={rows.isFetching}>
+            刷新
+          </Button>,
           can('mall:promotion:create') && (
-            <Button key="new" type="primary" onClick={() => setEditor({ id: null, readOnly: false })}>
+            <Button
+              key="new"
+              type="primary"
+              onClick={() => setEditor({ id: null, readOnly: false })}
+            >
               新增秒杀活动
             </Button>
           ),
@@ -401,9 +507,15 @@ export function SeckillActivityPage() {
       {editor?.id && (detail.isFetching || detail.isError) && (
         <Modal open title="秒杀活动" footer={null} onCancel={() => setEditor(undefined)}>
           {detail.isError ? (
-            <Alert type="error" title="详情读取失败" description={String(detail.error)}
-              action={<Button onClick={() => detail.refetch()}>重试</Button>} />
-          ) : '正在读取详情…'}
+            <Alert
+              type="error"
+              title="详情读取失败"
+              description={String(detail.error)}
+              action={<Button onClick={() => detail.refetch()}>重试</Button>}
+            />
+          ) : (
+            '正在读取详情…'
+          )}
         </Modal>
       )}
       {editor && (!editor.id || (loaded && !detail.isFetching && !detail.isError)) && (
@@ -440,7 +552,11 @@ export function SeckillActivityPage() {
             <SeckillActivityDetails value={loaded} configs={configs.data ?? []} />
           ) : (
             <>
-              <ProFormText name="name" label="活动名称" rules={[{ required: true }, { max: 100 }]} />
+              <ProFormText
+                name="name"
+                label="活动名称"
+                rules={[{ required: true }, { max: 100 }]}
+              />
               <ProFormSelect
                 name="spuId"
                 label="商品"
@@ -449,30 +565,57 @@ export function SeckillActivityPage() {
                 disabled={!can('mall:spu:list')}
                 request={async ({ keyWords }) =>
                   can('mall:spu:list')
-                    ? (await getSpuList({ name: keyWords, pageNum: 1, pageSize: 100 })).data.map((row) => ({
-                        label: row.name,
-                        value: row.id,
-                      }))
+                    ? (await getSpuList({ name: keyWords, pageNum: 1, pageSize: 100 })).data.map(
+                        (row) => ({
+                          label: row.name,
+                          value: row.id,
+                        }),
+                      )
                     : []
                 }
                 rules={[{ required: true }]}
               />
-              <ProFormDateTimePicker name="startTime" label="开始时间" rules={[{ required: true }]} />
+              <ProFormDateTimePicker
+                name="startTime"
+                label="开始时间"
+                rules={[{ required: true }]}
+              />
               <ProFormDateTimePicker name="endTime" label="结束时间" rules={[{ required: true }]} />
               <ProFormSelect
                 name="configIds"
                 label="秒杀时段"
                 mode="multiple"
-                options={configs.data?.filter((row) => row.status === 0)
-                  .map((row) => ({ label: `${row.name}（${row.startTime} - ${row.endTime}）`, value: row.id })) ?? []}
+                options={
+                  configs.data
+                    ?.filter((row) => row.status === 0)
+                    .map((row) => ({
+                      label: `${row.name}（${row.startTime} - ${row.endTime}）`,
+                      value: row.id,
+                    })) ?? []
+                }
                 rules={[{ required: true }]}
               />
-              <ProFormDigit name="sort" label="排序" min={0} fieldProps={{ precision: 0 }}
-                rules={[{ required: true }]} />
-              <ProFormDigit name="totalLimitCount" label="总限购数量" min={1}
-                fieldProps={{ precision: 0 }} rules={[{ required: true }]} />
-              <ProFormDigit name="singleLimitCount" label="单次限购数量" min={1}
-                fieldProps={{ precision: 0 }} rules={[{ required: true }]} />
+              <ProFormDigit
+                name="sort"
+                label="排序"
+                min={0}
+                fieldProps={{ precision: 0 }}
+                rules={[{ required: true }]}
+              />
+              <ProFormDigit
+                name="totalLimitCount"
+                label="总限购数量"
+                min={1}
+                fieldProps={{ precision: 0 }}
+                rules={[{ required: true }]}
+              />
+              <ProFormDigit
+                name="singleLimitCount"
+                label="单次限购数量"
+                min={1}
+                fieldProps={{ precision: 0 }}
+                rules={[{ required: true }]}
+              />
               <ProFormTextArea name="remark" label="备注" />
               <ProFormList
                 name="products"
@@ -507,40 +650,65 @@ function SeckillProductFields() {
         name="skuId"
         label="SKU"
         disabled={!spuId || !can('mall:spu:query') || skus.isFetching || skus.isError}
-        options={skus.data?.skus.map((row) => ({
-          label: `${row.name}（${row.code}，${row.price}元）`,
-          value: row.id,
-        })) ?? []}
+        options={
+          skus.data?.skus.map((row) => ({
+            label: `${row.name}（${row.code}，${row.price}元）`,
+            value: row.id,
+          })) ?? []
+        }
         rules={[{ required: true }]}
       />
       <ProFormText name="seckillPrice" label="秒杀价（元）" rules={[{ required: true }]} />
-      <ProFormDigit name="stock" label="秒杀库存" min={0} fieldProps={{ precision: 0 }}
-        rules={[{ required: true }]} />
+      <ProFormDigit
+        name="stock"
+        label="秒杀库存"
+        min={0}
+        fieldProps={{ precision: 0 }}
+        rules={[{ required: true }]}
+      />
     </>
   );
 }
 
-function SeckillActivityDetails({ value, configs }: { value: SeckillActivity; configs: SeckillConfig[] }) {
+function SeckillActivityDetails({
+  value,
+  configs,
+}: {
+  value: SeckillActivity;
+  configs: SeckillConfig[];
+}) {
   const names = value.configIds
     .map((id) => configs.find((row) => row.id === id)?.name ?? id)
     .join('、');
   return (
     <>
-      <Descriptions column={1} items={[
-        { key: 'name', label: '名称', children: value.name },
-        { key: 'spu', label: '商品', children: value.spuName ?? value.spuId },
-        { key: 'status', label: '状态', children: value.status === 0 ? '开启' : '关闭' },
-        { key: 'time', label: '活动时间', children: `${value.startTime} 至 ${value.endTime}` },
-        { key: 'config', label: '秒杀时段', children: names || '—' },
-        { key: 'limit', label: '限购', children: `总 ${value.totalLimitCount}，单次 ${value.singleLimitCount}` },
-        { key: 'stock', label: '库存', children: `${value.stock}/${value.totalStock}` },
-        { key: 'remark', label: '备注', children: value.remark || '—' },
-      ]} />
-      <Table rowKey="skuId" pagination={false} dataSource={value.products} columns={[
-        { title: 'SKU编号', dataIndex: 'skuId' },
-        { title: '秒杀价（元）', dataIndex: 'seckillPrice' },
-        { title: '剩余库存', dataIndex: 'stock' },
-      ]} />
+      <Descriptions
+        column={1}
+        items={[
+          { key: 'name', label: '名称', children: value.name },
+          { key: 'spu', label: '商品', children: value.spuName ?? value.spuId },
+          { key: 'status', label: '状态', children: value.status === 0 ? '开启' : '关闭' },
+          { key: 'time', label: '活动时间', children: `${value.startTime} 至 ${value.endTime}` },
+          { key: 'config', label: '秒杀时段', children: names || '—' },
+          {
+            key: 'limit',
+            label: '限购',
+            children: `总 ${value.totalLimitCount}，单次 ${value.singleLimitCount}`,
+          },
+          { key: 'stock', label: '库存', children: `${value.stock}/${value.totalStock}` },
+          { key: 'remark', label: '备注', children: value.remark || '—' },
+        ]}
+      />
+      <Table
+        rowKey="skuId"
+        pagination={false}
+        dataSource={value.products}
+        columns={[
+          { title: 'SKU编号', dataIndex: 'skuId' },
+          { title: '秒杀价（元）', dataIndex: 'seckillPrice' },
+          { title: '剩余库存', dataIndex: 'stock' },
+        ]}
+      />
     </>
   );
 }
