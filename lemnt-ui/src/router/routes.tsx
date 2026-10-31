@@ -30,6 +30,14 @@ export const pages: Record<string, ComponentType> = {
       default: m.PaymentChannelPage,
     })),
   ),
+  'trade/pay-app/index': lazy(() =>
+    import('../modules/trade/payment/pages/PayConfigPage').then((m) => ({ default: m.PayAppPage })),
+  ),
+  'trade/pay-channel/index': lazy(() =>
+    import('../modules/trade/payment/pages/PayConfigPage').then((m) => ({
+      default: m.PayChannelConfigPage,
+    })),
+  ),
   'mall/promotion/reward-activity/index': lazy(() =>
     import('../modules/mall/promotion/pages/ActivityPage').then((m) => ({
       default: m.RewardActivityPage,

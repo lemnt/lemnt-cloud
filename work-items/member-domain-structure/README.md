@@ -191,3 +191,7 @@
 2026-10-31 第133批：补齐真实SKU库存汇总的售罄/警戒库存分组与数量、当前筛选XLSX导出及独立权限。265项前端、38项后端聚焦验证通过；经营字段和真实联调仍待补。见[133-spu-stock-tabs-export-delivery.md](133-spu-stock-tabs-export-delivery.md)。
 
 2026-10-31 第134批：关键字、简介、轮播图和排序贯通表/各层/后台/导出；新增旧库字段升级脚本但未执行真实库。266项前端、mall全部31类132项测试通过；上传交互与更多经营/审计字段待补，见[134-spu-operating-fields-delivery.md](134-spu-operating-fields-delivery.md)。
+
+2026-10-31 第135批：App订单中心与售后中心闭环。后端新增本人订单分页/状态数量/详情/物流轨迹、本人售后分页/详情/额度/申请/登记退货，SQL按member_id过滤且他人资源统一不存在；小程序新增订单列表、订单详情、售后列表、售后申请、售后详情五页。trade各模块174项、小程序136项测试通过；真实环境、收银台/渠道SDK与真机联调仍待完成，见[135-app-order-aftersale-center-delivery.md](135-app-order-aftersale-center-delivery.md)。
+
+2026-10-31 第136批：支付应用与支付渠道配置。新增trade_pay_app/trade_pay_channel两表及CRUD、后台两页与菜单种子；渠道config明文不出接口、留空保留原值、code限定ALIPAY/WECHAT。trade全模块185项、前端271项测试通过；支付通知任务/日志/重试涉及回调路径，留待下一批，见[136-pay-app-channel-delivery.md](136-pay-app-channel-delivery.md)。

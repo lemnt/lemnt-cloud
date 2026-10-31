@@ -87,7 +87,28 @@ class ControllerMappingTest {
                 POST /trade/app/orders/{orderNo}/cancel
                 POST /trade/app/orders/{orderNo}/receive
                 GET /trade/app/orders/{orderNo}/payment
+                GET /trade/app/orders
+                GET /trade/app/orders/status-counts
+                GET /trade/app/orders/{orderNo}
+                GET /trade/app/orders/{orderNo}/tracks
+                POST /trade/app/orders/{orderNo}/after-sales
+                GET /trade/app/orders/{orderNo}/after-sale-items
+                GET /trade/app/after-sales
+                GET /trade/app/after-sales/{no}
+                POST /trade/app/after-sales/{no}/return
                 POST /trade/admin/orders/{orderNo}/shipment trade:fulfillment:ship
+                POST /trade/admin/pay-apps trade:pay-app:create
+                PUT /trade/admin/pay-apps/{id} trade:pay-app:update
+                PUT /trade/admin/pay-apps/{id}/status trade:pay-app:update
+                DELETE /trade/admin/pay-apps/{id} trade:pay-app:remove
+                GET /trade/admin/pay-apps/{id} trade:pay-app:query
+                GET /trade/admin/pay-apps trade:pay-app:list
+                POST /trade/admin/pay-channels trade:pay-channel:create
+                PUT /trade/admin/pay-channels/{id} trade:pay-channel:update
+                DELETE /trade/admin/pay-channels/{id} trade:pay-channel:remove
+                GET /trade/admin/pay-channels/{id} trade:pay-channel:query
+                GET /trade/admin/pay-channels trade:pay-channel:list
+                GET /trade/admin/pay-channels/by-app/{appId} trade:pay-channel:query
 
                 """.split("\n")));
         // 文本块会移除行尾空格，空权限与带权限的路由统一去掉行尾空白。
