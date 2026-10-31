@@ -28,7 +28,7 @@ export function decodeAreas(raw: unknown): AreaNode[] {
   return nodes(raw);
 }
 export async function getAreas() {
-  return decodeAreas((await request<unknown>({ url: '/areas/tree' })).data);
+  return decodeAreas((await request<unknown>({ url: '/system/areas/tree' })).data);
 }
 interface AreaOption {
   value: number;

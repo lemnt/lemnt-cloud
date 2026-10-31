@@ -1,14 +1,6 @@
-# Merge into reviewed gateway Nacos route configuration. Preserve /member and /members prefixes.
-# Not applied to a running gateway by this change.
-spring:
-  cloud:
-    gateway:
-      server:
-        webflux:
-          routes:
-            # Java MemberAuthRouteConfiguration 已注册以下精确认证路由。
-            # 此处仅列出 member 常规路由，不重复配置同名认证路由。
-            - id: lemnt-member
-              uri: lb://lemnt-member
-              predicates:
-                - Path=/member/**,/members/**,/growths/**,/growth/**,/groups/**,/tags/**,/member-users/**
+# 路由现由ServiceRouteConfiguration与MemberAuthRouteConfiguration提供，无需重复注册Nacos路由。
+# 普通/member/**去掉服务前缀；已有/member/admin/**流水路径保留完整路径。
+# /member/app/auth/login、refresh-token、logout精确路由优先走auth，保留完整路径。
+# /system/**、/auth/**去掉服务前缀；/mall/**、/trade/**保留原路径。
+# 本文件仅说明代码路由，不包含覆盖或清空现有Nacos routes的配置。
+# 部署后需核对现有动态路由优先级；本批没有修改运行中Nacos，gateway不引入Dubbo。

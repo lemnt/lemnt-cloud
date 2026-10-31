@@ -16,7 +16,7 @@ it('后台资料允许编辑手机号，不覆盖余额', async () => {
     ...{ mobile: '13800000001', points: 100 },
   });
   expect(mockedRequest).toHaveBeenCalledWith({
-    url: '/member-users/9',
+    url: '/member/member-users/9',
     method: 'PUT',
     data: {
       nickname: '昵称',
@@ -47,7 +47,7 @@ it('积分重试保持同一业务编号，不能发送绝对余额', async () =
   await api.adjustMember('9', 'points', v);
   await api.adjustMember('9', 'points', v);
   expect(mockedRequest).toHaveBeenLastCalledWith({
-    url: '/member-users/9/points',
+    url: '/member/member-users/9/points',
     method: 'PUT',
     data: { delta: -2, requestNo: 'same-key', reason: '扣减' },
   });
@@ -56,13 +56,13 @@ it('标签和分组按实际请求契约清空', async () => {
   mockedRequest.mockResolvedValue({ data: true });
   await api.assignMemberTags('9', []);
   expect(mockedRequest).toHaveBeenLastCalledWith({
-    url: '/member-users/9/tags',
+    url: '/member/member-users/9/tags',
     method: 'PUT',
     data: { tagIds: [] },
   });
   await api.assignMemberGroup('9', null);
   expect(mockedRequest).toHaveBeenLastCalledWith({
-    url: '/member-users/9/group',
+    url: '/member/member-users/9/group',
     method: 'PUT',
     data: { groupId: null },
   });
@@ -84,7 +84,7 @@ it('元数据分类型白名单，标签不提交等级或状态字段', async (
   mockedRequest.mockResolvedValue({ data: 15 });
   await api.saveMetadata('tags', undefined, { name: 'VIP', remark: '备注', level: 9, status: 1 });
   expect(mockedRequest).toHaveBeenLastCalledWith({
-    url: '/tags',
+    url: '/member/tags',
     method: 'POST',
     data: { name: 'VIP', remark: '备注' },
   });
@@ -262,14 +262,14 @@ it('签到配置新增返回ID、修改按ID定位且不发送额外字段', asy
   mockedRequest.mockResolvedValueOnce({ data: '9007199254740993' });
   expect(await api.createSignConfig(values)).toBe('9007199254740993');
   expect(mockedRequest.mock.calls[0][0]).toEqual({
-    url: '/growths/signin-configs',
+    url: '/member/growths/signin-configs',
     method: 'POST',
     data: { day: 7, point: 10, experience: 2, status: 1 },
   });
   mockedRequest.mockResolvedValueOnce({ data: true });
   await api.updateSignConfig('9007199254740993', { ...values, day: 3 });
   expect(mockedRequest.mock.calls[1][0]).toEqual({
-    url: '/growths/signin-configs/9007199254740993',
+    url: '/member/growths/signin-configs/9007199254740993',
     method: 'PUT',
     data: { day: 3, point: 10, experience: 2, status: 1 },
   });
@@ -280,11 +280,11 @@ it('签到配置列表和删除使用实际growths路径及规则ID', async () =
     data: [{ id: '99', day: 7, point: 10, experience: 2, status: 1 }],
   });
   expect((await api.getSignConfigs())[0]).toMatchObject({ id: '99', day: 7 });
-  expect(mockedRequest.mock.calls[0][0].url).toBe('/growths/signin-configs');
+  expect(mockedRequest.mock.calls[0][0].url).toBe('/member/growths/signin-configs');
   mockedRequest.mockResolvedValueOnce({ data: true });
   await api.deleteSignConfig('99');
   expect(mockedRequest.mock.calls[1][0]).toEqual({
-    url: '/growths/signin-configs/99',
+    url: '/member/growths/signin-configs/99',
     method: 'DELETE',
   });
 });
@@ -292,7 +292,7 @@ it('签到配置列表和删除使用实际growths路径及规则ID', async () =
 it('积分配置真实growths路径读取，未配置不伪造服务端值', async () => {
   mockedRequest.mockResolvedValueOnce({ data: null });
   expect(await api.getPointConfig()).toBeNull();
-  expect(mockedRequest.mock.calls[0][0].url).toBe('/growths/config');
+  expect(mockedRequest.mock.calls[0][0].url).toBe('/member/growths/config');
   const config = {
     pointTradeDeductEnable: true,
     pointTradeDeductUnitPrice: 5,
@@ -313,7 +313,7 @@ it('保存积分配置只发送四项业务字段，保留false和0', async () =
   };
   await api.savePointConfig({ ...config, ...{ id: '77', unknown: '不得发送' } });
   expect(mockedRequest.mock.calls[0][0]).toEqual({
-    url: '/growths/config',
+    url: '/member/growths/config',
     method: 'PUT',
     data: config,
   });
@@ -323,13 +323,13 @@ it('等级名称状态筛选保留0，分组标签不继承等级条件', async 
   mockedRequest.mockResolvedValue({ data: [] });
   await api.getMetadata('levels', { name: ' Gold ', status: 0 });
   expect(mockedRequest.mock.calls[0][0]).toEqual({
-    url: '/growth/levels',
+    url: '/member/growth/levels',
     params: { name: 'Gold', status: 0 },
   });
   await api.getMetadata('groups', { name: 'Gold', status: 0 });
-  expect(mockedRequest.mock.calls[1][0]).toEqual({ url: '/groups' });
+  expect(mockedRequest.mock.calls[1][0]).toEqual({ url: '/member/groups' });
   await api.getMetadata('tags', { name: 'Gold', status: 0 });
-  expect(mockedRequest.mock.calls[2][0]).toEqual({ url: '/tags' });
+  expect(mockedRequest.mock.calls[2][0]).toEqual({ url: '/member/tags' });
   await expect(api.getMetadata('levels', { status: 2 })).rejects.toThrow('状态');
 });
 
@@ -343,7 +343,7 @@ it('等级创建修改删除使用真实路径，空图片显式发送null', asy
     status: 1,
   });
   expect(mockedRequest.mock.calls[0][0]).toMatchObject({
-    url: '/growth/levels',
+    url: '/member/growth/levels',
     method: 'POST',
     data: { icon: null, backgroundUrl: null },
   });
@@ -355,10 +355,13 @@ it('等级创建修改删除使用真实路径，空图片显式发送null', asy
     discountPercent: 90,
     status: 0,
   });
-  expect(mockedRequest.mock.calls[1][0].url).toBe('/growth/levels/99');
+  expect(mockedRequest.mock.calls[1][0].url).toBe('/member/growth/levels/99');
   mockedRequest.mockResolvedValueOnce({ data: true });
   await api.deleteMetadata('levels', '99');
-  expect(mockedRequest.mock.calls[2][0]).toEqual({ url: '/growth/levels/99', method: 'DELETE' });
+  expect(mockedRequest.mock.calls[2][0]).toEqual({
+    url: '/member/growth/levels/99',
+    method: 'DELETE',
+  });
 });
 
 it('分组分页使用独立条件、统一分页，状态0和时间保留', async () => {
@@ -378,7 +381,7 @@ it('分组分页使用独立条件、统一分页，状态0和时间保留', asy
   expect(page.total).toBe(21);
   expect(page.records[0].createTime).toBe('2026-10-30 10:00:00');
   expect(mockedRequest.mock.calls[0][0]).toEqual({
-    url: '/groups/page',
+    url: '/member/groups/page',
     params: { ...q, name: 'VIP' },
   });
 });
@@ -397,7 +400,7 @@ it('标签分页不借用分组状态或会员ID，保留分页total', async () 
   };
   const page = await api.getTagPage({ ...q, ...{ status: 0, memberId: '999' } });
   expect(mockedRequest.mock.calls[0][0]).toEqual({
-    url: '/tags/page',
+    url: '/member/tags/page',
     params: { ...q, name: 'active' },
   });
   expect(page.total).toBe(1);

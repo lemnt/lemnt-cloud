@@ -7,7 +7,7 @@ function createImageClient({ baseUrl, getMemberToken, uploadFile }) {
       if (!/^https:\/\/[^?#]+$/.test(baseUrl))
         throw Error("请配置HTTPS服务地址");
       const response = await uploadFile({
-        url: baseUrl.replace(/\/$/, "") + "/files/app/upload",
+        url: baseUrl.replace(/\/$/, "") + "/system/files/app/upload",
         filePath: path,
         name: "file",
         header: { Authorization: "Bearer " + token },

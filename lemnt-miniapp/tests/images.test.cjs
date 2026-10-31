@@ -20,7 +20,7 @@ test("上传使用会员令牌及file字段，只信HTTPS返回地址", async ()
   assert.equal(await c.upload("/tmp/a.png"), "https://oss.test/a.png");
   assert.equal(sent.name, "file");
   assert.equal(sent.header.Authorization, "Bearer member");
-  assert.equal(sent.url, "https://example.test/files/app/upload");
+  assert.equal(sent.url, "https://example.test/system/files/app/upload");
 });
 test("换号或响应不合法拒绝回填，不自动重试", async () => {
   let token = "one",

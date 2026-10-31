@@ -5387,7 +5387,7 @@
       "sha256": "17b7138e5773f2b1814df9fd2d9e4fc5ae49dcdc7a933543d73179d76540fe89",
       "state": "in_progress",
       "target": "lemnt-server/lemnt-member",
-      "note": "124地址移除额外20条限制，归属写入错误/默认切换审计及user_id/BaseDO迁移；BaseMapper/Lambda逐表存储，最终展示契约及基础逻辑删除差异继续核对"
+      "note": "126地区全称按源格式复用system资源批量返显，查询独立Res，写与订单快照不变；基础逻辑删除及最终源契约继续核对"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/address/vo/AppAddressBaseVO.java",
@@ -5404,8 +5404,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/address/vo/AppAddressRespVO.java",
       "sha256": "5e34703b2d2c9b934377218a27c31c6238aa1e257d92d96ea339308af1ec2055",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "126地区全称按源格式复用system资源批量返显，查询独立Res，写与订单快照不变；基础逻辑删除及最终源契约继续核对"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/address/vo/AppAddressCreateReqVO.java",
@@ -5640,8 +5641,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/address/vo/AddressRespVO.java",
       "sha256": "6b9bd6312cb70d19ea43705306316002660d4667a2c60f88d1f7f17589edff70",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "126地区全称按源格式复用system资源批量返显，查询独立Res，写与订单快照不变；基础逻辑删除及最终源契约继续核对"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/address/vo/AddressBaseVO.java",
@@ -6214,8 +6216,9 @@
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/convert/address/AddressConvert.java",
       "sha256": "ffc9f1b0f0f2056b61a4e81e825890f2c49b04c100f93b7dcfd864afb8cc33a5",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-server/lemnt-member",
+      "note": "126地区全称按源格式复用system资源批量返显，查询独立Res，写与订单快照不变；基础逻辑删除及最终源契约继续核对"
     },
     {
       "source": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/convert/level/MemberLevelRecordConvert.java",
@@ -7741,5 +7744,12 @@
     "member SMS/WeChat auth per previous explicit constraint"
   ],
   "architecture": "existing lemnt six-layer CQRS, per-table BaseMapper/Gateway and XML resultMap",
-  "progressNote": "持续迁移尚未完成：42将SKU规格合并为SKU JSON，移除额外规格关系表，字典改名同步当前SKU而不改历史订单；初始化45表，业务缺表仍36张。"
+  "progressNote": "持续迁移尚未完成：42将SKU规格合并为SKU JSON，移除额外规格关系表，字典改名同步当前SKU而不改历史订单；初始化45表，业务缺表仍36张。",
+  "progressMetric": {
+    "date": "2026-10-31",
+    "canonicalReport": "../127-migration-progress-recount.md",
+    "canonicalEvidence": "migration-progress-20261031.json",
+    "codeStagePercent": 42.3,
+    "note": "原file state只表示历史映射登记，不能作为功能完成率；以63单元/214适用检查项复核为当前口径"
+  }
 }

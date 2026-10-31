@@ -25,11 +25,11 @@ import type {
   MemberPointConfig,
   MemberSignConfigValues,
 } from '../types';
-const user = (id: string) => `/member-users/${memberId(id)}`;
+const user = (id: string) => `/member/member-users/${memberId(id)}`;
 export async function getMembers(q: MemberUserPageQuery) {
   return decodePage(
     await request<unknown>({
-      url: '/member-users',
+      url: '/member/member-users',
       params: {
         mobile: q.mobile?.trim() || undefined,
         email: q.email?.trim() || undefined,
@@ -132,15 +132,15 @@ export async function getMemberAddresses(id: string) {
   return list((await request<unknown>({ url: user(id) + '/addresses' })).data, decodeAddress);
 }
 const metadataPaths: Record<MetadataKind, string> = {
-  levels: '/growth/levels',
-  groups: '/groups',
-  tags: '/tags',
+  levels: '/member/growth/levels',
+  groups: '/member/groups',
+  tags: '/member/tags',
 };
 /** 分组分页独立入参，状态0必须保留。 */
 export async function getGroupPage(q: MemberGroupPageQuery) {
   return decodePage(
     await request<unknown>({
-      url: '/groups/page',
+      url: '/member/groups/page',
       params: {
         name: q.name?.trim() || undefined,
         status: q.status,
@@ -157,7 +157,7 @@ export async function getGroupPage(q: MemberGroupPageQuery) {
 export async function getTagPage(q: MemberTagPageQuery) {
   return decodePage(
     await request<unknown>({
-      url: '/tags/page',
+      url: '/member/tags/page',
       params: {
         name: q.name?.trim() || undefined,
         startTime: q.startTime || undefined,
@@ -270,7 +270,7 @@ export async function getMemberRecords(kind: RecordKind, q: MemberPageQuery) {
   );
 }
 export async function getPointConfig() {
-  const raw = (await request<unknown>({ url: '/growths/config' })).data;
+  const raw = (await request<unknown>({ url: '/member/growths/config' })).data;
   return raw == null ? null : decodeConfig(raw);
 }
 export async function savePointConfig(values: MemberPointConfig) {
@@ -280,10 +280,15 @@ export async function savePointConfig(values: MemberPointConfig) {
     pointTradeDeductMaxPrice: values.pointTradeDeductMaxPrice,
     pointTradeGivePoint: values.pointTradeGivePoint,
   };
-  return confirmed((await request<unknown>({ url: '/growths/config', method: 'PUT', data })).data);
+  return confirmed(
+    (await request<unknown>({ url: '/member/growths/config', method: 'PUT', data })).data,
+  );
 }
 export async function getSignConfigs() {
-  return list((await request<unknown>({ url: '/growths/signin-configs' })).data, decodeSignConfig);
+  return list(
+    (await request<unknown>({ url: '/member/growths/signin-configs' })).data,
+    decodeSignConfig,
+  );
 }
 /** 创建仅提交规则内容，不能由前端指定生成ID。 */
 export async function createSignConfig(values: MemberSignConfigValues) {
@@ -294,7 +299,7 @@ export async function createSignConfig(values: MemberSignConfigValues) {
     status: values.status,
   };
   return memberId(
-    (await request<unknown>({ url: '/growths/signin-configs', method: 'POST', data })).data,
+    (await request<unknown>({ url: '/member/growths/signin-configs', method: 'POST', data })).data,
   );
 }
 /** 修改以路径ID定位，允许调整day。 */
@@ -308,7 +313,7 @@ export async function updateSignConfig(id: string, values: MemberSignConfigValue
   return confirmed(
     (
       await request<unknown>({
-        url: '/growths/signin-configs/' + memberId(id),
+        url: '/member/growths/signin-configs/' + memberId(id),
         method: 'PUT',
         data,
       })
@@ -317,7 +322,11 @@ export async function updateSignConfig(id: string, values: MemberSignConfigValue
 }
 export async function deleteSignConfig(id: string) {
   return confirmed(
-    (await request<unknown>({ url: '/growths/signin-configs/' + memberId(id), method: 'DELETE' }))
-      .data,
+    (
+      await request<unknown>({
+        url: '/member/growths/signin-configs/' + memberId(id),
+        method: 'DELETE',
+      })
+    ).data,
   );
 }

@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-31",
+  "scope": "service prefixes, actual gateway forwarding, member client paths and system upload identity",
+  "gateway": {
+    "tests": 35,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "routingCases": 18,
+  "ui": {
+    "tests": 223,
+    "files": 35,
+    "passed": true
+  },
+  "miniapp": {
+    "tests": 125,
+    "failures": 0,
+    "skipped": 0
+  },
+  "checks": {
+    "gatewayVerify": "passed",
+    "uiBuild": "passed with existing chunk warning",
+    "uiTypecheck": "passed",
+    "uiLint": "passed",
+    "uiFormat": "passed",
+    "diffCheck": "passed"
+  },
+  "packagedDubboLibraries": [],
+  "logs": [
+    "/tmp/service-prefix-gateway-verify.log",
+    "/tmp/service-prefix-mini.log",
+    "/tmp/service-prefix-ui-tests.log",
+    "/tmp/service-prefix-ui-build.log",
+    "/tmp/service-prefix-ui-typecheck.log",
+    "/tmp/service-prefix-ui-lint.log",
+    "/tmp/service-prefix-ui-format.log"
+  ],
+  "limits": [
+    "Gateway predicates and StripPrefix executed in tests, not a running Nacos/downstream cluster",
+    "No provider business implementation or DDL changed, so full four-service suite not repeated",
+    "No running Nacos config edits, deployment or commit/push"
+  ]
+}

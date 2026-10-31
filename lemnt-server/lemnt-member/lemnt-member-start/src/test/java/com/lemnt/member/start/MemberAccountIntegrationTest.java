@@ -1831,12 +1831,15 @@ class MemberAccountIntegrationTest {
     /** 真实H2保存和默认查询贯通HTTP，本人上下文不接受外部属主覆盖。 */
     @Test
     void addressHttpUsesOwnerContextAndUnifiedMissingResponse() throws Exception {
+        var areaNames = org.mockito.Mockito.mock(com.lemnt.member.domain.address.gateway.MemberAddressAreaGateway.class);
+        org.mockito.Mockito.when(areaNames.names(org.mockito.ArgumentMatchers.anyList())).thenReturn(java.util.Map.of());
+        var addressQueries = new com.lemnt.member.application.address.service.MemberAddressQueryService(areaNames);
         var controller = new AppMemberAddressController(
                 new MemberAddressDeleteCmdExe(addressService),
-                new MemberAddressDetailQueryExe(memberAddressGateway),
-                new MemberAddressListQueryExe(memberAddressGateway),
+                new MemberAddressDetailQueryExe(memberAddressGateway, addressQueries),
+                new MemberAddressListQueryExe(memberAddressGateway, addressQueries),
                 new MemberAddressSaveCmdExe(addressService),
-                new MemberAddressDefaultQueryExe(memberAddressGateway));
+                new MemberAddressDefaultQueryExe(memberAddressGateway, addressQueries));
         var mvc = MockMvcBuilders.standaloneSetup(controller)
                 .addInterceptors(new HeaderInterceptor())
                 .setControllerAdvice(new GlobalExceptionHandler()).build();

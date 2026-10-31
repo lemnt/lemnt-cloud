@@ -1492,8 +1492,9 @@
     {
       "source": "src/views/member/user/detail/UserAddressList.vue",
       "sha256": "6503688c765e62a3a6121190040f19c93e18f66fc9a3ec6eacca88150ac86972",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/member/account/pages/MemberUserPage.tsx",
+      "note": "126真实地区全称展示，旧响应及未知保持编号，写入不提交名称；最终UI契约继续核对"
     },
     {
       "source": "src/views/member/user/detail/UserAftersaleList.vue",
@@ -1831,5 +1832,12 @@
       "state": "pending",
       "target": null
     }
-  ]
+  ],
+  "progressMetric": {
+    "date": "2026-10-31",
+    "canonicalReport": "../127-migration-progress-recount.md",
+    "canonicalEvidence": "migration-progress-20261031.json",
+    "codeStagePercent": 42.3,
+    "note": "原file state只表示历史映射登记，不能作为功能完成率；以63单元/214适用检查项复核为当前口径"
+  }
 }

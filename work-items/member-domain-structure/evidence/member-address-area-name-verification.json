@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-31",
+  "batch": "125/126",
+  "tests": {
+    "member": {
+      "tests": 117,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "auth": {
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "mall": {
+      "tests": 119,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "system": {
+      "tests": 136,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "gateway": {
+      "tests": 34,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "common-security": {
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "businessTests": 414,
+  "react": {
+    "tests": 223,
+    "files": 35,
+    "passed": true
+  },
+  "miniapp": {
+    "tests": 124,
+    "failures": 0,
+    "skipped": 0
+  },
+  "checks": {
+    "jointVerify": "passed after allowing existing local HttpServer test",
+    "memberFinalVerify": "passed",
+    "build": "passed with pre-existing chunk warning",
+    "typecheck": "passed",
+    "lint": "passed",
+    "format:check": "passed",
+    "diffCheck": "passed"
+  },
+  "logs": [
+    "/tmp/member-address-area-verify.log",
+    "/tmp/member-address-area-final-verify.log",
+    "/tmp/member-address-area-member-final.log",
+    "/tmp/member-address-area-mini.log",
+    "/tmp/member-address-area-ui-tests.log",
+    "/tmp/member-address-area-ui-build.log",
+    "/tmp/member-address-area-ui-typecheck.log",
+    "/tmp/member-address-area-ui-lint.log",
+    "/tmp/member-address-area-ui-format.log"
+  ],
+  "schemaChange": false,
+  "limitations": [
+    "Initial sandbox test bind failure was environmental; existing MinIO integration test rerun with local-port permission",
+    "Region RPC mocked in member tests, real source CSV exercised in system tests",
+    "No real provider deployment/Nacos/Redis/browser/WeChat verification",
+    "No writes to real OSS",
+    "No commit or push"
+  ]
+}

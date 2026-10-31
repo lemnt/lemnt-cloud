@@ -223,3 +223,24 @@ it('会员未知关系与已读取无绑定分开，不默认造空标签', () =
     decodeProfile({ ...row, tagIds: [], tagNames: [], levelName: null, groupName: null }),
   ).toMatchObject({ tagIds: [], tagNames: [], levelName: null, groupName: null });
 });
+
+it('地址地区全称来自服务端，兼容缺失和null，未知编号不转为名称', () => {
+  const row = {
+    id: '1',
+    memberId: '2',
+    name: '收件人',
+    mobile: '13800000003',
+    areaId: '110101',
+    detailAddress: '街道门牌',
+    defaultStatus: true,
+  };
+  expect(decodeAddress({ ...row, areaName: '北京市 北京市 东城区' }).areaName).toBe(
+    '北京市 北京市 东城区',
+  );
+  expect(decodeAddress(row)).not.toHaveProperty('areaName');
+  expect(decodeAddress({ ...row, areaId: '9223372036854775807', areaName: null })).toMatchObject({
+    areaId: '9223372036854775807',
+    areaName: null,
+  });
+  expect(() => decodeAddress({ ...row, areaName: 110101 })).toThrow();
+});

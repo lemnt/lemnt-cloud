@@ -1,6 +1,6 @@
 package com.lemnt.member.application.address.executor;
 
-import com.lemnt.member.application.address.converter.MemberAddressDTOConverter;
+import com.lemnt.member.application.address.service.MemberAddressQueryService;
 import com.lemnt.member.application.address.dto.AddressDTO;
 import com.lemnt.member.application.address.qry.AddressListQry;
 import com.lemnt.member.domain.address.gateway.MemberAddressGateway;
@@ -18,12 +18,13 @@ import java.util.List;
 public class MemberAddressListQueryExe {
 
     private final MemberAddressGateway memberAddressGateway;
+    private final MemberAddressQueryService memberAddressQueryService;
 
     /**
      * 执行地址列表查询。
      */
     public List<AddressDTO> execute(AddressListQry qry) {
         MemberRules.id(qry.memberId());
-        return memberAddressGateway.addresses(qry.memberId()).stream().map(MemberAddressDTOConverter::toAddressDTO).toList();
+        return memberAddressQueryService.enrich(memberAddressGateway.addresses(qry.memberId()));
     }
 }

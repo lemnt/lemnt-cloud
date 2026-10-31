@@ -49,6 +49,7 @@ function address(v) {
     name: text(v.name),
     mobile: text(v.mobile),
     areaId: id(v.areaId),
+    ...(v.areaName === undefined ? {} : { areaName: v.areaName === null ? null : text(v.areaName) }),
     detailAddress: text(v.detailAddress),
     defaultStatus: v.defaultStatus,
   };
@@ -214,12 +215,12 @@ function createMemberClient({
         await call("/auth/logout", "POST", undefined, false, before).then(yes);
     },
     async profile() {
-      const p = profile(await call("/user"));
+      const p = profile(await call("/users/user"));
       if (p.id !== getSession()?.memberId) throw Error("会员资料身份不匹配");
       return p;
     },
     updateProfile: (v) =>
-      call("/user", "PUT", {
+      call("/users/user", "PUT", {
         nickname: v.nickname,
         email: v.email || null,
         avatar: v.avatar || null,
@@ -228,7 +229,7 @@ function createMemberClient({
       }).then(yes),
     async changePassword(oldPassword, newPassword) {
       const before = getSession();
-      await call("/user/password", "PUT", {
+      await call("/users/user/password", "PUT", {
         oldPassword: password(oldPassword),
         newPassword: password(newPassword),
       }).then(yes);
@@ -246,7 +247,7 @@ function createMemberClient({
       }).then((v) => owned(address(v))),
     deleteAddress: (key) => call("/addresses/" + id(key), "DELETE").then(yes),
     levels: () =>
-      call("/levels").then((v) =>
+      call("/growths/levels").then((v) =>
         list(v, (x) => {
           object(x);
           return {
@@ -258,7 +259,7 @@ function createMemberClient({
         }),
       ),
     signConfigs: () =>
-      call("/signin/config").then((v) =>
+      call("/growths/signin/config").then((v) =>
         list(v, (x) => {
           object(x);
           return {
@@ -269,7 +270,7 @@ function createMemberClient({
         }),
       ),
     summary: () =>
-      call("/signin/summary").then((v) => {
+      call("/growths/signin/summary").then((v) => {
         object(v);
         if (typeof v.todaySignIn !== "boolean") throw Error("签到汇总不合法");
         return {
@@ -279,7 +280,7 @@ function createMemberClient({
         };
       }),
     sign: () =>
-      call("/signin", "POST").then((v) => {
+      call("/growths/signin", "POST").then((v) => {
         object(v);
         return owned({
           id: id(v.id),
@@ -312,10 +313,10 @@ function createMemberClient({
       }
       return page(
         kind === "points"
-          ? "/point-records"
+          ? "/growths/point-records"
           : kind === "experience"
-            ? "/experience-records"
-            : "/signin/records",
+            ? "/growths/experience-records"
+            : "/growths/signin/records",
         pageNum,
         kind === "signin" ? "sign" : "asset",
         query,

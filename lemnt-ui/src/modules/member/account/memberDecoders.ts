@@ -106,6 +106,9 @@ export function decodeAddress(raw: unknown): MemberAddress {
     name: text(v.name),
     mobile: text(v.mobile),
     areaId: memberId(v.areaId),
+    ...(v.areaName === undefined
+      ? {}
+      : { areaName: v.areaName === null ? null : text(v.areaName) }),
     detailAddress: text(v.detailAddress),
     defaultStatus: v.defaultStatus,
   };

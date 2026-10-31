@@ -82,7 +82,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
     /** 通过完整接口路径选择会员身份域，不匹配近似前缀。 */
     private boolean isAppPath(String path) {
-        return path.equals("/files/app/upload") || path.equals("/member/app") || path.startsWith("/member/app/")
+        return path.equals("/system/files/app/upload") || path.equals("/files/app/upload") || path.equals("/member/app") || path.startsWith("/member/app/")
                 || path.equals("/mall/app") || path.startsWith("/mall/app/")
                 || path.equals("/trade/app") || path.startsWith("/trade/app/");
     }

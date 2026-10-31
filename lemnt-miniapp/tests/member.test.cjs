@@ -225,7 +225,7 @@ test("会员分页读取统一rows和total，积分经验签到路径保持隔�
   }
   assert.deepEqual(
     calls.map((q) => q.url.split("/member/app")[1]),
-    ["/point-records", "/experience-records", "/signin/records"],
+    ["/growths/point-records", "/growths/experience-records", "/growths/signin/records"],
   );
 });
 test("积分标题描述与原因分离，历史和经验不套用积分元数据", async () => {
@@ -305,4 +305,36 @@ test("签到未知时间不由业务日期补造，真实时间独立展示", as
   assert.equal((await client.records("signin", 1)).records[0].createTime, undefined);
   time = "2026-10-29 10:00:00";
   assert.equal((await client.records("signin", 1)).records[0].createTime, time);
+});
+
+test("地址地区名称解码兼容旧响应，保存只发送编号和原编辑字段", async () => {
+  const row = { id: "7", memberId: "1", name: "收件人", mobile: "13800000003", areaId: "110101", detailAddress: "street", defaultStatus: true };
+  const x = client(async q => q.method === "GET" ? [{ ...row, areaName: "北京市 北京市 东城区" }, { ...row, id: "8" }, { ...row, id: "9", areaName: null }] : row);
+  const rows = await x.c.addresses();
+  assert.equal(rows[0].areaName, "北京市 北京市 东城区");
+  assert.equal(rows[1].areaName, undefined);
+  assert.equal(rows[2].areaName, null);
+  await x.c.saveAddress("7", rows[0]);
+  assert.equal(x.calls[1].data.areaId, "110101");
+  assert.equal(Object.hasOwn(x.calls[1].data, "areaName"), false);
+  const bad = client(async () => [{ ...row, areaName: 110101 }]);
+  await assert.rejects(bad.c.addresses(), /文本/);
+});
+
+test("会员客户端保留服务前缀且业务路径与网关转发目标一致", async () => {
+  const x = client(async () => { throw Error("contract probe"); });
+  const cases = [
+    [() => x.c.profile(), "/member/app/users/user"],
+    [() => x.c.levels(), "/member/app/growths/levels"],
+    [() => x.c.signConfigs(), "/member/app/growths/signin/config"],
+    [() => x.c.summary(), "/member/app/growths/signin/summary"],
+    [() => x.c.sign(), "/member/app/growths/signin"],
+    [() => x.c.addresses(), "/member/app/addresses"],
+    [() => x.c.changePassword("Old-pass-2026", "New-pass-2026"), "/member/app/users/user/password"],
+    [() => x.c.deleteAddress("7"), "/member/app/addresses/7"],
+  ];
+  for (const [call, path] of cases) {
+    await assert.rejects(call(), /contract probe/);
+    assert.equal(new URL(x.calls.at(-1).url).pathname, path);
+  }
 });

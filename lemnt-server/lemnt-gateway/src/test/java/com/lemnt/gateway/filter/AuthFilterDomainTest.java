@@ -85,7 +85,7 @@ class AuthFilterDomainTest {
         var whites = new IgnoreWhiteProperties();
         whites.setWhites(List.of("/**"));
         ReflectionTestUtils.setField(filter, "ignoreWhite", whites);
-        for (String path : List.of("/member/app/user", "/trade/app/cart", "/mall/app/private")) {
+        for (String path : List.of("/member/app/users/user", "/trade/app/cart", "/mall/app/private", "/system/files/app/upload")) {
             var exchange = request(path, adminToken());
             filter.filter(exchange, ignored -> {
                 fail("后台令牌不得访问会员接口"); return Mono.empty();

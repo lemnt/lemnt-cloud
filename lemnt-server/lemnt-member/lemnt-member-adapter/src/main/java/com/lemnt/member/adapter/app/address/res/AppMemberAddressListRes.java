@@ -21,5 +21,7 @@ public record AppMemberAddressListRes(
         @Schema(description = "详细地址")
         String detailAddress,
         @Schema(description = "是否默认地址")
-        Boolean defaultStatus
+        Boolean defaultStatus,
+        @Schema(description = "省市区全称，未知或暂不可用时为空")
+        String areaName
 ) implements Serializable {}

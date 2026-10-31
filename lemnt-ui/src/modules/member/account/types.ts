@@ -115,6 +115,7 @@ export interface MemberAddress {
   areaId: string;
   detailAddress: string;
   defaultStatus: boolean;
+  areaName?: string | null;
 }
 export type RecordKind =
   'point-records' | 'experience-records' | 'level-records' | 'signin-records';

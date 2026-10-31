@@ -342,7 +342,7 @@ export default function MemberUserPage() {
               columns={[
                 { title: '姓名', dataIndex: 'name' },
                 { title: '手机号', dataIndex: 'mobile' },
-                { title: '区划代码', dataIndex: 'areaId' },
+                { title: '地区', render: (_, r) => r.areaName || `未识别地区（${r.areaId}）` },
                 { title: '详细地址', dataIndex: 'detailAddress' },
                 { title: '默认', render: (_, r) => (r.defaultStatus ? '是' : '否') },
               ]}

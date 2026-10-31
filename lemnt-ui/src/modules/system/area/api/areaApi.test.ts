@@ -25,5 +25,5 @@ it('拒绝重复编号、缺名和损坏子树', () => {
 it('地区树通过system独立接口读取', async () => {
   mockedRequest.mockResolvedValue({ data: tree });
   expect(await getAreas()).toEqual(tree);
-  expect(mockedRequest).toHaveBeenCalledWith({ url: '/areas/tree' });
+  expect(mockedRequest).toHaveBeenCalledWith({ url: '/system/areas/tree' });
 });

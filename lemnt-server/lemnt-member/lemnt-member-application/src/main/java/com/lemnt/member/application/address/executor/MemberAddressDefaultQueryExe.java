@@ -1,6 +1,6 @@
 package com.lemnt.member.application.address.executor;
 
-import com.lemnt.member.application.address.converter.MemberAddressDTOConverter;
+import com.lemnt.member.application.address.service.MemberAddressQueryService;
 import com.lemnt.member.application.address.dto.AddressDTO;
 import com.lemnt.member.application.address.qry.AddressDefaultQry;
 import com.lemnt.member.domain.address.gateway.MemberAddressGateway;
@@ -16,12 +16,13 @@ import lombok.RequiredArgsConstructor;
 public class MemberAddressDefaultQueryExe {
 
     private final MemberAddressGateway memberAddressGateway;
+    private final MemberAddressQueryService memberAddressQueryService;
 
     /**
      * 执行默认地址查询。
      */
     public AddressDTO execute(AddressDefaultQry qry) {
         MemberRules.id(qry.memberId());
-        return MemberAddressDTOConverter.toAddressDTO(memberAddressGateway.defaultAddress(qry.memberId()));
+        return memberAddressQueryService.enrich(memberAddressGateway.defaultAddress(qry.memberId()));
     }
 }

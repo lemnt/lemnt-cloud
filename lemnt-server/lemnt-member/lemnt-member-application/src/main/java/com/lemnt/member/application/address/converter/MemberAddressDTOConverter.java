@@ -23,4 +23,10 @@ public final class MemberAddressDTOConverter {
                         v.detailAddress(),
                         v.defaultStatus());
     }
+    /** 只为查询投影附加真实地区全称，不改变地址实体。 */
+    public static AddressDTO toAddressDTO(Address v, String areaName) {
+        return v == null ? null : new AddressDTO(v.id(), v.memberId(), v.name(), v.mobile(),
+                v.areaId(), v.detailAddress(), v.defaultStatus(), areaName);
+    }
+
 }

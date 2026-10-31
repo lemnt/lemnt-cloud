@@ -15,6 +15,11 @@
     <dependencies>
         <dependency>
             <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-system-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
             <artifactId>lemnt-auth-client</artifactId>
             <version>${project.version}</version>
         </dependency>
