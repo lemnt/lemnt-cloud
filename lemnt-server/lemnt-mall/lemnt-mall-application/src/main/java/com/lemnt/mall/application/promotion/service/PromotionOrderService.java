@@ -6,7 +6,9 @@ import com.lemnt.mall.application.promotion.cmd.PromotionOrderCmd;
 import com.lemnt.mall.application.promotion.dto.PromotionRefundResult;
 import com.lemnt.mall.client.bo.RefundStockBo;
 import com.lemnt.mall.domain.promotion.gateway.PromotionOrderGateway;
+import com.lemnt.mall.domain.promotion.gateway.PromotionOrderItemGateway;
 import com.lemnt.mall.domain.promotion.model.PromotionOrder;
+import com.lemnt.mall.domain.promotion.model.PromotionOrderItem;
 import com.lemnt.mall.domain.settlement.gateway.OrderGateway;
 import com.lemnt.mall.domain.settlement.model.SettlementOrder;
 
@@ -17,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /** 活动订单下单与生命周期补偿：活动库存预占、恢复、拼团建团。 */
 @Slf4j
@@ -25,6 +29,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class PromotionOrderService {
     private final PromotionOrderGateway promotionOrders;
+    private final PromotionOrderItemGateway promotionOrderItems;
     private final PromotionOrderPreparationService preparation;
     private final OrderGateway orders;
     private final SeckillStockService seckillStock;
@@ -44,10 +49,17 @@ public class PromotionOrderService {
         require(cmd != null && cmd.memberId() != null && cmd.memberId() > 0, "会员编号不合法");
         require(cmd.requestNo() != null && cmd.requestNo().matches("[A-Za-z0-9_-]{1,64}"),
                 "请求编号不合法");
-        String fingerprint = String.join(":", "PROMOTION", String.valueOf(cmd.activityType()),
-                String.valueOf(cmd.activityId()), String.valueOf(cmd.recordId()),
-                String.valueOf(cmd.headId()), String.valueOf(cmd.skuId()),
-                String.valueOf(cmd.quantity()));
+        require(cmd.lines() != null && !cmd.lines().isEmpty(), "活动商品不能为空");
+        var lineKey = cmd.lines().stream()
+                .map(line -> line.skuId() + ":" + line.quantity()).sorted().toList();
+        String fingerprint = cmd.lines().size() == 1
+                ? String.join(":", "PROMOTION", String.valueOf(cmd.activityType()),
+                    String.valueOf(cmd.activityId()), String.valueOf(cmd.recordId()),
+                    String.valueOf(cmd.headId()), String.valueOf(cmd.skuId()),
+                    String.valueOf(cmd.quantity()))
+                : String.join(":", "PROMOTION", String.valueOf(cmd.activityType()),
+                    String.valueOf(cmd.activityId()), String.valueOf(cmd.recordId()),
+                    String.valueOf(cmd.headId()), lineKey.toString());
         var prepared = preparation.prepare(cmd, fingerprint);
         try {
             return orders.save(prepared.order());
@@ -72,9 +84,24 @@ public class PromotionOrderService {
         if (value == null || !"CREATED".equals(value.status())) {
             return;
         }
+        var lines = promotionOrderItems.byOrderNo(orderNo);
         switch (value.activityType()) {
-            case "SECKILL" -> seckillStock.decreaseStock(value.activityId(), value.skuId(), value.quantity());
-            case "POINT" -> pointActivities.decreaseStock(value.activityId(), value.skuId(), value.quantity());
+            case "SECKILL" -> {
+                if (lines.isEmpty()) {
+                    seckillStock.decreaseStock(value.activityId(), value.skuId(), value.quantity());
+                } else {
+                    lines.forEach(line -> seckillStock.decreaseStock(value.activityId(), line.skuId(),
+                            line.quantity()));
+                }
+            }
+            case "POINT" -> {
+                if (lines.isEmpty()) {
+                    pointActivities.decreaseStock(value.activityId(), value.skuId(), value.quantity());
+                } else {
+                    lines.forEach(line -> pointActivities.decreaseStock(value.activityId(), line.skuId(),
+                            line.quantity()));
+                }
+            }
             case "BARGAIN" -> {
                 bargainActivities.decreaseStock(value.activityId(), value.quantity());
                 if (order.id() != null && value.activityRecordId() != null) {
@@ -123,14 +150,20 @@ public class PromotionOrderService {
             throw new IllegalStateException("已支付活动订单不能关闭");
         }
         if ("RESERVED".equals(value.status())) {
-            restore(value.activityType(), value.activityId(), value.skuId(), value.quantity());
+            var lines = promotionOrderItems.byOrderNo(orderNo);
+            if (lines.isEmpty()) {
+                restore(value.activityType(), value.activityId(), value.skuId(), value.quantity());
+            } else {
+                lines.forEach(line -> restore(value.activityType(), value.activityId(), line.skuId(),
+                        line.quantity()));
+            }
         }
         if (!promotionOrders.markClosed(orderNo)) {
             throw new IllegalStateException("活动订单状态冲突");
         }
     }
 
-    /** 售后按退款数量恢复活动库存，重复回调按已退数量去重。 */
+    /** 售后按商品行退款数量恢复活动库存，并按行累计数量计算本次应退积分。 */
     @Transactional(rollbackFor = Exception.class)
     public PromotionRefundResult refunded(String orderNo, String refundNo, SettlementOrder order,
             List<RefundStockBo> items) {
@@ -139,27 +172,75 @@ public class PromotionOrderService {
             return PromotionRefundResult.none();
         }
         require(refundNo != null && !refundNo.isBlank() && refundNo.length() <= 64, "退款单号不合法");
-        var requested = items == null ? 0 : items.stream()
-                .filter(item -> Objects.equals(item.productId(), value.skuId()))
-                .mapToInt(RefundStockBo::quantity).sum();
+        var requestedBySku = items == null ? Map.<Long, Integer>of() : items.stream()
+                .collect(Collectors.groupingBy(RefundStockBo::productId,
+                        Collectors.summingInt(RefundStockBo::quantity)));
+        var requested = requestedBySku.values().stream().mapToInt(Integer::intValue).sum();
         if (!promotionOrders.recordRefund(orderNo, refundNo, requested)) {
             return PromotionRefundResult.none();
         }
         if (requested <= 0) {
             return PromotionRefundResult.none();
         }
+        var lines = promotionOrderItems.byOrderNo(orderNo);
+        if (lines.isEmpty()) {
+            return legacyRefund(value, order, requested);
+        }
+        long refundPoints = 0L;
+        var totalDelta = 0;
+        for (var line : lines) {
+            var lineRequested = requestedBySku.getOrDefault(line.skuId(), 0);
+            var remaining = line.quantity() - line.refundedQuantity();
+            var delta = Math.min(lineRequested, remaining);
+            if (delta <= 0) {
+                continue;
+            }
+            restore(value.activityType(), value.activityId(), line.skuId(), delta);
+            if (!promotionOrderItems.increaseRefunded(orderNo, line.skuId(), line.refundedQuantity(), delta)) {
+                throw new IllegalStateException("活动订单商品退款数量冲突");
+            }
+            var previousPoints = line.usePoint() * line.refundedQuantity() / line.quantity();
+            var currentPoints = line.usePoint() * (line.refundedQuantity() + delta) / line.quantity();
+            refundPoints += currentPoints - previousPoints;
+            totalDelta += delta;
+        }
+        if (totalDelta == 0) {
+            if ("REFUNDED".equals(order.status()) && value.refundedQuantity() >= value.quantity()
+                    && !promotionOrders.markRefunded(orderNo)) {
+                var current = promotionOrders.findByOrderNo(orderNo);
+                if (current == null || !"REFUNDED".equals(current.status())) {
+                    throw new IllegalStateException("活动订单状态冲突");
+                }
+            }
+            return PromotionRefundResult.none();
+        }
+        var newQuantity = value.refundedQuantity() + totalDelta;
+        if (!promotionOrders.addRefundedQuantity(orderNo, value.refundedQuantity(), totalDelta)) {
+            throw new IllegalStateException("活动订单退款数量冲突");
+        }
+        if ("REFUNDED".equals(order.status()) && !promotionOrders.markRefunded(orderNo)) {
+            var current = promotionOrders.findByOrderNo(orderNo);
+            if (current == null || !"REFUNDED".equals(current.status())) {
+                throw new IllegalStateException("活动订单状态冲突");
+            }
+        }
+        return new PromotionRefundResult(refundPoints, newQuantity);
+    }
+
+    /** 兼容第144批之前没有商品行映射的活动订单。 */
+    private PromotionRefundResult legacyRefund(PromotionOrder value, SettlementOrder order, int requested) {
         var remaining = value.quantity() - value.refundedQuantity();
         var delta = Math.min(requested, remaining);
         var newQuantity = value.refundedQuantity();
         if (delta > 0) {
             restore(value.activityType(), value.activityId(), value.skuId(), delta);
-            if (!promotionOrders.addRefundedQuantity(orderNo, value.refundedQuantity(), delta)) {
+            if (!promotionOrders.addRefundedQuantity(value.orderNo(), value.refundedQuantity(), delta)) {
                 throw new IllegalStateException("活动订单退款数量冲突");
             }
             newQuantity += delta;
         }
-        if ("REFUNDED".equals(order.status()) && !promotionOrders.markRefunded(orderNo)) {
-            var current = promotionOrders.findByOrderNo(orderNo);
+        if ("REFUNDED".equals(order.status()) && !promotionOrders.markRefunded(value.orderNo())) {
+            var current = promotionOrders.findByOrderNo(value.orderNo());
             if (current == null || !"REFUNDED".equals(current.status())) {
                 throw new IllegalStateException("活动订单状态冲突");
             }

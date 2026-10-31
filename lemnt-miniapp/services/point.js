@@ -13,6 +13,7 @@ function createPointClient({request,baseUrl,getMemberToken,ready=false}){
   activities:async q=>{if(!Number.isSafeInteger(q.pageNum)||q.pageNum<1)throw Error('页码不合法');const r=await call('/activities',{pageNum:q.pageNum,pageSize:20});return {records:list(r.rows,activity),total:integer(r.total)};},
   activity:async key=>{const value=id(key);const r=await call('/activities/'+value);if(id(r.data.id)!==value)throw Error('积分商城活动编号不一致');return activity(r.data);},
   order:async p=>{const r=await call('/orders',{activityId:orderRules.id(p.activityId),skuId:orderRules.id(p.skuId),quantity:orderRules.quantity(p.quantity),addressId:orderRules.addressId(p.addressId),requestNo:orderRules.requestNo(p.requestNo)},'POST',true);return orderRules.decodeOrder(r.data);},
+  batchOrder:async p=>{if(!Array.isArray(p.lines)||!p.lines.length)throw Error('商品行不能为空');const lines=p.lines.map(line=>({skuId:orderRules.id(line.skuId),quantity:orderRules.quantity(line.quantity)}));const r=await call('/orders/batch',{activityId:orderRules.id(p.activityId),lines,addressId:orderRules.addressId(p.addressId),requestNo:orderRules.requestNo(p.requestNo)},'POST',true);return orderRules.decodeOrder(r.data);},
  };
 }
 module.exports={createPointClient};

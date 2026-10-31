@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.lemnt.mall.application.promotion.executor.PromotionOrderPlaceCmdExe;
 import com.lemnt.mall.adapter.app.promotion.res.AppPromotionOrderRes;
+import com.lemnt.mall.adapter.app.promotion.req.AppPromotionOrderBatchCreateReq;
 import com.lemnt.mall.adapter.app.promotion.req.AppPromotionOrderCreateReq;
 import com.lemnt.mall.adapter.app.promotion.converter.AppPromotionOrderConverter;
 import com.lemnt.common.security.utils.SecurityUtils;
@@ -55,5 +56,12 @@ public class AppPointController {
     public R<AppPromotionOrderRes> order(@Valid @RequestBody AppPromotionOrderCreateReq req) {
         return R.ok(AppPromotionOrderConverter.res(orderPlace.execute(
                 AppPromotionOrderConverter.cmd(SecurityUtils.getUserId(), "POINT", req))));
+    }
+
+    @PostMapping("/orders/batch")
+    @Operation(summary = "积分商城多商品下单")
+    public R<AppPromotionOrderRes> batchOrder(@Valid @RequestBody AppPromotionOrderBatchCreateReq req) {
+        return R.ok(AppPromotionOrderConverter.res(orderPlace.execute(
+                AppPromotionOrderConverter.batchCmd(SecurityUtils.getUserId(), "POINT", req))));
     }
 }

@@ -135,4 +135,89 @@ class ZeroCashAfterSaleTest {
                 Mockito.argThat(map -> Integer.valueOf(2).equals(map.get(2L))),
                 Mockito.eq(BigDecimal.ZERO.setScale(2)));
     }
+
+    @Test
+    void partialZeroRefundKeepsOrderPaid() {
+        var afterSale = new AfterSale("RF1", "TR0", "REQ", 1L, null, 11L, 1, "REFUND_ONLY",
+                BigDecimal.ZERO.setScale(2), "原因", "WAIT_REFUND", null, null, null,
+                LocalDateTime.now(), null, null, null, 5L, 7L, null, null, 2L, 3L, "商品",
+                null, null);
+        var refunded = new AfterSale("RF1", "TR0", "REQ", 1L, null, 11L, 1, "REFUND_ONLY",
+                BigDecimal.ZERO.setScale(2), "原因", "REFUNDED", null, null, null,
+                LocalDateTime.now(), null, null, null, 5L, 7L, LocalDateTime.now(), null, 2L, 3L,
+                "商品", null, null);
+        Mockito.when(afterSales.afterSale("RF1")).thenReturn(afterSale);
+        Mockito.when(orders.lockHeader("TR0")).thenReturn(order());
+        Mockito.when(afterSales.lockAfterSale("RF1")).thenReturn(afterSale);
+        Mockito.when(refundGateway.findByAfterSaleNo("RF1")).thenReturn(null);
+        Mockito.when(inventoryConfirmation.inventoryConfirmed("TR0")).thenReturn(true);
+        Mockito.when(items.refundItems(7L)).thenReturn(List.of(item()));
+        Mockito.when(afterSales.afterSales("TR0")).thenReturn(List.of(refunded));
+        Mockito.when(afterSales.startPaymentRefund("RF1")).thenReturn(true);
+        Mockito.when(afterSales.completePaymentRefund(Mockito.eq("RF1"), Mockito.any())).thenReturn(true);
+        var value = refundService().prepare("RF1", TradeOperator.system());
+        assertEquals("SUCCESS", value.status());
+        Mockito.verify(orders, Mockito.never()).transitionStatus(Mockito.anyString(),
+                Mockito.anyString(), Mockito.anyString());
+    }
+
+    @Test
+    void multiLineZeroRefundKeepsOrderUntilAllLinesRefunded() {
+        var afterSale = new AfterSale("RF1", "TR0", "REQ", 1L, null, 11L, 1, "REFUND_ONLY",
+                BigDecimal.ZERO.setScale(2), "原因", "WAIT_REFUND", null, null, null,
+                LocalDateTime.now(), null, null, null, 5L, 7L, null, null, 2L, 3L, "商品",
+                null, null);
+        var refunded = new AfterSale("RF1", "TR0", "REQ", 1L, null, 11L, 1, "REFUND_ONLY",
+                BigDecimal.ZERO.setScale(2), "原因", "REFUNDED", null, null, null,
+                LocalDateTime.now(), null, null, null, 5L, 7L, LocalDateTime.now(), null, 2L, 3L,
+                "商品", null, null);
+        Mockito.when(afterSales.afterSale("RF1")).thenReturn(afterSale);
+        Mockito.when(orders.lockHeader("TR0")).thenReturn(order());
+        Mockito.when(afterSales.lockAfterSale("RF1")).thenReturn(afterSale);
+        Mockito.when(refundGateway.findByAfterSaleNo("RF1")).thenReturn(null);
+        Mockito.when(inventoryConfirmation.inventoryConfirmed("TR0")).thenReturn(true);
+        Mockito.when(items.refundItems(7L)).thenReturn(List.of(
+                new OrderRefundItem(11L, 2L, "商品", 1, new BigDecimal("10.00"),
+                        BigDecimal.ZERO.setScale(2), BigDecimal.ZERO.setScale(2)),
+                new OrderRefundItem(12L, 4L, "商品二", 1, new BigDecimal("10.00"),
+                        BigDecimal.ZERO.setScale(2), BigDecimal.ZERO.setScale(2))));
+        Mockito.when(afterSales.afterSales("TR0")).thenReturn(List.of(refunded));
+        Mockito.when(afterSales.startPaymentRefund("RF1")).thenReturn(true);
+        Mockito.when(afterSales.completePaymentRefund(Mockito.eq("RF1"), Mockito.any())).thenReturn(true);
+        refundService().prepare("RF1", TradeOperator.system());
+        Mockito.verify(orders, Mockito.never()).transitionStatus(Mockito.anyString(),
+                Mockito.anyString(), Mockito.anyString());
+    }
+
+    @Test
+    void multiLineZeroRefundMarksOrderWhenAllLinesRefunded() {
+        var afterSale = new AfterSale("RF1", "TR0", "REQ", 1L, null, 11L, 1, "REFUND_ONLY",
+                BigDecimal.ZERO.setScale(2), "原因", "WAIT_REFUND", null, null, null,
+                LocalDateTime.now(), null, null, null, 5L, 7L, null, null, 2L, 3L, "商品",
+                null, null);
+        var first = new AfterSale("RF1", "TR0", "REQ", 1L, null, 11L, 1, "REFUND_ONLY",
+                BigDecimal.ZERO.setScale(2), "原因", "REFUNDED", null, null, null,
+                LocalDateTime.now(), null, null, null, 5L, 7L, LocalDateTime.now(), null, 2L, 3L,
+                "商品", null, null);
+        var second = new AfterSale("RF2", "TR0", "REQ2", 1L, null, 12L, 1, "REFUND_ONLY",
+                BigDecimal.ZERO.setScale(2), "原因", "REFUNDED", null, null, null,
+                LocalDateTime.now(), null, null, null, 6L, 7L, LocalDateTime.now(), null, 4L, 3L,
+                "商品", null, null);
+        Mockito.when(afterSales.afterSale("RF1")).thenReturn(afterSale);
+        Mockito.when(orders.lockHeader("TR0")).thenReturn(order());
+        Mockito.when(afterSales.lockAfterSale("RF1")).thenReturn(afterSale);
+        Mockito.when(refundGateway.findByAfterSaleNo("RF1")).thenReturn(null);
+        Mockito.when(inventoryConfirmation.inventoryConfirmed("TR0")).thenReturn(true);
+        Mockito.when(items.refundItems(7L)).thenReturn(List.of(
+                new OrderRefundItem(11L, 2L, "商品", 1, new BigDecimal("10.00"),
+                        BigDecimal.ZERO.setScale(2), BigDecimal.ZERO.setScale(2)),
+                new OrderRefundItem(12L, 4L, "商品二", 1, new BigDecimal("10.00"),
+                        BigDecimal.ZERO.setScale(2), BigDecimal.ZERO.setScale(2))));
+        Mockito.when(afterSales.afterSales("TR0")).thenReturn(List.of(first, second));
+        Mockito.when(afterSales.startPaymentRefund("RF1")).thenReturn(true);
+        Mockito.when(afterSales.completePaymentRefund(Mockito.eq("RF1"), Mockito.any())).thenReturn(true);
+        Mockito.when(orders.transitionStatus("TR0", "PAID", "REFUNDED")).thenReturn(true);
+        refundService().prepare("RF1", TradeOperator.system());
+        Mockito.verify(orders).transitionStatus("TR0", "PAID", "REFUNDED");
+    }
 }

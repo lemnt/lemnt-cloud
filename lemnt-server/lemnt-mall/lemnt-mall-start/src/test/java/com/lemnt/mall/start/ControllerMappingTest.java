@@ -115,6 +115,7 @@ class ControllerMappingTest {
                 POST /mall/app/combination/orders
                 POST /mall/app/bargain/orders
                 POST /mall/app/point-mall/orders
+                POST /mall/app/point-mall/orders/batch
                 DELETE /mall/app/cart/{productId}
                 DELETE /mall/brands/{id} mall:brand:remove
                 DELETE /mall/categories/{id} mall:category:remove

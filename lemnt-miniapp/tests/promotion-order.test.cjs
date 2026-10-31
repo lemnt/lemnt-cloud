@@ -28,10 +28,12 @@ test('四类活动下单走各自路径并携带会员令牌', async () => {
       'https://example.test/mall/app/bargain/orders'],
     [createPointClient, { activityId: '1', skuId: '2', quantity: 1, addressId: '3', requestNo: 'REQ1' },
       'https://example.test/mall/app/point-mall/orders'],
+    [createPointClient, { activityId: '1', lines: [{ skuId: '2', quantity: 1 }, { skuId: '4', quantity: 2 }], addressId: '3', requestNo: 'REQ2' },
+      'https://example.test/mall/app/point-mall/orders/batch'],
   ];
   for (const [factory, payload, url] of cases) {
     const { client, calls } = setup(factory, ok);
-    const order = await client.order(payload);
+    const order = payload.lines ? await client.batchOrder(payload) : await client.order(payload);
     assert.equal(order.orderNo, 'TR1');
     assert.equal(order.totalAmount, '10.00');
     assert.equal(calls[0].url, url);

@@ -114,14 +114,16 @@ public class PaymentRefundService {
         }
         afterSaleLogs.record(afterSales.afterSale(afterSale.refundNo()), "REFUNDING", "REFUNDED", 31,
                 operator, "零元订单积分原路退回");
-        var line = items.refundItems(order.id()).stream()
-                .filter(item -> item.id().equals(afterSale.orderItemId()))
-                .findFirst().orElseThrow(() -> new IllegalStateException("售后商品不属于原订单"));
-        var refundedQuantity = afterSales.afterSales(order.orderNo()).stream()
-                .filter(item -> "REFUNDED".equals(item.status())
-                        && line.id().equals(item.orderItemId()))
-                .mapToInt(AfterSale::quantity).sum();
-        if (refundedQuantity >= line.quantity()) {
+        var orderLines = items.refundItems(order.id());
+        if (orderLines.stream().noneMatch(item -> item.id().equals(afterSale.orderItemId()))) {
+            throw new IllegalStateException("售后商品不属于原订单");
+        }
+        var refunded = afterSales.afterSales(order.orderNo()).stream()
+                .filter(item -> "REFUNDED".equals(item.status())).toList();
+        var full = orderLines.stream().allMatch(line -> refunded.stream()
+                .filter(item -> line.id().equals(item.orderItemId()))
+                .mapToInt(AfterSale::quantity).sum() >= line.quantity());
+        if (full) {
             if (!orders.transitionStatus(order.orderNo(), order.status(), "REFUNDED")) {
                 throw new IllegalStateException("订单退款状态写入冲突");
             }

@@ -7,7 +7,9 @@ import com.lemnt.mall.application.promotion.dto.PromotionOrderDraft;
 import com.lemnt.mall.application.settlement.dto.SettlementPreparationResult;
 import com.lemnt.mall.application.settlement.service.SettlementPreparationService;
 import com.lemnt.mall.domain.promotion.gateway.PromotionOrderGateway;
+import com.lemnt.mall.domain.promotion.gateway.PromotionOrderItemGateway;
 import com.lemnt.mall.domain.promotion.model.PromotionOrder;
+import com.lemnt.mall.domain.promotion.model.PromotionOrderItem;
 import com.lemnt.mall.domain.settlement.gateway.OrderGateway;
 import com.lemnt.mall.domain.settlement.model.SettlementOrder;
 
@@ -25,6 +27,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class PromotionOrderPreparationService {
     private final PromotionOrderGateway promotionOrders;
+    private final PromotionOrderItemGateway promotionOrderItems;
     private final PromotionOrderPricingService pricing;
     private final SettlementPreparationService settlements;
     private final OrderGateway orders;
@@ -65,6 +68,9 @@ public class PromotionOrderPreparationService {
                     cmd.requestNo(), cmd.memberId(), draft.activityType(), draft.activityId(),
                     draft.recordId(), draft.headId(), draft.skuId(), draft.quantity(),
                     draft.activityPrice(), draft.usePoint(), 0, "CREATED", null, null, null));
+            promotionOrderItems.saveAll(result.order().orderNo(), draft.lines().stream()
+                    .map(line -> new PromotionOrderItem(null, result.order().orderNo(), line.skuId(),
+                            line.quantity(), line.usePoint(), 0)).toList());
             return new PreparedPromotionOrder(result.order(), saved, true);
         } catch (DuplicateKeyException exception) {
             var existing = promotionOrders.findByRequest(cmd.memberId(), cmd.requestNo());
@@ -75,6 +81,18 @@ public class PromotionOrderPreparationService {
         }
     }
 
+    private boolean sameLines(String orderNo, java.util.List<com.lemnt.mall.application.promotion.cmd.PromotionOrderLineCmd> lines) {
+        var saved = promotionOrderItems.byOrderNo(orderNo);
+        if (saved.size() != lines.size()) {
+            return false;
+        }
+        var expected = lines.stream()
+                .map(line -> line.skuId() + ":" + line.quantity()).sorted().toList();
+        var actual = saved.stream()
+                .map(line -> line.skuId() + ":" + line.quantity()).sorted().toList();
+        return expected.equals(actual);
+    }
+
     private boolean matches(PromotionOrder value, PromotionOrderCmd cmd) {
         if (!Objects.equals(value.activityType(), cmd.activityType())
                 || !Objects.equals(value.skuId(), cmd.skuId())
@@ -83,6 +101,15 @@ public class PromotionOrderPreparationService {
         }
         if ("BARGAIN".equals(cmd.activityType())) {
             return Objects.equals(value.activityRecordId(), cmd.recordId());
+        }
+        if ("POINT".equals(cmd.activityType())) {
+            if (promotionOrderItems.byOrderNo(value.orderNo()).isEmpty()) {
+                return Objects.equals(value.activityId(), cmd.activityId())
+                        && Objects.equals(value.skuId(), cmd.skuId())
+                        && Objects.equals(value.quantity(), cmd.quantity());
+            }
+            return Objects.equals(value.activityId(), cmd.activityId())
+                    && sameLines(value.orderNo(), cmd.lines());
         }
         return Objects.equals(value.activityId(), cmd.activityId())
                 && Objects.equals(value.headId(), cmd.headId());

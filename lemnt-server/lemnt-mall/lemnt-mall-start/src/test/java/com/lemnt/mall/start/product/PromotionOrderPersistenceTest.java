@@ -6,6 +6,7 @@ import com.lemnt.mall.application.promotion.cmd.CombinationProductCmd;
 import com.lemnt.mall.application.promotion.cmd.PointActivityCreateCmd;
 import com.lemnt.mall.application.promotion.cmd.PointProductCmd;
 import com.lemnt.mall.application.promotion.cmd.PromotionOrderCmd;
+import com.lemnt.mall.application.promotion.cmd.PromotionOrderLineCmd;
 import com.lemnt.mall.application.promotion.cmd.SeckillActivityCreateCmd;
 import com.lemnt.mall.application.promotion.cmd.SeckillConfigCreateCmd;
 import com.lemnt.mall.application.promotion.cmd.SeckillProductCmd;
@@ -30,6 +31,7 @@ import com.lemnt.mall.domain.promotion.model.BargainRecord;
 import com.lemnt.mall.domain.promotion.model.PromotionOrder;
 import com.lemnt.mall.domain.settlement.gateway.OrderGateway;
 import com.lemnt.mall.domain.settlement.model.SettlementOrder;
+import com.lemnt.mall.application.promotion.dto.PromotionRefundResult;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,7 +79,7 @@ class PromotionOrderPersistenceTest {
         f = new CatalogPersistenceTest();
         f.setup();
         for (var sql : List.of("V18__promotion_seckill.sql", "V19__promotion_combination.sql",
-                "V20__promotion_bargain.sql", "V21__promotion_point.sql", "V22__promotion_order.sql", "V23__promotion_order_refund.sql")) {
+                "V20__promotion_bargain.sql", "V21__promotion_point.sql", "V22__promotion_order.sql", "V23__promotion_order_refund.sql", "V24__promotion_order_item.sql")) {
             ScriptUtils.executeSqlScript(f.schemaConnection, new ClassPathResource("sql/" + sql));
         }
         f.components.register(MemberLookupGateway.class,
@@ -282,6 +284,44 @@ class PromotionOrderPersistenceTest {
                 List.of(new RefundStockBo(skuId, 1)));
         assertEquals(100L, second.refundPoints());
         assertEquals(5, pointActivities.detail(zero).stock());
+        assertEquals("REFUNDED", mappings.findByOrderNo(order.orderNo()).status());
+    }
+
+    @Test
+    void zeroCashMultiLineOrderRefundsPointsByLine() {
+        pointActivities.close(pointActivityId);
+        var multi = f.create("POINT_MULTI", f.draft("MULTI_RED", 10), f.draft("MULTI_BLUE", 10));
+        f.productSpuGateway.shelf(multi.id(), true);
+        var first = multi.skus().get(0).id();
+        var second = multi.skus().get(1).id();
+        var activity = pointActivities.create(new PointActivityCreateCmd(multi.id(), null, 1,
+                List.of(new PointProductCmd(first, 5, 100, BigDecimal.ZERO, 5),
+                        new PointProductCmd(second, 5, 50, BigDecimal.ZERO, 5))));
+        var cmd = PromotionOrderCmd.batch(1L, "POINT", activity, null, null,
+                List.of(new PromotionOrderLineCmd(first, 1), new PromotionOrderLineCmd(second, 2)),
+                null, "REQ_MULTI");
+        var order = orders.place(cmd);
+        assertEquals(200L, order.usePoint());
+        assertEquals(0, order.totalAmount().signum());
+        orders.reserved(order.orderNo(), order);
+        orders.paid(order.orderNo(), order);
+        assertEquals(7, pointActivities.detail(activity).stock());
+        assertEquals(4, pointActivities.detail(activity).products().stream()
+                .filter(item -> item.skuId().equals(first)).findFirst().orElseThrow().stock());
+        assertEquals(3, pointActivities.detail(activity).products().stream()
+                .filter(item -> item.skuId().equals(second)).findFirst().orElseThrow().stock());
+        PromotionRefundResult result = orders.refunded(order.orderNo(), "RF-M1", order,
+                List.of(new RefundStockBo(first, 1)));
+        assertEquals(100L, result.refundPoints());
+        assertEquals(8, pointActivities.detail(activity).stock());
+        assertEquals("PAID", mappings.findByOrderNo(order.orderNo()).status());
+        var refundedOrder = new SettlementOrder(order.id(), order.orderNo(), order.memberId(),
+                order.totalAmount(), "REFUNDED", order.items(), order.createTime(), order.usePoint(),
+                order.givePoint(), order.delivery());
+        result = orders.refunded(order.orderNo(), "RF-M2", refundedOrder,
+                List.of(new RefundStockBo(second, 2)));
+        assertEquals(100L, result.refundPoints());
+        assertEquals(10, pointActivities.detail(activity).stock());
         assertEquals("REFUNDED", mappings.findByOrderNo(order.orderNo()).status());
     }
 

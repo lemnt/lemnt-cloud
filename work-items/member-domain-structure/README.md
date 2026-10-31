@@ -211,3 +211,5 @@
 2026-10-31 第143批：0元积分兑换与交易零支付。交易允许0元订单（需消耗积分），库存与活动预占成功后自动PAID并确认库存；活动订单允许0元快照；会员0现金实付扣/退积分且不产生经验。mall 165项、trade 224项、member 118项、前端292项、小程序155项测试通过，见[143-zero-cash-point-order-delivery.md](143-zero-cash-point-order-delivery.md)。
 
 2026-10-31 第144批：0元订单售后退款与积分回退。售后/退款单允许无支付单和0金额，零元退款以POINT成功记录派发权益任务；商城恢复活动库存并置活动订单REFUNDED，会员整单退积分。trade 227项、mall 165项、member 118项、前端292项、小程序155项测试通过，见[144-zero-cash-aftersale-refund-delivery.md](144-zero-cash-aftersale-refund-delivery.md)。
+
+2026-11-01 第145批：0元订单按数量部分退款。零元售后支持部分数量、积分商城多商品按行拆分积分，累计达到整行才置订单REFUNDED；商城按累计数量计算积分增量并恢复活动库存，会员按refundPoint退积分并补齐尾差。trade 230项、mall 167项、member 118项、前端292项、小程序155项测试通过，见[145-zero-cash-partial-refund-delivery.md](145-zero-cash-partial-refund-delivery.md)。
