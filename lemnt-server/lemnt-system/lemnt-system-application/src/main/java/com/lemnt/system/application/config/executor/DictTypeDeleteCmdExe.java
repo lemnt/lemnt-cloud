@@ -1,8 +1,10 @@
 package com.lemnt.system.application.config.executor;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.system.domain.config.gateway.DictTypeGateway;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -15,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DictTypeDeleteCmdExe {
     private final DictTypeGateway dictTypeGateway;
-
     public Boolean execute(List<Long> dictIds) {
         return dictTypeGateway.deleteByIds(dictIds);
     }

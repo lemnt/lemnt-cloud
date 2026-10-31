@@ -1,0 +1,23 @@
+-- 同一 MySQL 实例跨库迁移模板；先替换并核对 ${TRADE_DATABASE}/${MALL_DATABASE}。
+-- 目标为当前商城新结构（先执行 V1/V2/V10/V14/V15/V16），目标业务表必须为空。
+-- 停止旧版购物、结算及促销写入，先迁移结算和促销请求缓存，参见 docs/mall-schema-consolidation.md。
+-- 仅复制数据库事实，源表保留；不能将 SQL 文件当成缓存迁移工具。
+-- MySQL 客户端不得使用 --force，任一报错必须停止并 ROLLBACK。
+SET @mall_original_time_zone=@@session.time_zone;
+SET time_zone='+00:00';
+START TRANSACTION;
+INSERT INTO `${MALL_DATABASE}`.`mall_cart` (`id`,`member_id`,`product_id`,`quantity`,`selected`,`version`)
+ SELECT `id`,`member_id`,`product_id`,`quantity`,`selected`,`version` FROM `${TRADE_DATABASE}`.`trade_cart`;
+INSERT INTO `${MALL_DATABASE}`.`mall_coupon_template` (`id`,`code`,`name`,`kind`,`threshold`,`fixed_amount`,`discount_percent`,`discount_limit`,`total_count`,`issued_count`,`valid_from`,`valid_until`,`enabled`)
+ SELECT `id`,`code`,`name`,`kind`,`threshold`,`fixed_amount`,`discount_percent`,`discount_limit`,`total_count`,`issued_count`,`valid_from`,`valid_until`,`enabled` FROM `${TRADE_DATABASE}`.`trade_coupon_template`;
+INSERT INTO `${MALL_DATABASE}`.`mall_coupon` (`id`,`template_id`,`member_id`,`status`,`order_no`)
+ SELECT `id`,`template_id`,`member_id`,`status`,`order_no` FROM `${TRADE_DATABASE}`.`trade_coupon`;
+UPDATE `${MALL_DATABASE}`.mall_coupon_template t
+ LEFT JOIN `${TRADE_DATABASE}`.trade_coupon_public_claim c ON c.template_id=t.id
+SET t.take_type=IF(COALESCE(c.enabled,FALSE),'USER','MANUAL');
+-- 促销不自动复制：旧整单折扣与新 SKU 折扣无法无损转换。
+-- 源活动及版本/使用历史保留归档，核对后按新活动接口重新配置；不得自动启用。
+-- 同一连接核对购物车、券模板和会员券数量与状态后，人工选择 COMMIT 或 ROLLBACK。
+-- COMMIT;
+-- ROLLBACK;
+-- 完成后恢复本连接时区：SET time_zone=@mall_original_time_zone;

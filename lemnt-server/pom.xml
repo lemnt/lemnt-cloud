@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>com.lemnt</groupId>
         <artifactId>lemnt-dependencies</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-
     <artifactId>lemnt-server</artifactId>
     <packaging>pom</packaging>
-
     <description>Ad server</description>
-
     <modules>
         <module>lemnt-auth</module>
         <module>lemnt-gateway</module>
         <module>lemnt-open</module>
+        <module>lemnt-member</module>
+        <module>lemnt-mall</module>
+        <module>lemnt-trade</module>
         <module>lemnt-system</module>
         <module>lemnt-third-sdk</module>
     </modules>

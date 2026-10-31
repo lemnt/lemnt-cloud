@@ -1,10 +1,10 @@
 package com.lemnt.system.infrastructure.auth.mapper;
 
 import com.lemnt.system.infrastructure.auth.dataobject.UserPostDO;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import org.apache.ibatis.annotations.Mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -15,7 +15,6 @@ import java.util.List;
  */
 @Mapper
 public interface UserPostMapper extends BaseMapper<UserPostDO> {
-
     /**
      * 通过岗位ID查询岗位使用数量
      *

@@ -1,15 +1,16 @@
 package com.lemnt.system.application.auth.executor;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.common.core.constant.Constants;
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.system.domain.auth.gateway.MenuGateway;
 import com.lemnt.system.domain.auth.gateway.RoleGateway;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.*;
 
 /**
  * 用户信息聚合查询执行器（前端路由初始化）
@@ -19,7 +20,6 @@ import com.lemnt.system.domain.auth.gateway.UserGateway;
 @Component
 @RequiredArgsConstructor
 public class UserInfoQueryExe {
-
     private final UserGateway userGateway;
     private final RoleGateway roleGateway;
     private final MenuGateway menuGateway;
@@ -31,10 +31,13 @@ public class UserInfoQueryExe {
      */
     public Map<String, Object> execute() {
         Long userId = SecurityUtils.getUserId();
+
         // 角色集合
         Set<String> roles = buildRoles(userId);
+
         // 权限集合
         Set<String> permissions = buildPermissions(userId);
+
         // 组装结果
         Map<String, Object> result = new HashMap<>();
         result.put("user", userGateway.selectUserById(userId));

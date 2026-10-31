@@ -1,13 +1,14 @@
 package com.lemnt.system.application.auth.executor;
 
-import com.lemnt.common.core.domain.R;
 import com.lemnt.common.core.exception.ServiceException;
-import com.lemnt.system.application.auth.cmd.UserPwdResetCmd;
-import com.lemnt.system.domain.auth.model.User;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.common.security.utils.SecurityUtils;
+import com.lemnt.system.application.auth.cmd.UserPwdResetCmd;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
+import com.lemnt.system.domain.auth.model.User;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 重置用户密码命令执行器
@@ -18,7 +19,6 @@ import com.lemnt.system.domain.auth.gateway.UserGateway;
 @RequiredArgsConstructor
 public class UserResetPwdCmdExe {
     private final UserGateway userGateway;
-
     public Boolean execute(UserPwdResetCmd cmd) {
         User user = new User();
         user.setUserId(cmd.userId());

@@ -3,15 +3,14 @@ package com.lemnt.system.infrastructure.config.mapper;
 import com.lemnt.common.core.utils.StringUtils;
 import com.lemnt.system.domain.config.model.Config;
 import com.lemnt.system.infrastructure.config.dataobject.ConfigDO;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -21,7 +20,6 @@ import java.util.Objects;
  */
 @Mapper
 public interface ConfigMapper extends BaseMapper<ConfigDO> {
-
     /**
      * 查询参数配置信息
      *

@@ -1,13 +1,23 @@
 package com.lemnt.system.adapter.web.config;
 
-import java.util.List;
-
+import com.lemnt.common.core.domain.R;
 import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.common.log.annotation.Log;
+import com.lemnt.common.log.enums.BusinessType;
+import com.lemnt.common.security.annotation.RequiresPermissions;
+import com.lemnt.system.adapter.web.config.converter.DictTypeReqConverter;
+import com.lemnt.system.adapter.web.config.converter.DictTypeResConverter;
+import com.lemnt.system.adapter.web.config.req.DictTypeAddReq;
 import com.lemnt.system.adapter.web.config.req.DictTypePageReq;
+import com.lemnt.system.adapter.web.config.req.DictTypeUpdateReq;
+import com.lemnt.system.adapter.web.config.res.SystemDictTypeGetInfoRes;
+import com.lemnt.system.adapter.web.config.res.SystemDictTypeListRes;
+import com.lemnt.system.adapter.web.config.res.SystemDictTypeOptionSelectRes;
+import com.lemnt.system.application.config.dto.DictTypeDTO;
 import com.lemnt.system.application.config.executor.*;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,17 +27,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.lemnt.common.core.domain.R;
-import com.lemnt.common.log.annotation.Log;
-import com.lemnt.common.log.enums.BusinessType;
-import com.lemnt.common.security.annotation.RequiresPermissions;
-import com.lemnt.system.adapter.web.config.converter.DictTypeReqConverter;
-import com.lemnt.system.adapter.web.config.converter.DictTypeResConverter;
-import com.lemnt.system.adapter.web.config.req.DictTypeAddReq;
-import com.lemnt.system.adapter.web.config.req.DictTypeUpdateReq;
-import com.lemnt.system.adapter.web.config.res.DictTypeRes;
-import com.lemnt.system.application.config.dto.DictTypeDTO;
-import com.lemnt.system.application.config.qry.DictTypePageQry;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * 数据字典信息操作处理
@@ -39,7 +42,6 @@ import com.lemnt.system.application.config.qry.DictTypePageQry;
 @RequestMapping("/dictionary-types")
 @RequiredArgsConstructor
 public class DictTypeController {
-
     private final DictTypePageQueryExe dictTypePageQueryExe;
     private final DictTypeListAllQueryExe dictTypeListAllQueryExe;
     private final DictTypeDetailQueryExe dictTypeDetailQueryExe;
@@ -51,21 +53,21 @@ public class DictTypeController {
     @Operation(summary = "查询字典类型列表")
     @RequiresPermissions("system:dict:list")
     @GetMapping
-    public R<DictTypeRes> list(@Validated DictTypePageReq req) {
+    public R<SystemDictTypeListRes> list(@Validated DictTypePageReq req) {
         PageResult<DictTypeDTO> result = dictTypePageQueryExe.execute(DictTypeReqConverter.toQry(req));
-        return R.page(DictTypeResConverter.toResList(result.getRecords()), result.getTotal());
+        return R.page(DictTypeResConverter.toResListToSystemDictTypeListRes(result.getRecords()), result.getTotal());
     }
 
     @Operation(summary = "查询字典类型详细")
     @GetMapping(value = "/{dictId}")
-    public R<DictTypeRes> getInfo(@PathVariable Long dictId) {
-        return R.ok(DictTypeResConverter.toRes(dictTypeDetailQueryExe.executeById(dictId)));
+    public R<SystemDictTypeGetInfoRes> getInfo(@PathVariable Long dictId) {
+        return R.ok(DictTypeResConverter.toResToSystemDictTypeGetInfoRes(dictTypeDetailQueryExe.executeById(dictId)));
     }
 
     @Operation(summary = "根据字典类型查询字典数据信息")
     @GetMapping(value = "/options")
-    public R<List<DictTypeRes>> optionSelect() {
-        return R.ok(DictTypeResConverter.toResList(dictTypeListAllQueryExe.execute()));
+    public R<List<SystemDictTypeOptionSelectRes>> optionSelect() {
+        return R.ok(DictTypeResConverter.toResListToSystemDictTypeOptionSelectRes(dictTypeListAllQueryExe.execute()));
     }
 
     @Operation(summary = "新增字典类型")

@@ -1,12 +1,15 @@
 package com.lemnt.system.application.auth.executor;
 
-import lombok.RequiredArgsConstructor;
+import com.lemnt.system.application.auth.cmd.RoleAddCmd;
+import com.lemnt.system.domain.auth.gateway.RoleGateway;
+import com.lemnt.system.domain.auth.gateway.RoleMenuGateway;
+import com.lemnt.system.domain.auth.model.Role;
+import com.lemnt.system.domain.auth.service.RoleDomainService;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import com.lemnt.system.application.auth.cmd.RoleAddCmd;
-import com.lemnt.system.domain.auth.model.Role;
-import com.lemnt.system.domain.auth.gateway.RoleGateway;
-import com.lemnt.system.domain.auth.service.RoleDomainService;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 新增角色命令执行器
@@ -16,8 +19,8 @@ import com.lemnt.system.domain.auth.service.RoleDomainService;
 @Component
 @RequiredArgsConstructor
 public class RoleAddCmdExe {
+    private final RoleMenuGateway roleMenuGateway;
     private final RoleGateway roleGateway;
-
     private final RoleDomainService roleDomainService;
 
     /**
@@ -39,7 +42,7 @@ public class RoleAddCmdExe {
         Boolean result = roleGateway.insertRole(entity);
         if (result) {
             // 新增角色菜单关联
-            roleGateway.insertRoleMenus(entity.getRoleId(), cmd.menuIds());
+            roleMenuGateway.insertRoleMenus(entity.getRoleId(), cmd.menuIds());
         }
         return result;
     }

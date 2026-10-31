@@ -1,21 +1,21 @@
 package com.lemnt.system.infrastructure.org.gateway;
 
-import java.util.Arrays;
-import java.util.List;
-
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lemnt.system.infrastructure.auth.mapper.UserPostMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import com.lemnt.system.domain.org.model.Post;
 import com.lemnt.system.domain.org.gateway.PostGateway;
+import com.lemnt.system.domain.org.model.Post;
 import com.lemnt.system.infrastructure.org.converter.PostConverter;
 import com.lemnt.system.infrastructure.org.dataobject.PostDO;
 import com.lemnt.system.infrastructure.org.mapper.PostMapper;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.stereotype.Component;
+
+import cn.hutool.core.collection.CollUtil;
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * 岗位网关实现 — infrastructure 层适配器
@@ -25,9 +25,7 @@ import com.lemnt.system.infrastructure.org.mapper.PostMapper;
 @Component
 @RequiredArgsConstructor
 public class PostGatewayImpl implements PostGateway {
-
     private final PostMapper postMapper;
-    private final UserPostMapper userPostMapper;
 
     @Override
     public Post selectById(Long postId) {
@@ -83,10 +81,5 @@ public class PostGatewayImpl implements PostGateway {
     @Override
     public Post checkPostCodeUnique(String postCode, Long excludePostId) {
         return PostConverter.toEntity(postMapper.checkPostCodeUnique(postCode, excludePostId));
-    }
-
-    @Override
-    public Long countUserPostById(Long postId) {
-        return userPostMapper.countUserPostById(postId);
     }
 }

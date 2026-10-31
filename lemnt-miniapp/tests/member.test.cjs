@@ -1,0 +1,340 @@
+const { test } = require("node:test");
+const assert = require("node:assert/strict");
+const { createMemberClient } = require("../services/member");
+const token = (memberId = "1", char = "a") => ({
+  memberId,
+  accessToken:
+    "eyJhbGciOiJIUzUxMiJ9." + char.repeat(43) + "." + char.repeat(43),
+  expiresIn: 7200,
+});
+function client(transport, ready = true) {
+  let session = token();
+  const calls = [];
+  const c = createMemberClient({
+    baseUrl: "https://api.example.test",
+    ready,
+    getSession: () => session,
+    setSession: (v) => (session = v),
+    request: async (q) => {
+      calls.push(q);
+      return { statusCode: 200, data: { code: 200, data: await transport(q) } };
+    },
+  });
+  return { c, calls, get: () => session, set: (v) => (session = v) };
+}
+test("会员请求从独立令牌取身份，资料写入不发送调用方memberId或余额", async () => {
+  const { c, calls } = client(async () => true);
+  await c.updateProfile({
+    memberId: 999,
+    points: 999,
+    nickname: "昵称",
+    sex: 0,
+  });
+  assert.deepEqual(calls[0].data, {
+    nickname: "昵称",
+    email: null,
+    avatar: null,
+    sex: 0,
+    birthday: null,
+  });
+  assert.equal(calls[0].header.Authorization, "Bearer " + token().accessToken);
+});
+test("默认未就绪禁止发送网络请求", async () => {
+  const { c, calls } = client(async () => true, false);
+  await assert.rejects(c.profile(), /未启用/);
+  assert.equal(calls.length, 0);
+});
+test("非法登录令牌不会覆盖当前会员", async () => {
+  const x = client(async () => ({
+    memberId: 1,
+    accessToken: "admin-jwt",
+    refreshToken: "refresh",
+    expiresIn: 10,
+  }));
+  await assert.rejects(
+    x.c.passwordLogin("13800000001", "Example-password-2026"),
+    /响应不合法/,
+  );
+  assert.equal(x.get().accessToken, token().accessToken);
+});
+test("登录规范化ID并仅保留会员令牌；密码不进入会话", async () => {
+  const x = client(async () => ({
+    ...token(2, "b"),
+    password: "must-not-store",
+  }));
+  await x.c.passwordLogin("13800000002", "Example-password-2026");
+  assert.deepEqual(x.get(), token("2", "b"));
+  assert.deepEqual(x.calls[0].data, {
+    mobile: "13800000002",
+    password: "Example-password-2026",
+  });
+});
+test("刷新不确定时清除旧会话且不重试", async () => {
+  const x = client(async () => {
+    throw Error("network");
+  });
+  await assert.rejects(x.c.refresh(), /network/);
+  assert.equal(x.get(), null);
+  assert.equal(x.calls.length, 1);
+});
+test("刷新必须保持会员身份，旧请求不能覆盖换号后的会话", async () => {
+  const x = client(async () => token("2", "b"));
+  await assert.rejects(x.c.refresh(), /身份不一致/);
+  assert.equal(x.get(), null);
+  let resolve;
+  const y = client(() => new Promise((r) => (resolve = r)));
+  const pending = y.c.refresh();
+  y.set(token("2", "c"));
+  resolve(token("1", "b"));
+  await assert.rejects(pending, /切换/);
+  assert.equal(y.get().memberId, "2");
+});
+test("地址响应必须属于当前会员，拒绝不安全long", async () => {
+  const x = client(async () => [
+    {
+      id: 1,
+      memberId: 2,
+      name: "n",
+      mobile: "13800000001",
+      areaId: 110101,
+      detailAddress: "address",
+      defaultStatus: false,
+    },
+  ]);
+  await assert.rejects(x.c.addresses(), /不属于/);
+  const y = client(async () => [
+    {
+      id: 2 ** 53,
+      memberId: 1,
+      name: "n",
+      mobile: "13800000001",
+      areaId: 110101,
+      detailAddress: "address",
+      defaultStatus: false,
+    },
+  ]);
+  await assert.rejects(y.c.addresses(), /标识/);
+});
+test("签到汇总和规则路径匹配实际接口，不伪造奖励", async () => {
+  const x = client(async (q) =>
+    q.url.endsWith("/summary")
+      ? { totalDay: 10, continuousDay: 2, todaySignIn: false }
+      : [],
+  );
+  assert.deepEqual(await x.c.summary(), {
+    total: 10,
+    continuous: 2,
+    signedToday: false,
+  });
+  await x.c.signConfigs();
+  assert.ok(x.calls[1].url.endsWith("/signin/config"));
+});
+test("登出先清除本机会话，失败也不恢复旧凭证", async () => {
+  const x = client(async () => {
+    throw Error("network");
+  });
+  await assert.rejects(x.c.logout());
+  assert.equal(x.get(), null);
+  assert.ok(x.calls[0].url.endsWith("/auth/logout"));
+});
+test("HTTP401或网关业务401均清除当前会话，绝不重试写入", async () => {
+  for (const response of [
+    { statusCode: 401, data: { code: 500 } },
+    { statusCode: 200, data: { code: 401 } },
+  ]) {
+    let s = token();
+    let count = 0;
+    const c = createMemberClient({
+      baseUrl: "https://api.example.test",
+      ready: true,
+      getSession: () => s,
+      setSession: (v) => (s = v),
+      request: async () => {
+        count++;
+        return response;
+      },
+    });
+    await assert.rejects(c.updateProfile({ nickname: "n" }), /失效/);
+    assert.equal(s, null);
+    assert.equal(count, 1);
+  }
+});
+
+test("统一问题响应保留业务错误提示", async () => {
+  let session = token();
+  const c = createMemberClient({
+    request: async () => ({
+      statusCode: 409,
+      data: {
+        status: 409,
+        code: "BUSINESS_RULE_VIOLATION",
+        detail: "签到规则未启用",
+      },
+    }),
+    baseUrl: "https://example.test",
+    ready: true,
+    getSession: () => session,
+    setSession: (value) => (session = value),
+  });
+  await assert.rejects(c.sign(), /签到规则未启用/);
+  assert.notEqual(session, null);
+});
+test("会员分页读取统一rows和total，积分经验签到路径保持隔离", async () => {
+  const calls = [];
+  const c = createMemberClient({
+    request: async (q) => {
+      calls.push(q);
+      const sign = q.url.includes("/signin/");
+      return {
+        statusCode: 200,
+        data: {
+          code: 200,
+          data: null,
+          rows: [
+            sign
+              ? {
+                  id: 1,
+                  memberId: 1,
+                  signDate: "2026-10-26",
+                  day: 1,
+                  point: 2,
+                  experience: 3,
+                }
+              : {
+                  id: 1,
+                  memberId: 1,
+                  delta: 2,
+                  balance: 5,
+                  reason: "奖励",
+                  createTime: "2026-10-26T10:00:00",
+                },
+          ],
+          total: 1,
+        },
+      };
+    },
+    baseUrl: "https://api.example.test",
+    ready: true,
+    getSession: () => token(),
+    setSession: () => {},
+  });
+  for (const kind of ["points", "experience", "signin"]) {
+    const page = await c.records(kind, 1);
+    assert.equal(page.total, 1);
+    assert.equal(page.records[0].memberId, "1");
+  }
+  assert.deepEqual(
+    calls.map((q) => q.url.split("/member/app")[1]),
+    ["/growths/point-records", "/growths/experience-records", "/growths/signin/records"],
+  );
+});
+test("积分标题描述与原因分离，历史和经验不套用积分元数据", async () => {
+  let row = {
+    id: 1,
+    memberId: 1,
+    assetType: "POINT",
+    delta: 10,
+    balance: 10,
+    reason: "人工原因",
+    createTime: "2026-10-30 08:00:00",
+    pointBizType: 2,
+    title: "管理员修改",
+    description: "管理员修改 10 积分",
+  };
+  const c = createMemberClient({
+    request: async () => ({
+      statusCode: 200,
+      data: { code: 200, rows: [row], total: 1 },
+    }),
+    baseUrl: "https://api.example.test",
+    ready: true,
+    getSession: () => token(),
+    setSession: () => {},
+  });
+  const point = (await c.records("points", 1)).records[0];
+  assert.equal(point.title, "管理员修改");
+  assert.equal(point.reason, "人工原因");
+  assert.equal(point.pointBizType, 2);
+  row = { ...row, assetType: "EXPERIENCE" };
+  assert.equal((await c.records("experience", 1)).records[0].title, undefined);
+  row = {
+    ...row,
+    assetType: "POINT",
+    title: null,
+    description: null,
+    pointBizType: null,
+  };
+  assert.equal((await c.records("points", 1)).records[0].title, undefined);
+});
+test("经验类型0与经验标题独立展示，不借积分编号", async () => {
+  const row={id:1,memberId:1,assetType:"EXPERIENCE",delta:5,balance:5,reason:"经验原因",createTime:"2026-10-30 10:00:00",experienceBizType:0,title:"管理员调整",description:"管理员调整获得 5 经验"};
+  const c=createMemberClient({request:async()=>({statusCode:200,data:{code:200,rows:[row],total:1}}),baseUrl:"https://api.example.test",ready:true,getSession:()=>token(),setSession:()=>{}});
+  const value=(await c.records("experience",1)).records[0];
+  assert.equal(value.experienceBizType,0);assert.equal(value.title,"管理员调整");assert.equal(value.pointBizType,undefined);assert.equal(value.reason,"经验原因");
+});
+
+test("积分方向false和日期白名单传递，经验不继承积分筛选", async () => {
+  const calls = [];
+  const client = createMemberClient({
+    request: async (q) => { calls.push(q); return { statusCode: 200, data: { code: 200, rows: [], total: 0 } }; },
+    baseUrl: "https://api.example.test", ready: true, getSession: () => token(), setSession: () => {},
+  });
+  await client.records("points", 2, { addStatus: false, startTime: "2026-10-30 00:00:00", endTime: "2026-10-30 23:59:59", memberId: "999" });
+  assert.deepEqual(calls[0].data, { addStatus: false, startTime: "2026-10-30 00:00:00", endTime: "2026-10-30 23:59:59", pageNum: 2, pageSize: 20 });
+  await client.records("experience", 1, { addStatus: false, startTime: "2026-10-30 00:00:00" });
+  assert.deepEqual(calls[1].data, { pageNum: 1, pageSize: 20 });
+  await client.records("points", 1);
+  assert.equal(Object.hasOwn(calls[2].data, "addStatus"), false);
+});
+
+test("积分方向和逆序日期非法时不发请求", () => {
+  let calls = 0;
+  const client = createMemberClient({ request: async () => { calls++; }, baseUrl: "https://api.example.test", ready: true, getSession: () => token(), setSession: () => {} });
+  assert.throws(() => client.records("points", 1, { addStatus: "false" }), /方向/);
+  assert.throws(() => client.records("points", 1, { startTime: "2026-10-31 00:00:00", endTime: "2026-10-30 23:59:59" }), /不能晚于/);
+  assert.throws(() => client.records("points", 1, { startTime: "bad" }), /时间格式/);
+  assert.equal(calls, 0);
+});
+
+test("签到未知时间不由业务日期补造，真实时间独立展示", async () => {
+  let time = null;
+  const client = createMemberClient({
+    request: async () => ({ statusCode: 200, data: { code: 200, rows: [{ id: 1, memberId: 1, signDate: "2026-10-29", day: 1, point: 5, experience: 2, createTime: time }], total: 1 } }),
+    baseUrl: "https://api.example.test", ready: true, getSession: () => token(), setSession: () => {},
+  });
+  assert.equal((await client.records("signin", 1)).records[0].createTime, undefined);
+  time = "2026-10-29 10:00:00";
+  assert.equal((await client.records("signin", 1)).records[0].createTime, time);
+});
+
+test("地址地区名称解码兼容旧响应，保存只发送编号和原编辑字段", async () => {
+  const row = { id: "7", memberId: "1", name: "收件人", mobile: "13800000003", areaId: "110101", detailAddress: "street", defaultStatus: true };
+  const x = client(async q => q.method === "GET" ? [{ ...row, areaName: "北京市 北京市 东城区" }, { ...row, id: "8" }, { ...row, id: "9", areaName: null }] : row);
+  const rows = await x.c.addresses();
+  assert.equal(rows[0].areaName, "北京市 北京市 东城区");
+  assert.equal(rows[1].areaName, undefined);
+  assert.equal(rows[2].areaName, null);
+  await x.c.saveAddress("7", rows[0]);
+  assert.equal(x.calls[1].data.areaId, "110101");
+  assert.equal(Object.hasOwn(x.calls[1].data, "areaName"), false);
+  const bad = client(async () => [{ ...row, areaName: 110101 }]);
+  await assert.rejects(bad.c.addresses(), /文本/);
+});
+
+test("会员客户端保留服务前缀且业务路径与网关转发目标一致", async () => {
+  const x = client(async () => { throw Error("contract probe"); });
+  const cases = [
+    [() => x.c.profile(), "/member/app/users/user"],
+    [() => x.c.levels(), "/member/app/growths/levels"],
+    [() => x.c.signConfigs(), "/member/app/growths/signin/config"],
+    [() => x.c.summary(), "/member/app/growths/signin/summary"],
+    [() => x.c.sign(), "/member/app/growths/signin"],
+    [() => x.c.addresses(), "/member/app/addresses"],
+    [() => x.c.changePassword("Old-pass-2026", "New-pass-2026"), "/member/app/users/user/password"],
+    [() => x.c.deleteAddress("7"), "/member/app/addresses/7"],
+  ];
+  for (const [call, path] of cases) {
+    await assert.rejects(call(), /contract probe/);
+    assert.equal(new URL(x.calls.at(-1).url).pathname, path);
+  }
+});

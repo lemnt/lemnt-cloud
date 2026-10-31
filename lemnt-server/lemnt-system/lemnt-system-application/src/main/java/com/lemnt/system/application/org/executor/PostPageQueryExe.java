@@ -1,16 +1,18 @@
 package com.lemnt.system.application.org.executor;
 
-import java.util.List;
-
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.system.application.org.converter.PostConverter;
 import com.lemnt.system.application.org.dto.PostDTO;
 import com.lemnt.system.application.org.qry.PostPageQry;
-import com.lemnt.system.domain.org.model.Post;
 import com.lemnt.system.domain.org.gateway.PostGateway;
+import com.lemnt.system.domain.org.model.Post;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * 岗位分页查询执行器
@@ -21,7 +23,6 @@ import com.lemnt.system.domain.org.gateway.PostGateway;
 @RequiredArgsConstructor
 public class PostPageQueryExe {
     private final PostGateway postGateway;
-
     public PageResult<PostDTO> execute(PostPageQry qry) {
         Post query = new Post();
         query.setPostCode(qry.postCode());

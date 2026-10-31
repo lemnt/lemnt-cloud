@@ -1,0 +1,6 @@
+Promotion design v1; source base20ec7bd;2026-10-25 Asia/Shanghai.
+Command: PYTHONPATH=/tmp/promotion-schema-validation python docs/promotion/validation/validate_design.py
+Python3 with temporary jsonschema4.23.0, no project runtime dependency changes.
+PASS design attachments only:15 schemas,16 valid examples,13 markdown JSON examples,13 rejected schema examples,4 rejected cross-field drafts,23 fixed pricing vectors,2000 allocation/unit-partition cases,1500 legacy percentage-rounding parity cases,14 source-file SHA256 checks.
+Java engine NOT IMPLEMENTED;new SQL NOT GENERATED;Maven/React/native rerun NOT RUN because no runtime source change. Baseline392 backend/169 React/69 native remains historical evidence.
+Live DB/Redis/Dubbo/providers/browser/device NOT RUN. No main edit,merge,deployment or live migration. PR Draft.

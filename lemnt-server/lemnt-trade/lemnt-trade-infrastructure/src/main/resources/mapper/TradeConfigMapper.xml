@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.trade.infrastructure.config.mapper.TradeConfigMapper">
+    <resultMap id="TradeConfigMap" type="com.lemnt.trade.infrastructure.config.dataobject.TradeConfigDO">
+        <id property="id" column="id"/>
+        <result property="afterSaleRefundReasons" column="after_sale_refund_reasons"/>
+        <result property="afterSaleReturnReasons" column="after_sale_return_reasons"/>
+        <result property="deliveryExpressFreeEnabled" column="delivery_express_free_enabled"/>
+        <result property="deliveryExpressFreePrice" column="delivery_express_free_price"/>
+        <result property="deliveryPickUpEnabled" column="delivery_pick_up_enabled"/>
+        <result property="brokerageEnabled" column="brokerage_enabled"/>
+        <result property="brokerageEnabledCondition" column="brokerage_enabled_condition"/>
+        <result property="brokerageBindMode" column="brokerage_bind_mode"/>
+        <result property="brokeragePosterUrls" column="brokerage_poster_urls"/>
+        <result property="brokerageFirstPercent" column="brokerage_first_percent"/>
+        <result property="brokerageSecondPercent" column="brokerage_second_percent"/>
+        <result property="brokerageWithdrawMinPrice" column="brokerage_withdraw_min_price"/>
+        <result property="brokerageWithdrawFeePercent" column="brokerage_withdraw_fee_percent"/>
+        <result property="brokerageFrozenDays" column="brokerage_frozen_days"/>
+        <result property="brokerageWithdrawTypes" column="brokerage_withdraw_types"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deleted" column="deleted"/>
+    </resultMap>
+    <select id="lockById" resultMap="TradeConfigMap" useCache="false" flushCache="true">
+        SELECT * FROM trade_config WHERE id = #{id} AND deleted = 0 FOR UPDATE
+    </select>
+</mapper>

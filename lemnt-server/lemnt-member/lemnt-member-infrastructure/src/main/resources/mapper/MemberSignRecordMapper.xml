@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.member.infrastructure.growth.mapper.MemberSignRecordMapper">
+  <resultMap id="SignRecordMap" type="com.lemnt.member.infrastructure.growth.dataobject.SignRecordDO">
+    <id column="id" property="id"/><result column="user_id" property="userId"/>
+    <result column="sign_date" property="signDate"/><result column="day" property="day"/>
+    <result column="point" property="point"/><result column="experience" property="experience"/>
+    <result column="nickname" property="nickname"/>
+    <result column="create_time" property="createTime"/><result column="create_by" property="createBy"/>
+    <result column="update_time" property="updateTime"/><result column="update_by" property="updateBy"/>
+  </resultMap>
+  <sql id="Conditions">
+    <where>
+      <if test="f.memberId != null">s.user_id=#{f.memberId}</if>
+      <if test="f.nickname != null">AND m.nickname LIKE CONCAT('%',#{f.nickname},'%')</if>
+      <if test="f.day != null">AND s.`day`=#{f.day}</if>
+      <if test="f.startTime != null">AND s.create_time &gt;= #{f.startTime}</if>
+      <if test="f.endTime != null">AND s.create_time &lt;= #{f.endTime}</if>
+    </where>
+  </sql>
+  <select id="signsPage" resultMap="SignRecordMap">
+    SELECT s.id,s.user_id,s.sign_date,s.`day`,s.point,s.experience,s.create_time,s.create_by,s.update_by,s.update_time,m.nickname
+    FROM member_sign_in_record s LEFT JOIN member_user m ON m.id=s.user_id
+    <include refid="Conditions"/> ORDER BY s.id DESC LIMIT #{f.limit} OFFSET #{f.offset}
+  </select>
+  <select id="signsCount" resultType="long">
+    SELECT COUNT(*) FROM member_sign_in_record s LEFT JOIN member_user m ON m.id=s.user_id
+    <include refid="Conditions"/>
+  </select>
+</mapper>

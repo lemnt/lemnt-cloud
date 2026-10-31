@@ -197,4 +197,9 @@ public class RedisStringService extends AbstractRedisService {
     public void setRange(String key, String value, long offset) {
         redisTemplate.opsForValue().set(key, value, offset);
     }
+    /** 仅更新尚存在的对象并续期，原子SET XX避免删除后被并发续期重建。 */
+    public <T> boolean setObjIfPresent(String key, T value, long timeout, TimeUnit unit) {
+        return Boolean.TRUE.equals(redisTemplate.opsForValue().setIfPresent(key, convertToString(value), timeout, unit));
+    }
+
 }

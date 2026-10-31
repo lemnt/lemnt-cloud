@@ -1,6 +1,9 @@
 package com.lemnt.system.adapter.web.auth.converter;
 
 import com.lemnt.system.adapter.web.auth.req.*;
+import com.lemnt.system.adapter.web.auth.req.SystemRoleUserAllocatedListReq;
+import com.lemnt.system.adapter.web.auth.req.SystemRoleUserUnallocatedListReq;
+import com.lemnt.system.adapter.web.auth.req.SystemUserListReq;
 import com.lemnt.system.application.auth.cmd.UserAddCmd;
 import com.lemnt.system.application.auth.cmd.UserProfileUpdateCmd;
 import com.lemnt.system.application.auth.cmd.UserPwdResetCmd;
@@ -16,7 +19,6 @@ import com.lemnt.system.application.auth.qry.UserPageQry;
  * @author wangxx
  */
 public class UserReqConverter {
-
     public static UserAddCmd toCmd(UserAddReq req) {
         return new UserAddCmd(
                 req.deptId(),
@@ -86,6 +88,57 @@ public class UserReqConverter {
     }
 
     public static UserPageQry toQry(UserPageReq item) {
+        if (item == null) {
+            return null;
+        }
+        return new UserPageQry(
+                item.userName(),
+                item.phonenumber(),
+                item.status(),
+                item.deptId(),
+                item.roleId(),
+                item.pageNum(),
+                item.pageSize(),
+                item.beginTime(),
+                item.endTime()
+        );
+    }
+
+    public static UserPageQry toQry(SystemUserListReq item) {
+        if (item == null) {
+            return null;
+        }
+        return new UserPageQry(
+                item.userName(),
+                item.phonenumber(),
+                item.status(),
+                item.deptId(),
+                item.roleId(),
+                item.pageNum(),
+                item.pageSize(),
+                item.beginTime(),
+                item.endTime()
+        );
+    }
+
+    public static UserPageQry toQry(SystemRoleUserAllocatedListReq item) {
+        if (item == null) {
+            return null;
+        }
+        return new UserPageQry(
+                item.userName(),
+                item.phonenumber(),
+                item.status(),
+                item.deptId(),
+                item.roleId(),
+                item.pageNum(),
+                item.pageSize(),
+                item.beginTime(),
+                item.endTime()
+        );
+    }
+
+    public static UserPageQry toQry(SystemRoleUserUnallocatedListReq item) {
         if (item == null) {
             return null;
         }

@@ -1,10 +1,12 @@
 package com.lemnt.system.application.log.executor;
 
 import com.lemnt.system.application.log.cmd.OperLogAddCmd;
-import com.lemnt.system.domain.log.model.OperLog;
 import com.lemnt.system.domain.log.gateway.OperLogGateway;
-import lombok.RequiredArgsConstructor;
+import com.lemnt.system.domain.log.model.OperLog;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 新增操作日志命令执行器
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class OperLogAddCmdExe {
-
     private final OperLogGateway operLogGateway;
 
     /**

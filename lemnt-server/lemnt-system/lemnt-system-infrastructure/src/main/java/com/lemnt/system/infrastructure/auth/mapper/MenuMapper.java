@@ -2,12 +2,12 @@ package com.lemnt.system.infrastructure.auth.mapper;
 
 import com.lemnt.system.domain.auth.model.Menu;
 import com.lemnt.system.infrastructure.auth.dataobject.MenuDO;
-import org.apache.ibatis.annotations.Mapper;
-
-import java.util.List;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * Menu 数据层
@@ -102,7 +102,7 @@ public interface MenuMapper extends BaseMapper<MenuDO> {
      * @return 结果
      */
     MenuDO checkMenuNameUnique(@Param("menuName") String menuName, @Param("parentId") Long parentId,
-                              @Param("excludeMenuId") Long excludeMenuId);
+            @Param("excludeMenuId") Long excludeMenuId);
 
     /**
      * 根据路由路径或名称查询菜单信息（用于唯一性校验）

@@ -1,6 +1,7 @@
 package com.lemnt.system.adapter.web.auth.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -13,18 +14,18 @@ import java.time.LocalDateTime;
 @Schema(description = "角色分页查询条件")
 public record RolePageReq(
         /**
-         * 角色名称
-         */
+ * 角色名称
+ */
         @Schema(description = "角色名称")
         String roleName,
         /**
-         * 角色权限标识
-         */
+ * 角色权限标识
+ */
         @Schema(description = "角色权限标识")
         String roleKey,
         /**
-         * 角色状态（1正常 2停用）
-         */
+ * 角色状态（1正常 2停用）
+ */
         @Schema(description = "角色状态（1正常 2停用）")
         @Pattern(regexp = "[12]", message = "状态值只能为1或2")
         String status,
@@ -37,7 +38,6 @@ public record RolePageReq(
         @Schema(description = "结束时间")
         LocalDateTime endTime
 ) implements Serializable {
-
     public RolePageReq {
         pageNum = pageNum == null ? 1 : pageNum;
         pageSize = pageSize == null ? 10 : pageSize;

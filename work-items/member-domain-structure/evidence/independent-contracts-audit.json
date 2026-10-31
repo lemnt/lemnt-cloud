@@ -1,0 +1,8 @@
+{
+  "httpOperations": 67,
+  "changedPathsOrMethods": 0,
+  "sharedBusinessRequestOrResponseTypes": {},
+  "pagination": "R.page: rows / total",
+  "customAccountPageResPresent": false,
+  "adminTypeNames": []
+}

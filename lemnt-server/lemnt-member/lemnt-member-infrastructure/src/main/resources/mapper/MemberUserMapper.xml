@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.member.infrastructure.user.mapper.MemberUserMapper">
+    <resultMap id="MemberMap" type="com.lemnt.member.infrastructure.user.dataobject.MemberDO">
+        <id column="id" property="id"/>
+        <result column="nickname" property="nickname"/>
+        <result column="mark" property="mark"/>
+        <result column="name" property="name"/>
+        <result column="area_id" property="areaId"/>
+        <result column="mobile" property="mobile"/>
+        <result column="password" property="password"/>
+        <result column="email" property="email"/>
+        <result column="avatar" property="avatar"/>
+        <result column="status" property="status"/>
+        <result column="points" property="points"/>
+        <result column="experience" property="experience"/>
+        <result column="level_id" property="levelId"/>
+        <result column="group_id" property="groupId"/>
+        <result column="sex" property="sex"/>
+        <result column="birthday" property="birthday"/>
+        <result column="login_date" property="loginDate"/>
+        <result column="login_ip" property="loginIp"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_by" property="updateBy"/>
+    </resultMap>
+    <sql id="Conditions">
+        <where>
+            <if test="f.mobile != null">m.mobile LIKE CONCAT('%',#{f.mobile},'%')</if>
+            <if test="f.email != null">AND m.email LIKE CONCAT('%',#{f.email},'%')</if>
+            <if test="f.nickname != null">AND m.nickname LIKE CONCAT('%',#{f.nickname},'%')</if>
+            <if test="f.levelId != null">AND m.level_id=#{f.levelId}</if>
+            <if test="f.groupId != null">AND m.group_id=#{f.groupId}</if>
+            <if test="f.loginStartTime != null">AND m.login_date &gt;= #{f.loginStartTime}</if>
+            <if test="f.loginEndTime != null">AND m.login_date &lt;= #{f.loginEndTime}</if>
+            <if test="f.createStartTime != null">AND m.create_time &gt;= #{f.createStartTime}</if>
+            <if test="f.createEndTime != null">AND m.create_time &lt;= #{f.createEndTime}</if>
+            <if test="f.tagIds != null and f.tagIds.size > 0">
+                AND EXISTS(SELECT 1 FROM member_tag_link t WHERE t.member_id=m.id AND t.tag_id IN
+                <foreach collection="f.tagIds" item="tagId" open="(" close=")" separator=",">#{tagId}</foreach>)
+            </if>
+        </where>
+    </sql>
+    <select id="profiles" resultMap="MemberMap">
+        SELECT m.* FROM member_user m <include refid="Conditions"/>
+        ORDER BY m.id DESC LIMIT #{f.limit} OFFSET #{f.offset}
+    </select>
+    <select id="profileCount" resultType="long">
+        SELECT COUNT(*) FROM member_user m <include refid="Conditions"/>
+    </select>
+    <select id="lock" resultMap="MemberMap">SELECT * FROM member_user WHERE id=#{id} FOR UPDATE</select>
+    <select id="now" resultType="java.time.LocalDateTime">SELECT CURRENT_TIMESTAMP</select>
+</mapper>

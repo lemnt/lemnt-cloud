@@ -1,0 +1,10 @@
+{
+  "status": "NOT_RUN",
+  "reason": "Prior browser launch blocked by runtime Unix socket restrictions; no new browser launch/interaction attempted",
+  "priorEvidence": "../catalog/browser-status.json",
+  "visualQA": "UNVERIFIED",
+  "newPages": [
+    "trade/order/index",
+    "trade/refund/index"
+  ]
+}

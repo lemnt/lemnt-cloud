@@ -1,11 +1,12 @@
 package com.lemnt.system.infrastructure.auth.mapper;
 
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.system.infrastructure.auth.dataobject.RoleDeptDO;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.apache.ibatis.annotations.Mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import cn.hutool.core.collection.CollUtil;
 
 import java.util.List;
 
@@ -16,7 +17,6 @@ import java.util.List;
  */
 @Mapper
 public interface RoleDeptMapper extends BaseMapper<RoleDeptDO> {
-
     /**
      * 通过角色ID删除角色部门关联
      *

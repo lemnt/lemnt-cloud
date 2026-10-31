@@ -1,0 +1,8 @@
+Before guard:targeted suite38 cases,2 assertion failures,0 errors. This run preceded synchronization of request-recovery tests; final verification below includes those preserved tests. Both duplicate-settlement tests expected rejection but placement succeeded.
+[ERROR] Tests run: 38, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 5.377 s <<< FAILURE! -- in com.lemnt.trade.start.checkout.CheckoutFlowIntegrationTest
+[ERROR] com.lemnt.trade.start.checkout.CheckoutFlowIntegrationTest.editedCartDoesNotMakeOldVersionReusableButNewPreviewCanPurchase -- Time elapsed: 0.082 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected java.lang.IllegalStateException to be thrown, but nothing was thrown.
+[ERROR] com.lemnt.trade.start.checkout.CheckoutFlowIntegrationTest.differentSettlementsCannotReuseConsumedCartVersionAfterReservationCompletes -- Time elapsed: 0.069 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected java.lang.IllegalStateException to be thrown, but nothing was thrown.
+[ERROR]   CheckoutFlowIntegrationTest.differentSettlementsCannotReuseConsumedCartVersionAfterReservationCompletes:1166 Expected java.lang.IllegalStateException to be thrown, but nothing was thrown.
+[ERROR]   CheckoutFlowIntegrationTest.editedCartDoesNotMakeOldVersionReusableButNewPreviewCanPurchase:1173 Expected java.lang.IllegalStateException to be thrown, but nothing was thrown.

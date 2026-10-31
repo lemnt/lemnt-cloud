@@ -1,0 +1,113 @@
+{
+  "batch": "133",
+  "date": "2026-10-31",
+  "scope": [
+    "sold-out and low-stock SPU query groups",
+    "five persisted/source stock counters",
+    "XLSX export for current supported fields and filters"
+  ],
+  "stockRules": {
+    "quantity": "SUM of stock across all non-DELETED SKUs, including off-shelf SKUs",
+    "soldOut": "quantity=0; includes non-deleted recycled SPUs per source",
+    "lowStock": "quantity<=10; excludes RECYCLED SPUs",
+    "deleted": "excluded",
+    "groupsOverlap": true,
+    "stockDenormalizationAdded": false
+  },
+  "frontend": {
+    "tests": 265,
+    "files": 46,
+    "passed": true,
+    "build": "passed; existing vendor chunk size warning",
+    "typecheck": "passed in tsc -b build",
+    "lint": "passed",
+    "format": "passed"
+  },
+  "backendFocusedTests": {
+    "ProductSpuExportQueryTest": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "ProductManagementHttpTest": {
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "ProductSpuExportHttpTest": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "CatalogPersistenceTest": {
+      "tests": 27,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "SpecMenuSeedTest": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "validationLayers": [
+    "frontend API contracts/SSR",
+    "production Jackson MockMvc binding/count/stock filters",
+    "POI opens actual XLSX output and checks Long text, literal formula-looking name and state label",
+    "H2 real Mapper sum/count/paging/boundary/reservation-and-release tests",
+    "application export pagination/oversize/incomplete tests",
+    "H2 idempotent export-permission SQL without grants"
+  ],
+  "export": {
+    "endpoint": "GET /mall/spus/export",
+    "permission": "mall:spu:export",
+    "maxRows": 10000,
+    "paginationAcceptedFromClient": false,
+    "partialResultsRejected": true,
+    "dependency": "existing managed EasyExcel library; no common-excel task/OSS auto-config dependency",
+    "fields": [
+      "id",
+      "code",
+      "name",
+      "categoryId",
+      "brandId",
+      "status",
+      "description"
+    ],
+    "errorFilesRejected": [
+      "JSON business error",
+      "ProblemDetail",
+      "401/expired identity",
+      "empty file"
+    ]
+  },
+  "sql": {
+    "path": "lemnt-server/sql/V20261031__mall_spu_export_permission.sql",
+    "roleGrantsChanged": false,
+    "realDatabaseExecuted": false,
+    "h2Idempotent": true
+  },
+  "schemaChanged": false,
+  "logs": [
+    "/tmp/spu-stock-ui-tests.log",
+    "/tmp/spu-stock-ui-build.log",
+    "/tmp/spu-stock-ui-lint.log",
+    "/tmp/spu-stock-ui-format.log",
+    "/tmp/spu-stock-backend.log"
+  ],
+  "testRuntime": "standalone Excel test uses -Djava.awt.headless=true",
+  "limits": [
+    "no browser download/click acceptance",
+    "no real MySQL/Redis/Dubbo/Nacos/deployed gateway validation",
+    "full source operating fields, aggregate-stock list display, create-time filtering/audit and full export columns remain incomplete",
+    "full backend and mini-program suites not rerun"
+  ],
+  "gitDiffCheck": "passed",
+  "committed": false,
+  "pushed": false
+}

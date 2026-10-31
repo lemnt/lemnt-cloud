@@ -1,0 +1,59 @@
+package com.lemnt.member.adapter.web.user.res;
+
+import java.util.List;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+/**
+ * 资料响应。
+ */
+@Schema(description = "会员Profile响应")
+public record MemberUserPageRes(
+        @Schema(description = "记录编号")
+        Long id,
+        @Schema(description = "昵称")
+        String nickname,
+        @Schema(description = "手机号")
+        String mobile,
+        @Schema(description = "邮箱")
+        String email,
+        @Schema(description = "头像HTTPS地址")
+        String avatar,
+        @Schema(description = "状态：1启用，0停用")
+        Integer status,
+        @Schema(description = "当前积分")
+        Long points,
+        @Schema(description = "经验值或等级升级门槛")
+        Long experience,
+        @Schema(description = "等级编号，可空")
+        Long levelId,
+        @Schema(description = "分组编号，可空")
+        Long groupId,
+        @Schema(description = "性别：0未知，1男，2女")
+        Integer sex,
+        @Schema(description = "出生日期")
+        LocalDate birthday,
+        @Schema(description = "数据库时间")
+        LocalDateTime createTime,
+        @Schema(description = "后台内部备注")
+        String mark,
+        @Schema(description = "真实姓名")
+        String name,
+        @Schema(description = "地区编号，未知不补造名称")
+        Integer areaId,
+        @Schema(description = "最近成功登录时间")
+        LocalDateTime loginDate,
+        @Schema(description = "网关观察到的登录连接IP")
+        String loginIp,
+        @Schema(description = "当前绑定标签编号")
+        List<Long> tagIds,
+        @Schema(description = "当前标签名称")
+        List<String> tagNames,
+        @Schema(description = "当前等级名称，未知可空")
+        String levelName,
+        @Schema(description = "当前分组名称，未知可空")
+        String groupName
+) implements Serializable {}

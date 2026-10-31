@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-28",
+  "design": "23-delivery-foundation-design.md",
+  "scope": "trade start and required reactor dependencies",
+  "build": "PASS: scoped clean verify; final scoped tests after HTTP problem contract/format adjustment",
+  "results": {
+    "tests": 160,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "logs": [
+    "/tmp/delivery-clean-verify.log",
+    "/tmp/delivery-final-test.log"
+  ],
+  "newFocusedCases": {
+    "productionPersistenceAndFreight": 9,
+    "httpNestedValidationAndProblemDetail": 1,
+    "shipmentCompanyStatusAndReplay": 1
+  },
+  "boundaries": [
+    "H2 MySQL mode, not real MySQL migration",
+    "No admin UI added",
+    "Delivery price not yet joined to settlement/order amount",
+    "No real channel SDK integration",
+    "No commit or push"
+  ]
+}

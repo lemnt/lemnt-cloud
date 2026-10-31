@@ -2,15 +2,14 @@ package com.lemnt.system.infrastructure.org.mapper;
 
 import com.lemnt.system.domain.org.model.Post;
 import com.lemnt.system.infrastructure.org.dataobject.PostDO;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,7 +19,6 @@ import java.util.List;
  */
 @Mapper
 public interface PostMapper extends BaseMapper<PostDO> {
-
     /**
      * 分页查询岗位列表
      *

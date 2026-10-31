@@ -1,23 +1,22 @@
 package com.lemnt.gateway.filter;
 
-import com.lemnt.common.redis.service.RedisStringService;
+import com.lemnt.common.core.utils.StringUtils;
 import com.lemnt.common.security.constant.SecurityConstants;
 import com.lemnt.common.security.constant.TokenConstants;
-import com.lemnt.common.security.utils.JwtUtils;
+import com.lemnt.common.security.model.SecurityUser;
+import com.lemnt.common.security.service.TokenService;
+import com.lemnt.gateway.config.properties.IgnoreWhiteProperties;
 import com.lemnt.gateway.utils.ServletUtils;
+
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
-import com.lemnt.common.core.constant.CacheConstants;
-import com.lemnt.common.core.utils.StringUtils;
-import com.lemnt.gateway.config.properties.IgnoreWhiteProperties;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
@@ -26,108 +25,118 @@ import java.util.Set;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_ORIGINAL_REQUEST_URL_ATTR;
 
 /**
- * 网关鉴权
+ * 网关统一鉴权，两端复用公共令牌组件，通过服务端接口路径区分所需身份。
  *
  * @author wangxx
  */
 @Component
 public class AuthFilter implements GlobalFilter, Ordered {
-    // 排除过滤的 uri 地址，nacos自行添加
+
+    private static final Set<String> PUBLIC_APP_POST_PATHS = Set.of(
+            "/member/app/auth/login",
+            "/member/app/auth/refresh-token",
+            "/member/app/auth/logout");
+
     @Autowired
     private IgnoreWhiteProperties ignoreWhite;
     @Autowired
-    private RedisStringService redisStringService;
-    @Autowired
-    private JwtUtils jwtUtils;
-
-    private static final String OPEN_API_PREFIX = "/open";
+    private TokenService tokenService;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, @NonNull GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String path = getOriginalPath(exchange, request);
-        // 开放平台路径跳过
-        if (path.startsWith(OPEN_API_PREFIX)) {
-            return chain.filter(exchange);
-        }
-        // 跳过不需要验证的路径
-        if (StringUtils.matches(path, ignoreWhite.getWhites())) {
-            return chain.filter(exchange);
+        boolean appRequest = isAppPath(path);
+        ServerWebExchange clean = clearIdentityHeaders(exchange);
+        // 小程序公开规则单独按完整路径匹配，不受后台宽泛白名单影响。
+        if (appRequest ? isPublicAppRequest(request.getMethod(), path)
+                : path.startsWith("/open") || StringUtils.matches(path, ignoreWhite.getWhites())) {
+            return chain.filter(clean);
         }
         String token = getToken(request);
         if (StringUtils.isEmpty(token)) {
             return ServletUtils.unauthorized(exchange.getResponse(), "令牌不能为空");
         }
-        Claims claims;
-        try {
-            claims = jwtUtils.parseToken(token);
-        } catch (JwtException | IllegalArgumentException e) {
-            // 令牌被篡改、已过期或格式非法时按未授权处理，避免网关抛出 500
-            return ServletUtils.unauthorized(exchange.getResponse(), "令牌已过期或验证不正确！");
+        String userType = appRequest ? SecurityConstants.MEMBER_USER_TYPE : SecurityConstants.ADMIN_USER_TYPE;
+        SecurityUser loginUser = tokenService.getSecurityUser(token, userType);
+        if (loginUser == null || loginUser.getUserId() == null) {
+            return ServletUtils.unauthorized(exchange.getResponse(), "登录状态已过期或令牌无效");
         }
-        String userKey = jwtUtils.getUserKey(claims);
-        if (!isLogin(userKey)) {
-            return ServletUtils.unauthorized(exchange.getResponse(), "登录状态已过期");
+        if (appRequest) {
+            ServerHttpRequest.Builder builder = clean.getRequest().mutate();
+            addHeader(builder, SecurityConstants.HEADER_USER_ID, loginUser.getUserId());
+            return chain.filter(clean.mutate().request(builder.build()).build());
         }
-        String userId = jwtUtils.getUserId(claims);
-        String username = jwtUtils.getUserName(claims);
-        if (StringUtils.isAnyBlank(userId, username)) {
+        if (StringUtils.isAnyBlank(loginUser.getToken(), loginUser.getUsername())) {
             return ServletUtils.unauthorized(exchange.getResponse(), "令牌验证失败");
         }
-
-        ServerHttpRequest.Builder builder = request.mutate();
-        // 设置用户信息到请求
-        addHeader(builder, SecurityConstants.HEADER_USER_KEY, userKey);
-        addHeader(builder, SecurityConstants.HEADER_USER_ID, userId);
-        addHeader(builder, SecurityConstants.HEADER_USER_NAME, username);
-        addHeader(builder, SecurityConstants.HEADER_ROLE_KEY, jwtUtils.getRoleKey(claims));
-        return chain.filter(exchange.mutate().request(builder.build()).build());
+        ServerHttpRequest.Builder builder = clean.getRequest().mutate();
+        addHeader(builder, SecurityConstants.HEADER_USER_KEY, loginUser.getToken());
+        addHeader(builder, SecurityConstants.HEADER_USER_ID, loginUser.getUserId());
+        addHeader(builder, SecurityConstants.HEADER_USER_NAME, loginUser.getUsername());
+        String roleKey = loginUser.getRoles() == null
+                ? loginUser.getRoleKey() : String.join(",", loginUser.getRoles());
+        addHeader(builder, SecurityConstants.HEADER_ROLE_KEY, roleKey);
+        return chain.filter(clean.mutate().request(builder.build()).build());
     }
 
-    /**
-     * 是否登录
-     */
-    private boolean isLogin(String userKey) {
-        return redisStringService.hasKey(CacheConstants.LOGIN_TOKEN_KEY + userKey);
+    /** 通过完整接口路径选择会员身份域，不匹配近似前缀。 */
+    private boolean isAppPath(String path) {
+        return path.equals("/system/files/app/upload") || path.equals("/files/app/upload") || path.equals("/member/app") || path.startsWith("/member/app/")
+                || path.equals("/mall/app") || path.startsWith("/mall/app/")
+                || path.equals("/trade/app") || path.startsWith("/trade/app/");
     }
 
-    /**
-     * 添加请求头
-     *
-     * @param mutate
-     * @param name
-     * @param value
-     */
-    private void addHeader(ServerHttpRequest.Builder mutate, String name, Object value) {
-        if (value == null) {
-            return;
+    /** 保留已有小程序公开读接口、登录入口。 */
+    private boolean isPublicAppRequest(HttpMethod method, String path) {
+        if (method == HttpMethod.POST) {
+            return PUBLIC_APP_POST_PATHS.contains(path);
         }
-        String valueStr = value.toString();
-        String valueEncode = ServletUtils.urlEncode(valueStr);
-        mutate.header(name, valueEncode);
+        return method == HttpMethod.GET && (path.equals("/mall/app/comments")
+                || path.equals("/mall/app/categories")
+                || path.equals("/mall/app/products")
+                || path.matches("/mall/app/products/[1-9][0-9]{0,18}"));
     }
 
-    /**
-     * 获取请求token
-     */
+    /** 清除客户端身份头，身份只从已校验的公共会话写入。 */
+    private ServerWebExchange clearIdentityHeaders(ServerWebExchange exchange) {
+        ServerHttpRequest request = exchange.getRequest().mutate().headers(headers -> {
+            for (String header : Set.of(SecurityConstants.HEADER_USER_ID, SecurityConstants.HEADER_USER_KEY,
+                    SecurityConstants.HEADER_USER_NAME, SecurityConstants.HEADER_ROLE_KEY,
+                    SecurityConstants.HEADER_ROLE_PERMISSION, SecurityConstants.HEADER_LOGIN_USER,
+                    "X-Lemnt-Login-Ip", "X-Member-Id", "memberId")) {
+                headers.remove(header);
+            }
+            // 仅使用连接对端，不信任客户端转发头；代理链需要另行配置。
+            var remote=exchange.getRequest().getRemoteAddress();
+            if(remote != null && remote.getAddress() != null) {
+                headers.set("X-Lemnt-Login-Ip",remote.getAddress().getHostAddress().split("%",2)[0]);
+            }
+        }).build();
+        return exchange.mutate().request(request).build();
+    }
+
+    /** 写入经过编码的可信身份信息。 */
+    private void addHeader(ServerHttpRequest.Builder builder, String name, Object value) {
+        if (value != null) {
+            builder.header(name, ServletUtils.urlEncode(value.toString()));
+        }
+    }
+
+    /** 与后台保持一致，提取公共访问令牌。 */
     private String getToken(ServerHttpRequest request) {
         String token = request.getHeaders().getFirst(SecurityConstants.AUTHORIZATION_HEADER);
-        // 如果前端设置了令牌前缀，则裁剪掉前缀
         if (StringUtils.isNotBlank(token) && token.startsWith(TokenConstants.PREFIX)) {
-            token = token.replaceFirst(TokenConstants.PREFIX, StringUtils.EMPTY);
+            return token.substring(TokenConstants.PREFIX.length());
         }
         return token;
     }
 
-    /**
-     * StripPrefix 执行后仍使用进入网关时的完整路径匹配白名单。
-     */
+    /** StripPrefix 执行后仍使用进入网关时的完整路径。 */
     private String getOriginalPath(ServerWebExchange exchange, ServerHttpRequest request) {
         Set<URI> originalUrls = exchange.getAttribute(GATEWAY_ORIGINAL_REQUEST_URL_ATTR);
-        if (originalUrls == null || originalUrls.isEmpty()) {
-            return request.getURI().getPath();
-        }
-        return originalUrls.iterator().next().getPath();
+        return originalUrls == null || originalUrls.isEmpty()
+                ? request.getURI().getPath() : originalUrls.iterator().next().getPath();
     }
 
     @Override

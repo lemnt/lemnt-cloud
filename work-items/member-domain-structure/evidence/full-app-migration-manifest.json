@@ -1,0 +1,1899 @@
+{
+  "sourceRoot": "/Users/wangxx/demo/yudao-mall-uniapp",
+  "framework": "uni-app / Vue",
+  "note": "业务页面、接口、共享组件及配置源清单；第三方uni_modules和静态素材未计入。清单不代表迁移完成，现有认证及渠道边界仍有效。",
+  "files": [
+    {
+      "source": "pages/activity/groupon/detail.vue",
+      "sha256": "c034e0958d9ba05fb44acb3393ae8defc6aed3e2b9cb234690d3b003ca3668ba",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/activity/groupon/list.vue",
+      "sha256": "54575e2c744654401bf6c52f7ee823e1e430768353fd58bb1c35831661615165",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/activity/groupon/order.vue",
+      "sha256": "0faa14bfd7dfa455927a053099fb8cf5a5a7aaa31fecd5961429e5971e848732",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/activity/index.vue",
+      "sha256": "89ab756eb2acbbb592d5bf8896b7aa8b22e2a2bfca1df345bfeffacb6066c09e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/activity/point/list.vue",
+      "sha256": "d37a74f47620ff6a5b0d45b0d3d7e1c6af712c9701441cc95feaff944d0ebc49",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/activity/seckill/list.vue",
+      "sha256": "42aa76e45e72131cd9dc80b0edad154d670dfb84d9f9757b19430f12b52a9705",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/app/sign.vue",
+      "sha256": "ac02372e585ead80119ecfaf02a8a1abf2b1acc4d50fb92d24c0926270dab8aa",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/chat/components/goods.vue",
+      "sha256": "f202526b4972185896f0e5a7c1a949528b83306f4e5be2a58f114d2cf9390a34",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/chat/components/messageInput.vue",
+      "sha256": "ae4e706bba44249df6deec3f892347d7f20ec1ae6e9855457c95ba99ca45316e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/chat/components/messageList.vue",
+      "sha256": "e71fd7fe3485c0205b49ab34d38d46b4d21e8dc6014cdb45d43f1f54e5c189f8",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/chat/components/messageListItem.vue",
+      "sha256": "8b18fdfcfed2fb4a306a0c43ef4163cce7715af70b0f3e2779891ad032813f65",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/chat/components/optimize-input.vue",
+      "sha256": "9d4189e8456721ac3a93a70615de45b4485d30def3854e87cbdc1f6fd3e936b7",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/chat/components/order.vue",
+      "sha256": "259632fd5c5f9514db11640f3dac76a1b61c60dbe1c68d6c084843887312e8b2",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/chat/components/select-popup.vue",
+      "sha256": "134b8e4b0a86ec595cf0e3c9c1e8b33adab1315c53672ff11c94a31752b3add1",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/chat/components/toolsPopup.vue",
+      "sha256": "3dfe3e77156d14775d9ecc0105a80009e077a28e961537e5e4a684133f291f2a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/chat/index.vue",
+      "sha256": "19089bb00963e68f68da615bbdf2a070a104064299676420a9fa47d15fbaa818",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/chat/util/constants.js",
+      "sha256": "3440d1bde9cc37ed11249df294526a6e0553783e3de877fb608f8a29b6e28f5e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/chat/util/emoji.js",
+      "sha256": "4d80fde24f477c3980c6b7d974e80baeb9fdbe50c7efb3680edca37965e55346",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/chat/util/useWebSocket.js",
+      "sha256": "a705fef6aa4a453489ca7d21b15c5ace163d72ccf040c8c3b5bbaea0a8aabc67",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/commission/commission-ranking.vue",
+      "sha256": "4b7f8e151bb32cddbe46317da96725b8ea40ed114882805a56bb15ac123c9b32",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/commission/components/account-info.vue",
+      "sha256": "abcebbd25b036708a6db351e819253e122dfe47b040c56c9d03ed8a153fe62fc",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/commission/components/account-type-select.vue",
+      "sha256": "415fed70abaa3bcbfb71ecaf54d29155a442a976c4c7725bf194ed6a118dc1a7",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/commission/components/commission-auth.vue",
+      "sha256": "417ce3d941e2bed1765e320ac01a0c4d1bb8722a5e23b45f44ca957a2444f65a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/commission/components/commission-info.vue",
+      "sha256": "f729cb6300044b3dc40b7997658239a751a7fb39ec0aa1f77f28685a170257aa",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/commission/components/commission-log.vue",
+      "sha256": "7eadb3f4fe6ba6efcacd07f1c748198f90225e4c0fd520b8b5c274897aab5667",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/commission/components/commission-menu.vue",
+      "sha256": "ee36d3db410a2ccef98c1e5fee1b9cf0edad0d61e378d0fbc115bb2ee79966ca",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/commission/goods.vue",
+      "sha256": "cd22faf092cb79f9daad32fff5baee564f9b5e73b537184eb477ed04dcdee5da",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/commission/index.vue",
+      "sha256": "cd0273f87b989b5daf8a3b16e4808b84c90aaf3812f0fbbd080d8a00d2239d20",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/commission/order.vue",
+      "sha256": "b0f19a27192d43b7dae10f1a2d4201af8bbd35f5c870ae2377e2bcb894426219",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/commission/promoter.vue",
+      "sha256": "b1ba72c9ebc2b2c53f25c65d0cfa3086e109e6d785b5572a61e68db036b4efa5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/commission/team.vue",
+      "sha256": "c0f5dd2d1167fc36d08cd675df97ec01ea4ff6dd7e354124913ff3062d3ffef4",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/commission/wallet.vue",
+      "sha256": "49af7a61a07923cbb7c29beee142e1977752fc8e33b75df1eeeb84ca8c401190",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/commission/withdraw.vue",
+      "sha256": "c528d57074320972f6e493768ba2e9582fbc660d566932a476154c7c0186efb4",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/components/HighlightNumberText.vue",
+      "sha256": "938df9c16be4bf2d844db672df9253f7b8baf377c05cc6c01500b5a79bfd6c14",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/coupon/detail.vue",
+      "sha256": "65edbc7273cb3b3015cac3ca22c676b2010ca535a78765142251eeeb81a8a1c3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/coupon/list.vue",
+      "sha256": "02af8c50066076fb120185bb783396b1919f99bcf408c7a5706c3575ebc12129",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/comment/add.vue",
+      "sha256": "96511797eb9491f383acadf8855731c7221ccb59e4c3d0e92aa6f0bd90d7596c",
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/order-comment/index",
+      "note": "同页多商品逐项评价及相册/拍照上传已接入微信原生页，复用system文件服务；地址删除使用原图片输入，跨端/真机、真实OSS及路由部署未验收。见62-comment-upload-delivery.md；64补齐当前表单附件预览/移除及提交同步；真机与跨端验收待完成。"
+    },
+    {
+      "source": "pages/goods/comment/list.vue",
+      "sha256": "3f13d1ae51be84f40f4bec8ecc9b2e63ada7bd64d8dd962bc52f65eaa32d99e7",
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/comments",
+      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
+    },
+    {
+      "source": "pages/goods/components/detail/comment-item.vue",
+      "sha256": "6cdd50991336043adf6193b03c0080135d1f4567d3091ce2694d1abae56ad56f",
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/comments",
+      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
+    },
+    {
+      "source": "pages/goods/components/detail/detail-activity-tip.vue",
+      "sha256": "58b84ad7b88abfd4c940fcbca60f8290f6a70a5bb2836e516f6b456897f605a2",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/components/detail/detail-cell-sku.vue",
+      "sha256": "9a5bc7402cb429bcf1655b24f036d220c618049c9fb4fb12c8a73842d21accd6",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/components/detail/detail-cell.vue",
+      "sha256": "05b746e2ab8b8b739f21e78d2297af61bccbcd5bae93b765936ae5ea263e8146",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/components/detail/detail-comment-card.vue",
+      "sha256": "7c3c5f2dabc9e7364a391273047a3ff669cc77447daeb5634c4f27db96cbfc6f",
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/comments",
+      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
+    },
+    {
+      "source": "pages/goods/components/detail/detail-content-card.vue",
+      "sha256": "8de022c3428a70f4a3b55d00ac4433667426a0392bb3cdc9fada0c9e3b6492fc",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/components/detail/detail-navbar.vue",
+      "sha256": "3e1a01577d857b866a470aef233aacf006c2bb3520bcfaa0b1024369f4f2d18a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/components/detail/detail-progress.vue",
+      "sha256": "1bb2da337447d904536af01c3323647716f9d148299266119449db5b6d3e6678",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/components/detail/detail-skeleton.vue",
+      "sha256": "ab4b48bd67242f2f54c9388068ac20558d811f4240b0d91778907fe17a66b14f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/components/detail/detail-tabbar.vue",
+      "sha256": "18d4415600824f570fa9d5f70b2a58e7fb1ac4203b7e84cf46cad79246cab1ee",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/components/groupon/groupon-card-list.vue",
+      "sha256": "92688a326038d7dd8b8fb9ce647adc2b23723dd44b1b44776cb783d752f3d299",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/components/list/list-goods-card.vue",
+      "sha256": "81f8050168b27aec0aa7f0ab9a3b30e7ead8041a77c1fadc1a3878f38d33b7a3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/components/list/list-navbar.vue",
+      "sha256": "450d5e016212bdc62fa3c7f1842349957773d0f011b783560e2842f6e104a77f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/groupon.vue",
+      "sha256": "47b9e416c34403eeacad046e2715b97615063ecffa9994215df885678a5636fa",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/index.vue",
+      "sha256": "631eb885f89b491d2ef382e0c9db2066a27957ce7fa3c8d5861dcb42fd37ca3e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/list.vue",
+      "sha256": "a72e919ba56295c976d4934f73bd708d369305a6e52bb618ff2085d3657048b3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/point.vue",
+      "sha256": "c147639a085b69bcaed5f997fca2a40ac245fbf29f1b717b1ef96a4c820e9f91",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/goods/seckill.vue",
+      "sha256": "a2e78cbe27d55936bb6b9d94d306c6dba1afbb14ada4c4dd237bb7d911646a1e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/index/cart.vue",
+      "sha256": "bf323f2e549ec89c6cc14f6d25e9cd87ffca0c97b5668c57ef4d327c54a136ac",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/index/category.vue",
+      "sha256": "0891c419cad9c6c3520538fcc0cfc3fdf3b26d5984d2c653c94d3ae9444fd216",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/index/components/first-one.vue",
+      "sha256": "5f919b109061ab55df1b2b643294127ea7d43af291086bf736a5ffddd06f642d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/index/components/first-two.vue",
+      "sha256": "577ccff73fe43cb9015e05f9843d6d516db9e4fa4a36075f9cdf46e06018ae41",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/index/components/second-one.vue",
+      "sha256": "81405e794a90aec0b8f57bb607fe23239522c989af94398f4787c7b5a76f0d3a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/index/index.vue",
+      "sha256": "7a147b1fc9ca08168dd007a4fddd321ada9d0b5adff9cdfe83305f526ca6be98",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/index/login.vue",
+      "sha256": "0a57e9afb1956c440c70e1ff86342b73867ea6913a6846093b4492cf0a5e1d89",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/index/page.vue",
+      "sha256": "8955b9d62d46db884c3cea1697e0e18df3bfef60bf372591e27f16de3bcd7af3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/index/search.vue",
+      "sha256": "89fc58921a93f8293a67fa26bdcbd1eb2cc182fcf6f56e09a270953fe0388ece",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/index/user.vue",
+      "sha256": "ce68f3552d46cb1fb31792108893e8fe46ea142219d3ca8b929e375ccd5ae355",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/order/addressSelection.vue",
+      "sha256": "74e937e436f75071174254e773ce3984458674d8f3e154f0b4312726b3518a46",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/order/aftersale/apply.vue",
+      "sha256": "ce22db2ee20a86bae22952e529eb354b0240a29a24b81f001d2eea53ae3dd392",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/order/aftersale/detail.vue",
+      "sha256": "c9f2b8ac9140d482272c81b12b20e6c6d0296ed4f5d1c6c56409c7d1beee7dc1",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/order/aftersale/list.vue",
+      "sha256": "2bab369b4ad1c71a7e46b7fb490b10c476dd244554af9d0d2b160596aa35bed9",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/order/aftersale/log-item.vue",
+      "sha256": "c5ed8f81e0e76c641a499b4f5857ec52bcf81e75b30fd1c378f0831935696a67",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/order/aftersale/log.vue",
+      "sha256": "36e849637dbe1027a8f24d28548db9ac2bb674dabb5a19c5739cc54a305eb21b",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/order/aftersale/return-delivery.vue",
+      "sha256": "86b199071913d136d6da150a040bd9ced5b50fe577eb75d2ebb1b330bdf56648",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/order/confirm.vue",
+      "sha256": "6a22439ed3b976d14a873c328f82ffa894b84e4fe47ca1e5453b46658e2a9ce5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/order/detail.vue",
+      "sha256": "c59e531252071ee668658f3a79c6b66504489d9afcca9c0ec69534eac9569d98",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/order/express/log.vue",
+      "sha256": "02e607b82d786461ae174b9931e8f2f1670e04219486181381fef66b2bddccdb",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/order/list.vue",
+      "sha256": "d493a7d788a36a23df81a933405ae460086d97c0580572446b21c2f650cdfbc3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/order/pickUpVerify.vue",
+      "sha256": "af54fb9e8a8a25b27269df73addccd8587d9b0a6d32e55853777f86bc2c60b03",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/pay/index.vue",
+      "sha256": "f6b526ef231dbb9ab680de5dd98f232fb7e0643732ec7efc78f7c42f83469579",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/pay/recharge-log.vue",
+      "sha256": "50aa7ce9c38f11d5eb0b63878533a743eb4165ca8dd2a4af70a61fe02ba650f1",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/pay/recharge.vue",
+      "sha256": "3977ae659ba7d1e9f677e8ce4a644aa9841d00c67ef3f16dbd68b6a626955d96",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/pay/result.vue",
+      "sha256": "9e063b8ee4acf1294f3ab168efd5c7df96429acf16bf533bdaf37ece0156d3fe",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/public/error.vue",
+      "sha256": "d35306d0177ab909d3e724170c1bebd3303a78c0776b5ffc58e876f89aeb16eb",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/public/faq.vue",
+      "sha256": "887164c0f2ad4984f39a575d8d22fe5204719e5457f207b5c1490c16ae2439e4",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/public/richtext.vue",
+      "sha256": "3ed418af94b95cf8009bfaf07e9804da6831358687167ee6c1a35e5bc56adc4c",
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
+    },
+    {
+      "source": "pages/public/setting.vue",
+      "sha256": "eb4bac258429643d72e9cf8a76cafa0ec2417680a243b75ae2bf3f16298aa6a2",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/public/webview.vue",
+      "sha256": "d9a2e511e9d812e970866408f246cab414ef7d099b31c09f7c4700ef472d9d64",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/user/address/edit.vue",
+      "sha256": "75efdf62fd76ad99bf814fc53ed77240bb47498c7dc2c8cc0e800d8245ee687d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/user/address/list.vue",
+      "sha256": "f7bb2e076bff5c0a0e42a4e80e9ad369d7542b6ed28fd5e2bc6adfabe7a1fd8c",
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/member-addresses",
+      "note": "126真实地区全称展示，旧响应及未知保持编号，写入不提交名称；最终UI契约继续核对"
+    },
+    {
+      "source": "pages/user/goods-collect.vue",
+      "sha256": "c3723c0b4682fffb393fb6895ad1f81cf44bc7753d7eadffb6a87c3f2659b404",
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/favorites",
+      "note": "原生小程序适配列表、分页、当前页选择、单条/批量移除，足迹清空；非源Vue样式复刻，未真机验收"
+    },
+    {
+      "source": "pages/user/goods-log.vue",
+      "sha256": "83d3c226e58d0762a8b6fc0cdc824e1df7d4b925c7de9fa8795bd9475cf0ea96",
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/browse-history",
+      "note": "原生小程序适配列表、分页、当前页选择、单条/批量移除，足迹清空；非源Vue样式复刻，未真机验收"
+    },
+    {
+      "source": "pages/user/goods_details_store/index.vue",
+      "sha256": "232451bd85408f89feb4f1aff003d1b3841081a76340d6146b6d146074257b1f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/user/info.vue",
+      "sha256": "9343af2f5fa9b15f67af81917885f3669d0485eafd219c60618161476bc4c6d5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/user/wallet/money.vue",
+      "sha256": "ca43916df4f10f9a953c2d4f88e7721569d27641e47bf6ce45b4f33ef3bcbfd0",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages/user/wallet/score.vue",
+      "sha256": "dbfda114c0a8ef86ac29f34c948c9291e3bcbbdd11efab1c78ee55785f67b0df",
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/member-benefits",
+      "note": "积分方向和日期筛选/跨页已迁移至原生页，微信端尚未验收，见100"
+    },
+    {
+      "source": "sheep/api/index.js",
+      "sha256": "31819ef6012421b849a643f5df602970aa55b395f7cbd773b2964f54b37b9d08",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/infra/file.js",
+      "sha256": "847f5dcdccae63bba8d62fd9947a0dbc2a10ce8785ea0217954accd2b0dfd0c9",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/infra/tenant.js",
+      "sha256": "61576ea7586679bc1a0962c3ba63a16103295ef769fe49f07f3de5b2fa358f58",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/member/address.js",
+      "sha256": "384815e835ac6d3a8f6cbab9619fa699e9d57afe47668b48b5857cb3732ba96f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/member/auth.js",
+      "sha256": "15bbe6477d6b17f7ffaebe87e51010d29cfede41d823dfbcd6b7981890925dc5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/member/point.js",
+      "sha256": "6b81f791d67118b4db78a850c14fd20c1e7d3f742d8ff3fb2a05b330a8828d93",
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/member-benefits",
+      "note": "积分方向和日期筛选/跨页已迁移至原生页，微信端尚未验收，见100"
+    },
+    {
+      "source": "sheep/api/member/signin.js",
+      "sha256": "1b1ce496d5f6e4c13ab71ed95cdb120f28f98d262984e97a94ac12ea1f140f7d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/member/social.js",
+      "sha256": "40b59447a25c55e73f783dcbd7fc498c87aab5a9384e89f51d9bff49ee7c9180",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/member/user.js",
+      "sha256": "8a8c169056357aa258445f1ce4a5d386c08bddc0a7340fa0eef853e832b761da",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/migration/app.js",
+      "sha256": "184d99f2c9742b5e225df439dd616bebeda6f1fdba53c044deb57d0cb7c74db1",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/migration/third.js",
+      "sha256": "987c63b672afaf0619d9ca6f3bfb370b3ea9ff5bd7b044e0d2b80973171b4eb4",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/pay/channel.js",
+      "sha256": "20dc3f47142633b13f23e7c50fe721b7ea18482c2794011ae2ea68cf3f30692e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/pay/order.js",
+      "sha256": "5a603a27794371e27203809b1629a2e462f0be141d843ac33991ec275082c455",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/pay/transfer.js",
+      "sha256": "216937c8081a1b2bad7d5d1cf3b0de8a47d33fcc27dab534c4cdebd2f3555bab",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/pay/wallet.js",
+      "sha256": "fd2e4bc93c82c0d8ddf88ba51066913352e00964fc62a7538607422bba47e70d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/product/category.js",
+      "sha256": "5e27df22d422c55dff6bfa85b925bd1333729ba1da8e69dafd8add498446421f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/product/comment.js",
+      "sha256": "57750f53b3c5eeefd598f501d6a8ffaf9b63ef9e6197124ad91fd0f7e95cada1",
+      "state": "in_progress",
+      "target": "lemnt-miniapp/pages/comments",
+      "note": "原生评价分组分页及单SKU创建接入，服务端订单核验、匿名/两项评分/图片URL、未知结果原样重试；源批量订单项投稿、照片上传和样式未完整迁移，未真机验收；2026-10-29补充：真实订单项ID与评价状态联动已接入，前述该项待迁移说明由49-order-item-comment-delivery.md替代，其他缺口不变。；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
+    },
+    {
+      "source": "sheep/api/product/favorite.js",
+      "sha256": "28d1fd4b659e1a9d7d033c7468bca2d16cd815d346fe538082cbbe58bb9ec979",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/product/history.js",
+      "sha256": "9a3a3a38091e20b6f6f79632800f1a6d82240f7294299b30319c1583f08d91a3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/product/spu.js",
+      "sha256": "0e1e39d68f067a60e8477c4fc8d568869ec70c0dfa396a523d2ac691c1f896db",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/promotion/activity.js",
+      "sha256": "0697b6d706b0eb80b2bb8e616ae89467bce161544cdb45c1672be30c697a7081",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/promotion/article.js",
+      "sha256": "8ff2dd27f76c1580ee85d90299d9af858d1bb69d036627cf0aba5b6a96aabc4d",
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
+    },
+    {
+      "source": "sheep/api/promotion/combination.js",
+      "sha256": "1bf4ce973f7f23830795e85d0ea681caf564f12f152ef6f712e80ec7fff03c3c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/promotion/coupon.js",
+      "sha256": "e7d63f4387ede1fc3682a5588a447bf4e518d88d751ade295c0e2213b1e3ed96",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/promotion/diy.js",
+      "sha256": "3111ce98f8dd1f04b8e23a1dbc9bedcf3770a107feed6e47cc154fc17d038447",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/promotion/kefu.js",
+      "sha256": "0175a8403034595099e36d381413f66c7cd650efae6f9c6ed738e18acbb4281b",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/promotion/point.js",
+      "sha256": "22574a6197b7dd1b5ff37701ff2367de3951f73e054a34e0315812f30976b5a6",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/promotion/rewardActivity.js",
+      "sha256": "b559fedb4ce54a135ac2d255b4b1bf6928b3454ee6d49f612a8af96fc9c57361",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/promotion/seckill.js",
+      "sha256": "20e17dc8ad1a3e2956fd3fd8e08c8a05a6096994d0ccd49ca516e3b2b98cf733",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/system/area.js",
+      "sha256": "7271d5fa01be5ba556bf27c7b0986acf5b8cfad228e26956c8a40abdb09cd6e3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/system/dict.js",
+      "sha256": "f5eb771fe2979a930083a4bc15423d3cd181e3e12254faedb755ed120f2835d0",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/trade/afterSale.js",
+      "sha256": "46c088fb7332c288e827c8a1454e4217c3b92bab9b32fa62f2b772d1667225b5",
+      "state": "in_progress",
+      "target": "lemnt-miniapp/services/trade.js",
+      "note": "本批仅对接本人取消售后；完整App售后查询/申请/退货页面及接口继续迁移"
+    },
+    {
+      "source": "sheep/api/trade/brokerage.js",
+      "sha256": "9e3223a86d3472c14d2eacaedbfb30a2db4b3cfb6ba5cc12808e0c03ba82aa73",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/trade/cart.js",
+      "sha256": "e37bfcdf053b304aa11aee6922b1084693937a4115063fbe15f25b68266daebd",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/trade/config.js",
+      "sha256": "5cc2eb6822e27b402be7d6149f8d52edf48ec0d813599f863da19e751dd39ed2",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/trade/delivery.js",
+      "sha256": "df045769090e28fc0fb1ce1cd1c1d3ac2d5bef452cc3c00ba5ecd6f2239f3a24",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/api/trade/order.js",
+      "sha256": "ab2f15daf7cb69b9293020a5af75c8a3793581ee21bcc782aa3610c9c73ab547",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-activity-pop/s-activity-pop.vue",
+      "sha256": "79f1659730abc81bb083d057f998fce3f750ffb99fbdec9d51cc339be2b336d5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-address-item/s-address-item.vue",
+      "sha256": "c1bc7d9eb4f3238e6071cd97d3304c65cd692a064ce7ae282184e5f091d9d6a5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-auth-modal/components/account-login.vue",
+      "sha256": "3ab55f08e70c438d9b715bfd1300fdefc4721c1b4536c58e4c628a2d4ba9105f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-auth-modal/components/change-mobile.vue",
+      "sha256": "00039faa91eade1be61876dfdf5c0e7685da28db38d36110c792466d2e60f312",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-auth-modal/components/change-password.vue",
+      "sha256": "aa80b424184474b614837a7a44878487195b216f78aed2ffa1f8533c5b477eef",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-auth-modal/components/mp-authorization.vue",
+      "sha256": "4f612b59f1bc925d76c743d8b4a6ede083d8c195766df04df67a570d96224096",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-auth-modal/components/reset-password.vue",
+      "sha256": "1d389259b322ca5b04c4eaa3688e6747b5017a422d4f362fbd735c096e4262ef",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-auth-modal/components/sms-login.vue",
+      "sha256": "25d2c81e94aec4f6a276ab026e1397dd335b471e52fb1afc4ed1ca32accd0c8c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-auth-modal/index.scss",
+      "sha256": "362ee38303bed480756f1525cca4c2fae21cf3ef75d165beb425ea85728fbe2e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-auth-modal/s-auth-modal.vue",
+      "sha256": "0de9030a29057ecb37c71c8e88518bb79c582c602109bb812b1a0cd7820ff897",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-block/s-block.vue",
+      "sha256": "2816d85b455e5638e26100d82612f350f40517aa176e04c50dece30ff9e6d880",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-block-item/s-block-item.vue",
+      "sha256": "4636f22e6c844f67d75062748837ecc395b6f917411e7cc7c7e7def3f20f6134",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-count-down/s-count-down.vue",
+      "sha256": "954ecf50ab0bbc3c34e669d751fc001cb7abac2249020e69be6cd0a47443bf76",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-coupon-block/s-coupon-block.vue",
+      "sha256": "c6218b26a3db50c6cac7c7f8b7c74367929e64cf4f87ead461440352487ad9c3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-coupon-card/s-coupon-card.vue",
+      "sha256": "c4ed59696e318e61277220a3a133a984064ab2b32fb3a9c83f806031f8ddf629",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-coupon-get/s-coupon-get.vue",
+      "sha256": "74254daf400cf183b555aa120177a643c128e0ac272cdbcd40e5df8e5086b88b",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-coupon-list/s-coupon-list.vue",
+      "sha256": "85c1daebf3ed209740be5e769da7b3a90cb6bf40ad65f4aa303fc4f60a226741",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-coupon-select/s-coupon-select.vue",
+      "sha256": "5e867dfdba20c238ca2da3b5f60bf3b32e1e6b01d8f9adcb43173964ec6c1e8c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-custom-navbar/components/navbar-item.vue",
+      "sha256": "90013f52f3e870eaeec1032a604c9ddc8967ac5cd0cf30e2b6c0fce101d7f9f9",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-custom-navbar/components/navbar.vue",
+      "sha256": "f56bf3610f2509e852d7f9e8b30a079676c5b14dac34500c3408babfa558535e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-custom-navbar/s-custom-navbar.vue",
+      "sha256": "fe089972f39760f7159b8505e789f5e162775cdebd420a868265390c7ad4d44c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-discount-list/s-discount-list.vue",
+      "sha256": "692695c452a41b0a457acb6fa1affe69111c54e015d2ea1bafea4d4a22e067ab",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-empty/s-empty.vue",
+      "sha256": "0e634a5b80a48e039f8b9be4e0be0da5f041dcc5101a92b743e38be52ce65af5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-float-menu/s-float-menu.vue",
+      "sha256": "29b385b3710990727c86301ac61093603eff457788fe18b964e98830ba58fc55",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-goods-card/s-goods-card.vue",
+      "sha256": "a064b836275b30dfb5128146e098ade55d4aedacaaf226e0dad6555e7abf62f3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-goods-column/s-goods-column.vue",
+      "sha256": "3db4fcdf6d7487454f00f59edb74581ff94394e1eecc198ca34a2cc155cd48a8",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-goods-item/s-goods-item.vue",
+      "sha256": "8236a05d6703485616fb41dc28dff9ab07f715be1afe2cb0807fbfbff089dbaa",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-goods-scroll/s-goods-scroll.vue",
+      "sha256": "0196e2b837e8eb38b2bbf96ca172c11536dec48c0c686555fd13269412e53290",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-goods-shelves/s-goods-shelves.vue",
+      "sha256": "0769e8ad33d6f5d55f32c8f9f46c9361237ec36691e3730cea178c79470c36fa",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-groupon-block/s-groupon-block.vue",
+      "sha256": "5bf53cfe54b627bacf8cd0d6ad6a0168259a3fb95e51a628aacc0027e78f8a2e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-hotzone-block/s-hotzone-block.vue",
+      "sha256": "fe38e8e79580be4c266209c3f640ab8b933ee029995af55cb55aba4e9953aefa",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-image-banner/s-image-banner.vue",
+      "sha256": "b068880df8703be1625ad83e42bdf855c8265539e73a37b113aabdea9d89c92f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-image-block/s-image-block.vue",
+      "sha256": "80071da90006ad97fd5cf8d0c1e2323b7dfd15e4403e6f79d9b6d4d9f6e0c7a6",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-image-cube/s-image-cube.vue",
+      "sha256": "8a356c596b3ee3daa612525f91cb712cfc88e59dac7e32b3b4b5de64cc36f507",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-layout/s-layout.vue",
+      "sha256": "a874ebe7bb0848c72fa32a28e2f642657e85cb76db9ee1d192cd7c1394c4dbbf",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-line-block/s-line-block.vue",
+      "sha256": "5f1ca8ef16a0b310398af73bca3d4d01d4510cda8cc16d21e8180ee6f04f82df",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-live-block/s-live-block.vue",
+      "sha256": "df93a54544a9b0bf42889ea640e9c66c0c5cde71b19dfecb69404087a5914333",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-live-card/s-live-card.vue",
+      "sha256": "f7c121d1050aeaed57712aba7895fb6d5e365e23fbe9b0da56d871c050ce4059",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-menu-button/s-menu-button.vue",
+      "sha256": "d1e8f0d2a367a34814116281a075ec73073138a4caa131b4bef2a14e5eb427f9",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-menu-grid/s-menu-grid.vue",
+      "sha256": "d252c13d00f9a6ae2d1b06a693a753e977a98038b1bec6317e27659f7b4cf032",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-menu-list/s-menu-list.vue",
+      "sha256": "93b3204397104fad13518086a968f542841df7f90704ccda717f0359667466f6",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-menu-tools/s-menu-tools.vue",
+      "sha256": "af20599d0ce24ce4c570fde4c7a3d47950b0bba8d49ae27cf9a298606b6e09cf",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-notice-block/s-notice-block.vue",
+      "sha256": "7d5aa4d90a1f51edc6e3ea36e7de0734100a996c0beb0e396f0bda2e7a8f25ac",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-order-card/s-order-card.vue",
+      "sha256": "72c72d29891eae43034f869c403d9a3eabe9d0c7055daf28ee5467f335695cd7",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-point-block/s-point-block.vue",
+      "sha256": "fff52009dfec7cc1871d9e5249ba3070441a1c40f90a727fe0155cb88803f872",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-point-card/s-point-card.vue",
+      "sha256": "b6dc941854e70e187409ef2c2b90b59c545cbecf7dddfb2be446e8f5b281a29c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-popup-image/s-popup-image.vue",
+      "sha256": "354bf00a963578b30a0f330447715d9657692d98c610df1821c8106d6260ef51",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-richtext-block/s-richtext-block.vue",
+      "sha256": "89f7494114ea069902b65b52fde31f9d3d9afa78c2561771248ef4e3786f4a14",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-search-block/s-search-block.vue",
+      "sha256": "c08c5642509e68dae396e0badaf9862733171a618708623e4a59f41e7238e167",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-seckill-block/s-seckill-block.vue",
+      "sha256": "fcd0f30186b5810c9f76774ef0be61d4a7114c9e172c4efa239f8cea5b2cf30c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-select-groupon-sku/s-select-groupon-sku.vue",
+      "sha256": "8e7dccf82f4f86c8bebe2ec9762f036b7f0f631a2ad71d767c2fdb519661cb27",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-select-seckill-sku/s-select-seckill-sku.vue",
+      "sha256": "d2af8d1f34e4e066e035a17dc609b969de7cbbd19fdf5d9341fa63cde2bfe943",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-select-sku/s-select-sku.vue",
+      "sha256": "a1e7cddbc253f20ac8d8270eadb202f8d6ce471b01745f4fd8bba54aaea588a8",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-share-modal/canvas-poster/index.vue",
+      "sha256": "9ae20c86b3d8d5687fd93afa4eb5020160e0183be67028c9e2557e0b49e12394",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-share-modal/canvas-poster/poster/goods.js",
+      "sha256": "d615dbcf5cadab9291833f40062037e31624bbf8630d489489ca260116162c91",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-share-modal/canvas-poster/poster/groupon.js",
+      "sha256": "8beaed47beb0ef4bf634da24e5c1e40b7af74e73e7181c57feece239940e01a9",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-share-modal/canvas-poster/poster/index.js",
+      "sha256": "9cb7859442594ee34ff0fd07de8b17939b0dd650b889c0d9caf150fad8763179",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-share-modal/canvas-poster/poster/user.js",
+      "sha256": "ab36c67174e901c7d09f855a3d1da88c81e5e6900617d232bf4e068428318c98",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-share-modal/s-share-modal.vue",
+      "sha256": "69db701a8a7ff3bf9637119c7c3d7368b7ea9459dce4cb6db93231adf40c31b1",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-statusbar/s-statusbar.vue",
+      "sha256": "e37e3abb5a199975fe8d1ea8fd3360007930e3d1cc525e72e5a920d5e781620e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-tabbar/s-tabbar.vue",
+      "sha256": "daf0a6131fb08f7142519bc0dbc460edd3751b8e9fa1f1e1580cb51ac7b688a9",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-title-block/s-title-block.vue",
+      "sha256": "959b84033ff4f7d9a8bbe7c7d6f5d608b89a82354b3116158513b55eb292c0b7",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-uploader/choose-and-upload-file.js",
+      "sha256": "54cb9fecb16375d0c53e4453a99e827f9e342aee24a2208aef1a44f6487c50a5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-uploader/s-uploader.vue",
+      "sha256": "1b5c3087379e52137f37d57098fdd35f2fe9b675472dd98deb8d94e135f9b7d5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-uploader/upload-file.vue",
+      "sha256": "d574ad3446246d783e1e9c32c074185fc54435454842e19542d44115e4594ec4",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-uploader/upload-image.vue",
+      "sha256": "0bb86dfa7d09ec426d38641bc46fd4557256a598b0bcb0d09a76df3f806c7ac3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-uploader/utils.js",
+      "sha256": "edc2290a7e71ba1741afe04c4ae14a4de707ab783d70479d87c179bfb28cfe2f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-user-card/s-user-card.vue",
+      "sha256": "cfea087c84e89ea16322cf25c02e6d5e66a47d048b5b4b5efbbb0ae43995d603",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-video-block/s-video-block.vue",
+      "sha256": "58fc48786fb3b34f4154702496835fbc947652c646c7633e327957213be14497",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/components/s-wallet-card/s-wallet-card.vue",
+      "sha256": "464eb5c343b77ee026ee2332f9feba6f7c57df1d7f79728b7eb5d04845bfbb14",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/config/index.js",
+      "sha256": "85d90a24d96cb96edee7d5ad5eba955bb848a4d70efaff2d277196477e624b91",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/config/zIndex.js",
+      "sha256": "81faf4e07eab0cd135e68aa12269ccd8bb51e19daf01a53ca4fdfc4666309155",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/helper/const.js",
+      "sha256": "c9cdb39a4f7800c67fb595659bb818bdd3bc8e84c5b581e1db63bd1937e21594",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/helper/digit.js",
+      "sha256": "0b7b5418bd4f664d1f3bf4d2aea44c060c6c04771ca6156b091ba49b927a440e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/helper/env.js",
+      "sha256": "a8992fbd6a3f356509a7d8cad1210746d12e01e1a296fbb2a10676cda56ed461",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/helper/index.js",
+      "sha256": "a9eb8d2fc26851b80aace0c2853ccfa7903a6ee538e3cdaec581a8a03fae9a54",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/helper/lodash.js",
+      "sha256": "c887567e08e45fbe5bc356345699d7cf119ba495676951aa9ed8541e70fca97d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/helper/test.js",
+      "sha256": "498f8921979d203ada2b2e3b30142eff0a158eb7c4e6c4f726b9ebc6d1e5cdc2",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/helper/throttle.js",
+      "sha256": "215973f7a04e5079d9f493d15c247dcf3669b80fb3a0a4f29d3f473376814cd2",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/helper/tools.js",
+      "sha256": "057000ec14ed4e8b0e55e43e557a65e40b1b5d8c65795539b2e79adaadd5407c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/helper/utils.js",
+      "sha256": "f9d61debefc5ea130c73dbba7028d2a1d4d4c411a29785381641ae7bf7834700",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/hooks/useGoods.js",
+      "sha256": "9f3571d46a507c74acdc3e457846172d009ec7e2b0a71b31805598ee7a065380",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/hooks/useModal.js",
+      "sha256": "69b3e1fdbb56d614c52bd3e89414b9785b7720dd4aa65bd2cc55e61323e2cba7",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/index.js",
+      "sha256": "6501fabaa3c9cfba04c017be7a087df413a6cf2189056da390ae8e04859e11ea",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/libs/mplive-manifest-plugin.js",
+      "sha256": "5b23f336791e65e9c34eaadb409a0f3db371b472db5163aef3c8351982578f8b",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/libs/permission.js",
+      "sha256": "f1f6083853757edbf291224f577cb56e632d4e8417dfbf05a5eb83b7b2f707fe",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/libs/sdk-h5-weixin.js",
+      "sha256": "bab26adb766375b87bd1ba130cbb60ecbd4165d5ad66afd684b366b78b5bca67",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/platform/index.js",
+      "sha256": "c92e52892e28441d745cefaf7db045282a8c92ee5d64a44a6c7d56d0442c524a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/platform/pay.js",
+      "sha256": "f0f46424e258e72d1bb8d85e760dc19d1ef74ee10fd8e7744d0cb1cc2ded7211",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/platform/provider/alipay/index.js",
+      "sha256": "eb667ce4899d1eea0b9f712f56a5cb10524934d62a1243f6c5c11dc3d6d3fbf5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/platform/provider/alipay/miniProgram.js",
+      "sha256": "b739135a38f8a5c83e299d1c15115a617e5f35d314c2cff18b0faf40b5f1b644",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/platform/provider/apple/app.js",
+      "sha256": "b460b2997e19032840fb3bbddb3dc60abf0695b1b425fa9a18e86266bf8f5b16",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/platform/provider/apple/index.js",
+      "sha256": "e4fd00323d434291ec4c206b794ca87681b9c6002fe32b4cf53fd146616f79d1",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/platform/provider/wechat/index.js",
+      "sha256": "eb681d71ba0db9c28e0fd571d3c48234360885a00163d2cd95eb0ee14f194579",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/platform/provider/wechat/miniProgram.js",
+      "sha256": "0a6eec5e514bfe24f521dc10ef8732cf9e466b9ab46f6aeeae9173db2442860a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/platform/provider/wechat/officialAccount.js",
+      "sha256": "714fc19033fef798f0e9f567a47d082479d747bdc3fe993a0525f2f40512e80c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/platform/provider/wechat/openPlatform.js",
+      "sha256": "38cf050d8d3cb957e85f94325147e75cc4cc819349edb4adf41a4be013744c6d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/platform/share.js",
+      "sha256": "670a38dbad7e55e367d15bcff7afb9313dd88c9b626b671539e923055441e4ef",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/request/index.js",
+      "sha256": "68b8925a8ff60412349bf429cfda6b556e4e4615e20e0b12424035a61e6d2f62",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/router/index.js",
+      "sha256": "dce2139a2b8b2f8ef274981d732eda9d4d13f2c9bfb56175ed7678c6834f1268",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/router/utils/strip-json-comments.js",
+      "sha256": "b80cd716c0090788996d746d144fda606a1dfcbf19e3c2a64739b67b229f9dff",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/router/utils/uni-read-pages-v3.js",
+      "sha256": "b162ba6427a1d3e408ed7e04a8c51f9eaa7f0f0647e4df8a7dbc8a9f34e72416",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/_main.scss",
+      "sha256": "5b4cad9f338b1144f471795dad6d82010ba20efc81a2f648f10292f6322a4f3e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/_mixins.scss",
+      "sha256": "29659e3b3023398549ae62764d26431bc38de59f4aad69deb8f5f31e721e7c26",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/_tools.scss",
+      "sha256": "fc2f0b5070cb353f886cda4f6ded3eaacc320f479b5c57661e06004b9f157081",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/_var.scss",
+      "sha256": "9f82279cbcf9066ba19709b257c49416e0b08bd399a55ce1878e4888c925991a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/font/OPPOSANS-M-subfont.ttf",
+      "sha256": "b8cdc8b884ad7564b015712cc0ace0bf626cce34a6940777607af045a271b998",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/icon/_coloricon.scss",
+      "sha256": "da7d3dacac25292c184b21cc909b482a33678c49e16095f622e2103e2f82f9bc",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/icon/_icon.scss",
+      "sha256": "49607cd75981fe21fc25e4328671aa0c1965cb8b49d4dbead251229553b57a72",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/icon/_sheepicon.scss",
+      "sha256": "7846e4c117f416fedaab6afbc0abf5d94ed0f3854e4c2336b3b731a2ec404f77",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/icon/_style.scss",
+      "sha256": "1340f4934120cea7cf728c47ec90aaf77f166e411d6213079399124f5ce15738",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/index.scss",
+      "sha256": "f0fee1c389f144a9c8d96fdb89d895b0dc9929d0ca881d7a31a7f870b28a04ed",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_avatar.scss",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_background.scss",
+      "sha256": "ebaa79ab0489067085ea19ae890d91faf52b44bc9fa38ee3e104e2e2bc0d7527",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_border.scss",
+      "sha256": "6115536dcc9192e03e14c385dc027ac5bbf725d3d6c69f963f4d4afbd4ab4296",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_button.scss",
+      "sha256": "77904848e0e3c7d6ee122eff3f84c0dd5cdcc8b670428408e9fb42c2f12f4fe4",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_card.scss",
+      "sha256": "d5a9cb2fa33baab845bcd21264dd3ef35bfa7508e69b4ef3c5fb04153ebe8d28",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_code.scss",
+      "sha256": "a2b21682b3d72936d807c67e2aa84b57d2911ec35780baffa9b2ee6d9164aa74",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_flex.scss",
+      "sha256": "aa0e3fd3ff132b89e00c01edc444fdb0e5c5eb31feac00ea4612f3a6e0462d8c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_form.scss",
+      "sha256": "1e818a268c4c6a67f4c3ca022475141495383b4b8c1d9a573e8e273c5638df72",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_grid.scss",
+      "sha256": "225c6cbbb978d1bc274890ad02aea962fa774977177894cedc288a0c9ecae041",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_markdown.scss",
+      "sha256": "0dda23a1fe4932ef381f53cdd5efe465a2e4b9aa8d359696780829caa503528c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_menu.scss",
+      "sha256": "426b9d96efb72bb8de739940a94648e51cf5f8277075c6cf41ffa7facf8e812f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_shadow.scss",
+      "sha256": "bb475f5df773fac7a7ff38bc3f0a29ca99d2b3a926857cc12bb72f3da20dea4d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_table.scss",
+      "sha256": "8dbd685217d435216f5ec879cc1e996f86a7f3cea76de52d7699498db74171b1",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_tag.scss",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/style/_text.scss",
+      "sha256": "ffcedf9a0a5f59c605b16a0c3581e7ea33652b650a1d8bc1d96a2f2a25969a0e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/theme/_dark.scss",
+      "sha256": "c5d0f372093454adf93216381888387b1985c055ab56ca7b3cc46eccb8396db9",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/theme/_light.scss",
+      "sha256": "388b2aa7ccf0e82253f9987e49e7af2670cb53944cb2a7d04a0fc971059494e6",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/theme/_style.scss",
+      "sha256": "7fb9271c8f9c549255b2735d169b7532b840c54eff1ce95101ec0f1957f2e7fe",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/scss/ui.scss",
+      "sha256": "3d69236c7753125821090288f10408d305f4103c3bbbe79d8ae70c182059d22d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/store/app.js",
+      "sha256": "f39734f3ba8456cc3f169b62ad2de345c40db3eb0870608955b710501020e417",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/store/cart.js",
+      "sha256": "4fd1a55ed4b1c6a743f0ebdecb0a64be6c0dba19983636eb58da40dda7b45b15",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/store/index.js",
+      "sha256": "9f3cce76021d11180e37db674832da1fe59c6f8915432f887c7d5916e9cab42e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/store/modal.js",
+      "sha256": "0fe5f25217d3bd7cddcd48faae74166eacd615fc6c29062f4feef1d9d60ae7f6",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/store/sys.js",
+      "sha256": "8dddedfad59fde66d65bf9a5da7f5cf9fe714934100f28ad021eafe6cfd6f165",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/store/user.js",
+      "sha256": "1bb8832298db7a094e6da6ebb8b91dfc2404dfe47b6e6e4011cfbb816af3089d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-coupon/su-coupon.vue",
+      "sha256": "95b8f8bbc1bb021e6d1c24c5708b03d325a827fc049d07e9bb6c88244ed9c381",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-data-checkbox/su-data-checkbox.vue",
+      "sha256": "aa963014e97ef0388b81fdbf18799fc8da1c0adaedc682318605ab80b476bf07",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-dialog/su-dialog.vue",
+      "sha256": "5446eb521995fbbaf26e06f79b6d8ebd7f79977a0b4b6203f50c9c8085c8d0e9",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-fixed/su-fixed.vue",
+      "sha256": "a4f68cefda350dc83bb72cf00b2992c57398b0430e19f5f5698360c1fd82b327",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-image/su-image.vue",
+      "sha256": "736899af452e8faed6f3e399599c59679d998fdb6069a9d2fe1e226e7cfced5b",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-inner-navbar/su-inner-navbar.vue",
+      "sha256": "6ec59c4e401f7d853b917a3abd9fde135a3438f7602cf3e7d6e44494a9e6614f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-navbar/su-navbar.vue",
+      "sha256": "8fd1dcb6bba7bcffc0f297e4fdd10e19918702a55a320d453353fba8c03950b5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-notice-bar/su-notice-bar.vue",
+      "sha256": "ab0daee6280d33a4ea4311e6fd775cf39434eaca025dc61fdb84087f2e054959",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-number-box/su-number-box.vue",
+      "sha256": "fdfd9341fe59980be4bd9ab66906a8f589811241d881276e2c144b19f15e1309",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-popover/su-popover.vue",
+      "sha256": "9f7298ab101da48116dd23993fd7c90054a33f058ce2209fc7e3c9ab29ae9e64",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-popup/keypress.js",
+      "sha256": "2f7fa8732f9ab9da8bde7e67b6e6f8a5a7df5a5d5e4a1a4ddfd80566136fd0b0",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-popup/su-popup.vue",
+      "sha256": "d2495d17af0ad489b948eeffc090605c06f68ce0614e56b089d260aa0cd081a7",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-progress/su-progress.vue",
+      "sha256": "10be3143904856f623c74b08d4a9de82be199ac5b3599cfd55b6b504b3d7c9cc",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-radio/su-radio.vue",
+      "sha256": "91d7b793b60ceed57f6380c98b9cabb933fb1c647ed5ce38f6b8e3c344c68d00",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-region-picker/su-region-picker.vue",
+      "sha256": "bf836f7abb4b04457e295eef971eec6d46def8e32d6a9c7202f28388180ef00c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-status-bar/su-status-bar.vue",
+      "sha256": "055340d380e5ee30f03282f96cf463a9572845d8487cc9da15b74e0b492880a1",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-sticky/su-sticky.vue",
+      "sha256": "f32c18c89af49f839a2550da9c3739a31b42949c989201bc282809b6018b1de8",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-subline/su-subline.vue",
+      "sha256": "1663b1a67f4b53c652a86711490c5799d2e3aa55c87851c91014511ae6b6a02a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-swiper/su-swiper.vue",
+      "sha256": "02d820b67c04d42c315dd48aaea0dac7a83685d3478676d91a8851086810fe84",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-switch/su-switch.vue",
+      "sha256": "7b0b57108be849b7b2c7d8a970ef08c7ded5cde0fa2c2a0437034a74cc3017b6",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-tab/su-tab.vue",
+      "sha256": "9d3054923ab2e460ccc0576fc362ace68f9713cecb3dcd1cfb6d85f2173ad460",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-tab-item/su-tab-item.vue",
+      "sha256": "06c9928c6d0849d0c3edb2746bdcb06ebc465f55b8f1a671f003544bfcbaeac2",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-tabbar/su-tabbar.vue",
+      "sha256": "2865c3b2d18f5c8ebf76357a638f0edda3c79b70809e6fce7f58da7f5ed36769",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-tabbar-item/su-tabbar-item.vue",
+      "sha256": "8566601e013779ad84239598d82cc29bf152a79dd1c5d5932a8048a917c80834",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-tabs/su-tabs.vue",
+      "sha256": "c07ba46edb4eea301921b88d1fa44cf79cddcbcd0eb28e28baea6e55d65888a7",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-tabs-item/props.js",
+      "sha256": "41f5fa02420da06a09177d0d02f8839ec34106dbfe09e06925fe11e997062f97",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-tabs-item/su-tabs-item.vue",
+      "sha256": "b9f585ca3fac8a9b7b5366ca3ce4d17b319b39e2b192fa771ce319e824c8e43c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-time-line/su-time-line.vue",
+      "sha256": "7fbb5d35d18d23a5b2fcad561e60f52cffea3563f9106752ddb33a9fee6731d9",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-timeline-item/su-timeline-item.vue",
+      "sha256": "bc74dd905b269ad7d3e80a6fb3346add33523573a90d56fa6069f72abda1417e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-toolbar/su-toolbar.vue",
+      "sha256": "c84a016bcc32e22ee49b2b571f389116e72816af32b6c7eb402653dc679de37a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-video/components/dom-video.vue",
+      "sha256": "8bd5aadac3cd8cf6151febb1d993461c590f7cac06afd736e425f31375450800",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/ui/su-video/su-video.vue",
+      "sha256": "569bb3e9687ecf9d3f81f3471304b2e292f089a2f3e0f8e5f09f579592919352",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/url/index.js",
+      "sha256": "6de97b3b68f42931fdd614d3a68e303969d8841fcec867d649c11d94d049dd9b",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "sheep/validate/form.js",
+      "sha256": "5aa348ca73583789555c28b519caddef82a91c0fb0fd29b78241646ba0f05cdb",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "utils/textUtils.js",
+      "sha256": "79b8e6d842261f14ebe38d4aeb1bcc4b12090a474ea6362bedfb35000b9b46ed",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "pages.json",
+      "sha256": "04c807b8366d55e97fb328d061148417a8a41e437ab7dbbce0b8df07afa01c1c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "manifest.json",
+      "sha256": "6578e940616195fbbe7d5acb55425027ba0f8ad2634f7b6f64cba6a1a7de9a39",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "package.json",
+      "sha256": "083cc1dd486bd9e339705ad725720de360ca6557f2bf28410fc0e4259f8fb18d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "App.vue",
+      "sha256": "303bdecf4900cbd5987ae5b1f79ee50682e32b76825fed5d8b4fe890cade43aa",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "main.js",
+      "sha256": "9ce89b1968975158d28adca0f6720ed7c249b6a508d7c24b60a107f3caa51b13",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "vite.config.js",
+      "sha256": "2bf7cd1a416391637f459a53cc803fd101e0c785a2d228f59686d57cc03d9059",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "uni.scss",
+      "sha256": "b361d1d01f482d18b3c30bd14a11724163b3d510a1ead9d05df4fef01a35d337",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "jsconfig.json",
+      "sha256": "b28eb08c62cf744634fd1c935f9233b844f76ed34ab2eb928bac6ea276d430e2",
+      "state": "pending",
+      "target": null
+    }
+  ],
+  "progressMetric": {
+    "date": "2026-10-31",
+    "canonicalReport": "../127-migration-progress-recount.md",
+    "canonicalEvidence": "migration-progress-20261031.json",
+    "codeStagePercent": 42.3,
+    "note": "原file state只表示历史映射登记，不能作为功能完成率；以63单元/214适用检查项复核为当前口径"
+  }
+}

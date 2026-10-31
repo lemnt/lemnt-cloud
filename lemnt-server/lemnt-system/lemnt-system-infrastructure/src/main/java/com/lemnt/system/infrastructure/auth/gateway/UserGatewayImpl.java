@@ -1,27 +1,20 @@
 package com.lemnt.system.infrastructure.auth.gateway;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
-import com.lemnt.system.infrastructure.auth.mapper.UserRoleMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import com.lemnt.common.core.constant.CacheConstants;
-import com.lemnt.common.redis.service.RedisStringService;
-import com.lemnt.system.domain.auth.model.User;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
+import com.lemnt.system.domain.auth.model.User;
 import com.lemnt.system.infrastructure.auth.converter.UserConverter;
 import com.lemnt.system.infrastructure.auth.dataobject.UserDO;
-import com.lemnt.system.infrastructure.auth.dataobject.UserPostDO;
-import com.lemnt.system.infrastructure.auth.dataobject.UserRoleDO;
 import com.lemnt.system.infrastructure.auth.mapper.UserMapper;
-import com.lemnt.system.infrastructure.auth.mapper.UserPostMapper;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * 用户管理 Gateway 实现
@@ -31,11 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class UserGatewayImpl implements UserGateway {
-
     private final UserMapper userMapper;
-    private final UserPostMapper userPostMapper;
-    private final UserRoleMapper userRoleMapper;
-    private final RedisStringService redisStringService;
 
     @Override
     public PageResult<User> selectPage(User user, PageQry pageQry) {
@@ -72,6 +61,7 @@ public class UserGatewayImpl implements UserGateway {
     public Boolean insertUser(User user) {
         UserDO userDO = UserConverter.toDO(user);
         int rows = userMapper.insert(userDO);
+
         // 回填自增主键到 Entity，供调用方获取 userId
         if (rows > 0) {
             user.setUserId(userDO.getUserId());
@@ -130,69 +120,7 @@ public class UserGatewayImpl implements UserGateway {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void insertUserRoles(Long userId, List<Long> roleIds) {
-        if (CollUtil.isEmpty(roleIds)) {
-            return;
-        }
-        List<UserRoleDO> list = new ArrayList<>();
-        for (Long roleId : roleIds) {
-            UserRoleDO ur = new UserRoleDO();
-            ur.setUserId(userId);
-            ur.setRoleId(roleId);
-            list.add(ur);
-        }
-        userRoleMapper.insert(list);
-    }
-
-    @Override
-    public void insertUserPosts(Long userId, List<Long> postIds) {
-        if (CollUtil.isEmpty(postIds)) {
-            return;
-        }
-        List<UserPostDO> list = new ArrayList<>();
-        for (Long postId : postIds) {
-            UserPostDO up = new UserPostDO();
-            up.setUserId(userId);
-            up.setPostId(postId);
-            list.add(up);
-        }
-        userPostMapper.insert(list);
-    }
-
-    @Override
-    public Boolean deleteUserRoleByUserId(Long userId) {
-        return userRoleMapper.deleteUserRoleByUserId(userId) > 0;
-    }
-
-    @Override
-    public Boolean deleteUserPostByUserId(Long userId) {
-        return userPostMapper.deleteUserPostByUserId(userId) > 0;
-    }
-
-    @Override
-    public Boolean deleteUserRoleByUserIds(List<Long> userIds) {
-        return userRoleMapper.deleteUserRoleByUserIds(userIds) > 0;
-    }
-
-    @Override
-    public Boolean deleteUserPostByUserIds(List<Long> userIds) {
-        return userPostMapper.deleteUserPostByUserIds(userIds) > 0;
-    }
-
-    @Override
-    public Boolean deleteUserRoleInfo(Long userId, Long roleId) {
-        return userRoleMapper.deleteUserRoleInfo(userId, roleId) > 0;
-    }
-
-    @Override
-    public Boolean deleteUserRoleInfosByRoleId(Long roleId, List<Long> userIds) {
-        return userRoleMapper.deleteUserRoleInfos(roleId, userIds) > 0;
-    }
-
-    @Override
-    public void unlockUser(String userName) {
-        String cacheKey = CacheConstants.PWD_ERR_CNT_KEY + userName;
-        redisStringService.delete(cacheKey);
+    public Boolean checkDeptExistUser(Long deptId) {
+        return userMapper.checkDeptExistUser(deptId) > 0;
     }
 }

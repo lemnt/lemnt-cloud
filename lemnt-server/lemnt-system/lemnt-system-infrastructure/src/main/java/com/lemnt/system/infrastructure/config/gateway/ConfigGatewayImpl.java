@@ -1,22 +1,24 @@
 package com.lemnt.system.infrastructure.config.gateway;
 
-import java.util.List;
-import java.util.Set;
-
+import com.lemnt.common.core.constant.CacheConstants;
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import com.lemnt.common.core.constant.CacheConstants;
 import com.lemnt.common.redis.service.RedisStringService;
-import com.lemnt.system.domain.config.model.Config;
 import com.lemnt.system.domain.config.gateway.ConfigGateway;
+import com.lemnt.system.domain.config.model.Config;
 import com.lemnt.system.infrastructure.config.converter.ConfigConverter;
 import com.lemnt.system.infrastructure.config.dataobject.ConfigDO;
 import com.lemnt.system.infrastructure.config.mapper.ConfigMapper;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import jakarta.annotation.PostConstruct;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 参数配置网关实现 — infrastructure 层适配器
@@ -26,7 +28,6 @@ import com.lemnt.system.infrastructure.config.mapper.ConfigMapper;
 @Component
 @RequiredArgsConstructor
 public class ConfigGatewayImpl implements ConfigGateway {
-
     private final ConfigMapper configMapper;
     private final RedisStringService redisStringService;
 

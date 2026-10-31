@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.mall.infrastructure.product.mapper.CategoryMapper">
+
+    <resultMap id="CategoryResult" type="com.lemnt.mall.infrastructure.product.dataobject.CategoryDO" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="name" column="name"/>
+        <result property="picUrl" column="pic_url"/>
+        <result property="sort" column="sort"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <select id="storeCatalogCategories" resultMap="CategoryResult">
+        SELECT c.* FROM mall_product_category c LEFT JOIN mall_product_category p ON p.id=c.parent_id WHERE
+        c.status='ENABLED' AND (c.parent_id IS NULL OR p.status='ENABLED') ORDER BY c.sort,c.id LIMIT 1001
+    </select>
+</mapper>

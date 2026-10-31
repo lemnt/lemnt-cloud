@@ -1,10 +1,10 @@
 package com.lemnt.system.adapter.web.auth.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.lemnt.system.adapter.web.auth.res.TreeSelectRes;
 import com.lemnt.system.domain.auth.model.TreeSelect;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 树选择响应对象组装器
@@ -12,7 +12,6 @@ import com.lemnt.system.domain.auth.model.TreeSelect;
  * @author wangxx
  */
 public class TreeSelectResConverter {
-
     /**
      * TreeSelect → TreeSelectInfoRes
      */

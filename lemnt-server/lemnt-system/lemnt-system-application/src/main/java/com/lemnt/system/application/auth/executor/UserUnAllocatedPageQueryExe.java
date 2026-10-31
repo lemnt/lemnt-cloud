@@ -7,8 +7,10 @@ import com.lemnt.system.application.auth.dto.UserDTO;
 import com.lemnt.system.application.auth.qry.UserPageQry;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
 import com.lemnt.system.domain.auth.model.User;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 查询未分配角色用户执行器
@@ -19,7 +21,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserUnAllocatedPageQueryExe {
     private final UserGateway userGateway;
-
     public PageResult<UserDTO> execute(UserPageQry qry) {
         User condition = new User();
         condition.setUserName(qry.userName());

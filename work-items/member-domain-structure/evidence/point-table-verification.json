@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-30",
+  "backend": {
+    "lemnt-member": {
+      "tests": 39,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-auth": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-mall": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "verified": [
+    "新积分表生产H2/独立Mapper/XML",
+    "并发幂等、失败回滚、签到跨表事务",
+    "同ID积分经验隔离",
+    "实际copy脚本保留ID和NULL、不删旧记录、原请求重放"
+  ],
+  "schema": {
+    "newTable": "member_point_record",
+    "compatibilityColumns": [
+      "biz_code",
+      "reason"
+    ],
+    "numericDifference": "保留BIGINT，不截源int",
+    "realMigrationExecuted": false
+  },
+  "notRun": [
+    "真实MySQL/自增序列",
+    "部署HTTP",
+    "前端/小程序未改动未重跑"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java": "d13c1081eb59e4308c410f9bb81977d0d9e13b6dda5ee9ec0d06a2b15e97723b",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/executor/MemberAssetRecordDetailQueryExe.java": "4824ba07215da0ea6d98e1128e88686f48e4d058cda180e70710a008f75d6dfc",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/resources/mapper/MemberPointRecordMapper.xml": "0d19e182fb1bcde50775de9d58d7490912c89243970437725658d19cee33d273",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/converter/PointRecordConverter.java": "4953ad23c5444ec34290e4bc6b76138cbb2f0acc3e78dd4aa489ce039c7d9064",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/mapper/MemberPointRecordMapper.java": "08b4e3f61b6ac39c62c3638ab9626e7b648ce0e15edafbaf4c770e3a6c293f67",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/mapper/MemberAssetRecordMapper.java": "9eeeaa26cb8dc4d44ac544cc5e4569cc76d1ecf7d881d8901e8d6b2349fb1ab2",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/dataobject/PointRecordDO.java": "1345e631aa67cce13beef36d0dcfb980f57c1b3687d7ad5168155a4f5063fbe1",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/gateway/MemberPointRecordGatewayImpl.java": "6be3a0deeffc65e459675effb6ad7a7dedb22124d3fe3439dbe2203bff21ef98",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/gateway/MemberAssetRecordGatewayImpl.java": "c0f02bec4282a4b2ed7c3553af65b79268182f89c9f85437a1c78efcb8cd5141",
+    "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/growth/gateway/MemberPointRecordGateway.java": "10135416353eeb821c944f893230b4dfda3266a2fbd8508c36c024ad190c69dc",
+    "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/growth/gateway/MemberAssetRecordGateway.java": "a03f444626b981fcd73176d87668a810e249ff4fff19f8eb09b767637131525e",
+    "lemnt-server/lemnt-member/sql/V4__member_point_record.sql": "030d3deb956c8529de404a91e1c23dc59e8922fee1d9ccd38b57fbe94f4a35fc",
+    "lemnt-server/lemnt-member/sql/upgrade/point_record_split.sql": "2922de82d9de6499cadda046bc9a3743008c4d52a691bb78e07341f0e1b89518",
+    "/tmp/point-table-final-backend.log": "2f5135d6841f6fac59038f3776c16763c4973c8cddf30385673c6bd6cc22b117",
+    "/tmp/point-table-member-final.log": "ad354edeba32c5d2f1de57f7463553292e4360a06bdc696e58175892dd4253bf"
+  }
+}

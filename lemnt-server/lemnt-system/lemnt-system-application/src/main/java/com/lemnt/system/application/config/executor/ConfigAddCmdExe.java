@@ -2,11 +2,13 @@ package com.lemnt.system.application.config.executor;
 
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.security.utils.SecurityUtils;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.system.application.config.cmd.ConfigAddCmd;
-import com.lemnt.system.domain.config.model.Config;
 import com.lemnt.system.domain.config.gateway.ConfigGateway;
+import com.lemnt.system.domain.config.model.Config;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 新增参数配置命令执行器

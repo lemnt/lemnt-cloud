@@ -7,10 +7,12 @@ import com.lemnt.system.domain.log.gateway.LogininforGateway;
 import com.lemnt.system.domain.log.gateway.OperLogGateway;
 import com.lemnt.system.domain.log.model.Logininfor;
 import com.lemnt.system.domain.log.model.OperLog;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 日志远程服务实现
@@ -22,7 +24,6 @@ import org.springframework.stereotype.Component;
 @DubboService
 @RequiredArgsConstructor
 public class RemoteLogServiceImpl implements RemoteLogService {
-
     private final OperLogGateway operLogGateway;
     private final LogininforGateway logininforGateway;
 

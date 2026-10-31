@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.mall.infrastructure.product.mapper.ProductCommentMapper">
+
+    <resultMap id="ProductCommentResult" type="com.lemnt.mall.infrastructure.product.dataobject.ProductCommentDO" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="spuId" column="spu_id"/>
+        <result property="skuId" column="sku_id"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="memberId" column="member_id"/>
+        <result property="score" column="score"/>
+        <result property="content" column="content"/>
+        <result property="visible" column="visible"/>
+        <result property="replyContent" column="reply_content"/>
+        <result property="replyUserId" column="reply_user_id"/>
+        <result property="replyTime" column="reply_time"/>
+        <result property="descriptionScores" column="description_scores"/>
+        <result property="benefitScores" column="benefit_scores"/>
+        <result property="picUrls" column="pic_urls"/>
+        <result property="anonymous" column="anonymous"/>
+        <result property="userNickname" column="user_nickname"/>
+        <result property="userAvatar" column="user_avatar"/>
+        <result property="orderId" column="order_id"/>
+        <result property="orderItemId" column="order_item_id"/>
+        <result property="spuName" column="spu_name"/>
+        <result property="skuPicUrl" column="sku_pic_url"/>
+        <result property="skuProperties" column="sku_properties"/>
+        <result property="replyStatus" column="reply_status"/>
+        <result property="deleted" column="deleted"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="lock" resultMap="ProductCommentResult"
+            flushCache="true" useCache="false">
+        SELECT * FROM mall_product_comment WHERE id=#{id} AND deleted=FALSE FOR UPDATE
+    </select>
+    <!-- 仅用于存量评价绑定检查：读取删除事实但绝不对外返回已删内容。 -->
+    <select id="legacyForLink" resultMap="ProductCommentResult">
+        SELECT * FROM mall_product_comment
+        WHERE order_no=#{orderNo} AND sku_id=#{skuId} AND order_item_id IS NULL
+    </select>
+</mapper>

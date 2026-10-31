@@ -1,0 +1,13 @@
+# Merge this entry into the existing lemnt-gateway.yaml Nacos route list.
+# Do not replace the auth/system/open route list with this file.
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: lemnt-mall
+              uri: lb://lemnt-mall
+              predicates:
+                - Path=/mall/**
+              # No StripPrefix: mall controllers expose /mall/... themselves.

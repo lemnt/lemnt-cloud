@@ -1,0 +1,113 @@
+Java 17 / Maven 3.9.11; root verify offline after dependency restoration, explicit Byte Buddy agent.
+Tests: 317, failures/errors/skips 0. Initial added HTTP test compile failed on missing MediaType import; fixed and full verification rerun.
+[INFO] Reactor Summary for lemnt-reactor 1.0.0-SNAPSHOT:
+[INFO]
+[INFO] lemnt-dependencies ................................. SUCCESS [  0.228 s]
+[INFO] lemnt-common ....................................... SUCCESS [  0.005 s]
+[INFO] lemnt-common-core .................................. SUCCESS [  0.506 s]
+[INFO] lemnt-common-redis ................................. SUCCESS [  0.083 s]
+[INFO] lemnt-common-snowflake ............................. SUCCESS [  0.065 s]
+[INFO] lemnt-common-security .............................. SUCCESS [  1.861 s]
+[INFO] lemnt-common-mq .................................... SUCCESS [  0.199 s]
+[INFO] lemnt-common-log ................................... SUCCESS [  0.040 s]
+[INFO] lemnt-common-swagger ............................... SUCCESS [  0.630 s]
+[INFO] lemnt-common-sensitive ............................. SUCCESS [  0.024 s]
+[INFO] lemnt-common-datascope ............................. SUCCESS [  0.752 s]
+[INFO] lemnt-common-datasource ............................ SUCCESS [  0.089 s]
+[INFO] lemnt-common-oss ................................... SUCCESS [  1.363 s]
+[INFO] lemnt-common-excel ................................. SUCCESS [  0.070 s]
+[INFO] lemnt-common-infrastructure ........................ SUCCESS [  0.011 s]
+[INFO] lemnt-common-mybatis ............................... SUCCESS [  0.034 s]
+[INFO] lemnt-common-dubbo ................................. SUCCESS [  0.036 s]
+[INFO] lemnt-common-job ................................... SUCCESS [  0.027 s]
+[INFO] lemnt-common-lock .................................. SUCCESS [  0.038 s]
+[INFO] lemnt-common-kafka ................................. SUCCESS [  0.026 s]
+[INFO] lemnt-common-async ................................. SUCCESS [  1.740 s]
+[INFO] lemnt-common-client ................................ SUCCESS [  0.010 s]
+[INFO] lemnt-common-domain ................................ SUCCESS [  0.010 s]
+[INFO] lemnt-common-application ........................... SUCCESS [  0.009 s]
+[INFO] lemnt-common-adapter ............................... SUCCESS [  1.461 s]
+[INFO] lemnt-common-start ................................. SUCCESS [  0.073 s]
+[INFO] lemnt-server ....................................... SUCCESS [  0.002 s]
+[INFO] lemnt-auth ......................................... SUCCESS [  0.001 s]
+[INFO] lemnt-auth-domain .................................. SUCCESS [  0.014 s]
+[INFO] lemnt-auth-application ............................. SUCCESS [  0.022 s]
+[INFO] lemnt-auth-adapter ................................. SUCCESS [  0.024 s]
+[INFO] lemnt-system ....................................... SUCCESS [  0.002 s]
+[INFO] lemnt-system-client ................................ SUCCESS [  0.013 s]
+[INFO] lemnt-auth-infrastructure .......................... SUCCESS [  0.026 s]
+[INFO] lemnt-auth-start ................................... SUCCESS [  0.152 s]
+[INFO] lemnt-gateway ...................................... SUCCESS [  1.572 s]
+[INFO] lemnt-open ......................................... SUCCESS [  0.002 s]
+[INFO] lemnt-open-domain .................................. SUCCESS [  0.009 s]
+[INFO] lemnt-open-application ............................. SUCCESS [  0.012 s]
+[INFO] lemnt-open-infrastructure .......................... SUCCESS [  0.012 s]
+[INFO] lemnt-open-adapter ................................. SUCCESS [  0.035 s]
+[INFO] lemnt-open-start ................................... SUCCESS [  0.066 s]
+[INFO] lemnt-member ....................................... SUCCESS [  0.004 s]
+[INFO] lemnt-member-client ................................ SUCCESS [  0.014 s]
+[INFO] lemnt-member-domain ................................ SUCCESS [  0.017 s]
+[INFO] lemnt-member-application ........................... SUCCESS [  0.018 s]
+[INFO] lemnt-member-adapter ............................... SUCCESS [  0.025 s]
+[INFO] lemnt-member-infrastructure ........................ SUCCESS [  0.021 s]
+[INFO] lemnt-member-start ................................. SUCCESS [  0.053 s]
+[INFO] lemnt-mall ......................................... SUCCESS [  0.003 s]
+[INFO] lemnt-mall-client .................................. SUCCESS [  0.011 s]
+[INFO] lemnt-mall-domain .................................. SUCCESS [  0.560 s]
+[INFO] lemnt-mall-application ............................. SUCCESS [  1.196 s]
+[INFO] lemnt-mall-adapter ................................. SUCCESS [  2.583 s]
+[INFO] lemnt-mall-infrastructure .......................... SUCCESS [  2.505 s]
+[INFO] lemnt-mall-start ................................... SUCCESS [  0.057 s]
+[INFO] lemnt-trade ........................................ SUCCESS [  0.004 s]
+[INFO] lemnt-trade-client ................................. SUCCESS [  0.011 s]
+[INFO] lemnt-trade-domain ................................. SUCCESS [  0.697 s]
+[INFO] lemnt-trade-application ............................ SUCCESS [  1.464 s]
+[INFO] lemnt-trade-adapter ................................ SUCCESS [  3.838 s]
+[INFO] lemnt-trade-infrastructure ......................... SUCCESS [  3.205 s]
+[INFO] lemnt-trade-start .................................. SUCCESS [  7.193 s]
+[INFO] lemnt-system-domain ................................ SUCCESS [  0.018 s]
+[INFO] lemnt-system-application ........................... SUCCESS [  2.149 s]
+[INFO] lemnt-system-adapter ............................... SUCCESS [  3.224 s]
+[INFO] lemnt-system-infrastructure ........................ SUCCESS [  4.005 s]
+[INFO] lemnt-system-start ................................. SUCCESS [  0.090 s]
+[INFO] lemnt-third-sdk .................................... SUCCESS [  0.002 s]
+[INFO] demo-sdk ........................................... SUCCESS [  0.009 s]
+[INFO] lemnt-reactor ...................................... SUCCESS [  0.000 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  44.758 s
+[INFO] Finished at: 2026-10-25T01:21:29-07:00
+[INFO] ------------------------------------------------------------------------
+
+Miniapp node --test tests/*.test.cjs:
+✔ 数量和勾选修改清除报价并读取服务端购物车 (2.536889ms)
+✔ 未确认结算阻止编辑或删除，即使界面pending状态过时 (0.625709ms)
+✔ 删除需确认，false响应不能算成功 (0.424147ms)
+✔ 修改请求失败后报价仍失效，不能使用旧报价提交 (0.325259ms)
+✔ 订单刷新只接受同一订单且保留金额字符串 (0.494673ms)
+✔ 刷新响应期间换号不会显示原会员订单 (0.356885ms)
+✔ 未知结果保留原载荷，重试不能替换成新报价 (2.975146ms)
+✔ 存储失败禁止发请求，损坏记录禁止自动覆盖 (0.402354ms)
+✔ 会员隔离且请求完成前切换身份不会返回或清除原会员记录 (0.480802ms)
+✔ 重复点击被阻止，无效订单响应保留请求 (0.335113ms)
+✔ 旧版未确认记录不能被新版结算静默覆盖 (0.55964ms)
+✔ 仅明确确认后可清除当前会员本机记录，不影响其他会员 (0.328853ms)
+✔ 券归属、状态及长ID校验，不把锁定券当作可用券 (1.14618ms)
+✔ 选券及不使用券都废弃旧报价 (0.44013ms)
+✔ 未确认结算不能刷新或换券 (0.288954ms)
+✔ 报价发送所选券，并保存同一券用于下单 (0.454452ms)
+✔ 锁定券不可选，服务端返回其他券不能接受报价 (0.47292ms)
+✔ 默认关闭；没有会员登录态时不请求网络 (1.633302ms)
+✔ 只调用用户端路径，忽略伪造会员和金额字段 (2.775176ms)
+✔ 结算重试保留原编号和令牌，不发送客户端金额 (0.385769ms)
+✔ 预支付只发送订单编号；支付结果从服务端查询 (0.356856ms)
+✔ 参数、HTTP错误和业务错误不能当作成功 (0.457387ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 116.234714

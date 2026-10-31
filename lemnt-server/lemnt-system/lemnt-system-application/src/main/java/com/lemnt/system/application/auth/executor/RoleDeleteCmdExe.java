@@ -1,9 +1,13 @@
 package com.lemnt.system.application.auth.executor;
 
-import lombok.RequiredArgsConstructor;
+import com.lemnt.system.domain.auth.gateway.RoleDeptGateway;
+import com.lemnt.system.domain.auth.gateway.RoleGateway;
+import com.lemnt.system.domain.auth.gateway.RoleMenuGateway;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import com.lemnt.system.domain.auth.gateway.RoleGateway;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -15,6 +19,8 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class RoleDeleteCmdExe {
+    private final RoleMenuGateway roleMenuGateway;
+    private final RoleDeptGateway roleDeptGateway;
     private final RoleGateway roleGateway;
 
     /**
@@ -26,9 +32,10 @@ public class RoleDeleteCmdExe {
     @Transactional(rollbackFor = Exception.class)
     public Boolean execute(List<Long> roleIds) {
         // 删除角色与菜单关联
-        roleGateway.deleteRoleMenu(roleIds);
+        roleMenuGateway.deleteRoleMenu(roleIds);
+
         // 删除角色与部门关联
-        roleGateway.deleteRoleDept(roleIds);
+        roleDeptGateway.deleteRoleDept(roleIds);
         return roleGateway.deleteRoleByIds(roleIds);
     }
 }

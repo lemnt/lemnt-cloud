@@ -2,11 +2,13 @@ package com.lemnt.system.application.config.executor;
 
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.security.utils.SecurityUtils;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.system.application.config.cmd.DictTypeAddCmd;
-import com.lemnt.system.domain.config.model.DictType;
 import com.lemnt.system.domain.config.gateway.DictTypeGateway;
+import com.lemnt.system.domain.config.model.DictType;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 新增字典类型命令执行器

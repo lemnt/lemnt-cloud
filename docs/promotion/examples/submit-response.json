@@ -1,0 +1,12 @@
+{
+  "pricingProtocol": "PROMOTION_V2",
+  "settlementId": "a8b6e08e-54e8-4da0-81cf-1070171f34af",
+  "requestNo": "MINI-submit-001",
+  "order": {
+    "orderNo": "TRDESIGN001",
+    "status": "RESERVING",
+    "originalFen": "3003",
+    "totalDiscountFen": "680",
+    "payableFen": "2323"
+  }
+}

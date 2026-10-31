@@ -1,0 +1,29 @@
+{
+  "backend": {
+    "command": "JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home /opt/homebrew/opt/maven/bin/mvn -o '-DargLine=-javaagent:/Users/wangxx/.m2/repository/org/mockito/mockito-core/5.23.0/mockito-core-5.23.0.jar' -pl lemnt-server/lemnt-auth/lemnt-auth-start,lemnt-server/lemnt-member/lemnt-member-start,lemnt-server/lemnt-gateway,lemnt-server/lemnt-trade/lemnt-trade-start -am clean verify",
+    "totals": {
+      "tests": 325,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "buildSuccess": true
+  },
+  "frontend": {
+    "checks": {
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "format": "PASS",
+      "test": "PASS"
+    },
+    "tests": 169,
+    "commands": [
+      "yarn typecheck",
+      "yarn lint",
+      "yarn format:check",
+      "yarn test"
+    ],
+    "runtime": "Node22.23.3 via existing local installation"
+  },
+  "scope": "Remove TokenService session index and obsolete UI claims; no production Redis operations"
+}

@@ -1,18 +1,20 @@
 package com.lemnt.system.application.org.executor;
 
-import java.util.List;
-import java.util.Objects;
-
+import com.lemnt.common.core.constant.UserConstants;
 import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.common.core.utils.StringUtils;
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.system.application.org.cmd.DeptUpdateCmd;
-import lombok.RequiredArgsConstructor;
+import com.lemnt.system.domain.org.gateway.DeptGateway;
+import com.lemnt.system.domain.org.model.Dept;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import com.lemnt.common.core.constant.UserConstants;
-import com.lemnt.common.core.utils.StringUtils;
-import com.lemnt.system.domain.org.model.Dept;
-import com.lemnt.system.domain.org.gateway.DeptGateway;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 修改部门命令执行器
@@ -33,6 +35,7 @@ public class DeptUpdateCmdExe {
     @Transactional(rollbackFor = Exception.class)
     public Boolean execute(DeptUpdateCmd cmd) {
         Long deptId = cmd.deptId();
+
         // 数据权限校验
         Dept condition = new Dept();
         condition.setDeptId(deptId);
@@ -55,13 +58,13 @@ public class DeptUpdateCmdExe {
         entity.setParentId(cmd.parentId());
         entity.setDeptName(cmd.deptName());
         entity.setOrderNum(cmd.orderNum());
+
         // 此命令接收完整编辑表单；清空联系字段时显式写空串，排序更新使用独立命令。
         entity.setLeader(cmd.leader() == null ? "" : cmd.leader());
         entity.setPhone(cmd.phone() == null ? "" : cmd.phone());
         entity.setEmail(cmd.email() == null ? "" : cmd.email());
         entity.setStatus(cmd.status());
         entity.setUpdateBy(SecurityUtils.getUsername());
-
         Dept newParentDept = deptGateway.selectDeptById(cmd.parentId());
         Dept oldDept = deptGateway.selectDeptById(cmd.deptId());
         if (Objects.nonNull(newParentDept) && Objects.nonNull(oldDept)) {

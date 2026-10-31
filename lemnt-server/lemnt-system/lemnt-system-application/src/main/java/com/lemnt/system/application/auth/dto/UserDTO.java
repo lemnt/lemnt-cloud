@@ -1,12 +1,13 @@
 package com.lemnt.system.application.auth.dto;
 
 import com.lemnt.system.application.org.dto.DeptDTO;
-import lombok.Data;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 用户 DTO

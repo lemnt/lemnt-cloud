@@ -4,6 +4,7 @@ import com.lemnt.system.domain.auth.gateway.RoleGateway;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
 import com.lemnt.system.domain.auth.service.RoleDomainService;
 import com.lemnt.system.domain.auth.service.UserDomainService;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration(proxyBeanMethods = false)
 public class DomainServiceConfiguration {
-
     @Bean
     public UserDomainService userDomainService(UserGateway userGateway) {
         return new UserDomainService(userGateway);

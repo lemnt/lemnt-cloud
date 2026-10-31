@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.member.infrastructure.growth.mapper.MemberLevelMapper">
+    <resultMap id="LevelMap" type="com.lemnt.member.infrastructure.growth.dataobject.LevelDO">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/><result column="level" property="level"/>
+        <result column="experience" property="experience"/><result column="discount_percent" property="discountPercent"/>
+        <result column="icon" property="icon"/><result column="background_url" property="backgroundUrl"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/><result column="create_by" property="createBy"/>
+        <result column="update_time" property="updateTime"/><result column="update_by" property="updateBy"/>
+    </resultMap>
+    <delete id="levelDelete">
+        DELETE FROM member_level WHERE id=#{id}
+        AND NOT EXISTS(SELECT 1 FROM member_user WHERE level_id=#{id})
+    </delete>
+</mapper>

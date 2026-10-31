@@ -1,12 +1,15 @@
 package com.lemnt.system.application.auth.executor;
 
-import lombok.RequiredArgsConstructor;
+import com.lemnt.system.application.auth.cmd.RoleUpdateCmd;
+import com.lemnt.system.domain.auth.gateway.RoleGateway;
+import com.lemnt.system.domain.auth.gateway.RoleMenuGateway;
+import com.lemnt.system.domain.auth.model.Role;
+import com.lemnt.system.domain.auth.service.RoleDomainService;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import com.lemnt.system.application.auth.cmd.RoleUpdateCmd;
-import com.lemnt.system.domain.auth.model.Role;
-import com.lemnt.system.domain.auth.gateway.RoleGateway;
-import com.lemnt.system.domain.auth.service.RoleDomainService;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 修改角色命令执行器
@@ -16,7 +19,7 @@ import com.lemnt.system.domain.auth.service.RoleDomainService;
 @Component
 @RequiredArgsConstructor
 public class RoleUpdateCmdExe {
-
+    private final RoleMenuGateway roleMenuGateway;
     private final RoleGateway roleGateway;
     private final RoleDomainService roleDomainService;
 
@@ -33,9 +36,10 @@ public class RoleUpdateCmdExe {
         roleDomainService.checkRoleDataScope(entity.getRoleId());
         roleDomainService.checkRoleNameUnique(cmd.roleId(), cmd.roleName());
         roleDomainService.checkRoleKeyUnique(cmd.roleId(), cmd.roleKey());
+
         // 修改角色菜单关联（先删后插）
-        roleGateway.deleteRoleMenuByRoleId(cmd.roleId());
-        roleGateway.insertRoleMenus(cmd.roleId(), cmd.menuIds());
+        roleMenuGateway.deleteRoleMenuByRoleId(cmd.roleId());
+        roleMenuGateway.insertRoleMenus(cmd.roleId(), cmd.menuIds());
         return roleGateway.updateRole(entity);
     }
 }

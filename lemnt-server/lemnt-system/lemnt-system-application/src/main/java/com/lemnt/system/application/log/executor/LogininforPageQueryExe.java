@@ -5,10 +5,12 @@ import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.system.application.log.converter.LogininforConverter;
 import com.lemnt.system.application.log.dto.LogininforDTO;
 import com.lemnt.system.application.log.qry.LogininforPageQry;
-import com.lemnt.system.domain.log.model.Logininfor;
 import com.lemnt.system.domain.log.gateway.LogininforGateway;
-import lombok.RequiredArgsConstructor;
+import com.lemnt.system.domain.log.model.Logininfor;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -20,7 +22,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class LogininforPageQueryExe {
-
     private final LogininforGateway logininforGateway;
 
     /**

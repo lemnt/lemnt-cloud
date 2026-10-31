@@ -1,0 +1,402 @@
+{
+  "mappingControllersCompared": 43,
+  "changedMappings": [],
+  "appControllers": [
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/AppStoreController.java",
+      "package": "com.lemnt.mall.adapter.app.store"
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/AppMemberAuthController.java",
+      "package": "com.lemnt.member.adapter.app.account"
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/AppMemberAccountController.java",
+      "package": "com.lemnt.member.adapter.app.account"
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/AppMemberExternalController.java",
+      "package": "com.lemnt.member.adapter.app.account"
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/AppMemberAddressController.java",
+      "package": "com.lemnt.member.adapter.app.account"
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/AppPaymentController.java",
+      "package": "com.lemnt.trade.adapter.app.checkout"
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/AppCheckoutController.java",
+      "package": "com.lemnt.trade.adapter.app.checkout"
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/store/AppPromotionController.java",
+      "package": "com.lemnt.trade.adapter.app.store"
+    }
+  ],
+  "fileChanges": [
+    {
+      "old": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/test/java/com/lemnt/mall/adapter/web/store/StoreHttpContractTest.java",
+      "new": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/test/java/com/lemnt/mall/adapter/app/store/StoreHttpContractTest.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/store/AppStoreController.java",
+      "new": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/AppStoreController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/store/res/StoreProductRes.java",
+      "new": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/res/StoreProductRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/store/res/StoreCategoryRes.java",
+      "new": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/res/StoreCategoryRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/store/res/StoreSkuRes.java",
+      "new": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/res/StoreSkuRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/store/res/StorePageRes.java",
+      "new": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/res/StorePageRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/store/res/StoreDetailRes.java",
+      "new": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/res/StoreDetailRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/store/converter/StoreResConverter.java",
+      "new": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/converter/StoreResConverter.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/store/converter/StoreReqConverter.java",
+      "new": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/converter/StoreReqConverter.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/store/req/StorePageReq.java",
+      "new": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/req/StorePageReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberHttpContractTest.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberHttpContractTest.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberGroupController.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberGroupController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AppMemberAuthController.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/AppMemberAuthController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AppMemberAccountController.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/AppMemberAccountController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberUserController.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberUserController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AppMemberExternalController.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/AppMemberExternalController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberTagController.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberTagController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberLevelController.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberLevelController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberRecordController.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberRecordController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/MemberAccountExceptionHandler.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/MemberAccountExceptionHandler.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberConfigController.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberConfigController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AppMemberAddressController.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/AppMemberAddressController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/JsapiConfigRes.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/res/JsapiConfigRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/SignSummaryRes.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/res/SignSummaryRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/AssetRecordRes.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/res/AssetRecordRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/LevelRes.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/res/LevelRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/SignRecordRes.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/res/SignRecordRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/QrcodeRes.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/res/QrcodeRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/AddressRes.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/res/AddressRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/SocialStateRes.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/res/SocialStateRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/AccountPageRes.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/res/AccountPageRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/ProfileRes.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/res/ProfileRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/TokenPairRes.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/res/TokenPairRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/SubscribeTemplateRes.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/res/SubscribeTemplateRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/SignConfigRes.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/res/SignConfigRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/converter/MemberResConverter.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/converter/MemberResConverter.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/converter/MemberReqConverter.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/converter/MemberReqConverter.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/MobileUpdateReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/MobileUpdateReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/SmsSendReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SmsSendReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/WechatMobileUpdateReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/WechatMobileUpdateReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/SmsValidateReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SmsValidateReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/AccountPageReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/req/AccountPageReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/SocialStateReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SocialStateReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/SocialBindReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SocialBindReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/SocialUnbindReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SocialUnbindReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/AuthLoginReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/AuthLoginReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/ProfileUpdateReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/ProfileUpdateReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/AddressSaveReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/AddressSaveReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/QrcodeReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/QrcodeReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/SocialLoginReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SocialLoginReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/SmsLoginReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SmsLoginReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/JsapiReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/JsapiReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/PasswordChangeReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/PasswordChangeReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/WechatLoginReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/WechatLoginReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/AuthRefreshReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/AuthRefreshReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/SmsPasswordResetReq.java",
+      "new": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SmsPasswordResetReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/test/java/com/lemnt/trade/adapter/web/app/AppPaymentControllerTest.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/test/java/com/lemnt/trade/adapter/app/checkout/AppPaymentControllerTest.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/test/java/com/lemnt/trade/adapter/web/app/AppCheckoutControllerTest.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/test/java/com/lemnt/trade/adapter/app/checkout/AppCheckoutControllerTest.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/test/java/com/lemnt/trade/adapter/web/store/PromotionHttpContractTest.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/test/java/com/lemnt/trade/adapter/web/store/PromotionHttpContractTest.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/app/AppPaymentController.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/AppPaymentController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/app/AppCheckoutController.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/AppCheckoutController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/app/res/SettlementRes.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/res/SettlementRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/app/res/SettlementAbandonRes.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/res/SettlementAbandonRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/app/res/MemberPaymentStatusRes.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/res/MemberPaymentStatusRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/app/converter/SettlementResConverter.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/converter/SettlementResConverter.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/app/converter/MemberPaymentStatusConverter.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/converter/MemberPaymentStatusConverter.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/app/req/SettlementSubmitReq.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/req/SettlementSubmitReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/res/OrderDetailRes.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/res/OrderDetailRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/converter/FulfillmentResConverter.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/converter/FulfillmentResConverter.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/AdminCartController.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/AdminCartController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/AdminCheckoutController.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/AdminCheckoutController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/AdminCouponController.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/AdminCouponController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/res/CartItemRes.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/res/CartItemRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/res/CheckoutReceiptRes.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/res/CheckoutReceiptRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/res/CheckoutItemRes.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/res/CheckoutItemRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/res/CheckoutQuoteRes.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/res/CheckoutQuoteRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/res/CouponRes.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/res/CouponRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/converter/CheckoutReqConverter.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/converter/CheckoutReqConverter.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/converter/CheckoutResConverter.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/converter/CheckoutResConverter.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/req/CheckoutQuoteReq.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/req/CheckoutQuoteReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/req/CartSaveReq.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/req/CartSaveReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/store/AppPromotionController.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/store/AppPromotionController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/store/AdminPublicCouponController.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/store/AdminPublicCouponController.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/store/res/PromotionPageRes.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/store/res/PromotionPageRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/store/res/CartAdditionRes.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/store/res/CartAdditionRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/store/res/CouponOfferRes.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/store/res/CouponOfferRes.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/store/converter/PromotionReqConverter.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/store/converter/PromotionReqConverter.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/store/converter/PromotionResConverter.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/store/converter/PromotionResConverter.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/store/req/PromotionPageReq.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/store/req/PromotionPageReq.java"
+    },
+    {
+      "old": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/store/req/CartAddReq.java",
+      "new": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/store/req/CartAddReq.java"
+    }
+  ],
+  "packagePathMismatches": [],
+  "appImportsWeb": []
+}

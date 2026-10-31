@@ -1,0 +1,10 @@
+{
+  "code": 409,
+  "msg": "优惠条件已变化，请先终止原提单再重新结算",
+  "data": {
+    "errorCode": "PROMOTION_SNAPSHOT_STALE",
+    "retryable": false,
+    "action": "ABANDON_THEN_REQUOTE",
+    "correlationId": "design-example-001"
+  }
+}

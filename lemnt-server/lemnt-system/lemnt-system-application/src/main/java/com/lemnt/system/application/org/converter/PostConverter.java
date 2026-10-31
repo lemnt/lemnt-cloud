@@ -1,10 +1,10 @@
 package com.lemnt.system.application.org.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.lemnt.system.application.org.dto.PostDTO;
 import com.lemnt.system.domain.org.model.Post;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 岗位 Entity ↔ DTO 组装器

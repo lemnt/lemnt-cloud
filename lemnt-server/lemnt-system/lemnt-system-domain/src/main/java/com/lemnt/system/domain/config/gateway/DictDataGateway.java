@@ -12,7 +12,6 @@ import java.util.List;
  * @author wangxx
  */
 public interface DictDataGateway {
-
     /**
      * 根据字典数据ID查询信息
      *
@@ -76,4 +75,35 @@ public interface DictDataGateway {
      * @return 数量
      */
     Long countDictDataByType(String dictType);
+
+    /**
+     * 清空字典缓存
+     */
+    void clearCache();
+
+    /**
+     * 重置字典缓存
+     */
+    void resetCache();
+
+    /**
+     * 清除指定类型的字典缓存
+     *
+     * @param dictType 字典类型
+     */
+    void clearCacheByType(String dictType);
+
+    /**
+     * 根据字典类型查询字典数据
+     *
+     * @param dictType 字典类型
+     * @return 字典数据集合
+     */
+    List<DictData> selectDictDataByType(String dictType);
+
+    /** 修改字典项引用的类型名称。 */
+    void renameType(String oldType, String newType);
+
+    /** 从数据库刷新单个字典的数据缓存。 */
+    void refreshByType(String type);
 }

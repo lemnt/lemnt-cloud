@@ -1,6 +1,7 @@
 package com.lemnt.system.domain.auth.model;
 
 import com.lemnt.common.core.utils.StringUtils;
+
 import lombok.Data;
 
 import java.io.Serial;
@@ -15,6 +16,7 @@ import java.io.Serializable;
 public class Meta implements Serializable {
     @Serial
     private static final long serialVersionUID = 5294520182945761933L;
+
     /**
      * 设置该路由在侧边栏和面包屑中展示的名字
      */
@@ -34,7 +36,6 @@ public class Meta implements Serializable {
      * 内链地址（http(s)://开头）
      */
     private String link;
-
     public Meta() {
     }
 

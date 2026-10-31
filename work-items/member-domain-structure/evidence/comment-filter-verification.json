@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-29",
+  "scope": "后台评价筛选，承接50设计",
+  "backend": {
+    "lemnt-mall": {
+      "tests": 117,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-trade": {
+      "tests": 155,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-member": {
+      "tests": 27,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-gateway": {
+      "tests": 32,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "reactTests": 180,
+  "reactChecks": [
+    "typecheck",
+    "lint",
+    "format:check",
+    "build"
+  ],
+  "miniapp": "未改动，本批未重跑",
+  "tests": [
+    "H2生产DDL/Mapper组合筛选与时间边界",
+    "昵称和商品快照名称模糊匹配、订单ID精确匹配、false回复状态",
+    "逻辑删除、倒置时间范围、HTTP参数绑定和422校验",
+    "长ID和false、时间参数透传"
+  ],
+  "limitations": [
+    "MockMvc standalone不验证网关权限切面",
+    "真实MySQL/部署HTTP/浏览器未验证",
+    "未新增表/执行真实DDL/commit/push",
+    "完整迁移仍有32张业务表未对应，文章排除"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/converter/CommentReqConverter.java": "0fdc803890b7b166c6ac55f27227a6c457929fa710b989aea00e02e15ad0257f",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/req/CommentPageReq.java": "37a241d8462352eaae5172f4c9d6842543b30b9875d06a1c92bdf9b6fa06c350",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/converter/CommentReqConverter.java": "021a1981f444f1ff11217b841d198ca7155c50b19c931522e3e2352deb5d833c",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/req/CommentPageReq.java": "82e6cbf692b58ed8e54c2e4c69ea4228ded9c670af89908921d9f8fa48dde07c",
+    "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/CommentFlowPersistenceTest.java": "c9c7c4be344c83604abdb15f632136cbde3e3251836b53eecfae7f2766021c09",
+    "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/CommentFilter.java": "dbe4896f1af63e52b9f47d16a15b892ddf284da0f8737fa8b9529db19b37c0b2",
+    "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/product/gateway/ProductCommentGatewayImpl.java": "e83e69e1104b9c3eecce006090fb7d70e5db47d7381db3883026d14445592932",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/qry/CommentPageQry.java": "99d3dc5c1e2764a9322ce4e8102749dc1893de781dccc21430cb8a98ab3671df",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/executor/CommentPageQueryExe.java": "47cde290b562b42c749bbbdbce3a4ff5f3d3163fdebc3fa8d1e36878bf6f6e6e",
+    "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/comment/vo/ProductCommentPageReqVO.java": "eb01d10941a573fa0b97940d627be6cd775c1a1a8122f1aadc33036cef984b18",
+    "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/mysql/comment/ProductCommentMapper.java": "e56d78006e173ce57e9cc60a687f21775b4000979ef76a0d6d5752f2bc1bf005",
+    "lemnt-ui/src/modules/mall/catalog/pages/CommentPage.tsx": "c943567468d0e10fcb8bc5723e3e84549e3a42e74f883fd8c49200fdf550b99a",
+    "lemnt-ui/src/modules/mall/catalog/commentTypes.ts": "ee9e8d8d3396a50c44e9609db7f31f19ded1aab0cd88ffc4f884956fec825ad9",
+    "lemnt-ui/src/modules/mall/catalog/api/commentApi.test.ts": "77513ac27100270b86203a3c22432c9f57b7b31877aeebb257f2c94937ed1417",
+    "/tmp/comment-filter-final-backend.log": "4f02a941280395edc241fc2abf6d6f0d91fbb714c0bea7b8c5899834774e58a3",
+    "/tmp/comment-filter-ui-build.log": "c41a52c888704996c2a8dbab1a904f038d0a94980f59009bd22f2a80b6afbd25",
+    "/tmp/comment-filter-ui-tests.log": "fabb7247678458754a8f1e4a02e2602fe8e01b3d2e210a7525d3bd0e1a9696e0",
+    "/tmp/comment-filter-ui-typecheck.log": "9feea68862ace8f4c44266036e533929561dc11868fa49061b763cdea019070d",
+    "/tmp/comment-filter-ui-lint.log": "d390a8c939ca60f7f656cd93d5acf81a14c2e00c6a3392b46efc2a7c89dedb55",
+    "/tmp/comment-filter-ui-format.log": "26e74b26d1158e460c922b81734e7f67f7f7e7a43a3b22670ebf3e6312be5bdf"
+  }
+}

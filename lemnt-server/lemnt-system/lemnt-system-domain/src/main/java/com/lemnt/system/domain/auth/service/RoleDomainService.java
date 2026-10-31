@@ -1,9 +1,10 @@
 package com.lemnt.system.domain.auth.service;
 
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.common.core.exception.ServiceException;
-import com.lemnt.system.domain.auth.model.Role;
 import com.lemnt.system.domain.auth.gateway.RoleGateway;
+import com.lemnt.system.domain.auth.model.Role;
+
+import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -16,7 +17,6 @@ import java.util.Objects;
  */
 @RequiredArgsConstructor
 public class RoleDomainService {
-
     private final RoleGateway roleGateway;
 
     /**

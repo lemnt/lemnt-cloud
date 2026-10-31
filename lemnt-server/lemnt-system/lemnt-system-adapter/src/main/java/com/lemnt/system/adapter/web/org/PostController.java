@@ -1,10 +1,26 @@
 package com.lemnt.system.adapter.web.org;
 
+import com.lemnt.common.core.domain.R;
 import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.common.log.annotation.Log;
+import com.lemnt.common.log.enums.BusinessType;
+import com.lemnt.common.security.annotation.RequiresPermissions;
+import com.lemnt.system.adapter.web.org.converter.PostReqConverter;
+import com.lemnt.system.adapter.web.org.converter.PostResConverter;
+import com.lemnt.system.adapter.web.org.req.PostAddReq;
 import com.lemnt.system.adapter.web.org.req.PostPageReq;
+import com.lemnt.system.adapter.web.org.req.PostUpdateReq;
+import com.lemnt.system.adapter.web.org.res.SystemPostGetInfoRes;
+import com.lemnt.system.adapter.web.org.res.SystemPostListRes;
+import com.lemnt.system.application.org.dto.PostDTO;
+import com.lemnt.system.application.org.executor.PostAddCmdExe;
+import com.lemnt.system.application.org.executor.PostDeleteCmdExe;
+import com.lemnt.system.application.org.executor.PostDetailQueryExe;
+import com.lemnt.system.application.org.executor.PostPageQueryExe;
+import com.lemnt.system.application.org.executor.PostUpdateCmdExe;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,24 +30,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.lemnt.common.core.domain.R;
-import com.lemnt.common.log.annotation.Log;
-import com.lemnt.common.log.enums.BusinessType;
-import com.lemnt.common.security.annotation.RequiresPermissions;
-import com.lemnt.system.adapter.web.org.converter.PostReqConverter;
-import com.lemnt.system.adapter.web.org.converter.PostResConverter;
-import com.lemnt.system.adapter.web.org.req.PostAddReq;
-import com.lemnt.system.adapter.web.org.req.PostUpdateReq;
-import com.lemnt.system.adapter.web.org.res.PostRes;
-import com.lemnt.system.application.org.dto.PostDTO;
-import com.lemnt.system.application.org.executor.PostAddCmdExe;
-import com.lemnt.system.application.org.executor.PostDeleteCmdExe;
-import com.lemnt.system.application.org.executor.PostDetailQueryExe;
-import com.lemnt.system.application.org.executor.PostPageQueryExe;
-import com.lemnt.system.application.org.executor.PostUpdateCmdExe;
-import com.lemnt.system.application.org.qry.PostPageQry;
 
-import java.util.Arrays;
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 
 /**
@@ -44,7 +45,6 @@ import java.util.List;
 @RequestMapping("/posts")
 @RequiredArgsConstructor
 public class PostController {
-
     private final PostPageQueryExe postPageQueryExe;
     private final PostDetailQueryExe postDetailQueryExe;
     private final PostAddCmdExe postAddCmdExe;
@@ -54,15 +54,15 @@ public class PostController {
     @Operation(summary = "获取岗位列表")
     @RequiresPermissions("system:post:list")
     @GetMapping
-    public R<PostRes> list(@Validated PostPageReq req) {
+    public R<SystemPostListRes> list(@Validated PostPageReq req) {
         PageResult<PostDTO> result = postPageQueryExe.execute(PostReqConverter.toQry(req));
-        return R.page(PostResConverter.toResList(result.getRecords()), result.getTotal());
+        return R.page(PostResConverter.toResListToSystemPostListRes(result.getRecords()), result.getTotal());
     }
 
     @Operation(summary = "根据岗位编号获取详细信息")
     @GetMapping(value = "/{postId}")
-    public R<PostRes> getInfo(@PathVariable Long postId) {
-        return R.ok(PostResConverter.toRes(postDetailQueryExe.execute(postId)));
+    public R<SystemPostGetInfoRes> getInfo(@PathVariable Long postId) {
+        return R.ok(PostResConverter.toResToSystemPostGetInfoRes(postDetailQueryExe.execute(postId)));
     }
 
     @Operation(summary = "新增岗位")

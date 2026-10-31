@@ -1,8 +1,8 @@
 package com.lemnt.system.adapter.web.notice.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -27,7 +27,6 @@ public record NoticeReadUsersPageReq(
         @Schema(description = "结束时间")
         LocalDateTime endTime
 ) implements Serializable {
-
     public NoticeReadUsersPageReq {
         pageNum = pageNum == null ? 1 : pageNum;
         pageSize = pageSize == null ? 10 : pageSize;

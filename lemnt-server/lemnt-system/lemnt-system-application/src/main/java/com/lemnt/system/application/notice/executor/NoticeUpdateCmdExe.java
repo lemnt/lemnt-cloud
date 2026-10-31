@@ -2,10 +2,12 @@ package com.lemnt.system.application.notice.executor;
 
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.system.application.notice.cmd.NoticeUpdateCmd;
-import com.lemnt.system.domain.notice.model.Notice;
 import com.lemnt.system.domain.notice.gateway.NoticeGateway;
-import lombok.RequiredArgsConstructor;
+import com.lemnt.system.domain.notice.model.Notice;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 修改通知公告命令执行器
@@ -31,6 +33,7 @@ public class NoticeUpdateCmdExe {
         entity.setNoticeContent(cmd.noticeContent());
         entity.setStatus(cmd.status());
         entity.setUpdateBy(SecurityUtils.getUsername());
+
         // 完整编辑表单省略空备注时，仍需清除数据库旧值。
         entity.setRemark(cmd.remark() == null ? "" : cmd.remark());
         return noticeGateway.update(entity);

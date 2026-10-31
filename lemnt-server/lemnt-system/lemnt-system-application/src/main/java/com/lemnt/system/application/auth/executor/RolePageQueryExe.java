@@ -2,13 +2,15 @@ package com.lemnt.system.application.auth.executor;
 
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.system.application.auth.converter.RoleConverter;
 import com.lemnt.system.application.auth.dto.RoleDTO;
 import com.lemnt.system.application.auth.qry.RolePageQry;
-import com.lemnt.system.domain.auth.model.Role;
 import com.lemnt.system.domain.auth.gateway.RoleGateway;
+import com.lemnt.system.domain.auth.model.Role;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 角色分页查询执行器
@@ -18,7 +20,6 @@ import com.lemnt.system.domain.auth.gateway.RoleGateway;
 @Component
 @RequiredArgsConstructor
 public class RolePageQueryExe {
-
     private final RoleGateway roleGateway;
 
     /**

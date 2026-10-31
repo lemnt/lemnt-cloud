@@ -1,13 +1,15 @@
 package com.lemnt.system.application.org.executor;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.common.core.constant.UserConstants;
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.system.application.org.cmd.DeptAddCmd;
-import com.lemnt.system.domain.org.model.Dept;
 import com.lemnt.system.domain.org.gateway.DeptGateway;
+import com.lemnt.system.domain.org.model.Dept;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.Objects;
 

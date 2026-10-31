@@ -1,10 +1,10 @@
 package com.lemnt.system.application.config.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.lemnt.system.application.config.dto.ConfigDTO;
 import com.lemnt.system.domain.config.model.Config;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 参数配置 Entity ↔ DTO 组装器
@@ -12,7 +12,6 @@ import com.lemnt.system.domain.config.model.Config;
  * @author wangxx
  */
 public class ConfigConverter {
-
     public static ConfigDTO toDTO(Config entity) {
         if (entity == null) {
             return null;

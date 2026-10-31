@@ -1,12 +1,16 @@
 package com.lemnt.system.application.auth.executor;
 
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.security.utils.SecurityUtils;
-import lombok.RequiredArgsConstructor;
+import com.lemnt.system.domain.auth.gateway.UserGateway;
+import com.lemnt.system.domain.auth.gateway.UserPostGateway;
+import com.lemnt.system.domain.auth.gateway.UserRoleGateway;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import com.lemnt.system.domain.auth.gateway.UserGateway;
+
+import cn.hutool.core.collection.CollUtil;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -18,6 +22,8 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class UserDeleteCmdExe {
+    private final UserPostGateway userPostGateway;
+    private final UserRoleGateway userRoleGateway;
     private final UserGateway userGateway;
 
     /**
@@ -38,8 +44,8 @@ public class UserDeleteCmdExe {
             }
         }
         // 删除关联关系
-        userGateway.deleteUserRoleByUserIds(userIds);
-        userGateway.deleteUserPostByUserIds(userIds);
+        userRoleGateway.deleteUserRoleByUserIds(userIds);
+        userPostGateway.deleteUserPostByUserIds(userIds);
         return userGateway.deleteUserByIds(userIds);
     }
 }

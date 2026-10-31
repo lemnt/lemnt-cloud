@@ -1,20 +1,22 @@
 package com.lemnt.system.infrastructure.notice.gateway;
 
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.system.domain.notice.gateway.NoticeReadGateway;
 import com.lemnt.system.domain.notice.model.Notice;
 import com.lemnt.system.domain.notice.model.NoticeRead;
-import com.lemnt.system.domain.notice.gateway.NoticeReadGateway;
 import com.lemnt.system.domain.notice.model.NoticeReadUser;
 import com.lemnt.system.infrastructure.notice.dataobject.NoticeDO;
 import com.lemnt.system.infrastructure.notice.dataobject.NoticeReadDO;
 import com.lemnt.system.infrastructure.notice.mapper.NoticeReadMapper;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import cn.hutool.core.collection.CollUtil;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,7 +30,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class NoticeReadGatewayImpl implements NoticeReadGateway {
-
     private final NoticeReadMapper noticeReadMapper;
 
     @Override

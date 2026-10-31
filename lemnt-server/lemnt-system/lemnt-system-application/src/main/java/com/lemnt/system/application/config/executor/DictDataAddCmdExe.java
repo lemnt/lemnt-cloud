@@ -1,11 +1,13 @@
 package com.lemnt.system.application.config.executor;
 
 import com.lemnt.common.security.utils.SecurityUtils;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.system.application.config.cmd.DictDataAddCmd;
-import com.lemnt.system.domain.config.model.DictData;
 import com.lemnt.system.domain.config.gateway.DictDataGateway;
+import com.lemnt.system.domain.config.model.DictData;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 新增字典数据命令执行器
@@ -16,7 +18,6 @@ import com.lemnt.system.domain.config.gateway.DictDataGateway;
 @RequiredArgsConstructor
 public class DictDataAddCmdExe {
     private final DictDataGateway dictDataGateway;
-
     public Boolean execute(DictDataAddCmd cmd) {
         DictData entity = new DictData();
         entity.setDictSort(cmd.dictSort());

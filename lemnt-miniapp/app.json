@@ -1,0 +1,22 @@
+{
+  "pages": [
+    "pages/store/index",
+    "pages/index/index",
+    "pages/member/index",
+    "pages/member-login/index",
+    "pages/member-addresses/index",
+    "pages/member-benefits/index",
+    "pages/product/index",
+    "pages/coupons/index",
+    "pages/favorites/index",
+    "pages/browse-history/index",
+    "pages/comments/index",
+    "pages/comment-create/index",
+    "pages/order-comment/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "lemnt 商城",
+    "navigationBarTextStyle": "black",
+    "navigationBarBackgroundColor": "#ffffff"
+  }
+}

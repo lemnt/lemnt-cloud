@@ -3,15 +3,13 @@ package com.lemnt.system.infrastructure.org.mapper;
 import com.lemnt.common.datascope.annotation.DataScope;
 import com.lemnt.system.domain.org.model.Dept;
 import com.lemnt.system.infrastructure.org.dataobject.DeptDO;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import org.apache.ibatis.annotations.Mapper;
-
-import java.util.List;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * Dept 数据层

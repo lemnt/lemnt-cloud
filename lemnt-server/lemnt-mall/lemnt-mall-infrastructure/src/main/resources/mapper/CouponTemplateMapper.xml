@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.mall.infrastructure.coupon.mapper.CouponTemplateMapper">
+
+    <resultMap id="CouponTemplateResult" type="com.lemnt.mall.infrastructure.coupon.dataobject.CouponTemplateDO" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="kind" column="kind"/>
+        <result property="threshold" column="threshold"/>
+        <result property="fixedAmount" column="fixed_amount"/>
+        <result property="discountPercent" column="discount_percent"/>
+        <result property="discountLimit" column="discount_limit"/>
+        <result property="totalCount" column="total_count"/>
+        <result property="issuedCount" column="issued_count"/>
+        <result property="validFrom" column="valid_from"/>
+        <result property="validUntil" column="valid_until"/>
+        <result property="enabled" column="enabled"/>
+        <result property="takeType" column="take_type"/>
+        <result property="description" column="description"/>
+        <result property="takeLimitCount" column="take_limit_count"/>
+        <result property="productScope" column="product_scope"/>
+        <result property="productScopeValues" column="product_scope_values"/>
+        <result property="validityType" column="validity_type"/>
+        <result property="fixedStartTerm" column="fixed_start_term"/>
+        <result property="fixedEndTerm" column="fixed_end_term"/>
+        <result property="useCount" column="use_count"/>
+        <result property="deleted" column="deleted"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="storefrontOffer">
+        FROM mall_coupon_template t  WHERE
+        t.deleted=FALSE AND t.take_type='USER' AND t.enabled=TRUE AND (t.validity_type='TERM' OR t.valid_until>CURRENT_TIMESTAMP)
+    </sql>
+
+    <select id="lockTemplate" resultMap="CouponTemplateResult"
+            flushCache="true" useCache="false">
+        SELECT * FROM mall_coupon_template WHERE id=#{id} AND deleted=FALSE FOR UPDATE
+    </select>
+
+    <update id="takeQuota">
+        UPDATE mall_coupon_template SET issued_count=issued_count+1 WHERE id=#{id} AND deleted=FALSE AND enabled=TRUE AND
+        (validity_type='TERM' OR valid_until>CURRENT_TIMESTAMP) AND (take_type&lt;>'USER' OR total_count=-1 OR issued_count&lt;total_count)
+    </update>
+
+    <select id="offers" resultMap="CouponTemplateResult">
+        SELECT t.*<include refid="storefrontOffer"/> ORDER BY t.id DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="offerCount" resultType="java.lang.Long">
+        SELECT COUNT(*)<include refid="storefrontOffer"/>
+    </select>
+
+    <select id="now" resultType="java.time.LocalDateTime">
+        SELECT CURRENT_TIMESTAMP
+    </select>
+</mapper>

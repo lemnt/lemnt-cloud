@@ -1,7 +1,8 @@
 package com.lemnt.system.infrastructure.auth.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lemnt.system.infrastructure.auth.dataobject.UserRoleDO;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -14,7 +15,6 @@ import java.util.List;
  */
 @Mapper
 public interface UserRoleMapper extends BaseMapper<UserRoleDO> {
-
     /**
      * 通过用户ID删除用户角色关联
      *

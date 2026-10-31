@@ -1,16 +1,18 @@
 package com.lemnt.system.application.config.executor;
 
-import java.util.List;
-
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.system.application.config.converter.DictDataConverter;
 import com.lemnt.system.application.config.dto.DictDataDTO;
 import com.lemnt.system.application.config.qry.DictDataPageQry;
-import com.lemnt.system.domain.config.model.DictData;
 import com.lemnt.system.domain.config.gateway.DictDataGateway;
+import com.lemnt.system.domain.config.model.DictData;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * 字典数据分页查询执行器
@@ -21,7 +23,6 @@ import com.lemnt.system.domain.config.gateway.DictDataGateway;
 @RequiredArgsConstructor
 public class DictDataPageQueryExe {
     private final DictDataGateway dictDataGateway;
-
     public PageResult<DictDataDTO> execute(DictDataPageQry qry) {
         DictData query = new DictData();
         query.setDictType(qry.dictType());

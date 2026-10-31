@@ -1,0 +1,29 @@
+server:
+  port: ${MALL_PORT:9120}
+spring:
+  application:
+    name: lemnt-mall
+  profiles:
+    active: @profile.active@
+  cloud:
+    nacos:
+      username: ${NACOS_USERNAME:nacos}
+      password: ${NACOS_PASSWORD:123456}
+      discovery:
+        server-addr: ${NACOS_HOST:127.0.0.1}:${NACOS_PORT:8848}
+        namespace: @profile.active@
+        group: DEFAULT_GROUP
+      config:
+        server-addr: ${NACOS_HOST:127.0.0.1}:${NACOS_PORT:8848}
+        namespace: @profile.active@
+        group: DEFAULT_GROUP
+        file-extension: yaml
+  config:
+    import:
+      - optional:nacos:lemnt-common.yaml?namespace=@profile.active@&group=DEFAULT_GROUP
+      - optional:nacos:lemnt-mall.yaml?namespace=@profile.active@&group=DEFAULT_GROUP
+dubbo:
+  application:
+    name: ${spring.application.name}-provider
+  registry:
+    address: nacos://${NACOS_HOST:127.0.0.1}:${NACOS_PORT:8848}?namespace=@profile.active@&group=DEFAULT_GROUP&username=${NACOS_USERNAME:nacos}&password=${NACOS_PASSWORD:123456}
