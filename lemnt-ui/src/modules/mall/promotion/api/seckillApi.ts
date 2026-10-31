@@ -38,12 +38,6 @@ function array(v: unknown): unknown[] {
 function strings(v: unknown): string[] {
   return array(v).map((item) => text(item));
 }
-function time(v: unknown): string {
-  const value = text(v);
-  if (!/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(value) && !/^\d{2}:\d{2}(:\d{2})?$/.test(value))
-    throw Error('秒杀时间格式不合法');
-  return value;
-}
 /** 金额只接受正数并保留两位小数，不使用浮点换算。 */
 export function money(v: unknown): string {
   const value = text(v);

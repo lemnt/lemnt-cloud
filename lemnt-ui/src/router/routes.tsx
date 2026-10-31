@@ -71,6 +71,16 @@ export const pages: Record<string, ComponentType> = {
       default: m.DiscountActivityPage,
     })),
   ),
+  'mall/promotion/seckill-config/index': lazy(() =>
+    import('../modules/mall/promotion/pages/SeckillPage').then((m) => ({
+      default: m.SeckillConfigPage,
+    })),
+  ),
+  'mall/promotion/seckill-activity/index': lazy(() =>
+    import('../modules/mall/promotion/pages/SeckillPage').then((m) => ({
+      default: m.SeckillActivityPage,
+    })),
+  ),
   'mall/comment/index': lazy(() => import('../modules/mall/catalog/pages/CommentPage')),
   'member/user/index': lazy(() => import('../modules/member/account/pages/MemberUserPage')),
   'member/level/index': lazy(() =>

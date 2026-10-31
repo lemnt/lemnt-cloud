@@ -56,6 +56,24 @@ class ControllerMappingTest {
                 PUT /mall/promotion/discount-activities/{id} mall:promotion:update
                 PUT /mall/promotion/discount-activities/{id}/close mall:promotion:update
                 DELETE /mall/promotion/discount-activities/{id} mall:promotion:delete
+                GET /mall/promotion/seckill-configs mall:promotion:list
+                GET /mall/promotion/seckill-configs/{id} mall:promotion:query
+                POST /mall/promotion/seckill-configs mall:promotion:create
+                PUT /mall/promotion/seckill-configs/{id} mall:promotion:update
+                PUT /mall/promotion/seckill-configs/{id}/status mall:promotion:update
+                DELETE /mall/promotion/seckill-configs/{id} mall:promotion:delete
+                GET /mall/promotion/seckill-configs/list mall:promotion:query
+                GET /mall/promotion/seckill-configs/simple-list
+                GET /mall/promotion/seckill-activities mall:promotion:list
+                GET /mall/promotion/seckill-activities/{id} mall:promotion:query
+                POST /mall/promotion/seckill-activities mall:promotion:create
+                PUT /mall/promotion/seckill-activities/{id} mall:promotion:update
+                PUT /mall/promotion/seckill-activities/{id}/close mall:promotion:update
+                DELETE /mall/promotion/seckill-activities/{id} mall:promotion:delete
+                GET /mall/app/seckill/configs
+                GET /mall/app/seckill/now
+                GET /mall/app/seckill/activities
+                GET /mall/app/seckill/activities/{id}
                 DELETE /mall/app/cart/{productId}
                 DELETE /mall/brands/{id} mall:brand:remove
                 DELETE /mall/categories/{id} mall:category:remove

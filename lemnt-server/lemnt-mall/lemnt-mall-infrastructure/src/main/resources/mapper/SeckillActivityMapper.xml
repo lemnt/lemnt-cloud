@@ -3,40 +3,40 @@
 <mapper namespace="com.lemnt.mall.infrastructure.promotion.mapper.SeckillActivityMapper">
 
     <select id="lockById" resultType="com.lemnt.mall.infrastructure.promotion.dataobject.SeckillActivityDO"
-            autoMapping="true" flushCache="true" useCache="false">
+            flushCache="true" useCache="false">
         SELECT * FROM mall_promotion_seckill_activity WHERE id=#{id} FOR UPDATE
     </select>
 
     <select id="selectPageByFilter" resultType="com.lemnt.mall.infrastructure.promotion.dataobject.SeckillActivityDO"
-            autoMapping="true">
+>
         SELECT * FROM mall_promotion_seckill_activity
         <where>
             <if test="name != null and name != ''">AND name LIKE CONCAT('%',#{name},'%')</if>
             <if test="status != null">AND status=#{status}</if>
-            <if test="configId != null">AND FIND_IN_SET(#{configId},config_ids)</if>
+            <if test="configId != null">AND CONCAT(',',config_ids,',') LIKE CONCAT('%,',#{configId},',%')</if>
         </where>
         ORDER BY id DESC
     </select>
 
     <select id="selectEnabledBySpuIds" resultType="com.lemnt.mall.infrastructure.promotion.dataobject.SeckillActivityDO"
-            autoMapping="true">
+>
         SELECT * FROM mall_promotion_seckill_activity WHERE status=0 AND spu_id IN
         <foreach collection="spuIds" item="spuId" open="(" separator="," close=")">#{spuId}</foreach>
     </select>
 
     <select id="selectAppPage" resultType="com.lemnt.mall.infrastructure.promotion.dataobject.SeckillActivityDO"
-            autoMapping="true">
+>
         SELECT * FROM mall_promotion_seckill_activity
         WHERE status=0 AND start_time&lt;#{now} AND end_time&gt;#{now}
-        <if test="configId != null">AND FIND_IN_SET(#{configId},config_ids)</if>
+        <if test="configId != null">AND CONCAT(',',config_ids,',') LIKE CONCAT('%,',#{configId},',%')</if>
         ORDER BY sort DESC,id DESC
     </select>
 
     <select id="selectByConfigAndNow" resultType="com.lemnt.mall.infrastructure.promotion.dataobject.SeckillActivityDO"
-            autoMapping="true">
+>
         SELECT * FROM mall_promotion_seckill_activity
         WHERE status=0 AND start_time&lt;#{now} AND end_time&gt;#{now}
-          AND FIND_IN_SET(#{configId},config_ids)
+          AND CONCAT(',',config_ids,',') LIKE CONCAT('%,',#{configId},',%')
         ORDER BY sort DESC,id DESC
     </select>
 </mapper>
