@@ -97,6 +97,7 @@ class ControllerMappingTest {
                 GET /mall/spec-values/simple mall:spec-value:query
                 GET /mall/spec-values/{id} mall:spec-value:query
                 GET /mall/spus/count mall:spu:list
+                GET /mall/spus/export mall:spu:export
                 GET /mall/spus/simple mall:spu:query
                 GET /mall/spus/batch mall:spu:query
                 GET /mall/brands/page mall:brand:list

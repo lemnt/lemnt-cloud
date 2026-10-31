@@ -30,7 +30,9 @@ public record ProductSpuPageReq(
         Long categoryId,
         @Schema(description = "精确品牌ID，可不传")
         @jakarta.validation.constraints.Positive
-        Long brandId
+        Long brandId,
+        @Schema(description = "库存分组：SOLD_OUT售罄，LOW_STOCK库存警戒；可不传")
+        String stockStatus
 ) implements Serializable {
     /**
      * 创建商品SPU分页请求实例。

@@ -16,7 +16,11 @@ public record ProductSpuCreateCmd(
         String image,
         List<ProductSkuDraft> skus,
         List<Integer> deliveryTypes,
-        Long deliveryTemplateId
+        Long deliveryTemplateId,
+        String keyword,
+        String introduction,
+        List<String> sliderPicUrls,
+        Integer sort
 ) implements Serializable {
     /**
      * 商品商品SKU草稿。
@@ -40,6 +44,6 @@ public record ProductSpuCreateCmd(
             String description,
             String image,
             List<ProductSkuDraft> skus) {
-        this(code, name, categoryId, brandId, description, image, skus, List.of(), null);
+        this(code, name, categoryId, brandId, description, image, skus, List.of(), null, null, null, null, null);
     }
 }

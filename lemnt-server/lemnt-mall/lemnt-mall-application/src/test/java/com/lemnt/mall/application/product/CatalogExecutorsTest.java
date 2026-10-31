@@ -56,13 +56,13 @@ class CatalogExecutorsTest {
         var executor = new ProductSpuPageQueryExe(productSpuGateway);
         assertThrows(
                 IllegalArgumentException.class,
-                () -> executor.execute(new ProductSpuPageQry(null, null, 0, 10, null, null)));
+                () -> executor.execute(new ProductSpuPageQry(null, null, 0, 10, null, null, null)));
         assertThrows(
                 IllegalArgumentException.class,
-                () -> executor.execute(new ProductSpuPageQry(null, null, 1, 101, null, null)));
+                () -> executor.execute(new ProductSpuPageQry(null, null, 1, 101, null, null, null)));
         assertThrows(
                 IllegalArgumentException.class,
-                () -> executor.execute(new ProductSpuPageQry(null, "unknown", 1, 10, null, null)));
+                () -> executor.execute(new ProductSpuPageQry(null, "unknown", 1, 10, null, null, null)));
         verifyNoInteractions(brandGateway, catalogService, categoryGateway, productSpuGateway);
     }
 

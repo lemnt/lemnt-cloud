@@ -9,6 +9,7 @@ import com.lemnt.mall.adapter.web.product.res.ProductSkuPageRes;
 import com.lemnt.mall.adapter.web.product.res.ProductSpuBatchRes;
 import com.lemnt.mall.adapter.web.product.res.ProductSpuBatchSkuRes;
 import com.lemnt.mall.adapter.web.product.res.ProductSpuCountRes;
+import com.lemnt.mall.adapter.web.product.res.ProductSpuExportRes;
 import com.lemnt.mall.adapter.web.product.res.ProductSpuSimpleRes;
 import com.lemnt.mall.application.product.dto.BrandDTO;
 import com.lemnt.mall.application.product.dto.CategoryTreeDTO;
@@ -64,7 +65,7 @@ public final class ProductManagementResConverter {
 
     /** 转换商品状态统计。 */
     public static ProductSpuCountRes count(ProductSpuStatusCountDTO value) {
-        return new ProductSpuCountRes(value.onShelf(), value.offShelf(), value.recycled());
+        return new ProductSpuCountRes(value.onShelf(), value.offShelf(), value.recycled(), value.soldOut(), value.lowStock());
     }
 
     /** 转换上架商品选择。 */
@@ -75,7 +76,7 @@ public final class ProductManagementResConverter {
     /** 转换批量商品详情。 */
     public static ProductSpuBatchRes batch(ProductSpuDTO value) {
         return new ProductSpuBatchRes(value.id(), value.code(), value.name(), value.categoryId(), value.brandId(),
-            value.description(), value.image(), value.status(), value.skus().stream().map(ProductManagementResConverter::batchSku).toList(), value.deliveryTypes(), value.deliveryTemplateId());
+            value.description(), value.image(), value.status(), value.skus().stream().map(ProductManagementResConverter::batchSku).toList(), value.deliveryTypes(), value.deliveryTemplateId(), value.keyword(), value.introduction(), value.sliderPicUrls(), value.sort());
     }
 
     /** 批量接口的SKU独立响应。 */
@@ -86,4 +87,16 @@ public final class ProductManagementResConverter {
                         new ProductSpuBatchSkuRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(), value.status(), value.weight(), value.volume());
     }
 
+    /** 编号转为文本，状态转换为展示名称，不向导出文件添加不存在的经营字段。 */
+    public static ProductSpuExportRes export(ProductSpuDTO value) {
+        String status = switch (value.status()) {
+            case "ON_SHELF" -> "上架";
+            case "OFF_SHELF" -> "下架";
+            case "RECYCLED" -> "回收站";
+            default -> value.status();
+        };
+        return new ProductSpuExportRes(value.id().toString(), value.code(), value.name(),
+                value.categoryId().toString(), value.brandId().toString(), status, value.description(), value.keyword(), value.introduction(),
+                value.sliderPicUrls() == null ? null : String.join("\n", value.sliderPicUrls()), value.sort());
+    }
 }

@@ -1,6 +1,7 @@
 export type TaxonomyStatus = 'ENABLED' | 'DISABLED';
 export type ShelfStatus = 'ON_SHELF' | 'OFF_SHELF';
 export type SpuStatus = ShelfStatus | 'RECYCLED';
+export type SpuStockStatus = 'SOLD_OUT' | 'LOW_STOCK';
 export interface Category {
   id: string;
   parentId: string | null;
@@ -56,6 +57,10 @@ export interface Spu {
   id: string;
   code: string;
   name: string;
+  keyword: string | null;
+  introduction: string | null;
+  sliderPicUrls: string[];
+  sort: number | null;
   categoryId: string;
   brandId: string;
   description: string | null;
@@ -63,11 +68,26 @@ export interface Spu {
   status: SpuStatus;
   skus: Sku[];
 }
-export interface SpuQuery {
+/** 商品列表与状态统计共用的真实商品筛选字段。 */
+export interface SpuFilter {
   name?: string;
+  categoryId?: string;
+  brandId?: string;
+}
+/** 商品分页包含单独的状态与分页参数。 */
+export interface SpuQuery extends SpuFilter {
+  stockStatus?: SpuStockStatus;
   status?: SpuStatus;
   pageNum?: number;
   pageSize?: number;
+}
+/** 服务端同筛选条件下的商品状态数量，不由当前页行数推算。 */
+export interface SpuStatusCounts {
+  onShelf: number;
+  offShelf: number;
+  recycled: number;
+  soldOut: number;
+  lowStock: number;
 }
 export interface SkuCreateRequest {
   weight?: string;
@@ -84,6 +104,10 @@ export interface SpuCreateRequest {
   deliveryTemplateId?: string;
   code: string;
   name: string;
+  keyword: string;
+  introduction: string;
+  sliderPicUrls: string[];
+  sort: number;
   categoryId: string;
   brandId: string;
   description?: string;
@@ -95,6 +119,10 @@ export interface SpuUpdateRequest {
   deliveryTemplateId?: string;
   skus: (SkuCreateRequest & { id?: string })[];
   name: string;
+  keyword: string;
+  introduction: string;
+  sliderPicUrls: string[];
+  sort: number;
   categoryId: string;
   brandId: string;
   description?: string;

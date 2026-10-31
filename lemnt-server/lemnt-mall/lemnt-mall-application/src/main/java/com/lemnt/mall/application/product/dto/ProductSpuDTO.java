@@ -17,7 +17,11 @@ public record ProductSpuDTO(
         String status,
         List<ProductSkuDTO> skus,
         List<Integer> deliveryTypes,
-        Long deliveryTemplateId
+        Long deliveryTemplateId,
+        String keyword,
+        String introduction,
+        List<String> sliderPicUrls,
+        Integer sort
 ) implements Serializable {
     /** 历史快照缺少配送字段，读取时保留未配置状态。 */
     public ProductSpuDTO(
@@ -30,6 +34,6 @@ public record ProductSpuDTO(
             String image,
             String status,
             List<ProductSkuDTO> skus) {
-        this(id, code, name, categoryId, brandId, description, image, status, skus, List.of(), null);
+        this(id, code, name, categoryId, brandId, description, image, status, skus, List.of(), null, null, null, null, null);
     }
 }

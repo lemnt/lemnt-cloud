@@ -55,7 +55,7 @@ public class ProductSpecValueGatewayImpl implements ProductSpecValueGateway {
                 Wrappers.lambdaQuery(ProductSpecValueDO.class).like(filter.name() != null,
                     ProductSpecValueDO::getName, filter.name())
                 .eq(filter.specId() != null, ProductSpecValueDO::getSpecId,
-                    filter.specId()).orderByAsc(ProductSpecValueDO::getId));
+                    filter.specId()).orderByDesc(ProductSpecValueDO::getId));
         return PageResult.of(page.getRecords().stream().map(ProductSpecValueConverter::toModel).toList(),
             page.getTotal());
     }

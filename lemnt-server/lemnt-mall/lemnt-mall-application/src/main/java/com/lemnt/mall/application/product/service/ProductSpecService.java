@@ -59,7 +59,7 @@ public class ProductSpecService {
                 throw new IllegalArgumentException("规格不存在");
             }
         }
-        var result = productSpecGateway.save(new ProductSpec(id, normalized, ProductCatalogValidation.optional(remark, 500)));
+        var result = productSpecGateway.save(new ProductSpec(id, normalized, ProductCatalogValidation.optional(remark, 500), null));
         if (id != null) { productSkuGateway.renameProperty(id, normalized); }
         return result;
     }
@@ -80,7 +80,7 @@ public class ProductSpecService {
         if (old != null) {
             old = productSpecValueGateway.lock(id);
         }
-        var result = productSpecValueGateway.save(new ProductSpecValue(id, parentId, normalized, ProductCatalogValidation.optional(remark, 500)));
+        var result = productSpecValueGateway.save(new ProductSpecValue(id, parentId, normalized, ProductCatalogValidation.optional(remark, 500), null));
         if (id != null) { productSkuGateway.renamePropertyValue(id, normalized); }
         return result;
     }
@@ -93,7 +93,7 @@ public class ProductSpecService {
         if (old == null) {
             return false;
         }
-        if (productSpecValueGateway.page(new ProductSpecFilter(null, id, 1, 1)).getTotal() > 0) {
+        if (productSpecValueGateway.page(new ProductSpecFilter(null, id, 1, 1, null, null)).getTotal() > 0) {
             throw new IllegalStateException("规格仍包含规格值");
         }
         return productSpecGateway.delete(id);

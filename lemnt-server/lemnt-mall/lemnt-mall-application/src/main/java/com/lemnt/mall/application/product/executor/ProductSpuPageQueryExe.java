@@ -6,6 +6,7 @@ import com.lemnt.mall.application.product.qry.ProductSpuPageQry;
 import com.lemnt.mall.domain.product.gateway.ProductSpuGateway;
 import com.lemnt.mall.domain.product.model.ProductCatalogFilter;
 import com.lemnt.mall.domain.product.model.ProductCatalogValidation;
+import com.lemnt.mall.domain.product.model.ProductStockStatus;
 
 import org.springframework.stereotype.Component;
 
@@ -42,13 +43,20 @@ public class ProductSpuPageQueryExe {
         }
         if (query.categoryId() != null) { ProductCatalogValidation.id(query.categoryId()); }
         if (query.brandId() != null) { ProductCatalogValidation.id(query.brandId()); }
+        ProductStockStatus stockStatus = null;
+        if (query.stockStatus() != null && !query.stockStatus().isBlank()) {
+            if (!Set.of("SOLD_OUT", "LOW_STOCK").contains(query.stockStatus())) {
+                throw new IllegalArgumentException("库存分组不合法");
+            }
+            stockStatus = ProductStockStatus.valueOf(query.stockStatus());
+        }
         var page =
                 productSpuGateway.page(
                 new ProductCatalogFilter(
                 name,
                 status,
                 (query.pageNum() - 1) * query.pageSize(),
-                query.pageSize(), query.categoryId(), query.brandId()));
+                query.pageSize(), query.categoryId(), query.brandId(), stockStatus));
         return new ProductSpuPageDTO(
                 page.records().stream().map(ProductCatalogDTOConverter::spu).toList(), page.total());
     }

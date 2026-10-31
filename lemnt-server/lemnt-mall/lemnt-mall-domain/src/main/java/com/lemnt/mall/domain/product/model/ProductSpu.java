@@ -16,13 +16,18 @@ public record ProductSpu(
         String status,
         List<ProductSku> skus,
         List<Integer> deliveryTypes,
-        Long deliveryTemplateId
+        Long deliveryTemplateId,
+        String keyword,
+        String introduction,
+        List<String> sliderPicUrls,
+        Integer sort
 ) {
     /**
      * 创建目录商品SPU实例。
      */
     public ProductSpu {
         deliveryTypes = deliveryTypes == null ? List.of() : List.copyOf(deliveryTypes);
+        sliderPicUrls = sliderPicUrls == null ? null : List.copyOf(sliderPicUrls);
         skus = skus == null ? List.of() : List.copyOf(skus);
     }
 
@@ -37,6 +42,6 @@ public record ProductSpu(
             String image,
             String status,
             List<ProductSku> skus) {
-        this(id, code, name, categoryId, brandId, description, image, status, skus, List.of(), null);
+        this(id, code, name, categoryId, brandId, description, image, status, skus, List.of(), null, null, null, null, null);
     }
 }

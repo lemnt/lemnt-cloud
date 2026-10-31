@@ -9,5 +9,6 @@ public record ProductSpuPageQry(
         int pageNum,
         int pageSize,
         Long categoryId,
-        Long brandId
+        Long brandId,
+        String stockStatus
 ) implements java.io.Serializable {}

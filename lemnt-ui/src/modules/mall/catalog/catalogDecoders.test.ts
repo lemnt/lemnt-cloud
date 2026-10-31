@@ -112,3 +112,35 @@ it('SKU规格列表保留编号和名称，旧名值只能还原缺号规格', (
     decodeSku({ ...row, properties: [{ ...row.properties[0], valueId: null }] }),
   ).toThrow();
 });
+
+it('商品经营字段保留真实值和轮播顺序，旧响应不补造内容', () => {
+  const raw = {
+    id: '1',
+    code: 'SP1',
+    name: '商品',
+    categoryId: '2',
+    brandId: '3',
+    status: 'OFF_SHELF',
+    skus: [],
+    keyword: '夏季',
+    introduction: '轻薄',
+    sliderPicUrls: ['/b.png', '/a.png'],
+    sort: 20,
+  };
+  expect(decodeSpu(raw)).toMatchObject({
+    keyword: '夏季',
+    introduction: '轻薄',
+    sliderPicUrls: ['/b.png', '/a.png'],
+    sort: 20,
+  });
+  expect(
+    decodeSpu({
+      ...raw,
+      keyword: undefined,
+      introduction: undefined,
+      sliderPicUrls: undefined,
+      sort: undefined,
+    }),
+  ).toMatchObject({ keyword: null, introduction: null, sliderPicUrls: [], sort: null });
+  expect(() => decodeSpu({ ...raw, sliderPicUrls: 'bad' })).toThrow('列表');
+});

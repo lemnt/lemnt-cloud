@@ -17,7 +17,11 @@ public record ProductSpuUpdateCmd(
         String image,
         List<ProductSku> skus,
         List<Integer> deliveryTypes,
-        Long deliveryTemplateId
+        Long deliveryTemplateId,
+        String keyword,
+        String introduction,
+        List<String> sliderPicUrls,
+        Integer sort
 ) implements Serializable {
     /** 历史快照缺少配送字段，读取时保留未配置状态。 */
     public ProductSpuUpdateCmd(
@@ -28,6 +32,6 @@ public record ProductSpuUpdateCmd(
             String description,
             String image,
             List<ProductSku> skus) {
-        this(id, name, categoryId, brandId, description, image, skus, List.of(), null);
+        this(id, name, categoryId, brandId, description, image, skus, List.of(), null, null, null, null, null);
     }
 }

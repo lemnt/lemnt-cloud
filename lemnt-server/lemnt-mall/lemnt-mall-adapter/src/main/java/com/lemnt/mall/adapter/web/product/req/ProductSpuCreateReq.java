@@ -51,5 +51,13 @@ public record ProductSpuCreateReq(
         List<@NotNull @Min(1) @Max(2) Integer> deliveryTypes,
         @Schema(description = "快递运费模板编号")
         @Positive
-        Long deliveryTemplateId
+        Long deliveryTemplateId,
+        @Schema(description = "商品关键字")
+        @NotBlank @Size(max = 255) String keyword,
+        @Schema(description = "商品简介")
+        @NotBlank @Size(max = 128) String introduction,
+        @Schema(description = "商品轮播图，最多5张")
+        @NotNull @Size(max = 5) List<@NotBlank @Size(max = 500) String> sliderPicUrls,
+        @Schema(description = "排序，数值越大越靠前")
+        @NotNull @Min(0) Integer sort
 ) implements Serializable {}

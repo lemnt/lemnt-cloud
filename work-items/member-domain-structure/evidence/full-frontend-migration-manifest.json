@@ -94,26 +94,30 @@
     {
       "source": "src/views/mall/product/property/PropertyForm.vue",
       "sha256": "b37b9f594cd309269d1d9b2bbfbe220bf68dca4980acdff62a1250d9d6a1aa39",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/SpecPage.tsx",
+      "note": "131批规格/规格值管理、固定归属、名称备注、创建时间与规格项时间筛选、菜单权限已接通；API/SSR/MockMvc/H2验证，浏览器及真实部署联调待验。沿用ProductSpec/ProductSpecValue命名。"
     },
     {
       "source": "src/views/mall/product/property/index.vue",
       "sha256": "b692b4b7a70b39bdfe441b889a79acf828011092292a7a6612821b1f56e0034c",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/SpecPage.tsx",
+      "note": "131批规格/规格值管理、固定归属、名称备注、创建时间与规格项时间筛选、菜单权限已接通；API/SSR/MockMvc/H2验证，浏览器及真实部署联调待验。沿用ProductSpec/ProductSpecValue命名。"
     },
     {
       "source": "src/views/mall/product/property/value/ValueForm.vue",
       "sha256": "cb542a44578096c9f507befd8e40a1b060b33ed6972186699bb77dcd89d33c82",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/SpecPage.tsx",
+      "note": "131批规格/规格值管理、固定归属、名称备注、创建时间与规格项时间筛选、菜单权限已接通；API/SSR/MockMvc/H2验证，浏览器及真实部署联调待验。沿用ProductSpec/ProductSpecValue命名。"
     },
     {
       "source": "src/views/mall/product/property/value/index.vue",
       "sha256": "07640917f085a2f289e417e98fa951eb22fe0a39f6253b12324ebc3b025c34cf",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/SpecPage.tsx",
+      "note": "131批规格/规格值管理、固定归属、名称备注、创建时间与规格项时间筛选、菜单权限已接通；API/SSR/MockMvc/H2验证，浏览器及真实部署联调待验。沿用ProductSpec/ProductSpecValue命名。"
     },
     {
       "source": "src/views/mall/product/spu/components/SkuList.vue",
@@ -160,14 +164,16 @@
     {
       "source": "src/views/mall/product/spu/form/InfoForm.vue",
       "sha256": "bcb8028febf4a1116733ccffd2ad372f87ba36fcb186299cf0a3e290a03f4f18",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/components/SpuEditor.tsx",
+      "note": "134批关键字、简介、轮播图URL维护/预览、保存/详情/导出已贯通；基础分类品牌主图沿用已有能力。源上传交互和浏览器联调待补。"
     },
     {
       "source": "src/views/mall/product/spu/form/OtherForm.vue",
       "sha256": "7552e51fafba08fb94020b49c59a068c12ff4e814702aa1d3ca4eb07d88a6eee",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/components/SpuEditor.tsx",
+      "note": "134批仅补商品排序及实际分页/导出排序；赠积分、虚拟销量尚未迁移，不能将整个OtherForm视作完成。"
     },
     {
       "source": "src/views/mall/product/spu/form/ProductAttributes.vue",
@@ -196,8 +202,9 @@
     {
       "source": "src/views/mall/product/spu/index.vue",
       "sha256": "faa212b12d7ad781354fa5a40e8000eddcd9219a556f05b169a1bf28bcd823b2",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/SpuPage.tsx",
+      "note": "133批售罄/警戒库存真实汇总与计数、当前筛选XLSX同步导出及权限已接通；132批回收恢复删除保留。源完整经营列、库存合计展示、创建时间筛选与真实联调待补。 134批新增简介/排序展示及真实sort/id倒序，基础经营字段已保存/详情/导出贯通。"
     },
     {
       "source": "src/views/mall/promotion/article/ArticleForm.vue",
@@ -1026,32 +1033,37 @@
     {
       "source": "src/views/mall/trade/config/index.vue",
       "sha256": "1dc89d021bfe958bbded0b466dd962ab1a882f73b0e9c5b9a46b8023c8b6986d",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/config/pages/TradeConfigPage.tsx",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
     },
     {
       "source": "src/views/mall/trade/delivery/express/ExpressForm.vue",
       "sha256": "e16f0e3e4928d26a20253ba6cd83f3333d8002533f0e122b562464c5545e6c7b",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/delivery/pages/DeliveryPage.tsx",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
     },
     {
       "source": "src/views/mall/trade/delivery/express/index.vue",
       "sha256": "13c8fdec432b565b464254d2d6f6ce95ed1d4bcaf57de0b1e9a7a648e9f739fe",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/delivery/pages/DeliveryPage.tsx",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
     },
     {
       "source": "src/views/mall/trade/delivery/expressTemplate/ExpressTemplateForm.vue",
       "sha256": "dd41eae8539fef9795582b824a0e572d8a133678731534d16ec3c8cf50ac7309",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/delivery/pages/DeliveryPage.tsx",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
     },
     {
       "source": "src/views/mall/trade/delivery/expressTemplate/index.vue",
       "sha256": "67053ad156b47c0867e7bdf2e33cc1169720f2b03eefed1ff5861fa88dfcf11c",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/delivery/pages/DeliveryPage.tsx",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
     },
     {
       "source": "src/views/mall/trade/delivery/pickUpOrder/index.vue",
@@ -1354,20 +1366,23 @@
     {
       "source": "src/api/mall/trade/config/index.ts",
       "sha256": "02b135c0cc9b0e768ef7b48850144f46a2afab52429f12c05c7e88ae32efe14b",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/config/api/tradeConfigApi.ts",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
     },
     {
       "source": "src/api/mall/trade/delivery/express/index.ts",
       "sha256": "8bc0cd7e7dcf2b00f85f76e7664410dc80754e21576b50c2aa99829902c882b7",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/delivery/api/deliveryApi.ts",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
     },
     {
       "source": "src/api/mall/trade/delivery/expressTemplate/index.ts",
       "sha256": "f9ca8fb52e4e79a04891a4263be845e0000e6da6d44505e9e7c4642266200a9c",
-      "state": "pending",
-      "target": null
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/delivery/api/deliveryApi.ts",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
     },
     {
       "source": "src/api/mall/trade/delivery/pickUpStore/index.ts",

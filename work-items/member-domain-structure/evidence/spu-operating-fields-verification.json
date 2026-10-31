@@ -1,0 +1,267 @@
+{
+  "batch": "134",
+  "date": "2026-10-31",
+  "scope": [
+    "SPU keyword",
+    "SPU introduction",
+    "ordered gallery URL list",
+    "sort priority in normal/stock/selection/storefront queries",
+    "backend contracts, admin editing/detail/preview and export columns"
+  ],
+  "frontend": {
+    "tests": 266,
+    "files": 46,
+    "passed": true,
+    "build": "passed; existing vendor chunk warning only",
+    "typecheck": "passed in tsc -b build",
+    "lint": "passed",
+    "format": "passed"
+  },
+  "backend": {
+    "scope": "all 31 mall test classes",
+    "tests": 132,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "classes": {
+      "com.lemnt.mall.domain.settlement.CheckoutRulesTest": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.domain.product.CatalogRulesTest": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.application.settlement.MemberReceiptOwnershipTest": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.application.product.ProductSpuExportQueryTest": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.application.product.CatalogExecutorsTest": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.adapter.app.settlement.AppCheckoutControllerTest": {
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.adapter.app.product.StoreHttpContractTest": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.adapter.web.settlement.CheckoutHttpContractTest": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.adapter.web.coupon.PromotionHttpContractTest": {
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.adapter.web.product.ProductManagementHttpTest": {
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.adapter.web.product.CatalogSerializationTest": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.adapter.web.product.ProductSpuExportHttpTest": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.adapter.web.product.CatalogHttpContractTest": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.infrastructure.settlement.DeliveryPriceGatewayTest": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.infrastructure.settlement.SettlementCacheTest": {
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.infrastructure.config.MapperXmlLoadingTest": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.infrastructure.member.MemberLockGatewayTest": {
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.infrastructure.product.CatalogMenuSeedTest": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.start.promotion.BusinessMenuRetirementTest": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.start.promotion.PromotionPermissionSeedTest": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.start.promotion.PromotionMenuSeedTest": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.start.ControllerMappingTest": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.start.product.ProductPermissionSeedTest": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.start.product.SpuOperatingMigrationTest": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.start.product.CommentFlowPersistenceTest": {
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.start.product.CommentMenuSeedTest": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.start.product.ProductInteractionPersistenceTest": {
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.start.product.ActivityAlignmentPersistenceTest": {
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.start.product.CatalogPersistenceTest": {
+        "tests": 28,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.start.product.SpecMenuSeedTest": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.lemnt.mall.start.product.CouponSnapshotPersistenceTest": {
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "schema": {
+    "fresh": "lemnt-server/lemnt-mall/sql/V2__mall_catalog.sql",
+    "upgrade": "lemnt-server/lemnt-mall/sql/upgrade/spu_operating_fields.sql",
+    "columns": [
+      "keyword VARCHAR(255) NULL",
+      "introduction VARCHAR(128) NULL",
+      "slider_pic_urls LONGTEXT NULL",
+      "sort INT NOT NULL DEFAULT 0"
+    ],
+    "businessTablesAdded": false,
+    "h2UpgradePreservesHistory": true,
+    "realDatabaseExecuted": false,
+    "upgradeRepeatable": false
+  },
+  "contracts": [
+    "distinct HTTP create/update requests require keyword/introduction/sort/gallery collection",
+    "gallery <=5 nonblank URL strings <=500 chars, ordered; empty list clears",
+    "old internal calls preserve omitted operating fields; MP conditional updates preserve null omissions",
+    "read-only responses retain unknown old text values; no name-derived metadata",
+    "all SPU queries sort DESC then id DESC; export uses same paging",
+    "export appends four real fields and actual workbook is read by POI",
+    "prior batch export route added to complete route/permission contract test",
+    "no new menu or role grants in this batch",
+    "two trade integration test SPU constructor sites adapted to extended metadata; production trade logic unchanged"
+  ],
+  "logs": [
+    "/tmp/spu-operating-ui-tests.log",
+    "/tmp/spu-operating-ui-build.log",
+    "/tmp/spu-operating-ui-lint.log",
+    "/tmp/spu-operating-ui-format.log",
+    "/tmp/spu-operating-backend.log",
+    "/tmp/spu-operating-trade-integration.log"
+  ],
+  "limits": [
+    "no browser interaction or deployment acceptance",
+    "no real database/Redis/Dubbo/Nacos run",
+    "App display of new fields not migrated in this batch",
+    "gallery is URL maintenance/preview; source upload/drag interaction remains incomplete",
+    "audit/creation time and remaining source operating fields remain incomplete",
+    "full server/full trade and mini-program suites not rerun; mall full suite and trade checkout integration were run"
+  ],
+  "gitDiffCheck": "passed",
+  "committed": false,
+  "pushed": false,
+  "tradeCheckoutIntegration": {
+    "class": "CheckoutFlowIntegrationTest",
+    "tests": 100,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "scope": "existing cross-module order/payment/refund/inventory/coupon integration scenarios; not full trade suite"
+  }
+}

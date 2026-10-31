@@ -26,7 +26,7 @@ public class ProductSpecValueSimpleListQueryExe {
         }
         ProductCatalogValidation.id(qry.specId());
         String name = qry.name() == null || qry.name().isBlank() ? null : ProductCatalogValidation.text(qry.name(), 100, "名称");
-        return productSpecValueGateway.page(new ProductSpecFilter(name, qry.specId(), 1, qry.limit()))
+        return productSpecValueGateway.page(new ProductSpecFilter(name, qry.specId(), 1, qry.limit(), null, null))
                 .getRecords().stream().map(ProductSpecDTOConverter::value).toList();
     }
 }

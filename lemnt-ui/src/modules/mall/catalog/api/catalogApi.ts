@@ -14,6 +14,8 @@ import type {
   BrandSaveRequest,
   Spu,
   SpuQuery,
+  SpuFilter,
+  SpuStatusCounts,
   SpuCreateRequest,
   SpuUpdateRequest,
 } from '../types';
@@ -52,7 +54,16 @@ export function deleteBrand(id: string) {
   return request<boolean>({ url: `/mall/brands/${id}`, method: 'DELETE' });
 }
 export async function getSpuList(params: SpuQuery) {
-  const result = await request<unknown[]>({ url: '/mall/spus', params });
+  const result = await request<unknown[]>({
+    url: '/mall/spus',
+    params: {
+      ...spuFilters(params),
+      status: params.status,
+      stockStatus: params.stockStatus,
+      pageNum: params.pageNum,
+      pageSize: params.pageSize,
+    },
+  });
   return {
     data: decodeList(result.rows, decodeSpu),
     total: decodeTotal(result.total),
@@ -176,4 +187,59 @@ function interactionRecord(value: unknown): import('../types').ProductFavoriteRe
     price: (row.price as string | null) ?? null,
     createTime: row.createTime,
   };
+}
+
+/** 商品列表和数量统计保持相同的名称、精确分类及品牌条件。 */
+function spuFilters(params: SpuFilter) {
+  return {
+    name: params.name?.trim() || undefined,
+    categoryId: params.categoryId ? productId(params.categoryId) : undefined,
+    brandId: params.brandId ? productId(params.brandId) : undefined,
+  };
+}
+/** 校验Long编号，防止路径注入或超过服务端编号范围。 */
+function productId(value: string) {
+  const id = decodeId(value);
+  if (id.length > 19 || BigInt(id) > 9223372036854775807n) throw Error('商品编号超出范围');
+  return id;
+}
+/** 查询服务端真实商品状态数量，统计条件不混入页码或当前状态。 */
+export async function getSpuStatusCounts(params: SpuFilter): Promise<SpuStatusCounts> {
+  const response = await request<unknown>({ url: '/mall/spus/count', params: spuFilters(params) });
+  if (!response.data || typeof response.data !== 'object' || Array.isArray(response.data))
+    throw Error('商品状态统计响应不合法');
+  const row = response.data as Record<string, unknown>;
+  return {
+    onShelf: decodeTotal(row.onShelf),
+    offShelf: decodeTotal(row.offShelf),
+    recycled: decodeTotal(row.recycled),
+    soldOut: decodeTotal(row.soldOut),
+    lowStock: decodeTotal(row.lowStock),
+  };
+}
+/** 下架商品进入回收站，由服务端校验实际状态。 */
+export async function recycleSpu(id: string) {
+  if (
+    (await request<unknown>({ url: '/mall/spus/' + productId(id) + '/recycle', method: 'POST' }))
+      .data !== true
+  )
+    throw Error('商品回收未成功');
+  return true;
+}
+/** 回收站商品恢复为下架，不能直接恢复上架。 */
+export async function restoreSpu(id: string) {
+  if (
+    (await request<unknown>({ url: '/mall/spus/' + productId(id) + '/restore', method: 'POST' }))
+      .data !== true
+  )
+    throw Error('商品恢复未成功');
+  return true;
+}
+/** 删除回收站商品，历史订单和库存台账保留。 */
+export async function deleteSpu(id: string) {
+  if (
+    (await request<unknown>({ url: '/mall/spus/' + productId(id), method: 'DELETE' })).data !== true
+  )
+    throw Error('商品删除未成功');
+  return true;
 }

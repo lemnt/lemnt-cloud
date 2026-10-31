@@ -39,7 +39,7 @@ public class ProductManagementService {
         return requested.stream().filter(parents::containsKey).map(id -> {
             var value = parents.get(id);
             return new ProductSpu(value.id(), value.code(), value.name(), value.categoryId(), value.brandId(),
-                    value.description(), value.image(), value.status(), grouped.getOrDefault(id, List.of()), value.deliveryTypes(), value.deliveryTemplateId());
+                    value.description(), value.image(), value.status(), grouped.getOrDefault(id, List.of()), value.deliveryTypes(), value.deliveryTemplateId(), value.keyword(), value.introduction(), value.sliderPicUrls(), value.sort());
         }).toList();
     }
 

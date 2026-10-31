@@ -3,10 +3,12 @@ package com.lemnt.mall.adapter.web.product.converter;
 import com.lemnt.mall.adapter.web.product.req.BrandPageReq;
 import com.lemnt.mall.adapter.web.product.req.BrandSimpleReq;
 import com.lemnt.mall.adapter.web.product.req.ProductSpuCountReq;
+import com.lemnt.mall.adapter.web.product.req.ProductSpuExportReq;
 import com.lemnt.mall.adapter.web.product.req.ProductSpuSimpleReq;
 import com.lemnt.mall.application.product.qry.BrandPageQry;
 import com.lemnt.mall.application.product.qry.BrandSimpleListQry;
 import com.lemnt.mall.application.product.qry.ProductSpuCountQry;
+import com.lemnt.mall.application.product.qry.ProductSpuExportQry;
 import com.lemnt.mall.application.product.qry.ProductSpuSimpleListQry;
 
 /** 商品管理新增接口请求转换。 */
@@ -35,4 +37,8 @@ public final class ProductManagementReqConverter {
         return new ProductSpuSimpleListQry(req.name(), req.limit() == null ? 20 : req.limit());
     }
 
+    /** 导出使用独立请求，不能通过页码截断数据。 */
+    public static ProductSpuExportQry export(ProductSpuExportReq req) {
+        return new ProductSpuExportQry(req.name(), req.status(), req.categoryId(), req.brandId(), req.stockStatus());
+    }
 }

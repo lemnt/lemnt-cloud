@@ -9,5 +9,6 @@ public record ProductCatalogFilter(
         int offset,
         int limit,
         Long categoryId,
-        Long brandId
+        Long brandId,
+        ProductStockStatus stockStatus
 ) {}

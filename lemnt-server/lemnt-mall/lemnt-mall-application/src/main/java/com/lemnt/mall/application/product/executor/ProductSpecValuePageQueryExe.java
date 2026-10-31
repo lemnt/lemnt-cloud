@@ -27,7 +27,7 @@ public class ProductSpecValuePageQueryExe {
             ProductCatalogValidation.id(qry.specId());
         }
         String name = qry.name() == null || qry.name().isBlank() ? null : ProductCatalogValidation.text(qry.name(), 100, "名称");
-        var page = productSpecValueGateway.page(new ProductSpecFilter(name, qry.specId(), qry.pageNum(), qry.pageSize()));
+        var page = productSpecValueGateway.page(new ProductSpecFilter(name, qry.specId(), qry.pageNum(), qry.pageSize(), null, null));
         return PageResult.of(page.getRecords().stream().map(ProductSpecDTOConverter::value).toList(), page.getTotal());
     }
 }

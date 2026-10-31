@@ -1,5 +1,6 @@
 import { ProFormGroup, ProFormList, ProFormSelect } from '@ant-design/pro-components';
-import { App, Form } from 'antd';
+import { App, Button, Form } from 'antd';
+import { useState } from 'react';
 import {
   getSpecOptions,
   getSpecValueOptions,
@@ -9,19 +10,31 @@ import {
 
 /** 每个SKU选取已有字典编号，不允许在商品编辑时临时创建同名规格。 */
 export function SkuSpecFields({ skuIndex }: { skuIndex: number }) {
+  const [revision, setRevision] = useState(0);
   return (
-    <ProFormList
-      name="specSelections"
-      label="商品规格（无规格时不添加）"
-      max={10}
-      copyIconProps={false}
-      creatorButtonProps={{ creatorButtonText: '添加规格' }}
-    >
-      {(field) => <SpecChoice skuIndex={skuIndex} specIndex={field.name} />}
-    </ProFormList>
+    <>
+      <ProFormList
+        name="specSelections"
+        label="商品规格（无规格时不添加）"
+        max={10}
+        copyIconProps={false}
+        creatorButtonProps={{ creatorButtonText: '添加规格' }}
+      >
+        {(field) => <SpecChoice skuIndex={skuIndex} specIndex={field.name} revision={revision} />}
+      </ProFormList>
+      <Button onClick={() => setRevision((value) => value + 1)}>刷新规格字典</Button>
+    </>
   );
 }
-function SpecChoice({ skuIndex, specIndex }: { skuIndex: number; specIndex: number }) {
+function SpecChoice({
+  skuIndex,
+  specIndex,
+  revision,
+}: {
+  skuIndex: number;
+  specIndex: number;
+  revision: number;
+}) {
   const form = Form.useFormInstance();
   const { message } = App.useApp();
   const path = ['skus', skuIndex, 'specSelections', specIndex];
@@ -63,7 +76,7 @@ function SpecChoice({ skuIndex, specIndex }: { skuIndex: number; specIndex: numb
         label="规格"
         showSearch
         debounceTime={300}
-        params={{ selected: propertyId }}
+        params={{ selected: propertyId, revision }}
         request={({ keyWords }) => options('spec', keyWords)}
         fieldProps={{
           filterOption: false,
@@ -81,7 +94,7 @@ function SpecChoice({ skuIndex, specIndex }: { skuIndex: number; specIndex: numb
         showSearch
         disabled={!propertyId}
         debounceTime={300}
-        params={{ propertyId, selected: valueId }}
+        params={{ propertyId, selected: valueId, revision }}
         request={({ keyWords }) => options('value', keyWords)}
         fieldProps={{ filterOption: false }}
         rules={[{ required: true }]}

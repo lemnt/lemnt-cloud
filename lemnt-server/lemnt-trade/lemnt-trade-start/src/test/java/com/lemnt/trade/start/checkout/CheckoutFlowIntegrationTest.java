@@ -977,7 +977,7 @@ class CheckoutFlowIntegrationTest {
                 null, "快递品牌", null, null, 0, "ENABLED"));
         var spu = mallComponents.get(com.lemnt.mall.domain.product.gateway.ProductSpuGateway.class).insertSpu(
                 new com.lemnt.mall.domain.product.model.ProductSpu(null, "DELIVERY-SPU", "快递商品", category.id(),
-                        brand.id(), null, null, "ON_SHELF", List.of(), List.of(1), template));
+                        brand.id(), null, null, "ON_SHELF", List.of(), List.of(1), template, null, null, null, null));
         mallComponents.get(com.lemnt.mall.infrastructure.product.mapper.ProductSkuMapper.class).update(null,
                 com.baomidou.mybatisplus.core.toolkit.Wrappers
                         .<com.lemnt.mall.infrastructure.product.dataobject.ProductSkuDO>lambdaUpdate()
@@ -2610,7 +2610,7 @@ class CheckoutFlowIntegrationTest {
                 originalSku.status(), originalSku.weight(), originalSku.volume());
         catalog.updateSpu(new com.lemnt.mall.domain.product.model.ProductSpu(spuId, originalSpu.code(), originalSpu.name(),
                 originalSpu.categoryId(), originalSpu.brandId(), originalSpu.description(), originalSpu.image(),
-                originalSpu.status(), List.of(linked), originalSpu.deliveryTypes(), originalSpu.deliveryTemplateId()));
+                originalSpu.status(), List.of(linked), originalSpu.deliveryTypes(), originalSpu.deliveryTemplateId(), originalSpu.keyword(), originalSpu.introduction(), originalSpu.sliderPicUrls(), originalSpu.sort()));
         var receipt = paidOrder(null);
         var order = orderPersistenceService.findByOrderNo(receipt.orderNo());
         var item = order.items().get(0);

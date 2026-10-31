@@ -27,6 +27,10 @@ public class ProductSpuDO implements Serializable {
     private Long id;
     private String code;
     private String name;
+    private String keyword;
+    private String introduction;
+    private String sliderPicUrls;
+    private Integer sort;
     private Long categoryId;
     private Long brandId;
     private String description;

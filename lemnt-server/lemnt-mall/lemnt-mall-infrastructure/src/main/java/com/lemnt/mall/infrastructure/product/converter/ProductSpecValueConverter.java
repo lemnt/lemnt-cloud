@@ -11,7 +11,7 @@ public final class ProductSpecValueConverter {
     /** 转换领域记录。 */
     public static ProductSpecValue toModel(ProductSpecValueDO row) {
         return row == null ? null : new ProductSpecValue(row.getId(), row.getSpecId(), row.getName(),
-            row.getRemark());
+            row.getRemark(), row.getCreateTime());
     }
 
     /** 转换数据对象。 */

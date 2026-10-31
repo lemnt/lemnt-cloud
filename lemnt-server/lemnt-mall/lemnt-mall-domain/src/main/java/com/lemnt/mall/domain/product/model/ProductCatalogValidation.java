@@ -188,6 +188,13 @@ public final class ProductCatalogValidation {
                         new com.lemnt.mall.domain.product.model.ProductSkuSpec(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
                     "ON_SHELF", sku.weight(), sku.volume()));
         }
+        if (input.sort() != null && input.sort() < 0) {
+            throw new IllegalArgumentException("商品排序不能为负");
+        }
+        if (input.sliderPicUrls() != null && (input.sliderPicUrls().size() > 5
+                || input.sliderPicUrls().stream().anyMatch(url -> url == null || url.isBlank() || url.length() > 500))) {
+            throw new IllegalArgumentException("轮播图最多5张且地址不能为空或超过500字");
+        }
         return new ProductSpu(
                 null,
                 text(input.code(), 64, "SPU编码"),
@@ -197,7 +204,7 @@ public final class ProductCatalogValidation {
                 optional(input.description(), 65535),
                 optional(input.image(), 500),
                 "OFF_SHELF",
-                skus, input.deliveryTypes(), input.deliveryTemplateId());
+                skus, input.deliveryTypes(), input.deliveryTemplateId(), optional(input.keyword(), 255), optional(input.introduction(), 128), input.sliderPicUrls(), input.sort());
     }
 
     /** 校验批量商品标识，拒绝重复编号和超量请求。 */

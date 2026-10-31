@@ -27,5 +27,13 @@ public record ProductSpuPageRes(
         @Schema(description = "状态")
         String status,
         @Schema(description = "SKU列表，分页列表时为空，详情包含完整SKU")
-        List<ProductSkuRes> skus
+        List<ProductSkuRes> skus,
+        @Schema(description = "商品关键字")
+        String keyword,
+        @Schema(description = "商品简介")
+        String introduction,
+        @Schema(description = "轮播图地址，按显示顺序返回")
+        List<String> sliderPicUrls,
+        @Schema(description = "排序，数值越大越靠前")
+        Integer sort
 ) implements Serializable {}

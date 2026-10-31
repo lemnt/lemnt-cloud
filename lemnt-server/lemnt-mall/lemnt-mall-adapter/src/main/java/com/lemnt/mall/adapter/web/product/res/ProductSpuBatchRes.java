@@ -29,7 +29,15 @@ public record ProductSpuBatchRes(
         @Schema(description = "配送方式，1 快递、2 自提")
         List<Integer> deliveryTypes,
         @Schema(description = "运费模板编号")
-        Long deliveryTemplateId
+        Long deliveryTemplateId,
+        @Schema(description = "商品关键字")
+        String keyword,
+        @Schema(description = "商品简介")
+        String introduction,
+        @Schema(description = "轮播图地址，按显示顺序返回")
+        List<String> sliderPicUrls,
+        @Schema(description = "排序，数值越大越靠前")
+        Integer sort
 ) implements Serializable {
 
     /** 历史快照缺少配送字段，读取时保留未配置状态。 */
@@ -43,6 +51,6 @@ public record ProductSpuBatchRes(
             String image,
             String status,
             List<ProductSpuBatchSkuRes> skus) {
-        this(id, code, name, categoryId, brandId, description, image, status, skus, List.of(), null);
+        this(id, code, name, categoryId, brandId, description, image, status, skus, List.of(), null, null, null, null, null);
     }
 }

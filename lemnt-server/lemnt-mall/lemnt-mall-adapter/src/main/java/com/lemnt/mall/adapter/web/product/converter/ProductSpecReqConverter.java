@@ -27,7 +27,7 @@ public final class ProductSpecReqConverter {
     /** 转换分页请求。 */
     public static ProductSpecPageQry page(ProductSpecPageReq req) {
         return new ProductSpecPageQry(req.name(), req.pageNum() == null ? 1 : req.pageNum(),
-            req.pageSize() == null ? 20 : req.pageSize());
+            req.pageSize() == null ? 20 : req.pageSize(), req.createTimeStart(), req.createTimeEnd());
     }
 
     /** 转换选择查询。 */

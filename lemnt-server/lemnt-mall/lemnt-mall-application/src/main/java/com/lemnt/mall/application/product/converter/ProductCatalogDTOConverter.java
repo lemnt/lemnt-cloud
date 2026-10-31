@@ -79,7 +79,7 @@ public final class ProductCatalogDTOConverter {
                 value.description(),
                 value.image(),
                 value.status(),
-                value.skus().stream().map(ProductCatalogDTOConverter::sku).toList(), value.deliveryTypes(), value.deliveryTemplateId());
+                value.skus().stream().map(ProductCatalogDTOConverter::sku).toList(), value.deliveryTypes(), value.deliveryTemplateId(), value.keyword(), value.introduction(), value.sliderPicUrls(), value.sort());
     }
 
 }

@@ -1,10 +1,10 @@
 import { ProDescriptions, ProTable, type ProColumns } from '@ant-design/pro-components';
-import { Alert, Button, Drawer, Empty } from 'antd';
+import { Alert, Button, Drawer, Empty, Image } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { usePermission } from '@/shared/hooks/usePermission';
 import { getSpuDetail } from '../api/catalogApi';
 import { catalogKeys } from '../hooks/catalogKeys';
-import { shelfStatusEnum } from '../constants';
+import { shelfStatusEnum, spuStatusEnum } from '../constants';
 import ProductInteractionPanels from './ProductInteractionPanels';
 import type { Sku } from '../types';
 
@@ -49,12 +49,20 @@ export function SpuDetailDrawer({ id, onClose }: { id?: string; onClose: () => v
             columns={[
               { title: 'SPU 编码', dataIndex: 'code' },
               { title: '名称', dataIndex: 'name' },
+              { title: '关键字', dataIndex: 'keyword' },
+              { title: '简介', dataIndex: 'introduction' },
+              { title: '排序', dataIndex: 'sort' },
               { title: '分类编号', dataIndex: 'categoryId' },
               { title: '品牌编号', dataIndex: 'brandId' },
               { title: '运费模板', dataIndex: 'deliveryTemplateId' },
-              { title: '状态', dataIndex: 'status', valueEnum: shelfStatusEnum },
+              { title: '状态', dataIndex: 'status', valueEnum: spuStatusEnum },
             ]}
           />
+          <Image.PreviewGroup>
+            {query.data.sliderPicUrls.map((url, index) => (
+              <Image key={`${index}-${url}`} src={url} alt={`商品轮播图${index + 1}`} width={100} />
+            ))}
+          </Image.PreviewGroup>
           <ProductInteractionPanels spuId={query.data.id} />
           <ProTable<Sku>
             rowKey="id"

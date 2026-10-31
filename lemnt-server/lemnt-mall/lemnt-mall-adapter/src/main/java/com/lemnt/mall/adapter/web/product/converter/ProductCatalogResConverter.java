@@ -73,7 +73,7 @@ public final class ProductCatalogResConverter {
                 value.description(),
                 value.image(),
                 value.status(),
-                value.skus().stream().map(ProductCatalogResConverter::sku).toList());
+                value.skus().stream().map(ProductCatalogResConverter::sku).toList(), value.keyword(), value.introduction(), value.sliderPicUrls(), value.sort());
     }
 
     /**
@@ -91,7 +91,7 @@ public final class ProductCatalogResConverter {
                 value.description(),
                 value.image(),
                 value.status(),
-                value.skus().stream().map(ProductCatalogResConverter::sku).toList(), value.deliveryTypes(), value.deliveryTemplateId());
+                value.skus().stream().map(ProductCatalogResConverter::sku).toList(), value.deliveryTypes(), value.deliveryTemplateId(), value.keyword(), value.introduction(), value.sliderPicUrls(), value.sort());
     }
 
     /**
@@ -109,7 +109,7 @@ public final class ProductCatalogResConverter {
                 value.description(),
                 value.image(),
                 value.status(),
-                value.skus().stream().map(ProductCatalogResConverter::sku).toList(), value.deliveryTypes(), value.deliveryTemplateId());
+                value.skus().stream().map(ProductCatalogResConverter::sku).toList(), value.deliveryTypes(), value.deliveryTemplateId(), value.keyword(), value.introduction(), value.sliderPicUrls(), value.sort());
     }
 
     /**

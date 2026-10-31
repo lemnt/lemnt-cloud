@@ -2,6 +2,21 @@ import { lazy, type ComponentType } from 'react';
 
 /** 后端 component 仅作为注册键使用，不执行任意路径导入。 */
 export const pages: Record<string, ComponentType> = {
+  'mall/spec/index': lazy(() => import('../modules/mall/catalog/pages/SpecPage')),
+  'mall/spec-value/index': lazy(() =>
+    import('../modules/mall/catalog/pages/SpecPage').then((m) => ({ default: m.SpecValuePage })),
+  ),
+  'trade/delivery/express/index': lazy(() =>
+    import('../modules/trade/delivery/pages/DeliveryPage').then((m) => ({
+      default: m.ExpressPage,
+    })),
+  ),
+  'trade/delivery/express-template/index': lazy(() =>
+    import('../modules/trade/delivery/pages/DeliveryPage').then((m) => ({
+      default: m.ExpressTemplatePage,
+    })),
+  ),
+  'trade/config/index': lazy(() => import('../modules/trade/config/pages/TradeConfigPage')),
   'trade/payment/index': lazy(() =>
     import('../modules/trade/payment/pages/PaymentPage').then((m) => ({ default: m.PaymentPage })),
   ),

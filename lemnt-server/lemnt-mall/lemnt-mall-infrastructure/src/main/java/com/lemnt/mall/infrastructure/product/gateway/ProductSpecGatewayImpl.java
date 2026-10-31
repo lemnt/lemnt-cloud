@@ -52,9 +52,12 @@ public class ProductSpecGatewayImpl implements ProductSpecGateway {
     @Override
     public PageResult<ProductSpec> page(ProductSpecFilter filter) {
         var page = productSpecMapper.selectPage(new Page<>(filter.pageNum(), filter.pageSize()),
-                Wrappers.lambdaQuery(ProductSpecDO.class).like(filter.name() != null,
+                Wrappers.lambdaQuery(ProductSpecDO.class)
+                .ge(filter.createTimeStart() != null, ProductSpecDO::getCreateTime, filter.createTimeStart())
+                .le(filter.createTimeEnd() != null, ProductSpecDO::getCreateTime, filter.createTimeEnd())
+                .like(filter.name() != null,
                     ProductSpecDO::getName, filter.name())
-                .orderByAsc(ProductSpecDO::getId));
+                .orderByDesc(ProductSpecDO::getId));
         return PageResult.of(page.getRecords().stream().map(ProductSpecConverter::toModel).toList(),
             page.getTotal());
     }

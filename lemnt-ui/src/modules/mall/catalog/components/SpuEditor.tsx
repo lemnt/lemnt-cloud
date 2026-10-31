@@ -43,6 +43,10 @@ interface SpuFormValues {
   deliveryTemplateId?: string;
   code: string;
   name: string;
+  keyword: string;
+  introduction: string;
+  sliderPictures: { url: string }[];
+  sort: number;
   categoryId: string;
   brandId: string;
   description?: string;
@@ -109,13 +113,19 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
               brandId: values.brandId,
               description: values.description,
               image: values.image,
+              keyword: values.keyword,
+              introduction: values.introduction,
+              sliderPicUrls: values.sliderPictures.map((row) => row.url),
+              sort: values.sort,
               skus: values.skus.map(skuPayload),
             })
           ).data,
         );
       } else {
+        const { sliderPictures, ...fields } = values;
         await createSpu({
-          ...values,
+          ...fields,
+          sliderPicUrls: sliderPictures.map((row) => row.url),
           skus: values.skus.map(skuPayload),
         });
       }
@@ -139,6 +149,10 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
         value
           ? {
               ...value,
+              keyword: value.keyword ?? '',
+              introduction: value.introduction ?? '',
+              sliderPictures: value.sliderPicUrls.map((url) => ({ url })),
+              sort: value.sort ?? 0,
               deliveryTypes: value.deliveryTypes.length ? value.deliveryTypes : [1],
               deliveryTemplateId: value.deliveryTemplateId ?? undefined,
               description: value.description ?? undefined,
@@ -162,7 +176,12 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
                 image: sku.image ?? undefined,
               })),
             }
-          : { deliveryTypes: [1], skus: [{ stock: 0, specSelections: [] }] }
+          : {
+              deliveryTypes: [1],
+              sliderPictures: [],
+              sort: 0,
+              skus: [{ stock: 0, specSelections: [] }],
+            }
       }
       modalProps={{ destroyOnHidden: true, maskClosable: false }}
       submitter={{
@@ -207,6 +226,24 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
         rules={[{ required: true }, { max: 64 }]}
       />
       <ProFormText name="name" label="商品名称" rules={[{ required: true }, { max: 200 }]} />
+      <ProFormText
+        name="keyword"
+        label="商品关键字"
+        rules={[{ required: true, whitespace: true, max: 255 }]}
+      />
+      <ProFormTextArea
+        name="introduction"
+        label="商品简介"
+        rules={[{ required: true, whitespace: true, max: 128 }]}
+      />
+      <ProFormDigit
+        name="sort"
+        label="商品排序"
+        min={0}
+        max={2147483647}
+        fieldProps={{ precision: 0 }}
+        rules={[{ required: true }]}
+      />
       <ProFormSelect
         name="categoryId"
         label="分类"
@@ -244,6 +281,19 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
         options={templates.data?.map((row) => ({ label: row.name, value: row.id }))}
       />
       <ProFormText name="image" label="主图 URL" rules={[{ max: 500 }]} />
+      <ProFormList
+        name="sliderPictures"
+        label="商品轮播图"
+        max={5}
+        copyIconProps={false}
+        creatorButtonProps={{ creatorButtonText: '添加轮播图' }}
+      >
+        <ProFormText
+          name="url"
+          label="图片URL"
+          rules={[{ required: true, whitespace: true, max: 500 }]}
+        />
+      </ProFormList>
       <ProFormTextArea name="description" label="商品描述" rules={[{ max: 65535 }]} />
       {value?.skus.some((sku) =>
         sku.properties.some((property) => property.propertyId == null || property.valueId == null),

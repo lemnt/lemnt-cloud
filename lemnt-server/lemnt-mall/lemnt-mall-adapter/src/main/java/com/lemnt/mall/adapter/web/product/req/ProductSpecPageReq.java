@@ -5,7 +5,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /** 规格字典分页请求。 */
 @Schema(description = "规格字典分页请求")
@@ -20,6 +23,12 @@ public record ProductSpecPageReq(
         @Schema(description = "每页数量，默认20，最多100")
         @Min(1)
         @Max(100)
-        Integer pageSize
+        Integer pageSize,
+        @Schema(description = "创建时间起，包含边界")
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        LocalDateTime createTimeStart,
+        @Schema(description = "创建时间止，包含边界")
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        LocalDateTime createTimeEnd
 ) implements Serializable {
 }

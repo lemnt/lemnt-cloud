@@ -41,6 +41,6 @@ public class ProductSpuUpdateCmdExe {
                 ProductCatalogValidation.optional(cmd.description(), 65535),
                 ProductCatalogValidation.optional(cmd.image(), 500),
                 null,
-                cmd.skus(), cmd.deliveryTypes(), cmd.deliveryTemplateId()));
+                cmd.skus(), cmd.deliveryTypes(), cmd.deliveryTemplateId(), cmd.keyword(), cmd.introduction(), cmd.sliderPicUrls(), cmd.sort()));
     }
 }

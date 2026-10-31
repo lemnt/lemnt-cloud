@@ -63,9 +63,16 @@ public class ProductCatalogService {
         ) {
             throw new IllegalArgumentException("商品不存在");
         }
+        // 内部历史调用未携带经营字段时保留原配置；HTTP编辑请求要求显式填写。
+        value = new ProductSpu(value.id(), value.code(), value.name(), value.categoryId(), value.brandId(),
+                value.description(), value.image(), value.status(), value.skus(), value.deliveryTypes(), value.deliveryTemplateId(),
+                value.keyword() == null ? original.keyword() : value.keyword(),
+                value.introduction() == null ? original.introduction() : value.introduction(),
+                value.sliderPicUrls() == null ? original.sliderPicUrls() : value.sliderPicUrls(),
+                value.sort() == null ? original.sort() : value.sort());
         var validated = ProductCatalogValidation.newSpu(
                 new ProductSpu(value.id(), original.code(), value.name(), value.categoryId(), value.brandId(),
-                        value.description(), value.image(), original.status(), value.skus(), value.deliveryTypes(), value.deliveryTemplateId()));
+                        value.description(), value.image(), original.status(), value.skus(), value.deliveryTypes(), value.deliveryTemplateId(), value.keyword(), value.introduction(), value.sliderPicUrls(), value.sort()));
         var existing = productSkuGateway.catalogSkus(value.id());
         // 整体保存时先锁定旧 SKU 并释放规格键，允许交换规格及替换旧规格。
         existing.stream().map(ProductSku::id).sorted().forEach(productSkuGateway::lockById);
@@ -147,7 +154,7 @@ public class ProductCatalogService {
                 value.description(),
                 value.image(),
                 value.status(),
-                skus, value.deliveryTypes(), value.deliveryTemplateId());
+                skus, value.deliveryTypes(), value.deliveryTemplateId(), value.keyword(), value.introduction(), value.sliderPicUrls(), value.sort());
     }
 
     private ProductSku withProperties(ProductSku value, List<ProductSkuSpec> properties) {

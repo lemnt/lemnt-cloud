@@ -24,12 +24,12 @@ public final class ProductSpecResConverter {
 
     /** 转换详情接口响应。 */
     public static ProductSpecDetailRes detail(ProductSpecDTO value) {
-        return new ProductSpecDetailRes(value.id(), value.name(), value.remark());
+        return new ProductSpecDetailRes(value.id(), value.name(), value.remark(), value.createTime());
     }
 
     /** 转换分页接口响应。 */
     public static ProductSpecPageRes page(ProductSpecDTO value) {
-        return new ProductSpecPageRes(value.id(), value.name(), value.remark());
+        return new ProductSpecPageRes(value.id(), value.name(), value.remark(), value.createTime());
     }
 
     /** 转换Simple接口响应。 */

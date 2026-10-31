@@ -6,6 +6,8 @@ import java.io.Serializable;
 public record ProductSpuStatusCount(
         long onShelf,
         long offShelf,
-        long recycled
+        long recycled,
+        long soldOut,
+        long lowStock
 ) implements Serializable {
 }

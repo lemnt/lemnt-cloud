@@ -128,3 +128,13 @@ F01进行中：规则快照、限领/无限量、DATE/TERM、商品范围计价�
 2026-10-31 129整业务批次：满减/折扣后台列表详情、增改关闭删除、SPU-SKU及规则选择、权限和幂等菜单种子一起交付；232前端、10项后端聚焦测试通过。赠券/赠积分等源剩余规则和真实浏览器联调未完成。
 
 129同批继续补齐支付单/支付退单/支持渠道三个入口，本批共五页；最终237前端、15项后端聚焦测试通过，两个新增菜单种子均未执行真实库。详见129-backoffice-management-pages-delivery.md。
+
+2026-10-31 第130批：补齐快递公司、运费模板、交易配置三个后台入口；复用现有接口、服务前缀、菜单权限，保留子规则身份与未开放配置原值。交付见[130-delivery-config-management-pages-delivery.md](130-delivery-config-management-pages-delivery.md)，不将代码/SSR/H2证据等同真实联调。
+
+2026-10-31 第131批：规格、规格值后台管理及商品编辑字典刷新已接通；补齐真实创建时间、规格项时间范围筛选和源编号倒序。无业务表变更，菜单不自动授权；见[131-product-spec-management-delivery.md](131-product-spec-management-delivery.md)。
+
+2026-10-31 第132批：商品页接通回收/恢复/删除、三种真实状态计数、分类品牌筛选与权限；260项前端、32项后端聚焦测试通过。售罄/警戒库存、经营字段及导出仍待补齐；见[132-spu-lifecycle-management-delivery.md](132-spu-lifecycle-management-delivery.md)。
+
+2026-10-31 第133批：补齐真实SKU库存汇总的售罄/警戒库存分组与数量、当前筛选XLSX导出及独立权限。265项前端、38项后端聚焦验证通过；经营字段和真实联调仍待补。见[133-spu-stock-tabs-export-delivery.md](133-spu-stock-tabs-export-delivery.md)。
+
+2026-10-31 第134批：关键字、简介、轮播图和排序贯通表/各层/后台/导出；新增旧库字段升级脚本但未执行真实库。266项前端、mall全部31类132项测试通过；上传交互与更多经营/审计字段待补，见[134-spu-operating-fields-delivery.md](134-spu-operating-fields-delivery.md)。

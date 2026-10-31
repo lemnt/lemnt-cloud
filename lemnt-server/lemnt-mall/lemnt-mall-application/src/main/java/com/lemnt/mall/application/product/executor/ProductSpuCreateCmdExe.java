@@ -62,7 +62,7 @@ public class ProductSpuCreateCmdExe {
                 cmd.description(),
                 cmd.image(),
                 null,
-                drafts, cmd.deliveryTypes(), cmd.deliveryTemplateId());
+                drafts, cmd.deliveryTypes(), cmd.deliveryTemplateId(), cmd.keyword(), cmd.introduction(), cmd.sliderPicUrls(), cmd.sort());
         catalogValidationService.enabledReferences(value.categoryId(), value.brandId());
         return ProductCatalogDTOConverter.spu(catalogService.createSpu(value));
     }

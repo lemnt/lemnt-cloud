@@ -12,6 +12,10 @@ public record ProductSpuCountRes(
         @Schema(description = "下架数量")
         long offShelf,
         @Schema(description = "回收站数量")
-        long recycled
+        long recycled,
+        @Schema(description = "总库存为0的商品数，包含未删除的回收站商品")
+        long soldOut,
+        @Schema(description = "库存不超过10且不在回收站的商品数")
+        long lowStock
 ) implements Serializable {
 }

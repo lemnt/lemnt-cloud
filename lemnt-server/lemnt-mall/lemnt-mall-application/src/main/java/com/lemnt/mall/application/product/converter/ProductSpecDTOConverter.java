@@ -12,12 +12,12 @@ public final class ProductSpecDTOConverter {
 
     /** 转换规格项。 */
     public static ProductSpecDTO property(ProductSpec value) {
-        return value == null ? null : new ProductSpecDTO(value.id(), value.name(), value.remark());
+        return value == null ? null : new ProductSpecDTO(value.id(), value.name(), value.remark(), value.createTime());
     }
 
     /** 转换规格值。 */
     public static ProductSpecValueDTO value(ProductSpecValue value) {
         return value == null ? null : new ProductSpecValueDTO(value.id(), value.specId(), value.name(),
-            value.remark());
+            value.remark(), value.createTime());
     }
 }

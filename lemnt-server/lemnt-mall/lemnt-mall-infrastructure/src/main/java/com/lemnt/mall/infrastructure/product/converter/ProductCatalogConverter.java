@@ -65,7 +65,7 @@ public final class ProductCatalogConverter {
                 row.getDescription(),
                 row.getImage(),
                 row.getStatus(),
-                skus, JSON.parseArray(row.getDeliveryTypes(), Integer.class), row.getDeliveryTemplateId());
+                skus, JSON.parseArray(row.getDeliveryTypes(), Integer.class), row.getDeliveryTemplateId(), row.getKeyword(), row.getIntroduction(), JSON.parseArray(row.getSliderPicUrls(), String.class), row.getSort());
     }
 
     /**
@@ -133,6 +133,10 @@ public final class ProductCatalogConverter {
         row.setStatus(value.status());
         row.setDeliveryTypes(JSON.toJSONString(value.deliveryTypes()));
         row.setDeliveryTemplateId(value.deliveryTemplateId());
+        row.setKeyword(value.keyword());
+        row.setIntroduction(value.introduction());
+        row.setSliderPicUrls(value.sliderPicUrls() == null ? null : JSON.toJSONString(value.sliderPicUrls()));
+        row.setSort(value.sort());
         return row;
     }
 

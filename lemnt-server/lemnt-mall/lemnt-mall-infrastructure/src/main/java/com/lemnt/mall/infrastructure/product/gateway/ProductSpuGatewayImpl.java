@@ -6,6 +6,7 @@ import com.lemnt.mall.domain.product.model.ProductCatalogPage;
 import com.lemnt.mall.domain.product.model.ProductCatalogValidation;
 import com.lemnt.mall.domain.product.model.ProductSpu;
 import com.lemnt.mall.domain.product.model.ProductSpuStatusCount;
+import com.lemnt.mall.domain.product.model.ProductStockStatus;
 import com.lemnt.mall.domain.product.model.StoreFilter;
 import com.lemnt.mall.domain.product.model.StoreProduct;
 import com.lemnt.mall.infrastructure.product.converter.ProductCatalogConverter;
@@ -57,26 +58,31 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
 
     @Override
     public ProductSpuStatusCount counts(String name, Long categoryId, Long brandId) {
-        var onShelf = new ProductCatalogFilter(name, "ON_SHELF", 0, 1, categoryId, brandId);
-        var offShelf = new ProductCatalogFilter(name, "OFF_SHELF", 0, 1, categoryId, brandId);
-        var recycled = new ProductCatalogFilter(name, "RECYCLED", 0, 1, categoryId, brandId);
+        var onShelf = new ProductCatalogFilter(name, "ON_SHELF", 0, 1, categoryId, brandId, null);
+        var offShelf = new ProductCatalogFilter(name, "OFF_SHELF", 0, 1, categoryId, brandId, null);
+        var recycled = new ProductCatalogFilter(name, "RECYCLED", 0, 1, categoryId, brandId, null);
         return new ProductSpuStatusCount(productSpuMapper.selectCount(query(onShelf)),
-                productSpuMapper.selectCount(query(offShelf)), productSpuMapper.selectCount(query(recycled)));
+                productSpuMapper.selectCount(query(offShelf)), productSpuMapper.selectCount(query(recycled)),
+                productSpuMapper.countStockSpus(new ProductCatalogFilter(name, null, 0, 1, categoryId, brandId,
+                        ProductStockStatus.SOLD_OUT), ProductStockStatus.ALERT_STOCK),
+                productSpuMapper.countStockSpus(new ProductCatalogFilter(name, null, 0, 1, categoryId, brandId,
+                        ProductStockStatus.LOW_STOCK), ProductStockStatus.ALERT_STOCK));
     }
 
     @Override
     public List<ProductSpu> simpleList(String name, int limit) {
-        var filter = new ProductCatalogFilter(name, "ON_SHELF", 0, limit, null, null);
-        return productSpuMapper.selectPage(new Page<>(1, limit, false), query(filter).orderByDesc(ProductSpuDO::getId))
+        var filter = new ProductCatalogFilter(name, "ON_SHELF", 0, limit, null, null, null);
+        return productSpuMapper.selectPage(new Page<>(1, limit, false), query(filter).orderByDesc(ProductSpuDO::getSort).orderByDesc(ProductSpuDO::getId))
                 .getRecords().stream().map(row -> ProductCatalogConverter.spu(row, List.of())).toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public ProductCatalogPage page(ProductCatalogFilter filter) {
-        var page = productSpuMapper.selectPage(
-                new Page<>((long) filter.offset() / filter.limit() + 1, filter.limit()),
-                query(filter).orderByDesc(ProductSpuDO::getId));
+        var pagination = new Page<ProductSpuDO>((long) filter.offset() / filter.limit() + 1, filter.limit());
+        var page = filter.stockStatus() == null
+                ? productSpuMapper.selectPage(pagination, query(filter).orderByDesc(ProductSpuDO::getSort).orderByDesc(ProductSpuDO::getId))
+                : productSpuMapper.selectStockPage(pagination, filter, ProductStockStatus.ALERT_STOCK);
         return new ProductCatalogPage(page.getRecords().stream()
                 .map(row -> ProductCatalogConverter.spu(row, List.of())).toList(), page.getTotal());
     }
@@ -86,6 +92,10 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
         var row = ProductCatalogConverter.spu(value);
         return productSpuMapper.update(null, Wrappers.<ProductSpuDO>lambdaUpdate()
                 .set(ProductSpuDO::getName, row.getName())
+                .set(row.getKeyword() != null, ProductSpuDO::getKeyword, row.getKeyword())
+                .set(row.getIntroduction() != null, ProductSpuDO::getIntroduction, row.getIntroduction())
+                .set(row.getSliderPicUrls() != null, ProductSpuDO::getSliderPicUrls, row.getSliderPicUrls())
+                .set(row.getSort() != null, ProductSpuDO::getSort, row.getSort())
                 .set(ProductSpuDO::getCategoryId, row.getCategoryId())
                 .set(ProductSpuDO::getBrandId, row.getBrandId())
                 .set(ProductSpuDO::getDescription, row.getDescription())

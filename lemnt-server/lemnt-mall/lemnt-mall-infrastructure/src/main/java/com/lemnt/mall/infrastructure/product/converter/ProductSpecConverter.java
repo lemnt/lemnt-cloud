@@ -10,7 +10,7 @@ public final class ProductSpecConverter {
 
     /** 转换领域记录。 */
     public static ProductSpec toModel(ProductSpecDO row) {
-        return row == null ? null : new ProductSpec(row.getId(), row.getName(), row.getRemark());
+        return row == null ? null : new ProductSpec(row.getId(), row.getName(), row.getRemark(), row.getCreateTime());
     }
 
     /** 转换数据对象。 */

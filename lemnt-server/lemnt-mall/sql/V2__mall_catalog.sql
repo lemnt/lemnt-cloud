@@ -21,6 +21,10 @@ CREATE TABLE mall_product_brand (
  CONSTRAINT chk_mall_brand_status CHECK(status IN ('ENABLED','DISABLED'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 CREATE TABLE mall_product_spu (
+ keyword VARCHAR(255) NULL,
+ introduction VARCHAR(128) NULL,
+ slider_pic_urls LONGTEXT NULL,
+ sort INT NOT NULL DEFAULT 0,
  delivery_types LONGTEXT NULL,
  delivery_template_id BIGINT NULL,
  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
