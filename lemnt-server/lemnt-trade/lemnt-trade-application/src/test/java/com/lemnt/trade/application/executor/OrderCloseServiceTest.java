@@ -27,7 +27,7 @@ class OrderCloseServiceTest {
 
     PaymentRecord waiting() {
         return new PaymentRecord(
-                1L, "PAY1", "TR1", "ALIPAY", null, BigDecimal.TEN, "WAITING", null);
+                1L, "PAY1", "TR1", "ALIPAY", null, null, BigDecimal.TEN, "WAITING", null);
     }
 
     void pending() {

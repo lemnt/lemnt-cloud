@@ -25,10 +25,10 @@ test('结算重试保留原编号和令牌，不发送客户端金额', async ()
   assert.deepEqual(calls[0].data, calls[1].data);
   assert.deepEqual(Object.keys(calls[0].data).sort(), ['requestNo', 'settlementId']);
 });
-test('预支付只发送订单编号；支付结果从服务端查询', async () => {
-  const { client, calls } = setup(); await client.prepay('TR1'); await client.paymentStatus('TR1');
-  assert.equal(calls[0].url, 'https://example.test/trade/app/orders/TR1/prepay');
-  assert.equal(calls[0].data, undefined); assert.equal(calls[1].method, 'GET');
+test('预支付只发送订单编号、应用与渠道；支付结果从服务端查询', async () => {
+  const { client, calls } = setup(); await client.prepay({ orderNo: 'TR1', appKey: 'lemnt-mall', channel: 'SANDBOX' }); await client.paymentStatus('TR1');
+  assert.equal(calls[0].url, 'https://example.test/trade/app/orders/TR1/payment');
+  assert.deepEqual(calls[0].data, { appKey: 'lemnt-mall', channel: 'SANDBOX' }); assert.equal(calls[1].method, 'GET');
 });
 test('参数、HTTP错误和业务错误不能当作成功', async () => {
   const { client } = setup(); assert.throws(() => client.saveCart('5', { quantity: 0, selected: true }));

@@ -27,7 +27,7 @@ class MemberPaymentStatusQueryTest {
     }
 
     PaymentRecord payment(String state, BigDecimal amount) {
-        return new PaymentRecord(1L, "P1", "TR1", "WECHAT", "TX", amount, state, "N");
+        return new PaymentRecord(1L, "P1", "TR1", "WECHAT", null, "TX", amount, state, "N");
     }
 
     String status() {

@@ -49,7 +49,7 @@ function TransactionPage({ refund }: { refund: boolean }) {
       dataIndex: 'channel',
       valueType: 'select',
       search: !refund,
-      valueEnum: { ALIPAY: '支付宝', WECHAT: '微信支付' },
+      valueEnum: { ALIPAY: '支付宝', WECHAT: '微信支付', SANDBOX: '沙箱' },
     },
     { title: '金额（元）', dataIndex: 'amount', search: false },
     { title: '状态', dataIndex: 'status', valueType: 'select', valueEnum: states },

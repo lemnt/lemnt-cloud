@@ -1,7 +1,11 @@
 package com.lemnt.trade.adapter.app.payment.converter;
 
+import com.lemnt.trade.adapter.app.payment.req.AppPaymentCreateReq;
+import com.lemnt.trade.adapter.app.payment.res.AppPaymentPrepayRes;
 import com.lemnt.trade.adapter.app.payment.res.MemberPaymentStatusRes;
+import com.lemnt.trade.application.payment.cmd.PaymentPrepayCmd;
 import com.lemnt.trade.application.payment.dto.MemberPaymentStatusDTO;
+import com.lemnt.trade.application.payment.dto.PaymentPrepayDTO;
 import com.lemnt.trade.application.payment.qry.MemberPaymentStatusQry;
 
 /**
@@ -27,5 +31,16 @@ public final class MemberPaymentStatusConverter {
                 v.payableAmount(),
                 v.localPaymentStatus(),
                 v.channelVerified());
+    }
+
+    /** 会员编号取自会话，客户端只选择应用与渠道。 */
+    public static PaymentPrepayCmd prepay(Long memberId, String orderNo, AppPaymentCreateReq req) {
+        return new PaymentPrepayCmd(memberId, orderNo, req.appKey(), req.channel());
+    }
+
+    /** 预支付响应。 */
+    public static AppPaymentPrepayRes prepay(PaymentPrepayDTO value) {
+        return new AppPaymentPrepayRes(value.paymentNo(), value.orderNo(), value.channel(),
+                value.amount(), value.payUrl(), value.params());
     }
 }

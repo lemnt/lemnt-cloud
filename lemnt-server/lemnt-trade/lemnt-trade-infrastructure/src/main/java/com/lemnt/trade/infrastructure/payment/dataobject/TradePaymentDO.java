@@ -25,6 +25,7 @@ public class TradePaymentDO extends BaseDO {
     private String paymentNo;
     private String orderNo;
     private String channel;
+    private String appKey;
     private String channelTradeNo;
     private BigDecimal amount;
     private String status;

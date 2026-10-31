@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 public record PayChannelCreateReq(
         @Schema(description = "所属支付应用编号")
         @NotNull @Positive Long appId,
-        @Schema(description = "渠道编码：ALIPAY、WECHAT")
+        @Schema(description = "渠道编码：ALIPAY、WECHAT、SANDBOX（仅联调）")
         @NotBlank @Size(max = 32) String code,
         @Schema(description = "状态：0启用、1停用")
         @NotNull @Min(0) @Max(1) Integer status,

@@ -15,6 +15,7 @@
     <view class="description" wx:if="{{row.properties && row.properties.length}}">规格：<text wx:for="{{row.properties}}" wx:for-item="p" wx:key="valueId">{{p.propertyName}} {{p.valueName}} </text></view>
    </view>
    <view class="row">
+    <button wx:if="{{order.canPay}}" type="primary" size="mini" bindtap="goCashier">去支付</button>
     <button wx:if="{{order.canCancel}}" size="mini" bindtap="cancel">取消订单</button>
     <button wx:if="{{order.canReceive}}" size="mini" bindtap="receive">确认收货</button>
     <button wx:if="{{order.canComment}}" size="mini" bindtap="goComment">去评价</button>

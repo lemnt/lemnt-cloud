@@ -1,0 +1,41 @@
+package com.lemnt.trade.infrastructure.payment.payment;
+
+import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.trade.domain.payment.gateway.PaymentChannelGateway;
+import com.lemnt.trade.domain.payment.model.PayChannelConfig;
+import com.lemnt.trade.domain.payment.model.PaymentPrepay;
+import com.lemnt.trade.domain.payment.model.PaymentRecord;
+import com.lemnt.trade.domain.payment.model.VerifiedPaymentNotification;
+
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+/** 按渠道路由适配器；缺失或重复适配器都明确失败，不模拟支付成功。 */
+@Component
+public class PaymentChannelGatewayImpl implements PaymentChannelGateway {
+    private final List<PaymentChannelAdapter> adapters;
+
+    public PaymentChannelGatewayImpl(List<PaymentChannelAdapter> adapters) {
+        this.adapters = List.copyOf(adapters);
+    }
+
+    @Override
+    public PaymentPrepay prepay(PaymentRecord payment, PayChannelConfig config) {
+        return adapter(payment.channel()).prepay(payment, config);
+    }
+
+    @Override
+    public VerifiedPaymentNotification verify(String channel, PayChannelConfig config, String body,
+            String signature, String timestamp) {
+        return adapter(channel).verify(config, body, signature, timestamp);
+    }
+
+    private PaymentChannelAdapter adapter(String channel) {
+        var matching = adapters.stream().filter(value -> value.channel().equals(channel)).toList();
+        if (matching.size() != 1) {
+            throw new ServiceException("支付渠道未接入", 400);
+        }
+        return matching.get(0);
+    }
+}

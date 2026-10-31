@@ -40,7 +40,7 @@ class PaymentNotificationServiceTest {
         when(payments.findByPaymentNo("PAY1"))
             .thenReturn(
                 new PaymentRecord(
-                1L, "PAY1", "TR1", "ALIPAY", tradeNo, amount, status, "NOTICE1"));
+                1L, "PAY1", "TR1", "ALIPAY", null, tradeNo, amount, status, "NOTICE1"));
     }
 
     @Test

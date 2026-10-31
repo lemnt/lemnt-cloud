@@ -166,6 +166,11 @@ Page({
       this.setData({ error:'操作已确认，订单刷新失败：'+error.message });
     }
   }); },
+  goCashier() {
+    const receipt = this.data.receipt;
+    if (!receipt || receipt.status !== 'PENDING_PAYMENT') return;
+    wx.navigateTo({ url: '/pages/cashier/index?orderNo=' + encodeURIComponent(receipt.orderNo) });
+  },
   refreshLocalPayment() { return this.action(async member => {
     if (!this.data.receipt || member !== this.receiptMember) throw new Error('请先找回本人订单');
     const no = this.data.receipt.orderNo;

@@ -47,4 +47,9 @@ Page({
     });
   },
   openRecord(e) { wx.navigateTo({ url: '/pages/combination-records/index?id=' + e.currentTarget.dataset.id }); },
+  goCashier() {
+    const order = this.data.order;
+    if (!order || order.status !== 'PENDING_PAYMENT') return;
+    wx.navigateTo({ url: '/pages/cashier/index?orderNo=' + encodeURIComponent(order.orderNo) });
+  },
 });

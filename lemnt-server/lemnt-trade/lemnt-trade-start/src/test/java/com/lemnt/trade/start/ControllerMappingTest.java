@@ -86,6 +86,10 @@ class ControllerMappingTest {
                 GET /trade/admin/orders/{orderNo}/logs trade:fulfillment:query
                 POST /trade/app/orders/{orderNo}/cancel
                 POST /trade/app/orders/{orderNo}/receive
+                POST /trade/app/orders/{orderNo}/payment
+                GET /trade/app/payment-channels
+                POST /trade/app/payments/{paymentNo}/sandbox-pay
+                POST /trade/payment/notify/{appKey}/{channel}
                 GET /trade/app/orders/{orderNo}/payment
                 GET /trade/app/orders
                 GET /trade/app/orders/status-counts

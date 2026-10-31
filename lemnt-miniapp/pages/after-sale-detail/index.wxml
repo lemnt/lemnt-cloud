@@ -14,6 +14,10 @@
    <view class="list-row" wx:if="{{sale.requestedAt}}">申请时间：{{sale.requestedAt}}</view>
    <view class="list-row" wx:if="{{sale.returnCarrierCode}}">退货物流：{{sale.returnCarrierCode}} {{sale.returnTrackingNo}}</view>
    <view class="list-row" wx:if="{{sale.refundTime}}">退款时间：{{sale.refundTime}}</view>
+   <view class="list-row" wx:if="{{payment}}">原支付：{{payment.label}} · 应付 ￥{{payment.payableAmount}}</view>
+   <view class="description" wx:if="{{sale.status === 'REFUNDING'}}">退款处理中，请稍后刷新进度。</view>
+   <view class="description" wx:if="{{sale.status === 'REFUNDED'}}">退款已完成，按原支付渠道退回。</view>
+   <button size="mini" bindtap="refreshProgress" disabled="{{loading}}">刷新退款进度</button>
    <view class="row">
     <button wx:if="{{sale.canReturn}}" size="mini" bindtap="toggleReturn">{{showReturn ? '收起' : '登记退货物流'}}</button>
     <button wx:if="{{sale.canCancel}}" size="mini" bindtap="cancel">取消售后</button>

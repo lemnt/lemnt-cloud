@@ -53,9 +53,10 @@ public class TradePaymentGatewayImpl implements TradePaymentGateway {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public PaymentRecord createWaiting(String paymentNo, String orderNo, String channel, BigDecimal amount) {
+    public PaymentRecord createWaiting(String paymentNo, String orderNo, String channel, String appKey,
+            BigDecimal amount) {
         TradePaymentDO row = new TradePaymentDO().setPaymentNo(paymentNo).setOrderNo(orderNo)
-                .setChannel(channel).setAmount(amount).setStatus("WAITING");
+                .setChannel(channel).setAppKey(appKey).setAmount(amount).setStatus("WAITING");
         tradePaymentMapper.insert(row);
         return toRecord(row);
     }
@@ -80,6 +81,7 @@ public class TradePaymentGatewayImpl implements TradePaymentGateway {
 
     private PaymentRecord toRecord(TradePaymentDO row) {
         return row == null ? null : new PaymentRecord(row.getId(), row.getPaymentNo(), row.getOrderNo(),
-                row.getChannel(), row.getChannelTradeNo(), row.getAmount(), row.getStatus(), row.getNotifyId());
+                row.getChannel(), row.getAppKey(), row.getChannelTradeNo(), row.getAmount(), row.getStatus(),
+                row.getNotifyId());
     }
 }

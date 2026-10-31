@@ -28,7 +28,8 @@ public interface TradePaymentGateway {
     /**
      * 创建待支付记录。
      */
-    PaymentRecord createWaiting(String paymentNo, String orderNo, String channel, BigDecimal amount);
+    PaymentRecord createWaiting(String paymentNo, String orderNo, String channel, String appKey,
+            BigDecimal amount);
 
     /**
      * 查找按订单编号。

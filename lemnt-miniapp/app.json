@@ -21,6 +21,7 @@
     "pages/after-sale-list/index",
     "pages/after-sale-create/index",
     "pages/after-sale-detail/index",
+    "pages/cashier/index",
     "pages/seckill/index",
     "pages/seckill-detail/index",
     "pages/combination/index",

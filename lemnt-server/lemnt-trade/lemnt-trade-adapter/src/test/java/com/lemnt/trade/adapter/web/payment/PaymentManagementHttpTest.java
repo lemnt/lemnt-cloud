@@ -45,10 +45,11 @@ class PaymentManagementHttpTest {
                 .setMessageConverters(converter()).build();
         mvc.perform(get("/trade/admin/payment-channels"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.length()").value(2))
+                .andExpect(jsonPath("$.data.length()").value(3))
                 .andExpect(jsonPath("$.data[0].code").value("ALIPAY"))
                 .andExpect(jsonPath("$.data[0].name").value("支付宝"))
                 .andExpect(jsonPath("$.data[1].code").value("WECHAT"))
+                .andExpect(jsonPath("$.data[2].code").value("SANDBOX"))
                 .andExpect(jsonPath("$.data[0].enabled").doesNotExist());
     }
 

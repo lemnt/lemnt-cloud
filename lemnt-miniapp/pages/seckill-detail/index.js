@@ -44,4 +44,9 @@ Page({
       this.setData({ address, order });
     });
   },
+  goCashier() {
+    const order = this.data.order;
+    if (!order || order.status !== 'PENDING_PAYMENT') return;
+    wx.navigateTo({ url: '/pages/cashier/index?orderNo=' + encodeURIComponent(order.orderNo) });
+  },
 });

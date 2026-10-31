@@ -1,4 +1,5 @@
 const runtime = require('../../services/orderRuntime');
+const { decodePaymentStatus } = require('../../services/paymentStatus');
 
 const STATUS_LABEL = Object.freeze({
   REQUESTED: '待商家审核', AWAITING_RETURN: '待买家退货', RETURNED: '待商家收货', WAIT_REFUND: '待退款',
@@ -8,7 +9,7 @@ const TYPE_LABEL = Object.freeze({ REFUND_ONLY: '仅退款', RETURN_REFUND: '退
 
 Page({
   data: {
-    ready: runtime.ready, loading: false, error: '', loggedIn: false, sale: null,
+    ready: runtime.ready, loading: false, error: '', loggedIn: false, sale: null, payment: null,
     showReturn: false, carrier: '', tracking: '',
   },
   onLoad(query) {
@@ -20,12 +21,19 @@ Page({
     this.setData({ loggedIn });
     if (loggedIn && runtime.requireLogin()) return this.reload();
   },
-  onSessionLost() { this.setData({ sale: null, loggedIn: false, error: '会员已切换，请重新登录' }); },
+  onSessionLost() { this.setData({ sale: null, payment: null, loggedIn: false, error: '会员已切换，请重新登录' }); },
   login() { wx.navigateTo({ url: '/pages/member-login/index' }); },
   reload() {
     if (!this.no) { this.setData({ error: '缺少售后单号' }); return; }
-    return runtime.run(this, async () => this.setData({ sale: this.toSale(await this.client.afterSaleDetail(this.no)) }));
+    return runtime.run(this, async () => {
+      const sale = this.toSale(await this.client.afterSaleDetail(this.no));
+      let payment = null;
+      try { payment = decodePaymentStatus(await this.client.paymentStatus(sale.orderNo), sale.orderNo); }
+      catch (e) { payment = null; }
+      this.setData({ sale, payment });
+    });
   },
+  refreshProgress() { return this.reload(); },
   toSale(value) {
     if (!value || value.refundNo !== this.no || !STATUS_LABEL[value.status]
       || !TYPE_LABEL[value.type] || typeof value.amount !== 'string') {

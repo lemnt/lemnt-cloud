@@ -65,7 +65,20 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
       return call('/checkout', 'POST', { settlementId: input.settlementId, requestNo: input.requestNo });
     },
     order: orderNo => call('/orders/' + order(orderNo)),
-    prepay: orderNo => call('/orders/' + order(orderNo) + '/prepay', 'POST', undefined, 'trade'),
+    paymentChannels: appKey => {
+      if (typeof appKey !== 'string' || !appKey.trim() || appKey.length > 64) throw new Error('支付应用不合法');
+      return call('/payment-channels', 'GET', { appKey }, 'trade');
+    },
+    prepay: input => {
+      if (!input || typeof input.orderNo !== 'string' || !input.orderNo.trim() || input.orderNo.length > 40) throw new Error('订单编号不合法');
+      if (typeof input.appKey !== 'string' || !input.appKey.trim() || input.appKey.length > 64) throw new Error('支付应用不合法');
+      if (!['ALIPAY', 'WECHAT', 'SANDBOX'].includes(input.channel)) throw new Error('支付渠道不合法');
+      return call('/orders/' + order(input.orderNo) + '/payment', 'POST', { appKey: input.appKey, channel: input.channel }, 'trade');
+    },
+    sandboxPay: paymentNo => {
+      if (typeof paymentNo !== 'string' || !/^PAY[A-Z0-9]{4,37}$/.test(paymentNo)) throw new Error('支付单编号不合法');
+      return call('/payments/' + encodeURIComponent(paymentNo) + '/sandbox-pay', 'POST', undefined, 'trade');
+    },
     abandonCheckout: input => {
       if (!input || typeof input.settlementId !== 'string' || !/^[a-f0-9-]{36}$/.test(input.settlementId) || typeof input.requestNo !== 'string' || !input.requestNo.trim() || input.requestNo.length > 64) throw new Error('结算单编号或请求编号不合法');
       return call('/checkout/abandon','POST',{settlementId:input.settlementId,requestNo:input.requestNo});

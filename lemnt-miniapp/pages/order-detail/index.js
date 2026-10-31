@@ -31,6 +31,7 @@ Page({
       ...value,
       statusLabel: STATUS_LABEL[value.status],
       canCancel: ['RESERVING', 'PENDING_PAYMENT'].includes(value.status),
+      canPay: value.status === 'PENDING_PAYMENT',
       canReceive: value.status === 'SHIPPED',
       canComment: value.status === 'COMPLETED' && value.commentStatus !== true,
       canAfterSale: ['PAID', 'SHIPPED', 'COMPLETED'].includes(value.status),
@@ -49,6 +50,9 @@ Page({
   },
   goAfterSale() {
     wx.navigateTo({ url: '/pages/after-sale-create/index?orderNo=' + encodeURIComponent(this.orderNo) });
+  },
+  goCashier() {
+    wx.navigateTo({ url: '/pages/cashier/index?orderNo=' + encodeURIComponent(this.orderNo) });
   },
   cancel() {
     return runtime.run(this, async () => {

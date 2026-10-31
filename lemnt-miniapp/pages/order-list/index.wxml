@@ -18,6 +18,7 @@
    <view class="list-row">实付 ￥{{item.totalAmount}}<text wx:if="{{item.activeRefund}}" class="tag">售后中</text></view>
    <view class="row">
     <button size="mini" data-order="{{item.orderNo}}" bindtap="goDetail">详情</button>
+    <button wx:if="{{item.canPay}}" type="primary" size="mini" data-order="{{item.orderNo}}" bindtap="goCashier">去支付</button>
     <button wx:if="{{item.canCancel}}" size="mini" data-order="{{item.orderNo}}" bindtap="cancel">取消订单</button>
     <button wx:if="{{item.canReceive}}" size="mini" data-order="{{item.orderNo}}" bindtap="receive">确认收货</button>
     <button wx:if="{{item.canComment}}" size="mini" data-order="{{item.orderNo}}" bindtap="goComment">去评价</button>

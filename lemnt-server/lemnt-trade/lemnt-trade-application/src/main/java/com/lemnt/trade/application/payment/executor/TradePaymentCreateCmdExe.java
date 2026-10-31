@@ -28,6 +28,12 @@ public class TradePaymentCreateCmdExe {
      */
     @Transactional(rollbackFor = Exception.class)
     public PaymentRecord execute(String orderNo, String channel) {
+        return execute(orderNo, channel, null);
+    }
+
+    /** 小程序支付创建时绑定支付应用，回调按应用解析渠道密钥。 */
+    @Transactional(rollbackFor = Exception.class)
+    public PaymentRecord execute(String orderNo, String channel, String appKey) {
         if (orderNo == null || orderNo.isBlank() || channel == null || channel.isBlank()) {
             throw new IllegalArgumentException("订单号和支付渠道不能为空");
         }
@@ -51,6 +57,7 @@ public class TradePaymentCreateCmdExe {
         }
         String paymentNo = "PAY" + UUID.randomUUID().toString().replace("-", "")
                 .substring(0, 24).toUpperCase(Locale.ROOT);
-        return tradePaymentGateway.createWaiting(paymentNo, order.orderNo(), normalizedChannel, order.totalAmount());
+        return tradePaymentGateway.createWaiting(paymentNo, order.orderNo(), normalizedChannel, appKey,
+                order.totalAmount());
     }
 }

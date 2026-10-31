@@ -475,6 +475,7 @@ export function PayChannelConfigPage() {
             options={[
               { value: 'ALIPAY', label: '支付宝' },
               { value: 'WECHAT', label: '微信支付' },
+              { value: 'SANDBOX', label: '沙箱（仅联调）' },
             ]}
             rules={[{ required: true }]}
             extra={editor.id ? '渠道编码创建后不可修改' : undefined}

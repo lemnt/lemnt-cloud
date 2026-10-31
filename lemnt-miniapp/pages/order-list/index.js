@@ -82,6 +82,7 @@ Page({
       ...value,
       statusLabel: STATUS_LABEL[value.status],
       canCancel: ['RESERVING', 'PENDING_PAYMENT'].includes(value.status),
+      canPay: value.status === 'PENDING_PAYMENT',
       canReceive: value.status === 'SHIPPED',
       canComment: value.status === 'COMPLETED' && value.commentStatus !== true,
       canAfterSale: ['PAID', 'SHIPPED', 'COMPLETED'].includes(value.status),
@@ -95,6 +96,9 @@ Page({
   },
   goAfterSale(event) {
     wx.navigateTo({ url: '/pages/after-sale-create/index?orderNo=' + encodeURIComponent(event.currentTarget.dataset.order) });
+  },
+  goCashier(event) {
+    wx.navigateTo({ url: '/pages/cashier/index?orderNo=' + encodeURIComponent(event.currentTarget.dataset.order) });
   },
   cancel(event) {
     const orderNo = event.currentTarget.dataset.order;

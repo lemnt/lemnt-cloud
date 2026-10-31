@@ -103,3 +103,25 @@ test('售后详情按状态与方式给出可取消、可登记退货', () => {
   assert.equal(refunding.canCancel, false);
   assert.throws(() => page.toSale({ refundNo: 'RF2', status: 'AWAITING_RETURN', type: 'RETURN_REFUND', amount: '10.00' }));
 });
+
+test('售后详情刷新同时加载原支付状态并容忍支付查询失败', async () => {
+  const sale = { refundNo: 'RF1', orderNo: 'TR1', status: 'REFUNDED', type: 'REFUND_ONLY', amount: '8.00' };
+  const page = makePage('../pages/after-sale-detail/index', {
+    afterSaleDetail: async () => sale,
+    paymentStatus: async () => ({ orderNo: 'TR1', orderStatus: 'REFUNDED', payableAmount: '8.00',
+      localPaymentStatus: 'SUCCESS', channelVerified: false }),
+  });
+  page.no = 'RF1';
+  await page.refreshProgress();
+  assert.equal(page.data.sale.statusLabel, '已退款');
+  assert.equal(page.data.payment.label, '本地已确认支付');
+  const failing = makePage('../pages/after-sale-detail/index', {
+    afterSaleDetail: async () => sale,
+    paymentStatus: async () => { throw new Error('支付查询失败'); },
+  });
+  failing.no = 'RF1';
+  await failing.refreshProgress();
+  assert.equal(failing.data.sale.statusLabel, '已退款');
+  assert.equal(failing.data.payment, null);
+  assert.equal(failing.data.error, '');
+});

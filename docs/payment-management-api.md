@@ -12,8 +12,12 @@
 | GET /trade/admin/payment-refunds | trade:payment-refund:list | 支付退单分页 |
 | GET /trade/admin/payment-refunds/{no} | trade:payment-refund:query | 支付退单详情 |
 | POST /trade/admin/refund-requests/{afterSaleNo}/payment-refund | trade:payment-refund:create | 基于售后单发起退款或查询同步原退款结果 |
+| POST /trade/app/orders/{orderNo}/payment | 会员登录 | 发起本人待支付订单支付，金额由订单确定 |
+| POST /trade/payment/notify/{appKey}/{channel} | 渠道验签 | 接收支付渠道异步通知并提交支付结果 |
+| GET /trade/app/payment-channels?appKey= | 会员登录 | 查询支付应用下已启用的渠道 |
+| POST /trade/app/payments/{paymentNo}/sandbox-pay | 会员登录 | 确认本人沙箱支付单，仅沙箱开关开启时可用 |
 
-支付配置与支付创建复用 PaymentChannel：ALIPAY（支付宝）、WECHAT（微信支付）。仅表明系统渠道类型，不表示已配置商户或实时可用；不新增支付配置表、不提供密钥、商户配置或修改接口。
+支付配置与支付创建复用 PaymentChannel：ALIPAY（支付宝）、WECHAT（微信支付）、SANDBOX（沙箱，仅联调）。SANDBOX 适配器仅在 `payment.sandbox.enabled=true` 时注册，生产默认关闭；缺失或重复渠道适配器明确失败，不模拟支付成功。仅表明系统渠道类型，不表示已配置商户或实时可用；不新增支付配置表、不提供密钥、商户配置或修改接口。
 
 分页统一 R.page 的 rows/total。页码默认1，范围1..1000000；每页默认20，最大100。支付单支持精确 paymentNo/orderNo/channel/status 筛选，状态 WAITING/SUCCESS/CLOSED。支付退单支持精确 afterSaleNo/paymentNo/status 筛选，状态 WAITING/SUCCESS/FAILED。查询详情不存在时返回统一业务失败。
 
@@ -31,6 +35,16 @@
 6. REFUNDING 禁止驳回和发货；REFUNDED 订单不可继续发货或再次发起售后。原支付单保留 SUCCESS 支付事实，支付退单单独记逆向交易。退款后重放原支付通知不再次确认库存和核券。
 
 商品售后和物流管理的后续接口见 order-after-sale-logistics-api.md。金融退款不等同于库存回补或退券；这类售后资源处理尚未接入。没有新增 Outbox、轮询任务或未验签的公网退款回调。
+
+## 支付发起与渠道通知
+
+1. 会员调用 `POST /trade/app/orders/{orderNo}/payment`，请求体只含 `appKey`、`channel`。服务端校验订单归属、`PENDING_PAYMENT` 状态和金额大于 0，按应用与渠道配置生成预支付参数；金额、支付单号由服务端确定。
+2. 支付单以 `(order_no, channel)` 唯一并绑定 `app_key`；预支付响应不包含渠道密钥。
+3. 渠道回调 `POST /trade/payment/notify/{appKey}/{channel}` 携带 `X-Pay-Timestamp`（毫秒）和 `X-Pay-Signature`（HMAC-SHA256 十六进制）。签名原文按换行拼接：渠道、支付单号、订单号、两位小数金额、渠道交易号、通知编号、时间戳。
+4. 通知必须在 5 分钟时间窗内，`notifyId` 全局唯一，支付单号、渠道、应用和金额必须与本地一致；验签通过后提交支付成功、订单 PAID 并派发库存确认与权益任务。重复通知幂等，不同渠道交易号的重放被拒绝。
+5. 关单会先关闭待支付渠道交易；沙箱渠道在本地直接视为撤销。
+6. 退款沿用售后 `WAIT_REFUND → REFUNDING → REFUNDED` 状态机；沙箱退款适配器在 `payment.sandbox.enabled=true` 时本地返回成功，渠道退款编号为 `SBR-{refundNo}`，重复请求保持同一编号。
+7. 小程序收银台先按 `appKey` 查询已启用渠道，再发起支付；沙箱渠道由会员本人调用 `sandbox-pay` 本地确认，关闭沙箱开关时该接口不可用。
 
 ## 表与部署
 

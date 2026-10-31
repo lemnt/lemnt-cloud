@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 class PaymentRefundChannelGatewayTest {
     final PaymentRefund refund = new PaymentRefund("PR1", "RF1", "P1", "TR1", "ALIPAY",
             BigDecimal.TEN, "WAITING", null);
-    final PaymentRecord payment = new PaymentRecord(1L, "P1", "TR1", "ALIPAY", "TX1",
+    final PaymentRecord payment = new PaymentRecord(1L, "P1", "TR1", "ALIPAY", null, "TX1",
             BigDecimal.TEN, "SUCCESS", "N1");
 
     @Test

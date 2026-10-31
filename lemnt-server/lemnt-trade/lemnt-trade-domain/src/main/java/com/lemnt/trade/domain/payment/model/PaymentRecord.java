@@ -10,6 +10,7 @@ public record PaymentRecord(
         String paymentNo,
         String orderNo,
         String channel,
+        String appKey,
         String channelTradeNo,
         BigDecimal amount,
         String status,
