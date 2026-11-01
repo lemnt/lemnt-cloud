@@ -18,23 +18,54 @@
     "lemnt-server/sql/V20261101__trade_order_adjust_permissions.sql",
     "lemnt-server/sql/V20261101__trade_pickup_verify_menu.sql"
   ],
-  "backend": {"mall": 190, "trade": 272, "gateway": 35, "failures": 0, "errors": 0, "skipped": 0},
-  "ui": {"tests": 315, "failures": 0, "new": ["PickUpVerifyPage.test.tsx", "fulfillmentApi adjust tests"]},
-  "miniapp": {"tests": 176, "failures": 0, "new": ["pickup distance query", "AWAITING_PICKUP tab"]},
+  "backend": {
+    "mall": 190,
+    "trade": 272,
+    "gateway": 35,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "ui": {
+    "tests": 315,
+    "failures": 0,
+    "new": [
+      "PickUpVerifyPage.test.tsx",
+      "fulfillmentApi adjust tests"
+    ]
+  },
+  "miniapp": {
+    "tests": 176,
+    "failures": 0,
+    "new": [
+      "pickup distance query",
+      "AWAITING_PICKUP tab"
+    ]
+  },
   "realEnvironment": {
     "adjustedOrderNo": "TRB13740A955CB465386AB2F6F",
     "priceBefore": "9.00",
     "priceAfter": "8.00",
     "itemPayAfter": "8.00",
-    "operateTypes": [2, 11],
+    "operateTypes": [
+      2,
+      11
+    ],
     "pickupOrderNo": "TR3759C6A7A75E4455974A37CF",
     "pickupVerifyCode": "38846600",
     "awaitingPickupCount": 1,
     "storeDistances": [
-      {"id": "2116822610022731777", "distanceKm": "0.00"},
-      {"id": "2116709400812654594", "distanceKm": "3.62"}
+      {
+        "id": "2116822610022731777",
+        "distanceKm": "0.00"
+      },
+      {
+        "id": "2116709400812654594",
+        "distanceKm": "3.62"
+      }
     ],
     "closedStoreRejected": true,
+    "closedStoreHttpStatus": 400,
     "browserVerification": {
       "login": "admin with math captcha",
       "verifyStationRoute": "/trade/pick-up-verify",
@@ -54,5 +85,8 @@
     "opening-hours validation during quote",
     "miniapp device location authorization"
   ],
-  "notes": ["no business commit or push in this batch"]
+  "notes": [
+    "this session did not run git commit or push",
+    "external commits f5894b36 and 83fb7394 appeared on the branch during acceptance"
+  ]
 }

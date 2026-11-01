@@ -13,7 +13,14 @@
   ],
   "backend": {
     "command": "mvn -f lemnt-server/pom.xml -pl lemnt-mall/lemnt-mall-start,lemnt-trade/lemnt-trade-start,lemnt-gateway -am test",
-    "totals": {"mall": 190, "trade": 272, "gateway": 35, "failures": 0, "errors": 0, "skipped": 0},
+    "totals": {
+      "mall": 190,
+      "trade": 272,
+      "gateway": 35,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
     "newTests": [
       "SettlementDeliveryFreeShippingTest",
       "RewardGiftServiceTest",
@@ -29,7 +36,9 @@
       "deliveryPrice": "0.00",
       "freeDelivery": true,
       "givePoint": 10,
-      "giveCouponTemplateCounts": {"1": 1},
+      "giveCouponTemplateCounts": {
+        "1": 1
+      },
       "payableAmount": "9.00"
     },
     "paid": {
@@ -62,5 +71,8 @@
     "commission recovery after withdrawal with insufficient balance",
     "real Alipay/WeChat channels"
   ],
-  "notes": ["no business commit or push in this batch"]
+  "notes": [
+    "this session did not run git commit or push",
+    "external commits f5894b36 and 83fb7394 appeared on the branch during acceptance"
+  ]
 }

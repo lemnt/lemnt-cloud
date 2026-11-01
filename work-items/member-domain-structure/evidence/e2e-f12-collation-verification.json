@@ -68,5 +68,8 @@
     "real logistics tracking",
     "equal-weight 63-unit progress recount"
   ],
-  "notes": ["no business commit or push in this batch"]
+  "notes": [
+    "this session did not run git commit or push",
+    "two external commits (f5894b36, 83fb7394) appeared on the branch during acceptance and contain these changes"
+  ]
 }
