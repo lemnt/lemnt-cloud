@@ -24,3 +24,4 @@ DB_HOST=10.0.0.10 DB_USER=lemnt DB_PASSWORD='***' ./lemnt-server/sql/release/app
 - 已有环境新增列使用对应模块 `sql/upgrade/` 下的脚本，逐个人工审核后执行；本脚本不自动执行，避免重复加列。
 - 建表脚本按 `V*` 文件名数字顺序执行，不依赖数据库迁移工具记录。
 - 执行前必须备份；脚本不处理回滚。
+- 手工用 `docker exec mysql ... < file` 导入时可能继承 `latin1` 客户端字符集，导致中文菜单双重编码；务必加 `--default-character-set=utf8mb4`，本脚本已内置该参数。已乱码数据可用 `lemnt-server/sql/upgrade/fix_menu_mojibake.sql` 修复。
