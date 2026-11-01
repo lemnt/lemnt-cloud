@@ -41,7 +41,8 @@ class AppCheckoutControllerTest {
                 new java.math.BigDecimal("20.00"), new java.math.BigDecimal("0.00"),
                 new java.math.BigDecimal("26.50"), null, "digest", 0L, 53L,
                 new com.lemnt.mall.application.settlement.dto.SettlementDeliveryDTO(123L, 1, "收件人",
-                        "13800000000", 110101L, "地址", new java.math.BigDecimal("6.50")));
+                        "13800000000", 110101L, "地址", new java.math.BigDecimal("6.50")),
+                false, java.util.Map.of());
         when(create.execute(any())).thenReturn(new com.lemnt.mall.application.settlement.dto.SettlementDTO(
                 "12345678-1234-1234-1234-123456789abc", java.time.Instant.now().plusSeconds(900), quote));
         var mvc = MockMvcBuilders.standaloneSetup(new AppSettlementController(create,
@@ -53,7 +54,7 @@ class AppCheckoutControllerTest {
                         .content("{\"productIds\":[5],\"addressId\":123,\"pointStatus\":true,\"memberId\":999}"))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.data.delivery.addressId").value(123));
         verify(create).execute(new com.lemnt.mall.application.settlement.cmd.SettlementCreateCmd(
-                7L, List.of(5L), null, true, 123L));
+                7L, List.of(5L), null, true, 123L, 1, null));
         mvc.perform(post("/mall/app/checkout/quote").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"productIds\":[5]}"))
                 .andExpect(status().isBadRequest());

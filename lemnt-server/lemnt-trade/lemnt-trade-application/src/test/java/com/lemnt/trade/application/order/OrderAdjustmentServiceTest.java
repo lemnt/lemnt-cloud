@@ -44,6 +44,8 @@ class OrderAdjustmentServiceTest {
         when(persistence.findByOrderNoForUpdate("TR1")).thenReturn(current);
         when(items.items(1L)).thenReturn(List.of(line(11L, "60.00"), line(12L, "40.00")));
         when(orders.updateTotalAmount("TR1", new BigDecimal("100.00"), new BigDecimal("80.00"))).thenReturn(true);
+        when(items.updatePayAmount(1L, 11L, new BigDecimal("48.00"))).thenReturn(true);
+        when(items.updatePayAmount(1L, 12L, new BigDecimal("32.00"))).thenReturn(true);
         when(persistence.findByOrderNo("TR1")).thenReturn(current);
 
         var result = service.adjustPrice(new OrderAdjustPriceCmd("TR1", new BigDecimal("80.00"), 9L));

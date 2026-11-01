@@ -93,7 +93,7 @@ class AppOrderControllerTest {
     void statusCountsAndTracksUseVerifiedMember() throws Exception {
         SecurityContextHolder.setUserId("1");
         var count = mock(MemberOrderStatusCountQueryExe.class);
-        when(count.execute(1L)).thenReturn(new MemberOrderStatusCountDTO(1, 2, 3, 4, 5, 6, 7));
+        when(count.execute(1L)).thenReturn(new MemberOrderStatusCountDTO(1, 2, 3, 4, 5, 6, 7, 8));
         var tracks = mock(MemberOrderTrackQueryExe.class);
         when(tracks.execute(1L, "TR1")).thenReturn(List.of());
         var mvc = MockMvcBuilders.standaloneSetup(controller(mock(TradeOrderCloseCmdExe.class),

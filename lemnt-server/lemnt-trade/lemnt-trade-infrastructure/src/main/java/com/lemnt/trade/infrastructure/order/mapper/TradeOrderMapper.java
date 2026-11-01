@@ -28,7 +28,7 @@ public interface TradeOrderMapper extends BaseMapper<TradeOrderDO> {
             + "<if test='status != null'>AND o.status=#{status}</if>"
             + "<if test='commentStatus != null'>AND o.comment_status=#{commentStatus}</if>"
             + "<if test='memberId != null'>AND o.member_id=#{memberId}</if>"
-            + "<if test='deliveryType != null'>AND COALESCE(o.delivery_type,1)=#{deliveryType}</if>"
+            + "<if test='deliveryType != null'> AND COALESCE(o.delivery_type,1)=#{deliveryType} </if>"
             + "</where>";
 
     /**

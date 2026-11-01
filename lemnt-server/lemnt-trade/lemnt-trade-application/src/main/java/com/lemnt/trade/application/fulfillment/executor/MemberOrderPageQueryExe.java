@@ -43,8 +43,8 @@ public class MemberOrderPageQueryExe {
             case "AWAITING_PICKUP", "AWAITING_SHIPMENT" -> "PAID";
             default -> status;
         };
-        Integer deliveryType = "AWAITING_PICKUP".equals(status) ? 2
-                : "AWAITING_SHIPMENT".equals(status) ? 1 : null;
+        Integer deliveryType = "AWAITING_PICKUP".equals(status) ? Integer.valueOf(2)
+                : "AWAITING_SHIPMENT".equals(status) ? Integer.valueOf(1) : null;
         var page = orders.orders(new FulfillmentFilter(null, dbStatus, qry.commentStatus(), memberId,
                 (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize(), deliveryType));
         var records = page.records().stream().map(summary -> {

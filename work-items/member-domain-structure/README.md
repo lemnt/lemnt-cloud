@@ -235,3 +235,9 @@
 2026-11-01 第155批：自提门店、店员与核销。新增自提门店/店员绑定、已支付订单设置自提、8位核销码核销、小程序门店列表与订单自提信息；trade 261项、React 312项、小程序175项、网关35项测试通过。结算选择自提、待自提独立状态与门店端/真机联调仍未覆盖，见[155-pickup-store-delivery.md](155-pickup-store-delivery.md)与`evidence/pickup-store-verification.json`。
 
 2026-11-01 第156批：结算选择自提门店。结算报价新增配送方式与门店编号，自提运费为零并绑定报价令牌；交易建单校验自提开关与门店状态、自动生成8位核销码；小程序结算页可切换快递/自提并选择门店。mall 187项、trade 263项、小程序176项测试通过，真实环境完成自提报价、提单、沙箱支付与订单详情验收。门店距离排序、报价阶段开关拦截、待自提独立状态与真机联调仍未覆盖，见[156-checkout-pickup-delivery.md](156-checkout-pickup-delivery.md)与`evidence/checkout-pickup-verification.json`。
+
+2026-11-01 第157批：营销赠礼与部分退款佣金回收。满减命中后同档位包邮、赠积分、赠券写入结算与交易订单快照，支付成功按来源订单幂等发券；部分退款按累计退款比例扣回两级佣金。mall 190项、trade 272项、网关35项测试通过，真实验证包邮0运费、赠券/赠积分与佣金扣回。退款撤券、余额不足追偿与真实渠道仍未覆盖，见[157-reward-gifts-commission-delivery.md](157-reward-gifts-commission-delivery.md)与`evidence/reward-gifts-commission-verification.json`。
+
+2026-11-01 第158批：订单改价改址与自提履约完善。新增后台调价/改址接口与页面、订单中心派生待自提状态、门店距离排序与营业时间校验、店员核销台。mall 190项、trade 272项、网关35项、React 315项、小程序176项测试通过，真实验证调价改址日志、待自提列表、距离排序、关闭门店拒绝和浏览器核销。已支付订单差价、持久化待自提状态与真机定位仍未覆盖，见[158-order-adjust-pickup-fulfillment-delivery.md](158-order-adjust-pickup-fulfillment-delivery.md)与`evidence/order-adjust-pickup-verification.json`。
+
+2026-11-01 第159批：端到端验收与F12收口。完成浏览器后台验证码登录、核销台与履约页实测，核对Nacos网关前缀与白名单，统计当前189/119/62个接口、35/27/18张表、8个任务、56条后台路由、38个小程序页面；清理10类无调用兼容构造器，新增生产SQL发布脚本。mall 190项、trade 272项、网关35项、React 315项、小程序176项测试通过。真机、多端与真实渠道SDK仍未验证，见[159-e2e-f12-collation-delivery.md](159-e2e-f12-collation-delivery.md)与`evidence/e2e-f12-collation-verification.json`。

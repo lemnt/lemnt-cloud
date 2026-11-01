@@ -21,11 +21,4 @@ public record AppPickUpStoreRes(
         @Schema(description = "距当前位置的直线距离，公里；未提供位置时为空")
         BigDecimal distanceKm
 ) implements java.io.Serializable {
-    /** 兼容未提供当前位置的门店响应。 */
-    public AppPickUpStoreRes(Long id, String name, String introduction, String phone, Long areaId,
-            String detailAddress, String logo, String openingTime, String closingTime,
-            BigDecimal latitude, BigDecimal longitude) {
-        this(id, name, introduction, phone, areaId, detailAddress, logo, openingTime, closingTime,
-                latitude, longitude, null);
-    }
 }

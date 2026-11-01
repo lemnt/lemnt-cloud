@@ -36,7 +36,8 @@ public class OrderGatewayImpl implements OrderGateway {
                 item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
                         new OrderItemDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
                                 snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
-                item.picUrl())).toList(), order.usePoint(), order.givePoint(), toDelivery(order.delivery()))));
+                item.picUrl())).toList(), order.usePoint(), order.givePoint(), toDelivery(order.delivery()),
+                order.giveCouponTemplateCounts())));
     }
 
     @Override
@@ -67,7 +68,7 @@ public class OrderGatewayImpl implements OrderGateway {
                 item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
                         new SettlementItem.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
                                 snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
-                item.picUrl(), item.orderItemId(), item.commentStatus())).toList(), value.createTime(), value.usePoint(), value.givePoint(), fromDelivery(value.delivery()), value.commentStatus(), value.finishTime());
+                item.picUrl(), item.orderItemId(), item.commentStatus())).toList(), value.createTime(), value.usePoint(), value.givePoint(), fromDelivery(value.delivery()), value.commentStatus(), value.finishTime(), value.giveCouponTemplateCounts());
     }
 
     private OrderDeliveryDTO toDelivery(

@@ -62,3 +62,26 @@ it('售后审批不提交金额和状态，原路退款区分受理、成功与�
   mockedRequest.mockResolvedValueOnce({ data: { refundNo: 'PR1', status: 'REFUNDED' } });
   await expect(api.refundAfterSale('RF1')).rejects.toThrow('退款状态');
 });
+
+it('调价与改址只发送业务字段并返回服务端确认', async () => {
+  const api = await import('./fulfillmentApi');
+  mockedRequest.mockResolvedValue({ data: true });
+  await api.adjustOrderPrice('TR1', '88.00');
+  expect(mockedRequest).toHaveBeenLastCalledWith({
+    url: '/trade/admin/orders/TR1/price-adjustment',
+    method: 'POST',
+    data: { totalAmount: '88.00' },
+  });
+  const address = {
+    receiverName: '李四',
+    receiverMobile: '13900000000',
+    receiverAreaId: '110102',
+    receiverDetailAddress: '新地址',
+  };
+  await api.adjustOrderAddress('TR1', address);
+  expect(mockedRequest).toHaveBeenLastCalledWith({
+    url: '/trade/admin/orders/TR1/address',
+    method: 'PUT',
+    data: address,
+  });
+});

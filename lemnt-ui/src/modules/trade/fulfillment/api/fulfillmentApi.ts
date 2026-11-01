@@ -8,7 +8,7 @@ import {
   decodeOrderLog,
   decodeAfterSaleLog,
 } from '../fulfillmentDecoders';
-import type { PageQuery, ShipmentRequest } from '../types';
+import type { OrderAddressRequest, PageQuery, ShipmentRequest } from '../types';
 const orderPath = (no: string) => `/trade/admin/orders/${encodeURIComponent(no)}`;
 export async function getOrders(params: PageQuery) {
   return decodePage(await request<unknown>({ url: '/trade/admin/orders', params }), decodeOrder);
@@ -20,6 +20,22 @@ export async function shipOrder(no: string, data: ShipmentRequest) {
   return decodeShipment(
     (await request<unknown>({ url: `${orderPath(no)}/shipment`, method: 'POST', data })).data,
   );
+}
+
+/** 待支付订单调价，服务端重分摊商品行实付并写日志。 */
+export async function adjustOrderPrice(no: string, totalAmount: string) {
+  const result = await request<boolean>({
+    url: `${orderPath(no)}/price-adjustment`,
+    method: 'POST',
+    data: { totalAmount },
+  });
+  return result.data === true;
+}
+
+/** 未发货快递单改址，不重算运费。 */
+export async function adjustOrderAddress(no: string, data: OrderAddressRequest) {
+  const result = await request<boolean>({ url: `${orderPath(no)}/address`, method: 'PUT', data });
+  return result.data === true;
 }
 
 export async function getRefunds(params: PageQuery) {

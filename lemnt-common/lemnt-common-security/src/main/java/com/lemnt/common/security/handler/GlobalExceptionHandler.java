@@ -77,6 +77,16 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 请求参数不合法，跨服务返回的同类异常也统一为客户端错误。
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public Object handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
+        log.warn("请求参数不合法 uri={}, message={}", request.getRequestURI(), e.getMessage());
+        return problem(request, org.springframework.http.HttpStatus.BAD_REQUEST.value(), "BAD_REQUEST",
+                "请求参数错误", Objects.requireNonNullElse(e.getMessage(), "请求参数不合法"), null);
+    }
+
+    /**
      * 请求路径中缺少必需的路径变量
      */
     @ExceptionHandler(MissingPathVariableException.class)

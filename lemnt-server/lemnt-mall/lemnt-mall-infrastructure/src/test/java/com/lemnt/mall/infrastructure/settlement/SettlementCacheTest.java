@@ -62,7 +62,7 @@ class SettlementCacheTest {
                 2, new BigDecimal("20.00"), new BigDecimal("26.50"), new BigDecimal("6.50"))),
                 new BigDecimal("20.00"), new BigDecimal("0.00"), new BigDecimal("26.50"), null, 0L, 53L,
                 new com.lemnt.mall.domain.settlement.model.SettlementDelivery(7L, 1, "收件人", "13800000000",
-                        110101L, "地址", new BigDecimal("6.50")));
+                        110101L, "地址", new BigDecimal("6.50"), null));
         var value = new Settlement(original.id(), original.memberId(), quote, original.references(), original.expiresAt());
         assertEquals(value, codec.deserialize(codec.serialize(value), Settlement.class));
     }

@@ -76,6 +76,8 @@
                     <include>V20261027__trade_fulfillment_management_permissions.sql</include>
                     <include>V20261101__trade_brokerage_menu.sql</include>
                     <include>V20261101__trade_pickup_menu.sql</include>
+                    <include>V20261101__trade_pickup_verify_menu.sql</include>
+                    <include>V20261101__trade_order_adjust_permissions.sql</include>
                 </includes>
             </testResource>
         </testResources>

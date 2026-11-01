@@ -23,6 +23,7 @@ function store(value) {
     logo: optional(row.logo, 'logo'), openingTime: text(row.openingTime, '开门时间'),
     closingTime: text(row.closingTime, '关门时间'),
     latitude: optional(row.latitude, '纬度'), longitude: optional(row.longitude, '经度'),
+    distanceKm: optional(row.distanceKm, '距离'),
   };
 }
 function createPickUpClient({ request, baseUrl, ready = false, getMemberToken = () => null }) {
@@ -39,10 +40,16 @@ function createPickUpClient({ request, baseUrl, ready = false, getMemberToken = 
     return response.data.data;
   }
   return {
-    stores: () => call('/delivery/pick-up-stores').then(value => {
+    stores: async (location) => {
+      const query = location == null ? '' : (() => {
+        const latitude = Number(location.latitude); const longitude = Number(location.longitude);
+        if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90 || !Number.isFinite(longitude) || longitude < -180 || longitude > 180) throw new Error('定位坐标不合法');
+        return `?latitude=${encodeURIComponent(latitude)}&longitude=${encodeURIComponent(longitude)}`;
+      })();
+      const value = await call('/delivery/pick-up-stores' + query);
       if (!Array.isArray(value)) throw new Error('自提门店列表不合法');
       return value.map(store);
-    }),
+    },
   };
 }
 module.exports = { createPickUpClient, store };

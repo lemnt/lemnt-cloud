@@ -22,6 +22,11 @@ export const pages: Record<string, ComponentType> = {
       default: m.PickUpStorePage,
     })),
   ),
+  'trade/pick-up-verify/index': lazy(() =>
+    import('../modules/trade/pickup/pages/PickUpVerifyPage').then((m) => ({
+      default: m.PickUpVerifyPage,
+    })),
+  ),
   'trade/brokerage/index': lazy(() =>
     import('../modules/trade/brokerage/pages/BrokeragePage').then((m) => ({
       default: m.BrokeragePage,

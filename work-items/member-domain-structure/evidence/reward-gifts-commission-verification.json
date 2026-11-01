@@ -1,0 +1,66 @@
+{
+  "batch": "157-reward-gifts-commission",
+  "date": "2026-11-01",
+  "scope": [
+    "reward free delivery, gift points and gift coupons in settlement",
+    "gift coupons issued on paid with order-source idempotency",
+    "partial refund proportional brokerage recall"
+  ],
+  "sql": [
+    "lemnt-server/lemnt-trade/sql/V17__order_reward_gift.sql",
+    "lemnt-server/lemnt-mall/sql/V28__coupon_reward_gift.sql",
+    "lemnt-server/lemnt-trade/sql/upgrade/order_reward_gift.sql"
+  ],
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-mall/lemnt-mall-start,lemnt-trade/lemnt-trade-start,lemnt-gateway -am test",
+    "totals": {"mall": 190, "trade": 272, "gateway": 35, "failures": 0, "errors": 0, "skipped": 0},
+    "newTests": [
+      "SettlementDeliveryFreeShippingTest",
+      "RewardGiftServiceTest",
+      "rewardThresholdActivatesFreeDeliveryPointsAndCoupons",
+      "partialRefundRecallsCommissionProportionallyAndIsIdempotent"
+    ]
+  },
+  "realEnvironment": {
+    "rewardActivityId": "2116701552884027394",
+    "couponTemplateId": "1",
+    "quote": {
+      "orderNo": "TR7CF15629652149CEAF68E490",
+      "deliveryPrice": "0.00",
+      "freeDelivery": true,
+      "givePoint": 10,
+      "giveCouponTemplateCounts": {"1": 1},
+      "payableAmount": "9.00"
+    },
+    "paid": {
+      "paymentNo": "PAY6207DEEC6CFE4D65830469F5",
+      "status": "PAID",
+      "memberPointsBefore": 10000,
+      "memberPointsAfter": 10010,
+      "giftCouponSourceOrderNo": "TR7CF15629652149CEAF68E490",
+      "duplicatePayCallbackGiftCount": 1
+    },
+    "partialRefund": {
+      "orderNo": "TR34B9C68635D04FDFBD0012E6",
+      "orderAmount": "19.00",
+      "refundNo": "PRD5191668A48D423AA04E78C19016F173",
+      "refundAmount": "9.50",
+      "firstLevelCommission": "1.90→0.95",
+      "secondLevelCommission": "0.95→0.47",
+      "reversalBizType": 4
+    }
+  },
+  "assertions": [
+    "reward threshold activates zero freight and gift snapshot in quote",
+    "gift snapshot is persisted to trade_order",
+    "paid issues gift coupons with source order and credits gift points",
+    "duplicate paid callback does not duplicate coupons or points",
+    "partial refund recalls commission proportionally and idempotently"
+  ],
+  "deferred": [
+    "coupon revocation on refund",
+    "commission recovery after withdrawal with insufficient balance",
+    "real Alipay/WeChat channels"
+  ],
+  "notes": ["no business commit or push in this batch"]
+}

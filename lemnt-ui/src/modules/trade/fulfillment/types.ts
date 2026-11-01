@@ -30,6 +30,13 @@ export interface ShipmentRequest {
   phone?: string;
   address?: string;
 }
+
+export interface OrderAddressRequest {
+  receiverName: string;
+  receiverMobile: string;
+  receiverAreaId: string;
+  receiverDetailAddress: string;
+}
 export interface Shipment extends ShipmentRequest {
   recipientName: string;
   phone: string;

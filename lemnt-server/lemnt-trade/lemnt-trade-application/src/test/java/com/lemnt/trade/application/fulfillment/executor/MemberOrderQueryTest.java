@@ -74,14 +74,14 @@ class MemberOrderQueryTest {
     @Test
     void statusCountsMapCompletedByCommentState() {
         when(orders.memberStatusCounts(7L)).thenReturn(List.of(
-                new OrderStatusCount("RESERVING", false, 1),
-                new OrderStatusCount("PENDING_PAYMENT", false, 1),
-                new OrderStatusCount("PAID", false, 2),
-                new OrderStatusCount("SHIPPED", false, 3),
-                new OrderStatusCount("COMPLETED", false, 4),
-                new OrderStatusCount("COMPLETED", true, 5),
-                new OrderStatusCount("CLOSED", false, 6),
-                new OrderStatusCount("REFUNDED", false, 7)));
+                new OrderStatusCount("RESERVING", false, 1, 1),
+                new OrderStatusCount("PENDING_PAYMENT", false, 1, 1),
+                new OrderStatusCount("PAID", false, 1, 2),
+                new OrderStatusCount("SHIPPED", false, 1, 3),
+                new OrderStatusCount("COMPLETED", false, 1, 4),
+                new OrderStatusCount("COMPLETED", true, 1, 5),
+                new OrderStatusCount("CLOSED", false, 1, 6),
+                new OrderStatusCount("REFUNDED", false, 1, 7)));
         var value = countQuery.execute(7L);
         assertEquals(2, value.pendingPayment());
         assertEquals(2, value.awaitingShipment());

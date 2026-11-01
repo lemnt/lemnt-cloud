@@ -81,6 +81,8 @@ class ControllerMappingTest {
                 GET /trade/admin/orders/summary trade:order:summary
                 GET /trade/admin/orders/{orderNo}/remark trade:order:query
                 PUT /trade/admin/orders/{orderNo}/remark trade:order:remark
+                POST /trade/admin/orders/{orderNo}/price-adjustment trade:order:update
+                PUT /trade/admin/orders/{orderNo}/address trade:order:update
                 GET /trade/admin/orders trade:fulfillment:list
                 GET /trade/admin/orders/{orderNo} trade:fulfillment:query
                 GET /trade/admin/orders/{orderNo}/logs trade:fulfillment:query

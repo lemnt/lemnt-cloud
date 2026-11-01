@@ -119,14 +119,18 @@ public class PickUpStoreService {
         return appList(null);
     }
 
-    /** 有坐标时按直线距离升序，缺失坐标的门店排在最后。 */
+    /** 有坐标时按直线距离升序，缺失坐标的门店排在最后；未提供位置时保持原有顺序。 */
     public List<AppPickUpStoreDTO> appList(AppPickUpStoreListQry qry) {
         boolean located = qry != null && qry.latitude() != null;
-        return stores.enabled().stream().map(value -> new AppPickUpStoreDTO(value.id(), value.name(),
+        var values = stores.enabled().stream().map(value -> new AppPickUpStoreDTO(value.id(), value.name(),
                 value.introduction(), value.phone(), value.areaId(), value.detailAddress(), value.logo(),
                 value.openingTime(), value.closingTime(), value.latitude(), value.longitude(),
                 located ? distanceKm(qry.latitude(), qry.longitude(), value) : null))
-                .sorted(java.util.Comparator
+                .toList();
+        if (!located) {
+            return values;
+        }
+        return values.stream().sorted(java.util.Comparator
                         .comparing(AppPickUpStoreDTO::distanceKm,
                                 java.util.Comparator.nullsLast(java.util.Comparator.naturalOrder()))
                         .thenComparing(AppPickUpStoreDTO::id))

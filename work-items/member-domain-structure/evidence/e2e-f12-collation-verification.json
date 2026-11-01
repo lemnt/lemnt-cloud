@@ -1,0 +1,72 @@
+{
+  "batch": "159-e2e-f12-collation",
+  "date": "2026-11-01",
+  "scope": [
+    "browser end-to-end acceptance",
+    "Nacos route verification",
+    "F12 endpoint/table/task/page collation",
+    "compatibility constructor cleanup",
+    "production SQL release script"
+  ],
+  "inventory": {
+    "endpoints": {"mall": 189, "trade": 119, "member": 62},
+    "tables": {"mall": 35, "trade": 27, "member": 18},
+    "scheduledTasks": 8,
+    "uiRoutes": 56,
+    "miniappPages": 38
+  },
+  "nacos": {
+    "dataId": "lemnt-gateway.yaml",
+    "namespace": "dev",
+    "routes": [
+      "/auth/** StripPrefix=1",
+      "/system/** StripPrefix=1",
+      "/mall/** prefix preserved",
+      "/trade/** prefix preserved"
+    ],
+    "whitelist": ["/auth/sessions/login", "/trade/payment/notify/**"],
+    "gatewayCallsPassed": [
+      "POST /mall/app/checkout/quote",
+      "POST /mall/app/checkout",
+      "GET /trade/app/orders?status=AWAITING_PICKUP",
+      "GET /trade/app/delivery/pick-up-stores?latitude=31.25&longitude=121.5",
+      "POST /trade/admin/orders/{orderNo}/price-adjustment",
+      "PUT /trade/admin/orders/{orderNo}/address",
+      "POST /trade/admin/after-sales/{no}/refund",
+      "GET /system/menus/routers"
+    ]
+  },
+  "browser": {
+    "login": "admin with math captcha through /auth/sessions/login",
+    "verificationWorkstation": "/trade/pick-up-verify",
+    "verifiedOrderNo": "TR3759C6A7A75E4455974A37CF",
+    "orderStatusAfterVerify": "COMPLETED",
+    "fulfillmentPageActions": ["改价", "改址"],
+    "priceDialogInitialAmount": "8.00"
+  },
+  "compatibilityRemoved": [
+    "SettlementCreateCmd 5/3-arg constructors",
+    "SettlementQuoteDTO 9/8-arg constructors",
+    "SettlementRes 9-arg constructor",
+    "OrderDeliveryDTO 7-arg constructor",
+    "SettlementDelivery 7-arg constructor",
+    "AppPickUpStoreDTO 10-arg constructor",
+    "AppPickUpStoreRes 10-arg constructor",
+    "MemberOrderStatusCountDTO 7-arg constructor",
+    "AppOrderStatusCountRes 7-arg constructor",
+    "OrderStatusCount 3-arg constructor"
+  ],
+  "releaseScript": {
+    "path": "lemnt-server/sql/release/apply-business-sql.sh",
+    "mode": "dry-run by default, --apply writes",
+    "readme": "lemnt-server/sql/release/README.md"
+  },
+  "tests": {"mall": 190, "trade": 272, "gateway": 35, "ui": 315, "miniapp": 176, "failures": 0},
+  "deferred": [
+    "miniapp device and iOS/Android/H5 runtime",
+    "real Alipay/WeChat payment refund transfer SDK",
+    "real logistics tracking",
+    "equal-weight 63-unit progress recount"
+  ],
+  "notes": ["no business commit or push in this batch"]
+}

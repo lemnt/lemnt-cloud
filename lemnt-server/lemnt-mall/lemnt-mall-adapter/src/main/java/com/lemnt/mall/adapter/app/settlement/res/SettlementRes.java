@@ -36,17 +36,4 @@ public record SettlementRes(
         @Schema(description = "支付成功后赠送的优惠券模板及数量")
         java.util.Map<Long, Integer> giveCouponTemplateCounts
 ) implements Serializable {
-    /** 历史快照缺少配送字段，读取时保留未配置状态。 */
-    public SettlementRes(
-            String settlementId,
-            String expiresAt,
-            List<SettlementItemRes> items,
-            BigDecimal originalAmount,
-            BigDecimal discountAmount,
-            BigDecimal payableAmount,
-            Long couponId,
-            long usePoint,
-            long givePoint) {
-        this(settlementId, expiresAt, items, originalAmount, discountAmount, payableAmount, couponId, usePoint, givePoint, null, false, java.util.Map.of());
-    }
 }

@@ -160,3 +160,5 @@ F01进行中：规则快照、限领/无限量、DATE/TERM、商品范围计价�
 2026-10-31 第144批：0元订单售后退款与积分回退。售后单/退款单允许无支付单和0金额，零元退款以POINT成功记录派发既有权益任务；商城恢复活动库存并置活动订单REFUNDED，会员整单退积分且无经验。trade 227项、mall 165项、member 118项、前端292项、小程序155项测试通过；零元部分退款及真实环境联调未做，见[144-zero-cash-aftersale-refund-delivery.md](144-zero-cash-aftersale-refund-delivery.md)。
 
 2026-11-01 第145批：0元订单按数量部分退款。零元售后支持部分数量、积分商城多商品按行拆分积分，订单仅在累计退款数量达到整行时REFUNDED；商城按累计数量计算积分增量并恢复活动库存，会员按refundPoint退回积分并在最后一次补齐尾差。trade 230项、mall 167项、member 118项、前端292项、小程序155项测试通过；非积分活动多商品及真实环境联调未做，见[145-zero-cash-partial-refund-delivery.md](145-zero-cash-partial-refund-delivery.md)。
+
+2026-11-01 F11/F12阶段：经营统计仍未迁移；F12完成本轮端到端、Nacos路由核对与主要兼容残留清理，当前接口/表/任务/页面规模见159批证据。第128–159批已补齐促销、支付钱包、分销、自提、客服装修等主要单元，但未重新执行63单元等权复核，42.3%不再作为当前进度结论。生产SQL发布脚本见`lemnt-server/sql/release/apply-business-sql.sh`。

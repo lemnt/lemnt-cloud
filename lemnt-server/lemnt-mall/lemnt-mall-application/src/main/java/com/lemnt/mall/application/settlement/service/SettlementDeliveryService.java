@@ -84,7 +84,7 @@ public class SettlementDeliveryService {
         return new SettlementQuote(items, quote.originalAmount(), quote.discountAmount(),
                 quote.payableAmount().add(fee.total()), quote.couponId(), quote.usePoint(), givePoint,
                 new SettlementDelivery(address.id(), 1, address.name(), address.mobile(), address.areaId(),
-                        address.detailAddress(), fee.total()),
+                        address.detailAddress(), fee.total(), null),
                 quote.rewardPoint(), quote.freeDelivery(), quote.giveCouponTemplateCounts());
     }
 
