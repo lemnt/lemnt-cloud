@@ -92,9 +92,19 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (method == HttpMethod.POST) {
             return PUBLIC_APP_POST_PATHS.contains(path);
         }
+        if (method == HttpMethod.PUT) {
+            return path.matches("/mall/app/banners/[1-9][0-9]{0,18}/browse");
+        }
         return method == HttpMethod.GET && (path.equals("/mall/app/comments")
                 || path.equals("/mall/app/categories")
                 || path.equals("/mall/app/products")
+                || path.equals("/mall/app/banners")
+                || path.equals("/mall/app/diy/template/used")
+                || path.equals("/mall/app/promotion-hub/sections")
+                || path.matches("/mall/app/promotion-hub/discount/[1-9][0-9]{0,18}")
+                || path.matches("/mall/app/promotion-hub/reward/[1-9][0-9]{0,18}")
+                || path.matches("/mall/app/diy/template/[1-9][0-9]{0,18}")
+                || path.matches("/mall/app/diy/page/[1-9][0-9]{0,18}")
                 || path.matches("/mall/app/products/[1-9][0-9]{0,18}"));
     }
 

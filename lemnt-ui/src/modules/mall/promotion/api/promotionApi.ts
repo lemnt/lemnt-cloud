@@ -80,7 +80,23 @@ export async function getReward(id: string): Promise<RewardActivity> {
     productScopeValues: array(v.productScopeValues).map(activityId),
     rules: array(v.rules).map((raw) => {
       const row = object(raw);
-      return { limit: decimal(row.limit), discountPrice: decimal(row.discountPrice) };
+      const coupons = row.giveCouponTemplateCounts;
+      if (coupons != null && (typeof coupons !== 'object' || Array.isArray(coupons)))
+        throw Error('赠送优惠券不合法');
+      return {
+        limit: decimal(row.limit),
+        discountPrice: decimal(row.discountPrice),
+        freeDelivery: row.freeDelivery === true,
+        point: row.point == null ? 0 : Number(row.point),
+        giveCouponTemplateCounts: coupons == null ? {} : Object.fromEntries(
+          Object.entries(coupons as Record<string, unknown>).map(([key, value]) => {
+            activityId(key);
+            if (typeof value !== 'number' || !Number.isInteger(value) || value < 1 || value > 99)
+              throw Error('赠送优惠券数量不合法');
+            return [key, value];
+          }),
+        ),
+      };
     }),
   };
 }
@@ -138,7 +154,26 @@ export function rewardPayload(v: ActivityEditorValues): RewardValues {
     if (v.conditionType === 'PRICE' && cents(discountPrice) > cents(limit))
       throw Error('减免金额不能超过门槛');
     previous = cents(limit);
-    return { limit, discountPrice };
+    const coupons = (row.couponCounts || '')
+      .split(',')
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map((part) => {
+        const [key, count] = part.split(':');
+        activityId(key);
+        const value = Number(count);
+        if (!Number.isInteger(value) || value < 1 || value > 99) throw Error('赠送优惠券数量不合法');
+        return [key, value] as const;
+      });
+    const point = row.point == null ? 0 : Number(row.point);
+    if (!Number.isInteger(point) || point < 0 || point > 1000000) throw Error('赠送积分不合法');
+    return {
+      limit,
+      discountPrice,
+      freeDelivery: row.freeDelivery === true,
+      point,
+      giveCouponTemplateCounts: Object.fromEntries(coupons),
+    };
   });
   return {
     ...base,

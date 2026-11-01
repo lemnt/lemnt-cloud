@@ -61,7 +61,7 @@ public final class CouponConverter {
     /** 从会员券自身读取规则，不能通过当前模板回填到运行期对象。 */
     public static Coupon coupon(CouponDO row) {
         return row == null ? null : new Coupon(row.getId(), row.getTemplateId(), row.getMemberId(), row.getStatus(),
-                row.getOrderNo(), terms(row), row.getUseTime());
+                row.getOrderNo(), terms(row), row.getUseTime(), row.getSourceOrderNo());
     }
 
     private static CouponTerms terms(CouponDO row) {
@@ -91,6 +91,7 @@ public final class CouponConverter {
         row.setMemberId(value.memberId());
         row.setStatus(value.status());
         row.setOrderNo(value.orderNo());
+        row.setSourceOrderNo(value.sourceOrderNo());
         row.setUseTime(value.useTime());
         var terms = value.terms();
         if (terms == null) {

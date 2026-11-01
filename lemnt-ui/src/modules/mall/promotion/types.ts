@@ -15,7 +15,13 @@ export interface RewardValues {
   conditionType: 'PRICE' | 'COUNT';
   productScope: 'ALL' | 'SPU_IDS' | 'CATEGORY_IDS';
   productScopeValues: string[];
-  rules: { limit: string; discountPrice: string }[];
+  rules: {
+    limit: string;
+    discountPrice: string;
+    freeDelivery?: boolean | null;
+    point?: number | null;
+    giveCouponTemplateCounts?: Record<string, number> | null;
+  }[];
 }
 export interface DiscountValues {
   name: string;
@@ -41,7 +47,13 @@ export interface ActivityEditorValues {
   conditionType?: 'PRICE' | 'COUNT';
   productScope?: 'ALL' | 'SPU_IDS' | 'CATEGORY_IDS';
   productScopeValues?: string[];
-  rules?: { limit: string; discountPrice: string }[];
+  rules?: {
+    limit: string;
+    discountPrice: string;
+    freeDelivery?: boolean;
+    point?: number;
+    couponCounts?: string;
+  }[];
   products?: {
     spuId: string;
     skuId: string;
@@ -279,4 +291,70 @@ export interface PointActivityFilter {
   status?: 0 | 1;
   pageNum: number;
   pageSize: number;
+}
+
+export interface Banner {
+  id: string;
+  title: string;
+  url: string;
+  picUrl: string;
+  sort: number;
+  status: 0 | 1;
+  position: 1 | 2 | 3 | 4 | 5;
+  memo: string | null;
+  browseCount: number;
+}
+export interface BannerSave {
+  title: string;
+  url: string;
+  picUrl: string;
+  sort: number;
+  status: 0 | 1;
+  position: 1 | 2 | 3 | 4 | 5;
+  memo?: string | null;
+}
+export interface BannerFilter {
+  title?: string;
+  status?: 0 | 1;
+  pageNum: number;
+  pageSize: number;
+}
+
+export interface KefuConversation {
+  id: string;
+  userId: string;
+  nickname: string | null;
+  avatar: string | null;
+  lastMessageTime: string | null;
+  lastMessageContent: string | null;
+  lastMessageContentType: number | null;
+  adminPinned: boolean;
+  adminUnreadMessageCount: number;
+}
+export interface KefuMessage {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderType: 1 | 2;
+  contentType: 1 | 2;
+  content: string;
+  readStatus: boolean;
+  createTime: string;
+}
+export interface DiyTemplate {
+  id: string;
+  name: string;
+  used: boolean;
+  usedTime: string | null;
+  remark: string | null;
+  previewPicUrls: string[];
+  property: string;
+}
+export interface DiyPage {
+  id: string;
+  templateId: string;
+  name: string;
+  remark: string | null;
+  previewPicUrls: string[];
+  property: string;
 }

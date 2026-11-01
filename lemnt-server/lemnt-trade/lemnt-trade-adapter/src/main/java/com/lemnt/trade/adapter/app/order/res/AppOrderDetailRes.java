@@ -27,7 +27,15 @@ public record AppOrderDetailRes(
         @Schema(description = "是否全部评价")
         Boolean commentStatus,
         @Schema(description = "全部评价完成时间")
-        LocalDateTime finishTime
+        LocalDateTime finishTime,
+        @Schema(description = "自提门店名称")
+        String pickUpStoreName,
+        @Schema(description = "自提门店电话")
+        String pickUpStorePhone,
+        @Schema(description = "自提门店地址")
+        String pickUpStoreAddress,
+        @Schema(description = "自提核销码")
+        String pickUpVerifyCode
 ) implements Serializable {
     public AppOrderDetailRes {
         items = items == null ? List.of() : List.copyOf(items);

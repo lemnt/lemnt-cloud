@@ -90,6 +90,29 @@ class ControllerMappingTest {
                 GET /trade/app/payment-channels
                 POST /trade/app/payments/{paymentNo}/sandbox-pay
                 POST /trade/payment/notify/{appKey}/{channel}
+                GET /trade/app/delivery/expresses
+                GET /trade/app/delivery/pick-up-stores
+                GET /trade/admin/delivery/pick-up-stores trade:pick-up-store:list
+                GET /trade/admin/delivery/pick-up-stores/{id} trade:pick-up-store:query
+                POST /trade/admin/delivery/pick-up-stores trade:pick-up-store:create
+                PUT /trade/admin/delivery/pick-up-stores/{id} trade:pick-up-store:update
+                PUT /trade/admin/delivery/pick-up-stores/{id}/verify-users trade:pick-up-store:update
+                DELETE /trade/admin/delivery/pick-up-stores/{id} trade:pick-up-store:delete
+                POST /trade/admin/orders/pick-up trade:fulfillment:update
+                GET /trade/admin/orders/pick-up/{code} trade:fulfillment:query
+                POST /trade/admin/orders/pick-up/{code}/verify trade:fulfillment:update
+                GET /trade/app/brokerage/user
+                POST /trade/app/brokerage/bind
+                GET /trade/app/brokerage/records
+                GET /trade/app/brokerage/withdraws
+                POST /trade/app/brokerage/withdraws
+                GET /trade/admin/brokerage/users trade:brokerage:list
+                PUT /trade/admin/brokerage/users/{id}/enabled trade:brokerage:update
+                PUT /trade/admin/brokerage/users/{id}/bind trade:brokerage:update
+                GET /trade/admin/brokerage/records trade:brokerage:list
+                GET /trade/admin/brokerage/withdraws trade:brokerage:list
+                POST /trade/admin/brokerage/withdraws/{id}/audit trade:brokerage:audit
+                POST /trade/admin/brokerage/unfreeze trade:brokerage:update
                 GET /trade/app/orders/{orderNo}/payment
                 GET /trade/app/orders
                 GET /trade/app/orders/status-counts

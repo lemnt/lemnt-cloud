@@ -1,0 +1,26 @@
+<view class="container">
+ <view class="title">{{detail.name || (type === 'REWARD' ? '满减送' : '限时折扣')}}</view>
+ <view wx:if="{{error}}" class="error">{{error}}</view>
+ <view wx:if="{{detail}}" class="card">
+  <view class="description">{{detail.startTime}} 至 {{detail.endTime}}</view>
+  <block wx:if="{{type === 'REWARD'}}">
+   <view class="subtitle">满减规则</view>
+   <view wx:for="{{detail.rules}}" wx:key="limit" class="list-row">
+    <view>满 {{item.limit}} {{detail.conditionType === 'COUNT' ? '件' : '元'}}，减 {{item.discountPrice}} 元</view>
+    <view class="description" wx:if="{{item.freeDelivery}}">赠送包邮</view>
+    <view class="description" wx:if="{{item.point}}">赠送 {{item.point}} 积分</view>
+    <view class="description" wx:if="{{item.giveCouponTemplateCounts}}">赠送优惠券</view>
+   </view>
+  </block>
+  <block wx:else>
+   <view class="subtitle">折扣商品</view>
+   <view wx:for="{{detail.products}}" wx:key="skuId" class="list-row">
+    <view>商品 {{item.spuId}} · SKU {{item.skuId}}</view>
+    <view class="description" wx:if="{{item.discountType === 'PRICE'}}">立减 {{item.discountPrice}} 元</view>
+    <view class="description" wx:else>折扣 {{item.discountPercent / 100}} 折</view>
+   </view>
+  </block>
+ </view>
+ <button bindtap="refresh" disabled="{{loading}}">刷新</button>
+ <navigator url="/pages/promotion-hub/index">返回活动中心</navigator>
+</view>

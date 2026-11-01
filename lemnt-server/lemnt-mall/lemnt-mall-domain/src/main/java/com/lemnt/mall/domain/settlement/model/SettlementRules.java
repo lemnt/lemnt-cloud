@@ -117,12 +117,20 @@ public final class SettlementRules {
         if (delivery != null
         ) {
             value.append('|').append(delivery.addressId()).append('|').append(delivery.deliveryType())
-                    .append('|').append(delivery.receiverAreaId()).append('|').append(delivery.deliveryPrice());
-            for (var text : List.of(delivery.receiverName(), delivery.receiverMobile(),
+                    .append('|').append(delivery.receiverAreaId()).append('|').append(delivery.deliveryPrice())
+                    .append('|').append(delivery.pickUpStoreId());
+            for (var text : java.util.Arrays.asList(delivery.receiverName(), delivery.receiverMobile(),
                     delivery.receiverDetailAddress())
             ) {
-                value.append('|').append(text.length()).append(':').append(text);
+                value.append('|').append(text == null ? -1 : text.length()).append(':').append(text);
             }
+        }
+        value.append("|reward:").append(quote.rewardPoint()).append('|').append(quote.freeDelivery());
+        if (quote.giveCouponTemplateCounts() != null) {
+            quote.giveCouponTemplateCounts().entrySet().stream()
+                    .sorted(java.util.Map.Entry.comparingByKey())
+                    .forEach(entry -> value.append("|gift:").append(entry.getKey())
+                            .append(':').append(entry.getValue()));
         }
         return fingerprint(value.append('|').append(quote.usePoint()).append('|').append(quote.givePoint()).toString());
     }

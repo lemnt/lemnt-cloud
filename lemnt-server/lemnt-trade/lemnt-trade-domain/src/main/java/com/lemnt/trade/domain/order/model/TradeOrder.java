@@ -3,6 +3,7 @@ package com.lemnt.trade.domain.order.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 交易订单聚合根：订单金额和商品信息来自服务端快照。
@@ -19,8 +20,28 @@ public record TradeOrder(
         long givePoint,
         TradeOrderDelivery delivery,
         Boolean commentStatus,
-        LocalDateTime finishTime
+        LocalDateTime finishTime,
+        Map<Long, Integer> giveCouponTemplateCounts
 ) {
+    /** 兼容无营销赠券的订单快照。 */
+    public TradeOrder(
+            Long id,
+            String orderNo,
+            Long memberId,
+            BigDecimal totalAmount,
+            String status,
+            List<TradeOrderItem> items,
+            LocalDateTime createTime,
+            long usePoint,
+            long givePoint,
+            TradeOrderDelivery delivery,
+            Boolean commentStatus,
+            LocalDateTime finishTime
+    ) {
+        this(id, orderNo, memberId, totalAmount, status, items, createTime, usePoint, givePoint, delivery,
+                commentStatus, finishTime, Map.of());
+    }
+
     /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
     public TradeOrder(
             Long id,
@@ -34,7 +55,8 @@ public record TradeOrder(
             long givePoint,
             TradeOrderDelivery delivery
     ) {
-        this(id, orderNo, memberId, totalAmount, status, items, createTime, usePoint, givePoint, delivery, null, null);
+        this(id, orderNo, memberId, totalAmount, status, items, createTime, usePoint, givePoint, delivery,
+                null, null, Map.of());
     }
 
     /**
@@ -42,6 +64,8 @@ public record TradeOrder(
      */
     public TradeOrder {
         items = items == null ? List.of() : List.copyOf(items);
+        giveCouponTemplateCounts = giveCouponTemplateCounts == null ? Map.of()
+                : Map.copyOf(giveCouponTemplateCounts);
     }
 
     /**

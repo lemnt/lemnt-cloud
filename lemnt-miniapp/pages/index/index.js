@@ -4,11 +4,17 @@ const { couponId, ownedCoupons } = require('../../services/coupons');
 const { createMemberClient } = require('../../services/member');
 const { createTradeClient } = require('../../services/trade');
 const { createCheckoutFlow } = require('../../services/checkoutFlow');
+const { createPickUpClient } = require('../../services/pickup');
 Page({
-  data: { ready: config.memberApiReady, loading: false, error: '', rows: [], quote: null, receipt: null, payment: null, pending: false, coupons: [], selectedCoupon: null, pointStatus: false, addresses: [], selectedAddress: null },
+  data: { ready: config.memberApiReady, loading: false, error: '', rows: [], quote: null, receipt: null, payment: null, pending: false, coupons: [], selectedCoupon: null, pointStatus: false, addresses: [], selectedAddress: null, deliveryType: 1, pickUpStores: [], pickUpStoreIndex: 0, pickUpStoreId: null },
   onLoad() {
     const session = () => getApp().globalData.memberSession;
     this.client = createTradeClient({
+      request: options => new Promise((resolve, reject) => wx.request({ ...options, success: resolve, fail: reject })),
+      baseUrl: config.apiBaseUrl, ready: config.memberApiReady,
+      getMemberToken: () => session()?.accessToken,
+    });
+    this.pickupClient = createPickUpClient({
       request: options => new Promise((resolve, reject) => wx.request({ ...options, success: resolve, fail: reject })),
       baseUrl: config.apiBaseUrl, ready: config.memberApiReady,
       getMemberToken: () => session()?.accessToken,
@@ -23,7 +29,7 @@ Page({
       newRequestNo: () => 'MINI-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2) });
   },
   onShow() {
-    this.setData({ rows: [], quote: null, receipt: null, payment: null, pending: false, coupons: [], selectedCoupon: null, pointStatus: false, addresses: [], selectedAddress: null });
+    this.setData({ rows: [], quote: null, receipt: null, payment: null, pending: false, coupons: [], selectedCoupon: null, pointStatus: false, addresses: [], selectedAddress: null, deliveryType: 1, pickUpStores: [], pickUpStoreIndex: 0, pickUpStoreId: null });
     this.quoteInput = null; this.rowsMember = null; this.quoteMember = null; this.receiptMember = null;
     try { this.setData({ pending: !!(this.flow && this.flow.pending()) }); }
     catch (error) { this.setData({ error: error.message || "未确认结算读取失败，请保留记录并重试" }); }
@@ -35,7 +41,7 @@ Page({
     try { await run(member); }
     catch (error) {
       if (member !== getApp().globalData.memberSession?.memberId) {
-        this.setData({ rows: [], quote: null, receipt: null, payment: null, pending: false, coupons: [], selectedCoupon: null, pointStatus: false, addresses: [], selectedAddress: null });
+        this.setData({ rows: [], quote: null, receipt: null, payment: null, pending: false, coupons: [], selectedCoupon: null, pointStatus: false, addresses: [], selectedAddress: null, deliveryType: 1, pickUpStores: [], pickUpStoreIndex: 0, pickUpStoreId: null });
         this.quoteInput = null; this.rowsMember = null; this.quoteMember = null; this.receiptMember = null;
       }
       this.setData({ error: error.message || '请求失败，请重试' });
@@ -63,15 +69,20 @@ Page({
     if (!productIds.length) throw new Error('购物车中没有已选且可售的商品');
     const selectedCoupon = this.data.selectedCoupon;
     if (selectedCoupon && (this.couponsMember !== member || !this.data.coupons.some(c => c.id === selectedCoupon && c.status === 'AVAILABLE'))) throw new Error('请重新加载并选择本人优惠券');
-    if (this.addressMember !== member || !this.data.addresses.some(row => row.id === this.data.selectedAddress)) throw new Error('请选择当前会员的收货地址');
-    const request = { productIds, addressId: this.data.selectedAddress, pointStatus: this.data.pointStatus, ...(selectedCoupon ? { couponId: selectedCoupon } : {}) };
+    const pickUp = this.data.deliveryType === 2;
+    if (!pickUp && (this.addressMember !== member || !this.data.addresses.some(row => row.id === this.data.selectedAddress))) throw new Error('请选择当前会员的收货地址');
+    if (pickUp && !this.data.pickUpStoreId) throw new Error('请选择自提门店');
+    const request = pickUp
+      ? { productIds, deliveryType: 2, pickUpStoreId: this.data.pickUpStoreId, pointStatus: this.data.pointStatus, ...(selectedCoupon ? { couponId: selectedCoupon } : {}) }
+      : { productIds, addressId: this.data.selectedAddress, pointStatus: this.data.pointStatus, ...(selectedCoupon ? { couponId: selectedCoupon } : {}) };
     const quote = await this.client.quote(request);
     if (member !== getApp().globalData.memberSession?.memberId) throw new Error('会员已切换，请重新加载');
     if (!quote || typeof quote.settlementId !== 'string' || !/^[a-f0-9-]{36}$/.test(quote.settlementId) || ['originalAmount','discountAmount','payableAmount'].some(key => typeof quote[key] !== 'string' || !/^\d+\.\d{2}$/.test(quote[key]))) throw new Error('报价响应不合法');
     if ((quote.couponId == null ? null : couponId(quote.couponId)) !== selectedCoupon) throw new Error('报价优惠券与所选不一致');
-    if (!quote.delivery || String(quote.delivery.addressId) !== this.data.selectedAddress
-      || quote.delivery.deliveryType !== 1 || typeof quote.delivery.deliveryPrice !== 'string'
-      || !/^\d+\.\d{2}$/.test(quote.delivery.deliveryPrice)) throw new Error('报价收货地址或运费不一致，请重新预览');
+    if (!quote.delivery || (pickUp
+      ? quote.delivery.deliveryType !== 2 || String(quote.delivery.pickUpStoreId) !== String(this.data.pickUpStoreId) || quote.delivery.deliveryPrice !== '0.00'
+      : String(quote.delivery.addressId) !== this.data.selectedAddress || quote.delivery.deliveryType !== 1)
+      || typeof quote.delivery.deliveryPrice !== 'string' || !/^\d+\.\d{2}$/.test(quote.delivery.deliveryPrice)) throw new Error('报价配送方式、地址或运费不一致，请重新预览');
     this.quoteMember = member;
     this.quoteInput = { settlementId: quote.settlementId };
     this.setData({ quote });
@@ -86,6 +97,26 @@ Page({
       this.setData({ receipt, payment: null, pending: false, quote: null }); this.quoteInput = null;
     } catch (error) { this.setData({ pending: !!this.flow.pending() }); throw error; }
   }); },
+  chooseDelivery(event) {
+    return this.action(async () => {
+      if (this.flow.pending()) throw new Error('存在未确认结算，不能切换配送方式');
+      const type = event.detail.value ? 2 : 1;
+      this.quoteInput = null;
+      this.setData({ deliveryType: type, quote: null });
+      if (type === 2 && !this.data.pickUpStores.length) {
+        const stores = await this.pickupClient.stores();
+        const index = stores.length ? 0 : -1;
+        this.setData({ pickUpStores: stores, pickUpStoreIndex: Math.max(index, 0), pickUpStoreId: index >= 0 ? stores[0].id : null });
+      }
+    });
+  },
+  choosePickUpStore(event) {
+    const index = Number(event.detail.value);
+    const store = this.data.pickUpStores[index];
+    if (!store) return;
+    this.quoteInput = null;
+    this.setData({ pickUpStoreIndex: index, pickUpStoreId: store.id, quote: null });
+  },
   loadAddresses() { return this.action(async member => {
     if (this.flow.pending()) throw new Error('存在未确认结算，不能更换地址');
     const addresses = await this.memberClient.addresses();

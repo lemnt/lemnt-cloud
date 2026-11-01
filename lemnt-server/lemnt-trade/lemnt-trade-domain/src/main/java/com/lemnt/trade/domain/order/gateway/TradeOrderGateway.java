@@ -40,6 +40,15 @@ public interface TradeOrderGateway {
 
     /** 同时确认收货状态和真实收货时间，调用方持有订单锁。 */
     boolean completeReceipt(String orderNo, LocalDateTime receivedAt);
+
+    /** 将已支付订单标记为自提，写入门店和核销码。 */
+    boolean assignPickUp(String orderNo, Long storeId, String verifyCode);
+
+    /** 按核销码读取订单主体。 */
+    TradeOrder findHeaderByPickUpCode(String verifyCode);
+
+    /** 自提核销完成订单，调用方已持有订单锁。 */
+    boolean completePickUp(String orderNo, LocalDateTime time);
     /** 有界扫描及持锁后重新核验到期条件。 */
     List<String> commentExpired(LocalDateTime cutoff, int limit);
     boolean commentExpired(String orderNo, LocalDateTime cutoff);

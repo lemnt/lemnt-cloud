@@ -11,6 +11,15 @@ public record TradeOrderDelivery(
         String receiverMobile,
         Long receiverAreaId,
         String receiverDetailAddress,
-        BigDecimal deliveryPrice
+        BigDecimal deliveryPrice,
+        Long pickUpStoreId,
+        String pickUpVerifyCode
 ) implements Serializable {
+    /** 兼容普通快递订单。 */
+    public TradeOrderDelivery(Long addressId, Integer deliveryType, String receiverName,
+            String receiverMobile, Long receiverAreaId, String receiverDetailAddress,
+            BigDecimal deliveryPrice) {
+        this(addressId, deliveryType, receiverName, receiverMobile, receiverAreaId,
+                receiverDetailAddress, deliveryPrice, null, null);
+    }
 }

@@ -88,11 +88,17 @@ public class SettlementPreparationService {
     private SettlementQuote price(Long memberId, Map<Long, Integer> quantities, Long couponId,
             boolean lockCoupon, boolean pointStatus
     ) {
-        return price(memberId, quantities, couponId, lockCoupon, pointStatus, null);
+        return price(memberId, quantities, couponId, lockCoupon, pointStatus, null, 1, null);
     }
 
     private SettlementQuote price(Long memberId, Map<Long, Integer> quantities, Long couponId,
             boolean lockCoupon, boolean pointStatus, Long addressId
+    ) {
+        return price(memberId, quantities, couponId, lockCoupon, pointStatus, addressId, 1, null);
+    }
+
+    private SettlementQuote price(Long memberId, Map<Long, Integer> quantities, Long couponId,
+            boolean lockCoupon, boolean pointStatus, Long addressId, Integer deliveryType, Long pickUpStoreId
     ) {
         var snapshots = productCatalogGateway.findOnShelfBatch(new ArrayList<>(quantities.keySet()));
         List<SettlementItem> items = new ArrayList<>();
@@ -134,6 +140,13 @@ public class SettlementPreparationService {
         var member = memberValidationService.requireActive(memberId);
         var quote = activityPricingService.price(items, coupon, couponTemplateGateway.now(),
                 member.discountPercent(), pointStatus, member.points());
+        int type = deliveryType == null ? 1 : deliveryType;
+        if (type == 2) {
+            return deliveryService.pickUp(quote, pickUpStoreId);
+        }
+        if (type != 1) {
+            throw new IllegalArgumentException("配送方式不合法");
+        }
         return addressId == null ? quote : deliveryService.attach(memberId, addressId, snapshots, quote);
     }
 
@@ -200,7 +213,8 @@ public class SettlementPreparationService {
                 quote.payableAmount(),
                 "RESERVING",
                 quote.items(),
-                null, quote.usePoint(), quote.givePoint(), quote.delivery());
+                null, quote.usePoint(), quote.givePoint(), quote.delivery(),
+                null, null, quote.giveCouponTemplateCounts());
         settlementRecordService.save(
                 new SettlementRecord(
                 orderNo,
@@ -292,7 +306,9 @@ public class SettlementPreparationService {
         var quantities = new TreeMap<Long, Integer>();
         selectedCart(query.memberId(), ids)
                 .forEach(row -> quantities.put(row.productId(), row.quantity()));
-        return price(query.memberId(), quantities, query.couponId(), false, Boolean.TRUE.equals(query.pointStatus()), query.addressId());
+        return price(query.memberId(), quantities, query.couponId(), false,
+                Boolean.TRUE.equals(query.pointStatus()), query.addressId(), query.deliveryType(),
+                query.pickUpStoreId());
     }
 
     /**
@@ -357,7 +373,8 @@ public class SettlementPreparationService {
         var quantities = new TreeMap<Long, Integer>();
         rows.forEach(row -> quantities.put(row.productId(), row.quantity()));
         var quote = price(query.memberId(), quantities, query.couponId(), false,
-            Boolean.TRUE.equals(query.pointStatus()), query.addressId());
+            Boolean.TRUE.equals(query.pointStatus()), query.addressId(), query.deliveryType(),
+            query.pickUpStoreId());
         return new Settlement(
                 UUID.randomUUID().toString(),
                 query.memberId(),
@@ -419,8 +436,10 @@ public class SettlementPreparationService {
         var quote = snapshot.quote();
         var quantities = new TreeMap<Long, Integer>();
         quote.items().forEach(item -> quantities.put(item.productId(), item.quantity()));
+        var delivery = quote.delivery();
         var current = price(memberId, quantities, quote.couponId(), true, quote.usePoint() > 0,
-                quote.delivery() == null ? null : quote.delivery().addressId());
+                delivery == null ? null : delivery.addressId(), delivery == null ? 1 : delivery.deliveryType(),
+                delivery == null ? null : delivery.pickUpStoreId());
         if (!SettlementRules.quoteToken(current).equals(SettlementRules.quoteToken(quote))
         ) {
             throw new com.lemnt.common.core.exception.ServiceException("商品、优惠、地址或运费已变化，请重新结算", 409);

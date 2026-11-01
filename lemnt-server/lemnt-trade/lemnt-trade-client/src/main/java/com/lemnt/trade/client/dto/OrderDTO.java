@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 交易订单跨服务快照。
@@ -20,8 +21,28 @@ public record OrderDTO(
         long givePoint,
         OrderDeliveryDTO delivery,
         Boolean commentStatus,
-        LocalDateTime finishTime
+        LocalDateTime finishTime,
+        Map<Long, Integer> giveCouponTemplateCounts
 ) implements Serializable {
+    /** 兼容无营销赠券的订单快照。 */
+    public OrderDTO(
+            Long id,
+            String orderNo,
+            Long memberId,
+            BigDecimal totalAmount,
+            String status,
+            List<OrderItemDTO> items,
+            LocalDateTime createTime,
+            long usePoint,
+            long givePoint,
+            OrderDeliveryDTO delivery,
+            Boolean commentStatus,
+            LocalDateTime finishTime
+    ) {
+        this(id, orderNo, memberId, totalAmount, status, items, createTime, usePoint, givePoint, delivery,
+                commentStatus, finishTime, Map.of());
+    }
+
     /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
     public OrderDTO(
             Long id,
@@ -35,7 +56,8 @@ public record OrderDTO(
             long givePoint,
             OrderDeliveryDTO delivery
     ) {
-        this(id, orderNo, memberId, totalAmount, status, items, createTime, usePoint, givePoint, delivery, null, null);
+        this(id, orderNo, memberId, totalAmount, status, items, createTime, usePoint, givePoint, delivery,
+                null, null, Map.of());
     }
 
     /**
@@ -43,6 +65,8 @@ public record OrderDTO(
      */
     public OrderDTO {
         items = items == null ? List.of() : List.copyOf(items);
+        giveCouponTemplateCounts = giveCouponTemplateCounts == null ? Map.of()
+                : Map.copyOf(giveCouponTemplateCounts);
     }
 
     /** 存量快照没有积分权益，按零积分订单读取。 */

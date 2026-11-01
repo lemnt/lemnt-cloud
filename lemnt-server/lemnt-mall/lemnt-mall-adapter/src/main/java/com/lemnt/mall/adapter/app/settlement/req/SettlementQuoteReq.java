@@ -2,6 +2,7 @@ package com.lemnt.mall.adapter.app.settlement.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -25,7 +26,22 @@ public record SettlementQuoteReq(
         Long couponId,
         @Schema(description = "是否使用积分抵扣，默认不使用")
         Boolean pointStatus,
-        @Schema(description = "当前会员收货地址编号")
-        @NotNull @Positive
-        Long addressId
-) implements Serializable {}
+        @Schema(description = "当前会员收货地址编号，快递配送时必填")
+        @Positive
+        Long addressId,
+        @Schema(description = "配送方式：1 快递、2 自提，默认快递")
+        Integer deliveryType,
+        @Schema(description = "自提门店编号，自提时必填")
+        @Positive
+        Long pickUpStoreId
+) implements Serializable {
+    /** 快递必须选择收货地址，自提必须选择门店。 */
+    @Schema(hidden = true)
+    @AssertTrue(message = "请选择有效的收货地址或自提门店")
+    public boolean isDeliveryChoiceValid() {
+        if (Integer.valueOf(2).equals(deliveryType)) {
+            return pickUpStoreId != null && pickUpStoreId > 0;
+        }
+        return addressId != null && addressId > 0;
+    }
+}

@@ -1,5 +1,6 @@
 package com.lemnt.trade.application.payment.service;
 
+import com.lemnt.trade.application.brokerage.service.BrokerageService;
 import com.lemnt.trade.application.order.service.OrderRemoteService;
 import com.lemnt.trade.application.paymentrefund.service.RefundBenefitsService;
 import com.lemnt.trade.domain.payment.model.PayNotifyTask;
@@ -17,10 +18,12 @@ public class PayNotifyDispatcher {
     private final OrderRemoteService orders;
     private final PaymentRefundGateway refunds;
     private final RefundBenefitsService benefits;
+    private final BrokerageService brokerage;
 
     public void dispatch(PayNotifyTask task) {
         if (PayNotifyType.PAY.name().equals(task.type())) {
             orders.paid(task.orderNo());
+            brokerage.addOrderCommission(task.orderNo());
             return;
         }
         if (PayNotifyType.REFUND.name().equals(task.type())) {

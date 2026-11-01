@@ -45,7 +45,8 @@ public final class SettlementDTOConverter {
                 value.discountAmount(),
                 value.payableAmount(),
                 value.couponId(),
-                SettlementRules.quoteToken(value), value.usePoint(), value.givePoint(), delivery(value.delivery()));
+                SettlementRules.quoteToken(value), value.usePoint(), value.givePoint(), delivery(value.delivery()),
+                value.freeDelivery(), value.giveCouponTemplateCounts());
     }
 
     /**
@@ -71,6 +72,7 @@ public final class SettlementDTOConverter {
     ) {
         return value == null ? null : new SettlementDeliveryDTO(
                 value.addressId(), value.deliveryType(), value.receiverName(), value.receiverMobile(),
-                value.receiverAreaId(), value.receiverDetailAddress(), value.deliveryPrice());
+                value.receiverAreaId(), value.receiverDetailAddress(), value.deliveryPrice(),
+                value.pickUpStoreId());
     }
 }

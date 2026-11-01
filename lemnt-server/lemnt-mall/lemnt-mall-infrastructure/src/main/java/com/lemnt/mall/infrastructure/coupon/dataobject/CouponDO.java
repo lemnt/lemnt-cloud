@@ -29,6 +29,8 @@ public class CouponDO extends BaseDO {
     private Long memberId;
     private String status;
     private String orderNo;
+    /** 营销活动赠券来源订单，普通持券为空。 */
+    private String sourceOrderNo;
 
     /** code。 */
     private String code;

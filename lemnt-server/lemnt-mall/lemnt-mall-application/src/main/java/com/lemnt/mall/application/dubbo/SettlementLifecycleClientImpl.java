@@ -2,6 +2,7 @@ package com.lemnt.mall.application.dubbo;
 
 import com.lemnt.mall.application.product.service.ProductInventoryService;
 import com.lemnt.mall.application.promotion.service.PromotionOrderService;
+import com.lemnt.mall.application.promotion.service.RewardGiftService;
 import com.lemnt.mall.application.settlement.service.SettlementRecordService;
 import com.lemnt.mall.client.CheckoutLifecycleClient;
 import com.lemnt.mall.client.bo.RefundStockBo;
@@ -30,6 +31,7 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
     private final OrderGateway orders;
     private final ProductInventoryService inventory;
     private final PromotionOrderService promotionOrders;
+    private final RewardGiftService rewardGifts;
 
     /**
      * 由交易服务在下单接口中同步调用，失败时不继续预占库存。
@@ -68,6 +70,7 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
             throw new IllegalStateException("订单未支付");
         }
         settlementRecordService.useCoupon(orderNo);
+        rewardGifts.issuePaid(order);
         applyMember(order, "PAID", null, BigDecimal.ZERO, 0L);
         promotionOrders.paid(orderNo, order);
     }

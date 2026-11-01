@@ -22,6 +22,14 @@
     <button wx:if="{{order.canAfterSale}}" size="mini" bindtap="goAfterSale">申请售后</button>
    </view>
   </view>
+  <view wx:if="{{order && order.pickUpVerifyCode}}" class="card">
+   <view class="subtitle">自提信息</view>
+   <view class="list-row">门店：{{order.pickUpStoreName}}</view>
+   <view class="list-row" wx:if="{{order.pickUpStoreAddress}}">{{order.pickUpStoreAddress}}</view>
+   <view class="list-row" wx:if="{{order.pickUpStorePhone}}">电话：{{order.pickUpStorePhone}}</view>
+   <view class="list-row">核销码：{{order.pickUpVerifyCode}}</view>
+   <view class="description">请到店出示核销码</view>
+  </view>
   <view wx:if="{{order && order.shipment}}" class="card">
    <view class="subtitle">物流信息</view>
    <view class="list-row">{{order.shipment.carrierCode}} {{order.shipment.trackingNo}}</view>

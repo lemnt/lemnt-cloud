@@ -125,3 +125,14 @@ test('售后详情刷新同时加载原支付状态并容忍支付查询失败',
   assert.equal(failing.data.payment, null);
   assert.equal(failing.data.error, '');
 });
+
+test('售后退货快递从启用列表选择', async () => {
+  const page = makePage('../pages/after-sale-detail/index', {
+    deliveryExpresses: async () => [{ id: 1, code: 'SF', name: '顺丰快递' }],
+  });
+  await page.loadCarriers();
+  assert.equal(page.data.carrier, 'SF');
+  assert.equal(page.data.carriers[0].name, '顺丰快递');
+  page.pickCarrier({ detail: { value: '0' } });
+  assert.equal(page.data.carrier, 'SF');
+});

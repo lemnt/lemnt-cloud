@@ -28,7 +28,8 @@ class MemberOrderQueryTest {
     final OrderPersistenceService persistence = mock(OrderPersistenceService.class);
     final MemberOrderPageQueryExe pageQuery = new MemberOrderPageQueryExe(orders, persistence);
     final OrderDetailQueryExe detail = mock(OrderDetailQueryExe.class);
-    final MemberOrderDetailQueryExe detailQuery = new MemberOrderDetailQueryExe(detail, persistence);
+    final MemberOrderDetailQueryExe detailQuery = new MemberOrderDetailQueryExe(detail, persistence,
+            mock(com.lemnt.trade.domain.delivery.gateway.PickUpStoreGateway.class));
     final MemberOrderStatusCountQueryExe countQuery = new MemberOrderStatusCountQueryExe(orders);
 
     @Test

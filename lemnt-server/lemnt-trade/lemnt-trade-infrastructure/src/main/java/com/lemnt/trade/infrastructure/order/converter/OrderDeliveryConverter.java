@@ -14,7 +14,8 @@ public final class OrderDeliveryConverter {
     public static TradeOrderDelivery from(TradeOrderDO row) {
         return row.getDeliveryType() == null ? null : new TradeOrderDelivery(row.getAddressId(),
                 row.getDeliveryType(), row.getReceiverName(), row.getReceiverMobile(), row.getReceiverAreaId(),
-                row.getReceiverDetailAddress(), row.getDeliveryPrice());
+                row.getReceiverDetailAddress(), row.getDeliveryPrice(), row.getPickUpStoreId(),
+                row.getPickUpVerifyCode());
     }
 
     /** 冻结配送信息，后续支付/发货不重读会员地址。 */
@@ -31,5 +32,7 @@ public final class OrderDeliveryConverter {
         row.setReceiverAreaId(value.receiverAreaId());
         row.setReceiverDetailAddress(value.receiverDetailAddress());
         row.setDeliveryPrice(value.deliveryPrice());
+        row.setPickUpStoreId(value.pickUpStoreId());
+        row.setPickUpVerifyCode(value.pickUpVerifyCode());
     }
 }

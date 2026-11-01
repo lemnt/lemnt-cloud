@@ -23,7 +23,7 @@
     <button wx:if="{{sale.canCancel}}" size="mini" bindtap="cancel">取消售后</button>
    </view>
    <view wx:if="{{showReturn && sale.canReturn}}">
-    <label class="field">快递公司<input value="{{carrier}}" maxlength="40" bindinput="inputCarrier" disabled="{{loading}}" placeholder="如 SF"/></label>
+    <picker mode="selector" range="{{carriers}}" range-key="name" value="{{carrierIndex}}" bindchange="pickCarrier" disabled="{{loading}}"><view class="field">快递公司：{{carriers.length ? carriers[carrierIndex].name : '暂无可用快递公司'}}（点击选择）</view></picker>
     <label class="field">快递单号<input value="{{tracking}}" maxlength="100" bindinput="inputTracking" disabled="{{loading}}"/></label>
     <button type="primary" bindtap="submitReturn" disabled="{{loading}}">提交退货物流</button>
    </view>

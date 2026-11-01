@@ -55,7 +55,15 @@ class AuthFilterAppRoutesTest {
                 {"GET", "/mall/app/comments"},
                 {"GET", "/mall/app/categories"},
                 {"GET", "/mall/app/products"},
-                {"GET", "/mall/app/products/1"}}) {
+                {"GET", "/mall/app/products/1"},
+                {"GET", "/mall/app/banners"},
+                {"PUT", "/mall/app/banners/1/browse"},
+                {"GET", "/mall/app/diy/template/used"},
+                {"GET", "/mall/app/diy/template/1"},
+                {"GET", "/mall/app/diy/page/1"},
+                {"GET", "/mall/app/promotion-hub/sections"},
+                {"GET", "/mall/app/promotion-hub/discount/1"},
+                {"GET", "/mall/app/promotion-hub/reward/1"}}) {
             var reached = new AtomicBoolean();
             filter.filter(exchange(route[0], route[1], null), clean -> {
                 reached.set(true);
@@ -85,7 +93,15 @@ class AuthFilterAppRoutesTest {
                 {"GET", "/mall/app/comments/1"},
                 {"GET", "/mall/app/products/0"},
                 {"GET", "/mall/app/products/1/edit"},
-                {"POST", "/mall/app/products"}}) {
+                {"POST", "/mall/app/products"},
+                {"POST", "/mall/app/banners"},
+                {"PUT", "/mall/app/banners/0/browse"},
+                {"GET", "/mall/app/diy/template/0"},
+                {"GET", "/mall/app/diy/page/0"},
+                {"GET", "/mall/app/diy/template/used/extra"},
+                {"GET", "/mall/app/kefu/conversation"},
+                {"GET", "/mall/app/promotion-hub/discount/0"},
+                {"GET", "/mall/app/promotion-hub/reward/0"}}) {
             var current = exchange(route[0], route[1], null);
             filter.filter(current, ignored -> {
                 fail("私有接口不得匿名进入");

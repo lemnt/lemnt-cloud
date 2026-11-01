@@ -17,6 +17,16 @@ export const pages: Record<string, ComponentType> = {
     })),
   ),
   'trade/config/index': lazy(() => import('../modules/trade/config/pages/TradeConfigPage')),
+  'trade/pick-up-store/index': lazy(() =>
+    import('../modules/trade/pickup/pages/PickUpStorePage').then((m) => ({
+      default: m.PickUpStorePage,
+    })),
+  ),
+  'trade/brokerage/index': lazy(() =>
+    import('../modules/trade/brokerage/pages/BrokeragePage').then((m) => ({
+      default: m.BrokeragePage,
+    })),
+  ),
   'trade/payment/index': lazy(() =>
     import('../modules/trade/payment/pages/PaymentPage').then((m) => ({ default: m.PaymentPage })),
   ),
@@ -104,6 +114,21 @@ export const pages: Record<string, ComponentType> = {
   'mall/promotion/point-activity/index': lazy(() =>
     import('../modules/mall/promotion/pages/PointPage').then((m) => ({
       default: m.PointActivityPage,
+    })),
+  ),
+  'mall/promotion/banner/index': lazy(() =>
+    import('../modules/mall/promotion/pages/BannerPage').then((m) => ({
+      default: m.BannerPage,
+    })),
+  ),
+  'mall/promotion/kefu/index': lazy(() =>
+    import('../modules/mall/promotion/pages/KefuPage').then((m) => ({
+      default: m.KefuPage,
+    })),
+  ),
+  'mall/promotion/diy/index': lazy(() =>
+    import('../modules/mall/promotion/pages/DiyPage').then((m) => ({
+      default: m.DiyPageView,
     })),
   ),
   'mall/comment/index': lazy(() => import('../modules/mall/catalog/pages/CommentPage')),

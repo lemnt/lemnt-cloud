@@ -200,4 +200,39 @@ class ActivityAlignmentPersistenceTest {
         assertEquals(0L, disabled.givePoint());
         assertEquals(new BigDecimal("10.00"), disabled.payableAmount());
     }
+
+    @Test
+    void rewardRuleGiftFieldsRoundTrip() {
+        var id = management.createReward(new RewardActivityCreateCmd("满100送礼", now.minusDays(1),
+                now.plusDays(1), null, "PRICE", "ALL", List.of(),
+                List.of(new RewardRule(new BigDecimal("100.00"), new BigDecimal("10.00"), true, 50,
+                        java.util.Map.of(3L, 2)))));
+        var rule = management.detailReward(id).rules().get(0);
+        assertEquals(true, rule.freeDelivery());
+        assertEquals(50, rule.point());
+        assertEquals(2, rule.giveCouponTemplateCounts().get(3L));
+    }
+
+    /** 达到满减门槛后，同一档位的包邮、赠积分和赠券写入报价快照。 */
+    @Test
+    void rewardThresholdActivatesFreeDeliveryPointsAndCoupons() {
+        management.createReward(new RewardActivityCreateCmd("满10送礼", now.minusDays(1),
+                now.plusDays(1), null, "PRICE", "ALL", List.of(),
+                List.of(new RewardRule(BigDecimal.TEN, new BigDecimal("0.01"), true, 50, java.util.Map.of(3L, 2)))));
+        var memberTrade = org.mockito.Mockito.mock(com.lemnt.mall.domain.member.gateway.MemberTradeGateway.class);
+        org.mockito.Mockito.when(memberTrade.config()).thenReturn(
+                new com.lemnt.mall.domain.member.model.MemberPointConfig(true, 1, 0, 2));
+        var service = new ActivityPricingService(memberTrade,
+                f.components.get(com.lemnt.mall.domain.promotion.gateway.DiscountActivityGateway.class),
+                f.components.get(com.lemnt.mall.domain.promotion.gateway.DiscountProductGateway.class),
+                f.components.get(com.lemnt.mall.domain.promotion.gateway.RewardActivityGateway.class),
+                f.productSkuGateway, f.productSpuGateway);
+        var sku = spu.skus().get(0);
+        var quote = service.price(List.of(new SettlementItem(sku.id(), sku.code(), sku.name(), sku.price(), 1,
+                new BigDecimal("10.00"))), null, now, 100);
+        assertTrue(quote.freeDelivery());
+        assertEquals(50L, quote.rewardPoint());
+        assertEquals(50L + 19L, quote.givePoint());
+        assertEquals(2, quote.giveCouponTemplateCounts().get(3L));
+    }
 }

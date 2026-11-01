@@ -221,3 +221,17 @@
 2026-11-01 第148批：沙箱退款适配器与退款链路。新增沙箱退款客户端，复用既有售后/退款事务，真实验证整单退款、两次部分退款累计全额、活动库存与会员经验回滚及退款幂等；真实支付宝/微信退款适配器与退款回调仍未接入。见[148-sandbox-refund-delivery.md](148-sandbox-refund-delivery.md)与`evidence/sandbox-refund-verification.json`。
 
 2026-11-01 第149批：小程序收银台与售后支付交互。新增渠道查询、沙箱支付确认、收银台页面与订单“去支付”入口，售后详情展示原支付状态并刷新退款进度；trade 250项、小程序160项测试通过。浏览器/真机与真实支付宝/微信支付 SDK 仍未接入。见[149-miniapp-cashier-delivery.md](149-miniapp-cashier-delivery.md)与`evidence/miniapp-cashier-verification.json`。
+
+2026-11-01 第150批：营销扩展之 Banner。新增 Banner 表、后台 CRUD/页面/菜单与小程序首页展示、点击量累加；mall 171项、React 297项、小程序162项测试通过。客服、装修、分销与 App 活动聚合仍未开始，见[150-banner-delivery.md](150-banner-delivery.md)与`evidence/banner-verification.json`。
+
+2026-11-01 第151批：客服与装修模板。新增客服会话/消息、后台客服工作台、小程序客服页，以及装修模板/页面、后台装修管理与小程序装修渲染；mall 181项、React 304项、小程序166项、网关35项测试通过。分销、App活动聚合、完整装修组件与WebSocket仍未接入，见[151-kefu-diy-delivery.md](151-kefu-diy-delivery.md)与`evidence/kefu-diy-verification.json`。
+
+2026-11-01 第152批：分销关系、佣金与提现。新增分销用户、两级订单佣金、冻结解冻、整单退款取消佣金、提现审核与钱包入账，后台分销页与小程序分销中心已接通；trade 255项、React 308项、小程序168项测试通过。多级分销树、自动转账、部分退款佣金回收与真机联调仍未覆盖，见[152-brokerage-delivery.md](152-brokerage-delivery.md)与`evidence/brokerage-verification.json`。
+
+2026-11-01 第153批：App活动聚合与营销规则页面。新增六类进行中活动聚合、折扣/满减公开详情，满减规则补齐包邮、赠积分、赠券字段与后台表单；mall 184项、网关35项、React 308项、小程序171项测试通过。包邮/积分/赠券的结算派发、部分退款回收与真机联调仍未覆盖，见[153-promotion-hub-rules-delivery.md](153-promotion-hub-rules-delivery.md)与`evidence/promotion-hub-rules-verification.json`。
+
+2026-11-01 第154批：履约细节第一批。新增超期自动确认收货调度与小程序退货快递公司选择，复用既有收货事务和操作日志；trade 257项、React 308项、小程序173项、网关35项测试通过。自提门店核销、订单改价改址、真实物流轨迹与真机联调仍未覆盖，见[154-fulfillment-delivery.md](154-fulfillment-delivery.md)与`evidence/fulfillment-auto-receive-verification.json`。
+
+2026-11-01 第155批：自提门店、店员与核销。新增自提门店/店员绑定、已支付订单设置自提、8位核销码核销、小程序门店列表与订单自提信息；trade 261项、React 312项、小程序175项、网关35项测试通过。结算选择自提、待自提独立状态与门店端/真机联调仍未覆盖，见[155-pickup-store-delivery.md](155-pickup-store-delivery.md)与`evidence/pickup-store-verification.json`。
+
+2026-11-01 第156批：结算选择自提门店。结算报价新增配送方式与门店编号，自提运费为零并绑定报价令牌；交易建单校验自提开关与门店状态、自动生成8位核销码；小程序结算页可切换快递/自提并选择门店。mall 187项、trade 263项、小程序176项测试通过，真实环境完成自提报价、提单、沙箱支付与订单详情验收。门店距离排序、报价阶段开关拦截、待自提独立状态与真机联调仍未覆盖，见[156-checkout-pickup-delivery.md](156-checkout-pickup-delivery.md)与`evidence/checkout-pickup-verification.json`。

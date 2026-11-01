@@ -14,6 +14,12 @@ public record RewardRuleReq(
         BigDecimal limit,
         @Schema(description = "优惠金额，单位元")
         @NotNull @DecimalMin("0.01")
-        BigDecimal discountPrice
+        BigDecimal discountPrice,
+        @Schema(description = "是否包邮")
+        Boolean freeDelivery,
+        @Schema(description = "赠送积分")
+        @jakarta.validation.constraints.Min(0) Integer point,
+        @Schema(description = "赠送优惠券，key 为模板编号，value 为数量")
+        java.util.Map<Long, Integer> giveCouponTemplateCounts
 ) implements java.io.Serializable {
 }

@@ -13,6 +13,7 @@ public record SettlementDeliveryRes(
         @Schema(description = "收件联系电话") String receiverMobile,
         @Schema(description = "收件地区编号") Long receiverAreaId,
         @Schema(description = "收件详细地址") String receiverDetailAddress,
-        @Schema(description = "订单运费，元") BigDecimal deliveryPrice
+        @Schema(description = "订单运费，元") BigDecimal deliveryPrice,
+        @Schema(description = "自提门店编号") Long pickUpStoreId
 ) implements Serializable {
 }

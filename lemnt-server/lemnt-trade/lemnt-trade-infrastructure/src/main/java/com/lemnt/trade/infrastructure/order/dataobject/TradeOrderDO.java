@@ -40,5 +40,9 @@ public class TradeOrderDO extends BaseDO {
     private String receiverMobile;
     private Long receiverAreaId;
     private String receiverDetailAddress;
+    private Long pickUpStoreId;
+    private String pickUpVerifyCode;
     private BigDecimal deliveryPrice;
+    /** 营销满减赠券模板及数量 JSON。 */
+    private String giveCouponTemplateCounts;
 }

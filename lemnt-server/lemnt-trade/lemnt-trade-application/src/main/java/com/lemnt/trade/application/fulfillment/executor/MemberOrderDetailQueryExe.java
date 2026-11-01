@@ -2,6 +2,7 @@ package com.lemnt.trade.application.fulfillment.executor;
 
 import com.lemnt.trade.application.fulfillment.dto.MemberOrderDetailDTO;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
+import com.lemnt.trade.domain.delivery.gateway.PickUpStoreGateway;
 import com.lemnt.trade.domain.order.model.OrderRules;
 
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberOrderDetailQueryExe {
     private final OrderDetailQueryExe detail;
     private final OrderPersistenceService persistence;
+    private final PickUpStoreGateway pickUpStores;
 
     /** 读取详情与下单时间后核验归属，避免向其他会员泄露订单。 */
     public MemberOrderDetailDTO execute(Long memberId, String orderNo) {
@@ -23,10 +25,17 @@ public class MemberOrderDetailQueryExe {
             return null;
         }
         var value = detail.execute(no);
-        return value == null
-                ? null
-                : new MemberOrderDetailDTO(value.orderNo(), value.status(), value.totalAmount(),
-                        order.createTime(), value.activeRefund(), value.items(), value.shipment(),
-                        value.commentStatus(), value.finishTime());
+        if (value == null) {
+            return null;
+        }
+        var delivery = order.delivery();
+        var store = delivery == null || delivery.pickUpStoreId() == null ? null
+                : pickUpStores.find(delivery.pickUpStoreId());
+        return new MemberOrderDetailDTO(value.orderNo(), value.status(), value.totalAmount(),
+                order.createTime(), value.activeRefund(), value.items(), value.shipment(),
+                value.commentStatus(), value.finishTime(),
+                store == null ? null : store.name(), store == null ? null : store.phone(),
+                store == null ? null : store.detailAddress(),
+                delivery == null ? null : delivery.pickUpVerifyCode());
     }
 }

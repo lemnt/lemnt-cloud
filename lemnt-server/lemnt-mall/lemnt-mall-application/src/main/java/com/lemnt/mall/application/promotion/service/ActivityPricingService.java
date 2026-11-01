@@ -72,6 +72,9 @@ public class ActivityPricingService {
             remaining.put(item.productId(), amount);
         }
         // 芋道按最新匹配活动处理满减，不保留自定义优先级或最优活动枚举机制。
+        long rewardPoint = 0L;
+        boolean freeDelivery = false;
+        Map<Long, Integer> giveCouponTemplateCounts = Map.of();
         var matched = rewards.enabled().stream().filter(a -> !now.isBefore(a.startTime())
                 && now.isBefore(a.endTime()) && items.stream().anyMatch(i -> matches(a, i.productId()))).findFirst();
         if (matched.isPresent()) {
@@ -87,6 +90,10 @@ public class ActivityPricingService {
                     .max(java.util.Comparator.comparing(r -> r.limit()));
             if (rule.isPresent()) {
                 subtract(remaining, eligible, rule.get().discountPrice().min(total(eligible)));
+                // 满减达到门槛后同时激活同一档位的包邮、赠积分和赠券。
+                rewardPoint = rule.get().point() == null ? 0L : Math.max(rule.get().point(), 0);
+                freeDelivery = Boolean.TRUE.equals(rule.get().freeDelivery());
+                giveCouponTemplateCounts = rule.get().giveCouponTemplateCounts();
             }
         }
         if (coupon != null) {
@@ -121,6 +128,7 @@ public class ActivityPricingService {
                 ? paid.multiply(BigDecimal.valueOf(config.givePerYuan())).setScale(0,
                     RoundingMode.DOWN).longValueExact()
                 : 0L;
+        givePoint += rewardPoint;
         var pricedItems = items.stream().map(i -> new SettlementItem(i.productId(),
                 i.productCode(),
                 i.productName(),
@@ -136,7 +144,8 @@ public class ActivityPricingService {
                                 snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
                 i.picUrl())).toList();
         return new SettlementQuote(pricedItems, original, original.subtract(paid), paid,
-                coupon == null ? null : coupon.id(), usePoint, givePoint);
+                coupon == null ? null : coupon.id(), usePoint, givePoint, null,
+                rewardPoint, freeDelivery, giveCouponTemplateCounts);
     }
 
     /** 范围使用商品主体和所属分类，不能把 SKU 编号当作 SPU。 */

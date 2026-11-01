@@ -6,6 +6,7 @@ import com.lemnt.trade.client.dto.OrderItemDTO;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /** 商城提交的已确认订单快照，不接受调用方指定订单状态。 */
 public record OrderCreateBo(
@@ -15,10 +16,19 @@ public record OrderCreateBo(
         List<OrderItemDTO> items,
         long usePoint,
         long givePoint,
-        OrderDeliveryDTO delivery
+        OrderDeliveryDTO delivery,
+        Map<Long, Integer> giveCouponTemplateCounts
 ) implements Serializable {
     public OrderCreateBo {
         items = items == null ? List.of() : List.copyOf(items);
+        giveCouponTemplateCounts = giveCouponTemplateCounts == null ? Map.of()
+                : Map.copyOf(giveCouponTemplateCounts);
+    }
+
+    /** 兼容无营销赠券的订单快照。 */
+    public OrderCreateBo(String orderNo, Long memberId, BigDecimal totalAmount, List<OrderItemDTO> items,
+            long usePoint, long givePoint, OrderDeliveryDTO delivery) {
+        this(orderNo, memberId, totalAmount, items, usePoint, givePoint, delivery, Map.of());
     }
 
     /** 存量快照没有积分权益，按零积分订单读取。 */

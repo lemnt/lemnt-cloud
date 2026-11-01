@@ -110,6 +110,7 @@ public final class SettlementQuoteResConverter {
     ) {
         return value == null ? null : new SettlementDeliveryRes(
                 value.addressId(), value.deliveryType(), value.receiverName(), value.receiverMobile(),
-                value.receiverAreaId(), value.receiverDetailAddress(), value.deliveryPrice());
+                value.receiverAreaId(), value.receiverDetailAddress(), value.deliveryPrice(),
+                value.pickUpStoreId());
     }
 }

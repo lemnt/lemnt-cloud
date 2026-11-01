@@ -20,7 +20,8 @@ public final class RewardActivityResConverter {
                 v.conditionType(),
                 v.productScope(),
                 v.productScopeValues(),
-                v.rules().stream().map(r -> new RewardRuleRes(r.limit(), r.discountPrice())).toList());
+                v.rules().stream().map(r -> new RewardRuleRes(r.limit(), r.discountPrice(), r.freeDelivery(), r.point(),
+                        r.giveCouponTemplateCounts())).toList());
     }
 
     public static RewardActivityPageRes page(RewardActivityDTO v) {

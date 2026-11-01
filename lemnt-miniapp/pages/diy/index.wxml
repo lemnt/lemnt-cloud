@@ -1,0 +1,41 @@
+<view class="container">
+ <view class="title">{{template.name || '装修页面'}}</view>
+ <view wx:if="{{!ready}}" class="notice">商城服务暂未启用。</view>
+ <view wx:if="{{error}}" class="error">{{error}}</view>
+ <view wx:for="{{items}}" wx:key="key">
+  <block wx:if="{{item.type === 'carousel'}}">
+   <swiper class="carousel" autoplay interval="3000" circular>
+    <swiper-item wx:for="{{item.items}}" wx:for-item="img" wx:key="imgUrl" data-url="{{img.url}}" bindtap="tap">
+     <image src="{{img.imgUrl}}" mode="aspectFill" class="carousel-img"/>
+    </swiper-item>
+   </swiper>
+  </block>
+  <block wx:elif="{{item.type === 'image'}}">
+   <image src="{{item.imgUrl}}" mode="widthFix" class="image" data-url="{{item.url}}" bindtap="tap"/>
+  </block>
+  <block wx:elif="{{item.type === 'title'}}">
+   <view class="block-title">{{item.title}}</view>
+   <view class="description">{{item.description}}</view>
+  </block>
+  <block wx:elif="{{item.type === 'notice'}}">
+   <view class="notice-bar" data-url="{{item.url}}" bindtap="tap">{{item.text}}</view>
+  </block>
+  <block wx:elif="{{item.type === 'grid'}}">
+   <view class="grid">
+    <view wx:for="{{item.items}}" wx:for-item="cell" wx:key="title" class="grid-cell" data-url="{{cell.url}}" bindtap="tap">
+     <image wx:if="{{cell.iconUrl}}" src="{{cell.iconUrl}}" class="grid-icon"/>
+     <view>{{cell.title}}</view>
+    </view>
+   </view>
+  </block>
+  <block wx:elif="{{item.type === 'divider'}}">
+   <view class="divider"></view>
+  </block>
+  <block wx:else>
+   <view class="notice">暂不支持组件：{{item.name}}</view>
+  </block>
+ </view>
+ <view wx:if="{{!items.length && !error}}" class="notice">当前装修页面暂无组件。</view>
+ <button bindtap="refresh" disabled="{{loading}}">刷新</button>
+ <navigator url="/pages/store/index">返回商城</navigator>
+</view>

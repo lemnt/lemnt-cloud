@@ -128,7 +128,7 @@ class ZeroCashAfterSaleTest {
         Mockito.when(afterSales.afterSale("RF1")).thenReturn(afterSale);
         Mockito.when(orderPersistence.findByOrderNo("TR0")).thenReturn(order());
         Mockito.when(itemGateway.refundItems(7L)).thenReturn(List.of(item()));
-        new RefundBenefitsService(afterSales, orderPersistence, itemGateway, benefits)
+        new RefundBenefitsService(afterSales, orderPersistence, itemGateway, benefits, Mockito.mock(com.lemnt.trade.application.brokerage.service.BrokerageService.class), Mockito.mock(com.lemnt.trade.domain.paymentrefund.gateway.PaymentRefundGateway.class))
                 .complete(new PaymentRefund("PR1", "RF1", null, "TR0", "POINT",
                         BigDecimal.ZERO.setScale(2), "SUCCESS", "POINTS"));
         Mockito.verify(benefits).refunded(Mockito.eq("TR0"), Mockito.eq("RF1"),

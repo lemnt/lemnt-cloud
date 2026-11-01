@@ -8,6 +8,9 @@ import com.lemnt.trade.client.bo.OrderCreateBo;
 import com.lemnt.trade.client.dto.OrderDTO;
 import com.lemnt.trade.client.dto.OrderDeliveryDTO;
 import com.lemnt.trade.client.dto.OrderItemDTO;
+import com.lemnt.trade.domain.config.gateway.TradeConfigGateway;
+import com.lemnt.trade.domain.delivery.gateway.PickUpStoreGateway;
+import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.trade.domain.order.model.TradeOrder;
 import com.lemnt.trade.domain.order.model.TradeOrderDelivery;
 import com.lemnt.trade.domain.order.model.TradeOrderItem;
@@ -27,6 +30,9 @@ public class TradeOrderClientImpl implements TradeOrderClient {
     private final OrderPersistenceService orders;
     private final OrderRemoteService remotes;
     private final com.lemnt.trade.application.order.service.OrderCommentService comments;
+    private final TradeOrderGateway orderGateway;
+    private final TradeConfigGateway configs;
+    private final PickUpStoreGateway pickUpStores;
 
     @Override
     public OrderDTO create(OrderCreateBo value) {
@@ -42,17 +48,44 @@ public class TradeOrderClientImpl implements TradeOrderClient {
         ) {
             throw new IllegalArgumentException("订单快照不合法");
         }
+        if (value != null && value.giveCouponTemplateCounts() != null && (value.giveCouponTemplateCounts().size() > 20
+                || value.giveCouponTemplateCounts().entrySet().stream().anyMatch(entry -> entry.getKey() == null
+                        || entry.getKey() <= 0 || entry.getValue() == null || entry.getValue() < 1
+                        || entry.getValue() > 100))) {
+            throw new IllegalArgumentException("订单赠券快照不合法");
+        }
         var delivery = value.delivery();
-        if (delivery != null && (delivery.addressId() == null || delivery.addressId() <= 0
-                || !Integer.valueOf(1).equals(delivery.deliveryType())
-                || delivery.receiverName() == null || delivery.receiverName().isBlank() || delivery.receiverName().length() > 100
-                || delivery.receiverMobile() == null || !delivery.receiverMobile().matches("[+0-9() -]{5,32}")
-                || delivery.receiverAreaId() == null || delivery.receiverAreaId() <= 0
-                || delivery.receiverDetailAddress() == null || delivery.receiverDetailAddress().isBlank()
-                || delivery.receiverDetailAddress().length() > 500 || delivery.deliveryPrice() == null
-                || delivery.deliveryPrice().signum() < 0 || delivery.deliveryPrice().scale() > 2)
-        ) {
-            throw new IllegalArgumentException("订单收件快照不合法");
+        if (delivery != null) {
+            int deliveryType = delivery.deliveryType() == null ? 1 : delivery.deliveryType();
+            if (deliveryType == 1) {
+                if (delivery.addressId() == null || delivery.addressId() <= 0
+                        || delivery.receiverName() == null || delivery.receiverName().isBlank() || delivery.receiverName().length() > 100
+                        || delivery.receiverMobile() == null || !delivery.receiverMobile().matches("[+0-9() -]{5,32}")
+                        || delivery.receiverAreaId() == null || delivery.receiverAreaId() <= 0
+                        || delivery.receiverDetailAddress() == null || delivery.receiverDetailAddress().isBlank()
+                        || delivery.receiverDetailAddress().length() > 500 || delivery.deliveryPrice() == null
+                        || delivery.deliveryPrice().signum() < 0 || delivery.deliveryPrice().scale() > 2) {
+                    throw new IllegalArgumentException("订单收件快照不合法");
+                }
+            } else if (deliveryType == 2) {
+                var config = configs.get();
+                if (config == null || !Boolean.TRUE.equals(config.deliveryPickUpEnabled())) {
+                    throw new IllegalArgumentException("自提功能未启用");
+                }
+                var store = delivery.pickUpStoreId() == null ? null : pickUpStores.find(delivery.pickUpStoreId());
+                if (store == null || !Integer.valueOf(0).equals(store.status())) {
+                    throw new IllegalArgumentException("自提门店不存在或已关闭");
+                }
+                if (delivery.pickUpStoreId() == null || delivery.pickUpStoreId() <= 0
+                        || delivery.deliveryPrice() == null || delivery.deliveryPrice().signum() != 0
+                        || (delivery.receiverName() != null && delivery.receiverName().length() > 100)
+                        || (delivery.receiverMobile() != null && !delivery.receiverMobile().matches("[+0-9() -]{5,32}"))
+                        || (delivery.receiverDetailAddress() != null && delivery.receiverDetailAddress().length() > 500)) {
+                    throw new IllegalArgumentException("自提订单快照不合法");
+                }
+            } else {
+                throw new IllegalArgumentException("配送方式不合法");
+            }
         }
         for (var item : value.items()
         ) {
@@ -108,6 +141,8 @@ public class TradeOrderClientImpl implements TradeOrderClient {
         ) {
             throw new IllegalArgumentException("订单运费分摊不一致");
         }
+        String verifyCode = delivery != null && Integer.valueOf(2).equals(delivery.deliveryType())
+                ? verifyCode() : null;
         var order = new TradeOrder(null, value.orderNo(), value.memberId(), value.totalAmount(),
                 "RESERVING", value.items().stream().map(item -> new TradeOrderItem(item.productId(),
                 item.productCode(),
@@ -122,7 +157,8 @@ public class TradeOrderClientImpl implements TradeOrderClient {
                 item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
                         new TradeOrderItem.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
                                 snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
-                item.picUrl())).toList(), null, value.usePoint(), value.givePoint(), fromDelivery(value.delivery()));
+                item.picUrl())).toList(), null, value.usePoint(), value.givePoint(),
+                fromDelivery(value.delivery(), verifyCode), null, null, value.giveCouponTemplateCounts());
         try {
             submissions.create(order);
         } catch (DuplicateKeyException exception
@@ -166,15 +202,27 @@ public class TradeOrderClientImpl implements TradeOrderClient {
                 item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
                         new OrderItemDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
                                 snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
-                item.picUrl(), item.orderItemId(), item.commentStatus())).toList(), value.createTime(), value.usePoint(), value.givePoint(), toDelivery(value.delivery()), value.commentStatus(), value.finishTime());
+                item.picUrl(), item.orderItemId(), item.commentStatus())).toList(), value.createTime(), value.usePoint(), value.givePoint(), toDelivery(value.delivery()), value.commentStatus(), value.finishTime(), value.giveCouponTemplateCounts());
     }
 
     private TradeOrderDelivery fromDelivery(
-            OrderDeliveryDTO value
+            OrderDeliveryDTO value, String verifyCode
     ) {
         return value == null ? null : new TradeOrderDelivery(value.addressId(),
                 value.deliveryType(), value.receiverName(), value.receiverMobile(), value.receiverAreaId(),
-                value.receiverDetailAddress(), value.deliveryPrice());
+                value.receiverDetailAddress(), value.deliveryPrice(), value.pickUpStoreId(), verifyCode);
+    }
+
+    /** 8 位核销码，与数据库唯一索引配合；重试时订单内容比较会忽略核销码。 */
+    private String verifyCode() {
+        for (int attempt = 0; attempt < 10; attempt++) {
+            String code = String.format("%08d", java.util.concurrent.ThreadLocalRandom.current()
+                    .nextInt(100_000_000));
+            if (orderGateway.findHeaderByPickUpCode(code) == null) {
+                return code;
+            }
+        }
+        throw new IllegalStateException("核销码生成失败，请重试");
     }
 
     private OrderDeliveryDTO toDelivery(
@@ -182,6 +230,6 @@ public class TradeOrderClientImpl implements TradeOrderClient {
     ) {
         return value == null ? null : new OrderDeliveryDTO(value.addressId(),
                 value.deliveryType(), value.receiverName(), value.receiverMobile(), value.receiverAreaId(),
-                value.receiverDetailAddress(), value.deliveryPrice());
+                value.receiverDetailAddress(), value.deliveryPrice(), value.pickUpStoreId());
     }
 }

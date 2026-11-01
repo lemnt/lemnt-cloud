@@ -29,7 +29,9 @@ public final class AppOrderResConverter {
     public static AppOrderDetailRes detail(MemberOrderDetailDTO value) {
         return new AppOrderDetailRes(value.orderNo(), value.status(), value.totalAmount(), value.createTime(),
                 value.activeRefund(), value.items().stream().map(AppOrderResConverter::item).toList(),
-                shipment(value.shipment()), value.commentStatus(), value.finishTime());
+                shipment(value.shipment()), value.commentStatus(), value.finishTime(),
+                value.pickUpStoreName(), value.pickUpStorePhone(), value.pickUpStoreAddress(),
+                value.pickUpVerifyCode());
     }
 
     /** 转换状态数量。 */

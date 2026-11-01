@@ -301,12 +301,16 @@ class CheckoutFlowIntegrationTest {
         mallSchema = mallSource.getConnection();
         ScriptUtils.executeSqlScript(
                 tradeSchema, new ClassPathResource("trade-sql/V1__trade_order.sql"));
+        ScriptUtils.executeSqlScript(tradeSchema, new ClassPathResource("trade-sql/V16__pickup.sql"));
+        ScriptUtils.executeSqlScript(tradeSchema, new ClassPathResource("trade-sql/V17__order_reward_gift.sql"));
         ScriptUtils.executeSqlScript(tradeSchema, new ClassPathResource("trade-sql/V8__order_log.sql"));
         ScriptUtils.executeSqlScript(
                 tradeSchema, new ClassPathResource("trade-sql/V2__trade_payment.sql"));
         ScriptUtils.executeSqlScript(tradeSchema, new ClassPathResource("trade-sql/V11__pay_notify_task.sql"));
         ScriptUtils.executeSqlScript(
                 mallSchema, new ClassPathResource("mall-sql/V10__cart_coupon_checkout.sql"));
+        ScriptUtils.executeSqlScript(
+                mallSchema, new ClassPathResource("mall-sql/V28__coupon_reward_gift.sql"));
         ScriptUtils.executeSqlScript(
                 mallSchema, new ClassPathResource("mall-sql/V1__mall_product.sql"));
         ScriptUtils.executeSqlScript(
@@ -320,6 +324,7 @@ class CheckoutFlowIntegrationTest {
         ScriptUtils.executeSqlScript(tradeSchema, new ClassPathResource("trade-sql/V9__after_sale_log.sql"));
         ScriptUtils.executeSqlScript(mallSchema, new ClassPathResource("mall-sql/V15__promotion_activity.sql"));
         ScriptUtils.executeSqlScript(tradeSchema, new ClassPathResource("trade-sql/V7__delivery_config.sql"));
+        ScriptUtils.executeSqlScript(tradeSchema, new ClassPathResource("trade-sql/V15__brokerage.sql"));
         var trade =
         template(tradeSource);
         var products = template(mallSource);
@@ -355,12 +360,20 @@ class CheckoutFlowIntegrationTest {
         tradeComponents.register(com.lemnt.trade.domain.order.gateway.OrderCommentGateway.class, commentBridge);
         var provider = new com.lemnt.trade.application.dubbo.TradeOrderClientImpl(
                 tradeComponents.get(com.lemnt.trade.application.order.service.OrderSubmissionService.class),
-                tradeComponents.get(OrderPersistenceService.class), null, tradeComponents.get(com.lemnt.trade.application.order.service.OrderCommentService.class));
+                tradeComponents.get(OrderPersistenceService.class), null,
+                tradeComponents.get(com.lemnt.trade.application.order.service.OrderCommentService.class),
+                tradeComponents.get(com.lemnt.trade.domain.order.gateway.TradeOrderGateway.class),
+                tradeComponents.get(com.lemnt.trade.domain.config.gateway.TradeConfigGateway.class),
+                tradeComponents.get(com.lemnt.trade.domain.delivery.gateway.PickUpStoreGateway.class));
         var client = new com.lemnt.trade.client.TradeOrderClient() {
             public com.lemnt.trade.client.dto.OrderDTO create(com.lemnt.trade.client.bo.OrderCreateBo value) {
                 var actual = new com.lemnt.trade.application.dubbo.TradeOrderClientImpl(
                         tradeComponents.get(com.lemnt.trade.application.order.service.OrderSubmissionService.class),
-                        orderPersistenceService, remotes, tradeComponents.get(com.lemnt.trade.application.order.service.OrderCommentService.class));
+                        orderPersistenceService, remotes,
+                        tradeComponents.get(com.lemnt.trade.application.order.service.OrderCommentService.class),
+                        tradeComponents.get(com.lemnt.trade.domain.order.gateway.TradeOrderGateway.class),
+                        tradeComponents.get(com.lemnt.trade.domain.config.gateway.TradeConfigGateway.class),
+                        tradeComponents.get(com.lemnt.trade.domain.delivery.gateway.PickUpStoreGateway.class));
                 var saved = actual.create(value);
                 if (loseNextOrderResponse) {
                     loseNextOrderResponse = false;
@@ -481,7 +494,8 @@ class CheckoutFlowIntegrationTest {
         var promotionOrders = Mockito.mock(com.lemnt.mall.application.promotion.service.PromotionOrderService.class);
         mallComponents.register(com.lemnt.mall.application.promotion.service.PromotionOrderService.class, promotionOrders);
         var handler = tx(new com.lemnt.mall.application.dubbo.SettlementLifecycleClientImpl(
-                mallComponents.get(com.lemnt.mall.domain.member.gateway.MemberTradeGateway.class), checkoutService, orderRpc, productInventoryService, promotionOrders), mallSource);
+                mallComponents.get(com.lemnt.mall.domain.member.gateway.MemberTradeGateway.class), checkoutService, orderRpc, productInventoryService, promotionOrders,
+                new com.lemnt.mall.application.promotion.service.RewardGiftService(couponGateway, couponIssuanceService)), mallSource);
         benefits = new com.lemnt.trade.domain.order.gateway.OrderBenefitsGateway() {
             public void verify(String no) { handler.verify(no); }
             public void reserved(String no) { handler.reserved(no); }

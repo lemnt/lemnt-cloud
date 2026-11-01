@@ -58,4 +58,13 @@ public class ShipmentGatewayImpl implements ShipmentGateway {
     public boolean receive(String no, LocalDateTime time) {
         return shipmentMapper.receive(no, time) == 1;
     }
+
+    @Override
+    public java.util.List<String> shippedBefore(LocalDateTime cutoff, int limit) {
+        return shipmentMapper.selectList(Wrappers.<ShipmentDO>lambdaQuery()
+                        .isNull(ShipmentDO::getReceivedAt)
+                        .le(ShipmentDO::getShippedAt, cutoff)
+                        .orderByAsc(ShipmentDO::getShippedAt).last("LIMIT " + Math.max(limit, 1)))
+                .stream().map(ShipmentDO::getOrderNo).toList();
+    }
 }

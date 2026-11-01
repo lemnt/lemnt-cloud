@@ -23,7 +23,8 @@ public final class SettlementResConverter {
                 q.originalAmount(),
                 q.discountAmount(),
                 q.payableAmount(),
-                q.couponId(), q.usePoint(), q.givePoint(), SettlementQuoteResConverter.delivery(q.delivery()));
+                q.couponId(), q.usePoint(), q.givePoint(), SettlementQuoteResConverter.delivery(q.delivery()),
+                q.freeDelivery(), q.giveCouponTemplateCounts());
     }
 
     /**

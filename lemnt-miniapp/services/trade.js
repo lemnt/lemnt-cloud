@@ -46,7 +46,11 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
   function quoteData(input) {
     if (!input || !Array.isArray(input.productIds) || !input.productIds.length) throw new Error('请选择商品');
     if (input.pointStatus !== undefined && typeof input.pointStatus !== 'boolean') throw new Error('积分选择不合法');
-    return { addressId: id(input.addressId), ...(input.pointStatus === undefined ? {} : { pointStatus: input.pointStatus }), productIds: input.productIds.map(id), ...(input.couponId ? { couponId: id(input.couponId) } : {}) };
+    const deliveryType = input.deliveryType === 2 ? 2 : 1;
+    const delivery = deliveryType === 2
+      ? { deliveryType, pickUpStoreId: id(input.pickUpStoreId) }
+      : { addressId: id(input.addressId) };
+    return { ...delivery, ...(input.pointStatus === undefined ? {} : { pointStatus: input.pointStatus }), productIds: input.productIds.map(id), ...(input.couponId ? { couponId: id(input.couponId) } : {}) };
   }
   return {
     cart: () => call('/cart'),
@@ -97,7 +101,7 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     walletTransactions: input => {
       const paging = page(input);
       const bizType = input && typeof input.bizType === 'string' && input.bizType ? input.bizType : undefined;
-      if (bizType !== undefined && !['RECHARGE','RECHARGE_REFUND','PAYMENT','PAYMENT_REFUND','UPDATE_BALANCE','TRANSFER'].includes(bizType)) throw new Error('业务类型不合法');
+      if (bizType !== undefined && !['RECHARGE','RECHARGE_REFUND','PAYMENT','PAYMENT_REFUND','UPDATE_BALANCE','TRANSFER','BROKERAGE_WITHDRAW'].includes(bizType)) throw new Error('业务类型不合法');
       return call('/wallet/transactions', 'GET', { ...paging, ...(bizType === undefined ? {} : { bizType }) }, 'trade');
     },
 
@@ -137,6 +141,7 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     orderStatusCounts: () => call('/orders/status-counts', 'GET', undefined, 'trade'),
     orderDetail: orderNo => call('/orders/' + order(orderNo), 'GET', undefined, 'trade'),
     orderTracks: orderNo => call('/orders/' + order(orderNo) + '/tracks', 'GET', undefined, 'trade'),
+    deliveryExpresses: () => call('/delivery/expresses', 'GET', undefined, 'trade'),
 
     // 售后中心
     afterSalePage: input => {

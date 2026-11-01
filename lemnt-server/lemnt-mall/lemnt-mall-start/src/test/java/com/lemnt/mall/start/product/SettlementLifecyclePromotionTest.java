@@ -23,8 +23,10 @@ class SettlementLifecyclePromotionTest {
     private final OrderGateway orders = Mockito.mock(OrderGateway.class);
     private final ProductInventoryService inventory = Mockito.mock(ProductInventoryService.class);
     private final PromotionOrderService promotions = Mockito.mock(PromotionOrderService.class);
+    private final com.lemnt.mall.application.promotion.service.RewardGiftService rewardGifts =
+            Mockito.mock(com.lemnt.mall.application.promotion.service.RewardGiftService.class);
     private final SettlementLifecycleClientImpl client =
-            new SettlementLifecycleClientImpl(members, records, orders, inventory, promotions);
+            new SettlementLifecycleClientImpl(members, records, orders, inventory, promotions, rewardGifts);
 
     private SettlementOrder order(String status) {
         return new SettlementOrder(7L, "TR1", 1L, new BigDecimal("10.00"), status,

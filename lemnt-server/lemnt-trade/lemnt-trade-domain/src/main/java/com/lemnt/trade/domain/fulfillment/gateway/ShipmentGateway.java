@@ -25,4 +25,7 @@ public interface ShipmentGateway {
      * 接收。
      */
     boolean receive(String orderNo, LocalDateTime time);
+
+    /** 未收货且发货时间早于截止时间的订单号，供自动收货任务使用。 */
+    java.util.List<String> shippedBefore(LocalDateTime cutoff, int limit);
 }

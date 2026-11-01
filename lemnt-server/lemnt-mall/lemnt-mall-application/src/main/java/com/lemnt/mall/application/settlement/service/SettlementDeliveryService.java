@@ -53,7 +53,13 @@ public class SettlementDeliveryService {
             return new DeliveryPriceLine(item.productId(), product.deliveryTemplateId(), item.quantity(),
                     product.weight(), product.volume(), item.payAmount());
         }).toList();
-        var fee = prices.price(address.areaId().intValue(), lines);
+        var fee = quote.freeDelivery()
+                ? new com.lemnt.mall.domain.settlement.model.DeliveryPriceResult(
+                        java.math.BigDecimal.ZERO.setScale(2),
+                        quote.items().stream().collect(java.util.stream.Collectors.toMap(
+                                SettlementItem::productId,
+                                item -> java.math.BigDecimal.ZERO.setScale(2))))
+                : prices.price(address.areaId().intValue(), lines);
         var items = quote.items().stream().map(item -> new SettlementItem(item.productId(),
                 item.productCode(),
                 item.productName(),
@@ -74,9 +80,27 @@ public class SettlementDeliveryService {
         long givePoint = pointConfig.enabled() && pointConfig.givePerYuan() > 0
                 ? paid.multiply(BigDecimal.valueOf(pointConfig.givePerYuan()))
                     .setScale(0, RoundingMode.DOWN).longValueExact() : 0L;
+        givePoint += quote.rewardPoint();
         return new SettlementQuote(items, quote.originalAmount(), quote.discountAmount(),
                 quote.payableAmount().add(fee.total()), quote.couponId(), quote.usePoint(), givePoint,
                 new SettlementDelivery(address.id(), 1, address.name(), address.mobile(), address.areaId(),
-                        address.detailAddress(), fee.total()));
+                        address.detailAddress(), fee.total()),
+                quote.rewardPoint(), quote.freeDelivery(), quote.giveCouponTemplateCounts());
+    }
+
+    /** 自提不计算运费，只冻结门店快照；门店有效性由交易建单再次校验。 */
+    public SettlementQuote pickUp(SettlementQuote quote, Long storeId) {
+        if (storeId == null || storeId <= 0) {
+            throw new ServiceException("自提门店不能为空", 400);
+        }
+        var items = quote.items().stream().map(item -> new SettlementItem(item.productId(),
+                item.productCode(), item.productName(), item.unitPrice(), item.quantity(), item.lineAmount(),
+                item.payAmount(), java.math.BigDecimal.ZERO.setScale(2), item.spuId(), item.spuName(),
+                item.properties(), item.picUrl())).toList();
+        return new SettlementQuote(items, quote.originalAmount(), quote.discountAmount(),
+                quote.payableAmount(), quote.couponId(), quote.usePoint(), quote.givePoint(),
+                new SettlementDelivery(null, 2, null, null, null, null,
+                        java.math.BigDecimal.ZERO.setScale(2), storeId),
+                quote.rewardPoint(), quote.freeDelivery(), quote.giveCouponTemplateCounts());
     }
 }

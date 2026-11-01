@@ -21,7 +21,8 @@ public final class RewardActivityReqConverter {
                 req.conditionType(),
                 req.productScope(),
                 req.productScopeValues(),
-                req.rules().stream().map(r -> new RewardRule(r.limit(), r.discountPrice())).toList());
+                req.rules().stream().map(r -> new RewardRule(r.limit(), r.discountPrice(), r.freeDelivery(),
+                        r.point() == null ? 0 : r.point(), r.giveCouponTemplateCounts())).toList());
     }
 
     public static RewardActivityUpdateCmd update(Long id, RewardActivityUpdateReq req) {
@@ -34,7 +35,8 @@ public final class RewardActivityReqConverter {
                 req.conditionType(),
                 req.productScope(),
                 req.productScopeValues(),
-                req.rules().stream().map(r -> new RewardRule(r.limit(), r.discountPrice())).toList());
+                req.rules().stream().map(r -> new RewardRule(r.limit(), r.discountPrice(), r.freeDelivery(),
+                        r.point() == null ? 0 : r.point(), r.giveCouponTemplateCounts())).toList());
     }
 
     public static RewardActivityPageQry page(RewardActivityPageReq req) {

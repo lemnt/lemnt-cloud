@@ -15,6 +15,7 @@ public final class SettlementQuoteReqConverter {
     ) {
         return new SettlementCreateCmd(memberId,
                 req.productIds(),
-                req.couponId(), req.pointStatus(), req.addressId());
+                req.couponId(), req.pointStatus(), req.addressId(),
+                req.deliveryType() == null ? 1 : req.deliveryType(), req.pickUpStoreId());
     }
 }

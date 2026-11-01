@@ -34,12 +34,22 @@ public class OrderSubmissionService {
         if (!previous.memberId().equals(order.memberId())
                 || previous.totalAmount().compareTo(order.totalAmount()) != 0
                 || previous.usePoint() != order.usePoint() || previous.givePoint() != order.givePoint()
-                || !Objects.equals(previous.delivery(), order.delivery())
+                || !Objects.equals(previous.giveCouponTemplateCounts(), order.giveCouponTemplateCounts())
+                || !Objects.equals(purchaseDelivery(previous.delivery()), purchaseDelivery(order.delivery()))
                 || !purchaseItems(previous.items()).equals(purchaseItems(order.items()))
         ) {
             throw new IllegalStateException("订单号已用于不同的订单内容");
         }
     }
+    /** 核销码由服务端生成，重试重算不应被视为内容变化。 */
+    private com.lemnt.trade.domain.order.model.TradeOrderDelivery purchaseDelivery(
+            com.lemnt.trade.domain.order.model.TradeOrderDelivery value) {
+        return value == null ? null : new com.lemnt.trade.domain.order.model.TradeOrderDelivery(
+                value.addressId(), value.deliveryType(), value.receiverName(), value.receiverMobile(),
+                value.receiverAreaId(), value.receiverDetailAddress(), value.deliveryPrice(),
+                value.pickUpStoreId(), null);
+    }
+
     /** 数据库主键及评价状态不属于原购买快照，不能影响下单原请求重试。 */
     private java.util.List<com.lemnt.trade.domain.order.model.TradeOrderItem> purchaseItems(
             java.util.List<com.lemnt.trade.domain.order.model.TradeOrderItem> values) {

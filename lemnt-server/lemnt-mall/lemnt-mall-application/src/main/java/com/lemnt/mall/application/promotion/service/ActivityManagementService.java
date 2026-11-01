@@ -96,6 +96,13 @@ public class ActivityManagementService {
                 require(rule.limit().scale() <= 2 && rule.discountPrice().compareTo(rule.limit()) <= 0,
                         "满减金额不能超过门槛");
             }
+            int point = rule.point() == null ? 0 : rule.point();
+            require(point >= 0 && point <= 1000000, "赠送积分不合法");
+            var coupons = rule.giveCouponTemplateCounts();
+            require(coupons == null || (coupons.size() <= 20
+                    && coupons.entrySet().stream().allMatch(item -> item.getKey() != null && item.getKey() > 0
+                    && item.getValue() != null && item.getValue() >= 1 && item.getValue() <= 99)),
+                    "赠送优惠券不合法");
             previous = rule.limit();
         }
         for (var other : rewards.enabled()) {

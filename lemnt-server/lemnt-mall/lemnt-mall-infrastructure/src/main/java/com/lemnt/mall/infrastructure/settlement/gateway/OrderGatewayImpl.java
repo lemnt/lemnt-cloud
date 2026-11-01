@@ -75,7 +75,7 @@ public class OrderGatewayImpl implements OrderGateway {
     ) {
         return value == null ? null : new OrderDeliveryDTO(value.addressId(),
                 value.deliveryType(), value.receiverName(), value.receiverMobile(), value.receiverAreaId(),
-                value.receiverDetailAddress(), value.deliveryPrice());
+                value.receiverDetailAddress(), value.deliveryPrice(), value.pickUpStoreId());
     }
 
     private SettlementDelivery fromDelivery(
@@ -83,6 +83,6 @@ public class OrderGatewayImpl implements OrderGateway {
     ) {
         return value == null ? null : new SettlementDelivery(value.addressId(),
                 value.deliveryType(), value.receiverName(), value.receiverMobile(), value.receiverAreaId(),
-                value.receiverDetailAddress(), value.deliveryPrice());
+                value.receiverDetailAddress(), value.deliveryPrice(), value.pickUpStoreId());
     }
 }

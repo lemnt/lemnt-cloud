@@ -25,6 +25,10 @@ test('结算重试保留原编号和令牌，不发送客户端金额', async ()
   assert.deepEqual(calls[0].data, calls[1].data);
   assert.deepEqual(Object.keys(calls[0].data).sort(), ['requestNo', 'settlementId']);
 });
+test('退货快递只读启用的交易快递公司', async () => {
+  const { client, calls } = setup(); await client.deliveryExpresses();
+  assert.equal(calls[0].url, 'https://example.test/trade/app/delivery/expresses');
+});
 test('预支付只发送订单编号、应用与渠道；支付结果从服务端查询', async () => {
   const { client, calls } = setup(); await client.prepay({ orderNo: 'TR1', appKey: 'lemnt-mall', channel: 'SANDBOX' }); await client.paymentStatus('TR1');
   assert.equal(calls[0].url, 'https://example.test/trade/app/orders/TR1/payment');
@@ -52,3 +56,10 @@ test('终止请求只传结算单编号和原请求号，不发送会员或订�
 test('会员取消和收货仅发送订单路径，不传管理员或会员身份字段',async()=>{const {client,calls}=setup();await client.cancelOrder('TR1');await client.receiveOrder('TR1');assert.equal(calls[0].url,'https://example.test/trade/app/orders/TR1/cancel');assert.equal(calls[1].url,'https://example.test/trade/app/orders/TR1/receive');assert.equal(calls[0].method,'POST');assert.equal(calls[1].method,'POST');assert.equal(calls[0].data,undefined);assert.equal(calls[1].data,undefined);});
 
 test('取消售后使用本人交易接口，只发送售后单号路径',async()=>{const {client,calls}=setup();await client.cancelAfterSale('RF1');assert.equal(calls[0].url,'https://example.test/trade/app/after-sales/RF1/cancel');assert.equal(calls[0].method,'POST');assert.equal(calls[0].data,undefined);assert.equal(calls[0].header.Authorization,'Bearer member-token');});
+
+test('自提报价只发送门店编号，不发送收货地址；缺少门店直接拒绝',async()=>{
+ const {client,calls}=setup();await client.quote({productIds:['5'],deliveryType:2,pickUpStoreId:'9',addressId:'123'});
+ assert.equal(calls[0].url,'https://example.test/mall/app/checkout/quote');
+ assert.deepEqual(calls[0].data,{deliveryType:2,pickUpStoreId:'9',productIds:['5']});
+ assert.throws(()=>client.quote({productIds:['5'],deliveryType:2}));
+});

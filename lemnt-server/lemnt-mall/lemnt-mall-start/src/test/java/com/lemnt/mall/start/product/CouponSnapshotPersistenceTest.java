@@ -30,6 +30,7 @@ class CouponSnapshotPersistenceTest {
         fixture = new CatalogPersistenceTest();
         fixture.setup();
         ScriptUtils.executeSqlScript(fixture.schemaConnection, new ClassPathResource("sql/V10__cart_coupon_checkout.sql"));
+        ScriptUtils.executeSqlScript(fixture.schemaConnection, new ClassPathResource("sql/V28__coupon_reward_gift.sql"));
         fixture.components.register(MemberLockGateway.class, memberId -> {});
         coupons = fixture.components.get(CouponGateway.class);
         templates = fixture.components.get(CouponTemplateGateway.class);

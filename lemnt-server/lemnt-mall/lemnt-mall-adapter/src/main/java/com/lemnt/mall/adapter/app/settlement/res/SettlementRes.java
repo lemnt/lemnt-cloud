@@ -30,7 +30,11 @@ public record SettlementRes(
         @Schema(description = "支付成功后赠送积分数")
         long givePoint,
         @Schema(description = "已冻结的配送快照")
-        SettlementDeliveryRes delivery
+        SettlementDeliveryRes delivery,
+        @Schema(description = "满减活动是否包邮")
+        boolean freeDelivery,
+        @Schema(description = "支付成功后赠送的优惠券模板及数量")
+        java.util.Map<Long, Integer> giveCouponTemplateCounts
 ) implements Serializable {
     /** 历史快照缺少配送字段，读取时保留未配置状态。 */
     public SettlementRes(
@@ -43,6 +47,6 @@ public record SettlementRes(
             Long couponId,
             long usePoint,
             long givePoint) {
-        this(settlementId, expiresAt, items, originalAmount, discountAmount, payableAmount, couponId, usePoint, givePoint, null);
+        this(settlementId, expiresAt, items, originalAmount, discountAmount, payableAmount, couponId, usePoint, givePoint, null, false, java.util.Map.of());
     }
 }

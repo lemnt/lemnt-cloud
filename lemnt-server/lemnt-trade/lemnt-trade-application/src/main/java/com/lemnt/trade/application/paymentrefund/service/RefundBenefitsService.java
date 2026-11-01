@@ -1,9 +1,11 @@
 package com.lemnt.trade.application.paymentrefund.service;
 
+import com.lemnt.trade.application.brokerage.service.BrokerageService;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
 import com.lemnt.trade.domain.aftersale.gateway.AfterSaleGateway;
 import com.lemnt.trade.domain.order.gateway.TradeOrderItemGateway;
 import com.lemnt.trade.domain.order.gateway.OrderBenefitsGateway;
+import com.lemnt.trade.domain.paymentrefund.gateway.PaymentRefundGateway;
 import com.lemnt.trade.domain.paymentrefund.model.PaymentRefund;
 import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ public class RefundBenefitsService {
     private final OrderPersistenceService orders;
     private final TradeOrderItemGateway items;
     private final OrderBenefitsGateway benefits;
+    private final BrokerageService brokerage;
+    private final PaymentRefundGateway paymentRefunds;
 
     public void complete(PaymentRefund refund) {
         if (!"SUCCESS".equals(refund.status())) { return; }
@@ -35,5 +39,14 @@ public class RefundBenefitsService {
             quantities.put(item.productId(), afterSale.quantity());
         }
         benefits.refunded(order.orderNo(), afterSale.refundNo(), quantities, refund.amount());
+        var latest = orders.findByOrderNo(order.orderNo());
+        if (latest != null && "REFUNDED".equals(latest.status())) {
+            brokerage.cancelOrderCommission(order.orderNo());
+        } else if (latest != null) {
+            // 部分退款按累计成功退款金额同比例扣回佣金，重复回调只补差额。
+            var total = paymentRefunds.total(order.orderNo());
+            brokerage.recallOrderCommission(order.orderNo(),
+                    total == null ? refund.amount() : total.refundAmount(), order.totalAmount());
+        }
     }
 }

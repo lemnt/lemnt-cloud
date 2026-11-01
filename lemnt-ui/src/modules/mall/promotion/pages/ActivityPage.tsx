@@ -7,6 +7,8 @@ import {
   ProFormSelect,
   ProFormDateTimePicker,
   ProFormList,
+  ProFormSwitch,
+  ProFormDigit,
   ProFormDependency,
   type ProColumns,
 } from '@ant-design/pro-components';
@@ -138,7 +140,18 @@ export function ActivityPage({ kind }: { kind: ActivityKind }) {
   const editable = !editor?.readOnly && (!loaded || loaded.status === 0);
   const initial: ActivityEditorValues = loaded
     ? 'rules' in loaded
-      ? loaded
+      ? {
+          ...loaded,
+          rules: loaded.rules.map((rule) => ({
+            limit: rule.limit,
+            discountPrice: rule.discountPrice,
+            freeDelivery: rule.freeDelivery === true,
+            point: rule.point ?? 0,
+            couponCounts: Object.entries(rule.giveCouponTemplateCounts ?? {})
+              .map(([key, value]) => `${key}:${value}`)
+              .join(','),
+          })),
+        }
       : {
           ...loaded,
           products: loaded.products.map((p) => ({
@@ -153,7 +166,7 @@ export function ActivityPage({ kind }: { kind: ActivityKind }) {
         conditionType: 'PRICE',
         productScope: 'ALL',
         productScopeValues: [],
-        rules: [{ limit: '', discountPrice: '' }],
+        rules: [{ limit: '', discountPrice: '', freeDelivery: false, point: 0, couponCounts: '' }],
         products: [{ spuId: '', skuId: '', discountType: 'PERCENT', discountRate: '8' }],
       };
   return (
@@ -302,6 +315,14 @@ function ActivityDetails({ value }: { value: RewardActivity | DiscountActivity }
             <p key={i}>
               满 {rule.limit} {value.conditionType === 'PRICE' ? '元' : '件'}，减{' '}
               {rule.discountPrice} 元
+              {rule.freeDelivery ? '，包邮' : ''}
+              {rule.point ? `，赠 ${rule.point} 积分` : ''}
+              {rule.giveCouponTemplateCounts &&
+              Object.keys(rule.giveCouponTemplateCounts).length
+                ? `，赠券 ${Object.entries(rule.giveCouponTemplateCounts)
+                    .map(([key, count]) => `${key}×${count}`)
+                    .join('、')}`
+                : ''}
             </p>
           ))}
         </>
@@ -405,6 +426,18 @@ function RewardFields() {
           rules={[{ required: true }]}
         />
         <ProFormText name="discountPrice" label="减免金额（元）" rules={[{ required: true }]} />
+        <ProFormSwitch name="freeDelivery" label="赠送包邮" />
+        <ProFormDigit
+          name="point"
+          label="赠送积分"
+          min={0}
+          fieldProps={{ precision: 0 }}
+        />
+        <ProFormText
+          name="couponCounts"
+          label="赠送优惠券（模板ID:数量，逗号分隔）"
+          placeholder="例如 3:1,5:2"
+        />
       </ProFormList>
     </>
   );

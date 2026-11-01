@@ -10,7 +10,7 @@ const TYPE_LABEL = Object.freeze({ REFUND_ONLY: '仅退款', RETURN_REFUND: '退
 Page({
   data: {
     ready: runtime.ready, loading: false, error: '', loggedIn: false, sale: null, payment: null,
-    showReturn: false, carrier: '', tracking: '',
+    showReturn: false, carrier: '', tracking: '', carriers: [], carrierIndex: 0,
   },
   onLoad(query) {
     runtime.attach(this);
@@ -31,6 +31,7 @@ Page({
       try { payment = decodePaymentStatus(await this.client.paymentStatus(sale.orderNo), sale.orderNo); }
       catch (e) { payment = null; }
       this.setData({ sale, payment });
+      await this.loadCarriers();
     });
   },
   refreshProgress() { return this.reload(); },
@@ -48,7 +49,21 @@ Page({
     };
   },
   toggleReturn() { this.setData({ showReturn: !this.data.showReturn, error: '' }); },
-  inputCarrier(event) { this.setData({ carrier: event.detail.value }); },
+  async loadCarriers() {
+    try {
+      const carriers = await this.client.deliveryExpresses();
+      if (!Array.isArray(carriers)) throw new Error('快递公司响应不合法');
+      const index = Math.max(0, carriers.findIndex(item => item.code === this.data.carrier));
+      this.setData({ carriers, carrierIndex: index, carrier: carriers[index] ? carriers[index].code : '' });
+    } catch (e) {
+      this.setData({ carriers: [] });
+    }
+  },
+  pickCarrier(event) {
+    const index = Number(event.detail.value);
+    const carrier = this.data.carriers[index];
+    if (carrier) this.setData({ carrierIndex: index, carrier: carrier.code });
+  },
   inputTracking(event) { this.setData({ tracking: event.detail.value }); },
   submitReturn() {
     return runtime.run(this, async () => {

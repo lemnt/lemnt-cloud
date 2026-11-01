@@ -116,6 +116,43 @@ class ControllerMappingTest {
                 POST /mall/app/bargain/orders
                 POST /mall/app/point-mall/orders
                 POST /mall/app/point-mall/orders/batch
+                GET /mall/promotion/banners mall:promotion:list
+                GET /mall/promotion/banners/{id} mall:promotion:query
+                POST /mall/promotion/banners mall:promotion:create
+                PUT /mall/promotion/banners/{id} mall:promotion:update
+                DELETE /mall/promotion/banners/{id} mall:promotion:delete
+                GET /mall/app/banners
+                PUT /mall/app/banners/{id}/browse
+                GET /mall/promotion/kefu-conversations mall:promotion:list
+                GET /mall/promotion/kefu-conversations/{id} mall:promotion:query
+                GET /mall/promotion/kefu-conversations/{id}/messages mall:promotion:query
+                POST /mall/promotion/kefu-conversations/{id}/messages mall:promotion:create
+                PUT /mall/promotion/kefu-conversations/{id}/read mall:promotion:update
+                PUT /mall/promotion/kefu-conversations/{id}/pinned mall:promotion:update
+                DELETE /mall/promotion/kefu-conversations/{id} mall:promotion:delete
+                GET /mall/app/kefu/conversation
+                GET /mall/app/kefu/messages
+                POST /mall/app/kefu/messages
+                PUT /mall/app/kefu/read
+                GET /mall/promotion/diy-templates mall:promotion:list
+                GET /mall/promotion/diy-templates/{id} mall:promotion:query
+                POST /mall/promotion/diy-templates mall:promotion:create
+                PUT /mall/promotion/diy-templates/{id} mall:promotion:update
+                PUT /mall/promotion/diy-templates/{id}/use mall:promotion:update
+                PUT /mall/promotion/diy-templates/{id}/property mall:promotion:update
+                DELETE /mall/promotion/diy-templates/{id} mall:promotion:delete
+                GET /mall/promotion/diy-pages mall:promotion:list
+                GET /mall/promotion/diy-pages/{id} mall:promotion:query
+                POST /mall/promotion/diy-pages mall:promotion:create
+                PUT /mall/promotion/diy-pages/{id} mall:promotion:update
+                PUT /mall/promotion/diy-pages/{id}/property mall:promotion:update
+                DELETE /mall/promotion/diy-pages/{id} mall:promotion:delete
+                GET /mall/app/diy/template/used
+                GET /mall/app/diy/template/{id}
+                GET /mall/app/diy/page/{id}
+                GET /mall/app/promotion-hub/sections
+                GET /mall/app/promotion-hub/discount/{id}
+                GET /mall/app/promotion-hub/reward/{id}
                 DELETE /mall/app/cart/{productId}
                 DELETE /mall/brands/{id} mall:brand:remove
                 DELETE /mall/categories/{id} mall:category:remove

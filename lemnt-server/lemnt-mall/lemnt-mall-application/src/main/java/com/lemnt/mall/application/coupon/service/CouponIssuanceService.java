@@ -26,6 +26,23 @@ public class CouponIssuanceService {
         return take(memberId, templateId, "ADMIN");
     }
 
+    /** 营销满减赠券不占用会员主动领取限次，但仍受启用状态、有效期和总名额约束。 */
+    @Transactional(rollbackFor = Exception.class)
+    public Coupon gift(Long memberId, Long templateId, String sourceOrderNo) {
+        memberLockGateway.lockMember(memberId);
+        var template = couponTemplateGateway.lockTemplate(templateId);
+        var now = couponTemplateGateway.now();
+        if (template == null || !template.enabled()
+                || ("DATE".equals(template.validityType()) && !template.validUntil().isAfter(now))) {
+            throw new ServiceException("赠券当前不可发放", 409);
+        }
+        if (!couponTemplateGateway.takeQuota(templateId)) {
+            throw new ServiceException("赠券名额已用完", 409);
+        }
+        return couponGateway.insertCoupon(new Coupon(null, templateId, memberId, "AVAILABLE", null,
+                CouponRules.snapshot(template, now), null, sourceOrderNo));
+    }
+
     /** 在会员锁和模板行锁内校验限领、占用名额并固化持券规则。 */
     @Transactional(rollbackFor = Exception.class)
     public Coupon take(Long memberId, Long templateId, String takeType) {
