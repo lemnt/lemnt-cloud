@@ -1,8 +1,8 @@
 const runtime = require('../../services/orderRuntime');
 
 const STATUS_LABEL = Object.freeze({
-  RESERVING: '处理中', PENDING_PAYMENT: '待付款', PAID: '待发货', SHIPPED: '待收货',
-  COMPLETED: '已完成', CLOSED: '已取消', REFUNDED: '已退款',
+  RESERVING: '处理中', PENDING_PAYMENT: '待付款', PAID: '待发货', AWAITING_PICKUP: '待自提',
+  SHIPPED: '待收货', COMPLETED: '已完成', CLOSED: '已取消', REFUNDED: '已退款',
 });
 
 Page({

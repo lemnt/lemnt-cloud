@@ -11,6 +11,8 @@ public record AppOrderStatusCountRes(
         long pendingPayment,
         @Schema(description = "待发货")
         long awaitingShipment,
+        @Schema(description = "待自提")
+        long awaitingPickup,
         @Schema(description = "待收货")
         long awaitingReceipt,
         @Schema(description = "待评价")
@@ -22,4 +24,9 @@ public record AppOrderStatusCountRes(
         @Schema(description = "已退款")
         long refunded
 ) implements Serializable {
+    /** 兼容未区分待自提的订单中心响应。 */
+    public AppOrderStatusCountRes(long pendingPayment, long awaitingShipment, long awaitingReceipt,
+            long awaitingComment, long completed, long closed, long refunded) {
+        this(pendingPayment, awaitingShipment, 0L, awaitingReceipt, awaitingComment, completed, closed, refunded);
+    }
 }

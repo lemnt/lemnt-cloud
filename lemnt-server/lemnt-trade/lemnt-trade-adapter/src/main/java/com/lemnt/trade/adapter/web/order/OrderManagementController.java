@@ -2,12 +2,19 @@ package com.lemnt.trade.adapter.web.order;
 
 import com.lemnt.common.core.domain.R;
 import com.lemnt.common.security.annotation.RequiresPermissions;
+import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.trade.adapter.web.order.converter.OrderManagementReqConverter;
 import com.lemnt.trade.adapter.web.order.converter.OrderManagementResConverter;
+import com.lemnt.trade.adapter.web.order.req.OrderAdjustAddressReq;
+import com.lemnt.trade.adapter.web.order.req.OrderAdjustPriceReq;
 import com.lemnt.trade.adapter.web.order.req.OrderRemarkUpdateReq;
 import com.lemnt.trade.adapter.web.order.req.OrderStatisticsReq;
 import com.lemnt.trade.adapter.web.order.res.OrderRemarkRes;
 import com.lemnt.trade.adapter.web.order.res.OrderStatisticsRes;
+import com.lemnt.trade.application.order.cmd.OrderAdjustAddressCmd;
+import com.lemnt.trade.application.order.cmd.OrderAdjustPriceCmd;
+import com.lemnt.trade.application.order.executor.OrderAdjustAddressCmdExe;
+import com.lemnt.trade.application.order.executor.OrderAdjustPriceCmdExe;
 import com.lemnt.trade.application.order.executor.OrderRemarkDetailQueryExe;
 import com.lemnt.trade.application.order.executor.OrderRemarkUpdateCmdExe;
 import com.lemnt.trade.application.order.executor.OrderStatisticsQueryExe;
@@ -17,6 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +43,8 @@ public class OrderManagementController {
     private final OrderStatisticsQueryExe statistics;
     private final OrderRemarkDetailQueryExe remark;
     private final OrderRemarkUpdateCmdExe updateRemark;
+    private final OrderAdjustPriceCmdExe adjustPrice;
+    private final OrderAdjustAddressCmdExe adjustAddress;
 
     /** 应付与退款分别展示，避免将待处理售后当作已退款。 */
     @GetMapping("/summary")
@@ -59,5 +69,26 @@ public class OrderManagementController {
     @RequiresPermissions("trade:order:remark")
     public R<Boolean> remark(@PathVariable String orderNo, @Valid @RequestBody OrderRemarkUpdateReq req) {
         return R.ok(updateRemark.execute(OrderManagementReqConverter.remark(orderNo, req)));
+    }
+
+    /** 待支付订单调价，金额重分摊到商品行并写操作日志。 */
+    @PostMapping("/{orderNo}/price-adjustment")
+    @Operation(summary = "订单调价")
+    @RequiresPermissions("trade:order:update")
+    public R<Boolean> adjustPrice(@PathVariable String orderNo,
+            @Valid @RequestBody OrderAdjustPriceReq req) {
+        adjustPrice.execute(new OrderAdjustPriceCmd(orderNo, req.totalAmount(), SecurityUtils.getUserId()));
+        return R.ok(true);
+    }
+
+    /** 未发货快递单改址，写入收件快照与操作日志。 */
+    @PutMapping("/{orderNo}/address")
+    @Operation(summary = "订单改址")
+    @RequiresPermissions("trade:order:update")
+    public R<Boolean> adjustAddress(@PathVariable String orderNo,
+            @Valid @RequestBody OrderAdjustAddressReq req) {
+        adjustAddress.execute(new OrderAdjustAddressCmd(orderNo, req.receiverName(), req.receiverMobile(),
+                req.receiverAreaId(), req.receiverDetailAddress(), SecurityUtils.getUserId()));
+        return R.ok(true);
     }
 }

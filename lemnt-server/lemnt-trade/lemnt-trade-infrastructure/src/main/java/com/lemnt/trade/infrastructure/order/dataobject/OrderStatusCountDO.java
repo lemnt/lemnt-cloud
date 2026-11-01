@@ -9,5 +9,6 @@ import lombok.Setter;
 public class OrderStatusCountDO {
     private String status;
     private Boolean commentStatus;
+    private Integer deliveryType;
     private long cnt;
 }

@@ -21,7 +21,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class MemberOrderPageQueryExe {
     private static final Set<String> STATUSES = Set.of("RESERVING", "PENDING_PAYMENT", "PAID", "SHIPPED",
-            "COMPLETED", "REFUNDED", "CLOSED");
+            "COMPLETED", "REFUNDED", "CLOSED", "AWAITING_PICKUP", "AWAITING_SHIPMENT");
 
     private final TradeOrderGateway orders;
     private final OrderPersistenceService persistence;
@@ -39,18 +39,31 @@ public class MemberOrderPageQueryExe {
         if (status != null && !STATUSES.contains(status)) {
             throw new IllegalArgumentException("状态参数不合法");
         }
-        var page = orders.orders(new FulfillmentFilter(null, status, qry.commentStatus(), memberId,
-                (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize()));
+        String dbStatus = switch (status == null ? "" : status) {
+            case "AWAITING_PICKUP", "AWAITING_SHIPMENT" -> "PAID";
+            default -> status;
+        };
+        Integer deliveryType = "AWAITING_PICKUP".equals(status) ? 2
+                : "AWAITING_SHIPMENT".equals(status) ? 1 : null;
+        var page = orders.orders(new FulfillmentFilter(null, dbStatus, qry.commentStatus(), memberId,
+                (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize(), deliveryType));
         var records = page.records().stream().map(summary -> {
             var order = persistence.findByOrderNo(summary.orderNo());
-            return new MemberOrderSummaryDTO(summary.orderNo(), summary.status(), summary.totalAmount(),
-                    summary.createTime(),
+            return new MemberOrderSummaryDTO(summary.orderNo(), displayStatus(summary.status(), order),
+                    summary.totalAmount(), summary.createTime(),
                     order == null ? null : order.commentStatus(),
                     order == null ? null : order.finishTime(),
                     summary.activeRefund(),
                     order == null ? List.of() : order.items().stream().map(this::item).toList());
         }).toList();
         return PageResult.of(records, page.total());
+    }
+
+    /** 已支付自提单在订单中心展示为待自提，内部状态仍沿用 PAID。 */
+    private String displayStatus(String status, com.lemnt.trade.domain.order.model.TradeOrder order) {
+        return "PAID".equals(status) && order != null && order.delivery() != null
+                && Integer.valueOf(2).equals(order.delivery().deliveryType())
+                ? "AWAITING_PICKUP" : status;
     }
 
     private OrderItemDTO item(TradeOrderItem value) {

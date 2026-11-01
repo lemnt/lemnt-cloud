@@ -1,6 +1,7 @@
 package com.lemnt.trade.application.pickup.executor;
 
 import com.lemnt.trade.application.pickup.dto.AppPickUpStoreDTO;
+import com.lemnt.trade.application.pickup.qry.AppPickUpStoreListQry;
 import com.lemnt.trade.application.pickup.service.PickUpStoreService;
 
 import org.springframework.stereotype.Component;
@@ -15,7 +16,7 @@ import java.util.List;
 public class AppPickUpStoreListQueryExe {
     private final PickUpStoreService service;
 
-    public List<AppPickUpStoreDTO> execute() {
-        return service.appList();
+    public List<AppPickUpStoreDTO> execute(AppPickUpStoreListQry qry) {
+        return service.appList(qry);
     }
 }

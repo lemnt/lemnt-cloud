@@ -26,6 +26,8 @@ test('订单记录按状态计算可操作项并拒绝非法状态', () => {
   const pending = page.toRecord({ orderNo: 'TR1', status: 'PENDING_PAYMENT', totalAmount: '10.00', items: [] });
   assert.equal(pending.canCancel, true);
   assert.equal(pending.statusLabel, '待付款');
+  const pickUp = page.toRecord({ orderNo: 'TRPU', status: 'AWAITING_PICKUP', totalAmount: '10.00', items: [] });
+  assert.equal(pickUp.statusLabel, '待自提');
   const shipped = page.toRecord({ orderNo: 'TR2', status: 'SHIPPED', totalAmount: '10.00', items: [] });
   assert.equal(shipped.canReceive, true);
   const comment = page.toRecord({ orderNo: 'TR3', status: 'COMPLETED', commentStatus: false, totalAmount: '10.00', items: [] });
@@ -40,7 +42,7 @@ test('订单状态数量按分组汇总并在缺省时补零', async () => {
     orderStatusCounts: async () => ({ pendingPayment: 1, awaitingShipment: 2, awaitingReceipt: 3, awaitingComment: 4, completed: 5, closed: 6, refunded: 7 }),
   });
   await page.loadCounts();
-  assert.deepEqual(page.data.counts, [28, 1, 2, 3, 4, 5, 6, 7]);
+  assert.deepEqual(page.data.counts, [28, 1, 2, 0, 3, 4, 5, 6, 7]);
 });
 
 test('取消订单必须先确认，确认后刷新计数与列表', async () => {

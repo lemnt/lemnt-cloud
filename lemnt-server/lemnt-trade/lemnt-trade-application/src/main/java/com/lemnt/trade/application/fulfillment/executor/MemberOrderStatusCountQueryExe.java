@@ -20,6 +20,7 @@ public class MemberOrderStatusCountQueryExe {
         }
         long pendingPayment = 0;
         long awaitingShipment = 0;
+        long awaitingPickup = 0;
         long awaitingReceipt = 0;
         long awaitingComment = 0;
         long completed = 0;
@@ -28,7 +29,13 @@ public class MemberOrderStatusCountQueryExe {
         for (var count : orders.memberStatusCounts(memberId)) {
             switch (count.status()) {
                 case "RESERVING", "PENDING_PAYMENT" -> pendingPayment += count.count();
-                case "PAID" -> awaitingShipment += count.count();
+                case "PAID" -> {
+                    if (Integer.valueOf(2).equals(count.deliveryType())) {
+                        awaitingPickup += count.count();
+                    } else {
+                        awaitingShipment += count.count();
+                    }
+                }
                 case "SHIPPED" -> awaitingReceipt += count.count();
                 case "COMPLETED" -> {
                     if (Boolean.TRUE.equals(count.commentStatus())) {
@@ -45,6 +52,6 @@ public class MemberOrderStatusCountQueryExe {
             }
         }
         return new MemberOrderStatusCountDTO(pendingPayment, awaitingShipment, awaitingReceipt,
-                awaitingComment, completed, closed, refunded);
+                awaitingComment, completed, closed, refunded, awaitingPickup);
     }
 }

@@ -36,8 +36,8 @@ public final class AppOrderResConverter {
 
     /** 转换状态数量。 */
     public static AppOrderStatusCountRes statusCount(MemberOrderStatusCountDTO value) {
-        return new AppOrderStatusCountRes(value.pendingPayment(), value.awaitingShipment(), value.awaitingReceipt(),
-                value.awaitingComment(), value.completed(), value.closed(), value.refunded());
+        return new AppOrderStatusCountRes(value.pendingPayment(), value.awaitingShipment(), value.awaitingPickup(),
+                value.awaitingReceipt(), value.awaitingComment(), value.completed(), value.closed(), value.refunded());
     }
 
     /** 转换物流轨迹。 */

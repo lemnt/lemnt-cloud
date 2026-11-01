@@ -15,6 +15,14 @@ public record AppPickUpStoreDTO(
         String openingTime,
         String closingTime,
         BigDecimal latitude,
-        BigDecimal longitude
+        BigDecimal longitude,
+        BigDecimal distanceKm
 ) implements Serializable {
+    /** 兼容未提供当前位置的门店列表。 */
+    public AppPickUpStoreDTO(Long id, String name, String introduction, String phone, Long areaId,
+            String detailAddress, String logo, String openingTime, String closingTime,
+            BigDecimal latitude, BigDecimal longitude) {
+        this(id, name, introduction, phone, areaId, detailAddress, logo, openingTime, closingTime,
+                latitude, longitude, null);
+    }
 }

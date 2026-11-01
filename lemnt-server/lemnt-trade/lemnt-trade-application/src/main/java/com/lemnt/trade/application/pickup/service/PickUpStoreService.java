@@ -6,6 +6,7 @@ import com.lemnt.trade.application.pickup.cmd.PickUpBindCmd;
 import com.lemnt.trade.application.pickup.cmd.PickUpStoreSaveCmd;
 import com.lemnt.trade.application.pickup.dto.AppPickUpStoreDTO;
 import com.lemnt.trade.application.pickup.dto.PickUpStoreDTO;
+import com.lemnt.trade.application.pickup.qry.AppPickUpStoreListQry;
 import com.lemnt.trade.application.pickup.qry.PickUpStorePageQry;
 import com.lemnt.trade.domain.delivery.gateway.PickUpStoreGateway;
 import com.lemnt.trade.domain.delivery.model.PickUpStore;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 
@@ -112,10 +114,38 @@ public class PickUpStoreService {
         return PageResult.of(result.getRecords().stream().map(this::dto).toList(), result.getTotal());
     }
 
+    /** 无当前位置时按门店配置顺序返回。 */
     public List<AppPickUpStoreDTO> appList() {
+        return appList(null);
+    }
+
+    /** 有坐标时按直线距离升序，缺失坐标的门店排在最后。 */
+    public List<AppPickUpStoreDTO> appList(AppPickUpStoreListQry qry) {
+        boolean located = qry != null && qry.latitude() != null;
         return stores.enabled().stream().map(value -> new AppPickUpStoreDTO(value.id(), value.name(),
                 value.introduction(), value.phone(), value.areaId(), value.detailAddress(), value.logo(),
-                value.openingTime(), value.closingTime(), value.latitude(), value.longitude())).toList();
+                value.openingTime(), value.closingTime(), value.latitude(), value.longitude(),
+                located ? distanceKm(qry.latitude(), qry.longitude(), value) : null))
+                .sorted(java.util.Comparator
+                        .comparing(AppPickUpStoreDTO::distanceKm,
+                                java.util.Comparator.nullsLast(java.util.Comparator.naturalOrder()))
+                        .thenComparing(AppPickUpStoreDTO::id))
+                .toList();
+    }
+
+    /** 门店纬度经度都齐全时按球面距离换算公里。 */
+    private BigDecimal distanceKm(BigDecimal latitude, BigDecimal longitude, PickUpStore store) {
+        if (store.latitude() == null || store.longitude() == null) {
+            return null;
+        }
+        double lat1 = Math.toRadians(latitude.doubleValue());
+        double lat2 = Math.toRadians(store.latitude().doubleValue());
+        double deltaLat = lat2 - lat1;
+        double deltaLng = Math.toRadians(store.longitude().doubleValue() - longitude.doubleValue());
+        double value = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2)
+                + Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
+        double km = 6371.0 * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value));
+        return BigDecimal.valueOf(km).setScale(2, java.math.RoundingMode.HALF_UP);
     }
 
     private PickUpStoreDTO dto(PickUpStore value) {

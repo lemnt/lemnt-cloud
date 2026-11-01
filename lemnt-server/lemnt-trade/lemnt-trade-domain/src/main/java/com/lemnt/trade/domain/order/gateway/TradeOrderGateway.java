@@ -38,6 +38,13 @@ public interface TradeOrderGateway {
      */
     boolean transitionStatus(String orderNo, String expectedStatus, String targetStatus);
 
+    /** 后台调价：仅把原金额改为新金额，调用方持有订单行锁。 */
+    boolean updateTotalAmount(String orderNo, java.math.BigDecimal expected, java.math.BigDecimal next);
+
+    /** 后台改址：仅未发货快递单可更新收件快照。 */
+    boolean updateAddress(String orderNo, String receiverName, String receiverMobile,
+            Long receiverAreaId, String receiverDetailAddress);
+
     /** 同时确认收货状态和真实收货时间，调用方持有订单锁。 */
     boolean completeReceipt(String orderNo, LocalDateTime receivedAt);
 

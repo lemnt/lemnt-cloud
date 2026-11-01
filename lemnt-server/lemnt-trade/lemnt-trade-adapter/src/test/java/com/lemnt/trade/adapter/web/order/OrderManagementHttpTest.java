@@ -2,11 +2,15 @@ package com.lemnt.trade.adapter.web.order;
 
 import com.lemnt.common.start.config.JacksonConfig;
 import com.lemnt.trade.application.order.dto.OrderStatisticsDTO;
+import com.lemnt.trade.application.order.executor.OrderAdjustAddressCmdExe;
+import com.lemnt.trade.application.order.executor.OrderAdjustPriceCmdExe;
 import com.lemnt.trade.application.order.executor.OrderStatisticsQueryExe;
 import com.lemnt.trade.application.order.executor.OrderRemarkDetailQueryExe;
 import com.lemnt.trade.application.order.executor.OrderRemarkUpdateCmdExe;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tools.jackson.databind.json.JsonMapper;
@@ -18,6 +22,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class OrderManagementHttpTest {
+    @BeforeEach
+    void identity() {
+        com.lemnt.common.security.context.SecurityContextHolder.setUserId("9");
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    void clearIdentity() {
+        com.lemnt.common.security.context.SecurityContextHolder.remove();
+    }
+
     @Test
     void emptyStatisticsKeepExactTwoDecimalMoneyAndNoFabricatedRevenue() throws Exception {
         var query = mock(OrderStatisticsQueryExe.class);
@@ -25,7 +39,8 @@ class OrderManagementHttpTest {
         var builder = JsonMapper.builder();
         new JacksonConfig().customizer().customize(builder);
         var mvc = MockMvcBuilders.standaloneSetup(new OrderManagementController(query,
-                        mock(OrderRemarkDetailQueryExe.class), mock(OrderRemarkUpdateCmdExe.class)))
+                        mock(OrderRemarkDetailQueryExe.class), mock(OrderRemarkUpdateCmdExe.class),
+                        mock(OrderAdjustPriceCmdExe.class), mock(OrderAdjustAddressCmdExe.class)))
                 .setMessageConverters(new JacksonJsonHttpMessageConverter(builder.build())).build();
         mvc.perform(get("/trade/admin/orders/summary"))
                 .andExpect(status().isOk())
@@ -33,5 +48,30 @@ class OrderManagementHttpTest {
                 .andExpect(jsonPath("$.data.orderPayPrice").value("0.00"))
                 .andExpect(jsonPath("$.data.afterSalePrice").value("0.00"));
         verify(query).execute(null);
+    }
+
+    @Test
+    void adjustsPriceAndAddressWithVerifiedOperator() throws Exception {
+        var price = mock(OrderAdjustPriceCmdExe.class);
+        var address = mock(OrderAdjustAddressCmdExe.class);
+        var builder = JsonMapper.builder();
+        new JacksonConfig().customizer().customize(builder);
+        var mvc = MockMvcBuilders.standaloneSetup(new OrderManagementController(
+                        mock(OrderStatisticsQueryExe.class), mock(OrderRemarkDetailQueryExe.class),
+                        mock(OrderRemarkUpdateCmdExe.class), price, address))
+                .setMessageConverters(new JacksonJsonHttpMessageConverter(builder.build())).build();
+
+        mvc.perform(post("/trade/admin/orders/TR1/price-adjustment").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"totalAmount\":\"88.00\"}"))
+                .andExpect(status().isOk());
+        mvc.perform(put("/trade/admin/orders/TR1/address").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"receiverName\":\"李四\",\"receiverMobile\":\"13900000000\","
+                                + "\"receiverAreaId\":110102,\"receiverDetailAddress\":\"新地址\"}"))
+                .andExpect(status().isOk());
+
+        verify(price).execute(new com.lemnt.trade.application.order.cmd.OrderAdjustPriceCmd(
+                "TR1", new BigDecimal("88.00"), 9L));
+        verify(address).execute(new com.lemnt.trade.application.order.cmd.OrderAdjustAddressCmd(
+                "TR1", "李四", "13900000000", 110102L, "新地址", 9L));
     }
 }

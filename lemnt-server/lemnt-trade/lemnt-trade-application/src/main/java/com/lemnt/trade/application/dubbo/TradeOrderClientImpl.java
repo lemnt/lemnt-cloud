@@ -10,6 +10,7 @@ import com.lemnt.trade.client.dto.OrderDeliveryDTO;
 import com.lemnt.trade.client.dto.OrderItemDTO;
 import com.lemnt.trade.domain.config.gateway.TradeConfigGateway;
 import com.lemnt.trade.domain.delivery.gateway.PickUpStoreGateway;
+import com.lemnt.trade.domain.delivery.model.PickUpStore;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.trade.domain.order.model.TradeOrder;
 import com.lemnt.trade.domain.order.model.TradeOrderDelivery;
@@ -21,6 +22,7 @@ import org.springframework.dao.DuplicateKeyException;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
 
 /** 接收商城确认后的缓存快照，交易服务不参与购物车或促销计价。 */
 @DubboService
@@ -76,6 +78,7 @@ public class TradeOrderClientImpl implements TradeOrderClient {
                 if (store == null || !Integer.valueOf(0).equals(store.status())) {
                     throw new IllegalArgumentException("自提门店不存在或已关闭");
                 }
+                requireOpen(store);
                 if (delivery.pickUpStoreId() == null || delivery.pickUpStoreId() <= 0
                         || delivery.deliveryPrice() == null || delivery.deliveryPrice().signum() != 0
                         || (delivery.receiverName() != null && delivery.receiverName().length() > 100)
@@ -211,6 +214,23 @@ public class TradeOrderClientImpl implements TradeOrderClient {
         return value == null ? null : new TradeOrderDelivery(value.addressId(),
                 value.deliveryType(), value.receiverName(), value.receiverMobile(), value.receiverAreaId(),
                 value.receiverDetailAddress(), value.deliveryPrice(), value.pickUpStoreId(), verifyCode);
+    }
+
+    /** 门店营业时间按 HH:mm:ss 解析；关门早于开门表示跨夜营业。 */
+    private void requireOpen(PickUpStore store) {
+        try {
+            LocalTime now = LocalTime.now();
+            LocalTime open = LocalTime.parse(store.openingTime());
+            LocalTime close = LocalTime.parse(store.closingTime());
+            boolean openNow = open.equals(close)
+                    || (open.isBefore(close) ? !now.isBefore(open) && now.isBefore(close)
+                            : !now.isBefore(open) || now.isBefore(close));
+            if (!openNow) {
+                throw new IllegalArgumentException("自提门店当前未营业");
+            }
+        } catch (java.time.format.DateTimeParseException exception) {
+            throw new IllegalArgumentException("自提门店营业时间配置不合法");
+        }
     }
 
     /** 8 位核销码，与数据库唯一索引配合；重试时订单内容比较会忽略核销码。 */

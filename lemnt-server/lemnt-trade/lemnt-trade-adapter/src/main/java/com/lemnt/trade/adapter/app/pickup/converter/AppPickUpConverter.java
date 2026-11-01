@@ -11,6 +11,6 @@ public final class AppPickUpConverter {
     public static AppPickUpStoreRes store(AppPickUpStoreDTO value) {
         return new AppPickUpStoreRes(value.id(), value.name(), value.introduction(), value.phone(),
                 value.areaId(), value.detailAddress(), value.logo(), value.openingTime(), value.closingTime(),
-                value.latitude(), value.longitude());
+                value.latitude(), value.longitude(), value.distanceKm());
     }
 }

@@ -44,7 +44,7 @@ class PickUpOrderCreateTest {
 
     PickUpStore store(int status) {
         return new PickUpStore(9L, "中心店", null, "13800000000", 1L, "中心路1号", null,
-                "09:00:00", "21:00:00", null, null, List.of(1L), status);
+                "00:00:00", "23:59:59", null, null, List.of(1L), status);
     }
 
     OrderCreateBo order() {
@@ -77,6 +77,10 @@ class PickUpOrderCreateTest {
         assertThrows(IllegalArgumentException.class, () -> client.create(order()));
         when(configs.get()).thenReturn(config(true));
         when(stores.find(9L)).thenReturn(store(1));
+        assertThrows(IllegalArgumentException.class, () -> client.create(order()));
+        var later = java.time.LocalTime.now().plusHours(1).withNano(0);
+        when(stores.find(9L)).thenReturn(new PickUpStore(9L, "中心店", null, "13800000000", 1L, "中心路1号",
+                null, later.toString(), later.plusHours(1).toString(), null, null, List.of(1L), 0));
         assertThrows(IllegalArgumentException.class, () -> client.create(order()));
     }
 }

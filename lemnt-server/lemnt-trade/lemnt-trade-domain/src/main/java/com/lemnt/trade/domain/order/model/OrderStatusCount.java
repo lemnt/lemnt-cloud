@@ -6,5 +6,11 @@ package com.lemnt.trade.domain.order.model;
 public record OrderStatusCount(
         String status,
         Boolean commentStatus,
+        Integer deliveryType,
         long count
-) {}
+) {
+    /** 兼容未区分配送方式的历史统计。 */
+    public OrderStatusCount(String status, Boolean commentStatus, long count) {
+        this(status, commentStatus, 1, count);
+    }
+}

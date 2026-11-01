@@ -1,13 +1,14 @@
 const runtime = require('../../services/orderRuntime');
 
 const STATUS_LABEL = Object.freeze({
-  RESERVING: '处理中', PENDING_PAYMENT: '待付款', PAID: '待发货', SHIPPED: '待收货',
-  COMPLETED: '已完成', CLOSED: '已取消', REFUNDED: '已退款',
+  RESERVING: '处理中', PENDING_PAYMENT: '待付款', PAID: '待发货', AWAITING_PICKUP: '待自提',
+  SHIPPED: '待收货', COMPLETED: '已完成', CLOSED: '已取消', REFUNDED: '已退款',
 });
 const TABS = Object.freeze([
   { label: '全部', status: '', commentStatus: null },
   { label: '待付款', status: 'PENDING_PAYMENT', commentStatus: null },
-  { label: '待发货', status: 'PAID', commentStatus: null },
+  { label: '待发货', status: 'AWAITING_SHIPMENT', commentStatus: null },
+  { label: '待自提', status: 'AWAITING_PICKUP', commentStatus: null },
   { label: '待收货', status: 'SHIPPED', commentStatus: null },
   { label: '待评价', status: 'COMPLETED', commentStatus: false },
   { label: '已完成', status: 'COMPLETED', commentStatus: true },
@@ -22,7 +23,7 @@ function number(value) {
 Page({
   data: {
     ready: runtime.ready, loading: false, error: '', loggedIn: false,
-    tabs: TABS, active: 0, counts: [0, 0, 0, 0, 0, 0, 0, 0],
+    tabs: TABS, active: 0, counts: [0, 0, 0, 0, 0, 0, 0, 0, 0],
     records: [], total: 0, pageNum: 0, hasMore: false,
   },
   onLoad() { runtime.attach(this); },
@@ -33,7 +34,7 @@ Page({
   },
   onHide() { this.setData({ records: [], total: 0, pageNum: 0, hasMore: false }); },
   onSessionLost() {
-    this.setData({ records: [], counts: [0, 0, 0, 0, 0, 0, 0, 0], total: 0, pageNum: 0, hasMore: false, loggedIn: false, error: '会员已切换，请重新登录' });
+    this.setData({ records: [], counts: [0, 0, 0, 0, 0, 0, 0, 0, 0], total: 0, pageNum: 0, hasMore: false, loggedIn: false, error: '会员已切换，请重新登录' });
   },
   login() { wx.navigateTo({ url: '/pages/member-login/index' }); },
   reload() {
@@ -55,7 +56,7 @@ Page({
   async loadCounts() {
     const value = await this.client.orderStatusCounts();
     if (!value || typeof value !== 'object') throw new Error('订单数量响应不合法');
-    const counts = [value.pendingPayment, value.awaitingShipment, value.awaitingReceipt,
+    const counts = [value.pendingPayment, value.awaitingShipment, value.awaitingPickup, value.awaitingReceipt,
       value.awaitingComment, value.completed, value.closed, value.refunded].map(number);
     this.setData({ counts: [counts.reduce((sum, item) => sum + item, 0), ...counts] });
   },

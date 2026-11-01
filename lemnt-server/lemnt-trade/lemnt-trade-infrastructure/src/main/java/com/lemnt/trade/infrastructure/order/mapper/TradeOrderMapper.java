@@ -28,6 +28,7 @@ public interface TradeOrderMapper extends BaseMapper<TradeOrderDO> {
             + "<if test='status != null'>AND o.status=#{status}</if>"
             + "<if test='commentStatus != null'>AND o.comment_status=#{commentStatus}</if>"
             + "<if test='memberId != null'>AND o.member_id=#{memberId}</if>"
+            + "<if test='deliveryType != null'>AND COALESCE(o.delivery_type,1)=#{deliveryType}</if>"
             + "</where>";
 
     /**
@@ -52,8 +53,8 @@ public interface TradeOrderMapper extends BaseMapper<TradeOrderDO> {
     long orderCount(FulfillmentFilter filter);
 
     /** 会员本人订单按状态与评价状态分组计数。 */
-    @Select("SELECT status, comment_status, COUNT(*) AS cnt FROM trade_order"
-            + " WHERE member_id=#{memberId} GROUP BY status, comment_status")
+    @Select("SELECT status, comment_status, COALESCE(delivery_type,1) AS delivery_type, COUNT(*) AS cnt FROM trade_order"
+            + " WHERE member_id=#{memberId} GROUP BY status, comment_status, COALESCE(delivery_type,1)")
     List<OrderStatusCountDO> memberStatusCounts(@Param("memberId") Long memberId);
 
     /**

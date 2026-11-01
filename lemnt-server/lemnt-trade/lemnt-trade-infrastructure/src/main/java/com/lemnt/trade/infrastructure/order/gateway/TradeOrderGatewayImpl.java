@@ -68,7 +68,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     @Override
     public List<OrderStatusCount> memberStatusCounts(Long memberId) {
         return tradeOrderMapper.memberStatusCounts(memberId).stream()
-                .map(row -> new OrderStatusCount(row.getStatus(), row.getCommentStatus(), row.getCnt()))
+                .map(row -> new OrderStatusCount(row.getStatus(), row.getCommentStatus(), row.getDeliveryType(), row.getCnt()))
                 .toList();
     }
 
@@ -100,6 +100,28 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     @Override
     public boolean transitionStatus(String orderNo, String expectedStatus, String targetStatus) {
         return tradeOrderMapper.transitionStatus(orderNo, expectedStatus, targetStatus) == 1;
+    }
+
+    @Override
+    public boolean updateTotalAmount(String orderNo, java.math.BigDecimal expected, java.math.BigDecimal next) {
+        return tradeOrderMapper.update(null, Wrappers.lambdaUpdate(TradeOrderDO.class)
+                .eq(TradeOrderDO::getOrderNo, orderNo)
+                .eq(TradeOrderDO::getStatus, "PENDING_PAYMENT")
+                .eq(TradeOrderDO::getTotalAmount, expected)
+                .set(TradeOrderDO::getTotalAmount, next)) == 1;
+    }
+
+    @Override
+    public boolean updateAddress(String orderNo, String receiverName, String receiverMobile,
+            Long receiverAreaId, String receiverDetailAddress) {
+        return tradeOrderMapper.update(null, Wrappers.lambdaUpdate(TradeOrderDO.class)
+                .eq(TradeOrderDO::getOrderNo, orderNo)
+                .in(TradeOrderDO::getStatus, "PENDING_PAYMENT", "PAID")
+                .eq(TradeOrderDO::getDeliveryType, 1)
+                .set(TradeOrderDO::getReceiverName, receiverName)
+                .set(TradeOrderDO::getReceiverMobile, receiverMobile)
+                .set(TradeOrderDO::getReceiverAreaId, receiverAreaId)
+                .set(TradeOrderDO::getReceiverDetailAddress, receiverDetailAddress)) == 1;
     }
 
     @Override

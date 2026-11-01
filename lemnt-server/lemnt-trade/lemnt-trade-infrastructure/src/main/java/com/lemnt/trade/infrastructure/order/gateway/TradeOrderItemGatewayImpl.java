@@ -59,4 +59,11 @@ public class TradeOrderItemGatewayImpl implements TradeOrderItemGateway {
                 .eq(TradeOrderItemDO::getId, orderItemId).eq(TradeOrderItemDO::getOrderId, orderId)
                 .set(TradeOrderItemDO::getCommentStatus, true)) == 1;
     }
+
+    @Override
+    public boolean updatePayAmount(Long orderId, Long orderItemId, java.math.BigDecimal payAmount) {
+        return tradeOrderItemMapper.update(null, Wrappers.lambdaUpdate(TradeOrderItemDO.class)
+                .eq(TradeOrderItemDO::getId, orderItemId).eq(TradeOrderItemDO::getOrderId, orderId)
+                .set(TradeOrderItemDO::getPayAmount, payAmount)) == 1;
+    }
 }

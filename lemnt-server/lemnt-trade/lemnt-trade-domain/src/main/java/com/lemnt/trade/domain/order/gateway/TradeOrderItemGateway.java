@@ -18,4 +18,7 @@ public interface TradeOrderItemGateway {
 
     /** 读取订单明细。 */
     List<TradeOrderItem> items(Long orderId);
+
+    /** 后台调价后按分摊结果更新单行实付。 */
+    boolean updatePayAmount(Long orderId, Long orderItemId, java.math.BigDecimal payAmount);
 }
