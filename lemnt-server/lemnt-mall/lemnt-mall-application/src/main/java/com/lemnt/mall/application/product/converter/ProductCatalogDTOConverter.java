@@ -59,8 +59,8 @@ public final class ProductCatalogDTOConverter {
                 value.price(),
                 value.stock(),
                 value.image(),
-                value.properties() == null ? null : value.properties().stream().map(property ->
-                        new ProductSkuDTO.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                value.specs() == null ? null : value.specs().stream().map(property ->
+                        new ProductSkuDTO.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
                 value.status(), value.weight(), value.volume());
     }
 

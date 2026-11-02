@@ -2,7 +2,7 @@ package com.lemnt.trade.domain.config.model;
 
 import java.util.List;
 
-/** trade_config 业务对象，金额以分为单位。 */
+/** 交易配置组业务对象，金额以分为单位。 */
 public record TradeConfig(
         Long id,
         List<String> afterSaleRefundReasons,

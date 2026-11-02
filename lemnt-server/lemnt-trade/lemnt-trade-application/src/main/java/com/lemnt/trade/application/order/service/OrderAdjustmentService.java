@@ -3,6 +3,7 @@ package com.lemnt.trade.application.order.service;
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.trade.application.order.cmd.OrderAdjustAddressCmd;
 import com.lemnt.trade.application.order.cmd.OrderAdjustPriceCmd;
+import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.trade.domain.order.gateway.TradeOrderItemGateway;
 import com.lemnt.trade.domain.order.model.TradeOperator;
@@ -29,6 +30,7 @@ public class OrderAdjustmentService {
     private final TradeOrderItemGateway items;
     private final OrderPersistenceService persistence;
     private final OrderLogService logs;
+    private final TradePaymentGateway payments;
 
     /** 待支付订单按新应付金额等比例重分摊到商品行，保持行实付合计等于订单金额。 */
     @Transactional(rollbackFor = Exception.class)
@@ -37,6 +39,10 @@ public class OrderAdjustmentService {
         var order = lock(cmd.orderNo());
         if (!"PENDING_PAYMENT".equals(order.status())) {
             throw new ServiceException("只有待支付订单可以调价", 409);
+        }
+        // 支付创建也持有订单行锁；已发起的渠道金额不能通过后台调价改写。
+        if (!payments.findByOrderNo(order.orderNo()).isEmpty()) {
+            throw new ServiceException("订单已生成支付单，不能调价，请取消订单后重新下单", 409);
         }
         var lines = items.items(order.id());
         BigDecimal current = lines.stream().map(TradeOrderItem::payAmount)

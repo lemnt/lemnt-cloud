@@ -9,7 +9,7 @@ import com.lemnt.trade.application.delivery.cmd.DeliveryExpressUpdateCmd;
 import com.lemnt.trade.application.delivery.cmd.DeliveryFreeCmd;
 import com.lemnt.trade.application.delivery.converter.DeliveryDTOConverter;
 import com.lemnt.trade.application.delivery.dto.DeliveryExpressTemplateDetailDTO;
-import com.lemnt.trade.domain.config.gateway.TradeConfigGateway;
+import com.lemnt.trade.domain.delivery.gateway.DeliveryManagementLockGateway;
 import com.lemnt.trade.domain.delivery.gateway.DeliveryExpressGateway;
 import com.lemnt.trade.domain.delivery.gateway.DeliveryExpressTemplateChargeGateway;
 import com.lemnt.trade.domain.delivery.gateway.DeliveryExpressTemplateFreeGateway;
@@ -29,11 +29,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/** 快递公司和模板主从表事务，使用配置行锁串行维护名称及编码唯一性。 */
+/** 快递公司和模板主从表事务，使用事务完成后释放的配送锁串行维护名称及编码唯一性。 */
 @Component
 @RequiredArgsConstructor
 public class DeliveryManagementService {
-    private final TradeConfigGateway config;
+    private final DeliveryManagementLockGateway lock;
     private final DeliveryExpressGateway expresses;
     private final DeliveryExpressTemplateGateway templates;
     private final DeliveryExpressTemplateChargeGateway charges;
@@ -42,7 +42,7 @@ public class DeliveryManagementService {
     /** 新增快递公司，编码重复拒绝。 */
     @Transactional(rollbackFor = Exception.class)
     public Long createExpress(DeliveryExpressCreateCmd cmd) {
-        config.lock();
+        lock.lock();
         var value = new DeliveryExpress(null, text(cmd.code(), 40), text(cmd.name(), 100),
                 cmd.logo(), cmd.sort(), cmd.status());
         validateExpress(value);
@@ -53,7 +53,7 @@ public class DeliveryManagementService {
     /** 修改公司信息，允许停用但不能覆盖另一公司编码。 */
     @Transactional(rollbackFor = Exception.class)
     public boolean updateExpress(DeliveryExpressUpdateCmd cmd) {
-        config.lock();
+        lock.lock();
         require(expresses.find(cmd.id()) != null, "快递公司不存在");
         var value = new DeliveryExpress(cmd.id(), text(cmd.code(), 40), text(cmd.name(), 100),
                 cmd.logo(), cmd.sort(), cmd.status());
@@ -66,7 +66,7 @@ public class DeliveryManagementService {
     /** 逻辑删除公司，已有物流记录仍保留公司编码。 */
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteExpress(Long id) {
-        config.lock();
+        lock.lock();
         require(expresses.find(id) != null, "快递公司不存在");
         return expresses.delete(id);
     }
@@ -74,7 +74,7 @@ public class DeliveryManagementService {
     /** 创建主模板及子规则。 */
     @Transactional(rollbackFor = Exception.class)
     public Long createTemplate(DeliveryExpressTemplateCreateCmd cmd) {
-        config.lock();
+        lock.lock();
         validateTemplate(null, cmd.name(), cmd.chargeMode(), cmd.sort(), cmd.charges(), cmd.frees());
         require(cmd.charges().stream().allMatch(row -> row.id() == null)
                 && cmd.frees().stream().allMatch(row -> row.id() == null), "新增模板不能指定旧规则编号");
@@ -87,7 +87,7 @@ public class DeliveryManagementService {
     /** 锁定模板后更新规则，已有子项保留主键，省略的子项逻辑删除。 */
     @Transactional(rollbackFor = Exception.class)
     public boolean updateTemplate(DeliveryExpressTemplateUpdateCmd cmd) {
-        config.lock();
+        lock.lock();
         require(templates.lock(cmd.id()) != null, "运费模板不存在");
         validateTemplate(cmd.id(), cmd.name(), cmd.chargeMode(), cmd.sort(), cmd.charges(), cmd.frees());
         saveRules(cmd.id(), cmd.chargeMode(), cmd.charges(), cmd.frees());
@@ -98,7 +98,7 @@ public class DeliveryManagementService {
     /** 删除主模板和所有子项，保留历史审计。 */
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteTemplate(Long id) {
-        config.lock();
+        lock.lock();
         require(templates.lock(id) != null, "运费模板不存在");
         charges.deleteByTemplate(id);
         frees.deleteByTemplate(id);

@@ -2,6 +2,8 @@
 
 2026-11-01 第157批。补齐满减活动达到门槛后的包邮、赠积分、赠券派发，以及部分退款按累计退款比例扣回分销佣金。
 
+2026-11-02 第160批修正：原来源订单+模板+会员唯一索引不能支持同模板多张赠券，现增加发放序号并以四列联合唯一约束幂等；旧库需执行本批升级脚本，详见[160-consistency-fixes-design.md](160-consistency-fixes-design.md)。
+
 ## 数据
 
 - `trade_order` 增加 `give_coupon_template_counts`（`V17__order_reward_gift.sql`），保存商城结算时冻结的赠券模板及数量。

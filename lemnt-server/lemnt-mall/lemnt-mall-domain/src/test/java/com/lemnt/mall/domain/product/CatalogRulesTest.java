@@ -14,9 +14,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CatalogRulesTest {
-    ProductSku sku(String code, Map<String, String> properties) {
+    ProductSku sku(String code, Map<String, String> specs) {
         return new ProductSku(
-                null, null, code, "name", new BigDecimal("12.50"), 5, null, properties, null);
+                null, null, code, "name", new BigDecimal("12.50"), 5, null, specs, null);
     }
 
     ProductSpu spu(ProductSku... skus) {
@@ -77,9 +77,9 @@ class CatalogRulesTest {
     void invalidAndNormalizedDuplicatePropertiesAreRejected() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> ProductCatalogValidation.properties(Map.of("a", "1", " a ", "2")));
+                () -> ProductCatalogValidation.specs(Map.of("a", "1", " a ", "2")));
         assertThrows(
-                IllegalArgumentException.class, () -> ProductCatalogValidation.properties(Map.of("a", " ")));
+                IllegalArgumentException.class, () -> ProductCatalogValidation.specs(Map.of("a", " ")));
         assertThrows(IllegalArgumentException.class, () -> ProductCatalogValidation.newSpu(spu()));
     }
 }

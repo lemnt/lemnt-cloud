@@ -93,7 +93,7 @@ class ActivityAlignmentPersistenceTest {
         var red = spu.skus().get(0);
         var blue = spu.skus().get(1);
         var items = List.of(new SettlementItem(red.id(), red.code(), red.name(), red.price(), 3, new BigDecimal("30.00"),
-                null, BigDecimal.ZERO, spu.id(), spu.name(), List.of(new SettlementItem.Property(null, "颜色", null, "红色")), "original.png"),
+                null, BigDecimal.ZERO, spu.id(), spu.name(), List.of(new SettlementItem.Spec(null, "颜色", null, "红色")), "original.png"),
                 new SettlementItem(blue.id(), blue.code(), blue.name(), blue.price(), 2, new BigDecimal("20.00")));
         var template = new CouponTemplate(2L, "C", "减3", "FIXED", BigDecimal.ZERO, new BigDecimal("3.00"),
                 null, null, 100, 1, now.minusDays(1), now.plusDays(1), true);
@@ -105,7 +105,7 @@ class ActivityAlignmentPersistenceTest {
         assertEquals(new BigDecimal("13.00"), quote.discountAmount());
         assertEquals(new BigDecimal("20.19"), quote.items().get(0).payAmount());
         assertEquals(spu.id(), quote.items().get(0).spuId());
-        assertEquals(List.of(new SettlementItem.Property(null, "颜色", null, "红色")), quote.items().get(0).properties());
+        assertEquals(List.of(new SettlementItem.Spec(null, "颜色", null, "红色")), quote.items().get(0).specs());
         assertEquals("original.png", quote.items().get(0).picUrl());
         assertEquals(quote.payableAmount(), quote.items().stream().map(SettlementItem::payAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add));
@@ -117,7 +117,7 @@ class ActivityAlignmentPersistenceTest {
     void spuSaveUpdatesSkuStockAndKeepsSkuIdentity() {
         var sku = spu.skus().get(0);
         var changed = new ProductSku(sku.id(), spu.id(), sku.code(), "新名称", new BigDecimal("12.00"),
-                6, sku.image(), sku.properties(), sku.status());
+                6, sku.image(), sku.specs(), sku.status());
         assertTrue(f.catalogService.updateSpu(new ProductSpu(spu.id(), spu.code(), "修改商品", spu.categoryId(),
                 spu.brandId(), spu.description(), spu.image(), spu.status(), List.of(changed, spu.skus().get(1)))));
         var actual = f.catalogService.sku(sku.id());
@@ -132,13 +132,13 @@ class ActivityAlignmentPersistenceTest {
         var first = spu.skus().get(0);
         var second = spu.skus().get(1);
         var a = new ProductSku(first.id(), spu.id(), first.code(), first.name(), first.price(),
-                first.stock(), first.image(), second.properties(), first.status());
+                first.stock(), first.image(), second.specs(), first.status());
         var b = new ProductSku(second.id(), spu.id(), second.code(), second.name(), second.price(),
-                second.stock(), second.image(), first.properties(), second.status());
+                second.stock(), second.image(), first.specs(), second.status());
         assertTrue(f.catalogService.updateSpu(new ProductSpu(spu.id(), spu.code(), spu.name(), spu.categoryId(),
                 spu.brandId(), spu.description(), spu.image(), spu.status(), List.of(a, b))));
-        assertEquals(second.properties(), f.catalogService.sku(first.id()).properties());
-        assertEquals(first.properties(), f.catalogService.sku(second.id()).properties());
+        assertEquals(second.specs(), f.catalogService.sku(first.id()).specs());
+        assertEquals(first.specs(), f.catalogService.sku(second.id()).specs());
     }
 
     @Test

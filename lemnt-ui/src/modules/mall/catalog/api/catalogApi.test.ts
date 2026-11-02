@@ -84,7 +84,7 @@ it('创建商品发送规格对象列表，不再发送临时编号映射', asyn
         name: '红色款',
         price: 10,
         stock: 2,
-        properties: [{ propertyId: '3', valueId: '7' }],
+        specs: [{ specId: '3', specValueId: '7' }],
       },
     ],
   };
@@ -101,14 +101,14 @@ it('创建商品发送规格对象列表，不再发送临时编号映射', asyn
           spuId: '10',
           price: '10.00',
           status: 'ON_SHELF',
-          properties: [{ propertyId: '3', propertyName: '颜色', valueId: '7', valueName: '红色' }],
+          specs: [{ specId: '3', specName: '颜色', specValueId: '7', specValueName: '红色' }],
         },
       ],
     },
   });
   const result = await createSpu(data);
   expect(mockedRequest).toHaveBeenCalledWith({ url: '/mall/spus', method: 'POST', data });
-  expect(result.data.skus[0].properties[0].valueName).toBe('红色');
+  expect(result.data.skus[0].specs[0].specValueName).toBe('红色');
   expect('specValueIds' in result.data.skus[0]).toBe(false);
 });
 

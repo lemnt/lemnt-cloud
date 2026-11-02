@@ -33,7 +33,7 @@ public class TradeOrderItemDO extends BaseDO {
     private Long spuId;
     private String spuName;
     /** 规格名称和值JSON，NULL表示历史未记录。 */
-    private String properties;
+    private String specs;
     /** 下单时采用的商品图片。 */
     private String picUrl;
     private String productCode;

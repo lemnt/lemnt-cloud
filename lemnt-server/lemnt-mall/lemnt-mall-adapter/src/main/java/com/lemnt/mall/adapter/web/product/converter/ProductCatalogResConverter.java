@@ -39,8 +39,8 @@ public final class ProductCatalogResConverter {
                 value.price(),
                 value.stock(),
                 value.image(),
-                value.properties() == null ? null : value.properties().stream().map(property ->
-                        new ProductSkuRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                value.specs() == null ? null : value.specs().stream().map(property ->
+                        new ProductSkuRes.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
                 value.status(), value.weight(), value.volume());
     }
 

@@ -21,8 +21,8 @@ export function SpuDetailDrawer({ id, onClose }: { id?: string; onClose: () => v
     {
       title: '规格',
       renderText: (_, row) =>
-        row.properties
-          .map((property) => `${property.propertyName}：${property.valueName}`)
+        row.specs
+          .map((property) => `${property.specName}：${property.specValueName}`)
           .join(' / ') || '无规格',
     },
     { title: '价格（元）', dataIndex: 'price' },

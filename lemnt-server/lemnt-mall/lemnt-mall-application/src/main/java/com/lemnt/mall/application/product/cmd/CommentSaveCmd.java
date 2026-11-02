@@ -18,7 +18,7 @@ public record CommentSaveCmd(
         Long spuId,
         String spuName,
         String skuPicUrl,
-        List<Property> properties,
+        List<Spec> specs,
         boolean uniqueSku,
         boolean allowCreate,
         Integer score,
@@ -29,10 +29,10 @@ public record CommentSaveCmd(
         List<String> picUrls
 ) implements Serializable {
     /** 原订单规格，不从当前字典补造。 */
-    public record Property(
-            Long propertyId,
-            String propertyName,
-            Long valueId,
-            String valueName
+    public record Spec(
+            Long specId,
+            String specName,
+            Long specValueId,
+            String specValueName
     ) implements Serializable {}
 }

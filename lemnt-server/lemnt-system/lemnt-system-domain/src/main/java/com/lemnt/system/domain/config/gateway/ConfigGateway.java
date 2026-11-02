@@ -46,6 +46,9 @@ public interface ConfigGateway {
      */
     Boolean insert(Config entity);
 
+    /** 依据唯一键原子保存完整业务配置组。 */
+    void saveBusinessConfig(Config entity);
+
     /**
      * 修改参数配置
      *

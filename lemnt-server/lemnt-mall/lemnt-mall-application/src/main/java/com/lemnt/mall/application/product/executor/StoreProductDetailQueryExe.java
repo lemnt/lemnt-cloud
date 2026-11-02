@@ -47,8 +47,8 @@ public class StoreProductDetailQueryExe {
                 money(s.price()),
                 s.stock(),
                 s.image(),
-                s.properties() == null ? null : s.properties().stream().map(property ->
-                        new StoreSkuDTO.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList()))
+                s.specs() == null ? null : s.specs().stream().map(property ->
+                        new StoreSkuDTO.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList()))
                 .toList());
     }
 }

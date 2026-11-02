@@ -11,13 +11,13 @@ public record StoreSkuDTO(
         String price,
         int stock,
         String image,
-        List<Property> properties
+        List<Spec> specs
 ) implements java.io.Serializable {
     /** 编号与名称保持一一对应。 */
-    public record Property(
-            Long propertyId,
-            String propertyName,
-            Long valueId,
-            String valueName
+    public record Spec(
+            Long specId,
+            String specName,
+            Long specValueId,
+            String specValueName
     ) implements java.io.Serializable {}
 }

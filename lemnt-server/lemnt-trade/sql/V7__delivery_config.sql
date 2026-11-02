@@ -63,30 +63,3 @@ CREATE TABLE trade_delivery_express_template_free (
     CONSTRAINT fk_delivery_free_template FOREIGN KEY(template_id) REFERENCES trade_delivery_express_template(id),
     CONSTRAINT chk_delivery_free_values CHECK(free_price>=0 AND free_count>=0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE trade_config (
-    id BIGINT NOT NULL PRIMARY KEY COMMENT '单例配置编号',
-    after_sale_refund_reasons LONGTEXT NOT NULL COMMENT '仅退款原因',
-    after_sale_return_reasons LONGTEXT NOT NULL COMMENT '退货退款原因',
-    delivery_express_free_enabled BOOLEAN NOT NULL COMMENT '是否全场包邮',
-    delivery_express_free_price INT NOT NULL COMMENT '全场包邮金额门槛，分',
-    delivery_pick_up_enabled BOOLEAN NOT NULL COMMENT '是否开启自提',
-    brokerage_enabled BOOLEAN NOT NULL COMMENT '是否启用分佣',
-    brokerage_enabled_condition INT NOT NULL COMMENT '分佣模式',
-    brokerage_bind_mode INT NOT NULL COMMENT '分销绑定模式',
-    brokerage_poster_urls LONGTEXT NOT NULL COMMENT '分销海报地址',
-    brokerage_first_percent INT NOT NULL COMMENT '一级返佣百分比',
-    brokerage_second_percent INT NOT NULL COMMENT '二级返佣百分比',
-    brokerage_withdraw_min_price INT NOT NULL COMMENT '最低提现金额，分',
-    brokerage_withdraw_fee_percent INT NOT NULL COMMENT '提现手续费百分比',
-    brokerage_frozen_days INT NOT NULL COMMENT '佣金冻结天数',
-    brokerage_withdraw_types LONGTEXT NOT NULL COMMENT '提现方式',
-    create_by VARCHAR(64) NULL,
-    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_by VARCHAR(64) NULL,
-    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted BOOLEAN NOT NULL DEFAULT FALSE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO trade_config (id, after_sale_refund_reasons, after_sale_return_reasons, delivery_express_free_enabled, delivery_express_free_price, delivery_pick_up_enabled, brokerage_enabled, brokerage_enabled_condition, brokerage_bind_mode, brokerage_poster_urls, brokerage_first_percent, brokerage_second_percent, brokerage_withdraw_min_price, brokerage_withdraw_fee_percent, brokerage_frozen_days, brokerage_withdraw_types)
-VALUES (1, '[]', '[]', FALSE, 0, FALSE, FALSE, 1, 1, '[]', 0, 0, 0, 0, 0, '[]');

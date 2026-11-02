@@ -19,17 +19,17 @@ public record CommentPageRes(
         @Schema(description = "评价图片，历史未知可空") List<String> picUrls,
         @Schema(description = "原订单商品名称，历史未知可空") String spuName,
         @Schema(description = "原订单图片，历史未知可空") String skuPicUrl,
-        @Schema(description = "原订单规格，历史未知可空") List<Property> skuProperties,
+        @Schema(description = "原订单规格，历史未知可空") List<Spec> skuProperties,
         @Schema(description = "是否回复") boolean replyStatus,
         @Schema(description = "商家回复，未回复可空") String replyContent,
         @Schema(description = "回复时间，可空") LocalDateTime replyTime,
         @Schema(description = "评价时间") LocalDateTime createTime
 ) {
     /** 保存时规格，独立HTTP值对象。 */
-    public record Property(
-            @Schema(description = "规格编号，历史可空") Long propertyId,
-            @Schema(description = "规格名称") String propertyName,
-            @Schema(description = "规格值编号，历史可空") Long valueId,
-            @Schema(description = "规格值名称") String valueName
+    public record Spec(
+            @Schema(description = "规格编号，历史可空") Long specId,
+            @Schema(description = "规格名称") String specName,
+            @Schema(description = "规格值编号，历史可空") Long specValueId,
+            @Schema(description = "规格值名称") String specValueName
     ) {}
 }

@@ -65,10 +65,10 @@ export default function AfterSaleDetailPanel({ no }: { no: string }) {
               key: 'spec',
               label: '下单规格',
               children:
-                detail.data.properties == null
+                detail.data.specs == null
                   ? '未记录'
-                  : detail.data.properties
-                      .map((property) => `${property.propertyName}：${property.valueName}`)
+                  : detail.data.specs
+                      .map((property) => `${property.specName}：${property.specValueName}`)
                       .join('；') || '无规格',
             },
             {

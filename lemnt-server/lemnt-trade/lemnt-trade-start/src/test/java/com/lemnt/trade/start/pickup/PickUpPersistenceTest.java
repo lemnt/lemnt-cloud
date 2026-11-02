@@ -115,10 +115,18 @@ class PickUpPersistenceTest {
     }
 
     @Test
+    void overnightHoursArePersistedAndReturned() {
+        var id = stores.create(new PickUpStoreSaveCmd(null, "夜间店", null, "1", 1L, "地址", null,
+                "21:00:00", "09:00:00", null, null, List.of(), 0));
+        assertEquals("21:00:00", stores.detail(id).openingTime());
+        assertEquals("09:00:00", stores.detail(id).closingTime());
+    }
+
+    @Test
     void invalidTimeAndDeletingMissingStoreAreRejected() {
         assertThrows(com.lemnt.common.core.exception.ServiceException.class,
                 () -> stores.create(new PickUpStoreSaveCmd(null, "店", null, "1", 1L, "地址", null,
-                        "21:00:00", "09:00:00", null, null, List.of(), 0)));
+                        "25:00:00", "09:00:00", null, null, List.of(), 0)));
         assertThrows(com.lemnt.common.core.exception.ServiceException.class, () -> stores.delete(999L));
     }
 }

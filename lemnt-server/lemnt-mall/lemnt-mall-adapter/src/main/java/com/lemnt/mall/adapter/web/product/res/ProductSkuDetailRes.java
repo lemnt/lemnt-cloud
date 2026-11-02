@@ -24,20 +24,20 @@ public record ProductSkuDetailRes(
         @Schema(description = "图片地址")
         String image,
         @Schema(description = "规格快照")
-        List<Property> properties,
+        List<Spec> specs,
         @Schema(description = "ON_SHELF或OFF_SHELF")
         String status
 ) implements Serializable {
     /** 编号与名称保持一一对应。 */
     @Schema(description = "商品规格")
-    public record Property(
+    public record Spec(
             @Schema(description = "规格项编号")
-            Long propertyId,
+            Long specId,
             @Schema(description = "规格名称，写入时可省略")
-            String propertyName,
+            String specName,
             @Schema(description = "规格值编号")
-            Long valueId,
+            Long specValueId,
             @Schema(description = "规格值名称，写入时可省略")
-            String valueName
+            String specValueName
     ) implements java.io.Serializable {}
 }

@@ -115,12 +115,12 @@ public class PromotionOrderPricingService {
                     .setScale(2, RoundingMode.DOWN);
             require(linePayable.signum() >= 0 && linePayable.compareTo(lineAmount) <= 0,
                     "活动价不能为负或高于原价");
-            var properties = snapshot.properties() == null ? null : snapshot.properties().stream()
-                    .map(value -> new SettlementItem.Property(value.propertyId(), value.propertyName(),
-                            value.valueId(), value.valueName())).toList();
+            var specs = snapshot.specs() == null ? null : snapshot.specs().stream()
+                    .map(value -> new SettlementItem.Spec(value.specId(), value.specName(),
+                            value.specValueId(), value.specValueName())).toList();
             items.add(new SettlementItem(line.skuId(), snapshot.productCode(), snapshot.name(), unit,
                     line.quantity(), lineAmount, linePayable, BigDecimal.ZERO.setScale(2),
-                    snapshot.spuId(), snapshot.spuName(), properties, snapshot.picUrl()));
+                    snapshot.spuId(), snapshot.spuName(), specs, snapshot.picUrl()));
             drafts.add(new PromotionOrderDraft.Line(line.skuId(), line.quantity(), price, lineUsePoint));
             original = original.add(lineAmount);
             payable = payable.add(linePayable);

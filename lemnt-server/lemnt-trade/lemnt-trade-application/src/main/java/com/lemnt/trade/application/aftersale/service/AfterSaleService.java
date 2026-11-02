@@ -69,9 +69,9 @@ public class AfterSaleService {
                 whole ? BigDecimal.ZERO.setScale(2) : allocated.get(line.id()).subtract(amount),
                 line.spuId(),
                 line.spuName(),
-                line.properties() == null ? null : line.properties().stream().map(snapshotProperty ->
-                        new AfterSaleItemDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
+                line.specs() == null ? null : line.specs().stream().map(snapshotProperty ->
+                        new AfterSaleItemDTO.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
+                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
                 line.picUrl());
         }).toList();
     }
@@ -159,9 +159,9 @@ public class AfterSaleService {
                 quota.productId(),
                 quota.spuId(),
                 quota.spuName(),
-                quota.properties() == null ? null : quota.properties().stream().map(snapshotProperty ->
-                        new AfterSale.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
+                quota.specs() == null ? null : quota.specs().stream().map(snapshotProperty ->
+                        new AfterSale.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
+                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
                 quota.picUrl());
         afterSales.saveAfterSale(value);
         var saved = afterSales.afterSale(value.refundNo());
@@ -318,9 +318,9 @@ public class AfterSaleService {
                 value.skuId(),
                 value.spuId(),
                 value.spuName(),
-                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
-                        new AfterSale.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
+                value.specs() == null ? null : value.specs().stream().map(snapshotProperty ->
+                        new AfterSale.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
+                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
                 value.picUrl());
         if (!afterSales.updateAfterSale(result, value.status())) {
             throw new IllegalStateException("售后状态已变化");

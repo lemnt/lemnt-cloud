@@ -15,6 +15,12 @@
         <result property="remark" column="remark"/>
     </resultMap>
 
+    <insert id="saveBusinessConfig">
+        INSERT INTO sys_config(config_name,config_key,config_value,config_type,create_by,create_time,update_by,update_time)
+        VALUES(#{value.configName},#{value.configKey},#{value.configValue},'1',#{value.updateBy},CURRENT_TIMESTAMP,#{value.updateBy},CURRENT_TIMESTAMP)
+        ON DUPLICATE KEY UPDATE config_value=VALUES(config_value),update_by=VALUES(update_by),update_time=CURRENT_TIMESTAMP
+    </insert>
+
     <sql id="selectConfigVo">
         config_id, config_name, config_key, config_value, config_type, create_by, create_time, update_by,
         update_time, remark

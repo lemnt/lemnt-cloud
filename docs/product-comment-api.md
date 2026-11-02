@@ -1,5 +1,8 @@
 # 商品评价接口
 
+2026-11-02 第162批：规格字段统一为 `specs` 及 `specId/specName/specValueId/specValueName`；旧JSON读取与列名升级说明见[规格命名迁移](spec-naming-migration.md)。
+
+
 2026-10-29。本批迁移评价多维评分、图片/匿名、会员与订单商品快照、公开查询、后台管理及小程序调用。订单项编号和订单评价标记联动已接入，见[订单项评价联动](order-item-comment-api.md)；虚拟评价创建、自动评价、照片上传/相机选择及统计/导出仍未迁移，不能视为芋道评价功能已全量完成。
 
 以下为按当前代码核对的构造示例，非部署HTTP实测。成功仍使用R；空值按NON_NULL省略，空数组和false保留。安全范围内Long为JSON数字，长编号为字符串；客户端统一保存字符串。响应日期格式yyyy-MM-dd HH:mm:ss，无附加时区。错误为统一RFC9457 Problem Details、application/problem+json。
@@ -54,10 +57,10 @@
 |rows[].skuProperties|array，可空|原订单规格快照|
 |rows[].replyStatus|boolean|是否商家回复|
 |rows[].picUrls[]|string|HTTPS图片地址|
-|rows[].skuProperties[].propertyId|integer或string，可空|规格编号，历史未知为空|
-|rows[].skuProperties[].propertyName|string|规格名称|
-|rows[].skuProperties[].valueId|integer或string，可空|规格值编号，历史未知为空|
-|rows[].skuProperties[].valueName|string|规格值名称|
+|rows[].skuProperties[].specId|integer或string，可空|规格编号，历史未知为空|
+|rows[].skuProperties[].specName|string|规格名称|
+|rows[].skuProperties[].specValueId|integer或string，可空|规格值编号，历史未知为空|
+|rows[].skuProperties[].specValueName|string|规格值名称|
 
 请求示例：
 ```sh
@@ -91,10 +94,10 @@ curl -X GET 'https://<API_HOST>/mall/comments?visible=false&replied=false&pageNu
       "skuPicUrl": "https://example.test/product.png",
       "skuProperties": [
         {
-          "propertyId": 8,
-          "propertyName": "颜色",
-          "valueId": 9,
-          "valueName": "红色"
+          "specId": 8,
+          "specName": "颜色",
+          "specValueId": 9,
+          "specValueName": "红色"
         }
       ],
       "replyStatus": false,
@@ -143,10 +146,10 @@ curl -X GET 'https://<API_HOST>/mall/comments?visible=false&replied=false&pageNu
 |data.skuProperties|array，可空|原订单规格快照|
 |data.replyStatus|boolean|是否商家回复|
 |data.picUrls[]|string|HTTPS图片地址|
-|data.skuProperties[].propertyId|integer或string，可空|规格编号，历史未知为空|
-|data.skuProperties[].propertyName|string|规格名称|
-|data.skuProperties[].valueId|integer或string，可空|规格值编号，历史未知为空|
-|data.skuProperties[].valueName|string|规格值名称|
+|data.skuProperties[].specId|integer或string，可空|规格编号，历史未知为空|
+|data.skuProperties[].specName|string|规格名称|
+|data.skuProperties[].specValueId|integer或string，可空|规格值编号，历史未知为空|
+|data.skuProperties[].specValueName|string|规格值名称|
 
 请求示例：
 ```sh
@@ -179,10 +182,10 @@ curl -X GET 'https://<API_HOST>/mall/comments/9' -H 'Authorization: Bearer <ADMI
     "skuPicUrl": "https://example.test/product.png",
     "skuProperties": [
       {
-        "propertyId": 8,
-        "propertyName": "颜色",
-        "valueId": 9,
-        "valueName": "红色"
+        "specId": 8,
+        "specName": "颜色",
+        "specValueId": 9,
+        "specValueName": "红色"
       }
     ],
     "replyStatus": false,
@@ -230,10 +233,10 @@ curl -X GET 'https://<API_HOST>/mall/comments/9' -H 'Authorization: Bearer <ADMI
 |data.skuProperties|array，可空|原订单规格快照|
 |data.replyStatus|boolean|是否商家回复|
 |data.picUrls[]|string|HTTPS图片地址|
-|data.skuProperties[].propertyId|integer或string，可空|规格编号，历史未知为空|
-|data.skuProperties[].propertyName|string|规格名称|
-|data.skuProperties[].valueId|integer或string，可空|规格值编号，历史未知为空|
-|data.skuProperties[].valueName|string|规格值名称|
+|data.skuProperties[].specId|integer或string，可空|规格编号，历史未知为空|
+|data.skuProperties[].specName|string|规格名称|
+|data.skuProperties[].specValueId|integer或string，可空|规格值编号，历史未知为空|
+|data.skuProperties[].specValueName|string|规格值名称|
 
 请求示例：
 ```sh
@@ -266,10 +269,10 @@ curl -X PUT 'https://<API_HOST>/mall/comments/9/reply' -H 'Authorization: Bearer
     "skuPicUrl": "https://example.test/product.png",
     "skuProperties": [
       {
-        "propertyId": 8,
-        "propertyName": "颜色",
-        "valueId": 9,
-        "valueName": "红色"
+        "specId": 8,
+        "specName": "颜色",
+        "specValueId": 9,
+        "specValueName": "红色"
       }
     ],
     "replyStatus": true,
@@ -349,10 +352,10 @@ curl -X PUT 'https://<API_HOST>/mall/comments/9/visible' -H 'Authorization: Bear
 |rows[].skuProperties|array，可空|原订单规格快照|
 |rows[].replyStatus|boolean|是否商家回复|
 |rows[].picUrls[]|string|HTTPS图片地址|
-|rows[].skuProperties[].propertyId|integer或string，可空|规格编号，历史未知为空|
-|rows[].skuProperties[].propertyName|string|规格名称|
-|rows[].skuProperties[].valueId|integer或string，可空|规格值编号，历史未知为空|
-|rows[].skuProperties[].valueName|string|规格值名称|
+|rows[].skuProperties[].specId|integer或string，可空|规格编号，历史未知为空|
+|rows[].skuProperties[].specName|string|规格名称|
+|rows[].skuProperties[].specValueId|integer或string，可空|规格值编号，历史未知为空|
+|rows[].skuProperties[].specValueName|string|规格值名称|
 
 请求示例：
 ```sh
@@ -381,10 +384,10 @@ curl -X GET 'https://<API_HOST>/mall/app/comments?spuId=2&type=0&pageNum=1&pageS
       "skuPicUrl": "https://example.test/product.png",
       "skuProperties": [
         {
-          "propertyId": 8,
-          "propertyName": "颜色",
-          "valueId": 9,
-          "valueName": "红色"
+          "specId": 8,
+          "specName": "颜色",
+          "specValueId": 9,
+          "specValueName": "红色"
         }
       ],
       "replyStatus": false,

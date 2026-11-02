@@ -5,6 +5,12 @@
 - [分析与开发设计](03-development-design.md)
 - [实现与验证](05-development.md)
 
+2026-11-02 第162批：商品、结算、订单明细和售后规格统一specs及四个spec*字段，旧JSON/回执兼容读取。mall195/trade283、React315、小程序176项通过；见[设计](162-spec-naming-design.md)、[交付](162-spec-naming-delivery.md)、[迁移说明](../../docs/spec-naming-migration.md)。未执行真实库升级/部署。
+
+2026-11-02 第161批：member_config和trade_config迁入sys_config，保留原业务入口；完整JSON配置组原子保存、通用入口保护、旧值复制和独立配送维护锁已实现。见[设计](161-business-config-migration-design.md)、[交付](161-business-config-migration-delivery.md)、[发布迁移说明](../../docs/business-config-migration.md)。未执行现有数据库迁移与部署。
+
+2026-11-02 第160批：修复代码一致性审查发现的支付单生成后调价、多张赠券唯一键和跨夜营业时间维护问题。采用已生成支付单拒绝调价、逐张赠券序号幂等及统一时间语义，见[修复设计](160-consistency-fixes-design.md)、[修复交付](160-consistency-fixes-delivery.md)和[调价接口](../../docs/order-price-adjustment-api.md)。赠券旧库升级需先执行本批SQL；不沿用历史完成率。
+
 保留既有 app/web、认证位于 auth、公共 TokenService/LOGIN_TOKEN_KEY、网关无 Dubbo、无会员全设备会话索引的决定。
 
 - [商城复刻基线](22-mall-replication-baseline.md)

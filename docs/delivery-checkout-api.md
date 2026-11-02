@@ -1,5 +1,8 @@
 # 普通快递贯通结算与订单
 
+2026-11-02 第162批：规格字段统一为 `specs` 及 `specId/specName/specValueId/specValueName`；旧JSON读取与列名升级说明见[规格命名迁移](spec-naming-migration.md)。
+
+
 2026-10-28 v1。承接配送基础接口与商城复刻基线。示例为构造数据，不代表已部署 HTTP 或真实渠道实测。当前仅实现普通快递，配送方式固定为1；自提及真实支付/退款/物流渠道后续接入。
 
 ## 1. 商品配送字段
@@ -28,12 +31,12 @@ POST /mall/spus
 Authorization: Bearer <ADMIN_TOKEN>
 Content-Type: application/json
 
-{"code":"SPU-DELIVERY","name":"快递商品","categoryId":1,"brandId":1,"deliveryTypes":[1],"deliveryTemplateId":9,"skus":[{"code":"SKU-DELIVERY","name":"标准款","price":"10.00","stock":10,"properties":{},"weight":"1.250000","volume":"0.125000"}]}
+{"code":"SPU-DELIVERY","name":"快递商品","categoryId":1,"brandId":1,"deliveryTypes":[1],"deliveryTemplateId":9,"skus":[{"code":"SKU-DELIVERY","name":"标准款","price":"10.00","stock":10,"specs":{},"weight":"1.250000","volume":"0.125000"}]}
 ```
 
 详情返回示例：
 ```json
-{"code":200,"data":{"id":1,"code":"SPU-DELIVERY","name":"快递商品","categoryId":1,"brandId":1,"status":"OFF_SHELF","deliveryTypes":[1],"deliveryTemplateId":9,"skus":[{"id":5,"spuId":1,"code":"SKU-DELIVERY","name":"标准款","price":"10.00","stock":10,"properties":{},"status":"ON_SHELF","weight":"1.250000","volume":"0.125000"}]}}
+{"code":200,"data":{"id":1,"code":"SPU-DELIVERY","name":"快递商品","categoryId":1,"brandId":1,"status":"OFF_SHELF","deliveryTypes":[1],"deliveryTemplateId":9,"skus":[{"id":5,"spuId":1,"code":"SKU-DELIVERY","name":"标准款","price":"10.00","stock":10,"specs":{},"status":"ON_SHELF","weight":"1.250000","volume":"0.125000"}]}}
 ```
 
 后台运费模板选择读取 GET `/trade/admin/delivery/templates/simple`，需要 `trade:delivery-template:query` 权限；列表从交易服务读取，不在前端编造模板。
@@ -169,4 +172,4 @@ Content-Type: application/json
 预览Redis键升级到 `mall:settlement:v2:`，旧无地址预览自然失效，客户端必须重新预览；提交回执的30天恢复索引保持原命名，不清除未确认订单。前后端需同步发布。真实数据库未执行变更，未部署，未做供应商端到端验收，未提交或推送。
 
 
-规格快照更新：结算商品行properties现为propertyId/propertyName/valueId/valueName对象列表，报价指纹包含编号，配送分摊保留完整列表，具体合同见 [商品快照接口](order-product-snapshot-api.md)。
+规格快照更新：结算商品行properties现为propertyId/specName/specValueId/valueName对象列表，报价指纹包含编号，配送分摊保留完整列表，具体合同见 [商品快照接口](order-product-snapshot-api.md)。

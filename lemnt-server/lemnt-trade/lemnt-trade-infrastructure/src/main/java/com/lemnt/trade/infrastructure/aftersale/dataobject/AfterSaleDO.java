@@ -35,7 +35,7 @@ public class AfterSaleDO extends BaseDO {
     private Long spuId;
     private String spuName;
     /** 原订单规格名称和值JSON。 */
-    private String properties;
+    private String specs;
     private String picUrl;
     /** 实际退款成功时间。 */
     private LocalDateTime refundTime;

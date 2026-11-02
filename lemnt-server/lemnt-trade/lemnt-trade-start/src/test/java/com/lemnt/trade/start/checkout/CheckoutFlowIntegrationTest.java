@@ -312,6 +312,8 @@ class CheckoutFlowIntegrationTest {
         ScriptUtils.executeSqlScript(
                 mallSchema, new ClassPathResource("mall-sql/V28__coupon_reward_gift.sql"));
         ScriptUtils.executeSqlScript(
+                mallSchema, new ClassPathResource("mall-sql/V29__coupon_gift_sequence.sql"));
+        ScriptUtils.executeSqlScript(
                 mallSchema, new ClassPathResource("mall-sql/V1__mall_product.sql"));
         ScriptUtils.executeSqlScript(
                 mallSchema, new ClassPathResource("mall-sql/V2__mall_catalog.sql"));
@@ -329,6 +331,9 @@ class CheckoutFlowIntegrationTest {
         template(tradeSource);
         var products = template(mallSource);
         tradeComponents = new TableTestComponents(trade, tradeSource);
+        tradeComponents.register(com.baomidou.lock.LockTemplate.class, memberLocks());
+        tradeComponents.register(com.lemnt.trade.domain.config.gateway.TradeConfigGateway.class,
+                com.lemnt.trade.start.BusinessConfigTestSupport.gateway());
         tradeComponents.get(com.lemnt.trade.domain.delivery.gateway.DeliveryExpressGateway.class).insert(
                 new com.lemnt.trade.domain.delivery.model.DeliveryExpress(null, "SF", "顺丰", null, 0, 0));
         mallComponents = new TableTestComponents(products, mallSource);
@@ -495,7 +500,7 @@ class CheckoutFlowIntegrationTest {
         mallComponents.register(com.lemnt.mall.application.promotion.service.PromotionOrderService.class, promotionOrders);
         var handler = tx(new com.lemnt.mall.application.dubbo.SettlementLifecycleClientImpl(
                 mallComponents.get(com.lemnt.mall.domain.member.gateway.MemberTradeGateway.class), checkoutService, orderRpc, productInventoryService, promotionOrders,
-                new com.lemnt.mall.application.promotion.service.RewardGiftService(couponGateway, couponIssuanceService)), mallSource);
+                new com.lemnt.mall.application.promotion.service.RewardGiftService(couponIssuanceService)), mallSource);
         benefits = new com.lemnt.trade.domain.order.gateway.OrderBenefitsGateway() {
             public void verify(String no) { handler.verify(no); }
             public void reserved(String no) { handler.reserved(no); }
@@ -575,6 +580,27 @@ class CheckoutFlowIntegrationTest {
             r.next();
             return r.getLong(1);
         }
+    }
+
+    /** 先调价后创建支付使用新金额；已有预支付单则在持久化前拒绝调价。 */
+    @Test
+    void repricingBeforePaymentIsConsistentAndExistingPaymentPreventsFurtherChanges() throws Exception {
+        var order = place("ADJUST-PAYMENT", null);
+        var adjustments = tradeComponents.get(com.lemnt.trade.application.order.service.OrderAdjustmentService.class);
+        adjustments.adjustPrice(new com.lemnt.trade.application.order.cmd.OrderAdjustPriceCmd(
+                order.orderNo(), new BigDecimal("8.00"), 9L));
+        var payment = paymentCreate.execute(order.orderNo(), "ALIPAY");
+        assertEquals(new BigDecimal("8.00"), payment.amount());
+        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+                () -> adjustments.adjustPrice(new com.lemnt.trade.application.order.cmd.OrderAdjustPriceCmd(
+                        order.orderNo(), new BigDecimal("7.00"), 9L)));
+        assertEquals(new BigDecimal("8.00"), tradeComponents.get(OrderPersistenceService.class)
+                .findByOrderNo(order.orderNo()).totalAmount());
+        assertEquals(new BigDecimal("8.00"), payments.findByPaymentNo(payment.paymentNo()).amount());
+        notify.execute(new VerifiedPaymentNotification(payment.paymentNo(), order.orderNo(),
+                "ALIPAY", "ADJUST-PAID", payment.amount(), "ADJUST-NOTICE"));
+        assertEquals("PAID", tradeComponents.get(OrderPersistenceService.class)
+                .findByOrderNo(order.orderNo()).status());
     }
 
     @Test
@@ -1026,8 +1052,8 @@ class CheckoutFlowIntegrationTest {
         assertEquals(new BigDecimal("6.50"), saved.items().get(0).deliveryPrice());
         assertEquals(saved.totalAmount(), saved.items().get(0).payAmount());
         assertEquals("快递商品", saved.items().get(0).spuName());
-        assertEquals("尺码", saved.items().get(0).properties().get(0).propertyName());
-        assertEquals("L", saved.items().get(0).properties().get(0).valueName());
+        assertEquals("尺码", saved.items().get(0).specs().get(0).specName());
+        assertEquals("L", saved.items().get(0).specs().get(0).specValueName());
         deliveryAddress = new com.lemnt.member.client.dto.MemberAddressDTO(
                 7L, 1L, "新收件人", "13800000000", 110101L, "修改后的地址");
         assertEquals(receipt, service.submit(1L, cached.settlementId(), "DELIVERY-ORDER"));
@@ -2635,14 +2661,14 @@ class CheckoutFlowIntegrationTest {
         var item = order.items().get(0);
         assertEquals(spuId, item.spuId());
         assertEquals("评价商品", item.spuName());
-        assertEquals("颜色", item.properties().get(0).propertyName());
-        assertEquals("黑色", item.properties().get(0).valueName());
-        assertEquals(spec.id(), item.properties().get(0).propertyId());
-        assertEquals(option.id(), item.properties().get(0).valueId());
+        assertEquals("颜色", item.specs().get(0).specName());
+        assertEquals("黑色", item.specs().get(0).specValueName());
+        assertEquals(spec.id(), item.specs().get(0).specId());
+        assertEquals(option.id(), item.specs().get(0).specValueId());
         assertEquals("https://example.com/old.png", item.picUrl());
         var changedItem = new com.lemnt.trade.domain.order.model.TradeOrderItem(item.productId(), item.productCode(),
                 item.productName(), item.unitPrice(), item.quantity(), item.lineAmount(), item.payAmount(),
-                item.deliveryPrice(), item.spuId(), item.spuName(), item.properties(), "https://example.com/forged.png");
+                item.deliveryPrice(), item.spuId(), item.spuName(), item.specs(), "https://example.com/forged.png");
         var changedOrder = new com.lemnt.trade.domain.order.model.TradeOrder(order.id(), order.orderNo(), order.memberId(),
                 order.totalAmount(), order.status(), List.of(changedItem), order.createTime(), order.usePoint(),
                 order.givePoint(), order.delivery());
@@ -2652,7 +2678,7 @@ class CheckoutFlowIntegrationTest {
         sql(mallSource, "UPDATE mall_product_sku SET main_image='https://example.com/new.png' WHERE id=" + sku);
         dict.update(new com.lemnt.mall.application.product.cmd.ProductSpecUpdateCmd(spec.id(), "色彩", null));
         dict.updateValue(new com.lemnt.mall.application.product.cmd.ProductSpecValueUpdateCmd(option.id(), "白色", null));
-        assertEquals("白色", catalog.sku(sku).properties().get(0).valueName());
+        assertEquals("白色", catalog.sku(sku).specs().get(0).specValueName());
         assertEquals(item, orderPersistenceService.findByOrderNo(order.orderNo()).items().get(0));
         var service = tradeComponents.get(AfterSaleService.class);
         var sale = service.create(itemRefund(order.orderNo(), "SNAPSHOT", 1, "REFUND_ONLY"));
@@ -2660,13 +2686,13 @@ class CheckoutFlowIntegrationTest {
         assertEquals(sku, saved.skuId());
         assertEquals(item.spuId(), saved.spuId());
         assertEquals(item.spuName(), saved.spuName());
-        assertEquals(item.properties().get(0).propertyName(), saved.properties().get(0).propertyName());
-        assertEquals(item.properties().get(0).valueName(), saved.properties().get(0).valueName());
-        assertEquals(item.properties().get(0).propertyId(), saved.properties().get(0).propertyId());
-        assertEquals(item.properties().get(0).valueId(), saved.properties().get(0).valueId());
+        assertEquals(item.specs().get(0).specName(), saved.specs().get(0).specName());
+        assertEquals(item.specs().get(0).specValueName(), saved.specs().get(0).specValueName());
+        assertEquals(item.specs().get(0).specId(), saved.specs().get(0).specId());
+        assertEquals(item.specs().get(0).specValueId(), saved.specs().get(0).specValueId());
         assertEquals(item.picUrl(), saved.picUrl());
         service.agree(saved.refundNo());
-        assertEquals(saved.properties(), refundRequestGateway.afterSale(saved.refundNo()).properties());
+        assertEquals(saved.specs(), refundRequestGateway.afterSale(saved.refundNo()).specs());
     }
 
     /** 报价后规格改变必须重新确认，不能静默提交新规格。 */
@@ -2697,12 +2723,12 @@ class CheckoutFlowIntegrationTest {
         assertEquals(0, count("trade_order"));
     }
 
-    private void skuProperties(List<com.lemnt.mall.domain.product.model.ProductSkuSpec> properties) {
+    private void skuProperties(List<com.lemnt.mall.domain.product.model.ProductSkuSpec> specs) {
         mallComponents.get(com.lemnt.mall.infrastructure.product.mapper.ProductSkuMapper.class).update(null,
                 com.baomidou.mybatisplus.core.toolkit.Wrappers.lambdaUpdate(com.lemnt.mall.infrastructure.product.dataobject.ProductSkuDO.class)
                         .eq(com.lemnt.mall.infrastructure.product.dataobject.ProductSkuDO::getId, sku)
-                        .set(com.lemnt.mall.infrastructure.product.dataobject.ProductSkuDO::getProperties,
-                                com.alibaba.fastjson2.JSON.toJSONString(properties)));
+                        .set(com.lemnt.mall.infrastructure.product.dataobject.ProductSkuDO::getSpecs,
+                                com.alibaba.fastjson2.JSON.toJSONString(specs)));
     }
     @Test
     void commentsUseRealItemIdsAndOnlyAllItemsFinishTheOrderAndLogOnce() throws Exception {
@@ -2728,7 +2754,7 @@ class CheckoutFlowIntegrationTest {
                 orderPersistenceService.findByOrderNo(order.orderNo()),new com.lemnt.trade.domain.order.model.TradeOrder(null,
                         order.orderNo(),order.memberId(),order.totalAmount(),"RESERVING",orderPersistenceService.findByOrderNo(order.orderNo()).items().stream().map(line->
                         new com.lemnt.trade.domain.order.model.TradeOrderItem(line.productId(),line.productCode(),line.productName(),line.unitPrice(),
-                                line.quantity(),line.lineAmount(),line.payAmount(),line.deliveryPrice(),line.spuId(),line.spuName(),line.properties(),line.picUrl())).toList(),
+                                line.quantity(),line.lineAmount(),line.payAmount(),line.deliveryPrice(),line.spuId(),line.spuName(),line.specs(),line.picUrl())).toList(),
                         null,order.usePoint(),order.givePoint(),orderPersistenceService.findByOrderNo(order.orderNo()).delivery()));
         var detail=tradeComponents.get(com.lemnt.trade.application.fulfillment.executor.OrderDetailQueryExe.class).execute(order.orderNo());
         assertTrue(detail.commentStatus());assertEquals(finished.finishTime(),detail.finishTime());

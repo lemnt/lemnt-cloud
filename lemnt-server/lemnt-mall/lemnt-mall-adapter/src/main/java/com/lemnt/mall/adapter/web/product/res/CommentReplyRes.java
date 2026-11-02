@@ -43,15 +43,15 @@ public record CommentReplyRes(
         @Schema(description = "原订单数据库编号，可空") Long orderId,
         @Schema(description = "原订单商品名称，可空") String spuName,
         @Schema(description = "原订单商品图片，可空") String skuPicUrl,
-        @Schema(description = "原订单商品规格快照，可空") List<Property> skuProperties,
+        @Schema(description = "原订单商品规格快照，可空") List<Spec> skuProperties,
         @Schema(description = "是否已商家回复") boolean replyStatus,
         @Schema(description = "真实订单项编号，历史未绑定为空") Long orderItemId
 ) implements Serializable {
     /** 保存时的规格编号及名称。 */
-    public record Property(
-            @Schema(description = "规格编号，历史可空") Long propertyId,
-            @Schema(description = "规格名称") String propertyName,
-            @Schema(description = "规格值编号，历史可空") Long valueId,
-            @Schema(description = "规格值名称") String valueName
+    public record Spec(
+            @Schema(description = "规格编号，历史可空") Long specId,
+            @Schema(description = "规格名称") String specName,
+            @Schema(description = "规格值编号，历史可空") Long specValueId,
+            @Schema(description = "规格值名称") String specValueName
     ) implements Serializable {}
 }

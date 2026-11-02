@@ -1,5 +1,8 @@
 # 交易配置与配送基础管理接口
 
+2026-11-02 第161批：交易配置存储改为sys_config中的trade.config完整JSON，原接口/字段/权限及金额单位不变；配送维护改用独立事务锁，不再依赖trade_config行。新旧库切换步骤见[业务配置迁移说明](business-config-migration.md)。
+
+
 > 2026-10-28 配送贯通批次：商品配送字段、地址必填结算、订单运费快照与发货冻结地址见 [配送结算接口变更](delivery-checkout-api.md)。本批已将运费接入下单金额；原文中“尚未接入”的说明仅代表上一批次状态。
 
 2026-10-28 v1。参考本地芋道 config/delivery 模型，Java 17 + Spring Boot 4.1/MyBatis Plus；保持当前项目 Adapter/CQRS/Domain/Gateway 分层。
@@ -420,7 +423,7 @@ Authorization: Bearer <ADMIN_TOKEN>
 
 ## 5. 上线和未完成部分
 
-先在演练库执行 `lemnt-trade/sql/V7__delivery_config.sql`，再部署；初始化单例配置，快递公司和运费模板由管理接口维护。存量发货编码先核对再导入公司表，不能自动把未知编码当启用渠道。权限脚本只增加权限定义，不自动授权角色或伪造管理页面。
+先在演练库执行 `lemnt-trade/sql/V7__delivery_config.sql`，再部署；第161批起单例配置由system种子/旧值迁移初始化，快递公司和运费模板仍由管理接口维护。存量发货编码先核对再导入公司表，不能自动把未知编码当启用渠道。权限脚本只增加权限定义，不自动授权角色或伪造管理页面。
 
 未执行真实数据库变更。未新增配置管理页面。商品 delivery_types/delivery_template_id、SKU weight/volume、会员配送地址及结算/订单运费快照尚未贯通，本批不代表运费已经加入当前订单金额。下一阶段须贯通这些字段后验证下单总价及退款分摊。真实渠道 SDK 后续接入。
 

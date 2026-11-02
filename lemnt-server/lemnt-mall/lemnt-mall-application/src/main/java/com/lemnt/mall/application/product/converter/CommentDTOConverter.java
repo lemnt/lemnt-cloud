@@ -16,7 +16,7 @@ public final class CommentDTOConverter {
                 value.descriptionScores(), value.benefitScores(), value.picUrls(), value.anonymous(),
                 value.userNickname(), value.userAvatar(), value.orderId(), value.spuName(), value.skuPicUrl(),
                 value.skuProperties() == null ? null : value.skuProperties().stream().map(property ->
-                        new ProductCommentDTO.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                        new ProductCommentDTO.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
                 value.replyStatus(), value.orderItemId());
     }
 }

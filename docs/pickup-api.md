@@ -1,6 +1,6 @@
 # 自提门店与核销接口
 
-2026-11-01。
+2026-11-02：第160批统一跨夜/全天营业时间语义。
 
 ## 后台门店
 
@@ -13,7 +13,7 @@
 | PUT /trade/admin/delivery/pick-up-stores/{id}/verify-users | trade:pick-up-store:update | 绑定核销店员 |
 | DELETE /trade/admin/delivery/pick-up-stores/{id} | trade:pick-up-store:delete | 删除 |
 
-营业时间为 `HH:mm:ss`，开门必须早于关门；核销店员为管理员编号，最多 20 人且不能重复；status 0 开启、1 关闭。
+营业时间为合法的 `HH:mm:ss`；关门早于开门表示跨夜，相同时间表示全天营业；核销店员为管理员编号，最多 20 人且不能重复；status 0 开启、1 关闭。
 
 ## 自提与核销
 

@@ -70,18 +70,18 @@ export interface Coupon {
   status: CouponStatus;
   orderNo: string | null;
 }
-export interface CheckoutProperty {
-  propertyId: string | null;
-  propertyName: string;
-  valueId: string | null;
-  valueName: string;
+export interface CheckoutSpec {
+  specId: string | null;
+  specName: string;
+  specValueId: string | null;
+  specValueName: string;
 }
 export interface CheckoutItem {
   orderItemId?: string | null;
   commentStatus?: boolean | null;
   spuId?: string | null;
   spuName?: string | null;
-  properties?: CheckoutProperty[] | null;
+  specs?: CheckoutSpec[] | null;
   picUrl?: string | null;
   productId: string;
   productCode: string;

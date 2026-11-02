@@ -252,7 +252,7 @@ class CatalogPersistenceTest {
     @Test
     void createsVariantsAndRollsBackWholeAggregateOnDuplicateSku() throws Exception {
         var first = create("SP1", draft("A", 4));
-        assertEquals(List.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(null, "颜色", null, "A")), first.skus().get(0).properties());
+        assertEquals(List.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(null, "颜色", null, "A")), first.skus().get(0).specs());
         assertThrows(RuntimeException.class, () -> create("SP2", draft("B", 2), draft("A", 2)));
         assertEquals(1, count("mall_product_spu"));
         assertEquals(1, count("mall_product_sku"));
@@ -513,7 +513,7 @@ class CatalogPersistenceTest {
         var service = components.get(ProductManagementService.class);
         var values = service.batchDetails(List.of(second.id(), first.id(), second.id()));
         assertEquals(List.of(second.id(), first.id()), values.stream().map(ProductSpu::id).toList());
-        assertEquals(List.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(null, "颜色", null, "B2")), values.get(0).skus().get(0).properties());
+        assertEquals(List.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(null, "颜色", null, "B2")), values.get(0).skus().get(0).specs());
         assertEquals(2, productSpuGateway.page(new ProductCatalogFilter("goods", null, 0, 20, categoryId, brandId, null)).total());
         assertEquals(0, productSpuGateway.page(new ProductCatalogFilter("goods", null, 0, 20, categoryId + 99, brandId, null)).total());
         assertEquals(2, productSpuGateway.counts("goods", categoryId, brandId).offShelf());
@@ -528,8 +528,8 @@ class CatalogPersistenceTest {
         var value = service.createValue(new ProductSpecValueCreateCmd(property.id(), "RED", "值说明"));
         assertNull(service.update(new ProductSpecUpdateCmd(property.id(), "色彩", null)).remark());
         assertNull(service.updateValue(new ProductSpecValueUpdateCmd(value.id(), "红色", null)).remark());
-        assertEquals("颜色", catalogService.sku(legacy.skus().get(0).id()).properties().get(0).propertyName());
-        assertEquals("RED", catalogService.sku(legacy.skus().get(0).id()).properties().get(0).valueName());
+        assertEquals("颜色", catalogService.sku(legacy.skus().get(0).id()).specs().get(0).specName());
+        assertEquals("RED", catalogService.sku(legacy.skus().get(0).id()).specs().get(0).specValueName());
         assertThrows(IllegalStateException.class, () -> service.delete(property.id()));
         assertTrue(service.deleteValue(value.id()));
         assertTrue(service.delete(property.id()));
@@ -664,7 +664,7 @@ class CatalogPersistenceTest {
         assertEquals(0, saved.skus().get(0).weight().compareTo(new BigDecimal("1.25")));
         var sku = catalogService.spu(saved.id()).skus().get(0);
         var replacement = new ProductSku(sku.id(), saved.id(), sku.code(), sku.name(), sku.price(), sku.stock(),
-                sku.image(), sku.properties(), sku.status(), new BigDecimal("2.75"), new BigDecimal("0.25"));
+                sku.image(), sku.specs(), sku.status(), new BigDecimal("2.75"), new BigDecimal("0.25"));
         assertTrue(components.get(com.lemnt.mall.application.product.executor.ProductSpuUpdateCmdExe.class).execute(
                 new com.lemnt.mall.application.product.cmd.ProductSpuUpdateCmd(saved.id(), saved.name(), categoryId,
                         brandId, null, null, List.of(replacement), List.of(1), 100L, null, null, null, null)));
@@ -686,20 +686,20 @@ class CatalogPersistenceTest {
         var ids = Map.of(color.id(), red.id(), size.id(), large.id());
         var saved = catalogService.createSpu(identitySpu("LINKED", identitySku("A", ids)));
         var sku = catalogService.sku(saved.skus().get(0).id());
-        assertEquals(ids, identity(sku.properties()));
-        assertEquals(java.util.Set.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(color.id(), "颜色字典", red.id(), "红色"), new com.lemnt.mall.domain.product.model.ProductSkuSpec(size.id(), "尺寸字典", large.id(), "大号")), new java.util.HashSet<>(sku.properties()));
-        assertEquals(ids, identity(catalogService.spu(saved.id()).skus().get(0).properties()));
+        assertEquals(ids, identity(sku.specs()));
+        assertEquals(java.util.Set.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(color.id(), "颜色字典", red.id(), "红色"), new com.lemnt.mall.domain.product.model.ProductSkuSpec(size.id(), "尺寸字典", large.id(), "大号")), new java.util.HashSet<>(sku.specs()));
+        assertEquals(ids, identity(catalogService.spu(saved.id()).skus().get(0).specs()));
         assertEquals(ids, identity(components.get(ProductManagementService.class).batchDetails(List.of(saved.id()))
-                .get(0).skus().get(0).properties()));
+                .get(0).skus().get(0).specs()));
         service.update(new ProductSpecUpdateCmd(color.id(), "色彩字典", null));
         service.updateValue(new ProductSpecValueUpdateCmd(red.id(), "已改名", null));
         var renamed = catalogService.sku(sku.id());
-        assertTrue(renamed.properties().contains(new com.lemnt.mall.domain.product.model.ProductSkuSpec(color.id(), "色彩字典", red.id(), "已改名")));
+        assertTrue(renamed.specs().contains(new com.lemnt.mall.domain.product.model.ProductSkuSpec(color.id(), "色彩字典", red.id(), "已改名")));
         assertEquals(sku.price(), renamed.price());
         assertEquals(sku.stock(), renamed.stock());
         assertTrue(service.deleteValue(red.id()));
         assertTrue(service.delete(color.id()));
-        assertEquals(renamed.properties(), catalogService.sku(sku.id()).properties());
+        assertEquals(renamed.specs(), catalogService.sku(sku.id()).specs());
     }
 
     /** 错误归属、未知编号、SKU规格项不一致全部拒绝，并且不创建半个商品。 */
@@ -728,19 +728,19 @@ class CatalogPersistenceTest {
     void legacyPropertiesRemainUnlinkedUntilExplicitSelectionAndUpdateReplacesIdentity() {
         var legacy = create("LEGACY-IDENTITY", draft("旧值", 5));
         var id = legacy.skus().get(0).id();
-        assertNull(catalogService.sku(id).properties().get(0).propertyId());
+        assertNull(catalogService.sku(id).specs().get(0).specId());
         var service = components.get(ProductSpecService.class);
         var spec = service.create(new ProductSpecCreateCmd("颜色", null));
         var value = service.createValue(new ProductSpecValueCreateCmd(spec.id(), "旧值", null));
-        assertNull(catalogService.sku(id).properties().get(0).propertyId());
+        assertNull(catalogService.sku(id).specs().get(0).specId());
         var ids = Map.of(spec.id(), value.id());
         var linked = new ProductSku(id, legacy.id(), "旧值", "sku", BigDecimal.TEN, 5, null, ids.entrySet().stream().map(entry ->
                         new com.lemnt.mall.domain.product.model.ProductSkuSpec(entry.getKey(), null, entry.getValue(), null)).toList(),
                 "ON_SHELF", null, null);
         assertTrue(catalogService.updateSpu(new ProductSpu(legacy.id(), legacy.code(), legacy.name(), categoryId,
                 brandId, null, null, legacy.status(), List.of(linked))));
-        assertEquals(ids, identity(catalogService.sku(id).properties()));
-        assertEquals(List.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(spec.id(), "颜色", value.id(), "旧值")), catalogService.sku(id).properties());
+        assertEquals(ids, identity(catalogService.sku(id).specs()));
+        assertEquals(List.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(spec.id(), "颜色", value.id(), "旧值")), catalogService.sku(id).specs());
     }
 
     private ProductSku identitySku(String code, Map<Long, Long> ids) {
@@ -774,8 +774,8 @@ class CatalogPersistenceTest {
 
     private Map<Long, Long> identity(List<com.lemnt.mall.domain.product.model.ProductSkuSpec> values) {
         return values.stream().collect(java.util.stream.Collectors.toMap(
-                com.lemnt.mall.domain.product.model.ProductSkuSpec::propertyId,
-                com.lemnt.mall.domain.product.model.ProductSkuSpec::valueId));
+                com.lemnt.mall.domain.product.model.ProductSkuSpec::specId,
+                com.lemnt.mall.domain.product.model.ProductSkuSpec::specValueId));
     }
 
     /** 真实Controller、校验、字典锁和事务落库；不代表网关认证或部署HTTP验收。 */
@@ -800,37 +800,51 @@ class CatalogPersistenceTest {
         String payload = """
                 {"code":"LIST-HTTP","name":"商品","categoryId":"%s","brandId":"%s","deliveryTypes":[],"keyword":"商品关键字","introduction":"简介","sliderPicUrls":[],"sort":0,
                  "skus":[{"code":"SKU-LIST-HTTP","name":"红色款","price":"10.00","stock":2,
-                 "properties":[{"propertyId":"%s","valueId":"%s"}]}]}
+                 "specs":[{"specId":"%s","specValueId":"%s"}]}]}
                 """.formatted(categoryId, brandId, spec.id(), option.id());
         var result = mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/mall/spus")
                 .contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(payload))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data.skus[0].properties[0].propertyName").value("接口颜色"))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data.skus[0].specs[0].specName").value("接口颜色"))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data.keyword").value("商品关键字"))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data.sort").value(0))
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data.skus[0].properties[0].valueId").value(option.id().toString()))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data.skus[0].specs[0].specValueId").value(option.id().toString()))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.data.skus[0].specValueIds").doesNotExist())
                 .andReturn();
         var savedId = mapper.readTree(result.getResponse().getContentAsString()).get("data").get("skus").get(0).get("id").asString();
         assertEquals(List.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(spec.id(), "接口颜色", option.id(), "红色")),
-                catalogService.sku(Long.valueOf(savedId)).properties());
+                catalogService.sku(Long.valueOf(savedId)).specs());
         mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/mall/spus")
                 .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
-                .content(payload.replace("\"valueId\":\"" + option.id() + "\"", "\"valueId\":0")))
+                .content(payload.replace("\"specValueId\":\"" + option.id() + "\"", "\"specValueId\":0")))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isUnprocessableEntity());
         mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/mall/spus")
                 .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
-                .content(payload.replace("\"propertyId\":", "\"propertyName\":\"伪造名称\",\"propertyId\":")))
+                .content(payload.replace("\"specId\":", "\"specName\":\"伪造名称\",\"specId\":")))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isBadRequest());
         assertEquals(1, count("mall_product_spu"));
         assertEquals(1, storedPropertyCount());
     }
 
     /** 从实际SKU JSON列核对规格数量，不依赖旧关系表。 */
+    /** 旧库只改列名，历史JSON保持原样且经真实Mapper读取为新规格字段。 */
+    @Test
+    void legacyPropertiesColumnMigrationPreservesSavedSkuSpecs() throws Exception {
+        var saved = create("OLD-SPEC-COLUMN", draft("RED", 10));
+        long skuId = saved.skus().get(0).id();
+        try (var statement = schemaConnection.createStatement()) {
+            statement.execute("ALTER TABLE mall_product_sku RENAME COLUMN specs TO properties");
+            statement.execute("UPDATE mall_product_sku SET properties='[{\"propertyId\":3,\"propertyName\":\"颜色\",\"valueId\":7,\"valueName\":\"黑色\"}]' WHERE id=" + skuId);
+        }
+        ScriptUtils.executeSqlScript(schemaConnection, new ClassPathResource("sql/upgrade/sku_specs_naming.sql"));
+        assertEquals(List.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(3L, "颜色", 7L, "黑色")),
+                catalogService.sku(skuId).specs());
+    }
+
     private long storedPropertyCount() throws Exception {
         long total = 0;
         try (var statement = schemaConnection.createStatement();
-                var rows = statement.executeQuery("SELECT properties FROM mall_product_sku")) {
+                var rows = statement.executeQuery("SELECT specs FROM mall_product_sku")) {
             while (rows.next()) {
                 var json = rows.getString(1);
                 if (json != null) { total += com.alibaba.fastjson2.JSON.parseArray(json).size(); }
@@ -848,7 +862,7 @@ class CatalogPersistenceTest {
         var saved = catalogService.createSpu(identitySpu("RENAME-ROLLBACK", identitySku("ROLL-SKU", Map.of(spec.id(), option.id()))));
         var before = catalogService.sku(saved.skus().get(0).id());
         try (var statement = schemaConnection.createStatement()) {
-            statement.execute("ALTER TABLE mall_product_sku ADD CONSTRAINT reject_property_rename CHECK(properties NOT LIKE '%禁止名称%')");
+            statement.execute("ALTER TABLE mall_product_sku ADD CONSTRAINT reject_property_rename CHECK(specs NOT LIKE '%禁止名称%')");
         }
         assertThrows(RuntimeException.class, () -> service.updateValue(new ProductSpecValueUpdateCmd(option.id(), "禁止名称", null)));
         assertEquals("红", components.get(ProductSpecValueGateway.class).find(option.id()).name());

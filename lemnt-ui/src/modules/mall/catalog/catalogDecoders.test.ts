@@ -15,7 +15,7 @@ it('保留服务端 BigDecimal 字符串，不静默转成浮点金额', () => {
     name: 'sku',
     price: '99999999999999999.99',
     stock: 0,
-    properties: {},
+    specs: {},
     status: 'ON_SHELF',
   };
   expect(decodeSku(row).price).toBe(row.price);
@@ -45,7 +45,7 @@ it('回收站只用于 SPU，SKU 和已删除商品不能作为正常商品返�
     name: '规格',
     price: '1.00',
     stock: 0,
-    properties: {},
+    specs: {},
     status: 'RECYCLED',
   };
   expect(() => decodeSku(sku)).toThrow();
@@ -60,7 +60,7 @@ it('配送模板及重量体积保留精确字符串，拒绝未知配送方式'
     price: '10.00',
     stock: 2,
     status: 'ON_SHELF',
-    properties: {},
+    specs: {},
     weight: '1.250000',
     volume: '0.125000',
   };
@@ -90,27 +90,25 @@ it('SKU规格列表保留编号和名称，旧名值只能还原缺号规格', (
     name: '商品',
     price: '10.00',
     stock: 1,
-    properties: [
+    specs: [
       {
-        propertyId: '9223372036854775807',
-        propertyName: '颜色',
-        valueId: '9223372036854775806',
-        valueName: '红色',
+        specId: '9223372036854775807',
+        specName: '颜色',
+        specValueId: '9223372036854775806',
+        specValueName: '红色',
       },
     ],
     status: 'ON_SHELF',
   };
-  expect(decodeSku(row).properties).toEqual(row.properties);
-  expect(decodeSku({ ...row, properties: [] }).properties).toEqual([]);
-  expect(decodeSku({ ...row, properties: { 颜色: '红色' } }).properties).toEqual([
-    { propertyId: null, propertyName: '颜色', valueId: null, valueName: '红色' },
+  expect(decodeSku(row).specs).toEqual(row.specs);
+  expect(decodeSku({ ...row, specs: [] }).specs).toEqual([]);
+  expect(decodeSku({ ...row, specs: { 颜色: '红色' } }).specs).toEqual([
+    { specId: null, specName: '颜色', specValueId: null, specValueName: '红色' },
   ]);
   expect(() =>
-    decodeSku({ ...row, properties: [{ ...row.properties[0], valueId: 9007199254740992 }] }),
+    decodeSku({ ...row, specs: [{ ...row.specs[0], specValueId: 9007199254740992 }] }),
   ).toThrow();
-  expect(() =>
-    decodeSku({ ...row, properties: [{ ...row.properties[0], valueId: null }] }),
-  ).toThrow();
+  expect(() => decodeSku({ ...row, specs: [{ ...row.specs[0], specValueId: null }] })).toThrow();
 });
 
 it('商品经营字段保留真实值和轮播顺序，旧响应不补造内容', () => {

@@ -1,10 +1,8 @@
 package com.lemnt.trade.infrastructure.order.converter;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.TypeReference;
 import com.lemnt.trade.domain.order.model.TradeOrderItem;
 import com.lemnt.trade.infrastructure.order.dataobject.TradeOrderItemDO;
-import java.util.Map;
 import java.util.List;
 
 /** 订单项只读取落库快照，不回查当前商品。 */
@@ -26,7 +24,7 @@ public final class OrderItemConverter {
                 .setDeliveryPrice(value.deliveryPrice())
                 .setSpuId(value.spuId())
                 .setSpuName(value.spuName())
-                .setProperties(value.properties() == null ? null : JSON.toJSONString(value.properties()))
+                .setSpecs(value.specs() == null ? null : JSON.toJSONString(value.specs()))
                 .setPicUrl(value.picUrl());
     }
 
@@ -35,19 +33,11 @@ public final class OrderItemConverter {
         return new TradeOrderItem(row.getProductId(), row.getProductCode(), row.getProductName(), row.getUnitPrice(),
                 row.getQuantity(), row.getLineAmount(), row.getPayAmount(), row.getDeliveryPrice(), row.getSpuId(),
                 row.getSpuName(),
-                properties(row.getProperties()), row.getPicUrl(), row.getId(), row.getCommentStatus());
+                specs(row.getSpecs()), row.getPicUrl(), row.getId(), row.getCommentStatus());
     }
 
-    /** 区分历史NULL和已知空规格。 */
-    public static List<TradeOrderItem.Property> properties(String json) {
-        if (json == null) {
-            return null;
-        }
-        if (json.stripLeading().startsWith("{")) {
-            var legacy = JSON.parseObject(json, new TypeReference<Map<String, String>>() {});
-            return legacy.entrySet().stream().sorted(Map.Entry.comparingByKey())
-                    .map(entry -> new TradeOrderItem.Property(null, entry.getKey(), null, entry.getValue())).toList();
-        }
-        return JSON.parseArray(json, TradeOrderItem.Property.class);
+    /** 区分历史NULL和已知空规格，并兼容旧四字段和名值JSON。 */
+    public static List<TradeOrderItem.Spec> specs(String json) {
+        return SpecSnapshotJson.read(json, TradeOrderItem.Spec.class);
     }
 }

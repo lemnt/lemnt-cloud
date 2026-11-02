@@ -49,7 +49,7 @@ function comment(value) {
         ? null
         : list(row.skuProperties, (v) => {
             const p = object(v);
-            return text(p.propertyName) + "：" + text(p.valueName);
+            return text(p.specName) + "：" + text(p.specValueName);
           }).join(" / "),
     replyStatus: row.replyStatus,
     replyContent: row.replyContent == null ? null : text(row.replyContent),

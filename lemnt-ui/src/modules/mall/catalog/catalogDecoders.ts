@@ -79,24 +79,24 @@ export function decodeSku(value: unknown): Sku {
   const row = record(value);
   const price = text(row.price);
   if (!/^\d+\.\d{2}$/.test(price)) throw new Error('商品接口金额必须为两位小数字符串');
-  const properties = Array.isArray(row.properties)
-    ? row.properties.map((item) => {
+  const specs = Array.isArray(row.specs)
+    ? row.specs.map((item) => {
         const property = record(item);
-        const propertyId = property.propertyId == null ? null : decodeId(property.propertyId);
-        const valueId = property.valueId == null ? null : decodeId(property.valueId);
-        if ((propertyId == null) !== (valueId == null)) throw new Error('规格编号必须成对');
+        const specId = property.specId == null ? null : decodeId(property.specId);
+        const specValueId = property.specValueId == null ? null : decodeId(property.specValueId);
+        if ((specId == null) !== (specValueId == null)) throw new Error('规格编号必须成对');
         return {
-          propertyId,
-          propertyName: text(property.propertyName),
-          valueId,
-          valueName: text(property.valueName),
+          specId,
+          specName: text(property.specName),
+          specValueId,
+          specValueName: text(property.specValueName),
         };
       })
-    : Object.entries(record(row.properties)).map(([propertyName, value]) => ({
-        propertyId: null,
-        propertyName,
-        valueId: null,
-        valueName: text(value),
+    : Object.entries(record(row.specs)).map(([specName, value]) => ({
+        specId: null,
+        specName,
+        specValueId: null,
+        specValueName: text(value),
       }));
   return {
     id: decodeId(row.id),
@@ -108,7 +108,7 @@ export function decodeSku(value: unknown): Sku {
     weight: optionalQuantity(row.weight),
     volume: optionalQuantity(row.volume),
     image: optionalText(row.image),
-    properties,
+    specs,
     status: shelfStatus(row.status),
   };
 }

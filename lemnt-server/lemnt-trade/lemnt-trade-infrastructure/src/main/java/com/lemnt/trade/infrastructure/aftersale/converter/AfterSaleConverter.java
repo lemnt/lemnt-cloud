@@ -18,16 +18,16 @@ public final class AfterSaleConverter {
         if (value == null) {
             return null;
         }
-        var properties = OrderItemConverter.properties(value.getProperties());
+        var specs = OrderItemConverter.specs(value.getSpecs());
         return new AfterSale(value.getRefundNo(), value.getOrderNo(), value.getRequestNo(),
                 value.getMemberId(), value.getPaymentNo(), value.getOrderItemId(), value.getQuantity(), value.getType(),
                 value.getAmount(), value.getReason(), value.getStatus(), value.getDecisionReason(),
                 value.getReturnCarrierCode(), value.getReturnTrackingNo(), value.getRequestedAt(), value.getDecidedAt(),
                 value.getReturnShippedAt(), value.getReturnReceivedAt(), value.getId(), value.getOrderId(),
                 value.getRefundTime(), value.getAuditUserId(), value.getSkuId(), value.getSpuId(), value.getSpuName(),
-                properties == null ? null : properties.stream().map(snapshotProperty ->
-                        new AfterSale.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(), value.getPicUrl());
+                specs == null ? null : specs.stream().map(snapshotProperty ->
+                        new AfterSale.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
+                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(), value.getPicUrl());
     }
 
     /** 转换售后写入字段。 */
@@ -40,8 +40,8 @@ public final class AfterSaleConverter {
                 .setSkuId(value.skuId())
                 .setSpuId(value.spuId())
                 .setSpuName(value.spuName())
-                .setProperties(value.properties() == null ? null
-                        : JSON.toJSONString(value.properties()))
+                .setSpecs(value.specs() == null ? null
+                        : JSON.toJSONString(value.specs()))
                 .setPicUrl(value.picUrl())
                 .setRefundNo(value.refundNo())
                 .setOrderNo(value.orderNo())

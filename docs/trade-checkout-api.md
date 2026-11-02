@@ -1,10 +1,13 @@
 # Admin cart, coupon and checkout API
 
+2026-11-02 第162批：规格字段统一为 `specs` 及 `specId/specName/specValueId/specValueName`；旧JSON读取与列名升级说明见[规格命名迁移](spec-naming-migration.md)。
+
+
 当前服务归属与独立事务说明见 [商城与交易服务边界](mall-trade-boundary.md)。下述接口由 mall 提供；支付及订单履约仍在 trade。
 v1 · 2026-10-25 · design v3. Source-checked contracts; examples are constructed, not live gateway/payment evidence.
 
 ## Boundary and serialization
-All routes are **permission-protected admin operations on a specified target member**, not member self-service. Do not treat the admin userId as a memberId. No new consumer authentication is implemented. IDs accept positive Long-compatible values; actual Jackson returns safe Long as numbers and large Long as strings. UI normalizes IDs to strings. BigDecimal responses are exact strings; null properties are omitted. Validity uses the mall database clock/time zone and left-closed/right-open intervals. Inputs shown as strings are accepted by the actual application mapper.
+All routes are **permission-protected admin operations on a specified target member**, not member self-service. Do not treat the admin userId as a memberId. No new consumer authentication is implemented. IDs accept positive Long-compatible values; actual Jackson returns safe Long as numbers and large Long as strings. UI normalizes IDs to strings. BigDecimal responses are exact strings; null specs are omitted. Validity uses the mall database clock/time zone and left-closed/right-open intervals. Inputs shown as strings are accepted by the actual application mapper.
 
 R envelope: code integer (200 application success), optional msg string, data object/array/boolean. Unused null data/rows/total fields are omitted. Empty arrays are preserved. False does not mean a successful mutation; clients must check it.
 

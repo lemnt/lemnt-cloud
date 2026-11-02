@@ -13,6 +13,7 @@ import com.lemnt.system.infrastructure.config.mapper.ConfigMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -65,6 +66,14 @@ public class ConfigGatewayImpl implements ConfigGateway {
             redisStringService.set(getCacheKey(entity.getConfigKey()), entity.getConfigValue());
         }
         return row > 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveBusinessConfig(Config entity) {
+        configMapper.saveBusinessConfig(entity);
+        // 配置读取直接访问权威库，清除旧缓存，避免保留先前的业务配置值。
+        redisStringService.delete(getCacheKey(entity.getConfigKey()));
     }
 
     @Override

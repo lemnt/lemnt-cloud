@@ -56,6 +56,6 @@ public class OrderSubmissionService {
         return values.stream().map(item -> new com.lemnt.trade.domain.order.model.TradeOrderItem(
                 item.productId(), item.productCode(), item.productName(), item.unitPrice(), item.quantity(),
                 item.lineAmount(), item.payAmount(), item.deliveryPrice(), item.spuId(), item.spuName(),
-                item.properties(), item.picUrl())).toList();
+                item.specs(), item.picUrl())).toList();
     }
 }

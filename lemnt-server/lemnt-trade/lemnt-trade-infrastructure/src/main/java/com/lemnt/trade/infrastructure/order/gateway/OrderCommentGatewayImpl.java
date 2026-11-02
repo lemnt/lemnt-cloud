@@ -18,8 +18,8 @@ public class OrderCommentGatewayImpl implements OrderCommentGateway {
     public Long saveSystem(VerifiedOrderComment value) { return save(value, true); }
     private Long save(VerifiedOrderComment value, boolean system) {
         var bo = new ProductCommentSaveBo(value.memberId(), value.orderNo(), value.skuId(), value.orderId(), value.orderItemId(), value.spuId(),
-                value.spuName(), value.skuPicUrl(), value.properties() == null ? null : value.properties().stream().map(property ->
-                        new ProductCommentSaveBo.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                value.spuName(), value.skuPicUrl(), value.specs() == null ? null : value.specs().stream().map(property ->
+                        new ProductCommentSaveBo.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
                 value.uniqueSku(), value.allowCreate(), value.score(), value.content(), value.descriptionScores(), value.benefitScores(), value.anonymous(), value.picUrls());
         return system ? client.saveSystem(bo) : client.saveVerified(bo);
     }

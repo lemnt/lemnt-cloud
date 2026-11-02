@@ -392,9 +392,7 @@ public class MemberGrowthService {
     /**
      * 保存配置。
      */
-    @Transactional(rollbackFor = Exception.class)
     public boolean saveConfig(Config v) {
-        configLocks.lockConfiguration();
         if (v.pointTradeDeductEnable() == null
                 || v.pointTradeDeductUnitPrice() == null
                 || v.pointTradeDeductUnitPrice() < 0

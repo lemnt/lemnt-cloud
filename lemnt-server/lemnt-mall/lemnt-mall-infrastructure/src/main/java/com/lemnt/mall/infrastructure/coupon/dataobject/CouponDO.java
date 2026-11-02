@@ -31,6 +31,8 @@ public class CouponDO extends BaseDO {
     private String orderNo;
     /** 营销活动赠券来源订单，普通持券为空。 */
     private String sourceOrderNo;
+    /** 同一来源订单、模板和会员下的赠券发放序号。 */
+    private Integer giftSequence;
 
     /** code。 */
     private String code;

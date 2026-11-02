@@ -30,9 +30,9 @@ public final class SettlementQuoteResConverter {
                 value.deliveryPrice(),
                 value.spuId(),
                 value.spuName(),
-                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
-                        new SettlementItemRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
+                value.specs() == null ? null : value.specs().stream().map(snapshotProperty ->
+                        new SettlementItemRes.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
+                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
                 value.picUrl(), value.orderItemId(), value.commentStatus());
     }
 

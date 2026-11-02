@@ -80,11 +80,8 @@ public class CouponGatewayImpl implements CouponGateway {
     }
 
     @Override
-    public long giftCount(String sourceOrderNo, Long templateId, Long memberId) {
-        return couponMapper.selectCount(Wrappers.<CouponDO>lambdaQuery()
-                .eq(CouponDO::getSourceOrderNo, sourceOrderNo)
-                .eq(CouponDO::getTemplateId, templateId)
-                .eq(CouponDO::getMemberId, memberId));
+    public boolean giftIssued(String sourceOrderNo, Long templateId, Long memberId, int giftSequence) {
+        return couponMapper.giftId(sourceOrderNo, templateId, memberId, giftSequence) != null;
     }
 
     @Override

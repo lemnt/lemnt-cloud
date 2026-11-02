@@ -120,7 +120,7 @@ function decodeItem(value: unknown): CheckoutItem {
   return {
     spuId: row.spuId == null ? null : positiveId(row.spuId),
     spuName: optionalText(row.spuName),
-    properties: decodeProperties(row.properties),
+    specs: decodeSpecs(row.specs),
     picUrl: optionalText(row.picUrl),
     ...(row.orderItemId == null ? {} : { orderItemId: positiveId(row.orderItemId) }),
     ...(row.commentStatus == null ? {} : { commentStatus: reviewStatus(row.commentStatus) }),
@@ -198,27 +198,27 @@ export function decodeCouponManagementRecord(value: unknown): CouponManagementRe
 }
 
 /** 规格列表保留编号；滚动升级期间兼容旧名值对象，但不猜测ID。 */
-export function decodeProperties(value: unknown): import('./types').CheckoutProperty[] | null {
+export function decodeSpecs(value: unknown): import('./types').CheckoutSpec[] | null {
   if (value == null) return null;
   if (!Array.isArray(value))
     return Object.entries(object(value))
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([propertyName, item]) => ({
-        propertyId: null,
-        propertyName,
-        valueId: null,
-        valueName: text(item),
+      .map(([specName, item]) => ({
+        specId: null,
+        specName,
+        specValueId: null,
+        specValueName: text(item),
       }));
   return value.map((item) => {
     const row = object(item);
-    const propertyId = row.propertyId == null ? null : positiveId(row.propertyId);
-    const valueId = row.valueId == null ? null : positiveId(row.valueId);
-    if ((propertyId == null) !== (valueId == null)) throw new Error('规格编号与规格值编号必须成对');
+    const specId = row.specId == null ? null : positiveId(row.specId);
+    const specValueId = row.specValueId == null ? null : positiveId(row.specValueId);
+    if ((specId == null) !== (specValueId == null)) throw new Error('规格编号与规格值编号必须成对');
     return {
-      propertyId,
-      propertyName: text(row.propertyName),
-      valueId,
-      valueName: text(row.valueName),
+      specId,
+      specName: text(row.specName),
+      specValueId,
+      specValueName: text(row.specValueName),
     };
   });
 }

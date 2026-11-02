@@ -121,9 +121,9 @@ public class SettlementPreparationService {
                 java.math.BigDecimal.ZERO.setScale(2),
                 product.spuId(),
                 product.spuName(),
-                product.properties() == null ? null : product.properties().stream().map(snapshotProperty ->
-                        new SettlementItem.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
+                product.specs() == null ? null : product.specs().stream().map(snapshotProperty ->
+                        new SettlementItem.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
+                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
                 product.picUrl()));
         }
         Coupon coupon = null;

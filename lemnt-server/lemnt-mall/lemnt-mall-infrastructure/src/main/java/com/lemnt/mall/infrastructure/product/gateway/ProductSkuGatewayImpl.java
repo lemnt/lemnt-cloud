@@ -79,7 +79,7 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
         return productSkuMapper.update(new ProductSkuDO(), Wrappers.<ProductSkuDO>lambdaUpdate()
                 .set(ProductSkuDO::getName, row.getName()).set(ProductSkuDO::getPrice, row.getPrice())
                 .set(ProductSkuDO::getMainImage, row.getMainImage())
-                .set(ProductSkuDO::getProperties, row.getProperties())
+                .set(ProductSkuDO::getSpecs, row.getSpecs())
                 .set(ProductSkuDO::getStock, row.getStock())
                 .set(ProductSkuDO::getWeight, row.getWeight())
                 .set(ProductSkuDO::getVolume, row.getVolume())
@@ -116,7 +116,7 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
     public Product save(Product p) {
         ProductSkuDO d =
                 new ProductSkuDO()
-                .setProperties("[]")
+                .setSpecs("[]")
                 .setProductCode(p.productCode())
                 .setName(p.name())
                 .setDescription(p.description())
@@ -226,35 +226,35 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
 
     /** 字典改名仅同步当前SKU，按编号锁后重读，价格库存保持原值。 */
     @Override
-    public void renameProperty(Long propertyId, String name) {
-        renameProperties(propertyId, name, false);
+    public void renameProperty(Long specId, String name) {
+        renameProperties(specId, name, false);
     }
 
     @Override
-    public void renamePropertyValue(Long valueId, String name) {
-        renameProperties(valueId, name, true);
+    public void renamePropertyValue(Long specValueId, String name) {
+        renameProperties(specValueId, name, true);
     }
 
-    private void renameProperties(Long propertyId, String name, boolean valueName) {
-        java.util.function.Predicate<ProductSkuSpec> matches = property -> valueName
-                ? propertyId.equals(property.valueId()) : propertyId.equals(property.propertyId());
+    private void renameProperties(Long specId, String name, boolean specValueName) {
+        java.util.function.Predicate<ProductSkuSpec> matches = property -> specValueName
+                ? specId.equals(property.specValueId()) : specId.equals(property.specId());
         var candidates = productSkuMapper.selectList(Wrappers.lambdaQuery(ProductSkuDO.class)
-                .select(ProductSkuDO::getId, ProductSkuDO::getProperties).isNotNull(ProductSkuDO::getProperties)
+                .select(ProductSkuDO::getId, ProductSkuDO::getSpecs).isNotNull(ProductSkuDO::getSpecs)
                 .ne(ProductSkuDO::getStatus, "DELETED").orderByAsc(ProductSkuDO::getId));
         for (var candidate : candidates) {
-            if (ProductCatalogConverter.properties(candidate.getProperties()).stream().noneMatch(matches)) { continue; }
+            if (ProductCatalogConverter.specs(candidate.getSpecs()).stream().noneMatch(matches)) { continue; }
             var row = productSkuMapper.lockById(candidate.getId());
             if (row == null || "DELETED".equals(row.getStatus())) { continue; }
-            var old = ProductCatalogConverter.properties(row.getProperties());
+            var old = ProductCatalogConverter.specs(row.getSpecs());
             var updated = old.stream().map(property -> {
-                return matches.test(property) ? new ProductSkuSpec(property.propertyId(),
-                        valueName ? property.propertyName() : name, property.valueId(),
-                        valueName ? name : property.valueName()) : property;
+                return matches.test(property) ? new ProductSkuSpec(property.specId(),
+                        specValueName ? property.specName() : name, property.specValueId(),
+                        specValueName ? name : property.specValueName()) : property;
             }).toList();
             if (!old.equals(updated)) {
                 productSkuMapper.update(null, Wrappers.lambdaUpdate(ProductSkuDO.class)
                         .eq(ProductSkuDO::getId, row.getId())
-                        .set(ProductSkuDO::getProperties, com.alibaba.fastjson2.JSON.toJSONString(updated))
+                        .set(ProductSkuDO::getSpecs, com.alibaba.fastjson2.JSON.toJSONString(updated))
                         .set(ProductSkuDO::getVariantKey, ProductCatalogValidation.variantKey(updated)));
             }
         }

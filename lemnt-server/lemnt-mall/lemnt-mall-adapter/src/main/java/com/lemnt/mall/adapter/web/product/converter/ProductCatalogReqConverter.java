@@ -60,8 +60,8 @@ public final class ProductCatalogReqConverter {
                 s.price(),
                 s.stock(),
                 s.image(),
-                s.properties() == null ? null : s.properties().stream().map(property ->
-                        new ProductSpuCreateCmd.ProductSkuDraft.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(), s.weight(), s.volume()))
+                s.specs() == null ? null : s.specs().stream().map(property ->
+                        new ProductSpuCreateCmd.ProductSkuDraft.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(), s.weight(), s.volume()))
                 .toList(), req.deliveryTypes(), req.deliveryTemplateId(), req.keyword(), req.introduction(), req.sliderPicUrls(), req.sort());
     }
 
@@ -73,8 +73,8 @@ public final class ProductCatalogReqConverter {
                 id, req.name(), req.categoryId(), req.brandId(), req.description(), req.image(),
                 req.skus().stream().map(sku -> new ProductSku(
                         sku.id(), id, sku.code(), sku.name(), sku.price(), sku.stock(), sku.image(),
-                sku.properties() == null ? null : sku.properties().stream().map(property ->
-                        new com.lemnt.mall.domain.product.model.ProductSkuSpec(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(), "ON_SHELF", sku.weight(), sku.volume())).toList(), req.deliveryTypes(), req.deliveryTemplateId(), req.keyword(), req.introduction(), req.sliderPicUrls(), req.sort());
+                sku.specs() == null ? null : sku.specs().stream().map(property ->
+                        new com.lemnt.mall.domain.product.model.ProductSkuSpec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(), "ON_SHELF", sku.weight(), sku.volume())).toList(), req.deliveryTypes(), req.deliveryTemplateId(), req.keyword(), req.introduction(), req.sliderPicUrls(), req.sort());
     }
 
     /**

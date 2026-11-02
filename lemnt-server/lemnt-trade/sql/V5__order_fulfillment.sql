@@ -25,7 +25,7 @@ CREATE TABLE trade_after_sale (
  sku_id BIGINT NULL,
  spu_id BIGINT NULL,
  spu_name VARCHAR(200) NULL,
- properties LONGTEXT NULL,
+ specs LONGTEXT NULL,
  pic_url VARCHAR(1024) NULL,
  refund_time DATETIME NULL,
  audit_user_id BIGINT NULL,

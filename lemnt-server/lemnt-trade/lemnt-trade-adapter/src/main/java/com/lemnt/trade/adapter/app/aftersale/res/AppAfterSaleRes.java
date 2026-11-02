@@ -51,20 +51,20 @@ public record AppAfterSaleRes(
         @Schema(description = "SPU名称")
         String spuName,
         @Schema(description = "规格快照")
-        List<Property> properties,
+        List<Spec> specs,
         @Schema(description = "商品图片")
         String picUrl
 ) implements Serializable {
     public AppAfterSaleRes {
-        properties = properties == null ? null : List.copyOf(properties);
+        specs = specs == null ? null : List.copyOf(specs);
     }
 
     /** 保存时的规格编号和名称。 */
     @Schema(description = "规格快照")
-    public record Property(
-            Long propertyId,
-            String propertyName,
-            Long valueId,
-            String valueName
+    public record Spec(
+            Long specId,
+            String specName,
+            Long specValueId,
+            String specValueName
     ) implements Serializable {}
 }

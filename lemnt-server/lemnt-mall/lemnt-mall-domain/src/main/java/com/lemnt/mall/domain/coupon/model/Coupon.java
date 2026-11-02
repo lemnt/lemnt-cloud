@@ -13,7 +13,8 @@ public record Coupon(
         String orderNo,
         CouponTerms terms,
         LocalDateTime useTime,
-        String sourceOrderNo
+        String sourceOrderNo,
+        Integer giftSequence
 ) {
     /** 兼容普通持券，来源订单仅在营销赠券时填写。 */
     public Coupon(
@@ -24,7 +25,7 @@ public record Coupon(
             String orderNo,
             CouponTerms terms,
             LocalDateTime useTime) {
-        this(id, templateId, memberId, status, orderNo, terms, useTime, null);
+        this(id, templateId, memberId, status, orderNo, terms, useTime, null, null);
     }
 
     /** 存量调用按原固定日期、单人一张规则兼容读取。 */

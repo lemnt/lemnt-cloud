@@ -22,7 +22,7 @@ public final class CommentResConverter {
                 anonymous ? "匿名用户" : value.userNickname(), anonymous ? null : value.userAvatar(), value.anonymous(),
                 value.score(), value.descriptionScores(), value.benefitScores(), value.content(), value.picUrls(),
                 value.spuName(), value.skuPicUrl(), value.skuProperties() == null ? null : value.skuProperties().stream().map(property ->
-                        new CommentPageRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                        new CommentPageRes.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
                 value.replyStatus(), value.replyContent(), value.replyTime(), value.createTime());
     }
 }

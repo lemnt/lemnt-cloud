@@ -109,20 +109,20 @@ public class TradeOrderClientImpl implements TradeOrderClient {
             if ((item.spuId() != null && item.spuId() <= 0)
                     || (item.spuName() != null && (item.spuName().isBlank() || item.spuName().length() > 200))
                     || (item.picUrl() != null && item.picUrl().length() > 1024)
-                    || (item.properties() != null && item.properties().stream().anyMatch(property ->
-                            property.propertyName() == null || property.propertyName().isBlank() || property.propertyName().length() > 64
-                                    || property.valueName() == null || property.valueName().isBlank() || property.valueName().length() > 100
-                                    || ((property.propertyId() == null) != (property.valueId() == null))
-                                    || (property.propertyId() != null && (property.propertyId() <= 0 || property.valueId() <= 0))))) {
+                    || (item.specs() != null && item.specs().stream().anyMatch(property ->
+                            property.specName() == null || property.specName().isBlank() || property.specName().length() > 64
+                                    || property.specValueName() == null || property.specValueName().isBlank() || property.specValueName().length() > 100
+                                    || ((property.specId() == null) != (property.specValueId() == null))
+                                    || (property.specId() != null && (property.specId() <= 0 || property.specValueId() <= 0))))) {
                 throw new IllegalArgumentException("商品规格快照不合法");
             }
         }
         for (var item : value.items()) {
-            if (item.properties() != null && (item.properties().size() > 10
-                    || item.properties().stream().map(property -> property.propertyName()).distinct().count() != item.properties().size()
-                    || item.properties().stream().filter(property -> property.propertyId() != null)
-                            .map(property -> property.propertyId()).distinct().count()
-                            != item.properties().stream().filter(property -> property.propertyId() != null).count())) {
+            if (item.specs() != null && (item.specs().size() > 10
+                    || item.specs().stream().map(property -> property.specName()).distinct().count() != item.specs().size()
+                    || item.specs().stream().filter(property -> property.specId() != null)
+                            .map(property -> property.specId()).distinct().count()
+                            != item.specs().stream().filter(property -> property.specId() != null).count())) {
                 throw new IllegalArgumentException("商品规格重复或超过10项");
             }
         }
@@ -157,9 +157,9 @@ public class TradeOrderClientImpl implements TradeOrderClient {
                 item.deliveryPrice(),
                 item.spuId(),
                 item.spuName(),
-                item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
-                        new TradeOrderItem.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
+                item.specs() == null ? null : item.specs().stream().map(snapshotProperty ->
+                        new TradeOrderItem.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
+                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
                 item.picUrl())).toList(), null, value.usePoint(), value.givePoint(),
                 fromDelivery(value.delivery(), verifyCode), null, null, value.giveCouponTemplateCounts());
         try {
@@ -202,9 +202,9 @@ public class TradeOrderClientImpl implements TradeOrderClient {
                 item.deliveryPrice(),
                 item.spuId(),
                 item.spuName(),
-                item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
-                        new OrderItemDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
+                item.specs() == null ? null : item.specs().stream().map(snapshotProperty ->
+                        new OrderItemDTO.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
+                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
                 item.picUrl(), item.orderItemId(), item.commentStatus())).toList(), value.createTime(), value.usePoint(), value.givePoint(), toDelivery(value.delivery()), value.commentStatus(), value.finishTime(), value.giveCouponTemplateCounts());
     }
 

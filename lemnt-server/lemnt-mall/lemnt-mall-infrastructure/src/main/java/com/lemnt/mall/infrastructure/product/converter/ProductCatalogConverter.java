@@ -76,7 +76,7 @@ public final class ProductCatalogConverter {
         ) {
             return null;
         }
-        var values = properties(row.getProperties());
+        var values = specs(row.getSpecs());
         return new ProductSku(
                 row.getId(),
                 row.getSpuId(),
@@ -86,7 +86,7 @@ public final class ProductCatalogConverter {
                 row.getStock(),
                 row.getMainImage(),
                 values == null ? null : values.stream().map(property ->
-                        new com.lemnt.mall.domain.product.model.ProductSkuSpec(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                        new com.lemnt.mall.domain.product.model.ProductSkuSpec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
                 row.getStatus(), row.getWeight(), row.getVolume());
     }
 
@@ -151,17 +151,17 @@ public final class ProductCatalogConverter {
         row.setName(value.name());
         row.setPrice(value.price());
         row.setStock(value.stock());
-        row.setProperties(JSON.toJSONString(value.properties()));
+        row.setSpecs(JSON.toJSONString(value.specs()));
         row.setMainImage(value.image());
         row.setStatus(value.status());
-        row.setVariantKey(ProductCatalogValidation.variantKey(value.properties()));
+        row.setVariantKey(ProductCatalogValidation.variantKey(value.specs()));
         row.setWeight(value.weight());
         row.setVolume(value.volume());
         return row;
     }
 
     /** SKU规格仅从其JSON读取，不补字典现值或猜测旧编号。 */
-    public static List<com.lemnt.mall.domain.product.model.ProductSkuSpec> properties(String json) {
-        return json == null ? List.of() : JSON.parseArray(json, com.lemnt.mall.domain.product.model.ProductSkuSpec.class);
+    public static List<com.lemnt.mall.domain.product.model.ProductSkuSpec> specs(String json) {
+        return json == null ? List.of() : SpecSnapshotJson.read(json, com.lemnt.mall.domain.product.model.ProductSkuSpec.class);
     }
 }

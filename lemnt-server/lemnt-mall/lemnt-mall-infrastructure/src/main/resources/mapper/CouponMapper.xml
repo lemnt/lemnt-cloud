@@ -8,6 +8,8 @@
         <result property="memberId" column="member_id"/>
         <result property="status" column="status"/>
         <result property="orderNo" column="order_no"/>
+        <result property="sourceOrderNo" column="source_order_no"/>
+        <result property="giftSequence" column="gift_sequence"/>
         <result property="code" column="code"/>
         <result property="name" column="name"/>
         <result property="takeType" column="take_type"/>
@@ -31,6 +33,11 @@
     <select id="lockCouponRow" resultMap="CouponResult"
             flushCache="true" useCache="false">
         SELECT * FROM mall_coupon WHERE member_id=#{memberId} AND id=#{id} AND deleted=FALSE FOR UPDATE
+    </select>
+    <select id="giftId" resultType="java.lang.Long" flushCache="true" useCache="false">
+        SELECT id FROM mall_coupon
+        WHERE source_order_no=#{sourceOrderNo} AND template_id=#{templateId}
+          AND member_id=#{memberId} AND gift_sequence=#{giftSequence} FOR UPDATE
     </select>
     <select id="now" resultType="java.time.LocalDateTime">SELECT CURRENT_TIMESTAMP</select>
 </mapper>

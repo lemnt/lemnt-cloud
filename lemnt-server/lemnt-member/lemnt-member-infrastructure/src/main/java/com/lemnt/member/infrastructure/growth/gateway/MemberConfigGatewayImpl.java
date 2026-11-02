@@ -1,44 +1,32 @@
 package com.lemnt.member.infrastructure.growth.gateway;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.lemnt.common.core.exception.ServiceException;
+import com.alibaba.fastjson2.JSON;
+import com.lemnt.common.security.utils.SecurityUtils;
+import com.lemnt.system.api.BusinessConfigKeys;
+import com.lemnt.system.api.RemoteConfigService;
+import com.lemnt.system.api.bo.BusinessConfigSaveBo;
 import com.lemnt.member.domain.growth.gateway.MemberConfigGateway;
 import com.lemnt.member.domain.growth.model.Config;
-import com.lemnt.member.infrastructure.growth.converter.ConfigConverter;
-import com.lemnt.member.infrastructure.growth.dataobject.ConfigDO;
-import com.lemnt.member.infrastructure.growth.mapper.MemberConfigMapper;
-import lombok.RequiredArgsConstructor;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
-/** 配置沿源首条记录读写，空表可首次保存，不依赖固定ID。 */
+/** 通过system保存整组业务配置，不访问旧表或跨服务数据库。 */
 @Component
-@RequiredArgsConstructor
 public class MemberConfigGatewayImpl implements MemberConfigGateway {
-    private final MemberConfigMapper mapper;
+    @DubboReference(check = false, retries = 0)
+    private RemoteConfigService remoteConfigService;
 
-    /** 读取实际首条配置，不用ID=1假设替代已有数据。 */
+    /** 单次读取完整JSON，保持关联参数来自同一版本；RPC故障不降级为默认配置。 */
     @Override
     public Config config() {
-        return ConfigConverter.toEntity(first());
+        String value = remoteConfigService.getConfig(BusinessConfigKeys.MEMBER_POINT);
+        return value == null ? null : JSON.parseObject(value, Config.class);
     }
 
-    /** 外层配置事务锁保护首次插入与更新。 */
+    /** 业务校验由原应用服务完成，system以唯一键原子替换整个配置组。 */
     @Override
     public void configSave(Config value) {
-        var current = first();
-        var row = ConfigConverter.toDO(value);
-        if (current == null) {
-            mapper.insert(row);
-        } else {
-            row.setId(current.getId());
-            if (mapper.updateById(row) != 1) {
-                throw new ServiceException("积分配置已变更，请刷新后重试", 409);
-            }
-        }
-    }
-
-    /** 沿ID升序选取首条，使用Lambda及固定LIMIT。 */
-    private ConfigDO first() {
-        return mapper.selectOne(Wrappers.<ConfigDO>lambdaQuery().orderByAsc(ConfigDO::getId).last("LIMIT 1"));
+        remoteConfigService.saveBusinessConfig(new BusinessConfigSaveBo(BusinessConfigKeys.MEMBER_POINT,
+                JSON.toJSONString(value), SecurityUtils.getUsername()));
     }
 }

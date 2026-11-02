@@ -33,8 +33,8 @@ public interface CouponGateway {
      */
     Coupon issued(Long memberId, Long templateId);
 
-    /** 统计营销赠券来源订单已发放数量，支付回调重试时补足差额。 */
-    long giftCount(String sourceOrderNo, Long templateId, Long memberId);
+    /** 按发放序号检查赠券事实，包含已撤回的持券，避免回调重放补发。 */
+    boolean giftIssued(String sourceOrderNo, Long templateId, Long memberId, int giftSequence);
 
     /**
      * 券包。

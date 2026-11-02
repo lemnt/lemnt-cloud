@@ -12,23 +12,23 @@ export function editablePrice(price: string): number {
 }
 
 /** 编号按字符串传递，拒绝重复规格项，名称由服务端字典决定。 */
-export function selectedProperties(
-  rows: { propertyId?: string; valueId?: string }[] | undefined,
-): { propertyId: string; valueId: string }[] {
-  const result: { propertyId: string; valueId: string }[] = [];
+export function selectedSpecs(
+  rows: { specId?: string; specValueId?: string }[] | undefined,
+): { specId: string; specValueId: string }[] {
+  const result: { specId: string; specValueId: string }[] = [];
   const selected = new Set<string>();
   if ((rows?.length ?? 0) > 10) throw new Error('每个SKU最多10项规格');
   for (const row of rows ?? []) {
     if (
-      !row.propertyId ||
-      !row.valueId ||
-      !/^[1-9]\d*$/.test(row.propertyId) ||
-      !/^[1-9]\d*$/.test(row.valueId)
+      !row.specId ||
+      !row.specValueId ||
+      !/^[1-9]\d*$/.test(row.specId) ||
+      !/^[1-9]\d*$/.test(row.specValueId)
     )
       throw new Error('请选择规格及规格值');
-    if (selected.has(row.propertyId)) throw new Error('同一个SKU不能重复选择规格项');
-    selected.add(row.propertyId);
-    result.push({ propertyId: row.propertyId, valueId: row.valueId });
+    if (selected.has(row.specId)) throw new Error('同一个SKU不能重复选择规格项');
+    selected.add(row.specId);
+    result.push({ specId: row.specId, specValueId: row.specValueId });
   }
   return result;
 }

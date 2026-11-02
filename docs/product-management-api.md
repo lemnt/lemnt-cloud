@@ -1,5 +1,8 @@
 # 商品管理接口补齐
 
+2026-11-02 第162批：规格字段统一为 `specs` 及 `specId/specName/specValueId/specValueName`；旧JSON读取与列名升级说明见[规格命名迁移](spec-naming-migration.md)。
+
+
 2026-10-31规格后台及创建时间筛选的当前交付见[规格管理页面](product-spec-management-pages.md)。
 
 > 2026-10-28 配送贯通批次：商品配送字段、地址必填结算、订单运费快照与发货冻结地址见 [配送结算接口变更](delivery-checkout-api.md)。本批已将运费接入下单金额；原文中“尚未接入”的说明仅代表上一批次状态。
@@ -22,7 +25,7 @@
 | SKU 规格快照 | `ProductSkuSpecDO` | 现有 `mall_product_sku_spec` |
 | 商品评价 | `ProductComment` | 新增 `mall_product_comment` |
 
-颜色、尺码等参与 SKU 组合的内容属于规格；材质等描述信息属于属性，后续业务落地时使用 `ProductAttribute` / `ProductAttributeValue`，本次不增加占位模型或表。SKU 的 `ProductSkuGateway`、`ProductSkuMapper`、`ProductSkuDO` 统一对应 `mall_product_sku`，删除原重复 SKU 数据投影。既有商品接口地址、SKU `properties` 字段及规格快照表保留兼容。
+颜色、尺码等参与 SKU 组合的内容属于规格；材质等描述信息属于属性，后续业务落地时使用 `ProductAttribute` / `ProductAttributeValue`，本次不增加占位模型或表。SKU 的 `ProductSkuGateway`、`ProductSkuMapper`、`ProductSkuDO` 统一对应 `mall_product_sku`，删除原重复 SKU 数据投影。既有商品接口地址、SKU `specs` 字段及规格快照表保留兼容。
 
 Adapter 按 app/web 后再分域；请求和响应按接口独立定义，分页统一使用 `R.page`。分类、品牌、规格、评价与库存统一归入 product 域，分别维护各自的应用逻辑；数据库访问遵循按表 Gateway、MyBatis Plus Mapper 和 DO。
 

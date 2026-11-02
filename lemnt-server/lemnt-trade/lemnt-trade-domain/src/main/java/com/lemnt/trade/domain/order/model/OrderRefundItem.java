@@ -16,7 +16,7 @@ public record OrderRefundItem(
         BigDecimal deliveryPrice,
         Long spuId,
         String spuName,
-        List<Property> properties,
+        List<Spec> specs,
         String picUrl
 ) implements Serializable {
     /** 历史未保存商品元数据，保持为空，不查询现值补历史。 */
@@ -44,7 +44,7 @@ public record OrderRefundItem(
     }
 
     public OrderRefundItem {
-        properties = properties == null ? null : List.copyOf(properties);
+        specs = specs == null ? null : List.copyOf(specs);
         deliveryPrice = deliveryPrice == null ? BigDecimal.ZERO.setScale(2) : deliveryPrice;
     }
 
@@ -64,10 +64,10 @@ public record OrderRefundItem(
     }
 
     /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
-    public record Property(
-            Long propertyId,
-            String propertyName,
-            Long valueId,
-            String valueName
+    public record Spec(
+            Long specId,
+            String specName,
+            Long specValueId,
+            String specValueName
     ) implements java.io.Serializable {}
 }

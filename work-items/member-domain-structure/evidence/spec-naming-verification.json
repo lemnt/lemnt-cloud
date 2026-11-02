@@ -1,0 +1,43 @@
+{
+  "batch": "162-spec-naming",
+  "date": "2026-11-02",
+  "contract": {
+    "list": "specs",
+    "fields": [
+      "specId",
+      "specName",
+      "specValueId",
+      "specValueName"
+    ]
+  },
+  "tests": {
+    "mall": 195,
+    "trade": 283,
+    "total": 478,
+    "ui": 315,
+    "miniapp": 176,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "typecheck": "PASS",
+  "uiBuild": "PASS",
+  "legacyRead": [
+    "old four fields",
+    "name-value objects",
+    "submission outer properties"
+  ],
+  "columns": [
+    "mall_product_sku.specs",
+    "trade_order_item.specs",
+    "trade_after_sale.specs"
+  ],
+  "previewCacheVersion": 5,
+  "submissionCacheVersion": 2,
+  "notRun": [
+    "actual MySQL migration",
+    "deployed Dubbo/gateway",
+    "browser/device"
+  ],
+  "commitPush": false
+}

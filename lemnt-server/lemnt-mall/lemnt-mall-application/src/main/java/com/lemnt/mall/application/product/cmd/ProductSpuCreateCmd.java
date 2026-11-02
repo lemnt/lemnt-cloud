@@ -26,13 +26,13 @@ public record ProductSpuCreateCmd(
      * 商品商品SKU草稿。
      */
     public record ProductSkuDraft(String code, String name, BigDecimal price, Integer stock, String image,
-            List<Property> properties, BigDecimal weight, BigDecimal volume) {
+            List<Spec> specs, BigDecimal weight, BigDecimal volume) {
         /** 未配置配送参数的草稿。 */
         public ProductSkuDraft(String code, String name, BigDecimal price, Integer stock, String image,
-                List<Property> properties) {
-            this(code, name, price, stock, image, properties, null, null);
+                List<Spec> specs) {
+            this(code, name, price, stock, image, specs, null, null);
         }
-        public record Property(Long propertyId, String propertyName, Long valueId, String valueName) {}
+        public record Spec(Long specId, String specName, Long specValueId, String specValueName) {}
     }
 
     /** 历史快照缺少配送字段，读取时保留未配置状态。 */

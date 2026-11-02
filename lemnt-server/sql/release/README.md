@@ -20,6 +20,8 @@ DB_HOST=10.0.0.10 DB_USER=lemnt DB_PASSWORD='***' ./lemnt-server/sql/release/app
 
 ## 边界
 
+- 第161批将积分/交易配置迁入sys_config。已有环境必须先完成[配置迁移](../../../docs/business-config-migration.md)，再执行V20261102默认种子；不能先执行种子，否则旧值复制会因目标key已存在而跳过。新库先使用更新后的system基础表结构。
+
 - `lemnt_system` 基础表不由本脚本重建；菜单脚本只依赖已存在的 `sys_menu`、`sys_role_menu`。
 - 已有环境新增列使用对应模块 `sql/upgrade/` 下的脚本，逐个人工审核后执行；本脚本不自动执行，避免重复加列。
 - 建表脚本按 `V*` 文件名数字顺序执行，不依赖数据库迁移工具记录。

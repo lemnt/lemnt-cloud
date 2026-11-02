@@ -38,22 +38,22 @@ function SpecChoice({
   const form = Form.useFormInstance();
   const { message } = App.useApp();
   const path = ['skus', skuIndex, 'specSelections', specIndex];
-  const propertyId = Form.useWatch([...path, 'propertyId'], form) as string | undefined;
-  const valueId = Form.useWatch([...path, 'valueId'], form) as string | undefined;
+  const specId = Form.useWatch([...path, 'specId'], form) as string | undefined;
+  const specValueId = Form.useWatch([...path, 'specValueId'], form) as string | undefined;
   async function options(kind: 'spec' | 'value', keyword?: string) {
     try {
       const rows =
         kind === 'spec'
           ? await getSpecOptions(keyword)
-          : propertyId
-            ? await getSpecValueOptions(propertyId, keyword)
+          : specId
+            ? await getSpecValueOptions(specId, keyword)
             : [];
-      const selected = kind === 'spec' ? propertyId : valueId;
+      const selected = kind === 'spec' ? specId : specValueId;
       if (selected && !rows.some((row) => row.id === selected)) {
         // 已保存名称是编辑快照；字典值删除后仍能展示它并选择替代值，不伪造当前字典状态。
         const savedName = form.getFieldValue([
           ...path,
-          kind === 'spec' ? 'propertyName' : 'valueName',
+          kind === 'spec' ? 'specName' : 'specValueName',
         ]);
         rows.unshift(
           typeof savedName === 'string' && savedName
@@ -72,29 +72,29 @@ function SpecChoice({
   return (
     <ProFormGroup>
       <ProFormSelect
-        name="propertyId"
+        name="specId"
         label="规格"
         showSearch
         debounceTime={300}
-        params={{ selected: propertyId, revision }}
+        params={{ selected: specId, revision }}
         request={({ keyWords }) => options('spec', keyWords)}
         fieldProps={{
           filterOption: false,
           onChange: () => {
-            form.setFieldValue([...path, 'valueId'], undefined);
-            form.setFieldValue([...path, 'propertyName'], undefined);
-            form.setFieldValue([...path, 'valueName'], undefined);
+            form.setFieldValue([...path, 'specValueId'], undefined);
+            form.setFieldValue([...path, 'specName'], undefined);
+            form.setFieldValue([...path, 'specValueName'], undefined);
           },
         }}
         rules={[{ required: true }]}
       />
       <ProFormSelect
-        name="valueId"
+        name="specValueId"
         label="规格值"
         showSearch
-        disabled={!propertyId}
+        disabled={!specId}
         debounceTime={300}
-        params={{ propertyId, selected: valueId, revision }}
+        params={{ specId, selected: specValueId, revision }}
         request={({ keyWords }) => options('value', keyWords)}
         fieldProps={{ filterOption: false }}
         rules={[{ required: true }]}

@@ -26,8 +26,8 @@ public final class ProductManagementResConverter {
     public static ProductSkuAddRes skuAdd(ProductSkuDTO value) {
         return new ProductSkuAddRes(value.id(), value.spuId(), value.code(), value.name(), value.price(), value.stock(),
             value.image(),
-                value.properties() == null ? null : value.properties().stream().map(property ->
-                        new ProductSkuAddRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(), value.status());
+                value.specs() == null ? null : value.specs().stream().map(property ->
+                        new ProductSkuAddRes.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(), value.status());
     }
 
     /** 转换SKU详情响应。 */
@@ -35,8 +35,8 @@ public final class ProductManagementResConverter {
         return new ProductSkuDetailRes(value.id(), value.spuId(), value.code(), value.name(), value.price(),
             value.stock(),
             value.image(),
-                value.properties() == null ? null : value.properties().stream().map(property ->
-                        new ProductSkuDetailRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(), value.status());
+                value.specs() == null ? null : value.specs().stream().map(property ->
+                        new ProductSkuDetailRes.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(), value.status());
     }
 
     /** 转换SKU分页响应。 */
@@ -83,8 +83,8 @@ public final class ProductManagementResConverter {
     public static ProductSpuBatchSkuRes batchSku(ProductSkuDTO value) {
         return new ProductSpuBatchSkuRes(value.id(), value.spuId(), value.code(), value.name(), value.price(),
             value.stock(), value.image(),
-                value.properties() == null ? null : value.properties().stream().map(property ->
-                        new ProductSpuBatchSkuRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(), value.status(), value.weight(), value.volume());
+                value.specs() == null ? null : value.specs().stream().map(property ->
+                        new ProductSpuBatchSkuRes.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(), value.status(), value.weight(), value.volume());
     }
 
     /** 编号转为文本，状态转换为展示名称，不向导出文件添加不存在的经营字段。 */

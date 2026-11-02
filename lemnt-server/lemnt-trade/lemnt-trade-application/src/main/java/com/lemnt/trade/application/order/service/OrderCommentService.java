@@ -39,8 +39,8 @@ public class OrderCommentService {
         require(line != null && line.orderItemId() != null, "订单项不属于当前订单或商品", 404);
         require(Boolean.TRUE.equals(line.commentStatus()) || "COMPLETED".equals(order.status()), "只能评价本人已完成订单内的商品", 400);
         var verified = new VerifiedOrderComment(order.memberId(), order.orderNo(), line.productId(), order.id(), line.orderItemId(),
-                line.spuId(), line.spuName(), line.picUrl(), line.properties() == null ? null : line.properties().stream().map(property ->
-                        new VerifiedOrderComment.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                line.spuId(), line.spuName(), line.picUrl(), line.specs() == null ? null : line.specs().stream().map(property ->
+                        new VerifiedOrderComment.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
                 candidates.size() == 1, !Boolean.TRUE.equals(line.commentStatus()), cmd.score(), cmd.content(), cmd.descriptionScores(), cmd.benefitScores(), cmd.anonymous(), cmd.picUrls());
         // 商城私有保存不能回查交易，避免在订单锁内形成循环RPC。
         Long commentId = comments.saveVerified(verified);
@@ -70,8 +70,8 @@ public class OrderCommentService {
         for (var line : lines) {
             if (!Boolean.FALSE.equals(line.commentStatus())) { continue; }
             var verified = new VerifiedOrderComment(order.memberId(), order.orderNo(), line.productId(), order.id(), line.orderItemId(),
-                    line.spuId(), line.spuName(), line.picUrl(), line.properties() == null ? null : line.properties().stream().map(v ->
-                    new VerifiedOrderComment.Property(v.propertyId(), v.propertyName(), v.valueId(), v.valueName())).toList(),
+                    line.spuId(), line.spuName(), line.picUrl(), line.specs() == null ? null : line.specs().stream().map(v ->
+                    new VerifiedOrderComment.Spec(v.specId(), v.specName(), v.specValueId(), v.specValueName())).toList(),
                     lines.stream().filter(v -> v.productId().equals(line.productId())).count() == 1,
                     true, 5, "", 5, 5, false, java.util.List.of());
             Long id = comments.saveSystem(verified);

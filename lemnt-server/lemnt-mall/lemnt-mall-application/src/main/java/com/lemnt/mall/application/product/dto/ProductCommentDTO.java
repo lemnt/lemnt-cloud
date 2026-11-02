@@ -28,7 +28,7 @@ public record ProductCommentDTO(
         Long orderId,
         String spuName,
         String skuPicUrl,
-        List<Property> skuProperties,
+        List<Spec> skuProperties,
         boolean replyStatus,
         Long orderItemId
 ) implements Serializable {
@@ -43,5 +43,5 @@ public record ProductCommentDTO(
     }
 
     /** 保存时的规格值，不关联当前字典进行回填。 */
-    public record Property(Long propertyId, String propertyName, Long valueId, String valueName) implements Serializable {}
+    public record Spec(Long specId, String specName, Long specValueId, String specValueName) implements Serializable {}
 }

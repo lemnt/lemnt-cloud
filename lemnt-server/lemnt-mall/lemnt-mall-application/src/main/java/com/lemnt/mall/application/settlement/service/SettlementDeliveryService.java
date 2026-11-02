@@ -70,9 +70,9 @@ public class SettlementDeliveryService {
                 fee.itemPrices().get(item.productId()),
                 item.spuId(),
                 item.spuName(),
-                item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
-                        new SettlementItem.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
+                item.specs() == null ? null : item.specs().stream().map(snapshotProperty ->
+                        new SettlementItem.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
+                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
                 item.picUrl()))
                 .toList();
         var paid = quote.payableAmount().add(fee.total());
@@ -96,7 +96,7 @@ public class SettlementDeliveryService {
         var items = quote.items().stream().map(item -> new SettlementItem(item.productId(),
                 item.productCode(), item.productName(), item.unitPrice(), item.quantity(), item.lineAmount(),
                 item.payAmount(), java.math.BigDecimal.ZERO.setScale(2), item.spuId(), item.spuName(),
-                item.properties(), item.picUrl())).toList();
+                item.specs(), item.picUrl())).toList();
         return new SettlementQuote(items, quote.originalAmount(), quote.discountAmount(),
                 quote.payableAmount(), quote.couponId(), quote.usePoint(), quote.givePoint(),
                 new SettlementDelivery(null, 2, null, null, null, null,

@@ -16,7 +16,7 @@ public record OrderItemDTO(
         BigDecimal lineAmount,
         Long spuId,
         String spuName,
-        List<Property> properties,
+        List<Spec> specs,
         String picUrl,
         Long orderItemId,
         Boolean commentStatus
@@ -31,14 +31,14 @@ public record OrderItemDTO(
             BigDecimal lineAmount,
             Long spuId,
             String spuName,
-            List<Property> properties,
+            List<Spec> specs,
             String picUrl
     ) {
-        this(productId, productCode, productName, unitPrice, quantity, lineAmount, spuId, spuName, properties, picUrl, null, null);
+        this(productId, productCode, productName, unitPrice, quantity, lineAmount, spuId, spuName, specs, picUrl, null, null);
     }
 
     public OrderItemDTO {
-        properties = properties == null ? null : List.copyOf(properties);
+        specs = specs == null ? null : List.copyOf(specs);
     }
 
     /** 历史未保存商品元数据，保持为空，不查询现值补历史。 */
@@ -64,10 +64,10 @@ public record OrderItemDTO(
     }
 
     /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
-    public record Property(
-            Long propertyId,
-            String propertyName,
-            Long valueId,
-            String valueName
+    public record Spec(
+            Long specId,
+            String specName,
+            Long specValueId,
+            String specValueName
     ) implements java.io.Serializable {}
 }

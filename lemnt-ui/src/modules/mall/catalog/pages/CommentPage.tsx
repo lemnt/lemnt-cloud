@@ -362,7 +362,7 @@ export default function CommentPage() {
                   title: '规格快照',
                   render: () =>
                     detail.skuProperties
-                      ?.map((v) => v.propertyName + '：' + v.valueName)
+                      ?.map((v) => v.specName + '：' + v.specValueName)
                       .join(' / ') ?? '未记录',
                 },
                 { title: '评价时间', dataIndex: 'createTime' },

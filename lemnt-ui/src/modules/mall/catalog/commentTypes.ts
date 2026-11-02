@@ -18,10 +18,10 @@ export interface ProductCommentRecord {
   skuPicUrl: string | null;
   skuProperties:
     | {
-        propertyId: string | null;
-        propertyName: string;
-        valueId: string | null;
-        valueName: string;
+        specId: string | null;
+        specName: string;
+        specValueId: string | null;
+        specValueName: string;
       }[]
     | null;
   picUrls: string[] | null;

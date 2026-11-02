@@ -48,7 +48,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 生产 SQL、Mapper/XML、Gateway 及 Spring 事务验证，不使用内存存储替身。 */
+/** 配送使用生产SQL/Mapper/事务；配置经真实Gateway调用显式Dubbo传输替身。 */
 class DeliveryPersistenceTest {
     AnnotationConfigApplicationContext context;
     DeliveryManagementService management;
@@ -240,11 +240,25 @@ class DeliveryPersistenceTest {
     @Configuration
     @EnableTransactionManagement(proxyTargetClass = true)
     @ComponentScan(basePackages = {"com.lemnt.trade.infrastructure.delivery.gateway",
-            "com.lemnt.trade.infrastructure.config.gateway", "com.lemnt.trade.application.delivery.service",
+            "com.lemnt.trade.application.delivery.service",
             "com.lemnt.trade.application.config.service"})
-    @MapperScan(basePackages = {"com.lemnt.trade.infrastructure.delivery.mapper",
-            "com.lemnt.trade.infrastructure.config.mapper"})
+    @MapperScan(basePackages = {"com.lemnt.trade.infrastructure.delivery.mapper"})
     static class TestConfig {
+        @Bean
+        com.baomidou.lock.LockTemplate deliveryLocks() {
+            var template = org.mockito.Mockito.mock(com.baomidou.lock.LockTemplate.class);
+            var mutex = new java.util.concurrent.locks.ReentrantLock();
+            org.mockito.Mockito.when(template.lock(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.eq(-1L),
+                    org.mockito.ArgumentMatchers.eq(3000L), org.mockito.ArgumentMatchers.eq(com.baomidou.lock.executor.RedissonLockExecutor.class)))
+                    .thenAnswer(call -> { mutex.lock(); return org.mockito.Mockito.mock(com.baomidou.lock.LockInfo.class); });
+            org.mockito.Mockito.when(template.releaseLock(org.mockito.ArgumentMatchers.any())).thenAnswer(call -> { mutex.unlock(); return true; });
+            return template;
+        }
+
+        @Bean
+        TradeConfigGateway tradeConfigGateway() {
+            return com.lemnt.trade.start.BusinessConfigTestSupport.gateway();
+        }
         @Bean
         JdbcDataSource dataSource() {
             var source = new JdbcDataSource();

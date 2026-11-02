@@ -1,5 +1,8 @@
 # 小程序商品与优惠券营销接口
 
+2026-11-02 第162批：规格字段统一为 `specs` 及 `specId/specName/specValueId/specValueName`；旧JSON读取与列名升级说明见[规格命名迁移](spec-naming-migration.md)。
+
+
 > 2026-10-28 优惠券规则、独立券包及当前请求/返回/错误以 [优惠券迁移接口](coupon-migration-api.md) 为准，下面旧优惠券 JSON 不再作为当前契约。业务收敛变更见 [当前接口变更](yudao-alignment-api.md)。本文中的旧兼容入口、独立 SKU 写接口及发布版本机制已退役。
 
 当前服务归属与独立事务说明见 [商城与交易服务边界](mall-trade-boundary.md)。下述接口由 mall 提供；支付及订单履约仍在 trade。
@@ -157,7 +160,7 @@ curl --request GET 'https://<API_HOST>/mall/app/products/1'
         "price": "9.99",
         "stock": 5,
         "image": "https://example.test/product.png",
-        "properties": {
+        "specs": {
           "颜色": "红",
           "尺寸": "M"
         }
@@ -564,7 +567,7 @@ curl --request POST 'https://<API_HOST>/mall/app/cart/7/add' --header 'Authoriza
 | price | String | 当前售价（元，精确两位小数字符串） |
 | stock | int | 当前可用库存，不表示库存预留 |
 | image | String | image |
-| properties | java.util.Map<String, String> | 规格属性名到值的映射 |
+| specs | java.util.Map<String, String> | 规格属性名到值的映射 |
 
 ## 页面、迁移与验证
 

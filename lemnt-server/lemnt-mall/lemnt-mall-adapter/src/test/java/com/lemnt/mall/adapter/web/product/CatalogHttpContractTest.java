@@ -80,7 +80,7 @@ class CatalogHttpContractTest {
                 .content(
                 """
 {"code":"SP1","name":"goods","categoryId":"1","brandId":"2","deliveryTypes":[],"keyword":"关键字","introduction":"简介","sliderPicUrls":[],"sort":0,
- "skus":[{"code":"S1","name":"sku","price":"9.25","stock":5,"properties":[]}]}
+ "skus":[{"code":"S1","name":"sku","price":"9.25","stock":5,"specs":[]}]}
 """))
             .andExpect(status().isOk());
         var captured =
@@ -95,17 +95,17 @@ class CatalogHttpContractTest {
         assertEquals(new BigDecimal("9.25"), captured.getValue().skus().get(0).price());
         mvc.perform(post("/mall/spus").contentType(MediaType.APPLICATION_JSON).content("""
                 {"code":"SP1","name":"goods","categoryId":1,"brandId":2,"deliveryTypes":[null],
-                 "skus":[{"code":"S1","name":"sku","price":"9.25","stock":5,"properties":[]}]}
+                 "skus":[{"code":"S1","name":"sku","price":"9.25","stock":5,"specs":[]}]}
                 """)).andExpect(status().isBadRequest());
         mvc.perform(post("/mall/spus").contentType(MediaType.APPLICATION_JSON).content("""
                 {"code":"SP1","name":"goods","categoryId":1,"brandId":2,"deliveryTypes":[],
                  "keyword":" ","introduction":"简介","sliderPicUrls":[],"sort":0,
-                 "skus":[{"code":"S1","name":"sku","price":"9.25","stock":5,"properties":[]}]}
+                 "skus":[{"code":"S1","name":"sku","price":"9.25","stock":5,"specs":[]}]}
                 """)).andExpect(status().isBadRequest());
         mvc.perform(post("/mall/spus").contentType(MediaType.APPLICATION_JSON).content("""
                 {"code":"SP1","name":"goods","categoryId":1,"brandId":2,"deliveryTypes":[],
                  "keyword":"关键字","introduction":"简介","sliderPicUrls":["/1","/2","/3","/4","/5","/6"],"sort":0,
-                 "skus":[{"code":"S1","name":"sku","price":"9.25","stock":5,"properties":[]}]}
+                 "skus":[{"code":"S1","name":"sku","price":"9.25","stock":5,"specs":[]}]}
                 """)).andExpect(status().isBadRequest());
         verifyNoMoreInteractions(create);
     }

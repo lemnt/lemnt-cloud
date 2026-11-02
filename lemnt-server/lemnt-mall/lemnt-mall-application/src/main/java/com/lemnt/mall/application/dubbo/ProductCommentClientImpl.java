@@ -18,8 +18,8 @@ public class ProductCommentClientImpl implements ProductCommentClient {
     public Long saveSystem(ProductCommentSaveBo value) { return save(value, true); }
     private Long save(ProductCommentSaveBo value, boolean system) {
         var cmd = new CommentSaveCmd(value.memberId(), value.orderNo(), value.skuId(), value.orderId(), value.orderItemId(), value.spuId(),
-                value.spuName(), value.skuPicUrl(), value.properties() == null ? null : value.properties().stream().map(property ->
-                        new CommentSaveCmd.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                value.spuName(), value.skuPicUrl(), value.specs() == null ? null : value.specs().stream().map(property ->
+                        new CommentSaveCmd.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
                 value.uniqueSku(), value.allowCreate(), value.score(), value.content(), value.descriptionScores(), value.benefitScores(), value.anonymous(), value.picUrls());
         return (system ? comments.saveSystem(cmd) : comments.saveVerified(cmd)).id();
     }

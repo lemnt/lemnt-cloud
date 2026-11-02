@@ -34,7 +34,7 @@ class SettlementCacheTest {
                 new BigDecimal("10.00"),
                 2,
                 new BigDecimal("20.00"), new BigDecimal("20.00"), BigDecimal.ZERO,
-                8L, "原商品", List.of(new SettlementItem.Property(3L, "颜色", 7L, "黑色")), "https://example.com/original.png")),
+                8L, "原商品", List.of(new SettlementItem.Spec(3L, "颜色", 7L, "黑色")), "https://example.com/original.png")),
                 new BigDecimal("20.00"),
                 new BigDecimal("0.00"),
                 new BigDecimal("20.00"),
@@ -78,7 +78,7 @@ class SettlementCacheTest {
         gateway.cache(value);
         var ttl = ArgumentCaptor.forClass(Duration.class);
         verify(values)
-            .setIfAbsent(eq("mall:settlement:v4:" + value.id()), anyString(), ttl.capture());
+            .setIfAbsent(eq("mall:settlement:v5:" + value.id()), anyString(), ttl.capture());
         assertTrue(ttl.getValue().getSeconds() > 890 && ttl.getValue().getSeconds() <= 900);
         when(values.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(false);
         assertThrows(IllegalStateException.class, () -> gateway.cache(value));
@@ -148,10 +148,10 @@ class SettlementCacheTest {
                 token(java.util.Map.of("a:b", "c"), "old.png"));
     }
 
-    private String token(java.util.Map<String, String> properties, String image) {
+    private String token(java.util.Map<String, String> specs, String image) {
         var item = new SettlementItem(5L, "SKU", "name", BigDecimal.TEN, 1, BigDecimal.TEN,
-                BigDecimal.TEN, BigDecimal.ZERO, 8L, "SPU", properties == null ? null : properties.entrySet().stream()
-                        .map(entry -> new SettlementItem.Property(null, entry.getKey(), null, entry.getValue())).toList(), image);
+                BigDecimal.TEN, BigDecimal.ZERO, 8L, "SPU", specs == null ? null : specs.entrySet().stream()
+                        .map(entry -> new SettlementItem.Spec(null, entry.getKey(), null, entry.getValue())).toList(), image);
         return com.lemnt.mall.domain.settlement.model.SettlementRules.quoteToken(
                 new SettlementQuote(List.of(item), BigDecimal.TEN, BigDecimal.ZERO, BigDecimal.TEN, null));
     }
@@ -168,6 +168,7 @@ class SettlementCacheTest {
         var codec = new Fastjson2RedisSerializer();
         var json = com.alibaba.fastjson2.JSON.parseObject(codec.serialize(
                 new com.lemnt.mall.domain.settlement.model.SettlementSubmission(order, record)));
+        json.getJSONObject("order").getJSONArray("items").getJSONObject(0).remove("specs");
         json.getJSONObject("order").getJSONArray("items").getJSONObject(0)
                 .put("properties", com.alibaba.fastjson2.JSON.parseObject("{\"颜色\":\"黑色\"}"));
         var redis = mock(StringRedisTemplate.class);
@@ -178,8 +179,8 @@ class SettlementCacheTest {
         assertEquals("OLD-ORDER", restored.order().orderNo());
         assertEquals("OLD-REQUEST", restored.record().requestNo());
         assertEquals("OLD-HASH", restored.record().fingerprint());
-        assertEquals(List.of(new SettlementItem.Property(null, "颜色", null, "黑色")),
-                restored.order().items().get(0).properties());
+        assertEquals(List.of(new SettlementItem.Spec(null, "颜色", null, "黑色")),
+                restored.order().items().get(0).specs());
         verify(values, never()).set(anyString(), anyString());
     }
 }

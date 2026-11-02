@@ -75,7 +75,6 @@ import com.lemnt.member.infrastructure.growth.gateway.MemberLevelGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberLevelRecordGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberSignConfigGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberSignRecordGatewayImpl;
-import com.lemnt.member.infrastructure.growth.mapper.MemberConfigMapper;
 import com.lemnt.member.infrastructure.growth.mapper.MemberLevelMapper;
 import com.lemnt.member.infrastructure.growth.mapper.MemberLevelRecordMapper;
 import com.lemnt.member.infrastructure.growth.mapper.MemberSignConfigMapper;
@@ -162,6 +161,9 @@ class MemberAccountIntegrationTest {
         assertEquals(status, exception.getCode());
     }
 
+    java.util.Map<String, String> pointConfigs;
+    boolean rejectPointConfig;
+
     @BeforeEach
     void setup() throws Exception {
         source = new JdbcDataSource();
@@ -195,7 +197,6 @@ class MemberAccountIntegrationTest {
         config.addMapper(MemberLevelRecordMapper.class);
         config.addMapper(MemberSignConfigMapper.class);
         if (!config.hasMapper(MemberSignRecordMapper.class)) config.addMapper(MemberSignRecordMapper.class);
-        config.addMapper(MemberConfigMapper.class);
         template = new SqlSessionTemplate(factory);
         memberUserGateway = new MemberUserGatewayImpl(template.getMapper(MemberUserMapper.class));
         memberGroupGateway = new MemberGroupGatewayImpl(template.getMapper(MemberGroupMapper.class));
@@ -208,7 +209,17 @@ class MemberAccountIntegrationTest {
         memberLevelRecordGateway = new MemberLevelRecordGatewayImpl(template.getMapper(MemberLevelRecordMapper.class));
         memberSignConfigGateway = new MemberSignConfigGatewayImpl(template.getMapper(MemberSignConfigMapper.class));
         memberSignRecordGateway = new MemberSignRecordGatewayImpl(template.getMapper(MemberSignRecordMapper.class));
-        memberConfigGateway = new MemberConfigGatewayImpl(template.getMapper(MemberConfigMapper.class));
+        pointConfigs = new java.util.concurrent.ConcurrentHashMap<>();
+        var remote = new com.lemnt.system.api.RemoteConfigService() {
+            public String getConfig(String key) { return pointConfigs.get(key); }
+            public void saveBusinessConfig(com.lemnt.system.api.bo.BusinessConfigSaveBo value) {
+                if (rejectPointConfig) throw new IllegalStateException("system配置保存失败");
+                pointConfigs.put(value.configKey(), value.configValue());
+            }
+        };
+        var gateway = new MemberConfigGatewayImpl();
+        org.springframework.test.util.ReflectionTestUtils.setField(gateway, "remoteConfigService", remote);
+        memberConfigGateway = gateway;
         memberAuthGateway = org.mockito.Mockito.mock(com.lemnt.member.domain.user.gateway.MemberAuthGateway.class);
         userService = tx(new MemberUserService(memberGroupGateway, memberTagGateway, memberTagLinkGateway, memberUserGateway, memberAuthGateway));
         addressService = tx(new MemberAddressService(memberUserGateway, memberAddressGateway));
@@ -1309,10 +1320,10 @@ class MemberAccountIntegrationTest {
         assertNotEquals(old.id(), created);
         assertEquals(3, memberSignConfigGateway.signConfigs().size());
     }
-    /** 空配置先能管理等级，再首次保存积分配置；更新按真实ID而不是固定1。 */
+    /** 空配置先能管理等级，再经RPC保存积分配置；不依赖旧表ID。 */
     @Test
     void missingPointConfigurationCanBeCreatedAndReadByTradeClient() throws Exception {
-        sql("DELETE FROM member_config");
+        pointConfigs.clear();
         assertNull(memberConfigGateway.config());
         var client = new com.lemnt.member.application.dubbo.MemberGrowthClientImpl(growthService, memberConfigGateway);
         assertBusinessException(409, () -> client.getPointConfig());
@@ -1325,59 +1336,50 @@ class MemberAccountIntegrationTest {
         assertEquals(2, external.maxPoints());
         assertEquals(3, external.givePerYuan());
         assertTrue(growthService.saveConfig(new com.lemnt.member.domain.growth.model.Config(false, 0, 0, 0)));
-        assertEquals(1, count("member_config"));
+        assertEquals(1, pointConfigs.size());
         assertFalse(memberConfigGateway.config().pointTradeDeductEnable());
         assertBusinessException(400, () -> growthService.saveConfig(new com.lemnt.member.domain.growth.model.Config(true, 0, 2, 1)));
         assertFalse(memberConfigGateway.config().pointTradeDeductEnable());
     }
 
-    /** 并发首次保存由基础事务锁串行化，不生成两份配置。 */
+    /** 并发业务请求经RPC保存同一配置键；system唯一键另有真实存储测试。 */
     @Test
     void concurrentInitialPointConfigurationSaveCreatesOnlyOneRow() throws Exception {
-        sql("DELETE FROM member_config");
+        pointConfigs.clear();
         var pool = Executors.newFixedThreadPool(2);
         try {
             var a = pool.submit(() -> growthService.saveConfig(new com.lemnt.member.domain.growth.model.Config(true, 5, 2, 1)));
             var b = pool.submit(() -> growthService.saveConfig(new com.lemnt.member.domain.growth.model.Config(true, 3, 4, 2)));
             assertTrue(a.get(15, TimeUnit.SECONDS));
             assertTrue(b.get(15, TimeUnit.SECONDS));
-            assertEquals(1, count("member_config"));
+            assertEquals(1, pointConfigs.size());
         } finally {
             pool.shutdownNow();
         }
     }
 
-    /** 旧配置ID与金额参数保持，新增审计未知NULL，后续修改只更新实际首条。 */
+    /** 新运行链路不再访问旧配置表，存储故障不伪装为默认配置。 */
     @Test
-    void legacyPointConfigurationUpgradePreservesRealIdAndAudit() throws Exception {
-        sql("DROP TABLE member_config");
-        sql("CREATE TABLE member_config(id INT PRIMARY KEY,point_trade_deduct_enable BOOLEAN NOT NULL,point_trade_deduct_unit_price INT NOT NULL,point_trade_deduct_max_price INT NOT NULL,point_trade_give_point INT NOT NULL)");
-        sql("INSERT INTO member_config VALUES(77,TRUE,5,2,3)");
-        ScriptUtils.executeSqlScript(schema, new ClassPathResource("member-sql/upgrade/point_config_audit.sql"));
-        var mapper = template.getMapper(MemberConfigMapper.class);
-        var original = mapper.selectById(77L);
-        assertNull(original.getCreateTime());
-        assertNull(original.getCreateBy());
-        assertNull(original.getUpdateTime());
-        assertEquals(5, memberConfigGateway.config().pointTradeDeductUnitPrice());
+    void pointConfigurationUsesSystemSnapshotWithoutLegacyTable() {
+        var value = new com.lemnt.member.domain.growth.model.Config(true, 5, 2, 3);
+        pointConfigs.put("member.point.config", com.alibaba.fastjson2.JSON.toJSONString(value));
+        assertEquals(value, memberConfigGateway.config());
         growthService.saveConfig(new com.lemnt.member.domain.growth.model.Config(true, 3, 4, 2));
-        assertEquals(3, mapper.selectById(77L).getPointTradeDeductUnitPrice());
-        assertNull(mapper.selectById(1L));
-        assertNull(mapper.selectById(77L).getCreateTime());
-        assertNotNull(mapper.selectById(77L).getUpdateTime());
+        assertEquals(3, memberConfigGateway.config().pointTradeDeductUnitPrice());
+        assertEquals(1, pointConfigs.size());
     }
-    /** 首次配置写入失败必须回滚，去掉故障约束后可以正常重新保存。 */
+    /** RPC保存失败不伪造成功，恢复传输后可以重新保存。 */
     @Test
     void failedInitialPointConfigurationWriteRollsBackAndCanRetry() throws Exception {
-        sql("DELETE FROM member_config");
-        sql("ALTER TABLE member_config ADD CONSTRAINT reject_config CHECK(point_trade_give_point<0)");
+        pointConfigs.clear();
+        rejectPointConfig = true;
         var value = new com.lemnt.member.domain.growth.model.Config(true, 5, 2, 3);
         assertThrows(Exception.class, () -> growthService.saveConfig(value));
-        assertEquals(0, count("member_config"));
-        sql("ALTER TABLE member_config DROP CONSTRAINT reject_config");
+        assertEquals(0, pointConfigs.size());
+        rejectPointConfig = false;
         assertTrue(growthService.saveConfig(value));
         assertEquals(value, memberConfigGateway.config());
-        assertEquals(1, count("member_config"));
+        assertEquals(1, pointConfigs.size());
     }
     /** 等级名称/状态筛选与启用列表按源条件，清空图片仍通过BaseMapper保存。 */
     @Test

@@ -24,7 +24,7 @@ public record ProductSpuBatchSkuRes(
         @Schema(description = "图片地址")
         String image,
         @Schema(description = "规格快照")
-        List<Property> properties,
+        List<Spec> specs,
         @Schema(description = "ON_SHELF或OFF_SHELF")
         String status,
         @Schema(description = "重量，千克")
@@ -34,19 +34,19 @@ public record ProductSpuBatchSkuRes(
 ) implements Serializable {
     /** 缺少配送字段的规格列表。 */
     public ProductSpuBatchSkuRes(Long id, Long spuId, String code, String name, BigDecimal price, Integer stock,
-            String image, List<Property> properties, String status) {
-        this(id, spuId, code, name, price, stock, image, properties, status, null, null);
+            String image, List<Spec> specs, String status) {
+        this(id, spuId, code, name, price, stock, image, specs, status, null, null);
     }
     /** 编号与名称保持一一对应。 */
     @Schema(description = "商品规格")
-    public record Property(
+    public record Spec(
             @Schema(description = "规格项编号")
-            Long propertyId,
+            Long specId,
             @Schema(description = "规格名称，写入时可省略")
-            String propertyName,
+            String specName,
             @Schema(description = "规格值编号")
-            Long valueId,
+            Long specValueId,
             @Schema(description = "规格值名称，写入时可省略")
-            String valueName
+            String specValueName
     ) implements java.io.Serializable {}
 }

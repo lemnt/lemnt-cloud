@@ -99,9 +99,9 @@ public final class FulfillmentResConverter {
                 item.lineAmount(),
                 item.spuId(),
                 item.spuName(),
-                item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
-                        new com.lemnt.trade.adapter.web.fulfillment.res.OrderItemRes.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
+                item.specs() == null ? null : item.specs().stream().map(snapshotProperty ->
+                        new com.lemnt.trade.adapter.web.fulfillment.res.OrderItemRes.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
+                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
                 item.picUrl(), item.orderItemId(), item.commentStatus())).toList(),
                 shipment(v.shipment()), v.commentStatus(), v.finishTime());
     }

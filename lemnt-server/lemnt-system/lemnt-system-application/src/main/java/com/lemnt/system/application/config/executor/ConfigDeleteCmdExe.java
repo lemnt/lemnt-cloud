@@ -1,6 +1,7 @@
 package com.lemnt.system.application.config.executor;
 
 import com.lemnt.system.domain.config.gateway.ConfigGateway;
+import com.lemnt.system.application.config.service.BusinessConfigGuard;
 
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,12 @@ public class ConfigDeleteCmdExe {
      * @return 行数
      */
     public Boolean execute(List<Long> configIds) {
+        for (Long id : configIds) {
+            var config = configGateway.selectById(id);
+            if (config != null) {
+                BusinessConfigGuard.requireEditable(config.getConfigKey());
+            }
+        }
         return configGateway.deleteByIds(configIds);
     }
 }

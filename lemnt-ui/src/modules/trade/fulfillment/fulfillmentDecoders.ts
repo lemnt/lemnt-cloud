@@ -1,4 +1,4 @@
-import { decodeProperties, positiveId } from '../../mall/checkout/checkoutDecoders';
+import { decodeSpecs, positiveId } from '../../mall/checkout/checkoutDecoders';
 import type { CheckoutStatus, CheckoutItem } from '../../mall/checkout/types';
 import type { Page, OrderSummary, OrderDetail, Shipment, RefundRequest } from './types';
 function object(v: unknown): Record<string, unknown> {
@@ -17,7 +17,7 @@ function productSnapshot(row: Record<string, unknown>) {
   return {
     spuId: row.spuId == null ? null : positiveId(row.spuId),
     spuName: optional(row.spuName),
-    properties: decodeProperties(row.properties),
+    specs: decodeSpecs(row.specs),
     picUrl: optional(row.picUrl),
   };
 }

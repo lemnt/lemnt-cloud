@@ -36,15 +36,15 @@ public class ProductCatalogGatewayImpl implements ProductCatalogGateway {
         return sellable.stream().collect(Collectors.toMap(value -> value.id(), value -> {
             var sku = skus.get(value.id());
             var spu = sku == null ? null : spus.get(sku.spuId());
-            var properties = sku == null ? List.<ProductSnapshot.Property>of() : sku.properties().stream()
-                    .sorted(java.util.Comparator.comparing(property -> property.propertyName()))
-                    .map(property -> new ProductSnapshot.Property(property.propertyId(), property.propertyName(),
-                            property.valueId(), property.valueName())).toList();
+            var specs = sku == null ? List.<ProductSnapshot.Spec>of() : sku.specs().stream()
+                    .sorted(java.util.Comparator.comparing(property -> property.specName()))
+                    .map(property -> new ProductSnapshot.Spec(property.specId(), property.specName(),
+                            property.specValueId(), property.specValueName())).toList();
             return new ProductSnapshot(value.id(), value.productCode(), value.name(), value.price(), value.stock(),
                     spu == null ? List.of() : spu.deliveryTypes(), spu == null ? null : spu.deliveryTemplateId(),
                     sku == null ? null : sku.weight(), sku == null ? null : sku.volume(),
                     sku == null ? null : sku.spuId(), spu == null ? null : spu.name(),
-                    properties,
+                    specs,
                     sku != null && sku.image() != null && !sku.image().isBlank()
                             ? sku.image() : spu == null ? null : spu.image());
         }));

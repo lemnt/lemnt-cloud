@@ -16,7 +16,7 @@ public final class CommentResConverter {
             value.score(), value.content(), value.visible(), value.replyContent(), value.replyUserId(), value.replyTime(), value.createTime(), value.descriptionScores(), value.benefitScores(), value.picUrls(),
                 value.anonymous(), value.userNickname(), value.userAvatar(), value.orderId(), value.spuName(), value.skuPicUrl(),
                 value.skuProperties() == null ? null : value.skuProperties().stream().map(property ->
-                        new CommentPageRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                        new CommentPageRes.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
                 value.replyStatus(), value.orderItemId());
     }
 
@@ -26,7 +26,7 @@ public final class CommentResConverter {
             value.score(), value.content(), value.visible(), value.replyContent(), value.replyUserId(), value.replyTime(), value.createTime(), value.descriptionScores(), value.benefitScores(), value.picUrls(),
                 value.anonymous(), value.userNickname(), value.userAvatar(), value.orderId(), value.spuName(), value.skuPicUrl(),
                 value.skuProperties() == null ? null : value.skuProperties().stream().map(property ->
-                        new CommentDetailRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                        new CommentDetailRes.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
                 value.replyStatus(), value.orderItemId());
     }
 
@@ -36,7 +36,7 @@ public final class CommentResConverter {
             value.score(), value.content(), value.visible(), value.replyContent(), value.replyUserId(), value.replyTime(), value.createTime(), value.descriptionScores(), value.benefitScores(), value.picUrls(),
                 value.anonymous(), value.userNickname(), value.userAvatar(), value.orderId(), value.spuName(), value.skuPicUrl(),
                 value.skuProperties() == null ? null : value.skuProperties().stream().map(property ->
-                        new CommentReplyRes.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                        new CommentReplyRes.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
                 value.replyStatus(), value.orderItemId());
     }
 }

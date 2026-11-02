@@ -1,8 +1,11 @@
 # Mall catalog API
+
+2026-11-02 第162批：规格字段统一为 `specs` 及 `specId/specName/specValueId/specValueName`；旧JSON读取与列名升级说明见[规格命名迁移](spec-naming-migration.md)。
+
 Version v1 · 2026-10-25 · source checked, examples constructed (not deployed HTTP evidence).
 Input: catalog design v2; Req/Res declarations; actual `JacksonConfig`/`BigNumberSerializer`. Local MVC validation and actual serialization are tested separately.
 
-Amounts are decimal yuan. Application Jackson serializes BigDecimal as strings, and emits Long values outside the JavaScript safe range as strings. Null properties are omitted. UI normalizes all IDs to strings and retains price strings for display. Edit forms limit prices to 99,999,999,999.99 yuan to avoid numeric editing precision loss; larger prices remain displayable and need a separate precise administrative workflow (not implemented by this UI).
+Amounts are decimal yuan. Application Jackson serializes BigDecimal as strings, and emits Long values outside the JavaScript safe range as strings. Null specs are omitted. UI normalizes all IDs to strings and retains price strings for display. Edit forms limit prices to 99,999,999,999.99 yuan to avoid numeric editing precision loss; larger prices remain displayable and need a separate precise administrative workflow (not implemented by this UI).
 
 Backend service paths retain `/mall`; see `config/mall-gateway-route.yaml`. Permission enforcement uses existing admin security; no member checkout endpoints or role grants are introduced.
 
@@ -39,8 +42,8 @@ Backend service paths retain `/mall`; see `config/mall-gateway-route.yaml`. Perm
 | price | decimal string on response; number/string on request | 价格，元 |
 | stock | integer | 可用库存 |
 | image | string | 图片URL |
-| properties | object | SKU规格映射 |
-| properties.<name> | string | SKU specification value |
+| specs | object | SKU规格映射 |
+| specs.<name> | string | SKU specification value |
 | status | string | 状态 |
 
 ### Spu
@@ -78,7 +81,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data[] | Category | Shared schema above (including nested skus[] and properties entries where present) |
+| data[] | Category | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -112,7 +115,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data | Category | Shared schema above (including nested skus[] and properties entries where present) |
+| data | Category | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -148,7 +151,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data | Category | Shared schema above (including nested skus[] and properties entries where present) |
+| data | Category | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -186,7 +189,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data | Category | Shared schema above (including nested skus[] and properties entries where present) |
+| data | Category | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -219,7 +222,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data | Boolean | Shared schema above (including nested skus[] and properties entries where present) |
+| data | Boolean | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -246,7 +249,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data[] | Brand | Shared schema above (including nested skus[] and properties entries where present) |
+| data[] | Brand | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -280,7 +283,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data | Brand | Shared schema above (including nested skus[] and properties entries where present) |
+| data | Brand | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -316,7 +319,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data | Brand | Shared schema above (including nested skus[] and properties entries where present) |
+| data | Brand | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -354,7 +357,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data | Brand | Shared schema above (including nested skus[] and properties entries where present) |
+| data | Brand | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -387,7 +390,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data | Boolean | Shared schema above (including nested skus[] and properties entries where present) |
+| data | Boolean | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -456,7 +459,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data | Spu | Shared schema above (including nested skus[] and properties entries where present) |
+| data | Spu | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -477,7 +480,7 @@ Constructed response:
         "name": "红色 M",
         "price": "99.00",
         "stock": 5,
-        "properties": {
+        "specs": {
           "颜色": "红色",
           "尺寸": "M"
         },
@@ -510,14 +513,14 @@ Address: `/mall/spus`. Method: `POST`. Permission: `mall:spu:add`.
 | skus[].price | decimal string on response; number/string on request | yes | body | none | 销售价，元，最多两位小数 |
 | skus[].stock | integer | yes | body | none | 可用库存 |
 | skus[].image | string | no | body | none | SKU图片URL |
-| skus[].properties | object | no | body | none | 规格名到规格值的映射，最多10项 |
+| skus[].specs | object | no | body | none | 规格名到规格值的映射，最多10项 |
 
 Response parameters:
 | Field | Type | Meaning |
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data | Spu | Shared schema above (including nested skus[] and properties entries where present) |
+| data | Spu | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -538,7 +541,7 @@ Constructed response:
         "name": "红色 M",
         "price": "99.00",
         "stock": 5,
-        "properties": {
+        "specs": {
           "颜色": "红色",
           "尺寸": "M"
         },
@@ -552,7 +555,7 @@ Constructed response:
 Request example (host/token placeholders):
 ```bash
 curl -X POST 'https://<API_HOST>/mall/spus' -H 'Authorization: Bearer <ADMIN_ACCESS_TOKEN>' \
-  -H 'Content-Type: application/json' --data '{"code":"SPU-001","name":"商品","categoryId":"1","brandId":"2","skus":[{"code":"SKU-RED-M","name":"红色 M","price":99,"stock":5,"properties":{"颜色":"红色","尺寸":"M"}}]}'
+  -H 'Content-Type: application/json' --data '{"code":"SPU-001","name":"商品","categoryId":"1","brandId":"2","skus":[{"code":"SKU-RED-M","name":"红色 M","price":99,"stock":5,"specs":{"颜色":"红色","尺寸":"M"}}]}'
 ```
 
 ## 14. SPU metadata
@@ -572,7 +575,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data | Boolean | Shared schema above (including nested skus[] and properties entries where present) |
+| data | Boolean | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -601,7 +604,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data | Boolean | Shared schema above (including nested skus[] and properties entries where present) |
+| data | Boolean | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -632,7 +635,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data | Boolean | Shared schema above (including nested skus[] and properties entries where present) |
+| data | Boolean | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -663,7 +666,7 @@ Response parameters:
 | --- | --- | --- |
 | code | integer | 200 on success |
 | msg | string, omitted if null | Existing R result message |
-| data | StockAdjustment | Shared schema above (including nested skus[] and properties entries where present) |
+| data | StockAdjustment | Shared schema above (including nested skus[] and specs entries where present) |
 
 Constructed response:
 ```json
@@ -689,7 +692,7 @@ curl -X POST 'https://<API_HOST>/mall/skus/3/stock' -H 'Authorization: Bearer <A
 - Parameter binding/Bean Validation rejects missing required fields, invalid decimal precision, nested SKU violations and paging limits before the application write. MVC tests verify 400 for these cases. Domain failures and persistence errors follow the existing global handler; deployed gateway/security response shapes have not been exercised.
 - Missing detail returns existing R.fail("record missing") behavior; delete/update/shelf of a missing row returns false. Arrays are genuinely empty only when the backend supplies an empty array. Invalid/missing response arrays are rejected by the catalog UI decoder.
 - Referenced category/brand deletion fails; parent category cannot be changed; categories are limited to two levels. List operations reject counts above 1000 instead of truncating silently.
-- SPU create accepts 1..100 SKUs and at most 10 properties per SKU; property-name sets must match and variant combinations/code must be unique. Creation is one local transaction. New SPU starts OFF_SHELF. Codes and variant identity are immutable in the present update API.
+- SPU create accepts 1..100 SKUs and at most 10 specs per SKU; property-name sets must match and variant combinations/code must be unique. Creation is one local transaction. New SPU starts OFF_SHELF. Codes and variant identity are immutable in the present update API.
 - Publishing validates enabled category, ancestors and brand. Snapshot lookup and reservation SQL independently require SPU/category/brand availability. Existing legacy standalone products retain their original behavior. Confirm/release works for previously reserved stock even if taxonomy/SPU is now disabled.
 - Stock adjustments require nonzero delta, positive SKU ID, nonblank requestNo <=64 characters, reason <=200. Same requestNo/product/delta/reason returns the original resultingStock snapshot; changed payload rejects. Concurrent duplicate insertion can return a retryable conflict; retry with identical requestNo and payload.
 - Inventory adjustment checks nonnegative stock, signed INT maximum and capacity for outstanding RESERVED releases. Ledger and inventory commit together. On unknown network outcome, do not invent a new requestNo: retry the original or inspect the ledger.

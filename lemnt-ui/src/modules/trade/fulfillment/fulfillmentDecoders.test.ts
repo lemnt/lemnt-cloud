@@ -106,30 +106,30 @@ it('订单商品快照保留长编号、规格和图片，未知历史不能变�
   };
   const read = (extra: Record<string, unknown>) =>
     decodeDetail({ ...order, items: [{ ...item, ...extra }] }).items[0];
-  expect(read({}).properties).toBeNull();
-  expect(read({ properties: {} }).properties).toEqual([]);
+  expect(read({}).specs).toBeNull();
+  expect(read({ specs: {} }).specs).toEqual([]);
   const row = read({
     spuId: '9223372036854775807',
     spuName: '原商品',
-    properties: { 颜色: '黑色' },
+    specs: { 颜色: '黑色' },
     picUrl: 'https://example.com/old.png',
   });
   expect(row.spuId).toBe('9223372036854775807');
-  expect(row.properties).toEqual([
-    { propertyId: null, propertyName: '颜色', valueId: null, valueName: '黑色' },
+  expect(row.specs).toEqual([
+    { specId: null, specName: '颜色', specValueId: null, specValueName: '黑色' },
   ]);
   expect(row.picUrl).toBe('https://example.com/old.png');
-  expect(() => read({ properties: { 颜色: 1 } })).toThrow();
-  expect(read({ properties: [] }).properties).toEqual([]);
+  expect(() => read({ specs: { 颜色: 1 } })).toThrow();
+  expect(read({ specs: [] }).specs).toEqual([]);
 });
 
 it('完整规格列表保留长编号，部分缺号不能伪装为合法规格', () => {
-  const properties = [
+  const specs = [
     {
-      propertyId: '9223372036854775807',
-      propertyName: '颜色',
-      valueId: '9223372036854775806',
-      valueName: '黑色',
+      specId: '9223372036854775807',
+      specName: '颜色',
+      specValueId: '9223372036854775806',
+      specValueName: '黑色',
     },
   ];
   const detail = {
@@ -142,23 +142,21 @@ it('完整规格列表保留长编号，部分缺号不能伪装为合法规格'
         unitPrice: '17.00',
         quantity: 1,
         lineAmount: '17.00',
-        properties,
+        specs,
       },
     ],
   };
-  expect(decodeDetail(detail).items[0].properties).toEqual(properties);
+  expect(decodeDetail(detail).items[0].specs).toEqual(specs);
   expect(() =>
     decodeDetail({
       ...detail,
-      items: [{ ...detail.items[0], properties: [{ ...properties[0], valueId: null }] }],
+      items: [{ ...detail.items[0], specs: [{ ...specs[0], specValueId: null }] }],
     }),
   ).toThrow();
   expect(() =>
     decodeDetail({
       ...detail,
-      items: [
-        { ...detail.items[0], properties: [{ ...properties[0], valueId: 9007199254740992 }] },
-      ],
+      items: [{ ...detail.items[0], specs: [{ ...specs[0], specValueId: 9007199254740992 }] }],
     }),
   ).toThrow();
 });

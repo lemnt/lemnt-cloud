@@ -26,13 +26,13 @@ public class CommentSelfCreateCmdExe {
         if (sku == null || spu == null || "DELETED".equals(sku.status()) || "DELETED".equals(spu.status())) {
             throw new ServiceException("商品或SKU不存在", 404);
         }
-        var properties = sku.properties().stream().map(v -> new ProductComment.Property(
-                v.propertyId(), v.propertyName(), v.valueId(), v.valueName())).toList();
+        var specs = sku.specs().stream().map(v -> new ProductComment.Spec(
+                v.specId(), v.specName(), v.specValueId(), v.specValueName())).toList();
         return comments.save(new ProductComment(null, spu.id(), sku.id(), null, 0L,
                 (cmd.descriptionScores() + cmd.benefitScores()) / 2, cmd.content().trim(), true,
                 null, null, null, null, cmd.descriptionScores(), cmd.benefitScores(),
                 cmd.picUrls() == null ? List.of() : cmd.picUrls(), false, cmd.userNickname().trim(), cmd.userAvatar(),
-                null, spu.name(), sku.image(), properties, false, null)).id();
+                null, spu.name(), sku.image(), specs, false, null)).id();
     }
     private boolean score(Integer value) { return value != null && value >= 1 && value <= 5; }
     private boolean text(String value, int max) { return value != null && !value.isBlank() && value.length() <= max; }

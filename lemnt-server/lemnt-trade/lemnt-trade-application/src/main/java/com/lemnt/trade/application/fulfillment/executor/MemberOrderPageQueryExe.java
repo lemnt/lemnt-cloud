@@ -69,9 +69,9 @@ public class MemberOrderPageQueryExe {
     private OrderItemDTO item(TradeOrderItem value) {
         return new OrderItemDTO(value.productId(), value.productCode(), value.productName(), value.unitPrice(),
                 value.quantity(), value.lineAmount(), value.spuId(), value.spuName(),
-                value.properties() == null ? null : value.properties().stream()
-                        .map(property -> new OrderItemDTO.Property(property.propertyId(), property.propertyName(),
-                                property.valueId(), property.valueName())).toList(),
+                value.specs() == null ? null : value.specs().stream()
+                        .map(property -> new OrderItemDTO.Spec(property.specId(), property.specName(),
+                                property.specValueId(), property.specValueName())).toList(),
                 value.picUrl(), value.orderItemId(), value.commentStatus());
     }
 }

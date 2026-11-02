@@ -83,9 +83,9 @@ public interface ProductSkuGateway {
     ProductSku insertSku(ProductSku value);
 
     /** 同步规格项或规格值名称，只修改当前SKU。 */
-    void renameProperty(Long propertyId, String name);
+    void renameProperty(Long specId, String name);
 
     /** 同步规格值名称，保留SKU编号和已有订单快照。 */
-    void renamePropertyValue(Long valueId, String name);
+    void renamePropertyValue(Long specValueId, String name);
 
 }

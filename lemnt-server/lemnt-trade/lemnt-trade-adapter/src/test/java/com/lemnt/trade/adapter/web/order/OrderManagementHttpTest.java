@@ -51,6 +51,23 @@ class OrderManagementHttpTest {
     }
 
     @Test
+    void existingPaymentReturnsConflictProblemDetails() throws Exception {
+        var price = mock(OrderAdjustPriceCmdExe.class);
+        when(price.execute(any())).thenThrow(new com.lemnt.common.core.exception.ServiceException(
+                "订单已生成支付单，不能调价，请取消订单后重新下单", 409));
+        var mvc = MockMvcBuilders.standaloneSetup(new OrderManagementController(
+                        mock(OrderStatisticsQueryExe.class), mock(OrderRemarkDetailQueryExe.class),
+                        mock(OrderRemarkUpdateCmdExe.class), price, mock(OrderAdjustAddressCmdExe.class)))
+                .setControllerAdvice(new com.lemnt.common.security.handler.GlobalExceptionHandler()).build();
+        mvc.perform(post("/trade/admin/orders/TR1/price-adjustment").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"totalAmount\":\"8.00\"}"))
+                .andExpect(status().isConflict())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.code").value("BUSINESS_RULE_VIOLATION"))
+                .andExpect(jsonPath("$.detail").value("订单已生成支付单，不能调价，请取消订单后重新下单"));
+    }
+
+    @Test
     void adjustsPriceAndAddressWithVerifiedOperator() throws Exception {
         var price = mock(OrderAdjustPriceCmdExe.class);
         var address = mock(OrderAdjustAddressCmdExe.class);

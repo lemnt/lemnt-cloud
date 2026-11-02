@@ -16,7 +16,13 @@ import { usePermission } from '@/shared/hooks/usePermission';
 import { checkoutStatusEnum } from '../../../mall/checkout/constants';
 import { checkoutKeys } from '../../../mall/checkout/hooks/checkoutKeys';
 import { canShip, fulfillmentKeys } from '../constants';
-import { getOrders, getOrder, shipOrder, adjustOrderPrice, adjustOrderAddress } from '../api/fulfillmentApi';
+import {
+  getOrders,
+  getOrder,
+  shipOrder,
+  adjustOrderPrice,
+  adjustOrderAddress,
+} from '../api/fulfillmentApi';
 import type { OrderAddressRequest, OrderSummary, PageQuery, ShipmentRequest } from '../types';
 type Operation = { kind: 'ship'; orderNo: string; requestNo: string };
 export default function OrderFulfillmentPage() {
@@ -272,10 +278,10 @@ export default function OrderFulfillmentPage() {
                 {
                   title: '下单规格',
                   render: (_, row) =>
-                    row.properties == null
+                    row.specs == null
                       ? '未记录'
-                      : row.properties
-                          .map((property) => `${property.propertyName}：${property.valueName}`)
+                      : row.specs
+                          .map((property) => `${property.specName}：${property.specValueName}`)
                           .join('；') || '无规格',
                 },
                 { title: '单价（元）', dataIndex: 'unitPrice' },

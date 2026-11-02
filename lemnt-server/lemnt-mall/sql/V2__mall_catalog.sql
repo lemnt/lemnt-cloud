@@ -45,5 +45,5 @@ ALTER TABLE mall_product_sku ADD COLUMN spu_id BIGINT NULL;
 ALTER TABLE mall_product_sku ADD COLUMN variant_key VARCHAR(64) NULL;
 ALTER TABLE mall_product_sku ADD CONSTRAINT fk_mall_product_spu FOREIGN KEY(spu_id) REFERENCES mall_product_spu(id);
 ALTER TABLE mall_product_sku ADD CONSTRAINT uk_mall_sku_variant UNIQUE(spu_id,variant_key);
-ALTER TABLE mall_product_sku ADD COLUMN properties LONGTEXT NULL;
+ALTER TABLE mall_product_sku ADD COLUMN specs LONGTEXT NULL;
 -- 独立库存调整台账已移除，SKU库存随SPU保存。

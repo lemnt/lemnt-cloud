@@ -1,6 +1,7 @@
 package com.lemnt.system.application.config.executor;
 
 import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.system.application.config.service.BusinessConfigGuard;
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.system.application.config.cmd.ConfigUpdateCmd;
 import com.lemnt.system.domain.config.gateway.ConfigGateway;
@@ -27,6 +28,12 @@ public class ConfigUpdateCmdExe {
      * @return 行数
      */
     public Boolean execute(ConfigUpdateCmd cmd) {
+        BusinessConfigGuard.requireEditable(cmd.configKey());
+        var current = configGateway.selectById(cmd.configId());
+        if (current != null) {
+            BusinessConfigGuard.requireEditable(current.getConfigKey());
+        }
+
         if (configGateway.checkConfigKeyUnique(cmd.configKey(), cmd.configId()) != null) {
             throw new ServiceException("修改参数'" + cmd.configName() + "'失败，参数键名已存在");
         }

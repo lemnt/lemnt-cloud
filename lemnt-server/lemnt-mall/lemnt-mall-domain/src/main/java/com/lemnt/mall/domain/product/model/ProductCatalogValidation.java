@@ -84,17 +84,17 @@ public final class ProductCatalogValidation {
     /**
      * 配置属性。
      */
-    public static Map<String, String> properties(Map<String, String> properties) {
-        if (properties == null
+    public static Map<String, String> specs(Map<String, String> specs) {
+        if (specs == null
         ) {
             return Map.of();
         }
-        if (properties.size() > 10
+        if (specs.size() > 10
         ) {
             throw new IllegalArgumentException("最多10项规格");
         }
         var result = new TreeMap<String, String>();
-        properties.forEach(
+        specs.forEach(
                 (key, value) -> {
             String normalized = text(key, 64, "规格名称");
             if (result.put(normalized, text(value, 100, "规格值")) != null
@@ -108,9 +108,9 @@ public final class ProductCatalogValidation {
     /**
      * 规格组合键。
      */
-    public static String variantKey(Map<String, String> properties) {
+    public static String variantKey(Map<String, String> specs) {
         StringBuilder canonical = new StringBuilder();
-        new TreeMap<>(properties(properties))
+        new TreeMap<>(specs(specs))
             .forEach(
                 (key, value) ->
                 canonical
@@ -165,16 +165,16 @@ public final class ProductCatalogValidation {
                 throw new ServiceException("商品重量或体积不合法", 400);
             }
             String code = text(sku.code(), 64, "SKU编码");
-            List<ProductSkuSpec> props = validatedProperties(sku.properties());
+            List<ProductSkuSpec> props = validatedProperties(sku.specs());
             if (!codes.add(code) || !variants.add(variantKey(props))
             ) {
                 throw new IllegalArgumentException("SKU编码或规格组合重复");
             }
-            if (names != null && !names.equals(props.stream().map(ProductSkuSpec::propertyName).collect(java.util.stream.Collectors.toSet()))
+            if (names != null && !names.equals(props.stream().map(ProductSkuSpec::specName).collect(java.util.stream.Collectors.toSet()))
             ) {
                 throw new IllegalArgumentException("同一商品的SKU必须使用相同的规格名称");
             }
-            names = props.stream().map(ProductSkuSpec::propertyName).collect(java.util.stream.Collectors.toSet());
+            names = props.stream().map(ProductSkuSpec::specName).collect(java.util.stream.Collectors.toSet());
             skus.add(
                     new ProductSku(
                     sku.id(),
@@ -185,7 +185,7 @@ public final class ProductCatalogValidation {
                     sku.stock(),
                     optional(sku.image(), 500),
                 props == null ? null : props.stream().map(property ->
-                        new com.lemnt.mall.domain.product.model.ProductSkuSpec(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList(),
+                        new com.lemnt.mall.domain.product.model.ProductSkuSpec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
                     "ON_SHELF", sku.weight(), sku.volume()));
         }
         if (input.sort() != null && input.sort() < 0) {
@@ -226,13 +226,13 @@ public final class ProductCatalogValidation {
         var names = new HashSet<String>();
         var ids = new HashSet<Long>();
         return values.stream().map(value -> {
-            String name = text(value.propertyName(), 64, "规格名称");
-            String option = text(value.valueName(), 100, "规格值");
-            if (!names.add(name) || ((value.propertyId() == null) != (value.valueId() == null))
-                    || (value.propertyId() != null && (value.propertyId() <= 0 || value.valueId() <= 0 || !ids.add(value.propertyId())))) {
+            String name = text(value.specName(), 64, "规格名称");
+            String option = text(value.specValueName(), 100, "规格值");
+            if (!names.add(name) || ((value.specId() == null) != (value.specValueId() == null))
+                    || (value.specId() != null && (value.specId() <= 0 || value.specValueId() <= 0 || !ids.add(value.specId())))) {
                 throw new IllegalArgumentException("SKU规格重复或编号不合法");
             }
-            return new ProductSkuSpec(value.propertyId(), name, value.valueId(), option);
+            return new ProductSkuSpec(value.specId(), name, value.specValueId(), option);
         }).toList();
     }
 

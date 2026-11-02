@@ -6,6 +6,8 @@ import com.lemnt.trade.application.order.cmd.OrderAdjustPriceCmd;
 import com.lemnt.trade.application.order.service.OrderAdjustmentService;
 import com.lemnt.trade.application.order.service.OrderLogService;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
+import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.trade.domain.payment.model.PaymentRecord;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.trade.domain.order.gateway.TradeOrderItemGateway;
 import com.lemnt.trade.domain.order.model.TradeOrder;
@@ -26,7 +28,8 @@ class OrderAdjustmentServiceTest {
     final TradeOrderItemGateway items = mock(TradeOrderItemGateway.class);
     final OrderPersistenceService persistence = mock(OrderPersistenceService.class);
     final OrderLogService logs = mock(OrderLogService.class);
-    final OrderAdjustmentService service = new OrderAdjustmentService(orders, items, persistence, logs);
+    final TradePaymentGateway payments = mock(TradePaymentGateway.class);
+    final OrderAdjustmentService service = new OrderAdjustmentService(orders, items, persistence, logs, payments);
 
     TradeOrder order(String status, TradeOrderDelivery delivery) {
         return new TradeOrder(1L, "TR1", 7L, new BigDecimal("100.00"), status, List.of(), null,
@@ -54,6 +57,18 @@ class OrderAdjustmentServiceTest {
         verify(items).updatePayAmount(1L, 11L, new BigDecimal("48.00"));
         verify(items).updatePayAmount(1L, 12L, new BigDecimal("32.00"));
         verify(logs).record(any(), eq("PENDING_PAYMENT"), eq("PENDING_PAYMENT"), eq(2), any(), contains("80.00"));
+    }
+
+
+    @Test
+    void existingPaymentPreventsRepricingBeforeAnyWrite() {
+        when(persistence.findByOrderNoForUpdate("TR1")).thenReturn(order("PENDING_PAYMENT", null));
+        when(payments.findByOrderNo("TR1")).thenReturn(List.of(new PaymentRecord(1L, "PAY1", "TR1",
+                "ALIPAY", null, null, new BigDecimal("100.00"), "WAITING", null)));
+        var exception = assertThrows(ServiceException.class,
+                () -> service.adjustPrice(new OrderAdjustPriceCmd("TR1", new BigDecimal("80.00"), 9L)));
+        assertEquals("订单已生成支付单，不能调价，请取消订单后重新下单", exception.getMessage());
+        verifyNoInteractions(items, orders, logs);
     }
 
     @Test

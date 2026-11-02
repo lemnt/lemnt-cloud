@@ -17,9 +17,9 @@ public final class AppAfterSaleResConverter {
                 value.decisionReason(), value.returnCarrierCode(), value.returnTrackingNo(), value.requestedAt(),
                 value.decidedAt(), value.returnShippedAt(), value.returnReceivedAt(), value.refundTime(),
                 value.spuId(), value.spuName(),
-                value.properties() == null ? null : value.properties().stream()
-                        .map(property -> new AppAfterSaleRes.Property(property.propertyId(), property.propertyName(),
-                                property.valueId(), property.valueName())).toList(),
+                value.specs() == null ? null : value.specs().stream()
+                        .map(property -> new AppAfterSaleRes.Spec(property.specId(), property.specName(),
+                                property.specValueId(), property.specValueName())).toList(),
                 value.picUrl());
     }
 
@@ -28,9 +28,9 @@ public final class AppAfterSaleResConverter {
         return new AppAfterSaleItemRes(value.orderItemId(), value.productId(), value.productName(),
                 value.quantity(), value.refundableQuantity(), value.refundableAmount(), value.spuId(),
                 value.spuName(),
-                value.properties() == null ? null : value.properties().stream()
-                        .map(property -> new AppAfterSaleItemRes.Property(property.propertyId(),
-                                property.propertyName(), property.valueId(), property.valueName())).toList(),
+                value.specs() == null ? null : value.specs().stream()
+                        .map(property -> new AppAfterSaleItemRes.Spec(property.specId(),
+                                property.specName(), property.specValueId(), property.specValueName())).toList(),
                 value.picUrl());
     }
 }

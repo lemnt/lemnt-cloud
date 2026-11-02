@@ -52,7 +52,7 @@ class CommentFlowPersistenceTest {
             public Long createComment(com.lemnt.mall.domain.product.model.CommentOrderRequest value) {
                 return comments.saveVerified(new com.lemnt.mall.application.product.cmd.CommentSaveCmd(value.memberId(),
                         value.orderNo(), value.skuId(), 10L, itemIds.get(value.orderNo()), spuId, "购买时商品", "https://example.test/old.png",
-                        List.of(new com.lemnt.mall.application.product.cmd.CommentSaveCmd.Property(8L,"颜色",9L,"原红色")), true, true,
+                        List.of(new com.lemnt.mall.application.product.cmd.CommentSaveCmd.Spec(8L,"颜色",9L,"原红色")), true, true,
                         value.score(), value.content(), value.descriptionScores(), value.benefitScores(), value.anonymous(), value.picUrls())).id();
             }
         });
@@ -71,7 +71,7 @@ class CommentFlowPersistenceTest {
         orders.put(no, new SettlementOrder(10L, no, 1L, BigDecimal.TEN, "COMPLETED", List.of(
                 new SettlementItem(skuId, "SKU", "购买时规格", BigDecimal.TEN, 1, BigDecimal.TEN,
                         BigDecimal.TEN, BigDecimal.ZERO, spuId, "购买时商品", List.of(
-                        new SettlementItem.Property(8L, "颜色", 9L, "原红色")), "https://example.test/old.png")), LocalDateTime.now()));
+                        new SettlementItem.Spec(8L, "颜色", 9L, "原红色")), "https://example.test/old.png")), LocalDateTime.now()));
     }
 
     CommentCreateCmd cmd(String no, int description, int benefit, boolean anonymous) {
@@ -88,7 +88,7 @@ class CommentFlowPersistenceTest {
         var saved = comments.create(cmd("S1", 5, 4, true));
         assertEquals(4, saved.score()); assertEquals(5, saved.descriptionScores()); assertEquals(4, saved.benefitScores());
         assertEquals("真实昵称", saved.userNickname()); assertEquals("购买时商品", saved.spuName());
-        assertEquals(List.of(new ProductComment.Property(8L,"颜色",9L,"原红色")),saved.skuProperties());
+        assertEquals(List.of(new ProductComment.Spec(8L,"颜色",9L,"原红色")),saved.skuProperties());
         assertEquals(10L, saved.orderId()); assertFalse(saved.replyStatus());
         var replied = comments.reply(new CommentReplyCmd(saved.id(), 99L, "谢谢"));
         assertTrue(replied.replyStatus()); assertEquals(saved.skuProperties(), replied.skuProperties());
@@ -190,7 +190,7 @@ class CommentFlowPersistenceTest {
 
     private com.lemnt.mall.application.product.cmd.CommentSaveCmd verified(CommentCreateCmd input, Long itemId, boolean unique, boolean allowCreate) {
         return new com.lemnt.mall.application.product.cmd.CommentSaveCmd(input.memberId(),input.orderNo(),input.skuId(),10L,itemId,
-                spuId,"购买时商品","https://example.test/old.png",List.of(new com.lemnt.mall.application.product.cmd.CommentSaveCmd.Property(8L,"颜色",9L,"红色")),
+                spuId,"购买时商品","https://example.test/old.png",List.of(new com.lemnt.mall.application.product.cmd.CommentSaveCmd.Spec(8L,"颜色",9L,"红色")),
                 unique,allowCreate,input.score(),input.content(),input.descriptionScores(),input.benefitScores(),input.anonymous(),input.picUrls());
     }
 

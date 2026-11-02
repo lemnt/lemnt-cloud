@@ -32,11 +32,11 @@ export interface BrandSaveRequest {
   sort: number;
   status: TaxonomyStatus;
 }
-export interface SkuProperty {
-  propertyId: string | null;
-  propertyName: string;
-  valueId: string | null;
-  valueName: string;
+export interface SkuSpec {
+  specId: string | null;
+  specName: string;
+  specValueId: string | null;
+  specValueName: string;
 }
 export interface Sku {
   weight: string | null;
@@ -48,7 +48,7 @@ export interface Sku {
   price: string;
   stock: number;
   image: string | null;
-  properties: SkuProperty[];
+  specs: SkuSpec[];
   status: ShelfStatus;
 }
 export interface Spu {
@@ -97,7 +97,7 @@ export interface SkuCreateRequest {
   price: number;
   stock: number;
   image?: string;
-  properties: { propertyId: string; valueId: string }[];
+  specs: { specId: string; specValueId: string }[];
 }
 export interface SpuCreateRequest {
   deliveryTypes: number[];

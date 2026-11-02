@@ -31,6 +31,7 @@ class CouponSnapshotPersistenceTest {
         fixture.setup();
         ScriptUtils.executeSqlScript(fixture.schemaConnection, new ClassPathResource("sql/V10__cart_coupon_checkout.sql"));
         ScriptUtils.executeSqlScript(fixture.schemaConnection, new ClassPathResource("sql/V28__coupon_reward_gift.sql"));
+        ScriptUtils.executeSqlScript(fixture.schemaConnection, new ClassPathResource("sql/V29__coupon_gift_sequence.sql"));
         fixture.components.register(MemberLockGateway.class, memberId -> {});
         coupons = fixture.components.get(CouponGateway.class);
         templates = fixture.components.get(CouponTemplateGateway.class);
@@ -48,6 +49,70 @@ class CouponSnapshotPersistenceTest {
                 BigDecimal.ZERO, new BigDecimal("3.00"), null, null, -1, 0,
                 now.minusDays(1), now.plusDays(10), true, "测试说明", "USER", limit,
                 "SPU_IDS", List.of(11L), validity, 1, 3, 0)));
+    }
+
+    @Test
+    void giftsTwoCouponsAndReplayDoesNotReissueRevokedCoupon() {
+        var template = template(-1, "DATE");
+        issuance.gift(7L, template.id(), "GIFT1", 1);
+        issuance.gift(7L, template.id(), "GIFT1", 2);
+        assertEquals(2, coupons.takeCount(7L, template.id()));
+        assertEquals(2, templates.template(template.id()).issuedCount());
+        var first = coupons.coupons(7L).get(0);
+        assertEquals("GIFT1", first.sourceOrderNo());
+        assertNotNull(first.giftSequence());
+        assertTrue(coupons.revoke(7L, first.id()));
+        issuance.gift(7L, template.id(), "GIFT1", 1);
+        issuance.gift(7L, template.id(), "GIFT1", 2);
+        assertEquals(1, coupons.takeCount(7L, template.id()));
+        assertEquals(2, templates.template(template.id()).issuedCount());
+        assertTrue(coupons.giftIssued("GIFT1", template.id(), 7L, 1));
+        assertTrue(coupons.giftIssued("GIFT1", template.id(), 7L, 2));
+    }
+
+    @Test
+    void migratesLegacyGiftToFirstSequenceAndPreservesDatabaseUniqueness() throws Exception {
+        var template = template(-1, "DATE");
+        var legacy = issuance.take(7L, template.id(), "USER");
+        try (var statement = fixture.schemaConnection.createStatement()) {
+            statement.execute("UPDATE mall_coupon SET source_order_no='LEGACY' WHERE id=" + legacy.id());
+            statement.execute("DROP INDEX uk_mall_coupon_gift ON mall_coupon");
+            statement.execute("ALTER TABLE mall_coupon DROP COLUMN gift_sequence");
+            statement.execute("CREATE UNIQUE INDEX uk_mall_coupon_gift ON mall_coupon(source_order_no,template_id,member_id)");
+        }
+        ScriptUtils.executeSqlScript(fixture.schemaConnection, new ClassPathResource("sql/V29__coupon_gift_sequence.sql"));
+        issuance.gift(7L, template.id(), "LEGACY", 1);
+        issuance.gift(7L, template.id(), "LEGACY", 2);
+        assertEquals(2, coupons.takeCount(7L, template.id()));
+        assertEquals(2, templates.template(template.id()).issuedCount());
+        assertEquals(1, coupons.coupon(7L, legacy.id(), false).giftSequence());
+        var duplicate = new com.lemnt.mall.domain.coupon.model.Coupon(null, template.id(), 7L,
+                "AVAILABLE", null, legacy.terms(), null, "LEGACY", 2);
+        assertThrows(org.springframework.dao.DuplicateKeyException.class, () -> coupons.insertCoupon(duplicate));
+    }
+
+    @Test
+    void concurrentGiftCallbacksDoNotDuplicateCouponsOrQuota() throws Exception {
+        var template = template(-1, "DATE");
+        var pool = java.util.concurrent.Executors.newFixedThreadPool(2);
+        var start = new java.util.concurrent.CountDownLatch(1);
+        try {
+            java.util.concurrent.Callable<Void> callback = () -> {
+                start.await();
+                issuance.gift(7L, template.id(), "CONCURRENT", 1);
+                issuance.gift(7L, template.id(), "CONCURRENT", 2);
+                return null;
+            };
+            var first = pool.submit(callback);
+            var second = pool.submit(callback);
+            start.countDown();
+            first.get(10, java.util.concurrent.TimeUnit.SECONDS);
+            second.get(10, java.util.concurrent.TimeUnit.SECONDS);
+            assertEquals(2, coupons.takeCount(7L, template.id()));
+            assertEquals(2, templates.template(template.id()).issuedCount());
+        } finally {
+            pool.shutdownNow();
+        }
     }
 
     @Test

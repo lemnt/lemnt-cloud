@@ -1,37 +1,32 @@
 package com.lemnt.trade.infrastructure.config.gateway;
 
+import com.alibaba.fastjson2.JSON;
+import com.lemnt.common.security.utils.SecurityUtils;
+import com.lemnt.system.api.BusinessConfigKeys;
+import com.lemnt.system.api.RemoteConfigService;
+import com.lemnt.system.api.bo.BusinessConfigSaveBo;
 import com.lemnt.trade.domain.config.gateway.TradeConfigGateway;
 import com.lemnt.trade.domain.config.model.TradeConfig;
-import com.lemnt.trade.infrastructure.config.converter.TradeConfigConverter;
-import com.lemnt.trade.infrastructure.config.mapper.TradeConfigMapper;
-
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
-import lombok.RequiredArgsConstructor;
-
-/** trade_config 持久化实现。 */
+/** 通过system保存整组业务配置，不访问旧表或跨服务数据库。 */
 @Component
-@RequiredArgsConstructor
 public class TradeConfigGatewayImpl implements TradeConfigGateway {
-    private final TradeConfigMapper mapper;
+    @DubboReference(check = false, retries = 0)
+    private RemoteConfigService remoteConfigService;
 
+    /** 单次读取完整JSON，保持关联参数来自同一版本；RPC故障不降级为默认配置。 */
     @Override
     public TradeConfig get() {
-        return TradeConfigConverter.toEntity(mapper.selectById(1L));
+        String value = remoteConfigService.getConfig(BusinessConfigKeys.TRADE);
+        return value == null ? null : JSON.parseObject(value, TradeConfig.class);
     }
 
-    @Override
-    public void lock() {
-        if (mapper.lockById(1L) == null) {
-            throw new IllegalStateException("交易配置缺失，请先执行初始化脚本");
-        }
-    }
-
+    /** 业务校验由原应用服务完成，system以唯一键原子替换整个配置组。 */
     @Override
     public void update(TradeConfig value) {
-        if (mapper.updateById(TradeConfigConverter.toDO(value)) != 1) {
-            throw new IllegalStateException("交易配置保存失败");
-        }
+        remoteConfigService.saveBusinessConfig(new BusinessConfigSaveBo(BusinessConfigKeys.TRADE,
+                JSON.toJSONString(value), SecurityUtils.getUsername()));
     }
-
 }

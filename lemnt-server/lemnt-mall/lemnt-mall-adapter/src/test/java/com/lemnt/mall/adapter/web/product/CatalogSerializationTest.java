@@ -42,17 +42,17 @@ class CatalogSerializationTest {
         var mapper = builder.build();
         var request = mapper.readValue("""
                 {"code":"SKU","name":"商品","price":"10.00","stock":1,
-                 "properties":[{"propertyId":"9223372036854775807","valueId":"9223372036854775806"}]}
+                 "specs":[{"specId":"9223372036854775807","specValueId":"9223372036854775806"}]}
                 """, com.lemnt.mall.adapter.web.product.req.ProductSkuCreateReq.class);
-        assertEquals(Long.MAX_VALUE - 1, request.properties().get(0).valueId());
-        var value = new ProductSkuRes(1L, 2L, "SKU", "商品", BigDecimal.TEN, 1, null, List.of(new ProductSkuRes.Property(Long.MAX_VALUE, "颜色", Long.MAX_VALUE - 1, "黑色")), "ON_SHELF",
+        assertEquals(Long.MAX_VALUE - 1, request.specs().get(0).specValueId());
+        var value = new ProductSkuRes(1L, 2L, "SKU", "商品", BigDecimal.TEN, 1, null, List.of(new ProductSkuRes.Spec(Long.MAX_VALUE, "颜色", Long.MAX_VALUE - 1, "黑色")), "ON_SHELF",
                 null, null);
         var json = mapper.readTree(mapper.writeValueAsString(value));
-        assertEquals("9223372036854775806", json.get("properties").get(0).get("valueId").asString());
+        assertEquals("9223372036854775806", json.get("specs").get(0).get("specValueId").asString());
         try (var factory = jakarta.validation.Validation.buildDefaultValidatorFactory()) {
             assertTrue(factory.getValidator().validate(request).isEmpty());
             var invalid = mapper.readValue("""
-                    {"code":"SKU","name":"商品","price":"10.00","stock":1,"properties":[{"propertyId":0,"valueId":-1}]}
+                    {"code":"SKU","name":"商品","price":"10.00","stock":1,"specs":[{"specId":0,"specValueId":-1}]}
                     """, com.lemnt.mall.adapter.web.product.req.ProductSkuCreateReq.class);
             assertFalse(factory.getValidator().validate(invalid).isEmpty());
         }

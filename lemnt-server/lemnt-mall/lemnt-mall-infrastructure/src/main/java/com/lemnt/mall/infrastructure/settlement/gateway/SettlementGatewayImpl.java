@@ -48,7 +48,7 @@ public class SettlementGatewayImpl implements SettlementGateway {
     public void cache(Settlement value) {
         var ttl = Duration.between(Instant.now(), value.expiresAt());
         if (ttl.isNegative() || ttl.isZero() || !Boolean.TRUE.equals(redis.opsForValue()
-                .setIfAbsent("mall:settlement:v4:" + value.id(), serializer.serialize(value), ttl))
+                .setIfAbsent("mall:settlement:v5:" + value.id(), serializer.serialize(value), ttl))
         ) {
             throw new IllegalStateException("结算单缓存写入失败");
         }
@@ -57,7 +57,7 @@ public class SettlementGatewayImpl implements SettlementGateway {
     /** 只读取真实存在的预览，不生成替代报价。 */
     @Override
     public Settlement cached(String id) {
-        var json = redis.opsForValue().get("mall:settlement:v4:" + id);
+        var json = redis.opsForValue().get("mall:settlement:v5:" + id);
         return json == null ? null : serializer.deserialize(json, Settlement.class);
     }
 

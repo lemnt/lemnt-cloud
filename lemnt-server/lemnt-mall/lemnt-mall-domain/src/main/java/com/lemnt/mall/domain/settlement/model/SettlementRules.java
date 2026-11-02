@@ -90,18 +90,18 @@ public final class SettlementRules {
             value.append("|spu:").append(item.spuId());
             appendSnapshotText(value, item.spuName());
             appendSnapshotText(value, item.picUrl());
-            if (item.properties() == null) {
-                value.append("|properties:null");
+            if (item.specs() == null) {
+                value.append("|specs:null");
             } else {
-                value.append("|properties:").append(item.properties().size());
-                item.properties().stream().sorted(java.util.Comparator
-                        .comparing(SettlementItem.Property::propertyName)
-                        .thenComparing(property -> property.propertyId(), java.util.Comparator.nullsFirst(Long::compareTo))
-                        .thenComparing(SettlementItem.Property::valueName)).forEach(property -> {
-                    value.append("|propertyId:").append(property.propertyId());
-                    appendSnapshotText(value, property.propertyName());
-                    value.append("|valueId:").append(property.valueId());
-                    appendSnapshotText(value, property.valueName());
+                value.append("|specs:").append(item.specs().size());
+                item.specs().stream().sorted(java.util.Comparator
+                        .comparing(SettlementItem.Spec::specName)
+                        .thenComparing(property -> property.specId(), java.util.Comparator.nullsFirst(Long::compareTo))
+                        .thenComparing(SettlementItem.Spec::specValueName)).forEach(property -> {
+                    value.append("|specId:").append(property.specId());
+                    appendSnapshotText(value, property.specName());
+                    value.append("|specValueId:").append(property.specValueId());
+                    appendSnapshotText(value, property.specValueName());
                 });
             }
         }

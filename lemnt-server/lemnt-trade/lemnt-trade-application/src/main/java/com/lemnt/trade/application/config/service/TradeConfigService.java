@@ -6,7 +6,6 @@ import com.lemnt.trade.domain.config.gateway.TradeConfigGateway;
 import com.lemnt.trade.domain.config.model.TradeConfig;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +18,6 @@ public class TradeConfigService {
     private final TradeConfigGateway gateway;
 
     /** 更新完整配置并保留分销字段，不代表分销流程已交付。 */
-    @Transactional(rollbackFor = Exception.class)
     public boolean update(TradeConfigUpdateCmd cmd) {
         validateReasons(cmd.afterSaleRefundReasons());
         validateReasons(cmd.afterSaleReturnReasons());
@@ -42,7 +40,6 @@ public class TradeConfigService {
         require(cmd.brokerageWithdrawTypes() != null && cmd.brokerageWithdrawTypes().size() <= 20
                 && cmd.brokerageWithdrawTypes().stream().allMatch(value -> value != null && List.of(1, 2, 3, 4, 5, 6).contains(value)),
                 "提现方式不合法");
-        gateway.lock();
         gateway.update(new TradeConfig(
                 1L,
                 cmd.afterSaleRefundReasons(),

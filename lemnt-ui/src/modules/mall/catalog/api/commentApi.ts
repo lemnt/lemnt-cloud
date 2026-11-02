@@ -55,10 +55,10 @@ export function decodeComment(value: unknown): ProductCommentRecord {
         : list(row.skuProperties, (value) => {
             const p = object(value);
             return {
-              propertyId: optionalId(p.propertyId),
-              propertyName: text(p.propertyName),
-              valueId: optionalId(p.valueId),
-              valueName: text(p.valueName),
+              specId: optionalId(p.specId),
+              specName: text(p.specName),
+              specValueId: optionalId(p.specValueId),
+              specValueName: text(p.specValueName),
             };
           }),
     picUrls: row.picUrls == null ? null : list(row.picUrls, text),

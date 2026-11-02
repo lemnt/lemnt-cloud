@@ -4,7 +4,7 @@
 
 ## 业务
 
-- 后台 `POST /trade/admin/orders/{orderNo}/price-adjustment`：仅待支付订单可调价，新金额按原行实付比例重分摊，最后一行承担尾差，写类型2日志。
+- 后台 `POST /trade/admin/orders/{orderNo}/price-adjustment`：仅待支付订单可调价（第160批进一步限制为尚未生成支付单），新金额按原行实付比例重分摊，最后一行承担尾差，写类型2日志。
 - 后台 `PUT /trade/admin/orders/{orderNo}/address`：仅未发货快递单可改址，只更新收件快照，不重算运费，写类型11日志。新增权限 `trade:order:update`。
 - 会员订单中心新增派生状态 `AWAITING_PICKUP`：已支付自提单在列表、详情和状态数量中显示为待自提；内部持久化状态仍为 `PAID`，核销后转 `COMPLETED`。
 - 小程序门店列表支持 `latitude/longitude`，按球面距离升序，缺少坐标门店排最后；门店页新增“按距离排序”。

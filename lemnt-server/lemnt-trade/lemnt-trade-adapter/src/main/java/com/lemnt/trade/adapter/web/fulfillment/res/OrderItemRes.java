@@ -29,7 +29,7 @@ public record OrderItemRes(
         @Schema(description = "下单时商品SPU名称")
         String spuName,
         @Schema(description = "下单时规格名称和值，历史未记录与空规格区分")
-        List<Property> properties,
+        List<Spec> specs,
         @Schema(description = "下单时商品图片")
         String picUrl,
         @Schema(description = "真实订单项主键") Long orderItemId,
@@ -45,14 +45,14 @@ public record OrderItemRes(
             BigDecimal lineAmount,
             Long spuId,
             String spuName,
-            List<Property> properties,
+            List<Spec> specs,
             String picUrl
     ) {
-        this(productId, productCode, productName, unitPrice, quantity, lineAmount, spuId, spuName, properties, picUrl, null, null);
+        this(productId, productCode, productName, unitPrice, quantity, lineAmount, spuId, spuName, specs, picUrl, null, null);
     }
 
     public OrderItemRes {
-        properties = properties == null ? null : List.copyOf(properties);
+        specs = specs == null ? null : List.copyOf(specs);
     }
 
     /** 历史未保存商品元数据，保持为空，不查询现值补历史。 */
@@ -79,14 +79,14 @@ public record OrderItemRes(
 
     /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
     @Schema(description = "商品规格快照")
-    public record Property(
+    public record Spec(
             @Schema(description = "规格项编号，历史未关联时为空")
-            Long propertyId,
+            Long specId,
             @Schema(description = "保存时规格名称")
-            String propertyName,
+            String specName,
             @Schema(description = "规格值编号，历史未关联时为空")
-            Long valueId,
+            Long specValueId,
             @Schema(description = "保存时规格值名称")
-            String valueName
+            String specValueName
     ) implements java.io.Serializable {}
 }

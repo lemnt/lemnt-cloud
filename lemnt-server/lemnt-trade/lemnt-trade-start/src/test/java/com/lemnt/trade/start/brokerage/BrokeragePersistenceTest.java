@@ -72,6 +72,7 @@ class BrokeragePersistenceTest {
         when(orders.findByOrderNo("TR1")).thenReturn(new TradeOrder(1L, "TR1", 1L,
                 new BigDecimal("100.00"), "PAID", List.of(), null, 0, 0, null));
         components.register(OrderPersistenceService.class, orders);
+        components.register(TradeConfigGateway.class, com.lemnt.trade.start.BusinessConfigTestSupport.gateway());
         var configs = components.get(TradeConfigGateway.class);
         configs.update(new TradeConfig(1L, List.of(), List.of(), false, 0, false, true, 1, 3,
                 List.of(), 10, 5, 100, 5, 3, List.of(1, 2)));

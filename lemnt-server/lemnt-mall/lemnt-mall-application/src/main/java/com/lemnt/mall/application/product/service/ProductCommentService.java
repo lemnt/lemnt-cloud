@@ -82,13 +82,13 @@ public class ProductCommentService {
         require(spuId != null, "订单商品标识不存在", 400);
         var member = memberLookupGateway.findById(cmd.memberId());
         require(member != null && cmd.memberId().equals(member.id()), "会员资料不存在", 404);
-        var properties = purchase.properties() == null ? null : purchase.properties().stream().map(property ->
-                new ProductComment.Property(property.propertyId(), property.propertyName(), property.valueId(), property.valueName())).toList();
+        var specs = purchase.specs() == null ? null : purchase.specs().stream().map(property ->
+                new ProductComment.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList();
         try {
             return productCommentGateway.save(new ProductComment(null, spuId, cmd.skuId(), cmd.orderNo().trim(), cmd.memberId(), input.score(),
                     input.content(), true, null, null, null, null,
                     input.description(), input.benefit(), input.pictures(), input.anonymous(), member.nickname(), member.avatar(),
-                    purchase.orderId(), purchase.spuName(), purchase.skuPicUrl(), properties, false, purchase.orderItemId()));
+                    purchase.orderId(), purchase.spuName(), purchase.skuPicUrl(), specs, false, purchase.orderItemId()));
         } catch (DuplicateKeyException conflict) {
             return winner(purchase.orderItemId(), cmd, input);
         }

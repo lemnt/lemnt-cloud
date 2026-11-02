@@ -6,16 +6,16 @@ it('后端返回 false 时不得宣告写入成功', () => {
 });
 
 it('规格选择保持长编号并拒绝重复或未选完的项', async () => {
-  const { selectedProperties } = await import('./catalogValidation');
+  const { selectedSpecs } = await import('./catalogValidation');
   expect(
-    selectedProperties([{ propertyId: '9223372036854775807', valueId: '9223372036854775806' }]),
-  ).toEqual([{ propertyId: '9223372036854775807', valueId: '9223372036854775806' }]);
-  expect(selectedProperties([])).toEqual([]);
-  expect(() => selectedProperties([{ propertyId: '1' }])).toThrow();
+    selectedSpecs([{ specId: '9223372036854775807', specValueId: '9223372036854775806' }]),
+  ).toEqual([{ specId: '9223372036854775807', specValueId: '9223372036854775806' }]);
+  expect(selectedSpecs([])).toEqual([]);
+  expect(() => selectedSpecs([{ specId: '1' }])).toThrow();
   expect(() =>
-    selectedProperties([
-      { propertyId: '1', valueId: '2' },
-      { propertyId: '1', valueId: '3' },
+    selectedSpecs([
+      { specId: '1', specValueId: '2' },
+      { specId: '1', specValueId: '3' },
     ]),
   ).toThrow();
 });

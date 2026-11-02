@@ -33,9 +33,9 @@ public class OrderGatewayImpl implements OrderGateway {
                 item.deliveryPrice(),
                 item.spuId(),
                 item.spuName(),
-                item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
-                        new OrderItemDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
+                item.specs() == null ? null : item.specs().stream().map(snapshotProperty ->
+                        new OrderItemDTO.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
+                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
                 item.picUrl())).toList(), order.usePoint(), order.givePoint(), toDelivery(order.delivery()),
                 order.giveCouponTemplateCounts())));
     }
@@ -65,9 +65,9 @@ public class OrderGatewayImpl implements OrderGateway {
                 item.deliveryPrice(),
                 item.spuId(),
                 item.spuName(),
-                item.properties() == null ? null : item.properties().stream().map(snapshotProperty ->
-                        new SettlementItem.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(),
+                item.specs() == null ? null : item.specs().stream().map(snapshotProperty ->
+                        new SettlementItem.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
+                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
                 item.picUrl(), item.orderItemId(), item.commentStatus())).toList(), value.createTime(), value.usePoint(), value.givePoint(), fromDelivery(value.delivery()), value.commentStatus(), value.finishTime(), value.giveCouponTemplateCounts());
     }
 

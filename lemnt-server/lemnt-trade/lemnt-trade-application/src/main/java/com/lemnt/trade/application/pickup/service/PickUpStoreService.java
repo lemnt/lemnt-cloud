@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.HashSet;
 import java.util.List;
 
@@ -61,8 +63,14 @@ public class PickUpStoreService {
                 && cmd.detailAddress().length() <= 255, "门店地址不能为空且不超过255字");
         require(cmd.logo() == null || cmd.logo().length() <= 500, "门店logo不超过500字");
         require(cmd.openingTime() != null && cmd.openingTime().matches("\\d{2}:\\d{2}:\\d{2}")
-                && cmd.closingTime() != null && cmd.closingTime().matches("\\d{2}:\\d{2}:\\d{2}")
-                && cmd.openingTime().compareTo(cmd.closingTime()) < 0, "营业时间不合法");
+                && cmd.closingTime() != null && cmd.closingTime().matches("\\d{2}:\\d{2}:\\d{2}"), "营业时间不合法");
+        // 跨夜和同刻全天营业与建单规则一致；解析拒绝99:99:99等伪时间。
+        try {
+            LocalTime.parse(cmd.openingTime());
+            LocalTime.parse(cmd.closingTime());
+        } catch (DateTimeParseException exception) {
+            throw new ServiceException("营业时间不合法", 400);
+        }
         require(cmd.status() != null && (cmd.status() == 0 || cmd.status() == 1),
                 "门店状态只能为0开启或1关闭");
         users(cmd.verifyUserIds());

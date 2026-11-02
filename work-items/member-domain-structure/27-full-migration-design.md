@@ -162,3 +162,9 @@ F01进行中：规则快照、限领/无限量、DATE/TERM、商品范围计价�
 2026-11-01 第145批：0元订单按数量部分退款。零元售后支持部分数量、积分商城多商品按行拆分积分，订单仅在累计退款数量达到整行时REFUNDED；商城按累计数量计算积分增量并恢复活动库存，会员按refundPoint退回积分并在最后一次补齐尾差。trade 230项、mall 167项、member 118项、前端292项、小程序155项测试通过；非积分活动多商品及真实环境联调未做，见[145-zero-cash-partial-refund-delivery.md](145-zero-cash-partial-refund-delivery.md)。
 
 2026-11-01 F11/F12阶段：经营统计仍未迁移；F12完成本轮端到端、Nacos路由核对与主要兼容残留清理，当前接口/表/任务/页面规模见159批证据。第128–159批已补齐促销、支付钱包、分销、自提、客服装修等主要单元，但未重新执行63单元等权复核，42.3%不再作为当前进度结论。生产SQL发布脚本见`lemnt-server/sql/release/apply-business-sql.sh`。
+
+2026-11-02 第160批：修复已生成支付单后调价、多张赠券幂等唯一键和跨夜营业维护不一致；mall193项、trade279项回归通过。赠券V29迁移已提供，未执行真实库；见[修复交付](160-consistency-fixes-delivery.md)。
+
+2026-11-02 第161批：会员积分及交易基础配置迁至sys_config两个完整JSON配置组，原业务合同保留，配送维护改独立锁。system142/member119/trade282及mall依赖45项回归通过；现有库迁移与实际RPC待验，见[交付](161-business-config-migration-delivery.md)。
+
+2026-11-02 第162批：规格字段统一specs及specId/specName/specValueId/specValueName，mall195/trade283回归通过，历史读取兼容；真实列改名待验，见[交付](162-spec-naming-delivery.md)。

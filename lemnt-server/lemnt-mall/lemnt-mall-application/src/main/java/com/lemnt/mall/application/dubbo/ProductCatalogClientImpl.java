@@ -36,9 +36,9 @@ public class ProductCatalogClientImpl implements ProductCatalogClient {
     private ProductSnapshotDTO toDTO(ProductSnapshot value) {
         return value == null ? null : new ProductSnapshotDTO(value.id(), value.productCode(), value.name(), value.price(),
                 value.stock(), value.spuId(), value.spuName(),
-                value.properties() == null ? null : value.properties().stream().map(snapshotProperty ->
-                        new ProductSnapshotDTO.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(), value.picUrl());
+                value.specs() == null ? null : value.specs().stream().map(snapshotProperty ->
+                        new ProductSnapshotDTO.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
+                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(), value.picUrl());
     }
 
     @Override

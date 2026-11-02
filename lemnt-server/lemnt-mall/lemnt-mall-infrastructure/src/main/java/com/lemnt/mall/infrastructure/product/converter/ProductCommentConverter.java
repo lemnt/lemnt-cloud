@@ -18,7 +18,7 @@ public final class ProductCommentConverter {
                 row.getReplyUserId(), row.getReplyTime(), row.getCreateTime(), row.getDescriptionScores(),
                 row.getBenefitScores(), pictures(row.getPicUrls()), row.getAnonymous(), row.getUserNickname(),
                 row.getUserAvatar(), row.getOrderId(), row.getSpuName(), row.getSkuPicUrl(),
-                properties(row.getSkuProperties()), Boolean.TRUE.equals(row.getReplyStatus()), row.getOrderItemId());
+                specs(row.getSkuProperties()), Boolean.TRUE.equals(row.getReplyStatus()), row.getOrderItemId());
     }
 
     /** 创建不接受客户端设置商家回复、可见性或会员商品快照。 */
@@ -37,7 +37,7 @@ public final class ProductCommentConverter {
         return value == null ? null : JSON.readValue(value, new TypeReference<List<String>>() {});
     }
 
-    private static List<ProductComment.Property> properties(String value) {
-        return value == null ? null : JSON.readValue(value, new TypeReference<List<ProductComment.Property>>() {});
+    private static List<ProductComment.Spec> specs(String value) {
+        return value == null ? null : SpecSnapshotJson.read(value, ProductComment.Spec.class);
     }
 }

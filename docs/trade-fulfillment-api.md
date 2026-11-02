@@ -1,10 +1,13 @@
 # Trade fulfillment API
 
+2026-11-02 第162批：规格字段统一为 `specs` 及 `specId/specName/specValueId/specValueName`；旧JSON读取与列名升级说明见[规格命名迁移](spec-naming-migration.md)。
+
+
 v3 · 2026-10-27 · actual Req/Res + Java 17 implementation. Examples are constructed contract examples, not deployed HTTP captures.
 
 Admin authentication/permissions use the existing security stack. Paths retain `/trade` through the gateway. This is administrative fulfillment, not a member self-service identity boundary. No role grants are included.
 
-`R` wraps success in `code=200`, `msg` and `data`; null properties can be omitted. BigDecimal response amounts are **two-decimal yuan strings**. Long IDs can be numbers or strings; the UI normalizes to strings without losing precision. Dates use existing `yyyy-MM-dd HH:mm:ss` serialization and database/session time, not a new UTC wire convention. Order create/expiry and fulfillment timestamps share the trade DB clock; deployment must explicitly align DB session assumptions.
+`R` wraps success in `code=200`, `msg` and `data`; null specs can be omitted. BigDecimal response amounts are **two-decimal yuan strings**. Long IDs can be numbers or strings; the UI normalizes to strings without losing precision. Dates use existing `yyyy-MM-dd HH:mm:ss` serialization and database/session time, not a new UTC wire convention. Order create/expiry and fulfillment timestamps share the trade DB clock; deployment must explicitly align DB session assumptions.
 
 ## States and guarantees
 

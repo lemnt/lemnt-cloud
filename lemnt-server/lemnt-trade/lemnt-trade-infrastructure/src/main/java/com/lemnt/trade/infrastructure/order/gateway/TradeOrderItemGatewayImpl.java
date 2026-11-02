@@ -27,13 +27,13 @@ public class TradeOrderItemGatewayImpl implements TradeOrderItemGateway {
                 .eq(TradeOrderItemDO::getOrderId, orderId)
                 .orderByAsc(TradeOrderItemDO::getId))
                 .stream().map(row -> {
-                    var properties = OrderItemConverter.properties(row.getProperties());
+                    var specs = OrderItemConverter.specs(row.getSpecs());
                     return new OrderRefundItem(row.getId(), row.getProductId(), row.getProductName(),
                         row.getQuantity(), row.getLineAmount(), row.getPayAmount(), row.getDeliveryPrice(), row.getSpuId(),
                         row.getSpuName(),
-                properties == null ? null : properties.stream().map(snapshotProperty ->
-                        new OrderRefundItem.Property(snapshotProperty.propertyId(), snapshotProperty.propertyName(),
-                                snapshotProperty.valueId(), snapshotProperty.valueName())).toList(), row.getPicUrl());
+                specs == null ? null : specs.stream().map(snapshotProperty ->
+                        new OrderRefundItem.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
+                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(), row.getPicUrl());
                 }).toList();
     }
 
