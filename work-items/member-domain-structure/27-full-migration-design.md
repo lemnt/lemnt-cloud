@@ -168,3 +168,5 @@ F01进行中：规则快照、限领/无限量、DATE/TERM、商品范围计价�
 2026-11-02 第161批：会员积分及交易基础配置迁至sys_config两个完整JSON配置组，原业务合同保留，配送维护改独立锁。system142/member119/trade282及mall依赖45项回归通过；现有库迁移与实际RPC待验，见[交付](161-business-config-migration-delivery.md)。
 
 2026-11-02 第162批：规格字段统一specs及specId/specName/specValueId/specValueName，mall195/trade283回归通过，历史读取兼容；真实列改名待验，见[交付](162-spec-naming-delivery.md)。
+
+2026-11-02 第163批：初始化表/字段COMMENT补齐，95表1040字段缺失归零，DDL结构未改；597项后端及7项工具测试通过，已有库注释升级未执行，见[交付](163-schema-comments-delivery.md)。

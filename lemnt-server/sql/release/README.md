@@ -20,6 +20,8 @@ DB_HOST=10.0.0.10 DB_USER=lemnt DB_PASSWORD='***' ./lemnt-server/sql/release/app
 
 ## 边界
 
+- 表/字段注释已在初始化SQL补齐。已有库不要重跑初始化文件，使用[注释升级工具](../../../docs/database-comments.md)读取实际DDL生成仅补缺失COMMENT的计划，审核后再显式执行。
+
 - 第161批将积分/交易配置迁入sys_config。已有环境必须先完成[配置迁移](../../../docs/business-config-migration.md)，再执行V20261102默认种子；不能先执行种子，否则旧值复制会因目标key已存在而跳过。新库先使用更新后的system基础表结构。
 
 - `lemnt_system` 基础表不由本脚本重建；菜单脚本只依赖已存在的 `sys_menu`、`sys_role_menu`。

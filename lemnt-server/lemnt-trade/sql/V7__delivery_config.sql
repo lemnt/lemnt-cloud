@@ -6,28 +6,28 @@ CREATE TABLE trade_delivery_express (
     logo VARCHAR(500) COMMENT '图标地址',
     sort INT NOT NULL COMMENT '排序',
     status INT NOT NULL COMMENT '状态，0 启用、1 停用',
-    create_by VARCHAR(64) NULL,
-    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_by VARCHAR(64) NULL,
-    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    deleted BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否逻辑删除，0否、1是',
     KEY idx_delivery_express_code(code),
     CONSTRAINT chk_delivery_express_status CHECK(status IN (0,1))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '快递公司';
 
 CREATE TABLE trade_delivery_express_template (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '编号',
     name VARCHAR(100) NOT NULL COMMENT '模板名称',
     charge_mode INT NOT NULL COMMENT '计费方式，1 件数、2 重量千克、3 体积立方米',
     sort INT NOT NULL COMMENT '排序',
-    create_by VARCHAR(64) NULL,
-    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_by VARCHAR(64) NULL,
-    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    deleted BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否逻辑删除，0否、1是',
     KEY idx_delivery_template_name(name),
     CONSTRAINT chk_delivery_charge_mode CHECK(charge_mode IN (1,2,3))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '运费模板';
 
 CREATE TABLE trade_delivery_express_template_charge (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '编号',
@@ -38,15 +38,15 @@ CREATE TABLE trade_delivery_express_template_charge (
     start_price INT NOT NULL COMMENT '首价，分',
     extra_count DECIMAL(18,6) NOT NULL COMMENT '续量',
     extra_price INT NOT NULL COMMENT '续价，分',
-    create_by VARCHAR(64) NULL,
-    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_by VARCHAR(64) NULL,
-    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    deleted BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否逻辑删除，0否、1是',
     KEY idx_delivery_charge_template(template_id),
     CONSTRAINT fk_delivery_charge_template FOREIGN KEY(template_id) REFERENCES trade_delivery_express_template(id),
     CONSTRAINT chk_delivery_charge_values CHECK(start_count>0 AND extra_count>0 AND start_price>=0 AND extra_price>=0 AND charge_mode IN (1,2,3))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '运费模板区域计费规则';
 
 CREATE TABLE trade_delivery_express_template_free (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '编号',
@@ -54,12 +54,12 @@ CREATE TABLE trade_delivery_express_template_free (
     area_ids LONGTEXT NOT NULL COMMENT '配送区域编号集合',
     free_price INT NOT NULL COMMENT '包邮金额门槛，分',
     free_count INT NOT NULL COMMENT '包邮计费量门槛',
-    create_by VARCHAR(64) NULL,
-    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_by VARCHAR(64) NULL,
-    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    deleted BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否逻辑删除，0否、1是',
     KEY idx_delivery_free_template(template_id),
     CONSTRAINT fk_delivery_free_template FOREIGN KEY(template_id) REFERENCES trade_delivery_express_template(id),
     CONSTRAINT chk_delivery_free_values CHECK(free_price>=0 AND free_count>=0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '运费模板区域包邮规则';

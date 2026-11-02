@@ -1,0 +1,50 @@
+{
+  "batch": "163-schema-comments",
+  "date": "2026-11-02",
+  "baseRevision": "0f5055f0",
+  "schema": {
+    "system": {
+      "tables": 17,
+      "columns": 169,
+      "addedTableComments": 0,
+      "addedColumnComments": 0
+    },
+    "member": {
+      "tables": 17,
+      "columns": 149,
+      "addedTableComments": 16,
+      "addedColumnComments": 148
+    },
+    "mall": {
+      "tables": 35,
+      "columns": 379,
+      "addedTableComments": 33,
+      "addedColumnComments": 379
+    },
+    "trade": {
+      "tables": 26,
+      "columns": 343,
+      "addedTableComments": 11,
+      "addedColumnComments": 320
+    }
+  },
+  "missingComments": 0,
+  "ddlStructureUnchanged": true,
+  "existingCommentsPreserved": true,
+  "tests": {
+    "member": 119,
+    "mall": 195,
+    "trade": 283,
+    "total": 597,
+    "python": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "log": "/private/tmp/schema-comments-backend-tests.log",
+  "notRun": [
+    "live MySQL read or comment upgrade",
+    "deployed schema comment audit"
+  ],
+  "commitPush": false
+}

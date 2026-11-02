@@ -5,6 +5,8 @@
 - [分析与开发设计](03-development-design.md)
 - [实现与验证](05-development.md)
 
+2026-11-02 第163批：95张表/1040字段注释盘点完成，补60处表注释及847处字段注释，缺失归零；既有注释与DDL结构保留。597项后端、7项工具测试通过。见[设计](163-schema-comments-design.md)、[交付](163-schema-comments-delivery.md)、[已有库操作说明](../../docs/database-comments.md)。本轮未连接/修改现有数据库。
+
 2026-11-02 第162批：商品、结算、订单明细和售后规格统一specs及四个spec*字段，旧JSON/回执兼容读取。mall195/trade283、React315、小程序176项通过；见[设计](162-spec-naming-design.md)、[交付](162-spec-naming-delivery.md)、[迁移说明](../../docs/spec-naming-migration.md)。未执行真实库升级/部署。
 
 2026-11-02 第161批：member_config和trade_config迁入sys_config，保留原业务入口；完整JSON配置组原子保存、通用入口保护、旧值复制和独立配送维护锁已实现。见[设计](161-business-config-migration-design.md)、[交付](161-business-config-migration-delivery.md)、[发布迁移说明](../../docs/business-config-migration.md)。未执行现有数据库迁移与部署。
