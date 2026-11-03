@@ -26,13 +26,34 @@ class SettlementLifecyclePromotionTest {
     private final com.lemnt.mall.application.promotion.service.RewardGiftService rewardGifts =
             Mockito.mock(com.lemnt.mall.application.promotion.service.RewardGiftService.class);
     private final SettlementLifecycleClientImpl client =
-            new SettlementLifecycleClientImpl(members, records, orders, inventory, promotions, rewardGifts);
+            new SettlementLifecycleClientImpl(
+                    members, records, orders, inventory, promotions, rewardGifts);
 
     private SettlementOrder order(String status) {
-        return new SettlementOrder(7L, "TR1", 1L, new BigDecimal("10.00"), status,
-                List.of(new SettlementItem(2L, "SKU", "商品", new BigDecimal("10.00"), 1,
-                        new BigDecimal("10.00"), new BigDecimal("10.00"), BigDecimal.ZERO,
-                        3L, "SPU", null, null)), null, 100L, 0L, null);
+        return new SettlementOrder(
+                7L,
+                "TR1",
+                1L,
+                new BigDecimal("10.00"),
+                status,
+                List.of(
+                        new SettlementItem(
+                                2L,
+                                "SKU",
+                                "商品",
+                                new BigDecimal("10.00"),
+                                1,
+                                new BigDecimal("10.00"),
+                                new BigDecimal("10.00"),
+                                BigDecimal.ZERO,
+                                3L,
+                                "SPU",
+                                null,
+                                null)),
+                null,
+                100L,
+                0L,
+                null);
     }
 
     @Test
@@ -52,6 +73,7 @@ class SettlementLifecyclePromotionTest {
         Mockito.when(orders.findByOrderNo("TR1")).thenReturn(order("REFUNDED"));
         var items = List.of(new RefundStockBo(2L, 1));
         client.refunded("TR1", "RF1", items, new BigDecimal("10.00"));
-        Mockito.verify(promotions).refunded(Mockito.eq("TR1"), Mockito.eq("RF1"), Mockito.any(), Mockito.eq(items));
+        Mockito.verify(promotions)
+                .refunded(Mockito.eq("TR1"), Mockito.eq("RF1"), Mockito.any(), Mockito.eq(items));
     }
 }

@@ -18,6 +18,5 @@ public record CouponTermsDTO(
         String productScope,
         List<Long> productScopeValues,
         LocalDateTime validFrom,
-        LocalDateTime validUntil
-) implements Serializable {
-}
+        LocalDateTime validUntil)
+        implements Serializable {}

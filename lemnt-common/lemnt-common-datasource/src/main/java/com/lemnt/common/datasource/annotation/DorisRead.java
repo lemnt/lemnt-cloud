@@ -13,6 +13,4 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @DS("doris-read")
-public @interface DorisRead {
-
-}
+public @interface DorisRead {}

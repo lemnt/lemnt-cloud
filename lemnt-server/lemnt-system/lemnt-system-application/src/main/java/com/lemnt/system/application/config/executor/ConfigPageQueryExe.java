@@ -37,7 +37,8 @@ public class ConfigPageQueryExe {
         query.setConfigType(qry.configType());
         query.setBeginTime(qry.beginTime());
         query.setEndTime(qry.endTime());
-        PageResult<Config> pageResult = configGateway.selectPage(query, new PageQry(qry.pageNum(), qry.pageSize()));
+        PageResult<Config> pageResult =
+                configGateway.selectPage(query, new PageQry(qry.pageNum(), qry.pageSize()));
         List<ConfigDTO> dtoList = ConfigConverter.toDTOList(pageResult.getRecords());
         return PageResult.of(dtoList, pageResult.getTotal());
     }

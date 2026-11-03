@@ -41,7 +41,8 @@ public class WalletRechargeController {
     @RequiresPermissions("trade:wallet-recharge:list")
     public R<WalletRechargeRes> page(@Valid @ModelAttribute WalletRechargePageReq req) {
         var value = page.execute(RechargeResConverter.rechargePage(req));
-        return R.page(value.getRecords().stream().map(RechargeResConverter::recharge).toList(),
+        return R.page(
+                value.getRecords().stream().map(RechargeResConverter::recharge).toList(),
                 value.getTotal());
     }
 
@@ -56,8 +57,8 @@ public class WalletRechargeController {
     @PostMapping("/{rechargeNo}/confirm")
     @Operation(summary = "确认充值到账")
     @RequiresPermissions("trade:wallet-recharge:confirm")
-    public R<WalletRechargeRes> confirm(@PathVariable String rechargeNo,
-            @Valid @RequestBody WalletRechargeConfirmReq req) {
+    public R<WalletRechargeRes> confirm(
+            @PathVariable String rechargeNo, @Valid @RequestBody WalletRechargeConfirmReq req) {
         return R.ok(RechargeResConverter.recharge(confirm.execute(rechargeNo, req.channelCode())));
     }
 

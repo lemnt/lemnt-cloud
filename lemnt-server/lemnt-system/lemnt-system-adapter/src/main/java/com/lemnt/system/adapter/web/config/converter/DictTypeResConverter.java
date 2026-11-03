@@ -17,7 +17,8 @@ public class DictTypeResConverter {
     /**
      * DictTypeDTO List → DictTypeInfoRes List
      */
-    public static List<SystemDictTypeListRes> toResListToSystemDictTypeListRes(List<DictTypeDTO> list) {
+    public static List<SystemDictTypeListRes> toResListToSystemDictTypeListRes(
+            List<DictTypeDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -40,8 +41,7 @@ public class DictTypeResConverter {
                 dto.getDictName(),
                 dto.getDictType(),
                 dto.getStatus(),
-                dto.getRemark()
-        );
+                dto.getRemark());
     }
 
     /**
@@ -56,14 +56,14 @@ public class DictTypeResConverter {
                 dto.getDictName(),
                 dto.getDictType(),
                 dto.getStatus(),
-                dto.getRemark()
-        );
+                dto.getRemark());
     }
 
     /**
      * DictTypeDTO List → DictTypeInfoRes List
      */
-    public static List<SystemDictTypeOptionSelectRes> toResListToSystemDictTypeOptionSelectRes(List<DictTypeDTO> list) {
+    public static List<SystemDictTypeOptionSelectRes> toResListToSystemDictTypeOptionSelectRes(
+            List<DictTypeDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -77,7 +77,8 @@ public class DictTypeResConverter {
     /**
      * DictTypeDTO → DictTypeInfoRes
      */
-    public static SystemDictTypeOptionSelectRes toResToSystemDictTypeOptionSelectRes(DictTypeDTO dto) {
+    public static SystemDictTypeOptionSelectRes toResToSystemDictTypeOptionSelectRes(
+            DictTypeDTO dto) {
         if (dto == null) {
             return null;
         }
@@ -86,7 +87,6 @@ public class DictTypeResConverter {
                 dto.getDictName(),
                 dto.getDictType(),
                 dto.getStatus(),
-                dto.getRemark()
-        );
+                dto.getRemark());
     }
 }

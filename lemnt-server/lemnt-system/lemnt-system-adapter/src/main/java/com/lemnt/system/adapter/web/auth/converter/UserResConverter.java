@@ -5,6 +5,7 @@ import com.lemnt.system.adapter.web.auth.res.SystemRoleUserUnallocatedListRes;
 import com.lemnt.system.adapter.web.auth.res.SystemUserListRes;
 import com.lemnt.system.adapter.web.auth.res.UserDetailRes;
 import com.lemnt.system.adapter.web.auth.res.UserRes;
+import com.lemnt.system.adapter.web.org.converter.DeptResConverter;
 import com.lemnt.system.adapter.web.org.converter.PostResConverter;
 import com.lemnt.system.application.auth.dto.UserDTO;
 import com.lemnt.system.application.auth.dto.UserDetailDTO;
@@ -39,9 +40,8 @@ public class UserResConverter {
                 dto.getLoginDate(),
                 dto.getCreateBy(),
                 dto.getCreateTime(),
-                dto.getRoles(),
-                dto.getDept()
-        );
+                dto.getRoles() == null ? null : RoleResConverter.toResList(dto.getRoles()),
+                DeptResConverter.toRes(dto.getDept(), true));
     }
 
     /**
@@ -70,8 +70,7 @@ public class UserResConverter {
                 dto.getRoleIds(),
                 dto.getPostIds(),
                 RoleResConverter.toResList(dto.getRoles()),
-                PostResConverter.toResList(dto.getPosts())
-        );
+                PostResConverter.toResList(dto.getPosts()));
     }
 
     /**
@@ -94,8 +93,7 @@ public class UserResConverter {
                 detail.getLoginIp(),
                 detail.getLoginDate(),
                 detail.getCreateBy(),
-                detail.getCreateTime()
-        );
+                detail.getCreateTime());
     }
 
     /**
@@ -133,15 +131,15 @@ public class UserResConverter {
                 dto.getLoginDate(),
                 dto.getCreateBy(),
                 dto.getCreateTime(),
-                dto.getRoles(),
-                dto.getDept()
-        );
+                dto.getRoles() == null ? null : RoleResConverter.toResList(dto.getRoles()),
+                DeptResConverter.toRes(dto.getDept(), true));
     }
 
     /**
      * UserDTO List → UserBaseInfoRes List
      */
-    public static List<SystemRoleUserAllocatedListRes> toResListToSystemRoleUserAllocatedListRes(List<UserDTO> list) {
+    public static List<SystemRoleUserAllocatedListRes> toResListToSystemRoleUserAllocatedListRes(
+            List<UserDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -155,7 +153,8 @@ public class UserResConverter {
     /**
      * UserDTO → UserBaseInfoRes
      */
-    public static SystemRoleUserAllocatedListRes toResToSystemRoleUserAllocatedListRes(UserDTO dto) {
+    public static SystemRoleUserAllocatedListRes toResToSystemRoleUserAllocatedListRes(
+            UserDTO dto) {
         if (dto == null) {
             return null;
         }
@@ -173,15 +172,15 @@ public class UserResConverter {
                 dto.getLoginDate(),
                 dto.getCreateBy(),
                 dto.getCreateTime(),
-                dto.getRoles(),
-                dto.getDept()
-        );
+                dto.getRoles() == null ? null : RoleResConverter.toResList(dto.getRoles()),
+                DeptResConverter.toRes(dto.getDept(), true));
     }
 
     /**
      * UserDTO List → UserBaseInfoRes List
      */
-    public static List<SystemRoleUserUnallocatedListRes> toResListToSystemRoleUserUnallocatedListRes(List<UserDTO> list) {
+    public static List<SystemRoleUserUnallocatedListRes>
+            toResListToSystemRoleUserUnallocatedListRes(List<UserDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -195,7 +194,8 @@ public class UserResConverter {
     /**
      * UserDTO → UserBaseInfoRes
      */
-    public static SystemRoleUserUnallocatedListRes toResToSystemRoleUserUnallocatedListRes(UserDTO dto) {
+    public static SystemRoleUserUnallocatedListRes toResToSystemRoleUserUnallocatedListRes(
+            UserDTO dto) {
         if (dto == null) {
             return null;
         }
@@ -213,8 +213,7 @@ public class UserResConverter {
                 dto.getLoginDate(),
                 dto.getCreateBy(),
                 dto.getCreateTime(),
-                dto.getRoles(),
-                dto.getDept()
-        );
+                dto.getRoles() == null ? null : RoleResConverter.toResList(dto.getRoles()),
+                DeptResConverter.toRes(dto.getDept(), true));
     }
 }

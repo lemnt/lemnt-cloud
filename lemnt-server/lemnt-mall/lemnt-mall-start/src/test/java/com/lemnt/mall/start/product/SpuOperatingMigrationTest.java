@@ -13,10 +13,13 @@ class SpuOperatingMigrationTest {
     void addsFieldsWithoutChangingHistoricalProductData() throws Exception {
         var source = new JdbcDataSource();
         source.setURL("jdbc:h2:mem:spu_operating_upgrade;MODE=MySQL");
-        try (var connection = source.getConnection(); var statement = connection.createStatement()) {
-            statement.execute("CREATE TABLE mall_product_spu(id BIGINT PRIMARY KEY, code VARCHAR(64),name VARCHAR(200))");
+        try (var connection = source.getConnection();
+                var statement = connection.createStatement()) {
+            statement.execute(
+                    "CREATE TABLE mall_product_spu(id BIGINT PRIMARY KEY, code VARCHAR(64),name VARCHAR(200))");
             statement.execute("INSERT INTO mall_product_spu VALUES(7,'LEGACY','原商品')");
-            ScriptUtils.executeSqlScript(connection, new ClassPathResource("sql/upgrade/spu_operating_fields.sql"));
+            ScriptUtils.executeSqlScript(
+                    connection, new ClassPathResource("sql/upgrade/spu_operating_fields.sql"));
             try (var rows = statement.executeQuery("SELECT * FROM mall_product_spu")) {
                 rows.next();
                 assertEquals(7, rows.getLong("id"));

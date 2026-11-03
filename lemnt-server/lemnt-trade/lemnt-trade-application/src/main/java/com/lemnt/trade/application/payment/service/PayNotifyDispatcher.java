@@ -26,6 +26,10 @@ public class PayNotifyDispatcher {
             brokerage.addOrderCommission(task.orderNo());
             return;
         }
+        if (PayNotifyType.AFTER_SALE.name().equals(task.type())) {
+            benefits.completeAfterSale(task.bizNo());
+            return;
+        }
         if (PayNotifyType.REFUND.name().equals(task.type())) {
             var refund = refunds.find(task.bizNo());
             if (refund == null || !"SUCCESS".equals(refund.status())) {

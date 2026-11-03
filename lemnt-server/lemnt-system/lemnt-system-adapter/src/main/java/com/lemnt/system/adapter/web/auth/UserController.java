@@ -48,15 +48,16 @@ public class UserController {
     @GetMapping
     public R<SystemUserListRes> list(@Validated SystemUserListReq req) {
         PageResult<UserDTO> result = userPageQueryExe.execute(UserReqConverter.toQry(req));
-        return R.page(UserResConverter.toResListToSystemUserListRes(result.getRecords()), result.getTotal());
+        return R.page(
+                UserResConverter.toResListToSystemUserListRes(result.getRecords()),
+                result.getTotal());
     }
 
     @Operation(summary = "根据用户编号获取详细信息")
     @RequiresPermissions("system:user:query")
-    @GetMapping(value = {
-            "/options", "/{userId}"
-            })
-    public R<UserDetailRes> getDetail(@PathVariable(value = "userId", required = false) Long userId) {
+    @GetMapping(value = {"/options", "/{userId}"})
+    public R<UserDetailRes> getDetail(
+            @PathVariable(value = "userId", required = false) Long userId) {
         return R.ok(UserResConverter.toDetailRes(userDetailQueryExe.execute(userId)));
     }
 

@@ -13,8 +13,8 @@ public record AppDiscountActivityRes(
         @Schema(description = "活动名称") String name,
         @Schema(description = "开始时间") LocalDateTime startTime,
         @Schema(description = "结束时间") LocalDateTime endTime,
-        @Schema(description = "折扣商品") List<Product> products
-) implements java.io.Serializable {
+        @Schema(description = "折扣商品") List<Product> products)
+        implements java.io.Serializable {
     public AppDiscountActivityRes {
         products = products == null ? List.of() : List.copyOf(products);
     }
@@ -26,7 +26,6 @@ public record AppDiscountActivityRes(
             @Schema(description = "SKU 编号") Long skuId,
             @Schema(description = "折扣类型 PRICE/PERCENT") String discountType,
             @Schema(description = "折扣百分比") Integer discountPercent,
-            @Schema(description = "优惠金额，元") BigDecimal discountPrice
-    ) implements java.io.Serializable {
-    }
+            @Schema(description = "优惠金额，元") BigDecimal discountPrice)
+            implements java.io.Serializable {}
 }

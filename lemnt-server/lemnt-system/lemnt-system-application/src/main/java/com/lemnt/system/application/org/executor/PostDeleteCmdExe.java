@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostDeleteCmdExe {
     private final PostGateway postGateway;
+
     public Boolean execute(List<Long> postIds) {
         return postGateway.deleteByIds(postIds);
     }

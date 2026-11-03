@@ -10,6 +10,5 @@ public record BannerCreateCmd(
         Integer sort,
         Integer status,
         Integer position,
-        String memo
-) implements Serializable {
-}
+        String memo)
+        implements Serializable {}

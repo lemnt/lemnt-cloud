@@ -19,8 +19,7 @@ public record ProductSnapshot(
         Long spuId,
         String spuName,
         List<Spec> specs,
-        String picUrl
-) {
+        String picUrl) {
     public ProductSnapshot {
         specs = specs == null ? null : List.copyOf(specs);
     }
@@ -35,8 +34,7 @@ public record ProductSnapshot(
             List<Integer> deliveryTypes,
             Long deliveryTemplateId,
             BigDecimal weight,
-            BigDecimal volume
-    ) {
+            BigDecimal volume) {
         this(
                 id,
                 productCode,
@@ -54,15 +52,12 @@ public record ProductSnapshot(
     }
 
     /** 历史快照缺少配送字段，读取时保留未配置状态。 */
-    public ProductSnapshot(Long id, String productCode, String name, BigDecimal price, Integer stock) {
+    public ProductSnapshot(
+            Long id, String productCode, String name, BigDecimal price, Integer stock) {
         this(id, productCode, name, price, stock, List.of(), null, null, null);
     }
 
     /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
-    public record Spec(
-            Long specId,
-            String specName,
-            Long specValueId,
-            String specValueName
-    ) implements java.io.Serializable {}
+    public record Spec(Long specId, String specName, Long specValueId, String specValueName)
+            implements java.io.Serializable {}
 }

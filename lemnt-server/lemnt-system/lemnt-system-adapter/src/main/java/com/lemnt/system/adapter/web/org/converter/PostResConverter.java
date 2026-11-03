@@ -28,8 +28,7 @@ public class PostResConverter {
                 dto.getPostSort(),
                 dto.getStatus(),
                 dto.getRemark(),
-                dto.getCreateTime()
-        );
+                dto.getCreateTime());
     }
 
     /**
@@ -74,8 +73,7 @@ public class PostResConverter {
                 dto.getPostSort(),
                 dto.getStatus(),
                 dto.getRemark(),
-                dto.getCreateTime()
-        );
+                dto.getCreateTime());
     }
 
     /**
@@ -92,7 +90,6 @@ public class PostResConverter {
                 dto.getPostSort(),
                 dto.getStatus(),
                 dto.getRemark(),
-                dto.getCreateTime()
-        );
+                dto.getCreateTime());
     }
 }

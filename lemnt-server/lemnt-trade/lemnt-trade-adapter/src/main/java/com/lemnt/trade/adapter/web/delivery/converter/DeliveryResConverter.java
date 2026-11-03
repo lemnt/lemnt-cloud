@@ -16,8 +16,7 @@ import com.lemnt.trade.application.delivery.dto.DeliveryExpressTemplateFreeDTO;
 
 /** delivery Res 接口边界转换。 */
 public final class DeliveryResConverter {
-    private DeliveryResConverter() {
-    }
+    private DeliveryResConverter() {}
 
     /** 转换分页响应。 */
     public static DeliveryExpressPageRes deliveryExpressPage(DeliveryExpressDTO value) {
@@ -25,12 +24,7 @@ public final class DeliveryResConverter {
             return null;
         }
         return new DeliveryExpressPageRes(
-                value.id(),
-                value.code(),
-                value.name(),
-                value.logo(),
-                value.sort(),
-                value.status());
+                value.id(), value.code(), value.name(), value.logo(), value.sort(), value.status());
     }
 
     /** 转换详情响应。 */
@@ -39,12 +33,7 @@ public final class DeliveryResConverter {
             return null;
         }
         return new DeliveryExpressDetailRes(
-                value.id(),
-                value.code(),
-                value.name(),
-                value.logo(),
-                value.sort(),
-                value.status());
+                value.id(), value.code(), value.name(), value.logo(), value.sort(), value.status());
     }
 
     /** 转换选择列表响应。 */
@@ -52,22 +41,17 @@ public final class DeliveryResConverter {
         if (value == null) {
             return null;
         }
-        return new DeliveryExpressSimpleRes(
-                value.id(),
-                value.code(),
-                value.name());
+        return new DeliveryExpressSimpleRes(value.id(), value.code(), value.name());
     }
 
     /** 转换分页响应。 */
-    public static DeliveryExpressTemplatePageRes deliveryExpressTemplatePage(DeliveryExpressTemplateDTO value) {
+    public static DeliveryExpressTemplatePageRes deliveryExpressTemplatePage(
+            DeliveryExpressTemplateDTO value) {
         if (value == null) {
             return null;
         }
         return new DeliveryExpressTemplatePageRes(
-                value.id(),
-                value.name(),
-                value.chargeMode(),
-                value.sort());
+                value.id(), value.name(), value.chargeMode(), value.sort());
     }
 
     /** 转换详情响应。 */
@@ -86,13 +70,12 @@ public final class DeliveryResConverter {
     }
 
     /** 转换选择列表响应。 */
-    public static DeliveryExpressTemplateSimpleRes deliveryExpressTemplateSimple(DeliveryExpressTemplateDTO value) {
+    public static DeliveryExpressTemplateSimpleRes deliveryExpressTemplateSimple(
+            DeliveryExpressTemplateDTO value) {
         if (value == null) {
             return null;
         }
-        return new DeliveryExpressTemplateSimpleRes(
-                value.id(),
-                value.name());
+        return new DeliveryExpressTemplateSimpleRes(value.id(), value.name());
     }
 
     /** 转换子规则。 */

@@ -19,6 +19,7 @@ public class WalletAdjustCmdExe {
         if (cmd == null) {
             throw new IllegalArgumentException("调整参数不合法");
         }
-        return WalletDTOConverter.wallet(service.adjust(memberId, cmd.requestNo(), cmd.amount(), cmd.reason()));
+        return WalletDTOConverter.wallet(
+                service.adjust(memberId, cmd.requestNo(), cmd.amount(), cmd.reason()));
     }
 }

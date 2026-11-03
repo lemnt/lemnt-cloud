@@ -17,5 +17,5 @@ public record OrderSummaryDTO(
         String carrierCode,
         String trackingNo,
         LocalDateTime shippedAt,
-        LocalDateTime receivedAt
-) implements java.io.Serializable {}
+        LocalDateTime receivedAt)
+        implements java.io.Serializable {}

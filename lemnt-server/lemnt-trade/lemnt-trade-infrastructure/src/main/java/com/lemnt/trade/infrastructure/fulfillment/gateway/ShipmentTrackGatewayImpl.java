@@ -21,13 +21,22 @@ public class ShipmentTrackGatewayImpl implements ShipmentTrackGateway {
 
     @Override
     public List<ShipmentTrack> tracks(Shipment shipment) {
-        var matching = clients.stream().filter(client -> client.carrierCode().equals(shipment.carrierCode())).toList();
+        var matching =
+                clients.stream()
+                        .filter(client -> client.carrierCode().equals(shipment.carrierCode()))
+                        .toList();
         if (matching.size() != 1) {
             throw new IllegalStateException("物流轨迹渠道未接入或配置重复");
         }
         var result = matching.get(0).tracks(shipment);
-        if (result == null || result.stream().anyMatch(item -> item == null || item.time() == null
-                || item.description() == null || item.description().isBlank())) {
+        if (result == null
+                || result.stream()
+                        .anyMatch(
+                                item ->
+                                        item == null
+                                                || item.time() == null
+                                                || item.description() == null
+                                                || item.description().isBlank())) {
             throw new IllegalStateException("物流轨迹响应不合法");
         }
         return List.copyOf(result);

@@ -5,6 +5,7 @@ import com.lemnt.common.infrastructure.domain.BaseDO;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 public class WalletRechargeDO extends BaseDO {
     @TableId(type = IdType.AUTO)
     private Long id;
+
     private String rechargeNo;
     private String requestNo;
     private Long walletId;

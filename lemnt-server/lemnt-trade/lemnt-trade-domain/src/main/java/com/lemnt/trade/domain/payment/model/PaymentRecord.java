@@ -14,5 +14,4 @@ public record PaymentRecord(
         String channelTradeNo,
         BigDecimal amount,
         String status,
-        String notifyId
-) {}
+        String notifyId) {}

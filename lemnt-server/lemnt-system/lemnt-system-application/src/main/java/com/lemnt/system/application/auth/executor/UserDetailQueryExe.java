@@ -43,10 +43,17 @@ public class UserDetailQueryExe {
             User user = userGateway.selectUserById(userId);
             detail.setDetail(UserDetailConverter.toDTO(user));
             detail.setPostIds(postGateway.selectPostsByUserId(userId));
-            detail.setRoleIds(user.getRoles().stream().map(Role::getRoleId).collect(Collectors.toList()));
+            detail.setRoleIds(
+                    user.getRoles().stream().map(Role::getRoleId).collect(Collectors.toList()));
         }
         List<Role> roleList = roleGateway.selectRoleAll();
-        detail.setRoles(SecurityUtils.isAdmin(userId) ? RoleConverter.toDTOList(roleList) : RoleConverter.toDTOList(roleList.stream().filter(r -> !r.isAdmin()).collect(Collectors.toList())));
+        detail.setRoles(
+                SecurityUtils.isAdmin(userId)
+                        ? RoleConverter.toDTOList(roleList)
+                        : RoleConverter.toDTOList(
+                                roleList.stream()
+                                        .filter(r -> !r.isAdmin())
+                                        .collect(Collectors.toList())));
         detail.setPosts(PostConverter.toDTOList(postGateway.selectPostAll()));
         return detail;
     }

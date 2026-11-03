@@ -19,29 +19,60 @@ public final class PointConverter {
     private PointConverter() {}
 
     private static List<PointProductCmd> products(List<PointProductReq> values) {
-        return values.stream().map(value -> new PointProductCmd(value.skuId(), value.exchangeCount(),
-                value.point(), value.price(), value.stock())).toList();
+        return values.stream()
+                .map(
+                        value ->
+                                new PointProductCmd(
+                                        value.skuId(),
+                                        value.exchangeCount(),
+                                        value.point(),
+                                        value.price(),
+                                        value.stock()))
+                .toList();
     }
 
     public static PointActivityCreateCmd create(PointActivityCreateReq req) {
-        return new PointActivityCreateCmd(req.spuId(), req.remark(), req.sort(), products(req.products()));
+        return new PointActivityCreateCmd(
+                req.spuId(), req.remark(), req.sort(), products(req.products()));
     }
 
     public static PointActivityUpdateCmd update(Long id, PointActivityUpdateReq req) {
-        return new PointActivityUpdateCmd(id, req.spuId(), req.remark(), req.sort(),
-                products(req.products()));
+        return new PointActivityUpdateCmd(
+                id, req.spuId(), req.remark(), req.sort(), products(req.products()));
     }
 
     public static PointActivityPageQry page(PointActivityPageReq req) {
-        return new PointActivityPageQry(req.status(), req.pageNum() == null ? 1 : req.pageNum(),
+        return new PointActivityPageQry(
+                req.status(),
+                req.pageNum() == null ? 1 : req.pageNum(),
                 req.pageSize() == null ? 20 : req.pageSize());
     }
 
     public static PointActivityRes activity(PointActivityDTO dto) {
-        return new PointActivityRes(dto.id(), dto.spuId(), dto.spuName(), dto.picUrl(), dto.status(),
-                dto.remark(), dto.sort(), dto.stock(), dto.totalStock(), dto.point(), dto.price(),
-                dto.marketPrice(), dto.products().stream().map(item -> new PointProductRes(item.id(),
-                        item.skuId(), item.spuId(), item.exchangeCount(), item.point(), item.price(),
-                        item.stock())).toList());
+        return new PointActivityRes(
+                dto.id(),
+                dto.spuId(),
+                dto.spuName(),
+                dto.picUrl(),
+                dto.status(),
+                dto.remark(),
+                dto.sort(),
+                dto.stock(),
+                dto.totalStock(),
+                dto.point(),
+                dto.price(),
+                dto.marketPrice(),
+                dto.products().stream()
+                        .map(
+                                item ->
+                                        new PointProductRes(
+                                                item.id(),
+                                                item.skuId(),
+                                                item.spuId(),
+                                                item.exchangeCount(),
+                                                item.point(),
+                                                item.price(),
+                                                item.stock()))
+                        .toList());
     }
 }

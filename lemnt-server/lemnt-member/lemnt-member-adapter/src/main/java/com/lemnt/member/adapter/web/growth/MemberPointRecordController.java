@@ -38,9 +38,13 @@ public class MemberPointRecordController {
     @RequiresPermissions("member:point:query")
     public R<MemberRecordPointRecordsRes> pointRecords(
             @Valid @ModelAttribute MemberRecordPointRecordsReq req) {
-        var page = memberAssetRecordAllPageQueryExe.execute(MemberReqConverter.toPageQry("POINT", req));
+        var page =
+                memberAssetRecordAllPageQueryExe.execute(
+                        MemberReqConverter.toPageQry("POINT", req));
         return R.page(
-                page.getRecords().stream().map(MemberGrowthResConverter::toMemberRecordPointRecordsRes).toList(),
+                page.getRecords().stream()
+                        .map(MemberGrowthResConverter::toMemberRecordPointRecordsRes)
+                        .toList(),
                 page.getTotal());
     }
 
@@ -50,6 +54,7 @@ public class MemberPointRecordController {
     public R<MemberRecordPointRecordsDetailRes> pointRecordsDetail(@PathVariable Long id) {
         return R.ok(
                 MemberGrowthResConverter.toMemberRecordPointRecordsDetailRes(
-                        memberAssetRecordDetailQueryExe.execute(new AssetRecordDetailQry("POINT", id))));
+                        memberAssetRecordDetailQueryExe.execute(
+                                new AssetRecordDetailQry("POINT", id))));
     }
 }

@@ -28,9 +28,11 @@ class RefundAllocationTest {
     @Test
     void inconsistentPaidAndItemSnapshotCannotProduceRefundQuota() {
         var item = new OrderRefundItem(1L, 10L, "商品", 1, BigDecimal.TEN);
-        assertThrows(IllegalStateException.class,
+        assertThrows(
+                IllegalStateException.class,
                 () -> RefundAllocation.allocate(new BigDecimal("10.01"), List.of(item)));
-        assertThrows(IllegalStateException.class,
+        assertThrows(
+                IllegalStateException.class,
                 () -> RefundAllocation.allocate(BigDecimal.TEN, List.of()));
     }
 }

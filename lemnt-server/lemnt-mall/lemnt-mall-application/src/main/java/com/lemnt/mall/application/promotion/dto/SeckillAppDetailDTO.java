@@ -16,8 +16,7 @@ public record SeckillAppDetailDTO(
         Integer singleLimitCount,
         Integer stock,
         Integer totalStock,
-        List<Product> products
-) {
+        List<Product> products) {
     /** 详情中的秒杀商品。 */
     public record Product(Long skuId, BigDecimal seckillPrice, Integer stock) {}
 }

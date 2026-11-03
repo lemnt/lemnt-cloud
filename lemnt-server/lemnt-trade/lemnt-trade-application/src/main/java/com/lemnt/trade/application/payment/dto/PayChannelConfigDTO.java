@@ -13,6 +13,5 @@ public record PayChannelConfigDTO(
         BigDecimal feeRate,
         String remark,
         String config,
-        LocalDateTime createTime
-) implements Serializable {
-}
+        LocalDateTime createTime)
+        implements Serializable {}

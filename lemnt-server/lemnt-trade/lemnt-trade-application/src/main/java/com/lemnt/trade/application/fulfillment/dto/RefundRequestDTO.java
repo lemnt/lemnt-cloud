@@ -17,5 +17,5 @@ public record RefundRequestDTO(
         String status,
         String decisionReason,
         LocalDateTime requestedAt,
-        LocalDateTime decidedAt
-) implements java.io.Serializable {}
+        LocalDateTime decidedAt)
+        implements java.io.Serializable {}

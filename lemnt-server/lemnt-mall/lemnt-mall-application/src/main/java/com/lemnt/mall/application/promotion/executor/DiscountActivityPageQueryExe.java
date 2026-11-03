@@ -17,7 +17,8 @@ public class DiscountActivityPageQueryExe {
     private final ActivityManagementService service;
 
     public PageResult<DiscountActivityDTO> execute(DiscountActivityPageQry query) {
-        return service.pageDiscount(new ActivityFilter(query.name(), query.status(), query.pageNum(),
-            query.pageSize()));
+        return service.pageDiscount(
+                new ActivityFilter(
+                        query.name(), query.status(), query.pageNum(), query.pageSize()));
     }
 }

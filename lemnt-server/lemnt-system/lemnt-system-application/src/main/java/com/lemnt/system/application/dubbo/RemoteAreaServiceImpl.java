@@ -2,8 +2,11 @@ package com.lemnt.system.application.dubbo;
 
 import com.lemnt.system.api.RemoteAreaService;
 import com.lemnt.system.domain.area.gateway.AreaGateway;
+
 import org.apache.dubbo.config.annotation.DubboService;
+
 import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 import java.util.Map;
 

@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class PromotionOrderDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private String orderNo;
     private String requestNo;
     private Long memberId;

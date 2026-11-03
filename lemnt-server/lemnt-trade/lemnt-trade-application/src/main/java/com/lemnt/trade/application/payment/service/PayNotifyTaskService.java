@@ -23,13 +23,26 @@ public class PayNotifyTaskService {
 
     /** 幂等入队，同一 type+bizNo 返回既有任务。 */
     public PayNotifyTask enqueue(String type, String bizNo, String orderNo) {
-        if (!PayNotifyType.PAY.name().equals(type) && !PayNotifyType.REFUND.name().equals(type)) {
+        if (!PayNotifyType.PAY.name().equals(type)
+                && !PayNotifyType.REFUND.name().equals(type)
+                && !PayNotifyType.AFTER_SALE.name().equals(type)) {
             throw new IllegalArgumentException("派发类型不合法");
         }
         require(bizNo, 40, "业务单号");
         require(orderNo, 40, "订单编号");
-        return tasks.createIfAbsent(new PayNotifyTask(null, type, bizNo, orderNo,
-                PayNotifyTaskStatus.PENDING.name(), 0, MAX_NOTIFY_TIMES, null, null, null, null));
+        return tasks.createIfAbsent(
+                new PayNotifyTask(
+                        null,
+                        type,
+                        bizNo,
+                        orderNo,
+                        PayNotifyTaskStatus.PENDING.name(),
+                        0,
+                        MAX_NOTIFY_TIMES,
+                        null,
+                        null,
+                        null,
+                        null));
     }
 
     /** 入队并立即尝试，返回值表示本次派发是否成功。 */
@@ -49,7 +62,17 @@ public class PayNotifyTaskService {
         if (task.notifyTimes() >= task.maxNotifyTimes()) {
             return false;
         }
-        if (!tasks.claim(id, task.notifyTimes())) {
+        var startedAt = tasks.databaseNow();
+        // 当前RPC超时5秒，整任务包含多个下游步骤，租约预留120秒；业务端仍必须幂等。
+        boolean claimed =
+                task.executeVersion() == null
+                        ? tasks.claim(id, task.notifyTimes())
+                        : tasks.claimVersion(
+                                id,
+                                task.notifyTimes(),
+                                task.executeVersion(),
+                                startedAt.plusSeconds(120));
+        if (!claimed) {
             // 被其他执行者抢占或状态已变化，按最新状态判断是否已成功。
             var current = tasks.find(id);
             return current != null && PayNotifyTaskStatus.SUCCESS.name().equals(current.status());
@@ -58,12 +81,35 @@ public class PayNotifyTaskService {
         var now = tasks.databaseNow();
         try {
             dispatcher.dispatch(task);
-            tasks.finishSuccess(id, attemptNo, "OK", now);
+            boolean finished =
+                    task.executeVersion() == null
+                            ? tasks.finishSuccess(id, attemptNo, "OK", now)
+                            : tasks.finishVersion(
+                                    id,
+                                    task.executeVersion() + 1,
+                                    true,
+                                    "OK",
+                                    null,
+                                    tasks.databaseNow());
+            if (!finished) {
+                return false;
+            }
             log(id, attemptNo, PayNotifyTaskStatus.SUCCESS.name(), "OK");
             return true;
         } catch (RuntimeException error) {
             String message = message(error);
-            tasks.finishFailed(id, attemptNo, message, now.plusSeconds(delay(attemptNo)), now);
+            if (task.executeVersion() == null) {
+                tasks.finishFailed(id, attemptNo, message, now.plusSeconds(delay(attemptNo)), now);
+            } else {
+                var endedAt = tasks.databaseNow();
+                tasks.finishVersion(
+                        id,
+                        task.executeVersion() + 1,
+                        false,
+                        message,
+                        endedAt.plusSeconds(delay(attemptNo)),
+                        endedAt);
+            }
             log(id, attemptNo, PayNotifyTaskStatus.FAILED.name(), message);
             return false;
         }

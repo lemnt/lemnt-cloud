@@ -18,18 +18,23 @@ public record ProductSkuDTO(
         List<Spec> specs,
         String status,
         BigDecimal weight,
-        BigDecimal volume
-) implements Serializable {
+        BigDecimal volume)
+        implements Serializable {
     /** 缺少配送字段的规格列表。 */
-    public ProductSkuDTO(Long id, Long spuId, String code, String name, BigDecimal price, Integer stock,
-            String image, List<Spec> specs, String status) {
+    public ProductSkuDTO(
+            Long id,
+            Long spuId,
+            String code,
+            String name,
+            BigDecimal price,
+            Integer stock,
+            String image,
+            List<Spec> specs,
+            String status) {
         this(id, spuId, code, name, price, stock, image, specs, status, null, null);
     }
+
     /** 编号与名称保持一一对应。 */
-    public record Spec(
-            Long specId,
-            String specName,
-            Long specValueId,
-            String specValueName
-    ) implements java.io.Serializable {}
+    public record Spec(Long specId, String specName, Long specValueId, String specValueName)
+            implements java.io.Serializable {}
 }

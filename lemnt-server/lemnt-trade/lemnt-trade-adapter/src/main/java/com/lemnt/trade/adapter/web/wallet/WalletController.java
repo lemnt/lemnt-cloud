@@ -44,7 +44,9 @@ public class WalletController {
     @RequiresPermissions("trade:wallet:list")
     public R<WalletRes> page(@Valid @ModelAttribute WalletPageReq req) {
         var value = page.execute(WalletResConverter.page(req));
-        return R.page(value.getRecords().stream().map(WalletResConverter::wallet).toList(), value.getTotal());
+        return R.page(
+                value.getRecords().stream().map(WalletResConverter::wallet).toList(),
+                value.getTotal());
     }
 
     /** 钱包详情。 */
@@ -60,17 +62,22 @@ public class WalletController {
     @GetMapping("/{memberId}/transactions")
     @Operation(summary = "钱包流水分页")
     @RequiresPermissions("trade:wallet:query")
-    public R<WalletTransactionRes> transactions(@PathVariable Long memberId,
-            @Valid @ModelAttribute WalletTransactionPageReq req) {
+    public R<WalletTransactionRes> transactions(
+            @PathVariable Long memberId, @Valid @ModelAttribute WalletTransactionPageReq req) {
         var value = transactions.execute(memberId, WalletResConverter.transactions(req));
-        return R.page(value.getRecords().stream().map(WalletResConverter::transaction).toList(), value.getTotal());
+        return R.page(
+                value.getRecords().stream().map(WalletResConverter::transaction).toList(),
+                value.getTotal());
     }
 
     /** 人工调整余额，requestNo 保证重复提交不重复记账。 */
     @PostMapping("/{memberId}/adjust")
     @Operation(summary = "调整钱包余额")
     @RequiresPermissions("trade:wallet:adjust")
-    public R<WalletRes> adjust(@PathVariable Long memberId, @Valid @RequestBody WalletAdjustReq req) {
-        return R.ok(WalletResConverter.wallet(adjust.execute(memberId, WalletResConverter.adjust(req))));
+    public R<WalletRes> adjust(
+            @PathVariable Long memberId, @Valid @RequestBody WalletAdjustReq req) {
+        return R.ok(
+                WalletResConverter.wallet(
+                        adjust.execute(memberId, WalletResConverter.adjust(req))));
     }
 }

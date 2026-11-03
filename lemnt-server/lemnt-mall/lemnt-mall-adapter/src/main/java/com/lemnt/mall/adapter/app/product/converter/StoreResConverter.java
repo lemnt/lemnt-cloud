@@ -22,14 +22,14 @@ public final class StoreResConverter {
         return v == null
                 ? null
                 : new StoreProductRes(
-                v.id(),
-                v.name(),
-                v.categoryId(),
-                v.brandId(),
-                v.image(),
-                v.minPrice(),
-                v.maxPrice(),
-                v.available());
+                        v.id(),
+                        v.name(),
+                        v.categoryId(),
+                        v.brandId(),
+                        v.image(),
+                        v.minPrice(),
+                        v.maxPrice(),
+                        v.available());
     }
 
     /**
@@ -39,9 +39,22 @@ public final class StoreResConverter {
         return v == null
                 ? null
                 : new StoreSkuRes(
-                v.id(), v.name(), v.price(), v.stock(), v.image(),
-                v.specs() == null ? null : v.specs().stream().map(property ->
-                        new StoreSkuRes.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList());
+                        v.id(),
+                        v.name(),
+                        v.price(),
+                        v.stock(),
+                        v.image(),
+                        v.specs() == null
+                                ? null
+                                : v.specs().stream()
+                                        .map(
+                                                property ->
+                                                        new StoreSkuRes.Spec(
+                                                                property.specId(),
+                                                                property.specName(),
+                                                                property.specValueId(),
+                                                                property.specValueName()))
+                                        .toList());
     }
 
     /**
@@ -58,12 +71,12 @@ public final class StoreResConverter {
         return v == null
                 ? null
                 : new StoreDetailRes(
-                v.id(),
-                v.name(),
-                v.categoryId(),
-                v.brandId(),
-                v.description(),
-                v.image(),
-                v.skus().stream().map(StoreResConverter::sku).toList());
+                        v.id(),
+                        v.name(),
+                        v.categoryId(),
+                        v.brandId(),
+                        v.description(),
+                        v.image(),
+                        v.skus().stream().map(StoreResConverter::sku).toList());
     }
 }

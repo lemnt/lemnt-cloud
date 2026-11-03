@@ -29,5 +29,4 @@ public final class MemberUserResConverter {
                         v.birthday(),
                         v.createTime());
     }
-
 }

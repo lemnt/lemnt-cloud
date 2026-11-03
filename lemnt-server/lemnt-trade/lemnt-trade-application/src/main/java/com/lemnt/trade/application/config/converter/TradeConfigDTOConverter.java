@@ -5,8 +5,7 @@ import com.lemnt.trade.domain.config.model.TradeConfig;
 
 /** config 应用输出转换。 */
 public final class TradeConfigDTOConverter {
-    private TradeConfigDTOConverter() {
-    }
+    private TradeConfigDTOConverter() {}
 
     /** 转换 交易配置。 */
     public static TradeConfigDTO toDTO(TradeConfig value) {

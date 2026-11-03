@@ -35,6 +35,5 @@ public record LogininforAddCmd(
         /**
          * 提示消息
          */
-        String msg
-) implements Serializable {
-}
+        String msg)
+        implements Serializable {}

@@ -11,6 +11,7 @@ import com.lemnt.system.infrastructure.notice.dataobject.NoticeReadDO;
 import com.lemnt.system.infrastructure.notice.mapper.NoticeReadMapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,9 +44,11 @@ public class NoticeReadGatewayImpl implements NoticeReadGateway {
     }
 
     @Override
-    public PageResult<NoticeReadUser> selectPageReadUsers(Long noticeId, String searchValue, PageQry qry) {
+    public PageResult<NoticeReadUser> selectPageReadUsers(
+            Long noticeId, String searchValue, PageQry qry) {
         Page<NoticeDO> page = new Page<>(qry.getPageNum(), qry.getPageSize());
-        IPage<NoticeReadUser> result = noticeReadMapper.selectPageReadUsers(page, noticeId, searchValue);
+        IPage<NoticeReadUser> result =
+                noticeReadMapper.selectPageReadUsers(page, noticeId, searchValue);
         return PageResult.of(result.getRecords(), result.getTotal());
     }
 
@@ -61,12 +64,12 @@ public class NoticeReadGatewayImpl implements NoticeReadGateway {
 
     @Override
     public Boolean deleteByNoticeIds(List<Long> noticeIds) {
-        return noticeReadMapper.deleteByNoticeIds(noticeIds) > 0;
+        return deleteByNoticeIdsRow(noticeIds) > 0;
     }
 
     @Override
     public Boolean isRead(Long noticeId, Long userId) {
-        return noticeReadMapper.selectIsRead(noticeId, userId) > 0;
+        return selectIsReadRow(noticeId, userId) > 0;
     }
 
     @Override
@@ -85,5 +88,33 @@ public class NoticeReadGatewayImpl implements NoticeReadGateway {
         }
         noticeReadMapper.insertReadRecords(list);
         return true;
+    }
+
+    /**
+     * 查询某用户是否已读某公告
+     *
+     * @param noticeId 公告ID
+     * @param userId   用户ID
+     * @return 已读记录数（0未读 1已读）
+     */
+    private long selectIsReadRow(Long noticeId, Long userId) {
+        return noticeReadMapper.selectCount(
+                Wrappers.<NoticeReadDO>lambdaQuery()
+                        .eq(NoticeReadDO::getNoticeId, noticeId)
+                        .eq(NoticeReadDO::getUserId, userId));
+    }
+
+    /**
+     * 公告删除时清理对应已读记录
+     *
+     * @param noticeIds 公告ID数组
+     * @return 结果
+     */
+    private int deleteByNoticeIdsRow(List<Long> noticeIds) {
+        if (CollUtil.isEmpty(noticeIds)) {
+            return 0;
+        }
+        return noticeReadMapper.delete(
+                Wrappers.<NoticeReadDO>lambdaQuery().in(NoticeReadDO::getNoticeId, noticeIds));
     }
 }

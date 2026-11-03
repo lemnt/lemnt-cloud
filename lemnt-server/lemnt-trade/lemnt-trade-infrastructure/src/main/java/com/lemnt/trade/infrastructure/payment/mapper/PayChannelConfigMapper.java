@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** trade_pay_channel Mapper，CRUD 复用 MyBatis Plus。 */
 @Mapper
-public interface PayChannelConfigMapper extends BaseMapper<PayChannelConfigDO> {
-}
+public interface PayChannelConfigMapper extends BaseMapper<PayChannelConfigDO> {}

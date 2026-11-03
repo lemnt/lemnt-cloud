@@ -3,7 +3,6 @@ package com.lemnt.trade.infrastructure.aftersale.mapper;
 import com.lemnt.trade.infrastructure.aftersale.dataobject.AfterSaleDO;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

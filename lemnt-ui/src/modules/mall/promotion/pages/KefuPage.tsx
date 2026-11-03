@@ -28,10 +28,11 @@ export function KefuPage() {
   });
   const read = useMutation({ mutationFn: (id: string) => api.readConversation(id) });
   const pin = useMutation({
-    mutationFn: ({ id, pinned }: { id: string; pinned: boolean }) => api.pinConversation(id, pinned),
+    mutationFn: ({ id, pinned }: { id: string; pinned: boolean }) =>
+      api.pinConversation(id, pinned),
   });
   const remove = useMutation({ mutationFn: (id: string) => api.deleteConversation(id) });
-  const current = conversations.data?.find(row => row.id === selected);
+  const current = conversations.data?.find((row) => row.id === selected);
 
   async function open(row: KefuConversation) {
     setSelected(row.id);
@@ -104,14 +105,20 @@ export function KefuPage() {
         <Alert type="error" title="会话读取失败" description={String(conversations.error)} />
       )}
       <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-        <Card title={`会话（${conversations.data?.length ?? 0}）`} style={{ width: 340, flex: 'none' }}>
+        <Card
+          title={`会话（${conversations.data?.length ?? 0}）`}
+          style={{ width: 340, flex: 'none' }}
+        >
           <List
             loading={conversations.isFetching}
             dataSource={conversations.data ?? []}
             locale={{ emptyText: '暂无客服会话' }}
-            renderItem={row => (
+            renderItem={(row) => (
               <List.Item
-                style={{ cursor: 'pointer', background: row.id === selected ? '#f5f5f5' : undefined }}
+                style={{
+                  cursor: 'pointer',
+                  background: row.id === selected ? '#f5f5f5' : undefined,
+                }}
                 onClick={() => open(row)}
                 actions={[
                   can('mall:promotion:update') && (
@@ -119,7 +126,7 @@ export function KefuPage() {
                       key="pin"
                       type="link"
                       size="small"
-                      onClick={event => {
+                      onClick={(event) => {
                         event.stopPropagation();
                         togglePin(row);
                       }}
@@ -133,7 +140,7 @@ export function KefuPage() {
                       type="link"
                       size="small"
                       danger
-                      onClick={event => {
+                      onClick={(event) => {
                         event.stopPropagation();
                         destroy(row);
                       }}
@@ -144,12 +151,18 @@ export function KefuPage() {
                 ].filter(Boolean)}
               >
                 <List.Item.Meta
-                  avatar={<Avatar src={row.avatar || undefined}>{row.nickname?.slice(0, 1) || '客'}</Avatar>}
+                  avatar={
+                    <Avatar src={row.avatar || undefined}>
+                      {row.nickname?.slice(0, 1) || '客'}
+                    </Avatar>
+                  }
                   title={
                     <Space>
                       {row.nickname || `会员 ${row.userId}`}
                       {row.adminPinned && <Tag color="gold">置顶</Tag>}
-                      {row.adminUnreadMessageCount > 0 && <Badge count={row.adminUnreadMessageCount} />}
+                      {row.adminUnreadMessageCount > 0 && (
+                        <Badge count={row.adminUnreadMessageCount} />
+                      )}
                     </Space>
                   }
                   description={
@@ -175,7 +188,7 @@ export function KefuPage() {
                 <Alert type="error" title="消息读取失败" description={String(messages.error)} />
               )}
               <div style={{ height: 380, overflow: 'auto', padding: 8 }}>
-                {(messages.data ?? []).map(row => (
+                {(messages.data ?? []).map((row) => (
                   <div
                     key={row.id}
                     style={{ textAlign: row.senderType === 2 ? 'right' : 'left', marginBottom: 12 }}
@@ -192,7 +205,12 @@ export function KefuPage() {
                       }}
                     >
                       {row.contentType === 2 ? (
-                        <a href={row.content} target="_blank" rel="noreferrer" style={{ color: 'inherit' }}>
+                        <a
+                          href={row.content}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ color: 'inherit' }}
+                        >
                           {row.content}
                         </a>
                       ) : (
@@ -200,15 +218,18 @@ export function KefuPage() {
                       )}
                     </div>
                     <div style={{ fontSize: 12, color: '#999', marginTop: 4 }}>
-                      {row.senderType === 2 ? '客服' : current.nickname || '会员'} · {row.createTime}
+                      {row.senderType === 2 ? '客服' : current.nickname || '会员'} ·{' '}
+                      {row.createTime}
                     </div>
                   </div>
                 ))}
-                {!messages.isFetching && !(messages.data ?? []).length && <Empty description="暂无消息" />}
+                {!messages.isFetching && !(messages.data ?? []).length && (
+                  <Empty description="暂无消息" />
+                )}
               </div>
               <Input.TextArea
                 value={content}
-                onChange={event => setContent(event.target.value)}
+                onChange={(event) => setContent(event.target.value)}
                 rows={3}
                 maxLength={2000}
                 placeholder="输入回复内容"

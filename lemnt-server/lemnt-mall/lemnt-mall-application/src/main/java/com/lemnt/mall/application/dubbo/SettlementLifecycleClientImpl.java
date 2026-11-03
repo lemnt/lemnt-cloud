@@ -41,8 +41,9 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
     public void verify(String orderNo) {
         settlementRecordService.verifyCoupon(orderNo);
         var order = orders.findByOrderNo(orderNo);
-        if (order == null || !Set.of("RESERVING", "PENDING_PAYMENT", "PAID", "SHIPPED", "COMPLETED")
-                .contains(order.status())) {
+        if (order == null
+                || !Set.of("RESERVING", "PENDING_PAYMENT", "PAID", "SHIPPED", "COMPLETED")
+                        .contains(order.status())) {
             throw new IllegalStateException("订单不能继续下单");
         }
         applyMember(order, "CREATE", null, BigDecimal.ZERO, 0L);
@@ -52,8 +53,9 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
     @Transactional(rollbackFor = Exception.class)
     public void reserved(String orderNo) {
         var order = orders.findByOrderNo(orderNo);
-        if (order == null || !Set.of("PENDING_PAYMENT", "PAID", "SHIPPED", "COMPLETED", "CLOSED")
-                .contains(order.status())) {
+        if (order == null
+                || !Set.of("PENDING_PAYMENT", "PAID", "SHIPPED", "COMPLETED", "CLOSED")
+                        .contains(order.status())) {
             throw new IllegalStateException("订单尚未完成库存预占");
         }
         if (!"CLOSED".equals(order.status())) {
@@ -93,16 +95,63 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void refunded(String orderNo, String refundNo, List<RefundStockBo> items, BigDecimal refundAmount) {
+    public void refunded(com.lemnt.mall.client.bo.RefundBenefitsBo plan) {
+        if (plan == null
+                || plan.ruleVersion() != 1
+                || plan.quantity() < 1
+                || plan.returnUsePoint() < 0
+                || plan.deductGivePoint() < 0
+                || plan.amount() == null
+                || plan.amount().signum() < 0) {
+            throw new IllegalArgumentException("冻结退款方案不合法");
+        }
+        var order = orders.findByOrderNo(plan.orderNo());
+        if (order == null
+                || order.items().stream()
+                        .noneMatch(
+                                i ->
+                                        plan.orderItemId().equals(i.orderItemId())
+                                                && plan.skuId().equals(i.productId())
+                                                && plan.quantity() <= i.quantity())) {
+            throw new IllegalArgumentException("冻结退款商品行不属于原订单");
+        }
+        applyRefund(
+                plan.orderNo(),
+                plan.afterSaleNo(),
+                List.of(new RefundStockBo(plan.skuId(), plan.quantity())),
+                plan.amount(),
+                plan);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void refunded(
+            String orderNo, String refundNo, List<RefundStockBo> items, BigDecimal refundAmount) {
+        applyRefund(orderNo, refundNo, items, refundAmount, null);
+    }
+
+    /** 库存去重及券状态属于mall本地事务，积分结果由新版退单明确给出。 */
+    private void applyRefund(
+            String orderNo,
+            String refundNo,
+            List<RefundStockBo> items,
+            BigDecimal refundAmount,
+            com.lemnt.mall.client.bo.RefundBenefitsBo plan) {
         var order = orders.findByOrderNo(orderNo);
-        if (order == null || !Set.of("PAID", "SHIPPED", "COMPLETED", "REFUNDED").contains(order.status())
-                || items == null || items.isEmpty()
-                || items.stream().map(RefundStockBo::productId).distinct().count() != items.size()) {
+        if (order == null
+                || !Set.of("PAID", "SHIPPED", "COMPLETED", "REFUNDED").contains(order.status())
+                || items == null
+                || items.isEmpty()
+                || items.stream().map(RefundStockBo::productId).distinct().count()
+                        != items.size()) {
             throw new IllegalArgumentException("售后回补的订单或商品不合法");
         }
-        for (var item : items.stream().sorted(java.util.Comparator.comparing(
-                RefundStockBo::productId)).toList()) {
-            if (order.items().stream().noneMatch(original -> original.productId().equals(item.productId()))) {
+        for (var item :
+                items.stream()
+                        .sorted(java.util.Comparator.comparing(RefundStockBo::productId))
+                        .toList()) {
+            if (order.items().stream()
+                    .noneMatch(original -> original.productId().equals(item.productId()))) {
                 throw new IllegalArgumentException("售后商品不属于原订单");
             }
             inventory.returnStock(orderNo, refundNo, item.productId(), item.quantity());
@@ -110,20 +159,53 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
         if ("REFUNDED".equals(order.status())) {
             settlementRecordService.returnUsedCoupon(orderNo);
         }
-        var promotionRefund = promotionOrders.refunded(orderNo, refundNo, order, items);
-        applyMember(order, "REFUND", refundNo, refundAmount,
-                promotionRefund == null ? 0L : promotionRefund.refundPoints());
+        if (plan == null) {
+            var promotionRefund = promotionOrders.refunded(orderNo, refundNo, order, items);
+            applyMember(
+                    order,
+                    "REFUND",
+                    refundNo,
+                    refundAmount,
+                    promotionRefund == null ? 0L : promotionRefund.refundPoints());
+        } else {
+            promotionOrders.refunded(orderNo, refundNo, order, items, true);
+            memberTradeGateway.apply(
+                    new MemberTradeChange(
+                            order.memberId(),
+                            "REFUND",
+                            orderNo,
+                            refundNo,
+                            order.usePoint(),
+                            order.givePoint(),
+                            order.totalAmount().movePointRight(2).longValueExact(),
+                            refundAmount.movePointRight(2).longValueExact(),
+                            "REFUNDED".equals(order.status()),
+                            plan.returnUsePoint(),
+                            plan.deductGivePoint(),
+                            plan.ruleVersion()));
+        }
     }
 
     /**
      * 只使用交易服务保存的原始积分与实付，禁止使用当前配置重算历史权益。
      */
-    private void applyMember(SettlementOrder order, String operation,
-                             String refundNo, BigDecimal refundAmount, long refundPoint) {
-        memberTradeGateway.apply(new MemberTradeChange(order.memberId(),
-                operation, order.orderNo(), refundNo, order.usePoint(), order.givePoint(),
-                order.totalAmount().movePointRight(2).longValueExact(),
-                refundAmount.movePointRight(2).longValueExact(), "REFUNDED".equals(order.status()),
-                refundPoint));
+    private void applyMember(
+            SettlementOrder order,
+            String operation,
+            String refundNo,
+            BigDecimal refundAmount,
+            long refundPoint) {
+        memberTradeGateway.apply(
+                new MemberTradeChange(
+                        order.memberId(),
+                        operation,
+                        order.orderNo(),
+                        refundNo,
+                        order.usePoint(),
+                        order.givePoint(),
+                        order.totalAmount().movePointRight(2).longValueExact(),
+                        refundAmount.movePointRight(2).longValueExact(),
+                        "REFUNDED".equals(order.status()),
+                        refundPoint));
     }
 }

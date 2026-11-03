@@ -12,6 +12,5 @@ public record BrokerageWithdrawCreateCmd(
         String userAccount,
         String qrCodeUrl,
         String bankName,
-        String bankAddress
-) implements Serializable {
-}
+        String bankAddress)
+        implements Serializable {}

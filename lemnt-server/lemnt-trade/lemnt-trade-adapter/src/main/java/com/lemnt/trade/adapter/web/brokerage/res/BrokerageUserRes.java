@@ -15,6 +15,5 @@ public record BrokerageUserRes(
         @Schema(description = "可用佣金，元") BigDecimal brokeragePrice,
         @Schema(description = "冻结佣金，元") BigDecimal frozenPrice,
         @Schema(description = "一级推广人数") Long firstLevelCount,
-        @Schema(description = "二级推广人数") Long secondLevelCount
-) implements java.io.Serializable {
-}
+        @Schema(description = "二级推广人数") Long secondLevelCount)
+        implements java.io.Serializable {}

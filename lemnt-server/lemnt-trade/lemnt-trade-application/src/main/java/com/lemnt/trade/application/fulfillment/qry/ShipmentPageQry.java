@@ -9,6 +9,5 @@ public record ShipmentPageQry(
         String trackingNo,
         String status,
         int pageNum,
-        int pageSize
-) implements Serializable {
-}
+        int pageSize)
+        implements Serializable {}

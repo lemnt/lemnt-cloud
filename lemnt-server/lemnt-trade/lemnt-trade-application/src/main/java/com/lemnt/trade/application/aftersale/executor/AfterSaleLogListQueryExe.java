@@ -18,11 +18,26 @@ import java.util.List;
 public class AfterSaleLogListQueryExe {
     private final AfterSaleGateway afterSales;
     private final AfterSaleLogGateway logs;
+
     /** 以售后数值主键读取日志。 */
     public List<AfterSaleLogDTO> execute(String no) {
         var value = afterSales.afterSale(OrderRules.text(no, 40));
-        if (value == null) { throw new ServiceException("售后单不存在", 400); }
-        return logs.byAfterSaleId(value.id()).stream().map(row -> new AfterSaleLogDTO(row.id(), row.userId(), row.userType(),
-                row.afterSaleId(), row.beforeStatus(), row.afterStatus(), row.operateType(), row.content(), row.createTime())).toList();
+        if (value == null) {
+            throw new ServiceException("售后单不存在", 400);
+        }
+        return logs.byAfterSaleId(value.id()).stream()
+                .map(
+                        row ->
+                                new AfterSaleLogDTO(
+                                        row.id(),
+                                        row.userId(),
+                                        row.userType(),
+                                        row.afterSaleId(),
+                                        row.beforeStatus(),
+                                        row.afterStatus(),
+                                        row.operateType(),
+                                        row.content(),
+                                        row.createTime()))
+                .toList();
     }
 }

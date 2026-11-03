@@ -14,6 +14,5 @@ public record BargainRecord(
         BigDecimal bargainPrice,
         Integer status,
         LocalDateTime endTime,
-        Long orderId
-) implements java.io.Serializable {
-}
+        Long orderId)
+        implements java.io.Serializable {}

@@ -11,8 +11,7 @@ import java.util.Arrays;
 public final class RechargeRules {
     private static final BigDecimal MAX_AMOUNT = new BigDecimal("999999999.99");
 
-    private RechargeRules() {
-    }
+    private RechargeRules() {}
 
     public static String name(String value) {
         return text(value, 64, "套餐名");
@@ -67,14 +66,16 @@ public final class RechargeRules {
             return null;
         }
         String text = value.trim();
-        if (Arrays.stream(PaymentChannel.values()).noneMatch(channel -> channel.name().equals(text))) {
+        if (Arrays.stream(PaymentChannel.values())
+                .noneMatch(channel -> channel.name().equals(text))) {
             throw new IllegalArgumentException("不支持的渠道编码");
         }
         return text;
     }
 
     private static BigDecimal money(BigDecimal value, String field) {
-        if (value == null || value.abs().compareTo(MAX_AMOUNT) > 0
+        if (value == null
+                || value.abs().compareTo(MAX_AMOUNT) > 0
                 || value.stripTrailingZeros().scale() > 2) {
             throw new IllegalArgumentException(field + "必须为0至999999999.99之间的两位小数");
         }

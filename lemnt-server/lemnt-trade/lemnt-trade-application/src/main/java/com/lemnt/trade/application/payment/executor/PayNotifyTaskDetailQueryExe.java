@@ -21,7 +21,8 @@ public class PayNotifyTaskDetailQueryExe {
         var task = tasks.find(id);
         return task == null
                 ? null
-                : new PayNotifyTaskDetailDTO(PayNotifyDTOConverter.task(task),
+                : new PayNotifyTaskDetailDTO(
+                        PayNotifyDTOConverter.task(task),
                         tasks.logs(id).stream().map(PayNotifyDTOConverter::log).toList());
     }
 }

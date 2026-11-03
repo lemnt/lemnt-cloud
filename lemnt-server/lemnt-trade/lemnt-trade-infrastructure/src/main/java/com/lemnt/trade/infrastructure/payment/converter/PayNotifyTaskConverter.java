@@ -7,17 +7,25 @@ import com.lemnt.trade.infrastructure.payment.dataobject.PayNotifyTaskDO;
 
 /** 派发任务与日志表字段转换。 */
 public final class PayNotifyTaskConverter {
-    private PayNotifyTaskConverter() {
-    }
+    private PayNotifyTaskConverter() {}
 
     public static PayNotifyTask toTask(PayNotifyTaskDO row) {
         return row == null
                 ? null
-                : new PayNotifyTask(row.getId(), row.getType(), row.getBizNo(), row.getOrderNo(), row.getStatus(),
+                : new PayNotifyTask(
+                        row.getId(),
+                        row.getType(),
+                        row.getBizNo(),
+                        row.getOrderNo(),
+                        row.getStatus(),
                         row.getNotifyTimes() == null ? 0 : row.getNotifyTimes(),
                         row.getMaxNotifyTimes() == null ? 0 : row.getMaxNotifyTimes(),
-                        row.getNextNotifyTime(), row.getLastExecuteTime(), row.getLastResponse(),
-                        row.getCreateTime());
+                        row.getNextNotifyTime(),
+                        row.getLastExecuteTime(),
+                        row.getLastResponse(),
+                        row.getCreateTime(),
+                        row.getExecuteVersion(),
+                        row.getLeaseUntil());
     }
 
     public static PayNotifyTaskDO toDO(PayNotifyTask value) {
@@ -32,15 +40,21 @@ public final class PayNotifyTaskConverter {
         row.setNextNotifyTime(value.nextNotifyTime());
         row.setLastExecuteTime(value.lastExecuteTime());
         row.setLastResponse(value.lastResponse());
+        row.setExecuteVersion(value.executeVersion() == null ? 0L : value.executeVersion());
+        row.setLeaseUntil(value.leaseUntil());
         return row;
     }
 
     public static PayNotifyLog toLog(PayNotifyLogDO row) {
         return row == null
                 ? null
-                : new PayNotifyLog(row.getId(), row.getTaskId(),
-                        row.getNotifyTimes() == null ? 0 : row.getNotifyTimes(), row.getStatus(),
-                        row.getResponse(), row.getCreateTime());
+                : new PayNotifyLog(
+                        row.getId(),
+                        row.getTaskId(),
+                        row.getNotifyTimes() == null ? 0 : row.getNotifyTimes(),
+                        row.getStatus(),
+                        row.getResponse(),
+                        row.getCreateTime());
     }
 
     public static PayNotifyLogDO toDO(PayNotifyLog value) {

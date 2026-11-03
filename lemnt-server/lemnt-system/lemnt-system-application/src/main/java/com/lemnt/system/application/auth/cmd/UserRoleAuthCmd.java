@@ -16,6 +16,5 @@ public record UserRoleAuthCmd(
         /**
          * 角色ID组
          */
-        List<Long> roleIds
-) implements Serializable {
-}
+        List<Long> roleIds)
+        implements Serializable {}

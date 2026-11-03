@@ -29,8 +29,11 @@ public class BrokerageWithdrawGatewayImpl implements BrokerageWithdrawGateway {
 
     @Override
     public BrokerageWithdraw lock(Long id) {
-        return BrokerageConverter.withdraw(mapper.selectOne(Wrappers.<BrokerageWithdrawDO>lambdaQuery()
-                .eq(BrokerageWithdrawDO::getId, id).last("FOR UPDATE")));
+        return BrokerageConverter.withdraw(
+                mapper.selectOne(
+                        Wrappers.<BrokerageWithdrawDO>lambdaQuery()
+                                .eq(BrokerageWithdrawDO::getId, id)
+                                .last("FOR UPDATE")));
     }
 
     @Override
@@ -42,23 +45,35 @@ public class BrokerageWithdrawGatewayImpl implements BrokerageWithdrawGateway {
 
     @Override
     public PageResult<BrokerageWithdraw> page(BrokerageWithdrawFilter filter) {
-        var page = mapper.selectPage(new Page<BrokerageWithdrawDO>(filter.pageNum(), filter.pageSize()),
-                Wrappers.<BrokerageWithdrawDO>lambdaQuery()
-                        .eq(filter.userId() != null, BrokerageWithdrawDO::getUserId, filter.userId())
-                        .eq(filter.status() != null, BrokerageWithdrawDO::getStatus, filter.status())
-                        .orderByDesc(BrokerageWithdrawDO::getId));
-        return PageResult.of(page.getRecords().stream().map(BrokerageConverter::withdraw).toList(),
+        var page =
+                mapper.selectPage(
+                        new Page<BrokerageWithdrawDO>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.<BrokerageWithdrawDO>lambdaQuery()
+                                .eq(
+                                        filter.userId() != null,
+                                        BrokerageWithdrawDO::getUserId,
+                                        filter.userId())
+                                .eq(
+                                        filter.status() != null,
+                                        BrokerageWithdrawDO::getStatus,
+                                        filter.status())
+                                .orderByDesc(BrokerageWithdrawDO::getId));
+        return PageResult.of(
+                page.getRecords().stream().map(BrokerageConverter::withdraw).toList(),
                 page.getTotal());
     }
 
     @Override
-    public boolean updateStatus(Long id, Integer expected, Integer next, String auditReason,
-            LocalDateTime auditTime) {
-        return mapper.update(null, Wrappers.<BrokerageWithdrawDO>lambdaUpdate()
-                .eq(BrokerageWithdrawDO::getId, id)
-                .eq(BrokerageWithdrawDO::getStatus, expected)
-                .set(BrokerageWithdrawDO::getStatus, next)
-                .set(BrokerageWithdrawDO::getAuditReason, auditReason)
-                .set(BrokerageWithdrawDO::getAuditTime, auditTime)) == 1;
+    public boolean updateStatus(
+            Long id, Integer expected, Integer next, String auditReason, LocalDateTime auditTime) {
+        return mapper.update(
+                        null,
+                        Wrappers.<BrokerageWithdrawDO>lambdaUpdate()
+                                .eq(BrokerageWithdrawDO::getId, id)
+                                .eq(BrokerageWithdrawDO::getStatus, expected)
+                                .set(BrokerageWithdrawDO::getStatus, next)
+                                .set(BrokerageWithdrawDO::getAuditReason, auditReason)
+                                .set(BrokerageWithdrawDO::getAuditTime, auditTime))
+                == 1;
     }
 }

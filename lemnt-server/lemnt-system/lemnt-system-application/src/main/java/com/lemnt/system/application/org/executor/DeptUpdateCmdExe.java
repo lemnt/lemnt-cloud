@@ -39,12 +39,12 @@ public class DeptUpdateCmdExe {
         // 数据权限校验
         Dept condition = new Dept();
         condition.setDeptId(deptId);
-        if (!SecurityUtils.isAdmin() && StringUtils.isEmpty(deptGateway.selectDeptList(condition))) {
+        if (!SecurityUtils.isAdmin()
+                && StringUtils.isEmpty(deptGateway.selectDeptList(condition))) {
             throw new ServiceException("没有权限访问部门数据！");
         }
         // 唯一性校验
-        Dept unique =
-                deptGateway.checkDeptNameUnique(cmd.deptName(), cmd.parentId());
+        Dept unique = deptGateway.checkDeptNameUnique(cmd.deptName(), cmd.parentId());
         if (unique != null && !unique.getDeptId().equals(deptId)) {
             throw new ServiceException("修改部门'" + cmd.deptName() + "'失败，部门名称已存在");
         } else if (cmd.parentId().equals(deptId)) {
@@ -75,13 +75,17 @@ public class DeptUpdateCmdExe {
         }
 
         Boolean result = deptGateway.updateDept(entity);
-        if (UserConstants.DEPT_NORMAL.equals(cmd.status()) && StringUtils.isNotEmpty(entity.getAncestors())
+        if (UserConstants.DEPT_NORMAL.equals(cmd.status())
+                && StringUtils.isNotEmpty(entity.getAncestors())
                 && !StringUtils.equals("0", entity.getAncestors())) {
             // 启用部门时，同步启用所有上级部门
             String ancestors = entity.getAncestors();
-            Long[] deptIds = StringUtils.split(ancestors, ",") == null ? new Long[0]
-                    : java.util.Arrays.stream(StringUtils.split(ancestors, ","))
-                    .map(Long::parseLong).toArray(Long[]::new);
+            Long[] deptIds =
+                    StringUtils.split(ancestors, ",") == null
+                            ? new Long[0]
+                            : java.util.Arrays.stream(StringUtils.split(ancestors, ","))
+                                    .map(Long::parseLong)
+                                    .toArray(Long[]::new);
             deptGateway.updateDeptStatusNormal(deptIds);
         }
         return result;

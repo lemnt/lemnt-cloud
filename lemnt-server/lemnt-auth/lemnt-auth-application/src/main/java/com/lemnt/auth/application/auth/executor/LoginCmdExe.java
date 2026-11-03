@@ -33,38 +33,43 @@ public class LoginCmdExe {
     private final LoginSecurityGateway loginSecurityGateway;
     private final TokenGateway tokenGateway;
     private final PasswordEncoderGateway passwordEncoderGateway;
+
     public TokenResult execute(LoginCmd cmd) {
         String username = cmd.username();
         String password = cmd.password();
         if (StringUtils.isAnyBlank(cmd.username(), cmd.password())) {
-            recordLogGateway.recordLogininfor(username,
+            recordLogGateway.recordLogininfor(
+                    username,
                     LoginTypeEnum.LOGIN.getCode(),
                     LoginStatusEnum.FAIL.getCode(),
-            "用户/密码必须填写");
+                    "用户/密码必须填写");
             throw new ServiceException("用户/密码必须填写");
         }
         if (password.length() < UserConstants.PASSWORD_MIN_LENGTH
                 || password.length() > UserConstants.PASSWORD_MAX_LENGTH) {
-            recordLogGateway.recordLogininfor(username,
+            recordLogGateway.recordLogininfor(
+                    username,
                     LoginTypeEnum.LOGIN.getCode(),
                     LoginStatusEnum.FAIL.getCode(),
-            "用户密码不在指定范围");
+                    "用户密码不在指定范围");
             throw new ServiceException("用户密码不在指定范围");
         }
         if (username.length() < UserConstants.USERNAME_MIN_LENGTH
                 || username.length() > UserConstants.USERNAME_MAX_LENGTH) {
-            recordLogGateway.recordLogininfor(username,
+            recordLogGateway.recordLogininfor(
+                    username,
                     LoginTypeEnum.LOGIN.getCode(),
                     LoginStatusEnum.FAIL.getCode(),
-            "用户名不在指定范围");
+                    "用户名不在指定范围");
             throw new ServiceException("用户名不在指定范围");
         }
         String blackStr = loginSecurityGateway.getBlackIpList();
         if (IpUtils.isMatchedIp(blackStr, IpUtils.getIpAddr())) {
-            recordLogGateway.recordLogininfor(username,
+            recordLogGateway.recordLogininfor(
+                    username,
                     LoginTypeEnum.LOGIN.getCode(),
                     LoginStatusEnum.FAIL.getCode(),
-            "很遗憾，访问IP已被列入系统黑名单");
+                    "很遗憾，访问IP已被列入系统黑名单");
             throw new ServiceException("很遗憾，访问IP已被列入系统黑名单");
         }
         LoginUser userInfo = userGateway.getUserInfo(username);
@@ -73,17 +78,16 @@ public class LoginCmdExe {
         }
         UserInfo user = userInfo.getDetail();
         if (user.isDisabled()) {
-            recordLogGateway.recordLogininfor(username,
+            recordLogGateway.recordLogininfor(
+                    username,
                     LoginTypeEnum.LOGIN.getCode(),
                     LoginStatusEnum.FAIL.getCode(),
-            "用户已停用，请联系管理员");
+                    "用户已停用，请联系管理员");
             throw new ServiceException("对不起，您的账号：" + username + " 已停用");
         }
         validate(user, password);
-        recordLogGateway.recordLogininfor(username,
-                LoginTypeEnum.LOGIN.getCode(),
-                LoginStatusEnum.SUCCESS.getCode(),
-        "登录成功");
+        recordLogGateway.recordLogininfor(
+                username, LoginTypeEnum.LOGIN.getCode(), LoginStatusEnum.SUCCESS.getCode(), "登录成功");
         recordLogGateway.recordLoginInfo(user.getUserId());
         return tokenGateway.createToken(userInfo);
     }
@@ -91,10 +95,13 @@ public class LoginCmdExe {
     private void validate(UserInfo user, String password) {
         String username = user.getUserName();
         if (loginSecurityGateway.isLocked(username)) {
-            String errMsg = String.format("密码输入错误%s次，帐户锁定%s分钟",
-                    CacheConstants.PASSWORD_MAX_RETRY_COUNT,
-                    CacheConstants.PASSWORD_LOCK_TIME);
-            recordLogGateway.recordLogininfor(username,
+            String errMsg =
+                    String.format(
+                            "密码输入错误%s次，帐户锁定%s分钟",
+                            CacheConstants.PASSWORD_MAX_RETRY_COUNT,
+                            CacheConstants.PASSWORD_LOCK_TIME);
+            recordLogGateway.recordLogininfor(
+                    username,
                     LoginTypeEnum.LOGIN.getCode(),
                     LoginStatusEnum.FAIL.getCode(),
                     errMsg);
@@ -102,11 +109,11 @@ public class LoginCmdExe {
         }
         if (!user.verifyPassword(password, passwordEncoderGateway)) {
             loginSecurityGateway.incrementRetryCount(username);
-            recordLogGateway.recordLogininfor(username,
+            recordLogGateway.recordLogininfor(
+                    username,
                     LoginTypeEnum.LOGIN.getCode(),
                     LoginStatusEnum.FAIL.getCode(),
-                    String.format("密码输入错误%s次",
-                    loginSecurityGateway.getRetryCount(username)));
+                    String.format("密码输入错误%s次", loginSecurityGateway.getRetryCount(username)));
             throw new ServiceException("用户不存在/密码错误");
         } else {
             loginSecurityGateway.clearRetryCount(username);

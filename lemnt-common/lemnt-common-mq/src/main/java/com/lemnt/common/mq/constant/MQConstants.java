@@ -81,8 +81,10 @@ public interface MQConstants {
         String ADX_BID_RESPONSE = Prefix.LEMNT + "adxbidresponse" + GROUP_SUFFIX;
         String RTB_CLICK_CALLBACK = Prefix.LEMNT + "rtbclickcallback" + GROUP_SUFFIX;
         String RTB_IMPRESSION_CALLBACK = Prefix.LEMNT + "rtbimpressioncallback" + GROUP_SUFFIX;
-        String DEEP_ZERO_TRACK_EVENT = Service.LEMNT + "trackevent" + StrPool.DASHED + "deepzero" + GROUP_SUFFIX;
-        String KUAI_SHOU_TRACK_EVENT = Service.LEMNT + "trackevent" + StrPool.DASHED + "kuaishou" + GROUP_SUFFIX;
+        String DEEP_ZERO_TRACK_EVENT =
+                Service.LEMNT + "trackevent" + StrPool.DASHED + "deepzero" + GROUP_SUFFIX;
+        String KUAI_SHOU_TRACK_EVENT =
+                Service.LEMNT + "trackevent" + StrPool.DASHED + "kuaishou" + GROUP_SUFFIX;
         String ORDER_BUDGET_EXPIRE = Prefix.LEMNT + "orderbudgetexpire" + GROUP_SUFFIX;
         String CREATIVE_RECALL_EVENT = Prefix.ORDER + "creativerecallevent" + GROUP_SUFFIX;
         String AIMEDIA_SYNC_EVENT = Prefix.ORDER + "aimedia" + GROUP_SUFFIX;
@@ -97,7 +99,9 @@ public interface MQConstants {
         String SYSTEM = Service.SYSTEM + TAG_SUFFIX;
         String ACCOUNT = Service.ACCOUNT + TAG_SUFFIX;
         String LEMNT = Service.LEMNT + TAG_SUFFIX;
-        String DEEP_ZERO_TRACK_EVENT = Service.LEMNT + "trackevent" + StrPool.DASHED + "deepzero" + TAG_SUFFIX;
-        String KUAI_SHOU_TRACK_EVENT = Service.LEMNT + "trackevent" + StrPool.DASHED + "kuaishou" + TAG_SUFFIX;
+        String DEEP_ZERO_TRACK_EVENT =
+                Service.LEMNT + "trackevent" + StrPool.DASHED + "deepzero" + TAG_SUFFIX;
+        String KUAI_SHOU_TRACK_EVENT =
+                Service.LEMNT + "trackevent" + StrPool.DASHED + "kuaishou" + TAG_SUFFIX;
     }
 }

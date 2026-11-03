@@ -31,7 +31,9 @@ public class AppPickUpStoreController {
     public R<List<AppPickUpStoreRes>> list(
             @RequestParam(required = false) BigDecimal latitude,
             @RequestParam(required = false) BigDecimal longitude) {
-        return R.ok(stores.execute(new AppPickUpStoreListQry(latitude, longitude)).stream()
-                .map(AppPickUpConverter::store).toList());
+        return R.ok(
+                stores.execute(new AppPickUpStoreListQry(latitude, longitude)).stream()
+                        .map(AppPickUpConverter::store)
+                        .toList());
     }
 }

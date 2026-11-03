@@ -11,6 +11,5 @@ public record AppKefuConversationRes(
         @Schema(description = "最后消息时间") LocalDateTime lastMessageTime,
         @Schema(description = "最后消息") String lastMessageContent,
         @Schema(description = "最后消息类型") Integer lastMessageContentType,
-        @Schema(description = "未读消息数") Long unreadCount
-) implements java.io.Serializable {
-}
+        @Schema(description = "未读消息数") Long unreadCount)
+        implements java.io.Serializable {}

@@ -8,6 +8,5 @@ public record DiyPagePageReq(
         @Schema(description = "模板编号") Long templateId,
         @Schema(description = "页面名称") String name,
         @Schema(description = "pageNum") Integer pageNum,
-        @Schema(description = "pageSize") Integer pageSize
-) implements java.io.Serializable {
-}
+        @Schema(description = "pageSize") Integer pageSize)
+        implements java.io.Serializable {}

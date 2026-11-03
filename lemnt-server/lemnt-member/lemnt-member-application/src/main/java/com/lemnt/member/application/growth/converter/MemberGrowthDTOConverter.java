@@ -33,7 +33,12 @@ public final class MemberGrowthDTOConverter {
                         v.bizType(),
                         v.bizNo(),
                         v.reason(),
-                        v.createTime(),v.nickname(),v.pointBizType(),v.title(),v.description(),v.experienceBizType());
+                        v.createTime(),
+                        v.nickname(),
+                        v.pointBizType(),
+                        v.title(),
+                        v.description(),
+                        v.experienceBizType());
     }
 
     /**
@@ -57,7 +62,9 @@ public final class MemberGrowthDTOConverter {
      * 签到配置。
      */
     public static SignConfigDTO toSignConfigDTO(SignConfig v) {
-        return v == null ? null : new SignConfigDTO(v.id(), v.day(), v.point(), v.experience(), v.status());
+        return v == null
+                ? null
+                : new SignConfigDTO(v.id(), v.day(), v.point(), v.experience(), v.status());
     }
 
     /**
@@ -67,7 +74,14 @@ public final class MemberGrowthDTOConverter {
         return v == null
                 ? null
                 : new SignRecordDTO(
-                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience(), v.nickname(), v.createTime());
+                        v.id(),
+                        v.memberId(),
+                        v.signDate(),
+                        v.day(),
+                        v.point(),
+                        v.experience(),
+                        v.nickname(),
+                        v.createTime());
     }
 
     /**

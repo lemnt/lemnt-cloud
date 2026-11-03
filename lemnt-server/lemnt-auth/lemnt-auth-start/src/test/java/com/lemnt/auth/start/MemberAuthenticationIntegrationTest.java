@@ -5,8 +5,8 @@ import com.lemnt.auth.domain.member.gateway.MemberAccountGateway;
 import com.lemnt.auth.domain.member.model.MemberLoginInfo;
 import com.lemnt.auth.domain.member.model.MemberToken;
 import com.lemnt.auth.infrastructure.member.gateway.MemberTokenGatewayImpl;
-import com.lemnt.auth.infrastructure.user.gateway.PasswordEncoderGatewayImpl;
 import com.lemnt.auth.infrastructure.user.gateway.LoginSecurityGatewayImpl;
+import com.lemnt.auth.infrastructure.user.gateway.PasswordEncoderGatewayImpl;
 import com.lemnt.common.core.constant.CacheConstants;
 import com.lemnt.common.redis.service.RedisStringService;
 import com.lemnt.common.security.model.SecurityUser;
@@ -49,44 +49,81 @@ class MemberAuthenticationIntegrationTest {
         var properties = new TokenProperties();
         properties.setSecret("test-secret-only-".repeat(5));
         jwtUtils = new JwtUtils(properties);
-        Mockito.when(snowflake.generateStr()).thenAnswer(invocation -> UUID.randomUUID().toString());
-        Mockito.when(redis.getObj(ArgumentMatchers.anyString(), ArgumentMatchers.eq(SecurityUser.class)))
+        Mockito.when(snowflake.generateStr())
+                .thenAnswer(invocation -> UUID.randomUUID().toString());
+        Mockito.when(
+                        redis.getObj(
+                                ArgumentMatchers.anyString(),
+                                ArgumentMatchers.eq(SecurityUser.class)))
                 .thenAnswer(invocation -> cachedSessions.get(invocation.getArgument(0)));
         Mockito.when(redis.getObj(ArgumentMatchers.anyString(), ArgumentMatchers.eq(Integer.class)))
                 .thenAnswer(invocation -> retryCounts.get(invocation.getArgument(0)));
-        Mockito.when(redis.hasKey(ArgumentMatchers.anyString())).thenAnswer(invocation ->
-                retryCounts.containsKey(invocation.getArgument(0)) || cachedSessions.containsKey(invocation.getArgument(0)));
-        Mockito.doAnswer(invocation -> {
-            String key = invocation.getArgument(0);
-            Object value = invocation.getArgument(1);
-            if (value instanceof SecurityUser user) { cachedSessions.put(key, user); }
-            else { retryCounts.put(key, (Integer) value); }
-            return null;
-        }).when(redis).setObj(ArgumentMatchers.anyString(), ArgumentMatchers.any(),
-                ArgumentMatchers.anyLong(), ArgumentMatchers.any(TimeUnit.class));
-        Mockito.doAnswer(invocation -> {
-            cachedSessions.remove(invocation.getArgument(0));
-            retryCounts.remove(invocation.getArgument(0));
-            return null;
-        }).when(redis).delete(ArgumentMatchers.anyString());
-        Mockito.doAnswer(invocation -> {
-            java.util.function.Consumer<String> action = invocation.getArgument(1);
-            java.util.List.copyOf(cachedSessions.keySet()).forEach(action);
-            return null;
-        }).when(redis).scan(ArgumentMatchers.eq(CacheConstants.LOGIN_TOKEN_KEY + "*"), ArgumentMatchers.any());
-        Mockito.when(redis.setObjIfPresent(ArgumentMatchers.anyString(), ArgumentMatchers.any(),
-                ArgumentMatchers.anyLong(), ArgumentMatchers.any(TimeUnit.class))).thenAnswer(invocation -> {
-            String key = invocation.getArgument(0);
-            SecurityUser value = invocation.getArgument(1);
-            return cachedSessions.replace(key, value) != null;
-        });
+        Mockito.when(redis.hasKey(ArgumentMatchers.anyString()))
+                .thenAnswer(
+                        invocation ->
+                                retryCounts.containsKey(invocation.getArgument(0))
+                                        || cachedSessions.containsKey(invocation.getArgument(0)));
+        Mockito.doAnswer(
+                        invocation -> {
+                            String key = invocation.getArgument(0);
+                            Object value = invocation.getArgument(1);
+                            if (value instanceof SecurityUser user) {
+                                cachedSessions.put(key, user);
+                            } else {
+                                retryCounts.put(key, (Integer) value);
+                            }
+                            return null;
+                        })
+                .when(redis)
+                .setObj(
+                        ArgumentMatchers.anyString(),
+                        ArgumentMatchers.any(),
+                        ArgumentMatchers.anyLong(),
+                        ArgumentMatchers.any(TimeUnit.class));
+        Mockito.doAnswer(
+                        invocation -> {
+                            cachedSessions.remove(invocation.getArgument(0));
+                            retryCounts.remove(invocation.getArgument(0));
+                            return null;
+                        })
+                .when(redis)
+                .delete(ArgumentMatchers.anyString());
+        Mockito.doAnswer(
+                        invocation -> {
+                            java.util.function.Consumer<String> action = invocation.getArgument(1);
+                            java.util.List.copyOf(cachedSessions.keySet()).forEach(action);
+                            return null;
+                        })
+                .when(redis)
+                .scan(
+                        ArgumentMatchers.eq(CacheConstants.LOGIN_TOKEN_KEY + "*"),
+                        ArgumentMatchers.any());
+        Mockito.when(
+                        redis.setObjIfPresent(
+                                ArgumentMatchers.anyString(),
+                                ArgumentMatchers.any(),
+                                ArgumentMatchers.anyLong(),
+                                ArgumentMatchers.any(TimeUnit.class)))
+                .thenAnswer(
+                        invocation -> {
+                            String key = invocation.getArgument(0);
+                            SecurityUser value = invocation.getArgument(1);
+                            return cachedSessions.replace(key, value) != null;
+                        });
         accounts = Mockito.mock(MemberAccountGateway.class);
-        Mockito.when(accounts.findByMobile("13800000001")).thenAnswer(invocation ->
-                new MemberLoginInfo(id, "13800000001", status.get(), passwordHash.get()));
+        Mockito.when(accounts.findByMobile("13800000001"))
+                .thenAnswer(
+                        invocation ->
+                                new MemberLoginInfo(
+                                        id, "13800000001", status.get(), passwordHash.get()));
         Mockito.when(accounts.findStatusByMemberId(id)).thenAnswer(invocation -> status.get());
         tokenService = new TokenService(redis, snowflake, jwtUtils);
-        auth = new MemberAuthenticationService(accounts, new PasswordEncoderGatewayImpl(),
-                new LoginSecurityGatewayImpl(redis), new MemberTokenGatewayImpl(tokenService));
+        auth =
+                new MemberAuthenticationService(
+                        accounts,
+                        new PasswordEncoderGatewayImpl(),
+                        new LoginSecurityGatewayImpl(redis),
+                        new MemberTokenGatewayImpl(tokenService));
     }
 
     /** 模拟会员 RPC 读取到密码更新后的登录资料。 */
@@ -116,11 +153,14 @@ class MemberAuthenticationIntegrationTest {
 
         assertEquals(1, cachedSessions.size());
 
-        assertTrue(cachedSessions.keySet().iterator().next().startsWith(
-                CacheConstants.LOGIN_TOKEN_KEY));
+        assertTrue(
+                cachedSessions
+                        .keySet()
+                        .iterator()
+                        .next()
+                        .startsWith(CacheConstants.LOGIN_TOKEN_KEY));
 
         assertNull(auth.authenticate("eyJ.admin.jwt"));
-
     }
 
     @Test
@@ -134,7 +174,6 @@ class MemberAuthenticationIntegrationTest {
         assertEquals(id, auth.authenticate(next.accessToken()));
 
         assertEquals(2592000L, next.expiresIn());
-
     }
 
     @Test
@@ -156,7 +195,6 @@ class MemberAuthenticationIntegrationTest {
 
         } finally {
             pool.shutdownNow();
-
         }
     }
 
@@ -182,7 +220,6 @@ class MemberAuthenticationIntegrationTest {
                 SecurityException.class, () -> auth.login("13800000001", "Member-password-2026"));
 
         assertNotNull(auth.login("13800000001", "New-password-2026"));
-
     }
 
     @Test
@@ -200,7 +237,6 @@ class MemberAuthenticationIntegrationTest {
 
         assertNull(auth.authenticate(tokens.accessToken()));
         assertNotNull(login());
-
     }
 
     @Test
@@ -210,7 +246,6 @@ class MemberAuthenticationIntegrationTest {
         for (int n = 0; n < 5; n++) {
             assertThrows(
                     SecurityException.class, () -> auth.login("13800000001", "wrong-password"));
-
         }
         assertThrows(
                 SecurityException.class, () -> auth.login("13800000001", "Member-password-2026"));
@@ -220,39 +255,45 @@ class MemberAuthenticationIntegrationTest {
         retryCounts.clear();
 
         assertNotNull(auth.login("13800000001", "Member-password-2026"));
-
     }
 
     @Test
     void successfulLoginAuditsOnceButRefreshAndWrongPasswordDoNot() {
-        var token=login();
+        var token = login();
         auth.refresh(token.accessToken());
-        assertThrows(SecurityException.class,()->auth.login("13800000001","wrong"));
-        Mockito.verify(accounts,Mockito.times(1)).recordLogin(id);
+        assertThrows(SecurityException.class, () -> auth.login("13800000001", "wrong"));
+        Mockito.verify(accounts, Mockito.times(1)).recordLogin(id);
     }
+
     @Test
     void auditFailureRevokesNewSharedSessionBeforeReturningFailure() {
         Mockito.doThrow(new IllegalStateException("审计RPC失败")).when(accounts).recordLogin(id);
-        assertThrows(IllegalStateException.class,()->login());
+        assertThrows(IllegalStateException.class, () -> login());
         assertTrue(cachedSessions.isEmpty());
     }
+
     @Test
     void failedTokenCreationDoesNotWriteLoginAudit() {
-        var tokens=Mockito.mock(com.lemnt.auth.domain.member.gateway.MemberTokenGateway.class);
-        Mockito.when(tokens.create(id,"13800000001")).thenThrow(new IllegalStateException("会话写入失败"));
-        var security=Mockito.mock(com.lemnt.auth.domain.user.gateway.LoginSecurityGateway.class);
-        setPassword(id,"Member-password-2026");
-        var service=new MemberAuthenticationService(accounts,new PasswordEncoderGatewayImpl(),security,tokens);
-        assertThrows(IllegalStateException.class,()->service.login("13800000001","Member-password-2026"));
-        Mockito.verify(accounts,Mockito.never()).recordLogin(id);
+        var tokens = Mockito.mock(com.lemnt.auth.domain.member.gateway.MemberTokenGateway.class);
+        Mockito.when(tokens.create(id, "13800000001"))
+                .thenThrow(new IllegalStateException("会话写入失败"));
+        var security = Mockito.mock(com.lemnt.auth.domain.user.gateway.LoginSecurityGateway.class);
+        setPassword(id, "Member-password-2026");
+        var service =
+                new MemberAuthenticationService(
+                        accounts, new PasswordEncoderGatewayImpl(), security, tokens);
+        assertThrows(
+                IllegalStateException.class,
+                () -> service.login("13800000001", "Member-password-2026"));
+        Mockito.verify(accounts, Mockito.never()).recordLogin(id);
     }
 
     @Test
     void successfulLoginPassesObservedIpOnlyAfterTokenCreation() {
-        setPassword(id,"Member-password-2026");
-        var token=auth.login("13800000001","Member-password-2026","203.0.113.7");
-        assertEquals(id,auth.authenticate(token.accessToken()));
-        Mockito.verify(accounts).recordLogin(id,"203.0.113.7");
+        setPassword(id, "Member-password-2026");
+        var token = auth.login("13800000001", "Member-password-2026", "203.0.113.7");
+        assertEquals(id, auth.authenticate(token.accessToken()));
+        Mockito.verify(accounts).recordLogin(id, "203.0.113.7");
     }
 
     /** 多终端撤销后网关读取不到会话，同ID管理员及其他会员不受影响。 */
@@ -284,5 +325,4 @@ class MemberAuthenticationIntegrationTest {
         assertNull(tokenService.getSecurityUser(token.accessToken(), "member"));
         assertTrue(cachedSessions.isEmpty());
     }
-
 }

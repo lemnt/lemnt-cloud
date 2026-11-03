@@ -23,7 +23,6 @@ class PostConverterTest {
         post.setRemark(remark);
 
         assertThat(PostConverter.toDO(post).getRemark()).isEqualTo(remark);
-
     }
 
     @ParameterizedTest
@@ -35,6 +34,5 @@ class PostConverterTest {
         post.setRemark(remark);
 
         assertThat(PostConverter.toEntity(post).getRemark()).isEqualTo(remark);
-
     }
 }

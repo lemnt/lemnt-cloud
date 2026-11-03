@@ -33,9 +33,16 @@ public class PayChannelCreateCmdExe {
         if (channels.exists(cmd.appId(), code, null)) {
             throw new IllegalStateException("该应用下渠道编码已存在");
         }
-        var value = new PayChannelConfig(null, cmd.appId(), code, cmd.status(),
-                PayConfigRules.feeRate(cmd.feeRate()), PayConfigRules.optional(cmd.remark(), 255, "备注"),
-                PayConfigRules.config(cmd.config()), null);
+        var value =
+                new PayChannelConfig(
+                        null,
+                        cmd.appId(),
+                        code,
+                        cmd.status(),
+                        PayConfigRules.feeRate(cmd.feeRate()),
+                        PayConfigRules.optional(cmd.remark(), 255, "备注"),
+                        PayConfigRules.config(cmd.config()),
+                        null);
         return PayConfigDTOConverter.payChannel(channels.insert(value));
     }
 }

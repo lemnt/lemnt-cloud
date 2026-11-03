@@ -25,13 +25,21 @@ class SandboxPaymentCmdExeTest {
     final SandboxPaymentCmdExe exe = new SandboxPaymentCmdExe(orders, payments, notify);
 
     private TradeOrder order(Long memberId, String status) {
-        return new TradeOrder(1L, "TR1", memberId, new BigDecimal("8.00"), status, List.of(), null, 0, 0,
-                null);
+        return new TradeOrder(
+                1L, "TR1", memberId, new BigDecimal("8.00"), status, List.of(), null, 0, 0, null);
     }
 
     private PaymentRecord payment(String status) {
-        return new PaymentRecord(1L, "PAY1", "TR1", "SANDBOX", "lemnt-mall", null,
-                new BigDecimal("8.00"), status, null);
+        return new PaymentRecord(
+                1L,
+                "PAY1",
+                "TR1",
+                "SANDBOX",
+                "lemnt-mall",
+                null,
+                new BigDecimal("8.00"),
+                status,
+                null);
     }
 
     @Test
@@ -60,8 +68,18 @@ class SandboxPaymentCmdExeTest {
         when(payments.findByPaymentNo("PAY1")).thenReturn(payment("CLOSED"));
         assertThrows(ServiceException.class, () -> exe.execute(7L, "PAY1"));
 
-        when(payments.findByPaymentNo("PAY1")).thenReturn(new PaymentRecord(1L, "PAY1", "TR1", "ALIPAY",
-                "lemnt-mall", null, new BigDecimal("8.00"), "WAITING", null));
+        when(payments.findByPaymentNo("PAY1"))
+                .thenReturn(
+                        new PaymentRecord(
+                                1L,
+                                "PAY1",
+                                "TR1",
+                                "ALIPAY",
+                                "lemnt-mall",
+                                null,
+                                new BigDecimal("8.00"),
+                                "WAITING",
+                                null));
         assertThrows(ServiceException.class, () -> exe.execute(7L, "PAY1"));
         verifyNoInteractions(notify);
     }

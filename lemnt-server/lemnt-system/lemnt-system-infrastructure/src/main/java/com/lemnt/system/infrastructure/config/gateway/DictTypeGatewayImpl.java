@@ -11,6 +11,7 @@ import com.lemnt.system.infrastructure.config.dataobject.DictTypeDO;
 import com.lemnt.system.infrastructure.config.mapper.DictTypeMapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.*;
+import java.util.List;
 
 /**
  * 字典类型网关实现 — infrastructure 层适配器
@@ -37,7 +39,7 @@ public class DictTypeGatewayImpl implements DictTypeGateway {
 
     @Override
     public DictType selectByType(String dictType) {
-        return DictTypeConverter.toEntity(dictTypeMapper.selectDictTypeByType(dictType));
+        return DictTypeConverter.toEntity(selectDictTypeByTypeRow(dictType));
     }
 
     @Override
@@ -50,7 +52,7 @@ public class DictTypeGatewayImpl implements DictTypeGateway {
 
     @Override
     public List<DictType> selectAll() {
-        return DictTypeConverter.toEntityList(dictTypeMapper.selectDictTypeAll());
+        return DictTypeConverter.toEntityList(selectDictTypeAllRow());
     }
 
     @Override
@@ -80,7 +82,7 @@ public class DictTypeGatewayImpl implements DictTypeGateway {
 
     @Override
     public DictType checkDictTypeUnique(String dictType) {
-        return DictTypeConverter.toEntity(dictTypeMapper.checkDictTypeUnique(dictType));
+        return DictTypeConverter.toEntity(checkDictTypeUniqueRow(dictType));
     }
 
     /**
@@ -100,5 +102,38 @@ public class DictTypeGatewayImpl implements DictTypeGateway {
      */
     private static String getCacheKey(String configKey) {
         return CacheConstants.SYS_DICT_KEY + configKey;
+    }
+
+    /**
+     * 根据所有字典类型
+     *
+     * @return 字典类型集合信息
+     */
+    private List<DictTypeDO> selectDictTypeAllRow() {
+        return dictTypeMapper.selectList(Wrappers.<DictTypeDO>lambdaQuery());
+    }
+
+    /**
+     * 根据字典类型查询信息
+     *
+     * @param dictType 字典类型
+     * @return 字典类型
+     */
+    private DictTypeDO selectDictTypeByTypeRow(String dictType) {
+        return dictTypeMapper.selectOne(
+                Wrappers.<DictTypeDO>lambdaQuery().eq(DictTypeDO::getDictType, dictType));
+    }
+
+    /**
+     * 校验字典类型称是否唯一
+     *
+     * @param dictType 字典类型
+     * @return 结果
+     */
+    private DictTypeDO checkDictTypeUniqueRow(String dictType) {
+        return dictTypeMapper.selectOne(
+                Wrappers.<DictTypeDO>lambdaQuery()
+                        .eq(DictTypeDO::getDictType, dictType)
+                        .last("limit 1"));
     }
 }

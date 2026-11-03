@@ -16,11 +16,15 @@ public class MemberDeliveryAddressGatewayImpl implements MemberDeliveryAddressGa
     @Override
     public MemberDeliveryAddress get(Long memberId, Long addressId) {
         var row = client.get(memberId, addressId);
-        if (row == null || !memberId.equals(row.memberId()) || !addressId.equals(row.id())
-        ) {
+        if (row == null || !memberId.equals(row.memberId()) || !addressId.equals(row.id())) {
             return null;
         }
-        return new MemberDeliveryAddress(row.id(), row.memberId(), row.name(), row.mobile(), row.areaId(),
+        return new MemberDeliveryAddress(
+                row.id(),
+                row.memberId(),
+                row.name(),
+                row.mobile(),
+                row.areaId(),
                 row.detailAddress());
     }
 }

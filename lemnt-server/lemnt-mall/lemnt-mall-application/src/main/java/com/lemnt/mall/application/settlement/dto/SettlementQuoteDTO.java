@@ -19,6 +19,5 @@ public record SettlementQuoteDTO(
         long givePoint,
         SettlementDeliveryDTO delivery,
         boolean freeDelivery,
-        Map<Long, Integer> giveCouponTemplateCounts
-) implements Serializable {
-}
+        Map<Long, Integer> giveCouponTemplateCounts)
+        implements Serializable {}

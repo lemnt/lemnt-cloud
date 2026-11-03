@@ -1,19 +1,17 @@
 package com.lemnt.mall.adapter.app.promotion;
 
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PostMapping;
-import com.lemnt.mall.application.promotion.executor.PromotionOrderPlaceCmdExe;
-import com.lemnt.mall.adapter.app.promotion.res.AppPromotionOrderRes;
-import com.lemnt.mall.adapter.app.promotion.req.AppPromotionOrderCreateReq;
-import com.lemnt.mall.adapter.app.promotion.converter.AppPromotionOrderConverter;
-import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.common.core.domain.R;
+import com.lemnt.common.security.utils.SecurityUtils;
+import com.lemnt.mall.adapter.app.promotion.converter.AppPromotionOrderConverter;
 import com.lemnt.mall.adapter.app.promotion.converter.AppSeckillConverter;
+import com.lemnt.mall.adapter.app.promotion.req.AppPromotionOrderCreateReq;
 import com.lemnt.mall.adapter.app.promotion.req.AppSeckillPageReq;
+import com.lemnt.mall.adapter.app.promotion.res.AppPromotionOrderRes;
 import com.lemnt.mall.adapter.app.promotion.res.AppSeckillActivityRes;
 import com.lemnt.mall.adapter.app.promotion.res.AppSeckillConfigRes;
 import com.lemnt.mall.adapter.app.promotion.res.AppSeckillDetailRes;
 import com.lemnt.mall.adapter.app.promotion.res.AppSeckillNowRes;
+import com.lemnt.mall.application.promotion.executor.PromotionOrderPlaceCmdExe;
 import com.lemnt.mall.application.promotion.executor.SeckillAppConfigListQueryExe;
 import com.lemnt.mall.application.promotion.executor.SeckillAppDetailQueryExe;
 import com.lemnt.mall.application.promotion.executor.SeckillAppPageQueryExe;
@@ -24,6 +22,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -60,7 +60,8 @@ public class AppSeckillController {
     @Operation(summary = "秒杀活动分页")
     public R<AppSeckillActivityRes> page(@Valid @ModelAttribute AppSeckillPageReq req) {
         var result = page.execute(AppSeckillConverter.page(req));
-        return R.page(result.getRecords().stream().map(AppSeckillConverter::activity).toList(),
+        return R.page(
+                result.getRecords().stream().map(AppSeckillConverter::activity).toList(),
                 result.getTotal());
     }
 
@@ -73,7 +74,10 @@ public class AppSeckillController {
     @PostMapping("/orders")
     @Operation(summary = "秒杀活动下单")
     public R<AppPromotionOrderRes> order(@Valid @RequestBody AppPromotionOrderCreateReq req) {
-        return R.ok(AppPromotionOrderConverter.res(orderPlace.execute(
-                AppPromotionOrderConverter.cmd(SecurityUtils.getUserId(), "SECKILL", req))));
+        return R.ok(
+                AppPromotionOrderConverter.res(
+                        orderPlace.execute(
+                                AppPromotionOrderConverter.cmd(
+                                        SecurityUtils.getUserId(), "SECKILL", req))));
     }
 }

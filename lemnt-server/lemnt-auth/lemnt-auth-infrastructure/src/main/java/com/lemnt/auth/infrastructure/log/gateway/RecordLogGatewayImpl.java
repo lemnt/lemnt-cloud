@@ -21,14 +21,13 @@ import java.time.LocalDateTime;
  */
 @Service
 public class RecordLogGatewayImpl implements RecordLogGateway {
-    @DubboReference
-    private RemoteLogService remoteLogService;
+    @DubboReference private RemoteLogService remoteLogService;
 
-    @DubboReference
-    private RemoteUserService remoteUserService;
+    @DubboReference private RemoteUserService remoteUserService;
 
     @Override
-    public void recordLogininfor(String username, Integer loginType, String status, String message) {
+    public void recordLogininfor(
+            String username, Integer loginType, String status, String message) {
         LogininforBo logininfor = new LogininforBo();
         logininfor.setUserName(username);
         logininfor.setIpaddr(IpUtils.getIpAddr());

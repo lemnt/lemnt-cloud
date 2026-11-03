@@ -14,8 +14,7 @@ import java.io.Serializable;
  */
 @Data
 public class MetaDTO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 5294520182945761933L;
+    @Serial private static final long serialVersionUID = 5294520182945761933L;
 
     /**
      * 设置该路由在侧边栏和面包屑中展示的名字
@@ -36,8 +35,8 @@ public class MetaDTO implements Serializable {
      * 内链地址（http(s)://开头）
      */
     private String link;
-    public MetaDTO() {
-    }
+
+    public MetaDTO() {}
 
     public MetaDTO(String title, String icon) {
         this.title = title;

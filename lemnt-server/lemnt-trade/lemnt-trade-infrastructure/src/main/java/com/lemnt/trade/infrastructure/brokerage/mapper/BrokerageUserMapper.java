@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** BrokerageUser 表 CRUD。 */
 @Mapper
-public interface BrokerageUserMapper extends BaseMapper<BrokerageUserDO> {
-}
+public interface BrokerageUserMapper extends BaseMapper<BrokerageUserDO> {}

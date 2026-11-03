@@ -19,6 +19,7 @@ public class MemberGroupSaveCmdExe {
      * 执行分组保存命令。
      */
     public Long execute(GroupSaveCmd cmd) {
-        return memberUserService.saveGroup(new Group(cmd.id(), cmd.name(), cmd.remark(), cmd.status()));
+        return memberUserService.saveGroup(
+                new Group(cmd.id(), cmd.name(), cmd.remark(), cmd.status()));
     }
 }

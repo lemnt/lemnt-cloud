@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** BrokerageWithdraw 表 CRUD。 */
 @Mapper
-public interface BrokerageWithdrawMapper extends BaseMapper<BrokerageWithdrawDO> {
-}
+public interface BrokerageWithdrawMapper extends BaseMapper<BrokerageWithdrawDO> {}

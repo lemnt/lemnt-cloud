@@ -72,6 +72,5 @@ public record OperLogAddCmd(
         /**
          * 消耗时间（毫秒）
          */
-        Long costTime
-) implements Serializable {
-}
+        Long costTime)
+        implements Serializable {}

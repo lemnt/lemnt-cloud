@@ -24,5 +24,4 @@ public record CombinationRecordDTO(
         Boolean virtualGroup,
         LocalDateTime expireTime,
         LocalDateTime startTime,
-        LocalDateTime endTime
-) {}
+        LocalDateTime endTime) {}

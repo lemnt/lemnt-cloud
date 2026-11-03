@@ -12,12 +12,7 @@ import java.io.Serializable;
  */
 @Schema(description = "从服务端缓存结算单提单")
 public record SettlementAbandonReq(
-        @Schema(description = "服务端结算单编号")
-        @NotBlank
-        @Pattern(regexp = "[a-f0-9-]{36}")
-        String settlementId,
-        @Schema(description = "幂等提单请求编号")
-        @NotBlank
-        @Size(max = 64)
-        String requestNo
-) implements Serializable {}
+        @Schema(description = "服务端结算单编号") @NotBlank @Pattern(regexp = "[a-f0-9-]{36}")
+                String settlementId,
+        @Schema(description = "幂等提单请求编号") @NotBlank @Size(max = 64) String requestNo)
+        implements Serializable {}

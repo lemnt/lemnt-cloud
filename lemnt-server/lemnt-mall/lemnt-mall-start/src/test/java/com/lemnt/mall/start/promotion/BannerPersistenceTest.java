@@ -38,21 +38,24 @@ class BannerPersistenceTest {
         source = new JdbcDataSource();
         source.setURL("jdbc:h2:mem:banner_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
         schema = source.getConnection();
-        ScriptUtils.executeSqlScript(schema, new ClassPathResource("sql/V25__promotion_banner.sql"));
+        ScriptUtils.executeSqlScript(
+                schema, new ClassPathResource("sql/V25__promotion_banner.sql"));
         var config = new MybatisConfiguration();
         config.setMapUnderscoreToCamelCase(true);
         var interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         config.addInterceptor(interceptor);
         var bean = new MybatisSqlSessionFactoryBean();
-        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
+        bean.setMapperLocations(
+                new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
         bean.setDataSource(source);
         bean.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
         bean.setConfiguration(config);
         var factory = bean.getObject();
         config.addMappers("com.lemnt.mall.infrastructure");
-        service = new TableTestComponents(new SqlSessionTemplate(factory), source)
-                .get(BannerManagementService.class);
+        service =
+                new TableTestComponents(new SqlSessionTemplate(factory), source)
+                        .get(BannerManagementService.class);
     }
 
     @AfterEach
@@ -63,8 +66,15 @@ class BannerPersistenceTest {
     }
 
     Long create(String title, int position, int sort, int status) {
-        return service.create(new BannerCreateCmd(title, "/pages/store/index",
-                "https://example.test/" + title + ".png", sort, status, position, null));
+        return service.create(
+                new BannerCreateCmd(
+                        title,
+                        "/pages/store/index",
+                        "https://example.test/" + title + ".png",
+                        sort,
+                        status,
+                        position,
+                        null));
     }
 
     @Test
@@ -90,24 +100,36 @@ class BannerPersistenceTest {
         service.addBrowseCount(id);
         service.addBrowseCount(id);
         assertEquals(2, service.detail(id).browseCount());
-        service.update(new BannerUpdateCmd(id, "spring-new", "/pages/store/index",
-                "https://example.test/new.png", 3, 1, 2, "备注"));
+        service.update(
+                new BannerUpdateCmd(
+                        id,
+                        "spring-new",
+                        "/pages/store/index",
+                        "https://example.test/new.png",
+                        3,
+                        1,
+                        2,
+                        "备注"));
         var updated = service.detail(id);
         assertEquals("spring-new", updated.title());
         assertEquals(3, updated.sort());
         assertEquals(2, updated.position());
         assertEquals(2, updated.browseCount());
         service.delete(id);
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class, () -> service.detail(id));
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class, () -> service.detail(id));
     }
 
     @Test
     void invalidPositionStatusAndBrowseTargetAreRejected() {
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
                 () -> create("bad", 6, 0, 0));
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
                 () -> service.create(new BannerCreateCmd("bad", "/x", "https://x", 0, 2, 1, null)));
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
                 () -> service.addBrowseCount(1L));
     }
 }

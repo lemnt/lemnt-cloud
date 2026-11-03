@@ -114,7 +114,8 @@ public class RedisZSetService extends AbstractRedisService {
         return redisTemplate.opsForZSet().rangeByScoreWithScores(key, min, max);
     }
 
-    public Set<TypedTuple<String>> zRangeByScoreWithScores(String key, double min, double max, long start, long end) {
+    public Set<TypedTuple<String>> zRangeByScoreWithScores(
+            String key, double min, double max, long start, long end) {
         return redisTemplate.opsForZSet().rangeByScoreWithScores(key, min, max, start, end);
     }
 
@@ -153,11 +154,13 @@ public class RedisZSetService extends AbstractRedisService {
         return redisTemplate.opsForZSet().reverseRangeByScore(key, min, max);
     }
 
-    public Set<TypedTuple<String>> zReverseRangeByScoreWithScores(String key, double min, double max) {
+    public Set<TypedTuple<String>> zReverseRangeByScoreWithScores(
+            String key, double min, double max) {
         return redisTemplate.opsForZSet().reverseRangeByScoreWithScores(key, min, max);
     }
 
-    public Set<String> zReverseRangeByScore(String key, double min, double max, long start, long end) {
+    public Set<String> zReverseRangeByScore(
+            String key, double min, double max, long start, long end) {
         return redisTemplate.opsForZSet().reverseRangeByScore(key, min, max, start, end);
     }
 

@@ -21,11 +21,11 @@ import java.time.LocalDateTime;
 @TableName("trade_shipment")
 public class ShipmentDO implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.INPUT)
     private String orderNo;
+
     private String requestNo;
     private String fingerprint;
     private String carrierCode;

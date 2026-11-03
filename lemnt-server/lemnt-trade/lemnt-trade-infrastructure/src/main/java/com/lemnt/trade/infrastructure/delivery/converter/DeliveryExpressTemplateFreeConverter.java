@@ -7,8 +7,7 @@ import com.alibaba.fastjson2.JSON;
 
 /** 运费包邮规则 与表字段转换。 */
 public final class DeliveryExpressTemplateFreeConverter {
-    private DeliveryExpressTemplateFreeConverter() {
-    }
+    private DeliveryExpressTemplateFreeConverter() {}
 
     /** 读取业务对象。 */
     public static DeliveryExpressTemplateFree toEntity(DeliveryExpressTemplateFreeDO row) {

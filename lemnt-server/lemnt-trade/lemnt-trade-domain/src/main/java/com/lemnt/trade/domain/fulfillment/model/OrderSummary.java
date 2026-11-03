@@ -17,5 +17,4 @@ public record OrderSummary(
         String carrierCode,
         String trackingNo,
         LocalDateTime shippedAt,
-        LocalDateTime receivedAt
-) {}
+        LocalDateTime receivedAt) {}

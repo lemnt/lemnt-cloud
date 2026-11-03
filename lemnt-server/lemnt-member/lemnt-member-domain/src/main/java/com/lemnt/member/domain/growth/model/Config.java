@@ -7,5 +7,4 @@ public record Config(
         Boolean pointTradeDeductEnable,
         Integer pointTradeDeductUnitPrice,
         Integer pointTradeDeductMaxPrice,
-        Integer pointTradeGivePoint
-) {}
+        Integer pointTradeGivePoint) {}

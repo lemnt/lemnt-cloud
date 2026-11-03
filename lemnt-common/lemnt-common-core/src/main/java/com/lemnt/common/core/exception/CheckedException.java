@@ -20,7 +20,11 @@ public class CheckedException extends RuntimeException {
         super(message, cause);
     }
 
-    public CheckedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public CheckedException(
+            String message,
+            Throwable cause,
+            boolean enableSuppression,
+            boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

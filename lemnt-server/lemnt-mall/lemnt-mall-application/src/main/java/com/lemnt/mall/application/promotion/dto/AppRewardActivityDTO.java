@@ -14,8 +14,8 @@ public record AppRewardActivityDTO(
         LocalDateTime endTime,
         String conditionType,
         String productScope,
-        List<RewardRule> rules
-) implements Serializable {
+        List<RewardRule> rules)
+        implements Serializable {
     public AppRewardActivityDTO {
         rules = rules == null ? List.of() : List.copyOf(rules);
     }

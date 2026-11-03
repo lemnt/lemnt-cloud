@@ -19,6 +19,17 @@ CREATE TABLE trade_shipment (
  CONSTRAINT fk_trade_shipment_order FOREIGN KEY(order_no) REFERENCES trade_order(order_no)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '订单发货与收件快照';
 CREATE TABLE trade_after_sale (
+ refund_discount_amount DECIMAL(19,2) NULL COMMENT '生成退单时冻结的本次商品优惠归因，非额外退现金，单位元',
+ refund_delivery_discount_price DECIMAL(19,2) NULL COMMENT '生成退单时冻结的本次运费优惠归因，非额外退现金，单位元',
+ return_use_point BIGINT NULL COMMENT '生成退单时冻结的应返使用积分，实际到账以账户流水为准',
+ deduct_give_point BIGINT NULL COMMENT '生成退单时冻结的应回收赠送积分，实际扣回以账户流水为准',
+ refund_rule_version INT NULL COMMENT '退款分摊规则版本，1为现金单件基准末次尾差及积分累计比例，历史未知为NULL',
+ CONSTRAINT chk_trade_after_sale_promotion_amount CHECK(
+   (refund_discount_amount IS NULL OR refund_discount_amount>=0) AND
+   (refund_delivery_discount_price IS NULL OR refund_delivery_discount_price>=0)),
+ CONSTRAINT chk_trade_after_sale_points CHECK(
+   (return_use_point IS NULL OR return_use_point>=0) AND (deduct_give_point IS NULL OR deduct_give_point>=0)),
+
  id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键编号',
  refund_no VARCHAR(40) NOT NULL COMMENT '售后业务单号',
  order_id BIGINT NULL COMMENT '交易订单主键编号',

@@ -49,6 +49,6 @@
     <select id="profileCount" resultType="long">
         SELECT COUNT(*) FROM member_user m <include refid="Conditions"/>
     </select>
-    <select id="lock" resultMap="MemberMap">SELECT * FROM member_user WHERE id=#{id} FOR UPDATE</select>
+    <select id="lock" resultMap="MemberMap" useCache="false" flushCache="true">SELECT * FROM member_user WHERE id=#{id} FOR UPDATE</select>
     <select id="now" resultType="java.time.LocalDateTime">SELECT CURRENT_TIMESTAMP</select>
 </mapper>

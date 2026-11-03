@@ -30,8 +30,8 @@ public record CouponTemplateDTO(
         String validityType,
         Integer fixedStartTerm,
         Integer fixedEndTerm,
-        int useCount
-) implements Serializable {
+        int useCount)
+        implements Serializable {
     /** 存量调用按原固定日期、单人一张规则兼容读取。 */
     public CouponTemplateDTO(
             Long id,

@@ -26,19 +26,24 @@ class SettlementCacheTest {
                 "12345678-1234-1234-1234-123456789abc",
                 1L,
                 new SettlementQuote(
-                List.of(
-                new SettlementItem(
-                5L,
-                "SKU",
-                "name",
-                new BigDecimal("10.00"),
-                2,
-                new BigDecimal("20.00"), new BigDecimal("20.00"), BigDecimal.ZERO,
-                8L, "原商品", List.of(new SettlementItem.Spec(3L, "颜色", 7L, "黑色")), "https://example.com/original.png")),
-                new BigDecimal("20.00"),
-                new BigDecimal("0.00"),
-                new BigDecimal("20.00"),
-                null),
+                        List.of(
+                                new SettlementItem(
+                                        5L,
+                                        "SKU",
+                                        "name",
+                                        new BigDecimal("10.00"),
+                                        2,
+                                        new BigDecimal("20.00"),
+                                        new BigDecimal("20.00"),
+                                        BigDecimal.ZERO,
+                                        8L,
+                                        "原商品",
+                                        List.of(new SettlementItem.Spec(3L, "颜色", 7L, "黑色")),
+                                        "https://example.com/original.png")),
+                        new BigDecimal("20.00"),
+                        new BigDecimal("0.00"),
+                        new BigDecimal("20.00"),
+                        null),
                 List.of(new CartReference(3L, 0)),
                 Instant.now().plusSeconds(900));
     }
@@ -58,12 +63,40 @@ class SettlementCacheTest {
     void freightAndRecipientRoundTripWithProductionRedisCodec() {
         var codec = new Fastjson2RedisSerializer();
         var original = snapshot();
-        var quote = new SettlementQuote(List.of(new SettlementItem(5L, "SKU", "name", new BigDecimal("10.00"),
-                2, new BigDecimal("20.00"), new BigDecimal("26.50"), new BigDecimal("6.50"))),
-                new BigDecimal("20.00"), new BigDecimal("0.00"), new BigDecimal("26.50"), null, 0L, 53L,
-                new com.lemnt.mall.domain.settlement.model.SettlementDelivery(7L, 1, "收件人", "13800000000",
-                        110101L, "地址", new BigDecimal("6.50"), null));
-        var value = new Settlement(original.id(), original.memberId(), quote, original.references(), original.expiresAt());
+        var quote =
+                new SettlementQuote(
+                        List.of(
+                                new SettlementItem(
+                                        5L,
+                                        "SKU",
+                                        "name",
+                                        new BigDecimal("10.00"),
+                                        2,
+                                        new BigDecimal("20.00"),
+                                        new BigDecimal("26.50"),
+                                        new BigDecimal("6.50"))),
+                        new BigDecimal("20.00"),
+                        new BigDecimal("0.00"),
+                        new BigDecimal("26.50"),
+                        null,
+                        0L,
+                        53L,
+                        new com.lemnt.mall.domain.settlement.model.SettlementDelivery(
+                                7L,
+                                1,
+                                "收件人",
+                                "13800000000",
+                                110101L,
+                                "地址",
+                                new BigDecimal("6.50"),
+                                null));
+        var value =
+                new Settlement(
+                        original.id(),
+                        original.memberId(),
+                        quote,
+                        original.references(),
+                        original.expiresAt());
         assertEquals(value, codec.deserialize(codec.serialize(value), Settlement.class));
     }
 
@@ -78,7 +111,7 @@ class SettlementCacheTest {
         gateway.cache(value);
         var ttl = ArgumentCaptor.forClass(Duration.class);
         verify(values)
-            .setIfAbsent(eq("mall:settlement:v5:" + value.id()), anyString(), ttl.capture());
+                .setIfAbsent(eq("mall:settlement:v5:" + value.id()), anyString(), ttl.capture());
         assertTrue(ttl.getValue().getSeconds() > 890 && ttl.getValue().getSeconds() <= 900);
         when(values.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(false);
         assertThrows(IllegalStateException.class, () -> gateway.cache(value));
@@ -89,9 +122,7 @@ class SettlementCacheTest {
         var redis = mock(StringRedisTemplate.class);
         ValueOperations<String, String> values = mock(ValueOperations.class);
         when(redis.opsForValue()).thenReturn(values);
-        var gateway =
-        new SettlementGatewayImpl(
-                redis, new Fastjson2RedisSerializer());
+        var gateway = new SettlementGatewayImpl(redis, new Fastjson2RedisSerializer());
         assertNull(gateway.cached(snapshot().id()));
     }
 
@@ -100,21 +131,33 @@ class SettlementCacheTest {
     void rollbackDoesNotRemovePreviouslyCommittedBinding() {
         for (long result : new long[] {1L, 2L}) {
             var redis = mock(StringRedisTemplate.class);
-            when(redis.execute(any(org.springframework.data.redis.core.script.RedisScript.class),
-                    anyList(), any(Object[].class))).thenReturn(result);
+            when(redis.execute(
+                            any(org.springframework.data.redis.core.script.RedisScript.class),
+                            anyList(),
+                            any(Object[].class)))
+                    .thenReturn(result);
             var gateway = new SettlementGatewayImpl(redis, new Fastjson2RedisSerializer());
-            org.springframework.transaction.support.TransactionSynchronizationManager.initSynchronization();
+            org.springframework.transaction.support.TransactionSynchronizationManager
+                    .initSynchronization();
             try {
                 gateway.bind(1L, "settlement", "ORDER");
-                var callbacks = org.springframework.transaction.support.TransactionSynchronizationManager
-                        .getSynchronizations();
+                var callbacks =
+                        org.springframework.transaction.support.TransactionSynchronizationManager
+                                .getSynchronizations();
                 assertEquals(result == 1L ? 1 : 0, callbacks.size());
-                callbacks.forEach(c -> c.afterCompletion(
-                        org.springframework.transaction.support.TransactionSynchronization.STATUS_ROLLED_BACK));
-                verify(redis, times(result == 1L ? 2 : 1)).execute(
-                        any(org.springframework.data.redis.core.script.RedisScript.class), anyList(), any(Object[].class));
+                callbacks.forEach(
+                        c ->
+                                c.afterCompletion(
+                                        org.springframework.transaction.support
+                                                .TransactionSynchronization.STATUS_ROLLED_BACK));
+                verify(redis, times(result == 1L ? 2 : 1))
+                        .execute(
+                                any(org.springframework.data.redis.core.script.RedisScript.class),
+                                anyList(),
+                                any(Object[].class));
             } finally {
-                org.springframework.transaction.support.TransactionSynchronizationManager.clearSynchronization();
+                org.springframework.transaction.support.TransactionSynchronizationManager
+                        .clearSynchronization();
             }
         }
     }
@@ -124,62 +167,122 @@ class SettlementCacheTest {
     void actualSerializerRoundTripsSubmission() {
         var value = snapshot();
         var quote = value.quote();
-        var order = new com.lemnt.mall.domain.settlement.model.SettlementOrder(
-                null, "ORDER", 1L, quote.payableAmount(), "PENDING", quote.items(), null);
-        var record = new com.lemnt.mall.domain.settlement.model.SettlementRecord(
-                "ORDER", 1L, "REQUEST", "HASH", quote.originalAmount(), quote.discountAmount(),
-                quote.payableAmount(), null, value.references());
-        var submission = new com.lemnt.mall.domain.settlement.model.SettlementSubmission(order, record);
+        var order =
+                new com.lemnt.mall.domain.settlement.model.SettlementOrder(
+                        null, "ORDER", 1L, quote.payableAmount(), "PENDING", quote.items(), null);
+        var record =
+                new com.lemnt.mall.domain.settlement.model.SettlementRecord(
+                        "ORDER",
+                        1L,
+                        "REQUEST",
+                        "HASH",
+                        quote.originalAmount(),
+                        quote.discountAmount(),
+                        quote.payableAmount(),
+                        null,
+                        value.references());
+        var submission =
+                new com.lemnt.mall.domain.settlement.model.SettlementSubmission(order, record);
         var codec = new Fastjson2RedisSerializer();
-        assertEquals(submission, codec.deserialize(codec.serialize(submission),
-                com.lemnt.mall.domain.settlement.model.SettlementSubmission.class));
+        assertEquals(
+                submission,
+                codec.deserialize(
+                        codec.serialize(submission),
+                        com.lemnt.mall.domain.settlement.model.SettlementSubmission.class));
     }
+
     /** 规格映射顺序不影响令牌，但规格内容、图片和未知状态影响令牌。 */
     @Test
     void tokenIncludesStableAndUnambiguousProductSnapshot() {
         var first = new java.util.LinkedHashMap<String, String>();
-        first.put("颜色", "黑色"); first.put("尺码", "L");
+        first.put("颜色", "黑色");
+        first.put("尺码", "L");
         var reverse = new java.util.LinkedHashMap<String, String>();
-        reverse.put("尺码", "L"); reverse.put("颜色", "黑色");
+        reverse.put("尺码", "L");
+        reverse.put("颜色", "黑色");
         assertEquals(token(first, "old.png"), token(reverse, "old.png"));
         assertNotEquals(token(first, "old.png"), token(first, "new.png"));
         assertNotEquals(token(null, "old.png"), token(java.util.Map.of(), "old.png"));
-        assertNotEquals(token(java.util.Map.of("a", "b:c"), "old.png"),
+        assertNotEquals(
+                token(java.util.Map.of("a", "b:c"), "old.png"),
                 token(java.util.Map.of("a:b", "c"), "old.png"));
     }
 
     private String token(java.util.Map<String, String> specs, String image) {
-        var item = new SettlementItem(5L, "SKU", "name", BigDecimal.TEN, 1, BigDecimal.TEN,
-                BigDecimal.TEN, BigDecimal.ZERO, 8L, "SPU", specs == null ? null : specs.entrySet().stream()
-                        .map(entry -> new SettlementItem.Spec(null, entry.getKey(), null, entry.getValue())).toList(), image);
+        var item =
+                new SettlementItem(
+                        5L,
+                        "SKU",
+                        "name",
+                        BigDecimal.TEN,
+                        1,
+                        BigDecimal.TEN,
+                        BigDecimal.TEN,
+                        BigDecimal.ZERO,
+                        8L,
+                        "SPU",
+                        specs == null
+                                ? null
+                                : specs.entrySet().stream()
+                                        .map(
+                                                entry ->
+                                                        new SettlementItem.Spec(
+                                                                null,
+                                                                entry.getKey(),
+                                                                null,
+                                                                entry.getValue()))
+                                        .toList(),
+                        image);
         return com.lemnt.mall.domain.settlement.model.SettlementRules.quoteToken(
-                new SettlementQuote(List.of(item), BigDecimal.TEN, BigDecimal.ZERO, BigDecimal.TEN, null));
+                new SettlementQuote(
+                        List.of(item), BigDecimal.TEN, BigDecimal.ZERO, BigDecimal.TEN, null));
     }
-
 
     @Test
     void oldBoundSubmissionRestoresNamesAndPreservesOriginalOrderAndRequest() {
         var snapshot = snapshot();
-        var order = new com.lemnt.mall.domain.settlement.model.SettlementOrder(null, "OLD-ORDER", 1L,
-                snapshot.quote().payableAmount(), "PENDING", snapshot.quote().items(), null);
-        var record = new com.lemnt.mall.domain.settlement.model.SettlementRecord("OLD-ORDER", 1L, "OLD-REQUEST",
-                "OLD-HASH", snapshot.quote().originalAmount(), snapshot.quote().discountAmount(),
-                snapshot.quote().payableAmount(), null, snapshot.references());
+        var order =
+                new com.lemnt.mall.domain.settlement.model.SettlementOrder(
+                        null,
+                        "OLD-ORDER",
+                        1L,
+                        snapshot.quote().payableAmount(),
+                        "PENDING",
+                        snapshot.quote().items(),
+                        null);
+        var record =
+                new com.lemnt.mall.domain.settlement.model.SettlementRecord(
+                        "OLD-ORDER",
+                        1L,
+                        "OLD-REQUEST",
+                        "OLD-HASH",
+                        snapshot.quote().originalAmount(),
+                        snapshot.quote().discountAmount(),
+                        snapshot.quote().payableAmount(),
+                        null,
+                        snapshot.references());
         var codec = new Fastjson2RedisSerializer();
-        var json = com.alibaba.fastjson2.JSON.parseObject(codec.serialize(
-                new com.lemnt.mall.domain.settlement.model.SettlementSubmission(order, record)));
+        var json =
+                com.alibaba.fastjson2.JSON.parseObject(
+                        codec.serialize(
+                                new com.lemnt.mall.domain.settlement.model.SettlementSubmission(
+                                        order, record)));
         json.getJSONObject("order").getJSONArray("items").getJSONObject(0).remove("specs");
-        json.getJSONObject("order").getJSONArray("items").getJSONObject(0)
+        json.getJSONObject("order")
+                .getJSONArray("items")
+                .getJSONObject(0)
                 .put("properties", com.alibaba.fastjson2.JSON.parseObject("{\"颜色\":\"黑色\"}"));
         var redis = mock(StringRedisTemplate.class);
         ValueOperations<String, String> values = mock(ValueOperations.class);
         when(redis.opsForValue()).thenReturn(values);
-        when(values.get("mall:{settlement}:v2:submission:OLD-ORDER")).thenReturn(json.toJSONString());
+        when(values.get("mall:{settlement}:v2:submission:OLD-ORDER"))
+                .thenReturn(json.toJSONString());
         var restored = new SettlementGatewayImpl(redis, codec).submission("OLD-ORDER");
         assertEquals("OLD-ORDER", restored.order().orderNo());
         assertEquals("OLD-REQUEST", restored.record().requestNo());
         assertEquals("OLD-HASH", restored.record().fingerprint());
-        assertEquals(List.of(new SettlementItem.Spec(null, "颜色", null, "黑色")),
+        assertEquals(
+                List.of(new SettlementItem.Spec(null, "颜色", null, "黑色")),
                 restored.order().items().get(0).specs());
         verify(values, never()).set(anyString(), anyString());
     }

@@ -22,8 +22,11 @@ public class MemberWalletTransactionPageQueryExe {
         if (memberId == null || memberId <= 0) {
             throw new IllegalArgumentException("会员编号不合法");
         }
-        if (qry == null || qry.pageNum() < 1 || qry.pageNum() > 1000000
-                || qry.pageSize() < 1 || qry.pageSize() > 100) {
+        if (qry == null
+                || qry.pageNum() < 1
+                || qry.pageNum() > 1000000
+                || qry.pageSize() < 1
+                || qry.pageSize() > 100) {
             throw new IllegalArgumentException("分页参数不合法");
         }
         String bizType = qry.bizType() == null || qry.bizType().isBlank() ? null : qry.bizType();
@@ -35,9 +38,12 @@ public class MemberWalletTransactionPageQueryExe {
             }
         }
         var wallet = wallets.createIfAbsent(memberId);
-        var page = wallets.transactionPage(new WalletTransactionFilter(wallet.id(), bizType,
-                qry.pageNum(), qry.pageSize()));
-        return PageResult.of(page.getRecords().stream().map(WalletDTOConverter::transaction).toList(),
+        var page =
+                wallets.transactionPage(
+                        new WalletTransactionFilter(
+                                wallet.id(), bizType, qry.pageNum(), qry.pageSize()));
+        return PageResult.of(
+                page.getRecords().stream().map(WalletDTOConverter::transaction).toList(),
                 page.getTotal());
     }
 }

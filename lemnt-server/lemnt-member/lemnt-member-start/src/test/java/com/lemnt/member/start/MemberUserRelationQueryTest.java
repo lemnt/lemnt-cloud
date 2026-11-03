@@ -3,20 +3,23 @@ package com.lemnt.member.start;
 import com.lemnt.member.application.user.dto.MemberDTO;
 import com.lemnt.member.application.user.service.MemberUserRelationQueryService;
 import com.lemnt.member.domain.growth.gateway.MemberLevelGateway;
+import com.lemnt.member.domain.growth.model.Level;
 import com.lemnt.member.domain.user.gateway.MemberGroupGateway;
 import com.lemnt.member.domain.user.gateway.MemberTagGateway;
 import com.lemnt.member.domain.user.gateway.MemberTagLinkGateway;
-import com.lemnt.member.domain.growth.model.Level;
 import com.lemnt.member.domain.user.model.Group;
 import com.lemnt.member.domain.user.model.Tag;
+
 import org.junit.jupiter.api.Test;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 class MemberUserRelationQueryTest {
     /** 两名会员也每张表只取一次，重复元数据ID不变成N+1。 */
@@ -26,10 +29,14 @@ class MemberUserRelationQueryTest {
         var groups = mock(MemberGroupGateway.class);
         var tags = mock(MemberTagGateway.class);
         var links = mock(MemberTagLinkGateway.class);
-        when(links.memberTagsBatch(anyCollection())).thenReturn(Map.of(1L, List.of(9L, 10L), 2L, List.of(10L)));
-        when(levels.levelsByIds(anyCollection())).thenReturn(List.of(new Level(7L, "Gold", 1, 100L, 90, null, null, 1)));
-        when(groups.groupsByIds(anyCollection())).thenReturn(List.of(new Group(8L, "VIP", null, 1)));
-        when(tags.tagsByIds(anyCollection())).thenReturn(List.of(new Tag(9L, "A", null), new Tag(10L, "B", null)));
+        when(links.memberTagsBatch(anyCollection()))
+                .thenReturn(Map.of(1L, List.of(9L, 10L), 2L, List.of(10L)));
+        when(levels.levelsByIds(anyCollection()))
+                .thenReturn(List.of(new Level(7L, "Gold", 1, 100L, 90, null, null, 1)));
+        when(groups.groupsByIds(anyCollection()))
+                .thenReturn(List.of(new Group(8L, "VIP", null, 1)));
+        when(tags.tagsByIds(anyCollection()))
+                .thenReturn(List.of(new Tag(9L, "A", null), new Tag(10L, "B", null)));
         var service = new MemberUserRelationQueryService(levels, groups, tags, links);
         var result = service.enrich(List.of(user(1L), user(2L)));
         assertEquals(List.of("A", "B"), result.get(0).tagNames());
@@ -49,7 +56,9 @@ class MemberUserRelationQueryTest {
         var groups = mock(MemberGroupGateway.class);
         var tags = mock(MemberTagGateway.class);
         var links = mock(MemberTagLinkGateway.class);
-        assertEquals(List.of(), new MemberUserRelationQueryService(levels, groups, tags, links).enrich(List.of()));
+        assertEquals(
+                List.of(),
+                new MemberUserRelationQueryService(levels, groups, tags, links).enrich(List.of()));
         verifyNoInteractions(levels, groups, tags, links);
     }
 
@@ -61,7 +70,10 @@ class MemberUserRelationQueryTest {
         var tags = mock(MemberTagGateway.class);
         var links = mock(MemberTagLinkGateway.class);
         when(links.memberTagsBatch(anyCollection())).thenReturn(Map.of(1L, List.of(9L)));
-        var value = new MemberUserRelationQueryService(levels, groups, tags, links).enrich(List.of(user(1L))).get(0);
+        var value =
+                new MemberUserRelationQueryService(levels, groups, tags, links)
+                        .enrich(List.of(user(1L)))
+                        .get(0);
         assertEquals(List.of(9L), value.tagIds());
         assertEquals(List.of(), value.tagNames());
         assertNull(value.levelName());

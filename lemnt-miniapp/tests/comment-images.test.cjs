@@ -1,49 +1,49 @@
-const { test } = require("node:test");
-const assert = require("node:assert/strict");
-const { pictureUrls, removePicture } = require("../services/images");
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const { pictureUrls, removePicture } = require('../services/images');
 function page(name) {
   let def,
-    token = "one";
+    token = 'one';
   global.Page = (x) => (def = x);
   global.getApp = () => ({
     globalData: { memberSession: { accessToken: token } },
   });
-  delete require.cache[require.resolve("../pages/" + name + "/index")];
-  require("../pages/" + name + "/index");
+  delete require.cache[require.resolve('../pages/' + name + '/index')];
+  require('../pages/' + name + '/index');
   return {
     p: {
       ...def,
-      ownerToken: "one",
+      ownerToken: 'one',
       data: JSON.parse(JSON.stringify(def.data)),
       setData(x) {
         Object.assign(this.data, x);
       },
     },
-    switch: () => (token = "two"),
+    switch: () => (token = 'two'),
   };
 }
-const a = "https://oss.test/a.png",
-  b = "https://oss.test/b.png";
-test("附件解析仅预览HTTPS，移除一次并保持剩余顺序", () => {
-  assert.deepEqual(pictureUrls(a + "\nhttp://bad.test/a\n" + b), [a, b]);
-  assert.equal(removePicture(a + "\n" + a + "\n" + b, a), a + "\n" + b);
+const a = 'https://oss.test/a.png',
+  b = 'https://oss.test/b.png';
+test('附件解析仅预览HTTPS，移除一次并保持剩余顺序', () => {
+  assert.deepEqual(pictureUrls(a + '\nhttp://bad.test/a\n' + b), [a, b]);
+  assert.equal(removePicture(a + '\n' + a + '\n' + b, a), a + '\n' + b);
 });
-test("单项图片输入、删除和提交一致，预览不能注入URL", async () => {
-  const { p } = page("comment-create");
-  p.orderNo = "ORD";
-  p.skuId = "3";
-  p.orderItemId = "301";
+test('单项图片输入、删除和提交一致，预览不能注入URL', async () => {
+  const { p } = page('comment-create');
+  p.orderNo = 'ORD';
+  p.skuId = '3';
+  p.orderItemId = '301';
   p.data.eligible = true;
-  p.data.content = "评价";
+  p.data.content = '评价';
   p.input({
-    currentTarget: { dataset: { field: "pictures" } },
-    detail: { value: a + "\n" + b },
+    currentTarget: { dataset: { field: 'pictures' } },
+    detail: { value: a + '\n' + b },
   });
   assert.deepEqual(p.data.imageUrls, [a, b]);
   let shown;
   global.wx = { previewImage: (x) => (shown = x) };
   p.previewImages({
-    currentTarget: { dataset: { url: "https://evil.test/a" } },
+    currentTarget: { dataset: { url: 'https://evil.test/a' } },
   });
   assert.equal(shown, undefined);
   p.previewImages({ currentTarget: { dataset: { url: b } } });
@@ -53,15 +53,15 @@ test("单项图片输入、删除和提交一致，预览不能注入URL", async
   p.client = {
     create: async (x) => {
       sent = x;
-      return { id: "9" };
+      return { id: '9' };
     },
   };
   await p.submit();
   assert.deepEqual(sent.picUrls, [b]);
   assert.deepEqual(p.data.imageUrls, [b]);
 });
-test("单项未知结果冻结图片，换号清理缩略图并拒绝预览", () => {
-  const x = page("comment-create");
+test('单项未知结果冻结图片，换号清理缩略图并拒绝预览', () => {
+  const x = page('comment-create');
   x.p.data.pictures = a;
   x.p.data.imageUrls = [a];
   x.p.data.pending = true;
@@ -70,13 +70,13 @@ test("单项未知结果冻结图片，换号清理缩略图并拒绝预览", ()
   x.switch();
   x.p.onShow();
   assert.deepEqual(x.p.data.imageUrls, []);
-  global.wx = { previewImage: () => assert.fail("换号不能预览") };
+  global.wx = { previewImage: () => assert.fail('换号不能预览') };
   x.p.previewImages({ currentTarget: { dataset: { url: a } } });
 });
-test("同页移除只影响当前行，未知项禁止删除", () => {
-  const { p } = page("order-comment");
+test('同页移除只影响当前行，未知项禁止删除', () => {
+  const { p } = page('order-comment');
   p.data.rows = [
-    { pictures: a + "\n" + b, imageUrls: [a, b], commentStatus: false },
+    { pictures: a + '\n' + b, imageUrls: [a, b], commentStatus: false },
     { pictures: a, imageUrls: [a], commentStatus: false, pending: {} },
   ];
   p.removeImage({ currentTarget: { dataset: { index: 0, url: a } } });

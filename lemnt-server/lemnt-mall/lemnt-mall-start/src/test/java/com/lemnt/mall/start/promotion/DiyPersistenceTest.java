@@ -47,14 +47,16 @@ class DiyPersistenceTest {
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         config.addInterceptor(interceptor);
         var bean = new MybatisSqlSessionFactoryBean();
-        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
+        bean.setMapperLocations(
+                new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
         bean.setDataSource(source);
         bean.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
         bean.setConfiguration(config);
         var factory = bean.getObject();
         config.addMappers("com.lemnt.mall.infrastructure");
-        service = new TableTestComponents(new SqlSessionTemplate(factory), source)
-                .get(DiyDecorationService.class);
+        service =
+                new TableTestComponents(new SqlSessionTemplate(factory), source)
+                        .get(DiyDecorationService.class);
     }
 
     @AfterEach
@@ -65,8 +67,9 @@ class DiyPersistenceTest {
     }
 
     Long template(String name) {
-        return service.createTemplate(new DiyTemplateSaveCmd(null, name, "备注",
-                List.of("https://example.test/preview.png")));
+        return service.createTemplate(
+                new DiyTemplateSaveCmd(
+                        null, name, "备注", List.of("https://example.test/preview.png")));
     }
 
     @Test
@@ -76,7 +79,8 @@ class DiyPersistenceTest {
         assertFalse(detail.used());
         var pages = service.pagePage(new DiyPagePageQry(id, null, 1, 20));
         assertEquals(2, pages.getTotal());
-        assertEquals(List.of("首页", "我的"), pages.getRecords().stream().map(row -> row.name()).toList());
+        assertEquals(
+                List.of("首页", "我的"), pages.getRecords().stream().map(row -> row.name()).toList());
     }
 
     @Test
@@ -87,7 +91,8 @@ class DiyPersistenceTest {
         assertTrue(service.useTemplate(second));
         assertFalse(service.templateDetail(first).used());
         assertTrue(service.templateDetail(second).used());
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
                 () -> service.deleteTemplate(second));
         assertTrue(service.deleteTemplate(first));
     }
@@ -95,16 +100,20 @@ class DiyPersistenceTest {
     @Test
     void pageNamesAreUniqueAndPropertiesMustBeJson() {
         var id = template("模板");
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
                 () -> service.createPage(new DiyPageSaveCmd(null, id, "首页", null, List.of())));
         var page = service.createPage(new DiyPageSaveCmd(null, id, "活动页", null, List.of()));
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
                 () -> service.updatePage(new DiyPageSaveCmd(page, id, "我的", null, List.of())));
         assertTrue(service.updatePageProperty(new DiyPropertyCmd(page, "{\"components\":[]}")));
         assertEquals("{\"components\":[]}", service.pageDetail(page).property());
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
                 () -> service.updatePageProperty(new DiyPropertyCmd(page, "not-json")));
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
                 () -> service.updateTemplateProperty(new DiyPropertyCmd(id, "not-json")));
         assertTrue(service.updateTemplateProperty(new DiyPropertyCmd(id, "{\"tabbar\":{}}")));
     }
@@ -115,7 +124,8 @@ class DiyPersistenceTest {
         service.useTemplate(id);
         var pages = service.pagePage(new DiyPagePageQry(id, null, 1, 20)).getRecords();
         var home = pages.stream().filter(row -> row.name().equals("首页")).findFirst().orElseThrow();
-        service.updatePageProperty(new DiyPropertyCmd(home.id(), "{\"components\":[{\"id\":\"TitleBar\"}]}"));
+        service.updatePageProperty(
+                new DiyPropertyCmd(home.id(), "{\"components\":[{\"id\":\"TitleBar\"}]}"));
         var used = service.usedTemplate();
         assertEquals(id, used.id());
         assertTrue(used.home().contains("TitleBar"));

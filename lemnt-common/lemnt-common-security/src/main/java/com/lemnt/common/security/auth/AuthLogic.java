@@ -1,25 +1,26 @@
 package com.lemnt.common.security.auth;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import com.lemnt.common.security.context.SecurityContextHolder;
-import com.lemnt.common.security.model.SecurityUser;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.PatternMatchUtils;
-import com.lemnt.common.security.exception.NotLoginException;
-import com.lemnt.common.security.exception.NotPermissionException;
-import com.lemnt.common.security.exception.NotRoleException;
 import com.lemnt.common.core.utils.StringUtils;
 import com.lemnt.common.security.annotation.Logical;
 import com.lemnt.common.security.annotation.RequiresLogin;
 import com.lemnt.common.security.annotation.RequiresPermissions;
 import com.lemnt.common.security.annotation.RequiresRoles;
+import com.lemnt.common.security.context.SecurityContextHolder;
+import com.lemnt.common.security.exception.NotLoginException;
+import com.lemnt.common.security.exception.NotPermissionException;
+import com.lemnt.common.security.exception.NotRoleException;
+import com.lemnt.common.security.model.SecurityUser;
 import com.lemnt.common.security.service.TokenService;
 import com.lemnt.common.security.utils.SecurityUtils;
-import jakarta.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.PatternMatchUtils;
+
+import jakarta.annotation.PostConstruct;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Token 权限验证，逻辑实现类
@@ -38,8 +39,7 @@ public class AuthLogic {
      */
     private static final String SUPER_ADMIN = "admin";
 
-    @Autowired
-    public TokenService tokenService;
+    @Autowired public TokenService tokenService;
 
     /**
      * Spring 容器初始化后，将当前 Bean 注入到 AuthUtil 的静态字段中，
@@ -326,8 +326,12 @@ public class AuthLogic {
      * @return 用户是否具备某权限
      */
     public boolean hasPermi(Collection<String> authorities, String permission) {
-        return authorities.stream().filter(StringUtils::hasText)
-                .anyMatch(x -> ALL_PERMISSION.equals(x) || PatternMatchUtils.simpleMatch(x, permission));
+        return authorities.stream()
+                .filter(StringUtils::hasText)
+                .anyMatch(
+                        x ->
+                                ALL_PERMISSION.equals(x)
+                                        || PatternMatchUtils.simpleMatch(x, permission));
     }
 
     /**
@@ -338,7 +342,8 @@ public class AuthLogic {
      * @return 用户是否具备某角色权限
      */
     public boolean hasRole(Collection<String> roles, String role) {
-        return roles.stream().filter(StringUtils::hasText)
+        return roles.stream()
+                .filter(StringUtils::hasText)
                 .anyMatch(x -> SUPER_ADMIN.equals(x) || PatternMatchUtils.simpleMatch(x, role));
     }
 }

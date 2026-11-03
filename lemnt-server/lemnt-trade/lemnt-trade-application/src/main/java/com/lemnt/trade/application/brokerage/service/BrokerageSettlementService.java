@@ -20,18 +20,25 @@ public class BrokerageSettlementService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public boolean unfreeze(Long recordId) {
         var record = records.find(recordId);
-        if (record == null || record.status() != BrokerageService.STATUS_WAIT
-                || !records.updateStatus(recordId, BrokerageService.STATUS_WAIT,
-                        BrokerageService.STATUS_SETTLED)) {
+        if (record == null
+                || record.status() != BrokerageService.STATUS_WAIT
+                || !records.updateStatus(
+                        recordId, BrokerageService.STATUS_WAIT, BrokerageService.STATUS_SETTLED)) {
             return false;
         }
         var user = users.lock(record.userId());
         if (user == null || user.frozenPrice().compareTo(record.price()) < 0) {
             throw new IllegalStateException("冻结佣金不足，无法解冻");
         }
-        BrokerageUser updated = new BrokerageUser(user.id(), user.bindUserId(), user.bindUserTime(),
-                user.brokerageEnabled(), user.brokerageTime(),
-                user.brokeragePrice().add(record.price()), user.frozenPrice().subtract(record.price()));
+        BrokerageUser updated =
+                new BrokerageUser(
+                        user.id(),
+                        user.bindUserId(),
+                        user.bindUserTime(),
+                        user.brokerageEnabled(),
+                        user.brokerageTime(),
+                        user.brokeragePrice().add(record.price()),
+                        user.frozenPrice().subtract(record.price()));
         users.save(updated);
         return true;
     }

@@ -1,10 +1,11 @@
 package com.lemnt.trade.start.delivery;
 
+import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.trade.infrastructure.delivery.gateway.DeliveryManagementLockGatewayImpl;
+
 import com.baomidou.lock.LockInfo;
 import com.baomidou.lock.LockTemplate;
 import com.baomidou.lock.executor.RedissonLockExecutor;
-import com.lemnt.common.core.exception.ServiceException;
-import com.lemnt.trade.infrastructure.delivery.gateway.DeliveryManagementLockGatewayImpl;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,22 +27,27 @@ class DeliveryManagementLockTest {
         var locks = mock(LockTemplate.class);
         var handle = mock(LockInfo.class);
         when(locks.lock(anyString(), anyLong(), anyLong(), any())).thenReturn(handle);
-        when(locks.releaseLock(handle)).thenAnswer(call -> {
-            try (var connection = source.getConnection();
-                    var statement = connection.createStatement();
-                    var rows = statement.executeQuery("SELECT COUNT(*) FROM effect")) {
-                rows.next();
-                assertEquals(1, rows.getInt(1));
-            }
-            return true;
-        });
+        when(locks.releaseLock(handle))
+                .thenAnswer(
+                        call -> {
+                            try (var connection = source.getConnection();
+                                    var statement = connection.createStatement();
+                                    var rows =
+                                            statement.executeQuery("SELECT COUNT(*) FROM effect")) {
+                                rows.next();
+                                assertEquals(1, rows.getInt(1));
+                            }
+                            return true;
+                        });
         var gateway = new DeliveryManagementLockGatewayImpl(locks);
-        new TransactionTemplate(new DataSourceTransactionManager(source)).executeWithoutResult(status -> {
-            gateway.lock();
-            gateway.lock();
-            jdbc.update("INSERT INTO effect VALUES(1)");
-            verify(locks, never()).releaseLock(any());
-        });
+        new TransactionTemplate(new DataSourceTransactionManager(source))
+                .executeWithoutResult(
+                        status -> {
+                            gateway.lock();
+                            gateway.lock();
+                            jdbc.update("INSERT INTO effect VALUES(1)");
+                            verify(locks, never()).releaseLock(any());
+                        });
         verify(locks).lock("lemnt:trade:delivery:management", -1, 3000, RedissonLockExecutor.class);
         verify(locks).releaseLock(handle);
     }
@@ -55,8 +61,15 @@ class DeliveryManagementLockTest {
         when(locks.releaseLock(handle)).thenReturn(true);
         var gateway = new DeliveryManagementLockGatewayImpl(locks);
         assertThrows(IllegalStateException.class, gateway::lock);
-        assertThrows(ServiceException.class, () -> new TransactionTemplate(new DataSourceTransactionManager(source()))
-                .executeWithoutResult(status -> { gateway.lock(); throw new ServiceException("回滚", 409); }));
+        assertThrows(
+                ServiceException.class,
+                () ->
+                        new TransactionTemplate(new DataSourceTransactionManager(source()))
+                                .executeWithoutResult(
+                                        status -> {
+                                            gateway.lock();
+                                            throw new ServiceException("回滚", 409);
+                                        }));
         verify(locks).releaseLock(handle);
     }
 

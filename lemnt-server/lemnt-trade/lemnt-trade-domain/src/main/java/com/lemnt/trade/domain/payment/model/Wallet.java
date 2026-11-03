@@ -11,6 +11,4 @@ public record Wallet(
         BigDecimal freezePrice,
         BigDecimal totalExpense,
         BigDecimal totalRecharge,
-        LocalDateTime createTime
-) {
-}
+        LocalDateTime createTime) {}

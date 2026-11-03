@@ -7,16 +7,21 @@ import com.lemnt.mall.infrastructure.promotion.dataobject.KefuMessageDO;
 
 /** 客服领域对象与表结构转换。 */
 public final class KefuConverter {
-    private KefuConverter() {
-    }
+    private KefuConverter() {}
 
     public static KefuConversation model(KefuConversationDO row) {
         if (row == null) {
             return null;
         }
-        return new KefuConversation(row.getId(), row.getUserId(), row.getLastMessageTime(),
-                row.getLastMessageContent(), row.getLastMessageContentType(), row.getAdminPinned(),
-                row.getAdminDeleted(), row.getAdminUnreadMessageCount());
+        return new KefuConversation(
+                row.getId(),
+                row.getUserId(),
+                row.getLastMessageTime(),
+                row.getLastMessageContent(),
+                row.getLastMessageContentType(),
+                row.getAdminPinned(),
+                row.getAdminDeleted(),
+                row.getAdminUnreadMessageCount());
     }
 
     public static KefuConversationDO row(KefuConversation value) {
@@ -36,9 +41,17 @@ public final class KefuConverter {
         if (row == null) {
             return null;
         }
-        return new KefuMessage(row.getId(), row.getConversationId(), row.getSenderId(), row.getSenderType(),
-                row.getReceiverId(), row.getReceiverType(), row.getContentType(), row.getContent(),
-                row.getReadStatus(), row.getCreateTime());
+        return new KefuMessage(
+                row.getId(),
+                row.getConversationId(),
+                row.getSenderId(),
+                row.getSenderType(),
+                row.getReceiverId(),
+                row.getReceiverType(),
+                row.getContentType(),
+                row.getContent(),
+                row.getReadStatus(),
+                row.getCreateTime());
     }
 
     public static KefuMessageDO row(KefuMessage value) {

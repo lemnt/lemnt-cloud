@@ -1,10 +1,8 @@
 package com.lemnt.trade.application.order.executor;
 
-import com.lemnt.trade.domain.order.model.TradeOperator;
-
-
 import com.lemnt.trade.application.order.service.OrderCloseService;
 import com.lemnt.trade.application.order.service.OrderRemoteService;
+import com.lemnt.trade.domain.order.model.TradeOperator;
 
 import org.springframework.stereotype.Component;
 
@@ -25,6 +23,7 @@ public class TradeOrderCloseCmdExe {
         remotes.closed(orderNo);
         return true;
     }
+
     /** 本人取消未支付订单，事务提交后发送统一回滚补偿。 */
     public boolean executeForMember(Long memberId, String orderNo) {
         if (!orders.execute(orderNo, TradeOperator.member(memberId))) {

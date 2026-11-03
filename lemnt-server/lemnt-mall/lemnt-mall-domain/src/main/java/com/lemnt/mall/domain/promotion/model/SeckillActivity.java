@@ -17,8 +17,8 @@ public record SeckillActivity(
         Integer totalLimitCount,
         Integer singleLimitCount,
         Integer stock,
-        Integer totalStock
-) implements java.io.Serializable {
+        Integer totalStock)
+        implements java.io.Serializable {
     public SeckillActivity {
         configIds = configIds == null ? List.of() : List.copyOf(configIds);
     }

@@ -16,5 +16,4 @@ public interface UserGateway {
      * @return
      */
     LoginUser getUserInfo(String username);
-
 }

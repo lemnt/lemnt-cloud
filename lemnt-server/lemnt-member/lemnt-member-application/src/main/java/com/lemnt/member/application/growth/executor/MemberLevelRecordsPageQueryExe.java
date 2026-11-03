@@ -25,10 +25,14 @@ public class MemberLevelRecordsPageQueryExe {
         MemberRules.id(qry.memberId());
         MemberRules.page(qry.pageNum(), qry.pageSize());
         return new PageResult<>(
-                memberLevelRecordGateway.levelRecords(qry.memberId(), (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize())
-                .stream()
-                .map(MemberGrowthDTOConverter::toLevelRecordDTO)
-                .toList(),
+                memberLevelRecordGateway
+                        .levelRecords(
+                                qry.memberId(),
+                                (qry.pageNum() - 1) * qry.pageSize(),
+                                qry.pageSize())
+                        .stream()
+                        .map(MemberGrowthDTOConverter::toLevelRecordDTO)
+                        .toList(),
                 memberLevelRecordGateway.levelRecordCount(qry.memberId()));
     }
 }

@@ -1,7 +1,8 @@
 package com.lemnt.member.infrastructure.growth.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lemnt.member.infrastructure.growth.dataobject.LevelDO;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

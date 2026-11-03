@@ -3,7 +3,6 @@ package com.lemnt.mall.infrastructure.coupon.mapper;
 import com.lemnt.mall.infrastructure.coupon.dataobject.CouponTemplateDO;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -33,6 +32,7 @@ public interface CouponTemplateMapper extends BaseMapper<CouponTemplateDO> {
      * 可领取优惠数量。
      */
     long offerCount();
+
     /** 获取数据库当前时间。 */
     LocalDateTime now();
 }

@@ -36,77 +36,126 @@ public class CombinationRecordGatewayImpl implements CombinationRecordGateway {
     @Override
     public CombinationRecord save(CombinationRecord value) {
         var row = CombinationConverter.row(value);
-        if (row.getId() == null) { mapper.insert(row); } else { mapper.updateById(row); }
+        if (row.getId() == null) {
+            mapper.insert(row);
+        } else {
+            mapper.updateById(row);
+        }
         return CombinationConverter.model(row);
     }
 
     @Override
-    public boolean finish(Long id, Integer status, Integer userCount, Boolean virtualGroup,
+    public boolean finish(
+            Long id,
+            Integer status,
+            Integer userCount,
+            Boolean virtualGroup,
             LocalDateTime endTime) {
-        return mapper.update(null, Wrappers.<CombinationRecordDO>lambdaUpdate()
-                .eq(CombinationRecordDO::getId, id)
-                .set(CombinationRecordDO::getStatus, status)
-                .set(CombinationRecordDO::getUserCount, userCount)
-                .set(CombinationRecordDO::getVirtualGroup, virtualGroup)
-                .set(CombinationRecordDO::getEndTime, endTime)) == 1;
+        return mapper.update(
+                        null,
+                        Wrappers.<CombinationRecordDO>lambdaUpdate()
+                                .eq(CombinationRecordDO::getId, id)
+                                .set(CombinationRecordDO::getStatus, status)
+                                .set(CombinationRecordDO::getUserCount, userCount)
+                                .set(CombinationRecordDO::getVirtualGroup, virtualGroup)
+                                .set(CombinationRecordDO::getEndTime, endTime))
+                == 1;
     }
 
     @Override
     public boolean bindOrder(Long id, Long orderId) {
-        return mapper.update(null, Wrappers.<CombinationRecordDO>lambdaUpdate()
-                .eq(CombinationRecordDO::getId, id).set(CombinationRecordDO::getOrderId, orderId)) == 1;
+        return mapper.update(
+                        null,
+                        Wrappers.<CombinationRecordDO>lambdaUpdate()
+                                .eq(CombinationRecordDO::getId, id)
+                                .set(CombinationRecordDO::getOrderId, orderId))
+                == 1;
     }
 
     @Override
     public PageResult<CombinationRecord> page(CombinationRecordFilter filter) {
-        var page = mapper.selectPage(new Page<CombinationRecordDO>(filter.pageNum(), filter.pageSize()),
-                Wrappers.<CombinationRecordDO>lambdaQuery()
-                        .eq(filter.userId() != null, CombinationRecordDO::getUserId, filter.userId())
-                        .eq(filter.activityId() != null, CombinationRecordDO::getActivityId, filter.activityId())
-                        .eq(filter.status() != null, CombinationRecordDO::getStatus, filter.status())
-                        .eq(filter.headId() != null, CombinationRecordDO::getHeadId, filter.headId())
-                        .orderByDesc(CombinationRecordDO::getId));
-        return PageResult.of(page.getRecords().stream().map(CombinationConverter::model).toList(), page.getTotal());
+        var page =
+                mapper.selectPage(
+                        new Page<CombinationRecordDO>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.<CombinationRecordDO>lambdaQuery()
+                                .eq(
+                                        filter.userId() != null,
+                                        CombinationRecordDO::getUserId,
+                                        filter.userId())
+                                .eq(
+                                        filter.activityId() != null,
+                                        CombinationRecordDO::getActivityId,
+                                        filter.activityId())
+                                .eq(
+                                        filter.status() != null,
+                                        CombinationRecordDO::getStatus,
+                                        filter.status())
+                                .eq(
+                                        filter.headId() != null,
+                                        CombinationRecordDO::getHeadId,
+                                        filter.headId())
+                                .orderByDesc(CombinationRecordDO::getId));
+        return PageResult.of(
+                page.getRecords().stream().map(CombinationConverter::model).toList(),
+                page.getTotal());
     }
 
     @Override
     public List<CombinationRecord> byHeadId(Long headId) {
-        return mapper.selectList(Wrappers.<CombinationRecordDO>lambdaQuery()
-                        .eq(CombinationRecordDO::getHeadId, headId).orderByAsc(CombinationRecordDO::getId))
-                .stream().map(CombinationConverter::model).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<CombinationRecordDO>lambdaQuery()
+                                .eq(CombinationRecordDO::getHeadId, headId)
+                                .orderByAsc(CombinationRecordDO::getId))
+                .stream()
+                .map(CombinationConverter::model)
+                .toList();
     }
 
     @Override
     public List<CombinationRecord> byUserAndActivity(Long userId, Long activityId) {
-        return mapper.selectList(Wrappers.<CombinationRecordDO>lambdaQuery()
-                        .eq(CombinationRecordDO::getUserId, userId)
-                        .eq(CombinationRecordDO::getActivityId, activityId)
-                        .orderByDesc(CombinationRecordDO::getId))
-                .stream().map(CombinationConverter::model).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<CombinationRecordDO>lambdaQuery()
+                                .eq(CombinationRecordDO::getUserId, userId)
+                                .eq(CombinationRecordDO::getActivityId, activityId)
+                                .orderByDesc(CombinationRecordDO::getId))
+                .stream()
+                .map(CombinationConverter::model)
+                .toList();
     }
 
     @Override
     public CombinationRecord inProgressHead(Long headId) {
-        return CombinationConverter.model(mapper.selectOne(Wrappers.<CombinationRecordDO>lambdaQuery()
-                .eq(CombinationRecordDO::getId, headId)
-                .eq(CombinationRecordDO::getHeadId, CombinationRecord.HEAD_ID_GROUP)
-                .eq(CombinationRecordDO::getStatus, 0)));
+        return CombinationConverter.model(
+                mapper.selectOne(
+                        Wrappers.<CombinationRecordDO>lambdaQuery()
+                                .eq(CombinationRecordDO::getId, headId)
+                                .eq(CombinationRecordDO::getHeadId, CombinationRecord.HEAD_ID_GROUP)
+                                .eq(CombinationRecordDO::getStatus, 0)));
     }
 
     @Override
     public List<CombinationRecord> expiredHeads(LocalDateTime now) {
-        return mapper.selectList(Wrappers.<CombinationRecordDO>lambdaQuery()
-                        .eq(CombinationRecordDO::getHeadId, CombinationRecord.HEAD_ID_GROUP)
-                        .eq(CombinationRecordDO::getStatus, 0)
-                        .lt(CombinationRecordDO::getExpireTime, now)
-                        .orderByAsc(CombinationRecordDO::getId))
-                .stream().map(CombinationConverter::model).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<CombinationRecordDO>lambdaQuery()
+                                .eq(CombinationRecordDO::getHeadId, CombinationRecord.HEAD_ID_GROUP)
+                                .eq(CombinationRecordDO::getStatus, 0)
+                                .lt(CombinationRecordDO::getExpireTime, now)
+                                .orderByAsc(CombinationRecordDO::getId))
+                .stream()
+                .map(CombinationConverter::model)
+                .toList();
     }
 
     @Override
     public List<CombinationRecord> latest(int count) {
-        var page = mapper.selectPage(new Page<CombinationRecordDO>(1, count),
-                Wrappers.<CombinationRecordDO>lambdaQuery().orderByDesc(CombinationRecordDO::getId));
+        var page =
+                mapper.selectPage(
+                        new Page<CombinationRecordDO>(1, count),
+                        Wrappers.<CombinationRecordDO>lambdaQuery()
+                                .orderByDesc(CombinationRecordDO::getId));
         return page.getRecords().stream().map(CombinationConverter::model).toList();
     }
 
@@ -117,9 +166,10 @@ public class CombinationRecordGatewayImpl implements CombinationRecordGateway {
 
     @Override
     public long successCount(Long activityId) {
-        return mapper.selectCount(Wrappers.<CombinationRecordDO>lambdaQuery()
-                .eq(CombinationRecordDO::getActivityId, activityId)
-                .eq(CombinationRecordDO::getHeadId, CombinationRecord.HEAD_ID_GROUP)
-                .eq(CombinationRecordDO::getStatus, 1));
+        return mapper.selectCount(
+                Wrappers.<CombinationRecordDO>lambdaQuery()
+                        .eq(CombinationRecordDO::getActivityId, activityId)
+                        .eq(CombinationRecordDO::getHeadId, CombinationRecord.HEAD_ID_GROUP)
+                        .eq(CombinationRecordDO::getStatus, 1));
     }
 }

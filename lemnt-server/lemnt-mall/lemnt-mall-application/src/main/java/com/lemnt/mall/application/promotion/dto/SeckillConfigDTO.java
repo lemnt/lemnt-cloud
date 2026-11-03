@@ -10,5 +10,4 @@ public record SeckillConfigDTO(
         String endTime,
         List<String> sliderPicUrls,
         Integer status,
-        Integer activityCount
-) {}
+        Integer activityCount) {}

@@ -25,6 +25,5 @@ public record CouponTemplateUpdateCmd(
         List<Long> productScopeValues,
         String validityType,
         Integer fixedStartTerm,
-        Integer fixedEndTerm
-) implements Serializable {
-}
+        Integer fixedEndTerm)
+        implements Serializable {}

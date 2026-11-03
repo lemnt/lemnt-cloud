@@ -45,7 +45,8 @@ public class LogininforController {
     @RequiresPermissions("system:logininfor:list")
     @GetMapping
     public R<LogininforRes> page(@Validated LogininforPageReq req) {
-        PageResult<LogininforDTO> result = logininforPageQueryExe.execute(LogininforReqConverter.toQry(req));
+        PageResult<LogininforDTO> result =
+                logininforPageQueryExe.execute(LogininforReqConverter.toQry(req));
         return R.page(LogininforResConverter.toResList(result.getRecords()), result.getTotal());
     }
 

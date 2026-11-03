@@ -19,6 +19,5 @@ public record TradeConfigDTO(
         Integer brokerageWithdrawMinPrice,
         Integer brokerageWithdrawFeePercent,
         Integer brokerageFrozenDays,
-        List<Integer> brokerageWithdrawTypes
-) implements java.io.Serializable {
-}
+        List<Integer> brokerageWithdrawTypes)
+        implements java.io.Serializable {}

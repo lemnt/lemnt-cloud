@@ -37,7 +37,9 @@ public class PaymentController {
     @RequiresPermissions("trade:payment:list")
     public R<PaymentPageRes> page(@Valid @ModelAttribute PaymentPageReq req) {
         var page = pageQuery.execute(PaymentReqConverter.page(req));
-        return R.page(page.getRecords().stream().map(PaymentResConverter::page).toList(), page.getTotal());
+        return R.page(
+                page.getRecords().stream().map(PaymentResConverter::page).toList(),
+                page.getTotal());
     }
 
     /** 查询本地交易详情。 */

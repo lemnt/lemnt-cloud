@@ -11,5 +11,5 @@ public record ProductFavoritePageRes(
         @Schema(description = "当前图片，缺失时为空") String picUrl,
         @Schema(description = "当前最低价格，元，缺失时为空") java.math.BigDecimal price,
         @Schema(description = "会员编号") Long userId,
-        @Schema(description = "收藏时间") java.time.LocalDateTime createTime
-) {}
+        @Schema(description = "收藏时间") java.time.LocalDateTime createTime)
+        implements java.io.Serializable {}

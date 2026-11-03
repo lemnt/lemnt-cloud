@@ -1,11 +1,47 @@
-.container { padding: 24rpx; }
-.card { background: #fff; border-radius: 16rpx; padding: 24rpx; margin-bottom: 24rpx; }
-.title { font-size: 36rpx; font-weight: 600; margin-bottom: 16rpx; }
-.subtitle { font-size: 30rpx; font-weight: 500; margin-bottom: 12rpx; }
-.list-row { margin-bottom: 12rpx; }
-.description { color: #666; font-size: 26rpx; margin: 12rpx 0; }
-.success { color: #2e7d32; margin: 16rpx 0; }
-.error { color: #c62828; margin: 16rpx 0; }
-.notice { color: #999; margin: 16rpx 0; }
-.row { display: flex; gap: 16rpx; margin-top: 12rpx; }
-button { margin-top: 12rpx; }
+.container {
+  padding: 24rpx;
+}
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+.title {
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+.subtitle {
+  font-size: 30rpx;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+.list-row {
+  margin-bottom: 12rpx;
+}
+.description {
+  color: #666;
+  font-size: 26rpx;
+  margin: 12rpx 0;
+}
+.success {
+  color: #2e7d32;
+  margin: 16rpx 0;
+}
+.error {
+  color: #c62828;
+  margin: 16rpx 0;
+}
+.notice {
+  color: #999;
+  margin: 16rpx 0;
+}
+.row {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 12rpx;
+}
+button {
+  margin-top: 12rpx;
+}

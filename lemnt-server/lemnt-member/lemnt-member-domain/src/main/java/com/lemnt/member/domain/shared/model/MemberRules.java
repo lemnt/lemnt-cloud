@@ -1,6 +1,7 @@
 package com.lemnt.member.domain.shared.model;
 
 import com.lemnt.common.core.exception.ServiceException;
+
 import java.nio.charset.StandardCharsets;
 
 /**

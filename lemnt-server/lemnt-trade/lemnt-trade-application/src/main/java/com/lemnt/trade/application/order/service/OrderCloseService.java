@@ -1,11 +1,9 @@
 package com.lemnt.trade.application.order.service;
 
 import com.lemnt.common.core.exception.ServiceException;
-import com.lemnt.trade.domain.order.model.TradeOperator;
-
-
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
+import com.lemnt.trade.domain.order.model.TradeOperator;
 import com.lemnt.trade.domain.order.model.TradeOrder;
 import com.lemnt.trade.domain.payment.gateway.PaymentChannelCloseGateway;
 import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
@@ -70,7 +68,12 @@ public class OrderCloseService {
         if (!tradeOrderGateway.transitionStatus(orderNo, order.status(), "CLOSED")) {
             return false;
         }
-        logs.record(order, order.status(), "CLOSED", operator.userType() == 1 ? 40 : 41, operator,
+        logs.record(
+                order,
+                order.status(),
+                "CLOSED",
+                operator.userType() == 1 ? 40 : 41,
+                operator,
                 operator.userType() == 1 ? "用户取消订单" : "系统取消未支付订单");
         return true;
     }

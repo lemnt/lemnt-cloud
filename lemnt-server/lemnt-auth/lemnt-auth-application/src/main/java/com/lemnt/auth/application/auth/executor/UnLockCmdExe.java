@@ -25,6 +25,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UnLockCmdExe {
     private final UserGateway userGateway;
+
     public Boolean execute(UnLockCmd cmd) {
         String username = SecurityUtils.getUsername();
 

@@ -11,6 +11,5 @@ public record PaymentDTO(
         String channel,
         String channelTradeNo,
         BigDecimal amount,
-        String status
-) implements Serializable {
-}
+        String status)
+        implements Serializable {}

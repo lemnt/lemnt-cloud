@@ -1,16 +1,16 @@
-const config = require("../../config");
-const { createCommentClient } = require("../../services/comments");
-const { id } = require("../../services/storefront");
+const config = require('../../config');
+const { createCommentClient } = require('../../services/comments');
+const { id } = require('../../services/storefront');
 Page({
   data: {
     ready: config.memberApiReady,
     loading: false,
-    error: "",
+    error: '',
     rows: [],
     type: 0,
     pageNum: 1,
     total: 0,
-    types: ["全部", "好评", "中评", "差评"],
+    types: ['全部', '好评', '中评', '差评'],
   },
   onLoad(options) {
     try {
@@ -27,7 +27,7 @@ Page({
           wx.request({
             ...options,
             success: resolve,
-            fail: () => reject(Error("网络请求失败")),
+            fail: () => reject(Error('网络请求失败')),
           }),
         ),
     });
@@ -35,7 +35,7 @@ Page({
   },
   async load() {
     if (this.data.loading || !this.spuId) return;
-    this.setData({ loading: true, error: "" });
+    this.setData({ loading: true, error: '' });
     try {
       const result = await this.client.page({
         spuId: this.spuId,

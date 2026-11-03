@@ -8,10 +8,13 @@ import com.lemnt.member.application.user.executor.MemberGroupPageQueryExe;
 import com.lemnt.member.application.user.executor.MemberTagPageQueryExe;
 import com.lemnt.member.application.user.qry.GroupPageQry;
 import com.lemnt.member.application.user.qry.TagPageQry;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import java.time.LocalDateTime;
 import java.util.List;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -28,14 +31,29 @@ class MemberGroupTagPageHttpTest {
         var tagQry = new TagPageQry("active", 1, 20, start, end);
         when(groups.execute(groupQry)).thenReturn(new PageResult<>(List.of(), 0));
         when(tags.execute(tagQry)).thenReturn(new PageResult<>(List.of(), 0));
-        var mvc = MockMvcBuilders.standaloneSetup(new MemberGroupQueryController(groups), new MemberTagQueryController(tags))
-                .setControllerAdvice(new GlobalExceptionHandler()).build();
-        mvc.perform(get("/groups/page").param("name", "VIP").param("status", "0")
-                .param("startTime", "2026-10-30 10:00:00").param("endTime", "2026-10-30 11:00:00"))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.rows").isArray());
-        mvc.perform(get("/tags/page").param("name", "active").param("status", "0").param("memberId", "999")
-                .param("startTime", "2026-10-30 10:00:00").param("endTime", "2026-10-30 11:00:00"))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.rows").isArray());
+        var mvc =
+                MockMvcBuilders.standaloneSetup(
+                                new MemberGroupQueryController(groups),
+                                new MemberTagQueryController(tags))
+                        .setControllerAdvice(new GlobalExceptionHandler())
+                        .build();
+        mvc.perform(
+                        get("/groups/page")
+                                .param("name", "VIP")
+                                .param("status", "0")
+                                .param("startTime", "2026-10-30 10:00:00")
+                                .param("endTime", "2026-10-30 11:00:00"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rows").isArray());
+        mvc.perform(
+                        get("/tags/page")
+                                .param("name", "active")
+                                .param("status", "0")
+                                .param("memberId", "999")
+                                .param("startTime", "2026-10-30 10:00:00")
+                                .param("endTime", "2026-10-30 11:00:00"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rows").isArray());
         mvc.perform(get("/groups/page").param("status", "2"))
                 .andExpect(status().isUnprocessableEntity());
         verify(groups).execute(groupQry);

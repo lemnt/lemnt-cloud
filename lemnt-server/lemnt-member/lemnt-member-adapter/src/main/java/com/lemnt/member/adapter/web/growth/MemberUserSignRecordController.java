@@ -36,7 +36,9 @@ public class MemberUserSignRecordController {
             @PathVariable Long id, @Valid @ModelAttribute MemberUserSignsReq req) {
         var page = memberSignRecordPageQueryExe.execute(MemberGrowthReqConverter.signs(id, req));
         return R.page(
-                page.getRecords().stream().map(MemberGrowthResConverter::toMemberUserSignsRes).toList(),
+                page.getRecords().stream()
+                        .map(MemberGrowthResConverter::toMemberUserSignsRes)
+                        .toList(),
                 page.getTotal());
     }
 }

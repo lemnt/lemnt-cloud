@@ -11,6 +11,4 @@ public record PayApp(
         String remark,
         String orderNotifyUrl,
         String refundNotifyUrl,
-        LocalDateTime createTime
-) {
-}
+        LocalDateTime createTime) {}

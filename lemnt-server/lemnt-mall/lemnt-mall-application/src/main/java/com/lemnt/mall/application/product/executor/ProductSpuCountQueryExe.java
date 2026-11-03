@@ -26,8 +26,16 @@ public class ProductSpuCountQueryExe {
         if (qry.brandId() != null) {
             ProductCatalogValidation.id(qry.brandId());
         }
-        String name = qry.name() == null || qry.name().isBlank() ? null : ProductCatalogValidation.text(qry.name(), 200, "名称");
+        String name =
+                qry.name() == null || qry.name().isBlank()
+                        ? null
+                        : ProductCatalogValidation.text(qry.name(), 200, "名称");
         var counts = productSpuGateway.counts(name, qry.categoryId(), qry.brandId());
-        return new ProductSpuStatusCountDTO(counts.onShelf(), counts.offShelf(), counts.recycled(), counts.soldOut(), counts.lowStock());
+        return new ProductSpuStatusCountDTO(
+                counts.onShelf(),
+                counts.offShelf(),
+                counts.recycled(),
+                counts.soldOut(),
+                counts.lowStock());
     }
 }

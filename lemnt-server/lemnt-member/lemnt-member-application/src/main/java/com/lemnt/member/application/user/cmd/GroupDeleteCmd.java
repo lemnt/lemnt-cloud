@@ -5,6 +5,4 @@ import java.io.Serializable;
 /**
  * 分组删除命令。
  */
-public record GroupDeleteCmd(
-        Long id
-) implements Serializable {}
+public record GroupDeleteCmd(Long id) implements Serializable {}

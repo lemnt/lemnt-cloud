@@ -15,5 +15,4 @@ public record CombinationAppActivityDTO(
         Integer status,
         LocalDateTime startTime,
         LocalDateTime endTime,
-        Integer userSize
-) {}
+        Integer userSize) {}

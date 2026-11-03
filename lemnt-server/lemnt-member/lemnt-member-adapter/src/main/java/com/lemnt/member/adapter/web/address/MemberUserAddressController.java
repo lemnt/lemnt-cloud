@@ -33,7 +33,7 @@ public class MemberUserAddressController {
     public R<List<AddressRes>> addresses(@PathVariable Long id) {
         return R.ok(
                 memberAddressListQueryExe.execute(new AddressListQry(id)).stream()
-                .map(MemberAddressResConverter::address)
-                .toList());
+                        .map(MemberAddressResConverter::address)
+                        .toList());
     }
 }

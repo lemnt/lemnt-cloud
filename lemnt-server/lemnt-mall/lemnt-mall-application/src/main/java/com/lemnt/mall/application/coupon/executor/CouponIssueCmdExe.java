@@ -31,6 +31,7 @@ public class CouponIssueCmdExe {
         }
         CouponRules.id(cmd.templateId());
         memberValidationService.requireActive(cmd.memberId());
-        return CouponDTOConverter.coupon(couponIssuanceService.issue(cmd.memberId(), cmd.templateId()));
+        return CouponDTOConverter.coupon(
+                couponIssuanceService.issue(cmd.memberId(), cmd.templateId()));
     }
 }

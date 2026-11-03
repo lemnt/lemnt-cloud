@@ -24,13 +24,17 @@ class MenuNameUniqueTest {
 
         when(gateway.checkMenuNameUnique("测试菜单", 0L)).thenReturn(new Menu());
 
-        assertThatThrownBy(() -> new MenuAddCmdExe(gateway).execute(new MenuAddCmd(
-                "测试菜单", 0L, 1, "test", null, null, null, "1", "0", "M", "1", "2", null, "#")))
+        assertThatThrownBy(
+                        () ->
+                                new MenuAddCmdExe(gateway)
+                                        .execute(
+                                                new MenuAddCmd(
+                                                        "测试菜单", 0L, 1, "test", null, null, null,
+                                                        "1", "0", "M", "1", "2", null, "#")))
                 .isInstanceOf(ServiceException.class)
                 .hasMessage("新增菜单'测试菜单'失败，菜单名称已存在");
 
         verify(gateway, never()).insert(any());
-
     }
 
     @Test
@@ -44,13 +48,10 @@ class MenuNameUniqueTest {
                 .hasMessage("修改菜单'测试菜单'失败，菜单名称已存在");
 
         verify(gateway, never()).update(any());
-
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "自身名称", "未占用名称"
-            })
+    @ValueSource(strings = {"自身名称", "未占用名称"})
     void allowsOwnOrUnusedNameWhenUpdating(String name) {
         MenuGateway gateway = mock(MenuGateway.class);
 
@@ -67,7 +68,6 @@ class MenuNameUniqueTest {
         assertThat(entity.getValue().getMenuId()).isEqualTo(2L);
 
         assertThat(entity.getValue().getMenuName()).isEqualTo(name);
-
     }
 
     @Test
@@ -76,8 +76,13 @@ class MenuNameUniqueTest {
 
         when(gateway.insert(any())).thenReturn(true);
 
-        assertThat(new MenuAddCmdExe(gateway).execute(new MenuAddCmd(
-                "测试菜单", 3L, 1, "test", null, null, null, "1", "0", "M", "1", "2", null, "#"))).isTrue();
+        assertThat(
+                        new MenuAddCmdExe(gateway)
+                                .execute(
+                                        new MenuAddCmd(
+                                                "测试菜单", 3L, 1, "test", null, null, null, "1", "0",
+                                                "M", "1", "2", null, "#")))
+                .isTrue();
 
         verify(gateway).checkMenuNameUnique("测试菜单", 3L);
 
@@ -86,13 +91,11 @@ class MenuNameUniqueTest {
         verify(gateway).insert(entity.capture());
 
         assertThat(entity.getValue().getParentId()).isEqualTo(3L);
-
     }
 
     /** 构造隐藏、停用菜单，覆盖同一父菜单下的修改。 */
     private MenuUpdateCmd updateCmd(String name) {
-        return new MenuUpdateCmd(2L, name, 0L, 1, "test", null, null, null,
-                "1", "0", "M", "1", "2", null, "#");
-
+        return new MenuUpdateCmd(
+                2L, name, 0L, 1, "test", null, null, null, "1", "0", "M", "1", "2", null, "#");
     }
 }

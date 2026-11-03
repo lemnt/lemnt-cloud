@@ -28,19 +28,27 @@ public final class TableTestComponents {
     }
 
     public <T> T get(Class<T> type) {
-        if (components.containsKey(type)) { return type.cast(components.get(type)); }
-        if (type.getSimpleName().endsWith("Mapper")) { return session.getMapper(type); }
+        if (components.containsKey(type)) {
+            return type.cast(components.get(type));
+        }
+        if (type.getSimpleName().endsWith("Mapper")) {
+            return session.getMapper(type);
+        }
         try {
-            var implementation = type.isInterface()
-                    ? Class.forName(type.getName().replace(".domain.", ".infrastructure.") + "Impl")
-                    : type;
+            var implementation =
+                    type.isInterface()
+                            ? Class.forName(
+                                    type.getName().replace(".domain.", ".infrastructure.") + "Impl")
+                            : type;
             var constructor = implementation.getConstructors()[0];
             var args = Arrays.stream(constructor.getParameterTypes()).map(this::get).toArray();
             var target = constructor.newInstance(args);
             var proxy = new ProxyFactory(target);
             proxy.setProxyTargetClass(!type.isInterface());
-            proxy.addAdvice(new TransactionInterceptor(new DataSourceTransactionManager(source),
-                    new AnnotationTransactionAttributeSource()));
+            proxy.addAdvice(
+                    new TransactionInterceptor(
+                            new DataSourceTransactionManager(source),
+                            new AnnotationTransactionAttributeSource()));
             var value = proxy.getProxy();
             components.put(type, value);
             return type.cast(value);

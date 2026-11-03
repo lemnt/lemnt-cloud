@@ -8,6 +8,5 @@ public record PickUpStorePageReq(
         @Schema(description = "门店名称") String name,
         @Schema(description = "状态") Integer status,
         @Schema(description = "pageNum") Integer pageNum,
-        @Schema(description = "pageSize") Integer pageSize
-) implements java.io.Serializable {
-}
+        @Schema(description = "pageSize") Integer pageSize)
+        implements java.io.Serializable {}

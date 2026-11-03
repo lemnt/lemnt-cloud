@@ -12,6 +12,5 @@ public record PayAppDTO(
         String remark,
         String orderNotifyUrl,
         String refundNotifyUrl,
-        LocalDateTime createTime
-) implements Serializable {
-}
+        LocalDateTime createTime)
+        implements Serializable {}

@@ -18,8 +18,7 @@ public record PromotionOrderDraft(
         BigDecimal activityPrice,
         long usePoint,
         SettlementQuote quote,
-        List<Line> lines
-) {
+        List<Line> lines) {
     /** 活动订单商品行计价快照。 */
     public record Line(Long skuId, Integer quantity, BigDecimal activityPrice, long usePoint) {}
 }

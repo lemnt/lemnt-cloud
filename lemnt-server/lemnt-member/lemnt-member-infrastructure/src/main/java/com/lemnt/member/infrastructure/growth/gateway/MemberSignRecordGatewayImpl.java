@@ -4,8 +4,11 @@ import com.lemnt.member.domain.growth.gateway.MemberSignRecordGateway;
 import com.lemnt.member.domain.growth.model.SignRecord;
 import com.lemnt.member.domain.growth.model.SignRecordPageFilter;
 import com.lemnt.member.infrastructure.growth.converter.SignRecordConverter;
+import com.lemnt.member.infrastructure.growth.dataobject.SignRecordDO;
 import com.lemnt.member.infrastructure.growth.mapper.MemberSignRecordMapper;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +28,7 @@ public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
      */
     @Override
     public SignRecord signDate(Long memberId, LocalDate date) {
-        return SignRecordConverter.toEntity(memberSignRecordMapper.signDate(memberId, date));
+        return SignRecordConverter.toEntity(signDateRow(memberId, date));
     }
 
     /**
@@ -33,7 +36,7 @@ public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
      */
     @Override
     public SignRecord lastSign(Long memberId) {
-        return SignRecordConverter.toEntity(memberSignRecordMapper.lastSign(memberId));
+        return SignRecordConverter.toEntity(lastSignRow(memberId));
     }
 
     /**
@@ -51,7 +54,7 @@ public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
      */
     @Override
     public List<SignRecord> signs(Long memberId, int offset, int limit) {
-        return memberSignRecordMapper.signs(memberId, offset, limit).stream()
+        return signsRow(memberId, offset, limit).stream()
                 .map(SignRecordConverter::toEntity)
                 .toList();
     }
@@ -61,7 +64,7 @@ public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
      */
     @Override
     public long signCount(Long memberId) {
-        return memberSignRecordMapper.signCount(memberId);
+        return signCountRow(memberId);
     }
 
     /**
@@ -69,7 +72,9 @@ public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
      */
     @Override
     public List<SignRecord> signs(SignRecordPageFilter f) {
-        return memberSignRecordMapper.signsPage(f).stream().map(SignRecordConverter::toEntity).toList();
+        return memberSignRecordMapper.signsPage(f).stream()
+                .map(SignRecordConverter::toEntity)
+                .toList();
     }
 
     /**
@@ -78,5 +83,47 @@ public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
     @Override
     public long signsCount(SignRecordPageFilter f) {
         return memberSignRecordMapper.signsCount(f);
+    }
+
+    /**
+     * 签到日期。
+     */
+    private SignRecordDO signDateRow(Long memberId, LocalDate date) {
+        return memberSignRecordMapper.selectOne(
+                Wrappers.<SignRecordDO>lambdaQuery()
+                        .eq(SignRecordDO::getUserId, memberId)
+                        .eq(SignRecordDO::getSignDate, date));
+    }
+
+    /**
+     * 最近一次签到。
+     */
+    private SignRecordDO lastSignRow(Long memberId) {
+        return memberSignRecordMapper.selectOne(
+                Wrappers.<SignRecordDO>lambdaQuery()
+                        .eq(SignRecordDO::getUserId, memberId)
+                        .orderByDesc(SignRecordDO::getSignDate)
+                        .last("LIMIT 1"));
+    }
+
+    /**
+     * 查询签到记录。
+     */
+    private List<SignRecordDO> signsRow(Long memberId, int offset, int limit) {
+        return memberSignRecordMapper
+                .selectPage(
+                        new Page<>((long) offset / limit + 1, limit, false),
+                        Wrappers.<SignRecordDO>lambdaQuery()
+                                .eq(SignRecordDO::getUserId, memberId)
+                                .orderByDesc(SignRecordDO::getId))
+                .getRecords();
+    }
+
+    /**
+     * 签到数量。
+     */
+    private long signCountRow(Long memberId) {
+        return memberSignRecordMapper.selectCount(
+                Wrappers.<SignRecordDO>lambdaQuery().eq(SignRecordDO::getUserId, memberId));
     }
 }

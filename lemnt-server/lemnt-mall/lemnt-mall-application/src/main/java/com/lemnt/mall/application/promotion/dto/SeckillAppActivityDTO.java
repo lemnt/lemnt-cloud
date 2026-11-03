@@ -13,5 +13,4 @@ public record SeckillAppActivityDTO(
         Integer status,
         Integer stock,
         Integer totalStock,
-        BigDecimal seckillPrice
-) {}
+        BigDecimal seckillPrice) {}

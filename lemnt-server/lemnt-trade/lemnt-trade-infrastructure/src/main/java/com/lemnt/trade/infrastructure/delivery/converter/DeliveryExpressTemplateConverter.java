@@ -5,8 +5,7 @@ import com.lemnt.trade.infrastructure.delivery.dataobject.DeliveryExpressTemplat
 
 /** 运费模板 与表字段转换。 */
 public final class DeliveryExpressTemplateConverter {
-    private DeliveryExpressTemplateConverter() {
-    }
+    private DeliveryExpressTemplateConverter() {}
 
     /** 读取业务对象。 */
     public static DeliveryExpressTemplate toEntity(DeliveryExpressTemplateDO row) {
@@ -14,10 +13,7 @@ public final class DeliveryExpressTemplateConverter {
             return null;
         }
         return new DeliveryExpressTemplate(
-                row.getId(),
-                row.getName(),
-                row.getChargeMode(),
-                row.getSort());
+                row.getId(), row.getName(), row.getChargeMode(), row.getSort());
     }
 
     /** 写入表字段，集合列按 JSON 保存。 */

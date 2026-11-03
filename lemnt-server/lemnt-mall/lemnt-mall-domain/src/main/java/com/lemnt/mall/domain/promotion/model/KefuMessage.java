@@ -14,6 +14,5 @@ public record KefuMessage(
         Integer contentType,
         String content,
         Boolean readStatus,
-        LocalDateTime createTime
-) implements Serializable {
-}
+        LocalDateTime createTime)
+        implements Serializable {}

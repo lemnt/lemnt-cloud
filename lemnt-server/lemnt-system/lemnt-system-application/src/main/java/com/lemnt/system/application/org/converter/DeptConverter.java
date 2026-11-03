@@ -33,7 +33,10 @@ public class DeptConverter {
         dto.setCreateBy(entity.getCreateBy());
         dto.setCreateTime(entity.getCreateTime());
         if (entity.getChildren() != null) {
-            dto.setChildren(entity.getChildren().stream().map(DeptConverter::toDTO).collect(Collectors.toList()));
+            dto.setChildren(
+                    entity.getChildren().stream()
+                            .map(DeptConverter::toDTO)
+                            .collect(Collectors.toList()));
         }
         return dto;
     }

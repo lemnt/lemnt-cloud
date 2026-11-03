@@ -24,22 +24,36 @@ public class DiscountProductGatewayImpl implements DiscountProductGateway {
         if (activityIds.isEmpty()) {
             return List.of();
         }
-        return mapper.selectList(Wrappers.<DiscountProductDO>lambdaQuery()
-                .in(DiscountProductDO::getActivityId, activityIds))
-                .stream().map(PromotionConverter::model).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<DiscountProductDO>lambdaQuery()
+                                .in(DiscountProductDO::getActivityId, activityIds))
+                .stream()
+                .map(PromotionConverter::model)
+                .toList();
     }
 
     @Override
     public void replace(Long activityId, List<DiscountProduct> products) {
         deleteByActivity(activityId);
         for (var item : products) {
-            mapper.insert(PromotionConverter.row(new DiscountProduct(null, activityId,
-                    item.spuId(), item.skuId(), item.discountType(), item.discountPercent(), item.discountPrice())));
+            mapper.insert(
+                    PromotionConverter.row(
+                            new DiscountProduct(
+                                    null,
+                                    activityId,
+                                    item.spuId(),
+                                    item.skuId(),
+                                    item.discountType(),
+                                    item.discountPercent(),
+                                    item.discountPrice())));
         }
     }
 
     @Override
     public void deleteByActivity(Long activityId) {
-        mapper.delete(Wrappers.<DiscountProductDO>lambdaQuery().eq(DiscountProductDO::getActivityId, activityId));
+        mapper.delete(
+                Wrappers.<DiscountProductDO>lambdaQuery()
+                        .eq(DiscountProductDO::getActivityId, activityId));
     }
 }

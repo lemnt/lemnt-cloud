@@ -14,6 +14,7 @@ import com.lemnt.system.infrastructure.config.mapper.DictDataMapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Component;
 
@@ -51,7 +52,7 @@ public class DictDataGatewayImpl implements DictDataGateway {
 
     @Override
     public List<DictData> selectByType(String dictType) {
-        return DictDataConverter.toEntityList(dictDataMapper.selectDictDataByType(dictType));
+        return DictDataConverter.toEntityList(selectDictDataByTypeRow(dictType));
     }
 
     @Override
@@ -74,13 +75,14 @@ public class DictDataGatewayImpl implements DictDataGateway {
 
     @Override
     public Boolean deleteByType(String dictType) {
-        return dictDataMapper.deleteDictDataByType(dictType) > 0;
+        return deleteDictDataByTypeRow(dictType) > 0;
     }
 
     @Override
     public Long countDictDataByType(String dictType) {
-        return dictDataMapper.countDictDataByType(dictType);
+        return countDictDataByTypeRow(dictType);
     }
+
     /**
      * 项目启动时，初始化字典到缓存
      */
@@ -98,12 +100,13 @@ public class DictDataGatewayImpl implements DictDataGateway {
     public void resetCache() {
         clearCache();
         List<DictDataDO> query = dictDataMapper.selectList(null);
-        Map<String, List<DictDataDO>> dictDataMap = query
-                .stream().collect(Collectors.groupingBy(DictDataDO::getDictType));
+        Map<String, List<DictDataDO>> dictDataMap =
+                query.stream().collect(Collectors.groupingBy(DictDataDO::getDictType));
         for (Map.Entry<String, List<DictDataDO>> entry : dictDataMap.entrySet()) {
-            List<DictDataDO> sorted = entry.getValue().stream()
-                    .sorted(Comparator.comparing(DictDataDO::getDictSort))
-                    .collect(Collectors.toList());
+            List<DictDataDO> sorted =
+                    entry.getValue().stream()
+                            .sorted(Comparator.comparing(DictDataDO::getDictSort))
+                            .collect(Collectors.toList());
             setDictCache(entry.getKey(), DictDataConverter.toEntityList(sorted));
         }
     }
@@ -119,7 +122,7 @@ public class DictDataGatewayImpl implements DictDataGateway {
         if (CollUtil.isNotEmpty(cached)) {
             return cached;
         }
-        List<DictDataDO> list = dictDataMapper.selectDictDataByType(dictType);
+        List<DictDataDO> list = selectDictDataByTypeRow(dictType);
         if (list != null && !list.isEmpty()) {
             setDictCache(dictType, DictDataConverter.toEntityList(list));
         }
@@ -181,15 +184,83 @@ public class DictDataGatewayImpl implements DictDataGateway {
     private static String getCacheKey(String configKey) {
         return CacheConstants.SYS_DICT_KEY + configKey;
     }
+
     /** 修改字典项引用的类型名称。 */
     @Override
     public void renameType(String oldType, String newType) {
-        dictDataMapper.updateDictDataType(oldType, newType);
+        updateDictDataTypeRow(oldType, newType);
     }
 
     /** 从数据库刷新单个字典的数据缓存。 */
     @Override
     public void refreshByType(String type) {
-        setDictCache(type, DictDataConverter.toEntityList(dictDataMapper.selectDictDataByType(type)));
+        setDictCache(type, DictDataConverter.toEntityList(selectDictDataByTypeRow(type)));
+    }
+
+    /**
+     * 根据字典类型查询字典数据
+     *
+     * @param dictType 字典类型
+     * @return 字典数据集合信息
+     */
+    private List<DictDataDO> selectDictDataByTypeRow(String dictType) {
+        return dictDataMapper.selectList(
+                Wrappers.<DictDataDO>lambdaQuery()
+                        .eq(DictDataDO::getDictType, dictType)
+                        .eq(DictDataDO::getStatus, "1")
+                        .orderByAsc(DictDataDO::getDictSort));
+    }
+
+    /**
+     * 根据字典类型和字典键值查询字典数据信息
+     *
+     * @param dictType  字典类型
+     * @param dictValue 字典键值
+     * @return 字典标签
+     */
+    private String selectDictLabelRow(String dictType, String dictValue) {
+        DictDataDO dictData =
+                dictDataMapper.selectOne(
+                        Wrappers.<DictDataDO>lambdaQuery()
+                                .eq(DictDataDO::getDictType, dictType)
+                                .eq(DictDataDO::getDictValue, dictValue));
+        return dictData == null ? "" : dictData.getDictLabel();
+    }
+
+    /**
+     * 查询字典数据
+     *
+     * @param dictType 字典类型
+     * @return 字典数据
+     */
+    private Long countDictDataByTypeRow(String dictType) {
+        return dictDataMapper.selectCount(
+                Wrappers.<DictDataDO>lambdaQuery().eq(DictDataDO::getDictType, dictType));
+    }
+
+    /**
+     * 批量删除字典数据信息
+     *
+     * @param dictType 需要删除的字典类型
+     * @return 结果
+     */
+    private int deleteDictDataByTypeRow(String dictType) {
+        return dictDataMapper.delete(
+                Wrappers.<DictDataDO>lambdaQuery().eq(DictDataDO::getDictType, dictType));
+    }
+
+    /**
+     * 同步修改字典类型
+     *
+     * @param oldDictType 旧字典类型
+     * @param newDictType 新旧字典类型
+     * @return 结果
+     */
+    private int updateDictDataTypeRow(String oldDictType, String newDictType) {
+        return dictDataMapper.update(
+                null,
+                Wrappers.<DictDataDO>lambdaUpdate()
+                        .eq(DictDataDO::getDictType, oldDictType)
+                        .set(DictDataDO::getDictType, newDictType));
     }
 }

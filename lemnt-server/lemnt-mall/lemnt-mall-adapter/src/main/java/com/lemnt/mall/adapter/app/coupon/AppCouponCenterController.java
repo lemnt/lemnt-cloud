@@ -41,8 +41,13 @@ public class AppCouponCenterController {
     @Operation(summary = "本人可见的公开领券中心")
     public R<MallAppCouponCenterOffersRes> offers(
             @Valid @ModelAttribute MallAppCouponCenterOffersReq req) {
-        var page = couponOffersPageQueryExe.execute(CouponReqConverter.offers(SecurityUtils.getUserId(), req));
-        return R.page(page.records().stream().map(CouponResConverter::toMallAppCouponCenterOffersRes).toList(),
+        var page =
+                couponOffersPageQueryExe.execute(
+                        CouponReqConverter.offers(SecurityUtils.getUserId(), req));
+        return R.page(
+                page.records().stream()
+                        .map(CouponResConverter::toMallAppCouponCenterOffersRes)
+                        .toList(),
                 page.total());
     }
 
@@ -50,18 +55,22 @@ public class AppCouponCenterController {
     @Operation(summary = "本人优惠券及服务端当前可用状态")
     public R<MallAppCouponCenterWalletRes> wallet(
             @Valid @ModelAttribute MallAppCouponCenterWalletReq req) {
-        var page = couponWalletPageQueryExe.execute(CouponReqConverter.wallet(SecurityUtils.getUserId(), req));
-        return R.page(page.records().stream().map(CouponResConverter::toMallAppCouponCenterWalletRes).toList(),
+        var page =
+                couponWalletPageQueryExe.execute(
+                        CouponReqConverter.wallet(SecurityUtils.getUserId(), req));
+        return R.page(
+                page.records().stream()
+                        .map(CouponResConverter::toMallAppCouponCenterWalletRes)
+                        .toList(),
                 page.total());
     }
 
     @PostMapping("/coupon-center/{templateId}/claim")
     @Operation(summary = "本人领取公开优惠券，按模板限制领取次数")
-    public R<MallAppCouponCenterClaimRes> claim(
-            @PathVariable Long templateId) {
+    public R<MallAppCouponCenterClaimRes> claim(@PathVariable Long templateId) {
         return R.ok(
                 CouponResConverter.couponToMallAppCouponCenterClaimRes(
-                couponClaimCmdExe.execute(
-                new CouponClaimCmd(SecurityUtils.getUserId(), templateId))));
+                        couponClaimCmdExe.execute(
+                                new CouponClaimCmd(SecurityUtils.getUserId(), templateId))));
     }
 }

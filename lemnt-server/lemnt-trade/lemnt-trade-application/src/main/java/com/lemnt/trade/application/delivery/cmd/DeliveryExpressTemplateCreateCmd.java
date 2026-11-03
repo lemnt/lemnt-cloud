@@ -8,6 +8,5 @@ public record DeliveryExpressTemplateCreateCmd(
         Integer chargeMode,
         Integer sort,
         List<DeliveryChargeCmd> charges,
-        List<DeliveryFreeCmd> frees
-) implements java.io.Serializable {
-}
+        List<DeliveryFreeCmd> frees)
+        implements java.io.Serializable {}

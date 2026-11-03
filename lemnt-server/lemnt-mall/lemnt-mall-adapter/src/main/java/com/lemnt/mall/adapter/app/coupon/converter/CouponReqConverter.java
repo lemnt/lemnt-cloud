@@ -53,14 +53,16 @@ public final class CouponReqConverter {
 
     /** 转换当前接口的分页参数。 */
     public static CouponPageQry page(Long memberId, MallAppCouponCenterOffersReq req) {
-        return new CouponPageQry(memberId,
+        return new CouponPageQry(
+                memberId,
                 req.pageNum() == null ? 1 : req.pageNum(),
                 req.pageSize() == null ? 20 : req.pageSize());
     }
 
     /** 转换当前接口的分页参数。 */
     public static CouponPageQry page(Long memberId, MallAppCouponCenterWalletReq req) {
-        return new CouponPageQry(memberId,
+        return new CouponPageQry(
+                memberId,
                 req.pageNum() == null ? 1 : req.pageNum(),
                 req.pageSize() == null ? 20 : req.pageSize());
     }

@@ -1,9 +1,8 @@
 package com.lemnt.trade.application.aftersale.dto;
 
-import java.util.List;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 /** 订单商品可售后额度。 */
 public record AfterSaleItemDTO(
@@ -16,8 +15,35 @@ public record AfterSaleItemDTO(
         Long spuId,
         String spuName,
         List<Spec> specs,
-        String picUrl
-) implements Serializable {
+        String picUrl,
+        Integer refundedQuantity)
+        implements Serializable {
+    /** 兼容未记录本批优惠与退款元数据的历史快照。 */
+    public AfterSaleItemDTO(
+            Long orderItemId,
+            Long productId,
+            String productName,
+            Integer quantity,
+            Integer refundableQuantity,
+            BigDecimal refundableAmount,
+            Long spuId,
+            String spuName,
+            List<Spec> specs,
+            String picUrl) {
+        this(
+                orderItemId,
+                productId,
+                productName,
+                quantity,
+                refundableQuantity,
+                refundableAmount,
+                spuId,
+                spuName,
+                specs,
+                picUrl,
+                null);
+    }
+
     public AfterSaleItemDTO {
         specs = specs == null ? null : List.copyOf(specs);
     }
@@ -29,8 +55,7 @@ public record AfterSaleItemDTO(
             String productName,
             Integer quantity,
             Integer refundableQuantity,
-            BigDecimal refundableAmount
-    ) {
+            BigDecimal refundableAmount) {
         this(
                 orderItemId,
                 productId,
@@ -45,10 +70,6 @@ public record AfterSaleItemDTO(
     }
 
     /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
-    public record Spec(
-            Long specId,
-            String specName,
-            Long specValueId,
-            String specValueName
-    ) implements java.io.Serializable {}
+    public record Spec(Long specId, String specName, Long specValueId, String specValueName)
+            implements java.io.Serializable {}
 }

@@ -5,6 +5,7 @@ import com.lemnt.common.infrastructure.domain.BaseDO;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,6 +18,7 @@ import java.math.BigDecimal;
 public class WalletTransferDO extends BaseDO {
     @TableId(type = IdType.AUTO)
     private Long id;
+
     private String transferNo;
     private String requestNo;
     private Long fromWalletId;

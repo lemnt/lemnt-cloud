@@ -33,6 +33,5 @@ public record OperLogPageQry(
         int pageNum,
         int pageSize,
         LocalDateTime beginTime,
-        LocalDateTime endTime
-) implements Serializable {
-}
+        LocalDateTime endTime)
+        implements Serializable {}

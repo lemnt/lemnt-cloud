@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductSpecGatewayImpl implements ProductSpecGateway {
     private final ProductSpecMapper productSpecMapper;
+
     @Override
     public ProductSpec find(Long id) {
         return ProductSpecConverter.toModel(productSpecMapper.selectById(id));
@@ -34,11 +35,13 @@ public class ProductSpecGatewayImpl implements ProductSpecGateway {
         var row = ProductSpecConverter.toDO(value);
         if (row.getId() == null) {
             productSpecMapper.insert(row);
-        }
-        else if (productSpecMapper.update(null, Wrappers.lambdaUpdate(ProductSpecDO.class).eq(ProductSpecDO::getId,
-            row.getId())
-                .set(ProductSpecDO::getName, row.getName()).set(ProductSpecDO::getRemark,
-                    row.getRemark())) != 1) {
+        } else if (productSpecMapper.update(
+                        null,
+                        Wrappers.lambdaUpdate(ProductSpecDO.class)
+                                .eq(ProductSpecDO::getId, row.getId())
+                                .set(ProductSpecDO::getName, row.getName())
+                                .set(ProductSpecDO::getRemark, row.getRemark()))
+                != 1) {
             throw new IllegalArgumentException("字典记录不存在");
         }
         return find(row.getId());
@@ -51,14 +54,22 @@ public class ProductSpecGatewayImpl implements ProductSpecGateway {
 
     @Override
     public PageResult<ProductSpec> page(ProductSpecFilter filter) {
-        var page = productSpecMapper.selectPage(new Page<>(filter.pageNum(), filter.pageSize()),
-                Wrappers.lambdaQuery(ProductSpecDO.class)
-                .ge(filter.createTimeStart() != null, ProductSpecDO::getCreateTime, filter.createTimeStart())
-                .le(filter.createTimeEnd() != null, ProductSpecDO::getCreateTime, filter.createTimeEnd())
-                .like(filter.name() != null,
-                    ProductSpecDO::getName, filter.name())
-                .orderByDesc(ProductSpecDO::getId));
-        return PageResult.of(page.getRecords().stream().map(ProductSpecConverter::toModel).toList(),
-            page.getTotal());
+        var page =
+                productSpecMapper.selectPage(
+                        new Page<>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.lambdaQuery(ProductSpecDO.class)
+                                .ge(
+                                        filter.createTimeStart() != null,
+                                        ProductSpecDO::getCreateTime,
+                                        filter.createTimeStart())
+                                .le(
+                                        filter.createTimeEnd() != null,
+                                        ProductSpecDO::getCreateTime,
+                                        filter.createTimeEnd())
+                                .like(filter.name() != null, ProductSpecDO::getName, filter.name())
+                                .orderByDesc(ProductSpecDO::getId));
+        return PageResult.of(
+                page.getRecords().stream().map(ProductSpecConverter::toModel).toList(),
+                page.getTotal());
     }
 }

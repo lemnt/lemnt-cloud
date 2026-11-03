@@ -21,13 +21,11 @@ class RemoteLogServiceImplTest {
     @Test
     void shouldPersistCallerAccessTime() {
         assertSavedAccessTime(LocalDateTime.of(2026, 10, 8, 15, 30, 12));
-
     }
 
     @Test
     void shouldNotInventMissingAccessTime() {
         assertSavedAccessTime(null);
-
     }
 
     /** 验证调用方时间原样传递，且保存结果不变。 */
@@ -36,7 +34,8 @@ class RemoteLogServiceImplTest {
 
         when(gateway.insert(any(Logininfor.class))).thenReturn(true);
 
-        RemoteLogServiceImpl service = new RemoteLogServiceImpl(mock(OperLogGateway.class), gateway);
+        RemoteLogServiceImpl service =
+                new RemoteLogServiceImpl(mock(OperLogGateway.class), gateway);
 
         LogininforBo bo = new LogininforBo();
 
@@ -53,6 +52,5 @@ class RemoteLogServiceImplTest {
         assertThat(captor.getValue().getAccessTime()).isEqualTo(time);
 
         assertThat(captor.getValue().getUserName()).isEqualTo("admin");
-
     }
 }

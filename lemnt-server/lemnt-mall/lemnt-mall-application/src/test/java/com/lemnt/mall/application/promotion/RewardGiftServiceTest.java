@@ -18,8 +18,20 @@ class RewardGiftServiceTest {
     final RewardGiftService service = new RewardGiftService(issuance);
 
     SettlementOrder order() {
-        return new SettlementOrder(1L, "TR1", 7L, BigDecimal.TEN, "PAID", List.of(), null,
-                0L, 0L, null, null, null, Map.of(3L, 2));
+        return new SettlementOrder(
+                1L,
+                "TR1",
+                7L,
+                BigDecimal.TEN,
+                "PAID",
+                List.of(),
+                null,
+                0L,
+                0L,
+                null,
+                null,
+                null,
+                Map.of(3L, 2));
     }
 
     @Test

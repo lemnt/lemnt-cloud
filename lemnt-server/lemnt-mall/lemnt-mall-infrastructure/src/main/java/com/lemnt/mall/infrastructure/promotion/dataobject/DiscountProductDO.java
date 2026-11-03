@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 public class DiscountProductDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private Long activityId;
     private Long spuId;
     private Long skuId;

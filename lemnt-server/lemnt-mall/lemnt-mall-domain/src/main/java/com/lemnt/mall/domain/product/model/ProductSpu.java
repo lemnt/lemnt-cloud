@@ -20,8 +20,7 @@ public record ProductSpu(
         String keyword,
         String introduction,
         List<String> sliderPicUrls,
-        Integer sort
-) {
+        Integer sort) {
     /**
      * 创建目录商品SPU实例。
      */
@@ -42,6 +41,21 @@ public record ProductSpu(
             String image,
             String status,
             List<ProductSku> skus) {
-        this(id, code, name, categoryId, brandId, description, image, status, skus, List.of(), null, null, null, null, null);
+        this(
+                id,
+                code,
+                name,
+                categoryId,
+                brandId,
+                description,
+                image,
+                status,
+                skus,
+                List.of(),
+                null,
+                null,
+                null,
+                null,
+                null);
     }
 }

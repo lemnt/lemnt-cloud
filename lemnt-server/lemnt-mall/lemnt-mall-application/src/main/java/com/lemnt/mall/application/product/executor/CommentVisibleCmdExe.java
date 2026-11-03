@@ -1,8 +1,8 @@
 package com.lemnt.mall.application.product.executor;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.mall.application.product.cmd.CommentVisibleCmd;
 import com.lemnt.mall.domain.product.gateway.ProductCommentGateway;
-import com.lemnt.common.core.exception.ServiceException;
 
 import org.springframework.stereotype.Component;
 

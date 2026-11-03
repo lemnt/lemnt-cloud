@@ -11,5 +11,4 @@ public record SeckillProductDTO(
         BigDecimal seckillPrice,
         Integer stock,
         LocalDateTime activityStartTime,
-        LocalDateTime activityEndTime
-) {}
+        LocalDateTime activityEndTime) {}

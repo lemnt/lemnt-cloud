@@ -187,6 +187,8 @@ def main():
     if args.apply and not args.domain:
         parser.error("--apply必须指定--domain")
     if args.domain:
+        legacy = json.loads(CATALOG.with_name("schema-comments-legacy.json").read_text())
+        catalog[args.domain] = {**catalog[args.domain], **legacy.get(args.domain, {})}
         user = os.environ.get("DB_USER")
         if not user:
             parser.error("请设置DB_USER，密码可通过DB_PASSWORD环境变量传入")

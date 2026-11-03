@@ -56,7 +56,8 @@ public class CombinationRecordService {
 
     /** 校验活动、父团、商品库存及本人限购后可加入。 */
     @Transactional(readOnly = true)
-    public CombinationProduct validateJoin(Long userId, Long activityId, Long headId, Long skuId, Integer count) {
+    public CombinationProduct validateJoin(
+            Long userId, Long activityId, Long headId, Long skuId, Integer count) {
         require(userId != null && userId > 0, "会员编号不合法");
         require(count != null && count > 0, "购买数量不合法");
         var activity = activities.find(activityId);
@@ -77,8 +78,10 @@ public class CombinationRecordService {
         require(product != null, "拼团商品不存在");
         var sku = skus.catalogSku(skuId);
         require(sku != null && count <= sku.stock(), "拼团商品库存不足");
-        var joined = records.byUserAndActivity(userId, activityId).stream()
-                .filter(item -> !Objects.equals(item.status(), 2)).toList();
+        var joined =
+                records.byUserAndActivity(userId, activityId).stream()
+                        .filter(item -> !Objects.equals(item.status(), 2))
+                        .toList();
         require(joined.stream().noneMatch(item -> Objects.equals(item.status(), 0)), "您已有正在进行的拼团");
         var total = joined.stream().mapToInt(CombinationRecord::count).sum();
         require(total + count <= activity.totalLimitCount(), "超过总限购数量");
@@ -88,26 +91,48 @@ public class CombinationRecordService {
     /** 订单支付后创建拼团记录；团长开团或加入父团，满员即成功。 */
     public CombinationRecordDTO create(CombinationRecordCreateCmd cmd) {
         var member = members.requireActive(cmd.userId());
-        var product = validateJoin(cmd.userId(), cmd.activityId(), cmd.headId(), cmd.skuId(), cmd.count());
+        var product =
+                validateJoin(
+                        cmd.userId(), cmd.activityId(), cmd.headId(), cmd.skuId(), cmd.count());
         var activity = activities.find(cmd.activityId());
         var spu = spus.findSpu(cmd.spuId());
         require(spu != null, "拼团商品不存在");
         var joining = cmd.headId() != null && cmd.headId() != CombinationRecord.HEAD_ID_GROUP;
         var head = joining ? records.lockById(cmd.headId()) : null;
         var now = LocalDateTime.now();
-        var record = records.save(new CombinationRecord(null, activity.id(), product.combinationPrice(),
-                spu.id(), spu.name(), spu.image(), cmd.skuId(), cmd.count(), cmd.userId(),
-                member == null ? null : member.nickname(), member == null ? null : member.avatar(),
-                joining ? head.id() : CombinationRecord.HEAD_ID_GROUP, 0, null, activity.userSize(), 1,
-                false, joining ? head.expireTime() : now.plusHours(activity.limitDuration()),
-                joining ? head.startTime() : now, null));
+        var record =
+                records.save(
+                        new CombinationRecord(
+                                null,
+                                activity.id(),
+                                product.combinationPrice(),
+                                spu.id(),
+                                spu.name(),
+                                spu.image(),
+                                cmd.skuId(),
+                                cmd.count(),
+                                cmd.userId(),
+                                member == null ? null : member.nickname(),
+                                member == null ? null : member.avatar(),
+                                joining ? head.id() : CombinationRecord.HEAD_ID_GROUP,
+                                0,
+                                null,
+                                activity.userSize(),
+                                1,
+                                false,
+                                joining
+                                        ? head.expireTime()
+                                        : now.plusHours(activity.limitDuration()),
+                                joining ? head.startTime() : now,
+                                null));
         var groupCount = (int) (records.byHeadId(joining ? head.id() : record.id()).size() + 1);
         finishGroup(joining ? head.id() : record.id(), groupCount, activity, false);
         return dto(records.find(record.id()));
     }
 
     /** 满员时整团成功，否则仅同步人数，保证各团员看到同一进度。 */
-    private void finishGroup(Long headId, int count, CombinationActivity activity, boolean virtual) {
+    private void finishGroup(
+            Long headId, int count, CombinationActivity activity, boolean virtual) {
         var success = count >= activity.userSize();
         var now = LocalDateTime.now();
         var head = records.find(headId);
@@ -155,55 +180,116 @@ public class CombinationRecordService {
     private void virtualGroup(CombinationRecord head, CombinationActivity activity) {
         var current = records.byHeadId(head.id()).size() + 1;
         for (int index = current; index < activity.userSize(); index++) {
-            records.save(new CombinationRecord(null, head.activityId(), head.combinationPrice(), head.spuId(),
-                    head.spuName(), head.picUrl(), head.skuId(), 1, 0L, "虚拟用户", null, head.id(), 1,
-                    null, activity.userSize(), activity.userSize(), true, head.expireTime(), head.startTime(),
-                    LocalDateTime.now()));
+            records.save(
+                    new CombinationRecord(
+                            null,
+                            head.activityId(),
+                            head.combinationPrice(),
+                            head.spuId(),
+                            head.spuName(),
+                            head.picUrl(),
+                            head.skuId(),
+                            1,
+                            0L,
+                            "虚拟用户",
+                            null,
+                            head.id(),
+                            1,
+                            null,
+                            activity.userSize(),
+                            activity.userSize(),
+                            true,
+                            head.expireTime(),
+                            head.startTime(),
+                            LocalDateTime.now()));
         }
         finishGroup(head.id(), activity.userSize(), activity, true);
     }
 
     @Transactional(readOnly = true)
     public PageResult<CombinationRecordDTO> page(CombinationRecordPageQry qry) {
-        require(qry.pageNum() != null && qry.pageNum() >= 1 && qry.pageSize() != null
-                && qry.pageSize() >= 1 && qry.pageSize() <= 100, "分页参数不合法");
-        var page = records.page(new CombinationRecordFilter(qry.userId(), qry.activityId(), qry.status(),
-                qry.headId(), qry.pageNum(), qry.pageSize()));
+        require(
+                qry.pageNum() != null
+                        && qry.pageNum() >= 1
+                        && qry.pageSize() != null
+                        && qry.pageSize() >= 1
+                        && qry.pageSize() <= 100,
+                "分页参数不合法");
+        var page =
+                records.page(
+                        new CombinationRecordFilter(
+                                qry.userId(),
+                                qry.activityId(),
+                                qry.status(),
+                                qry.headId(),
+                                qry.pageNum(),
+                                qry.pageSize()));
         return PageResult.of(page.getRecords().stream().map(this::dto).toList(), page.getTotal());
     }
 
     @Transactional(readOnly = true)
     public CombinationRecordDetailDTO detail(Long id, Long userId) {
         var value = record(id);
-        var headId = Objects.equals(value.headId(), CombinationRecord.HEAD_ID_GROUP) ? value.id() : value.headId();
+        var headId =
+                Objects.equals(value.headId(), CombinationRecord.HEAD_ID_GROUP)
+                        ? value.id()
+                        : value.headId();
         var head = record(headId);
         var members = records.byHeadId(headId);
         var orderId = Objects.equals(value.userId(), userId) ? value.orderId() : null;
-        return new CombinationRecordDetailDTO(dto(head), members.stream().map(this::dto).toList(), orderId);
+        return new CombinationRecordDetailDTO(
+                dto(head), members.stream().map(this::dto).toList(), orderId);
     }
 
     /** 最近 n 条团长记录，用于活动详情展示可参与的团。 */
     @Transactional(readOnly = true)
     public List<CombinationRecordDTO> heads(Long activityId, Integer status, int count) {
         require(count >= 1 && count <= 20, "数量不合法");
-        var page = records.page(new CombinationRecordFilter(null, activityId, status,
-                CombinationRecord.HEAD_ID_GROUP, 1, count));
+        var page =
+                records.page(
+                        new CombinationRecordFilter(
+                                null,
+                                activityId,
+                                status,
+                                CombinationRecord.HEAD_ID_GROUP,
+                                1,
+                                count));
         return page.getRecords().stream().map(this::dto).toList();
     }
 
     @Transactional(readOnly = true)
     public CombinationSummaryDTO summary() {
         var total = records.userCount();
-        var avatars = records.latest(10).stream().map(CombinationRecord::avatar)
-                .filter(Objects::nonNull).toList();
+        var avatars =
+                records.latest(10).stream()
+                        .map(CombinationRecord::avatar)
+                        .filter(Objects::nonNull)
+                        .toList();
         return new CombinationSummaryDTO(total, avatars);
     }
 
     private CombinationRecordDTO dto(CombinationRecord value) {
-        return new CombinationRecordDTO(value.id(), value.activityId(), value.combinationPrice(), value.spuId(),
-                value.spuName(), value.picUrl(), value.skuId(), value.count(), value.userId(), value.nickname(),
-                value.avatar(), value.headId(), value.status(), value.orderId(), value.userSize(),
-                value.userCount(), value.virtualGroup(), value.expireTime(), value.startTime(), value.endTime());
+        return new CombinationRecordDTO(
+                value.id(),
+                value.activityId(),
+                value.combinationPrice(),
+                value.spuId(),
+                value.spuName(),
+                value.picUrl(),
+                value.skuId(),
+                value.count(),
+                value.userId(),
+                value.nickname(),
+                value.avatar(),
+                value.headId(),
+                value.status(),
+                value.orderId(),
+                value.userSize(),
+                value.userCount(),
+                value.virtualGroup(),
+                value.expireTime(),
+                value.startTime(),
+                value.endTime());
     }
 
     /** 拼团记录的团长及成员，供订单集成按订单号回查。 */

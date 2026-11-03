@@ -22,8 +22,11 @@ public class MemberWalletTransferPageQueryExe {
             throw new IllegalArgumentException("会员编号不合法");
         }
         PayConfigRules.page(pageNum, pageSize);
-        var page = transfers.page(new WalletTransferFilter(memberId, null, null, null, pageNum, pageSize));
-        return PageResult.of(page.getRecords().stream().map(WalletTransferDTOConverter::transfer).toList(),
+        var page =
+                transfers.page(
+                        new WalletTransferFilter(memberId, null, null, null, pageNum, pageSize));
+        return PageResult.of(
+                page.getRecords().stream().map(WalletTransferDTOConverter::transfer).toList(),
                 page.getTotal());
     }
 }

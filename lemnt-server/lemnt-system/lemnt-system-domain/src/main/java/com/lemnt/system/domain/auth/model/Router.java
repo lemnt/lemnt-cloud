@@ -1,7 +1,5 @@
 package com.lemnt.system.domain.auth.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.Data;
 
 import java.io.Serial;
@@ -14,10 +12,8 @@ import java.util.List;
  * @author wangxx
  */
 @Data
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Router implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -6472100563384356589L;
+    @Serial private static final long serialVersionUID = -6472100563384356589L;
 
     /**
      * 路由名字

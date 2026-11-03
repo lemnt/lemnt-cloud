@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** 砍价记录表 CRUD。 */
 @Mapper
-public interface BargainRecordMapper extends BaseMapper<BargainRecordDO> {
-}
+public interface BargainRecordMapper extends BaseMapper<BargainRecordDO> {}

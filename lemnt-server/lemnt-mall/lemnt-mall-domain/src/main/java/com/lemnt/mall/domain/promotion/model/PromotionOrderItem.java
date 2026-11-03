@@ -7,6 +7,5 @@ public record PromotionOrderItem(
         Long skuId,
         Integer quantity,
         Long usePoint,
-        Integer refundedQuantity
-) implements java.io.Serializable {
-}
+        Integer refundedQuantity)
+        implements java.io.Serializable {}

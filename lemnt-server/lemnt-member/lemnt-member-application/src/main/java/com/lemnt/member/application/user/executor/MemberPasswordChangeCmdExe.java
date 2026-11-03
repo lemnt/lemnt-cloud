@@ -27,11 +27,13 @@ public class MemberPasswordChangeCmdExe {
         }
         MemberRules.password(cmd.newPassword());
         String password = memberUserGateway.findPasswordByMemberId(cmd.memberId());
-        if (cmd.oldPassword() == null || password == null
+        if (cmd.oldPassword() == null
+                || password == null
                 || !SecurityUtils.matchesPassword(cmd.oldPassword(), password)) {
             throw new ServiceException("原密码错误", 401);
         }
-        memberUserGateway.updatePassword(cmd.memberId(), SecurityUtils.encryptPassword(cmd.newPassword()));
+        memberUserGateway.updatePassword(
+                cmd.memberId(), SecurityUtils.encryptPassword(cmd.newPassword()));
         return true;
     }
 }

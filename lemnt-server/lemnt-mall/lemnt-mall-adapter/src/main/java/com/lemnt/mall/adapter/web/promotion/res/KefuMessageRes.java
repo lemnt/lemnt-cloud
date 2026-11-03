@@ -14,6 +14,5 @@ public record KefuMessageRes(
         @Schema(description = "消息类型") Integer contentType,
         @Schema(description = "消息内容") String content,
         @Schema(description = "是否已读") Boolean readStatus,
-        @Schema(description = "发送时间") LocalDateTime createTime
-) implements java.io.Serializable {
-}
+        @Schema(description = "发送时间") LocalDateTime createTime)
+        implements java.io.Serializable {}

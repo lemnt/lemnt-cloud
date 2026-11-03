@@ -10,5 +10,5 @@ public record CouponOfferDTO(
         Long couponId,
         String couponStatus,
         boolean usable,
-        boolean claimable
-) implements Serializable {}
+        boolean claimable)
+        implements Serializable {}

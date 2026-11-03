@@ -5,6 +5,4 @@ import java.io.Serializable;
 /**
  * 等级删除命令。
  */
-public record LevelDeleteCmd(
-        Long id
-) implements Serializable {}
+public record LevelDeleteCmd(Long id) implements Serializable {}

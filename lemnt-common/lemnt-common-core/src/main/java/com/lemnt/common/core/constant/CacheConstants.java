@@ -11,36 +11,37 @@ public class CacheConstants {
     /**
      * 默认缓存前缀
      */
-    public final static String DEF_PREFIX = "lemnt:";
+    public static final String DEF_PREFIX = "lemnt:";
 
     /**
      * 全局缓存前缀
      */
-    public final static String GLOBAL_PREFIX = DEF_PREFIX + "global:";
+    public static final String GLOBAL_PREFIX = DEF_PREFIX + "global:";
+
     /**
      * 登录会话有效期：30 天，单位秒，与 Redis TTL 和 expires_in 一致
      */
-    public final static long TOKEN_TTL_SECONDS = TimeUnit.DAYS.toSeconds(30);
+    public static final long TOKEN_TTL_SECONDS = TimeUnit.DAYS.toSeconds(30);
 
     /**
      * 登录会话续期阈值：剩余不超过 120 分钟时续期，单位秒
      */
-    public final static long TOKEN_REFRESH_THRESHOLD_SECONDS = TimeUnit.MINUTES.toSeconds(120);
+    public static final long TOKEN_REFRESH_THRESHOLD_SECONDS = TimeUnit.MINUTES.toSeconds(120);
 
     /**
      * 密码最大错误次数
      */
-    public final static int PASSWORD_MAX_RETRY_COUNT = 5;
+    public static final int PASSWORD_MAX_RETRY_COUNT = 5;
 
     /**
      * 密码锁定时间，默认10（分钟）
      */
-    public final static long PASSWORD_LOCK_TIME = 10;
+    public static final long PASSWORD_LOCK_TIME = 10;
 
     /**
      * 权限缓存前缀
      */
-    public final static String LOGIN_TOKEN_KEY = GLOBAL_PREFIX + "login_tokens:";
+    public static final String LOGIN_TOKEN_KEY = GLOBAL_PREFIX + "login_tokens:";
 
     /**
      * 验证码 redis key
@@ -81,5 +82,4 @@ public class CacheConstants {
      * 雪花算法worker缓存
      */
     public static final String SNOWFLAKE_WORKER_KEY = GLOBAL_PREFIX + "snowflake:%s:%s:%d:%d";
-
 }

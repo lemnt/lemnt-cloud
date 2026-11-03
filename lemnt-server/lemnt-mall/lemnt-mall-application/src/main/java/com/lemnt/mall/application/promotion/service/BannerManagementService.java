@@ -40,8 +40,14 @@ public class BannerManagementService {
         return value;
     }
 
-    private void validate(String title, String url, String picUrl, Integer sort, Integer status,
-            Integer position, String memo) {
+    private void validate(
+            String title,
+            String url,
+            String picUrl,
+            Integer sort,
+            Integer status,
+            Integer position,
+            String memo) {
         require(title != null && !title.isBlank() && title.length() <= 100, "标题不能为空且不超过100字");
         require(url != null && !url.isBlank() && url.length() <= 500, "跳转链接不能为空且不超过500字");
         require(picUrl != null && !picUrl.isBlank() && picUrl.length() <= 500, "图片地址不能为空且不超过500字");
@@ -53,18 +59,51 @@ public class BannerManagementService {
 
     public Long create(BannerCreateCmd cmd) {
         require(cmd != null, "Banner 参数不能为空");
-        validate(cmd.title(), cmd.url(), cmd.picUrl(), cmd.sort(), cmd.status(), cmd.position(), cmd.memo());
-        return banners.save(new Banner(null, cmd.title().trim(), cmd.url().trim(), cmd.picUrl().trim(),
-                cmd.sort(), cmd.status(), cmd.position(), cmd.memo(), 0)).id();
+        validate(
+                cmd.title(),
+                cmd.url(),
+                cmd.picUrl(),
+                cmd.sort(),
+                cmd.status(),
+                cmd.position(),
+                cmd.memo());
+        return banners.save(
+                        new Banner(
+                                null,
+                                cmd.title().trim(),
+                                cmd.url().trim(),
+                                cmd.picUrl().trim(),
+                                cmd.sort(),
+                                cmd.status(),
+                                cmd.position(),
+                                cmd.memo(),
+                                0))
+                .id();
     }
 
     /** 修改时保留点击量，不能被管理端覆盖。 */
     public Boolean update(BannerUpdateCmd cmd) {
         require(cmd != null && cmd.id() != null && cmd.id() > 0, "Banner 编号不合法");
         var existing = banner(cmd.id());
-        validate(cmd.title(), cmd.url(), cmd.picUrl(), cmd.sort(), cmd.status(), cmd.position(), cmd.memo());
-        banners.save(new Banner(existing.id(), cmd.title().trim(), cmd.url().trim(), cmd.picUrl().trim(),
-                cmd.sort(), cmd.status(), cmd.position(), cmd.memo(), existing.browseCount()));
+        validate(
+                cmd.title(),
+                cmd.url(),
+                cmd.picUrl(),
+                cmd.sort(),
+                cmd.status(),
+                cmd.position(),
+                cmd.memo());
+        banners.save(
+                new Banner(
+                        existing.id(),
+                        cmd.title().trim(),
+                        cmd.url().trim(),
+                        cmd.picUrl().trim(),
+                        cmd.sort(),
+                        cmd.status(),
+                        cmd.position(),
+                        cmd.memo(),
+                        existing.browseCount()));
         return true;
     }
 
@@ -81,17 +120,28 @@ public class BannerManagementService {
     }
 
     public PageResult<BannerDTO> page(BannerPageQry qry) {
-        require(qry != null && qry.pageNum() >= 1 && qry.pageNum() <= 1000000
-                && qry.pageSize() >= 1 && qry.pageSize() <= 100, "分页参数不合法");
+        require(
+                qry != null
+                        && qry.pageNum() >= 1
+                        && qry.pageNum() <= 1000000
+                        && qry.pageSize() >= 1
+                        && qry.pageSize() <= 100,
+                "分页参数不合法");
         require(qry.status() == null || qry.status() == 0 || qry.status() == 1, "状态只能为0或1");
-        var result = banners.page(new BannerFilter(qry.title(), qry.status(), qry.pageNum(), qry.pageSize()));
-        return PageResult.of(result.getRecords().stream().map(this::dto).toList(), result.getTotal());
+        var result =
+                banners.page(
+                        new BannerFilter(qry.title(), qry.status(), qry.pageNum(), qry.pageSize()));
+        return PageResult.of(
+                result.getRecords().stream().map(this::dto).toList(), result.getTotal());
     }
 
     public List<AppBannerDTO> appList(Integer position) {
         require(position != null && POSITIONS.contains(position), "Banner 位置不合法");
         return banners.enabledByPosition(position).stream()
-                .map(value -> new AppBannerDTO(value.id(), value.title(), value.url(), value.picUrl()))
+                .map(
+                        value ->
+                                new AppBannerDTO(
+                                        value.id(), value.title(), value.url(), value.picUrl()))
                 .toList();
     }
 
@@ -103,7 +153,15 @@ public class BannerManagementService {
     }
 
     private BannerDTO dto(Banner value) {
-        return new BannerDTO(value.id(), value.title(), value.url(), value.picUrl(), value.sort(),
-                value.status(), value.position(), value.memo(), value.browseCount());
+        return new BannerDTO(
+                value.id(),
+                value.title(),
+                value.url(),
+                value.picUrl(),
+                value.sort(),
+                value.status(),
+                value.position(),
+                value.memo(),
+                value.browseCount());
     }
 }

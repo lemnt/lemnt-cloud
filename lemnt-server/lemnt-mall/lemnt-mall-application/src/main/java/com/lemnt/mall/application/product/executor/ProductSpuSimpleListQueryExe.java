@@ -23,7 +23,12 @@ public class ProductSpuSimpleListQueryExe {
         if (qry == null || qry.limit() < 1 || qry.limit() > 100) {
             throw new IllegalArgumentException("选择条数须为1至100");
         }
-        String name = qry.name() == null || qry.name().isBlank() ? null : ProductCatalogValidation.text(qry.name(), 200, "名称");
-        return productSpuGateway.simpleList(name, qry.limit()).stream().map(ProductCatalogDTOConverter::spu).toList();
+        String name =
+                qry.name() == null || qry.name().isBlank()
+                        ? null
+                        : ProductCatalogValidation.text(qry.name(), 200, "名称");
+        return productSpuGateway.simpleList(name, qry.limit()).stream()
+                .map(ProductCatalogDTOConverter::spu)
+                .toList();
     }
 }

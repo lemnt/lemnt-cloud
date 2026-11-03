@@ -23,29 +23,27 @@ class PostCodeUniqueMapperTest {
 
     @BeforeAll
     static void initializeTableMetadata() {
-        MapperBuilderAssistant assistant = new MapperBuilderAssistant(new MybatisConfiguration(), "test");
+        MapperBuilderAssistant assistant =
+                new MapperBuilderAssistant(new MybatisConfiguration(), "test");
 
         assistant.setCurrentNamespace("test");
 
         TableInfoHelper.initTableInfo(assistant, PostDO.class);
-
     }
 
     @ParameterizedTest
-    @ValueSource(booleans = {
-            false, true
-            })
+    @ValueSource(booleans = {false, true})
     void shouldCheckCodeAndExcludeOnlyCurrentPost(boolean editing) {
         PostMapper mapper = mock(PostMapper.class, CALLS_REAL_METHODS);
 
         doReturn(null).when(mapper).selectOne(any());
 
+        var gateway = new com.lemnt.system.infrastructure.org.gateway.PostGatewayImpl(mapper);
         if (editing) {
-            mapper.checkPostCodeUnique("test", 5L);
+            gateway.checkPostCodeUnique("test", 5L);
 
         } else {
-            mapper.checkPostCodeUnique("test");
-
+            gateway.checkPostCodeUnique("test");
         }
 
         ArgumentCaptor<LambdaQueryWrapper<PostDO>> captor = ArgumentCaptor.captor();
@@ -59,13 +57,13 @@ class PostCodeUniqueMapperTest {
         if (editing) {
             assertThat(query.getSqlSegment()).contains("post_id <>");
 
-            assertThat(query.getParamNameValuePairs().values()).containsExactlyInAnyOrder("test", 5L);
+            assertThat(query.getParamNameValuePairs().values())
+                    .containsExactlyInAnyOrder("test", 5L);
 
         } else {
             assertThat(query.getSqlSegment()).doesNotContain("post_id <>");
 
             assertThat(query.getParamNameValuePairs().values()).containsExactly("test");
-
         }
     }
 }

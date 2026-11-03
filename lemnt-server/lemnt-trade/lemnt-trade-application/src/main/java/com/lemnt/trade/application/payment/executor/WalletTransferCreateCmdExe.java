@@ -19,7 +19,12 @@ public class WalletTransferCreateCmdExe {
         if (cmd == null) {
             throw new IllegalArgumentException("转账参数不合法");
         }
-        return WalletTransferDTOConverter.transfer(service.transfer(fromMemberId, cmd.toMemberId(), cmd.amount(),
-                cmd.remark(), cmd.requestNo()));
+        return WalletTransferDTOConverter.transfer(
+                service.transfer(
+                        fromMemberId,
+                        cmd.toMemberId(),
+                        cmd.amount(),
+                        cmd.remark(),
+                        cmd.requestNo()));
     }
 }

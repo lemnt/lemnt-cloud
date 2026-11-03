@@ -18,29 +18,81 @@ public record SettlementQuote(
         SettlementDelivery delivery,
         long rewardPoint,
         boolean freeDelivery,
-        Map<Long, Integer> giveCouponTemplateCounts
-) {
+        Map<Long, Integer> giveCouponTemplateCounts,
+        java.util.List<SettlementPromotion> promotions,
+        BigDecimal deliveryOriginalPrice,
+        BigDecimal deliveryDiscountPrice) {
+    /** 兼容未记录本批优惠与退款元数据的历史快照。 */
+    public SettlementQuote(
+            List<SettlementItem> items,
+            BigDecimal originalAmount,
+            BigDecimal discountAmount,
+            BigDecimal payableAmount,
+            Long couponId,
+            long usePoint,
+            long givePoint,
+            SettlementDelivery delivery,
+            long rewardPoint,
+            boolean freeDelivery,
+            Map<Long, Integer> giveCouponTemplateCounts) {
+        this(
+                items,
+                originalAmount,
+                discountAmount,
+                payableAmount,
+                couponId,
+                usePoint,
+                givePoint,
+                delivery,
+                rewardPoint,
+                freeDelivery,
+                giveCouponTemplateCounts,
+                java.util.List.of(),
+                null,
+                null);
+    }
+
     /**
      * 创建结算报价实例。
      */
     public SettlementQuote {
+        promotions = promotions == null ? java.util.List.of() : java.util.List.copyOf(promotions);
         items = List.copyOf(items);
-        giveCouponTemplateCounts = giveCouponTemplateCounts == null ? Map.of()
-                : Map.copyOf(giveCouponTemplateCounts);
+        giveCouponTemplateCounts =
+                giveCouponTemplateCounts == null ? Map.of() : Map.copyOf(giveCouponTemplateCounts);
     }
 
     /** 存量快照没有营销赠礼，按无赠礼报价读取。 */
-    public SettlementQuote(List<SettlementItem> items, BigDecimal originalAmount, BigDecimal discountAmount,
-        BigDecimal payableAmount, Long couponId, long usePoint, long givePoint, SettlementDelivery delivery
-    ) {
-        this(items, originalAmount, discountAmount, payableAmount, couponId, usePoint, givePoint, delivery,
-                0L, false, Map.of());
+    public SettlementQuote(
+            List<SettlementItem> items,
+            BigDecimal originalAmount,
+            BigDecimal discountAmount,
+            BigDecimal payableAmount,
+            Long couponId,
+            long usePoint,
+            long givePoint,
+            SettlementDelivery delivery) {
+        this(
+                items,
+                originalAmount,
+                discountAmount,
+                payableAmount,
+                couponId,
+                usePoint,
+                givePoint,
+                delivery,
+                0L,
+                false,
+                Map.of());
     }
 
     /** 存量快照没有积分权益，按零积分订单读取。 */
-    public SettlementQuote(List<SettlementItem> items, BigDecimal originalAmount, BigDecimal discountAmount,
-        BigDecimal payableAmount, Long couponId
-    ) {
+    public SettlementQuote(
+            List<SettlementItem> items,
+            BigDecimal originalAmount,
+            BigDecimal discountAmount,
+            BigDecimal payableAmount,
+            Long couponId) {
         this(items, originalAmount, discountAmount, payableAmount, couponId, 0L, 0L);
     }
 
@@ -53,6 +105,14 @@ public record SettlementQuote(
             Long couponId,
             long usePoint,
             long givePoint) {
-        this(items, originalAmount, discountAmount, payableAmount, couponId, usePoint, givePoint, null);
+        this(
+                items,
+                originalAmount,
+                discountAmount,
+                payableAmount,
+                couponId,
+                usePoint,
+                givePoint,
+                null);
     }
 }

@@ -38,8 +38,10 @@ public class SettlementService {
      * 提交。
      */
     public SettlementReceiptDTO submit(Long memberId, String id, String requestNo) {
-        var order = orderPlacementService.submitSettlement(memberId, id, requestNo, settlementGateway);
-        return SettlementDTOConverter.receipt(settlementRecordService.receipt(order.orderNo()), order);
+        var order =
+                orderPlacementService.submitSettlement(memberId, id, requestNo, settlementGateway);
+        return SettlementDTOConverter.receipt(
+                settlementRecordService.receipt(order.orderNo()), order);
     }
 
     /**
@@ -48,10 +50,7 @@ public class SettlementService {
     public SettlementReceiptDTO findByRequest(Long memberId, String requestNo) {
         SettlementRules.id(memberId);
         String key = SettlementRules.text(requestNo, 64);
-        var record = settlementRecordService.findRequest(
-                memberId,
-                key
-        );
+        var record = settlementRecordService.findRequest(memberId, key);
         if (record == null || !memberId.equals(record.memberId())) {
             return null;
         }
@@ -65,16 +64,14 @@ public class SettlementService {
     /**
      * 放弃。
      */
-    public SettlementAbandonDTO abandon(
-            Long memberId,
-            String id,
-            String requestNo
-    ) {
-        var order = orderPlacementService.abandonSettlement(memberId, id, requestNo, settlementGateway);
+    public SettlementAbandonDTO abandon(Long memberId, String id, String requestNo) {
+        var order =
+                orderPlacementService.abandonSettlement(memberId, id, requestNo, settlementGateway);
         return new SettlementAbandonDTO(
                 order == null,
                 order == null
-                ? null
-                : SettlementDTOConverter.receipt(settlementRecordService.receipt(order.orderNo()), order));
+                        ? null
+                        : SettlementDTOConverter.receipt(
+                                settlementRecordService.receipt(order.orderNo()), order));
     }
 }

@@ -13,4 +13,9 @@ public interface TradeOrderClient {
 
     /** 查询订单快照。 */
     OrderDTO getByOrderNo(String orderNo);
+
+    /** 完整报价专用建单入口，旧消费者不能丢弃新增金额/分摊字段后继续建单。 */
+    default OrderDTO createPriced(OrderCreateBo order) {
+        throw new UnsupportedOperationException("交易服务未升级完整报价协议");
+    }
 }

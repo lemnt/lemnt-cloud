@@ -10,6 +10,5 @@ public record ProductSpecFilter(
         int pageNum,
         int pageSize,
         LocalDateTime createTimeStart,
-        LocalDateTime createTimeEnd
-) implements Serializable {
-}
+        LocalDateTime createTimeEnd)
+        implements Serializable {}

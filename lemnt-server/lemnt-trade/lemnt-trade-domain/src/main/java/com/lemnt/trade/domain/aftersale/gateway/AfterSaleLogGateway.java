@@ -8,6 +8,7 @@ import java.util.List;
 public interface AfterSaleLogGateway {
     /** 与售后状态变化同事务追加真实操作。 */
     void append(AfterSaleLog value);
+
     /** 按发生顺序读取售后日志。 */
     List<AfterSaleLog> byAfterSaleId(Long afterSaleId);
 }

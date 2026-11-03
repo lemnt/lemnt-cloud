@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
-
 import java.util.List;
 
 /** 优惠券模板接口。 */
@@ -49,7 +48,9 @@ public class CouponTemplateController {
     @RequiresPermissions("mall:coupon-template:list")
     public R<List<MallCouponTemplateTemplatesRes>> templates() {
         return R.ok(
-                couponTemplateListQueryExe.execute().stream().map(CouponResConverter::couponTemplateToMallCouponTemplateTemplatesRes).toList());
+                couponTemplateListQueryExe.execute().stream()
+                        .map(CouponResConverter::couponTemplateToMallCouponTemplateTemplatesRes)
+                        .toList());
     }
 
     @Operation(summary = "创建优惠券模板")
@@ -58,7 +59,7 @@ public class CouponTemplateController {
     public R<MallCouponTemplateCreateRes> create(@Valid @RequestBody CouponTemplateCreateReq req) {
         return R.ok(
                 CouponResConverter.couponTemplateToMallCouponTemplateCreateRes(
-                couponTemplateCreateCmdExe.execute(CouponReqConverter.template(req))));
+                        couponTemplateCreateCmdExe.execute(CouponReqConverter.template(req))));
     }
 
     @Operation(summary = "启停后续发券，不影响已发券权益")
@@ -68,12 +69,13 @@ public class CouponTemplateController {
             @PathVariable Long id, @Valid @RequestBody CouponTemplateEnableReq req) {
         return R.ok(couponTemplateEnableCmdExe.execute(CouponReqConverter.enable(id, req)));
     }
+
     /** 更新模板只影响之后领取的优惠券。 */
     @PutMapping("/coupon-templates/{id}")
     @Operation(summary = "修改优惠券模板")
     @RequiresPermissions("mall:coupon-template:edit")
-    public R<Boolean> update(@PathVariable Long id,
-            @Valid @RequestBody CouponTemplateUpdateReq req) {
+    public R<Boolean> update(
+            @PathVariable Long id, @Valid @RequestBody CouponTemplateUpdateReq req) {
         return R.ok(couponTemplateUpdateCmdExe.execute(CouponReqConverter.update(id, req)));
     }
 

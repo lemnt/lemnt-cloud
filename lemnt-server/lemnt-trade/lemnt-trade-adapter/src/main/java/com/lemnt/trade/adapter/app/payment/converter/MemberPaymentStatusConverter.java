@@ -40,7 +40,12 @@ public final class MemberPaymentStatusConverter {
 
     /** 预支付响应。 */
     public static AppPaymentPrepayRes prepay(PaymentPrepayDTO value) {
-        return new AppPaymentPrepayRes(value.paymentNo(), value.orderNo(), value.channel(),
-                value.amount(), value.payUrl(), value.params());
+        return new AppPaymentPrepayRes(
+                value.paymentNo(),
+                value.orderNo(),
+                value.channel(),
+                value.amount(),
+                value.payUrl(),
+                value.params());
     }
 }

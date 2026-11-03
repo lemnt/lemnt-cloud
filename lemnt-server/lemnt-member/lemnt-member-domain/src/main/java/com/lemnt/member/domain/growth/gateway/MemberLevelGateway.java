@@ -1,9 +1,8 @@
 package com.lemnt.member.domain.growth.gateway;
 
-import java.util.Collection;
-
 import com.lemnt.member.domain.growth.model.Level;
 
+import java.util.Collection;
 import java.util.List;
 
 /** member_level 表领域存储网关。 */
@@ -31,6 +30,7 @@ public interface MemberLevelGateway {
      * 等级删除。
      */
     boolean levelDelete(Long id);
+
     /** 按真实关联ID批量读取，空集合不查表。 */
     List<Level> levelsByIds(Collection<Long> ids);
 }

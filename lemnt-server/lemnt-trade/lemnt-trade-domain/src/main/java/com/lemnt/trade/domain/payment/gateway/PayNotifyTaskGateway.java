@@ -26,7 +26,8 @@ public interface PayNotifyTaskGateway {
     boolean finishSuccess(Long id, int attemptNo, String response, LocalDateTime now);
 
     /** 标记失败并设置下次派发时间，仅覆盖当前次数。 */
-    boolean finishFailed(Long id, int attemptNo, String response, LocalDateTime nextTime, LocalDateTime now);
+    boolean finishFailed(
+            Long id, int attemptNo, String response, LocalDateTime nextTime, LocalDateTime now);
 
     /** 追加一次尝试日志。 */
     void appendLog(PayNotifyLog log);
@@ -45,4 +46,20 @@ public interface PayNotifyTaskGateway {
 
     /** 数据库当前时间。 */
     LocalDateTime databaseNow();
+
+    /** 版本及租约CAS，数据库实现必须覆盖；存量内存实现沿用原接口。 */
+    default boolean claimVersion(Long id, int expectedTimes, long version, LocalDateTime until) {
+        return claim(id, expectedTimes);
+    }
+
+    /** 仅当前执行版本可完成。 */
+    default boolean finishVersion(
+            Long id,
+            long version,
+            boolean success,
+            String response,
+            LocalDateTime next,
+            LocalDateTime now) {
+        throw new UnsupportedOperationException("存储未实现执行版本隔离");
+    }
 }

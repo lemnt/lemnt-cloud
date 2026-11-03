@@ -14,16 +14,40 @@ public final class AppBargainConverter {
     private AppBargainConverter() {}
 
     public static AppBargainActivityRes activity(BargainActivityDTO dto) {
-        return new AppBargainActivityRes(dto.id(), dto.name(), dto.spuId(), dto.spuName(), dto.picUrl(),
-                dto.skuPrice(), dto.skuId(), dto.bargainFirstPrice(), dto.bargainMinPrice(), dto.stock(),
-                dto.totalStock(), dto.helpMaxCount(), dto.bargainCount(), dto.totalLimitCount(),
-                dto.startTime(), dto.endTime(), dto.successCount());
+        return new AppBargainActivityRes(
+                dto.id(),
+                dto.name(),
+                dto.spuId(),
+                dto.spuName(),
+                dto.picUrl(),
+                dto.skuPrice(),
+                dto.skuId(),
+                dto.bargainFirstPrice(),
+                dto.bargainMinPrice(),
+                dto.stock(),
+                dto.totalStock(),
+                dto.helpMaxCount(),
+                dto.bargainCount(),
+                dto.totalLimitCount(),
+                dto.startTime(),
+                dto.endTime(),
+                dto.successCount());
     }
 
     public static AppBargainRecordRes record(BargainRecordDTO dto) {
-        return new AppBargainRecordRes(dto.id(), dto.userId(), dto.activityId(), dto.spuId(), dto.spuName(),
-                dto.picUrl(), dto.skuId(), dto.bargainFirstPrice(), dto.bargainPrice(), dto.status(),
-                dto.endTime(), dto.orderId());
+        return new AppBargainRecordRes(
+                dto.id(),
+                dto.userId(),
+                dto.activityId(),
+                dto.spuId(),
+                dto.spuName(),
+                dto.picUrl(),
+                dto.skuId(),
+                dto.bargainFirstPrice(),
+                dto.bargainPrice(),
+                dto.status(),
+                dto.endTime(),
+                dto.orderId());
     }
 
     public static AppBargainHelpRes help(BargainHelpDTO dto) {
@@ -31,7 +55,10 @@ public final class AppBargainConverter {
     }
 
     public static AppBargainDetailRes detail(BargainDetailDTO dto) {
-        return new AppBargainDetailRes(activity(dto.activity()), record(dto.record()),
-                dto.helps().stream().map(AppBargainConverter::help).toList(), dto.helped());
+        return new AppBargainDetailRes(
+                activity(dto.activity()),
+                record(dto.record()),
+                dto.helps().stream().map(AppBargainConverter::help).toList(),
+                dto.helped());
     }
 }

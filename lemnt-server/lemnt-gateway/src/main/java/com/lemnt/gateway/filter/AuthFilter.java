@@ -32,15 +32,14 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 @Component
 public class AuthFilter implements GlobalFilter, Ordered {
 
-    private static final Set<String> PUBLIC_APP_POST_PATHS = Set.of(
-            "/member/app/auth/login",
-            "/member/app/auth/refresh-token",
-            "/member/app/auth/logout");
+    private static final Set<String> PUBLIC_APP_POST_PATHS =
+            Set.of(
+                    "/member/app/auth/login",
+                    "/member/app/auth/refresh-token",
+                    "/member/app/auth/logout");
 
-    @Autowired
-    private IgnoreWhiteProperties ignoreWhite;
-    @Autowired
-    private TokenService tokenService;
+    @Autowired private IgnoreWhiteProperties ignoreWhite;
+    @Autowired private TokenService tokenService;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, @NonNull GatewayFilterChain chain) {
@@ -49,7 +48,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
         boolean appRequest = isAppPath(path);
         ServerWebExchange clean = clearIdentityHeaders(exchange);
         // 小程序公开规则单独按完整路径匹配，不受后台宽泛白名单影响。
-        if (appRequest ? isPublicAppRequest(request.getMethod(), path)
+        if (appRequest
+                ? isPublicAppRequest(request.getMethod(), path)
                 : path.startsWith("/open") || StringUtils.matches(path, ignoreWhite.getWhites())) {
             return chain.filter(clean);
         }
@@ -57,7 +57,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (StringUtils.isEmpty(token)) {
             return ServletUtils.unauthorized(exchange.getResponse(), "令牌不能为空");
         }
-        String userType = appRequest ? SecurityConstants.MEMBER_USER_TYPE : SecurityConstants.ADMIN_USER_TYPE;
+        String userType =
+                appRequest ? SecurityConstants.MEMBER_USER_TYPE : SecurityConstants.ADMIN_USER_TYPE;
         SecurityUser loginUser = tokenService.getSecurityUser(token, userType);
         if (loginUser == null || loginUser.getUserId() == null) {
             return ServletUtils.unauthorized(exchange.getResponse(), "登录状态已过期或令牌无效");
@@ -74,17 +75,24 @@ public class AuthFilter implements GlobalFilter, Ordered {
         addHeader(builder, SecurityConstants.HEADER_USER_KEY, loginUser.getToken());
         addHeader(builder, SecurityConstants.HEADER_USER_ID, loginUser.getUserId());
         addHeader(builder, SecurityConstants.HEADER_USER_NAME, loginUser.getUsername());
-        String roleKey = loginUser.getRoles() == null
-                ? loginUser.getRoleKey() : String.join(",", loginUser.getRoles());
+        String roleKey =
+                loginUser.getRoles() == null
+                        ? loginUser.getRoleKey()
+                        : String.join(",", loginUser.getRoles());
         addHeader(builder, SecurityConstants.HEADER_ROLE_KEY, roleKey);
         return chain.filter(clean.mutate().request(builder.build()).build());
     }
 
     /** 通过完整接口路径选择会员身份域，不匹配近似前缀。 */
     private boolean isAppPath(String path) {
-        return path.equals("/system/files/app/upload") || path.equals("/files/app/upload") || path.equals("/member/app") || path.startsWith("/member/app/")
-                || path.equals("/mall/app") || path.startsWith("/mall/app/")
-                || path.equals("/trade/app") || path.startsWith("/trade/app/");
+        return path.equals("/system/files/app/upload")
+                || path.equals("/files/app/upload")
+                || path.equals("/member/app")
+                || path.startsWith("/member/app/")
+                || path.equals("/mall/app")
+                || path.startsWith("/mall/app/")
+                || path.equals("/trade/app")
+                || path.startsWith("/trade/app/");
     }
 
     /** 保留已有小程序公开读接口、登录入口。 */
@@ -95,34 +103,51 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (method == HttpMethod.PUT) {
             return path.matches("/mall/app/banners/[1-9][0-9]{0,18}/browse");
         }
-        return method == HttpMethod.GET && (path.equals("/mall/app/comments")
-                || path.equals("/mall/app/categories")
-                || path.equals("/mall/app/products")
-                || path.equals("/mall/app/banners")
-                || path.equals("/mall/app/diy/template/used")
-                || path.equals("/mall/app/promotion-hub/sections")
-                || path.matches("/mall/app/promotion-hub/discount/[1-9][0-9]{0,18}")
-                || path.matches("/mall/app/promotion-hub/reward/[1-9][0-9]{0,18}")
-                || path.matches("/mall/app/diy/template/[1-9][0-9]{0,18}")
-                || path.matches("/mall/app/diy/page/[1-9][0-9]{0,18}")
-                || path.matches("/mall/app/products/[1-9][0-9]{0,18}"));
+        return method == HttpMethod.GET
+                && (path.equals("/mall/app/comments")
+                        || path.equals("/mall/app/categories")
+                        || path.equals("/mall/app/products")
+                        || path.equals("/mall/app/banners")
+                        || path.equals("/mall/app/diy/template/used")
+                        || path.equals("/mall/app/promotion-hub/sections")
+                        || path.matches("/mall/app/promotion-hub/discount/[1-9][0-9]{0,18}")
+                        || path.matches("/mall/app/promotion-hub/reward/[1-9][0-9]{0,18}")
+                        || path.matches("/mall/app/diy/template/[1-9][0-9]{0,18}")
+                        || path.matches("/mall/app/diy/page/[1-9][0-9]{0,18}")
+                        || path.matches("/mall/app/products/[1-9][0-9]{0,18}"));
     }
 
     /** 清除客户端身份头，身份只从已校验的公共会话写入。 */
     private ServerWebExchange clearIdentityHeaders(ServerWebExchange exchange) {
-        ServerHttpRequest request = exchange.getRequest().mutate().headers(headers -> {
-            for (String header : Set.of(SecurityConstants.HEADER_USER_ID, SecurityConstants.HEADER_USER_KEY,
-                    SecurityConstants.HEADER_USER_NAME, SecurityConstants.HEADER_ROLE_KEY,
-                    SecurityConstants.HEADER_ROLE_PERMISSION, SecurityConstants.HEADER_LOGIN_USER,
-                    "X-Lemnt-Login-Ip", "X-Member-Id", "memberId")) {
-                headers.remove(header);
-            }
-            // 仅使用连接对端，不信任客户端转发头；代理链需要另行配置。
-            var remote=exchange.getRequest().getRemoteAddress();
-            if(remote != null && remote.getAddress() != null) {
-                headers.set("X-Lemnt-Login-Ip",remote.getAddress().getHostAddress().split("%",2)[0]);
-            }
-        }).build();
+        ServerHttpRequest request =
+                exchange.getRequest()
+                        .mutate()
+                        .headers(
+                                headers -> {
+                                    for (String header :
+                                            Set.of(
+                                                    SecurityConstants.HEADER_USER_ID,
+                                                    SecurityConstants.HEADER_USER_KEY,
+                                                    SecurityConstants.HEADER_USER_NAME,
+                                                    SecurityConstants.HEADER_ROLE_KEY,
+                                                    SecurityConstants.HEADER_ROLE_PERMISSION,
+                                                    SecurityConstants.HEADER_LOGIN_USER,
+                                                    "X-Lemnt-Login-Ip",
+                                                    "X-Member-Id",
+                                                    "memberId")) {
+                                        headers.remove(header);
+                                    }
+                                    // 仅使用连接对端，不信任客户端转发头；代理链需要另行配置。
+                                    var remote = exchange.getRequest().getRemoteAddress();
+                                    if (remote != null && remote.getAddress() != null) {
+                                        headers.set(
+                                                "X-Lemnt-Login-Ip",
+                                                remote.getAddress()
+                                                        .getHostAddress()
+                                                        .split("%", 2)[0]);
+                                    }
+                                })
+                        .build();
         return exchange.mutate().request(request).build();
     }
 
@@ -146,7 +171,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
     private String getOriginalPath(ServerWebExchange exchange, ServerHttpRequest request) {
         Set<URI> originalUrls = exchange.getAttribute(GATEWAY_ORIGINAL_REQUEST_URL_ATTR);
         return originalUrls == null || originalUrls.isEmpty()
-                ? request.getURI().getPath() : originalUrls.iterator().next().getPath();
+                ? request.getURI().getPath()
+                : originalUrls.iterator().next().getPath();
     }
 
     @Override

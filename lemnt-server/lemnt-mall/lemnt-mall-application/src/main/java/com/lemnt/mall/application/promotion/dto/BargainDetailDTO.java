@@ -7,5 +7,4 @@ public record BargainDetailDTO(
         BargainActivityDTO activity,
         BargainRecordDTO record,
         List<BargainHelpDTO> helps,
-        Boolean helped
-) {}
+        Boolean helped) {}

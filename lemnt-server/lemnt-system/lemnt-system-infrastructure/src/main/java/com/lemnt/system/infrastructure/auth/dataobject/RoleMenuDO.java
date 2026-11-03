@@ -19,8 +19,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @TableName("sys_role_menu")
 public class RoleMenuDO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     /**
      * 角色ID

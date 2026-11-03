@@ -30,8 +30,7 @@ public class MenuReqConverter {
                 req.visible(),
                 req.status(),
                 req.perms(),
-                req.icon()
-        );
+                req.icon());
     }
 
     public static MenuUpdateCmd toCmd(MenuUpdateReq req) {
@@ -50,43 +49,27 @@ public class MenuReqConverter {
                 req.visible(),
                 req.status(),
                 req.perms(),
-                req.icon()
-        );
+                req.icon());
     }
 
     public static MenuListQry toQry(MenuListReq req, Long userId) {
         if (req == null) {
             return null;
         }
-        return new MenuListQry(
-                req.menuName(),
-                req.status(),
-                req.visible(),
-                userId
-        );
+        return new MenuListQry(req.menuName(), req.status(), req.visible(), userId);
     }
 
     public static MenuListQry toQry(SystemMenuListReq req, Long userId) {
         if (req == null) {
             return null;
         }
-        return new MenuListQry(
-                req.menuName(),
-                req.status(),
-                req.visible(),
-                userId
-        );
+        return new MenuListQry(req.menuName(), req.status(), req.visible(), userId);
     }
 
     public static MenuListQry toQry(SystemMenuTreeSelectReq req, Long userId) {
         if (req == null) {
             return null;
         }
-        return new MenuListQry(
-                req.menuName(),
-                req.status(),
-                req.visible(),
-                userId
-        );
+        return new MenuListQry(req.menuName(), req.status(), req.visible(), userId);
     }
 }

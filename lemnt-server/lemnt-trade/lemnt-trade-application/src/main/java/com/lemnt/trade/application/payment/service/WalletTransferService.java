@@ -27,7 +27,11 @@ public class WalletTransferService {
     private final WalletService walletService;
 
     @Transactional(rollbackFor = Exception.class)
-    public WalletTransfer transfer(Long fromMemberId, Long toMemberId, BigDecimal amount, String remark,
+    public WalletTransfer transfer(
+            Long fromMemberId,
+            Long toMemberId,
+            BigDecimal amount,
+            String remark,
             String requestNo) {
         requireMember(fromMemberId, "转出会员");
         requireMember(toMemberId, "转入会员");
@@ -36,7 +40,8 @@ public class WalletTransferService {
         }
         BigDecimal value = RechargeRules.positiveMoney(amount, "转账金额");
         String request = RechargeRules.text(requestNo, 64, "请求编号");
-        String note = remark == null || remark.isBlank() ? null : RechargeRules.text(remark, 128, "转账备注");
+        String note =
+                remark == null || remark.isBlank() ? null : RechargeRules.text(remark, 128, "转账备注");
         var existing = transfers.findByRequestNo(request);
         if (existing != null) {
             return verify(existing, fromMemberId, toMemberId, value);
@@ -47,9 +52,24 @@ public class WalletTransferService {
         }
         var fromWallet = walletService.getOrCreate(fromMemberId);
         lockBoth(fromWallet.id(), toWallet.id());
-        var created = transfers.createIfAbsent(new WalletTransfer(null,
-                "TF" + UUID.randomUUID().toString().replace("-", "").toUpperCase(Locale.ROOT), request,
-                fromWallet.id(), fromMemberId, toWallet.id(), toMemberId, value, note, SUCCESS, null));
+        var created =
+                transfers.createIfAbsent(
+                        new WalletTransfer(
+                                null,
+                                "TF"
+                                        + UUID.randomUUID()
+                                                .toString()
+                                                .replace("-", "")
+                                                .toUpperCase(Locale.ROOT),
+                                request,
+                                fromWallet.id(),
+                                fromMemberId,
+                                toWallet.id(),
+                                toMemberId,
+                                value,
+                                note,
+                                SUCCESS,
+                                null));
         if (created == null) {
             created = transfers.findByRequestNo(request);
         }
@@ -59,8 +79,10 @@ public class WalletTransferService {
         return record;
     }
 
-    private WalletTransfer verify(WalletTransfer value, Long fromMemberId, Long toMemberId, BigDecimal amount) {
-        if (!value.fromMemberId().equals(fromMemberId) || !value.toMemberId().equals(toMemberId)
+    private WalletTransfer verify(
+            WalletTransfer value, Long fromMemberId, Long toMemberId, BigDecimal amount) {
+        if (!value.fromMemberId().equals(fromMemberId)
+                || !value.toMemberId().equals(toMemberId)
                 || value.amount().compareTo(amount) != 0) {
             throw new IllegalStateException("请求编号已用于不同转账内容");
         }

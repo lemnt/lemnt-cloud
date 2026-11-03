@@ -51,7 +51,8 @@ export default function RefundRequestPage() {
     try {
       const value = await operate.mutateAsync({ no, kind });
       if (value.kind === 'refund' && 'status' in value.result) {
-        if (value.result.status === 'SUCCESS') message.success('渠道已确认退款成功');
+        if (value.result.status === 'SUCCESS')
+          message.success(value.result.refundNo ? '渠道已确认退款成功' : '零现金售后已完成');
         else if (value.result.status === 'FAILED') message.error('退款失败，售后尚未完成');
         else message.info('退款已受理，等待渠道结果');
       } else message.success('操作已保存');
@@ -65,6 +66,12 @@ export default function RefundRequestPage() {
     { title: '订单编号', dataIndex: 'orderNo', fieldProps: { maxLength: 40 } },
     { title: '会员', dataIndex: 'memberId', search: false },
     { title: '申请金额（元）', dataIndex: 'amount', search: false },
+    {
+      title: '本次售后数量',
+      dataIndex: 'quantity',
+      search: false,
+      render: (_, row) => row.quantity ?? '未记录',
+    },
     { title: '状态', dataIndex: 'status', valueEnum: refundStatusEnum, initialValue: 'REQUESTED' },
     { title: '申请原因', dataIndex: 'reason', search: false },
     { title: '登记时间', dataIndex: 'requestedAt', search: false },

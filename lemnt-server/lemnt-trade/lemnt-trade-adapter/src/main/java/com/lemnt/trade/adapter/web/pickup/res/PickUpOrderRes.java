@@ -11,6 +11,5 @@ public record PickUpOrderRes(
         @Schema(description = "门店名称") String storeName,
         @Schema(description = "门店电话") String storePhone,
         @Schema(description = "门店地址") String storeAddress,
-        @Schema(description = "核销码") String verifyCode
-) implements java.io.Serializable {
-}
+        @Schema(description = "核销码") String verifyCode)
+        implements java.io.Serializable {}

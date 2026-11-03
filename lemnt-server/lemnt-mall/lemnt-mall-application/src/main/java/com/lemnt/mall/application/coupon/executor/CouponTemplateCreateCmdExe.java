@@ -30,21 +30,29 @@ public class CouponTemplateCreateCmdExe {
         }
         var value =
                 CouponRules.template(
-                new CouponTemplate(
-                null,
-                cmd.code(),
-                cmd.name(),
-                cmd.kind(),
-                cmd.threshold(),
-                cmd.fixedAmount(),
-                cmd.discountPercent(),
-                cmd.discountLimit(),
-                cmd.totalCount(),
-                0,
-                cmd.validFrom(),
-                cmd.validUntil(),
-                true,
-                cmd.description(), cmd.takeType(), cmd.takeLimitCount(), cmd.productScope(), cmd.productScopeValues(), cmd.validityType(), cmd.fixedStartTerm(), cmd.fixedEndTerm(), 0));
+                        new CouponTemplate(
+                                null,
+                                cmd.code(),
+                                cmd.name(),
+                                cmd.kind(),
+                                cmd.threshold(),
+                                cmd.fixedAmount(),
+                                cmd.discountPercent(),
+                                cmd.discountLimit(),
+                                cmd.totalCount(),
+                                0,
+                                cmd.validFrom(),
+                                cmd.validUntil(),
+                                true,
+                                cmd.description(),
+                                cmd.takeType(),
+                                cmd.takeLimitCount(),
+                                cmd.productScope(),
+                                cmd.productScopeValues(),
+                                cmd.validityType(),
+                                cmd.fixedStartTerm(),
+                                cmd.fixedEndTerm(),
+                                0));
         return CouponDTOConverter.template(couponTemplateGateway.createTemplate(value));
     }
 }

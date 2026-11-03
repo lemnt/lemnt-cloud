@@ -1,8 +1,34 @@
-.container { padding: 24rpx; }
-.title { font-size: 36rpx; font-weight: 600; margin-bottom: 16rpx; }
-.card { background: #fff; border-radius: 16rpx; padding: 24rpx; margin-bottom: 24rpx; }
-.subtitle { font-size: 30rpx; font-weight: 500; margin-bottom: 8rpx; }
-.list-row { margin: 6rpx 0; }
-.description { color: #666; font-size: 24rpx; }
-.notice { color: #999; margin: 16rpx 0; }
-.error { color: #c62828; margin: 16rpx 0; }
+.container {
+  padding: 24rpx;
+}
+.title {
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+.subtitle {
+  font-size: 30rpx;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+.list-row {
+  margin: 6rpx 0;
+}
+.description {
+  color: #666;
+  font-size: 24rpx;
+}
+.notice {
+  color: #999;
+  margin: 16rpx 0;
+}
+.error {
+  color: #c62828;
+  margin: 16rpx 0;
+}

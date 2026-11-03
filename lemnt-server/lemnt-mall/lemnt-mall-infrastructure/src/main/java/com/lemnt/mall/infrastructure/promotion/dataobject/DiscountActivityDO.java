@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class DiscountActivityDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private String name;
     private Integer status;
     private LocalDateTime startTime;

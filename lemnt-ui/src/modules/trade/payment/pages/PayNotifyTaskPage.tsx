@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { usePermission } from '@/shared/hooks/usePermission';
 import * as api from '../api/payNotifyApi';
 
-const typeEnum = { PAY: '支付', REFUND: '退款' } as const;
+const typeEnum = { PAY: '支付', REFUND: '退款', AFTER_SALE: '售后权益' } as const;
 const statusEnum = { PENDING: '待派发', SUCCESS: '成功', FAILED: '失败' } as const;
 
 /** 支付结果派发任务：查看尝试日志并对失败任务人工重发。 */
@@ -112,7 +112,10 @@ export function PayNotifyTaskPage() {
         ]}
         onSubmit={(v) => {
           setFilters({
-            type: v.type === 'PAY' || v.type === 'REFUND' ? v.type : undefined,
+            type:
+              v.type === 'PAY' || v.type === 'REFUND' || v.type === 'AFTER_SALE'
+                ? v.type
+                : undefined,
             bizNo: typeof v.bizNo === 'string' ? v.bizNo : undefined,
             orderNo: typeof v.orderNo === 'string' ? v.orderNo : undefined,
             status:

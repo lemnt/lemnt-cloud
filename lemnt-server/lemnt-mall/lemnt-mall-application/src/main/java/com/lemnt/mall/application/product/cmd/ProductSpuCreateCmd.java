@@ -20,18 +20,31 @@ public record ProductSpuCreateCmd(
         String keyword,
         String introduction,
         List<String> sliderPicUrls,
-        Integer sort
-) implements Serializable {
+        Integer sort)
+        implements Serializable {
     /**
      * 商品商品SKU草稿。
      */
-    public record ProductSkuDraft(String code, String name, BigDecimal price, Integer stock, String image,
-            List<Spec> specs, BigDecimal weight, BigDecimal volume) {
+    public record ProductSkuDraft(
+            String code,
+            String name,
+            BigDecimal price,
+            Integer stock,
+            String image,
+            List<Spec> specs,
+            BigDecimal weight,
+            BigDecimal volume) {
         /** 未配置配送参数的草稿。 */
-        public ProductSkuDraft(String code, String name, BigDecimal price, Integer stock, String image,
+        public ProductSkuDraft(
+                String code,
+                String name,
+                BigDecimal price,
+                Integer stock,
+                String image,
                 List<Spec> specs) {
             this(code, name, price, stock, image, specs, null, null);
         }
+
         public record Spec(Long specId, String specName, Long specValueId, String specValueName) {}
     }
 
@@ -44,6 +57,19 @@ public record ProductSpuCreateCmd(
             String description,
             String image,
             List<ProductSkuDraft> skus) {
-        this(code, name, categoryId, brandId, description, image, skus, List.of(), null, null, null, null, null);
+        this(
+                code,
+                name,
+                categoryId,
+                brandId,
+                description,
+                image,
+                skus,
+                List.of(),
+                null,
+                null,
+                null,
+                null,
+                null);
     }
 }

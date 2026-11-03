@@ -30,14 +30,28 @@ class BargainPersistenceTest {
     void setup() throws Exception {
         f = new CatalogPersistenceTest();
         f.setup();
-        ScriptUtils.executeSqlScript(f.schemaConnection, new ClassPathResource("sql/V20__promotion_bargain.sql"));
+        ScriptUtils.executeSqlScript(
+                f.schemaConnection, new ClassPathResource("sql/V20__promotion_bargain.sql"));
         activities = f.components.get(BargainActivityManagementService.class);
         records = f.components.get(BargainRecordService.class);
         spu = f.create("BARGAIN", f.draft("RED", 10));
         var now = LocalDateTime.now();
-        activityId = activities.create(new BargainActivityCreateCmd("砍价", now.minusDays(1), now.plusDays(1),
-                spu.id(), spu.skus().get(0).id(), new BigDecimal("10.00"), new BigDecimal("9.00"), 5, 2, 1,
-                1, new BigDecimal("1.00"), new BigDecimal("1.00")));
+        activityId =
+                activities.create(
+                        new BargainActivityCreateCmd(
+                                "砍价",
+                                now.minusDays(1),
+                                now.plusDays(1),
+                                spu.id(),
+                                spu.skus().get(0).id(),
+                                new BigDecimal("10.00"),
+                                new BigDecimal("9.00"),
+                                5,
+                                2,
+                                1,
+                                1,
+                                new BigDecimal("1.00"),
+                                new BigDecimal("1.00")));
     }
 
     @AfterEach
@@ -61,16 +75,32 @@ class BargainPersistenceTest {
     @Test
     void selfHelpDuplicateHelpAndSecondInProgressAreRejected() {
         var id = records.create(1L, activityId);
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class, () -> records.help(1L, id));
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class, () -> records.help(1L, id));
         records.help(2L, id);
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class, () -> records.help(2L, id));
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class, () -> records.help(2L, id));
         var other = f.create("BARGAIN2", f.draft("BLUE", 10));
-        var second = activities.create(new BargainActivityCreateCmd("另一个砍价", LocalDateTime.now().minusDays(1),
-                LocalDateTime.now().plusDays(1), other.id(), other.skus().get(0).id(),
-                new BigDecimal("10.00"), new BigDecimal("8.00"), 5, 2, 1, 1,
-                new BigDecimal("1.00"), new BigDecimal("1.00")));
+        var second =
+                activities.create(
+                        new BargainActivityCreateCmd(
+                                "另一个砍价",
+                                LocalDateTime.now().minusDays(1),
+                                LocalDateTime.now().plusDays(1),
+                                other.id(),
+                                other.skus().get(0).id(),
+                                new BigDecimal("10.00"),
+                                new BigDecimal("8.00"),
+                                5,
+                                2,
+                                1,
+                                1,
+                                new BigDecimal("1.00"),
+                                new BigDecimal("1.00")));
         records.create(3L, second);
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class, () -> records.create(3L, second));
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
+                () -> records.create(3L, second));
     }
 
     @Test
@@ -78,11 +108,24 @@ class BargainPersistenceTest {
         var id = records.create(1L, activityId);
         var gateway = f.components.get(BargainActivityGateway.class);
         var current = gateway.find(activityId);
-        gateway.save(new BargainActivity(current.id(), current.name(), current.startTime(),
-                LocalDateTime.now().minusMinutes(1), current.status(), current.spuId(), current.skuId(),
-                current.bargainFirstPrice(), current.bargainMinPrice(), current.stock(), current.totalStock(),
-                current.helpMaxCount(), current.bargainCount(), current.totalLimitCount(),
-                current.randomMinPrice(), current.randomMaxPrice()));
+        gateway.save(
+                new BargainActivity(
+                        current.id(),
+                        current.name(),
+                        current.startTime(),
+                        LocalDateTime.now().minusMinutes(1),
+                        current.status(),
+                        current.spuId(),
+                        current.skuId(),
+                        current.bargainFirstPrice(),
+                        current.bargainMinPrice(),
+                        current.stock(),
+                        current.totalStock(),
+                        current.helpMaxCount(),
+                        current.bargainCount(),
+                        current.totalLimitCount(),
+                        current.randomMinPrice(),
+                        current.randomMaxPrice()));
         assertEquals(1, records.expire());
         assertEquals(3, records.detail(id, 1L).record().status());
     }
@@ -93,7 +136,8 @@ class BargainPersistenceTest {
         assertEquals(3, activities.detail(activityId).stock());
         activities.increaseStock(activityId, 2);
         assertEquals(5, activities.detail(activityId).stock());
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
                 () -> activities.decreaseStock(activityId, 6));
     }
 }

@@ -12,13 +12,12 @@ import com.lemnt.trade.application.fulfillment.executor.OrderPageQueryExe;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
@@ -26,7 +25,6 @@ import jakarta.validation.Valid;
 @Tag(name = "订单履约查询")
 @RestController
 @RequestMapping("/trade/admin/orders")
-@RequiredArgsConstructor
 public class FulfillmentOrderController {
     private final OrderPageQueryExe orderPageQueryExe;
     private final OrderDetailQueryExe orderDetailQueryExe;
@@ -36,7 +34,9 @@ public class FulfillmentOrderController {
     @RequiresPermissions("trade:fulfillment:list")
     public R<OrderSummaryRes> page(@Valid @ModelAttribute OrderPageReq req) {
         var page = orderPageQueryExe.execute(FulfillmentReqConverter.orders(req));
-        return R.page(page.records().stream().map(FulfillmentResConverter::summary).toList(), page.total());
+        return R.page(
+                page.records().stream().map(FulfillmentResConverter::summary).toList(),
+                page.total());
     }
 
     @GetMapping("/{orderNo}")
@@ -45,5 +45,36 @@ public class FulfillmentOrderController {
     public R<OrderDetailRes> detail(@PathVariable String orderNo) {
         var value = orderDetailQueryExe.execute(orderNo);
         return value == null ? R.fail("订单不存在") : R.ok(FulfillmentResConverter.detail(value));
+    }
+
+    private final com.lemnt.trade.application.promotion.executor.OrderPromotionDetailQueryExe
+            promotionQuery;
+
+    /** 查询冻结优惠及权益，不回查当前促销规则。 */
+    @GetMapping("/{orderNo}/promotions")
+    @Operation(summary = "订单优惠快照")
+    @RequiresPermissions("trade:fulfillment:query")
+    public R<com.lemnt.trade.adapter.web.promotion.res.OrderPromotionDetailRes> promotions(
+            @PathVariable String orderNo) {
+        return R.ok(
+                com.lemnt.trade.adapter.web.promotion.converter.OrderPromotionResConverter.toRes(
+                        promotionQuery.execute(orderNo)));
+    }
+
+    /** 生产使用完整查询协作者，存量测试构造仅服务原有路由。 */
+    @Autowired
+    public FulfillmentOrderController(
+            OrderPageQueryExe orderPageQueryExe,
+            OrderDetailQueryExe orderDetailQueryExe,
+            com.lemnt.trade.application.promotion.executor.OrderPromotionDetailQueryExe
+                    promotionQuery) {
+        this.orderPageQueryExe = orderPageQueryExe;
+        this.orderDetailQueryExe = orderDetailQueryExe;
+        this.promotionQuery = promotionQuery;
+    }
+
+    public FulfillmentOrderController(
+            OrderPageQueryExe orderPageQueryExe, OrderDetailQueryExe orderDetailQueryExe) {
+        this(orderPageQueryExe, orderDetailQueryExe, null);
     }
 }

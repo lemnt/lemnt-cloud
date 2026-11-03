@@ -31,8 +31,17 @@ public class MemberUserClientImpl implements MemberUserClient {
             return null;
         }
         var level = member.levelId() == null ? null : memberLevelGateway.level(member.levelId());
-        int percent = level == null || !Integer.valueOf(1).equals(level.status()) ? 100 : level.discountPercent();
-        return new MemberUserDTO(member.id(), member.nickname(), member.status(), percent, member.points(), member.avatar());
+        int percent =
+                level == null || !Integer.valueOf(1).equals(level.status())
+                        ? 100
+                        : level.discountPercent();
+        return new MemberUserDTO(
+                member.id(),
+                member.nickname(),
+                member.status(),
+                percent,
+                member.points(),
+                member.avatar());
     }
 
     /** 锁定会员行，在同一事务内读取会员资料和密码。 */
@@ -50,10 +59,13 @@ public class MemberUserClientImpl implements MemberUserClient {
         String password = memberUserGateway.findPasswordByMemberId(member.id());
         return new MemberLoginInfoDTO(member.id(), member.mobile(), member.status(), password);
     }
+
     /** 兼容旧私有调用并保留事务，缺少IP时记录未知。 */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void recordLogin(Long memberId) { recordLogin(memberId,null); }
+    public void recordLogin(Long memberId) {
+        recordLogin(memberId, null);
+    }
 
     /** 认证中心成功签发会话后记录；状态变化时拒绝并由认证端撤销会话。 */
     @Override
@@ -61,15 +73,20 @@ public class MemberUserClientImpl implements MemberUserClient {
     public void recordLogin(Long memberId, String loginIp) {
         if (loginIp != null) {
             try {
-                if(loginIp.length()>50 || !loginIp.matches("[0-9a-fA-F:.]+") || (!loginIp.contains(":") && !loginIp.matches("[0-9]{1,3}(\\.[0-9]{1,3}){3}"))) throw new IllegalArgumentException();
+                if (loginIp.length() > 50
+                        || !loginIp.matches("[0-9a-fA-F:.]+")
+                        || (!loginIp.contains(":")
+                                && !loginIp.matches("[0-9]{1,3}(\\.[0-9]{1,3}){3}")))
+                    throw new IllegalArgumentException();
                 java.net.InetAddress.getByName(loginIp);
-            } catch(Exception error) {throw new com.lemnt.common.core.exception.ServiceException("登录连接IP不合法",400);}
+            } catch (Exception error) {
+                throw new com.lemnt.common.core.exception.ServiceException("登录连接IP不合法", 400);
+            }
         }
-        var member=memberUserGateway.lockById(memberId);
+        var member = memberUserGateway.lockById(memberId);
         if (member == null || !Integer.valueOf(1).equals(member.status())) {
-            throw new com.lemnt.common.core.exception.ServiceException("会员不可登录",400);
+            throw new com.lemnt.common.core.exception.ServiceException("会员不可登录", 400);
         }
-        memberUserGateway.recordLogin(memberId,memberUserGateway.now(),loginIp);
+        memberUserGateway.recordLogin(memberId, memberUserGateway.now(), loginIp);
     }
-
 }

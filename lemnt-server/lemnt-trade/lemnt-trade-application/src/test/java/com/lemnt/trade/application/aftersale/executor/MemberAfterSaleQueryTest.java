@@ -27,15 +27,46 @@ class MemberAfterSaleQueryTest {
     final AfterSaleService service = mock(AfterSaleService.class);
     final MemberAfterSalePageQueryExe pageQuery = new MemberAfterSalePageQueryExe(afterSales);
     final MemberAfterSaleDetailQueryExe detailQuery = new MemberAfterSaleDetailQueryExe(afterSales);
-    final MemberAfterSaleItemListQueryExe itemQuery = new MemberAfterSaleItemListQueryExe(persistence, service);
+    final MemberAfterSaleItemListQueryExe itemQuery =
+            new MemberAfterSaleItemListQueryExe(persistence, service);
 
     private AfterSale sale(Long memberId) {
-        return new AfterSale("RF1", "TR1", "REQ1", memberId, "P1", 10L, 1, "REFUND_ONLY", BigDecimal.ONE, "r",
-                "REQUESTED", null, null, null, LocalDateTime.now(), null, null, null, 1L, 1L, null, null);
+        return new AfterSale(
+                "RF1",
+                "TR1",
+                "REQ1",
+                memberId,
+                "P1",
+                10L,
+                1,
+                "REFUND_ONLY",
+                BigDecimal.ONE,
+                "r",
+                "REQUESTED",
+                null,
+                null,
+                null,
+                LocalDateTime.now(),
+                null,
+                null,
+                null,
+                1L,
+                1L,
+                null,
+                null);
     }
 
     private TradeOrder order(Long memberId) {
-        return new TradeOrder(1L, "TR1", memberId, BigDecimal.TEN, "PAID", List.of(), LocalDateTime.now(), 0L, 0L);
+        return new TradeOrder(
+                1L,
+                "TR1",
+                memberId,
+                BigDecimal.TEN,
+                "PAID",
+                List.of(),
+                LocalDateTime.now(),
+                0L,
+                0L);
     }
 
     @Test
@@ -50,8 +81,12 @@ class MemberAfterSaleQueryTest {
 
     @Test
     void pageRejectsMissingMemberAndInvalidStatus() {
-        assertThrows(IllegalArgumentException.class, () -> pageQuery.execute(null, new MemberAfterSalePageQry(null, null, 1, 10)));
-        assertThrows(IllegalArgumentException.class, () -> pageQuery.execute(7L, new MemberAfterSalePageQry(null, "UNKNOWN", 1, 10)));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> pageQuery.execute(null, new MemberAfterSalePageQry(null, null, 1, 10)));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> pageQuery.execute(7L, new MemberAfterSalePageQry(null, "UNKNOWN", 1, 10)));
         verifyNoInteractions(afterSales);
     }
 

@@ -1,18 +1,17 @@
 package com.lemnt.mall.adapter.app.promotion;
 
-import com.lemnt.mall.application.promotion.executor.PromotionOrderPlaceCmdExe;
-import com.lemnt.mall.adapter.app.promotion.res.AppPromotionOrderRes;
-import com.lemnt.mall.adapter.app.promotion.req.AppPromotionOrderCreateReq;
-import com.lemnt.mall.adapter.app.promotion.converter.AppPromotionOrderConverter;
 import com.lemnt.common.core.domain.R;
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.mall.adapter.app.promotion.converter.AppBargainConverter;
+import com.lemnt.mall.adapter.app.promotion.converter.AppPromotionOrderConverter;
 import com.lemnt.mall.adapter.app.promotion.req.AppBargainHelpCreateReq;
 import com.lemnt.mall.adapter.app.promotion.req.AppBargainRecordCreateReq;
+import com.lemnt.mall.adapter.app.promotion.req.AppPromotionOrderCreateReq;
 import com.lemnt.mall.adapter.app.promotion.res.AppBargainActivityRes;
 import com.lemnt.mall.adapter.app.promotion.res.AppBargainDetailRes;
 import com.lemnt.mall.adapter.app.promotion.res.AppBargainHelpRes;
 import com.lemnt.mall.adapter.app.promotion.res.AppBargainRecordRes;
+import com.lemnt.mall.adapter.app.promotion.res.AppPromotionOrderRes;
 import com.lemnt.mall.application.promotion.executor.BargainAppDetailQueryExe;
 import com.lemnt.mall.application.promotion.executor.BargainAppPageQueryExe;
 import com.lemnt.mall.application.promotion.executor.BargainDetailQueryExe;
@@ -21,6 +20,7 @@ import com.lemnt.mall.application.promotion.executor.BargainHelpPageQueryExe;
 import com.lemnt.mall.application.promotion.executor.BargainLatestQueryExe;
 import com.lemnt.mall.application.promotion.executor.BargainRecordCreateCmdExe;
 import com.lemnt.mall.application.promotion.executor.BargainRecordPageQueryExe;
+import com.lemnt.mall.application.promotion.executor.PromotionOrderPlaceCmdExe;
 import com.lemnt.mall.application.promotion.qry.BargainHelpPageQry;
 import com.lemnt.mall.application.promotion.qry.BargainRecordPageQry;
 
@@ -57,10 +57,12 @@ public class AppBargainController {
 
     @GetMapping("/activities")
     @Operation(summary = "砍价活动分页")
-    public R<AppBargainActivityRes> activities(@RequestParam(defaultValue = "1") Integer pageNum,
+    public R<AppBargainActivityRes> activities(
+            @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "20") Integer pageSize) {
         var result = page.execute(pageNum, pageSize);
-        return R.page(result.getRecords().stream().map(AppBargainConverter::activity).toList(),
+        return R.page(
+                result.getRecords().stream().map(AppBargainConverter::activity).toList(),
                 result.getTotal());
     }
 
@@ -72,10 +74,14 @@ public class AppBargainController {
 
     @GetMapping("/activities/{id}/records")
     @Operation(summary = "活动最近砍价记录")
-    public R<List<AppBargainRecordRes>> activityRecords(@PathVariable Long id,
+    public R<List<AppBargainRecordRes>> activityRecords(
+            @PathVariable Long id,
             @RequestParam(required = false) Integer status,
             @RequestParam(defaultValue = "20") Integer count) {
-        return R.ok(latest.execute(id, status, count).stream().map(AppBargainConverter::record).toList());
+        return R.ok(
+                latest.execute(id, status, count).stream()
+                        .map(AppBargainConverter::record)
+                        .toList());
     }
 
     @PostMapping("/records")
@@ -86,42 +92,53 @@ public class AppBargainController {
 
     @GetMapping("/records")
     @Operation(summary = "我的砍价记录分页")
-    public R<AppBargainRecordRes> records(@RequestParam(required = false) Long activityId,
+    public R<AppBargainRecordRes> records(
+            @RequestParam(required = false) Long activityId,
             @RequestParam(required = false) Integer status,
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "20") Integer pageSize) {
-        var result = records.execute(new BargainRecordPageQry(SecurityUtils.getUserId(), activityId,
-                status, pageNum, pageSize));
-        return R.page(result.getRecords().stream().map(AppBargainConverter::record).toList(),
+        var result =
+                records.execute(
+                        new BargainRecordPageQry(
+                                SecurityUtils.getUserId(), activityId, status, pageNum, pageSize));
+        return R.page(
+                result.getRecords().stream().map(AppBargainConverter::record).toList(),
                 result.getTotal());
     }
 
     @GetMapping("/records/{id}")
     @Operation(summary = "砍价详情")
     public R<AppBargainDetailRes> record(@PathVariable Long id) {
-        return R.ok(AppBargainConverter.detail(recordDetail.execute(id, SecurityUtils.getUserId())));
+        return R.ok(
+                AppBargainConverter.detail(recordDetail.execute(id, SecurityUtils.getUserId())));
     }
 
     @GetMapping("/records/{id}/helps")
     @Operation(summary = "砍价助力列表")
-    public R<AppBargainHelpRes> recordHelps(@PathVariable Long id,
+    public R<AppBargainHelpRes> recordHelps(
+            @PathVariable Long id,
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "20") Integer pageSize) {
         var result = helps.execute(new BargainHelpPageQry(id, null, null, pageNum, pageSize));
-        return R.page(result.getRecords().stream().map(AppBargainConverter::help).toList(),
+        return R.page(
+                result.getRecords().stream().map(AppBargainConverter::help).toList(),
                 result.getTotal());
     }
 
     @PostMapping("/helps")
     @Operation(summary = "帮好友砍一刀")
     public R<AppBargainHelpRes> help(@Valid @RequestBody AppBargainHelpCreateReq req) {
-        return R.ok(AppBargainConverter.help(help.execute(SecurityUtils.getUserId(), req.recordId())));
+        return R.ok(
+                AppBargainConverter.help(help.execute(SecurityUtils.getUserId(), req.recordId())));
     }
 
     @PostMapping("/orders")
     @Operation(summary = "砍价成功后下单")
     public R<AppPromotionOrderRes> order(@Valid @RequestBody AppPromotionOrderCreateReq req) {
-        return R.ok(AppPromotionOrderConverter.res(orderPlace.execute(
-                AppPromotionOrderConverter.cmd(SecurityUtils.getUserId(), "BARGAIN", req))));
+        return R.ok(
+                AppPromotionOrderConverter.res(
+                        orderPlace.execute(
+                                AppPromotionOrderConverter.cmd(
+                                        SecurityUtils.getUserId(), "BARGAIN", req))));
     }
 }

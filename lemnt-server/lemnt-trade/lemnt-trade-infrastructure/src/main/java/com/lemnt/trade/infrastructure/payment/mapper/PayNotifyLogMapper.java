@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** trade_pay_notify_log Mapper，追加与查询复用 MyBatis Plus。 */
 @Mapper
-public interface PayNotifyLogMapper extends BaseMapper<PayNotifyLogDO> {
-}
+public interface PayNotifyLogMapper extends BaseMapper<PayNotifyLogDO> {}

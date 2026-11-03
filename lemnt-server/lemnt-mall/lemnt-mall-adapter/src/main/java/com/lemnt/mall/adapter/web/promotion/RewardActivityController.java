@@ -55,7 +55,8 @@ public class RewardActivityController {
     @PutMapping("/{id}")
     @Operation(summary = "修改满减活动")
     @RequiresPermissions("mall:promotion:update")
-    public R<Boolean> update(@PathVariable Long id, @Valid @RequestBody RewardActivityUpdateReq req) {
+    public R<Boolean> update(
+            @PathVariable Long id, @Valid @RequestBody RewardActivityUpdateReq req) {
         return R.ok(update.execute(RewardActivityReqConverter.update(id, req)));
     }
 
@@ -85,6 +86,8 @@ public class RewardActivityController {
     @RequiresPermissions("mall:promotion:list")
     public R<RewardActivityPageRes> page(@Valid @ModelAttribute RewardActivityPageReq req) {
         var result = page.execute(RewardActivityReqConverter.page(req));
-        return R.page(result.getRecords().stream().map(RewardActivityResConverter::page).toList(), result.getTotal());
+        return R.page(
+                result.getRecords().stream().map(RewardActivityResConverter::page).toList(),
+                result.getTotal());
     }
 }

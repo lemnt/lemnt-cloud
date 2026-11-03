@@ -20,20 +20,31 @@ public final class SettlementQuoteResConverter {
     public static SettlementItemRes checkoutItem(SettlementItemDTO value) {
         return value == null
                 ? null
-                : new SettlementItemRes(value.productId(),
-                value.productCode(),
-                value.productName(),
-                value.unitPrice(),
-                value.quantity(),
-                value.lineAmount(),
-                value.payAmount(),
-                value.deliveryPrice(),
-                value.spuId(),
-                value.spuName(),
-                value.specs() == null ? null : value.specs().stream().map(snapshotProperty ->
-                        new SettlementItemRes.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
-                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
-                value.picUrl(), value.orderItemId(), value.commentStatus());
+                : new SettlementItemRes(
+                        value.productId(),
+                        value.productCode(),
+                        value.productName(),
+                        value.unitPrice(),
+                        value.quantity(),
+                        value.lineAmount(),
+                        value.payAmount(),
+                        value.deliveryPrice(),
+                        value.spuId(),
+                        value.spuName(),
+                        value.specs() == null
+                                ? null
+                                : value.specs().stream()
+                                        .map(
+                                                snapshotProperty ->
+                                                        new SettlementItemRes.Spec(
+                                                                snapshotProperty.specId(),
+                                                                snapshotProperty.specName(),
+                                                                snapshotProperty.specValueId(),
+                                                                snapshotProperty.specValueName()))
+                                        .toList(),
+                        value.picUrl(),
+                        value.orderItemId(),
+                        value.commentStatus());
     }
 
     /**
@@ -43,14 +54,19 @@ public final class SettlementQuoteResConverter {
         return value == null
                 ? null
                 : new SettlementReceiptRes(
-                value.orderNo(),
-                value.memberId(),
-                value.status(),
-                value.originalAmount(),
-                value.discountAmount(),
-                value.payableAmount(),
-                value.couponId(),
-                value.items().stream().map(SettlementQuoteResConverter::checkoutItem).toList(), delivery(value.delivery()), value.commentStatus(), value.finishTime());
+                        value.orderNo(),
+                        value.memberId(),
+                        value.status(),
+                        value.originalAmount(),
+                        value.discountAmount(),
+                        value.payableAmount(),
+                        value.couponId(),
+                        value.items().stream()
+                                .map(SettlementQuoteResConverter::checkoutItem)
+                                .toList(),
+                        delivery(value.delivery()),
+                        value.commentStatus(),
+                        value.finishTime());
     }
 
     /**
@@ -60,57 +76,79 @@ public final class SettlementQuoteResConverter {
         return value == null
                 ? null
                 : new SettlementSubmitRes(
-                value.orderNo(),
-                value.memberId(),
-                value.status(),
-                value.originalAmount(),
-                value.discountAmount(),
-                value.payableAmount(),
-                value.couponId(),
-                value.items().stream().map(SettlementQuoteResConverter::checkoutItem).toList(), delivery(value.delivery()), value.commentStatus(), value.finishTime());
+                        value.orderNo(),
+                        value.memberId(),
+                        value.status(),
+                        value.originalAmount(),
+                        value.discountAmount(),
+                        value.payableAmount(),
+                        value.couponId(),
+                        value.items().stream()
+                                .map(SettlementQuoteResConverter::checkoutItem)
+                                .toList(),
+                        delivery(value.delivery()),
+                        value.commentStatus(),
+                        value.finishTime());
     }
 
     /**
      * 结算回执。
      */
-    public static MallAppOrderOrderRes checkoutReceiptToMallAppOrderOrderRes(SettlementReceiptDTO value) {
+    public static MallAppOrderOrderRes checkoutReceiptToMallAppOrderOrderRes(
+            SettlementReceiptDTO value) {
         return value == null
                 ? null
                 : new MallAppOrderOrderRes(
-                value.orderNo(),
-                value.memberId(),
-                value.status(),
-                value.originalAmount(),
-                value.discountAmount(),
-                value.payableAmount(),
-                value.couponId(),
-                value.items().stream().map(SettlementQuoteResConverter::checkoutItem).toList(), delivery(value.delivery()), value.commentStatus(), value.finishTime());
+                        value.orderNo(),
+                        value.memberId(),
+                        value.status(),
+                        value.originalAmount(),
+                        value.discountAmount(),
+                        value.payableAmount(),
+                        value.couponId(),
+                        value.items().stream()
+                                .map(SettlementQuoteResConverter::checkoutItem)
+                                .toList(),
+                        delivery(value.delivery()),
+                        value.commentStatus(),
+                        value.finishTime());
     }
 
     /**
      * 结算回执。
      */
-    public static MallAppOrderRecoverRes checkoutReceiptToMallAppOrderRecoverRes(SettlementReceiptDTO value) {
+    public static MallAppOrderRecoverRes checkoutReceiptToMallAppOrderRecoverRes(
+            SettlementReceiptDTO value) {
         return value == null
                 ? null
                 : new MallAppOrderRecoverRes(
-                value.orderNo(),
-                value.memberId(),
-                value.status(),
-                value.originalAmount(),
-                value.discountAmount(),
-                value.payableAmount(),
-                value.couponId(),
-                value.items().stream().map(SettlementQuoteResConverter::checkoutItem).toList(), delivery(value.delivery()), value.commentStatus(), value.finishTime());
+                        value.orderNo(),
+                        value.memberId(),
+                        value.status(),
+                        value.originalAmount(),
+                        value.discountAmount(),
+                        value.payableAmount(),
+                        value.couponId(),
+                        value.items().stream()
+                                .map(SettlementQuoteResConverter::checkoutItem)
+                                .toList(),
+                        delivery(value.delivery()),
+                        value.commentStatus(),
+                        value.finishTime());
     }
 
     /** HTTP 只返回已经校验会员归属的收件快照。 */
-    public static SettlementDeliveryRes delivery(
-            SettlementDeliveryDTO value
-    ) {
-        return value == null ? null : new SettlementDeliveryRes(
-                value.addressId(), value.deliveryType(), value.receiverName(), value.receiverMobile(),
-                value.receiverAreaId(), value.receiverDetailAddress(), value.deliveryPrice(),
-                value.pickUpStoreId());
+    public static SettlementDeliveryRes delivery(SettlementDeliveryDTO value) {
+        return value == null
+                ? null
+                : new SettlementDeliveryRes(
+                        value.addressId(),
+                        value.deliveryType(),
+                        value.receiverName(),
+                        value.receiverMobile(),
+                        value.receiverAreaId(),
+                        value.receiverDetailAddress(),
+                        value.deliveryPrice(),
+                        value.pickUpStoreId());
     }
 }

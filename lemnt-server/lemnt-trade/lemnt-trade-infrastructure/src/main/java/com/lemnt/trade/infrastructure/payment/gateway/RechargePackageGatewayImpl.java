@@ -24,12 +24,22 @@ public class RechargePackageGatewayImpl implements RechargePackageGateway {
 
     @Override
     public PageResult<RechargePackage> page(RechargePackageFilter filter) {
-        var page = mapper.selectPage(new Page<RechargePackageDO>(filter.pageNum(), filter.pageSize()),
-                Wrappers.<RechargePackageDO>lambdaQuery()
-                        .like(filter.name() != null && !filter.name().isBlank(), RechargePackageDO::getName, filter.name())
-                        .eq(filter.status() != null, RechargePackageDO::getStatus, filter.status())
-                        .orderByDesc(RechargePackageDO::getId));
-        return PageResult.of(page.getRecords().stream().map(RechargeConverter::toEntity).toList(), page.getTotal());
+        var page =
+                mapper.selectPage(
+                        new Page<RechargePackageDO>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.<RechargePackageDO>lambdaQuery()
+                                .like(
+                                        filter.name() != null && !filter.name().isBlank(),
+                                        RechargePackageDO::getName,
+                                        filter.name())
+                                .eq(
+                                        filter.status() != null,
+                                        RechargePackageDO::getStatus,
+                                        filter.status())
+                                .orderByDesc(RechargePackageDO::getId));
+        return PageResult.of(
+                page.getRecords().stream().map(RechargeConverter::toEntity).toList(),
+                page.getTotal());
     }
 
     @Override
@@ -39,17 +49,24 @@ public class RechargePackageGatewayImpl implements RechargePackageGateway {
 
     @Override
     public List<RechargePackage> listEnabled() {
-        return mapper.selectList(Wrappers.<RechargePackageDO>lambdaQuery()
-                        .eq(RechargePackageDO::getStatus, 0)
-                        .orderByAsc(RechargePackageDO::getPayPrice).orderByAsc(RechargePackageDO::getId))
-                .stream().map(RechargeConverter::toEntity).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<RechargePackageDO>lambdaQuery()
+                                .eq(RechargePackageDO::getStatus, 0)
+                                .orderByAsc(RechargePackageDO::getPayPrice)
+                                .orderByAsc(RechargePackageDO::getId))
+                .stream()
+                .map(RechargeConverter::toEntity)
+                .toList();
     }
 
     @Override
     public boolean existsName(String name, Long excludeId) {
-        return mapper.selectCount(Wrappers.<RechargePackageDO>lambdaQuery()
-                .eq(RechargePackageDO::getName, name)
-                .ne(excludeId != null, RechargePackageDO::getId, excludeId)) > 0;
+        return mapper.selectCount(
+                        Wrappers.<RechargePackageDO>lambdaQuery()
+                                .eq(RechargePackageDO::getName, name)
+                                .ne(excludeId != null, RechargePackageDO::getId, excludeId))
+                > 0;
     }
 
     @Override

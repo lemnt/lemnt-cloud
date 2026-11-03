@@ -25,9 +25,12 @@ class AutoReceiveSchedulerTest {
     void receivesExpiredShipmentsAndIsolatesFailures() {
         when(orders.databaseNow()).thenReturn(LocalDateTime.of(2026, 11, 1, 12, 0));
         when(shipments.shippedBefore(any(), eq(50))).thenReturn(List.of("TR1", "TR2"));
-        doThrow(new IllegalStateException("conflict")).when(fulfillment).receive("TR1", TradeOperator.system());
+        doThrow(new IllegalStateException("conflict"))
+                .when(fulfillment)
+                .receive("TR1", TradeOperator.system());
 
-        new TradeOrderAutoReceiveScheduler(shipments, orders, fulfillment, Duration.ofDays(7)).execute();
+        new TradeOrderAutoReceiveScheduler(shipments, orders, fulfillment, Duration.ofDays(7))
+                .execute();
 
         verify(fulfillment).receive("TR1", TradeOperator.system());
         verify(fulfillment).receive("TR2", TradeOperator.system());
@@ -35,7 +38,10 @@ class AutoReceiveSchedulerTest {
 
     @Test
     void rejectsNonPositiveExpiry() {
-        assertThrows(IllegalArgumentException.class, () -> new TradeOrderAutoReceiveScheduler(
-                shipments, orders, fulfillment, Duration.ZERO));
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        new TradeOrderAutoReceiveScheduler(
+                                shipments, orders, fulfillment, Duration.ZERO));
     }
 }

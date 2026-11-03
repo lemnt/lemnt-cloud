@@ -49,7 +49,9 @@ public class PickUpStoreController {
     @RequiresPermissions("trade:pick-up-store:list")
     public R<PickUpStoreRes> page(@Valid @ModelAttribute PickUpStorePageReq req) {
         var result = page.execute(PickUpConverter.page(req));
-        return R.page(result.getRecords().stream().map(PickUpConverter::store).toList(), result.getTotal());
+        return R.page(
+                result.getRecords().stream().map(PickUpConverter::store).toList(),
+                result.getTotal());
     }
 
     @GetMapping("/{id}")

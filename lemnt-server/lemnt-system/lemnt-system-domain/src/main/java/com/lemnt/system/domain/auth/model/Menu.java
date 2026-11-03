@@ -16,8 +16,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 public class Menu implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -8511071642304718718L;
+    @Serial private static final long serialVersionUID = -8511071642304718718L;
 
     /**
      * 菜单ID

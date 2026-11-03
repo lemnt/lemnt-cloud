@@ -9,6 +9,7 @@ import com.lemnt.system.infrastructure.org.dataobject.PostDO;
 import com.lemnt.system.infrastructure.org.mapper.PostMapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Component;
 
@@ -47,7 +48,7 @@ public class PostGatewayImpl implements PostGateway {
 
     @Override
     public List<Post> selectPostAll() {
-        return PostConverter.toEntityList(postMapper.selectPostAll());
+        return PostConverter.toEntityList(selectPostAllRow());
     }
 
     @Override
@@ -70,16 +71,56 @@ public class PostGatewayImpl implements PostGateway {
 
     @Override
     public Post checkPostNameUnique(String postName) {
-        return PostConverter.toEntity(postMapper.checkPostNameUnique(postName));
+        return PostConverter.toEntity(checkPostNameUniqueRow(postName));
     }
 
     @Override
     public Post checkPostCodeUnique(String postCode) {
-        return PostConverter.toEntity(postMapper.checkPostCodeUnique(postCode));
+        return PostConverter.toEntity(checkPostCodeUniqueRow(postCode));
     }
 
     @Override
     public Post checkPostCodeUnique(String postCode, Long excludePostId) {
-        return PostConverter.toEntity(postMapper.checkPostCodeUnique(postCode, excludePostId));
+        return PostConverter.toEntity(checkPostCodeUniqueRow(postCode, excludePostId));
+    }
+
+    /**
+     * 查询所有岗位
+     *
+     * @return 岗位列表
+     */
+    private List<PostDO> selectPostAllRow() {
+        return postMapper.selectList(
+                Wrappers.<PostDO>lambdaQuery().orderByAsc(PostDO::getPostSort));
+    }
+
+    /**
+     * 校验岗位名称
+     *
+     * @param postName 岗位名称
+     * @return 结果
+     */
+    private PostDO checkPostNameUniqueRow(String postName) {
+        return postMapper.selectOne(
+                Wrappers.<PostDO>lambdaQuery().eq(PostDO::getPostName, postName).last("limit 1"));
+    }
+
+    /**
+     * 校验岗位编码
+     *
+     * @param postCode 岗位编码
+     * @return 结果
+     */
+    private PostDO checkPostCodeUniqueRow(String postCode) {
+        return checkPostCodeUniqueRow(postCode, null);
+    }
+
+    /** 按编码检查冲突，不过滤停用岗位；修改时排除自身。 */
+    private PostDO checkPostCodeUniqueRow(String postCode, Long excludePostId) {
+        return postMapper.selectOne(
+                Wrappers.<PostDO>lambdaQuery()
+                        .eq(PostDO::getPostCode, postCode)
+                        .ne(excludePostId != null, PostDO::getPostId, excludePostId)
+                        .last("limit 1"));
     }
 }

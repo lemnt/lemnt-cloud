@@ -19,12 +19,10 @@ class DeptConverterTest {
         dept.setCreateTime(time);
 
         assertThat(DeptConverter.toEntity(dept).getCreateTime()).isEqualTo(time);
-
     }
 
     @Test
     void shouldKeepMissingCreateTimeNull() {
         assertThat(DeptConverter.toEntity(new DeptDO()).getCreateTime()).isNull();
-
     }
 }

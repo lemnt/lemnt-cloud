@@ -1,10 +1,9 @@
 package com.lemnt.mall.domain.product.gateway;
 
-import com.lemnt.mall.domain.product.model.PublicCommentFilter;
-
 import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.mall.domain.product.model.CommentFilter;
 import com.lemnt.mall.domain.product.model.ProductComment;
+import com.lemnt.mall.domain.product.model.PublicCommentFilter;
 
 /** 商品评价表领域存储接口。 */
 public interface ProductCommentGateway {

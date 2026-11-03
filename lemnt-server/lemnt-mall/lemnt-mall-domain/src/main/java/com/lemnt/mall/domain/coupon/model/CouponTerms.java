@@ -17,9 +17,9 @@ public record CouponTerms(
         String productScope,
         List<Long> productScopeValues,
         LocalDateTime validFrom,
-        LocalDateTime validUntil
-) {
+        LocalDateTime validUntil) {
     public CouponTerms {
-        productScopeValues = productScopeValues == null ? List.of() : List.copyOf(productScopeValues);
+        productScopeValues =
+                productScopeValues == null ? List.of() : List.copyOf(productScopeValues);
     }
 }

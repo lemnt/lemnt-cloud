@@ -10,11 +10,11 @@ public record RewardRule(
         BigDecimal discountPrice,
         Boolean freeDelivery,
         Integer point,
-        Map<Long, Integer> giveCouponTemplateCounts
-) implements Serializable {
+        Map<Long, Integer> giveCouponTemplateCounts)
+        implements Serializable {
     public RewardRule {
-        giveCouponTemplateCounts = giveCouponTemplateCounts == null ? Map.of()
-                : Map.copyOf(giveCouponTemplateCounts);
+        giveCouponTemplateCounts =
+                giveCouponTemplateCounts == null ? Map.of() : Map.copyOf(giveCouponTemplateCounts);
     }
 
     /** 兼容仅配置金额减免的历史规则。 */

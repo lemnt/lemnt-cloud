@@ -1,10 +1,8 @@
 package com.lemnt.mall.application.settlement.service;
 
-import com.lemnt.mall.domain.coupon.gateway.CouponTemplateGateway;
-import java.util.Set;
-
 import com.lemnt.mall.domain.cart.gateway.CartGateway;
 import com.lemnt.mall.domain.coupon.gateway.CouponGateway;
+import com.lemnt.mall.domain.coupon.gateway.CouponTemplateGateway;
 import com.lemnt.mall.domain.coupon.model.CouponOrderReference;
 import com.lemnt.mall.domain.settlement.gateway.SettlementGateway;
 import com.lemnt.mall.domain.settlement.model.SettlementOrder;
@@ -15,6 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.Set;
 
 /** 结算回执、购物车版本引用和订单券状态编排。 */
 @Component
@@ -36,7 +36,8 @@ public class SettlementRecordService {
             return;
         }
         var coupon = couponGateway.coupon(record.memberId(), record.couponId(), true);
-        if (coupon == null || !record.memberId().equals(coupon.memberId())
+        if (coupon == null
+                || !record.memberId().equals(coupon.memberId())
                 || !orderNo.equals(coupon.orderNo())
                 || !Set.of("LOCKED", "USED").contains(coupon.status())) {
             throw new IllegalStateException("订单优惠券归属或锁定状态不一致");
@@ -54,7 +55,8 @@ public class SettlementRecordService {
             }
             return;
         }
-        if (couponGateway.useCoupon(new CouponOrderReference(coupon.memberId(), coupon.id(), orderNo))) {
+        if (couponGateway.useCoupon(
+                new CouponOrderReference(coupon.memberId(), coupon.id(), orderNo))) {
             couponTemplateGateway.changeCounts(coupon.templateId(), 0, 1);
         }
     }
@@ -64,7 +66,8 @@ public class SettlementRecordService {
     public void releaseCoupon(String orderNo) {
         var coupon = couponGateway.byOrderNo(orderNo);
         if (coupon != null) {
-            couponGateway.releaseCoupon(new CouponOrderReference(coupon.memberId(), coupon.id(), orderNo));
+            couponGateway.releaseCoupon(
+                    new CouponOrderReference(coupon.memberId(), coupon.id(), orderNo));
         }
     }
 

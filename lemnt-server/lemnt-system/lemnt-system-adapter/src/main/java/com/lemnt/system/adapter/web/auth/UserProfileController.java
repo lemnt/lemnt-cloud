@@ -48,18 +48,19 @@ public class UserProfileController {
     @GetMapping("/profile")
     public R<UserProfileRes> profile() {
         Map<String, Object> result = userProfileQueryExe.execute();
-        UserProfileRes res = new UserProfileRes(
-                UserResConverter.toRes(UserConverter.toDTO((User) result.get("user"))),
-                (String) result.get("roleGroup"),
-                (String) result.get("postGroup")
-        );
+        UserProfileRes res =
+                new UserProfileRes(
+                        UserResConverter.toRes(UserConverter.toDTO((User) result.get("user"))),
+                        (String) result.get("roleGroup"),
+                        (String) result.get("postGroup"));
         return R.ok(res);
     }
 
     @Operation(summary = "上传用户头像")
     @Log(title = "用户头像", businessType = BusinessType.UPDATE)
     @PostMapping("/profile/avatar")
-    public R<UserAvatarRes> avatar(@RequestParam("avatarfile") MultipartFile file) throws IOException {
+    public R<UserAvatarRes> avatar(@RequestParam("avatarfile") MultipartFile file)
+            throws IOException {
         String fileUrl = ossFileService.uploadFile(file);
         String oldAvatar = userAvatarUpdateCmdExe.execute(fileUrl);
         if (com.lemnt.common.core.utils.StringUtils.isNotBlank(oldAvatar)) {

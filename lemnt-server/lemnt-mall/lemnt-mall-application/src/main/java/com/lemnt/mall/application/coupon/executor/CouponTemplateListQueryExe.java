@@ -22,6 +22,8 @@ public class CouponTemplateListQueryExe {
      * 执行优惠券模板列表查询。
      */
     public List<CouponTemplateDTO> execute() {
-        return couponTemplateGateway.templates().stream().map(CouponDTOConverter::template).toList();
+        return couponTemplateGateway.templates().stream()
+                .map(CouponDTOConverter::template)
+                .toList();
     }
 }

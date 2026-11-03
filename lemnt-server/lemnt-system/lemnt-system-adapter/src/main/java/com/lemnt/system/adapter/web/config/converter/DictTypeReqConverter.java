@@ -15,22 +15,12 @@ import com.lemnt.system.application.config.qry.DictTypePageQry;
 public class DictTypeReqConverter {
 
     public static DictTypeAddCmd toCmd(DictTypeAddReq req) {
-        return new DictTypeAddCmd(
-                req.dictName(),
-                req.dictType(),
-                req.status(),
-                req.remark()
-        );
+        return new DictTypeAddCmd(req.dictName(), req.dictType(), req.status(), req.remark());
     }
 
     public static DictTypeUpdateCmd toCmd(DictTypeUpdateReq req) {
         return new DictTypeUpdateCmd(
-                req.dictId(),
-                req.dictName(),
-                req.dictType(),
-                req.status(),
-                req.remark()
-        );
+                req.dictId(), req.dictName(), req.dictType(), req.status(), req.remark());
     }
 
     public static DictTypePageQry toQry(DictTypePageReq item) {
@@ -44,7 +34,6 @@ public class DictTypeReqConverter {
                 item.pageNum(),
                 item.pageSize(),
                 item.beginTime(),
-                item.endTime()
-        );
+                item.endTime());
     }
 }

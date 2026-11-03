@@ -21,26 +21,43 @@ public class PromotionOrderItemGatewayImpl implements PromotionOrderItemGateway 
 
     @Override
     public List<PromotionOrderItem> byOrderNo(String orderNo) {
-        return mapper.selectList(Wrappers.<PromotionOrderItemDO>lambdaQuery()
-                        .eq(PromotionOrderItemDO::getOrderNo, orderNo)
-                        .orderByAsc(PromotionOrderItemDO::getSkuId))
-                .stream().map(PromotionOrderItemConverter::model).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<PromotionOrderItemDO>lambdaQuery()
+                                .eq(PromotionOrderItemDO::getOrderNo, orderNo)
+                                .orderByAsc(PromotionOrderItemDO::getSkuId))
+                .stream()
+                .map(PromotionOrderItemConverter::model)
+                .toList();
     }
 
     @Override
     public void saveAll(String orderNo, List<PromotionOrderItem> items) {
         for (var item : items) {
-            mapper.insert(PromotionOrderItemConverter.row(new PromotionOrderItem(null, orderNo,
-                    item.skuId(), item.quantity(), item.usePoint(), 0)));
+            mapper.insert(
+                    PromotionOrderItemConverter.row(
+                            new PromotionOrderItem(
+                                    null,
+                                    orderNo,
+                                    item.skuId(),
+                                    item.quantity(),
+                                    item.usePoint(),
+                                    0)));
         }
     }
 
     @Override
-    public boolean increaseRefunded(String orderNo, Long skuId, Integer expected, Integer quantity) {
-        return mapper.update(null, Wrappers.<PromotionOrderItemDO>lambdaUpdate()
-                .eq(PromotionOrderItemDO::getOrderNo, orderNo)
-                .eq(PromotionOrderItemDO::getSkuId, skuId)
-                .eq(PromotionOrderItemDO::getRefundedQuantity, expected)
-                .set(PromotionOrderItemDO::getRefundedQuantity, expected + quantity)) == 1;
+    public boolean increaseRefunded(
+            String orderNo, Long skuId, Integer expected, Integer quantity) {
+        return mapper.update(
+                        null,
+                        Wrappers.<PromotionOrderItemDO>lambdaUpdate()
+                                .eq(PromotionOrderItemDO::getOrderNo, orderNo)
+                                .eq(PromotionOrderItemDO::getSkuId, skuId)
+                                .eq(PromotionOrderItemDO::getRefundedQuantity, expected)
+                                .set(
+                                        PromotionOrderItemDO::getRefundedQuantity,
+                                        expected + quantity))
+                == 1;
     }
 }

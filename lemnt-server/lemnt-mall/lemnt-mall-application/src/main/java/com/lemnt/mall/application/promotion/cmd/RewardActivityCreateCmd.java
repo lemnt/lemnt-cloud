@@ -14,5 +14,4 @@ public record RewardActivityCreateCmd(
         String conditionType,
         String productScope,
         List<Long> productScopeValues,
-        List<RewardRule> rules
-) {}
+        List<RewardRule> rules) {}

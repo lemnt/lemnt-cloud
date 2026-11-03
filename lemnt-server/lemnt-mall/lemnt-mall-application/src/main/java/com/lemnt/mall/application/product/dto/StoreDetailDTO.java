@@ -12,5 +12,5 @@ public record StoreDetailDTO(
         Long brandId,
         String description,
         String image,
-        List<StoreSkuDTO> skus
-) implements java.io.Serializable {}
+        List<StoreSkuDTO> skus)
+        implements java.io.Serializable {}

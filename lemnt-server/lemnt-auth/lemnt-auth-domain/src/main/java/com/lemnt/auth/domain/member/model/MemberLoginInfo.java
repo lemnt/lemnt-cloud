@@ -4,6 +4,10 @@ package com.lemnt.auth.domain.member.model;
 public record MemberLoginInfo(Long memberId, String mobile, int status, String passwordHash) {
     @Override
     public String toString() {
-        return "MemberLoginInfo[memberId=" + memberId + ", status=" + status + ", passwordHash=[REDACTED]]";
+        return "MemberLoginInfo[memberId="
+                + memberId
+                + ", status="
+                + status
+                + ", passwordHash=[REDACTED]]";
     }
 }

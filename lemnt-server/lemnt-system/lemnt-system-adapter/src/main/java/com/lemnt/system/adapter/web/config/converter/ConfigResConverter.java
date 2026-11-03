@@ -42,8 +42,7 @@ public class ConfigResConverter {
                 dto.getConfigValue(),
                 dto.getConfigType(),
                 dto.getRemark(),
-                dto.getCreateTime()
-        );
+                dto.getCreateTime());
     }
 
     /**
@@ -60,8 +59,7 @@ public class ConfigResConverter {
                 dto.getConfigValue(),
                 dto.getConfigType(),
                 dto.getRemark(),
-                dto.getCreateTime()
-        );
+                dto.getCreateTime());
     }
 
     /**
@@ -78,7 +76,6 @@ public class ConfigResConverter {
                 dto.getConfigValue(),
                 dto.getConfigType(),
                 dto.getRemark(),
-                dto.getCreateTime()
-        );
+                dto.getCreateTime());
     }
 }

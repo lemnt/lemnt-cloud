@@ -21,10 +21,14 @@ public class CombinationProductGatewayImpl implements CombinationProductGateway 
 
     @Override
     public List<CombinationProduct> byActivityId(Long activityId) {
-        return mapper.selectList(Wrappers.<CombinationProductDO>lambdaQuery()
-                        .eq(CombinationProductDO::getActivityId, activityId)
-                        .orderByAsc(CombinationProductDO::getId))
-                .stream().map(CombinationConverter::model).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<CombinationProductDO>lambdaQuery()
+                                .eq(CombinationProductDO::getActivityId, activityId)
+                                .orderByAsc(CombinationProductDO::getId))
+                .stream()
+                .map(CombinationConverter::model)
+                .toList();
     }
 
     @Override
@@ -32,32 +36,47 @@ public class CombinationProductGatewayImpl implements CombinationProductGateway 
         if (activityIds == null || activityIds.isEmpty()) {
             return List.of();
         }
-        return mapper.selectList(Wrappers.<CombinationProductDO>lambdaQuery()
-                        .in(CombinationProductDO::getActivityId, activityIds)
-                        .orderByAsc(CombinationProductDO::getId))
-                .stream().map(CombinationConverter::model).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<CombinationProductDO>lambdaQuery()
+                                .in(CombinationProductDO::getActivityId, activityIds)
+                                .orderByAsc(CombinationProductDO::getId))
+                .stream()
+                .map(CombinationConverter::model)
+                .toList();
     }
 
     @Override
     public CombinationProduct byActivityAndSku(Long activityId, Long skuId) {
-        return CombinationConverter.model(mapper.selectOne(Wrappers.<CombinationProductDO>lambdaQuery()
-                .eq(CombinationProductDO::getActivityId, activityId)
-                .eq(CombinationProductDO::getSkuId, skuId)));
+        return CombinationConverter.model(
+                mapper.selectOne(
+                        Wrappers.<CombinationProductDO>lambdaQuery()
+                                .eq(CombinationProductDO::getActivityId, activityId)
+                                .eq(CombinationProductDO::getSkuId, skuId)));
     }
 
     @Override
     public void replace(Long activityId, List<CombinationProduct> products) {
         deleteByActivity(activityId);
         for (var item : products) {
-            mapper.insert(CombinationConverter.row(new CombinationProduct(null, activityId, item.spuId(),
-                    item.skuId(), item.combinationPrice(), item.activityStatus(), item.activityStartTime(),
-                    item.activityEndTime())));
+            mapper.insert(
+                    CombinationConverter.row(
+                            new CombinationProduct(
+                                    null,
+                                    activityId,
+                                    item.spuId(),
+                                    item.skuId(),
+                                    item.combinationPrice(),
+                                    item.activityStatus(),
+                                    item.activityStartTime(),
+                                    item.activityEndTime())));
         }
     }
 
     @Override
     public void deleteByActivity(Long activityId) {
-        mapper.delete(Wrappers.<CombinationProductDO>lambdaQuery()
-                .eq(CombinationProductDO::getActivityId, activityId));
+        mapper.delete(
+                Wrappers.<CombinationProductDO>lambdaQuery()
+                        .eq(CombinationProductDO::getActivityId, activityId));
     }
 }

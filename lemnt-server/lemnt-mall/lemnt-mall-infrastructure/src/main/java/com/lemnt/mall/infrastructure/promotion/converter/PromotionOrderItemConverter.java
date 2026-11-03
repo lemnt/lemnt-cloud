@@ -8,9 +8,16 @@ public final class PromotionOrderItemConverter {
     private PromotionOrderItemConverter() {}
 
     public static PromotionOrderItem model(PromotionOrderItemDO row) {
-        if (row == null) { return null; }
-        return new PromotionOrderItem(row.getId(), row.getOrderNo(), row.getSkuId(), row.getQuantity(),
-                row.getUsePoint(), row.getRefundedQuantity());
+        if (row == null) {
+            return null;
+        }
+        return new PromotionOrderItem(
+                row.getId(),
+                row.getOrderNo(),
+                row.getSkuId(),
+                row.getQuantity(),
+                row.getUsePoint(),
+                row.getRefundedQuantity());
     }
 
     public static PromotionOrderItemDO row(PromotionOrderItem value) {

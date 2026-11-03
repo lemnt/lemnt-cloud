@@ -1,7 +1,6 @@
 package com.lemnt.mall.application.product.cmd;
 
 import java.io.Serializable;
-
 import java.util.List;
 
 /**
@@ -26,13 +25,9 @@ public record CommentSaveCmd(
         Integer descriptionScores,
         Integer benefitScores,
         Boolean anonymous,
-        List<String> picUrls
-) implements Serializable {
+        List<String> picUrls)
+        implements Serializable {
     /** 原订单规格，不从当前字典补造。 */
-    public record Spec(
-            Long specId,
-            String specName,
-            Long specValueId,
-            String specValueName
-    ) implements Serializable {}
+    public record Spec(Long specId, String specName, Long specValueId, String specValueName)
+            implements Serializable {}
 }

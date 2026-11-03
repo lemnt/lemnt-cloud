@@ -25,7 +25,6 @@ class OrgTimeConverterTest {
         assertThat(result.getCreateTime()).isEqualTo(time);
 
         assertThat(result.getChildren().get(0).getCreateTime()).isEqualTo(child.getCreateTime());
-
     }
 
     @Test
@@ -37,7 +36,6 @@ class OrgTimeConverterTest {
         post.setCreateTime(time);
 
         assertThat(PostConverter.toDTO(post).getCreateTime()).isEqualTo(time);
-
     }
 
     @Test
@@ -45,6 +43,5 @@ class OrgTimeConverterTest {
         assertThat(DeptConverter.toDTO(new Dept()).getCreateTime()).isNull();
 
         assertThat(PostConverter.toDTO(new Post()).getCreateTime()).isNull();
-
     }
 }

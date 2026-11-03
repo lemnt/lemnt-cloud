@@ -28,7 +28,9 @@ public class CartListQueryExe {
     public List<CartItemDTO> execute(Long memberId) {
         CartRules.id(memberId);
         var rows = cartGateway.cart(memberId);
-        var snapshots = productCatalogGateway.findOnShelfBatch(rows.stream().map(CartLine::productId).toList());
+        var snapshots =
+                productCatalogGateway.findOnShelfBatch(
+                        rows.stream().map(CartLine::productId).toList());
         return rows.stream()
                 .map(row -> CartDTOConverter.cart(row, snapshots.get(row.productId())))
                 .toList();

@@ -24,5 +24,4 @@ public record BargainActivityDTO(
         Integer totalLimitCount,
         BigDecimal randomMinPrice,
         BigDecimal randomMaxPrice,
-        Long successCount
-) {}
+        Long successCount) {}

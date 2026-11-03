@@ -314,11 +314,9 @@ function ActivityDetails({ value }: { value: RewardActivity | DiscountActivity }
           {value.rules.map((rule, i) => (
             <p key={i}>
               满 {rule.limit} {value.conditionType === 'PRICE' ? '元' : '件'}，减{' '}
-              {rule.discountPrice} 元
-              {rule.freeDelivery ? '，包邮' : ''}
+              {rule.discountPrice} 元{rule.freeDelivery ? '，包邮' : ''}
               {rule.point ? `，赠 ${rule.point} 积分` : ''}
-              {rule.giveCouponTemplateCounts &&
-              Object.keys(rule.giveCouponTemplateCounts).length
+              {rule.giveCouponTemplateCounts && Object.keys(rule.giveCouponTemplateCounts).length
                 ? `，赠券 ${Object.entries(rule.giveCouponTemplateCounts)
                     .map(([key, count]) => `${key}×${count}`)
                     .join('、')}`
@@ -427,12 +425,7 @@ function RewardFields() {
         />
         <ProFormText name="discountPrice" label="减免金额（元）" rules={[{ required: true }]} />
         <ProFormSwitch name="freeDelivery" label="赠送包邮" />
-        <ProFormDigit
-          name="point"
-          label="赠送积分"
-          min={0}
-          fieldProps={{ precision: 0 }}
-        />
+        <ProFormDigit name="point" label="赠送积分" min={0} fieldProps={{ precision: 0 }} />
         <ProFormText
           name="couponCounts"
           label="赠送优惠券（模板ID:数量，逗号分隔）"

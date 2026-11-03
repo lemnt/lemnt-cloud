@@ -9,5 +9,5 @@ import org.apache.ibatis.annotations.Mapper;
  * trade_delivery_express_template_charge Mapper，CRUD 复用 MyBatis Plus。
  */
 @Mapper
-public interface DeliveryExpressTemplateChargeMapper extends BaseMapper<DeliveryExpressTemplateChargeDO> {
-}
+public interface DeliveryExpressTemplateChargeMapper
+        extends BaseMapper<DeliveryExpressTemplateChargeDO> {}

@@ -24,15 +24,26 @@ public class ShipmentGatewayImpl implements ShipmentGateway {
 
     @Override
     public PageResult<Shipment> page(ShipmentFilter filter) {
-        var query = Wrappers.lambdaQuery(ShipmentDO.class)
-                .eq(filter.orderNo() != null, ShipmentDO::getOrderNo, filter.orderNo())
-                .eq(filter.carrierCode() != null, ShipmentDO::getCarrierCode, filter.carrierCode())
-                .eq(filter.trackingNo() != null, ShipmentDO::getTrackingNo, filter.trackingNo())
-                .isNull("SHIPPED".equals(filter.status()), ShipmentDO::getReceivedAt)
-                .isNotNull("RECEIVED".equals(filter.status()), ShipmentDO::getReceivedAt)
-                .orderByDesc(ShipmentDO::getShippedAt).orderByDesc(ShipmentDO::getOrderNo);
-        var page = shipmentMapper.selectPage(new Page<>(filter.pageNum(), filter.pageSize()), query);
-        return PageResult.of(page.getRecords().stream().map(FulfillmentConverter::shipment).toList(), page.getTotal());
+        var query =
+                Wrappers.lambdaQuery(ShipmentDO.class)
+                        .eq(filter.orderNo() != null, ShipmentDO::getOrderNo, filter.orderNo())
+                        .eq(
+                                filter.carrierCode() != null,
+                                ShipmentDO::getCarrierCode,
+                                filter.carrierCode())
+                        .eq(
+                                filter.trackingNo() != null,
+                                ShipmentDO::getTrackingNo,
+                                filter.trackingNo())
+                        .isNull("SHIPPED".equals(filter.status()), ShipmentDO::getReceivedAt)
+                        .isNotNull("RECEIVED".equals(filter.status()), ShipmentDO::getReceivedAt)
+                        .orderByDesc(ShipmentDO::getShippedAt)
+                        .orderByDesc(ShipmentDO::getOrderNo);
+        var page =
+                shipmentMapper.selectPage(new Page<>(filter.pageNum(), filter.pageSize()), query);
+        return PageResult.of(
+                page.getRecords().stream().map(FulfillmentConverter::shipment).toList(),
+                page.getTotal());
     }
 
     @Override
@@ -40,7 +51,7 @@ public class ShipmentGatewayImpl implements ShipmentGateway {
      * 发货。
      */
     public Shipment shipment(String no) {
-        return FulfillmentConverter.shipment(shipmentMapper.shipment(no));
+        return FulfillmentConverter.shipment(shipmentRow(no));
     }
 
     @Override
@@ -48,7 +59,7 @@ public class ShipmentGatewayImpl implements ShipmentGateway {
      * 保存发货。
      */
     public void saveShipment(Shipment value) {
-        shipmentMapper.insertShipment(FulfillmentConverter.shipment(value));
+        insertShipmentRow(FulfillmentConverter.shipment(value));
     }
 
     @Override
@@ -61,10 +72,30 @@ public class ShipmentGatewayImpl implements ShipmentGateway {
 
     @Override
     public java.util.List<String> shippedBefore(LocalDateTime cutoff, int limit) {
-        return shipmentMapper.selectList(Wrappers.<ShipmentDO>lambdaQuery()
-                        .isNull(ShipmentDO::getReceivedAt)
-                        .le(ShipmentDO::getShippedAt, cutoff)
-                        .orderByAsc(ShipmentDO::getShippedAt).last("LIMIT " + Math.max(limit, 1)))
-                .stream().map(ShipmentDO::getOrderNo).toList();
+        return shipmentMapper
+                .selectList(
+                        Wrappers.<ShipmentDO>lambdaQuery()
+                                .isNull(ShipmentDO::getReceivedAt)
+                                .le(ShipmentDO::getShippedAt, cutoff)
+                                .orderByAsc(ShipmentDO::getShippedAt)
+                                .last("LIMIT " + Math.max(limit, 1)))
+                .stream()
+                .map(ShipmentDO::getOrderNo)
+                .toList();
+    }
+
+    /**
+     * 发货。
+     */
+    private ShipmentDO shipmentRow(String orderNo) {
+        return shipmentMapper.selectOne(
+                Wrappers.<ShipmentDO>lambdaQuery().eq(ShipmentDO::getOrderNo, orderNo));
+    }
+
+    /**
+     * 插入发货。
+     */
+    private int insertShipmentRow(ShipmentDO row) {
+        return shipmentMapper.insert(row);
     }
 }

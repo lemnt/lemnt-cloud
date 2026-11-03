@@ -23,49 +23,65 @@ public final class MemberUserResConverter {
      * 分组。
      */
     public static MemberCatalogQueryGroupsPageRes toMemberCatalogQueryGroupsPageRes(GroupDTO v) {
-        return v == null ? null : new MemberCatalogQueryGroupsPageRes(v.id(), v.name(), v.remark(), v.status(), v.createTime());
+        return v == null
+                ? null
+                : new MemberCatalogQueryGroupsPageRes(
+                        v.id(), v.name(), v.remark(), v.status(), v.createTime());
     }
 
     /**
      * 分组。
      */
     public static MemberGroupListRes toMemberGroupListRes(GroupDTO v) {
-        return v == null ? null : new MemberGroupListRes(v.id(), v.name(), v.remark(), v.status(), v.createTime());
+        return v == null
+                ? null
+                : new MemberGroupListRes(v.id(), v.name(), v.remark(), v.status(), v.createTime());
     }
 
     /**
      * 分组。
      */
     public static MemberGroupDetailRes toMemberGroupDetailRes(GroupDTO v) {
-        return v == null ? null : new MemberGroupDetailRes(v.id(), v.name(), v.remark(), v.status(), v.createTime());
+        return v == null
+                ? null
+                : new MemberGroupDetailRes(
+                        v.id(), v.name(), v.remark(), v.status(), v.createTime());
     }
 
     /**
      * 分组。
      */
     public static MemberGroupSimpleRes toMemberGroupSimpleRes(GroupDTO v) {
-        return v == null ? null : new MemberGroupSimpleRes(v.id(), v.name(), v.remark(), v.status());
+        return v == null
+                ? null
+                : new MemberGroupSimpleRes(v.id(), v.name(), v.remark(), v.status());
     }
 
     /**
      * 标签。
      */
     public static MemberCatalogQueryTagsPageRes toMemberCatalogQueryTagsPageRes(TagDTO v) {
-        return v == null ? null : new MemberCatalogQueryTagsPageRes(v.id(), v.name(), v.remark(), v.createTime());
+        return v == null
+                ? null
+                : new MemberCatalogQueryTagsPageRes(v.id(), v.name(), v.remark(), v.createTime());
     }
 
     /**
      * 标签。
      */
     public static MemberTagListRes toMemberTagListRes(TagDTO v) {
-        return v == null ? null : new MemberTagListRes(v.id(), v.name(), v.remark(), v.createTime());
+        return v == null
+                ? null
+                : new MemberTagListRes(v.id(), v.name(), v.remark(), v.createTime());
     }
 
     /**
      * 标签。
      */
     public static MemberTagDetailRes toMemberTagDetailRes(TagDTO v) {
-        return v == null ? null : new MemberTagDetailRes(v.id(), v.name(), v.remark(), v.createTime());
+        return v == null
+                ? null
+                : new MemberTagDetailRes(v.id(), v.name(), v.remark(), v.createTime());
     }
 
     /**
@@ -74,7 +90,6 @@ public final class MemberUserResConverter {
     public static MemberTagSimpleRes toMemberTagSimpleRes(TagDTO v) {
         return v == null ? null : new MemberTagSimpleRes(v.id(), v.name(), v.remark());
     }
-
 
     /**
      * 资料。
@@ -95,8 +110,16 @@ public final class MemberUserResConverter {
                         v.groupId(),
                         v.sex(),
                         v.birthday(),
-                        v.createTime(), v.mark(), v.name(), v.areaId(), v.loginDate(),v.loginIp(),
-                        v.tagIds(), v.tagNames(), v.levelName(), v.groupName());
+                        v.createTime(),
+                        v.mark(),
+                        v.name(),
+                        v.areaId(),
+                        v.loginDate(),
+                        v.loginIp(),
+                        v.tagIds(),
+                        v.tagNames(),
+                        v.levelName(),
+                        v.groupName());
     }
 
     /**
@@ -118,9 +141,15 @@ public final class MemberUserResConverter {
                         v.groupId(),
                         v.sex(),
                         v.birthday(),
-                        v.createTime(), v.mark(), v.name(), v.areaId(), v.loginDate(),v.loginIp(),
-                        v.tagIds(), v.tagNames(), v.levelName(), v.groupName());
+                        v.createTime(),
+                        v.mark(),
+                        v.name(),
+                        v.areaId(),
+                        v.loginDate(),
+                        v.loginIp(),
+                        v.tagIds(),
+                        v.tagNames(),
+                        v.levelName(),
+                        v.groupName());
     }
-
-
 }

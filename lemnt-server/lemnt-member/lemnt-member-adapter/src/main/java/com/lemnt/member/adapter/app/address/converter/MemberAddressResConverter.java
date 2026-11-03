@@ -25,13 +25,15 @@ public final class MemberAddressResConverter {
                         v.mobile(),
                         v.areaId(),
                         v.detailAddress(),
-                        v.defaultStatus(), v.areaName());
+                        v.defaultStatus(),
+                        v.areaName());
     }
 
     /**
      * 地址。
      */
-    public static AppMemberAddressDefaultAddressRes toAppMemberAddressDefaultAddressRes(AddressDTO v) {
+    public static AppMemberAddressDefaultAddressRes toAppMemberAddressDefaultAddressRes(
+            AddressDTO v) {
         return v == null
                 ? null
                 : new AppMemberAddressDefaultAddressRes(
@@ -41,7 +43,8 @@ public final class MemberAddressResConverter {
                         v.mobile(),
                         v.areaId(),
                         v.detailAddress(),
-                        v.defaultStatus(), v.areaName());
+                        v.defaultStatus(),
+                        v.areaName());
     }
 
     /**
@@ -57,7 +60,8 @@ public final class MemberAddressResConverter {
                         v.mobile(),
                         v.areaId(),
                         v.detailAddress(),
-                        v.defaultStatus(), v.areaName());
+                        v.defaultStatus(),
+                        v.areaName());
     }
 
     /**

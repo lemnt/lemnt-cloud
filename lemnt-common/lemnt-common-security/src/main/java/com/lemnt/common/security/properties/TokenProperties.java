@@ -1,13 +1,13 @@
 package com.lemnt.common.security.properties;
 
-import java.nio.charset.StandardCharsets;
-
 import com.lemnt.common.core.utils.StringUtils;
 
-import jakarta.annotation.PostConstruct;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import jakarta.annotation.PostConstruct;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 令牌配置

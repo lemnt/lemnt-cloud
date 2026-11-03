@@ -80,7 +80,13 @@ it('满件数必须整数，指定范围不能为空，金额和时间错误不�
       conditionType: 'COUNT',
       rules: [{ limit: '2', discountPrice: '5' }],
     }).rules[0],
-  ).toEqual({ limit: '2.00', discountPrice: '5.00', freeDelivery: false, point: 0, giveCouponTemplateCounts: {} });
+  ).toEqual({
+    limit: '2.00',
+    discountPrice: '5.00',
+    freeDelivery: false,
+    point: 0,
+    giveCouponTemplateCounts: {},
+  });
 });
 it('折扣按几折精确转换，减价和折扣互斥，重复SKU拒绝', () => {
   const product = {

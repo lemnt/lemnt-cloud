@@ -12,6 +12,5 @@ public record PaymentRefundDTO(
         String channel,
         BigDecimal amount,
         String status,
-        String channelRefundNo
-) implements Serializable {
-}
+        String channelRefundNo)
+        implements Serializable {}

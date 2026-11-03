@@ -32,6 +32,5 @@ public record RoleAddCmd(
         /**
          * 菜单组
          */
-        List<Long> menuIds
-) implements Serializable {
-}
+        List<Long> menuIds)
+        implements Serializable {}

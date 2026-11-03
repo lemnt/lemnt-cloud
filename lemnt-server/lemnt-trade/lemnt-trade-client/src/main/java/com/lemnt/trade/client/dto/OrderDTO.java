@@ -22,8 +22,55 @@ public record OrderDTO(
         OrderDeliveryDTO delivery,
         Boolean commentStatus,
         LocalDateTime finishTime,
-        Map<Long, Integer> giveCouponTemplateCounts
-) implements Serializable {
+        Map<Long, Integer> giveCouponTemplateCounts,
+        BigDecimal originalAmount,
+        BigDecimal discountAmount,
+        BigDecimal deliveryOriginalPrice,
+        BigDecimal deliveryDiscountPrice,
+        BigDecimal adjustmentAmount,
+        String pricingSnapshotStatus,
+        Integer pricingSnapshotVersion,
+        java.util.List<com.lemnt.trade.client.dto.OrderPromotionDTO> promotions)
+        implements Serializable {
+    /** 兼容未记录本批优惠与退款元数据的历史快照。 */
+    public OrderDTO(
+            Long id,
+            String orderNo,
+            Long memberId,
+            BigDecimal totalAmount,
+            String status,
+            List<OrderItemDTO> items,
+            LocalDateTime createTime,
+            long usePoint,
+            long givePoint,
+            OrderDeliveryDTO delivery,
+            Boolean commentStatus,
+            LocalDateTime finishTime,
+            Map<Long, Integer> giveCouponTemplateCounts) {
+        this(
+                id,
+                orderNo,
+                memberId,
+                totalAmount,
+                status,
+                items,
+                createTime,
+                usePoint,
+                givePoint,
+                delivery,
+                commentStatus,
+                finishTime,
+                giveCouponTemplateCounts,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "LEGACY_PARTIAL",
+                0,
+                java.util.List.of());
+    }
+
     /** 兼容无营销赠券的订单快照。 */
     public OrderDTO(
             Long id,
@@ -37,10 +84,21 @@ public record OrderDTO(
             long givePoint,
             OrderDeliveryDTO delivery,
             Boolean commentStatus,
-            LocalDateTime finishTime
-    ) {
-        this(id, orderNo, memberId, totalAmount, status, items, createTime, usePoint, givePoint, delivery,
-                commentStatus, finishTime, Map.of());
+            LocalDateTime finishTime) {
+        this(
+                id,
+                orderNo,
+                memberId,
+                totalAmount,
+                status,
+                items,
+                createTime,
+                usePoint,
+                givePoint,
+                delivery,
+                commentStatus,
+                finishTime,
+                Map.of());
     }
 
     /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
@@ -54,19 +112,31 @@ public record OrderDTO(
             LocalDateTime createTime,
             long usePoint,
             long givePoint,
-            OrderDeliveryDTO delivery
-    ) {
-        this(id, orderNo, memberId, totalAmount, status, items, createTime, usePoint, givePoint, delivery,
-                null, null, Map.of());
+            OrderDeliveryDTO delivery) {
+        this(
+                id,
+                orderNo,
+                memberId,
+                totalAmount,
+                status,
+                items,
+                createTime,
+                usePoint,
+                givePoint,
+                delivery,
+                null,
+                null,
+                Map.of());
     }
 
     /**
      * 创建交易订单实例。
      */
     public OrderDTO {
+        promotions = promotions == null ? java.util.List.of() : java.util.List.copyOf(promotions);
         items = items == null ? List.of() : List.copyOf(items);
-        giveCouponTemplateCounts = giveCouponTemplateCounts == null ? Map.of()
-                : Map.copyOf(giveCouponTemplateCounts);
+        giveCouponTemplateCounts =
+                giveCouponTemplateCounts == null ? Map.of() : Map.copyOf(giveCouponTemplateCounts);
     }
 
     /** 存量快照没有积分权益，按零积分订单读取。 */
@@ -92,6 +162,16 @@ public record OrderDTO(
             LocalDateTime createTime,
             long usePoint,
             long givePoint) {
-        this(id, orderNo, memberId, totalAmount, status, items, createTime, usePoint, givePoint, null);
+        this(
+                id,
+                orderNo,
+                memberId,
+                totalAmount,
+                status,
+                items,
+                createTime,
+                usePoint,
+                givePoint,
+                null);
     }
 }

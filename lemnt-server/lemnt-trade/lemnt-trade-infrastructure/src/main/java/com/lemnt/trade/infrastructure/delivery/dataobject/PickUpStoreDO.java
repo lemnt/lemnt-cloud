@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 public class PickUpStoreDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private String name;
     private String introduction;
     private String phone;

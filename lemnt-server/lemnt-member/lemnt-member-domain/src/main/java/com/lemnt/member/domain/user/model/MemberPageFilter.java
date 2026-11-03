@@ -16,5 +16,4 @@ public record MemberPageFilter(
         LocalDateTime createStartTime,
         LocalDateTime createEndTime,
         int offset,
-        int limit
-) {}
+        int limit) {}

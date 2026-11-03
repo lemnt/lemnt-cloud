@@ -30,14 +30,22 @@ public class SeckillConfigGatewayImpl implements SeckillConfigGateway {
     @Override
     public SeckillConfig save(SeckillConfig value) {
         var row = SeckillConverter.row(value);
-        if (row.getId() == null) { mapper.insert(row); } else { mapper.updateById(row); }
+        if (row.getId() == null) {
+            mapper.insert(row);
+        } else {
+            mapper.updateById(row);
+        }
         return SeckillConverter.model(row);
     }
 
     @Override
     public boolean updateStatus(Long id, Integer status) {
-        return mapper.update(null, Wrappers.<SeckillConfigDO>lambdaUpdate()
-                .eq(SeckillConfigDO::getId, id).set(SeckillConfigDO::getStatus, status)) == 1;
+        return mapper.update(
+                        null,
+                        Wrappers.<SeckillConfigDO>lambdaUpdate()
+                                .eq(SeckillConfigDO::getId, id)
+                                .set(SeckillConfigDO::getStatus, status))
+                == 1;
     }
 
     @Override
@@ -47,16 +55,25 @@ public class SeckillConfigGatewayImpl implements SeckillConfigGateway {
 
     @Override
     public List<SeckillConfig> all() {
-        return mapper.selectList(Wrappers.<SeckillConfigDO>lambdaQuery()
-                        .orderByAsc(SeckillConfigDO::getStartTime))
-                .stream().map(SeckillConverter::model).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<SeckillConfigDO>lambdaQuery()
+                                .orderByAsc(SeckillConfigDO::getStartTime))
+                .stream()
+                .map(SeckillConverter::model)
+                .toList();
     }
 
     @Override
     public List<SeckillConfig> byStatus(Integer status) {
-        return mapper.selectList(Wrappers.<SeckillConfigDO>lambdaQuery()
-                        .eq(SeckillConfigDO::getStatus, status).orderByAsc(SeckillConfigDO::getStartTime))
-                .stream().map(SeckillConverter::model).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<SeckillConfigDO>lambdaQuery()
+                                .eq(SeckillConfigDO::getStatus, status)
+                                .orderByAsc(SeckillConfigDO::getStartTime))
+                .stream()
+                .map(SeckillConverter::model)
+                .toList();
     }
 
     @Override
@@ -69,18 +86,29 @@ public class SeckillConfigGatewayImpl implements SeckillConfigGateway {
 
     @Override
     public PageResult<SeckillConfig> page(SeckillConfigFilter filter) {
-        var page = mapper.selectPage(new Page<SeckillConfigDO>(filter.pageNum(), filter.pageSize()),
-                Wrappers.<SeckillConfigDO>lambdaQuery()
-                        .like(filter.name() != null && !filter.name().isBlank(),
-                                SeckillConfigDO::getName, filter.name())
-                        .eq(filter.status() != null, SeckillConfigDO::getStatus, filter.status())
-                        .orderByAsc(SeckillConfigDO::getStartTime));
-        return PageResult.of(page.getRecords().stream().map(SeckillConverter::model).toList(), page.getTotal());
+        var page =
+                mapper.selectPage(
+                        new Page<SeckillConfigDO>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.<SeckillConfigDO>lambdaQuery()
+                                .like(
+                                        filter.name() != null && !filter.name().isBlank(),
+                                        SeckillConfigDO::getName,
+                                        filter.name())
+                                .eq(
+                                        filter.status() != null,
+                                        SeckillConfigDO::getStatus,
+                                        filter.status())
+                                .orderByAsc(SeckillConfigDO::getStartTime));
+        return PageResult.of(
+                page.getRecords().stream().map(SeckillConverter::model).toList(), page.getTotal());
     }
 
     @Override
     public SeckillConfig lockById(Long id) {
-        return SeckillConverter.model(mapper.lockAll().stream()
-                .filter(row -> row.getId().equals(id)).findFirst().orElse(null));
+        return SeckillConverter.model(
+                mapper.lockAll().stream()
+                        .filter(row -> row.getId().equals(id))
+                        .findFirst()
+                        .orElse(null));
     }
 }

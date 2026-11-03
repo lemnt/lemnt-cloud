@@ -13,8 +13,7 @@ public record Settlement(
         Long memberId,
         SettlementQuote quote,
         List<CartReference> references,
-        Instant expiresAt
-) {
+        Instant expiresAt) {
     /**
      * 创建结算实例。
      */

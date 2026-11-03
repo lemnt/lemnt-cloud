@@ -1,5 +1,6 @@
 package com.lemnt.system.adapter.web.auth.converter;
 
+import com.lemnt.system.adapter.web.auth.res.MetaRes;
 import com.lemnt.system.adapter.web.auth.res.RouterRes;
 import com.lemnt.system.adapter.web.auth.res.SystemMenuGetInfoRes;
 import com.lemnt.system.adapter.web.auth.res.SystemMenuListRes;
@@ -30,9 +31,14 @@ public class MenuResConverter {
                 dto.getComponent(),
                 dto.getQuery(),
                 dto.getAlwaysShow(),
-                dto.getMeta(),
-                toRouterResList(dto.getChildren())
-        );
+                dto.getMeta() == null
+                        ? null
+                        : new MetaRes(
+                                dto.getMeta().getTitle(),
+                                dto.getMeta().getIcon(),
+                                dto.getMeta().isNoCache(),
+                                dto.getMeta().getLink()),
+                toRouterResList(dto.getChildren()));
     }
 
     /**
@@ -86,8 +92,7 @@ public class MenuResConverter {
                 dto.getStatus(),
                 dto.getPerms(),
                 dto.getIcon(),
-                toResListToSystemMenuListRes(dto.getChildren())
-        );
+                toResListToSystemMenuListRes(dto.getChildren()));
     }
 
     /**
@@ -113,8 +118,7 @@ public class MenuResConverter {
                 dto.getStatus(),
                 dto.getPerms(),
                 dto.getIcon(),
-                toResListToSystemMenuGetInfoRes(dto.getChildren())
-        );
+                toResListToSystemMenuGetInfoRes(dto.getChildren()));
     }
 
     /**

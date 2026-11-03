@@ -17,8 +17,14 @@ public class SettlementCreateCmdExe {
 
     /** 执行当前结算操作。 */
     public SettlementDTO execute(SettlementCreateCmd cmd) {
-        return settlementService.create(new SettlementQuoteQry(cmd.memberId(),
-                cmd.productIds(),
-                cmd.couponId(), cmd.pointStatus(), cmd.addressId(), cmd.deliveryType(), cmd.pickUpStoreId()));
+        return settlementService.create(
+                new SettlementQuoteQry(
+                        cmd.memberId(),
+                        cmd.productIds(),
+                        cmd.couponId(),
+                        cmd.pointStatus(),
+                        cmd.addressId(),
+                        cmd.deliveryType(),
+                        cmd.pickUpStoreId()));
     }
 }

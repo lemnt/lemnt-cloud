@@ -51,7 +51,14 @@ public class MemberOrderStatusCountQueryExe {
                 }
             }
         }
-        return new MemberOrderStatusCountDTO(pendingPayment, awaitingShipment, awaitingReceipt,
-                awaitingComment, completed, closed, refunded, awaitingPickup);
+        return new MemberOrderStatusCountDTO(
+                pendingPayment,
+                awaitingShipment,
+                awaitingReceipt,
+                awaitingComment,
+                completed,
+                closed,
+                refunded,
+                awaitingPickup);
     }
 }

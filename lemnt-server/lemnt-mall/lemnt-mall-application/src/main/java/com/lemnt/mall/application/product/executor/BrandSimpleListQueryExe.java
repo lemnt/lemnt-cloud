@@ -24,8 +24,15 @@ public class BrandSimpleListQueryExe {
         if (qry == null || qry.limit() < 1 || qry.limit() > 100) {
             throw new IllegalArgumentException("选择条数须为1至100");
         }
-        String name = qry.name() == null || qry.name().isBlank() ? null : ProductCatalogValidation.text(qry.name(), 100, "品牌名");
-        return brandGateway.page(new BrandFilter(name, "ENABLED", 1, qry.limit())).getRecords().stream()
-                .map(ProductCatalogDTOConverter::brand).toList();
+        String name =
+                qry.name() == null || qry.name().isBlank()
+                        ? null
+                        : ProductCatalogValidation.text(qry.name(), 100, "品牌名");
+        return brandGateway
+                .page(new BrandFilter(name, "ENABLED", 1, qry.limit()))
+                .getRecords()
+                .stream()
+                .map(ProductCatalogDTOConverter::brand)
+                .toList();
     }
 }

@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** 秒杀活动商品表 CRUD。 */
 @Mapper
-public interface SeckillProductMapper extends BaseMapper<SeckillProductDO> {
-}
+public interface SeckillProductMapper extends BaseMapper<SeckillProductDO> {}

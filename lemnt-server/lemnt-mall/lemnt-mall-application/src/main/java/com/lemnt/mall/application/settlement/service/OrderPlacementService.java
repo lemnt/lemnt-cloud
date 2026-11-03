@@ -5,8 +5,8 @@ import com.lemnt.mall.application.settlement.cmd.SettlementOrderSubmitCmd;
 import com.lemnt.mall.application.settlement.qry.SettlementQuoteQry;
 import com.lemnt.mall.domain.settlement.gateway.OrderGateway;
 import com.lemnt.mall.domain.settlement.gateway.SettlementGateway;
-import com.lemnt.mall.domain.settlement.model.SettlementOrder;
 import com.lemnt.mall.domain.settlement.model.Settlement;
+import com.lemnt.mall.domain.settlement.model.SettlementOrder;
 import com.lemnt.mall.domain.settlement.model.SettlementQuote;
 
 import org.springframework.stereotype.Component;
@@ -41,12 +41,14 @@ public class OrderPlacementService {
     }
 
     /** 读取并校验 Redis 结算单后创建交易订单。 */
-    public SettlementOrder submitSettlement(Long memberId, String id, String requestNo, SettlementGateway cache) {
+    public SettlementOrder submitSettlement(
+            Long memberId, String id, String requestNo, SettlementGateway cache) {
         return orders.save(preparation.submitSettlement(memberId, id, requestNo, cache));
     }
 
     /** 放弃尚未提交的结算；已提交的订单通过交易服务查询。 */
-    public SettlementOrder abandonSettlement(Long memberId, String id, String requestNo, SettlementGateway cache) {
+    public SettlementOrder abandonSettlement(
+            Long memberId, String id, String requestNo, SettlementGateway cache) {
         var order = preparation.abandonSettlement(memberId, id, requestNo, cache);
         return order == null ? null : orders.save(order);
     }

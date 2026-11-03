@@ -12,10 +12,11 @@ import com.lemnt.common.security.utils.SecurityUtils;
 
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
-import lombok.SneakyThrows;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+
+import lombok.SneakyThrows;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -62,8 +63,12 @@ public class CustomDataPermissionHandler implements DataPermissionHandler {
     @Override
     @SneakyThrows
     public Expression getSqlSegment(Expression where, String mappedStatementId) {
-        Class<?> clazz = Class.forName(mappedStatementId.substring(0, mappedStatementId.lastIndexOf(StringPool.DOT)));
-        String methodName = mappedStatementId.substring(mappedStatementId.lastIndexOf(StringPool.DOT) + 1);
+        Class<?> clazz =
+                Class.forName(
+                        mappedStatementId.substring(
+                                0, mappedStatementId.lastIndexOf(StringPool.DOT)));
+        String methodName =
+                mappedStatementId.substring(mappedStatementId.lastIndexOf(StringPool.DOT) + 1);
         // mappedStatementId 属于 Mapper；同时检查继承方法，避免漏读父接口注解。
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
@@ -96,32 +101,39 @@ public class CustomDataPermissionHandler implements DataPermissionHandler {
      * @return 追加数据权限后的查询条件
      */
     @SneakyThrows
-    private Expression dataScopeFilter(DataScope annotation, Expression where, SecurityUser loginUser) {
+    private Expression dataScopeFilter(
+            DataScope annotation, Expression where, SecurityUser loginUser) {
         SecurityUserDetail user = loginUser.getDetail();
         if (Objects.isNull(user) || Objects.isNull(user.getRoles()) || user.getRoles().isEmpty()) {
             return denyAll(where);
         }
         // 停用角色不参与数据权限计算
-        List<SecurityRole> roles = user.getRoles().stream()
-                .filter(role -> !Objects.equals(role.getStatus(), UserConstants.ROLE_DISABLE))
-                .collect(Collectors.toList());
+        List<SecurityRole> roles =
+                user.getRoles().stream()
+                        .filter(
+                                role ->
+                                        !Objects.equals(
+                                                role.getStatus(), UserConstants.ROLE_DISABLE))
+                        .collect(Collectors.toList());
         if (roles.isEmpty()) {
             return denyAll(where);
         }
         // 任一角色拥有全部数据权限，无需过滤
-        boolean hasAllScope = roles.stream()
-                .map(SecurityRole::getDataScope)
-                .map(DataScopeEnum::getDataScopeEnum)
-                .anyMatch(scope -> Objects.equals(DataScopeEnum.ALL, scope));
+        boolean hasAllScope =
+                roles.stream()
+                        .map(SecurityRole::getDataScope)
+                        .map(DataScopeEnum::getDataScopeEnum)
+                        .anyMatch(scope -> Objects.equals(DataScopeEnum.ALL, scope));
         if (hasAllScope) {
             return where;
         }
         // 多个角色的数据范围取并集，LinkedHashSet 保证生成的 SQL 条件顺序稳定
-        Set<DataScopeEnum> scopes = roles.stream()
-                .map(SecurityRole::getDataScope)
-                .map(DataScopeEnum::getDataScopeEnum)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+        Set<DataScopeEnum> scopes =
+                roles.stream()
+                        .map(SecurityRole::getDataScope)
+                        .map(DataScopeEnum::getDataScopeEnum)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toCollection(LinkedHashSet::new));
         List<String> conditions = new ArrayList<>();
         for (DataScopeEnum scope : scopes) {
             switch (scope) {
@@ -145,7 +157,8 @@ public class CustomDataPermissionHandler implements DataPermissionHandler {
         if (conditions.isEmpty()) {
             return denyAll(where);
         }
-        Expression appendExpression = CCJSqlParserUtil.parseCondExpression("(" + String.join(" OR ", conditions) + ")");
+        Expression appendExpression =
+                CCJSqlParserUtil.parseCondExpression("(" + String.join(" OR ", conditions) + ")");
         if (Objects.isNull(where)) {
             return appendExpression;
         }
@@ -164,27 +177,37 @@ public class CustomDataPermissionHandler implements DataPermissionHandler {
     /**
      * 自定义数据权限：按角色在 sys_role_dept 中授权的部门过滤
      */
-    private void appendCustomCondition(List<String> conditions, DataScope annotation, List<SecurityRole> roles) {
+    private void appendCustomCondition(
+            List<String> conditions, DataScope annotation, List<SecurityRole> roles) {
         String deptColumn = resolveDeptColumn(annotation);
         if (Objects.isNull(deptColumn)) {
             return;
         }
-        String roleIds = roles.stream()
-                .map(SecurityRole::getRoleId)
-                .filter(Objects::nonNull)
-                .map(String::valueOf)
-                .collect(Collectors.joining(StringPool.COMMA));
+        String roleIds =
+                roles.stream()
+                        .map(SecurityRole::getRoleId)
+                        .filter(Objects::nonNull)
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(StringPool.COMMA));
         if (StringUtils.isBlank(roleIds)) {
             return;
         }
-        conditions.add(deptColumn + " IN (SELECT " + DEPT_ID_COLUMN + " FROM " + ROLE_DEPT_TABLE
-                + " WHERE role_id IN (" + roleIds + "))");
+        conditions.add(
+                deptColumn
+                        + " IN (SELECT "
+                        + DEPT_ID_COLUMN
+                        + " FROM "
+                        + ROLE_DEPT_TABLE
+                        + " WHERE role_id IN ("
+                        + roleIds
+                        + "))");
     }
 
     /**
      * 本部门数据权限
      */
-    private void appendDeptCondition(List<String> conditions, DataScope annotation, SecurityUserDetail user) {
+    private void appendDeptCondition(
+            List<String> conditions, DataScope annotation, SecurityUserDetail user) {
         String deptColumn = resolveDeptColumn(annotation);
         if (Objects.isNull(deptColumn) || Objects.isNull(user.getDeptId())) {
             return;
@@ -195,20 +218,32 @@ public class CustomDataPermissionHandler implements DataPermissionHandler {
     /**
      * 本部门及以下数据权限：命中本部门自身，或祖级列表中含本部门的部门
      */
-    private void appendDeptAndChildCondition(List<String> conditions, DataScope annotation, SecurityUserDetail user) {
+    private void appendDeptAndChildCondition(
+            List<String> conditions, DataScope annotation, SecurityUserDetail user) {
         String deptColumn = resolveDeptColumn(annotation);
         if (Objects.isNull(deptColumn) || Objects.isNull(user.getDeptId())) {
             return;
         }
-        conditions.add(deptColumn + " IN (SELECT " + DEPT_ID_COLUMN + " FROM " + DEPT_TABLE
-                + " WHERE " + DEPT_ID_COLUMN + " = " + user.getDeptId()
-                + " OR FIND_IN_SET(" + user.getDeptId() + ", ancestors))");
+        conditions.add(
+                deptColumn
+                        + " IN (SELECT "
+                        + DEPT_ID_COLUMN
+                        + " FROM "
+                        + DEPT_TABLE
+                        + " WHERE "
+                        + DEPT_ID_COLUMN
+                        + " = "
+                        + user.getDeptId()
+                        + " OR FIND_IN_SET("
+                        + user.getDeptId()
+                        + ", ancestors))");
     }
 
     /**
      * 仅本人数据权限
      */
-    private void appendSelfCondition(List<String> conditions, DataScope annotation, SecurityUserDetail user) {
+    private void appendSelfCondition(
+            List<String> conditions, DataScope annotation, SecurityUserDetail user) {
         String userColumn = resolveUserColumn(annotation);
         if (Objects.isNull(userColumn) || Objects.isNull(user.getUserId())) {
             return;
@@ -223,7 +258,9 @@ public class CustomDataPermissionHandler implements DataPermissionHandler {
      */
     private String resolveDeptColumn(DataScope annotation) {
         String deptAlias = annotation.deptAlias();
-        return StringUtils.isNotBlank(deptAlias) ? (deptAlias + StringPool.DOT + DEPT_ID_COLUMN) : null;
+        return StringUtils.isNotBlank(deptAlias)
+                ? (deptAlias + StringPool.DOT + DEPT_ID_COLUMN)
+                : null;
     }
 
     /**
@@ -233,6 +270,8 @@ public class CustomDataPermissionHandler implements DataPermissionHandler {
      */
     private String resolveUserColumn(DataScope annotation) {
         String userAlias = annotation.userAlias();
-        return StringUtils.isNotBlank(userAlias) ? (userAlias + StringPool.DOT + annotation.userIdColumnName()) : null;
+        return StringUtils.isNotBlank(userAlias)
+                ? (userAlias + StringPool.DOT + annotation.userIdColumnName())
+                : null;
     }
 }

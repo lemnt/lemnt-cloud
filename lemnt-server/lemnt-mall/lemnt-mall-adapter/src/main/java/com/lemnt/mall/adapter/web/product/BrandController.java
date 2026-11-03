@@ -48,7 +48,10 @@ public class BrandController {
     @GetMapping
     @RequiresPermissions("mall:brand:list")
     public R<List<MallBrandListRes>> list() {
-        return R.ok(brandListQueryExe.execute().stream().map(ProductCatalogResConverter::brandToMallBrandListRes).toList());
+        return R.ok(
+                brandListQueryExe.execute().stream()
+                        .map(ProductCatalogResConverter::brandToMallBrandListRes)
+                        .toList());
     }
 
     @Operation(summary = "查询详情")
@@ -56,24 +59,28 @@ public class BrandController {
     @RequiresPermissions("mall:brand:query")
     public R<MallBrandDetailRes> detail(@PathVariable Long id) {
         var value = brandDetailQueryExe.execute(id);
-        return value == null ? R.fail("记录不存在") : R.ok(ProductCatalogResConverter.brandToMallBrandDetailRes(value));
+        return value == null
+                ? R.fail("记录不存在")
+                : R.ok(ProductCatalogResConverter.brandToMallBrandDetailRes(value));
     }
 
     @Operation(summary = "创建")
     @PostMapping
     @RequiresPermissions("mall:brand:add")
     public R<MallBrandCreateRes> create(@Valid @RequestBody MallBrandCreateReq req) {
-        return R.ok(ProductCatalogResConverter.brandToMallBrandCreateRes(brandSaveCmdExe.execute(ProductCatalogReqConverter.brand(null,
-
-                req))));
+        return R.ok(
+                ProductCatalogResConverter.brandToMallBrandCreateRes(
+                        brandSaveCmdExe.execute(ProductCatalogReqConverter.brand(null, req))));
     }
 
     @Operation(summary = "修改")
     @PutMapping("/{id}")
     @RequiresPermissions("mall:brand:edit")
-    public R<MallBrandUpdateRes> update(@PathVariable Long id, @Valid @RequestBody MallBrandUpdateReq req) {
-        return R.ok(ProductCatalogResConverter.brandToMallBrandUpdateRes(brandSaveCmdExe.execute(ProductCatalogReqConverter.brand(id,
-                req))));
+    public R<MallBrandUpdateRes> update(
+            @PathVariable Long id, @Valid @RequestBody MallBrandUpdateReq req) {
+        return R.ok(
+                ProductCatalogResConverter.brandToMallBrandUpdateRes(
+                        brandSaveCmdExe.execute(ProductCatalogReqConverter.brand(id, req))));
     }
 
     @Operation(summary = "删除未被引用的记录")

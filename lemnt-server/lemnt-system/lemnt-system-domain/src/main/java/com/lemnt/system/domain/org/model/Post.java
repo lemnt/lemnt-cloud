@@ -15,8 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 public class Post implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     /**
      * 岗位序号

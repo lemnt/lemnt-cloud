@@ -24,9 +24,15 @@ public class WalletRechargePageQueryExe {
             throw new IllegalArgumentException("分页参数不合法");
         }
         PayConfigRules.page(qry.pageNum(), qry.pageSize());
-        var page = recharges.page(new WalletRechargeFilter(qry.memberId(), RechargeRules.statusText(qry.status()),
-                qry.pageNum(), qry.pageSize()));
-        return PageResult.of(page.getRecords().stream().map(RechargeDTOConverter::recharge).toList(),
+        var page =
+                recharges.page(
+                        new WalletRechargeFilter(
+                                qry.memberId(),
+                                RechargeRules.statusText(qry.status()),
+                                qry.pageNum(),
+                                qry.pageSize()));
+        return PageResult.of(
+                page.getRecords().stream().map(RechargeDTOConverter::recharge).toList(),
                 page.getTotal());
     }
 }

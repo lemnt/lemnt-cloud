@@ -5,9 +5,11 @@ public final class BusinessConfigKeys {
     public static final String MEMBER_POINT = "member.point.config";
     public static final String TRADE = "trade.config";
 
-    private BusinessConfigKeys() { }
+    private BusinessConfigKeys() {}
 
     public static boolean reserved(String key) {
-        return key != null && (MEMBER_POINT.equalsIgnoreCase(key.strip()) || TRADE.equalsIgnoreCase(key.strip()));
+        return key != null
+                && (MEMBER_POINT.equalsIgnoreCase(key.strip())
+                        || TRADE.equalsIgnoreCase(key.strip()));
     }
 }

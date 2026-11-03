@@ -23,16 +23,18 @@ public final class SettlementResConverter {
                 q.originalAmount(),
                 q.discountAmount(),
                 q.payableAmount(),
-                q.couponId(), q.usePoint(), q.givePoint(), SettlementQuoteResConverter.delivery(q.delivery()),
-                q.freeDelivery(), q.giveCouponTemplateCounts());
+                q.couponId(),
+                q.usePoint(),
+                q.givePoint(),
+                SettlementQuoteResConverter.delivery(q.delivery()),
+                q.freeDelivery(),
+                q.giveCouponTemplateCounts());
     }
 
     /**
      * 放弃。
      */
-    public static SettlementAbandonRes abandon(
-            SettlementAbandonDTO value
-    ) {
+    public static SettlementAbandonRes abandon(SettlementAbandonDTO value) {
         return new SettlementAbandonRes(
                 value.abandoned(), SettlementQuoteResConverter.checkoutReceipt(value.order()));
     }

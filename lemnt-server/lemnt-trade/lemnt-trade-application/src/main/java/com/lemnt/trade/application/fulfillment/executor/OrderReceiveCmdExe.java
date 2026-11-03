@@ -1,11 +1,9 @@
 package com.lemnt.trade.application.fulfillment.executor;
 
-import com.lemnt.trade.domain.order.model.TradeOperator;
-
-
 import com.lemnt.trade.application.fulfillment.converter.FulfillmentDTOConverter;
 import com.lemnt.trade.application.fulfillment.dto.ShipmentDTO;
 import com.lemnt.trade.application.fulfillment.service.OrderFulfillmentService;
+import com.lemnt.trade.domain.order.model.TradeOperator;
 
 import org.springframework.stereotype.Component;
 
@@ -26,9 +24,10 @@ public class OrderReceiveCmdExe {
     public ShipmentDTO execute(String orderNo) {
         return FulfillmentDTOConverter.shipment(orderFulfillmentService.receive(orderNo));
     }
+
     /** 本人收货由领域操作明确记录会员身份。 */
     public ShipmentDTO executeForMember(Long memberId, String orderNo) {
-        return FulfillmentDTOConverter.shipment(orderFulfillmentService.receive(orderNo,
-                TradeOperator.member(memberId)));
+        return FulfillmentDTOConverter.shipment(
+                orderFulfillmentService.receive(orderNo, TradeOperator.member(memberId)));
     }
 }

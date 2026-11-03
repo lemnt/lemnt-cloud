@@ -10,16 +10,10 @@ import java.io.Serializable;
 /** 配送分页请求。 */
 @Schema(description = "配送分页请求")
 public record DeliveryExpressTemplatePageReq(
-        @Schema(description = "名称模糊查询")
-        @Size(max = 100)
-        String name,
-        @Schema(description = "页码，默认 1")
-        @Min(1)
-        Integer pageNum,
-        @Schema(description = "每页数量，默认 20，上限 100")
-        @Min(1) @Max(100)
-        Integer pageSize
-) implements Serializable {
+        @Schema(description = "名称模糊查询") @Size(max = 100) String name,
+        @Schema(description = "页码，默认 1") @Min(1) Integer pageNum,
+        @Schema(description = "每页数量，默认 20，上限 100") @Min(1) @Max(100) Integer pageSize)
+        implements Serializable {
     public DeliveryExpressTemplatePageReq {
         pageNum = pageNum == null ? 1 : pageNum;
         pageSize = pageSize == null ? 20 : pageSize;

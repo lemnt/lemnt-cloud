@@ -28,7 +28,12 @@ public final class MemberConverter {
                         row.getGroupId(),
                         row.getSex(),
                         row.getBirthday(),
-                        row.getCreateTime(), row.getMark(), row.getName(), row.getAreaId(), row.getLoginDate(),row.getLoginIp());
+                        row.getCreateTime(),
+                        row.getMark(),
+                        row.getName(),
+                        row.getAreaId(),
+                        row.getLoginDate(),
+                        row.getLoginIp());
     }
 
     /**

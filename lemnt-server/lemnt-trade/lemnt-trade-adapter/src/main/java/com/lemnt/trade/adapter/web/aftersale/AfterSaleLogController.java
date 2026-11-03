@@ -24,6 +24,7 @@ import java.util.List;
 @RequestMapping("/trade/admin/after-sales")
 public class AfterSaleLogController {
     private final AfterSaleLogListQueryExe logs;
+
     /** 与售后详情使用同一查询权限。 */
     @GetMapping("/{no}/logs")
     @Operation(summary = "查询售后操作日志")

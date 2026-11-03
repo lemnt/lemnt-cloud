@@ -12,11 +12,11 @@ import com.lemnt.trade.domain.order.model.TradeOrderItem;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /** 商城同步预占回调失败时必须关闭订单并发布统一补偿，避免订单占用 SKU 库存。 */
 class OrderRemoteServiceCallbackTest {
@@ -29,17 +29,41 @@ class OrderRemoteServiceCallbackTest {
             new OrderRemoteService(orders, inventory, benefits, lifecycle, rollback);
 
     private TradeOrder order(String status) {
-        return new TradeOrder(7L, "TR1", 1L, new BigDecimal("10.00"), status,
-                List.of(new TradeOrderItem(2L, "SKU", "商品", new BigDecimal("10.00"), 1,
-                        new BigDecimal("10.00"), new BigDecimal("10.00"), BigDecimal.ZERO, 3L, "SPU",
-                        null, null)), null, 0L, 0L, null);
+        return new TradeOrder(
+                7L,
+                "TR1",
+                1L,
+                new BigDecimal("10.00"),
+                status,
+                List.of(
+                        new TradeOrderItem(
+                                2L,
+                                "SKU",
+                                "商品",
+                                new BigDecimal("10.00"),
+                                1,
+                                new BigDecimal("10.00"),
+                                new BigDecimal("10.00"),
+                                BigDecimal.ZERO,
+                                3L,
+                                "SPU",
+                                null,
+                                null)),
+                null,
+                0L,
+                0L,
+                null);
     }
 
     @Test
     void mallReservedFailureClosesOrderAndPublishesRollback() {
         var calls = new AtomicInteger();
-        Mockito.when(orders.findByOrderNo("TR1")).thenAnswer(invocation ->
-                calls.getAndIncrement() < 3 ? order("PENDING_PAYMENT") : order("CLOSED"));
+        Mockito.when(orders.findByOrderNo("TR1"))
+                .thenAnswer(
+                        invocation ->
+                                calls.getAndIncrement() < 3
+                                        ? order("PENDING_PAYMENT")
+                                        : order("CLOSED"));
         Mockito.doThrow(new IllegalStateException("活动库存不足")).when(benefits).reserved("TR1");
         assertThrows(IllegalStateException.class, () -> service.reserve("TR1"));
         Mockito.verify(lifecycle).reservationCallbackFailed("TR1");

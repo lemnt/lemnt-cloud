@@ -24,7 +24,9 @@ public class TradeOrderAutoReceiveScheduler {
     private final OrderFulfillmentService fulfillment;
     private final Duration expiry;
 
-    public TradeOrderAutoReceiveScheduler(ShipmentGateway shipments, TradeOrderGateway orders,
+    public TradeOrderAutoReceiveScheduler(
+            ShipmentGateway shipments,
+            TradeOrderGateway orders,
             OrderFulfillmentService fulfillment,
             @Value("${lemnt.trade.auto-receive.expire:7d}") Duration expiry) {
         if (expiry == null || expiry.isNegative() || expiry.isZero()) {

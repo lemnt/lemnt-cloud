@@ -9,6 +9,5 @@ import jakarta.validation.constraints.Size;
 @Schema(description = "提现审核请求")
 public record BrokerageWithdrawAuditReq(
         @Schema(description = "是否通过") @NotNull Boolean approved,
-        @Schema(description = "审核说明") @Size(max = 255) String reason
-) implements java.io.Serializable {
-}
+        @Schema(description = "审核说明") @Size(max = 255) String reason)
+        implements java.io.Serializable {}

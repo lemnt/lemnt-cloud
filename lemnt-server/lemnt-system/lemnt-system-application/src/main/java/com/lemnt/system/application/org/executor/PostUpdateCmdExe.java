@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostUpdateCmdExe {
     private final PostGateway postGateway;
+
     public Boolean execute(PostUpdateCmd cmd) {
         // 排除当前岗位，仍拦截其他岗位使用相同编码。
         if (postGateway.checkPostCodeUnique(cmd.postCode(), cmd.postId()) != null) {

@@ -33,9 +33,13 @@ public class MemberSignRecordController {
     @RequiresPermissions("member:signin:query")
     public R<MemberRecordSigninRecordsRes> signinRecords(
             @Valid @ModelAttribute MemberRecordSigninRecordsReq req) {
-        var page = memberSignRecordAllPageQueryExe.execute(MemberReqConverter.toSignRecordPageQry(req));
+        var page =
+                memberSignRecordAllPageQueryExe.execute(
+                        MemberReqConverter.toSignRecordPageQry(req));
         return R.page(
-                page.getRecords().stream().map(MemberGrowthResConverter::toMemberRecordSigninRecordsRes).toList(),
+                page.getRecords().stream()
+                        .map(MemberGrowthResConverter::toMemberRecordSigninRecordsRes)
+                        .toList(),
                 page.getTotal());
     }
 }

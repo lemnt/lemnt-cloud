@@ -6,6 +6,7 @@ import com.lemnt.trade.infrastructure.aftersale.dataobject.AfterSaleLogDO;
 /** 售后日志持久化转换。 */
 public final class AfterSaleLogConverter {
     private AfterSaleLogConverter() {}
+
     /** 转换日志写入行。 */
     public static AfterSaleLogDO toDO(AfterSaleLog value) {
         var row = new AfterSaleLogDO();
@@ -19,9 +20,18 @@ public final class AfterSaleLogConverter {
         row.setCreateTime(value.createTime());
         return row;
     }
+
     /** 转换查询结果。 */
     public static AfterSaleLog toModel(AfterSaleLogDO row) {
-        return new AfterSaleLog(row.getId(), row.getUserId(), row.getUserType(), row.getAfterSaleId(), row.getBeforeStatus(),
-                row.getAfterStatus(), row.getOperateType(), row.getContent(), row.getCreateTime());
+        return new AfterSaleLog(
+                row.getId(),
+                row.getUserId(),
+                row.getUserType(),
+                row.getAfterSaleId(),
+                row.getBeforeStatus(),
+                row.getAfterStatus(),
+                row.getOperateType(),
+                row.getContent(),
+                row.getCreateTime());
     }
 }

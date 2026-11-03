@@ -20,7 +20,11 @@ public class CommentPageQueryExe {
 
     /** 按商品、会员、评分、显示与回复状态筛选。 */
     public PageResult<ProductCommentDTO> execute(CommentPageQry qry) {
-        if (qry == null || qry.pageNum() < 1 || qry.pageNum() > 1000000 || qry.pageSize() < 1 || qry.pageSize() > 100
+        if (qry == null
+                || qry.pageNum() < 1
+                || qry.pageNum() > 1000000
+                || qry.pageSize() < 1
+                || qry.pageSize() > 100
                 || (qry.score() != null && (qry.score() < 1 || qry.score() > 5))) {
             throw new IllegalArgumentException("评价查询参数不合法");
         }
@@ -33,16 +37,33 @@ public class CommentPageQueryExe {
         if (qry.orderId() != null) {
             ProductCatalogValidation.id(qry.orderId());
         }
-        if ((qry.createTimeStart() != null && qry.createTimeEnd() != null && qry.createTimeStart().isAfter(qry.createTimeEnd()))
+        if ((qry.createTimeStart() != null
+                        && qry.createTimeEnd() != null
+                        && qry.createTimeStart().isAfter(qry.createTimeEnd()))
                 || (qry.userNickname() != null && qry.userNickname().length() > 255)
                 || (qry.spuName() != null && qry.spuName().length() > 255)) {
             throw new com.lemnt.common.core.exception.ServiceException("评价筛选名称或时间范围不合法", 400);
         }
-        var page = productCommentGateway.page(new CommentFilter(qry.spuId(), qry.memberId(), qry.score(), qry.visible(),
-                qry.replied(), qry.pageNum(), qry.pageSize(), text(qry.userNickname()), qry.orderId(),
-                text(qry.spuName()), qry.createTimeStart(), qry.createTimeEnd()));
-        return PageResult.of(page.getRecords().stream().map(CommentDTOConverter::toDTO).toList(), page.getTotal());
+        var page =
+                productCommentGateway.page(
+                        new CommentFilter(
+                                qry.spuId(),
+                                qry.memberId(),
+                                qry.score(),
+                                qry.visible(),
+                                qry.replied(),
+                                qry.pageNum(),
+                                qry.pageSize(),
+                                text(qry.userNickname()),
+                                qry.orderId(),
+                                text(qry.spuName()),
+                                qry.createTimeStart(),
+                                qry.createTimeEnd()));
+        return PageResult.of(
+                page.getRecords().stream().map(CommentDTOConverter::toDTO).toList(),
+                page.getTotal());
     }
+
     /** 空白搜索词不构造模糊查询。 */
     private String text(String value) {
         return value == null || value.isBlank() ? null : value.trim();

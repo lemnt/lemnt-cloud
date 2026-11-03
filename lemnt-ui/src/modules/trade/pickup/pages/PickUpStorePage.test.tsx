@@ -13,7 +13,9 @@ it('没有门店列表权限时拒绝', () => {
   permissions.clear();
   const html = renderToStaticMarkup(
     <QueryClientProvider client={new QueryClient()}>
-      <App><PickUpStorePage /></App>
+      <App>
+        <PickUpStorePage />
+      </App>
     </QueryClientProvider>,
   );
   expect(html).toContain('没有自提门店权限');

@@ -21,7 +21,10 @@ public class PaymentRefundChannelGatewayImpl implements PaymentRefundChannelGate
 
     @Override
     public PaymentRefundResult refund(PaymentRefund refund, PaymentRecord payment) {
-        var matching = clients.stream().filter(client -> client.channel().equals(refund.channel())).toList();
+        var matching =
+                clients.stream()
+                        .filter(client -> client.channel().equals(refund.channel()))
+                        .toList();
         if (matching.size() != 1) {
             throw new IllegalStateException("退款渠道未接入或存在重复适配器");
         }
@@ -32,8 +35,13 @@ public class PaymentRefundChannelGatewayImpl implements PaymentRefundChannelGate
         }
         // 渠道已受理但查询暂不可见时保留待退款，不能重新发起另一笔交易。
         if (refund.channelRefundNo() != null) {
-            return new PaymentRefundResult(refund.refundNo(), refund.paymentNo(), refund.channel(),
-                    refund.amount(), "WAITING", refund.channelRefundNo());
+            return new PaymentRefundResult(
+                    refund.refundNo(),
+                    refund.paymentNo(),
+                    refund.channel(),
+                    refund.amount(),
+                    "WAITING",
+                    refund.channelRefundNo());
         }
         return client.refund(refund, payment);
     }

@@ -1,16 +1,17 @@
 package com.lemnt.common.sensitive.config;
 
-import java.util.Objects;
-import java.util.Set;
-
-import com.lemnt.common.security.enums.RoleKeyEnum;
 import com.lemnt.common.security.context.SecurityContextHolder;
+import com.lemnt.common.security.enums.RoleKeyEnum;
 import com.lemnt.common.sensitive.annotation.Sensitive;
 import com.lemnt.common.sensitive.enums.DesensitizedType;
+
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.BeanProperty;
 import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.ValueSerializer;
+
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * 数据脱敏序列化过滤
@@ -32,7 +33,8 @@ public class SensitiveJsonSerializer extends ValueSerializer<String> {
     @Override
     public ValueSerializer<?> createContextual(SerializationContext prov, BeanProperty property) {
         Sensitive annotation = property.getAnnotation(Sensitive.class);
-        if (Objects.nonNull(annotation) && Objects.equals(String.class, property.getType().getRawClass())) {
+        if (Objects.nonNull(annotation)
+                && Objects.equals(String.class, property.getType().getRawClass())) {
             this.desensitizedType = annotation.desensitizedType();
             return this;
         }
@@ -46,7 +48,8 @@ public class SensitiveJsonSerializer extends ValueSerializer<String> {
         try {
             Set<String> roleKeys = SecurityContextHolder.getRoleKey();
             // 管理员不脱敏
-            return !roleKeys.contains(RoleKeyEnum.ADMIN.getRoleKey()) && !roleKeys.contains(RoleKeyEnum.SYSTEM.getRoleKey());
+            return !roleKeys.contains(RoleKeyEnum.ADMIN.getRoleKey())
+                    && !roleKeys.contains(RoleKeyEnum.SYSTEM.getRoleKey());
         } catch (Exception e) {
             return true;
         }

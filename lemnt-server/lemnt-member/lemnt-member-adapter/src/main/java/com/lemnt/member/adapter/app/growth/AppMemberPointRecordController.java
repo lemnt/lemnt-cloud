@@ -30,12 +30,15 @@ public class AppMemberPointRecordController {
 
     @GetMapping("/point-records")
     @Operation(summary = "本人积分流水分页")
-    public R<AppMemberGrowthPointRes> point(
-            @Valid @ModelAttribute PointRecordPageReq req) {
-        var page = memberAssetRecordPageQueryExe.execute(
-                MemberGrowthReqConverter.toPointRecordPageQry(SecurityUtils.getUserId(), req));
+    public R<AppMemberGrowthPointRes> point(@Valid @ModelAttribute PointRecordPageReq req) {
+        var page =
+                memberAssetRecordPageQueryExe.execute(
+                        MemberGrowthReqConverter.toPointRecordPageQry(
+                                SecurityUtils.getUserId(), req));
         return R.page(
-                page.getRecords().stream().map(MemberGrowthResConverter::toAppMemberGrowthPointRes).toList(),
+                page.getRecords().stream()
+                        .map(MemberGrowthResConverter::toAppMemberGrowthPointRes)
+                        .toList(),
                 page.getTotal());
     }
 }

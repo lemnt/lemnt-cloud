@@ -12,6 +12,5 @@ public record SettlementDelivery(
         Long receiverAreaId,
         String receiverDetailAddress,
         BigDecimal deliveryPrice,
-        Long pickUpStoreId
-) implements Serializable {
-}
+        Long pickUpStoreId)
+        implements Serializable {}

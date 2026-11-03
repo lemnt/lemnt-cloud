@@ -25,7 +25,7 @@ public interface DeliveryExpressGateway {
 
     /** 逻辑删除。 */
     boolean delete(Long id);
+
     /** 分页查询。 */
     PageResult<DeliveryExpress> page(DeliveryExpressFilter filter);
-
 }

@@ -53,7 +53,8 @@ public class BargainActivityController {
     @PutMapping("/{id}")
     @Operation(summary = "修改砍价活动")
     @RequiresPermissions("mall:promotion:update")
-    public R<Boolean> update(@PathVariable Long id, @Valid @RequestBody BargainActivityUpdateReq req) {
+    public R<Boolean> update(
+            @PathVariable Long id, @Valid @RequestBody BargainActivityUpdateReq req) {
         return R.ok(update.execute(BargainConverter.update(id, req)));
     }
 
@@ -83,7 +84,8 @@ public class BargainActivityController {
     @RequiresPermissions("mall:promotion:list")
     public R<BargainActivityRes> page(@Valid @ModelAttribute BargainActivityPageReq req) {
         var result = page.execute(BargainConverter.page(req));
-        return R.page(result.getRecords().stream().map(BargainConverter::activity).toList(),
+        return R.page(
+                result.getRecords().stream().map(BargainConverter::activity).toList(),
                 result.getTotal());
     }
 }

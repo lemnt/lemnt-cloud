@@ -61,28 +61,43 @@ public final class MemberGrowthReqConverter {
      * 等级记录。
      */
     public static LevelRecordsPageQry levelRecords(Long id, MemberUserLevelRecordsReq r) {
-        return new LevelRecordsPageQry(id, (r.pageNum() == null ? 1 : r.pageNum()), (r.pageSize() == null ? 20 : r.pageSize()));
+        return new LevelRecordsPageQry(
+                id,
+                (r.pageNum() == null ? 1 : r.pageNum()),
+                (r.pageSize() == null ? 20 : r.pageSize()));
     }
 
     /**
      * 查询签到记录。
      */
     public static SignRecordPageQry signs(Long id, MemberUserSignsReq r) {
-        return new SignRecordPageQry(id, (r.pageNum() == null ? 1 : r.pageNum()), (r.pageSize() == null ? 20 : r.pageSize()));
+        return new SignRecordPageQry(
+                id,
+                (r.pageNum() == null ? 1 : r.pageNum()),
+                (r.pageSize() == null ? 20 : r.pageSize()));
     }
 
     /**
      * 查询会员资产记录。
      */
     public static AssetRecordPageQry assets(Long id, String type, MemberUserPointsRecordsReq r) {
-        return new AssetRecordPageQry(id, type, (r.pageNum() == null ? 1 : r.pageNum()), (r.pageSize() == null ? 20 : r.pageSize()));
+        return new AssetRecordPageQry(
+                id,
+                type,
+                (r.pageNum() == null ? 1 : r.pageNum()),
+                (r.pageSize() == null ? 20 : r.pageSize()));
     }
 
     /**
      * 查询会员资产记录。
      */
-    public static AssetRecordPageQry assets(Long id, String type, MemberUserExperienceRecordsReq r) {
-        return new AssetRecordPageQry(id, type, (r.pageNum() == null ? 1 : r.pageNum()), (r.pageSize() == null ? 20 : r.pageSize()));
+    public static AssetRecordPageQry assets(
+            Long id, String type, MemberUserExperienceRecordsReq r) {
+        return new AssetRecordPageQry(
+                id,
+                type,
+                (r.pageNum() == null ? 1 : r.pageNum()),
+                (r.pageSize() == null ? 20 : r.pageSize()));
     }
 
     /**

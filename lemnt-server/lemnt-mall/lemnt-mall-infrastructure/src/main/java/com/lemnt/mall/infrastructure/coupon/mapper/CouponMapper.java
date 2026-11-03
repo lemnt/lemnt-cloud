@@ -3,7 +3,6 @@ package com.lemnt.mall.infrastructure.coupon.mapper;
 import com.lemnt.mall.infrastructure.coupon.dataobject.CouponDO;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,10 +18,12 @@ public interface CouponMapper extends BaseMapper<CouponDO> {
     CouponDO lockCouponRow(@Param("memberId") Long memberId, @Param("id") Long id);
 
     /** 查询不可重复的赠券发放事实，逻辑撤回不清除幂等记录。 */
-    Long giftId(@Param("sourceOrderNo") String sourceOrderNo, @Param("templateId") Long templateId,
-            @Param("memberId") Long memberId, @Param("giftSequence") int giftSequence);
+    Long giftId(
+            @Param("sourceOrderNo") String sourceOrderNo,
+            @Param("templateId") Long templateId,
+            @Param("memberId") Long memberId,
+            @Param("giftSequence") int giftSequence);
 
     /** 使用数据库时钟记录核销和恢复有效性。 */
     LocalDateTime now();
-
 }

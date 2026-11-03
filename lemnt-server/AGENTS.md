@@ -18,6 +18,12 @@ lemnt-server
 │   ├── lemnt-system-domain         领域层
 │   ├── lemnt-system-infrastructure 基础设施层
 │   └── lemnt-system-start          启动引导
+├── lemnt-member          会员、积分与账户 [9110]
+│   └── client / adapter / application / domain / infrastructure / start
+├── lemnt-mall            商品、结算与活动执行 [9120]
+│   └── client / adapter / application / domain / infrastructure / start
+├── lemnt-trade           订单、支付、售后与交易快照 [9130]
+│   └── client / adapter / application / domain / infrastructure / start
 ├── lemnt-open            开放平台 [9300]
 │   └── ...（无 client 模块）
 └── lemnt-third-sdk       第三方 SDK
@@ -267,7 +273,7 @@ Dubbo 接口 → Bo/DTO 独立设计
 | 查询执行器     | `{聚合}{查询类型}QueryExe`                  | `ConfigPageQueryExe` | application                           |
 | 领域实体       | `{聚合}`                                    | `Config`             | domain                                |
 | 数据对象       | `{聚合}DO`                                  | `ConfigDO`           | infrastructure                        |
-| Dubbo 接口     | `Remote{聚合}Service`                       | `RemoteUserService`  | `-client` 模块（包名 `com.lemnt.*.api`） |
+| Dubbo 接口     | `{能力}Client`；system保留旧Remote*Service | `TradeOrderClient`  | `-client` 模块；已有api包名兼容 |
 | Dubbo 出参     | `{聚合}DTO`                                 | `UserInfoDTO`        | `-client` 模块                        |
 | Dubbo 入参     | `{聚合}Bo`                                  | `UserBo`             | `-client` 模块                        |
 
@@ -286,7 +292,8 @@ Dubbo 接口 → Bo/DTO 独立设计
 - Mapper 按数据库表继承 `BaseMapper<DO>`；已有的插入、按主键查询、更新、删除方法直接复用，不再新增同义方法或默认包装方法。
 - 普通条件查询、分页及更新在 GatewayImpl 中使用 Lambda 条件构造器；支持的字段增减使用 `setIncrBy` / `setDecrBy`，保留原有状态和并发约束。
 - 多表关联、复杂限额条件、数据库函数、原子 upsert 等无法清晰使用 Lambda 表达的操作放在 Mapper XML；不在 Java 注解或字符串常量中编写 SQL，也不通过 `apply` / `setSql` 拼接复杂 SQL。
-- 带行锁的查询在 XML 明确关闭查询缓存并刷新本地缓存，避免用缓存结果代替实际加锁。
+- 带行锁的查询在 XML 显式设置useCache="false"及flushCache="true"，避免用缓存结果代替实际加锁；同事务重复锁也必须执行SQL。
+- Mapper不放default方法和private条件构造器；条件在对应GatewayImpl复用，数据库特定操作保持XML。
 - XML 沿用 `src/main/resources/mapper/` 根目录，兼容现有配置扫描路径；联合主键使用完整 Lambda 条件，不为使用按 ID 方法虚构主键。
 - 使用 MyBatis Plus，不引入 JPA、EntityManager 或 JpaRepository。
 
@@ -326,7 +333,7 @@ public class Config implements Serializable {
 
 - 领域模型位于 `domain/{domain}/model`；`lemnt-auth` 现有 `entity` 包属于存量结构
 - 聚合根、需要状态变化或承载领域行为的实体使用普通类；不可变且按值比较的值对象优先使用 `record`
-- Domain Model 只包含领域字段和领域行为，不含 HTTP、Swagger、持久化注解
+- Domain Model 只包含领域字段和领域行为，不含 HTTP、Swagger、Jackson、持久化注解；除Lombok外仅依赖JDK及项目领域/契约
 - 不使用 `@TableName`、`@TableId` 等 MyBatis-Plus 注解，这些注解只放在 Infrastructure DO
 - `LoginUser` 是会话状态模型，登录时间、过期时间、Token 等字段需要刷新，因此保留可变类
 - `UserInfo` 承载 `isDisabled`、`verifyPassword` 等领域行为，因此保留领域类
@@ -459,6 +466,8 @@ Controller 当前直接放在 `adapter.web.{domain}` 包下，不额外创建 `c
 
 ## 代码格式规范
 
+采用[统一代码规范](../docs/code-standards.md)和`scripts/format_java.py`：固定版本AOSP四空格格式、项目导入分组。格式工具保留长字符串和Javadoc正文；不手工对抗工具输出。下面示例用于说明可读性，实际换行以工具为准。
+
 ### 换行
 
 ```java
@@ -481,7 +490,7 @@ public IPage<Config> execute(
 // ❌ 禁止单行多语句
 data.setDictLabel(cmd.getDictLabel()); data.setDictValue(cmd.getDictValue()); data.setDictType(cmd.getDictType());
 
-// ❌ 禁止方法声明写在一行超过 120 字符
+// ❌ 避免单行堆积参数；方法声明由固定格式工具统一换行
 ```
 
 ### 空行
@@ -505,6 +514,8 @@ import org.springframework.stereotype.Component;
 ```
 
 ### import 顺序
+
+注解必须import后使用短名，例如`@Schema(...)`、`@Transactional(...)`；禁止`@io.swagger...Schema(...)`一类全限定写法。由Java格式工具一并检查和规范化。
 
 ```
 1. 内部模块（com.lemnt.*）
@@ -575,3 +586,7 @@ Bean。 **密钥缺失或不足 64 字节时应用启动直接失败**（HS512 �
 - Cmd/Qry 包含业务逻辑（纯数据容器）
 - Entity 包含持久化注解或继承 MyBatis-Plus 基类
 - 多字段写入/查询直接以散参数传递；应封装为 Cmd/Qry（单 ID、ID 集合等简单参数除外）
+
+## 全项目检查
+
+规范入口、数值契约、冻结快照、数据库升级与统一验证命令见[代码规范](../docs/code-standards.md)。根目录运行`python3 scripts/check_architecture.py`检查源码及POM分层、HTTP模型与Mapper规则；业务正确性仍以对应测试和实际环境证据为准。

@@ -72,42 +72,69 @@ public class ActivityManagementService {
     /** 校验门槛顺序及减免额，满金额与满件数采用同一阶梯列表。 */
     private void validateReward(RewardActivity value) {
         validate(value.name(), value.startTime(), value.endTime());
-        require(value.conditionType() != null && Set.of("PRICE", "COUNT").contains(value.conditionType()), "满减条件类型不合法");
-        require(value.productScope() != null && Set.of("ALL", "SPU_IDS",
-            "CATEGORY_IDS").contains(value.productScope()), "商品范围不合法");
+        require(
+                value.conditionType() != null
+                        && Set.of("PRICE", "COUNT").contains(value.conditionType()),
+                "满减条件类型不合法");
+        require(
+                value.productScope() != null
+                        && Set.of("ALL", "SPU_IDS", "CATEGORY_IDS").contains(value.productScope()),
+                "商品范围不合法");
         require(value.productScopeValues() != null, "商品范围不能为空");
         if (!"ALL".equals(value.productScope())) {
-            require(!value.productScopeValues().isEmpty() && value.productScopeValues().stream()
-                    .allMatch(id -> id != null && id > 0), "请指定商品范围");
+            require(
+                    !value.productScopeValues().isEmpty()
+                            && value.productScopeValues().stream()
+                                    .allMatch(id -> id != null && id > 0),
+                    "请指定商品范围");
         }
         if ("SPU_IDS".equals(value.productScope())) {
-            require(spus.existingSpuIds(value.productScopeValues()).size() == value.productScopeValues().size(),
+            require(
+                    spus.existingSpuIds(value.productScopeValues()).size()
+                            == value.productScopeValues().size(),
                     "活动商品不存在");
         }
         require(value.rules() != null && !value.rules().isEmpty(), "满减规则不能为空");
         BigDecimal previous = BigDecimal.ZERO;
         for (var rule : value.rules()) {
-            require(rule.limit() != null && rule.limit().compareTo(previous) > 0
-                    && rule.discountPrice() != null && rule.discountPrice().signum() > 0
-                    && rule.discountPrice().scale() <= 2, "满减规则门槛必须递增且减免金额合法");
+            require(
+                    rule.limit() != null
+                            && rule.limit().compareTo(previous) > 0
+                            && rule.discountPrice() != null
+                            && rule.discountPrice().signum() > 0
+                            && rule.discountPrice().scale() <= 2,
+                    "满减规则门槛必须递增且减免金额合法");
             if ("COUNT".equals(value.conditionType())) {
                 require(rule.limit().stripTrailingZeros().scale() <= 0, "满件数门槛必须为整数");
             } else {
-                require(rule.limit().scale() <= 2 && rule.discountPrice().compareTo(rule.limit()) <= 0,
+                require(
+                        rule.limit().scale() <= 2
+                                && rule.discountPrice().compareTo(rule.limit()) <= 0,
                         "满减金额不能超过门槛");
             }
             int point = rule.point() == null ? 0 : rule.point();
             require(point >= 0 && point <= 1000000, "赠送积分不合法");
             var coupons = rule.giveCouponTemplateCounts();
-            require(coupons == null || (coupons.size() <= 20
-                    && coupons.entrySet().stream().allMatch(item -> item.getKey() != null && item.getKey() > 0
-                    && item.getValue() != null && item.getValue() >= 1 && item.getValue() <= 99)),
+            require(
+                    coupons == null
+                            || (coupons.size() <= 20
+                                    && coupons.entrySet().stream()
+                                            .allMatch(
+                                                    item ->
+                                                            item.getKey() != null
+                                                                    && item.getKey() > 0
+                                                                    && item.getValue() != null
+                                                                    && item.getValue() >= 1
+                                                                    && item.getValue() <= 99)),
                     "赠送优惠券不合法");
             previous = rule.limit();
         }
         for (var other : rewards.enabled()) {
-            if (Objects.equals(other.id(), value.id()) || !value.startTime().isBefore(other.endTime())
-                    || !other.startTime().isBefore(value.endTime())) { continue; }
+            if (Objects.equals(other.id(), value.id())
+                    || !value.startTime().isBefore(other.endTime())
+                    || !other.startTime().isBefore(value.endTime())) {
+                continue;
+            }
             require(!scopeOverlaps(other, value), "同一时段的满减商品范围不能重叠");
         }
     }
@@ -118,7 +145,8 @@ public class ActivityManagementService {
             return true;
         }
         if (left.productScope().equals(right.productScope())) {
-            return left.productScopeValues().stream().anyMatch(right.productScopeValues()::contains);
+            return left.productScopeValues().stream()
+                    .anyMatch(right.productScopeValues()::contains);
         }
         var selected = "SPU_IDS".equals(left.productScope()) ? left : right;
         var categories = selected == left ? right : left;
@@ -130,33 +158,57 @@ public class ActivityManagementService {
     private void validateProducts(Long activityId, List<DiscountProduct> values) {
         require(values != null && !values.isEmpty(), "折扣商品不能为空");
         var ids = values.stream().map(DiscountProduct::skuId).toList();
-        require(ids.stream().allMatch(id -> id != null && id > 0)
-                && ids.stream().distinct().count() == ids.size(), "SKU 编号重复或不合法");
+        require(
+                ids.stream().allMatch(id -> id != null && id > 0)
+                        && ids.stream().distinct().count() == ids.size(),
+                "SKU 编号重复或不合法");
         ids.stream().sorted().forEach(skus::lockById);
         for (var value : values) {
             var sku = skus.catalogSku(value.skuId());
             require(sku != null && Objects.equals(sku.spuId(), value.spuId()), "SKU 与商品不匹配");
-            require(value.discountType() != null && Set.of("PRICE", "PERCENT").contains(value.discountType()),
-                "折扣类型不合法");
+            require(
+                    value.discountType() != null
+                            && Set.of("PRICE", "PERCENT").contains(value.discountType()),
+                    "折扣类型不合法");
             if ("PRICE".equals(value.discountType())) {
-                require(value.discountPrice() != null && value.discountPrice().signum() > 0
-                        && value.discountPrice().scale() <= 2
-                        && value.discountPrice().compareTo(sku.price()) < 0, "减价金额不合法");
+                require(
+                        value.discountPrice() != null
+                                && value.discountPrice().signum() > 0
+                                && value.discountPrice().scale() <= 2
+                                && value.discountPrice().compareTo(sku.price()) < 0,
+                        "减价金额不合法");
             } else {
-                require(value.discountPercent() != null && value.discountPercent() >= 1
-                        && value.discountPercent() <= 9999, "折扣比例必须为 1 至 9999 基点");
+                require(
+                        value.discountPercent() != null
+                                && value.discountPercent() >= 1
+                                && value.discountPercent() <= 9999,
+                        "折扣比例必须为 1 至 9999 基点");
             }
         }
-        var others = discounts.enabled().stream().filter(a -> !Objects.equals(a.id(), activityId))
-                .map(DiscountActivity::id).toList();
-        require(products.byActivities(others).stream().noneMatch(p -> ids.contains(p.skuId())),
+        var others =
+                discounts.enabled().stream()
+                        .filter(a -> !Objects.equals(a.id(), activityId))
+                        .map(DiscountActivity::id)
+                        .toList();
+        require(
+                products.byActivities(others).stream().noneMatch(p -> ids.contains(p.skuId())),
                 "商品已参加其他开启的折扣活动");
     }
 
     /** 创建满减活动。 */
     public Long createReward(RewardActivityCreateCmd cmd) {
-        var value = new RewardActivity(null, cmd.name(), 0, cmd.startTime(), cmd.endTime(), cmd.remark(),
-            cmd.conditionType(), cmd.productScope(), cmd.productScopeValues(), cmd.rules());
+        var value =
+                new RewardActivity(
+                        null,
+                        cmd.name(),
+                        0,
+                        cmd.startTime(),
+                        cmd.endTime(),
+                        cmd.remark(),
+                        cmd.conditionType(),
+                        cmd.productScope(),
+                        cmd.productScopeValues(),
+                        cmd.rules());
         validateReward(value);
         var saved = rewards.save(value);
         return saved.id();
@@ -165,8 +217,18 @@ public class ActivityManagementService {
     /** 修改满减活动。 */
     public Boolean updateReward(RewardActivityUpdateCmd cmd) {
         editable(reward(cmd.id()).status());
-        var value = new RewardActivity(cmd.id(), cmd.name(), 0, cmd.startTime(), cmd.endTime(), cmd.remark(),
-            cmd.conditionType(), cmd.productScope(), cmd.productScopeValues(), cmd.rules());
+        var value =
+                new RewardActivity(
+                        cmd.id(),
+                        cmd.name(),
+                        0,
+                        cmd.startTime(),
+                        cmd.endTime(),
+                        cmd.remark(),
+                        cmd.conditionType(),
+                        cmd.productScope(),
+                        cmd.productScopeValues(),
+                        cmd.rules());
         validateReward(value);
         var saved = rewards.save(value);
         return true;
@@ -175,15 +237,25 @@ public class ActivityManagementService {
     /** 关闭活动，重复关闭保持原结果。 */
     public Boolean closeReward(Long id) {
         var value = reward(id);
-        rewards.save(new RewardActivity(value.id(), value.name(), 1, value.startTime(), value.endTime(),
-            value.remark(), value.conditionType(), value.productScope(), value.productScopeValues(), value.rules()));
+        rewards.save(
+                new RewardActivity(
+                        value.id(),
+                        value.name(),
+                        1,
+                        value.startTime(),
+                        value.endTime(),
+                        value.remark(),
+                        value.conditionType(),
+                        value.productScope(),
+                        value.productScopeValues(),
+                        value.rules()));
         return true;
     }
 
     /** 仅删除已关闭活动。 */
     public Boolean deleteReward(Long id) {
         require(reward(id).status() == 1, "请先关闭活动");
-        
+
         rewards.delete(id);
         return true;
     }
@@ -196,19 +268,33 @@ public class ActivityManagementService {
 
     @Transactional(readOnly = true)
     public PageResult<RewardActivityDTO> pageReward(ActivityFilter filter) {
-        require(filter.pageNum() >= 1 && filter.pageSize() >= 1 && filter.pageSize() <= 100, "分页参数不合法");
+        require(
+                filter.pageNum() >= 1 && filter.pageSize() >= 1 && filter.pageSize() <= 100,
+                "分页参数不合法");
         var page = rewards.page(filter);
-        return PageResult.of(page.getRecords().stream().map(this::rewardDto).toList(), page.getTotal());
+        return PageResult.of(
+                page.getRecords().stream().map(this::rewardDto).toList(), page.getTotal());
     }
 
     private RewardActivityDTO rewardDto(RewardActivity value) {
-        return new RewardActivityDTO(value.id(), value.name(), value.status(), value.startTime(), value.endTime(),
-            value.remark(), value.conditionType(), value.productScope(), value.productScopeValues(), value.rules());
+        return new RewardActivityDTO(
+                value.id(),
+                value.name(),
+                value.status(),
+                value.startTime(),
+                value.endTime(),
+                value.remark(),
+                value.conditionType(),
+                value.productScope(),
+                value.productScopeValues(),
+                value.rules());
     }
 
     /** 创建折扣活动。 */
     public Long createDiscount(DiscountActivityCreateCmd cmd) {
-        var value = new DiscountActivity(null, cmd.name(), 0, cmd.startTime(), cmd.endTime(), cmd.remark());
+        var value =
+                new DiscountActivity(
+                        null, cmd.name(), 0, cmd.startTime(), cmd.endTime(), cmd.remark());
         validate(cmd.name(), cmd.startTime(), cmd.endTime());
         validateProducts(null, cmd.products());
         var saved = discounts.save(value);
@@ -219,7 +305,9 @@ public class ActivityManagementService {
     /** 修改折扣活动。 */
     public Boolean updateDiscount(DiscountActivityUpdateCmd cmd) {
         editable(discount(cmd.id()).status());
-        var value = new DiscountActivity(cmd.id(), cmd.name(), 0, cmd.startTime(), cmd.endTime(), cmd.remark());
+        var value =
+                new DiscountActivity(
+                        cmd.id(), cmd.name(), 0, cmd.startTime(), cmd.endTime(), cmd.remark());
         validate(cmd.name(), cmd.startTime(), cmd.endTime());
         validateProducts(cmd.id(), cmd.products());
         var saved = discounts.save(value);
@@ -230,8 +318,14 @@ public class ActivityManagementService {
     /** 关闭活动，重复关闭保持原结果。 */
     public Boolean closeDiscount(Long id) {
         var value = discount(id);
-        discounts.save(new DiscountActivity(value.id(), value.name(), 1, value.startTime(), value.endTime(),
-            value.remark()));
+        discounts.save(
+                new DiscountActivity(
+                        value.id(),
+                        value.name(),
+                        1,
+                        value.startTime(),
+                        value.endTime(),
+                        value.remark()));
         return true;
     }
 
@@ -251,13 +345,22 @@ public class ActivityManagementService {
 
     @Transactional(readOnly = true)
     public PageResult<DiscountActivityDTO> pageDiscount(ActivityFilter filter) {
-        require(filter.pageNum() >= 1 && filter.pageSize() >= 1 && filter.pageSize() <= 100, "分页参数不合法");
+        require(
+                filter.pageNum() >= 1 && filter.pageSize() >= 1 && filter.pageSize() <= 100,
+                "分页参数不合法");
         var page = discounts.page(filter);
-        return PageResult.of(page.getRecords().stream().map(this::discountDto).toList(), page.getTotal());
+        return PageResult.of(
+                page.getRecords().stream().map(this::discountDto).toList(), page.getTotal());
     }
 
     private DiscountActivityDTO discountDto(DiscountActivity value) {
-        return new DiscountActivityDTO(value.id(), value.name(), value.status(), value.startTime(), value.endTime(),
-            value.remark(), products.byActivities(List.of(value.id())));
+        return new DiscountActivityDTO(
+                value.id(),
+                value.name(),
+                value.status(),
+                value.startTime(),
+                value.endTime(),
+                value.remark(),
+                products.byActivities(List.of(value.id())));
     }
 }

@@ -12,6 +12,4 @@ public record DeliveryExpressTemplateCharge(
         BigDecimal startCount,
         Integer startPrice,
         BigDecimal extraCount,
-        Integer extraPrice
-) {
-}
+        Integer extraPrice) {}

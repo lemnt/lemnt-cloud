@@ -8,6 +8,5 @@ public record DiyTemplatePageReq(
         @Schema(description = "模板名称") String name,
         @Schema(description = "是否启用") Boolean used,
         @Schema(description = "pageNum") Integer pageNum,
-        @Schema(description = "pageSize") Integer pageSize
-) implements java.io.Serializable {
-}
+        @Schema(description = "pageSize") Integer pageSize)
+        implements java.io.Serializable {}

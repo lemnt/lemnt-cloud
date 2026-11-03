@@ -17,5 +17,4 @@ public record RefundRequest(
         String status,
         String decisionReason,
         LocalDateTime requestedAt,
-        LocalDateTime decidedAt
-) {}
+        LocalDateTime decidedAt) {}

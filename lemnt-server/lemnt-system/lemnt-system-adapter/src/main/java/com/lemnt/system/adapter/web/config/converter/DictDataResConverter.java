@@ -32,14 +32,14 @@ public class DictDataResConverter {
                 dto.getListClass(),
                 dto.getIsDefault(),
                 dto.getStatus(),
-                dto.getRemark()
-        );
+                dto.getRemark());
     }
 
     /**
      * DictDataDTO List → DictDataInfoRes List
      */
-    public static List<SystemDictDataListRes> toResListToSystemDictDataListRes(List<DictDataDTO> list) {
+    public static List<SystemDictDataListRes> toResListToSystemDictDataListRes(
+            List<DictDataDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -67,8 +67,7 @@ public class DictDataResConverter {
                 dto.getListClass(),
                 dto.getIsDefault(),
                 dto.getStatus(),
-                dto.getRemark()
-        );
+                dto.getRemark());
     }
 
     /**
@@ -88,14 +87,14 @@ public class DictDataResConverter {
                 dto.getListClass(),
                 dto.getIsDefault(),
                 dto.getStatus(),
-                dto.getRemark()
-        );
+                dto.getRemark());
     }
 
     /**
      * DictDataDTO List → DictDataInfoRes List
      */
-    public static List<SystemDictDataDictTypeRes> toResListToSystemDictDataDictTypeRes(List<DictDataDTO> list) {
+    public static List<SystemDictDataDictTypeRes> toResListToSystemDictDataDictTypeRes(
+            List<DictDataDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -123,7 +122,6 @@ public class DictDataResConverter {
                 dto.getListClass(),
                 dto.getIsDefault(),
                 dto.getStatus(),
-                dto.getRemark()
-        );
+                dto.getRemark());
     }
 }

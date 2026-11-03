@@ -25,7 +25,12 @@ public class AppDeliveryExpressController {
     @GetMapping("/expresses")
     @Operation(summary = "启用的快递公司列表")
     public R<List<AppDeliveryExpressRes>> expresses() {
-        return R.ok(expresses.execute().stream()
-                .map(value -> new AppDeliveryExpressRes(value.id(), value.code(), value.name())).toList());
+        return R.ok(
+                expresses.execute().stream()
+                        .map(
+                                value ->
+                                        new AppDeliveryExpressRes(
+                                                value.id(), value.code(), value.name()))
+                        .toList());
     }
 }

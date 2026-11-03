@@ -63,8 +63,10 @@ public interface CouponGateway {
 
     /** 根据优惠券订单归属维护状态。 */
     void releaseCoupon(CouponOrderReference reference);
+
     /** 按订单读取已绑定券，支付回调不依赖结算缓存有效期。 */
     Coupon byOrderNo(String orderNo);
+
     /** 整单退款后归还已核销券，重复调用不产生新券。 */
     boolean returnUsedCoupon(String orderNo);
 }

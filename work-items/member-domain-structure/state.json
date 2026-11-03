@@ -1,0 +1,38 @@
+{
+  "requirement": {
+    "name": "member-domain-structure",
+    "description": "第164批订单促销快照与部分退款代码交付完成；第165批全项目规范重构、注解短名统一及本地验证完成，见对应分析/交付报告。现有数据库执行与真实环境验收未完成，review/retrospective不自动完成。",
+    "createdAt": "2026-11-02T17:41:47+08:00",
+    "updatedAt": "2026-11-03T09:33:29+08:00"
+  },
+  "phases": {
+    "entry": {
+      "status": "completed",
+      "output": "README.md"
+    },
+    "requirement": {
+      "status": "completed",
+      "output": "164-order-promotion-refund-design.md"
+    },
+    "design": {
+      "status": "completed",
+      "output": "164-order-promotion-refund-design.md"
+    },
+    "task": {
+      "status": "completed",
+      "output": "tasks.md"
+    },
+    "generate": {
+      "status": "completed",
+      "output": "code-summary.md"
+    },
+    "review": {
+      "status": "pending",
+      "output": null
+    },
+    "retrospective": {
+      "status": "pending",
+      "output": null
+    }
+  }
+}

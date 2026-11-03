@@ -11,16 +11,7 @@ import java.io.Serializable;
 /** 规格字典新增请求。 */
 @Schema(description = "规格字典新增请求")
 public record ProductSpecValueCreateReq(
-        @Schema(description = "所属规格项ID")
-        @NotNull
-        @Positive
-        Long specId,
-        @Schema(description = "规格值名称")
-        @NotBlank
-        @Size(max = 100)
-        String name,
-        @Schema(description = "说明，可空")
-        @Size(max = 500)
-        String remark
-) implements Serializable {
-}
+        @Schema(description = "所属规格项ID") @NotNull @Positive Long specId,
+        @Schema(description = "规格值名称") @NotBlank @Size(max = 100) String name,
+        @Schema(description = "说明，可空") @Size(max = 500) String remark)
+        implements Serializable {}

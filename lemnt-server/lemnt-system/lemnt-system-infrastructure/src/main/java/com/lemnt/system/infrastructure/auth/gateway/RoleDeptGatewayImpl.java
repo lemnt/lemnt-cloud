@@ -4,6 +4,7 @@ import com.lemnt.system.domain.auth.gateway.RoleDeptGateway;
 import com.lemnt.system.infrastructure.auth.dataobject.RoleDeptDO;
 import com.lemnt.system.infrastructure.auth.mapper.RoleDeptMapper;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +12,7 @@ import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 
 import java.util.*;
+import java.util.List;
 
 /** RoleDept 持久化实现。 */
 @Component
@@ -20,12 +22,12 @@ public class RoleDeptGatewayImpl implements RoleDeptGateway {
 
     @Override
     public Boolean deleteRoleDeptByRoleId(Long roleId) {
-        return roleDeptMapper.deleteRoleDeptByRoleId(roleId) > 0;
+        return deleteRoleDeptByRoleIdRow(roleId) > 0;
     }
 
     @Override
     public Boolean deleteRoleDept(List<Long> ids) {
-        return roleDeptMapper.deleteRoleDept(ids) > 0;
+        return deleteRoleDeptRow(ids) > 0;
     }
 
     @Override
@@ -44,8 +46,45 @@ public class RoleDeptGatewayImpl implements RoleDeptGateway {
         roleDeptMapper.insert(list);
         return true;
     }
+
     @Override
     public Long selectCountRoleDeptByDeptId(Long deptId) {
-        return roleDeptMapper.selectCountRoleDeptByDeptId(deptId);
+        return selectCountRoleDeptByDeptIdRow(deptId);
+    }
+
+    /**
+     * 通过角色ID删除角色部门关联
+     *
+     * @param roleId 角色ID
+     * @return 结果
+     */
+    private int deleteRoleDeptByRoleIdRow(Long roleId) {
+        return roleDeptMapper.delete(
+                Wrappers.<RoleDeptDO>lambdaQuery().eq(RoleDeptDO::getRoleId, roleId));
+    }
+
+    /**
+     * 批量删除角色部门关联
+     *
+     * @param roleIds 角色ID数组
+     * @return 结果
+     */
+    private int deleteRoleDeptRow(List<Long> roleIds) {
+        if (CollUtil.isEmpty(roleIds)) {
+            return 0;
+        }
+        return roleDeptMapper.delete(
+                Wrappers.<RoleDeptDO>lambdaQuery().in(RoleDeptDO::getRoleId, roleIds));
+    }
+
+    /**
+     * 查询部门被角色使用数量
+     *
+     * @param deptId 部门ID
+     * @return 结果
+     */
+    private long selectCountRoleDeptByDeptIdRow(Long deptId) {
+        return roleDeptMapper.selectCount(
+                Wrappers.<RoleDeptDO>lambdaQuery().eq(RoleDeptDO::getDeptId, deptId));
     }
 }

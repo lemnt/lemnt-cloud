@@ -1,10 +1,9 @@
 package com.lemnt.trade.domain.aftersale.model;
 
-import java.util.List;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /** 商品售后及退货信息。 */
 public record AfterSale(
@@ -34,8 +33,77 @@ public record AfterSale(
         Long spuId,
         String spuName,
         List<Spec> specs,
-        String picUrl
-) implements Serializable {
+        String picUrl,
+        BigDecimal refundDiscountAmount,
+        BigDecimal refundDeliveryDiscountPrice,
+        Long returnUsePoint,
+        Long deductGivePoint,
+        Integer refundRuleVersion)
+        implements Serializable {
+    /** 兼容未记录本批优惠与退款元数据的历史快照。 */
+    public AfterSale(
+            String refundNo,
+            String orderNo,
+            String requestNo,
+            Long memberId,
+            String paymentNo,
+            Long orderItemId,
+            Integer quantity,
+            String type,
+            BigDecimal amount,
+            String reason,
+            String status,
+            String decisionReason,
+            String returnCarrierCode,
+            String returnTrackingNo,
+            LocalDateTime requestedAt,
+            LocalDateTime decidedAt,
+            LocalDateTime returnShippedAt,
+            LocalDateTime returnReceivedAt,
+            Long id,
+            Long orderId,
+            LocalDateTime refundTime,
+            Long auditUserId,
+            Long skuId,
+            Long spuId,
+            String spuName,
+            List<Spec> specs,
+            String picUrl) {
+        this(
+                refundNo,
+                orderNo,
+                requestNo,
+                memberId,
+                paymentNo,
+                orderItemId,
+                quantity,
+                type,
+                amount,
+                reason,
+                status,
+                decisionReason,
+                returnCarrierCode,
+                returnTrackingNo,
+                requestedAt,
+                decidedAt,
+                returnShippedAt,
+                returnReceivedAt,
+                id,
+                orderId,
+                refundTime,
+                auditUserId,
+                skuId,
+                spuId,
+                spuName,
+                specs,
+                picUrl,
+                null,
+                null,
+                null,
+                null,
+                null);
+    }
+
     public AfterSale {
         specs = specs == null ? null : List.copyOf(specs);
     }
@@ -63,8 +131,7 @@ public record AfterSale(
             Long id,
             Long orderId,
             LocalDateTime refundTime,
-            Long auditUserId
-    ) {
+            Long auditUserId) {
         this(
                 refundNo,
                 orderNo,
@@ -97,33 +164,50 @@ public record AfterSale(
 
     /** 存量内部调用，身份由数据库写入后读取。 */
     public AfterSale(
-        String refundNo,
-        String orderNo,
-        String requestNo,
-        Long memberId,
-        String paymentNo,
-        Long orderItemId,
-        Integer quantity,
-        String type,
-        BigDecimal amount,
-        String reason,
-        String status,
-        String decisionReason,
-        String returnCarrierCode,
-        String returnTrackingNo,
-        LocalDateTime requestedAt,
-        LocalDateTime decidedAt,
-        LocalDateTime returnShippedAt,
-        LocalDateTime returnReceivedAt
-    ) {
-        this(refundNo, orderNo, requestNo, memberId, paymentNo, orderItemId, quantity, type, amount, reason, status, decisionReason, returnCarrierCode, returnTrackingNo, requestedAt, decidedAt, returnShippedAt, returnReceivedAt, null, null, null, null);
+            String refundNo,
+            String orderNo,
+            String requestNo,
+            Long memberId,
+            String paymentNo,
+            Long orderItemId,
+            Integer quantity,
+            String type,
+            BigDecimal amount,
+            String reason,
+            String status,
+            String decisionReason,
+            String returnCarrierCode,
+            String returnTrackingNo,
+            LocalDateTime requestedAt,
+            LocalDateTime decidedAt,
+            LocalDateTime returnShippedAt,
+            LocalDateTime returnReceivedAt) {
+        this(
+                refundNo,
+                orderNo,
+                requestNo,
+                memberId,
+                paymentNo,
+                orderItemId,
+                quantity,
+                type,
+                amount,
+                reason,
+                status,
+                decisionReason,
+                returnCarrierCode,
+                returnTrackingNo,
+                requestedAt,
+                decidedAt,
+                returnShippedAt,
+                returnReceivedAt,
+                null,
+                null,
+                null,
+                null);
     }
 
     /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
-    public record Spec(
-            Long specId,
-            String specName,
-            Long specValueId,
-            String specValueName
-    ) implements java.io.Serializable {}
+    public record Spec(Long specId, String specName, Long specValueId, String specValueName)
+            implements java.io.Serializable {}
 }

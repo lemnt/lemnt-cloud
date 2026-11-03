@@ -9,12 +9,6 @@ import java.io.Serializable;
 /** 规格字典新增请求。 */
 @Schema(description = "规格字典新增请求")
 public record ProductSpecCreateReq(
-        @Schema(description = "规格名称")
-        @NotBlank
-        @Size(max = 64)
-        String name,
-        @Schema(description = "说明，可空")
-        @Size(max = 500)
-        String remark
-) implements Serializable {
-}
+        @Schema(description = "规格名称") @NotBlank @Size(max = 64) String name,
+        @Schema(description = "说明，可空") @Size(max = 500) String remark)
+        implements Serializable {}

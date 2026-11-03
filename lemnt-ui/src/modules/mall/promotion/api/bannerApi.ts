@@ -12,7 +12,11 @@ function text(v: unknown, field: string): string {
 }
 function id(v: unknown): string {
   const value = typeof v === 'number' && Number.isSafeInteger(v) ? String(v) : v;
-  if (typeof value !== 'string' || !/^[1-9]\d{0,18}$/.test(value) || BigInt(value) > 9223372036854775807n)
+  if (
+    typeof value !== 'string' ||
+    !/^[1-9]\d{0,18}$/.test(value) ||
+    BigInt(value) > 9223372036854775807n
+  )
     throw Error('Banner 编号不合法或已丢失精度');
   return value;
 }
@@ -25,8 +29,14 @@ function badge(v: unknown): Banner {
   const row = object(v);
   const sort = row.sort;
   const browseCount = row.browseCount;
-  if ((row.status !== 0 && row.status !== 1) || typeof sort !== 'number' || !Number.isSafeInteger(sort)
-    || typeof browseCount !== 'number' || !Number.isSafeInteger(browseCount) || browseCount < 0)
+  if (
+    (row.status !== 0 && row.status !== 1) ||
+    typeof sort !== 'number' ||
+    !Number.isSafeInteger(sort) ||
+    typeof browseCount !== 'number' ||
+    !Number.isSafeInteger(browseCount) ||
+    browseCount < 0
+  )
     throw Error('Banner 数据不合法');
   return {
     id: id(row.id),
@@ -54,10 +64,16 @@ function payload(value: BannerSave) {
 export async function getBannerPage(q: BannerFilter) {
   const r = await request<unknown>({
     url: path,
-    params: { title: q.title?.trim() || undefined, status: q.status, pageNum: q.pageNum, pageSize: q.pageSize },
+    params: {
+      title: q.title?.trim() || undefined,
+      status: q.status,
+      pageNum: q.pageNum,
+      pageSize: q.pageSize,
+    },
   });
   const total = r.total;
-  if (typeof total !== 'number' || !Number.isSafeInteger(total) || total < 0) throw Error('Banner 总数不合法');
+  if (typeof total !== 'number' || !Number.isSafeInteger(total) || total < 0)
+    throw Error('Banner 总数不合法');
   if (!Array.isArray(r.rows)) throw Error('Banner 列表不合法');
   return { records: (r.rows as unknown[]).map(badge), total };
 }

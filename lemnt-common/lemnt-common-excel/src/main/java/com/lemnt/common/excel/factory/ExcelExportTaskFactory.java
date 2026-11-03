@@ -1,6 +1,7 @@
 package com.lemnt.common.excel.factory;
 
 import com.lemnt.common.excel.listener.task.BaseExcelExportTask;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -23,11 +24,13 @@ public class ExcelExportTaskFactory implements InitializingBean, ApplicationCont
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Map<String, BaseExcelExportTask> beans = applicationContext.getBeansOfType(BaseExcelExportTask.class);
+        Map<String, BaseExcelExportTask> beans =
+                applicationContext.getBeansOfType(BaseExcelExportTask.class);
         for (BaseExcelExportTask task : beans.values()) {
             String type = task.getType();
             if (type == null || type.isEmpty()) {
-                throw new IllegalArgumentException("BaseExcelExportTask must implement getType(): " + task.getClass());
+                throw new IllegalArgumentException(
+                        "BaseExcelExportTask must implement getType(): " + task.getClass());
             }
             taskMap.put(type, task);
         }

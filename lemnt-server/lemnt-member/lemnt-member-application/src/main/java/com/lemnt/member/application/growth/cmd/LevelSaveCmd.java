@@ -13,5 +13,5 @@ public record LevelSaveCmd(
         Integer discountPercent,
         String icon,
         String backgroundUrl,
-        Integer status
-) implements Serializable {}
+        Integer status)
+        implements Serializable {}

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class SeckillActivityDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private Long spuId;
     private String name;
     private Integer status;

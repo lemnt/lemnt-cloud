@@ -27,17 +27,41 @@ class OrderRemoteServiceZeroPayTest {
             new OrderRemoteService(orders, inventory, benefits, lifecycle, rollback);
 
     private TradeOrder order(String status) {
-        return new TradeOrder(7L, "TR0", 1L, BigDecimal.ZERO, status,
-                List.of(new TradeOrderItem(2L, "SKU", "商品", new BigDecimal("10.00"), 1,
-                        new BigDecimal("10.00"), BigDecimal.ZERO, BigDecimal.ZERO, 3L, "SPU",
-                        null, null)), null, 100L, 0L, null);
+        return new TradeOrder(
+                7L,
+                "TR0",
+                1L,
+                BigDecimal.ZERO,
+                status,
+                List.of(
+                        new TradeOrderItem(
+                                2L,
+                                "SKU",
+                                "商品",
+                                new BigDecimal("10.00"),
+                                1,
+                                new BigDecimal("10.00"),
+                                BigDecimal.ZERO,
+                                BigDecimal.ZERO,
+                                3L,
+                                "SPU",
+                                null,
+                                null)),
+                null,
+                100L,
+                0L,
+                null);
     }
 
     @Test
     void zeroAmountOrderIsPaidAndInventoryConfirmedAfterReservation() {
         var calls = new AtomicInteger();
-        Mockito.when(orders.findByOrderNo("TR0")).thenAnswer(invocation ->
-                calls.getAndIncrement() < 4 ? order("PENDING_PAYMENT") : order("PAID"));
+        Mockito.when(orders.findByOrderNo("TR0"))
+                .thenAnswer(
+                        invocation ->
+                                calls.getAndIncrement() < 4
+                                        ? order("PENDING_PAYMENT")
+                                        : order("PAID"));
         service.reserve("TR0");
         Mockito.verify(lifecycle).zeroPay("TR0");
         Mockito.verify(inventory).confirmStock("TR0", 2L);

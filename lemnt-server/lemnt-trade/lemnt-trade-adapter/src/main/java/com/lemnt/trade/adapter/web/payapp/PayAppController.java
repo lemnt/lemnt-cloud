@@ -65,7 +65,8 @@ public class PayAppController {
     @PutMapping("/{id}/status")
     @Operation(summary = "支付应用状态")
     @RequiresPermissions("trade:pay-app:update")
-    public R<Boolean> updateStatus(@PathVariable Long id, @Valid @RequestBody PayAppStatusUpdateReq req) {
+    public R<Boolean> updateStatus(
+            @PathVariable Long id, @Valid @RequestBody PayAppStatusUpdateReq req) {
         return R.ok(updateStatus.execute(id, req.status()));
     }
 
@@ -92,6 +93,8 @@ public class PayAppController {
     @RequiresPermissions("trade:pay-app:list")
     public R<PayAppRes> page(@Valid @ModelAttribute PayAppPageReq req) {
         var value = page.execute(PayConfigReqConverter.payAppPage(req));
-        return R.page(value.getRecords().stream().map(PayConfigResConverter::payApp).toList(), value.getTotal());
+        return R.page(
+                value.getRecords().stream().map(PayConfigResConverter::payApp).toList(),
+                value.getTotal());
     }
 }

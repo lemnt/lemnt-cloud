@@ -30,16 +30,20 @@ class StoreHttpContractTest {
     void boundedQueryDefaultsAndExactStringPrices() throws Exception {
         when(storeProductPageQueryExe.execute(new StorePageQry("goods", 2L, 1, 20)))
                 .thenReturn(
-                new StorePageDTO(
-                List.of(
-                new StoreProductDTO(
-                1L, "goods", 2L, 3L, null, "9.99", "12.50", true)),
-                1));
+                        new StorePageDTO(
+                                List.of(
+                                        new StoreProductDTO(
+                                                1L, "goods", 2L, 3L, null, "9.99", "12.50", true)),
+                                1));
 
-        var mvc = MockMvcBuilders.standaloneSetup(new Object[] {
-                new AppCategoryController(storeCategoryListQueryExe),
-                new AppProductController(storeProductPageQueryExe, storeProductDetailQueryExe)
-                }).build();
+        var mvc =
+                MockMvcBuilders.standaloneSetup(
+                                new Object[] {
+                                    new AppCategoryController(storeCategoryListQueryExe),
+                                    new AppProductController(
+                                            storeProductPageQueryExe, storeProductDetailQueryExe)
+                                })
+                        .build();
 
         mvc.perform(get("/mall/app/products?name=goods&categoryId=2"))
                 .andExpect(status().isOk())
@@ -50,34 +54,40 @@ class StoreHttpContractTest {
 
         verify(storeProductPageQueryExe).execute(new StorePageQry("goods", 2L, 1, 20));
 
-        verifyNoMoreInteractions(storeCategoryListQueryExe, storeProductPageQueryExe, storeProductDetailQueryExe);
-
+        verifyNoMoreInteractions(
+                storeCategoryListQueryExe, storeProductPageQueryExe, storeProductDetailQueryExe);
     }
 
     @Test
     void hiddenDetailDoesNotExposeAdminFields() throws Exception {
         when(storeProductDetailQueryExe.execute(1L))
                 .thenReturn(
-                new StoreDetailDTO(
-                1L,
-                "goods",
-                2L,
-                3L,
-                "plain",
-                null,
-                List.of(
-                new StoreSkuDTO(
-                7L,
-                "red",
-                "10.00",
-                3,
-                null,
-                List.of(new StoreSkuDTO.Spec(2L, "颜色", 3L, "红"))))));
+                        new StoreDetailDTO(
+                                1L,
+                                "goods",
+                                2L,
+                                3L,
+                                "plain",
+                                null,
+                                List.of(
+                                        new StoreSkuDTO(
+                                                7L,
+                                                "red",
+                                                "10.00",
+                                                3,
+                                                null,
+                                                List.of(
+                                                        new StoreSkuDTO.Spec(
+                                                                2L, "颜色", 3L, "红"))))));
 
-        var mvc = MockMvcBuilders.standaloneSetup(new Object[] {
-                new AppCategoryController(storeCategoryListQueryExe),
-                new AppProductController(storeProductPageQueryExe, storeProductDetailQueryExe)
-                }).build();
+        var mvc =
+                MockMvcBuilders.standaloneSetup(
+                                new Object[] {
+                                    new AppCategoryController(storeCategoryListQueryExe),
+                                    new AppProductController(
+                                            storeProductPageQueryExe, storeProductDetailQueryExe)
+                                })
+                        .build();
 
         mvc.perform(get("/mall/app/products/1"))
                 .andExpect(status().isOk())
@@ -89,6 +99,5 @@ class StoreHttpContractTest {
         mvc.perform(get("/mall/app/products/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isEmpty());
-
     }
 }

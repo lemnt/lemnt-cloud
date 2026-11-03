@@ -1,8 +1,7 @@
 package com.lemnt.member.domain.user.gateway;
 
-import com.lemnt.member.domain.user.model.MemberPageFilter;
-
 import com.lemnt.member.domain.user.model.Member;
+import com.lemnt.member.domain.user.model.MemberPageFilter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -60,11 +59,7 @@ public interface MemberUserGateway {
     /**
      * 余额。
      */
-    void balance(
-            Long memberId,
-            String assetType,
-            Long balance
-    );
+    void balance(Long memberId, String assetType, Long balance);
 
     /**
      * 分配等级。

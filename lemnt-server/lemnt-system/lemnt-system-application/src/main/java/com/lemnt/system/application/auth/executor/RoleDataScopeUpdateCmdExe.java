@@ -22,6 +22,7 @@ public class RoleDataScopeUpdateCmdExe {
     private final RoleDeptGateway roleDeptGateway;
     private final RoleDomainService roleDomainService;
     private final RoleGateway roleGateway;
+
     public Boolean execute(RoleDataScopeUpdateCmd cmd) {
         Role entity = new Role();
         entity.setRoleId(cmd.roleId());

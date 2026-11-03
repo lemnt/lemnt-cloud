@@ -4,33 +4,32 @@
 
 当前交付：商品浏览/搜索/详情/规格与幂等加购、领券中心/钱包、会员页面及购物车/服务端缓存结算页面和对应接口代码。启动页为商品首页。真实部署、微信支付及原生编译/真机尚未核验，config.js 仍默认关闭网络业务，不能标为生产成品。详见 [商品与优惠券接口](../docs/storefront-marketing-api.md) 和 [会员页面](../docs/member-pages.md)。
 
-## 接口边界
+## 当前接口边界与验证
 
-以下契约代码已实现但未在目标环境部署验证。独立会员会话与权威Dubbo验证器已经实现，禁止使用管理员身份或伪造memberId。真实预支付/渠道查询仍待实现，本地支付状态报告不代表渠道结果：
+2026-11-03：Node测试179项通过，JS/JSON/WXSS格式检查和38个WXML标签缩进检查通过。统一规范见[AGENTS.md](AGENTS.md)及[代码规范](../docs/code-standards.md)，完整范围见[第165批交付](../work-items/member-domain-structure/165-project-code-standards-delivery.md)。业务开关仍默认关闭，真实部署、微信原生编译、渠道支付和真机验收均未完成。
 
-| 方法 | 路径 | 输入 |
-| --- | --- | --- |
-| GET | /trade/app/cart | 无 |
-| PUT | /trade/app/cart/{productId} | quantity、selected |
-| DELETE | /trade/app/cart/{productId} | 无 |
-| GET | /trade/app/coupons | 无 |
-| POST | /trade/app/checkout/quote | productIds、可选 couponId |
-| POST | /trade/app/checkout | 上述字段、requestNo、quoteToken |
-| GET | /trade/app/orders/{orderNo} | 无 |
-| POST | /trade/app/orders/{orderNo}/prepay | 无客户端金额 |
-| GET | /trade/app/orders/{orderNo}/payment | 无 |
+当前路由由services/trade.js显式区分mall与trade，不能沿用历史版本的trade购物车前缀：
 
-响应沿用 R 包装。金额必须保持十进制字符串，商品及会员等 Long ID 在前端统一字符串。服务端必须通过独立会员会话确定 memberId，校验订单/券归属和会员有效性，不能接收客户端指定身份，也不能把后台 SecurityUtils.getUserId() 当作会员ID。网关须拒绝后台令牌访问会员接口，并移除客户端伪造身份头。
+| 方法 | 当前路径 | 输入/说明 |
+|---|---|---|
+| GET/PUT/DELETE | /mall/app/cart 及 /mall/app/cart/{productId} | 购物车及数量/选中状态 |
+| GET | /mall/app/coupon-center、/mall/app/coupon-wallet | 领券中心及本人优惠券 |
+| POST | /mall/app/checkout/quote | 当前商品、配送与可选券，服务端计价 |
+| POST | /mall/app/checkout | settlementId、requestNo，不提交金额 |
+| GET | /mall/app/checkout/requests/{requestNo} | 按原请求找回结算回执 |
+| GET | /trade/app/orders/{orderNo} | 本人订单完整详情 |
+| POST | /trade/app/orders/{orderNo}/payment | appKey、channel，不提交金额 |
+| GET | /trade/app/orders/{orderNo}/payment | 服务端支付状态 |
+| GET | /trade/app/orders/{orderNo}/promotions | 原订单优惠快照 |
+| GET | /trade/app/after-sales/{no}/promotions | 冻结退款归因与权益任务状态 |
 
-已有 /trade/admin/** 和 /trade/orders 是后台权限接口；本客户端不调用它们。现有后台购物车和结算页面视为历史管理工具，不计入小程序迁移完成度。商品、券模板、发货、审核、补偿留在后台。支付渠道回调另设服务端入口，验签后才进入支付应用服务，不使用小程序会话。
+HTTP保持R包装。金额和Long ID在解码边界保持精度；会员身份来自当前会话，服务端核对订单、券与售后归属，不接受页面输入memberId决定身份。不使用管理员令牌调用会员接口，也不在页面计算退款尾差。
 
-## 接通顺序
+上线前需核对HTTPS域名、AppID、后端路由、会员验证、支付配置及数据库版本，完成微信开发者工具/真机和目标环境验收后再决定开启memberApiReady。旧结算未知结果必须使用原请求查询/重试，不能以清本机记录替代服务端取消。
 
-1. 实现独立会员登录/退出/过期会话及网关身份隔离，会员使用手机号密码登录，不在客户端持久保存密码。
-2. 实现以上用户端入口，复用现有计价、订单、库存和 Outbox 服务；补充跨会员越权与后台令牌拒绝测试。
-3. 实现真实微信预支付和回调验签，响应签名支付参数；客户端 wx.requestPayment 返回成功只代表客户端调用结果，最终状态必须查询服务器。当前项目没有虚构支付参数或调用假成功。
-4. 结算 UI 必须在发出请求前持久化会员会话隔离的不可变 requestNo/quoteToken/商品载荷，未知结果用原载荷重试；退出/换号不得重放另一个会员的请求。当前服务客户端只接受调用方提供的稳定编号，尚未提供完整结算页面和持久化工作流。
-5. 配置合法 HTTPS 请求域名、AppID 和 config.js，完成开发者工具/真机验证后才打开 memberApiReady。不得为了调试关闭域名校验后宣称可发布。
+## 历史批次记录
+
+以下保留各批当时的能力、协议和测试数量，包含后来已经替换的入口与实现缺口描述；不作为当前代码状态。当前请求以services和上述接口表为准，完整迁移进度以work-items目录的最新批次为准。
 
 ## 后端入口接入状态
 

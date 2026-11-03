@@ -37,8 +37,7 @@ public class DeliveryExpressDO extends BaseDO {
     /**
      * 图标地址。
      */
-    @TableField(
-            updateStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.ALWAYS)
+    @TableField(updateStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.ALWAYS)
     private String logo;
 
     /**

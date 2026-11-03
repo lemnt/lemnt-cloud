@@ -13,7 +13,9 @@ it('没有列表权限时拒绝分销管理', () => {
   permissions.clear();
   const html = renderToStaticMarkup(
     <QueryClientProvider client={new QueryClient()}>
-      <App><BrokeragePage /></App>
+      <App>
+        <BrokeragePage />
+      </App>
     </QueryClientProvider>,
   );
   expect(html).toContain('没有分销管理权限');

@@ -5,6 +5,12 @@
 - [分析与开发设计](03-development-design.md)
 - [实现与验证](05-development.md)
 
+2026-11-03 第165批：全项目规范批量重构完成。3001个Java文件格式与导入统一，255处注解改短名；19个Mapper的68个默认方法及3个条件方法迁回Gateway，15处注解SQL移至XML。修复角色撤销参数反置和BigInteger精度缺陷，补HTTP边界及规范工具。后端/公共组件835、管理端320、小程序179、工具17项测试通过，全后端clean打包、前端类型/lint/format/build通过。见[全项目分析](165-project-code-standards-analysis.md)、[交付](165-project-code-standards-delivery.md)、[清单](165-project-code-standards-files.md)、[统一规范](../../docs/code-standards.md)。未执行现有库DDL与真实环境验收，未commit。
+
+2026-11-03 第164批：订单促销快照与按数量部分退款代码完成。trade保存三张优惠结果表，锁订单后限制单笔处理中，退单创建时冻结单件金额与末次尾差，成功后累计已退数量；零现金份额无虚假渠道退款。trade310/mall197/member122、React320、小程序179项通过。见[设计](164-order-promotion-refund-design.md)、[交付](164-order-promotion-refund-delivery.md)、[代码清单](code-summary.md)、[正式任务](tasks.md)、[迁移说明](../../docs/order-promotion-refund-migration.md)。未执行现有数据库迁移、部署和真实环境验收，未commit。
+
+本目录[state.json](state.json)仅跟踪第164批流水线，generate.completed；review及retrospective仍pending。历史批次按原索引核对。第165批全项目规范重构已按上方记录完成，未据此自动完成cs-review或retrospective。
+
 2026-11-02 第163批：95张表/1040字段注释盘点完成，补60处表注释及847处字段注释，缺失归零；既有注释与DDL结构保留。597项后端、7项工具测试通过。见[设计](163-schema-comments-design.md)、[交付](163-schema-comments-delivery.md)、[已有库操作说明](../../docs/database-comments.md)。本轮未连接/修改现有数据库。
 
 2026-11-02 第162批：商品、结算、订单明细和售后规格统一specs及四个spec*字段，旧JSON/回执兼容读取。mall195/trade283、React315、小程序176项通过；见[设计](162-spec-naming-design.md)、[交付](162-spec-naming-delivery.md)、[迁移说明](../../docs/spec-naming-migration.md)。未执行真实库升级/部署。
@@ -249,3 +255,5 @@
 2026-11-01 第158批：订单改价改址与自提履约完善。新增后台调价/改址接口与页面、订单中心派生待自提状态、门店距离排序与营业时间校验、店员核销台。mall 190项、trade 272项、网关35项、React 315项、小程序176项测试通过，真实验证调价改址日志、待自提列表、距离排序、关闭门店拒绝和浏览器核销。已支付订单差价、持久化待自提状态与真机定位仍未覆盖，见[158-order-adjust-pickup-fulfillment-delivery.md](158-order-adjust-pickup-fulfillment-delivery.md)与`evidence/order-adjust-pickup-verification.json`。
 
 2026-11-01 第159批：端到端验收与F12收口。完成浏览器后台验证码登录、核销台与履约页实测，核对Nacos网关前缀与白名单，统计当前189/119/62个接口、35/27/18张表、8个任务、56条后台路由、38个小程序页面；清理10类无调用兼容构造器，新增生产SQL发布脚本。mall 190项、trade 272项、网关35项、React 315项、小程序176项测试通过。真机、多端与真实渠道SDK仍未验证，见[159-e2e-f12-collation-delivery.md](159-e2e-f12-collation-delivery.md)与`evidence/e2e-f12-collation-verification.json`。
+
+2026-11-02 第163批真实库执行：mysql8四库补62处表注释、860处字段注释；97张表/1069字段空注释归零，列属性和约束逻辑核对通过。实际库含两张历史配置表，注释已登记，未执行其他迁移。见[执行记录](163-schema-comments-delivery.md)。

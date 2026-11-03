@@ -1,8 +1,10 @@
 package com.lemnt.trade.infrastructure.fulfillment.gateway;
 
 import com.lemnt.trade.domain.fulfillment.gateway.InventoryConfirmationGateway;
+import com.lemnt.trade.infrastructure.fulfillment.dataobject.InventoryConfirmationDO;
 import com.lemnt.trade.infrastructure.fulfillment.mapper.InventoryConfirmationMapper;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,7 @@ public class InventoryConfirmationGatewayImpl implements InventoryConfirmationGa
      * 库存已确认。
      */
     public boolean inventoryConfirmed(String no) {
-        return inventoryConfirmationMapper.confirmed(no) == 1;
+        return confirmedRow(no) == 1;
     }
 
     @Override
@@ -29,5 +31,16 @@ public class InventoryConfirmationGatewayImpl implements InventoryConfirmationGa
      */
     public void confirmInventory(String no, LocalDateTime time) {
         inventoryConfirmationMapper.confirm(no, time);
+    }
+
+    /**
+     * 已确认。
+     */
+    private int confirmedRow(String orderNo) {
+        return inventoryConfirmationMapper
+                .selectCount(
+                        Wrappers.<InventoryConfirmationDO>lambdaQuery()
+                                .eq(InventoryConfirmationDO::getOrderNo, orderNo))
+                .intValue();
     }
 }

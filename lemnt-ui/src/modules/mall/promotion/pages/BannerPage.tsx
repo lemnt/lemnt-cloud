@@ -101,7 +101,11 @@ export function BannerPage() {
       valueType: 'option',
       render: (_, row) => [
         can('mall:promotion:query') && (
-          <Button key="detail" type="link" onClick={() => setEditor({ id: row.id, readOnly: true })}>
+          <Button
+            key="detail"
+            type="link"
+            onClick={() => setEditor({ id: row.id, readOnly: true })}
+          >
             详情
           </Button>
         ),
@@ -177,7 +181,11 @@ export function BannerPage() {
             刷新
           </Button>,
           can('mall:promotion:create') && (
-            <Button key="new" type="primary" onClick={() => setEditor({ id: null, readOnly: false })}>
+            <Button
+              key="new"
+              type="primary"
+              onClick={() => setEditor({ id: null, readOnly: false })}
+            >
               新增 Banner
             </Button>
           ),
@@ -230,7 +238,11 @@ export function BannerPage() {
             <>
               <ProFormText name="title" label="标题" rules={[{ required: true }, { max: 100 }]} />
               <ProFormText name="url" label="跳转链接" rules={[{ required: true }, { max: 500 }]} />
-              <ProFormText name="picUrl" label="图片地址" rules={[{ required: true }, { max: 500 }]} />
+              <ProFormText
+                name="picUrl"
+                label="图片地址"
+                rules={[{ required: true }, { max: 500 }]}
+              />
               <ProFormSelect
                 name="position"
                 label="位置"

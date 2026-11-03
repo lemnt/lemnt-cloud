@@ -7,5 +7,4 @@ import jakarta.validation.constraints.NotNull;
 /** 客服会话置顶请求。 */
 @Schema(description = "客服会话置顶请求")
 public record KefuConversationPinReq(@Schema(description = "是否置顶") @NotNull Boolean pinned)
-        implements java.io.Serializable {
-}
+        implements java.io.Serializable {}

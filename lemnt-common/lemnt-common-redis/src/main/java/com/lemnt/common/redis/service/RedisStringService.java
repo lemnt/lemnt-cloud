@@ -132,7 +132,8 @@ public class RedisStringService extends AbstractRedisService {
      * 只有在 key 不存在时设置对象
      */
     public <T> boolean setObjIfAbsent(String key, T value) {
-        return Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, convertToString(value)));
+        return Boolean.TRUE.equals(
+                redisTemplate.opsForValue().setIfAbsent(key, convertToString(value)));
     }
 
     /**
@@ -197,9 +198,12 @@ public class RedisStringService extends AbstractRedisService {
     public void setRange(String key, String value, long offset) {
         redisTemplate.opsForValue().set(key, value, offset);
     }
+
     /** 仅更新尚存在的对象并续期，原子SET XX避免删除后被并发续期重建。 */
     public <T> boolean setObjIfPresent(String key, T value, long timeout, TimeUnit unit) {
-        return Boolean.TRUE.equals(redisTemplate.opsForValue().setIfPresent(key, convertToString(value), timeout, unit));
+        return Boolean.TRUE.equals(
+                redisTemplate
+                        .opsForValue()
+                        .setIfPresent(key, convertToString(value), timeout, unit));
     }
-
 }

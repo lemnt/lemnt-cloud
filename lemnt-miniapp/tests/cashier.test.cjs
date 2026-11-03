@@ -4,11 +4,15 @@ const assert = require('node:assert/strict');
 let definition;
 function load() {
   delete require.cache[require.resolve('../pages/cashier/index')];
-  global.Page = value => { definition = value; };
+  global.Page = (value) => {
+    definition = value;
+  };
   require('../pages/cashier/index');
   return definition;
 }
-function session() { return { memberId: '1', accessToken: 'token' }; }
+function session() {
+  return { memberId: '1', accessToken: 'token' };
+}
 function setupGlobals() {
   global.getApp = () => ({ globalData: { memberSession: session() } });
   global.wx = { navigateTo() {}, showToast() {} };
@@ -16,26 +20,46 @@ function setupGlobals() {
 function makePage(client) {
   setupGlobals();
   const page = { ...load() };
-  page.data = { ...JSON.parse(JSON.stringify(page.data)), loading: false, orderNo: 'TR1', appKey: 'lemnt-mall' };
-  page.setData = function (value) { Object.assign(this.data, value); };
+  page.data = {
+    ...JSON.parse(JSON.stringify(page.data)),
+    loading: false,
+    orderNo: 'TR1',
+    appKey: 'lemnt-mall',
+  };
+  page.setData = function (value) {
+    Object.assign(this.data, value);
+  };
   page.client = client;
   return page;
 }
 const prepay = {
-  paymentNo: 'PAY1D1667178F2041E1BFD70474', orderNo: 'TR1', channel: 'SANDBOX',
-  amount: '8.00', payUrl: null, params: { paymentNo: 'PAY1D1667178F2041E1BFD70474' },
+  paymentNo: 'PAY1D1667178F2041E1BFD70474',
+  orderNo: 'TR1',
+  channel: 'SANDBOX',
+  amount: '8.00',
+  payUrl: null,
+  params: { paymentNo: 'PAY1D1667178F2041E1BFD70474' },
 };
-const status = localPaymentStatus => ({
-  orderNo: 'TR1', orderStatus: localPaymentStatus === 'SUCCESS' ? 'PAID' : 'PENDING_PAYMENT',
-  payableAmount: '8.00', localPaymentStatus, channelVerified: false,
+const status = (localPaymentStatus) => ({
+  orderNo: 'TR1',
+  orderStatus: localPaymentStatus === 'SUCCESS' ? 'PAID' : 'PENDING_PAYMENT',
+  payableAmount: '8.00',
+  localPaymentStatus,
+  channelVerified: false,
 });
 
 test('收银台加载渠道、创建支付单并模拟沙箱支付', async () => {
   const submitted = [];
   const page = makePage({
     paymentChannels: async () => [{ code: 'SANDBOX', name: '沙箱' }],
-    prepay: async input => { submitted.push(input); return prepay; },
-    sandboxPay: async paymentNo => { submitted.push(paymentNo); return paymentNo; },
+    prepay: async (input) => {
+      submitted.push(input);
+      return prepay;
+    },
+    sandboxPay: async (paymentNo) => {
+      submitted.push(paymentNo);
+      return paymentNo;
+    },
     paymentStatus: async () => status(page.data.prepay ? 'SUCCESS' : 'WAITING'),
   });
   await page.loadChannels();
@@ -53,7 +77,7 @@ test('收银台加载渠道、创建支付单并模拟沙箱支付', async () =>
 test('收银台拒绝非法渠道参数与非法响应', async () => {
   const page = makePage({
     paymentChannels: async () => [{ code: 'CASH', name: '现金' }],
-    prepay: async input => {
+    prepay: async (input) => {
       if (input.channel === 'CASH') throw new Error('支付渠道不合法');
       return { ...prepay, orderNo: 'TR2' };
     },

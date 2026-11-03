@@ -3,6 +3,6 @@ package com.lemnt.trade.application.brokerage.qry;
 import java.io.Serializable;
 
 /** 佣金记录分页查询。 */
-public record BrokerageRecordPageQry(Long userId, Integer bizType, Integer status, int pageNum,
-        int pageSize) implements Serializable {
-}
+public record BrokerageRecordPageQry(
+        Long userId, Integer bizType, Integer status, int pageNum, int pageSize)
+        implements Serializable {}

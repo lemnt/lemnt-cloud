@@ -2,11 +2,12 @@ package com.lemnt.mall.start;
 
 import com.lemnt.mall.application.promotion.executor.CombinationExpireCmdExe;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /** 拼团过期调度；虚拟成团或整团失败由应用服务处理。 */
 @Slf4j

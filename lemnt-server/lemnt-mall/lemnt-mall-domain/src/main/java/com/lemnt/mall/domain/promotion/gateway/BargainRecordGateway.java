@@ -14,7 +14,11 @@ public interface BargainRecordGateway {
     BargainRecord save(BargainRecord value);
 
     /** 按旧价格条件更新，保证并发助力只成功一次。 */
-    boolean updatePrice(Long id, java.math.BigDecimal expected, java.math.BigDecimal price, Integer status,
+    boolean updatePrice(
+            Long id,
+            java.math.BigDecimal expected,
+            java.math.BigDecimal price,
+            Integer status,
             LocalDateTime endTime);
 
     boolean bindOrder(Long id, Long orderId);

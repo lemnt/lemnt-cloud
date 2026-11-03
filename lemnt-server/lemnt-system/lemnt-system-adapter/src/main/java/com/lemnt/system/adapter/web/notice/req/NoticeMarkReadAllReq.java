@@ -13,7 +13,6 @@ import java.util.List;
  */
 @Schema(description = "批量标记公告已读请求")
 public record NoticeMarkReadAllReq(
-        @NotEmpty(message = "公告ID列表不能为空")
-        @Schema(description = "公告ID列表", example = "[1, 2, 3]")
-        List<Long> ids
-) implements Serializable {}
+        @NotEmpty(message = "公告ID列表不能为空") @Schema(description = "公告ID列表", example = "[1, 2, 3]")
+                List<Long> ids)
+        implements Serializable {}

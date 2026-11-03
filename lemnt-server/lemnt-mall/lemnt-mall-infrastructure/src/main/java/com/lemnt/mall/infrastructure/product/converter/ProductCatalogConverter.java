@@ -25,14 +25,14 @@ public final class ProductCatalogConverter {
      */
     public static Category category(CategoryDO row) {
         return row == null
-        ? null
-        : new Category(
-                row.getId(),
-                row.getParentId(),
-                row.getName(),
-                row.getPicUrl(),
-                row.getSort(),
-                row.getStatus());
+                ? null
+                : new Category(
+                        row.getId(),
+                        row.getParentId(),
+                        row.getName(),
+                        row.getPicUrl(),
+                        row.getSort(),
+                        row.getStatus());
     }
 
     /**
@@ -40,14 +40,14 @@ public final class ProductCatalogConverter {
      */
     public static Brand brand(BrandDO row) {
         return row == null
-        ? null
-        : new Brand(
-                row.getId(),
-                row.getName(),
-                row.getPicUrl(),
-                row.getDescription(),
-                row.getSort(),
-                row.getStatus());
+                ? null
+                : new Brand(
+                        row.getId(),
+                        row.getName(),
+                        row.getPicUrl(),
+                        row.getDescription(),
+                        row.getSort(),
+                        row.getStatus());
     }
 
     /**
@@ -55,25 +55,30 @@ public final class ProductCatalogConverter {
      */
     public static ProductSpu spu(ProductSpuDO row, List<ProductSku> skus) {
         return row == null
-        ? null
-        : new ProductSpu(
-                row.getId(),
-                row.getCode(),
-                row.getName(),
-                row.getCategoryId(),
-                row.getBrandId(),
-                row.getDescription(),
-                row.getImage(),
-                row.getStatus(),
-                skus, JSON.parseArray(row.getDeliveryTypes(), Integer.class), row.getDeliveryTemplateId(), row.getKeyword(), row.getIntroduction(), JSON.parseArray(row.getSliderPicUrls(), String.class), row.getSort());
+                ? null
+                : new ProductSpu(
+                        row.getId(),
+                        row.getCode(),
+                        row.getName(),
+                        row.getCategoryId(),
+                        row.getBrandId(),
+                        row.getDescription(),
+                        row.getImage(),
+                        row.getStatus(),
+                        skus,
+                        JSON.parseArray(row.getDeliveryTypes(), Integer.class),
+                        row.getDeliveryTemplateId(),
+                        row.getKeyword(),
+                        row.getIntroduction(),
+                        JSON.parseArray(row.getSliderPicUrls(), String.class),
+                        row.getSort());
     }
 
     /**
      * 商品SKU。
      */
     public static ProductSku sku(ProductSkuDO row) {
-        if (row == null
-        ) {
+        if (row == null) {
             return null;
         }
         var values = specs(row.getSpecs());
@@ -85,9 +90,21 @@ public final class ProductCatalogConverter {
                 row.getPrice(),
                 row.getStock(),
                 row.getMainImage(),
-                values == null ? null : values.stream().map(property ->
-                        new com.lemnt.mall.domain.product.model.ProductSkuSpec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
-                row.getStatus(), row.getWeight(), row.getVolume());
+                values == null
+                        ? null
+                        : values.stream()
+                                .map(
+                                        property ->
+                                                new com.lemnt.mall.domain.product.model
+                                                        .ProductSkuSpec(
+                                                        property.specId(),
+                                                        property.specName(),
+                                                        property.specValueId(),
+                                                        property.specValueName()))
+                                .toList(),
+                row.getStatus(),
+                row.getWeight(),
+                row.getVolume());
     }
 
     /**
@@ -135,7 +152,8 @@ public final class ProductCatalogConverter {
         row.setDeliveryTemplateId(value.deliveryTemplateId());
         row.setKeyword(value.keyword());
         row.setIntroduction(value.introduction());
-        row.setSliderPicUrls(value.sliderPicUrls() == null ? null : JSON.toJSONString(value.sliderPicUrls()));
+        row.setSliderPicUrls(
+                value.sliderPicUrls() == null ? null : JSON.toJSONString(value.sliderPicUrls()));
         row.setSort(value.sort());
         return row;
     }
@@ -162,6 +180,9 @@ public final class ProductCatalogConverter {
 
     /** SKU规格仅从其JSON读取，不补字典现值或猜测旧编号。 */
     public static List<com.lemnt.mall.domain.product.model.ProductSkuSpec> specs(String json) {
-        return json == null ? List.of() : SpecSnapshotJson.read(json, com.lemnt.mall.domain.product.model.ProductSkuSpec.class);
+        return json == null
+                ? List.of()
+                : SpecSnapshotJson.read(
+                        json, com.lemnt.mall.domain.product.model.ProductSkuSpec.class);
     }
 }

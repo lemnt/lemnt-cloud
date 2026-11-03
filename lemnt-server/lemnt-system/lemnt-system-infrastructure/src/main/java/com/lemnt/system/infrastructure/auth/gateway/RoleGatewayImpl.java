@@ -122,5 +122,4 @@ public class RoleGatewayImpl implements RoleGateway {
     public Boolean deleteRoleByIds(List<Long> roleIds) {
         return roleMapper.deleteByIds(roleIds) > 0;
     }
-
 }

@@ -30,9 +30,14 @@ public class RechargePackageUpdateCmdExe {
         if (packages.existsName(name, cmd.id())) {
             throw new IllegalStateException("套餐名已存在");
         }
-        var value = new RechargePackage(existing.id(), name,
-                RechargeRules.positiveMoney(cmd.payPrice(), "支付金额"),
-                RechargeRules.nonNegativeMoney(cmd.bonusPrice(), "赠送金额"), cmd.status(), existing.createTime());
+        var value =
+                new RechargePackage(
+                        existing.id(),
+                        name,
+                        RechargeRules.positiveMoney(cmd.payPrice(), "支付金额"),
+                        RechargeRules.nonNegativeMoney(cmd.bonusPrice(), "赠送金额"),
+                        cmd.status(),
+                        existing.createTime());
         return packages.update(value);
     }
 }

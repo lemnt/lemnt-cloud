@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserUpdateStatusCmdExe {
     private final UserGateway userGateway;
+
     public Boolean execute(UserStatusUpdateCmd cmd) {
         User user = new User();
         user.setUserId(cmd.userId());

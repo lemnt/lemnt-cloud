@@ -5,9 +5,5 @@ import java.math.BigDecimal;
 
 /** 订单管理统计。 */
 public record OrderStatisticsDTO(
-        long orderCount,
-        BigDecimal orderPayPrice,
-        long afterSaleCount,
-        BigDecimal afterSalePrice
-) implements Serializable {
-}
+        long orderCount, BigDecimal orderPayPrice, long afterSaleCount, BigDecimal afterSalePrice)
+        implements Serializable {}

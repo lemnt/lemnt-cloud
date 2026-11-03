@@ -19,17 +19,36 @@ public record MemberOrderDetailDTO(
         String pickUpStoreName,
         String pickUpStorePhone,
         String pickUpStoreAddress,
-        String pickUpVerifyCode
-) implements Serializable {
+        String pickUpVerifyCode)
+        implements Serializable {
     public MemberOrderDetailDTO {
         items = items == null ? List.of() : List.copyOf(items);
     }
 
     /** 兼容普通快递订单。 */
-    public MemberOrderDetailDTO(String orderNo, String status, java.math.BigDecimal totalAmount,
-            LocalDateTime createTime, boolean activeRefund, List<OrderItemDTO> items, ShipmentDTO shipment,
-            Boolean commentStatus, LocalDateTime finishTime) {
-        this(orderNo, status, totalAmount, createTime, activeRefund, items, shipment, commentStatus,
-                finishTime, null, null, null, null);
+    public MemberOrderDetailDTO(
+            String orderNo,
+            String status,
+            java.math.BigDecimal totalAmount,
+            LocalDateTime createTime,
+            boolean activeRefund,
+            List<OrderItemDTO> items,
+            ShipmentDTO shipment,
+            Boolean commentStatus,
+            LocalDateTime finishTime) {
+        this(
+                orderNo,
+                status,
+                totalAmount,
+                createTime,
+                activeRefund,
+                items,
+                shipment,
+                commentStatus,
+                finishTime,
+                null,
+                null,
+                null,
+                null);
     }
 }

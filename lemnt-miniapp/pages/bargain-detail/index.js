@@ -4,15 +4,53 @@ const { createMemberClient } = require('../../services/member');
 const { createPromotionOrderHelper } = require('../../services/promotionOrderPage');
 
 Page({
-  data: { ready: config.memberApiReady, loading: false, error: '', activityId: '', recordId: '', activity: null, detail: null, loggedIn: false, address: null, order: null },
+  data: {
+    ready: config.memberApiReady,
+    loading: false,
+    error: '',
+    activityId: '',
+    recordId: '',
+    activity: null,
+    detail: null,
+    loggedIn: false,
+    address: null,
+    order: null,
+  },
   onLoad(options) {
     this.client = createBargainClient({
-      baseUrl: config.apiBaseUrl, ready: config.memberApiReady,
+      baseUrl: config.apiBaseUrl,
+      ready: config.memberApiReady,
       getMemberToken: () => getApp().globalData.memberSession?.accessToken,
-      request: (options) => new Promise((resolve, reject) => wx.request({ ...options, success: resolve, fail: () => reject(Error('请求未确认，请刷新核验')) })),
+      request: (options) =>
+        new Promise((resolve, reject) =>
+          wx.request({
+            ...options,
+            success: resolve,
+            fail: () => reject(Error('请求未确认，请刷新核验')),
+          }),
+        ),
     });
-    this.memberClient = createMemberClient({ request: (options) => new Promise((resolve, reject) => wx.request({ ...options, success: resolve, fail: () => reject(Error('请求未确认，请刷新核验')) })), baseUrl: config.apiBaseUrl, ready: config.memberApiReady, getSession: () => getApp().globalData.memberSession, setSession: (value) => { getApp().globalData.memberSession = value; } });
-    this.helper = createPromotionOrderHelper({ type: 'BARGAIN', client: this.client, memberClient: this.memberClient });
+    this.memberClient = createMemberClient({
+      request: (options) =>
+        new Promise((resolve, reject) =>
+          wx.request({
+            ...options,
+            success: resolve,
+            fail: () => reject(Error('请求未确认，请刷新核验')),
+          }),
+        ),
+      baseUrl: config.apiBaseUrl,
+      ready: config.memberApiReady,
+      getSession: () => getApp().globalData.memberSession,
+      setSession: (value) => {
+        getApp().globalData.memberSession = value;
+      },
+    });
+    this.helper = createPromotionOrderHelper({
+      type: 'BARGAIN',
+      client: this.client,
+      memberClient: this.memberClient,
+    });
     this.setData({ activityId: options.activityId || '', recordId: options.recordId || '' });
   },
   onShow() {
@@ -23,13 +61,22 @@ Page({
     }
   },
   async loadAddress() {
-    try { this.setData({ address: await this.helper.loadAddress() }); }
-    catch (e) { this.setData({ error: e.message || '收货地址读取失败' }); }
+    try {
+      this.setData({ address: await this.helper.loadAddress() });
+    } catch (e) {
+      this.setData({ error: e.message || '收货地址读取失败' });
+    }
   },
   async run(work) {
     if (this.data.loading) return;
     this.setData({ loading: true, error: '' });
-    try { await work(); } catch (e) { this.setData({ error: e.message || '砍价详情读取失败' }); } finally { this.setData({ loading: false }); }
+    try {
+      await work();
+    } catch (e) {
+      this.setData({ error: e.message || '砍价详情读取失败' });
+    } finally {
+      this.setData({ loading: false });
+    }
   },
   reload() {
     return this.run(async () => {
@@ -63,11 +110,18 @@ Page({
       if (!this.data.detail || this.data.detail.record.status !== 2) throw Error('砍价尚未成功');
       const address = await this.helper.loadAddress();
       if (!address) throw Error('请先在会员中心添加收货地址');
-      const order = await this.helper.submit({ recordId: this.data.detail.record.id, skuId: this.data.detail.record.skuId, quantity: 1, addressId: address.id });
+      const order = await this.helper.submit({
+        recordId: this.data.detail.record.id,
+        skuId: this.data.detail.record.skuId,
+        quantity: 1,
+        addressId: address.id,
+      });
       this.setData({ address, order });
     });
   },
-  login() { wx.navigateTo({ url: '/pages/member-login/index' }); },
+  login() {
+    wx.navigateTo({ url: '/pages/member-login/index' });
+  },
   goCashier() {
     const order = this.data.order;
     if (!order || order.status !== 'PENDING_PAYMENT') return;

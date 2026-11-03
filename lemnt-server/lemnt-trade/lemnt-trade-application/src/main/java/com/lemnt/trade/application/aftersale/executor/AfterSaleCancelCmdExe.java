@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AfterSaleCancelCmdExe {
     private final AfterSaleService service;
+
     /** 行锁下校验会员归属和可取消阶段。 */
     public boolean execute(Long memberId, String no) {
         return service.cancel(memberId, no) != null;

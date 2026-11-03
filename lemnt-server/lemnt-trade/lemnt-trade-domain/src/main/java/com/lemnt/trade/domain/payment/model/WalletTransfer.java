@@ -15,6 +15,4 @@ public record WalletTransfer(
         BigDecimal amount,
         String remark,
         String status,
-        LocalDateTime createTime
-) {
-}
+        LocalDateTime createTime) {}

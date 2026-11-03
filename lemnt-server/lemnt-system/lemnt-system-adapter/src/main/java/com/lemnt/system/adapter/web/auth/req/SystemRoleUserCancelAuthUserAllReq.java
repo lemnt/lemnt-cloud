@@ -13,11 +13,7 @@ import java.util.List;
  */
 @Schema(description = "角色取消用户授权请求")
 public record SystemRoleUserCancelAuthUserAllReq(
-        @NotNull(message = "角色ID不能为空")
-        @Schema(description = "角色ID")
-        Long roleId,
-        @Schema(description = "用户ID")
-        Long userId,
-        @Schema(description = "用户ID列表")
-        List<Long> userIds
-) implements Serializable {}
+        @NotNull(message = "角色ID不能为空") @Schema(description = "角色ID") Long roleId,
+        @Schema(description = "用户ID") Long userId,
+        @Schema(description = "用户ID列表") List<Long> userIds)
+        implements Serializable {}

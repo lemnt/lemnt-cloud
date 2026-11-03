@@ -31,7 +31,8 @@ public class CombinationRecordController {
     @RequiresPermissions("mall:promotion:list")
     public R<CombinationRecordRes> page(@Valid @ModelAttribute CombinationRecordPageReq req) {
         var result = page.execute(CombinationConverter.recordPage(req));
-        return R.page(result.getRecords().stream().map(CombinationConverter::record).toList(),
+        return R.page(
+                result.getRecords().stream().map(CombinationConverter::record).toList(),
                 result.getTotal());
     }
 }

@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** 复用 MyBatis Plus 的活动表 CRUD。 */
 @Mapper
-public interface DiscountProductMapper extends BaseMapper<DiscountProductDO> {
-}
+public interface DiscountProductMapper extends BaseMapper<DiscountProductDO> {}

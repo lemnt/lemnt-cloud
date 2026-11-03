@@ -18,8 +18,18 @@ public final class DiscountActivityReqConverter {
                 req.startTime(),
                 req.endTime(),
                 req.remark(),
-                req.products().stream().map(p -> new DiscountProduct(null, null, p.spuId(), p.skuId(),
-                    p.discountType(), p.discountPercent(), p.discountPrice())).toList());
+                req.products().stream()
+                        .map(
+                                p ->
+                                        new DiscountProduct(
+                                                null,
+                                                null,
+                                                p.spuId(),
+                                                p.skuId(),
+                                                p.discountType(),
+                                                p.discountPercent(),
+                                                p.discountPrice()))
+                        .toList());
     }
 
     public static DiscountActivityUpdateCmd update(Long id, DiscountActivityUpdateReq req) {
@@ -29,12 +39,25 @@ public final class DiscountActivityReqConverter {
                 req.startTime(),
                 req.endTime(),
                 req.remark(),
-                req.products().stream().map(p -> new DiscountProduct(null, null, p.spuId(), p.skuId(),
-                    p.discountType(), p.discountPercent(), p.discountPrice())).toList());
+                req.products().stream()
+                        .map(
+                                p ->
+                                        new DiscountProduct(
+                                                null,
+                                                null,
+                                                p.spuId(),
+                                                p.skuId(),
+                                                p.discountType(),
+                                                p.discountPercent(),
+                                                p.discountPrice()))
+                        .toList());
     }
 
     public static DiscountActivityPageQry page(DiscountActivityPageReq req) {
-        return new DiscountActivityPageQry(req.name(), req.status(), req.pageNum() == null ? 1 : req.pageNum(),
+        return new DiscountActivityPageQry(
+                req.name(),
+                req.status(),
+                req.pageNum() == null ? 1 : req.pageNum(),
                 req.pageSize() == null ? 20 : req.pageSize());
     }
 }

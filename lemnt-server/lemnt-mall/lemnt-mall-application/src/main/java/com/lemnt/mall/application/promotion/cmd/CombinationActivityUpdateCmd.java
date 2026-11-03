@@ -15,5 +15,4 @@ public record CombinationActivityUpdateCmd(
         Integer userSize,
         Boolean virtualGroup,
         Integer limitDuration,
-        List<CombinationProductCmd> products
-) {}
+        List<CombinationProductCmd> products) {}

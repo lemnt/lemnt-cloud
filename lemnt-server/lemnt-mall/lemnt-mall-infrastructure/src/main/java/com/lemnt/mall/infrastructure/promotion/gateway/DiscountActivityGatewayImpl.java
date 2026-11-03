@@ -30,7 +30,9 @@ public class DiscountActivityGatewayImpl implements DiscountActivityGateway {
     @Override
     public DiscountActivity save(DiscountActivity value) {
         var row = PromotionConverter.row(value);
-        if (row.getId() == null) { mapper.insert(row); } else {
+        if (row.getId() == null) {
+            mapper.insert(row);
+        } else {
             mapper.updateById(row);
         }
         return PromotionConverter.model(row);
@@ -43,19 +45,33 @@ public class DiscountActivityGatewayImpl implements DiscountActivityGateway {
 
     @Override
     public PageResult<DiscountActivity> page(ActivityFilter filter) {
-        var page = mapper.selectPage(new Page<DiscountActivityDO>(filter.pageNum(), filter.pageSize()),
-                Wrappers.<DiscountActivityDO>lambdaQuery()
-                        .like(filter.name() != null && !filter.name().isBlank(), DiscountActivityDO::getName,
-                            filter.name())
-                        .eq(filter.status() != null, DiscountActivityDO::getStatus, filter.status())
-                        .orderByDesc(DiscountActivityDO::getId));
-        return PageResult.of(page.getRecords().stream().map(PromotionConverter::model).toList(), page.getTotal());
+        var page =
+                mapper.selectPage(
+                        new Page<DiscountActivityDO>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.<DiscountActivityDO>lambdaQuery()
+                                .like(
+                                        filter.name() != null && !filter.name().isBlank(),
+                                        DiscountActivityDO::getName,
+                                        filter.name())
+                                .eq(
+                                        filter.status() != null,
+                                        DiscountActivityDO::getStatus,
+                                        filter.status())
+                                .orderByDesc(DiscountActivityDO::getId));
+        return PageResult.of(
+                page.getRecords().stream().map(PromotionConverter::model).toList(),
+                page.getTotal());
     }
 
     @Override
     public List<DiscountActivity> enabled() {
-        return mapper.selectList(Wrappers.<DiscountActivityDO>lambdaQuery()
-                .eq(DiscountActivityDO::getStatus, 0).orderByDesc(DiscountActivityDO::getId))
-                .stream().map(PromotionConverter::model).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<DiscountActivityDO>lambdaQuery()
+                                .eq(DiscountActivityDO::getStatus, 0)
+                                .orderByDesc(DiscountActivityDO::getId))
+                .stream()
+                .map(PromotionConverter::model)
+                .toList();
     }
 }

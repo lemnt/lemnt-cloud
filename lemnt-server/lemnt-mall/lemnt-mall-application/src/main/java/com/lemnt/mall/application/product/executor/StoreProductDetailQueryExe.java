@@ -19,6 +19,7 @@ import java.math.RoundingMode;
 @RequiredArgsConstructor
 public class StoreProductDetailQueryExe {
     private final ProductCatalogService catalogService;
+
     private String money(BigDecimal v) {
         return v.setScale(2, RoundingMode.UNNECESSARY).toPlainString();
     }
@@ -32,23 +33,37 @@ public class StoreProductDetailQueryExe {
         return v == null
                 ? null
                 : new StoreDetailDTO(
-                v.id(),
-                v.name(),
-                v.categoryId(),
-                v.brandId(),
-                v.description(),
-                v.image(),
-                v.skus().stream()
-                .map(
-                s ->
-                new StoreSkuDTO(
-                s.id(),
-                s.name(),
-                money(s.price()),
-                s.stock(),
-                s.image(),
-                s.specs() == null ? null : s.specs().stream().map(property ->
-                        new StoreSkuDTO.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList()))
-                .toList());
+                        v.id(),
+                        v.name(),
+                        v.categoryId(),
+                        v.brandId(),
+                        v.description(),
+                        v.image(),
+                        v.skus().stream()
+                                .map(
+                                        s ->
+                                                new StoreSkuDTO(
+                                                        s.id(),
+                                                        s.name(),
+                                                        money(s.price()),
+                                                        s.stock(),
+                                                        s.image(),
+                                                        s.specs() == null
+                                                                ? null
+                                                                : s.specs().stream()
+                                                                        .map(
+                                                                                property ->
+                                                                                        new StoreSkuDTO
+                                                                                                .Spec(
+                                                                                                property
+                                                                                                        .specId(),
+                                                                                                property
+                                                                                                        .specName(),
+                                                                                                property
+                                                                                                        .specValueId(),
+                                                                                                property
+                                                                                                        .specValueName()))
+                                                                        .toList()))
+                                .toList());
     }
 }

@@ -1,12 +1,12 @@
 package com.lemnt.member.application.growth.service;
 
 import com.lemnt.common.core.exception.ServiceException;
-import com.lemnt.member.domain.growth.gateway.MemberPointRecordGateway;
-import com.lemnt.member.domain.growth.gateway.MemberExperienceRecordGateway;
 import com.lemnt.member.domain.growth.gateway.MemberConfigGateway;
 import com.lemnt.member.domain.growth.gateway.MemberConfigLockGateway;
+import com.lemnt.member.domain.growth.gateway.MemberExperienceRecordGateway;
 import com.lemnt.member.domain.growth.gateway.MemberLevelGateway;
 import com.lemnt.member.domain.growth.gateway.MemberLevelRecordGateway;
+import com.lemnt.member.domain.growth.gateway.MemberPointRecordGateway;
 import com.lemnt.member.domain.growth.gateway.MemberSignConfigGateway;
 import com.lemnt.member.domain.growth.gateway.MemberSignRecordGateway;
 import com.lemnt.member.domain.growth.model.AssetRecord;
@@ -44,27 +44,29 @@ public class MemberGrowthService {
     private final MemberUserGateway memberUserGateway;
 
     /** 应用编排直接选择逐表网关，不保留泛化领域存储接口。 */
-    private AssetRecord assetRequest(Long memberId,String type,String code,String bizNo) {
-        return switch(type) {
-            case "POINT" -> pointRecords.request(memberId,code,bizNo);
-            case "EXPERIENCE" -> experienceRecords.request(memberId,code,bizNo);
-            default -> throw new ServiceException("资产类型不合法",400);
+    private AssetRecord assetRequest(Long memberId, String type, String code, String bizNo) {
+        return switch (type) {
+            case "POINT" -> pointRecords.request(memberId, code, bizNo);
+            case "EXPERIENCE" -> experienceRecords.request(memberId, code, bizNo);
+            default -> throw new ServiceException("资产类型不合法", 400);
         };
     }
+
     /** 已持会员锁，写入对应账本并参加外层事务。 */
     private void saveAsset(AssetRecord record) {
-        switch(record.assetType()) {
+        switch (record.assetType()) {
             case "POINT" -> pointRecords.save(record);
             case "EXPERIENCE" -> experienceRecords.save(record);
-            default -> throw new ServiceException("资产类型不合法",400);
+            default -> throw new ServiceException("资产类型不合法", 400);
         }
     }
+
     /** 退款累计只查询原权益所属账本。 */
-    private long tradeReturns(Long memberId,String type,String code,String orderNo) {
-        return switch(type) {
-            case "POINT" -> pointRecords.returned(memberId,code,orderNo);
-            case "EXPERIENCE" -> experienceRecords.returned(memberId,code,orderNo);
-            default -> throw new ServiceException("资产类型不合法",400);
+    private long tradeReturns(Long memberId, String type, String code, String orderNo) {
+        return switch (type) {
+            case "POINT" -> pointRecords.returned(memberId, code, orderNo);
+            case "EXPERIENCE" -> experienceRecords.returned(memberId, code, orderNo);
+            default -> throw new ServiceException("资产类型不合法", 400);
         };
     }
 
@@ -124,8 +126,11 @@ public class MemberGrowthService {
             throw new ServiceException("余额不足", 400);
         }
         memberUserGateway.balance(memberId, type, balance);
-        var metadata=com.lemnt.member.domain.growth.model.PointRecordMetadata.from(type,bizType,delta);
-        var expMetadata=com.lemnt.member.domain.growth.model.ExperienceRecordMetadata.from(type,bizType,delta);
+        var metadata =
+                com.lemnt.member.domain.growth.model.PointRecordMetadata.from(type, bizType, delta);
+        var expMetadata =
+                com.lemnt.member.domain.growth.model.ExperienceRecordMetadata.from(
+                        type, bizType, delta);
         var record =
                 new AssetRecord(
                         null,
@@ -136,16 +141,20 @@ public class MemberGrowthService {
                         bizType,
                         key,
                         reason,
-                        memberUserGateway.now(),null,metadata.type(),"POINT".equals(type)?metadata.title():expMetadata.title(),"POINT".equals(type)?metadata.description():expMetadata.description(),expMetadata.type()
-                );
+                        memberUserGateway.now(),
+                        null,
+                        metadata.type(),
+                        "POINT".equals(type) ? metadata.title() : expMetadata.title(),
+                        "POINT".equals(type) ? metadata.description() : expMetadata.description(),
+                        expMetadata.type());
         saveAsset(record);
         if (autoLevel && "EXPERIENCE".equals(type)) {
             long userExperience = balance;
             var best =
                     memberLevelGateway.levels().stream()
-                    .filter(v -> v.status() == 1 && v.experience() <= userExperience)
-                    .max(Comparator.comparing(Level::level))
-                    .orElse(null);
+                            .filter(v -> v.status() == 1 && v.experience() <= userExperience)
+                            .max(Comparator.comparing(Level::level))
+                            .orElse(null);
             // 无匹配的启用等级时保留原等级，仅明确匹配到不同等级才变更。
             if (best != null && !Objects.equals(best.id(), user.levelId())) {
                 memberUserGateway.assignLevel(memberId, best.id());
@@ -291,7 +300,8 @@ public class MemberGrowthService {
         if (memberSignConfigGateway.signConfigByDay(value.day()) != null) {
             throw new ServiceException("签到天数已存在", 409);
         }
-        return memberSignConfigGateway.create(new SignConfig(value.day(), value.point(), value.experience(), value.status()));
+        return memberSignConfigGateway.create(
+                new SignConfig(value.day(), value.point(), value.experience(), value.status()));
     }
 
     /** 修改规则可调整天数，但不能占用其他规则的天数。 */
@@ -314,11 +324,16 @@ public class MemberGrowthService {
 
     /** 校验规则内容，保留现有天数及奖励约束。 */
     private void validateSignConfig(SignConfig v) {
-        if (v.day() == null || v.day() < 1 || v.day() > 366
-                || v.point() == null || v.point() < 0
-                || v.experience() == null || v.experience() < 0
+        if (v.day() == null
+                || v.day() < 1
+                || v.day() > 366
+                || v.point() == null
+                || v.point() < 0
+                || v.experience() == null
+                || v.experience() < 0
                 || (v.point() == 0 && v.experience() == 0)
-                || v.status() == null || (v.status() != 0 && v.status() != 1)) {
+                || v.status() == null
+                || (v.status() != 0 && v.status() != 1)) {
             throw new ServiceException("签到配置不合法", 400);
         }
     }
@@ -346,7 +361,10 @@ public class MemberGrowthService {
         if (previous != null) {
             throw new ServiceException("今日已签到", 409);
         }
-        var configs = memberSignConfigGateway.signConfigs().stream().filter(v -> v.status() == 1).toList();
+        var configs =
+                memberSignConfigGateway.signConfigs().stream()
+                        .filter(v -> v.status() == 1)
+                        .toList();
         if (configs.isEmpty()) {
             throw new ServiceException("签到规则未启用", 409);
         }
@@ -359,11 +377,20 @@ public class MemberGrowthService {
         final int current = day;
         var config =
                 configs.stream()
-                .filter(v -> v.day() == current)
-                .findFirst()
-                .orElse(new SignConfig(day, 0L, 0L, 1));
-        var signRecordId = memberSignRecordGateway.signSave(
-                new SignRecord(null, memberId, today, day, config.point(), config.experience(), null, now));
+                        .filter(v -> v.day() == current)
+                        .findFirst()
+                        .orElse(new SignConfig(day, 0L, 0L, 1));
+        var signRecordId =
+                memberSignRecordGateway.signSave(
+                        new SignRecord(
+                                null,
+                                memberId,
+                                today,
+                                day,
+                                config.point(),
+                                config.experience(),
+                                null,
+                                now));
         if (config.point() > 0) {
             adjust(
                     memberId,
@@ -406,11 +433,17 @@ public class MemberGrowthService {
         memberConfigGateway.configSave(v);
         return true;
     }
+
     /** 订单创建、支付、关闭和售后资产写入同一会员事务，重复回调按业务编号核对。 */
     @Transactional(rollbackFor = Exception.class)
     public void tradeAsset(com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd cmd) {
-        if (cmd == null || cmd.usePoint() < 0 || cmd.givePoint() < 0 || cmd.paidFen() < 0
-                || cmd.refundFen() < 0 || cmd.refundFen() > cmd.paidFen() || cmd.refundPoint() < 0) {
+        if (cmd == null
+                || cmd.usePoint() < 0
+                || cmd.givePoint() < 0
+                || cmd.paidFen() < 0
+                || cmd.refundFen() < 0
+                || cmd.refundFen() > cmd.paidFen()
+                || cmd.refundPoint() < 0) {
             throw new ServiceException("交易权益参数不合法", 400);
         }
         String orderNo = MemberRules.text(cmd.orderNo(), 40);
@@ -422,20 +455,43 @@ public class MemberGrowthService {
                     throw new ServiceException("订单已经关闭，不能再抵扣积分", 409);
                 }
                 if (cmd.usePoint() > 0) {
-                    adjust(cmd.memberId(), "POINT", -cmd.usePoint(), "TRADE_USE", orderNo, reason, false, false);
+                    adjust(
+                            cmd.memberId(),
+                            "POINT",
+                            -cmd.usePoint(),
+                            "TRADE_USE",
+                            orderNo,
+                            reason,
+                            false,
+                            false);
                 }
             }
             case "PAID" -> {
-                if (cmd.usePoint() > 0 && assetRequest(
-                        cmd.memberId(), "POINT", "TRADE_USE", orderNo) == null) {
+                if (cmd.usePoint() > 0
+                        && assetRequest(cmd.memberId(), "POINT", "TRADE_USE", orderNo) == null) {
                     throw new ServiceException("订单抵扣积分尚未确认", 409);
                 }
                 if (cmd.givePoint() > 0) {
-                    adjust(cmd.memberId(), "POINT", cmd.givePoint(), "TRADE_GIVE", orderNo, reason, false, false);
+                    adjust(
+                            cmd.memberId(),
+                            "POINT",
+                            cmd.givePoint(),
+                            "TRADE_GIVE",
+                            orderNo,
+                            reason,
+                            false,
+                            false);
                 }
                 if (cmd.paidFen() > 0) {
-                    adjust(cmd.memberId(), "EXPERIENCE", cmd.paidFen(), "TRADE_EXPERIENCE", orderNo, reason,
-                            false, true);
+                    adjust(
+                            cmd.memberId(),
+                            "EXPERIENCE",
+                            cmd.paidFen(),
+                            "TRADE_EXPERIENCE",
+                            orderNo,
+                            reason,
+                            false,
+                            true);
                 }
             }
             case "CLOSED" -> {
@@ -443,54 +499,219 @@ public class MemberGrowthService {
                 adjust(cmd.memberId(), "POINT", 0, "TRADE_CLOSED", orderNo, reason, true, false);
                 var used = assetRequest(cmd.memberId(), "POINT", "TRADE_USE", orderNo);
                 if (used != null) {
-                    adjust(cmd.memberId(), "POINT", -used.delta(), "TRADE_USE_CANCEL", orderNo, reason, false, false);
+                    adjust(
+                            cmd.memberId(),
+                            "POINT",
+                            -used.delta(),
+                            "TRADE_USE_CANCEL",
+                            orderNo,
+                            reason,
+                            false,
+                            false);
                 }
             }
             case "REFUND" -> {
                 String refundNo = MemberRules.text(cmd.refundNo(), 40);
-                String key = MemberRules.text(orderNo + ":" + refundNo, 64);
+                if (Integer.valueOf(1).equals(cmd.refundRuleVersion())) {
+                    if (cmd.deductGivePoint() == null || cmd.deductGivePoint() < 0) {
+                        throw new ServiceException("冻结回收积分不合法", 400);
+                    }
+                    String frozenReason =
+                            reason
+                                    + ":"
+                                    + orderNo
+                                    + ":"
+                                    + cmd.refundFen()
+                                    + ":"
+                                    + cmd.refundPoint()
+                                    + ":"
+                                    + cmd.deductGivePoint();
+                    returnExactTradeAsset(
+                            cmd.memberId(),
+                            "POINT",
+                            "TRADE_USE",
+                            "TRADE_USE_RETURN",
+                            orderNo,
+                            refundNo,
+                            cmd.refundPoint(),
+                            false,
+                            frozenReason);
+                    returnExactTradeAsset(
+                            cmd.memberId(),
+                            "POINT",
+                            "TRADE_GIVE",
+                            "TRADE_GIVE_RETURN",
+                            orderNo,
+                            refundNo,
+                            cmd.deductGivePoint(),
+                            true,
+                            frozenReason);
+                    returnExactTradeAsset(
+                            cmd.memberId(),
+                            "EXPERIENCE",
+                            "TRADE_EXPERIENCE",
+                            "TRADE_EXPERIENCE_RETURN",
+                            orderNo,
+                            refundNo,
+                            cmd.refundFen(),
+                            true,
+                            frozenReason);
+                    break;
+                }
+                String key = refundNo;
                 String refundReason = reason + ":" + cmd.refundFen() + ":" + cmd.fullRefund();
-                returnTradeAsset(cmd.memberId(), "POINT", "TRADE_USE", "TRADE_USE_RETURN", orderNo,
-                        key, cmd.refundFen(), cmd.paidFen(), cmd.fullRefund(), false, cmd.refundPoint(),
+                returnTradeAsset(
+                        cmd.memberId(),
+                        "POINT",
+                        "TRADE_USE",
+                        "TRADE_USE_RETURN",
+                        orderNo,
+                        key,
+                        cmd.refundFen(),
+                        cmd.paidFen(),
+                        cmd.fullRefund(),
+                        false,
+                        cmd.refundPoint(),
                         refundReason);
-                returnTradeAsset(cmd.memberId(), "POINT", "TRADE_GIVE", "TRADE_GIVE_RETURN", orderNo,
-                        key, cmd.refundFen(), cmd.paidFen(), cmd.fullRefund(), true, 0L, refundReason);
-                returnTradeAsset(cmd.memberId(), "EXPERIENCE", "TRADE_EXPERIENCE", "TRADE_EXPERIENCE_RETURN",
-                        orderNo, key, cmd.refundFen(), cmd.paidFen(), cmd.fullRefund(), true, 0L, refundReason);
+                returnTradeAsset(
+                        cmd.memberId(),
+                        "POINT",
+                        "TRADE_GIVE",
+                        "TRADE_GIVE_RETURN",
+                        orderNo,
+                        key,
+                        cmd.refundFen(),
+                        cmd.paidFen(),
+                        cmd.fullRefund(),
+                        true,
+                        0L,
+                        refundReason);
+                returnTradeAsset(
+                        cmd.memberId(),
+                        "EXPERIENCE",
+                        "TRADE_EXPERIENCE",
+                        "TRADE_EXPERIENCE_RETURN",
+                        orderNo,
+                        key,
+                        cmd.refundFen(),
+                        cmd.paidFen(),
+                        cmd.fullRefund(),
+                        true,
+                        0L,
+                        refundReason);
             }
             default -> throw new ServiceException("交易权益操作不合法", 400);
         }
     }
 
     /** 按已记录的原始权益回退；最终整单退款处理分次取整尾差，不回退其他订单权益。 */
-    private void returnTradeAsset(Long memberId, String type, String originalType, String returnType,
-            String orderNo, String key, long refundedFen, long paidFen, boolean fullRefund,
-            boolean reclaim, long explicitPoints, String reason) {
-        var previous = assetRequest(memberId, type, returnType, key);
-        if (previous != null) {
-            if (!reason.equals(previous.reason())) { throw new ServiceException("售后权益内容不一致", 409); }
+    private void returnTradeAsset(
+            Long memberId,
+            String type,
+            String originalType,
+            String returnType,
+            String orderNo,
+            String key,
+            long refundedFen,
+            long paidFen,
+            boolean fullRefund,
+            boolean reclaim,
+            long explicitPoints,
+            String reason) {
+        var original = assetRequest(memberId, type, originalType, orderNo);
+        if (original == null) {
             return;
         }
-        var original = assetRequest(memberId, type, originalType, orderNo);
-        if (original == null) { return; }
+        // 保留已有旧幂等号的重放；新写入关联原流水，避免40位订单号加RF超过64位。
+        String legacyKey = orderNo + ":" + key;
+        var previous =
+                legacyKey.length() <= 64
+                        ? assetRequest(memberId, type, returnType, legacyKey)
+                        : null;
+        key = MemberRules.text("@L" + original.id() + ":" + key, 64);
+        if (previous == null) {
+            previous = assetRequest(memberId, type, returnType, key);
+        }
+        if (previous != null) {
+            if (!reason.equals(previous.reason())) {
+                throw new ServiceException("售后权益内容不一致", 409);
+            }
+            return;
+        }
         long total = Math.abs(original.delta());
-        long returned = Math.abs(tradeReturns(memberId, type, returnType, orderNo));
-        if (returned > total) { throw new ServiceException("历史权益回退超过原记录", 409); }
+        long returned =
+                Math.addExact(
+                        Math.abs(tradeReturns(memberId, type, returnType, orderNo)),
+                        Math.abs(tradeReturns(memberId, type, returnType, "@L" + original.id())));
+        if (returned > total) {
+            throw new ServiceException("历史权益回退超过原记录", 409);
+        }
         long planned;
         if (paidFen == 0) {
             // 零元订单由交易按数量比例计算本次退回积分，整单退款返回剩余全部积分。
-            planned = fullRefund ? total - returned
-                    : Math.min(Math.max(0L, explicitPoints), total - returned);
+            planned =
+                    fullRefund
+                            ? total - returned
+                            : Math.min(Math.max(0L, explicitPoints), total - returned);
         } else {
-            planned = java.math.BigInteger.valueOf(total)
-                    .multiply(java.math.BigInteger.valueOf(refundedFen))
-                    .divide(java.math.BigInteger.valueOf(paidFen)).longValueExact();
+            planned =
+                    java.math.BigInteger.valueOf(total)
+                            .multiply(java.math.BigInteger.valueOf(refundedFen))
+                            .divide(java.math.BigInteger.valueOf(paidFen))
+                            .longValueExact();
         }
         long delta = Math.min(total - returned, planned);
         if (reclaim) {
             var user = lock(memberId);
             // 已使用的赠送权益不产生负余额，也不阻塞原支付退款。
             delta = -Math.min(delta, "POINT".equals(type) ? user.points() : user.experience());
+        }
+        adjust(memberId, type, delta, returnType, key, reason, true, "EXPERIENCE".equals(type));
+    }
+
+    /** 冻结方案使用原流水主键构造短幂等号，避免订单号与RF组合超过64位。 */
+    private void returnExactTradeAsset(
+            Long memberId,
+            String type,
+            String originalType,
+            String returnType,
+            String orderNo,
+            String refundNo,
+            long planned,
+            boolean reclaim,
+            String reason) {
+        var original = assetRequest(memberId, type, originalType, orderNo);
+        if (original == null) {
+            if (planned != 0) {
+                throw new ServiceException("原订单权益流水缺失", 409);
+            }
+            return;
+        }
+        String prefix = "@L" + original.id();
+        String key = MemberRules.text(prefix + ":" + refundNo, 64);
+        var previous = assetRequest(memberId, type, returnType, key);
+        if (previous != null) {
+            if (!reason.equals(previous.reason())) {
+                throw new ServiceException("售后冻结权益内容不一致", 409);
+            }
+            return;
+        }
+        long total = Math.abs(original.delta());
+        long returned =
+                Math.addExact(
+                        Math.abs(tradeReturns(memberId, type, returnType, orderNo)),
+                        Math.abs(tradeReturns(memberId, type, returnType, prefix)));
+        if (planned < 0 || returned > total || planned > total - returned) {
+            throw new ServiceException("冻结权益超出原订单剩余额度", 409);
+        }
+        long delta = planned;
+        if (reclaim) {
+            var user = lock(memberId);
+            long balance = "POINT".equals(type) ? user.points() : user.experience();
+            if ("POINT".equals(type) && delta > balance) {
+                throw new ServiceException("赠送积分余额不足回收，待补偿处理", 409);
+            }
+            delta = -Math.min(delta, balance);
         }
         adjust(memberId, type, delta, returnType, key, reason, true, "EXPERIENCE".equals(type));
     }

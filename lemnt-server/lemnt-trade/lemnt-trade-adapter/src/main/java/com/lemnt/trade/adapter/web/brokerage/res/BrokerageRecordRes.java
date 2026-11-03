@@ -20,6 +20,5 @@ public record BrokerageRecordRes(
         @Schema(description = "冻结天数") Integer frozenDays,
         @Schema(description = "解冻时间") LocalDateTime unfreezeTime,
         @Schema(description = "来源层级") Integer sourceUserLevel,
-        @Schema(description = "创建时间") LocalDateTime createTime
-) implements java.io.Serializable {
-}
+        @Schema(description = "创建时间") LocalDateTime createTime)
+        implements java.io.Serializable {}

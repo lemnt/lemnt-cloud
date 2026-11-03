@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostDetailQueryExe {
     private final PostGateway postGateway;
+
     public PostDTO execute(Long postId) {
         return PostConverter.toDTO(postGateway.selectById(postId));
     }

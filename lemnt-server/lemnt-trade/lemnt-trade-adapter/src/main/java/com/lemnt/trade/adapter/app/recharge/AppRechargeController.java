@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
-
 import java.util.List;
 
 /** App 充值套餐选择与本人充值单。 */
@@ -56,8 +55,14 @@ public class AppRechargeController {
     @GetMapping("/wallet/recharges")
     @Operation(summary = "本人充值单分页")
     public R<WalletRechargeRes> recharges(@Valid @ModelAttribute AppRechargePageReq req) {
-        var value = recharges.execute(SecurityUtils.getUserId(), req.status(),
-                req.pageNum() == null ? 1 : req.pageNum(), req.pageSize() == null ? 10 : req.pageSize());
-        return R.page(value.getRecords().stream().map(RechargeResConverter::recharge).toList(), value.getTotal());
+        var value =
+                recharges.execute(
+                        SecurityUtils.getUserId(),
+                        req.status(),
+                        req.pageNum() == null ? 1 : req.pageNum(),
+                        req.pageSize() == null ? 10 : req.pageSize());
+        return R.page(
+                value.getRecords().stream().map(RechargeResConverter::recharge).toList(),
+                value.getTotal());
     }
 }

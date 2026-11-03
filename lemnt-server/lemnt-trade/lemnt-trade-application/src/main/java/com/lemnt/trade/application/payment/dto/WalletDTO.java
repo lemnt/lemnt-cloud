@@ -12,6 +12,5 @@ public record WalletDTO(
         BigDecimal freezePrice,
         BigDecimal totalExpense,
         BigDecimal totalRecharge,
-        LocalDateTime createTime
-) implements Serializable {
-}
+        LocalDateTime createTime)
+        implements Serializable {}

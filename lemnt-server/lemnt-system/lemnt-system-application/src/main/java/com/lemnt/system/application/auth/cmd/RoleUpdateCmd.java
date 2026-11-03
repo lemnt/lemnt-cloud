@@ -36,6 +36,5 @@ public record RoleUpdateCmd(
         /**
          * 菜单组
          */
-        List<Long> menuIds
-) implements Serializable {
-}
+        List<Long> menuIds)
+        implements Serializable {}

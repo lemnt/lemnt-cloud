@@ -34,23 +34,55 @@ class PickUpOrderCreateTest {
     final TradeOrderGateway orderGateway = mock(TradeOrderGateway.class);
     final TradeConfigGateway configs = mock(TradeConfigGateway.class);
     final PickUpStoreGateway stores = mock(PickUpStoreGateway.class);
-    final TradeOrderClientImpl client = new TradeOrderClientImpl(submissions, persistence, remotes, comments,
-            orderGateway, configs, stores);
+    final TradeOrderClientImpl client =
+            new TradeOrderClientImpl(
+                    submissions, persistence, remotes, comments, orderGateway, configs, stores);
 
     TradeConfig config(boolean enabled) {
-        return new TradeConfig(1L, List.of(), List.of(), false, 0, enabled, false, 1, 1, List.of(),
-                0, 0, 0, 0, 0, List.of());
+        return new TradeConfig(
+                1L, List.of(), List.of(), false, 0, enabled, false, 1, 1, List.of(), 0, 0, 0, 0, 0,
+                List.of());
     }
 
     PickUpStore store(int status) {
-        return new PickUpStore(9L, "中心店", null, "13800000000", 1L, "中心路1号", null,
-                "00:00:00", "23:59:59", null, null, List.of(1L), status);
+        return new PickUpStore(
+                9L,
+                "中心店",
+                null,
+                "13800000000",
+                1L,
+                "中心路1号",
+                null,
+                "00:00:00",
+                "23:59:59",
+                null,
+                null,
+                List.of(1L),
+                status);
     }
 
     OrderCreateBo order() {
-        var item = new OrderItemDTO(5L, "P1", "商品", new BigDecimal("10.00"), 1,
-                new BigDecimal("10.00"), new BigDecimal("10.00"), BigDecimal.ZERO, 1L, "商品", List.of(), null);
-        return new OrderCreateBo("TR1", 7L, new BigDecimal("10.00"), List.of(item), 0, 0,
+        var item =
+                new OrderItemDTO(
+                        5L,
+                        "P1",
+                        "商品",
+                        new BigDecimal("10.00"),
+                        1,
+                        new BigDecimal("10.00"),
+                        new BigDecimal("10.00"),
+                        BigDecimal.ZERO,
+                        1L,
+                        "商品",
+                        List.of(),
+                        null);
+        return new OrderCreateBo(
+                "TR1",
+                7L,
+                new BigDecimal("10.00"),
+                List.of(item),
+                0,
+                0,
                 new OrderDeliveryDTO(null, 2, null, null, null, null, new BigDecimal("0.00"), 9L));
     }
 
@@ -59,8 +91,16 @@ class PickUpOrderCreateTest {
         when(configs.get()).thenReturn(config(true));
         when(stores.find(9L)).thenReturn(store(0));
         when(orderGateway.findHeaderByPickUpCode(anyString())).thenReturn(null);
-        when(persistence.findByOrderNo("TR1")).thenReturn(new TradeOrder(1L, "TR1", 7L,
-                new BigDecimal("10.00"), "RESERVING", List.of(), null));
+        when(persistence.findByOrderNo("TR1"))
+                .thenReturn(
+                        new TradeOrder(
+                                1L,
+                                "TR1",
+                                7L,
+                                new BigDecimal("10.00"),
+                                "RESERVING",
+                                List.of(),
+                                null));
 
         client.create(order());
 
@@ -74,17 +114,59 @@ class PickUpOrderCreateTest {
     @Test
     void overnightAndAllDayStoresAllowOrderCreation() {
         when(configs.get()).thenReturn(config(true));
-        when(persistence.findByOrderNo("TR1")).thenReturn(new TradeOrder(1L, "TR1", 7L,
-                new BigDecimal("10.00"), "RESERVING", List.of(), null));
+        when(persistence.findByOrderNo("TR1"))
+                .thenReturn(
+                        new TradeOrder(
+                                1L,
+                                "TR1",
+                                7L,
+                                new BigDecimal("10.00"),
+                                "RESERVING",
+                                List.of(),
+                                null));
         var format = java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss");
         var now = java.time.LocalTime.now();
-        String open = now.isBefore(java.time.LocalTime.NOON) ? "23:59:59" : format.format(now.minusHours(1));
-        String close = now.isBefore(java.time.LocalTime.NOON) ? format.format(now.plusHours(1)) : "00:00:00";
-        when(stores.find(9L)).thenReturn(new PickUpStore(9L, "跨夜店", null, "13800000000", 1L, "地址",
-                null, open, close, null, null, List.of(1L), 0));
+        String open =
+                now.isBefore(java.time.LocalTime.NOON)
+                        ? "23:59:59"
+                        : format.format(now.minusHours(1));
+        String close =
+                now.isBefore(java.time.LocalTime.NOON)
+                        ? format.format(now.plusHours(1))
+                        : "00:00:00";
+        when(stores.find(9L))
+                .thenReturn(
+                        new PickUpStore(
+                                9L,
+                                "跨夜店",
+                                null,
+                                "13800000000",
+                                1L,
+                                "地址",
+                                null,
+                                open,
+                                close,
+                                null,
+                                null,
+                                List.of(1L),
+                                0));
         assertDoesNotThrow(() -> client.create(order()));
-        when(stores.find(9L)).thenReturn(new PickUpStore(9L, "全天店", null, "13800000000", 1L, "地址",
-                null, "00:00:00", "00:00:00", null, null, List.of(1L), 0));
+        when(stores.find(9L))
+                .thenReturn(
+                        new PickUpStore(
+                                9L,
+                                "全天店",
+                                null,
+                                "13800000000",
+                                1L,
+                                "地址",
+                                null,
+                                "00:00:00",
+                                "00:00:00",
+                                null,
+                                null,
+                                List.of(1L),
+                                0));
         assertDoesNotThrow(() -> client.create(order()));
     }
 
@@ -96,8 +178,22 @@ class PickUpOrderCreateTest {
         when(stores.find(9L)).thenReturn(store(1));
         assertThrows(IllegalArgumentException.class, () -> client.create(order()));
         var later = java.time.LocalTime.now().plusHours(1).withNano(0);
-        when(stores.find(9L)).thenReturn(new PickUpStore(9L, "中心店", null, "13800000000", 1L, "中心路1号",
-                null, later.toString(), later.plusHours(1).toString(), null, null, List.of(1L), 0));
+        when(stores.find(9L))
+                .thenReturn(
+                        new PickUpStore(
+                                9L,
+                                "中心店",
+                                null,
+                                "13800000000",
+                                1L,
+                                "中心路1号",
+                                null,
+                                later.toString(),
+                                later.plusHours(1).toString(),
+                                null,
+                                null,
+                                List.of(1L),
+                                0));
         assertThrows(IllegalArgumentException.class, () -> client.create(order()));
     }
 }

@@ -21,6 +21,5 @@ public record BrokerageWithdraw(
         String auditReason,
         LocalDateTime auditTime,
         String remark,
-        LocalDateTime createTime
-) implements Serializable {
-}
+        LocalDateTime createTime)
+        implements Serializable {}

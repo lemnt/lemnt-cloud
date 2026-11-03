@@ -15,16 +15,16 @@ public final class CartResConverter {
         return value == null
                 ? null
                 : new MallAppCartCartRes(
-                value.id(),
-                value.productId(),
-                value.quantity(),
-                value.selected(),
-                value.version(),
-                value.name(),
-                value.productCode(),
-                value.unitPrice(),
-                value.availableStock(),
-                value.sellable());
+                        value.id(),
+                        value.productId(),
+                        value.quantity(),
+                        value.selected(),
+                        value.version(),
+                        value.name(),
+                        value.productCode(),
+                        value.unitPrice(),
+                        value.availableStock(),
+                        value.sellable());
     }
 
     /**
@@ -34,16 +34,15 @@ public final class CartResConverter {
         return value == null
                 ? null
                 : new MallAppCartSaveRes(
-                value.id(),
-                value.productId(),
-                value.quantity(),
-                value.selected(),
-                value.version(),
-                value.name(),
-                value.productCode(),
-                value.unitPrice(),
-                value.availableStock(),
-                value.sellable());
+                        value.id(),
+                        value.productId(),
+                        value.quantity(),
+                        value.selected(),
+                        value.version(),
+                        value.name(),
+                        value.productCode(),
+                        value.unitPrice(),
+                        value.availableStock(),
+                        value.sellable());
     }
-
 }

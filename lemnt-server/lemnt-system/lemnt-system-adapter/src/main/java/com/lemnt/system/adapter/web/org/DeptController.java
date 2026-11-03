@@ -61,17 +61,22 @@ public class DeptController {
     @RequiresPermissions("system:dept:list")
     @GetMapping
     public R<List<SystemDeptListRes>> list(@Validated DeptListReq req) {
-        return R.ok(DeptResConverter.toResListToSystemDeptListRes(deptListQueryExe.execute(DeptReqConverter.toQry(req))));
+        return R.ok(
+                DeptResConverter.toResListToSystemDeptListRes(
+                        deptListQueryExe.execute(DeptReqConverter.toQry(req))));
     }
 
     @Operation(summary = "查询部门列表（排除节点）")
     @RequiresPermissions("system:dept:list")
     @GetMapping("/exclude/{deptId}")
-    public R<List<SystemDeptExcludeChildRes>> excludeChild(@PathVariable(value = "deptId",
-            required = false) Long deptId) {
+    public R<List<SystemDeptExcludeChildRes>> excludeChild(
+            @PathVariable(value = "deptId", required = false) Long deptId) {
         List<DeptDTO> depts = deptListQueryExe.execute(new DeptListQry(null, null));
-        depts.removeIf(d -> d.getDeptId().intValue() == deptId
-                || ArrayUtils.contains(StringUtils.split(d.getAncestors(), ","), deptId + ""));
+        depts.removeIf(
+                d ->
+                        d.getDeptId().intValue() == deptId
+                                || ArrayUtils.contains(
+                                        StringUtils.split(d.getAncestors(), ","), deptId + ""));
         return R.ok(DeptResConverter.toResListToSystemDeptExcludeChildRes(depts));
     }
 
@@ -79,7 +84,8 @@ public class DeptController {
     @RequiresPermissions("system:dept:query")
     @GetMapping(value = "/{deptId}")
     public R<SystemDeptGetInfoRes> getInfo(@PathVariable Long deptId) {
-        return R.ok(DeptResConverter.toResToSystemDeptGetInfoRes(deptDetailQueryExe.execute(deptId)));
+        return R.ok(
+                DeptResConverter.toResToSystemDeptGetInfoRes(deptDetailQueryExe.execute(deptId)));
     }
 
     @Operation(summary = "新增部门")

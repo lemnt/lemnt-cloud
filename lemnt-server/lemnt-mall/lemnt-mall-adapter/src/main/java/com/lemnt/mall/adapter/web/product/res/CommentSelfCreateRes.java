@@ -1,3 +1,8 @@
 package com.lemnt.mall.adapter.web.product.res;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /** 后台自评创建结果。 */
-public record CommentSelfCreateRes(Long id) {}
+@Schema(description = "后台商品自评结果")
+public record CommentSelfCreateRes(@Schema(description = "编号") Long id)
+        implements java.io.Serializable {}

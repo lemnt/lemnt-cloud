@@ -38,10 +38,12 @@ public class MemberUserPointController {
     @PutMapping("/{id}/points")
     @Operation(summary = "幂等变更会员points，余额不能为负")
     @RequiresPermissions("member:user:update-point")
-    public R<MemberUserPointsRes> points(@PathVariable Long id, @Valid @RequestBody MemberUserPointsReq req) {
+    public R<MemberUserPointsRes> points(
+            @PathVariable Long id, @Valid @RequestBody MemberUserPointsReq req) {
         return R.ok(
                 MemberGrowthResConverter.toMemberUserPointsRes(
-                        memberAssetAdjustCmdExe.execute(MemberGrowthReqConverter.asset(id, "POINT", req))));
+                        memberAssetAdjustCmdExe.execute(
+                                MemberGrowthReqConverter.asset(id, "POINT", req))));
     }
 
     @GetMapping("/{id}/points-records")
@@ -49,9 +51,13 @@ public class MemberUserPointController {
     @RequiresPermissions("member:point-record:query")
     public R<MemberUserPointsRecordsRes> pointsRecords(
             @PathVariable Long id, @Valid @ModelAttribute MemberUserPointsRecordsReq req) {
-        var page = memberAssetRecordPageQueryExe.execute(MemberGrowthReqConverter.assets(id, "POINT", req));
+        var page =
+                memberAssetRecordPageQueryExe.execute(
+                        MemberGrowthReqConverter.assets(id, "POINT", req));
         return R.page(
-                page.getRecords().stream().map(MemberGrowthResConverter::toMemberUserPointsRecordsRes).toList(),
+                page.getRecords().stream()
+                        .map(MemberGrowthResConverter::toMemberUserPointsRecordsRes)
+                        .toList(),
                 page.getTotal());
     }
 }

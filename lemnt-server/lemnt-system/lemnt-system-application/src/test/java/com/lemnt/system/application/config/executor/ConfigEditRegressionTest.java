@@ -35,14 +35,16 @@ class ConfigEditRegressionTest {
         when(gateway.checkConfigKeyUnique("test")).thenReturn(new Config());
 
         try (var security = mockStatic(SecurityUtils.class)) {
-            assertThatThrownBy(() -> new ConfigAddCmdExe(gateway)
-                    .execute(new ConfigAddCmd("测试", "test", "value", "0", "备注")))
+            assertThatThrownBy(
+                            () ->
+                                    new ConfigAddCmdExe(gateway)
+                                            .execute(
+                                                    new ConfigAddCmd(
+                                                            "测试", "test", "value", "0", "备注")))
                     .isInstanceOf(ServiceException.class)
                     .hasMessage("新增参数'测试'失败，参数键名已存在");
-
         }
         verify(gateway, never()).insert(any());
-
     }
 
     @Test
@@ -52,9 +54,10 @@ class ConfigEditRegressionTest {
         when(gateway.insert(any())).thenReturn(true);
 
         try (var security = mockStatic(SecurityUtils.class)) {
-            assertThat(new ConfigAddCmdExe(gateway)
-                    .execute(new ConfigAddCmd("测试", "unused", "value", "0", "备注"))).isTrue();
-
+            assertThat(
+                            new ConfigAddCmdExe(gateway)
+                                    .execute(new ConfigAddCmd("测试", "unused", "value", "0", "备注")))
+                    .isTrue();
         }
         verify(gateway).checkConfigKeyUnique("unused");
 
@@ -67,7 +70,6 @@ class ConfigEditRegressionTest {
         assertThat(entity.getValue().getConfigValue()).isEqualTo("value");
 
         assertThat(entity.getValue().getRemark()).isEqualTo("备注");
-
     }
 
     @Test
@@ -80,12 +82,16 @@ class ConfigEditRegressionTest {
 
         when(gateway.checkConfigKeyUnique("test", 2L)).thenReturn(existing);
 
-        assertThatThrownBy(() -> new ConfigUpdateCmdExe(gateway)
-                .execute(new ConfigUpdateCmd(2L, "测试", "test", "value", "0", null)))
-                .isInstanceOf(ServiceException.class).hasMessageContaining("参数键名已存在");
+        assertThatThrownBy(
+                        () ->
+                                new ConfigUpdateCmdExe(gateway)
+                                        .execute(
+                                                new ConfigUpdateCmd(
+                                                        2L, "测试", "test", "value", "0", null)))
+                .isInstanceOf(ServiceException.class)
+                .hasMessageContaining("参数键名已存在");
 
         verify(gateway, never()).update(any());
-
     }
 
     @ParameterizedTest
@@ -97,9 +103,12 @@ class ConfigEditRegressionTest {
         when(gateway.update(any())).thenReturn(true);
 
         try (var security = mockStatic(SecurityUtils.class)) {
-            assertThat(new ConfigUpdateCmdExe(gateway)
-                    .execute(new ConfigUpdateCmd(2L, "测试", "test", "value", "0", remark))).isTrue();
-
+            assertThat(
+                            new ConfigUpdateCmdExe(gateway)
+                                    .execute(
+                                            new ConfigUpdateCmd(
+                                                    2L, "测试", "test", "value", "0", remark)))
+                    .isTrue();
         }
         ArgumentCaptor<Config> entity = ArgumentCaptor.forClass(Config.class);
 
@@ -110,7 +119,6 @@ class ConfigEditRegressionTest {
         assertThat(entity.getValue().getRemark()).isEqualTo(remark == null ? "" : remark);
 
         assertThat(entity.getValue().getConfigValue()).isEqualTo("value");
-
     }
 
     @Test
@@ -119,12 +127,14 @@ class ConfigEditRegressionTest {
 
         when(gateway.checkDictTypeUnique("test")).thenReturn(new DictType());
 
-        assertThatThrownBy(() -> new DictTypeAddCmdExe(gateway)
-                .execute(new DictTypeAddCmd("测试", "test", "2", null)))
-                .isInstanceOf(ServiceException.class).hasMessageContaining("字典类型已存在");
+        assertThatThrownBy(
+                        () ->
+                                new DictTypeAddCmdExe(gateway)
+                                        .execute(new DictTypeAddCmd("测试", "test", "2", null)))
+                .isInstanceOf(ServiceException.class)
+                .hasMessageContaining("字典类型已存在");
 
         verify(gateway, never()).insert(any());
-
     }
 
     @Test
@@ -137,13 +147,19 @@ class ConfigEditRegressionTest {
 
         when(gateway.checkDictTypeUnique("test")).thenReturn(existing);
 
-        assertThatThrownBy(() -> new DictTypeUpdateCmdExe(gateway,
-                org.mockito.Mockito.mock(com.lemnt.system.domain.config.gateway.DictDataGateway.class))
-                .execute(new DictTypeUpdateCmd(2L, "测试", "test", "2", null)))
-                .isInstanceOf(ServiceException.class).hasMessageContaining("字典类型已存在");
+        assertThatThrownBy(
+                        () ->
+                                new DictTypeUpdateCmdExe(
+                                                gateway,
+                                                org.mockito.Mockito.mock(
+                                                        com.lemnt.system.domain.config.gateway
+                                                                .DictDataGateway.class))
+                                        .execute(
+                                                new DictTypeUpdateCmd(2L, "测试", "test", "2", null)))
+                .isInstanceOf(ServiceException.class)
+                .hasMessageContaining("字典类型已存在");
 
         verify(gateway, never()).update(any());
-
     }
 
     @Test
@@ -161,13 +177,19 @@ class ConfigEditRegressionTest {
         when(gateway.insert(any())).thenReturn(true);
 
         try (var security = mockStatic(SecurityUtils.class)) {
-            assertThat(new DictTypeUpdateCmdExe(gateway,
-                    org.mockito.Mockito.mock(com.lemnt.system.domain.config.gateway.DictDataGateway.class))
-                    .execute(new DictTypeUpdateCmd(2L, "测试", "test", "2", "备注"))).isTrue();
+            assertThat(
+                            new DictTypeUpdateCmdExe(
+                                            gateway,
+                                            org.mockito.Mockito.mock(
+                                                    com.lemnt.system.domain.config.gateway
+                                                            .DictDataGateway.class))
+                                    .execute(new DictTypeUpdateCmd(2L, "测试", "test", "2", "备注")))
+                    .isTrue();
 
-            assertThat(new DictTypeAddCmdExe(gateway)
-                    .execute(new DictTypeAddCmd("新测试", "unused", "2", "备注"))).isTrue();
-
+            assertThat(
+                            new DictTypeAddCmdExe(gateway)
+                                    .execute(new DictTypeAddCmd("新测试", "unused", "2", "备注")))
+                    .isTrue();
         }
     }
 
@@ -180,9 +202,13 @@ class ConfigEditRegressionTest {
         when(gateway.update(any())).thenReturn(true);
 
         try (var security = mockStatic(SecurityUtils.class)) {
-            assertThat(new DictDataUpdateCmdExe(gateway).execute(new DictDataUpdateCmd(
-                    3L, 0L, "标签", "0", "test", value, "default", "0", "2", value))).isTrue();
-
+            assertThat(
+                            new DictDataUpdateCmdExe(gateway)
+                                    .execute(
+                                            new DictDataUpdateCmd(
+                                                    3L, 0L, "标签", "0", "test", value, "default",
+                                                    "0", "2", value)))
+                    .isTrue();
         }
         ArgumentCaptor<DictData> entity = ArgumentCaptor.forClass(DictData.class);
 
@@ -193,6 +219,5 @@ class ConfigEditRegressionTest {
         assertThat(entity.getValue().getRemark()).isEqualTo(value == null ? "" : value);
 
         assertThat(entity.getValue().getDictValue()).isEqualTo("0");
-
     }
 }

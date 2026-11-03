@@ -16,7 +16,11 @@ public final class SignConfigConverter {
         return row == null
                 ? null
                 : new SignConfig(
-                        row.getId(), row.getDay(), row.getPoint(), row.getExperience(), row.getStatus());
+                        row.getId(),
+                        row.getDay(),
+                        row.getPoint(),
+                        row.getExperience(),
+                        row.getStatus());
     }
 
     /**

@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MenuDetailQueryExe {
     private final MenuGateway menuGateway;
+
     public MenuDTO execute(Long menuId) {
         return MenuConverter.toDTO(menuGateway.selectById(menuId));
     }

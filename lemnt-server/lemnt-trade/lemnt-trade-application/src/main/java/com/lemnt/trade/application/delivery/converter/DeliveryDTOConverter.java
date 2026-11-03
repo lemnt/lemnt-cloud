@@ -11,8 +11,7 @@ import com.lemnt.trade.domain.delivery.model.DeliveryExpressTemplateFree;
 
 /** delivery 应用输出转换。 */
 public final class DeliveryDTOConverter {
-    private DeliveryDTOConverter() {
-    }
+    private DeliveryDTOConverter() {}
 
     /** 转换 快递公司。 */
     public static DeliveryExpressDTO toDTO(DeliveryExpress value) {
@@ -20,12 +19,7 @@ public final class DeliveryDTOConverter {
             return null;
         }
         return new DeliveryExpressDTO(
-                value.id(),
-                value.code(),
-                value.name(),
-                value.logo(),
-                value.sort(),
-                value.status());
+                value.id(), value.code(), value.name(), value.logo(), value.sort(), value.status());
     }
 
     /** 转换 运费模板。 */
@@ -34,10 +28,7 @@ public final class DeliveryDTOConverter {
             return null;
         }
         return new DeliveryExpressTemplateDTO(
-                value.id(),
-                value.name(),
-                value.chargeMode(),
-                value.sort());
+                value.id(), value.name(), value.chargeMode(), value.sort());
     }
 
     /** 转换 运费计费规则。 */

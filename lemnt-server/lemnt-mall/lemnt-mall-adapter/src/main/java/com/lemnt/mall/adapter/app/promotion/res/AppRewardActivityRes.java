@@ -16,8 +16,8 @@ public record AppRewardActivityRes(
         @Schema(description = "结束时间") LocalDateTime endTime,
         @Schema(description = "条件类型 PRICE/COUNT") String conditionType,
         @Schema(description = "商品范围") String productScope,
-        @Schema(description = "规则") List<Rule> rules
-) implements java.io.Serializable {
+        @Schema(description = "规则") List<Rule> rules)
+        implements java.io.Serializable {
     public AppRewardActivityRes {
         rules = rules == null ? List.of() : List.copyOf(rules);
     }
@@ -29,7 +29,6 @@ public record AppRewardActivityRes(
             @Schema(description = "优惠金额，元") BigDecimal discountPrice,
             @Schema(description = "是否包邮") Boolean freeDelivery,
             @Schema(description = "赠送积分") Integer point,
-            @Schema(description = "赠送优惠券") Map<Long, Integer> giveCouponTemplateCounts
-    ) implements java.io.Serializable {
-    }
+            @Schema(description = "赠送优惠券") Map<Long, Integer> giveCouponTemplateCounts)
+            implements java.io.Serializable {}
 }

@@ -15,5 +15,4 @@ public record SeckillActivityUpdateCmd(
         List<Long> configIds,
         Integer totalLimitCount,
         Integer singleLimitCount,
-        List<SeckillProductCmd> products
-) {}
+        List<SeckillProductCmd> products) {}

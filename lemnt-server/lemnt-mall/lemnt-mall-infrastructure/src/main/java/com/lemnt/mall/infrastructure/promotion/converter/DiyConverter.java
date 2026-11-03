@@ -11,8 +11,7 @@ import java.util.List;
 
 /** 装修领域对象与表结构转换，预览图按 JSON 数组保存。 */
 public final class DiyConverter {
-    private DiyConverter() {
-    }
+    private DiyConverter() {}
 
     private static List<String> previews(String value) {
         if (value == null || value.isBlank()) {
@@ -29,8 +28,14 @@ public final class DiyConverter {
         if (row == null) {
             return null;
         }
-        return new DiyTemplate(row.getId(), row.getName(), row.getUsed(), row.getUsedTime(), row.getRemark(),
-                previews(row.getPreviewPicUrls()), row.getProperty());
+        return new DiyTemplate(
+                row.getId(),
+                row.getName(),
+                row.getUsed(),
+                row.getUsedTime(),
+                row.getRemark(),
+                previews(row.getPreviewPicUrls()),
+                row.getProperty());
     }
 
     public static DiyTemplateDO row(DiyTemplate value) {
@@ -49,8 +54,13 @@ public final class DiyConverter {
         if (row == null) {
             return null;
         }
-        return new DiyPage(row.getId(), row.getTemplateId(), row.getName(), row.getRemark(),
-                previews(row.getPreviewPicUrls()), row.getProperty());
+        return new DiyPage(
+                row.getId(),
+                row.getTemplateId(),
+                row.getName(),
+                row.getRemark(),
+                previews(row.getPreviewPicUrls()),
+                row.getProperty());
     }
 
     public static DiyPageDO row(DiyPage value) {

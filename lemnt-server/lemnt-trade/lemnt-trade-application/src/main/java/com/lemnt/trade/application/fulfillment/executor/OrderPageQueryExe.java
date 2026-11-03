@@ -34,30 +34,30 @@ public class OrderPageQueryExe {
         }
         String no =
                 query.orderNo() == null || query.orderNo().isBlank()
-                ? null
-                : OrderRules.text(query.orderNo(), 40);
+                        ? null
+                        : OrderRules.text(query.orderNo(), 40);
         String status = query.status() == null || query.status().isBlank() ? null : query.status();
         if (status != null
                 && !Set.of(
-                "RESERVING",
-                "PENDING_PAYMENT",
-                "PAID",
-                "SHIPPED",
-                "COMPLETED",
-                "REFUNDED",
-        "CLOSED")
-                .contains(status)) {
+                                "RESERVING",
+                                "PENDING_PAYMENT",
+                                "PAID",
+                                "SHIPPED",
+                                "COMPLETED",
+                                "REFUNDED",
+                                "CLOSED")
+                        .contains(status)) {
             throw new IllegalArgumentException("状态参数不合法");
         }
         var page =
                 tradeOrderGateway.orders(
-                new FulfillmentFilter(
-                no,
-                status,
-                null,
-                null,
-                (query.pageNum() - 1) * query.pageSize(),
-                query.pageSize()));
+                        new FulfillmentFilter(
+                                no,
+                                status,
+                                null,
+                                null,
+                                (query.pageNum() - 1) * query.pageSize(),
+                                query.pageSize()));
         return new OrderPageDTO(
                 page.records().stream().map(FulfillmentDTOConverter::summary).toList(),
                 page.total());

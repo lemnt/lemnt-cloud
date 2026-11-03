@@ -9,8 +9,8 @@ public record SeckillConfig(
         String startTime,
         String endTime,
         List<String> sliderPicUrls,
-        Integer status
-) implements java.io.Serializable {
+        Integer status)
+        implements java.io.Serializable {
     public SeckillConfig {
         sliderPicUrls = sliderPicUrls == null ? List.of() : List.copyOf(sliderPicUrls);
     }

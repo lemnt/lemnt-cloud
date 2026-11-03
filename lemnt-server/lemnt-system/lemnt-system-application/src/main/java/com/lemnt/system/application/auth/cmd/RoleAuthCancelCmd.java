@@ -20,6 +20,5 @@ public record RoleAuthCancelCmd(
         /**
          * 用户ID列表
          */
-        List<Long> userIds
-) implements Serializable {
-}
+        List<Long> userIds)
+        implements Serializable {}

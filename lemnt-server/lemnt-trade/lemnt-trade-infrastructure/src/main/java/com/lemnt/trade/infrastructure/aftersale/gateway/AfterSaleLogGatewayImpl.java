@@ -7,7 +7,6 @@ import com.lemnt.trade.infrastructure.aftersale.dataobject.AfterSaleLogDO;
 import com.lemnt.trade.infrastructure.aftersale.mapper.AfterSaleLogMapper;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -19,13 +18,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AfterSaleLogGatewayImpl implements AfterSaleLogGateway {
     private final AfterSaleLogMapper mapper;
+
     @Override
     public void append(AfterSaleLog value) {
         mapper.insert(AfterSaleLogConverter.toDO(value));
     }
+
     @Override
     public List<AfterSaleLog> byAfterSaleId(Long afterSaleId) {
-        return mapper.selectList(Wrappers.<AfterSaleLogDO>lambdaQuery().eq(AfterSaleLogDO::getAfterSaleId, afterSaleId)
-                .orderByAsc(AfterSaleLogDO::getId)).stream().map(AfterSaleLogConverter::toModel).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<AfterSaleLogDO>lambdaQuery()
+                                .eq(AfterSaleLogDO::getAfterSaleId, afterSaleId)
+                                .orderByAsc(AfterSaleLogDO::getId))
+                .stream()
+                .map(AfterSaleLogConverter::toModel)
+                .toList();
     }
 }

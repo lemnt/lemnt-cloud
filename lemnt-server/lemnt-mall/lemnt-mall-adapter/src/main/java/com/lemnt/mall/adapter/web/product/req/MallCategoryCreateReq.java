@@ -15,22 +15,10 @@ import java.io.Serializable;
  */
 @Schema(description = "MallCategoryCreateReq")
 public record MallCategoryCreateReq(
-        @Schema(description = "父分类编号，根分类为null")
-        @Positive
-        Long parentId,
-        @Schema(description = "分类名称")
-        @NotBlank
-        @Size(max = 100)
-        String name,
-        @Schema(description = "分类图片URL")
-        @Size(max = 500)
-        String picUrl,
-        @Schema(description = "显示排序")
-        @NotNull
-        @Min(0)
-        Integer sort,
-        @Schema(description = "ENABLED或DISABLED")
-        @NotBlank
-        @Pattern(regexp = "ENABLED|DISABLED")
-        String status
-) implements Serializable {}
+        @Schema(description = "父分类编号，根分类为null") @Positive Long parentId,
+        @Schema(description = "分类名称") @NotBlank @Size(max = 100) String name,
+        @Schema(description = "分类图片URL") @Size(max = 500) String picUrl,
+        @Schema(description = "显示排序") @NotNull @Min(0) Integer sort,
+        @Schema(description = "ENABLED或DISABLED") @NotBlank @Pattern(regexp = "ENABLED|DISABLED")
+                String status)
+        implements Serializable {}

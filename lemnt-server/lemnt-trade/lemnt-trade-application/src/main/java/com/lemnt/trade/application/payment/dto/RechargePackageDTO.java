@@ -11,6 +11,5 @@ public record RechargePackageDTO(
         BigDecimal payPrice,
         BigDecimal bonusPrice,
         Integer status,
-        LocalDateTime createTime
-) implements Serializable {
-}
+        LocalDateTime createTime)
+        implements Serializable {}

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class PromotionOrderItemDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private String orderNo;
     private Long skuId;
     private Integer quantity;

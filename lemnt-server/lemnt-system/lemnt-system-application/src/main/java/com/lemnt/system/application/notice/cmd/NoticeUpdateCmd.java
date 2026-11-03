@@ -31,6 +31,5 @@ public record NoticeUpdateCmd(
         /**
          * 备注
          */
-        String remark
-) implements Serializable {
-}
+        String remark)
+        implements Serializable {}

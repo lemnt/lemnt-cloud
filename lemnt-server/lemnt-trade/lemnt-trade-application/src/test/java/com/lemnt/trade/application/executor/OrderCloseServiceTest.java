@@ -23,7 +23,12 @@ class OrderCloseServiceTest {
     final TradePaymentGateway payments = mock(TradePaymentGateway.class);
     final PaymentChannelCloseGateway channels = mock(PaymentChannelCloseGateway.class);
     final OrderCloseService closer =
-    new OrderCloseService(orderPersistenceService, tradeOrderGateway, payments, channels, mock(com.lemnt.trade.application.order.service.OrderLogService.class));
+            new OrderCloseService(
+                    orderPersistenceService,
+                    tradeOrderGateway,
+                    payments,
+                    channels,
+                    mock(com.lemnt.trade.application.order.service.OrderLogService.class));
 
     PaymentRecord waiting() {
         return new PaymentRecord(
@@ -32,9 +37,9 @@ class OrderCloseServiceTest {
 
     void pending() {
         when(orderPersistenceService.findByOrderNoForUpdate("TR1"))
-            .thenReturn(
-                new TradeOrder(
-                1L, "TR1", 2L, BigDecimal.TEN, "PENDING_PAYMENT", List.of(), null));
+                .thenReturn(
+                        new TradeOrder(
+                                1L, "TR1", 2L, BigDecimal.TEN, "PENDING_PAYMENT", List.of(), null));
     }
 
     @Test
@@ -51,7 +56,8 @@ class OrderCloseServiceTest {
         when(payments.findByOrderNo("TR1")).thenReturn(List.of(waiting()));
         when(channels.closeUnpaid(waiting())).thenReturn(true);
         when(payments.markClosed("PAY1")).thenReturn(true);
-        when(tradeOrderGateway.transitionStatus("TR1", "PENDING_PAYMENT", "CLOSED")).thenReturn(true);
+        when(tradeOrderGateway.transitionStatus("TR1", "PENDING_PAYMENT", "CLOSED"))
+                .thenReturn(true);
         assertTrue(closer.execute("TR1"));
         var sequence = inOrder(tradeOrderGateway, orderPersistenceService, channels, payments);
         sequence.verify(orderPersistenceService).findByOrderNoForUpdate("TR1");
@@ -73,7 +79,8 @@ class OrderCloseServiceTest {
     void orderWithoutPaymentCanCloseUnderOrderLock() {
         pending();
         when(payments.findByOrderNo("TR1")).thenReturn(List.of());
-        when(tradeOrderGateway.transitionStatus("TR1", "PENDING_PAYMENT", "CLOSED")).thenReturn(true);
+        when(tradeOrderGateway.transitionStatus("TR1", "PENDING_PAYMENT", "CLOSED"))
+                .thenReturn(true);
         assertTrue(closer.execute("TR1"));
         verifyNoInteractions(channels);
     }

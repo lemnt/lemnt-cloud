@@ -88,14 +88,22 @@ export async function getReward(id: string): Promise<RewardActivity> {
         discountPrice: decimal(row.discountPrice),
         freeDelivery: row.freeDelivery === true,
         point: row.point == null ? 0 : Number(row.point),
-        giveCouponTemplateCounts: coupons == null ? {} : Object.fromEntries(
-          Object.entries(coupons as Record<string, unknown>).map(([key, value]) => {
-            activityId(key);
-            if (typeof value !== 'number' || !Number.isInteger(value) || value < 1 || value > 99)
-              throw Error('赠送优惠券数量不合法');
-            return [key, value];
-          }),
-        ),
+        giveCouponTemplateCounts:
+          coupons == null
+            ? {}
+            : Object.fromEntries(
+                Object.entries(coupons as Record<string, unknown>).map(([key, value]) => {
+                  activityId(key);
+                  if (
+                    typeof value !== 'number' ||
+                    !Number.isInteger(value) ||
+                    value < 1 ||
+                    value > 99
+                  )
+                    throw Error('赠送优惠券数量不合法');
+                  return [key, value];
+                }),
+              ),
       };
     }),
   };
@@ -162,7 +170,8 @@ export function rewardPayload(v: ActivityEditorValues): RewardValues {
         const [key, count] = part.split(':');
         activityId(key);
         const value = Number(count);
-        if (!Number.isInteger(value) || value < 1 || value > 99) throw Error('赠送优惠券数量不合法');
+        if (!Number.isInteger(value) || value < 1 || value > 99)
+          throw Error('赠送优惠券数量不合法');
         return [key, value] as const;
       });
     const point = row.point == null ? 0 : Number(row.point);

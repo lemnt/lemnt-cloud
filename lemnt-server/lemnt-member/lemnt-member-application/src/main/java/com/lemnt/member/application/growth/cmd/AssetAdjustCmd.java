@@ -6,9 +6,5 @@ import java.io.Serializable;
  * 资产调整命令。
  */
 public record AssetAdjustCmd(
-        Long memberId,
-        String assetType,
-        Long delta,
-        String requestNo,
-        String reason
-) implements Serializable {}
+        Long memberId, String assetType, Long delta, String requestNo, String reason)
+        implements Serializable {}

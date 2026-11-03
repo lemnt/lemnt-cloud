@@ -21,27 +21,28 @@ class GatewayExceptionHandlerTest {
     @Test
     void shouldNotExpireSessionWhenUpstreamConnectionFails() {
         assertResponse(new SocketException("Connection reset"), 502, "后端服务连接中断，请重试");
-        assertResponse(PrematureCloseException.TEST_EXCEPTION,
-                502, "后端服务连接中断，请重试");
+        assertResponse(PrematureCloseException.TEST_EXCEPTION, 502, "后端服务连接中断，请重试");
     }
 
     @Test
     void shouldReturnServiceUnavailableWhenNoInstanceIsRegistered() {
-        assertResponse(new NotFoundException("Unable to find instance for lemnt-system"),
-                503, "服务暂不可用，请稍后重试");
+        assertResponse(
+                new NotFoundException("Unable to find instance for lemnt-system"),
+                503,
+                "服务暂不可用，请稍后重试");
     }
 
     @Test
     void shouldKeepRequestErrorAndAuthenticationStatusSeparate() {
-        assertResponse(new ResponseStatusException(HttpStatus.BAD_REQUEST, "请求包含不安全内容"),
-                400, "请求包含不安全内容");
-        assertResponse(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "登录失效"),
-                401, "登录失效");
+        assertResponse(
+                new ResponseStatusException(HttpStatus.BAD_REQUEST, "请求包含不安全内容"), 400, "请求包含不安全内容");
+        assertResponse(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "登录失效"), 401, "登录失效");
         assertResponse(new IllegalStateException("Unexpected failure"), 500, "内部服务器错误");
     }
 
     private void assertResponse(Throwable error, int expectedCode, String expectedMessage) {
-        var exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/system/users/current-info"));
+        var exchange =
+                MockServerWebExchange.from(MockServerHttpRequest.get("/system/users/current-info"));
 
         handler.handle(exchange, error).block();
 

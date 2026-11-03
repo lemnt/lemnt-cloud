@@ -22,5 +22,4 @@ public record SeckillActivityDTO(
         Integer singleLimitCount,
         Integer stock,
         Integer totalStock,
-        List<SeckillProductDTO> products
-) {}
+        List<SeckillProductDTO> products) {}

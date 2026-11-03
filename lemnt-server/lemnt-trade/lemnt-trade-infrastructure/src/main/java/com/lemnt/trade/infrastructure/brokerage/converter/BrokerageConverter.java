@@ -9,15 +9,19 @@ import com.lemnt.trade.infrastructure.brokerage.dataobject.BrokerageWithdrawDO;
 
 /** 分销领域对象与表结构转换。 */
 public final class BrokerageConverter {
-    private BrokerageConverter() {
-    }
+    private BrokerageConverter() {}
 
     public static BrokerageUser user(BrokerageUserDO row) {
         if (row == null) {
             return null;
         }
-        return new BrokerageUser(row.getId(), row.getBindUserId(), row.getBindUserTime(),
-                row.getBrokerageEnabled(), row.getBrokerageTime(), row.getBrokeragePrice(),
+        return new BrokerageUser(
+                row.getId(),
+                row.getBindUserId(),
+                row.getBindUserTime(),
+                row.getBrokerageEnabled(),
+                row.getBrokerageTime(),
+                row.getBrokeragePrice(),
                 row.getFrozenPrice());
     }
 
@@ -37,9 +41,20 @@ public final class BrokerageConverter {
         if (row == null) {
             return null;
         }
-        return new BrokerageRecord(row.getId(), row.getUserId(), row.getBizId(), row.getBizType(),
-                row.getTitle(), row.getDescription(), row.getPrice(), row.getTotalPrice(), row.getStatus(),
-                row.getFrozenDays(), row.getUnfreezeTime(), row.getSourceUserLevel(), row.getSourceUserId(),
+        return new BrokerageRecord(
+                row.getId(),
+                row.getUserId(),
+                row.getBizId(),
+                row.getBizType(),
+                row.getTitle(),
+                row.getDescription(),
+                row.getPrice(),
+                row.getTotalPrice(),
+                row.getStatus(),
+                row.getFrozenDays(),
+                row.getUnfreezeTime(),
+                row.getSourceUserLevel(),
+                row.getSourceUserId(),
                 row.getCreateTime());
     }
 
@@ -66,10 +81,23 @@ public final class BrokerageConverter {
         if (row == null) {
             return null;
         }
-        return new BrokerageWithdraw(row.getId(), row.getUserId(), row.getPrice(), row.getFeePrice(),
-                row.getTotalPrice(), row.getType(), row.getUserName(), row.getUserAccount(),
-                row.getQrCodeUrl(), row.getBankName(), row.getBankAddress(), row.getStatus(),
-                row.getAuditReason(), row.getAuditTime(), row.getRemark(), row.getCreateTime());
+        return new BrokerageWithdraw(
+                row.getId(),
+                row.getUserId(),
+                row.getPrice(),
+                row.getFeePrice(),
+                row.getTotalPrice(),
+                row.getType(),
+                row.getUserName(),
+                row.getUserAccount(),
+                row.getQrCodeUrl(),
+                row.getBankName(),
+                row.getBankAddress(),
+                row.getStatus(),
+                row.getAuditReason(),
+                row.getAuditTime(),
+                row.getRemark(),
+                row.getCreateTime());
     }
 
     public static BrokerageWithdrawDO row(BrokerageWithdraw value) {

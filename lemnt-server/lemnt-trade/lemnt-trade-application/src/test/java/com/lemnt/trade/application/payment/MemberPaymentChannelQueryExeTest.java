@@ -27,10 +27,15 @@ class MemberPaymentChannelQueryExeTest {
 
     @Test
     void enabledChannelsAreDistinctAndUnknownCodesSkipped() {
-        when(apps.findByAppKey("lemnt-mall")).thenReturn(new PayApp(1L, "lemnt-mall", "商城", 0, null,
-                null, null, null));
-        when(channels.listByAppId(1L)).thenReturn(List.of(config("SANDBOX", 0), config("SANDBOX", 0),
-                config("ALIPAY", 1), config("UNKNOWN", 0)));
+        when(apps.findByAppKey("lemnt-mall"))
+                .thenReturn(new PayApp(1L, "lemnt-mall", "商城", 0, null, null, null, null));
+        when(channels.listByAppId(1L))
+                .thenReturn(
+                        List.of(
+                                config("SANDBOX", 0),
+                                config("SANDBOX", 0),
+                                config("ALIPAY", 1),
+                                config("UNKNOWN", 0)));
         var result = exe.execute("lemnt-mall");
         assertEquals(1, result.size());
         assertEquals("SANDBOX", result.get(0).code());
@@ -39,8 +44,8 @@ class MemberPaymentChannelQueryExeTest {
     @Test
     void missingOrDisabledAppIsRejected() {
         assertThrows(ServiceException.class, () -> exe.execute(""));
-        when(apps.findByAppKey("lemnt-mall")).thenReturn(new PayApp(1L, "lemnt-mall", "商城", 1, null,
-                null, null, null));
+        when(apps.findByAppKey("lemnt-mall"))
+                .thenReturn(new PayApp(1L, "lemnt-mall", "商城", 1, null, null, null, null));
         assertThrows(ServiceException.class, () -> exe.execute("lemnt-mall"));
         verifyNoInteractions(channels);
     }

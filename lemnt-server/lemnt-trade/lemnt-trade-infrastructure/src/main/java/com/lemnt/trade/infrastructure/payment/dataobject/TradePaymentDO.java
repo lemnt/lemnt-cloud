@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 public class TradePaymentDO extends BaseDO {
     @TableId(type = IdType.AUTO)
     private Long id;
+
     private String paymentNo;
     private String orderNo;
     private String channel;

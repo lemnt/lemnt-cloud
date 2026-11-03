@@ -3,8 +3,8 @@ package com.lemnt.trade.infrastructure.fulfillment.converter;
 import com.lemnt.trade.domain.fulfillment.model.OrderSummary;
 import com.lemnt.trade.domain.fulfillment.model.RefundRequest;
 import com.lemnt.trade.domain.fulfillment.model.Shipment;
-import com.lemnt.trade.infrastructure.fulfillment.dataobject.OrderSummaryDO;
 import com.lemnt.trade.infrastructure.aftersale.dataobject.AfterSaleDO;
+import com.lemnt.trade.infrastructure.fulfillment.dataobject.OrderSummaryDO;
 import com.lemnt.trade.infrastructure.fulfillment.dataobject.ShipmentDO;
 
 /**
@@ -18,18 +18,18 @@ public final class FulfillmentConverter {
      */
     public static Shipment shipment(ShipmentDO row) {
         return row == null
-        ? null
-        : new Shipment(
-                row.getOrderNo(),
-                row.getRequestNo(),
-                row.getFingerprint(),
-                row.getCarrierCode(),
-                row.getTrackingNo(),
-                row.getRecipientName(),
-                row.getPhone(),
-                row.getAddress(),
-                row.getShippedAt(),
-                row.getReceivedAt());
+                ? null
+                : new Shipment(
+                        row.getOrderNo(),
+                        row.getRequestNo(),
+                        row.getFingerprint(),
+                        row.getCarrierCode(),
+                        row.getTrackingNo(),
+                        row.getRecipientName(),
+                        row.getPhone(),
+                        row.getAddress(),
+                        row.getShippedAt(),
+                        row.getReceivedAt());
     }
 
     /**
@@ -55,19 +55,19 @@ public final class FulfillmentConverter {
      */
     public static RefundRequest refundRequest(AfterSaleDO row) {
         return row == null
-        ? null
-        : new RefundRequest(
-                row.getRefundNo(),
-                row.getOrderNo(),
-                row.getRequestNo(),
-                row.getMemberId(),
-                row.getPaymentNo(),
-                row.getAmount(),
-                row.getReason(),
-                row.getStatus(),
-                row.getDecisionReason(),
-                row.getRequestedAt(),
-                row.getDecidedAt());
+                ? null
+                : new RefundRequest(
+                        row.getRefundNo(),
+                        row.getOrderNo(),
+                        row.getRequestNo(),
+                        row.getMemberId(),
+                        row.getPaymentNo(),
+                        row.getAmount(),
+                        row.getReason(),
+                        row.getStatus(),
+                        row.getDecisionReason(),
+                        row.getRequestedAt(),
+                        row.getDecidedAt());
     }
 
     /**
@@ -94,18 +94,18 @@ public final class FulfillmentConverter {
      */
     public static OrderSummary orderSummary(OrderSummaryDO row) {
         return row == null
-        ? null
-        : new OrderSummary(
-                row.getOrderNo(),
-                row.getMemberId(),
-                row.getTotalAmount(),
-                row.getStatus(),
-                row.getCreateTime(),
-                Boolean.TRUE.equals(row.getInventoryConfirmed()),
-                Boolean.TRUE.equals(row.getActiveRefund()),
-                row.getCarrierCode(),
-                row.getTrackingNo(),
-                row.getShippedAt(),
-                row.getReceivedAt());
+                ? null
+                : new OrderSummary(
+                        row.getOrderNo(),
+                        row.getMemberId(),
+                        row.getTotalAmount(),
+                        row.getStatus(),
+                        row.getCreateTime(),
+                        Boolean.TRUE.equals(row.getInventoryConfirmed()),
+                        Boolean.TRUE.equals(row.getActiveRefund()),
+                        row.getCarrierCode(),
+                        row.getTrackingNo(),
+                        row.getShippedAt(),
+                        row.getReceivedAt());
     }
 }

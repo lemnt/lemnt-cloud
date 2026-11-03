@@ -1,8 +1,9 @@
 package com.lemnt.common.datascope.config;
 
+import com.lemnt.common.datascope.handler.CustomDataPermissionHandler;
+
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
-import com.lemnt.common.datascope.handler.CustomDataPermissionHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

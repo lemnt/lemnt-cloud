@@ -26,8 +26,12 @@ public class PaymentChannelGatewayImpl implements PaymentChannelGateway {
     }
 
     @Override
-    public VerifiedPaymentNotification verify(String channel, PayChannelConfig config, String body,
-            String signature, String timestamp) {
+    public VerifiedPaymentNotification verify(
+            String channel,
+            PayChannelConfig config,
+            String body,
+            String signature,
+            String timestamp) {
         return adapter(channel).verify(config, body, signature, timestamp);
     }
 

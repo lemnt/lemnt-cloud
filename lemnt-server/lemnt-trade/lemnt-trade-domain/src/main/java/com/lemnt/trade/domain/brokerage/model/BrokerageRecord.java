@@ -19,6 +19,5 @@ public record BrokerageRecord(
         LocalDateTime unfreezeTime,
         Integer sourceUserLevel,
         Long sourceUserId,
-        LocalDateTime createTime
-) implements Serializable {
-}
+        LocalDateTime createTime)
+        implements Serializable {}

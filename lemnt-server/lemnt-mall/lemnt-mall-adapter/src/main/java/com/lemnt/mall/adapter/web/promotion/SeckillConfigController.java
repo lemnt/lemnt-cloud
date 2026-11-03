@@ -60,14 +60,16 @@ public class SeckillConfigController {
     @PutMapping("/{id}")
     @Operation(summary = "修改秒杀时段")
     @RequiresPermissions("mall:promotion:update")
-    public R<Boolean> update(@PathVariable Long id, @Valid @RequestBody SeckillConfigUpdateReq req) {
+    public R<Boolean> update(
+            @PathVariable Long id, @Valid @RequestBody SeckillConfigUpdateReq req) {
         return R.ok(update.execute(SeckillConfigConverter.update(id, req)));
     }
 
     @PutMapping("/{id}/status")
     @Operation(summary = "修改秒杀时段状态")
     @RequiresPermissions("mall:promotion:update")
-    public R<Boolean> status(@PathVariable Long id, @Valid @RequestBody SeckillConfigStatusReq req) {
+    public R<Boolean> status(
+            @PathVariable Long id, @Valid @RequestBody SeckillConfigStatusReq req) {
         return R.ok(status.execute(id, req.status()));
     }
 
@@ -90,7 +92,9 @@ public class SeckillConfigController {
     @RequiresPermissions("mall:promotion:list")
     public R<SeckillConfigRes> page(@Valid @ModelAttribute SeckillConfigPageReq req) {
         var result = page.execute(SeckillConfigConverter.page(req));
-        return R.page(result.getRecords().stream().map(SeckillConfigConverter::res).toList(), result.getTotal());
+        return R.page(
+                result.getRecords().stream().map(SeckillConfigConverter::res).toList(),
+                result.getTotal());
     }
 
     @GetMapping("/list")

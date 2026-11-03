@@ -12,6 +12,5 @@ public record KefuConversation(
         Integer lastMessageContentType,
         Boolean adminPinned,
         Boolean adminDeleted,
-        Integer adminUnreadMessageCount
-) implements Serializable {
-}
+        Integer adminUnreadMessageCount)
+        implements Serializable {}

@@ -10,6 +10,5 @@ public record PickUpOrderDTO(
         String storeName,
         String storePhone,
         String storeAddress,
-        String verifyCode
-) implements Serializable {
-}
+        String verifyCode)
+        implements Serializable {}

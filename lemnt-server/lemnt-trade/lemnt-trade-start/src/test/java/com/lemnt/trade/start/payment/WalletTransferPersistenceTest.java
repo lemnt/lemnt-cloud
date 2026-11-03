@@ -57,15 +57,41 @@ class WalletTransferPersistenceTest {
     void requestIsIdempotentAndVisibleFromBothMembers() {
         var from = wallets.createIfAbsent(1L);
         var to = wallets.createIfAbsent(2L);
-        var value = new WalletTransfer(null, "TF1", "REQ1", from.id(), 1L, to.id(), 2L,
-                new BigDecimal("10.00"), "备注", "SUCCESS", null);
+        var value =
+                new WalletTransfer(
+                        null,
+                        "TF1",
+                        "REQ1",
+                        from.id(),
+                        1L,
+                        to.id(),
+                        2L,
+                        new BigDecimal("10.00"),
+                        "备注",
+                        "SUCCESS",
+                        null);
         var created = transfers.createIfAbsent(value);
         var again = transfers.createIfAbsent(value);
         assertEquals(created.id(), again.id());
         assertNotNull(transfers.findByNo("TF1"));
-        assertEquals(1, transfers.page(new WalletTransferFilter(1L, null, null, null, 1, 20)).getRecords().size());
-        assertEquals(1, transfers.page(new WalletTransferFilter(2L, null, null, null, 1, 20)).getRecords().size());
-        assertEquals(1, transfers.page(new WalletTransferFilter(null, 1L, null, null, 1, 20)).getRecords().size());
+        assertEquals(
+                1,
+                transfers
+                        .page(new WalletTransferFilter(1L, null, null, null, 1, 20))
+                        .getRecords()
+                        .size());
+        assertEquals(
+                1,
+                transfers
+                        .page(new WalletTransferFilter(2L, null, null, null, 1, 20))
+                        .getRecords()
+                        .size());
+        assertEquals(
+                1,
+                transfers
+                        .page(new WalletTransferFilter(null, 1L, null, null, 1, 20))
+                        .getRecords()
+                        .size());
     }
 
     @Configuration
@@ -76,20 +102,24 @@ class WalletTransferPersistenceTest {
         @Bean
         JdbcDataSource dataSource() {
             var source = new JdbcDataSource();
-            source.setURL("jdbc:h2:mem:transfer_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
+            source.setURL(
+                    "jdbc:h2:mem:transfer_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
             return source;
         }
 
         @Bean(destroyMethod = "close")
         Connection schema(JdbcDataSource source) throws Exception {
             var connection = source.getConnection();
-            ScriptUtils.executeSqlScript(connection, new ClassPathResource("trade-sql/V12__member_wallet.sql"));
-            ScriptUtils.executeSqlScript(connection, new ClassPathResource("trade-sql/V14__wallet_transfer.sql"));
+            ScriptUtils.executeSqlScript(
+                    connection, new ClassPathResource("trade-sql/V12__member_wallet.sql"));
+            ScriptUtils.executeSqlScript(
+                    connection, new ClassPathResource("trade-sql/V14__wallet_transfer.sql"));
             return connection;
         }
 
         @Bean
-        SqlSessionFactory sqlSessionFactory(JdbcDataSource source, Connection schema) throws Exception {
+        SqlSessionFactory sqlSessionFactory(JdbcDataSource source, Connection schema)
+                throws Exception {
             var config = new MybatisConfiguration();
             config.setMapUnderscoreToCamelCase(true);
             var interceptor = new MybatisPlusInterceptor();
@@ -98,8 +128,11 @@ class WalletTransferPersistenceTest {
             var factory = new MybatisSqlSessionFactoryBean();
             factory.setDataSource(source);
             factory.setConfiguration(config);
-            factory.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
-            factory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
+            factory.setGlobalConfig(
+                    new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
+            factory.setMapperLocations(
+                    new PathMatchingResourcePatternResolver()
+                            .getResources("classpath*:mapper/*.xml"));
             return factory.getObject();
         }
 

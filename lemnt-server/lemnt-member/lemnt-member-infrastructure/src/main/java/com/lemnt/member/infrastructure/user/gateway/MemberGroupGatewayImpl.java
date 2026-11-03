@@ -1,21 +1,22 @@
 package com.lemnt.member.infrastructure.user.gateway;
 
-import java.util.Collection;
-
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.member.domain.user.gateway.MemberGroupGateway;
 import com.lemnt.member.domain.user.model.Group;
 import com.lemnt.member.domain.user.model.GroupPageFilter;
 import com.lemnt.member.infrastructure.user.converter.GroupConverter;
-import com.lemnt.member.infrastructure.user.mapper.MemberGroupMapper;
 import com.lemnt.member.infrastructure.user.dataobject.GroupDO;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import org.springframework.dao.DuplicateKeyException;
+import com.lemnt.member.infrastructure.user.mapper.MemberGroupMapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collection;
 import java.util.List;
 
 /** member_group 表持久化实现。 */
@@ -30,7 +31,11 @@ public class MemberGroupGatewayImpl implements MemberGroupGateway {
      */
     @Override
     public List<Group> groups() {
-        return memberGroupMapper.selectList(Wrappers.<GroupDO>lambdaQuery().orderByAsc(GroupDO::getId)).stream().map(GroupConverter::toEntity).toList();
+        return memberGroupMapper
+                .selectList(Wrappers.<GroupDO>lambdaQuery().orderByAsc(GroupDO::getId))
+                .stream()
+                .map(GroupConverter::toEntity)
+                .toList();
     }
 
     /**
@@ -72,7 +77,7 @@ public class MemberGroupGatewayImpl implements MemberGroupGateway {
      */
     @Override
     public List<Group> groups(GroupPageFilter f) {
-        return memberGroupMapper.groupsPage(f).stream().map(GroupConverter::toEntity).toList();
+        return groupsPageRow(f).stream().map(GroupConverter::toEntity).toList();
     }
 
     /**
@@ -80,13 +85,40 @@ public class MemberGroupGatewayImpl implements MemberGroupGateway {
      */
     @Override
     public long groupsCount(GroupPageFilter f) {
-        return memberGroupMapper.groupsCount(f);
+        return groupsCountRow(f);
     }
+
     /** 批量关联返显，避免逐会员查询。 */
     @Override
     public List<Group> groupsByIds(Collection<Long> ids) {
         if (ids.isEmpty()) return List.of();
-        return memberGroupMapper.selectList(Wrappers.<GroupDO>lambdaQuery().in(GroupDO::getId, ids))
-                .stream().map(GroupConverter::toEntity).toList();
+        return memberGroupMapper
+                .selectList(Wrappers.<GroupDO>lambdaQuery().in(GroupDO::getId, ids))
+                .stream()
+                .map(GroupConverter::toEntity)
+                .toList();
+    }
+
+    /** 分页和总数共用条件。 */
+    private List<GroupDO> groupsPageRow(GroupPageFilter f) {
+        return memberGroupMapper
+                .selectPage(
+                        new Page<>((long) f.offset() / f.limit() + 1, f.limit(), false),
+                        conditions(f).orderByDesc(GroupDO::getId))
+                .getRecords();
+    }
+
+    /** 读取筛选后的总数。 */
+    private long groupsCountRow(GroupPageFilter f) {
+        return memberGroupMapper.selectCount(conditions(f));
+    }
+
+    /** 分页与计数复用同一组类型安全条件。 */
+    private LambdaQueryWrapper<GroupDO> conditions(GroupPageFilter f) {
+        return Wrappers.<GroupDO>lambdaQuery()
+                .like(f.name() != null, GroupDO::getName, f.name())
+                .eq(f.status() != null, GroupDO::getStatus, f.status())
+                .ge(f.startTime() != null, GroupDO::getCreateTime, f.startTime())
+                .le(f.endTime() != null, GroupDO::getCreateTime, f.endTime());
     }
 }

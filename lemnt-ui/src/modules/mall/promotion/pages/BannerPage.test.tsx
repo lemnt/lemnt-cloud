@@ -46,7 +46,7 @@ it('没有列表权限时拒绝，不暴露新增入口', () => {
 it('列表、新增、编辑和删除权限相互独立', () => {
   permissions.clear();
   permissions.add('mall:promotion:list');
-  let html = render(<BannerPage />);
+  const html = render(<BannerPage />);
   expect(html).toContain('测试 Banner');
   expect(html).not.toContain('新增 Banner');
   permissions.add('mall:promotion:create');

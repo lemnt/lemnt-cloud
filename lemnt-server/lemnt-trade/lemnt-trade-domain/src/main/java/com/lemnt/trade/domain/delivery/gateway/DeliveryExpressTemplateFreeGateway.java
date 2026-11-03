@@ -20,5 +20,4 @@ public interface DeliveryExpressTemplateFreeGateway {
 
     /** 移除模板全部子项。 */
     void deleteByTemplate(Long templateId);
-
 }

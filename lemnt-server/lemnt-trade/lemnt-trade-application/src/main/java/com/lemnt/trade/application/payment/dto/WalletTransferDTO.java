@@ -16,6 +16,5 @@ public record WalletTransferDTO(
         BigDecimal amount,
         String remark,
         String status,
-        LocalDateTime createTime
-) implements Serializable {
-}
+        LocalDateTime createTime)
+        implements Serializable {}

@@ -9,6 +9,5 @@ public record ShipmentSummaryDTO(
         String carrierCode,
         String trackingNo,
         LocalDateTime shippedAt,
-        LocalDateTime receivedAt
-) implements Serializable {
-}
+        LocalDateTime receivedAt)
+        implements Serializable {}

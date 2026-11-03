@@ -29,16 +29,37 @@ public class ProductCatalogClientImpl implements ProductCatalogClient {
     @Override
     public List<ProductSnapshotDTO> findOnShelfBatch(List<Long> ids) {
         var values = productCatalogGateway.findOnShelfBatch(ids);
-        return ids.stream().map(values::get).filter(java.util.Objects::nonNull).map(this::toDTO).toList();
+        return ids.stream()
+                .map(values::get)
+                .filter(java.util.Objects::nonNull)
+                .map(this::toDTO)
+                .toList();
     }
 
     /** 远程输出与结算读取相同的可信目录快照。 */
     private ProductSnapshotDTO toDTO(ProductSnapshot value) {
-        return value == null ? null : new ProductSnapshotDTO(value.id(), value.productCode(), value.name(), value.price(),
-                value.stock(), value.spuId(), value.spuName(),
-                value.specs() == null ? null : value.specs().stream().map(snapshotProperty ->
-                        new ProductSnapshotDTO.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
-                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(), value.picUrl());
+        return value == null
+                ? null
+                : new ProductSnapshotDTO(
+                        value.id(),
+                        value.productCode(),
+                        value.name(),
+                        value.price(),
+                        value.stock(),
+                        value.spuId(),
+                        value.spuName(),
+                        value.specs() == null
+                                ? null
+                                : value.specs().stream()
+                                        .map(
+                                                snapshotProperty ->
+                                                        new ProductSnapshotDTO.Spec(
+                                                                snapshotProperty.specId(),
+                                                                snapshotProperty.specName(),
+                                                                snapshotProperty.specValueId(),
+                                                                snapshotProperty.specValueName()))
+                                        .toList(),
+                        value.picUrl());
     }
 
     @Override

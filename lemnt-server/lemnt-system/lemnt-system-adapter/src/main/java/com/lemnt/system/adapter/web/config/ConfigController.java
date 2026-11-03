@@ -59,21 +59,27 @@ public class ConfigController {
     @GetMapping
     public R<SystemConfigListRes> list(ConfigPageReq req) {
         PageResult<ConfigDTO> result = configPageQueryExe.execute(ConfigReqConverter.toQry(req));
-        return R.page(ConfigResConverter.toResListToSystemConfigListRes(result.getRecords()), result.getTotal());
+        return R.page(
+                ConfigResConverter.toResListToSystemConfigListRes(result.getRecords()),
+                result.getTotal());
     }
 
     @Operation(summary = "根据参数编号获取详细信息")
     @RequiresPermissions("system:config:query")
     @GetMapping(value = "/{configId}")
     public R<SystemConfigGetInfoRes> getInfo(@PathVariable Long configId) {
-        return R.ok(ConfigResConverter.toResToSystemConfigGetInfoRes(configDetailQueryExe.executeById(configId)));
+        return R.ok(
+                ConfigResConverter.toResToSystemConfigGetInfoRes(
+                        configDetailQueryExe.executeById(configId)));
     }
 
     @Operation(summary = "根据参数键名查询参数值")
     @RequiresPermissions("system:config:query")
     @GetMapping(value = "/config-key/{configKey}")
     public R<SystemConfigGetConfigKeyRes> getConfigKey(@PathVariable String configKey) {
-        return R.ok(ConfigResConverter.toResToSystemConfigGetConfigKeyRes(configDetailQueryExe.executeByKey(configKey)));
+        return R.ok(
+                ConfigResConverter.toResToSystemConfigGetConfigKeyRes(
+                        configDetailQueryExe.executeByKey(configKey)));
     }
 
     @Operation(summary = "新增参数配置")

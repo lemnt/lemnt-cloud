@@ -1,11 +1,13 @@
 package com.lemnt.member.start;
 
-import com.alibaba.fastjson2.JSON;
-import com.lemnt.system.api.RemoteConfigService;
-import com.lemnt.member.infrastructure.growth.gateway.MemberConfigGatewayImpl;
 import com.lemnt.member.domain.growth.model.Config;
+import com.lemnt.member.infrastructure.growth.gateway.MemberConfigGatewayImpl;
+import com.lemnt.system.api.RemoteConfigService;
+
+import com.alibaba.fastjson2.JSON;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -21,11 +23,19 @@ class MemberConfigStorageTest {
         when(remote.getConfig("member.point.config")).thenReturn(JSON.toJSONString(value));
         assertEquals(value, gateway.config());
         gateway.configSave(value);
-        verify(remote).saveBusinessConfig(argThat(bo -> bo.configKey().equals("member.point.config")
-                && JSON.parseObject(bo.configValue(), Config.class).equals(value)));
-        when(remote.getConfig("member.point.config")).thenThrow(new IllegalStateException("system unavailable"));
+        verify(remote)
+                .saveBusinessConfig(
+                        argThat(
+                                bo ->
+                                        bo.configKey().equals("member.point.config")
+                                                && JSON.parseObject(bo.configValue(), Config.class)
+                                                        .equals(value)));
+        when(remote.getConfig("member.point.config"))
+                .thenThrow(new IllegalStateException("system unavailable"));
         assertThrows(IllegalStateException.class, gateway::config);
-        doThrow(new IllegalStateException("system unavailable")).when(remote).saveBusinessConfig(any());
+        doThrow(new IllegalStateException("system unavailable"))
+                .when(remote)
+                .saveBusinessConfig(any());
         assertThrows(IllegalStateException.class, () -> gateway.configSave(value));
     }
 }

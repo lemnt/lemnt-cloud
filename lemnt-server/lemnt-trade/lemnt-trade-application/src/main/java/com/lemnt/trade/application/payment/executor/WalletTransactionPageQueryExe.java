@@ -41,9 +41,12 @@ public class WalletTransactionPageQueryExe {
         if (wallet == null) {
             return PageResult.of(List.of(), 0L);
         }
-        var page = wallets.transactionPage(new WalletTransactionFilter(wallet.id(), bizType,
-                qry.pageNum(), qry.pageSize()));
-        return PageResult.of(page.getRecords().stream().map(WalletDTOConverter::transaction).toList(),
+        var page =
+                wallets.transactionPage(
+                        new WalletTransactionFilter(
+                                wallet.id(), bizType, qry.pageNum(), qry.pageSize()));
+        return PageResult.of(
+                page.getRecords().stream().map(WalletDTOConverter::transaction).toList(),
                 page.getTotal());
     }
 }

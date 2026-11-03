@@ -5,8 +5,7 @@ import com.lemnt.trade.application.config.dto.TradeConfigDTO;
 
 /** config Res 接口边界转换。 */
 public final class TradeConfigResConverter {
-    private TradeConfigResConverter() {
-    }
+    private TradeConfigResConverter() {}
 
     /** 转换详情响应。 */
     public static TradeConfigDetailRes tradeConfigDetail(TradeConfigDTO value) {

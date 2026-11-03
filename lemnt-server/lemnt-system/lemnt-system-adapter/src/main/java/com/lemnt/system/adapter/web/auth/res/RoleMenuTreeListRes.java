@@ -12,8 +12,6 @@ import java.util.List;
  */
 @Schema(description = "角色菜单树列表响应")
 public record RoleMenuTreeListRes(
-        @Schema(description = "已选中菜单ID列表")
-        List<Long> checkedKeys,
-        @Schema(description = "菜单树列表")
-        List<TreeSelectRes> menus
-) implements Serializable {}
+        @Schema(description = "已选中菜单ID列表") List<Long> checkedKeys,
+        @Schema(description = "菜单树列表") List<TreeSelectRes> menus)
+        implements Serializable {}

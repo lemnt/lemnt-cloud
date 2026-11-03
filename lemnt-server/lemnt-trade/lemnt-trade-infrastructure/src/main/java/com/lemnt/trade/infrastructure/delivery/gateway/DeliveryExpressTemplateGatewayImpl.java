@@ -36,10 +36,18 @@ public class DeliveryExpressTemplateGatewayImpl implements DeliveryExpressTempla
 
     @Override
     public List<DeliveryExpressTemplate> list(String name) {
-        return mapper.selectList(Wrappers.<DeliveryExpressTemplateDO>lambdaQuery()
-                        .like(name != null && !name.isBlank(), DeliveryExpressTemplateDO::getName, name)
-                        .orderByAsc(DeliveryExpressTemplateDO::getSort).orderByDesc(DeliveryExpressTemplateDO::getId))
-                .stream().map(DeliveryExpressTemplateConverter::toEntity).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<DeliveryExpressTemplateDO>lambdaQuery()
+                                .like(
+                                        name != null && !name.isBlank(),
+                                        DeliveryExpressTemplateDO::getName,
+                                        name)
+                                .orderByAsc(DeliveryExpressTemplateDO::getSort)
+                                .orderByDesc(DeliveryExpressTemplateDO::getId))
+                .stream()
+                .map(DeliveryExpressTemplateConverter::toEntity)
+                .toList();
     }
 
     @Override
@@ -61,10 +69,18 @@ public class DeliveryExpressTemplateGatewayImpl implements DeliveryExpressTempla
 
     @Override
     public PageResult<DeliveryExpressTemplate> page(DeliveryExpressTemplateFilter filter) {
-        var page = mapper.selectPage(new Page<>(filter.pageNum(), filter.pageSize()),
-                Wrappers.<DeliveryExpressTemplateDO>lambdaQuery()
-                        .like(filter.name() != null && !filter.name().isBlank(), DeliveryExpressTemplateDO::getName, filter.name())
-                        .orderByAsc(DeliveryExpressTemplateDO::getSort).orderByDesc(DeliveryExpressTemplateDO::getId));
-        return PageResult.of(page.getRecords().stream().map(DeliveryExpressTemplateConverter::toEntity).toList(), page.getTotal());
+        var page =
+                mapper.selectPage(
+                        new Page<>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.<DeliveryExpressTemplateDO>lambdaQuery()
+                                .like(
+                                        filter.name() != null && !filter.name().isBlank(),
+                                        DeliveryExpressTemplateDO::getName,
+                                        filter.name())
+                                .orderByAsc(DeliveryExpressTemplateDO::getSort)
+                                .orderByDesc(DeliveryExpressTemplateDO::getId));
+        return PageResult.of(
+                page.getRecords().stream().map(DeliveryExpressTemplateConverter::toEntity).toList(),
+                page.getTotal());
     }
 }

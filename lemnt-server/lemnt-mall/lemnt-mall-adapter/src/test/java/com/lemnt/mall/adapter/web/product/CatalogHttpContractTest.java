@@ -33,19 +33,25 @@ class CatalogHttpContractTest {
     ProductSpuGateway productSpuGateway = mock(ProductSpuGateway.class);
     ProductSpuCreateCmdExe create = mock(ProductSpuCreateCmdExe.class);
     ProductSpuController controller =
-    new ProductSpuController(new ProductSpuPageQueryExe(productSpuGateway), new ProductSpuDetailQueryExe(catalogService), create, mock(ProductSpuUpdateCmdExe.class), mock(ProductSpuShelfCmdExe.class));
+            new ProductSpuController(
+                    new ProductSpuPageQueryExe(productSpuGateway),
+                    new ProductSpuDetailQueryExe(catalogService),
+                    create,
+                    mock(ProductSpuUpdateCmdExe.class),
+                    mock(ProductSpuShelfCmdExe.class));
 
     @Test
     void pageDefaultsAndTopLevelRowsFollowExistingContract() throws Exception {
         when(productSpuGateway.page(new ProductCatalogFilter(null, null, 0, 10, null, null, null)))
-            .thenReturn(new ProductCatalogPage(List.of(), 0));
+                .thenReturn(new ProductCatalogPage(List.of(), 0));
         MockMvcBuilders.standaloneSetup(controller)
-            .build()
-            .perform(get("/mall/spus"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.rows").isEmpty())
-            .andExpect(jsonPath("$.total").value(0));
-        verify(productSpuGateway).page(new ProductCatalogFilter(null, null, 0, 10, null, null, null));
+                .build()
+                .perform(get("/mall/spus"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rows").isEmpty())
+                .andExpect(jsonPath("$.total").value(0));
+        verify(productSpuGateway)
+                .page(new ProductCatalogFilter(null, null, 0, 10, null, null, null));
     }
 
     @Test
@@ -53,39 +59,37 @@ class CatalogHttpContractTest {
         var mvc = MockMvcBuilders.standaloneSetup(controller).build();
         mvc.perform(get("/mall/spus?pageSize=101")).andExpect(status().isBadRequest());
         mvc.perform(
-                post("/mall/spus")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                "{\"code\":\"SP1\",\"name\":\"goods\",\"categoryId\":1,\"brandId\":1,\"skus\":[]}"))
-            .andExpect(status().isBadRequest());
+                        post("/mall/spus")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        "{\"code\":\"SP1\",\"name\":\"goods\",\"categoryId\":1,\"brandId\":1,\"skus\":[]}"))
+                .andExpect(status().isBadRequest());
         mvc.perform(
-                post("/mall/spus")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                "{\"code\":\"SP1\",\"name\":\"goods\",\"categoryId\":1,\"brandId\":1,\"skus\":[{\"code\":\"S1\",\"name\":\"sku\",\"price\":1.001,\"stock\":1}]}"))
-            .andExpect(status().isBadRequest());
+                        post("/mall/spus")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        "{\"code\":\"SP1\",\"name\":\"goods\",\"categoryId\":1,\"brandId\":1,\"skus\":[{\"code\":\"S1\",\"name\":\"sku\",\"price\":1.001,\"stock\":1}]}"))
+                .andExpect(status().isBadRequest());
         verifyNoInteractions(create);
     }
 
     @Test
     void acceptsNormalizedStringIdentifiersAndDecimalAmountsFromAdminUi() throws Exception {
         when(create.execute(any()))
-            .thenReturn(
-                new ProductSpuDTO(
-                3L, "SP1", "goods", 1L, 2L, null, null, "OFF_SHELF", List.of()));
+                .thenReturn(
+                        new ProductSpuDTO(
+                                3L, "SP1", "goods", 1L, 2L, null, null, "OFF_SHELF", List.of()));
         var mvc = MockMvcBuilders.standaloneSetup(controller).build();
         mvc.perform(
-                post("/mall/spus")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                """
+                        post("/mall/spus")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
 {"code":"SP1","name":"goods","categoryId":"1","brandId":"2","deliveryTypes":[],"keyword":"关键字","introduction":"简介","sliderPicUrls":[],"sort":0,
  "skus":[{"code":"S1","name":"sku","price":"9.25","stock":5,"specs":[]}]}
 """))
-            .andExpect(status().isOk());
-        var captured =
-        ArgumentCaptor.forClass(
-                ProductSpuCreateCmd.class);
+                .andExpect(status().isOk());
+        var captured = ArgumentCaptor.forClass(ProductSpuCreateCmd.class);
         verify(create).execute(captured.capture());
         assertEquals(1L, captured.getValue().categoryId());
         assertEquals("关键字", captured.getValue().keyword());
@@ -93,20 +97,35 @@ class CatalogHttpContractTest {
         assertEquals(List.of(), captured.getValue().sliderPicUrls());
         assertEquals(0, captured.getValue().sort());
         assertEquals(new BigDecimal("9.25"), captured.getValue().skus().get(0).price());
-        mvc.perform(post("/mall/spus").contentType(MediaType.APPLICATION_JSON).content("""
+        mvc.perform(
+                        post("/mall/spus")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
                 {"code":"SP1","name":"goods","categoryId":1,"brandId":2,"deliveryTypes":[null],
                  "skus":[{"code":"S1","name":"sku","price":"9.25","stock":5,"specs":[]}]}
-                """)).andExpect(status().isBadRequest());
-        mvc.perform(post("/mall/spus").contentType(MediaType.APPLICATION_JSON).content("""
+                """))
+                .andExpect(status().isBadRequest());
+        mvc.perform(
+                        post("/mall/spus")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
                 {"code":"SP1","name":"goods","categoryId":1,"brandId":2,"deliveryTypes":[],
                  "keyword":" ","introduction":"简介","sliderPicUrls":[],"sort":0,
                  "skus":[{"code":"S1","name":"sku","price":"9.25","stock":5,"specs":[]}]}
-                """)).andExpect(status().isBadRequest());
-        mvc.perform(post("/mall/spus").contentType(MediaType.APPLICATION_JSON).content("""
+                """))
+                .andExpect(status().isBadRequest());
+        mvc.perform(
+                        post("/mall/spus")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
                 {"code":"SP1","name":"goods","categoryId":1,"brandId":2,"deliveryTypes":[],
                  "keyword":"关键字","introduction":"简介","sliderPicUrls":["/1","/2","/3","/4","/5","/6"],"sort":0,
                  "skus":[{"code":"S1","name":"sku","price":"9.25","stock":5,"specs":[]}]}
-                """)).andExpect(status().isBadRequest());
+                """))
+                .andExpect(status().isBadRequest());
         verifyNoMoreInteractions(create);
     }
 
@@ -114,9 +133,9 @@ class CatalogHttpContractTest {
     void everyCatalogEndpointDeclaresAnExplicitPermission() {
         for (var type :
                 List.of(
-                CategoryController.class,
-                BrandController.class,
-                ProductSpuController.class)) {
+                        CategoryController.class,
+                        BrandController.class,
+                        ProductSpuController.class)) {
             for (var method : type.getDeclaredMethods()) {
                 if (!Modifier.isPublic(method.getModifiers())) {
                     continue;

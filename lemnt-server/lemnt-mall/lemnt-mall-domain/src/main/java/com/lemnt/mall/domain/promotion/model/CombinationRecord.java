@@ -24,7 +24,7 @@ public record CombinationRecord(
         Boolean virtualGroup,
         LocalDateTime expireTime,
         LocalDateTime startTime,
-        LocalDateTime endTime
-) implements java.io.Serializable {
+        LocalDateTime endTime)
+        implements java.io.Serializable {
     public static final long HEAD_ID_GROUP = 0L;
 }

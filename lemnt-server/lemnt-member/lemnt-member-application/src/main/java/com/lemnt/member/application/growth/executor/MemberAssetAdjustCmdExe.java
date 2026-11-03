@@ -22,6 +22,10 @@ public class MemberAssetAdjustCmdExe {
     public AssetRecordDTO execute(AssetAdjustCmd cmd) {
         return MemberGrowthDTOConverter.toAssetRecordDTO(
                 memberGrowthService.adjustAsset(
-                        cmd.memberId(), cmd.assetType(), cmd.delta(), cmd.requestNo(), cmd.reason()));
+                        cmd.memberId(),
+                        cmd.assetType(),
+                        cmd.delta(),
+                        cmd.requestNo(),
+                        cmd.reason()));
     }
 }

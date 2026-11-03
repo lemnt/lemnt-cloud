@@ -18,8 +18,8 @@ public record PickUpStoreDTO(
         BigDecimal latitude,
         BigDecimal longitude,
         List<Long> verifyUserIds,
-        Integer status
-) implements Serializable {
+        Integer status)
+        implements Serializable {
     public PickUpStoreDTO {
         verifyUserIds = verifyUserIds == null ? List.of() : List.copyOf(verifyUserIds);
     }

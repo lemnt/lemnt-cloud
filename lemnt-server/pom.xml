@@ -9,7 +9,7 @@
     </parent>
     <artifactId>lemnt-server</artifactId>
     <packaging>pom</packaging>
-    <description>Ad server</description>
+    <description>lemnt-cloud微服务与商城业务服务</description>
     <modules>
         <module>lemnt-auth</module>
         <module>lemnt-gateway</module>

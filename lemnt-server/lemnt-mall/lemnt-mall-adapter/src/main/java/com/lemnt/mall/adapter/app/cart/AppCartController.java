@@ -41,24 +41,25 @@ public class AppCartController {
     @Operation(summary = "查询当前会员购物车")
     public R<List<MallAppCartCartRes>> cart() {
         Long memberId = SecurityUtils.getUserId();
-        return R.ok(cartListQueryExe.execute(memberId).stream().map(CartResConverter::cartItemToMallAppCartCartRes).toList());
+        return R.ok(
+                cartListQueryExe.execute(memberId).stream()
+                        .map(CartResConverter::cartItemToMallAppCartCartRes)
+                        .toList());
     }
 
     @PutMapping("/cart/{productId}")
     @Operation(summary = "更新当前会员购物车，不接受客户端价格或会员身份")
     public R<MallAppCartSaveRes> save(
-            @PathVariable Long productId,
-            @Valid @RequestBody CartSaveReq req) {
+            @PathVariable Long productId, @Valid @RequestBody CartSaveReq req) {
         Long memberId = SecurityUtils.getUserId();
         return R.ok(
                 CartResConverter.cartItemToMallAppCartSaveRes(
-                cartSaveCmdExe.execute(CartReqConverter.cart(memberId, productId, req))));
+                        cartSaveCmdExe.execute(CartReqConverter.cart(memberId, productId, req))));
     }
 
     @DeleteMapping("/cart/{productId}")
     @Operation(summary = "删除当前会员购物车条目")
-    public R<Boolean> delete(
-            @PathVariable Long productId) {
+    public R<Boolean> delete(@PathVariable Long productId) {
         Long memberId = SecurityUtils.getUserId();
         return R.ok(cartDeleteCmdExe.execute(new CartDeleteCmd(memberId, productId)));
     }

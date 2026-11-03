@@ -18,6 +18,5 @@ public record PickUpStoreSaveCmd(
         BigDecimal latitude,
         BigDecimal longitude,
         List<Long> verifyUserIds,
-        Integer status
-) implements Serializable {
-}
+        Integer status)
+        implements Serializable {}

@@ -14,15 +14,20 @@ public final class MemberAuthResConverter {
      * 保持既有会员令牌响应字段。
      */
     public static AuthAppMemberAuthLoginRes toResToAuthAppMemberAuthLoginRes(MemberTokenDTO value) {
-        return value == null ? null : new AuthAppMemberAuthLoginRes(
-                value.memberId(), value.accessToken(), value.expiresIn());
+        return value == null
+                ? null
+                : new AuthAppMemberAuthLoginRes(
+                        value.memberId(), value.accessToken(), value.expiresIn());
     }
 
     /**
      * 保持既有会员令牌响应字段。
      */
-    public static AuthAppMemberAuthRefreshRes toResToAuthAppMemberAuthRefreshRes(MemberTokenDTO value) {
-        return value == null ? null : new AuthAppMemberAuthRefreshRes(
-                value.memberId(), value.accessToken(), value.expiresIn());
+    public static AuthAppMemberAuthRefreshRes toResToAuthAppMemberAuthRefreshRes(
+            MemberTokenDTO value) {
+        return value == null
+                ? null
+                : new AuthAppMemberAuthRefreshRes(
+                        value.memberId(), value.accessToken(), value.expiresIn());
     }
 }

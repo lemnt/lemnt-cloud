@@ -15,5 +15,5 @@ public record MemberUserUpdateCmd(
         String mark,
         String name,
         Integer areaId,
-        String mobile
-) implements Serializable {}
+        String mobile)
+        implements Serializable {}

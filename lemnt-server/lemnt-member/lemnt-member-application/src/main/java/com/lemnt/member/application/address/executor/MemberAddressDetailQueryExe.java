@@ -1,8 +1,8 @@
 package com.lemnt.member.application.address.executor;
 
-import com.lemnt.member.application.address.service.MemberAddressQueryService;
 import com.lemnt.member.application.address.dto.AddressDTO;
 import com.lemnt.member.application.address.qry.AddressDetailQry;
+import com.lemnt.member.application.address.service.MemberAddressQueryService;
 import com.lemnt.member.domain.address.gateway.MemberAddressGateway;
 import com.lemnt.member.domain.shared.model.MemberRules;
 
@@ -24,6 +24,7 @@ public class MemberAddressDetailQueryExe {
     public AddressDTO execute(AddressDetailQry qry) {
         MemberRules.id(qry.memberId());
         MemberRules.id(qry.id());
-        return memberAddressQueryService.enrich(memberAddressGateway.address(qry.memberId(), qry.id()));
+        return memberAddressQueryService.enrich(
+                memberAddressGateway.address(qry.memberId(), qry.id()));
     }
 }

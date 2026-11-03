@@ -2,11 +2,12 @@ package com.lemnt.mall.start;
 
 import com.lemnt.mall.application.promotion.executor.BargainExpireCmdExe;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /** 砍价活动到期调度，进行中的记录统一失败。 */
 @Slf4j

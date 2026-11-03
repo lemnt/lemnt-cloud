@@ -20,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DictTypeListAllQueryExe {
     private final DictTypeGateway dictTypeGateway;
+
     public List<DictTypeDTO> execute() {
         List<DictType> dictTypeList = dictTypeGateway.selectAll();
         return DictTypeConverter.toDTOList(dictTypeList);

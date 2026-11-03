@@ -30,7 +30,9 @@ public class RewardActivityGatewayImpl implements RewardActivityGateway {
     @Override
     public RewardActivity save(RewardActivity value) {
         var row = PromotionConverter.row(value);
-        if (row.getId() == null) { mapper.insert(row); } else {
+        if (row.getId() == null) {
+            mapper.insert(row);
+        } else {
             mapper.updateById(row);
         }
         return PromotionConverter.model(row);
@@ -43,19 +45,33 @@ public class RewardActivityGatewayImpl implements RewardActivityGateway {
 
     @Override
     public PageResult<RewardActivity> page(ActivityFilter filter) {
-        var page = mapper.selectPage(new Page<RewardActivityDO>(filter.pageNum(), filter.pageSize()),
-                Wrappers.<RewardActivityDO>lambdaQuery()
-                        .like(filter.name() != null && !filter.name().isBlank(), RewardActivityDO::getName,
-                            filter.name())
-                        .eq(filter.status() != null, RewardActivityDO::getStatus, filter.status())
-                        .orderByDesc(RewardActivityDO::getId));
-        return PageResult.of(page.getRecords().stream().map(PromotionConverter::model).toList(), page.getTotal());
+        var page =
+                mapper.selectPage(
+                        new Page<RewardActivityDO>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.<RewardActivityDO>lambdaQuery()
+                                .like(
+                                        filter.name() != null && !filter.name().isBlank(),
+                                        RewardActivityDO::getName,
+                                        filter.name())
+                                .eq(
+                                        filter.status() != null,
+                                        RewardActivityDO::getStatus,
+                                        filter.status())
+                                .orderByDesc(RewardActivityDO::getId));
+        return PageResult.of(
+                page.getRecords().stream().map(PromotionConverter::model).toList(),
+                page.getTotal());
     }
 
     @Override
     public List<RewardActivity> enabled() {
-        return mapper.selectList(Wrappers.<RewardActivityDO>lambdaQuery()
-                .eq(RewardActivityDO::getStatus, 0).orderByDesc(RewardActivityDO::getId))
-                .stream().map(PromotionConverter::model).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<RewardActivityDO>lambdaQuery()
+                                .eq(RewardActivityDO::getStatus, 0)
+                                .orderByDesc(RewardActivityDO::getId))
+                .stream()
+                .map(PromotionConverter::model)
+                .toList();
     }
 }

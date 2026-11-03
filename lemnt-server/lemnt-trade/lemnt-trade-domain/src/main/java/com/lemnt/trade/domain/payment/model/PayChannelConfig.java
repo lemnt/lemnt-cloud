@@ -12,6 +12,4 @@ public record PayChannelConfig(
         BigDecimal feeRate,
         String remark,
         String config,
-        LocalDateTime createTime
-) {
-}
+        LocalDateTime createTime) {}

@@ -13,5 +13,4 @@ public record DiscountActivityDTO(
         LocalDateTime startTime,
         LocalDateTime endTime,
         String remark,
-        List<DiscountProduct> products
-) {}
+        List<DiscountProduct> products) {}

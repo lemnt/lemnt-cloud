@@ -12,6 +12,5 @@ public record DeliveryExpressTemplateChargeDTO(
         BigDecimal startCount,
         Integer startPrice,
         BigDecimal extraCount,
-        Integer extraPrice
-) implements java.io.Serializable {
-}
+        Integer extraPrice)
+        implements java.io.Serializable {}

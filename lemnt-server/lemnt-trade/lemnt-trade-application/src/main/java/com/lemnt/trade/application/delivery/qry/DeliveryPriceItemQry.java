@@ -9,6 +9,4 @@ public record DeliveryPriceItemQry(
         Integer count,
         BigDecimal weight,
         BigDecimal volume,
-        Integer payPrice
-) {
-}
+        Integer payPrice) {}

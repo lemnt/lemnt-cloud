@@ -17,8 +17,15 @@ public class AppDeliveryExpressListQueryExe {
 
     public List<DeliveryExpressDTO> execute() {
         return expresses.list(null, 0).stream()
-                .map(value -> new DeliveryExpressDTO(value.id(), value.code(), value.name(), value.logo(),
-                        value.sort(), value.status()))
+                .map(
+                        value ->
+                                new DeliveryExpressDTO(
+                                        value.id(),
+                                        value.code(),
+                                        value.name(),
+                                        value.logo(),
+                                        value.sort(),
+                                        value.status()))
                 .toList();
     }
 }

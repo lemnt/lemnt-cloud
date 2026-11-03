@@ -1,12 +1,13 @@
 package com.lemnt.member.infrastructure.growth.gateway;
 
-import com.alibaba.fastjson2.JSON;
 import com.lemnt.common.security.utils.SecurityUtils;
+import com.lemnt.member.domain.growth.gateway.MemberConfigGateway;
+import com.lemnt.member.domain.growth.model.Config;
 import com.lemnt.system.api.BusinessConfigKeys;
 import com.lemnt.system.api.RemoteConfigService;
 import com.lemnt.system.api.bo.BusinessConfigSaveBo;
-import com.lemnt.member.domain.growth.gateway.MemberConfigGateway;
-import com.lemnt.member.domain.growth.model.Config;
+
+import com.alibaba.fastjson2.JSON;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,10 @@ public class MemberConfigGatewayImpl implements MemberConfigGateway {
     /** 业务校验由原应用服务完成，system以唯一键原子替换整个配置组。 */
     @Override
     public void configSave(Config value) {
-        remoteConfigService.saveBusinessConfig(new BusinessConfigSaveBo(BusinessConfigKeys.MEMBER_POINT,
-                JSON.toJSONString(value), SecurityUtils.getUsername()));
+        remoteConfigService.saveBusinessConfig(
+                new BusinessConfigSaveBo(
+                        BusinessConfigKeys.MEMBER_POINT,
+                        JSON.toJSONString(value),
+                        SecurityUtils.getUsername()));
     }
 }

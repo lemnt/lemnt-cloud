@@ -36,8 +36,8 @@ public class NacosDeregister {
             @Value("${spring.cloud.nacos.discovery.group:DEFAULT_GROUP}") String groupName,
             @Value("${spring.application.name}") String serviceName,
             @Value("${server.port}") int port,
-            @Value("${lemnt.shutdown.wait-time:500}") long waitTime  // 等待 Gateway / Nacos 刷新感知
-    ) {
+            @Value("${lemnt.shutdown.wait-time:500}") long waitTime // 等待 Gateway / Nacos 刷新感知
+            ) {
         this.serverAddr = serverAddr;
         this.namespace = namespace;
         this.groupName = groupName;

@@ -9,10 +9,10 @@ import com.lemnt.member.adapter.web.growth.req.SignConfigUpdateReq;
 import com.lemnt.member.adapter.web.growth.res.MemberConfigDetailRes;
 import com.lemnt.member.adapter.web.growth.res.MemberConfigListRes;
 import com.lemnt.member.application.growth.cmd.SignConfigDeleteCmd;
+import com.lemnt.member.application.growth.executor.MemberSignConfigCreateCmdExe;
 import com.lemnt.member.application.growth.executor.MemberSignConfigDeleteCmdExe;
 import com.lemnt.member.application.growth.executor.MemberSignConfigDetailQueryExe;
 import com.lemnt.member.application.growth.executor.MemberSignConfigListQueryExe;
-import com.lemnt.member.application.growth.executor.MemberSignConfigCreateCmdExe;
 import com.lemnt.member.application.growth.executor.MemberSignConfigUpdateCmdExe;
 import com.lemnt.member.application.growth.qry.SignConfigDetailQry;
 import com.lemnt.member.application.growth.qry.SignConfigListQry;
@@ -22,8 +22,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,8 +54,8 @@ public class MemberSignConfigController {
     public R<List<MemberConfigListRes>> list() {
         return R.ok(
                 memberSignConfigListQueryExe.execute(new SignConfigListQry(false)).stream()
-                .map(MemberGrowthResConverter::toMemberConfigListRes)
-                .toList());
+                        .map(MemberGrowthResConverter::toMemberConfigListRes)
+                        .toList());
     }
 
     @PostMapping("/signin-configs")
@@ -69,7 +69,8 @@ public class MemberSignConfigController {
     @Operation(summary = "按ID修改签到规则，允许调整天数")
     @RequiresPermissions("member:sign-in-config:update")
     public R<Boolean> update(@PathVariable Long id, @Valid @RequestBody SignConfigUpdateReq req) {
-        return R.ok(memberSignConfigUpdateCmdExe.execute(MemberGrowthReqConverter.signConfig(id, req)));
+        return R.ok(
+                memberSignConfigUpdateCmdExe.execute(MemberGrowthReqConverter.signConfig(id, req)));
     }
 
     @DeleteMapping("/signin-configs/{id}")
@@ -83,7 +84,8 @@ public class MemberSignConfigController {
     @Operation(summary = "按ID读取签到规则")
     @RequiresPermissions("member:sign-in-config:query")
     public R<MemberConfigDetailRes> detail(@PathVariable Long id) {
-        return R.ok(MemberGrowthResConverter.toMemberConfigDetailRes(
-                memberSignConfigDetailQueryExe.execute(new SignConfigDetailQry(id))));
+        return R.ok(
+                MemberGrowthResConverter.toMemberConfigDetailRes(
+                        memberSignConfigDetailQueryExe.execute(new SignConfigDetailQry(id))));
     }
 }

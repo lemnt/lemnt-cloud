@@ -15,16 +15,17 @@ import lombok.RequiredArgsConstructor;
 public class MemberSessionClientImpl implements MemberSessionClient {
 
     private final MemberAuthenticationService memberAuthenticationService;
+
     /**
      * 校验登录会话并返回会员编号。
      */
     public Long authenticate(String token) {
         return memberAuthenticationService.authenticate(token);
     }
+
     /** 同步撤销会员会话，不回调会员数据库。 */
     @Override
     public void revokeMemberSessions(Long memberId) {
         memberAuthenticationService.revokeMemberSessions(memberId);
     }
-
 }

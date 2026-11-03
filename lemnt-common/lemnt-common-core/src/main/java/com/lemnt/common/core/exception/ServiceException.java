@@ -12,8 +12,7 @@ import java.io.Serial;
 @Getter
 public final class ServiceException extends RuntimeException {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     /**
      * 错误码
@@ -33,8 +32,7 @@ public final class ServiceException extends RuntimeException {
     /**
      * 空构造方法，避免反序列化问题
      */
-    public ServiceException() {
-    }
+    public ServiceException() {}
 
     public ServiceException(String message) {
         this.message = message;

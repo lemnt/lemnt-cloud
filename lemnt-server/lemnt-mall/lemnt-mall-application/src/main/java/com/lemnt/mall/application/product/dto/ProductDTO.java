@@ -5,11 +5,5 @@ import java.math.BigDecimal;
 
 /** 商品基础接口应用结果。 */
 public record ProductDTO(
-        Long id,
-        String productCode,
-        String name,
-        BigDecimal price,
-        Integer stock,
-        String status
-) implements Serializable {
-}
+        Long id, String productCode, String name, BigDecimal price, Integer stock, String status)
+        implements Serializable {}

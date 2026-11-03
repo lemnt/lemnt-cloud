@@ -28,7 +28,6 @@ class OrgTimeContractTest {
         assertThat(DeptResConverter.toRes(dept).createTime()).isEqualTo(time);
 
         assertThat(PostResConverter.toRes(post).createTime()).isEqualTo(time);
-
     }
 
     @Test
@@ -36,6 +35,5 @@ class OrgTimeContractTest {
         assertThat(DeptResConverter.toRes(new DeptDTO()).createTime()).isNull();
 
         assertThat(PostResConverter.toRes(new PostDTO()).createTime()).isNull();
-
     }
 }

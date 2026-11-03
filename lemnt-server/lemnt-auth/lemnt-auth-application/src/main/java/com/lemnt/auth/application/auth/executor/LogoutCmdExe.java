@@ -40,10 +40,11 @@ public class LogoutCmdExe {
 
             // 记录用户退出日志
             String username = loginUser != null ? loginUser.getUsername() : "unknown";
-            recordLogGateway.recordLogininfor(username,
+            recordLogGateway.recordLogininfor(
+                    username,
                     LoginTypeEnum.LOGIN_OUT.getCode(),
                     LoginStatusEnum.SUCCESS.getCode(),
-            "退出成功");
+                    "退出成功");
         }
         return Boolean.TRUE;
     }

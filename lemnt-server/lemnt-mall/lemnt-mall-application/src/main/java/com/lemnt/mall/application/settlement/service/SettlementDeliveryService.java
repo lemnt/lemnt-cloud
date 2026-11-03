@@ -27,65 +27,122 @@ public class SettlementDeliveryService {
     private final MemberTradeGateway memberTradeGateway;
 
     /** 输入已完成商品优惠的报价，运费不参与商品优惠门槛。 */
-    public SettlementQuote attach(Long memberId, Long addressId, Map<Long, ProductSnapshot> products,
-            SettlementQuote quote
-    ) {
+    public SettlementQuote attach(
+            Long memberId,
+            Long addressId,
+            Map<Long, ProductSnapshot> products,
+            SettlementQuote quote) {
         var address = addresses.get(memberId, addressId);
-        if (address == null || !memberId.equals(address.memberId()) || !addressId.equals(address.id())
-        ) {
+        if (address == null
+                || !memberId.equals(address.memberId())
+                || !addressId.equals(address.id())) {
             throw new ServiceException("收货地址不存在或不属于当前会员", 400);
         }
-        if (address.areaId() == null || address.areaId() <= 0 || address.areaId() > Integer.MAX_VALUE
-                || address.name() == null || address.name().isBlank() || address.name().length() > 100
-                || address.mobile() == null || !address.mobile().matches("[+0-9() -]{5,32}")
-                || address.detailAddress() == null || address.detailAddress().isBlank()
-                || address.detailAddress().length() > 500
-        ) {
+        if (address.areaId() == null
+                || address.areaId() <= 0
+                || address.areaId() > Integer.MAX_VALUE
+                || address.name() == null
+                || address.name().isBlank()
+                || address.name().length() > 100
+                || address.mobile() == null
+                || !address.mobile().matches("[+0-9() -]{5,32}")
+                || address.detailAddress() == null
+                || address.detailAddress().isBlank()
+                || address.detailAddress().length() > 500) {
             throw new ServiceException("收货地址信息不完整", 400);
         }
-        var lines = quote.items().stream().map(item -> {
-            var product = products.get(item.productId());
-            if (product == null || product.deliveryTypes() == null || !product.deliveryTypes().contains(1)
-                    || product.deliveryTemplateId() == null || product.deliveryTemplateId() <= 0
-            ) {
-                throw new ServiceException("商品未配置快递配送和运费模板", 400);
-            }
-            return new DeliveryPriceLine(item.productId(), product.deliveryTemplateId(), item.quantity(),
-                    product.weight(), product.volume(), item.payAmount());
-        }).toList();
-        var fee = quote.freeDelivery()
-                ? new com.lemnt.mall.domain.settlement.model.DeliveryPriceResult(
-                        java.math.BigDecimal.ZERO.setScale(2),
-                        quote.items().stream().collect(java.util.stream.Collectors.toMap(
-                                SettlementItem::productId,
-                                item -> java.math.BigDecimal.ZERO.setScale(2))))
-                : prices.price(address.areaId().intValue(), lines);
-        var items = quote.items().stream().map(item -> new SettlementItem(item.productId(),
-                item.productCode(),
-                item.productName(),
-                item.unitPrice(),
-                item.quantity(),
-                item.lineAmount(),
-                item.payAmount().add(fee.itemPrices().get(item.productId())),
-                fee.itemPrices().get(item.productId()),
-                item.spuId(),
-                item.spuName(),
-                item.specs() == null ? null : item.specs().stream().map(snapshotProperty ->
-                        new SettlementItem.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
-                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
-                item.picUrl()))
-                .toList();
+        var lines =
+                quote.items().stream()
+                        .map(
+                                item -> {
+                                    var product = products.get(item.productId());
+                                    if (product == null
+                                            || product.deliveryTypes() == null
+                                            || !product.deliveryTypes().contains(1)
+                                            || product.deliveryTemplateId() == null
+                                            || product.deliveryTemplateId() <= 0) {
+                                        throw new ServiceException("商品未配置快递配送和运费模板", 400);
+                                    }
+                                    return new DeliveryPriceLine(
+                                            item.productId(),
+                                            product.deliveryTemplateId(),
+                                            item.quantity(),
+                                            product.weight(),
+                                            product.volume(),
+                                            item.payAmount());
+                                })
+                        .toList();
+        var originalFee = prices.price(address.areaId().intValue(), lines);
+        var fee =
+                quote.freeDelivery()
+                        ? new com.lemnt.mall.domain.settlement.model.DeliveryPriceResult(
+                                BigDecimal.ZERO.setScale(2),
+                                quote.items().stream()
+                                        .collect(
+                                                java.util.stream.Collectors.toMap(
+                                                        SettlementItem::productId,
+                                                        item -> BigDecimal.ZERO.setScale(2))))
+                        : originalFee;
+        var items =
+                quote.items().stream()
+                        .map(
+                                item ->
+                                        new SettlementItem(
+                                                item.productId(),
+                                                item.productCode(),
+                                                item.productName(),
+                                                item.unitPrice(),
+                                                item.quantity(),
+                                                item.lineAmount(),
+                                                item.payAmount()
+                                                        .add(
+                                                                fee.itemPrices()
+                                                                        .get(item.productId())),
+                                                fee.itemPrices().get(item.productId()),
+                                                item.spuId(),
+                                                item.spuName(),
+                                                item.specs() == null
+                                                        ? null
+                                                        : item.specs().stream()
+                                                                .map(
+                                                                        snapshotProperty ->
+                                                                                new SettlementItem
+                                                                                        .Spec(
+                                                                                        snapshotProperty
+                                                                                                .specId(),
+                                                                                        snapshotProperty
+                                                                                                .specName(),
+                                                                                        snapshotProperty
+                                                                                                .specValueId(),
+                                                                                        snapshotProperty
+                                                                                                .specValueName()))
+                                                                .toList(),
+                                                item.picUrl()))
+                        .toList();
         var paid = quote.payableAmount().add(fee.total());
         var pointConfig = memberTradeGateway.config();
-        long givePoint = pointConfig.enabled() && pointConfig.givePerYuan() > 0
-                ? paid.multiply(BigDecimal.valueOf(pointConfig.givePerYuan()))
-                    .setScale(0, RoundingMode.DOWN).longValueExact() : 0L;
+        long givePoint =
+                pointConfig.enabled() && pointConfig.givePerYuan() > 0
+                        ? paid.multiply(BigDecimal.valueOf(pointConfig.givePerYuan()))
+                                .setScale(0, RoundingMode.DOWN)
+                                .longValueExact()
+                        : 0L;
         givePoint += quote.rewardPoint();
-        return new SettlementQuote(items, quote.originalAmount(), quote.discountAmount(),
-                quote.payableAmount().add(fee.total()), quote.couponId(), quote.usePoint(), givePoint,
-                new SettlementDelivery(address.id(), 1, address.name(), address.mobile(), address.areaId(),
-                        address.detailAddress(), fee.total(), null),
-                quote.rewardPoint(), quote.freeDelivery(), quote.giveCouponTemplateCounts());
+        return SettlementPromotionSnapshots.finish(
+                quote,
+                items,
+                new SettlementDelivery(
+                        address.id(),
+                        1,
+                        address.name(),
+                        address.mobile(),
+                        address.areaId(),
+                        address.detailAddress(),
+                        fee.total(),
+                        null),
+                originalFee.itemPrices(),
+                givePoint - quote.rewardPoint(),
+                pointConfig.enabled() ? pointConfig.givePerYuan() : 0);
     }
 
     /** 自提不计算运费，只冻结门店快照；门店有效性由交易建单再次校验。 */
@@ -93,14 +150,44 @@ public class SettlementDeliveryService {
         if (storeId == null || storeId <= 0) {
             throw new ServiceException("自提门店不能为空", 400);
         }
-        var items = quote.items().stream().map(item -> new SettlementItem(item.productId(),
-                item.productCode(), item.productName(), item.unitPrice(), item.quantity(), item.lineAmount(),
-                item.payAmount(), java.math.BigDecimal.ZERO.setScale(2), item.spuId(), item.spuName(),
-                item.specs(), item.picUrl())).toList();
-        return new SettlementQuote(items, quote.originalAmount(), quote.discountAmount(),
-                quote.payableAmount(), quote.couponId(), quote.usePoint(), quote.givePoint(),
-                new SettlementDelivery(null, 2, null, null, null, null,
-                        java.math.BigDecimal.ZERO.setScale(2), storeId),
-                quote.rewardPoint(), quote.freeDelivery(), quote.giveCouponTemplateCounts());
+        var items =
+                quote.items().stream()
+                        .map(
+                                item ->
+                                        new SettlementItem(
+                                                item.productId(),
+                                                item.productCode(),
+                                                item.productName(),
+                                                item.unitPrice(),
+                                                item.quantity(),
+                                                item.lineAmount(),
+                                                item.payAmount(),
+                                                java.math.BigDecimal.ZERO.setScale(2),
+                                                item.spuId(),
+                                                item.spuName(),
+                                                item.specs(),
+                                                item.picUrl()))
+                        .toList();
+        var fees = new java.util.LinkedHashMap<Long, BigDecimal>();
+        items.forEach(item -> fees.put(item.productId(), BigDecimal.ZERO.setScale(2)));
+        var gift =
+                quote.promotions().stream()
+                        .filter(p -> "ORDER_GIFT".equals(p.promotionType()))
+                        .findFirst();
+        int rate =
+                gift.map(
+                                p ->
+                                        new java.math.BigDecimal(
+                                                        p.ruleSnapshot().replaceAll("[^0-9]", ""))
+                                                .intValueExact())
+                        .orElse(0);
+        return SettlementPromotionSnapshots.finish(
+                quote,
+                items,
+                new SettlementDelivery(
+                        null, 2, null, null, null, null, BigDecimal.ZERO.setScale(2), storeId),
+                fees,
+                quote.givePoint() - quote.rewardPoint(),
+                rate);
     }
 }

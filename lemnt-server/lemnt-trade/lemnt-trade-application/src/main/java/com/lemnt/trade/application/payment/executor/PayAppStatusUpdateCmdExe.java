@@ -25,7 +25,15 @@ public class PayAppStatusUpdateCmdExe {
         if (existing == null) {
             throw new IllegalArgumentException("支付应用不存在");
         }
-        return apps.update(new PayApp(existing.id(), existing.appKey(), existing.name(), status,
-                existing.remark(), existing.orderNotifyUrl(), existing.refundNotifyUrl(), existing.createTime()));
+        return apps.update(
+                new PayApp(
+                        existing.id(),
+                        existing.appKey(),
+                        existing.name(),
+                        status,
+                        existing.remark(),
+                        existing.orderNotifyUrl(),
+                        existing.refundNotifyUrl(),
+                        existing.createTime()));
     }
 }

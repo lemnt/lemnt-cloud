@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DictDataDetailQueryExe {
     private final DictDataGateway dictDataGateway;
+
     public DictDataDTO execute(Long dictCode) {
         return DictDataConverter.toDTO(dictDataGateway.selectById(dictCode));
     }

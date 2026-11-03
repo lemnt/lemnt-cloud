@@ -1,11 +1,13 @@
 package com.lemnt.mall.start;
 
 import com.lemnt.mall.application.coupon.executor.CouponExpireCmdExe;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /** 优惠券过期调度，与订单锁定互不覆盖。 */
 @Slf4j

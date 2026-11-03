@@ -22,12 +22,16 @@ import java.math.BigDecimal;
 public class ProductSkuDO extends BaseDO {
     @TableId(type = IdType.AUTO)
     private Long id;
+
     /** 所属 SPU 编号。 */
     private Long spuId;
+
     /** SPU 内的规格组合键。 */
     private String variantKey;
+
     /** 四字段规格列表JSON，编号和名称随SKU保存。 */
     private String specs;
+
     private String productCode;
     private String name;
     private String description;

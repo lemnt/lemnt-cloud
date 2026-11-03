@@ -29,14 +29,28 @@ public class MemberOrderDetailQueryExe {
             return null;
         }
         var delivery = order.delivery();
-        var store = delivery == null || delivery.pickUpStoreId() == null ? null
-                : pickUpStores.find(delivery.pickUpStoreId());
-        var displayStatus = "PAID".equals(value.status()) && delivery != null
-                && Integer.valueOf(2).equals(delivery.deliveryType()) ? "AWAITING_PICKUP" : value.status();
-        return new MemberOrderDetailDTO(value.orderNo(), displayStatus, value.totalAmount(),
-                order.createTime(), value.activeRefund(), value.items(), value.shipment(),
-                value.commentStatus(), value.finishTime(),
-                store == null ? null : store.name(), store == null ? null : store.phone(),
+        var store =
+                delivery == null || delivery.pickUpStoreId() == null
+                        ? null
+                        : pickUpStores.find(delivery.pickUpStoreId());
+        var displayStatus =
+                "PAID".equals(value.status())
+                                && delivery != null
+                                && Integer.valueOf(2).equals(delivery.deliveryType())
+                        ? "AWAITING_PICKUP"
+                        : value.status();
+        return new MemberOrderDetailDTO(
+                value.orderNo(),
+                displayStatus,
+                value.totalAmount(),
+                order.createTime(),
+                value.activeRefund(),
+                value.items(),
+                value.shipment(),
+                value.commentStatus(),
+                value.finishTime(),
+                store == null ? null : store.name(),
+                store == null ? null : store.phone(),
                 store == null ? null : store.detailAddress(),
                 delivery == null ? null : delivery.pickUpVerifyCode());
     }

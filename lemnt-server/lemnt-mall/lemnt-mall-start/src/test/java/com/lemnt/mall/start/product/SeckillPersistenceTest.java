@@ -36,14 +36,21 @@ class SeckillPersistenceTest {
     void setup() throws Exception {
         f = new CatalogPersistenceTest();
         f.setup();
-        ScriptUtils.executeSqlScript(f.schemaConnection, new ClassPathResource("sql/V18__promotion_seckill.sql"));
+        ScriptUtils.executeSqlScript(
+                f.schemaConnection, new ClassPathResource("sql/V18__promotion_seckill.sql"));
         configs = f.components.get(SeckillConfigManagementService.class);
         activities = f.components.get(SeckillActivityManagementService.class);
         app = f.components.get(SeckillAppQueryService.class);
         stock = f.components.get(SeckillStockService.class);
         spu = f.create("SECKILL", f.draft("RED", 10), f.draft("BLUE", 10));
-        configId = configs.create(new SeckillConfigCreateCmd("全天", "00:00:00", "23:59:59",
-                List.of("https://example.test/banner.png"), 0));
+        configId =
+                configs.create(
+                        new SeckillConfigCreateCmd(
+                                "全天",
+                                "00:00:00",
+                                "23:59:59",
+                                List.of("https://example.test/banner.png"),
+                                0));
     }
 
     @AfterEach
@@ -53,18 +60,35 @@ class SeckillPersistenceTest {
 
     Long create() {
         var now = LocalDateTime.now();
-        return activities.create(new SeckillActivityCreateCmd(spu.id(), "限时秒杀", null,
-                now.minusDays(1), now.plusDays(1), 0, List.of(configId), 10, 5,
-                List.of(new SeckillProductCmd(spu.skus().get(0).id(), new BigDecimal("5.00"), 3),
-                        new SeckillProductCmd(spu.skus().get(1).id(), new BigDecimal("6.00"), 2))));
+        return activities.create(
+                new SeckillActivityCreateCmd(
+                        spu.id(),
+                        "限时秒杀",
+                        null,
+                        now.minusDays(1),
+                        now.plusDays(1),
+                        0,
+                        List.of(configId),
+                        10,
+                        5,
+                        List.of(
+                                new SeckillProductCmd(
+                                        spu.skus().get(0).id(), new BigDecimal("5.00"), 3),
+                                new SeckillProductCmd(
+                                        spu.skus().get(1).id(), new BigDecimal("6.00"), 2))));
     }
 
     @Test
     void overlappingConfigIsRejectedAndReferencedConfigCannotBeDeleted() {
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
-                () -> configs.create(new SeckillConfigCreateCmd("重叠", "12:00:00", "13:00:00", List.of(), 0)));
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
+                () ->
+                        configs.create(
+                                new SeckillConfigCreateCmd(
+                                        "重叠", "12:00:00", "13:00:00", List.of(), 0)));
         create();
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
                 () -> configs.delete(configId));
         assertEquals(1, configs.detail(configId).activityCount());
     }
@@ -77,10 +101,26 @@ class SeckillPersistenceTest {
         assertEquals(5, detail.totalStock());
         assertEquals(new BigDecimal("5.00"), detail.seckillPrice());
         activities.close(id);
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
-                () -> activities.update(new SeckillActivityUpdateCmd(id, spu.id(), "修改", null,
-                        detail.startTime(), detail.endTime(), 0, List.of(configId), 10, 5,
-                        List.of(new SeckillProductCmd(spu.skus().get(0).id(), new BigDecimal("5.00"), 3)))));
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
+                () ->
+                        activities.update(
+                                new SeckillActivityUpdateCmd(
+                                        id,
+                                        spu.id(),
+                                        "修改",
+                                        null,
+                                        detail.startTime(),
+                                        detail.endTime(),
+                                        0,
+                                        List.of(configId),
+                                        10,
+                                        5,
+                                        List.of(
+                                                new SeckillProductCmd(
+                                                        spu.skus().get(0).id(),
+                                                        new BigDecimal("5.00"),
+                                                        3)))));
         assertTrue(activities.delete(id));
     }
 
@@ -97,12 +137,18 @@ class SeckillPersistenceTest {
         var join = stock.validateJoin(id, skuId, 3);
         assertEquals(10, join.totalLimitCount());
         assertEquals(new BigDecimal("5.00"), join.seckillPrice());
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
                 () -> stock.validateJoin(id, skuId, 4));
         stock.decreaseStock(id, skuId, 2);
         assertEquals(3, activities.detail(id).stock());
-        assertEquals(1, app.detail(id).products().stream()
-                .filter(item -> item.skuId().equals(skuId)).findFirst().orElseThrow().stock());
+        assertEquals(
+                1,
+                app.detail(id).products().stream()
+                        .filter(item -> item.skuId().equals(skuId))
+                        .findFirst()
+                        .orElseThrow()
+                        .stock());
         stock.increaseStock(id, skuId, 2);
         assertEquals(5, activities.detail(id).stock());
     }

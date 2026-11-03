@@ -9,5 +9,5 @@ public record ConfigDTO(
         Boolean pointTradeDeductEnable,
         Integer pointTradeDeductUnitPrice,
         Integer pointTradeDeductMaxPrice,
-        Integer pointTradeGivePoint
-) implements Serializable {}
+        Integer pointTradeGivePoint)
+        implements Serializable {}

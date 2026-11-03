@@ -18,6 +18,8 @@ public class ProductSpuBatchDetailQueryExe {
 
     /** 批量读取真实详情，不伪造缺失商品。 */
     public List<ProductSpuDTO> execute(List<Long> ids) {
-        return catalogManagementService.batchDetails(ids).stream().map(ProductCatalogDTOConverter::spu).toList();
+        return catalogManagementService.batchDetails(ids).stream()
+                .map(ProductCatalogDTOConverter::spu)
+                .toList();
     }
 }

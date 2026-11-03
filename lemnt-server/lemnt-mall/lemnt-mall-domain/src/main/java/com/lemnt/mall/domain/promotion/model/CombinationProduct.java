@@ -12,6 +12,5 @@ public record CombinationProduct(
         BigDecimal combinationPrice,
         Integer activityStatus,
         LocalDateTime activityStartTime,
-        LocalDateTime activityEndTime
-) implements java.io.Serializable {
-}
+        LocalDateTime activityEndTime)
+        implements java.io.Serializable {}

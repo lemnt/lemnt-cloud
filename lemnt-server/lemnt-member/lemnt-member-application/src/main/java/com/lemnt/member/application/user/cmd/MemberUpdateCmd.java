@@ -16,28 +16,30 @@ public record MemberUpdateCmd(
         Integer status,
         String mark,
         String name,
-        Integer areaId
-) implements Serializable {
+        Integer areaId)
+        implements Serializable {
     /** 兼容缺少姓名地区的既有调用。 */
-    public MemberUpdateCmd(Long memberId,
-        String nickname,
-        String email,
-        String avatar,
-        Integer sex,
-        LocalDate birthday,
-        Integer status,
-        String mark) {
+    public MemberUpdateCmd(
+            Long memberId,
+            String nickname,
+            String email,
+            String avatar,
+            Integer sex,
+            LocalDate birthday,
+            Integer status,
+            String mark) {
         this(memberId, nickname, email, avatar, sex, birthday, status, mark, null, null);
     }
 
     /** 兼容缺少内部备注的既有调用。 */
-    public MemberUpdateCmd(Long memberId,
-        String nickname,
-        String email,
-        String avatar,
-        Integer sex,
-        LocalDate birthday,
-        Integer status) {
+    public MemberUpdateCmd(
+            Long memberId,
+            String nickname,
+            String email,
+            String avatar,
+            Integer sex,
+            LocalDate birthday,
+            Integer status) {
         this(memberId, nickname, email, avatar, sex, birthday, status, null, null, null);
     }
 }

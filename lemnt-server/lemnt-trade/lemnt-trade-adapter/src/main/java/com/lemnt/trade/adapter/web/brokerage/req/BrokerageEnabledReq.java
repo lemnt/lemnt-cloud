@@ -7,5 +7,4 @@ import jakarta.validation.constraints.NotNull;
 /** 分销资格开关请求。 */
 @Schema(description = "分销资格开关请求")
 public record BrokerageEnabledReq(@Schema(description = "是否开通") @NotNull Boolean enabled)
-        implements java.io.Serializable {
-}
+        implements java.io.Serializable {}

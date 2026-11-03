@@ -15,8 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 public class NoticeReadUser implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 4444418413107258088L;
+    @Serial private static final long serialVersionUID = 4444418413107258088L;
 
     /**
      * 用户ID

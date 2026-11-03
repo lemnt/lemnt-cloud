@@ -1,9 +1,8 @@
 package com.lemnt.mall.application.settlement.dto;
 
-import java.util.List;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 结算明细数据传输对象。
@@ -22,8 +21,8 @@ public record SettlementItemDTO(
         List<Spec> specs,
         String picUrl,
         Long orderItemId,
-        Boolean commentStatus
-) implements Serializable {
+        Boolean commentStatus)
+        implements Serializable {
     /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
     public SettlementItemDTO(
             Long productId,
@@ -37,9 +36,22 @@ public record SettlementItemDTO(
             Long spuId,
             String spuName,
             List<Spec> specs,
-            String picUrl
-    ) {
-        this(productId, productCode, productName, unitPrice, quantity, lineAmount, payAmount, deliveryPrice, spuId, spuName, specs, picUrl, null, null);
+            String picUrl) {
+        this(
+                productId,
+                productCode,
+                productName,
+                unitPrice,
+                quantity,
+                lineAmount,
+                payAmount,
+                deliveryPrice,
+                spuId,
+                spuName,
+                specs,
+                picUrl,
+                null,
+                null);
     }
 
     public SettlementItemDTO {
@@ -55,8 +67,7 @@ public record SettlementItemDTO(
             Integer quantity,
             BigDecimal lineAmount,
             BigDecimal payAmount,
-            BigDecimal deliveryPrice
-    ) {
+            BigDecimal deliveryPrice) {
         this(
                 productId,
                 productCode,
@@ -80,14 +91,18 @@ public record SettlementItemDTO(
             BigDecimal unitPrice,
             Integer quantity,
             BigDecimal lineAmount) {
-        this(productId, productCode, productName, unitPrice, quantity, lineAmount, null, BigDecimal.ZERO.setScale(2));
+        this(
+                productId,
+                productCode,
+                productName,
+                unitPrice,
+                quantity,
+                lineAmount,
+                null,
+                BigDecimal.ZERO.setScale(2));
     }
 
     /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
-    public record Spec(
-            Long specId,
-            String specName,
-            Long specValueId,
-            String specValueName
-    ) implements java.io.Serializable {}
+    public record Spec(Long specId, String specName, Long specValueId, String specValueName)
+            implements java.io.Serializable {}
 }

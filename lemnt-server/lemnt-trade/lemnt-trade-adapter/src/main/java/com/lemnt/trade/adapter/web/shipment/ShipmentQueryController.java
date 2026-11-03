@@ -41,7 +41,9 @@ public class ShipmentQueryController {
     @RequiresPermissions("trade:shipment:list")
     public R<ShipmentPageRes> page(@Valid @ModelAttribute ShipmentPageReq req) {
         var page = pageQuery.execute(ShipmentReqConverter.page(req));
-        return R.page(page.getRecords().stream().map(ShipmentResConverter::page).toList(), page.getTotal());
+        return R.page(
+                page.getRecords().stream().map(ShipmentResConverter::page).toList(),
+                page.getTotal());
     }
 
     /** 查询含收件信息的物流详情。 */

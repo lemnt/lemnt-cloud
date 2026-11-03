@@ -22,8 +22,7 @@ public class DeptReqConverter {
                 req.leader(),
                 req.phone(),
                 req.email(),
-                req.status()
-        );
+                req.status());
     }
 
     public static DeptUpdateCmd toCmd(DeptUpdateReq req) {
@@ -36,17 +35,13 @@ public class DeptReqConverter {
                 req.leader(),
                 req.phone(),
                 req.email(),
-                req.status()
-        );
+                req.status());
     }
 
     public static DeptListQry toQry(DeptListReq item) {
         if (item == null) {
             return null;
         }
-        return new DeptListQry(
-                item.deptName(),
-                item.status()
-        );
+        return new DeptListQry(item.deptName(), item.status());
     }
 }

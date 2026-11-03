@@ -13,6 +13,8 @@ import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
+import org.apache.ibatis.plugin.Intercepts;
+import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.AfterEach;
@@ -65,22 +67,82 @@ class WalletPersistenceTest {
     @Test
     void updateAndTransactionPagePersist() {
         var created = wallets.createIfAbsent(2L);
-        var updated = new Wallet(created.id(), 2L, new BigDecimal("12.00"), new BigDecimal("3.00"),
-                new BigDecimal("5.00"), new BigDecimal("10.00"), created.createTime());
+        var updated =
+                new Wallet(
+                        created.id(),
+                        2L,
+                        new BigDecimal("12.00"),
+                        new BigDecimal("3.00"),
+                        new BigDecimal("5.00"),
+                        new BigDecimal("10.00"),
+                        created.createTime());
         assertTrue(wallets.update(updated));
         var stored = wallets.findByMemberId(2L);
         assertEquals(new BigDecimal("12.00"), stored.balance());
         assertEquals(new BigDecimal("3.00"), stored.freezePrice());
 
-        wallets.insertTransaction(new WalletTransaction(null, "WT1", created.id(), "RECHARGE", "R1", "充值",
-                new BigDecimal("10.00"), new BigDecimal("12.00"), null));
+        wallets.insertTransaction(
+                new WalletTransaction(
+                        null,
+                        "WT1",
+                        created.id(),
+                        "RECHARGE",
+                        "R1",
+                        "充值",
+                        new BigDecimal("10.00"),
+                        new BigDecimal("12.00"),
+                        null));
         var found = wallets.findTransaction(created.id(), "RECHARGE", "R1");
         assertNotNull(found);
         assertEquals(new BigDecimal("10.00"), found.amount());
-        assertEquals(1, wallets.transactionPage(new WalletTransactionFilter(created.id(), null, 1, 20))
-                .getRecords().size());
-        assertEquals(0, wallets.transactionPage(new WalletTransactionFilter(created.id(), "PAYMENT", 1, 20))
-                .getRecords().size());
+        assertEquals(
+                1,
+                wallets.transactionPage(new WalletTransactionFilter(created.id(), null, 1, 20))
+                        .getRecords()
+                        .size());
+        assertEquals(
+                0,
+                wallets.transactionPage(new WalletTransactionFilter(created.id(), "PAYMENT", 1, 20))
+                        .getRecords()
+                        .size());
+    }
+
+    /** 同一事务连续锁同一钱包时，每次必须真正执行SQL，不能命中MyBatis会话缓存。 */
+    @Test
+    void repeatedWalletLocksAlwaysReachDatabase() {
+        var wallet = wallets.createIfAbsent(3L);
+        var statements = context.getBean(LockStatements.class);
+        var transaction =
+                new org.springframework.transaction.support.TransactionTemplate(
+                        context.getBean(PlatformTransactionManager.class));
+        transaction.executeWithoutResult(
+                status -> {
+                    wallets.lockByMemberId(3L);
+                    wallets.lockByMemberId(3L);
+                    wallets.lockById(wallet.id());
+                    wallets.lockById(wallet.id());
+                });
+        assertEquals(4, statements.count.get());
+    }
+
+    @Intercepts(
+            @Signature(
+                    type = org.apache.ibatis.executor.statement.StatementHandler.class,
+                    method = "prepare",
+                    args = {Connection.class, Integer.class}))
+    static class LockStatements implements org.apache.ibatis.plugin.Interceptor {
+        final java.util.concurrent.atomic.AtomicInteger count =
+                new java.util.concurrent.atomic.AtomicInteger();
+
+        @Override
+        public Object intercept(org.apache.ibatis.plugin.Invocation invocation) throws Throwable {
+            var statement =
+                    (org.apache.ibatis.executor.statement.StatementHandler) invocation.getTarget();
+            if (statement.getBoundSql().getSql().contains("FOR UPDATE")) {
+                count.incrementAndGet();
+            }
+            return invocation.proceed();
+        }
     }
 
     @Configuration
@@ -91,20 +153,30 @@ class WalletPersistenceTest {
         @Bean
         JdbcDataSource dataSource() {
             var source = new JdbcDataSource();
-            source.setURL("jdbc:h2:mem:wallet_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
+            source.setURL(
+                    "jdbc:h2:mem:wallet_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
             return source;
         }
 
         @Bean(destroyMethod = "close")
         Connection schema(JdbcDataSource source) throws Exception {
             var connection = source.getConnection();
-            ScriptUtils.executeSqlScript(connection, new ClassPathResource("trade-sql/V12__member_wallet.sql"));
+            ScriptUtils.executeSqlScript(
+                    connection, new ClassPathResource("trade-sql/V12__member_wallet.sql"));
             return connection;
         }
 
         @Bean
-        SqlSessionFactory sqlSessionFactory(JdbcDataSource source, Connection schema) throws Exception {
+        LockStatements lockStatements() {
+            return new LockStatements();
+        }
+
+        @Bean
+        SqlSessionFactory sqlSessionFactory(
+                JdbcDataSource source, Connection schema, LockStatements statements)
+                throws Exception {
             var config = new MybatisConfiguration();
+            config.addInterceptor(statements);
             config.setMapUnderscoreToCamelCase(true);
             var interceptor = new MybatisPlusInterceptor();
             interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
@@ -112,8 +184,11 @@ class WalletPersistenceTest {
             var factory = new MybatisSqlSessionFactoryBean();
             factory.setDataSource(source);
             factory.setConfiguration(config);
-            factory.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
-            factory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
+            factory.setGlobalConfig(
+                    new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
+            factory.setMapperLocations(
+                    new PathMatchingResourcePatternResolver()
+                            .getResources("classpath*:mapper/*.xml"));
             return factory.getObject();
         }
 

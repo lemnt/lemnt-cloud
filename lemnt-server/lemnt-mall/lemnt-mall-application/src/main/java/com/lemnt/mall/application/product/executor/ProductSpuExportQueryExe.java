@@ -29,8 +29,16 @@ public class ProductSpuExportQueryExe {
         long total;
         int page = 1;
         do {
-            var result = pageQuery.execute(new ProductSpuPageQry(query.name(), query.status(), page++, 100,
-                    query.categoryId(), query.brandId(), query.stockStatus()));
+            var result =
+                    pageQuery.execute(
+                            new ProductSpuPageQry(
+                                    query.name(),
+                                    query.status(),
+                                    page++,
+                                    100,
+                                    query.categoryId(),
+                                    query.brandId(),
+                                    query.stockStatus()));
             total = result.total();
             if (total > MAX_EXPORT_ROWS) {
                 throw new IllegalArgumentException("最多导出10000件商品，请缩小筛选范围");

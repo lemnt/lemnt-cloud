@@ -28,10 +28,16 @@ public class PayAppCreateCmdExe {
         if (apps.existsAppKey(appKey, null)) {
             throw new IllegalStateException("应用标识已存在");
         }
-        var value = new PayApp(null, appKey, PayConfigRules.required(cmd.name(), 64, "应用名"), cmd.status(),
-                PayConfigRules.optional(cmd.remark(), 255, "备注"),
-                PayConfigRules.url(cmd.orderNotifyUrl(), "支付结果回调地址"),
-                PayConfigRules.url(cmd.refundNotifyUrl(), "退款结果回调地址"), null);
+        var value =
+                new PayApp(
+                        null,
+                        appKey,
+                        PayConfigRules.required(cmd.name(), 64, "应用名"),
+                        cmd.status(),
+                        PayConfigRules.optional(cmd.remark(), 255, "备注"),
+                        PayConfigRules.url(cmd.orderNotifyUrl(), "支付结果回调地址"),
+                        PayConfigRules.url(cmd.refundNotifyUrl(), "退款结果回调地址"),
+                        null);
         return PayConfigDTOConverter.payApp(apps.insert(value));
     }
 }

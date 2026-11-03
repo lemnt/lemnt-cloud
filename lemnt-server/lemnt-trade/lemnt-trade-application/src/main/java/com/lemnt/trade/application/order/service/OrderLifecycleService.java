@@ -1,11 +1,9 @@
 package com.lemnt.trade.application.order.service;
 
-import com.lemnt.trade.domain.order.model.TradeOperator;
-
-
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
 import com.lemnt.trade.domain.fulfillment.gateway.InventoryConfirmationGateway;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
+import com.lemnt.trade.domain.order.model.TradeOperator;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +33,7 @@ public class OrderLifecycleService {
             throw new IllegalArgumentException("订单不存在");
         }
         if (!"RESERVING".equals(order.status())) {
-            return ;
+            return;
         }
         if (!tradeOrderGateway.transitionStatus(orderNo, "RESERVING", "PENDING_PAYMENT")) {
             throw new IllegalStateException("订单状态冲突");
@@ -52,7 +50,7 @@ public class OrderLifecycleService {
             throw new IllegalArgumentException("订单不存在");
         }
         if (!"RESERVING".equals(order.status())) {
-            return ;
+            return;
         }
         if (!tradeOrderGateway.transitionStatus(orderNo, "RESERVING", "CLOSED")) {
             throw new IllegalStateException("订单状态冲突");
@@ -75,8 +73,8 @@ public class OrderLifecycleService {
         if (!tradeOrderGateway.transitionStatus(orderNo, "PENDING_PAYMENT", "CLOSED")) {
             throw new IllegalStateException("订单状态冲突");
         }
-        logs.record(order, "PENDING_PAYMENT", "CLOSED", 41, TradeOperator.system(),
-                "商城预占回调失败，系统取消订单");
+        logs.record(
+                order, "PENDING_PAYMENT", "CLOSED", 41, TradeOperator.system(), "商城预占回调失败，系统取消订单");
     }
 
     /**
@@ -106,8 +104,7 @@ public class OrderLifecycleService {
     @Transactional(rollbackFor = Exception.class)
     public void inventoryConfirmed(String orderNo) {
         var order = orderPersistenceService.findByOrderNoForUpdate(orderNo);
-        if (order == null
-                || !Set.of("PAID", "SHIPPED", "COMPLETED").contains(order.status())) {
+        if (order == null || !Set.of("PAID", "SHIPPED", "COMPLETED").contains(order.status())) {
             throw new IllegalStateException("订单状态不允许确认库存");
         }
         inventoryConfirmationGateway.confirmInventory(orderNo, tradeOrderGateway.databaseNow());

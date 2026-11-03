@@ -13,5 +13,5 @@ public record LevelDTO(
         Integer discountPercent,
         String icon,
         String backgroundUrl,
-        Integer status
-) implements Serializable {}
+        Integer status)
+        implements Serializable {}

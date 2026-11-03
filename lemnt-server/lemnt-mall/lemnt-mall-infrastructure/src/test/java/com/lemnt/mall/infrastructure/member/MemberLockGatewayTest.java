@@ -46,49 +46,61 @@ class MemberLockGatewayTest {
         jdbc = new JdbcTemplate(source);
         jdbc.execute("CREATE TABLE operation_result(id INT PRIMARY KEY)");
         transaction = new TransactionTemplate(new DataSourceTransactionManager(source));
-        when(locks.lock(anyString(), eq(-1L), eq(3000L), eq(RedissonLockExecutor.class))).thenReturn(lock);
+        when(locks.lock(anyString(), eq(-1L), eq(3000L), eq(RedissonLockExecutor.class)))
+                .thenReturn(lock);
         when(locks.releaseLock(any())).thenReturn(true);
     }
 
     @Test
     void releaseHappensAfterTheCommitIsVisible() {
-        when(locks.releaseLock(lock)).thenAnswer(invocation -> {
-            // 用独立连接确认真正提交后才解锁，不复用事务中的连接。
-            try (var connection = source.getConnection();
-                    var statement = connection.createStatement();
-                    var rows = statement.executeQuery("SELECT COUNT(*) FROM operation_result")) {
-                rows.next();
-                assertEquals(1, rows.getInt(1));
-            }
-            return true;
-        });
-        transaction.executeWithoutResult(status -> {
-            gateway.lockMember(1L);
-            jdbc.update("INSERT INTO operation_result VALUES(1)");
-            verify(locks, never()).releaseLock(any());
-        });
+        when(locks.releaseLock(lock))
+                .thenAnswer(
+                        invocation -> {
+                            // 用独立连接确认真正提交后才解锁，不复用事务中的连接。
+                            try (var connection = source.getConnection();
+                                    var statement = connection.createStatement();
+                                    var rows =
+                                            statement.executeQuery(
+                                                    "SELECT COUNT(*) FROM operation_result")) {
+                                rows.next();
+                                assertEquals(1, rows.getInt(1));
+                            }
+                            return true;
+                        });
+        transaction.executeWithoutResult(
+                status -> {
+                    gateway.lockMember(1L);
+                    jdbc.update("INSERT INTO operation_result VALUES(1)");
+                    verify(locks, never()).releaseLock(any());
+                });
         verify(locks).releaseLock(lock);
     }
 
     @Test
     void rollbackAlsoReleasesTheLockAfterDataIsDiscarded() {
-        assertThrows(IllegalStateException.class, () -> transaction.executeWithoutResult(status -> {
-            gateway.lockMember(1L);
-            jdbc.update("INSERT INTO operation_result VALUES(1)");
-            verify(locks, never()).releaseLock(any());
-            throw new IllegalStateException("rollback");
-        }));
-        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM operation_result", Integer.class));
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        transaction.executeWithoutResult(
+                                status -> {
+                                    gateway.lockMember(1L);
+                                    jdbc.update("INSERT INTO operation_result VALUES(1)");
+                                    verify(locks, never()).releaseLock(any());
+                                    throw new IllegalStateException("rollback");
+                                }));
+        assertEquals(
+                0, jdbc.queryForObject("SELECT COUNT(*) FROM operation_result", Integer.class));
         verify(locks).releaseLock(lock);
     }
 
     @Test
     void repeatedAcquisitionInOneTransactionUsesOneLock() {
-        transaction.executeWithoutResult(status -> {
-            gateway.lockMember(1L);
-            gateway.lockMember(1L);
-            verify(locks, never()).releaseLock(any());
-        });
+        transaction.executeWithoutResult(
+                status -> {
+                    gateway.lockMember(1L);
+                    gateway.lockMember(1L);
+                    verify(locks, never()).releaseLock(any());
+                });
         verify(locks).lock("lemnt:mall:member:operation:1", -1, 3000, RedissonLockExecutor.class);
         verify(locks).releaseLock(lock);
     }
@@ -99,20 +111,22 @@ class MemberLockGatewayTest {
         when(locks.lock(anyString(), anyLong(), anyLong(), any())).thenReturn(lock, innerLock);
         var inner = new TransactionTemplate(new DataSourceTransactionManager(source));
         inner.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-        transaction.executeWithoutResult(status -> {
-            gateway.lockMember(1L);
-            inner.executeWithoutResult(innerStatus -> gateway.lockMember(1L));
-            verify(locks).releaseLock(innerLock);
-            verify(locks, never()).releaseLock(lock);
-            gateway.lockMember(1L);
-        });
+        transaction.executeWithoutResult(
+                status -> {
+                    gateway.lockMember(1L);
+                    inner.executeWithoutResult(innerStatus -> gateway.lockMember(1L));
+                    verify(locks).releaseLock(innerLock);
+                    verify(locks, never()).releaseLock(lock);
+                    gateway.lockMember(1L);
+                });
         verify(locks).releaseLock(lock);
     }
 
     @Test
     void lockFailureAbortsWithoutRegisteringARelease() {
         when(locks.lock(anyString(), anyLong(), anyLong(), any())).thenReturn(null);
-        assertThrows(IllegalStateException.class,
+        assertThrows(
+                IllegalStateException.class,
                 () -> transaction.executeWithoutResult(status -> gateway.lockMember(1L)));
         verify(locks, never()).releaseLock(any());
     }

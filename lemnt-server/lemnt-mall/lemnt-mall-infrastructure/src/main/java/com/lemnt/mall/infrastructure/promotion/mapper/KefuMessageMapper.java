@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** 客服消息表 CRUD。 */
 @Mapper
-public interface KefuMessageMapper extends BaseMapper<KefuMessageDO> {
-}
+public interface KefuMessageMapper extends BaseMapper<KefuMessageDO> {}

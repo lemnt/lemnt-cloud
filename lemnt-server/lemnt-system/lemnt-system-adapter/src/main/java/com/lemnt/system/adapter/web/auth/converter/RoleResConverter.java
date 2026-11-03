@@ -30,8 +30,7 @@ public class RoleResConverter {
                 dto.getRoleSort(),
                 dto.getDataScope(),
                 dto.getStatus(),
-                dto.isFlag()
-        );
+                dto.isFlag());
     }
 
     /**
@@ -48,8 +47,7 @@ public class RoleResConverter {
                 entity.getRoleSort(),
                 entity.getDataScope(),
                 entity.getStatus(),
-                entity.isFlag()
-        );
+                entity.isFlag());
     }
 
     /**
@@ -94,8 +92,7 @@ public class RoleResConverter {
                 dto.getRoleSort(),
                 dto.getDataScope(),
                 dto.getStatus(),
-                dto.isFlag()
-        );
+                dto.isFlag());
     }
 
     /**
@@ -112,8 +109,7 @@ public class RoleResConverter {
                 entity.getRoleSort(),
                 entity.getDataScope(),
                 entity.getStatus(),
-                entity.isFlag()
-        );
+                entity.isFlag());
     }
 
     /**
@@ -130,8 +126,7 @@ public class RoleResConverter {
                 dto.getRoleSort(),
                 dto.getDataScope(),
                 dto.getStatus(),
-                dto.isFlag()
-        );
+                dto.isFlag());
     }
 
     /**
@@ -148,14 +143,14 @@ public class RoleResConverter {
                 entity.getRoleSort(),
                 entity.getDataScope(),
                 entity.getStatus(),
-                entity.isFlag()
-        );
+                entity.isFlag());
     }
 
     /**
      * RoleDTO List → RoleInfoRes List
      */
-    public static List<SystemRoleOptionselectRes> toResListToSystemRoleOptionselectRes(List<RoleDTO> list) {
+    public static List<SystemRoleOptionselectRes> toResListToSystemRoleOptionselectRes(
+            List<RoleDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -180,8 +175,7 @@ public class RoleResConverter {
                 dto.getRoleSort(),
                 dto.getDataScope(),
                 dto.getStatus(),
-                dto.isFlag()
-        );
+                dto.isFlag());
     }
 
     /**
@@ -198,7 +192,6 @@ public class RoleResConverter {
                 entity.getRoleSort(),
                 entity.getDataScope(),
                 entity.getStatus(),
-                entity.isFlag()
-        );
+                entity.isFlag());
     }
 }

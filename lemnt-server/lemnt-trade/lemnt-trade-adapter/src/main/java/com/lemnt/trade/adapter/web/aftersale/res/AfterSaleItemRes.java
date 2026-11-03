@@ -1,36 +1,52 @@
 package com.lemnt.trade.adapter.web.aftersale.res;
 
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 /** 可售后商品额度。 */
 @Schema(description = "可售后商品额度")
 public record AfterSaleItemRes(
-        @Schema(description = "订单商品行ID")
-        Long orderItemId,
-        @Schema(description = "商品ID")
-        Long productId,
-        @Schema(description = "商品名称")
-        String productName,
-        @Schema(description = "购买数量")
-        Integer quantity,
-        @Schema(description = "剩余可售后数量")
-        Integer refundableQuantity,
-        @Schema(description = "剩余可退款金额，单位元")
-        BigDecimal refundableAmount,
-        @Schema(description = "商品SPU编号，历史未记录时为空")
-        Long spuId,
-        @Schema(description = "下单时商品SPU名称")
-        String spuName,
-        @Schema(description = "下单时规格名称和值，历史未记录与空规格区分")
-        List<Spec> specs,
-        @Schema(description = "下单时商品图片")
-        String picUrl
-) implements Serializable {
+        @Schema(description = "订单商品行ID") Long orderItemId,
+        @Schema(description = "商品ID") Long productId,
+        @Schema(description = "商品名称") String productName,
+        @Schema(description = "购买数量") Integer quantity,
+        @Schema(description = "剩余可售后数量") Integer refundableQuantity,
+        @Schema(description = "剩余可退款金额，单位元") BigDecimal refundableAmount,
+        @Schema(description = "商品SPU编号，历史未记录时为空") Long spuId,
+        @Schema(description = "下单时商品SPU名称") String spuName,
+        @Schema(description = "下单时规格名称和值，历史未记录与空规格区分") List<Spec> specs,
+        @Schema(description = "下单时商品图片") String picUrl,
+        @Schema(description = "已成功退款数量，历史未知为NULL") Integer refundedQuantity)
+        implements Serializable {
+    /** 兼容旧响应构造。 */
+    public AfterSaleItemRes(
+            Long orderItemId,
+            Long productId,
+            String productName,
+            Integer quantity,
+            Integer refundableQuantity,
+            BigDecimal refundableAmount,
+            Long spuId,
+            String spuName,
+            List<Spec> specs,
+            String picUrl) {
+        this(
+                orderItemId,
+                productId,
+                productName,
+                quantity,
+                refundableQuantity,
+                refundableAmount,
+                spuId,
+                spuName,
+                specs,
+                picUrl,
+                null);
+    }
+
     public AfterSaleItemRes {
         specs = specs == null ? null : List.copyOf(specs);
     }
@@ -42,8 +58,7 @@ public record AfterSaleItemRes(
             String productName,
             Integer quantity,
             Integer refundableQuantity,
-            BigDecimal refundableAmount
-    ) {
+            BigDecimal refundableAmount) {
         this(
                 orderItemId,
                 productId,
@@ -60,13 +75,9 @@ public record AfterSaleItemRes(
     /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
     @Schema(description = "商品规格快照")
     public record Spec(
-            @Schema(description = "规格项编号，历史未关联时为空")
-            Long specId,
-            @Schema(description = "保存时规格名称")
-            String specName,
-            @Schema(description = "规格值编号，历史未关联时为空")
-            Long specValueId,
-            @Schema(description = "保存时规格值名称")
-            String specValueName
-    ) implements java.io.Serializable {}
+            @Schema(description = "规格项编号，历史未关联时为空") Long specId,
+            @Schema(description = "保存时规格名称") String specName,
+            @Schema(description = "规格值编号，历史未关联时为空") Long specValueId,
+            @Schema(description = "保存时规格值名称") String specValueName)
+            implements java.io.Serializable {}
 }

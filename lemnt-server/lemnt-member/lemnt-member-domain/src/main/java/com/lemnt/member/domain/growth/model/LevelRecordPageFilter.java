@@ -9,8 +9,7 @@ public record LevelRecordPageFilter(
         int limit,
         Long levelId,
         LocalDateTime startTime,
-        LocalDateTime endTime
-) {
+        LocalDateTime endTime) {
     /** 会员下列表沿用无附加条件的分页。 */
     public LevelRecordPageFilter(Long memberId, int offset, int limit) {
         this(memberId, offset, limit, null, null, null);

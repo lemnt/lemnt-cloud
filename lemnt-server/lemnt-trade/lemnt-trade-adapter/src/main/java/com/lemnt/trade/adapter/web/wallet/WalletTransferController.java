@@ -34,7 +34,8 @@ public class WalletTransferController {
     @RequiresPermissions("trade:wallet-transfer:list")
     public R<WalletTransferRes> page(@Valid @ModelAttribute WalletTransferPageReq req) {
         var value = page.execute(WalletTransferResConverter.page(req));
-        return R.page(value.getRecords().stream().map(WalletTransferResConverter::transfer).toList(),
+        return R.page(
+                value.getRecords().stream().map(WalletTransferResConverter::transfer).toList(),
                 value.getTotal());
     }
 

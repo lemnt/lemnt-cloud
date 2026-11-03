@@ -9,8 +9,9 @@ public record GroupPageFilter(
         int offset,
         int limit,
         LocalDateTime startTime,
-        LocalDateTime endTime
-) {
+        LocalDateTime endTime) {
     /** 旧查询不附加创建时间。 */
-    public GroupPageFilter(String name, Integer status, int offset, int limit) { this(name, status, offset, limit, null, null); }
+    public GroupPageFilter(String name, Integer status, int offset, int limit) {
+        this(name, status, offset, limit, null, null);
+    }
 }

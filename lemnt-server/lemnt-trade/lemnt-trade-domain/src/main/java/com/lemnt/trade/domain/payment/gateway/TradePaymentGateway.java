@@ -1,8 +1,8 @@
 package com.lemnt.trade.domain.payment.gateway;
 
-import com.lemnt.trade.domain.payment.model.PaymentRecord;
-import com.lemnt.trade.domain.payment.model.PaymentFilter;
 import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.trade.domain.payment.model.PaymentFilter;
+import com.lemnt.trade.domain.payment.model.PaymentRecord;
 import com.lemnt.trade.domain.payment.model.VerifiedPaymentNotification;
 
 import java.math.BigDecimal;
@@ -28,8 +28,8 @@ public interface TradePaymentGateway {
     /**
      * 创建待支付记录。
      */
-    PaymentRecord createWaiting(String paymentNo, String orderNo, String channel, String appKey,
-            BigDecimal amount);
+    PaymentRecord createWaiting(
+            String paymentNo, String orderNo, String channel, String appKey, BigDecimal amount);
 
     /**
      * 查找按订单编号。

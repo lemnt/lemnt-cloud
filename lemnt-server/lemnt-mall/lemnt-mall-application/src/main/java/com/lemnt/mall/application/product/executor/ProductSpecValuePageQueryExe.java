@@ -20,14 +20,26 @@ public class ProductSpecValuePageQueryExe {
 
     /** 分页查询字典，可供规格选择器按关键词筛选。 */
     public PageResult<ProductSpecValueDTO> execute(ProductSpecValuePageQry qry) {
-        if (qry == null || qry.pageNum() < 1 || qry.pageNum() > 1000000 || qry.pageSize() < 1 || qry.pageSize() > 100) {
+        if (qry == null
+                || qry.pageNum() < 1
+                || qry.pageNum() > 1000000
+                || qry.pageSize() < 1
+                || qry.pageSize() > 100) {
             throw new IllegalArgumentException("分页参数不合法");
         }
         if (qry.specId() != null) {
             ProductCatalogValidation.id(qry.specId());
         }
-        String name = qry.name() == null || qry.name().isBlank() ? null : ProductCatalogValidation.text(qry.name(), 100, "名称");
-        var page = productSpecValueGateway.page(new ProductSpecFilter(name, qry.specId(), qry.pageNum(), qry.pageSize(), null, null));
-        return PageResult.of(page.getRecords().stream().map(ProductSpecDTOConverter::value).toList(), page.getTotal());
+        String name =
+                qry.name() == null || qry.name().isBlank()
+                        ? null
+                        : ProductCatalogValidation.text(qry.name(), 100, "名称");
+        var page =
+                productSpecValueGateway.page(
+                        new ProductSpecFilter(
+                                name, qry.specId(), qry.pageNum(), qry.pageSize(), null, null));
+        return PageResult.of(
+                page.getRecords().stream().map(ProductSpecDTOConverter::value).toList(),
+                page.getTotal());
     }
 }

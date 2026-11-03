@@ -1,8 +1,9 @@
 package com.lemnt.common.excel.converter;
 
-import cn.hutool.core.util.StrUtil;
 import com.lemnt.common.core.annotation.Excel;
 import com.lemnt.common.core.annotation.Excels;
+
+import cn.hutool.core.util.StrUtil;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -68,7 +69,10 @@ public class ExcelExportAnnotationConverter {
             current = current.getSuperclass();
         }
         return fieldList.stream()
-                .filter(f -> f.isAnnotationPresent(Excel.class) || f.isAnnotationPresent(Excels.class))
+                .filter(
+                        f ->
+                                f.isAnnotationPresent(Excel.class)
+                                        || f.isAnnotationPresent(Excels.class))
                 .filter(ExcelExportAnnotationConverter::isExportField)
                 .sorted(Comparator.comparingInt(ExcelExportAnnotationConverter::getSort))
                 .peek(f -> f.setAccessible(true))
@@ -122,8 +126,10 @@ public class ExcelExportAnnotationConverter {
             }
             if (StrUtil.isNotBlank(excel.readConverterExp())) {
                 String[] pairs = excel.readConverterExp().split(",");
-                Map<String, String> map = Arrays.stream(pairs).map(s -> s.split("="))
-                        .collect(Collectors.toMap(a -> a[0], a -> a[1]));
+                Map<String, String> map =
+                        Arrays.stream(pairs)
+                                .map(s -> s.split("="))
+                                .collect(Collectors.toMap(a -> a[0], a -> a[1]));
                 String strVal = String.valueOf(value);
                 if (map.containsKey(strVal)) {
                     return map.get(strVal);
@@ -186,7 +192,9 @@ public class ExcelExportAnnotationConverter {
     private static boolean isExportField(Field field) {
         Excel excel = field.getAnnotation(Excel.class);
         if (Objects.nonNull(excel)) {
-            return excel.isExport() || Objects.equals(excel.type(), Excel.Type.ALL) || Objects.equals(excel.type(), Excel.Type.EXPORT);
+            return excel.isExport()
+                    || Objects.equals(excel.type(), Excel.Type.ALL)
+                    || Objects.equals(excel.type(), Excel.Type.EXPORT);
         }
         return field.isAnnotationPresent(Excels.class);
     }

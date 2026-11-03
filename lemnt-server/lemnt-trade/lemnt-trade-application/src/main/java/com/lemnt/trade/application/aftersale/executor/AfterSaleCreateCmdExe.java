@@ -20,10 +20,11 @@ public class AfterSaleCreateCmdExe {
     public AfterSaleDTO execute(AfterSaleCreateCmd value) {
         return AfterSaleDTOConverter.toDTO(service.create(value));
     }
+
     /** 由后台已认证上下文提供操作者，不能取客户端字段。 */
     public AfterSaleDTO executeForAdmin(AfterSaleCreateCmd value, Long operatorId) {
-        return AfterSaleDTOConverter.toDTO(service.create(value,
-                TradeOperator.administrator(operatorId)));
+        return AfterSaleDTOConverter.toDTO(
+                service.create(value, TradeOperator.administrator(operatorId)));
     }
 
     /** 会员本人申请，领域层再次核验订单归属。 */

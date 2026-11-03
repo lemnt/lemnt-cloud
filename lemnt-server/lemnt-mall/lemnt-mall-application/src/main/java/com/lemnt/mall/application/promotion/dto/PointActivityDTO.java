@@ -17,5 +17,4 @@ public record PointActivityDTO(
         Integer point,
         BigDecimal price,
         BigDecimal marketPrice,
-        List<PointProductDTO> products
-) {}
+        List<PointProductDTO> products) {}

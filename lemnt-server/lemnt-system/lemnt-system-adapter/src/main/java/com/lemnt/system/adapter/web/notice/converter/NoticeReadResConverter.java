@@ -26,8 +26,7 @@ public class NoticeReadResConverter {
                 dto.getNickName(),
                 dto.getDeptName(),
                 dto.getPhonenumber(),
-                dto.getReadTime()
-        );
+                dto.getReadTime());
     }
 
     /**

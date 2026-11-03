@@ -19,6 +19,7 @@ public class WalletRechargeCreateCmdExe {
         if (cmd == null) {
             throw new IllegalArgumentException("充值参数不合法");
         }
-        return RechargeDTOConverter.recharge(service.create(memberId, cmd.packageId(), cmd.requestNo()));
+        return RechargeDTOConverter.recharge(
+                service.create(memberId, cmd.packageId(), cmd.requestNo()));
     }
 }

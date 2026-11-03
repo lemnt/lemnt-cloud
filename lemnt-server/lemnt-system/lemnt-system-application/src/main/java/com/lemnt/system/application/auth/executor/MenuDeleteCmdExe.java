@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MenuDeleteCmdExe {
     private final MenuGateway menuGateway;
+
     public Boolean execute(Long menuId) {
         if (menuGateway.hasChildByMenuId(menuId)) {
             throw new ServiceException("存在子菜单,不允许删除");

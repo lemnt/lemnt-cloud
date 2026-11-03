@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** trade_member_wallet_transfer Mapper，CRUD 复用 MyBatis Plus。 */
 @Mapper
-public interface WalletTransferMapper extends BaseMapper<WalletTransferDO> {
-}
+public interface WalletTransferMapper extends BaseMapper<WalletTransferDO> {}

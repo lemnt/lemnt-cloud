@@ -18,18 +18,29 @@ public final class SettlementResConverter {
     public static SettlementItemRes checkoutItem(SettlementItemDTO value) {
         return value == null
                 ? null
-                : new SettlementItemRes(value.productId(),
-                value.productCode(),
-                value.productName(),
-                value.unitPrice(),
-                value.quantity(),
-                value.lineAmount(),
-                value.spuId(),
-                value.spuName(),
-                value.specs() == null ? null : value.specs().stream().map(snapshotProperty ->
-                        new SettlementItemRes.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
-                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
-                value.picUrl(), value.orderItemId(), value.commentStatus());
+                : new SettlementItemRes(
+                        value.productId(),
+                        value.productCode(),
+                        value.productName(),
+                        value.unitPrice(),
+                        value.quantity(),
+                        value.lineAmount(),
+                        value.spuId(),
+                        value.spuName(),
+                        value.specs() == null
+                                ? null
+                                : value.specs().stream()
+                                        .map(
+                                                snapshotProperty ->
+                                                        new SettlementItemRes.Spec(
+                                                                snapshotProperty.specId(),
+                                                                snapshotProperty.specName(),
+                                                                snapshotProperty.specValueId(),
+                                                                snapshotProperty.specValueName()))
+                                        .toList(),
+                        value.picUrl(),
+                        value.orderItemId(),
+                        value.commentStatus());
     }
 
     /**
@@ -39,12 +50,12 @@ public final class SettlementResConverter {
         return value == null
                 ? null
                 : new SettlementQuoteRes(
-                value.items().stream().map(SettlementResConverter::checkoutItem).toList(),
-                value.originalAmount(),
-                value.discountAmount(),
-                value.payableAmount(),
-                value.couponId(),
-                value.quoteToken());
+                        value.items().stream().map(SettlementResConverter::checkoutItem).toList(),
+                        value.originalAmount(),
+                        value.discountAmount(),
+                        value.payableAmount(),
+                        value.couponId(),
+                        value.quoteToken());
     }
 
     /**
@@ -54,14 +65,16 @@ public final class SettlementResConverter {
         return value == null
                 ? null
                 : new SettlementSubmitRes(
-                value.orderNo(),
-                value.memberId(),
-                value.status(),
-                value.originalAmount(),
-                value.discountAmount(),
-                value.payableAmount(),
-                value.couponId(),
-                value.items().stream().map(SettlementResConverter::checkoutItem).toList(), value.commentStatus(), value.finishTime());
+                        value.orderNo(),
+                        value.memberId(),
+                        value.status(),
+                        value.originalAmount(),
+                        value.discountAmount(),
+                        value.payableAmount(),
+                        value.couponId(),
+                        value.items().stream().map(SettlementResConverter::checkoutItem).toList(),
+                        value.commentStatus(),
+                        value.finishTime());
     }
 
     /**
@@ -71,13 +84,13 @@ public final class SettlementResConverter {
         return value == null
                 ? null
                 : new SettlementReceiptDetailRes(
-                value.orderNo(),
-                value.memberId(),
-                value.status(),
-                value.originalAmount(),
-                value.discountAmount(),
-                value.payableAmount(),
-                value.couponId(),
-                value.items().stream().map(SettlementResConverter::checkoutItem).toList());
+                        value.orderNo(),
+                        value.memberId(),
+                        value.status(),
+                        value.originalAmount(),
+                        value.discountAmount(),
+                        value.payableAmount(),
+                        value.couponId(),
+                        value.items().stream().map(SettlementResConverter::checkoutItem).toList());
     }
 }

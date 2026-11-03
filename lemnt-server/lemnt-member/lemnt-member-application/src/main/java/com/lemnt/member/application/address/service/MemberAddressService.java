@@ -52,7 +52,8 @@ public class MemberAddressService {
             throw new ServiceException("默认地址标志不能为空", 400);
         }
         if (input.id() != null
-                && memberAddressGateway.address(input.memberId(), MemberRules.id(input.id())) == null) {
+                && memberAddressGateway.address(input.memberId(), MemberRules.id(input.id()))
+                        == null) {
             throw new ServiceException("地址不存在", 404);
         }
         if (input.defaultStatus()) {
@@ -82,5 +83,4 @@ public class MemberAddressService {
         }
         return true;
     }
-
 }

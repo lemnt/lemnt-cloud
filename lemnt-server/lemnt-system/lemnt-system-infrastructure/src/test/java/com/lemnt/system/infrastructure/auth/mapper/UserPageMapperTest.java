@@ -27,13 +27,19 @@ class UserPageMapperTest {
     void shouldSelectDepartmentNameWithoutChangingUserOrScopeFilters() throws Exception {
         var statement = mapper().getMappedStatement(UserMapper.class.getName() + ".selectPage");
 
-        var query = new User().setDeptId(103L).setUserName("test").setDataScope(" AND u.user_id = 2");
+        var query =
+                new User().setDeptId(103L).setUserName("test").setDataScope(" AND u.user_id = 2");
 
         String sql = statement.getBoundSql(Map.of("qry", query)).getSql();
 
-        assertThat(sql).contains("d.dept_name", "LEFT JOIN sys_dept d", "u.del_flag = '0'",
-                "u.user_name LIKE", "FIND_IN_SET").doesNotContain("AND u.user_id = 2");
-
+        assertThat(sql)
+                .contains(
+                        "d.dept_name",
+                        "LEFT JOIN sys_dept d",
+                        "u.del_flag = '0'",
+                        "u.user_name LIKE",
+                        "FIND_IN_SET")
+                .doesNotContain("AND u.user_id = 2");
     }
 
     @Test
@@ -46,9 +52,7 @@ class UserPageMapperTest {
 
         var metadata = new RowSetMetaDataImpl();
 
-        String[] columns = {
-            "user_id", "dept_id", "joined_dept_id", "dept_name"
-                };
+        String[] columns = {"user_id", "dept_id", "joined_dept_id", "dept_name"};
 
         metadata.setColumnCount(columns.length);
 
@@ -58,15 +62,12 @@ class UserPageMapperTest {
             metadata.setColumnLabel(index + 1, columns[index]);
 
             metadata.setColumnType(index + 1, index == 3 ? Types.VARCHAR : Types.BIGINT);
-
         }
         // 用离线结果集复现已关联部门及部门缺失两种情况，不连接真实用户库。
         try (var rows = RowSetProvider.newFactory().createCachedRowSet()) {
             rows.setMetaData(metadata);
 
-            for (long userId : new long[]{
-                    2L, 3L
-                    }) {
+            for (long userId : new long[] {2L, 3L}) {
                 rows.moveToInsertRow();
 
                 rows.updateLong(1, userId);
@@ -82,12 +83,10 @@ class UserPageMapperTest {
                     rows.updateNull(3);
 
                     rows.updateNull(4);
-
                 }
                 rows.insertRow();
 
                 rows.moveToCurrentRow();
-
             }
             rows.beforeFirst();
 
@@ -101,26 +100,37 @@ class UserPageMapperTest {
 
             when(statement.getUpdateCount()).thenReturn(-1);
 
-            var handler = new DefaultResultSetHandler(null, mapped, null, null, boundSql, RowBounds.DEFAULT);
+            var handler =
+                    new DefaultResultSetHandler(
+                            null, mapped, null, null, boundSql, RowBounds.DEFAULT);
 
             var users = handler.handleResultSets(statement);
 
-            assertThat(users).hasSize(2).allSatisfy(user -> assertThat(user).isInstanceOf(User.class));
+            assertThat(users)
+                    .hasSize(2)
+                    .allSatisfy(user -> assertThat(user).isInstanceOf(User.class));
 
-            var linked = users.stream().map(User.class::cast)
-                    .filter(user -> user.getUserId() == 2L).findFirst().orElseThrow();
+            var linked =
+                    users.stream()
+                            .map(User.class::cast)
+                            .filter(user -> user.getUserId() == 2L)
+                            .findFirst()
+                            .orElseThrow();
 
             assertThat(linked.getDept().getDeptId()).isEqualTo(103L);
 
             assertThat(linked.getDept().getDeptName()).isEqualTo("测试部门");
 
-            var missing = users.stream().map(User.class::cast)
-                    .filter(user -> user.getUserId() == 3L).findFirst().orElseThrow();
+            var missing =
+                    users.stream()
+                            .map(User.class::cast)
+                            .filter(user -> user.getUserId() == 3L)
+                            .findFirst()
+                            .orElseThrow();
 
             assertThat(missing.getDeptId()).isEqualTo(103L);
 
             assertThat(missing.getDept()).isNull();
-
         }
     }
 
@@ -132,10 +142,9 @@ class UserPageMapperTest {
         try (var input = getClass().getClassLoader().getResourceAsStream(resource)) {
             assertThat(input).isNotNull();
 
-            new XMLMapperBuilder(input, configuration, resource, configuration.getSqlFragments()).parse();
-
+            new XMLMapperBuilder(input, configuration, resource, configuration.getSqlFragments())
+                    .parse();
         }
         return configuration;
-
     }
 }

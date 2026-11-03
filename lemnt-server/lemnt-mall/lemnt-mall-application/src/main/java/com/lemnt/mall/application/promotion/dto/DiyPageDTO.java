@@ -10,8 +10,8 @@ public record DiyPageDTO(
         String name,
         String remark,
         List<String> previewPicUrls,
-        String property
-) implements Serializable {
+        String property)
+        implements Serializable {
     public DiyPageDTO {
         previewPicUrls = previewPicUrls == null ? List.of() : List.copyOf(previewPicUrls);
     }

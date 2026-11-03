@@ -25,7 +25,10 @@ public class SandboxPaymentCmdExe {
     private final PaymentNotifyCmdExe notify;
 
     public String execute(Long memberId, String paymentNo) {
-        if (memberId == null || memberId <= 0 || paymentNo == null || paymentNo.isBlank()
+        if (memberId == null
+                || memberId <= 0
+                || paymentNo == null
+                || paymentNo.isBlank()
                 || paymentNo.length() > 40) {
             throw new ServiceException("支付单编号不合法", 400);
         }
@@ -41,14 +44,26 @@ public class SandboxPaymentCmdExe {
                 && Set.of("PAID", "SHIPPED", "COMPLETED", "REFUNDED").contains(order.status())) {
             return paymentNo;
         }
-        if (!"WAITING".equals(payment.status()) || !"PENDING_PAYMENT".equals(order.status())
-                || payment.amount() == null || payment.amount().signum() <= 0) {
+        if (!"WAITING".equals(payment.status())
+                || !"PENDING_PAYMENT".equals(order.status())
+                || payment.amount() == null
+                || payment.amount().signum() <= 0) {
             throw new ServiceException("支付单或订单状态不允许支付", 400);
         }
-        String suffix = UUID.randomUUID().toString().replace("-", "").toUpperCase(Locale.ROOT)
-                .substring(0, 24);
-        notify.execute(new VerifiedPaymentNotification(payment.paymentNo(), payment.orderNo(),
-                PaymentChannel.SANDBOX.name(), "SBAPP-" + suffix, payment.amount(), "NAPP-" + suffix));
+        String suffix =
+                UUID.randomUUID()
+                        .toString()
+                        .replace("-", "")
+                        .toUpperCase(Locale.ROOT)
+                        .substring(0, 24);
+        notify.execute(
+                new VerifiedPaymentNotification(
+                        payment.paymentNo(),
+                        payment.orderNo(),
+                        PaymentChannel.SANDBOX.name(),
+                        "SBAPP-" + suffix,
+                        payment.amount(),
+                        "NAPP-" + suffix));
         return paymentNo;
     }
 }

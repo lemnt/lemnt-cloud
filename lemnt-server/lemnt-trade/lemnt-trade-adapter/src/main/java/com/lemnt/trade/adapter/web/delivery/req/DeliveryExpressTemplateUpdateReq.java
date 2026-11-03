@@ -15,24 +15,11 @@ import java.util.List;
 /** 修改运费模板。 */
 @Schema(description = "修改运费模板")
 public record DeliveryExpressTemplateUpdateReq(
-        @Schema(description = "模板名称")
-        @NotBlank @Size(max = 100)
-        String name,
-        @Schema(description = "计费方式，1 件数、2 重量千克、3 体积立方米")
-        @NotNull
-        @Min(1) @Max(3)
-        Integer chargeMode,
-        @Schema(description = "排序")
-        @NotNull
-        @DecimalMin("0")
-        Integer sort,
-        @Schema(description = "计费规则")
-        @NotNull @Size(max = 100)
-        @Valid
-        List<DeliveryChargeReq> charges,
-        @Schema(description = "包邮规则")
-        @NotNull @Size(max = 100)
-        @Valid
-        List<DeliveryFreeReq> frees
-) implements Serializable {
-}
+        @Schema(description = "模板名称") @NotBlank @Size(max = 100) String name,
+        @Schema(description = "计费方式，1 件数、2 重量千克、3 体积立方米") @NotNull @Min(1) @Max(3)
+                Integer chargeMode,
+        @Schema(description = "排序") @NotNull @DecimalMin("0") Integer sort,
+        @Schema(description = "计费规则") @NotNull @Size(max = 100) @Valid
+                List<DeliveryChargeReq> charges,
+        @Schema(description = "包邮规则") @NotNull @Size(max = 100) @Valid List<DeliveryFreeReq> frees)
+        implements Serializable {}

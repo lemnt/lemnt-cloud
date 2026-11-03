@@ -12,6 +12,5 @@ public record Banner(
         Integer status,
         Integer position,
         String memo,
-        Integer browseCount
-) implements Serializable {
-}
+        Integer browseCount)
+        implements Serializable {}

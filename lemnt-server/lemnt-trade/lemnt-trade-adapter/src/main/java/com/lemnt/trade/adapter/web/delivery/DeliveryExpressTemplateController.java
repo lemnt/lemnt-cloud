@@ -59,7 +59,8 @@ public class DeliveryExpressTemplateController {
     @PutMapping("/{id}")
     @Operation(summary = "配送修改")
     @RequiresPermissions("trade:delivery-template:update")
-    public R<Boolean> update(@PathVariable Long id, @Valid @RequestBody DeliveryExpressTemplateUpdateReq req) {
+    public R<Boolean> update(
+            @PathVariable Long id, @Valid @RequestBody DeliveryExpressTemplateUpdateReq req) {
         return R.ok(update.execute(DeliveryReqConverter.deliveryExpressTemplateUpdate(id, req)));
     }
 
@@ -83,9 +84,14 @@ public class DeliveryExpressTemplateController {
     @GetMapping
     @Operation(summary = "配送分页")
     @RequiresPermissions("trade:delivery-template:list")
-    public R<DeliveryExpressTemplatePageRes> page(@Valid @ModelAttribute DeliveryExpressTemplatePageReq req) {
+    public R<DeliveryExpressTemplatePageRes> page(
+            @Valid @ModelAttribute DeliveryExpressTemplatePageReq req) {
         var result = page.execute(DeliveryReqConverter.deliveryExpressTemplatePage(req));
-        return R.page(result.getRecords().stream().map(DeliveryResConverter::deliveryExpressTemplatePage).toList(), result.getTotal());
+        return R.page(
+                result.getRecords().stream()
+                        .map(DeliveryResConverter::deliveryExpressTemplatePage)
+                        .toList(),
+                result.getTotal());
     }
 
     /** 配送选择列表操作。 */
@@ -93,6 +99,9 @@ public class DeliveryExpressTemplateController {
     @Operation(summary = "配送选择列表")
     @RequiresPermissions("trade:delivery-template:query")
     public R<List<DeliveryExpressTemplateSimpleRes>> simpleList() {
-        return R.ok(simpleList.execute().stream().map(DeliveryResConverter::deliveryExpressTemplateSimple).toList());
+        return R.ok(
+                simpleList.execute().stream()
+                        .map(DeliveryResConverter::deliveryExpressTemplateSimple)
+                        .toList());
     }
 }

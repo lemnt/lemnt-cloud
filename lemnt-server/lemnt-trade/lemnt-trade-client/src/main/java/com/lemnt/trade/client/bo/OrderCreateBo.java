@@ -17,22 +17,67 @@ public record OrderCreateBo(
         long usePoint,
         long givePoint,
         OrderDeliveryDTO delivery,
-        Map<Long, Integer> giveCouponTemplateCounts
-) implements Serializable {
+        Map<Long, Integer> giveCouponTemplateCounts,
+        BigDecimal originalAmount,
+        BigDecimal discountAmount,
+        BigDecimal deliveryOriginalPrice,
+        BigDecimal deliveryDiscountPrice,
+        BigDecimal adjustmentAmount,
+        String pricingSnapshotStatus,
+        Integer pricingSnapshotVersion,
+        java.util.List<com.lemnt.trade.client.dto.OrderPromotionDTO> promotions)
+        implements Serializable {
+    /** 兼容未记录本批优惠与退款元数据的历史快照。 */
+    public OrderCreateBo(
+            String orderNo,
+            Long memberId,
+            BigDecimal totalAmount,
+            List<OrderItemDTO> items,
+            long usePoint,
+            long givePoint,
+            OrderDeliveryDTO delivery,
+            Map<Long, Integer> giveCouponTemplateCounts) {
+        this(
+                orderNo,
+                memberId,
+                totalAmount,
+                items,
+                usePoint,
+                givePoint,
+                delivery,
+                giveCouponTemplateCounts,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "LEGACY_PARTIAL",
+                0,
+                java.util.List.of());
+    }
+
     public OrderCreateBo {
+        promotions = promotions == null ? java.util.List.of() : java.util.List.copyOf(promotions);
         items = items == null ? List.of() : List.copyOf(items);
-        giveCouponTemplateCounts = giveCouponTemplateCounts == null ? Map.of()
-                : Map.copyOf(giveCouponTemplateCounts);
+        giveCouponTemplateCounts =
+                giveCouponTemplateCounts == null ? Map.of() : Map.copyOf(giveCouponTemplateCounts);
     }
 
     /** 兼容无营销赠券的订单快照。 */
-    public OrderCreateBo(String orderNo, Long memberId, BigDecimal totalAmount, List<OrderItemDTO> items,
-            long usePoint, long givePoint, OrderDeliveryDTO delivery) {
+    public OrderCreateBo(
+            String orderNo,
+            Long memberId,
+            BigDecimal totalAmount,
+            List<OrderItemDTO> items,
+            long usePoint,
+            long givePoint,
+            OrderDeliveryDTO delivery) {
         this(orderNo, memberId, totalAmount, items, usePoint, givePoint, delivery, Map.of());
     }
 
     /** 存量快照没有积分权益，按零积分订单读取。 */
-    public OrderCreateBo(String orderNo, Long memberId, BigDecimal totalAmount, List<OrderItemDTO> items) {
+    public OrderCreateBo(
+            String orderNo, Long memberId, BigDecimal totalAmount, List<OrderItemDTO> items) {
         this(orderNo, memberId, totalAmount, items, 0L, 0L);
     }
 

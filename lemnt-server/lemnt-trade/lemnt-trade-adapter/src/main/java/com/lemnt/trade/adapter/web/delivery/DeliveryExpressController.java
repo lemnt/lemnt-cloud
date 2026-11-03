@@ -59,7 +59,8 @@ public class DeliveryExpressController {
     @PutMapping("/{id}")
     @Operation(summary = "配送修改")
     @RequiresPermissions("trade:delivery-express:update")
-    public R<Boolean> update(@PathVariable Long id, @Valid @RequestBody DeliveryExpressUpdateReq req) {
+    public R<Boolean> update(
+            @PathVariable Long id, @Valid @RequestBody DeliveryExpressUpdateReq req) {
         return R.ok(update.execute(DeliveryReqConverter.deliveryExpressUpdate(id, req)));
     }
 
@@ -85,7 +86,11 @@ public class DeliveryExpressController {
     @RequiresPermissions("trade:delivery-express:list")
     public R<DeliveryExpressPageRes> page(@Valid @ModelAttribute DeliveryExpressPageReq req) {
         var result = page.execute(DeliveryReqConverter.deliveryExpressPage(req));
-        return R.page(result.getRecords().stream().map(DeliveryResConverter::deliveryExpressPage).toList(), result.getTotal());
+        return R.page(
+                result.getRecords().stream()
+                        .map(DeliveryResConverter::deliveryExpressPage)
+                        .toList(),
+                result.getTotal());
     }
 
     /** 配送选择列表操作。 */
@@ -93,6 +98,9 @@ public class DeliveryExpressController {
     @Operation(summary = "配送选择列表")
     @RequiresPermissions("trade:delivery-express:query")
     public R<List<DeliveryExpressSimpleRes>> simpleList() {
-        return R.ok(simpleList.execute().stream().map(DeliveryResConverter::deliveryExpressSimple).toList());
+        return R.ok(
+                simpleList.execute().stream()
+                        .map(DeliveryResConverter::deliveryExpressSimple)
+                        .toList());
     }
 }

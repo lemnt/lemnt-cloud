@@ -36,12 +36,14 @@ class AppPromotionHubServiceTest {
     final DiscountActivityGateway discounts = mock(DiscountActivityGateway.class);
     final RewardActivityGateway rewards = mock(RewardActivityGateway.class);
     final DiscountProductGateway discountProducts = mock(DiscountProductGateway.class);
-    final AppPromotionHubService service = new AppPromotionHubService(seckills, combinations, bargains, points,
-            discounts, rewards, discountProducts);
+    final AppPromotionHubService service =
+            new AppPromotionHubService(
+                    seckills, combinations, bargains, points, discounts, rewards, discountProducts);
     final LocalDateTime now = LocalDateTime.now();
 
     SeckillActivity seckill(Long id, LocalDateTime start, LocalDateTime end) {
-        return new SeckillActivity(id, 1L, "秒杀" + id, 0, null, start, end, 0, List.of(), 5, 2, 5, 5);
+        return new SeckillActivity(
+                id, 1L, "秒杀" + id, 0, null, start, end, 0, List.of(), 5, 2, 5, 5);
     }
 
     DiscountActivity discount(Long id, LocalDateTime start, LocalDateTime end) {
@@ -49,24 +51,68 @@ class AppPromotionHubServiceTest {
     }
 
     RewardActivity reward(Long id) {
-        return new RewardActivity(id, "满减" + id, 0, now.minusDays(1), now.plusDays(1), null, "PRICE",
-                "ALL", List.of(), List.of(new RewardRule(BigDecimal.TEN, BigDecimal.ONE)));
+        return new RewardActivity(
+                id,
+                "满减" + id,
+                0,
+                now.minusDays(1),
+                now.plusDays(1),
+                null,
+                "PRICE",
+                "ALL",
+                List.of(),
+                List.of(new RewardRule(BigDecimal.TEN, BigDecimal.ONE)));
     }
 
     @Test
     void sectionsFilterExpiredActivitiesAndRespectLimit() {
-        when(seckills.enabled()).thenReturn(List.of(seckill(1L, now.minusDays(1), now.plusDays(1)),
-                seckill(2L, now.minusDays(3), now.minusDays(2))));
-        when(combinations.enabled()).thenReturn(List.of(new CombinationActivity(3L, "拼团", 1L, 5, 2,
-                now.minusDays(1), now.plusDays(1), 2, true, 0, 24)));
-        when(bargains.enabled()).thenReturn(List.of(new BargainActivity(4L, "砍价", now.minusDays(1),
-                now.plusDays(1), 0, 1L, 1L, BigDecimal.TEN, BigDecimal.ONE, 5, 5, 2, 1, 1,
-                BigDecimal.ONE, BigDecimal.ONE)));
+        when(seckills.enabled())
+                .thenReturn(
+                        List.of(
+                                seckill(1L, now.minusDays(1), now.plusDays(1)),
+                                seckill(2L, now.minusDays(3), now.minusDays(2))));
+        when(combinations.enabled())
+                .thenReturn(
+                        List.of(
+                                new CombinationActivity(
+                                        3L,
+                                        "拼团",
+                                        1L,
+                                        5,
+                                        2,
+                                        now.minusDays(1),
+                                        now.plusDays(1),
+                                        2,
+                                        true,
+                                        0,
+                                        24)));
+        when(bargains.enabled())
+                .thenReturn(
+                        List.of(
+                                new BargainActivity(
+                                        4L,
+                                        "砍价",
+                                        now.minusDays(1),
+                                        now.plusDays(1),
+                                        0,
+                                        1L,
+                                        1L,
+                                        BigDecimal.TEN,
+                                        BigDecimal.ONE,
+                                        5,
+                                        5,
+                                        2,
+                                        1,
+                                        1,
+                                        BigDecimal.ONE,
+                                        BigDecimal.ONE)));
         when(points.enabled()).thenReturn(List.of(new PointActivity(5L, 1L, 0, null, 0, 5, 5)));
-        when(discounts.enabled()).thenReturn(List.of(discount(6L, now.minusDays(1), now.plusDays(1))));
+        when(discounts.enabled())
+                .thenReturn(List.of(discount(6L, now.minusDays(1), now.plusDays(1))));
         when(rewards.enabled()).thenReturn(List.of(reward(7L)));
         var sections = service.sections(10);
-        assertEquals(List.of("SECKILL", "COMBINATION", "BARGAIN", "POINT", "DISCOUNT", "REWARD"),
+        assertEquals(
+                List.of("SECKILL", "COMBINATION", "BARGAIN", "POINT", "DISCOUNT", "REWARD"),
                 sections.stream().map(value -> value.type()).toList());
         assertEquals(1, sections.get(0).items().size());
         assertEquals(1, sections.get(3).items().size());
@@ -78,16 +124,27 @@ class AppPromotionHubServiceTest {
     @Test
     void ruleDetailsRequireActiveActivity() {
         when(discounts.find(6L)).thenReturn(discount(6L, now.minusDays(1), now.plusDays(1)));
-        when(discountProducts.byActivities(List.of(6L))).thenReturn(List.of(new DiscountProduct(1L, 6L, 1L,
-                2L, "PERCENT", 8000, null)));
+        when(discountProducts.byActivities(List.of(6L)))
+                .thenReturn(List.of(new DiscountProduct(1L, 6L, 1L, 2L, "PERCENT", 8000, null)));
         assertEquals(1, service.discount(6L).products().size());
         when(discounts.find(7L)).thenReturn(discount(7L, now.minusDays(3), now.minusDays(2)));
         assertThrows(ServiceException.class, () -> service.discount(7L));
 
         when(rewards.find(8L)).thenReturn(reward(8L));
         assertEquals("满减8", service.reward(8L).name());
-        when(rewards.find(9L)).thenReturn(new RewardActivity(9L, "关闭", 1, now.minusDays(1), now.plusDays(1),
-                null, "PRICE", "ALL", List.of(), List.of()));
+        when(rewards.find(9L))
+                .thenReturn(
+                        new RewardActivity(
+                                9L,
+                                "关闭",
+                                1,
+                                now.minusDays(1),
+                                now.plusDays(1),
+                                null,
+                                "PRICE",
+                                "ALL",
+                                List.of(),
+                                List.of()));
         assertThrows(ServiceException.class, () -> service.reward(9L));
     }
 }

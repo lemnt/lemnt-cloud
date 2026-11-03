@@ -21,4 +21,7 @@ public interface TradeOrderItemGateway {
 
     /** 后台调价后按分摊结果更新单行实付。 */
     boolean updatePayAmount(Long orderId, Long orderItemId, java.math.BigDecimal payAmount);
+
+    /** 持有订单锁且售后首次成功后增加已退数量，历史NULL从成功事实核对后初始化。 */
+    boolean recordRefunded(Long orderId, Long orderItemId, int previous, int delta);
 }

@@ -16,8 +16,7 @@ import java.util.Set;
 @Data
 @Accessors(chain = true)
 public class Role implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 6198267707181465840L;
+    @Serial private static final long serialVersionUID = 6198267707181465840L;
 
     /**
      * 数据范围：自定义数据权限
@@ -98,6 +97,7 @@ public class Role implements Serializable {
      * 结束时间（查询用）
      */
     private LocalDateTime endTime;
+
     public boolean isAdmin() {
         return isAdmin(this.roleId);
     }

@@ -34,28 +34,53 @@ public class WalletTransferGatewayImpl implements WalletTransferGateway {
 
     @Override
     public WalletTransfer findByNo(String transferNo) {
-        return WalletTransferConverter.toEntity(mapper.selectOne(Wrappers.<WalletTransferDO>lambdaQuery()
-                .eq(WalletTransferDO::getTransferNo, transferNo).last("LIMIT 1")));
+        return WalletTransferConverter.toEntity(
+                mapper.selectOne(
+                        Wrappers.<WalletTransferDO>lambdaQuery()
+                                .eq(WalletTransferDO::getTransferNo, transferNo)
+                                .last("LIMIT 1")));
     }
 
     @Override
     public WalletTransfer findByRequestNo(String requestNo) {
-        return WalletTransferConverter.toEntity(mapper.selectOne(Wrappers.<WalletTransferDO>lambdaQuery()
-                .eq(WalletTransferDO::getRequestNo, requestNo).last("LIMIT 1")));
+        return WalletTransferConverter.toEntity(
+                mapper.selectOne(
+                        Wrappers.<WalletTransferDO>lambdaQuery()
+                                .eq(WalletTransferDO::getRequestNo, requestNo)
+                                .last("LIMIT 1")));
     }
 
     @Override
     public PageResult<WalletTransfer> page(WalletTransferFilter filter) {
-        var page = mapper.selectPage(new Page<WalletTransferDO>(filter.pageNum(), filter.pageSize()),
-                Wrappers.<WalletTransferDO>lambdaQuery()
-                        .and(filter.memberId() != null, query -> query
-                                .eq(WalletTransferDO::getFromMemberId, filter.memberId())
-                                .or().eq(WalletTransferDO::getToMemberId, filter.memberId()))
-                        .eq(filter.fromMemberId() != null, WalletTransferDO::getFromMemberId, filter.fromMemberId())
-                        .eq(filter.toMemberId() != null, WalletTransferDO::getToMemberId, filter.toMemberId())
-                        .eq(filter.status() != null, WalletTransferDO::getStatus, filter.status())
-                        .orderByDesc(WalletTransferDO::getId));
-        return PageResult.of(page.getRecords().stream().map(WalletTransferConverter::toEntity).toList(),
+        var page =
+                mapper.selectPage(
+                        new Page<WalletTransferDO>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.<WalletTransferDO>lambdaQuery()
+                                .and(
+                                        filter.memberId() != null,
+                                        query ->
+                                                query.eq(
+                                                                WalletTransferDO::getFromMemberId,
+                                                                filter.memberId())
+                                                        .or()
+                                                        .eq(
+                                                                WalletTransferDO::getToMemberId,
+                                                                filter.memberId()))
+                                .eq(
+                                        filter.fromMemberId() != null,
+                                        WalletTransferDO::getFromMemberId,
+                                        filter.fromMemberId())
+                                .eq(
+                                        filter.toMemberId() != null,
+                                        WalletTransferDO::getToMemberId,
+                                        filter.toMemberId())
+                                .eq(
+                                        filter.status() != null,
+                                        WalletTransferDO::getStatus,
+                                        filter.status())
+                                .orderByDesc(WalletTransferDO::getId));
+        return PageResult.of(
+                page.getRecords().stream().map(WalletTransferConverter::toEntity).toList(),
                 page.getTotal());
     }
 }

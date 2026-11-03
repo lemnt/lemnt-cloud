@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class KefuMessageDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private Long conversationId;
     private Long senderId;
     private Integer senderType;

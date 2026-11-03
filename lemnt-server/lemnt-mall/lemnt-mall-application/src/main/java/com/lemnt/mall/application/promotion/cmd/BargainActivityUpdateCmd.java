@@ -18,5 +18,4 @@ public record BargainActivityUpdateCmd(
         Integer bargainCount,
         Integer totalLimitCount,
         BigDecimal randomMinPrice,
-        BigDecimal randomMaxPrice
-) {}
+        BigDecimal randomMaxPrice) {}

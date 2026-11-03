@@ -29,7 +29,6 @@ class UserInfoQueryExeTest {
     @AfterEach
     void clearContext() {
         SecurityContextHolder.remove();
-
     }
 
     @Test
@@ -53,6 +52,5 @@ class UserInfoQueryExeTest {
         assertThat(result.get("roles")).isEqualTo(Set.of("common"));
 
         assertThat(result.get("permissions")).isEqualTo(Set.of("system:user:list"));
-
     }
 }

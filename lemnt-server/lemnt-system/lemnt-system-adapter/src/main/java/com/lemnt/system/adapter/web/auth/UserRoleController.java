@@ -42,9 +42,10 @@ public class UserRoleController {
     @GetMapping("/auth-role/{userId}")
     public R<UserAuthRoleRes> authRole(@PathVariable Long userId) {
         Map<String, Object> result = userRoleAuthQueryExe.execute(userId);
-        UserAuthRoleRes res = new UserAuthRoleRes(
-                UserResConverter.toRes((UserDTO) result.get("user")),
-                RoleResConverter.toResList((List<RoleDTO>) result.get("roles")));
+        UserAuthRoleRes res =
+                new UserAuthRoleRes(
+                        UserResConverter.toRes((UserDTO) result.get("user")),
+                        RoleResConverter.toResList((List<RoleDTO>) result.get("roles")));
         return R.ok(res);
     }
 

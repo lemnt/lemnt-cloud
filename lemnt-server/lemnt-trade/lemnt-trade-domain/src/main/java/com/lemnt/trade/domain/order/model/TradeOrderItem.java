@@ -1,8 +1,7 @@
 package com.lemnt.trade.domain.order.model;
 
-import java.util.List;
-
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 交易订单明细。
@@ -21,8 +20,54 @@ public record TradeOrderItem(
         List<Spec> specs,
         String picUrl,
         Long orderItemId,
-        Boolean commentStatus
-) {
+        Boolean commentStatus,
+        BigDecimal discountAmount,
+        BigDecimal deliveryOriginalPrice,
+        BigDecimal deliveryDiscountPrice,
+        BigDecimal adjustmentAmount,
+        Long usePoint,
+        Long givePoint,
+        Integer refundedQuantity) {
+    /** 兼容未记录本批优惠与退款元数据的历史快照。 */
+    public TradeOrderItem(
+            Long productId,
+            String productCode,
+            String productName,
+            BigDecimal unitPrice,
+            Integer quantity,
+            BigDecimal lineAmount,
+            BigDecimal payAmount,
+            BigDecimal deliveryPrice,
+            Long spuId,
+            String spuName,
+            List<Spec> specs,
+            String picUrl,
+            Long orderItemId,
+            Boolean commentStatus) {
+        this(
+                productId,
+                productCode,
+                productName,
+                unitPrice,
+                quantity,
+                lineAmount,
+                payAmount,
+                deliveryPrice,
+                spuId,
+                spuName,
+                specs,
+                picUrl,
+                orderItemId,
+                commentStatus,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+    }
+
     /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
     public TradeOrderItem(
             Long productId,
@@ -36,9 +81,22 @@ public record TradeOrderItem(
             Long spuId,
             String spuName,
             List<Spec> specs,
-            String picUrl
-    ) {
-        this(productId, productCode, productName, unitPrice, quantity, lineAmount, payAmount, deliveryPrice, spuId, spuName, specs, picUrl, null, null);
+            String picUrl) {
+        this(
+                productId,
+                productCode,
+                productName,
+                unitPrice,
+                quantity,
+                lineAmount,
+                payAmount,
+                deliveryPrice,
+                spuId,
+                spuName,
+                specs,
+                picUrl,
+                null,
+                null);
     }
 
     /** 历史未保存商品元数据，保持为空，不查询现值补历史。 */
@@ -50,8 +108,7 @@ public record TradeOrderItem(
             Integer quantity,
             BigDecimal lineAmount,
             BigDecimal payAmount,
-            BigDecimal deliveryPrice
-    ) {
+            BigDecimal deliveryPrice) {
         this(
                 productId,
                 productCode,
@@ -73,9 +130,13 @@ public record TradeOrderItem(
     }
 
     /** 兼容存量订单快照，未记录行实付时由原订单金额分摊。 */
-    public TradeOrderItem(Long productId, String productCode, String productName, BigDecimal unitPrice,
-            Integer quantity, BigDecimal lineAmount
-    ) {
+    public TradeOrderItem(
+            Long productId,
+            String productCode,
+            String productName,
+            BigDecimal unitPrice,
+            Integer quantity,
+            BigDecimal lineAmount) {
         this(productId, productCode, productName, unitPrice, quantity, lineAmount, null);
     }
 
@@ -88,14 +149,18 @@ public record TradeOrderItem(
             Integer quantity,
             BigDecimal lineAmount,
             BigDecimal payAmount) {
-        this(productId, productCode, productName, unitPrice, quantity, lineAmount, payAmount, BigDecimal.ZERO.setScale(2));
+        this(
+                productId,
+                productCode,
+                productName,
+                unitPrice,
+                quantity,
+                lineAmount,
+                payAmount,
+                BigDecimal.ZERO.setScale(2));
     }
 
     /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
-    public record Spec(
-            Long specId,
-            String specName,
-            Long specValueId,
-            String specValueName
-    ) implements java.io.Serializable {}
+    public record Spec(Long specId, String specName, Long specValueId, String specValueName)
+            implements java.io.Serializable {}
 }

@@ -23,6 +23,5 @@ public record MenuListQry(
         /**
          * 查询用户ID（非管理员时按用户权限过滤）
          */
-        Long userId
-) implements Serializable {
-}
+        Long userId)
+        implements Serializable {}

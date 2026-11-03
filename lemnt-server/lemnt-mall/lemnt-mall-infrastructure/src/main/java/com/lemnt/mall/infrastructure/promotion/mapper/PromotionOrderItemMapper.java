@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** 活动订单商品行表 CRUD。 */
 @Mapper
-public interface PromotionOrderItemMapper extends BaseMapper<PromotionOrderItemDO> {
-}
+public interface PromotionOrderItemMapper extends BaseMapper<PromotionOrderItemDO> {}

@@ -45,8 +45,9 @@ public class OrderRemoteService {
             lifecycle.reservationSucceeded(orderNo);
         }
         var current = orders.findByOrderNo(orderNo);
-        if (current == null || !Set.of("PENDING_PAYMENT", "PAID", "SHIPPED", "COMPLETED")
-                .contains(current.status())) {
+        if (current == null
+                || !Set.of("PENDING_PAYMENT", "PAID", "SHIPPED", "COMPLETED")
+                        .contains(current.status())) {
             if (current != null && "CLOSED".equals(current.status())) {
                 closed(orderNo);
             }
@@ -90,7 +91,8 @@ public class OrderRemoteService {
         if (order != null && "REFUNDED".equals(order.status())) {
             return;
         }
-        if (order == null || !Set.of("PAID", "SHIPPED", "COMPLETED").contains(order.status())
+        if (order == null
+                || !Set.of("PAID", "SHIPPED", "COMPLETED").contains(order.status())
                 || order.items().isEmpty()) {
             throw new IllegalStateException("订单尚未支付或没有明细");
         }

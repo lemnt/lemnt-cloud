@@ -17,8 +17,7 @@ public record SettlementRecord(
         BigDecimal discountAmount,
         BigDecimal payableAmount,
         Long couponId,
-        List<CartReference> cartReferences
-) {
+        List<CartReference> cartReferences) {
     /**
      * 创建结算记录实例。
      */

@@ -8,6 +8,5 @@ public record BannerPageReq(
         @Schema(description = "标题") String title,
         @Schema(description = "0 开启，1 关闭") Integer status,
         @Schema(description = "pageNum") Integer pageNum,
-        @Schema(description = "pageSize") Integer pageSize
-) implements java.io.Serializable {
-}
+        @Schema(description = "pageSize") Integer pageSize)
+        implements java.io.Serializable {}

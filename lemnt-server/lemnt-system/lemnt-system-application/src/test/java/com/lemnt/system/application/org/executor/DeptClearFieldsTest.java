@@ -27,9 +27,13 @@ class DeptClearFieldsTest {
         try (var security = mockStatic(SecurityUtils.class)) {
             security.when(SecurityUtils::isAdmin).thenReturn(true);
 
-            assertThat(new DeptUpdateCmdExe(gateway).execute(new DeptUpdateCmd(
-                    200L, 100L, "0,100", "测试部门", 97, value, value, value, "2"))).isTrue();
-
+            assertThat(
+                            new DeptUpdateCmdExe(gateway)
+                                    .execute(
+                                            new DeptUpdateCmd(
+                                                    200L, 100L, "0,100", "测试部门", 97, value, value,
+                                                    value, "2")))
+                    .isTrue();
         }
         ArgumentCaptor<Dept> entity = ArgumentCaptor.forClass(Dept.class);
 
@@ -46,6 +50,5 @@ class DeptClearFieldsTest {
         assertThat(entity.getValue().getParentId()).isEqualTo(100L);
 
         assertThat(entity.getValue().getStatus()).isEqualTo("2");
-
     }
 }

@@ -26,8 +26,8 @@ public record CouponTemplateCreateCmd(
         List<Long> productScopeValues,
         String validityType,
         Integer fixedStartTerm,
-        Integer fixedEndTerm
-) implements Serializable {
+        Integer fixedEndTerm)
+        implements Serializable {
     /** 存量调用按原固定日期、单人一张规则兼容读取。 */
     public CouponTemplateCreateCmd(
             String code,

@@ -51,8 +51,7 @@ class CheckoutRulesTest {
                 new BigDecimal("5.00"),
                 CouponRules.discount(coupon, new BigDecimal("100.00"), now));
         assertEquals(
-                new BigDecimal("2.19"),
-                CouponRules.discount(coupon, new BigDecimal("10.99"), now));
+                new BigDecimal("2.19"), CouponRules.discount(coupon, new BigDecimal("10.99"), now));
     }
 
     @Test
@@ -74,17 +73,17 @@ class CheckoutRulesTest {
         var template = template("FIXED", new BigDecimal("20.00"), null, null);
         var line = new SettlementItem(1L, "S1", "sku", BigDecimal.TEN, 1, BigDecimal.TEN);
         var quote =
-        SettlementRules.quote(
-                List.of(line), new Coupon(2L, 1L, 3L, "AVAILABLE", null), template, now);
+                SettlementRules.quote(
+                        List.of(line), new Coupon(2L, 1L, 3L, "AVAILABLE", null), template, now);
         assertEquals(new BigDecimal("0.00"), quote.payableAmount());
         assertThrows(
                 IllegalArgumentException.class,
                 () ->
-                SettlementRules.quote(
-                List.of(line),
-                new Coupon(2L, 1L, 3L, "LOCKED", "O1"),
-                template,
-                now));
+                        SettlementRules.quote(
+                                List.of(line),
+                                new Coupon(2L, 1L, 3L, "LOCKED", "O1"),
+                                template,
+                                now));
     }
 
     @Test

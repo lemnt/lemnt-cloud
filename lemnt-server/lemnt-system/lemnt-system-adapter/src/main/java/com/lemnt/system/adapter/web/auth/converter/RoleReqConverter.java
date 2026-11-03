@@ -24,8 +24,7 @@ public class RoleReqConverter {
                 req.roleSort(),
                 req.dataScope(),
                 req.status(),
-                req.menuIds()
-        );
+                req.menuIds());
     }
 
     public static RoleUpdateCmd toCmd(RoleUpdateReq req) {
@@ -36,38 +35,23 @@ public class RoleReqConverter {
                 req.roleSort(),
                 req.dataScope(),
                 req.status(),
-                req.menuIds()
-        );
+                req.menuIds());
     }
 
     public static RoleDataScopeUpdateCmd toCmd(RoleDataScopeUpdateReq req) {
-        return new RoleDataScopeUpdateCmd(
-                req.roleId(),
-                req.dataScope(),
-                req.deptIds()
-        );
+        return new RoleDataScopeUpdateCmd(req.roleId(), req.dataScope(), req.deptIds());
     }
 
     public static RoleStatusUpdateCmd toCmd(RoleStatusUpdateReq req) {
-        return new RoleStatusUpdateCmd(
-                req.roleId(),
-                req.status()
-        );
+        return new RoleStatusUpdateCmd(req.roleId(), req.status());
     }
 
     public static RoleAuthCancelCmd toAuthCancelCmd(RoleAuthCancelReq req) {
-        return new RoleAuthCancelCmd(
-                req.roleId(),
-                req.userId(),
-                req.userIds()
-        );
+        return new RoleAuthCancelCmd(req.roleId(), req.userId(), req.userIds());
     }
 
     public static RoleAuthCmd toAuthCmd(RoleAuthReq req) {
-        return new RoleAuthCmd(
-                req.roleId(),
-                req.userIds()
-        );
+        return new RoleAuthCmd(req.roleId(), req.userIds());
     }
 
     public static RolePageQry toQry(RolePageReq item) {
@@ -81,23 +65,14 @@ public class RoleReqConverter {
                 item.pageNum(),
                 item.pageSize(),
                 item.beginTime(),
-                item.endTime()
-        );
+                item.endTime());
     }
 
     public static RoleAuthCancelCmd toAuthCancelCmd(SystemRoleUserCancelAuthUserReq req) {
-        return new RoleAuthCancelCmd(
-                req.roleId(),
-                req.userId(),
-                req.userIds()
-        );
+        return new RoleAuthCancelCmd(req.roleId(), req.userId(), req.userIds());
     }
 
     public static RoleAuthCancelCmd toAuthCancelCmd(SystemRoleUserCancelAuthUserAllReq req) {
-        return new RoleAuthCancelCmd(
-                req.roleId(),
-                req.userId(),
-                req.userIds()
-        );
+        return new RoleAuthCancelCmd(req.roleId(), req.userId(), req.userIds());
     }
 }

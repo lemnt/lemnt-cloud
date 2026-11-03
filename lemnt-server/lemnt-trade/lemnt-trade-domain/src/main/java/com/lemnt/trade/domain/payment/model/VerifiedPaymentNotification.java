@@ -12,5 +12,4 @@ public record VerifiedPaymentNotification(
         String channel,
         String channelTradeNo,
         BigDecimal amount,
-        String notifyId
-) {}
+        String notifyId) {}

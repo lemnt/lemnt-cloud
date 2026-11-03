@@ -9,6 +9,5 @@ public record DiscountActivity(
         Integer status,
         LocalDateTime startTime,
         LocalDateTime endTime,
-        String remark
-) implements java.io.Serializable {
-}
+        String remark)
+        implements java.io.Serializable {}

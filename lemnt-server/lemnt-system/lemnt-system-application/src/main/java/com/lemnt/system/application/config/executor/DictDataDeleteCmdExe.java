@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DictDataDeleteCmdExe {
     private final DictDataGateway dictDataGateway;
+
     public Boolean execute(List<Long> dictCodes) {
         return dictDataGateway.deleteByIds(dictCodes);
     }

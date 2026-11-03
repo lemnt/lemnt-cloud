@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 public class ProductCommentDO extends BaseDO {
     @TableId(type = IdType.AUTO)
     private Long id;
+
     private Long spuId;
     private Long skuId;
     private String orderNo;
@@ -43,6 +44,5 @@ public class ProductCommentDO extends BaseDO {
     private String skuPicUrl;
     private String skuProperties;
     private Boolean replyStatus;
-    @TableLogic
-    private Boolean deleted;
+    @TableLogic private Boolean deleted;
 }

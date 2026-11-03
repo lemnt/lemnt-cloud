@@ -13,11 +13,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class PasswordEncoderGatewayImpl implements PasswordEncoderGateway {
     // 缺少凭证时仍执行同等成本的默认算法校验，避免暴露账户是否存在。
-    private final String dummyHash = SecurityUtils.encryptPassword(java.util.UUID.randomUUID().toString());
+    private final String dummyHash =
+            SecurityUtils.encryptPassword(java.util.UUID.randomUUID().toString());
 
     @Override
     public boolean matches(String rawPassword, String encodedPassword) {
-        return SecurityUtils.matchesPassword(rawPassword, encodedPassword == null ? dummyHash : encodedPassword);
+        return SecurityUtils.matchesPassword(
+                rawPassword, encodedPassword == null ? dummyHash : encodedPassword);
     }
 
     @Override

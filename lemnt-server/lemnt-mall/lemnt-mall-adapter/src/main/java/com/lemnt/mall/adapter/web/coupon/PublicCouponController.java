@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
-
 import java.util.List;
 
 /**
@@ -43,9 +42,7 @@ public class PublicCouponController {
     @PutMapping("/{id}/public-claim")
     @RequiresPermissions("mall:coupon-template:edit")
     @Operation(summary = "开启或关闭会员自助领取；现有模板默认关闭")
-    public R<Boolean> setting(
-            @PathVariable Long id,
-            @Valid @RequestBody CouponPublicClaimReq req) {
+    public R<Boolean> setting(@PathVariable Long id, @Valid @RequestBody CouponPublicClaimReq req) {
         return R.ok(couponPublicClaimCmdExe.execute(CouponReqConverter.setting(id, req)));
     }
 }

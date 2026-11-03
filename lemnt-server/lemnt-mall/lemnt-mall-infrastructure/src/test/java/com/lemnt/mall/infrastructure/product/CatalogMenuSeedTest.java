@@ -19,10 +19,10 @@ class CatalogMenuSeedTest {
             // Contract fixture for the columns used from the existing sys_menu schema.
             statement.execute(
                     "CREATE TABLE sys_menu(menu_id BIGINT AUTO_INCREMENT PRIMARY KEY, menu_name"
-                    + " VARCHAR(50),parent_id BIGINT,order_num INT,path VARCHAR(200),component"
-                    + " VARCHAR(255),is_frame INT,is_cache INT,menu_type CHAR(1),visible"
-                    + " CHAR(1),status CHAR(1),perms VARCHAR(100),icon VARCHAR(100),create_by"
-                    + " VARCHAR(64),create_time TIMESTAMP)");
+                            + " VARCHAR(50),parent_id BIGINT,order_num INT,path VARCHAR(200),component"
+                            + " VARCHAR(255),is_frame INT,is_cache INT,menu_type CHAR(1),visible"
+                            + " CHAR(1),status CHAR(1),perms VARCHAR(100),icon VARCHAR(100),create_by"
+                            + " VARCHAR(64),create_time TIMESTAMP)");
             var script = new ClassPathResource("sql/V20261025__mall_catalog_menu.sql");
             ScriptUtils.executeSqlScript(connection, script);
             ScriptUtils.executeSqlScript(connection, script);
@@ -33,7 +33,7 @@ class CatalogMenuSeedTest {
             }
             try (var rows =
                     statement.executeQuery(
-                    "SELECT COUNT(*) FROM sys_menu WHERE perms='mall:sku:stock'")) {
+                            "SELECT COUNT(*) FROM sys_menu WHERE perms='mall:sku:stock'")) {
                 rows.next();
                 assertEquals(1, rows.getInt(1));
             }

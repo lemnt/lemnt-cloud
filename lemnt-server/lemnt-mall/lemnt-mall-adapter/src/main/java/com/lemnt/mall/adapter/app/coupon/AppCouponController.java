@@ -28,6 +28,9 @@ public class AppCouponController {
     @Operation(summary = "当前会员持有的优惠券")
     public R<List<MallAppCouponCouponsRes>> coupons() {
         Long memberId = SecurityUtils.getUserId();
-        return R.ok(couponListQueryExe.execute(memberId).stream().map(CouponResConverter::couponToMallAppCouponCouponsRes).toList());
+        return R.ok(
+                couponListQueryExe.execute(memberId).stream()
+                        .map(CouponResConverter::couponToMallAppCouponCouponsRes)
+                        .toList());
     }
 }

@@ -29,8 +29,11 @@ public class RewardGiftService {
                 try {
                     issuance.gift(order.memberId(), entry.getKey(), order.orderNo(), index);
                 } catch (ServiceException exception) {
-                    log.warn("订单赠券未发放, orderNo={}, templateId={}, reason={}",
-                            order.orderNo(), entry.getKey(), exception.getMessage());
+                    log.warn(
+                            "订单赠券未发放, orderNo={}, templateId={}, reason={}",
+                            order.orderNo(),
+                            entry.getKey(),
+                            exception.getMessage());
                     break;
                 }
             }

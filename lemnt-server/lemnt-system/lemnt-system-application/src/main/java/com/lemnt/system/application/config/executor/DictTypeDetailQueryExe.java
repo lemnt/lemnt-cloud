@@ -23,6 +23,7 @@ import java.util.List;
 public class DictTypeDetailQueryExe {
     private final DictDataGateway dictDataGateway;
     private final DictTypeGateway dictTypeGateway;
+
     public DictTypeDTO executeById(Long dictId) {
         return DictTypeConverter.toDTO(dictTypeGateway.selectById(dictId));
     }
@@ -32,7 +33,6 @@ public class DictTypeDetailQueryExe {
     }
 
     public List<DictDataDTO> executeDictDataByType(String dictType) {
-        return DictDataConverter
-                .toDTOList(dictDataGateway.selectDictDataByType(dictType));
+        return DictDataConverter.toDTOList(dictDataGateway.selectDictDataByType(dictType));
     }
 }

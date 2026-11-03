@@ -21,6 +21,7 @@ import java.math.RoundingMode;
 @RequiredArgsConstructor
 public class StoreProductPageQueryExe {
     private final ProductSpuGateway productSpuGateway;
+
     private String money(BigDecimal v) {
         return v.setScale(2, RoundingMode.UNNECESSARY).toPlainString();
     }
@@ -41,25 +42,25 @@ public class StoreProductPageQueryExe {
         }
         String name =
                 q.name() == null || q.name().isBlank()
-                ? null
-                : ProductCatalogValidation.text(q.name(), 200, "商品名称");
+                        ? null
+                        : ProductCatalogValidation.text(q.name(), 200, "商品名称");
         var f =
                 new StoreFilter(
-                name, q.categoryId(), (q.pageNum() - 1) * q.pageSize(), q.pageSize());
+                        name, q.categoryId(), (q.pageNum() - 1) * q.pageSize(), q.pageSize());
         return new StorePageDTO(
                 productSpuGateway.products(f).stream()
-                .map(
-                v ->
-                new StoreProductDTO(
-                v.id(),
-                v.name(),
-                v.categoryId(),
-                v.brandId(),
-                v.image(),
-                money(v.minPrice()),
-                money(v.maxPrice()),
-                v.available()))
-                .toList(),
+                        .map(
+                                v ->
+                                        new StoreProductDTO(
+                                                v.id(),
+                                                v.name(),
+                                                v.categoryId(),
+                                                v.brandId(),
+                                                v.image(),
+                                                money(v.minPrice()),
+                                                money(v.maxPrice()),
+                                                v.available()))
+                        .toList(),
                 productSpuGateway.storeCount(f));
     }
 }

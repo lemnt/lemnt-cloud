@@ -30,6 +30,7 @@ public class MemberLevelListQueryExe {
         }
         var name = qry.name() == null || qry.name().isBlank() ? null : qry.name().trim();
         return memberLevelGateway.levels(name, qry.enabledOnly() ? 1 : qry.status()).stream()
-                .map(MemberGrowthDTOConverter::toLevelDTO).toList();
+                .map(MemberGrowthDTOConverter::toLevelDTO)
+                .toList();
     }
 }

@@ -1,9 +1,8 @@
 package com.lemnt.trade.domain.order.model;
 
-import java.util.List;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 /** 可售后订单商品行快照。 */
 public record OrderRefundItem(
@@ -17,8 +16,8 @@ public record OrderRefundItem(
         Long spuId,
         String spuName,
         List<Spec> specs,
-        String picUrl
-) implements Serializable {
+        String picUrl)
+        implements Serializable {
     /** 历史未保存商品元数据，保持为空，不查询现值补历史。 */
     public OrderRefundItem(
             Long id,
@@ -27,8 +26,7 @@ public record OrderRefundItem(
             Integer quantity,
             BigDecimal lineAmount,
             BigDecimal payAmount,
-            BigDecimal deliveryPrice
-    ) {
+            BigDecimal deliveryPrice) {
         this(
                 id,
                 productId,
@@ -48,7 +46,8 @@ public record OrderRefundItem(
         deliveryPrice = deliveryPrice == null ? BigDecimal.ZERO.setScale(2) : deliveryPrice;
     }
 
-    public OrderRefundItem(Long id, Long productId, String productName, Integer quantity, BigDecimal lineAmount) {
+    public OrderRefundItem(
+            Long id, Long productId, String productName, Integer quantity, BigDecimal lineAmount) {
         this(id, productId, productName, quantity, lineAmount, null);
     }
 
@@ -60,14 +59,17 @@ public record OrderRefundItem(
             Integer quantity,
             BigDecimal lineAmount,
             BigDecimal payAmount) {
-        this(id, productId, productName, quantity, lineAmount, payAmount, BigDecimal.ZERO.setScale(2));
+        this(
+                id,
+                productId,
+                productName,
+                quantity,
+                lineAmount,
+                payAmount,
+                BigDecimal.ZERO.setScale(2));
     }
 
     /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
-    public record Spec(
-            Long specId,
-            String specName,
-            Long specValueId,
-            String specValueName
-    ) implements java.io.Serializable {}
+    public record Spec(Long specId, String specName, Long specValueId, String specValueName)
+            implements java.io.Serializable {}
 }

@@ -6,6 +6,7 @@ import com.lemnt.member.adapter.web.growth.MemberLevelRecordController;
 import com.lemnt.member.application.growth.executor.MemberLevelRecordAllPageQueryExe;
 import com.lemnt.member.application.growth.executor.MemberLevelRecordDetailQueryExe;
 import com.lemnt.member.application.growth.qry.LevelRecordAllPageQry;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -21,15 +22,31 @@ class MemberLevelRecordHttpTest {
     @Test
     void bindsLevelAndTimeRangeToIndependentQuery() throws Exception {
         var query = mock(MemberLevelRecordAllPageQueryExe.class);
-        var expected = new LevelRecordAllPageQry(7L, 2, 1, 9L,
-                LocalDateTime.of(2026, 10, 30, 10, 0), LocalDateTime.of(2026, 10, 30, 11, 0));
+        var expected =
+                new LevelRecordAllPageQry(
+                        7L,
+                        2,
+                        1,
+                        9L,
+                        LocalDateTime.of(2026, 10, 30, 10, 0),
+                        LocalDateTime.of(2026, 10, 30, 11, 0));
         when(query.execute(expected)).thenReturn(new PageResult<>(List.of(), 0));
-        var mvc = MockMvcBuilders.standaloneSetup(new MemberLevelRecordController(
-                query, mock(MemberLevelRecordDetailQueryExe.class))).setControllerAdvice(new GlobalExceptionHandler()).build();
-        mvc.perform(get("/member/admin/level-records").param("memberId", "7").param("levelId", "9")
-                .param("pageNum", "2").param("pageSize", "1")
-                .param("startTime", "2026-10-30 10:00:00").param("endTime", "2026-10-30 11:00:00"))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.rows").isArray())
+        var mvc =
+                MockMvcBuilders.standaloneSetup(
+                                new MemberLevelRecordController(
+                                        query, mock(MemberLevelRecordDetailQueryExe.class)))
+                        .setControllerAdvice(new GlobalExceptionHandler())
+                        .build();
+        mvc.perform(
+                        get("/member/admin/level-records")
+                                .param("memberId", "7")
+                                .param("levelId", "9")
+                                .param("pageNum", "2")
+                                .param("pageSize", "1")
+                                .param("startTime", "2026-10-30 10:00:00")
+                                .param("endTime", "2026-10-30 11:00:00"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rows").isArray())
                 .andExpect(jsonPath("$.total").value(0));
         verify(query).execute(expected);
     }
@@ -38,8 +55,12 @@ class MemberLevelRecordHttpTest {
     @Test
     void validatesLevelIdAndPaginationBeforeQuery() throws Exception {
         var query = mock(MemberLevelRecordAllPageQueryExe.class);
-        var mvc = MockMvcBuilders.standaloneSetup(new MemberLevelRecordController(
-                query, mock(MemberLevelRecordDetailQueryExe.class))).setControllerAdvice(new GlobalExceptionHandler()).build();
+        var mvc =
+                MockMvcBuilders.standaloneSetup(
+                                new MemberLevelRecordController(
+                                        query, mock(MemberLevelRecordDetailQueryExe.class)))
+                        .setControllerAdvice(new GlobalExceptionHandler())
+                        .build();
         mvc.perform(get("/member/admin/level-records").param("levelId", "0"))
                 .andExpect(status().isUnprocessableEntity());
         mvc.perform(get("/member/admin/level-records").param("pageSize", "101"))

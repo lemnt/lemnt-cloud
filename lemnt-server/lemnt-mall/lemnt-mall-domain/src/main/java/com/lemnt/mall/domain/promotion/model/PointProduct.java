@@ -12,6 +12,5 @@ public record PointProduct(
         Integer point,
         BigDecimal price,
         Integer stock,
-        Integer activityStatus
-) implements java.io.Serializable {
-}
+        Integer activityStatus)
+        implements java.io.Serializable {}

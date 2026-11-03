@@ -8,7 +8,13 @@ import type { BrokerageRecord, BrokerageUser, BrokerageWithdraw } from '../api/b
 
 const BIZ = { 1: '推广佣金', 2: '提现扣减', 3: '提现驳回' };
 const STATUS = { 0: '待结算', 1: '已结算', 2: '已取消' };
-const WITHDRAW_STATUS = { 0: '审核中', 10: '审核通过', 11: '提现成功', 20: '审核不通过', 21: '提现失败' };
+const WITHDRAW_STATUS = {
+  0: '审核中',
+  10: '审核通过',
+  11: '提现成功',
+  20: '审核不通过',
+  21: '提现失败',
+};
 const WITHDRAW_TYPE = { 1: '钱包', 2: '银行卡', 3: '微信收款码', 4: '支付宝收款码' };
 
 /** 后台分销用户、佣金记录与提现审核。 */
@@ -17,9 +23,15 @@ export function BrokeragePage() {
   const { message } = App.useApp();
   const cache = useQueryClient();
   const [userPage, setUserPage] = useState({ pageNum: 1, pageSize: 20 });
-  const [userFilter, setUserFilter] = useState<{ bindUserId?: string; brokerageEnabled?: boolean }>({});
+  const [userFilter, setUserFilter] = useState<{ bindUserId?: string; brokerageEnabled?: boolean }>(
+    {},
+  );
   const [recordPage, setRecordPage] = useState({ pageNum: 1, pageSize: 20 });
-  const [recordFilter, setRecordFilter] = useState<{ userId?: string; bizType?: number; status?: number }>({});
+  const [recordFilter, setRecordFilter] = useState<{
+    userId?: string;
+    bizType?: number;
+    status?: number;
+  }>({});
   const [withdrawPage, setWithdrawPage] = useState({ pageNum: 1, pageSize: 20 });
   const [withdrawFilter, setWithdrawFilter] = useState<{ userId?: string; status?: number }>({});
   const [bind, setBind] = useState<{ userId: string; value: string }>();
@@ -40,7 +52,9 @@ export function BrokeragePage() {
     queryFn: () => api.getWithdraws({ ...withdrawFilter, ...withdrawPage }),
     enabled: can('trade:brokerage:list'),
   });
-  const enabled = useMutation({ mutationFn: ({ id, value }: { id: string; value: boolean }) => api.setEnabled(id, value) });
+  const enabled = useMutation({
+    mutationFn: ({ id, value }: { id: string; value: boolean }) => api.setEnabled(id, value),
+  });
   const bindMutation = useMutation({ mutationFn: () => api.updateBind(bind!.userId, bind!.value) });
   const auditMutation = useMutation({
     mutationFn: () => api.auditWithdraw(audit!.id, audit!.approved, audit!.reason),
@@ -62,11 +76,27 @@ export function BrokeragePage() {
   }
   const userColumns: ProColumns<BrokerageUser>[] = [
     { title: '会员编号', dataIndex: 'id', search: false },
-    { title: '推广员', dataIndex: 'bindNickname', search: false, render: (_, row) => row.bindNickname || row.bindUserId || '—' },
-    { title: '分销资格', dataIndex: 'brokerageEnabled', valueType: 'select', valueEnum: { true: '已开通', false: '未开通' }, search: false },
+    {
+      title: '推广员',
+      dataIndex: 'bindNickname',
+      search: false,
+      render: (_, row) => row.bindNickname || row.bindUserId || '—',
+    },
+    {
+      title: '分销资格',
+      dataIndex: 'brokerageEnabled',
+      valueType: 'select',
+      valueEnum: { true: '已开通', false: '未开通' },
+      search: false,
+    },
     { title: '可用佣金', dataIndex: 'brokeragePrice', search: false },
     { title: '冻结佣金', dataIndex: 'frozenPrice', search: false },
-    { title: '一级/二级', dataIndex: 'firstLevelCount', search: false, render: (_, row) => `${row.firstLevelCount}/${row.secondLevelCount}` },
+    {
+      title: '一级/二级',
+      dataIndex: 'firstLevelCount',
+      search: false,
+      render: (_, row) => `${row.firstLevelCount}/${row.secondLevelCount}`,
+    },
     {
       title: '操作',
       valueType: 'option',
@@ -89,7 +119,11 @@ export function BrokeragePage() {
           </Popconfirm>
         ),
         can('trade:brokerage:update') && (
-          <Button key="bind" type="link" onClick={() => setBind({ userId: row.id, value: row.bindUserId || '' })}>
+          <Button
+            key="bind"
+            type="link"
+            onClick={() => setBind({ userId: row.id, value: row.bindUserId || '' })}
+          >
             改推广员
           </Button>
         ),
@@ -111,7 +145,13 @@ export function BrokeragePage() {
     { title: '会员编号', dataIndex: 'userId' },
     { title: '金额', dataIndex: 'price', search: false },
     { title: '手续费', dataIndex: 'feePrice', search: false },
-    { title: '方式', dataIndex: 'type', valueType: 'select', valueEnum: WITHDRAW_TYPE, search: false },
+    {
+      title: '方式',
+      dataIndex: 'type',
+      valueType: 'select',
+      valueEnum: WITHDRAW_TYPE,
+      search: false,
+    },
     { title: '收款人', dataIndex: 'userName', search: false },
     { title: '收款账号', dataIndex: 'userAccount', search: false },
     { title: '状态', dataIndex: 'status', valueType: 'select', valueEnum: WITHDRAW_STATUS },
@@ -119,12 +159,26 @@ export function BrokeragePage() {
     {
       title: '操作',
       valueType: 'option',
-      render: (_, row) => row.status === 0 && can('trade:brokerage:audit')
-        ? [
-            <Button key="pass" type="link" onClick={() => setAudit({ id: row.id, approved: true, reason: '' })}>通过</Button>,
-            <Button key="reject" type="link" danger onClick={() => setAudit({ id: row.id, approved: false, reason: '' })}>驳回</Button>,
-          ]
-        : [],
+      render: (_, row) =>
+        row.status === 0 && can('trade:brokerage:audit')
+          ? [
+              <Button
+                key="pass"
+                type="link"
+                onClick={() => setAudit({ id: row.id, approved: true, reason: '' })}
+              >
+                通过
+              </Button>,
+              <Button
+                key="reject"
+                type="link"
+                danger
+                onClick={() => setAudit({ id: row.id, approved: false, reason: '' })}
+              >
+                驳回
+              </Button>,
+            ]
+          : [],
     },
   ];
   return (
@@ -150,7 +204,9 @@ export function BrokeragePage() {
         ),
       ]}
     >
-      {users.isError && <Alert type="error" title="分销用户读取失败" description={String(users.error)} />}
+      {users.isError && (
+        <Alert type="error" title="分销用户读取失败" description={String(users.error)} />
+      )}
       <Tabs
         items={[
           {
@@ -163,16 +219,22 @@ export function BrokeragePage() {
                 columns={userColumns}
                 dataSource={users.data?.records ?? []}
                 loading={users.isFetching}
-                onSubmit={value => {
+                onSubmit={(value) => {
                   setUserFilter({
                     bindUserId: typeof value.id === 'string' ? value.id : undefined,
-                    brokerageEnabled: value.brokerageEnabled === 'true' || value.brokerageEnabled === true,
+                    brokerageEnabled:
+                      value.brokerageEnabled === 'true' || value.brokerageEnabled === true,
                   });
                   setUserPage({ ...userPage, pageNum: 1 });
                 }}
-                onReset={() => { setUserFilter({}); setUserPage({ ...userPage, pageNum: 1 }); }}
+                onReset={() => {
+                  setUserFilter({});
+                  setUserPage({ ...userPage, pageNum: 1 });
+                }}
                 pagination={{
-                  current: userPage.pageNum, pageSize: userPage.pageSize, total: users.data?.total ?? 0,
+                  current: userPage.pageNum,
+                  pageSize: userPage.pageSize,
+                  total: users.data?.total ?? 0,
                   onChange: (pageNum, pageSize) => setUserPage({ pageNum, pageSize }),
                 }}
               />
@@ -188,7 +250,7 @@ export function BrokeragePage() {
                 columns={recordColumns}
                 dataSource={records.data?.records ?? []}
                 loading={records.isFetching}
-                onSubmit={value => {
+                onSubmit={(value) => {
                   setRecordFilter({
                     userId: typeof value.userId === 'string' ? value.userId : undefined,
                     bizType: typeof value.bizType === 'number' ? value.bizType : undefined,
@@ -196,9 +258,14 @@ export function BrokeragePage() {
                   });
                   setRecordPage({ ...recordPage, pageNum: 1 });
                 }}
-                onReset={() => { setRecordFilter({}); setRecordPage({ ...recordPage, pageNum: 1 }); }}
+                onReset={() => {
+                  setRecordFilter({});
+                  setRecordPage({ ...recordPage, pageNum: 1 });
+                }}
                 pagination={{
-                  current: recordPage.pageNum, pageSize: recordPage.pageSize, total: records.data?.total ?? 0,
+                  current: recordPage.pageNum,
+                  pageSize: recordPage.pageSize,
+                  total: records.data?.total ?? 0,
                   onChange: (pageNum, pageSize) => setRecordPage({ pageNum, pageSize }),
                 }}
               />
@@ -214,16 +281,21 @@ export function BrokeragePage() {
                 columns={withdrawColumns}
                 dataSource={withdrawals.data?.records ?? []}
                 loading={withdrawals.isFetching}
-                onSubmit={value => {
+                onSubmit={(value) => {
                   setWithdrawFilter({
                     userId: typeof value.userId === 'string' ? value.userId : undefined,
                     status: typeof value.status === 'number' ? value.status : undefined,
                   });
                   setWithdrawPage({ ...withdrawPage, pageNum: 1 });
                 }}
-                onReset={() => { setWithdrawFilter({}); setWithdrawPage({ ...withdrawPage, pageNum: 1 }); }}
+                onReset={() => {
+                  setWithdrawFilter({});
+                  setWithdrawPage({ ...withdrawPage, pageNum: 1 });
+                }}
                 pagination={{
-                  current: withdrawPage.pageNum, pageSize: withdrawPage.pageSize, total: withdrawals.data?.total ?? 0,
+                  current: withdrawPage.pageNum,
+                  pageSize: withdrawPage.pageSize,
+                  total: withdrawals.data?.total ?? 0,
                   onChange: (pageNum, pageSize) => setWithdrawPage({ pageNum, pageSize }),
                 }}
               />
@@ -252,7 +324,7 @@ export function BrokeragePage() {
           <Input
             value={bind?.value ?? ''}
             placeholder="推广员会员编号"
-            onChange={event => bind && setBind({ ...bind, value: event.target.value })}
+            onChange={(event) => bind && setBind({ ...bind, value: event.target.value })}
           />
         </Space>
       </Modal>
@@ -277,7 +349,7 @@ export function BrokeragePage() {
           rows={3}
           value={audit?.reason ?? ''}
           placeholder="审核说明（可选）"
-          onChange={event => audit && setAudit({ ...audit, reason: event.target.value })}
+          onChange={(event) => audit && setAudit({ ...audit, reason: event.target.value })}
         />
       </Modal>
     </PageContainer>

@@ -55,15 +55,20 @@ public class ProductSpecController {
     @Operation(summary = "新增规格字典")
     @RequiresPermissions("mall:spec:add")
     public R<ProductSpecCreateRes> create(@Valid @RequestBody ProductSpecCreateReq req) {
-        return R.ok(ProductSpecResConverter.create(productSpecCreateCmdExe.execute(ProductSpecReqConverter.create(req))));
+        return R.ok(
+                ProductSpecResConverter.create(
+                        productSpecCreateCmdExe.execute(ProductSpecReqConverter.create(req))));
     }
 
     /** 修改字典。 */
     @PutMapping("/{id}")
     @Operation(summary = "修改规格字典")
     @RequiresPermissions("mall:spec:edit")
-    public R<ProductSpecUpdateRes> update(@PathVariable Long id, @Valid @RequestBody ProductSpecUpdateReq req) {
-        return R.ok(ProductSpecResConverter.update(productSpecUpdateCmdExe.execute(ProductSpecReqConverter.update(id, req))));
+    public R<ProductSpecUpdateRes> update(
+            @PathVariable Long id, @Valid @RequestBody ProductSpecUpdateReq req) {
+        return R.ok(
+                ProductSpecResConverter.update(
+                        productSpecUpdateCmdExe.execute(ProductSpecReqConverter.update(id, req))));
     }
 
     /** 删除无子值的规格项。 */
@@ -89,7 +94,9 @@ public class ProductSpecController {
     @RequiresPermissions("mall:spec:list")
     public R<ProductSpecPageRes> page(@Valid @ModelAttribute ProductSpecPageReq req) {
         var value = productSpecPageQueryExe.execute(ProductSpecReqConverter.page(req));
-        return R.page(value.getRecords().stream().map(ProductSpecResConverter::page).toList(), value.getTotal());
+        return R.page(
+                value.getRecords().stream().map(ProductSpecResConverter::page).toList(),
+                value.getTotal());
     }
 
     /** 查询有限条选择数据。 */
@@ -97,6 +104,9 @@ public class ProductSpecController {
     @Operation(summary = "规格字典选择查询")
     @RequiresPermissions("mall:spec:query")
     public R<List<ProductSpecSimpleRes>> simple(@Valid @ModelAttribute ProductSpecSimpleReq req) {
-        return R.ok(productSpecSimpleListQueryExe.execute(ProductSpecReqConverter.simple(req)).stream().map(ProductSpecResConverter::simple).toList());
+        return R.ok(
+                productSpecSimpleListQueryExe.execute(ProductSpecReqConverter.simple(req)).stream()
+                        .map(ProductSpecResConverter::simple)
+                        .toList());
     }
 }

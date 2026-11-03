@@ -10,8 +10,8 @@ public record LevelRecordAllPageQry(
         int pageSize,
         Long levelId,
         LocalDateTime startTime,
-        LocalDateTime endTime
-) implements Serializable {
+        LocalDateTime endTime)
+        implements Serializable {
     /** 会员内旧查询不附加等级或日期筛选。 */
     public LevelRecordAllPageQry(Long memberId, int pageNum, int pageSize) {
         this(memberId, pageNum, pageSize, null, null, null);

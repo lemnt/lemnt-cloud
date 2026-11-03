@@ -9,11 +9,13 @@ import com.lemnt.system.infrastructure.auth.dataobject.UserDO;
 import com.lemnt.system.infrastructure.auth.mapper.UserMapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -76,22 +78,22 @@ public class UserGatewayImpl implements UserGateway {
 
     @Override
     public Boolean updateUserAvatar(Long userId, String avatar) {
-        return userMapper.updateUserAvatar(userId, avatar) > 0;
+        return updateUserAvatarRow(userId, avatar) > 0;
     }
 
     @Override
     public Boolean updateUserStatus(User user) {
-        return userMapper.updateUserStatus(user.getUserId(), user.getStatus()) > 0;
+        return updateUserStatusRow(user.getUserId(), user.getStatus()) > 0;
     }
 
     @Override
     public Boolean updateLoginInfo(User user) {
-        return userMapper.updateLoginInfo(UserConverter.toDO(user)) > 0;
+        return updateLoginInfoRow(UserConverter.toDO(user)) > 0;
     }
 
     @Override
     public Boolean resetUserPwd(Long userId, String password) {
-        return userMapper.resetUserPwd(userId, password) > 0;
+        return resetUserPwdRow(userId, password) > 0;
     }
 
     @Override
@@ -106,21 +108,123 @@ public class UserGatewayImpl implements UserGateway {
 
     @Override
     public User checkUserNameUnique(String userName) {
-        return UserConverter.toEntity(userMapper.checkUserNameUnique(userName));
+        return UserConverter.toEntity(checkUserNameUniqueRow(userName));
     }
 
     @Override
     public User checkPhoneUnique(String phonenumber) {
-        return UserConverter.toEntity(userMapper.checkPhoneUnique(phonenumber));
+        return UserConverter.toEntity(checkPhoneUniqueRow(phonenumber));
     }
 
     @Override
     public User checkEmailUnique(String email) {
-        return UserConverter.toEntity(userMapper.checkEmailUnique(email));
+        return UserConverter.toEntity(checkEmailUniqueRow(email));
     }
 
     @Override
     public Boolean checkDeptExistUser(Long deptId) {
-        return userMapper.checkDeptExistUser(deptId) > 0;
+        return checkDeptExistUserRow(deptId) > 0;
+    }
+
+    /**
+     * 修改用户头像
+     *
+     * @param userId 用户ID
+     * @param avatar 头像路径
+     * @return 结果
+     */
+    private int updateUserAvatarRow(Long userId, String avatar) {
+        return userMapper.update(
+                Wrappers.lambdaUpdate(UserDO.class)
+                        .eq(UserDO::getUserId, userId)
+                        .set(UserDO::getAvatar, avatar));
+    }
+
+    /**
+     * 修改用户状态
+     *
+     * @param userId 用户ID
+     * @param status 状态
+     * @return 结果
+     */
+    private int updateUserStatusRow(Long userId, String status) {
+        return userMapper.update(
+                Wrappers.lambdaUpdate(UserDO.class)
+                        .eq(UserDO::getUserId, userId)
+                        .set(UserDO::getStatus, status));
+    }
+
+    /**
+     * 更新用户登录信息
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    private int updateLoginInfoRow(UserDO user) {
+        return userMapper.update(
+                Wrappers.lambdaUpdate(UserDO.class)
+                        .eq(UserDO::getUserId, user.getUserId())
+                        .set(UserDO::getLoginDate, user.getLoginDate())
+                        .set(UserDO::getLoginIp, user.getLoginIp()));
+    }
+
+    /**
+     * 重置用户密码
+     *
+     * @param userId   用户ID
+     * @param password 新密码
+     * @return 结果
+     */
+    private int resetUserPwdRow(Long userId, String password) {
+        return userMapper.update(
+                Wrappers.lambdaUpdate(UserDO.class)
+                        .eq(UserDO::getUserId, userId)
+                        .set(UserDO::getPassword, password)
+                        .set(UserDO::getPwdUpdateDate, LocalDateTime.now()));
+    }
+
+    /**
+     * 校验用户名是否唯一
+     *
+     * @param userName 用户名
+     * @return 用户信息
+     */
+    private UserDO checkUserNameUniqueRow(String userName) {
+        return userMapper.selectOne(
+                Wrappers.<UserDO>lambdaQuery().eq(UserDO::getUserName, userName).last("limit 1"));
+    }
+
+    /**
+     * 校验手机号是否唯一
+     *
+     * @param phonenumber 手机号
+     * @return 用户信息
+     */
+    private UserDO checkPhoneUniqueRow(String phonenumber) {
+        return userMapper.selectOne(
+                Wrappers.<UserDO>lambdaQuery()
+                        .eq(UserDO::getPhonenumber, phonenumber)
+                        .last("limit 1"));
+    }
+
+    /**
+     * 校验邮箱是否唯一
+     *
+     * @param email 邮箱
+     * @return 用户信息
+     */
+    private UserDO checkEmailUniqueRow(String email) {
+        return userMapper.selectOne(
+                Wrappers.<UserDO>lambdaQuery().eq(UserDO::getEmail, email).last("limit 1"));
+    }
+
+    /**
+     * 查询部门是否存在用户
+     *
+     * @param deptId 部门ID
+     * @return 结果
+     */
+    private long checkDeptExistUserRow(Long deptId) {
+        return userMapper.selectCount(Wrappers.<UserDO>lambdaQuery().eq(UserDO::getDeptId, deptId));
     }
 }

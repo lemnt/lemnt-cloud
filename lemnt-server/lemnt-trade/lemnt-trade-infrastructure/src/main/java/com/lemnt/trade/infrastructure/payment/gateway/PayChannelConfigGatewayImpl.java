@@ -24,13 +24,25 @@ public class PayChannelConfigGatewayImpl implements PayChannelConfigGateway {
 
     @Override
     public PageResult<PayChannelConfig> page(PayChannelFilter filter) {
-        var page = mapper.selectPage(new Page<PayChannelConfigDO>(filter.pageNum(), filter.pageSize()),
-                Wrappers.<PayChannelConfigDO>lambdaQuery()
-                        .eq(filter.appId() != null, PayChannelConfigDO::getAppId, filter.appId())
-                        .like(filter.code() != null && !filter.code().isBlank(), PayChannelConfigDO::getCode, filter.code())
-                        .eq(filter.status() != null, PayChannelConfigDO::getStatus, filter.status())
-                        .orderByDesc(PayChannelConfigDO::getId));
-        return PageResult.of(page.getRecords().stream().map(PayChannelConfigConverter::toEntity).toList(),
+        var page =
+                mapper.selectPage(
+                        new Page<PayChannelConfigDO>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.<PayChannelConfigDO>lambdaQuery()
+                                .eq(
+                                        filter.appId() != null,
+                                        PayChannelConfigDO::getAppId,
+                                        filter.appId())
+                                .like(
+                                        filter.code() != null && !filter.code().isBlank(),
+                                        PayChannelConfigDO::getCode,
+                                        filter.code())
+                                .eq(
+                                        filter.status() != null,
+                                        PayChannelConfigDO::getStatus,
+                                        filter.status())
+                                .orderByDesc(PayChannelConfigDO::getId));
+        return PageResult.of(
+                page.getRecords().stream().map(PayChannelConfigConverter::toEntity).toList(),
                 page.getTotal());
     }
 
@@ -41,18 +53,24 @@ public class PayChannelConfigGatewayImpl implements PayChannelConfigGateway {
 
     @Override
     public List<PayChannelConfig> listByAppId(Long appId) {
-        return mapper.selectList(Wrappers.<PayChannelConfigDO>lambdaQuery()
-                        .eq(PayChannelConfigDO::getAppId, appId)
-                        .orderByAsc(PayChannelConfigDO::getCode))
-                .stream().map(PayChannelConfigConverter::toEntity).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<PayChannelConfigDO>lambdaQuery()
+                                .eq(PayChannelConfigDO::getAppId, appId)
+                                .orderByAsc(PayChannelConfigDO::getCode))
+                .stream()
+                .map(PayChannelConfigConverter::toEntity)
+                .toList();
     }
 
     @Override
     public boolean exists(Long appId, String code, Long excludeId) {
-        return mapper.selectCount(Wrappers.<PayChannelConfigDO>lambdaQuery()
-                .eq(PayChannelConfigDO::getAppId, appId)
-                .eq(PayChannelConfigDO::getCode, code)
-                .ne(excludeId != null, PayChannelConfigDO::getId, excludeId)) > 0;
+        return mapper.selectCount(
+                        Wrappers.<PayChannelConfigDO>lambdaQuery()
+                                .eq(PayChannelConfigDO::getAppId, appId)
+                                .eq(PayChannelConfigDO::getCode, code)
+                                .ne(excludeId != null, PayChannelConfigDO::getId, excludeId))
+                > 0;
     }
 
     @Override
@@ -74,7 +92,9 @@ public class PayChannelConfigGatewayImpl implements PayChannelConfigGateway {
 
     @Override
     public boolean channelReferenced(Long appId) {
-        return mapper.selectCount(Wrappers.<PayChannelConfigDO>lambdaQuery()
-                .eq(PayChannelConfigDO::getAppId, appId)) > 0;
+        return mapper.selectCount(
+                        Wrappers.<PayChannelConfigDO>lambdaQuery()
+                                .eq(PayChannelConfigDO::getAppId, appId))
+                > 0;
     }
 }

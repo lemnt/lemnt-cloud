@@ -13,15 +13,10 @@ public record CouponDTO(
         String status,
         String orderNo,
         CouponTermsDTO terms,
-        LocalDateTime useTime
-) implements Serializable {
+        LocalDateTime useTime)
+        implements Serializable {
     /** 存量调用按原固定日期、单人一张规则兼容读取。 */
-    public CouponDTO(
-            Long id,
-            Long templateId,
-            Long memberId,
-            String status,
-            String orderNo) {
+    public CouponDTO(Long id, Long templateId, Long memberId, String status, String orderNo) {
         this(id, templateId, memberId, status, orderNo, null, null);
     }
 }

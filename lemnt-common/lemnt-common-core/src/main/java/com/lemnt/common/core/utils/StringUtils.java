@@ -1,12 +1,13 @@
 package com.lemnt.common.core.utils;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import com.lemnt.common.core.constant.Constants;
 
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.util.AntPathMatcher;
-import com.lemnt.common.core.constant.Constants;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 字符串工具类
@@ -91,7 +92,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /**
      * 在字符串中查找第一个出现的 open 和最后一个出现的 close 之间的子字符串
      */
-    public static String substringBetweenLast(final String str, final String open, final String close) {
+    public static String substringBetweenLast(
+            final String str, final String open, final String close) {
         if (isEmpty(str) || isEmpty(open) || isEmpty(close)) {
             return NULLSTR;
         }

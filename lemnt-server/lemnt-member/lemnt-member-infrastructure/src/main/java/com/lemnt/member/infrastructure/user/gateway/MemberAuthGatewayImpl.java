@@ -2,6 +2,7 @@ package com.lemnt.member.infrastructure.user.gateway;
 
 import com.lemnt.auth.api.MemberSessionClient;
 import com.lemnt.member.domain.user.gateway.MemberAuthGateway;
+
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
@@ -9,8 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MemberAuthGatewayImpl implements MemberAuthGateway {
 
-    @DubboReference
-    private MemberSessionClient memberSessionClient;
+    @DubboReference private MemberSessionClient memberSessionClient;
 
     /** 同步完成撤销，远程失败由外层会员事务回滚。 */
     @Override

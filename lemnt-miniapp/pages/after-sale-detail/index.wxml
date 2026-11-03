@@ -1,33 +1,44 @@
 <view class="container">
- <view wx:if="{{!ready}}" class="notice">会员服务暂未启用。</view>
- <view wx:if="{{error}}" class="error">{{error}}</view>
- <button wx:if="{{!loggedIn}}" bindtap="login">会员登录</button>
- <block wx:if="{{loggedIn}}">
-  <view wx:if="{{sale}}" class="card">
-   <view class="title">售后 {{sale.refundNo}}</view>
-   <view class="list-row">状态：<text class="status">{{sale.statusLabel}}</text></view>
-   <view class="list-row">订单 {{sale.orderNo}}</view>
-   <view class="list-row">{{sale.spuName}} ×{{sale.quantity}}</view>
-   <view class="list-row">方式：{{sale.typeLabel}}　退款 ￥{{sale.amount}}</view>
-   <view class="list-row" wx:if="{{sale.reason}}">申请原因：{{sale.reason}}</view>
-   <view class="list-row" wx:if="{{sale.decisionReason}}">处理说明：{{sale.decisionReason}}</view>
-   <view class="list-row" wx:if="{{sale.requestedAt}}">申请时间：{{sale.requestedAt}}</view>
-   <view class="list-row" wx:if="{{sale.returnCarrierCode}}">退货物流：{{sale.returnCarrierCode}} {{sale.returnTrackingNo}}</view>
-   <view class="list-row" wx:if="{{sale.refundTime}}">退款时间：{{sale.refundTime}}</view>
-   <view class="list-row" wx:if="{{payment}}">原支付：{{payment.label}} · 应付 ￥{{payment.payableAmount}}</view>
-   <view class="description" wx:if="{{sale.status === 'REFUNDING'}}">退款处理中，请稍后刷新进度。</view>
-   <view class="description" wx:if="{{sale.status === 'REFUNDED'}}">退款已完成，按原支付渠道退回。</view>
-   <button size="mini" bindtap="refreshProgress" disabled="{{loading}}">刷新退款进度</button>
-   <view class="row">
-    <button wx:if="{{sale.canReturn}}" size="mini" bindtap="toggleReturn">{{showReturn ? '收起' : '登记退货物流'}}</button>
-    <button wx:if="{{sale.canCancel}}" size="mini" bindtap="cancel">取消售后</button>
-   </view>
-   <view wx:if="{{showReturn && sale.canReturn}}">
-    <picker mode="selector" range="{{carriers}}" range-key="name" value="{{carrierIndex}}" bindchange="pickCarrier" disabled="{{loading}}"><view class="field">快递公司：{{carriers.length ? carriers[carrierIndex].name : '暂无可用快递公司'}}（点击选择）</view></picker>
-    <label class="field">快递单号<input value="{{tracking}}" maxlength="100" bindinput="inputTracking" disabled="{{loading}}"/></label>
-    <button type="primary" bindtap="submitReturn" disabled="{{loading}}">提交退货物流</button>
-   </view>
-  </view>
-  <view class="row"><navigator url="/pages/after-sale-list/index">售后中心</navigator><navigator url="/pages/order-list/index">订单中心</navigator></view>
- </block>
+  <view wx:if="{{!ready}}" class="notice">会员服务暂未启用。</view>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+  <button wx:if="{{!loggedIn}}" bindtap="login">会员登录</button>
+  <block wx:if="{{loggedIn}}">
+    <view wx:if="{{sale}}" class="card">
+      <view class="title">售后 {{sale.refundNo}}</view>
+      <view class="list-row">状态：<text class="status">{{sale.statusLabel}}</text></view>
+      <view class="list-row">订单 {{sale.orderNo}}</view>
+      <view class="list-row">{{sale.spuName}} ×{{sale.quantity}}</view>
+      <view class="list-row">方式：{{sale.typeLabel}}　退款 ￥{{sale.amount}}</view>
+      <view class="list-row" wx:if="{{sale.reason}}">申请原因：{{sale.reason}}</view>
+      <view class="list-row" wx:if="{{sale.decisionReason}}">处理说明：{{sale.decisionReason}}</view>
+      <view class="list-row" wx:if="{{sale.requestedAt}}">申请时间：{{sale.requestedAt}}</view>
+      <view class="list-row" wx:if="{{sale.returnCarrierCode}}">退货物流：{{sale.returnCarrierCode}} {{sale.returnTrackingNo}}</view>
+      <view class="list-row" wx:if="{{sale.refundTime}}">退款时间：{{sale.refundTime}}</view>
+      <view class="list-row" wx:if="{{payment}}">原支付：{{payment.label}} · 应付 ￥{{payment.payableAmount}}</view>
+      <view class="description" wx:if="{{sale.status === 'REFUNDING'}}">退款处理中，请稍后刷新进度。</view>
+      <view class="description" wx:if="{{sale.status === 'REFUNDED'}}">退款已完成，按原支付渠道退回。</view>
+      <button size="mini" bindtap="refreshProgress" disabled="{{loading}}">刷新退款进度</button>
+      <view class="row">
+        <button wx:if="{{sale.canReturn}}" size="mini" bindtap="toggleReturn">{{showReturn ? '收起' : '登记退货物流'}}</button>
+        <button wx:if="{{sale.canCancel}}" size="mini" bindtap="cancel">取消售后</button>
+      </view>
+      <view wx:if="{{showReturn && sale.canReturn}}">
+        <picker mode="selector" range="{{carriers}}" range-key="name" value="{{carrierIndex}}" bindchange="pickCarrier" disabled="{{loading}}"><view class="field">快递公司：{{carriers.length ? carriers[carrierIndex].name : '暂无可用快递公司'}}（点击选择）</view></picker>
+        <label class="field">快递单号<input value="{{tracking}}" maxlength="100" bindinput="inputTracking" disabled="{{loading}}"/></label>
+        <button type="primary" bindtap="submitReturn" disabled="{{loading}}">提交退货物流</button>
+      </view>
+    </view>
+    <view wx:if="{{promotionError}}" class="error">{{promotionError}}，请刷新重试</view>
+    <view wx:if="{{promotion}}" class="card">
+      <view class="subtitle">本次退款分摊</view>
+      <view wx:if="{{promotion.snapshotStatus === 'LEGACY_PARTIAL'}}" class="description">历史分摊信息不完整，未知值未补零</view>
+      <view class="list-row">优惠归因 ￥{{promotion.discountAmount == null ? '未记录' : promotion.discountAmount}}</view>
+      <view class="list-row">应返使用积分 {{promotion.returnUsePoint == null ? '未记录' : promotion.returnUsePoint}}</view>
+      <view class="list-row">应回收赠送积分 {{promotion.deductGivePoint == null ? '未记录' : promotion.deductGivePoint}}</view>
+      <view class="list-row">权益处理：{{promotion.benefitStatusLabel}}</view>
+      <view class="description">优惠归因不额外增加现金退款；积分以权益处理结果为准。</view>
+      <view wx:for="{{promotion.promotions}}" wx:key="viewKey" class="list-row">{{item.promotionName || '名称未记录'}}：￥{{item.discountAmount == null ? '未记录' : item.discountAmount}}</view>
+    </view>
+    <view class="row"><navigator url="/pages/after-sale-list/index">售后中心</navigator><navigator url="/pages/order-list/index">订单中心</navigator></view>
+  </block>
 </view>

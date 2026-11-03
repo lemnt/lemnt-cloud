@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** 装修模板表 CRUD。 */
 @Mapper
-public interface DiyTemplateMapper extends BaseMapper<DiyTemplateDO> {
-}
+public interface DiyTemplateMapper extends BaseMapper<DiyTemplateDO> {}

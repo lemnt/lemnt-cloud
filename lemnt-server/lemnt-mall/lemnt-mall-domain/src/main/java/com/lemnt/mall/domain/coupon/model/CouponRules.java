@@ -15,28 +15,37 @@ public final class CouponRules {
      * 模板。
      */
     public static CouponTemplate template(CouponTemplate value) {
-        if (value == null || (value.totalCount() != -1 && value.totalCount() < 1)
+        if (value == null
+                || (value.totalCount() != -1 && value.totalCount() < 1)
                 || (value.takeLimitCount() != -1 && value.takeLimitCount() < 1)
                 || !Set.of("USER", "ADMIN", "REGISTER").contains(value.takeType())
                 || !Set.of("DATE", "TERM").contains(value.validityType())
                 || !Set.of("ALL", "SPU_IDS", "CATEGORY_IDS").contains(value.productScope())) {
             throw new ServiceException("优惠券模板类型、数量或范围不合法", 400);
         }
-        if ("DATE".equals(value.validityType()) && (value.validFrom() == null || value.validUntil() == null
-                || !value.validUntil().isAfter(value.validFrom()))) {
+        if ("DATE".equals(value.validityType())
+                && (value.validFrom() == null
+                        || value.validUntil() == null
+                        || !value.validUntil().isAfter(value.validFrom()))) {
             throw new ServiceException("固定日期有效期不合法", 400);
         }
-        if ("TERM".equals(value.validityType()) && (value.fixedStartTerm() == null || value.fixedStartTerm() < 0
-                || value.fixedEndTerm() == null || value.fixedEndTerm() <= 0)) {
+        if ("TERM".equals(value.validityType())
+                && (value.fixedStartTerm() == null
+                        || value.fixedStartTerm() < 0
+                        || value.fixedEndTerm() == null
+                        || value.fixedEndTerm() <= 0)) {
             throw new ServiceException("领取后有效期不合法", 400);
         }
-        if (value.productScopeValues().size() > 1000 || value.productScopeValues().stream()
-                .anyMatch(id -> id == null || id <= 0)
-                || value.productScopeValues().stream().distinct().count() != value.productScopeValues().size()
+        if (value.productScopeValues().size() > 1000
+                || value.productScopeValues().stream().anyMatch(id -> id == null || id <= 0)
+                || value.productScopeValues().stream().distinct().count()
+                        != value.productScopeValues().size()
                 || (!"ALL".equals(value.productScope()) && value.productScopeValues().isEmpty())) {
             throw new ServiceException("优惠券适用商品范围不合法", 400);
         }
-        if ("USER".equals(value.takeType()) && value.totalCount() != -1 && value.takeLimitCount() != -1
+        if ("USER".equals(value.takeType())
+                && value.totalCount() != -1
+                && value.takeLimitCount() != -1
                 && value.takeLimitCount() > value.totalCount()) {
             throw new ServiceException("每人限领数不能超过发放总量", 400);
         }
@@ -60,21 +69,54 @@ public final class CouponRules {
                 limit = money(value.discountLimit(), false);
             }
         }
-        return new CouponTemplate(null, text(value.code(), 64), text(value.name(), 100), value.kind(),
-                money(value.threshold(), true), fixed, percent, limit, value.totalCount(), 0,
+        return new CouponTemplate(
+                null,
+                text(value.code(), 64),
+                text(value.name(), 100),
+                value.kind(),
+                money(value.threshold(), true),
+                fixed,
+                percent,
+                limit,
+                value.totalCount(),
+                0,
                 "DATE".equals(value.validityType()) ? value.validFrom() : null,
-                "DATE".equals(value.validityType()) ? value.validUntil() : null, true,
-                value.description(), value.takeType(), value.takeLimitCount(), value.productScope(),
-                value.productScopeValues(), value.validityType(), value.fixedStartTerm(), value.fixedEndTerm(), 0);
+                "DATE".equals(value.validityType()) ? value.validUntil() : null,
+                true,
+                value.description(),
+                value.takeType(),
+                value.takeLimitCount(),
+                value.productScope(),
+                value.productScopeValues(),
+                value.validityType(),
+                value.fixedStartTerm(),
+                value.fixedEndTerm(),
+                0);
     }
 
     /** 领取时冻结规则，相对有效期从数据库当前时刻推算。 */
     public static CouponTerms snapshot(CouponTemplate value, LocalDateTime now) {
-        LocalDateTime from = "TERM".equals(value.validityType()) ? now.plusDays(value.fixedStartTerm()) : value.validFrom();
-        LocalDateTime until = "TERM".equals(value.validityType()) ? from.plusDays(value.fixedEndTerm()) : value.validUntil();
-        return new CouponTerms(value.code(), value.name(), value.takeType(), value.kind(), value.threshold(),
-                value.fixedAmount(), value.discountPercent(), value.discountLimit(), value.productScope(),
-                value.productScopeValues(), from, until);
+        LocalDateTime from =
+                "TERM".equals(value.validityType())
+                        ? now.plusDays(value.fixedStartTerm())
+                        : value.validFrom();
+        LocalDateTime until =
+                "TERM".equals(value.validityType())
+                        ? from.plusDays(value.fixedEndTerm())
+                        : value.validUntil();
+        return new CouponTerms(
+                value.code(),
+                value.name(),
+                value.takeType(),
+                value.kind(),
+                value.threshold(),
+                value.fixedAmount(),
+                value.discountPercent(),
+                value.discountLimit(),
+                value.productScope(),
+                value.productScopeValues(),
+                from,
+                until);
     }
 
     /** 已发券只根据自己的有效期、门槛和金额计算，不读取模板启停。 */
@@ -85,9 +127,11 @@ public final class CouponRules {
         if (gross.compareTo(terms.threshold()) < 0) {
             throw new ServiceException("适用商品金额未达到用券门槛", 400);
         }
-        var amount = "FIXED".equals(terms.kind()) ? terms.fixedAmount()
-                : gross.multiply(BigDecimal.valueOf(100 - terms.discountPercent()))
-                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.DOWN);
+        var amount =
+                "FIXED".equals(terms.kind())
+                        ? terms.fixedAmount()
+                        : gross.multiply(BigDecimal.valueOf(100 - terms.discountPercent()))
+                                .divide(BigDecimal.valueOf(100), 2, RoundingMode.DOWN);
         if (terms.discountLimit() != null) {
             amount = amount.min(terms.discountLimit());
         }
@@ -109,9 +153,9 @@ public final class CouponRules {
         }
         BigDecimal amount =
                 "FIXED".equals(template.kind())
-                ? template.fixedAmount()
-                : gross.multiply(BigDecimal.valueOf(100 - template.discountPercent()))
-                .divide(BigDecimal.valueOf(100), 2, RoundingMode.DOWN);
+                        ? template.fixedAmount()
+                        : gross.multiply(BigDecimal.valueOf(100 - template.discountPercent()))
+                                .divide(BigDecimal.valueOf(100), 2, RoundingMode.DOWN);
         if ("PERCENT".equals(template.kind()) && template.discountLimit() != null) {
             amount = amount.min(template.discountLimit());
         }
@@ -137,7 +181,7 @@ public final class CouponRules {
     public static BigDecimal money(BigDecimal value, boolean allowZero) {
         if (value == null
                 || value.signum() < 0
-                ||(!allowZero && value.signum() == 0)
+                || (!allowZero && value.signum() == 0)
                 || value.precision() - value.scale() > 17) {
             throw new IllegalArgumentException("金额不合法");
         }

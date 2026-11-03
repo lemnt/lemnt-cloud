@@ -18,17 +18,17 @@ public final class FulfillmentDTOConverter {
      */
     public static ShipmentDTO shipment(Shipment value) {
         return value == null
-        ? null
-        : new ShipmentDTO(
-                value.orderNo(),
-                value.requestNo(),
-                value.carrierCode(),
-                value.trackingNo(),
-                value.recipientName(),
-                value.phone(),
-                value.address(),
-                value.shippedAt(),
-                value.receivedAt());
+                ? null
+                : new ShipmentDTO(
+                        value.orderNo(),
+                        value.requestNo(),
+                        value.carrierCode(),
+                        value.trackingNo(),
+                        value.recipientName(),
+                        value.phone(),
+                        value.address(),
+                        value.shippedAt(),
+                        value.receivedAt());
     }
 
     /**
@@ -36,19 +36,19 @@ public final class FulfillmentDTOConverter {
      */
     public static RefundRequestDTO refund(RefundRequest value) {
         return value == null
-        ? null
-        : new RefundRequestDTO(
-                value.refundNo(),
-                value.orderNo(),
-                value.requestNo(),
-                value.memberId(),
-                value.paymentNo(),
-                value.amount(),
-                value.reason(),
-                value.status(),
-                value.decisionReason(),
-                value.requestedAt(),
-                value.decidedAt());
+                ? null
+                : new RefundRequestDTO(
+                        value.refundNo(),
+                        value.orderNo(),
+                        value.requestNo(),
+                        value.memberId(),
+                        value.paymentNo(),
+                        value.amount(),
+                        value.reason(),
+                        value.status(),
+                        value.decisionReason(),
+                        value.requestedAt(),
+                        value.decidedAt());
     }
 
     /**

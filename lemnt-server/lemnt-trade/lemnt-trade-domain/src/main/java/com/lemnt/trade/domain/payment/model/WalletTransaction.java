@@ -13,6 +13,4 @@ public record WalletTransaction(
         String title,
         BigDecimal amount,
         BigDecimal balanceAfter,
-        LocalDateTime createTime
-) {
-}
+        LocalDateTime createTime) {}

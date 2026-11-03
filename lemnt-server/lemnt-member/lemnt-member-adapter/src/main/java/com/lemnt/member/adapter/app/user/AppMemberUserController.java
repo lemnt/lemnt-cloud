@@ -36,13 +36,16 @@ public class AppMemberUserController {
     @Operation(summary = "当前会员资料")
     public R<ProfileRes> user() {
         return R.ok(
-                MemberUserResConverter.profile(memberDetailQueryExe.execute(new MemberDetailQry(SecurityUtils.getUserId()))));
+                MemberUserResConverter.profile(
+                        memberDetailQueryExe.execute(
+                                new MemberDetailQry(SecurityUtils.getUserId()))));
     }
 
     @PutMapping("/user")
     @Operation(summary = "更新本人资料，不接受会员ID、手机号、积分、等级或状态")
-    public R<Boolean> update(
-            @Valid @RequestBody ProfileUpdateReq req) {
-        return R.ok(memberUpdateCmdExe.execute(MemberUserReqConverter.profile(SecurityUtils.getUserId(), req)));
+    public R<Boolean> update(@Valid @RequestBody ProfileUpdateReq req) {
+        return R.ok(
+                memberUpdateCmdExe.execute(
+                        MemberUserReqConverter.profile(SecurityUtils.getUserId(), req)));
     }
 }

@@ -29,6 +29,9 @@ public class CategoryTreeController {
     @Operation(summary = "分类树")
     @RequiresPermissions("mall:category:list")
     public R<List<CategoryTreeRes>> tree() {
-        return R.ok(categoryTreeQueryExe.execute().stream().map(ProductManagementResConverter::tree).toList());
+        return R.ok(
+                categoryTreeQueryExe.execute().stream()
+                        .map(ProductManagementResConverter::tree)
+                        .toList());
     }
 }

@@ -1,7 +1,7 @@
 import { Alert, Button, Descriptions, Image, Spin, Table } from 'antd';
 import { useQuery } from '@tanstack/react-query';
-import { getAfterSale, getAfterSaleLogs } from '../api/fulfillmentApi';
-import { fulfillmentKeys, refundStatusEnum } from '../constants';
+import { getAfterSale, getAfterSaleLogs, getAfterSalePromotions } from '../api/fulfillmentApi';
+import { fulfillmentKeys, refundStatusEnum, benefitStatusLabels } from '../constants';
 const states: Record<number, string> = {
   10: '申请中',
   20: '同意退货',
@@ -14,6 +14,11 @@ const states: Record<number, string> = {
 };
 /** 详情与日志独立加载，失败不展示虚构的成功状态。 */
 export default function AfterSaleDetailPanel({ no }: { no: string }) {
+  const promotions = useQuery({
+    queryKey: fulfillmentKeys.afterSalePromotions(no),
+    queryFn: () => getAfterSalePromotions(no),
+    gcTime: 0,
+  });
   const detail = useQuery({
     queryKey: [...fulfillmentKeys.all, 'after-sale', no],
     queryFn: () => getAfterSale(no),
@@ -95,6 +100,75 @@ export default function AfterSaleDetailPanel({ no }: { no: string }) {
             { key: 'refund', label: '退款成功时间', children: detail.data.refundTime ?? '—' },
           ]}
         />
+      )}
+      {promotions.isLoading && <Spin />}
+      {promotions.isError && (
+        <Alert
+          type="error"
+          title="退款优惠读取失败"
+          action={<Button onClick={() => void promotions.refetch()}>重试</Button>}
+        />
+      )}
+      {promotions.data && (
+        <>
+          {promotions.data.snapshotStatus === 'LEGACY_PARTIAL' && (
+            <Alert type="info" title="历史退款分摊未完整记录" />
+          )}
+          <Descriptions
+            column={1}
+            bordered
+            items={[
+              {
+                key: 'discount',
+                label: '本次商品优惠归因（元）',
+                children: promotions.data.discountAmount ?? '未记录',
+              },
+              {
+                key: 'shipping',
+                label: '本次运费优惠归因（元）',
+                children: promotions.data.deliveryDiscountPrice ?? '未记录',
+              },
+              {
+                key: 'return',
+                label: '应返使用积分',
+                children: promotions.data.returnUsePoint ?? '未记录',
+              },
+              {
+                key: 'deduct',
+                label: '应回收赠送积分',
+                children: promotions.data.deductGivePoint ?? '未记录',
+              },
+              {
+                key: 'benefit-status',
+                label: '权益处理',
+                children: benefitStatusLabels[promotions.data.benefitStatus],
+              },
+            ]}
+          />
+          <Table
+            pagination={false}
+            rowKey={(_, index) => String(index)}
+            dataSource={promotions.data.promotions}
+            columns={[
+              {
+                title: '原优惠来源',
+                dataIndex: 'promotionName',
+                render: (value: string | null) => value ?? '未记录',
+              },
+              {
+                title: '商品优惠归因（元）',
+                dataIndex: 'discountAmount',
+                render: (value: string | null) => value ?? '未记录',
+              },
+              {
+                title: '运费优惠归因（元）',
+                dataIndex: 'deliveryDiscountPrice',
+                render: (value: string | null) => value ?? '未记录',
+              },
+            ]}
+          />
+          <Alert type="info" title="优惠归因不叠加退款；应返积分需结合权益处理状态查看" />
+        </>
       )}
       {logs.isError ? (
         <Alert

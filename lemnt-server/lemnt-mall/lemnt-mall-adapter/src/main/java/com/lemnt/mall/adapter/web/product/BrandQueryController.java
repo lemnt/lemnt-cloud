@@ -38,7 +38,9 @@ public class BrandQueryController {
     @RequiresPermissions("mall:brand:list")
     public R<BrandPageRes> page(@Valid @ModelAttribute BrandPageReq req) {
         var value = brandPageQueryExe.execute(ProductManagementReqConverter.brands(req));
-        return R.page(value.getRecords().stream().map(ProductManagementResConverter::brand).toList(), value.getTotal());
+        return R.page(
+                value.getRecords().stream().map(ProductManagementResConverter::brand).toList(),
+                value.getTotal());
     }
 
     /** 查询启用品牌供选择。 */
@@ -46,6 +48,11 @@ public class BrandQueryController {
     @Operation(summary = "启用品牌选择查询")
     @RequiresPermissions("mall:brand:query")
     public R<List<BrandSimpleRes>> simple(@Valid @ModelAttribute BrandSimpleReq req) {
-        return R.ok(brandSimpleListQueryExe.execute(ProductManagementReqConverter.brandSimple(req)).stream().map(ProductManagementResConverter::brandSimple).toList());
+        return R.ok(
+                brandSimpleListQueryExe
+                        .execute(ProductManagementReqConverter.brandSimple(req))
+                        .stream()
+                        .map(ProductManagementResConverter::brandSimple)
+                        .toList());
     }
 }

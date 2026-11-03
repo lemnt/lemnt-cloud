@@ -11,19 +11,41 @@ import com.lemnt.mall.domain.settlement.model.SettlementOrder;
 public final class AppPromotionOrderConverter {
     private AppPromotionOrderConverter() {}
 
-    public static PromotionOrderCmd cmd(Long memberId, String type, AppPromotionOrderCreateReq req) {
-        return new PromotionOrderCmd(memberId, type, req.activityId(), req.recordId(), req.headId(),
-                req.skuId(), req.quantity(), req.addressId(), req.requestNo());
+    public static PromotionOrderCmd cmd(
+            Long memberId, String type, AppPromotionOrderCreateReq req) {
+        return new PromotionOrderCmd(
+                memberId,
+                type,
+                req.activityId(),
+                req.recordId(),
+                req.headId(),
+                req.skuId(),
+                req.quantity(),
+                req.addressId(),
+                req.requestNo());
     }
 
-    public static PromotionOrderCmd batchCmd(Long memberId, String type, AppPromotionOrderBatchCreateReq req) {
-        return PromotionOrderCmd.batch(memberId, type, req.activityId(), null, null,
-                req.lines().stream().map(line -> new PromotionOrderLineCmd(line.skuId(), line.quantity()))
-                        .toList(), req.addressId(), req.requestNo());
+    public static PromotionOrderCmd batchCmd(
+            Long memberId, String type, AppPromotionOrderBatchCreateReq req) {
+        return PromotionOrderCmd.batch(
+                memberId,
+                type,
+                req.activityId(),
+                null,
+                null,
+                req.lines().stream()
+                        .map(line -> new PromotionOrderLineCmd(line.skuId(), line.quantity()))
+                        .toList(),
+                req.addressId(),
+                req.requestNo());
     }
 
     public static AppPromotionOrderRes res(SettlementOrder order) {
-        return new AppPromotionOrderRes(order.orderNo(), order.totalAmount(), order.status(),
-                order.usePoint(), order.givePoint());
+        return new AppPromotionOrderRes(
+                order.orderNo(),
+                order.totalAmount(),
+                order.status(),
+                order.usePoint(),
+                order.givePoint());
     }
 }

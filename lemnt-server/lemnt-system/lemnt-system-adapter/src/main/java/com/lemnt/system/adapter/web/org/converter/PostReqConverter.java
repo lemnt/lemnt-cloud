@@ -16,12 +16,7 @@ public class PostReqConverter {
 
     public static PostAddCmd toCmd(PostAddReq req) {
         return new PostAddCmd(
-                req.postName(),
-                req.postCode(),
-                req.postSort(),
-                req.status(),
-                req.remark()
-        );
+                req.postName(), req.postCode(), req.postSort(), req.status(), req.remark());
     }
 
     public static PostUpdateCmd toCmd(PostUpdateReq req) {
@@ -31,8 +26,7 @@ public class PostReqConverter {
                 req.postCode(),
                 req.postSort(),
                 req.status(),
-                req.remark()
-        );
+                req.remark());
     }
 
     public static PostPageQry toQry(PostPageReq item) {
@@ -46,7 +40,6 @@ public class PostReqConverter {
                 item.pageNum(),
                 item.pageSize(),
                 item.beginTime(),
-                item.endTime()
-        );
+                item.endTime());
     }
 }

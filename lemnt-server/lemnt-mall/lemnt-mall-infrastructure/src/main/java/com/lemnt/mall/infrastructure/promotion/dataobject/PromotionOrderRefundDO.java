@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class PromotionOrderRefundDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private String orderNo;
     private String refundNo;
     private Integer quantity;

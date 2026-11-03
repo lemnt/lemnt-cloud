@@ -18,5 +18,4 @@ public interface ProductCatalogGateway {
      * 查找批量上架状态。
      */
     Map<Long, ProductSnapshot> findOnShelfBatch(List<Long> productIds);
-
 }

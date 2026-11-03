@@ -9,8 +9,7 @@ import com.lemnt.mall.application.product.qry.CommentPageQry;
 
 /** 后台评价请求转换，操作者来自网关上下文。 */
 public final class CommentReqConverter {
-    private CommentReqConverter() {
-    }
+    private CommentReqConverter() {}
 
     /** 转换回复命令。 */
     public static CommentReplyCmd reply(Long id, Long operatorId, CommentReplyReq req) {
@@ -24,8 +23,18 @@ public final class CommentReqConverter {
 
     /** 转换分页。 */
     public static CommentPageQry page(CommentPageReq req) {
-        return new CommentPageQry(req.spuId(), req.memberId(), req.score(), req.visible(), req.replied(),
-            req.pageNum() == null ? 1 : req.pageNum(), req.pageSize() == null ? 20 : req.pageSize(),
-            req.userNickname(), req.orderId(), req.spuName(), req.createTimeStart(), req.createTimeEnd());
+        return new CommentPageQry(
+                req.spuId(),
+                req.memberId(),
+                req.score(),
+                req.visible(),
+                req.replied(),
+                req.pageNum() == null ? 1 : req.pageNum(),
+                req.pageSize() == null ? 20 : req.pageSize(),
+                req.userNickname(),
+                req.orderId(),
+                req.spuName(),
+                req.createTimeStart(),
+                req.createTimeEnd());
     }
 }

@@ -56,7 +56,9 @@ public class BrokerageController {
     @RequiresPermissions("trade:brokerage:list")
     public R<BrokerageUserRes> users(@Valid @ModelAttribute BrokerageUserPageReq req) {
         var result = users.execute(BrokerageConverter.users(req));
-        return R.page(result.getRecords().stream().map(BrokerageConverter::user).toList(), result.getTotal());
+        return R.page(
+                result.getRecords().stream().map(BrokerageConverter::user).toList(),
+                result.getTotal());
     }
 
     @PutMapping("/users/{id}/enabled")
@@ -78,7 +80,8 @@ public class BrokerageController {
     @RequiresPermissions("trade:brokerage:list")
     public R<BrokerageRecordRes> records(@Valid @ModelAttribute BrokerageRecordPageReq req) {
         var result = records.execute(BrokerageConverter.records(req));
-        return R.page(result.getRecords().stream().map(BrokerageConverter::record).toList(),
+        return R.page(
+                result.getRecords().stream().map(BrokerageConverter::record).toList(),
                 result.getTotal());
     }
 
@@ -87,14 +90,16 @@ public class BrokerageController {
     @RequiresPermissions("trade:brokerage:list")
     public R<BrokerageWithdrawRes> withdraws(@Valid @ModelAttribute BrokerageWithdrawPageReq req) {
         var result = withdraws.execute(BrokerageConverter.withdraws(req));
-        return R.page(result.getRecords().stream().map(BrokerageConverter::withdraw).toList(),
+        return R.page(
+                result.getRecords().stream().map(BrokerageConverter::withdraw).toList(),
                 result.getTotal());
     }
 
     @PostMapping("/withdraws/{id}/audit")
     @Operation(summary = "审核提现")
     @RequiresPermissions("trade:brokerage:audit")
-    public R<Boolean> audit(@PathVariable Long id, @Valid @RequestBody BrokerageWithdrawAuditReq req) {
+    public R<Boolean> audit(
+            @PathVariable Long id, @Valid @RequestBody BrokerageWithdrawAuditReq req) {
         return R.ok(audit.execute(BrokerageConverter.audit(id, SecurityUtils.getUserId(), req)));
     }
 

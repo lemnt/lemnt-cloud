@@ -8,13 +8,13 @@ import com.lemnt.common.security.annotation.RequiresPermissions;
 import com.lemnt.system.adapter.web.config.converter.DictDataReqConverter;
 import com.lemnt.system.adapter.web.config.converter.DictDataResConverter;
 import com.lemnt.system.adapter.web.config.req.DictDataAddReq;
+import com.lemnt.system.adapter.web.config.req.DictDataPageReq;
 import com.lemnt.system.adapter.web.config.req.DictDataUpdateReq;
 import com.lemnt.system.adapter.web.config.res.SystemDictDataDictTypeRes;
 import com.lemnt.system.adapter.web.config.res.SystemDictDataGetInfoRes;
 import com.lemnt.system.adapter.web.config.res.SystemDictDataListRes;
 import com.lemnt.system.application.config.dto.DictDataDTO;
 import com.lemnt.system.application.config.executor.*;
-import com.lemnt.system.application.config.qry.DictDataPageQry;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -48,26 +48,32 @@ public class DictDataController {
     private final DictDataUpdateCmdExe dictDataUpdateCmdExe;
     private final DictDataDeleteCmdExe dictDataDeleteCmdExe;
     private final DictDataListQueryExe dictDataListQueryExe;
-    ;
 
     @Operation(summary = "查询字典数据列表")
     @RequiresPermissions("system:dict:list")
     @GetMapping
-    public R<SystemDictDataListRes> list(DictDataPageQry qry) {
-        PageResult<DictDataDTO> result = dictDataPageQueryExe.execute(qry);
-        return R.page(DictDataResConverter.toResListToSystemDictDataListRes(result.getRecords()), result.getTotal());
+    public R<SystemDictDataListRes> list(@Validated DictDataPageReq req) {
+        PageResult<DictDataDTO> result =
+                dictDataPageQueryExe.execute(DictDataReqConverter.toQry(req));
+        return R.page(
+                DictDataResConverter.toResListToSystemDictDataListRes(result.getRecords()),
+                result.getTotal());
     }
 
     @Operation(summary = "查询字典数据详细")
     @GetMapping(value = "/{dictCode}")
     public R<SystemDictDataGetInfoRes> getInfo(@PathVariable Long dictCode) {
-        return R.ok(DictDataResConverter.toResToSystemDictDataGetInfoRes(dictDataDetailQueryExe.execute(dictCode)));
+        return R.ok(
+                DictDataResConverter.toResToSystemDictDataGetInfoRes(
+                        dictDataDetailQueryExe.execute(dictCode)));
     }
 
     @Operation(summary = "根据字典类型查询字典数据信息")
     @GetMapping(value = "/type/{dictType}")
     public R<List<SystemDictDataDictTypeRes>> dictType(@PathVariable String dictType) {
-        return R.ok(DictDataResConverter.toResListToSystemDictDataDictTypeRes(dictDataListQueryExe.execute(dictType)));
+        return R.ok(
+                DictDataResConverter.toResListToSystemDictDataDictTypeRes(
+                        dictDataListQueryExe.execute(dictType)));
     }
 
     @Operation(summary = "新增字典数据")

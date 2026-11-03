@@ -30,7 +30,7 @@ public class AppMemberSignConfigController {
     public R<List<SignConfigRes>> signConfig() {
         return R.ok(
                 memberSignConfigListQueryExe.execute(new SignConfigListQry(true)).stream()
-                .map(MemberGrowthResConverter::signConfig)
-                .toList());
+                        .map(MemberGrowthResConverter::signConfig)
+                        .toList());
     }
 }

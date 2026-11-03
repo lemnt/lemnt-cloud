@@ -24,8 +24,15 @@ public class ProductSpecSimpleListQueryExe {
         if (qry == null || qry.limit() < 1 || qry.limit() > 100) {
             throw new IllegalArgumentException("选择条数须为1至100");
         }
-        String name = qry.name() == null || qry.name().isBlank() ? null : ProductCatalogValidation.text(qry.name(), 64, "名称");
-        return productSpecGateway.page(new ProductSpecFilter(name, null, 1, qry.limit(), null, null))
-                .getRecords().stream().map(ProductSpecDTOConverter::property).toList();
+        String name =
+                qry.name() == null || qry.name().isBlank()
+                        ? null
+                        : ProductCatalogValidation.text(qry.name(), 64, "名称");
+        return productSpecGateway
+                .page(new ProductSpecFilter(name, null, 1, qry.limit(), null, null))
+                .getRecords()
+                .stream()
+                .map(ProductSpecDTOConverter::property)
+                .toList();
     }
 }

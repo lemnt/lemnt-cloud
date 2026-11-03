@@ -6,6 +6,7 @@ import com.lemnt.common.redis.service.RedisListService;
 import com.lemnt.common.redis.service.RedisStringService;
 import com.lemnt.gateway.model.OpenApiClient;
 import com.lemnt.gateway.service.OpenApiService;
+
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +26,18 @@ public class OpenApiServiceImpl implements OpenApiService {
 
     private static final HmacAlgorithms SIGN_ALGORITHM = HmacAlgorithms.HMAC_SHA_256;
 
-    @Autowired
-    private RedisListService redisListService;
-    @Autowired
-    private RedisStringService redisStringService;
+    @Autowired private RedisListService redisListService;
+    @Autowired private RedisStringService redisStringService;
 
     @Override
     public OpenApiClient getByClientId(String clientId) {
-        List<OpenApiClient> accountList = redisListService.lRangeObj(CacheConstants.CLIENT_ACCOUNT_KEY, 0, -1, OpenApiClient.class);
-        return accountList.stream().filter(f -> Objects.equals(clientId, f.getClientId()))
-                .findFirst().orElse(null);
+        List<OpenApiClient> accountList =
+                redisListService.lRangeObj(
+                        CacheConstants.CLIENT_ACCOUNT_KEY, 0, -1, OpenApiClient.class);
+        return accountList.stream()
+                .filter(f -> Objects.equals(clientId, f.getClientId()))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
@@ -63,16 +66,24 @@ public class OpenApiServiceImpl implements OpenApiService {
     }
 
     @Override
-    public void verifySign(String clientId, String timestamp, String nonce, String appSecret, String sign, Map<String, Object> params) {
+    public void verifySign(
+            String clientId,
+            String timestamp,
+            String nonce,
+            String appSecret,
+            String sign,
+            Map<String, Object> params) {
         // 参数排序
         Map<String, Object> sortParams = new TreeMap<>(params);
-        String paramStr = sortParams.entrySet()
-                .stream()
-                .map(entry -> entry.getKey() + "=" + Objects.toString(entry.getValue(), ""))
-                .collect(Collectors.joining("&"));
+        String paramStr =
+                sortParams.entrySet().stream()
+                        .map(entry -> entry.getKey() + "=" + Objects.toString(entry.getValue(), ""))
+                        .collect(Collectors.joining("&"));
         String data = String.join("\n", clientId, timestamp, nonce, paramStr);
         String serverSign = new HmacUtils(SIGN_ALGORITHM, appSecret).hmacHex(data);
-        if (!MessageDigest.isEqual(serverSign.getBytes(StandardCharsets.UTF_8), sign.getBytes(StandardCharsets.UTF_8))) {
+        if (!MessageDigest.isEqual(
+                serverSign.getBytes(StandardCharsets.UTF_8),
+                sign.getBytes(StandardCharsets.UTF_8))) {
             throw new ServiceException("签名错误");
         }
     }

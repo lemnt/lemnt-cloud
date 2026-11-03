@@ -22,8 +22,7 @@ public class NoticeReqConverter {
                 req.noticeType(),
                 req.noticeContent(),
                 req.status(),
-                req.remark()
-        );
+                req.remark());
     }
 
     public static NoticeUpdateCmd toCmd(NoticeUpdateReq req) {
@@ -33,8 +32,7 @@ public class NoticeReqConverter {
                 req.noticeType(),
                 req.noticeContent(),
                 req.status(),
-                req.remark()
-        );
+                req.remark());
     }
 
     public static NoticePageQry toQry(NoticePageReq item) {
@@ -48,8 +46,7 @@ public class NoticeReqConverter {
                 item.pageNum(),
                 item.pageSize(),
                 item.beginTime(),
-                item.endTime()
-        );
+                item.endTime());
     }
 
     public static NoticeReadUserPageQry toQry(NoticeReadUsersPageReq item) {
@@ -62,7 +59,6 @@ public class NoticeReqConverter {
                 item.pageNum(),
                 item.pageSize(),
                 item.beginTime(),
-                item.endTime()
-        );
+                item.endTime());
     }
 }

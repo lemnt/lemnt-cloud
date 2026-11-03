@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class CombinationActivityDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private String name;
     private Long spuId;
     private Integer totalLimitCount;

@@ -34,12 +34,16 @@ public class SeckillConfigManagementService {
     }
 
     private LocalTime time(String value, String label) {
-        require(value != null && value.matches("^([01]\\d|2[0-3]):[0-5]\\d(:[0-5]\\d)?$"), label + "格式不合法");
+        require(
+                value != null && value.matches("^([01]\\d|2[0-3]):[0-5]\\d(:[0-5]\\d)?$"),
+                label + "格式不合法");
         return LocalTime.parse(value.length() == 5 ? value + ":00" : value);
     }
 
     private void validate(SeckillConfig value) {
-        require(value.name() != null && !value.name().isBlank() && value.name().length() <= 100, "时段名称不合法");
+        require(
+                value.name() != null && !value.name().isBlank() && value.name().length() <= 100,
+                "时段名称不合法");
         var start = time(value.startTime(), "开始时间");
         var end = time(value.endTime(), "结束时间");
         require(start.isBefore(end), "开始时间必须早于结束时间");
@@ -68,8 +72,14 @@ public class SeckillConfigManagementService {
     }
 
     public Long create(SeckillConfigCreateCmd cmd) {
-        var value = new SeckillConfig(null, cmd.name(), cmd.startTime(), cmd.endTime(),
-                cmd.sliderPicUrls(), cmd.status());
+        var value =
+                new SeckillConfig(
+                        null,
+                        cmd.name(),
+                        cmd.startTime(),
+                        cmd.endTime(),
+                        cmd.sliderPicUrls(),
+                        cmd.status());
         validate(value);
         validateConflict(value);
         return configs.save(value).id();
@@ -77,8 +87,14 @@ public class SeckillConfigManagementService {
 
     public Boolean update(SeckillConfigUpdateCmd cmd) {
         config(cmd.id());
-        var value = new SeckillConfig(cmd.id(), cmd.name(), cmd.startTime(), cmd.endTime(),
-                cmd.sliderPicUrls(), cmd.status());
+        var value =
+                new SeckillConfig(
+                        cmd.id(),
+                        cmd.name(),
+                        cmd.startTime(),
+                        cmd.endTime(),
+                        cmd.sliderPicUrls(),
+                        cmd.status());
         validate(value);
         validateConflict(value);
         configs.save(value);
@@ -117,16 +133,33 @@ public class SeckillConfigManagementService {
 
     @Transactional(readOnly = true)
     public PageResult<SeckillConfigDTO> page(SeckillConfigPageQry qry) {
-        require(qry.pageNum() != null && qry.pageNum() >= 1 && qry.pageSize() != null
-                && qry.pageSize() >= 1 && qry.pageSize() <= 100, "分页参数不合法");
-        var page = configs.page(new SeckillConfigFilter(qry.name(), qry.status(), qry.pageNum(), qry.pageSize()));
+        require(
+                qry.pageNum() != null
+                        && qry.pageNum() >= 1
+                        && qry.pageSize() != null
+                        && qry.pageSize() >= 1
+                        && qry.pageSize() <= 100,
+                "分页参数不合法");
+        var page =
+                configs.page(
+                        new SeckillConfigFilter(
+                                qry.name(), qry.status(), qry.pageNum(), qry.pageSize()));
         return PageResult.of(page.getRecords().stream().map(this::dto).toList(), page.getTotal());
     }
 
     private SeckillConfigDTO dto(SeckillConfig value) {
-        var count = (int) activities.all().stream()
-                .filter(activity -> activity.configIds().contains(value.id())).count();
-        return new SeckillConfigDTO(value.id(), value.name(), value.startTime(), value.endTime(),
-                value.sliderPicUrls(), value.status(), count);
+        var count =
+                (int)
+                        activities.all().stream()
+                                .filter(activity -> activity.configIds().contains(value.id()))
+                                .count();
+        return new SeckillConfigDTO(
+                value.id(),
+                value.name(),
+                value.startTime(),
+                value.endTime(),
+                value.sliderPicUrls(),
+                value.status(),
+                count);
     }
 }

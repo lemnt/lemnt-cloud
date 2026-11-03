@@ -51,27 +51,43 @@ public class AppWalletController {
     /** 本人钱包流水。 */
     @GetMapping("/transactions")
     @Operation(summary = "本人钱包流水")
-    public R<WalletTransactionRes> transactions(@Valid @ModelAttribute AppWalletTransactionPageReq req) {
-        var value = transactions.execute(SecurityUtils.getUserId(), new WalletTransactionPageQry(req.bizType(),
-                req.pageNum() == null ? 1 : req.pageNum(), req.pageSize() == null ? 10 : req.pageSize()));
-        return R.page(value.getRecords().stream().map(WalletResConverter::transaction).toList(), value.getTotal());
+    public R<WalletTransactionRes> transactions(
+            @Valid @ModelAttribute AppWalletTransactionPageReq req) {
+        var value =
+                transactions.execute(
+                        SecurityUtils.getUserId(),
+                        new WalletTransactionPageQry(
+                                req.bizType(),
+                                req.pageNum() == null ? 1 : req.pageNum(),
+                                req.pageSize() == null ? 10 : req.pageSize()));
+        return R.page(
+                value.getRecords().stream().map(WalletResConverter::transaction).toList(),
+                value.getTotal());
     }
 
     /** 本人钱包转账，requestNo 幂等。 */
     @PostMapping("/transfers")
     @Operation(summary = "钱包转账")
     public R<WalletTransferRes> transfer(@Valid @RequestBody AppWalletTransferCreateReq req) {
-        var cmd = new WalletTransferCreateCmd(req.toMemberId(), req.amount(), req.remark(), req.requestNo());
-        return R.ok(WalletTransferResConverter.transfer(createTransfer.execute(SecurityUtils.getUserId(), cmd)));
+        var cmd =
+                new WalletTransferCreateCmd(
+                        req.toMemberId(), req.amount(), req.remark(), req.requestNo());
+        return R.ok(
+                WalletTransferResConverter.transfer(
+                        createTransfer.execute(SecurityUtils.getUserId(), cmd)));
     }
 
     /** 本人转出或转入分页。 */
     @GetMapping("/transfers")
     @Operation(summary = "本人转账分页")
     public R<WalletTransferRes> transfers(@Valid @ModelAttribute AppWalletTransferPageReq req) {
-        var value = transfers.execute(SecurityUtils.getUserId(), req.pageNum() == null ? 1 : req.pageNum(),
-                req.pageSize() == null ? 10 : req.pageSize());
-        return R.page(value.getRecords().stream().map(WalletTransferResConverter::transfer).toList(),
+        var value =
+                transfers.execute(
+                        SecurityUtils.getUserId(),
+                        req.pageNum() == null ? 1 : req.pageNum(),
+                        req.pageSize() == null ? 10 : req.pageSize());
+        return R.page(
+                value.getRecords().stream().map(WalletTransferResConverter::transfer).toList(),
                 value.getTotal());
     }
 }

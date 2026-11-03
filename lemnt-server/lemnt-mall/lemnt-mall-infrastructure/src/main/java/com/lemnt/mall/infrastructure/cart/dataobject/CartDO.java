@@ -20,11 +20,11 @@ import java.io.Serializable;
 @TableName("mall_cart")
 public class CartDO implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.AUTO)
     private Long id;
+
     private Long memberId;
     private Long productId;
     private Integer quantity;

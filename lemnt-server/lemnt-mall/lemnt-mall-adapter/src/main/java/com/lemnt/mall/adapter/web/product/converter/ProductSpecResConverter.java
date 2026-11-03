@@ -9,8 +9,7 @@ import com.lemnt.mall.application.product.dto.ProductSpecDTO;
 
 /** 规格字典独立接口响应转换。 */
 public final class ProductSpecResConverter {
-    private ProductSpecResConverter() {
-    }
+    private ProductSpecResConverter() {}
 
     /** 转换新增接口响应。 */
     public static ProductSpecCreateRes create(ProductSpecDTO value) {
@@ -24,7 +23,8 @@ public final class ProductSpecResConverter {
 
     /** 转换详情接口响应。 */
     public static ProductSpecDetailRes detail(ProductSpecDTO value) {
-        return new ProductSpecDetailRes(value.id(), value.name(), value.remark(), value.createTime());
+        return new ProductSpecDetailRes(
+                value.id(), value.name(), value.remark(), value.createTime());
     }
 
     /** 转换分页接口响应。 */

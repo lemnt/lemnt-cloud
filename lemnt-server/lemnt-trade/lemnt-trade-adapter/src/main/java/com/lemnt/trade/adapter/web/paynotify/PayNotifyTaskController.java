@@ -39,7 +39,9 @@ public class PayNotifyTaskController {
     @RequiresPermissions("trade:pay-notify:list")
     public R<PayNotifyTaskRes> page(@Valid @ModelAttribute PayNotifyTaskPageReq req) {
         var value = page.execute(PayNotifyResConverter.page(req));
-        return R.page(value.getRecords().stream().map(PayNotifyResConverter::task).toList(), value.getTotal());
+        return R.page(
+                value.getRecords().stream().map(PayNotifyResConverter::task).toList(),
+                value.getTotal());
     }
 
     /** 派发任务详情与尝试日志。 */

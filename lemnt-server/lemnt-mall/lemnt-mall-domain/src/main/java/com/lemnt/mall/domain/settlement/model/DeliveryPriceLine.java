@@ -10,6 +10,5 @@ public record DeliveryPriceLine(
         Integer count,
         BigDecimal weight,
         BigDecimal volume,
-        BigDecimal payAmount
-) implements Serializable {
-}
+        BigDecimal payAmount)
+        implements Serializable {}

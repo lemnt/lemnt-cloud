@@ -17,7 +17,9 @@ public class FileUploadCmdExe {
 
     /** 将上传命令交由存储网关处理。 */
     public FileUploadDTO execute(FileUploadCmd cmd) {
-        return new FileUploadDTO(fileGateway.upload(
-                new UploadFile(cmd.content(), cmd.fileName(), cmd.contentType(), cmd.size())));
+        return new FileUploadDTO(
+                fileGateway.upload(
+                        new UploadFile(
+                                cmd.content(), cmd.fileName(), cmd.contentType(), cmd.size())));
     }
 }

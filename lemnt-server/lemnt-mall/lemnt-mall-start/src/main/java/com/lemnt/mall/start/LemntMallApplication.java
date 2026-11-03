@@ -1,12 +1,11 @@
 package com.lemnt.mall.start;
 
-import org.springframework.scheduling.annotation.EnableScheduling;
-
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Lemnt商城应用启动。

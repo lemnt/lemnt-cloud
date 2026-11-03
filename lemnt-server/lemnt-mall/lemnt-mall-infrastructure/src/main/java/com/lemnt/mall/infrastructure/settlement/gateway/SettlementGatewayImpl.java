@@ -47,9 +47,14 @@ public class SettlementGatewayImpl implements SettlementGateway {
     @Override
     public void cache(Settlement value) {
         var ttl = Duration.between(Instant.now(), value.expiresAt());
-        if (ttl.isNegative() || ttl.isZero() || !Boolean.TRUE.equals(redis.opsForValue()
-                .setIfAbsent("mall:settlement:v5:" + value.id(), serializer.serialize(value), ttl))
-        ) {
+        if (ttl.isNegative()
+                || ttl.isZero()
+                || !Boolean.TRUE.equals(
+                        redis.opsForValue()
+                                .setIfAbsent(
+                                        "mall:settlement:v5:" + value.id(),
+                                        serializer.serialize(value),
+                                        ttl))) {
             throw new IllegalStateException("结算单缓存写入失败");
         }
     }
@@ -70,10 +75,15 @@ public class SettlementGatewayImpl implements SettlementGateway {
         keys.add(requestKey(record.memberId(), record.requestNo()));
         record.cartReferences().forEach(ref -> keys.add(PREFIX + "cart:" + ref.cartId()));
         String json = serializer.serialize(value);
-        Long result = redis.execute(SAVE, keys, json, record.orderNo(), Long.toString(RECOVERY_TTL.toSeconds()));
+        Long result =
+                redis.execute(
+                        SAVE,
+                        keys,
+                        json,
+                        record.orderNo(),
+                        Long.toString(RECOVERY_TTL.toSeconds()));
         require(result);
-        if (Long.valueOf(1).equals(result)
-        ) {
+        if (Long.valueOf(1).equals(result)) {
             onRollback(() -> redis.execute(ROLLBACK, keys, json, record.orderNo()));
         }
     }
@@ -82,7 +92,10 @@ public class SettlementGatewayImpl implements SettlementGateway {
     @Override
     public SettlementSubmission submission(String orderNo) {
         var json = redis.opsForValue().get(PREFIX + "submission:" + orderNo);
-        return json == null ? null : serializer.deserialize(SettlementSubmissionConverter.normalize(json), SettlementSubmission.class);
+        return json == null
+                ? null
+                : serializer.deserialize(
+                        SettlementSubmissionConverter.normalize(json), SettlementSubmission.class);
     }
 
     /** 请求索引只指向同一份提交内容。 */
@@ -90,8 +103,7 @@ public class SettlementGatewayImpl implements SettlementGateway {
     public SettlementRecord findRequest(Long memberId, String requestNo) {
         var orderNo = redis.opsForValue().get(requestKey(memberId, requestNo));
         var value = orderNo == null ? null : submission(orderNo);
-        if (orderNo != null && value == null
-        ) {
+        if (orderNo != null && value == null) {
             throw new IllegalStateException("提交缓存不完整，请按原订单号查询，禁止重复下单");
         }
         return value == null ? null : value.record();
@@ -101,7 +113,9 @@ public class SettlementGatewayImpl implements SettlementGateway {
     @Override
     public List<String> ordersForCart(Long cartId) {
         var orders = redis.opsForSet().members(PREFIX + "cart:" + cartId);
-        return orders == null ? List.of() : orders.stream().filter(no -> submission(no) != null).toList();
+        return orders == null
+                ? List.of()
+                : orders.stream().filter(no -> submission(no) != null).toList();
     }
 
     /** 读取结算单唯一绑定。 */
@@ -114,11 +128,14 @@ public class SettlementGatewayImpl implements SettlementGateway {
     @Override
     public void bind(Long memberId, String id, String orderNo) {
         String key = bindingKey(memberId, id);
-        Long result = redis.execute(BIND, List.of(key, abandonKey(memberId, id)), orderNo,
-                Long.toString(RECOVERY_TTL.toSeconds()));
+        Long result =
+                redis.execute(
+                        BIND,
+                        List.of(key, abandonKey(memberId, id)),
+                        orderNo,
+                        Long.toString(RECOVERY_TTL.toSeconds()));
         require(result);
-        if (Long.valueOf(1).equals(result)
-        ) {
+        if (Long.valueOf(1).equals(result)) {
             onRollback(() -> redis.execute(REMOVE, List.of(key), orderNo));
         }
     }
@@ -133,11 +150,13 @@ public class SettlementGatewayImpl implements SettlementGateway {
     @Override
     public void abandon(Long memberId, String id) {
         String key = abandonKey(memberId, id);
-        Long result = redis.execute(ABANDON, List.of(key, bindingKey(memberId, id)),
-                Long.toString(RECOVERY_TTL.toSeconds()));
+        Long result =
+                redis.execute(
+                        ABANDON,
+                        List.of(key, bindingKey(memberId, id)),
+                        Long.toString(RECOVERY_TTL.toSeconds()));
         require(result);
-        if (Long.valueOf(1).equals(result)
-        ) {
+        if (Long.valueOf(1).equals(result)) {
             onRollback(() -> redis.execute(REMOVE, List.of(key), "1"));
         }
     }
@@ -156,33 +175,28 @@ public class SettlementGatewayImpl implements SettlementGateway {
 
     /** Redis 失败不降级为无索引下单。 */
     private void require(Long result) {
-        if (!Long.valueOf(1).equals(result) && !Long.valueOf(2).equals(result)
-        ) {
+        if (!Long.valueOf(1).equals(result) && !Long.valueOf(2).equals(result)) {
             throw new IllegalStateException("结算缓存写入失败或请求已被占用");
         }
     }
 
     /** 事务回滚后撤销缓存，不在数据库尚未确定时解锁会员操作。 */
     private void onRollback(Runnable action) {
-        if (TransactionSynchronizationManager.isSynchronizationActive()
-        ) {
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization(
-            ) {
-                @Override
-                public int getOrder(
-                ) {
-                    return Integer.MIN_VALUE;
-                }
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(
+                    new TransactionSynchronization() {
+                        @Override
+                        public int getOrder() {
+                            return Integer.MIN_VALUE;
+                        }
 
-                @Override
-                public void afterCompletion(int status
-                ) {
-                    if (status == STATUS_ROLLED_BACK
-                    ) {
-                        action.run();
-                    }
-                }
-            });
+                        @Override
+                        public void afterCompletion(int status) {
+                            if (status == STATUS_ROLLED_BACK) {
+                                action.run();
+                            }
+                        }
+                    });
         }
     }
 }

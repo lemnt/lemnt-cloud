@@ -1,8 +1,8 @@
 package com.lemnt.gateway.handler;
 
 import com.lemnt.common.core.utils.JsonUtils;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowException;
 
+import com.alibaba.csp.sentinel.slots.block.flow.FlowException;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
@@ -13,7 +13,8 @@ class SentinelFallbackHandlerTest {
 
     @Test
     void shouldReturnRateLimitCodeWithoutExpiringSession() {
-        var exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/system/users/current-info"));
+        var exchange =
+                MockServerWebExchange.from(MockServerHttpRequest.get("/system/users/current-info"));
 
         new SentinelFallbackHandler().handle(exchange, new FlowException("gateway-flow")).block();
 

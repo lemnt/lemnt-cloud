@@ -101,7 +101,9 @@ public interface MenuMapper extends BaseMapper<MenuDO> {
      * @param excludeMenuId 排除的菜单ID，新增时为空
      * @return 结果
      */
-    MenuDO checkMenuNameUnique(@Param("menuName") String menuName, @Param("parentId") Long parentId,
+    MenuDO checkMenuNameUnique(
+            @Param("menuName") String menuName,
+            @Param("parentId") Long parentId,
             @Param("excludeMenuId") Long excludeMenuId);
 
     /**
@@ -111,5 +113,6 @@ public interface MenuMapper extends BaseMapper<MenuDO> {
      * @param routeName 路由名称
      * @return 匹配的菜单列表
      */
-    List<MenuDO> selectMenusByPathOrRouteName(@Param("path") String path, @Param("routeName") String routeName);
+    List<MenuDO> selectMenusByPathOrRouteName(
+            @Param("path") String path, @Param("routeName") String routeName);
 }

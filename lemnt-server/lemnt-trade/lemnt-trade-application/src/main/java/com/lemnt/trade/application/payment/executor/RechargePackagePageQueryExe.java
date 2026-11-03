@@ -23,9 +23,15 @@ public class RechargePackagePageQueryExe {
             throw new IllegalArgumentException("分页参数不合法");
         }
         PayConfigRules.page(qry.pageNum(), qry.pageSize());
-        var page = packages.page(new RechargePackageFilter(
-                PayConfigRules.optional(qry.name(), 64, "套餐名"), qry.status(), qry.pageNum(), qry.pageSize()));
-        return PageResult.of(page.getRecords().stream().map(RechargeDTOConverter::packageView).toList(),
+        var page =
+                packages.page(
+                        new RechargePackageFilter(
+                                PayConfigRules.optional(qry.name(), 64, "套餐名"),
+                                qry.status(),
+                                qry.pageNum(),
+                                qry.pageSize()));
+        return PageResult.of(
+                page.getRecords().stream().map(RechargeDTOConverter::packageView).toList(),
                 page.getTotal());
     }
 }

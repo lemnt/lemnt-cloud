@@ -13,5 +13,4 @@ public final class CartReqConverter {
     public static CartSaveCmd cart(Long memberId, Long productId, CartSaveReq req) {
         return new CartSaveCmd(memberId, productId, req.quantity(), req.selected());
     }
-
 }

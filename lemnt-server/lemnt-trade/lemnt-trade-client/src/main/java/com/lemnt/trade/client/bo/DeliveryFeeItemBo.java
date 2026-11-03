@@ -10,6 +10,5 @@ public record DeliveryFeeItemBo(
         Integer count,
         BigDecimal weight,
         BigDecimal volume,
-        Integer payPrice
-) implements Serializable {
-}
+        Integer payPrice)
+        implements Serializable {}

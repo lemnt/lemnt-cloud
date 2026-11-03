@@ -7,6 +7,10 @@ public record MemberLoginInfoDTO(Long memberId, String mobile, int status, Strin
         implements Serializable {
     @Override
     public String toString() {
-        return "MemberLoginInfoDTO[memberId=" + memberId + ", status=" + status + ", passwordHash=[REDACTED]]";
+        return "MemberLoginInfoDTO[memberId="
+                + memberId
+                + ", status="
+                + status
+                + ", passwordHash=[REDACTED]]";
     }
 }

@@ -51,14 +51,19 @@ public class MemberTagController {
     @Operation(summary = "Tag列表")
     @RequiresPermissions("member:tag:query")
     public R<List<MemberTagListRes>> list() {
-        return R.ok(memberTagListQueryExe.execute(new TagListQry()).stream().map(MemberUserResConverter::toMemberTagListRes).toList());
+        return R.ok(
+                memberTagListQueryExe.execute(new TagListQry()).stream()
+                        .map(MemberUserResConverter::toMemberTagListRes)
+                        .toList());
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Tag详情")
     @RequiresPermissions("member:tag:query")
     public R<MemberTagDetailRes> detail(@PathVariable Long id) {
-        return R.ok(MemberUserResConverter.toMemberTagDetailRes(memberTagDetailQueryExe.execute(new TagDetailQry(id))));
+        return R.ok(
+                MemberUserResConverter.toMemberTagDetailRes(
+                        memberTagDetailQueryExe.execute(new TagDetailQry(id))));
     }
 
     @PostMapping
@@ -86,6 +91,9 @@ public class MemberTagController {
     @Operation(summary = "Tag简洁列表")
     @RequiresPermissions("member:tag:query")
     public R<List<MemberTagSimpleRes>> simple() {
-        return R.ok(memberTagListQueryExe.execute(new TagListQry()).stream().map(MemberUserResConverter::toMemberTagSimpleRes).toList());
+        return R.ok(
+                memberTagListQueryExe.execute(new TagListQry()).stream()
+                        .map(MemberUserResConverter::toMemberTagSimpleRes)
+                        .toList());
     }
 }

@@ -34,13 +34,15 @@ public class WalletService {
 
     /** 入账，写正值流水。 */
     @Transactional(rollbackFor = Exception.class)
-    public Wallet credit(Long memberId, WalletBizType type, String bizNo, BigDecimal amount, String title) {
+    public Wallet credit(
+            Long memberId, WalletBizType type, String bizNo, BigDecimal amount, String title) {
         return change(memberId, type, bizNo, amount, title, true);
     }
 
     /** 出账，余额不足时拒绝并写负值流水。 */
     @Transactional(rollbackFor = Exception.class)
-    public Wallet debit(Long memberId, WalletBizType type, String bizNo, BigDecimal amount, String title) {
+    public Wallet debit(
+            Long memberId, WalletBizType type, String bizNo, BigDecimal amount, String title) {
         return change(memberId, type, bizNo, amount, title, false);
     }
 
@@ -54,9 +56,15 @@ public class WalletService {
         if (locked.balance().compareTo(value) < 0) {
             throw new ServiceException("钱包可用余额不足", 400);
         }
-        var updated = new Wallet(locked.id(), locked.memberId(), locked.balance().subtract(value),
-                locked.freezePrice().add(value), locked.totalExpense(), locked.totalRecharge(),
-                locked.createTime());
+        var updated =
+                new Wallet(
+                        locked.id(),
+                        locked.memberId(),
+                        locked.balance().subtract(value),
+                        locked.freezePrice().add(value),
+                        locked.totalExpense(),
+                        locked.totalRecharge(),
+                        locked.createTime());
         save(updated);
         return updated;
     }
@@ -71,9 +79,15 @@ public class WalletService {
         if (locked.freezePrice().compareTo(value) < 0) {
             throw new ServiceException("钱包冻结金额不足", 400);
         }
-        var updated = new Wallet(locked.id(), locked.memberId(), locked.balance().add(value),
-                locked.freezePrice().subtract(value), locked.totalExpense(), locked.totalRecharge(),
-                locked.createTime());
+        var updated =
+                new Wallet(
+                        locked.id(),
+                        locked.memberId(),
+                        locked.balance().add(value),
+                        locked.freezePrice().subtract(value),
+                        locked.totalExpense(),
+                        locked.totalRecharge(),
+                        locked.createTime());
         save(updated);
         return updated;
     }
@@ -88,10 +102,21 @@ public class WalletService {
         String title = text(reason, 128, "调整原因");
         return amount.signum() > 0
                 ? change(memberId, WalletBizType.UPDATE_BALANCE, bizNo, amount, title, true)
-                : change(memberId, WalletBizType.UPDATE_BALANCE, bizNo, amount.negate(), title, false);
+                : change(
+                        memberId,
+                        WalletBizType.UPDATE_BALANCE,
+                        bizNo,
+                        amount.negate(),
+                        title,
+                        false);
     }
 
-    private Wallet change(Long memberId, WalletBizType type, String bizNo, BigDecimal amount, String title,
+    private Wallet change(
+            Long memberId,
+            WalletBizType type,
+            String bizNo,
+            BigDecimal amount,
+            String title,
             boolean increase) {
         requireMember(memberId);
         if (type == null) {
@@ -115,15 +140,35 @@ public class WalletService {
             throw new ServiceException("钱包余额不足", 400);
         }
         BigDecimal expense = increase ? locked.totalExpense() : locked.totalExpense().add(value);
-        BigDecimal recharge = increase && type == WalletBizType.RECHARGE
-                ? locked.totalRecharge().add(value)
-                : locked.totalRecharge();
-        var updated = new Wallet(locked.id(), locked.memberId(), balance, locked.freezePrice(), expense,
-                recharge, locked.createTime());
+        BigDecimal recharge =
+                increase && type == WalletBizType.RECHARGE
+                        ? locked.totalRecharge().add(value)
+                        : locked.totalRecharge();
+        var updated =
+                new Wallet(
+                        locked.id(),
+                        locked.memberId(),
+                        balance,
+                        locked.freezePrice(),
+                        expense,
+                        recharge,
+                        locked.createTime());
         save(updated);
-        wallets.insertTransaction(new WalletTransaction(null,
-                "WT" + UUID.randomUUID().toString().replace("-", "").toUpperCase(Locale.ROOT),
-                locked.id(), type.name(), key, description, signed, balance, null));
+        wallets.insertTransaction(
+                new WalletTransaction(
+                        null,
+                        "WT"
+                                + UUID.randomUUID()
+                                        .toString()
+                                        .replace("-", "")
+                                        .toUpperCase(Locale.ROOT),
+                        locked.id(),
+                        type.name(),
+                        key,
+                        description,
+                        signed,
+                        balance,
+                        null));
         return updated;
     }
 
@@ -140,7 +185,9 @@ public class WalletService {
     }
 
     private BigDecimal positive(BigDecimal amount) {
-        if (amount == null || amount.signum() <= 0 || amount.compareTo(MAX_AMOUNT) > 0
+        if (amount == null
+                || amount.signum() <= 0
+                || amount.compareTo(MAX_AMOUNT) > 0
                 || amount.stripTrailingZeros().scale() > 2) {
             throw new IllegalArgumentException("金额必须为0至999999999.99之间的两位小数");
         }

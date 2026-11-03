@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DictDataUpdateCmdExe {
     private final DictDataGateway dictDataGateway;
+
     public Boolean execute(DictDataUpdateCmd cmd) {
         DictData entity = new DictData();
         entity.setDictCode(cmd.dictCode());

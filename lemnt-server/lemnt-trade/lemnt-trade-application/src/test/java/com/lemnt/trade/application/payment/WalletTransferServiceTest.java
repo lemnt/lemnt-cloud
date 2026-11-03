@@ -23,25 +23,53 @@ class WalletTransferServiceTest {
     final WalletGateway wallets = mock(WalletGateway.class);
     final WalletTransferGateway transfers = mock(WalletTransferGateway.class);
     final WalletService walletService = mock(WalletService.class);
-    final WalletTransferService service = new WalletTransferService(wallets, transfers, walletService);
+    final WalletTransferService service =
+            new WalletTransferService(wallets, transfers, walletService);
 
     private Wallet wallet(Long id, Long memberId) {
-        return new Wallet(id, memberId, new BigDecimal("100.00"), BigDecimal.ZERO, BigDecimal.ZERO,
-                BigDecimal.ZERO, null);
+        return new Wallet(
+                id,
+                memberId,
+                new BigDecimal("100.00"),
+                BigDecimal.ZERO,
+                BigDecimal.ZERO,
+                BigDecimal.ZERO,
+                null);
     }
 
     private WalletTransfer transfer(Long fromMember, Long toMember, String amount) {
-        return new WalletTransfer(5L, "TF1", "REQ1", 20L, fromMember, 10L, toMember, new BigDecimal(amount),
-                "备注", "SUCCESS", null);
+        return new WalletTransfer(
+                5L,
+                "TF1",
+                "REQ1",
+                20L,
+                fromMember,
+                10L,
+                toMember,
+                new BigDecimal(amount),
+                "备注",
+                "SUCCESS",
+                null);
     }
 
     private void stubCreateReturnsRecord() {
-        when(transfers.createIfAbsent(any())).thenAnswer(invocation -> {
-            WalletTransfer value = invocation.getArgument(0);
-            return new WalletTransfer(5L, value.transferNo(), value.requestNo(), value.fromWalletId(),
-                    value.fromMemberId(), value.toWalletId(), value.toMemberId(), value.amount(), value.remark(),
-                    value.status(), null);
-        });
+        when(transfers.createIfAbsent(any()))
+                .thenAnswer(
+                        invocation -> {
+                            WalletTransfer value = invocation.getArgument(0);
+                            return new WalletTransfer(
+                                    5L,
+                                    value.transferNo(),
+                                    value.requestNo(),
+                                    value.fromWalletId(),
+                                    value.fromMemberId(),
+                                    value.toWalletId(),
+                                    value.toMemberId(),
+                                    value.amount(),
+                                    value.remark(),
+                                    value.status(),
+                                    null);
+                        });
     }
 
     @Test
@@ -56,8 +84,10 @@ class WalletTransferServiceTest {
         InOrder order = inOrder(wallets);
         order.verify(wallets).lockById(10L);
         order.verify(wallets).lockById(20L);
-        verify(walletService).debit(1L, WalletBizType.TRANSFER, "REQ1", new BigDecimal("10.00"), "转账转出");
-        verify(walletService).credit(2L, WalletBizType.TRANSFER, "REQ1", new BigDecimal("10.00"), "转账转入");
+        verify(walletService)
+                .debit(1L, WalletBizType.TRANSFER, "REQ1", new BigDecimal("10.00"), "转账转出");
+        verify(walletService)
+                .credit(2L, WalletBizType.TRANSFER, "REQ1", new BigDecimal("10.00"), "转账转入");
     }
 
     @Test
@@ -84,22 +114,27 @@ class WalletTransferServiceTest {
     @Test
     void reusedRequestWithDifferentContentIsRejected() {
         when(transfers.findByRequestNo("REQ1")).thenReturn(transfer(1L, 3L, "10.00"));
-        assertThrows(IllegalStateException.class,
+        assertThrows(
+                IllegalStateException.class,
                 () -> service.transfer(1L, 2L, new BigDecimal("10.00"), null, "REQ1"));
         verifyNoInteractions(walletService);
     }
 
     @Test
     void selfTransferMissingReceiverAndBadAmountAreRejected() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(
+                IllegalArgumentException.class,
                 () -> service.transfer(1L, 1L, new BigDecimal("10.00"), null, "REQ1"));
         when(transfers.findByRequestNo("REQ1")).thenReturn(null);
         when(wallets.findByMemberId(2L)).thenReturn(null);
-        assertThrows(ServiceException.class,
+        assertThrows(
+                ServiceException.class,
                 () -> service.transfer(1L, 2L, new BigDecimal("10.00"), null, "REQ1"));
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(
+                IllegalArgumentException.class,
                 () -> service.transfer(1L, 2L, new BigDecimal("0.00"), null, "REQ1"));
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(
+                IllegalArgumentException.class,
                 () -> service.transfer(1L, 2L, new BigDecimal("10.00"), null, ""));
     }
 }

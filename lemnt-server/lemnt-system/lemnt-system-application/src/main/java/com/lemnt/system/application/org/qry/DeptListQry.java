@@ -15,6 +15,5 @@ public record DeptListQry(
         /**
          * 部门状态（1正常 2停用）
          */
-        String status
-) implements Serializable {
-}
+        String status)
+        implements Serializable {}

@@ -15,5 +15,4 @@ public record Shipment(
         String phone,
         String address,
         LocalDateTime shippedAt,
-        LocalDateTime receivedAt
-) {}
+        LocalDateTime receivedAt) {}

@@ -29,29 +29,37 @@ public class KefuMessageGatewayImpl implements KefuMessageGateway {
 
     @Override
     public List<KefuMessage> list(Long conversationId, LocalDateTime beforeTime, int limit) {
-        return mapper.selectList(Wrappers.<KefuMessageDO>lambdaQuery()
-                        .eq(KefuMessageDO::getConversationId, conversationId)
-                        .lt(beforeTime != null, KefuMessageDO::getCreateTime, beforeTime)
-                        .orderByDesc(KefuMessageDO::getCreateTime).orderByDesc(KefuMessageDO::getId)
-                        .last("LIMIT " + limit))
-                .stream().map(KefuConverter::model).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<KefuMessageDO>lambdaQuery()
+                                .eq(KefuMessageDO::getConversationId, conversationId)
+                                .lt(beforeTime != null, KefuMessageDO::getCreateTime, beforeTime)
+                                .orderByDesc(KefuMessageDO::getCreateTime)
+                                .orderByDesc(KefuMessageDO::getId)
+                                .last("LIMIT " + limit))
+                .stream()
+                .map(KefuConverter::model)
+                .toList();
     }
 
     @Override
     public boolean markRead(Long conversationId, int readerType) {
-        mapper.update(null, Wrappers.<KefuMessageDO>lambdaUpdate()
-                .eq(KefuMessageDO::getConversationId, conversationId)
-                .ne(KefuMessageDO::getSenderType, readerType)
-                .eq(KefuMessageDO::getReadStatus, false)
-                .set(KefuMessageDO::getReadStatus, true));
+        mapper.update(
+                null,
+                Wrappers.<KefuMessageDO>lambdaUpdate()
+                        .eq(KefuMessageDO::getConversationId, conversationId)
+                        .ne(KefuMessageDO::getSenderType, readerType)
+                        .eq(KefuMessageDO::getReadStatus, false)
+                        .set(KefuMessageDO::getReadStatus, true));
         return true;
     }
 
     @Override
     public long unreadCount(Long conversationId, int readerType) {
-        return mapper.selectCount(Wrappers.<KefuMessageDO>lambdaQuery()
-                .eq(KefuMessageDO::getConversationId, conversationId)
-                .ne(KefuMessageDO::getSenderType, readerType)
-                .eq(KefuMessageDO::getReadStatus, false));
+        return mapper.selectCount(
+                Wrappers.<KefuMessageDO>lambdaQuery()
+                        .eq(KefuMessageDO::getConversationId, conversationId)
+                        .ne(KefuMessageDO::getSenderType, readerType)
+                        .eq(KefuMessageDO::getReadStatus, false));
     }
 }

@@ -1,7 +1,6 @@
 package com.lemnt.common.lock.config;
 
 import com.baomidou.lock.spring.boot.autoconfigure.LockAutoConfiguration;
-import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -10,6 +9,8 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -52,10 +53,11 @@ public class RedissonConfig {
         Config config = new Config();
         if (clusterNodes != null && !clusterNodes.isEmpty()) {
             // 集群模式
-            String[] nodes = clusterNodes.stream()
-                    .map(String::trim)
-                    .map(n -> n.startsWith("redis://") ? n : "redis://" + n)
-                    .toArray(String[]::new);
+            String[] nodes =
+                    clusterNodes.stream()
+                            .map(String::trim)
+                            .map(n -> n.startsWith("redis://") ? n : "redis://" + n)
+                            .toArray(String[]::new);
 
             config.useClusterServers()
                     .addNodeAddress(nodes)
@@ -70,7 +72,9 @@ public class RedissonConfig {
                     .setConnectTimeout(10000)
                     .setTimeout(3000);
 
-            log.info("[RedissonConfig] RedissonClient initialized in cluster mode: {}", String.join(",", nodes));
+            log.info(
+                    "[RedissonConfig] RedissonClient initialized in cluster mode: {}",
+                    String.join(",", nodes));
         } else {
             // 单节点模式
             String address = "redis://" + host + ":" + port;
@@ -85,7 +89,9 @@ public class RedissonConfig {
                     .setConnectTimeout(10000)
                     .setTimeout(3000);
 
-            log.info("[RedissonConfig] RedissonClient initialized in single server mode: {}", address);
+            log.info(
+                    "[RedissonConfig] RedissonClient initialized in single server mode: {}",
+                    address);
         }
         return Redisson.create(config);
     }

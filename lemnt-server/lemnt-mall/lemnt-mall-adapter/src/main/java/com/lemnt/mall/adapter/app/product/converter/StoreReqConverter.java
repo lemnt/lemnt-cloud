@@ -12,8 +12,7 @@ public final class StoreReqConverter {
     /**
      * 转换分页查询或分页响应。
      */
-    public static StorePageQry page(
-            StorePageReq r) {
+    public static StorePageQry page(StorePageReq r) {
         return new StorePageQry(
                 r.name(),
                 r.categoryId(),

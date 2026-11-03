@@ -11,6 +11,5 @@ public record TradeOrderDetailDTO(
         Long memberId,
         BigDecimal totalAmount,
         String status,
-        List<TradeOrderItemDTO> items
-) implements Serializable {
-}
+        List<TradeOrderItemDTO> items)
+        implements Serializable {}

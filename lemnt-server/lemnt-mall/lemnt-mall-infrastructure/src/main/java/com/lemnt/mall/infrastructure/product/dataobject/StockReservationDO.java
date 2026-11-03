@@ -20,10 +20,12 @@ import lombok.experimental.Accessors;
 public class StockReservationDO extends BaseDO {
     @TableId(type = IdType.AUTO)
     private Long id;
+
     private String reservationNo;
     private Long productId;
     private Integer quantity;
     private String status;
+
     /** 售后回补关联的原预占订单号。 */
     private String sourceNo;
 }

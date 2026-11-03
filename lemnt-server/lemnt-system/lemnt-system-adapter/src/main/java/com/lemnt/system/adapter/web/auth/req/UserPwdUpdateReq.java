@@ -13,13 +13,7 @@ import java.io.Serializable;
  */
 @Schema(description = "修改个人密码请求")
 public record UserPwdUpdateReq(
-        @NotNull(message = "用户ID不能为空")
-        @Schema(description = "用户ID")
-        Long userId,
-        @NotBlank(message = "旧密码不能为空")
-        @Schema(description = "旧密码")
-        String oldPassword,
-        @NotBlank(message = "新密码不能为空")
-        @Schema(description = "新密码")
-        String newPassword
-) implements Serializable {}
+        @NotNull(message = "用户ID不能为空") @Schema(description = "用户ID") Long userId,
+        @NotBlank(message = "旧密码不能为空") @Schema(description = "旧密码") String oldPassword,
+        @NotBlank(message = "新密码不能为空") @Schema(description = "新密码") String newPassword)
+        implements Serializable {}

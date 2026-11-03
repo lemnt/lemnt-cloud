@@ -1,11 +1,9 @@
 package com.lemnt.trade.application.payment.service;
 
 import com.lemnt.trade.application.order.service.OrderLogService;
-import com.lemnt.trade.domain.order.model.TradeOperator;
-
-
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
+import com.lemnt.trade.domain.order.model.TradeOperator;
 import com.lemnt.trade.domain.order.model.TradeOrder;
 import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.trade.domain.payment.model.PaymentRecord;
@@ -89,7 +87,13 @@ public class PaymentNotificationService {
         if (!tradeOrderGateway.transitionStatus(order.orderNo(), "PENDING_PAYMENT", "PAID")) {
             throw new IllegalStateException("订单状态已变化，请重试");
         }
-        logs.record(order, "PENDING_PAYMENT", "PAID", 10, TradeOperator.member(order.memberId()), "用户付款成功");
+        logs.record(
+                order,
+                "PENDING_PAYMENT",
+                "PAID",
+                10,
+                TradeOperator.member(order.memberId()),
+                "用户付款成功");
     }
 
     private boolean blank(String value) {

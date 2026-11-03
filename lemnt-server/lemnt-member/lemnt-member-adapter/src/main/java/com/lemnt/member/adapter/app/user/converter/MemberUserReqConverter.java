@@ -2,8 +2,8 @@ package com.lemnt.member.adapter.app.user.converter;
 
 import com.lemnt.member.adapter.app.user.req.PasswordChangeReq;
 import com.lemnt.member.adapter.app.user.req.ProfileUpdateReq;
-import com.lemnt.member.application.user.cmd.PasswordChangeCmd;
 import com.lemnt.member.application.user.cmd.MemberUpdateCmd;
+import com.lemnt.member.application.user.cmd.PasswordChangeCmd;
 
 /** 会员资料转换器。 */
 public final class MemberUserReqConverter {
@@ -24,5 +24,4 @@ public final class MemberUserReqConverter {
     public static PasswordChangeCmd password(Long id, PasswordChangeReq r) {
         return new PasswordChangeCmd(id, r.oldPassword(), r.newPassword());
     }
-
 }

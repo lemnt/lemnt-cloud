@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** 装修页面表 CRUD。 */
 @Mapper
-public interface DiyPageMapper extends BaseMapper<DiyPageDO> {
-}
+public interface DiyPageMapper extends BaseMapper<DiyPageDO> {}

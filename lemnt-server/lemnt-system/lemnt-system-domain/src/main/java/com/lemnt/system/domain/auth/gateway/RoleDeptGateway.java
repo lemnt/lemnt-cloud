@@ -28,6 +28,7 @@ public interface RoleDeptGateway {
      * @return 是否成功
      */
     Boolean insertRoleDepts(Long roleId, List<Long> deptIds);
+
     /** 统计部门关联的角色数量。 */
     Long selectCountRoleDeptByDeptId(Long deptId);
 }

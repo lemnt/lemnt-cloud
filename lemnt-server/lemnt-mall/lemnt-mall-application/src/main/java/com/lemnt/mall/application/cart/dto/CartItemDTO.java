@@ -15,5 +15,5 @@ public record CartItemDTO(
         String productCode,
         BigDecimal unitPrice,
         Integer availableStock,
-        boolean sellable
-) implements java.io.Serializable {}
+        boolean sellable)
+        implements java.io.Serializable {}

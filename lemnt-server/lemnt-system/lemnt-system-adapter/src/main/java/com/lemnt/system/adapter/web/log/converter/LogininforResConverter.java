@@ -25,8 +25,7 @@ public class LogininforResConverter {
                 dto.getIpaddr(),
                 dto.getStatus(),
                 dto.getMsg(),
-                dto.getAccessTime()
-        );
+                dto.getAccessTime());
     }
 
     /**

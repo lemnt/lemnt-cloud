@@ -26,10 +26,16 @@ public class PayAppUpdateCmdExe {
             throw new IllegalArgumentException("支付应用不存在");
         }
         PayConfigRules.status(cmd.status());
-        var value = new PayApp(existing.id(), existing.appKey(), PayConfigRules.required(cmd.name(), 64, "应用名"),
-                cmd.status(), PayConfigRules.optional(cmd.remark(), 255, "备注"),
-                PayConfigRules.url(cmd.orderNotifyUrl(), "支付结果回调地址"),
-                PayConfigRules.url(cmd.refundNotifyUrl(), "退款结果回调地址"), existing.createTime());
+        var value =
+                new PayApp(
+                        existing.id(),
+                        existing.appKey(),
+                        PayConfigRules.required(cmd.name(), 64, "应用名"),
+                        cmd.status(),
+                        PayConfigRules.optional(cmd.remark(), 255, "备注"),
+                        PayConfigRules.url(cmd.orderNotifyUrl(), "支付结果回调地址"),
+                        PayConfigRules.url(cmd.refundNotifyUrl(), "退款结果回调地址"),
+                        existing.createTime());
         return apps.update(value);
     }
 }

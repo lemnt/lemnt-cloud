@@ -2,9 +2,9 @@ package com.lemnt.member.adapter.web.user;
 
 import com.lemnt.common.core.domain.R;
 import com.lemnt.common.security.annotation.RequiresPermissions;
-import com.lemnt.member.adapter.web.user.req.MemberCatalogQueryGroupsPageReq;
 import com.lemnt.member.adapter.web.user.converter.MemberReqConverter;
 import com.lemnt.member.adapter.web.user.converter.MemberUserResConverter;
+import com.lemnt.member.adapter.web.user.req.MemberCatalogQueryGroupsPageReq;
 import com.lemnt.member.adapter.web.user.res.MemberCatalogQueryGroupsPageRes;
 import com.lemnt.member.application.user.executor.MemberGroupPageQueryExe;
 
@@ -33,10 +33,13 @@ public class MemberGroupQueryController {
     @GetMapping("/page")
     @Operation(summary = "groups/page分页")
     @RequiresPermissions("member:group:query")
-    public R<MemberCatalogQueryGroupsPageRes> groupsPage(@Valid @ModelAttribute MemberCatalogQueryGroupsPageReq req) {
+    public R<MemberCatalogQueryGroupsPageRes> groupsPage(
+            @Valid @ModelAttribute MemberCatalogQueryGroupsPageReq req) {
         var page = memberGroupPageQueryExe.execute(MemberReqConverter.toGroupPageQry(req));
         return R.page(
-                page.getRecords().stream().map(MemberUserResConverter::toMemberCatalogQueryGroupsPageRes).toList(),
+                page.getRecords().stream()
+                        .map(MemberUserResConverter::toMemberCatalogQueryGroupsPageRes)
+                        .toList(),
                 page.getTotal());
     }
 }

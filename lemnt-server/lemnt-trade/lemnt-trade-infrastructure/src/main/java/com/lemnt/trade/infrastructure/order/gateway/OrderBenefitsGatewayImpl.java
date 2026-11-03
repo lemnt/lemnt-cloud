@@ -35,8 +35,35 @@ public class OrderBenefitsGatewayImpl implements OrderBenefitsGateway {
     }
 
     @Override
-    public void refunded(String orderNo, String refundNo, java.util.Map<Long, Integer> quantities, java.math.BigDecimal refundAmount) {
-        client.refunded(orderNo, refundNo, quantities.entrySet().stream()
-                .map(item -> new com.lemnt.mall.client.bo.RefundStockBo(item.getKey(), item.getValue())).toList(), refundAmount);
+    public void refunded(
+            String orderNo,
+            String refundNo,
+            java.util.Map<Long, Integer> quantities,
+            java.math.BigDecimal refundAmount) {
+        client.refunded(
+                orderNo,
+                refundNo,
+                quantities.entrySet().stream()
+                        .map(
+                                item ->
+                                        new com.lemnt.mall.client.bo.RefundStockBo(
+                                                item.getKey(), item.getValue()))
+                        .toList(),
+                refundAmount);
+    }
+
+    @Override
+    public void refunded(com.lemnt.trade.domain.order.model.OrderRefundBenefits plan) {
+        client.refunded(
+                new com.lemnt.mall.client.bo.RefundBenefitsBo(
+                        plan.orderNo(),
+                        plan.afterSaleNo(),
+                        plan.orderItemId(),
+                        plan.skuId(),
+                        plan.quantity(),
+                        plan.amount(),
+                        plan.returnUsePoint(),
+                        plan.deductGivePoint(),
+                        plan.ruleVersion()));
     }
 }

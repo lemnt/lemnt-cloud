@@ -23,13 +23,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DictTypePageQueryExe {
     private final DictTypeGateway dictTypeGateway;
+
     public PageResult<DictTypeDTO> execute(DictTypePageQry qry) {
         DictType query = new DictType();
         query.setDictName(qry.dictName());
         query.setDictType(qry.dictType());
         query.setStatus(qry.status());
-        PageResult<DictType> pageResult = dictTypeGateway.selectPage(
-                query, new PageQry(qry.pageNum(), qry.pageSize()));
+        PageResult<DictType> pageResult =
+                dictTypeGateway.selectPage(query, new PageQry(qry.pageNum(), qry.pageSize()));
         List<DictTypeDTO> dtoList = DictTypeConverter.toDTOList(pageResult.getRecords());
         return PageResult.of(dtoList, pageResult.getTotal());
     }

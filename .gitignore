@@ -50,6 +50,8 @@ node_modules/
 dist/
 coverage/
 *.tsbuildinfo
+__pycache__/
+*.pyc
 
 # 前端共享的接口前缀配置
 !/lemnt-ui/.env.development

@@ -20,18 +20,30 @@ public final class SeckillConverter {
         if (value == null || value.isBlank()) {
             return List.of();
         }
-        return Arrays.stream(value.split(",")).map(String::trim).filter(s -> !s.isEmpty())
-                .map(Long::valueOf).toList();
+        return Arrays.stream(value.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(Long::valueOf)
+                .toList();
     }
 
     static String ids(List<Long> values) {
-        return values == null ? "" : String.join(",", values.stream().map(String::valueOf).toList());
+        return values == null
+                ? ""
+                : String.join(",", values.stream().map(String::valueOf).toList());
     }
 
     public static SeckillConfig model(SeckillConfigDO row) {
-        if (row == null) { return null; }
-        return new SeckillConfig(row.getId(), row.getName(), row.getStartTime(), row.getEndTime(),
-                JSON.parseArray(row.getSliderPicUrls(), String.class), row.getStatus());
+        if (row == null) {
+            return null;
+        }
+        return new SeckillConfig(
+                row.getId(),
+                row.getName(),
+                row.getStartTime(),
+                row.getEndTime(),
+                JSON.parseArray(row.getSliderPicUrls(), String.class),
+                row.getStatus());
     }
 
     public static SeckillConfigDO row(SeckillConfig value) {
@@ -46,10 +58,23 @@ public final class SeckillConverter {
     }
 
     public static SeckillActivity model(SeckillActivityDO row) {
-        if (row == null) { return null; }
-        return new SeckillActivity(row.getId(), row.getSpuId(), row.getName(), row.getStatus(), row.getRemark(),
-                row.getStartTime(), row.getEndTime(), row.getSort(), ids(row.getConfigIds()),
-                row.getTotalLimitCount(), row.getSingleLimitCount(), row.getStock(), row.getTotalStock());
+        if (row == null) {
+            return null;
+        }
+        return new SeckillActivity(
+                row.getId(),
+                row.getSpuId(),
+                row.getName(),
+                row.getStatus(),
+                row.getRemark(),
+                row.getStartTime(),
+                row.getEndTime(),
+                row.getSort(),
+                ids(row.getConfigIds()),
+                row.getTotalLimitCount(),
+                row.getSingleLimitCount(),
+                row.getStock(),
+                row.getTotalStock());
     }
 
     public static SeckillActivityDO row(SeckillActivity value) {
@@ -71,10 +96,20 @@ public final class SeckillConverter {
     }
 
     public static SeckillProduct model(SeckillProductDO row) {
-        if (row == null) { return null; }
-        return new SeckillProduct(row.getId(), row.getActivityId(), ids(row.getConfigIds()), row.getSpuId(),
-                row.getSkuId(), row.getSeckillPrice(), row.getStock(), row.getActivityStatus(),
-                row.getActivityStartTime(), row.getActivityEndTime());
+        if (row == null) {
+            return null;
+        }
+        return new SeckillProduct(
+                row.getId(),
+                row.getActivityId(),
+                ids(row.getConfigIds()),
+                row.getSpuId(),
+                row.getSkuId(),
+                row.getSeckillPrice(),
+                row.getStock(),
+                row.getActivityStatus(),
+                row.getActivityStartTime(),
+                row.getActivityEndTime());
     }
 
     public static SeckillProductDO row(SeckillProduct value) {

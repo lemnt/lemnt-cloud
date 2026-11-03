@@ -27,23 +27,32 @@ class ControllerMappingTest {
         for (var definition : scanner.findCandidateComponents("com.lemnt.trade.adapter")) {
             var type = Class.forName(definition.getBeanClassName());
             var constructor = type.getConstructors()[0];
-            var dependencies = Arrays.stream(constructor.getParameterTypes()).map(t -> mock(t)).toArray();
+            var dependencies =
+                    Arrays.stream(constructor.getParameterTypes()).map(t -> mock(t)).toArray();
             controllers.add(constructor.newInstance(dependencies));
         }
         var mvc = MockMvcBuilders.standaloneSetup(controllers.toArray()).build();
-        var mappings = mvc.getDispatcherServlet().getWebApplicationContext()
-                .getBean(RequestMappingHandlerMapping.class);
+        var mappings =
+                mvc.getDispatcherServlet()
+                        .getWebApplicationContext()
+                        .getBean(RequestMappingHandlerMapping.class);
         var actual = new TreeSet<String>();
-        mappings.getHandlerMethods().forEach((mapping, handler) -> {
-            var permission = handler.getMethodAnnotation(RequiresPermissions.class);
-            var permissions = permission == null ? "" : String.join(",", permission.value());
-            for (var method : mapping.getMethodsCondition().getMethods()) {
-                for (var path : mapping.getPatternValues()) {
-                    actual.add(method.name() + " " + path + " " + permissions);
-                }
-            }
-        });
-        var expected = new TreeSet<>(Arrays.asList("""
+        mappings.getHandlerMethods()
+                .forEach(
+                        (mapping, handler) -> {
+                            var permission = handler.getMethodAnnotation(RequiresPermissions.class);
+                            var permissions =
+                                    permission == null ? "" : String.join(",", permission.value());
+                            for (var method : mapping.getMethodsCondition().getMethods()) {
+                                for (var path : mapping.getPatternValues()) {
+                                    actual.add(method.name() + " " + path + " " + permissions);
+                                }
+                            }
+                        });
+        var expected =
+                new TreeSet<>(
+                        Arrays.asList(
+                                """
                 GET /trade/admin/config trade:config:query
                 PUT /trade/admin/config trade:config:update
                 POST /trade/admin/delivery/expresses trade:delivery-express:create
@@ -145,6 +154,10 @@ class ControllerMappingTest {
                 GET /trade/admin/wallets/{memberId} trade:wallet:query
                 GET /trade/admin/wallets/{memberId}/transactions trade:wallet:query
                 POST /trade/admin/wallets/{memberId}/adjust trade:wallet:adjust
+                GET /trade/admin/orders/{orderNo}/promotions trade:fulfillment:query
+                GET /trade/admin/after-sales/{no}/promotions trade:after-sale:query
+                GET /trade/app/orders/{orderNo}/promotions
+                GET /trade/app/after-sales/{no}/promotions
                 GET /trade/app/wallet
                 GET /trade/app/wallet/transactions
                 GET /trade/admin/recharge-packages trade:recharge-package:list
@@ -164,7 +177,8 @@ class ControllerMappingTest {
                 POST /trade/app/wallet/transfers
                 GET /trade/app/wallet/transfers
 
-                """.split("\n")));
+                """
+                                        .split("\n")));
         // 文本块会移除行尾空格，空权限与带权限的路由统一去掉行尾空白。
         var normalized = new TreeSet<String>();
         actual.forEach(route -> normalized.add(route.stripTrailing()));

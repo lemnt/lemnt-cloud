@@ -7,12 +7,9 @@ import com.lemnt.system.infrastructure.notice.dataobject.NoticeReadDO;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import cn.hutool.core.collection.CollUtil;
 
 import java.util.List;
 
@@ -37,26 +34,14 @@ public interface NoticeReadMapper extends BaseMapper<NoticeReadDO> {
     int selectUnreadCount(@Param("userId") Long userId);
 
     /**
-     * 查询某用户是否已读某公告
-     *
-     * @param noticeId 公告ID
-     * @param userId   用户ID
-     * @return 已读记录数（0未读 1已读）
-     */
-    default long selectIsRead(@Param("noticeId") Long noticeId, @Param("userId") Long userId) {
-        return selectCount(Wrappers.<NoticeReadDO>lambdaQuery()
-                .eq(NoticeReadDO::getNoticeId, noticeId)
-                .eq(NoticeReadDO::getUserId, userId));
-    }
-
-    /**
      * 查询带已读状态的公告列表（SQL层限制条数，一次查询完成）
      *
      * @param userId 用户ID
      * @param limit  最多返回条数
      * @return 带 isRead 标记的公告列表
      */
-    List<Notice> selectNoticeListWithReadStatus(@Param("userId") Long userId, @Param("limit") int limit);
+    List<Notice> selectNoticeListWithReadStatus(
+            @Param("userId") Long userId, @Param("limit") int limit);
 
     /**
      * 查询已阅读某公告的用户列表
@@ -65,21 +50,8 @@ public interface NoticeReadMapper extends BaseMapper<NoticeReadDO> {
      * @param searchValue 搜索值
      * @return 已读用户列表
      */
-    IPage<NoticeReadUser> selectPageReadUsers(Page<NoticeDO> page,
+    IPage<NoticeReadUser> selectPageReadUsers(
+            Page<NoticeDO> page,
             @Param("noticeId") Long noticeId,
             @Param("searchValue") String searchValue);
-
-    /**
-     * 公告删除时清理对应已读记录
-     *
-     * @param noticeIds 公告ID数组
-     * @return 结果
-     */
-    default int deleteByNoticeIds(List<Long> noticeIds) {
-        if (CollUtil.isEmpty(noticeIds)) {
-            return 0;
-        }
-        return delete(Wrappers.<NoticeReadDO>lambdaQuery()
-                .in(NoticeReadDO::getNoticeId, noticeIds));
-    }
 }

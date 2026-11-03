@@ -10,5 +10,4 @@ import org.springframework.context.annotation.Configuration;
  * @date 2025/7/26 22:02
  */
 @Configuration
-public class CustomDubboConfig {
-}
+public class CustomDubboConfig {}

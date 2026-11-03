@@ -12,6 +12,5 @@ public record WalletTransactionDTO(
         String title,
         BigDecimal amount,
         BigDecimal balanceAfter,
-        LocalDateTime createTime
-) implements Serializable {
-}
+        LocalDateTime createTime)
+        implements Serializable {}

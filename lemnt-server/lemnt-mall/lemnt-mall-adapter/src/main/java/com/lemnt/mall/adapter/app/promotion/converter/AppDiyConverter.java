@@ -7,12 +7,13 @@ import com.lemnt.mall.application.promotion.dto.AppDiyTemplateDTO;
 
 /** 小程序装修响应转换。 */
 public final class AppDiyConverter {
-    private AppDiyConverter() {
-    }
+    private AppDiyConverter() {}
 
     public static AppDiyTemplateRes template(AppDiyTemplateDTO value) {
-        return value == null ? null : new AppDiyTemplateRes(value.id(), value.name(), value.property(),
-                value.home(), value.user());
+        return value == null
+                ? null
+                : new AppDiyTemplateRes(
+                        value.id(), value.name(), value.property(), value.home(), value.user());
     }
 
     public static AppDiyPageRes page(AppDiyPageDTO value) {

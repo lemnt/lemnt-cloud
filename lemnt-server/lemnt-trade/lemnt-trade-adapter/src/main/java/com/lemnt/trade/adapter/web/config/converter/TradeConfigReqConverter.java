@@ -5,8 +5,7 @@ import com.lemnt.trade.application.config.cmd.TradeConfigUpdateCmd;
 
 /** config Req 接口边界转换。 */
 public final class TradeConfigReqConverter {
-    private TradeConfigReqConverter() {
-    }
+    private TradeConfigReqConverter() {}
 
     /** 转换修改请求。 */
     public static TradeConfigUpdateCmd tradeConfigUpdate(TradeConfigUpdateReq req) {

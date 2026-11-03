@@ -13,7 +13,9 @@ public final class TagConverter {
      * 转换为领域对象。
      */
     public static Tag toEntity(TagDO row) {
-        return row == null ? null : new Tag(row.getId(), row.getName(), row.getRemark(), row.getCreateTime());
+        return row == null
+                ? null
+                : new Tag(row.getId(), row.getName(), row.getRemark(), row.getCreateTime());
     }
 
     /**

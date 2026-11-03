@@ -30,7 +30,7 @@ public class AppMemberLevelController {
     public R<List<LevelRes>> levels() {
         return R.ok(
                 memberLevelListQueryExe.execute(new LevelListQry(true)).stream()
-                .map(MemberGrowthResConverter::level)
-                .toList());
+                        .map(MemberGrowthResConverter::level)
+                        .toList());
     }
 }

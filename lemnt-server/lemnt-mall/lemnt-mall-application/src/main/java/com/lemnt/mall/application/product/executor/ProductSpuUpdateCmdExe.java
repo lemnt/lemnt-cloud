@@ -25,22 +25,27 @@ public class ProductSpuUpdateCmdExe {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean execute(ProductSpuUpdateCmd cmd) {
-        if (cmd == null
-        ) {
+        if (cmd == null) {
             throw new IllegalArgumentException("商品参数不能为空");
         }
         ProductCatalogValidation.id(cmd.id());
         catalogValidationService.enabledReferences(cmd.categoryId(), cmd.brandId());
         return productCatalogService.updateSpu(
                 new ProductSpu(
-                cmd.id(),
-                null,
-                ProductCatalogValidation.text(cmd.name(), 200, "商品名称"),
-                cmd.categoryId(),
-                cmd.brandId(),
-                ProductCatalogValidation.optional(cmd.description(), 65535),
-                ProductCatalogValidation.optional(cmd.image(), 500),
-                null,
-                cmd.skus(), cmd.deliveryTypes(), cmd.deliveryTemplateId(), cmd.keyword(), cmd.introduction(), cmd.sliderPicUrls(), cmd.sort()));
+                        cmd.id(),
+                        null,
+                        ProductCatalogValidation.text(cmd.name(), 200, "商品名称"),
+                        cmd.categoryId(),
+                        cmd.brandId(),
+                        ProductCatalogValidation.optional(cmd.description(), 65535),
+                        ProductCatalogValidation.optional(cmd.image(), 500),
+                        null,
+                        cmd.skus(),
+                        cmd.deliveryTypes(),
+                        cmd.deliveryTemplateId(),
+                        cmd.keyword(),
+                        cmd.introduction(),
+                        cmd.sliderPicUrls(),
+                        cmd.sort()));
     }
 }

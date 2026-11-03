@@ -10,6 +10,5 @@ import jakarta.validation.constraints.Size;
 @Schema(description = "设置自提订单请求")
 public record PickUpAssignReq(
         @Schema(description = "订单编号") @NotBlank @Size(max = 40) String orderNo,
-        @Schema(description = "自提门店编号") @NotNull Long storeId
-) implements java.io.Serializable {
-}
+        @Schema(description = "自提门店编号") @NotNull Long storeId)
+        implements java.io.Serializable {}

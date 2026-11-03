@@ -17,8 +17,8 @@ public interface KefuConversationGateway {
     List<KefuConversation> listVisible();
 
     /** 更新最后消息；会员发送时管理员未读数加一，并恢复被管理员删除的会话。 */
-    boolean updateLastMessage(Long id, LocalDateTime time, String content, Integer contentType,
-            boolean fromMember);
+    boolean updateLastMessage(
+            Long id, LocalDateTime time, String content, Integer contentType, boolean fromMember);
 
     boolean clearAdminUnread(Long id);
 

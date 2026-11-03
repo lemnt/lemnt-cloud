@@ -8,6 +8,7 @@ import com.lemnt.system.domain.config.gateway.DictTypeGateway;
 import com.lemnt.system.domain.config.model.DictType;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +26,7 @@ public class DictTypeUpdateCmdExe {
     private final DictDataGateway dictDataGateway;
 
     /** 修改前检查类型冲突，保持自身类型时允许保存。 */
-    @org.springframework.transaction.annotation.Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public Boolean execute(DictTypeUpdateCmd cmd) {
         DictType existing = dictTypeGateway.checkDictTypeUnique(cmd.dictType());
         if (existing != null && !Objects.equals(existing.getDictId(), cmd.dictId())) {

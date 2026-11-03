@@ -1,13 +1,22 @@
 /** 活动详情页下单：默认地址、请求编号复用和成功清理。 */
-function createPromotionOrderHelper({type, client, memberClient}) {
-  function memberId() { return getApp().globalData.memberSession?.memberId; }
-  function key(member) { return 'promotion.order.' + type + '.' + member; }
+function createPromotionOrderHelper({ type, client, memberClient }) {
+  function memberId() {
+    return getApp().globalData.memberSession?.memberId;
+  }
+  function key(member) {
+    return 'promotion.order.' + type + '.' + member;
+  }
   return {
     async loadAddress() {
       if (!memberId()) return null;
       const list = await memberClient.addresses();
       const address = list.find((item) => item.defaultStatus) || list[0];
-      return address ? { id: address.id, label: address.name + ' ' + address.mobile + ' ' + address.detailAddress } : null;
+      return address
+        ? {
+            id: address.id,
+            label: address.name + ' ' + address.mobile + ' ' + address.detailAddress,
+          }
+        : null;
     },
     async submit(payload) {
       const member = memberId();

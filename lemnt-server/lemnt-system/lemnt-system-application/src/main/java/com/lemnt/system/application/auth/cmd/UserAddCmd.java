@@ -48,6 +48,5 @@ public record UserAddCmd(
         /**
          * 岗位ID组
          */
-        List<Long> postIds
-) implements Serializable {
-}
+        List<Long> postIds)
+        implements Serializable {}

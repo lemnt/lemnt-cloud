@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** StockReservation 表数据访问接口。 */
 @Mapper
-public interface StockReservationMapper extends BaseMapper<StockReservationDO> {
-}
+public interface StockReservationMapper extends BaseMapper<StockReservationDO> {}

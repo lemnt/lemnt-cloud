@@ -45,8 +45,7 @@ public final class MemberGrowthResConverter {
     /**
      * 汇总。
      */
-    public static SignSummaryRes summary(
-            SignSummaryDTO v) {
+    public static SignSummaryRes summary(SignSummaryDTO v) {
         return new SignSummaryRes(v.totalDay(), v.continuousDay(), v.todaySignIn());
     }
 
@@ -57,7 +56,13 @@ public final class MemberGrowthResConverter {
         return v == null
                 ? null
                 : new AppMemberGrowthSignRes(
-                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience(), v.createTime());
+                        v.id(),
+                        v.memberId(),
+                        v.signDate(),
+                        v.day(),
+                        v.point(),
+                        v.experience(),
+                        v.createTime());
     }
 
     /**
@@ -67,7 +72,13 @@ public final class MemberGrowthResConverter {
         return v == null
                 ? null
                 : new AppMemberGrowthSignsRes(
-                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience(), v.createTime());
+                        v.id(),
+                        v.memberId(),
+                        v.signDate(),
+                        v.day(),
+                        v.point(),
+                        v.experience(),
+                        v.createTime());
     }
 
     /**
@@ -85,7 +96,10 @@ public final class MemberGrowthResConverter {
                         v.bizType(),
                         v.bizNo(),
                         v.reason(),
-                        v.createTime(),v.pointBizType(),v.title(),v.description());
+                        v.createTime(),
+                        v.pointBizType(),
+                        v.title(),
+                        v.description());
     }
 
     /**
@@ -103,6 +117,9 @@ public final class MemberGrowthResConverter {
                         v.bizType(),
                         v.bizNo(),
                         v.reason(),
-                        v.createTime(),v.experienceBizType(),v.title(),v.description());
+                        v.createTime(),
+                        v.experienceBizType(),
+                        v.title(),
+                        v.description());
     }
 }

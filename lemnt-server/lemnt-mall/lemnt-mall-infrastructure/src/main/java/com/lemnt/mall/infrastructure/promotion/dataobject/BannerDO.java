@@ -12,6 +12,7 @@ import lombok.Data;
 public class BannerDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private String title;
     private String url;
     private String picUrl;

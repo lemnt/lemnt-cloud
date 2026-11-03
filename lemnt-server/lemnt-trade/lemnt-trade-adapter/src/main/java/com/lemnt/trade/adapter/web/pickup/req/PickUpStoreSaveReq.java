@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -23,6 +22,5 @@ public record PickUpStoreSaveReq(
         @Schema(description = "纬度") BigDecimal latitude,
         @Schema(description = "经度") BigDecimal longitude,
         @Schema(description = "可核销管理员编号") List<Long> verifyUserIds,
-        @Schema(description = "0 开启、1 关闭") @NotNull Integer status
-) implements java.io.Serializable {
-}
+        @Schema(description = "0 开启、1 关闭") @NotNull Integer status)
+        implements java.io.Serializable {}

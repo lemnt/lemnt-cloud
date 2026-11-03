@@ -20,6 +20,5 @@ public record BargainActivity(
         Integer bargainCount,
         Integer totalLimitCount,
         BigDecimal randomMinPrice,
-        BigDecimal randomMaxPrice
-) implements java.io.Serializable {
-}
+        BigDecimal randomMaxPrice)
+        implements java.io.Serializable {}

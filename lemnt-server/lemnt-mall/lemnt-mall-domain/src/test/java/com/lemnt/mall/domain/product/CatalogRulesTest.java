@@ -31,7 +31,9 @@ class CatalogRulesTest {
         var second = new LinkedHashMap<String, String>();
         second.put("尺寸", "M");
         second.put(" 颜色 ", "红色");
-        assertEquals(ProductCatalogValidation.variantKey(first), ProductCatalogValidation.variantKey(second));
+        assertEquals(
+                ProductCatalogValidation.variantKey(first),
+                ProductCatalogValidation.variantKey(second));
         assertNotEquals(
                 ProductCatalogValidation.variantKey(Map.of("ab", "c")),
                 ProductCatalogValidation.variantKey(Map.of("a", "bc")));
@@ -45,13 +47,13 @@ class CatalogRulesTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () ->
-                ProductCatalogValidation.newSpu(
-                spu(sku("A", Map.of("颜色", "红")), sku(" A ", Map.of("颜色", "蓝")))));
+                        ProductCatalogValidation.newSpu(
+                                spu(sku("A", Map.of("颜色", "红")), sku(" A ", Map.of("颜色", "蓝")))));
         assertThrows(
                 IllegalArgumentException.class,
                 () ->
-                ProductCatalogValidation.newSpu(
-                spu(sku("A", Map.of("颜色", "红")), sku("B", Map.of("尺寸", "M")))));
+                        ProductCatalogValidation.newSpu(
+                                spu(sku("A", Map.of("颜色", "红")), sku("B", Map.of("尺寸", "M")))));
     }
 
     @Test
@@ -79,7 +81,8 @@ class CatalogRulesTest {
                 IllegalArgumentException.class,
                 () -> ProductCatalogValidation.specs(Map.of("a", "1", " a ", "2")));
         assertThrows(
-                IllegalArgumentException.class, () -> ProductCatalogValidation.specs(Map.of("a", " ")));
+                IllegalArgumentException.class,
+                () -> ProductCatalogValidation.specs(Map.of("a", " ")));
         assertThrows(IllegalArgumentException.class, () -> ProductCatalogValidation.newSpu(spu()));
     }
 }

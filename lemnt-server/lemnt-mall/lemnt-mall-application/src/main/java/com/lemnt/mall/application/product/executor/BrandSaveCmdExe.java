@@ -36,12 +36,12 @@ public class BrandSaveCmdExe {
         }
         var brand =
                 new Brand(
-                cmd.id(),
-                ProductCatalogValidation.text(cmd.name(), 100, "品牌名称"),
-                ProductCatalogValidation.optional(cmd.picUrl(), 500),
-                ProductCatalogValidation.optional(cmd.description(), 2000),
-                cmd.sort(),
-                ProductCatalogValidation.status(cmd.status()));
+                        cmd.id(),
+                        ProductCatalogValidation.text(cmd.name(), 100, "品牌名称"),
+                        ProductCatalogValidation.optional(cmd.picUrl(), 500),
+                        ProductCatalogValidation.optional(cmd.description(), 2000),
+                        cmd.sort(),
+                        ProductCatalogValidation.status(cmd.status()));
         return ProductCatalogDTOConverter.brand(brandGateway.saveBrand(brand));
     }
 }

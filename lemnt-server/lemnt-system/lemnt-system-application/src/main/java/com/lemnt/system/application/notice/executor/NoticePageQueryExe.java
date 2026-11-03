@@ -37,7 +37,8 @@ public class NoticePageQueryExe {
         query.setNoticeType(qry.noticeType());
         query.setStatus(qry.status());
         query.setCreateBy(SecurityUtils.getUsername());
-        PageResult<Notice> pageResult = noticeGateway.selectPage(query, new PageQry(qry.pageNum(), qry.pageSize()));
+        PageResult<Notice> pageResult =
+                noticeGateway.selectPage(query, new PageQry(qry.pageNum(), qry.pageSize()));
         List<NoticeDTO> dtoList = NoticeConverter.toDTOList(pageResult.getRecords());
         return PageResult.of(dtoList, pageResult.getTotal());
     }

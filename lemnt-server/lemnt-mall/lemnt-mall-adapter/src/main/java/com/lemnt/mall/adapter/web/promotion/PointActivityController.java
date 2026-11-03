@@ -53,7 +53,8 @@ public class PointActivityController {
     @PutMapping("/{id}")
     @Operation(summary = "修改积分商城活动")
     @RequiresPermissions("mall:promotion:update")
-    public R<Boolean> update(@PathVariable Long id, @Valid @RequestBody PointActivityUpdateReq req) {
+    public R<Boolean> update(
+            @PathVariable Long id, @Valid @RequestBody PointActivityUpdateReq req) {
         return R.ok(update.execute(PointConverter.update(id, req)));
     }
 
@@ -83,7 +84,8 @@ public class PointActivityController {
     @RequiresPermissions("mall:promotion:list")
     public R<PointActivityRes> page(@Valid @ModelAttribute PointActivityPageReq req) {
         var result = page.execute(PointConverter.page(req));
-        return R.page(result.getRecords().stream().map(PointConverter::activity).toList(),
+        return R.page(
+                result.getRecords().stream().map(PointConverter::activity).toList(),
                 result.getTotal());
     }
 }

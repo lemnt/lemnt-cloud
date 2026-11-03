@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 public class PaymentRefundDO extends BaseDO {
     @TableId(type = IdType.INPUT)
     private String refundNo;
+
     private String afterSaleNo;
     private String paymentNo;
     private String orderNo;

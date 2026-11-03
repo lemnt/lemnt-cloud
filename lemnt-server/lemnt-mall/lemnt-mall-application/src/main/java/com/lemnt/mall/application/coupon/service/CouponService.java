@@ -57,10 +57,17 @@ public class CouponService {
                 CouponDTOConverter.template(t),
                 c == null ? null : c.id(),
                 c == null ? null : c.status(),
-                c != null && "AVAILABLE".equals(c.status()) && c.terms() != null
-                        && !now.isBefore(c.terms().validFrom()) && now.isBefore(c.terms().validUntil()),
-                publicClaim && valid(t) && (t.totalCount() == -1 || t.issuedCount() < t.totalCount())
-                        && (t.takeLimitCount() == -1 || (c == null ? 0 : couponGateway.takeCount(c.memberId(), t.id())) < t.takeLimitCount()));
+                c != null
+                        && "AVAILABLE".equals(c.status())
+                        && c.terms() != null
+                        && !now.isBefore(c.terms().validFrom())
+                        && now.isBefore(c.terms().validUntil()),
+                publicClaim
+                        && valid(t)
+                        && (t.totalCount() == -1 || t.issuedCount() < t.totalCount())
+                        && (t.takeLimitCount() == -1
+                                || (c == null ? 0 : couponGateway.takeCount(c.memberId(), t.id()))
+                                        < t.takeLimitCount()));
     }
 
     /** 分页查询当前会员可领取的优惠券。 */
@@ -68,9 +75,11 @@ public class CouponService {
     public CouponPageDTO offers(CouponPageQry q) {
         page(q);
         return new CouponPageDTO(
-                couponTemplateGateway.offers((q.pageNum() - 1) * q.pageSize(), q.pageSize()).stream()
-                .map(t -> offer(t, couponGateway.issued(q.memberId(), t.id()), true))
-                .toList(),
+                couponTemplateGateway
+                        .offers((q.pageNum() - 1) * q.pageSize(), q.pageSize())
+                        .stream()
+                        .map(t -> offer(t, couponGateway.issued(q.memberId(), t.id()), true))
+                        .toList(),
                 couponTemplateGateway.offerCount());
     }
 
@@ -79,16 +88,26 @@ public class CouponService {
     public CouponWalletPageDTO wallet(CouponPageQry q) {
         page(q);
         var now = couponTemplateGateway.now();
-        var values = couponGateway.wallet(q.memberId(), (q.pageNum() - 1) * q.pageSize(), q.pageSize()).stream()
-                .map(c -> {
-                    var terms = c.terms();
-                    if (terms == null) {
-                        throw new ServiceException("优惠券规则尚未完成数据迁移", 409);
-                    }
-                    return new CouponWalletDTO(c.id(), c.templateId(),
-                            c.status(), CouponDTOConverter.terms(terms), "AVAILABLE".equals(c.status())
-                            && !now.isBefore(terms.validFrom()) && now.isBefore(terms.validUntil()));
-                }).toList();
+        var values =
+                couponGateway
+                        .wallet(q.memberId(), (q.pageNum() - 1) * q.pageSize(), q.pageSize())
+                        .stream()
+                        .map(
+                                c -> {
+                                    var terms = c.terms();
+                                    if (terms == null) {
+                                        throw new ServiceException("优惠券规则尚未完成数据迁移", 409);
+                                    }
+                                    return new CouponWalletDTO(
+                                            c.id(),
+                                            c.templateId(),
+                                            c.status(),
+                                            CouponDTOConverter.terms(terms),
+                                            "AVAILABLE".equals(c.status())
+                                                    && !now.isBefore(terms.validFrom())
+                                                    && now.isBefore(terms.validUntil()));
+                                })
+                        .toList();
         return new CouponWalletPageDTO(values, couponGateway.walletCount(q.memberId()));
     }
 
@@ -107,7 +126,9 @@ public class CouponService {
         if (template == null) {
             throw new IllegalArgumentException("模板不存在");
         }
-        if (c.enabled() && template.totalCount() != -1 && template.issuedCount() > template.totalCount()) {
+        if (c.enabled()
+                && template.totalCount() != -1
+                && template.issuedCount() > template.totalCount()) {
             throw new ServiceException("公开领取总量不能小于已发数量", 400);
         }
         couponTemplateGateway.claimable(c.templateId(), c.enabled());
@@ -119,6 +140,7 @@ public class CouponService {
     public CouponDTO claim(CouponClaimCmd c) {
         memberValidationService.requireActive(c.memberId());
         CouponRules.id(c.templateId());
-        return CouponDTOConverter.coupon(couponIssuanceService.take(c.memberId(), c.templateId(), "USER"));
+        return CouponDTOConverter.coupon(
+                couponIssuanceService.take(c.memberId(), c.templateId(), "USER"));
     }
 }

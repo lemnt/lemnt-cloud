@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductInventoryService {
     private final ProductSkuGateway productSkuGateway;
     private final StockReservationGateway stockReservationGateway;
+
     private String reservationKey(String value, Long productId) {
         if (value == null
                 || value.isBlank()
@@ -44,8 +45,7 @@ public class ProductInventoryService {
             if (!quantity.equals(existing.quantity())) {
                 throw new IllegalStateException("预占数量不允许变化");
             }
-            return "RESERVED".equals(existing.status())
-                    || "CONFIRMED".equals(existing.status());
+            return "RESERVED".equals(existing.status()) || "CONFIRMED".equals(existing.status());
         }
         if (!productSkuGateway.reserveQuantity(productId, quantity)) {
             return false;
@@ -63,8 +63,9 @@ public class ProductInventoryService {
         var row = lockReservation(key, productId);
         if (row == null) {
             // Terminal cancellation prevents a delayed RPC from reserving after order close.
-            stockReservationGateway.insert(new StockReservation(key, productId, quantity, "RELEASED"));
-            return ;
+            stockReservationGateway.insert(
+                    new StockReservation(key, productId, quantity, "RELEASED"));
+            return;
         }
         if (!quantity.equals(row.quantity())) {
             throw new IllegalStateException("取消数量与预占不符");
@@ -74,7 +75,7 @@ public class ProductInventoryService {
 
     private void releaseLocked(String key, Long productId, StockReservation row) {
         if ("RELEASED".equals(row.status())) {
-            return ;
+            return;
         }
         if (!"RESERVED".equals(row.status())) {
             throw new IllegalStateException("已确认的库存不能直接释放");
@@ -103,7 +104,7 @@ public class ProductInventoryService {
             throw new IllegalStateException("库存预占记录不存在");
         }
         if ("CONFIRMED".equals(row.status())) {
-            return ;
+            return;
         }
         if (!"RESERVED".equals(row.status())) {
             throw new IllegalStateException("已取消预占不能确认");
@@ -112,6 +113,7 @@ public class ProductInventoryService {
             throw new IllegalStateException("库存确认失败");
         }
     }
+
     /** 售后成功按商品数量回补，原预占行串行核对累计数量，售后编号保证重试不重复。 */
     @Transactional(rollbackFor = Exception.class)
     public void returnStock(String orderNo, String refundNo, Long productId, Integer quantity) {
@@ -126,18 +128,21 @@ public class ProductInventoryService {
         }
         var previous = stockReservationGateway.lock(key, productId);
         if (previous != null) {
-            if (!"RETURNED".equals(previous.status()) || !orderNo.equals(previous.sourceNo())
+            if (!"RETURNED".equals(previous.status())
+                    || !orderNo.equals(previous.sourceNo())
                     || !quantity.equals(previous.quantity())) {
                 throw new IllegalStateException("售后回补内容与原请求不一致");
             }
             return;
         }
-        if ((long) stockReservationGateway.returnedQuantity(orderNo, productId) + quantity > original.quantity()) {
+        if ((long) stockReservationGateway.returnedQuantity(orderNo, productId) + quantity
+                > original.quantity()) {
             throw new IllegalStateException("累计回补数量超过原订单数量");
         }
         if (!productSkuGateway.releaseQuantity(productId, quantity)) {
             throw new IllegalStateException("售后库存回补失败");
         }
-        stockReservationGateway.insert(new StockReservation(key, productId, quantity, "RETURNED", orderNo));
+        stockReservationGateway.insert(
+                new StockReservation(key, productId, quantity, "RETURNED", orderNo));
     }
 }

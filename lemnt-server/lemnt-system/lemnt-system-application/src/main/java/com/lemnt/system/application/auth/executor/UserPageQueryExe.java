@@ -36,7 +36,9 @@ public class UserPageQueryExe {
         condition.setDeptId(qry.deptId());
         condition.setBeginTime(qry.beginTime());
         condition.setEndTime(qry.endTime());
-        PageResult<User> pageResult = userGateway.selectPage(condition, new PageQry(qry.pageNum(), qry.pageSize()));
-        return PageResult.of(UserConverter.toDTOList(pageResult.getRecords()), pageResult.getTotal());
+        PageResult<User> pageResult =
+                userGateway.selectPage(condition, new PageQry(qry.pageNum(), qry.pageSize()));
+        return PageResult.of(
+                UserConverter.toDTOList(pageResult.getRecords()), pageResult.getTotal());
     }
 }

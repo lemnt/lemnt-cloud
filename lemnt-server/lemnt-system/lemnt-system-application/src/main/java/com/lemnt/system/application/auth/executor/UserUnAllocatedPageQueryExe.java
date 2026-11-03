@@ -21,13 +21,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserUnAllocatedPageQueryExe {
     private final UserGateway userGateway;
+
     public PageResult<UserDTO> execute(UserPageQry qry) {
         User condition = new User();
         condition.setUserName(qry.userName());
         condition.setPhonenumber(qry.phonenumber());
         condition.setRoleId(qry.roleId());
-        PageResult<User> pageResult = userGateway.selectUnallocatedList(
-                condition, new PageQry(qry.pageNum(), qry.pageSize()));
-        return PageResult.of(UserConverter.toDTOList(pageResult.getRecords()), pageResult.getTotal());
+        PageResult<User> pageResult =
+                userGateway.selectUnallocatedList(
+                        condition, new PageQry(qry.pageNum(), qry.pageSize()));
+        return PageResult.of(
+                UserConverter.toDTOList(pageResult.getRecords()), pageResult.getTotal());
     }
 }

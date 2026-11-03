@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductSpecValueGatewayImpl implements ProductSpecValueGateway {
     private final ProductSpecValueMapper productSpecValueMapper;
+
     @Override
     public ProductSpecValue find(Long id) {
         return ProductSpecValueConverter.toModel(productSpecValueMapper.selectById(id));
@@ -34,11 +35,13 @@ public class ProductSpecValueGatewayImpl implements ProductSpecValueGateway {
         var row = ProductSpecValueConverter.toDO(value);
         if (row.getId() == null) {
             productSpecValueMapper.insert(row);
-        }
-        else if (productSpecValueMapper.update(null,
-            Wrappers.lambdaUpdate(ProductSpecValueDO.class).eq(ProductSpecValueDO::getId, row.getId())
-                .set(ProductSpecValueDO::getName, row.getName()).set(ProductSpecValueDO::getRemark,
-                    row.getRemark())) != 1) {
+        } else if (productSpecValueMapper.update(
+                        null,
+                        Wrappers.lambdaUpdate(ProductSpecValueDO.class)
+                                .eq(ProductSpecValueDO::getId, row.getId())
+                                .set(ProductSpecValueDO::getName, row.getName())
+                                .set(ProductSpecValueDO::getRemark, row.getRemark()))
+                != 1) {
             throw new IllegalArgumentException("字典记录不存在");
         }
         return find(row.getId());
@@ -51,12 +54,21 @@ public class ProductSpecValueGatewayImpl implements ProductSpecValueGateway {
 
     @Override
     public PageResult<ProductSpecValue> page(ProductSpecFilter filter) {
-        var page = productSpecValueMapper.selectPage(new Page<>(filter.pageNum(), filter.pageSize()),
-                Wrappers.lambdaQuery(ProductSpecValueDO.class).like(filter.name() != null,
-                    ProductSpecValueDO::getName, filter.name())
-                .eq(filter.specId() != null, ProductSpecValueDO::getSpecId,
-                    filter.specId()).orderByDesc(ProductSpecValueDO::getId));
-        return PageResult.of(page.getRecords().stream().map(ProductSpecValueConverter::toModel).toList(),
-            page.getTotal());
+        var page =
+                productSpecValueMapper.selectPage(
+                        new Page<>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.lambdaQuery(ProductSpecValueDO.class)
+                                .like(
+                                        filter.name() != null,
+                                        ProductSpecValueDO::getName,
+                                        filter.name())
+                                .eq(
+                                        filter.specId() != null,
+                                        ProductSpecValueDO::getSpecId,
+                                        filter.specId())
+                                .orderByDesc(ProductSpecValueDO::getId));
+        return PageResult.of(
+                page.getRecords().stream().map(ProductSpecValueConverter::toModel).toList(),
+                page.getTotal());
     }
 }

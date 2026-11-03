@@ -14,8 +14,8 @@ public record MemberOrderSummaryDTO(
         Boolean commentStatus,
         LocalDateTime finishTime,
         boolean activeRefund,
-        List<OrderItemDTO> items
-) implements Serializable {
+        List<OrderItemDTO> items)
+        implements Serializable {
     public MemberOrderSummaryDTO {
         items = items == null ? List.of() : List.copyOf(items);
     }

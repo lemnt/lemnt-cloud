@@ -14,6 +14,6 @@ public interface PaymentChannelAdapter {
     PaymentPrepay prepay(PaymentRecord payment, PayChannelConfig config);
 
     /** 验签并转换通知；签名、时间戳或商户不一致时必须抛错。 */
-    VerifiedPaymentNotification verify(PayChannelConfig config, String body, String signature,
-            String timestamp);
+    VerifiedPaymentNotification verify(
+            PayChannelConfig config, String body, String signature, String timestamp);
 }

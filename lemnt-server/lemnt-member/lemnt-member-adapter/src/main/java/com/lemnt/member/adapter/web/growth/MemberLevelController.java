@@ -5,6 +5,7 @@ import com.lemnt.common.security.annotation.RequiresPermissions;
 import com.lemnt.member.adapter.web.growth.converter.MemberGrowthReqConverter;
 import com.lemnt.member.adapter.web.growth.converter.MemberGrowthResConverter;
 import com.lemnt.member.adapter.web.growth.req.MemberLevelCreateReq;
+import com.lemnt.member.adapter.web.growth.req.MemberLevelListReq;
 import com.lemnt.member.adapter.web.growth.req.MemberLevelUpdateReq;
 import com.lemnt.member.adapter.web.growth.res.MemberLevelDetailRes;
 import com.lemnt.member.adapter.web.growth.res.MemberLevelListRes;
@@ -21,6 +22,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,8 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
-import com.lemnt.member.adapter.web.growth.req.MemberLevelListReq;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import java.util.List;
 
 /**
@@ -54,16 +54,20 @@ public class MemberLevelController {
     @RequiresPermissions("member:level:query")
     public R<List<MemberLevelListRes>> list(@Valid @ModelAttribute MemberLevelListReq req) {
         return R.ok(
-                memberLevelListQueryExe.execute(new LevelListQry(false, req.name(), req.status())).stream()
-                .map(MemberGrowthResConverter::toMemberLevelListRes)
-                .toList());
+                memberLevelListQueryExe
+                        .execute(new LevelListQry(false, req.name(), req.status()))
+                        .stream()
+                        .map(MemberGrowthResConverter::toMemberLevelListRes)
+                        .toList());
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Level详情")
     @RequiresPermissions("member:level:query")
     public R<MemberLevelDetailRes> detail(@PathVariable Long id) {
-        return R.ok(MemberGrowthResConverter.toMemberLevelDetailRes(memberLevelDetailQueryExe.execute(new LevelDetailQry(id))));
+        return R.ok(
+                MemberGrowthResConverter.toMemberLevelDetailRes(
+                        memberLevelDetailQueryExe.execute(new LevelDetailQry(id))));
     }
 
     @PostMapping
@@ -93,7 +97,7 @@ public class MemberLevelController {
     public R<List<MemberLevelSimpleRes>> simple() {
         return R.ok(
                 memberLevelListQueryExe.execute(new LevelListQry(true)).stream()
-                .map(MemberGrowthResConverter::toMemberLevelSimpleRes)
-                .toList());
+                        .map(MemberGrowthResConverter::toMemberLevelSimpleRes)
+                        .toList());
     }
 }

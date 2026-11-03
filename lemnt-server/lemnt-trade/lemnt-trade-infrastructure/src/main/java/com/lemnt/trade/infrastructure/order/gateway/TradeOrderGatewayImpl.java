@@ -11,9 +11,9 @@ import com.lemnt.trade.infrastructure.order.converter.OrderDeliveryConverter;
 import com.lemnt.trade.infrastructure.order.dataobject.TradeOrderDO;
 import com.lemnt.trade.infrastructure.order.mapper.TradeOrderMapper;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,15 +37,21 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
 
     @Override
     public String remark(String orderNo) {
-        var value = tradeOrderMapper.selectOne(Wrappers.lambdaQuery(TradeOrderDO.class)
-                .eq(TradeOrderDO::getOrderNo, orderNo));
+        var value =
+                tradeOrderMapper.selectOne(
+                        Wrappers.lambdaQuery(TradeOrderDO.class)
+                                .eq(TradeOrderDO::getOrderNo, orderNo));
         return value == null ? null : value.getRemark();
     }
 
     @Override
     public boolean updateRemark(String orderNo, String remark) {
-        return tradeOrderMapper.update(null, Wrappers.lambdaUpdate(TradeOrderDO.class)
-                .eq(TradeOrderDO::getOrderNo, orderNo).set(TradeOrderDO::getRemark, remark)) == 1;
+        return tradeOrderMapper.update(
+                        null,
+                        Wrappers.lambdaUpdate(TradeOrderDO.class)
+                                .eq(TradeOrderDO::getOrderNo, orderNo)
+                                .set(TradeOrderDO::getRemark, remark))
+                == 1;
     }
 
     @Override
@@ -55,7 +61,9 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     @Transactional(readOnly = true)
     public OrderPage orders(FulfillmentFilter filter) {
         return new OrderPage(
-                tradeOrderMapper.orders(filter).stream().map(FulfillmentConverter::orderSummary).toList(),
+                tradeOrderMapper.orders(filter).stream()
+                        .map(FulfillmentConverter::orderSummary)
+                        .toList(),
                 tradeOrderMapper.orderCount(filter));
     }
 
@@ -68,33 +76,56 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     @Override
     public List<OrderStatusCount> memberStatusCounts(Long memberId) {
         return tradeOrderMapper.memberStatusCounts(memberId).stream()
-                .map(row -> new OrderStatusCount(row.getStatus(), row.getCommentStatus(), row.getDeliveryType(), row.getCnt()))
+                .map(
+                        row ->
+                                new OrderStatusCount(
+                                        row.getStatus(),
+                                        row.getCommentStatus(),
+                                        row.getDeliveryType(),
+                                        row.getCnt()))
                 .toList();
     }
 
     @Override
     public List<String> commentExpired(LocalDateTime cutoff, int limit) {
-        return tradeOrderMapper.selectList(expired(cutoff).orderByAsc(TradeOrderDO::getReceiveTime)
-                .orderByAsc(TradeOrderDO::getId).last("LIMIT " + Math.min(100, Math.max(1, limit))))
-                .stream().map(TradeOrderDO::getOrderNo).toList();
+        return tradeOrderMapper
+                .selectList(
+                        expired(cutoff)
+                                .orderByAsc(TradeOrderDO::getReceiveTime)
+                                .orderByAsc(TradeOrderDO::getId)
+                                .last("LIMIT " + Math.min(100, Math.max(1, limit))))
+                .stream()
+                .map(TradeOrderDO::getOrderNo)
+                .toList();
     }
+
     @Override
     public boolean commentExpired(String orderNo, LocalDateTime cutoff) {
-        return tradeOrderMapper.selectCount(expired(cutoff).eq(TradeOrderDO::getOrderNo, orderNo)) == 1;
+        return tradeOrderMapper.selectCount(expired(cutoff).eq(TradeOrderDO::getOrderNo, orderNo))
+                == 1;
     }
-    private com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<TradeOrderDO> expired(LocalDateTime cutoff) {
-        return Wrappers.lambdaQuery(TradeOrderDO.class).eq(TradeOrderDO::getStatus, "COMPLETED")
-                .eq(TradeOrderDO::getCommentStatus, false).lt(TradeOrderDO::getReceiveTime, cutoff);
+
+    private com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<TradeOrderDO> expired(
+            LocalDateTime cutoff) {
+        return Wrappers.lambdaQuery(TradeOrderDO.class)
+                .eq(TradeOrderDO::getStatus, "COMPLETED")
+                .eq(TradeOrderDO::getCommentStatus, false)
+                .lt(TradeOrderDO::getReceiveTime, cutoff);
     }
 
     /** 收货时间与完成状态同一条条件更新，不覆盖已有收货事实。 */
     @Override
     public boolean completeReceipt(String orderNo, LocalDateTime receivedAt) {
-        return tradeOrderMapper.update(null, Wrappers.lambdaUpdate(TradeOrderDO.class)
-                .eq(TradeOrderDO::getOrderNo, orderNo).eq(TradeOrderDO::getStatus, "SHIPPED")
-                .isNull(TradeOrderDO::getReceiveTime)
-                .set(TradeOrderDO::getStatus, "COMPLETED").set(TradeOrderDO::getReceiveTime, receivedAt)
-                .set(TradeOrderDO::getUpdateTime, receivedAt)) == 1;
+        return tradeOrderMapper.update(
+                        null,
+                        Wrappers.lambdaUpdate(TradeOrderDO.class)
+                                .eq(TradeOrderDO::getOrderNo, orderNo)
+                                .eq(TradeOrderDO::getStatus, "SHIPPED")
+                                .isNull(TradeOrderDO::getReceiveTime)
+                                .set(TradeOrderDO::getStatus, "COMPLETED")
+                                .set(TradeOrderDO::getReceiveTime, receivedAt)
+                                .set(TradeOrderDO::getUpdateTime, receivedAt))
+                == 1;
     }
 
     @Override
@@ -103,25 +134,49 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     }
 
     @Override
-    public boolean updateTotalAmount(String orderNo, java.math.BigDecimal expected, java.math.BigDecimal next) {
-        return tradeOrderMapper.update(null, Wrappers.lambdaUpdate(TradeOrderDO.class)
-                .eq(TradeOrderDO::getOrderNo, orderNo)
-                .eq(TradeOrderDO::getStatus, "PENDING_PAYMENT")
-                .eq(TradeOrderDO::getTotalAmount, expected)
-                .set(TradeOrderDO::getTotalAmount, next)) == 1;
+    public boolean updateTotalAmount(
+            String orderNo, java.math.BigDecimal expected, java.math.BigDecimal next) {
+        var current = findHeader(orderNo);
+        boolean complete = current != null && "COMPLETE".equals(current.pricingSnapshotStatus());
+        return tradeOrderMapper.update(
+                        null,
+                        Wrappers.lambdaUpdate(TradeOrderDO.class)
+                                .eq(TradeOrderDO::getOrderNo, orderNo)
+                                .eq(TradeOrderDO::getStatus, "PENDING_PAYMENT")
+                                .eq(TradeOrderDO::getTotalAmount, expected)
+                                .set(TradeOrderDO::getTotalAmount, next)
+                                .set(
+                                        complete,
+                                        TradeOrderDO::getAdjustmentAmount,
+                                        complete
+                                                ? current.adjustmentAmount()
+                                                        .add(next.subtract(expected))
+                                                : null)
+                                .set(
+                                        complete,
+                                        TradeOrderDO::getPricingSnapshotVersion,
+                                        complete ? current.pricingSnapshotVersion() + 1 : null))
+                == 1;
     }
 
     @Override
-    public boolean updateAddress(String orderNo, String receiverName, String receiverMobile,
-            Long receiverAreaId, String receiverDetailAddress) {
-        return tradeOrderMapper.update(null, Wrappers.lambdaUpdate(TradeOrderDO.class)
-                .eq(TradeOrderDO::getOrderNo, orderNo)
-                .in(TradeOrderDO::getStatus, "PENDING_PAYMENT", "PAID")
-                .eq(TradeOrderDO::getDeliveryType, 1)
-                .set(TradeOrderDO::getReceiverName, receiverName)
-                .set(TradeOrderDO::getReceiverMobile, receiverMobile)
-                .set(TradeOrderDO::getReceiverAreaId, receiverAreaId)
-                .set(TradeOrderDO::getReceiverDetailAddress, receiverDetailAddress)) == 1;
+    public boolean updateAddress(
+            String orderNo,
+            String receiverName,
+            String receiverMobile,
+            Long receiverAreaId,
+            String receiverDetailAddress) {
+        return tradeOrderMapper.update(
+                        null,
+                        Wrappers.lambdaUpdate(TradeOrderDO.class)
+                                .eq(TradeOrderDO::getOrderNo, orderNo)
+                                .in(TradeOrderDO::getStatus, "PENDING_PAYMENT", "PAID")
+                                .eq(TradeOrderDO::getDeliveryType, 1)
+                                .set(TradeOrderDO::getReceiverName, receiverName)
+                                .set(TradeOrderDO::getReceiverMobile, receiverMobile)
+                                .set(TradeOrderDO::getReceiverAreaId, receiverAreaId)
+                                .set(TradeOrderDO::getReceiverDetailAddress, receiverDetailAddress))
+                == 1;
     }
 
     @Override
@@ -135,8 +190,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     }
 
     private static void one(int n) {
-        if (n != 1
-        ) {
+        if (n != 1) {
             throw new IllegalStateException("Promotion persistence CAS/integrity failure");
         }
     }
@@ -147,11 +201,22 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     public TradeOrder saveHeader(TradeOrder order) {
         TradeOrderDO row =
                 new TradeOrderDO()
-                .setOrderNo(order.orderNo())
-                .setMemberId(order.memberId())
-                .setTotalAmount(order.totalAmount()).setUsePoint(order.usePoint()).setGivePoint(order.givePoint())
-                .setStatus(order.status()).setCommentStatus(false)
-                .setGiveCouponTemplateCounts(JSON.toJSONString(order.giveCouponTemplateCounts()));
+                        .setOrderNo(order.orderNo())
+                        .setMemberId(order.memberId())
+                        .setTotalAmount(order.totalAmount())
+                        .setUsePoint(order.usePoint())
+                        .setGivePoint(order.givePoint())
+                        .setStatus(order.status())
+                        .setCommentStatus(false)
+                        .setGiveCouponTemplateCounts(
+                                JSON.toJSONString(order.giveCouponTemplateCounts()))
+                        .setOriginalAmount(order.originalAmount())
+                        .setDiscountAmount(order.discountAmount())
+                        .setDeliveryOriginalPrice(order.deliveryOriginalPrice())
+                        .setDeliveryDiscountPrice(order.deliveryDiscountPrice())
+                        .setAdjustmentAmount(order.adjustmentAmount())
+                        .setPricingSnapshotStatus(order.pricingSnapshotStatus())
+                        .setPricingSnapshotVersion(order.pricingSnapshotVersion());
 
         // Expiry uses the database clock; do not fill order creation from a possibly different JVM
         // zone.
@@ -166,7 +231,21 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 row.getTotalAmount(),
                 row.getStatus(),
                 order.items(),
-                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row), row.getCommentStatus(), row.getFinishTime(), gifts(row.getGiveCouponTemplateCounts()));
+                row.getCreateTime(),
+                row.getUsePoint(),
+                row.getGivePoint(),
+                OrderDeliveryConverter.from(row),
+                row.getCommentStatus(),
+                row.getFinishTime(),
+                gifts(row.getGiveCouponTemplateCounts()),
+                row.getOriginalAmount(),
+                row.getDiscountAmount(),
+                row.getDeliveryOriginalPrice(),
+                row.getDeliveryDiscountPrice(),
+                row.getAdjustmentAmount(),
+                row.getPricingSnapshotStatus(),
+                row.getPricingSnapshotVersion(),
+                List.of());
     }
 
     /** 读取订单主体。 */
@@ -174,11 +253,10 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     public TradeOrder findHeader(String orderNo) {
         TradeOrderDO row =
                 tradeOrderMapper.selectOne(
-                Wrappers.lambdaQuery(TradeOrderDO.class)
-                .eq(TradeOrderDO::getOrderNo, orderNo)
-                .last("LIMIT 1"));
-        if (row == null
-        ) {
+                        Wrappers.lambdaQuery(TradeOrderDO.class)
+                                .eq(TradeOrderDO::getOrderNo, orderNo)
+                                .last("LIMIT 1"));
+        if (row == null) {
             return null;
         }
         return new TradeOrder(
@@ -188,20 +266,29 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 row.getTotalAmount(),
                 row.getStatus(),
                 List.of(),
-                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row), row.getCommentStatus(), row.getFinishTime(), gifts(row.getGiveCouponTemplateCounts()));
+                row.getCreateTime(),
+                row.getUsePoint(),
+                row.getGivePoint(),
+                OrderDeliveryConverter.from(row),
+                row.getCommentStatus(),
+                row.getFinishTime(),
+                gifts(row.getGiveCouponTemplateCounts()),
+                row.getOriginalAmount(),
+                row.getDiscountAmount(),
+                row.getDeliveryOriginalPrice(),
+                row.getDeliveryDiscountPrice(),
+                row.getAdjustmentAmount(),
+                row.getPricingSnapshotStatus(),
+                row.getPricingSnapshotVersion(),
+                List.of());
     }
 
     /** 锁定订单主体。 */
     @Override
     public TradeOrder lockHeader(String orderNo) {
         // Caller must own a transaction. Lock header before reading payment rows.
-        TradeOrderDO row =
-                tradeOrderMapper.selectOne(
-                Wrappers.lambdaQuery(TradeOrderDO.class)
-                .eq(TradeOrderDO::getOrderNo, orderNo)
-                .last("FOR UPDATE"));
-        if (row == null
-        ) {
+        TradeOrderDO row = tradeOrderMapper.lockByOrderNo(orderNo);
+        if (row == null) {
             return null;
         }
         return new TradeOrder(
@@ -211,68 +298,129 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 row.getTotalAmount(),
                 row.getStatus(),
                 List.of(),
-                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row), row.getCommentStatus(), row.getFinishTime(), gifts(row.getGiveCouponTemplateCounts()));
+                row.getCreateTime(),
+                row.getUsePoint(),
+                row.getGivePoint(),
+                OrderDeliveryConverter.from(row),
+                row.getCommentStatus(),
+                row.getFinishTime(),
+                gifts(row.getGiveCouponTemplateCounts()),
+                row.getOriginalAmount(),
+                row.getDiscountAmount(),
+                row.getDeliveryOriginalPrice(),
+                row.getDeliveryDiscountPrice(),
+                row.getAdjustmentAmount(),
+                row.getPricingSnapshotStatus(),
+                row.getPricingSnapshotVersion(),
+                List.of());
     }
 
     @Override
     public boolean assignPickUp(String orderNo, Long storeId, String verifyCode) {
-        return tradeOrderMapper.update(null, Wrappers.lambdaUpdate(TradeOrderDO.class)
-                .eq(TradeOrderDO::getOrderNo, orderNo)
-                .eq(TradeOrderDO::getStatus, "PAID")
-                .set(TradeOrderDO::getDeliveryType, 2)
-                .set(TradeOrderDO::getPickUpStoreId, storeId)
-                .set(TradeOrderDO::getPickUpVerifyCode, verifyCode)) == 1;
+        return tradeOrderMapper.update(
+                        null,
+                        Wrappers.lambdaUpdate(TradeOrderDO.class)
+                                .eq(TradeOrderDO::getOrderNo, orderNo)
+                                .eq(TradeOrderDO::getStatus, "PAID")
+                                .set(TradeOrderDO::getDeliveryType, 2)
+                                .set(TradeOrderDO::getPickUpStoreId, storeId)
+                                .set(TradeOrderDO::getPickUpVerifyCode, verifyCode))
+                == 1;
     }
 
     @Override
     public TradeOrder findHeaderByPickUpCode(String verifyCode) {
-        var row = tradeOrderMapper.selectOne(Wrappers.lambdaQuery(TradeOrderDO.class)
-                .eq(TradeOrderDO::getPickUpVerifyCode, verifyCode).last("LIMIT 1"));
+        var row =
+                tradeOrderMapper.selectOne(
+                        Wrappers.lambdaQuery(TradeOrderDO.class)
+                                .eq(TradeOrderDO::getPickUpVerifyCode, verifyCode)
+                                .last("LIMIT 1"));
         if (row == null) {
             return null;
         }
-        return new TradeOrder(row.getId(), row.getOrderNo(), row.getMemberId(), row.getTotalAmount(),
-                row.getStatus(), List.of(), row.getCreateTime(), row.getUsePoint(), row.getGivePoint(),
-                OrderDeliveryConverter.from(row), row.getCommentStatus(), row.getFinishTime(), gifts(row.getGiveCouponTemplateCounts()));
-    }
-
-    @Override
-    public boolean completePickUp(String orderNo, LocalDateTime time) {
-        return tradeOrderMapper.update(null, Wrappers.lambdaUpdate(TradeOrderDO.class)
-                .eq(TradeOrderDO::getOrderNo, orderNo)
-                .eq(TradeOrderDO::getStatus, "PAID")
-                .isNull(TradeOrderDO::getReceiveTime)
-                .set(TradeOrderDO::getStatus, "COMPLETED")
-                .set(TradeOrderDO::getReceiveTime, time)
-                .set(TradeOrderDO::getUpdateTime, time)) == 1;
-    }
-
-    private List<TradeOrder> expired(String status, LocalDateTime deadline, int limit) {
-        return tradeOrderMapper
-                .selectList(
-                Wrappers.lambdaQuery(TradeOrderDO.class)
-                .eq(TradeOrderDO::getStatus, status)
-                .lt(TradeOrderDO::getCreateTime, deadline)
-                .orderByAsc(TradeOrderDO::getCreateTime)
-                .last("LIMIT " + Math.max(1, Math.min(limit, 500))))
-                .stream()
-                .map(
-                row ->
-                new TradeOrder(
+        return new TradeOrder(
                 row.getId(),
                 row.getOrderNo(),
                 row.getMemberId(),
                 row.getTotalAmount(),
                 row.getStatus(),
                 List.of(),
-                row.getCreateTime(), row.getUsePoint(), row.getGivePoint(), OrderDeliveryConverter.from(row), row.getCommentStatus(), row.getFinishTime()))
+                row.getCreateTime(),
+                row.getUsePoint(),
+                row.getGivePoint(),
+                OrderDeliveryConverter.from(row),
+                row.getCommentStatus(),
+                row.getFinishTime(),
+                gifts(row.getGiveCouponTemplateCounts()),
+                row.getOriginalAmount(),
+                row.getDiscountAmount(),
+                row.getDeliveryOriginalPrice(),
+                row.getDeliveryDiscountPrice(),
+                row.getAdjustmentAmount(),
+                row.getPricingSnapshotStatus(),
+                row.getPricingSnapshotVersion(),
+                List.of());
+    }
+
+    @Override
+    public boolean completePickUp(String orderNo, LocalDateTime time) {
+        return tradeOrderMapper.update(
+                        null,
+                        Wrappers.lambdaUpdate(TradeOrderDO.class)
+                                .eq(TradeOrderDO::getOrderNo, orderNo)
+                                .eq(TradeOrderDO::getStatus, "PAID")
+                                .isNull(TradeOrderDO::getReceiveTime)
+                                .set(TradeOrderDO::getStatus, "COMPLETED")
+                                .set(TradeOrderDO::getReceiveTime, time)
+                                .set(TradeOrderDO::getUpdateTime, time))
+                == 1;
+    }
+
+    private List<TradeOrder> expired(String status, LocalDateTime deadline, int limit) {
+        return tradeOrderMapper
+                .selectList(
+                        Wrappers.lambdaQuery(TradeOrderDO.class)
+                                .eq(TradeOrderDO::getStatus, status)
+                                .lt(TradeOrderDO::getCreateTime, deadline)
+                                .orderByAsc(TradeOrderDO::getCreateTime)
+                                .last("LIMIT " + Math.max(1, Math.min(limit, 500))))
+                .stream()
+                .map(
+                        row ->
+                                new TradeOrder(
+                                        row.getId(),
+                                        row.getOrderNo(),
+                                        row.getMemberId(),
+                                        row.getTotalAmount(),
+                                        row.getStatus(),
+                                        List.of(),
+                                        row.getCreateTime(),
+                                        row.getUsePoint(),
+                                        row.getGivePoint(),
+                                        OrderDeliveryConverter.from(row),
+                                        row.getCommentStatus(),
+                                        row.getFinishTime(),
+                                        gifts(row.getGiveCouponTemplateCounts()),
+                                        row.getOriginalAmount(),
+                                        row.getDiscountAmount(),
+                                        row.getDeliveryOriginalPrice(),
+                                        row.getDeliveryDiscountPrice(),
+                                        row.getAdjustmentAmount(),
+                                        row.getPricingSnapshotStatus(),
+                                        row.getPricingSnapshotVersion(),
+                                        List.of()))
                 .toList();
     }
+
     @Override
     public boolean updateCommentState(com.lemnt.trade.domain.order.model.OrderCommentState value) {
-        return tradeOrderMapper.update(null, Wrappers.lambdaUpdate(TradeOrderDO.class)
-                .eq(TradeOrderDO::getId, value.orderId()).set(TradeOrderDO::getCommentStatus, value.commentStatus())
-                .set(TradeOrderDO::getFinishTime, value.finishTime())) == 1;
+        return tradeOrderMapper.update(
+                        null,
+                        Wrappers.lambdaUpdate(TradeOrderDO.class)
+                                .eq(TradeOrderDO::getId, value.orderId())
+                                .set(TradeOrderDO::getCommentStatus, value.commentStatus())
+                                .set(TradeOrderDO::getFinishTime, value.finishTime()))
+                == 1;
     }
 
     /** 商城赠券快照以 JSON 保存，历史订单无该字段时按空赠券读取。 */
@@ -280,7 +428,8 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
         if (json == null || json.isBlank()) {
             return Map.of();
         }
-        Map<Long, Integer> value = JSON.parseObject(json, new TypeReference<Map<Long, Integer>>() {});
+        Map<Long, Integer> value =
+                JSON.parseObject(json, new TypeReference<Map<Long, Integer>>() {});
         return value == null ? Map.of() : value;
     }
 }

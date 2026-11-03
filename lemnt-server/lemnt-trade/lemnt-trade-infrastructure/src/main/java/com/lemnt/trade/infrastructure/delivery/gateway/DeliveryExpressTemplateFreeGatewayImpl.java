@@ -21,9 +21,14 @@ public class DeliveryExpressTemplateFreeGatewayImpl implements DeliveryExpressTe
 
     @Override
     public List<DeliveryExpressTemplateFree> byTemplate(Long templateId) {
-        return mapper.selectList(Wrappers.<DeliveryExpressTemplateFreeDO>lambdaQuery()
-                .eq(DeliveryExpressTemplateFreeDO::getTemplateId, templateId).orderByAsc(DeliveryExpressTemplateFreeDO::getId))
-                .stream().map(DeliveryExpressTemplateFreeConverter::toEntity).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<DeliveryExpressTemplateFreeDO>lambdaQuery()
+                                .eq(DeliveryExpressTemplateFreeDO::getTemplateId, templateId)
+                                .orderByAsc(DeliveryExpressTemplateFreeDO::getId))
+                .stream()
+                .map(DeliveryExpressTemplateFreeConverter::toEntity)
+                .toList();
     }
 
     @Override
@@ -35,7 +40,9 @@ public class DeliveryExpressTemplateFreeGatewayImpl implements DeliveryExpressTe
 
     @Override
     public void deleteByTemplate(Long templateId) {
-        mapper.delete(Wrappers.<DeliveryExpressTemplateFreeDO>lambdaQuery().eq(DeliveryExpressTemplateFreeDO::getTemplateId, templateId));
+        mapper.delete(
+                Wrappers.<DeliveryExpressTemplateFreeDO>lambdaQuery()
+                        .eq(DeliveryExpressTemplateFreeDO::getTemplateId, templateId));
     }
 
     @Override
@@ -49,5 +56,4 @@ public class DeliveryExpressTemplateFreeGatewayImpl implements DeliveryExpressTe
     public boolean update(DeliveryExpressTemplateFree value) {
         return mapper.updateById(DeliveryExpressTemplateFreeConverter.toDO(value)) == 1;
     }
-
 }

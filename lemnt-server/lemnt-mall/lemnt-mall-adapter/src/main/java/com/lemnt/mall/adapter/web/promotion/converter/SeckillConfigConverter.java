@@ -15,27 +15,36 @@ public final class SeckillConfigConverter {
     private SeckillConfigConverter() {}
 
     public static SeckillConfigCreateCmd create(SeckillConfigCreateReq req) {
-        return new SeckillConfigCreateCmd(req.name(), req.startTime(), req.endTime(), req.sliderPicUrls(),
-                req.status());
+        return new SeckillConfigCreateCmd(
+                req.name(), req.startTime(), req.endTime(), req.sliderPicUrls(), req.status());
     }
 
     public static SeckillConfigUpdateCmd update(Long id, SeckillConfigUpdateReq req) {
-        return new SeckillConfigUpdateCmd(id, req.name(), req.startTime(), req.endTime(), req.sliderPicUrls(),
-                req.status());
+        return new SeckillConfigUpdateCmd(
+                id, req.name(), req.startTime(), req.endTime(), req.sliderPicUrls(), req.status());
     }
 
     public static SeckillConfigPageQry page(SeckillConfigPageReq req) {
-        return new SeckillConfigPageQry(req.name(), req.status(), req.pageNum() == null ? 1 : req.pageNum(),
+        return new SeckillConfigPageQry(
+                req.name(),
+                req.status(),
+                req.pageNum() == null ? 1 : req.pageNum(),
                 req.pageSize() == null ? 20 : req.pageSize());
     }
 
     public static SeckillConfigRes res(SeckillConfigDTO dto) {
-        return new SeckillConfigRes(dto.id(), dto.name(), dto.startTime(), dto.endTime(), dto.sliderPicUrls(),
-                dto.status(), dto.activityCount());
+        return new SeckillConfigRes(
+                dto.id(),
+                dto.name(),
+                dto.startTime(),
+                dto.endTime(),
+                dto.sliderPicUrls(),
+                dto.status(),
+                dto.activityCount());
     }
 
     public static SeckillConfigSimpleRes simple(SeckillConfigDTO dto) {
-        return new SeckillConfigSimpleRes(dto.id(), dto.name(), dto.startTime(), dto.endTime(),
-                dto.sliderPicUrls());
+        return new SeckillConfigSimpleRes(
+                dto.id(), dto.name(), dto.startTime(), dto.endTime(), dto.sliderPicUrls());
     }
 }

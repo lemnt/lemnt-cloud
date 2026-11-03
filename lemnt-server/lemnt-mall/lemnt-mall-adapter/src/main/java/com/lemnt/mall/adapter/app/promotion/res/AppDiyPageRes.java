@@ -7,6 +7,5 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record AppDiyPageRes(
         @Schema(description = "页面编号") Long id,
         @Schema(description = "页面名称") String name,
-        @Schema(description = "页面属性 JSON") String property
-) implements java.io.Serializable {
-}
+        @Schema(description = "页面属性 JSON") String property)
+        implements java.io.Serializable {}

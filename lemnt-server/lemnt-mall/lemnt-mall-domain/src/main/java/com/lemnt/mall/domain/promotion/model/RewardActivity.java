@@ -14,6 +14,5 @@ public record RewardActivity(
         String conditionType,
         String productScope,
         List<Long> productScopeValues,
-        List<RewardRule> rules
-) implements java.io.Serializable {
-}
+        List<RewardRule> rules)
+        implements java.io.Serializable {}

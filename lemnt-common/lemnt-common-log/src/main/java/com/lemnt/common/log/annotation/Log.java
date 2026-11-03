@@ -1,13 +1,13 @@
 package com.lemnt.common.log.annotation;
 
+import com.lemnt.common.log.enums.BusinessType;
+import com.lemnt.common.log.enums.OperatorType;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import com.lemnt.common.log.enums.BusinessType;
-import com.lemnt.common.log.enums.OperatorType;
 
 /**
  * 自定义操作日志记录注解

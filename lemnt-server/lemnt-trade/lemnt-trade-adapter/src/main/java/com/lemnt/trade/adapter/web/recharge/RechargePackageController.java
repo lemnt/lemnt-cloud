@@ -46,7 +46,8 @@ public class RechargePackageController {
     @RequiresPermissions("trade:recharge-package:list")
     public R<RechargePackageRes> page(@Valid @ModelAttribute RechargePackagePageReq req) {
         var value = page.execute(RechargeResConverter.packagePage(req));
-        return R.page(value.getRecords().stream().map(RechargeResConverter::packageView).toList(),
+        return R.page(
+                value.getRecords().stream().map(RechargeResConverter::packageView).toList(),
                 value.getTotal());
     }
 
@@ -68,7 +69,8 @@ public class RechargePackageController {
     @PutMapping("/{id}")
     @Operation(summary = "修改充值套餐")
     @RequiresPermissions("trade:recharge-package:update")
-    public R<Boolean> update(@PathVariable Long id, @Valid @RequestBody RechargePackageUpdateReq req) {
+    public R<Boolean> update(
+            @PathVariable Long id, @Valid @RequestBody RechargePackageUpdateReq req) {
         return R.ok(update.execute(RechargeResConverter.packageUpdate(id, req)));
     }
 

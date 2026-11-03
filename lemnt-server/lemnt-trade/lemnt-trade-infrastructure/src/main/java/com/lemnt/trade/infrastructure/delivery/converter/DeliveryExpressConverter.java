@@ -5,8 +5,7 @@ import com.lemnt.trade.infrastructure.delivery.dataobject.DeliveryExpressDO;
 
 /** 快递公司 与表字段转换。 */
 public final class DeliveryExpressConverter {
-    private DeliveryExpressConverter() {
-    }
+    private DeliveryExpressConverter() {}
 
     /** 读取业务对象。 */
     public static DeliveryExpress toEntity(DeliveryExpressDO row) {

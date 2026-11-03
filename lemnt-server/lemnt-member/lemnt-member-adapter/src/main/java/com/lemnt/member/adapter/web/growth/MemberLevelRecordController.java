@@ -38,9 +38,13 @@ public class MemberLevelRecordController {
     @RequiresPermissions("member:level:query")
     public R<MemberRecordLevelRecordsRes> levelRecords(
             @Valid @ModelAttribute MemberRecordLevelRecordsReq req) {
-        var page = memberLevelRecordAllPageQueryExe.execute(MemberReqConverter.toLevelRecordPageQry(req));
+        var page =
+                memberLevelRecordAllPageQueryExe.execute(
+                        MemberReqConverter.toLevelRecordPageQry(req));
         return R.page(
-                page.getRecords().stream().map(MemberGrowthResConverter::toMemberRecordLevelRecordsRes).toList(),
+                page.getRecords().stream()
+                        .map(MemberGrowthResConverter::toMemberRecordLevelRecordsRes)
+                        .toList(),
                 page.getTotal());
     }
 

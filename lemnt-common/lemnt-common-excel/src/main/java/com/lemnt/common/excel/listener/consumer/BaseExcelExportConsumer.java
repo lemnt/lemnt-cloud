@@ -5,8 +5,10 @@ import com.lemnt.common.excel.factory.ExcelExportTaskFactory;
 import com.lemnt.common.excel.listener.task.BaseExcelExportTask;
 import com.lemnt.common.excel.service.BaseExcelTaskService;
 import com.lemnt.common.mq.consumer.BaseConsumer;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 基础表格导出消费者
@@ -16,10 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Slf4j
 public class BaseExcelExportConsumer<T extends ExcelExportTaskEvent> extends BaseConsumer<T> {
 
-    @Autowired
-    private ExcelExportTaskFactory excelExportTaskFactory;
-    @Autowired
-    private BaseExcelTaskService baseExcelTaskService;
+    @Autowired private ExcelExportTaskFactory excelExportTaskFactory;
+    @Autowired private BaseExcelTaskService baseExcelTaskService;
 
     @Override
     protected void handle(T message) {

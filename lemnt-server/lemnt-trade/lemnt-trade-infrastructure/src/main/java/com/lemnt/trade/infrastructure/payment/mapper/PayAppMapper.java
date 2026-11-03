@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** trade_pay_app Mapper，CRUD 复用 MyBatis Plus。 */
 @Mapper
-public interface PayAppMapper extends BaseMapper<PayAppDO> {
-}
+public interface PayAppMapper extends BaseMapper<PayAppDO> {}

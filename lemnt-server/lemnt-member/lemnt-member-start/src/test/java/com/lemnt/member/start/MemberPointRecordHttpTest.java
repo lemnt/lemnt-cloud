@@ -6,6 +6,7 @@ import com.lemnt.member.adapter.web.growth.MemberPointRecordController;
 import com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe;
 import com.lemnt.member.application.growth.executor.MemberAssetRecordDetailQueryExe;
 import com.lemnt.member.application.growth.qry.AssetRecordAllPageQry;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -22,11 +23,21 @@ class MemberPointRecordHttpTest {
         var query = mock(MemberAssetRecordAllPageQueryExe.class);
         var expected = new AssetRecordAllPageQry("POINT", 7L, 1, 20, "会员", "ADMIN", 2, "管理");
         when(query.execute(expected)).thenReturn(new PageResult<>(List.of(), 0));
-        var mvc = MockMvcBuilders.standaloneSetup(new MemberPointRecordController(
-                query, mock(MemberAssetRecordDetailQueryExe.class))).setControllerAdvice(new GlobalExceptionHandler()).build();
-        mvc.perform(get("/member/admin/point-records").param("memberId", "7").param("nickname", "会员")
-                .param("bizType", "ADMIN").param("pointBizType", "2").param("title", "管理"))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.rows").isArray());
+        var mvc =
+                MockMvcBuilders.standaloneSetup(
+                                new MemberPointRecordController(
+                                        query, mock(MemberAssetRecordDetailQueryExe.class)))
+                        .setControllerAdvice(new GlobalExceptionHandler())
+                        .build();
+        mvc.perform(
+                        get("/member/admin/point-records")
+                                .param("memberId", "7")
+                                .param("nickname", "会员")
+                                .param("bizType", "ADMIN")
+                                .param("pointBizType", "2")
+                                .param("title", "管理"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rows").isArray());
         mvc.perform(get("/member/admin/point-records").param("title", "x".repeat(256)))
                 .andExpect(status().isUnprocessableEntity());
         verify(query).execute(expected);

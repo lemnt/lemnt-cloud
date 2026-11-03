@@ -18,8 +18,20 @@ class PropertySnapshotSerializationTest {
         var builder = JsonMapper.builder();
         new JacksonConfig().customizer().customize(builder);
         var mapper = builder.build();
-        var value = new TradeOrderItemRes(1L, "SKU", "商品", BigDecimal.TEN, 1, BigDecimal.TEN,
-                2L, "SPU", List.of(new TradeOrderItemRes.Spec(Long.MAX_VALUE, "颜色", Long.MAX_VALUE - 1, "黑色")), null);
+        var value =
+                new TradeOrderItemRes(
+                        1L,
+                        "SKU",
+                        "商品",
+                        BigDecimal.TEN,
+                        1,
+                        BigDecimal.TEN,
+                        2L,
+                        "SPU",
+                        List.of(
+                                new TradeOrderItemRes.Spec(
+                                        Long.MAX_VALUE, "颜色", Long.MAX_VALUE - 1, "黑色")),
+                        null);
         var json = mapper.readTree(mapper.writeValueAsString(value));
         assertTrue(json.get("specs").isArray());
         assertEquals("9223372036854775807", json.get("specs").get(0).get("specId").asString());

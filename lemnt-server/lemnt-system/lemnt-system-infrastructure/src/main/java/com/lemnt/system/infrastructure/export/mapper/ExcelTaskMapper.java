@@ -12,5 +12,4 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2026-01-20
  */
 @Mapper
-public interface ExcelTaskMapper extends BaseMapper<ExcelTaskDO> {
-}
+public interface ExcelTaskMapper extends BaseMapper<ExcelTaskDO> {}

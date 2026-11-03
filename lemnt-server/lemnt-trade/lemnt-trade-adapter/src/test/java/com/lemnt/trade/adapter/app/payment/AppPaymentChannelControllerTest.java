@@ -5,6 +5,7 @@ import com.lemnt.trade.application.payment.dto.PaymentChannelDTO;
 import com.lemnt.trade.application.payment.executor.MemberPaymentChannelQueryExe;
 import com.lemnt.trade.application.payment.executor.SandboxPaymentCmdExe;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
@@ -25,7 +26,7 @@ class AppPaymentChannelControllerTest {
         return new JacksonJsonHttpMessageConverter(builder.build());
     }
 
-    @org.junit.jupiter.api.AfterEach
+    @AfterEach
     void clearIdentity() {
         com.lemnt.common.security.context.SecurityContextHolder.remove();
     }
@@ -33,9 +34,12 @@ class AppPaymentChannelControllerTest {
     @Test
     void channelsAreScopedToAppKey() throws Exception {
         var query = mock(MemberPaymentChannelQueryExe.class);
-        when(query.execute("lemnt-mall")).thenReturn(List.of(new PaymentChannelDTO("SANDBOX", "沙箱")));
-        var mvc = MockMvcBuilders.standaloneSetup(new AppPaymentChannelController(query))
-                .setMessageConverters(converter()).build();
+        when(query.execute("lemnt-mall"))
+                .thenReturn(List.of(new PaymentChannelDTO("SANDBOX", "沙箱")));
+        var mvc =
+                MockMvcBuilders.standaloneSetup(new AppPaymentChannelController(query))
+                        .setMessageConverters(converter())
+                        .build();
         mvc.perform(get("/trade/app/payment-channels").param("appKey", "lemnt-mall"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].code").value("SANDBOX"))
@@ -49,8 +53,10 @@ class AppPaymentChannelControllerTest {
         @SuppressWarnings("unchecked")
         ObjectProvider<SandboxPaymentCmdExe> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(null);
-        var mvc = MockMvcBuilders.standaloneSetup(new AppSandboxPaymentController(provider))
-                .setMessageConverters(converter()).build();
+        var mvc =
+                MockMvcBuilders.standaloneSetup(new AppSandboxPaymentController(provider))
+                        .setMessageConverters(converter())
+                        .build();
         mvc.perform(post("/trade/app/payments/PAY1/sandbox-pay"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("沙箱支付未启用"));
@@ -64,8 +70,10 @@ class AppPaymentChannelControllerTest {
         @SuppressWarnings("unchecked")
         ObjectProvider<SandboxPaymentCmdExe> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(exe);
-        var mvc = MockMvcBuilders.standaloneSetup(new AppSandboxPaymentController(provider))
-                .setMessageConverters(converter()).build();
+        var mvc =
+                MockMvcBuilders.standaloneSetup(new AppSandboxPaymentController(provider))
+                        .setMessageConverters(converter())
+                        .build();
         mvc.perform(post("/trade/app/payments/PAY1/sandbox-pay"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").value("PAY1"));

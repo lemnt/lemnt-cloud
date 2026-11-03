@@ -13,11 +13,11 @@ public final class MemberAuthReqConverter {
      * 转换密码登录请求。
      */
     public static AuthLoginCmd toLoginCmd(AuthLoginReq req) {
-        return toLoginCmd(req,null);
+        return toLoginCmd(req, null);
     }
 
     /** 连接上下文来自网关内部头，不接受JSON登录IP字段。 */
-    public static AuthLoginCmd toLoginCmd(AuthLoginReq req,String loginIp) {
-        return new AuthLoginCmd(req.mobile(),req.password(),loginIp);
+    public static AuthLoginCmd toLoginCmd(AuthLoginReq req, String loginIp) {
+        return new AuthLoginCmd(req.mobile(), req.password(), loginIp);
     }
 }

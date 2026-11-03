@@ -20,11 +20,20 @@ public final class RewardActivityResConverter {
                 v.conditionType(),
                 v.productScope(),
                 v.productScopeValues(),
-                v.rules().stream().map(r -> new RewardRuleRes(r.limit(), r.discountPrice(), r.freeDelivery(), r.point(),
-                        r.giveCouponTemplateCounts())).toList());
+                v.rules().stream()
+                        .map(
+                                r ->
+                                        new RewardRuleRes(
+                                                r.limit(),
+                                                r.discountPrice(),
+                                                r.freeDelivery(),
+                                                r.point(),
+                                                r.giveCouponTemplateCounts()))
+                        .toList());
     }
 
     public static RewardActivityPageRes page(RewardActivityDTO v) {
-        return new RewardActivityPageRes(v.id(), v.name(), v.status(), v.startTime(), v.endTime(), v.remark());
+        return new RewardActivityPageRes(
+                v.id(), v.name(), v.status(), v.startTime(), v.endTime(), v.remark());
     }
 }

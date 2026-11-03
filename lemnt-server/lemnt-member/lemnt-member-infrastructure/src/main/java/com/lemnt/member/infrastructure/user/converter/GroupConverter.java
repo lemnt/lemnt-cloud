@@ -15,7 +15,12 @@ public final class GroupConverter {
     public static Group toEntity(GroupDO row) {
         return row == null
                 ? null
-                : new Group(row.getId(), row.getName(), row.getRemark(), row.getStatus(), row.getCreateTime());
+                : new Group(
+                        row.getId(),
+                        row.getName(),
+                        row.getRemark(),
+                        row.getStatus(),
+                        row.getCreateTime());
     }
 
     /**

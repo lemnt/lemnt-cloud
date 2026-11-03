@@ -9,6 +9,5 @@ public record PayAppCreateCmd(
         Integer status,
         String remark,
         String orderNotifyUrl,
-        String refundNotifyUrl
-) implements Serializable {
-}
+        String refundNotifyUrl)
+        implements Serializable {}

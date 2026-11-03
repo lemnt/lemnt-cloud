@@ -37,7 +37,10 @@ public class UserRoleAuthQueryExe {
     public Map<String, Object> execute(Long userId) {
         User user = userGateway.selectUserById(userId);
         List<Role> roles = roleGateway.selectRolesByUserId(userId);
-        List<Role> filteredRoles = SecurityUtils.isAdmin(userId) ? roles : roles.stream().filter(r -> !r.isAdmin()).collect(Collectors.toList());
+        List<Role> filteredRoles =
+                SecurityUtils.isAdmin(userId)
+                        ? roles
+                        : roles.stream().filter(r -> !r.isAdmin()).collect(Collectors.toList());
         Map<String, Object> result = new HashMap<>();
         result.put("user", UserConverter.toDTO(user));
         result.put("roles", RoleConverter.toDTOList(filteredRoles));

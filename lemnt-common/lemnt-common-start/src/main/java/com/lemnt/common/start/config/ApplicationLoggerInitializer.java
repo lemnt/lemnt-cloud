@@ -11,7 +11,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
  * @version 1.0.0
  * @date 2025-12-01 14:52
  */
-public class ApplicationLoggerInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+public class ApplicationLoggerInitializer
+        implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
@@ -20,5 +21,4 @@ public class ApplicationLoggerInitializer implements ApplicationContextInitializ
         String logBase = environment.getProperty("LOGGING_PATH", "logs");
         System.setProperty("logging.file.name", String.format("%s/%s/debug.log", logBase, appName));
     }
-
 }

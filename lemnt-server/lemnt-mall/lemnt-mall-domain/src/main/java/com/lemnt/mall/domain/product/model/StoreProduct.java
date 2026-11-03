@@ -13,5 +13,4 @@ public record StoreProduct(
         String image,
         BigDecimal minPrice,
         BigDecimal maxPrice,
-        boolean available
-) {}
+        boolean available) {}

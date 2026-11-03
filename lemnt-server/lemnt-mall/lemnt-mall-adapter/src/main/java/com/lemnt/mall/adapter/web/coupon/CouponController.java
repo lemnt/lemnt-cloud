@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 /** 会员优惠券接口。 */
@@ -45,15 +46,19 @@ public class CouponController {
     public R<MallCouponIssueRes> issue(@PathVariable Long memberId, @PathVariable Long templateId) {
         return R.ok(
                 CouponResConverter.couponToMallCouponIssueRes(
-                couponIssueCmdExe.execute(new CouponIssueCmd(memberId, templateId))));
+                        couponIssueCmdExe.execute(new CouponIssueCmd(memberId, templateId))));
     }
 
     @Operation(summary = "查看目标会员优惠券，超过1000条时拒绝截断")
     @GetMapping("/members/{memberId}/coupons")
     @RequiresPermissions("mall:coupon:list")
     public R<List<MallCouponCouponsRes>> coupons(@PathVariable Long memberId) {
-        return R.ok(couponListQueryExe.execute(memberId).stream().map(CouponResConverter::couponToMallCouponCouponsRes).toList());
+        return R.ok(
+                couponListQueryExe.execute(memberId).stream()
+                        .map(CouponResConverter::couponToMallCouponCouponsRes)
+                        .toList());
     }
+
     /** 撤回会员未用或已过期券。 */
     @DeleteMapping("/members/{memberId}/coupons/{couponId}")
     @Operation(summary = "撤回会员优惠券")
@@ -61,12 +66,12 @@ public class CouponController {
     public R<Boolean> revoke(@PathVariable Long memberId, @PathVariable Long couponId) {
         return R.ok(couponRevokeCmdExe.execute(memberId, couponId));
     }
+
     /** 后台持券管理可按会员、模板和状态分页查询。 */
     @GetMapping("/coupons")
     @Operation(summary = "会员优惠券分页")
     @RequiresPermissions("mall:coupon:list")
-    public R<CouponManagementPageRes> page(
-            @jakarta.validation.Valid @ModelAttribute CouponManagementPageReq req) {
+    public R<CouponManagementPageRes> page(@Valid @ModelAttribute CouponManagementPageReq req) {
         var page = couponManagementPageQueryExe.execute(CouponReqConverter.page(req));
         return R.page(page.records().stream().map(CouponResConverter::page).toList(), page.total());
     }

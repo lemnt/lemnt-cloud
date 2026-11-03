@@ -1,6 +1,7 @@
 package com.lemnt.system.infrastructure.config.gateway;
 
 import com.lemnt.common.core.constant.CacheConstants;
+import com.lemnt.common.core.utils.StringUtils;
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.common.redis.service.RedisStringService;
@@ -11,6 +12,7 @@ import com.lemnt.system.infrastructure.config.dataobject.ConfigDO;
 import com.lemnt.system.infrastructure.config.mapper.ConfigMapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.annotation.PostConstruct;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -42,12 +45,12 @@ public class ConfigGatewayImpl implements ConfigGateway {
 
     @Override
     public Config selectById(Long configId) {
-        return ConfigConverter.toEntity(configMapper.selectConfig(configId, null));
+        return ConfigConverter.toEntity(selectConfigRow(configId, null));
     }
 
     @Override
     public Config selectByKey(String configKey) {
-        return ConfigConverter.toEntity(configMapper.selectConfig(null, configKey));
+        return ConfigConverter.toEntity(selectConfigRow(null, configKey));
     }
 
     @Override
@@ -125,15 +128,48 @@ public class ConfigGatewayImpl implements ConfigGateway {
 
     @Override
     public Config checkConfigKeyUnique(String configKey) {
-        return ConfigConverter.toEntity(configMapper.checkConfigKeyUnique(configKey));
+        return ConfigConverter.toEntity(checkConfigKeyUniqueRow(configKey));
     }
 
     @Override
     public Config checkConfigKeyUnique(String configKey, Long excludeConfigId) {
-        return ConfigConverter.toEntity(configMapper.checkConfigKeyUnique(configKey, excludeConfigId));
+        return ConfigConverter.toEntity(checkConfigKeyUniqueRow(configKey, excludeConfigId));
     }
 
     private String getCacheKey(String configKey) {
         return CacheConstants.SYS_CONFIG_KEY + configKey;
+    }
+
+    /**
+     * 查询参数配置信息
+     *
+     * @param configId  参数配置信息
+     * @param configKey 参数配置键
+     * @return 参数配置信息
+     */
+    private ConfigDO selectConfigRow(Long configId, String configKey) {
+        return configMapper.selectOne(
+                Wrappers.<ConfigDO>lambdaQuery()
+                        .eq(Objects.nonNull(configId), ConfigDO::getConfigId, configId)
+                        .eq(StringUtils.isNotBlank(configKey), ConfigDO::getConfigKey, configKey));
+    }
+
+    /**
+     * 根据键名查询参数配置信息
+     *
+     * @param configKey 参数键名
+     * @return 参数配置信息
+     */
+    private ConfigDO checkConfigKeyUniqueRow(String configKey) {
+        return checkConfigKeyUniqueRow(configKey, null);
+    }
+
+    /** 排除自身后查冲突，避免已有重复数据中先查到自身而漏判。 */
+    private ConfigDO checkConfigKeyUniqueRow(String configKey, Long excludeConfigId) {
+        return configMapper.selectOne(
+                Wrappers.<ConfigDO>lambdaQuery()
+                        .eq(ConfigDO::getConfigKey, configKey)
+                        .ne(excludeConfigId != null, ConfigDO::getConfigId, excludeConfigId)
+                        .last("limit 1"));
     }
 }

@@ -27,66 +27,94 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
 
     @Override
     public List<ProductSku> byIds(List<Long> ids) {
-        if (ids.isEmpty()
-        ) {
+        if (ids.isEmpty()) {
             return List.of();
         }
         return productSkuMapper.selectByIds(ids).stream()
-                .map(row -> ProductCatalogConverter.sku(row)).toList();
+                .map(row -> ProductCatalogConverter.sku(row))
+                .toList();
     }
 
     @Override
     public List<ProductSku> skusBySpuIds(List<Long> ids) {
-        if (ids.isEmpty()
-        ) {
+        if (ids.isEmpty()) {
             return List.of();
         }
-        return productSkuMapper.selectList(Wrappers.<ProductSkuDO>lambdaQuery()
-                .in(ProductSkuDO::getSpuId, ids).ne(ProductSkuDO::getStatus, "DELETED").orderByAsc(ProductSkuDO::getId))
-                .stream().map(row -> ProductCatalogConverter.sku(row)).toList();
+        return productSkuMapper
+                .selectList(
+                        Wrappers.<ProductSkuDO>lambdaQuery()
+                                .in(ProductSkuDO::getSpuId, ids)
+                                .ne(ProductSkuDO::getStatus, "DELETED")
+                                .orderByAsc(ProductSkuDO::getId))
+                .stream()
+                .map(row -> ProductCatalogConverter.sku(row))
+                .toList();
     }
 
     @Override
     public PageResult<ProductSku> skuPage(ProductSkuFilter filter) {
-        var page = productSkuMapper.selectPage(new Page<>(
-                filter.pageNum(), filter.pageSize()), Wrappers.lambdaQuery(ProductSkuDO.class)
-                .isNotNull(ProductSkuDO::getSpuId).ne(ProductSkuDO::getStatus, "DELETED")
-                .eq(filter.spuId() != null, ProductSkuDO::getSpuId, filter.spuId())
-                .eq(filter.code() != null, ProductSkuDO::getProductCode, filter.code())
-                .like(filter.name() != null, ProductSkuDO::getName, filter.name())
-                .eq(filter.status() != null, ProductSkuDO::getStatus, filter.status())
-                .orderByDesc(ProductSkuDO::getId));
-        return PageResult.of(page.getRecords().stream().map(ProductCatalogConverter::sku).toList(), page.getTotal());
+        var page =
+                productSkuMapper.selectPage(
+                        new Page<>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.lambdaQuery(ProductSkuDO.class)
+                                .isNotNull(ProductSkuDO::getSpuId)
+                                .ne(ProductSkuDO::getStatus, "DELETED")
+                                .eq(filter.spuId() != null, ProductSkuDO::getSpuId, filter.spuId())
+                                .eq(
+                                        filter.code() != null,
+                                        ProductSkuDO::getProductCode,
+                                        filter.code())
+                                .like(filter.name() != null, ProductSkuDO::getName, filter.name())
+                                .eq(
+                                        filter.status() != null,
+                                        ProductSkuDO::getStatus,
+                                        filter.status())
+                                .orderByDesc(ProductSkuDO::getId));
+        return PageResult.of(
+                page.getRecords().stream().map(ProductCatalogConverter::sku).toList(),
+                page.getTotal());
     }
 
     @Override
     public boolean deleteSku(Long id) {
-        return productSkuMapper.update(null, Wrappers.lambdaUpdate(ProductSkuDO.class).eq(ProductSkuDO::getId, id)
-                .ne(ProductSkuDO::getStatus, "DELETED").set(ProductSkuDO::getStatus, "DELETED")
-                .set(ProductSkuDO::getVariantKey, null)) == 1;
+        return productSkuMapper.update(
+                        null,
+                        Wrappers.lambdaUpdate(ProductSkuDO.class)
+                                .eq(ProductSkuDO::getId, id)
+                                .ne(ProductSkuDO::getStatus, "DELETED")
+                                .set(ProductSkuDO::getStatus, "DELETED")
+                                .set(ProductSkuDO::getVariantKey, null))
+                == 1;
     }
 
     @Override
     public void clearVariantKeys(Long spuId) {
-        productSkuMapper.update(null, Wrappers.<ProductSkuDO>lambdaUpdate()
-                .eq(ProductSkuDO::getSpuId, spuId).ne(ProductSkuDO::getStatus, "DELETED")
-                .set(ProductSkuDO::getVariantKey, null));
+        productSkuMapper.update(
+                null,
+                Wrappers.<ProductSkuDO>lambdaUpdate()
+                        .eq(ProductSkuDO::getSpuId, spuId)
+                        .ne(ProductSkuDO::getStatus, "DELETED")
+                        .set(ProductSkuDO::getVariantKey, null));
     }
 
     @Override
     public boolean updateSku(ProductSku value) {
         var row = ProductCatalogConverter.sku(value);
-        return productSkuMapper.update(new ProductSkuDO(), Wrappers.<ProductSkuDO>lambdaUpdate()
-                .set(ProductSkuDO::getName, row.getName()).set(ProductSkuDO::getPrice, row.getPrice())
-                .set(ProductSkuDO::getMainImage, row.getMainImage())
-                .set(ProductSkuDO::getSpecs, row.getSpecs())
-                .set(ProductSkuDO::getStock, row.getStock())
-                .set(ProductSkuDO::getWeight, row.getWeight())
-                .set(ProductSkuDO::getVolume, row.getVolume())
-                .set(ProductSkuDO::getStatus, "ON_SHELF")
-                .set(ProductSkuDO::getVariantKey, row.getVariantKey())
-                .eq(ProductSkuDO::getId, row.getId())
-                .ne(ProductSkuDO::getStatus, "DELETED")) == 1;
+        return productSkuMapper.update(
+                        new ProductSkuDO(),
+                        Wrappers.<ProductSkuDO>lambdaUpdate()
+                                .set(ProductSkuDO::getName, row.getName())
+                                .set(ProductSkuDO::getPrice, row.getPrice())
+                                .set(ProductSkuDO::getMainImage, row.getMainImage())
+                                .set(ProductSkuDO::getSpecs, row.getSpecs())
+                                .set(ProductSkuDO::getStock, row.getStock())
+                                .set(ProductSkuDO::getWeight, row.getWeight())
+                                .set(ProductSkuDO::getVolume, row.getVolume())
+                                .set(ProductSkuDO::getStatus, "ON_SHELF")
+                                .set(ProductSkuDO::getVariantKey, row.getVariantKey())
+                                .eq(ProductSkuDO::getId, row.getId())
+                                .ne(ProductSkuDO::getStatus, "DELETED"))
+                == 1;
     }
 
     @Override
@@ -101,29 +129,28 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
 
     @Override
     public Product findByCode(String code) {
-        if (code == null || code.isBlank()
-        ) {
+        if (code == null || code.isBlank()) {
             return null;
         }
         return toDomain(
                 productSkuMapper.selectOne(
-                Wrappers.lambdaQuery(ProductSkuDO.class)
-                .eq(ProductSkuDO::getProductCode, code.trim())
-                .last("LIMIT 1")));
+                        Wrappers.lambdaQuery(ProductSkuDO.class)
+                                .eq(ProductSkuDO::getProductCode, code.trim())
+                                .last("LIMIT 1")));
     }
 
     @Override
     public Product save(Product p) {
         ProductSkuDO d =
                 new ProductSkuDO()
-                .setSpecs("[]")
-                .setProductCode(p.productCode())
-                .setName(p.name())
-                .setDescription(p.description())
-                .setMainImage(p.mainImage())
-                .setPrice(p.price())
-                .setStock(p.stock())
-                .setStatus(p.status());
+                        .setSpecs("[]")
+                        .setProductCode(p.productCode())
+                        .setName(p.name())
+                        .setDescription(p.description())
+                        .setMainImage(p.mainImage())
+                        .setPrice(p.price())
+                        .setStock(p.stock())
+                        .setStatus(p.status());
         productSkuMapper.insert(d);
         return toDomain(d);
     }
@@ -131,22 +158,20 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
     @Override
     public boolean updateStatus(Long id, String status) {
         return productSkuMapper.update(
-                null,
-                Wrappers.lambdaUpdate(ProductSkuDO.class)
-                .eq(ProductSkuDO::getId, id)
-                .ne(ProductSkuDO::getStatus, "DELETED")
-                .set(ProductSkuDO::getStatus, status))
-        == 1;
+                        null,
+                        Wrappers.lambdaUpdate(ProductSkuDO.class)
+                                .eq(ProductSkuDO::getId, id)
+                                .ne(ProductSkuDO::getStatus, "DELETED")
+                                .set(ProductSkuDO::getStatus, status))
+                == 1;
     }
 
     @Override
     public List<Product> findSellableByIds(List<Long> ids) {
-        if (ids == null || ids.size() > 200 || ids.stream().anyMatch(id -> id == null || id <= 0)
-        ) {
+        if (ids == null || ids.size() > 200 || ids.stream().anyMatch(id -> id == null || id <= 0)) {
             throw new IllegalArgumentException("商品批量编号不合法");
         }
-        if (ids.isEmpty()
-        ) {
+        if (ids.isEmpty()) {
             return List.of();
         }
         return productSkuMapper.findSellableByIds(ids.stream().distinct().toList()).stream()
@@ -159,25 +184,31 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
      * 已有商品SKU编号集合。
      */
     public List<Long> existingSkuIds(List<Long> ids) {
-        return productSkuMapper.selectList(Wrappers.<ProductSkuDO>lambdaQuery().select(ProductSkuDO::getId)
-                .in(ProductSkuDO::getId, ProductCatalogValidation.ids(ids, 1000)).ne(ProductSkuDO::getStatus, "DELETED")
-                .orderByAsc(ProductSkuDO::getId))
-                .stream().map(ProductSkuDO::getId).toList();
+        return productSkuMapper
+                .selectList(
+                        Wrappers.<ProductSkuDO>lambdaQuery()
+                                .select(ProductSkuDO::getId)
+                                .in(ProductSkuDO::getId, ProductCatalogValidation.ids(ids, 1000))
+                                .ne(ProductSkuDO::getStatus, "DELETED")
+                                .orderByAsc(ProductSkuDO::getId))
+                .stream()
+                .map(ProductSkuDO::getId)
+                .toList();
     }
 
     private Product toDomain(ProductSkuDO d) {
         return d == null
                 ? null
                 : new Product(
-                d.getId(),
-                d.getProductCode(),
-                d.getName(),
-                d.getDescription(),
-                d.getMainImage(),
-                d.getPrice(),
-                d.getStock(),
-                d.getStatus(),
-                d.getCreateTime());
+                        d.getId(),
+                        d.getProductCode(),
+                        d.getName(),
+                        d.getDescription(),
+                        d.getMainImage(),
+                        d.getPrice(),
+                        d.getStock(),
+                        d.getStatus(),
+                        d.getCreateTime());
     }
 
     /** 锁定商品行，保持库存事务锁顺序。 */
@@ -195,17 +226,26 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
     /** 归还预占库存。 */
     @Override
     public boolean releaseQuantity(Long id, Integer quantity) {
-        return productSkuMapper.update(new ProductSkuDO(), Wrappers.<ProductSkuDO>lambdaUpdate()
-                .setIncrBy(ProductSkuDO::getStock, quantity).eq(ProductSkuDO::getId, id)) == 1;
+        return productSkuMapper.update(
+                        new ProductSkuDO(),
+                        Wrappers.<ProductSkuDO>lambdaUpdate()
+                                .setIncrBy(ProductSkuDO::getStock, quantity)
+                                .eq(ProductSkuDO::getId, id))
+                == 1;
     }
 
     /** 读取指定商品的 SKU 列表。 */
     @Override
     public List<ProductSku> catalogSkus(Long spuId) {
-        return productSkuMapper.selectList(Wrappers.<ProductSkuDO>lambdaQuery()
-                .eq(ProductSkuDO::getSpuId, spuId).ne(ProductSkuDO::getStatus, "DELETED")
-                .orderByAsc(ProductSkuDO::getId))
-                .stream().map(row -> ProductCatalogConverter.sku(row)).toList();
+        return productSkuMapper
+                .selectList(
+                        Wrappers.<ProductSkuDO>lambdaQuery()
+                                .eq(ProductSkuDO::getSpuId, spuId)
+                                .ne(ProductSkuDO::getStatus, "DELETED")
+                                .orderByAsc(ProductSkuDO::getId))
+                .stream()
+                .map(row -> ProductCatalogConverter.sku(row))
+                .toList();
     }
 
     /** 读取单个 SKU。 */
@@ -236,26 +276,53 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
     }
 
     private void renameProperties(Long specId, String name, boolean specValueName) {
-        java.util.function.Predicate<ProductSkuSpec> matches = property -> specValueName
-                ? specId.equals(property.specValueId()) : specId.equals(property.specId());
-        var candidates = productSkuMapper.selectList(Wrappers.lambdaQuery(ProductSkuDO.class)
-                .select(ProductSkuDO::getId, ProductSkuDO::getSpecs).isNotNull(ProductSkuDO::getSpecs)
-                .ne(ProductSkuDO::getStatus, "DELETED").orderByAsc(ProductSkuDO::getId));
+        java.util.function.Predicate<ProductSkuSpec> matches =
+                property ->
+                        specValueName
+                                ? specId.equals(property.specValueId())
+                                : specId.equals(property.specId());
+        var candidates =
+                productSkuMapper.selectList(
+                        Wrappers.lambdaQuery(ProductSkuDO.class)
+                                .select(ProductSkuDO::getId, ProductSkuDO::getSpecs)
+                                .isNotNull(ProductSkuDO::getSpecs)
+                                .ne(ProductSkuDO::getStatus, "DELETED")
+                                .orderByAsc(ProductSkuDO::getId));
         for (var candidate : candidates) {
-            if (ProductCatalogConverter.specs(candidate.getSpecs()).stream().noneMatch(matches)) { continue; }
+            if (ProductCatalogConverter.specs(candidate.getSpecs()).stream().noneMatch(matches)) {
+                continue;
+            }
             var row = productSkuMapper.lockById(candidate.getId());
-            if (row == null || "DELETED".equals(row.getStatus())) { continue; }
+            if (row == null || "DELETED".equals(row.getStatus())) {
+                continue;
+            }
             var old = ProductCatalogConverter.specs(row.getSpecs());
-            var updated = old.stream().map(property -> {
-                return matches.test(property) ? new ProductSkuSpec(property.specId(),
-                        specValueName ? property.specName() : name, property.specValueId(),
-                        specValueName ? name : property.specValueName()) : property;
-            }).toList();
+            var updated =
+                    old.stream()
+                            .map(
+                                    property -> {
+                                        return matches.test(property)
+                                                ? new ProductSkuSpec(
+                                                        property.specId(),
+                                                        specValueName ? property.specName() : name,
+                                                        property.specValueId(),
+                                                        specValueName
+                                                                ? name
+                                                                : property.specValueName())
+                                                : property;
+                                    })
+                            .toList();
             if (!old.equals(updated)) {
-                productSkuMapper.update(null, Wrappers.lambdaUpdate(ProductSkuDO.class)
-                        .eq(ProductSkuDO::getId, row.getId())
-                        .set(ProductSkuDO::getSpecs, com.alibaba.fastjson2.JSON.toJSONString(updated))
-                        .set(ProductSkuDO::getVariantKey, ProductCatalogValidation.variantKey(updated)));
+                productSkuMapper.update(
+                        null,
+                        Wrappers.lambdaUpdate(ProductSkuDO.class)
+                                .eq(ProductSkuDO::getId, row.getId())
+                                .set(
+                                        ProductSkuDO::getSpecs,
+                                        com.alibaba.fastjson2.JSON.toJSONString(updated))
+                                .set(
+                                        ProductSkuDO::getVariantKey,
+                                        ProductCatalogValidation.variantKey(updated)));
             }
         }
     }

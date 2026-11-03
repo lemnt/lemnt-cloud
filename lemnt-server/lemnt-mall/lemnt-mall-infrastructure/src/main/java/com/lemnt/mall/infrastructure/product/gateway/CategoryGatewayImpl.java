@@ -22,10 +22,12 @@ public class CategoryGatewayImpl implements CategoryGateway {
 
     @Override
     public List<Category> categories() {
-        var rows = categoryMapper.selectList(Wrappers.<CategoryDO>lambdaQuery()
-                .orderByAsc(CategoryDO::getSort)
-                .orderByAsc(CategoryDO::getId)
-                .last("LIMIT 1001"));
+        var rows =
+                categoryMapper.selectList(
+                        Wrappers.<CategoryDO>lambdaQuery()
+                                .orderByAsc(CategoryDO::getSort)
+                                .orderByAsc(CategoryDO::getId)
+                                .last("LIMIT 1001"));
         if (rows.size() > 1000) {
             throw new IllegalStateException("分类超过1000条，请先接入分页分类维护");
         }
@@ -42,13 +44,15 @@ public class CategoryGatewayImpl implements CategoryGateway {
         var row = ProductCatalogConverter.category(value);
         if (value.id() == null) {
             categoryMapper.insert(row);
-        }
-        else if (categoryMapper.update(null, Wrappers.<CategoryDO>lambdaUpdate()
-                .set(CategoryDO::getName, row.getName())
-                .set(CategoryDO::getPicUrl, row.getPicUrl())
-                .set(CategoryDO::getSort, row.getSort())
-                .set(CategoryDO::getStatus, row.getStatus())
-                .eq(CategoryDO::getId, row.getId())) != 1) {
+        } else if (categoryMapper.update(
+                        null,
+                        Wrappers.<CategoryDO>lambdaUpdate()
+                                .set(CategoryDO::getName, row.getName())
+                                .set(CategoryDO::getPicUrl, row.getPicUrl())
+                                .set(CategoryDO::getSort, row.getSort())
+                                .set(CategoryDO::getStatus, row.getStatus())
+                                .eq(CategoryDO::getId, row.getId()))
+                != 1) {
             throw new IllegalArgumentException("分类不存在");
         }
         return ProductCatalogConverter.category(row);
@@ -74,14 +78,14 @@ public class CategoryGatewayImpl implements CategoryGateway {
         }
         return rows.stream()
                 .map(
-                v ->
-                new Category(
-                v.getId(),
-                v.getParentId(),
-                v.getName(),
-                v.getPicUrl(),
-                v.getSort(),
-                v.getStatus()))
+                        v ->
+                                new Category(
+                                        v.getId(),
+                                        v.getParentId(),
+                                        v.getName(),
+                                        v.getPicUrl(),
+                                        v.getSort(),
+                                        v.getStatus()))
                 .toList();
     }
 }

@@ -29,10 +29,10 @@ public record CouponTemplate(
         String validityType,
         Integer fixedStartTerm,
         Integer fixedEndTerm,
-        int useCount
-) {
+        int useCount) {
     public CouponTemplate {
-        productScopeValues = productScopeValues == null ? List.of() : List.copyOf(productScopeValues);
+        productScopeValues =
+                productScopeValues == null ? List.of() : List.copyOf(productScopeValues);
         takeType = "MANUAL".equals(takeType) ? "ADMIN" : takeType;
     }
 

@@ -49,14 +49,17 @@ public class RoleController {
     @GetMapping
     public R<SystemRoleListRes> list(@Validated RolePageReq req) {
         PageResult<RoleDTO> result = rolePageQueryExe.execute(RoleReqConverter.toQry(req));
-        return R.page(RoleResConverter.toResListToSystemRoleListRes(result.getRecords()), result.getTotal());
+        return R.page(
+                RoleResConverter.toResListToSystemRoleListRes(result.getRecords()),
+                result.getTotal());
     }
 
     @Operation(summary = "根据角色编号获取详细信息")
     @RequiresPermissions("system:role:query")
     @GetMapping(value = "/{roleId}")
     public R<SystemRoleGetInfoRes> getInfo(@PathVariable Long roleId) {
-        return R.ok(RoleResConverter.toResToSystemRoleGetInfoRes(roleDetailQueryExe.execute(roleId)));
+        return R.ok(
+                RoleResConverter.toResToSystemRoleGetInfoRes(roleDetailQueryExe.execute(roleId)));
     }
 
     @Operation(summary = "新增角色")
@@ -95,6 +98,8 @@ public class RoleController {
     @RequiresPermissions("system:role:query")
     @GetMapping("/options")
     public R<List<SystemRoleOptionselectRes>> optionselect() {
-        return R.ok(RoleResConverter.toResListToSystemRoleOptionselectRes(roleOptionselectQueryExe.execute()));
+        return R.ok(
+                RoleResConverter.toResListToSystemRoleOptionselectRes(
+                        roleOptionselectQueryExe.execute()));
     }
 }

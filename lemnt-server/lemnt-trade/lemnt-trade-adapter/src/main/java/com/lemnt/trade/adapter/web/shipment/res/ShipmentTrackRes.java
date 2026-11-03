@@ -8,9 +8,6 @@ import java.time.LocalDateTime;
 /** 物流轨迹事件。 */
 @Schema(description = "物流轨迹事件")
 public record ShipmentTrackRes(
-        @Schema(description = "事件时间")
-        LocalDateTime time,
-        @Schema(description = "物流事件描述")
-        String description
-) implements Serializable {
-}
+        @Schema(description = "事件时间") LocalDateTime time,
+        @Schema(description = "物流事件描述") String description)
+        implements Serializable {}

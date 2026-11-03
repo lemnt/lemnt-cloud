@@ -5,19 +5,54 @@ const MONEY = /^\d+\.\d{2}$/;
 
 Page({
   data: {
-    ready: runtime.ready, loading: false, error: '', loggedIn: false,
-    packages: [], selectedPackage: null, recharges: [], total: 0, pageNum: 0, hasMore: false,
+    ready: runtime.ready,
+    loading: false,
+    error: '',
+    loggedIn: false,
+    packages: [],
+    selectedPackage: null,
+    recharges: [],
+    total: 0,
+    pageNum: 0,
+    hasMore: false,
   },
-  onLoad() { runtime.attach(this); this.requestNo = null; },
+  onLoad() {
+    runtime.attach(this);
+    this.requestNo = null;
+  },
   onShow() {
     const loggedIn = !!runtime.current();
     this.setData({ loggedIn });
     if (loggedIn && runtime.requireLogin()) return this.reload();
   },
-  onHide() { this.setData({ packages: [], selectedPackage: null, recharges: [], total: 0, pageNum: 0, hasMore: false }); },
-  onSessionLost() { this.setData({ packages: [], selectedPackage: null, recharges: [], total: 0, pageNum: 0, hasMore: false, loggedIn: false, error: '会员已切换，请重新登录' }); },
-  login() { wx.navigateTo({ url: '/pages/member-login/index' }); },
-  resetRequest() { this.requestNo = null; },
+  onHide() {
+    this.setData({
+      packages: [],
+      selectedPackage: null,
+      recharges: [],
+      total: 0,
+      pageNum: 0,
+      hasMore: false,
+    });
+  },
+  onSessionLost() {
+    this.setData({
+      packages: [],
+      selectedPackage: null,
+      recharges: [],
+      total: 0,
+      pageNum: 0,
+      hasMore: false,
+      loggedIn: false,
+      error: '会员已切换，请重新登录',
+    });
+  },
+  login() {
+    wx.navigateTo({ url: '/pages/member-login/index' });
+  },
+  resetRequest() {
+    this.requestNo = null;
+  },
   reload() {
     return runtime.run(this, async () => {
       const packages = await this.client.rechargePackages();
@@ -37,7 +72,10 @@ Page({
   choosePackage(event) {
     const index = Number(event.currentTarget.dataset.index);
     const value = this.data.packages[index];
-    if (!value) { this.setData({ error: '套餐不存在，请刷新' }); return; }
+    if (!value) {
+      this.setData({ error: '套餐不存在，请刷新' });
+      return;
+    }
     this.resetRequest();
     this.setData({ selectedPackage: value, error: '' });
   },
@@ -58,9 +96,12 @@ Page({
       const pkg = this.data.selectedPackage;
       if (!pkg) throw new Error('请选择充值套餐');
       if (!this.requestNo) {
-        this.requestNo = 'MINI-RC-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+        this.requestNo =
+          'MINI-RC-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
       }
-      const created = this.toRecharge(await this.client.createRecharge({ packageId: Number(pkg.id), requestNo: this.requestNo }));
+      const created = this.toRecharge(
+        await this.client.createRecharge({ packageId: Number(pkg.id), requestNo: this.requestNo }),
+      );
       wx.showToast({ title: '充值单已创建', icon: 'success' });
       this.resetRequest();
       this.setData({ selectedPackage: null });
@@ -69,15 +110,26 @@ Page({
     });
   },
   toPackage(value) {
-    if (!value || !Number.isSafeInteger(value.id) || typeof value.payPrice !== 'string' || !MONEY.test(value.payPrice)
-      || typeof value.bonusPrice !== 'string' || !MONEY.test(value.bonusPrice)) {
+    if (
+      !value ||
+      !Number.isSafeInteger(value.id) ||
+      typeof value.payPrice !== 'string' ||
+      !MONEY.test(value.payPrice) ||
+      typeof value.bonusPrice !== 'string' ||
+      !MONEY.test(value.bonusPrice)
+    ) {
       throw new Error('充值套餐数据不合法');
     }
     return { ...value, total: (Number(value.payPrice) + Number(value.bonusPrice)).toFixed(2) };
   },
   toRecharge(value) {
-    if (!value || typeof value.rechargeNo !== 'string' || !STATUS_LABEL[value.status]
-      || typeof value.totalPrice !== 'string' || !MONEY.test(value.totalPrice)) {
+    if (
+      !value ||
+      typeof value.rechargeNo !== 'string' ||
+      !STATUS_LABEL[value.status] ||
+      typeof value.totalPrice !== 'string' ||
+      !MONEY.test(value.totalPrice)
+    ) {
       throw new Error('充值单数据不合法');
     }
     return { ...value, statusLabel: STATUS_LABEL[value.status] };

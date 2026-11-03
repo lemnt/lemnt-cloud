@@ -20,5 +20,4 @@ public record CombinationActivityDTO(
         Boolean virtualGroup,
         Integer status,
         Integer limitDuration,
-        List<CombinationProductDTO> products
-) {}
+        List<CombinationProductDTO> products) {}

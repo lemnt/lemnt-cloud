@@ -8,7 +8,11 @@ function object(v: unknown): Record<string, unknown> {
 }
 function id(v: unknown, field = '编号'): string {
   const value = typeof v === 'number' && Number.isSafeInteger(v) ? String(v) : v;
-  if (typeof value !== 'string' || !/^[1-9]\d{0,18}$/.test(value) || BigInt(value) > 9223372036854775807n)
+  if (
+    typeof value !== 'string' ||
+    !/^[1-9]\d{0,18}$/.test(value) ||
+    BigInt(value) > 9223372036854775807n
+  )
     throw Error(`${field}不合法或已丢失精度`);
   return value;
 }
@@ -26,8 +30,10 @@ function conversation(raw: unknown): KefuConversation {
     nickname: v.nickname == null ? null : text(v.nickname, '昵称'),
     avatar: v.avatar == null ? null : text(v.avatar, '头像'),
     lastMessageTime: v.lastMessageTime == null ? null : text(v.lastMessageTime, '最后消息时间'),
-    lastMessageContent: v.lastMessageContent == null ? null : text(v.lastMessageContent, '最后消息'),
-    lastMessageContentType: v.lastMessageContentType == null ? null : Number(v.lastMessageContentType),
+    lastMessageContent:
+      v.lastMessageContent == null ? null : text(v.lastMessageContent, '最后消息'),
+    lastMessageContentType:
+      v.lastMessageContentType == null ? null : Number(v.lastMessageContentType),
     adminPinned: v.adminPinned,
     adminUnreadMessageCount: v.adminUnreadMessageCount,
   };
@@ -56,7 +62,10 @@ export async function getConversations() {
 }
 export async function getMessages(conversationId: string, limit = 50) {
   if (!Number.isInteger(limit) || limit < 1 || limit > 200) throw Error('消息条数不合法');
-  const r = await request<unknown>({ url: `${path}/${id(conversationId)}/messages`, params: { limit } });
+  const r = await request<unknown>({
+    url: `${path}/${id(conversationId)}/messages`,
+    params: { limit },
+  });
   if (!Array.isArray(r.data)) throw Error('客服消息列表不合法');
   return (r.data as unknown[]).map(message);
 }

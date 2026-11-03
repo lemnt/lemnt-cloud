@@ -80,7 +80,7 @@ export interface RefundRequest {
   orderNo: string;
   requestNo: string;
   memberId: string;
-  paymentNo: string;
+  paymentNo: string | null;
   amount: string;
   reason: string;
   status: RefundStatus;
@@ -127,4 +127,67 @@ export interface AfterSaleLog {
   operateType: number;
   content: string;
   createTime: string;
+}
+
+/** 订单快照的金额为元，两位小数字符串；历史未知保持null。 */
+export type PricingSnapshotStatus = 'COMPLETE' | 'LEGACY_PARTIAL';
+export type BenefitStatus = 'NOT_STARTED' | 'PENDING' | 'SUCCESS' | 'FAILED' | 'UNKNOWN';
+export interface PromotionAllocation {
+  orderItemId: string;
+  discountAmount: string | null;
+  deliveryDiscountPrice: string | null;
+  usePoint: string | null;
+  givePoint: string | null;
+}
+export interface OrderPromotionDetail {
+  orderNo: string;
+  snapshotStatus: PricingSnapshotStatus;
+  summary: {
+    originalAmount: string | null;
+    discountAmount: string | null;
+    deliveryOriginalPrice: string | null;
+    deliveryDiscountPrice: string | null;
+    adjustmentAmount: string | null;
+    payAmount: string;
+  };
+  promotions: {
+    promotionType: string;
+    promotionName: string | null;
+    discountAmount: string | null;
+    deliveryDiscountPrice: string | null;
+    usePoint: string | null;
+    givePoint: string | null;
+    giveCouponTemplateCounts: Record<string, number> | null;
+    items: PromotionAllocation[];
+  }[];
+}
+export interface AfterSalePromotionDetail {
+  afterSaleNo: string;
+  orderItemId: string | null;
+  quantity: number | null;
+  amount: string;
+  discountAmount: string | null;
+  deliveryDiscountPrice: string | null;
+  returnUsePoint: string | null;
+  deductGivePoint: string | null;
+  ruleVersion: number | null;
+  snapshotStatus: PricingSnapshotStatus;
+  benefitStatus: BenefitStatus;
+  promotions: {
+    promotionType: string;
+    promotionName: string | null;
+    discountAmount: string | null;
+    deliveryDiscountPrice: string | null;
+    returnUsePoint: string | null;
+    deductGivePoint: string | null;
+  }[];
+}
+
+/** 服务端已考虑同订单处理中退单的可申请额度。 */
+export interface OrderRefundableItem {
+  orderItemId: string;
+  quantity: number;
+  refundedQuantity: number | null;
+  refundableQuantity: number;
+  refundableAmount: string;
 }

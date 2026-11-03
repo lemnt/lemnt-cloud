@@ -1,71 +1,43 @@
 package com.lemnt.trade.adapter.web.aftersale.res;
 
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /** 商品售后拒收响应。 */
 @Schema(description = "商品售后拒收响应")
 public record AfterSaleRefuseRes(
-        @Schema(description = "售后单编号")
-        String refundNo,
-        @Schema(description = "订单编号")
-        String orderNo,
-        @Schema(description = "请求编号")
-        String requestNo,
-        @Schema(description = "会员ID")
-        Long memberId,
-        @Schema(description = "原支付单编号")
-        String paymentNo,
-        @Schema(description = "商品行ID，历史整单售后为空")
-        Long orderItemId,
-        @Schema(description = "售后商品数量，历史整单售后为空")
-        Integer quantity,
-        @Schema(description = "方式：REFUND_ONLY仅退款、RETURN_REFUND退货退款")
-        String type,
-        @Schema(description = "退款金额，单位元，由服务端计算")
-        BigDecimal amount,
-        @Schema(description = "申请原因")
-        String reason,
-        @Schema(description = "售后流程状态")
-        String status,
-        @Schema(description = "拒绝或拒收原因")
-        String decisionReason,
-        @Schema(description = "退货承运商")
-        String returnCarrierCode,
-        @Schema(description = "退货运单编号")
-        String returnTrackingNo,
-        @Schema(description = "申请时间")
-        LocalDateTime requestedAt,
-        @Schema(description = "审核时间")
-        LocalDateTime decidedAt,
-        @Schema(description = "退货登记时间")
-        LocalDateTime returnShippedAt,
-        @Schema(description = "退货处理时间")
-        LocalDateTime returnReceivedAt,
-        @Schema(description = "售后数值主键")
-        Long id,
-        @Schema(description = "订单数值主键")
-        Long orderId,
-        @Schema(description = "实际退款成功时间，历史无依据时为空")
-        LocalDateTime refundTime,
-        @Schema(description = "实际审批人员，历史无依据时为空")
-        Long auditUserId,
-        @Schema(description = "原订单SKU编号")
-        Long skuId,
-        @Schema(description = "商品SPU编号，历史未记录时为空")
-        Long spuId,
-        @Schema(description = "下单时商品SPU名称")
-        String spuName,
-        @Schema(description = "下单时规格名称和值，历史未记录与空规格区分")
-        List<Spec> specs,
-        @Schema(description = "下单时商品图片")
-        String picUrl
-) implements Serializable {
+        @Schema(description = "售后单编号") String refundNo,
+        @Schema(description = "订单编号") String orderNo,
+        @Schema(description = "请求编号") String requestNo,
+        @Schema(description = "会员ID") Long memberId,
+        @Schema(description = "原支付单编号") String paymentNo,
+        @Schema(description = "商品行ID，历史整单售后为空") Long orderItemId,
+        @Schema(description = "售后商品数量，历史整单售后为空") Integer quantity,
+        @Schema(description = "方式：REFUND_ONLY仅退款、RETURN_REFUND退货退款") String type,
+        @Schema(description = "退款金额，单位元，由服务端计算") BigDecimal amount,
+        @Schema(description = "申请原因") String reason,
+        @Schema(description = "售后流程状态") String status,
+        @Schema(description = "拒绝或拒收原因") String decisionReason,
+        @Schema(description = "退货承运商") String returnCarrierCode,
+        @Schema(description = "退货运单编号") String returnTrackingNo,
+        @Schema(description = "申请时间") LocalDateTime requestedAt,
+        @Schema(description = "审核时间") LocalDateTime decidedAt,
+        @Schema(description = "退货登记时间") LocalDateTime returnShippedAt,
+        @Schema(description = "退货处理时间") LocalDateTime returnReceivedAt,
+        @Schema(description = "售后数值主键") Long id,
+        @Schema(description = "订单数值主键") Long orderId,
+        @Schema(description = "实际退款成功时间，历史无依据时为空") LocalDateTime refundTime,
+        @Schema(description = "实际审批人员，历史无依据时为空") Long auditUserId,
+        @Schema(description = "原订单SKU编号") Long skuId,
+        @Schema(description = "商品SPU编号，历史未记录时为空") Long spuId,
+        @Schema(description = "下单时商品SPU名称") String spuName,
+        @Schema(description = "下单时规格名称和值，历史未记录与空规格区分") List<Spec> specs,
+        @Schema(description = "下单时商品图片") String picUrl)
+        implements Serializable {
     public AfterSaleRefuseRes {
         specs = specs == null ? null : List.copyOf(specs);
     }
@@ -93,8 +65,7 @@ public record AfterSaleRefuseRes(
             Long id,
             Long orderId,
             LocalDateTime refundTime,
-            Long auditUserId
-    ) {
+            Long auditUserId) {
         this(
                 refundNo,
                 orderNo,
@@ -128,13 +99,9 @@ public record AfterSaleRefuseRes(
     /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
     @Schema(description = "商品规格快照")
     public record Spec(
-            @Schema(description = "规格项编号，历史未关联时为空")
-            Long specId,
-            @Schema(description = "保存时规格名称")
-            String specName,
-            @Schema(description = "规格值编号，历史未关联时为空")
-            Long specValueId,
-            @Schema(description = "保存时规格值名称")
-            String specValueName
-    ) implements java.io.Serializable {}
+            @Schema(description = "规格项编号，历史未关联时为空") Long specId,
+            @Schema(description = "保存时规格名称") String specName,
+            @Schema(description = "规格值编号，历史未关联时为空") Long specValueId,
+            @Schema(description = "保存时规格值名称") String specValueName)
+            implements java.io.Serializable {}
 }

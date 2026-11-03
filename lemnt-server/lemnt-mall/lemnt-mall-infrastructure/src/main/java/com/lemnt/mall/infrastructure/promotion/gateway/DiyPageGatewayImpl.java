@@ -29,15 +29,24 @@ public class DiyPageGatewayImpl implements DiyPageGateway {
 
     @Override
     public DiyPage findByName(Long templateId, String name) {
-        return DiyConverter.model(mapper.selectOne(Wrappers.<DiyPageDO>lambdaQuery()
-                .eq(DiyPageDO::getTemplateId, templateId).eq(DiyPageDO::getName, name).last("LIMIT 1")));
+        return DiyConverter.model(
+                mapper.selectOne(
+                        Wrappers.<DiyPageDO>lambdaQuery()
+                                .eq(DiyPageDO::getTemplateId, templateId)
+                                .eq(DiyPageDO::getName, name)
+                                .last("LIMIT 1")));
     }
 
     @Override
     public List<DiyPage> byTemplateId(Long templateId) {
-        return mapper.selectList(Wrappers.<DiyPageDO>lambdaQuery()
-                        .eq(DiyPageDO::getTemplateId, templateId).orderByAsc(DiyPageDO::getId))
-                .stream().map(DiyConverter::model).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<DiyPageDO>lambdaQuery()
+                                .eq(DiyPageDO::getTemplateId, templateId)
+                                .orderByAsc(DiyPageDO::getId))
+                .stream()
+                .map(DiyConverter::model)
+                .toList();
     }
 
     @Override
@@ -53,14 +62,21 @@ public class DiyPageGatewayImpl implements DiyPageGateway {
 
     @Override
     public PageResult<DiyPage> page(DiyPageFilter filter) {
-        var page = mapper.selectPage(new Page<DiyPageDO>(filter.pageNum(), filter.pageSize()),
-                Wrappers.<DiyPageDO>lambdaQuery()
-                        .eq(filter.templateId() != null, DiyPageDO::getTemplateId, filter.templateId())
-                        .like(filter.name() != null && !filter.name().isBlank(), DiyPageDO::getName,
-                                filter.name())
-                        .orderByAsc(DiyPageDO::getId));
-        return PageResult.of(page.getRecords().stream().map(DiyConverter::model).toList(),
-                page.getTotal());
+        var page =
+                mapper.selectPage(
+                        new Page<DiyPageDO>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.<DiyPageDO>lambdaQuery()
+                                .eq(
+                                        filter.templateId() != null,
+                                        DiyPageDO::getTemplateId,
+                                        filter.templateId())
+                                .like(
+                                        filter.name() != null && !filter.name().isBlank(),
+                                        DiyPageDO::getName,
+                                        filter.name())
+                                .orderByAsc(DiyPageDO::getId));
+        return PageResult.of(
+                page.getRecords().stream().map(DiyConverter::model).toList(), page.getTotal());
     }
 
     @Override

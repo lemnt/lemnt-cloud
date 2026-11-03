@@ -26,6 +26,9 @@ public class AppCategoryController {
     @GetMapping("/categories")
     @Operation(summary = "公开启用分类")
     public R<List<StoreCategoryRes>> categories() {
-        return R.ok(storeCategoryListQueryExe.execute().stream().map(StoreResConverter::category).toList());
+        return R.ok(
+                storeCategoryListQueryExe.execute().stream()
+                        .map(StoreResConverter::category)
+                        .toList());
     }
 }

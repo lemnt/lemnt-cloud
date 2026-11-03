@@ -17,6 +17,8 @@ public class RewardActivityPageQueryExe {
     private final ActivityManagementService service;
 
     public PageResult<RewardActivityDTO> execute(RewardActivityPageQry query) {
-        return service.pageReward(new ActivityFilter(query.name(), query.status(), query.pageNum(), query.pageSize()));
+        return service.pageReward(
+                new ActivityFilter(
+                        query.name(), query.status(), query.pageNum(), query.pageSize()));
     }
 }

@@ -1,8 +1,9 @@
 package com.lemnt.common.redis.configure;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * 缓存配置属性

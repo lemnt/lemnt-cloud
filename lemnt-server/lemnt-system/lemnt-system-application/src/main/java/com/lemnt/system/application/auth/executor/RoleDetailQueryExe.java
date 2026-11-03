@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class RoleDetailQueryExe {
     private final RoleGateway roleGateway;
     private final RoleDomainService roleDomainService;
+
     public RoleDTO execute(Long roleId) {
         roleDomainService.checkRoleDataScope(roleId);
         Role entity = roleGateway.selectRoleById(roleId);

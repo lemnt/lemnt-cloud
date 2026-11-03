@@ -8,6 +8,5 @@ public record AppBannerRes(
         @Schema(description = "编号") Long id,
         @Schema(description = "标题") String title,
         @Schema(description = "跳转链接") String url,
-        @Schema(description = "图片地址") String picUrl
-) implements java.io.Serializable {
-}
+        @Schema(description = "图片地址") String picUrl)
+        implements java.io.Serializable {}

@@ -48,10 +48,26 @@ public class RechargeService {
         }
         var wallet = walletService.getOrCreate(memberId);
         BigDecimal total = value.payPrice().add(value.bonusPrice()).setScale(2);
-        var created = new WalletRecharge(null,
-                "RC" + UUID.randomUUID().toString().replace("-", "").toUpperCase(Locale.ROOT), request,
-                wallet.id(), memberId, packageId, value.payPrice(), value.bonusPrice(), total,
-                WalletRechargeStatus.PENDING.name(), null, null, null, null);
+        var created =
+                new WalletRecharge(
+                        null,
+                        "RC"
+                                + UUID.randomUUID()
+                                        .toString()
+                                        .replace("-", "")
+                                        .toUpperCase(Locale.ROOT),
+                        request,
+                        wallet.id(),
+                        memberId,
+                        packageId,
+                        value.payPrice(),
+                        value.bonusPrice(),
+                        total,
+                        WalletRechargeStatus.PENDING.name(),
+                        null,
+                        null,
+                        null,
+                        null);
         return recharges.createIfAbsent(created);
     }
 
@@ -68,13 +84,30 @@ public class RechargeService {
             return current;
         }
         var now = recharges.databaseNow();
-        var paid = new WalletRecharge(current.id(), current.rechargeNo(), current.requestNo(), current.walletId(),
-                current.memberId(), current.packageId(), current.payPrice(), current.bonusPrice(),
-                current.totalPrice(), WalletRechargeStatus.PAID.name(), channel, now, null, current.createTime());
+        var paid =
+                new WalletRecharge(
+                        current.id(),
+                        current.rechargeNo(),
+                        current.requestNo(),
+                        current.walletId(),
+                        current.memberId(),
+                        current.packageId(),
+                        current.payPrice(),
+                        current.bonusPrice(),
+                        current.totalPrice(),
+                        WalletRechargeStatus.PAID.name(),
+                        channel,
+                        now,
+                        null,
+                        current.createTime());
         if (!recharges.update(paid)) {
             throw new IllegalStateException("充值单状态已变化");
         }
-        walletService.credit(current.memberId(), WalletBizType.RECHARGE, current.rechargeNo(), current.totalPrice(),
+        walletService.credit(
+                current.memberId(),
+                WalletBizType.RECHARGE,
+                current.rechargeNo(),
+                current.totalPrice(),
                 "充值到账");
         return recharges.findByNo(no);
     }
@@ -94,15 +127,31 @@ public class RechargeService {
             throw new ServiceException("充值未到账，不能退款", 400);
         }
         var now = recharges.databaseNow();
-        var refunded = new WalletRecharge(current.id(), current.rechargeNo(), current.requestNo(),
-                current.walletId(), current.memberId(), current.packageId(), current.payPrice(),
-                current.bonusPrice(), current.totalPrice(), WalletRechargeStatus.REFUNDED.name(),
-                current.channelCode(), current.paidTime(), now, current.createTime());
+        var refunded =
+                new WalletRecharge(
+                        current.id(),
+                        current.rechargeNo(),
+                        current.requestNo(),
+                        current.walletId(),
+                        current.memberId(),
+                        current.packageId(),
+                        current.payPrice(),
+                        current.bonusPrice(),
+                        current.totalPrice(),
+                        WalletRechargeStatus.REFUNDED.name(),
+                        current.channelCode(),
+                        current.paidTime(),
+                        now,
+                        current.createTime());
         if (!recharges.update(refunded)) {
             throw new IllegalStateException("充值单状态已变化");
         }
-        walletService.debit(current.memberId(), WalletBizType.RECHARGE_REFUND, current.rechargeNo(),
-                current.totalPrice(), "充值退款");
+        walletService.debit(
+                current.memberId(),
+                WalletBizType.RECHARGE_REFUND,
+                current.rechargeNo(),
+                current.totalPrice(),
+                "充值退款");
         return recharges.findByNo(no);
     }
 }

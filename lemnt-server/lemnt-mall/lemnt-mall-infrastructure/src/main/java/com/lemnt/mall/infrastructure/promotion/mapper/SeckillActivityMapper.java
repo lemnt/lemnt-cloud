@@ -17,17 +17,22 @@ public interface SeckillActivityMapper extends BaseMapper<SeckillActivityDO> {
     SeckillActivityDO lockById(Long id);
 
     /** 后台分页，时段编号以逗号存储。 */
-    IPage<SeckillActivityDO> selectPageByFilter(IPage<SeckillActivityDO> page,
-            @Param("name") String name, @Param("status") Integer status, @Param("configId") Long configId);
+    IPage<SeckillActivityDO> selectPageByFilter(
+            IPage<SeckillActivityDO> page,
+            @Param("name") String name,
+            @Param("status") Integer status,
+            @Param("configId") Long configId);
 
     /** 查询指定 SPU 的开启活动。 */
     List<SeckillActivityDO> selectEnabledBySpuIds(@Param("spuIds") List<Long> spuIds);
 
     /** App 分页。 */
-    IPage<SeckillActivityDO> selectAppPage(IPage<SeckillActivityDO> page,
-            @Param("configId") Long configId, @Param("now") java.time.LocalDateTime now);
+    IPage<SeckillActivityDO> selectAppPage(
+            IPage<SeckillActivityDO> page,
+            @Param("configId") Long configId,
+            @Param("now") java.time.LocalDateTime now);
 
     /** 指定时段的进行中活动。 */
-    List<SeckillActivityDO> selectByConfigAndNow(@Param("configId") Long configId,
-            @Param("now") java.time.LocalDateTime now);
+    List<SeckillActivityDO> selectByConfigAndNow(
+            @Param("configId") Long configId, @Param("now") java.time.LocalDateTime now);
 }

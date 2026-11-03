@@ -6,8 +6,5 @@ import java.io.Serializable;
 
 /** 会员评价创建响应。 */
 @Schema(description = "会员评价创建响应")
-public record CommentCreateRes(
-        @Schema(description = "已创建的真实评价ID")
-        Long id
-) implements Serializable {
-}
+public record CommentCreateRes(@Schema(description = "已创建的真实评价ID") Long id)
+        implements Serializable {}

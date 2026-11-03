@@ -9,6 +9,5 @@ public record AppDiyTemplateRes(
         @Schema(description = "模板名称") String name,
         @Schema(description = "模板属性 JSON") String property,
         @Schema(description = "首页属性 JSON") String home,
-        @Schema(description = "我的页面属性 JSON") String user
-) implements java.io.Serializable {
-}
+        @Schema(description = "我的页面属性 JSON") String user)
+        implements java.io.Serializable {}

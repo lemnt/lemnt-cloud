@@ -8,8 +8,5 @@ import java.io.Serializable;
 /** 订单统计请求。 */
 @Schema(description = "订单统计请求")
 public record OrderStatisticsReq(
-        @Schema(description = "可空，精确订单编号，不传统计全部订单")
-        @Size(max = 40)
-        String orderNo
-) implements Serializable {
-}
+        @Schema(description = "可空，精确订单编号，不传统计全部订单") @Size(max = 40) String orderNo)
+        implements Serializable {}

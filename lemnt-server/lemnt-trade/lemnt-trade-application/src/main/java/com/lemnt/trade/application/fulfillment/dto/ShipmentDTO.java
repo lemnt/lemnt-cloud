@@ -14,5 +14,5 @@ public record ShipmentDTO(
         String phone,
         String address,
         LocalDateTime shippedAt,
-        LocalDateTime receivedAt
-) implements java.io.Serializable {}
+        LocalDateTime receivedAt)
+        implements java.io.Serializable {}

@@ -19,8 +19,7 @@ import java.time.LocalDateTime;
 @TableName("trade_inventory_confirmation")
 public class InventoryConfirmationDO implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     /** 订单号。 */
     @TableId(type = IdType.INPUT)

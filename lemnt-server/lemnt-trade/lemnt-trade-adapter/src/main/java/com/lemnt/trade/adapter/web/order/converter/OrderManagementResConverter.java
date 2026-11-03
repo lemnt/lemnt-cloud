@@ -7,13 +7,15 @@ import com.lemnt.trade.application.order.dto.OrderStatisticsDTO;
 
 /** 订单管理响应转换。 */
 public final class OrderManagementResConverter {
-    private OrderManagementResConverter() {
-    }
+    private OrderManagementResConverter() {}
 
     /** 统计精度沿用统一金额序列化。 */
     public static OrderStatisticsRes statistics(OrderStatisticsDTO value) {
-        return new OrderStatisticsRes(value.orderCount(), value.orderPayPrice().setScale(2),
-                value.afterSaleCount(), value.afterSalePrice().setScale(2));
+        return new OrderStatisticsRes(
+                value.orderCount(),
+                value.orderPayPrice().setScale(2),
+                value.afterSaleCount(),
+                value.afterSalePrice().setScale(2));
     }
 
     /** 转换备注响应。 */

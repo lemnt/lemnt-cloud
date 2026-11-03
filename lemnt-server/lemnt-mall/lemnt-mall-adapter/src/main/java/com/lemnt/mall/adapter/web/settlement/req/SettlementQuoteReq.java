@@ -14,13 +14,7 @@ import java.util.List;
  */
 @Schema(description = "SettlementQuoteReq")
 public record SettlementQuoteReq(
-        @Schema(description = "该会员购物车中已选中的SKU编号，1至100项")
-        @NotEmpty
-        @Size(max = 100)
-        List<@NotNull
-        @Positive
-        Long> productIds,
-        @Schema(description = "该会员的优惠券实例编号，可不传")
-        @Positive
-        Long couponId
-) implements Serializable {}
+        @Schema(description = "该会员购物车中已选中的SKU编号，1至100项") @NotEmpty @Size(max = 100)
+                List<@NotNull @Positive Long> productIds,
+        @Schema(description = "该会员的优惠券实例编号，可不传") @Positive Long couponId)
+        implements Serializable {}

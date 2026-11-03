@@ -37,7 +37,9 @@ public class PaymentRefundController {
     @RequiresPermissions("trade:payment-refund:list")
     public R<PaymentRefundPageRes> page(@Valid @ModelAttribute PaymentRefundPageReq req) {
         var page = pageQuery.execute(PaymentRefundReqConverter.page(req));
-        return R.page(page.getRecords().stream().map(PaymentRefundResConverter::page).toList(), page.getTotal());
+        return R.page(
+                page.getRecords().stream().map(PaymentRefundResConverter::page).toList(),
+                page.getTotal());
     }
 
     /** 查询本地交易详情。 */

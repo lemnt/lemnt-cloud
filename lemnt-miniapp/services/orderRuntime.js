@@ -8,11 +8,14 @@ function current() {
 /** 为订单/售后页面注入 trade 客户端，身份只取会员会话令牌。 */
 function attach(page) {
   page.client = createTradeClient({
-    request: options => new Promise((resolve, reject) => wx.request({
-      ...options,
-      success: resolve,
-      fail: () => reject(Error('网络未确认，请刷新核验后再操作')),
-    })),
+    request: (options) =>
+      new Promise((resolve, reject) =>
+        wx.request({
+          ...options,
+          success: resolve,
+          fail: () => reject(Error('网络未确认，请刷新核验后再操作')),
+        }),
+      ),
     baseUrl: config.apiBaseUrl,
     ready: config.memberApiReady,
     getMemberToken: () => current()?.accessToken,
@@ -45,7 +48,7 @@ function requireLogin() {
 
 function confirm(title, content) {
   return new Promise((resolve, reject) => {
-    wx.showModal({ title, content, success: result => resolve(result.confirm), fail: reject });
+    wx.showModal({ title, content, success: (result) => resolve(result.confirm), fail: reject });
   });
 }
 

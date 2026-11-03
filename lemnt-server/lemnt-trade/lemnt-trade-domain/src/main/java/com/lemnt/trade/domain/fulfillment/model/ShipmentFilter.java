@@ -9,6 +9,5 @@ public record ShipmentFilter(
         String trackingNo,
         String status,
         int pageNum,
-        int pageSize
-) implements Serializable {
-}
+        int pageSize)
+        implements Serializable {}

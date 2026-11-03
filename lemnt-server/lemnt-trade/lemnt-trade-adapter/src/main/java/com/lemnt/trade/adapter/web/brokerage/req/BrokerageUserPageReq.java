@@ -8,6 +8,5 @@ public record BrokerageUserPageReq(
         @Schema(description = "推广员编号") Long bindUserId,
         @Schema(description = "是否有分销资格") Boolean brokerageEnabled,
         @Schema(description = "pageNum") Integer pageNum,
-        @Schema(description = "pageSize") Integer pageSize
-) implements java.io.Serializable {
-}
+        @Schema(description = "pageSize") Integer pageSize)
+        implements java.io.Serializable {}

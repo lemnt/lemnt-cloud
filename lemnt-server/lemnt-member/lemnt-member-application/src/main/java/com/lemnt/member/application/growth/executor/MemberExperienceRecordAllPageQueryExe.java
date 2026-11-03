@@ -10,8 +10,9 @@ import com.lemnt.member.domain.growth.model.AssetRecordPageFilter;
 import com.lemnt.member.domain.growth.model.ExperienceRecordMetadata;
 import com.lemnt.member.domain.shared.model.MemberRules;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /** 后台经验记录专用查询，列表和总数使用同一条件。 */
 @Component
@@ -26,24 +27,37 @@ public class MemberExperienceRecordAllPageQueryExe {
         if (qry.memberId() != null) {
             MemberRules.id(qry.memberId());
         }
-        if (qry.experienceBizType() != null && !ExperienceRecordMetadata.supported(qry.experienceBizType())) {
+        if (qry.experienceBizType() != null
+                && !ExperienceRecordMetadata.supported(qry.experienceBizType())) {
             throw new ServiceException("经验业务类型不合法", 400);
         }
         if ((qry.bizNo() != null && qry.bizNo().length() > 64)
                 || (qry.title() != null && qry.title().length() > 255)) {
             throw new ServiceException("经验筛选条件超长", 400);
         }
-        if (qry.startTime() != null && qry.endTime() != null && qry.startTime().isAfter(qry.endTime())) {
+        if (qry.startTime() != null
+                && qry.endTime() != null
+                && qry.startTime().isAfter(qry.endTime())) {
             throw new ServiceException("开始时间不能晚于结束时间", 400);
         }
-        var filter = new AssetRecordPageFilter(qry.memberId(), "EXPERIENCE",
-                (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize(), null, null, null,
-                qry.bizNo() == null || qry.bizNo().isBlank() ? null : qry.bizNo().trim(),
-                qry.experienceBizType(),
-                qry.title() == null || qry.title().isBlank() ? null : qry.title().trim(),
-                qry.startTime(), qry.endTime());
+        var filter =
+                new AssetRecordPageFilter(
+                        qry.memberId(),
+                        "EXPERIENCE",
+                        (qry.pageNum() - 1) * qry.pageSize(),
+                        qry.pageSize(),
+                        null,
+                        null,
+                        null,
+                        qry.bizNo() == null || qry.bizNo().isBlank() ? null : qry.bizNo().trim(),
+                        qry.experienceBizType(),
+                        qry.title() == null || qry.title().isBlank() ? null : qry.title().trim(),
+                        qry.startTime(),
+                        qry.endTime());
         return new PageResult<>(
-                experienceRecords.page(filter).stream().map(MemberGrowthDTOConverter::toAssetRecordDTO).toList(),
+                experienceRecords.page(filter).stream()
+                        .map(MemberGrowthDTOConverter::toAssetRecordDTO)
+                        .toList(),
                 experienceRecords.count(filter));
     }
 }

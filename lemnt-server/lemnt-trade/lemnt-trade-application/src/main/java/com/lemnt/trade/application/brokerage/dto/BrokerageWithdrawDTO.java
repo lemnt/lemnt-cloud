@@ -20,6 +20,5 @@ public record BrokerageWithdrawDTO(
         Integer status,
         String auditReason,
         LocalDateTime auditTime,
-        LocalDateTime createTime
-) implements Serializable {
-}
+        LocalDateTime createTime)
+        implements Serializable {}

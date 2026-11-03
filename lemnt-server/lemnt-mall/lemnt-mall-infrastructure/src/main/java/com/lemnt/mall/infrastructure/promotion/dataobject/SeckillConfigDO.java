@@ -12,6 +12,7 @@ import lombok.Data;
 public class SeckillConfigDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private String name;
     private String startTime;
     private String endTime;

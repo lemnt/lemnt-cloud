@@ -44,18 +44,27 @@ public class SeckillStockService {
         require(activity != null, "秒杀活动不存在");
         require(Objects.equals(activity.status(), 0), "秒杀活动已关闭");
         var now = LocalDateTime.now();
-        require(!now.isBefore(activity.startTime()) && now.isBefore(activity.endTime()), "秒杀活动不在进行时间");
-        var config = configs.byStatus(0).stream()
-                .filter(item -> activity.configIds().contains(item.id())
-                        && !now.toLocalTime().isBefore(parse(item.startTime()))
-                        && now.toLocalTime().isBefore(parse(item.endTime())))
-                .findFirst().orElse(null);
+        require(
+                !now.isBefore(activity.startTime()) && now.isBefore(activity.endTime()),
+                "秒杀活动不在进行时间");
+        var config =
+                configs.byStatus(0).stream()
+                        .filter(
+                                item ->
+                                        activity.configIds().contains(item.id())
+                                                && !now.toLocalTime()
+                                                        .isBefore(parse(item.startTime()))
+                                                && now.toLocalTime()
+                                                        .isBefore(parse(item.endTime())))
+                        .findFirst()
+                        .orElse(null);
         require(config != null, "当前不在秒杀时段");
         require(count <= activity.singleLimitCount(), "超过单次限购数量");
         var product = products.byActivityAndSku(activityId, skuId);
         require(product != null, "秒杀商品不存在");
         require(count <= product.stock(), "秒杀库存不足");
-        return new SeckillJoinDTO(activity.name(), activity.totalLimitCount(), product.seckillPrice());
+        return new SeckillJoinDTO(
+                activity.name(), activity.totalLimitCount(), product.seckillPrice());
     }
 
     /** 扣减活动商品和活动库存；两步在同一事务内按活动行锁串行。 */

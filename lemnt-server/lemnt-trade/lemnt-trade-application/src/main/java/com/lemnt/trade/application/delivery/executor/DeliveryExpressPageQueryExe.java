@@ -20,11 +20,19 @@ public class DeliveryExpressPageQueryExe {
 
     /** 执行配送操作。 */
     public PageResult<DeliveryExpressDTO> execute(DeliveryExpressPageQry qry) {
-        if (qry.pageNum() == null || qry.pageNum() < 1 || qry.pageSize() == null
-                || qry.pageSize() < 1 || qry.pageSize() > 100) {
+        if (qry.pageNum() == null
+                || qry.pageNum() < 1
+                || qry.pageSize() == null
+                || qry.pageSize() < 1
+                || qry.pageSize() > 100) {
             throw new ServiceException("分页参数不合法", 400);
         }
-        var page = gateway.page(new DeliveryExpressFilter(qry.name(), qry.status(), qry.pageNum(), qry.pageSize()));
-        return PageResult.of(page.getRecords().stream().map(DeliveryDTOConverter::toDTO).toList(), page.getTotal());
+        var page =
+                gateway.page(
+                        new DeliveryExpressFilter(
+                                qry.name(), qry.status(), qry.pageNum(), qry.pageSize()));
+        return PageResult.of(
+                page.getRecords().stream().map(DeliveryDTOConverter::toDTO).toList(),
+                page.getTotal());
     }
 }

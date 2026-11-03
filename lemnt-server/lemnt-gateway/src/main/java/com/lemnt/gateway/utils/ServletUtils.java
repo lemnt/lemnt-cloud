@@ -3,12 +3,14 @@ package com.lemnt.gateway.utils;
 import com.lemnt.common.core.constant.HttpStatus;
 import com.lemnt.common.core.domain.R;
 import com.lemnt.common.core.utils.JsonUtils;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import reactor.core.publisher.Mono;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -31,8 +33,9 @@ public class ServletUtils {
         response.setStatusCode(org.springframework.http.HttpStatus.OK);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         R<?> result = R.fail(code, msg);
-        DataBuffer dataBuffer = response.bufferFactory()
-                .wrap(JsonUtils.toJsonStr(result).getBytes(StandardCharsets.UTF_8));
+        DataBuffer dataBuffer =
+                response.bufferFactory()
+                        .wrap(JsonUtils.toJsonStr(result).getBytes(StandardCharsets.UTF_8));
         return response.writeWith(Mono.just(dataBuffer));
     }
 

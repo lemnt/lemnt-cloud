@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
 @Data
 @Accessors(chain = true)
 public class Dept implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -8718952977066491257L;
+    @Serial private static final long serialVersionUID = -8718952977066491257L;
 
     /**
      * 部门ID
@@ -135,7 +134,8 @@ public class Dept implements Serializable {
         Iterator<Dept> it = list.iterator();
         while (it.hasNext()) {
             Dept n = it.next();
-            if (n.getParentId() != null && n.getParentId().longValue() == t.getDeptId().longValue()) {
+            if (n.getParentId() != null
+                    && n.getParentId().longValue() == t.getDeptId().longValue()) {
                 tlist.add(n);
             }
         }

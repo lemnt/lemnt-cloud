@@ -35,14 +35,18 @@ public class ProductSpuPageQueryExe {
         }
         String name =
                 query.name() == null || query.name().isBlank()
-                ? null
-                : ProductCatalogValidation.text(query.name(), 200, "商品名称");
+                        ? null
+                        : ProductCatalogValidation.text(query.name(), 200, "商品名称");
         String status = query.status() == null || query.status().isBlank() ? null : query.status();
         if (status != null && !Set.of("ON_SHELF", "OFF_SHELF", "RECYCLED").contains(status)) {
             throw new IllegalArgumentException("商品状态不合法");
         }
-        if (query.categoryId() != null) { ProductCatalogValidation.id(query.categoryId()); }
-        if (query.brandId() != null) { ProductCatalogValidation.id(query.brandId()); }
+        if (query.categoryId() != null) {
+            ProductCatalogValidation.id(query.categoryId());
+        }
+        if (query.brandId() != null) {
+            ProductCatalogValidation.id(query.brandId());
+        }
         ProductStockStatus stockStatus = null;
         if (query.stockStatus() != null && !query.stockStatus().isBlank()) {
             if (!Set.of("SOLD_OUT", "LOW_STOCK").contains(query.stockStatus())) {
@@ -52,12 +56,16 @@ public class ProductSpuPageQueryExe {
         }
         var page =
                 productSpuGateway.page(
-                new ProductCatalogFilter(
-                name,
-                status,
-                (query.pageNum() - 1) * query.pageSize(),
-                query.pageSize(), query.categoryId(), query.brandId(), stockStatus));
+                        new ProductCatalogFilter(
+                                name,
+                                status,
+                                (query.pageNum() - 1) * query.pageSize(),
+                                query.pageSize(),
+                                query.categoryId(),
+                                query.brandId(),
+                                stockStatus));
         return new ProductSpuPageDTO(
-                page.records().stream().map(ProductCatalogDTOConverter::spu).toList(), page.total());
+                page.records().stream().map(ProductCatalogDTOConverter::spu).toList(),
+                page.total());
     }
 }

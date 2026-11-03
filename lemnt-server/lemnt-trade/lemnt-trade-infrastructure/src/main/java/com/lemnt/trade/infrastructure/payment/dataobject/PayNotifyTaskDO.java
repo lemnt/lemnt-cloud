@@ -20,7 +20,7 @@ public class PayNotifyTaskDO extends BaseDO {
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    /** 类型：PAY/REFUND。 */
+    /** 类型：PAY/REFUND/AFTER_SALE。 */
     private String type;
 
     /** 业务单号：支付单号或退款单号。 */
@@ -46,4 +46,10 @@ public class PayNotifyTaskDO extends BaseDO {
 
     /** 最后一次响应或失败信息。 */
     private String lastResponse;
+
+    /** 每次领取和重置递增，旧执行者不得覆盖新状态。 */
+    private Long executeVersion;
+
+    /** 领取租约到期后可恢复执行。 */
+    private LocalDateTime leaseUntil;
 }

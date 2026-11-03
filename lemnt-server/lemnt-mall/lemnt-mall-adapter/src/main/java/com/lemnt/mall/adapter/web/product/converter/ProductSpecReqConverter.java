@@ -11,8 +11,7 @@ import com.lemnt.mall.application.product.qry.ProductSpecSimpleListQry;
 
 /** 规格字典请求转换。 */
 public final class ProductSpecReqConverter {
-    private ProductSpecReqConverter() {
-    }
+    private ProductSpecReqConverter() {}
 
     /** 转换新增请求。 */
     public static ProductSpecCreateCmd create(ProductSpecCreateReq req) {
@@ -26,8 +25,12 @@ public final class ProductSpecReqConverter {
 
     /** 转换分页请求。 */
     public static ProductSpecPageQry page(ProductSpecPageReq req) {
-        return new ProductSpecPageQry(req.name(), req.pageNum() == null ? 1 : req.pageNum(),
-            req.pageSize() == null ? 20 : req.pageSize(), req.createTimeStart(), req.createTimeEnd());
+        return new ProductSpecPageQry(
+                req.name(),
+                req.pageNum() == null ? 1 : req.pageNum(),
+                req.pageSize() == null ? 20 : req.pageSize(),
+                req.createTimeStart(),
+                req.createTimeEnd());
     }
 
     /** 转换选择查询。 */

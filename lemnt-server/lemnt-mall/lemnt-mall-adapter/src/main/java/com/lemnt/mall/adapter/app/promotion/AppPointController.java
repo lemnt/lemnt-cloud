@@ -1,23 +1,23 @@
 package com.lemnt.mall.adapter.app.promotion;
 
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PostMapping;
-import com.lemnt.mall.application.promotion.executor.PromotionOrderPlaceCmdExe;
-import com.lemnt.mall.adapter.app.promotion.res.AppPromotionOrderRes;
+import com.lemnt.common.core.domain.R;
+import com.lemnt.common.security.utils.SecurityUtils;
+import com.lemnt.mall.adapter.app.promotion.converter.AppPointConverter;
+import com.lemnt.mall.adapter.app.promotion.converter.AppPromotionOrderConverter;
 import com.lemnt.mall.adapter.app.promotion.req.AppPromotionOrderBatchCreateReq;
 import com.lemnt.mall.adapter.app.promotion.req.AppPromotionOrderCreateReq;
-import com.lemnt.mall.adapter.app.promotion.converter.AppPromotionOrderConverter;
-import com.lemnt.common.security.utils.SecurityUtils;
-import com.lemnt.common.core.domain.R;
-import com.lemnt.mall.adapter.app.promotion.converter.AppPointConverter;
 import com.lemnt.mall.adapter.app.promotion.res.AppPointActivityRes;
+import com.lemnt.mall.adapter.app.promotion.res.AppPromotionOrderRes;
 import com.lemnt.mall.application.promotion.executor.PointAppDetailQueryExe;
 import com.lemnt.mall.application.promotion.executor.PointAppPageQueryExe;
+import com.lemnt.mall.application.promotion.executor.PromotionOrderPlaceCmdExe;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,10 +38,12 @@ public class AppPointController {
 
     @GetMapping("/activities")
     @Operation(summary = "积分商城活动分页")
-    public R<AppPointActivityRes> activities(@RequestParam(defaultValue = "1") Integer pageNum,
+    public R<AppPointActivityRes> activities(
+            @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "20") Integer pageSize) {
         var result = page.execute(pageNum, pageSize);
-        return R.page(result.getRecords().stream().map(AppPointConverter::activity).toList(),
+        return R.page(
+                result.getRecords().stream().map(AppPointConverter::activity).toList(),
                 result.getTotal());
     }
 
@@ -54,14 +56,21 @@ public class AppPointController {
     @PostMapping("/orders")
     @Operation(summary = "积分商城下单")
     public R<AppPromotionOrderRes> order(@Valid @RequestBody AppPromotionOrderCreateReq req) {
-        return R.ok(AppPromotionOrderConverter.res(orderPlace.execute(
-                AppPromotionOrderConverter.cmd(SecurityUtils.getUserId(), "POINT", req))));
+        return R.ok(
+                AppPromotionOrderConverter.res(
+                        orderPlace.execute(
+                                AppPromotionOrderConverter.cmd(
+                                        SecurityUtils.getUserId(), "POINT", req))));
     }
 
     @PostMapping("/orders/batch")
     @Operation(summary = "积分商城多商品下单")
-    public R<AppPromotionOrderRes> batchOrder(@Valid @RequestBody AppPromotionOrderBatchCreateReq req) {
-        return R.ok(AppPromotionOrderConverter.res(orderPlace.execute(
-                AppPromotionOrderConverter.batchCmd(SecurityUtils.getUserId(), "POINT", req))));
+    public R<AppPromotionOrderRes> batchOrder(
+            @Valid @RequestBody AppPromotionOrderBatchCreateReq req) {
+        return R.ok(
+                AppPromotionOrderConverter.res(
+                        orderPlace.execute(
+                                AppPromotionOrderConverter.batchCmd(
+                                        SecurityUtils.getUserId(), "POINT", req))));
     }
 }

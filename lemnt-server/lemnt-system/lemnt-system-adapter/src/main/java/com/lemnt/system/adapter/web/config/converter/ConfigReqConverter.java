@@ -20,8 +20,7 @@ public class ConfigReqConverter {
                 req.configKey(),
                 req.configValue(),
                 req.configType(),
-                req.remark()
-        );
+                req.remark());
     }
 
     public static ConfigUpdateCmd toUpdateCmd(ConfigUpdateReq req) {
@@ -31,8 +30,7 @@ public class ConfigReqConverter {
                 req.configKey(),
                 req.configValue(),
                 req.configType(),
-                req.remark()
-        );
+                req.remark());
     }
 
     public static ConfigPageQry toQry(ConfigPageReq item) {
@@ -46,7 +44,6 @@ public class ConfigReqConverter {
                 item.beginTime(),
                 item.endTime(),
                 item.pageNum(),
-                item.pageSize()
-        );
+                item.pageSize());
     }
 }

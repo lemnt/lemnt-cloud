@@ -2,13 +2,15 @@
 
 基于 Spring Cloud 的通用微服务开发框架，保留 CQRS/DDD 分层，提供统一网关、认证、系统管理及公共组件，作为业务系统的开发底座。
 
-当前仓库包含 Java 后端工程和 React 管理前端。第三方 SDK 仅保留一个通用 HTTP 调用示例。
+当前仓库包含 Java 后端、React 管理前端和微信原生小程序。第三方 SDK 仅保留一个通用 HTTP 调用示例。
 
 ## 项目结构
 
 ```text
 lemnt-cloud
+├── AGENTS.md                   全项目规范入口
 ├── lemnt-ui                    React 管理前端
+├── lemnt-miniapp               微信原生会员端
 ├── lemnt-dependencies          统一依赖版本、构建插件和环境配置
 ├── lemnt-common                通用组件
 │   ├── lemnt-common-core        基础工具与通用常量
@@ -21,6 +23,9 @@ lemnt-cloud
     ├── lemnt-gateway           网关
     ├── lemnt-auth              认证中心
     ├── lemnt-system            系统管理
+    ├── lemnt-member            会员与积分账户
+    ├── lemnt-mall              商品、结算与活动执行
+    ├── lemnt-trade             订单、支付与售后
     ├── lemnt-open              开放接口示例
     ├── lemnt-third-sdk
     │   └── demo-sdk            Java HTTP Client 调用示例
@@ -75,7 +80,7 @@ lemnt-cloud
 
 调用链为 `Controller → Executor → Domain Gateway → GatewayImpl`。`application` 与 `infrastructure` 都依赖 `domain`，两者不互相依赖。
 
-详细规范见 [AGENTS.md](lemnt-server/AGENTS.md)。
+统一边界、格式及检查命令见[代码规范](docs/code-standards.md)，各端规则由[根AGENTS.md](AGENTS.md)索引。
 
 ## 本地运行
 
@@ -225,7 +230,7 @@ mvn -f lemnt-common/pom.xml test
 mvn -f lemnt-server/pom.xml test
 ```
 
-移除根聚合 POM 后的分步构建与测试尚未重新执行。文件上传校验测试已按现有 Problem Details 响应断言 HTTP 状态、错误码及错误详情。
+分步构建与测试结果按[全项目规范重构交付](work-items/member-domain-structure/165-project-code-standards-delivery.md)记录；文件上传测试会开启本地测试端口。SQL注释、规范扫描和格式检查命令见[代码规范](docs/code-standards.md)。
 
 打包成功不代表已完成真实部署验收；Nacos 3.2.1 连接、数据库、中间件、登录和接口权限等运行流程仍需在目标环境验证。
 

@@ -34,7 +34,8 @@ public class AppPromotionHubController {
     @GetMapping("/sections")
     @Operation(summary = "当前进行中的营销活动聚合")
     public R<List<AppPromotionSectionRes>> sections(@RequestParam(required = false) Integer limit) {
-        return R.ok(sections.execute(limit).stream().map(AppPromotionHubConverter::section).toList());
+        return R.ok(
+                sections.execute(limit).stream().map(AppPromotionHubConverter::section).toList());
     }
 
     @GetMapping("/discount/{id}")

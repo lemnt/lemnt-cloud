@@ -124,5 +124,4 @@ public interface RoleGateway {
      * @return 是否成功
      */
     Boolean deleteRoleByIds(List<Long> roleIds);
-
 }

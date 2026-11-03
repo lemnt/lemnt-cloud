@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** BrokerageRecord 表 CRUD。 */
 @Mapper
-public interface BrokerageRecordMapper extends BaseMapper<BrokerageRecordDO> {
-}
+public interface BrokerageRecordMapper extends BaseMapper<BrokerageRecordDO> {}

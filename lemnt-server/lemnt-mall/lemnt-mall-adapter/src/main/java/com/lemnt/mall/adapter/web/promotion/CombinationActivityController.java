@@ -53,7 +53,8 @@ public class CombinationActivityController {
     @PutMapping("/{id}")
     @Operation(summary = "修改拼团活动")
     @RequiresPermissions("mall:promotion:update")
-    public R<Boolean> update(@PathVariable Long id, @Valid @RequestBody CombinationActivityUpdateReq req) {
+    public R<Boolean> update(
+            @PathVariable Long id, @Valid @RequestBody CombinationActivityUpdateReq req) {
         return R.ok(update.execute(CombinationConverter.update(id, req)));
     }
 
@@ -83,7 +84,8 @@ public class CombinationActivityController {
     @RequiresPermissions("mall:promotion:list")
     public R<CombinationActivityRes> page(@Valid @ModelAttribute CombinationActivityPageReq req) {
         var result = page.execute(CombinationConverter.page(req));
-        return R.page(result.getRecords().stream().map(CombinationConverter::activity).toList(),
+        return R.page(
+                result.getRecords().stream().map(CombinationConverter::activity).toList(),
                 result.getTotal());
     }
 }

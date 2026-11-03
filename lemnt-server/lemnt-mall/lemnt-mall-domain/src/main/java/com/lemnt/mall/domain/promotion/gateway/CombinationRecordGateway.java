@@ -17,7 +17,12 @@ public interface CombinationRecordGateway {
     CombinationRecord save(CombinationRecord value);
 
     /** 只更新状态、人数、结束时间和虚拟成团标记。 */
-    boolean finish(Long id, Integer status, Integer userCount, Boolean virtualGroup, LocalDateTime endTime);
+    boolean finish(
+            Long id,
+            Integer status,
+            Integer userCount,
+            Boolean virtualGroup,
+            LocalDateTime endTime);
 
     /** 只更新订单号。 */
     boolean bindOrder(Long id, Long orderId);

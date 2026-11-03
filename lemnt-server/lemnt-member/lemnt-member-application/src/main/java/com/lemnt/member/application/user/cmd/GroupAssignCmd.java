@@ -5,7 +5,4 @@ import java.io.Serializable;
 /**
  * 分组分配命令。
  */
-public record GroupAssignCmd(
-        Long memberId,
-        Long groupId
-) implements Serializable {}
+public record GroupAssignCmd(Long memberId, Long groupId) implements Serializable {}

@@ -7,10 +7,22 @@ public interface OrderBenefitsGateway {
 
     /** 库存预占完成。 */
     void reserved(String orderNo);
+
     /** 已支付。 */
     void paid(String orderNo);
+
     /** 已关闭。 */
     void closed(String orderNo);
+
     /** 支付退款成功后按售后单回补库存及券权益。 */
-    void refunded(String orderNo, String refundNo, java.util.Map<Long, Integer> quantities, java.math.BigDecimal refundAmount);
+    void refunded(
+            String orderNo,
+            String refundNo,
+            java.util.Map<Long, Integer> quantities,
+            java.math.BigDecimal refundAmount);
+
+    /** 新版明确商品行及积分结果，不能退回旧版按当前金额计算。 */
+    default void refunded(com.lemnt.trade.domain.order.model.OrderRefundBenefits plan) {
+        throw new UnsupportedOperationException("下游未升级冻结权益协议");
+    }
 }

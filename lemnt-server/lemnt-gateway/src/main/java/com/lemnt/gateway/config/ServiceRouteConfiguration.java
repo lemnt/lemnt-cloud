@@ -13,18 +13,36 @@ public class ServiceRouteConfiguration {
     @Bean
     public RouteLocator serviceRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("lemnt-member-records", r -> r.order(-9).path("/member/admin/**")
-                        .uri("lb://lemnt-member"))
-                .route("lemnt-member-prefixed", r -> r.order(-8).path("/member/**")
-                        .filters(f -> f.stripPrefix(1)).uri("lb://lemnt-member"))
-                .route("lemnt-system-prefixed", r -> r.order(-8).path("/system/**")
-                        .filters(f -> f.stripPrefix(1)).uri("lb://lemnt-system"))
-                .route("lemnt-auth-prefixed", r -> r.order(-8).path("/auth/**")
-                        .filters(f -> f.stripPrefix(1)).uri("lb://lemnt-auth"))
-                .route("lemnt-mall-prefixed", r -> r.order(-8).path("/mall/**")
-                        .uri("lb://lemnt-mall"))
-                .route("lemnt-trade-prefixed", r -> r.order(-8).path("/trade/**")
-                        .uri("lb://lemnt-trade"))
+                .route(
+                        "lemnt-member-records",
+                        r -> r.order(-9).path("/member/admin/**").uri("lb://lemnt-member"))
+                .route(
+                        "lemnt-member-prefixed",
+                        r ->
+                                r.order(-8)
+                                        .path("/member/**")
+                                        .filters(f -> f.stripPrefix(1))
+                                        .uri("lb://lemnt-member"))
+                .route(
+                        "lemnt-system-prefixed",
+                        r ->
+                                r.order(-8)
+                                        .path("/system/**")
+                                        .filters(f -> f.stripPrefix(1))
+                                        .uri("lb://lemnt-system"))
+                .route(
+                        "lemnt-auth-prefixed",
+                        r ->
+                                r.order(-8)
+                                        .path("/auth/**")
+                                        .filters(f -> f.stripPrefix(1))
+                                        .uri("lb://lemnt-auth"))
+                .route(
+                        "lemnt-mall-prefixed",
+                        r -> r.order(-8).path("/mall/**").uri("lb://lemnt-mall"))
+                .route(
+                        "lemnt-trade-prefixed",
+                        r -> r.order(-8).path("/trade/**").uri("lb://lemnt-trade"))
                 .build();
     }
 }

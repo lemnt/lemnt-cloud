@@ -21,30 +21,89 @@ public class OrderGatewayImpl implements OrderGateway {
 
     @Override
     public SettlementOrder save(SettlementOrder order) {
-        return from(client.create(new OrderCreateBo(order.orderNo(), order.memberId(),
-                order.totalAmount(), order.items().stream().map(item ->
-                        new OrderItemDTO(item.productId(),
-                item.productCode(),
-                item.productName(),
-                item.unitPrice(),
-                item.quantity(),
-                item.lineAmount(),
-                item.payAmount(),
-                item.deliveryPrice(),
-                item.spuId(),
-                item.spuName(),
-                item.specs() == null ? null : item.specs().stream().map(snapshotProperty ->
-                        new OrderItemDTO.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
-                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
-                item.picUrl())).toList(), order.usePoint(), order.givePoint(), toDelivery(order.delivery()),
-                order.giveCouponTemplateCounts())));
+        var payload =
+                new OrderCreateBo(
+                        order.orderNo(),
+                        order.memberId(),
+                        order.totalAmount(),
+                        order.items().stream()
+                                .map(
+                                        item ->
+                                                new OrderItemDTO(
+                                                        item.productId(),
+                                                        item.productCode(),
+                                                        item.productName(),
+                                                        item.unitPrice(),
+                                                        item.quantity(),
+                                                        item.lineAmount(),
+                                                        item.payAmount(),
+                                                        item.deliveryPrice(),
+                                                        item.spuId(),
+                                                        item.spuName(),
+                                                        item.specs() == null
+                                                                ? null
+                                                                : item.specs().stream()
+                                                                        .map(
+                                                                                snapshotProperty ->
+                                                                                        new OrderItemDTO
+                                                                                                .Spec(
+                                                                                                snapshotProperty
+                                                                                                        .specId(),
+                                                                                                snapshotProperty
+                                                                                                        .specName(),
+                                                                                                snapshotProperty
+                                                                                                        .specValueId(),
+                                                                                                snapshotProperty
+                                                                                                        .specValueName()))
+                                                                        .toList(),
+                                                        item.picUrl(),
+                                                        null,
+                                                        null,
+                                                        item.discountAmount(),
+                                                        item.deliveryOriginalPrice(),
+                                                        item.deliveryDiscountPrice(),
+                                                        item.adjustmentAmount(),
+                                                        item.usePoint(),
+                                                        item.givePoint(),
+                                                        item.refundedQuantity()))
+                                .toList(),
+                        order.usePoint(),
+                        order.givePoint(),
+                        toDelivery(order.delivery()),
+                        order.giveCouponTemplateCounts(),
+                        order.originalAmount(),
+                        order.discountAmount(),
+                        order.deliveryOriginalPrice(),
+                        order.deliveryDiscountPrice(),
+                        order.adjustmentAmount(),
+                        order.pricingSnapshotStatus(),
+                        order.pricingSnapshotVersion(),
+                        order.promotions().stream()
+                                .map(
+                                        com.lemnt.mall.infrastructure.settlement.converter
+                                                        .PromotionClientConverter
+                                                ::to)
+                                .toList());
+        return from(
+                "COMPLETE".equals(order.pricingSnapshotStatus())
+                        ? client.createPriced(payload)
+                        : client.create(payload));
     }
 
     @Override
     public Long createComment(com.lemnt.mall.domain.product.model.CommentOrderRequest value) {
-        return client.createComment(new com.lemnt.trade.client.bo.OrderCommentCreateBo(value.memberId(),
-                value.orderNo(), value.skuId(), value.orderItemId(), value.score(), value.content(),
-                value.descriptionScores(), value.benefitScores(), value.anonymous(), value.picUrls()));
+        return client.createComment(
+                new com.lemnt.trade.client.bo.OrderCommentCreateBo(
+                        value.memberId(),
+                        value.orderNo(),
+                        value.skuId(),
+                        value.orderItemId(),
+                        value.score(),
+                        value.content(),
+                        value.descriptionScores(),
+                        value.benefitScores(),
+                        value.anonymous(),
+                        value.picUrls()));
     }
 
     @Override
@@ -53,37 +112,102 @@ public class OrderGatewayImpl implements OrderGateway {
     }
 
     private SettlementOrder from(OrderDTO value) {
-        return value == null ? null : new SettlementOrder(value.id(), value.orderNo(), value.memberId(),
-                value.totalAmount(), value.status(), value.items().stream().map(item ->
-                        new SettlementItem(item.productId(),
-                item.productCode(),
-                item.productName(),
-                item.unitPrice(),
-                item.quantity(),
-                item.lineAmount(),
-                item.payAmount(),
-                item.deliveryPrice(),
-                item.spuId(),
-                item.spuName(),
-                item.specs() == null ? null : item.specs().stream().map(snapshotProperty ->
-                        new SettlementItem.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
-                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
-                item.picUrl(), item.orderItemId(), item.commentStatus())).toList(), value.createTime(), value.usePoint(), value.givePoint(), fromDelivery(value.delivery()), value.commentStatus(), value.finishTime(), value.giveCouponTemplateCounts());
+        return value == null
+                ? null
+                : new SettlementOrder(
+                        value.id(),
+                        value.orderNo(),
+                        value.memberId(),
+                        value.totalAmount(),
+                        value.status(),
+                        value.items().stream()
+                                .map(
+                                        item ->
+                                                new SettlementItem(
+                                                        item.productId(),
+                                                        item.productCode(),
+                                                        item.productName(),
+                                                        item.unitPrice(),
+                                                        item.quantity(),
+                                                        item.lineAmount(),
+                                                        item.payAmount(),
+                                                        item.deliveryPrice(),
+                                                        item.spuId(),
+                                                        item.spuName(),
+                                                        item.specs() == null
+                                                                ? null
+                                                                : item.specs().stream()
+                                                                        .map(
+                                                                                snapshotProperty ->
+                                                                                        new SettlementItem
+                                                                                                .Spec(
+                                                                                                snapshotProperty
+                                                                                                        .specId(),
+                                                                                                snapshotProperty
+                                                                                                        .specName(),
+                                                                                                snapshotProperty
+                                                                                                        .specValueId(),
+                                                                                                snapshotProperty
+                                                                                                        .specValueName()))
+                                                                        .toList(),
+                                                        item.picUrl(),
+                                                        item.orderItemId(),
+                                                        item.commentStatus(),
+                                                        item.discountAmount(),
+                                                        item.deliveryOriginalPrice(),
+                                                        item.deliveryDiscountPrice(),
+                                                        item.adjustmentAmount(),
+                                                        item.usePoint(),
+                                                        item.givePoint(),
+                                                        item.refundedQuantity()))
+                                .toList(),
+                        value.createTime(),
+                        value.usePoint(),
+                        value.givePoint(),
+                        fromDelivery(value.delivery()),
+                        value.commentStatus(),
+                        value.finishTime(),
+                        value.giveCouponTemplateCounts(),
+                        value.originalAmount(),
+                        value.discountAmount(),
+                        value.deliveryOriginalPrice(),
+                        value.deliveryDiscountPrice(),
+                        value.adjustmentAmount(),
+                        value.pricingSnapshotStatus(),
+                        value.pricingSnapshotVersion(),
+                        value.promotions().stream()
+                                .map(
+                                        com.lemnt.mall.infrastructure.settlement.converter
+                                                        .PromotionClientConverter
+                                                ::from)
+                                .toList());
     }
 
-    private OrderDeliveryDTO toDelivery(
-            SettlementDelivery value
-    ) {
-        return value == null ? null : new OrderDeliveryDTO(value.addressId(),
-                value.deliveryType(), value.receiverName(), value.receiverMobile(), value.receiverAreaId(),
-                value.receiverDetailAddress(), value.deliveryPrice(), value.pickUpStoreId());
+    private OrderDeliveryDTO toDelivery(SettlementDelivery value) {
+        return value == null
+                ? null
+                : new OrderDeliveryDTO(
+                        value.addressId(),
+                        value.deliveryType(),
+                        value.receiverName(),
+                        value.receiverMobile(),
+                        value.receiverAreaId(),
+                        value.receiverDetailAddress(),
+                        value.deliveryPrice(),
+                        value.pickUpStoreId());
     }
 
-    private SettlementDelivery fromDelivery(
-            OrderDeliveryDTO value
-    ) {
-        return value == null ? null : new SettlementDelivery(value.addressId(),
-                value.deliveryType(), value.receiverName(), value.receiverMobile(), value.receiverAreaId(),
-                value.receiverDetailAddress(), value.deliveryPrice(), value.pickUpStoreId());
+    private SettlementDelivery fromDelivery(OrderDeliveryDTO value) {
+        return value == null
+                ? null
+                : new SettlementDelivery(
+                        value.addressId(),
+                        value.deliveryType(),
+                        value.receiverName(),
+                        value.receiverMobile(),
+                        value.receiverAreaId(),
+                        value.receiverDetailAddress(),
+                        value.deliveryPrice(),
+                        value.pickUpStoreId());
     }
 }

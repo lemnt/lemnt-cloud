@@ -10,19 +10,22 @@ public interface MemberTokenGateway {
      * 创建。
      */
     MemberToken create(Long memberId, String username);
+
     /**
      * 会员编号。
      */
     Long memberId(String accessToken);
+
     /**
      * 续期。
      */
     MemberToken refresh(String accessToken);
+
     /**
      * 退出。
      */
     void logout(String accessToken);
+
     /** 撤销指定会员的全部登录会话。 */
     void revokeMemberSessions(Long memberId);
-
 }

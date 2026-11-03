@@ -27,9 +27,17 @@ public class WalletTransferPageQueryExe {
         if (status != null && !"SUCCESS".equals(status)) {
             throw new IllegalArgumentException("转账状态不合法");
         }
-        var page = transfers.page(new WalletTransferFilter(qry.memberId(), qry.fromMemberId(), qry.toMemberId(),
-                status, qry.pageNum(), qry.pageSize()));
-        return PageResult.of(page.getRecords().stream().map(WalletTransferDTOConverter::transfer).toList(),
+        var page =
+                transfers.page(
+                        new WalletTransferFilter(
+                                qry.memberId(),
+                                qry.fromMemberId(),
+                                qry.toMemberId(),
+                                status,
+                                qry.pageNum(),
+                                qry.pageSize()));
+        return PageResult.of(
+                page.getRecords().stream().map(WalletTransferDTOConverter::transfer).toList(),
                 page.getTotal());
     }
 }

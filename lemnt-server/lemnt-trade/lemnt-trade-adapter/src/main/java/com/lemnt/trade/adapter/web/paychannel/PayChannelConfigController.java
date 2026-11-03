@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
-
 import java.util.List;
 
 /** 支付渠道配置管理接口，不返回渠道配置明文。 */
@@ -85,7 +84,9 @@ public class PayChannelConfigController {
     @RequiresPermissions("trade:pay-channel:list")
     public R<PayChannelConfigRes> page(@Valid @ModelAttribute PayChannelPageReq req) {
         var value = page.execute(PayConfigReqConverter.payChannelPage(req));
-        return R.page(value.getRecords().stream().map(PayConfigResConverter::payChannel).toList(), value.getTotal());
+        return R.page(
+                value.getRecords().stream().map(PayConfigResConverter::payChannel).toList(),
+                value.getTotal());
     }
 
     /** 查询应用下全部渠道配置，供选择使用。 */
@@ -93,6 +94,7 @@ public class PayChannelConfigController {
     @Operation(summary = "应用下渠道配置")
     @RequiresPermissions("trade:pay-channel:query")
     public R<List<PayChannelConfigRes>> listByApp(@PathVariable Long appId) {
-        return R.ok(listByApp.execute(appId).stream().map(PayConfigResConverter::payChannel).toList());
+        return R.ok(
+                listByApp.execute(appId).stream().map(PayConfigResConverter::payChannel).toList());
     }
 }

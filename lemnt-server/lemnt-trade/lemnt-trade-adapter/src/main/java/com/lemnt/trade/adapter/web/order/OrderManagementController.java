@@ -67,7 +67,8 @@ public class OrderManagementController {
     @PutMapping("/{orderNo}/remark")
     @Operation(summary = "修改订单备注")
     @RequiresPermissions("trade:order:remark")
-    public R<Boolean> remark(@PathVariable String orderNo, @Valid @RequestBody OrderRemarkUpdateReq req) {
+    public R<Boolean> remark(
+            @PathVariable String orderNo, @Valid @RequestBody OrderRemarkUpdateReq req) {
         return R.ok(updateRemark.execute(OrderManagementReqConverter.remark(orderNo, req)));
     }
 
@@ -75,9 +76,10 @@ public class OrderManagementController {
     @PostMapping("/{orderNo}/price-adjustment")
     @Operation(summary = "订单调价")
     @RequiresPermissions("trade:order:update")
-    public R<Boolean> adjustPrice(@PathVariable String orderNo,
-            @Valid @RequestBody OrderAdjustPriceReq req) {
-        adjustPrice.execute(new OrderAdjustPriceCmd(orderNo, req.totalAmount(), SecurityUtils.getUserId()));
+    public R<Boolean> adjustPrice(
+            @PathVariable String orderNo, @Valid @RequestBody OrderAdjustPriceReq req) {
+        adjustPrice.execute(
+                new OrderAdjustPriceCmd(orderNo, req.totalAmount(), SecurityUtils.getUserId()));
         return R.ok(true);
     }
 
@@ -85,10 +87,16 @@ public class OrderManagementController {
     @PutMapping("/{orderNo}/address")
     @Operation(summary = "订单改址")
     @RequiresPermissions("trade:order:update")
-    public R<Boolean> adjustAddress(@PathVariable String orderNo,
-            @Valid @RequestBody OrderAdjustAddressReq req) {
-        adjustAddress.execute(new OrderAdjustAddressCmd(orderNo, req.receiverName(), req.receiverMobile(),
-                req.receiverAreaId(), req.receiverDetailAddress(), SecurityUtils.getUserId()));
+    public R<Boolean> adjustAddress(
+            @PathVariable String orderNo, @Valid @RequestBody OrderAdjustAddressReq req) {
+        adjustAddress.execute(
+                new OrderAdjustAddressCmd(
+                        orderNo,
+                        req.receiverName(),
+                        req.receiverMobile(),
+                        req.receiverAreaId(),
+                        req.receiverDetailAddress(),
+                        SecurityUtils.getUserId()));
         return R.ok(true);
     }
 }

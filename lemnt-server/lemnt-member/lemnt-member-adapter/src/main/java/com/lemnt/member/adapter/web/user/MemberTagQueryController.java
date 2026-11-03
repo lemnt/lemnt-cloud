@@ -2,9 +2,9 @@ package com.lemnt.member.adapter.web.user;
 
 import com.lemnt.common.core.domain.R;
 import com.lemnt.common.security.annotation.RequiresPermissions;
-import com.lemnt.member.adapter.web.user.req.MemberCatalogQueryTagsPageReq;
 import com.lemnt.member.adapter.web.user.converter.MemberReqConverter;
 import com.lemnt.member.adapter.web.user.converter.MemberUserResConverter;
+import com.lemnt.member.adapter.web.user.req.MemberCatalogQueryTagsPageReq;
 import com.lemnt.member.adapter.web.user.res.MemberCatalogQueryTagsPageRes;
 import com.lemnt.member.application.user.executor.MemberTagPageQueryExe;
 
@@ -33,10 +33,13 @@ public class MemberTagQueryController {
     @GetMapping("/page")
     @Operation(summary = "tags/page分页")
     @RequiresPermissions("member:tag:query")
-    public R<MemberCatalogQueryTagsPageRes> tagsPage(@Valid @ModelAttribute MemberCatalogQueryTagsPageReq req) {
+    public R<MemberCatalogQueryTagsPageRes> tagsPage(
+            @Valid @ModelAttribute MemberCatalogQueryTagsPageReq req) {
         var page = memberTagPageQueryExe.execute(MemberReqConverter.toTagPageQry(req));
         return R.page(
-                page.getRecords().stream().map(MemberUserResConverter::toMemberCatalogQueryTagsPageRes).toList(),
+                page.getRecords().stream()
+                        .map(MemberUserResConverter::toMemberCatalogQueryTagsPageRes)
+                        .toList(),
                 page.getTotal());
     }
 }

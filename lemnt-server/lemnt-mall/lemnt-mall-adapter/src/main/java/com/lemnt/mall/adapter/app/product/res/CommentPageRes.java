@@ -1,10 +1,12 @@
 package com.lemnt.mall.adapter.app.product.res;
 
-import java.time.LocalDateTime;
-
-import java.util.List;
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 /** 公开评价独立响应，不输出订单/会员/管理员编号。 */
+@Schema(description = "商品评价分页结果")
 public record CommentPageRes(
         @Schema(description = "评价编号") Long id,
         @Schema(description = "商品SPU编号") Long spuId,
@@ -23,13 +25,14 @@ public record CommentPageRes(
         @Schema(description = "是否回复") boolean replyStatus,
         @Schema(description = "商家回复，未回复可空") String replyContent,
         @Schema(description = "回复时间，可空") LocalDateTime replyTime,
-        @Schema(description = "评价时间") LocalDateTime createTime
-) {
+        @Schema(description = "评价时间") LocalDateTime createTime)
+        implements java.io.Serializable {
     /** 保存时规格，独立HTTP值对象。 */
+    @Schema(description = "商品规格快照")
     public record Spec(
             @Schema(description = "规格编号，历史可空") Long specId,
             @Schema(description = "规格名称") String specName,
             @Schema(description = "规格值编号，历史可空") Long specValueId,
-            @Schema(description = "规格值名称") String specValueName
-    ) {}
+            @Schema(description = "规格值名称") String specValueName)
+            implements java.io.Serializable {}
 }

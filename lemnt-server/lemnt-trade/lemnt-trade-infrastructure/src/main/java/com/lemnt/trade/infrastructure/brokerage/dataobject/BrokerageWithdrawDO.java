@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class BrokerageWithdrawDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private Long userId;
     private BigDecimal price;
     private BigDecimal feePrice;

@@ -7,9 +7,5 @@ import java.io.Serializable;
 
 /** SKU上下架请求。 */
 @Schema(description = "SKU上下架请求")
-public record ProductSkuShelfReq(
-        @Schema(description = "是否上架SKU")
-        @NotNull
-        Boolean onShelf
-) implements Serializable {
-}
+public record ProductSkuShelfReq(@Schema(description = "是否上架SKU") @NotNull Boolean onShelf)
+        implements Serializable {}

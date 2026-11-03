@@ -16,6 +16,8 @@ public class BrokerageMemberGatewayImpl implements BrokerageMemberGateway {
     @Override
     public BrokerageMemberInfo find(Long memberId) {
         var member = memberUserClient.getByMemberId(memberId);
-        return member == null ? null : new BrokerageMemberInfo(member.id(), member.nickname(), member.avatar());
+        return member == null
+                ? null
+                : new BrokerageMemberInfo(member.id(), member.nickname(), member.avatar());
     }
 }

@@ -13,8 +13,8 @@ public record AssetRecordPageQry(
         int pageSize,
         Boolean addStatus,
         LocalDateTime startTime,
-        LocalDateTime endTime
-) implements Serializable {
+        LocalDateTime endTime)
+        implements Serializable {
     /** 旧查询保持全部变更方向与时间。 */
     public AssetRecordPageQry(Long memberId, String assetType, int pageNum, int pageSize) {
         this(memberId, assetType, pageNum, pageSize, null, null, null);

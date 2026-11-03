@@ -10,6 +10,5 @@ public record DiscountProduct(
         Long skuId,
         String discountType,
         Integer discountPercent,
-        BigDecimal discountPrice
-) implements java.io.Serializable {
-}
+        BigDecimal discountPrice)
+        implements java.io.Serializable {}

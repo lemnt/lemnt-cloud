@@ -51,7 +51,9 @@ public class DiyTemplateController {
     @RequiresPermissions("mall:promotion:list")
     public R<DiyTemplateRes> page(@Valid @ModelAttribute DiyTemplatePageReq req) {
         var result = page.execute(DiyConverter.page(req));
-        return R.page(result.getRecords().stream().map(DiyConverter::template).toList(), result.getTotal());
+        return R.page(
+                result.getRecords().stream().map(DiyConverter::template).toList(),
+                result.getTotal());
     }
 
     @GetMapping("/{id}")

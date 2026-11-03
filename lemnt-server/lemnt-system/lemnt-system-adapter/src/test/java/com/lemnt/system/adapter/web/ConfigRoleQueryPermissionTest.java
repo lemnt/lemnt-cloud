@@ -44,9 +44,9 @@ class ConfigRoleQueryPermissionTest {
 
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        SecurityContextHolder.set(SecurityConstants.LOGIN_USER,
+        SecurityContextHolder.set(
+                SecurityConstants.LOGIN_USER,
                 new SecurityUser().setUserId(100L).setPermissions(Set.of("example:record:list")));
-
     }
 
     @AfterEach
@@ -56,7 +56,6 @@ class ConfigRoleQueryPermissionTest {
         SecurityContextHolder.remove();
 
         RequestContextHolder.resetRequestAttributes();
-
     }
 
     @Test
@@ -64,15 +63,14 @@ class ConfigRoleQueryPermissionTest {
         ConfigController controller = proxied(ConfigController.class, null);
 
         assertThatThrownBy(() -> controller.list(null)).isInstanceOf(NotPermissionException.class);
-
     }
 
     @Test
     void shouldRejectConfigDetailWithoutPermission() throws Exception {
         ConfigController controller = proxied(ConfigController.class, configDetail());
 
-        assertThatThrownBy(() -> controller.getInfo(9999L)).isInstanceOf(NotPermissionException.class);
-
+        assertThatThrownBy(() -> controller.getInfo(9999L))
+                .isInstanceOf(NotPermissionException.class);
     }
 
     @Test
@@ -81,24 +79,22 @@ class ConfigRoleQueryPermissionTest {
 
         assertThatThrownBy(() -> controller.getConfigKey("acceptance.synthetic"))
                 .isInstanceOf(NotPermissionException.class);
-
     }
 
     @Test
     void shouldRejectOtherRoleMenuSelectionWithoutPermission() throws Exception {
-        MenuRoleTreeQueryExe query = new MenuRoleTreeQueryExe(null, null, null) {
-            @Override
-            public Map<String, Object> execute(Long roleId) {
-                return Map.of("checkedKeys", List.of(9999L), "menus", List.of());
-
-            }
-        };
+        MenuRoleTreeQueryExe query =
+                new MenuRoleTreeQueryExe(null, null, null) {
+                    @Override
+                    public Map<String, Object> execute(Long roleId) {
+                        return Map.of("checkedKeys", List.of(9999L), "menus", List.of());
+                    }
+                };
 
         MenuController controller = proxied(MenuController.class, query);
 
         assertThatThrownBy(() -> controller.roleMenuTreeSelect(1L))
                 .isInstanceOf(NotPermissionException.class);
-
     }
 
     @Test
@@ -112,7 +108,6 @@ class ConfigRoleQueryPermissionTest {
 
         assertThat(controller.getConfigKey("acceptance.synthetic").getData().configKey())
                 .isEqualTo("acceptance.synthetic");
-
     }
 
     @Test
@@ -120,17 +115,20 @@ class ConfigRoleQueryPermissionTest {
         SecurityContextHolder.get(SecurityConstants.LOGIN_USER, SecurityUser.class)
                 .setPermissions(Set.of("system:role:query"));
 
-        MenuRoleTreeQueryExe query = new MenuRoleTreeQueryExe(null, null, null) {
-            @Override
-            public Map<String, Object> execute(Long roleId) {
-                return Map.of("checkedKeys", List.of(9999L), "menus", List.of());
+        MenuRoleTreeQueryExe query =
+                new MenuRoleTreeQueryExe(null, null, null) {
+                    @Override
+                    public Map<String, Object> execute(Long roleId) {
+                        return Map.of("checkedKeys", List.of(9999L), "menus", List.of());
+                    }
+                };
 
-            }
-        };
-
-        assertThat(proxied(MenuController.class, query).roleMenuTreeSelect(1L).getData().checkedKeys())
+        assertThat(
+                        proxied(MenuController.class, query)
+                                .roleMenuTreeSelect(1L)
+                                .getData()
+                                .checkedKeys())
                 .containsExactly(9999L);
-
     }
 
     @Test
@@ -140,11 +138,11 @@ class ConfigRoleQueryPermissionTest {
 
         ConfigController controller = proxied(ConfigController.class, configDetail());
 
-        assertThatThrownBy(() -> controller.getInfo(9999L)).isInstanceOf(NotPermissionException.class);
+        assertThatThrownBy(() -> controller.getInfo(9999L))
+                .isInstanceOf(NotPermissionException.class);
 
         assertThatThrownBy(() -> controller.getConfigKey("acceptance.synthetic"))
                 .isInstanceOf(NotPermissionException.class);
-
     }
 
     /** 合成详情结果只用于观察鉴权是否在控制器调用前执行。 */
@@ -157,7 +155,6 @@ class ConfigRoleQueryPermissionTest {
                 dto.setConfigId(configId);
 
                 return dto;
-
             }
 
             @Override
@@ -167,10 +164,8 @@ class ConfigRoleQueryPermissionTest {
                 dto.setConfigKey(configKey);
 
                 return dto;
-
             }
         };
-
     }
 
     /** 按构造器注入唯一查询桩，其他依赖仅用于被鉴权拦截的路径。 */
@@ -183,7 +178,6 @@ class ConfigRoleQueryPermissionTest {
 
         for (int i = 0; i < types.length; i++) {
             if (query != null && types[i].isInstance(query)) arguments[i] = query;
-
         }
         T target = type.cast(constructor.newInstance(arguments));
 
@@ -194,6 +188,5 @@ class ConfigRoleQueryPermissionTest {
         factory.addAspect(new PreAuthorizeAspect());
 
         return type.cast(factory.getProxy());
-
     }
 }

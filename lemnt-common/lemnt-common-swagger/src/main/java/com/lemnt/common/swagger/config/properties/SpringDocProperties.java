@@ -1,9 +1,9 @@
 package com.lemnt.common.swagger.config.properties;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.License;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * Swagger 配置属性
@@ -20,8 +20,7 @@ public class SpringDocProperties {
     /**
      * 文档基本信息
      */
-    @NestedConfigurationProperty
-    private InfoProperties info = new InfoProperties();
+    @NestedConfigurationProperty private InfoProperties info = new InfoProperties();
 
     /**
      * <p>
@@ -46,14 +45,12 @@ public class SpringDocProperties {
         /**
          * 联系人信息
          */
-        @NestedConfigurationProperty
-        private Contact contact = null;
+        @NestedConfigurationProperty private Contact contact = null;
 
         /**
          * 许可证
          */
-        @NestedConfigurationProperty
-        private License license = null;
+        @NestedConfigurationProperty private License license = null;
 
         /**
          * 版本

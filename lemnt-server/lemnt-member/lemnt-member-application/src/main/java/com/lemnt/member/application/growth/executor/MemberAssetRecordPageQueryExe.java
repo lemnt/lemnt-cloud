@@ -5,8 +5,8 @@ import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.member.application.growth.converter.MemberGrowthDTOConverter;
 import com.lemnt.member.application.growth.dto.AssetRecordDTO;
 import com.lemnt.member.application.growth.qry.AssetRecordPageQry;
-import com.lemnt.member.domain.growth.gateway.MemberPointRecordGateway;
 import com.lemnt.member.domain.growth.gateway.MemberExperienceRecordGateway;
+import com.lemnt.member.domain.growth.gateway.MemberPointRecordGateway;
 import com.lemnt.member.domain.shared.model.MemberRules;
 
 import org.springframework.stereotype.Component;
@@ -36,14 +36,35 @@ public class MemberAssetRecordPageQueryExe {
                 && (qry.addStatus() != null || qry.startTime() != null || qry.endTime() != null)) {
             throw new ServiceException("积分筛选不能用于其他资产", 400);
         }
-        if (qry.startTime() != null && qry.endTime() != null && qry.startTime().isAfter(qry.endTime())) {
+        if (qry.startTime() != null
+                && qry.endTime() != null
+                && qry.startTime().isAfter(qry.endTime())) {
             throw new ServiceException("开始时间不能晚于结束时间", 400);
         }
-        var filter=new com.lemnt.member.domain.growth.model.AssetRecordPageFilter(qry.memberId(),qry.assetType(),
-                (qry.pageNum()-1)*qry.pageSize(),qry.pageSize(),null,null,null,null,null,null,
-                qry.startTime(),qry.endTime(),qry.addStatus());
-        var records="POINT".equals(qry.assetType()) ? pointRecords.page(filter) : experienceRecords.page(filter);
-        var total="POINT".equals(qry.assetType()) ? pointRecords.count(filter) : experienceRecords.count(filter);
-        return new PageResult<>(records.stream().map(MemberGrowthDTOConverter::toAssetRecordDTO).toList(),total);
+        var filter =
+                new com.lemnt.member.domain.growth.model.AssetRecordPageFilter(
+                        qry.memberId(),
+                        qry.assetType(),
+                        (qry.pageNum() - 1) * qry.pageSize(),
+                        qry.pageSize(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        qry.startTime(),
+                        qry.endTime(),
+                        qry.addStatus());
+        var records =
+                "POINT".equals(qry.assetType())
+                        ? pointRecords.page(filter)
+                        : experienceRecords.page(filter);
+        var total =
+                "POINT".equals(qry.assetType())
+                        ? pointRecords.count(filter)
+                        : experienceRecords.count(filter);
+        return new PageResult<>(
+                records.stream().map(MemberGrowthDTOConverter::toAssetRecordDTO).toList(), total);
     }
 }

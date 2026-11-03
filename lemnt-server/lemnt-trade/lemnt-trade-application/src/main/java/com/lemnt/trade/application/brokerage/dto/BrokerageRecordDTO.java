@@ -18,6 +18,5 @@ public record BrokerageRecordDTO(
         Integer frozenDays,
         LocalDateTime unfreezeTime,
         Integer sourceUserLevel,
-        LocalDateTime createTime
-) implements Serializable {
-}
+        LocalDateTime createTime)
+        implements Serializable {}

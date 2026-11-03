@@ -18,6 +18,7 @@ public class MemberLevelAssignCmdExe {
      * 执行等级分配命令。
      */
     public Boolean execute(LevelAssignCmd cmd) {
-        return memberGrowthService.assignLevel(cmd.memberId(), cmd.levelId(), cmd.requestNo(), cmd.reason());
+        return memberGrowthService.assignLevel(
+                cmd.memberId(), cmd.levelId(), cmd.requestNo(), cmd.reason());
     }
 }

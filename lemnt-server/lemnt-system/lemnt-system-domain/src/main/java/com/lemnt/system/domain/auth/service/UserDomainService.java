@@ -35,7 +35,8 @@ public class UserDomainService {
      * @throws ServiceException 已存在时抛出
      */
     public void checkPhoneUnique(String phonenumber) {
-        if (StringUtils.isNotEmpty(phonenumber) && userGateway.checkPhoneUnique(phonenumber) != null) {
+        if (StringUtils.isNotEmpty(phonenumber)
+                && userGateway.checkPhoneUnique(phonenumber) != null) {
             throw new ServiceException("手机号码'" + phonenumber + "'已存在");
         }
     }

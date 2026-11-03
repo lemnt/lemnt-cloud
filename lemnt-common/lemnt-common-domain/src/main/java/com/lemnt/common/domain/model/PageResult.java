@@ -16,8 +16,7 @@ import java.util.List;
 @Data
 public class PageResult<T> implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     /**
      * 当前页记录

@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** 活动订单退款去重表 CRUD。 */
 @Mapper
-public interface PromotionOrderRefundMapper extends BaseMapper<PromotionOrderRefundDO> {
-}
+public interface PromotionOrderRefundMapper extends BaseMapper<PromotionOrderRefundDO> {}

@@ -10,12 +10,6 @@ import java.io.Serializable;
 /** 上架商品选择请求。 */
 @Schema(description = "上架商品选择请求")
 public record ProductSpuSimpleReq(
-        @Schema(description = "商品名称关键词")
-        @Size(max = 200)
-        String name,
-        @Schema(description = "选择条数，默认20，最大100")
-        @Min(1)
-        @Max(100)
-        Integer limit
-) implements Serializable {
-}
+        @Schema(description = "商品名称关键词") @Size(max = 200) String name,
+        @Schema(description = "选择条数，默认20，最大100") @Min(1) @Max(100) Integer limit)
+        implements Serializable {}

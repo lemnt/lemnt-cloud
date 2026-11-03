@@ -31,7 +31,6 @@ class DictDataRemarkContractTest {
 
         if (remark != null) {
             assertThat(JsonUtils.toJsonStr(response)).contains("\"remark\":\"" + remark + "\"");
-
         }
     }
 }

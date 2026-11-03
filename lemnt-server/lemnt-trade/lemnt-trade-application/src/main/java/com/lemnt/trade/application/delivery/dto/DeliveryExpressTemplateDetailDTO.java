@@ -9,6 +9,5 @@ public record DeliveryExpressTemplateDetailDTO(
         Integer chargeMode,
         Integer sort,
         List<DeliveryExpressTemplateChargeDTO> charges,
-        List<DeliveryExpressTemplateFreeDTO> frees
-) implements java.io.Serializable {
-}
+        List<DeliveryExpressTemplateFreeDTO> frees)
+        implements java.io.Serializable {}

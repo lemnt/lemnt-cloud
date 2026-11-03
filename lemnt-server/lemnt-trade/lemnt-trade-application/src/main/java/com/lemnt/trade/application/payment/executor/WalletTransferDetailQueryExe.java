@@ -16,6 +16,7 @@ public class WalletTransferDetailQueryExe {
     private final WalletTransferGateway transfers;
 
     public WalletTransferDTO execute(String transferNo) {
-        return WalletTransferDTOConverter.transfer(transfers.findByNo(OrderRules.text(transferNo, 40)));
+        return WalletTransferDTOConverter.transfer(
+                transfers.findByNo(OrderRules.text(transferNo, 40)));
     }
 }

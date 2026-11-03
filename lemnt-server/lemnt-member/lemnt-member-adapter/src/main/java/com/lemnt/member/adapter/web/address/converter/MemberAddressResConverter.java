@@ -21,6 +21,7 @@ public final class MemberAddressResConverter {
                         v.mobile(),
                         v.areaId(),
                         v.detailAddress(),
-                        v.defaultStatus(), v.areaName());
+                        v.defaultStatus(),
+                        v.areaName());
     }
 }

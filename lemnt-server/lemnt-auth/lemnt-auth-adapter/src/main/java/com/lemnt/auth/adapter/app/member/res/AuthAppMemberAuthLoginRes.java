@@ -9,13 +9,10 @@ import java.io.Serializable;
  */
 @Schema(description = "会员MemberToken响应")
 public record AuthAppMemberAuthLoginRes(
-        @Schema(description = "会员编号")
-        Long memberId,
-        @Schema(description = "会员访问令牌，禁止记录到日志")
-        String accessToken,
-        @Schema(description = "访问令牌有效期，秒")
-        Long expiresIn
-) implements Serializable {
+        @Schema(description = "会员编号") Long memberId,
+        @Schema(description = "会员访问令牌，禁止记录到日志") String accessToken,
+        @Schema(description = "访问令牌有效期，秒") Long expiresIn)
+        implements Serializable {
     @Override
     public String toString() {
         return "AuthAppMemberAuthLoginRes[tokens=<redacted>]";

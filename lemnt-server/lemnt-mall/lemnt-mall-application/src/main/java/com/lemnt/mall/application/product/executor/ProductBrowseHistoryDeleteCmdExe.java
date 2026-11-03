@@ -2,8 +2,10 @@ package com.lemnt.mall.application.product.executor;
 
 import com.lemnt.mall.application.product.cmd.ProductBrowseHistoryDeleteCmd;
 import com.lemnt.mall.application.product.service.ProductBrowseHistoryService;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /** hide执行器。 */
 @Component

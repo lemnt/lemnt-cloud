@@ -21,15 +21,34 @@ public class AfterSaleLogService {
 
     /** 使用真实售后数值主键，不以业务单号冒充关联。 */
     @Transactional(propagation = Propagation.MANDATORY)
-    public void record(AfterSale value, String before, String after, int type, TradeOperator operator, String content) {
-        if (value.id() == null) { throw new IllegalStateException("售后主键未写入"); }
-        logs.append(new AfterSaleLog(null, operator.userId(), operator.userType(), value.id(), status(before), status(after),
-                type, content, orders.databaseNow()));
+    public void record(
+            AfterSale value,
+            String before,
+            String after,
+            int type,
+            TradeOperator operator,
+            String content) {
+        if (value.id() == null) {
+            throw new IllegalStateException("售后主键未写入");
+        }
+        logs.append(
+                new AfterSaleLog(
+                        null,
+                        operator.userId(),
+                        operator.userType(),
+                        value.id(),
+                        status(before),
+                        status(after),
+                        type,
+                        content,
+                        orders.databaseNow()));
     }
 
     /** 当前支付退款处理中仍对应芋道等待退款状态40。 */
     private Integer status(String value) {
-        if (value == null) { return null; }
+        if (value == null) {
+            return null;
+        }
         return switch (value) {
             case "REQUESTED" -> 10;
             case "AWAITING_RETURN" -> 20;

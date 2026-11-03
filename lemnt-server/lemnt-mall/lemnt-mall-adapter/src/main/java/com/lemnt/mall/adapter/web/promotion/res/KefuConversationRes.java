@@ -15,6 +15,5 @@ public record KefuConversationRes(
         @Schema(description = "最后消息") String lastMessageContent,
         @Schema(description = "最后消息类型") Integer lastMessageContentType,
         @Schema(description = "管理端置顶") Boolean adminPinned,
-        @Schema(description = "管理员未读消息数") Integer adminUnreadMessageCount
-) implements java.io.Serializable {
-}
+        @Schema(description = "管理员未读消息数") Integer adminUnreadMessageCount)
+        implements java.io.Serializable {}

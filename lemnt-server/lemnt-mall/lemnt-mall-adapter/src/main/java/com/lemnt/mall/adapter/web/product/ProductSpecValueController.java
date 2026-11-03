@@ -55,15 +55,22 @@ public class ProductSpecValueController {
     @Operation(summary = "新增规格字典")
     @RequiresPermissions("mall:spec-value:add")
     public R<ProductSpecValueCreateRes> create(@Valid @RequestBody ProductSpecValueCreateReq req) {
-        return R.ok(ProductSpecValueResConverter.create(productSpecValueCreateCmdExe.execute(ProductSpecValueReqConverter.create(req))));
+        return R.ok(
+                ProductSpecValueResConverter.create(
+                        productSpecValueCreateCmdExe.execute(
+                                ProductSpecValueReqConverter.create(req))));
     }
 
     /** 修改字典。 */
     @PutMapping("/{id}")
     @Operation(summary = "修改规格字典")
     @RequiresPermissions("mall:spec-value:edit")
-    public R<ProductSpecValueUpdateRes> update(@PathVariable Long id, @Valid @RequestBody ProductSpecValueUpdateReq req) {
-        return R.ok(ProductSpecValueResConverter.update(productSpecValueUpdateCmdExe.execute(ProductSpecValueReqConverter.update(id, req))));
+    public R<ProductSpecValueUpdateRes> update(
+            @PathVariable Long id, @Valid @RequestBody ProductSpecValueUpdateReq req) {
+        return R.ok(
+                ProductSpecValueResConverter.update(
+                        productSpecValueUpdateCmdExe.execute(
+                                ProductSpecValueReqConverter.update(id, req))));
     }
 
     /** 删除规格值并保留SKU快照。 */
@@ -89,14 +96,22 @@ public class ProductSpecValueController {
     @RequiresPermissions("mall:spec-value:list")
     public R<ProductSpecValuePageRes> page(@Valid @ModelAttribute ProductSpecValuePageReq req) {
         var value = productSpecValuePageQueryExe.execute(ProductSpecValueReqConverter.page(req));
-        return R.page(value.getRecords().stream().map(ProductSpecValueResConverter::page).toList(), value.getTotal());
+        return R.page(
+                value.getRecords().stream().map(ProductSpecValueResConverter::page).toList(),
+                value.getTotal());
     }
 
     /** 查询有限条选择数据。 */
     @GetMapping("/simple")
     @Operation(summary = "规格字典选择查询")
     @RequiresPermissions("mall:spec-value:query")
-    public R<List<ProductSpecValueSimpleRes>> simple(@Valid @ModelAttribute ProductSpecValueSimpleReq req) {
-        return R.ok(productSpecValueSimpleListQueryExe.execute(ProductSpecValueReqConverter.simple(req)).stream().map(ProductSpecValueResConverter::simple).toList());
+    public R<List<ProductSpecValueSimpleRes>> simple(
+            @Valid @ModelAttribute ProductSpecValueSimpleReq req) {
+        return R.ok(
+                productSpecValueSimpleListQueryExe
+                        .execute(ProductSpecValueReqConverter.simple(req))
+                        .stream()
+                        .map(ProductSpecValueResConverter::simple)
+                        .toList());
     }
 }

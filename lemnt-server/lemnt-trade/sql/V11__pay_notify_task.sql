@@ -1,7 +1,10 @@
--- 支付结果下游派发任务与每次尝试日志；type=PAY/REFUND，唯一键保证同一业务单只入队一次。
+-- 支付结果下游派发任务与每次尝试日志；type=PAY/REFUND/AFTER_SALE，唯一键保证同一业务单只入队一次。
 CREATE TABLE IF NOT EXISTS trade_pay_notify_task (
+ execute_version BIGINT NOT NULL DEFAULT 0 COMMENT '单调执行版本，领取和人工重置均递增，完成时按版本CAS',
+ lease_until DATETIME NULL COMMENT '当前执行租约到期时间，使用数据库时间，过期允许重新领取',
+
  id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
- type VARCHAR(16) NOT NULL COMMENT '派发业务类型：PAY支付、REFUND退款',
+ type VARCHAR(16) NOT NULL COMMENT '派发业务类型：PAY支付、REFUND历史退款、AFTER_SALE售后权益',
  biz_no VARCHAR(40) NOT NULL COMMENT '业务单号',
  order_no VARCHAR(40) NOT NULL COMMENT '交易订单业务单号',
  status VARCHAR(20) NOT NULL DEFAULT 'PENDING' COMMENT '派发状态：PENDING待派发、SUCCESS成功、FAILED失败待重试',

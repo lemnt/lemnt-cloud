@@ -10,5 +10,4 @@ public record Address(
         String mobile,
         Long areaId,
         String detailAddress,
-        Boolean defaultStatus
-) {}
+        Boolean defaultStatus) {}

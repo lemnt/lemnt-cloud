@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class BrokerageUserDO {
     @TableId(type = IdType.INPUT)
     private Long id;
+
     private Long bindUserId;
     private LocalDateTime bindUserTime;
     private Boolean brokerageEnabled;

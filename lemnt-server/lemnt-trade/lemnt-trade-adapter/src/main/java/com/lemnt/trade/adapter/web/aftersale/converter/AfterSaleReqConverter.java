@@ -13,12 +13,17 @@ import com.lemnt.trade.application.aftersale.qry.AfterSalePageQry;
 
 /** 售后请求与应用输入转换。 */
 public final class AfterSaleReqConverter {
-    private AfterSaleReqConverter() {
-    }
+    private AfterSaleReqConverter() {}
 
     /** 转换商品售后申请。 */
     public static AfterSaleCreateCmd create(String orderNo, AfterSaleCreateReq req) {
-        return new AfterSaleCreateCmd(orderNo, req.requestNo(), req.orderItemId(), req.quantity(), req.type(), req.reason());
+        return new AfterSaleCreateCmd(
+                orderNo,
+                req.requestNo(),
+                req.orderItemId(),
+                req.quantity(),
+                req.type(),
+                req.reason());
     }
 
     /** 转换拒绝请求。 */
@@ -38,7 +43,10 @@ public final class AfterSaleReqConverter {
 
     /** 转换分页请求。 */
     public static AfterSalePageQry page(AfterSalePageReq req) {
-        return new AfterSalePageQry(req.orderNo(), req.status(), req.pageNum() == null ? 1 : req.pageNum(),
+        return new AfterSalePageQry(
+                req.orderNo(),
+                req.status(),
+                req.pageNum() == null ? 1 : req.pageNum(),
                 req.pageSize() == null ? 20 : req.pageSize());
     }
 }

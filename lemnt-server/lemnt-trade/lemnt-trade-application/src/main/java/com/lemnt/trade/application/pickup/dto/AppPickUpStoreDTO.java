@@ -16,6 +16,5 @@ public record AppPickUpStoreDTO(
         String closingTime,
         BigDecimal latitude,
         BigDecimal longitude,
-        BigDecimal distanceKm
-) implements Serializable {
-}
+        BigDecimal distanceKm)
+        implements Serializable {}

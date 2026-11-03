@@ -1,16 +1,35 @@
 const runtime = require('../../services/orderRuntime');
+const { afterSalePromotion } = require('../../services/orderPromotion');
 const { decodePaymentStatus } = require('../../services/paymentStatus');
 
 const STATUS_LABEL = Object.freeze({
-  REQUESTED: '待商家审核', AWAITING_RETURN: '待买家退货', RETURNED: '待商家收货', WAIT_REFUND: '待退款',
-  RETURN_REJECTED: '退货被拒', REJECTED: '已拒绝', REFUNDING: '退款中', REFUNDED: '已退款', CANCELLED: '已取消',
+  REQUESTED: '待商家审核',
+  AWAITING_RETURN: '待买家退货',
+  RETURNED: '待商家收货',
+  WAIT_REFUND: '待退款',
+  RETURN_REJECTED: '退货被拒',
+  REJECTED: '已拒绝',
+  REFUNDING: '退款中',
+  REFUNDED: '已退款',
+  CANCELLED: '已取消',
 });
 const TYPE_LABEL = Object.freeze({ REFUND_ONLY: '仅退款', RETURN_REFUND: '退货退款' });
 
 Page({
   data: {
-    ready: runtime.ready, loading: false, error: '', loggedIn: false, sale: null, payment: null,
-    showReturn: false, carrier: '', tracking: '', carriers: [], carrierIndex: 0,
+    ready: runtime.ready,
+    loading: false,
+    error: '',
+    loggedIn: false,
+    sale: null,
+    payment: null,
+    promotion: null,
+    promotionError: '',
+    showReturn: false,
+    carrier: '',
+    tracking: '',
+    carriers: [],
+    carrierIndex: 0,
   },
   onLoad(query) {
     runtime.attach(this);
@@ -21,23 +40,54 @@ Page({
     this.setData({ loggedIn });
     if (loggedIn && runtime.requireLogin()) return this.reload();
   },
-  onSessionLost() { this.setData({ sale: null, payment: null, loggedIn: false, error: '会员已切换，请重新登录' }); },
-  login() { wx.navigateTo({ url: '/pages/member-login/index' }); },
+  onSessionLost() {
+    this.setData({
+      sale: null,
+      payment: null,
+      promotion: null,
+      promotionError: '',
+      loggedIn: false,
+      error: '会员已切换，请重新登录',
+    });
+  },
+  login() {
+    wx.navigateTo({ url: '/pages/member-login/index' });
+  },
   reload() {
-    if (!this.no) { this.setData({ error: '缺少售后单号' }); return; }
+    if (!this.no) {
+      this.setData({ error: '缺少售后单号' });
+      return;
+    }
     return runtime.run(this, async () => {
       const sale = this.toSale(await this.client.afterSaleDetail(this.no));
       let payment = null;
-      try { payment = decodePaymentStatus(await this.client.paymentStatus(sale.orderNo), sale.orderNo); }
-      catch (e) { payment = null; }
-      this.setData({ sale, payment });
+      try {
+        payment = decodePaymentStatus(await this.client.paymentStatus(sale.orderNo), sale.orderNo);
+      } catch (e) {
+        payment = null;
+      }
+      this.setData({ sale, payment, promotion: null, promotionError: '' });
+      try {
+        this.setData({
+          promotion: afterSalePromotion(await this.client.afterSalePromotions(this.no), this.no),
+        });
+      } catch (error) {
+        this.setData({ promotionError: error.message || '退款优惠读取失败' });
+      }
       await this.loadCarriers();
     });
   },
-  refreshProgress() { return this.reload(); },
+  refreshProgress() {
+    return this.reload();
+  },
   toSale(value) {
-    if (!value || value.refundNo !== this.no || !STATUS_LABEL[value.status]
-      || !TYPE_LABEL[value.type] || typeof value.amount !== 'string') {
+    if (
+      !value ||
+      value.refundNo !== this.no ||
+      !STATUS_LABEL[value.status] ||
+      !TYPE_LABEL[value.type] ||
+      typeof value.amount !== 'string'
+    ) {
       throw new Error('售后详情响应不合法');
     }
     return {
@@ -45,16 +95,28 @@ Page({
       statusLabel: STATUS_LABEL[value.status],
       typeLabel: TYPE_LABEL[value.type],
       canCancel: ['REQUESTED', 'AWAITING_RETURN', 'RETURNED'].includes(value.status),
-      canReturn: value.status === 'AWAITING_RETURN' && value.type === 'RETURN_REFUND' && !value.returnTrackingNo,
+      canReturn:
+        value.status === 'AWAITING_RETURN' &&
+        value.type === 'RETURN_REFUND' &&
+        !value.returnTrackingNo,
     };
   },
-  toggleReturn() { this.setData({ showReturn: !this.data.showReturn, error: '' }); },
+  toggleReturn() {
+    this.setData({ showReturn: !this.data.showReturn, error: '' });
+  },
   async loadCarriers() {
     try {
       const carriers = await this.client.deliveryExpresses();
       if (!Array.isArray(carriers)) throw new Error('快递公司响应不合法');
-      const index = Math.max(0, carriers.findIndex(item => item.code === this.data.carrier));
-      this.setData({ carriers, carrierIndex: index, carrier: carriers[index] ? carriers[index].code : '' });
+      const index = Math.max(
+        0,
+        carriers.findIndex((item) => item.code === this.data.carrier),
+      );
+      this.setData({
+        carriers,
+        carrierIndex: index,
+        carrier: carriers[index] ? carriers[index].code : '',
+      });
     } catch (e) {
       this.setData({ carriers: [] });
     }
@@ -64,7 +126,9 @@ Page({
     const carrier = this.data.carriers[index];
     if (carrier) this.setData({ carrierIndex: index, carrier: carrier.code });
   },
-  inputTracking(event) { this.setData({ tracking: event.detail.value }); },
+  inputTracking(event) {
+    this.setData({ tracking: event.detail.value });
+  },
   submitReturn() {
     return runtime.run(this, async () => {
       const carrierCode = (this.data.carrier || '').trim();
@@ -78,7 +142,7 @@ Page({
   },
   cancel() {
     return runtime.run(this, async () => {
-      if (!await runtime.confirm('取消售后', '确认取消该售后申请？')) return;
+      if (!(await runtime.confirm('取消售后', '确认取消该售后申请？'))) return;
       await this.client.cancelAfterSale(this.no);
       this.setData({ sale: this.toSale(await this.client.afterSaleDetail(this.no)) });
     });

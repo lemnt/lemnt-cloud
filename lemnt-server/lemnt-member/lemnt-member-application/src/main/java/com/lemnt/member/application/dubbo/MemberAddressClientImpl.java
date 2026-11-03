@@ -16,12 +16,18 @@ public class MemberAddressClientImpl implements MemberAddressClient {
 
     @Override
     public MemberAddressDTO get(Long memberId, Long addressId) {
-        if (memberId == null || memberId <= 0 || addressId == null || addressId <= 0
-        ) {
+        if (memberId == null || memberId <= 0 || addressId == null || addressId <= 0) {
             return null;
         }
         var row = addresses.address(memberId, addressId);
-        return row == null ? null : new MemberAddressDTO(row.id(), row.memberId(), row.name(),
-                row.mobile(), row.areaId(), row.detailAddress());
+        return row == null
+                ? null
+                : new MemberAddressDTO(
+                        row.id(),
+                        row.memberId(),
+                        row.name(),
+                        row.mobile(),
+                        row.areaId(),
+                        row.detailAddress());
     }
 }

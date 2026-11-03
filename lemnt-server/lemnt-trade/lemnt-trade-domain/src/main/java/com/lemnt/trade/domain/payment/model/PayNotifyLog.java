@@ -9,6 +9,4 @@ public record PayNotifyLog(
         int notifyTimes,
         String status,
         String response,
-        LocalDateTime createTime
-) {
-}
+        LocalDateTime createTime) {}

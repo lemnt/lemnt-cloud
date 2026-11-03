@@ -11,5 +11,5 @@ public record StoreProductDTO(
         String image,
         String minPrice,
         String maxPrice,
-        boolean available
-) implements java.io.Serializable {}
+        boolean available)
+        implements java.io.Serializable {}

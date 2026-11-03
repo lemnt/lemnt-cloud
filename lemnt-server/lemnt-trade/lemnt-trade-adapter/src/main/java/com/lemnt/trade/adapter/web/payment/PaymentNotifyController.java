@@ -25,10 +25,14 @@ public class PaymentNotifyController {
 
     @PostMapping("/{appKey}/{channel}")
     @Operation(summary = "接收渠道支付通知")
-    public R<String> notify(@PathVariable String appKey, @PathVariable String channel,
+    public R<String> notify(
+            @PathVariable String appKey,
+            @PathVariable String channel,
             @RequestHeader(value = "X-Pay-Signature", required = false) String signature,
             @RequestHeader(value = "X-Pay-Timestamp", required = false) String timestamp,
             @RequestBody String body) {
-        return R.ok(receive.execute(new PaymentNotifyReceiveCmd(appKey, channel, body, signature, timestamp)));
+        return R.ok(
+                receive.execute(
+                        new PaymentNotifyReceiveCmd(appKey, channel, body, signature, timestamp)));
     }
 }

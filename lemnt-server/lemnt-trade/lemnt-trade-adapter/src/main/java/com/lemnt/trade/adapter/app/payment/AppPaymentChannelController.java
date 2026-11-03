@@ -26,7 +26,9 @@ public class AppPaymentChannelController {
     @GetMapping
     @Operation(summary = "查询支付应用下已启用的渠道")
     public R<List<AppPaymentChannelRes>> list(@RequestParam String appKey) {
-        return R.ok(channels.execute(appKey).stream()
-                .map(value -> new AppPaymentChannelRes(value.code(), value.name())).toList());
+        return R.ok(
+                channels.execute(appKey).stream()
+                        .map(value -> new AppPaymentChannelRes(value.code(), value.name()))
+                        .toList());
     }
 }

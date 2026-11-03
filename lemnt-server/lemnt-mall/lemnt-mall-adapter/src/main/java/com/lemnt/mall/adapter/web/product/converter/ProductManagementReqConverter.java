@@ -13,13 +13,15 @@ import com.lemnt.mall.application.product.qry.ProductSpuSimpleListQry;
 
 /** 商品管理新增接口请求转换。 */
 public final class ProductManagementReqConverter {
-    private ProductManagementReqConverter() {
-    }
+    private ProductManagementReqConverter() {}
 
     /** 转换品牌分页。 */
     public static BrandPageQry brands(BrandPageReq req) {
-        return new BrandPageQry(req.name(), req.status(), req.pageNum() == null ? 1 : req.pageNum(),
-            req.pageSize() == null ? 20 : req.pageSize());
+        return new BrandPageQry(
+                req.name(),
+                req.status(),
+                req.pageNum() == null ? 1 : req.pageNum(),
+                req.pageSize() == null ? 20 : req.pageSize());
     }
 
     /** 转换品牌选择。 */
@@ -39,6 +41,7 @@ public final class ProductManagementReqConverter {
 
     /** 导出使用独立请求，不能通过页码截断数据。 */
     public static ProductSpuExportQry export(ProductSpuExportReq req) {
-        return new ProductSpuExportQry(req.name(), req.status(), req.categoryId(), req.brandId(), req.stockStatus());
+        return new ProductSpuExportQry(
+                req.name(), req.status(), req.categoryId(), req.brandId(), req.stockStatus());
     }
 }

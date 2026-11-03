@@ -1,5 +1,13 @@
 import { expect, it } from 'vitest';
-import { decodePage, decodeOrder, decodeDetail, decodeRefund } from './fulfillmentDecoders';
+import {
+  decodePage,
+  decodeOrder,
+  decodeDetail,
+  decodeRefund,
+  decodeOrderPromotions,
+  decodeAfterSalePromotions,
+  decodeRefundableItems,
+} from './fulfillmentDecoders';
 import { canShip, canRequestRefund } from './constants';
 const order = {
   orderNo: 'TR1',
@@ -193,5 +201,101 @@ it('履约详情保留真实订单项与评价状态，旧记录不猜测未评�
   expect(old.items[0].commentStatus).toBeUndefined();
   expect(() =>
     decodeDetail({ ...order, items: [{ ...item, commentStatus: 'false' }], shipment: null }),
+  ).toThrow();
+});
+
+it('优惠快照保留历史未知和有符号调价，长积分不丢精度', () => {
+  const value = decodeOrderPromotions({
+    orderNo: 'TR1',
+    snapshotStatus: 'LEGACY_PARTIAL',
+    summary: {
+      originalAmount: null,
+      discountAmount: null,
+      deliveryOriginalPrice: null,
+      deliveryDiscountPrice: null,
+      adjustmentAmount: '-1.00',
+      payAmount: '10.00',
+    },
+    promotions: [
+      {
+        promotionType: 'POINT_DEDUCT',
+        promotionName: '积分抵扣',
+        discountAmount: '2.00',
+        deliveryDiscountPrice: '0.00',
+        usePoint: '9223372036854775807',
+        givePoint: 0,
+        giveCouponTemplateCounts: {},
+        items: [
+          {
+            orderItemId: '11',
+            discountAmount: '2.00',
+            deliveryDiscountPrice: '0.00',
+            usePoint: 5,
+            givePoint: 0,
+          },
+        ],
+      },
+    ],
+  });
+  expect(value.summary.discountAmount).toBeNull();
+  expect(value.summary.adjustmentAmount).toBe('-1.00');
+  expect(value.promotions[0].usePoint).toBe('9223372036854775807');
+  expect(value.promotions[0].items[0].orderItemId).toBe('11');
+});
+it('退单应返积分与到账状态分别读取，优惠金额不叠加现金', () => {
+  const value = decodeAfterSalePromotions({
+    afterSaleNo: 'RF1',
+    orderItemId: '11',
+    quantity: 1,
+    amount: '40.00',
+    discountAmount: '10.00',
+    deliveryDiscountPrice: '0.00',
+    returnUsePoint: 5,
+    deductGivePoint: 2,
+    ruleVersion: 1,
+    snapshotStatus: 'COMPLETE',
+    benefitStatus: 'PENDING',
+    promotions: [],
+  });
+  expect(value.amount).toBe('40.00');
+  expect(value.discountAmount).toBe('10.00');
+  expect(value.benefitStatus).toBe('PENDING');
+  expect(value.returnUsePoint).toBe('5');
+  expect(() => decodeAfterSalePromotions({ ...value, benefitStatus: 'DONE' })).toThrow();
+});
+
+it('已退数量与可申请额度来自服务端，处理中时额度为零且历史未知保留', () => {
+  const values = decodeRefundableItems([
+    {
+      orderItemId: '11',
+      quantity: 6,
+      refundedQuantity: 2,
+      refundableQuantity: 0,
+      refundableAmount: '0.00',
+    },
+  ]);
+  expect(values[0].refundedQuantity).toBe(2);
+  expect(values[0].refundableQuantity).toBe(0);
+  expect(
+    decodeRefundableItems([
+      {
+        orderItemId: '11',
+        quantity: 6,
+        refundedQuantity: null,
+        refundableQuantity: 0,
+        refundableAmount: '0.00',
+      },
+    ])[0].refundedQuantity,
+  ).toBeNull();
+  expect(() =>
+    decodeRefundableItems([
+      {
+        orderItemId: '11',
+        quantity: 6,
+        refundedQuantity: 7,
+        refundableQuantity: 0,
+        refundableAmount: '0.00',
+      },
+    ]),
   ).toThrow();
 });

@@ -14,6 +14,5 @@ public record CombinationActivity(
         Integer userSize,
         Boolean virtualGroup,
         Integer status,
-        Integer limitDuration
-) implements java.io.Serializable {
-}
+        Integer limitDuration)
+        implements java.io.Serializable {}

@@ -23,7 +23,6 @@ public class OperLogReqConverter {
                 item.pageNum(),
                 item.pageSize(),
                 item.beginTime(),
-                item.endTime()
-        );
+                item.endTime());
     }
 }

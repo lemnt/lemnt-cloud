@@ -12,5 +12,4 @@ public record ProductSkuSpec(Long specId, String specName, Long specValueId, Str
         values.forEach(value -> result.put(value.specName(), value.specValueName()));
         return result;
     }
-
 }

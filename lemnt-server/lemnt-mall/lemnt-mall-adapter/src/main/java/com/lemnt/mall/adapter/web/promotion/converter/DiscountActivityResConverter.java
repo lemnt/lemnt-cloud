@@ -17,11 +17,20 @@ public final class DiscountActivityResConverter {
                 v.startTime(),
                 v.endTime(),
                 v.remark(),
-                v.products().stream().map(p -> new DiscountProductRes(p.spuId(), p.skuId(), p.discountType(),
-                    p.discountPercent(), p.discountPrice())).toList());
+                v.products().stream()
+                        .map(
+                                p ->
+                                        new DiscountProductRes(
+                                                p.spuId(),
+                                                p.skuId(),
+                                                p.discountType(),
+                                                p.discountPercent(),
+                                                p.discountPrice()))
+                        .toList());
     }
 
     public static DiscountActivityPageRes page(DiscountActivityDTO v) {
-        return new DiscountActivityPageRes(v.id(), v.name(), v.status(), v.startTime(), v.endTime(), v.remark());
+        return new DiscountActivityPageRes(
+                v.id(), v.name(), v.status(), v.startTime(), v.endTime(), v.remark());
     }
 }

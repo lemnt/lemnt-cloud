@@ -24,8 +24,8 @@ public class SettlementReceiptQueryExe {
      */
     public SettlementReceiptDTO execute(String orderNo) {
         String key = SettlementRules.text(orderNo, 40);
-        return SettlementDTOConverter.receipt(settlementRecordService.receipt(key),
-            orderPersistenceService.findByOrderNo(key));
+        return SettlementDTOConverter.receipt(
+                settlementRecordService.receipt(key), orderPersistenceService.findByOrderNo(key));
     }
 
     /**
@@ -38,9 +38,7 @@ public class SettlementReceiptQueryExe {
         if (order == null || !memberId.equals(order.memberId())) {
             return null;
         }
-        var record = settlementRecordService.receipt(
-                key
-        );
+        var record = settlementRecordService.receipt(key);
         if (record == null || !memberId.equals(record.memberId())) {
             return null;
         }

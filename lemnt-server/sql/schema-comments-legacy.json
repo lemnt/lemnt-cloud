@@ -1,0 +1,46 @@
+{
+  "member": {
+    "member_config": {
+      "comment": "历史会员积分交易配置",
+      "columns": {
+        "id": "历史配置主键编号",
+        "point_trade_deduct_enable": "是否启用积分抵扣及按支付金额赠积分",
+        "point_trade_deduct_unit_price": "每积分可抵扣金额，单位分",
+        "point_trade_deduct_max_price": "每单抵扣积分上限，0不限",
+        "point_trade_give_point": "每支付1元赠送积分数",
+        "create_by": "创建人",
+        "create_time": "创建时间",
+        "update_by": "修改人",
+        "update_time": "修改时间"
+      }
+    }
+  },
+  "trade": {
+    "trade_config": {
+      "comment": "历史交易基础配置",
+      "columns": {
+        "id": "历史单例配置编号",
+        "after_sale_refund_reasons": "仅退款原因JSON数组",
+        "after_sale_return_reasons": "退货退款原因JSON数组",
+        "delivery_express_free_enabled": "是否开启全场满额包邮",
+        "delivery_express_free_price": "全场包邮门槛金额，单位分",
+        "delivery_pick_up_enabled": "是否开启自提",
+        "brokerage_enabled": "是否开启分销佣金",
+        "brokerage_enabled_condition": "分销开通模式编码",
+        "brokerage_bind_mode": "分销关系绑定模式编码",
+        "brokerage_poster_urls": "分销海报地址JSON数组",
+        "brokerage_first_percent": "一级返佣百分比",
+        "brokerage_second_percent": "二级返佣百分比",
+        "brokerage_withdraw_min_price": "最低提现金额，单位分",
+        "brokerage_withdraw_fee_percent": "提现手续费百分比",
+        "brokerage_frozen_days": "佣金冻结天数",
+        "brokerage_withdraw_types": "允许的提现方式编码JSON数组",
+        "deleted": "是否逻辑删除，0否、1是",
+        "create_by": "创建人",
+        "create_time": "创建时间",
+        "update_by": "修改人",
+        "update_time": "修改时间"
+      }
+    }
+  }
+}

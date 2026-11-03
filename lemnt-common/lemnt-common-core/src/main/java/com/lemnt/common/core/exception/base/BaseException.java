@@ -12,8 +12,7 @@ import java.io.Serial;
 @Getter
 public class BaseException extends RuntimeException {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     /**
      * 所属模块
@@ -57,5 +56,4 @@ public class BaseException extends RuntimeException {
     public BaseException(String defaultMessage) {
         this(null, null, null, defaultMessage);
     }
-
 }

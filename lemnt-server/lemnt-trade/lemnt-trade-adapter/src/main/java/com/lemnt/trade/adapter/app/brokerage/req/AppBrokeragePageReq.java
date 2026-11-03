@@ -7,6 +7,5 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record AppBrokeragePageReq(
         @Schema(description = "状态") Integer status,
         @Schema(description = "pageNum") Integer pageNum,
-        @Schema(description = "pageSize") Integer pageSize
-) implements java.io.Serializable {
-}
+        @Schema(description = "pageSize") Integer pageSize)
+        implements java.io.Serializable {}

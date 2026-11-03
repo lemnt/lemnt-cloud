@@ -1,13 +1,11 @@
-const config = require("../../config");
-const {
-  createProductInteractionClient,
-} = require("../../services/productInteractions");
+const config = require('../../config');
+const { createProductInteractionClient } = require('../../services/productInteractions');
 Page({
   data: {
     ready: config.memberApiReady,
     loggedIn: false,
     loading: false,
-    error: "",
+    error: '',
     rows: [],
     selected: [],
     pageNum: 1,
@@ -23,7 +21,7 @@ Page({
           wx.request({
             ...options,
             success: resolve,
-            fail: () => reject(Error("网络结果未确认，请刷新核验")),
+            fail: () => reject(Error('网络结果未确认，请刷新核验')),
           }),
         ),
     });
@@ -34,14 +32,14 @@ Page({
       selected: [],
       total: 0,
       pageNum: 1,
-      error: "",
+      error: '',
       loggedIn: !!getApp().globalData.memberSession,
     });
     if (this.data.loggedIn && this.data.ready) return this.load();
   },
   async load() {
     if (this.data.loading) return;
-    this.setData({ loading: true, error: "" });
+    this.setData({ loading: true, error: '' });
     try {
       const result = await this.client.history(this.data.pageNum);
       this.setData({ rows: result.records, selected: [], total: result.total });
@@ -54,8 +52,8 @@ Page({
   async remove(event) {
     if (this.data.loading) return;
     const spuId = event.currentTarget.dataset.id;
-    let failure = "";
-    this.setData({ loading: true, error: "" });
+    let failure = '';
+    this.setData({ loading: true, error: '' });
     try {
       await this.client.deleteHistory([spuId]);
       this.setData({ pageNum: 1 });
@@ -102,13 +100,13 @@ Page({
   async removeSelected() {
     if (this.data.loading || !this.data.selected.length) return;
     const selected = [...this.data.selected];
-    let failure = "";
-    this.setData({ loading: true, error: "" });
+    let failure = '';
+    this.setData({ loading: true, error: '' });
     try {
       await this.client.deleteHistory(selected);
       this.setData({ pageNum: 1 });
     } catch (error) {
-      failure = "部分操作结果未确认，请核验列表：" + error.message;
+      failure = '部分操作结果未确认，请核验列表：' + error.message;
     } finally {
       this.setData({ loading: false, selected: [] });
     }
@@ -117,31 +115,29 @@ Page({
   },
   product(event) {
     wx.navigateTo({
-      url:
-        "/pages/product/index?id=" +
-        encodeURIComponent(event.currentTarget.dataset.id),
+      url: '/pages/product/index?id=' + encodeURIComponent(event.currentTarget.dataset.id),
     });
   },
   login() {
-    wx.navigateTo({ url: "/pages/member-login/index" });
+    wx.navigateTo({ url: '/pages/member-login/index' });
   },
   async clear() {
     if (this.data.loading) return;
     const token = getApp().globalData.memberSession?.accessToken;
     const answer = await new Promise((resolve) =>
       wx.showModal({
-        title: "清空足迹",
-        content: "确认清空本人浏览足迹？",
+        title: '清空足迹',
+        content: '确认清空本人浏览足迹？',
         success: resolve,
       }),
     );
     if (!answer.confirm) return;
     if (token !== getApp().globalData.memberSession?.accessToken) {
-      this.setData({ rows: [], error: "会员已切换，请重新确认" });
+      this.setData({ rows: [], error: '会员已切换，请重新确认' });
       return;
     }
-    let failure = "";
-    this.setData({ loading: true, error: "" });
+    let failure = '';
+    this.setData({ loading: true, error: '' });
     try {
       await this.client.clearHistory();
       this.setData({ pageNum: 1 });

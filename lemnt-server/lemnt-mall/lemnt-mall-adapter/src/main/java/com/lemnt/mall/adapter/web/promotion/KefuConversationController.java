@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -68,11 +67,15 @@ public class KefuConversationController {
     @GetMapping("/{id}/messages")
     @Operation(summary = "客服会话消息")
     @RequiresPermissions("mall:promotion:query")
-    public R<List<KefuMessageRes>> messages(@PathVariable Long id,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime beforeTime,
+    public R<List<KefuMessageRes>> messages(
+            @PathVariable Long id,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                    LocalDateTime beforeTime,
             @RequestParam(required = false) Integer limit) {
-        return R.ok(messages.execute(KefuConverter.messages(id, beforeTime, limit)).stream()
-                .map(KefuConverter::message).toList());
+        return R.ok(
+                messages.execute(KefuConverter.messages(id, beforeTime, limit)).stream()
+                        .map(KefuConverter::message)
+                        .toList());
     }
 
     @PostMapping("/{id}/messages")
@@ -92,7 +95,8 @@ public class KefuConversationController {
     @PutMapping("/{id}/pinned")
     @Operation(summary = "置顶或取消置顶会话")
     @RequiresPermissions("mall:promotion:update")
-    public R<Boolean> pinned(@PathVariable Long id, @Valid @RequestBody KefuConversationPinReq req) {
+    public R<Boolean> pinned(
+            @PathVariable Long id, @Valid @RequestBody KefuConversationPinReq req) {
         return R.ok(pin.execute(new KefuConversationPinCmd(id, req.pinned())));
     }
 

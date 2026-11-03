@@ -87,5 +87,4 @@ public interface ProductSkuGateway {
 
     /** 同步规格值名称，保留SKU编号和已有订单快照。 */
     void renamePropertyValue(Long specValueId, String name);
-
 }

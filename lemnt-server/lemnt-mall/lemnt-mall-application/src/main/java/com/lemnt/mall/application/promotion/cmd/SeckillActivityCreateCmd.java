@@ -14,5 +14,4 @@ public record SeckillActivityCreateCmd(
         List<Long> configIds,
         Integer totalLimitCount,
         Integer singleLimitCount,
-        List<SeckillProductCmd> products
-) {}
+        List<SeckillProductCmd> products) {}

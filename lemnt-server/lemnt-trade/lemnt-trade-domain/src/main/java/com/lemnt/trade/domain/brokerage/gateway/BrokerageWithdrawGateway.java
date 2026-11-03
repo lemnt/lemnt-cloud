@@ -15,6 +15,10 @@ public interface BrokerageWithdrawGateway {
 
     PageResult<BrokerageWithdraw> page(BrokerageWithdrawFilter filter);
 
-    boolean updateStatus(Long id, Integer expected, Integer next, String auditReason,
+    boolean updateStatus(
+            Long id,
+            Integer expected,
+            Integer next,
+            String auditReason,
             java.time.LocalDateTime auditTime);
 }

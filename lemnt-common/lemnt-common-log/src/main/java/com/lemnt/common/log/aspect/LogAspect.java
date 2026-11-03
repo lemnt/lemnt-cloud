@@ -1,15 +1,16 @@
 package com.lemnt.common.log.aspect;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-
-import cn.hutool.core.convert.Convert;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
+import com.lemnt.common.core.utils.ExceptionUtil;
+import com.lemnt.common.core.utils.JsonUtils;
+import com.lemnt.common.core.utils.ServletUtils;
+import com.lemnt.common.core.utils.StringUtils;
+import com.lemnt.common.core.utils.ip.IpUtils;
+import com.lemnt.common.log.annotation.Log;
+import com.lemnt.common.log.enums.BusinessStatus;
 import com.lemnt.common.log.event.OperLogEvent;
+import com.lemnt.common.log.service.AsyncLogService;
+import com.lemnt.common.security.utils.SecurityUtils;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -23,15 +24,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
-import com.lemnt.common.core.utils.JsonUtils;
-import com.lemnt.common.core.utils.ExceptionUtil;
-import com.lemnt.common.core.utils.ServletUtils;
-import com.lemnt.common.core.utils.StringUtils;
-import com.lemnt.common.core.utils.ip.IpUtils;
-import com.lemnt.common.log.annotation.Log;
-import com.lemnt.common.log.enums.BusinessStatus;
-import com.lemnt.common.log.service.AsyncLogService;
-import com.lemnt.common.security.utils.SecurityUtils;
+
+import cn.hutool.core.convert.Convert;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 操作日志记录处理
@@ -47,6 +48,7 @@ public class LogAspect {
      * 操作标题
      */
     public static final String OPERATION_TITLE_HEADER = "X-Operation-Title";
+
     /**
      * 操作名称
      */
@@ -55,20 +57,22 @@ public class LogAspect {
     /**
      * 排除敏感属性字段
      */
-    public static final String[] EXCLUDE_PROPERTIES = {"password", "oldPassword", "newPassword", "confirmPassword"};
+    public static final String[] EXCLUDE_PROPERTIES = {
+        "password", "oldPassword", "newPassword", "confirmPassword"
+    };
 
     /**
      * 计算操作消耗时间
      */
-    private static final ThreadLocal<Long> TIME_THREADLOCAL = new NamedThreadLocal<Long>("Cost Time");
+    private static final ThreadLocal<Long> TIME_THREADLOCAL =
+            new NamedThreadLocal<Long>("Cost Time");
 
     /**
      * 参数最大长度限制
      */
     private static final int PARAM_MAX_LENGTH = 2000;
 
-    @Autowired
-    private AsyncLogService asyncLogService;
+    @Autowired private AsyncLogService asyncLogService;
 
     /**
      * 处理请求前执行
@@ -99,7 +103,8 @@ public class LogAspect {
         handleLog(joinPoint, controllerLog, e, null);
     }
 
-    protected void handleLog(final JoinPoint joinPoint, Log controllerLog, final Exception e, Object jsonResult) {
+    protected void handleLog(
+            final JoinPoint joinPoint, Log controllerLog, final Exception e, Object jsonResult) {
         try {
             // *========数据库日志=========*//
             OperLogEvent addCmd = new OperLogEvent();
@@ -107,7 +112,8 @@ public class LogAspect {
             // 请求的地址
             String ip = IpUtils.getIpAddr();
             addCmd.setOperIp(ip);
-            addCmd.setOperUrl(StringUtils.substring(ServletUtils.getRequest().getRequestURI(), 0, 255));
+            addCmd.setOperUrl(
+                    StringUtils.substring(ServletUtils.getRequest().getRequestURI(), 0, 255));
             String username = SecurityUtils.getUsername();
             if (StringUtils.isNotBlank(username)) {
                 addCmd.setOperName(username);
@@ -115,7 +121,11 @@ public class LogAspect {
 
             if (e != null) {
                 addCmd.setStatus(BusinessStatus.FAIL.getCode());
-                addCmd.setErrorMsg(StringUtils.substring(Convert.toStr(e.getMessage(), ExceptionUtil.getExceptionMessage(e)), 0, 2000));
+                addCmd.setErrorMsg(
+                        StringUtils.substring(
+                                Convert.toStr(e.getMessage(), ExceptionUtil.getExceptionMessage(e)),
+                                0,
+                                2000));
             }
             // 设置方法名称
             String className = joinPoint.getTarget().getClass().getName();
@@ -145,12 +155,23 @@ public class LogAspect {
      * @param addCmd 操作日志
      * @throws Exception
      */
-    public void getControllerMethodDescription(JoinPoint joinPoint, Log log, OperLogEvent addCmd, Object jsonResult) throws Exception {
+    public void getControllerMethodDescription(
+            JoinPoint joinPoint, Log log, OperLogEvent addCmd, Object jsonResult) throws Exception {
         // 设置action动作
         addCmd.setBusinessType(log.businessType().ordinal());
-        addCmd.setBusinessName(StringUtils.defaultIfBlank(ServletUtils.getHeader(Objects.requireNonNull(ServletUtils.getRequest()), OPERATION_NAME_HEADER), log.businessName()));
+        addCmd.setBusinessName(
+                StringUtils.defaultIfBlank(
+                        ServletUtils.getHeader(
+                                Objects.requireNonNull(ServletUtils.getRequest()),
+                                OPERATION_NAME_HEADER),
+                        log.businessName()));
         // 设置标题
-        addCmd.setTitle(StringUtils.defaultIfBlank(ServletUtils.getHeader(Objects.requireNonNull(ServletUtils.getRequest()), OPERATION_TITLE_HEADER), log.title()));
+        addCmd.setTitle(
+                StringUtils.defaultIfBlank(
+                        ServletUtils.getHeader(
+                                Objects.requireNonNull(ServletUtils.getRequest()),
+                                OPERATION_TITLE_HEADER),
+                        log.title()));
         // 设置操作人类别
         addCmd.setOperatorType(log.operatorType().ordinal());
         // 是否需要保存request，参数和值
@@ -170,14 +191,21 @@ public class LogAspect {
      * @param addCmd 操作日志
      * @throws Exception 异常
      */
-    private void setRequestValue(JoinPoint joinPoint, OperLogEvent addCmd, String[] excludeParamNames) throws Exception {
+    private void setRequestValue(
+            JoinPoint joinPoint, OperLogEvent addCmd, String[] excludeParamNames) throws Exception {
         String requestMethod = addCmd.getRequestMethod();
         Map<?, ?> paramsMap = ServletUtils.getParamMap(ServletUtils.getRequest());
-        if (StringUtils.isEmpty(paramsMap) && StringUtils.equalsAny(requestMethod, HttpMethod.PUT.name(), HttpMethod.POST.name(), HttpMethod.DELETE.name())) {
+        if (StringUtils.isEmpty(paramsMap)
+                && StringUtils.equalsAny(
+                        requestMethod,
+                        HttpMethod.PUT.name(),
+                        HttpMethod.POST.name(),
+                        HttpMethod.DELETE.name())) {
             String params = argsArrayToString(joinPoint.getArgs(), excludeParamNames);
             addCmd.setOperParam(params);
         } else {
-            addCmd.setOperParam(StringUtils.substring(JsonUtils.toJsonStr(paramsMap), 0, PARAM_MAX_LENGTH));
+            addCmd.setOperParam(
+                    StringUtils.substring(JsonUtils.toJsonStr(paramsMap), 0, PARAM_MAX_LENGTH));
         }
     }
 
@@ -204,7 +232,6 @@ public class LogAspect {
         return params.toString();
     }
 
-
     /**
      * 判断是否需要过滤的对象。
      *
@@ -228,7 +255,9 @@ public class LogAspect {
                 return entry.getValue() instanceof MultipartFile;
             }
         }
-        return o instanceof MultipartFile || o instanceof HttpServletRequest || o instanceof HttpServletResponse
+        return o instanceof MultipartFile
+                || o instanceof HttpServletRequest
+                || o instanceof HttpServletResponse
                 || o instanceof BindingResult;
     }
 }

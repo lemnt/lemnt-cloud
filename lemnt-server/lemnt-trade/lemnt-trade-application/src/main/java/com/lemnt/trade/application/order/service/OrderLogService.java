@@ -5,10 +5,12 @@ import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.trade.domain.order.model.OrderLog;
 import com.lemnt.trade.domain.order.model.TradeOperator;
 import com.lemnt.trade.domain.order.model.TradeOrder;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
 
 /** 真实订单操作与状态在调用方同一事务内落库。 */
 @Component
@@ -26,13 +28,24 @@ public class OrderLogService {
             int operateType,
             TradeOperator operator,
             String content) {
-        logs.append(new OrderLog(null, operator.userId(), operator.userType(), order.id(), status(before), status(after),
-                operateType, content, orders.databaseNow()));
+        logs.append(
+                new OrderLog(
+                        null,
+                        operator.userId(),
+                        operator.userType(),
+                        order.id(),
+                        status(before),
+                        status(after),
+                        operateType,
+                        content,
+                        orders.databaseNow()));
     }
 
     /** 内部预占中和待支付都对应源项目待支付状态。 */
     private Integer status(String value) {
-        if (value == null) { return null; }
+        if (value == null) {
+            return null;
+        }
         return switch (value) {
             case "RESERVING", "PENDING_PAYMENT" -> 0;
             case "PAID" -> 10;

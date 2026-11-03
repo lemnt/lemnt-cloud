@@ -57,12 +57,26 @@ class RechargePersistenceTest {
     }
 
     private RechargePackage pkg(String name, int status) {
-        return new RechargePackage(null, name, new BigDecimal("100.00"), new BigDecimal("20.00"), status, null);
+        return new RechargePackage(
+                null, name, new BigDecimal("100.00"), new BigDecimal("20.00"), status, null);
     }
 
     private WalletRecharge recharge(Long walletId, String requestNo) {
-        return new WalletRecharge(null, "RC" + requestNo, requestNo, walletId, 1L, 1L, new BigDecimal("100.00"),
-                new BigDecimal("20.00"), new BigDecimal("120.00"), "PENDING", null, null, null, null);
+        return new WalletRecharge(
+                null,
+                "RC" + requestNo,
+                requestNo,
+                walletId,
+                1L,
+                1L,
+                new BigDecimal("100.00"),
+                new BigDecimal("20.00"),
+                new BigDecimal("120.00"),
+                "PENDING",
+                null,
+                null,
+                null,
+                null);
     }
 
     @Test
@@ -72,8 +86,14 @@ class RechargePersistenceTest {
         assertTrue(packages.existsName("标准", null));
         assertFalse(packages.existsName("标准", enabled.id()));
         assertEquals(1, packages.listEnabled().size());
-        var updated = new RechargePackage(enabled.id(), "标准2", new BigDecimal("50.00"), BigDecimal.ZERO, 0,
-                enabled.createTime());
+        var updated =
+                new RechargePackage(
+                        enabled.id(),
+                        "标准2",
+                        new BigDecimal("50.00"),
+                        BigDecimal.ZERO,
+                        0,
+                        enabled.createTime());
         assertTrue(packages.update(updated));
         assertEquals(new BigDecimal("50.00"), packages.find(enabled.id()).payPrice());
     }
@@ -86,9 +106,22 @@ class RechargePersistenceTest {
         assertEquals(created.id(), again.id());
         assertNotNull(recharges.lockByNo(created.rechargeNo()));
         assertTrue(recharges.packageReferenced(1L));
-        var paid = new WalletRecharge(created.id(), created.rechargeNo(), created.requestNo(), created.walletId(),
-                created.memberId(), created.packageId(), created.payPrice(), created.bonusPrice(),
-                created.totalPrice(), "PAID", "ALIPAY", null, null, created.createTime());
+        var paid =
+                new WalletRecharge(
+                        created.id(),
+                        created.rechargeNo(),
+                        created.requestNo(),
+                        created.walletId(),
+                        created.memberId(),
+                        created.packageId(),
+                        created.payPrice(),
+                        created.bonusPrice(),
+                        created.totalPrice(),
+                        "PAID",
+                        "ALIPAY",
+                        null,
+                        null,
+                        created.createTime());
         assertTrue(recharges.update(paid));
         assertEquals("PAID", recharges.findByNo(created.rechargeNo()).status());
     }
@@ -101,20 +134,24 @@ class RechargePersistenceTest {
         @Bean
         JdbcDataSource dataSource() {
             var source = new JdbcDataSource();
-            source.setURL("jdbc:h2:mem:recharge_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
+            source.setURL(
+                    "jdbc:h2:mem:recharge_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
             return source;
         }
 
         @Bean(destroyMethod = "close")
         Connection schema(JdbcDataSource source) throws Exception {
             var connection = source.getConnection();
-            ScriptUtils.executeSqlScript(connection, new ClassPathResource("trade-sql/V12__member_wallet.sql"));
-            ScriptUtils.executeSqlScript(connection, new ClassPathResource("trade-sql/V13__wallet_recharge.sql"));
+            ScriptUtils.executeSqlScript(
+                    connection, new ClassPathResource("trade-sql/V12__member_wallet.sql"));
+            ScriptUtils.executeSqlScript(
+                    connection, new ClassPathResource("trade-sql/V13__wallet_recharge.sql"));
             return connection;
         }
 
         @Bean
-        SqlSessionFactory sqlSessionFactory(JdbcDataSource source, Connection schema) throws Exception {
+        SqlSessionFactory sqlSessionFactory(JdbcDataSource source, Connection schema)
+                throws Exception {
             var config = new MybatisConfiguration();
             config.setMapUnderscoreToCamelCase(true);
             var interceptor = new MybatisPlusInterceptor();
@@ -123,8 +160,11 @@ class RechargePersistenceTest {
             var factory = new MybatisSqlSessionFactoryBean();
             factory.setDataSource(source);
             factory.setConfiguration(config);
-            factory.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
-            factory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
+            factory.setGlobalConfig(
+                    new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
+            factory.setMapperLocations(
+                    new PathMatchingResourcePatternResolver()
+                            .getResources("classpath*:mapper/*.xml"));
             return factory.getObject();
         }
 

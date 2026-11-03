@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DictTypeCacheRefreshCmdExe {
     private final DictDataGateway dictDataGateway;
+
     public Boolean execute() {
         dictDataGateway.resetCache();
         return Boolean.TRUE;

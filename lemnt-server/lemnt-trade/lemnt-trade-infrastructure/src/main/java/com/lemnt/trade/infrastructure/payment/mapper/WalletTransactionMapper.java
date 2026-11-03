@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** trade_member_wallet_transaction Mapper，追加与查询复用 MyBatis Plus。 */
 @Mapper
-public interface WalletTransactionMapper extends BaseMapper<WalletTransactionDO> {
-}
+public interface WalletTransactionMapper extends BaseMapper<WalletTransactionDO> {}

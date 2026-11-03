@@ -56,7 +56,11 @@ public final class MemberGrowthResConverter {
                         v.levelId(),
                         v.experience(),
                         v.reason(),
-                        v.createTime(),v.level(),v.discountPercent(),v.recordExperience(),v.description());
+                        v.createTime(),
+                        v.level(),
+                        v.discountPercent(),
+                        v.recordExperience(),
+                        v.description());
     }
 
     /**
@@ -71,13 +75,18 @@ public final class MemberGrowthResConverter {
                         v.levelId(),
                         v.experience(),
                         v.reason(),
-                        v.createTime(),v.level(),v.discountPercent(),v.recordExperience(),v.description());
+                        v.createTime(),
+                        v.level(),
+                        v.discountPercent(),
+                        v.recordExperience(),
+                        v.description());
     }
 
     /**
      * 等级记录。
      */
-    public static MemberRecordLevelRecordsDetailRes toMemberRecordLevelRecordsDetailRes(LevelRecordDTO v) {
+    public static MemberRecordLevelRecordsDetailRes toMemberRecordLevelRecordsDetailRes(
+            LevelRecordDTO v) {
         return v == null
                 ? null
                 : new MemberRecordLevelRecordsDetailRes(
@@ -86,7 +95,11 @@ public final class MemberGrowthResConverter {
                         v.levelId(),
                         v.experience(),
                         v.reason(),
-                        v.createTime(),v.level(),v.discountPercent(),v.recordExperience(),v.description());
+                        v.createTime(),
+                        v.level(),
+                        v.discountPercent(),
+                        v.recordExperience(),
+                        v.description());
     }
 
     /**
@@ -96,7 +109,13 @@ public final class MemberGrowthResConverter {
         return v == null
                 ? null
                 : new MemberUserSignsRes(
-                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience(), v.createTime());
+                        v.id(),
+                        v.memberId(),
+                        v.signDate(),
+                        v.day(),
+                        v.point(),
+                        v.experience(),
+                        v.createTime());
     }
 
     /**
@@ -106,7 +125,14 @@ public final class MemberGrowthResConverter {
         return v == null
                 ? null
                 : new MemberRecordSigninRecordsRes(
-                        v.id(), v.memberId(), v.signDate(), v.day(), v.point(), v.experience(), v.nickname(), v.createTime());
+                        v.id(),
+                        v.memberId(),
+                        v.signDate(),
+                        v.day(),
+                        v.point(),
+                        v.experience(),
+                        v.nickname(),
+                        v.createTime());
     }
 
     /**
@@ -166,7 +192,8 @@ public final class MemberGrowthResConverter {
     /**
      * 资产记录。
      */
-    public static MemberUserExperienceRecordsRes toMemberUserExperienceRecordsRes(AssetRecordDTO v) {
+    public static MemberUserExperienceRecordsRes toMemberUserExperienceRecordsRes(
+            AssetRecordDTO v) {
         return v == null
                 ? null
                 : new MemberUserExperienceRecordsRes(
@@ -196,13 +223,18 @@ public final class MemberGrowthResConverter {
                         v.bizType(),
                         v.bizNo(),
                         v.reason(),
-                        v.createTime(),v.nickname(),v.pointBizType(),v.title(),v.description());
+                        v.createTime(),
+                        v.nickname(),
+                        v.pointBizType(),
+                        v.title(),
+                        v.description());
     }
 
     /**
      * 资产记录。
      */
-    public static MemberRecordPointRecordsDetailRes toMemberRecordPointRecordsDetailRes(AssetRecordDTO v) {
+    public static MemberRecordPointRecordsDetailRes toMemberRecordPointRecordsDetailRes(
+            AssetRecordDTO v) {
         return v == null
                 ? null
                 : new MemberRecordPointRecordsDetailRes(
@@ -214,13 +246,17 @@ public final class MemberGrowthResConverter {
                         v.bizType(),
                         v.bizNo(),
                         v.reason(),
-                        v.createTime(),v.pointBizType(),v.title(),v.description());
+                        v.createTime(),
+                        v.pointBizType(),
+                        v.title(),
+                        v.description());
     }
 
     /**
      * 资产记录。
      */
-    public static MemberRecordExperienceRecordsRes toMemberRecordExperienceRecordsRes(AssetRecordDTO v) {
+    public static MemberRecordExperienceRecordsRes toMemberRecordExperienceRecordsRes(
+            AssetRecordDTO v) {
         return v == null
                 ? null
                 : new MemberRecordExperienceRecordsRes(
@@ -232,13 +268,17 @@ public final class MemberGrowthResConverter {
                         v.bizType(),
                         v.bizNo(),
                         v.reason(),
-                        v.createTime(),v.experienceBizType(),v.title(),v.description());
+                        v.createTime(),
+                        v.experienceBizType(),
+                        v.title(),
+                        v.description());
     }
 
     /**
      * 资产记录。
      */
-    public static MemberRecordExperienceRecordsDetailRes toMemberRecordExperienceRecordsDetailRes(AssetRecordDTO v) {
+    public static MemberRecordExperienceRecordsDetailRes toMemberRecordExperienceRecordsDetailRes(
+            AssetRecordDTO v) {
         return v == null
                 ? null
                 : new MemberRecordExperienceRecordsDetailRes(
@@ -250,7 +290,10 @@ public final class MemberGrowthResConverter {
                         v.bizType(),
                         v.bizNo(),
                         v.reason(),
-                        v.createTime(),v.experienceBizType(),v.title(),v.description());
+                        v.createTime(),
+                        v.experienceBizType(),
+                        v.title(),
+                        v.description());
     }
 
     /**
@@ -308,13 +351,17 @@ public final class MemberGrowthResConverter {
      * 签到配置。
      */
     public static MemberConfigListRes toMemberConfigListRes(SignConfigDTO v) {
-        return v == null ? null : new MemberConfigListRes(v.id(), v.day(), v.point(), v.experience(), v.status());
+        return v == null
+                ? null
+                : new MemberConfigListRes(v.id(), v.day(), v.point(), v.experience(), v.status());
     }
 
     /**
      * 签到配置。
      */
     public static MemberConfigDetailRes toMemberConfigDetailRes(SignConfigDTO v) {
-        return v == null ? null : new MemberConfigDetailRes(v.id(), v.day(), v.point(), v.experience(), v.status());
+        return v == null
+                ? null
+                : new MemberConfigDetailRes(v.id(), v.day(), v.point(), v.experience(), v.status());
     }
 }

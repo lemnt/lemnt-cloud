@@ -5,22 +5,40 @@ Page({
   data: { ready: config.memberApiReady, loading: false, error: '', rows: [], pageNum: 1, total: 0 },
   onLoad() {
     this.client = createCombinationClient({
-      baseUrl: config.apiBaseUrl, ready: config.memberApiReady,
+      baseUrl: config.apiBaseUrl,
+      ready: config.memberApiReady,
       getMemberToken: () => getApp().globalData.memberSession?.accessToken,
-      request: (options) => new Promise((resolve, reject) => wx.request({ ...options, success: resolve, fail: () => reject(Error('请求未确认，请刷新核验')) })),
+      request: (options) =>
+        new Promise((resolve, reject) =>
+          wx.request({
+            ...options,
+            success: resolve,
+            fail: () => reject(Error('请求未确认，请刷新核验')),
+          }),
+        ),
     });
   },
-  onShow() { if (this.data.ready) return this.reload(); },
+  onShow() {
+    if (this.data.ready) return this.reload();
+  },
   async run(work) {
     if (this.data.loading) return;
     this.setData({ loading: true, error: '' });
-    try { await work(); } catch (e) { this.setData({ error: e.message || '拼团读取失败' }); } finally { this.setData({ loading: false }); }
+    try {
+      await work();
+    } catch (e) {
+      this.setData({ error: e.message || '拼团读取失败' });
+    } finally {
+      this.setData({ loading: false });
+    }
   },
   async read(pageNum) {
     const result = await this.client.activities({ pageNum });
     this.setData({ rows: result.records, total: result.total, pageNum });
   },
-  reload() { return this.run(() => this.read(1)); },
+  reload() {
+    return this.run(() => this.read(1));
+  },
   page(e) {
     return this.run(async () => {
       const next = this.data.pageNum + Number(e.currentTarget.dataset.delta);
@@ -28,6 +46,10 @@ Page({
       await this.read(next);
     });
   },
-  open(e) { wx.navigateTo({ url: '/pages/combination-detail/index?id=' + e.currentTarget.dataset.id }); },
-  records() { wx.navigateTo({ url: '/pages/combination-records/index' }); },
+  open(e) {
+    wx.navigateTo({ url: '/pages/combination-detail/index?id=' + e.currentTarget.dataset.id });
+  },
+  records() {
+    wx.navigateTo({ url: '/pages/combination-records/index' });
+  },
 });

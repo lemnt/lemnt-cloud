@@ -23,8 +23,7 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @TableName("sys_oper_log")
 public class OperLogDO implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     /**
      * 日志主键

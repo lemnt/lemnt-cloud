@@ -47,54 +47,125 @@ public class AppPromotionHubService {
             throw new ServiceException("聚合数量须在1至50之间", 400);
         }
         List<AppPromotionSectionDTO> result = new ArrayList<>();
-        result.add(new AppPromotionSectionDTO("SECKILL", "限时秒杀", items(seckills.enabled(), size,
-                SeckillActivity::id, SeckillActivity::name, SeckillActivity::startTime,
-                SeckillActivity::endTime)));
-        result.add(new AppPromotionSectionDTO("COMBINATION", "拼团活动", items(combinations.enabled(), size,
-                CombinationActivity::id, CombinationActivity::name, CombinationActivity::startTime,
-                CombinationActivity::endTime)));
-        result.add(new AppPromotionSectionDTO("BARGAIN", "砍价活动", items(bargains.enabled(), size,
-                BargainActivity::id, BargainActivity::name, BargainActivity::startTime,
-                BargainActivity::endTime)));
-        result.add(new AppPromotionSectionDTO("POINT", "积分商城", points.enabled().stream().limit(size)
-                .map(point -> new AppPromotionItemDTO(point.id(), "积分商城", null, null)).toList()));
-        result.add(new AppPromotionSectionDTO("DISCOUNT", "限时折扣", items(discounts.enabled(), size,
-                DiscountActivity::id, DiscountActivity::name, DiscountActivity::startTime,
-                DiscountActivity::endTime)));
-        result.add(new AppPromotionSectionDTO("REWARD", "满减送", items(rewards.enabled(), size,
-                RewardActivity::id, RewardActivity::name, RewardActivity::startTime,
-                RewardActivity::endTime)));
+        result.add(
+                new AppPromotionSectionDTO(
+                        "SECKILL",
+                        "限时秒杀",
+                        items(
+                                seckills.enabled(),
+                                size,
+                                SeckillActivity::id,
+                                SeckillActivity::name,
+                                SeckillActivity::startTime,
+                                SeckillActivity::endTime)));
+        result.add(
+                new AppPromotionSectionDTO(
+                        "COMBINATION",
+                        "拼团活动",
+                        items(
+                                combinations.enabled(),
+                                size,
+                                CombinationActivity::id,
+                                CombinationActivity::name,
+                                CombinationActivity::startTime,
+                                CombinationActivity::endTime)));
+        result.add(
+                new AppPromotionSectionDTO(
+                        "BARGAIN",
+                        "砍价活动",
+                        items(
+                                bargains.enabled(),
+                                size,
+                                BargainActivity::id,
+                                BargainActivity::name,
+                                BargainActivity::startTime,
+                                BargainActivity::endTime)));
+        result.add(
+                new AppPromotionSectionDTO(
+                        "POINT",
+                        "积分商城",
+                        points.enabled().stream()
+                                .limit(size)
+                                .map(
+                                        point ->
+                                                new AppPromotionItemDTO(
+                                                        point.id(), "积分商城", null, null))
+                                .toList()));
+        result.add(
+                new AppPromotionSectionDTO(
+                        "DISCOUNT",
+                        "限时折扣",
+                        items(
+                                discounts.enabled(),
+                                size,
+                                DiscountActivity::id,
+                                DiscountActivity::name,
+                                DiscountActivity::startTime,
+                                DiscountActivity::endTime)));
+        result.add(
+                new AppPromotionSectionDTO(
+                        "REWARD",
+                        "满减送",
+                        items(
+                                rewards.enabled(),
+                                size,
+                                RewardActivity::id,
+                                RewardActivity::name,
+                                RewardActivity::startTime,
+                                RewardActivity::endTime)));
         return result;
     }
 
     public AppDiscountActivityDTO discount(Long id) {
         var activity = discounts.find(id);
-        if (activity == null || activity.status() != 0 || !active(activity.startTime(), activity.endTime())) {
+        if (activity == null
+                || activity.status() != 0
+                || !active(activity.startTime(), activity.endTime())) {
             throw new ServiceException("折扣活动不存在或已结束", 400);
         }
-        return new AppDiscountActivityDTO(activity.id(), activity.name(), activity.startTime(),
-                activity.endTime(), discountProducts.byActivities(List.of(activity.id())));
+        return new AppDiscountActivityDTO(
+                activity.id(),
+                activity.name(),
+                activity.startTime(),
+                activity.endTime(),
+                discountProducts.byActivities(List.of(activity.id())));
     }
 
     public AppRewardActivityDTO reward(Long id) {
         var activity = rewards.find(id);
-        if (activity == null || activity.status() != 0 || !active(activity.startTime(), activity.endTime())) {
+        if (activity == null
+                || activity.status() != 0
+                || !active(activity.startTime(), activity.endTime())) {
             throw new ServiceException("满减活动不存在或已结束", 400);
         }
-        return new AppRewardActivityDTO(activity.id(), activity.name(), activity.startTime(),
-                activity.endTime(), activity.conditionType(), activity.productScope(), activity.rules());
+        return new AppRewardActivityDTO(
+                activity.id(),
+                activity.name(),
+                activity.startTime(),
+                activity.endTime(),
+                activity.conditionType(),
+                activity.productScope(),
+                activity.rules());
     }
 
-    private <T> List<AppPromotionItemDTO> items(List<T> values, int limit,
-            java.util.function.Function<T, Long> id, java.util.function.Function<T, String> name,
+    private <T> List<AppPromotionItemDTO> items(
+            List<T> values,
+            int limit,
+            java.util.function.Function<T, Long> id,
+            java.util.function.Function<T, String> name,
             java.util.function.Function<T, LocalDateTime> start,
             java.util.function.Function<T, LocalDateTime> end) {
         return values.stream()
                 .filter(value -> active(start.apply(value), end.apply(value)))
                 .sorted(Comparator.comparing(start))
                 .limit(limit)
-                .map(value -> new AppPromotionItemDTO(id.apply(value), name.apply(value), start.apply(value),
-                        end.apply(value)))
+                .map(
+                        value ->
+                                new AppPromotionItemDTO(
+                                        id.apply(value),
+                                        name.apply(value),
+                                        start.apply(value),
+                                        end.apply(value)))
                 .toList();
     }
 

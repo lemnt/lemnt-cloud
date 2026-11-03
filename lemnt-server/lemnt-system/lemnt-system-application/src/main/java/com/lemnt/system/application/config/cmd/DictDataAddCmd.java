@@ -43,6 +43,5 @@ public record DictDataAddCmd(
         /**
          * 备注
          */
-        String remark
-) implements Serializable {
-}
+        String remark)
+        implements Serializable {}

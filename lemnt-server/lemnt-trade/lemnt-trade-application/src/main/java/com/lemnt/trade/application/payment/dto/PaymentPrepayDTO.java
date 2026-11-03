@@ -11,8 +11,8 @@ public record PaymentPrepayDTO(
         String channel,
         BigDecimal amount,
         String payUrl,
-        Map<String, String> params
-) implements Serializable {
+        Map<String, String> params)
+        implements Serializable {
     public PaymentPrepayDTO {
         params = params == null ? Map.of() : Map.copyOf(params);
     }

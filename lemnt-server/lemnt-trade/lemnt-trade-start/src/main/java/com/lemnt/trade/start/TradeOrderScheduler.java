@@ -24,8 +24,7 @@ public class TradeOrderScheduler {
      * 创建订单超时关单调度器。
      */
     public TradeOrderScheduler(
-            TradeOrderCloseCmdExe tradeOrderCloseCmdExe,
-            TradeOrderGateway tradeOrderGateway) {
+            TradeOrderCloseCmdExe tradeOrderCloseCmdExe, TradeOrderGateway tradeOrderGateway) {
         this.tradeOrderCloseCmdExe = tradeOrderCloseCmdExe;
         this.tradeOrderGateway = tradeOrderGateway;
     }
@@ -38,9 +37,11 @@ public class TradeOrderScheduler {
         LocalDateTime cutoff = tradeOrderGateway.databaseNow().minusMinutes(30);
         for (var order :
                 Stream.concat(
-                tradeOrderGateway.findReservingCreatedBefore(cutoff, 50).stream(),
-                tradeOrderGateway.findPendingPaymentCreatedBefore(cutoff, 50).stream())
-                .toList()) {
+                                tradeOrderGateway.findReservingCreatedBefore(cutoff, 50).stream(),
+                                tradeOrderGateway
+                                        .findPendingPaymentCreatedBefore(cutoff, 50)
+                                        .stream())
+                        .toList()) {
             try {
                 tradeOrderCloseCmdExe.execute(order.orderNo());
             } catch (RuntimeException ex) {

@@ -12,8 +12,6 @@ import java.util.List;
  */
 @Schema(description = "首页顶部公告列表响应")
 public record NoticeTopRes(
-        @Schema(description = "公告列表")
-        List<NoticeRes> list,
-        @Schema(description = "未读数量")
-        Integer unreadCount
-) implements Serializable {}
+        @Schema(description = "公告列表") List<NoticeRes> list,
+        @Schema(description = "未读数量") Integer unreadCount)
+        implements Serializable {}

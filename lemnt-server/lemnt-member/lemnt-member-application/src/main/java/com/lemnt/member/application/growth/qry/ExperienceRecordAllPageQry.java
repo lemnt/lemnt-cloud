@@ -12,5 +12,5 @@ public record ExperienceRecordAllPageQry(
         Integer experienceBizType,
         String title,
         LocalDateTime startTime,
-        LocalDateTime endTime
-) implements Serializable {}
+        LocalDateTime endTime)
+        implements Serializable {}

@@ -11,6 +11,5 @@ public record BannerUpdateCmd(
         Integer sort,
         Integer status,
         Integer position,
-        String memo
-) implements Serializable {
-}
+        String memo)
+        implements Serializable {}

@@ -31,7 +31,8 @@ public class NoticeReadController {
     @RequiresPermissions("system:notice:list")
     @GetMapping("/read-users")
     public R<NoticeReadUserRes> readUsersList(NoticeReadUsersPageReq req) {
-        PageResult<NoticeReadUserDTO> result = noticeReadUserPageQueryExe.execute(NoticeReqConverter.toQry(req));
+        PageResult<NoticeReadUserDTO> result =
+                noticeReadUserPageQueryExe.execute(NoticeReqConverter.toQry(req));
         return R.page(NoticeReadResConverter.toResList(result.getRecords()), result.getTotal());
     }
 

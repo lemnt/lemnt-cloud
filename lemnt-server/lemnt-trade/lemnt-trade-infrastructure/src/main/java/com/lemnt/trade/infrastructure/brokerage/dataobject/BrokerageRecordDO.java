@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class BrokerageRecordDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private Long userId;
     private String bizId;
     private Integer bizType;

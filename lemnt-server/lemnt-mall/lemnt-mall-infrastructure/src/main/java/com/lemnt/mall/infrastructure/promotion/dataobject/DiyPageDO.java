@@ -12,6 +12,7 @@ import lombok.Data;
 public class DiyPageDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private Long templateId;
     private String name;
     private String remark;

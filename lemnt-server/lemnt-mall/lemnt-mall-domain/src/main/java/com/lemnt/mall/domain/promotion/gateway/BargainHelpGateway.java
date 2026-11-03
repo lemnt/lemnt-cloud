@@ -15,5 +15,6 @@ public interface BargainHelpGateway {
 
     long countByUserAndActivity(Long userId, Long activityId);
 
-    PageResult<BargainHelp> page(Long recordId, Long userId, Long activityId, int pageNum, int pageSize);
+    PageResult<BargainHelp> page(
+            Long recordId, Long userId, Long activityId, int pageNum, int pageSize);
 }

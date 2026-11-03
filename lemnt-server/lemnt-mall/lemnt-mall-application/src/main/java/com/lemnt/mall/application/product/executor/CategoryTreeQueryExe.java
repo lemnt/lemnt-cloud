@@ -21,10 +21,19 @@ public class CategoryTreeQueryExe {
     public List<CategoryTreeDTO> execute() {
         return children(categoryGateway.categories(), null);
     }
+
     private List<CategoryTreeDTO> children(List<Category> rows, Long parentId) {
-        return rows.stream().filter(value -> Objects.equals(value.parentId(), parentId))
-                .map(value -> new CategoryTreeDTO(value.id(), value.name(), value.picUrl(), value.sort(),
-                    value.status(),
-                        children(rows, value.id()))).toList();
+        return rows.stream()
+                .filter(value -> Objects.equals(value.parentId(), parentId))
+                .map(
+                        value ->
+                                new CategoryTreeDTO(
+                                        value.id(),
+                                        value.name(),
+                                        value.picUrl(),
+                                        value.sort(),
+                                        value.status(),
+                                        children(rows, value.id())))
+                .toList();
     }
 }

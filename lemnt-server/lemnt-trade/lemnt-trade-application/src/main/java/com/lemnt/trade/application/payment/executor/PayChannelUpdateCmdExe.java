@@ -27,12 +27,20 @@ public class PayChannelUpdateCmdExe {
         }
         PayConfigRules.status(cmd.status());
         // 渠道配置含密钥：留空表示保留原值，只有显式传入才替换。
-        String config = cmd.config() == null || cmd.config().isBlank()
-                ? existing.config()
-                : PayConfigRules.config(cmd.config());
-        var value = new PayChannelConfig(existing.id(), existing.appId(), existing.code(), cmd.status(),
-                PayConfigRules.feeRate(cmd.feeRate()), PayConfigRules.optional(cmd.remark(), 255, "备注"),
-                config, existing.createTime());
+        String config =
+                cmd.config() == null || cmd.config().isBlank()
+                        ? existing.config()
+                        : PayConfigRules.config(cmd.config());
+        var value =
+                new PayChannelConfig(
+                        existing.id(),
+                        existing.appId(),
+                        existing.code(),
+                        cmd.status(),
+                        PayConfigRules.feeRate(cmd.feeRate()),
+                        PayConfigRules.optional(cmd.remark(), 255, "备注"),
+                        config,
+                        existing.createTime());
         return channels.update(value);
     }
 }

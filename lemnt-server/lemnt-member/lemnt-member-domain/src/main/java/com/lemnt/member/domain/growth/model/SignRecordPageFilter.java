@@ -10,11 +10,13 @@ public record SignRecordPageFilter(
         String nickname,
         Integer day,
         LocalDateTime startTime,
-        LocalDateTime endTime
-) {
+        LocalDateTime endTime) {
     /** 旧查询不附加天数或时间。 */
     public SignRecordPageFilter(Long memberId, int offset, int limit, String nickname) {
         this(memberId, offset, limit, nickname, null, null, null);
     }
-    public SignRecordPageFilter(Long memberId,int offset,int limit) {this(memberId,offset,limit,null);}
+
+    public SignRecordPageFilter(Long memberId, int offset, int limit) {
+        this(memberId, offset, limit, null);
+    }
 }

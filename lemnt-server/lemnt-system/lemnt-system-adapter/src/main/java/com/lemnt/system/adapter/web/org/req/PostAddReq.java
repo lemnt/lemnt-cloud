@@ -13,17 +13,10 @@ import java.io.Serializable;
  */
 @Schema(description = "新增岗位请求")
 public record PostAddReq(
-        @NotBlank(message = "岗位名称不能为空")
-        @Schema(description = "岗位名称")
-        String postName,
-        @NotBlank(message = "岗位编码不能为空")
-        @Schema(description = "岗位编码")
-        String postCode,
-        @Schema(description = "岗位排序")
-        Integer postSort,
-        @Schema(description = "状态（1正常 2停用）")
-        @Pattern(regexp = "[12]", message = "状态值只能为1或2")
-        String status,
-        @Schema(description = "备注")
-        String remark
-) implements Serializable {}
+        @NotBlank(message = "岗位名称不能为空") @Schema(description = "岗位名称") String postName,
+        @NotBlank(message = "岗位编码不能为空") @Schema(description = "岗位编码") String postCode,
+        @Schema(description = "岗位排序") Integer postSort,
+        @Schema(description = "状态（1正常 2停用）") @Pattern(regexp = "[12]", message = "状态值只能为1或2")
+                String status,
+        @Schema(description = "备注") String remark)
+        implements Serializable {}

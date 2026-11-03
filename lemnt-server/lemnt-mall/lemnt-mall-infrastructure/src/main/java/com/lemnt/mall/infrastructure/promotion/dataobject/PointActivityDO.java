@@ -12,6 +12,7 @@ import lombok.Data;
 public class PointActivityDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private Long spuId;
     private Integer status;
     private String remark;

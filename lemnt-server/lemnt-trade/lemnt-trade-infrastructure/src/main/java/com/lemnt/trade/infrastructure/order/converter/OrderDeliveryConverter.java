@@ -7,21 +7,27 @@ import java.math.BigDecimal;
 
 /** 订单收件快照与独立数据库列转换。 */
 public final class OrderDeliveryConverter {
-    private OrderDeliveryConverter() {
-    }
+    private OrderDeliveryConverter() {}
 
     /** 历史记录没有配送方式时保持为空。 */
     public static TradeOrderDelivery from(TradeOrderDO row) {
-        return row.getDeliveryType() == null ? null : new TradeOrderDelivery(row.getAddressId(),
-                row.getDeliveryType(), row.getReceiverName(), row.getReceiverMobile(), row.getReceiverAreaId(),
-                row.getReceiverDetailAddress(), row.getDeliveryPrice(), row.getPickUpStoreId(),
-                row.getPickUpVerifyCode());
+        return row.getDeliveryType() == null
+                ? null
+                : new TradeOrderDelivery(
+                        row.getAddressId(),
+                        row.getDeliveryType(),
+                        row.getReceiverName(),
+                        row.getReceiverMobile(),
+                        row.getReceiverAreaId(),
+                        row.getReceiverDetailAddress(),
+                        row.getDeliveryPrice(),
+                        row.getPickUpStoreId(),
+                        row.getPickUpVerifyCode());
     }
 
     /** 冻结配送信息，后续支付/发货不重读会员地址。 */
     public static void fill(TradeOrderDelivery value, TradeOrderDO row) {
-        if (value == null
-        ) {
+        if (value == null) {
             row.setDeliveryPrice(BigDecimal.ZERO.setScale(2));
             return;
         }

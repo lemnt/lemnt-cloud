@@ -16,9 +16,10 @@ import com.lemnt.trade.application.fulfillment.executor.MemberOrderTrackQueryExe
 import com.lemnt.trade.application.fulfillment.executor.OrderReceiveCmdExe;
 import com.lemnt.trade.application.fulfillment.qry.MemberOrderPageQry;
 import com.lemnt.trade.application.order.executor.TradeOrderCloseCmdExe;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +33,6 @@ import java.util.List;
 /** 会员本人订单中心，身份仅取网关已认证上下文。 */
 @Tag(name = "会员订单中心")
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/trade/app/orders")
 public class AppOrderController {
     private final TradeOrderCloseCmdExe close;
@@ -46,17 +46,26 @@ public class AppOrderController {
     @GetMapping
     @Operation(summary = "本人订单分页")
     public R<AppOrderSummaryRes> page(@Valid @ModelAttribute AppOrderPageReq req) {
-        var page = pageQuery.execute(SecurityUtils.getUserId(), new MemberOrderPageQry(req.status(),
-                req.commentStatus(), req.pageNum() == null ? 1 : req.pageNum(),
-                req.pageSize() == null ? 10 : req.pageSize()));
-        return R.page(page.getRecords().stream().map(AppOrderResConverter::summary).toList(), page.getTotal());
+        var page =
+                pageQuery.execute(
+                        SecurityUtils.getUserId(),
+                        new MemberOrderPageQry(
+                                req.status(),
+                                req.commentStatus(),
+                                req.pageNum() == null ? 1 : req.pageNum(),
+                                req.pageSize() == null ? 10 : req.pageSize()));
+        return R.page(
+                page.getRecords().stream().map(AppOrderResConverter::summary).toList(),
+                page.getTotal());
     }
 
     /** 本人订单各状态数量，区分待评价与已完成。 */
     @GetMapping("/status-counts")
     @Operation(summary = "本人订单状态数量")
     public R<AppOrderStatusCountRes> statusCounts() {
-        return R.ok(AppOrderResConverter.statusCount(statusCountQuery.execute(SecurityUtils.getUserId())));
+        return R.ok(
+                AppOrderResConverter.statusCount(
+                        statusCountQuery.execute(SecurityUtils.getUserId())));
     }
 
     /** 本人订单详情，他人订单统一返回不存在。 */
@@ -93,5 +102,50 @@ public class AppOrderController {
     public R<Boolean> receive(@PathVariable String orderNo) {
         receive.executeForMember(SecurityUtils.getUserId(), orderNo);
         return R.ok(true);
+    }
+
+    private final com.lemnt.trade.application.promotion.executor.OrderPromotionDetailQueryExe
+            promotionQuery;
+
+    /** 查询冻结优惠及权益，不回查当前促销规则。 */
+    @GetMapping("/{orderNo}/promotions")
+    @Operation(summary = "订单优惠快照")
+    public R<com.lemnt.trade.adapter.app.promotion.res.AppOrderPromotionDetailRes> promotions(
+            @PathVariable String orderNo) {
+        return R.ok(
+                com.lemnt.trade.adapter.app.promotion.converter.OrderPromotionResConverter.toRes(
+                        promotionQuery.execute(
+                                com.lemnt.common.security.utils.SecurityUtils.getUserId(),
+                                orderNo)));
+    }
+
+    /** 生产使用完整查询协作者，存量测试构造仅服务原有路由。 */
+    @Autowired
+    public AppOrderController(
+            TradeOrderCloseCmdExe close,
+            OrderReceiveCmdExe receive,
+            MemberOrderPageQueryExe pageQuery,
+            MemberOrderDetailQueryExe detailQuery,
+            MemberOrderTrackQueryExe trackQuery,
+            MemberOrderStatusCountQueryExe statusCountQuery,
+            com.lemnt.trade.application.promotion.executor.OrderPromotionDetailQueryExe
+                    promotionQuery) {
+        this.close = close;
+        this.receive = receive;
+        this.pageQuery = pageQuery;
+        this.detailQuery = detailQuery;
+        this.trackQuery = trackQuery;
+        this.statusCountQuery = statusCountQuery;
+        this.promotionQuery = promotionQuery;
+    }
+
+    public AppOrderController(
+            TradeOrderCloseCmdExe close,
+            OrderReceiveCmdExe receive,
+            MemberOrderPageQueryExe pageQuery,
+            MemberOrderDetailQueryExe detailQuery,
+            MemberOrderTrackQueryExe trackQuery,
+            MemberOrderStatusCountQueryExe statusCountQuery) {
+        this(close, receive, pageQuery, detailQuery, trackQuery, statusCountQuery, null);
     }
 }

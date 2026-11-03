@@ -43,13 +43,17 @@ public class NoticeController {
     @GetMapping
     public R<SystemNoticeListRes> list(@Validated NoticePageReq req) {
         PageResult<NoticeDTO> result = noticePageQueryExe.execute(NoticeReqConverter.toQry(req));
-        return R.page(NoticeResConverter.toResListToSystemNoticeListRes(result.getRecords()), result.getTotal());
+        return R.page(
+                NoticeResConverter.toResListToSystemNoticeListRes(result.getRecords()),
+                result.getTotal());
     }
 
     @Operation(summary = "根据通知公告编号获取详细信息")
     @GetMapping(value = "/{noticeId}")
     public R<SystemNoticeGetInfoRes> getInfo(@PathVariable Long noticeId) {
-        return R.ok(NoticeResConverter.toResToSystemNoticeGetInfoRes(noticeDetailQueryExe.execute(noticeId)));
+        return R.ok(
+                NoticeResConverter.toResToSystemNoticeGetInfoRes(
+                        noticeDetailQueryExe.execute(noticeId)));
     }
 
     @Operation(summary = "首页顶部公告列表")
@@ -58,9 +62,10 @@ public class NoticeController {
     public R<NoticeTopRes> listTop() {
         Long userId = SecurityUtils.getUserId();
         Map<String, Object> result = noticeTopListQueryExe.execute(userId, 5);
-        NoticeTopRes res = new NoticeTopRes(
-                NoticeResConverter.toResList((List<NoticeDTO>) result.get("list")),
-                (Integer) result.get("unreadCount"));
+        NoticeTopRes res =
+                new NoticeTopRes(
+                        NoticeResConverter.toResList((List<NoticeDTO>) result.get("list")),
+                        (Integer) result.get("unreadCount"));
         return R.ok(res);
     }
 

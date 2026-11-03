@@ -43,9 +43,12 @@ public class PaymentRefundCreateCmdExe {
             return PaymentRefundDTOConverter.toDTO(refund);
         }
         var payment = payments.findByPaymentNo(refund.paymentNo());
-        if (payment == null || !"SUCCESS".equals(payment.status())
-                || !payment.orderNo().equals(refund.orderNo()) || !payment.channel().equals(refund.channel())
-                || refund.amount().signum() <= 0 || payment.amount().compareTo(refund.amount()) < 0) {
+        if (payment == null
+                || !"SUCCESS".equals(payment.status())
+                || !payment.orderNo().equals(refund.orderNo())
+                || !payment.channel().equals(refund.channel())
+                || refund.amount().signum() <= 0
+                || payment.amount().compareTo(refund.amount()) < 0) {
             throw new IllegalStateException("原支付单与退款交易不一致，请先对账");
         }
         var result = service.complete(refund, channels.refund(refund, payment));
@@ -58,8 +61,12 @@ public class PaymentRefundCreateCmdExe {
         if (!"SUCCESS".equals(refund.status())) {
             return;
         }
-        if (!tasks.enqueueAndAttempt(PayNotifyType.REFUND.name(), refund.refundNo(), refund.orderNo())) {
-            throw new IllegalStateException("退款后处理失败，已登记重试任务");
-        }
+        // 任务已在退款成功事务内入库；被其他执行者领取或权益失败不改变已确认的现金结果。
+        // 权益是否完成由售后优惠子资源单独返回，失败保留任务重试。
+        String type = service.taskType(refund);
+        tasks.enqueueAndAttempt(
+                type,
+                "AFTER_SALE".equals(type) ? refund.afterSaleNo() : refund.refundNo(),
+                refund.orderNo());
     }
 }

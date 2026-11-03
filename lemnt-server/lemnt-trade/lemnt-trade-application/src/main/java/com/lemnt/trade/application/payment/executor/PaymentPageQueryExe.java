@@ -23,8 +23,11 @@ public class PaymentPageQueryExe {
 
     /** 按精确条件分页查询，不返回内部通知标识。 */
     public PageResult<PaymentDTO> execute(PaymentPageQry query) {
-        if (query == null || query.pageNum() < 1 || query.pageNum() > 1000000
-                || query.pageSize() < 1 || query.pageSize() > 100) {
+        if (query == null
+                || query.pageNum() < 1
+                || query.pageNum() > 1000000
+                || query.pageSize() < 1
+                || query.pageSize() > 100) {
             throw new IllegalArgumentException("分页参数不合法");
         }
         String paymentNo = text(query.paymentNo(), 40);
@@ -37,9 +40,18 @@ public class PaymentPageQueryExe {
         if (channel != null) {
             PaymentChannel.valueOf(channel);
         }
-        var page = gateway.page(new PaymentFilter(
-                paymentNo, orderNo, channel, status, query.pageNum(), query.pageSize()));
-        return PageResult.of(page.getRecords().stream().map(PaymentDTOConverter::toDTO).toList(), page.getTotal());
+        var page =
+                gateway.page(
+                        new PaymentFilter(
+                                paymentNo,
+                                orderNo,
+                                channel,
+                                status,
+                                query.pageNum(),
+                                query.pageSize()));
+        return PageResult.of(
+                page.getRecords().stream().map(PaymentDTOConverter::toDTO).toList(),
+                page.getTotal());
     }
 
     private String text(String value, int max) {

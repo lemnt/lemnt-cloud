@@ -9,6 +9,5 @@ public record BrokerageRecordPageReq(
         @Schema(description = "业务类型") Integer bizType,
         @Schema(description = "状态") Integer status,
         @Schema(description = "pageNum") Integer pageNum,
-        @Schema(description = "pageSize") Integer pageSize
-) implements java.io.Serializable {
-}
+        @Schema(description = "pageSize") Integer pageSize)
+        implements java.io.Serializable {}

@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** Banner 表 CRUD。 */
 @Mapper
-public interface BannerMapper extends BaseMapper<BannerDO> {
-}
+public interface BannerMapper extends BaseMapper<BannerDO> {}

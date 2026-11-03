@@ -14,6 +14,7 @@ public class PaymentChannelListQueryExe {
     /** 与支付单创建复用同一渠道定义。 */
     public List<PaymentChannelDTO> execute() {
         return Arrays.stream(PaymentChannel.values())
-                .map(channel -> new PaymentChannelDTO(channel.name(), channel.displayName())).toList();
+                .map(channel -> new PaymentChannelDTO(channel.name(), channel.displayName()))
+                .toList();
     }
 }

@@ -28,9 +28,14 @@ public class RechargePackageCreateCmdExe {
         if (packages.existsName(name, null)) {
             throw new IllegalStateException("套餐名已存在");
         }
-        var value = new RechargePackage(null, name,
-                RechargeRules.positiveMoney(cmd.payPrice(), "支付金额"),
-                RechargeRules.nonNegativeMoney(cmd.bonusPrice(), "赠送金额"), cmd.status(), null);
+        var value =
+                new RechargePackage(
+                        null,
+                        name,
+                        RechargeRules.positiveMoney(cmd.payPrice(), "支付金额"),
+                        RechargeRules.nonNegativeMoney(cmd.bonusPrice(), "赠送金额"),
+                        cmd.status(),
+                        null);
         return RechargeDTOConverter.packageView(packages.insert(value));
     }
 }

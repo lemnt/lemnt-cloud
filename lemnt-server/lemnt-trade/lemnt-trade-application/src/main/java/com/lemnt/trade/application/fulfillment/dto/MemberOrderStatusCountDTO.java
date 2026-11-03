@@ -11,6 +11,5 @@ public record MemberOrderStatusCountDTO(
         long completed,
         long closed,
         long refunded,
-        long awaitingPickup
-) implements Serializable {
-}
+        long awaitingPickup)
+        implements Serializable {}

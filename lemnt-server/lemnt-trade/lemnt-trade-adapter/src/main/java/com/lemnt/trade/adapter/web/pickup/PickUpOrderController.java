@@ -39,8 +39,11 @@ public class PickUpOrderController {
     @Operation(summary = "将已支付订单设置为自提")
     @RequiresPermissions("trade:fulfillment:update")
     public R<PickUpOrderRes> assign(@Valid @RequestBody PickUpAssignReq req) {
-        return R.ok(PickUpConverter.order(assign.execute(new PickUpAssignCmd(req.orderNo(), req.storeId(),
-                SecurityUtils.getUserId()))));
+        return R.ok(
+                PickUpConverter.order(
+                        assign.execute(
+                                new PickUpAssignCmd(
+                                        req.orderNo(), req.storeId(), SecurityUtils.getUserId()))));
     }
 
     @GetMapping("/{code}")
@@ -54,6 +57,8 @@ public class PickUpOrderController {
     @Operation(summary = "确认自提核销")
     @RequiresPermissions("trade:fulfillment:update")
     public R<PickUpOrderRes> verify(@PathVariable String code) {
-        return R.ok(PickUpConverter.order(verify.execute(new PickUpVerifyCmd(code, SecurityUtils.getUserId()))));
+        return R.ok(
+                PickUpConverter.order(
+                        verify.execute(new PickUpVerifyCmd(code, SecurityUtils.getUserId()))));
     }
 }

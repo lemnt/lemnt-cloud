@@ -15,6 +15,5 @@ public record PayNotifyTaskDTO(
         LocalDateTime nextNotifyTime,
         LocalDateTime lastExecuteTime,
         String lastResponse,
-        LocalDateTime createTime
-) implements Serializable {
-}
+        LocalDateTime createTime)
+        implements Serializable {}

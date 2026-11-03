@@ -1,5 +1,10 @@
 import { beforeEach, expect, it, vi } from 'vitest';
-import { shipOrder } from './fulfillmentApi';
+import {
+  shipOrder,
+  getOrderPromotions,
+  getAfterSalePromotions,
+  refundAfterSale,
+} from './fulfillmentApi';
 const { mockedRequest } = vi.hoisted(() => ({ mockedRequest: vi.fn() }));
 vi.mock('@/api/request', () => ({ request: mockedRequest }));
 beforeEach(() => mockedRequest.mockReset());
@@ -84,4 +89,66 @@ it('调价与改址只发送业务字段并返回服务端确认', async () => {
     method: 'PUT',
     data: address,
   });
+});
+
+it('优惠子资源使用原订单与售后路径，保留原包装', async () => {
+  mockedRequest.mockResolvedValueOnce({
+    data: {
+      orderNo: 'TR1',
+      snapshotStatus: 'COMPLETE',
+      summary: {
+        originalAmount: '100.00',
+        discountAmount: '20.00',
+        deliveryOriginalPrice: '0.00',
+        deliveryDiscountPrice: '0.00',
+        adjustmentAmount: '0.00',
+        payAmount: '80.00',
+      },
+      promotions: [],
+    },
+  });
+  expect((await getOrderPromotions('TR1')).summary.discountAmount).toBe('20.00');
+  expect(mockedRequest).toHaveBeenLastCalledWith({ url: '/trade/admin/orders/TR1/promotions' });
+  mockedRequest.mockResolvedValueOnce({
+    data: {
+      afterSaleNo: 'RF1',
+      orderItemId: '11',
+      quantity: 1,
+      amount: '40.00',
+      discountAmount: '10.00',
+      deliveryDiscountPrice: '0.00',
+      returnUsePoint: 0,
+      deductGivePoint: 0,
+      ruleVersion: 1,
+      snapshotStatus: 'COMPLETE',
+      benefitStatus: 'SUCCESS',
+      promotions: [],
+    },
+  });
+  expect((await getAfterSalePromotions('RF1')).amount).toBe('40.00');
+  expect(mockedRequest).toHaveBeenLastCalledWith({
+    url: '/trade/admin/after-sales/RF1/promotions',
+  });
+});
+it('零现金售后没有支付退款编号，不能接受伪造的非零无流水成功', async () => {
+  mockedRequest.mockResolvedValueOnce({
+    data: {
+      refundNo: null,
+      afterSaleNo: 'RF1',
+      channel: 'NONE',
+      amount: '0.00',
+      status: 'SUCCESS',
+    },
+  });
+  expect(await refundAfterSale('RF1')).toEqual({ refundNo: null, status: 'SUCCESS' });
+  mockedRequest.mockResolvedValueOnce({
+    data: {
+      refundNo: null,
+      afterSaleNo: 'RF1',
+      channel: 'NONE',
+      amount: '1.00',
+      status: 'SUCCESS',
+    },
+  });
+  await expect(refundAfterSale('RF1')).rejects.toThrow();
 });

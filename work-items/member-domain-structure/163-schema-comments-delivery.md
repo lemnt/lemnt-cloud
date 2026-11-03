@@ -42,3 +42,23 @@ JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home \
 [已有库操作说明](../../docs/database-comments.md)包含只读计划与--apply步骤。NOT RUN：真实MySQL读取/DDL升级、实际information_schema注释验收、部署及业务数据核对。工具的列属性保真已用复杂SHOW CREATE样例验证，但未连接目标库，不宣称真实库已补齐。
 
 下一接收方为QA/用户真实环境演练和审核。本批仅完成代码与SQL交付，不代替人工验收，不重算整体迁移完成率。
+
+## 2026-11-02 已有库实际执行
+
+用户明确要求“数据库执行下”后，在本地Docker mysql8（MySQL8.0.46）完成注释升级。使用容器内mysql客户端及本批upgrade_plan逻辑，凭证只在容器内使用，不输出或落盘。
+
+| 库 | 实际表数 | 补表注释 | 补字段注释 |
+| --- | --- | --- | --- |
+| lemnt_member | 18 | 17 | 157 |
+| lemnt_mall | 35 | 33 | 378 |
+| lemnt_trade | 27 | 12 | 325 |
+| lemnt_system | 17 | 0 | 0 |
+| 合计 | 97 | 62 | 860 |
+
+执行922条仅COMMENT变更，涉及80张表；system17张表注释完整，无需改写。实际库保留member_config/trade_config，已补充schema-comments-legacy.json纳入这两张已知历史表；没有执行配置迁移、赠券列升级或规格改名。
+
+执行前建表定义、列属性快照及SQL计划位于 `/private/tmp/lemnt-schema-comments-20261102/` 的before-ddl.json、before-columns.json及plan.sql。临时驱动run.py分别执行prepare、apply、verify，结构快照不含业务行数据，不是全库业务数据备份。
+
+实际复查PASS：97张表、1069个实际字段，空表注释和空字段注释均为0；原有非空注释保留，字段类型、精度、默认值、空值、字符集、排序规则、EXTRA和生成表达式逐项一致；索引、外键及CHECK逻辑一致。8张表的CHECK中MySQL将ASCII字面量字符集标记从_latin1重序列化为_utf8mb4，核对仅此标记不同，字段、运算符和字面值未变；原始DDL不是字节完全相同。
+
+本节取代前文“未执行真实MySQL”的历史状态。未做服务部署/浏览器验收，未commit/push；仅执行本批注释DDL，不触碰业务行。

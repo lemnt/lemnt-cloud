@@ -28,28 +28,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
-    @Mock
-    private UserPageQueryExe userPageQueryExe;
+    @Mock private UserPageQueryExe userPageQueryExe;
 
-    @InjectMocks
-    private UserController controller;
+    @InjectMocks private UserController controller;
 
     private MockMvc mvc;
 
     @BeforeEach
     void setUp() {
-        mvc = MockMvcBuilders.standaloneSetup(controller)
-                .setControllerAdvice(new GlobalRequestBindingAdvice())
-                .build();
+        mvc =
+                MockMvcBuilders.standaloneSetup(controller)
+                        .setControllerAdvice(new GlobalRequestBindingAdvice())
+                        .build();
         when(userPageQueryExe.execute(any())).thenReturn(PageResult.of(List.of(), 0L));
     }
 
     @Test
     void shouldNotUseLoginUsernameHeaderAsListFilter() throws Exception {
-        mvc.perform(get("/users")
-                        .header("username", "admin")
-                        .param("pageNum", "1")
-                        .param("pageSize", "20"))
+        mvc.perform(
+                        get("/users")
+                                .header("username", "admin")
+                                .param("pageNum", "1")
+                                .param("pageSize", "20"))
                 .andExpect(status().isOk());
 
         ArgumentCaptor<UserPageQry> query = ArgumentCaptor.forClass(UserPageQry.class);
@@ -61,10 +61,11 @@ class UserControllerTest {
 
     @Test
     void shouldPreserveExplicitUsernameAndDepartmentFilters() throws Exception {
-        mvc.perform(get("/users")
-                        .header("username", "admin")
-                        .param("userName", "ry")
-                        .param("deptId", "105"))
+        mvc.perform(
+                        get("/users")
+                                .header("username", "admin")
+                                .param("userName", "ry")
+                                .param("deptId", "105"))
                 .andExpect(status().isOk());
 
         ArgumentCaptor<UserPageQry> query = ArgumentCaptor.forClass(UserPageQry.class);

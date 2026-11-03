@@ -21,10 +21,20 @@ class ShipmentHttpTest {
     @Test
     void shipmentListHasIndependentPaginationAndNeverIncludesRecipientData() throws Exception {
         var query = mock(ShipmentPageQueryExe.class);
-        when(query.execute(any())).thenReturn(PageResult.of(List.of(new ShipmentSummaryDTO(
-                "TR1", "SF", "WAY1", LocalDateTime.now(), null)), 1));
-        var mvc = MockMvcBuilders.standaloneSetup(new ShipmentQueryController(
-                query, mock(ShipmentDetailQueryExe.class), mock(ShipmentTrackListQueryExe.class))).build();
+        when(query.execute(any()))
+                .thenReturn(
+                        PageResult.of(
+                                List.of(
+                                        new ShipmentSummaryDTO(
+                                                "TR1", "SF", "WAY1", LocalDateTime.now(), null)),
+                                1));
+        var mvc =
+                MockMvcBuilders.standaloneSetup(
+                                new ShipmentQueryController(
+                                        query,
+                                        mock(ShipmentDetailQueryExe.class),
+                                        mock(ShipmentTrackListQueryExe.class)))
+                        .build();
         mvc.perform(get("/trade/admin/shipments").param("trackingNo", "WAY1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.total").value(1))

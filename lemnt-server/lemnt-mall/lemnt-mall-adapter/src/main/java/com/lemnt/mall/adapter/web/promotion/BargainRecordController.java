@@ -35,7 +35,8 @@ public class BargainRecordController {
     @RequiresPermissions("mall:promotion:list")
     public R<BargainRecordRes> records(@Valid @ModelAttribute BargainRecordPageReq req) {
         var result = records.execute(BargainConverter.recordPage(req));
-        return R.page(result.getRecords().stream().map(BargainConverter::record).toList(),
+        return R.page(
+                result.getRecords().stream().map(BargainConverter::record).toList(),
                 result.getTotal());
     }
 
@@ -44,7 +45,8 @@ public class BargainRecordController {
     @RequiresPermissions("mall:promotion:list")
     public R<BargainHelpRes> helps(@Valid @ModelAttribute BargainHelpPageReq req) {
         var result = helps.execute(BargainConverter.helpPage(req));
-        return R.page(result.getRecords().stream().map(BargainConverter::help).toList(),
+        return R.page(
+                result.getRecords().stream().map(BargainConverter::help).toList(),
                 result.getTotal());
     }
 }

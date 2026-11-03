@@ -32,7 +32,8 @@ public class FileController {
     @Operation(summary = "上传文件到 OSS")
     @RequiresLogin
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public R<FileUploadRes> upload(@Validated @ModelAttribute FileUploadReq req) throws IOException {
+    public R<FileUploadRes> upload(@Validated @ModelAttribute FileUploadReq req)
+            throws IOException {
         var cmd = FileReqConverter.toCmd(req);
 
         // 存储成功或失败都关闭上传流，不将 HTTP 文件类型传入应用层。

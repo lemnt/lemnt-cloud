@@ -29,13 +29,12 @@ class MenuRoleTreeQueryExeTest {
 
     private final MenuGateway menus = mock(MenuGateway.class);
 
-    private final MenuRoleTreeQueryExe executor = new MenuRoleTreeQueryExe(
-            menus, new TreeMenuService(), new RoleDomainService(roles));
+    private final MenuRoleTreeQueryExe executor =
+            new MenuRoleTreeQueryExe(menus, new TreeMenuService(), new RoleDomainService(roles));
 
     @AfterEach
     void clearContext() {
         SecurityContextHolder.remove();
-
     }
 
     @Test
@@ -43,10 +42,10 @@ class MenuRoleTreeQueryExeTest {
         when(roles.selectRoleList(any(Role.class))).thenReturn(List.of());
 
         assertThatThrownBy(() -> executor.execute(103L))
-                .isInstanceOf(ServiceException.class).hasMessageContaining("没有权限访问角色数据");
+                .isInstanceOf(ServiceException.class)
+                .hasMessageContaining("没有权限访问角色数据");
 
         verifyNoInteractions(menus);
-
     }
 
     @Test
@@ -74,6 +73,5 @@ class MenuRoleTreeQueryExeTest {
         verify(menus).selectListByUserId(menu.capture());
 
         assertThat(menu.getValue().getUserId()).isEqualTo(100L);
-
     }
 }

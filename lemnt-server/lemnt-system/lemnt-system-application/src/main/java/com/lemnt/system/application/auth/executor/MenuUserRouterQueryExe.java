@@ -20,7 +20,7 @@ import java.util.Objects;
  */
 @Component
 @RequiredArgsConstructor
-public class MenuUserRouterQryExe {
+public class MenuUserRouterQueryExe {
     private final MenuGateway menuGateway;
     private final RouterMenuService routerMenuService;
 

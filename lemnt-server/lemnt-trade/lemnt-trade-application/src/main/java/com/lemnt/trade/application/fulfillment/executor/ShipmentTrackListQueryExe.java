@@ -24,7 +24,8 @@ public class ShipmentTrackListQueryExe {
         if (shipment == null) {
             throw new IllegalArgumentException("物流单不存在");
         }
-        return tracks.tracks(shipment).stream().map(value ->
-                new ShipmentTrackDTO(value.time(), value.description())).toList();
+        return tracks.tracks(shipment).stream()
+                .map(value -> new ShipmentTrackDTO(value.time(), value.description()))
+                .toList();
     }
 }

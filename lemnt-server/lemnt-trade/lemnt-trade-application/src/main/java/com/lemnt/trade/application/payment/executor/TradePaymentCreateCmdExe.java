@@ -51,13 +51,19 @@ public class TradePaymentCreateCmdExe {
             throw new IllegalStateException("只有待支付订单可以创建支付单");
         }
 
-        PaymentRecord existing = tradePaymentGateway.findByOrderNoAndChannel(order.orderNo(), normalizedChannel);
+        PaymentRecord existing =
+                tradePaymentGateway.findByOrderNoAndChannel(order.orderNo(), normalizedChannel);
         if (existing != null) {
             return existing;
         }
-        String paymentNo = "PAY" + UUID.randomUUID().toString().replace("-", "")
-                .substring(0, 24).toUpperCase(Locale.ROOT);
-        return tradePaymentGateway.createWaiting(paymentNo, order.orderNo(), normalizedChannel, appKey,
-                order.totalAmount());
+        String paymentNo =
+                "PAY"
+                        + UUID.randomUUID()
+                                .toString()
+                                .replace("-", "")
+                                .substring(0, 24)
+                                .toUpperCase(Locale.ROOT);
+        return tradePaymentGateway.createWaiting(
+                paymentNo, order.orderNo(), normalizedChannel, appKey, order.totalAmount());
     }
 }

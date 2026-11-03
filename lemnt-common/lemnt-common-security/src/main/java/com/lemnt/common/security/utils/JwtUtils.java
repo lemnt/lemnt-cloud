@@ -1,15 +1,16 @@
 package com.lemnt.common.security.utils;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-
-import cn.hutool.core.convert.Convert;
 import com.lemnt.common.security.constant.SecurityConstants;
 import com.lemnt.common.security.properties.TokenProperties;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
+import cn.hutool.core.convert.Convert;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import javax.crypto.SecretKey;
 
 /**
@@ -30,9 +31,9 @@ public class JwtUtils {
         return userType == null ? SecurityConstants.ADMIN_USER_TYPE : userType;
     }
 
-
     public JwtUtils(TokenProperties tokenProperties) {
-        this.secretKey = Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8));
+        this.secretKey =
+                Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -42,10 +43,7 @@ public class JwtUtils {
      * @return 令牌
      */
     public String createToken(Map<String, Object> claims) {
-        return Jwts.builder()
-                .claims(claims)
-                .signWith(secretKey, Jwts.SIG.HS512)
-                .compact();
+        return Jwts.builder().claims(claims).signWith(secretKey, Jwts.SIG.HS512).compact();
     }
 
     /**
@@ -55,11 +53,7 @@ public class JwtUtils {
      * @return 数据声明
      */
     public Claims parseToken(String token) {
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
     }
 
     /**

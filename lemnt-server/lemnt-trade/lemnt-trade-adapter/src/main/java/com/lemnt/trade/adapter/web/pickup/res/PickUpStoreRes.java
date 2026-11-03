@@ -20,6 +20,5 @@ public record PickUpStoreRes(
         @Schema(description = "纬度") BigDecimal latitude,
         @Schema(description = "经度") BigDecimal longitude,
         @Schema(description = "核销店员") List<Long> verifyUserIds,
-        @Schema(description = "状态") Integer status
-) implements java.io.Serializable {
-}
+        @Schema(description = "状态") Integer status)
+        implements java.io.Serializable {}

@@ -53,8 +53,10 @@ public interface CouponTemplateGateway {
 
     /** 占用优惠券发放名额。 */
     boolean takeQuota(Long templateId);
+
     /** 获取数据库时间，保持有效期判断与写入条件一致。 */
     LocalDateTime now();
+
     /** 是否开放会员主动领取。 */
     boolean claimable(Long id);
 

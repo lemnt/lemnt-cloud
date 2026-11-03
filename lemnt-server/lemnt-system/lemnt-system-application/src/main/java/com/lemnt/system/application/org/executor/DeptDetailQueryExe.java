@@ -31,7 +31,8 @@ public class DeptDetailQueryExe {
     public DeptDTO execute(Long deptId) {
         Dept condition = new Dept();
         condition.setDeptId(deptId);
-        if (!SecurityUtils.isAdmin() && StringUtils.isEmpty(deptGateway.selectDeptList(condition))) {
+        if (!SecurityUtils.isAdmin()
+                && StringUtils.isEmpty(deptGateway.selectDeptList(condition))) {
             throw new ServiceException("没有权限访问部门数据！");
         }
         return DeptConverter.toDTO(deptGateway.selectDeptById(deptId));

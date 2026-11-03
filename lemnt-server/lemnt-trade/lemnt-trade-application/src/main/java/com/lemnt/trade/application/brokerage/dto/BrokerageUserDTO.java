@@ -13,6 +13,5 @@ public record BrokerageUserDTO(
         BigDecimal brokeragePrice,
         BigDecimal frozenPrice,
         long firstLevelCount,
-        long secondLevelCount
-) implements Serializable {
-}
+        long secondLevelCount)
+        implements Serializable {}

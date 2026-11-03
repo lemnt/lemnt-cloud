@@ -19,41 +19,29 @@ import com.lemnt.trade.application.delivery.qry.DeliveryExpressTemplatePageQry;
 
 /** delivery Req 接口边界转换。 */
 public final class DeliveryReqConverter {
-    private DeliveryReqConverter() {
-    }
+    private DeliveryReqConverter() {}
 
     /** 转换新增请求。 */
     public static DeliveryExpressCreateCmd deliveryExpressCreate(DeliveryExpressCreateReq req) {
         return new DeliveryExpressCreateCmd(
-                req.code(),
-                req.name(),
-                req.logo(),
-                req.sort(),
-                req.status());
+                req.code(), req.name(), req.logo(), req.sort(), req.status());
     }
 
     /** 转换修改请求。 */
-    public static DeliveryExpressUpdateCmd deliveryExpressUpdate(Long id, DeliveryExpressUpdateReq req) {
+    public static DeliveryExpressUpdateCmd deliveryExpressUpdate(
+            Long id, DeliveryExpressUpdateReq req) {
         return new DeliveryExpressUpdateCmd(
-                id,
-                req.code(),
-                req.name(),
-                req.logo(),
-                req.sort(),
-                req.status());
+                id, req.code(), req.name(), req.logo(), req.sort(), req.status());
     }
 
     /** 转换分页请求。 */
     public static DeliveryExpressPageQry deliveryExpressPage(DeliveryExpressPageReq req) {
-        return new DeliveryExpressPageQry(
-                req.name(),
-                req.status(),
-                req.pageNum(),
-                req.pageSize());
+        return new DeliveryExpressPageQry(req.name(), req.status(), req.pageNum(), req.pageSize());
     }
 
     /** 转换新增请求。 */
-    public static DeliveryExpressTemplateCreateCmd deliveryExpressTemplateCreate(DeliveryExpressTemplateCreateReq req) {
+    public static DeliveryExpressTemplateCreateCmd deliveryExpressTemplateCreate(
+            DeliveryExpressTemplateCreateReq req) {
         return new DeliveryExpressTemplateCreateCmd(
                 req.name(),
                 req.chargeMode(),
@@ -64,8 +52,7 @@ public final class DeliveryReqConverter {
 
     /** 转换修改请求。 */
     public static DeliveryExpressTemplateUpdateCmd deliveryExpressTemplateUpdate(
-            Long id,
-            DeliveryExpressTemplateUpdateReq req) {
+            Long id, DeliveryExpressTemplateUpdateReq req) {
         return new DeliveryExpressTemplateUpdateCmd(
                 id,
                 req.name(),
@@ -76,11 +63,9 @@ public final class DeliveryReqConverter {
     }
 
     /** 转换分页请求。 */
-    public static DeliveryExpressTemplatePageQry deliveryExpressTemplatePage(DeliveryExpressTemplatePageReq req) {
-        return new DeliveryExpressTemplatePageQry(
-                req.name(),
-                req.pageNum(),
-                req.pageSize());
+    public static DeliveryExpressTemplatePageQry deliveryExpressTemplatePage(
+            DeliveryExpressTemplatePageReq req) {
+        return new DeliveryExpressTemplatePageQry(req.name(), req.pageNum(), req.pageSize());
     }
 
     /** 转换子规则。 */
@@ -97,9 +82,6 @@ public final class DeliveryReqConverter {
     /** 转换子规则。 */
     private static DeliveryFreeCmd free(DeliveryFreeReq value) {
         return new DeliveryFreeCmd(
-                value.id(),
-                value.areaIds(),
-                value.freePrice(),
-                value.freeCount());
+                value.id(), value.areaIds(), value.freePrice(), value.freeCount());
     }
 }

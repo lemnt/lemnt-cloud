@@ -39,9 +39,10 @@ public class RoleDataScopeController {
     @GetMapping(value = "/dept-tree/{roleId}")
     public R<RoleDeptTreeRes> deptTree(@PathVariable("roleId") Long roleId) {
         Map<String, Object> result = roleDeptTreeQueryExe.execute(roleId);
-        RoleDeptTreeRes res = new RoleDeptTreeRes(
-                (List<Long>) result.get("checkedKeys"),
-                TreeSelectResConverter.toResList((List<TreeSelect>) result.get("depts")));
+        RoleDeptTreeRes res =
+                new RoleDeptTreeRes(
+                        (List<Long>) result.get("checkedKeys"),
+                        TreeSelectResConverter.toResList((List<TreeSelect>) result.get("depts")));
         return R.ok(res);
     }
 

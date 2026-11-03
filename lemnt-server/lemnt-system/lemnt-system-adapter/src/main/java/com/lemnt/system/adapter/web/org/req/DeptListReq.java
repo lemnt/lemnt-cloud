@@ -13,14 +13,12 @@ import java.io.Serializable;
 @Schema(description = "部门列表查询条件")
 public record DeptListReq(
         /**
- * 部门名称
- */
-        @Schema(description = "部门名称")
-        String deptName,
+         * 部门名称
+         */
+        @Schema(description = "部门名称") String deptName,
         /**
- * 部门状态（1正常 2停用）
- */
-        @Schema(description = "部门状态（1正常 2停用）")
-        @Pattern(regexp = "[12]", message = "状态值只能为1或2")
-        String status
-) implements Serializable {}
+         * 部门状态（1正常 2停用）
+         */
+        @Schema(description = "部门状态（1正常 2停用）") @Pattern(regexp = "[12]", message = "状态值只能为1或2")
+                String status)
+        implements Serializable {}

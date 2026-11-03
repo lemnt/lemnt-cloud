@@ -22,7 +22,8 @@ public class PaymentNotifyCmdExe {
      */
     public void execute(VerifiedPaymentNotification notification) {
         notifications.execute(notification);
-        if (!tasks.enqueueAndAttempt(PayNotifyType.PAY.name(), notification.paymentNo(), notification.orderNo())) {
+        if (!tasks.enqueueAndAttempt(
+                PayNotifyType.PAY.name(), notification.paymentNo(), notification.orderNo())) {
             throw new IllegalStateException("支付后处理失败，已登记重试任务");
         }
     }

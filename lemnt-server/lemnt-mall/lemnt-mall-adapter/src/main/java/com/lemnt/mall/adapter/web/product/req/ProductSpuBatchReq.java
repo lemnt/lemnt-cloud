@@ -12,9 +12,6 @@ import java.util.List;
 /** 商品批量详情请求。 */
 @Schema(description = "商品批量详情请求")
 public record ProductSpuBatchReq(
-        @Schema(description = "1至100个商品ID")
-        @NotEmpty @Size(max = 100)
-        List<@NotNull
-        @Positive Long> ids
-) implements Serializable {
-}
+        @Schema(description = "1至100个商品ID") @NotEmpty @Size(max = 100)
+                List<@NotNull @Positive Long> ids)
+        implements Serializable {}

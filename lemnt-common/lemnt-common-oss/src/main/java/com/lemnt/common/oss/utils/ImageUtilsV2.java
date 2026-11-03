@@ -1,8 +1,5 @@
 package com.lemnt.common.oss.utils;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -10,6 +7,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 /**
  * 图像等比压缩工具类
@@ -24,10 +24,12 @@ public class ImageUtilsV2 {
      * 目标图片格式
      */
     private static final String[] SUPPORTED_FORMATS = {"jpeg", "png", "gif", "bmp", "webp"};
+
     /**
      * 目标图片格式
      */
     private static final String TARGET_FORMAT = "jpg";
+
     /**
      * 白色背景（用于处理透明通道）
      */
@@ -37,7 +39,6 @@ public class ImageUtilsV2 {
     public static final Map<String, String> SUFFIX_CONTENT_TYPE_MAP = new HashMap<>();
 
     public static final List<String> WHITE_IP_LIST = Arrays.asList("111.175.90.254");
-
 
     static {
         SUFFIX_CONTENT_TYPE_MAP.put("jpg", "image/jpeg");
@@ -90,7 +91,9 @@ public class ImageUtilsV2 {
             return "";
         }
         int idx = fileName.lastIndexOf('.');
-        return (idx != -1 && idx < fileName.length() - 1) ? fileName.substring(idx + 1).toLowerCase() : "";
+        return (idx != -1 && idx < fileName.length() - 1)
+                ? fileName.substring(idx + 1).toLowerCase()
+                : "";
     }
 
     /**
@@ -257,11 +260,11 @@ public class ImageUtilsV2 {
         }
 
         // 处理透明背景
-        BufferedImage convertedImage = new BufferedImage(
-                originalImage.getWidth(),
-                originalImage.getHeight(),
-                BufferedImage.TYPE_INT_RGB
-        );
+        BufferedImage convertedImage =
+                new BufferedImage(
+                        originalImage.getWidth(),
+                        originalImage.getHeight(),
+                        BufferedImage.TYPE_INT_RGB);
         Graphics2D g = convertedImage.createGraphics();
         g.setBackground(TRANSPARENT_BACKGROUND);
         g.clearRect(0, 0, originalImage.getWidth(), originalImage.getHeight());
@@ -283,7 +286,8 @@ public class ImageUtilsV2 {
      * @param height     新的高度
      * @throws IOException
      */
-    public static void resizeAndSaveImage(InputStream inputImage, File outputFile, int width, int height) throws IOException {
+    public static void resizeAndSaveImage(
+            InputStream inputImage, File outputFile, int width, int height) throws IOException {
         // 读取原图
         BufferedImage originalImage = ImageIO.read(inputImage);
 
@@ -303,8 +307,10 @@ public class ImageUtilsV2 {
             newHeight = (int) (newWidth / aspectRatio);
         }
         // 创建一个新的图像对象，进行缩放
-        Image scaledImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+        Image scaledImage =
+                originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+        BufferedImage resizedImage =
+                new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
 
         // 将缩放后的图像绘制到新图像中
         Graphics2D g2d = resizedImage.createGraphics();
@@ -323,7 +329,8 @@ public class ImageUtilsV2 {
      * @param height     新的高度
      * @throws IOException
      */
-    public static byte[] resizeAndSaveImage(InputStream inputImage, int width, int height) throws IOException {
+    public static byte[] resizeAndSaveImage(InputStream inputImage, int width, int height)
+            throws IOException {
         // 读取原图
         BufferedImage originalImage = ImageIO.read(inputImage);
 
@@ -345,12 +352,18 @@ public class ImageUtilsV2 {
         // 判断图片是否透明
         boolean isTransparent = isImageTransparent(originalImage);
         // 创建一个新的图像对象，进行缩放
-        Image scaledImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, isTransparent ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
+        Image scaledImage =
+                originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+        BufferedImage resizedImage =
+                new BufferedImage(
+                        newWidth,
+                        newHeight,
+                        isTransparent ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
 
         // 将缩放后的图像绘制到新图像中
         Graphics2D g2d = resizedImage.createGraphics();
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.setRenderingHint(
+                RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.setComposite(AlphaComposite.Src);
         g2d.drawImage(scaledImage, 0, 0, null);
         g2d.dispose();
@@ -405,7 +418,7 @@ public class ImageUtilsV2 {
      */
     public static int[] getImageDimensions(String imageUrl) {
         try (InputStream is = new URL(imageUrl).openStream();
-             ImageInputStream iis = ImageIO.createImageInputStream(is)) {
+                ImageInputStream iis = ImageIO.createImageInputStream(is)) {
 
             Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
             if (!readers.hasNext()) {
@@ -416,9 +429,9 @@ public class ImageUtilsV2 {
             ImageReader reader = readers.next();
             try {
                 reader.setInput(iis);
-                return new int[]{
-                        reader.getWidth(0),  // 宽度
-                        reader.getHeight(0) // 高度
+                return new int[] {
+                    reader.getWidth(0), // 宽度
+                    reader.getHeight(0) // 高度
                 };
             } finally {
                 reader.dispose();
@@ -429,5 +442,4 @@ public class ImageUtilsV2 {
             return null;
         }
     }
-
 }

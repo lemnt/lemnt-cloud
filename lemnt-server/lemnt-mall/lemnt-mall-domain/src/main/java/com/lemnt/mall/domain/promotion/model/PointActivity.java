@@ -8,6 +8,5 @@ public record PointActivity(
         String remark,
         Integer sort,
         Integer stock,
-        Integer totalStock
-) implements java.io.Serializable {
-}
+        Integer totalStock)
+        implements java.io.Serializable {}

@@ -1,8 +1,10 @@
 package com.lemnt.common.mq.consumer;
 
 import com.lemnt.common.core.utils.JsonUtils;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.rocketmq.spring.core.RocketMQListener;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -69,12 +71,10 @@ public abstract class BaseConsumer<T> implements RocketMQListener<String> {
     /**
      * 处理消息
      */
-    protected void handle(T message) {
-    }
+    protected void handle(T message) {}
 
     /**
      * 处理批量消息
      */
-    protected void handleList(List<T> messages) {
-    }
+    protected void handleList(List<T> messages) {}
 }

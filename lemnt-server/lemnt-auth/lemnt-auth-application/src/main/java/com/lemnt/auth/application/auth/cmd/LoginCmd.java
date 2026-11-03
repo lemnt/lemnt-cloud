@@ -7,5 +7,4 @@ import java.io.Serializable;
  *
  * @author wangxx
  */
-public record LoginCmd(String username, String password) implements Serializable {
-}
+public record LoginCmd(String username, String password) implements Serializable {}

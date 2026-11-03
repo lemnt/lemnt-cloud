@@ -12,6 +12,5 @@ public record BrokerageUser(
         Boolean brokerageEnabled,
         LocalDateTime brokerageTime,
         BigDecimal brokeragePrice,
-        BigDecimal frozenPrice
-) implements Serializable {
-}
+        BigDecimal frozenPrice)
+        implements Serializable {}

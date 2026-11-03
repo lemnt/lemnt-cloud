@@ -12,5 +12,5 @@ public record AddressSaveCmd(
         String mobile,
         Long areaId,
         String detailAddress,
-        Boolean defaultStatus
-) implements Serializable {}
+        Boolean defaultStatus)
+        implements Serializable {}

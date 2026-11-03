@@ -27,14 +27,20 @@ public class DiyTemplateGatewayImpl implements DiyTemplateGateway {
 
     @Override
     public DiyTemplate findByName(String name) {
-        return DiyConverter.model(mapper.selectOne(Wrappers.<DiyTemplateDO>lambdaQuery()
-                .eq(DiyTemplateDO::getName, name).last("LIMIT 1")));
+        return DiyConverter.model(
+                mapper.selectOne(
+                        Wrappers.<DiyTemplateDO>lambdaQuery()
+                                .eq(DiyTemplateDO::getName, name)
+                                .last("LIMIT 1")));
     }
 
     @Override
     public DiyTemplate findUsed() {
-        return DiyConverter.model(mapper.selectOne(Wrappers.<DiyTemplateDO>lambdaQuery()
-                .eq(DiyTemplateDO::getUsed, true).last("LIMIT 1")));
+        return DiyConverter.model(
+                mapper.selectOne(
+                        Wrappers.<DiyTemplateDO>lambdaQuery()
+                                .eq(DiyTemplateDO::getUsed, true)
+                                .last("LIMIT 1")));
     }
 
     @Override
@@ -50,14 +56,18 @@ public class DiyTemplateGatewayImpl implements DiyTemplateGateway {
 
     @Override
     public PageResult<DiyTemplate> page(DiyTemplateFilter filter) {
-        var page = mapper.selectPage(new Page<DiyTemplateDO>(filter.pageNum(), filter.pageSize()),
-                Wrappers.<DiyTemplateDO>lambdaQuery()
-                        .like(filter.name() != null && !filter.name().isBlank(), DiyTemplateDO::getName,
-                                filter.name())
-                        .eq(filter.used() != null, DiyTemplateDO::getUsed, filter.used())
-                        .orderByDesc(DiyTemplateDO::getId));
-        return PageResult.of(page.getRecords().stream().map(DiyConverter::model).toList(),
-                page.getTotal());
+        var page =
+                mapper.selectPage(
+                        new Page<DiyTemplateDO>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.<DiyTemplateDO>lambdaQuery()
+                                .like(
+                                        filter.name() != null && !filter.name().isBlank(),
+                                        DiyTemplateDO::getName,
+                                        filter.name())
+                                .eq(filter.used() != null, DiyTemplateDO::getUsed, filter.used())
+                                .orderByDesc(DiyTemplateDO::getId));
+        return PageResult.of(
+                page.getRecords().stream().map(DiyConverter::model).toList(), page.getTotal());
     }
 
     @Override

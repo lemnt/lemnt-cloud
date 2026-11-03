@@ -27,8 +27,12 @@ public class MemberLockGatewayImpl implements MemberLockGateway {
             throw new IllegalStateException("会员操作锁必须在事务内获取");
         }
         String key = "lemnt:mall:member:operation:" + memberId;
-        boolean held = TransactionSynchronizationManager.getSynchronizations().stream()
-                .anyMatch(sync -> sync instanceof MemberLockCompletion completion && key.equals(completion.key()));
+        boolean held =
+                TransactionSynchronizationManager.getSynchronizations().stream()
+                        .anyMatch(
+                                sync ->
+                                        sync instanceof MemberLockCompletion completion
+                                                && key.equals(completion.key()));
         if (held) {
             return;
         }
@@ -37,7 +41,8 @@ public class MemberLockGatewayImpl implements MemberLockGateway {
         if (lock == null) {
             throw new IllegalStateException("会员操作处理中，请稍后重试");
         }
-        TransactionSynchronizationManager.registerSynchronization(new MemberLockCompletion(key, lock, lockTemplate));
+        TransactionSynchronizationManager.registerSynchronization(
+                new MemberLockCompletion(key, lock, lockTemplate));
     }
 
     /** 事务提交和回滚均释放锁，不在业务方法返回时提前释放。 */

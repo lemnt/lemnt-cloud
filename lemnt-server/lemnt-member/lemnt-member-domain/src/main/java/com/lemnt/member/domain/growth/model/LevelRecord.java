@@ -15,8 +15,7 @@ public record LevelRecord(
         Integer level,
         Integer discountPercent,
         Long recordExperience,
-        String description
-) {
+        String description) {
     /** 旧等级流水缺少配置快照，不回填当前配置。 */
     public LevelRecord(
             Long id,

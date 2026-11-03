@@ -9,5 +9,4 @@ public interface TradeConfigGateway {
 
     /** 修改记录。 */
     void update(TradeConfig value);
-
 }

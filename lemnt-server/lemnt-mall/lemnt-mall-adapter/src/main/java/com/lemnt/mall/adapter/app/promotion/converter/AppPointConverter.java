@@ -8,9 +8,26 @@ public final class AppPointConverter {
     private AppPointConverter() {}
 
     public static AppPointActivityRes activity(PointActivityDTO dto) {
-        return new AppPointActivityRes(dto.id(), dto.spuId(), dto.spuName(), dto.picUrl(), dto.status(),
-                dto.stock(), dto.totalStock(), dto.point(), dto.price(), dto.marketPrice(),
-                dto.products().stream().map(item -> new AppPointActivityRes.Product(item.skuId(),
-                        item.exchangeCount(), item.point(), item.price(), item.stock())).toList());
+        return new AppPointActivityRes(
+                dto.id(),
+                dto.spuId(),
+                dto.spuName(),
+                dto.picUrl(),
+                dto.status(),
+                dto.stock(),
+                dto.totalStock(),
+                dto.point(),
+                dto.price(),
+                dto.marketPrice(),
+                dto.products().stream()
+                        .map(
+                                item ->
+                                        new AppPointActivityRes.Product(
+                                                item.skuId(),
+                                                item.exchangeCount(),
+                                                item.point(),
+                                                item.price(),
+                                                item.stock()))
+                        .toList());
     }
 }

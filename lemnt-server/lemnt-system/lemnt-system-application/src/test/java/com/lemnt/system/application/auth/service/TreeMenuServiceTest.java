@@ -33,6 +33,5 @@ class TreeMenuServiceTest {
         assertEquals(1, tree.get(0).getChildren().size());
 
         assertEquals(2L, tree.get(0).getChildren().get(0).getMenuId());
-
     }
 }

@@ -5,16 +5,22 @@ import com.lemnt.trade.infrastructure.payment.dataobject.PayAppDO;
 
 /** 支付应用与表字段转换。 */
 public final class PayAppConverter {
-    private PayAppConverter() {
-    }
+    private PayAppConverter() {}
 
     /** 读取业务对象。 */
     public static PayApp toEntity(PayAppDO row) {
         if (row == null) {
             return null;
         }
-        return new PayApp(row.getId(), row.getAppKey(), row.getName(), row.getStatus(), row.getRemark(),
-                row.getOrderNotifyUrl(), row.getRefundNotifyUrl(), row.getCreateTime());
+        return new PayApp(
+                row.getId(),
+                row.getAppKey(),
+                row.getName(),
+                row.getStatus(),
+                row.getRemark(),
+                row.getOrderNotifyUrl(),
+                row.getRefundNotifyUrl(),
+                row.getCreateTime());
     }
 
     /** 写入表字段。 */

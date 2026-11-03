@@ -49,20 +49,28 @@ class KefuPersistenceTest {
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         config.addInterceptor(interceptor);
         var bean = new MybatisSqlSessionFactoryBean();
-        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
+        bean.setMapperLocations(
+                new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
         bean.setDataSource(source);
         bean.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
         bean.setConfiguration(config);
         var factory = bean.getObject();
         config.addMappers("com.lemnt.mall.infrastructure");
         var components = new TableTestComponents(new SqlSessionTemplate(factory), source);
-        components.register(MemberLookupGateway.class, new MemberLookupGateway() {
-            @Override
-            public MemberSnapshot findById(Long memberId) {
-                return new MemberSnapshot(memberId, 0, 100, 0L, "会员" + memberId,
-                        "https://example.test/avatar.png");
-            }
-        });
+        components.register(
+                MemberLookupGateway.class,
+                new MemberLookupGateway() {
+                    @Override
+                    public MemberSnapshot findById(Long memberId) {
+                        return new MemberSnapshot(
+                                memberId,
+                                0,
+                                100,
+                                0L,
+                                "会员" + memberId,
+                                "https://example.test/avatar.png");
+                    }
+                });
         service = components.get(KefuChatService.class);
     }
 
@@ -74,7 +82,8 @@ class KefuPersistenceTest {
     }
 
     Long send(Long memberId, String text) {
-        return service.appSend(new AppKefuMessageSendCmd(memberId, text, KefuChatService.CONTENT_TEXT));
+        return service.appSend(
+                new AppKefuMessageSendCmd(memberId, text, KefuChatService.CONTENT_TEXT));
     }
 
     @Test
@@ -85,8 +94,11 @@ class KefuPersistenceTest {
         assertNotNull(conversation.id());
         assertEquals("你好", conversation.lastMessageContent());
         assertEquals(0L, conversation.unreadCount().longValue());
-        var admin = service.adminList().stream().filter(row -> row.userId().equals(1L)).findFirst()
-                .orElseThrow();
+        var admin =
+                service.adminList().stream()
+                        .filter(row -> row.userId().equals(1L))
+                        .findFirst()
+                        .orElseThrow();
         assertEquals(1, admin.adminUnreadMessageCount());
         assertEquals("会员1", admin.nickname());
     }
@@ -105,8 +117,11 @@ class KefuPersistenceTest {
         assertEquals(0L, service.appConversation(1L).unreadCount().longValue());
 
         send(2L, "另一个会员");
-        var second = service.adminList().stream().filter(row -> row.userId().equals(2L)).findFirst()
-                .orElseThrow();
+        var second =
+                service.adminList().stream()
+                        .filter(row -> row.userId().equals(2L))
+                        .findFirst()
+                        .orElseThrow();
         service.adminPin(new KefuConversationPinCmd(second.id(), true));
         assertEquals(second.id(), service.adminList().get(0).id());
         service.adminRead(second.id());
@@ -127,11 +142,19 @@ class KefuPersistenceTest {
 
     @Test
     void invalidContentAndImageUrlAreRejected() {
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
-                () -> service.appSend(new AppKefuMessageSendCmd(1L, " ", KefuChatService.CONTENT_TEXT)));
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
-                () -> service.appSend(new AppKefuMessageSendCmd(1L, "ftp://x", KefuChatService.CONTENT_IMAGE)));
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
+                () ->
+                        service.appSend(
+                                new AppKefuMessageSendCmd(1L, " ", KefuChatService.CONTENT_TEXT)));
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
+                () ->
+                        service.appSend(
+                                new AppKefuMessageSendCmd(
+                                        1L, "ftp://x", KefuChatService.CONTENT_IMAGE)));
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
                 () -> service.appSend(new AppKefuMessageSendCmd(1L, "x", 9)));
     }
 }

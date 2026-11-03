@@ -9,8 +9,12 @@ import java.util.List;
 /** RewardActivity 活动主表访问。 */
 public interface RewardActivityGateway {
     RewardActivity find(Long id);
+
     RewardActivity save(RewardActivity value);
+
     void delete(Long id);
+
     PageResult<RewardActivity> page(ActivityFilter filter);
+
     List<RewardActivity> enabled();
 }

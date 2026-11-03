@@ -36,15 +36,26 @@ public class CouponIssuanceService {
             return;
         }
         var now = couponTemplateGateway.now();
-        if (template == null || !template.enabled()
-                || ("DATE".equals(template.validityType()) && !template.validUntil().isAfter(now))) {
+        if (template == null
+                || !template.enabled()
+                || ("DATE".equals(template.validityType())
+                        && !template.validUntil().isAfter(now))) {
             throw new ServiceException("赠券当前不可发放", 409);
         }
         if (!couponTemplateGateway.takeQuota(templateId)) {
             throw new ServiceException("赠券名额已用完", 409);
         }
-        couponGateway.insertCoupon(new Coupon(null, templateId, memberId, "AVAILABLE", null,
-                CouponRules.snapshot(template, now), null, sourceOrderNo, giftSequence));
+        couponGateway.insertCoupon(
+                new Coupon(
+                        null,
+                        templateId,
+                        memberId,
+                        "AVAILABLE",
+                        null,
+                        CouponRules.snapshot(template, now),
+                        null,
+                        sourceOrderNo,
+                        giftSequence));
     }
 
     /** 在会员锁和模板行锁内校验限领、占用名额并固化持券规则。 */
@@ -53,8 +64,11 @@ public class CouponIssuanceService {
         memberLockGateway.lockMember(memberId);
         var template = couponTemplateGateway.lockTemplate(templateId);
         var now = couponTemplateGateway.now();
-        if (template == null || !template.enabled() || !takeType.equals(template.takeType())
-                || ("DATE".equals(template.validityType()) && !template.validUntil().isAfter(now))) {
+        if (template == null
+                || !template.enabled()
+                || !takeType.equals(template.takeType())
+                || ("DATE".equals(template.validityType())
+                        && !template.validUntil().isAfter(now))) {
             throw new ServiceException("优惠券当前不可领取", 400);
         }
         if (template.takeLimitCount() != -1
@@ -64,7 +78,14 @@ public class CouponIssuanceService {
         if (!couponTemplateGateway.takeQuota(templateId)) {
             throw new ServiceException("优惠券名额已用完", 400);
         }
-        return couponGateway.insertCoupon(new Coupon(null, templateId, memberId, "AVAILABLE", null,
-                CouponRules.snapshot(template, now), null));
+        return couponGateway.insertCoupon(
+                new Coupon(
+                        null,
+                        templateId,
+                        memberId,
+                        "AVAILABLE",
+                        null,
+                        CouponRules.snapshot(template, now),
+                        null));
     }
 }

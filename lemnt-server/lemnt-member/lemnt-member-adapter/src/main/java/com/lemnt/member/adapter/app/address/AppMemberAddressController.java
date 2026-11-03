@@ -56,7 +56,9 @@ public class AppMemberAddressController {
     @Operation(summary = "本人地址列表")
     public R<List<AppMemberAddressListRes>> list() {
         return R.ok(
-                memberAddressListQueryExe.execute(new AddressListQry(SecurityUtils.getUserId())).stream()
+                memberAddressListQueryExe
+                        .execute(new AddressListQry(SecurityUtils.getUserId()))
+                        .stream()
                         .map(MemberAddressResConverter::toAppMemberAddressListRes)
                         .toList());
     }
@@ -66,43 +68,45 @@ public class AppMemberAddressController {
     public R<AppMemberAddressDefaultAddressRes> defaultAddress() {
         return R.ok(
                 MemberAddressResConverter.toAppMemberAddressDefaultAddressRes(
-                        memberAddressDefaultQueryExe.execute(new AddressDefaultQry(SecurityUtils.getUserId()))));
+                        memberAddressDefaultQueryExe.execute(
+                                new AddressDefaultQry(SecurityUtils.getUserId()))));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "本人地址详情，不存在和他人地址均为空")
-    public R<AppMemberAddressDetailRes> detail(
-            @PathVariable Long id) {
+    public R<AppMemberAddressDetailRes> detail(@PathVariable Long id) {
         return R.ok(
                 MemberAddressResConverter.toAppMemberAddressDetailRes(
-                        memberAddressDetailQueryExe.execute(new AddressDetailQry(SecurityUtils.getUserId(), id))));
+                        memberAddressDetailQueryExe.execute(
+                                new AddressDetailQry(SecurityUtils.getUserId(), id))));
     }
 
     @PostMapping
     @Operation(summary = "新增本人地址")
-    public R<AppMemberAddressCreateRes> create(
-            @Valid @RequestBody AppMemberAddressCreateReq req) {
+    public R<AppMemberAddressCreateRes> create(@Valid @RequestBody AppMemberAddressCreateReq req) {
         return R.ok(
                 MemberAddressResConverter.toAppMemberAddressCreateRes(
                         memberAddressSaveCmdExe.execute(
-                                MemberAddressReqConverter.address(SecurityUtils.getUserId(), null, req))));
+                                MemberAddressReqConverter.address(
+                                        SecurityUtils.getUserId(), null, req))));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "更新本人地址，默认地址修改串行化")
     public R<AppMemberAddressUpdateRes> update(
-            @PathVariable Long id,
-            @Valid @RequestBody AppMemberAddressUpdateReq req) {
+            @PathVariable Long id, @Valid @RequestBody AppMemberAddressUpdateReq req) {
         return R.ok(
                 MemberAddressResConverter.toAppMemberAddressUpdateRes(
                         memberAddressSaveCmdExe.execute(
-                                MemberAddressReqConverter.address(SecurityUtils.getUserId(), id, req))));
+                                MemberAddressReqConverter.address(
+                                        SecurityUtils.getUserId(), id, req))));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除本人地址")
-    public R<Boolean> delete(
-            @PathVariable Long id) {
-        return R.ok(memberAddressDeleteCmdExe.execute(new AddressDeleteCmd(SecurityUtils.getUserId(), id)));
+    public R<Boolean> delete(@PathVariable Long id) {
+        return R.ok(
+                memberAddressDeleteCmdExe.execute(
+                        new AddressDeleteCmd(SecurityUtils.getUserId(), id)));
     }
 }

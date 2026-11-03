@@ -39,10 +39,17 @@ public class PromotionOrderPreparationService {
         if (previous != null && matches(previous, cmd)) {
             var order = orders.findByOrderNo(previous.orderNo());
             if (order == null) {
-                order = settlements.preparePromotion(cmd.memberId(), cmd.requestNo(), fingerprint,
-                        () -> {
-                            throw new IllegalStateException("原提交快照已失效，请查询交易订单");
-                        }, List.of()).order();
+                order =
+                        settlements
+                                .preparePromotion(
+                                        cmd.memberId(),
+                                        cmd.requestNo(),
+                                        fingerprint,
+                                        () -> {
+                                            throw new IllegalStateException("原提交快照已失效，请查询交易订单");
+                                        },
+                                        List.of())
+                                .order();
             }
             if ("FAILED".equals(previous.status())) {
                 promotionOrders.reopenFailed(previous.orderNo());
@@ -54,8 +61,9 @@ public class PromotionOrderPreparationService {
             throw new ServiceException("请求编号已用于不同的活动订单内容", 409);
         }
         PromotionOrderDraft draft = pricing.price(cmd);
-        SettlementPreparationResult result = settlements.preparePromotion(cmd.memberId(), cmd.requestNo(),
-                fingerprint, draft::quote, List.of());
+        SettlementPreparationResult result =
+                settlements.preparePromotion(
+                        cmd.memberId(), cmd.requestNo(), fingerprint, draft::quote, List.of());
         if (!result.created()) {
             var existing = promotionOrders.findByRequest(cmd.memberId(), cmd.requestNo());
             if (existing == null || !matches(existing, cmd)) {
@@ -64,13 +72,39 @@ public class PromotionOrderPreparationService {
             return new PreparedPromotionOrder(result.order(), existing, false);
         }
         try {
-            var saved = promotionOrders.save(new PromotionOrder(null, result.order().orderNo(),
-                    cmd.requestNo(), cmd.memberId(), draft.activityType(), draft.activityId(),
-                    draft.recordId(), draft.headId(), draft.skuId(), draft.quantity(),
-                    draft.activityPrice(), draft.usePoint(), 0, "CREATED", null, null, null));
-            promotionOrderItems.saveAll(result.order().orderNo(), draft.lines().stream()
-                    .map(line -> new PromotionOrderItem(null, result.order().orderNo(), line.skuId(),
-                            line.quantity(), line.usePoint(), 0)).toList());
+            var saved =
+                    promotionOrders.save(
+                            new PromotionOrder(
+                                    null,
+                                    result.order().orderNo(),
+                                    cmd.requestNo(),
+                                    cmd.memberId(),
+                                    draft.activityType(),
+                                    draft.activityId(),
+                                    draft.recordId(),
+                                    draft.headId(),
+                                    draft.skuId(),
+                                    draft.quantity(),
+                                    draft.activityPrice(),
+                                    draft.usePoint(),
+                                    0,
+                                    "CREATED",
+                                    null,
+                                    null,
+                                    null));
+            promotionOrderItems.saveAll(
+                    result.order().orderNo(),
+                    draft.lines().stream()
+                            .map(
+                                    line ->
+                                            new PromotionOrderItem(
+                                                    null,
+                                                    result.order().orderNo(),
+                                                    line.skuId(),
+                                                    line.quantity(),
+                                                    line.usePoint(),
+                                                    0))
+                            .toList());
             return new PreparedPromotionOrder(result.order(), saved, true);
         } catch (DuplicateKeyException exception) {
             var existing = promotionOrders.findByRequest(cmd.memberId(), cmd.requestNo());
@@ -81,15 +115,17 @@ public class PromotionOrderPreparationService {
         }
     }
 
-    private boolean sameLines(String orderNo, java.util.List<com.lemnt.mall.application.promotion.cmd.PromotionOrderLineCmd> lines) {
+    private boolean sameLines(
+            String orderNo,
+            java.util.List<com.lemnt.mall.application.promotion.cmd.PromotionOrderLineCmd> lines) {
         var saved = promotionOrderItems.byOrderNo(orderNo);
         if (saved.size() != lines.size()) {
             return false;
         }
-        var expected = lines.stream()
-                .map(line -> line.skuId() + ":" + line.quantity()).sorted().toList();
-        var actual = saved.stream()
-                .map(line -> line.skuId() + ":" + line.quantity()).sorted().toList();
+        var expected =
+                lines.stream().map(line -> line.skuId() + ":" + line.quantity()).sorted().toList();
+        var actual =
+                saved.stream().map(line -> line.skuId() + ":" + line.quantity()).sorted().toList();
         return expected.equals(actual);
     }
 

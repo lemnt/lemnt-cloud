@@ -12,10 +12,7 @@ import java.util.Set;
  */
 @Schema(description = "用户信息响应")
 public record UserInfoRes(
-        @Schema(description = "用户信息")
-        UserRes user,
-        @Schema(description = "角色集合")
-        Set<String> roles,
-        @Schema(description = "权限集合")
-        Set<String> permissions
-) implements Serializable {}
+        @Schema(description = "用户信息") UserRes user,
+        @Schema(description = "角色集合") Set<String> roles,
+        @Schema(description = "权限集合") Set<String> permissions)
+        implements Serializable {}

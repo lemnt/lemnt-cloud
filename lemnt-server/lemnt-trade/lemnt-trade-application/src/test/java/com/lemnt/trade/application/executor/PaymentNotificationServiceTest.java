@@ -23,24 +23,29 @@ class PaymentNotificationServiceTest {
     final OrderPersistenceService orderPersistenceService = mock(OrderPersistenceService.class);
     TradeOrderGateway tradeOrderGateway = mock(TradeOrderGateway.class);
     final PaymentNotificationService notifier =
-    new PaymentNotificationService(orderPersistenceService, tradeOrderGateway, payments, mock(com.lemnt.trade.application.order.service.OrderLogService.class));
+            new PaymentNotificationService(
+                    orderPersistenceService,
+                    tradeOrderGateway,
+                    payments,
+                    mock(com.lemnt.trade.application.order.service.OrderLogService.class));
     final VerifiedPaymentNotification notice =
-    new VerifiedPaymentNotification(
-            "PAY1", "TR1", "ALIPAY", "CHANNEL1", BigDecimal.TEN, "NOTICE2");
+            new VerifiedPaymentNotification(
+                    "PAY1", "TR1", "ALIPAY", "CHANNEL1", BigDecimal.TEN, "NOTICE2");
 
     @BeforeEach
     void setup() {
         when(orderPersistenceService.findByOrderNoForUpdate("TR1"))
-            .thenReturn(
-                new TradeOrder(
-                1L, "TR1", 2L, BigDecimal.TEN, "PENDING_PAYMENT", List.of(), null));
+                .thenReturn(
+                        new TradeOrder(
+                                1L, "TR1", 2L, BigDecimal.TEN, "PENDING_PAYMENT", List.of(), null));
     }
 
     void payment(String status, String tradeNo, BigDecimal amount) {
         when(payments.findByPaymentNo("PAY1"))
-            .thenReturn(
-                new PaymentRecord(
-                1L, "PAY1", "TR1", "ALIPAY", null, tradeNo, amount, status, "NOTICE1"));
+                .thenReturn(
+                        new PaymentRecord(
+                                1L, "PAY1", "TR1", "ALIPAY", null, tradeNo, amount, status,
+                                "NOTICE1"));
     }
 
     @Test
@@ -81,7 +86,7 @@ class PaymentNotificationServiceTest {
 
     void orderStatus(String status) {
         when(orderPersistenceService.findByOrderNoForUpdate("TR1"))
-            .thenReturn(new TradeOrder(1L, "TR1", 2L, BigDecimal.TEN, status, List.of(), null));
+                .thenReturn(new TradeOrder(1L, "TR1", 2L, BigDecimal.TEN, status, List.of(), null));
     }
 
     @Test

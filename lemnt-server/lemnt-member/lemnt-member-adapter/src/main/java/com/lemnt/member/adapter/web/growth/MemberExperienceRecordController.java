@@ -7,8 +7,8 @@ import com.lemnt.member.adapter.web.growth.converter.MemberReqConverter;
 import com.lemnt.member.adapter.web.growth.req.MemberRecordExperienceRecordsReq;
 import com.lemnt.member.adapter.web.growth.res.MemberRecordExperienceRecordsDetailRes;
 import com.lemnt.member.adapter.web.growth.res.MemberRecordExperienceRecordsRes;
-import com.lemnt.member.application.growth.executor.MemberExperienceRecordAllPageQueryExe;
 import com.lemnt.member.application.growth.executor.MemberAssetRecordDetailQueryExe;
+import com.lemnt.member.application.growth.executor.MemberExperienceRecordAllPageQueryExe;
 import com.lemnt.member.application.growth.qry.AssetRecordDetailQry;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,18 +38,24 @@ public class MemberExperienceRecordController {
     @RequiresPermissions("member:experience:query")
     public R<MemberRecordExperienceRecordsRes> experienceRecords(
             @Valid @ModelAttribute MemberRecordExperienceRecordsReq req) {
-        var page = memberExperienceRecordAllPageQueryExe.execute(MemberReqConverter.toExperiencePageQry(req));
+        var page =
+                memberExperienceRecordAllPageQueryExe.execute(
+                        MemberReqConverter.toExperiencePageQry(req));
         return R.page(
-                page.getRecords().stream().map(MemberGrowthResConverter::toMemberRecordExperienceRecordsRes).toList(),
+                page.getRecords().stream()
+                        .map(MemberGrowthResConverter::toMemberRecordExperienceRecordsRes)
+                        .toList(),
                 page.getTotal());
     }
 
     @GetMapping("/experience-records/{id}")
     @Operation(summary = "experience-records详情")
     @RequiresPermissions("member:experience:query")
-    public R<MemberRecordExperienceRecordsDetailRes> experienceRecordsDetail(@PathVariable Long id) {
+    public R<MemberRecordExperienceRecordsDetailRes> experienceRecordsDetail(
+            @PathVariable Long id) {
         return R.ok(
                 MemberGrowthResConverter.toMemberRecordExperienceRecordsDetailRes(
-                        memberAssetRecordDetailQueryExe.execute(new AssetRecordDetailQry("EXPERIENCE", id))));
+                        memberAssetRecordDetailQueryExe.execute(
+                                new AssetRecordDetailQry("EXPERIENCE", id))));
     }
 }

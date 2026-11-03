@@ -35,6 +35,10 @@ public class PromotionOrderPricingService {
     private final CombinationRecordService combinationRecordService;
     private final BargainRecordService bargainRecordService;
     private final PointActivityManagementService pointActivityManagementService;
+    private final com.lemnt.mall.domain.promotion.gateway.SeckillActivityGateway seckillActivities;
+    private final com.lemnt.mall.domain.promotion.gateway.CombinationActivityGateway
+            combinationActivities;
+    private final com.lemnt.mall.domain.promotion.gateway.BargainActivityGateway bargainActivities;
 
     private void require(boolean condition, String message) {
         if (!condition) {
@@ -53,7 +57,8 @@ public class PromotionOrderPricingService {
         }
         for (var line : lines) {
             require(line != null && line.skuId() != null && line.skuId() > 0, "SKU 编号不合法");
-            require(line.quantity() != null && line.quantity() > 0 && line.quantity() <= 999,
+            require(
+                    line.quantity() != null && line.quantity() > 0 && line.quantity() <= 999,
                     "购买数量不合法");
         }
         var member = memberValidationService.requireActive(cmd.memberId());
@@ -62,7 +67,10 @@ public class PromotionOrderPricingService {
         var snapshots = productCatalogGateway.findOnShelfBatch(skuIds);
         for (var line : lines) {
             var snapshot = snapshots.get(line.skuId());
-            require(snapshot != null && snapshot.stock() != null && snapshot.stock() >= line.quantity(),
+            require(
+                    snapshot != null
+                            && snapshot.stock() != null
+                            && snapshot.stock() >= line.quantity(),
                     "商品已下架或库存不足");
         }
 
@@ -84,44 +92,81 @@ public class PromotionOrderPricingService {
             switch (type) {
                 case "SECKILL" -> {
                     require(activityId != null && activityId > 0, "秒杀活动编号不能为空");
-                    price = seckillStockService.validateJoin(activityId, line.skuId(), line.quantity())
-                            .seckillPrice();
+                    price =
+                            seckillStockService
+                                    .validateJoin(activityId, line.skuId(), line.quantity())
+                                    .seckillPrice();
                 }
                 case "COMBINATION" -> {
                     require(activityId != null && activityId > 0, "拼团活动编号不能为空");
-                    price = combinationRecordService.validateJoin(cmd.memberId(), activityId, headId,
-                            line.skuId(), line.quantity()).combinationPrice();
+                    price =
+                            combinationRecordService
+                                    .validateJoin(
+                                            cmd.memberId(),
+                                            activityId,
+                                            headId,
+                                            line.skuId(),
+                                            line.quantity())
+                                    .combinationPrice();
                 }
                 case "BARGAIN" -> {
                     require(recordId != null && recordId > 0, "砍价记录编号不能为空");
                     require(line.quantity() == 1, "砍价商品只能购买一件");
-                    var join = bargainRecordService.validateJoin(cmd.memberId(), recordId, line.skuId());
+                    var join =
+                            bargainRecordService.validateJoin(
+                                    cmd.memberId(), recordId, line.skuId());
                     activityId = join.activityId();
                     price = join.bargainPrice();
                 }
                 case "POINT" -> {
                     require(activityId != null && activityId > 0, "积分商城活动编号不能为空");
-                    var join = pointActivityManagementService.validateJoin(activityId, line.skuId(),
-                            line.quantity());
+                    var join =
+                            pointActivityManagementService.validateJoin(
+                                    activityId, line.skuId(), line.quantity());
                     price = join.price();
                     lineUsePoint = (long) join.point() * line.quantity();
                 }
                 default -> throw new ServiceException("活动类型不合法", 400);
             }
             var unit = snapshot.price();
-            var lineAmount = unit.multiply(BigDecimal.valueOf(line.quantity()))
-                    .setScale(2, RoundingMode.DOWN);
-            var linePayable = price.multiply(BigDecimal.valueOf(line.quantity()))
-                    .setScale(2, RoundingMode.DOWN);
-            require(linePayable.signum() >= 0 && linePayable.compareTo(lineAmount) <= 0,
+            var lineAmount =
+                    unit.multiply(BigDecimal.valueOf(line.quantity()))
+                            .setScale(2, RoundingMode.DOWN);
+            var linePayable =
+                    price.multiply(BigDecimal.valueOf(line.quantity()))
+                            .setScale(2, RoundingMode.DOWN);
+            require(
+                    linePayable.signum() >= 0 && linePayable.compareTo(lineAmount) <= 0,
                     "活动价不能为负或高于原价");
-            var specs = snapshot.specs() == null ? null : snapshot.specs().stream()
-                    .map(value -> new SettlementItem.Spec(value.specId(), value.specName(),
-                            value.specValueId(), value.specValueName())).toList();
-            items.add(new SettlementItem(line.skuId(), snapshot.productCode(), snapshot.name(), unit,
-                    line.quantity(), lineAmount, linePayable, BigDecimal.ZERO.setScale(2),
-                    snapshot.spuId(), snapshot.spuName(), specs, snapshot.picUrl()));
-            drafts.add(new PromotionOrderDraft.Line(line.skuId(), line.quantity(), price, lineUsePoint));
+            var specs =
+                    snapshot.specs() == null
+                            ? null
+                            : snapshot.specs().stream()
+                                    .map(
+                                            value ->
+                                                    new SettlementItem.Spec(
+                                                            value.specId(),
+                                                            value.specName(),
+                                                            value.specValueId(),
+                                                            value.specValueName()))
+                                    .toList();
+            items.add(
+                    new SettlementItem(
+                            line.skuId(),
+                            snapshot.productCode(),
+                            snapshot.name(),
+                            unit,
+                            line.quantity(),
+                            lineAmount,
+                            linePayable,
+                            BigDecimal.ZERO.setScale(2),
+                            snapshot.spuId(),
+                            snapshot.spuName(),
+                            specs,
+                            snapshot.picUrl()));
+            drafts.add(
+                    new PromotionOrderDraft.Line(
+                            line.skuId(), line.quantity(), price, lineUsePoint));
             original = original.add(lineAmount);
             payable = payable.add(linePayable);
             usePoint += lineUsePoint;
@@ -129,22 +174,112 @@ public class PromotionOrderPricingService {
                 firstPrice = price;
             }
         }
-        require(payable.signum() >= 0 && (payable.signum() > 0 || usePoint > 0),
-                "活动订单金额和积分不能同时为零");
+        require(payable.signum() >= 0 && (payable.signum() > 0 || usePoint > 0), "活动订单金额和积分不能同时为零");
         var memberPoints = member.points() == null ? 0L : member.points();
         require(usePoint <= memberPoints, "会员积分不足");
         var config = memberTradeGateway.config();
-        long givePoint = config.enabled() && config.givePerYuan() > 0
-                ? payable.multiply(BigDecimal.valueOf(config.givePerYuan()))
-                    .setScale(0, RoundingMode.DOWN).longValueExact() : 0L;
-        SettlementQuote quote = new SettlementQuote(items, original, original.subtract(payable), payable,
-                null, usePoint, givePoint, null);
+        long givePoint =
+                config.enabled() && config.givePerYuan() > 0
+                        ? payable.multiply(BigDecimal.valueOf(config.givePerYuan()))
+                                .setScale(0, RoundingMode.DOWN)
+                                .longValueExact()
+                        : 0L;
+        var children =
+                new java.util.ArrayList<
+                        com.lemnt.mall.domain.settlement.model.SettlementItemPromotion>();
+        for (int i = 0; i < items.size(); i++) {
+            children.add(
+                    new com.lemnt.mall.domain.settlement.model.SettlementItemPromotion(
+                            null,
+                            null,
+                            null,
+                            String.valueOf(i),
+                            items.get(i).lineAmount().subtract(items.get(i).payAmount()),
+                            BigDecimal.ZERO.setScale(2),
+                            drafts.get(i).usePoint(),
+                            0L));
+        }
+        String promotionType = "POINT".equals(type) ? "POINT_EXCHANGE" : type;
+        var promotion =
+                new com.lemnt.mall.domain.settlement.model.SettlementPromotion(
+                        null,
+                        null,
+                        promotionType + ":" + activityId,
+                        promotionType,
+                        activityId,
+                        activityName(type, activityId),
+                        "活动价",
+                        null,
+                        original.subtract(payable),
+                        BigDecimal.ZERO.setScale(2),
+                        usePoint,
+                        0L,
+                        Map.of(),
+                        children);
+        SettlementQuote quote =
+                new SettlementQuote(
+                        items,
+                        original,
+                        original.subtract(payable),
+                        payable,
+                        null,
+                        usePoint,
+                        givePoint,
+                        null,
+                        0L,
+                        false,
+                        Map.of(),
+                        List.of(promotion),
+                        BigDecimal.ZERO.setScale(2),
+                        BigDecimal.ZERO.setScale(2));
+        var fees = new java.util.LinkedHashMap<Long, BigDecimal>();
+        items.forEach(item -> fees.put(item.productId(), BigDecimal.ZERO.setScale(2)));
+        quote =
+                com.lemnt.mall.application.settlement.service.SettlementPromotionSnapshots.finish(
+                        quote,
+                        items,
+                        null,
+                        fees,
+                        givePoint,
+                        config.enabled() ? config.givePerYuan() : 0);
         if (cmd.addressId() != null) {
             Map<Long, ProductSnapshot> deliverySnapshots = new LinkedHashMap<>(snapshots);
-            quote = deliveryService.attach(cmd.memberId(), cmd.addressId(), deliverySnapshots, quote);
+            quote =
+                    deliveryService.attach(
+                            cmd.memberId(), cmd.addressId(), deliverySnapshots, quote);
         }
         var totalQuantity = lines.stream().mapToInt(PromotionOrderLineCmd::quantity).sum();
-        return new PromotionOrderDraft(cmd, type, activityId, recordId, headId, lines.get(0).skuId(),
-                totalQuantity, firstPrice, usePoint, quote, drafts);
+        return new PromotionOrderDraft(
+                cmd,
+                type,
+                activityId,
+                recordId,
+                headId,
+                lines.get(0).skuId(),
+                totalQuantity,
+                firstPrice,
+                usePoint,
+                quote,
+                drafts);
+    }
+
+    /** 积分活动没有名称字段，不从备注或当前商品名称伪造活动名。 */
+    private String activityName(String type, Long id) {
+        return switch (type) {
+            case "SECKILL" ->
+                    java.util.Optional.ofNullable(seckillActivities.find(id))
+                            .map(a -> a.name())
+                            .orElseThrow(() -> new ServiceException("活动已失效，请重新确认报价", 400));
+            case "COMBINATION" ->
+                    java.util.Optional.ofNullable(combinationActivities.find(id))
+                            .map(a -> a.name())
+                            .orElseThrow(() -> new ServiceException("活动已失效，请重新确认报价", 400));
+            case "BARGAIN" ->
+                    java.util.Optional.ofNullable(bargainActivities.find(id))
+                            .map(a -> a.name())
+                            .orElseThrow(() -> new ServiceException("活动已失效，请重新确认报价", 400));
+            case "POINT" -> "积分兑换";
+            default -> throw new IllegalArgumentException("活动类型不合法");
+        };
     }
 }

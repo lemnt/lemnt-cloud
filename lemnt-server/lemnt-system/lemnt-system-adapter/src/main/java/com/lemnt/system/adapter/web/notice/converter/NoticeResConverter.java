@@ -32,8 +32,7 @@ public class NoticeResConverter {
                 dto.getCreateTime(),
                 dto.getUpdateBy(),
                 dto.getUpdateTime(),
-                dto.getRemark()
-        );
+                dto.getRemark());
     }
 
     /**
@@ -82,8 +81,7 @@ public class NoticeResConverter {
                 dto.getCreateTime(),
                 dto.getUpdateBy(),
                 dto.getUpdateTime(),
-                dto.getRemark()
-        );
+                dto.getRemark());
     }
 
     /**
@@ -104,7 +102,6 @@ public class NoticeResConverter {
                 dto.getCreateTime(),
                 dto.getUpdateBy(),
                 dto.getUpdateTime(),
-                dto.getRemark()
-        );
+                dto.getRemark());
     }
 }

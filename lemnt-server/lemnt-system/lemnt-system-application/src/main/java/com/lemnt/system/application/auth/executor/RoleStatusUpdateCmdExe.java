@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class RoleStatusUpdateCmdExe {
     private final RoleDomainService roleDomainService;
     private final RoleGateway roleGateway;
+
     public Boolean execute(RoleStatusUpdateCmd cmd) {
         Role entity = new Role();
         entity.setRoleId(cmd.roleId());

@@ -1,6 +1,7 @@
 package com.lemnt.gateway.handler;
 
 import com.lemnt.gateway.utils.ServletUtils;
+
 import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.GatewayCallbackManager;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import org.jspecify.annotations.NonNull;
@@ -18,8 +19,8 @@ import reactor.core.publisher.Mono;
 public class SentinelFallbackHandler implements WebExceptionHandler {
 
     private Mono<Void> writeResponse(ServerResponse response, ServerWebExchange exchange) {
-        return ServletUtils.error(exchange.getResponse(), HttpStatus.TOO_MANY_REQUESTS.value(),
-                "请求超过最大数，请稍候再试");
+        return ServletUtils.error(
+                exchange.getResponse(), HttpStatus.TOO_MANY_REQUESTS.value(), "请求超过最大数，请稍候再试");
     }
 
     @Override
@@ -30,10 +31,12 @@ public class SentinelFallbackHandler implements WebExceptionHandler {
         if (!BlockException.isBlockException(ex)) {
             return Mono.error(ex);
         }
-        return handleBlockedRequest(exchange, ex).flatMap(response -> writeResponse(response, exchange));
+        return handleBlockedRequest(exchange, ex)
+                .flatMap(response -> writeResponse(response, exchange));
     }
 
-    private Mono<ServerResponse> handleBlockedRequest(ServerWebExchange exchange, Throwable throwable) {
+    private Mono<ServerResponse> handleBlockedRequest(
+            ServerWebExchange exchange, Throwable throwable) {
         return GatewayCallbackManager.getBlockHandler().handleRequest(exchange, throwable);
     }
 }

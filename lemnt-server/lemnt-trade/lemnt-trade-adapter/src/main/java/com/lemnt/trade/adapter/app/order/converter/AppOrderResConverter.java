@@ -15,29 +15,50 @@ import com.lemnt.trade.application.fulfillment.dto.ShipmentTrackDTO;
 
 /** 会员订单接口响应转换。 */
 public final class AppOrderResConverter {
-    private AppOrderResConverter() {
-    }
+    private AppOrderResConverter() {}
 
     /** 转换订单列表项。 */
     public static AppOrderSummaryRes summary(MemberOrderSummaryDTO value) {
-        return new AppOrderSummaryRes(value.orderNo(), value.status(), value.totalAmount(), value.createTime(),
-                value.commentStatus(), value.finishTime(), value.activeRefund(),
+        return new AppOrderSummaryRes(
+                value.orderNo(),
+                value.status(),
+                value.totalAmount(),
+                value.createTime(),
+                value.commentStatus(),
+                value.finishTime(),
+                value.activeRefund(),
                 value.items().stream().map(AppOrderResConverter::item).toList());
     }
 
     /** 转换订单详情。 */
     public static AppOrderDetailRes detail(MemberOrderDetailDTO value) {
-        return new AppOrderDetailRes(value.orderNo(), value.status(), value.totalAmount(), value.createTime(),
-                value.activeRefund(), value.items().stream().map(AppOrderResConverter::item).toList(),
-                shipment(value.shipment()), value.commentStatus(), value.finishTime(),
-                value.pickUpStoreName(), value.pickUpStorePhone(), value.pickUpStoreAddress(),
+        return new AppOrderDetailRes(
+                value.orderNo(),
+                value.status(),
+                value.totalAmount(),
+                value.createTime(),
+                value.activeRefund(),
+                value.items().stream().map(AppOrderResConverter::item).toList(),
+                shipment(value.shipment()),
+                value.commentStatus(),
+                value.finishTime(),
+                value.pickUpStoreName(),
+                value.pickUpStorePhone(),
+                value.pickUpStoreAddress(),
                 value.pickUpVerifyCode());
     }
 
     /** 转换状态数量。 */
     public static AppOrderStatusCountRes statusCount(MemberOrderStatusCountDTO value) {
-        return new AppOrderStatusCountRes(value.pendingPayment(), value.awaitingShipment(), value.awaitingPickup(),
-                value.awaitingReceipt(), value.awaitingComment(), value.completed(), value.closed(), value.refunded());
+        return new AppOrderStatusCountRes(
+                value.pendingPayment(),
+                value.awaitingShipment(),
+                value.awaitingPickup(),
+                value.awaitingReceipt(),
+                value.awaitingComment(),
+                value.completed(),
+                value.closed(),
+                value.refunded());
     }
 
     /** 转换物流轨迹。 */
@@ -48,16 +69,39 @@ public final class AppOrderResConverter {
     private static AppOrderShipmentRes shipment(ShipmentDTO value) {
         return value == null
                 ? null
-                : new AppOrderShipmentRes(value.carrierCode(), value.trackingNo(), value.recipientName(),
-                        value.phone(), value.address(), value.shippedAt(), value.receivedAt());
+                : new AppOrderShipmentRes(
+                        value.carrierCode(),
+                        value.trackingNo(),
+                        value.recipientName(),
+                        value.phone(),
+                        value.address(),
+                        value.shippedAt(),
+                        value.receivedAt());
     }
 
     private static AppOrderItemRes item(OrderItemDTO value) {
-        return new AppOrderItemRes(value.productId(), value.productCode(), value.productName(), value.unitPrice(),
-                value.quantity(), value.lineAmount(), value.spuId(), value.spuName(),
-                value.specs() == null ? null : value.specs().stream()
-                        .map(property -> new AppOrderItemRes.Spec(property.specId(), property.specName(),
-                                property.specValueId(), property.specValueName())).toList(),
-                value.picUrl(), value.orderItemId(), value.commentStatus());
+        return new AppOrderItemRes(
+                value.productId(),
+                value.productCode(),
+                value.productName(),
+                value.unitPrice(),
+                value.quantity(),
+                value.lineAmount(),
+                value.spuId(),
+                value.spuName(),
+                value.specs() == null
+                        ? null
+                        : value.specs().stream()
+                                .map(
+                                        property ->
+                                                new AppOrderItemRes.Spec(
+                                                        property.specId(),
+                                                        property.specName(),
+                                                        property.specValueId(),
+                                                        property.specValueName()))
+                                .toList(),
+                value.picUrl(),
+                value.orderItemId(),
+                value.commentStatus());
     }
 }

@@ -18,6 +18,7 @@ import lombok.experimental.Accessors;
 public class ProductSpecDO extends BaseDO {
     @TableId(type = IdType.AUTO)
     private Long id;
+
     private String name;
     private String remark;
 }

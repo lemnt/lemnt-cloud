@@ -10,5 +10,4 @@ public record PointProductDTO(
         Integer exchangeCount,
         Integer point,
         BigDecimal price,
-        Integer stock
-) {}
+        Integer stock) {}

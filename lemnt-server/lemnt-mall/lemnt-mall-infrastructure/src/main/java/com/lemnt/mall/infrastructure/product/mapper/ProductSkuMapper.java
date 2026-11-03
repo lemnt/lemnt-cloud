@@ -31,5 +31,4 @@ public interface ProductSkuMapper extends BaseMapper<ProductSkuDO> {
      * 预留库存。
      */
     int reserveStock(@Param("id") Long id, @Param("quantity") Integer quantity);
-
 }

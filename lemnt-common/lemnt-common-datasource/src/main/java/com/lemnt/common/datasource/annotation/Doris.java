@@ -13,6 +13,4 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @DS("doris")
-public @interface Doris {
-
-}
+public @interface Doris {}

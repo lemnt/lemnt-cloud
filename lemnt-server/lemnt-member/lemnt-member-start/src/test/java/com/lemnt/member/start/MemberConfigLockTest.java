@@ -1,10 +1,11 @@
 package com.lemnt.member.start;
 
+import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.member.infrastructure.growth.gateway.MemberConfigLockGatewayImpl;
+
 import com.baomidou.lock.LockInfo;
 import com.baomidou.lock.LockTemplate;
 import com.baomidou.lock.executor.RedissonLockExecutor;
-import com.lemnt.common.core.exception.ServiceException;
-import com.lemnt.member.infrastructure.growth.gateway.MemberConfigLockGatewayImpl;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,23 +27,29 @@ class MemberConfigLockTest {
         var locks = mock(LockTemplate.class);
         var handle = mock(LockInfo.class);
         when(locks.lock(anyString(), anyLong(), anyLong(), any())).thenReturn(handle);
-        when(locks.releaseLock(handle)).thenAnswer(call -> {
-            try (var connection = source.getConnection();
-                    var statement = connection.createStatement();
-                    var rows = statement.executeQuery("SELECT COUNT(*) FROM effect")) {
-                rows.next();
-                assertEquals(1, rows.getInt(1));
-            }
-            return true;
-        });
+        when(locks.releaseLock(handle))
+                .thenAnswer(
+                        call -> {
+                            try (var connection = source.getConnection();
+                                    var statement = connection.createStatement();
+                                    var rows =
+                                            statement.executeQuery("SELECT COUNT(*) FROM effect")) {
+                                rows.next();
+                                assertEquals(1, rows.getInt(1));
+                            }
+                            return true;
+                        });
         var gateway = new MemberConfigLockGatewayImpl(locks);
-        new TransactionTemplate(new DataSourceTransactionManager(source)).executeWithoutResult(status -> {
-            gateway.lockConfiguration();
-            gateway.lockConfiguration();
-            jdbc.update("INSERT INTO effect VALUES(1)");
-            verify(locks, never()).releaseLock(any());
-        });
-        verify(locks).lock("lemnt:member:growth:configuration", -1, 3000, RedissonLockExecutor.class);
+        new TransactionTemplate(new DataSourceTransactionManager(source))
+                .executeWithoutResult(
+                        status -> {
+                            gateway.lockConfiguration();
+                            gateway.lockConfiguration();
+                            jdbc.update("INSERT INTO effect VALUES(1)");
+                            verify(locks, never()).releaseLock(any());
+                        });
+        verify(locks)
+                .lock("lemnt:member:growth:configuration", -1, 3000, RedissonLockExecutor.class);
         verify(locks).releaseLock(handle);
     }
 
@@ -52,13 +59,17 @@ class MemberConfigLockTest {
         var source = source();
         var jdbc = new JdbcTemplate(source);
         var support = new MemberConfigLockTestSupport();
-        assertThrows(ServiceException.class, () -> new TransactionTemplate(new DataSourceTransactionManager(source))
-                .executeWithoutResult(status -> {
-                    support.gateway.lockConfiguration();
-                    jdbc.update("INSERT INTO effect VALUES(1)");
-                    verify(support.locks, never()).releaseLock(any());
-                    throw new ServiceException("回滚", 409);
-                }));
+        assertThrows(
+                ServiceException.class,
+                () ->
+                        new TransactionTemplate(new DataSourceTransactionManager(source))
+                                .executeWithoutResult(
+                                        status -> {
+                                            support.gateway.lockConfiguration();
+                                            jdbc.update("INSERT INTO effect VALUES(1)");
+                                            verify(support.locks, never()).releaseLock(any());
+                                            throw new ServiceException("回滚", 409);
+                                        }));
         assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM effect", Integer.class));
         verify(support.locks).releaseLock(any());
         new TransactionTemplate(new DataSourceTransactionManager(source))
@@ -72,8 +83,13 @@ class MemberConfigLockTest {
         var gateway = new MemberConfigLockGatewayImpl(locks);
         assertThrows(IllegalStateException.class, gateway::lockConfiguration);
         verifyNoInteractions(locks);
-        var error = assertThrows(ServiceException.class, () -> new TransactionTemplate(new DataSourceTransactionManager(source()))
-                .executeWithoutResult(status -> gateway.lockConfiguration()));
+        var error =
+                assertThrows(
+                        ServiceException.class,
+                        () ->
+                                new TransactionTemplate(new DataSourceTransactionManager(source()))
+                                        .executeWithoutResult(
+                                                status -> gateway.lockConfiguration()));
         assertEquals(409, error.getCode());
         verify(locks, never()).releaseLock(any());
     }

@@ -19,7 +19,8 @@ public final class SettlementDTOConverter {
      * 明细。
      */
     public static SettlementItemDTO item(SettlementItem value) {
-        return new SettlementItemDTO(value.productId(),
+        return new SettlementItemDTO(
+                value.productId(),
                 value.productCode(),
                 value.productName(),
                 value.unitPrice(),
@@ -29,10 +30,20 @@ public final class SettlementDTOConverter {
                 value.deliveryPrice(),
                 value.spuId(),
                 value.spuName(),
-                value.specs() == null ? null : value.specs().stream().map(snapshotProperty ->
-                        new SettlementItemDTO.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
-                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
-                value.picUrl(), value.orderItemId(), value.commentStatus());
+                value.specs() == null
+                        ? null
+                        : value.specs().stream()
+                                .map(
+                                        snapshotProperty ->
+                                                new SettlementItemDTO.Spec(
+                                                        snapshotProperty.specId(),
+                                                        snapshotProperty.specName(),
+                                                        snapshotProperty.specValueId(),
+                                                        snapshotProperty.specValueName()))
+                                .toList(),
+                value.picUrl(),
+                value.orderItemId(),
+                value.commentStatus());
     }
 
     /**
@@ -45,8 +56,12 @@ public final class SettlementDTOConverter {
                 value.discountAmount(),
                 value.payableAmount(),
                 value.couponId(),
-                SettlementRules.quoteToken(value), value.usePoint(), value.givePoint(), delivery(value.delivery()),
-                value.freeDelivery(), value.giveCouponTemplateCounts());
+                SettlementRules.quoteToken(value),
+                value.usePoint(),
+                value.givePoint(),
+                delivery(value.delivery()),
+                value.freeDelivery(),
+                value.giveCouponTemplateCounts());
     }
 
     /**
@@ -56,23 +71,31 @@ public final class SettlementDTOConverter {
         return value == null || order == null
                 ? null
                 : new SettlementReceiptDTO(
-                value.orderNo(),
-                value.memberId(),
-                order.status(),
-                value.originalAmount(),
-                value.discountAmount(),
-                value.payableAmount(),
-                value.couponId(),
-                order.items().stream().map(SettlementDTOConverter::item).toList(), delivery(order.delivery()), order.commentStatus(), order.finishTime());
+                        value.orderNo(),
+                        value.memberId(),
+                        order.status(),
+                        value.originalAmount(),
+                        value.discountAmount(),
+                        value.payableAmount(),
+                        value.couponId(),
+                        order.items().stream().map(SettlementDTOConverter::item).toList(),
+                        delivery(order.delivery()),
+                        order.commentStatus(),
+                        order.finishTime());
     }
 
     /** 转换服务端冻结的收件快照。 */
-    public static SettlementDeliveryDTO delivery(
-            SettlementDelivery value
-    ) {
-        return value == null ? null : new SettlementDeliveryDTO(
-                value.addressId(), value.deliveryType(), value.receiverName(), value.receiverMobile(),
-                value.receiverAreaId(), value.receiverDetailAddress(), value.deliveryPrice(),
-                value.pickUpStoreId());
+    public static SettlementDeliveryDTO delivery(SettlementDelivery value) {
+        return value == null
+                ? null
+                : new SettlementDeliveryDTO(
+                        value.addressId(),
+                        value.deliveryType(),
+                        value.receiverName(),
+                        value.receiverMobile(),
+                        value.receiverAreaId(),
+                        value.receiverDetailAddress(),
+                        value.deliveryPrice(),
+                        value.pickUpStoreId());
     }
 }

@@ -32,10 +32,14 @@ public class AppMemberExperienceRecordController {
     @Operation(summary = "本人经验流水分页")
     public R<AppMemberGrowthExperienceRes> experience(
             @Valid @ModelAttribute ExperienceRecordPageReq req) {
-        var page = memberAssetRecordPageQueryExe.execute(
-                MemberGrowthReqConverter.toExperienceRecordPageQry(SecurityUtils.getUserId(), req));
+        var page =
+                memberAssetRecordPageQueryExe.execute(
+                        MemberGrowthReqConverter.toExperienceRecordPageQry(
+                                SecurityUtils.getUserId(), req));
         return R.page(
-                page.getRecords().stream().map(MemberGrowthResConverter::toAppMemberGrowthExperienceRes).toList(),
+                page.getRecords().stream()
+                        .map(MemberGrowthResConverter::toAppMemberGrowthExperienceRes)
+                        .toList(),
                 page.getTotal());
     }
 }

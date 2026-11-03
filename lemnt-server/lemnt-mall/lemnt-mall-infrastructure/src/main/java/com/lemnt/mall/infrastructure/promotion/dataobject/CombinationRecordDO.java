@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class CombinationRecordDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private Long activityId;
     private BigDecimal combinationPrice;
     private Long spuId;

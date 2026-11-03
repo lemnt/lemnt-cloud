@@ -27,8 +27,12 @@ class NoticeUpdateCmdExeTest {
         NoticeGateway gateway = mock(NoticeGateway.class);
         when(gateway.update(any())).thenReturn(true);
         try (var security = mockStatic(SecurityUtils.class)) {
-            assertThat(new NoticeUpdateCmdExe(gateway).execute(new NoticeUpdateCmd(
-                    11L, "测试公告", "2", "<p>正文</p>", "2", remark))).isTrue();
+            assertThat(
+                            new NoticeUpdateCmdExe(gateway)
+                                    .execute(
+                                            new NoticeUpdateCmd(
+                                                    11L, "测试公告", "2", "<p>正文</p>", "2", remark)))
+                    .isTrue();
         }
         ArgumentCaptor<Notice> entity = ArgumentCaptor.forClass(Notice.class);
         verify(gateway).update(entity.capture());

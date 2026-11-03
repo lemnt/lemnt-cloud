@@ -9,6 +9,5 @@ public record AppKefuConversationDTO(
         LocalDateTime lastMessageTime,
         String lastMessageContent,
         Integer lastMessageContentType,
-        Long unreadCount
-) implements Serializable {
-}
+        Long unreadCount)
+        implements Serializable {}

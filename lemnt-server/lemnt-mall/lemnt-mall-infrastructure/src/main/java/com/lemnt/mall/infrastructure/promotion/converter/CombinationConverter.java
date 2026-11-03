@@ -12,10 +12,21 @@ public final class CombinationConverter {
     private CombinationConverter() {}
 
     public static CombinationActivity model(CombinationActivityDO row) {
-        if (row == null) { return null; }
-        return new CombinationActivity(row.getId(), row.getName(), row.getSpuId(), row.getTotalLimitCount(),
-                row.getSingleLimitCount(), row.getStartTime(), row.getEndTime(), row.getUserSize(),
-                row.getVirtualGroup(), row.getStatus(), row.getLimitDuration());
+        if (row == null) {
+            return null;
+        }
+        return new CombinationActivity(
+                row.getId(),
+                row.getName(),
+                row.getSpuId(),
+                row.getTotalLimitCount(),
+                row.getSingleLimitCount(),
+                row.getStartTime(),
+                row.getEndTime(),
+                row.getUserSize(),
+                row.getVirtualGroup(),
+                row.getStatus(),
+                row.getLimitDuration());
     }
 
     public static CombinationActivityDO row(CombinationActivity value) {
@@ -35,9 +46,17 @@ public final class CombinationConverter {
     }
 
     public static CombinationProduct model(CombinationProductDO row) {
-        if (row == null) { return null; }
-        return new CombinationProduct(row.getId(), row.getActivityId(), row.getSpuId(), row.getSkuId(),
-                row.getCombinationPrice(), row.getActivityStatus(), row.getActivityStartTime(),
+        if (row == null) {
+            return null;
+        }
+        return new CombinationProduct(
+                row.getId(),
+                row.getActivityId(),
+                row.getSpuId(),
+                row.getSkuId(),
+                row.getCombinationPrice(),
+                row.getActivityStatus(),
+                row.getActivityStartTime(),
                 row.getActivityEndTime());
     }
 
@@ -55,12 +74,30 @@ public final class CombinationConverter {
     }
 
     public static CombinationRecord model(CombinationRecordDO row) {
-        if (row == null) { return null; }
-        return new CombinationRecord(row.getId(), row.getActivityId(), row.getCombinationPrice(),
-                row.getSpuId(), row.getSpuName(), row.getPicUrl(), row.getSkuId(), row.getCount(),
-                row.getUserId(), row.getNickname(), row.getAvatar(), row.getHeadId(), row.getStatus(),
-                row.getOrderId(), row.getUserSize(), row.getUserCount(), row.getVirtualGroup(),
-                row.getExpireTime(), row.getStartTime(), row.getEndTime());
+        if (row == null) {
+            return null;
+        }
+        return new CombinationRecord(
+                row.getId(),
+                row.getActivityId(),
+                row.getCombinationPrice(),
+                row.getSpuId(),
+                row.getSpuName(),
+                row.getPicUrl(),
+                row.getSkuId(),
+                row.getCount(),
+                row.getUserId(),
+                row.getNickname(),
+                row.getAvatar(),
+                row.getHeadId(),
+                row.getStatus(),
+                row.getOrderId(),
+                row.getUserSize(),
+                row.getUserCount(),
+                row.getVirtualGroup(),
+                row.getExpireTime(),
+                row.getStartTime(),
+                row.getEndTime());
     }
 
     public static CombinationRecordDO row(CombinationRecord value) {

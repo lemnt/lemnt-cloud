@@ -1,25 +1,20 @@
 package com.lemnt.mall.adapter.app.product;
 
-import com.lemnt.mall.adapter.app.product.req.CommentPageReq;
-
-import com.lemnt.mall.adapter.app.product.res.CommentPageRes;
-
-import com.lemnt.mall.application.product.executor.CommentPublicPageQueryExe;
-
-import org.springframework.web.bind.annotation.ModelAttribute;
-
-import org.springframework.web.bind.annotation.GetMapping;
-
 import com.lemnt.common.core.domain.R;
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.mall.adapter.app.product.converter.CommentReqConverter;
 import com.lemnt.mall.adapter.app.product.converter.CommentResConverter;
 import com.lemnt.mall.adapter.app.product.req.CommentCreateReq;
+import com.lemnt.mall.adapter.app.product.req.CommentPageReq;
 import com.lemnt.mall.adapter.app.product.res.CommentCreateRes;
+import com.lemnt.mall.adapter.app.product.res.CommentPageRes;
 import com.lemnt.mall.application.product.executor.CommentCreateCmdExe;
+import com.lemnt.mall.application.product.executor.CommentPublicPageQueryExe;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,17 +36,20 @@ public class AppCommentController {
     /** 公开查询当前商品可见评价，不接受其他会员或后台过滤条件。 */
     @GetMapping
     @Operation(summary = "商品公开评价分页")
-    public R<CommentPageRes> page(
-            @Valid @ModelAttribute CommentPageReq req) {
+    public R<CommentPageRes> page(@Valid @ModelAttribute CommentPageReq req) {
         var result = commentPublicPageQueryExe.execute(CommentReqConverter.page(req));
-        return R.page(result.getRecords().stream().map(CommentResConverter::page).toList(), result.getTotal());
+        return R.page(
+                result.getRecords().stream().map(CommentResConverter::page).toList(),
+                result.getTotal());
     }
 
     /** 只允许本人完成订单的SKU，令牌由网关统一校验。 */
     @PostMapping
     @Operation(summary = "评价本人已完成订单内商品")
     public R<CommentCreateRes> create(@Valid @RequestBody CommentCreateReq req) {
-        return R.ok(CommentResConverter.created(commentCreateCmdExe.execute(CommentReqConverter.create(SecurityUtils.getUserId(),
-            req))));
+        return R.ok(
+                CommentResConverter.created(
+                        commentCreateCmdExe.execute(
+                                CommentReqConverter.create(SecurityUtils.getUserId(), req))));
     }
 }

@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 /** 消费失败直接抛给 RocketMQ，复用其重试机制。 */
 @Component
 @RequiredArgsConstructor
-@RocketMQMessageListener(topic = OrderRollbackEvent.TOPIC, consumerGroup = OrderRollbackEvent.GROUP,
+@RocketMQMessageListener(
+        topic = OrderRollbackEvent.TOPIC,
+        consumerGroup = OrderRollbackEvent.GROUP,
         consumeMode = ConsumeMode.ORDERLY)
 public class OrderRollbackConsumer implements RocketMQListener<String> {
     private final OrderRollbackCmdExe executor;

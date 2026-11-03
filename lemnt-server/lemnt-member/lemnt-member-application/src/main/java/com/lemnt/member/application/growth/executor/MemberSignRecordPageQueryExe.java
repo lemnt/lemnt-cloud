@@ -25,10 +25,11 @@ public class MemberSignRecordPageQueryExe {
         MemberRules.id(qry.memberId());
         MemberRules.page(qry.pageNum(), qry.pageSize());
         return new PageResult<>(
-                memberSignRecordGateway.signs(qry.memberId(), (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize())
-                .stream()
-                .map(MemberGrowthDTOConverter::toSignRecordDTO)
-                .toList(),
+                memberSignRecordGateway
+                        .signs(qry.memberId(), (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize())
+                        .stream()
+                        .map(MemberGrowthDTOConverter::toSignRecordDTO)
+                        .toList(),
                 memberSignRecordGateway.signCount(qry.memberId()));
     }
 }

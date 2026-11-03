@@ -12,8 +12,9 @@ import lombok.RequiredArgsConstructor;
 public class DiyPagePageQueryExe {
     private final DiyDecorationService service;
 
-    public com.lemnt.common.domain.model.PageResult<com.lemnt.mall.application.promotion.dto.DiyPageDTO> execute(
-            com.lemnt.mall.application.promotion.qry.DiyPagePageQry qry) {
+    public com.lemnt.common.domain.model.PageResult<
+                    com.lemnt.mall.application.promotion.dto.DiyPageDTO>
+            execute(com.lemnt.mall.application.promotion.qry.DiyPagePageQry qry) {
         return service.pagePage(qry);
     }
 }

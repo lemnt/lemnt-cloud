@@ -14,8 +14,7 @@ import java.time.LocalDateTime;
 @Data
 public class PageQry implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     /**
      * 页码（默认 1）
@@ -37,8 +36,7 @@ public class PageQry implements Serializable {
      */
     private LocalDateTime endTime;
 
-    public PageQry() {
-    }
+    public PageQry() {}
 
     public PageQry(int pageNum, int pageSize) {
         this.pageNum = pageNum;

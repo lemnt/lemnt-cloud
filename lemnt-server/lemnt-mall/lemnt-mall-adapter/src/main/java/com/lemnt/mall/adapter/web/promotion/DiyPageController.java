@@ -49,7 +49,8 @@ public class DiyPageController {
     @RequiresPermissions("mall:promotion:list")
     public R<DiyPageRes> page(@Valid @ModelAttribute DiyPagePageReq req) {
         var result = page.execute(DiyConverter.page(req));
-        return R.page(result.getRecords().stream().map(DiyConverter::page).toList(), result.getTotal());
+        return R.page(
+                result.getRecords().stream().map(DiyConverter::page).toList(), result.getTotal());
     }
 
     @GetMapping("/{id}")

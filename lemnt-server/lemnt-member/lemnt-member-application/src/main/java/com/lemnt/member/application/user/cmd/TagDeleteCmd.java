@@ -5,6 +5,4 @@ import java.io.Serializable;
 /**
  * 标签删除命令。
  */
-public record TagDeleteCmd(
-        Long id
-) implements Serializable {}
+public record TagDeleteCmd(Long id) implements Serializable {}

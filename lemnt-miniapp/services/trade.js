@@ -9,34 +9,50 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     const prefix = service === 'trade' ? '/trade/app' : '/mall/app';
     const response = await request({
       url: baseUrl.replace(/\/$/, '') + prefix + path,
-      method, data, timeout: 15000,
+      method,
+      data,
+      timeout: 15000,
       header: { Authorization: `Bearer ${token}` },
     });
     if (getMemberToken() !== token) throw new Error('会员已切换，请重新操作');
     if (response.statusCode !== 200 || !response.data || response.data.code !== 200) {
-      throw new Error(response.data && (response.data.detail || response.data.msg) || '请求失败，请查询订单结果后重试');
+      throw new Error(
+        (response.data && (response.data.detail || response.data.msg)) ||
+          '请求失败，请查询订单结果后重试',
+      );
     }
     if (path === '/coupon-center' || path === '/coupon-wallet') {
       return { records: response.data.rows, total: response.data.total };
     }
-    if (service === 'trade' && (path === '/orders' || path === '/after-sales' || path === '/wallet/transactions' || path === '/wallet/recharges' || path === '/wallet/transfers')) {
+    if (
+      service === 'trade' &&
+      (path === '/orders' ||
+        path === '/after-sales' ||
+        path === '/wallet/transactions' ||
+        path === '/wallet/recharges' ||
+        path === '/wallet/transfers')
+    ) {
       return { records: response.data.rows || [], total: response.data.total || 0 };
     }
     return response.data.data;
   }
   function id(value) {
-    if (typeof value !== 'string' || !/^[1-9]\d{0,18}$/.test(value)) throw new Error('商品编号须为正整数字符串');
+    if (typeof value !== 'string' || !/^[1-9]\d{0,18}$/.test(value))
+      throw new Error('商品编号须为正整数字符串');
     return value;
   }
   function order(value) {
-    if (typeof value !== 'string' || !value.trim() || value.length > 40) throw new Error('订单编号不合法');
+    if (typeof value !== 'string' || !value.trim() || value.length > 40)
+      throw new Error('订单编号不合法');
     return encodeURIComponent(value);
   }
   function page(input = {}) {
     const pageNum = input.pageNum === undefined ? 1 : input.pageNum;
     const pageSize = input.pageSize === undefined ? 10 : input.pageSize;
-    if (!Number.isInteger(pageNum) || pageNum < 1 || pageNum > 1000000) throw new Error('页码不合法');
-    if (!Number.isInteger(pageSize) || pageSize < 1 || pageSize > 100) throw new Error('每页数量不合法');
+    if (!Number.isInteger(pageNum) || pageNum < 1 || pageNum > 1000000)
+      throw new Error('页码不合法');
+    if (!Number.isInteger(pageSize) || pageSize < 1 || pageSize > 100)
+      throw new Error('每页数量不合法');
     return { pageNum, pageSize };
   }
   function positiveId(value) {
@@ -44,127 +60,295 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     return value;
   }
   function quoteData(input) {
-    if (!input || !Array.isArray(input.productIds) || !input.productIds.length) throw new Error('请选择商品');
-    if (input.pointStatus !== undefined && typeof input.pointStatus !== 'boolean') throw new Error('积分选择不合法');
+    if (!input || !Array.isArray(input.productIds) || !input.productIds.length)
+      throw new Error('请选择商品');
+    if (input.pointStatus !== undefined && typeof input.pointStatus !== 'boolean')
+      throw new Error('积分选择不合法');
     const deliveryType = input.deliveryType === 2 ? 2 : 1;
-    const delivery = deliveryType === 2
-      ? { deliveryType, pickUpStoreId: id(input.pickUpStoreId) }
-      : { addressId: id(input.addressId) };
-    return { ...delivery, ...(input.pointStatus === undefined ? {} : { pointStatus: input.pointStatus }), productIds: input.productIds.map(id), ...(input.couponId ? { couponId: id(input.couponId) } : {}) };
+    const delivery =
+      deliveryType === 2
+        ? { deliveryType, pickUpStoreId: id(input.pickUpStoreId) }
+        : { addressId: id(input.addressId) };
+    return {
+      ...delivery,
+      ...(input.pointStatus === undefined ? {} : { pointStatus: input.pointStatus }),
+      productIds: input.productIds.map(id),
+      ...(input.couponId ? { couponId: id(input.couponId) } : {}),
+    };
   }
   return {
     cart: () => call('/cart'),
     saveCart: (productId, input) => {
-      if (!Number.isInteger(input.quantity) || input.quantity < 1 || typeof input.selected !== 'boolean') throw new Error('购物车参数不合法');
-      return call('/cart/' + id(productId), 'PUT', { quantity: input.quantity, selected: input.selected });
+      if (
+        !Number.isInteger(input.quantity) ||
+        input.quantity < 1 ||
+        typeof input.selected !== 'boolean'
+      )
+        throw new Error('购物车参数不合法');
+      return call('/cart/' + id(productId), 'PUT', {
+        quantity: input.quantity,
+        selected: input.selected,
+      });
     },
-    deleteCart: productId => call('/cart/' + id(productId), 'DELETE'),
+    deleteCart: (productId) => call('/cart/' + id(productId), 'DELETE'),
     coupons: () => call('/coupons'),
-    couponCenter: pageNum => call('/coupon-center','GET',{pageNum,pageSize:20}),
-    couponWallet: pageNum => call('/coupon-wallet','GET',{pageNum,pageSize:20}),
-    claimCoupon: templateId => call('/coupon-center/'+id(templateId)+'/claim','POST'),
-    quote: input => call('/checkout/quote', 'POST', quoteData(input)),
-    checkout: input => {
-      if (!input || typeof input.requestNo !== 'string' || !input.requestNo.trim() || input.requestNo.length > 64 || typeof input.settlementId !== 'string' || !/^[a-f0-9-]{36}$/.test(input.settlementId)) throw new Error('结算单编号或请求编号不合法');
-      return call('/checkout', 'POST', { settlementId: input.settlementId, requestNo: input.requestNo });
+    couponCenter: (pageNum) => call('/coupon-center', 'GET', { pageNum, pageSize: 20 }),
+    couponWallet: (pageNum) => call('/coupon-wallet', 'GET', { pageNum, pageSize: 20 }),
+    claimCoupon: (templateId) => call('/coupon-center/' + id(templateId) + '/claim', 'POST'),
+    quote: (input) => call('/checkout/quote', 'POST', quoteData(input)),
+    checkout: (input) => {
+      if (
+        !input ||
+        typeof input.requestNo !== 'string' ||
+        !input.requestNo.trim() ||
+        input.requestNo.length > 64 ||
+        typeof input.settlementId !== 'string' ||
+        !/^[a-f0-9-]{36}$/.test(input.settlementId)
+      )
+        throw new Error('结算单编号或请求编号不合法');
+      return call('/checkout', 'POST', {
+        settlementId: input.settlementId,
+        requestNo: input.requestNo,
+      });
     },
-    order: orderNo => call('/orders/' + order(orderNo)),
-    paymentChannels: appKey => {
-      if (typeof appKey !== 'string' || !appKey.trim() || appKey.length > 64) throw new Error('支付应用不合法');
+    order: (orderNo) => call('/orders/' + order(orderNo)),
+    paymentChannels: (appKey) => {
+      if (typeof appKey !== 'string' || !appKey.trim() || appKey.length > 64)
+        throw new Error('支付应用不合法');
       return call('/payment-channels', 'GET', { appKey }, 'trade');
     },
-    prepay: input => {
-      if (!input || typeof input.orderNo !== 'string' || !input.orderNo.trim() || input.orderNo.length > 40) throw new Error('订单编号不合法');
-      if (typeof input.appKey !== 'string' || !input.appKey.trim() || input.appKey.length > 64) throw new Error('支付应用不合法');
-      if (!['ALIPAY', 'WECHAT', 'SANDBOX'].includes(input.channel)) throw new Error('支付渠道不合法');
-      return call('/orders/' + order(input.orderNo) + '/payment', 'POST', { appKey: input.appKey, channel: input.channel }, 'trade');
+    prepay: (input) => {
+      if (
+        !input ||
+        typeof input.orderNo !== 'string' ||
+        !input.orderNo.trim() ||
+        input.orderNo.length > 40
+      )
+        throw new Error('订单编号不合法');
+      if (typeof input.appKey !== 'string' || !input.appKey.trim() || input.appKey.length > 64)
+        throw new Error('支付应用不合法');
+      if (!['ALIPAY', 'WECHAT', 'SANDBOX'].includes(input.channel))
+        throw new Error('支付渠道不合法');
+      return call(
+        '/orders/' + order(input.orderNo) + '/payment',
+        'POST',
+        { appKey: input.appKey, channel: input.channel },
+        'trade',
+      );
     },
-    sandboxPay: paymentNo => {
-      if (typeof paymentNo !== 'string' || !/^PAY[A-Z0-9]{4,37}$/.test(paymentNo)) throw new Error('支付单编号不合法');
-      return call('/payments/' + encodeURIComponent(paymentNo) + '/sandbox-pay', 'POST', undefined, 'trade');
+    sandboxPay: (paymentNo) => {
+      if (typeof paymentNo !== 'string' || !/^PAY[A-Z0-9]{4,37}$/.test(paymentNo))
+        throw new Error('支付单编号不合法');
+      return call(
+        '/payments/' + encodeURIComponent(paymentNo) + '/sandbox-pay',
+        'POST',
+        undefined,
+        'trade',
+      );
     },
-    abandonCheckout: input => {
-      if (!input || typeof input.settlementId !== 'string' || !/^[a-f0-9-]{36}$/.test(input.settlementId) || typeof input.requestNo !== 'string' || !input.requestNo.trim() || input.requestNo.length > 64) throw new Error('结算单编号或请求编号不合法');
-      return call('/checkout/abandon','POST',{settlementId:input.settlementId,requestNo:input.requestNo});
+    abandonCheckout: (input) => {
+      if (
+        !input ||
+        typeof input.settlementId !== 'string' ||
+        !/^[a-f0-9-]{36}$/.test(input.settlementId) ||
+        typeof input.requestNo !== 'string' ||
+        !input.requestNo.trim() ||
+        input.requestNo.length > 64
+      )
+        throw new Error('结算单编号或请求编号不合法');
+      return call('/checkout/abandon', 'POST', {
+        settlementId: input.settlementId,
+        requestNo: input.requestNo,
+      });
     },
-    checkoutRequest: requestNo => {
-      if (typeof requestNo !== 'string' || !requestNo.trim() || requestNo.length > 64) throw new Error('请求编号不合法');
+    checkoutRequest: (requestNo) => {
+      if (typeof requestNo !== 'string' || !requestNo.trim() || requestNo.length > 64)
+        throw new Error('请求编号不合法');
       return call('/checkout/requests/' + encodeURIComponent(requestNo));
     },
-    paymentStatus: orderNo => call('/orders/' + order(orderNo) + '/payment', 'GET', undefined, 'trade'),
-    cancelOrder: orderNo => call('/orders/' + order(orderNo) + '/cancel', 'POST', undefined, 'trade'),
-    receiveOrder: orderNo => call('/orders/' + order(orderNo) + '/receive', 'POST', undefined, 'trade'),
-    cancelAfterSale: no => call('/after-sales/' + order(no) + '/cancel', 'POST', undefined, 'trade'),
+    paymentStatus: (orderNo) =>
+      call('/orders/' + order(orderNo) + '/payment', 'GET', undefined, 'trade'),
+    cancelOrder: (orderNo) =>
+      call('/orders/' + order(orderNo) + '/cancel', 'POST', undefined, 'trade'),
+    receiveOrder: (orderNo) =>
+      call('/orders/' + order(orderNo) + '/receive', 'POST', undefined, 'trade'),
+    orderPromotions: (no) =>
+      call('/orders/' + order(no) + '/promotions', 'GET', undefined, 'trade'),
+    afterSalePromotions: (no) =>
+      call('/after-sales/' + order(no) + '/promotions', 'GET', undefined, 'trade'),
+    cancelAfterSale: (no) =>
+      call('/after-sales/' + order(no) + '/cancel', 'POST', undefined, 'trade'),
 
     // 钱包
     wallet: () => call('/wallet', 'GET', undefined, 'trade'),
-    walletTransactions: input => {
+    walletTransactions: (input) => {
       const paging = page(input);
-      const bizType = input && typeof input.bizType === 'string' && input.bizType ? input.bizType : undefined;
-      if (bizType !== undefined && !['RECHARGE','RECHARGE_REFUND','PAYMENT','PAYMENT_REFUND','UPDATE_BALANCE','TRANSFER','BROKERAGE_WITHDRAW'].includes(bizType)) throw new Error('业务类型不合法');
-      return call('/wallet/transactions', 'GET', { ...paging, ...(bizType === undefined ? {} : { bizType }) }, 'trade');
+      const bizType =
+        input && typeof input.bizType === 'string' && input.bizType ? input.bizType : undefined;
+      if (
+        bizType !== undefined &&
+        ![
+          'RECHARGE',
+          'RECHARGE_REFUND',
+          'PAYMENT',
+          'PAYMENT_REFUND',
+          'UPDATE_BALANCE',
+          'TRANSFER',
+          'BROKERAGE_WITHDRAW',
+        ].includes(bizType)
+      )
+        throw new Error('业务类型不合法');
+      return call(
+        '/wallet/transactions',
+        'GET',
+        { ...paging, ...(bizType === undefined ? {} : { bizType }) },
+        'trade',
+      );
     },
 
     // 充值
     rechargePackages: () => call('/recharge-packages', 'GET', undefined, 'trade'),
-    createRecharge: input => {
+    createRecharge: (input) => {
       const packageId = input && input.packageId;
       if (!Number.isSafeInteger(packageId) || packageId <= 0) throw new Error('套餐编号不合法');
       const requestNo = input && input.requestNo;
-      if (typeof requestNo !== 'string' || !requestNo.trim() || requestNo.length > 64) throw new Error('请求编号不合法');
+      if (typeof requestNo !== 'string' || !requestNo.trim() || requestNo.length > 64)
+        throw new Error('请求编号不合法');
       return call('/wallet/recharges', 'POST', { packageId, requestNo }, 'trade');
     },
-    myRecharges: input => call('/wallet/recharges', 'GET', page(input), 'trade'),
+    myRecharges: (input) => call('/wallet/recharges', 'GET', page(input), 'trade'),
 
     // 转账
-    walletTransfer: input => {
+    walletTransfer: (input) => {
       const toMemberId = input && input.toMemberId;
-      if (!Number.isSafeInteger(toMemberId) || toMemberId <= 0) throw new Error('转入会员编号不合法');
+      if (!Number.isSafeInteger(toMemberId) || toMemberId <= 0)
+        throw new Error('转入会员编号不合法');
       const amount = input && typeof input.amount === 'string' ? input.amount.trim() : '';
-      if (!/^\d{1,9}(\.\d{1,2})?$/.test(amount) || Number(amount) <= 0) throw new Error('转账金额不合法');
+      if (!/^\d{1,9}(\.\d{1,2})?$/.test(amount) || Number(amount) <= 0)
+        throw new Error('转账金额不合法');
       const requestNo = input && input.requestNo;
-      if (typeof requestNo !== 'string' || !requestNo.trim() || requestNo.length > 64) throw new Error('请求编号不合法');
-      const remark = input && typeof input.remark === 'string' && input.remark.trim() ? input.remark.trim() : undefined;
-      return call('/wallet/transfers', 'POST', { toMemberId, amount: Number(amount).toFixed(2), requestNo, ...(remark ? { remark } : {}) }, 'trade');
+      if (typeof requestNo !== 'string' || !requestNo.trim() || requestNo.length > 64)
+        throw new Error('请求编号不合法');
+      const remark =
+        input && typeof input.remark === 'string' && input.remark.trim()
+          ? input.remark.trim()
+          : undefined;
+      return call(
+        '/wallet/transfers',
+        'POST',
+        { toMemberId, amount: Number(amount).toFixed(2), requestNo, ...(remark ? { remark } : {}) },
+        'trade',
+      );
     },
-    myTransfers: input => call('/wallet/transfers', 'GET', page(input), 'trade'),
+    myTransfers: (input) => call('/wallet/transfers', 'GET', page(input), 'trade'),
 
     // 订单中心
-    orderPage: input => {
+    orderPage: (input) => {
       const paging = page(input);
-      const status = input && typeof input.status === 'string' && input.status ? input.status : undefined;
-      if (status !== undefined && !['RESERVING','PENDING_PAYMENT','PAID','SHIPPED','COMPLETED','REFUNDED','CLOSED'].includes(status)) throw new Error('订单状态不合法');
-      const commentStatus = input && input.commentStatus === null ? undefined : input && input.commentStatus;
-      if (commentStatus !== undefined && typeof commentStatus !== 'boolean') throw new Error('评价状态不合法');
-      return call('/orders', 'GET', { ...paging, ...(status === undefined ? {} : { status }), ...(commentStatus === undefined ? {} : { commentStatus }) }, 'trade');
+      const status =
+        input && typeof input.status === 'string' && input.status ? input.status : undefined;
+      if (
+        status !== undefined &&
+        ![
+          'RESERVING',
+          'PENDING_PAYMENT',
+          'PAID',
+          'SHIPPED',
+          'COMPLETED',
+          'REFUNDED',
+          'CLOSED',
+        ].includes(status)
+      )
+        throw new Error('订单状态不合法');
+      const commentStatus =
+        input && input.commentStatus === null ? undefined : input && input.commentStatus;
+      if (commentStatus !== undefined && typeof commentStatus !== 'boolean')
+        throw new Error('评价状态不合法');
+      return call(
+        '/orders',
+        'GET',
+        {
+          ...paging,
+          ...(status === undefined ? {} : { status }),
+          ...(commentStatus === undefined ? {} : { commentStatus }),
+        },
+        'trade',
+      );
     },
     orderStatusCounts: () => call('/orders/status-counts', 'GET', undefined, 'trade'),
-    orderDetail: orderNo => call('/orders/' + order(orderNo), 'GET', undefined, 'trade'),
-    orderTracks: orderNo => call('/orders/' + order(orderNo) + '/tracks', 'GET', undefined, 'trade'),
+    orderDetail: (orderNo) => call('/orders/' + order(orderNo), 'GET', undefined, 'trade'),
+    orderTracks: (orderNo) =>
+      call('/orders/' + order(orderNo) + '/tracks', 'GET', undefined, 'trade'),
     deliveryExpresses: () => call('/delivery/expresses', 'GET', undefined, 'trade'),
 
     // 售后中心
-    afterSalePage: input => {
+    afterSalePage: (input) => {
       const paging = page(input);
-      const status = input && typeof input.status === 'string' && input.status ? input.status : undefined;
-      const orderNo = input && typeof input.orderNo === 'string' && input.orderNo ? input.orderNo : undefined;
+      const status =
+        input && typeof input.status === 'string' && input.status ? input.status : undefined;
+      const orderNo =
+        input && typeof input.orderNo === 'string' && input.orderNo ? input.orderNo : undefined;
       if (orderNo !== undefined && orderNo.length > 40) throw new Error('订单编号不合法');
-      return call('/after-sales', 'GET', { ...paging, ...(status === undefined ? {} : { status }), ...(orderNo === undefined ? {} : { orderNo }) }, 'trade');
+      return call(
+        '/after-sales',
+        'GET',
+        {
+          ...paging,
+          ...(status === undefined ? {} : { status }),
+          ...(orderNo === undefined ? {} : { orderNo }),
+        },
+        'trade',
+      );
     },
-    afterSaleDetail: no => call('/after-sales/' + order(no), 'GET', undefined, 'trade'),
-    afterSaleItems: orderNo => call('/orders/' + order(orderNo) + '/after-sale-items', 'GET', undefined, 'trade'),
+    afterSaleDetail: (no) => call('/after-sales/' + order(no), 'GET', undefined, 'trade'),
+    afterSaleItems: (orderNo) =>
+      call('/orders/' + order(orderNo) + '/after-sale-items', 'GET', undefined, 'trade'),
     createAfterSale: (orderNo, input) => {
-      if (!input || typeof input.requestNo !== 'string' || !input.requestNo.trim() || input.requestNo.length > 64) throw new Error('请求编号不合法');
-      if (!Number.isInteger(input.quantity) || input.quantity < 1 || input.quantity > 999) throw new Error('售后数量须在1至999之间');
-      if (!['REFUND_ONLY','RETURN_REFUND'].includes(input.type)) throw new Error('售后方式不合法');
-      if (typeof input.reason !== 'string' || !input.reason.trim() || input.reason.length > 500) throw new Error('申请原因不能为空且不超过500字');
-      return call('/orders/' + order(orderNo) + '/after-sales', 'POST',
-        { requestNo: input.requestNo, orderItemId: positiveId(input.orderItemId), quantity: input.quantity, type: input.type, reason: input.reason }, 'trade');
+      if (
+        !input ||
+        typeof input.requestNo !== 'string' ||
+        !input.requestNo.trim() ||
+        input.requestNo.length > 64
+      )
+        throw new Error('请求编号不合法');
+      if (!Number.isInteger(input.quantity) || input.quantity < 1 || input.quantity > 999)
+        throw new Error('售后数量须在1至999之间');
+      if (!['REFUND_ONLY', 'RETURN_REFUND'].includes(input.type)) throw new Error('售后方式不合法');
+      if (typeof input.reason !== 'string' || !input.reason.trim() || input.reason.length > 500)
+        throw new Error('申请原因不能为空且不超过500字');
+      return call(
+        '/orders/' + order(orderNo) + '/after-sales',
+        'POST',
+        {
+          requestNo: input.requestNo,
+          orderItemId: positiveId(input.orderItemId),
+          quantity: input.quantity,
+          type: input.type,
+          reason: input.reason,
+        },
+        'trade',
+      );
     },
     returnAfterSale: (no, input) => {
-      if (!input || typeof input.carrierCode !== 'string' || !input.carrierCode.trim() || input.carrierCode.length > 40) throw new Error('快递公司不能为空且不超过40字');
-      if (typeof input.trackingNo !== 'string' || !input.trackingNo.trim() || input.trackingNo.length > 100) throw new Error('快递单号不能为空且不超过100字');
-      return call('/after-sales/' + order(no) + '/return', 'POST', { carrierCode: input.carrierCode, trackingNo: input.trackingNo }, 'trade');
+      if (
+        !input ||
+        typeof input.carrierCode !== 'string' ||
+        !input.carrierCode.trim() ||
+        input.carrierCode.length > 40
+      )
+        throw new Error('快递公司不能为空且不超过40字');
+      if (
+        typeof input.trackingNo !== 'string' ||
+        !input.trackingNo.trim() ||
+        input.trackingNo.length > 100
+      )
+        throw new Error('快递单号不能为空且不超过100字');
+      return call(
+        '/after-sales/' + order(no) + '/return',
+        'POST',
+        { carrierCode: input.carrierCode, trackingNo: input.trackingNo },
+        'trade',
+      );
     },
   };
 }

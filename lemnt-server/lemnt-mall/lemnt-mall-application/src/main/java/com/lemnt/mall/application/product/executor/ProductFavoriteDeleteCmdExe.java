@@ -2,8 +2,10 @@ package com.lemnt.mall.application.product.executor;
 
 import com.lemnt.mall.application.product.cmd.ProductFavoriteDeleteCmd;
 import com.lemnt.mall.application.product.service.ProductFavoriteService;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /** remove执行器。 */
 @Component

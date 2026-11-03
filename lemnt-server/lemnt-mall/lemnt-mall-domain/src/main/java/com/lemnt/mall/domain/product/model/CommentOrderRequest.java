@@ -13,5 +13,4 @@ public record CommentOrderRequest(
         Integer descriptionScores,
         Integer benefitScores,
         Boolean anonymous,
-        List<String> picUrls
-) {}
+        List<String> picUrls) {}

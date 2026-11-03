@@ -1,26 +1,28 @@
 package com.lemnt.gateway.service.impl;
 
+import com.lemnt.common.core.constant.CacheConstants;
+import com.lemnt.common.core.constant.Constants;
+import com.lemnt.common.core.domain.R;
+import com.lemnt.common.core.utils.StringUtils;
+import com.lemnt.common.redis.service.RedisStringService;
+import com.lemnt.common.security.exception.CaptchaException;
+import com.lemnt.common.snowflake.utils.SnowflakeUtils;
+import com.lemnt.gateway.config.properties.CaptchaProperties;
+import com.lemnt.gateway.service.ValidateCodeService;
+
+import com.google.code.kaptcha.Producer;
+import org.springframework.stereotype.Service;
+import org.springframework.util.FastByteArrayOutputStream;
+
+import cn.hutool.core.codec.Base64;
+
+import jakarta.annotation.Resource;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
-
-import cn.hutool.core.codec.Base64;
-import com.lemnt.common.core.domain.R;
-import com.lemnt.common.redis.service.RedisStringService;
-import com.lemnt.common.snowflake.utils.SnowflakeUtils;
-import jakarta.annotation.Resource;
-import org.springframework.stereotype.Service;
-import org.springframework.util.FastByteArrayOutputStream;
-import com.google.code.kaptcha.Producer;
-import com.lemnt.common.core.constant.CacheConstants;
-import com.lemnt.common.core.constant.Constants;
-import com.lemnt.common.security.exception.CaptchaException;
-import com.lemnt.common.core.utils.StringUtils;
-import com.lemnt.gateway.config.properties.CaptchaProperties;
-import com.lemnt.gateway.service.ValidateCodeService;
 
 /**
  * 验证码实现处理
@@ -32,14 +34,13 @@ public class ValidateCodeServiceImpl implements ValidateCodeService {
 
     @Resource(name = "captchaProducer")
     private Producer captchaProducer;
+
     @Resource(name = "captchaProducerMath")
     private Producer captchaProducerMath;
-    @Resource
-    private RedisStringService redisStringService;
-    @Resource
-    private CaptchaProperties captchaProperties;
-    @Resource
-    private SnowflakeUtils snowflakeUtils;
+
+    @Resource private RedisStringService redisStringService;
+    @Resource private CaptchaProperties captchaProperties;
+    @Resource private SnowflakeUtils snowflakeUtils;
 
     /**
      * 生成验证码

@@ -29,8 +29,11 @@ public class BrokerageUserGatewayImpl implements BrokerageUserGateway {
 
     @Override
     public BrokerageUser lock(Long id) {
-        return BrokerageConverter.user(mapper.selectOne(Wrappers.<BrokerageUserDO>lambdaQuery()
-                .eq(BrokerageUserDO::getId, id).last("FOR UPDATE")));
+        return BrokerageConverter.user(
+                mapper.selectOne(
+                        Wrappers.<BrokerageUserDO>lambdaQuery()
+                                .eq(BrokerageUserDO::getId, id)
+                                .last("FOR UPDATE")));
     }
 
     @Override
@@ -46,34 +49,49 @@ public class BrokerageUserGatewayImpl implements BrokerageUserGateway {
 
     @Override
     public boolean clearBind(Long id) {
-        return mapper.update(null, Wrappers.<BrokerageUserDO>lambdaUpdate()
-                .eq(BrokerageUserDO::getId, id)
-                .set(BrokerageUserDO::getBindUserId, null)
-                .set(BrokerageUserDO::getBindUserTime, null)) == 1;
+        return mapper.update(
+                        null,
+                        Wrappers.<BrokerageUserDO>lambdaUpdate()
+                                .eq(BrokerageUserDO::getId, id)
+                                .set(BrokerageUserDO::getBindUserId, null)
+                                .set(BrokerageUserDO::getBindUserTime, null))
+                == 1;
     }
 
     @Override
     public PageResult<BrokerageUser> page(BrokerageUserFilter filter) {
-        var page = mapper.selectPage(new Page<BrokerageUserDO>(filter.pageNum(), filter.pageSize()),
-                Wrappers.<BrokerageUserDO>lambdaQuery()
-                        .eq(filter.bindUserId() != null, BrokerageUserDO::getBindUserId, filter.bindUserId())
-                        .eq(filter.brokerageEnabled() != null, BrokerageUserDO::getBrokerageEnabled,
-                                filter.brokerageEnabled())
-                        .orderByDesc(BrokerageUserDO::getId));
-        return PageResult.of(page.getRecords().stream().map(BrokerageConverter::user).toList(),
-                page.getTotal());
+        var page =
+                mapper.selectPage(
+                        new Page<BrokerageUserDO>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.<BrokerageUserDO>lambdaQuery()
+                                .eq(
+                                        filter.bindUserId() != null,
+                                        BrokerageUserDO::getBindUserId,
+                                        filter.bindUserId())
+                                .eq(
+                                        filter.brokerageEnabled() != null,
+                                        BrokerageUserDO::getBrokerageEnabled,
+                                        filter.brokerageEnabled())
+                                .orderByDesc(BrokerageUserDO::getId));
+        return PageResult.of(
+                page.getRecords().stream().map(BrokerageConverter::user).toList(), page.getTotal());
     }
 
     @Override
     public long countChildren(Long bindUserId) {
-        return mapper.selectCount(Wrappers.<BrokerageUserDO>lambdaQuery()
-                .eq(BrokerageUserDO::getBindUserId, bindUserId));
+        return mapper.selectCount(
+                Wrappers.<BrokerageUserDO>lambdaQuery()
+                        .eq(BrokerageUserDO::getBindUserId, bindUserId));
     }
 
     @Override
     public List<Long> childIds(Long bindUserId) {
-        return mapper.selectList(Wrappers.<BrokerageUserDO>lambdaQuery()
-                        .eq(BrokerageUserDO::getBindUserId, bindUserId))
-                .stream().map(BrokerageUserDO::getId).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<BrokerageUserDO>lambdaQuery()
+                                .eq(BrokerageUserDO::getBindUserId, bindUserId))
+                .stream()
+                .map(BrokerageUserDO::getId)
+                .toList();
     }
 }

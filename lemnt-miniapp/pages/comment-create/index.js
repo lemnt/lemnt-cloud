@@ -3,40 +3,39 @@ const {
   selectImages,
   pictureUrls,
   removePicture,
-} = require("../../services/images");
-const config = require("../../config");
-const { createCommentClient } = require("../../services/comments");
-const { createTradeClient } = require("../../services/trade");
-const { id } = require("../../services/storefront");
+} = require('../../services/images');
+const config = require('../../config');
+const { createCommentClient } = require('../../services/comments');
+const { createTradeClient } = require('../../services/trade');
+const { id } = require('../../services/storefront');
 Page({
   data: {
     ready: config.memberApiReady,
     loading: false,
     eligible: false,
-    error: "",
-    success: "",
+    error: '',
+    success: '',
     pending: false,
     submitted: false,
     spuId: null,
-    productName: "",
-    descriptionScores: "5",
-    benefitScores: "5",
-    content: "",
-    pictures: "",
+    productName: '',
+    descriptionScores: '5',
+    benefitScores: '5',
+    content: '',
+    pictures: '',
     imageUrls: [],
     anonymous: false,
   },
   onLoad(options) {
     try {
       this.skuId = id(options.skuId);
-      this.requestedOrderItemId =
-        options.orderItemId == null ? null : id(options.orderItemId);
+      this.requestedOrderItemId = options.orderItemId == null ? null : id(options.orderItemId);
       if (
-        typeof options.orderNo !== "string" ||
+        typeof options.orderNo !== 'string' ||
         !options.orderNo.trim() ||
         options.orderNo.length > 40
       )
-        throw Error("订单编号不合法");
+        throw Error('订单编号不合法');
       this.orderNo = options.orderNo;
     } catch (error) {
       this.setData({ error: error.message });
@@ -47,7 +46,7 @@ Page({
         wx.request({
           ...options,
           success: resolve,
-          fail: () => reject(Error("网络结果未确认")),
+          fail: () => reject(Error('网络结果未确认')),
         }),
       );
     const settings = {
@@ -62,49 +61,44 @@ Page({
     return this.load();
   },
   onShow() {
-    if (
-      this.ownerToken &&
-      this.ownerToken !== getApp().globalData.memberSession?.accessToken
-    ) {
+    if (this.ownerToken && this.ownerToken !== getApp().globalData.memberSession?.accessToken) {
       this.pending = null;
       this.setData({
         eligible: false,
-        content: "",
-        pictures: "",
+        content: '',
+        pictures: '',
         imageUrls: [],
-        error: "会员已切换，请从本人订单重新进入",
+        error: '会员已切换，请从本人订单重新进入',
         pending: false,
         submitted: false,
-        success: "",
+        success: '',
       });
     }
   },
   async load() {
     if (this.data.loading || !this.orderNo) return;
-    this.setData({ loading: true, error: "", eligible: false });
+    this.setData({ loading: true, error: '', eligible: false });
     try {
       if (this.ownerToken !== getApp().globalData.memberSession?.accessToken)
-        throw Error("请从本人订单重新进入");
+        throw Error('请从本人订单重新进入');
       const order = await this.trade.order(this.orderNo);
       if (
         order?.orderNo !== this.orderNo ||
-        order.status !== "COMPLETED" ||
+        order.status !== 'COMPLETED' ||
         !Array.isArray(order.items)
       )
-        throw Error("只能评价本人已完成订单商品");
+        throw Error('只能评价本人已完成订单商品');
       const line = order.items.find(
         (item) =>
           id(item.productId) === this.skuId &&
-          (!this.requestedOrderItemId ||
-            id(item.orderItemId) === this.requestedOrderItemId),
+          (!this.requestedOrderItemId || id(item.orderItemId) === this.requestedOrderItemId),
       );
-      if (!line) throw Error("商品不在当前订单中");
+      if (!line) throw Error('商品不在当前订单中');
       this.orderItemId = id(line.orderItemId);
-      if (line.commentStatus === true && !this.pending)
-        throw Error("该订单项已评价");
+      if (line.commentStatus === true && !this.pending) throw Error('该订单项已评价');
       this.setData({
         eligible: true,
-        productName: line.productName || "",
+        productName: line.productName || '',
         spuId: line.spuId == null ? null : id(line.spuId),
       });
     } catch (error) {
@@ -116,16 +110,10 @@ Page({
   input(event) {
     if (this.data.loading || this.data.pending || this.data.submitted) return;
     const name = event.currentTarget.dataset.field;
-    if (
-      ["content", "pictures", "descriptionScores", "benefitScores"].includes(
-        name,
-      )
-    )
+    if (['content', 'pictures', 'descriptionScores', 'benefitScores'].includes(name))
       this.setData({
         [name]: event.detail.value,
-        ...(name === "pictures"
-          ? { imageUrls: pictureUrls(event.detail.value) }
-          : {}),
+        ...(name === 'pictures' ? { imageUrls: pictureUrls(event.detail.value) } : {}),
       });
   },
   anonymous(event) {
@@ -133,8 +121,7 @@ Page({
       this.setData({ anonymous: event.detail.value });
   },
   previewImages(event) {
-    if (this.ownerToken !== getApp().globalData.memberSession?.accessToken)
-      return;
+    if (this.ownerToken !== getApp().globalData.memberSession?.accessToken) return;
     const urls = pictureUrls(this.data.pictures),
       current = event.currentTarget.dataset.url;
     if (urls.includes(current)) wx.previewImage({ urls, current });
@@ -147,29 +134,21 @@ Page({
       this.ownerToken !== getApp().globalData.memberSession?.accessToken
     )
       return;
-    const pictures = removePicture(
-      this.data.pictures,
-      event.currentTarget.dataset.url,
-    );
+    const pictures = removePicture(this.data.pictures, event.currentTarget.dataset.url);
     this.setData({ pictures, imageUrls: pictureUrls(pictures) });
   },
   async uploadImages() {
-    if (
-      this.data.loading ||
-      this.data.pending ||
-      this.data.submitted ||
-      !this.data.eligible
-    )
+    if (this.data.loading || this.data.pending || this.data.submitted || !this.data.eligible)
       return;
     const original = this.data.pictures
       .split(/\r?\n/)
       .map((v) => v.trim())
       .filter(Boolean);
     if (original.length >= 9) return;
-    this.setData({ loading: true, error: "" });
+    this.setData({ loading: true, error: '' });
     try {
       if (this.ownerToken !== getApp().globalData.memberSession?.accessToken)
-        throw Error("请重新进入本人订单");
+        throw Error('请重新进入本人订单');
       const client = createImageClient({
         baseUrl: config.apiBaseUrl,
         getMemberToken: () =>
@@ -181,7 +160,7 @@ Page({
             wx.uploadFile({
               ...options,
               success: resolve,
-              fail: () => reject(Error("上传结果未确认，请核对后重选")),
+              fail: () => reject(Error('上传结果未确认，请核对后重选')),
             }),
           ),
       });
@@ -189,13 +168,11 @@ Page({
         count: 9 - original.length,
         client,
         append: (url) => {
-          if (
-            this.ownerToken !== getApp().globalData.memberSession?.accessToken
-          )
-            throw Error("会员已切换");
+          if (this.ownerToken !== getApp().globalData.memberSession?.accessToken)
+            throw Error('会员已切换');
           original.push(url);
           this.setData({
-            pictures: original.join("\n"),
+            pictures: original.join('\n'),
             imageUrls: [...original],
           });
         },
@@ -208,7 +185,7 @@ Page({
   },
   async submit() {
     if (this.data.loading || !this.data.eligible || this.data.submitted) return;
-    this.setData({ loading: true, error: "", success: "" });
+    this.setData({ loading: true, error: '', success: '' });
     const payload = this.pending || {
       orderNo: this.orderNo,
       skuId: this.skuId,
@@ -224,21 +201,21 @@ Page({
     };
     try {
       if (this.ownerToken !== getApp().globalData.memberSession?.accessToken)
-        throw Error("会员已切换，请从本人订单重新进入");
-      if (!this.orderItemId) throw Error("请先核验真实订单项信息");
+        throw Error('会员已切换，请从本人订单重新进入');
+      if (!this.orderItemId) throw Error('请先核验真实订单项信息');
       const result = await this.client.create(payload);
       this.pending = null;
       this.setData({
         pending: false,
         submitted: true,
-        success: "评价已保存，编号 " + result.id,
+        success: '评价已保存，编号 ' + result.id,
       });
     } catch (error) {
       if (error.unconfirmed) {
         this.pending = payload;
         this.setData({
           pending: true,
-          error: "结果未确认，请重试原评价核验：" + error.message,
+          error: '结果未确认，请重试原评价核验：' + error.message,
         });
       } else {
         this.setData({ error: error.message });
@@ -250,8 +227,7 @@ Page({
   comments() {
     if (this.data.spuId)
       wx.navigateTo({
-        url:
-          "/pages/comments/index?spuId=" + encodeURIComponent(this.data.spuId),
+        url: '/pages/comments/index?spuId=' + encodeURIComponent(this.data.spuId),
       });
   },
 });

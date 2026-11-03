@@ -24,6 +24,5 @@ public record DictDataPageQry(
         int pageNum,
         int pageSize,
         LocalDateTime beginTime,
-        LocalDateTime endTime
-) implements Serializable {
-}
+        LocalDateTime endTime)
+        implements Serializable {}

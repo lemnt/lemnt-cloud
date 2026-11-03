@@ -1,13 +1,15 @@
 package com.lemnt.common.core.domain;
 
+import com.lemnt.common.core.constant.Constants;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
-
-import com.lemnt.common.core.constant.Constants;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * 响应信息主体
@@ -19,8 +21,7 @@ import lombok.Setter;
 @Schema(description = "响应信息主体")
 public class R<T> implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     /**
      * 成功

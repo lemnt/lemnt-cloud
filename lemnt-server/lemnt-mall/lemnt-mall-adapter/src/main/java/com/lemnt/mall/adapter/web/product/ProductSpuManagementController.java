@@ -74,7 +74,10 @@ public class ProductSpuManagementController {
     @Operation(summary = "商品状态统计")
     @RequiresPermissions("mall:spu:list")
     public R<ProductSpuCountRes> count(@Valid @ModelAttribute ProductSpuCountReq req) {
-        return R.ok(ProductManagementResConverter.count(productSpuCountQueryExe.execute(ProductManagementReqConverter.counts(req))));
+        return R.ok(
+                ProductManagementResConverter.count(
+                        productSpuCountQueryExe.execute(
+                                ProductManagementReqConverter.counts(req))));
     }
 
     /** 有界上架商品选择。 */
@@ -82,7 +85,12 @@ public class ProductSpuManagementController {
     @Operation(summary = "上架商品选择查询")
     @RequiresPermissions("mall:spu:query")
     public R<List<ProductSpuSimpleRes>> simple(@Valid @ModelAttribute ProductSpuSimpleReq req) {
-        return R.ok(productSpuSimpleListQueryExe.execute(ProductManagementReqConverter.simple(req)).stream().map(ProductManagementResConverter::simple).toList());
+        return R.ok(
+                productSpuSimpleListQueryExe
+                        .execute(ProductManagementReqConverter.simple(req))
+                        .stream()
+                        .map(ProductManagementResConverter::simple)
+                        .toList());
     }
 
     /** 批量查询真实详情。 */
@@ -90,6 +98,9 @@ public class ProductSpuManagementController {
     @Operation(summary = "批量商品详情")
     @RequiresPermissions("mall:spu:query")
     public R<List<ProductSpuBatchRes>> batch(@Valid @ModelAttribute ProductSpuBatchReq req) {
-        return R.ok(productSpuBatchDetailQueryExe.execute(req.ids()).stream().map(ProductManagementResConverter::batch).toList());
+        return R.ok(
+                productSpuBatchDetailQueryExe.execute(req.ids()).stream()
+                        .map(ProductManagementResConverter::batch)
+                        .toList());
     }
 }

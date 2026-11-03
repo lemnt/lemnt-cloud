@@ -18,8 +18,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 public class UserInfo implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 6586525147787663980L;
+    @Serial private static final long serialVersionUID = 6586525147787663980L;
 
     /**
      * 账号停用状态值

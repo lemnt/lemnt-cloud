@@ -19,6 +19,8 @@ import { canShip, fulfillmentKeys } from '../constants';
 import {
   getOrders,
   getOrder,
+  getOrderPromotions,
+  getRefundableItems,
   shipOrder,
   adjustOrderPrice,
   adjustOrderAddress,
@@ -39,10 +41,25 @@ export default function OrderFulfillmentPage() {
     queryFn: () => getOrders(query),
     enabled: can('trade:fulfillment:list'),
   });
+  const promotions = useQuery({
+    queryKey: fulfillmentKeys.orderPromotions(detailNo),
+    queryFn: () => getOrderPromotions(detailNo!),
+    enabled: !!detailNo && can('trade:fulfillment:query'),
+    gcTime: 0,
+  });
   const detail = useQuery({
     queryKey: fulfillmentKeys.detail(detailNo),
     queryFn: () => getOrder(detailNo!),
     enabled: !!detailNo && can('trade:fulfillment:query'),
+    gcTime: 0,
+  });
+  const refundable = useQuery({
+    queryKey: fulfillmentKeys.refundableItems(detailNo),
+    queryFn: () => getRefundableItems(detailNo!),
+    enabled:
+      !!detailNo &&
+      can('trade:after-sale:query') &&
+      ['PAID', 'SHIPPED', 'COMPLETED', 'REFUNDED'].includes(detail.data?.status ?? ''),
     gcTime: 0,
   });
   const ship = useMutation({
@@ -249,6 +266,81 @@ export default function OrderFulfillmentPage() {
                 },
               ]}
             />
+            {promotions.isLoading && <Spin />}
+            {promotions.isError && (
+              <Alert
+                type="error"
+                title="优惠读取失败"
+                action={<Button onClick={() => void promotions.refetch()}>重试</Button>}
+              />
+            )}
+            {promotions.data && (
+              <>
+                {promotions.data.snapshotStatus === 'LEGACY_PARTIAL' && (
+                  <Alert type="info" title="历史优惠信息不完整，未知金额不补零" />
+                )}
+                <Descriptions
+                  column={2}
+                  items={[
+                    {
+                      key: 'goods-discount',
+                      label: '商品优惠',
+                      children: promotions.data.summary.discountAmount ?? '未记录',
+                    },
+                    {
+                      key: 'freight-discount',
+                      label: '运费优惠',
+                      children: promotions.data.summary.deliveryDiscountPrice ?? '未记录',
+                    },
+                    {
+                      key: 'adjustment',
+                      label: '人工调价差额',
+                      children: promotions.data.summary.adjustmentAmount ?? '未记录',
+                    },
+                  ]}
+                />
+                <Table
+                  pagination={false}
+                  rowKey="key"
+                  title={() => '优惠来源与商品行分摊'}
+                  dataSource={promotions.data.promotions.flatMap((promotion, p) =>
+                    promotion.items.map((item, i) => ({
+                      ...item,
+                      key: `${p}:${i}`,
+                      promotionName: promotion.promotionName,
+                    })),
+                  )}
+                  columns={[
+                    {
+                      title: '优惠来源',
+                      dataIndex: 'promotionName',
+                      render: (value: string | null) => value ?? '未记录',
+                    },
+                    { title: '订单明细', dataIndex: 'orderItemId' },
+                    {
+                      title: '商品优惠（元）',
+                      dataIndex: 'discountAmount',
+                      render: (value: string | null) => value ?? '未记录',
+                    },
+                    {
+                      title: '运费优惠（元）',
+                      dataIndex: 'deliveryDiscountPrice',
+                      render: (value: string | null) => value ?? '未记录',
+                    },
+                    {
+                      title: '使用积分',
+                      dataIndex: 'usePoint',
+                      render: (value: string | null) => value ?? '未记录',
+                    },
+                    {
+                      title: '赠送积分',
+                      dataIndex: 'givePoint',
+                      render: (value: string | null) => value ?? '未记录',
+                    },
+                  ]}
+                />
+              </>
+            )}
             <Table
               rowKey="productId"
               pagination={false}
@@ -286,9 +378,31 @@ export default function OrderFulfillmentPage() {
                 },
                 { title: '单价（元）', dataIndex: 'unitPrice' },
                 { title: '数量', dataIndex: 'quantity' },
+                {
+                  title: '已退数量',
+                  render: (_, row) =>
+                    refundable.data?.find((item) => item.orderItemId === row.orderItemId)
+                      ?.refundedQuantity ?? '—',
+                },
+                {
+                  title: '可申请数量',
+                  render: (_, row) =>
+                    refundable.data?.find((item) => item.orderItemId === row.orderItemId)
+                      ?.refundableQuantity ?? '—',
+                },
                 { title: '原始小计（元）', dataIndex: 'lineAmount' },
               ]}
             />
+            {refundable.isError && (
+              <Alert
+                type="error"
+                title="售后数量读取失败"
+                action={<Button onClick={() => void refundable.refetch()}>重试</Button>}
+              />
+            )}
+            {detail.data.activeRefund && (
+              <Alert type="info" title="该订单有售后处理中，完成后可继续申请剩余商品" />
+            )}
             <OrderLogPanel orderNo={detail.data.orderNo} />
           </>
         )}

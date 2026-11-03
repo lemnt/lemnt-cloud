@@ -2,17 +2,20 @@ package com.lemnt.mall.application.product.service;
 
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.mall.application.product.cmd.ProductFavoriteCreateCmd;
+import com.lemnt.mall.application.product.dto.ProductFavoriteDTO;
+import com.lemnt.mall.application.product.qry.ProductFavoritePageQry;
 import com.lemnt.mall.domain.member.gateway.MemberLockGateway;
 import com.lemnt.mall.domain.product.gateway.ProductFavoriteGateway;
-import com.lemnt.mall.domain.product.gateway.ProductSpuGateway;
 import com.lemnt.mall.domain.product.gateway.ProductSkuGateway;
+import com.lemnt.mall.domain.product.gateway.ProductSpuGateway;
 import com.lemnt.mall.domain.product.model.ProductCatalogValidation;
-import com.lemnt.mall.application.product.cmd.ProductFavoriteCreateCmd;
-import com.lemnt.mall.application.product.qry.ProductFavoritePageQry;
-import com.lemnt.mall.application.product.dto.ProductFavoriteDTO;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,8 +69,11 @@ public class ProductFavoriteService {
     /** 查询范围由受保护适配层提供；批量补充商品资料，不制造缺失价格。 */
     @Transactional(readOnly = true)
     public PageResult<ProductFavoriteDTO> page(ProductFavoritePageQry qry) {
-        if (qry.pageNum() < 1 || qry.pageSize() < 1 || qry.pageSize() > 100
-                || (qry.userId() != null && qry.userId() <= 0) || (qry.spuId() != null && qry.spuId() <= 0)) {
+        if (qry.pageNum() < 1
+                || qry.pageSize() < 1
+                || qry.pageSize() > 100
+                || (qry.userId() != null && qry.userId() <= 0)
+                || (qry.spuId() != null && qry.spuId() <= 0)) {
             throw new ServiceException("分页条件不合法", 400);
         }
         var page = gateway.page(qry.userId(), qry.spuId(), qry.pageNum(), qry.pageSize());
@@ -75,15 +81,33 @@ public class ProductFavoriteService {
             return PageResult.of(List.of(), page.getTotal());
         }
         var ids = page.getRecords().stream().map(value -> value.spuId()).distinct().toList();
-        var products = spus.findSpus(ids).stream().collect(Collectors.toMap(value -> value.id(), value -> value));
-        var prices = skus.skusBySpuIds(ids).stream().filter(value -> value.price() != null)
-                .collect(Collectors.toMap(value -> value.spuId(), value -> value.price(), BigDecimal::min));
-        return PageResult.of(page.getRecords().stream().map(value -> {
-            var product = products.get(value.spuId());
-            return new ProductFavoriteDTO(value.id(), value.userId(), value.spuId(), product == null ? null : product.name(),
-                    product == null ? null : product.image(), product == null ? null : prices.get(value.spuId()),
-                    value.createTime());
-        }).toList(), page.getTotal());
+        var products =
+                spus.findSpus(ids).stream()
+                        .collect(Collectors.toMap(value -> value.id(), value -> value));
+        var prices =
+                skus.skusBySpuIds(ids).stream()
+                        .filter(value -> value.price() != null)
+                        .collect(
+                                Collectors.toMap(
+                                        value -> value.spuId(),
+                                        value -> value.price(),
+                                        BigDecimal::min));
+        return PageResult.of(
+                page.getRecords().stream()
+                        .map(
+                                value -> {
+                                    var product = products.get(value.spuId());
+                                    return new ProductFavoriteDTO(
+                                            value.id(),
+                                            value.userId(),
+                                            value.spuId(),
+                                            product == null ? null : product.name(),
+                                            product == null ? null : product.image(),
+                                            product == null ? null : prices.get(value.spuId()),
+                                            value.createTime());
+                                })
+                        .toList(),
+                page.getTotal());
     }
 
     private void member(Long userId) {

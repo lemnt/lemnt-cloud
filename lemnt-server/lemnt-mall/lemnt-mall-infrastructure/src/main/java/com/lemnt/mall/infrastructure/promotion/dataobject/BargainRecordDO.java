@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class BargainRecordDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private Long userId;
     private Long activityId;
     private Long spuId;

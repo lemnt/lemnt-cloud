@@ -11,8 +11,7 @@ import java.util.regex.Pattern;
 public final class PayConfigRules {
     private static final Pattern APP_KEY = Pattern.compile("^[A-Za-z0-9_-]{4,64}$");
 
-    private PayConfigRules() {
-    }
+    private PayConfigRules() {}
 
     public static void page(int pageNum, int pageSize) {
         if (pageNum < 1 || pageNum > 1000000 || pageSize < 1 || pageSize > 100) {
@@ -63,7 +62,8 @@ public final class PayConfigRules {
     /** 只接受当前系统声明支持的渠道编码，避免存入无法识别的渠道。 */
     public static String channelCode(String value) {
         String text = required(value, 32, "渠道编码");
-        if (Arrays.stream(PaymentChannel.values()).noneMatch(channel -> channel.name().equals(text))) {
+        if (Arrays.stream(PaymentChannel.values())
+                .noneMatch(channel -> channel.name().equals(text))) {
             throw new IllegalArgumentException("不支持的渠道编码");
         }
         return text;

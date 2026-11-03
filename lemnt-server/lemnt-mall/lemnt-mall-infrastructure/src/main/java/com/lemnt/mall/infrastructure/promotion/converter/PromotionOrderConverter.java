@@ -8,11 +8,26 @@ public final class PromotionOrderConverter {
     private PromotionOrderConverter() {}
 
     public static PromotionOrder model(PromotionOrderDO row) {
-        if (row == null) { return null; }
-        return new PromotionOrder(row.getId(), row.getOrderNo(), row.getRequestNo(), row.getMemberId(),
-                row.getActivityType(), row.getActivityId(), row.getActivityRecordId(), row.getHeadId(),
-                row.getSkuId(), row.getQuantity(), row.getActivityPrice(), row.getUsePoint(),
-                row.getRefundedQuantity(), row.getStatus(), row.getFailureReason(), row.getCreateTime(),
+        if (row == null) {
+            return null;
+        }
+        return new PromotionOrder(
+                row.getId(),
+                row.getOrderNo(),
+                row.getRequestNo(),
+                row.getMemberId(),
+                row.getActivityType(),
+                row.getActivityId(),
+                row.getActivityRecordId(),
+                row.getHeadId(),
+                row.getSkuId(),
+                row.getQuantity(),
+                row.getActivityPrice(),
+                row.getUsePoint(),
+                row.getRefundedQuantity(),
+                row.getStatus(),
+                row.getFailureReason(),
+                row.getCreateTime(),
                 row.getUpdateTime());
     }
 

@@ -23,9 +23,16 @@ public class PayChannelPageQueryExe {
             throw new IllegalArgumentException("分页参数不合法");
         }
         PayConfigRules.page(qry.pageNum(), qry.pageSize());
-        var page = channels.page(new PayChannelFilter(qry.appId(),
-                PayConfigRules.optional(qry.code(), 32, "渠道编码"), qry.status(), qry.pageNum(), qry.pageSize()));
-        return PageResult.of(page.getRecords().stream().map(PayConfigDTOConverter::payChannel).toList(),
+        var page =
+                channels.page(
+                        new PayChannelFilter(
+                                qry.appId(),
+                                PayConfigRules.optional(qry.code(), 32, "渠道编码"),
+                                qry.status(),
+                                qry.pageNum(),
+                                qry.pageSize()));
+        return PageResult.of(
+                page.getRecords().stream().map(PayConfigDTOConverter::payChannel).toList(),
                 page.getTotal());
     }
 }

@@ -8,6 +8,7 @@ import com.lemnt.mall.application.product.qry.ProductFavoritePageQry;
 /** AppFavorite入参转换，会员身份只能从认证上下文传入。 */
 public final class ProductFavoriteReqConverter {
     private ProductFavoriteReqConverter() {}
+
     /** 创建命令没有客户端会员字段。 */
     public static ProductFavoriteCreateCmd create(Long member, AppProductFavoriteCreateReq req) {
         return new ProductFavoriteCreateCmd(member, req.spuId());
@@ -15,6 +16,10 @@ public final class ProductFavoriteReqConverter {
 
     /** 分页固定本人范围。 */
     public static ProductFavoritePageQry page(Long member, AppProductFavoritePageReq req) {
-        return new ProductFavoritePageQry(member, null, req.pageNum() == null ? 1 : req.pageNum(), req.pageSize() == null ? 20 : req.pageSize());
+        return new ProductFavoritePageQry(
+                member,
+                null,
+                req.pageNum() == null ? 1 : req.pageNum(),
+                req.pageSize() == null ? 20 : req.pageSize());
     }
 }

@@ -13,8 +13,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class PaymentChannelCloseGatewayImplTest {
-    final PaymentRecord payment = new PaymentRecord(1L, "P1", "O1", "ALIPAY", null, null,
-            BigDecimal.TEN, "WAITING", null);
+    final PaymentRecord payment =
+            new PaymentRecord(
+                    1L, "P1", "O1", "ALIPAY", null, null, BigDecimal.TEN, "WAITING", null);
 
     @Test
     void missingAdapterIsFailClosed() {
@@ -27,7 +28,8 @@ class PaymentChannelCloseGatewayImplTest {
         var second = mock(PaymentChannelCloseClient.class);
         when(first.channel()).thenReturn("ALIPAY");
         when(second.channel()).thenReturn("ALIPAY");
-        assertFalse(new PaymentChannelCloseGatewayImpl(List.of(first, second)).closeUnpaid(payment));
+        assertFalse(
+                new PaymentChannelCloseGatewayImpl(List.of(first, second)).closeUnpaid(payment));
         verify(first, never()).closeUnpaid(any());
         verify(second, never()).closeUnpaid(any());
     }

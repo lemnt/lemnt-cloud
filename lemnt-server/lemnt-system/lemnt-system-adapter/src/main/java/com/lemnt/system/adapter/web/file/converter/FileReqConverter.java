@@ -13,6 +13,10 @@ public class FileReqConverter {
         if (file == null || file.isEmpty()) {
             throw new ServiceException("上传文件不能为空");
         }
-        return new FileUploadCmd(file.getInputStream(), file.getOriginalFilename(), file.getContentType(), file.getSize());
+        return new FileUploadCmd(
+                file.getInputStream(),
+                file.getOriginalFilename(),
+                file.getContentType(),
+                file.getSize());
     }
 }

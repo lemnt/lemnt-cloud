@@ -15,6 +15,5 @@ public record UserPwdResetCmd(
         /**
          * 密码
          */
-        String password
-) implements Serializable {
-}
+        String password)
+        implements Serializable {}

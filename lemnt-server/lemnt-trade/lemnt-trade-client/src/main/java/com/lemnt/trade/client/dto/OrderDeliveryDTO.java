@@ -12,6 +12,5 @@ public record OrderDeliveryDTO(
         Long receiverAreaId,
         String receiverDetailAddress,
         BigDecimal deliveryPrice,
-        Long pickUpStoreId
-) implements Serializable {
-}
+        Long pickUpStoreId)
+        implements Serializable {}

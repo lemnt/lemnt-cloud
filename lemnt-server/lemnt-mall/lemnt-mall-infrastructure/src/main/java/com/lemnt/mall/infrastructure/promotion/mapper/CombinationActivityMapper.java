@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** 拼团活动表 CRUD。 */
 @Mapper
-public interface CombinationActivityMapper extends BaseMapper<CombinationActivityDO> {
-}
+public interface CombinationActivityMapper extends BaseMapper<CombinationActivityDO> {}

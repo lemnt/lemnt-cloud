@@ -52,17 +52,40 @@ public final class ProductCatalogReqConverter {
                 req.description(),
                 req.image(),
                 req.skus().stream()
-                .map(
-                s ->
-                new ProductSpuCreateCmd.ProductSkuDraft(
-                s.code(),
-                s.name(),
-                s.price(),
-                s.stock(),
-                s.image(),
-                s.specs() == null ? null : s.specs().stream().map(property ->
-                        new ProductSpuCreateCmd.ProductSkuDraft.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(), s.weight(), s.volume()))
-                .toList(), req.deliveryTypes(), req.deliveryTemplateId(), req.keyword(), req.introduction(), req.sliderPicUrls(), req.sort());
+                        .map(
+                                s ->
+                                        new ProductSpuCreateCmd.ProductSkuDraft(
+                                                s.code(),
+                                                s.name(),
+                                                s.price(),
+                                                s.stock(),
+                                                s.image(),
+                                                s.specs() == null
+                                                        ? null
+                                                        : s.specs().stream()
+                                                                .map(
+                                                                        property ->
+                                                                                new ProductSpuCreateCmd
+                                                                                        .ProductSkuDraft
+                                                                                        .Spec(
+                                                                                        property
+                                                                                                .specId(),
+                                                                                        property
+                                                                                                .specName(),
+                                                                                        property
+                                                                                                .specValueId(),
+                                                                                        property
+                                                                                                .specValueName()))
+                                                                .toList(),
+                                                s.weight(),
+                                                s.volume()))
+                        .toList(),
+                req.deliveryTypes(),
+                req.deliveryTemplateId(),
+                req.keyword(),
+                req.introduction(),
+                req.sliderPicUrls(),
+                req.sort());
     }
 
     /**
@@ -70,19 +93,66 @@ public final class ProductCatalogReqConverter {
      */
     public static ProductSpuUpdateCmd update(Long id, ProductSpuUpdateReq req) {
         return new ProductSpuUpdateCmd(
-                id, req.name(), req.categoryId(), req.brandId(), req.description(), req.image(),
-                req.skus().stream().map(sku -> new ProductSku(
-                        sku.id(), id, sku.code(), sku.name(), sku.price(), sku.stock(), sku.image(),
-                sku.specs() == null ? null : sku.specs().stream().map(property ->
-                        new com.lemnt.mall.domain.product.model.ProductSkuSpec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(), "ON_SHELF", sku.weight(), sku.volume())).toList(), req.deliveryTypes(), req.deliveryTemplateId(), req.keyword(), req.introduction(), req.sliderPicUrls(), req.sort());
+                id,
+                req.name(),
+                req.categoryId(),
+                req.brandId(),
+                req.description(),
+                req.image(),
+                req.skus().stream()
+                        .map(
+                                sku ->
+                                        new ProductSku(
+                                                sku.id(),
+                                                id,
+                                                sku.code(),
+                                                sku.name(),
+                                                sku.price(),
+                                                sku.stock(),
+                                                sku.image(),
+                                                sku.specs() == null
+                                                        ? null
+                                                        : sku.specs().stream()
+                                                                .map(
+                                                                        property ->
+                                                                                new com.lemnt.mall
+                                                                                        .domain
+                                                                                        .product
+                                                                                        .model
+                                                                                        .ProductSkuSpec(
+                                                                                        property
+                                                                                                .specId(),
+                                                                                        property
+                                                                                                .specName(),
+                                                                                        property
+                                                                                                .specValueId(),
+                                                                                        property
+                                                                                                .specValueName()))
+                                                                .toList(),
+                                                "ON_SHELF",
+                                                sku.weight(),
+                                                sku.volume()))
+                        .toList(),
+                req.deliveryTypes(),
+                req.deliveryTemplateId(),
+                req.keyword(),
+                req.introduction(),
+                req.sliderPicUrls(),
+                req.sort());
     }
 
     /**
      * 转换分页查询或分页响应。
      */
     public static ProductSpuPageQry page(ProductSpuPageReq req) {
-        return new ProductSpuPageQry(req.name(), req.status(), req.pageNum(), req.pageSize(), req.categoryId(),
-            req.brandId(), req.stockStatus());
+        return new ProductSpuPageQry(
+                req.name(),
+                req.status(),
+                req.pageNum(),
+                req.pageSize(),
+                req.categoryId(),
+                req.brandId(),
+                req.stockStatus());
     }
 
     /**

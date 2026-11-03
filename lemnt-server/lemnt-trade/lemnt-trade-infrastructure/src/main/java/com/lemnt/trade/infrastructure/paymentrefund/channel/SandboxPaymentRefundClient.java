@@ -34,19 +34,27 @@ public class SandboxPaymentRefundClient implements PaymentRefundClient {
         if (channelRefundNo.length() > CHANNEL_NO_MAX) {
             throw new IllegalStateException("沙箱渠道退款编号过长");
         }
-        return new PaymentRefundResult(refund.refundNo(), refund.paymentNo(), refund.channel(),
-                refund.amount(), "SUCCESS", channelRefundNo);
+        return new PaymentRefundResult(
+                refund.refundNo(),
+                refund.paymentNo(),
+                refund.channel(),
+                refund.amount(),
+                "SUCCESS",
+                channelRefundNo);
     }
 
     private void requireSandbox(PaymentRefund refund, PaymentRecord payment) {
-        if (refund == null || payment == null
+        if (refund == null
+                || payment == null
                 || !PaymentChannel.SANDBOX.name().equals(refund.channel())
                 || !PaymentChannel.SANDBOX.name().equals(payment.channel())
                 || !refund.paymentNo().equals(payment.paymentNo())
-                || refund.amount() == null || payment.amount() == null
+                || refund.amount() == null
+                || payment.amount() == null
                 || refund.amount().compareTo(payment.amount()) > 0
                 || !"SUCCESS".equals(payment.status())
-                || payment.channelTradeNo() == null || payment.channelTradeNo().isBlank()) {
+                || payment.channelTradeNo() == null
+                || payment.channelTradeNo().isBlank()) {
             throw new IllegalStateException("沙箱退款与原支付不一致");
         }
     }

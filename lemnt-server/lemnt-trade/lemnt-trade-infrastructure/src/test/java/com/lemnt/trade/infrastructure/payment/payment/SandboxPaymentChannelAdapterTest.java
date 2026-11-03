@@ -14,10 +14,27 @@ import static org.junit.jupiter.api.Assertions.*;
 class SandboxPaymentChannelAdapterTest {
     static final String SECRET = "0123456789abcdef";
     final SandboxPaymentChannelAdapter adapter = new SandboxPaymentChannelAdapter();
-    final PayChannelConfig config = new PayChannelConfig(1L, 1L, "SANDBOX", 0, BigDecimal.ZERO, null,
-            "{\"hmacSecret\":\"" + SECRET + "\"}", null);
-    final PaymentRecord payment = new PaymentRecord(1L, "PAY1", "TR1", "SANDBOX", "lemnt-mall", null,
-            new BigDecimal("8.00"), "WAITING", null);
+    final PayChannelConfig config =
+            new PayChannelConfig(
+                    1L,
+                    1L,
+                    "SANDBOX",
+                    0,
+                    BigDecimal.ZERO,
+                    null,
+                    "{\"hmacSecret\":\"" + SECRET + "\"}",
+                    null);
+    final PaymentRecord payment =
+            new PaymentRecord(
+                    1L,
+                    "PAY1",
+                    "TR1",
+                    "SANDBOX",
+                    "lemnt-mall",
+                    null,
+                    new BigDecimal("8.00"),
+                    "WAITING",
+                    null);
 
     private String body() {
         return "{\"paymentNo\":\"PAY1\",\"orderNo\":\"TR1\",\"channelTradeNo\":\"SB-1\","
@@ -25,8 +42,10 @@ class SandboxPaymentChannelAdapterTest {
     }
 
     private String signature(String timestamp) {
-        return SandboxPaymentChannelAdapter.sign(SECRET, SandboxPaymentChannelAdapter.canonical(
-                "PAY1", "TR1", new BigDecimal("8.00"), "SB-1", "N-1", timestamp));
+        return SandboxPaymentChannelAdapter.sign(
+                SECRET,
+                SandboxPaymentChannelAdapter.canonical(
+                        "PAY1", "TR1", new BigDecimal("8.00"), "SB-1", "N-1", timestamp));
     }
 
     @Test
@@ -51,21 +70,41 @@ class SandboxPaymentChannelAdapterTest {
     @Test
     void verifyRejectsTamperedAndStaleNotification() {
         String time = String.valueOf(System.currentTimeMillis());
-        assertThrows(ServiceException.class,
-                () -> adapter.verify(config, body().replace("8.00", "9.00"), signature(time), time));
+        assertThrows(
+                ServiceException.class,
+                () ->
+                        adapter.verify(
+                                config, body().replace("8.00", "9.00"), signature(time), time));
         String stale = String.valueOf(System.currentTimeMillis() - 6 * 60_000L);
-        assertThrows(ServiceException.class,
+        assertThrows(
+                ServiceException.class,
                 () -> adapter.verify(config, body(), signature(stale), stale));
-        assertThrows(ServiceException.class, () -> adapter.verify(
-                new PayChannelConfig(1L, 1L, "SANDBOX", 0, BigDecimal.ZERO, null, "{}", null),
-                body(), signature(time), time));
+        assertThrows(
+                ServiceException.class,
+                () ->
+                        adapter.verify(
+                                new PayChannelConfig(
+                                        1L, 1L, "SANDBOX", 0, BigDecimal.ZERO, null, "{}", null),
+                                body(),
+                                signature(time),
+                                time));
     }
 
     @Test
     void closeUnpaidOnlyAcceptsSandboxPayment() {
         var close = new SandboxPaymentChannelCloseClient();
         assertTrue(close.closeUnpaid(payment));
-        assertFalse(close.closeUnpaid(new PaymentRecord(1L, "PAY1", "TR1", "ALIPAY", null, null,
-                BigDecimal.TEN, "WAITING", null)));
+        assertFalse(
+                close.closeUnpaid(
+                        new PaymentRecord(
+                                1L,
+                                "PAY1",
+                                "TR1",
+                                "ALIPAY",
+                                null,
+                                null,
+                                BigDecimal.TEN,
+                                "WAITING",
+                                null)));
     }
 }

@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DictDataAddCmdExe {
     private final DictDataGateway dictDataGateway;
+
     public Boolean execute(DictDataAddCmd cmd) {
         DictData entity = new DictData();
         entity.setDictSort(cmd.dictSort());

@@ -15,32 +15,25 @@ public record NoticeReadUserRes(
         /**
          * 用户ID
          */
-        @Schema(description = "用户ID")
-        Long userId,
+        @Schema(description = "用户ID") Long userId,
         /**
          * 用户名
          */
-        @Schema(description = "用户名")
-        String userName,
+        @Schema(description = "用户名") String userName,
         /**
          * 昵称
          */
-        @Schema(description = "昵称")
-        String nickName,
+        @Schema(description = "昵称") String nickName,
         /**
          * 部门名称
          */
-        @Schema(description = "部门名称")
-        String deptName,
+        @Schema(description = "部门名称") String deptName,
         /**
          * 手机号
          */
-        @Schema(description = "手机号")
-        String phonenumber,
+        @Schema(description = "手机号") String phonenumber,
         /**
          * 阅读时间
          */
-        @Schema(description = "阅读时间")
-        LocalDateTime readTime
-) implements Serializable {
-}
+        @Schema(description = "阅读时间") LocalDateTime readTime)
+        implements Serializable {}

@@ -51,12 +51,16 @@ public class KefuChatService {
     }
 
     private String content(String value, Integer contentType) {
-        require(contentType != null && (contentType == CONTENT_TEXT || contentType == CONTENT_IMAGE),
+        require(
+                contentType != null
+                        && (contentType == CONTENT_TEXT || contentType == CONTENT_IMAGE),
                 "消息类型只能为文本或图片");
         require(value != null && !value.isBlank() && value.length() <= 2000, "消息不能为空且不超过2000字");
         String text = value.trim();
         if (contentType == CONTENT_IMAGE) {
-            require(text.length() <= 500 && (text.startsWith("https://") || text.startsWith("http://")),
+            require(
+                    text.length() <= 500
+                            && (text.startsWith("https://") || text.startsWith("http://")),
                     "图片消息必须是http或https地址");
         }
         return text;
@@ -73,8 +77,9 @@ public class KefuChatService {
         if (value != null) {
             return value;
         }
-        return conversations.save(new KefuConversation(null, memberId, LocalDateTime.now(), "", CONTENT_TEXT,
-                false, false, 0));
+        return conversations.save(
+                new KefuConversation(
+                        null, memberId, LocalDateTime.now(), "", CONTENT_TEXT, false, false, 0));
     }
 
     public AppKefuConversationDTO appConversation(Long memberId) {
@@ -83,8 +88,12 @@ public class KefuChatService {
         if (value == null) {
             return null;
         }
-        return new AppKefuConversationDTO(value.id(), value.lastMessageTime(), value.lastMessageContent(),
-                value.lastMessageContentType(), messages.unreadCount(value.id(), USER_TYPE_MEMBER));
+        return new AppKefuConversationDTO(
+                value.id(),
+                value.lastMessageTime(),
+                value.lastMessageContent(),
+                value.lastMessageContentType(),
+                messages.unreadCount(value.id(), USER_TYPE_MEMBER));
     }
 
     /** 消息按时间正序返回，方便客户端直接追加展示。 */
@@ -102,10 +111,23 @@ public class KefuChatService {
         String text = content(cmd.content(), cmd.contentType());
         var conversation = getOrCreate(cmd.memberId());
         var now = LocalDateTime.now();
-        var saved = messages.save(new KefuMessage(null, conversation.id(), cmd.memberId(),
-                USER_TYPE_MEMBER, 0L, USER_TYPE_ADMIN, cmd.contentType(), text, false, now));
-        require(conversations.updateLastMessage(conversation.id(), now, text,
-                cmd.contentType(), true), "客服会话消息更新失败");
+        var saved =
+                messages.save(
+                        new KefuMessage(
+                                null,
+                                conversation.id(),
+                                cmd.memberId(),
+                                USER_TYPE_MEMBER,
+                                0L,
+                                USER_TYPE_ADMIN,
+                                cmd.contentType(),
+                                text,
+                                false,
+                                now));
+        require(
+                conversations.updateLastMessage(
+                        conversation.id(), now, text, cmd.contentType(), true),
+                "客服会话消息更新失败");
         return saved.id();
     }
 
@@ -128,22 +150,41 @@ public class KefuChatService {
     }
 
     public List<KefuMessageDTO> adminMessages(KefuMessageQry qry) {
-        require(qry != null && qry.conversationId() != null && qry.conversationId() > 0,
+        require(
+                qry != null && qry.conversationId() != null && qry.conversationId() > 0,
                 "客服会话编号不合法");
         conversation(qry.conversationId());
         return dto(messages.list(qry.conversationId(), qry.beforeTime(), limit(qry.limit())));
     }
 
     public Long adminSend(KefuMessageSendCmd cmd) {
-        require(cmd != null && cmd.conversationId() != null && cmd.conversationId() > 0
-                && cmd.senderId() != null && cmd.senderId() > 0, "客服消息参数不合法");
+        require(
+                cmd != null
+                        && cmd.conversationId() != null
+                        && cmd.conversationId() > 0
+                        && cmd.senderId() != null
+                        && cmd.senderId() > 0,
+                "客服消息参数不合法");
         String text = content(cmd.content(), cmd.contentType());
         var conversation = conversation(cmd.conversationId());
         var now = LocalDateTime.now();
-        var saved = messages.save(new KefuMessage(null, conversation.id(), cmd.senderId(),
-                USER_TYPE_ADMIN, conversation.userId(), USER_TYPE_MEMBER, cmd.contentType(), text, false, now));
-        require(conversations.updateLastMessage(conversation.id(), now, text,
-                cmd.contentType(), false), "客服会话消息更新失败");
+        var saved =
+                messages.save(
+                        new KefuMessage(
+                                null,
+                                conversation.id(),
+                                cmd.senderId(),
+                                USER_TYPE_ADMIN,
+                                conversation.userId(),
+                                USER_TYPE_MEMBER,
+                                cmd.contentType(),
+                                text,
+                                false,
+                                now));
+        require(
+                conversations.updateLastMessage(
+                        conversation.id(), now, text, cmd.contentType(), false),
+                "客服会话消息更新失败");
         return saved.id();
     }
 
@@ -169,19 +210,32 @@ public class KefuChatService {
 
     private KefuConversationDTO conversationDto(KefuConversation value) {
         var member = members.findById(value.userId());
-        return new KefuConversationDTO(value.id(), value.userId(),
-                member == null ? null : member.nickname(), member == null ? null : member.avatar(),
-                value.lastMessageTime(), value.lastMessageContent(), value.lastMessageContentType(),
-                value.adminPinned(), value.adminUnreadMessageCount());
+        return new KefuConversationDTO(
+                value.id(),
+                value.userId(),
+                member == null ? null : member.nickname(),
+                member == null ? null : member.avatar(),
+                value.lastMessageTime(),
+                value.lastMessageContent(),
+                value.lastMessageContentType(),
+                value.adminPinned(),
+                value.adminUnreadMessageCount());
     }
 
     private List<KefuMessageDTO> dto(List<KefuMessage> values) {
         var result = new ArrayList<KefuMessageDTO>(values.size());
         for (int index = values.size() - 1; index >= 0; index--) {
             var value = values.get(index);
-            result.add(new KefuMessageDTO(value.id(), value.conversationId(), value.senderId(),
-                    value.senderType(), value.contentType(), value.content(), value.readStatus(),
-                    value.createTime()));
+            result.add(
+                    new KefuMessageDTO(
+                            value.id(),
+                            value.conversationId(),
+                            value.senderId(),
+                            value.senderType(),
+                            value.contentType(),
+                            value.content(),
+                            value.readStatus(),
+                            value.createTime()));
         }
         return result;
     }

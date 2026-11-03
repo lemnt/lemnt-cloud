@@ -19,6 +19,5 @@ public record UserPwdUpdateCmd(
         /**
          * 新密码
          */
-        String newPassword
-) implements Serializable {
-}
+        String newPassword)
+        implements Serializable {}

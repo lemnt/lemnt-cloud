@@ -21,7 +21,10 @@ public class OrderStatisticsQueryExe {
         String no = orderNo == null || orderNo.isBlank() ? null : OrderRules.text(orderNo, 40);
         var ordered = orders.total(no);
         var refunded = refunds.total(no);
-        return new OrderStatisticsDTO(ordered.orderCount(), ordered.orderPayPrice(),
-                refunded.refundCount(), refunded.refundAmount());
+        return new OrderStatisticsDTO(
+                ordered.orderCount(),
+                ordered.orderPayPrice(),
+                refunded.refundCount(),
+                refunded.refundAmount());
     }
 }

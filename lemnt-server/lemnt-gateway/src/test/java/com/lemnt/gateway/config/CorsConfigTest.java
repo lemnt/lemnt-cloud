@@ -22,11 +22,14 @@ class CorsConfigTest {
 
     @Test
     void preflightShouldAllowAuthorizationAndCredentials() {
-        MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest
-                .options("http://localhost:8080/system/user")
-                .header(HttpHeaders.ORIGIN, FRONTEND)
-                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "POST")
-                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS, "authorization,content-type"));
+        MockServerWebExchange exchange =
+                MockServerWebExchange.from(
+                        MockServerHttpRequest.options("http://localhost:8080/system/user")
+                                .header(HttpHeaders.ORIGIN, FRONTEND)
+                                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "POST")
+                                .header(
+                                        HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS,
+                                        "authorization,content-type"));
 
         assertThat(filter(FRONTEND, exchange)).isFalse();
         HttpHeaders headers = exchange.getResponse().getHeaders();
@@ -34,7 +37,8 @@ class CorsConfigTest {
         assertThat(exchange.getResponse().getStatusCode()).isNull();
         assertThat(headers.getAccessControlAllowOrigin()).isEqualTo(FRONTEND);
         assertThat(headers.getAccessControlAllowCredentials()).isTrue();
-        assertThat(headers.getAccessControlAllowHeaders()).contains("authorization", "content-type");
+        assertThat(headers.getAccessControlAllowHeaders())
+                .contains("authorization", "content-type");
         assertThat(headers.getAccessControlMaxAge()).isEqualTo(18000);
     }
 
@@ -43,9 +47,11 @@ class CorsConfigTest {
         MockServerWebExchange exchange = request(FRONTEND);
 
         assertThat(filter(FRONTEND, exchange)).isTrue();
-        assertThat(exchange.getResponse().getHeaders().getAccessControlAllowOrigin()).isEqualTo(FRONTEND);
+        assertThat(exchange.getResponse().getHeaders().getAccessControlAllowOrigin())
+                .isEqualTo(FRONTEND);
         assertThat(exchange.getResponse().getHeaders().getAccessControlAllowCredentials()).isTrue();
-        assertThat(exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION)).isEqualTo("Bearer test");
+        assertThat(exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
+                .isEqualTo("Bearer test");
     }
 
     @Test
@@ -59,10 +65,11 @@ class CorsConfigTest {
 
     @Test
     void unlistedPreflightShouldBeRejected() {
-        MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest
-                .options("http://localhost:8080/system/user")
-                .header(HttpHeaders.ORIGIN, "https://untrusted.example")
-                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET"));
+        MockServerWebExchange exchange =
+                MockServerWebExchange.from(
+                        MockServerHttpRequest.options("http://localhost:8080/system/user")
+                                .header(HttpHeaders.ORIGIN, "https://untrusted.example")
+                                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET"));
 
         assertThat(filter(FRONTEND, exchange)).isFalse();
         assertThat(exchange.getResponse().getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
@@ -70,11 +77,12 @@ class CorsConfigTest {
 
     @Test
     void unlistedHeaderShouldBeRejected() {
-        MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest
-                .options("http://localhost:8080/system/user")
-                .header(HttpHeaders.ORIGIN, FRONTEND)
-                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "POST")
-                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS, "X-Untrusted"));
+        MockServerWebExchange exchange =
+                MockServerWebExchange.from(
+                        MockServerHttpRequest.options("http://localhost:8080/system/user")
+                                .header(HttpHeaders.ORIGIN, FRONTEND)
+                                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "POST")
+                                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS, "X-Untrusted"));
 
         assertThat(filter(FRONTEND, exchange)).isFalse();
         assertThat(exchange.getResponse().getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
@@ -99,10 +107,11 @@ class CorsConfigTest {
 
     @Test
     void unlistedMethodShouldBeRejected() {
-        MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest
-                .options("http://localhost:8080/system/user")
-                .header(HttpHeaders.ORIGIN, FRONTEND)
-                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "TRACE"));
+        MockServerWebExchange exchange =
+                MockServerWebExchange.from(
+                        MockServerHttpRequest.options("http://localhost:8080/system/user")
+                                .header(HttpHeaders.ORIGIN, FRONTEND)
+                                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "TRACE"));
 
         assertThat(filter(FRONTEND, exchange)).isFalse();
         assertThat(exchange.getResponse().getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
@@ -123,22 +132,28 @@ class CorsConfigTest {
     }
 
     private MockServerWebExchange request(String origin) {
-        return MockServerWebExchange.from(MockServerHttpRequest.get("http://localhost:8080/system/user")
-                .header(HttpHeaders.ORIGIN, origin)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer test"));
+        return MockServerWebExchange.from(
+                MockServerHttpRequest.get("http://localhost:8080/system/user")
+                        .header(HttpHeaders.ORIGIN, origin)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer test"));
     }
 
     /** 使用实际配置 Bean 执行过滤链，记录请求是否进入后续处理。 */
     private boolean filter(String origins, MockServerWebExchange exchange) {
-        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+        try (AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext()) {
             TestPropertyValues.of("gateway.cors.allowed-origins=" + origins).applyTo(context);
             context.register(CorsConfig.class);
             context.refresh();
             AtomicBoolean forwarded = new AtomicBoolean();
-            context.getBean("corsFilter", WebFilter.class).filter(exchange, request -> {
-                forwarded.set(true);
-                return Mono.empty();
-            }).block();
+            context.getBean("corsFilter", WebFilter.class)
+                    .filter(
+                            exchange,
+                            request -> {
+                                forwarded.set(true);
+                                return Mono.empty();
+                            })
+                    .block();
             return forwarded.get();
         }
     }

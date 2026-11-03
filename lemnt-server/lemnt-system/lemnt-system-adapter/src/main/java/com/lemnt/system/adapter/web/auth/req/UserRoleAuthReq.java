@@ -13,9 +13,6 @@ import java.util.List;
  */
 @Schema(description = "用户授权角色请求")
 public record UserRoleAuthReq(
-        @NotNull(message = "用户ID不能为空")
-        @Schema(description = "用户ID")
-        Long userId,
-        @Schema(description = "角色ID组")
-        List<Long> roleIds
-) implements Serializable {}
+        @NotNull(message = "用户ID不能为空") @Schema(description = "用户ID") Long userId,
+        @Schema(description = "角色ID组") List<Long> roleIds)
+        implements Serializable {}

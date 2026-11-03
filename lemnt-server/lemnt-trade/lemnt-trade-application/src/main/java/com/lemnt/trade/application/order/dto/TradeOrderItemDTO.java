@@ -1,9 +1,8 @@
 package com.lemnt.trade.application.order.dto;
 
-import java.util.List;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 /** 订单商品快照响应。 */
 public record TradeOrderItemDTO(
@@ -16,8 +15,8 @@ public record TradeOrderItemDTO(
         Long spuId,
         String spuName,
         List<Spec> specs,
-        String picUrl
-) implements Serializable {
+        String picUrl)
+        implements Serializable {
     public TradeOrderItemDTO {
         specs = specs == null ? null : List.copyOf(specs);
     }
@@ -29,8 +28,7 @@ public record TradeOrderItemDTO(
             String productName,
             BigDecimal unitPrice,
             Integer quantity,
-            BigDecimal lineAmount
-    ) {
+            BigDecimal lineAmount) {
         this(
                 productId,
                 productCode,
@@ -45,10 +43,6 @@ public record TradeOrderItemDTO(
     }
 
     /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
-    public record Spec(
-            Long specId,
-            String specName,
-            Long specValueId,
-            String specValueName
-    ) implements java.io.Serializable {}
+    public record Spec(Long specId, String specName, Long specValueId, String specValueName)
+            implements java.io.Serializable {}
 }

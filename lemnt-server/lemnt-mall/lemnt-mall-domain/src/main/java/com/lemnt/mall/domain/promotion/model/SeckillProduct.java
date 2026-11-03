@@ -15,8 +15,8 @@ public record SeckillProduct(
         Integer stock,
         Integer activityStatus,
         LocalDateTime activityStartTime,
-        LocalDateTime activityEndTime
-) implements java.io.Serializable {
+        LocalDateTime activityEndTime)
+        implements java.io.Serializable {
     public SeckillProduct {
         configIds = configIds == null ? List.of() : List.copyOf(configIds);
     }

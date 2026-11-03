@@ -32,10 +32,11 @@ public class UserInfoController {
     @GetMapping("/current-info")
     public R<UserInfoRes> getInfo() {
         Map<String, Object> result = userInfoQueryExe.execute();
-        UserInfoRes res = new UserInfoRes(
-                UserResConverter.toRes(UserConverter.toDTO((User) result.get("user"))),
-                (Set<String>) result.get("roles"),
-                (Set<String>) result.get("permissions"));
+        UserInfoRes res =
+                new UserInfoRes(
+                        UserResConverter.toRes(UserConverter.toDTO((User) result.get("user"))),
+                        (Set<String>) result.get("roles"),
+                        (Set<String>) result.get("permissions"));
         return R.ok(res);
     }
 }

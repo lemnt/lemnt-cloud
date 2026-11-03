@@ -13,6 +13,5 @@ public record KefuConversationDTO(
         String lastMessageContent,
         Integer lastMessageContentType,
         Boolean adminPinned,
-        Integer adminUnreadMessageCount
-) implements Serializable {
-}
+        Integer adminUnreadMessageCount)
+        implements Serializable {}

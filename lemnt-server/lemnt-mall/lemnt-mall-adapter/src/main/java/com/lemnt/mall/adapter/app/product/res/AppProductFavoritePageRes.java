@@ -9,5 +9,5 @@ public record AppProductFavoritePageRes(
         @Schema(description = "商品SPU编号") Long spuId,
         @Schema(description = "当前商品名称，失效时为空") String spuName,
         @Schema(description = "当前图片，缺失时为空") String picUrl,
-        @Schema(description = "当前最低价格，元，缺失时为空") java.math.BigDecimal price
-) {}
+        @Schema(description = "当前最低价格，元，缺失时为空") java.math.BigDecimal price)
+        implements java.io.Serializable {}

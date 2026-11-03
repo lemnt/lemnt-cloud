@@ -12,13 +12,13 @@ public final class CartConverter {
      */
     public static CartLine cart(CartDO row) {
         return row == null
-        ? null
-        : new CartLine(
-                row.getId(),
-                row.getMemberId(),
-                row.getProductId(),
-                row.getQuantity(),
-                Boolean.TRUE.equals(row.getSelected()),
-                row.getVersion());
+                ? null
+                : new CartLine(
+                        row.getId(),
+                        row.getMemberId(),
+                        row.getProductId(),
+                        row.getQuantity(),
+                        Boolean.TRUE.equals(row.getSelected()),
+                        row.getVersion());
     }
 }

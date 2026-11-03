@@ -16,17 +16,32 @@ public final class CouponDTOConverter {
      */
     public static CouponDTO coupon(Coupon value) {
         return new CouponDTO(
-                value.id(), value.templateId(), value.memberId(), value.status(), value.orderNo(),
-                terms(value.terms()), value.useTime());
+                value.id(),
+                value.templateId(),
+                value.memberId(),
+                value.status(),
+                value.orderNo(),
+                terms(value.terms()),
+                value.useTime());
     }
 
     /** 对外传输持券快照，不暴露领域对象。 */
-    public static CouponTermsDTO terms(
-            CouponTerms value) {
-        return value == null ? null : new CouponTermsDTO(
-                value.code(), value.name(), value.takeType(), value.kind(), value.threshold(),
-                value.fixedAmount(), value.discountPercent(), value.discountLimit(), value.productScope(),
-                value.productScopeValues(), value.validFrom(), value.validUntil());
+    public static CouponTermsDTO terms(CouponTerms value) {
+        return value == null
+                ? null
+                : new CouponTermsDTO(
+                        value.code(),
+                        value.name(),
+                        value.takeType(),
+                        value.kind(),
+                        value.threshold(),
+                        value.fixedAmount(),
+                        value.discountPercent(),
+                        value.discountLimit(),
+                        value.productScope(),
+                        value.productScopeValues(),
+                        value.validFrom(),
+                        value.validUntil());
     }
 
     /**
@@ -47,6 +62,14 @@ public final class CouponDTOConverter {
                 value.validFrom(),
                 value.validUntil(),
                 value.enabled(),
-                value.description(), value.takeType(), value.takeLimitCount(), value.productScope(), value.productScopeValues(), value.validityType(), value.fixedStartTerm(), value.fixedEndTerm(), value.useCount());
+                value.description(),
+                value.takeType(),
+                value.takeLimitCount(),
+                value.productScope(),
+                value.productScopeValues(),
+                value.validityType(),
+                value.fixedStartTerm(),
+                value.fixedEndTerm(),
+                value.useCount());
     }
 }

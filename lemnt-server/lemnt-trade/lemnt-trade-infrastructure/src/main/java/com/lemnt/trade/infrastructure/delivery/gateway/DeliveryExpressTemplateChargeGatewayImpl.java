@@ -16,14 +16,20 @@ import java.util.List;
 /** trade_delivery_express_template_charge 持久化实现。 */
 @Component
 @RequiredArgsConstructor
-public class DeliveryExpressTemplateChargeGatewayImpl implements DeliveryExpressTemplateChargeGateway {
+public class DeliveryExpressTemplateChargeGatewayImpl
+        implements DeliveryExpressTemplateChargeGateway {
     private final DeliveryExpressTemplateChargeMapper mapper;
 
     @Override
     public List<DeliveryExpressTemplateCharge> byTemplate(Long templateId) {
-        return mapper.selectList(Wrappers.<DeliveryExpressTemplateChargeDO>lambdaQuery()
-                .eq(DeliveryExpressTemplateChargeDO::getTemplateId, templateId).orderByAsc(DeliveryExpressTemplateChargeDO::getId))
-                .stream().map(DeliveryExpressTemplateChargeConverter::toEntity).toList();
+        return mapper
+                .selectList(
+                        Wrappers.<DeliveryExpressTemplateChargeDO>lambdaQuery()
+                                .eq(DeliveryExpressTemplateChargeDO::getTemplateId, templateId)
+                                .orderByAsc(DeliveryExpressTemplateChargeDO::getId))
+                .stream()
+                .map(DeliveryExpressTemplateChargeConverter::toEntity)
+                .toList();
     }
 
     @Override
@@ -35,7 +41,9 @@ public class DeliveryExpressTemplateChargeGatewayImpl implements DeliveryExpress
 
     @Override
     public void deleteByTemplate(Long templateId) {
-        mapper.delete(Wrappers.<DeliveryExpressTemplateChargeDO>lambdaQuery().eq(DeliveryExpressTemplateChargeDO::getTemplateId, templateId));
+        mapper.delete(
+                Wrappers.<DeliveryExpressTemplateChargeDO>lambdaQuery()
+                        .eq(DeliveryExpressTemplateChargeDO::getTemplateId, templateId));
     }
 
     @Override
@@ -49,5 +57,4 @@ public class DeliveryExpressTemplateChargeGatewayImpl implements DeliveryExpress
     public boolean update(DeliveryExpressTemplateCharge value) {
         return mapper.updateById(DeliveryExpressTemplateChargeConverter.toDO(value)) == 1;
     }
-
 }

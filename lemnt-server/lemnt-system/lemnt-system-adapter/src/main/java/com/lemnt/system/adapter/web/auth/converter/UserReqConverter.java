@@ -30,8 +30,7 @@ public class UserReqConverter {
                 req.password(),
                 req.status(),
                 req.roleIds(),
-                req.postIds()
-        );
+                req.postIds());
     }
 
     public static UserUpdateCmd toCmd(UserUpdateReq req) {
@@ -44,47 +43,28 @@ public class UserReqConverter {
                 req.sex(),
                 req.status(),
                 req.roleIds(),
-                req.postIds()
-        );
+                req.postIds());
     }
 
     public static UserPwdResetCmd toCmd(UserPwdResetReq req) {
-        return new UserPwdResetCmd(
-                req.userId(),
-                req.password()
-        );
+        return new UserPwdResetCmd(req.userId(), req.password());
     }
 
     public static UserStatusUpdateCmd toCmd(UserStatusUpdateReq req) {
-        return new UserStatusUpdateCmd(
-                req.userId(),
-                req.status()
-        );
+        return new UserStatusUpdateCmd(req.userId(), req.status());
     }
 
     public static UserProfileUpdateCmd toCmd(UserProfileUpdateReq req) {
         return new UserProfileUpdateCmd(
-                req.userId(),
-                req.nickName(),
-                req.email(),
-                req.phonenumber(),
-                req.sex()
-        );
+                req.userId(), req.nickName(), req.email(), req.phonenumber(), req.sex());
     }
 
     public static UserPwdUpdateCmd toCmd(UserPwdUpdateReq req) {
-        return new UserPwdUpdateCmd(
-                req.userId(),
-                req.oldPassword(),
-                req.newPassword()
-        );
+        return new UserPwdUpdateCmd(req.userId(), req.oldPassword(), req.newPassword());
     }
 
     public static UserRoleAuthCmd toCmd(UserRoleAuthReq req) {
-        return new UserRoleAuthCmd(
-                req.userId(),
-                req.roleIds()
-        );
+        return new UserRoleAuthCmd(req.userId(), req.roleIds());
     }
 
     public static UserPageQry toQry(UserPageReq item) {
@@ -100,8 +80,7 @@ public class UserReqConverter {
                 item.pageNum(),
                 item.pageSize(),
                 item.beginTime(),
-                item.endTime()
-        );
+                item.endTime());
     }
 
     public static UserPageQry toQry(SystemUserListReq item) {
@@ -117,8 +96,7 @@ public class UserReqConverter {
                 item.pageNum(),
                 item.pageSize(),
                 item.beginTime(),
-                item.endTime()
-        );
+                item.endTime());
     }
 
     public static UserPageQry toQry(SystemRoleUserAllocatedListReq item) {
@@ -134,8 +112,7 @@ public class UserReqConverter {
                 item.pageNum(),
                 item.pageSize(),
                 item.beginTime(),
-                item.endTime()
-        );
+                item.endTime());
     }
 
     public static UserPageQry toQry(SystemRoleUserUnallocatedListReq item) {
@@ -151,7 +128,6 @@ public class UserReqConverter {
                 item.pageNum(),
                 item.pageSize(),
                 item.beginTime(),
-                item.endTime()
-        );
+                item.endTime());
     }
 }

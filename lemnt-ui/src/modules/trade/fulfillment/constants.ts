@@ -20,5 +20,17 @@ export const fulfillmentKeys = {
   all: ['trade', 'fulfillment'] as const,
   orders: (query: object) => ['trade', 'fulfillment', 'orders', query] as const,
   detail: (no?: string) => ['trade', 'fulfillment', 'detail', no] as const,
+  refundableItems: (no?: string) => ['trade', 'fulfillment', 'refundable-items', no] as const,
+  orderPromotions: (no?: string) => ['trade', 'fulfillment', 'order-promotions', no] as const,
+  afterSalePromotions: (no: string) =>
+    ['trade', 'fulfillment', 'after-sale-promotions', no] as const,
   refunds: (query: object) => ['trade', 'fulfillment', 'refunds', query] as const,
 };
+
+export const benefitStatusLabels = {
+  NOT_STARTED: '退款完成后执行',
+  PENDING: '处理中',
+  SUCCESS: '已完成',
+  FAILED: '处理失败，待重试',
+  UNKNOWN: '历史未记录',
+} as const;

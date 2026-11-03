@@ -7,5 +7,4 @@ import jakarta.validation.constraints.NotNull;
 /** 会员绑定推广员请求。 */
 @Schema(description = "会员绑定推广员请求")
 public record AppBrokerageBindReq(@Schema(description = "推广员会员编号") @NotNull Long bindUserId)
-        implements java.io.Serializable {
-}
+        implements java.io.Serializable {}

@@ -2,18 +2,41 @@ const runtime = require('../../services/orderRuntime');
 
 Page({
   data: {
-    ready: runtime.ready, loading: false, error: '', loggedIn: false, wallet: null,
-    records: [], total: 0, pageNum: 0, hasMore: false,
+    ready: runtime.ready,
+    loading: false,
+    error: '',
+    loggedIn: false,
+    wallet: null,
+    records: [],
+    total: 0,
+    pageNum: 0,
+    hasMore: false,
   },
-  onLoad() { runtime.attach(this); },
+  onLoad() {
+    runtime.attach(this);
+  },
   onShow() {
     const loggedIn = !!runtime.current();
     this.setData({ loggedIn });
     if (loggedIn && runtime.requireLogin()) return this.reload();
   },
-  onHide() { this.setData({ records: [], total: 0, pageNum: 0, hasMore: false }); },
-  onSessionLost() { this.setData({ wallet: null, records: [], total: 0, pageNum: 0, hasMore: false, loggedIn: false, error: '会员已切换，请重新登录' }); },
-  login() { wx.navigateTo({ url: '/pages/member-login/index' }); },
+  onHide() {
+    this.setData({ records: [], total: 0, pageNum: 0, hasMore: false });
+  },
+  onSessionLost() {
+    this.setData({
+      wallet: null,
+      records: [],
+      total: 0,
+      pageNum: 0,
+      hasMore: false,
+      loggedIn: false,
+      error: '会员已切换，请重新登录',
+    });
+  },
+  login() {
+    wx.navigateTo({ url: '/pages/member-login/index' });
+  },
   reload() {
     return runtime.run(this, async () => {
       const wallet = this.toWallet(await this.client.wallet());
@@ -49,9 +72,14 @@ Page({
     return value;
   },
   toTransaction(value) {
-    if (!value || typeof value.transactionNo !== 'string'
-      || typeof value.amount !== 'string' || !/^-?\d+\.\d{2}$/.test(value.amount)
-      || typeof value.balanceAfter !== 'string' || !/^\d+\.\d{2}$/.test(value.balanceAfter)) {
+    if (
+      !value ||
+      typeof value.transactionNo !== 'string' ||
+      typeof value.amount !== 'string' ||
+      !/^-?\d+\.\d{2}$/.test(value.amount) ||
+      typeof value.balanceAfter !== 'string' ||
+      !/^\d+\.\d{2}$/.test(value.balanceAfter)
+    ) {
       throw new Error('钱包流水数据不合法');
     }
     return { ...value, increase: !value.amount.startsWith('-') };

@@ -13,6 +13,5 @@ public record BannerRes(
         @Schema(description = "0 开启，1 关闭") Integer status,
         @Schema(description = "位置") Integer position,
         @Schema(description = "备注") String memo,
-        @Schema(description = "点击次数") Integer browseCount
-) implements java.io.Serializable {
-}
+        @Schema(description = "点击次数") Integer browseCount)
+        implements java.io.Serializable {}

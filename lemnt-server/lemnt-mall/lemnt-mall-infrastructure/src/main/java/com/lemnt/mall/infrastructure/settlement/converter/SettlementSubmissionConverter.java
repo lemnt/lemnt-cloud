@@ -1,12 +1,13 @@
 package com.lemnt.mall.infrastructure.settlement.converter;
 
+import com.lemnt.mall.infrastructure.product.converter.SpecSnapshotJson;
+
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.lemnt.mall.infrastructure.product.converter.SpecSnapshotJson;
 
 /** 提交回执只规范原商品规格，不改写恢复索引、原指纹或查询当前商品。 */
 public final class SettlementSubmissionConverter {
-    private SettlementSubmissionConverter() { }
+    private SettlementSubmissionConverter() {}
 
     public static String normalize(String json) {
         var root = JSON.parseObject(json);

@@ -9,8 +9,5 @@ import java.io.Serializable;
 /** 订单备注修改请求。 */
 @Schema(description = "订单备注修改请求")
 public record OrderRemarkUpdateReq(
-        @Schema(description = "后台备注，空字符串清除")
-        @NotNull @Size(max = 500)
-        String remark
-) implements Serializable {
-}
+        @Schema(description = "后台备注，空字符串清除") @NotNull @Size(max = 500) String remark)
+        implements Serializable {}

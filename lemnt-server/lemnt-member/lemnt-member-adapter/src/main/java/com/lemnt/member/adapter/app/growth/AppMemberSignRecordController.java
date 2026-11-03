@@ -42,7 +42,8 @@ public class AppMemberSignRecordController {
     public R<SignSummaryRes> summary() {
         return R.ok(
                 MemberGrowthResConverter.summary(
-                        memberSignSummaryQueryExe.execute(new SignSummaryQry(SecurityUtils.getUserId()))));
+                        memberSignSummaryQueryExe.execute(
+                                new SignSummaryQry(SecurityUtils.getUserId()))));
     }
 
     @PostMapping("/signin")
@@ -50,16 +51,21 @@ public class AppMemberSignRecordController {
     public R<AppMemberGrowthSignRes> sign() {
         return R.ok(
                 MemberGrowthResConverter.toAppMemberGrowthSignRes(
-                        memberSignCreateCmdExe.execute(new SignCreateCmd(SecurityUtils.getUserId()))));
+                        memberSignCreateCmdExe.execute(
+                                new SignCreateCmd(SecurityUtils.getUserId()))));
     }
 
     @GetMapping("/signin/records")
     @Operation(summary = "本人签到记录分页")
-    public R<AppMemberGrowthSignsRes> signs(
-            @Valid @ModelAttribute SignRecordPageReq req) {
-        var page = memberSignRecordPageQueryExe.execute(MemberGrowthReqConverter.toSignRecordPageQry(SecurityUtils.getUserId(), req));
+    public R<AppMemberGrowthSignsRes> signs(@Valid @ModelAttribute SignRecordPageReq req) {
+        var page =
+                memberSignRecordPageQueryExe.execute(
+                        MemberGrowthReqConverter.toSignRecordPageQry(
+                                SecurityUtils.getUserId(), req));
         return R.page(
-                page.getRecords().stream().map(MemberGrowthResConverter::toAppMemberGrowthSignsRes).toList(),
+                page.getRecords().stream()
+                        .map(MemberGrowthResConverter::toAppMemberGrowthSignsRes)
+                        .toList(),
                 page.getTotal());
     }
 }

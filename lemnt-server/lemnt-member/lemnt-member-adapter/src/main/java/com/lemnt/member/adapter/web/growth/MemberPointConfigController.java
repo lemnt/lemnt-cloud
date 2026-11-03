@@ -38,7 +38,9 @@ public class MemberPointConfigController {
     @Operation(summary = "积分交易配置")
     @RequiresPermissions("member:config:query")
     public R<ConfigRes> config() {
-        return R.ok(MemberGrowthResConverter.config(memberConfigDetailQueryExe.execute(new ConfigDetailQry())));
+        return R.ok(
+                MemberGrowthResConverter.config(
+                        memberConfigDetailQueryExe.execute(new ConfigDetailQry())));
     }
 
     @PutMapping("/config")

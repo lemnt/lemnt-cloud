@@ -11,6 +11,10 @@ public interface PaymentChannelGateway {
     PaymentPrepay prepay(PaymentRecord payment, PayChannelConfig config);
 
     /** 验签并转换渠道通知；验签失败不得返回已核验对象。 */
-    VerifiedPaymentNotification verify(String channel, PayChannelConfig config, String body,
-            String signature, String timestamp);
+    VerifiedPaymentNotification verify(
+            String channel,
+            PayChannelConfig config,
+            String body,
+            String signature,
+            String timestamp);
 }

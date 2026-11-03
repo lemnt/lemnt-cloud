@@ -34,7 +34,8 @@ public class AppProductController {
     @Operation(summary = "公开在售商品分页，服务端价格区间")
     public R<StoreProductRes> products(@Valid @ModelAttribute StorePageReq req) {
         var page = storeProductPageQueryExe.execute(StoreReqConverter.page(req));
-        return R.page(page.records().stream().map(StoreResConverter::product).toList(), page.total());
+        return R.page(
+                page.records().stream().map(StoreResConverter::product).toList(), page.total());
     }
 
     @GetMapping("/products/{id}")

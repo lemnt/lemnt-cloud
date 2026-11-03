@@ -17,25 +17,40 @@ class MemberAuthRouteConfigurationTest {
     @Test
     void onlyExactAuthenticationPathsRouteToAuthWithoutStrippingPrefix() {
         try (var context = new StaticApplicationContext()) {
-            context.getBeanFactory().registerSingleton("pathRoutePredicateFactory",
-                    new PathRoutePredicateFactory(
-                    new WebFluxProperties()));
-            var routes = new MemberAuthRouteConfiguration().memberAuthRoutes(new RouteLocatorBuilder(context))
-                .getRoutes().collectList().block();
+            context.getBeanFactory()
+                    .registerSingleton(
+                            "pathRoutePredicateFactory",
+                            new PathRoutePredicateFactory(new WebFluxProperties()));
+            var routes =
+                    new MemberAuthRouteConfiguration()
+                            .memberAuthRoutes(new RouteLocatorBuilder(context))
+                            .getRoutes()
+                            .collectList()
+                            .block();
             assertEquals(1, routes.size());
             var route = routes.get(0);
             assertEquals("lb://lemnt-auth", route.getUri().toString());
             assertTrue(route.getOrder() < 0);
             assertTrue(route.getFilters().isEmpty());
-            for (String path : List.of("/member/app/auth/login", "/member/app/auth/refresh-token", "/member/app/auth/logout")) {
+            for (String path :
+                    List.of(
+                            "/member/app/auth/login",
+                            "/member/app/auth/refresh-token",
+                            "/member/app/auth/logout")) {
                 var exchange = MockServerWebExchange.from(MockServerHttpRequest.post(path));
                 assertEquals(Boolean.TRUE, Mono.from(route.getPredicate().apply(exchange)).block());
                 assertEquals(path, exchange.getRequest().getURI().getPath());
             }
-            for (String path : List.of("/member/app/auth/sms-login", "/member/app/auth/social-login",
-                    "/member/app/user", "/member/admin/users", "/member/app/auth/login/extra")) {
+            for (String path :
+                    List.of(
+                            "/member/app/auth/sms-login",
+                            "/member/app/auth/social-login",
+                            "/member/app/user",
+                            "/member/admin/users",
+                            "/member/app/auth/login/extra")) {
                 var exchange = MockServerWebExchange.from(MockServerHttpRequest.post(path));
-                assertEquals(Boolean.FALSE, Mono.from(route.getPredicate().apply(exchange)).block());
+                assertEquals(
+                        Boolean.FALSE, Mono.from(route.getPredicate().apply(exchange)).block());
             }
         }
     }

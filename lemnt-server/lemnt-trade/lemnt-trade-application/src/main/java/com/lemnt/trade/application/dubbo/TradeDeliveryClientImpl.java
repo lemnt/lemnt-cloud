@@ -22,13 +22,27 @@ public class TradeDeliveryClientImpl implements TradeDeliveryClient {
 
     @Override
     public DeliveryFeeDTO price(DeliveryFeeBo input) {
-        if (input == null || input.items() == null || input.items().stream().anyMatch(Objects::isNull)
-        ) {
+        if (input == null
+                || input.items() == null
+                || input.items().stream().anyMatch(Objects::isNull)) {
             throw new ServiceException("运费快照不合法", 400);
         }
-        var value = prices.calculate(new DeliveryPriceQry(input.areaId(), input.freeDelivery(),
-                input.items().stream().map(item -> new DeliveryPriceItemQry(item.skuId(), item.templateId(),
-                        item.count(), item.weight(), item.volume(), item.payPrice())).toList()));
+        var value =
+                prices.calculate(
+                        new DeliveryPriceQry(
+                                input.areaId(),
+                                input.freeDelivery(),
+                                input.items().stream()
+                                        .map(
+                                                item ->
+                                                        new DeliveryPriceItemQry(
+                                                                item.skuId(),
+                                                                item.templateId(),
+                                                                item.count(),
+                                                                item.weight(),
+                                                                item.volume(),
+                                                                item.payPrice()))
+                                        .toList()));
         return new DeliveryFeeDTO(value.deliveryPrice(), value.itemPrices());
     }
 }

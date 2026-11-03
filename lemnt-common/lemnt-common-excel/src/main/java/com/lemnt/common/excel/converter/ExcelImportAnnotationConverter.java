@@ -1,9 +1,10 @@
 package com.lemnt.common.excel.converter;
 
-import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.lemnt.common.core.annotation.Excel;
 import com.lemnt.common.core.annotation.Excels;
+
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -58,7 +59,8 @@ public class ExcelImportAnnotationConverter {
      * @param <E>     实体类型
      * @return 实体列表
      */
-    public static <E> E convertRow(Map<Integer, Field> headMap, Class<E> clazz, Map<Integer, Object> data) {
+    public static <E> E convertRow(
+            Map<Integer, Field> headMap, Class<E> clazz, Map<Integer, Object> data) {
         if (Objects.isNull(data)) {
             return null;
         }
@@ -86,7 +88,8 @@ public class ExcelImportAnnotationConverter {
      * @return
      */
     private static boolean isImportField(Excel excel) {
-        return Objects.equals(excel.type(), Excel.Type.ALL) || Objects.equals(excel.type(), Excel.Type.IMPORT);
+        return Objects.equals(excel.type(), Excel.Type.ALL)
+                || Objects.equals(excel.type(), Excel.Type.IMPORT);
     }
 
     /**
@@ -115,7 +118,8 @@ public class ExcelImportAnnotationConverter {
                         Excel e = excels.value()[i];
                         Field nestedField = nestedObj.getClass().getDeclaredField(e.targetAttr());
                         nestedField.setAccessible(true);
-                        Object converted = processCellValue(cellValues.get(i), nestedField.getType(), e);
+                        Object converted =
+                                processCellValue(cellValues.get(i), nestedField.getType(), e);
                         nestedField.set(nestedObj, converted);
                     }
                 }
@@ -148,9 +152,11 @@ public class ExcelImportAnnotationConverter {
             // 2. 反解字典（readConverterExp）
             if (StrUtil.isNotBlank(excel.readConverterExp())) {
                 String[] pairs = excel.readConverterExp().split(",");
-                Map<String, String> map = Arrays.stream(pairs)
-                        .map(s -> s.split("=")).filter(arr -> arr.length == 2)
-                        .collect(Collectors.toMap(a -> a[1], a -> a[0]));
+                Map<String, String> map =
+                        Arrays.stream(pairs)
+                                .map(s -> s.split("="))
+                                .filter(arr -> arr.length == 2)
+                                .collect(Collectors.toMap(a -> a[1], a -> a[0]));
                 if (!map.containsKey(strVal)) {
                     return null;
                 }
@@ -185,7 +191,8 @@ public class ExcelImportAnnotationConverter {
             }
             if (targetType == LocalDateTime.class) {
                 if (StrUtil.isNotBlank(excel.dateFormat())) {
-                    return LocalDateTime.parse(strVal, DateTimeFormatter.ofPattern(excel.dateFormat()));
+                    return LocalDateTime.parse(
+                            strVal, DateTimeFormatter.ofPattern(excel.dateFormat()));
                 } else {
                     return LocalDateTime.parse(strVal);
                 }
@@ -194,5 +201,4 @@ public class ExcelImportAnnotationConverter {
         }
         return null;
     }
-
 }

@@ -43,18 +43,23 @@ public class RoleUserController {
     @Operation(summary = "查询已分配用户角色列表")
     @RequiresPermissions("system:role:list")
     @GetMapping("/auth-user/allocated-list")
-    public R<SystemRoleUserAllocatedListRes> allocatedList(@Validated SystemRoleUserAllocatedListReq req) {
+    public R<SystemRoleUserAllocatedListRes> allocatedList(
+            @Validated SystemRoleUserAllocatedListReq req) {
         PageResult<UserDTO> result = userAllocatedPageQueryExe.execute(UserReqConverter.toQry(req));
-        return R.page(UserResConverter.toResListToSystemRoleUserAllocatedListRes(result.getRecords()),
+        return R.page(
+                UserResConverter.toResListToSystemRoleUserAllocatedListRes(result.getRecords()),
                 result.getTotal());
     }
 
     @Operation(summary = "查询未分配用户角色列表")
     @RequiresPermissions("system:role:list")
     @GetMapping("/auth-user/unallocated-list")
-    public R<SystemRoleUserUnallocatedListRes> unallocatedList(@Validated SystemRoleUserUnallocatedListReq req) {
-        PageResult<UserDTO> result = userUnAllocatedPageQueryExe.execute(UserReqConverter.toQry(req));
-        return R.page(UserResConverter.toResListToSystemRoleUserUnallocatedListRes(result.getRecords()),
+    public R<SystemRoleUserUnallocatedListRes> unallocatedList(
+            @Validated SystemRoleUserUnallocatedListReq req) {
+        PageResult<UserDTO> result =
+                userUnAllocatedPageQueryExe.execute(UserReqConverter.toQry(req));
+        return R.page(
+                UserResConverter.toResListToSystemRoleUserUnallocatedListRes(result.getRecords()),
                 result.getTotal());
     }
 

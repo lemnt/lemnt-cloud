@@ -8,6 +8,5 @@ public record BrokerageWithdrawPageReq(
         @Schema(description = "会员编号") Long userId,
         @Schema(description = "状态") Integer status,
         @Schema(description = "pageNum") Integer pageNum,
-        @Schema(description = "pageSize") Integer pageSize
-) implements java.io.Serializable {
-}
+        @Schema(description = "pageSize") Integer pageSize)
+        implements java.io.Serializable {}

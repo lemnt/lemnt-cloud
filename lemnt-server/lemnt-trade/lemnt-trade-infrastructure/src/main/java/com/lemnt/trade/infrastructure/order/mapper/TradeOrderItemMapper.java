@@ -7,5 +7,4 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** TradeOrderItem 表数据访问接口。 */
 @Mapper
-public interface TradeOrderItemMapper extends BaseMapper<TradeOrderItemDO> {
-}
+public interface TradeOrderItemMapper extends BaseMapper<TradeOrderItemDO> {}

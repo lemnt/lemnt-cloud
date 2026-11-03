@@ -32,5 +32,11 @@ public interface CheckoutLifecycleClient {
     /**
      * 商品售后成功后，统一回补库存并处理整单退款的券权益。
      */
-    void refunded(String orderNo, String refundNo, List<RefundStockBo> items, BigDecimal refundAmount);
+    void refunded(
+            String orderNo, String refundNo, List<RefundStockBo> items, BigDecimal refundAmount);
+
+    /** 新版商品行及明确权益方案，未升级消费者必须失败并保留重试。 */
+    default void refunded(com.lemnt.mall.client.bo.RefundBenefitsBo plan) {
+        throw new UnsupportedOperationException("未升级冻结权益协议");
+    }
 }

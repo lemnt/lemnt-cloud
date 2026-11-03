@@ -8,5 +8,4 @@ public record SeckillConfigCreateCmd(
         String startTime,
         String endTime,
         List<String> sliderPicUrls,
-        Integer status
-) {}
+        Integer status) {}

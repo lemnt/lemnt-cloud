@@ -18,7 +18,5 @@ public record AppPickUpStoreRes(
         @Schema(description = "关门时间") String closingTime,
         @Schema(description = "纬度") BigDecimal latitude,
         @Schema(description = "经度") BigDecimal longitude,
-        @Schema(description = "距当前位置的直线距离，公里；未提供位置时为空")
-        BigDecimal distanceKm
-) implements java.io.Serializable {
-}
+        @Schema(description = "距当前位置的直线距离，公里；未提供位置时为空") BigDecimal distanceKm)
+        implements java.io.Serializable {}

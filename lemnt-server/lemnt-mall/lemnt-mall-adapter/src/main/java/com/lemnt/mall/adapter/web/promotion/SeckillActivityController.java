@@ -53,7 +53,8 @@ public class SeckillActivityController {
     @PutMapping("/{id}")
     @Operation(summary = "修改秒杀活动")
     @RequiresPermissions("mall:promotion:update")
-    public R<Boolean> update(@PathVariable Long id, @Valid @RequestBody SeckillActivityUpdateReq req) {
+    public R<Boolean> update(
+            @PathVariable Long id, @Valid @RequestBody SeckillActivityUpdateReq req) {
         return R.ok(update.execute(SeckillActivityConverter.update(id, req)));
     }
 
@@ -83,6 +84,8 @@ public class SeckillActivityController {
     @RequiresPermissions("mall:promotion:list")
     public R<SeckillActivityRes> page(@Valid @ModelAttribute SeckillActivityPageReq req) {
         var result = page.execute(SeckillActivityConverter.page(req));
-        return R.page(result.getRecords().stream().map(SeckillActivityConverter::res).toList(), result.getTotal());
+        return R.page(
+                result.getRecords().stream().map(SeckillActivityConverter::res).toList(),
+                result.getTotal());
     }
 }

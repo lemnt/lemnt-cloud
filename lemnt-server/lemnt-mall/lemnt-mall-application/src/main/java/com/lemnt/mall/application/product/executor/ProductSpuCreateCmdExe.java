@@ -32,37 +32,61 @@ public class ProductSpuCreateCmdExe {
         if (cmd == null
                 || cmd.skus() == null
                 || cmd.skus().size() > 100
-                || cmd.skus().stream().anyMatch(Objects::isNull)
-        ) {
+                || cmd.skus().stream().anyMatch(Objects::isNull)) {
             throw new IllegalArgumentException("商品参数不合法");
         }
         var drafts =
                 cmd.skus().stream()
-                .map(
-                s ->
-                new ProductSku(
-                null,
-                null,
-                s.code(),
-                s.name(),
-                s.price(),
-                s.stock(),
-                s.image(),
-                s.specs() == null ? null : s.specs().stream().map(property ->
-                        new com.lemnt.mall.domain.product.model.ProductSkuSpec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
-                null, s.weight(), s.volume()))
-                .toList();
+                        .map(
+                                s ->
+                                        new ProductSku(
+                                                null,
+                                                null,
+                                                s.code(),
+                                                s.name(),
+                                                s.price(),
+                                                s.stock(),
+                                                s.image(),
+                                                s.specs() == null
+                                                        ? null
+                                                        : s.specs().stream()
+                                                                .map(
+                                                                        property ->
+                                                                                new com.lemnt.mall
+                                                                                        .domain
+                                                                                        .product
+                                                                                        .model
+                                                                                        .ProductSkuSpec(
+                                                                                        property
+                                                                                                .specId(),
+                                                                                        property
+                                                                                                .specName(),
+                                                                                        property
+                                                                                                .specValueId(),
+                                                                                        property
+                                                                                                .specValueName()))
+                                                                .toList(),
+                                                null,
+                                                s.weight(),
+                                                s.volume()))
+                        .toList();
         var value =
                 new ProductSpu(
-                null,
-                cmd.code(),
-                cmd.name(),
-                cmd.categoryId(),
-                cmd.brandId(),
-                cmd.description(),
-                cmd.image(),
-                null,
-                drafts, cmd.deliveryTypes(), cmd.deliveryTemplateId(), cmd.keyword(), cmd.introduction(), cmd.sliderPicUrls(), cmd.sort());
+                        null,
+                        cmd.code(),
+                        cmd.name(),
+                        cmd.categoryId(),
+                        cmd.brandId(),
+                        cmd.description(),
+                        cmd.image(),
+                        null,
+                        drafts,
+                        cmd.deliveryTypes(),
+                        cmd.deliveryTemplateId(),
+                        cmd.keyword(),
+                        cmd.introduction(),
+                        cmd.sliderPicUrls(),
+                        cmd.sort());
         catalogValidationService.enabledReferences(value.categoryId(), value.brandId());
         return ProductCatalogDTOConverter.spu(catalogService.createSpu(value));
     }

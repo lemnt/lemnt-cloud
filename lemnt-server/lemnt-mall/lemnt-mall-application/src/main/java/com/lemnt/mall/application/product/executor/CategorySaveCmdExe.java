@@ -52,12 +52,12 @@ public class CategorySaveCmdExe {
         }
         var category =
                 new Category(
-                cmd.id(),
-                cmd.parentId(),
-                ProductCatalogValidation.text(cmd.name(), 100, "分类名称"),
-                ProductCatalogValidation.optional(cmd.picUrl(), 500),
-                cmd.sort(),
-                ProductCatalogValidation.status(cmd.status()));
+                        cmd.id(),
+                        cmd.parentId(),
+                        ProductCatalogValidation.text(cmd.name(), 100, "分类名称"),
+                        ProductCatalogValidation.optional(cmd.picUrl(), 500),
+                        cmd.sort(),
+                        ProductCatalogValidation.status(cmd.status()));
         return ProductCatalogDTOConverter.category(categoryGateway.saveCategory(category));
     }
 }

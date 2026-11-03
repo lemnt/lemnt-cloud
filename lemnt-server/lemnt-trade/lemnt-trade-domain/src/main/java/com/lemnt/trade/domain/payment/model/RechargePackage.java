@@ -10,6 +10,4 @@ public record RechargePackage(
         BigDecimal payPrice,
         BigDecimal bonusPrice,
         Integer status,
-        LocalDateTime createTime
-) {
-}
+        LocalDateTime createTime) {}

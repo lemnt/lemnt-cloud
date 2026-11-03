@@ -1,12 +1,13 @@
 package com.lemnt.trade.infrastructure.config.gateway;
 
-import com.alibaba.fastjson2.JSON;
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.system.api.BusinessConfigKeys;
 import com.lemnt.system.api.RemoteConfigService;
 import com.lemnt.system.api.bo.BusinessConfigSaveBo;
 import com.lemnt.trade.domain.config.gateway.TradeConfigGateway;
 import com.lemnt.trade.domain.config.model.TradeConfig;
+
+import com.alibaba.fastjson2.JSON;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,10 @@ public class TradeConfigGatewayImpl implements TradeConfigGateway {
     /** 业务校验由原应用服务完成，system以唯一键原子替换整个配置组。 */
     @Override
     public void update(TradeConfig value) {
-        remoteConfigService.saveBusinessConfig(new BusinessConfigSaveBo(BusinessConfigKeys.TRADE,
-                JSON.toJSONString(value), SecurityUtils.getUsername()));
+        remoteConfigService.saveBusinessConfig(
+                new BusinessConfigSaveBo(
+                        BusinessConfigKeys.TRADE,
+                        JSON.toJSONString(value),
+                        SecurityUtils.getUsername()));
     }
 }

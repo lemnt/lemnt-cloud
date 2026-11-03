@@ -10,9 +10,17 @@ public final class PointConverter {
     private PointConverter() {}
 
     public static PointActivity model(PointActivityDO row) {
-        if (row == null) { return null; }
-        return new PointActivity(row.getId(), row.getSpuId(), row.getStatus(), row.getRemark(), row.getSort(),
-                row.getStock(), row.getTotalStock());
+        if (row == null) {
+            return null;
+        }
+        return new PointActivity(
+                row.getId(),
+                row.getSpuId(),
+                row.getStatus(),
+                row.getRemark(),
+                row.getSort(),
+                row.getStock(),
+                row.getTotalStock());
     }
 
     public static PointActivityDO row(PointActivity value) {
@@ -28,9 +36,18 @@ public final class PointConverter {
     }
 
     public static PointProduct model(PointProductDO row) {
-        if (row == null) { return null; }
-        return new PointProduct(row.getId(), row.getActivityId(), row.getSpuId(), row.getSkuId(),
-                row.getExchangeCount(), row.getPoint(), row.getPrice(), row.getStock(),
+        if (row == null) {
+            return null;
+        }
+        return new PointProduct(
+                row.getId(),
+                row.getActivityId(),
+                row.getSpuId(),
+                row.getSkuId(),
+                row.getExchangeCount(),
+                row.getPoint(),
+                row.getPrice(),
+                row.getStock(),
                 row.getActivityStatus());
     }
 

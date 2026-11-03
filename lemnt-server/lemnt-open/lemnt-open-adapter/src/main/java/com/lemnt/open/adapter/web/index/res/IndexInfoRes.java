@@ -12,6 +12,5 @@ import java.io.Serializable;
 @Schema(name = "IndexInfoRes", description = "开放平台首页信息响应")
 public record IndexInfoRes(
         @Schema(description = "平台名称", example = "test", requiredMode = Schema.RequiredMode.REQUIRED)
-        String name
-) implements Serializable {
-}
+                String name)
+        implements Serializable {}

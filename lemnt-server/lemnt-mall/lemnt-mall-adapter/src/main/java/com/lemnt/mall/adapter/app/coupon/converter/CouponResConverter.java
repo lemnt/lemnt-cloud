@@ -21,20 +21,28 @@ public final class CouponResConverter {
         return value == null
                 ? null
                 : new CouponTemplateRes(
-                value.id(),
-                value.code(),
-                value.name(),
-                value.kind(),
-                value.threshold(),
-                value.fixedAmount(),
-                value.discountPercent(),
-                value.discountLimit(),
-                value.totalCount(),
-                value.issuedCount(),
-                value.validFrom(),
-                value.validUntil(),
-                value.enabled(),
-                value.description(), value.takeType(), value.takeLimitCount(), value.productScope(), value.productScopeValues(), value.validityType(), value.fixedStartTerm(), value.fixedEndTerm(), value.useCount());
+                        value.id(),
+                        value.code(),
+                        value.name(),
+                        value.kind(),
+                        value.threshold(),
+                        value.fixedAmount(),
+                        value.discountPercent(),
+                        value.discountLimit(),
+                        value.totalCount(),
+                        value.issuedCount(),
+                        value.validFrom(),
+                        value.validUntil(),
+                        value.enabled(),
+                        value.description(),
+                        value.takeType(),
+                        value.takeLimitCount(),
+                        value.productScope(),
+                        value.productScopeValues(),
+                        value.validityType(),
+                        value.fixedStartTerm(),
+                        value.fixedEndTerm(),
+                        value.useCount());
     }
 
     /**
@@ -44,11 +52,11 @@ public final class CouponResConverter {
         return value == null
                 ? null
                 : new MallAppCouponCenterClaimRes(
-                value.id(),
-                value.templateId(),
-                value.memberId(),
-                value.status(),
-                value.orderNo());
+                        value.id(),
+                        value.templateId(),
+                        value.memberId(),
+                        value.status(),
+                        value.orderNo());
     }
 
     /**
@@ -58,16 +66,18 @@ public final class CouponResConverter {
         return value == null
                 ? null
                 : new MallAppCouponCouponsRes(
-                value.id(),
-                value.templateId(),
-                value.memberId(),
-                value.status(),
-                value.orderNo());
+                        value.id(),
+                        value.templateId(),
+                        value.memberId(),
+                        value.status(),
+                        value.orderNo());
     }
 
     /** 转换当前接口的优惠券分页项。 */
-    public static MallAppCouponCenterOffersRes toMallAppCouponCenterOffersRes(CouponOfferDTO value) {
-        return new MallAppCouponCenterOffersRes(CouponResConverter.couponTemplate(value.template()),
+    public static MallAppCouponCenterOffersRes toMallAppCouponCenterOffersRes(
+            CouponOfferDTO value) {
+        return new MallAppCouponCenterOffersRes(
+                CouponResConverter.couponTemplate(value.template()),
                 value.couponId(),
                 value.couponStatus(),
                 value.usable(),
@@ -78,9 +88,23 @@ public final class CouponResConverter {
     public static MallAppCouponCenterWalletRes toMallAppCouponCenterWalletRes(
             CouponWalletDTO value) {
         var terms = value.terms();
-        return new MallAppCouponCenterWalletRes(value.couponId(), value.templateId(), value.couponStatus(),
-                new MallAppCouponCenterWalletRes.RuleRes(terms.code(), terms.name(), terms.takeType(), terms.kind(),
-                        terms.threshold(), terms.fixedAmount(), terms.discountPercent(), terms.discountLimit(),
-                        terms.productScope(), terms.productScopeValues(), terms.validFrom(), terms.validUntil()), value.usable());
+        return new MallAppCouponCenterWalletRes(
+                value.couponId(),
+                value.templateId(),
+                value.couponStatus(),
+                new MallAppCouponCenterWalletRes.RuleRes(
+                        terms.code(),
+                        terms.name(),
+                        terms.takeType(),
+                        terms.kind(),
+                        terms.threshold(),
+                        terms.fixedAmount(),
+                        terms.discountPercent(),
+                        terms.discountLimit(),
+                        terms.productScope(),
+                        terms.productScopeValues(),
+                        terms.validFrom(),
+                        terms.validUntil()),
+                value.usable());
     }
 }

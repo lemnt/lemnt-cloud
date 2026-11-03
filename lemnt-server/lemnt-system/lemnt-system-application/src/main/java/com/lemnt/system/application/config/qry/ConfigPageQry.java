@@ -30,6 +30,5 @@ public record ConfigPageQry(
          */
         LocalDateTime endTime,
         int pageNum,
-        int pageSize
-) implements Serializable {
-}
+        int pageSize)
+        implements Serializable {}

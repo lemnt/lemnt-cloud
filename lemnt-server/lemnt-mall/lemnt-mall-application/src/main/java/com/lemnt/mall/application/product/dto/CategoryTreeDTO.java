@@ -10,6 +10,5 @@ public record CategoryTreeDTO(
         String picUrl,
         Integer sort,
         String status,
-        List<CategoryTreeDTO> children
-) implements Serializable {
-}
+        List<CategoryTreeDTO> children)
+        implements Serializable {}

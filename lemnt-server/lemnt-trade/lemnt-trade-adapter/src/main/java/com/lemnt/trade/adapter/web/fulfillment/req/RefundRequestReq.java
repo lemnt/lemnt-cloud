@@ -11,12 +11,6 @@ import java.io.Serializable;
  */
 @Schema(description = "RefundRequest请求")
 public record RefundRequestReq(
-        @Schema(description = "幂等请求编号")
-        @NotBlank
-        @Size(max = 64)
-        String requestNo,
-        @Schema(description = "申请原因")
-        @NotBlank
-        @Size(max = 500)
-        String reason
-) implements Serializable {}
+        @Schema(description = "幂等请求编号") @NotBlank @Size(max = 64) String requestNo,
+        @Schema(description = "申请原因") @NotBlank @Size(max = 500) String reason)
+        implements Serializable {}

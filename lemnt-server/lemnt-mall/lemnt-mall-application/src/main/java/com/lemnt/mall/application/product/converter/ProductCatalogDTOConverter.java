@@ -20,14 +20,14 @@ public final class ProductCatalogDTOConverter {
      */
     public static CategoryDTO category(Category value) {
         return value == null
-        ? null
-        : new CategoryDTO(
-                value.id(),
-                value.parentId(),
-                value.name(),
-                value.picUrl(),
-                value.sort(),
-                value.status());
+                ? null
+                : new CategoryDTO(
+                        value.id(),
+                        value.parentId(),
+                        value.name(),
+                        value.picUrl(),
+                        value.sort(),
+                        value.status());
     }
 
     /**
@@ -35,14 +35,14 @@ public final class ProductCatalogDTOConverter {
      */
     public static BrandDTO brand(Brand value) {
         return value == null
-        ? null
-        : new BrandDTO(
-                value.id(),
-                value.name(),
-                value.picUrl(),
-                value.description(),
-                value.sort(),
-                value.status());
+                ? null
+                : new BrandDTO(
+                        value.id(),
+                        value.name(),
+                        value.picUrl(),
+                        value.description(),
+                        value.sort(),
+                        value.status());
     }
 
     /**
@@ -50,18 +50,29 @@ public final class ProductCatalogDTOConverter {
      */
     public static ProductSkuDTO sku(ProductSku value) {
         return value == null
-        ? null
-        : new ProductSkuDTO(
-                value.id(),
-                value.spuId(),
-                value.code(),
-                value.name(),
-                value.price(),
-                value.stock(),
-                value.image(),
-                value.specs() == null ? null : value.specs().stream().map(property ->
-                        new ProductSkuDTO.Spec(property.specId(), property.specName(), property.specValueId(), property.specValueName())).toList(),
-                value.status(), value.weight(), value.volume());
+                ? null
+                : new ProductSkuDTO(
+                        value.id(),
+                        value.spuId(),
+                        value.code(),
+                        value.name(),
+                        value.price(),
+                        value.stock(),
+                        value.image(),
+                        value.specs() == null
+                                ? null
+                                : value.specs().stream()
+                                        .map(
+                                                property ->
+                                                        new ProductSkuDTO.Spec(
+                                                                property.specId(),
+                                                                property.specName(),
+                                                                property.specValueId(),
+                                                                property.specValueName()))
+                                        .toList(),
+                        value.status(),
+                        value.weight(),
+                        value.volume());
     }
 
     /**
@@ -69,17 +80,22 @@ public final class ProductCatalogDTOConverter {
      */
     public static ProductSpuDTO spu(ProductSpu value) {
         return value == null
-        ? null
-        : new ProductSpuDTO(
-                value.id(),
-                value.code(),
-                value.name(),
-                value.categoryId(),
-                value.brandId(),
-                value.description(),
-                value.image(),
-                value.status(),
-                value.skus().stream().map(ProductCatalogDTOConverter::sku).toList(), value.deliveryTypes(), value.deliveryTemplateId(), value.keyword(), value.introduction(), value.sliderPicUrls(), value.sort());
+                ? null
+                : new ProductSpuDTO(
+                        value.id(),
+                        value.code(),
+                        value.name(),
+                        value.categoryId(),
+                        value.brandId(),
+                        value.description(),
+                        value.image(),
+                        value.status(),
+                        value.skus().stream().map(ProductCatalogDTOConverter::sku).toList(),
+                        value.deliveryTypes(),
+                        value.deliveryTemplateId(),
+                        value.keyword(),
+                        value.introduction(),
+                        value.sliderPicUrls(),
+                        value.sort());
     }
-
 }

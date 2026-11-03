@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserResetPwdCmdExe {
     private final UserGateway userGateway;
+
     public Boolean execute(UserPwdResetCmd cmd) {
         User user = new User();
         user.setUserId(cmd.userId());

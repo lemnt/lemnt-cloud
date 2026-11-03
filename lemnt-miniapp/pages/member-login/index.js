@@ -1,8 +1,12 @@
 const runtime = require('../../services/memberRuntime');
 Page({
   data: { ready: runtime.ready, loading: false, error: '', success: '', mobile: '', password: '' },
-  onLoad() { runtime.attach(this); },
-  onUnload() { this.setData({ password: '' }); },
+  onLoad() {
+    runtime.attach(this);
+  },
+  onUnload() {
+    this.setData({ password: '' });
+  },
   input(e) {
     const key = e.currentTarget.dataset.field;
     if (['mobile', 'password'].includes(key)) this.setData({ [key]: runtime.input(e) });

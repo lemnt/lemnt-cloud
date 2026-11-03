@@ -20,6 +20,5 @@ public record RoleDataScopeUpdateCmd(
         /**
          * 部门组
          */
-        List<Long> deptIds
-) implements Serializable {
-}
+        List<Long> deptIds)
+        implements Serializable {}

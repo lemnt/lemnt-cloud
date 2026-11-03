@@ -22,6 +22,7 @@ public class MemberSignConfigDetailQueryExe {
      */
     public SignConfigDTO execute(SignConfigDetailQry qry) {
         MemberRules.id(qry.id());
-        return MemberGrowthDTOConverter.toSignConfigDTO(memberSignConfigGateway.signConfig(qry.id()));
+        return MemberGrowthDTOConverter.toSignConfigDTO(
+                memberSignConfigGateway.signConfig(qry.id()));
     }
 }

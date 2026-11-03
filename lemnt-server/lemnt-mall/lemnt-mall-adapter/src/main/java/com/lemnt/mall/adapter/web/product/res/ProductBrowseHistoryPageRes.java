@@ -12,5 +12,5 @@ public record ProductBrowseHistoryPageRes(
         @Schema(description = "当前最低价格，元，缺失时为空") java.math.BigDecimal price,
         @Schema(description = "最近浏览时间") java.time.LocalDateTime createTime,
         @Schema(description = "会员编号") Long userId,
-        @Schema(description = "是否被会员隐藏") boolean userDeleted
-) {}
+        @Schema(description = "是否被会员隐藏") boolean userDeleted)
+        implements java.io.Serializable {}

@@ -21,6 +21,5 @@ public record PromotionOrder(
         String status,
         String failureReason,
         LocalDateTime createTime,
-        LocalDateTime updateTime
-) implements java.io.Serializable {
-}
+        LocalDateTime updateTime)
+        implements java.io.Serializable {}

@@ -12,8 +12,8 @@ public record AppDiscountActivityDTO(
         String name,
         LocalDateTime startTime,
         LocalDateTime endTime,
-        List<DiscountProduct> products
-) implements Serializable {
+        List<DiscountProduct> products)
+        implements Serializable {
     public AppDiscountActivityDTO {
         products = products == null ? List.of() : List.copyOf(products);
     }

@@ -35,6 +35,7 @@ public class ShipmentController {
             @PathVariable String orderNo, @Valid @RequestBody ShipmentCreateReq req) {
         return R.ok(
                 FulfillmentResConverter.shipmentToTradeShipmentShipRes(
-                shipmentCreateCmdExe.execute(FulfillmentReqConverter.shipment(orderNo, req))));
+                        shipmentCreateCmdExe.execute(
+                                FulfillmentReqConverter.shipment(orderNo, req))));
     }
 }

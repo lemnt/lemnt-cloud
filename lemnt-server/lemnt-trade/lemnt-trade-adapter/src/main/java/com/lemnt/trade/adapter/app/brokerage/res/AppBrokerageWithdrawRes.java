@@ -16,6 +16,5 @@ public record AppBrokerageWithdrawRes(
         @Schema(description = "状态") Integer status,
         @Schema(description = "驳回原因") String auditReason,
         @Schema(description = "审核时间") LocalDateTime auditTime,
-        @Schema(description = "创建时间") LocalDateTime createTime
-) implements java.io.Serializable {
-}
+        @Schema(description = "创建时间") LocalDateTime createTime)
+        implements java.io.Serializable {}

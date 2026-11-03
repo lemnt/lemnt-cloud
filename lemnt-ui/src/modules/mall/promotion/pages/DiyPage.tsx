@@ -1,6 +1,19 @@
 import { useState } from 'react';
 import { PageContainer, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
-import { Alert, App, Button, Card, Descriptions, Input, Modal, Popconfirm, Result, Space, Table, Tag } from 'antd';
+import {
+  Alert,
+  App,
+  Button,
+  Card,
+  Descriptions,
+  Input,
+  Modal,
+  Popconfirm,
+  Result,
+  Space,
+  Table,
+  Tag,
+} from 'antd';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AdminModalForm } from '@/shared/components/AdminModalForm';
 import { usePermission } from '@/shared/hooks/usePermission';
@@ -20,7 +33,7 @@ interface PageForm {
 function urls(value: string) {
   return value
     .split('\n')
-    .map(item => item.trim())
+    .map((item) => item.trim())
     .filter(Boolean);
 }
 
@@ -32,7 +45,11 @@ export function DiyPageView() {
   const [selected, setSelected] = useState<DiyTemplate>();
   const [templateEditor, setTemplateEditor] = useState<{ id: string | null }>();
   const [pageEditor, setPageEditor] = useState<{ id: string | null }>();
-  const [propertyEditor, setPropertyEditor] = useState<{ kind: 'template' | 'page'; id: string; text: string }>();
+  const [propertyEditor, setPropertyEditor] = useState<{
+    kind: 'template' | 'page';
+    id: string;
+    text: string;
+  }>();
   const templates = useQuery({
     queryKey: ['diy', 'templates'],
     queryFn: () => api.getDiyTemplatePage({ pageNum: 1, pageSize: 100 }),
@@ -48,7 +65,11 @@ export function DiyPageView() {
   };
   const templateSave = useMutation({
     mutationFn: async (value: TemplateForm) => {
-      const data = { name: value.name, remark: value.remark, previewPicUrls: urls(value.previewPicUrls || '') };
+      const data = {
+        name: value.name,
+        remark: value.remark,
+        previewPicUrls: urls(value.previewPicUrls || ''),
+      };
       if (templateEditor?.id) await api.updateDiyTemplate(templateEditor.id, data);
       else await api.createDiyTemplate(data);
     },
@@ -114,7 +135,7 @@ export function DiyPageView() {
           loading={templates.isFetching}
           dataSource={templates.data?.records ?? []}
           pagination={false}
-          onRow={row => ({ onClick: () => setSelected(row) })}
+          onRow={(row) => ({ onClick: () => setSelected(row) })}
           columns={[
             {
               title: '名称',
@@ -126,31 +147,57 @@ export function DiyPageView() {
                 </Space>
               ),
             },
-            { title: '备注', dataIndex: 'remark', render: value => value || '—' },
-            { title: '页面数', dataIndex: 'id', render: (_, row) => (row.id === selected?.id ? pages.data?.total : '—') },
+            { title: '备注', dataIndex: 'remark', render: (value) => value || '—' },
+            {
+              title: '页面数',
+              dataIndex: 'id',
+              render: (_, row) => (row.id === selected?.id ? pages.data?.total : '—'),
+            },
             {
               title: '操作',
               render: (_, row) => (
-                <Space onClick={event => event.stopPropagation()}>
+                <Space onClick={(event) => event.stopPropagation()}>
                   {can('mall:promotion:query') && (
-                    <Button type="link" onClick={() => { setSelected(row); }}>页面</Button>
+                    <Button
+                      type="link"
+                      onClick={() => {
+                        setSelected(row);
+                      }}
+                    >
+                      页面
+                    </Button>
                   )}
                   {can('mall:promotion:update') && (
-                    <Button type="link" onClick={() => setPropertyEditor({ kind: 'template', id: row.id, text: row.property })}>
+                    <Button
+                      type="link"
+                      onClick={() =>
+                        setPropertyEditor({ kind: 'template', id: row.id, text: row.property })
+                      }
+                    >
                       属性
                     </Button>
                   )}
                   {can('mall:promotion:update') && (
-                    <Button type="link" onClick={() => setTemplateEditor({ id: row.id })}>编辑</Button>
+                    <Button type="link" onClick={() => setTemplateEditor({ id: row.id })}>
+                      编辑
+                    </Button>
                   )}
                   {can('mall:promotion:update') && !row.used && (
-                    <Popconfirm title="确认启用该模板？" onConfirm={() => run(() => useTemplate.mutateAsync(row.id), '已启用')}>
+                    <Popconfirm
+                      title="确认启用该模板？"
+                      onConfirm={() => run(() => useTemplate.mutateAsync(row.id), '已启用')}
+                    >
                       <Button type="link">启用</Button>
                     </Popconfirm>
                   )}
                   {can('mall:promotion:delete') && !row.used && (
-                    <Popconfirm title="确认删除模板？" onConfirm={() => run(() => removeTemplate.mutateAsync(row.id), '已删除')}>
-                      <Button type="link" danger>删除</Button>
+                    <Popconfirm
+                      title="确认删除模板？"
+                      onConfirm={() => run(() => removeTemplate.mutateAsync(row.id), '已删除')}
+                    >
+                      <Button type="link" danger>
+                        删除
+                      </Button>
                     </Popconfirm>
                   )}
                 </Space>
@@ -163,14 +210,20 @@ export function DiyPageView() {
         title={selected ? `页面 · ${selected.name}` : '页面'}
         style={{ marginTop: 16 }}
         extra={
-          selected && can('mall:promotion:create') && (
+          selected &&
+          can('mall:promotion:create') && (
             <Button type="primary" onClick={() => setPageEditor({ id: null })}>
               新增页面
             </Button>
           )
         }
       >
-        {!selected && <Descriptions column={1} items={[{ key: 'tip', label: '提示', children: '请选择模板' }]} />}
+        {!selected && (
+          <Descriptions
+            column={1}
+            items={[{ key: 'tip', label: '提示', children: '请选择模板' }]}
+          />
+        )}
         {selected && (
           <Table<DiyPage>
             rowKey="id"
@@ -179,22 +232,34 @@ export function DiyPageView() {
             pagination={false}
             columns={[
               { title: '名称', dataIndex: 'name' },
-              { title: '备注', dataIndex: 'remark', render: value => value || '—' },
+              { title: '备注', dataIndex: 'remark', render: (value) => value || '—' },
               {
                 title: '操作',
                 render: (_, row) => (
                   <Space>
                     {can('mall:promotion:update') && (
-                      <Button type="link" onClick={() => setPropertyEditor({ kind: 'page', id: row.id, text: row.property })}>
+                      <Button
+                        type="link"
+                        onClick={() =>
+                          setPropertyEditor({ kind: 'page', id: row.id, text: row.property })
+                        }
+                      >
                         属性
                       </Button>
                     )}
                     {can('mall:promotion:update') && (
-                      <Button type="link" onClick={() => setPageEditor({ id: row.id })}>编辑</Button>
+                      <Button type="link" onClick={() => setPageEditor({ id: row.id })}>
+                        编辑
+                      </Button>
                     )}
                     {can('mall:promotion:delete') && (
-                      <Popconfirm title="确认删除页面？" onConfirm={() => run(() => removePage.mutateAsync(row.id), '已删除')}>
-                        <Button type="link" danger>删除</Button>
+                      <Popconfirm
+                        title="确认删除页面？"
+                        onConfirm={() => run(() => removePage.mutateAsync(row.id), '已删除')}
+                      >
+                        <Button type="link" danger>
+                          删除
+                        </Button>
                       </Popconfirm>
                     )}
                   </Space>
@@ -211,16 +276,24 @@ export function DiyPageView() {
           initialValues={
             templateEditor.id
               ? {
-                  name: templates.data?.records.find(row => row.id === templateEditor.id)?.name ?? '',
-                  remark: templates.data?.records.find(row => row.id === templateEditor.id)?.remark ?? null,
-                  previewPicUrls: (templates.data?.records.find(row => row.id === templateEditor.id)?.previewPicUrls ?? []).join('\n'),
+                  name:
+                    templates.data?.records.find((row) => row.id === templateEditor.id)?.name ?? '',
+                  remark:
+                    templates.data?.records.find((row) => row.id === templateEditor.id)?.remark ??
+                    null,
+                  previewPicUrls: (
+                    templates.data?.records.find((row) => row.id === templateEditor.id)
+                      ?.previewPicUrls ?? []
+                  ).join('\n'),
                 }
               : { name: '', remark: null, previewPicUrls: '' }
           }
           modalProps={{ destroyOnHidden: true }}
-          onOpenChange={open => { if (!open) setTemplateEditor(undefined); }}
+          onOpenChange={(open) => {
+            if (!open) setTemplateEditor(undefined);
+          }}
           submitter={{ submitButtonProps: { loading: templateSave.isPending } }}
-          onFinish={async value => {
+          onFinish={async (value) => {
             try {
               await templateSave.mutateAsync(value);
               message.success('已保存');
@@ -245,16 +318,22 @@ export function DiyPageView() {
           initialValues={
             pageEditor.id
               ? {
-                  name: pages.data?.records.find(row => row.id === pageEditor.id)?.name ?? '',
-                  remark: pages.data?.records.find(row => row.id === pageEditor.id)?.remark ?? null,
-                  previewPicUrls: (pages.data?.records.find(row => row.id === pageEditor.id)?.previewPicUrls ?? []).join('\n'),
+                  name: pages.data?.records.find((row) => row.id === pageEditor.id)?.name ?? '',
+                  remark:
+                    pages.data?.records.find((row) => row.id === pageEditor.id)?.remark ?? null,
+                  previewPicUrls: (
+                    pages.data?.records.find((row) => row.id === pageEditor.id)?.previewPicUrls ??
+                    []
+                  ).join('\n'),
                 }
               : { name: '', remark: null, previewPicUrls: '' }
           }
           modalProps={{ destroyOnHidden: true }}
-          onOpenChange={open => { if (!open) setPageEditor(undefined); }}
+          onOpenChange={(open) => {
+            if (!open) setPageEditor(undefined);
+          }}
           submitter={{ submitButtonProps: { loading: pageSave.isPending } }}
-          onFinish={async value => {
+          onFinish={async (value) => {
             try {
               await pageSave.mutateAsync(value);
               message.success('已保存');
@@ -292,7 +371,9 @@ export function DiyPageView() {
         <Input.TextArea
           rows={18}
           value={propertyEditor?.text ?? ''}
-          onChange={event => propertyEditor && setPropertyEditor({ ...propertyEditor, text: event.target.value })}
+          onChange={(event) =>
+            propertyEditor && setPropertyEditor({ ...propertyEditor, text: event.target.value })
+          }
           spellCheck={false}
         />
       </Modal>

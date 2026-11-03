@@ -11,5 +11,4 @@ public record Level(
         Integer discountPercent,
         String icon,
         String backgroundUrl,
-        Integer status
-) {}
+        Integer status) {}

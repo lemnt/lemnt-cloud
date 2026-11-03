@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class DiyTemplateDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private String name;
     private Boolean used;
     private LocalDateTime usedTime;

@@ -30,7 +30,14 @@ public final class CouponReqConverter {
                 req.totalCount(),
                 req.validFrom(),
                 req.validUntil(),
-                req.description(), req.takeType() == null ? "ADMIN" : req.takeType(), req.takeLimitCount() == null ? 1 : req.takeLimitCount(), req.productScope() == null ? "ALL" : req.productScope(), req.productScopeValues(), req.validityType() == null ? "DATE" : req.validityType(), req.fixedStartTerm(), req.fixedEndTerm());
+                req.description(),
+                req.takeType() == null ? "ADMIN" : req.takeType(),
+                req.takeLimitCount() == null ? 1 : req.takeLimitCount(),
+                req.productScope() == null ? "ALL" : req.productScope(),
+                req.productScopeValues(),
+                req.validityType() == null ? "DATE" : req.validityType(),
+                req.fixedStartTerm(),
+                req.fixedEndTerm());
     }
 
     /** 转换模板修改请求。 */
@@ -47,7 +54,14 @@ public final class CouponReqConverter {
                 req.totalCount(),
                 req.validFrom(),
                 req.validUntil(),
-                req.description(), req.takeType() == null ? "ADMIN" : req.takeType(), req.takeLimitCount() == null ? 1 : req.takeLimitCount(), req.productScope() == null ? "ALL" : req.productScope(), req.productScopeValues(), req.validityType() == null ? "DATE" : req.validityType(), req.fixedStartTerm(), req.fixedEndTerm());
+                req.description(),
+                req.takeType() == null ? "ADMIN" : req.takeType(),
+                req.takeLimitCount() == null ? 1 : req.takeLimitCount(),
+                req.productScope() == null ? "ALL" : req.productScope(),
+                req.productScopeValues(),
+                req.validityType() == null ? "DATE" : req.validityType(),
+                req.fixedStartTerm(),
+                req.fixedEndTerm());
     }
 
     /**
@@ -63,10 +77,14 @@ public final class CouponReqConverter {
     public static CouponPublicClaimCmd setting(Long t, CouponPublicClaimReq r) {
         return new CouponPublicClaimCmd(t, r.enabled());
     }
+
     /** 转换独立的后台分页请求。 */
-    public static CouponManagementPageQry page(
-            CouponManagementPageReq req) {
-        return new CouponManagementPageQry(req.memberId(), req.templateId(), req.status(),
-                req.pageNum() == null ? 1 : req.pageNum(), req.pageSize() == null ? 20 : req.pageSize());
+    public static CouponManagementPageQry page(CouponManagementPageReq req) {
+        return new CouponManagementPageQry(
+                req.memberId(),
+                req.templateId(),
+                req.status(),
+                req.pageNum() == null ? 1 : req.pageNum(),
+                req.pageSize() == null ? 20 : req.pageSize());
     }
 }

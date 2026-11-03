@@ -10,5 +10,5 @@ public record MemberPaymentStatusDTO(
         String orderStatus,
         BigDecimal payableAmount,
         String localPaymentStatus,
-        boolean channelVerified
-) implements java.io.Serializable {}
+        boolean channelVerified)
+        implements java.io.Serializable {}

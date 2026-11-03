@@ -52,7 +52,10 @@ public class ProductSpuController {
     public R<ProductSpuPageRes> page(@Valid @ModelAttribute ProductSpuPageReq req) {
         var result = productSpuPageQueryExe.execute(ProductCatalogReqConverter.page(req));
         return R.page(
-                result.records().stream().map(ProductCatalogResConverter::spuToProductSpuPageRes).toList(), result.total());
+                result.records().stream()
+                        .map(ProductCatalogResConverter::spuToProductSpuPageRes)
+                        .toList(),
+                result.total());
     }
 
     @Operation(summary = "查询SPU与全部SKU详情")
@@ -60,14 +63,18 @@ public class ProductSpuController {
     @RequiresPermissions("mall:spu:query")
     public R<ProductSpuDetailRes> detail(@PathVariable Long id) {
         var value = productSpuDetailQueryExe.execute(id);
-        return value == null ? R.fail("商品不存在") : R.ok(ProductCatalogResConverter.spuToProductSpuDetailRes(value));
+        return value == null
+                ? R.fail("商品不存在")
+                : R.ok(ProductCatalogResConverter.spuToProductSpuDetailRes(value));
     }
 
     @Operation(summary = "原子创建SPU及SKU")
     @PostMapping
     @RequiresPermissions("mall:spu:add")
     public R<ProductSpuCreateRes> create(@Valid @RequestBody ProductSpuCreateReq req) {
-        return R.ok(ProductCatalogResConverter.spuToProductSpuCreateRes(productSpuCreateCmdExe.execute(ProductCatalogReqConverter.create(req))));
+        return R.ok(
+                ProductCatalogResConverter.spuToProductSpuCreateRes(
+                        productSpuCreateCmdExe.execute(ProductCatalogReqConverter.create(req))));
     }
 
     @Operation(summary = "修改SPU资料，不修改SKU库存")

@@ -19,6 +19,4 @@ public record TradeConfig(
         Integer brokerageWithdrawMinPrice,
         Integer brokerageWithdrawFeePercent,
         Integer brokerageFrozenDays,
-        List<Integer> brokerageWithdrawTypes
-) {
-}
+        List<Integer> brokerageWithdrawTypes) {}

@@ -63,6 +63,5 @@ public record MenuAddCmd(
         /**
          * 菜单图标
          */
-        String icon
-) implements Serializable {
-}
+        String icon)
+        implements Serializable {}

@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserUpdatePwdCmdExe {
     private final UserGateway userGateway;
+
     public Boolean execute(UserPwdUpdateCmd cmd) {
         String username = SecurityUtils.getUsername();
         User user = userGateway.selectUserByUserName(username);
@@ -35,6 +36,7 @@ public class UserUpdatePwdCmdExe {
         }
 
         // 重置密码
-        return userGateway.resetUserPwd(user.getUserId(), SecurityUtils.encryptPassword(cmd.newPassword()));
+        return userGateway.resetUserPwd(
+                user.getUserId(), SecurityUtils.encryptPassword(cmd.newPassword()));
     }
 }

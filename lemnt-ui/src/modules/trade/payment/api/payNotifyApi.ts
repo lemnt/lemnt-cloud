@@ -1,6 +1,6 @@
 import { request } from '@/api/request';
 
-export type PayNotifyType = 'PAY' | 'REFUND';
+export type PayNotifyType = 'PAY' | 'REFUND' | 'AFTER_SALE';
 export type PayNotifyStatus = 'PENDING' | 'SUCCESS' | 'FAILED';
 
 export interface PayNotifyTask {
@@ -61,7 +61,7 @@ function count(v: unknown): number {
   return v;
 }
 function taskType(v: unknown): PayNotifyType {
-  if (v !== 'PAY' && v !== 'REFUND') throw Error('派发类型不合法');
+  if (v !== 'PAY' && v !== 'REFUND' && v !== 'AFTER_SALE') throw Error('派发类型不合法');
   return v;
 }
 function taskStatus(v: unknown): PayNotifyStatus {

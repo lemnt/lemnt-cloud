@@ -22,6 +22,8 @@ public class MemberGroupListQueryExe {
      * 执行查询分组查询。
      */
     public List<GroupDTO> execute(GroupListQry qry) {
-        return memberGroupGateway.groups().stream().map(MemberUserDTOConverter::toGroupDTO).toList();
+        return memberGroupGateway.groups().stream()
+                .map(MemberUserDTOConverter::toGroupDTO)
+                .toList();
     }
 }

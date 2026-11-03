@@ -16,13 +16,17 @@ public record Product(
         BigDecimal price,
         Integer stock,
         String status,
-        LocalDateTime createTime
-) {
+        LocalDateTime createTime) {
     /**
      * 创建。
      */
-    public static Product create(String code, String name, String description, String image,
-            BigDecimal price, Integer stock) {
+    public static Product create(
+            String code,
+            String name,
+            String description,
+            String image,
+            BigDecimal price,
+            Integer stock) {
         if (code == null || code.isBlank()) {
             throw new IllegalArgumentException("商品编码不能为空");
         }
@@ -35,7 +39,15 @@ public record Product(
         if (stock == null || stock < 0) {
             throw new IllegalArgumentException("库存不能小于0");
         }
-        return new Product(null, code.trim(), name.trim(), description, image,
-                price.setScale(2, RoundingMode.HALF_UP), stock, "OFF_SHELF", null);
+        return new Product(
+                null,
+                code.trim(),
+                name.trim(),
+                description,
+                image,
+                price.setScale(2, RoundingMode.HALF_UP),
+                stock,
+                "OFF_SHELF",
+                null);
     }
 }

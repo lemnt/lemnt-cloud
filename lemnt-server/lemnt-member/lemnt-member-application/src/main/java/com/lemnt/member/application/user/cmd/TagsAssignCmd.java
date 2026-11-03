@@ -6,7 +6,4 @@ import java.util.List;
 /**
  * 查询标签分配命令。
  */
-public record TagsAssignCmd(
-        Long memberId,
-        List<Long> tagIds
-) implements Serializable {}
+public record TagsAssignCmd(Long memberId, List<Long> tagIds) implements Serializable {}

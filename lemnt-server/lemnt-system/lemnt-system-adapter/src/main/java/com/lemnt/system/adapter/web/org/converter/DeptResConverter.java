@@ -19,6 +19,11 @@ public class DeptResConverter {
      * DeptDTO → DeptInfoRes
      */
     public static DeptRes toRes(DeptDTO dto) {
+        return toRes(dto, false);
+    }
+
+    /** 旧用户详情曾直接输出DeptDTO，迁到Res后仍保留其NULL子节点。 */
+    public static DeptRes toRes(DeptDTO dto, boolean preserveNullChildren) {
         if (dto == null) {
             return null;
         }
@@ -35,8 +40,13 @@ public class DeptResConverter {
                 dto.getParentName(),
                 dto.getCreateBy(),
                 dto.getCreateTime(),
-                toResList(dto.getChildren())
-        );
+                preserveNullChildren
+                        ? dto.getChildren() == null
+                                ? null
+                                : dto.getChildren().stream()
+                                        .map(child -> toRes(child, true))
+                                        .toList()
+                        : toResList(dto.getChildren()));
     }
 
     /**
@@ -87,14 +97,14 @@ public class DeptResConverter {
                 dto.getParentName(),
                 dto.getCreateBy(),
                 dto.getCreateTime(),
-                toResListToSystemDeptListRes(dto.getChildren())
-        );
+                toResListToSystemDeptListRes(dto.getChildren()));
     }
 
     /**
      * DeptDTO List → DeptInfoRes List
      */
-    public static List<SystemDeptExcludeChildRes> toResListToSystemDeptExcludeChildRes(List<DeptDTO> list) {
+    public static List<SystemDeptExcludeChildRes> toResListToSystemDeptExcludeChildRes(
+            List<DeptDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -125,8 +135,7 @@ public class DeptResConverter {
                 dto.getParentName(),
                 dto.getCreateBy(),
                 dto.getCreateTime(),
-                toResListToSystemDeptExcludeChildRes(dto.getChildren())
-        );
+                toResListToSystemDeptExcludeChildRes(dto.getChildren()));
     }
 
     /**
@@ -149,8 +158,7 @@ public class DeptResConverter {
                 dto.getParentName(),
                 dto.getCreateBy(),
                 dto.getCreateTime(),
-                toResListToSystemDeptGetInfoRes(dto.getChildren())
-        );
+                toResListToSystemDeptGetInfoRes(dto.getChildren()));
     }
 
     /**

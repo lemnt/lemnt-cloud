@@ -4,8 +4,11 @@ import com.lemnt.member.application.address.converter.MemberAddressDTOConverter;
 import com.lemnt.member.application.address.dto.AddressDTO;
 import com.lemnt.member.domain.address.gateway.MemberAddressAreaGateway;
 import com.lemnt.member.domain.address.model.Address;
+
 import org.springframework.stereotype.Component;
+
 import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 
 /** 地址查询统一批量返显地区名称，避免逐行远程查询。 */
@@ -20,7 +23,9 @@ public class MemberAddressQueryService {
         if (rows.isEmpty()) return List.of();
         var ids = rows.stream().map(Address::areaId).distinct().toList();
         var names = memberAddressAreaGateway.names(ids);
-        return rows.stream().map(row -> MemberAddressDTOConverter.toAddressDTO(row, names.get(row.areaId()))).toList();
+        return rows.stream()
+                .map(row -> MemberAddressDTOConverter.toAddressDTO(row, names.get(row.areaId())))
+                .toList();
     }
 
     /** 缺失地址直接返回null，不触发地区读取。 */

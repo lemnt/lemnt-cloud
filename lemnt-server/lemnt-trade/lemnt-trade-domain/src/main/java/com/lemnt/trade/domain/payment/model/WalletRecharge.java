@@ -18,6 +18,4 @@ public record WalletRecharge(
         String channelCode,
         LocalDateTime paidTime,
         LocalDateTime refundedTime,
-        LocalDateTime createTime
-) {
-}
+        LocalDateTime createTime) {}

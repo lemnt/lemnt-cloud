@@ -35,9 +35,10 @@ public class MemberAuthenticationService {
         return phone;
     }
 
-
     /** 会员与后台使用不同重试键，按现有登录安全策略控制失败次数。 */
-    public MemberToken login(String mobile, String password) { return login(mobile,password,null); }
+    public MemberToken login(String mobile, String password) {
+        return login(mobile, password, null);
+    }
 
     /** IP只由网关连接信息传入，不解析客户端代理链。 */
     public MemberToken login(String mobile, String password, String loginIp) {
@@ -50,17 +51,22 @@ public class MemberAuthenticationService {
             throw new SecurityException("登录尝试过多，请稍后再试");
         }
         var account = memberAccountGateway.findByMobile(phone);
-        boolean matched = passwordEncoderGateway.matches(password,
-                account == null ? null : account.passwordHash());
-        if (!matched || account == null || account.status() != 1 || !phone.equals(account.mobile())) {
+        boolean matched =
+                passwordEncoderGateway.matches(
+                        password, account == null ? null : account.passwordHash());
+        if (!matched
+                || account == null
+                || account.status() != 1
+                || !phone.equals(account.mobile())) {
             loginSecurityGateway.incrementRetryCount(retryKey);
             throw new SecurityException("手机号或密码错误");
         }
         loginSecurityGateway.clearRetryCount(retryKey);
-        var token=memberTokenGateway.create(account.memberId(), account.mobile());
-        try { if(loginIp == null) memberAccountGateway.recordLogin(account.memberId());
-              else memberAccountGateway.recordLogin(account.memberId(),loginIp); }
-        catch (RuntimeException error) {
+        var token = memberTokenGateway.create(account.memberId(), account.mobile());
+        try {
+            if (loginIp == null) memberAccountGateway.recordLogin(account.memberId());
+            else memberAccountGateway.recordLogin(account.memberId(), loginIp);
+        } catch (RuntimeException error) {
             memberTokenGateway.logout(token.accessToken());
             throw error;
         }
@@ -96,10 +102,10 @@ public class MemberAuthenticationService {
         memberTokenGateway.logout(authorization.substring(7));
         return true;
     }
+
     /** 后台停用后撤销全部会话，仅操作令牌存储以避免回调会员事务。 */
     public void revokeMemberSessions(Long memberId) {
         if (memberId == null || memberId <= 0) throw new IllegalArgumentException("会员编号不合法");
         memberTokenGateway.revokeMemberSessions(memberId);
     }
-
 }

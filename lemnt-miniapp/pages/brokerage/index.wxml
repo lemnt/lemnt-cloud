@@ -1,58 +1,58 @@
 <view class="container">
- <view class="title">分销中心</view>
- <view wx:if="{{error}}" class="error">{{error}}</view>
- <view wx:if="{{success}}" class="success">{{success}}</view>
- <button wx:if="{{!loggedIn}}" bindtap="login">会员登录</button>
- <block wx:if="{{loggedIn}}">
-  <view wx:if="{{user}}" class="card">
-   <view>分销资格：{{user.brokerageEnabled ? '已开通' : '未开通'}}</view>
-   <view>可用佣金 ￥{{user.brokeragePrice}} · 冻结佣金 ￥{{user.frozenPrice}}</view>
-   <view>推广人数：一级 {{user.firstLevelCount}} · 二级 {{user.secondLevelCount}}</view>
-   <view wx:if="{{user.bindUserId}}">推广员：{{user.bindNickname || user.bindUserId}}</view>
-  </view>
-  <view class="card">
-   <view class="subtitle">绑定推广员</view>
-   <input class="input" value="{{bindId}}" data-field="bindId" bindinput="input" placeholder="推广员会员编号"/>
-   <button bindtap="bind" disabled="{{loading}}">绑定</button>
-  </view>
-  <view class="card">
-   <view class="subtitle">佣金记录</view>
-   <view wx:if="{{!records.length}}" class="description">暂无佣金记录</view>
-   <view wx:for="{{records}}" wx:key="id" class="list-row">
-    <view>{{item.title}} · {{item.statusLabel}}</view>
-    <view class="{{item.price < 0 ? 'negative' : 'positive'}}">{{item.price}} 元</view>
-    <view class="description">{{item.createTime}}{{item.unfreezeTime ? ' · 解冻 ' + item.unfreezeTime : ''}}</view>
-   </view>
-  </view>
-  <view class="card">
-   <view class="subtitle">申请提现</view>
-   <picker mode="selector" range="{{['钱包','银行卡','微信收款码','支付宝收款码']}}" value="{{type - 1}}" bindchange="chooseType" disabled="{{loading}}">
-    <view class="field">方式：{{type === 1 ? '钱包' : type === 2 ? '银行卡' : type === 3 ? '微信收款码' : '支付宝收款码'}}</view>
-   </picker>
-   <input class="input" type="digit" value="{{price}}" data-field="price" bindinput="input" placeholder="提现金额（元）"/>
-   <block wx:if="{{type !== 1}}">
-    <input class="input" value="{{userName}}" data-field="userName" bindinput="input" placeholder="收款人姓名"/>
-    <block wx:if="{{type === 2}}">
-     <input class="input" value="{{userAccount}}" data-field="userAccount" bindinput="input" placeholder="银行卡号"/>
-     <input class="input" value="{{bankName}}" data-field="bankName" bindinput="input" placeholder="银行名称"/>
-     <input class="input" value="{{bankAddress}}" data-field="bankAddress" bindinput="input" placeholder="开户地址"/>
-    </block>
-    <block wx:else>
-     <input class="input" value="{{qrCodeUrl}}" data-field="qrCodeUrl" bindinput="input" placeholder="收款码 HTTPS 地址"/>
-    </block>
-   </block>
-   <button type="primary" bindtap="withdraw" disabled="{{loading}}">提交提现申请</button>
-  </view>
-  <view class="card">
-   <view class="subtitle">提现记录</view>
-   <view wx:if="{{!withdraws.length}}" class="description">暂无提现记录</view>
-   <view wx:for="{{withdraws}}" wx:key="id" class="list-row">
-    <view>{{item.typeLabel}} · {{item.statusLabel}}</view>
-    <view>{{item.price}} 元（手续费 {{item.feePrice}} 元）</view>
-    <view class="description">{{item.createTime}}{{item.auditReason ? ' · ' + item.auditReason : ''}}</view>
-   </view>
-  </view>
-  <button bindtap="refresh" disabled="{{loading}}">刷新</button>
-  <navigator url="/pages/member/index">返回会员中心</navigator>
- </block>
+  <view class="title">分销中心</view>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+  <view wx:if="{{success}}" class="success">{{success}}</view>
+  <button wx:if="{{!loggedIn}}" bindtap="login">会员登录</button>
+  <block wx:if="{{loggedIn}}">
+    <view wx:if="{{user}}" class="card">
+      <view>分销资格：{{user.brokerageEnabled ? '已开通' : '未开通'}}</view>
+      <view>可用佣金 ￥{{user.brokeragePrice}} · 冻结佣金 ￥{{user.frozenPrice}}</view>
+      <view>推广人数：一级 {{user.firstLevelCount}} · 二级 {{user.secondLevelCount}}</view>
+      <view wx:if="{{user.bindUserId}}">推广员：{{user.bindNickname || user.bindUserId}}</view>
+    </view>
+    <view class="card">
+      <view class="subtitle">绑定推广员</view>
+      <input class="input" value="{{bindId}}" data-field="bindId" bindinput="input" placeholder="推广员会员编号"/>
+      <button bindtap="bind" disabled="{{loading}}">绑定</button>
+    </view>
+    <view class="card">
+      <view class="subtitle">佣金记录</view>
+      <view wx:if="{{!records.length}}" class="description">暂无佣金记录</view>
+      <view wx:for="{{records}}" wx:key="id" class="list-row">
+        <view>{{item.title}} · {{item.statusLabel}}</view>
+        <view class="{{item.price < 0 ? 'negative' : 'positive'}}">{{item.price}} 元</view>
+        <view class="description">{{item.createTime}}{{item.unfreezeTime ? ' · 解冻 ' + item.unfreezeTime : ''}}</view>
+      </view>
+    </view>
+    <view class="card">
+      <view class="subtitle">申请提现</view>
+      <picker mode="selector" range="{{['钱包','银行卡','微信收款码','支付宝收款码']}}" value="{{type - 1}}" bindchange="chooseType" disabled="{{loading}}">
+        <view class="field">方式：{{type === 1 ? '钱包' : type === 2 ? '银行卡' : type === 3 ? '微信收款码' : '支付宝收款码'}}</view>
+      </picker>
+      <input class="input" type="digit" value="{{price}}" data-field="price" bindinput="input" placeholder="提现金额（元）"/>
+      <block wx:if="{{type !== 1}}">
+        <input class="input" value="{{userName}}" data-field="userName" bindinput="input" placeholder="收款人姓名"/>
+        <block wx:if="{{type === 2}}">
+          <input class="input" value="{{userAccount}}" data-field="userAccount" bindinput="input" placeholder="银行卡号"/>
+          <input class="input" value="{{bankName}}" data-field="bankName" bindinput="input" placeholder="银行名称"/>
+          <input class="input" value="{{bankAddress}}" data-field="bankAddress" bindinput="input" placeholder="开户地址"/>
+        </block>
+        <block wx:else>
+          <input class="input" value="{{qrCodeUrl}}" data-field="qrCodeUrl" bindinput="input" placeholder="收款码 HTTPS 地址"/>
+        </block>
+      </block>
+      <button type="primary" bindtap="withdraw" disabled="{{loading}}">提交提现申请</button>
+    </view>
+    <view class="card">
+      <view class="subtitle">提现记录</view>
+      <view wx:if="{{!withdraws.length}}" class="description">暂无提现记录</view>
+      <view wx:for="{{withdraws}}" wx:key="id" class="list-row">
+        <view>{{item.typeLabel}} · {{item.statusLabel}}</view>
+        <view>{{item.price}} 元（手续费 {{item.feePrice}} 元）</view>
+        <view class="description">{{item.createTime}}{{item.auditReason ? ' · ' + item.auditReason : ''}}</view>
+      </view>
+    </view>
+    <button bindtap="refresh" disabled="{{loading}}">刷新</button>
+    <navigator url="/pages/member/index">返回会员中心</navigator>
+  </block>
 </view>

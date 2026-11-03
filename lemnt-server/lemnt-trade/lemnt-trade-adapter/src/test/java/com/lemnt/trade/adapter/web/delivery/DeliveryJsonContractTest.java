@@ -22,12 +22,15 @@ class DeliveryJsonContractTest {
         var builder = JsonMapper.builder();
         new JacksonConfig().customizer().customize(builder);
         var mapper = builder.build();
-        var request = mapper.readValue("""
+        var request =
+                mapper.readValue(
+                        """
                 {"name":"重量模板","chargeMode":2,"sort":0,"charges":[{
                   "id":"9223372036854775807","areaIds":[110101],
                   "startCount":"0.000001","extraCount":"1.01","startPrice":29,"extraPrice":101
                 }],"frees":[]}
-                """, DeliveryExpressTemplateUpdateReq.class);
+                """,
+                        DeliveryExpressTemplateUpdateReq.class);
         var row = request.charges().get(0);
         assertEquals(Long.MAX_VALUE, row.id());
         assertEquals(new BigDecimal("0.000001"), row.startCount());
@@ -35,9 +38,23 @@ class DeliveryJsonContractTest {
         assertEquals(29, row.startPrice());
         assertTrue(request.frees().isEmpty());
 
-        var response = new DeliveryExpressTemplateDetailRes(9L, request.name(), 2, 0,
-                List.of(new DeliveryChargeRes(row.id(), 9L, row.areaIds(), 2,
-                        row.startCount(), row.startPrice(), row.extraCount(), row.extraPrice())), List.of());
+        var response =
+                new DeliveryExpressTemplateDetailRes(
+                        9L,
+                        request.name(),
+                        2,
+                        0,
+                        List.of(
+                                new DeliveryChargeRes(
+                                        row.id(),
+                                        9L,
+                                        row.areaIds(),
+                                        2,
+                                        row.startCount(),
+                                        row.startPrice(),
+                                        row.extraCount(),
+                                        row.extraPrice())),
+                        List.of());
         String json = mapper.writeValueAsString(response);
         assertTrue(json.contains("\"id\":\"9223372036854775807\""));
         assertTrue(json.contains("\"startCount\":\"0.000001\""));

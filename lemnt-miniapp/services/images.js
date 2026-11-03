@@ -3,31 +3,26 @@ function createImageClient({ baseUrl, getMemberToken, uploadFile }) {
   return {
     async upload(path) {
       const token = getMemberToken();
-      if (!token) throw Error("请先登录");
-      if (!/^https:\/\/[^?#]+$/.test(baseUrl))
-        throw Error("请配置HTTPS服务地址");
+      if (!token) throw Error('请先登录');
+      if (!/^https:\/\/[^?#]+$/.test(baseUrl)) throw Error('请配置HTTPS服务地址');
       const response = await uploadFile({
-        url: baseUrl.replace(/\/$/, "") + "/system/files/app/upload",
+        url: baseUrl.replace(/\/$/, '') + '/system/files/app/upload',
         filePath: path,
-        name: "file",
-        header: { Authorization: "Bearer " + token },
+        name: 'file',
+        header: { Authorization: 'Bearer ' + token },
         timeout: 30000,
       });
-      if (token !== getMemberToken())
-        throw Error("会员已切换，不能使用原上传结果");
+      if (token !== getMemberToken()) throw Error('会员已切换，不能使用原上传结果');
       let result;
       try {
         result = JSON.parse(response.data);
       } catch {
-        throw Error("上传结果未确认");
+        throw Error('上传结果未确认');
       }
       if (response.statusCode !== 200 || result.code !== 200)
-        throw Error(result.detail || result.msg || "上传失败");
-      if (
-        typeof result.data?.url !== "string" ||
-        !/^https:\/\/[^\s]+$/.test(result.data.url)
-      )
-        throw Error("上传地址无效");
+        throw Error(result.detail || result.msg || '上传失败');
+      if (typeof result.data?.url !== 'string' || !/^https:\/\/[^\s]+$/.test(result.data.url))
+        throw Error('上传地址无效');
       return result.data.url;
     },
   };
@@ -37,20 +32,19 @@ async function selectImages({ count, append, client }) {
   const chosen = await new Promise((resolve, reject) =>
     wx.chooseMedia({
       count,
-      mediaType: ["image"],
-      sourceType: ["album", "camera"],
+      mediaType: ['image'],
+      sourceType: ['album', 'camera'],
       success: resolve,
       fail: (error) =>
-        /cancel/.test(error.errMsg || "")
+        /cancel/.test(error.errMsg || '')
           ? resolve({ tempFiles: [] })
-          : reject(Error("选择图片失败")),
+          : reject(Error('选择图片失败')),
     }),
   );
   if (!Array.isArray(chosen.tempFiles) || chosen.tempFiles.length > count)
-    throw Error("最多9张图片");
+    throw Error('最多9张图片');
   for (const file of chosen.tempFiles) {
-    if (!file.size || file.size > 10 * 1024 * 1024)
-      throw Error("每张图片不能超过10MiB");
+    if (!file.size || file.size > 10 * 1024 * 1024) throw Error('每张图片不能超过10MiB');
     append(await client.upload(file.tempFilePath));
   }
 }
@@ -69,7 +63,7 @@ function removePicture(value, url) {
     .filter(Boolean);
   const index = values.indexOf(url);
   if (index >= 0) values.splice(index, 1);
-  return values.join("\n");
+  return values.join('\n');
 }
 module.exports = {
   createImageClient,

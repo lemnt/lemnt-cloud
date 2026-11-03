@@ -12,9 +12,8 @@ import java.math.BigDecimal;
 @Schema(description = "后台订单调价请求")
 public record OrderAdjustPriceReq(
         @Schema(description = "新的应付金额，人民币元", example = "99.00")
-        @NotNull
-        @DecimalMin(value = "0.01")
-        @Digits(integer = 7, fraction = 2)
-        BigDecimal totalAmount
-) implements Serializable {
-}
+                @NotNull
+                @DecimalMin(value = "0.01")
+                @Digits(integer = 7, fraction = 2)
+                BigDecimal totalAmount)
+        implements Serializable {}

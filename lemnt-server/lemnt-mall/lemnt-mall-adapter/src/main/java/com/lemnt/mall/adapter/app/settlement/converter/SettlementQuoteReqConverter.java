@@ -10,12 +10,14 @@ public final class SettlementQuoteReqConverter {
     /**
      * 报价。
      */
-    public static SettlementCreateCmd quote(Long memberId,
-            SettlementQuoteReq req
-    ) {
-        return new SettlementCreateCmd(memberId,
+    public static SettlementCreateCmd quote(Long memberId, SettlementQuoteReq req) {
+        return new SettlementCreateCmd(
+                memberId,
                 req.productIds(),
-                req.couponId(), req.pointStatus(), req.addressId(),
-                req.deliveryType() == null ? 1 : req.deliveryType(), req.pickUpStoreId());
+                req.couponId(),
+                req.pointStatus(),
+                req.addressId(),
+                req.deliveryType() == null ? 1 : req.deliveryType(),
+                req.pickUpStoreId());
     }
 }

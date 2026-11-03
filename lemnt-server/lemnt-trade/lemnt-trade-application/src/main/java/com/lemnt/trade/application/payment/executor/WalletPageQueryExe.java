@@ -24,6 +24,8 @@ public class WalletPageQueryExe {
         }
         PayConfigRules.page(qry.pageNum(), qry.pageSize());
         var page = wallets.page(new WalletFilter(qry.memberId(), qry.pageNum(), qry.pageSize()));
-        return PageResult.of(page.getRecords().stream().map(WalletDTOConverter::wallet).toList(), page.getTotal());
+        return PageResult.of(
+                page.getRecords().stream().map(WalletDTOConverter::wallet).toList(),
+                page.getTotal());
     }
 }

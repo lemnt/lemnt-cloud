@@ -32,15 +32,16 @@ class OperLogCostTimeMapperTest {
     void preservesNullDuration() throws Exception {
         ResultSet resultSet = numericResultSet();
         when(resultSet.wasNull()).thenReturn(true);
-        assertThat(costTimeMapping().getTypeHandler().getResult(resultSet, "cost_time"))
-                .isNull();
+        assertThat(costTimeMapping().getTypeHandler().getResult(resultSet, "cost_time")).isNull();
     }
 
     private ResultSet numericResultSet() throws Exception {
         ResultSet resultSet = mock(ResultSet.class);
         // 与 MySQL 对 BIGINT 强制日期转换的失败行为一致。
         when(resultSet.getObject("cost_time", LocalDateTime.class))
-                .thenThrow(new SQLDataException("Unsupported conversion from LONG to java.time.LocalDateTime"));
+                .thenThrow(
+                        new SQLDataException(
+                                "Unsupported conversion from LONG to java.time.LocalDateTime"));
         return resultSet;
     }
 
@@ -48,11 +49,15 @@ class OperLogCostTimeMapperTest {
         Configuration configuration = new Configuration();
         String resource = "mapper/OperLogMapper.xml";
         try (InputStream input = getClass().getClassLoader().getResourceAsStream(resource)) {
-            new XMLMapperBuilder(input, configuration, resource, configuration.getSqlFragments()).parse();
+            new XMLMapperBuilder(input, configuration, resource, configuration.getSqlFragments())
+                    .parse();
         }
-        return configuration.getResultMap(OperLogMapper.class.getName() + ".SysOperLogResult")
-                .getResultMappings().stream()
+        return configuration
+                .getResultMap(OperLogMapper.class.getName() + ".SysOperLogResult")
+                .getResultMappings()
+                .stream()
                 .filter(mapping -> "costTime".equals(mapping.getProperty()))
-                .findFirst().orElseThrow();
+                .findFirst()
+                .orElseThrow();
     }
 }

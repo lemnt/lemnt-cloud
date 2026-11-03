@@ -23,12 +23,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostPageQueryExe {
     private final PostGateway postGateway;
+
     public PageResult<PostDTO> execute(PostPageQry qry) {
         Post query = new Post();
         query.setPostCode(qry.postCode());
         query.setPostName(qry.postName());
         query.setStatus(qry.status());
-        PageResult<Post> pageResult = postGateway.selectPage(query, new PageQry(qry.pageNum(), qry.pageSize()));
+        PageResult<Post> pageResult =
+                postGateway.selectPage(query, new PageQry(qry.pageNum(), qry.pageSize()));
         List<PostDTO> dtoList = PostConverter.toDTOList(pageResult.getRecords());
         return PageResult.of(dtoList, pageResult.getTotal());
     }

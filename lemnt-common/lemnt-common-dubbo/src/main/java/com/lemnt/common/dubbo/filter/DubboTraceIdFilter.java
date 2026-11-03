@@ -1,16 +1,18 @@
 package com.lemnt.common.dubbo.filter;
 
-import cn.hutool.core.convert.Convert;
 import com.lemnt.common.core.utils.JsonUtils;
 import com.lemnt.common.security.constant.SecurityConstants;
 import com.lemnt.common.security.context.SecurityContextHolder;
 import com.lemnt.common.security.model.SecurityUser;
 import com.lemnt.common.security.utils.SecurityUtils;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.rpc.*;
 import org.slf4j.MDC;
+
+import cn.hutool.core.convert.Convert;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -62,14 +64,25 @@ public class DubboTraceIdFilter implements Filter {
         // 设置到 RpcContext，传递给服务提供方
         attachment.setAttachment(SecurityConstants.HEADER_TRACE_ID, traceId);
         // 设置用户信息到 RpcContext，传递给服务提供方
-        attachment.setAttachment(SecurityConstants.HEADER_USER_ID, Convert.toStr(SecurityUtils.getUserId(), StringUtils.EMPTY));
-        attachment.setAttachment(SecurityConstants.HEADER_USER_NAME, Convert.toStr(SecurityUtils.getUsername(), StringUtils.EMPTY));
-        attachment.setAttachment(SecurityConstants.HEADER_ROLE_PERMISSION, Convert.toStr(SecurityContextHolder.getPermission(), StringUtils.EMPTY));
-        attachment.setAttachment(SecurityConstants.HEADER_ROLE_KEY, Convert.toStr(String.join(",", SecurityUtils.getRoleKey()), StringUtils.EMPTY));
+        attachment.setAttachment(
+                SecurityConstants.HEADER_USER_ID,
+                Convert.toStr(SecurityUtils.getUserId(), StringUtils.EMPTY));
+        attachment.setAttachment(
+                SecurityConstants.HEADER_USER_NAME,
+                Convert.toStr(SecurityUtils.getUsername(), StringUtils.EMPTY));
+        attachment.setAttachment(
+                SecurityConstants.HEADER_ROLE_PERMISSION,
+                Convert.toStr(SecurityContextHolder.getPermission(), StringUtils.EMPTY));
+        attachment.setAttachment(
+                SecurityConstants.HEADER_ROLE_KEY,
+                Convert.toStr(String.join(",", SecurityUtils.getRoleKey()), StringUtils.EMPTY));
         if (Objects.isNull(SecurityUtils.getLoginUser())) {
             attachment.setAttachment(SecurityConstants.HEADER_LOGIN_USER, StringUtils.EMPTY);
         } else {
-            attachment.setAttachment(SecurityConstants.HEADER_LOGIN_USER, Convert.toStr(JsonUtils.toJsonStr(SecurityUtils.getLoginUser()), StringUtils.EMPTY));
+            attachment.setAttachment(
+                    SecurityConstants.HEADER_LOGIN_USER,
+                    Convert.toStr(
+                            JsonUtils.toJsonStr(SecurityUtils.getLoginUser()), StringUtils.EMPTY));
         }
     }
 
@@ -102,7 +115,8 @@ public class DubboTraceIdFilter implements Filter {
         }
         String loginUser = attachment.getAttachment(SecurityConstants.HEADER_LOGIN_USER);
         if (StringUtils.isNotBlank(loginUser)) {
-            SecurityContextHolder.set(SecurityConstants.LOGIN_USER, JsonUtils.toBean(loginUser, SecurityUser.class));
+            SecurityContextHolder.set(
+                    SecurityConstants.LOGIN_USER, JsonUtils.toBean(loginUser, SecurityUser.class));
         }
     }
 }

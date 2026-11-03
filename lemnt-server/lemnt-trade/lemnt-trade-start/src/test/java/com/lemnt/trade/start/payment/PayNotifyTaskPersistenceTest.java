@@ -51,7 +51,8 @@ class PayNotifyTaskPersistenceTest {
     }
 
     private PayNotifyTask task(String bizNo) {
-        return new PayNotifyTask(null, "PAY", bizNo, "TR1", "PENDING", 0, 8, null, null, null, null);
+        return new PayNotifyTask(
+                null, "PAY", bizNo, "TR1", "PENDING", 0, 8, null, null, null, null);
     }
 
     @Test
@@ -92,6 +93,25 @@ class PayNotifyTaskPersistenceTest {
         assertEquals(0, reset.notifyTimes());
     }
 
+    @Test
+    void leaseVersionAndResetFenceOldExecution() {
+        var created = tasks.createIfAbsent(task("VERSION"));
+        var now = tasks.databaseNow();
+        assertEquals(0L, created.executeVersion());
+        assertTrue(tasks.claimVersion(created.id(), 0, 0L, now.plusMinutes(2)));
+        assertFalse(tasks.claimVersion(created.id(), 1, 1L, now.plusMinutes(3)));
+        assertFalse(tasks.resetForRetry(created.id(), now));
+        assertTrue(tasks.finishVersion(created.id(), 1L, false, "待重试", now, now));
+        assertTrue(tasks.resetForRetry(created.id(), now));
+        assertFalse(tasks.finishVersion(created.id(), 1L, true, "旧成功", null, now));
+        var reset = tasks.find(created.id());
+        assertTrue(tasks.claimVersion(created.id(), 0, reset.executeVersion(), now.plusMinutes(2)));
+        assertTrue(
+                tasks.finishVersion(
+                        created.id(), reset.executeVersion() + 1, true, "完成", null, now));
+        assertEquals("SUCCESS", tasks.find(created.id()).status());
+    }
+
     @Configuration
     @EnableTransactionManagement(proxyTargetClass = true)
     @ComponentScan(basePackages = {"com.lemnt.trade.infrastructure.payment.gateway"})
@@ -100,19 +120,24 @@ class PayNotifyTaskPersistenceTest {
         @Bean
         JdbcDataSource dataSource() {
             var source = new JdbcDataSource();
-            source.setURL("jdbc:h2:mem:pay_notify_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
+            source.setURL(
+                    "jdbc:h2:mem:pay_notify_"
+                            + UUID.randomUUID()
+                            + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
             return source;
         }
 
         @Bean(destroyMethod = "close")
         Connection schema(JdbcDataSource source) throws Exception {
             var connection = source.getConnection();
-            ScriptUtils.executeSqlScript(connection, new ClassPathResource("trade-sql/V11__pay_notify_task.sql"));
+            ScriptUtils.executeSqlScript(
+                    connection, new ClassPathResource("trade-sql/V11__pay_notify_task.sql"));
             return connection;
         }
 
         @Bean
-        SqlSessionFactory sqlSessionFactory(JdbcDataSource source, Connection schema) throws Exception {
+        SqlSessionFactory sqlSessionFactory(JdbcDataSource source, Connection schema)
+                throws Exception {
             var config = new MybatisConfiguration();
             config.setMapUnderscoreToCamelCase(true);
             var interceptor = new MybatisPlusInterceptor();
@@ -121,8 +146,11 @@ class PayNotifyTaskPersistenceTest {
             var factory = new MybatisSqlSessionFactoryBean();
             factory.setDataSource(source);
             factory.setConfiguration(config);
-            factory.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
-            factory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
+            factory.setGlobalConfig(
+                    new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
+            factory.setMapperLocations(
+                    new PathMatchingResourcePatternResolver()
+                            .getResources("classpath*:mapper/*.xml"));
             return factory.getObject();
         }
 

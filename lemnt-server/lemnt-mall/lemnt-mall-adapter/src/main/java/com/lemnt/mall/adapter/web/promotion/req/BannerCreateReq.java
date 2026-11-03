@@ -16,7 +16,7 @@ public record BannerCreateReq(
         @Schema(description = "图片地址") @NotBlank @Size(max = 500) String picUrl,
         @Schema(description = "排序") @NotNull Integer sort,
         @Schema(description = "0 开启，1 关闭") @NotNull @Min(0) @Max(1) Integer status,
-        @Schema(description = "位置：1首页、2秒杀、3拼团/砍价、4折扣、5满减") @NotNull @Min(1) @Max(5) Integer position,
-        @Schema(description = "备注") @Size(max = 255) String memo
-) implements java.io.Serializable {
-}
+        @Schema(description = "位置：1首页、2秒杀、3拼团/砍价、4折扣、5满减") @NotNull @Min(1) @Max(5)
+                Integer position,
+        @Schema(description = "备注") @Size(max = 255) String memo)
+        implements java.io.Serializable {}

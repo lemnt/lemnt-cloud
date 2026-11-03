@@ -13,10 +13,6 @@ import java.io.Serializable;
  */
 @Schema(description = "重置用户密码请求")
 public record UserPwdResetReq(
-        @NotNull(message = "用户ID不能为空")
-        @Schema(description = "用户ID")
-        Long userId,
-        @NotBlank(message = "密码不能为空")
-        @Schema(description = "密码")
-        String password
-) implements Serializable {}
+        @NotNull(message = "用户ID不能为空") @Schema(description = "用户ID") Long userId,
+        @NotBlank(message = "密码不能为空") @Schema(description = "密码") String password)
+        implements Serializable {}

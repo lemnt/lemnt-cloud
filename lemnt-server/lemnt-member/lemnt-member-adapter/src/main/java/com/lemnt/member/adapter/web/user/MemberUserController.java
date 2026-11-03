@@ -44,7 +44,9 @@ public class MemberUserController {
     public R<MemberUserPageRes> page(@Valid @ModelAttribute MemberUserPageReq req) {
         var page = memberPageQueryExe.execute(MemberUserReqConverter.profiles(req));
         return R.page(
-                page.getRecords().stream().map(MemberUserResConverter::toMemberUserPageRes).toList(),
+                page.getRecords().stream()
+                        .map(MemberUserResConverter::toMemberUserPageRes)
+                        .toList(),
                 page.getTotal());
     }
 
@@ -52,13 +54,16 @@ public class MemberUserController {
     @Operation(summary = "会员详情")
     @RequiresPermissions("member:user:query")
     public R<MemberUserDetailRes> detail(@PathVariable Long id) {
-        return R.ok(MemberUserResConverter.toMemberUserDetailRes(memberDetailQueryExe.execute(new MemberDetailQry(id))));
+        return R.ok(
+                MemberUserResConverter.toMemberUserDetailRes(
+                        memberDetailQueryExe.execute(new MemberDetailQry(id))));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "后台更新资料和状态，校验会员状态")
     @RequiresPermissions("member:user:update")
-    public R<Boolean> update(@PathVariable Long id, @Valid @RequestBody MemberProfileUpdateReq req) {
+    public R<Boolean> update(
+            @PathVariable Long id, @Valid @RequestBody MemberProfileUpdateReq req) {
         return R.ok(memberUpdateCmdExe.execute(MemberUserReqConverter.profile(id, req)));
     }
 }

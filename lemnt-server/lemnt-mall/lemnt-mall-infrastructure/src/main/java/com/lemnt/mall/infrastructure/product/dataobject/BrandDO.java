@@ -20,11 +20,11 @@ import java.io.Serializable;
 @TableName("mall_product_brand")
 public class BrandDO implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.AUTO)
     private Long id;
+
     private String name;
     private String picUrl;
     private String description;

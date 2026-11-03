@@ -19,7 +19,8 @@ public interface SeckillActivityGateway {
     PageResult<SeckillActivity> page(SeckillFilter filter);
 
     /** App 分页，只返回开启且活动时间覆盖当前时刻的活动。 */
-    PageResult<SeckillActivity> appPage(Long configId, java.time.LocalDateTime now, int pageNum, int pageSize);
+    PageResult<SeckillActivity> appPage(
+            Long configId, java.time.LocalDateTime now, int pageNum, int pageSize);
 
     /** 指定时段当前正在进行的活动。 */
     List<SeckillActivity> byConfigAndNow(Long configId, java.time.LocalDateTime now);

@@ -9,6 +9,5 @@ public record AfterSaleCreateCmd(
         Long orderItemId,
         Integer quantity,
         String type,
-        String reason
-) implements Serializable {
-}
+        String reason)
+        implements Serializable {}

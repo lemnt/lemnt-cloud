@@ -74,6 +74,7 @@ public class BannerController {
     @RequiresPermissions("mall:promotion:list")
     public R<BannerRes> page(@Valid @ModelAttribute BannerPageReq req) {
         var result = page.execute(BannerConverter.page(req));
-        return R.page(result.getRecords().stream().map(BannerConverter::res).toList(), result.getTotal());
+        return R.page(
+                result.getRecords().stream().map(BannerConverter::res).toList(), result.getTotal());
     }
 }

@@ -22,18 +22,42 @@ public class AfterSalePageQueryExe {
 
     /** 按精确条件查询售后，不混用支付退款交易状态。 */
     public PageResult<AfterSaleDTO> execute(AfterSalePageQry qry) {
-        if (qry == null || qry.pageNum() < 1 || qry.pageNum() > 1000000
-                || qry.pageSize() < 1 || qry.pageSize() > 100) {
+        if (qry == null
+                || qry.pageNum() < 1
+                || qry.pageNum() > 1000000
+                || qry.pageSize() < 1
+                || qry.pageSize() > 100) {
             throw new IllegalArgumentException("分页参数不合法");
         }
-        String no = qry.orderNo() == null || qry.orderNo().isBlank() ? null : OrderRules.text(qry.orderNo(), 40);
+        String no =
+                qry.orderNo() == null || qry.orderNo().isBlank()
+                        ? null
+                        : OrderRules.text(qry.orderNo(), 40);
         String status = qry.status() == null || qry.status().isBlank() ? null : qry.status();
-        if (status != null && !Set.of("REQUESTED", "REJECTED", "AWAITING_RETURN", "RETURNED", "WAIT_REFUND",
-                "RETURN_REJECTED", "REFUNDING", "REFUNDED", "CANCELLED").contains(status)) {
+        if (status != null
+                && !Set.of(
+                                "REQUESTED",
+                                "REJECTED",
+                                "AWAITING_RETURN",
+                                "RETURNED",
+                                "WAIT_REFUND",
+                                "RETURN_REJECTED",
+                                "REFUNDING",
+                                "REFUNDED",
+                                "CANCELLED")
+                        .contains(status)) {
             throw new IllegalArgumentException("售后状态不合法");
         }
-        var page = afterSales.afterSalePage(new AfterSaleFilter(no, status, null,
-                (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize()));
-        return PageResult.of(page.getRecords().stream().map(AfterSaleDTOConverter::toDTO).toList(), page.getTotal());
+        var page =
+                afterSales.afterSalePage(
+                        new AfterSaleFilter(
+                                no,
+                                status,
+                                null,
+                                (qry.pageNum() - 1) * qry.pageSize(),
+                                qry.pageSize()));
+        return PageResult.of(
+                page.getRecords().stream().map(AfterSaleDTOConverter::toDTO).toList(),
+                page.getTotal());
     }
 }

@@ -25,17 +25,59 @@ public class CouponTemplateUpdateCmdExe {
         if (current == null) {
             throw new ServiceException("优惠券模板不存在", 400);
         }
-        var rule = CouponRules.template(new CouponTemplate(null, cmd.code(), cmd.name(), cmd.kind(),
-                cmd.threshold(), cmd.fixedAmount(), cmd.discountPercent(), cmd.discountLimit(), cmd.totalCount(),
-                0, cmd.validFrom(), cmd.validUntil(), true, cmd.description(), cmd.takeType(), cmd.takeLimitCount(),
-                cmd.productScope(), cmd.productScopeValues(), cmd.validityType(), cmd.fixedStartTerm(), cmd.fixedEndTerm(), 0));
-        if ("USER".equals(rule.takeType()) && rule.totalCount() != -1 && rule.totalCount() < current.issuedCount()) {
+        var rule =
+                CouponRules.template(
+                        new CouponTemplate(
+                                null,
+                                cmd.code(),
+                                cmd.name(),
+                                cmd.kind(),
+                                cmd.threshold(),
+                                cmd.fixedAmount(),
+                                cmd.discountPercent(),
+                                cmd.discountLimit(),
+                                cmd.totalCount(),
+                                0,
+                                cmd.validFrom(),
+                                cmd.validUntil(),
+                                true,
+                                cmd.description(),
+                                cmd.takeType(),
+                                cmd.takeLimitCount(),
+                                cmd.productScope(),
+                                cmd.productScopeValues(),
+                                cmd.validityType(),
+                                cmd.fixedStartTerm(),
+                                cmd.fixedEndTerm(),
+                                0));
+        if ("USER".equals(rule.takeType())
+                && rule.totalCount() != -1
+                && rule.totalCount() < current.issuedCount()) {
             throw new ServiceException("发放总量不能小于已发数量", 400);
         }
-        return templates.updateTemplate(new CouponTemplate(current.id(), rule.code(), rule.name(), rule.kind(),
-                rule.threshold(), rule.fixedAmount(), rule.discountPercent(), rule.discountLimit(), rule.totalCount(),
-                current.issuedCount(), rule.validFrom(), rule.validUntil(), current.enabled(), rule.description(), rule.takeType(),
-                rule.takeLimitCount(), rule.productScope(), rule.productScopeValues(), rule.validityType(), rule.fixedStartTerm(),
-                rule.fixedEndTerm(), current.useCount()));
+        return templates.updateTemplate(
+                new CouponTemplate(
+                        current.id(),
+                        rule.code(),
+                        rule.name(),
+                        rule.kind(),
+                        rule.threshold(),
+                        rule.fixedAmount(),
+                        rule.discountPercent(),
+                        rule.discountLimit(),
+                        rule.totalCount(),
+                        current.issuedCount(),
+                        rule.validFrom(),
+                        rule.validUntil(),
+                        current.enabled(),
+                        rule.description(),
+                        rule.takeType(),
+                        rule.takeLimitCount(),
+                        rule.productScope(),
+                        rule.productScopeValues(),
+                        rule.validityType(),
+                        rule.fixedStartTerm(),
+                        rule.fixedEndTerm(),
+                        current.useCount()));
     }
 }

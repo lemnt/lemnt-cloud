@@ -15,7 +15,9 @@ public final class PromotionConverter {
     private PromotionConverter() {}
 
     public static RewardActivity model(RewardActivityDO row) {
-        if (row == null) { return null; }
+        if (row == null) {
+            return null;
+        }
         return new RewardActivity(
                 row.getId(),
                 row.getName(),
@@ -45,7 +47,9 @@ public final class PromotionConverter {
     }
 
     public static DiscountActivity model(DiscountActivityDO row) {
-        if (row == null) { return null; }
+        if (row == null) {
+            return null;
+        }
         return new DiscountActivity(
                 row.getId(),
                 row.getName(),
@@ -67,7 +71,9 @@ public final class PromotionConverter {
     }
 
     public static DiscountProduct model(DiscountProductDO row) {
-        if (row == null) { return null; }
+        if (row == null) {
+            return null;
+        }
         return new DiscountProduct(
                 row.getId(),
                 row.getActivityId(),

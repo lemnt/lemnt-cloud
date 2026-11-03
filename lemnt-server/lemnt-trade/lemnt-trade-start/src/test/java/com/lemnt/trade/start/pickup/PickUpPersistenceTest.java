@@ -43,9 +43,14 @@ class PickUpPersistenceTest {
         source = new JdbcDataSource();
         source.setURL("jdbc:h2:mem:pickup_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
         schema = source.getConnection();
-        for (String path : List.of("trade-sql/V1__trade_order.sql", "trade-sql/V2__trade_payment.sql",
-                "trade-sql/V5__order_fulfillment.sql", "trade-sql/V8__order_log.sql",
-                "trade-sql/V16__pickup.sql", "trade-sql/V17__order_reward_gift.sql")) {
+        for (String path :
+                List.of(
+                        "trade-sql/V1__trade_order.sql",
+                        "trade-sql/V2__trade_payment.sql",
+                        "trade-sql/V5__order_fulfillment.sql",
+                        "trade-sql/V8__order_log.sql",
+                        "trade-sql/V16__pickup.sql",
+                        "trade-sql/V17__order_reward_gift.sql")) {
             ScriptUtils.executeSqlScript(schema, new ClassPathResource(path));
         }
         var config = new MybatisConfiguration();
@@ -54,7 +59,8 @@ class PickUpPersistenceTest {
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         config.addInterceptor(interceptor);
         var bean = new MybatisSqlSessionFactoryBean();
-        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
+        bean.setMapperLocations(
+                new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
         bean.setDataSource(source);
         bean.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
         bean.setConfiguration(config);
@@ -73,14 +79,29 @@ class PickUpPersistenceTest {
     }
 
     Long createStore(List<Long> verifyUserIds) {
-        return stores.create(new PickUpStoreSaveCmd(null, "中心店", "门店简介", "13800000000", 1L,
-                "中心路1号", null, "09:00:00", "21:00:00", null, null, verifyUserIds, 0));
+        return stores.create(
+                new PickUpStoreSaveCmd(
+                        null,
+                        "中心店",
+                        "门店简介",
+                        "13800000000",
+                        1L,
+                        "中心路1号",
+                        null,
+                        "09:00:00",
+                        "21:00:00",
+                        null,
+                        null,
+                        verifyUserIds,
+                        0));
     }
 
     void insertOrder(String orderNo) throws Exception {
         try (var statement = schema.createStatement()) {
-            statement.execute("INSERT INTO trade_order(order_no,member_id,total_amount,status) VALUES('"
-                    + orderNo + "',7,10.00,'PAID')");
+            statement.execute(
+                    "INSERT INTO trade_order(order_no,member_id,total_amount,status) VALUES('"
+                            + orderNo
+                            + "',7,10.00,'PAID')");
         }
     }
 
@@ -91,12 +112,15 @@ class PickUpPersistenceTest {
         var assigned = orders.assign(new PickUpAssignCmd("TR1", storeId, 99L));
         assertTrue(assigned.verifyCode().matches("\\d{8}"));
         assertEquals("中心店", orders.preview(assigned.verifyCode()).storeName());
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
                 () -> orders.verify(new PickUpVerifyCmd(assigned.verifyCode(), 2L)));
         var done = orders.verify(new PickUpVerifyCmd(assigned.verifyCode(), 1L));
         assertEquals("COMPLETED", done.status());
         try (var statement = schema.createStatement();
-                var result = statement.executeQuery("SELECT status,receive_time FROM trade_order WHERE order_no='TR1'")) {
+                var result =
+                        statement.executeQuery(
+                                "SELECT status,receive_time FROM trade_order WHERE order_no='TR1'")) {
             result.next();
             assertEquals("COMPLETED", result.getString(1));
             assertNotNull(result.getTimestamp(2));
@@ -107,26 +131,70 @@ class PickUpPersistenceTest {
     void storeListOnlyReturnsEnabledAndBindingRejectsDuplicates() {
         var storeId = createStore(List.of(1L));
         assertEquals(1, stores.appList().size());
-        stores.update(new PickUpStoreSaveCmd(storeId, "中心店", null, "13800000000", 1L, "中心路1号", null,
-                "09:00:00", "21:00:00", null, null, List.of(1L), 1));
+        stores.update(
+                new PickUpStoreSaveCmd(
+                        storeId,
+                        "中心店",
+                        null,
+                        "13800000000",
+                        1L,
+                        "中心路1号",
+                        null,
+                        "09:00:00",
+                        "21:00:00",
+                        null,
+                        null,
+                        List.of(1L),
+                        1));
         assertTrue(stores.appList().isEmpty());
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
                 () -> stores.bind(new PickUpBindCmd(storeId, List.of(1L, 1L))));
     }
 
     @Test
     void overnightHoursArePersistedAndReturned() {
-        var id = stores.create(new PickUpStoreSaveCmd(null, "夜间店", null, "1", 1L, "地址", null,
-                "21:00:00", "09:00:00", null, null, List.of(), 0));
+        var id =
+                stores.create(
+                        new PickUpStoreSaveCmd(
+                                null,
+                                "夜间店",
+                                null,
+                                "1",
+                                1L,
+                                "地址",
+                                null,
+                                "21:00:00",
+                                "09:00:00",
+                                null,
+                                null,
+                                List.of(),
+                                0));
         assertEquals("21:00:00", stores.detail(id).openingTime());
         assertEquals("09:00:00", stores.detail(id).closingTime());
     }
 
     @Test
     void invalidTimeAndDeletingMissingStoreAreRejected() {
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class,
-                () -> stores.create(new PickUpStoreSaveCmd(null, "店", null, "1", 1L, "地址", null,
-                        "25:00:00", "09:00:00", null, null, List.of(), 0)));
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class, () -> stores.delete(999L));
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class,
+                () ->
+                        stores.create(
+                                new PickUpStoreSaveCmd(
+                                        null,
+                                        "店",
+                                        null,
+                                        "1",
+                                        1L,
+                                        "地址",
+                                        null,
+                                        "25:00:00",
+                                        "09:00:00",
+                                        null,
+                                        null,
+                                        List.of(),
+                                        0)));
+        assertThrows(
+                com.lemnt.common.core.exception.ServiceException.class, () -> stores.delete(999L));
     }
 }

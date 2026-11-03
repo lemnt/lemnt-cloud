@@ -31,18 +31,21 @@ public class MemberTokenGatewayImpl implements MemberTokenGateway {
         user.setRoles(Set.of());
         user.setPermissions(Set.of());
         var token = tokenService.createToken(user);
-        return new MemberToken(memberId, (String) token.get("access_token"), (Long) token.get("expires_in"));
+        return new MemberToken(
+                memberId, (String) token.get("access_token"), (Long) token.get("expires_in"));
     }
 
     @Override
     public Long memberId(String accessToken) {
-        SecurityUser user = tokenService.getSecurityUser(accessToken, SecurityConstants.MEMBER_USER_TYPE);
+        SecurityUser user =
+                tokenService.getSecurityUser(accessToken, SecurityConstants.MEMBER_USER_TYPE);
         return user == null ? null : user.getUserId();
     }
 
     @Override
     public MemberToken refresh(String accessToken) {
-        SecurityUser user = tokenService.getSecurityUser(accessToken, SecurityConstants.MEMBER_USER_TYPE);
+        SecurityUser user =
+                tokenService.getSecurityUser(accessToken, SecurityConstants.MEMBER_USER_TYPE);
         if (user == null) {
             throw new SecurityException("会员会话无效");
         }
@@ -54,10 +57,10 @@ public class MemberTokenGatewayImpl implements MemberTokenGateway {
     public void logout(String accessToken) {
         tokenService.delSecurityUser(accessToken, SecurityConstants.MEMBER_USER_TYPE);
     }
+
     /** 复用公共缓存会话撤销，不访问会员数据库。 */
     @Override
     public void revokeMemberSessions(Long memberId) {
         tokenService.revokeMemberSessions(memberId);
     }
-
 }

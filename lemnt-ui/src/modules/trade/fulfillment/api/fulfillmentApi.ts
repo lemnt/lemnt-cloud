@@ -7,6 +7,9 @@ import {
   decodeRefund,
   decodeOrderLog,
   decodeAfterSaleLog,
+  decodeOrderPromotions,
+  decodeAfterSalePromotions,
+  decodeRefundableItems,
 } from '../fulfillmentDecoders';
 import type { OrderAddressRequest, PageQuery, ShipmentRequest } from '../types';
 const orderPath = (no: string) => `/trade/admin/orders/${encodeURIComponent(no)}`;
@@ -99,15 +102,45 @@ export async function refundAfterSale(no: string) {
   if (!data || typeof data !== 'object') throw new Error('退款响应格式不合法');
   const row = data as Record<string, unknown>;
   if (
-    typeof row.refundNo !== 'string' ||
+    (typeof row.refundNo !== 'string' &&
+      !(
+        row.refundNo == null &&
+        row.channel === 'NONE' &&
+        row.amount === '0.00' &&
+        row.status === 'SUCCESS' &&
+        row.afterSaleNo === no
+      )) ||
     !['WAITING', 'SUCCESS', 'FAILED'].includes(String(row.status))
   )
     throw new Error('退款状态不合法');
-  return { refundNo: row.refundNo, status: row.status as 'WAITING' | 'SUCCESS' | 'FAILED' };
+  return {
+    refundNo: typeof row.refundNo === 'string' ? row.refundNo : null,
+    status: row.status as 'WAITING' | 'SUCCESS' | 'FAILED',
+  };
 }
 /** 读取后台售后操作日志。 */
 export async function getAfterSaleLogs(no: string) {
   const data = (await request<unknown>({ url: `${afterSalePath(no)}/logs` })).data;
   if (!Array.isArray(data)) throw new Error('售后日志列表格式不合法');
   return data.map(decodeAfterSaleLog);
+}
+
+/** 查询订单冻结优惠，失败由详情页明确展示。 */
+export async function getOrderPromotions(no: string) {
+  return decodeOrderPromotions(
+    (await request<unknown>({ url: `${orderPath(no)}/promotions` })).data,
+  );
+}
+/** 查询退单生成时冻结的归因和权益处理结果。 */
+export async function getAfterSalePromotions(no: string) {
+  return decodeAfterSalePromotions(
+    (await request<unknown>({ url: `${afterSalePath(no)}/promotions` })).data,
+  );
+}
+
+/** 查询订单明细已退及可申请数量；有处理中退单时服务端返回可申请0。 */
+export async function getRefundableItems(no: string) {
+  return decodeRefundableItems(
+    (await request<unknown>({ url: `${orderPath(no)}/after-sale-items` })).data,
+  );
 }

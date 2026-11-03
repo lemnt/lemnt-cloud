@@ -19,6 +19,5 @@ public record WalletRechargeDTO(
         String channelCode,
         LocalDateTime paidTime,
         LocalDateTime refundedTime,
-        LocalDateTime createTime
-) implements Serializable {
-}
+        LocalDateTime createTime)
+        implements Serializable {}

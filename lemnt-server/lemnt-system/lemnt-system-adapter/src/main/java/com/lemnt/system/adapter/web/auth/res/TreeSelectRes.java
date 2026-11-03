@@ -15,23 +15,19 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public record TreeSelectRes(
         /**
- * 节点ID
- */
-        @Schema(description = "节点ID")
-        Long id,
+         * 节点ID
+         */
+        @Schema(description = "节点ID") Long id,
         /**
- * 节点名称
- */
-        @Schema(description = "节点名称")
-        String label,
+         * 节点名称
+         */
+        @Schema(description = "节点名称") String label,
         /**
- * 节点禁用
- */
-        @Schema(description = "节点禁用")
-        boolean disabled,
+         * 节点禁用
+         */
+        @Schema(description = "节点禁用") boolean disabled,
         /**
- * 子节点
- */
-        @Schema(description = "子节点")
-        List<TreeSelectRes> children
-) implements Serializable {}
+         * 子节点
+         */
+        @Schema(description = "子节点") List<TreeSelectRes> children)
+        implements Serializable {}

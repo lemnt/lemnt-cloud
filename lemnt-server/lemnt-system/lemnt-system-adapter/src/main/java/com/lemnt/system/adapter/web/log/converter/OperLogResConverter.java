@@ -36,8 +36,7 @@ public class OperLogResConverter {
                 dto.getStatus(),
                 dto.getErrorMsg(),
                 dto.getOperTime(),
-                dto.getCostTime()
-        );
+                dto.getCostTime());
     }
 
     /**

@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Component
 @RequiredArgsConstructor
-public class MenuTreeQryExe {
+public class MenuTreeQueryExe {
     private final MenuGateway menuGateway;
     private final RouterMenuService routerMenuService;
 

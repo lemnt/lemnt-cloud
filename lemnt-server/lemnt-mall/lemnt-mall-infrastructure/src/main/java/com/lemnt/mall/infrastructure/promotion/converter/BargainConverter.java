@@ -12,11 +12,25 @@ public final class BargainConverter {
     private BargainConverter() {}
 
     public static BargainActivity model(BargainActivityDO row) {
-        if (row == null) { return null; }
-        return new BargainActivity(row.getId(), row.getName(), row.getStartTime(), row.getEndTime(),
-                row.getStatus(), row.getSpuId(), row.getSkuId(), row.getBargainFirstPrice(),
-                row.getBargainMinPrice(), row.getStock(), row.getTotalStock(), row.getHelpMaxCount(),
-                row.getBargainCount(), row.getTotalLimitCount(), row.getRandomMinPrice(),
+        if (row == null) {
+            return null;
+        }
+        return new BargainActivity(
+                row.getId(),
+                row.getName(),
+                row.getStartTime(),
+                row.getEndTime(),
+                row.getStatus(),
+                row.getSpuId(),
+                row.getSkuId(),
+                row.getBargainFirstPrice(),
+                row.getBargainMinPrice(),
+                row.getStock(),
+                row.getTotalStock(),
+                row.getHelpMaxCount(),
+                row.getBargainCount(),
+                row.getTotalLimitCount(),
+                row.getRandomMinPrice(),
                 row.getRandomMaxPrice());
     }
 
@@ -42,10 +56,20 @@ public final class BargainConverter {
     }
 
     public static BargainRecord model(BargainRecordDO row) {
-        if (row == null) { return null; }
-        return new BargainRecord(row.getId(), row.getUserId(), row.getActivityId(), row.getSpuId(),
-                row.getSkuId(), row.getBargainFirstPrice(), row.getBargainPrice(), row.getStatus(),
-                row.getEndTime(), row.getOrderId());
+        if (row == null) {
+            return null;
+        }
+        return new BargainRecord(
+                row.getId(),
+                row.getUserId(),
+                row.getActivityId(),
+                row.getSpuId(),
+                row.getSkuId(),
+                row.getBargainFirstPrice(),
+                row.getBargainPrice(),
+                row.getStatus(),
+                row.getEndTime(),
+                row.getOrderId());
     }
 
     public static BargainRecordDO row(BargainRecord value) {
@@ -64,8 +88,14 @@ public final class BargainConverter {
     }
 
     public static BargainHelp model(BargainHelpDO row) {
-        if (row == null) { return null; }
-        return new BargainHelp(row.getId(), row.getActivityId(), row.getRecordId(), row.getUserId(),
+        if (row == null) {
+            return null;
+        }
+        return new BargainHelp(
+                row.getId(),
+                row.getActivityId(),
+                row.getRecordId(),
+                row.getUserId(),
                 row.getReducePrice());
     }
 

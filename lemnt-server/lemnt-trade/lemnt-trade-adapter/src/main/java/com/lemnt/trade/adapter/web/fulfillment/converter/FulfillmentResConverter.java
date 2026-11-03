@@ -27,15 +27,15 @@ public final class FulfillmentResConverter {
         return v == null
                 ? null
                 : new ShipmentRes(
-                v.orderNo(),
-                v.requestNo(),
-                v.carrierCode(),
-                v.trackingNo(),
-                v.recipientName(),
-                v.phone(),
-                v.address(),
-                v.shippedAt(),
-                v.receivedAt());
+                        v.orderNo(),
+                        v.requestNo(),
+                        v.carrierCode(),
+                        v.trackingNo(),
+                        v.recipientName(),
+                        v.phone(),
+                        v.address(),
+                        v.shippedAt(),
+                        v.receivedAt());
     }
 
     /**
@@ -45,17 +45,17 @@ public final class FulfillmentResConverter {
         return v == null
                 ? null
                 : new RefundRequestRes(
-                v.refundNo(),
-                v.orderNo(),
-                v.requestNo(),
-                v.memberId(),
-                v.paymentNo(),
-                v.amount(),
-                v.reason(),
-                v.status(),
-                v.decisionReason(),
-                v.requestedAt(),
-                v.decidedAt());
+                        v.refundNo(),
+                        v.orderNo(),
+                        v.requestNo(),
+                        v.memberId(),
+                        v.paymentNo(),
+                        v.amount(),
+                        v.reason(),
+                        v.status(),
+                        v.decisionReason(),
+                        v.requestedAt(),
+                        v.decidedAt());
     }
 
     /**
@@ -65,17 +65,17 @@ public final class FulfillmentResConverter {
         return v == null
                 ? null
                 : new OrderSummaryRes(
-                v.orderNo(),
-                v.memberId(),
-                v.totalAmount(),
-                v.status(),
-                v.createTime(),
-                v.inventoryConfirmed(),
-                v.activeRefund(),
-                v.carrierCode(),
-                v.trackingNo(),
-                v.shippedAt(),
-                v.receivedAt());
+                        v.orderNo(),
+                        v.memberId(),
+                        v.totalAmount(),
+                        v.status(),
+                        v.createTime(),
+                        v.inventoryConfirmed(),
+                        v.activeRefund(),
+                        v.carrierCode(),
+                        v.trackingNo(),
+                        v.shippedAt(),
+                        v.receivedAt());
     }
 
     /**
@@ -85,85 +85,118 @@ public final class FulfillmentResConverter {
         return v == null
                 ? null
                 : new OrderDetailRes(
-                v.orderNo(),
-                v.memberId(),
-                v.totalAmount(),
-                v.status(),
-                v.inventoryConfirmed(),
-                v.activeRefund(),
-                v.items().stream().map(item -> new com.lemnt.trade.adapter.web.fulfillment.res.OrderItemRes(item.productId(),
-                item.productCode(),
-                item.productName(),
-                item.unitPrice(),
-                item.quantity(),
-                item.lineAmount(),
-                item.spuId(),
-                item.spuName(),
-                item.specs() == null ? null : item.specs().stream().map(snapshotProperty ->
-                        new com.lemnt.trade.adapter.web.fulfillment.res.OrderItemRes.Spec(snapshotProperty.specId(), snapshotProperty.specName(),
-                                snapshotProperty.specValueId(), snapshotProperty.specValueName())).toList(),
-                item.picUrl(), item.orderItemId(), item.commentStatus())).toList(),
-                shipment(v.shipment()), v.commentStatus(), v.finishTime());
+                        v.orderNo(),
+                        v.memberId(),
+                        v.totalAmount(),
+                        v.status(),
+                        v.inventoryConfirmed(),
+                        v.activeRefund(),
+                        v.items().stream()
+                                .map(
+                                        item ->
+                                                new com.lemnt.trade.adapter.web.fulfillment.res
+                                                        .OrderItemRes(
+                                                        item.productId(),
+                                                        item.productCode(),
+                                                        item.productName(),
+                                                        item.unitPrice(),
+                                                        item.quantity(),
+                                                        item.lineAmount(),
+                                                        item.spuId(),
+                                                        item.spuName(),
+                                                        item.specs() == null
+                                                                ? null
+                                                                : item.specs().stream()
+                                                                        .map(
+                                                                                snapshotProperty ->
+                                                                                        new com
+                                                                                                .lemnt
+                                                                                                .trade
+                                                                                                .adapter
+                                                                                                .web
+                                                                                                .fulfillment
+                                                                                                .res
+                                                                                                .OrderItemRes
+                                                                                                .Spec(
+                                                                                                snapshotProperty
+                                                                                                        .specId(),
+                                                                                                snapshotProperty
+                                                                                                        .specName(),
+                                                                                                snapshotProperty
+                                                                                                        .specValueId(),
+                                                                                                snapshotProperty
+                                                                                                        .specValueName()))
+                                                                        .toList(),
+                                                        item.picUrl(),
+                                                        item.orderItemId(),
+                                                        item.commentStatus()))
+                                .toList(),
+                        shipment(v.shipment()),
+                        v.commentStatus(),
+                        v.finishTime());
     }
 
     /**
      * 退款。
      */
-    public static TradeRefundRequestDetailRes refundToTradeRefundRequestDetailRes(RefundRequestDTO v) {
+    public static TradeRefundRequestDetailRes refundToTradeRefundRequestDetailRes(
+            RefundRequestDTO v) {
         return v == null
                 ? null
                 : new TradeRefundRequestDetailRes(
-                v.refundNo(),
-                v.orderNo(),
-                v.requestNo(),
-                v.memberId(),
-                v.paymentNo(),
-                v.amount(),
-                v.reason(),
-                v.status(),
-                v.decisionReason(),
-                v.requestedAt(),
-                v.decidedAt());
+                        v.refundNo(),
+                        v.orderNo(),
+                        v.requestNo(),
+                        v.memberId(),
+                        v.paymentNo(),
+                        v.amount(),
+                        v.reason(),
+                        v.status(),
+                        v.decisionReason(),
+                        v.requestedAt(),
+                        v.decidedAt());
     }
 
     /**
      * 退款。
      */
-    public static TradeRefundRequestRejectRes refundToTradeRefundRequestRejectRes(RefundRequestDTO v) {
+    public static TradeRefundRequestRejectRes refundToTradeRefundRequestRejectRes(
+            RefundRequestDTO v) {
         return v == null
                 ? null
                 : new TradeRefundRequestRejectRes(
-                v.refundNo(),
-                v.orderNo(),
-                v.requestNo(),
-                v.memberId(),
-                v.paymentNo(),
-                v.amount(),
-                v.reason(),
-                v.status(),
-                v.decisionReason(),
-                v.requestedAt(),
-                v.decidedAt());
+                        v.refundNo(),
+                        v.orderNo(),
+                        v.requestNo(),
+                        v.memberId(),
+                        v.paymentNo(),
+                        v.amount(),
+                        v.reason(),
+                        v.status(),
+                        v.decisionReason(),
+                        v.requestedAt(),
+                        v.decidedAt());
     }
 
     /**
      * 退款。
      */
-    public static TradeOrderRefundRequestRefundRes refundToTradeOrderRefundRequestRefundRes(RefundRequestDTO v) {
+    public static TradeOrderRefundRequestRefundRes refundToTradeOrderRefundRequestRefundRes(
+            RefundRequestDTO v) {
         return v == null
                 ? null
                 : new TradeOrderRefundRequestRefundRes(
-                v.refundNo(),
-                v.orderNo(),
-                v.requestNo(),
-                v.memberId(),
-                v.paymentNo(),
-                v.amount(),
-                v.reason(),
-                v.status(),
-                v.decisionReason(),
-                v.requestedAt(),
-                v.decidedAt());
+                        v.refundNo(),
+                        v.orderNo(),
+                        v.requestNo(),
+                        v.memberId(),
+                        v.paymentNo(),
+                        v.amount(),
+                        v.reason(),
+                        v.status(),
+                        v.decisionReason(),
+                        v.requestedAt(),
+                        v.decidedAt());
     }
 
     /**
@@ -173,15 +206,15 @@ public final class FulfillmentResConverter {
         return v == null
                 ? null
                 : new TradeShipmentShipRes(
-                v.orderNo(),
-                v.requestNo(),
-                v.carrierCode(),
-                v.trackingNo(),
-                v.recipientName(),
-                v.phone(),
-                v.address(),
-                v.shippedAt(),
-                v.receivedAt());
+                        v.orderNo(),
+                        v.requestNo(),
+                        v.carrierCode(),
+                        v.trackingNo(),
+                        v.recipientName(),
+                        v.phone(),
+                        v.address(),
+                        v.shippedAt(),
+                        v.receivedAt());
     }
 
     /**
@@ -191,14 +224,14 @@ public final class FulfillmentResConverter {
         return v == null
                 ? null
                 : new TradeShipmentReceiveRes(
-                v.orderNo(),
-                v.requestNo(),
-                v.carrierCode(),
-                v.trackingNo(),
-                v.recipientName(),
-                v.phone(),
-                v.address(),
-                v.shippedAt(),
-                v.receivedAt());
+                        v.orderNo(),
+                        v.requestNo(),
+                        v.carrierCode(),
+                        v.trackingNo(),
+                        v.recipientName(),
+                        v.phone(),
+                        v.address(),
+                        v.shippedAt(),
+                        v.receivedAt());
     }
 }

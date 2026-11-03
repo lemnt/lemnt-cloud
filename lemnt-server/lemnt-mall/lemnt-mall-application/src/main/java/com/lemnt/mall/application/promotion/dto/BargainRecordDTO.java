@@ -16,5 +16,4 @@ public record BargainRecordDTO(
         BigDecimal bargainPrice,
         Integer status,
         LocalDateTime endTime,
-        Long orderId
-) {}
+        Long orderId) {}

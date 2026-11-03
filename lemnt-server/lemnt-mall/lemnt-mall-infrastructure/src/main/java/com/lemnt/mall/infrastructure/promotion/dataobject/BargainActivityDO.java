@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class BargainActivityDO {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+
     private String name;
     private LocalDateTime startTime;
     private LocalDateTime endTime;

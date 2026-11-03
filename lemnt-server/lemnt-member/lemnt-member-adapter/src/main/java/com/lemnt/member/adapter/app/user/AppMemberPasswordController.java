@@ -28,8 +28,9 @@ public class AppMemberPasswordController {
 
     @PutMapping("/user/password")
     @Operation(summary = "验证原密码并修改")
-    public R<Boolean> password(
-            @Valid @RequestBody PasswordChangeReq req) {
-        return R.ok(memberPasswordChangeCmdExe.execute(MemberUserReqConverter.password(SecurityUtils.getUserId(), req)));
+    public R<Boolean> password(@Valid @RequestBody PasswordChangeReq req) {
+        return R.ok(
+                memberPasswordChangeCmdExe.execute(
+                        MemberUserReqConverter.password(SecurityUtils.getUserId(), req)));
     }
 }

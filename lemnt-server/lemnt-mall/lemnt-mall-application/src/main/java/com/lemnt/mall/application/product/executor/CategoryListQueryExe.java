@@ -22,6 +22,8 @@ public class CategoryListQueryExe {
      * 执行分类列表查询。
      */
     public List<CategoryDTO> execute() {
-        return categoryGateway.categories().stream().map(ProductCatalogDTOConverter::category).toList();
+        return categoryGateway.categories().stream()
+                .map(ProductCatalogDTOConverter::category)
+                .toList();
     }
 }

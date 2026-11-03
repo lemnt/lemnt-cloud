@@ -43,5 +43,4 @@ public interface RemoteUserService {
      * @return 结果
      */
     Boolean recordUserLogin(UserBo bo);
-
 }
