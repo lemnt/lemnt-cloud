@@ -1,5 +1,7 @@
 # 后台积分流水筛选
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 2026-10-30，对照源MemberPointRecordPageReqVO的昵称/会员/业务类型能力。
 
 GET `/member/admin/point-records`，权限member:point:query，分页R.rows/R.total保持。独立请求字段：memberId可选正ID；nickname最多80字包含匹配；bizType最多40字按当前存储代码精确匹配（如ADMIN、SIGN_IN）；pageNum默认1最大1000000，pageSize默认20最大100。字符串空白忽略，多个条件同时生效，无匹配空页。超长参数HTTP422、应用400。

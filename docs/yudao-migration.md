@@ -1,5 +1,7 @@
 # Yudao member / mall / trade migration
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 Reference: https://github.com/YunaiV/yudao-cloud
 
 This branch adapts the business boundaries to lemnt-cloud's Java 17, Spring Boot 4.1, Dubbo/Nacos and six-layer DDD layout. This is an initial migration slice, not a claim that all Yudao features have been ported.

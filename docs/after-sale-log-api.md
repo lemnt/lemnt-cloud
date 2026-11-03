@@ -1,5 +1,7 @@
 # 售后标准表、操作日志及本人取消
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 2026-10-28。对照本地芋道AfterSaleDO/AfterSaleLogDO、售后状态及操作类型迁移。真实渠道SDK仍后置；以下curl/JSON为构造示例，未做部署HTTP、浏览器或真机端到端验收。
 
 ## 1. 售后身份与新增返回字段

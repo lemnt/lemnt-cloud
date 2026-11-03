@@ -302,24 +302,29 @@ class CommentFlowPersistenceTest {
     }
 
     @Test
-    void legacyUpgradeKeepsUnknownSnapshotsNullAndBackfillsOnlyKnownReplyFact() throws Exception {
-        var source = new org.h2.jdbcx.JdbcDataSource();
-        source.setURL("jdbc:h2:mem:comment_upgrade_" + UUID.randomUUID() + ";MODE=MySQL");
-        try (var connection = source.getConnection();
-                var statement = connection.createStatement()) {
+    void initializationKeepsHistoricalUnknownSnapshotsAndKnownReplyFact() throws Exception {
+        try (var statement = fixture.schemaConnection.createStatement()) {
             statement.execute(
-                    "CREATE TABLE mall_product_comment(id BIGINT, score INT, reply_content VARCHAR(1000))");
-            statement.execute("INSERT INTO mall_product_comment VALUES(1,5,NULL),(2,3,'已回复')");
+                    "INSERT INTO mall_product_comment(id,spu_id,sku_id,member_id,score,content,reply_content,reply_status) VALUES(900,"
+                            + spuId
+                            + ","
+                            + skuId
+                            + ",1,5,'旧评价',NULL,FALSE),(901,"
+                            + spuId
+                            + ","
+                            + skuId
+                            + ",1,3,'旧评价','已回复',TRUE)");
             ScriptUtils.executeSqlScript(
-                    connection, new ClassPathResource("sql/upgrade/product_comment_fields.sql"));
+                    fixture.schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
             try (var rows =
                     statement.executeQuery(
                             "SELECT description_scores,benefit_scores,anonymous,spu_name,pic_urls,reply_status FROM mall_product_comment ORDER BY id")) {
                 assertTrue(rows.next());
-                for (int i = 1; i <= 5; i++) assertNull(rows.getObject(i));
+                for (int column = 1; column <= 5; column++) assertNull(rows.getObject(column));
                 assertFalse(rows.getBoolean(6));
                 assertTrue(rows.next());
                 assertTrue(rows.getBoolean(6));
+                assertFalse(rows.next());
             }
         }
     }

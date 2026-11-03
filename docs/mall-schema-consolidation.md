@@ -1,5 +1,7 @@
 # 商城表结构整理
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 本次以芋道的领域模型为参考，采用按活动类型建表：满减 `mall_promotion_reward_activity`、折扣 `mall_promotion_discount_activity`。不是每发布一次活动就创建一张新表，每个活动是一条记录。
 
 参考源码：

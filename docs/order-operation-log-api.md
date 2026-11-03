@@ -1,5 +1,7 @@
 # 订单操作日志与会员操作
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 2026-10-28。对照芋道TradeOrderLogDO及TradeOrderOperateTypeEnum迁移。新库/存量库在部署新服务前执行 `lemnt-server/lemnt-trade/sql/V8__order_log.sql`；不回填虚构历史。脚本已生成，未在真实数据库执行。以下示例均为构造，未部署HTTP实测。
 
 ## 1. 后台订单日志

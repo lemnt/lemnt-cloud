@@ -143,9 +143,8 @@ class RechargePersistenceTest {
         Connection schema(JdbcDataSource source) throws Exception {
             var connection = source.getConnection();
             ScriptUtils.executeSqlScript(
-                    connection, new ClassPathResource("trade-sql/V12__member_wallet.sql"));
-            ScriptUtils.executeSqlScript(
-                    connection, new ClassPathResource("trade-sql/V13__wallet_recharge.sql"));
+                    connection, new ClassPathResource("trade-sql/lemnt_trade.sql"));
+
             return connection;
         }
 

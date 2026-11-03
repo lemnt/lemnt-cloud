@@ -79,17 +79,8 @@ class PromotionOrderPersistenceTest {
     void setup() throws Exception {
         f = new CatalogPersistenceTest();
         f.setup();
-        for (var sql :
-                List.of(
-                        "V18__promotion_seckill.sql",
-                        "V19__promotion_combination.sql",
-                        "V20__promotion_bargain.sql",
-                        "V21__promotion_point.sql",
-                        "V22__promotion_order.sql",
-                        "V23__promotion_order_refund.sql",
-                        "V24__promotion_order_item.sql")) {
-            ScriptUtils.executeSqlScript(f.schemaConnection, new ClassPathResource("sql/" + sql));
-        }
+        ScriptUtils.executeSqlScript(
+                f.schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
         f.components.register(
                 MemberLookupGateway.class,
                 memberId ->

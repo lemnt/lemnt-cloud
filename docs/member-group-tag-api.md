@@ -1,5 +1,7 @@
 # 会员分组与标签管理分页
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 2026-10-30，依据源Group/Tag PageReqVO及当前项目约定。独立分页路径GET `/groups/page`、GET `/tags/page`，权限分别member:group:query/tag:query，返回统一rows/total；旧重复资源分页路径不保留。根GET /groups、/tags列表仍供选择器使用，创建/修改/删除路径与权限不变。
 
 |筛选|分组|标签|

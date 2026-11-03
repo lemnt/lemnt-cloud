@@ -31,7 +31,7 @@ class PointPersistenceTest {
         f = new CatalogPersistenceTest();
         f.setup();
         ScriptUtils.executeSqlScript(
-                f.schemaConnection, new ClassPathResource("sql/V21__promotion_point.sql"));
+                f.schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
         service = f.components.get(PointActivityManagementService.class);
         spu = f.create("POINT", f.draft("RED", 10), f.draft("BLUE", 10));
         activityId =

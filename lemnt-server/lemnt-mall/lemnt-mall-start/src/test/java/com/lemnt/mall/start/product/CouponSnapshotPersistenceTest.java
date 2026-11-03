@@ -33,13 +33,8 @@ class CouponSnapshotPersistenceTest {
         fixture = new CatalogPersistenceTest();
         fixture.setup();
         ScriptUtils.executeSqlScript(
-                fixture.schemaConnection,
-                new ClassPathResource("sql/V10__cart_coupon_checkout.sql"));
-        ScriptUtils.executeSqlScript(
-                fixture.schemaConnection, new ClassPathResource("sql/V28__coupon_reward_gift.sql"));
-        ScriptUtils.executeSqlScript(
-                fixture.schemaConnection,
-                new ClassPathResource("sql/V29__coupon_gift_sequence.sql"));
+                fixture.schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
+
         fixture.components.register(MemberLockGateway.class, memberId -> {});
         coupons = fixture.components.get(CouponGateway.class);
         templates = fixture.components.get(CouponTemplateGateway.class);
@@ -100,20 +95,16 @@ class CouponSnapshotPersistenceTest {
     }
 
     @Test
-    void migratesLegacyGiftToFirstSequenceAndPreservesDatabaseUniqueness() throws Exception {
+    void finalGiftSequenceConstraintSupportsReplayWithoutDuplicatingCoupons() throws Exception {
         var template = template(-1, "DATE");
         var legacy = issuance.take(7L, template.id(), "USER");
         try (var statement = fixture.schemaConnection.createStatement()) {
             statement.execute(
-                    "UPDATE mall_coupon SET source_order_no='LEGACY' WHERE id=" + legacy.id());
-            statement.execute("DROP INDEX uk_mall_coupon_gift ON mall_coupon");
-            statement.execute("ALTER TABLE mall_coupon DROP COLUMN gift_sequence");
-            statement.execute(
-                    "CREATE UNIQUE INDEX uk_mall_coupon_gift ON mall_coupon(source_order_no,template_id,member_id)");
+                    "UPDATE mall_coupon SET source_order_no='LEGACY',gift_sequence=1 WHERE id="
+                            + legacy.id());
         }
         ScriptUtils.executeSqlScript(
-                fixture.schemaConnection,
-                new ClassPathResource("sql/V29__coupon_gift_sequence.sql"));
+                fixture.schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
         issuance.gift(7L, template.id(), "LEGACY", 1);
         issuance.gift(7L, template.id(), "LEGACY", 2);
         assertEquals(2, coupons.takeCount(7L, template.id()));
@@ -262,8 +253,7 @@ class CouponSnapshotPersistenceTest {
                         com.lemnt.mall.application.promotion.service.ActivityPricingService.class);
         try {
             ScriptUtils.executeSqlScript(
-                    fixture.schemaConnection,
-                    new ClassPathResource("sql/V15__promotion_activity.sql"));
+                    fixture.schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
         } catch (Exception exception) {
             throw new IllegalStateException(exception);
         }

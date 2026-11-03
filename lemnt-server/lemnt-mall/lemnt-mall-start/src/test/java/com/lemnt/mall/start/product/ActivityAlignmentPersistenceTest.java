@@ -38,7 +38,7 @@ class ActivityAlignmentPersistenceTest {
         f = new CatalogPersistenceTest();
         f.setup();
         ScriptUtils.executeSqlScript(
-                f.schemaConnection, new ClassPathResource("sql/V15__promotion_activity.sql"));
+                f.schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
         management = f.components.get(ActivityManagementService.class);
         pricing = f.components.get(ActivityPricingService.class);
         spu = f.create("ACTIVITY", f.draft("RED", 10), f.draft("BLUE", 10));

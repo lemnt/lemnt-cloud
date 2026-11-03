@@ -131,7 +131,7 @@ class PayNotifyTaskPersistenceTest {
         Connection schema(JdbcDataSource source) throws Exception {
             var connection = source.getConnection();
             ScriptUtils.executeSqlScript(
-                    connection, new ClassPathResource("trade-sql/V11__pay_notify_task.sql"));
+                    connection, new ClassPathResource("trade-sql/lemnt_trade.sql"));
             return connection;
         }
 

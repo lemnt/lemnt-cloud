@@ -1,5 +1,7 @@
 # 会员收货地址收敛
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 接口路径和原独立Req/Res保持：App `/app/addresses` 列表/创建，`/{id}` 详情/修改/删除，`/default` 默认地址；网关对外仍加 `/member` 前缀。本人编号仅来自网关上下文，HTTP请求和RPC的memberId映射保持，不因数据库列改名而改变。
 
 按本地芋道AddressServiceImpl移除额外20条限制；不存在或非本人地址修改/删除统一ServiceException404，使用项目全局Problem Details响应。详情查询缺失或他人仍为null。删除默认地址不擅自把其他地址改成默认，首次新增非默认项也不会自动变默认。

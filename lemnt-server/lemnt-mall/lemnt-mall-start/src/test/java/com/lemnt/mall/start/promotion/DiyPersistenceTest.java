@@ -40,7 +40,7 @@ class DiyPersistenceTest {
         source = new JdbcDataSource();
         source.setURL("jdbc:h2:mem:diy_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
         schema = source.getConnection();
-        ScriptUtils.executeSqlScript(schema, new ClassPathResource("sql/V27__promotion_diy.sql"));
+        ScriptUtils.executeSqlScript(schema, new ClassPathResource("mall-sql/lemnt_mall.sql"));
         var config = new MybatisConfiguration();
         config.setMapUnderscoreToCamelCase(true);
         var interceptor = new MybatisPlusInterceptor();

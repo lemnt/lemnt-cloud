@@ -1,5 +1,7 @@
 # 会员后台备注
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 2026-10-29。参考源MemberUserDO.mark和会员后台更新资料；当前实现只补备注，不代表全部会员字段已对齐。
 
 GET /member-users（权限member:user:query）的分页项及GET /member-users/{id}详情增加可空mark，历史未知不补造。PUT /member-users/{id}（member:user:update）在既有资料请求中新增可选mark，最多255字；省略或null保留原值，空字符串明确清除。字段校验422，应用长度校验400；与昵称等字段同事务，不改变余额或密码。响应仍为R<Boolean>。

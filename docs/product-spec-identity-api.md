@@ -1,5 +1,7 @@
 # 商品规格字典关联
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 2026-11-02 第162批：规格字段统一为 `specs` 及 `specId/specName/specValueId/specValueName`；旧JSON读取与列名升级说明见[规格命名迁移](spec-naming-migration.md)。
 
 

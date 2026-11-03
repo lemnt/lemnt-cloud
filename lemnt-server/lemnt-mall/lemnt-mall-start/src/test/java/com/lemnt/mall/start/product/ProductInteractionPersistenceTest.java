@@ -35,7 +35,7 @@ class ProductInteractionPersistenceTest {
         f = new CatalogPersistenceTest();
         f.setup();
         ScriptUtils.executeSqlScript(
-                f.schemaConnection, new ClassPathResource("sql/V17__product_interaction.sql"));
+                f.schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
         f.components.register(com.baomidou.lock.LockTemplate.class, memberLocks());
         favorites = f.components.get(ProductFavoriteService.class);
         history = f.components.get(ProductBrowseHistoryService.class);

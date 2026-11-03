@@ -1,6 +1,6 @@
 # 第164批实现计划：订单优惠与按数量部分退款
 
-2026-11-02。对应[设计](/Users/wangxx/demo/lemnt-cloud/work-items/member-domain-structure/164-order-promotion-refund-design.md)及[DDL草案](/Users/wangxx/demo/lemnt-cloud/work-items/member-domain-structure/164-order-promotion-model.sql)。本文件为待实施计划，以下文件并未因本次设计而完成开发。复杂度：★局部、★★跨对象、★★★跨事务/服务。
+2026-11-02。对应[设计](/Users/wangxx/demo/lemnt-cloud/work-items/member-domain-structure/164-order-promotion-refund-design.md)及[已整合，查看最终建表](../../lemnt-server/lemnt-trade/sql/lemnt_trade.sql)。本文件为待实施计划，以下文件并未因本次设计而完成开发。复杂度：★局部、★★跨对象、★★★跨事务/服务。
 
 ## 实施顺序与通过条件
 
@@ -23,7 +23,7 @@ P1/P2提供向后兼容契约后先部署消费者，再部署生产者；P4切�
 
 | 文件（精确路径） | 操作 | 复杂度/内容 |
 |---|---|---|
-| [V18__order_promotion_snapshot.sql](/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-trade/sql/V18__order_promotion_snapshot.sql) | 新增，实施时再次核对版本号 | ★★ 正式增量DDL；不能直接把工作项草案当已执行脚本 |
+| [已整合，查看最终建表](../../lemnt-server/lemnt-trade/sql/lemnt_trade.sql) | 新增，实施时再次核对版本号 | ★★ 正式增量DDL；不能直接把工作项草案当已执行脚本 |
 | [TradeOrder.java](/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrder.java) | 修改 | ★★ 金额汇总、完整性/版本 |
 | [TradeOrderItem.java](/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrderItem.java) | 修改 | ★★ 行优惠/积分及已退数量；不加退款中数量或退款单价字段 |
 | [AfterSale.java](/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/aftersale/model/AfterSale.java) | 修改 | ★★ 冻结优惠归因、积分和退款规则版本 |

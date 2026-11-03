@@ -42,7 +42,7 @@ class KefuPersistenceTest {
         source = new JdbcDataSource();
         source.setURL("jdbc:h2:mem:kefu_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
         schema = source.getConnection();
-        ScriptUtils.executeSqlScript(schema, new ClassPathResource("sql/V26__promotion_kefu.sql"));
+        ScriptUtils.executeSqlScript(schema, new ClassPathResource("mall-sql/lemnt_mall.sql"));
         var config = new MybatisConfiguration();
         config.setMapUnderscoreToCamelCase(true);
         var interceptor = new MybatisPlusInterceptor();

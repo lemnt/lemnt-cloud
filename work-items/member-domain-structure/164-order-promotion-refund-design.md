@@ -306,7 +306,7 @@ P很小时 U可能为0。比如0.01元买3件，前两件按数量退的现金�
 
 ## 7. 数据库设计
 
-完整带中文注释的增量结构草案：[164-order-promotion-model.sql](/Users/wangxx/demo/lemnt-cloud/work-items/member-domain-structure/164-order-promotion-model.sql)。该文件在工作项目录，**不是已发布的迁移文件，也未在数据库执行**。
+完整带中文注释的增量结构草案：[已整合，查看最终建表](../../lemnt-server/lemnt-trade/sql/lemnt_trade.sql)。该文件在工作项目录，**不是已发布的迁移文件，也未在数据库执行**。
 
 ### 7.1 字段与关系
 

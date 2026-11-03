@@ -34,7 +34,7 @@ HTTP沿用`Req → Cmd/Qry → Executor → DTO → Res`。Adapter完成HTTP绑�
 - 多表、数据库函数、原子upsert和复杂CAS放在`resources/mapper/*.xml`。Java中不写注解SQL，不用setSql拼接表达式；数字增减优先setIncrBy/setDecrBy。
 - FOR UPDATE必须在事务内真正执行，XML同时设置`useCache="false"`、`flushCache="true"`。状态变更保留期望值或版本条件，并检查影响行数。
 - 跨行操作统一锁顺序；远程调用不持有本地数据库锁。金额/数量状态和后续任务在同一事务保存，下游执行使用业务幂等。
-- 新库初始化和已有库升级分别提供脚本。不能重跑DROP/CREATE初始化来升级；不能把准备好的SQL写成“数据库已执行”。
+- member/mall/trade每个服务只保留一个最终初始化SQL，只含CREATE TABLE及必要INSERT，不保留V*或upgrade脚本；system脚本维持现状。初始化不负责旧库升级；不能把准备好的SQL写成“数据库已执行”。详见[业务库初始化](database-initialization.md)。
 - 历史未知保持NULL；只有经可审计核对的事实才回填。禁止按当前商品、活动、会员等级或积分配置推断历史快照。
 
 ## 数值、状态与身份

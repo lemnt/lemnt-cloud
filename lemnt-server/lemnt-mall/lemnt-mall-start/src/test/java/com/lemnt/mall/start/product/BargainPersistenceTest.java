@@ -31,7 +31,7 @@ class BargainPersistenceTest {
         f = new CatalogPersistenceTest();
         f.setup();
         ScriptUtils.executeSqlScript(
-                f.schemaConnection, new ClassPathResource("sql/V20__promotion_bargain.sql"));
+                f.schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
         activities = f.components.get(BargainActivityManagementService.class);
         records = f.components.get(BargainRecordService.class);
         spu = f.create("BARGAIN", f.draft("RED", 10));

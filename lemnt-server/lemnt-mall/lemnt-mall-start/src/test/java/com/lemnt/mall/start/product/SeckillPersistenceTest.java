@@ -37,7 +37,7 @@ class SeckillPersistenceTest {
         f = new CatalogPersistenceTest();
         f.setup();
         ScriptUtils.executeSqlScript(
-                f.schemaConnection, new ClassPathResource("sql/V18__promotion_seckill.sql"));
+                f.schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
         configs = f.components.get(SeckillConfigManagementService.class);
         activities = f.components.get(SeckillActivityManagementService.class);
         app = f.components.get(SeckillAppQueryService.class);

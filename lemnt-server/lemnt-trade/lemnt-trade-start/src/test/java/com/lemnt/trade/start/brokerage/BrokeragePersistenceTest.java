@@ -51,11 +51,8 @@ class BrokeragePersistenceTest {
         source.setURL(
                 "jdbc:h2:mem:brokerage_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
         schema = source.getConnection();
-        ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("trade-sql/V7__delivery_config.sql"));
-        ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("trade-sql/V12__member_wallet.sql"));
-        ScriptUtils.executeSqlScript(schema, new ClassPathResource("trade-sql/V15__brokerage.sql"));
+        ScriptUtils.executeSqlScript(schema, new ClassPathResource("trade-sql/lemnt_trade.sql"));
+
         var config = new MybatisConfiguration();
         config.setMapUnderscoreToCamelCase(true);
         var interceptor = new MybatisPlusInterceptor();

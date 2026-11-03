@@ -64,6 +64,12 @@
             <artifactId>lemnt-common-redis</artifactId>
         </dependency>
 
+        <!-- Micrometer Prometheus 指标 -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>pro.fessional</groupId>
             <artifactId>kaptcha</artifactId>

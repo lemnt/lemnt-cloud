@@ -21,7 +21,7 @@
 
 | 编号 | 文件 | 操作 | 复杂度 | 前置依赖 | 估计耗时 | 完成要求 | 状态 |
 |---|---|---|---|---|---|---|---|
-| 1 | [lemnt-server/lemnt-trade/sql/V18__order_promotion_snapshot.sql](/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-trade/sql/V18__order_promotion_snapshot.sql) | 新增 | ★★☆ | 无 | 20–45min | 正式增量DDL；不能直接把工作项草案当已执行脚本 | 待开始 |
+| 1 | [已整合，查看最终建表](../../lemnt-server/lemnt-trade/sql/lemnt_trade.sql) | 新增 | ★★☆ | 无 | 20–45min | 正式增量DDL；不能直接把工作项草案当已执行脚本 | 待开始 |
 | 2 | [lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrder.java](/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrder.java) | 修改 | ★★☆ | 1 | 20–45min | 金额汇总、完整性/版本 | 待开始 |
 | 3 | [lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrderItem.java](/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrderItem.java) | 修改 | ★★☆ | 1 | 20–45min | 行优惠/积分及已退数量；不加退款中数量或退款单价字段 | 待开始 |
 | 4 | [lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/aftersale/model/AfterSale.java](/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/aftersale/model/AfterSale.java) | 修改 | ★★☆ | 1 | 20–45min | 冻结优惠归因、积分和退款规则版本 | 待开始 |

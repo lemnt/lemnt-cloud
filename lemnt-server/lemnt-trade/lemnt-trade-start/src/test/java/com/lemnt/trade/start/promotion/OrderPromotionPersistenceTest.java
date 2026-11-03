@@ -214,18 +214,8 @@ class OrderPromotionPersistenceTest {
         @Bean(destroyMethod = "close")
         Connection schema(JdbcDataSource source) throws Exception {
             var connection = source.getConnection();
-            for (var file :
-                    java.util.List.of(
-                            "V1__trade_order.sql",
-                            "V2__trade_payment.sql",
-                            "V5__order_fulfillment.sql",
-                            "V11__pay_notify_task.sql",
-                            "V16__pickup.sql",
-                            "V17__order_reward_gift.sql",
-                            "V18__order_promotion_snapshot.sql")) {
-                ScriptUtils.executeSqlScript(
-                        connection, new ClassPathResource("trade-sql/" + file));
-            }
+            ScriptUtils.executeSqlScript(
+                    connection, new ClassPathResource("trade-sql/lemnt_trade.sql"));
             return connection;
         }
 

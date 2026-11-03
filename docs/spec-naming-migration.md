@@ -1,5 +1,7 @@
 # 规格字段统一命名
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 2026-11-02，第162批。商品字典原本已称ProductSpec/ProductSpecValue、SKU规格类型称ProductSkuSpec，本批将商品、结算、订单及售后快照的字段统一为spec术语。
 
 ## 字段合同

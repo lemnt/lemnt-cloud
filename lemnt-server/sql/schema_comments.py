@@ -96,8 +96,7 @@ def definitions(sql):
 def source_files():
     yield "system", ROOT / "sql/lemnt_system.sql"
     for domain in ("member", "mall", "trade"):
-        for path in sorted((ROOT / f"lemnt-{domain}/sql").glob("V*.sql")):
-            yield domain, path
+        yield domain, ROOT / f"lemnt-{domain}/sql/lemnt_{domain}.sql"
 
 
 def inventory():

@@ -127,7 +127,7 @@ class PayConfigPersistenceTest {
         Connection schema(JdbcDataSource source) throws Exception {
             var connection = source.getConnection();
             ScriptUtils.executeSqlScript(
-                    connection, new ClassPathResource("trade-sql/V10__pay_app_channel.sql"));
+                    connection, new ClassPathResource("trade-sql/lemnt_trade.sql"));
             return connection;
         }
 

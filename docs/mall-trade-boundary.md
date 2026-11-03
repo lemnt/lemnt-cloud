@@ -1,5 +1,7 @@
 # 商城与交易服务边界（2026-10-27）
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 商城负责商品、购物车、优惠券、结算和促销引擎。交易负责订单、明细、支付单、支付退单及订单履约。服务间只依赖 client 契约，不共享 Application、Domain、Infrastructure 或 Mapper。交易不再维护 Outbox 表、消息轮询任务或手动重放接口。
 
 ## 同步下单

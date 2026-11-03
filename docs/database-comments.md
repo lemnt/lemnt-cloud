@@ -6,7 +6,7 @@
 
 ## 新库及检查
 
-各模块的V*初始化SQL已就地补齐，system已有注释不重复修改。注释目录为 `lemnt-server/sql/schema-comments.json`，按服务、表、字段登记中文含义；覆盖后续ADD COLUMN，包括specs快照、来源订单、赠券序号等。历史升级文件不批量改写。
+第166批起member/mall/trade分别读取`sql/lemnt_member.sql`、`sql/lemnt_mall.sql`、`sql/lemnt_trade.sql`；system仍读取`lemnt-server/sql/lemnt_system.sql`，本次不调整system。注释目录为 `lemnt-server/sql/schema-comments.json`，按服务、表、字段登记中文含义；包含已合并到最终建表中的specs快照、来源订单、赠券序号等。三个业务服务不再保留历史升级SQL，详见[当前初始化入口](database-initialization.md)。
 
 从项目根目录执行只读覆盖检查：
 

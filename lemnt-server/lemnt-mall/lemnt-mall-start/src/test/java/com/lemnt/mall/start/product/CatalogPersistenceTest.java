@@ -87,12 +87,10 @@ class CatalogPersistenceTest {
         schemaConnection = source.getConnection();
         {
             ScriptUtils.executeSqlScript(
-                    schemaConnection, new ClassPathResource("sql/V1__mall_product.sql"));
-            ScriptUtils.executeSqlScript(
-                    schemaConnection, new ClassPathResource("sql/V2__mall_catalog.sql"));
+                    schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
         }
         ScriptUtils.executeSqlScript(
-                schemaConnection, new ClassPathResource("sql/V16__product_management.sql"));
+                schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
         var config = new MybatisConfiguration();
         var interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
@@ -206,12 +204,12 @@ class CatalogPersistenceTest {
         try (var connection = oldSource.getConnection();
                 var statement = connection.createStatement()) {
             ScriptUtils.executeSqlScript(
-                    connection, new ClassPathResource("sql/V1__mall_product.sql"));
+                    connection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
             statement.execute(
                     "INSERT INTO mall_product_sku(id,product_code,name,price,stock,status) "
                             + "VALUES(42,'LEGACY','legacy',9.25,7,'ON_SHELF')");
             ScriptUtils.executeSqlScript(
-                    connection, new ClassPathResource("sql/V2__mall_catalog.sql"));
+                    connection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
             try (var row =
                     statement.executeQuery(
                             "SELECT id,price,stock,spu_id FROM mall_product_sku WHERE id=42")) {
@@ -701,7 +699,7 @@ class CatalogPersistenceTest {
             statement.execute("DROP TABLE mall_product_spec");
         }
         ScriptUtils.executeSqlScript(
-                schemaConnection, new ClassPathResource("sql/V16__product_management.sql"));
+                schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
         assertEquals(0, count("mall_product_spec"));
         assertEquals(0, count("mall_product_spec_value"));
         assertEquals(2, storedPropertyCount());
@@ -1223,19 +1221,16 @@ class CatalogPersistenceTest {
     }
 
     /** 从实际SKU JSON列核对规格数量，不依赖旧关系表。 */
-    /** 旧库只改列名，历史JSON保持原样且经真实Mapper读取为新规格字段。 */
+    /** 最终specs列中的历史JSON保持原样，真实Mapper兼容读取旧属性键。 */
     @Test
-    void legacyPropertiesColumnMigrationPreservesSavedSkuSpecs() throws Exception {
+    void historicalJsonInFinalSpecsColumnKeepsSavedIdentity() throws Exception {
         var saved = create("OLD-SPEC-COLUMN", draft("RED", 10));
         long skuId = saved.skus().get(0).id();
         try (var statement = schemaConnection.createStatement()) {
-            statement.execute("ALTER TABLE mall_product_sku RENAME COLUMN specs TO properties");
             statement.execute(
-                    "UPDATE mall_product_sku SET properties='[{\"propertyId\":3,\"propertyName\":\"颜色\",\"valueId\":7,\"valueName\":\"黑色\"}]' WHERE id="
+                    "UPDATE mall_product_sku SET specs='[{\"propertyId\":3,\"propertyName\":\"颜色\",\"valueId\":7,\"valueName\":\"黑色\"}]' WHERE id="
                             + skuId);
         }
-        ScriptUtils.executeSqlScript(
-                schemaConnection, new ClassPathResource("sql/upgrade/sku_specs_naming.sql"));
         assertEquals(
                 List.of(new com.lemnt.mall.domain.product.model.ProductSkuSpec(3L, "颜色", 7L, "黑色")),
                 catalogService.sku(skuId).specs());

@@ -1,5 +1,7 @@
 > 2026-10-31：网关对外服务前缀及会员users/growths路径已统一，当前访问约定见 [服务转发合同](service-routing-contract.md)。下文历史路径以该合同为准。
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 # 会员接口迁移
 
 版本 v9，2026-10-26；业务Req/Res按接口独立，分页统一使用R.page；认证沿用公共TokenService；基础提交 8eac9f6。参考 YunaiV/yudao-cloud `8db9153bfe6bdc03baf93b74e244a2e74477c5c4` 的 member 控制器。本文按代码静态核对生成；JSON/curl 均为构造示例，部署环境尚未实测。设计依据见 work-items/yudao-member-mall-trade-migration/03-development-design.md。模板参考 code-software-engineer/references/api-documentation.md。

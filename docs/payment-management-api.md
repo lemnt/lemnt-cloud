@@ -1,5 +1,7 @@
 # 后台支付渠道、支付单和支付退单
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 2026-10-27。范围按用户定义：支付配置展示支持渠道；支付退单是已有订单售后单触发的逆向支付交易。参考芋道支付退款和售后分工，按本项目 Adapter → Application → Domain / Infrastructure 结构实现。支付与退款创建仍由订单、售后流程发起，后台提供只读管理页面。
 
 ## 接口

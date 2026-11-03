@@ -568,6 +568,8 @@ Bean。 **密钥缺失或不足 64 字节时应用启动直接失败**（HS512 �
 |---------------------|---------------------------------------------------------------------------------------------|
 | `lemnt_system.sql`     | 系统库表结构（`sys_*`）与初始化数据，**建表使用 DROP + CREATE**                             |
 
+member、mall、trade分别只保留`sql/lemnt_member.sql`、`sql/lemnt_mall.sql`、`sql/lemnt_trade.sql`，只含最终CREATE TABLE及必要INSERT。原V*及upgrade脚本已整合移除，不用初始化文件升级旧库。system的现有脚本不调整。详见[业务库初始化](../docs/database-initialization.md)。
+
 ### 单元测试
 
 测试放在各模块的 `src/test/java`，需在 pom 中声明 `spring-boot-starter-test`（test scope）。约定：

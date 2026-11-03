@@ -1,5 +1,7 @@
 # 会员积分配置闭环
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 2026-10-30。GET/PUT `/growths/config`，权限分别member:config:query/update；四项独立Req/Res和R封装不变。前端已修正实际路径，保存仅发送四个业务字段。
 
 |字段|含义|

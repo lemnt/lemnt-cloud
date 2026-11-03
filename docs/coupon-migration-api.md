@@ -1,5 +1,7 @@
 # 优惠券规则快照接口
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 2026-10-28。本批按本地芋道 CouponTemplateDO/CouponDO/CouponServiceImpl、后台优惠券页面及 uni-app CouponApi 对齐。接口地址沿用当前项目，金额为元，两位小数字符串；请求金额为 JSON 数值。日期为数据库时区 `yyyy-MM-dd HH:mm:ss`，有效期左闭右开。以下请求和 JSON 为构造示例，未部署 HTTP 实测。
 
 ## 1. 创建、修改模板

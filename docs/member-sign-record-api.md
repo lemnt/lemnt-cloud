@@ -1,5 +1,7 @@
 # 后台签到记录昵称查询
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 2026-10-29，对照芋道签到记录后台查询及昵称拼接，非部署实测。
 
 GET `/member/admin/signin-records`，权限`member:signin:query`，既有分页R.rows/R.total不变。独立请求：memberId可选正编号、nickname可选最多80字包含匹配、pageNum默认1最大1000000、pageSize默认20最大100。nickname空白忽略，与memberId同时生效，无匹配空页。超长昵称HTTP422，应用校验400。

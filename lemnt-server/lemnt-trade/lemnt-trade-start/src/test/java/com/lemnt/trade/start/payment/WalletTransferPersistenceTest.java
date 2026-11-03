@@ -111,9 +111,8 @@ class WalletTransferPersistenceTest {
         Connection schema(JdbcDataSource source) throws Exception {
             var connection = source.getConnection();
             ScriptUtils.executeSqlScript(
-                    connection, new ClassPathResource("trade-sql/V12__member_wallet.sql"));
-            ScriptUtils.executeSqlScript(
-                    connection, new ClassPathResource("trade-sql/V14__wallet_transfer.sql"));
+                    connection, new ClassPathResource("trade-sql/lemnt_trade.sql"));
+
             return connection;
         }
 

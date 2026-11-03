@@ -34,7 +34,7 @@ class CombinationPersistenceTest {
         f = new CatalogPersistenceTest();
         f.setup();
         ScriptUtils.executeSqlScript(
-                f.schemaConnection, new ClassPathResource("sql/V19__promotion_combination.sql"));
+                f.schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
         f.components.register(
                 MemberLookupGateway.class,
                 memberId ->

@@ -29,11 +29,7 @@
 
 订单和明细保留原价、优惠、原始运费、运费减免、人工调价等独立口径；明细使用/赠送积分及已退数量单独保存。历史未知字段保持NULL，订单标记LEGACY_PARTIAL。新订单由应用显式写已退数量0；不能把历史NULL默认改成0。
 
-新库按当前初始化脚本执行V1至V18。其中V1/V5/V11包含新增字段，V18只建三张扩展表。已有库只使用：
-
-`lemnt-server/lemnt-trade/sql/upgrade/order_promotion_snapshot.sql`
-
-该升级脚本不是幂等脚本，需备份、核对实际SHOW CREATE TABLE、确认缺失列和约束后执行一次；不要在已有库重跑V1/V5初始化。正式执行前应在目标MySQL校验方言和锁表影响。本轮未执行现有库DDL。
+第166批起，新库仅使用`lemnt-server/lemnt-trade/sql/lemnt_trade.sql`，所有最终字段及三张扩展表已合并到建表语句。原V*与upgrade脚本已移除；当前文件不提供历史回填或旧表升级。已有库应核对实际结构后另行制定并演练变更，不能把IF NOT EXISTS当作升级。本轮未执行现有库DDL。参见[业务库初始化](database-initialization.md)。
 
 mall原三张促销执行表不会跨库重命名或直接删除。存量活动仍需它们完成库存与请求去重；财务优惠结果由trade负责。旧执行表退役应另列批次，先排空旧订单及通知任务。
 
@@ -82,7 +78,7 @@ WHERE a.order_no<>o.order_no OR (a.sku_id IS NOT NULL AND a.sku_id<>i.sku_id);
 
 建议顺序：
 
-1. 核对DDL、备份与维护窗口，先安装trade增量结构。
+1. 核对DDL、备份与维护窗口；新库导入最终初始化文件，已有库另行核对和演练结构变更。
 2. 部署支持新冻结入口的member服务。
 3. 暂停并停止所有旧trade通知执行器，再部署新trade。任务新增lease_until与单调execute_version，新旧领取实现不能混跑；租约采用数据库时间，当前120秒覆盖已有5秒RPC与本次任务步骤预算，跨服务执行仍须业务幂等。
 4. 部署新mall消费者及报价生产者。旧mall调用新trade旧入口仍可兼容；新mall使用createPriced，旧trade会拒绝。

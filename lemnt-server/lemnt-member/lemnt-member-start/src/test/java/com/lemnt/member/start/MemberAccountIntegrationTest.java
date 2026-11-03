@@ -170,13 +170,8 @@ class MemberAccountIntegrationTest {
                         + UUID.randomUUID()
                         + ";MODE=MySQL;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=10000");
         schema = source.getConnection();
-        ScriptUtils.executeSqlScript(schema, new ClassPathResource("member-sql/V1__member.sql"));
-        ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("member-sql/V2__member_account.sql"));
-        ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("member-sql/V4__member_point_record.sql"));
-        ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("member-sql/V5__member_experience_record.sql"));
+        ScriptUtils.executeSqlScript(schema, new ClassPathResource("member-sql/lemnt_member.sql"));
+
         var config = new MybatisConfiguration();
         var interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
@@ -1237,16 +1232,13 @@ class MemberAccountIntegrationTest {
     }
 
     @Test
-    void legacyPointCopyPreservesIdsUnknownMetadataAndOriginalRequestReplay() throws Exception {
-        // 模拟未拆表旧库，保留源POINT归档；新库检查约束不允许此写入。
-        createLegacyAssetTable();
+    void historicalPointRowsPreserveUnknownMetadataAndOriginalRequestReplay() throws Exception {
+        // 在最终表中构造历史未知快照，验证读取和请求重放，不执行已退役升级脚本。
         sql(
-                "INSERT INTO member_asset_record(id,member_id,asset_type,delta,balance,biz_type,biz_no,reason,create_time) VALUES(900,"
+                "INSERT INTO member_point_record(id,user_id,biz_id,point,total_point,biz_code,reason,create_time) VALUES(900,"
                         + id
-                        + ",'POINT',7,7,'ADMIN','OLD-POINT','旧原因',CURRENT_TIMESTAMP)");
+                        + ",'OLD-POINT',7,7,'ADMIN','旧原因',CURRENT_TIMESTAMP)");
         sql("UPDATE member_user SET points=7 WHERE id=" + id);
-        ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("member-sql/upgrade/point_record_split.sql"));
         var copied = pointRecords.request(id, "ADMIN", "OLD-POINT");
         var copiedAudit =
                 template.getMapper(
@@ -1266,16 +1258,9 @@ class MemberAccountIntegrationTest {
                 pointRecords.count(
                         new com.lemnt.member.domain.growth.model.AssetRecordPageFilter(
                                 id, "POINT", 0, 1)));
-        assertEquals(1, count("member_asset_record"));
         assertEquals(copied, growthService.adjustAsset(id, "POINT", 7, "OLD-POINT", "旧原因"));
         assertEquals(7L, memberUserGateway.findById(id).points());
         assertEquals(1, count("member_point_record"));
-    }
-
-    /** 仅迁移测试构造旧库表，新库初始化不保留泛化流水表。 */
-    private void createLegacyAssetTable() throws Exception {
-        sql(
-                "CREATE TABLE member_asset_record(id BIGINT PRIMARY KEY,member_id BIGINT,asset_type VARCHAR(16),delta BIGINT,balance BIGINT,biz_type VARCHAR(40),biz_no VARCHAR(64),reason VARCHAR(500),create_time DATETIME,point_biz_type INT,title VARCHAR(255),description VARCHAR(500))");
     }
 
     @Test
@@ -1310,15 +1295,12 @@ class MemberAccountIntegrationTest {
     }
 
     @Test
-    void legacyExperienceCopyKeepsOriginalIdAndUnknownMetadataAndReplay() throws Exception {
-        createLegacyAssetTable();
+    void historicalExperienceRowsKeepIdUnknownMetadataAndReplay() throws Exception {
         sql(
-                "INSERT INTO member_asset_record(id,member_id,asset_type,delta,balance,biz_type,biz_no,reason,create_time) VALUES(900,"
+                "INSERT INTO member_experience_record(id,user_id,biz_id,experience,total_experience,biz_code,reason,create_time) VALUES(900,"
                         + id
-                        + ",'EXPERIENCE',7,7,'ADMIN','OLD-EXP','旧经验',CURRENT_TIMESTAMP)");
+                        + ",'OLD-EXP',7,7,'ADMIN','旧经验',CURRENT_TIMESTAMP)");
         sql("UPDATE member_user SET experience=7 WHERE id=" + id);
-        ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("member-sql/upgrade/experience_record_split.sql"));
         var copied = experienceRecords.request(id, "ADMIN", "OLD-EXP");
         assertEquals(900L, copied.id());
         assertNull(copied.experienceBizType());
@@ -1327,7 +1309,6 @@ class MemberAccountIntegrationTest {
         assertEquals(copied, growthService.adjustAsset(id, "EXPERIENCE", 7, "OLD-EXP", "旧经验"));
         assertEquals(7L, memberUserGateway.findById(id).experience());
         assertEquals(1, count("member_experience_record"));
-        assertEquals(1, count("member_asset_record"));
     }
 
     @Test
@@ -1430,20 +1411,14 @@ class MemberAccountIntegrationTest {
     }
 
     @Test
-    void legacyLevelUpgradeKeepsMemberExperienceAndDoesNotInferCurrentConfiguration()
-            throws Exception {
+    void historicalLevelRowsDoNotInferCurrentConfiguration() throws Exception {
         var level = growthService.saveLevel(new Level(null, "Current", 1, 100L, 90, null, null, 1));
-        sql("DROP TABLE member_level_record");
         sql(
-                "CREATE TABLE member_level_record(id BIGINT PRIMARY KEY,member_id BIGINT,level_id BIGINT,experience BIGINT NOT NULL,reason VARCHAR(500),create_time DATETIME)");
-        sql(
-                "INSERT INTO member_level_record VALUES(900,"
+                "INSERT INTO member_level_record(id,user_id,level_id,user_experience,remark,create_time) VALUES(900,"
                         + id
                         + ","
                         + level
                         + ",7,'旧原因',CURRENT_TIMESTAMP)");
-        ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("member-sql/upgrade/level_record_snapshot.sql"));
         var old = memberLevelRecordGateway.levelsDetail(900L);
         assertEquals(7L, old.experience());
         assertEquals("旧原因", old.reason());
@@ -1885,15 +1860,13 @@ class MemberAccountIntegrationTest {
                                 new SignRecordAllPageQry(id, 1, 20, null, 1, end, start)));
     }
 
-    /** 旧表升级保存业务日期和奖励，未知真实时间/操作者保持NULL。 */
+    /** 最终表读取历史业务日期和奖励，未知真实时间/操作者保持NULL。 */
     @Test
-    void legacySignUpgradeRenamesSourceFieldsWithoutInventingTime() throws Exception {
-        sql("DROP TABLE member_sign_in_record");
+    void historicalSignRowsKeepUnknownTime() throws Exception {
         sql(
-                "CREATE TABLE member_sign_record(id BIGINT PRIMARY KEY,member_id BIGINT NOT NULL,sign_date DATE NOT NULL,signin_day INT NOT NULL,point BIGINT NOT NULL,experience BIGINT NOT NULL,UNIQUE(member_id,sign_date))");
-        sql("INSERT INTO member_sign_record VALUES(900," + id + ",'2026-10-29',3,5,2)");
-        ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("member-sql/upgrade/sign_record_time.sql"));
+                "INSERT INTO member_sign_in_record(id,user_id,sign_date,`day`,point,experience) VALUES(900,"
+                        + id
+                        + ",'2026-10-29',3,5,2)");
         var old = memberSignRecordGateway.signDate(id, java.time.LocalDate.of(2026, 10, 29));
         assertEquals(900L, old.id());
         assertEquals(3, old.day());
@@ -2056,15 +2029,11 @@ class MemberAccountIntegrationTest {
         }
     }
 
-    /** 真实旧结构升级保留业务配置，生成的新ID仅作定位，不推算历史审计。 */
+    /** 历史签到配置的编号只作定位，不推算未知审计。 */
     @Test
-    void legacySignConfigUpgradeAddsIdsAndKeepsUnknownAudit() throws Exception {
-        sql("DROP TABLE member_sign_in_config");
+    void historicalSignConfigKeepsIdsAndUnknownAudit() throws Exception {
         sql(
-                "CREATE TABLE member_sign_config(signin_day INT PRIMARY KEY,point BIGINT NOT NULL,experience BIGINT NOT NULL,status INT NOT NULL)");
-        sql("INSERT INTO member_sign_config VALUES(7,10,2,0),(3,5,0,1)");
-        ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("member-sql/upgrade/sign_config_id.sql"));
+                "INSERT INTO member_sign_in_config(`day`,point,experience,status) VALUES(7,10,2,0),(3,5,0,1)");
         var old = memberSignConfigGateway.signConfigByDay(7);
         assertNotNull(old.id());
         assertEquals(10L, old.point());
@@ -2222,17 +2191,11 @@ class MemberAccountIntegrationTest {
         assertBusinessException(404, () -> growthService.deleteLevel(level));
     }
 
-    /** 旧表审计升级只加未知NULL，不推断创建时间。 */
+    /** 历史等级的未知审计保持NULL，不推断创建时间。 */
     @Test
-    void legacyLevelAuditUpgradePreservesConfigurationAndUnknownHistory() throws Exception {
-        // 保留旧结构本就存在的唯一键及会员外键，只移除本批新增审计列。
-        sql("ALTER TABLE member_level DROP COLUMN create_time");
-        sql("ALTER TABLE member_level DROP COLUMN create_by");
-        sql("ALTER TABLE member_level DROP COLUMN update_time");
-        sql("ALTER TABLE member_level DROP COLUMN update_by");
-        sql("INSERT INTO member_level VALUES(900,'Old',1,100,90,'icon','background',1)");
-        ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("member-sql/upgrade/level_audit_fields.sql"));
+    void historicalLevelRowsKeepUnknownAudit() throws Exception {
+        sql(
+                "INSERT INTO member_level(id,name,level,experience,discount_percent,icon,background_url,status) VALUES(900,'Old',1,100,90,'icon','background',1)");
         var mapper = template.getMapper(MemberLevelMapper.class);
         var old = mapper.selectById(900L);
         assertNull(old.getCreateTime());
@@ -2313,19 +2276,11 @@ class MemberAccountIntegrationTest {
         assertBusinessException(404, () -> userService.deleteTag(Long.MAX_VALUE));
     }
 
-    /** 升级保留分组/标签现有外键与唯一键，旧创建时间及操作者未知NULL。 */
+    /** 最终表保留分组/标签约束，历史创建时间及操作者未知NULL。 */
     @Test
-    void legacyGroupTagAuditUpgradePreservesUnknownTimeAndExistingConstraints() throws Exception {
-        for (String table : new String[] {"member_group", "member_tag"}) {
-            for (String column :
-                    new String[] {"create_time", "create_by", "update_time", "update_by"}) {
-                sql("ALTER TABLE " + table + " DROP COLUMN " + column);
-            }
-        }
-        sql("INSERT INTO member_group VALUES(900,'OldGroup','old',1)");
-        sql("INSERT INTO member_tag VALUES(901,'OldTag','old')");
-        ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("member-sql/upgrade/group_tag_audit_fields.sql"));
+    void historicalGroupTagRowsKeepUnknownAuditAndConstraints() throws Exception {
+        sql("INSERT INTO member_group(id,name,remark,status) VALUES(900,'OldGroup','old',1)");
+        sql("INSERT INTO member_tag(id,name,remark) VALUES(901,'OldTag','old')");
         assertNull(memberGroupGateway.group(900L).createTime());
         assertNull(memberTagGateway.tag(901L).createTime());
         userService.saveGroup(new Group(900L, "OldGroup", null, 1));
@@ -2914,18 +2869,13 @@ class MemberAccountIntegrationTest {
         }
     }
 
-    /** 旧属主列及未知审计迁移后保留原归属、默认标志、编号和外键。 */
+    /** 最终表读取历史地址时保留原归属、默认标志、编号和外键。 */
     @Test
-    void addressUpgradePreservesLegacyRowsAndLeavesUnknownAuditNull() throws Exception {
-        sql("DROP TABLE member_address");
+    void historicalAddressesKeepOwnerConstraintsAndUnknownAudit() throws Exception {
         sql(
-                "CREATE TABLE member_address(id BIGINT AUTO_INCREMENT PRIMARY KEY,member_id BIGINT NOT NULL,name VARCHAR(80) NOT NULL,mobile VARCHAR(24) NOT NULL,area_id BIGINT NOT NULL,detail_address VARCHAR(500) NOT NULL,default_status BOOLEAN NOT NULL DEFAULT FALSE,FOREIGN KEY(member_id) REFERENCES member_user(id),KEY idx_member_address_owner(member_id))");
-        sql(
-                "INSERT INTO member_address(id,member_id,name,mobile,area_id,detail_address,default_status) VALUES(900,"
+                "INSERT INTO member_address(id,user_id,name,mobile,area_id,detail_address,default_status) VALUES(900,"
                         + id
                         + ",'old','13800000003',110101,'legacy',true)");
-        ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("member-sql/upgrade/address_owner_audit.sql"));
         var mapper = template.getMapper(MemberAddressMapper.class);
         var old = mapper.selectById(900L);
         assertEquals(id, old.getUserId());

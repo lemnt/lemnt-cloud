@@ -1,5 +1,7 @@
 # 交易配置与配送基础管理接口
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 2026-11-02 第161批：交易配置存储改为sys_config中的trade.config完整JSON，原接口/字段/权限及金额单位不变；配送维护改用独立事务锁，不再依赖trade_config行。新旧库切换步骤见[业务配置迁移说明](business-config-migration.md)。
 
 

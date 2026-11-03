@@ -1,5 +1,7 @@
 # 会员等级管理
 
+> 第166批更新：member/mall/trade的旧V*及upgrade脚本已整合移除，本文原执行步骤只作历史说明。新库统一使用[最终初始化文件](database-initialization.md)；已有库另行核对结构差异，system SQL不变。
+
 2026-10-30。服务内路径/growth/levels，前端已同步；分组与标签元数据实际路径分别/groups、/tags，已一并修正旧/member/admin调用。网关示例补相应路径，尚未应用Nacos。
 
 GET /growth/levels使用独立MemberLevelListReq：name可选最多80字包含匹配，status可选0停用/1启用，空白名称忽略；返回等级升序的独立列表Res，权限member:level:query。GET /growth/levels/list-all-simple与App列表只查启用，附加status=0不能把简单列表改成停用列表。原创建/修改/详情路径及Req/Res、权限保持。

@@ -45,12 +45,12 @@ class PickUpPersistenceTest {
         schema = source.getConnection();
         for (String path :
                 List.of(
-                        "trade-sql/V1__trade_order.sql",
-                        "trade-sql/V2__trade_payment.sql",
-                        "trade-sql/V5__order_fulfillment.sql",
-                        "trade-sql/V8__order_log.sql",
-                        "trade-sql/V16__pickup.sql",
-                        "trade-sql/V17__order_reward_gift.sql")) {
+                        "trade-sql/lemnt_trade.sql",
+                        "trade-sql/lemnt_trade.sql",
+                        "trade-sql/lemnt_trade.sql",
+                        "trade-sql/lemnt_trade.sql",
+                        "trade-sql/lemnt_trade.sql",
+                        "trade-sql/lemnt_trade.sql")) {
             ScriptUtils.executeSqlScript(schema, new ClassPathResource(path));
         }
         var config = new MybatisConfiguration();

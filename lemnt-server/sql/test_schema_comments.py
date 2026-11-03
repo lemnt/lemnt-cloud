@@ -70,6 +70,41 @@ class SchemaCommentsTest(unittest.TestCase):
                 self.assertEqual(catalog[domain][table]["columns"], item["columns"])
                 self.assertTrue(all(item["columns"].values()), table)
 
+    def business_statements(self, domain):
+        path = schema.ROOT / f"lemnt-{domain}/sql/lemnt_{domain}.sql"
+        values = schema.tokens(path.read_text())
+        start = 0
+        for index, token in enumerate(values):
+            if token.value == ";":
+                if values[start:index]:
+                    yield values[start:index]
+                start = index + 1
+        self.assertFalse(values[start:], "初始化语句必须以分号结束")
+
+    def test_business_services_have_one_initialization_file_with_only_create_and_insert(self):
+        for domain in ("member", "mall", "trade"):
+            directory = schema.ROOT / f"lemnt-{domain}/sql"
+            self.assertEqual([directory / f"lemnt_{domain}.sql"], sorted(directory.rglob("*.sql")))
+            for statement in self.business_statements(domain):
+                self.assertIn([part.value.upper() for part in statement[:2]],
+                              [["CREATE", "TABLE"], ["INSERT", "INTO"]])
+
+    def test_business_foreign_keys_reference_already_created_tables(self):
+        for domain in ("member", "mall", "trade"):
+            created = set()
+            for statement in self.business_statements(domain):
+                if statement[0].value.upper() != "CREATE":
+                    continue
+                table_index = 5 if statement[2].value.upper() == "IF" else 2
+                table = schema.name(statement[table_index])
+                self.assertNotIn(table, created)
+                references = {schema.name(statement[index + 1])
+                              for index, token in enumerate(statement[:-1])
+                              if token.value.upper() == "REFERENCES"} - {table}
+                self.assertTrue(references <= created, f"{table}: {references - created}")
+                created.add(table)
+            self.assertTrue(created, domain)
+
 
 if __name__ == "__main__":
     unittest.main()

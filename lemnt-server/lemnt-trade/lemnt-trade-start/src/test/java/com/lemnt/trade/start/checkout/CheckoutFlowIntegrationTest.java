@@ -334,43 +334,10 @@ class CheckoutFlowIntegrationTest {
         tradeSchema = tradeSource.getConnection();
         mallSchema = mallSource.getConnection();
         ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V1__trade_order.sql"));
-        ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V16__pickup.sql"));
-        ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V17__order_reward_gift.sql"));
-        ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V8__order_log.sql"));
-        ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V2__trade_payment.sql"));
-        ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V11__pay_notify_task.sql"));
-        ScriptUtils.executeSqlScript(
-                mallSchema, new ClassPathResource("mall-sql/V10__cart_coupon_checkout.sql"));
-        ScriptUtils.executeSqlScript(
-                mallSchema, new ClassPathResource("mall-sql/V28__coupon_reward_gift.sql"));
-        ScriptUtils.executeSqlScript(
-                mallSchema, new ClassPathResource("mall-sql/V29__coupon_gift_sequence.sql"));
-        ScriptUtils.executeSqlScript(
-                mallSchema, new ClassPathResource("mall-sql/V1__mall_product.sql"));
-        ScriptUtils.executeSqlScript(
-                mallSchema, new ClassPathResource("mall-sql/V2__mall_catalog.sql"));
-        ScriptUtils.executeSqlScript(
-                mallSchema, new ClassPathResource("mall-sql/V16__product_management.sql"));
-        ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V5__order_fulfillment.sql"));
-        ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V6__payment_refund.sql"));
-        ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V9__after_sale_log.sql"));
-        ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V18__order_promotion_snapshot.sql"));
-        ScriptUtils.executeSqlScript(
-                mallSchema, new ClassPathResource("mall-sql/V15__promotion_activity.sql"));
-        ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V7__delivery_config.sql"));
-        ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V15__brokerage.sql"));
+                tradeSchema, new ClassPathResource("trade-sql/lemnt_trade.sql"));
+
+        ScriptUtils.executeSqlScript(mallSchema, new ClassPathResource("mall-sql/lemnt_mall.sql"));
+
         var trade = template(tradeSource);
         var products = template(mallSource);
         tradeComponents = new TableTestComponents(trade, tradeSource);
@@ -1823,20 +1790,19 @@ class CheckoutFlowIntegrationTest {
         sql(tradeSource, "DROP TABLE trade_shipment");
         sql(tradeSource, "DROP TABLE trade_inventory_confirmation");
         ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V5__order_fulfillment.sql"));
-        ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V6__payment_refund.sql"));
-        ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("trade-sql/V9__after_sale_log.sql"));
+                tradeSchema, new ClassPathResource("trade-sql/lemnt_trade.sql"));
+
         var script =
-                new ClassPathResource("trade-sql/V18__order_promotion_snapshot.sql")
+                new ClassPathResource("trade-sql/lemnt_trade.sql")
                         .getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
         sql(
                 tradeSource,
                 script.substring(
-                        script.indexOf("CREATE TABLE trade_order_promotion_refund"),
+                        script.indexOf("CREATE TABLE IF NOT EXISTS trade_order_promotion_refund"),
                         script.indexOf(
-                                ";", script.indexOf("CREATE TABLE trade_order_promotion_refund"))));
+                                ";",
+                                script.indexOf(
+                                        "CREATE TABLE IF NOT EXISTS trade_order_promotion_refund"))));
         assertFalse(inventoryConfirmationGateway.inventoryConfirmed(order.orderNo()));
         remotes.paid(order.orderNo());
         assertTrue(inventoryConfirmationGateway.inventoryConfirmed(order.orderNo()));
