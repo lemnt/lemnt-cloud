@@ -2,6 +2,7 @@ package com.lemnt.mall.adapter.app.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -26,4 +27,4 @@ public record AppCombinationRecordRes(
         @Schema(description = "已参团人数") Integer userCount,
         @Schema(description = "是否虚拟成团") Boolean virtualGroup,
         @Schema(description = "过期时间") LocalDateTime expireTime)
-        implements java.io.Serializable {}
+        implements Serializable {}

@@ -46,6 +46,6 @@ public interface TradeOrderMapper extends BaseMapper<TradeOrderDO> {
             @Param("targetStatus") String targetStatus);
 
     /** 订单写操作共用的真实数据库行锁。 */
-    com.lemnt.trade.infrastructure.order.dataobject.TradeOrderDO lockByOrderNo(
+    TradeOrderDO lockByOrderNo(
             @Param("orderNo") String orderNo);
 }

@@ -1,5 +1,6 @@
 package com.lemnt.promotion.start.product;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.promotion.application.promotion.cmd.SeckillActivityCreateCmd;
 import com.lemnt.promotion.application.promotion.cmd.SeckillActivityUpdateCmd;
 import com.lemnt.promotion.application.promotion.cmd.SeckillConfigCreateCmd;
@@ -8,7 +9,7 @@ import com.lemnt.promotion.application.promotion.service.SeckillActivityManageme
 import com.lemnt.promotion.application.promotion.service.SeckillAppQueryService;
 import com.lemnt.promotion.application.promotion.service.SeckillConfigManagementService;
 import com.lemnt.promotion.application.promotion.service.SeckillStockService;
-import com.lemnt.promotion.domain.product.model.ProductSpu;
+import com.lemnt.product.domain.product.model.ProductSpu;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,14 +82,14 @@ class SeckillPersistenceTest {
     @Test
     void overlappingConfigIsRejectedAndReferencedConfigCannotBeDeleted() {
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         configs.create(
                                 new SeckillConfigCreateCmd(
                                         "重叠", "12:00:00", "13:00:00", List.of(), 0)));
         create();
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> configs.delete(configId));
         assertEquals(1, configs.detail(configId).activityCount());
     }
@@ -102,7 +103,7 @@ class SeckillPersistenceTest {
         assertEquals(new BigDecimal("5.00"), detail.seckillPrice());
         activities.close(id);
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         activities.update(
                                 new SeckillActivityUpdateCmd(
@@ -127,7 +128,7 @@ class SeckillPersistenceTest {
     @Test
     void sameSpuAndConfigCannotJoinTwoEnabledActivities() {
         create();
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class, this::create);
+        assertThrows(ServiceException.class, this::create);
     }
 
     @Test
@@ -138,7 +139,7 @@ class SeckillPersistenceTest {
         assertEquals(10, join.totalLimitCount());
         assertEquals(new BigDecimal("5.00"), join.seckillPrice());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> stock.validateJoin(id, skuId, 4));
         stock.decreaseStock(id, skuId, 2);
         assertEquals(3, activities.detail(id).stock());

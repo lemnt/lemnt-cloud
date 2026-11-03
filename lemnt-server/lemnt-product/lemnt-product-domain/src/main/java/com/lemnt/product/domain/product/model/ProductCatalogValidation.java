@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * Pure rules shared by HTTP, RPC and future import use cases.
@@ -165,13 +166,13 @@ public final class ProductCatalogValidation {
                     && !names.equals(
                             props.stream()
                                     .map(ProductSkuSpec::specName)
-                                    .collect(java.util.stream.Collectors.toSet()))) {
+                                    .collect(Collectors.toSet()))) {
                 throw new IllegalArgumentException("同一商品的SKU必须使用相同的规格名称");
             }
             names =
                     props.stream()
                             .map(ProductSkuSpec::specName)
-                            .collect(java.util.stream.Collectors.toSet());
+                            .collect(Collectors.toSet());
             skus.add(
                     new ProductSku(
                             sku.id(),

@@ -10,6 +10,8 @@ import com.lemnt.product.application.product.cmd.ProductSpecValueUpdateCmd;
 import com.lemnt.product.application.product.dto.ProductCommentDTO;
 import com.lemnt.product.application.product.dto.ProductSpecDTO;
 import com.lemnt.product.application.product.dto.ProductSpecValueDTO;
+import com.lemnt.product.application.product.dto.ProductSpuPageDTO;
+import com.lemnt.product.application.product.dto.ProductSpuStatusCountDTO;
 import com.lemnt.product.application.product.executor.*;
 import com.lemnt.product.application.product.executor.CommentCreateCmdExe;
 import com.lemnt.product.application.product.executor.ProductSpecCreateCmdExe;
@@ -25,6 +27,8 @@ import com.lemnt.product.application.product.executor.ProductSpecValuePageQueryE
 import com.lemnt.product.application.product.executor.ProductSpecValueSimpleListQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpecValueUpdateCmdExe;
 import com.lemnt.product.application.product.qry.ProductSpecPageQry;
+import com.lemnt.product.application.product.qry.ProductSpuCountQry;
+import com.lemnt.product.application.product.qry.ProductSpuPageQry;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -32,6 +36,7 @@ import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -75,7 +80,7 @@ class ProductManagementHttpTest {
     @Test
     void specPageBindsTimeRangeAndReturnsPersistedCreationTime() throws Exception {
         var query = mock(ProductSpecPageQueryExe.class);
-        var time = java.time.LocalDateTime.of(2026, 10, 15, 12, 0);
+        var time = LocalDateTime.of(2026, 10, 15, 12, 0);
         when(query.execute(any()))
                 .thenReturn(PageResult.of(List.of(new ProductSpecDTO(1L, "颜色", null, time)), 1));
         var controller =
@@ -141,7 +146,7 @@ class ProductManagementHttpTest {
         var count = mock(ProductSpuCountQueryExe.class);
         when(count.execute(any()))
                 .thenReturn(
-                        new com.lemnt.product.application.product.dto.ProductSpuStatusCountDTO(
+                        new ProductSpuStatusCountDTO(
                                 3, 2, 1, 1, 2));
         var controller =
                 new ProductSpuManagementController(
@@ -170,7 +175,7 @@ class ProductManagementHttpTest {
                 .andExpect(jsonPath("$.data.lowStock").value(2));
         verify(count)
                 .execute(
-                        new com.lemnt.product.application.product.qry.ProductSpuCountQry(
+                        new ProductSpuCountQry(
                                 "商品", 1L, 2L));
         mvc.perform(get("/mall/spus/count").param("categoryId", "0"))
                 .andExpect(status().isBadRequest());
@@ -183,7 +188,7 @@ class ProductManagementHttpTest {
         var query = mock(ProductSpuPageQueryExe.class);
         when(query.execute(any()))
                 .thenReturn(
-                        new com.lemnt.product.application.product.dto.ProductSpuPageDTO(
+                        new ProductSpuPageDTO(
                                 List.of(), 0));
         var mvc =
                 MockMvcBuilders.standaloneSetup(
@@ -200,7 +205,7 @@ class ProductManagementHttpTest {
                 .andExpect(jsonPath("$.total").value(0));
         verify(query)
                 .execute(
-                        new com.lemnt.product.application.product.qry.ProductSpuPageQry(
+                        new ProductSpuPageQry(
                                 null, null, 1, 10, 1L, null, "LOW_STOCK"));
     }
 

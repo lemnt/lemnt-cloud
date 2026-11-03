@@ -4,6 +4,7 @@ import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.trade.domain.brokerage.model.BrokerageRecord;
 import com.lemnt.trade.domain.brokerage.model.BrokerageRecordFilter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,5 +25,5 @@ public interface BrokerageRecordGateway {
     boolean updateStatus(Long id, Integer expected, Integer next);
 
     /** 按原金额 CAS 更新退款扣回累计金额，避免并发重复扣回。 */
-    boolean updatePrice(Long id, java.math.BigDecimal expected, java.math.BigDecimal next);
+    boolean updatePrice(Long id, BigDecimal expected, BigDecimal next);
 }

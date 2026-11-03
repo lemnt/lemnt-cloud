@@ -2,6 +2,7 @@ package com.lemnt.promotion.adapter.web.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -28,4 +29,4 @@ public record CombinationRecordRes(
         @Schema(description = "过期时间") LocalDateTime expireTime,
         @Schema(description = "开始时间") LocalDateTime startTime,
         @Schema(description = "结束时间") LocalDateTime endTime)
-        implements java.io.Serializable {}
+        implements Serializable {}

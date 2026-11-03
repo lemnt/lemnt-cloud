@@ -26,6 +26,7 @@ import com.lemnt.member.application.growth.qry.SignRecordPageQry;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -136,7 +137,7 @@ class MemberHttpContractTest {
     @Test
     void appPointFiltersKeepFalseAndTrustedMemberId() throws Exception {
         var assets = mock(MemberAssetRecordPageQueryExe.class);
-        var start = java.time.LocalDateTime.of(2026, 10, 30, 10, 0);
+        var start = LocalDateTime.of(2026, 10, 30, 10, 0);
         var expected = new AssetRecordPageQry(7L, "POINT", 1, 20, false, start, start.plusHours(1));
         when(assets.execute(expected)).thenReturn(new PageResult<>(List.of(), 0));
         var mvc =

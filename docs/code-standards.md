@@ -21,7 +21,7 @@ HTTP沿用`Req → Cmd/Qry → Executor → DTO → Res`。Adapter完成HTTP绑�
 
 - Application与Infrastructure互为兄弟，不能相互依赖；Domain不依赖它们，也不引入Spring、MyBatis、Jackson、Swagger或工具库。领域类可使用Lombok和JDK。
 - 普通Executor不直接调用远端、Redis或Mapper。Dubbo提供者位于application/dubbo，消费者由GatewayImpl隔离。
-- Req/Res不嵌套Application DTO、Domain Model或DO。公开字段及嵌套类型补齐中文Schema，明确枚举、单位、空值和范围。注解通过import引入并使用短名，例如`@Schema(...)`，不在注解位置写完整包路径。纯数据载体优先record并实现Serializable。
+- Req/Res不嵌套Application DTO、Domain Model或DO。公开字段及嵌套类型补齐中文Schema，明确枚举、单位、空值和范围。所有Java类型通过显式import引入并使用短名，包含注解、字段、泛型、参数、返回值、implements和静态调用，例如`@Schema(...)`、`Map<Long, Integer>`、`implements Serializable`。字符串、反射类名及XML中的真实包路径保留。纯数据载体优先record并实现Serializable。
 - 新命令采用`{聚合}{动词}Cmd`/`CmdExe`，查询采用`{聚合}{查询类型}Qry`/`QueryExe`。不新增`QryExe`、`Resp`或应用层`Vo`。
 - 跨服务接口沿用各上下文现有`*Client`；system旧`Remote*Service`及`api`包名保持兼容，不为统一外观重命名远端契约。
 - 密码等敏感字段不得进入HTTP Res。UserDTO现有WRITE_ONLY防护保留，不以删除注解的方式弱化安全边界。
@@ -103,6 +103,6 @@ npm test
 ../lemnt-ui/node_modules/.bin/prettier --check '**/*.{js,cjs,mjs,json,wxss}'
 ```
 
-静态检查覆盖明确的源码导入/POM依赖、HTTP模型Schema、注解SQL、Mapper默认方法、SQL片段和锁缓存规则；它不替代编译器、人工业务审查、安全审计和真实MySQL验证。新增例外必须说明具体兼容原因，不增加无解释的忽略清单。
+静态检查覆盖明确的源码导入/POM依赖、Java全限定类型引用、HTTP模型Schema、注解SQL、Mapper默认方法、SQL片段和锁缓存规则；它不替代编译器、人工业务审查、安全审计和真实MySQL验证。类型短名规则同时检查测试源码。新增例外必须说明具体兼容原因，不增加无解释的忽略清单。
 
 交付记录说明实际文件范围、行为变化、检查命令与结果、未验证层及迁移影响。批量格式化与业务修复分别说明依据，不自动commit或push。

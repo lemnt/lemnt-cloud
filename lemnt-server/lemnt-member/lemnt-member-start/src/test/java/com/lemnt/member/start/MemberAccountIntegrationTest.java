@@ -8,36 +8,58 @@ import com.lemnt.common.security.handler.GlobalExceptionHandler;
 import com.lemnt.common.security.interceptor.HeaderInterceptor;
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.member.adapter.app.address.AppMemberAddressController;
+import com.lemnt.member.adapter.app.user.req.ProfileUpdateReq;
+import com.lemnt.member.adapter.app.user.res.ProfileRes;
+import com.lemnt.member.adapter.web.growth.MemberPointRecordController;
+import com.lemnt.member.adapter.web.growth.MemberSignRecordController;
 import com.lemnt.member.application.address.executor.MemberAddressDefaultQueryExe;
 import com.lemnt.member.application.address.executor.MemberAddressDeleteCmdExe;
 import com.lemnt.member.application.address.executor.MemberAddressDetailQueryExe;
 import com.lemnt.member.application.address.executor.MemberAddressListQueryExe;
 import com.lemnt.member.application.address.executor.MemberAddressSaveCmdExe;
+import com.lemnt.member.application.address.service.MemberAddressQueryService;
 import com.lemnt.member.application.address.service.MemberAddressService;
+import com.lemnt.member.application.dubbo.MemberAddressClientImpl;
+import com.lemnt.member.application.dubbo.MemberGrowthClientImpl;
 import com.lemnt.member.application.dubbo.MemberUserClientImpl;
+import com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd;
 import com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe;
 import com.lemnt.member.application.growth.executor.MemberAssetRecordDetailQueryExe;
 import com.lemnt.member.application.growth.executor.MemberAssetRecordPageQueryExe;
 import com.lemnt.member.application.growth.executor.MemberExperienceRecordAllPageQueryExe;
+import com.lemnt.member.application.growth.executor.MemberLevelListQueryExe;
 import com.lemnt.member.application.growth.executor.MemberLevelRecordAllPageQueryExe;
 import com.lemnt.member.application.growth.executor.MemberLevelRecordDetailQueryExe;
 import com.lemnt.member.application.growth.executor.MemberSignRecordAllPageQueryExe;
+import com.lemnt.member.application.growth.executor.MemberSignSummaryQueryExe;
 import com.lemnt.member.application.growth.qry.AssetRecordAllPageQry;
 import com.lemnt.member.application.growth.qry.AssetRecordDetailQry;
 import com.lemnt.member.application.growth.qry.AssetRecordPageQry;
 import com.lemnt.member.application.growth.qry.ExperienceRecordAllPageQry;
+import com.lemnt.member.application.growth.qry.LevelListQry;
 import com.lemnt.member.application.growth.qry.LevelRecordAllPageQry;
 import com.lemnt.member.application.growth.qry.LevelRecordDetailQry;
 import com.lemnt.member.application.growth.qry.SignRecordAllPageQry;
 import com.lemnt.member.application.growth.qry.SignRecordAllPageQry;
+import com.lemnt.member.application.growth.qry.SignSummaryQry;
 import com.lemnt.member.application.growth.service.MemberGrowthService;
+import com.lemnt.member.application.user.cmd.MemberUserUpdateCmd;
 import com.lemnt.member.application.user.cmd.PasswordChangeCmd;
+import com.lemnt.member.application.user.executor.MemberDetailQueryExe;
 import com.lemnt.member.application.user.executor.MemberGroupPageQueryExe;
+import com.lemnt.member.application.user.executor.MemberPageQueryExe;
 import com.lemnt.member.application.user.executor.MemberPasswordChangeCmdExe;
 import com.lemnt.member.application.user.executor.MemberTagPageQueryExe;
+import com.lemnt.member.application.user.executor.MemberUserDetailQueryExe;
+import com.lemnt.member.application.user.executor.MemberUserPageQueryExe;
 import com.lemnt.member.application.user.qry.GroupPageQry;
+import com.lemnt.member.application.user.qry.MemberDetailQry;
+import com.lemnt.member.application.user.qry.MemberPageQry;
 import com.lemnt.member.application.user.qry.TagPageQry;
+import com.lemnt.member.application.user.service.MemberUserRelationQueryService;
 import com.lemnt.member.application.user.service.MemberUserService;
+import com.lemnt.member.client.MemberUserClient;
+import com.lemnt.member.domain.address.gateway.MemberAddressAreaGateway;
 import com.lemnt.member.domain.address.gateway.MemberAddressGateway;
 import com.lemnt.member.domain.address.model.Address;
 import com.lemnt.member.domain.growth.gateway.MemberConfigGateway;
@@ -47,9 +69,15 @@ import com.lemnt.member.domain.growth.gateway.MemberLevelRecordGateway;
 import com.lemnt.member.domain.growth.gateway.MemberPointRecordGateway;
 import com.lemnt.member.domain.growth.gateway.MemberSignConfigGateway;
 import com.lemnt.member.domain.growth.gateway.MemberSignRecordGateway;
+import com.lemnt.member.domain.growth.model.AssetRecord;
+import com.lemnt.member.domain.growth.model.AssetRecordPageFilter;
+import com.lemnt.member.domain.growth.model.Config;
+import com.lemnt.member.domain.growth.model.ExperienceRecordMetadata;
 import com.lemnt.member.domain.growth.model.Level;
+import com.lemnt.member.domain.growth.model.PointRecordMetadata;
 import com.lemnt.member.domain.growth.model.SignConfig;
 import com.lemnt.member.domain.growth.model.SignRecord;
+import com.lemnt.member.domain.user.gateway.MemberAuthGateway;
 import com.lemnt.member.domain.user.gateway.MemberGroupGateway;
 import com.lemnt.member.domain.user.gateway.MemberTagGateway;
 import com.lemnt.member.domain.user.gateway.MemberTagLinkGateway;
@@ -62,12 +90,14 @@ import com.lemnt.member.infrastructure.address.mapper.MemberAddressMapper;
 import com.lemnt.member.infrastructure.growth.gateway.MemberConfigGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberLevelGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberLevelRecordGatewayImpl;
+import com.lemnt.member.infrastructure.growth.gateway.MemberPointRecordGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberSignConfigGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberSignRecordGatewayImpl;
 import com.lemnt.member.infrastructure.growth.mapper.MemberLevelMapper;
 import com.lemnt.member.infrastructure.growth.mapper.MemberLevelRecordMapper;
 import com.lemnt.member.infrastructure.growth.mapper.MemberSignConfigMapper;
 import com.lemnt.member.infrastructure.growth.mapper.MemberSignRecordMapper;
+import com.lemnt.member.infrastructure.user.dataobject.MemberDO;
 import com.lemnt.member.infrastructure.user.gateway.MemberGroupGatewayImpl;
 import com.lemnt.member.infrastructure.user.gateway.MemberTagGatewayImpl;
 import com.lemnt.member.infrastructure.user.gateway.MemberTagLinkGatewayImpl;
@@ -76,7 +106,10 @@ import com.lemnt.member.infrastructure.user.mapper.MemberGroupMapper;
 import com.lemnt.member.infrastructure.user.mapper.MemberTagLinkMapper;
 import com.lemnt.member.infrastructure.user.mapper.MemberTagMapper;
 import com.lemnt.member.infrastructure.user.mapper.MemberUserMapper;
+import com.lemnt.system.api.RemoteConfigService;
+import com.lemnt.system.api.bo.BusinessConfigSaveBo;
 
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
@@ -88,20 +121,31 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -129,7 +173,7 @@ class MemberAccountIntegrationTest {
     JdbcDataSource source;
     Connection schema;
     MemberUserService userService;
-    com.lemnt.member.domain.user.gateway.MemberAuthGateway memberAuthGateway;
+    MemberAuthGateway memberAuthGateway;
     MemberAddressService addressService;
     SqlSessionTemplate template;
     MemberGrowthService growthService;
@@ -159,7 +203,7 @@ class MemberAccountIntegrationTest {
         assertEquals(status, exception.getCode());
     }
 
-    java.util.Map<String, String> pointConfigs;
+    Map<String, String> pointConfigs;
     boolean rejectPointConfig;
 
     @BeforeEach
@@ -181,7 +225,7 @@ class MemberAccountIntegrationTest {
         bean.setDataSource(source);
         bean.setConfiguration(config);
         bean.setMapperLocations(
-                new org.springframework.core.io.support.PathMatchingResourcePatternResolver()
+                new PathMatchingResourcePatternResolver()
                         .getResources("classpath*:mapper/Member*Mapper.xml"));
         bean.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
         var factory = bean.getObject();
@@ -205,7 +249,7 @@ class MemberAccountIntegrationTest {
         memberAddressGateway =
                 new MemberAddressGatewayImpl(template.getMapper(MemberAddressMapper.class));
         pointRecords =
-                new com.lemnt.member.infrastructure.growth.gateway.MemberPointRecordGatewayImpl(
+                new MemberPointRecordGatewayImpl(
                         template.getMapper(
                                 com.lemnt.member.infrastructure.growth.mapper
                                         .MemberPointRecordMapper.class));
@@ -223,26 +267,26 @@ class MemberAccountIntegrationTest {
                 new MemberSignConfigGatewayImpl(template.getMapper(MemberSignConfigMapper.class));
         memberSignRecordGateway =
                 new MemberSignRecordGatewayImpl(template.getMapper(MemberSignRecordMapper.class));
-        pointConfigs = new java.util.concurrent.ConcurrentHashMap<>();
+        pointConfigs = new ConcurrentHashMap<>();
         var remote =
-                new com.lemnt.system.api.RemoteConfigService() {
+                new RemoteConfigService() {
                     public String getConfig(String key) {
                         return pointConfigs.get(key);
                     }
 
                     public void saveBusinessConfig(
-                            com.lemnt.system.api.bo.BusinessConfigSaveBo value) {
+                            BusinessConfigSaveBo value) {
                         if (rejectPointConfig) throw new IllegalStateException("system配置保存失败");
                         pointConfigs.put(value.configKey(), value.configValue());
                     }
                 };
         var gateway = new MemberConfigGatewayImpl();
-        org.springframework.test.util.ReflectionTestUtils.setField(
+        ReflectionTestUtils.setField(
                 gateway, "remoteConfigService", remote);
         memberConfigGateway = gateway;
         memberAuthGateway =
-                org.mockito.Mockito.mock(
-                        com.lemnt.member.domain.user.gateway.MemberAuthGateway.class);
+                Mockito.mock(
+                        MemberAuthGateway.class);
         userService =
                 tx(
                         new MemberUserService(
@@ -353,7 +397,7 @@ class MemberAccountIntegrationTest {
     @Test
     void memberPasswordDiagnosticsDoNotExposeHashes() {
         String hash = "sensitive-password-hash";
-        var row = new com.lemnt.member.infrastructure.user.dataobject.MemberDO();
+        var row = new MemberDO();
         row.setId(id);
         row.setPassword(hash);
         assertFalse(row.toString().contains(hash));
@@ -370,7 +414,7 @@ class MemberAccountIntegrationTest {
                                         id, "missing-password", "New-password-2026")));
         memberUserGateway.updatePassword(
                 id,
-                com.lemnt.common.security.utils.SecurityUtils.encryptPassword(
+                SecurityUtils.encryptPassword(
                         "Member-password-2026"));
         assertTrue(
                 SecurityUtils.matchesPassword(
@@ -397,7 +441,7 @@ class MemberAccountIntegrationTest {
     void addressRpcOnlyReturnsTheOwnerAddressFromProductionGateway() {
         var saved = addressService.saveAddress(address(id, null, true));
         var client =
-                new com.lemnt.member.application.dubbo.MemberAddressClientImpl(
+                new MemberAddressClientImpl(
                         memberAddressGateway);
         assertEquals(id, client.get(id, saved.id()).memberId());
         assertEquals("测试地址", client.get(id, saved.id()).detailAddress());
@@ -545,7 +589,7 @@ class MemberAccountIntegrationTest {
         growthService.createSignConfig(new SignConfig(1, 10L, 2L, 1));
         var pool = Executors.newFixedThreadPool(2);
         try {
-            java.util.concurrent.Callable<Object> attempt =
+            Callable<Object> attempt =
                     () -> {
                         try {
                             return growthService.sign(id);
@@ -689,14 +733,14 @@ class MemberAccountIntegrationTest {
                 1,
                 memberSignRecordAllPageQueryExe
                         .execute(
-                                new com.lemnt.member.application.growth.qry.SignRecordAllPageQry(
+                                new SignRecordAllPageQry(
                                         null, 1, 20))
                         .getTotal());
         assertEquals(
                 0,
                 memberSignRecordAllPageQueryExe
                         .execute(
-                                new com.lemnt.member.application.growth.qry.SignRecordAllPageQry(
+                                new SignRecordAllPageQry(
                                         other, 1, 20))
                         .getTotal());
     }
@@ -706,12 +750,12 @@ class MemberAccountIntegrationTest {
     void memberUserClientReadsExistingStorageAndTracksCurrentStatus() {
         memberUserGateway.updatePassword(
                 id,
-                com.lemnt.common.security.utils.SecurityUtils.encryptPassword(
+                SecurityUtils.encryptPassword(
                         "Member-password-2026"));
-        com.lemnt.member.client.MemberUserClient client =
+        MemberUserClient client =
                 tx(
-                        (com.lemnt.member.client.MemberUserClient)
-                                new com.lemnt.member.application.dubbo.MemberUserClientImpl(
+                        (MemberUserClient)
+                                new MemberUserClientImpl(
                                         memberUserGateway, memberLevelGateway));
         var login = client.getByMobile("13800000001");
         assertEquals(id, login.memberId());
@@ -729,27 +773,27 @@ class MemberAccountIntegrationTest {
     void tradeAssetsAreIdempotentAndRefundReturnsOnlyOriginalOrderBenefits() {
         growthService.adjustAsset(id, "POINT", 100, "SEED", "初始化");
         var create =
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "CREATE", "ORDER", null, 20, 10, 1000, 0, false);
         growthService.tradeAsset(create);
         growthService.tradeAsset(create);
         assertEquals(80L, memberUserGateway.findById(id).points());
         var paid =
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "PAID", "ORDER", null, 20, 10, 1000, 0, false);
         growthService.tradeAsset(paid);
         growthService.tradeAsset(paid);
         assertEquals(90L, memberUserGateway.findById(id).points());
         assertEquals(1000L, memberUserGateway.findById(id).experience());
         var first =
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "REFUND", "ORDER", "FIRST", 20, 10, 1000, 500, false);
         growthService.tradeAsset(first);
         growthService.tradeAsset(first);
         assertEquals(95L, memberUserGateway.findById(id).points());
         assertEquals(500L, memberUserGateway.findById(id).experience());
         growthService.tradeAsset(
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "REFUND", "ORDER", "LAST", 20, 10, 1000, 500, true));
         assertEquals(100L, memberUserGateway.findById(id).points());
         assertEquals(0L, memberUserGateway.findById(id).experience());
@@ -760,22 +804,22 @@ class MemberAccountIntegrationTest {
     void zeroCashPointOrderDeductsAndReturnsPointsWithoutExperience() {
         growthService.adjustAsset(id, "POINT", 100, "SEED_ZERO", "初始化");
         var create =
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "CREATE", "ZERO", null, 50, 0, 0, 0, false);
         growthService.tradeAsset(create);
         assertEquals(50L, memberUserGateway.findById(id).points());
         var paid =
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "PAID", "ZERO", null, 50, 0, 0, 0, false);
         growthService.tradeAsset(paid);
         assertEquals(50L, memberUserGateway.findById(id).points());
         assertEquals(0L, memberUserGateway.findById(id).experience());
         growthService.tradeAsset(
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "REFUND", "ZERO", "RF-ZERO-1", 50, 0, 0, 0, false, 25));
         assertEquals(75L, memberUserGateway.findById(id).points());
         growthService.tradeAsset(
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "REFUND", "ZERO", "RF-ZERO-2", 50, 0, 0, 0, true, 25));
         assertEquals(100L, memberUserGateway.findById(id).points());
         assertEquals(0L, memberUserGateway.findById(id).experience());
@@ -785,11 +829,11 @@ class MemberAccountIntegrationTest {
     @Test
     void closedTradeDoesNotCreditUndeductedPointsAndRejectsLateCreate() {
         var create =
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "CREATE", "CLOSED", null, 20, 0, 1000, 0, false);
         assertThrows(ServiceException.class, () -> growthService.tradeAsset(create));
         growthService.tradeAsset(
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "CLOSED", "CLOSED", null, 20, 0, 1000, 0, false));
         assertEquals(0L, memberUserGateway.findById(id).points());
         growthService.adjustAsset(id, "POINT", 100, "SEED", "初始化");
@@ -801,11 +845,11 @@ class MemberAccountIntegrationTest {
     @Test
     void refundCannotCreateNegativeBalanceOrReclaimFutureUnrelatedPoints() {
         growthService.tradeAsset(
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "PAID", "SPENT", null, 0, 10, 1000, 0, false));
         growthService.adjustAsset(id, "POINT", -10, "SPEND", "使用积分");
         var refund =
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "REFUND", "SPENT", "REFUND", 0, 10, 1000, 1000, true);
         growthService.tradeAsset(refund);
         assertEquals(0L, memberUserGateway.findById(id).points());
@@ -821,7 +865,7 @@ class MemberAccountIntegrationTest {
         userService.profileUpdate(id, "new", null, null, null, null, null);
         assertEquals("仅后台可见", memberUserGateway.findById(id).mark());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         userService.profileUpdate(
                                 id, "new", null, null, null, null, null, "字".repeat(256)));
@@ -829,11 +873,11 @@ class MemberAccountIntegrationTest {
         userService.profileUpdate(id, "new", null, null, null, null, null, "");
         assertEquals("", memberUserGateway.findById(id).mark());
         for (Class<?> contract :
-                java.util.List.of(
-                        com.lemnt.member.adapter.app.user.req.ProfileUpdateReq.class,
-                        com.lemnt.member.adapter.app.user.res.ProfileRes.class)) {
+                List.of(
+                        ProfileUpdateReq.class,
+                        ProfileRes.class)) {
             assertFalse(
-                    java.util.Arrays.stream(contract.getRecordComponents())
+                    Arrays.stream(contract.getRecordComponents())
                             .anyMatch(v -> v.getName().equals("mark")));
         }
     }
@@ -847,7 +891,7 @@ class MemberAccountIntegrationTest {
         assertEquals("真实姓名", memberUserGateway.findById(id).name());
         assertEquals(110101, memberUserGateway.findById(id).areaId());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         userService.profileUpdate(
                                 id,
@@ -861,7 +905,7 @@ class MemberAccountIntegrationTest {
                                 "字".repeat(31),
                                 110101));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         userService.profileUpdate(
                                 id, "不得写入", null, null, null, null, null, null, "姓名", 0));
@@ -870,11 +914,11 @@ class MemberAccountIntegrationTest {
         assertEquals("", memberUserGateway.findById(id).name());
         assertEquals(110101, memberUserGateway.findById(id).areaId());
         for (Class<?> contract :
-                java.util.List.of(
-                        com.lemnt.member.adapter.app.user.req.ProfileUpdateReq.class,
-                        com.lemnt.member.adapter.app.user.res.ProfileRes.class)) {
+                List.of(
+                        ProfileUpdateReq.class,
+                        ProfileRes.class)) {
             assertFalse(
-                    java.util.Arrays.stream(contract.getRecordComponents())
+                    Arrays.stream(contract.getRecordComponents())
                             .anyMatch(
                                     v ->
                                             v.getName().equals("name")
@@ -884,10 +928,10 @@ class MemberAccountIntegrationTest {
 
     @Test
     void loginTimeUsesMemberDatabaseAndOrdinaryProfileUpdateCannotClearIt() {
-        com.lemnt.member.client.MemberUserClient client =
+        MemberUserClient client =
                 tx(
-                        (com.lemnt.member.client.MemberUserClient)
-                                new com.lemnt.member.application.dubbo.MemberUserClientImpl(
+                        (MemberUserClient)
+                                new MemberUserClientImpl(
                                         memberUserGateway, memberLevelGateway));
         assertNull(memberUserGateway.findById(id).loginDate());
         var before = memberUserGateway.now();
@@ -899,23 +943,23 @@ class MemberAccountIntegrationTest {
         assertEquals(logged, memberUserGateway.findById(id).loginDate());
         userService.profileUpdate(id, "one", null, null, null, null, 0);
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> client.recordLogin(id));
         assertEquals(logged, memberUserGateway.findById(id).loginDate());
     }
 
     @Test
     void loginIpAndTimeAreSavedTogetherAndUnknownDoesNotReusePreviousIp() {
-        com.lemnt.member.client.MemberUserClient client =
+        MemberUserClient client =
                 tx(
-                        (com.lemnt.member.client.MemberUserClient)
-                                new com.lemnt.member.application.dubbo.MemberUserClientImpl(
+                        (MemberUserClient)
+                                new MemberUserClientImpl(
                                         memberUserGateway, memberLevelGateway));
         client.recordLogin(id, "203.0.113.7");
         assertEquals("203.0.113.7", memberUserGateway.findById(id).loginIp());
         assertNotNull(memberUserGateway.findById(id).loginDate());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> client.recordLogin(id, "example.com"));
         assertEquals("203.0.113.7", memberUserGateway.findById(id).loginIp());
         client.recordLogin(id, null);
@@ -926,15 +970,15 @@ class MemberAccountIntegrationTest {
     void signRecordNicknameFilterAndPageTotalUseSameRealJoinedRecords() {
         var today = memberUserGateway.now().toLocalDate();
         memberSignRecordGateway.signSave(
-                new com.lemnt.member.domain.growth.model.SignRecord(null, id, today, 1, 1L, 0L));
+                new SignRecord(null, id, today, 1, 1L, 0L));
         memberSignRecordGateway.signSave(
-                new com.lemnt.member.domain.growth.model.SignRecord(null, other, today, 1, 2L, 0L));
+                new SignRecord(null, other, today, 1, 2L, 0L));
         var query =
-                new com.lemnt.member.application.growth.executor.MemberSignRecordAllPageQueryExe(
+                new MemberSignRecordAllPageQueryExe(
                         memberSignRecordGateway);
         var page =
                 query.execute(
-                        new com.lemnt.member.application.growth.qry.SignRecordAllPageQry(
+                        new SignRecordAllPageQry(
                                 null, 1, 1, "o"));
         assertEquals(2, page.getTotal());
         assertEquals(1, page.getRecords().size());
@@ -942,25 +986,25 @@ class MemberAccountIntegrationTest {
         assertEquals(
                 1,
                 query.execute(
-                                new com.lemnt.member.application.growth.qry.SignRecordAllPageQry(
+                                new SignRecordAllPageQry(
                                         id, 1, 20, "one"))
                         .getTotal());
         assertEquals(
                 0,
                 query.execute(
-                                new com.lemnt.member.application.growth.qry.SignRecordAllPageQry(
+                                new SignRecordAllPageQry(
                                         id, 1, 20, "two"))
                         .getTotal());
         assertEquals(
                 0,
                 query.execute(
-                                new com.lemnt.member.application.growth.qry.SignRecordAllPageQry(
+                                new SignRecordAllPageQry(
                                         null, 1, 20, "无匹配"))
                         .getTotal());
         userService.profileUpdate(id, "改名", null, null, null, null, null);
         var renamed =
                 query.execute(
-                        new com.lemnt.member.application.growth.qry.SignRecordAllPageQry(
+                        new SignRecordAllPageQry(
                                 null, 1, 20, "改名"));
         assertEquals(1, renamed.getTotal());
         assertEquals("改名", renamed.getRecords().get(0).nickname());
@@ -970,39 +1014,39 @@ class MemberAccountIntegrationTest {
     void signNicknameHttpBindingUsesIndependentCriterionAndReturnsCurrentNickname()
             throws Exception {
         memberSignRecordGateway.signSave(
-                new com.lemnt.member.domain.growth.model.SignRecord(
+                new SignRecord(
                         null, id, memberUserGateway.now().toLocalDate(), 1, 1L, 0L));
         var query =
-                new com.lemnt.member.application.growth.executor.MemberSignRecordAllPageQueryExe(
+                new MemberSignRecordAllPageQueryExe(
                         memberSignRecordGateway);
         var mvc =
-                org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(
-                                new com.lemnt.member.adapter.web.growth.MemberSignRecordController(
+                MockMvcBuilders.standaloneSetup(
+                                new MemberSignRecordController(
                                         query))
                         .setControllerAdvice(
-                                new com.lemnt.common.security.handler.GlobalExceptionHandler())
+                                new GlobalExceptionHandler())
                         .build();
         mvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                        MockMvcRequestBuilders.get(
                                         "/member/admin/signin-records")
                                 .param("nickname", "one"))
                 .andExpect(
-                        org.springframework.test.web.servlet.result.MockMvcResultMatchers.status()
+                        MockMvcResultMatchers.status()
                                 .isOk())
                 .andExpect(
-                        org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath(
+                        MockMvcResultMatchers.jsonPath(
                                         "$.total")
                                 .value(1))
                 .andExpect(
-                        org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath(
+                        MockMvcResultMatchers.jsonPath(
                                         "$.rows[0].nickname")
                                 .value("one"));
         mvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                        MockMvcRequestBuilders.get(
                                         "/member/admin/signin-records")
                                 .param("nickname", "字".repeat(81)))
                 .andExpect(
-                        org.springframework.test.web.servlet.result.MockMvcResultMatchers.status()
+                        MockMvcResultMatchers.status()
                                 .is(422));
     }
 
@@ -1010,40 +1054,40 @@ class MemberAccountIntegrationTest {
     void pointNicknameBusinessTypeAndMemberFilterShareCountAndExcludeExperience() {
         var now = memberUserGateway.now();
         pointRecords.save(
-                new com.lemnt.member.domain.growth.model.AssetRecord(
+                new AssetRecord(
                         null, id, "POINT", 1L, 1L, "ADMIN", "F1", "调整", now));
         pointRecords.save(
-                new com.lemnt.member.domain.growth.model.AssetRecord(
+                new AssetRecord(
                         null, other, "POINT", 2L, 2L, "SIGN_IN", "F2", "签到", now));
         experienceRecords.save(
-                new com.lemnt.member.domain.growth.model.AssetRecord(
+                new AssetRecord(
                         null, id, "EXPERIENCE", 3L, 3L, "ADMIN", "F3", "经验", now));
         var query =
-                new com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe(
+                new MemberAssetRecordAllPageQueryExe(
                         pointRecords, experienceRecords);
         var all =
                 query.execute(
-                        new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry(
+                        new AssetRecordAllPageQry(
                                 "POINT", null, 1, 1, "o", null));
         assertEquals(2, all.getTotal());
         assertEquals(1, all.getRecords().size());
         assertEquals("two", all.getRecords().get(0).nickname());
         var filtered =
                 query.execute(
-                        new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry(
+                        new AssetRecordAllPageQry(
                                 "POINT", id, 1, 20, "one", "ADMIN"));
         assertEquals(1, filtered.getTotal());
         assertEquals("POINT", filtered.getRecords().get(0).assetType());
         assertEquals(
                 0,
                 query.execute(
-                                new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry(
+                                new AssetRecordAllPageQry(
                                         "POINT", id, 1, 20, "one", "SIGN_IN"))
                         .getTotal());
         assertEquals(
                 0,
                 query.execute(
-                                new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry(
+                                new AssetRecordAllPageQry(
                                         "POINT", null, 1, 20, "无匹配", null))
                         .getTotal());
         assertEquals(0L, memberUserGateway.findById(id).points());
@@ -1052,11 +1096,11 @@ class MemberAccountIntegrationTest {
     @Test
     void pointFilterHttpBindsNicknameAndBusinessTypeAndRejectsOversize() throws Exception {
         pointRecords.save(
-                new com.lemnt.member.domain.growth.model.AssetRecord(
+                new AssetRecord(
                         null, id, "POINT", 1L, 1L, "ADMIN", "H1", "调整", memberUserGateway.now()));
         var mvc =
-                org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(
-                                new com.lemnt.member.adapter.web.growth.MemberPointRecordController(
+                MockMvcBuilders.standaloneSetup(
+                                new MemberPointRecordController(
                                         new com.lemnt.member.application.growth.executor
                                                 .MemberAssetRecordAllPageQueryExe(
                                                 pointRecords, experienceRecords),
@@ -1064,56 +1108,56 @@ class MemberAccountIntegrationTest {
                                                 .MemberAssetRecordDetailQueryExe(
                                                 pointRecords, experienceRecords)))
                         .setControllerAdvice(
-                                new com.lemnt.common.security.handler.GlobalExceptionHandler())
+                                new GlobalExceptionHandler())
                         .build();
         mvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                        MockMvcRequestBuilders.get(
                                         "/member/admin/point-records")
                                 .param("nickname", "one")
                                 .param("bizType", "ADMIN")
                                 .param("memberId", id.toString()))
                 .andExpect(
-                        org.springframework.test.web.servlet.result.MockMvcResultMatchers.status()
+                        MockMvcResultMatchers.status()
                                 .isOk())
                 .andExpect(
-                        org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath(
+                        MockMvcResultMatchers.jsonPath(
                                         "$.total")
                                 .value(1))
                 .andExpect(
-                        org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath(
+                        MockMvcResultMatchers.jsonPath(
                                         "$.rows[0].nickname")
                                 .value("one"));
         mvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                        MockMvcRequestBuilders.get(
                                         "/member/admin/point-records")
                                 .param("bizType", "字".repeat(41)))
                 .andExpect(
-                        org.springframework.test.web.servlet.result.MockMvcResultMatchers.status()
+                        MockMvcResultMatchers.status()
                                 .is(422));
         mvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                        MockMvcRequestBuilders.get(
                                         "/member/admin/point-records")
                                 .param("pointBizType", "2"))
                 .andExpect(
-                        org.springframework.test.web.servlet.result.MockMvcResultMatchers.status()
+                        MockMvcResultMatchers.status()
                                 .isOk())
                 .andExpect(
-                        org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath(
+                        MockMvcResultMatchers.jsonPath(
                                         "$.total")
                                 .value(0));
         mvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                        MockMvcRequestBuilders.get(
                                         "/member/admin/point-records")
                                 .param("pointBizType", "3"))
                 .andExpect(
-                        org.springframework.test.web.servlet.result.MockMvcResultMatchers.status()
+                        MockMvcResultMatchers.status()
                                 .isBadRequest());
         mvc.perform(
-                        org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                        MockMvcRequestBuilders.get(
                                         "/member/admin/point-records")
                                 .param("pointBizType", "invalid"))
                 .andExpect(
-                        org.springframework.test.web.servlet.result.MockMvcResultMatchers.status()
+                        MockMvcResultMatchers.status()
                                 .is(422));
     }
 
@@ -1139,7 +1183,7 @@ class MemberAccountIntegrationTest {
     @Test
     void sourcePointEnumMappingDoesNotInventUnknownOrInternalMarkerMetadata() {
         var codes =
-                java.util.Map.of(
+                Map.of(
                         "SIGN_IN",
                         1,
                         "ADMIN",
@@ -1158,19 +1202,19 @@ class MemberAccountIntegrationTest {
                 (code, number) ->
                         assertEquals(
                                 number,
-                                com.lemnt.member.domain.growth.model.PointRecordMetadata.from(
+                                PointRecordMetadata.from(
                                                 "POINT", code, 10)
                                         .type()));
         assertNull(
-                com.lemnt.member.domain.growth.model.PointRecordMetadata.from(
+                PointRecordMetadata.from(
                                 "POINT", "TRADE_CLOSED", 0)
                         .type());
         assertNull(
-                com.lemnt.member.domain.growth.model.PointRecordMetadata.from(
+                PointRecordMetadata.from(
                                 "EXPERIENCE", "ADMIN", 10)
                         .type());
         assertNull(
-                com.lemnt.member.domain.growth.model.PointRecordMetadata.from(
+                PointRecordMetadata.from(
                                 "POINT", "UNKNOWN", 10)
                         .type());
     }
@@ -1179,7 +1223,7 @@ class MemberAccountIntegrationTest {
     void numericPointFilterMatchesSavedMetadataAndKeepsLegacyUnknownOnlyWhenUnfiltered() {
         growthService.adjustAsset(id, "POINT", 10, "NUMERIC-1", "新流水");
         pointRecords.save(
-                new com.lemnt.member.domain.growth.model.AssetRecord(
+                new AssetRecord(
                         null,
                         id,
                         "POINT",
@@ -1190,17 +1234,17 @@ class MemberAccountIntegrationTest {
                         "旧流水",
                         memberUserGateway.now()));
         var query =
-                new com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe(
+                new MemberAssetRecordAllPageQueryExe(
                         pointRecords, experienceRecords);
         assertEquals(
                 2,
                 query.execute(
-                                new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry(
+                                new AssetRecordAllPageQry(
                                         "POINT", id, 1, 20))
                         .getTotal());
         var result =
                 query.execute(
-                        new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry(
+                        new AssetRecordAllPageQry(
                                 "POINT", id, 1, 1, "one", "ADMIN", 2));
         assertEquals(1, result.getTotal());
         assertEquals(1, result.getRecords().size());
@@ -1208,25 +1252,25 @@ class MemberAccountIntegrationTest {
         assertEquals(
                 0,
                 query.execute(
-                                new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry(
+                                new AssetRecordAllPageQry(
                                         "POINT", id, 1, 20, null, "SIGN_IN", 2))
                         .getTotal());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         query.execute(
-                                new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry(
+                                new AssetRecordAllPageQry(
                                         "POINT", id, 1, 20, null, null, 3)));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         query.execute(
-                                new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry(
+                                new AssetRecordAllPageQry(
                                         "EXPERIENCE", id, 1, 20, null, null, 2)));
         assertEquals(
                 0,
                 query.execute(
-                                new com.lemnt.member.application.growth.qry.AssetRecordAllPageQry(
+                                new AssetRecordAllPageQry(
                                         "POINT", id, 1, 20, null, null, 22))
                         .getTotal());
     }
@@ -1256,7 +1300,7 @@ class MemberAccountIntegrationTest {
         assertEquals(
                 1,
                 pointRecords.count(
-                        new com.lemnt.member.domain.growth.model.AssetRecordPageFilter(
+                        new AssetRecordPageFilter(
                                 id, "POINT", 0, 1)));
         assertEquals(copied, growthService.adjustAsset(id, "POINT", 7, "OLD-POINT", "旧原因"));
         assertEquals(7L, memberUserGateway.findById(id).points());
@@ -1275,21 +1319,21 @@ class MemberAccountIntegrationTest {
         assertEquals(5L, memberUserGateway.findById(id).experience());
         assertEquals(
                 4,
-                com.lemnt.member.domain.growth.model.ExperienceRecordMetadata.from(
+                ExperienceRecordMetadata.from(
                                 "EXPERIENCE", "SIGN_IN", 2)
                         .type());
         assertEquals(
                 11,
-                com.lemnt.member.domain.growth.model.ExperienceRecordMetadata.from(
+                ExperienceRecordMetadata.from(
                                 "EXPERIENCE", "TRADE_EXPERIENCE", 2)
                         .type());
         assertEquals(
                 13,
-                com.lemnt.member.domain.growth.model.ExperienceRecordMetadata.from(
+                ExperienceRecordMetadata.from(
                                 "EXPERIENCE", "TRADE_EXPERIENCE_RETURN", -2)
                         .type());
         assertNull(
-                com.lemnt.member.domain.growth.model.ExperienceRecordMetadata.from(
+                ExperienceRecordMetadata.from(
                                 "EXPERIENCE", "UNKNOWN", 2)
                         .type());
     }
@@ -1315,10 +1359,10 @@ class MemberAccountIntegrationTest {
     void typedLedgersRejectMisroutedWritesAndQueriesRejectUnknownType() {
         var now = memberUserGateway.now();
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         pointRecords.save(
-                                new com.lemnt.member.domain.growth.model.AssetRecord(
+                                new AssetRecord(
                                         null,
                                         id,
                                         "EXPERIENCE",
@@ -1329,23 +1373,23 @@ class MemberAccountIntegrationTest {
                                         "错误",
                                         now)));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         experienceRecords.save(
-                                new com.lemnt.member.domain.growth.model.AssetRecord(
+                                new AssetRecord(
                                         null, id, "POINT", 1L, 1L, "ADMIN", "WRONG", "错误", now)));
         assertEquals(
                 0,
                 pointRecords.count(
-                        new com.lemnt.member.domain.growth.model.AssetRecordPageFilter(
+                        new AssetRecordPageFilter(
                                 id, "POINT", 0, 1)));
         assertEquals(
                 0,
                 experienceRecords.count(
-                        new com.lemnt.member.domain.growth.model.AssetRecordPageFilter(
+                        new AssetRecordPageFilter(
                                 id, "EXPERIENCE", 0, 1)));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         memberAssetRecordDetailQueryExe.execute(
                                 new AssetRecordDetailQry("UNKNOWN", 1L)));
@@ -1353,7 +1397,7 @@ class MemberAccountIntegrationTest {
 
     @Test
     void ledgerAuditUsesExistingContextAndStableDatabaseEventTimeOnReplay() {
-        com.lemnt.common.security.context.SecurityContextHolder.setUserName("audit-operator");
+        SecurityContextHolder.setUserName("audit-operator");
         try {
             var point = growthService.adjustAsset(id, "POINT", 3, "AUDIT-P", "原因");
             var experience = growthService.adjustAsset(id, "EXPERIENCE", 4, "AUDIT-E", "原因");
@@ -1372,7 +1416,7 @@ class MemberAccountIntegrationTest {
             assertEquals(pointRow.getCreateTime(), pointRow.getUpdateTime());
             assertEquals("audit-operator", expRow.getCreateBy());
             assertEquals(expRow.getCreateTime(), expRow.getUpdateTime());
-            com.lemnt.common.security.context.SecurityContextHolder.setUserName("retry-operator");
+            SecurityContextHolder.setUserName("retry-operator");
             growthService.adjustAsset(id, "POINT", 3, "AUDIT-P", "原因");
             var replay =
                     template.getMapper(
@@ -1382,7 +1426,7 @@ class MemberAccountIntegrationTest {
             assertEquals(pointRow.getUpdateTime(), replay.getUpdateTime());
             assertEquals("audit-operator", replay.getUpdateBy());
         } finally {
-            com.lemnt.common.security.context.SecurityContextHolder.remove();
+            SecurityContextHolder.remove();
         }
     }
 
@@ -1501,7 +1545,7 @@ class MemberAccountIntegrationTest {
         growthService.adjustAsset(id, "EXPERIENCE", 6, "FILTER-E2", "原因2");
         growthService.adjustAsset(other, "EXPERIENCE", 7, "FILTER-OTHER", "其他会员");
         experienceRecords.save(
-                new com.lemnt.member.domain.growth.model.AssetRecord(
+                new AssetRecord(
                         null,
                         id,
                         "EXPERIENCE",
@@ -1684,7 +1728,7 @@ class MemberAccountIntegrationTest {
         growthService.adjustAsset(id, "POINT", 2, "TITLE-P2", "原原因");
         growthService.adjustAsset(other, "POINT", 3, "TITLE-OTHER", "原原因");
         pointRecords.save(
-                new com.lemnt.member.domain.growth.model.AssetRecord(
+                new AssetRecord(
                         null,
                         id,
                         "POINT",
@@ -1726,7 +1770,7 @@ class MemberAccountIntegrationTest {
         growthService.adjustAsset(id, "POINT", 2, "DIRECTION-P3", "收入2");
         growthService.adjustAsset(other, "POINT", 3, "DIRECTION-OTHER", "其他会员");
         pointRecords.save(
-                new com.lemnt.member.domain.growth.model.AssetRecord(
+                new AssetRecord(
                         null,
                         id,
                         "POINT",
@@ -1867,7 +1911,7 @@ class MemberAccountIntegrationTest {
                 "INSERT INTO member_sign_in_record(id,user_id,sign_date,`day`,point,experience) VALUES(900,"
                         + id
                         + ",'2026-10-29',3,5,2)");
-        var old = memberSignRecordGateway.signDate(id, java.time.LocalDate.of(2026, 10, 29));
+        var old = memberSignRecordGateway.signDate(id, LocalDate.of(2026, 10, 29));
         assertEquals(900L, old.id());
         assertEquals(3, old.day());
         assertEquals(5L, old.point());
@@ -1958,7 +2002,7 @@ class MemberAccountIntegrationTest {
                                 null,
                                 now.plusDays(1)));
         var summary =
-                new com.lemnt.member.application.growth.executor.MemberSignSummaryQueryExe(
+                new MemberSignSummaryQueryExe(
                         memberSignRecordGateway, memberUserGateway);
         for (int offset : new int[] {1, 0, -1, -2}) {
             sql(
@@ -1967,7 +2011,7 @@ class MemberAccountIntegrationTest {
                             + "' WHERE id="
                             + recordId);
             var result =
-                    summary.execute(new com.lemnt.member.application.growth.qry.SignSummaryQry(id));
+                    summary.execute(new SignSummaryQry(id));
             assertEquals(1, result.totalDay());
             assertEquals(offset == 0 || offset == -1 ? 3 : 0, result.continuousDay());
             assertEquals(offset == 0, result.todaySignIn());
@@ -2004,7 +2048,7 @@ class MemberAccountIntegrationTest {
     void concurrentSignConfigurationCreationHasOneWinner() throws Exception {
         var pool = Executors.newFixedThreadPool(2);
         try {
-            java.util.concurrent.Callable<Object> create =
+            Callable<Object> create =
                     () -> {
                         try {
                             return memberSignConfigGateway.create(new SignConfig(1, 5L, 0L, 1));
@@ -2055,12 +2099,12 @@ class MemberAccountIntegrationTest {
         pointConfigs.clear();
         assertNull(memberConfigGateway.config());
         var client =
-                new com.lemnt.member.application.dubbo.MemberGrowthClientImpl(
+                new MemberGrowthClientImpl(
                         growthService, memberConfigGateway);
         assertBusinessException(409, () -> client.getPointConfig());
         assertNotNull(
                 growthService.saveLevel(new Level(null, "NoConfig", 1, 10L, 95, null, null, 1)));
-        var value = new com.lemnt.member.domain.growth.model.Config(true, 5, 2, 3);
+        var value = new Config(true, 5, 2, 3);
         assertTrue(growthService.saveConfig(value));
         assertEquals(value, memberConfigGateway.config());
         var external = client.getPointConfig();
@@ -2069,14 +2113,14 @@ class MemberAccountIntegrationTest {
         assertEquals(3, external.givePerYuan());
         assertTrue(
                 growthService.saveConfig(
-                        new com.lemnt.member.domain.growth.model.Config(false, 0, 0, 0)));
+                        new Config(false, 0, 0, 0)));
         assertEquals(1, pointConfigs.size());
         assertFalse(memberConfigGateway.config().pointTradeDeductEnable());
         assertBusinessException(
                 400,
                 () ->
                         growthService.saveConfig(
-                                new com.lemnt.member.domain.growth.model.Config(true, 0, 2, 1)));
+                                new Config(true, 0, 2, 1)));
         assertFalse(memberConfigGateway.config().pointTradeDeductEnable());
     }
 
@@ -2090,13 +2134,13 @@ class MemberAccountIntegrationTest {
                     pool.submit(
                             () ->
                                     growthService.saveConfig(
-                                            new com.lemnt.member.domain.growth.model.Config(
+                                            new Config(
                                                     true, 5, 2, 1)));
             var b =
                     pool.submit(
                             () ->
                                     growthService.saveConfig(
-                                            new com.lemnt.member.domain.growth.model.Config(
+                                            new Config(
                                                     true, 3, 4, 2)));
             assertTrue(a.get(15, TimeUnit.SECONDS));
             assertTrue(b.get(15, TimeUnit.SECONDS));
@@ -2109,10 +2153,10 @@ class MemberAccountIntegrationTest {
     /** 新运行链路不再访问旧配置表，存储故障不伪装为默认配置。 */
     @Test
     void pointConfigurationUsesSystemSnapshotWithoutLegacyTable() {
-        var value = new com.lemnt.member.domain.growth.model.Config(true, 5, 2, 3);
-        pointConfigs.put("member.point.config", com.alibaba.fastjson2.JSON.toJSONString(value));
+        var value = new Config(true, 5, 2, 3);
+        pointConfigs.put("member.point.config", JSON.toJSONString(value));
         assertEquals(value, memberConfigGateway.config());
-        growthService.saveConfig(new com.lemnt.member.domain.growth.model.Config(true, 3, 4, 2));
+        growthService.saveConfig(new Config(true, 3, 4, 2));
         assertEquals(3, memberConfigGateway.config().pointTradeDeductUnitPrice());
         assertEquals(1, pointConfigs.size());
     }
@@ -2122,7 +2166,7 @@ class MemberAccountIntegrationTest {
     void failedInitialPointConfigurationWriteRollsBackAndCanRetry() throws Exception {
         pointConfigs.clear();
         rejectPointConfig = true;
-        var value = new com.lemnt.member.domain.growth.model.Config(true, 5, 2, 3);
+        var value = new Config(true, 5, 2, 3);
         assertThrows(Exception.class, () -> growthService.saveConfig(value));
         assertEquals(0, pointConfigs.size());
         rejectPointConfig = false;
@@ -2139,28 +2183,28 @@ class MemberAccountIntegrationTest {
                         new Level(null, "Bronze", 1, 10L, 95, "old-icon", "old-background", 1));
         var gold = growthService.saveLevel(new Level(null, "Gold", 2, 100L, 90, null, null, 0));
         var query =
-                new com.lemnt.member.application.growth.executor.MemberLevelListQueryExe(
+                new MemberLevelListQueryExe(
                         memberLevelGateway);
         var filtered =
                 query.execute(
-                        new com.lemnt.member.application.growth.qry.LevelListQry(false, " Go ", 0));
+                        new LevelListQry(false, " Go ", 0));
         assertEquals(1, filtered.size());
         assertEquals(gold, filtered.get(0).id());
         assertEquals(
                 1,
-                query.execute(new com.lemnt.member.application.growth.qry.LevelListQry(true))
+                query.execute(new LevelListQry(true))
                         .size());
         assertEquals(
                 0,
                 query.execute(
-                                new com.lemnt.member.application.growth.qry.LevelListQry(
+                                new LevelListQry(
                                         true, "Gold", null))
                         .size());
         assertBusinessException(
                 400,
                 () ->
                         query.execute(
-                                new com.lemnt.member.application.growth.qry.LevelListQry(
+                                new LevelListQry(
                                         false, null, 2)));
         var mapper = template.getMapper(MemberLevelMapper.class);
         var created = mapper.selectById(bronze).getCreateTime();
@@ -2315,11 +2359,11 @@ class MemberAccountIntegrationTest {
         var start = LocalDateTime.of(2026, 10, 30, 10, 0);
         var end = start.plusHours(1);
         var query =
-                new com.lemnt.member.application.user.executor.MemberPageQueryExe(
+                new MemberPageQueryExe(
                         memberUserGateway);
         var first =
                 query.execute(
-                        new com.lemnt.member.application.user.qry.MemberPageQry(
+                        new MemberPageQry(
                                 "138",
                                 " shop.test ",
                                 "会员",
@@ -2334,7 +2378,7 @@ class MemberAccountIntegrationTest {
                                 1));
         var second =
                 query.execute(
-                        new com.lemnt.member.application.user.qry.MemberPageQry(
+                        new MemberPageQry(
                                 "138",
                                 "shop.test",
                                 "会员",
@@ -2354,7 +2398,7 @@ class MemberAccountIntegrationTest {
         assertEquals(
                 1,
                 query.execute(
-                                new com.lemnt.member.application.user.qry.MemberPageQry(
+                                new MemberPageQry(
                                         null,
                                         null,
                                         null,
@@ -2371,7 +2415,7 @@ class MemberAccountIntegrationTest {
         assertEquals(
                 2,
                 query.execute(
-                                new com.lemnt.member.application.user.qry.MemberPageQry(
+                                new MemberPageQry(
                                         null,
                                         null,
                                         null,
@@ -2388,14 +2432,14 @@ class MemberAccountIntegrationTest {
         assertEquals(
                 1,
                 query.execute(
-                                new com.lemnt.member.application.user.qry.MemberPageQry(
+                                new MemberPageQry(
                                         null, null, null, null, null, null, end, null, null, null,
                                         1, 20))
                         .getTotal());
         assertEquals(
                 1,
                 query.execute(
-                                new com.lemnt.member.application.user.qry.MemberPageQry(
+                                new MemberPageQry(
                                         null, null, null, null, null, null, null, null, null, start,
                                         1, 20))
                         .getTotal());
@@ -2405,24 +2449,24 @@ class MemberAccountIntegrationTest {
     @Test
     void memberUserFilterHandlesEmptyTagsUnknownLoginAndInvalidValues() {
         var query =
-                new com.lemnt.member.application.user.executor.MemberPageQueryExe(
+                new MemberPageQueryExe(
                         memberUserGateway);
         var now = memberUserGateway.now();
         assertEquals(
                 2,
-                query.execute(new com.lemnt.member.application.user.qry.MemberPageQry("138", 1, 20))
+                query.execute(new MemberPageQry("138", 1, 20))
                         .getTotal());
         assertEquals(
                 2,
                 query.execute(
-                                new com.lemnt.member.application.user.qry.MemberPageQry(
+                                new MemberPageQry(
                                         null, null, null, null, null, List.of(), null, null, null,
                                         null, 1, 20))
                         .getTotal());
         assertEquals(
                 0,
                 query.execute(
-                                new com.lemnt.member.application.user.qry.MemberPageQry(
+                                new MemberPageQry(
                                         null,
                                         null,
                                         null,
@@ -2439,7 +2483,7 @@ class MemberAccountIntegrationTest {
         assertEquals(
                 0,
                 query.execute(
-                                new com.lemnt.member.application.user.qry.MemberPageQry(
+                                new MemberPageQry(
                                         null,
                                         null,
                                         null,
@@ -2457,14 +2501,14 @@ class MemberAccountIntegrationTest {
                 400,
                 () ->
                         query.execute(
-                                new com.lemnt.member.application.user.qry.MemberPageQry(
+                                new MemberPageQry(
                                         null, null, null, 0L, null, null, null, null, null, null, 1,
                                         20)));
         assertBusinessException(
                 400,
                 () ->
                         query.execute(
-                                new com.lemnt.member.application.user.qry.MemberPageQry(
+                                new MemberPageQry(
                                         null,
                                         null,
                                         null,
@@ -2481,7 +2525,7 @@ class MemberAccountIntegrationTest {
                 400,
                 () ->
                         query.execute(
-                                new com.lemnt.member.application.user.qry.MemberPageQry(
+                                new MemberPageQry(
                                         null,
                                         null,
                                         null,
@@ -2498,7 +2542,7 @@ class MemberAccountIntegrationTest {
                 400,
                 () ->
                         query.execute(
-                                new com.lemnt.member.application.user.qry.MemberPageQry(
+                                new MemberPageQry(
                                         null,
                                         null,
                                         null,
@@ -2523,29 +2567,29 @@ class MemberAccountIntegrationTest {
         userService.assignGroup(id, group);
         userService.assignTags(id, List.of(tag));
         var relations =
-                new com.lemnt.member.application.user.service.MemberUserRelationQueryService(
+                new MemberUserRelationQueryService(
                         memberLevelGateway,
                         memberGroupGateway,
                         memberTagGateway,
                         memberTagLinkGateway);
         var baseQuery =
-                new com.lemnt.member.application.user.executor.MemberDetailQueryExe(
+                new MemberDetailQueryExe(
                         memberUserGateway);
-        var base = baseQuery.execute(new com.lemnt.member.application.user.qry.MemberDetailQry(id));
+        var base = baseQuery.execute(new MemberDetailQry(id));
         var detail =
-                new com.lemnt.member.application.user.executor.MemberUserDetailQueryExe(
+                new MemberUserDetailQueryExe(
                         baseQuery, relations);
         var page =
-                new com.lemnt.member.application.user.executor.MemberUserPageQueryExe(
-                                new com.lemnt.member.application.user.executor.MemberPageQueryExe(
+                new MemberUserPageQueryExe(
+                                new MemberPageQueryExe(
                                         memberUserGateway),
                                 relations)
                         .execute(
-                                new com.lemnt.member.application.user.qry.MemberPageQry(
+                                new MemberPageQry(
                                         null, 1, 20));
         var mine =
                 page.getRecords().stream().filter(v -> id.equals(v.id())).findFirst().orElseThrow();
-        var read = detail.execute(new com.lemnt.member.application.user.qry.MemberDetailQry(id));
+        var read = detail.execute(new MemberDetailQry(id));
         assertEquals(List.of(tag), read.tagIds());
         assertEquals(List.of("Active"), read.tagNames());
         assertEquals("Gold", read.levelName());
@@ -2564,7 +2608,7 @@ class MemberAccountIntegrationTest {
         growthService.saveLevel(new Level(level, "NewGold", 1, 100L, 90, null, null, 1));
         userService.saveGroup(new Group(group, "NewVIP", null, 1));
         userService.saveTag(new Tag(tag, "NewActive", null));
-        var renamed = detail.execute(new com.lemnt.member.application.user.qry.MemberDetailQry(id));
+        var renamed = detail.execute(new MemberDetailQry(id));
         assertEquals("NewGold", renamed.levelName());
         assertEquals("NewVIP", renamed.groupName());
         assertEquals(List.of("NewActive"), renamed.tagNames());
@@ -2574,13 +2618,13 @@ class MemberAccountIntegrationTest {
         userService.assignTags(id, List.of());
         userService.assignGroup(id, null);
         growthService.assignLevel(id, null, "RELATION-CANCEL", "清空");
-        var cleared = detail.execute(new com.lemnt.member.application.user.qry.MemberDetailQry(id));
+        var cleared = detail.execute(new MemberDetailQry(id));
         assertEquals(List.of(), cleared.tagIds());
         assertNull(cleared.levelName());
         assertNull(cleared.groupName());
         assertNull(
                 detail.execute(
-                        new com.lemnt.member.application.user.qry.MemberDetailQry(Long.MAX_VALUE)));
+                        new MemberDetailQry(Long.MAX_VALUE)));
     }
 
     /** 后台改号仅更新资料，不覆盖密码、资产、关联或登录审计。 */
@@ -2592,12 +2636,12 @@ class MemberAccountIntegrationTest {
         userService.assignTags(id, List.of(tag));
         growthService.adjustAsset(id, "POINT", 5L, "profile-points", "测试");
         memberUserGateway.updatePassword(id, "unchanged-hash");
-        var loginTime = java.time.LocalDateTime.of(2026, 10, 30, 12, 0);
+        var loginTime = LocalDateTime.of(2026, 10, 30, 12, 0);
         memberUserGateway.recordLogin(id, loginTime, "127.0.0.1");
         var before = memberUserGateway.findById(id);
         assertTrue(
                 userService.updateUser(
-                        new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                        new MemberUserUpdateCmd(
                                 id,
                                 "Updated",
                                 "edit@example.com",
@@ -2624,7 +2668,7 @@ class MemberAccountIntegrationTest {
         // 同一会员继续使用当前手机号/邮箱，不应误判占用。
         assertTrue(
                 userService.updateUser(
-                        new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                        new MemberUserUpdateCmd(
                                 id,
                                 "Updated",
                                 "edit@example.com",
@@ -2638,7 +2682,7 @@ class MemberAccountIntegrationTest {
                                 "+8613800000099")));
         // 旧后台客户端及App都不能把手机号写空。
         userService.updateUser(
-                new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                new MemberUserUpdateCmd(
                         id,
                         "Legacy",
                         "edit@example.com",
@@ -2663,7 +2707,7 @@ class MemberAccountIntegrationTest {
                 409,
                 () ->
                         userService.updateUser(
-                                new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                                new MemberUserUpdateCmd(
                                         id,
                                         "不得保存",
                                         null,
@@ -2679,7 +2723,7 @@ class MemberAccountIntegrationTest {
                 409,
                 () ->
                         userService.updateUser(
-                                new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                                new MemberUserUpdateCmd(
                                         id,
                                         "不得保存",
                                         "occupied@example.com",
@@ -2695,7 +2739,7 @@ class MemberAccountIntegrationTest {
                 400,
                 () ->
                         userService.updateUser(
-                                new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                                new MemberUserUpdateCmd(
                                         id, "不得保存", null, null, null, null, 0, "不得保存", null, null,
                                         "")));
         assertEquals(before, memberUserGateway.findById(id));
@@ -2731,29 +2775,29 @@ class MemberAccountIntegrationTest {
     @Test
     void disablingMemberRequestsRemoteSessionRevocationOnlyFromWebUpdate() {
         userService.updateUser(
-                new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                new MemberUserUpdateCmd(
                         id, "disabled", null, null, null, null, 0, null, null, null, null));
         assertEquals(0, memberUserGateway.findById(id).status());
-        org.mockito.Mockito.verify(memberAuthGateway).revokeSessions(id);
+        Mockito.verify(memberAuthGateway).revokeSessions(id);
         userService.updateUser(
-                new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                new MemberUserUpdateCmd(
                         id, "enabled", null, null, null, null, 1, null, null, null, null));
         userService.profileUpdate(id, "App", null, null, null, null, null);
-        org.mockito.Mockito.verifyNoMoreInteractions(memberAuthGateway);
+        Mockito.verifyNoMoreInteractions(memberAuthGateway);
     }
 
     /** 认证中心撤销失败时，停用状态、改号和普通资料共同回滚。 */
     @Test
     void failedRemoteRevocationRollsBackEntireMemberUpdate() {
         var before = memberUserGateway.findById(id);
-        org.mockito.Mockito.doThrow(new IllegalStateException("auth不可用"))
+        Mockito.doThrow(new IllegalStateException("auth不可用"))
                 .when(memberAuthGateway)
                 .revokeSessions(id);
         assertThrows(
                 IllegalStateException.class,
                 () ->
                         userService.updateUser(
-                                new com.lemnt.member.application.user.cmd.MemberUserUpdateCmd(
+                                new MemberUserUpdateCmd(
                                         id,
                                         "不得保存",
                                         null,
@@ -2939,12 +2983,12 @@ class MemberAccountIntegrationTest {
     @Test
     void addressHttpUsesOwnerContextAndUnifiedMissingResponse() throws Exception {
         var areaNames =
-                org.mockito.Mockito.mock(
-                        com.lemnt.member.domain.address.gateway.MemberAddressAreaGateway.class);
-        org.mockito.Mockito.when(areaNames.names(org.mockito.ArgumentMatchers.anyList()))
-                .thenReturn(java.util.Map.of());
+                Mockito.mock(
+                        MemberAddressAreaGateway.class);
+        Mockito.when(areaNames.names(ArgumentMatchers.anyList()))
+                .thenReturn(Map.of());
         var addressQueries =
-                new com.lemnt.member.application.address.service.MemberAddressQueryService(
+                new MemberAddressQueryService(
                         areaNames);
         var controller =
                 new AppMemberAddressController(
@@ -2996,20 +3040,20 @@ class MemberAccountIntegrationTest {
         growthService.adjustAsset(id, "POINT", 100, "SEED_FROZEN", "初始化");
         String order = "O".repeat(40), first = "RF" + "1".repeat(32), last = "RF" + "2".repeat(32);
         growthService.tradeAsset(
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "CREATE", order, null, 5, 3, 1000, 0, false));
         growthService.tradeAsset(
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "PAID", order, null, 5, 3, 1000, 0, false));
         assertEquals(98L, memberUserGateway.findById(id).points());
         var plan =
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "REFUND", order, first, 5, 3, 1000, 333, false, 1, 1L, 1);
         growthService.tradeAsset(plan);
         growthService.tradeAsset(plan);
         assertEquals(98L, memberUserGateway.findById(id).points());
         growthService.tradeAsset(
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "REFUND", order, last, 5, 3, 1000, 667, true, 4, 2L, 1));
         assertEquals(100L, memberUserGateway.findById(id).points());
         assertEquals(0L, memberUserGateway.findById(id).experience());
@@ -3019,14 +3063,14 @@ class MemberAccountIntegrationTest {
     void frozenPointReclaimFailureDoesNotPartiallyReturnConsumedPoints() {
         growthService.adjustAsset(id, "POINT", 10, "SEED_FROZEN_FAILURE", "初始化");
         growthService.tradeAsset(
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "CREATE", "FROZEN_FAIL", null, 5, 3, 1000, 0, false));
         growthService.tradeAsset(
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "PAID", "FROZEN_FAIL", null, 5, 3, 1000, 0, false));
         growthService.adjustAsset(id, "POINT", -8, "SPEND_FROZEN", "使用积分");
         var plan =
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "REFUND", "FROZEN_FAIL", "RF_F", 5, 3, 1000, 333, false, 1, 2L, 1);
         assertThrows(ServiceException.class, () -> growthService.tradeAsset(plan));
         assertEquals(0L, memberUserGateway.findById(id).points());
@@ -3041,13 +3085,13 @@ class MemberAccountIntegrationTest {
         growthService.adjustAsset(id, "POINT", 100, "SEED_LONG_LEGACY", "初始化");
         String order = "L".repeat(40), rf = "RF" + "7".repeat(32);
         growthService.tradeAsset(
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "CREATE", order, null, 20, 10, 1000, 0, false));
         growthService.tradeAsset(
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "PAID", order, null, 20, 10, 1000, 0, false));
         var refund =
-                new com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd(
+                new MemberTradeAssetCmd(
                         id, "REFUND", order, rf, 20, 10, 1000, 500, false);
         growthService.tradeAsset(refund);
         growthService.tradeAsset(refund);

@@ -1,23 +1,39 @@
 package com.lemnt.promotion.start.product;
 
 import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.promotion.application.coupon.cmd.CouponTemplateUpdateCmd;
+import com.lemnt.promotion.application.coupon.executor.CouponRevokeCmdExe;
+import com.lemnt.promotion.application.coupon.executor.CouponTemplateUpdateCmdExe;
+import com.lemnt.promotion.application.coupon.qry.CouponManagementPageQry;
 import com.lemnt.promotion.application.coupon.service.CouponIssuanceService;
+import com.lemnt.promotion.application.promotion.service.ActivityPricingService;
+import com.lemnt.promotion.application.settlement.service.SettlementRecordService;
 import com.lemnt.promotion.domain.coupon.gateway.CouponGateway;
 import com.lemnt.promotion.domain.coupon.gateway.CouponTemplateGateway;
+import com.lemnt.promotion.domain.coupon.model.Coupon;
 import com.lemnt.promotion.domain.coupon.model.CouponOrderReference;
 import com.lemnt.promotion.domain.coupon.model.CouponRules;
 import com.lemnt.promotion.domain.coupon.model.CouponTemplate;
+import com.lemnt.promotion.domain.coupon.model.CouponTerms;
 import com.lemnt.promotion.domain.member.gateway.MemberLockGateway;
+import com.lemnt.promotion.domain.settlement.gateway.SettlementGateway;
+import com.lemnt.promotion.domain.settlement.model.SettlementItem;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -111,7 +127,7 @@ class CouponSnapshotPersistenceTest {
         assertEquals(2, templates.template(template.id()).issuedCount());
         assertEquals(1, coupons.coupon(7L, legacy.id(), false).giftSequence());
         var duplicate =
-                new com.lemnt.promotion.domain.coupon.model.Coupon(
+                new Coupon(
                         null,
                         template.id(),
                         7L,
@@ -122,17 +138,17 @@ class CouponSnapshotPersistenceTest {
                         "LEGACY",
                         2);
         assertThrows(
-                org.springframework.dao.DuplicateKeyException.class,
+                DuplicateKeyException.class,
                 () -> coupons.insertCoupon(duplicate));
     }
 
     @Test
     void concurrentGiftCallbacksDoNotDuplicateCouponsOrQuota() throws Exception {
         var template = template(-1, "DATE");
-        var pool = java.util.concurrent.Executors.newFixedThreadPool(2);
-        var start = new java.util.concurrent.CountDownLatch(1);
+        var pool = Executors.newFixedThreadPool(2);
+        var start = new CountDownLatch(1);
         try {
-            java.util.concurrent.Callable<Void> callback =
+            Callable<Void> callback =
                     () -> {
                         start.await();
                         issuance.gift(7L, template.id(), "CONCURRENT", 1);
@@ -142,8 +158,8 @@ class CouponSnapshotPersistenceTest {
             var first = pool.submit(callback);
             var second = pool.submit(callback);
             start.countDown();
-            first.get(10, java.util.concurrent.TimeUnit.SECONDS);
-            second.get(10, java.util.concurrent.TimeUnit.SECONDS);
+            first.get(10, TimeUnit.SECONDS);
+            second.get(10, TimeUnit.SECONDS);
             assertEquals(2, coupons.takeCount(7L, template.id()));
             assertEquals(2, templates.template(template.id()).issuedCount());
         } finally {
@@ -216,7 +232,7 @@ class CouponSnapshotPersistenceTest {
         var secondSku = second.skus().get(0).id();
         var now = templates.now();
         var terms =
-                new com.lemnt.promotion.domain.coupon.model.CouponTerms(
+                new CouponTerms(
                         "SCOPE",
                         "范围券",
                         "USER",
@@ -230,18 +246,18 @@ class CouponSnapshotPersistenceTest {
                         now.minusDays(1),
                         now.plusDays(1));
         var coupon =
-                new com.lemnt.promotion.domain.coupon.model.Coupon(
+                new Coupon(
                         1L, 1L, 7L, "AVAILABLE", null, terms, null);
         var items =
                 List.of(
-                        new com.lemnt.promotion.domain.settlement.model.SettlementItem(
+                        new SettlementItem(
                                 firstSku,
                                 "A",
                                 "甲",
                                 new BigDecimal("20.00"),
                                 1,
                                 new BigDecimal("20.00")),
-                        new com.lemnt.promotion.domain.settlement.model.SettlementItem(
+                        new SettlementItem(
                                 secondSku,
                                 "B",
                                 "乙",
@@ -250,7 +266,7 @@ class CouponSnapshotPersistenceTest {
                                 new BigDecimal("40.00")));
         var pricing =
                 fixture.components.get(
-                        com.lemnt.promotion.application.promotion.service.ActivityPricingService.class);
+                        ActivityPricingService.class);
         try {
             ScriptUtils.executeSqlScript(
                     fixture.schemaConnection, new ClassPathResource("promotion-sql/lemnt_promotion.sql"));
@@ -269,10 +285,10 @@ class CouponSnapshotPersistenceTest {
     @Test
     void concurrentClaimsCannotExceedPerMemberLimit() throws Exception {
         var template = template(1, "DATE");
-        var executor = java.util.concurrent.Executors.newFixedThreadPool(2);
-        var start = new java.util.concurrent.CountDownLatch(1);
+        var executor = Executors.newFixedThreadPool(2);
+        var start = new CountDownLatch(1);
         try {
-            java.util.concurrent.Callable<Boolean> task =
+            Callable<Boolean> task =
                     () -> {
                         start.await();
                         try {
@@ -286,8 +302,8 @@ class CouponSnapshotPersistenceTest {
             var two = executor.submit(task);
             start.countDown();
             assertNotEquals(
-                    one.get(10, java.util.concurrent.TimeUnit.SECONDS),
-                    two.get(10, java.util.concurrent.TimeUnit.SECONDS));
+                    one.get(10, TimeUnit.SECONDS),
+                    two.get(10, TimeUnit.SECONDS));
             assertEquals(1, coupons.takeCount(7L, template.id()));
             assertEquals(1, templates.template(template.id()).issuedCount());
         } finally {
@@ -301,12 +317,12 @@ class CouponSnapshotPersistenceTest {
         var coupon = issuance.take(7L, template.id(), "USER");
         var second = issuance.take(7L, template.id(), "USER");
         fixture.components.register(
-                com.lemnt.promotion.domain.settlement.gateway.SettlementGateway.class,
-                org.mockito.Mockito.mock(
-                        com.lemnt.promotion.domain.settlement.gateway.SettlementGateway.class));
+                SettlementGateway.class,
+                Mockito.mock(
+                        SettlementGateway.class));
         var lifecycle =
                 fixture.components.get(
-                        com.lemnt.promotion.application.settlement.service.SettlementRecordService
+                        SettlementRecordService
                                 .class);
         coupons.lockCoupon(7L, coupon.id(), "COUNTER1");
         lifecycle.useCoupon("COUNTER1");
@@ -317,7 +333,7 @@ class CouponSnapshotPersistenceTest {
         assertEquals(0, templates.template(template.id()).useCount());
         var revoke =
                 fixture.components.get(
-                        com.lemnt.promotion.application.coupon.executor.CouponRevokeCmdExe.class);
+                        CouponRevokeCmdExe.class);
         assertTrue(revoke.execute(7L, second.id()));
         assertEquals(1, templates.template(template.id()).issuedCount());
         assertThrows(ServiceException.class, () -> revoke.execute(7L, second.id()));
@@ -328,7 +344,7 @@ class CouponSnapshotPersistenceTest {
                                 com.lemnt.promotion.application.coupon.executor
                                         .CouponManagementPageQueryExe.class)
                         .execute(
-                                new com.lemnt.promotion.application.coupon.qry.CouponManagementPageQry(
+                                new CouponManagementPageQry(
                                         7L, template.id(), "AVAILABLE", 1, 20));
         assertEquals(1, page.total());
         assertEquals(coupon.id(), page.records().get(0).id());
@@ -341,11 +357,11 @@ class CouponSnapshotPersistenceTest {
         var original = issuance.take(7L, template.id(), "USER");
         var update =
                 fixture.components.get(
-                        com.lemnt.promotion.application.coupon.executor.CouponTemplateUpdateCmdExe
+                        CouponTemplateUpdateCmdExe
                                 .class);
         assertTrue(
                 update.execute(
-                        new com.lemnt.promotion.application.coupon.cmd.CouponTemplateUpdateCmd(
+                        new CouponTemplateUpdateCmd(
                                 template.id(),
                                 "TEST",
                                 "新规则",

@@ -1,5 +1,6 @@
 package com.lemnt.member.application.user.executor;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.member.application.user.converter.MemberUserDTOConverter;
 import com.lemnt.member.application.user.dto.TagDTO;
@@ -25,7 +26,7 @@ public class MemberTagPageQueryExe {
         if (qry.startTime() != null
                 && qry.endTime() != null
                 && qry.startTime().isAfter(qry.endTime())) {
-            throw new com.lemnt.common.core.exception.ServiceException("开始时间不能晚于结束时间", 400);
+            throw new ServiceException("开始时间不能晚于结束时间", 400);
         }
         var filter =
                 new TagPageFilter(

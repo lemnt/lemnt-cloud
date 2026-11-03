@@ -3,6 +3,8 @@ package com.lemnt.trade.start;
 import com.lemnt.trade.application.order.service.OrderCommentService;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,8 +16,8 @@ import java.time.Duration;
 @Component
 @ConditionalOnProperty(name = "lemnt.trade.auto-comment.enabled", havingValue = "true")
 public class TradeOrderAutoCommentScheduler {
-    private static final org.slf4j.Logger LOG =
-            org.slf4j.LoggerFactory.getLogger(TradeOrderAutoCommentScheduler.class);
+    private static final Logger LOG =
+            LoggerFactory.getLogger(TradeOrderAutoCommentScheduler.class);
     private final TradeOrderGateway orders;
     private final OrderCommentService comments;
     private final Duration expiry;

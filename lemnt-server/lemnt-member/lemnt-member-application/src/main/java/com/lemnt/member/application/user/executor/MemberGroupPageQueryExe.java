@@ -29,7 +29,7 @@ public class MemberGroupPageQueryExe {
         if (qry.startTime() != null
                 && qry.endTime() != null
                 && qry.startTime().isAfter(qry.endTime())) {
-            throw new com.lemnt.common.core.exception.ServiceException("开始时间不能晚于结束时间", 400);
+            throw new ServiceException("开始时间不能晚于结束时间", 400);
         }
         var filter =
                 new GroupPageFilter(

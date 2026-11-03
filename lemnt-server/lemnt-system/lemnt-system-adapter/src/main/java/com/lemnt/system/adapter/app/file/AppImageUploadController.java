@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 /** 会员图片上传复用统一文件存储，身份由网关会员域校验。 */
 @RestController
@@ -40,8 +42,8 @@ public class AppImageUploadController {
                                     && (h[2] & 255) == 255
                             || "image/png".equals(type)
                                     && h.length >= 8
-                                    && java.util.Arrays.equals(
-                                            java.util.Arrays.copyOf(h, 8),
+                                    && Arrays.equals(
+                                            Arrays.copyOf(h, 8),
                                             new byte[] {(byte) 137, 80, 78, 71, 13, 10, 26, 10})
                             || "image/webp".equals(type)
                                     && h.length >= 12
@@ -49,13 +51,13 @@ public class AppImageUploadController {
                                                     h,
                                                     0,
                                                     4,
-                                                    java.nio.charset.StandardCharsets.US_ASCII)
+                                                    StandardCharsets.US_ASCII)
                                             .equals("RIFF")
                                     && new String(
                                                     h,
                                                     8,
                                                     4,
-                                                    java.nio.charset.StandardCharsets.US_ASCII)
+                                                    StandardCharsets.US_ASCII)
                                             .equals("WEBP");
             if (!valid) throw new ServiceException("只支持JPEG、PNG、WebP图片", 400);
         }

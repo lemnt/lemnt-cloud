@@ -3,8 +3,11 @@ package com.lemnt.trade.application.paymentrefund.service;
 import com.lemnt.trade.application.brokerage.service.BrokerageService;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
 import com.lemnt.trade.domain.aftersale.gateway.AfterSaleGateway;
+import com.lemnt.trade.domain.aftersale.model.AfterSale;
 import com.lemnt.trade.domain.order.gateway.OrderBenefitsGateway;
 import com.lemnt.trade.domain.order.gateway.TradeOrderItemGateway;
+import com.lemnt.trade.domain.order.model.OrderRefundBenefits;
+import com.lemnt.trade.domain.order.model.TradeOrder;
 import com.lemnt.trade.domain.paymentrefund.gateway.PaymentRefundGateway;
 import com.lemnt.trade.domain.paymentrefund.model.PaymentRefund;
 
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 
 /** 渠道退款已提交后再远程处理库存与券，失败可重放同一售后单。 */
@@ -54,8 +58,8 @@ public class RefundBenefitsService {
 
     /** 新版明确行与积分，历史未知保留原协议。 */
     private void apply(
-            com.lemnt.trade.domain.aftersale.model.AfterSale afterSale,
-            com.lemnt.trade.domain.order.model.TradeOrder order) {
+            AfterSale afterSale,
+            TradeOrder order) {
         var quantities = new LinkedHashMap<Long, Integer>();
         var lines = items.refundItems(order.id());
         if (afterSale.orderItemId() == null) {
@@ -77,7 +81,7 @@ public class RefundBenefitsService {
                             .findFirst()
                             .orElseThrow();
             benefits.refunded(
-                    new com.lemnt.trade.domain.order.model.OrderRefundBenefits(
+                    new OrderRefundBenefits(
                             order.orderNo(),
                             afterSale.refundNo(),
                             afterSale.orderItemId(),
@@ -94,7 +98,7 @@ public class RefundBenefitsService {
     }
 
     /** 佣金沿用现金累计额回收，零现金行不会额外回收现金佣金。 */
-    private void recall(String orderNo, java.math.BigDecimal amount) {
+    private void recall(String orderNo, BigDecimal amount) {
         var latest = orders.findByOrderNo(orderNo);
         if (latest != null && "REFUNDED".equals(latest.status())) {
             brokerage.cancelOrderCommission(orderNo);

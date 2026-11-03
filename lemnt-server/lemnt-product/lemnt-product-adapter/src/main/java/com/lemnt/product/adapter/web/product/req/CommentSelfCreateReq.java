@@ -3,6 +3,7 @@ package com.lemnt.product.adapter.web.product.req;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.validation.constraints.*;
+import java.io.Serializable;
 import java.util.List;
 
 /** 后台自评请求。 */
@@ -21,4 +22,4 @@ public record CommentSelfCreateReq(
         @Schema(description = "评价图片地址，最多9张") @Size(max = 9)
                 List<@NotBlank @Size(max = 1024) @Pattern(regexp = "https://[^\\s]+") String>
                         picUrls)
-        implements java.io.Serializable {}
+        implements Serializable {}

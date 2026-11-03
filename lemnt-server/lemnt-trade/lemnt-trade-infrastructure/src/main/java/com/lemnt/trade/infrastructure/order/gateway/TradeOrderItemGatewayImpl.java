@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /** TradeOrderItem 表持久化实现。 */
@@ -96,7 +97,7 @@ public class TradeOrderItemGatewayImpl implements TradeOrderItemGateway {
     }
 
     @Override
-    public boolean updatePayAmount(Long orderId, Long orderItemId, java.math.BigDecimal payAmount) {
+    public boolean updatePayAmount(Long orderId, Long orderItemId, BigDecimal payAmount) {
         var current = tradeOrderItemMapper.selectById(orderItemId);
         if (current == null || !orderId.equals(current.getOrderId())) {
             return false;

@@ -5,6 +5,7 @@ import com.lemnt.mall.application.promotion.service.PromotionOrderService;
 import com.lemnt.mall.application.promotion.service.RewardGiftService;
 import com.lemnt.mall.application.settlement.service.SettlementRecordService;
 import com.lemnt.mall.client.CheckoutLifecycleClient;
+import com.lemnt.mall.client.bo.RefundBenefitsBo;
 import com.lemnt.mall.client.bo.RefundStockBo;
 import com.lemnt.mall.domain.member.gateway.MemberTradeGateway;
 import com.lemnt.mall.domain.member.model.MemberTradeChange;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -95,7 +97,7 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void refunded(com.lemnt.mall.client.bo.RefundBenefitsBo plan) {
+    public void refunded(RefundBenefitsBo plan) {
         if (plan == null
                 || plan.ruleVersion() != 1
                 || plan.quantity() < 1
@@ -136,7 +138,7 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
             String refundNo,
             List<RefundStockBo> items,
             BigDecimal refundAmount,
-            com.lemnt.mall.client.bo.RefundBenefitsBo plan) {
+            RefundBenefitsBo plan) {
         var order = orders.findByOrderNo(orderNo);
         if (order == null
                 || !Set.of("PAID", "SHIPPED", "COMPLETED", "REFUNDED").contains(order.status())
@@ -148,7 +150,7 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
         }
         for (var item :
                 items.stream()
-                        .sorted(java.util.Comparator.comparing(RefundStockBo::productId))
+                        .sorted(Comparator.comparing(RefundStockBo::productId))
                         .toList()) {
             if (order.items().stream()
                     .noneMatch(original -> original.productId().equals(item.productId()))) {

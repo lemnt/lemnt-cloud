@@ -1,5 +1,7 @@
 package com.lemnt.trade.adapter.web.delivery;
 
+import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.common.security.handler.GlobalExceptionHandler;
 import com.lemnt.trade.application.delivery.cmd.DeliveryExpressTemplateCreateCmd;
 import com.lemnt.trade.application.delivery.executor.DeliveryExpressTemplateCreateCmdExe;
 import com.lemnt.trade.application.delivery.executor.DeliveryExpressTemplateDeleteCmdExe;
@@ -37,7 +39,7 @@ class DeliveryHttpTest {
         var mvc =
                 MockMvcBuilders.standaloneSetup(controller)
                         .setControllerAdvice(
-                                new com.lemnt.common.security.handler.GlobalExceptionHandler())
+                                new GlobalExceptionHandler())
                         .build();
         String valid =
                 """
@@ -70,7 +72,7 @@ class DeliveryHttpTest {
         verifyNoMoreInteractions(create);
         reset(create);
         when(create.execute(any()))
-                .thenThrow(new com.lemnt.common.core.exception.ServiceException("配送区域不合法或重复", 400));
+                .thenThrow(new ServiceException("配送区域不合法或重复", 400));
         mvc.perform(
                         post("/trade/admin/delivery/templates")
                                 .contentType(MediaType.APPLICATION_JSON)

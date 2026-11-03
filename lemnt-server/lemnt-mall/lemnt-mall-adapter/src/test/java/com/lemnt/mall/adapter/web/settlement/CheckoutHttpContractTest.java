@@ -7,6 +7,7 @@ import com.lemnt.mall.adapter.web.coupon.CouponTemplateController;
 import com.lemnt.mall.application.coupon.cmd.CouponTemplateCreateCmd;
 import com.lemnt.mall.application.coupon.executor.CouponIssueCmdExe;
 import com.lemnt.mall.application.coupon.executor.CouponListQueryExe;
+import com.lemnt.mall.application.coupon.executor.CouponRevokeCmdExe;
 import com.lemnt.mall.application.coupon.executor.CouponTemplateCreateCmdExe;
 import com.lemnt.mall.application.coupon.executor.CouponTemplateEnableCmdExe;
 import com.lemnt.mall.application.coupon.executor.CouponTemplateListQueryExe;
@@ -51,7 +52,7 @@ class CheckoutHttpContractTest {
                     new CouponController(
                             mock(CouponIssueCmdExe.class),
                             mock(
-                                    com.lemnt.mall.application.coupon.executor.CouponRevokeCmdExe
+                                    CouponRevokeCmdExe
                                             .class),
                             mock(CouponListQueryExe.class),
                             mock(

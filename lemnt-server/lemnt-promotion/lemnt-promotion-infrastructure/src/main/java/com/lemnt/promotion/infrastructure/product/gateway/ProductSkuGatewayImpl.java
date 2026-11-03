@@ -1,11 +1,13 @@
 package com.lemnt.promotion.infrastructure.product.gateway;
+import com.lemnt.product.client.ProductCatalogClient;
+import com.lemnt.product.client.dto.ProductSkuBriefDTO;
 import com.lemnt.promotion.domain.product.gateway.ProductSkuGateway;
 import com.lemnt.promotion.domain.product.model.ProductSku;
 import com.lemnt.promotion.domain.product.model.ProductSkuSpec;
-import com.lemnt.product.client.ProductCatalogClient;
-import com.lemnt.product.client.dto.ProductSkuBriefDTO;
+
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
+
 import java.util.*;
 /** 活动配置读取当前SKU，不持有商品库行锁。 */
 @Component

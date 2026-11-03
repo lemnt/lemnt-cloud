@@ -4,10 +4,13 @@ import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.trade.domain.order.gateway.TradeOrderItemGateway;
 import com.lemnt.trade.domain.order.model.TradeOperator;
 import com.lemnt.trade.domain.order.model.TradeOrder;
+import com.lemnt.trade.domain.promotion.gateway.OrderPromotionGateway;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /** OrderPersistenceService 跨表应用编排，保持原有事务和锁顺序。 */
 @Component
@@ -15,7 +18,7 @@ public class OrderPersistenceService {
     private final TradeOrderGateway tradeOrderGateway;
     private final TradeOrderItemGateway tradeOrderItemGateway;
     private final OrderLogService logs;
-    private final com.lemnt.trade.domain.promotion.gateway.OrderPromotionGateway promotions;
+    private final OrderPromotionGateway promotions;
 
     /** 生产环境完整注入优惠持久化边界。 */
     @Autowired
@@ -23,7 +26,7 @@ public class OrderPersistenceService {
             TradeOrderGateway orders,
             TradeOrderItemGateway items,
             OrderLogService logs,
-            com.lemnt.trade.domain.promotion.gateway.OrderPromotionGateway promotions) {
+            OrderPromotionGateway promotions) {
         this.tradeOrderGateway = orders;
         this.tradeOrderItemGateway = items;
         this.logs = logs;
@@ -77,7 +80,7 @@ public class OrderPersistenceService {
                         value.pricingSnapshotVersion(),
                         "COMPLETE".equals(value.pricingSnapshotStatus())
                                 ? promotions.find(value.id())
-                                : java.util.List.of());
+                                : List.of());
     }
 
     /** 按原顺序锁定订单主体，调用方持有事务。 */

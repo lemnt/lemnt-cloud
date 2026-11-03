@@ -4,6 +4,7 @@ import com.lemnt.common.core.utils.JsonUtils;
 import com.lemnt.trade.domain.payment.model.PaymentChannel;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -76,7 +77,7 @@ public final class PayConfigRules {
         if (value.signum() < 0 || value.compareTo(BigDecimal.valueOf(100)) > 0) {
             throw new IllegalArgumentException("渠道费率须在0至100之间");
         }
-        return value.setScale(2, java.math.RoundingMode.DOWN);
+        return value.setScale(2, RoundingMode.DOWN);
     }
 
     /** 渠道配置必须为 JSON 对象文本，保存为不透明字符串，不在此处解析字段含义。 */

@@ -5,7 +5,7 @@
 - 项目结构与验证命令见[README](README.md)；统一边界、格式和发布标准见[代码规范](docs/code-standards.md)。
 - 后端遵循[后端规范](lemnt-server/AGENTS.md)，管理端遵循[管理端规范](lemnt-ui/AGENTS.md)，小程序遵循[小程序规范](lemnt-miniapp/AGENTS.md)。公共组件采用相同Java格式与分层约束。
 - 改动前核对git状态、工作项和实际代码，保留已有未提交改动；不把文档示例或历史进度当作已执行事实。
-- 注解使用显式import和短名，如`@Schema(...)`，不写全限定注解路径。
+- Java类型统一使用显式import和短名，包括注解、泛型、参数、返回值、implements和静态调用；例如`@Schema(...)`、`Map<Long, Integer>`、`implements Serializable`。字符串、反射类名和XML中的包路径按其协议保留。
 - 接口、方法和复杂业务规则使用中文说明，解释单位、状态、并发约束、幂等与兼容原因；不批量生成无业务含义的占位注释。
 - HTTP使用Req/Res，应用层使用Cmd/Qry/DTO，领域层保持纯Java，基础设施在GatewayImpl隔离；不因格式重构改变公共路径、字段和权限。
 - Java采用固定版本AOSP四空格格式及项目导入顺序；TS/JS/JSON/WXSS使用已有Prettier配置。WXML只统一标签行缩进，保留正文、指令和属性值。

@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author wangxx
  */
-public class StringUtils extends org.apache.commons.lang3.StringUtils {
+public class StringUtils extends CommonsStringUtils {
 
     private static final String NULLSTR = "";
     private static final char SEPARATOR = '_';

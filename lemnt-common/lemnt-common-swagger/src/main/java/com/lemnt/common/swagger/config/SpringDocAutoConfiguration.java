@@ -24,6 +24,8 @@ import org.springframework.context.annotation.Bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON_VALUE;
+
 /**
  * Swagger 文档配置
  *
@@ -116,8 +118,7 @@ public class SpringDocAutoConfiguration {
                         .content(
                                 new Content()
                                         .addMediaType(
-                                                org.springframework.http.MediaType
-                                                        .APPLICATION_PROBLEM_JSON_VALUE,
+                                                APPLICATION_PROBLEM_JSON_VALUE,
                                                 mediaType)));
     }
 }

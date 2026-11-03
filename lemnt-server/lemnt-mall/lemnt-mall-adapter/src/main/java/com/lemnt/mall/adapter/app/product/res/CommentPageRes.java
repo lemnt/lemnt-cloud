@@ -2,6 +2,7 @@ package com.lemnt.mall.adapter.app.product.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public record CommentPageRes(
         @Schema(description = "商家回复，未回复可空") String replyContent,
         @Schema(description = "回复时间，可空") LocalDateTime replyTime,
         @Schema(description = "评价时间") LocalDateTime createTime)
-        implements java.io.Serializable {
+        implements Serializable {
     /** 保存时规格，独立HTTP值对象。 */
     @Schema(description = "商品规格快照")
     public record Spec(
@@ -34,5 +35,5 @@ public record CommentPageRes(
             @Schema(description = "规格名称") String specName,
             @Schema(description = "规格值编号，历史可空") Long specValueId,
             @Schema(description = "规格值名称") String specValueName)
-            implements java.io.Serializable {}
+            implements Serializable {}
 }

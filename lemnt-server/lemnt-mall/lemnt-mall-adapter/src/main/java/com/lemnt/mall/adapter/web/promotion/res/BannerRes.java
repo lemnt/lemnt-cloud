@@ -2,6 +2,8 @@ package com.lemnt.mall.adapter.web.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
+
 /** Banner 响应。 */
 @Schema(description = "Banner 响应")
 public record BannerRes(
@@ -14,4 +16,4 @@ public record BannerRes(
         @Schema(description = "位置") Integer position,
         @Schema(description = "备注") String memo,
         @Schema(description = "点击次数") Integer browseCount)
-        implements java.io.Serializable {}
+        implements Serializable {}

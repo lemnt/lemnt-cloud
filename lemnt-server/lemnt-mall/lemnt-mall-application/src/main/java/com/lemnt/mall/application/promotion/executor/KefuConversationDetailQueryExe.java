@@ -1,5 +1,6 @@
 package com.lemnt.mall.application.promotion.executor;
 
+import com.lemnt.mall.application.promotion.dto.KefuConversationDTO;
 import com.lemnt.mall.application.promotion.service.KefuChatService;
 
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class KefuConversationDetailQueryExe {
     private final KefuChatService service;
 
-    public com.lemnt.mall.application.promotion.dto.KefuConversationDTO execute(Long id) {
+    public KefuConversationDTO execute(Long id) {
         return service.adminDetail(id);
     }
 }

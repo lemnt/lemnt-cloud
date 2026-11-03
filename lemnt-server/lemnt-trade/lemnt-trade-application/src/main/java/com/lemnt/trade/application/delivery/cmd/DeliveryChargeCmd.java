@@ -1,5 +1,6 @@
 package com.lemnt.trade.application.delivery.cmd;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -11,4 +12,4 @@ public record DeliveryChargeCmd(
         Integer startPrice,
         BigDecimal extraCount,
         Integer extraPrice)
-        implements java.io.Serializable {}
+        implements Serializable {}

@@ -2,6 +2,7 @@ package com.lemnt.mall.adapter.web.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,4 +16,4 @@ public record DiscountActivityDetailRes(
         @Schema(description = "结束时间，yyyy-MM-dd HH:mm:ss") LocalDateTime endTime,
         @Schema(description = "备注") String remark,
         @Schema(description = "SKU 折扣配置") List<DiscountProductRes> products)
-        implements java.io.Serializable {}
+        implements Serializable {}

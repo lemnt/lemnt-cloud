@@ -1,6 +1,5 @@
 package com.lemnt.common.security.handler;
 
-import com.lemnt.common.core.constant.HttpStatus;
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.security.constant.SecurityConstants;
 import com.lemnt.common.security.exception.NotPermissionException;
@@ -9,6 +8,8 @@ import com.lemnt.common.security.exception.NotRoleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 
+import static com.lemnt.common.core.constant.HttpStatus.FORBIDDEN;
+
 /**
  * 全局异常处理器
  *
@@ -43,7 +46,7 @@ public class GlobalExceptionHandler {
     public Object handleNotPermissionException(
             NotPermissionException e, HttpServletRequest request) {
         log.warn("请求地址'{}',权限码校验失败'{}'", request.getRequestURI(), e.getMessage());
-        return respond(request, HttpStatus.FORBIDDEN, "FORBIDDEN", "没有访问权限", "没有访问权限，请联系管理员授权");
+        return respond(request, FORBIDDEN, "FORBIDDEN", "没有访问权限", "没有访问权限，请联系管理员授权");
     }
 
     /**
@@ -52,7 +55,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotRoleException.class)
     public Object handleNotRoleException(NotRoleException e, HttpServletRequest request) {
         log.warn("请求地址'{}',角色权限校验失败'{}'", request.getRequestURI(), e.getMessage());
-        return respond(request, HttpStatus.FORBIDDEN, "FORBIDDEN", "没有访问权限", "没有访问权限，请联系管理员授权");
+        return respond(request, FORBIDDEN, "FORBIDDEN", "没有访问权限", "没有访问权限，请联系管理员授权");
     }
 
     /**
@@ -64,7 +67,7 @@ public class GlobalExceptionHandler {
         log.warn("请求地址'{}',不支持'{}'请求", request.getRequestURI(), e.getMethod());
         return respond(
                 request,
-                org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED.value(),
+                HttpStatus.METHOD_NOT_ALLOWED.value(),
                 "METHOD_NOT_ALLOWED",
                 "请求方法不支持",
                 e.getMessage());
@@ -80,7 +83,7 @@ public class GlobalExceptionHandler {
         int status =
                 isErrorStatus(code)
                         ? code
-                        : org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY.value();
+                        : HttpStatus.UNPROCESSABLE_ENTITY.value();
         return problem(
                 request, status, "BUSINESS_RULE_VIOLATION", "业务规则校验失败", e.getMessage(), null);
     }
@@ -94,7 +97,7 @@ public class GlobalExceptionHandler {
         log.warn("请求参数不合法 uri={}, message={}", request.getRequestURI(), e.getMessage());
         return problem(
                 request,
-                org.springframework.http.HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.value(),
                 "BAD_REQUEST",
                 "请求参数错误",
                 Objects.requireNonNullElse(e.getMessage(), "请求参数不合法"),
@@ -110,7 +113,7 @@ public class GlobalExceptionHandler {
         log.error("请求路径中缺少必需的路径变量'{}',发生系统异常.", request.getRequestURI());
         return respond(
                 request,
-                org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "INTERNAL_ERROR",
                 "服务器内部错误",
                 "系统异常，请联系管理员");
@@ -125,7 +128,7 @@ public class GlobalExceptionHandler {
         String message = String.format("请求参数[%s]不能为空", e.getParameterName());
         return respond(
                 request,
-                org.springframework.http.HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.value(),
                 "BAD_REQUEST",
                 "请求参数错误",
                 message);
@@ -150,7 +153,7 @@ public class GlobalExceptionHandler {
         log.error("运行时异常 uri={}", request.getRequestURI(), e);
         return respond(
                 request,
-                org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "INTERNAL_ERROR",
                 "服务器内部错误",
                 "系统繁忙，请稍后重试");
@@ -164,7 +167,7 @@ public class GlobalExceptionHandler {
         log.error("系统异常 uri={}", request.getRequestURI(), e);
         return respond(
                 request,
-                org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "INTERNAL_ERROR",
                 "服务器内部错误",
                 "系统异常，请联系管理员");
@@ -218,7 +221,7 @@ public class GlobalExceptionHandler {
                         .toList();
         return problem(
                 request,
-                org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
                 "VALIDATION_ERROR",
                 "请求参数校验失败",
                 message,
@@ -239,7 +242,7 @@ public class GlobalExceptionHandler {
             List<ValidationError> errors) {
         ProblemDetail body =
                 ProblemDetail.forStatusAndDetail(
-                        org.springframework.http.HttpStatusCode.valueOf(status), detail);
+                        HttpStatusCode.valueOf(status), detail);
         body.setType(URI.create("urn:lemnt:problem:" + code.toLowerCase().replace('_', '-')));
         body.setTitle(title);
         body.setInstance(URI.create(request.getRequestURI()));
@@ -277,8 +280,8 @@ public class GlobalExceptionHandler {
     }
 
     private String title(int status) {
-        org.springframework.http.HttpStatus httpStatus =
-                org.springframework.http.HttpStatus.resolve(status);
+        HttpStatus httpStatus =
+                HttpStatus.resolve(status);
         return httpStatus == null ? "请求失败" : httpStatus.getReasonPhrase();
     }
 

@@ -2,6 +2,8 @@ package com.lemnt.promotion.adapter.web.promotion.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
+
 /** 拼团记录分页请求。 */
 @Schema(description = "拼团记录分页请求")
 public record CombinationRecordPageReq(
@@ -11,4 +13,4 @@ public record CombinationRecordPageReq(
         @Schema(description = "团长记录编号，0 表示只看团长") Long headId,
         @Schema(description = "pageNum") Integer pageNum,
         @Schema(description = "pageSize") Integer pageSize)
-        implements java.io.Serializable {}
+        implements Serializable {}

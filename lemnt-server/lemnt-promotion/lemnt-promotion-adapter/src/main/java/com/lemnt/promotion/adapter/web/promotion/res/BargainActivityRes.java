@@ -2,6 +2,7 @@ package com.lemnt.promotion.adapter.web.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -28,4 +29,4 @@ public record BargainActivityRes(
         @Schema(description = "单次随机最小砍价") BigDecimal randomMinPrice,
         @Schema(description = "单次随机最大砍价") BigDecimal randomMaxPrice,
         @Schema(description = "成功砍价人数") Long successCount)
-        implements java.io.Serializable {}
+        implements Serializable {}

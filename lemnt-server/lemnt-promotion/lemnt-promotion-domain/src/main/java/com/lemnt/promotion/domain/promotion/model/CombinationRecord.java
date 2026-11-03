@@ -1,5 +1,6 @@
 package com.lemnt.promotion.domain.promotion.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -25,6 +26,6 @@ public record CombinationRecord(
         LocalDateTime expireTime,
         LocalDateTime startTime,
         LocalDateTime endTime)
-        implements java.io.Serializable {
+        implements Serializable {
     public static final long HEAD_ID_GROUP = 0L;
 }

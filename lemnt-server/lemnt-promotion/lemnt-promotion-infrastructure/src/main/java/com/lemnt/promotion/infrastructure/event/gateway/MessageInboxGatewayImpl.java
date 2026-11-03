@@ -3,11 +3,14 @@ package com.lemnt.promotion.infrastructure.event.gateway;
 import com.lemnt.promotion.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.promotion.infrastructure.event.dataobject.MessageInboxDO;
 import com.lemnt.promotion.infrastructure.event.mapper.MessageInboxMapper;
+
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

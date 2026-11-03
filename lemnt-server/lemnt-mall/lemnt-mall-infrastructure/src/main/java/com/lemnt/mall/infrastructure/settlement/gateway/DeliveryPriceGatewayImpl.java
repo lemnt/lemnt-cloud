@@ -1,5 +1,6 @@
 package com.lemnt.mall.infrastructure.settlement.gateway;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.mall.domain.settlement.gateway.DeliveryPriceGateway;
 import com.lemnt.mall.domain.settlement.model.DeliveryPriceLine;
 import com.lemnt.mall.domain.settlement.model.DeliveryPriceResult;
@@ -61,7 +62,7 @@ public class DeliveryPriceGatewayImpl implements DeliveryPriceGateway {
         try {
             return value.movePointRight(2).intValueExact();
         } catch (ArithmeticException exception) {
-            throw new com.lemnt.common.core.exception.ServiceException("商品金额超出运费计价范围", 400);
+            throw new ServiceException("商品金额超出运费计价范围", 400);
         }
     }
 }

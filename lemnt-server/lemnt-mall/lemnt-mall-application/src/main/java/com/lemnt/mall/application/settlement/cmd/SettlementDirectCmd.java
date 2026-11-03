@@ -1,5 +1,6 @@
 package com.lemnt.mall.application.settlement.cmd;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  */
 public record SettlementDirectCmd(
         Long memberId, List<OrderLine> items, String requestNo, Long couponId)
-        implements java.io.Serializable {
+        implements Serializable {
     /**
      * 创建交易订单创建命令实例。
      */

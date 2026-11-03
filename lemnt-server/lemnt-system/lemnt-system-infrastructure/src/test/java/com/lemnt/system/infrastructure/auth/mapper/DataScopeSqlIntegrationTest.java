@@ -26,6 +26,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.core.io.ClassPathResource;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -66,7 +67,7 @@ public class DataScopeSqlIntegrationTest {
         try (var statement = session.getConnection().createStatement();
                 var input = getClass().getResourceAsStream("/datascope-fixture.sql")) {
             assertThat(input).isNotNull();
-            String sql = new String(input.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+            String sql = new String(input.readAllBytes(), StandardCharsets.UTF_8);
             for (String command : sql.split(";")) {
                 if (!command.isBlank()) {
                     statement.execute(command);

@@ -8,6 +8,7 @@ import com.lemnt.promotion.application.promotion.cmd.RewardActivityCreateCmd;
 import com.lemnt.promotion.application.promotion.cmd.RewardActivityUpdateCmd;
 import com.lemnt.promotion.application.promotion.dto.DiscountActivityDTO;
 import com.lemnt.promotion.application.promotion.dto.RewardActivityDTO;
+import com.lemnt.promotion.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.promotion.domain.product.gateway.ProductSkuGateway;
 import com.lemnt.promotion.domain.product.gateway.ProductSpuGateway;
 import com.lemnt.promotion.domain.promotion.gateway.DiscountActivityGateway;
@@ -19,6 +20,7 @@ import com.lemnt.promotion.domain.promotion.model.DiscountProduct;
 import com.lemnt.promotion.domain.promotion.model.RewardActivity;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
@@ -32,13 +34,15 @@ import java.util.Set;
 /** 按芋道直接管理活动及 SKU 折扣，不引入草稿版本和额度账本。 */
 @Component
 @RequiredArgsConstructor
-@Transactional(rollbackFor = Exception.class)
+@Transactional(rollbackFor = Exception.class,
+        isolation = Isolation.READ_COMMITTED)
 public class ActivityManagementService {
     private final RewardActivityGateway rewards;
     private final DiscountActivityGateway discounts;
     private final DiscountProductGateway products;
     private final ProductSkuGateway skus;
     private final ProductSpuGateway spus;
+    private final MessageInboxGateway resourceMutex;
 
     /** 活动起止时间及名称是两类活动共同的业务约束。 */
     private void validate(String name, LocalDateTime start, LocalDateTime end) {
@@ -154,7 +158,7 @@ public class ActivityManagementService {
                 .anyMatch(spu -> categories.productScopeValues().contains(spu.categoryId()));
     }
 
-    /** SKU 锁按编号排序，避免并发创建两个有效折扣活动使用同一 SKU。 */
+    /** 营销库内按SKU升序锁定稳定凭证，避免远程商品锁失效及活动并发穿透。 */
     private void validateProducts(Long activityId, List<DiscountProduct> values) {
         require(values != null && !values.isEmpty(), "折扣商品不能为空");
         var ids = values.stream().map(DiscountProduct::skuId).toList();
@@ -162,7 +166,9 @@ public class ActivityManagementService {
                 ids.stream().allMatch(id -> id != null && id > 0)
                         && ids.stream().distinct().count() == ids.size(),
                 "SKU 编号重复或不合法");
-        ids.stream().sorted().forEach(skus::lockById);
+        ids.stream().sorted().forEach(id -> resourceMutex.begin(
+                "promotion.discount.sku.mutex.v1", String.valueOf(id),
+                "DISCOUNT_SKU_MUTEX", String.valueOf(id), "{}"));
         for (var value : values) {
             var sku = skus.catalogSku(value.skuId());
             require(sku != null && Objects.equals(sku.spuId(), value.spuId()), "SKU 与商品不匹配");

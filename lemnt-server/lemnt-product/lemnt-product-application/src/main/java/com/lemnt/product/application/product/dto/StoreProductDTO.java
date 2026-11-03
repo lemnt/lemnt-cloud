@@ -1,5 +1,7 @@
 package com.lemnt.product.application.product.dto;
 
+import java.io.Serializable;
+
 /**
  * 门店商品数据传输对象。
  */
@@ -12,4 +14,4 @@ public record StoreProductDTO(
         String minPrice,
         String maxPrice,
         boolean available)
-        implements java.io.Serializable {}
+        implements Serializable {}

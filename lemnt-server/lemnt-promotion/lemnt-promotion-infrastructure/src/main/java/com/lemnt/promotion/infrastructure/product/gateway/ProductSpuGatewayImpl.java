@@ -1,10 +1,12 @@
 package com.lemnt.promotion.infrastructure.product.gateway;
-import com.lemnt.promotion.domain.product.gateway.ProductSpuGateway;
-import com.lemnt.promotion.domain.product.model.ProductSpu;
 import com.lemnt.product.client.ProductCatalogClient;
 import com.lemnt.product.client.dto.ProductSpuBriefDTO;
+import com.lemnt.promotion.domain.product.gateway.ProductSpuGateway;
+import com.lemnt.promotion.domain.product.model.ProductSpu;
+
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
+
 import java.util.*;
 /** 仅映射活动实际使用的SPU字段，其余属性保持未知，不补造商品详情。 */
 @Component

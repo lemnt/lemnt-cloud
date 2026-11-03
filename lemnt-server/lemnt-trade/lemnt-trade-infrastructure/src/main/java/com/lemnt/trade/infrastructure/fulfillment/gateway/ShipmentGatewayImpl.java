@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /** Shipment 表持久化实现。 */
 @Component
@@ -71,7 +72,7 @@ public class ShipmentGatewayImpl implements ShipmentGateway {
     }
 
     @Override
-    public java.util.List<String> shippedBefore(LocalDateTime cutoff, int limit) {
+    public List<String> shippedBefore(LocalDateTime cutoff, int limit) {
         return shipmentMapper
                 .selectList(
                         Wrappers.<ShipmentDO>lambdaQuery()

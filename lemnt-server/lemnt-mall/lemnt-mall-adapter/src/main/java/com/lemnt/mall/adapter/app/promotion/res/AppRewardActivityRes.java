@@ -2,6 +2,7 @@ package com.lemnt.mall.adapter.app.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +18,7 @@ public record AppRewardActivityRes(
         @Schema(description = "条件类型 PRICE/COUNT") String conditionType,
         @Schema(description = "商品范围") String productScope,
         @Schema(description = "规则") List<Rule> rules)
-        implements java.io.Serializable {
+        implements Serializable {
     public AppRewardActivityRes {
         rules = rules == null ? List.of() : List.copyOf(rules);
     }
@@ -30,5 +31,5 @@ public record AppRewardActivityRes(
             @Schema(description = "是否包邮") Boolean freeDelivery,
             @Schema(description = "赠送积分") Integer point,
             @Schema(description = "赠送优惠券") Map<Long, Integer> giveCouponTemplateCounts)
-            implements java.io.Serializable {}
+            implements Serializable {}
 }

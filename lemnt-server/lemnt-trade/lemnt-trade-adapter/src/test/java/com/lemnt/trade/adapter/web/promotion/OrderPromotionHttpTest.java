@@ -1,5 +1,6 @@
 package com.lemnt.trade.adapter.web.promotion;
 
+import com.lemnt.common.security.context.SecurityContextHolder;
 import com.lemnt.common.start.config.JacksonConfig;
 import com.lemnt.trade.adapter.app.order.AppOrderController;
 import com.lemnt.trade.adapter.web.fulfillment.FulfillmentOrderController;
@@ -74,7 +75,7 @@ class OrderPromotionHttpTest {
 
     @Test
     void memberIdentityComesFromContextNotQueryParameter() throws Exception {
-        com.lemnt.common.security.context.SecurityContextHolder.setUserId("7");
+        SecurityContextHolder.setUserId("7");
         try {
             when(query.execute(7L, "T1")).thenReturn(result());
             var mvc =
@@ -89,7 +90,7 @@ class OrderPromotionHttpTest {
             verify(query).execute(7L, "T1");
             verify(query, never()).execute(8L, "T1");
         } finally {
-            com.lemnt.common.security.context.SecurityContextHolder.remove();
+            SecurityContextHolder.remove();
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.lemnt.mall.domain.promotion.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /** 限时折扣活动。 */
@@ -10,4 +11,4 @@ public record DiscountActivity(
         LocalDateTime startTime,
         LocalDateTime endTime,
         String remark)
-        implements java.io.Serializable {}
+        implements Serializable {}

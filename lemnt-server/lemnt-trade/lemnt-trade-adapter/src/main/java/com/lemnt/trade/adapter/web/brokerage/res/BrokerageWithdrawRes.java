@@ -2,6 +2,7 @@ package com.lemnt.trade.adapter.web.brokerage.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -23,4 +24,4 @@ public record BrokerageWithdrawRes(
         @Schema(description = "审核说明") String auditReason,
         @Schema(description = "审核时间") LocalDateTime auditTime,
         @Schema(description = "创建时间") LocalDateTime createTime)
-        implements java.io.Serializable {}
+        implements Serializable {}

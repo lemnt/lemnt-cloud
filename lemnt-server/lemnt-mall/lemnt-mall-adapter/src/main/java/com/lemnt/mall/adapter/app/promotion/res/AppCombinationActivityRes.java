@@ -2,6 +2,7 @@ package com.lemnt.mall.adapter.app.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -19,4 +20,4 @@ public record AppCombinationActivityRes(
         @Schema(description = "开始时间") LocalDateTime startTime,
         @Schema(description = "结束时间") LocalDateTime endTime,
         @Schema(description = "成团人数") Integer userSize)
-        implements java.io.Serializable {}
+        implements Serializable {}

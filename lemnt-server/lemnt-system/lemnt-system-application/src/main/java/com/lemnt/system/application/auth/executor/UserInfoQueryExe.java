@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 
 import java.util.*;
+import java.util.HashSet;
 
 /**
  * 用户信息聚合查询执行器（前端路由初始化）
@@ -63,7 +64,7 @@ public class UserInfoQueryExe {
      * 构建权限集合
      */
     private Set<String> buildPermissions(Long userId) {
-        Set<String> permissions = new java.util.HashSet<>();
+        Set<String> permissions = new HashSet<>();
         if (SecurityUtils.isAdmin()) {
             permissions.add(Constants.ALL_PERMISSION);
         } else {

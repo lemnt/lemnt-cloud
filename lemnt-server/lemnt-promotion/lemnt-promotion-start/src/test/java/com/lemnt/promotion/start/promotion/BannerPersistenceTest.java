@@ -1,5 +1,6 @@
 package com.lemnt.promotion.start.promotion;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
 import com.lemnt.promotion.application.promotion.cmd.BannerCreateCmd;
 import com.lemnt.promotion.application.promotion.cmd.BannerUpdateCmd;
@@ -116,19 +117,19 @@ class BannerPersistenceTest {
         assertEquals(2, updated.browseCount());
         service.delete(id);
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class, () -> service.detail(id));
+                ServiceException.class, () -> service.detail(id));
     }
 
     @Test
     void invalidPositionStatusAndBrowseTargetAreRejected() {
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> create("bad", 6, 0, 0));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> service.create(new BannerCreateCmd("bad", "/x", "https://x", 0, 2, 1, null)));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> service.addBrowseCount(1L));
     }
 }

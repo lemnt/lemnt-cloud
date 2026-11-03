@@ -1,5 +1,7 @@
 package com.lemnt.trade.domain.order.model;
 
+import java.math.BigDecimal;
+
 /** 退单生成时冻结、售后完成后执行的权益方案。 */
 public record OrderRefundBenefits(
         String orderNo,
@@ -7,7 +9,7 @@ public record OrderRefundBenefits(
         Long orderItemId,
         Long skuId,
         int quantity,
-        java.math.BigDecimal amount,
+        BigDecimal amount,
         long returnUsePoint,
         long deductGivePoint,
         int ruleVersion) {}

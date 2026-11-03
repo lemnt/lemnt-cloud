@@ -1,6 +1,7 @@
 package com.lemnt.member.application.growth.service;
 
 import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd;
 import com.lemnt.member.domain.growth.gateway.MemberConfigGateway;
 import com.lemnt.member.domain.growth.gateway.MemberConfigLockGateway;
 import com.lemnt.member.domain.growth.gateway.MemberExperienceRecordGateway;
@@ -11,8 +12,10 @@ import com.lemnt.member.domain.growth.gateway.MemberSignConfigGateway;
 import com.lemnt.member.domain.growth.gateway.MemberSignRecordGateway;
 import com.lemnt.member.domain.growth.model.AssetRecord;
 import com.lemnt.member.domain.growth.model.Config;
+import com.lemnt.member.domain.growth.model.ExperienceRecordMetadata;
 import com.lemnt.member.domain.growth.model.Level;
 import com.lemnt.member.domain.growth.model.LevelRecord;
+import com.lemnt.member.domain.growth.model.PointRecordMetadata;
 import com.lemnt.member.domain.growth.model.SignConfig;
 import com.lemnt.member.domain.growth.model.SignRecord;
 import com.lemnt.member.domain.shared.model.MemberRules;
@@ -24,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigInteger;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Set;
@@ -127,9 +131,9 @@ public class MemberGrowthService {
         }
         memberUserGateway.balance(memberId, type, balance);
         var metadata =
-                com.lemnt.member.domain.growth.model.PointRecordMetadata.from(type, bizType, delta);
+                PointRecordMetadata.from(type, bizType, delta);
         var expMetadata =
-                com.lemnt.member.domain.growth.model.ExperienceRecordMetadata.from(
+                ExperienceRecordMetadata.from(
                         type, bizType, delta);
         var record =
                 new AssetRecord(
@@ -436,7 +440,7 @@ public class MemberGrowthService {
 
     /** 订单创建、支付、关闭和售后资产写入同一会员事务，重复回调按业务编号核对。 */
     @Transactional(rollbackFor = Exception.class)
-    public void tradeAsset(com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd cmd) {
+    public void tradeAsset(MemberTradeAssetCmd cmd) {
         if (cmd == null
                 || cmd.usePoint() < 0
                 || cmd.givePoint() < 0
@@ -655,9 +659,9 @@ public class MemberGrowthService {
                             : Math.min(Math.max(0L, explicitPoints), total - returned);
         } else {
             planned =
-                    java.math.BigInteger.valueOf(total)
-                            .multiply(java.math.BigInteger.valueOf(refundedFen))
-                            .divide(java.math.BigInteger.valueOf(paidFen))
+                    BigInteger.valueOf(total)
+                            .multiply(BigInteger.valueOf(refundedFen))
+                            .divide(BigInteger.valueOf(paidFen))
                             .longValueExact();
         }
         long delta = Math.min(total - returned, planned);

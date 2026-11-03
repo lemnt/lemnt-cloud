@@ -1,10 +1,12 @@
 package com.lemnt.promotion.infrastructure.product.gateway;
-import com.lemnt.promotion.domain.product.gateway.ProductCatalogGateway;
-import com.lemnt.promotion.domain.product.model.ProductSnapshot;
 import com.lemnt.product.client.ProductCatalogClient;
 import com.lemnt.product.client.dto.ProductSnapshotDTO;
+import com.lemnt.promotion.domain.product.gateway.ProductCatalogGateway;
+import com.lemnt.promotion.domain.product.model.ProductSnapshot;
+
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
+
 import java.util.*;
 /** 当前目录只通过商品Client读取，不能访问商品表或回填历史快照。 */
 @Component

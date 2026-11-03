@@ -1,5 +1,6 @@
 package com.lemnt.mall.domain.promotion.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -21,4 +22,4 @@ public record BargainActivity(
         Integer totalLimitCount,
         BigDecimal randomMinPrice,
         BigDecimal randomMaxPrice)
-        implements java.io.Serializable {}
+        implements Serializable {}

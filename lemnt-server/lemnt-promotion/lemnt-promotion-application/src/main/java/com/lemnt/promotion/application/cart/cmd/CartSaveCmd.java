@@ -1,7 +1,9 @@
 package com.lemnt.promotion.application.cart.cmd;
 
+import java.io.Serializable;
+
 /**
  * 购物车保存命令。
  */
 public record CartSaveCmd(Long memberId, Long productId, int quantity, boolean selected)
-        implements java.io.Serializable {}
+        implements Serializable {}

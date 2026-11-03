@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -54,7 +55,7 @@ public class ProductCatalogGatewayImpl implements ProductCatalogGateway {
                                                     ? List.<ProductSnapshot.Spec>of()
                                                     : sku.specs().stream()
                                                             .sorted(
-                                                                    java.util.Comparator.comparing(
+                                                                    Comparator.comparing(
                                                                             property ->
                                                                                     property
                                                                                             .specName()))

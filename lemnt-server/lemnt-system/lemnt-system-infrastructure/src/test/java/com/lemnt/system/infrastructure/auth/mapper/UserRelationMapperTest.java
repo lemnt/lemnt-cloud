@@ -2,6 +2,8 @@ package com.lemnt.system.infrastructure.auth.mapper;
 
 import com.lemnt.system.infrastructure.auth.dataobject.UserPostDO;
 import com.lemnt.system.infrastructure.auth.dataobject.UserRoleDO;
+import com.lemnt.system.infrastructure.auth.gateway.UserPostGatewayImpl;
+import com.lemnt.system.infrastructure.auth.gateway.UserRoleGatewayImpl;
 
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -14,6 +16,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,7 +50,7 @@ class UserRelationMapperTest {
         List<Long> ids = multiple ? List.of(2L, 3L) : List.of(2L);
 
         assertThat(
-                        new com.lemnt.system.infrastructure.auth.gateway.UserRoleGatewayImpl(mapper)
+                        new UserRoleGatewayImpl(mapper)
                                 .deleteUserRoleByUserIds(ids))
                 .isTrue();
 
@@ -68,7 +71,7 @@ class UserRelationMapperTest {
         List<Long> ids = multiple ? List.of(2L, 3L) : List.of(2L);
 
         assertThat(
-                        new com.lemnt.system.infrastructure.auth.gateway.UserRoleGatewayImpl(mapper)
+                        new UserRoleGatewayImpl(mapper)
                                 .deleteUserRoleInfosByRoleId(10L, ids))
                 .isTrue();
 
@@ -93,7 +96,7 @@ class UserRelationMapperTest {
         List<Long> ids = multiple ? List.of(2L, 3L) : List.of(2L);
 
         assertThat(
-                        new com.lemnt.system.infrastructure.auth.gateway.UserPostGatewayImpl(mapper)
+                        new UserPostGatewayImpl(mapper)
                                 .deleteUserPostByUserIds(ids))
                 .isTrue();
 
@@ -114,17 +117,17 @@ class UserRelationMapperTest {
         List<Long> ids = nullIds ? null : List.of();
 
         assertThat(
-                        new com.lemnt.system.infrastructure.auth.gateway.UserRoleGatewayImpl(roles)
+                        new UserRoleGatewayImpl(roles)
                                 .deleteUserRoleByUserIds(ids))
                 .isFalse();
 
         assertThat(
-                        new com.lemnt.system.infrastructure.auth.gateway.UserRoleGatewayImpl(roles)
+                        new UserRoleGatewayImpl(roles)
                                 .deleteUserRoleInfosByRoleId(10L, ids))
                 .isFalse();
 
         assertThat(
-                        new com.lemnt.system.infrastructure.auth.gateway.UserPostGatewayImpl(posts)
+                        new UserPostGatewayImpl(posts)
                                 .deleteUserPostByUserIds(ids))
                 .isFalse();
 
@@ -145,7 +148,7 @@ class UserRelationMapperTest {
     void singleRoleRevocationBindsUserAndRoleToTheirOwnColumns() {
         UserRoleMapper mapper = mock(UserRoleMapper.class);
         doReturn(1).when(mapper).delete(any());
-        var gateway = new com.lemnt.system.infrastructure.auth.gateway.UserRoleGatewayImpl(mapper);
+        var gateway = new UserRoleGatewayImpl(mapper);
         assertThat(gateway.deleteUserRoleInfo(2L, 10L)).isTrue();
         ArgumentCaptor<LambdaQueryWrapper<UserRoleDO>> captor = ArgumentCaptor.captor();
         verify(mapper).delete(captor.capture());
@@ -156,7 +159,7 @@ class UserRelationMapperTest {
 
     private void assertColumnBinding(LambdaQueryWrapper<?> query, String column, Long value) {
         var binding =
-                java.util.regex.Pattern.compile(
+                Pattern.compile(
                                 column + " = #\\{ew\\.paramNameValuePairs\\.([^}]+)}")
                         .matcher(query.getSqlSegment());
         assertThat(binding.find()).isTrue();

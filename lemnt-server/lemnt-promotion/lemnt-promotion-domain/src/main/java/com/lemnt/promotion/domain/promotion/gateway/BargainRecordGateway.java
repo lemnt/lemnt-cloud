@@ -4,6 +4,7 @@ import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.promotion.domain.promotion.model.BargainRecord;
 import com.lemnt.promotion.domain.promotion.model.BargainRecordFilter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,8 +17,8 @@ public interface BargainRecordGateway {
     /** 按旧价格条件更新，保证并发助力只成功一次。 */
     boolean updatePrice(
             Long id,
-            java.math.BigDecimal expected,
-            java.math.BigDecimal price,
+            BigDecimal expected,
+            BigDecimal price,
             Integer status,
             LocalDateTime endTime);
 

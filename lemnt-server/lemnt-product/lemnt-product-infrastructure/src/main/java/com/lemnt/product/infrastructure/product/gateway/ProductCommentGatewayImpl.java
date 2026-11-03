@@ -1,8 +1,10 @@
 package com.lemnt.product.infrastructure.product.gateway;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.product.domain.product.gateway.ProductCommentGateway;
 import com.lemnt.product.domain.product.model.CommentFilter;
+import com.lemnt.product.domain.product.model.CommentOrderLink;
 import com.lemnt.product.domain.product.model.ProductComment;
 import com.lemnt.product.domain.product.model.PublicCommentFilter;
 import com.lemnt.product.infrastructure.product.converter.ProductCommentConverter;
@@ -36,7 +38,7 @@ public class ProductCommentGatewayImpl implements ProductCommentGateway {
         var legacy = productCommentMapper.legacyForLink(orderNo, skuId);
         if (legacy.size() > 1
                 || legacy.stream().anyMatch(value -> Boolean.TRUE.equals(value.getDeleted()))) {
-            throw new com.lemnt.common.core.exception.ServiceException("旧评价已删除或归属不唯一，不能重复投稿", 409);
+            throw new ServiceException("旧评价已删除或归属不唯一，不能重复投稿", 409);
         }
         return legacy.isEmpty() ? null : ProductCommentConverter.toModel(legacy.get(0));
     }
@@ -151,7 +153,7 @@ public class ProductCommentGatewayImpl implements ProductCommentGateway {
     }
 
     @Override
-    public boolean bindOrderItem(com.lemnt.product.domain.product.model.CommentOrderLink value) {
+    public boolean bindOrderItem(CommentOrderLink value) {
         return productCommentMapper.update(
                         null,
                         Wrappers.lambdaUpdate(ProductCommentDO.class)

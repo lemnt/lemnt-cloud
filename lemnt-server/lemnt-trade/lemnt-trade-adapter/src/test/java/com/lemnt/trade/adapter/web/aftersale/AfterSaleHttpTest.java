@@ -1,5 +1,6 @@
 package com.lemnt.trade.adapter.web.aftersale;
 
+import com.lemnt.common.security.context.SecurityContextHolder;
 import com.lemnt.common.start.config.JacksonConfig;
 import com.lemnt.trade.application.aftersale.cmd.AfterSaleCreateCmd;
 import com.lemnt.trade.application.aftersale.dto.AfterSaleDTO;
@@ -32,12 +33,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AfterSaleHttpTest {
     @BeforeEach
     void user() {
-        com.lemnt.common.security.context.SecurityContextHolder.setUserId("55");
+        SecurityContextHolder.setUserId("55");
     }
 
     @AfterEach
     void clear() {
-        com.lemnt.common.security.context.SecurityContextHolder.remove();
+        SecurityContextHolder.remove();
     }
 
     AfterSaleCreateCmdExe create = mock(AfterSaleCreateCmdExe.class);

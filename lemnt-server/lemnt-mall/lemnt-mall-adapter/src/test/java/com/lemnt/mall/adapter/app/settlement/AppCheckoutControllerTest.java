@@ -1,5 +1,8 @@
 package com.lemnt.mall.adapter.app.settlement;
 
+import com.lemnt.common.security.constant.SecurityConstants;
+import com.lemnt.common.security.context.SecurityContextHolder;
+import com.lemnt.common.security.interceptor.HeaderInterceptor;
 import com.lemnt.mall.adapter.app.cart.AppCartController;
 import com.lemnt.mall.adapter.app.coupon.AppCouponController;
 import com.lemnt.mall.application.cart.executor.CartDeleteCmdExe;
@@ -7,8 +10,12 @@ import com.lemnt.mall.application.cart.executor.CartListQueryExe;
 import com.lemnt.mall.application.cart.executor.CartSaveCmdExe;
 import com.lemnt.mall.application.coupon.executor.CouponListQueryExe;
 import com.lemnt.mall.application.settlement.cmd.SettlementAbandonCmd;
+import com.lemnt.mall.application.settlement.cmd.SettlementCreateCmd;
 import com.lemnt.mall.application.settlement.cmd.SettlementSubmitCmd;
 import com.lemnt.mall.application.settlement.dto.SettlementAbandonDTO;
+import com.lemnt.mall.application.settlement.dto.SettlementDTO;
+import com.lemnt.mall.application.settlement.dto.SettlementDeliveryDTO;
+import com.lemnt.mall.application.settlement.dto.SettlementQuoteDTO;
 import com.lemnt.mall.application.settlement.executor.SettlementAbandonCmdExe;
 import com.lemnt.mall.application.settlement.executor.SettlementCreateCmdExe;
 import com.lemnt.mall.application.settlement.executor.SettlementReceiptQueryExe;
@@ -22,7 +29,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -32,42 +42,42 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AppCheckoutControllerTest {
     @BeforeEach
     void identity() {
-        com.lemnt.common.security.context.SecurityContextHolder.setUserId("7");
+        SecurityContextHolder.setUserId("7");
     }
 
     @AfterEach
     void clearIdentity() {
-        com.lemnt.common.security.context.SecurityContextHolder.remove();
+        SecurityContextHolder.remove();
     }
 
     @Test
     void quoteForwardsOwnedAddressAndPointChoiceAndRejectsMissingAddress() throws Exception {
         var create = mock(SettlementCreateCmdExe.class);
         var quote =
-                new com.lemnt.mall.application.settlement.dto.SettlementQuoteDTO(
+                new SettlementQuoteDTO(
                         List.of(),
-                        new java.math.BigDecimal("20.00"),
-                        new java.math.BigDecimal("0.00"),
-                        new java.math.BigDecimal("26.50"),
+                        new BigDecimal("20.00"),
+                        new BigDecimal("0.00"),
+                        new BigDecimal("26.50"),
                         null,
                         "digest",
                         0L,
                         53L,
-                        new com.lemnt.mall.application.settlement.dto.SettlementDeliveryDTO(
+                        new SettlementDeliveryDTO(
                                 123L,
                                 1,
                                 "收件人",
                                 "13800000000",
                                 110101L,
                                 "地址",
-                                new java.math.BigDecimal("6.50")),
+                                new BigDecimal("6.50")),
                         false,
-                        java.util.Map.of());
+                        Map.of());
         when(create.execute(any()))
                 .thenReturn(
-                        new com.lemnt.mall.application.settlement.dto.SettlementDTO(
+                        new SettlementDTO(
                                 "12345678-1234-1234-1234-123456789abc",
-                                java.time.Instant.now().plusSeconds(900),
+                                Instant.now().plusSeconds(900),
                                 quote));
         var mvc =
                 MockMvcBuilders.standaloneSetup(
@@ -76,10 +86,10 @@ class AppCheckoutControllerTest {
                                         mock(SettlementSubmitCmdExe.class),
                                         mock(SettlementAbandonCmdExe.class)))
                         .addInterceptors(
-                                new com.lemnt.common.security.interceptor.HeaderInterceptor())
+                                new HeaderInterceptor())
                         .defaultRequest(
                                 get("/").header(
-                                                com.lemnt.common.security.constant.SecurityConstants
+                                                SecurityConstants
                                                         .HEADER_USER_ID,
                                                 "7"))
                         .build();
@@ -92,7 +102,7 @@ class AppCheckoutControllerTest {
                 .andExpect(jsonPath("$.data.delivery.addressId").value(123));
         verify(create)
                 .execute(
-                        new com.lemnt.mall.application.settlement.cmd.SettlementCreateCmd(
+                        new SettlementCreateCmd(
                                 7L, List.of(5L), null, true, 123L, 1, null));
         mvc.perform(
                         post("/mall/app/checkout/quote")
@@ -109,12 +119,12 @@ class AppCheckoutControllerTest {
         MockMvcBuilders.standaloneSetup(
                         new AppCartController(
                                 list, mock(CartSaveCmdExe.class), mock(CartDeleteCmdExe.class)))
-                .addInterceptors(new com.lemnt.common.security.interceptor.HeaderInterceptor())
+                .addInterceptors(new HeaderInterceptor())
                 .build()
                 .perform(
                         get("/mall/app/cart")
                                 .header(
-                                        com.lemnt.common.security.constant.SecurityConstants
+                                        SecurityConstants
                                                 .HEADER_USER_ID,
                                         "7")
                                 .header("memberId", "999"))
@@ -141,10 +151,10 @@ class AppCheckoutControllerTest {
                             mock(SettlementRequestDetailQueryExe.class))
                 };
         MockMvcBuilders.standaloneSetup(controller)
-                .addInterceptors(new com.lemnt.common.security.interceptor.HeaderInterceptor())
+                .addInterceptors(new HeaderInterceptor())
                 .defaultRequest(
                         get("/").header(
-                                        com.lemnt.common.security.constant.SecurityConstants
+                                        SecurityConstants
                                                 .HEADER_USER_ID,
                                         "7"))
                 .build()
@@ -188,10 +198,10 @@ class AppCheckoutControllerTest {
         var mvc =
                 MockMvcBuilders.standaloneSetup(controller)
                         .addInterceptors(
-                                new com.lemnt.common.security.interceptor.HeaderInterceptor())
+                                new HeaderInterceptor())
                         .defaultRequest(
                                 get("/").header(
-                                                com.lemnt.common.security.constant.SecurityConstants
+                                                SecurityConstants
                                                         .HEADER_USER_ID,
                                                 "7"))
                         .build();
@@ -231,10 +241,10 @@ class AppCheckoutControllerTest {
                     new AppOrderController(mock(SettlementReceiptQueryExe.class), cached)
                 };
         MockMvcBuilders.standaloneSetup(controller)
-                .addInterceptors(new com.lemnt.common.security.interceptor.HeaderInterceptor())
+                .addInterceptors(new HeaderInterceptor())
                 .defaultRequest(
                         get("/").header(
-                                        com.lemnt.common.security.constant.SecurityConstants
+                                        SecurityConstants
                                                 .HEADER_USER_ID,
                                         "7"))
                 .build()
@@ -270,10 +280,10 @@ class AppCheckoutControllerTest {
                             mock(SettlementRequestDetailQueryExe.class))
                 };
         MockMvcBuilders.standaloneSetup(controller)
-                .addInterceptors(new com.lemnt.common.security.interceptor.HeaderInterceptor())
+                .addInterceptors(new HeaderInterceptor())
                 .defaultRequest(
                         get("/").header(
-                                        com.lemnt.common.security.constant.SecurityConstants
+                                        SecurityConstants
                                                 .HEADER_USER_ID,
                                         "7"))
                 .build()

@@ -1,6 +1,7 @@
 package com.lemnt.trade.adapter.web.payment;
 
 import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.common.security.context.SecurityContextHolder;
 import com.lemnt.common.start.config.JacksonConfig;
 import com.lemnt.trade.adapter.web.aftersale.AfterSaleController;
 import com.lemnt.trade.adapter.web.paymentrefund.PaymentRefundController;
@@ -39,7 +40,7 @@ class PaymentManagementHttpTest {
 
     @AfterEach
     void clearIdentity() {
-        com.lemnt.common.security.context.SecurityContextHolder.remove();
+        SecurityContextHolder.remove();
     }
 
     @Test
@@ -96,7 +97,7 @@ class PaymentManagementHttpTest {
     @Test
     void refundSubmissionAcceptsOnlyAfterSaleIdentityAndReturnsServerTransaction()
             throws Exception {
-        com.lemnt.common.security.context.SecurityContextHolder.setUserId("55");
+        SecurityContextHolder.setUserId("55");
         var create = mock(PaymentRefundCreateCmdExe.class);
         when(create.executeForAdmin("RF1", 55L))
                 .thenReturn(

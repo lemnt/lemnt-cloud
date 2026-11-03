@@ -11,6 +11,7 @@ import com.lemnt.product.infrastructure.product.converter.ProductCatalogConverte
 import com.lemnt.product.infrastructure.product.dataobject.ProductSkuDO;
 import com.lemnt.product.infrastructure.product.mapper.ProductSkuMapper;
 
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /** Product 表持久化实现。 */
 @Component
@@ -276,7 +278,7 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
     }
 
     private void renameProperties(Long specId, String name, boolean specValueName) {
-        java.util.function.Predicate<ProductSkuSpec> matches =
+        Predicate<ProductSkuSpec> matches =
                 property ->
                         specValueName
                                 ? specId.equals(property.specValueId())
@@ -319,7 +321,7 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
                                 .eq(ProductSkuDO::getId, row.getId())
                                 .set(
                                         ProductSkuDO::getSpecs,
-                                        com.alibaba.fastjson2.JSON.toJSONString(updated))
+                                        JSON.toJSONString(updated))
                                 .set(
                                         ProductSkuDO::getVariantKey,
                                         ProductCatalogValidation.variantKey(updated)));

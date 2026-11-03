@@ -8,6 +8,7 @@ import com.lemnt.trade.domain.order.model.TradeOperator;
 import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.trade.domain.payment.model.PayNotifyType;
 import com.lemnt.trade.domain.paymentrefund.gateway.PaymentRefundChannelGateway;
+import com.lemnt.trade.domain.paymentrefund.model.PaymentRefund;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -57,7 +58,7 @@ public class PaymentRefundCreateCmdExe {
     }
 
     /** 退款成功后通过持久化任务回退权益；非成功状态没有下游权益可派发。 */
-    private void complete(com.lemnt.trade.domain.paymentrefund.model.PaymentRefund refund) {
+    private void complete(PaymentRefund refund) {
         if (!"SUCCESS".equals(refund.status())) {
             return;
         }

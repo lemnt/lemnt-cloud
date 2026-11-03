@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -83,7 +84,7 @@ public class DeptUpdateCmdExe {
             Long[] deptIds =
                     StringUtils.split(ancestors, ",") == null
                             ? new Long[0]
-                            : java.util.Arrays.stream(StringUtils.split(ancestors, ","))
+                            : Arrays.stream(StringUtils.split(ancestors, ","))
                                     .map(Long::parseLong)
                                     .toArray(Long[]::new);
             deptGateway.updateDeptStatusNormal(deptIds);

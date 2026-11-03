@@ -1,5 +1,7 @@
 package com.lemnt.member.client.bo;
 
+import java.io.Serializable;
+
 /** 交易服务确认的订单积分及经验变更，金额均为整数分。 */
 public record MemberTradeAssetBo(
         Long memberId,
@@ -14,7 +16,7 @@ public record MemberTradeAssetBo(
         long refundPoint,
         Long deductGivePoint,
         Integer refundRuleVersion)
-        implements java.io.Serializable {
+        implements Serializable {
     /** 兼容未记录明确回收积分的旧协议。 */
     public MemberTradeAssetBo(
             Long memberId,

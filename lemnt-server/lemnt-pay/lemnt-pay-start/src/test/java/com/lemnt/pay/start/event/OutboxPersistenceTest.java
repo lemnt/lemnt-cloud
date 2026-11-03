@@ -3,11 +3,13 @@ package com.lemnt.pay.start.event;
 import com.lemnt.common.client.event.CommerceEventEnvelope;
 import com.lemnt.common.client.event.CommerceEventTopics;
 import com.lemnt.common.core.utils.JsonUtils;
+import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
 import com.lemnt.pay.domain.event.gateway.MessageOutboxGateway;
 import com.lemnt.pay.infrastructure.event.gateway.MessageOutboxGatewayImpl;
 import com.lemnt.pay.infrastructure.event.mapper.MessageOutboxMapper;
 
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.AfterEach;
@@ -16,13 +18,16 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.transaction.IllegalTransactionStateException;
 import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.sql.Connection;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /** 使用仅支付库的生产DDL验证事务消息，禁止依靠跨服务混库通过测试。 */
 public class OutboxPersistenceTest {
     JdbcDataSource source;
-    java.sql.Connection schemaConnection;
+    Connection schemaConnection;
     JdbcTemplate jdbc;
     TransactionTemplate transaction;
     SqlSessionTemplate session;
@@ -54,12 +59,12 @@ public class OutboxPersistenceTest {
         var factory = new MybatisSqlSessionFactoryBean();
         factory.setDataSource(source);
         factory.setGlobalConfig(
-                new com.baomidou.mybatisplus.core.config.GlobalConfig()
+                new GlobalConfig()
                         .setMetaObjectHandler(
-                                new com.lemnt.common.mybatis.handler.MyMetaObjectHandler()));
+                                new MyMetaObjectHandler()));
         factory.setConfiguration(configuration);
         factory.setMapperLocations(
-                new org.springframework.core.io.support.PathMatchingResourcePatternResolver()
+                new PathMatchingResourcePatternResolver()
                         .getResources("classpath*:mapper/*.xml"));
         session = new SqlSessionTemplate(factory.getObject());
         outbox =
@@ -107,7 +112,7 @@ public class OutboxPersistenceTest {
         assertEquals(
                 0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_outbox", Integer.class));
         assertThrows(
-                org.springframework.transaction.IllegalTransactionStateException.class,
+                IllegalTransactionStateException.class,
                 () -> outbox.enqueue(CommerceEventTopics.PAY_SUCCESS, "O1:7", "O1", "{}"));
     }
 

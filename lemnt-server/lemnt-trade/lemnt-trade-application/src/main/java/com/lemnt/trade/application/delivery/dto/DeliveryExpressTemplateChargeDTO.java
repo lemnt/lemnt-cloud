@@ -1,5 +1,6 @@
 package com.lemnt.trade.application.delivery.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -13,4 +14,4 @@ public record DeliveryExpressTemplateChargeDTO(
         Integer startPrice,
         BigDecimal extraCount,
         Integer extraPrice)
-        implements java.io.Serializable {}
+        implements Serializable {}

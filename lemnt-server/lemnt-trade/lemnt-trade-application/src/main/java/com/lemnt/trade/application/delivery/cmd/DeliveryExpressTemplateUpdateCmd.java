@@ -1,5 +1,6 @@
 package com.lemnt.trade.application.delivery.cmd;
 
+import java.io.Serializable;
 import java.util.List;
 
 /** 修改运费模板命令。 */
@@ -10,4 +11,4 @@ public record DeliveryExpressTemplateUpdateCmd(
         Integer sort,
         List<DeliveryChargeCmd> charges,
         List<DeliveryFreeCmd> frees)
-        implements java.io.Serializable {}
+        implements Serializable {}

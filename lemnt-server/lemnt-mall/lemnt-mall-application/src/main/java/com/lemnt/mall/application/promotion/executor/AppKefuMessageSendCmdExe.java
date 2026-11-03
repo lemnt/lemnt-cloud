@@ -1,5 +1,6 @@
 package com.lemnt.mall.application.promotion.executor;
 
+import com.lemnt.mall.application.promotion.cmd.AppKefuMessageSendCmd;
 import com.lemnt.mall.application.promotion.service.KefuChatService;
 
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class AppKefuMessageSendCmdExe {
     private final KefuChatService service;
 
-    public Long execute(com.lemnt.mall.application.promotion.cmd.AppKefuMessageSendCmd cmd) {
+    public Long execute(AppKefuMessageSendCmd cmd) {
         return service.appSend(cmd);
     }
 }

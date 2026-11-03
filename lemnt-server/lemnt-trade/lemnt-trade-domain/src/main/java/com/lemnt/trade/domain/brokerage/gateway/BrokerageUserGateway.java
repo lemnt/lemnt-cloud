@@ -4,6 +4,8 @@ import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.trade.domain.brokerage.model.BrokerageUser;
 import com.lemnt.trade.domain.brokerage.model.BrokerageUserFilter;
 
+import java.util.List;
+
 /** 分销用户存储契约。 */
 public interface BrokerageUserGateway {
     BrokerageUser find(Long id);
@@ -21,5 +23,5 @@ public interface BrokerageUserGateway {
     long countChildren(Long bindUserId);
 
     /** 一级下级的编号，用于统计二级人数。 */
-    java.util.List<Long> childIds(Long bindUserId);
+    List<Long> childIds(Long bindUserId);
 }

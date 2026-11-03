@@ -4,6 +4,8 @@ import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.trade.domain.brokerage.model.BrokerageWithdraw;
 import com.lemnt.trade.domain.brokerage.model.BrokerageWithdrawFilter;
 
+import java.time.LocalDateTime;
+
 /** 提现单存储契约。 */
 public interface BrokerageWithdrawGateway {
     BrokerageWithdraw find(Long id);
@@ -20,5 +22,5 @@ public interface BrokerageWithdrawGateway {
             Integer expected,
             Integer next,
             String auditReason,
-            java.time.LocalDateTime auditTime);
+            LocalDateTime auditTime);
 }

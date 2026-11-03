@@ -28,6 +28,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
@@ -139,7 +140,7 @@ class OrderPromotionPersistenceTest {
         assertEquals(new BigDecimal("1.00"), result.get(0).refundDiscountAmount());
         assertEquals(2L, result.get(0).returnUsePoint());
         assertThrows(
-                org.springframework.dao.DataIntegrityViolationException.class,
+                DataIntegrityViolationException.class,
                 () ->
                         promotions.saveRefund(
                                 13L,
@@ -181,7 +182,7 @@ class OrderPromotionPersistenceTest {
                 "INSERT INTO trade_order_item(id,order_id,sku_id,product_code,product_name,unit_price,quantity,line_amount,pay_amount) VALUES(12,7,3,'SKU2','商品2',1,1,1,0)");
         insertAfterSale(13, "RF1", 11);
         assertThrows(
-                org.springframework.dao.DataIntegrityViolationException.class,
+                DataIntegrityViolationException.class,
                 () -> insertAfterSale(14, "RF2", 12));
     }
 

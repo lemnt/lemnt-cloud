@@ -6,6 +6,7 @@ import com.lemnt.trade.infrastructure.order.converter.OrderItemConverter;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderProductSnapshotTest {
     @Test
     void snapshotRoundTripsAndDefensivelyCopiesProperties() {
-        var specs = new java.util.ArrayList<>(List.of(new TradeOrderItem.Spec(3L, "颜色", 7L, "黑色")));
+        var specs = new ArrayList<>(List.of(new TradeOrderItem.Spec(3L, "颜色", 7L, "黑色")));
         var item = item(specs);
         specs.clear();
         assertEquals("黑色", item.specs().get(0).specValueName());

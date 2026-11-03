@@ -5,6 +5,8 @@ import com.lemnt.common.security.utils.SecurityUtils;
 
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 /**
  * 密码编码器实现（基于 Spring Security BCrypt）
  *
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class PasswordEncoderGatewayImpl implements PasswordEncoderGateway {
     // 缺少凭证时仍执行同等成本的默认算法校验，避免暴露账户是否存在。
     private final String dummyHash =
-            SecurityUtils.encryptPassword(java.util.UUID.randomUUID().toString());
+            SecurityUtils.encryptPassword(UUID.randomUUID().toString());
 
     @Override
     public boolean matches(String rawPassword, String encodedPassword) {

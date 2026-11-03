@@ -1,5 +1,9 @@
 package com.lemnt.trade.domain.promotion.model;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
 /** 订单实际采用的优惠与权益结果，历史未知保持为空。 */
 public record OrderPromotion(
         Long id,
@@ -10,17 +14,17 @@ public record OrderPromotion(
         String promotionName,
         String ruleSummary,
         String ruleSnapshot,
-        java.math.BigDecimal discountAmount,
-        java.math.BigDecimal deliveryDiscountPrice,
+        BigDecimal discountAmount,
+        BigDecimal deliveryDiscountPrice,
         Long usePoint,
         Long givePoint,
-        java.util.Map<Long, Integer> giveCouponTemplateCounts,
-        java.util.List<OrderItemPromotion> items) {
+        Map<Long, Integer> giveCouponTemplateCounts,
+        List<OrderItemPromotion> items) {
     public OrderPromotion {
-        items = items == null ? java.util.List.of() : java.util.List.copyOf(items);
+        items = items == null ? List.of() : List.copyOf(items);
         giveCouponTemplateCounts =
                 giveCouponTemplateCounts == null
                         ? null
-                        : java.util.Map.copyOf(giveCouponTemplateCounts);
+                        : Map.copyOf(giveCouponTemplateCounts);
     }
 }

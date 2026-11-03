@@ -19,6 +19,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -151,7 +152,7 @@ class ConfigEditRegressionTest {
                         () ->
                                 new DictTypeUpdateCmdExe(
                                                 gateway,
-                                                org.mockito.Mockito.mock(
+                                                Mockito.mock(
                                                         com.lemnt.system.domain.config.gateway
                                                                 .DictDataGateway.class))
                                         .execute(
@@ -180,7 +181,7 @@ class ConfigEditRegressionTest {
             assertThat(
                             new DictTypeUpdateCmdExe(
                                             gateway,
-                                            org.mockito.Mockito.mock(
+                                            Mockito.mock(
                                                     com.lemnt.system.domain.config.gateway
                                                             .DictDataGateway.class))
                                     .execute(new DictTypeUpdateCmd(2L, "测试", "test", "2", "备注")))

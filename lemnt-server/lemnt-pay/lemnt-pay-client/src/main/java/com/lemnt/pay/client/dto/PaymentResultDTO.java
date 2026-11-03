@@ -1,5 +1,8 @@
 package com.lemnt.pay.client.dto;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+
 /** 可信内部支付流水快照，金额单位元。 */
 public record PaymentResultDTO(
         String paymentNo,
@@ -7,6 +10,6 @@ public record PaymentResultDTO(
         String channel,
         String appKey,
         String channelTradeNo,
-        java.math.BigDecimal amount,
+        BigDecimal amount,
         String status)
-        implements java.io.Serializable {}
+        implements Serializable {}

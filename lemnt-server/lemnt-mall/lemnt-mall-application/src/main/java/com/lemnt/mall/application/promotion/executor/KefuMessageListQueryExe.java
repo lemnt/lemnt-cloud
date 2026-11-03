@@ -1,10 +1,14 @@
 package com.lemnt.mall.application.promotion.executor;
 
+import com.lemnt.mall.application.promotion.dto.KefuMessageDTO;
+import com.lemnt.mall.application.promotion.qry.KefuMessageQry;
 import com.lemnt.mall.application.promotion.service.KefuChatService;
 
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /** 管理端客服消息查询执行器。 */
 @Component
@@ -12,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 public class KefuMessageListQueryExe {
     private final KefuChatService service;
 
-    public java.util.List<com.lemnt.mall.application.promotion.dto.KefuMessageDTO> execute(
-            com.lemnt.mall.application.promotion.qry.KefuMessageQry qry) {
+    public List<KefuMessageDTO> execute(
+            KefuMessageQry qry) {
         return service.adminMessages(qry);
     }
 }

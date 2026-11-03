@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serializable;
 
 /** Banner 修改请求。 */
 @Schema(description = "Banner 修改请求")
@@ -19,4 +20,4 @@ public record BannerUpdateReq(
         @Schema(description = "位置：1首页、2秒杀、3拼团/砍价、4折扣、5满减") @NotNull @Min(1) @Max(5)
                 Integer position,
         @Schema(description = "备注") @Size(max = 255) String memo)
-        implements java.io.Serializable {}
+        implements Serializable {}

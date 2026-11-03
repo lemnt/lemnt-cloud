@@ -1,12 +1,14 @@
 package com.lemnt.mall.application.settlement;
 
 import com.lemnt.mall.application.settlement.service.SettlementDeliveryService;
+import com.lemnt.mall.application.settlement.service.SettlementPromotionSnapshots;
 import com.lemnt.mall.domain.member.gateway.MemberDeliveryAddressGateway;
 import com.lemnt.mall.domain.member.gateway.MemberTradeGateway;
 import com.lemnt.mall.domain.member.model.MemberDeliveryAddress;
 import com.lemnt.mall.domain.member.model.MemberPointConfig;
 import com.lemnt.mall.domain.product.model.ProductSnapshot;
 import com.lemnt.mall.domain.settlement.gateway.DeliveryPriceGateway;
+import com.lemnt.mall.domain.settlement.model.DeliveryPriceResult;
 import com.lemnt.mall.domain.settlement.model.SettlementItem;
 import com.lemnt.mall.domain.settlement.model.SettlementQuote;
 
@@ -64,10 +66,10 @@ class SettlementDeliveryFreeShippingTest {
                         null);
         when(prices.price(eq(110101), anyList()))
                 .thenReturn(
-                        new com.lemnt.mall.domain.settlement.model.DeliveryPriceResult(
+                        new DeliveryPriceResult(
                                 new BigDecimal("5.00"), Map.of(5L, new BigDecimal("5.00"))));
         var reward =
-                com.lemnt.mall.application.settlement.service.SettlementPromotionSnapshots.capture(
+                SettlementPromotionSnapshots.capture(
                         "REWARD:1",
                         "REWARD",
                         1L,

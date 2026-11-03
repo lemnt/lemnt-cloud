@@ -8,6 +8,7 @@ import com.lemnt.trade.application.aftersale.cmd.AfterSaleReturnCmd;
 import com.lemnt.trade.application.aftersale.dto.AfterSaleItemDTO;
 import com.lemnt.trade.domain.aftersale.gateway.AfterSaleGateway;
 import com.lemnt.trade.domain.aftersale.model.AfterSale;
+import com.lemnt.trade.domain.aftersale.service.AfterSaleRefundCalculator;
 import com.lemnt.trade.domain.fulfillment.model.RefundAllocation;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.trade.domain.order.gateway.TradeOrderItemGateway;
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /** 商品售后审批和退货流程，所有写入沿用订单行锁串行校验额度。 */
 @Component
@@ -82,12 +84,12 @@ public class AfterSaleService {
                 persistedItems.stream()
                         .filter(i -> i.refundedQuantity() == null)
                         .map(i -> i.orderItemId())
-                        .collect(java.util.stream.Collectors.toSet());
+                        .collect(Collectors.toSet());
         var savedQuantities =
                 persistedItems.stream()
                         .filter(i -> i.refundedQuantity() != null)
                         .collect(
-                                java.util.stream.Collectors.toMap(
+                                Collectors.toMap(
                                         i -> i.orderItemId(), i -> i.refundedQuantity()));
         var history =
                 afterSales.afterSales(order.orderNo()).stream()
@@ -226,7 +228,7 @@ public class AfterSaleService {
                         .reduce(BigDecimal.ZERO, BigDecimal::add);
         var originalAmount = quota.refundableAmount().add(refundedAmount);
         var amount =
-                com.lemnt.trade.domain.aftersale.service.AfterSaleRefundCalculator.cash(
+                AfterSaleRefundCalculator.cash(
                         originalAmount,
                         quota.quantity(),
                         refundedQuantity,

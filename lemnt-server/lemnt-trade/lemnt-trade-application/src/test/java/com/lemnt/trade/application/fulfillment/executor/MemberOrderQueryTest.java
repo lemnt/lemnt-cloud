@@ -3,6 +3,7 @@ package com.lemnt.trade.application.fulfillment.executor;
 import com.lemnt.trade.application.fulfillment.dto.OrderDetailDTO;
 import com.lemnt.trade.application.fulfillment.qry.MemberOrderPageQry;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
+import com.lemnt.trade.domain.delivery.gateway.PickUpStoreGateway;
 import com.lemnt.trade.domain.fulfillment.model.FulfillmentFilter;
 import com.lemnt.trade.domain.fulfillment.model.OrderPage;
 import com.lemnt.trade.domain.fulfillment.model.OrderSummary;
@@ -32,7 +33,7 @@ class MemberOrderQueryTest {
             new MemberOrderDetailQueryExe(
                     detail,
                     persistence,
-                    mock(com.lemnt.trade.domain.delivery.gateway.PickUpStoreGateway.class));
+                    mock(PickUpStoreGateway.class));
     final MemberOrderStatusCountQueryExe countQuery = new MemberOrderStatusCountQueryExe(orders);
 
     @Test

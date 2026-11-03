@@ -8,14 +8,18 @@ import com.lemnt.product.adapter.web.product.converter.CommentReqConverter;
 import com.lemnt.product.adapter.web.product.converter.CommentResConverter;
 import com.lemnt.product.adapter.web.product.req.CommentPageReq;
 import com.lemnt.product.adapter.web.product.req.CommentReplyReq;
+import com.lemnt.product.adapter.web.product.req.CommentSelfCreateReq;
 import com.lemnt.product.adapter.web.product.req.CommentVisibleReq;
 import com.lemnt.product.adapter.web.product.res.CommentDetailRes;
 import com.lemnt.product.adapter.web.product.res.CommentPageRes;
 import com.lemnt.product.adapter.web.product.res.CommentReplyRes;
+import com.lemnt.product.adapter.web.product.res.CommentSelfCreateRes;
 import com.lemnt.product.adapter.web.product.res.CommentVisibleRes;
+import com.lemnt.product.application.product.cmd.CommentSelfCreateCmd;
 import com.lemnt.product.application.product.executor.CommentDetailQueryExe;
 import com.lemnt.product.application.product.executor.CommentPageQueryExe;
 import com.lemnt.product.application.product.executor.CommentReplyCmdExe;
+import com.lemnt.product.application.product.executor.CommentSelfCreateCmdExe;
 import com.lemnt.product.application.product.executor.CommentVisibleCmdExe;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,7 +43,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/mall/comments")
 @RequiredArgsConstructor
 public class CommentController {
-    private final com.lemnt.product.application.product.executor.CommentSelfCreateCmdExe
+    private final CommentSelfCreateCmdExe
             commentSelfCreateCmdExe;
     private final CommentPageQueryExe commentPageQueryExe;
     private final CommentDetailQueryExe commentDetailQueryExe;
@@ -50,12 +54,12 @@ public class CommentController {
     @PostMapping
     @Operation(summary = "添加后台自评")
     @RequiresPermissions("mall:comment:create")
-    public R<com.lemnt.product.adapter.web.product.res.CommentSelfCreateRes> create(
+    public R<CommentSelfCreateRes> create(
             @Valid @RequestBody
-                    com.lemnt.product.adapter.web.product.req.CommentSelfCreateReq req) {
+                    CommentSelfCreateReq req) {
         var id =
                 commentSelfCreateCmdExe.execute(
-                        new com.lemnt.product.application.product.cmd.CommentSelfCreateCmd(
+                        new CommentSelfCreateCmd(
                                 req.userNickname(),
                                 req.userAvatar(),
                                 req.skuId(),
@@ -63,7 +67,7 @@ public class CommentController {
                                 req.benefitScores(),
                                 req.content(),
                                 req.picUrls()));
-        return R.ok(new com.lemnt.product.adapter.web.product.res.CommentSelfCreateRes(id));
+        return R.ok(new CommentSelfCreateRes(id));
     }
 
     /** 分页查询含隐藏内容的后台评价。 */

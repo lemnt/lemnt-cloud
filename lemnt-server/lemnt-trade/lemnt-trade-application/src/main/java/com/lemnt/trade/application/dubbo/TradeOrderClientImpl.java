@@ -1,9 +1,12 @@
 package com.lemnt.trade.application.dubbo;
 
+import com.lemnt.trade.application.order.cmd.OrderCommentCreateCmd;
+import com.lemnt.trade.application.order.service.OrderCommentService;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
 import com.lemnt.trade.application.order.service.OrderRemoteService;
 import com.lemnt.trade.application.order.service.OrderSubmissionService;
 import com.lemnt.trade.client.TradeOrderClient;
+import com.lemnt.trade.client.bo.OrderCommentCreateBo;
 import com.lemnt.trade.client.bo.OrderCreateBo;
 import com.lemnt.trade.client.dto.OrderDTO;
 import com.lemnt.trade.client.dto.OrderDeliveryDTO;
@@ -18,12 +21,15 @@ import com.lemnt.trade.domain.order.model.TradeOrderItem;
 
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+import java.util.concurrent.ThreadLocalRandom;
 
 /** 接收商城确认后的缓存快照，交易服务不参与购物车或促销计价。 */
 @DubboService
@@ -32,7 +38,7 @@ public class TradeOrderClientImpl implements TradeOrderClient {
     private final OrderSubmissionService submissions;
     private final OrderPersistenceService orders;
     private final OrderRemoteService remotes;
-    private final com.lemnt.trade.application.order.service.OrderCommentService comments;
+    private final OrderCommentService comments;
     private final TradeOrderGateway orderGateway;
     private final TradeConfigGateway configs;
     private final PickUpStoreGateway pickUpStores;
@@ -305,9 +311,9 @@ public class TradeOrderClientImpl implements TradeOrderClient {
     }
 
     @Override
-    public Long createComment(com.lemnt.trade.client.bo.OrderCommentCreateBo value) {
+    public Long createComment(OrderCommentCreateBo value) {
         return comments.create(
-                new com.lemnt.trade.application.order.cmd.OrderCommentCreateCmd(
+                new OrderCommentCreateCmd(
                         value.memberId(),
                         value.orderNo(),
                         value.skuId(),
@@ -426,7 +432,7 @@ public class TradeOrderClientImpl implements TradeOrderClient {
             if (!openNow) {
                 throw new IllegalArgumentException("自提门店当前未营业");
             }
-        } catch (java.time.format.DateTimeParseException exception) {
+        } catch (DateTimeParseException exception) {
             throw new IllegalArgumentException("自提门店营业时间配置不合法");
         }
     }
@@ -437,7 +443,7 @@ public class TradeOrderClientImpl implements TradeOrderClient {
             String code =
                     String.format(
                             "%08d",
-                            java.util.concurrent.ThreadLocalRandom.current().nextInt(100_000_000));
+                            ThreadLocalRandom.current().nextInt(100_000_000));
             if (orderGateway.findHeaderByPickUpCode(code) == null) {
                 return code;
             }
@@ -462,7 +468,7 @@ public class TradeOrderClientImpl implements TradeOrderClient {
     /** 完整报价保持原建单编排，在内部持久化事务校验所有优惠及权益分摊。 */
     @Override
     @Transactional(
-            propagation = org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED)
+            propagation = Propagation.NOT_SUPPORTED)
     public OrderDTO createPriced(OrderCreateBo value) {
         if (value == null || !"COMPLETE".equals(value.pricingSnapshotStatus())) {
             throw new IllegalArgumentException("完整报价快照标记缺失");

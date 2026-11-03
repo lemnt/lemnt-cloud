@@ -1,5 +1,6 @@
 package com.lemnt.mall.domain.promotion.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -22,4 +23,4 @@ public record PromotionOrder(
         String failureReason,
         LocalDateTime createTime,
         LocalDateTime updateTime)
-        implements java.io.Serializable {}
+        implements Serializable {}

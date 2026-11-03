@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 /** 交易核验购买并编排评价，订单锁内完成行状态、汇总和日志。 */
@@ -127,7 +129,7 @@ public class OrderCommentService {
 
     /** 调度任务逐单调用，持锁后二次核验期限；失败由下一轮原内容修复。 */
     @Transactional(rollbackFor = Exception.class)
-    public boolean createSystem(String orderNo, java.time.LocalDateTime cutoff) {
+    public boolean createSystem(String orderNo, LocalDateTime cutoff) {
         var order = orders.lockHeader(orderNo);
         if (order == null || !orders.commentExpired(orderNo, cutoff)) {
             return false;
@@ -168,7 +170,7 @@ public class OrderCommentService {
                             5,
                             5,
                             false,
-                            java.util.List.of());
+                            List.of());
             Long id = comments.saveSystem(verified);
             require(
                     id != null && id > 0 && items.markCommented(order.id(), line.orderItemId()),

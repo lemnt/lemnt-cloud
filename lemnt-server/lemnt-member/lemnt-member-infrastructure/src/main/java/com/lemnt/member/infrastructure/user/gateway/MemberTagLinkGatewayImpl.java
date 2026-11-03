@@ -43,7 +43,7 @@ public class MemberTagLinkGatewayImpl implements MemberTagLinkGateway {
     /** 按会员和标签编号排序，返回稳定的当前绑定。 */
     @Override
     public Map<Long, List<Long>> memberTagsBatch(Collection<Long> memberIds) {
-        if (memberIds.isEmpty()) return java.util.Map.of();
+        if (memberIds.isEmpty()) return Map.of();
         return memberTagLinkMapper
                 .selectList(
                         Wrappers.<MemberTagLinkDO>lambdaQuery()

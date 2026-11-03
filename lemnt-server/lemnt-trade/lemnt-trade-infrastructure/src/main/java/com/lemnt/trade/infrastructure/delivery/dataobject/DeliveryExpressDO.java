@@ -2,6 +2,7 @@ package com.lemnt.trade.infrastructure.delivery.dataobject;
 
 import com.lemnt.common.infrastructure.domain.BaseDO;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -37,7 +38,7 @@ public class DeliveryExpressDO extends BaseDO {
     /**
      * 图标地址。
      */
-    @TableField(updateStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.ALWAYS)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String logo;
 
     /**

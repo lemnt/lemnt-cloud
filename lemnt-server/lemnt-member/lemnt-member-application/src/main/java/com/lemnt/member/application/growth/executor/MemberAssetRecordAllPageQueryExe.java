@@ -8,6 +8,7 @@ import com.lemnt.member.application.growth.qry.AssetRecordAllPageQry;
 import com.lemnt.member.domain.growth.gateway.MemberExperienceRecordGateway;
 import com.lemnt.member.domain.growth.gateway.MemberPointRecordGateway;
 import com.lemnt.member.domain.growth.model.AssetRecordPageFilter;
+import com.lemnt.member.domain.growth.model.PointRecordMetadata;
 import com.lemnt.member.domain.shared.model.MemberRules;
 
 import org.springframework.stereotype.Component;
@@ -42,7 +43,7 @@ public class MemberAssetRecordAllPageQueryExe {
                 qry.bizType() == null || qry.bizType().isBlank() ? null : qry.bizType().trim();
         if (qry.pointBizType() != null
                 && (!"POINT".equals(qry.assetType())
-                        || !com.lemnt.member.domain.growth.model.PointRecordMetadata.supported(
+                        || !PointRecordMetadata.supported(
                                 qry.pointBizType()))) throw new ServiceException("积分业务类型不合法", 400);
         if (qry.title() != null
                 && (qry.title().length() > 255 || !"POINT".equals(qry.assetType()))) {

@@ -1,5 +1,6 @@
 package com.lemnt.trade.application.config.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 /** 交易配置传输对象。 */
@@ -20,4 +21,4 @@ public record TradeConfigDTO(
         Integer brokerageWithdrawFeePercent,
         Integer brokerageFrozenDays,
         List<Integer> brokerageWithdrawTypes)
-        implements java.io.Serializable {}
+        implements Serializable {}

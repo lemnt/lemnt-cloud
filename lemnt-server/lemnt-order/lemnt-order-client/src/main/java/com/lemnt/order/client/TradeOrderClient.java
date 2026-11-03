@@ -1,5 +1,6 @@
 package com.lemnt.order.client;
 
+import com.lemnt.order.client.bo.OrderCommentCreateBo;
 import com.lemnt.order.client.bo.OrderCreateBo;
 import com.lemnt.order.client.dto.OrderDTO;
 
@@ -9,7 +10,7 @@ public interface TradeOrderClient {
     OrderDTO create(OrderCreateBo order);
 
     /** 在订单锁事务内编排真实购买评价。 */
-    Long createComment(com.lemnt.order.client.bo.OrderCommentCreateBo value);
+    Long createComment(OrderCommentCreateBo value);
 
     /** 查询订单快照。 */
     OrderDTO getByOrderNo(String orderNo);

@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
+
 /** 生成售后时冻结的优惠回退归因持久化对象。 */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -27,10 +29,10 @@ public class OrderPromotionRefundDO extends BaseDO {
     private Long orderItemPromotionId;
 
     /** 本次商品优惠归因，单位元，不额外增加现金退款。 */
-    private java.math.BigDecimal refundDiscountAmount;
+    private BigDecimal refundDiscountAmount;
 
     /** 本次运费优惠归因，单位元，不额外增加现金退款。 */
-    private java.math.BigDecimal refundDeliveryDiscountPrice;
+    private BigDecimal refundDeliveryDiscountPrice;
 
     /** 生成退单时冻结的应返使用积分，到账以账户流水为准。 */
     private Long returnUsePoint;

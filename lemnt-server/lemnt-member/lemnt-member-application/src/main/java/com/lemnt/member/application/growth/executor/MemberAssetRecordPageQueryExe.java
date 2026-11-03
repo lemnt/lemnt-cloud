@@ -7,6 +7,7 @@ import com.lemnt.member.application.growth.dto.AssetRecordDTO;
 import com.lemnt.member.application.growth.qry.AssetRecordPageQry;
 import com.lemnt.member.domain.growth.gateway.MemberExperienceRecordGateway;
 import com.lemnt.member.domain.growth.gateway.MemberPointRecordGateway;
+import com.lemnt.member.domain.growth.model.AssetRecordPageFilter;
 import com.lemnt.member.domain.shared.model.MemberRules;
 
 import org.springframework.stereotype.Component;
@@ -42,7 +43,7 @@ public class MemberAssetRecordPageQueryExe {
             throw new ServiceException("开始时间不能晚于结束时间", 400);
         }
         var filter =
-                new com.lemnt.member.domain.growth.model.AssetRecordPageFilter(
+                new AssetRecordPageFilter(
                         qry.memberId(),
                         qry.assetType(),
                         (qry.pageNum() - 1) * qry.pageSize(),

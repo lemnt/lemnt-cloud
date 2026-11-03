@@ -1,5 +1,6 @@
 package com.lemnt.mall.application.settlement.service;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.mall.application.member.service.MemberValidationService;
 import com.lemnt.mall.application.promotion.service.ActivityPricingService;
 import com.lemnt.mall.application.settlement.cmd.SettlementDirectCmd;
@@ -129,7 +130,7 @@ public class SettlementPreparationService {
                             entry.getValue(),
                             unit.multiply(BigDecimal.valueOf(entry.getValue())),
                             null,
-                            java.math.BigDecimal.ZERO.setScale(2),
+                            BigDecimal.ZERO.setScale(2),
                             product.spuId(),
                             product.spuName(),
                             product.specs() == null
@@ -244,7 +245,7 @@ public class SettlementPreparationService {
                         quote.discountAmount(),
                         quote.deliveryOriginalPrice(),
                         quote.deliveryDiscountPrice(),
-                        java.math.BigDecimal.ZERO.setScale(2),
+                        BigDecimal.ZERO.setScale(2),
                         quote.deliveryOriginalPrice() == null ? "LEGACY_PARTIAL" : "COMPLETE",
                         1,
                         quote.promotions());
@@ -479,7 +480,7 @@ public class SettlementPreparationService {
                         delivery == null ? 1 : delivery.deliveryType(),
                         delivery == null ? null : delivery.pickUpStoreId());
         if (!SettlementRules.quoteToken(current).equals(SettlementRules.quoteToken(quote))) {
-            throw new com.lemnt.common.core.exception.ServiceException("商品、优惠、地址或运费已变化，请重新结算", 409);
+            throw new ServiceException("商品、优惠、地址或运费已变化，请重新结算", 409);
         }
         var order = persist(memberId, key, fingerprint, quote, snapshot.references());
         submissionCache.bind(memberId, id, order.orderNo());

@@ -9,6 +9,8 @@ import com.lemnt.trade.adapter.app.order.res.AppOrderDetailRes;
 import com.lemnt.trade.adapter.app.order.res.AppOrderStatusCountRes;
 import com.lemnt.trade.adapter.app.order.res.AppOrderSummaryRes;
 import com.lemnt.trade.adapter.app.order.res.AppOrderTrackRes;
+import com.lemnt.trade.adapter.app.promotion.converter.OrderPromotionResConverter;
+import com.lemnt.trade.adapter.app.promotion.res.AppOrderPromotionDetailRes;
 import com.lemnt.trade.application.fulfillment.executor.MemberOrderDetailQueryExe;
 import com.lemnt.trade.application.fulfillment.executor.MemberOrderPageQueryExe;
 import com.lemnt.trade.application.fulfillment.executor.MemberOrderStatusCountQueryExe;
@@ -16,6 +18,7 @@ import com.lemnt.trade.application.fulfillment.executor.MemberOrderTrackQueryExe
 import com.lemnt.trade.application.fulfillment.executor.OrderReceiveCmdExe;
 import com.lemnt.trade.application.fulfillment.qry.MemberOrderPageQry;
 import com.lemnt.trade.application.order.executor.TradeOrderCloseCmdExe;
+import com.lemnt.trade.application.promotion.executor.OrderPromotionDetailQueryExe;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -104,18 +107,18 @@ public class AppOrderController {
         return R.ok(true);
     }
 
-    private final com.lemnt.trade.application.promotion.executor.OrderPromotionDetailQueryExe
+    private final OrderPromotionDetailQueryExe
             promotionQuery;
 
     /** 查询冻结优惠及权益，不回查当前促销规则。 */
     @GetMapping("/{orderNo}/promotions")
     @Operation(summary = "订单优惠快照")
-    public R<com.lemnt.trade.adapter.app.promotion.res.AppOrderPromotionDetailRes> promotions(
+    public R<AppOrderPromotionDetailRes> promotions(
             @PathVariable String orderNo) {
         return R.ok(
-                com.lemnt.trade.adapter.app.promotion.converter.OrderPromotionResConverter.toRes(
+                OrderPromotionResConverter.toRes(
                         promotionQuery.execute(
-                                com.lemnt.common.security.utils.SecurityUtils.getUserId(),
+                                SecurityUtils.getUserId(),
                                 orderNo)));
     }
 
@@ -128,7 +131,7 @@ public class AppOrderController {
             MemberOrderDetailQueryExe detailQuery,
             MemberOrderTrackQueryExe trackQuery,
             MemberOrderStatusCountQueryExe statusCountQuery,
-            com.lemnt.trade.application.promotion.executor.OrderPromotionDetailQueryExe
+            OrderPromotionDetailQueryExe
                     promotionQuery) {
         this.close = close;
         this.receive = receive;

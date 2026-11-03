@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 服务端缓存结算单，有效期15分钟。
@@ -23,5 +24,5 @@ public record SettlementRes(
         @Schema(description = "已冻结的配送快照") SettlementDeliveryRes delivery,
         @Schema(description = "满减活动是否包邮") boolean freeDelivery,
         @Schema(description = "支付成功后赠送的优惠券模板及数量")
-                java.util.Map<Long, Integer> giveCouponTemplateCounts)
+                Map<Long, Integer> giveCouponTemplateCounts)
         implements Serializable {}

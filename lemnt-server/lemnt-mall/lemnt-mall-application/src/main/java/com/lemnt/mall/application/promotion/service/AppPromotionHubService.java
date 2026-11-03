@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 
 /** 小程序活动聚合：只聚合已开启且当前在有效期内的活动，详情跳转各业务页面。 */
 @Component
@@ -151,10 +152,10 @@ public class AppPromotionHubService {
     private <T> List<AppPromotionItemDTO> items(
             List<T> values,
             int limit,
-            java.util.function.Function<T, Long> id,
-            java.util.function.Function<T, String> name,
-            java.util.function.Function<T, LocalDateTime> start,
-            java.util.function.Function<T, LocalDateTime> end) {
+            Function<T, Long> id,
+            Function<T, String> name,
+            Function<T, LocalDateTime> start,
+            Function<T, LocalDateTime> end) {
         return values.stream()
                 .filter(value -> active(start.apply(value), end.apply(value)))
                 .sorted(Comparator.comparing(start))

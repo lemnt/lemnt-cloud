@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -203,7 +204,7 @@ public class PointActivityManagementService {
         var lines = products.byActivityId(value.id());
         var min =
                 lines.stream()
-                        .min(java.util.Comparator.comparing(PointProduct::point))
+                        .min(Comparator.comparing(PointProduct::point))
                         .orElse(null);
         var market =
                 spus.findSpus(List.of(value.spuId())).stream()

@@ -1,5 +1,10 @@
 package com.lemnt.order.client.dto;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
 /** 已确认的优惠结果，跨边界只传冻结值。 */
 public record OrderPromotionDTO(
         Long id,
@@ -10,18 +15,18 @@ public record OrderPromotionDTO(
         String promotionName,
         String ruleSummary,
         String ruleSnapshot,
-        java.math.BigDecimal discountAmount,
-        java.math.BigDecimal deliveryDiscountPrice,
+        BigDecimal discountAmount,
+        BigDecimal deliveryDiscountPrice,
         Long usePoint,
         Long givePoint,
-        java.util.Map<Long, Integer> giveCouponTemplateCounts,
-        java.util.List<OrderItemPromotionDTO> items)
-        implements java.io.Serializable {
+        Map<Long, Integer> giveCouponTemplateCounts,
+        List<OrderItemPromotionDTO> items)
+        implements Serializable {
     public OrderPromotionDTO {
-        items = items == null ? java.util.List.of() : java.util.List.copyOf(items);
+        items = items == null ? List.of() : List.copyOf(items);
         giveCouponTemplateCounts =
                 giveCouponTemplateCounts == null
                         ? null
-                        : java.util.Map.copyOf(giveCouponTemplateCounts);
+                        : Map.copyOf(giveCouponTemplateCounts);
     }
 }

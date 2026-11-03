@@ -1,5 +1,6 @@
 package com.lemnt.mall.application.settlement.cmd;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,4 +8,4 @@ import java.util.List;
  */
 public record SettlementOrderSubmitCmd(
         Long memberId, String requestNo, List<Long> productIds, Long couponId, String quoteToken)
-        implements java.io.Serializable {}
+        implements Serializable {}

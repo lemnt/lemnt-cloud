@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Set;
+
 /** 仅处理已验签的现金事实；支付和Outbox同事务，不写订单或权益。 */
 @Component
 @RequiredArgsConstructor
@@ -50,7 +52,7 @@ public class PaymentNotificationService {
                 throw new IllegalStateException("成功支付收到不同渠道交易编号");
         } else {
             // 渠道确实收款时，即使订单已关闭也要保存资金事实，由order对账，不能吞掉真实付款。
-            if (!java.util.Set.of("WAITING", "CLOSED").contains(payment.status())
+            if (!Set.of("WAITING", "CLOSED").contains(payment.status())
                     || !payments.markSuccess(notice)) {
                 throw new IllegalStateException("支付状态已变化或渠道结果不允许完成");
             }

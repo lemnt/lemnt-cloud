@@ -1,10 +1,16 @@
 package com.lemnt.trade.infrastructure.order.gateway;
 
 import com.lemnt.mall.client.CheckoutLifecycleClient;
+import com.lemnt.mall.client.bo.RefundBenefitsBo;
+import com.lemnt.mall.client.bo.RefundStockBo;
 import com.lemnt.trade.domain.order.gateway.OrderBenefitsGateway;
+import com.lemnt.trade.domain.order.model.OrderRefundBenefits;
 
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * 由事务消息驱动，商城故障时保留事件重试。
@@ -38,24 +44,24 @@ public class OrderBenefitsGatewayImpl implements OrderBenefitsGateway {
     public void refunded(
             String orderNo,
             String refundNo,
-            java.util.Map<Long, Integer> quantities,
-            java.math.BigDecimal refundAmount) {
+            Map<Long, Integer> quantities,
+            BigDecimal refundAmount) {
         client.refunded(
                 orderNo,
                 refundNo,
                 quantities.entrySet().stream()
                         .map(
                                 item ->
-                                        new com.lemnt.mall.client.bo.RefundStockBo(
+                                        new RefundStockBo(
                                                 item.getKey(), item.getValue()))
                         .toList(),
                 refundAmount);
     }
 
     @Override
-    public void refunded(com.lemnt.trade.domain.order.model.OrderRefundBenefits plan) {
+    public void refunded(OrderRefundBenefits plan) {
         client.refunded(
-                new com.lemnt.mall.client.bo.RefundBenefitsBo(
+                new RefundBenefitsBo(
                         plan.orderNo(),
                         plan.afterSaleNo(),
                         plan.orderItemId(),

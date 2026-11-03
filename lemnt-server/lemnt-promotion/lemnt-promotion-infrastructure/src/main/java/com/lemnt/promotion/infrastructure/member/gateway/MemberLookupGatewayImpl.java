@@ -1,9 +1,9 @@
 package com.lemnt.promotion.infrastructure.member.gateway;
 
-import com.lemnt.promotion.domain.member.gateway.MemberLookupGateway;
-import com.lemnt.promotion.domain.member.model.MemberSnapshot;
 import com.lemnt.member.client.MemberUserClient;
 import com.lemnt.member.client.dto.MemberUserDTO;
+import com.lemnt.promotion.domain.member.gateway.MemberLookupGateway;
+import com.lemnt.promotion.domain.member.model.MemberSnapshot;
 
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;

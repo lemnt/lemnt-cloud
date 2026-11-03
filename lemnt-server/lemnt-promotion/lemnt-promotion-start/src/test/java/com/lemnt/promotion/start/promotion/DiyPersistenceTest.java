@@ -1,5 +1,6 @@
 package com.lemnt.promotion.start.promotion;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
 import com.lemnt.promotion.application.promotion.cmd.DiyPageSaveCmd;
 import com.lemnt.promotion.application.promotion.cmd.DiyPropertyCmd;
@@ -92,7 +93,7 @@ class DiyPersistenceTest {
         assertFalse(service.templateDetail(first).used());
         assertTrue(service.templateDetail(second).used());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> service.deleteTemplate(second));
         assertTrue(service.deleteTemplate(first));
     }
@@ -101,19 +102,19 @@ class DiyPersistenceTest {
     void pageNamesAreUniqueAndPropertiesMustBeJson() {
         var id = template("模板");
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> service.createPage(new DiyPageSaveCmd(null, id, "首页", null, List.of())));
         var page = service.createPage(new DiyPageSaveCmd(null, id, "活动页", null, List.of()));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> service.updatePage(new DiyPageSaveCmd(page, id, "我的", null, List.of())));
         assertTrue(service.updatePageProperty(new DiyPropertyCmd(page, "{\"components\":[]}")));
         assertEquals("{\"components\":[]}", service.pageDetail(page).property());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> service.updatePageProperty(new DiyPropertyCmd(page, "not-json")));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> service.updateTemplateProperty(new DiyPropertyCmd(id, "not-json")));
         assertTrue(service.updateTemplateProperty(new DiyPropertyCmd(id, "{\"tabbar\":{}}")));
     }
@@ -136,6 +137,6 @@ class DiyPersistenceTest {
     @Test
     void templateNamesAreUnique() {
         template("重复");
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class, () -> template("重复"));
+        assertThrows(ServiceException.class, () -> template("重复"));
     }
 }

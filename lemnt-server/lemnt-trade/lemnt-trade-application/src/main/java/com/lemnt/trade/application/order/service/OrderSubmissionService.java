@@ -1,12 +1,17 @@
 package com.lemnt.trade.application.order.service;
 
 import com.lemnt.trade.domain.order.model.TradeOrder;
+import com.lemnt.trade.domain.order.model.TradeOrderDelivery;
+import com.lemnt.trade.domain.order.model.TradeOrderItem;
+import com.lemnt.trade.domain.promotion.model.OrderPromotion;
+import com.lemnt.trade.domain.promotion.service.OrderPricingRules;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Objects;
 
 /** 订单与明细的本地持久化事务，库存由调用方在提交后同步预占。 */
@@ -18,7 +23,7 @@ public class OrderSubmissionService {
     /** 重试使用同一个订单号，订单内容不一致时拒绝。 */
     @Transactional(rollbackFor = Exception.class)
     public TradeOrder create(TradeOrder order) {
-        com.lemnt.trade.domain.promotion.service.OrderPricingRules.validate(order);
+        OrderPricingRules.validate(order);
         var previous = orders.findByOrderNoForUpdate(order.orderNo());
         if (previous != null) {
             previous = orders.findByOrderNo(order.orderNo());
@@ -39,14 +44,14 @@ public class OrderSubmissionService {
                         previous.giveCouponTemplateCounts(), order.giveCouponTemplateCounts())
                 || !Objects.equals(
                         purchaseDelivery(previous.delivery()), purchaseDelivery(order.delivery()))
-                || !java.util.Objects.equals(previous.originalAmount(), order.originalAmount())
-                || !java.util.Objects.equals(previous.discountAmount(), order.discountAmount())
-                || !java.util.Objects.equals(
+                || !Objects.equals(previous.originalAmount(), order.originalAmount())
+                || !Objects.equals(previous.discountAmount(), order.discountAmount())
+                || !Objects.equals(
                         previous.deliveryOriginalPrice(), order.deliveryOriginalPrice())
-                || !java.util.Objects.equals(
+                || !Objects.equals(
                         previous.deliveryDiscountPrice(), order.deliveryDiscountPrice())
-                || !java.util.Objects.equals(previous.adjustmentAmount(), order.adjustmentAmount())
-                || !java.util.Objects.equals(
+                || !Objects.equals(previous.adjustmentAmount(), order.adjustmentAmount())
+                || !Objects.equals(
                         previous.pricingSnapshotStatus(), order.pricingSnapshotStatus())
                 || !promotionValues(previous.promotions())
                         .equals(promotionValues(order.promotions()))
@@ -56,11 +61,11 @@ public class OrderSubmissionService {
     }
 
     /** 核销码由服务端生成，重试重算不应被视为内容变化。 */
-    private com.lemnt.trade.domain.order.model.TradeOrderDelivery purchaseDelivery(
-            com.lemnt.trade.domain.order.model.TradeOrderDelivery value) {
+    private TradeOrderDelivery purchaseDelivery(
+            TradeOrderDelivery value) {
         return value == null
                 ? null
-                : new com.lemnt.trade.domain.order.model.TradeOrderDelivery(
+                : new TradeOrderDelivery(
                         value.addressId(),
                         value.deliveryType(),
                         value.receiverName(),
@@ -73,12 +78,12 @@ public class OrderSubmissionService {
     }
 
     /** 数据库主键及评价状态不属于原购买快照，不能影响下单原请求重试。 */
-    private java.util.List<com.lemnt.trade.domain.order.model.TradeOrderItem> purchaseItems(
-            java.util.List<com.lemnt.trade.domain.order.model.TradeOrderItem> values) {
+    private List<TradeOrderItem> purchaseItems(
+            List<TradeOrderItem> values) {
         return values.stream()
                 .map(
                         item ->
-                                new com.lemnt.trade.domain.order.model.TradeOrderItem(
+                                new TradeOrderItem(
                                         item.productId(),
                                         item.productCode(),
                                         item.productName(),
@@ -104,12 +109,12 @@ public class OrderSubmissionService {
     }
 
     /** 原请求重试忽略数据库生成的优惠、行主键，仍核对全部计算结果和来源。 */
-    private java.util.List<com.lemnt.trade.domain.promotion.model.OrderPromotion> promotionValues(
-            java.util.List<com.lemnt.trade.domain.promotion.model.OrderPromotion> values) {
+    private List<OrderPromotion> promotionValues(
+            List<OrderPromotion> values) {
         return values.stream()
                 .map(
                         p ->
-                                new com.lemnt.trade.domain.promotion.model.OrderPromotion(
+                                new OrderPromotion(
                                         null,
                                         null,
                                         p.promotionKey(),

@@ -16,6 +16,7 @@ import com.lemnt.order.application.promotion.executor.SeckillAppConfigListQueryE
 import com.lemnt.order.application.promotion.executor.SeckillAppDetailQueryExe;
 import com.lemnt.order.application.promotion.executor.SeckillAppPageQueryExe;
 import com.lemnt.order.application.promotion.executor.SeckillNowQueryExe;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import lombok.RequiredArgsConstructor;
+
 import jakarta.validation.Valid;
 import java.util.List;
 

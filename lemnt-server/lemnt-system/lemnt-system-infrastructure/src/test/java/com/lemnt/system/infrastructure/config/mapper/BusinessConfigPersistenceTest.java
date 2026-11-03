@@ -1,6 +1,9 @@
 package com.lemnt.system.infrastructure.config.mapper;
 
+import com.lemnt.common.redis.service.RedisStringService;
+import com.lemnt.system.domain.config.gateway.ConfigGateway;
 import com.lemnt.system.domain.config.model.Config;
+import com.lemnt.system.infrastructure.config.gateway.ConfigGatewayImpl;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
@@ -8,14 +11,24 @@ import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BusinessConfigPersistenceTest {
     JdbcDataSource source;
     ConfigMapper mapper;
-    com.lemnt.system.infrastructure.config.gateway.ConfigGatewayImpl configGateway;
+    ConfigGatewayImpl configGateway;
     String schemaDDL;
     final Path sql = Path.of("../../sql");
 
@@ -52,10 +65,10 @@ class BusinessConfigPersistenceTest {
         factory.setMapperLocations(new ClassPathResource("mapper/ConfigMapper.xml"));
         mapper = new SqlSessionTemplate(factory.getObject()).getMapper(ConfigMapper.class);
         configGateway =
-                new com.lemnt.system.infrastructure.config.gateway.ConfigGatewayImpl(
+                new ConfigGatewayImpl(
                         mapper,
-                        org.mockito.Mockito.mock(
-                                com.lemnt.common.redis.service.RedisStringService.class));
+                        Mockito.mock(
+                                RedisStringService.class));
     }
 
     Config value(String json, String operator) {
@@ -84,7 +97,7 @@ class BusinessConfigPersistenceTest {
         try (var connection = source.getConnection();
                 var statement = connection.createStatement()) {
             assertThrows(
-                    java.sql.SQLException.class,
+                    SQLException.class,
                     () ->
                             statement.execute(
                                     "INSERT INTO sys_config(config_key) VALUES('trade.config')"));
@@ -93,17 +106,17 @@ class BusinessConfigPersistenceTest {
 
     @Test
     void concurrentUpsertsKeepOneCompleteSnapshot() throws Exception {
-        var pool = java.util.concurrent.Executors.newFixedThreadPool(2);
-        var start = new java.util.concurrent.CountDownLatch(1);
+        var pool = Executors.newFixedThreadPool(2);
+        var start = new CountDownLatch(1);
         try {
-            java.util.concurrent.Callable<Void> writerA =
+            Callable<Void> writerA =
                     () -> {
                         start.await();
                         for (int i = 0; i < 20; i++)
                             mapper.saveBusinessConfig(value("{\"first\":10,\"second\":90}", "a"));
                         return null;
                     };
-            java.util.concurrent.Callable<Void> writerB =
+            Callable<Void> writerB =
                     () -> {
                         start.await();
                         for (int i = 0; i < 20; i++)
@@ -113,8 +126,8 @@ class BusinessConfigPersistenceTest {
             var a = pool.submit(writerA);
             var b = pool.submit(writerB);
             start.countDown();
-            a.get(10, java.util.concurrent.TimeUnit.SECONDS);
-            b.get(10, java.util.concurrent.TimeUnit.SECONDS);
+            a.get(10, TimeUnit.SECONDS);
+            b.get(10, TimeUnit.SECONDS);
             var result =
                     JSON.parseObject(configGateway.selectByKey("trade.config").getConfigValue());
             assertEquals(100, result.getIntValue("first") + result.getIntValue("second"));
@@ -134,21 +147,21 @@ class BusinessConfigPersistenceTest {
     @Test
     void failedCacheInvalidationRollsBackSystemWrite() {
         var redis =
-                org.mockito.Mockito.mock(com.lemnt.common.redis.service.RedisStringService.class);
-        org.mockito.Mockito.doThrow(new IllegalStateException("redis failure"))
+                Mockito.mock(RedisStringService.class);
+        Mockito.doThrow(new IllegalStateException("redis failure"))
                 .when(redis)
-                .delete(org.mockito.ArgumentMatchers.anyString());
+                .delete(ArgumentMatchers.anyString());
         var target =
-                new com.lemnt.system.infrastructure.config.gateway.ConfigGatewayImpl(mapper, redis);
-        var factory = new org.springframework.aop.framework.ProxyFactory(target);
+                new ConfigGatewayImpl(mapper, redis);
+        var factory = new ProxyFactory(target);
         factory.setProxyTargetClass(true);
         factory.addAdvice(
-                new org.springframework.transaction.interceptor.TransactionInterceptor(
-                        new org.springframework.jdbc.datasource.DataSourceTransactionManager(
+                new TransactionInterceptor(
+                        new DataSourceTransactionManager(
                                 source),
                         new org.springframework.transaction.annotation
                                 .AnnotationTransactionAttributeSource()));
-        var gateway = (com.lemnt.system.domain.config.gateway.ConfigGateway) factory.getProxy();
+        var gateway = (ConfigGateway) factory.getProxy();
         assertThrows(
                 IllegalStateException.class,
                 () -> gateway.saveBusinessConfig(value("{}", "creator")));

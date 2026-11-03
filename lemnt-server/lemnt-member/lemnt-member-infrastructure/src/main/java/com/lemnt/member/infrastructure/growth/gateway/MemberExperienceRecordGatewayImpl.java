@@ -1,5 +1,6 @@
 package com.lemnt.member.infrastructure.growth.gateway;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.member.domain.growth.gateway.MemberExperienceRecordGateway;
 import com.lemnt.member.domain.growth.model.*;
 import com.lemnt.member.infrastructure.growth.converter.ExperienceRecordConverter;
@@ -32,7 +33,7 @@ public class MemberExperienceRecordGatewayImpl implements MemberExperienceRecord
     @Override
     public void save(AssetRecord record) {
         if (!"EXPERIENCE".equals(record.assetType()))
-            throw new com.lemnt.common.core.exception.ServiceException("账本资产类型不匹配", 400);
+            throw new ServiceException("账本资产类型不匹配", 400);
         mapper.insert(ExperienceRecordConverter.toDO(record));
     }
 

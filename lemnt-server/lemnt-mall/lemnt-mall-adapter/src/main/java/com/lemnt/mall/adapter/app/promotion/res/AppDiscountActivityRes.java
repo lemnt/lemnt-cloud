@@ -2,6 +2,7 @@ package com.lemnt.mall.adapter.app.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +15,7 @@ public record AppDiscountActivityRes(
         @Schema(description = "开始时间") LocalDateTime startTime,
         @Schema(description = "结束时间") LocalDateTime endTime,
         @Schema(description = "折扣商品") List<Product> products)
-        implements java.io.Serializable {
+        implements Serializable {
     public AppDiscountActivityRes {
         products = products == null ? List.of() : List.copyOf(products);
     }
@@ -27,5 +28,5 @@ public record AppDiscountActivityRes(
             @Schema(description = "折扣类型 PRICE/PERCENT") String discountType,
             @Schema(description = "折扣百分比") Integer discountPercent,
             @Schema(description = "优惠金额，元") BigDecimal discountPrice)
-            implements java.io.Serializable {}
+            implements Serializable {}
 }

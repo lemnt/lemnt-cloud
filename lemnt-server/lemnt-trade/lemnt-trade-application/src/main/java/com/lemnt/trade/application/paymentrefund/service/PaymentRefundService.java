@@ -2,6 +2,7 @@ package com.lemnt.trade.application.paymentrefund.service;
 
 import com.lemnt.trade.application.aftersale.service.AfterSaleLogService;
 import com.lemnt.trade.application.order.service.OrderLogService;
+import com.lemnt.trade.application.payment.service.PayNotifyTaskService;
 import com.lemnt.trade.domain.aftersale.gateway.AfterSaleGateway;
 import com.lemnt.trade.domain.aftersale.model.AfterSale;
 import com.lemnt.trade.domain.fulfillment.gateway.InventoryConfirmationGateway;
@@ -9,6 +10,7 @@ import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.trade.domain.order.gateway.TradeOrderItemGateway;
 import com.lemnt.trade.domain.order.model.OrderRules;
 import com.lemnt.trade.domain.order.model.TradeOperator;
+import com.lemnt.trade.domain.order.model.TradeOrder;
 import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.trade.domain.paymentrefund.gateway.PaymentRefundGateway;
 import com.lemnt.trade.domain.paymentrefund.model.PaymentRefund;
@@ -16,9 +18,11 @@ import com.lemnt.trade.domain.paymentrefund.model.PaymentRefundResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
@@ -35,7 +39,7 @@ public class PaymentRefundService {
     private final OrderLogService logs;
     private final AfterSaleLogService afterSaleLogs;
 
-    private final com.lemnt.trade.application.payment.service.PayNotifyTaskService tasks;
+    private final PayNotifyTaskService tasks;
 
     @Autowired
     public PaymentRefundService(
@@ -47,7 +51,7 @@ public class PaymentRefundService {
             InventoryConfirmationGateway inventoryConfirmation,
             OrderLogService logs,
             AfterSaleLogService afterSaleLogs,
-            com.lemnt.trade.application.payment.service.PayNotifyTaskService tasks) {
+            PayNotifyTaskService tasks) {
         this.orders = orders;
         this.afterSales = afterSales;
         this.payments = payments;
@@ -84,7 +88,7 @@ public class PaymentRefundService {
     /** 锁定订单后校验售后与原支付，独立提交唯一退款单再调用渠道。 */
     @Transactional(
             propagation = Propagation.REQUIRES_NEW,
-            isolation = org.springframework.transaction.annotation.Isolation.READ_COMMITTED,
+            isolation = Isolation.READ_COMMITTED,
             rollbackFor = Exception.class)
     public PaymentRefund prepare(String afterSaleNo) {
         return prepare(afterSaleNo, TradeOperator.system());
@@ -93,7 +97,7 @@ public class PaymentRefundService {
     /** 发起退款保留实际后台操作者。 */
     @Transactional(
             propagation = Propagation.REQUIRES_NEW,
-            isolation = org.springframework.transaction.annotation.Isolation.READ_COMMITTED,
+            isolation = Isolation.READ_COMMITTED,
             rollbackFor = Exception.class)
     public PaymentRefund prepare(String afterSaleNo, TradeOperator operator) {
         var initial = afterSales.afterSale(OrderRules.text(afterSaleNo, 40));
@@ -168,7 +172,7 @@ public class PaymentRefundService {
     /** 零现金份额无需渠道退款流水，售后成功与权益任务同事务提交。 */
     private PaymentRefund zeroRefund(
             AfterSale afterSale,
-            com.lemnt.trade.domain.order.model.TradeOrder order,
+            TradeOrder order,
             TradeOperator operator) {
         if (afterSale.amount().signum() != 0 || !order.memberId().equals(afterSale.memberId())) {
             throw new IllegalStateException("零现金售后金额或会员不一致");
@@ -196,7 +200,7 @@ public class PaymentRefundService {
     /** 现金与零现金统一完成数量事实，不能仅凭退完现金提前结束整单。 */
     private void finishAfterSale(
             AfterSale afterSale,
-            com.lemnt.trade.domain.order.model.TradeOrder order,
+            TradeOrder order,
             TradeOperator operator) {
         if (!afterSales.completePaymentRefund(afterSale.refundNo(), orders.databaseNow())) {
             throw new IllegalStateException("退款成功状态写入冲突");
@@ -224,7 +228,7 @@ public class PaymentRefundService {
         var cash =
                 history.stream()
                         .map(AfterSale::amount)
-                        .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add);
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
         if (cash.compareTo(order.totalAmount()) > 0) {
             throw new IllegalStateException("累计退款超过订单实付");
         }

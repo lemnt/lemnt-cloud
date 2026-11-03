@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /** 自提菜单可重入，不授予角色。 */
@@ -48,7 +50,7 @@ class PickUpMenuSeedTest {
             s.execute(
                     "CREATE TABLE sys_menu(menu_id BIGINT AUTO_INCREMENT PRIMARY KEY,menu_name VARCHAR(100),parent_id BIGINT,order_num INT,path VARCHAR(200),component VARCHAR(200),is_frame INT,is_cache INT,menu_type CHAR(1),visible CHAR(1),status CHAR(1),perms VARCHAR(100),icon VARCHAR(100),create_by VARCHAR(64),create_time DATETIME)");
             for (var path :
-                    java.util.List.of(
+                    List.of(
                             "setup-sql/V20261101__trade_pickup_verify_menu.sql",
                             "setup-sql/V20261101__trade_order_adjust_permissions.sql")) {
                 var script = new ClassPathResource(path);

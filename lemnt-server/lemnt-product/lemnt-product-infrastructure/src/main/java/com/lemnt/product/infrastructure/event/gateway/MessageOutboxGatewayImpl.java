@@ -21,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /** 与业务同库登记，投递租约采用独立短事务。 */
@@ -32,7 +33,7 @@ public class MessageOutboxGatewayImpl implements MessageOutboxGateway {
     @Override
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = Exception.class)
     public void enqueue(String type, String key, String aggregate, String payload) {
-        if (!java.util.Set.of(CommerceEventTopics.STOCK_PRE_RESERVED).contains(type)
+        if (!Set.of(CommerceEventTopics.STOCK_PRE_RESERVED).contains(type)
                 || key == null
                 || key.isBlank()
                 || aggregate == null

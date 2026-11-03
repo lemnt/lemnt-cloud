@@ -26,7 +26,7 @@ public record CommentCreateCmd(
             Integer descriptionScores,
             Integer benefitScores,
             Boolean anonymous,
-            java.util.List<String> picUrls) {
+            List<String> picUrls) {
         this(
                 memberId,
                 orderNo,

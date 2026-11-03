@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,4 +24,4 @@ public record SeckillActivityUpdateReq(
         @Schema(description = "总限购数量") @NotNull Integer totalLimitCount,
         @Schema(description = "单次限购数量") @NotNull Integer singleLimitCount,
         @Schema(description = "秒杀商品") @NotEmpty @Valid List<SeckillProductReq> products)
-        implements java.io.Serializable {}
+        implements Serializable {}

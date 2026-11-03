@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Set;
+
 /**
  * 商品商品SPU上架命令执行器。
  */
@@ -34,7 +36,7 @@ public class ProductSpuShelfCmdExe {
         if (value == null) {
             return false;
         }
-        if (!java.util.Set.of("ON_SHELF", "OFF_SHELF").contains(value.status())) {
+        if (!Set.of("ON_SHELF", "OFF_SHELF").contains(value.status())) {
             throw new IllegalStateException("回收站商品须先恢复");
         }
         if (cmd.onShelf()) {

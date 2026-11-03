@@ -1,6 +1,7 @@
 package com.lemnt.trade.application.executor;
 
 import com.lemnt.trade.application.order.service.OrderCloseService;
+import com.lemnt.trade.application.order.service.OrderLogService;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.trade.domain.order.model.TradeOrder;
@@ -28,7 +29,7 @@ class OrderCloseServiceTest {
                     tradeOrderGateway,
                     payments,
                     channels,
-                    mock(com.lemnt.trade.application.order.service.OrderLogService.class));
+                    mock(OrderLogService.class));
 
     PaymentRecord waiting() {
         return new PaymentRecord(

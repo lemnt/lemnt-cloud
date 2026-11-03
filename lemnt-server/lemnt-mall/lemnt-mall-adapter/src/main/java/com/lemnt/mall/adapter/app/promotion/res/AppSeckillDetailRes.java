@@ -2,6 +2,7 @@ package com.lemnt.mall.adapter.app.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,4 +20,4 @@ public record AppSeckillDetailRes(
         @Schema(description = "剩余活动库存") Integer stock,
         @Schema(description = "活动总库存") Integer totalStock,
         @Schema(description = "秒杀商品") List<AppSeckillProductRes> products)
-        implements java.io.Serializable {}
+        implements Serializable {}

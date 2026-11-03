@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /** ProductCatalogService 跨表应用编排，保持原有事务和锁顺序。 */
 @Component
@@ -276,12 +277,12 @@ public class ProductCatalogService {
         var expected =
                 value.skus().get(0).specs().stream()
                         .map(ProductSkuSpec::specId)
-                        .collect(java.util.stream.Collectors.toSet());
+                        .collect(Collectors.toSet());
         for (var sku : value.skus()) {
             var selected =
                     sku.specs().stream()
                             .map(ProductSkuSpec::specId)
-                            .collect(java.util.stream.Collectors.toSet());
+                            .collect(Collectors.toSet());
             if (selected.size() != sku.specs().size() || !selected.equals(expected)) {
                 throw new ServiceException("SKU规格重复或规格项集合不一致", 400);
             }

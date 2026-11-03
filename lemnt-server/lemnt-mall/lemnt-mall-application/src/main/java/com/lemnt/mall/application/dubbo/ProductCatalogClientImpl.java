@@ -11,6 +11,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 商品目录客户端实现。
@@ -31,7 +32,7 @@ public class ProductCatalogClientImpl implements ProductCatalogClient {
         var values = productCatalogGateway.findOnShelfBatch(ids);
         return ids.stream()
                 .map(values::get)
-                .filter(java.util.Objects::nonNull)
+                .filter(Objects::nonNull)
                 .map(this::toDTO)
                 .toList();
     }

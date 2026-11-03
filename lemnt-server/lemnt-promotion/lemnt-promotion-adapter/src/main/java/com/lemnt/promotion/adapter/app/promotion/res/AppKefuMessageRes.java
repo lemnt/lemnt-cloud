@@ -2,6 +2,7 @@ package com.lemnt.promotion.adapter.app.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /** 小程序客服消息。 */
@@ -14,4 +15,4 @@ public record AppKefuMessageRes(
         @Schema(description = "消息内容") String content,
         @Schema(description = "是否已读") Boolean readStatus,
         @Schema(description = "发送时间") LocalDateTime createTime)
-        implements java.io.Serializable {}
+        implements Serializable {}

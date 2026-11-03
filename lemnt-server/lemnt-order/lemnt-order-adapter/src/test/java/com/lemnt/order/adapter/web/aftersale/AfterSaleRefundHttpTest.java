@@ -1,5 +1,6 @@
 package com.lemnt.order.adapter.web.aftersale;
 
+import com.lemnt.common.security.context.SecurityContextHolder;
 import com.lemnt.common.start.config.JacksonConfig;
 import com.lemnt.order.application.aftersale.executor.*;
 import com.lemnt.order.application.paymentrefund.dto.PaymentRefundDTO;
@@ -27,13 +28,13 @@ class AfterSaleRefundHttpTest {
 
     @AfterEach
     void clearIdentity() {
-        com.lemnt.common.security.context.SecurityContextHolder.remove();
+        SecurityContextHolder.remove();
     }
 
     @Test
     void refundSubmissionAcceptsOnlyAfterSaleIdentityAndReturnsServerTransaction()
             throws Exception {
-        com.lemnt.common.security.context.SecurityContextHolder.setUserId("55");
+        SecurityContextHolder.setUserId("55");
         var create = mock(PaymentRefundCreateCmdExe.class);
         when(create.executeForAdmin("RF1", 55L))
                 .thenReturn(

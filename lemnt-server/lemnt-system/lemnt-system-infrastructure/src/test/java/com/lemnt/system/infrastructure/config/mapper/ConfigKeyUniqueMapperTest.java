@@ -1,6 +1,8 @@
 package com.lemnt.system.infrastructure.config.mapper;
 
+import com.lemnt.common.redis.service.RedisStringService;
 import com.lemnt.system.infrastructure.config.dataobject.ConfigDO;
+import com.lemnt.system.infrastructure.config.gateway.ConfigGatewayImpl;
 
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,10 +41,10 @@ class ConfigKeyUniqueMapperTest {
         doReturn(null).when(mapper).selectOne(any());
 
         var gateway =
-                new com.lemnt.system.infrastructure.config.gateway.ConfigGatewayImpl(
+                new ConfigGatewayImpl(
                         mapper,
-                        org.mockito.Mockito.mock(
-                                com.lemnt.common.redis.service.RedisStringService.class));
+                        Mockito.mock(
+                                RedisStringService.class));
         if (editing) gateway.checkConfigKeyUnique("test", 2L);
         else gateway.checkConfigKeyUnique("test");
 

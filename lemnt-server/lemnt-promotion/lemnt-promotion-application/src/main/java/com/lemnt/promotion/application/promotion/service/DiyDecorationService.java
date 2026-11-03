@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /** 装修模板与页面编排：新建模板自动生成首页和我的页面，属性只做 JSON 结构校验。 */
 @Component
@@ -79,7 +80,7 @@ public class DiyDecorationService {
         try {
             var parsed = JSON.parse(value);
             require(
-                    parsed instanceof java.util.Map || parsed instanceof java.util.List,
+                    parsed instanceof Map || parsed instanceof List,
                     "装修属性必须是JSON对象或数组");
             return value;
         } catch (RuntimeException exception) {

@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 JAVA_LITERAL = re.compile(r'/\*.*?\*/|//[^\n]*|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'', re.S)
 SCHEMA = re.compile(r'@(?:io\.swagger\.v3\.oas\.annotations\.media\.)?Schema\b')
 IMPORT = re.compile(r'^import\s+(?:static\s+)?([\w.*]+)\s*;', re.M)
+QUALIFIED_TYPE = re.compile(r'(?<![\w.$])(?:[a-z]\w*\.)+[A-Z]\w*')
 NS = {'m': 'http://maven.apache.org/POM/4.0.0'}
 LAYERS = {'adapter', 'application', 'domain', 'infrastructure', 'client', 'start'}
 FORBIDDEN = {
@@ -25,6 +26,17 @@ FORBIDDEN = {
 def mask_java(text):
     """忽略注释与字面量，保留位置，避免把示例代码误判为真实依赖。"""
     return JAVA_LITERAL.sub(lambda match: ' ' * len(match.group()), text)
+
+
+def qualified_type_references(text):
+    """仅返回代码中的全限定类型，忽略import、包声明、注释和反射字符串。"""
+    masked = mask_java(text)
+    declarations = list(re.finditer(
+        r'\b(?:import\s+(?:static\s+)?[\w.*]+|package\s+[\w.]+)\s*;', masked))
+    for match in QUALIFIED_TYPE.finditer(masked):
+        if not any(declaration.start() <= match.start() < declaration.end()
+                   for declaration in declarations):
+            yield match
 
 
 def layer_of(path):
@@ -117,6 +129,17 @@ def scan(root):
         if path.name.endswith('Controller.java'):
             for match in re.finditer(r'public\s+[^;{]+?\([^;{]*?\b(\w+(?:Cmd|Qry|DTO|Bo))\s+\w+', masked):
                 issue('http-input', path, match.start(), match.group(1) + '须经Req转换')
+
+    # 类型短名规范同样覆盖测试，避免测试夹具持续复制全限定引用。
+    for directory in ('lemnt-common', 'lemnt-server'):
+        for path in sorted((root / directory).rglob('*.java')):
+            if '/src/' not in path.as_posix() or 'target' in path.parts:
+                continue
+            text = contents.get(path) or path.read_text()
+            for match in qualified_type_references(text):
+                findings.append({'rule': 'qualified-type', 'path': path.relative_to(root).as_posix(),
+                                 'line': text[:match.start()].count('\n') + 1,
+                                 'detail': match.group() + '须使用短名及显式import'})
 
     xml_count = 0
     for path in sorted((root / 'lemnt-server').rglob('*.xml')):

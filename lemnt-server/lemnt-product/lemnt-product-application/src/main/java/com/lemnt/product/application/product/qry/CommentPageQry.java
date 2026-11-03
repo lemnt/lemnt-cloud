@@ -1,6 +1,7 @@
 package com.lemnt.product.application.product.qry;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /** 评价分页查询。 */
 public record CommentPageQry(
@@ -14,8 +15,8 @@ public record CommentPageQry(
         String userNickname,
         Long orderId,
         String spuName,
-        java.time.LocalDateTime createTimeStart,
-        java.time.LocalDateTime createTimeEnd)
+        LocalDateTime createTimeStart,
+        LocalDateTime createTimeEnd)
         implements Serializable {
     /** 兼容现有筛选调用，新条件均为可选。 */
     public CommentPageQry(

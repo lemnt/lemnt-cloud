@@ -24,5 +24,5 @@ public record StoreSkuRes(
             @Schema(description = "规格名称，写入时可省略") String specName,
             @Schema(description = "规格值编号") Long specValueId,
             @Schema(description = "规格值名称，写入时可省略") String specValueName)
-            implements java.io.Serializable {}
+            implements Serializable {}
 }

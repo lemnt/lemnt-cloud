@@ -1,5 +1,6 @@
 package com.lemnt.member.application.growth.executor;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.member.application.growth.converter.MemberGrowthDTOConverter;
 import com.lemnt.member.application.growth.dto.LevelDTO;
 import com.lemnt.member.application.growth.qry.LevelListQry;
@@ -23,10 +24,10 @@ public class MemberLevelListQueryExe {
      */
     public List<LevelDTO> execute(LevelListQry qry) {
         if (qry.name() != null && qry.name().length() > 80) {
-            throw new com.lemnt.common.core.exception.ServiceException("等级名称不能超过80字", 400);
+            throw new ServiceException("等级名称不能超过80字", 400);
         }
         if (qry.status() != null && qry.status() != 0 && qry.status() != 1) {
-            throw new com.lemnt.common.core.exception.ServiceException("等级状态不合法", 400);
+            throw new ServiceException("等级状态不合法", 400);
         }
         var name = qry.name() == null || qry.name().isBlank() ? null : qry.name().trim();
         return memberLevelGateway.levels(name, qry.enabledOnly() ? 1 : qry.status()).stream()

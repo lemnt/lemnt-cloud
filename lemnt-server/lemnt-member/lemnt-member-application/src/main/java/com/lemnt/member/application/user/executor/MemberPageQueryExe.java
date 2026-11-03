@@ -1,5 +1,6 @@
 package com.lemnt.member.application.user.executor;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.member.application.user.converter.MemberUserDTOConverter;
 import com.lemnt.member.application.user.dto.MemberDTO;
@@ -11,6 +12,8 @@ import com.lemnt.member.domain.user.model.MemberPageFilter;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /** 查询会员资料分页查询执行器。 */
 @Component
@@ -26,7 +29,7 @@ public class MemberPageQueryExe {
         MemberRules.page(qry.pageNum(), qry.pageSize());
         if (qry.levelId() != null) MemberRules.id(qry.levelId());
         if (qry.groupId() != null) MemberRules.id(qry.groupId());
-        var tags = qry.tagIds() == null ? java.util.List.<Long>of() : qry.tagIds();
+        var tags = qry.tagIds() == null ? List.<Long>of() : qry.tagIds();
         tags.forEach(MemberRules::id);
         if ((qry.loginStartTime() != null
                         && qry.loginEndTime() != null
@@ -34,7 +37,7 @@ public class MemberPageQueryExe {
                 || (qry.createStartTime() != null
                         && qry.createEndTime() != null
                         && qry.createStartTime().isAfter(qry.createEndTime()))) {
-            throw new com.lemnt.common.core.exception.ServiceException("开始时间不能晚于结束时间", 400);
+            throw new ServiceException("开始时间不能晚于结束时间", 400);
         }
         var filter =
                 new MemberPageFilter(

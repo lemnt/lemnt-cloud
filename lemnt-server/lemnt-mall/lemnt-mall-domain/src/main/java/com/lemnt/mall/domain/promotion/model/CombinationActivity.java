@@ -1,5 +1,6 @@
 package com.lemnt.mall.domain.promotion.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /** 拼团活动。 */
@@ -15,4 +16,4 @@ public record CombinationActivity(
         Boolean virtualGroup,
         Integer status,
         Integer limitDuration)
-        implements java.io.Serializable {}
+        implements Serializable {}

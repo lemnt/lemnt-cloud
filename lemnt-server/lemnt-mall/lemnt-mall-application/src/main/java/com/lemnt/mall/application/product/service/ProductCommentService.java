@@ -3,9 +3,12 @@ package com.lemnt.mall.application.product.service;
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.mall.application.product.cmd.CommentCreateCmd;
 import com.lemnt.mall.application.product.cmd.CommentReplyCmd;
+import com.lemnt.mall.application.product.cmd.CommentSaveCmd;
 import com.lemnt.mall.domain.member.gateway.MemberLookupGateway;
 import com.lemnt.mall.domain.product.gateway.ProductCommentGateway;
 import com.lemnt.mall.domain.product.gateway.ProductSkuGateway;
+import com.lemnt.mall.domain.product.model.CommentOrderLink;
+import com.lemnt.mall.domain.product.model.CommentOrderRequest;
 import com.lemnt.mall.domain.product.model.ProductComment;
 import com.lemnt.mall.domain.settlement.gateway.OrderGateway;
 
@@ -34,7 +37,7 @@ public class ProductCommentService {
         var input = normalize(cmd);
         Long id =
                 orderGateway.createComment(
-                        new com.lemnt.mall.domain.product.model.CommentOrderRequest(
+                        new CommentOrderRequest(
                                 cmd.memberId(),
                                 cmd.orderNo().trim(),
                                 cmd.skuId(),
@@ -61,13 +64,13 @@ public class ProductCommentService {
 
     /** 私有RPC只接收交易已验证的订单事实，不回查持锁中的交易订单。 */
     public ProductComment saveVerified(
-            com.lemnt.mall.application.product.cmd.CommentSaveCmd purchase) {
+            CommentSaveCmd purchase) {
         return savePurchase(purchase, false);
     }
 
     /** 独立私有系统入口，不能由会员HTTP输入开启空正文模式。 */
     public ProductComment saveSystem(
-            com.lemnt.mall.application.product.cmd.CommentSaveCmd purchase) {
+            CommentSaveCmd purchase) {
         require(
                 purchase != null
                         && Integer.valueOf(5).equals(purchase.score())
@@ -83,7 +86,7 @@ public class ProductCommentService {
     }
 
     private ProductComment savePurchase(
-            com.lemnt.mall.application.product.cmd.CommentSaveCmd purchase, boolean system) {
+            CommentSaveCmd purchase, boolean system) {
         require(
                 purchase != null
                         && purchase.orderId() != null
@@ -118,7 +121,7 @@ public class ProductCommentService {
             try {
                 require(
                         productCommentGateway.bindOrderItem(
-                                new com.lemnt.mall.domain.product.model.CommentOrderLink(
+                                new CommentOrderLink(
                                         legacy.id(), purchase.orderId(), purchase.orderItemId())),
                         "评价订单项绑定冲突",
                         409);

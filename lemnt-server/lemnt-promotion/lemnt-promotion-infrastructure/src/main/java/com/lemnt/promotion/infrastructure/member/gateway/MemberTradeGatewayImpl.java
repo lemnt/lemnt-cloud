@@ -1,10 +1,10 @@
 package com.lemnt.promotion.infrastructure.member.gateway;
 
+import com.lemnt.member.client.MemberGrowthClient;
+import com.lemnt.member.client.bo.MemberTradeAssetBo;
 import com.lemnt.promotion.domain.member.gateway.MemberTradeGateway;
 import com.lemnt.promotion.domain.member.model.MemberPointConfig;
 import com.lemnt.promotion.domain.member.model.MemberTradeChange;
-import com.lemnt.member.client.MemberGrowthClient;
-import com.lemnt.member.client.bo.MemberTradeAssetBo;
 
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;

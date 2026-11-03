@@ -1,5 +1,6 @@
 package com.lemnt.mall.application.cart.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -16,4 +17,4 @@ public record CartItemDTO(
         BigDecimal unitPrice,
         Integer availableStock,
         boolean sellable)
-        implements java.io.Serializable {}
+        implements Serializable {}

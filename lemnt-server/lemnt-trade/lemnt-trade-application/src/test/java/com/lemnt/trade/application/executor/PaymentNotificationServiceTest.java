@@ -1,5 +1,6 @@
 package com.lemnt.trade.application.executor;
 
+import com.lemnt.trade.application.order.service.OrderLogService;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
 import com.lemnt.trade.application.payment.service.PaymentNotificationService;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
@@ -27,7 +28,7 @@ class PaymentNotificationServiceTest {
                     orderPersistenceService,
                     tradeOrderGateway,
                     payments,
-                    mock(com.lemnt.trade.application.order.service.OrderLogService.class));
+                    mock(OrderLogService.class));
     final VerifiedPaymentNotification notice =
             new VerifiedPaymentNotification(
                     "PAY1", "TR1", "ALIPAY", "CHANNEL1", BigDecimal.TEN, "NOTICE2");

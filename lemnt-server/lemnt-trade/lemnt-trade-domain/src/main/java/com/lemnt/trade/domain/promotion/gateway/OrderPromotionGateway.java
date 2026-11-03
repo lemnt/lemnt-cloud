@@ -1,6 +1,7 @@
 package com.lemnt.trade.domain.promotion.gateway;
 
 import com.lemnt.trade.domain.order.model.TradeOrderItem;
+import com.lemnt.trade.domain.promotion.model.OrderGiftAdjustment;
 import com.lemnt.trade.domain.promotion.model.OrderPromotion;
 import com.lemnt.trade.domain.promotion.model.OrderPromotionRefund;
 
@@ -21,5 +22,5 @@ public interface OrderPromotionGateway {
     List<OrderPromotionRefund> refunds(List<Long> afterSaleIds);
 
     /** 调价与赠积分结果使用同一trade事务更新，只允许尚未支付的订单。 */
-    void updateGift(com.lemnt.trade.domain.promotion.model.OrderGiftAdjustment adjustment);
+    void updateGift(OrderGiftAdjustment adjustment);
 }

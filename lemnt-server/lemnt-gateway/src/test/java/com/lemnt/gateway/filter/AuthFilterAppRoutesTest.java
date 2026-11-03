@@ -13,6 +13,7 @@ import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Mono;
 
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -231,7 +232,7 @@ class AuthFilterAppRoutesTest {
     void loginAuditHeaderUsesObservedPeerAndDiscardsSpoofedHeaders() {
         var request =
                 MockServerHttpRequest.post("/member/app/auth/login")
-                        .remoteAddress(new java.net.InetSocketAddress("203.0.113.7", 1234))
+                        .remoteAddress(new InetSocketAddress("203.0.113.7", 1234))
                         .header("X-Lemnt-Login-Ip", "198.51.100.99")
                         .header("X-Forwarded-For", "198.51.100.99")
                         .build();

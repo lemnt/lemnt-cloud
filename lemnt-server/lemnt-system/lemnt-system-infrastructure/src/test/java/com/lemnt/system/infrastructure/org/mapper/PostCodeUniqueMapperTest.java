@@ -1,6 +1,7 @@
 package com.lemnt.system.infrastructure.org.mapper;
 
 import com.lemnt.system.infrastructure.org.dataobject.PostDO;
+import com.lemnt.system.infrastructure.org.gateway.PostGatewayImpl;
 
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -38,7 +39,7 @@ class PostCodeUniqueMapperTest {
 
         doReturn(null).when(mapper).selectOne(any());
 
-        var gateway = new com.lemnt.system.infrastructure.org.gateway.PostGatewayImpl(mapper);
+        var gateway = new PostGatewayImpl(mapper);
         if (editing) {
             gateway.checkPostCodeUnique("test", 5L);
 

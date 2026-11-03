@@ -1,5 +1,6 @@
 package com.lemnt.member.application.growth.executor;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.member.application.growth.converter.MemberGrowthDTOConverter;
 import com.lemnt.member.application.growth.dto.SignRecordDTO;
@@ -26,16 +27,16 @@ public class MemberSignRecordAllPageQueryExe {
             MemberRules.id(qry.memberId());
         }
         if (qry.nickname() != null && qry.nickname().length() > 80)
-            throw new com.lemnt.common.core.exception.ServiceException("昵称不能超过80字", 400);
+            throw new ServiceException("昵称不能超过80字", 400);
         var nickname =
                 qry.nickname() == null || qry.nickname().isBlank() ? null : qry.nickname().trim();
         if (qry.day() != null && qry.day() <= 0) {
-            throw new com.lemnt.common.core.exception.ServiceException("签到天数必须为正数", 400);
+            throw new ServiceException("签到天数必须为正数", 400);
         }
         if (qry.startTime() != null
                 && qry.endTime() != null
                 && qry.startTime().isAfter(qry.endTime())) {
-            throw new com.lemnt.common.core.exception.ServiceException("开始时间不能晚于结束时间", 400);
+            throw new ServiceException("开始时间不能晚于结束时间", 400);
         }
         var filter =
                 new SignRecordPageFilter(

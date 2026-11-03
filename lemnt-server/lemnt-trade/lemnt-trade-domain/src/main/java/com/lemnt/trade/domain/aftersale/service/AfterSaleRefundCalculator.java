@@ -1,6 +1,7 @@
 package com.lemnt.trade.domain.aftersale.service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 
 /** 仅在生成退单时调用，审批、渠道执行和重试使用已落库结果。 */
@@ -47,12 +48,12 @@ public final class AfterSaleRefundCalculator {
                 || requestedQuantity > quantity - refundedQuantity) {
             throw new IllegalArgumentException("积分退款数量不合法");
         }
-        var total = java.math.BigInteger.valueOf(original);
-        var q = java.math.BigInteger.valueOf(quantity);
+        var total = BigInteger.valueOf(original);
+        var q = BigInteger.valueOf(quantity);
         return total.multiply(
-                        java.math.BigInteger.valueOf((long) refundedQuantity + requestedQuantity))
+                        BigInteger.valueOf((long) refundedQuantity + requestedQuantity))
                 .divide(q)
-                .subtract(total.multiply(java.math.BigInteger.valueOf(refundedQuantity)).divide(q))
+                .subtract(total.multiply(BigInteger.valueOf(refundedQuantity)).divide(q))
                 .longValueExact();
     }
 }

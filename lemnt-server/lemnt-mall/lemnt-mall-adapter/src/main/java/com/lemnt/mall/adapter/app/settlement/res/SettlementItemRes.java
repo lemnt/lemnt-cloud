@@ -112,5 +112,5 @@ public record SettlementItemRes(
             @Schema(description = "保存时规格名称") String specName,
             @Schema(description = "规格值编号，历史未关联时为空") Long specValueId,
             @Schema(description = "保存时规格值名称") String specValueName)
-            implements java.io.Serializable {}
+            implements Serializable {}
 }

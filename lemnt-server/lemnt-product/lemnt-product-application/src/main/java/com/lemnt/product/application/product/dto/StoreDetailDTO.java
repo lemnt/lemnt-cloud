@@ -1,5 +1,6 @@
 package com.lemnt.product.application.product.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,4 +14,4 @@ public record StoreDetailDTO(
         String description,
         String image,
         List<StoreSkuDTO> skus)
-        implements java.io.Serializable {}
+        implements Serializable {}

@@ -1,5 +1,6 @@
 package com.lemnt.trade.application.fulfillment.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -18,4 +19,4 @@ public record OrderSummaryDTO(
         String trackingNo,
         LocalDateTime shippedAt,
         LocalDateTime receivedAt)
-        implements java.io.Serializable {}
+        implements Serializable {}

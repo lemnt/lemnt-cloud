@@ -4,6 +4,7 @@ import com.lemnt.common.sensitive.annotation.Xss;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -68,7 +69,7 @@ public class XssValidator implements ConstraintValidator<Xss, String> {
         }
 
         // 提取所有标签名，检查是否在白名单外
-        java.util.regex.Matcher matcher = HTML_TAG_PATTERN.matcher(value);
+        Matcher matcher = HTML_TAG_PATTERN.matcher(value);
         while (matcher.find()) {
             String tagName = matcher.group(1).toLowerCase();
             boolean isSafe = false;

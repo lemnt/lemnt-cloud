@@ -6,10 +6,16 @@ import com.lemnt.mall.application.promotion.cmd.PromotionOrderCmd;
 import com.lemnt.mall.application.promotion.cmd.PromotionOrderLineCmd;
 import com.lemnt.mall.application.promotion.dto.PromotionOrderDraft;
 import com.lemnt.mall.application.settlement.service.SettlementDeliveryService;
+import com.lemnt.mall.application.settlement.service.SettlementPromotionSnapshots;
 import com.lemnt.mall.domain.member.gateway.MemberTradeGateway;
 import com.lemnt.mall.domain.product.gateway.ProductCatalogGateway;
 import com.lemnt.mall.domain.product.model.ProductSnapshot;
+import com.lemnt.mall.domain.promotion.gateway.BargainActivityGateway;
+import com.lemnt.mall.domain.promotion.gateway.CombinationActivityGateway;
+import com.lemnt.mall.domain.promotion.gateway.SeckillActivityGateway;
 import com.lemnt.mall.domain.settlement.model.SettlementItem;
+import com.lemnt.mall.domain.settlement.model.SettlementItemPromotion;
+import com.lemnt.mall.domain.settlement.model.SettlementPromotion;
 import com.lemnt.mall.domain.settlement.model.SettlementQuote;
 
 import org.springframework.stereotype.Component;
@@ -22,6 +28,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /** 活动订单计价：只使用活动价，积分商城支持多商品按行计算积分。 */
 @Component
@@ -35,10 +42,10 @@ public class PromotionOrderPricingService {
     private final CombinationRecordService combinationRecordService;
     private final BargainRecordService bargainRecordService;
     private final PointActivityManagementService pointActivityManagementService;
-    private final com.lemnt.mall.domain.promotion.gateway.SeckillActivityGateway seckillActivities;
-    private final com.lemnt.mall.domain.promotion.gateway.CombinationActivityGateway
+    private final SeckillActivityGateway seckillActivities;
+    private final CombinationActivityGateway
             combinationActivities;
-    private final com.lemnt.mall.domain.promotion.gateway.BargainActivityGateway bargainActivities;
+    private final BargainActivityGateway bargainActivities;
 
     private void require(boolean condition, String message) {
         if (!condition) {
@@ -185,11 +192,11 @@ public class PromotionOrderPricingService {
                                 .longValueExact()
                         : 0L;
         var children =
-                new java.util.ArrayList<
-                        com.lemnt.mall.domain.settlement.model.SettlementItemPromotion>();
+                new ArrayList<
+                        SettlementItemPromotion>();
         for (int i = 0; i < items.size(); i++) {
             children.add(
-                    new com.lemnt.mall.domain.settlement.model.SettlementItemPromotion(
+                    new SettlementItemPromotion(
                             null,
                             null,
                             null,
@@ -201,7 +208,7 @@ public class PromotionOrderPricingService {
         }
         String promotionType = "POINT".equals(type) ? "POINT_EXCHANGE" : type;
         var promotion =
-                new com.lemnt.mall.domain.settlement.model.SettlementPromotion(
+                new SettlementPromotion(
                         null,
                         null,
                         promotionType + ":" + activityId,
@@ -232,10 +239,10 @@ public class PromotionOrderPricingService {
                         List.of(promotion),
                         BigDecimal.ZERO.setScale(2),
                         BigDecimal.ZERO.setScale(2));
-        var fees = new java.util.LinkedHashMap<Long, BigDecimal>();
+        var fees = new LinkedHashMap<Long, BigDecimal>();
         items.forEach(item -> fees.put(item.productId(), BigDecimal.ZERO.setScale(2)));
         quote =
-                com.lemnt.mall.application.settlement.service.SettlementPromotionSnapshots.finish(
+                SettlementPromotionSnapshots.finish(
                         quote,
                         items,
                         null,
@@ -267,15 +274,15 @@ public class PromotionOrderPricingService {
     private String activityName(String type, Long id) {
         return switch (type) {
             case "SECKILL" ->
-                    java.util.Optional.ofNullable(seckillActivities.find(id))
+                    Optional.ofNullable(seckillActivities.find(id))
                             .map(a -> a.name())
                             .orElseThrow(() -> new ServiceException("活动已失效，请重新确认报价", 400));
             case "COMBINATION" ->
-                    java.util.Optional.ofNullable(combinationActivities.find(id))
+                    Optional.ofNullable(combinationActivities.find(id))
                             .map(a -> a.name())
                             .orElseThrow(() -> new ServiceException("活动已失效，请重新确认报价", 400));
             case "BARGAIN" ->
-                    java.util.Optional.ofNullable(bargainActivities.find(id))
+                    Optional.ofNullable(bargainActivities.find(id))
                             .map(a -> a.name())
                             .orElseThrow(() -> new ServiceException("活动已失效，请重新确认报价", 400));
             case "POINT" -> "积分兑换";

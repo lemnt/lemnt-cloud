@@ -1,5 +1,6 @@
 package com.lemnt.trade.domain.order.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -162,5 +163,5 @@ public record TradeOrderItem(
 
     /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
     public record Spec(Long specId, String specName, Long specValueId, String specValueName)
-            implements java.io.Serializable {}
+            implements Serializable {}
 }

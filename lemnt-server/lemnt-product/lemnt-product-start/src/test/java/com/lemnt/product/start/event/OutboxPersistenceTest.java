@@ -10,18 +10,22 @@ import com.lemnt.product.infrastructure.event.mapper.MessageOutboxMapper;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 import org.h2.jdbcx.JdbcDataSource;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.transaction.IllegalTransactionStateException;
 import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.sql.Connection;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /** 使用仅商品库的生产DDL验证事务消息，禁止依靠跨服务混库通过测试。 */
 public class OutboxPersistenceTest {
     JdbcDataSource source;
-    java.sql.Connection schemaConnection;
+    Connection schemaConnection;
     JdbcTemplate jdbc;
     TransactionTemplate transaction;
     SqlSessionTemplate session;
@@ -53,7 +57,7 @@ public class OutboxPersistenceTest {
         factory.setDataSource(source);
         factory.setConfiguration(configuration);
         factory.setMapperLocations(
-                new org.springframework.core.io.support.PathMatchingResourcePatternResolver()
+                new PathMatchingResourcePatternResolver()
                         .getResources("classpath*:mapper/Message*Mapper.xml"));
         session = new SqlSessionTemplate(factory.getObject());
         outbox =
@@ -62,7 +66,7 @@ public class OutboxPersistenceTest {
                         MessageOutboxGateway.class);
     }
 
-    @org.junit.jupiter.api.AfterEach
+    @AfterEach
     void closeSchemaConnection() throws Exception { if (schemaConnection != null) schemaConnection.close(); }
 
     <T> T proxy(Object target, Class<T> type) {
@@ -102,7 +106,7 @@ public class OutboxPersistenceTest {
                 0,
                 jdbc.queryForObject("SELECT COUNT(*) FROM product_message_outbox", Integer.class));
         assertThrows(
-                org.springframework.transaction.IllegalTransactionStateException.class,
+                IllegalTransactionStateException.class,
                 () -> outbox.enqueue(CommerceEventTopics.STOCK_PRE_RESERVED, "O1:7", "O1", "{}"));
     }
 

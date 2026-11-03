@@ -29,7 +29,7 @@ public record MemberOrderDetailDTO(
     public MemberOrderDetailDTO(
             String orderNo,
             String status,
-            java.math.BigDecimal totalAmount,
+            BigDecimal totalAmount,
             LocalDateTime createTime,
             boolean activeRefund,
             List<OrderItemDTO> items,

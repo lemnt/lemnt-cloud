@@ -3,6 +3,7 @@ package com.lemnt.mall.start.product;
 import com.lemnt.mall.application.dubbo.SettlementLifecycleClientImpl;
 import com.lemnt.mall.application.product.service.ProductInventoryService;
 import com.lemnt.mall.application.promotion.service.PromotionOrderService;
+import com.lemnt.mall.application.promotion.service.RewardGiftService;
 import com.lemnt.mall.application.settlement.service.SettlementRecordService;
 import com.lemnt.mall.client.bo.RefundStockBo;
 import com.lemnt.mall.domain.member.gateway.MemberTradeGateway;
@@ -23,8 +24,8 @@ class SettlementLifecyclePromotionTest {
     private final OrderGateway orders = Mockito.mock(OrderGateway.class);
     private final ProductInventoryService inventory = Mockito.mock(ProductInventoryService.class);
     private final PromotionOrderService promotions = Mockito.mock(PromotionOrderService.class);
-    private final com.lemnt.mall.application.promotion.service.RewardGiftService rewardGifts =
-            Mockito.mock(com.lemnt.mall.application.promotion.service.RewardGiftService.class);
+    private final RewardGiftService rewardGifts =
+            Mockito.mock(RewardGiftService.class);
     private final SettlementLifecycleClientImpl client =
             new SettlementLifecycleClientImpl(
                     members, records, orders, inventory, promotions, rewardGifts);

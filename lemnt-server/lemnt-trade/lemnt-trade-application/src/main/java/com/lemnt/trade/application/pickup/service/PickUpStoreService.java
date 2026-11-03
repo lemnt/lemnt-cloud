@@ -18,8 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -212,10 +214,10 @@ public class PickUpStoreService {
         }
         return values.stream()
                 .sorted(
-                        java.util.Comparator.comparing(
+                        Comparator.comparing(
                                         AppPickUpStoreDTO::distanceKm,
-                                        java.util.Comparator.nullsLast(
-                                                java.util.Comparator.naturalOrder()))
+                                        Comparator.nullsLast(
+                                                Comparator.naturalOrder()))
                                 .thenComparing(AppPickUpStoreDTO::id))
                 .toList();
     }
@@ -236,7 +238,7 @@ public class PickUpStoreService {
                                 * Math.sin(deltaLng / 2)
                                 * Math.sin(deltaLng / 2);
         double km = 6371.0 * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value));
-        return BigDecimal.valueOf(km).setScale(2, java.math.RoundingMode.HALF_UP);
+        return BigDecimal.valueOf(km).setScale(2, RoundingMode.HALF_UP);
     }
 
     private PickUpStoreDTO dto(PickUpStore value) {

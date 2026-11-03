@@ -1,5 +1,7 @@
 package com.lemnt.trade.domain.order.model;
 
+import com.lemnt.trade.domain.promotion.model.OrderPromotion;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +31,7 @@ public record TradeOrder(
         BigDecimal adjustmentAmount,
         String pricingSnapshotStatus,
         Integer pricingSnapshotVersion,
-        java.util.List<com.lemnt.trade.domain.promotion.model.OrderPromotion> promotions) {
+        List<OrderPromotion> promotions) {
     /** 兼容未记录本批优惠与退款元数据的历史快照。 */
     public TradeOrder(
             Long id,
@@ -66,7 +68,7 @@ public record TradeOrder(
                 null,
                 "LEGACY_PARTIAL",
                 0,
-                java.util.List.of());
+                List.of());
     }
 
     /** 兼容无营销赠券的订单快照。 */

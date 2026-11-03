@@ -1,6 +1,9 @@
 package com.lemnt.mall.adapter.web.coupon;
 
 import com.lemnt.common.security.annotation.RequiresPermissions;
+import com.lemnt.common.security.constant.SecurityConstants;
+import com.lemnt.common.security.context.SecurityContextHolder;
+import com.lemnt.common.security.interceptor.HeaderInterceptor;
 import com.lemnt.mall.adapter.app.cart.AppCartController;
 import com.lemnt.mall.adapter.app.coupon.AppCouponCenterController;
 import com.lemnt.mall.adapter.web.coupon.req.CouponPublicClaimReq;
@@ -18,6 +21,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -34,12 +39,12 @@ class PromotionHttpContractTest {
 
     @BeforeEach
     void identity() {
-        com.lemnt.common.security.context.SecurityContextHolder.setUserId("7");
+        SecurityContextHolder.setUserId("7");
     }
 
     @AfterEach
     void clearIdentity() {
-        com.lemnt.common.security.context.SecurityContextHolder.remove();
+        SecurityContextHolder.remove();
     }
 
     @Test
@@ -54,7 +59,7 @@ class PromotionHttpContractTest {
                                 0L,
                                 "商品",
                                 "SKU",
-                                java.math.BigDecimal.TEN,
+                                BigDecimal.TEN,
                                 10,
                                 true));
         var mvc =
@@ -74,10 +79,10 @@ class PromotionHttpContractTest {
                                                             .CartDeleteCmdExe.class))
                                 })
                         .addInterceptors(
-                                new com.lemnt.common.security.interceptor.HeaderInterceptor())
+                                new HeaderInterceptor())
                         .defaultRequest(
                                 get("/").header(
-                                                com.lemnt.common.security.constant.SecurityConstants
+                                                SecurityConstants
                                                         .HEADER_USER_ID,
                                                 "7"))
                         .build();
@@ -112,10 +117,10 @@ class PromotionHttpContractTest {
                                                             .CartDeleteCmdExe.class))
                                 })
                         .addInterceptors(
-                                new com.lemnt.common.security.interceptor.HeaderInterceptor())
+                                new HeaderInterceptor())
                         .defaultRequest(
                                 get("/").header(
-                                                com.lemnt.common.security.constant.SecurityConstants
+                                                SecurityConstants
                                                         .HEADER_USER_ID,
                                                 "7"))
                         .build();

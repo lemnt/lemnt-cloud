@@ -1,6 +1,10 @@
 package com.lemnt.product.client;
 
+import com.lemnt.product.client.bo.StockReservationQueryBo;
+import com.lemnt.product.client.dto.ProductSkuBriefDTO;
 import com.lemnt.product.client.dto.ProductSnapshotDTO;
+import com.lemnt.product.client.dto.ProductSpuBriefDTO;
+import com.lemnt.product.client.dto.StockReservationDTO;
 
 import java.util.List;
 
@@ -9,14 +13,14 @@ import java.util.List;
  */
 public interface ProductCatalogClient {
     /** 营销管理读取当前商品，包含未上架但尚未删除的目录记录。 */
-    com.lemnt.product.client.dto.ProductSkuBriefDTO catalogSku(Long skuId);
-    List<com.lemnt.product.client.dto.ProductSkuBriefDTO> catalogSkus(Long spuId);
-    List<com.lemnt.product.client.dto.ProductSkuBriefDTO> skusBySpuIds(List<Long> spuIds);
-    com.lemnt.product.client.dto.ProductSpuBriefDTO findSpu(Long spuId);
-    List<com.lemnt.product.client.dto.ProductSpuBriefDTO> findSpus(List<Long> spuIds);
+    ProductSkuBriefDTO catalogSku(Long skuId);
+    List<ProductSkuBriefDTO> catalogSkus(Long spuId);
+    List<ProductSkuBriefDTO> skusBySpuIds(List<Long> spuIds);
+    ProductSpuBriefDTO findSpu(Long spuId);
+    List<ProductSpuBriefDTO> findSpus(List<Long> spuIds);
     /** 按原业务号读取预占事实，供订单核实库存后处理完成状态。 */
-    com.lemnt.product.client.dto.StockReservationDTO reservationStatus(
-            com.lemnt.product.client.bo.StockReservationQueryBo query);
+    StockReservationDTO reservationStatus(
+            StockReservationQueryBo query);
 
     /** 按冻结售后数量回补原已确认库存，原售后号保证幂等。 */
     void returnStock(String orderNo, String afterSaleNo, Long skuId, Integer quantity);

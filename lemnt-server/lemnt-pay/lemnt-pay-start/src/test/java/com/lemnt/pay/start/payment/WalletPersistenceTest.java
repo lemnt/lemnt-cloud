@@ -13,7 +13,10 @@ import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
+import org.apache.ibatis.executor.statement.StatementHandler;
+import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
+import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.h2.jdbcx.JdbcDataSource;
@@ -31,10 +34,12 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -113,7 +118,7 @@ class WalletPersistenceTest {
         var wallet = wallets.createIfAbsent(3L);
         var statements = context.getBean(LockStatements.class);
         var transaction =
-                new org.springframework.transaction.support.TransactionTemplate(
+                new TransactionTemplate(
                         context.getBean(PlatformTransactionManager.class));
         transaction.executeWithoutResult(
                 status -> {
@@ -127,17 +132,17 @@ class WalletPersistenceTest {
 
     @Intercepts(
             @Signature(
-                    type = org.apache.ibatis.executor.statement.StatementHandler.class,
+                    type = StatementHandler.class,
                     method = "prepare",
                     args = {Connection.class, Integer.class}))
-    static class LockStatements implements org.apache.ibatis.plugin.Interceptor {
-        final java.util.concurrent.atomic.AtomicInteger count =
-                new java.util.concurrent.atomic.AtomicInteger();
+    static class LockStatements implements Interceptor {
+        final AtomicInteger count =
+                new AtomicInteger();
 
         @Override
-        public Object intercept(org.apache.ibatis.plugin.Invocation invocation) throws Throwable {
+        public Object intercept(Invocation invocation) throws Throwable {
             var statement =
-                    (org.apache.ibatis.executor.statement.StatementHandler) invocation.getTarget();
+                    (StatementHandler) invocation.getTarget();
             if (statement.getBoundSql().getSql().contains("FOR UPDATE")) {
                 count.incrementAndGet();
             }

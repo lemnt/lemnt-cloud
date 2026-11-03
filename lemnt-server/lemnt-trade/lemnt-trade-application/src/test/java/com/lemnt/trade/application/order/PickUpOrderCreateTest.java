@@ -19,6 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -124,14 +126,14 @@ class PickUpOrderCreateTest {
                                 "RESERVING",
                                 List.of(),
                                 null));
-        var format = java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss");
-        var now = java.time.LocalTime.now();
+        var format = DateTimeFormatter.ofPattern("HH:mm:ss");
+        var now = LocalTime.now();
         String open =
-                now.isBefore(java.time.LocalTime.NOON)
+                now.isBefore(LocalTime.NOON)
                         ? "23:59:59"
                         : format.format(now.minusHours(1));
         String close =
-                now.isBefore(java.time.LocalTime.NOON)
+                now.isBefore(LocalTime.NOON)
                         ? format.format(now.plusHours(1))
                         : "00:00:00";
         when(stores.find(9L))
@@ -177,7 +179,7 @@ class PickUpOrderCreateTest {
         when(configs.get()).thenReturn(config(true));
         when(stores.find(9L)).thenReturn(store(1));
         assertThrows(IllegalArgumentException.class, () -> client.create(order()));
-        var later = java.time.LocalTime.now().plusHours(1).withNano(0);
+        var later = LocalTime.now().plusHours(1).withNano(0);
         when(stores.find(9L))
                 .thenReturn(
                         new PickUpStore(

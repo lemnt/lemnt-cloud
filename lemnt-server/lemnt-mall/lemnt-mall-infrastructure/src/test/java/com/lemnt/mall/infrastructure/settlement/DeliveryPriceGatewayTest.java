@@ -4,6 +4,7 @@ import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.mall.domain.settlement.model.DeliveryPriceLine;
 import com.lemnt.mall.infrastructure.settlement.gateway.DeliveryPriceGatewayImpl;
 import com.lemnt.trade.client.TradeDeliveryClient;
+import com.lemnt.trade.client.bo.DeliveryFeeBo;
 import com.lemnt.trade.client.dto.DeliveryFeeDTO;
 
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ class DeliveryPriceGatewayTest {
         when(client.price(any()))
                 .thenAnswer(
                         call -> {
-                            com.lemnt.trade.client.bo.DeliveryFeeBo request = call.getArgument(0);
+                            DeliveryFeeBo request = call.getArgument(0);
                             assertEquals(2000, request.items().get(0).payPrice());
                             return new DeliveryFeeDTO(650, Map.of(5L, 650));
                         });

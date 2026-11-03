@@ -6,6 +6,7 @@ import com.lemnt.mall.domain.member.gateway.MemberTradeGateway;
 import com.lemnt.mall.domain.product.model.ProductSnapshot;
 import com.lemnt.mall.domain.settlement.gateway.DeliveryPriceGateway;
 import com.lemnt.mall.domain.settlement.model.DeliveryPriceLine;
+import com.lemnt.mall.domain.settlement.model.DeliveryPriceResult;
 import com.lemnt.mall.domain.settlement.model.SettlementDelivery;
 import com.lemnt.mall.domain.settlement.model.SettlementItem;
 import com.lemnt.mall.domain.settlement.model.SettlementQuote;
@@ -16,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /** 快递地址和价格来自服务端，结算单冻结收件信息及逐行运费。 */
 @Component
@@ -75,11 +78,11 @@ public class SettlementDeliveryService {
         var originalFee = prices.price(address.areaId().intValue(), lines);
         var fee =
                 quote.freeDelivery()
-                        ? new com.lemnt.mall.domain.settlement.model.DeliveryPriceResult(
+                        ? new DeliveryPriceResult(
                                 BigDecimal.ZERO.setScale(2),
                                 quote.items().stream()
                                         .collect(
-                                                java.util.stream.Collectors.toMap(
+                                                Collectors.toMap(
                                                         SettlementItem::productId,
                                                         item -> BigDecimal.ZERO.setScale(2))))
                         : originalFee;
@@ -162,13 +165,13 @@ public class SettlementDeliveryService {
                                                 item.quantity(),
                                                 item.lineAmount(),
                                                 item.payAmount(),
-                                                java.math.BigDecimal.ZERO.setScale(2),
+                                                BigDecimal.ZERO.setScale(2),
                                                 item.spuId(),
                                                 item.spuName(),
                                                 item.specs(),
                                                 item.picUrl()))
                         .toList();
-        var fees = new java.util.LinkedHashMap<Long, BigDecimal>();
+        var fees = new LinkedHashMap<Long, BigDecimal>();
         items.forEach(item -> fees.put(item.productId(), BigDecimal.ZERO.setScale(2)));
         var gift =
                 quote.promotions().stream()
@@ -177,7 +180,7 @@ public class SettlementDeliveryService {
         int rate =
                 gift.map(
                                 p ->
-                                        new java.math.BigDecimal(
+                                        new BigDecimal(
                                                         p.ruleSnapshot().replaceAll("[^0-9]", ""))
                                                 .intValueExact())
                         .orElse(0);

@@ -3,6 +3,7 @@ package com.lemnt.trade.infrastructure.order.gateway;
 import com.lemnt.trade.domain.fulfillment.model.FulfillmentFilter;
 import com.lemnt.trade.domain.fulfillment.model.OrderPage;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
+import com.lemnt.trade.domain.order.model.OrderCommentState;
 import com.lemnt.trade.domain.order.model.OrderStatusCount;
 import com.lemnt.trade.domain.order.model.OrderTotal;
 import com.lemnt.trade.domain.order.model.TradeOrder;
@@ -13,12 +14,14 @@ import com.lemnt.trade.infrastructure.order.mapper.TradeOrderMapper;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +108,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 == 1;
     }
 
-    private com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<TradeOrderDO> expired(
+    private LambdaQueryWrapper<TradeOrderDO> expired(
             LocalDateTime cutoff) {
         return Wrappers.lambdaQuery(TradeOrderDO.class)
                 .eq(TradeOrderDO::getStatus, "COMPLETED")
@@ -135,7 +138,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
 
     @Override
     public boolean updateTotalAmount(
-            String orderNo, java.math.BigDecimal expected, java.math.BigDecimal next) {
+            String orderNo, BigDecimal expected, BigDecimal next) {
         var current = findHeader(orderNo);
         boolean complete = current != null && "COMPLETE".equals(current.pricingSnapshotStatus());
         return tradeOrderMapper.update(
@@ -413,7 +416,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     }
 
     @Override
-    public boolean updateCommentState(com.lemnt.trade.domain.order.model.OrderCommentState value) {
+    public boolean updateCommentState(OrderCommentState value) {
         return tradeOrderMapper.update(
                         null,
                         Wrappers.lambdaUpdate(TradeOrderDO.class)

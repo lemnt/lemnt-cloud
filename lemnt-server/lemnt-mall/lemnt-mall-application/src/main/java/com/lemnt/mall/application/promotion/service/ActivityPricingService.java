@@ -1,6 +1,7 @@
 package com.lemnt.mall.application.promotion.service;
 
 import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.mall.application.settlement.service.SettlementPromotionSnapshots;
 import com.lemnt.mall.domain.coupon.model.Coupon;
 import com.lemnt.mall.domain.coupon.model.CouponRules;
 import com.lemnt.mall.domain.member.gateway.MemberTradeGateway;
@@ -11,6 +12,7 @@ import com.lemnt.mall.domain.promotion.gateway.DiscountProductGateway;
 import com.lemnt.mall.domain.promotion.gateway.RewardActivityGateway;
 import com.lemnt.mall.domain.promotion.model.RewardActivity;
 import com.lemnt.mall.domain.settlement.model.SettlementItem;
+import com.lemnt.mall.domain.settlement.model.SettlementPromotion;
 import com.lemnt.mall.domain.settlement.model.SettlementQuote;
 import com.lemnt.mall.domain.settlement.model.SettlementRules;
 
@@ -21,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +63,8 @@ public class ActivityPricingService {
         // 先复用基础报价校验商品金额和券归属，券门槛在促销后再次计算。
         var original = SettlementRules.quote(items, null, null, now).originalAmount();
         var trace =
-                new java.util.ArrayList<
-                        com.lemnt.mall.domain.settlement.model.SettlementPromotion>();
+                new ArrayList<
+                        SettlementPromotion>();
         var activeRecords = discounts.enabled();
         var active =
                 activeRecords.stream()
@@ -104,7 +108,7 @@ public class ActivityPricingService {
                                         .orElseThrow()
                                 : "会员折扣";
                 trace.add(
-                        com.lemnt.mall.application.settlement.service.SettlementPromotionSnapshots
+                        SettlementPromotionSnapshots
                                 .capture(
                                         (activityWins ? "DISCOUNT:" : "MEMBER_LEVEL:")
                                                 + item.productId(),
@@ -154,7 +158,7 @@ public class ActivityPricingService {
             var rule =
                     activity.rules().stream()
                             .filter(r -> basis.compareTo(r.limit()) >= 0)
-                            .max(java.util.Comparator.comparing(r -> r.limit()));
+                            .max(Comparator.comparing(r -> r.limit()));
             if (rule.isPresent()) {
                 var rewardBefore = new LinkedHashMap<>(eligible);
                 subtract(remaining, eligible, rule.get().discountPrice().min(total(eligible)));
@@ -163,7 +167,7 @@ public class ActivityPricingService {
                 freeDelivery = Boolean.TRUE.equals(rule.get().freeDelivery());
                 giveCouponTemplateCounts = rule.get().giveCouponTemplateCounts();
                 trace.add(
-                        com.lemnt.mall.application.settlement.service.SettlementPromotionSnapshots
+                        SettlementPromotionSnapshots
                                 .capture(
                                         "REWARD:" + activity.id(),
                                         "REWARD",
@@ -201,7 +205,7 @@ public class ActivityPricingService {
             var couponBefore = new LinkedHashMap<>(eligible);
             subtract(remaining, eligible, CouponRules.discount(terms, total(eligible), now));
             trace.add(
-                    com.lemnt.mall.application.settlement.service.SettlementPromotionSnapshots
+                    SettlementPromotionSnapshots
                             .capture(
                                     "COUPON:" + coupon.id(),
                                     "COUPON",
@@ -229,7 +233,7 @@ public class ActivityPricingService {
             var pointBefore = new LinkedHashMap<>(remaining);
             subtract(remaining, new LinkedHashMap<>(remaining), deduction);
             trace.add(
-                    com.lemnt.mall.application.settlement.service.SettlementPromotionSnapshots
+                    SettlementPromotionSnapshots
                             .capture(
                                     "POINT_DEDUCT",
                                     "POINT_DEDUCT",
@@ -263,7 +267,7 @@ public class ActivityPricingService {
                                                 i.quantity(),
                                                 i.lineAmount(),
                                                 remaining.get(i.productId()),
-                                                java.math.BigDecimal.ZERO.setScale(2),
+                                                BigDecimal.ZERO.setScale(2),
                                                 i.spuId(),
                                                 i.spuName(),
                                                 i.specs() == null
@@ -302,7 +306,7 @@ public class ActivityPricingService {
                         BigDecimal.ZERO.setScale(2));
         var fees = new LinkedHashMap<Long, BigDecimal>();
         items.forEach(item -> fees.put(item.productId(), BigDecimal.ZERO.setScale(2)));
-        return com.lemnt.mall.application.settlement.service.SettlementPromotionSnapshots.finish(
+        return SettlementPromotionSnapshots.finish(
                 quote,
                 pricedItems,
                 null,

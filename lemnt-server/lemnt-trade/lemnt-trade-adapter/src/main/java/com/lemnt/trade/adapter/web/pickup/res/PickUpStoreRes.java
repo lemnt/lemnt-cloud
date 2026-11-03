@@ -2,6 +2,7 @@ package com.lemnt.trade.adapter.web.pickup.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -21,4 +22,4 @@ public record PickUpStoreRes(
         @Schema(description = "经度") BigDecimal longitude,
         @Schema(description = "核销店员") List<Long> verifyUserIds,
         @Schema(description = "状态") Integer status)
-        implements java.io.Serializable {}
+        implements Serializable {}

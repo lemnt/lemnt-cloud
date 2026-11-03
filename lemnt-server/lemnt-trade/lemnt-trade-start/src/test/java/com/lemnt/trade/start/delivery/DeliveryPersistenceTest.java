@@ -17,7 +17,11 @@ import com.lemnt.trade.domain.config.gateway.TradeConfigGateway;
 import com.lemnt.trade.domain.delivery.gateway.DeliveryExpressGateway;
 import com.lemnt.trade.domain.delivery.gateway.DeliveryExpressTemplateGateway;
 import com.lemnt.trade.domain.delivery.model.DeliveryExpressFilter;
+import com.lemnt.trade.start.BusinessConfigTestSupport;
 
+import com.baomidou.lock.LockInfo;
+import com.baomidou.lock.LockTemplate;
+import com.baomidou.lock.executor.RedissonLockExecutor;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
@@ -29,6 +33,8 @@ import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -45,6 +51,10 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -273,9 +283,9 @@ class DeliveryPersistenceTest {
 
     @Test
     void concurrentCreatesCannotPersistDuplicateTemplateNames() throws Exception {
-        var pool = java.util.concurrent.Executors.newFixedThreadPool(2);
-        var start = new java.util.concurrent.CountDownLatch(1);
-        java.util.concurrent.Callable<Boolean> create =
+        var pool = Executors.newFixedThreadPool(2);
+        var start = new CountDownLatch(1);
+        Callable<Boolean> create =
                 () -> {
                     start.await();
                     try {
@@ -407,22 +417,22 @@ class DeliveryPersistenceTest {
     @MapperScan(basePackages = {"com.lemnt.trade.infrastructure.delivery.mapper"})
     static class TestConfig {
         @Bean
-        com.baomidou.lock.LockTemplate deliveryLocks() {
-            var template = org.mockito.Mockito.mock(com.baomidou.lock.LockTemplate.class);
-            var mutex = new java.util.concurrent.locks.ReentrantLock();
-            org.mockito.Mockito.when(
+        LockTemplate deliveryLocks() {
+            var template = Mockito.mock(LockTemplate.class);
+            var mutex = new ReentrantLock();
+            Mockito.when(
                             template.lock(
-                                    org.mockito.ArgumentMatchers.anyString(),
-                                    org.mockito.ArgumentMatchers.eq(-1L),
-                                    org.mockito.ArgumentMatchers.eq(3000L),
-                                    org.mockito.ArgumentMatchers.eq(
-                                            com.baomidou.lock.executor.RedissonLockExecutor.class)))
+                                    ArgumentMatchers.anyString(),
+                                    ArgumentMatchers.eq(-1L),
+                                    ArgumentMatchers.eq(3000L),
+                                    ArgumentMatchers.eq(
+                                            RedissonLockExecutor.class)))
                     .thenAnswer(
                             call -> {
                                 mutex.lock();
-                                return org.mockito.Mockito.mock(com.baomidou.lock.LockInfo.class);
+                                return Mockito.mock(LockInfo.class);
                             });
-            org.mockito.Mockito.when(template.releaseLock(org.mockito.ArgumentMatchers.any()))
+            Mockito.when(template.releaseLock(ArgumentMatchers.any()))
                     .thenAnswer(
                             call -> {
                                 mutex.unlock();
@@ -433,7 +443,7 @@ class DeliveryPersistenceTest {
 
         @Bean
         TradeConfigGateway tradeConfigGateway() {
-            return com.lemnt.trade.start.BusinessConfigTestSupport.gateway();
+            return BusinessConfigTestSupport.gateway();
         }
 
         @Bean

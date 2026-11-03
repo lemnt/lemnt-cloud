@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -108,7 +109,7 @@ public class BrokerageRecordGatewayImpl implements BrokerageRecordGateway {
     }
 
     @Override
-    public boolean updatePrice(Long id, java.math.BigDecimal expected, java.math.BigDecimal next) {
+    public boolean updatePrice(Long id, BigDecimal expected, BigDecimal next) {
         return mapper.update(
                         null,
                         Wrappers.<BrokerageRecordDO>lambdaUpdate()

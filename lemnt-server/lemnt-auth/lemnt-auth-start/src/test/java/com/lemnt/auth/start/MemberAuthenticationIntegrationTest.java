@@ -1,9 +1,12 @@
 package com.lemnt.auth.start;
 
+import com.lemnt.auth.application.dubbo.MemberSessionClientImpl;
 import com.lemnt.auth.application.member.service.MemberAuthenticationService;
 import com.lemnt.auth.domain.member.gateway.MemberAccountGateway;
+import com.lemnt.auth.domain.member.gateway.MemberTokenGateway;
 import com.lemnt.auth.domain.member.model.MemberLoginInfo;
 import com.lemnt.auth.domain.member.model.MemberToken;
+import com.lemnt.auth.domain.user.gateway.LoginSecurityGateway;
 import com.lemnt.auth.infrastructure.member.gateway.MemberTokenGatewayImpl;
 import com.lemnt.auth.infrastructure.user.gateway.LoginSecurityGatewayImpl;
 import com.lemnt.auth.infrastructure.user.gateway.PasswordEncoderGatewayImpl;
@@ -20,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,6 +31,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -90,8 +95,8 @@ class MemberAuthenticationIntegrationTest {
                 .delete(ArgumentMatchers.anyString());
         Mockito.doAnswer(
                         invocation -> {
-                            java.util.function.Consumer<String> action = invocation.getArgument(1);
-                            java.util.List.copyOf(cachedSessions.keySet()).forEach(action);
+                            Consumer<String> action = invocation.getArgument(1);
+                            List.copyOf(cachedSessions.keySet()).forEach(action);
                             return null;
                         })
                 .when(redis)
@@ -227,7 +232,7 @@ class MemberAuthenticationIntegrationTest {
         var tokens = login();
 
         status.set(0);
-        new com.lemnt.auth.application.dubbo.MemberSessionClientImpl(auth).revokeMemberSessions(id);
+        new MemberSessionClientImpl(auth).revokeMemberSessions(id);
 
         assertNull(auth.authenticate(tokens.accessToken()));
 
@@ -274,10 +279,10 @@ class MemberAuthenticationIntegrationTest {
 
     @Test
     void failedTokenCreationDoesNotWriteLoginAudit() {
-        var tokens = Mockito.mock(com.lemnt.auth.domain.member.gateway.MemberTokenGateway.class);
+        var tokens = Mockito.mock(MemberTokenGateway.class);
         Mockito.when(tokens.create(id, "13800000001"))
                 .thenThrow(new IllegalStateException("会话写入失败"));
-        var security = Mockito.mock(com.lemnt.auth.domain.user.gateway.LoginSecurityGateway.class);
+        var security = Mockito.mock(LoginSecurityGateway.class);
         setPassword(id, "Member-password-2026");
         var service =
                 new MemberAuthenticationService(
@@ -305,7 +310,7 @@ class MemberAuthenticationIntegrationTest {
         var other = new SecurityUser().setUserId(id + 1).setUserType("member").setToken("other");
         cachedSessions.put(CacheConstants.LOGIN_TOKEN_KEY + "admin", admin);
         cachedSessions.put(CacheConstants.LOGIN_TOKEN_KEY + "other", other);
-        new com.lemnt.auth.application.dubbo.MemberSessionClientImpl(auth).revokeMemberSessions(id);
+        new MemberSessionClientImpl(auth).revokeMemberSessions(id);
         assertNull(tokenService.getSecurityUser(first.accessToken(), "member"));
         assertNull(tokenService.getSecurityUser(second.accessToken(), "member"));
         assertEquals(2, cachedSessions.size());

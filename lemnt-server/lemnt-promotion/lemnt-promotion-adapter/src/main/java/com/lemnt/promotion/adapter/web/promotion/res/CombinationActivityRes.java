@@ -2,6 +2,7 @@ package com.lemnt.promotion.adapter.web.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,4 +25,4 @@ public record CombinationActivityRes(
         @Schema(description = "0 开启，1 关闭") Integer status,
         @Schema(description = "限制时长，小时") Integer limitDuration,
         @Schema(description = "拼团商品") List<CombinationProductRes> products)
-        implements java.io.Serializable {}
+        implements Serializable {}

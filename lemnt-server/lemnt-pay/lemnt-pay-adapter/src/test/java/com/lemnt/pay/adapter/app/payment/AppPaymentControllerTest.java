@@ -1,10 +1,19 @@
 package com.lemnt.pay.adapter.app.payment;
 
+import com.lemnt.common.security.constant.SecurityConstants;
+import com.lemnt.common.security.interceptor.HeaderInterceptor;
+import com.lemnt.pay.application.payment.cmd.PaymentPrepayCmd;
+import com.lemnt.pay.application.payment.dto.PaymentPrepayDTO;
 import com.lemnt.pay.application.payment.executor.MemberPaymentStatusQueryExe;
+import com.lemnt.pay.application.payment.executor.PaymentPrepayCmdExe;
 import com.lemnt.pay.application.payment.qry.MemberPaymentStatusQry;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.math.BigDecimal;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -22,13 +31,13 @@ class AppPaymentControllerTest {
                                                 com.lemnt.pay.application.payment.executor
                                                         .PaymentPrepayCmdExe.class)))
                         .addInterceptors(
-                                new com.lemnt.common.security.interceptor.HeaderInterceptor())
+                                new HeaderInterceptor())
                         .build();
         mvc.perform(
                         get("/trade/app/orders/TR1/payment")
                                 .header("Authorization", "Bearer member")
                                 .header(
-                                        com.lemnt.common.security.constant.SecurityConstants
+                                        SecurityConstants
                                                 .HEADER_USER_ID,
                                         "7")
                                 .header("memberId", "999"))
@@ -46,12 +55,12 @@ class AppPaymentControllerTest {
                                 mock(
                                         com.lemnt.pay.application.payment.executor
                                                 .PaymentPrepayCmdExe.class)))
-                .addInterceptors(new com.lemnt.common.security.interceptor.HeaderInterceptor())
+                .addInterceptors(new HeaderInterceptor())
                 .build()
                 .perform(
                         get("/trade/app/orders/TR1/payment")
                                 .header(
-                                        com.lemnt.common.security.constant.SecurityConstants
+                                        SecurityConstants
                                                 .HEADER_USER_ID,
                                         "8"))
                 .andExpect(status().isOk());
@@ -61,25 +70,25 @@ class AppPaymentControllerTest {
     @Test
     void prepayUsesSessionMemberAndReturnsChannelParams() throws Exception {
         var query = mock(MemberPaymentStatusQueryExe.class);
-        var prepay = mock(com.lemnt.pay.application.payment.executor.PaymentPrepayCmdExe.class);
-        org.mockito.Mockito.when(prepay.execute(any()))
+        var prepay = mock(PaymentPrepayCmdExe.class);
+        Mockito.when(prepay.execute(any()))
                 .thenReturn(
-                        new com.lemnt.pay.application.payment.dto.PaymentPrepayDTO(
+                        new PaymentPrepayDTO(
                                 "PAY1",
                                 "TR1",
                                 "SANDBOX",
-                                new java.math.BigDecimal("8.00"),
+                                new BigDecimal("8.00"),
                                 null,
-                                java.util.Map.of("paymentNo", "PAY1", "appKey", "lemnt-mall")));
+                                Map.of("paymentNo", "PAY1", "appKey", "lemnt-mall")));
         var mvc =
                 MockMvcBuilders.standaloneSetup(new AppPaymentController(query, prepay))
                         .addInterceptors(
-                                new com.lemnt.common.security.interceptor.HeaderInterceptor())
+                                new HeaderInterceptor())
                         .build();
         mvc.perform(
                         post("/trade/app/orders/TR1/payment")
                                 .header(
-                                        com.lemnt.common.security.constant.SecurityConstants
+                                        SecurityConstants
                                                 .HEADER_USER_ID,
                                         "7")
                                 .contentType("application/json")
@@ -91,7 +100,7 @@ class AppPaymentControllerTest {
                 .andExpect(jsonPath("$.data.params.appKey").value("lemnt-mall"));
         verify(prepay)
                 .execute(
-                        new com.lemnt.pay.application.payment.cmd.PaymentPrepayCmd(
+                        new PaymentPrepayCmd(
                                 7L, "TR1", "lemnt-mall", "SANDBOX"));
     }
 }

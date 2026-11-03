@@ -1,5 +1,7 @@
 package com.lemnt.mall.application.product.qry;
 
+import java.io.Serializable;
+
 /**
  * 商品SPU分页查询。
  */
@@ -11,4 +13,4 @@ public record ProductSpuPageQry(
         Long categoryId,
         Long brandId,
         String stockStatus)
-        implements java.io.Serializable {}
+        implements Serializable {}

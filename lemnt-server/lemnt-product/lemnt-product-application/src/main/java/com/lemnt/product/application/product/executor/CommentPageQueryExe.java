@@ -1,5 +1,6 @@
 package com.lemnt.product.application.product.executor;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.product.application.product.converter.CommentDTOConverter;
 import com.lemnt.product.application.product.dto.ProductCommentDTO;
@@ -42,7 +43,7 @@ public class CommentPageQueryExe {
                         && qry.createTimeStart().isAfter(qry.createTimeEnd()))
                 || (qry.userNickname() != null && qry.userNickname().length() > 255)
                 || (qry.spuName() != null && qry.spuName().length() > 255)) {
-            throw new com.lemnt.common.core.exception.ServiceException("评价筛选名称或时间范围不合法", 400);
+            throw new ServiceException("评价筛选名称或时间范围不合法", 400);
         }
         var page =
                 productCommentGateway.page(

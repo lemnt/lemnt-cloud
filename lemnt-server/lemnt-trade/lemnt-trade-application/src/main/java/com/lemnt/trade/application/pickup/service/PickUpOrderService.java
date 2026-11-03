@@ -8,8 +8,10 @@ import com.lemnt.trade.application.pickup.cmd.PickUpVerifyCmd;
 import com.lemnt.trade.application.pickup.dto.PickUpOrderDTO;
 import com.lemnt.trade.domain.aftersale.gateway.AfterSaleGateway;
 import com.lemnt.trade.domain.delivery.gateway.PickUpStoreGateway;
+import com.lemnt.trade.domain.delivery.model.PickUpStore;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.trade.domain.order.model.TradeOperator;
+import com.lemnt.trade.domain.order.model.TradeOrder;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -114,8 +116,8 @@ public class PickUpOrderService {
     }
 
     private PickUpOrderDTO dto(
-            com.lemnt.trade.domain.order.model.TradeOrder order,
-            com.lemnt.trade.domain.delivery.model.PickUpStore store) {
+            TradeOrder order,
+            PickUpStore store) {
         var delivery = order.delivery();
         return new PickUpOrderDTO(
                 order.orderNo(),

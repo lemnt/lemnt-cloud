@@ -1,5 +1,6 @@
 package com.lemnt.product.application.product.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,8 +8,8 @@ import java.util.List;
  */
 public record StoreSkuDTO(
         Long id, String name, String price, int stock, String image, List<Spec> specs)
-        implements java.io.Serializable {
+        implements Serializable {
     /** 编号与名称保持一一对应。 */
     public record Spec(Long specId, String specName, Long specValueId, String specValueName)
-            implements java.io.Serializable {}
+            implements Serializable {}
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -176,7 +177,7 @@ class AuthFilterDomainTest {
         assertTrue(reached.get());
         doAnswer(
                         invocation -> {
-                            java.util.function.Consumer<String> action = invocation.getArgument(1);
+                            Consumer<String> action = invocation.getArgument(1);
                             action.accept(CacheConstants.LOGIN_TOKEN_KEY + "member-session");
                             return null;
                         })

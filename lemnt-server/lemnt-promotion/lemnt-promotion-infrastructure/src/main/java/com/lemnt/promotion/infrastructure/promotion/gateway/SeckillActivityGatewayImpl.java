@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /** 秒杀活动仅操作活动主表。 */
@@ -79,7 +80,7 @@ public class SeckillActivityGatewayImpl implements SeckillActivityGateway {
 
     @Override
     public PageResult<SeckillActivity> appPage(
-            Long configId, java.time.LocalDateTime now, int pageNum, int pageSize) {
+            Long configId, LocalDateTime now, int pageNum, int pageSize) {
         var page =
                 mapper.selectAppPage(new Page<SeckillActivityDO>(pageNum, pageSize), configId, now);
         return PageResult.of(
@@ -87,7 +88,7 @@ public class SeckillActivityGatewayImpl implements SeckillActivityGateway {
     }
 
     @Override
-    public List<SeckillActivity> byConfigAndNow(Long configId, java.time.LocalDateTime now) {
+    public List<SeckillActivity> byConfigAndNow(Long configId, LocalDateTime now) {
         return mapper.selectByConfigAndNow(configId, now).stream()
                 .map(SeckillConverter::model)
                 .toList();

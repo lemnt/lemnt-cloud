@@ -2,6 +2,7 @@ package com.lemnt.promotion.adapter.app.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -20,4 +21,4 @@ public record AppBargainRecordRes(
         @Schema(description = "1 砍价中，2 成功，3 失败") Integer status,
         @Schema(description = "结束时间") LocalDateTime endTime,
         @Schema(description = "订单编号") Long orderId)
-        implements java.io.Serializable {}
+        implements Serializable {}

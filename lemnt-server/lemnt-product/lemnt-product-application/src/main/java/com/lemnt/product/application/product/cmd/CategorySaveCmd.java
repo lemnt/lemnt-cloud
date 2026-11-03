@@ -1,8 +1,10 @@
 package com.lemnt.product.application.product.cmd;
 
+import java.io.Serializable;
+
 /**
  * 分类保存命令。
  */
 public record CategorySaveCmd(
         Long id, Long parentId, String name, String picUrl, Integer sort, String status)
-        implements java.io.Serializable {}
+        implements Serializable {}

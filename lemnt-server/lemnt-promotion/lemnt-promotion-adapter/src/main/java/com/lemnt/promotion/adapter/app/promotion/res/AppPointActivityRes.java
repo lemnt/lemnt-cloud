@@ -2,6 +2,7 @@ package com.lemnt.promotion.adapter.app.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public record AppPointActivityRes(
         @Schema(description = "最低补差金额") BigDecimal price,
         @Schema(description = "商品市场价") BigDecimal marketPrice,
         @Schema(description = "积分商品") List<Product> products)
-        implements java.io.Serializable {
+        implements Serializable {
     /** 积分商品。 */
     @Schema(description = "活动商品")
     public record Product(
@@ -28,5 +29,5 @@ public record AppPointActivityRes(
             @Schema(description = "兑换积分数量") Integer point,
             @Schema(description = "兑换现金价格，单位元") BigDecimal price,
             @Schema(description = "库存数量") Integer stock)
-            implements java.io.Serializable {}
+            implements Serializable {}
 }

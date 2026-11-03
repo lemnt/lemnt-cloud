@@ -11,6 +11,9 @@ import com.lemnt.system.application.auth.dto.UserDTO;
 import com.lemnt.system.application.config.executor.*;
 import com.lemnt.system.application.config.qry.DictDataPageQry;
 import com.lemnt.system.application.org.dto.DeptDTO;
+import com.lemnt.system.application.org.executor.DeptTreeQueryExe;
+import com.lemnt.system.application.org.qry.DeptListQry;
+import com.lemnt.system.domain.auth.model.TreeSelect;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.junit.jupiter.api.Test;
@@ -96,8 +99,8 @@ class BoundaryRefactorContractTest {
 
     @Test
     void userDepartmentTreePreservesEmptyLabelFalseAndOmittedEmptyChildren() throws Exception {
-        var query = mock(com.lemnt.system.application.org.executor.DeptTreeQueryExe.class);
-        var tree = new com.lemnt.system.domain.auth.model.TreeSelect();
+        var query = mock(DeptTreeQueryExe.class);
+        var tree = new TreeSelect();
         tree.setId(7L);
         tree.setLabel("");
         tree.setChildren(List.of());
@@ -113,7 +116,7 @@ class BoundaryRefactorContractTest {
         assertFalse(node.get("disabled").asBoolean());
         assertNull(node.get("children"));
         var argument =
-                ArgumentCaptor.forClass(com.lemnt.system.application.org.qry.DeptListQry.class);
+                ArgumentCaptor.forClass(DeptListQry.class);
         verify(query).execute(argument.capture());
         assertEquals("研发", argument.getValue().deptName());
         assertEquals("1", argument.getValue().status());

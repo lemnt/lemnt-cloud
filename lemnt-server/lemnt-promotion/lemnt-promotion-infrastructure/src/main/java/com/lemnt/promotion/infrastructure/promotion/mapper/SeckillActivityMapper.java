@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /** 秒杀活动表 CRUD 及包含 JSON 时段条件的查询。 */
@@ -30,9 +31,9 @@ public interface SeckillActivityMapper extends BaseMapper<SeckillActivityDO> {
     IPage<SeckillActivityDO> selectAppPage(
             IPage<SeckillActivityDO> page,
             @Param("configId") Long configId,
-            @Param("now") java.time.LocalDateTime now);
+            @Param("now") LocalDateTime now);
 
     /** 指定时段的进行中活动。 */
     List<SeckillActivityDO> selectByConfigAndNow(
-            @Param("configId") Long configId, @Param("now") java.time.LocalDateTime now);
+            @Param("configId") Long configId, @Param("now") LocalDateTime now);
 }

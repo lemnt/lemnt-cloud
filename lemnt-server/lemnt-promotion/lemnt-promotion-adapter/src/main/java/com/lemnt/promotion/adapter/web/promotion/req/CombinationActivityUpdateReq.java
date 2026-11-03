@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,4 +24,4 @@ public record CombinationActivityUpdateReq(
         @Schema(description = "是否虚拟成团") @NotNull Boolean virtualGroup,
         @Schema(description = "限制时长，小时") @NotNull Integer limitDuration,
         @Schema(description = "拼团商品") @NotEmpty @Valid List<CombinationProductReq> products)
-        implements java.io.Serializable {}
+        implements Serializable {}

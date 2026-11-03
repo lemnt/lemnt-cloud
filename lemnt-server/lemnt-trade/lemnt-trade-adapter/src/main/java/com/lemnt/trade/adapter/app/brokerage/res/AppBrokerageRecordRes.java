@@ -2,6 +2,7 @@ package com.lemnt.trade.adapter.app.brokerage.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -19,4 +20,4 @@ public record AppBrokerageRecordRes(
         @Schema(description = "冻结天数") Integer frozenDays,
         @Schema(description = "解冻时间") LocalDateTime unfreezeTime,
         @Schema(description = "创建时间") LocalDateTime createTime)
-        implements java.io.Serializable {}
+        implements Serializable {}

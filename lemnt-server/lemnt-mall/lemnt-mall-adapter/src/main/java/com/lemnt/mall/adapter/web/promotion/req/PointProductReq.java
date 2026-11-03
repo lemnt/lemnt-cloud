@@ -3,6 +3,7 @@ package com.lemnt.mall.adapter.web.promotion.req;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /** 积分商城活动商品请求。 */
@@ -13,4 +14,4 @@ public record PointProductReq(
         @Schema(description = "所需积分") @NotNull Integer point,
         @Schema(description = "补差金额，单位元") @NotNull BigDecimal price,
         @Schema(description = "库存") @NotNull Integer stock)
-        implements java.io.Serializable {}
+        implements Serializable {}

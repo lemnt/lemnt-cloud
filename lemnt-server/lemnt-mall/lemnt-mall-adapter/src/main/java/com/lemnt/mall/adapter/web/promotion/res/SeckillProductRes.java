@@ -2,6 +2,7 @@ package com.lemnt.mall.adapter.web.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -15,4 +16,4 @@ public record SeckillProductRes(
         @Schema(description = "剩余库存") Integer stock,
         @Schema(description = "活动开始时间") LocalDateTime activityStartTime,
         @Schema(description = "活动结束时间") LocalDateTime activityEndTime)
-        implements java.io.Serializable {}
+        implements Serializable {}

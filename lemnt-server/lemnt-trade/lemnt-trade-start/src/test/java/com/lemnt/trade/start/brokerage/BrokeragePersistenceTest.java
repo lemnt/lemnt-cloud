@@ -1,5 +1,6 @@
 package com.lemnt.trade.start.brokerage;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
 import com.lemnt.trade.application.brokerage.cmd.BrokerageWithdrawAuditCmd;
 import com.lemnt.trade.application.brokerage.cmd.BrokerageWithdrawCreateCmd;
@@ -12,6 +13,7 @@ import com.lemnt.trade.domain.brokerage.model.BrokerageMemberInfo;
 import com.lemnt.trade.domain.config.gateway.TradeConfigGateway;
 import com.lemnt.trade.domain.config.model.TradeConfig;
 import com.lemnt.trade.domain.order.model.TradeOrder;
+import com.lemnt.trade.start.BusinessConfigTestSupport;
 import com.lemnt.trade.start.TableTestComponents;
 
 import com.baomidou.mybatisplus.annotation.DbType;
@@ -87,7 +89,7 @@ class BrokeragePersistenceTest {
         components.register(OrderPersistenceService.class, orders);
         components.register(
                 TradeConfigGateway.class,
-                com.lemnt.trade.start.BusinessConfigTestSupport.gateway());
+                BusinessConfigTestSupport.gateway());
         var configs = components.get(TradeConfigGateway.class);
         configs.update(
                 new TradeConfig(
@@ -122,15 +124,15 @@ class BrokeragePersistenceTest {
     void bindValidatesSelfCycleAndEnabledPromoter() {
         brokerage.setEnabled(2L, true);
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> brokerage.bind(1L, 1L));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> brokerage.bind(1L, 3L));
         assertTrue(brokerage.bind(1L, 2L));
         assertEquals(2L, brokerage.appUser(1L).bindUserId());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> brokerage.bind(2L, 1L));
         assertTrue(brokerage.adminBind(1L, null));
         assertNull(brokerage.appUser(1L).bindUserId());
@@ -238,7 +240,7 @@ class BrokeragePersistenceTest {
         assertTrue(withdraws.audit(new BrokerageWithdrawAuditCmd(second, false, "驳回", 99L)));
         assertEquals(new BigDecimal("6.00"), brokerage.appUser(2L).brokeragePrice());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         withdraws.create(
                                 new BrokerageWithdrawCreateCmd(

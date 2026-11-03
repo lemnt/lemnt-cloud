@@ -1,7 +1,12 @@
 package com.lemnt.pay.start.event;
 
+import com.lemnt.common.client.event.CommerceEventEnvelope;
+import com.lemnt.common.core.utils.JsonUtils;
+import com.lemnt.order.client.event.OrderClosedEvent;
+import com.lemnt.pay.application.event.service.OrderClosedEventHandler;
 import com.lemnt.pay.application.payment.service.PaymentNotificationService;
 import com.lemnt.pay.application.paymentrefund.service.PaymentRefundService;
+import com.lemnt.pay.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
 import com.lemnt.pay.domain.order.model.FrozenRefundPlan;
 import com.lemnt.pay.domain.order.model.OrderPaymentSnapshot;
@@ -10,6 +15,8 @@ import com.lemnt.pay.domain.payment.model.PaymentOperator;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundGateway;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundResult;
+import com.lemnt.pay.infrastructure.event.gateway.MessageInboxGatewayImpl;
+import com.lemnt.pay.infrastructure.event.mapper.MessageInboxMapper;
 import com.lemnt.pay.infrastructure.payment.gateway.TradePaymentGatewayImpl;
 import com.lemnt.pay.infrastructure.payment.mapper.TradePaymentMapper;
 import com.lemnt.pay.infrastructure.paymentrefund.gateway.PaymentRefundGatewayImpl;
@@ -19,6 +26,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -150,28 +159,28 @@ class CashPaymentPersistenceTest extends OutboxPersistenceTest {
     void closeEventReceiptRollsBackOnWrongOwnerAndRetryClosesOnlyWaitingPayment() {
         var inbox =
                 proxy(
-                        new com.lemnt.pay.infrastructure.event.gateway.MessageInboxGatewayImpl(
+                        new MessageInboxGatewayImpl(
                                 session.getMapper(
-                                        com.lemnt.pay.infrastructure.event.mapper.MessageInboxMapper
+                                        MessageInboxMapper
                                                 .class)),
-                        com.lemnt.pay.domain.event.gateway.MessageInboxGateway.class);
+                        MessageInboxGateway.class);
         var handler =
                 proxy(
-                        new com.lemnt.pay.application.event.service.OrderClosedEventHandler(
+                        new OrderClosedEventHandler(
                                 inbox, orders, payments),
-                        com.lemnt.pay.application.event.service.OrderClosedEventHandler.class);
+                        OrderClosedEventHandler.class);
         var payload =
-                com.lemnt.common.core.utils.JsonUtils.toJsonStr(
-                        new com.lemnt.order.client.event.OrderClosedEvent(
-                                "O1", 7L, java.util.List.of()));
+                JsonUtils.toJsonStr(
+                        new OrderClosedEvent(
+                                "O1", 7L, List.of()));
         var event =
-                new com.lemnt.common.client.event.CommerceEventEnvelope(
+                new CommerceEventEnvelope(
                         "EC1",
                         "ORDER_CLOSED",
                         1,
                         "O1",
                         "O1",
-                        java.time.Instant.now(),
+                        Instant.now(),
                         null,
                         payload);
         when(orders.findByOrderNo("O1"))

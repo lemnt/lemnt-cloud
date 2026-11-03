@@ -19,7 +19,7 @@ public record SettlementQuote(
         long rewardPoint,
         boolean freeDelivery,
         Map<Long, Integer> giveCouponTemplateCounts,
-        java.util.List<SettlementPromotion> promotions,
+        List<SettlementPromotion> promotions,
         BigDecimal deliveryOriginalPrice,
         BigDecimal deliveryDiscountPrice) {
     /** 兼容未记录本批优惠与退款元数据的历史快照。 */
@@ -47,7 +47,7 @@ public record SettlementQuote(
                 rewardPoint,
                 freeDelivery,
                 giveCouponTemplateCounts,
-                java.util.List.of(),
+                List.of(),
                 null,
                 null);
     }
@@ -56,7 +56,7 @@ public record SettlementQuote(
      * 创建结算报价实例。
      */
     public SettlementQuote {
-        promotions = promotions == null ? java.util.List.of() : java.util.List.copyOf(promotions);
+        promotions = promotions == null ? List.of() : List.copyOf(promotions);
         items = List.copyOf(items);
         giveCouponTemplateCounts =
                 giveCouponTemplateCounts == null ? Map.of() : Map.copyOf(giveCouponTemplateCounts);

@@ -3,6 +3,8 @@ package com.lemnt.system.api;
 import com.lemnt.system.api.domain.bo.UserBo;
 import com.lemnt.system.api.domain.dto.LoginUserDTO;
 
+import java.util.List;
+
 /**
  * 用户服务
  *
@@ -34,7 +36,7 @@ public interface RemoteUserService {
      * @param status  用户状态，1正常、2停用
      * @return 是否成功
      */
-    Boolean updateUserStatus(java.util.List<Long> userIds, String status);
+    Boolean updateUserStatus(List<Long> userIds, String status);
 
     /**
      * 记录用户登录IP地址和登录时间

@@ -2,6 +2,7 @@ package com.lemnt.member.infrastructure.growth.dataobject;
 
 import com.lemnt.common.infrastructure.domain.BaseDO;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -41,11 +42,11 @@ public class LevelDO extends BaseDO {
     private Integer discountPercent;
 
     /** 等级图标地址。 */
-    @TableField(updateStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.ALWAYS)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String icon;
 
     /** 等级背景地址。 */
-    @TableField(updateStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.ALWAYS)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String backgroundUrl;
 
     /** 状态：0停用，1启用。 */

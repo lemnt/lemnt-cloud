@@ -1,6 +1,11 @@
 package com.lemnt.trade.adapter.web.order;
 
+import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.common.security.context.SecurityContextHolder;
+import com.lemnt.common.security.handler.GlobalExceptionHandler;
 import com.lemnt.common.start.config.JacksonConfig;
+import com.lemnt.trade.application.order.cmd.OrderAdjustAddressCmd;
+import com.lemnt.trade.application.order.cmd.OrderAdjustPriceCmd;
 import com.lemnt.trade.application.order.dto.OrderStatisticsDTO;
 import com.lemnt.trade.application.order.executor.OrderAdjustAddressCmdExe;
 import com.lemnt.trade.application.order.executor.OrderAdjustPriceCmdExe;
@@ -25,12 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class OrderManagementHttpTest {
     @BeforeEach
     void identity() {
-        com.lemnt.common.security.context.SecurityContextHolder.setUserId("9");
+        SecurityContextHolder.setUserId("9");
     }
 
     @AfterEach
     void clearIdentity() {
-        com.lemnt.common.security.context.SecurityContextHolder.remove();
+        SecurityContextHolder.remove();
     }
 
     @Test
@@ -63,7 +68,7 @@ class OrderManagementHttpTest {
         var price = mock(OrderAdjustPriceCmdExe.class);
         when(price.execute(any()))
                 .thenThrow(
-                        new com.lemnt.common.core.exception.ServiceException(
+                        new ServiceException(
                                 "订单已生成支付单，不能调价，请取消订单后重新下单", 409));
         var mvc =
                 MockMvcBuilders.standaloneSetup(
@@ -74,7 +79,7 @@ class OrderManagementHttpTest {
                                         price,
                                         mock(OrderAdjustAddressCmdExe.class)))
                         .setControllerAdvice(
-                                new com.lemnt.common.security.handler.GlobalExceptionHandler())
+                                new GlobalExceptionHandler())
                         .build();
         mvc.perform(
                         post("/trade/admin/orders/TR1/price-adjustment")
@@ -118,11 +123,11 @@ class OrderManagementHttpTest {
 
         verify(price)
                 .execute(
-                        new com.lemnt.trade.application.order.cmd.OrderAdjustPriceCmd(
+                        new OrderAdjustPriceCmd(
                                 "TR1", new BigDecimal("88.00"), 9L));
         verify(address)
                 .execute(
-                        new com.lemnt.trade.application.order.cmd.OrderAdjustAddressCmd(
+                        new OrderAdjustAddressCmd(
                                 "TR1", "李四", "13900000000", 110102L, "新地址", 9L));
     }
 }

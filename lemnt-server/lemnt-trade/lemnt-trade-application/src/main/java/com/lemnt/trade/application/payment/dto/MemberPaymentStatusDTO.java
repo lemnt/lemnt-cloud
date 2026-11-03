@@ -1,5 +1,6 @@
 package com.lemnt.trade.application.payment.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -11,4 +12,4 @@ public record MemberPaymentStatusDTO(
         BigDecimal payableAmount,
         String localPaymentStatus,
         boolean channelVerified)
-        implements java.io.Serializable {}
+        implements Serializable {}

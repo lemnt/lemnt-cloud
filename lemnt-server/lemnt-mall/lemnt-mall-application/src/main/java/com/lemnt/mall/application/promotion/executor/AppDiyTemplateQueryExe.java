@@ -1,5 +1,6 @@
 package com.lemnt.mall.application.promotion.executor;
 
+import com.lemnt.mall.application.promotion.dto.AppDiyTemplateDTO;
 import com.lemnt.mall.application.promotion.service.DiyDecorationService;
 
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class AppDiyTemplateQueryExe {
     private final DiyDecorationService service;
 
-    public com.lemnt.mall.application.promotion.dto.AppDiyTemplateDTO execute(Long id) {
+    public AppDiyTemplateDTO execute(Long id) {
         return service.appTemplate(id);
     }
 }

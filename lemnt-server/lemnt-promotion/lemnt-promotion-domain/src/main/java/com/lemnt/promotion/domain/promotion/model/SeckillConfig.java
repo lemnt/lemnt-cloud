@@ -1,5 +1,6 @@
 package com.lemnt.promotion.domain.promotion.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /** 秒杀时段，使用 HH:mm:ss 字符串保存每日时间点。 */
@@ -10,7 +11,7 @@ public record SeckillConfig(
         String endTime,
         List<String> sliderPicUrls,
         Integer status)
-        implements java.io.Serializable {
+        implements Serializable {
     public SeckillConfig {
         sliderPicUrls = sliderPicUrls == null ? List.of() : List.copyOf(sliderPicUrls);
     }

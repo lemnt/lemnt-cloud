@@ -1,5 +1,6 @@
 package com.lemnt.member.application.growth.executor;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.member.application.growth.converter.MemberGrowthDTOConverter;
 import com.lemnt.member.application.growth.dto.AssetRecordDTO;
 import com.lemnt.member.application.growth.qry.AssetRecordDetailQry;
@@ -10,6 +11,8 @@ import com.lemnt.member.domain.shared.model.MemberRules;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.Objects;
 
 /** 会员资产流水详情执行器。 */
 @Component
@@ -27,10 +30,10 @@ public class MemberAssetRecordDetailQueryExe {
                     case "POINT" -> pointRecords.detail(qry.id());
                     case "EXPERIENCE" -> experienceRecords.detail(qry.id());
                     default ->
-                            throw new com.lemnt.common.core.exception.ServiceException(
+                            throw new ServiceException(
                                     "资产类型不合法", 400);
                 };
-        if (record != null && !java.util.Objects.equals(qry.assetType(), record.assetType())) {
+        if (record != null && !Objects.equals(qry.assetType(), record.assetType())) {
             return null;
         }
         return MemberGrowthDTOConverter.toAssetRecordDTO(record);

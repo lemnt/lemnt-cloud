@@ -1,10 +1,12 @@
 package com.lemnt.mall.infrastructure.settlement.gateway;
 
+import com.lemnt.mall.domain.product.model.CommentOrderRequest;
 import com.lemnt.mall.domain.settlement.gateway.OrderGateway;
 import com.lemnt.mall.domain.settlement.model.SettlementDelivery;
 import com.lemnt.mall.domain.settlement.model.SettlementItem;
 import com.lemnt.mall.domain.settlement.model.SettlementOrder;
 import com.lemnt.trade.client.TradeOrderClient;
+import com.lemnt.trade.client.bo.OrderCommentCreateBo;
 import com.lemnt.trade.client.bo.OrderCreateBo;
 import com.lemnt.trade.client.dto.OrderDTO;
 import com.lemnt.trade.client.dto.OrderDeliveryDTO;
@@ -91,9 +93,9 @@ public class OrderGatewayImpl implements OrderGateway {
     }
 
     @Override
-    public Long createComment(com.lemnt.mall.domain.product.model.CommentOrderRequest value) {
+    public Long createComment(CommentOrderRequest value) {
         return client.createComment(
-                new com.lemnt.trade.client.bo.OrderCommentCreateBo(
+                new OrderCommentCreateBo(
                         value.memberId(),
                         value.orderNo(),
                         value.skuId(),

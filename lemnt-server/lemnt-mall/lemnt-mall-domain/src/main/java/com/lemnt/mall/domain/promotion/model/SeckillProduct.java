@@ -1,5 +1,6 @@
 package com.lemnt.mall.domain.promotion.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +17,7 @@ public record SeckillProduct(
         Integer activityStatus,
         LocalDateTime activityStartTime,
         LocalDateTime activityEndTime)
-        implements java.io.Serializable {
+        implements Serializable {
     public SeckillProduct {
         configIds = configIds == null ? List.of() : List.copyOf(configIds);
     }

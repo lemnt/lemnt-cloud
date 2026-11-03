@@ -25,10 +25,12 @@ import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /** 秒杀活动直接管理，负责商品校验、时段冲突和库存合计。 */
 @Component
@@ -72,9 +74,9 @@ public class SeckillActivityManagementService {
         require(lines != null && !lines.isEmpty(), "秒杀商品不能为空");
         var skuMap =
                 skus.catalogSkus(spuId).stream()
-                        .collect(java.util.stream.Collectors.toMap(ProductSku::id, sku -> sku));
+                        .collect(Collectors.toMap(ProductSku::id, sku -> sku));
         var seen = new HashSet<Long>();
-        var result = new java.util.ArrayList<SeckillProduct>();
+        var result = new ArrayList<SeckillProduct>();
         for (var line : lines) {
             require(line.skuId() != null && seen.add(line.skuId()), "SKU 编号重复或不合法");
             var sku = skuMap.get(line.skuId());

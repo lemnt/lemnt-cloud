@@ -30,7 +30,7 @@ public record SettlementOrder(
         BigDecimal adjustmentAmount,
         String pricingSnapshotStatus,
         Integer pricingSnapshotVersion,
-        java.util.List<SettlementPromotion> promotions)
+        List<SettlementPromotion> promotions)
         implements Serializable {
     /** 兼容未记录本批优惠与退款元数据的历史快照。 */
     public SettlementOrder(
@@ -68,7 +68,7 @@ public record SettlementOrder(
                 null,
                 "LEGACY_PARTIAL",
                 0,
-                java.util.List.of());
+                List.of());
     }
 
     /** 兼容报价/历史快照，营销赠券由支付回调按订单快照发放。 */
@@ -105,7 +105,7 @@ public record SettlementOrder(
      * 创建结算单实例。
      */
     public SettlementOrder {
-        promotions = promotions == null ? java.util.List.of() : java.util.List.copyOf(promotions);
+        promotions = promotions == null ? List.of() : List.copyOf(promotions);
         items = items == null ? List.of() : List.copyOf(items);
         giveCouponTemplateCounts =
                 giveCouponTemplateCounts == null ? Map.of() : Map.copyOf(giveCouponTemplateCounts);

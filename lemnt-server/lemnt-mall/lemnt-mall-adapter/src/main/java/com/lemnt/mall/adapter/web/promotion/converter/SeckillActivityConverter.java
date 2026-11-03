@@ -3,6 +3,7 @@ package com.lemnt.mall.adapter.web.promotion.converter;
 import com.lemnt.mall.adapter.web.promotion.req.SeckillActivityCreateReq;
 import com.lemnt.mall.adapter.web.promotion.req.SeckillActivityPageReq;
 import com.lemnt.mall.adapter.web.promotion.req.SeckillActivityUpdateReq;
+import com.lemnt.mall.adapter.web.promotion.req.SeckillProductReq;
 import com.lemnt.mall.adapter.web.promotion.res.SeckillActivityRes;
 import com.lemnt.mall.adapter.web.promotion.res.SeckillProductRes;
 import com.lemnt.mall.application.promotion.cmd.SeckillActivityCreateCmd;
@@ -12,12 +13,14 @@ import com.lemnt.mall.application.promotion.dto.SeckillActivityDTO;
 import com.lemnt.mall.application.promotion.dto.SeckillProductDTO;
 import com.lemnt.mall.application.promotion.qry.SeckillActivityPageQry;
 
+import java.util.List;
+
 /** 秒杀活动请求及响应转换。 */
 public final class SeckillActivityConverter {
     private SeckillActivityConverter() {}
 
-    private static java.util.List<SeckillProductCmd> products(
-            java.util.List<com.lemnt.mall.adapter.web.promotion.req.SeckillProductReq> values) {
+    private static List<SeckillProductCmd> products(
+            List<SeckillProductReq> values) {
         return values.stream()
                 .map(
                         value ->

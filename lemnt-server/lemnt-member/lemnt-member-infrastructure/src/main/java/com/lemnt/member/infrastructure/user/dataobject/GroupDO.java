@@ -2,6 +2,7 @@ package com.lemnt.member.infrastructure.user.dataobject;
 
 import com.lemnt.common.infrastructure.domain.BaseDO;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -32,7 +33,7 @@ public class GroupDO extends BaseDO {
     private String name;
 
     /** 备注。 */
-    @TableField(updateStrategy = com.baomidou.mybatisplus.annotation.FieldStrategy.ALWAYS)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String remark;
 
     /** 状态：0停用，1启用。 */

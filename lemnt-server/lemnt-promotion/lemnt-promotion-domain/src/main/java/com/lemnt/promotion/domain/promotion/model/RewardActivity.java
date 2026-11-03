@@ -1,5 +1,6 @@
 package com.lemnt.promotion.domain.promotion.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,4 +16,4 @@ public record RewardActivity(
         String productScope,
         List<Long> productScopeValues,
         List<RewardRule> rules)
-        implements java.io.Serializable {}
+        implements Serializable {}

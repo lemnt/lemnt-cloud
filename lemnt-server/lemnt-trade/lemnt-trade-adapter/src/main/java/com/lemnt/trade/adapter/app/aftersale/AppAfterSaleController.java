@@ -8,6 +8,8 @@ import com.lemnt.trade.adapter.app.aftersale.req.AppAfterSalePageReq;
 import com.lemnt.trade.adapter.app.aftersale.req.AppAfterSaleReturnReq;
 import com.lemnt.trade.adapter.app.aftersale.res.AppAfterSaleItemRes;
 import com.lemnt.trade.adapter.app.aftersale.res.AppAfterSaleRes;
+import com.lemnt.trade.adapter.app.promotion.converter.OrderPromotionResConverter;
+import com.lemnt.trade.adapter.app.promotion.res.AppAfterSalePromotionDetailRes;
 import com.lemnt.trade.application.aftersale.cmd.AfterSaleCreateCmd;
 import com.lemnt.trade.application.aftersale.cmd.AfterSaleReturnCmd;
 import com.lemnt.trade.application.aftersale.executor.AfterSaleCancelCmdExe;
@@ -17,6 +19,7 @@ import com.lemnt.trade.application.aftersale.executor.MemberAfterSaleDetailQuery
 import com.lemnt.trade.application.aftersale.executor.MemberAfterSaleItemListQueryExe;
 import com.lemnt.trade.application.aftersale.executor.MemberAfterSalePageQueryExe;
 import com.lemnt.trade.application.aftersale.qry.MemberAfterSalePageQry;
+import com.lemnt.trade.application.promotion.executor.AfterSalePromotionDetailQueryExe;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -115,18 +118,18 @@ public class AppAfterSaleController {
         return R.ok(cancel.execute(SecurityUtils.getUserId(), no));
     }
 
-    private final com.lemnt.trade.application.promotion.executor.AfterSalePromotionDetailQueryExe
+    private final AfterSalePromotionDetailQueryExe
             promotionQuery;
 
     /** 查询冻结优惠及权益，不回查当前促销规则。 */
     @GetMapping("/after-sales/{no}/promotions")
     @Operation(summary = "售后优惠归因与权益进度")
-    public R<com.lemnt.trade.adapter.app.promotion.res.AppAfterSalePromotionDetailRes> promotions(
+    public R<AppAfterSalePromotionDetailRes> promotions(
             @PathVariable String no) {
         return R.ok(
-                com.lemnt.trade.adapter.app.promotion.converter.OrderPromotionResConverter.toRes(
+                OrderPromotionResConverter.toRes(
                         promotionQuery.execute(
-                                com.lemnt.common.security.utils.SecurityUtils.getUserId(), no)));
+                                SecurityUtils.getUserId(), no)));
     }
 
     /** 生产使用完整查询协作者，存量测试构造仅服务原有路由。 */
@@ -138,7 +141,7 @@ public class AppAfterSaleController {
             MemberAfterSalePageQueryExe pageQuery,
             MemberAfterSaleDetailQueryExe detailQuery,
             MemberAfterSaleItemListQueryExe itemQuery,
-            com.lemnt.trade.application.promotion.executor.AfterSalePromotionDetailQueryExe
+            AfterSalePromotionDetailQueryExe
                     promotionQuery) {
         this.cancel = cancel;
         this.create = create;

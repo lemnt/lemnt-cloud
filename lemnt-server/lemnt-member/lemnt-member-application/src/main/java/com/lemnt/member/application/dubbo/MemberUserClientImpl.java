@@ -1,8 +1,10 @@
 package com.lemnt.member.application.dubbo;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.member.client.MemberUserClient;
 import com.lemnt.member.client.dto.MemberLoginInfoDTO;
 import com.lemnt.member.client.dto.MemberUserDTO;
+import com.lemnt.member.domain.growth.gateway.MemberLevelGateway;
 import com.lemnt.member.domain.user.gateway.MemberUserGateway;
 import com.lemnt.member.domain.user.model.Member;
 
@@ -10,6 +12,8 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+
+import java.net.InetAddress;
 
 /**
  * 会员客户端实现。
@@ -19,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberUserClientImpl implements MemberUserClient {
 
     private final MemberUserGateway memberUserGateway;
-    private final com.lemnt.member.domain.growth.gateway.MemberLevelGateway memberLevelGateway;
+    private final MemberLevelGateway memberLevelGateway;
 
     /**
      * 根据会员编号查询跨服务基础资料。
@@ -78,14 +82,14 @@ public class MemberUserClientImpl implements MemberUserClient {
                         || (!loginIp.contains(":")
                                 && !loginIp.matches("[0-9]{1,3}(\\.[0-9]{1,3}){3}")))
                     throw new IllegalArgumentException();
-                java.net.InetAddress.getByName(loginIp);
+                InetAddress.getByName(loginIp);
             } catch (Exception error) {
-                throw new com.lemnt.common.core.exception.ServiceException("登录连接IP不合法", 400);
+                throw new ServiceException("登录连接IP不合法", 400);
             }
         }
         var member = memberUserGateway.lockById(memberId);
         if (member == null || !Integer.valueOf(1).equals(member.status())) {
-            throw new com.lemnt.common.core.exception.ServiceException("会员不可登录", 400);
+            throw new ServiceException("会员不可登录", 400);
         }
         memberUserGateway.recordLogin(memberId, memberUserGateway.now(), loginIp);
     }

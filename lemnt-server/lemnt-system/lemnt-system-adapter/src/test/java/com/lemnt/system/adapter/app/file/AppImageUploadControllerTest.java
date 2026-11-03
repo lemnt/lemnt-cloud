@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -24,7 +26,7 @@ class AppImageUploadControllerTest {
                                                     try {
                                                         assertArrayEquals(
                                                                 png, file.content().readAllBytes());
-                                                    } catch (java.io.IOException e) {
+                                                    } catch (IOException e) {
                                                         throw new RuntimeException(e);
                                                     }
                                                     return "https://example.test/image.png";

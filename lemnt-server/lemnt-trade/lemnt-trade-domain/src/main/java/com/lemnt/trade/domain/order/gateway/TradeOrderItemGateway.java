@@ -3,6 +3,7 @@ package com.lemnt.trade.domain.order.gateway;
 import com.lemnt.trade.domain.order.model.OrderRefundItem;
 import com.lemnt.trade.domain.order.model.TradeOrderItem;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /** TradeOrderItem 表领域存储接口。 */
@@ -20,7 +21,7 @@ public interface TradeOrderItemGateway {
     List<TradeOrderItem> items(Long orderId);
 
     /** 后台调价后按分摊结果更新单行实付。 */
-    boolean updatePayAmount(Long orderId, Long orderItemId, java.math.BigDecimal payAmount);
+    boolean updatePayAmount(Long orderId, Long orderItemId, BigDecimal payAmount);
 
     /** 持有订单锁且售后首次成功后增加已退数量，历史NULL从成功事实核对后初始化。 */
     boolean recordRefunded(Long orderId, Long orderItemId, int previous, int delta);

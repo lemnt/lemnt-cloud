@@ -1,5 +1,6 @@
 package com.lemnt.trade.start.pickup;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
 import com.lemnt.trade.application.pickup.cmd.PickUpAssignCmd;
 import com.lemnt.trade.application.pickup.cmd.PickUpBindCmd;
@@ -113,7 +114,7 @@ class PickUpPersistenceTest {
         assertTrue(assigned.verifyCode().matches("\\d{8}"));
         assertEquals("中心店", orders.preview(assigned.verifyCode()).storeName());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> orders.verify(new PickUpVerifyCmd(assigned.verifyCode(), 2L)));
         var done = orders.verify(new PickUpVerifyCmd(assigned.verifyCode(), 1L));
         assertEquals("COMPLETED", done.status());
@@ -148,7 +149,7 @@ class PickUpPersistenceTest {
                         1));
         assertTrue(stores.appList().isEmpty());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> stores.bind(new PickUpBindCmd(storeId, List.of(1L, 1L))));
     }
 
@@ -177,7 +178,7 @@ class PickUpPersistenceTest {
     @Test
     void invalidTimeAndDeletingMissingStoreAreRejected() {
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         stores.create(
                                 new PickUpStoreSaveCmd(
@@ -195,6 +196,6 @@ class PickUpPersistenceTest {
                                         List.of(),
                                         0)));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class, () -> stores.delete(999L));
+                ServiceException.class, () -> stores.delete(999L));
     }
 }

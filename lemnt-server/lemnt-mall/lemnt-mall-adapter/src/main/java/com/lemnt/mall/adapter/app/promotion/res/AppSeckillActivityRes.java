@@ -2,6 +2,7 @@ package com.lemnt.mall.adapter.app.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /** App 秒杀活动摘要。 */
@@ -17,4 +18,4 @@ public record AppSeckillActivityRes(
         @Schema(description = "剩余活动库存") Integer stock,
         @Schema(description = "活动总库存") Integer totalStock,
         @Schema(description = "最低秒杀价") BigDecimal seckillPrice)
-        implements java.io.Serializable {}
+        implements Serializable {}

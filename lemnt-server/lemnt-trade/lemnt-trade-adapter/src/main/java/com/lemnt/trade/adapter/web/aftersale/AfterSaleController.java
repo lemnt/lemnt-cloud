@@ -21,6 +21,8 @@ import com.lemnt.trade.adapter.web.aftersale.res.AfterSaleRefundRes;
 import com.lemnt.trade.adapter.web.aftersale.res.AfterSaleRefuseRes;
 import com.lemnt.trade.adapter.web.aftersale.res.AfterSaleRejectRes;
 import com.lemnt.trade.adapter.web.aftersale.res.AfterSaleReturnRes;
+import com.lemnt.trade.adapter.web.promotion.converter.OrderPromotionResConverter;
+import com.lemnt.trade.adapter.web.promotion.res.AfterSalePromotionDetailRes;
 import com.lemnt.trade.application.aftersale.executor.AfterSaleAgreeCmdExe;
 import com.lemnt.trade.application.aftersale.executor.AfterSaleCreateCmdExe;
 import com.lemnt.trade.application.aftersale.executor.AfterSaleDetailQueryExe;
@@ -31,6 +33,7 @@ import com.lemnt.trade.application.aftersale.executor.AfterSaleRefuseCmdExe;
 import com.lemnt.trade.application.aftersale.executor.AfterSaleRejectCmdExe;
 import com.lemnt.trade.application.aftersale.executor.AfterSaleReturnCmdExe;
 import com.lemnt.trade.application.paymentrefund.executor.PaymentRefundCreateCmdExe;
+import com.lemnt.trade.application.promotion.executor.AfterSalePromotionDetailQueryExe;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -169,17 +172,17 @@ public class AfterSaleController {
                                 AfterSaleReqConverter.refuse(no, req), SecurityUtils.getUserId())));
     }
 
-    private final com.lemnt.trade.application.promotion.executor.AfterSalePromotionDetailQueryExe
+    private final AfterSalePromotionDetailQueryExe
             promotionQuery;
 
     /** 查询冻结优惠及权益，不回查当前促销规则。 */
     @GetMapping("/after-sales/{no}/promotions")
     @Operation(summary = "售后优惠归因与权益进度")
     @RequiresPermissions("trade:after-sale:query")
-    public R<com.lemnt.trade.adapter.web.promotion.res.AfterSalePromotionDetailRes> promotions(
+    public R<AfterSalePromotionDetailRes> promotions(
             @PathVariable String no) {
         return R.ok(
-                com.lemnt.trade.adapter.web.promotion.converter.OrderPromotionResConverter.toRes(
+                OrderPromotionResConverter.toRes(
                         promotionQuery.execute(no)));
     }
 
@@ -196,7 +199,7 @@ public class AfterSaleController {
             AfterSaleDetailQueryExe detail,
             AfterSaleItemListQueryExe items,
             PaymentRefundCreateCmdExe refund,
-            com.lemnt.trade.application.promotion.executor.AfterSalePromotionDetailQueryExe
+            AfterSalePromotionDetailQueryExe
                     promotionQuery) {
         this.create = create;
         this.agree = agree;

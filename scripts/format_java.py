@@ -12,6 +12,42 @@ ROOT = Path(__file__).resolve().parents[1]
 SHA256 = "25157797a0a972c2290b5bc71530c4f7ad646458025e3484412a6e5a9b8c9aa6"
 IMPORT = re.compile(r"^import (static )?([\w.*]+);[ \t]*$", re.M)
 ANNOTATION = re.compile(r"@((?:[a-z]\w*\.)+[A-Z]\w*(?:\.[A-Z]\w*)*)")
+QUALIFIED_TYPE = re.compile(r"(?<![\w.$])(?:[a-z]\w*\.)+[A-Z]\w*")
+
+
+def normalize_types(text):
+    """代码中的类型使用显式import；保留字符串、反射类名、注释及嵌套类型作用域。"""
+    from check_architecture import mask_java
+    masked = mask_java(text)
+    declarations_ranges = list(re.finditer(
+        r'\b(?:import\s+(?:static\s+)?[\w.*]+|package\s+[\w.]+)\s*;', masked))
+    imports = {match.group(2).split('.')[-1]: match.group(2)
+               for match in re.finditer(r'\bimport\s+(static\s+)?([\w.*]+)\s*;', masked)
+               if not match.group(1)}
+    declarations = set(re.findall(r'\b(?:class|record|interface|enum)\s+(\w+)', masked))
+    additions = set()
+    edits = []
+    for match in QUALIFIED_TYPE.finditer(masked):
+        if any(declaration.start() <= match.start() < declaration.end()
+               for declaration in declarations_ranges):
+            continue
+        qualified = match.group()
+        simple = qualified.rsplit('.', 1)[1]
+        if simple in declarations or (simple in imports and imports[simple] != qualified):
+            raise ValueError(f'类型同名冲突：{qualified}')
+        imports[simple] = qualified
+        line = 'import ' + qualified + ';'
+        if not qualified.startswith('java.lang.') and line not in text:
+            additions.add(line)
+        edits.append((match.start(), match.end(), simple))
+    for start, end, value in reversed(edits):
+        text = text[:start] + value + text[end:]
+    if additions:
+        package = re.search(r'\bpackage\s+[\w.]+\s*;', masked)
+        if package is None:
+            raise ValueError('缺少package声明')
+        text = text[:package.end()] + '\n\n' + '\n'.join(sorted(additions)) + text[package.end():]
+    return text
 
 
 def normalize_annotations(text):
@@ -97,7 +133,7 @@ def main():
     imports_changed = []
     for path in files:
         text = path.read_text()
-        ordered = sort_imports(normalize_annotations(text))
+        ordered = sort_imports(normalize_types(normalize_annotations(text)))
         if text != ordered:
             imports_changed.append(path)
             if args.write:

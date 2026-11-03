@@ -2,6 +2,7 @@ package com.lemnt.product.domain.product.gateway;
 
 import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.product.domain.product.model.CommentFilter;
+import com.lemnt.product.domain.product.model.CommentOrderLink;
 import com.lemnt.product.domain.product.model.ProductComment;
 import com.lemnt.product.domain.product.model.PublicCommentFilter;
 
@@ -17,7 +18,7 @@ public interface ProductCommentGateway {
     ProductComment findByOrderItem(Long orderItemId);
 
     /** 条件绑定交易确认的旧行，不能改写已有不同归属。 */
-    boolean bindOrderItem(com.lemnt.product.domain.product.model.CommentOrderLink value);
+    boolean bindOrderItem(CommentOrderLink value);
 
     /** 只查询尚未绑定ID的旧订单SKU评价，绑定前由交易核验SKU唯一性。 */
     ProductComment findByOrderSku(String orderNo, Long skuId);

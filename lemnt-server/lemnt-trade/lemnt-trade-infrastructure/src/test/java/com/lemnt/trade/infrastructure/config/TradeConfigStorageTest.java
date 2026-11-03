@@ -8,6 +8,8 @@ import com.alibaba.fastjson2.JSON;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -22,21 +24,21 @@ class TradeConfigStorageTest {
         var value =
                 new TradeConfig(
                         1L,
-                        java.util.List.of("原因"),
-                        java.util.List.of(),
+                        List.of("原因"),
+                        List.of(),
                         false,
                         1000,
                         true,
                         true,
                         1,
                         2,
-                        java.util.List.of(),
+                        List.of(),
                         10,
                         5,
                         100,
                         2,
                         3,
-                        java.util.List.of(1));
+                        List.of(1));
         when(remote.getConfig("trade.config")).thenReturn(JSON.toJSONString(value));
         assertEquals(value, gateway.get());
         gateway.update(value);

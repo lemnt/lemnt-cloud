@@ -2,6 +2,7 @@ package com.lemnt.promotion.adapter.web.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,4 +16,4 @@ public record DiyTemplateRes(
         @Schema(description = "备注") String remark,
         @Schema(description = "预览图") List<String> previewPicUrls,
         @Schema(description = "JSON 属性") String property)
-        implements java.io.Serializable {}
+        implements Serializable {}

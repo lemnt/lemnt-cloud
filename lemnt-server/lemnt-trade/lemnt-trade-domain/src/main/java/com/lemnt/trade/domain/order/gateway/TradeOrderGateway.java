@@ -2,10 +2,12 @@ package com.lemnt.trade.domain.order.gateway;
 
 import com.lemnt.trade.domain.fulfillment.model.FulfillmentFilter;
 import com.lemnt.trade.domain.fulfillment.model.OrderPage;
+import com.lemnt.trade.domain.order.model.OrderCommentState;
 import com.lemnt.trade.domain.order.model.OrderStatusCount;
 import com.lemnt.trade.domain.order.model.OrderTotal;
 import com.lemnt.trade.domain.order.model.TradeOrder;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public interface TradeOrderGateway {
 
     /** 后台调价：仅把原金额改为新金额，调用方持有订单行锁。 */
     boolean updateTotalAmount(
-            String orderNo, java.math.BigDecimal expected, java.math.BigDecimal next);
+            String orderNo, BigDecimal expected, BigDecimal next);
 
     /** 后台改址：仅未发货快递单可更新收件快照。 */
     boolean updateAddress(
@@ -78,7 +80,7 @@ public interface TradeOrderGateway {
     List<TradeOrder> findPendingPaymentCreatedBefore(LocalDateTime deadline, int limit);
 
     /** 调用方已持有订单锁，保存真实评价汇总状态。 */
-    boolean updateCommentState(com.lemnt.trade.domain.order.model.OrderCommentState value);
+    boolean updateCommentState(OrderCommentState value);
 
     /** 保存订单主体，明细由应用层编排。 */
     TradeOrder saveHeader(TradeOrder order);

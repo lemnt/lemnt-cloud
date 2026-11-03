@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -24,4 +25,4 @@ public record BargainActivityCreateReq(
         @Schema(description = "总限购数量") @NotNull Integer totalLimitCount,
         @Schema(description = "单次随机最小砍价") @NotNull BigDecimal randomMinPrice,
         @Schema(description = "单次随机最大砍价") @NotNull BigDecimal randomMaxPrice)
-        implements java.io.Serializable {}
+        implements Serializable {}

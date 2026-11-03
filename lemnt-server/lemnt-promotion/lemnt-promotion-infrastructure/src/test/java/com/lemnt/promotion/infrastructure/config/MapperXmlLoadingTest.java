@@ -1,6 +1,6 @@
 package com.lemnt.promotion.infrastructure.config;
 
-import com.lemnt.promotion.infrastructure.product.mapper.ProductSkuMapper;
+import com.lemnt.promotion.infrastructure.coupon.mapper.CouponMapper;
 
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
@@ -32,22 +32,8 @@ class MapperXmlLoadingTest {
                         () -> "未加载 Mapper XML: " + mapper.getName() + "." + method.getName());
             }
         }
-        assertTrue(configuration.hasStatement(ProductSkuMapper.class.getName() + ".selectById"));
-        assertTrue(configuration.hasStatement(ProductSkuMapper.class.getName() + ".reserveStock"));
-        var productResult =
-                configuration
-                        .getMappedStatement(ProductSkuMapper.class.getName() + ".lockById")
-                        .getResultMaps()
-                        .get(0);
-        assertFalse(productResult.getAutoMapping());
-        assertTrue(
-                productResult.getPropertyResultMappings().stream()
-                        .anyMatch(
-                                mapping ->
-                                        "productCode".equals(mapping.getProperty())
-                                                && "product_code".equals(mapping.getColumn())));
-        var lock = configuration.getMappedStatement(ProductSkuMapper.class.getName() + ".lockById");
-        assertFalse(lock.isUseCache());
-        assertTrue(lock.isFlushCacheRequired());
+        assertTrue(configuration.hasStatement(CouponMapper.class.getName()+".selectById"));
+        var lock=configuration.getMappedStatement(CouponMapper.class.getName()+".lockCouponRow");
+        assertFalse(lock.isUseCache());assertTrue(lock.isFlushCacheRequired());
     }
 }

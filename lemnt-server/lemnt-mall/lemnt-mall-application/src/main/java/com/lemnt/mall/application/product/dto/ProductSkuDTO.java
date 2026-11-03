@@ -36,5 +36,5 @@ public record ProductSkuDTO(
 
     /** 编号与名称保持一一对应。 */
     public record Spec(Long specId, String specName, Long specValueId, String specValueName)
-            implements java.io.Serializable {}
+            implements Serializable {}
 }

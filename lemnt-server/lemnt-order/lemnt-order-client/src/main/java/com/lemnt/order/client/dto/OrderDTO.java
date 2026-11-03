@@ -1,5 +1,7 @@
 package com.lemnt.order.client.dto;
 
+import com.lemnt.order.client.dto.OrderPromotionDTO;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -30,7 +32,7 @@ public record OrderDTO(
         BigDecimal adjustmentAmount,
         String pricingSnapshotStatus,
         Integer pricingSnapshotVersion,
-        java.util.List<com.lemnt.order.client.dto.OrderPromotionDTO> promotions)
+        List<OrderPromotionDTO> promotions)
         implements Serializable {
     /** 兼容未记录本批优惠与退款元数据的历史快照。 */
     public OrderDTO(
@@ -68,7 +70,7 @@ public record OrderDTO(
                 null,
                 "LEGACY_PARTIAL",
                 0,
-                java.util.List.of());
+                List.of());
     }
 
     /** 兼容无营销赠券的订单快照。 */
@@ -133,7 +135,7 @@ public record OrderDTO(
      * 创建交易订单实例。
      */
     public OrderDTO {
-        promotions = promotions == null ? java.util.List.of() : java.util.List.copyOf(promotions);
+        promotions = promotions == null ? List.of() : List.copyOf(promotions);
         items = items == null ? List.of() : List.copyOf(items);
         giveCouponTemplateCounts =
                 giveCouponTemplateCounts == null ? Map.of() : Map.copyOf(giveCouponTemplateCounts);

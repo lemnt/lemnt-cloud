@@ -1,5 +1,6 @@
 package com.lemnt.mall.client;
 
+import com.lemnt.mall.client.bo.RefundBenefitsBo;
 import com.lemnt.mall.client.bo.RefundStockBo;
 
 import java.math.BigDecimal;
@@ -36,7 +37,7 @@ public interface CheckoutLifecycleClient {
             String orderNo, String refundNo, List<RefundStockBo> items, BigDecimal refundAmount);
 
     /** 新版商品行及明确权益方案，未升级消费者必须失败并保留重试。 */
-    default void refunded(com.lemnt.mall.client.bo.RefundBenefitsBo plan) {
+    default void refunded(RefundBenefitsBo plan) {
         throw new UnsupportedOperationException("未升级冻结权益协议");
     }
 }

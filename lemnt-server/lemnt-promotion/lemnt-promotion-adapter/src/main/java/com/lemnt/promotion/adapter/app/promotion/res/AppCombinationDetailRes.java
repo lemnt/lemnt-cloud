@@ -2,6 +2,7 @@ package com.lemnt.promotion.adapter.app.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,11 +21,11 @@ public record AppCombinationDetailRes(
         @Schema(description = "总限购数量") Integer totalLimitCount,
         @Schema(description = "单次限购数量") Integer singleLimitCount,
         @Schema(description = "拼团商品") List<Product> products)
-        implements java.io.Serializable {
+        implements Serializable {
     /** 拼团商品。 */
     @Schema(description = "活动商品")
     public record Product(
             @Schema(description = "商品SKU编号") Long skuId,
             @Schema(description = "拼团价，单位元") BigDecimal combinationPrice)
-            implements java.io.Serializable {}
+            implements Serializable {}
 }

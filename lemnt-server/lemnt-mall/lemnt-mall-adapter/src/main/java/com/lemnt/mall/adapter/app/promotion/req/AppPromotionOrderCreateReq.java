@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import java.io.Serializable;
 
 /** App 活动下单请求，活动/记录编号按接口类型使用。 */
 @Schema(description = "App 活动下单请求")
@@ -19,4 +20,4 @@ public record AppPromotionOrderCreateReq(
         @Schema(description = "收货地址编号，不传表示不使用配送快照") Long addressId,
         @Schema(description = "客户端请求编号，用于幂等重试") @NotBlank @Pattern(regexp = "[A-Za-z0-9_-]{1,64}")
                 String requestNo)
-        implements java.io.Serializable {}
+        implements Serializable {}

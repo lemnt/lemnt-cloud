@@ -1,5 +1,6 @@
 package com.lemnt.mall.domain.promotion.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public record SeckillActivity(
         Integer singleLimitCount,
         Integer stock,
         Integer totalStock)
-        implements java.io.Serializable {
+        implements Serializable {
     public SeckillActivity {
         configIds = configIds == null ? List.of() : List.copyOf(configIds);
     }

@@ -7,6 +7,7 @@ import com.lemnt.trade.application.fulfillment.qry.MemberOrderPageQry;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
 import com.lemnt.trade.domain.fulfillment.model.FulfillmentFilter;
 import com.lemnt.trade.domain.order.gateway.TradeOrderGateway;
+import com.lemnt.trade.domain.order.model.TradeOrder;
 import com.lemnt.trade.domain.order.model.TradeOrderItem;
 
 import org.springframework.stereotype.Component;
@@ -95,7 +96,7 @@ public class MemberOrderPageQueryExe {
 
     /** 已支付自提单在订单中心展示为待自提，内部状态仍沿用 PAID。 */
     private String displayStatus(
-            String status, com.lemnt.trade.domain.order.model.TradeOrder order) {
+            String status, TradeOrder order) {
         return "PAID".equals(status)
                         && order != null
                         && order.delivery() != null

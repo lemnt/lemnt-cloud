@@ -1,6 +1,7 @@
 package com.lemnt.system.adapter.web.auth;
 
 import com.lemnt.common.core.domain.R;
+import com.lemnt.common.core.utils.StringUtils;
 import com.lemnt.common.log.annotation.Log;
 import com.lemnt.common.log.enums.BusinessType;
 import com.lemnt.common.oss.service.OssFileService;
@@ -63,7 +64,7 @@ public class UserProfileController {
             throws IOException {
         String fileUrl = ossFileService.uploadFile(file);
         String oldAvatar = userAvatarUpdateCmdExe.execute(fileUrl);
-        if (com.lemnt.common.core.utils.StringUtils.isNotBlank(oldAvatar)) {
+        if (StringUtils.isNotBlank(oldAvatar)) {
             ossFileService.deleteFile(oldAvatar);
         }
         SecurityUser securityUser = tokenService.getSecurityUser();

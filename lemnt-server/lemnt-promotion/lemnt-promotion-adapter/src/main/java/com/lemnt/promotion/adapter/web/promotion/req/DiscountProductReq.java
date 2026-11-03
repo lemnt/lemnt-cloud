@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /** 折扣商品请求。 */
@@ -17,4 +18,4 @@ public record DiscountProductReq(
                 String discountType,
         @Schema(description = "折扣基点，8000 表示八折") Integer discountPercent,
         @Schema(description = "优惠金额，单位元") BigDecimal discountPrice)
-        implements java.io.Serializable {}
+        implements Serializable {}

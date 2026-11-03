@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 /** mall_product_browse_history持久化，仅通过BaseMapper与Lambda读写。 */
 @Component
 @RequiredArgsConstructor
@@ -41,7 +43,7 @@ public class ProductBrowseHistoryGatewayImpl implements ProductBrowseHistoryGate
     }
 
     @Override
-    public void hide(Long userId, java.util.List<Long> spuIds) {
+    public void hide(Long userId, List<Long> spuIds) {
         mapper.update(
                 null,
                 Wrappers.lambdaUpdate(ProductBrowseHistoryDO.class)

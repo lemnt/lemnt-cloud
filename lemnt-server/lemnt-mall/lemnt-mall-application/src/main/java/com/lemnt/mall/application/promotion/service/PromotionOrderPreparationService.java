@@ -2,6 +2,7 @@ package com.lemnt.mall.application.promotion.service;
 
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.mall.application.promotion.cmd.PromotionOrderCmd;
+import com.lemnt.mall.application.promotion.cmd.PromotionOrderLineCmd;
 import com.lemnt.mall.application.promotion.dto.PreparedPromotionOrder;
 import com.lemnt.mall.application.promotion.dto.PromotionOrderDraft;
 import com.lemnt.mall.application.settlement.dto.SettlementPreparationResult;
@@ -117,7 +118,7 @@ public class PromotionOrderPreparationService {
 
     private boolean sameLines(
             String orderNo,
-            java.util.List<com.lemnt.mall.application.promotion.cmd.PromotionOrderLineCmd> lines) {
+            List<PromotionOrderLineCmd> lines) {
         var saved = promotionOrderItems.byOrderNo(orderNo);
         if (saved.size() != lines.size()) {
             return false;

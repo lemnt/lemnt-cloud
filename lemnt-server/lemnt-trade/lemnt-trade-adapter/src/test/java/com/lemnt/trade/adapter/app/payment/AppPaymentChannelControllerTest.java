@@ -1,5 +1,6 @@
 package com.lemnt.trade.adapter.app.payment;
 
+import com.lemnt.common.security.context.SecurityContextHolder;
 import com.lemnt.common.start.config.JacksonConfig;
 import com.lemnt.trade.application.payment.dto.PaymentChannelDTO;
 import com.lemnt.trade.application.payment.executor.MemberPaymentChannelQueryExe;
@@ -28,7 +29,7 @@ class AppPaymentChannelControllerTest {
 
     @AfterEach
     void clearIdentity() {
-        com.lemnt.common.security.context.SecurityContextHolder.remove();
+        SecurityContextHolder.remove();
     }
 
     @Test
@@ -49,7 +50,7 @@ class AppPaymentChannelControllerTest {
 
     @Test
     void sandboxPayIsDisabledWhenAdapterIsOff() throws Exception {
-        com.lemnt.common.security.context.SecurityContextHolder.setUserId("7");
+        SecurityContextHolder.setUserId("7");
         @SuppressWarnings("unchecked")
         ObjectProvider<SandboxPaymentCmdExe> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(null);
@@ -64,7 +65,7 @@ class AppPaymentChannelControllerTest {
 
     @Test
     void sandboxPayUsesSessionMember() throws Exception {
-        com.lemnt.common.security.context.SecurityContextHolder.setUserId("7");
+        SecurityContextHolder.setUserId("7");
         var exe = mock(SandboxPaymentCmdExe.class);
         when(exe.execute(7L, "PAY1")).thenReturn("PAY1");
         @SuppressWarnings("unchecked")

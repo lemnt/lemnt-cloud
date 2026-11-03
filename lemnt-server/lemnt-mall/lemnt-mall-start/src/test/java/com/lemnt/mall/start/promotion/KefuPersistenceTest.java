@@ -1,5 +1,6 @@
 package com.lemnt.mall.start.promotion;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
 import com.lemnt.mall.application.promotion.cmd.AppKefuMessageSendCmd;
 import com.lemnt.mall.application.promotion.cmd.KefuConversationPinCmd;
@@ -143,18 +144,18 @@ class KefuPersistenceTest {
     @Test
     void invalidContentAndImageUrlAreRejected() {
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         service.appSend(
                                 new AppKefuMessageSendCmd(1L, " ", KefuChatService.CONTENT_TEXT)));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         service.appSend(
                                 new AppKefuMessageSendCmd(
                                         1L, "ftp://x", KefuChatService.CONTENT_IMAGE)));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> service.appSend(new AppKefuMessageSendCmd(1L, "x", 9)));
     }
 }

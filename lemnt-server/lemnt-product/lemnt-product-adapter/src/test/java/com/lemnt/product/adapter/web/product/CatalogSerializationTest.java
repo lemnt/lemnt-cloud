@@ -1,11 +1,13 @@
 package com.lemnt.product.adapter.web.product;
 
 import com.lemnt.common.start.config.JacksonConfig;
+import com.lemnt.product.adapter.web.product.req.ProductSkuCreateReq;
 import com.lemnt.product.adapter.web.product.res.ProductSkuRes;
 
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.json.JsonMapper;
 
+import jakarta.validation.Validation;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -46,7 +48,7 @@ class CatalogSerializationTest {
                 {"code":"SKU","name":"商品","price":"10.00","stock":1,
                  "specs":[{"specId":"9223372036854775807","specValueId":"9223372036854775806"}]}
                 """,
-                        com.lemnt.product.adapter.web.product.req.ProductSkuCreateReq.class);
+                        ProductSkuCreateReq.class);
         assertEquals(Long.MAX_VALUE - 1, request.specs().get(0).specValueId());
         var value =
                 new ProductSkuRes(
@@ -65,14 +67,14 @@ class CatalogSerializationTest {
                         null);
         var json = mapper.readTree(mapper.writeValueAsString(value));
         assertEquals("9223372036854775806", json.get("specs").get(0).get("specValueId").asString());
-        try (var factory = jakarta.validation.Validation.buildDefaultValidatorFactory()) {
+        try (var factory = Validation.buildDefaultValidatorFactory()) {
             assertTrue(factory.getValidator().validate(request).isEmpty());
             var invalid =
                     mapper.readValue(
                             """
                     {"code":"SKU","name":"商品","price":"10.00","stock":1,"specs":[{"specId":0,"specValueId":-1}]}
                     """,
-                            com.lemnt.product.adapter.web.product.req.ProductSkuCreateReq.class);
+                            ProductSkuCreateReq.class);
             assertFalse(factory.getValidator().validate(invalid).isEmpty());
         }
     }

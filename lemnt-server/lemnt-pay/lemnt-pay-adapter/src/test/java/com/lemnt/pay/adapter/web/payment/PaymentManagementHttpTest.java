@@ -1,6 +1,7 @@
 package com.lemnt.pay.adapter.web.payment;
 
 import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.common.security.context.SecurityContextHolder;
 import com.lemnt.common.start.config.JacksonConfig;
 import com.lemnt.pay.adapter.web.paymentrefund.PaymentRefundController;
 import com.lemnt.pay.application.payment.dto.PaymentDTO;
@@ -36,7 +37,7 @@ class PaymentManagementHttpTest {
 
     @AfterEach
     void clearIdentity() {
-        com.lemnt.common.security.context.SecurityContextHolder.remove();
+        SecurityContextHolder.remove();
     }
 
     @Test

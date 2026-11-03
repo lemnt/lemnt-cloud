@@ -3,8 +3,10 @@ package com.lemnt.trade.infrastructure.promotion.gateway;
 import com.lemnt.trade.domain.order.model.TradeOrderItem;
 import com.lemnt.trade.domain.promotion.gateway.OrderPromotionGateway;
 import com.lemnt.trade.domain.promotion.model.*;
+import com.lemnt.trade.domain.promotion.model.OrderGiftAdjustment;
 import com.lemnt.trade.infrastructure.order.dataobject.TradeOrderItemDO;
 import com.lemnt.trade.infrastructure.order.mapper.TradeOrderItemMapper;
+import com.lemnt.trade.infrastructure.order.mapper.TradeOrderMapper;
 import com.lemnt.trade.infrastructure.promotion.converter.OrderPromotionConverter;
 import com.lemnt.trade.infrastructure.promotion.dataobject.*;
 import com.lemnt.trade.infrastructure.promotion.mapper.*;
@@ -25,7 +27,7 @@ public class OrderPromotionGatewayImpl implements OrderPromotionGateway {
     private final OrderItemPromotionMapper allocations;
     private final OrderPromotionRefundMapper refunds;
     private final TradeOrderItemMapper orderItems;
-    private final com.lemnt.trade.infrastructure.order.mapper.TradeOrderMapper orders;
+    private final TradeOrderMapper orders;
 
     @Override
     public void save(Long orderId, List<OrderPromotion> values, List<TradeOrderItem> items) {
@@ -124,7 +126,7 @@ public class OrderPromotionGatewayImpl implements OrderPromotionGateway {
     }
 
     @Override
-    public void updateGift(com.lemnt.trade.domain.promotion.model.OrderGiftAdjustment value) {
+    public void updateGift(OrderGiftAdjustment value) {
         if (orders.update(
                                 null,
                                 Wrappers

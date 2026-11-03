@@ -1,5 +1,6 @@
 package com.lemnt.mall.start.product;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.mall.application.promotion.cmd.BargainActivityCreateCmd;
 import com.lemnt.mall.application.promotion.service.BargainActivityManagementService;
 import com.lemnt.mall.application.promotion.service.BargainRecordService;
@@ -76,10 +77,10 @@ class BargainPersistenceTest {
     void selfHelpDuplicateHelpAndSecondInProgressAreRejected() {
         var id = records.create(1L, activityId);
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class, () -> records.help(1L, id));
+                ServiceException.class, () -> records.help(1L, id));
         records.help(2L, id);
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class, () -> records.help(2L, id));
+                ServiceException.class, () -> records.help(2L, id));
         var other = f.create("BARGAIN2", f.draft("BLUE", 10));
         var second =
                 activities.create(
@@ -99,7 +100,7 @@ class BargainPersistenceTest {
                                 new BigDecimal("1.00")));
         records.create(3L, second);
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> records.create(3L, second));
     }
 
@@ -137,7 +138,7 @@ class BargainPersistenceTest {
         activities.increaseStock(activityId, 2);
         assertEquals(5, activities.detail(activityId).stock());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> activities.decreaseStock(activityId, 6));
     }
 }

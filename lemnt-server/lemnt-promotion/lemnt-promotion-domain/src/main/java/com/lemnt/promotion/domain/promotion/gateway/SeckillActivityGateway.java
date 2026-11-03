@@ -4,6 +4,7 @@ import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.promotion.domain.promotion.model.SeckillActivity;
 import com.lemnt.promotion.domain.promotion.model.SeckillFilter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /** 秒杀活动存储契约。 */
@@ -20,10 +21,10 @@ public interface SeckillActivityGateway {
 
     /** App 分页，只返回开启且活动时间覆盖当前时刻的活动。 */
     PageResult<SeckillActivity> appPage(
-            Long configId, java.time.LocalDateTime now, int pageNum, int pageSize);
+            Long configId, LocalDateTime now, int pageNum, int pageSize);
 
     /** 指定时段当前正在进行的活动。 */
-    List<SeckillActivity> byConfigAndNow(Long configId, java.time.LocalDateTime now);
+    List<SeckillActivity> byConfigAndNow(Long configId, LocalDateTime now);
 
     List<SeckillActivity> enabled();
 

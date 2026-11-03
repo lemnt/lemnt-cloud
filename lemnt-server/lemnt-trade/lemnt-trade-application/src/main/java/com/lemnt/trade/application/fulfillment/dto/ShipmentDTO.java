@@ -1,5 +1,6 @@
 package com.lemnt.trade.application.fulfillment.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -15,4 +16,4 @@ public record ShipmentDTO(
         String address,
         LocalDateTime shippedAt,
         LocalDateTime receivedAt)
-        implements java.io.Serializable {}
+        implements Serializable {}

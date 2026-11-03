@@ -2,6 +2,8 @@ package com.lemnt.mall.start.product;
 
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.security.context.SecurityContextHolder;
+import com.lemnt.common.security.handler.GlobalExceptionHandler;
+import com.lemnt.common.start.config.JacksonConfig;
 import com.lemnt.mall.application.product.cmd.ProductBrowseHistoryCreateCmd;
 import com.lemnt.mall.application.product.cmd.ProductFavoriteCreateCmd;
 import com.lemnt.mall.application.product.qry.ProductBrowseHistoryPageQry;
@@ -9,15 +11,29 @@ import com.lemnt.mall.application.product.qry.ProductFavoritePageQry;
 import com.lemnt.mall.application.product.service.ProductBrowseHistoryService;
 import com.lemnt.mall.application.product.service.ProductFavoriteService;
 
+import com.baomidou.lock.LockTemplate;
+import com.baomidou.lock.executor.RedissonLockExecutor;
+import com.baomidou.lock.spring.boot.autoconfigure.Lock4jProperties;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+import org.redisson.api.RLock;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.databind.json.JsonMapper;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -36,7 +52,7 @@ class ProductInteractionPersistenceTest {
         f.setup();
         ScriptUtils.executeSqlScript(
                 f.schemaConnection, new ClassPathResource("mall-sql/lemnt_mall.sql"));
-        f.components.register(com.baomidou.lock.LockTemplate.class, memberLocks());
+        f.components.register(LockTemplate.class, memberLocks());
         favorites = f.components.get(ProductFavoriteService.class);
         history = f.components.get(ProductBrowseHistoryService.class);
         spu = f.create("INTERACTION", f.draft("红色", 3)).id();
@@ -63,7 +79,7 @@ class ProductInteractionPersistenceTest {
         var page = favorites.page(new ProductFavoritePageQry(1L, null, 1, 20));
         assertEquals(1, page.getTotal());
         assertEquals("goods", page.getRecords().get(0).spuName());
-        assertEquals(new java.math.BigDecimal("10.00"), page.getRecords().get(0).price());
+        assertEquals(new BigDecimal("10.00"), page.getRecords().get(0).price());
         assertTrue(favorites.remove(1L, spu));
         assertNotEquals(first, favorites.create(new ProductFavoriteCreateCmd(1L, spu)));
         assertEquals(1, favorites.count(1L));
@@ -74,7 +90,7 @@ class ProductInteractionPersistenceTest {
         var pool = Executors.newFixedThreadPool(6);
         try {
             var tasks =
-                    java.util.stream.IntStream.range(0, 6)
+                    IntStream.range(0, 6)
                             .mapToObj(
                                     i ->
                                             pool.submit(
@@ -168,7 +184,7 @@ class ProductInteractionPersistenceTest {
         var pool = Executors.newFixedThreadPool(8);
         try {
             var tasks =
-                    java.util.stream.LongStream.range(2000, 2030)
+                    LongStream.range(2000, 2030)
                             .mapToObj(
                                     id ->
                                             pool.submit(
@@ -192,10 +208,10 @@ class ProductInteractionPersistenceTest {
     @Test
     void realControllerIgnoresForgedIdentityAndKeepsHiddenRowsPrivate() throws Exception {
         SecurityContextHolder.setUserId("1");
-        var mapperBuilder = tools.jackson.databind.json.JsonMapper.builder();
-        new com.lemnt.common.start.config.JacksonConfig().customizer().customize(mapperBuilder);
+        var mapperBuilder = JsonMapper.builder();
+        new JacksonConfig().customizer().customize(mapperBuilder);
         var mvc =
-                org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(
+                MockMvcBuilders.standaloneSetup(
                                 f.components.get(
                                         com.lemnt.mall.adapter.app.product
                                                 .AppProductFavoriteController.class),
@@ -203,14 +219,14 @@ class ProductInteractionPersistenceTest {
                                         com.lemnt.mall.adapter.app.product
                                                 .AppProductBrowseHistoryController.class))
                         .setControllerAdvice(
-                                new com.lemnt.common.security.handler.GlobalExceptionHandler())
+                                new GlobalExceptionHandler())
                         .setMessageConverters(
                                 new org.springframework.http.converter.json
                                         .JacksonJsonHttpMessageConverter(mapperBuilder.build()))
                         .build();
         mvc.perform(
                         post("/mall/app/favorites")
-                                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"userId\":2,\"spuId\":" + spu + "}"))
                 .andExpect(status().isOk());
         assertEquals(1, favorites.count(1L));
@@ -221,7 +237,7 @@ class ProductInteractionPersistenceTest {
                 .andExpect(jsonPath("$.rows[0].userId").doesNotExist());
         mvc.perform(
                         delete("/mall/app/browse-history")
-                                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"spuIds\":[]}"))
                 .andExpect(status().is(422));
         history.create(new ProductBrowseHistoryCreateCmd(1L, spu));
@@ -233,37 +249,37 @@ class ProductInteractionPersistenceTest {
         mvc.perform(get("/mall/app/favorites")).andExpect(status().isUnauthorized());
     }
 
-    private com.baomidou.lock.LockTemplate memberLocks() throws Exception {
+    private LockTemplate memberLocks() throws Exception {
         var locks =
-                new java.util.concurrent.ConcurrentHashMap<
-                        String, java.util.concurrent.locks.ReentrantLock>();
+                new ConcurrentHashMap<
+                        String, ReentrantLock>();
         var executor =
-                org.mockito.Mockito.mock(com.baomidou.lock.executor.RedissonLockExecutor.class);
-        org.mockito.Mockito.when(executor.renewal()).thenReturn(true);
-        org.mockito.Mockito.when(
+                Mockito.mock(RedissonLockExecutor.class);
+        Mockito.when(executor.renewal()).thenReturn(true);
+        Mockito.when(
                         executor.acquire(
-                                org.mockito.ArgumentMatchers.anyString(),
-                                org.mockito.ArgumentMatchers.anyString(),
-                                org.mockito.ArgumentMatchers.anyLong(),
-                                org.mockito.ArgumentMatchers.anyLong()))
+                                ArgumentMatchers.anyString(),
+                                ArgumentMatchers.anyString(),
+                                ArgumentMatchers.anyLong(),
+                                ArgumentMatchers.anyLong()))
                 .thenAnswer(
                         invocation -> {
                             var lock =
                                     locks.computeIfAbsent(
                                             invocation.getArgument(0),
-                                            key -> new java.util.concurrent.locks.ReentrantLock());
-                            if (!lock.tryLock(3, java.util.concurrent.TimeUnit.SECONDS)) {
+                                            key -> new ReentrantLock());
+                            if (!lock.tryLock(3, TimeUnit.SECONDS)) {
                                 return null;
                             }
-                            var instance = org.mockito.Mockito.mock(org.redisson.api.RLock.class);
+                            var instance = Mockito.mock(RLock.class);
                             return instance;
                         });
         // LockTemplate 调用执行器解锁；测试替身显式释放对应本地锁。
-        org.mockito.Mockito.when(
+        Mockito.when(
                         executor.releaseLock(
-                                org.mockito.ArgumentMatchers.anyString(),
-                                org.mockito.ArgumentMatchers.anyString(),
-                                org.mockito.ArgumentMatchers.any()))
+                                ArgumentMatchers.anyString(),
+                                ArgumentMatchers.anyString(),
+                                ArgumentMatchers.any()))
                 .thenAnswer(
                         invocation -> {
                             var lock = locks.get(invocation.<String>getArgument(0));
@@ -273,11 +289,11 @@ class ProductInteractionPersistenceTest {
                             lock.unlock();
                             return true;
                         });
-        var properties = new com.baomidou.lock.spring.boot.autoconfigure.Lock4jProperties();
-        properties.setPrimaryExecutor(com.baomidou.lock.executor.RedissonLockExecutor.class);
-        var template = new com.baomidou.lock.LockTemplate();
+        var properties = new Lock4jProperties();
+        properties.setPrimaryExecutor(RedissonLockExecutor.class);
+        var template = new LockTemplate();
         template.setProperties(properties);
-        template.setExecutors(java.util.List.of(executor));
+        template.setExecutors(List.of(executor));
         template.afterPropertiesSet();
         return template;
     }

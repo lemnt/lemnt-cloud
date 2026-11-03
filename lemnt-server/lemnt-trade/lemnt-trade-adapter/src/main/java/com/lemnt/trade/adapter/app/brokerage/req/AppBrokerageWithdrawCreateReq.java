@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /** 会员佣金提现申请请求。 */
@@ -16,4 +17,4 @@ public record AppBrokerageWithdrawCreateReq(
         @Schema(description = "收款码地址") @Size(max = 500) String qrCodeUrl,
         @Schema(description = "银行名称") @Size(max = 100) String bankName,
         @Schema(description = "开户地址") @Size(max = 255) String bankAddress)
-        implements java.io.Serializable {}
+        implements Serializable {}

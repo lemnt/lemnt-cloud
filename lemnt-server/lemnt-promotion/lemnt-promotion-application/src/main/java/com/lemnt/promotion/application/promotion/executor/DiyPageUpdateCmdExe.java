@@ -1,5 +1,6 @@
 package com.lemnt.promotion.application.promotion.executor;
 
+import com.lemnt.promotion.application.promotion.cmd.DiyPageSaveCmd;
 import com.lemnt.promotion.application.promotion.service.DiyDecorationService;
 
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class DiyPageUpdateCmdExe {
     private final DiyDecorationService service;
 
-    public Boolean execute(com.lemnt.promotion.application.promotion.cmd.DiyPageSaveCmd cmd) {
+    public Boolean execute(DiyPageSaveCmd cmd) {
         return service.updatePage(cmd);
     }
 }

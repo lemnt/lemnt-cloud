@@ -1,9 +1,14 @@
 package com.lemnt.mall.application.settlement;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.mall.application.settlement.service.SettlementDeliveryService;
+import com.lemnt.mall.domain.member.gateway.MemberDeliveryAddressGateway;
+import com.lemnt.mall.domain.member.gateway.MemberTradeGateway;
+import com.lemnt.mall.domain.settlement.gateway.DeliveryPriceGateway;
 import com.lemnt.mall.domain.settlement.model.SettlementDelivery;
 import com.lemnt.mall.domain.settlement.model.SettlementItem;
 import com.lemnt.mall.domain.settlement.model.SettlementQuote;
+import com.lemnt.mall.domain.settlement.model.SettlementRules;
 
 import org.junit.jupiter.api.Test;
 
@@ -17,9 +22,9 @@ import static org.mockito.Mockito.mock;
 class PickUpSettlementTest {
     final SettlementDeliveryService service =
             new SettlementDeliveryService(
-                    mock(com.lemnt.mall.domain.member.gateway.MemberDeliveryAddressGateway.class),
-                    mock(com.lemnt.mall.domain.settlement.gateway.DeliveryPriceGateway.class),
-                    mock(com.lemnt.mall.domain.member.gateway.MemberTradeGateway.class));
+                    mock(MemberDeliveryAddressGateway.class),
+                    mock(DeliveryPriceGateway.class),
+                    mock(MemberTradeGateway.class));
     final SettlementItem item =
             new SettlementItem(
                     5L,
@@ -66,7 +71,7 @@ class PickUpSettlementTest {
                         new BigDecimal("20.00"),
                         null);
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> service.pickUp(quote, null));
     }
 
@@ -80,7 +85,7 @@ class PickUpSettlementTest {
                         new BigDecimal("20.00"),
                         null);
         assertNotNull(
-                com.lemnt.mall.domain.settlement.model.SettlementRules.quoteToken(
+                SettlementRules.quoteToken(
                         service.pickUp(quote, 9L)));
     }
 }

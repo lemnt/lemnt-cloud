@@ -2,6 +2,7 @@ package com.lemnt.mall.adapter.web.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,4 +19,4 @@ public record RewardActivityDetailRes(
         @Schema(description = "ALL 全部、SPU_IDS 指定商品、CATEGORY_IDS 指定分类") String productScope,
         @Schema(description = "适用商品或分类编号集合") List<Long> productScopeValues,
         @Schema(description = "按门槛递增的满减规则") List<RewardRuleRes> rules)
-        implements java.io.Serializable {}
+        implements Serializable {}

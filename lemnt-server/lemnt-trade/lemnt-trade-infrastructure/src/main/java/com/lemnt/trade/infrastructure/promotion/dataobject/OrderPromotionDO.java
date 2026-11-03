@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
+
 /** 订单实际采用的优惠与权益结果持久化对象。 */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -42,10 +44,10 @@ public class OrderPromotionDO extends BaseDO {
     private String ruleSnapshot;
 
     /** 商品优惠金额，单位元，历史未知为NULL。 */
-    private java.math.BigDecimal discountAmount;
+    private BigDecimal discountAmount;
 
     /** 运费优惠金额，单位元，历史未知为NULL。 */
-    private java.math.BigDecimal deliveryDiscountPrice;
+    private BigDecimal deliveryDiscountPrice;
 
     /** 使用积分数量，历史未知为NULL。 */
     private Long usePoint;

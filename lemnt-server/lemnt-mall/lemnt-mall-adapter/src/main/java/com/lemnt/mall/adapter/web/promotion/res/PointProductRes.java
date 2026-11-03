@@ -2,6 +2,7 @@ package com.lemnt.mall.adapter.web.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /** 积分商城活动商品响应。 */
@@ -14,4 +15,4 @@ public record PointProductRes(
         @Schema(description = "所需积分") Integer point,
         @Schema(description = "补差金额") BigDecimal price,
         @Schema(description = "库存") Integer stock)
-        implements java.io.Serializable {}
+        implements Serializable {}

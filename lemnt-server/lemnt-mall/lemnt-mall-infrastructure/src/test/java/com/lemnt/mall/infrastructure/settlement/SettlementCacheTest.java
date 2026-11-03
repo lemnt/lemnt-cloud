@@ -3,19 +3,29 @@ package com.lemnt.mall.infrastructure.settlement;
 import com.lemnt.common.redis.serializer.Fastjson2RedisSerializer;
 import com.lemnt.mall.domain.cart.model.CartReference;
 import com.lemnt.mall.domain.settlement.model.Settlement;
+import com.lemnt.mall.domain.settlement.model.SettlementDelivery;
 import com.lemnt.mall.domain.settlement.model.SettlementItem;
+import com.lemnt.mall.domain.settlement.model.SettlementOrder;
 import com.lemnt.mall.domain.settlement.model.SettlementQuote;
+import com.lemnt.mall.domain.settlement.model.SettlementRecord;
+import com.lemnt.mall.domain.settlement.model.SettlementRules;
+import com.lemnt.mall.domain.settlement.model.SettlementSubmission;
 import com.lemnt.mall.infrastructure.settlement.gateway.SettlementGatewayImpl;
 
+import com.alibaba.fastjson2.JSON;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.script.RedisScript;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -81,7 +91,7 @@ class SettlementCacheTest {
                         null,
                         0L,
                         53L,
-                        new com.lemnt.mall.domain.settlement.model.SettlementDelivery(
+                        new SettlementDelivery(
                                 7L,
                                 1,
                                 "收件人",
@@ -132,17 +142,17 @@ class SettlementCacheTest {
         for (long result : new long[] {1L, 2L}) {
             var redis = mock(StringRedisTemplate.class);
             when(redis.execute(
-                            any(org.springframework.data.redis.core.script.RedisScript.class),
+                            any(RedisScript.class),
                             anyList(),
                             any(Object[].class)))
                     .thenReturn(result);
             var gateway = new SettlementGatewayImpl(redis, new Fastjson2RedisSerializer());
-            org.springframework.transaction.support.TransactionSynchronizationManager
+            TransactionSynchronizationManager
                     .initSynchronization();
             try {
                 gateway.bind(1L, "settlement", "ORDER");
                 var callbacks =
-                        org.springframework.transaction.support.TransactionSynchronizationManager
+                        TransactionSynchronizationManager
                                 .getSynchronizations();
                 assertEquals(result == 1L ? 1 : 0, callbacks.size());
                 callbacks.forEach(
@@ -152,11 +162,11 @@ class SettlementCacheTest {
                                                 .TransactionSynchronization.STATUS_ROLLED_BACK));
                 verify(redis, times(result == 1L ? 2 : 1))
                         .execute(
-                                any(org.springframework.data.redis.core.script.RedisScript.class),
+                                any(RedisScript.class),
                                 anyList(),
                                 any(Object[].class));
             } finally {
-                org.springframework.transaction.support.TransactionSynchronizationManager
+                TransactionSynchronizationManager
                         .clearSynchronization();
             }
         }
@@ -168,10 +178,10 @@ class SettlementCacheTest {
         var value = snapshot();
         var quote = value.quote();
         var order =
-                new com.lemnt.mall.domain.settlement.model.SettlementOrder(
+                new SettlementOrder(
                         null, "ORDER", 1L, quote.payableAmount(), "PENDING", quote.items(), null);
         var record =
-                new com.lemnt.mall.domain.settlement.model.SettlementRecord(
+                new SettlementRecord(
                         "ORDER",
                         1L,
                         "REQUEST",
@@ -182,33 +192,33 @@ class SettlementCacheTest {
                         null,
                         value.references());
         var submission =
-                new com.lemnt.mall.domain.settlement.model.SettlementSubmission(order, record);
+                new SettlementSubmission(order, record);
         var codec = new Fastjson2RedisSerializer();
         assertEquals(
                 submission,
                 codec.deserialize(
                         codec.serialize(submission),
-                        com.lemnt.mall.domain.settlement.model.SettlementSubmission.class));
+                        SettlementSubmission.class));
     }
 
     /** 规格映射顺序不影响令牌，但规格内容、图片和未知状态影响令牌。 */
     @Test
     void tokenIncludesStableAndUnambiguousProductSnapshot() {
-        var first = new java.util.LinkedHashMap<String, String>();
+        var first = new LinkedHashMap<String, String>();
         first.put("颜色", "黑色");
         first.put("尺码", "L");
-        var reverse = new java.util.LinkedHashMap<String, String>();
+        var reverse = new LinkedHashMap<String, String>();
         reverse.put("尺码", "L");
         reverse.put("颜色", "黑色");
         assertEquals(token(first, "old.png"), token(reverse, "old.png"));
         assertNotEquals(token(first, "old.png"), token(first, "new.png"));
-        assertNotEquals(token(null, "old.png"), token(java.util.Map.of(), "old.png"));
+        assertNotEquals(token(null, "old.png"), token(Map.of(), "old.png"));
         assertNotEquals(
-                token(java.util.Map.of("a", "b:c"), "old.png"),
-                token(java.util.Map.of("a:b", "c"), "old.png"));
+                token(Map.of("a", "b:c"), "old.png"),
+                token(Map.of("a:b", "c"), "old.png"));
     }
 
-    private String token(java.util.Map<String, String> specs, String image) {
+    private String token(Map<String, String> specs, String image) {
         var item =
                 new SettlementItem(
                         5L,
@@ -233,7 +243,7 @@ class SettlementCacheTest {
                                                                 entry.getValue()))
                                         .toList(),
                         image);
-        return com.lemnt.mall.domain.settlement.model.SettlementRules.quoteToken(
+        return SettlementRules.quoteToken(
                 new SettlementQuote(
                         List.of(item), BigDecimal.TEN, BigDecimal.ZERO, BigDecimal.TEN, null));
     }
@@ -242,7 +252,7 @@ class SettlementCacheTest {
     void oldBoundSubmissionRestoresNamesAndPreservesOriginalOrderAndRequest() {
         var snapshot = snapshot();
         var order =
-                new com.lemnt.mall.domain.settlement.model.SettlementOrder(
+                new SettlementOrder(
                         null,
                         "OLD-ORDER",
                         1L,
@@ -251,7 +261,7 @@ class SettlementCacheTest {
                         snapshot.quote().items(),
                         null);
         var record =
-                new com.lemnt.mall.domain.settlement.model.SettlementRecord(
+                new SettlementRecord(
                         "OLD-ORDER",
                         1L,
                         "OLD-REQUEST",
@@ -263,15 +273,15 @@ class SettlementCacheTest {
                         snapshot.references());
         var codec = new Fastjson2RedisSerializer();
         var json =
-                com.alibaba.fastjson2.JSON.parseObject(
+                JSON.parseObject(
                         codec.serialize(
-                                new com.lemnt.mall.domain.settlement.model.SettlementSubmission(
+                                new SettlementSubmission(
                                         order, record)));
         json.getJSONObject("order").getJSONArray("items").getJSONObject(0).remove("specs");
         json.getJSONObject("order")
                 .getJSONArray("items")
                 .getJSONObject(0)
-                .put("properties", com.alibaba.fastjson2.JSON.parseObject("{\"颜色\":\"黑色\"}"));
+                .put("properties", JSON.parseObject("{\"颜色\":\"黑色\"}"));
         var redis = mock(StringRedisTemplate.class);
         ValueOperations<String, String> values = mock(ValueOperations.class);
         when(redis.opsForValue()).thenReturn(values);

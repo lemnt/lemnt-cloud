@@ -2,6 +2,7 @@ package com.lemnt.promotion.adapter.app.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public record AppPromotionSectionRes(
         @Schema(description = "类型") String type,
         @Schema(description = "名称") String label,
         @Schema(description = "活动列表") List<Item> items)
-        implements java.io.Serializable {
+        implements Serializable {
     public AppPromotionSectionRes {
         items = items == null ? List.of() : List.copyOf(items);
     }
@@ -23,5 +24,5 @@ public record AppPromotionSectionRes(
             @Schema(description = "活动名称") String name,
             @Schema(description = "开始时间") LocalDateTime startTime,
             @Schema(description = "结束时间") LocalDateTime endTime)
-            implements java.io.Serializable {}
+            implements Serializable {}
 }

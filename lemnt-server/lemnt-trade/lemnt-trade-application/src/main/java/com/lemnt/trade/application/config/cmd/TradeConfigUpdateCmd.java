@@ -1,5 +1,6 @@
 package com.lemnt.trade.application.config.cmd;
 
+import java.io.Serializable;
 import java.util.List;
 
 /** 交易配置修改命令。 */
@@ -19,4 +20,4 @@ public record TradeConfigUpdateCmd(
         Integer brokerageWithdrawFeePercent,
         Integer brokerageFrozenDays,
         List<Integer> brokerageWithdrawTypes)
-        implements java.io.Serializable {}
+        implements Serializable {}

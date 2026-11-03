@@ -1,6 +1,7 @@
 package com.lemnt.mall.domain.product.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /** 评价查询条件。 */
 public record CommentFilter(
@@ -14,8 +15,8 @@ public record CommentFilter(
         String userNickname,
         Long orderId,
         String spuName,
-        java.time.LocalDateTime createTimeStart,
-        java.time.LocalDateTime createTimeEnd)
+        LocalDateTime createTimeStart,
+        LocalDateTime createTimeEnd)
         implements Serializable {
     /** 兼容现有筛选调用，新条件均为可选。 */
     public CommentFilter(

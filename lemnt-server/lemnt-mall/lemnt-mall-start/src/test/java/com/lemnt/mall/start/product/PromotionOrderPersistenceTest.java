@@ -1,5 +1,6 @@
 package com.lemnt.mall.start.product;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.mall.application.promotion.cmd.BargainActivityCreateCmd;
 import com.lemnt.mall.application.promotion.cmd.CombinationActivityCreateCmd;
 import com.lemnt.mall.application.promotion.cmd.CombinationProductCmd;
@@ -25,6 +26,8 @@ import com.lemnt.mall.domain.member.gateway.MemberLookupGateway;
 import com.lemnt.mall.domain.member.gateway.MemberTradeGateway;
 import com.lemnt.mall.domain.member.model.MemberPointConfig;
 import com.lemnt.mall.domain.member.model.MemberSnapshot;
+import com.lemnt.mall.domain.member.model.MemberTradeChange;
+import com.lemnt.mall.domain.product.model.CommentOrderRequest;
 import com.lemnt.mall.domain.product.model.ProductSpu;
 import com.lemnt.mall.domain.promotion.gateway.BargainRecordGateway;
 import com.lemnt.mall.domain.promotion.gateway.PromotionOrderGateway;
@@ -39,6 +42,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 import java.math.BigDecimal;
@@ -48,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,8 +74,8 @@ class PromotionOrderPersistenceTest {
     Long bargainActivityId;
     Long pointActivityId;
     Long skuId;
-    java.util.concurrent.atomic.AtomicLong memberPoints =
-            new java.util.concurrent.atomic.AtomicLong(10000);
+    AtomicLong memberPoints =
+            new AtomicLong(10000);
 
     Map<String, SettlementOrder> trades = new HashMap<>();
     AtomicLong tradeIds = new AtomicLong(100);
@@ -94,7 +99,7 @@ class PromotionOrderPersistenceTest {
                     }
 
                     public void apply(
-                            com.lemnt.mall.domain.member.model.MemberTradeChange change) {}
+                            MemberTradeChange change) {}
                 });
         f.components.register(
                 SettlementDeliveryService.class, Mockito.mock(SettlementDeliveryService.class));
@@ -116,7 +121,7 @@ class PromotionOrderPersistenceTest {
                                 return new SettlementPreparationResult(previous, false);
                             }
                             var supplier =
-                                    (java.util.function.Supplier<
+                                    (Supplier<
                                                     com.lemnt.mall.domain.settlement.model
                                                             .SettlementQuote>)
                                             invocation.getArgument(3);
@@ -158,7 +163,7 @@ class PromotionOrderPersistenceTest {
                     }
 
                     public Long createComment(
-                            com.lemnt.mall.domain.product.model.CommentOrderRequest value) {
+                            CommentOrderRequest value) {
                         return null;
                     }
 
@@ -268,7 +273,7 @@ class PromotionOrderPersistenceTest {
         assertEquals(first.orderNo(), second.orderNo());
         assertNotNull(mappings.findByRequest(1L, "REQ_IDEM").id());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> orders.place(cmd("SECKILL", seckillActivityId, null, 2, "REQ_IDEM")));
     }
 
@@ -395,7 +400,7 @@ class PromotionOrderPersistenceTest {
                                                 5))));
         memberPoints.set(50L);
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         orders.place(
                                 new PromotionOrderCmd(
@@ -551,7 +556,7 @@ class PromotionOrderPersistenceTest {
                         null);
         mappings.save(mapping);
         assertThrows(
-                org.springframework.dao.DataIntegrityViolationException.class,
+                DataIntegrityViolationException.class,
                 () ->
                         mappings.save(
                                 new PromotionOrder(

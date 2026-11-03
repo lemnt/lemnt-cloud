@@ -1,5 +1,8 @@
 package com.lemnt.mall.application.promotion.executor;
 
+import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.mall.application.promotion.dto.DiyPageDTO;
+import com.lemnt.mall.application.promotion.qry.DiyPagePageQry;
 import com.lemnt.mall.application.promotion.service.DiyDecorationService;
 
 import org.springframework.stereotype.Component;
@@ -12,9 +15,9 @@ import lombok.RequiredArgsConstructor;
 public class DiyPagePageQueryExe {
     private final DiyDecorationService service;
 
-    public com.lemnt.common.domain.model.PageResult<
-                    com.lemnt.mall.application.promotion.dto.DiyPageDTO>
-            execute(com.lemnt.mall.application.promotion.qry.DiyPagePageQry qry) {
+    public PageResult<
+                    DiyPageDTO>
+            execute(DiyPagePageQry qry) {
         return service.pagePage(qry);
     }
 }

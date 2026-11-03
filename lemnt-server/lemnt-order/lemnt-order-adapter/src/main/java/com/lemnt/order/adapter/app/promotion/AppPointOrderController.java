@@ -11,6 +11,7 @@ import com.lemnt.order.adapter.app.promotion.res.AppPromotionOrderRes;
 import com.lemnt.order.application.promotion.executor.PointAppDetailQueryExe;
 import com.lemnt.order.application.promotion.executor.PointAppPageQueryExe;
 import com.lemnt.order.application.promotion.executor.PromotionOrderPlaceCmdExe;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import lombok.RequiredArgsConstructor;
+
 import jakarta.validation.Valid;
 
 /** 原活动下单入口，统一由订单服务执行。 */

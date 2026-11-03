@@ -2,6 +2,7 @@ package com.lemnt.trade.adapter.app.pickup.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /** 小程序自提门店。 */
@@ -19,4 +20,4 @@ public record AppPickUpStoreRes(
         @Schema(description = "纬度") BigDecimal latitude,
         @Schema(description = "经度") BigDecimal longitude,
         @Schema(description = "距当前位置的直线距离，公里；未提供位置时为空") BigDecimal distanceKm)
-        implements java.io.Serializable {}
+        implements Serializable {}

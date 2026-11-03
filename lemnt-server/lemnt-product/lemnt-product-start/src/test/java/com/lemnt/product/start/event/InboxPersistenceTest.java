@@ -6,6 +6,7 @@ import com.lemnt.product.infrastructure.event.mapper.MessageInboxMapper;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -104,7 +105,7 @@ class InboxPersistenceTest extends OutboxPersistenceTest {
     void concurrentBusinessDuplicateOnlyAppliesOneEffect() throws Exception {
         var inbox = inbox();
         jdbc.execute("CREATE TABLE test_effect(id INT PRIMARY KEY)");
-        var start = new java.util.concurrent.CountDownLatch(1);
+        var start = new CountDownLatch(1);
         var pool = Executors.newFixedThreadPool(2);
         try {
             var first =

@@ -2,6 +2,7 @@ package com.lemnt.promotion.adapter.web.promotion.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
 import java.util.List;
 
 /** 秒杀时段响应。 */
@@ -14,4 +15,4 @@ public record SeckillConfigRes(
         @Schema(description = "轮播图") List<String> sliderPicUrls,
         @Schema(description = "0 开启，1 关闭") Integer status,
         @Schema(description = "关联活动数量") Integer activityCount)
-        implements java.io.Serializable {}
+        implements Serializable {}

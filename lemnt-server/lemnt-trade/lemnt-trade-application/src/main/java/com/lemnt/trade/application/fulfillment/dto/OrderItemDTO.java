@@ -1,5 +1,6 @@
 package com.lemnt.trade.application.fulfillment.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public record OrderItemDTO(
         String picUrl,
         Long orderItemId,
         Boolean commentStatus)
-        implements java.io.Serializable {
+        implements Serializable {
     /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
     public OrderItemDTO(
             Long productId,
@@ -74,5 +75,5 @@ public record OrderItemDTO(
 
     /** 保存时的规格编号和名称，历史缺失编号保持为空。 */
     public record Spec(Long specId, String specName, Long specValueId, String specValueName)
-            implements java.io.Serializable {}
+            implements Serializable {}
 }

@@ -7,8 +7,11 @@ import com.lemnt.trade.adapter.web.fulfillment.converter.FulfillmentResConverter
 import com.lemnt.trade.adapter.web.fulfillment.req.OrderPageReq;
 import com.lemnt.trade.adapter.web.fulfillment.res.OrderDetailRes;
 import com.lemnt.trade.adapter.web.fulfillment.res.OrderSummaryRes;
+import com.lemnt.trade.adapter.web.promotion.converter.OrderPromotionResConverter;
+import com.lemnt.trade.adapter.web.promotion.res.OrderPromotionDetailRes;
 import com.lemnt.trade.application.fulfillment.executor.OrderDetailQueryExe;
 import com.lemnt.trade.application.fulfillment.executor.OrderPageQueryExe;
+import com.lemnt.trade.application.promotion.executor.OrderPromotionDetailQueryExe;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,17 +50,17 @@ public class FulfillmentOrderController {
         return value == null ? R.fail("订单不存在") : R.ok(FulfillmentResConverter.detail(value));
     }
 
-    private final com.lemnt.trade.application.promotion.executor.OrderPromotionDetailQueryExe
+    private final OrderPromotionDetailQueryExe
             promotionQuery;
 
     /** 查询冻结优惠及权益，不回查当前促销规则。 */
     @GetMapping("/{orderNo}/promotions")
     @Operation(summary = "订单优惠快照")
     @RequiresPermissions("trade:fulfillment:query")
-    public R<com.lemnt.trade.adapter.web.promotion.res.OrderPromotionDetailRes> promotions(
+    public R<OrderPromotionDetailRes> promotions(
             @PathVariable String orderNo) {
         return R.ok(
-                com.lemnt.trade.adapter.web.promotion.converter.OrderPromotionResConverter.toRes(
+                OrderPromotionResConverter.toRes(
                         promotionQuery.execute(orderNo)));
     }
 
@@ -66,7 +69,7 @@ public class FulfillmentOrderController {
     public FulfillmentOrderController(
             OrderPageQueryExe orderPageQueryExe,
             OrderDetailQueryExe orderDetailQueryExe,
-            com.lemnt.trade.application.promotion.executor.OrderPromotionDetailQueryExe
+            OrderPromotionDetailQueryExe
                     promotionQuery) {
         this.orderPageQueryExe = orderPageQueryExe;
         this.orderDetailQueryExe = orderDetailQueryExe;

@@ -6,6 +6,8 @@ import com.lemnt.trade.infrastructure.order.converter.OrderItemConverter;
 
 import com.alibaba.fastjson2.JSON;
 
+import java.util.Set;
+
 /** 售后表持久化转换。 */
 public final class AfterSaleConverter {
     private AfterSaleConverter() {}
@@ -92,7 +94,7 @@ public final class AfterSaleConverter {
                 .setReturnShippedAt(value.returnShippedAt())
                 .setReturnReceivedAt(value.returnReceivedAt())
                 .setActiveOrderNo(
-                        java.util.Set.of(
+                        Set.of(
                                                 "REQUESTED",
                                                 "AWAITING_RETURN",
                                                 "RETURNED",

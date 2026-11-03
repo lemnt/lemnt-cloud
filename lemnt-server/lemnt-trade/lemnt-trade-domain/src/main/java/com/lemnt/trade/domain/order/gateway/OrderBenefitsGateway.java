@@ -1,5 +1,10 @@
 package com.lemnt.trade.domain.order.gateway;
 
+import com.lemnt.trade.domain.order.model.OrderRefundBenefits;
+
+import java.math.BigDecimal;
+import java.util.Map;
+
 /** 通过商城服务处理订单事件，不共享商城表或事务。 */
 public interface OrderBenefitsGateway {
     /** 下单时同步核验本单优惠券的会员、订单绑定和锁定状态。 */
@@ -18,11 +23,11 @@ public interface OrderBenefitsGateway {
     void refunded(
             String orderNo,
             String refundNo,
-            java.util.Map<Long, Integer> quantities,
-            java.math.BigDecimal refundAmount);
+            Map<Long, Integer> quantities,
+            BigDecimal refundAmount);
 
     /** 新版明确商品行及积分结果，不能退回旧版按当前金额计算。 */
-    default void refunded(com.lemnt.trade.domain.order.model.OrderRefundBenefits plan) {
+    default void refunded(OrderRefundBenefits plan) {
         throw new UnsupportedOperationException("下游未升级冻结权益协议");
     }
 }

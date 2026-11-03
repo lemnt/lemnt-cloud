@@ -1,10 +1,11 @@
 package com.lemnt.promotion.start.product;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.promotion.application.promotion.cmd.PointActivityCreateCmd;
 import com.lemnt.promotion.application.promotion.cmd.PointActivityUpdateCmd;
 import com.lemnt.promotion.application.promotion.cmd.PointProductCmd;
 import com.lemnt.promotion.application.promotion.service.PointActivityManagementService;
-import com.lemnt.promotion.domain.product.model.ProductSpu;
+import com.lemnt.product.domain.product.model.ProductSpu;
 import com.lemnt.promotion.domain.promotion.gateway.PointProductGateway;
 import com.lemnt.promotion.domain.promotion.model.PointProduct;
 
@@ -77,7 +78,7 @@ class PointPersistenceTest {
         assertEquals(100, join.point());
         assertEquals(new BigDecimal("5.00"), join.price());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> service.validateJoin(activityId, red, 4));
     }
 
@@ -96,7 +97,7 @@ class PointPersistenceTest {
         service.increaseStock(activityId, red, 2);
         assertEquals(5, service.detail(activityId).stock());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> service.decreaseStock(activityId, red, 4));
     }
 
@@ -107,7 +108,7 @@ class PointPersistenceTest {
         var product = f.components.get(PointProductGateway.class).byActivityId(activityId);
         assertTrue(product.stream().allMatch(item -> item.activityStatus() == 1));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         service.update(
                                 new PointActivityUpdateCmd(

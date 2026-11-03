@@ -1,5 +1,6 @@
 package com.lemnt.trade.application.delivery.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 /** 运费模板详情。 */
@@ -10,4 +11,4 @@ public record DeliveryExpressTemplateDetailDTO(
         Integer sort,
         List<DeliveryExpressTemplateChargeDTO> charges,
         List<DeliveryExpressTemplateFreeDTO> frees)
-        implements java.io.Serializable {}
+        implements Serializable {}

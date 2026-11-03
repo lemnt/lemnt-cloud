@@ -9,8 +9,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Map;
 
 import static com.lemnt.promotion.domain.coupon.model.CouponRules.discount;
 
@@ -93,10 +96,10 @@ public final class SettlementRules {
                 value.append("|specs:").append(item.specs().size());
                 item.specs().stream()
                         .sorted(
-                                java.util.Comparator.comparing(SettlementItem.Spec::specName)
+                                Comparator.comparing(SettlementItem.Spec::specName)
                                         .thenComparing(
                                                 property -> property.specId(),
-                                                java.util.Comparator.nullsFirst(Long::compareTo))
+                                                Comparator.nullsFirst(Long::compareTo))
                                         .thenComparing(SettlementItem.Spec::specValueName))
                         .forEach(
                                 property -> {
@@ -128,7 +131,7 @@ public final class SettlementRules {
                     .append('|')
                     .append(delivery.pickUpStoreId());
             for (var text :
-                    java.util.Arrays.asList(
+                    Arrays.asList(
                             delivery.receiverName(),
                             delivery.receiverMobile(),
                             delivery.receiverDetailAddress())) {
@@ -144,7 +147,7 @@ public final class SettlementRules {
                 .append(quote.freeDelivery());
         if (quote.giveCouponTemplateCounts() != null) {
             quote.giveCouponTemplateCounts().entrySet().stream()
-                    .sorted(java.util.Map.Entry.comparingByKey())
+                    .sorted(Map.Entry.comparingByKey())
                     .forEach(
                             entry ->
                                     value.append("|gift:")

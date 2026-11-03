@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /** 商品评价表访问接口。 */
 @Mapper
 public interface ProductCommentMapper extends BaseMapper<ProductCommentDO> {
@@ -13,6 +15,6 @@ public interface ProductCommentMapper extends BaseMapper<ProductCommentDO> {
     ProductCommentDO lock(Long id);
 
     /** 旧购买唯一事实检查包含逻辑删除行，防止重复投稿或猜测旧订单项。 */
-    java.util.List<com.lemnt.product.infrastructure.product.dataobject.ProductCommentDO>
+    List<ProductCommentDO>
             legacyForLink(@Param("orderNo") String orderNo, @Param("skuId") Long skuId);
 }

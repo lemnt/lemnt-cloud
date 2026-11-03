@@ -1,14 +1,21 @@
 package com.lemnt.mall.start.product;
 
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.mall.application.promotion.cmd.DiscountActivityCreateCmd;
 import com.lemnt.mall.application.promotion.cmd.DiscountActivityUpdateCmd;
 import com.lemnt.mall.application.promotion.cmd.RewardActivityCreateCmd;
 import com.lemnt.mall.application.promotion.service.ActivityManagementService;
 import com.lemnt.mall.application.promotion.service.ActivityPricingService;
 import com.lemnt.mall.domain.coupon.model.Coupon;
+import com.lemnt.mall.domain.coupon.model.CouponRules;
 import com.lemnt.mall.domain.coupon.model.CouponTemplate;
+import com.lemnt.mall.domain.member.gateway.MemberTradeGateway;
+import com.lemnt.mall.domain.member.model.MemberPointConfig;
 import com.lemnt.mall.domain.product.model.ProductSku;
 import com.lemnt.mall.domain.product.model.ProductSpu;
+import com.lemnt.mall.domain.promotion.gateway.DiscountActivityGateway;
+import com.lemnt.mall.domain.promotion.gateway.DiscountProductGateway;
+import com.lemnt.mall.domain.promotion.gateway.RewardActivityGateway;
 import com.lemnt.mall.domain.promotion.model.DiscountProduct;
 import com.lemnt.mall.domain.promotion.model.RewardRule;
 import com.lemnt.mall.domain.settlement.model.SettlementItem;
@@ -16,12 +23,14 @@ import com.lemnt.mall.domain.settlement.model.SettlementItem;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,12 +74,12 @@ class ActivityAlignmentPersistenceTest {
         var id = createDiscount();
         assertEquals(0, management.detailDiscount(id).status());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> management.deleteDiscount(id));
         management.closeDiscount(id);
         assertEquals(1, management.detailDiscount(id).status());
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         management.updateDiscount(
                                 new DiscountActivityUpdateCmd(
@@ -82,14 +91,14 @@ class ActivityAlignmentPersistenceTest {
                                         List.of(discount()))));
         assertTrue(management.deleteDiscount(id));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> management.detailDiscount(id));
     }
 
     @Test
     void sameSkuCannotJoinTwoOpenDiscountActivities() {
         createDiscount();
-        assertThrows(com.lemnt.common.core.exception.ServiceException.class, this::createDiscount);
+        assertThrows(ServiceException.class, this::createDiscount);
     }
 
     @Test
@@ -105,7 +114,7 @@ class ActivityAlignmentPersistenceTest {
                         List.of(),
                         List.of(new RewardRule(new BigDecimal("40.00"), new BigDecimal("4.00")))));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () ->
                         management.createReward(
                                 new RewardActivityCreateCmd(
@@ -178,7 +187,7 @@ class ActivityAlignmentPersistenceTest {
                         7L,
                         "AVAILABLE",
                         null,
-                        com.lemnt.mall.domain.coupon.model.CouponRules.snapshot(template, now),
+                        CouponRules.snapshot(template, now),
                         null);
         var quote = pricing.price(items, coupon, now, 100);
         assertEquals(new BigDecimal("50.00"), quote.originalAmount());
@@ -296,22 +305,22 @@ class ActivityAlignmentPersistenceTest {
     @Test
     void pointDeductionAndRewardsUseConfirmedQuoteAndRejectZeroCashPayment() {
         var memberTrade =
-                org.mockito.Mockito.mock(
-                        com.lemnt.mall.domain.member.gateway.MemberTradeGateway.class);
-        org.mockito.Mockito.when(memberTrade.config())
+                Mockito.mock(
+                        MemberTradeGateway.class);
+        Mockito.when(memberTrade.config())
                 .thenReturn(
-                        new com.lemnt.mall.domain.member.model.MemberPointConfig(true, 1, 20, 2));
+                        new MemberPointConfig(true, 1, 20, 2));
         var service =
                 new ActivityPricingService(
                         memberTrade,
                         f.components.get(
-                                com.lemnt.mall.domain.promotion.gateway.DiscountActivityGateway
+                                DiscountActivityGateway
                                         .class),
                         f.components.get(
-                                com.lemnt.mall.domain.promotion.gateway.DiscountProductGateway
+                                DiscountProductGateway
                                         .class),
                         f.components.get(
-                                com.lemnt.mall.domain.promotion.gateway.RewardActivityGateway
+                                RewardActivityGateway
                                         .class),
                         f.productSkuGateway,
                         f.productSpuGateway);
@@ -324,11 +333,11 @@ class ActivityAlignmentPersistenceTest {
         assertEquals(20L, quote.usePoint());
         assertEquals(19L, quote.givePoint());
         assertEquals(new BigDecimal("9.80"), quote.payableAmount());
-        org.mockito.Mockito.when(memberTrade.config())
+        Mockito.when(memberTrade.config())
                 .thenReturn(
-                        new com.lemnt.mall.domain.member.model.MemberPointConfig(true, 1, 0, 2));
+                        new MemberPointConfig(true, 1, 0, 2));
         assertThrows(
-                com.lemnt.common.core.exception.ServiceException.class,
+                ServiceException.class,
                 () -> service.price(items, null, now, 100, true, 1000));
     }
 
@@ -336,22 +345,22 @@ class ActivityAlignmentPersistenceTest {
     @Test
     void pointCapIsPointCountAndDisabledSwitchAlsoStopsGift() {
         var memberTrade =
-                org.mockito.Mockito.mock(
-                        com.lemnt.mall.domain.member.gateway.MemberTradeGateway.class);
-        org.mockito.Mockito.when(memberTrade.config())
+                Mockito.mock(
+                        MemberTradeGateway.class);
+        Mockito.when(memberTrade.config())
                 .thenReturn(
-                        new com.lemnt.mall.domain.member.model.MemberPointConfig(true, 5, 2, 3));
+                        new MemberPointConfig(true, 5, 2, 3));
         var service =
                 new ActivityPricingService(
                         memberTrade,
                         f.components.get(
-                                com.lemnt.mall.domain.promotion.gateway.DiscountActivityGateway
+                                DiscountActivityGateway
                                         .class),
                         f.components.get(
-                                com.lemnt.mall.domain.promotion.gateway.DiscountProductGateway
+                                DiscountProductGateway
                                         .class),
                         f.components.get(
-                                com.lemnt.mall.domain.promotion.gateway.RewardActivityGateway
+                                RewardActivityGateway
                                         .class),
                         f.productSkuGateway,
                         f.productSpuGateway);
@@ -367,9 +376,9 @@ class ActivityAlignmentPersistenceTest {
         assertEquals(2L, enabled.usePoint());
         assertEquals(new BigDecimal("9.90"), enabled.payableAmount());
         assertEquals(29L, enabled.givePoint());
-        org.mockito.Mockito.when(memberTrade.config())
+        Mockito.when(memberTrade.config())
                 .thenReturn(
-                        new com.lemnt.mall.domain.member.model.MemberPointConfig(false, 5, 2, 3));
+                        new MemberPointConfig(false, 5, 2, 3));
         var disabled = service.price(List.of(item), null, now, 100, true, 100L);
         assertEquals(0L, disabled.usePoint());
         assertEquals(0L, disabled.givePoint());
@@ -394,7 +403,7 @@ class ActivityAlignmentPersistenceTest {
                                                 new BigDecimal("10.00"),
                                                 true,
                                                 50,
-                                                java.util.Map.of(3L, 2)))));
+                                                Map.of(3L, 2)))));
         var rule = management.detailReward(id).rules().get(0);
         assertEquals(true, rule.freeDelivery());
         assertEquals(50, rule.point());
@@ -419,24 +428,24 @@ class ActivityAlignmentPersistenceTest {
                                         new BigDecimal("0.01"),
                                         true,
                                         50,
-                                        java.util.Map.of(3L, 2)))));
+                                        Map.of(3L, 2)))));
         var memberTrade =
-                org.mockito.Mockito.mock(
-                        com.lemnt.mall.domain.member.gateway.MemberTradeGateway.class);
-        org.mockito.Mockito.when(memberTrade.config())
+                Mockito.mock(
+                        MemberTradeGateway.class);
+        Mockito.when(memberTrade.config())
                 .thenReturn(
-                        new com.lemnt.mall.domain.member.model.MemberPointConfig(true, 1, 0, 2));
+                        new MemberPointConfig(true, 1, 0, 2));
         var service =
                 new ActivityPricingService(
                         memberTrade,
                         f.components.get(
-                                com.lemnt.mall.domain.promotion.gateway.DiscountActivityGateway
+                                DiscountActivityGateway
                                         .class),
                         f.components.get(
-                                com.lemnt.mall.domain.promotion.gateway.DiscountProductGateway
+                                DiscountProductGateway
                                         .class),
                         f.components.get(
-                                com.lemnt.mall.domain.promotion.gateway.RewardActivityGateway
+                                RewardActivityGateway
                                         .class),
                         f.productSkuGateway,
                         f.productSpuGateway);

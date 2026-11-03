@@ -1,11 +1,15 @@
 package com.lemnt.system.start.area;
 
+import com.lemnt.common.security.annotation.RequiresLogin;
 import com.lemnt.system.adapter.web.area.AreaController;
 import com.lemnt.system.application.area.executor.AreaTreeQueryExe;
+import com.lemnt.system.application.dubbo.RemoteAreaServiceImpl;
 import com.lemnt.system.infrastructure.area.gateway.AreaGatewayImpl;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -49,17 +53,17 @@ class AreaTreeTest {
         assertNotNull(
                 AreaController.class
                         .getMethod("tree")
-                        .getAnnotation(com.lemnt.common.security.annotation.RequiresLogin.class));
+                        .getAnnotation(RequiresLogin.class));
     }
 
     /** 地区名称复用实际CSV，国内不加中国，国外保留国家，未知不推断。 */
     @Test
     void remoteNamesFormatSourcePathsAndHandleUnknownIds() {
         var remote =
-                new com.lemnt.system.application.dubbo.RemoteAreaServiceImpl(new AreaGatewayImpl());
+                new RemoteAreaServiceImpl(new AreaGatewayImpl());
         var names =
                 remote.getNames(
-                        java.util.List.of(
+                        List.of(
                                 110101L, 110100L, 110000L, 1L, 2L, Long.MAX_VALUE, 110101L));
         assertEquals("北京市 北京市 东城区", names.get(110101L));
         assertEquals("北京市 北京市", names.get(110100L));
@@ -68,7 +72,7 @@ class AreaTreeTest {
         assertEquals("蒙古", names.get(2L));
         assertFalse(names.containsKey(Long.MAX_VALUE));
         assertEquals(5, names.size());
-        assertTrue(remote.getNames(java.util.List.of()).isEmpty());
+        assertTrue(remote.getNames(List.of()).isEmpty());
         assertTrue(remote.getNames(null).isEmpty());
         assertThrows(UnsupportedOperationException.class, () -> names.clear());
     }

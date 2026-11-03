@@ -9,6 +9,9 @@ import com.lemnt.trade.domain.order.model.TradeOperator;
 import com.lemnt.trade.domain.order.model.TradeOrder;
 import com.lemnt.trade.domain.order.model.TradeOrderItem;
 import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.trade.domain.promotion.gateway.OrderPromotionGateway;
+import com.lemnt.trade.domain.promotion.model.OrderGiftAdjustment;
+import com.lemnt.trade.domain.promotion.service.OrderPricingRules;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,8 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /** 后台订单改价与改址：只改未支付金额或未发货收件快照，并写操作日志。 */
 @Component
@@ -30,7 +36,7 @@ public class OrderAdjustmentService {
     private final OrderLogService logs;
     private final TradePaymentGateway payments;
 
-    private final com.lemnt.trade.domain.promotion.gateway.OrderPromotionGateway promotions;
+    private final OrderPromotionGateway promotions;
 
     @Autowired
     public OrderAdjustmentService(
@@ -39,7 +45,7 @@ public class OrderAdjustmentService {
             OrderPersistenceService persistence,
             OrderLogService logs,
             TradePaymentGateway payments,
-            com.lemnt.trade.domain.promotion.gateway.OrderPromotionGateway promotions) {
+            OrderPromotionGateway promotions) {
         this.orders = orders;
         this.items = items;
         this.persistence = persistence;
@@ -92,7 +98,7 @@ public class OrderAdjustmentService {
             repriceGift(order, lines, allocations, cmd.totalAmount());
         }
         var updated = persistence.findByOrderNo(order.orderNo());
-        com.lemnt.trade.domain.promotion.service.OrderPricingRules.validate(updated);
+        OrderPricingRules.validate(updated);
         logs.record(
                 updated,
                 order.status(),
@@ -148,7 +154,7 @@ public class OrderAdjustmentService {
     /** 按原行实付占比分摊新金额，最后一行承担尾差。 */
     private List<BigDecimal> allocate(
             List<TradeOrderItem> lines, BigDecimal current, BigDecimal target) {
-        var result = new java.util.ArrayList<BigDecimal>(lines.size());
+        var result = new ArrayList<BigDecimal>(lines.size());
         BigDecimal allocated = BigDecimal.ZERO;
         for (int index = 0; index < lines.size(); index++) {
             BigDecimal value;
@@ -216,7 +222,7 @@ public class OrderAdjustmentService {
         }
         var source = normal.get();
         var matcher =
-                java.util.regex.Pattern.compile("\"givePerYuan\"\\s*:\\s*(\\d+)")
+                Pattern.compile("\"givePerYuan\"\\s*:\\s*(\\d+)")
                         .matcher(source.ruleSnapshot());
         if (!matcher.find()) {
             throw new IllegalStateException("原赠积分系数缺失");
@@ -226,8 +232,8 @@ public class OrderAdjustmentService {
                 total.multiply(BigDecimal.valueOf(rate))
                         .setScale(0, RoundingMode.DOWN)
                         .longValueExact();
-        var itemPoints = new java.util.LinkedHashMap<Long, Long>();
-        var allocationPoints = new java.util.LinkedHashMap<Long, Long>();
+        var itemPoints = new LinkedHashMap<Long, Long>();
+        var allocationPoints = new LinkedHashMap<Long, Long>();
         var cumulative = BigDecimal.ZERO;
         long allocated = 0;
         for (int index = 0; index < lines.size(); index++) {
@@ -252,7 +258,7 @@ public class OrderAdjustmentService {
             allocated = next;
         }
         promotions.updateGift(
-                new com.lemnt.trade.domain.promotion.model.OrderGiftAdjustment(
+                new OrderGiftAdjustment(
                         order.id(),
                         source.id(),
                         Math.addExact(order.givePoint() - source.givePoint(), target),

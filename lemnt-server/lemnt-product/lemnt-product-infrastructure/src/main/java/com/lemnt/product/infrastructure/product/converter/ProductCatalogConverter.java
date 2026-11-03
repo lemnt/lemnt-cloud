@@ -4,6 +4,7 @@ import com.lemnt.product.domain.product.model.Brand;
 import com.lemnt.product.domain.product.model.Category;
 import com.lemnt.product.domain.product.model.ProductCatalogValidation;
 import com.lemnt.product.domain.product.model.ProductSku;
+import com.lemnt.product.domain.product.model.ProductSkuSpec;
 import com.lemnt.product.domain.product.model.ProductSpu;
 import com.lemnt.product.infrastructure.product.dataobject.BrandDO;
 import com.lemnt.product.infrastructure.product.dataobject.CategoryDO;
@@ -179,10 +180,10 @@ public final class ProductCatalogConverter {
     }
 
     /** SKU规格仅从其JSON读取，不补字典现值或猜测旧编号。 */
-    public static List<com.lemnt.product.domain.product.model.ProductSkuSpec> specs(String json) {
+    public static List<ProductSkuSpec> specs(String json) {
         return json == null
                 ? List.of()
                 : SpecSnapshotJson.read(
-                        json, com.lemnt.product.domain.product.model.ProductSkuSpec.class);
+                        json, ProductSkuSpec.class);
     }
 }

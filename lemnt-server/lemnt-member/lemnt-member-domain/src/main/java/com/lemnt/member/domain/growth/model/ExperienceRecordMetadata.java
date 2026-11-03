@@ -1,10 +1,12 @@
 package com.lemnt.member.domain.growth.model;
 
+import java.util.Set;
+
 /** 源经验枚举快照，未知来源不推断。 */
 public record ExperienceRecordMetadata(Integer type, String title, String description) {
     /** 源枚举中合法的查询类型，未接入写入路径的类型同样允许查询。 */
     public static boolean supported(Integer type) {
-        return type != null && java.util.Set.of(0, 1, 4, 5, 11, 12, 13).contains(type);
+        return type != null && Set.of(0, 1, 4, 5, 11, 12, 13).contains(type);
     }
 
     public static ExperienceRecordMetadata from(String assetType, String code, long delta) {

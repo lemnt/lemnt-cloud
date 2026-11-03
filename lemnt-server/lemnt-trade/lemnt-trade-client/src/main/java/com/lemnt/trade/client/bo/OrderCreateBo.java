@@ -2,6 +2,7 @@ package com.lemnt.trade.client.bo;
 
 import com.lemnt.trade.client.dto.OrderDeliveryDTO;
 import com.lemnt.trade.client.dto.OrderItemDTO;
+import com.lemnt.trade.client.dto.OrderPromotionDTO;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -25,7 +26,7 @@ public record OrderCreateBo(
         BigDecimal adjustmentAmount,
         String pricingSnapshotStatus,
         Integer pricingSnapshotVersion,
-        java.util.List<com.lemnt.trade.client.dto.OrderPromotionDTO> promotions)
+        List<OrderPromotionDTO> promotions)
         implements Serializable {
     /** 兼容未记录本批优惠与退款元数据的历史快照。 */
     public OrderCreateBo(
@@ -53,11 +54,11 @@ public record OrderCreateBo(
                 null,
                 "LEGACY_PARTIAL",
                 0,
-                java.util.List.of());
+                List.of());
     }
 
     public OrderCreateBo {
-        promotions = promotions == null ? java.util.List.of() : java.util.List.copyOf(promotions);
+        promotions = promotions == null ? List.of() : List.copyOf(promotions);
         items = items == null ? List.of() : List.copyOf(items);
         giveCouponTemplateCounts =
                 giveCouponTemplateCounts == null ? Map.of() : Map.copyOf(giveCouponTemplateCounts);

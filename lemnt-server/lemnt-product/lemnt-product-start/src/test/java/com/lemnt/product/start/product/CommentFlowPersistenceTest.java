@@ -1,30 +1,45 @@
 package com.lemnt.product.start.product;
 
 import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.common.security.context.SecurityContextHolder;
+import com.lemnt.common.security.handler.GlobalExceptionHandler;
+import com.lemnt.common.start.config.JacksonConfig;
+import com.lemnt.product.adapter.app.product.AppCommentController;
+import com.lemnt.product.adapter.web.product.CommentController;
 import com.lemnt.product.application.product.cmd.CommentCreateCmd;
 import com.lemnt.product.application.product.cmd.CommentReplyCmd;
+import com.lemnt.product.application.product.cmd.CommentSaveCmd;
+import com.lemnt.product.application.product.cmd.CommentSelfCreateCmd;
 import com.lemnt.product.application.product.cmd.CommentVisibleCmd;
+import com.lemnt.product.application.product.executor.CommentPageQueryExe;
 import com.lemnt.product.application.product.executor.CommentPublicPageQueryExe;
+import com.lemnt.product.application.product.executor.CommentSelfCreateCmdExe;
 import com.lemnt.product.application.product.executor.CommentVisibleCmdExe;
+import com.lemnt.product.application.product.qry.CommentPageQry;
 import com.lemnt.product.application.product.qry.CommentPublicPageQry;
 import com.lemnt.product.application.product.service.ProductCommentService;
 import com.lemnt.product.domain.member.gateway.MemberLookupGateway;
 import com.lemnt.product.domain.member.model.MemberSnapshot;
 import com.lemnt.product.domain.order.gateway.OrderSnapshotGateway;
 import com.lemnt.product.domain.product.gateway.ProductCommentGateway;
+import com.lemnt.product.domain.product.model.CommentOrderRequest;
 import com.lemnt.product.domain.product.model.ProductComment;
 import com.lemnt.product.domain.settlement.model.SettlementItem;
 import com.lemnt.product.domain.settlement.model.SettlementOrder;
 
 import org.junit.jupiter.api.*;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -62,7 +77,7 @@ class CommentFlowPersistenceTest {
                     }
 
                     public Long createComment(
-                            com.lemnt.product.domain.product.model.CommentOrderRequest value) {
+                            CommentOrderRequest value) {
                         return comments.saveVerified(
                                         new com.lemnt.product.application.product.cmd
                                                 .CommentSaveCmd(
@@ -101,7 +116,7 @@ class CommentFlowPersistenceTest {
 
     @AfterEach
     void close() throws Exception {
-        com.lemnt.common.security.context.SecurityContextHolder.remove();
+        SecurityContextHolder.remove();
         fixture.closeSchemaConnection();
     }
 
@@ -209,15 +224,15 @@ class CommentFlowPersistenceTest {
         assertEquals(3, query.execute(new CommentPublicPageQry(spuId, 0, 1, 20)).getTotal());
         for (int type = 1; type <= 3; type++)
             assertEquals(1, query.execute(new CommentPublicPageQry(spuId, type, 1, 20)).getTotal());
-        var builder = tools.jackson.databind.json.JsonMapper.builder();
-        new com.lemnt.common.start.config.JacksonConfig().customizer().customize(builder);
+        var builder = JsonMapper.builder();
+        new JacksonConfig().customizer().customize(builder);
         var mvc =
-                org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(
+                MockMvcBuilders.standaloneSetup(
                                 fixture.components.get(
-                                        com.lemnt.product.adapter.app.product.AppCommentController
+                                        AppCommentController
                                                 .class))
                         .setControllerAdvice(
-                                new com.lemnt.common.security.handler.GlobalExceptionHandler())
+                                new GlobalExceptionHandler())
                         .setMessageConverters(
                                 new org.springframework.http.converter.json
                                         .JacksonJsonHttpMessageConverter(builder.build()))
@@ -259,7 +274,7 @@ class CommentFlowPersistenceTest {
         var pool = Executors.newFixedThreadPool(4);
         try {
             var tasks =
-                    java.util.stream.IntStream.range(0, 4)
+                    IntStream.range(0, 4)
                             .mapToObj(
                                     i -> pool.submit(() -> comments.create(cmd("S3", 5, 4, false))))
                             .toList();
@@ -335,17 +350,17 @@ class CommentFlowPersistenceTest {
     void httpImageInputUsesSameRulesAndCannotForgeMemberOrSnapshots() throws Exception {
         completed("HTTP");
         completed("BAD-IMAGE");
-        com.lemnt.common.security.context.SecurityContextHolder.setUserId("1");
-        var builder = tools.jackson.databind.json.JsonMapper.builder();
-        new com.lemnt.common.start.config.JacksonConfig().customizer().customize(builder);
+        SecurityContextHolder.setUserId("1");
+        var builder = JsonMapper.builder();
+        new JacksonConfig().customizer().customize(builder);
         var mapper = builder.build();
         var mvc =
-                org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(
+                MockMvcBuilders.standaloneSetup(
                                 fixture.components.get(
-                                        com.lemnt.product.adapter.app.product.AppCommentController
+                                        AppCommentController
                                                 .class))
                         .setControllerAdvice(
-                                new com.lemnt.common.security.handler.GlobalExceptionHandler())
+                                new GlobalExceptionHandler())
                         .setMessageConverters(
                                 new org.springframework.http.converter.json
                                         .JacksonJsonHttpMessageConverter(mapper))
@@ -363,7 +378,7 @@ class CommentFlowPersistenceTest {
         body.put("spuName", "伪造商品");
         mvc.perform(
                         post("/mall/app/comments")
-                                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
                                 .content(mapper.writeValueAsString(body)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").exists());
@@ -379,7 +394,7 @@ class CommentFlowPersistenceTest {
         body.put("picUrls", List.of("https://example.test/has space.png"));
         mvc.perform(
                         post("/mall/app/comments")
-                                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
                                 .content(mapper.writeValueAsString(body)))
                 .andExpect(status().is(422));
         assertNull(
@@ -396,9 +411,9 @@ class CommentFlowPersistenceTest {
                         .findByOrderItem(itemIds.get("RPC-FAIL")));
     }
 
-    private com.lemnt.product.application.product.cmd.CommentSaveCmd verified(
+    private CommentSaveCmd verified(
             CommentCreateCmd input, Long itemId, boolean unique, boolean allowCreate) {
-        return new com.lemnt.product.application.product.cmd.CommentSaveCmd(
+        return new CommentSaveCmd(
                 input.memberId(),
                 input.orderNo(),
                 input.skuId(),
@@ -408,7 +423,7 @@ class CommentFlowPersistenceTest {
                 "购买时商品",
                 "https://example.test/old.png",
                 List.of(
-                        new com.lemnt.product.application.product.cmd.CommentSaveCmd.Spec(
+                        new CommentSaveCmd.Spec(
                                 8L, "颜色", 9L, "红色")),
                 unique,
                 allowCreate,
@@ -538,29 +553,29 @@ class CommentFlowPersistenceTest {
         }
         var query =
                 fixture.components.get(
-                        com.lemnt.product.application.product.executor.CommentPageQueryExe.class);
+                        CommentPageQueryExe.class);
         var time = LocalDateTime.of(2026, 10, 29, 10, 0);
         var filter =
-                new com.lemnt.product.application.product.qry.CommentPageQry(
+                new CommentPageQry(
                         spuId, 1L, 4, true, false, 1, 20, "  实昵称  ", 10L, "买时商", time, time);
         assertEquals(1, query.execute(filter).getTotal());
         assertEquals(
                 0,
                 query.execute(
-                                new com.lemnt.product.application.product.qry.CommentPageQry(
+                                new CommentPageQry(
                                         null, null, null, null, true, 1, 20))
                         .getTotal());
         assertEquals(
                 0,
                 query.execute(
-                                new com.lemnt.product.application.product.qry.CommentPageQry(
+                                new CommentPageQry(
                                         null, null, null, null, null, 1, 20, null, 11L, null, null,
                                         null))
                         .getTotal());
         assertEquals(
                 0,
                 query.execute(
-                                new com.lemnt.product.application.product.qry.CommentPageQry(
+                                new CommentPageQry(
                                         null,
                                         null,
                                         null,
@@ -578,7 +593,7 @@ class CommentFlowPersistenceTest {
                 ServiceException.class,
                 () ->
                         query.execute(
-                                new com.lemnt.product.application.product.qry.CommentPageQry(
+                                new CommentPageQry(
                                         null,
                                         null,
                                         null,
@@ -594,7 +609,7 @@ class CommentFlowPersistenceTest {
         assertEquals(
                 1,
                 query.execute(
-                                new com.lemnt.product.application.product.qry.CommentPageQry(
+                                new CommentPageQry(
                                         null, null, null, null, null, 1, 20))
                         .getTotal());
         try (var statement = fixture.schemaConnection.createStatement()) {
@@ -603,7 +618,7 @@ class CommentFlowPersistenceTest {
         assertEquals(
                 0,
                 query.execute(
-                                new com.lemnt.product.application.product.qry.CommentPageQry(
+                                new CommentPageQry(
                                         null, null, null, null, null, 1, 20))
                         .getTotal());
     }
@@ -612,15 +627,15 @@ class CommentFlowPersistenceTest {
     void adminHttpBindsIndependentFilterFieldsAndRejectsInvalidRanges() throws Exception {
         completed("FILTER-HTTP");
         comments.create(cmd("FILTER-HTTP", 5, 4, false));
-        var builder = tools.jackson.databind.json.JsonMapper.builder();
-        new com.lemnt.common.start.config.JacksonConfig().customizer().customize(builder);
+        var builder = JsonMapper.builder();
+        new JacksonConfig().customizer().customize(builder);
         var mvc =
-                org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(
+                MockMvcBuilders.standaloneSetup(
                                 fixture.components.get(
-                                        com.lemnt.product.adapter.web.product.CommentController
+                                        CommentController
                                                 .class))
                         .setControllerAdvice(
-                                new com.lemnt.common.security.handler.GlobalExceptionHandler())
+                                new GlobalExceptionHandler())
                         .setMessageConverters(
                                 new org.springframework.http.converter.json
                                         .JacksonJsonHttpMessageConverter(builder.build()))
@@ -653,10 +668,10 @@ class CommentFlowPersistenceTest {
         memberUnavailable = true;
         var executor =
                 fixture.components.get(
-                        com.lemnt.product.application.product.executor.CommentSelfCreateCmdExe
+                        CommentSelfCreateCmdExe
                                 .class);
         var input =
-                new com.lemnt.product.application.product.cmd.CommentSelfCreateCmd(
+                new CommentSelfCreateCmd(
                         "自评昵称", "https://example.test/a.png", skuId, 5, 4, "后台自评", List.of());
         var id = executor.execute(input);
         var row = fixture.components.get(ProductCommentGateway.class).find(id);
@@ -675,7 +690,7 @@ class CommentFlowPersistenceTest {
                 ServiceException.class,
                 () ->
                         executor.execute(
-                                new com.lemnt.product.application.product.cmd.CommentSelfCreateCmd(
+                                new CommentSelfCreateCmd(
                                         "昵称",
                                         "https://example.test/a.png",
                                         Long.MAX_VALUE,
@@ -687,7 +702,7 @@ class CommentFlowPersistenceTest {
                 ServiceException.class,
                 () ->
                         executor.execute(
-                                new com.lemnt.product.application.product.cmd.CommentSelfCreateCmd(
+                                new CommentSelfCreateCmd(
                                         "昵称",
                                         "http://example.test/a.png",
                                         skuId,

@@ -35,5 +35,5 @@ public record ProductSkuAddReq(
             @Schema(description = "规格名称，写入时可省略") @Size(max = 64) String specName,
             @Schema(description = "规格值编号") @NotNull @Positive Long specValueId,
             @Schema(description = "规格值名称，写入时可省略") @Size(max = 100) String specValueName)
-            implements java.io.Serializable {}
+            implements Serializable {}
 }

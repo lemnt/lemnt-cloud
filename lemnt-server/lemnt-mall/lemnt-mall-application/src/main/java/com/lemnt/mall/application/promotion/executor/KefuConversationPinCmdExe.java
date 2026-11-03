@@ -1,5 +1,6 @@
 package com.lemnt.mall.application.promotion.executor;
 
+import com.lemnt.mall.application.promotion.cmd.KefuConversationPinCmd;
 import com.lemnt.mall.application.promotion.service.KefuChatService;
 
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class KefuConversationPinCmdExe {
     private final KefuChatService service;
 
-    public Boolean execute(com.lemnt.mall.application.promotion.cmd.KefuConversationPinCmd cmd) {
+    public Boolean execute(KefuConversationPinCmd cmd) {
         return service.adminPin(cmd);
     }
 }

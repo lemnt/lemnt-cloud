@@ -12,6 +12,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * 会员数据对象。
@@ -26,7 +27,7 @@ public class MemberDO extends BaseDO {
     private Long id;
 
     /** 最近成功登录时间，历史未知保持空。 */
-    private java.time.LocalDateTime loginDate;
+    private LocalDateTime loginDate;
 
     /** 网关观察到的登录连接IP，不推断代理链终端。 */
     private String loginIp;

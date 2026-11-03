@@ -3,6 +3,7 @@ package com.lemnt.trade.application.aftersale;
 import com.lemnt.trade.application.aftersale.cmd.AfterSaleCreateCmd;
 import com.lemnt.trade.application.aftersale.service.AfterSaleLogService;
 import com.lemnt.trade.application.aftersale.service.AfterSaleService;
+import com.lemnt.trade.application.brokerage.service.BrokerageService;
 import com.lemnt.trade.application.order.service.OrderLogService;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
 import com.lemnt.trade.application.paymentrefund.service.PaymentRefundService;
@@ -256,10 +257,10 @@ class ZeroCashAfterSaleTest {
                         itemGateway,
                         benefits,
                         Mockito.mock(
-                                com.lemnt.trade.application.brokerage.service.BrokerageService
+                                BrokerageService
                                         .class),
                         Mockito.mock(
-                                com.lemnt.trade.domain.paymentrefund.gateway.PaymentRefundGateway
+                                PaymentRefundGateway
                                         .class))
                 .complete(
                         new PaymentRefund(
