@@ -16,6 +16,10 @@
         <module>lemnt-open</module>
         <module>lemnt-member</module>
         <module>lemnt-mall</module>
+        <module>lemnt-product</module>
+        <module>lemnt-order</module>
+        <module>lemnt-pay</module>
+        <module>lemnt-promotion</module>
         <module>lemnt-trade</module>
         <module>lemnt-system</module>
         <module>lemnt-third-sdk</module>

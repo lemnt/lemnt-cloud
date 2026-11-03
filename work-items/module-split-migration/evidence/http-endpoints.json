@@ -1,0 +1,2819 @@
+[
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/cart/AppCartController.java",
+    "line": 40,
+    "baseExpression": "\"/mall/app\"",
+    "method": "GET",
+    "pathExpression": "\"/cart\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/cart/AppCartController.java",
+    "line": 50,
+    "baseExpression": "\"/mall/app\"",
+    "method": "PUT",
+    "pathExpression": "\"/cart/{productId}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/cart/AppCartController.java",
+    "line": 60,
+    "baseExpression": "\"/mall/app\"",
+    "method": "DELETE",
+    "pathExpression": "\"/cart/{productId}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/coupon/AppCouponCenterController.java",
+    "line": 40,
+    "baseExpression": "\"/mall/app\"",
+    "method": "GET",
+    "pathExpression": "\"/coupon-center\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/coupon/AppCouponCenterController.java",
+    "line": 54,
+    "baseExpression": "\"/mall/app\"",
+    "method": "GET",
+    "pathExpression": "\"/coupon-wallet\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/coupon/AppCouponCenterController.java",
+    "line": 68,
+    "baseExpression": "\"/mall/app\"",
+    "method": "POST",
+    "pathExpression": "\"/coupon-center/{templateId}/claim\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/coupon/AppCouponController.java",
+    "line": 27,
+    "baseExpression": "\"/mall/app\"",
+    "method": "GET",
+    "pathExpression": "\"/coupons\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppCategoryController.java",
+    "line": 26,
+    "baseExpression": "\"/mall/app\"",
+    "method": "GET",
+    "pathExpression": "\"/categories\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppCommentController.java",
+    "line": 37,
+    "baseExpression": "\"/mall/app/comments\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppCommentController.java",
+    "line": 47,
+    "baseExpression": "\"/mall/app/comments\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppProductBrowseHistoryController.java",
+    "line": 46,
+    "baseExpression": "\"/mall/app/browse-history\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppProductBrowseHistoryController.java",
+    "line": 56,
+    "baseExpression": "\"/mall/app/browse-history\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppProductBrowseHistoryController.java",
+    "line": 67,
+    "baseExpression": "\"/mall/app/browse-history\"",
+    "method": "DELETE",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppProductBrowseHistoryController.java",
+    "line": 77,
+    "baseExpression": "\"/mall/app/browse-history\"",
+    "method": "DELETE",
+    "pathExpression": "\"/clear\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppProductController.java",
+    "line": 33,
+    "baseExpression": "\"/mall/app\"",
+    "method": "GET",
+    "pathExpression": "\"/products\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppProductController.java",
+    "line": 41,
+    "baseExpression": "\"/mall/app\"",
+    "method": "GET",
+    "pathExpression": "\"/products/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppProductFavoriteController.java",
+    "line": 51,
+    "baseExpression": "\"/mall/app/favorites\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppProductFavoriteController.java",
+    "line": 61,
+    "baseExpression": "\"/mall/app/favorites\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppProductFavoriteController.java",
+    "line": 71,
+    "baseExpression": "\"/mall/app/favorites\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{spuId:[1-9][0-9]*}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppProductFavoriteController.java",
+    "line": 80,
+    "baseExpression": "\"/mall/app/favorites\"",
+    "method": "GET",
+    "pathExpression": "\"/exists\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/product/AppProductFavoriteController.java",
+    "line": 90,
+    "baseExpression": "\"/mall/app/favorites\"",
+    "method": "GET",
+    "pathExpression": "\"/count\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBannerController.java",
+    "line": 31,
+    "baseExpression": "\"/mall/app/banners\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBannerController.java",
+    "line": 37,
+    "baseExpression": "\"/mall/app/banners\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/browse\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "line": 58,
+    "baseExpression": "\"/mall/app/bargain\"",
+    "method": "GET",
+    "pathExpression": "\"/activities\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "line": 69,
+    "baseExpression": "\"/mall/app/bargain\"",
+    "method": "GET",
+    "pathExpression": "\"/activities/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "line": 75,
+    "baseExpression": "\"/mall/app/bargain\"",
+    "method": "GET",
+    "pathExpression": "\"/activities/{id}/records\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "line": 87,
+    "baseExpression": "\"/mall/app/bargain\"",
+    "method": "POST",
+    "pathExpression": "\"/records\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "line": 93,
+    "baseExpression": "\"/mall/app/bargain\"",
+    "method": "GET",
+    "pathExpression": "\"/records\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "line": 109,
+    "baseExpression": "\"/mall/app/bargain\"",
+    "method": "GET",
+    "pathExpression": "\"/records/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "line": 116,
+    "baseExpression": "\"/mall/app/bargain\"",
+    "method": "GET",
+    "pathExpression": "\"/records/{id}/helps\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "line": 128,
+    "baseExpression": "\"/mall/app/bargain\"",
+    "method": "POST",
+    "pathExpression": "\"/helps\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "line": 135,
+    "baseExpression": "\"/mall/app/bargain\"",
+    "method": "POST",
+    "pathExpression": "\"/orders\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "line": 54,
+    "baseExpression": "\"/mall/app/combination\"",
+    "method": "GET",
+    "pathExpression": "\"/activities\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "line": 65,
+    "baseExpression": "\"/mall/app/combination\"",
+    "method": "GET",
+    "pathExpression": "\"/activities/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "line": 71,
+    "baseExpression": "\"/mall/app/combination\"",
+    "method": "GET",
+    "pathExpression": "\"/activities/{id}/heads\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "line": 83,
+    "baseExpression": "\"/mall/app/combination\"",
+    "method": "GET",
+    "pathExpression": "\"/records\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "line": 104,
+    "baseExpression": "\"/mall/app/combination\"",
+    "method": "GET",
+    "pathExpression": "\"/records/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "line": 112,
+    "baseExpression": "\"/mall/app/combination\"",
+    "method": "GET",
+    "pathExpression": "\"/summary\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "line": 118,
+    "baseExpression": "\"/mall/app/combination\"",
+    "method": "POST",
+    "pathExpression": "\"/orders\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppDiyController.java",
+    "line": 30,
+    "baseExpression": "\"/mall/app/diy\"",
+    "method": "GET",
+    "pathExpression": "\"/template/used\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppDiyController.java",
+    "line": 36,
+    "baseExpression": "\"/mall/app/diy\"",
+    "method": "GET",
+    "pathExpression": "\"/template/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppDiyController.java",
+    "line": 42,
+    "baseExpression": "\"/mall/app/diy\"",
+    "method": "GET",
+    "pathExpression": "\"/page/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppKefuController.java",
+    "line": 42,
+    "baseExpression": "\"/mall/app/kefu\"",
+    "method": "GET",
+    "pathExpression": "\"/conversation\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppKefuController.java",
+    "line": 48,
+    "baseExpression": "\"/mall/app/kefu\"",
+    "method": "GET",
+    "pathExpression": "\"/messages\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppKefuController.java",
+    "line": 64,
+    "baseExpression": "\"/mall/app/kefu\"",
+    "method": "POST",
+    "pathExpression": "\"/messages\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppKefuController.java",
+    "line": 70,
+    "baseExpression": "\"/mall/app/kefu\"",
+    "method": "PUT",
+    "pathExpression": "\"/read\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPointController.java",
+    "line": 39,
+    "baseExpression": "\"/mall/app/point-mall\"",
+    "method": "GET",
+    "pathExpression": "\"/activities\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPointController.java",
+    "line": 50,
+    "baseExpression": "\"/mall/app/point-mall\"",
+    "method": "GET",
+    "pathExpression": "\"/activities/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPointController.java",
+    "line": 56,
+    "baseExpression": "\"/mall/app/point-mall\"",
+    "method": "POST",
+    "pathExpression": "\"/orders\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPointController.java",
+    "line": 66,
+    "baseExpression": "\"/mall/app/point-mall\"",
+    "method": "POST",
+    "pathExpression": "\"/orders/batch\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPromotionHubController.java",
+    "line": 34,
+    "baseExpression": "\"/mall/app/promotion-hub\"",
+    "method": "GET",
+    "pathExpression": "\"/sections\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPromotionHubController.java",
+    "line": 41,
+    "baseExpression": "\"/mall/app/promotion-hub\"",
+    "method": "GET",
+    "pathExpression": "\"/discount/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPromotionHubController.java",
+    "line": 47,
+    "baseExpression": "\"/mall/app/promotion-hub\"",
+    "method": "GET",
+    "pathExpression": "\"/reward/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppSeckillController.java",
+    "line": 47,
+    "baseExpression": "\"/mall/app/seckill\"",
+    "method": "GET",
+    "pathExpression": "\"/configs\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppSeckillController.java",
+    "line": 53,
+    "baseExpression": "\"/mall/app/seckill\"",
+    "method": "GET",
+    "pathExpression": "\"/now\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppSeckillController.java",
+    "line": 59,
+    "baseExpression": "\"/mall/app/seckill\"",
+    "method": "GET",
+    "pathExpression": "\"/activities\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppSeckillController.java",
+    "line": 68,
+    "baseExpression": "\"/mall/app/seckill\"",
+    "method": "GET",
+    "pathExpression": "\"/activities/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppSeckillController.java",
+    "line": 74,
+    "baseExpression": "\"/mall/app/seckill\"",
+    "method": "POST",
+    "pathExpression": "\"/orders\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/settlement/AppOrderController.java",
+    "line": 30,
+    "baseExpression": "\"/mall/app\"",
+    "method": "GET",
+    "pathExpression": "\"/orders/{orderNo}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/settlement/AppOrderController.java",
+    "line": 40,
+    "baseExpression": "\"/mall/app\"",
+    "method": "GET",
+    "pathExpression": "\"/checkout/requests/{requestNo}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/settlement/AppSettlementController.java",
+    "line": 40,
+    "baseExpression": "\"/mall/app\"",
+    "method": "POST",
+    "pathExpression": "\"/checkout/quote\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/settlement/AppSettlementController.java",
+    "line": 50,
+    "baseExpression": "\"/mall/app\"",
+    "method": "POST",
+    "pathExpression": "\"/checkout\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/settlement/AppSettlementController.java",
+    "line": 60,
+    "baseExpression": "\"/mall/app\"",
+    "method": "POST",
+    "pathExpression": "\"/checkout/abandon\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponController.java",
+    "line": 44,
+    "baseExpression": "\"/mall/admin\"",
+    "method": "POST",
+    "pathExpression": "\"/members/{memberId}/coupons/{templateId}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponController.java",
+    "line": 53,
+    "baseExpression": "\"/mall/admin\"",
+    "method": "GET",
+    "pathExpression": "\"/members/{memberId}/coupons\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponController.java",
+    "line": 63,
+    "baseExpression": "\"/mall/admin\"",
+    "method": "DELETE",
+    "pathExpression": "\"/members/{memberId}/coupons/{couponId}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponController.java",
+    "line": 71,
+    "baseExpression": "\"/mall/admin\"",
+    "method": "GET",
+    "pathExpression": "\"/coupons\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponTemplateController.java",
+    "line": 47,
+    "baseExpression": "\"/mall/admin\"",
+    "method": "GET",
+    "pathExpression": "\"/coupon-templates\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponTemplateController.java",
+    "line": 57,
+    "baseExpression": "\"/mall/admin\"",
+    "method": "POST",
+    "pathExpression": "\"/coupon-templates\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponTemplateController.java",
+    "line": 66,
+    "baseExpression": "\"/mall/admin\"",
+    "method": "PUT",
+    "pathExpression": "\"/coupon-templates/{id}/enabled\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponTemplateController.java",
+    "line": 74,
+    "baseExpression": "\"/mall/admin\"",
+    "method": "PUT",
+    "pathExpression": "\"/coupon-templates/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponTemplateController.java",
+    "line": 83,
+    "baseExpression": "\"/mall/admin\"",
+    "method": "DELETE",
+    "pathExpression": "\"/coupon-templates/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/PublicCouponController.java",
+    "line": 35,
+    "baseExpression": "\"/mall/admin/coupon-templates\"",
+    "method": "GET",
+    "pathExpression": "\"/public-claim\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/PublicCouponController.java",
+    "line": 42,
+    "baseExpression": "\"/mall/admin/coupon-templates\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/public-claim\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/BrandController.java",
+    "line": 48,
+    "baseExpression": "\"/mall/brands\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/BrandController.java",
+    "line": 58,
+    "baseExpression": "\"/mall/brands\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/BrandController.java",
+    "line": 68,
+    "baseExpression": "\"/mall/brands\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/BrandController.java",
+    "line": 77,
+    "baseExpression": "\"/mall/brands\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/BrandController.java",
+    "line": 87,
+    "baseExpression": "\"/mall/brands\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/BrandQueryController.java",
+    "line": 36,
+    "baseExpression": "\"/mall/brands\"",
+    "method": "GET",
+    "pathExpression": "\"/page\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/BrandQueryController.java",
+    "line": 47,
+    "baseExpression": "\"/mall/brands\"",
+    "method": "GET",
+    "pathExpression": "\"/simple\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CategoryController.java",
+    "line": 48,
+    "baseExpression": "\"/mall/categories\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CategoryController.java",
+    "line": 58,
+    "baseExpression": "\"/mall/categories\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CategoryController.java",
+    "line": 68,
+    "baseExpression": "\"/mall/categories\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CategoryController.java",
+    "line": 78,
+    "baseExpression": "\"/mall/categories\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CategoryController.java",
+    "line": 88,
+    "baseExpression": "\"/mall/categories\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CategoryTreeController.java",
+    "line": 28,
+    "baseExpression": "\"/mall/categories\"",
+    "method": "GET",
+    "pathExpression": "\"/tree\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CommentController.java",
+    "line": 50,
+    "baseExpression": "\"/mall/comments\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CommentController.java",
+    "line": 69,
+    "baseExpression": "\"/mall/comments\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CommentController.java",
+    "line": 80,
+    "baseExpression": "\"/mall/comments\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CommentController.java",
+    "line": 92,
+    "baseExpression": "\"/mall/comments\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/reply\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CommentController.java",
+    "line": 104,
+    "baseExpression": "\"/mall/comments\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/visible\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductBrowseHistoryController.java",
+    "line": 29,
+    "baseExpression": "\"/mall/product-browse-history\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductFavoriteController.java",
+    "line": 29,
+    "baseExpression": "\"/mall/product-favorites\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecController.java",
+    "line": 54,
+    "baseExpression": "\"/mall/specs\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecController.java",
+    "line": 64,
+    "baseExpression": "\"/mall/specs\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecController.java",
+    "line": 75,
+    "baseExpression": "\"/mall/specs\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecController.java",
+    "line": 83,
+    "baseExpression": "\"/mall/specs\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecController.java",
+    "line": 92,
+    "baseExpression": "\"/mall/specs\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecController.java",
+    "line": 103,
+    "baseExpression": "\"/mall/specs\"",
+    "method": "GET",
+    "pathExpression": "\"/simple\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecValueController.java",
+    "line": 54,
+    "baseExpression": "\"/mall/spec-values\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecValueController.java",
+    "line": 65,
+    "baseExpression": "\"/mall/spec-values\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecValueController.java",
+    "line": 77,
+    "baseExpression": "\"/mall/spec-values\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecValueController.java",
+    "line": 85,
+    "baseExpression": "\"/mall/spec-values\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecValueController.java",
+    "line": 94,
+    "baseExpression": "\"/mall/spec-values\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecValueController.java",
+    "line": 105,
+    "baseExpression": "\"/mall/spec-values\"",
+    "method": "GET",
+    "pathExpression": "\"/simple\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuController.java",
+    "line": 50,
+    "baseExpression": "\"/mall/spus\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuController.java",
+    "line": 62,
+    "baseExpression": "\"/mall/spus\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuController.java",
+    "line": 72,
+    "baseExpression": "\"/mall/spus\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuController.java",
+    "line": 81,
+    "baseExpression": "\"/mall/spus\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuController.java",
+    "line": 88,
+    "baseExpression": "\"/mall/spus\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/shelf\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuExportController.java",
+    "line": 35,
+    "baseExpression": "\"/mall/spus\"",
+    "method": "GET",
+    "pathExpression": "\"/export\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuManagementController.java",
+    "line": 49,
+    "baseExpression": "\"/mall/spus\"",
+    "method": "POST",
+    "pathExpression": "\"/{id}/recycle\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuManagementController.java",
+    "line": 57,
+    "baseExpression": "\"/mall/spus\"",
+    "method": "POST",
+    "pathExpression": "\"/{id}/restore\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuManagementController.java",
+    "line": 65,
+    "baseExpression": "\"/mall/spus\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuManagementController.java",
+    "line": 73,
+    "baseExpression": "\"/mall/spus\"",
+    "method": "GET",
+    "pathExpression": "\"/count\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuManagementController.java",
+    "line": 84,
+    "baseExpression": "\"/mall/spus\"",
+    "method": "GET",
+    "pathExpression": "\"/simple\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuManagementController.java",
+    "line": 97,
+    "baseExpression": "\"/mall/spus\"",
+    "method": "GET",
+    "pathExpression": "\"/batch\"",
+    "owner": "product",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BannerController.java",
+    "line": 44,
+    "baseExpression": "\"/mall/promotion/banners\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BannerController.java",
+    "line": 51,
+    "baseExpression": "\"/mall/promotion/banners\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BannerController.java",
+    "line": 58,
+    "baseExpression": "\"/mall/promotion/banners\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BannerController.java",
+    "line": 65,
+    "baseExpression": "\"/mall/promotion/banners\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BannerController.java",
+    "line": 72,
+    "baseExpression": "\"/mall/promotion/banners\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainActivityController.java",
+    "line": 46,
+    "baseExpression": "\"/mall/promotion/bargain-activities\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainActivityController.java",
+    "line": 53,
+    "baseExpression": "\"/mall/promotion/bargain-activities\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainActivityController.java",
+    "line": 61,
+    "baseExpression": "\"/mall/promotion/bargain-activities\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/close\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainActivityController.java",
+    "line": 68,
+    "baseExpression": "\"/mall/promotion/bargain-activities\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainActivityController.java",
+    "line": 75,
+    "baseExpression": "\"/mall/promotion/bargain-activities\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainActivityController.java",
+    "line": 82,
+    "baseExpression": "\"/mall/promotion/bargain-activities\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainRecordController.java",
+    "line": 33,
+    "baseExpression": "\"/mall/promotion\"",
+    "method": "GET",
+    "pathExpression": "\"/bargain-records\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainRecordController.java",
+    "line": 43,
+    "baseExpression": "\"/mall/promotion\"",
+    "method": "GET",
+    "pathExpression": "\"/bargain-helps\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/CombinationActivityController.java",
+    "line": 46,
+    "baseExpression": "\"/mall/promotion/combination-activities\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/CombinationActivityController.java",
+    "line": 53,
+    "baseExpression": "\"/mall/promotion/combination-activities\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/CombinationActivityController.java",
+    "line": 61,
+    "baseExpression": "\"/mall/promotion/combination-activities\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/close\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/CombinationActivityController.java",
+    "line": 68,
+    "baseExpression": "\"/mall/promotion/combination-activities\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/CombinationActivityController.java",
+    "line": 75,
+    "baseExpression": "\"/mall/promotion/combination-activities\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/CombinationActivityController.java",
+    "line": 82,
+    "baseExpression": "\"/mall/promotion/combination-activities\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/CombinationRecordController.java",
+    "line": 29,
+    "baseExpression": "\"/mall/promotion/combination-records\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java",
+    "line": 48,
+    "baseExpression": "\"/mall/promotion/discount-activities\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java",
+    "line": 55,
+    "baseExpression": "\"/mall/promotion/discount-activities\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java",
+    "line": 63,
+    "baseExpression": "\"/mall/promotion/discount-activities\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/close\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java",
+    "line": 70,
+    "baseExpression": "\"/mall/promotion/discount-activities\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java",
+    "line": 77,
+    "baseExpression": "\"/mall/promotion/discount-activities\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java",
+    "line": 84,
+    "baseExpression": "\"/mall/promotion/discount-activities\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyPageController.java",
+    "line": 47,
+    "baseExpression": "\"/mall/promotion/diy-pages\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyPageController.java",
+    "line": 56,
+    "baseExpression": "\"/mall/promotion/diy-pages\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyPageController.java",
+    "line": 63,
+    "baseExpression": "\"/mall/promotion/diy-pages\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyPageController.java",
+    "line": 70,
+    "baseExpression": "\"/mall/promotion/diy-pages\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyPageController.java",
+    "line": 77,
+    "baseExpression": "\"/mall/promotion/diy-pages\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyPageController.java",
+    "line": 84,
+    "baseExpression": "\"/mall/promotion/diy-pages\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/property\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyTemplateController.java",
+    "line": 49,
+    "baseExpression": "\"/mall/promotion/diy-templates\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyTemplateController.java",
+    "line": 59,
+    "baseExpression": "\"/mall/promotion/diy-templates\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyTemplateController.java",
+    "line": 66,
+    "baseExpression": "\"/mall/promotion/diy-templates\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyTemplateController.java",
+    "line": 73,
+    "baseExpression": "\"/mall/promotion/diy-templates\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyTemplateController.java",
+    "line": 80,
+    "baseExpression": "\"/mall/promotion/diy-templates\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/use\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyTemplateController.java",
+    "line": 87,
+    "baseExpression": "\"/mall/promotion/diy-templates\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyTemplateController.java",
+    "line": 94,
+    "baseExpression": "\"/mall/promotion/diy-templates\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/property\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/KefuConversationController.java",
+    "line": 53,
+    "baseExpression": "\"/mall/promotion/kefu-conversations\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/KefuConversationController.java",
+    "line": 60,
+    "baseExpression": "\"/mall/promotion/kefu-conversations\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/KefuConversationController.java",
+    "line": 67,
+    "baseExpression": "\"/mall/promotion/kefu-conversations\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}/messages\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/KefuConversationController.java",
+    "line": 81,
+    "baseExpression": "\"/mall/promotion/kefu-conversations\"",
+    "method": "POST",
+    "pathExpression": "\"/{id}/messages\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/KefuConversationController.java",
+    "line": 88,
+    "baseExpression": "\"/mall/promotion/kefu-conversations\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/read\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/KefuConversationController.java",
+    "line": 95,
+    "baseExpression": "\"/mall/promotion/kefu-conversations\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/pinned\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/KefuConversationController.java",
+    "line": 103,
+    "baseExpression": "\"/mall/promotion/kefu-conversations\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/PointActivityController.java",
+    "line": 46,
+    "baseExpression": "\"/mall/promotion/point-activities\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/PointActivityController.java",
+    "line": 53,
+    "baseExpression": "\"/mall/promotion/point-activities\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/PointActivityController.java",
+    "line": 61,
+    "baseExpression": "\"/mall/promotion/point-activities\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/close\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/PointActivityController.java",
+    "line": 68,
+    "baseExpression": "\"/mall/promotion/point-activities\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/PointActivityController.java",
+    "line": 75,
+    "baseExpression": "\"/mall/promotion/point-activities\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/PointActivityController.java",
+    "line": 82,
+    "baseExpression": "\"/mall/promotion/point-activities\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java",
+    "line": 48,
+    "baseExpression": "\"/mall/promotion/reward-activities\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java",
+    "line": 55,
+    "baseExpression": "\"/mall/promotion/reward-activities\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java",
+    "line": 63,
+    "baseExpression": "\"/mall/promotion/reward-activities\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/close\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java",
+    "line": 70,
+    "baseExpression": "\"/mall/promotion/reward-activities\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java",
+    "line": 77,
+    "baseExpression": "\"/mall/promotion/reward-activities\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java",
+    "line": 84,
+    "baseExpression": "\"/mall/promotion/reward-activities\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillActivityController.java",
+    "line": 46,
+    "baseExpression": "\"/mall/promotion/seckill-activities\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillActivityController.java",
+    "line": 53,
+    "baseExpression": "\"/mall/promotion/seckill-activities\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillActivityController.java",
+    "line": 61,
+    "baseExpression": "\"/mall/promotion/seckill-activities\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/close\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillActivityController.java",
+    "line": 68,
+    "baseExpression": "\"/mall/promotion/seckill-activities\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillActivityController.java",
+    "line": 75,
+    "baseExpression": "\"/mall/promotion/seckill-activities\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillActivityController.java",
+    "line": 82,
+    "baseExpression": "\"/mall/promotion/seckill-activities\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "line": 53,
+    "baseExpression": "\"/mall/promotion/seckill-configs\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "line": 60,
+    "baseExpression": "\"/mall/promotion/seckill-configs\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "line": 68,
+    "baseExpression": "\"/mall/promotion/seckill-configs\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/status\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "line": 76,
+    "baseExpression": "\"/mall/promotion/seckill-configs\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "line": 83,
+    "baseExpression": "\"/mall/promotion/seckill-configs\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "line": 90,
+    "baseExpression": "\"/mall/promotion/seckill-configs\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "line": 100,
+    "baseExpression": "\"/mall/promotion/seckill-configs\"",
+    "method": "GET",
+    "pathExpression": "\"/list\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "line": 107,
+    "baseExpression": "\"/mall/promotion/seckill-configs\"",
+    "method": "GET",
+    "pathExpression": "\"/simple-list\"",
+    "owner": "promotion",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "line": 48,
+    "baseExpression": "\"/trade/app\"",
+    "method": "GET",
+    "pathExpression": "\"/orders/{orderNo}/after-sale-items\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "line": 58,
+    "baseExpression": "\"/trade/app\"",
+    "method": "POST",
+    "pathExpression": "\"/orders/{orderNo}/after-sales\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "line": 76,
+    "baseExpression": "\"/trade/app\"",
+    "method": "GET",
+    "pathExpression": "\"/after-sales\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "line": 93,
+    "baseExpression": "\"/trade/app\"",
+    "method": "GET",
+    "pathExpression": "\"/after-sales/{no}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "line": 101,
+    "baseExpression": "\"/trade/app\"",
+    "method": "POST",
+    "pathExpression": "\"/after-sales/{no}/return\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "line": 112,
+    "baseExpression": "\"/trade/app\"",
+    "method": "POST",
+    "pathExpression": "\"/after-sales/{no}/cancel\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "line": 122,
+    "baseExpression": "\"/trade/app\"",
+    "method": "GET",
+    "pathExpression": "\"/after-sales/{no}/promotions\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/brokerage/AppBrokerageController.java",
+    "line": 43,
+    "baseExpression": "\"/trade/app/brokerage\"",
+    "method": "GET",
+    "pathExpression": "\"/user\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/brokerage/AppBrokerageController.java",
+    "line": 49,
+    "baseExpression": "\"/trade/app/brokerage\"",
+    "method": "POST",
+    "pathExpression": "\"/bind\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/brokerage/AppBrokerageController.java",
+    "line": 55,
+    "baseExpression": "\"/trade/app/brokerage\"",
+    "method": "GET",
+    "pathExpression": "\"/records\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/brokerage/AppBrokerageController.java",
+    "line": 64,
+    "baseExpression": "\"/trade/app/brokerage\"",
+    "method": "GET",
+    "pathExpression": "\"/withdraws\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/brokerage/AppBrokerageController.java",
+    "line": 74,
+    "baseExpression": "\"/trade/app/brokerage\"",
+    "method": "POST",
+    "pathExpression": "\"/withdraws\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/fulfillment/AppDeliveryExpressController.java",
+    "line": 25,
+    "baseExpression": "\"/trade/app/delivery\"",
+    "method": "GET",
+    "pathExpression": "\"/expresses\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "line": 46,
+    "baseExpression": "\"/trade/app/orders\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "line": 63,
+    "baseExpression": "\"/trade/app/orders\"",
+    "method": "GET",
+    "pathExpression": "\"/status-counts\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "line": 72,
+    "baseExpression": "\"/trade/app/orders\"",
+    "method": "GET",
+    "pathExpression": "\"/{orderNo}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "line": 80,
+    "baseExpression": "\"/trade/app/orders\"",
+    "method": "GET",
+    "pathExpression": "\"/{orderNo}/tracks\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "line": 90,
+    "baseExpression": "\"/trade/app/orders\"",
+    "method": "POST",
+    "pathExpression": "\"/{orderNo}/cancel\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "line": 100,
+    "baseExpression": "\"/trade/app/orders\"",
+    "method": "POST",
+    "pathExpression": "\"/{orderNo}/receive\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "line": 111,
+    "baseExpression": "\"/trade/app/orders\"",
+    "method": "GET",
+    "pathExpression": "\"/{orderNo}/promotions\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/payment/AppPaymentChannelController.java",
+    "line": 26,
+    "baseExpression": "\"/trade/app/payment-channels\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/payment/AppPaymentController.java",
+    "line": 36,
+    "baseExpression": "\"/trade/app/orders\"",
+    "method": "GET",
+    "pathExpression": "\"/{orderNo}/payment\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/payment/AppPaymentController.java",
+    "line": 44,
+    "baseExpression": "\"/trade/app/orders\"",
+    "method": "POST",
+    "pathExpression": "\"/{orderNo}/payment\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/payment/AppSandboxPaymentController.java",
+    "line": 25,
+    "baseExpression": "\"/trade/app/payments\"",
+    "method": "POST",
+    "pathExpression": "\"/{paymentNo}/sandbox-pay\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/pickup/AppPickUpStoreController.java",
+    "line": 29,
+    "baseExpression": "\"/trade/app/delivery/pick-up-stores\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/recharge/AppRechargeController.java",
+    "line": 40,
+    "baseExpression": "\"/trade/app\"",
+    "method": "GET",
+    "pathExpression": "\"/recharge-packages\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/recharge/AppRechargeController.java",
+    "line": 47,
+    "baseExpression": "\"/trade/app\"",
+    "method": "POST",
+    "pathExpression": "\"/wallet/recharges\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/recharge/AppRechargeController.java",
+    "line": 55,
+    "baseExpression": "\"/trade/app\"",
+    "method": "GET",
+    "pathExpression": "\"/wallet/recharges\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/wallet/AppWalletController.java",
+    "line": 45,
+    "baseExpression": "\"/trade/app/wallet\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/wallet/AppWalletController.java",
+    "line": 52,
+    "baseExpression": "\"/trade/app/wallet\"",
+    "method": "GET",
+    "pathExpression": "\"/transactions\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/wallet/AppWalletController.java",
+    "line": 69,
+    "baseExpression": "\"/trade/app/wallet\"",
+    "method": "POST",
+    "pathExpression": "\"/transfers\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/wallet/AppWalletController.java",
+    "line": 81,
+    "baseExpression": "\"/trade/app/wallet\"",
+    "method": "GET",
+    "pathExpression": "\"/transfers\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "line": 66,
+    "baseExpression": "\"/trade/admin\"",
+    "method": "POST",
+    "pathExpression": "\"/after-sales/{no}/refund\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "line": 76,
+    "baseExpression": "\"/trade/admin\"",
+    "method": "GET",
+    "pathExpression": "\"/orders/{orderNo}/after-sale-items\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "line": 84,
+    "baseExpression": "\"/trade/admin\"",
+    "method": "POST",
+    "pathExpression": "\"/orders/{orderNo}/after-sales\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "line": 97,
+    "baseExpression": "\"/trade/admin\"",
+    "method": "GET",
+    "pathExpression": "\"/after-sales\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "line": 108,
+    "baseExpression": "\"/trade/admin\"",
+    "method": "GET",
+    "pathExpression": "\"/after-sales/{no}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "line": 117,
+    "baseExpression": "\"/trade/admin\"",
+    "method": "POST",
+    "pathExpression": "\"/after-sales/{no}/agree\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "line": 126,
+    "baseExpression": "\"/trade/admin\"",
+    "method": "POST",
+    "pathExpression": "\"/after-sales/{no}/reject\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "line": 138,
+    "baseExpression": "\"/trade/admin\"",
+    "method": "POST",
+    "pathExpression": "\"/after-sales/{no}/return\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "line": 151,
+    "baseExpression": "\"/trade/admin\"",
+    "method": "POST",
+    "pathExpression": "\"/after-sales/{no}/receive\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "line": 161,
+    "baseExpression": "\"/trade/admin\"",
+    "method": "POST",
+    "pathExpression": "\"/after-sales/{no}/refuse\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "line": 176,
+    "baseExpression": "\"/trade/admin\"",
+    "method": "GET",
+    "pathExpression": "\"/after-sales/{no}/promotions\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleLogController.java",
+    "line": 29,
+    "baseExpression": "\"/trade/admin/after-sales\"",
+    "method": "GET",
+    "pathExpression": "\"/{no}/logs\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/brokerage/BrokerageController.java",
+    "line": 54,
+    "baseExpression": "\"/trade/admin/brokerage\"",
+    "method": "GET",
+    "pathExpression": "\"/users\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/brokerage/BrokerageController.java",
+    "line": 64,
+    "baseExpression": "\"/trade/admin/brokerage\"",
+    "method": "PUT",
+    "pathExpression": "\"/users/{id}/enabled\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/brokerage/BrokerageController.java",
+    "line": 71,
+    "baseExpression": "\"/trade/admin/brokerage\"",
+    "method": "PUT",
+    "pathExpression": "\"/users/{id}/bind\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/brokerage/BrokerageController.java",
+    "line": 78,
+    "baseExpression": "\"/trade/admin/brokerage\"",
+    "method": "GET",
+    "pathExpression": "\"/records\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/brokerage/BrokerageController.java",
+    "line": 88,
+    "baseExpression": "\"/trade/admin/brokerage\"",
+    "method": "GET",
+    "pathExpression": "\"/withdraws\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/brokerage/BrokerageController.java",
+    "line": 98,
+    "baseExpression": "\"/trade/admin/brokerage\"",
+    "method": "POST",
+    "pathExpression": "\"/withdraws/{id}/audit\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/brokerage/BrokerageController.java",
+    "line": 106,
+    "baseExpression": "\"/trade/admin/brokerage\"",
+    "method": "POST",
+    "pathExpression": "\"/unfreeze\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/config/TradeConfigController.java",
+    "line": 34,
+    "baseExpression": "\"/trade/admin/config\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/config/TradeConfigController.java",
+    "line": 42,
+    "baseExpression": "\"/trade/admin/config\"",
+    "method": "PUT",
+    "pathExpression": "\"\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressController.java",
+    "line": 51,
+    "baseExpression": "\"/trade/admin/delivery/expresses\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressController.java",
+    "line": 59,
+    "baseExpression": "\"/trade/admin/delivery/expresses\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressController.java",
+    "line": 68,
+    "baseExpression": "\"/trade/admin/delivery/expresses\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressController.java",
+    "line": 76,
+    "baseExpression": "\"/trade/admin/delivery/expresses\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressController.java",
+    "line": 84,
+    "baseExpression": "\"/trade/admin/delivery/expresses\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressController.java",
+    "line": 97,
+    "baseExpression": "\"/trade/admin/delivery/expresses\"",
+    "method": "GET",
+    "pathExpression": "\"/simple\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressTemplateController.java",
+    "line": 51,
+    "baseExpression": "\"/trade/admin/delivery/templates\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressTemplateController.java",
+    "line": 59,
+    "baseExpression": "\"/trade/admin/delivery/templates\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressTemplateController.java",
+    "line": 68,
+    "baseExpression": "\"/trade/admin/delivery/templates\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressTemplateController.java",
+    "line": 76,
+    "baseExpression": "\"/trade/admin/delivery/templates\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressTemplateController.java",
+    "line": 84,
+    "baseExpression": "\"/trade/admin/delivery/templates\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressTemplateController.java",
+    "line": 98,
+    "baseExpression": "\"/trade/admin/delivery/templates\"",
+    "method": "GET",
+    "pathExpression": "\"/simple\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/FulfillmentOrderController.java",
+    "line": 32,
+    "baseExpression": "\"/trade/admin/orders\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/FulfillmentOrderController.java",
+    "line": 42,
+    "baseExpression": "\"/trade/admin/orders\"",
+    "method": "GET",
+    "pathExpression": "\"/{orderNo}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/FulfillmentOrderController.java",
+    "line": 54,
+    "baseExpression": "\"/trade/admin/orders\"",
+    "method": "GET",
+    "pathExpression": "\"/{orderNo}/promotions\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/ShipmentController.java",
+    "line": 31,
+    "baseExpression": "\"/trade/admin/orders\"",
+    "method": "POST",
+    "pathExpression": "\"/{orderNo}/shipment\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderLogController.java",
+    "line": 29,
+    "baseExpression": "\"/trade/admin/orders\"",
+    "method": "GET",
+    "pathExpression": "\"/{orderNo}/logs\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderManagementController.java",
+    "line": 50,
+    "baseExpression": "\"/trade/admin/orders\"",
+    "method": "GET",
+    "pathExpression": "\"/summary\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderManagementController.java",
+    "line": 58,
+    "baseExpression": "\"/trade/admin/orders\"",
+    "method": "GET",
+    "pathExpression": "\"/{orderNo}/remark\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderManagementController.java",
+    "line": 67,
+    "baseExpression": "\"/trade/admin/orders\"",
+    "method": "PUT",
+    "pathExpression": "\"/{orderNo}/remark\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderManagementController.java",
+    "line": 76,
+    "baseExpression": "\"/trade/admin/orders\"",
+    "method": "POST",
+    "pathExpression": "\"/{orderNo}/price-adjustment\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderManagementController.java",
+    "line": 87,
+    "baseExpression": "\"/trade/admin/orders\"",
+    "method": "PUT",
+    "pathExpression": "\"/{orderNo}/address\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payapp/PayAppController.java",
+    "line": 49,
+    "baseExpression": "\"/trade/admin/pay-apps\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payapp/PayAppController.java",
+    "line": 57,
+    "baseExpression": "\"/trade/admin/pay-apps\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payapp/PayAppController.java",
+    "line": 65,
+    "baseExpression": "\"/trade/admin/pay-apps\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/status\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payapp/PayAppController.java",
+    "line": 74,
+    "baseExpression": "\"/trade/admin/pay-apps\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payapp/PayAppController.java",
+    "line": 82,
+    "baseExpression": "\"/trade/admin/pay-apps\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payapp/PayAppController.java",
+    "line": 91,
+    "baseExpression": "\"/trade/admin/pay-apps\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paychannel/PayChannelConfigController.java",
+    "line": 49,
+    "baseExpression": "\"/trade/admin/pay-channels\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paychannel/PayChannelConfigController.java",
+    "line": 57,
+    "baseExpression": "\"/trade/admin/pay-channels\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paychannel/PayChannelConfigController.java",
+    "line": 65,
+    "baseExpression": "\"/trade/admin/pay-channels\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paychannel/PayChannelConfigController.java",
+    "line": 73,
+    "baseExpression": "\"/trade/admin/pay-channels\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paychannel/PayChannelConfigController.java",
+    "line": 82,
+    "baseExpression": "\"/trade/admin/pay-channels\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paychannel/PayChannelConfigController.java",
+    "line": 93,
+    "baseExpression": "\"/trade/admin/pay-channels\"",
+    "method": "GET",
+    "pathExpression": "\"/by-app/{appId}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payment/PaymentChannelController.java",
+    "line": 28,
+    "baseExpression": "\"/trade/admin/payment-channels\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payment/PaymentController.java",
+    "line": 35,
+    "baseExpression": "\"/trade/admin/payments\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payment/PaymentController.java",
+    "line": 46,
+    "baseExpression": "\"/trade/admin/payments\"",
+    "method": "GET",
+    "pathExpression": "\"/{no}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payment/PaymentNotifyController.java",
+    "line": 26,
+    "baseExpression": "\"/trade/payment/notify\"",
+    "method": "POST",
+    "pathExpression": "\"/{appKey}/{channel}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paymentrefund/PaymentRefundController.java",
+    "line": 35,
+    "baseExpression": "\"/trade/admin/payment-refunds\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paymentrefund/PaymentRefundController.java",
+    "line": 46,
+    "baseExpression": "\"/trade/admin/payment-refunds\"",
+    "method": "GET",
+    "pathExpression": "\"/{no}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paynotify/PayNotifyTaskController.java",
+    "line": 37,
+    "baseExpression": "\"/trade/admin/pay-notify-tasks\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paynotify/PayNotifyTaskController.java",
+    "line": 48,
+    "baseExpression": "\"/trade/admin/pay-notify-tasks\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paynotify/PayNotifyTaskController.java",
+    "line": 57,
+    "baseExpression": "\"/trade/admin/pay-notify-tasks\"",
+    "method": "POST",
+    "pathExpression": "\"/{id}/retry\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpOrderController.java",
+    "line": 38,
+    "baseExpression": "\"/trade/admin/orders/pick-up\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpOrderController.java",
+    "line": 49,
+    "baseExpression": "\"/trade/admin/orders/pick-up\"",
+    "method": "GET",
+    "pathExpression": "\"/{code}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpOrderController.java",
+    "line": 56,
+    "baseExpression": "\"/trade/admin/orders/pick-up\"",
+    "method": "POST",
+    "pathExpression": "\"/{code}/verify\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpStoreController.java",
+    "line": 47,
+    "baseExpression": "\"/trade/admin/delivery/pick-up-stores\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpStoreController.java",
+    "line": 57,
+    "baseExpression": "\"/trade/admin/delivery/pick-up-stores\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpStoreController.java",
+    "line": 64,
+    "baseExpression": "\"/trade/admin/delivery/pick-up-stores\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpStoreController.java",
+    "line": 71,
+    "baseExpression": "\"/trade/admin/delivery/pick-up-stores\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpStoreController.java",
+    "line": 78,
+    "baseExpression": "\"/trade/admin/delivery/pick-up-stores\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}/verify-users\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpStoreController.java",
+    "line": 85,
+    "baseExpression": "\"/trade/admin/delivery/pick-up-stores\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/RechargePackageController.java",
+    "line": 44,
+    "baseExpression": "\"/trade/admin/recharge-packages\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/RechargePackageController.java",
+    "line": 54,
+    "baseExpression": "\"/trade/admin/recharge-packages\"",
+    "method": "GET",
+    "pathExpression": "\"/{id}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/RechargePackageController.java",
+    "line": 62,
+    "baseExpression": "\"/trade/admin/recharge-packages\"",
+    "method": "POST",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/RechargePackageController.java",
+    "line": 69,
+    "baseExpression": "\"/trade/admin/recharge-packages\"",
+    "method": "PUT",
+    "pathExpression": "\"/{id}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/RechargePackageController.java",
+    "line": 77,
+    "baseExpression": "\"/trade/admin/recharge-packages\"",
+    "method": "DELETE",
+    "pathExpression": "\"/{id}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/WalletRechargeController.java",
+    "line": 39,
+    "baseExpression": "\"/trade/admin/wallet-recharges\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/WalletRechargeController.java",
+    "line": 49,
+    "baseExpression": "\"/trade/admin/wallet-recharges\"",
+    "method": "GET",
+    "pathExpression": "\"/{rechargeNo}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/WalletRechargeController.java",
+    "line": 57,
+    "baseExpression": "\"/trade/admin/wallet-recharges\"",
+    "method": "POST",
+    "pathExpression": "\"/{rechargeNo}/confirm\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/WalletRechargeController.java",
+    "line": 65,
+    "baseExpression": "\"/trade/admin/wallet-recharges\"",
+    "method": "POST",
+    "pathExpression": "\"/{rechargeNo}/refund\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/shipment/ShipmentQueryController.java",
+    "line": 39,
+    "baseExpression": "\"/trade/admin/shipments\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/shipment/ShipmentQueryController.java",
+    "line": 50,
+    "baseExpression": "\"/trade/admin/shipments\"",
+    "method": "GET",
+    "pathExpression": "\"/{orderNo}\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/shipment/ShipmentQueryController.java",
+    "line": 59,
+    "baseExpression": "\"/trade/admin/shipments\"",
+    "method": "GET",
+    "pathExpression": "\"/{orderNo}/tracks\"",
+    "owner": "order",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/wallet/WalletController.java",
+    "line": 42,
+    "baseExpression": "\"/trade/admin/wallets\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/wallet/WalletController.java",
+    "line": 53,
+    "baseExpression": "\"/trade/admin/wallets\"",
+    "method": "GET",
+    "pathExpression": "\"/{memberId}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/wallet/WalletController.java",
+    "line": 62,
+    "baseExpression": "\"/trade/admin/wallets\"",
+    "method": "GET",
+    "pathExpression": "\"/{memberId}/transactions\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/wallet/WalletController.java",
+    "line": 74,
+    "baseExpression": "\"/trade/admin/wallets\"",
+    "method": "POST",
+    "pathExpression": "\"/{memberId}/adjust\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/wallet/WalletTransferController.java",
+    "line": 32,
+    "baseExpression": "\"/trade/admin/wallet-transfers\"",
+    "method": "GET",
+    "pathExpression": "\"\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/wallet/WalletTransferController.java",
+    "line": 42,
+    "baseExpression": "\"/trade/admin/wallet-transfers\"",
+    "method": "GET",
+    "pathExpression": "\"/{transferNo}\"",
+    "owner": "pay",
+    "contract": "路径/参数/返回/权限/登录规则保持，原Req/Res为字段契约来源"
+  }
+]

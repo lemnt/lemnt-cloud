@@ -1,9 +1,9 @@
 {
   "requirement": {
     "name": "member-domain-structure",
-    "description": "第164批订单促销快照与部分退款代码交付完成；第165批全项目规范重构、注解短名统一及本地验证完成，见对应分析/交付报告。现有数据库执行与真实环境验收未完成，review/retrospective不自动完成。",
+    "description": "第164/165批代码与规范交付完成；第166批member/mall/trade SQL单文件整合完成，system不调整，630项后端及9项SQL工具测试通过。既有库执行与目标环境验收单列未完成；review/retrospective不自动完成。",
     "createdAt": "2026-11-02T17:41:47+08:00",
-    "updatedAt": "2026-11-03T09:33:29+08:00"
+    "updatedAt": "2026-11-03T10:39:44+08:00"
   },
   "phases": {
     "entry": {

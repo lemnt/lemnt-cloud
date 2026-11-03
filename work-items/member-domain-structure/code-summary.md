@@ -164,3 +164,7 @@
 ## 第165批统一规范续更
 
 用户随后授权全项目批量重构并要求注解使用短名。完整路径、类型和关键改动见[第165批文件清单](165-project-code-standards-files.md)及其机器清单；验证见[第165批交付](165-project-code-standards-delivery.md)。原第164批业务文件继续保留，不将格式变化误记为新增功能。
+
+## 第166批SQL入口续更
+
+member、mall、trade各只保留sql/lemnt_member.sql、sql/lemnt_mall.sql、sql/lemnt_trade.sql；上方历史清单内的V*、upgrade及结构草案SQL已被替代。system SQL不调整。见[本批交付及完整文件清单](166-database-initialization-delivery.md)。

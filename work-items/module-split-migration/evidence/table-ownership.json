@@ -1,0 +1,945 @@
+[
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 4,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_product_stock_reservation",
+    "targetDatabase": "lemnt_product",
+    "targetTable": "product_stock_reservation",
+    "owner": "product",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 21,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_product_category",
+    "targetDatabase": "lemnt_product",
+    "targetTable": "product_category",
+    "owner": "product",
+    "foreignKeys": [
+      {
+        "constraint": "fk_mall_category_parent",
+        "references": "mall_product_category",
+        "targetTable": "product_category",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 33,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_product_brand",
+    "targetDatabase": "lemnt_product",
+    "targetTable": "product_brand",
+    "owner": "product",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 43,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_cart",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_cart",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 54,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_coupon_template",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_coupon_template",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 89,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_reward_activity",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_reward_activity",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 106,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_discount_activity",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_discount_activity",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 117,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_product_spec",
+    "targetDatabase": "lemnt_product",
+    "targetTable": "product_spec",
+    "owner": "product",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 128,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_product_favorite",
+    "targetDatabase": "lemnt_product",
+    "targetTable": "product_favorite",
+    "owner": "product",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 142,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_product_browse_history",
+    "targetDatabase": "lemnt_product",
+    "targetTable": "product_browse_history",
+    "owner": "product",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 157,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_seckill_config",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_seckill_config",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 168,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_seckill_activity",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_seckill_activity",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 187,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_combination_activity",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_combination_activity",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 205,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_combination_record",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_combination_record",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 233,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_bargain_activity",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_bargain_activity",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 257,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_point_activity",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_point_activity",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 269,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_order",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_activity",
+    "owner": "order",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 297,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_order_refund",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_activity_refund",
+    "owner": "order",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 308,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_banner",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_banner",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 324,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_kefu_conversation",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_kefu_conversation",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 337,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_kefu_message",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_kefu_message",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 352,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_diy_template",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_diy_template",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 364,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_diy_page",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_diy_page",
+    "owner": "promotion",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 374,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_product_spu",
+    "targetDatabase": "lemnt_product",
+    "targetTable": "product_spu",
+    "owner": "product",
+    "foreignKeys": [
+      {
+        "constraint": "fk_mall_spu_category",
+        "references": "mall_product_category",
+        "targetTable": "product_category",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      },
+      {
+        "constraint": "fk_mall_spu_brand",
+        "references": "mall_product_brand",
+        "targetTable": "product_brand",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 396,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_coupon",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_coupon",
+    "owner": "promotion",
+    "foreignKeys": [
+      {
+        "constraint": "fk_trade_coupon_template",
+        "references": "mall_coupon_template",
+        "targetTable": "promotion_coupon_template",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 431,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_discount_product",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_discount_product",
+    "owner": "promotion",
+    "foreignKeys": [
+      {
+        "constraint": "fk_discount_activity",
+        "references": "mall_promotion_discount_activity",
+        "targetTable": "promotion_discount_activity",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 445,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_product_spec_value",
+    "targetDatabase": "lemnt_product",
+    "targetTable": "product_spec_value",
+    "owner": "product",
+    "foreignKeys": [
+      {
+        "constraint": "fk_mall_product_spec_value",
+        "references": "mall_product_spec",
+        "targetTable": "product_spec",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 458,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_seckill_product",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_seckill_product",
+    "owner": "promotion",
+    "foreignKeys": [
+      {
+        "constraint": "fk_seckill_product_activity",
+        "references": "mall_promotion_seckill_activity",
+        "targetTable": "promotion_seckill_activity",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 476,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_combination_product",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_combination_product",
+    "owner": "promotion",
+    "foreignKeys": [
+      {
+        "constraint": "fk_combination_product_activity",
+        "references": "mall_promotion_combination_activity",
+        "targetTable": "promotion_combination_activity",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 490,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_bargain_record",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_bargain_record",
+    "owner": "promotion",
+    "foreignKeys": [
+      {
+        "constraint": "fk_bargain_record_activity",
+        "references": "mall_promotion_bargain_activity",
+        "targetTable": "promotion_bargain_activity",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 507,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_point_product",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_point_product",
+    "owner": "promotion",
+    "foreignKeys": [
+      {
+        "constraint": "fk_point_product_activity",
+        "references": "mall_promotion_point_activity",
+        "targetTable": "promotion_point_activity",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 525,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_order_item",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_activity_item",
+    "owner": "order",
+    "foreignKeys": [
+      {
+        "constraint": "fk_promotion_order_item_order",
+        "references": "mall_promotion_order",
+        "targetTable": "order_activity",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 542,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_product_sku",
+    "targetDatabase": "lemnt_product",
+    "targetTable": "product_sku",
+    "owner": "product",
+    "foreignKeys": [
+      {
+        "constraint": "fk_mall_product_spu",
+        "references": "mall_product_spu",
+        "targetTable": "product_spu",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 569,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_promotion_bargain_help",
+    "targetDatabase": "lemnt_promotion",
+    "targetTable": "promotion_bargain_help",
+    "owner": "promotion",
+    "foreignKeys": [
+      {
+        "constraint": "fk_bargain_help_record",
+        "references": "mall_promotion_bargain_record",
+        "targetTable": "promotion_bargain_record",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "sourceLine": 581,
+    "sourceDatabase": "lemnt_mall",
+    "sourceTable": "mall_product_comment",
+    "targetDatabase": "lemnt_product",
+    "targetTable": "product_comment",
+    "owner": "product",
+    "foreignKeys": [
+      {
+        "constraint": "fk_mall_comment_spu",
+        "references": "mall_product_spu",
+        "targetTable": "product_spu",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      },
+      {
+        "constraint": "fk_mall_comment_sku",
+        "references": "mall_product_sku",
+        "targetTable": "product_sku",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 4,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_order",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_info",
+    "owner": "order",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 49,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_payment",
+    "targetDatabase": "lemnt_pay",
+    "targetTable": "pay_payment",
+    "owner": "pay",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 72,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_delivery_express",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_delivery_express",
+    "owner": "order",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 88,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_delivery_express_template",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_delivery_express_template",
+    "owner": "order",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 102,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_pay_app",
+    "targetDatabase": "lemnt_pay",
+    "targetTable": "pay_app",
+    "owner": "pay",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 119,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_pay_notify_task",
+    "targetDatabase": "lemnt_pay",
+    "targetTable": "pay_notify_task",
+    "owner": "pay",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 141,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_member_wallet",
+    "targetDatabase": "lemnt_pay",
+    "targetTable": "pay_wallet",
+    "owner": "pay",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 160,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_pay_recharge_package",
+    "targetDatabase": "lemnt_pay",
+    "targetTable": "pay_recharge_package",
+    "owner": "pay",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 177,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_brokerage_user",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_brokerage_user",
+    "owner": "order",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 189,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_brokerage_record",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_brokerage_record",
+    "owner": "order",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 210,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_brokerage_withdraw",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_brokerage_withdraw",
+    "owner": "order",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 232,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_delivery_pick_up_store",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_delivery_pick_up_store",
+    "owner": "order",
+    "foreignKeys": []
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 250,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_order_item",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_item",
+    "owner": "order",
+    "foreignKeys": [
+      {
+        "constraint": "fk_trade_order_item_order",
+        "references": "trade_order",
+        "targetTable": "order_info",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 289,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_inventory_confirmation",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_inventory_confirmation",
+    "owner": "order",
+    "foreignKeys": [
+      {
+        "constraint": "fk_trade_inventory_confirmation_order",
+        "references": "trade_order",
+        "targetTable": "order_info",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 295,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_shipment",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_shipment",
+    "owner": "order",
+    "foreignKeys": [
+      {
+        "constraint": "fk_trade_shipment_order",
+        "references": "trade_order",
+        "targetTable": "order_info",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 309,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_delivery_express_template_charge",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_delivery_express_template_charge",
+    "owner": "order",
+    "foreignKeys": [
+      {
+        "constraint": "fk_delivery_charge_template",
+        "references": "trade_delivery_express_template",
+        "targetTable": "order_delivery_express_template",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 328,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_delivery_express_template_free",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_delivery_express_template_free",
+    "owner": "order",
+    "foreignKeys": [
+      {
+        "constraint": "fk_delivery_free_template",
+        "references": "trade_delivery_express_template",
+        "targetTable": "order_delivery_express_template",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 344,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_order_log",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_log",
+    "owner": "order",
+    "foreignKeys": [
+      {
+        "constraint": "fk_trade_order_log_order",
+        "references": "trade_order",
+        "targetTable": "order_info",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 362,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_pay_channel",
+    "targetDatabase": "lemnt_pay",
+    "targetTable": "pay_channel",
+    "owner": "pay",
+    "foreignKeys": [
+      {
+        "constraint": "fk_trade_pay_channel_app",
+        "references": "trade_pay_app",
+        "targetTable": "pay_app",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 382,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_pay_notify_log",
+    "targetDatabase": "lemnt_pay",
+    "targetTable": "pay_notify_log",
+    "owner": "pay",
+    "foreignKeys": [
+      {
+        "constraint": "fk_trade_pay_notify_log_task",
+        "references": "trade_pay_notify_task",
+        "targetTable": "pay_notify_task",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 397,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_member_wallet_transaction",
+    "targetDatabase": "lemnt_pay",
+    "targetTable": "pay_wallet_transaction",
+    "owner": "pay",
+    "foreignKeys": [
+      {
+        "constraint": "fk_wallet_tx_wallet",
+        "references": "trade_member_wallet",
+        "targetTable": "pay_wallet",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 417,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_pay_wallet_recharge",
+    "targetDatabase": "lemnt_pay",
+    "targetTable": "pay_wallet_recharge",
+    "owner": "pay",
+    "foreignKeys": [
+      {
+        "constraint": "fk_wallet_recharge_wallet",
+        "references": "trade_member_wallet",
+        "targetTable": "pay_wallet",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 444,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_member_wallet_transfer",
+    "targetDatabase": "lemnt_pay",
+    "targetTable": "pay_wallet_transfer",
+    "owner": "pay",
+    "foreignKeys": [
+      {
+        "constraint": "fk_wallet_transfer_from",
+        "references": "trade_member_wallet",
+        "targetTable": "pay_wallet",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      },
+      {
+        "constraint": "fk_wallet_transfer_to",
+        "references": "trade_member_wallet",
+        "targetTable": "pay_wallet",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 470,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_order_promotion",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_promotion",
+    "owner": "order",
+    "foreignKeys": [
+      {
+        "constraint": "fk_trade_order_promotion_order",
+        "references": "trade_order",
+        "targetTable": "order_info",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 497,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_after_sale",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_after_sale",
+    "owner": "order",
+    "foreignKeys": [
+      {
+        "constraint": "fk_trade_refund_order",
+        "references": "trade_order",
+        "targetTable": "order_info",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      },
+      {
+        "constraint": "fk_trade_refund_item",
+        "references": "trade_order_item",
+        "targetTable": "order_item",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      },
+      {
+        "constraint": "fk_trade_refund_payment",
+        "references": "trade_payment",
+        "targetTable": "pay_payment",
+        "crossDatabase": true,
+        "action": "删除跨库物理约束，保留字段并由RPC校验"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 555,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_order_item_promotion",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_item_promotion",
+    "owner": "order",
+    "foreignKeys": [
+      {
+        "constraint": "fk_trade_item_promotion_header",
+        "references": "trade_order_promotion",
+        "targetTable": "order_promotion",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      },
+      {
+        "constraint": "fk_trade_item_promotion_item",
+        "references": "trade_order_item",
+        "targetTable": "order_item",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 578,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_payment_refund",
+    "targetDatabase": "lemnt_pay",
+    "targetTable": "pay_payment_refund",
+    "owner": "pay",
+    "foreignKeys": [
+      {
+        "constraint": "fk_payment_refund_after_sale",
+        "references": "trade_after_sale",
+        "targetTable": "order_after_sale",
+        "crossDatabase": true,
+        "action": "删除跨库物理约束，保留字段并由RPC校验"
+      },
+      {
+        "constraint": "fk_payment_refund_payment",
+        "references": "trade_payment",
+        "targetTable": "pay_payment",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      },
+      {
+        "constraint": "fk_payment_refund_order",
+        "references": "trade_order",
+        "targetTable": "order_info",
+        "crossDatabase": true,
+        "action": "删除跨库物理约束，保留字段并由RPC校验"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 601,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_after_sale_log",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_after_sale_log",
+    "owner": "order",
+    "foreignKeys": [
+      {
+        "constraint": "fk_trade_after_sale_log_order",
+        "references": "trade_after_sale",
+        "targetTable": "order_after_sale",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  },
+  {
+    "sourceFile": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "sourceLine": 619,
+    "sourceDatabase": "lemnt_trade",
+    "sourceTable": "trade_order_promotion_refund",
+    "targetDatabase": "lemnt_order",
+    "targetTable": "order_promotion_refund",
+    "owner": "order",
+    "foreignKeys": [
+      {
+        "constraint": "fk_trade_promotion_refund_after_sale",
+        "references": "trade_after_sale",
+        "targetTable": "order_after_sale",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      },
+      {
+        "constraint": "fk_trade_promotion_refund_source",
+        "references": "trade_order_item_promotion",
+        "targetTable": "order_item_promotion",
+        "crossDatabase": false,
+        "action": "保留并重命名本库约束"
+      }
+    ]
+  }
+]

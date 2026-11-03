@@ -1,0 +1,1 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion><parent><groupId>com.lemnt</groupId><artifactId>lemnt-server</artifactId><version>1.0.0-SNAPSHOT</version></parent><artifactId>lemnt-order</artifactId><packaging>pom</packaging><modules><module>lemnt-order-client</module></modules></project>

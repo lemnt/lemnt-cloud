@@ -21,7 +21,7 @@
 
 | 编号 | 文件 | 操作 | 复杂度 | 前置依赖 | 估计耗时 | 完成要求 | 状态 |
 |---|---|---|---|---|---|---|---|
-| 1 | [已整合，查看最终建表](../../lemnt-server/lemnt-trade/sql/lemnt_trade.sql) | 新增 | ★★☆ | 无 | 20–45min | 新库V18建三表，已有库独立upgrade增量DDL；未执行真实库 | ✅ 完成（代码/本地） |
+| 1 | [lemnt-server/lemnt-trade/sql/lemnt_trade.sql](../../lemnt-server/lemnt-trade/sql/lemnt_trade.sql) | 新增 | ★★☆ | 无 | 20–45min | 第166批已整合为最终单文件建表，不再保留upgrade SQL；未执行真实库 | ✅ 完成（代码/本地） |
 | 2 | [lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrder.java](/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrder.java) | 修改 | ★★☆ | 1 | 20–45min | 金额汇总、完整性/版本 | ✅ 完成（代码/本地） |
 | 3 | [lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrderItem.java](/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrderItem.java) | 修改 | ★★☆ | 1 | 20–45min | 行优惠/积分及已退数量；不加退款中数量或退款单价字段 | ✅ 完成（代码/本地） |
 | 4 | [lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/aftersale/model/AfterSale.java](/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/aftersale/model/AfterSale.java) | 修改 | ★★☆ | 1 | 20–45min | 冻结优惠归因、积分和退款规则版本 | ✅ 完成（代码/本地） |
@@ -145,3 +145,5 @@ P6 验证与迁移准备 ← P5 查询与页面 ← P4 退款与可靠执行
 5. MySQL锁与DDL、真实HTTP、支付渠道和会员账户对账单列证据；未运行就标未验证。
 
 任务拆解与代码生成已完成；真实环境闸门5未运行，不计入已通过验收。
+
+第166批续更：上述SQL任务已切换到三个服务唯一初始化文件，具体见166交付；system保持原样。原升级专项测试已改为最终结构/历史记录兼容验证，不再维护已移除迁移实现。

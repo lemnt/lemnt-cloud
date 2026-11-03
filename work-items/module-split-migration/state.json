@@ -3,15 +3,36 @@
     "name": "module-split-migration",
     "description": "将 mall + trade 拆分为 product + promotion + order + pay 四个独立模块，引入 MQ 实现异步解耦",
     "createdAt": "2026-11-03T10:00:00+08:00",
-    "updatedAt": "2026-11-03T10:00:00+08:00"
+    "updatedAt": "2026-11-03T11:21:20+08:00"
   },
   "phases": {
-    "entry": { "status": "completed", "output": null },
-    "requirement": { "status": "completed", "output": "migration-plan.md" },
-    "design": { "status": "pending", "output": null },
-    "task": { "status": "pending", "output": null },
-    "generate": { "status": "pending", "output": null },
-    "review": { "status": "pending", "output": null },
-    "retrospective": { "status": "pending", "output": null }
+    "entry": {
+      "status": "completed",
+      "output": null
+    },
+    "requirement": {
+      "status": "completed",
+      "output": "migration-plan.md"
+    },
+    "design": {
+      "status": "completed",
+      "output": "design.md"
+    },
+    "task": {
+      "status": "completed",
+      "output": "tasks.md"
+    },
+    "generate": {
+      "status": "in_progress",
+      "output": "code-summary.md"
+    },
+    "review": {
+      "status": "pending",
+      "output": null
+    },
+    "retrospective": {
+      "status": "pending",
+      "output": null
+    }
   }
 }

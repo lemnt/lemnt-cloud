@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.lemnt</groupId>
+        <artifactId>lemnt-server</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>lemnt-promotion</artifactId>
+    <packaging>pom</packaging>
+    <description>Mall product bounded context</description>
+    <modules>
+        <module>lemnt-promotion-client</module>
+        <module>lemnt-promotion-adapter</module>
+        <module>lemnt-promotion-application</module>
+        <module>lemnt-promotion-domain</module>
+        <module>lemnt-promotion-infrastructure</module>
+        <module>lemnt-promotion-start</module>
+    </modules>
+</project>

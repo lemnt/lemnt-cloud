@@ -5,6 +5,8 @@
 - [分析与开发设计](03-development-design.md)
 - [实现与验证](05-development.md)
 
+2026-11-03 第166批：member/mall/trade SQL各收敛为一个最终初始化文件，system不调整。保留81表/931列的结构、索引、外键、检查和注释，移除三个服务旧V*与upgrade SQL；没有增加业务演示数据。独立H2新旧结构比对一致，630项后端与9项SQL工具测试通过。见[交付](166-database-initialization-delivery.md)、[初始化入口](../../docs/database-initialization.md)、[证据](evidence/database-initialization-verification.json)。未执行实库DDL；并行监控改动不计入本批。
+
 2026-11-03 第165批：全项目规范批量重构完成。3001个Java文件格式与导入统一，255处注解改短名；19个Mapper的68个默认方法及3个条件方法迁回Gateway，15处注解SQL移至XML。修复角色撤销参数反置和BigInteger精度缺陷，补HTTP边界及规范工具。后端/公共组件835、管理端320、小程序179、工具17项测试通过，全后端clean打包、前端类型/lint/format/build通过。见[全项目分析](165-project-code-standards-analysis.md)、[交付](165-project-code-standards-delivery.md)、[清单](165-project-code-standards-files.md)、[统一规范](../../docs/code-standards.md)。未执行现有库DDL与真实环境验收，未commit。
 
 2026-11-03 第164批：订单促销快照与按数量部分退款代码完成。trade保存三张优惠结果表，锁订单后限制单笔处理中，退单创建时冻结单件金额与末次尾差，成功后累计已退数量；零现金份额无虚假渠道退款。trade310/mall197/member122、React320、小程序179项通过。见[设计](164-order-promotion-refund-design.md)、[交付](164-order-promotion-refund-delivery.md)、[代码清单](code-summary.md)、[正式任务](tasks.md)、[迁移说明](../../docs/order-promotion-refund-migration.md)。未执行现有数据库迁移、部署和真实环境验收，未commit。

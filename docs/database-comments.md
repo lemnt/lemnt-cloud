@@ -50,6 +50,6 @@ python3 -B lemnt-server/sql/schema_comments.py --domain member --database lemnt_
 
 ## 本地库实际执行记录（2026-11-02）
 
-已按用户授权在Docker mysql8的四个lemnt库执行，补62处表注释、860处字段注释。实际97表/1069字段的注释缺失已归零。库中保留的member_config/trade_config已通过schema-comments-legacy.json登记，已有库模式会一并处理；初始化覆盖检查仍只统计当前95张表。
+已按用户授权在Docker mysql8的四个lemnt库执行，补62处表注释、860处字段注释。实际97表/1069字段的注释缺失已归零。库中保留的member_config/trade_config已通过schema-comments-legacy.json登记，已有库模式会一并处理；当时初始化覆盖检查为95张表；当前98表/1100字段以本页上方及工具输出为准。
 
 建表定义快照、计划及复查结果保存在 `/private/tmp/lemnt-schema-comments-20261102/`。逐列属性保持，已有非空注释保留；MySQL对8张表CHECK中的ASCII字面量做了字符集标记规范化，已单独核对约束逻辑相同。未执行其他结构迁移或部署。
