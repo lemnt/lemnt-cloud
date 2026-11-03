@@ -43,8 +43,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/mall/comments")
 @RequiredArgsConstructor
 public class CommentController {
-    private final CommentSelfCreateCmdExe
-            commentSelfCreateCmdExe;
+    private final CommentSelfCreateCmdExe commentSelfCreateCmdExe;
     private final CommentPageQueryExe commentPageQueryExe;
     private final CommentDetailQueryExe commentDetailQueryExe;
     private final CommentReplyCmdExe commentReplyCmdExe;
@@ -54,9 +53,7 @@ public class CommentController {
     @PostMapping
     @Operation(summary = "添加后台自评")
     @RequiresPermissions("mall:comment:create")
-    public R<CommentSelfCreateRes> create(
-            @Valid @RequestBody
-                    CommentSelfCreateReq req) {
+    public R<CommentSelfCreateRes> create(@Valid @RequestBody CommentSelfCreateReq req) {
         var id =
                 commentSelfCreateCmdExe.execute(
                         new CommentSelfCreateCmd(

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.order.infrastructure.event.mapper.MessageOutboxMapper">
+    <insert id="insertIfAbsent">
+        INSERT INTO order_message_outbox(event_no,event_type,business_key,aggregate_no,schema_version,payload,payload_hash)
+        VALUES(#{eventNo},#{eventType},#{businessKey},#{aggregateNo},#{schemaVersion},#{payload},#{payloadHash})
+        ON DUPLICATE KEY UPDATE event_no=event_no
+    </insert>
+    <select id="lockBusiness" resultType="com.lemnt.order.infrastructure.event.dataobject.MessageOutboxDO" useCache="false" flushCache="true">
+        SELECT * FROM order_message_outbox WHERE event_type=#{type} AND business_key=#{key} FOR UPDATE
+    </select>
+    <select id="lockDue" resultType="com.lemnt.order.infrastructure.event.dataobject.MessageOutboxDO" useCache="false" flushCache="true">
+        SELECT * FROM order_message_outbox WHERE next_retry_at &lt;= CURRENT_TIMESTAMP
+        AND (status='PENDING' OR (status='SENDING' AND lease_until &lt;= CURRENT_TIMESTAMP))
+        ORDER BY id LIMIT #{size} FOR UPDATE
+    </select>
+    <update id="claim">
+        UPDATE order_message_outbox SET status='SENDING', attempts=attempts+1,
+        execute_version=execute_version+1,lease_until=TIMESTAMPADD(SECOND,120,CURRENT_TIMESTAMP),update_time=CURRENT_TIMESTAMP
+        WHERE id=#{id} AND execute_version=#{version}
+        AND (status='PENDING' OR (status='SENDING' AND lease_until &lt;= CURRENT_TIMESTAMP))
+    </update>
+    <update id="sent">
+        UPDATE order_message_outbox SET status='SENT',lease_until=NULL,last_error=NULL,update_time=CURRENT_TIMESTAMP
+        WHERE id=#{id} AND execute_version=#{version} AND status='SENDING' AND lease_until &gt; CURRENT_TIMESTAMP
+    </update>
+    <update id="failed">
+        UPDATE order_message_outbox SET status=#{status},last_error=#{error},lease_until=NULL,
+        next_retry_at=TIMESTAMPADD(SECOND,#{delay},CURRENT_TIMESTAMP),update_time=CURRENT_TIMESTAMP
+        WHERE id=#{id} AND execute_version=#{version} AND status='SENDING' AND lease_until &gt; CURRENT_TIMESTAMP
+    </update>
+    <update id="retryFailed">
+        UPDATE order_message_outbox SET status='PENDING',attempts=0,execute_version=execute_version+1,
+        next_retry_at=CURRENT_TIMESTAMP,lease_until=NULL,last_error=NULL,update_time=CURRENT_TIMESTAMP
+        WHERE event_no=#{eventNo} AND status='FAILED'
+    </update>
+    <update id="replay">
+        UPDATE order_message_outbox SET status='PENDING',attempts=0,execute_version=execute_version+1,
+        next_retry_at=CURRENT_TIMESTAMP,lease_until=NULL,last_error=NULL,update_time=CURRENT_TIMESTAMP
+        WHERE event_type=#{type} AND business_key=#{key} AND
+        (status IN ('SENT','FAILED','PENDING') OR (status='SENDING' AND lease_until &lt;= CURRENT_TIMESTAMP))
+    </update>
+</mapper>

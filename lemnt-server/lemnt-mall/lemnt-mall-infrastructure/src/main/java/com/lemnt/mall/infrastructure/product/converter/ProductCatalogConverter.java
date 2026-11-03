@@ -96,8 +96,7 @@ public final class ProductCatalogConverter {
                         : values.stream()
                                 .map(
                                         property ->
-                                                new com.lemnt.mall.domain.product.model
-                                                        .ProductSkuSpec(
+                                                new ProductSkuSpec(
                                                         property.specId(),
                                                         property.specName(),
                                                         property.specValueId(),
@@ -181,9 +180,6 @@ public final class ProductCatalogConverter {
 
     /** SKU规格仅从其JSON读取，不补字典现值或猜测旧编号。 */
     public static List<ProductSkuSpec> specs(String json) {
-        return json == null
-                ? List.of()
-                : SpecSnapshotJson.read(
-                        json, ProductSkuSpec.class);
+        return json == null ? List.of() : SpecSnapshotJson.read(json, ProductSkuSpec.class);
     }
 }

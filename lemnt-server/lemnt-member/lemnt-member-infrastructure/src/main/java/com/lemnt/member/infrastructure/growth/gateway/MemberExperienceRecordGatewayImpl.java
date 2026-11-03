@@ -32,8 +32,7 @@ public class MemberExperienceRecordGatewayImpl implements MemberExperienceRecord
 
     @Override
     public void save(AssetRecord record) {
-        if (!"EXPERIENCE".equals(record.assetType()))
-            throw new ServiceException("账本资产类型不匹配", 400);
+        if (!"EXPERIENCE".equals(record.assetType())) throw new ServiceException("账本资产类型不匹配", 400);
         mapper.insert(ExperienceRecordConverter.toDO(record));
     }
 

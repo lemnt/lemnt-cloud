@@ -30,10 +30,7 @@ class MemberOrderQueryTest {
     final MemberOrderPageQueryExe pageQuery = new MemberOrderPageQueryExe(orders, persistence);
     final OrderDetailQueryExe detail = mock(OrderDetailQueryExe.class);
     final MemberOrderDetailQueryExe detailQuery =
-            new MemberOrderDetailQueryExe(
-                    detail,
-                    persistence,
-                    mock(PickUpStoreGateway.class));
+            new MemberOrderDetailQueryExe(detail, persistence, mock(PickUpStoreGateway.class));
     final MemberOrderStatusCountQueryExe countQuery = new MemberOrderStatusCountQueryExe(orders);
 
     @Test

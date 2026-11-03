@@ -128,14 +128,8 @@ class PickUpOrderCreateTest {
                                 null));
         var format = DateTimeFormatter.ofPattern("HH:mm:ss");
         var now = LocalTime.now();
-        String open =
-                now.isBefore(LocalTime.NOON)
-                        ? "23:59:59"
-                        : format.format(now.minusHours(1));
-        String close =
-                now.isBefore(LocalTime.NOON)
-                        ? format.format(now.plusHours(1))
-                        : "00:00:00";
+        String open = now.isBefore(LocalTime.NOON) ? "23:59:59" : format.format(now.minusHours(1));
+        String close = now.isBefore(LocalTime.NOON) ? format.format(now.plusHours(1)) : "00:00:00";
         when(stores.find(9L))
                 .thenReturn(
                         new PickUpStore(

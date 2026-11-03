@@ -79,9 +79,7 @@ public class DiyDecorationService {
         require(value != null && !value.isBlank() && value.length() <= 60000, "装修属性不能为空且不超过60000字");
         try {
             var parsed = JSON.parse(value);
-            require(
-                    parsed instanceof Map || parsed instanceof List,
-                    "装修属性必须是JSON对象或数组");
+            require(parsed instanceof Map || parsed instanceof List, "装修属性必须是JSON对象或数组");
             return value;
         } catch (RuntimeException exception) {
             throw new ServiceException("装修属性必须是合法JSON", 400);

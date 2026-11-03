@@ -8,6 +8,5 @@ import java.io.Serializable;
 
 /** 会员图片上传请求。 */
 @Schema(description = "会员图片上传请求")
-public record ImageUploadReq(
-        @Schema(description = "图片文件") @NotNull MultipartFile file)
+public record ImageUploadReq(@Schema(description = "图片文件") @NotNull MultipartFile file)
         implements Serializable {}

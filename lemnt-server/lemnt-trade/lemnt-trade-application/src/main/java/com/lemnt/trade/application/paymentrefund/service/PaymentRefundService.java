@@ -171,9 +171,7 @@ public class PaymentRefundService {
 
     /** 零现金份额无需渠道退款流水，售后成功与权益任务同事务提交。 */
     private PaymentRefund zeroRefund(
-            AfterSale afterSale,
-            TradeOrder order,
-            TradeOperator operator) {
+            AfterSale afterSale, TradeOrder order, TradeOperator operator) {
         if (afterSale.amount().signum() != 0 || !order.memberId().equals(afterSale.memberId())) {
             throw new IllegalStateException("零现金售后金额或会员不一致");
         }
@@ -198,10 +196,7 @@ public class PaymentRefundService {
     }
 
     /** 现金与零现金统一完成数量事实，不能仅凭退完现金提前结束整单。 */
-    private void finishAfterSale(
-            AfterSale afterSale,
-            TradeOrder order,
-            TradeOperator operator) {
+    private void finishAfterSale(AfterSale afterSale, TradeOrder order, TradeOperator operator) {
         if (!afterSales.completePaymentRefund(afterSale.refundNo(), orders.databaseNow())) {
             throw new IllegalStateException("退款成功状态写入冲突");
         }
@@ -225,10 +220,7 @@ public class PaymentRefundService {
                 throw new IllegalStateException("订单明细已退数量更新冲突");
             }
         }
-        var cash =
-                history.stream()
-                        .map(AfterSale::amount)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+        var cash = history.stream().map(AfterSale::amount).reduce(BigDecimal.ZERO, BigDecimal::add);
         if (cash.compareTo(order.totalAmount()) > 0) {
             throw new IllegalStateException("累计退款超过订单实付");
         }

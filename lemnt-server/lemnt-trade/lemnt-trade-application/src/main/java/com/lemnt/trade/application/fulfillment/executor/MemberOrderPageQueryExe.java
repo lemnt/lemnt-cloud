@@ -95,8 +95,7 @@ public class MemberOrderPageQueryExe {
     }
 
     /** 已支付自提单在订单中心展示为待自提，内部状态仍沿用 PAID。 */
-    private String displayStatus(
-            String status, TradeOrder order) {
+    private String displayStatus(String status, TradeOrder order) {
         return "PAID".equals(status)
                         && order != null
                         && order.delivery() != null

@@ -235,8 +235,7 @@ public class ProductCatalogService {
                         : specs.stream()
                                 .map(
                                         property ->
-                                                new com.lemnt.mall.domain.product.model
-                                                        .ProductSkuSpec(
+                                                new ProductSkuSpec(
                                                         property.specId(),
                                                         property.specName(),
                                                         property.specValueId(),
@@ -280,9 +279,7 @@ public class ProductCatalogService {
                         .collect(Collectors.toSet());
         for (var sku : value.skus()) {
             var selected =
-                    sku.specs().stream()
-                            .map(ProductSkuSpec::specId)
-                            .collect(Collectors.toSet());
+                    sku.specs().stream().map(ProductSkuSpec::specId).collect(Collectors.toSet());
             if (selected.size() != sku.specs().size() || !selected.equals(expected)) {
                 throw new ServiceException("SKU规格重复或规格项集合不一致", 400);
             }

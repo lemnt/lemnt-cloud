@@ -126,6 +126,4 @@ public class AppBargainController {
         return R.ok(
                 AppBargainConverter.help(help.execute(SecurityUtils.getUserId(), req.recordId())));
     }
-
-
 }

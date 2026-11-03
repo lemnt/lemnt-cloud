@@ -159,30 +159,16 @@ class CashPaymentPersistenceTest extends OutboxPersistenceTest {
     void closeEventReceiptRollsBackOnWrongOwnerAndRetryClosesOnlyWaitingPayment() {
         var inbox =
                 proxy(
-                        new MessageInboxGatewayImpl(
-                                session.getMapper(
-                                        MessageInboxMapper
-                                                .class)),
+                        new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
                         MessageInboxGateway.class);
         var handler =
                 proxy(
-                        new OrderClosedEventHandler(
-                                inbox, orders, payments),
+                        new OrderClosedEventHandler(inbox, orders, payments),
                         OrderClosedEventHandler.class);
-        var payload =
-                JsonUtils.toJsonStr(
-                        new OrderClosedEvent(
-                                "O1", 7L, List.of()));
+        var payload = JsonUtils.toJsonStr(new OrderClosedEvent("O1", 7L, List.of()));
         var event =
                 new CommerceEventEnvelope(
-                        "EC1",
-                        "ORDER_CLOSED",
-                        1,
-                        "O1",
-                        "O1",
-                        Instant.now(),
-                        null,
-                        payload);
+                        "EC1", "ORDER_CLOSED", 1, "O1", "O1", Instant.now(), null, payload);
         when(orders.findByOrderNo("O1"))
                 .thenReturn(new OrderPaymentSnapshot("O1", 8L, new BigDecimal("10.00"), "CLOSED"));
         assertThrows(IllegalStateException.class, () -> handler.execute(event));

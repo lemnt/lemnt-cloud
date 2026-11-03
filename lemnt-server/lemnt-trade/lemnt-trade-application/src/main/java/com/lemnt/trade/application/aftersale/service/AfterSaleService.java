@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -88,9 +87,7 @@ public class AfterSaleService {
         var savedQuantities =
                 persistedItems.stream()
                         .filter(i -> i.refundedQuantity() != null)
-                        .collect(
-                                Collectors.toMap(
-                                        i -> i.orderItemId(), i -> i.refundedQuantity()));
+                        .collect(Collectors.toMap(i -> i.orderItemId(), i -> i.refundedQuantity()));
         var history =
                 afterSales.afterSales(order.orderNo()).stream()
                         .filter(value -> !RELEASED.contains(value.status()))

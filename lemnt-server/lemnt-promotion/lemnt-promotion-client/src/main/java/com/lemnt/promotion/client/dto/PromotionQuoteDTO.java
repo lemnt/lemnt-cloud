@@ -22,7 +22,8 @@ public record PromotionQuoteDTO(
         Map<Long, Integer> giveCouponTemplateCounts,
         List<PromotionSnapshotDTO> promotions,
         BigDecimal deliveryOriginalPrice,
-        BigDecimal deliveryDiscountPrice) implements Serializable {
+        BigDecimal deliveryDiscountPrice)
+        implements Serializable {
     /** 兼容未记录本批优惠与退款元数据的历史快照。 */
     public PromotionQuoteDTO(
             List<PromotionItemDTO> items,

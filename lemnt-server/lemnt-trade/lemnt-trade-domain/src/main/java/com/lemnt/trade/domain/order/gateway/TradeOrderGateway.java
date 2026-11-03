@@ -41,8 +41,7 @@ public interface TradeOrderGateway {
     boolean transitionStatus(String orderNo, String expectedStatus, String targetStatus);
 
     /** 后台调价：仅把原金额改为新金额，调用方持有订单行锁。 */
-    boolean updateTotalAmount(
-            String orderNo, BigDecimal expected, BigDecimal next);
+    boolean updateTotalAmount(String orderNo, BigDecimal expected, BigDecimal next);
 
     /** 后台改址：仅未发货快递单可更新收件快照。 */
     boolean updateAddress(

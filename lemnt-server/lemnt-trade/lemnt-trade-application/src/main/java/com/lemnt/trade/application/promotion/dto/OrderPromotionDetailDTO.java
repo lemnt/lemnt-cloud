@@ -7,10 +7,7 @@ import java.util.Map;
 
 /** 冻结优惠查询结果，历史未知不读取现值补写。 */
 public record OrderPromotionDetailDTO(
-        String orderNo,
-        String snapshotStatus,
-        Summary summary,
-        List<Promotion> promotions)
+        String orderNo, String snapshotStatus, Summary summary, List<Promotion> promotions)
         implements Serializable {
     public record Summary(
             BigDecimal originalAmount,

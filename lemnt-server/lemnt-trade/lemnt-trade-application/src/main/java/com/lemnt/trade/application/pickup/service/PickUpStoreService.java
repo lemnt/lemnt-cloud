@@ -216,8 +216,7 @@ public class PickUpStoreService {
                 .sorted(
                         Comparator.comparing(
                                         AppPickUpStoreDTO::distanceKm,
-                                        Comparator.nullsLast(
-                                                Comparator.naturalOrder()))
+                                        Comparator.nullsLast(Comparator.naturalOrder()))
                                 .thenComparing(AppPickUpStoreDTO::id))
                 .toList();
     }

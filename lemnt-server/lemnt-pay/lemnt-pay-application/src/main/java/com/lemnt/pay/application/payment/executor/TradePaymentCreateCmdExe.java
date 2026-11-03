@@ -1,5 +1,7 @@
 package com.lemnt.pay.application.payment.executor;
 
+import com.lemnt.common.core.utils.JsonUtils;
+import com.lemnt.pay.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
 import com.lemnt.pay.domain.order.model.OrderPaymentSnapshot;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -22,6 +25,7 @@ import java.util.UUID;
 public class TradePaymentCreateCmdExe {
     private final OrderPaymentGateway orderPersistenceService;
     private final TradePaymentGateway tradePaymentGateway;
+    private final MessageInboxGateway receipts;
 
     /**
      * 执行交易支付创建命令。
@@ -43,7 +47,7 @@ public class TradePaymentCreateCmdExe {
         } catch (IllegalArgumentException exception) {
             throw new IllegalArgumentException("暂不支持该支付渠道");
         }
-        OrderPaymentSnapshot order = orderPersistenceService.findByOrderNo(orderNo.trim());
+        OrderPaymentSnapshot order = orderPersistenceService.preparePayment(orderNo.trim());
         if (order == null) {
             throw new IllegalArgumentException("订单不存在");
         }
@@ -53,6 +57,10 @@ public class TradePaymentCreateCmdExe {
 
         if (order.totalAmount() == null || order.totalAmount().signum() <= 0)
             throw new IllegalStateException("零元订单无需创建支付单");
+
+        receipts.begin("pay.order.fence.v1",order.orderNo(),"PAYMENT_ORDER_FENCE",order.orderNo(),
+                JsonUtils.toJsonStr(Map.of("orderNo",order.orderNo())));
+        if(receipts.has("pay.order.closed.v1","ORDER_CLOSED",order.orderNo())) throw new IllegalStateException("订单已关闭，不能创建延迟支付尝试");
 
         PaymentRecord existing =
                 tradePaymentGateway.findByOrderNoAndChannel(order.orderNo(), normalizedChannel);

@@ -6,5 +6,4 @@ import java.io.Serializable;
 
 /** 会员图片访问地址。 */
 @Schema(description = "会员图片上传结果")
-public record ImageUploadRes(@Schema(description = "图片访问地址") String url)
-        implements Serializable {}
+public record ImageUploadRes(@Schema(description = "图片访问地址") String url) implements Serializable {}

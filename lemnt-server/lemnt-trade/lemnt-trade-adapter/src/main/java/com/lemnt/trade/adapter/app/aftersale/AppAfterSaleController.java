@@ -118,18 +118,15 @@ public class AppAfterSaleController {
         return R.ok(cancel.execute(SecurityUtils.getUserId(), no));
     }
 
-    private final AfterSalePromotionDetailQueryExe
-            promotionQuery;
+    private final AfterSalePromotionDetailQueryExe promotionQuery;
 
     /** 查询冻结优惠及权益，不回查当前促销规则。 */
     @GetMapping("/after-sales/{no}/promotions")
     @Operation(summary = "售后优惠归因与权益进度")
-    public R<AppAfterSalePromotionDetailRes> promotions(
-            @PathVariable String no) {
+    public R<AppAfterSalePromotionDetailRes> promotions(@PathVariable String no) {
         return R.ok(
                 OrderPromotionResConverter.toRes(
-                        promotionQuery.execute(
-                                SecurityUtils.getUserId(), no)));
+                        promotionQuery.execute(SecurityUtils.getUserId(), no)));
     }
 
     /** 生产使用完整查询协作者，存量测试构造仅服务原有路由。 */
@@ -141,8 +138,7 @@ public class AppAfterSaleController {
             MemberAfterSalePageQueryExe pageQuery,
             MemberAfterSaleDetailQueryExe detailQuery,
             MemberAfterSaleItemListQueryExe itemQuery,
-            AfterSalePromotionDetailQueryExe
-                    promotionQuery) {
+            AfterSalePromotionDetailQueryExe promotionQuery) {
         this.cancel = cancel;
         this.create = create;
         this.returned = returned;

@@ -32,8 +32,10 @@ class MapperXmlLoadingTest {
                         () -> "未加载 Mapper XML: " + mapper.getName() + "." + method.getName());
             }
         }
-        assertTrue(configuration.hasStatement(CouponMapper.class.getName()+".selectById"));
-        var lock=configuration.getMappedStatement(CouponMapper.class.getName()+".lockCouponRow");
-        assertFalse(lock.isUseCache());assertTrue(lock.isFlushCacheRequired());
+        assertTrue(configuration.hasStatement(CouponMapper.class.getName() + ".selectById"));
+        var lock =
+                configuration.getMappedStatement(CouponMapper.class.getName() + ".lockCouponRow");
+        assertFalse(lock.isUseCache());
+        assertTrue(lock.isFlushCacheRequired());
     }
 }

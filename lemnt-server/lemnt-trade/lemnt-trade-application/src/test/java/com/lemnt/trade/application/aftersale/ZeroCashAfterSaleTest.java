@@ -256,12 +256,8 @@ class ZeroCashAfterSaleTest {
                         orderPersistence,
                         itemGateway,
                         benefits,
-                        Mockito.mock(
-                                BrokerageService
-                                        .class),
-                        Mockito.mock(
-                                PaymentRefundGateway
-                                        .class))
+                        Mockito.mock(BrokerageService.class),
+                        Mockito.mock(PaymentRefundGateway.class))
                 .complete(
                         new PaymentRefund(
                                 "PR1",

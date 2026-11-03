@@ -57,9 +57,7 @@ public class RefundBenefitsService {
     }
 
     /** 新版明确行与积分，历史未知保留原协议。 */
-    private void apply(
-            AfterSale afterSale,
-            TradeOrder order) {
+    private void apply(AfterSale afterSale, TradeOrder order) {
         var quantities = new LinkedHashMap<Long, Integer>();
         var lines = items.refundItems(order.id());
         if (afterSale.orderItemId() == null) {

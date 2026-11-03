@@ -23,6 +23,5 @@ public record SettlementRes(
         @Schema(description = "支付成功后赠送积分数") long givePoint,
         @Schema(description = "已冻结的配送快照") SettlementDeliveryRes delivery,
         @Schema(description = "满减活动是否包邮") boolean freeDelivery,
-        @Schema(description = "支付成功后赠送的优惠券模板及数量")
-                Map<Long, Integer> giveCouponTemplateCounts)
+        @Schema(description = "支付成功后赠送的优惠券模板及数量") Map<Long, Integer> giveCouponTemplateCounts)
         implements Serializable {}

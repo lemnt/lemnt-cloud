@@ -6,6 +6,7 @@ import com.lemnt.mall.application.product.dto.ProductSpuDTO;
 import com.lemnt.mall.application.product.service.ProductCatalogService;
 import com.lemnt.mall.application.product.service.ProductValidationService;
 import com.lemnt.mall.domain.product.model.ProductSku;
+import com.lemnt.mall.domain.product.model.ProductSkuSpec;
 import com.lemnt.mall.domain.product.model.ProductSpu;
 
 import org.springframework.stereotype.Component;
@@ -52,11 +53,7 @@ public class ProductSpuCreateCmdExe {
                                                         : s.specs().stream()
                                                                 .map(
                                                                         property ->
-                                                                                new com.lemnt.mall
-                                                                                        .domain
-                                                                                        .product
-                                                                                        .model
-                                                                                        .ProductSkuSpec(
+                                                                                new ProductSkuSpec(
                                                                                         property
                                                                                                 .specId(),
                                                                                         property

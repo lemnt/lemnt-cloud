@@ -50,10 +50,7 @@ public class OrderBenefitsGatewayImpl implements OrderBenefitsGateway {
                 orderNo,
                 refundNo,
                 quantities.entrySet().stream()
-                        .map(
-                                item ->
-                                        new RefundStockBo(
-                                                item.getKey(), item.getValue()))
+                        .map(item -> new RefundStockBo(item.getKey(), item.getValue()))
                         .toList(),
                 refundAmount);
     }

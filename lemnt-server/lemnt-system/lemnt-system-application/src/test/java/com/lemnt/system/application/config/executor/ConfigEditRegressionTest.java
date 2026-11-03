@@ -151,10 +151,7 @@ class ConfigEditRegressionTest {
         assertThatThrownBy(
                         () ->
                                 new DictTypeUpdateCmdExe(
-                                                gateway,
-                                                Mockito.mock(
-                                                        com.lemnt.system.domain.config.gateway
-                                                                .DictDataGateway.class))
+                                                gateway, Mockito.mock(DictDataGateway.class))
                                         .execute(
                                                 new DictTypeUpdateCmd(2L, "测试", "test", "2", null)))
                 .isInstanceOf(ServiceException.class)
@@ -179,11 +176,7 @@ class ConfigEditRegressionTest {
 
         try (var security = mockStatic(SecurityUtils.class)) {
             assertThat(
-                            new DictTypeUpdateCmdExe(
-                                            gateway,
-                                            Mockito.mock(
-                                                    com.lemnt.system.domain.config.gateway
-                                                            .DictDataGateway.class))
+                            new DictTypeUpdateCmdExe(gateway, Mockito.mock(DictDataGateway.class))
                                     .execute(new DictTypeUpdateCmd(2L, "测试", "test", "2", "备注")))
                     .isTrue();
 

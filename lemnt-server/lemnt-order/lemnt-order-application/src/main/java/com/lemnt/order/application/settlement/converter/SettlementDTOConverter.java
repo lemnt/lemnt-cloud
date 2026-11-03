@@ -1,0 +1,101 @@
+package com.lemnt.order.application.settlement.converter;
+
+import com.lemnt.order.application.settlement.dto.SettlementDeliveryDTO;
+import com.lemnt.order.application.settlement.dto.SettlementItemDTO;
+import com.lemnt.order.application.settlement.dto.SettlementQuoteDTO;
+import com.lemnt.order.application.settlement.dto.SettlementReceiptDTO;
+import com.lemnt.order.domain.settlement.model.SettlementDelivery;
+import com.lemnt.order.domain.settlement.model.SettlementItem;
+import com.lemnt.order.domain.settlement.model.SettlementOrder;
+import com.lemnt.order.domain.settlement.model.SettlementQuote;
+import com.lemnt.order.domain.settlement.model.SettlementRecord;
+import com.lemnt.order.domain.settlement.model.SettlementRules;
+
+/** 按业务域转换接口与应用数据。 */
+public final class SettlementDTOConverter {
+    private SettlementDTOConverter() {}
+
+    /**
+     * 明细。
+     */
+    public static SettlementItemDTO item(SettlementItem value) {
+        return new SettlementItemDTO(
+                value.productId(),
+                value.productCode(),
+                value.productName(),
+                value.unitPrice(),
+                value.quantity(),
+                value.lineAmount(),
+                value.payAmount(),
+                value.deliveryPrice(),
+                value.spuId(),
+                value.spuName(),
+                value.specs() == null
+                        ? null
+                        : value.specs().stream()
+                                .map(
+                                        snapshotProperty ->
+                                                new SettlementItemDTO.Spec(
+                                                        snapshotProperty.specId(),
+                                                        snapshotProperty.specName(),
+                                                        snapshotProperty.specValueId(),
+                                                        snapshotProperty.specValueName()))
+                                .toList(),
+                value.picUrl(),
+                value.orderItemId(),
+                value.commentStatus());
+    }
+
+    /**
+     * 报价。
+     */
+    public static SettlementQuoteDTO quote(SettlementQuote value) {
+        return new SettlementQuoteDTO(
+                value.items().stream().map(SettlementDTOConverter::item).toList(),
+                value.originalAmount(),
+                value.discountAmount(),
+                value.payableAmount(),
+                value.couponId(),
+                SettlementRules.quoteToken(value),
+                value.usePoint(),
+                value.givePoint(),
+                delivery(value.delivery()),
+                value.freeDelivery(),
+                value.giveCouponTemplateCounts());
+    }
+
+    /**
+     * 回执。
+     */
+    public static SettlementReceiptDTO receipt(SettlementRecord value, SettlementOrder order) {
+        return value == null || order == null
+                ? null
+                : new SettlementReceiptDTO(
+                        value.orderNo(),
+                        value.memberId(),
+                        order.status(),
+                        value.originalAmount(),
+                        value.discountAmount(),
+                        value.payableAmount(),
+                        value.couponId(),
+                        order.items().stream().map(SettlementDTOConverter::item).toList(),
+                        delivery(order.delivery()),
+                        order.commentStatus(),
+                        order.finishTime());
+    }
+
+    /** 转换服务端冻结的收件快照。 */
+    public static SettlementDeliveryDTO delivery(SettlementDelivery value) {
+        return value == null
+                ? null
+                : new SettlementDeliveryDTO(
+                        value.addressId(),
+                        value.deliveryType(),
+                        value.receiverName(),
+                        value.receiverMobile(),
+                        value.receiverAreaId(),
+                        value.receiverDetailAddress(),
+                        value.deliveryPrice(),
+                        value.pickUpStoreId());
+    }
+}

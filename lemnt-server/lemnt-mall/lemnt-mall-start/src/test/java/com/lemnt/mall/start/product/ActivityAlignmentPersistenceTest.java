@@ -73,9 +73,7 @@ class ActivityAlignmentPersistenceTest {
     void activityIsImmediatelyEnabledAndClosedActivityCannotBeEditedOrReopened() {
         var id = createDiscount();
         assertEquals(0, management.detailDiscount(id).status());
-        assertThrows(
-                ServiceException.class,
-                () -> management.deleteDiscount(id));
+        assertThrows(ServiceException.class, () -> management.deleteDiscount(id));
         management.closeDiscount(id);
         assertEquals(1, management.detailDiscount(id).status());
         assertThrows(
@@ -90,9 +88,7 @@ class ActivityAlignmentPersistenceTest {
                                         null,
                                         List.of(discount()))));
         assertTrue(management.deleteDiscount(id));
-        assertThrows(
-                ServiceException.class,
-                () -> management.detailDiscount(id));
+        assertThrows(ServiceException.class, () -> management.detailDiscount(id));
     }
 
     @Test
@@ -182,13 +178,7 @@ class ActivityAlignmentPersistenceTest {
                         true);
         var coupon =
                 new Coupon(
-                        1L,
-                        2L,
-                        7L,
-                        "AVAILABLE",
-                        null,
-                        CouponRules.snapshot(template, now),
-                        null);
+                        1L, 2L, 7L, "AVAILABLE", null, CouponRules.snapshot(template, now), null);
         var quote = pricing.price(items, coupon, now, 100);
         assertEquals(new BigDecimal("50.00"), quote.originalAmount());
         assertEquals(new BigDecimal("37.00"), quote.payableAmount());
@@ -304,24 +294,14 @@ class ActivityAlignmentPersistenceTest {
     /** 积分按会员配置抵扣，赠送积分按最终实付计算并随结算单保存。 */
     @Test
     void pointDeductionAndRewardsUseConfirmedQuoteAndRejectZeroCashPayment() {
-        var memberTrade =
-                Mockito.mock(
-                        MemberTradeGateway.class);
-        Mockito.when(memberTrade.config())
-                .thenReturn(
-                        new MemberPointConfig(true, 1, 20, 2));
+        var memberTrade = Mockito.mock(MemberTradeGateway.class);
+        Mockito.when(memberTrade.config()).thenReturn(new MemberPointConfig(true, 1, 20, 2));
         var service =
                 new ActivityPricingService(
                         memberTrade,
-                        f.components.get(
-                                DiscountActivityGateway
-                                        .class),
-                        f.components.get(
-                                DiscountProductGateway
-                                        .class),
-                        f.components.get(
-                                RewardActivityGateway
-                                        .class),
+                        f.components.get(DiscountActivityGateway.class),
+                        f.components.get(DiscountProductGateway.class),
+                        f.components.get(RewardActivityGateway.class),
                         f.productSkuGateway,
                         f.productSpuGateway);
         var sku = spu.skus().get(0);
@@ -333,35 +313,22 @@ class ActivityAlignmentPersistenceTest {
         assertEquals(20L, quote.usePoint());
         assertEquals(19L, quote.givePoint());
         assertEquals(new BigDecimal("9.80"), quote.payableAmount());
-        Mockito.when(memberTrade.config())
-                .thenReturn(
-                        new MemberPointConfig(true, 1, 0, 2));
+        Mockito.when(memberTrade.config()).thenReturn(new MemberPointConfig(true, 1, 0, 2));
         assertThrows(
-                ServiceException.class,
-                () -> service.price(items, null, now, 100, true, 1000));
+                ServiceException.class, () -> service.price(items, null, now, 100, true, 1000));
     }
 
     /** maxPrice历史字段实际表示积分数，单积分5分、最多2积分应只抵扣0.10元。 */
     @Test
     void pointCapIsPointCountAndDisabledSwitchAlsoStopsGift() {
-        var memberTrade =
-                Mockito.mock(
-                        MemberTradeGateway.class);
-        Mockito.when(memberTrade.config())
-                .thenReturn(
-                        new MemberPointConfig(true, 5, 2, 3));
+        var memberTrade = Mockito.mock(MemberTradeGateway.class);
+        Mockito.when(memberTrade.config()).thenReturn(new MemberPointConfig(true, 5, 2, 3));
         var service =
                 new ActivityPricingService(
                         memberTrade,
-                        f.components.get(
-                                DiscountActivityGateway
-                                        .class),
-                        f.components.get(
-                                DiscountProductGateway
-                                        .class),
-                        f.components.get(
-                                RewardActivityGateway
-                                        .class),
+                        f.components.get(DiscountActivityGateway.class),
+                        f.components.get(DiscountProductGateway.class),
+                        f.components.get(RewardActivityGateway.class),
                         f.productSkuGateway,
                         f.productSpuGateway);
         var item =
@@ -376,9 +343,7 @@ class ActivityAlignmentPersistenceTest {
         assertEquals(2L, enabled.usePoint());
         assertEquals(new BigDecimal("9.90"), enabled.payableAmount());
         assertEquals(29L, enabled.givePoint());
-        Mockito.when(memberTrade.config())
-                .thenReturn(
-                        new MemberPointConfig(false, 5, 2, 3));
+        Mockito.when(memberTrade.config()).thenReturn(new MemberPointConfig(false, 5, 2, 3));
         var disabled = service.price(List.of(item), null, now, 100, true, 100L);
         assertEquals(0L, disabled.usePoint());
         assertEquals(0L, disabled.givePoint());
@@ -429,24 +394,14 @@ class ActivityAlignmentPersistenceTest {
                                         true,
                                         50,
                                         Map.of(3L, 2)))));
-        var memberTrade =
-                Mockito.mock(
-                        MemberTradeGateway.class);
-        Mockito.when(memberTrade.config())
-                .thenReturn(
-                        new MemberPointConfig(true, 1, 0, 2));
+        var memberTrade = Mockito.mock(MemberTradeGateway.class);
+        Mockito.when(memberTrade.config()).thenReturn(new MemberPointConfig(true, 1, 0, 2));
         var service =
                 new ActivityPricingService(
                         memberTrade,
-                        f.components.get(
-                                DiscountActivityGateway
-                                        .class),
-                        f.components.get(
-                                DiscountProductGateway
-                                        .class),
-                        f.components.get(
-                                RewardActivityGateway
-                                        .class),
+                        f.components.get(DiscountActivityGateway.class),
+                        f.components.get(DiscountProductGateway.class),
+                        f.components.get(RewardActivityGateway.class),
                         f.productSkuGateway,
                         f.productSpuGateway);
         var sku = spu.skus().get(0);

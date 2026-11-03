@@ -169,10 +169,7 @@ public final class ProductCatalogValidation {
                                     .collect(Collectors.toSet()))) {
                 throw new IllegalArgumentException("同一商品的SKU必须使用相同的规格名称");
             }
-            names =
-                    props.stream()
-                            .map(ProductSkuSpec::specName)
-                            .collect(Collectors.toSet());
+            names = props.stream().map(ProductSkuSpec::specName).collect(Collectors.toSet());
             skus.add(
                     new ProductSku(
                             sku.id(),
@@ -187,8 +184,7 @@ public final class ProductCatalogValidation {
                                     : props.stream()
                                             .map(
                                                     property ->
-                                                            new com.lemnt.product.domain.product
-                                                                    .model.ProductSkuSpec(
+                                                            new ProductSkuSpec(
                                                                     property.specId(),
                                                                     property.specName(),
                                                                     property.specValueId(),

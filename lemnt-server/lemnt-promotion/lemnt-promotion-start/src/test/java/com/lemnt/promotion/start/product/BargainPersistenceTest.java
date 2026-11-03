@@ -1,10 +1,10 @@
 package com.lemnt.promotion.start.product;
 
 import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.product.domain.product.model.ProductSpu;
 import com.lemnt.promotion.application.promotion.cmd.BargainActivityCreateCmd;
 import com.lemnt.promotion.application.promotion.service.BargainActivityManagementService;
 import com.lemnt.promotion.application.promotion.service.BargainRecordService;
-import com.lemnt.product.domain.product.model.ProductSpu;
 import com.lemnt.promotion.domain.promotion.gateway.BargainActivityGateway;
 import com.lemnt.promotion.domain.promotion.model.BargainActivity;
 
@@ -76,11 +76,9 @@ class BargainPersistenceTest {
     @Test
     void selfHelpDuplicateHelpAndSecondInProgressAreRejected() {
         var id = records.create(1L, activityId);
-        assertThrows(
-                ServiceException.class, () -> records.help(1L, id));
+        assertThrows(ServiceException.class, () -> records.help(1L, id));
         records.help(2L, id);
-        assertThrows(
-                ServiceException.class, () -> records.help(2L, id));
+        assertThrows(ServiceException.class, () -> records.help(2L, id));
         var other = f.create("BARGAIN2", f.draft("BLUE", 10));
         var second =
                 activities.create(
@@ -99,9 +97,7 @@ class BargainPersistenceTest {
                                 new BigDecimal("1.00"),
                                 new BigDecimal("1.00")));
         records.create(3L, second);
-        assertThrows(
-                ServiceException.class,
-                () -> records.create(3L, second));
+        assertThrows(ServiceException.class, () -> records.create(3L, second));
     }
 
     @Test
@@ -137,8 +133,6 @@ class BargainPersistenceTest {
         assertEquals(3, activities.detail(activityId).stock());
         activities.increaseStock(activityId, 2);
         assertEquals(5, activities.detail(activityId).stock());
-        assertThrows(
-                ServiceException.class,
-                () -> activities.decreaseStock(activityId, 6));
+        assertThrows(ServiceException.class, () -> activities.decreaseStock(activityId, 6));
     }
 }

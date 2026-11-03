@@ -172,18 +172,14 @@ public class AfterSaleController {
                                 AfterSaleReqConverter.refuse(no, req), SecurityUtils.getUserId())));
     }
 
-    private final AfterSalePromotionDetailQueryExe
-            promotionQuery;
+    private final AfterSalePromotionDetailQueryExe promotionQuery;
 
     /** 查询冻结优惠及权益，不回查当前促销规则。 */
     @GetMapping("/after-sales/{no}/promotions")
     @Operation(summary = "售后优惠归因与权益进度")
     @RequiresPermissions("trade:after-sale:query")
-    public R<AfterSalePromotionDetailRes> promotions(
-            @PathVariable String no) {
-        return R.ok(
-                OrderPromotionResConverter.toRes(
-                        promotionQuery.execute(no)));
+    public R<AfterSalePromotionDetailRes> promotions(@PathVariable String no) {
+        return R.ok(OrderPromotionResConverter.toRes(promotionQuery.execute(no)));
     }
 
     /** 生产使用完整查询协作者，存量测试构造仅服务原有路由。 */
@@ -199,8 +195,7 @@ public class AfterSaleController {
             AfterSaleDetailQueryExe detail,
             AfterSaleItemListQueryExe items,
             PaymentRefundCreateCmdExe refund,
-            AfterSalePromotionDetailQueryExe
-                    promotionQuery) {
+            AfterSalePromotionDetailQueryExe promotionQuery) {
         this.create = create;
         this.agree = agree;
         this.reject = reject;

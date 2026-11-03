@@ -425,8 +425,7 @@ class DeliveryPersistenceTest {
                                     ArgumentMatchers.anyString(),
                                     ArgumentMatchers.eq(-1L),
                                     ArgumentMatchers.eq(3000L),
-                                    ArgumentMatchers.eq(
-                                            RedissonLockExecutor.class)))
+                                    ArgumentMatchers.eq(RedissonLockExecutor.class)))
                     .thenAnswer(
                             call -> {
                                 mutex.lock();

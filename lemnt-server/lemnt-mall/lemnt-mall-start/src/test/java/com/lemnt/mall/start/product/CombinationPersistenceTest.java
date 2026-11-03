@@ -134,9 +134,7 @@ class CombinationPersistenceTest {
                 records.create(
                         new CombinationRecordCreateCmd(
                                 1L, spu.id(), id, null, spu.skus().get(0).id(), 1));
-        var gateway =
-                f.components.get(
-                        CombinationRecordGateway.class);
+        var gateway = f.components.get(CombinationRecordGateway.class);
         gateway.save(
                 new CombinationRecord(
                         head.id(),
@@ -169,9 +167,7 @@ class CombinationPersistenceTest {
                 records.create(
                         new CombinationRecordCreateCmd(
                                 1L, spu.id(), activityId, null, spu.skus().get(0).id(), 1));
-        var gateway =
-                f.components.get(
-                        CombinationRecordGateway.class);
+        var gateway = f.components.get(CombinationRecordGateway.class);
         gateway.save(
                 new CombinationRecord(
                         head.id(),

@@ -5,6 +5,7 @@ import com.lemnt.mall.domain.settlement.gateway.OrderGateway;
 import com.lemnt.mall.domain.settlement.model.SettlementDelivery;
 import com.lemnt.mall.domain.settlement.model.SettlementItem;
 import com.lemnt.mall.domain.settlement.model.SettlementOrder;
+import com.lemnt.mall.infrastructure.settlement.converter.PromotionClientConverter;
 import com.lemnt.trade.client.TradeOrderClient;
 import com.lemnt.trade.client.bo.OrderCommentCreateBo;
 import com.lemnt.trade.client.bo.OrderCreateBo;
@@ -80,12 +81,7 @@ public class OrderGatewayImpl implements OrderGateway {
                         order.adjustmentAmount(),
                         order.pricingSnapshotStatus(),
                         order.pricingSnapshotVersion(),
-                        order.promotions().stream()
-                                .map(
-                                        com.lemnt.mall.infrastructure.settlement.converter
-                                                        .PromotionClientConverter
-                                                ::to)
-                                .toList());
+                        order.promotions().stream().map(PromotionClientConverter::to).toList());
         return from(
                 "COMPLETE".equals(order.pricingSnapshotStatus())
                         ? client.createPriced(payload)
@@ -177,12 +173,7 @@ public class OrderGatewayImpl implements OrderGateway {
                         value.adjustmentAmount(),
                         value.pricingSnapshotStatus(),
                         value.pricingSnapshotVersion(),
-                        value.promotions().stream()
-                                .map(
-                                        com.lemnt.mall.infrastructure.settlement.converter
-                                                        .PromotionClientConverter
-                                                ::from)
-                                .toList());
+                        value.promotions().stream().map(PromotionClientConverter::from).toList());
     }
 
     private OrderDeliveryDTO toDelivery(SettlementDelivery value) {

@@ -9,6 +9,8 @@ import com.lemnt.mall.adapter.app.coupon.AppCouponCenterController;
 import com.lemnt.mall.adapter.web.coupon.req.CouponPublicClaimReq;
 import com.lemnt.mall.application.cart.cmd.CartSaveCmd;
 import com.lemnt.mall.application.cart.dto.CartItemDTO;
+import com.lemnt.mall.application.cart.executor.CartDeleteCmdExe;
+import com.lemnt.mall.application.cart.executor.CartListQueryExe;
 import com.lemnt.mall.application.cart.executor.CartSaveCmdExe;
 import com.lemnt.mall.application.coupon.executor.CouponClaimCmdExe;
 import com.lemnt.mall.application.coupon.executor.CouponOffersPageQueryExe;
@@ -52,16 +54,7 @@ class PromotionHttpContractTest {
         when(cartAddCmdExe.execute(new CartSaveCmd(7L, 8L, 2, true)))
                 .thenReturn(
                         new CartItemDTO(
-                                1L,
-                                8L,
-                                2,
-                                true,
-                                0L,
-                                "商品",
-                                "SKU",
-                                BigDecimal.TEN,
-                                10,
-                                true));
+                                1L, 8L, 2, true, 0L, "商品", "SKU", BigDecimal.TEN, 10, true));
         var mvc =
                 MockMvcBuilders.standaloneSetup(
                                 new Object[] {
@@ -70,21 +63,12 @@ class PromotionHttpContractTest {
                                             couponOffersPageQueryExe,
                                             couponWalletPageQueryExe),
                                     new AppCartController(
-                                            mock(
-                                                    com.lemnt.mall.application.cart.executor
-                                                            .CartListQueryExe.class),
+                                            mock(CartListQueryExe.class),
                                             cartAddCmdExe,
-                                            mock(
-                                                    com.lemnt.mall.application.cart.executor
-                                                            .CartDeleteCmdExe.class))
+                                            mock(CartDeleteCmdExe.class))
                                 })
-                        .addInterceptors(
-                                new HeaderInterceptor())
-                        .defaultRequest(
-                                get("/").header(
-                                                SecurityConstants
-                                                        .HEADER_USER_ID,
-                                                "7"))
+                        .addInterceptors(new HeaderInterceptor())
+                        .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
                         .build();
         mvc.perform(
                         put("/mall/app/cart/8")
@@ -108,21 +92,12 @@ class PromotionHttpContractTest {
                                             couponOffersPageQueryExe,
                                             couponWalletPageQueryExe),
                                     new AppCartController(
-                                            mock(
-                                                    com.lemnt.mall.application.cart.executor
-                                                            .CartListQueryExe.class),
+                                            mock(CartListQueryExe.class),
                                             cartAddCmdExe,
-                                            mock(
-                                                    com.lemnt.mall.application.cart.executor
-                                                            .CartDeleteCmdExe.class))
+                                            mock(CartDeleteCmdExe.class))
                                 })
-                        .addInterceptors(
-                                new HeaderInterceptor())
-                        .defaultRequest(
-                                get("/").header(
-                                                SecurityConstants
-                                                        .HEADER_USER_ID,
-                                                "7"))
+                        .addInterceptors(new HeaderInterceptor())
+                        .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
                         .build();
         mvc.perform(
                         put("/mall/app/cart/3")

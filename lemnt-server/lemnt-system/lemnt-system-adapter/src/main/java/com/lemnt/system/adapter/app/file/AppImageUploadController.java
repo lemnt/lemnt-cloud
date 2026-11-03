@@ -47,17 +47,8 @@ public class AppImageUploadController {
                                             new byte[] {(byte) 137, 80, 78, 71, 13, 10, 26, 10})
                             || "image/webp".equals(type)
                                     && h.length >= 12
-                                    && new String(
-                                                    h,
-                                                    0,
-                                                    4,
-                                                    StandardCharsets.US_ASCII)
-                                            .equals("RIFF")
-                                    && new String(
-                                                    h,
-                                                    8,
-                                                    4,
-                                                    StandardCharsets.US_ASCII)
+                                    && new String(h, 0, 4, StandardCharsets.US_ASCII).equals("RIFF")
+                                    && new String(h, 8, 4, StandardCharsets.US_ASCII)
                                             .equals("WEBP");
             if (!valid) throw new ServiceException("只支持JPEG、PNG、WebP图片", 400);
         }

@@ -1,6 +1,7 @@
 package com.lemnt.trade.adapter.web.fulfillment.converter;
 
 import com.lemnt.trade.adapter.web.fulfillment.res.OrderDetailRes;
+import com.lemnt.trade.adapter.web.fulfillment.res.OrderItemRes;
 import com.lemnt.trade.adapter.web.fulfillment.res.OrderSummaryRes;
 import com.lemnt.trade.adapter.web.fulfillment.res.RefundRequestRes;
 import com.lemnt.trade.adapter.web.fulfillment.res.ShipmentRes;
@@ -94,8 +95,7 @@ public final class FulfillmentResConverter {
                         v.items().stream()
                                 .map(
                                         item ->
-                                                new com.lemnt.trade.adapter.web.fulfillment.res
-                                                        .OrderItemRes(
+                                                new OrderItemRes(
                                                         item.productId(),
                                                         item.productCode(),
                                                         item.productName(),
@@ -109,14 +109,7 @@ public final class FulfillmentResConverter {
                                                                 : item.specs().stream()
                                                                         .map(
                                                                                 snapshotProperty ->
-                                                                                        new com
-                                                                                                .lemnt
-                                                                                                .trade
-                                                                                                .adapter
-                                                                                                .web
-                                                                                                .fulfillment
-                                                                                                .res
-                                                                                                .OrderItemRes
+                                                                                        new OrderItemRes
                                                                                                 .Spec(
                                                                                                 snapshotProperty
                                                                                                         .specId(),

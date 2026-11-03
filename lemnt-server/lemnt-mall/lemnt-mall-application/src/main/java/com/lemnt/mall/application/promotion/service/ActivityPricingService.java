@@ -62,9 +62,7 @@ public class ActivityPricingService {
         }
         // 先复用基础报价校验商品金额和券归属，券门槛在促销后再次计算。
         var original = SettlementRules.quote(items, null, null, now).originalAmount();
-        var trace =
-                new ArrayList<
-                        SettlementPromotion>();
+        var trace = new ArrayList<SettlementPromotion>();
         var activeRecords = discounts.enabled();
         var active =
                 activeRecords.stream()
@@ -108,24 +106,20 @@ public class ActivityPricingService {
                                         .orElseThrow()
                                 : "会员折扣";
                 trace.add(
-                        SettlementPromotionSnapshots
-                                .capture(
-                                        (activityWins ? "DISCOUNT:" : "MEMBER_LEVEL:")
-                                                + item.productId(),
-                                        activityWins ? "DISCOUNT" : "MEMBER_LEVEL",
-                                        source,
-                                        name,
-                                        activityWins
-                                                ? "活动价与会员价取低"
-                                                : "{\"discountPercent\":"
-                                                        + memberDiscountPercent
-                                                        + "}",
-                                        items,
-                                        Map.of(item.productId(), item.lineAmount()),
-                                        Map.of(item.productId(), amount),
-                                        0,
-                                        0,
-                                        Map.of()));
+                        SettlementPromotionSnapshots.capture(
+                                (activityWins ? "DISCOUNT:" : "MEMBER_LEVEL:") + item.productId(),
+                                activityWins ? "DISCOUNT" : "MEMBER_LEVEL",
+                                source,
+                                name,
+                                activityWins
+                                        ? "活动价与会员价取低"
+                                        : "{\"discountPercent\":" + memberDiscountPercent + "}",
+                                items,
+                                Map.of(item.productId(), item.lineAmount()),
+                                Map.of(item.productId(), amount),
+                                0,
+                                0,
+                                Map.of()));
             }
         }
         // 芋道按最新匹配活动处理满减，不保留自定义优先级或最优活动枚举机制。
@@ -167,19 +161,18 @@ public class ActivityPricingService {
                 freeDelivery = Boolean.TRUE.equals(rule.get().freeDelivery());
                 giveCouponTemplateCounts = rule.get().giveCouponTemplateCounts();
                 trace.add(
-                        SettlementPromotionSnapshots
-                                .capture(
-                                        "REWARD:" + activity.id(),
-                                        "REWARD",
-                                        activity.id(),
-                                        activity.name(),
-                                        "满足档位" + rule.get().limit(),
-                                        items,
-                                        rewardBefore,
-                                        remaining,
-                                        0,
-                                        rewardPoint,
-                                        giveCouponTemplateCounts));
+                        SettlementPromotionSnapshots.capture(
+                                "REWARD:" + activity.id(),
+                                "REWARD",
+                                activity.id(),
+                                activity.name(),
+                                "满足档位" + rule.get().limit(),
+                                items,
+                                rewardBefore,
+                                remaining,
+                                0,
+                                rewardPoint,
+                                giveCouponTemplateCounts));
             }
         }
         if (coupon != null) {
@@ -205,19 +198,18 @@ public class ActivityPricingService {
             var couponBefore = new LinkedHashMap<>(eligible);
             subtract(remaining, eligible, CouponRules.discount(terms, total(eligible), now));
             trace.add(
-                    SettlementPromotionSnapshots
-                            .capture(
-                                    "COUPON:" + coupon.id(),
-                                    "COUPON",
-                                    coupon.id(),
-                                    terms.name(),
-                                    terms.kind(),
-                                    items,
-                                    couponBefore,
-                                    remaining,
-                                    0,
-                                    0,
-                                    Map.of()));
+                    SettlementPromotionSnapshots.capture(
+                            "COUPON:" + coupon.id(),
+                            "COUPON",
+                            coupon.id(),
+                            terms.name(),
+                            terms.kind(),
+                            items,
+                            couponBefore,
+                            remaining,
+                            0,
+                            0,
+                            Map.of()));
         }
         var config = memberTradeGateway.config();
         long usePoint = 0L;
@@ -233,19 +225,18 @@ public class ActivityPricingService {
             var pointBefore = new LinkedHashMap<>(remaining);
             subtract(remaining, new LinkedHashMap<>(remaining), deduction);
             trace.add(
-                    SettlementPromotionSnapshots
-                            .capture(
-                                    "POINT_DEDUCT",
-                                    "POINT_DEDUCT",
-                                    null,
-                                    "积分抵扣",
-                                    "{\"unitPriceFen\":" + config.unitPrice() + "}",
-                                    items,
-                                    pointBefore,
-                                    remaining,
-                                    usePoint,
-                                    0,
-                                    Map.of()));
+                    SettlementPromotionSnapshots.capture(
+                            "POINT_DEDUCT",
+                            "POINT_DEDUCT",
+                            null,
+                            "积分抵扣",
+                            "{\"unitPriceFen\":" + config.unitPrice() + "}",
+                            items,
+                            pointBefore,
+                            remaining,
+                            usePoint,
+                            0,
+                            Map.of()));
         }
         var paid = total(remaining);
         long givePoint =

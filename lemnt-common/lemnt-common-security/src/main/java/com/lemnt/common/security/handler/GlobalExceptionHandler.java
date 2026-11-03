@@ -80,10 +80,7 @@ public class GlobalExceptionHandler {
     public Object handleServiceException(ServiceException e, HttpServletRequest request) {
         log.warn("业务异常: {}", e.getMessage(), e);
         Integer code = e.getCode();
-        int status =
-                isErrorStatus(code)
-                        ? code
-                        : HttpStatus.UNPROCESSABLE_ENTITY.value();
+        int status = isErrorStatus(code) ? code : HttpStatus.UNPROCESSABLE_ENTITY.value();
         return problem(
                 request, status, "BUSINESS_RULE_VIOLATION", "业务规则校验失败", e.getMessage(), null);
     }
@@ -126,12 +123,7 @@ public class GlobalExceptionHandler {
     public Object handleMissingServletRequestParameterException(
             MissingServletRequestParameterException e, HttpServletRequest request) {
         String message = String.format("请求参数[%s]不能为空", e.getParameterName());
-        return respond(
-                request,
-                HttpStatus.BAD_REQUEST.value(),
-                "BAD_REQUEST",
-                "请求参数错误",
-                message);
+        return respond(request, HttpStatus.BAD_REQUEST.value(), "BAD_REQUEST", "请求参数错误", message);
     }
 
     /**
@@ -241,8 +233,7 @@ public class GlobalExceptionHandler {
             String detail,
             List<ValidationError> errors) {
         ProblemDetail body =
-                ProblemDetail.forStatusAndDetail(
-                        HttpStatusCode.valueOf(status), detail);
+                ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(status), detail);
         body.setType(URI.create("urn:lemnt:problem:" + code.toLowerCase().replace('_', '-')));
         body.setTitle(title);
         body.setInstance(URI.create(request.getRequestURI()));
@@ -280,8 +271,7 @@ public class GlobalExceptionHandler {
     }
 
     private String title(int status) {
-        HttpStatus httpStatus =
-                HttpStatus.resolve(status);
+        HttpStatus httpStatus = HttpStatus.resolve(status);
         return httpStatus == null ? "请求失败" : httpStatus.getReasonPhrase();
     }
 

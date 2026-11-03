@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /** 秒杀活动直接管理，负责商品校验、时段冲突和库存合计。 */

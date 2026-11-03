@@ -50,18 +50,14 @@ public class FulfillmentOrderController {
         return value == null ? R.fail("订单不存在") : R.ok(FulfillmentResConverter.detail(value));
     }
 
-    private final OrderPromotionDetailQueryExe
-            promotionQuery;
+    private final OrderPromotionDetailQueryExe promotionQuery;
 
     /** 查询冻结优惠及权益，不回查当前促销规则。 */
     @GetMapping("/{orderNo}/promotions")
     @Operation(summary = "订单优惠快照")
     @RequiresPermissions("trade:fulfillment:query")
-    public R<OrderPromotionDetailRes> promotions(
-            @PathVariable String orderNo) {
-        return R.ok(
-                OrderPromotionResConverter.toRes(
-                        promotionQuery.execute(orderNo)));
+    public R<OrderPromotionDetailRes> promotions(@PathVariable String orderNo) {
+        return R.ok(OrderPromotionResConverter.toRes(promotionQuery.execute(orderNo)));
     }
 
     /** 生产使用完整查询协作者，存量测试构造仅服务原有路由。 */
@@ -69,8 +65,7 @@ public class FulfillmentOrderController {
     public FulfillmentOrderController(
             OrderPageQueryExe orderPageQueryExe,
             OrderDetailQueryExe orderDetailQueryExe,
-            OrderPromotionDetailQueryExe
-                    promotionQuery) {
+            OrderPromotionDetailQueryExe promotionQuery) {
         this.orderPageQueryExe = orderPageQueryExe;
         this.orderDetailQueryExe = orderDetailQueryExe;
         this.promotionQuery = promotionQuery;

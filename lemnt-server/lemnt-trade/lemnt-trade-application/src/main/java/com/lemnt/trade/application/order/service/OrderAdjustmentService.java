@@ -222,8 +222,7 @@ public class OrderAdjustmentService {
         }
         var source = normal.get();
         var matcher =
-                Pattern.compile("\"givePerYuan\"\\s*:\\s*(\\d+)")
-                        .matcher(source.ruleSnapshot());
+                Pattern.compile("\"givePerYuan\"\\s*:\\s*(\\d+)").matcher(source.ruleSnapshot());
         if (!matcher.find()) {
             throw new IllegalStateException("原赠积分系数缺失");
         }

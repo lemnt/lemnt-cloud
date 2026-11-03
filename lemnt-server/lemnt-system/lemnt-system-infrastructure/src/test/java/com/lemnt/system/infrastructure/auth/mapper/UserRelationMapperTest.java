@@ -49,10 +49,7 @@ class UserRelationMapperTest {
 
         List<Long> ids = multiple ? List.of(2L, 3L) : List.of(2L);
 
-        assertThat(
-                        new UserRoleGatewayImpl(mapper)
-                                .deleteUserRoleByUserIds(ids))
-                .isTrue();
+        assertThat(new UserRoleGatewayImpl(mapper).deleteUserRoleByUserIds(ids)).isTrue();
 
         ArgumentCaptor<LambdaQueryWrapper<UserRoleDO>> wrapper = ArgumentCaptor.captor();
 
@@ -70,10 +67,7 @@ class UserRelationMapperTest {
 
         List<Long> ids = multiple ? List.of(2L, 3L) : List.of(2L);
 
-        assertThat(
-                        new UserRoleGatewayImpl(mapper)
-                                .deleteUserRoleInfosByRoleId(10L, ids))
-                .isTrue();
+        assertThat(new UserRoleGatewayImpl(mapper).deleteUserRoleInfosByRoleId(10L, ids)).isTrue();
 
         ArgumentCaptor<LambdaQueryWrapper<UserRoleDO>> wrapper = ArgumentCaptor.captor();
 
@@ -95,10 +89,7 @@ class UserRelationMapperTest {
 
         List<Long> ids = multiple ? List.of(2L, 3L) : List.of(2L);
 
-        assertThat(
-                        new UserPostGatewayImpl(mapper)
-                                .deleteUserPostByUserIds(ids))
-                .isTrue();
+        assertThat(new UserPostGatewayImpl(mapper).deleteUserPostByUserIds(ids)).isTrue();
 
         ArgumentCaptor<LambdaQueryWrapper<UserPostDO>> wrapper = ArgumentCaptor.captor();
 
@@ -116,20 +107,11 @@ class UserRelationMapperTest {
 
         List<Long> ids = nullIds ? null : List.of();
 
-        assertThat(
-                        new UserRoleGatewayImpl(roles)
-                                .deleteUserRoleByUserIds(ids))
-                .isFalse();
+        assertThat(new UserRoleGatewayImpl(roles).deleteUserRoleByUserIds(ids)).isFalse();
 
-        assertThat(
-                        new UserRoleGatewayImpl(roles)
-                                .deleteUserRoleInfosByRoleId(10L, ids))
-                .isFalse();
+        assertThat(new UserRoleGatewayImpl(roles).deleteUserRoleInfosByRoleId(10L, ids)).isFalse();
 
-        assertThat(
-                        new UserPostGatewayImpl(posts)
-                                .deleteUserPostByUserIds(ids))
-                .isFalse();
+        assertThat(new UserPostGatewayImpl(posts).deleteUserPostByUserIds(ids)).isFalse();
 
         verify(roles, never()).delete(any());
 
@@ -159,8 +141,7 @@ class UserRelationMapperTest {
 
     private void assertColumnBinding(LambdaQueryWrapper<?> query, String column, Long value) {
         var binding =
-                Pattern.compile(
-                                column + " = #\\{ew\\.paramNameValuePairs\\.([^}]+)}")
+                Pattern.compile(column + " = #\\{ew\\.paramNameValuePairs\\.([^}]+)}")
                         .matcher(query.getSqlSegment());
         assertThat(binding.find()).isTrue();
         assertThat(query.getParamNameValuePairs().get(binding.group(1))).isEqualTo(value);

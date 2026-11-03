@@ -50,8 +50,7 @@ public final class AfterSaleRefundCalculator {
         }
         var total = BigInteger.valueOf(original);
         var q = BigInteger.valueOf(quantity);
-        return total.multiply(
-                        BigInteger.valueOf((long) refundedQuantity + requestedQuantity))
+        return total.multiply(BigInteger.valueOf((long) refundedQuantity + requestedQuantity))
                 .divide(q)
                 .subtract(total.multiply(BigInteger.valueOf(refundedQuantity)).divide(q))
                 .longValueExact();

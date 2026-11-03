@@ -18,6 +18,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.script.RedisScript;
+import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
@@ -141,33 +142,20 @@ class SettlementCacheTest {
     void rollbackDoesNotRemovePreviouslyCommittedBinding() {
         for (long result : new long[] {1L, 2L}) {
             var redis = mock(StringRedisTemplate.class);
-            when(redis.execute(
-                            any(RedisScript.class),
-                            anyList(),
-                            any(Object[].class)))
+            when(redis.execute(any(RedisScript.class), anyList(), any(Object[].class)))
                     .thenReturn(result);
             var gateway = new SettlementGatewayImpl(redis, new Fastjson2RedisSerializer());
-            TransactionSynchronizationManager
-                    .initSynchronization();
+            TransactionSynchronizationManager.initSynchronization();
             try {
                 gateway.bind(1L, "settlement", "ORDER");
-                var callbacks =
-                        TransactionSynchronizationManager
-                                .getSynchronizations();
+                var callbacks = TransactionSynchronizationManager.getSynchronizations();
                 assertEquals(result == 1L ? 1 : 0, callbacks.size());
                 callbacks.forEach(
-                        c ->
-                                c.afterCompletion(
-                                        org.springframework.transaction.support
-                                                .TransactionSynchronization.STATUS_ROLLED_BACK));
+                        c -> c.afterCompletion(TransactionSynchronization.STATUS_ROLLED_BACK));
                 verify(redis, times(result == 1L ? 2 : 1))
-                        .execute(
-                                any(RedisScript.class),
-                                anyList(),
-                                any(Object[].class));
+                        .execute(any(RedisScript.class), anyList(), any(Object[].class));
             } finally {
-                TransactionSynchronizationManager
-                        .clearSynchronization();
+                TransactionSynchronizationManager.clearSynchronization();
             }
         }
     }
@@ -191,14 +179,11 @@ class SettlementCacheTest {
                         quote.payableAmount(),
                         null,
                         value.references());
-        var submission =
-                new SettlementSubmission(order, record);
+        var submission = new SettlementSubmission(order, record);
         var codec = new Fastjson2RedisSerializer();
         assertEquals(
                 submission,
-                codec.deserialize(
-                        codec.serialize(submission),
-                        SettlementSubmission.class));
+                codec.deserialize(codec.serialize(submission), SettlementSubmission.class));
     }
 
     /** 规格映射顺序不影响令牌，但规格内容、图片和未知状态影响令牌。 */
@@ -213,9 +198,7 @@ class SettlementCacheTest {
         assertEquals(token(first, "old.png"), token(reverse, "old.png"));
         assertNotEquals(token(first, "old.png"), token(first, "new.png"));
         assertNotEquals(token(null, "old.png"), token(Map.of(), "old.png"));
-        assertNotEquals(
-                token(Map.of("a", "b:c"), "old.png"),
-                token(Map.of("a:b", "c"), "old.png"));
+        assertNotEquals(token(Map.of("a", "b:c"), "old.png"), token(Map.of("a:b", "c"), "old.png"));
     }
 
     private String token(Map<String, String> specs, String image) {
@@ -272,11 +255,7 @@ class SettlementCacheTest {
                         null,
                         snapshot.references());
         var codec = new Fastjson2RedisSerializer();
-        var json =
-                JSON.parseObject(
-                        codec.serialize(
-                                new SettlementSubmission(
-                                        order, record)));
+        var json = JSON.parseObject(codec.serialize(new SettlementSubmission(order, record)));
         json.getJSONObject("order").getJSONArray("items").getJSONObject(0).remove("specs");
         json.getJSONObject("order")
                 .getJSONArray("items")

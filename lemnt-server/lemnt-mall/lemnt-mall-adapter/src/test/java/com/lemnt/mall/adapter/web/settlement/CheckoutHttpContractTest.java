@@ -7,10 +7,13 @@ import com.lemnt.mall.adapter.web.coupon.CouponTemplateController;
 import com.lemnt.mall.application.coupon.cmd.CouponTemplateCreateCmd;
 import com.lemnt.mall.application.coupon.executor.CouponIssueCmdExe;
 import com.lemnt.mall.application.coupon.executor.CouponListQueryExe;
+import com.lemnt.mall.application.coupon.executor.CouponManagementPageQueryExe;
 import com.lemnt.mall.application.coupon.executor.CouponRevokeCmdExe;
 import com.lemnt.mall.application.coupon.executor.CouponTemplateCreateCmdExe;
+import com.lemnt.mall.application.coupon.executor.CouponTemplateDeleteCmdExe;
 import com.lemnt.mall.application.coupon.executor.CouponTemplateEnableCmdExe;
 import com.lemnt.mall.application.coupon.executor.CouponTemplateListQueryExe;
+import com.lemnt.mall.application.coupon.executor.CouponTemplateUpdateCmdExe;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -43,21 +46,13 @@ class CheckoutHttpContractTest {
                             mock(CouponTemplateListQueryExe.class),
                             create,
                             mock(CouponTemplateEnableCmdExe.class),
-                            mock(
-                                    com.lemnt.mall.application.coupon.executor
-                                            .CouponTemplateUpdateCmdExe.class),
-                            mock(
-                                    com.lemnt.mall.application.coupon.executor
-                                            .CouponTemplateDeleteCmdExe.class)),
+                            mock(CouponTemplateUpdateCmdExe.class),
+                            mock(CouponTemplateDeleteCmdExe.class)),
                     new CouponController(
                             mock(CouponIssueCmdExe.class),
-                            mock(
-                                    CouponRevokeCmdExe
-                                            .class),
+                            mock(CouponRevokeCmdExe.class),
                             mock(CouponListQueryExe.class),
-                            mock(
-                                    com.lemnt.mall.application.coupon.executor
-                                            .CouponManagementPageQueryExe.class))
+                            mock(CouponManagementPageQueryExe.class))
                 };
         var mvc =
                 MockMvcBuilders.standaloneSetup(controller)

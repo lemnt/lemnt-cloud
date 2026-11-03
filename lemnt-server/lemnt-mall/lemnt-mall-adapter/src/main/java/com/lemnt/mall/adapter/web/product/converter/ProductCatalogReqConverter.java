@@ -17,6 +17,7 @@ import com.lemnt.mall.application.product.cmd.ProductSpuShelfCmd;
 import com.lemnt.mall.application.product.cmd.ProductSpuUpdateCmd;
 import com.lemnt.mall.application.product.qry.ProductSpuPageQry;
 import com.lemnt.mall.domain.product.model.ProductSku;
+import com.lemnt.mall.domain.product.model.ProductSkuSpec;
 
 /**
  * 目录请求转换器。
@@ -115,11 +116,7 @@ public final class ProductCatalogReqConverter {
                                                         : sku.specs().stream()
                                                                 .map(
                                                                         property ->
-                                                                                new com.lemnt.mall
-                                                                                        .domain
-                                                                                        .product
-                                                                                        .model
-                                                                                        .ProductSkuSpec(
+                                                                                new ProductSkuSpec(
                                                                                         property
                                                                                                 .specId(),
                                                                                         property

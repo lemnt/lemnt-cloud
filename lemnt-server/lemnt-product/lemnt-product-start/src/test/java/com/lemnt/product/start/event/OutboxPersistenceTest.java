@@ -48,7 +48,8 @@ public class OutboxPersistenceTest {
                         + ";MODE=MySQL;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=5000");
         // H2 2.4的CHECK IN常量比较器依赖建表会话，保留至本用例结束。
         schemaConnection = source.getConnection();
-        ScriptUtils.executeSqlScript(schemaConnection, new ClassPathResource("product-sql/lemnt_product.sql"));
+        ScriptUtils.executeSqlScript(
+                schemaConnection, new ClassPathResource("product-sql/lemnt_product.sql"));
         jdbc = new JdbcTemplate(source);
         transaction = new TransactionTemplate(new DataSourceTransactionManager(source));
         var configuration = new MybatisConfiguration();
@@ -67,7 +68,9 @@ public class OutboxPersistenceTest {
     }
 
     @AfterEach
-    void closeSchemaConnection() throws Exception { if (schemaConnection != null) schemaConnection.close(); }
+    void closeSchemaConnection() throws Exception {
+        if (schemaConnection != null) schemaConnection.close();
+    }
 
     <T> T proxy(Object target, Class<T> type) {
         var proxy = new ProxyFactory(target);

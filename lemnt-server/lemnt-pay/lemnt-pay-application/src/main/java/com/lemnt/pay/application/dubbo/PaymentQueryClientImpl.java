@@ -2,6 +2,7 @@ package com.lemnt.pay.application.dubbo;
 
 import com.lemnt.pay.client.PaymentQueryClient;
 import com.lemnt.pay.client.dto.PaymentRefundResultDTO;
+import com.lemnt.pay.client.dto.PaymentRefundTotalDTO;
 import com.lemnt.pay.client.dto.PaymentResultDTO;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
@@ -19,6 +20,10 @@ import java.util.List;
 public class PaymentQueryClientImpl implements PaymentQueryClient {
     private final TradePaymentGateway payments;
     private final PaymentRefundGateway refunds;
+    @Override public PaymentRefundTotalDTO refundTotal(String no) {
+        var value=refunds.total(no);return new PaymentRefundTotalDTO(value.refundCount(),value.refundAmount());
+    }
+
 
     @Override
     public List<PaymentResultDTO> findByOrderNo(String no) {

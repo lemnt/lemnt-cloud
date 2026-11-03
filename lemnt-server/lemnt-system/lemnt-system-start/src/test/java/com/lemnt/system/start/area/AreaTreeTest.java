@@ -50,21 +50,16 @@ class AreaTreeTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.data[?(@.id == 110000)].name").value("北京市"));
-        assertNotNull(
-                AreaController.class
-                        .getMethod("tree")
-                        .getAnnotation(RequiresLogin.class));
+        assertNotNull(AreaController.class.getMethod("tree").getAnnotation(RequiresLogin.class));
     }
 
     /** 地区名称复用实际CSV，国内不加中国，国外保留国家，未知不推断。 */
     @Test
     void remoteNamesFormatSourcePathsAndHandleUnknownIds() {
-        var remote =
-                new RemoteAreaServiceImpl(new AreaGatewayImpl());
+        var remote = new RemoteAreaServiceImpl(new AreaGatewayImpl());
         var names =
                 remote.getNames(
-                        List.of(
-                                110101L, 110100L, 110000L, 1L, 2L, Long.MAX_VALUE, 110101L));
+                        List.of(110101L, 110100L, 110000L, 1L, 2L, Long.MAX_VALUE, 110101L));
         assertEquals("北京市 北京市 东城区", names.get(110101L));
         assertEquals("北京市 北京市", names.get(110100L));
         assertEquals("北京市", names.get(110000L));

@@ -130,11 +130,8 @@ public class MemberGrowthService {
             throw new ServiceException("余额不足", 400);
         }
         memberUserGateway.balance(memberId, type, balance);
-        var metadata =
-                PointRecordMetadata.from(type, bizType, delta);
-        var expMetadata =
-                ExperienceRecordMetadata.from(
-                        type, bizType, delta);
+        var metadata = PointRecordMetadata.from(type, bizType, delta);
+        var expMetadata = ExperienceRecordMetadata.from(type, bizType, delta);
         var record =
                 new AssetRecord(
                         null,

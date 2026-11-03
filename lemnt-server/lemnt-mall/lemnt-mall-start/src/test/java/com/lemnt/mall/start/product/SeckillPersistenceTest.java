@@ -88,9 +88,7 @@ class SeckillPersistenceTest {
                                 new SeckillConfigCreateCmd(
                                         "重叠", "12:00:00", "13:00:00", List.of(), 0)));
         create();
-        assertThrows(
-                ServiceException.class,
-                () -> configs.delete(configId));
+        assertThrows(ServiceException.class, () -> configs.delete(configId));
         assertEquals(1, configs.detail(configId).activityCount());
     }
 
@@ -138,9 +136,7 @@ class SeckillPersistenceTest {
         var join = stock.validateJoin(id, skuId, 3);
         assertEquals(10, join.totalLimitCount());
         assertEquals(new BigDecimal("5.00"), join.seckillPrice());
-        assertThrows(
-                ServiceException.class,
-                () -> stock.validateJoin(id, skuId, 4));
+        assertThrows(ServiceException.class, () -> stock.validateJoin(id, skuId, 4));
         stock.decreaseStock(id, skuId, 2);
         assertEquals(3, activities.detail(id).stock());
         assertEquals(

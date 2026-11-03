@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.order.infrastructure.order.mapper.TradeOrderMapper">
+    <sql id="fulfillmentFilter">
+        <where>
+            <if test="orderNo != null">o.order_no=#{orderNo}</if>
+            <if test="status != null">AND o.status=#{status}</if>
+            <if test="commentStatus != null">AND o.comment_status=#{commentStatus}</if>
+            <if test="memberId != null">AND o.member_id=#{memberId}</if>
+            <if test="deliveryType != null">AND COALESCE(o.delivery_type,1)=#{deliveryType}</if>
+        </where>
+    </sql>
+
+    <select id="total" resultType="com.lemnt.order.infrastructure.order.dataobject.OrderTotalDO">
+        SELECT COUNT(*) AS order_count, COALESCE(SUM(total_amount),0) AS order_pay_price
+        FROM order_info
+        <if test="orderNo != null">WHERE order_no=#{orderNo}</if>
+    </select>
+
+    <select id="orders" resultType="com.lemnt.order.infrastructure.fulfillment.dataobject.OrderSummaryDO">
+        SELECT o.order_no,o.member_id,o.total_amount,o.status,o.create_time,
+               CASE WHEN c.order_no IS NULL THEN FALSE ELSE TRUE END AS inventory_confirmed,
+               EXISTS(SELECT 1 FROM order_after_sale r WHERE r.order_no=o.order_no
+                      AND r.status IN ('REQUESTED','AWAITING_RETURN','RETURNED','WAIT_REFUND','REFUNDING')) AS active_refund,
+               s.carrier_code,s.tracking_no,s.shipped_at,s.received_at
+        FROM order_info o
+        LEFT JOIN order_inventory_confirmation c ON c.order_no=o.order_no
+        LEFT JOIN order_shipment s ON s.order_no=o.order_no
+        <include refid="fulfillmentFilter"/>
+        ORDER BY o.id DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="orderCount" resultType="long">
+        SELECT COUNT(*) FROM order_info o
+        <include refid="fulfillmentFilter"/>
+    </select>
+
+    <select id="memberStatusCounts" resultType="com.lemnt.order.infrastructure.order.dataobject.OrderStatusCountDO">
+        SELECT status, comment_status, COALESCE(delivery_type,1) AS delivery_type, COUNT(*) AS cnt
+        FROM order_info WHERE member_id=#{memberId}
+        GROUP BY status, comment_status, COALESCE(delivery_type,1)
+    </select>
+
+    <select id="databaseNow" resultType="java.time.LocalDateTime">
+        SELECT CURRENT_TIMESTAMP
+    </select>
+
+    <update id="transitionStatus">
+        UPDATE order_info SET status=#{targetStatus}, update_time=CURRENT_TIMESTAMP
+        WHERE order_no=#{orderNo} AND status=#{expectedStatus}
+    </update>
+</mapper>

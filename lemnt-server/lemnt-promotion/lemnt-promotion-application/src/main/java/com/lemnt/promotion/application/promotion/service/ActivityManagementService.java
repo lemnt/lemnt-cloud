@@ -34,8 +34,7 @@ import java.util.Set;
 /** 按芋道直接管理活动及 SKU 折扣，不引入草稿版本和额度账本。 */
 @Component
 @RequiredArgsConstructor
-@Transactional(rollbackFor = Exception.class,
-        isolation = Isolation.READ_COMMITTED)
+@Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
 public class ActivityManagementService {
     private final RewardActivityGateway rewards;
     private final DiscountActivityGateway discounts;
@@ -166,9 +165,16 @@ public class ActivityManagementService {
                 ids.stream().allMatch(id -> id != null && id > 0)
                         && ids.stream().distinct().count() == ids.size(),
                 "SKU 编号重复或不合法");
-        ids.stream().sorted().forEach(id -> resourceMutex.begin(
-                "promotion.discount.sku.mutex.v1", String.valueOf(id),
-                "DISCOUNT_SKU_MUTEX", String.valueOf(id), "{}"));
+        ids.stream()
+                .sorted()
+                .forEach(
+                        id ->
+                                resourceMutex.begin(
+                                        "promotion.discount.sku.mutex.v1",
+                                        String.valueOf(id),
+                                        "DISCOUNT_SKU_MUTEX",
+                                        String.valueOf(id),
+                                        "{}"));
         for (var value : values) {
             var sku = skus.catalogSku(value.skuId());
             require(sku != null && Objects.equals(sku.spuId(), value.spuId()), "SKU 与商品不匹配");

@@ -40,11 +40,7 @@ class ConfigKeyUniqueMapperTest {
 
         doReturn(null).when(mapper).selectOne(any());
 
-        var gateway =
-                new ConfigGatewayImpl(
-                        mapper,
-                        Mockito.mock(
-                                RedisStringService.class));
+        var gateway = new ConfigGatewayImpl(mapper, Mockito.mock(RedisStringService.class));
         if (editing) gateway.checkConfigKeyUnique("test", 2L);
         else gateway.checkConfigKeyUnique("test");
 

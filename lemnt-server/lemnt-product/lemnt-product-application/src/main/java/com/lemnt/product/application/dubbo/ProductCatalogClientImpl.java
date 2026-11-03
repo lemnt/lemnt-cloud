@@ -36,39 +36,65 @@ public class ProductCatalogClientImpl implements ProductCatalogClient {
     public ProductSkuBriefDTO catalogSku(Long id) {
         return sku(skus.catalogSku(id));
     }
+
     @Override
     public List<ProductSkuBriefDTO> catalogSkus(Long spuId) {
         return skus.catalogSkus(spuId).stream().map(this::sku).toList();
     }
+
     @Override
     public List<ProductSkuBriefDTO> skusBySpuIds(List<Long> ids) {
         return skus.skusBySpuIds(ids).stream().map(this::sku).toList();
     }
+
     @Override
     public ProductSpuBriefDTO findSpu(Long id) {
         return spu(spus.findSpu(id));
     }
+
     @Override
     public List<ProductSpuBriefDTO> findSpus(List<Long> ids) {
         return spus.findSpus(ids).stream().map(this::spu).toList();
     }
-    private ProductSpuBriefDTO spu(
-            ProductSpu value) {
-        return value == null ? null : new ProductSpuBriefDTO(
-                value.id(), value.name(), value.categoryId(), value.image(), value.status());
+
+    private ProductSpuBriefDTO spu(ProductSpu value) {
+        return value == null
+                ? null
+                : new ProductSpuBriefDTO(
+                        value.id(),
+                        value.name(),
+                        value.categoryId(),
+                        value.image(),
+                        value.status());
     }
-    private ProductSkuBriefDTO sku(
-            ProductSku value) {
-        return value == null ? null : new ProductSkuBriefDTO(
-                value.id(), value.spuId(), value.code(), value.name(), value.price(), value.stock(),
-                value.image(), value.specs().stream().map(spec -> new ProductSnapshotDTO.Spec(
-                        spec.specId(), spec.specName(), spec.specValueId(), spec.specValueName())).toList(),
-                value.status(), value.weight(), value.volume());
+
+    private ProductSkuBriefDTO sku(ProductSku value) {
+        return value == null
+                ? null
+                : new ProductSkuBriefDTO(
+                        value.id(),
+                        value.spuId(),
+                        value.code(),
+                        value.name(),
+                        value.price(),
+                        value.stock(),
+                        value.image(),
+                        value.specs().stream()
+                                .map(
+                                        spec ->
+                                                new ProductSnapshotDTO.Spec(
+                                                        spec.specId(),
+                                                        spec.specName(),
+                                                        spec.specValueId(),
+                                                        spec.specValueName()))
+                                .toList(),
+                        value.status(),
+                        value.weight(),
+                        value.volume());
     }
 
     @Override
-    public StockReservationDTO reservationStatus(
-            StockReservationQueryBo query) {
+    public StockReservationDTO reservationStatus(StockReservationQueryBo query) {
         if (query == null) throw new IllegalArgumentException("预占查询条件不能为空");
         var value = productInventoryService.reservationStatus(query.reservationNo(), query.skuId());
         return value == null
@@ -90,11 +116,7 @@ public class ProductCatalogClientImpl implements ProductCatalogClient {
     @Override
     public List<ProductSnapshotDTO> findOnShelfBatch(List<Long> ids) {
         var values = productCatalogGateway.findOnShelfBatch(ids);
-        return ids.stream()
-                .map(values::get)
-                .filter(Objects::nonNull)
-                .map(this::toDTO)
-                .toList();
+        return ids.stream().map(values::get).filter(Objects::nonNull).map(this::toDTO).toList();
     }
 
     /** 远程输出与结算读取相同的可信目录快照。 */
@@ -120,8 +142,11 @@ public class ProductCatalogClientImpl implements ProductCatalogClient {
                                                                 snapshotProperty.specValueId(),
                                                                 snapshotProperty.specValueName()))
                                         .toList(),
-                        value.picUrl(), value.deliveryTypes(), value.deliveryTemplateId(),
-                        value.weight(), value.volume());
+                        value.picUrl(),
+                        value.deliveryTypes(),
+                        value.deliveryTemplateId(),
+                        value.weight(),
+                        value.volume());
     }
 
     @Override

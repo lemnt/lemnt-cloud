@@ -25,7 +25,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.List;
 import java.util.UUID;
@@ -195,7 +194,6 @@ class PickUpPersistenceTest {
                                         null,
                                         List.of(),
                                         0)));
-        assertThrows(
-                ServiceException.class, () -> stores.delete(999L));
+        assertThrows(ServiceException.class, () -> stores.delete(999L));
     }
 }

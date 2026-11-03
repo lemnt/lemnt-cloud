@@ -1,5 +1,6 @@
 package com.lemnt.trade.application.dubbo;
 
+import com.lemnt.trade.application.dubbo.converter.PromotionClientConverter;
 import com.lemnt.trade.application.order.cmd.OrderCommentCreateCmd;
 import com.lemnt.trade.application.order.service.OrderCommentService;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
@@ -291,12 +292,7 @@ public class TradeOrderClientImpl implements TradeOrderClient {
                         value.adjustmentAmount(),
                         value.pricingSnapshotStatus(),
                         value.pricingSnapshotVersion(),
-                        value.promotions().stream()
-                                .map(
-                                        com.lemnt.trade.application.dubbo.converter
-                                                        .PromotionClientConverter
-                                                ::from)
-                                .toList());
+                        value.promotions().stream().map(PromotionClientConverter::from).toList());
         try {
             submissions.create(order);
         } catch (DuplicateKeyException exception) {
@@ -395,12 +391,7 @@ public class TradeOrderClientImpl implements TradeOrderClient {
                         value.adjustmentAmount(),
                         value.pricingSnapshotStatus(),
                         value.pricingSnapshotVersion(),
-                        value.promotions().stream()
-                                .map(
-                                        com.lemnt.trade.application.dubbo.converter
-                                                        .PromotionClientConverter
-                                                ::to)
-                                .toList());
+                        value.promotions().stream().map(PromotionClientConverter::to).toList());
     }
 
     private TradeOrderDelivery fromDelivery(OrderDeliveryDTO value, String verifyCode) {
@@ -440,10 +431,7 @@ public class TradeOrderClientImpl implements TradeOrderClient {
     /** 8 位核销码，与数据库唯一索引配合；重试时订单内容比较会忽略核销码。 */
     private String verifyCode() {
         for (int attempt = 0; attempt < 10; attempt++) {
-            String code =
-                    String.format(
-                            "%08d",
-                            ThreadLocalRandom.current().nextInt(100_000_000));
+            String code = String.format("%08d", ThreadLocalRandom.current().nextInt(100_000_000));
             if (orderGateway.findHeaderByPickUpCode(code) == null) {
                 return code;
             }
@@ -467,8 +455,7 @@ public class TradeOrderClientImpl implements TradeOrderClient {
 
     /** 完整报价保持原建单编排，在内部持久化事务校验所有优惠及权益分摊。 */
     @Override
-    @Transactional(
-            propagation = Propagation.NOT_SUPPORTED)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public OrderDTO createPriced(OrderCreateBo value) {
         if (value == null || !"COMPLETE".equals(value.pricingSnapshotStatus())) {
             throw new IllegalArgumentException("完整报价快照标记缺失");

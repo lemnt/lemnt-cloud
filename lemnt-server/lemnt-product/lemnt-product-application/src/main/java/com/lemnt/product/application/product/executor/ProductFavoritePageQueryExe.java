@@ -16,9 +16,7 @@ public class ProductFavoritePageQueryExe {
     private final ProductFavoriteService service;
 
     /** 委托领域应用服务完成本次用例。 */
-    public PageResult<
-                    ProductFavoriteDTO>
-            execute(ProductFavoritePageQry value) {
+    public PageResult<ProductFavoriteDTO> execute(ProductFavoritePageQry value) {
         return service.page(value);
     }
 }

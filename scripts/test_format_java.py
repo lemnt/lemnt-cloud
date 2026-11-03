@@ -23,6 +23,14 @@ class AnnotationFormatTest(unittest.TestCase):
 
 
 class TypeImportFormatTest(unittest.TestCase):
+    def test_wrapped_package_paths_and_serializable_are_shortened(self):
+        source = ('package example;\nrecord Quote(java.util.\n Map<Long, Integer> gifts) '
+                  'implements java.io.\n Serializable {}')
+        result = normalize_types(source)
+        self.assertIn('import java.util.Map;', result)
+        self.assertIn('import java.io.Serializable;', result)
+        self.assertIn('record Quote(Map<Long, Integer> gifts) implements Serializable', result)
+
     def test_generic_and_static_access_use_explicit_imports(self):
         source = ('package example;\nclass Quote { java.util.Map<Long, Integer> gifts; '
                   'Object values = java.util.List.of(); }')

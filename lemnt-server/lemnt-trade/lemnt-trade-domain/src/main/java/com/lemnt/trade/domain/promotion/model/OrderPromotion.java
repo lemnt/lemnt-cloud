@@ -23,8 +23,6 @@ public record OrderPromotion(
     public OrderPromotion {
         items = items == null ? List.of() : List.copyOf(items);
         giveCouponTemplateCounts =
-                giveCouponTemplateCounts == null
-                        ? null
-                        : Map.copyOf(giveCouponTemplateCounts);
+                giveCouponTemplateCounts == null ? null : Map.copyOf(giveCouponTemplateCounts);
     }
 }

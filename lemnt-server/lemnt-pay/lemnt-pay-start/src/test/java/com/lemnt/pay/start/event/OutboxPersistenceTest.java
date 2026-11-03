@@ -58,14 +58,10 @@ public class OutboxPersistenceTest {
         configuration.setMapUnderscoreToCamelCase(true);
         var factory = new MybatisSqlSessionFactoryBean();
         factory.setDataSource(source);
-        factory.setGlobalConfig(
-                new GlobalConfig()
-                        .setMetaObjectHandler(
-                                new MyMetaObjectHandler()));
+        factory.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
         factory.setConfiguration(configuration);
         factory.setMapperLocations(
-                new PathMatchingResourcePatternResolver()
-                        .getResources("classpath*:mapper/*.xml"));
+                new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
         session = new SqlSessionTemplate(factory.getObject());
         outbox =
                 proxy(

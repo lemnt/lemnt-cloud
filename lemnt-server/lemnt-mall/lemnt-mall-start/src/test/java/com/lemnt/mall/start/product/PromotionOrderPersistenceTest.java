@@ -14,6 +14,7 @@ import com.lemnt.mall.application.promotion.cmd.SeckillProductCmd;
 import com.lemnt.mall.application.promotion.dto.PromotionRefundResult;
 import com.lemnt.mall.application.promotion.service.BargainActivityManagementService;
 import com.lemnt.mall.application.promotion.service.CombinationActivityManagementService;
+import com.lemnt.mall.application.promotion.service.CombinationRecordService;
 import com.lemnt.mall.application.promotion.service.PointActivityManagementService;
 import com.lemnt.mall.application.promotion.service.PromotionOrderService;
 import com.lemnt.mall.application.promotion.service.SeckillActivityManagementService;
@@ -35,6 +36,7 @@ import com.lemnt.mall.domain.promotion.model.BargainRecord;
 import com.lemnt.mall.domain.promotion.model.PromotionOrder;
 import com.lemnt.mall.domain.settlement.gateway.OrderGateway;
 import com.lemnt.mall.domain.settlement.model.SettlementOrder;
+import com.lemnt.mall.domain.settlement.model.SettlementQuote;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +52,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 
@@ -74,8 +75,7 @@ class PromotionOrderPersistenceTest {
     Long bargainActivityId;
     Long pointActivityId;
     Long skuId;
-    AtomicLong memberPoints =
-            new AtomicLong(10000);
+    AtomicLong memberPoints = new AtomicLong(10000);
 
     Map<String, SettlementOrder> trades = new HashMap<>();
     AtomicLong tradeIds = new AtomicLong(100);
@@ -98,8 +98,7 @@ class PromotionOrderPersistenceTest {
                         return new MemberPointConfig(false, 1, 0, 0);
                     }
 
-                    public void apply(
-                            MemberTradeChange change) {}
+                    public void apply(MemberTradeChange change) {}
                 });
         f.components.register(
                 SettlementDeliveryService.class, Mockito.mock(SettlementDeliveryService.class));
@@ -120,11 +119,7 @@ class PromotionOrderPersistenceTest {
                             if (previous != null) {
                                 return new SettlementPreparationResult(previous, false);
                             }
-                            var supplier =
-                                    (Supplier<
-                                                    com.lemnt.mall.domain.settlement.model
-                                                            .SettlementQuote>)
-                                            invocation.getArgument(3);
+                            var supplier = (Supplier<SettlementQuote>) invocation.getArgument(3);
                             var quote = supplier.get();
                             var order =
                                     new SettlementOrder(
@@ -162,8 +157,7 @@ class PromotionOrderPersistenceTest {
                         return saved;
                     }
 
-                    public Long createComment(
-                            CommentOrderRequest value) {
+                    public Long createComment(CommentOrderRequest value) {
                         return null;
                     }
 
@@ -289,9 +283,7 @@ class PromotionOrderPersistenceTest {
         assertEquals(
                 1,
                 f.components
-                        .get(
-                                com.lemnt.mall.application.promotion.service
-                                        .CombinationRecordService.class)
+                        .get(CombinationRecordService.class)
                         .byHead(mapping.activityRecordId())
                         .size());
     }

@@ -33,8 +33,7 @@ public record OrderPromotionDetailRes(
             @Schema(description = "运费优惠金额或本次归因，单位元") BigDecimal deliveryDiscountPrice,
             @Schema(description = "使用积分数量") Long usePoint,
             @Schema(description = "赠送积分数量") Long givePoint,
-            @Schema(description = "赠券模板编号与数量映射")
-                    Map<Long, Integer> giveCouponTemplateCounts,
+            @Schema(description = "赠券模板编号与数量映射") Map<Long, Integer> giveCouponTemplateCounts,
             @Schema(description = "原订单商品行优惠分摊") List<Item> items)
             implements Serializable {}
 

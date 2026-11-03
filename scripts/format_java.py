@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SHA256 = "25157797a0a972c2290b5bc71530c4f7ad646458025e3484412a6e5a9b8c9aa6"
 IMPORT = re.compile(r"^import (static )?([\w.*]+);[ \t]*$", re.M)
 ANNOTATION = re.compile(r"@((?:[a-z]\w*\.)+[A-Z]\w*(?:\.[A-Z]\w*)*)")
-QUALIFIED_TYPE = re.compile(r"(?<![\w.$])(?:[a-z]\w*\.)+[A-Z]\w*")
+QUALIFIED_TYPE = re.compile(r"(?<![\w.$])(?:[a-z]\w*\s*\.\s*)+[A-Z]\w*")
 
 
 def normalize_types(text):
@@ -31,7 +31,9 @@ def normalize_types(text):
         if any(declaration.start() <= match.start() < declaration.end()
                for declaration in declarations_ranges):
             continue
-        qualified = match.group()
+        if '/*' in text[match.start():match.end()] or '//' in text[match.start():match.end()]:
+            raise ValueError('类型引用包含注释，需保留注释后人工整理')
+        qualified = re.sub(r'\s+', '', match.group())
         simple = qualified.rsplit('.', 1)[1]
         if simple in declarations or (simple in imports and imports[simple] != qualified):
             raise ValueError(f'类型同名冲突：{qualified}')

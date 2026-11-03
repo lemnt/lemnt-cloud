@@ -16,8 +16,7 @@ import java.util.List;
 public class KefuMessageListQueryExe {
     private final KefuChatService service;
 
-    public List<KefuMessageDTO> execute(
-            KefuMessageQry qry) {
+    public List<KefuMessageDTO> execute(KefuMessageQry qry) {
         return service.adminMessages(qry);
     }
 }

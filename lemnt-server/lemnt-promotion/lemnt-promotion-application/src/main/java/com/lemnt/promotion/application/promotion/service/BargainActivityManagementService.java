@@ -8,7 +8,6 @@ import com.lemnt.promotion.application.promotion.dto.BargainActivityDTO;
 import com.lemnt.promotion.application.promotion.qry.BargainActivityPageQry;
 import com.lemnt.promotion.domain.product.gateway.ProductSkuGateway;
 import com.lemnt.promotion.domain.product.gateway.ProductSpuGateway;
-import com.lemnt.promotion.domain.product.model.ProductSku;
 import com.lemnt.promotion.domain.product.model.ProductSpu;
 import com.lemnt.promotion.domain.promotion.gateway.BargainActivityGateway;
 import com.lemnt.promotion.domain.promotion.gateway.BargainRecordGateway;
@@ -22,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 /** 砍价活动直接管理，单一 SKU 且同一商品只能参加一个开启活动。 */

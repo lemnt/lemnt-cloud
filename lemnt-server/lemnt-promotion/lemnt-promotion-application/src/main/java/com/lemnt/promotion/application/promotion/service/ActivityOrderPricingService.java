@@ -8,7 +8,6 @@ import com.lemnt.promotion.application.promotion.dto.PromotionOrderDraft;
 import com.lemnt.promotion.application.settlement.service.SettlementPromotionSnapshots;
 import com.lemnt.promotion.domain.member.gateway.MemberTradeGateway;
 import com.lemnt.promotion.domain.product.gateway.ProductCatalogGateway;
-import com.lemnt.promotion.domain.product.model.ProductSnapshot;
 import com.lemnt.promotion.domain.promotion.gateway.BargainActivityGateway;
 import com.lemnt.promotion.domain.promotion.gateway.CombinationActivityGateway;
 import com.lemnt.promotion.domain.promotion.gateway.SeckillActivityGateway;
@@ -41,8 +40,7 @@ public class ActivityOrderPricingService {
     private final BargainRecordService bargainRecordService;
     private final PointActivityManagementService pointActivityManagementService;
     private final SeckillActivityGateway seckillActivities;
-    private final CombinationActivityGateway
-            combinationActivities;
+    private final CombinationActivityGateway combinationActivities;
     private final BargainActivityGateway bargainActivities;
 
     private void require(boolean condition, String message) {
@@ -189,9 +187,7 @@ public class ActivityOrderPricingService {
                                 .setScale(0, RoundingMode.DOWN)
                                 .longValueExact()
                         : 0L;
-        var children =
-                new ArrayList<
-                        SettlementItemPromotion>();
+        var children = new ArrayList<SettlementItemPromotion>();
         for (int i = 0; i < items.size(); i++) {
             children.add(
                     new SettlementItemPromotion(

@@ -85,13 +85,8 @@ class AppCheckoutControllerTest {
                                         create,
                                         mock(SettlementSubmitCmdExe.class),
                                         mock(SettlementAbandonCmdExe.class)))
-                        .addInterceptors(
-                                new HeaderInterceptor())
-                        .defaultRequest(
-                                get("/").header(
-                                                SecurityConstants
-                                                        .HEADER_USER_ID,
-                                                "7"))
+                        .addInterceptors(new HeaderInterceptor())
+                        .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
                         .build();
         mvc.perform(
                         post("/mall/app/checkout/quote")
@@ -100,10 +95,7 @@ class AppCheckoutControllerTest {
                                         "{\"productIds\":[5],\"addressId\":123,\"pointStatus\":true,\"memberId\":999}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.delivery.addressId").value(123));
-        verify(create)
-                .execute(
-                        new SettlementCreateCmd(
-                                7L, List.of(5L), null, true, 123L, 1, null));
+        verify(create).execute(new SettlementCreateCmd(7L, List.of(5L), null, true, 123L, 1, null));
         mvc.perform(
                         post("/mall/app/checkout/quote")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -123,10 +115,7 @@ class AppCheckoutControllerTest {
                 .build()
                 .perform(
                         get("/mall/app/cart")
-                                .header(
-                                        SecurityConstants
-                                                .HEADER_USER_ID,
-                                        "7")
+                                .header(SecurityConstants.HEADER_USER_ID, "7")
                                 .header("memberId", "999"))
                 .andExpect(status().isOk());
         verify(list).execute(7L);
@@ -152,11 +141,7 @@ class AppCheckoutControllerTest {
                 };
         MockMvcBuilders.standaloneSetup(controller)
                 .addInterceptors(new HeaderInterceptor())
-                .defaultRequest(
-                        get("/").header(
-                                        SecurityConstants
-                                                .HEADER_USER_ID,
-                                        "7"))
+                .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
                 .build()
                 .perform(
                         get("/mall/app/cart")
@@ -197,13 +182,8 @@ class AppCheckoutControllerTest {
                 };
         var mvc =
                 MockMvcBuilders.standaloneSetup(controller)
-                        .addInterceptors(
-                                new HeaderInterceptor())
-                        .defaultRequest(
-                                get("/").header(
-                                                SecurityConstants
-                                                        .HEADER_USER_ID,
-                                                "7"))
+                        .addInterceptors(new HeaderInterceptor())
+                        .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
                         .build();
         mvc.perform(
                         post("/mall/app/checkout")
@@ -242,11 +222,7 @@ class AppCheckoutControllerTest {
                 };
         MockMvcBuilders.standaloneSetup(controller)
                 .addInterceptors(new HeaderInterceptor())
-                .defaultRequest(
-                        get("/").header(
-                                        SecurityConstants
-                                                .HEADER_USER_ID,
-                                        "7"))
+                .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
                 .build()
                 .perform(
                         get("/mall/app/checkout/requests/R1")
@@ -281,11 +257,7 @@ class AppCheckoutControllerTest {
                 };
         MockMvcBuilders.standaloneSetup(controller)
                 .addInterceptors(new HeaderInterceptor())
-                .defaultRequest(
-                        get("/").header(
-                                        SecurityConstants
-                                                .HEADER_USER_ID,
-                                        "7"))
+                .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
                 .build()
                 .perform(
                         post("/mall/app/checkout/abandon")

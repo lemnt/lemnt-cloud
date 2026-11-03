@@ -1,7 +1,6 @@
 package com.lemnt.promotion.adapter.app.promotion;
 
 import com.lemnt.common.core.domain.R;
-import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.promotion.adapter.app.promotion.converter.AppSeckillConverter;
 import com.lemnt.promotion.adapter.app.promotion.req.AppSeckillPageReq;
 import com.lemnt.promotion.adapter.app.promotion.res.AppSeckillActivityRes;
@@ -18,8 +17,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -65,6 +62,4 @@ public class AppSeckillController {
     public R<AppSeckillDetailRes> detail(@PathVariable Long id) {
         return R.ok(AppSeckillConverter.detail(detail.execute(id)));
     }
-
-
 }

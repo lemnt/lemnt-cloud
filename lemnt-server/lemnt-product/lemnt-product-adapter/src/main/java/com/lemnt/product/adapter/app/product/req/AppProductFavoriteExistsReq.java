@@ -9,5 +9,4 @@ import java.io.Serializable;
 /** 商品收藏状态查询请求。 */
 @Schema(description = "商品收藏状态查询请求")
 public record AppProductFavoriteExistsReq(
-        @Schema(description = "商品SPU编号") @NotNull @Positive Long spuId)
-        implements Serializable {}
+        @Schema(description = "商品SPU编号") @NotNull @Positive Long spuId) implements Serializable {}

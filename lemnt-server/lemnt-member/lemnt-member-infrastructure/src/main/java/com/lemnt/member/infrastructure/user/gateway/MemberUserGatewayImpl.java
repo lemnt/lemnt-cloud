@@ -32,19 +32,10 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
     public void recordLogin(Long memberId, LocalDateTime loginDate, String loginIp) {
         memberUserMapper.update(
                 null,
-                Wrappers.lambdaUpdate(
-                                MemberDO.class)
-                        .eq(
-                                MemberDO::getId,
-                                memberId)
-                        .set(
-                                MemberDO
-                                        ::getLoginDate,
-                                loginDate)
-                        .set(
-                                MemberDO
-                                        ::getLoginIp,
-                                loginIp));
+                Wrappers.lambdaUpdate(MemberDO.class)
+                        .eq(MemberDO::getId, memberId)
+                        .set(MemberDO::getLoginDate, loginDate)
+                        .set(MemberDO::getLoginIp, loginIp));
     }
 
     @Override

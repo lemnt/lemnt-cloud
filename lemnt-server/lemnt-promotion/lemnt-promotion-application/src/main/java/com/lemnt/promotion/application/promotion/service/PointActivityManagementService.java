@@ -12,7 +12,6 @@ import com.lemnt.promotion.application.promotion.qry.PointActivityPageQry;
 import com.lemnt.promotion.domain.product.gateway.ProductSkuGateway;
 import com.lemnt.promotion.domain.product.gateway.ProductSpuGateway;
 import com.lemnt.promotion.domain.product.model.ProductSku;
-import com.lemnt.promotion.domain.product.model.ProductSpu;
 import com.lemnt.promotion.domain.promotion.gateway.PointActivityGateway;
 import com.lemnt.promotion.domain.promotion.gateway.PointProductGateway;
 import com.lemnt.promotion.domain.promotion.model.PointActivity;
@@ -29,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -202,10 +200,7 @@ public class PointActivityManagementService {
     private PointActivityDTO dto(PointActivity value) {
         var spu = spus.findSpu(value.spuId());
         var lines = products.byActivityId(value.id());
-        var min =
-                lines.stream()
-                        .min(Comparator.comparing(PointProduct::point))
-                        .orElse(null);
+        var min = lines.stream().min(Comparator.comparing(PointProduct::point)).orElse(null);
         var market =
                 spus.findSpus(List.of(value.spuId())).stream()
                         .flatMap(item -> skus.catalogSkus(item.id()).stream())

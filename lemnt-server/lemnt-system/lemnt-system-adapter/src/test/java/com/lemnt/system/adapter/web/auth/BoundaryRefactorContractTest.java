@@ -115,8 +115,7 @@ class BoundaryRefactorContractTest {
         assertEquals("", node.get("label").asString());
         assertFalse(node.get("disabled").asBoolean());
         assertNull(node.get("children"));
-        var argument =
-                ArgumentCaptor.forClass(DeptListQry.class);
+        var argument = ArgumentCaptor.forClass(DeptListQry.class);
         verify(query).execute(argument.capture());
         assertEquals("研发", argument.getValue().deptName());
         assertEquals("1", argument.getValue().status());

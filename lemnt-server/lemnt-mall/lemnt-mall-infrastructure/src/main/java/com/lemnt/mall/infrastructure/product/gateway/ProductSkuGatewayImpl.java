@@ -319,9 +319,7 @@ public class ProductSkuGatewayImpl implements ProductSkuGateway {
                         null,
                         Wrappers.lambdaUpdate(ProductSkuDO.class)
                                 .eq(ProductSkuDO::getId, row.getId())
-                                .set(
-                                        ProductSkuDO::getSpecs,
-                                        JSON.toJSONString(updated))
+                                .set(ProductSkuDO::getSpecs, JSON.toJSONString(updated))
                                 .set(
                                         ProductSkuDO::getVariantKey,
                                         ProductCatalogValidation.variantKey(updated)));

@@ -27,8 +27,16 @@ public record ProductSnapshotDTO(
     }
 
     /** 兼容旧目录协议；旧调用缺失配送信息，保留未知值，不从现值补历史。 */
-    public ProductSnapshotDTO(Long id, String code, String name, BigDecimal price, Integer stock,
-            Long spuId, String spuName, List<Spec> specs, String picUrl) {
+    public ProductSnapshotDTO(
+            Long id,
+            String code,
+            String name,
+            BigDecimal price,
+            Integer stock,
+            Long spuId,
+            String spuName,
+            List<Spec> specs,
+            String picUrl) {
         this(id, code, name, price, stock, spuId, spuName, specs, picUrl, null, null, null, null);
     }
 

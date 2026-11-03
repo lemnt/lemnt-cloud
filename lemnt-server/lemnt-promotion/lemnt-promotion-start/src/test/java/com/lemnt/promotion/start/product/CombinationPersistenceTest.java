@@ -1,6 +1,7 @@
 package com.lemnt.promotion.start.product;
 
 import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.product.domain.product.model.ProductSpu;
 import com.lemnt.promotion.application.promotion.cmd.CombinationActivityCreateCmd;
 import com.lemnt.promotion.application.promotion.cmd.CombinationProductCmd;
 import com.lemnt.promotion.application.promotion.cmd.CombinationRecordCreateCmd;
@@ -8,7 +9,6 @@ import com.lemnt.promotion.application.promotion.service.CombinationActivityMana
 import com.lemnt.promotion.application.promotion.service.CombinationRecordService;
 import com.lemnt.promotion.domain.member.gateway.MemberLookupGateway;
 import com.lemnt.promotion.domain.member.model.MemberSnapshot;
-import com.lemnt.product.domain.product.model.ProductSpu;
 import com.lemnt.promotion.domain.promotion.gateway.CombinationRecordGateway;
 import com.lemnt.promotion.domain.promotion.model.CombinationRecord;
 
@@ -134,9 +134,7 @@ class CombinationPersistenceTest {
                 records.create(
                         new CombinationRecordCreateCmd(
                                 1L, spu.id(), id, null, spu.skus().get(0).id(), 1));
-        var gateway =
-                f.components.get(
-                        CombinationRecordGateway.class);
+        var gateway = f.components.get(CombinationRecordGateway.class);
         gateway.save(
                 new CombinationRecord(
                         head.id(),
@@ -169,9 +167,7 @@ class CombinationPersistenceTest {
                 records.create(
                         new CombinationRecordCreateCmd(
                                 1L, spu.id(), activityId, null, spu.skus().get(0).id(), 1));
-        var gateway =
-                f.components.get(
-                        CombinationRecordGateway.class);
+        var gateway = f.components.get(CombinationRecordGateway.class);
         gateway.save(
                 new CombinationRecord(
                         head.id(),

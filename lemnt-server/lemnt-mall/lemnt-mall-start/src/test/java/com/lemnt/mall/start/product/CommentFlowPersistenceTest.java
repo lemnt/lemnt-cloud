@@ -30,6 +30,7 @@ import com.lemnt.mall.domain.settlement.model.SettlementOrder;
 import org.junit.jupiter.api.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tools.jackson.databind.json.JsonMapper;
@@ -76,8 +77,7 @@ class CommentFlowPersistenceTest {
                         return orders.get(no);
                     }
 
-                    public Long createComment(
-                            CommentOrderRequest value) {
+                    public Long createComment(CommentOrderRequest value) {
                         return comments.saveVerified(
                                         new CommentSaveCmd(
                                                 value.memberId(),
@@ -89,8 +89,7 @@ class CommentFlowPersistenceTest {
                                                 "购买时商品",
                                                 "https://example.test/old.png",
                                                 List.of(
-                                                        new com.lemnt.mall.application.product.cmd
-                                                                .CommentSaveCmd.Spec(
+                                                        new CommentSaveCmd.Spec(
                                                                 8L, "颜色", 9L, "原红色")),
                                                 true,
                                                 true,
@@ -226,15 +225,9 @@ class CommentFlowPersistenceTest {
         var builder = JsonMapper.builder();
         new JacksonConfig().customizer().customize(builder);
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                fixture.components.get(
-                                        AppCommentController
-                                                .class))
-                        .setControllerAdvice(
-                                new GlobalExceptionHandler())
-                        .setMessageConverters(
-                                new org.springframework.http.converter.json
-                                        .JacksonJsonHttpMessageConverter(builder.build()))
+                MockMvcBuilders.standaloneSetup(fixture.components.get(AppCommentController.class))
+                        .setControllerAdvice(new GlobalExceptionHandler())
+                        .setMessageConverters(new JacksonJsonHttpMessageConverter(builder.build()))
                         .build();
         mvc.perform(
                         get("/mall/app/comments")
@@ -353,15 +346,9 @@ class CommentFlowPersistenceTest {
         new JacksonConfig().customizer().customize(builder);
         var mapper = builder.build();
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                fixture.components.get(
-                                        AppCommentController
-                                                .class))
-                        .setControllerAdvice(
-                                new GlobalExceptionHandler())
-                        .setMessageConverters(
-                                new org.springframework.http.converter.json
-                                        .JacksonJsonHttpMessageConverter(mapper))
+                MockMvcBuilders.standaloneSetup(fixture.components.get(AppCommentController.class))
+                        .setControllerAdvice(new GlobalExceptionHandler())
+                        .setMessageConverters(new JacksonJsonHttpMessageConverter(mapper))
                         .build();
         var body = new HashMap<String, Object>();
         body.put("orderNo", "HTTP");
@@ -420,9 +407,7 @@ class CommentFlowPersistenceTest {
                 spuId,
                 "购买时商品",
                 "https://example.test/old.png",
-                List.of(
-                        new CommentSaveCmd.Spec(
-                                8L, "颜色", 9L, "红色")),
+                List.of(new CommentSaveCmd.Spec(8L, "颜色", 9L, "红色")),
                 unique,
                 allowCreate,
                 input.score(),
@@ -550,9 +535,7 @@ class CommentFlowPersistenceTest {
                     "UPDATE mall_product_comment SET create_time='2026-10-29 10:00:00', reply_content='旧正文', reply_status=false WHERE id="
                             + saved.id());
         }
-        var query =
-                fixture.components.get(
-                        CommentPageQueryExe.class);
+        var query = fixture.components.get(CommentPageQueryExe.class);
         var time = LocalDateTime.of(2026, 10, 29, 10, 0);
         var filter =
                 new CommentPageQry(
@@ -560,10 +543,7 @@ class CommentFlowPersistenceTest {
         assertEquals(1, query.execute(filter).getTotal());
         assertEquals(
                 0,
-                query.execute(
-                                new CommentPageQry(
-                                        null, null, null, null, true, 1, 20))
-                        .getTotal());
+                query.execute(new CommentPageQry(null, null, null, null, true, 1, 20)).getTotal());
         assertEquals(
                 0,
                 query.execute(
@@ -607,20 +587,14 @@ class CommentFlowPersistenceTest {
                                         time)));
         assertEquals(
                 1,
-                query.execute(
-                                new CommentPageQry(
-                                        null, null, null, null, null, 1, 20))
-                        .getTotal());
+                query.execute(new CommentPageQry(null, null, null, null, null, 1, 20)).getTotal());
         try (var statement = fixture.schemaConnection.createStatement()) {
             statement.execute(
                     "UPDATE mall_product_comment SET deleted=true WHERE id=" + saved.id());
         }
         assertEquals(
                 0,
-                query.execute(
-                                new CommentPageQry(
-                                        null, null, null, null, null, 1, 20))
-                        .getTotal());
+                query.execute(new CommentPageQry(null, null, null, null, null, 1, 20)).getTotal());
     }
 
     @Test
@@ -630,14 +604,9 @@ class CommentFlowPersistenceTest {
         var builder = JsonMapper.builder();
         new JacksonConfig().customizer().customize(builder);
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                fixture.components.get(
-                                        CommentController.class))
-                        .setControllerAdvice(
-                                new GlobalExceptionHandler())
-                        .setMessageConverters(
-                                new org.springframework.http.converter.json
-                                        .JacksonJsonHttpMessageConverter(builder.build()))
+                MockMvcBuilders.standaloneSetup(fixture.components.get(CommentController.class))
+                        .setControllerAdvice(new GlobalExceptionHandler())
+                        .setMessageConverters(new JacksonJsonHttpMessageConverter(builder.build()))
                         .build();
         // 仅验证HTTP绑定和业务响应，standalone不代表网关或权限切面的部署验收。
         mvc.perform(
@@ -665,9 +634,7 @@ class CommentFlowPersistenceTest {
     @Test
     void selfCommentUsesSourceZeroMemberAndNoOrderAndRealProductSnapshot() {
         memberUnavailable = true;
-        var executor =
-                fixture.components.get(
-                        CommentSelfCreateCmdExe.class);
+        var executor = fixture.components.get(CommentSelfCreateCmdExe.class);
         var input =
                 new CommentSelfCreateCmd(
                         "自评昵称", "https://example.test/a.png", skuId, 5, 4, "后台自评", List.of());

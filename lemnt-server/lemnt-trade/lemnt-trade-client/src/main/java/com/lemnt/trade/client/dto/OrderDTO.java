@@ -1,6 +1,5 @@
 package com.lemnt.trade.client.dto;
 
-import com.lemnt.trade.client.dto.OrderPromotionDTO;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

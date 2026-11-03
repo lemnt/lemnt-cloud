@@ -180,8 +180,7 @@ public class SettlementDeliveryService {
         int rate =
                 gift.map(
                                 p ->
-                                        new BigDecimal(
-                                                        p.ruleSnapshot().replaceAll("[^0-9]", ""))
+                                        new BigDecimal(p.ruleSnapshot().replaceAll("[^0-9]", ""))
                                                 .intValueExact())
                         .orElse(0);
         return SettlementPromotionSnapshots.finish(

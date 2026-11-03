@@ -29,9 +29,7 @@ public class MemberAssetRecordDetailQueryExe {
                 switch (qry.assetType()) {
                     case "POINT" -> pointRecords.detail(qry.id());
                     case "EXPERIENCE" -> experienceRecords.detail(qry.id());
-                    default ->
-                            throw new ServiceException(
-                                    "资产类型不合法", 400);
+                    default -> throw new ServiceException("资产类型不合法", 400);
                 };
         if (record != null && !Objects.equals(qry.assetType(), record.assetType())) {
             return null;

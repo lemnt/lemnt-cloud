@@ -5,6 +5,7 @@ import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
 import com.lemnt.trade.application.brokerage.cmd.BrokerageWithdrawAuditCmd;
 import com.lemnt.trade.application.brokerage.cmd.BrokerageWithdrawCreateCmd;
 import com.lemnt.trade.application.brokerage.qry.BrokerageRecordPageQry;
+import com.lemnt.trade.application.brokerage.qry.BrokerageWithdrawPageQry;
 import com.lemnt.trade.application.brokerage.service.BrokerageService;
 import com.lemnt.trade.application.brokerage.service.BrokerageWithdrawService;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
@@ -87,9 +88,7 @@ class BrokeragePersistenceTest {
                                 0,
                                 null));
         components.register(OrderPersistenceService.class, orders);
-        components.register(
-                TradeConfigGateway.class,
-                BusinessConfigTestSupport.gateway());
+        components.register(TradeConfigGateway.class, BusinessConfigTestSupport.gateway());
         var configs = components.get(TradeConfigGateway.class);
         configs.update(
                 new TradeConfig(
@@ -123,17 +122,11 @@ class BrokeragePersistenceTest {
     @Test
     void bindValidatesSelfCycleAndEnabledPromoter() {
         brokerage.setEnabled(2L, true);
-        assertThrows(
-                ServiceException.class,
-                () -> brokerage.bind(1L, 1L));
-        assertThrows(
-                ServiceException.class,
-                () -> brokerage.bind(1L, 3L));
+        assertThrows(ServiceException.class, () -> brokerage.bind(1L, 1L));
+        assertThrows(ServiceException.class, () -> brokerage.bind(1L, 3L));
         assertTrue(brokerage.bind(1L, 2L));
         assertEquals(2L, brokerage.appUser(1L).bindUserId());
-        assertThrows(
-                ServiceException.class,
-                () -> brokerage.bind(2L, 1L));
+        assertThrows(ServiceException.class, () -> brokerage.bind(2L, 1L));
         assertTrue(brokerage.adminBind(1L, null));
         assertNull(brokerage.appUser(1L).bindUserId());
     }
@@ -226,9 +219,7 @@ class BrokeragePersistenceTest {
         assertEquals(
                 11,
                 withdraws
-                        .page(
-                                new com.lemnt.trade.application.brokerage.qry
-                                        .BrokerageWithdrawPageQry(2L, null, 1, 20))
+                        .page(new BrokerageWithdrawPageQry(2L, null, 1, 20))
                         .getRecords()
                         .get(0)
                         .status()

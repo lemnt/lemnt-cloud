@@ -19,6 +19,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import java.nio.file.Files;
@@ -64,11 +65,7 @@ class BusinessConfigPersistenceTest {
         factory.setConfiguration(configuration);
         factory.setMapperLocations(new ClassPathResource("mapper/ConfigMapper.xml"));
         mapper = new SqlSessionTemplate(factory.getObject()).getMapper(ConfigMapper.class);
-        configGateway =
-                new ConfigGatewayImpl(
-                        mapper,
-                        Mockito.mock(
-                                RedisStringService.class));
+        configGateway = new ConfigGatewayImpl(mapper, Mockito.mock(RedisStringService.class));
     }
 
     Config value(String json, String operator) {
@@ -146,21 +143,17 @@ class BusinessConfigPersistenceTest {
 
     @Test
     void failedCacheInvalidationRollsBackSystemWrite() {
-        var redis =
-                Mockito.mock(RedisStringService.class);
+        var redis = Mockito.mock(RedisStringService.class);
         Mockito.doThrow(new IllegalStateException("redis failure"))
                 .when(redis)
                 .delete(ArgumentMatchers.anyString());
-        var target =
-                new ConfigGatewayImpl(mapper, redis);
+        var target = new ConfigGatewayImpl(mapper, redis);
         var factory = new ProxyFactory(target);
         factory.setProxyTargetClass(true);
         factory.addAdvice(
                 new TransactionInterceptor(
-                        new DataSourceTransactionManager(
-                                source),
-                        new org.springframework.transaction.annotation
-                                .AnnotationTransactionAttributeSource()));
+                        new DataSourceTransactionManager(source),
+                        new AnnotationTransactionAttributeSource()));
         var gateway = (ConfigGateway) factory.getProxy();
         assertThrows(
                 IllegalStateException.class,

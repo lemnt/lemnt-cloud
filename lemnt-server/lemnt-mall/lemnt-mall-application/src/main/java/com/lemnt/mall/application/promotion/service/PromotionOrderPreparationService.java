@@ -12,7 +12,6 @@ import com.lemnt.mall.domain.promotion.gateway.PromotionOrderItemGateway;
 import com.lemnt.mall.domain.promotion.model.PromotionOrder;
 import com.lemnt.mall.domain.promotion.model.PromotionOrderItem;
 import com.lemnt.mall.domain.settlement.gateway.OrderGateway;
-import com.lemnt.mall.domain.settlement.model.SettlementOrder;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
@@ -116,9 +115,7 @@ public class PromotionOrderPreparationService {
         }
     }
 
-    private boolean sameLines(
-            String orderNo,
-            List<PromotionOrderLineCmd> lines) {
+    private boolean sameLines(String orderNo, List<PromotionOrderLineCmd> lines) {
         var saved = promotionOrderItems.byOrderNo(orderNo);
         if (saved.size() != lines.size()) {
             return false;

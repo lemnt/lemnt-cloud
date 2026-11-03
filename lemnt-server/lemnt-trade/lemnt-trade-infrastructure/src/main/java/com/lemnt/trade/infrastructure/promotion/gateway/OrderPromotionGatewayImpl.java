@@ -4,6 +4,7 @@ import com.lemnt.trade.domain.order.model.TradeOrderItem;
 import com.lemnt.trade.domain.promotion.gateway.OrderPromotionGateway;
 import com.lemnt.trade.domain.promotion.model.*;
 import com.lemnt.trade.domain.promotion.model.OrderGiftAdjustment;
+import com.lemnt.trade.infrastructure.order.dataobject.TradeOrderDO;
 import com.lemnt.trade.infrastructure.order.dataobject.TradeOrderItemDO;
 import com.lemnt.trade.infrastructure.order.mapper.TradeOrderItemMapper;
 import com.lemnt.trade.infrastructure.order.mapper.TradeOrderMapper;
@@ -129,25 +130,10 @@ public class OrderPromotionGatewayImpl implements OrderPromotionGateway {
     public void updateGift(OrderGiftAdjustment value) {
         if (orders.update(
                                 null,
-                                Wrappers
-                                        .<com.lemnt.trade.infrastructure.order.dataobject
-                                                        .TradeOrderDO>
-                                                lambdaUpdate()
-                                        .eq(
-                                                com.lemnt.trade.infrastructure.order.dataobject
-                                                                .TradeOrderDO
-                                                        ::getId,
-                                                value.orderId())
-                                        .eq(
-                                                com.lemnt.trade.infrastructure.order.dataobject
-                                                                .TradeOrderDO
-                                                        ::getStatus,
-                                                "PENDING_PAYMENT")
-                                        .set(
-                                                com.lemnt.trade.infrastructure.order.dataobject
-                                                                .TradeOrderDO
-                                                        ::getGivePoint,
-                                                value.givePoint()))
+                                Wrappers.<TradeOrderDO>lambdaUpdate()
+                                        .eq(TradeOrderDO::getId, value.orderId())
+                                        .eq(TradeOrderDO::getStatus, "PENDING_PAYMENT")
+                                        .set(TradeOrderDO::getGivePoint, value.givePoint()))
                         != 1
                 || promotions.update(
                                 null,

@@ -2,9 +2,6 @@ package com.lemnt.trade.start.promotion;
 
 import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
 import com.lemnt.trade.domain.order.model.TradeOrderItem;
-import com.lemnt.trade.domain.payment.gateway.PayNotifyTaskGateway;
-import com.lemnt.trade.domain.payment.model.PayNotifyLog;
-import com.lemnt.trade.domain.payment.model.PayNotifyTask;
 import com.lemnt.trade.domain.promotion.gateway.OrderPromotionGateway;
 import com.lemnt.trade.domain.promotion.model.*;
 import com.lemnt.trade.infrastructure.order.gateway.TradeOrderItemGatewayImpl;
@@ -38,7 +35,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -181,9 +177,7 @@ class OrderPromotionPersistenceTest {
         jdbc.update(
                 "INSERT INTO trade_order_item(id,order_id,sku_id,product_code,product_name,unit_price,quantity,line_amount,pay_amount) VALUES(12,7,3,'SKU2','商品2',1,1,1,0)");
         insertAfterSale(13, "RF1", 11);
-        assertThrows(
-                DataIntegrityViolationException.class,
-                () -> insertAfterSale(14, "RF2", 12));
+        assertThrows(DataIntegrityViolationException.class, () -> insertAfterSale(14, "RF2", 12));
     }
 
     private void insertAfterSale(long id, String no, long item) {

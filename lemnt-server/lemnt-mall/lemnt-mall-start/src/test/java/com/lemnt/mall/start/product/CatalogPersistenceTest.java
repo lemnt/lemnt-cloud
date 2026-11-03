@@ -68,6 +68,7 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -131,8 +132,7 @@ class CatalogPersistenceTest {
         config.setMapUnderscoreToCamelCase(true);
         var bean = new MybatisSqlSessionFactoryBean();
         bean.setMapperLocations(
-                new PathMatchingResourcePatternResolver()
-                        .getResources("classpath*:mapper/*.xml"));
+                new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
         bean.setDataSource(source);
         bean.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
         bean.setConfiguration(config);
@@ -145,12 +145,10 @@ class CatalogPersistenceTest {
                 MemberTradeGateway.class,
                 new MemberTradeGateway() {
                     public MemberPointConfig config() {
-                        return new MemberPointConfig(
-                                false, 1, 0, 0);
+                        return new MemberPointConfig(false, 1, 0, 0);
                     }
 
-                    public void apply(
-                            MemberTradeChange change) {}
+                    public void apply(MemberTradeChange change) {}
                 });
         categoryGateway = components.get(CategoryGateway.class);
         brandGateway = components.get(BrandGateway.class);
@@ -289,10 +287,7 @@ class CatalogPersistenceTest {
     void createsVariantsAndRollsBackWholeAggregateOnDuplicateSku() throws Exception {
         var first = create("SP1", draft("A", 4));
         assertEquals(
-                List.of(
-                        new ProductSkuSpec(
-                                null, "颜色", null, "A")),
-                first.skus().get(0).specs());
+                List.of(new ProductSkuSpec(null, "颜色", null, "A")), first.skus().get(0).specs());
         assertThrows(RuntimeException.class, () -> create("SP2", draft("B", 2), draft("A", 2)));
         assertEquals(1, count("mall_product_spu"));
         assertEquals(1, count("mall_product_sku"));
@@ -518,26 +513,14 @@ class CatalogPersistenceTest {
         assertEquals(2, counts.lowStock());
         var sold =
                 new ProductCatalogFilter(
-                        null,
-                        null,
-                        0,
-                        1,
-                        categoryId,
-                        brandId,
-                        ProductStockStatus.SOLD_OUT);
+                        null, null, 0, 1, categoryId, brandId, ProductStockStatus.SOLD_OUT);
         assertEquals(2, productSpuGateway.page(sold).total());
         assertEquals(
                 List.of(recycled.id()),
                 productSpuGateway.page(sold).records().stream().map(ProductSpu::id).toList());
         var low =
                 new ProductCatalogFilter(
-                        null,
-                        null,
-                        0,
-                        20,
-                        categoryId,
-                        brandId,
-                        ProductStockStatus.LOW_STOCK);
+                        null, null, 0, 20, categoryId, brandId, ProductStockStatus.LOW_STOCK);
         assertEquals(
                 List.of(ten.id(), zero.id()),
                 productSpuGateway.page(low).records().stream().map(ProductSpu::id).toList());
@@ -550,13 +533,10 @@ class CatalogPersistenceTest {
         assertEquals(3, productSpuGateway.page(low).total());
         productInventoryService.cancelReservation("WARNING", sku.id(), 1);
         assertEquals(2, productSpuGateway.counts(null, categoryId, brandId).lowStock());
-        var exporter =
-                components.get(
-                        ProductSpuExportQueryExe.class);
+        var exporter = components.get(ProductSpuExportQueryExe.class);
         var exported =
                 exporter.execute(
-                        new ProductSpuExportQry(
-                                "goods", null, categoryId, brandId, "LOW_STOCK"));
+                        new ProductSpuExportQry("goods", null, categoryId, brandId, "LOW_STOCK"));
         assertEquals(List.of(ten.id(), zero.id()), exported.stream().map(row -> row.id()).toList());
     }
 
@@ -588,9 +568,7 @@ class CatalogPersistenceTest {
         assertEquals(
                 List.of(second.id(), first.id()), values.stream().map(ProductSpu::id).toList());
         assertEquals(
-                List.of(
-                        new ProductSkuSpec(
-                                null, "颜色", null, "B2")),
+                List.of(new ProductSkuSpec(null, "颜色", null, "B2")),
                 values.get(0).skus().get(0).specs());
         assertEquals(
                 2,
@@ -667,44 +645,26 @@ class CatalogPersistenceTest {
                 statement.executeUpdate();
             }
         }
-        var specs =
-                components.get(
-                        ProductSpecPageQueryExe.class);
-        var values =
-                components.get(
-                        ProductSpecValuePageQueryExe
-                                .class);
+        var specs = components.get(ProductSpecPageQueryExe.class);
+        var values = components.get(ProductSpecValuePageQueryExe.class);
         assertEquals(
                 List.of(size.id(), color.id()),
-                specs
-                        .execute(
-                                new ProductSpecPageQry(
-                                        null, 1, 20, null, null))
-                        .getRecords()
-                        .stream()
+                specs.execute(new ProductSpecPageQry(null, 1, 20, null, null)).getRecords().stream()
                         .map(row -> row.id())
                         .toList());
         assertEquals(
                 List.of(blue.id(), red.id()),
                 values
-                        .execute(
-                                new ProductSpecValuePageQry(
-                                        color.id(), null, 1, 20))
+                        .execute(new ProductSpecValuePageQry(color.id(), null, 1, 20))
                         .getRecords()
                         .stream()
                         .map(row -> row.id())
                         .toList());
-        var result =
-                specs.execute(
-                        new ProductSpecPageQry(
-                                null, 1, 20, boundary, boundary));
+        var result = specs.execute(new ProductSpecPageQry(null, 1, 20, boundary, boundary));
         assertEquals(
                 List.of(color.id()), result.getRecords().stream().map(row -> row.id()).toList());
         assertEquals(boundary, result.getRecords().get(0).createTime());
-        var valueResult =
-                values.execute(
-                        new ProductSpecValuePageQry(
-                                color.id(), "红", 1, 20));
+        var valueResult = values.execute(new ProductSpecValuePageQry(color.id(), "红", 1, 20));
         assertEquals(
                 List.of(red.id()), valueResult.getRecords().stream().map(row -> row.id()).toList());
         assertEquals(boundary, valueResult.getRecords().get(0).createTime());
@@ -773,9 +733,7 @@ class CatalogPersistenceTest {
     /** 经营字段贯通写入、修改、字典重组与两种分页，轮播顺序必须保留。 */
     @Test
     void spuOperatingFieldsPersistAndLegacyInternalUpdatesPreserveThem() {
-        var create =
-                components.get(
-                        ProductSpuCreateCmdExe.class);
+        var create = components.get(ProductSpuCreateCmdExe.class);
         var draft =
                 new ProductSpuCreateCmd.ProductSkuDraft(
                         "META-SKU", "规格", BigDecimal.TEN, 3, null, List.of());
@@ -819,9 +777,7 @@ class CatalogPersistenceTest {
         assertEquals(
                 List.of(saved.id(), newer.id()),
                 low.records().stream().map(ProductSpu::id).toList());
-        var update =
-                components.get(
-                        ProductSpuUpdateCmdExe.class);
+        var update = components.get(ProductSpuUpdateCmdExe.class);
         assertTrue(
                 update.execute(
                         new ProductSpuUpdateCmd(
@@ -859,9 +815,7 @@ class CatalogPersistenceTest {
 
     @Test
     void productCommandsPersistDeliveryTemplateAndSkuDimensionsWithoutLosingThemOnUpdate() {
-        var create =
-                components.get(
-                        ProductSpuCreateCmdExe.class);
+        var create = components.get(ProductSpuCreateCmdExe.class);
         var saved =
                 create.execute(
                         new ProductSpuCreateCmd(
@@ -872,8 +826,7 @@ class CatalogPersistenceTest {
                                 null,
                                 null,
                                 List.of(
-                                        new com.lemnt.mall.application.product.cmd
-                                                .ProductSpuCreateCmd.ProductSkuDraft(
+                                        new ProductSpuCreateCmd.ProductSkuDraft(
                                                 "DELIVERY-SKU",
                                                 "规格",
                                                 BigDecimal.TEN,
@@ -907,9 +860,7 @@ class CatalogPersistenceTest {
                         new BigDecimal("0.25"));
         assertTrue(
                 components
-                        .get(
-                                ProductSpuUpdateCmdExe
-                                        .class)
+                        .get(ProductSpuUpdateCmdExe.class)
                         .execute(
                                 new ProductSpuUpdateCmd(
                                         saved.id(),
@@ -945,10 +896,8 @@ class CatalogPersistenceTest {
         assertEquals(ids, identity(sku.specs()));
         assertEquals(
                 Set.of(
-                        new ProductSkuSpec(
-                                color.id(), "颜色字典", red.id(), "红色"),
-                        new ProductSkuSpec(
-                                size.id(), "尺寸字典", large.id(), "大号")),
+                        new ProductSkuSpec(color.id(), "颜色字典", red.id(), "红色"),
+                        new ProductSkuSpec(size.id(), "尺寸字典", large.id(), "大号")),
                 new HashSet<>(sku.specs()));
         assertEquals(ids, identity(catalogService.spu(saved.id()).skus().get(0).specs()));
         assertEquals(
@@ -965,10 +914,7 @@ class CatalogPersistenceTest {
         service.updateValue(new ProductSpecValueUpdateCmd(red.id(), "已改名", null));
         var renamed = catalogService.sku(sku.id());
         assertTrue(
-                renamed.specs()
-                        .contains(
-                                new ProductSkuSpec(
-                                        color.id(), "色彩字典", red.id(), "已改名")));
+                renamed.specs().contains(new ProductSkuSpec(color.id(), "色彩字典", red.id(), "已改名")));
         assertEquals(sku.price(), renamed.price());
         assertEquals(sku.stock(), renamed.stock());
         assertTrue(service.deleteValue(red.id()));
@@ -1014,9 +960,7 @@ class CatalogPersistenceTest {
                         BigDecimal.TEN,
                         1,
                         null,
-                        List.of(
-                                new ProductSkuSpec(
-                                        a.id(), "规格甲", option.id(), "伪造")),
+                        List.of(new ProductSkuSpec(a.id(), "规格甲", option.id(), "伪造")),
                         "ON_SHELF",
                         null,
                         null);
@@ -1050,8 +994,7 @@ class CatalogPersistenceTest {
                         ids.entrySet().stream()
                                 .map(
                                         entry ->
-                                                new com.lemnt.mall.domain.product.model
-                                                        .ProductSkuSpec(
+                                                new ProductSkuSpec(
                                                         entry.getKey(),
                                                         null,
                                                         entry.getValue(),
@@ -1074,9 +1017,7 @@ class CatalogPersistenceTest {
                                 List.of(linked))));
         assertEquals(ids, identity(catalogService.sku(id).specs()));
         assertEquals(
-                List.of(
-                        new ProductSkuSpec(
-                                spec.id(), "颜色", value.id(), "旧值")),
+                List.of(new ProductSkuSpec(spec.id(), "颜色", value.id(), "旧值")),
                 catalogService.sku(id).specs());
     }
 
@@ -1131,13 +1072,9 @@ class CatalogPersistenceTest {
         assertNotNull(service.createValue(new ProductSpecValueCreateCmd(spec.id(), "丙", null)));
     }
 
-    private Map<Long, Long> identity(
-            List<ProductSkuSpec> values) {
+    private Map<Long, Long> identity(List<ProductSkuSpec> values) {
         return values.stream()
-                .collect(
-                        Collectors.toMap(
-                                ProductSkuSpec::specId,
-                                ProductSkuSpec::specValueId));
+                .collect(Collectors.toMap(ProductSkuSpec::specId, ProductSkuSpec::specValueId));
     }
 
     /** 真实Controller、校验、字典锁和事务落库；不代表网关认证或部署HTTP验收。 */
@@ -1149,32 +1086,18 @@ class CatalogPersistenceTest {
         var option = dict.createValue(new ProductSpecValueCreateCmd(spec.id(), "红色", null));
         var controller =
                 new ProductSpuController(
-                        Mockito.mock(
-                                ProductSpuPageQueryExe
-                                        .class),
-                        Mockito.mock(
-                                ProductSpuDetailQueryExe
-                                        .class),
-                        components.get(
-                                ProductSpuCreateCmdExe
-                                        .class),
-                        Mockito.mock(
-                                ProductSpuUpdateCmdExe
-                                        .class),
-                        Mockito.mock(
-                                ProductSpuShelfCmdExe
-                                        .class));
+                        Mockito.mock(ProductSpuPageQueryExe.class),
+                        Mockito.mock(ProductSpuDetailQueryExe.class),
+                        components.get(ProductSpuCreateCmdExe.class),
+                        Mockito.mock(ProductSpuUpdateCmdExe.class),
+                        Mockito.mock(ProductSpuShelfCmdExe.class));
         var builder = JsonMapper.builder();
         new JacksonConfig().customizer().customize(builder);
         var mapper = builder.build();
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                controller)
-                        .setControllerAdvice(
-                                new GlobalExceptionHandler())
-                        .setMessageConverters(
-                                new org.springframework.http.converter.json
-                                        .JacksonJsonHttpMessageConverter(mapper))
+                MockMvcBuilders.standaloneSetup(controller)
+                        .setControllerAdvice(new GlobalExceptionHandler())
+                        .setMessageConverters(new JacksonJsonHttpMessageConverter(mapper))
                         .build();
         String payload =
                 """
@@ -1185,34 +1108,21 @@ class CatalogPersistenceTest {
                         .formatted(categoryId, brandId, spec.id(), option.id());
         var result =
                 mvc.perform(
-                                MockMvcRequestBuilders
-                                        .post("/mall/spus")
-                                        .contentType(
-                                                MediaType.APPLICATION_JSON)
+                                MockMvcRequestBuilders.post("/mall/spus")
+                                        .contentType(MediaType.APPLICATION_JSON)
                                         .content(payload))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
                         .andExpect(
-                                MockMvcResultMatchers
-                                        .status()
-                                        .isOk())
-                        .andExpect(
-                                MockMvcResultMatchers
-                                        .jsonPath("$.data.skus[0].specs[0].specName")
+                                MockMvcResultMatchers.jsonPath("$.data.skus[0].specs[0].specName")
                                         .value("接口颜色"))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.keyword").value("商品关键字"))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.sort").value(0))
                         .andExpect(
-                                MockMvcResultMatchers
-                                        .jsonPath("$.data.keyword")
-                                        .value("商品关键字"))
-                        .andExpect(
-                                MockMvcResultMatchers
-                                        .jsonPath("$.data.sort")
-                                        .value(0))
-                        .andExpect(
-                                MockMvcResultMatchers
-                                        .jsonPath("$.data.skus[0].specs[0].specValueId")
+                                MockMvcResultMatchers.jsonPath(
+                                                "$.data.skus[0].specs[0].specValueId")
                                         .value(option.id().toString()))
                         .andExpect(
-                                MockMvcResultMatchers
-                                        .jsonPath("$.data.skus[0].specValueIds")
+                                MockMvcResultMatchers.jsonPath("$.data.skus[0].specValueIds")
                                         .doesNotExist())
                         .andReturn();
         var savedId =
@@ -1223,32 +1133,24 @@ class CatalogPersistenceTest {
                         .get("id")
                         .asString();
         assertEquals(
-                List.of(
-                        new ProductSkuSpec(
-                                spec.id(), "接口颜色", option.id(), "红色")),
+                List.of(new ProductSkuSpec(spec.id(), "接口颜色", option.id(), "红色")),
                 catalogService.sku(Long.valueOf(savedId)).specs());
         mvc.perform(
-                        MockMvcRequestBuilders.post(
-                                        "/mall/spus")
+                        MockMvcRequestBuilders.post("/mall/spus")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(
                                         payload.replace(
                                                 "\"specValueId\":\"" + option.id() + "\"",
                                                 "\"specValueId\":0")))
-                .andExpect(
-                        MockMvcResultMatchers.status()
-                                .isUnprocessableEntity());
+                .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity());
         mvc.perform(
-                        MockMvcRequestBuilders.post(
-                                        "/mall/spus")
+                        MockMvcRequestBuilders.post("/mall/spus")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(
                                         payload.replace(
                                                 "\"specId\":",
                                                 "\"specName\":\"伪造名称\",\"specId\":")))
-                .andExpect(
-                        MockMvcResultMatchers.status()
-                                .isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
         assertEquals(1, count("mall_product_spu"));
         assertEquals(1, storedPropertyCount());
     }
@@ -1265,8 +1167,7 @@ class CatalogPersistenceTest {
                             + skuId);
         }
         assertEquals(
-                List.of(new ProductSkuSpec(3L, "颜色", 7L, "黑色")),
-                catalogService.sku(skuId).specs());
+                List.of(new ProductSkuSpec(3L, "颜色", 7L, "黑色")), catalogService.sku(skuId).specs());
     }
 
     private long storedPropertyCount() throws Exception {

@@ -38,8 +38,7 @@ class DeliveryHttpTest {
                         mock(DeliveryExpressTemplateSimpleListQueryExe.class));
         var mvc =
                 MockMvcBuilders.standaloneSetup(controller)
-                        .setControllerAdvice(
-                                new GlobalExceptionHandler())
+                        .setControllerAdvice(new GlobalExceptionHandler())
                         .build();
         String valid =
                 """
@@ -71,8 +70,7 @@ class DeliveryHttpTest {
                 .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"));
         verifyNoMoreInteractions(create);
         reset(create);
-        when(create.execute(any()))
-                .thenThrow(new ServiceException("配送区域不合法或重复", 400));
+        when(create.execute(any())).thenThrow(new ServiceException("配送区域不合法或重复", 400));
         mvc.perform(
                         post("/trade/admin/delivery/templates")
                                 .contentType(MediaType.APPLICATION_JSON)

@@ -5,7 +5,6 @@ import com.lemnt.mall.application.settlement.service.SettlementDeliveryService;
 import com.lemnt.mall.domain.member.gateway.MemberDeliveryAddressGateway;
 import com.lemnt.mall.domain.member.gateway.MemberTradeGateway;
 import com.lemnt.mall.domain.settlement.gateway.DeliveryPriceGateway;
-import com.lemnt.mall.domain.settlement.model.SettlementDelivery;
 import com.lemnt.mall.domain.settlement.model.SettlementItem;
 import com.lemnt.mall.domain.settlement.model.SettlementQuote;
 import com.lemnt.mall.domain.settlement.model.SettlementRules;
@@ -70,9 +69,7 @@ class PickUpSettlementTest {
                         BigDecimal.ZERO,
                         new BigDecimal("20.00"),
                         null);
-        assertThrows(
-                ServiceException.class,
-                () -> service.pickUp(quote, null));
+        assertThrows(ServiceException.class, () -> service.pickUp(quote, null));
     }
 
     @Test
@@ -84,8 +81,6 @@ class PickUpSettlementTest {
                         BigDecimal.ZERO,
                         new BigDecimal("20.00"),
                         null);
-        assertNotNull(
-                SettlementRules.quoteToken(
-                        service.pickUp(quote, 9L)));
+        assertNotNull(SettlementRules.quoteToken(service.pickUp(quote, 9L)));
     }
 }

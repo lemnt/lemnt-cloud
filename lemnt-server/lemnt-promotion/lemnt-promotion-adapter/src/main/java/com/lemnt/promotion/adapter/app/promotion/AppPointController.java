@@ -1,7 +1,6 @@
 package com.lemnt.promotion.adapter.app.promotion;
 
 import com.lemnt.common.core.domain.R;
-import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.promotion.adapter.app.promotion.converter.AppPointConverter;
 import com.lemnt.promotion.adapter.app.promotion.res.AppPointActivityRes;
 import com.lemnt.promotion.application.promotion.executor.PointAppDetailQueryExe;
@@ -11,15 +10,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
-import jakarta.validation.Valid;
 
 /** 小程序积分商城入口。 */
 @Tag(name = "小程序积分商城")
@@ -46,8 +42,4 @@ public class AppPointController {
     public R<AppPointActivityRes> activity(@PathVariable Long id) {
         return R.ok(AppPointConverter.activity(detail.execute(id)));
     }
-
-
-
-
 }

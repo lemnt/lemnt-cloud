@@ -92,9 +92,7 @@ class DiyPersistenceTest {
         assertTrue(service.useTemplate(second));
         assertFalse(service.templateDetail(first).used());
         assertTrue(service.templateDetail(second).used());
-        assertThrows(
-                ServiceException.class,
-                () -> service.deleteTemplate(second));
+        assertThrows(ServiceException.class, () -> service.deleteTemplate(second));
         assertTrue(service.deleteTemplate(first));
     }
 

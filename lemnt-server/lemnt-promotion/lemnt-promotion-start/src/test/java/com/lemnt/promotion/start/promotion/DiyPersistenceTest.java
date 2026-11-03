@@ -41,7 +41,8 @@ class DiyPersistenceTest {
         source = new JdbcDataSource();
         source.setURL("jdbc:h2:mem:diy_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
         schema = source.getConnection();
-        ScriptUtils.executeSqlScript(schema, new ClassPathResource("promotion-sql/lemnt_promotion.sql"));
+        ScriptUtils.executeSqlScript(
+                schema, new ClassPathResource("promotion-sql/lemnt_promotion.sql"));
         var config = new MybatisConfiguration();
         config.setMapUnderscoreToCamelCase(true);
         var interceptor = new MybatisPlusInterceptor();
@@ -92,9 +93,7 @@ class DiyPersistenceTest {
         assertTrue(service.useTemplate(second));
         assertFalse(service.templateDetail(first).used());
         assertTrue(service.templateDetail(second).used());
-        assertThrows(
-                ServiceException.class,
-                () -> service.deleteTemplate(second));
+        assertThrows(ServiceException.class, () -> service.deleteTemplate(second));
         assertTrue(service.deleteTemplate(first));
     }
 

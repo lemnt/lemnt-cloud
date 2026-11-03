@@ -115,9 +115,7 @@ public class PickUpOrderService {
         throw new IllegalStateException("核销码生成失败，请重试");
     }
 
-    private PickUpOrderDTO dto(
-            TradeOrder order,
-            PickUpStore store) {
+    private PickUpOrderDTO dto(TradeOrder order, PickUpStore store) {
         var delivery = order.delivery();
         return new PickUpOrderDTO(
                 order.orderNo(),

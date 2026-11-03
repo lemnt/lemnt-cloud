@@ -2,6 +2,7 @@ package com.lemnt.trade.application.fulfillment.executor;
 
 import com.lemnt.trade.application.fulfillment.converter.FulfillmentDTOConverter;
 import com.lemnt.trade.application.fulfillment.dto.OrderDetailDTO;
+import com.lemnt.trade.application.fulfillment.dto.OrderItemDTO;
 import com.lemnt.trade.application.order.service.OrderPersistenceService;
 import com.lemnt.trade.domain.aftersale.gateway.AfterSaleGateway;
 import com.lemnt.trade.domain.fulfillment.gateway.InventoryConfirmationGateway;
@@ -43,8 +44,7 @@ public class OrderDetailQueryExe {
                         order.items().stream()
                                 .map(
                                         item ->
-                                                new com.lemnt.trade.application.fulfillment.dto
-                                                        .OrderItemDTO(
+                                                new OrderItemDTO(
                                                         item.productId(),
                                                         item.productCode(),
                                                         item.productName(),
@@ -58,13 +58,7 @@ public class OrderDetailQueryExe {
                                                                 : item.specs().stream()
                                                                         .map(
                                                                                 snapshotProperty ->
-                                                                                        new com
-                                                                                                .lemnt
-                                                                                                .trade
-                                                                                                .application
-                                                                                                .fulfillment
-                                                                                                .dto
-                                                                                                .OrderItemDTO
+                                                                                        new OrderItemDTO
                                                                                                 .Spec(
                                                                                                 snapshotProperty
                                                                                                         .specId(),

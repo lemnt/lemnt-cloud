@@ -88,13 +88,16 @@ import com.lemnt.member.domain.user.model.Tag;
 import com.lemnt.member.infrastructure.address.gateway.MemberAddressGatewayImpl;
 import com.lemnt.member.infrastructure.address.mapper.MemberAddressMapper;
 import com.lemnt.member.infrastructure.growth.gateway.MemberConfigGatewayImpl;
+import com.lemnt.member.infrastructure.growth.gateway.MemberExperienceRecordGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberLevelGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberLevelRecordGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberPointRecordGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberSignConfigGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberSignRecordGatewayImpl;
+import com.lemnt.member.infrastructure.growth.mapper.MemberExperienceRecordMapper;
 import com.lemnt.member.infrastructure.growth.mapper.MemberLevelMapper;
 import com.lemnt.member.infrastructure.growth.mapper.MemberLevelRecordMapper;
+import com.lemnt.member.infrastructure.growth.mapper.MemberPointRecordMapper;
 import com.lemnt.member.infrastructure.growth.mapper.MemberSignConfigMapper;
 import com.lemnt.member.infrastructure.growth.mapper.MemberSignRecordMapper;
 import com.lemnt.member.infrastructure.user.dataobject.MemberDO;
@@ -249,16 +252,10 @@ class MemberAccountIntegrationTest {
         memberAddressGateway =
                 new MemberAddressGatewayImpl(template.getMapper(MemberAddressMapper.class));
         pointRecords =
-                new MemberPointRecordGatewayImpl(
-                        template.getMapper(
-                                com.lemnt.member.infrastructure.growth.mapper
-                                        .MemberPointRecordMapper.class));
+                new MemberPointRecordGatewayImpl(template.getMapper(MemberPointRecordMapper.class));
         experienceRecords =
-                new com.lemnt.member.infrastructure.growth.gateway
-                        .MemberExperienceRecordGatewayImpl(
-                        template.getMapper(
-                                com.lemnt.member.infrastructure.growth.mapper
-                                        .MemberExperienceRecordMapper.class));
+                new MemberExperienceRecordGatewayImpl(
+                        template.getMapper(MemberExperienceRecordMapper.class));
         memberLevelGateway =
                 new MemberLevelGatewayImpl(template.getMapper(MemberLevelMapper.class));
         memberLevelRecordGateway =
@@ -274,19 +271,15 @@ class MemberAccountIntegrationTest {
                         return pointConfigs.get(key);
                     }
 
-                    public void saveBusinessConfig(
-                            BusinessConfigSaveBo value) {
+                    public void saveBusinessConfig(BusinessConfigSaveBo value) {
                         if (rejectPointConfig) throw new IllegalStateException("system配置保存失败");
                         pointConfigs.put(value.configKey(), value.configValue());
                     }
                 };
         var gateway = new MemberConfigGatewayImpl();
-        ReflectionTestUtils.setField(
-                gateway, "remoteConfigService", remote);
+        ReflectionTestUtils.setField(gateway, "remoteConfigService", remote);
         memberConfigGateway = gateway;
-        memberAuthGateway =
-                Mockito.mock(
-                        MemberAuthGateway.class);
+        memberAuthGateway = Mockito.mock(MemberAuthGateway.class);
         userService =
                 tx(
                         new MemberUserService(
@@ -412,10 +405,7 @@ class MemberAccountIntegrationTest {
                         passwordChange.execute(
                                 new PasswordChangeCmd(
                                         id, "missing-password", "New-password-2026")));
-        memberUserGateway.updatePassword(
-                id,
-                SecurityUtils.encryptPassword(
-                        "Member-password-2026"));
+        memberUserGateway.updatePassword(id, SecurityUtils.encryptPassword("Member-password-2026"));
         assertTrue(
                 SecurityUtils.matchesPassword(
                         "Member-password-2026", memberUserGateway.findPasswordByMemberId(id)));
@@ -440,9 +430,7 @@ class MemberAccountIntegrationTest {
     @Test
     void addressRpcOnlyReturnsTheOwnerAddressFromProductionGateway() {
         var saved = addressService.saveAddress(address(id, null, true));
-        var client =
-                new MemberAddressClientImpl(
-                        memberAddressGateway);
+        var client = new MemberAddressClientImpl(memberAddressGateway);
         assertEquals(id, client.get(id, saved.id()).memberId());
         assertEquals("测试地址", client.get(id, saved.id()).detailAddress());
         assertNull(client.get(other, saved.id()));
@@ -732,31 +720,23 @@ class MemberAccountIntegrationTest {
         assertEquals(
                 1,
                 memberSignRecordAllPageQueryExe
-                        .execute(
-                                new SignRecordAllPageQry(
-                                        null, 1, 20))
+                        .execute(new SignRecordAllPageQry(null, 1, 20))
                         .getTotal());
         assertEquals(
                 0,
                 memberSignRecordAllPageQueryExe
-                        .execute(
-                                new SignRecordAllPageQry(
-                                        other, 1, 20))
+                        .execute(new SignRecordAllPageQry(other, 1, 20))
                         .getTotal());
     }
 
     /** 数据库读取留在会员服务，RPC 结果不在诊断文本泄露密码。 */
     @Test
     void memberUserClientReadsExistingStorageAndTracksCurrentStatus() {
-        memberUserGateway.updatePassword(
-                id,
-                SecurityUtils.encryptPassword(
-                        "Member-password-2026"));
+        memberUserGateway.updatePassword(id, SecurityUtils.encryptPassword("Member-password-2026"));
         MemberUserClient client =
                 tx(
                         (MemberUserClient)
-                                new MemberUserClientImpl(
-                                        memberUserGateway, memberLevelGateway));
+                                new MemberUserClientImpl(memberUserGateway, memberLevelGateway));
         var login = client.getByMobile("13800000001");
         assertEquals(id, login.memberId());
         assertTrue(SecurityUtils.matchesPassword("Member-password-2026", login.passwordHash()));
@@ -772,29 +752,23 @@ class MemberAccountIntegrationTest {
     @Test
     void tradeAssetsAreIdempotentAndRefundReturnsOnlyOriginalOrderBenefits() {
         growthService.adjustAsset(id, "POINT", 100, "SEED", "初始化");
-        var create =
-                new MemberTradeAssetCmd(
-                        id, "CREATE", "ORDER", null, 20, 10, 1000, 0, false);
+        var create = new MemberTradeAssetCmd(id, "CREATE", "ORDER", null, 20, 10, 1000, 0, false);
         growthService.tradeAsset(create);
         growthService.tradeAsset(create);
         assertEquals(80L, memberUserGateway.findById(id).points());
-        var paid =
-                new MemberTradeAssetCmd(
-                        id, "PAID", "ORDER", null, 20, 10, 1000, 0, false);
+        var paid = new MemberTradeAssetCmd(id, "PAID", "ORDER", null, 20, 10, 1000, 0, false);
         growthService.tradeAsset(paid);
         growthService.tradeAsset(paid);
         assertEquals(90L, memberUserGateway.findById(id).points());
         assertEquals(1000L, memberUserGateway.findById(id).experience());
         var first =
-                new MemberTradeAssetCmd(
-                        id, "REFUND", "ORDER", "FIRST", 20, 10, 1000, 500, false);
+                new MemberTradeAssetCmd(id, "REFUND", "ORDER", "FIRST", 20, 10, 1000, 500, false);
         growthService.tradeAsset(first);
         growthService.tradeAsset(first);
         assertEquals(95L, memberUserGateway.findById(id).points());
         assertEquals(500L, memberUserGateway.findById(id).experience());
         growthService.tradeAsset(
-                new MemberTradeAssetCmd(
-                        id, "REFUND", "ORDER", "LAST", 20, 10, 1000, 500, true));
+                new MemberTradeAssetCmd(id, "REFUND", "ORDER", "LAST", 20, 10, 1000, 500, true));
         assertEquals(100L, memberUserGateway.findById(id).points());
         assertEquals(0L, memberUserGateway.findById(id).experience());
     }
@@ -803,24 +777,18 @@ class MemberAccountIntegrationTest {
     @Test
     void zeroCashPointOrderDeductsAndReturnsPointsWithoutExperience() {
         growthService.adjustAsset(id, "POINT", 100, "SEED_ZERO", "初始化");
-        var create =
-                new MemberTradeAssetCmd(
-                        id, "CREATE", "ZERO", null, 50, 0, 0, 0, false);
+        var create = new MemberTradeAssetCmd(id, "CREATE", "ZERO", null, 50, 0, 0, 0, false);
         growthService.tradeAsset(create);
         assertEquals(50L, memberUserGateway.findById(id).points());
-        var paid =
-                new MemberTradeAssetCmd(
-                        id, "PAID", "ZERO", null, 50, 0, 0, 0, false);
+        var paid = new MemberTradeAssetCmd(id, "PAID", "ZERO", null, 50, 0, 0, 0, false);
         growthService.tradeAsset(paid);
         assertEquals(50L, memberUserGateway.findById(id).points());
         assertEquals(0L, memberUserGateway.findById(id).experience());
         growthService.tradeAsset(
-                new MemberTradeAssetCmd(
-                        id, "REFUND", "ZERO", "RF-ZERO-1", 50, 0, 0, 0, false, 25));
+                new MemberTradeAssetCmd(id, "REFUND", "ZERO", "RF-ZERO-1", 50, 0, 0, 0, false, 25));
         assertEquals(75L, memberUserGateway.findById(id).points());
         growthService.tradeAsset(
-                new MemberTradeAssetCmd(
-                        id, "REFUND", "ZERO", "RF-ZERO-2", 50, 0, 0, 0, true, 25));
+                new MemberTradeAssetCmd(id, "REFUND", "ZERO", "RF-ZERO-2", 50, 0, 0, 0, true, 25));
         assertEquals(100L, memberUserGateway.findById(id).points());
         assertEquals(0L, memberUserGateway.findById(id).experience());
     }
@@ -828,13 +796,10 @@ class MemberAccountIntegrationTest {
     /** 未成功扣减不能通过关单获得积分，终态会拒绝迟到的抵扣。 */
     @Test
     void closedTradeDoesNotCreditUndeductedPointsAndRejectsLateCreate() {
-        var create =
-                new MemberTradeAssetCmd(
-                        id, "CREATE", "CLOSED", null, 20, 0, 1000, 0, false);
+        var create = new MemberTradeAssetCmd(id, "CREATE", "CLOSED", null, 20, 0, 1000, 0, false);
         assertThrows(ServiceException.class, () -> growthService.tradeAsset(create));
         growthService.tradeAsset(
-                new MemberTradeAssetCmd(
-                        id, "CLOSED", "CLOSED", null, 20, 0, 1000, 0, false));
+                new MemberTradeAssetCmd(id, "CLOSED", "CLOSED", null, 20, 0, 1000, 0, false));
         assertEquals(0L, memberUserGateway.findById(id).points());
         growthService.adjustAsset(id, "POINT", 100, "SEED", "初始化");
         assertThrows(ServiceException.class, () -> growthService.tradeAsset(create));
@@ -845,12 +810,10 @@ class MemberAccountIntegrationTest {
     @Test
     void refundCannotCreateNegativeBalanceOrReclaimFutureUnrelatedPoints() {
         growthService.tradeAsset(
-                new MemberTradeAssetCmd(
-                        id, "PAID", "SPENT", null, 0, 10, 1000, 0, false));
+                new MemberTradeAssetCmd(id, "PAID", "SPENT", null, 0, 10, 1000, 0, false));
         growthService.adjustAsset(id, "POINT", -10, "SPEND", "使用积分");
         var refund =
-                new MemberTradeAssetCmd(
-                        id, "REFUND", "SPENT", "REFUND", 0, 10, 1000, 1000, true);
+                new MemberTradeAssetCmd(id, "REFUND", "SPENT", "REFUND", 0, 10, 1000, 1000, true);
         growthService.tradeAsset(refund);
         assertEquals(0L, memberUserGateway.findById(id).points());
         growthService.adjustAsset(id, "POINT", 5, "OTHER", "其他业务奖励");
@@ -872,10 +835,7 @@ class MemberAccountIntegrationTest {
         assertEquals("仅后台可见", memberUserGateway.findById(id).mark());
         userService.profileUpdate(id, "new", null, null, null, null, null, "");
         assertEquals("", memberUserGateway.findById(id).mark());
-        for (Class<?> contract :
-                List.of(
-                        ProfileUpdateReq.class,
-                        ProfileRes.class)) {
+        for (Class<?> contract : List.of(ProfileUpdateReq.class, ProfileRes.class)) {
             assertFalse(
                     Arrays.stream(contract.getRecordComponents())
                             .anyMatch(v -> v.getName().equals("mark")));
@@ -913,10 +873,7 @@ class MemberAccountIntegrationTest {
         userService.profileUpdate(id, "one", null, null, null, null, null, null, "", null);
         assertEquals("", memberUserGateway.findById(id).name());
         assertEquals(110101, memberUserGateway.findById(id).areaId());
-        for (Class<?> contract :
-                List.of(
-                        ProfileUpdateReq.class,
-                        ProfileRes.class)) {
+        for (Class<?> contract : List.of(ProfileUpdateReq.class, ProfileRes.class)) {
             assertFalse(
                     Arrays.stream(contract.getRecordComponents())
                             .anyMatch(
@@ -931,8 +888,7 @@ class MemberAccountIntegrationTest {
         MemberUserClient client =
                 tx(
                         (MemberUserClient)
-                                new MemberUserClientImpl(
-                                        memberUserGateway, memberLevelGateway));
+                                new MemberUserClientImpl(memberUserGateway, memberLevelGateway));
         assertNull(memberUserGateway.findById(id).loginDate());
         var before = memberUserGateway.now();
         client.recordLogin(id);
@@ -942,9 +898,7 @@ class MemberAccountIntegrationTest {
         userService.profileUpdate(id, "one", null, null, null, null, null);
         assertEquals(logged, memberUserGateway.findById(id).loginDate());
         userService.profileUpdate(id, "one", null, null, null, null, 0);
-        assertThrows(
-                ServiceException.class,
-                () -> client.recordLogin(id));
+        assertThrows(ServiceException.class, () -> client.recordLogin(id));
         assertEquals(logged, memberUserGateway.findById(id).loginDate());
     }
 
@@ -953,14 +907,11 @@ class MemberAccountIntegrationTest {
         MemberUserClient client =
                 tx(
                         (MemberUserClient)
-                                new MemberUserClientImpl(
-                                        memberUserGateway, memberLevelGateway));
+                                new MemberUserClientImpl(memberUserGateway, memberLevelGateway));
         client.recordLogin(id, "203.0.113.7");
         assertEquals("203.0.113.7", memberUserGateway.findById(id).loginIp());
         assertNotNull(memberUserGateway.findById(id).loginDate());
-        assertThrows(
-                ServiceException.class,
-                () -> client.recordLogin(id, "example.com"));
+        assertThrows(ServiceException.class, () -> client.recordLogin(id, "example.com"));
         assertEquals("203.0.113.7", memberUserGateway.findById(id).loginIp());
         client.recordLogin(id, null);
         assertNull(memberUserGateway.findById(id).loginIp());
@@ -969,43 +920,18 @@ class MemberAccountIntegrationTest {
     @Test
     void signRecordNicknameFilterAndPageTotalUseSameRealJoinedRecords() {
         var today = memberUserGateway.now().toLocalDate();
-        memberSignRecordGateway.signSave(
-                new SignRecord(null, id, today, 1, 1L, 0L));
-        memberSignRecordGateway.signSave(
-                new SignRecord(null, other, today, 1, 2L, 0L));
-        var query =
-                new MemberSignRecordAllPageQueryExe(
-                        memberSignRecordGateway);
-        var page =
-                query.execute(
-                        new SignRecordAllPageQry(
-                                null, 1, 1, "o"));
+        memberSignRecordGateway.signSave(new SignRecord(null, id, today, 1, 1L, 0L));
+        memberSignRecordGateway.signSave(new SignRecord(null, other, today, 1, 2L, 0L));
+        var query = new MemberSignRecordAllPageQueryExe(memberSignRecordGateway);
+        var page = query.execute(new SignRecordAllPageQry(null, 1, 1, "o"));
         assertEquals(2, page.getTotal());
         assertEquals(1, page.getRecords().size());
         assertEquals("two", page.getRecords().get(0).nickname());
-        assertEquals(
-                1,
-                query.execute(
-                                new SignRecordAllPageQry(
-                                        id, 1, 20, "one"))
-                        .getTotal());
-        assertEquals(
-                0,
-                query.execute(
-                                new SignRecordAllPageQry(
-                                        id, 1, 20, "two"))
-                        .getTotal());
-        assertEquals(
-                0,
-                query.execute(
-                                new SignRecordAllPageQry(
-                                        null, 1, 20, "无匹配"))
-                        .getTotal());
+        assertEquals(1, query.execute(new SignRecordAllPageQry(id, 1, 20, "one")).getTotal());
+        assertEquals(0, query.execute(new SignRecordAllPageQry(id, 1, 20, "two")).getTotal());
+        assertEquals(0, query.execute(new SignRecordAllPageQry(null, 1, 20, "无匹配")).getTotal());
         userService.profileUpdate(id, "改名", null, null, null, null, null);
-        var renamed =
-                query.execute(
-                        new SignRecordAllPageQry(
-                                null, 1, 20, "改名"));
+        var renamed = query.execute(new SignRecordAllPageQry(null, 1, 20, "改名"));
         assertEquals(1, renamed.getTotal());
         assertEquals("改名", renamed.getRecords().get(0).nickname());
     }
@@ -1014,81 +940,47 @@ class MemberAccountIntegrationTest {
     void signNicknameHttpBindingUsesIndependentCriterionAndReturnsCurrentNickname()
             throws Exception {
         memberSignRecordGateway.signSave(
-                new SignRecord(
-                        null, id, memberUserGateway.now().toLocalDate(), 1, 1L, 0L));
-        var query =
-                new MemberSignRecordAllPageQueryExe(
-                        memberSignRecordGateway);
+                new SignRecord(null, id, memberUserGateway.now().toLocalDate(), 1, 1L, 0L));
+        var query = new MemberSignRecordAllPageQueryExe(memberSignRecordGateway);
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new MemberSignRecordController(
-                                        query))
-                        .setControllerAdvice(
-                                new GlobalExceptionHandler())
+                MockMvcBuilders.standaloneSetup(new MemberSignRecordController(query))
+                        .setControllerAdvice(new GlobalExceptionHandler())
                         .build();
         mvc.perform(
-                        MockMvcRequestBuilders.get(
-                                        "/member/admin/signin-records")
+                        MockMvcRequestBuilders.get("/member/admin/signin-records")
                                 .param("nickname", "one"))
-                .andExpect(
-                        MockMvcResultMatchers.status()
-                                .isOk())
-                .andExpect(
-                        MockMvcResultMatchers.jsonPath(
-                                        "$.total")
-                                .value(1))
-                .andExpect(
-                        MockMvcResultMatchers.jsonPath(
-                                        "$.rows[0].nickname")
-                                .value("one"));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.total").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.rows[0].nickname").value("one"));
         mvc.perform(
-                        MockMvcRequestBuilders.get(
-                                        "/member/admin/signin-records")
+                        MockMvcRequestBuilders.get("/member/admin/signin-records")
                                 .param("nickname", "字".repeat(81)))
-                .andExpect(
-                        MockMvcResultMatchers.status()
-                                .is(422));
+                .andExpect(MockMvcResultMatchers.status().is(422));
     }
 
     @Test
     void pointNicknameBusinessTypeAndMemberFilterShareCountAndExcludeExperience() {
         var now = memberUserGateway.now();
+        pointRecords.save(new AssetRecord(null, id, "POINT", 1L, 1L, "ADMIN", "F1", "调整", now));
         pointRecords.save(
-                new AssetRecord(
-                        null, id, "POINT", 1L, 1L, "ADMIN", "F1", "调整", now));
-        pointRecords.save(
-                new AssetRecord(
-                        null, other, "POINT", 2L, 2L, "SIGN_IN", "F2", "签到", now));
+                new AssetRecord(null, other, "POINT", 2L, 2L, "SIGN_IN", "F2", "签到", now));
         experienceRecords.save(
-                new AssetRecord(
-                        null, id, "EXPERIENCE", 3L, 3L, "ADMIN", "F3", "经验", now));
-        var query =
-                new MemberAssetRecordAllPageQueryExe(
-                        pointRecords, experienceRecords);
-        var all =
-                query.execute(
-                        new AssetRecordAllPageQry(
-                                "POINT", null, 1, 1, "o", null));
+                new AssetRecord(null, id, "EXPERIENCE", 3L, 3L, "ADMIN", "F3", "经验", now));
+        var query = new MemberAssetRecordAllPageQueryExe(pointRecords, experienceRecords);
+        var all = query.execute(new AssetRecordAllPageQry("POINT", null, 1, 1, "o", null));
         assertEquals(2, all.getTotal());
         assertEquals(1, all.getRecords().size());
         assertEquals("two", all.getRecords().get(0).nickname());
-        var filtered =
-                query.execute(
-                        new AssetRecordAllPageQry(
-                                "POINT", id, 1, 20, "one", "ADMIN"));
+        var filtered = query.execute(new AssetRecordAllPageQry("POINT", id, 1, 20, "one", "ADMIN"));
         assertEquals(1, filtered.getTotal());
         assertEquals("POINT", filtered.getRecords().get(0).assetType());
         assertEquals(
                 0,
-                query.execute(
-                                new AssetRecordAllPageQry(
-                                        "POINT", id, 1, 20, "one", "SIGN_IN"))
+                query.execute(new AssetRecordAllPageQry("POINT", id, 1, 20, "one", "SIGN_IN"))
                         .getTotal());
         assertEquals(
                 0,
-                query.execute(
-                                new AssetRecordAllPageQry(
-                                        "POINT", null, 1, 20, "无匹配", null))
+                query.execute(new AssetRecordAllPageQry("POINT", null, 1, 20, "无匹配", null))
                         .getTotal());
         assertEquals(0L, memberUserGateway.findById(id).points());
     }
@@ -1101,64 +993,37 @@ class MemberAccountIntegrationTest {
         var mvc =
                 MockMvcBuilders.standaloneSetup(
                                 new MemberPointRecordController(
-                                        new com.lemnt.member.application.growth.executor
-                                                .MemberAssetRecordAllPageQueryExe(
+                                        new MemberAssetRecordAllPageQueryExe(
                                                 pointRecords, experienceRecords),
-                                        new com.lemnt.member.application.growth.executor
-                                                .MemberAssetRecordDetailQueryExe(
+                                        new MemberAssetRecordDetailQueryExe(
                                                 pointRecords, experienceRecords)))
-                        .setControllerAdvice(
-                                new GlobalExceptionHandler())
+                        .setControllerAdvice(new GlobalExceptionHandler())
                         .build();
         mvc.perform(
-                        MockMvcRequestBuilders.get(
-                                        "/member/admin/point-records")
+                        MockMvcRequestBuilders.get("/member/admin/point-records")
                                 .param("nickname", "one")
                                 .param("bizType", "ADMIN")
                                 .param("memberId", id.toString()))
-                .andExpect(
-                        MockMvcResultMatchers.status()
-                                .isOk())
-                .andExpect(
-                        MockMvcResultMatchers.jsonPath(
-                                        "$.total")
-                                .value(1))
-                .andExpect(
-                        MockMvcResultMatchers.jsonPath(
-                                        "$.rows[0].nickname")
-                                .value("one"));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.total").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.rows[0].nickname").value("one"));
         mvc.perform(
-                        MockMvcRequestBuilders.get(
-                                        "/member/admin/point-records")
+                        MockMvcRequestBuilders.get("/member/admin/point-records")
                                 .param("bizType", "字".repeat(41)))
-                .andExpect(
-                        MockMvcResultMatchers.status()
-                                .is(422));
+                .andExpect(MockMvcResultMatchers.status().is(422));
         mvc.perform(
-                        MockMvcRequestBuilders.get(
-                                        "/member/admin/point-records")
+                        MockMvcRequestBuilders.get("/member/admin/point-records")
                                 .param("pointBizType", "2"))
-                .andExpect(
-                        MockMvcResultMatchers.status()
-                                .isOk())
-                .andExpect(
-                        MockMvcResultMatchers.jsonPath(
-                                        "$.total")
-                                .value(0));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.total").value(0));
         mvc.perform(
-                        MockMvcRequestBuilders.get(
-                                        "/member/admin/point-records")
+                        MockMvcRequestBuilders.get("/member/admin/point-records")
                                 .param("pointBizType", "3"))
-                .andExpect(
-                        MockMvcResultMatchers.status()
-                                .isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
         mvc.perform(
-                        MockMvcRequestBuilders.get(
-                                        "/member/admin/point-records")
+                        MockMvcRequestBuilders.get("/member/admin/point-records")
                                 .param("pointBizType", "invalid"))
-                .andExpect(
-                        MockMvcResultMatchers.status()
-                                .is(422));
+                .andExpect(MockMvcResultMatchers.status().is(422));
     }
 
     @Test
@@ -1200,23 +1065,10 @@ class MemberAccountIntegrationTest {
                         23);
         codes.forEach(
                 (code, number) ->
-                        assertEquals(
-                                number,
-                                PointRecordMetadata.from(
-                                                "POINT", code, 10)
-                                        .type()));
-        assertNull(
-                PointRecordMetadata.from(
-                                "POINT", "TRADE_CLOSED", 0)
-                        .type());
-        assertNull(
-                PointRecordMetadata.from(
-                                "EXPERIENCE", "ADMIN", 10)
-                        .type());
-        assertNull(
-                PointRecordMetadata.from(
-                                "POINT", "UNKNOWN", 10)
-                        .type());
+                        assertEquals(number, PointRecordMetadata.from("POINT", code, 10).type()));
+        assertNull(PointRecordMetadata.from("POINT", "TRADE_CLOSED", 0).type());
+        assertNull(PointRecordMetadata.from("EXPERIENCE", "ADMIN", 10).type());
+        assertNull(PointRecordMetadata.from("POINT", "UNKNOWN", 10).type());
     }
 
     @Test
@@ -1233,45 +1085,27 @@ class MemberAccountIntegrationTest {
                         "LEGACY",
                         "旧流水",
                         memberUserGateway.now()));
-        var query =
-                new MemberAssetRecordAllPageQueryExe(
-                        pointRecords, experienceRecords);
-        assertEquals(
-                2,
-                query.execute(
-                                new AssetRecordAllPageQry(
-                                        "POINT", id, 1, 20))
-                        .getTotal());
-        var result =
-                query.execute(
-                        new AssetRecordAllPageQry(
-                                "POINT", id, 1, 1, "one", "ADMIN", 2));
+        var query = new MemberAssetRecordAllPageQueryExe(pointRecords, experienceRecords);
+        assertEquals(2, query.execute(new AssetRecordAllPageQry("POINT", id, 1, 20)).getTotal());
+        var result = query.execute(new AssetRecordAllPageQry("POINT", id, 1, 1, "one", "ADMIN", 2));
         assertEquals(1, result.getTotal());
         assertEquals(1, result.getRecords().size());
         assertEquals(2, result.getRecords().get(0).pointBizType());
         assertEquals(
                 0,
-                query.execute(
-                                new AssetRecordAllPageQry(
-                                        "POINT", id, 1, 20, null, "SIGN_IN", 2))
+                query.execute(new AssetRecordAllPageQry("POINT", id, 1, 20, null, "SIGN_IN", 2))
                         .getTotal());
         assertThrows(
                 ServiceException.class,
-                () ->
-                        query.execute(
-                                new AssetRecordAllPageQry(
-                                        "POINT", id, 1, 20, null, null, 3)));
+                () -> query.execute(new AssetRecordAllPageQry("POINT", id, 1, 20, null, null, 3)));
         assertThrows(
                 ServiceException.class,
                 () ->
                         query.execute(
-                                new AssetRecordAllPageQry(
-                                        "EXPERIENCE", id, 1, 20, null, null, 2)));
+                                new AssetRecordAllPageQry("EXPERIENCE", id, 1, 20, null, null, 2)));
         assertEquals(
                 0,
-                query.execute(
-                                new AssetRecordAllPageQry(
-                                        "POINT", id, 1, 20, null, null, 22))
+                query.execute(new AssetRecordAllPageQry("POINT", id, 1, 20, null, null, 22))
                         .getTotal());
     }
 
@@ -1284,11 +1118,7 @@ class MemberAccountIntegrationTest {
                         + ",'OLD-POINT',7,7,'ADMIN','旧原因',CURRENT_TIMESTAMP)");
         sql("UPDATE member_user SET points=7 WHERE id=" + id);
         var copied = pointRecords.request(id, "ADMIN", "OLD-POINT");
-        var copiedAudit =
-                template.getMapper(
-                                com.lemnt.member.infrastructure.growth.mapper
-                                        .MemberPointRecordMapper.class)
-                        .selectById(copied.id());
+        var copiedAudit = template.getMapper(MemberPointRecordMapper.class).selectById(copied.id());
         assertNull(copiedAudit.getCreateBy());
         assertNull(copiedAudit.getUpdateBy());
         assertNull(copiedAudit.getUpdateTime());
@@ -1297,11 +1127,7 @@ class MemberAccountIntegrationTest {
         assertNull(copied.pointBizType());
         assertNull(copied.title());
         assertEquals("旧原因", copied.reason());
-        assertEquals(
-                1,
-                pointRecords.count(
-                        new AssetRecordPageFilter(
-                                id, "POINT", 0, 1)));
+        assertEquals(1, pointRecords.count(new AssetRecordPageFilter(id, "POINT", 0, 1)));
         assertEquals(copied, growthService.adjustAsset(id, "POINT", 7, "OLD-POINT", "旧原因"));
         assertEquals(7L, memberUserGateway.findById(id).points());
         assertEquals(1, count("member_point_record"));
@@ -1317,25 +1143,12 @@ class MemberAccountIntegrationTest {
         assertEquals("经验原因", first.reason());
         assertEquals(first, growthService.adjustAsset(id, "EXPERIENCE", 5, "EXP-META", "经验原因"));
         assertEquals(5L, memberUserGateway.findById(id).experience());
-        assertEquals(
-                4,
-                ExperienceRecordMetadata.from(
-                                "EXPERIENCE", "SIGN_IN", 2)
-                        .type());
-        assertEquals(
-                11,
-                ExperienceRecordMetadata.from(
-                                "EXPERIENCE", "TRADE_EXPERIENCE", 2)
-                        .type());
+        assertEquals(4, ExperienceRecordMetadata.from("EXPERIENCE", "SIGN_IN", 2).type());
+        assertEquals(11, ExperienceRecordMetadata.from("EXPERIENCE", "TRADE_EXPERIENCE", 2).type());
         assertEquals(
                 13,
-                ExperienceRecordMetadata.from(
-                                "EXPERIENCE", "TRADE_EXPERIENCE_RETURN", -2)
-                        .type());
-        assertNull(
-                ExperienceRecordMetadata.from(
-                                "EXPERIENCE", "UNKNOWN", 2)
-                        .type());
+                ExperienceRecordMetadata.from("EXPERIENCE", "TRADE_EXPERIENCE_RETURN", -2).type());
+        assertNull(ExperienceRecordMetadata.from("EXPERIENCE", "UNKNOWN", 2).type());
     }
 
     @Test
@@ -1378,16 +1191,8 @@ class MemberAccountIntegrationTest {
                         experienceRecords.save(
                                 new AssetRecord(
                                         null, id, "POINT", 1L, 1L, "ADMIN", "WRONG", "错误", now)));
-        assertEquals(
-                0,
-                pointRecords.count(
-                        new AssetRecordPageFilter(
-                                id, "POINT", 0, 1)));
-        assertEquals(
-                0,
-                experienceRecords.count(
-                        new AssetRecordPageFilter(
-                                id, "EXPERIENCE", 0, 1)));
+        assertEquals(0, pointRecords.count(new AssetRecordPageFilter(id, "POINT", 0, 1)));
+        assertEquals(0, experienceRecords.count(new AssetRecordPageFilter(id, "EXPERIENCE", 0, 1)));
         assertThrows(
                 ServiceException.class,
                 () ->
@@ -1401,15 +1206,9 @@ class MemberAccountIntegrationTest {
         try {
             var point = growthService.adjustAsset(id, "POINT", 3, "AUDIT-P", "原因");
             var experience = growthService.adjustAsset(id, "EXPERIENCE", 4, "AUDIT-E", "原因");
-            var pointRow =
-                    template.getMapper(
-                                    com.lemnt.member.infrastructure.growth.mapper
-                                            .MemberPointRecordMapper.class)
-                            .selectById(point.id());
+            var pointRow = template.getMapper(MemberPointRecordMapper.class).selectById(point.id());
             var expRow =
-                    template.getMapper(
-                                    com.lemnt.member.infrastructure.growth.mapper
-                                            .MemberExperienceRecordMapper.class)
+                    template.getMapper(MemberExperienceRecordMapper.class)
                             .selectById(experience.id());
             assertEquals("audit-operator", pointRow.getCreateBy());
             assertEquals("audit-operator", pointRow.getUpdateBy());
@@ -1418,11 +1217,7 @@ class MemberAccountIntegrationTest {
             assertEquals(expRow.getCreateTime(), expRow.getUpdateTime());
             SecurityContextHolder.setUserName("retry-operator");
             growthService.adjustAsset(id, "POINT", 3, "AUDIT-P", "原因");
-            var replay =
-                    template.getMapper(
-                                    com.lemnt.member.infrastructure.growth.mapper
-                                            .MemberPointRecordMapper.class)
-                            .selectById(point.id());
+            var replay = template.getMapper(MemberPointRecordMapper.class).selectById(point.id());
             assertEquals(pointRow.getUpdateTime(), replay.getUpdateTime());
             assertEquals("audit-operator", replay.getUpdateBy());
         } finally {
@@ -2001,17 +1796,14 @@ class MemberAccountIntegrationTest {
                                 0L,
                                 null,
                                 now.plusDays(1)));
-        var summary =
-                new MemberSignSummaryQueryExe(
-                        memberSignRecordGateway, memberUserGateway);
+        var summary = new MemberSignSummaryQueryExe(memberSignRecordGateway, memberUserGateway);
         for (int offset : new int[] {1, 0, -1, -2}) {
             sql(
                     "UPDATE member_sign_in_record SET sign_date='"
                             + now.plusDays(offset).toLocalDate()
                             + "' WHERE id="
                             + recordId);
-            var result =
-                    summary.execute(new SignSummaryQry(id));
+            var result = summary.execute(new SignSummaryQry(id));
             assertEquals(1, result.totalDay());
             assertEquals(offset == 0 || offset == -1 ? 3 : 0, result.continuousDay());
             assertEquals(offset == 0, result.todaySignIn());
@@ -2098,9 +1890,7 @@ class MemberAccountIntegrationTest {
     void missingPointConfigurationCanBeCreatedAndReadByTradeClient() throws Exception {
         pointConfigs.clear();
         assertNull(memberConfigGateway.config());
-        var client =
-                new MemberGrowthClientImpl(
-                        growthService, memberConfigGateway);
+        var client = new MemberGrowthClientImpl(growthService, memberConfigGateway);
         assertBusinessException(409, () -> client.getPointConfig());
         assertNotNull(
                 growthService.saveLevel(new Level(null, "NoConfig", 1, 10L, 95, null, null, 1)));
@@ -2111,16 +1901,10 @@ class MemberAccountIntegrationTest {
         assertEquals(5, external.unitPrice());
         assertEquals(2, external.maxPoints());
         assertEquals(3, external.givePerYuan());
-        assertTrue(
-                growthService.saveConfig(
-                        new Config(false, 0, 0, 0)));
+        assertTrue(growthService.saveConfig(new Config(false, 0, 0, 0)));
         assertEquals(1, pointConfigs.size());
         assertFalse(memberConfigGateway.config().pointTradeDeductEnable());
-        assertBusinessException(
-                400,
-                () ->
-                        growthService.saveConfig(
-                                new Config(true, 0, 2, 1)));
+        assertBusinessException(400, () -> growthService.saveConfig(new Config(true, 0, 2, 1)));
         assertFalse(memberConfigGateway.config().pointTradeDeductEnable());
     }
 
@@ -2130,18 +1914,8 @@ class MemberAccountIntegrationTest {
         pointConfigs.clear();
         var pool = Executors.newFixedThreadPool(2);
         try {
-            var a =
-                    pool.submit(
-                            () ->
-                                    growthService.saveConfig(
-                                            new Config(
-                                                    true, 5, 2, 1)));
-            var b =
-                    pool.submit(
-                            () ->
-                                    growthService.saveConfig(
-                                            new Config(
-                                                    true, 3, 4, 2)));
+            var a = pool.submit(() -> growthService.saveConfig(new Config(true, 5, 2, 1)));
+            var b = pool.submit(() -> growthService.saveConfig(new Config(true, 3, 4, 2)));
             assertTrue(a.get(15, TimeUnit.SECONDS));
             assertTrue(b.get(15, TimeUnit.SECONDS));
             assertEquals(1, pointConfigs.size());
@@ -2182,30 +1956,13 @@ class MemberAccountIntegrationTest {
                 growthService.saveLevel(
                         new Level(null, "Bronze", 1, 10L, 95, "old-icon", "old-background", 1));
         var gold = growthService.saveLevel(new Level(null, "Gold", 2, 100L, 90, null, null, 0));
-        var query =
-                new MemberLevelListQueryExe(
-                        memberLevelGateway);
-        var filtered =
-                query.execute(
-                        new LevelListQry(false, " Go ", 0));
+        var query = new MemberLevelListQueryExe(memberLevelGateway);
+        var filtered = query.execute(new LevelListQry(false, " Go ", 0));
         assertEquals(1, filtered.size());
         assertEquals(gold, filtered.get(0).id());
-        assertEquals(
-                1,
-                query.execute(new LevelListQry(true))
-                        .size());
-        assertEquals(
-                0,
-                query.execute(
-                                new LevelListQry(
-                                        true, "Gold", null))
-                        .size());
-        assertBusinessException(
-                400,
-                () ->
-                        query.execute(
-                                new LevelListQry(
-                                        false, null, 2)));
+        assertEquals(1, query.execute(new LevelListQry(true)).size());
+        assertEquals(0, query.execute(new LevelListQry(true, "Gold", null)).size());
+        assertBusinessException(400, () -> query.execute(new LevelListQry(false, null, 2)));
         var mapper = template.getMapper(MemberLevelMapper.class);
         var created = mapper.selectById(bronze).getCreateTime();
         assertNotNull(created);
@@ -2358,9 +2115,7 @@ class MemberAccountIntegrationTest {
                         + other);
         var start = LocalDateTime.of(2026, 10, 30, 10, 0);
         var end = start.plusHours(1);
-        var query =
-                new MemberPageQueryExe(
-                        memberUserGateway);
+        var query = new MemberPageQueryExe(memberUserGateway);
         var first =
                 query.execute(
                         new MemberPageQry(
@@ -2448,14 +2203,9 @@ class MemberAccountIntegrationTest {
     /** 空标签不筛选，NULL登录时间不匹配时间范围，非法条件在应用层拒绝。 */
     @Test
     void memberUserFilterHandlesEmptyTagsUnknownLoginAndInvalidValues() {
-        var query =
-                new MemberPageQueryExe(
-                        memberUserGateway);
+        var query = new MemberPageQueryExe(memberUserGateway);
         var now = memberUserGateway.now();
-        assertEquals(
-                2,
-                query.execute(new MemberPageQry("138", 1, 20))
-                        .getTotal());
+        assertEquals(2, query.execute(new MemberPageQry("138", 1, 20)).getTotal());
         assertEquals(
                 2,
                 query.execute(
@@ -2572,21 +2322,12 @@ class MemberAccountIntegrationTest {
                         memberGroupGateway,
                         memberTagGateway,
                         memberTagLinkGateway);
-        var baseQuery =
-                new MemberDetailQueryExe(
-                        memberUserGateway);
+        var baseQuery = new MemberDetailQueryExe(memberUserGateway);
         var base = baseQuery.execute(new MemberDetailQry(id));
-        var detail =
-                new MemberUserDetailQueryExe(
-                        baseQuery, relations);
+        var detail = new MemberUserDetailQueryExe(baseQuery, relations);
         var page =
-                new MemberUserPageQueryExe(
-                                new MemberPageQueryExe(
-                                        memberUserGateway),
-                                relations)
-                        .execute(
-                                new MemberPageQry(
-                                        null, 1, 20));
+                new MemberUserPageQueryExe(new MemberPageQueryExe(memberUserGateway), relations)
+                        .execute(new MemberPageQry(null, 1, 20));
         var mine =
                 page.getRecords().stream().filter(v -> id.equals(v.id())).findFirst().orElseThrow();
         var read = detail.execute(new MemberDetailQry(id));
@@ -2622,9 +2363,7 @@ class MemberAccountIntegrationTest {
         assertEquals(List.of(), cleared.tagIds());
         assertNull(cleared.levelName());
         assertNull(cleared.groupName());
-        assertNull(
-                detail.execute(
-                        new MemberDetailQry(Long.MAX_VALUE)));
+        assertNull(detail.execute(new MemberDetailQry(Long.MAX_VALUE)));
     }
 
     /** 后台改号仅更新资料，不覆盖密码、资产、关联或登录审计。 */
@@ -2982,14 +2721,9 @@ class MemberAccountIntegrationTest {
     /** 真实H2保存和默认查询贯通HTTP，本人上下文不接受外部属主覆盖。 */
     @Test
     void addressHttpUsesOwnerContextAndUnifiedMissingResponse() throws Exception {
-        var areaNames =
-                Mockito.mock(
-                        MemberAddressAreaGateway.class);
-        Mockito.when(areaNames.names(ArgumentMatchers.anyList()))
-                .thenReturn(Map.of());
-        var addressQueries =
-                new MemberAddressQueryService(
-                        areaNames);
+        var areaNames = Mockito.mock(MemberAddressAreaGateway.class);
+        Mockito.when(areaNames.names(ArgumentMatchers.anyList())).thenReturn(Map.of());
+        var addressQueries = new MemberAddressQueryService(areaNames);
         var controller =
                 new AppMemberAddressController(
                         new MemberAddressDeleteCmdExe(addressService),
@@ -3040,11 +2774,9 @@ class MemberAccountIntegrationTest {
         growthService.adjustAsset(id, "POINT", 100, "SEED_FROZEN", "初始化");
         String order = "O".repeat(40), first = "RF" + "1".repeat(32), last = "RF" + "2".repeat(32);
         growthService.tradeAsset(
-                new MemberTradeAssetCmd(
-                        id, "CREATE", order, null, 5, 3, 1000, 0, false));
+                new MemberTradeAssetCmd(id, "CREATE", order, null, 5, 3, 1000, 0, false));
         growthService.tradeAsset(
-                new MemberTradeAssetCmd(
-                        id, "PAID", order, null, 5, 3, 1000, 0, false));
+                new MemberTradeAssetCmd(id, "PAID", order, null, 5, 3, 1000, 0, false));
         assertEquals(98L, memberUserGateway.findById(id).points());
         var plan =
                 new MemberTradeAssetCmd(
@@ -3063,11 +2795,9 @@ class MemberAccountIntegrationTest {
     void frozenPointReclaimFailureDoesNotPartiallyReturnConsumedPoints() {
         growthService.adjustAsset(id, "POINT", 10, "SEED_FROZEN_FAILURE", "初始化");
         growthService.tradeAsset(
-                new MemberTradeAssetCmd(
-                        id, "CREATE", "FROZEN_FAIL", null, 5, 3, 1000, 0, false));
+                new MemberTradeAssetCmd(id, "CREATE", "FROZEN_FAIL", null, 5, 3, 1000, 0, false));
         growthService.tradeAsset(
-                new MemberTradeAssetCmd(
-                        id, "PAID", "FROZEN_FAIL", null, 5, 3, 1000, 0, false));
+                new MemberTradeAssetCmd(id, "PAID", "FROZEN_FAIL", null, 5, 3, 1000, 0, false));
         growthService.adjustAsset(id, "POINT", -8, "SPEND_FROZEN", "使用积分");
         var plan =
                 new MemberTradeAssetCmd(
@@ -3085,14 +2815,10 @@ class MemberAccountIntegrationTest {
         growthService.adjustAsset(id, "POINT", 100, "SEED_LONG_LEGACY", "初始化");
         String order = "L".repeat(40), rf = "RF" + "7".repeat(32);
         growthService.tradeAsset(
-                new MemberTradeAssetCmd(
-                        id, "CREATE", order, null, 20, 10, 1000, 0, false));
+                new MemberTradeAssetCmd(id, "CREATE", order, null, 20, 10, 1000, 0, false));
         growthService.tradeAsset(
-                new MemberTradeAssetCmd(
-                        id, "PAID", order, null, 20, 10, 1000, 0, false));
-        var refund =
-                new MemberTradeAssetCmd(
-                        id, "REFUND", order, rf, 20, 10, 1000, 500, false);
+                new MemberTradeAssetCmd(id, "PAID", order, null, 20, 10, 1000, 0, false));
+        var refund = new MemberTradeAssetCmd(id, "REFUND", order, rf, 20, 10, 1000, 500, false);
         growthService.tradeAsset(refund);
         growthService.tradeAsset(refund);
         assertEquals(95L, memberUserGateway.findById(id).points());

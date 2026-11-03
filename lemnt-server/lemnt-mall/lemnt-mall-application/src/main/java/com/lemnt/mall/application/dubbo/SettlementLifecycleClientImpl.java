@@ -149,9 +149,7 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
             throw new IllegalArgumentException("售后回补的订单或商品不合法");
         }
         for (var item :
-                items.stream()
-                        .sorted(Comparator.comparing(RefundStockBo::productId))
-                        .toList()) {
+                items.stream().sorted(Comparator.comparing(RefundStockBo::productId)).toList()) {
             if (order.items().stream()
                     .noneMatch(original -> original.productId().equals(item.productId()))) {
                 throw new IllegalArgumentException("售后商品不属于原订单");

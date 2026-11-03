@@ -43,8 +43,8 @@ public class MemberAssetRecordAllPageQueryExe {
                 qry.bizType() == null || qry.bizType().isBlank() ? null : qry.bizType().trim();
         if (qry.pointBizType() != null
                 && (!"POINT".equals(qry.assetType())
-                        || !PointRecordMetadata.supported(
-                                qry.pointBizType()))) throw new ServiceException("积分业务类型不合法", 400);
+                        || !PointRecordMetadata.supported(qry.pointBizType())))
+            throw new ServiceException("积分业务类型不合法", 400);
         if (qry.title() != null
                 && (qry.title().length() > 255 || !"POINT".equals(qry.assetType()))) {
             throw new ServiceException("积分标题筛选不合法", 400);

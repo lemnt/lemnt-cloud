@@ -6,7 +6,6 @@ import com.lemnt.trade.application.paymentrefund.dto.PaymentRefundDTO;
 import com.lemnt.trade.application.paymentrefund.service.PaymentRefundService;
 import com.lemnt.trade.domain.order.model.TradeOperator;
 import com.lemnt.trade.domain.payment.gateway.TradePaymentGateway;
-import com.lemnt.trade.domain.payment.model.PayNotifyType;
 import com.lemnt.trade.domain.paymentrefund.gateway.PaymentRefundChannelGateway;
 import com.lemnt.trade.domain.paymentrefund.model.PaymentRefund;
 

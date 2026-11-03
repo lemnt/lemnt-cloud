@@ -33,9 +33,7 @@ public class MessageOutboxGatewayImpl implements MessageOutboxGateway {
     @Override
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = Exception.class)
     public void enqueue(String type, String key, String aggregate, String payload) {
-        if (!Set.of(
-                                CommerceEventTopics.PAY_SUCCESS,
-                                CommerceEventTopics.PAY_REFUND_SUCCESS)
+        if (!Set.of(CommerceEventTopics.PAY_SUCCESS, CommerceEventTopics.PAY_REFUND_SUCCESS)
                         .contains(type)
                 || key == null
                 || key.isBlank()

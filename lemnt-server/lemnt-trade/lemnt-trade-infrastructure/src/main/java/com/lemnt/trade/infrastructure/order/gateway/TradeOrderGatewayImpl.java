@@ -108,8 +108,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
                 == 1;
     }
 
-    private LambdaQueryWrapper<TradeOrderDO> expired(
-            LocalDateTime cutoff) {
+    private LambdaQueryWrapper<TradeOrderDO> expired(LocalDateTime cutoff) {
         return Wrappers.lambdaQuery(TradeOrderDO.class)
                 .eq(TradeOrderDO::getStatus, "COMPLETED")
                 .eq(TradeOrderDO::getCommentStatus, false)
@@ -137,8 +136,7 @@ public class TradeOrderGatewayImpl implements TradeOrderGateway {
     }
 
     @Override
-    public boolean updateTotalAmount(
-            String orderNo, BigDecimal expected, BigDecimal next) {
+    public boolean updateTotalAmount(String orderNo, BigDecimal expected, BigDecimal next) {
         var current = findHeader(orderNo);
         boolean complete = current != null && "COMPLETE".equals(current.pricingSnapshotStatus());
         return tradeOrderMapper.update(

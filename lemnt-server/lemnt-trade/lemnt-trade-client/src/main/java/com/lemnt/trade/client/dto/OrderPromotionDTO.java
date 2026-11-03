@@ -25,8 +25,6 @@ public record OrderPromotionDTO(
     public OrderPromotionDTO {
         items = items == null ? List.of() : List.copyOf(items);
         giveCouponTemplateCounts =
-                giveCouponTemplateCounts == null
-                        ? null
-                        : Map.copyOf(giveCouponTemplateCounts);
+                giveCouponTemplateCounts == null ? null : Map.copyOf(giveCouponTemplateCounts);
     }
 }

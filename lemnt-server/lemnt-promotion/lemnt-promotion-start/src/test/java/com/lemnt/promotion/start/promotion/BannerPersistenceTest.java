@@ -39,7 +39,8 @@ class BannerPersistenceTest {
         source = new JdbcDataSource();
         source.setURL("jdbc:h2:mem:banner_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
         schema = source.getConnection();
-        ScriptUtils.executeSqlScript(schema, new ClassPathResource("promotion-sql/lemnt_promotion.sql"));
+        ScriptUtils.executeSqlScript(
+                schema, new ClassPathResource("promotion-sql/lemnt_promotion.sql"));
         var config = new MybatisConfiguration();
         config.setMapUnderscoreToCamelCase(true);
         var interceptor = new MybatisPlusInterceptor();
@@ -116,20 +117,15 @@ class BannerPersistenceTest {
         assertEquals(2, updated.position());
         assertEquals(2, updated.browseCount());
         service.delete(id);
-        assertThrows(
-                ServiceException.class, () -> service.detail(id));
+        assertThrows(ServiceException.class, () -> service.detail(id));
     }
 
     @Test
     void invalidPositionStatusAndBrowseTargetAreRejected() {
-        assertThrows(
-                ServiceException.class,
-                () -> create("bad", 6, 0, 0));
+        assertThrows(ServiceException.class, () -> create("bad", 6, 0, 0));
         assertThrows(
                 ServiceException.class,
                 () -> service.create(new BannerCreateCmd("bad", "/x", "https://x", 0, 2, 1, null)));
-        assertThrows(
-                ServiceException.class,
-                () -> service.addBrowseCount(1L));
+        assertThrows(ServiceException.class, () -> service.addBrowseCount(1L));
     }
 }

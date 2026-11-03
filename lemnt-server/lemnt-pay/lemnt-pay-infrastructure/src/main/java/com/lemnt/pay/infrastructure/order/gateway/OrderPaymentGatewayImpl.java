@@ -17,6 +17,12 @@ public class OrderPaymentGatewayImpl implements OrderPaymentGateway {
     private OrderSnapshotClient client;
 
     @Override
+    public OrderPaymentSnapshot preparePayment(String no) {
+        var value=client.preparePayment(no);
+        return value==null?null:new OrderPaymentSnapshot(value.orderNo(),value.memberId(),value.totalAmount(),value.status());
+    }
+
+    @Override
     public OrderPaymentSnapshot findByOrderNo(String no) {
         var value = client.paymentOrder(no);
         return value == null

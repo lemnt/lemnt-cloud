@@ -118,8 +118,7 @@ class WalletPersistenceTest {
         var wallet = wallets.createIfAbsent(3L);
         var statements = context.getBean(LockStatements.class);
         var transaction =
-                new TransactionTemplate(
-                        context.getBean(PlatformTransactionManager.class));
+                new TransactionTemplate(context.getBean(PlatformTransactionManager.class));
         transaction.executeWithoutResult(
                 status -> {
                     wallets.lockByMemberId(3L);
@@ -136,13 +135,11 @@ class WalletPersistenceTest {
                     method = "prepare",
                     args = {Connection.class, Integer.class}))
     static class LockStatements implements Interceptor {
-        final AtomicInteger count =
-                new AtomicInteger();
+        final AtomicInteger count = new AtomicInteger();
 
         @Override
         public Object intercept(Invocation invocation) throws Throwable {
-            var statement =
-                    (StatementHandler) invocation.getTarget();
+            var statement = (StatementHandler) invocation.getTarget();
             if (statement.getBoundSql().getSql().contains("FOR UPDATE")) {
                 count.incrementAndGet();
             }

@@ -30,11 +30,7 @@ public class ProductCatalogClientImpl implements ProductCatalogClient {
     @Override
     public List<ProductSnapshotDTO> findOnShelfBatch(List<Long> ids) {
         var values = productCatalogGateway.findOnShelfBatch(ids);
-        return ids.stream()
-                .map(values::get)
-                .filter(Objects::nonNull)
-                .map(this::toDTO)
-                .toList();
+        return ids.stream().map(values::get).filter(Objects::nonNull).map(this::toDTO).toList();
     }
 
     /** 远程输出与结算读取相同的可信目录快照。 */

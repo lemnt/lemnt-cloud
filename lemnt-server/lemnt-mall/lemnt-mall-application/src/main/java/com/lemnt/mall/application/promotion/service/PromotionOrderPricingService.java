@@ -43,8 +43,7 @@ public class PromotionOrderPricingService {
     private final BargainRecordService bargainRecordService;
     private final PointActivityManagementService pointActivityManagementService;
     private final SeckillActivityGateway seckillActivities;
-    private final CombinationActivityGateway
-            combinationActivities;
+    private final CombinationActivityGateway combinationActivities;
     private final BargainActivityGateway bargainActivities;
 
     private void require(boolean condition, String message) {
@@ -191,9 +190,7 @@ public class PromotionOrderPricingService {
                                 .setScale(0, RoundingMode.DOWN)
                                 .longValueExact()
                         : 0L;
-        var children =
-                new ArrayList<
-                        SettlementItemPromotion>();
+        var children = new ArrayList<SettlementItemPromotion>();
         for (int i = 0; i < items.size(); i++) {
             children.add(
                     new SettlementItemPromotion(

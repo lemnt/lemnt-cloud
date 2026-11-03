@@ -1,6 +1,7 @@
 package com.lemnt.promotion.start.product;
 
 import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.product.domain.product.model.ProductSpu;
 import com.lemnt.promotion.application.promotion.cmd.SeckillActivityCreateCmd;
 import com.lemnt.promotion.application.promotion.cmd.SeckillActivityUpdateCmd;
 import com.lemnt.promotion.application.promotion.cmd.SeckillConfigCreateCmd;
@@ -9,7 +10,6 @@ import com.lemnt.promotion.application.promotion.service.SeckillActivityManageme
 import com.lemnt.promotion.application.promotion.service.SeckillAppQueryService;
 import com.lemnt.promotion.application.promotion.service.SeckillConfigManagementService;
 import com.lemnt.promotion.application.promotion.service.SeckillStockService;
-import com.lemnt.product.domain.product.model.ProductSpu;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,9 +88,7 @@ class SeckillPersistenceTest {
                                 new SeckillConfigCreateCmd(
                                         "重叠", "12:00:00", "13:00:00", List.of(), 0)));
         create();
-        assertThrows(
-                ServiceException.class,
-                () -> configs.delete(configId));
+        assertThrows(ServiceException.class, () -> configs.delete(configId));
         assertEquals(1, configs.detail(configId).activityCount());
     }
 
@@ -138,9 +136,7 @@ class SeckillPersistenceTest {
         var join = stock.validateJoin(id, skuId, 3);
         assertEquals(10, join.totalLimitCount());
         assertEquals(new BigDecimal("5.00"), join.seckillPrice());
-        assertThrows(
-                ServiceException.class,
-                () -> stock.validateJoin(id, skuId, 4));
+        assertThrows(ServiceException.class, () -> stock.validateJoin(id, skuId, 4));
         stock.decreaseStock(id, skuId, 2);
         assertEquals(3, activities.detail(id).stock());
         assertEquals(

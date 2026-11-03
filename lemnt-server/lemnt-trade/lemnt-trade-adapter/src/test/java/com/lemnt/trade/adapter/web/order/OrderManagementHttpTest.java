@@ -66,10 +66,7 @@ class OrderManagementHttpTest {
     @Test
     void existingPaymentReturnsConflictProblemDetails() throws Exception {
         var price = mock(OrderAdjustPriceCmdExe.class);
-        when(price.execute(any()))
-                .thenThrow(
-                        new ServiceException(
-                                "订单已生成支付单，不能调价，请取消订单后重新下单", 409));
+        when(price.execute(any())).thenThrow(new ServiceException("订单已生成支付单，不能调价，请取消订单后重新下单", 409));
         var mvc =
                 MockMvcBuilders.standaloneSetup(
                                 new OrderManagementController(
@@ -78,8 +75,7 @@ class OrderManagementHttpTest {
                                         mock(OrderRemarkUpdateCmdExe.class),
                                         price,
                                         mock(OrderAdjustAddressCmdExe.class)))
-                        .setControllerAdvice(
-                                new GlobalExceptionHandler())
+                        .setControllerAdvice(new GlobalExceptionHandler())
                         .build();
         mvc.perform(
                         post("/trade/admin/orders/TR1/price-adjustment")
@@ -121,13 +117,8 @@ class OrderManagementHttpTest {
                                                 + "\"receiverAreaId\":110102,\"receiverDetailAddress\":\"新地址\"}"))
                 .andExpect(status().isOk());
 
-        verify(price)
-                .execute(
-                        new OrderAdjustPriceCmd(
-                                "TR1", new BigDecimal("88.00"), 9L));
+        verify(price).execute(new OrderAdjustPriceCmd("TR1", new BigDecimal("88.00"), 9L));
         verify(address)
-                .execute(
-                        new OrderAdjustAddressCmd(
-                                "TR1", "李四", "13900000000", 110102L, "新地址", 9L));
+                .execute(new OrderAdjustAddressCmd("TR1", "李四", "13900000000", 110102L, "新地址", 9L));
     }
 }

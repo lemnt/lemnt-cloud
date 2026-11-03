@@ -30,6 +30,7 @@ import com.lemnt.mall.application.product.service.ProductCommentService;
 import com.lemnt.mall.application.product.service.ProductInventoryService;
 import com.lemnt.mall.application.product.service.ProductManagementService;
 import com.lemnt.mall.application.product.service.ProductSpecService;
+import com.lemnt.mall.application.promotion.service.ActivityPricingService;
 import com.lemnt.mall.application.promotion.service.PromotionOrderService;
 import com.lemnt.mall.application.promotion.service.RewardGiftService;
 import com.lemnt.mall.application.settlement.cmd.SettlementDirectCmd;
@@ -37,6 +38,7 @@ import com.lemnt.mall.application.settlement.cmd.SettlementOrderSubmitCmd;
 import com.lemnt.mall.application.settlement.executor.SettlementReceiptQueryExe;
 import com.lemnt.mall.application.settlement.qry.SettlementQuoteQry;
 import com.lemnt.mall.application.settlement.service.OrderPlacementService;
+import com.lemnt.mall.application.settlement.service.SettlementDeliveryService;
 import com.lemnt.mall.application.settlement.service.SettlementPreparationService;
 import com.lemnt.mall.application.settlement.service.SettlementRecordService;
 import com.lemnt.mall.application.settlement.service.SettlementService;
@@ -91,6 +93,8 @@ import com.lemnt.trade.application.aftersale.cmd.AfterSaleReturnCmd;
 import com.lemnt.trade.application.aftersale.executor.AfterSalePageQueryExe;
 import com.lemnt.trade.application.aftersale.qry.AfterSalePageQry;
 import com.lemnt.trade.application.aftersale.service.AfterSaleService;
+import com.lemnt.trade.application.delivery.cmd.DeliveryChargeCmd;
+import com.lemnt.trade.application.delivery.cmd.DeliveryExpressTemplateCreateCmd;
 import com.lemnt.trade.application.delivery.service.DeliveryManagementService;
 import com.lemnt.trade.application.delivery.service.DeliveryPriceService;
 import com.lemnt.trade.application.dubbo.TradeDeliveryClientImpl;
@@ -126,6 +130,7 @@ import com.lemnt.trade.application.payment.executor.TradePaymentCreateCmdExe;
 import com.lemnt.trade.application.payment.qry.MemberPaymentStatusQry;
 import com.lemnt.trade.application.payment.qry.PaymentPageQry;
 import com.lemnt.trade.application.payment.service.PayNotifyTaskService;
+import com.lemnt.trade.application.payment.service.PaymentNotificationService;
 import com.lemnt.trade.application.paymentrefund.executor.PaymentRefundCreateCmdExe;
 import com.lemnt.trade.application.paymentrefund.executor.PaymentRefundPageQueryExe;
 import com.lemnt.trade.application.paymentrefund.qry.PaymentRefundPageQry;
@@ -163,6 +168,8 @@ import com.lemnt.trade.domain.paymentrefund.gateway.PaymentRefundChannelGateway;
 import com.lemnt.trade.domain.paymentrefund.gateway.PaymentRefundGateway;
 import com.lemnt.trade.domain.paymentrefund.model.PaymentRefund;
 import com.lemnt.trade.domain.paymentrefund.model.PaymentRefundResult;
+import com.lemnt.trade.infrastructure.delivery.dataobject.DeliveryExpressTemplateChargeDO;
+import com.lemnt.trade.infrastructure.delivery.mapper.DeliveryExpressTemplateChargeMapper;
 import com.lemnt.trade.infrastructure.order.gateway.OrderCommentGatewayImpl;
 import com.lemnt.trade.infrastructure.order.mapper.TradeOrderMapper;
 import com.lemnt.trade.infrastructure.payment.gateway.TradePaymentGatewayImpl;
@@ -201,6 +208,7 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
@@ -274,9 +282,7 @@ class CheckoutFlowIntegrationTest {
         int execute(int limit) {
             int completed = 0;
             int size = Math.min(messages.size(), limit);
-            var processor =
-                    new OrderRollbackCmdExe(
-                            orderPersistenceService, benefits);
+            var processor = new OrderRollbackCmdExe(orderPersistenceService, benefits);
             for (int i = 0; i < size; i++) {
                 String no = messages.remove();
                 try {
@@ -298,9 +304,7 @@ class CheckoutFlowIntegrationTest {
     TradePaymentCreateCmdExe paymentCreate;
     PaymentNotifyCmdExe notify;
 
-    interface CatalogBridge
-            extends ProductCatalogGateway,
-                    InventoryGateway {}
+    interface CatalogBridge extends ProductCatalogGateway, InventoryGateway {}
 
     CatalogBridge bridge;
     OrderGateway orderRpc;
@@ -308,8 +312,7 @@ class CheckoutFlowIntegrationTest {
     boolean deliveryPointGift;
     Long sku;
     MemberAddressDTO deliveryAddress =
-            new MemberAddressDTO(
-                    7L, 1L, "收件人", "13800000000", 110101L, "原始地址");
+            new MemberAddressDTO(7L, 1L, "收件人", "13800000000", 110101L, "原始地址");
     boolean failNextRefundBenefits;
     boolean loseNextOrderResponse;
     boolean rejectNextReserve;
@@ -363,11 +366,8 @@ class CheckoutFlowIntegrationTest {
 
     /** 用本地重入锁替代 Redis 传输，保留真实锁模板及事务完成回调。 */
     private LockTemplate memberLocks() throws Exception {
-        var locks =
-                new ConcurrentHashMap<
-                        String, ReentrantLock>();
-        var executor =
-                Mockito.mock(RedissonLockExecutor.class);
+        var locks = new ConcurrentHashMap<String, ReentrantLock>();
+        var executor = Mockito.mock(RedissonLockExecutor.class);
         Mockito.when(executor.renewal()).thenReturn(true);
         Mockito.when(
                         executor.acquire(
@@ -379,8 +379,7 @@ class CheckoutFlowIntegrationTest {
                         invocation -> {
                             var lock =
                                     locks.computeIfAbsent(
-                                            invocation.getArgument(0),
-                                            key -> new ReentrantLock());
+                                            invocation.getArgument(0), key -> new ReentrantLock());
                             if (!lock.tryLock(3, TimeUnit.SECONDS)) {
                                 return null;
                             }
@@ -427,31 +426,22 @@ class CheckoutFlowIntegrationTest {
         var products = template(mallSource);
         tradeComponents = new TableTestComponents(trade, tradeSource);
         tradeComponents.register(LockTemplate.class, memberLocks());
-        tradeComponents.register(
-                TradeConfigGateway.class,
-                BusinessConfigTestSupport.gateway());
+        tradeComponents.register(TradeConfigGateway.class, BusinessConfigTestSupport.gateway());
         tradeComponents
                 .get(DeliveryExpressGateway.class)
-                .insert(
-                        new DeliveryExpress(
-                                null, "SF", "顺丰", null, 0, 0));
+                .insert(new DeliveryExpress(null, "SF", "顺丰", null, 0, 0));
         mallComponents = new TableTestComponents(products, mallSource);
-        mallComponents.register(
-                MemberLookupGateway.class,
-                id -> new MemberSnapshot(id, 1));
+        mallComponents.register(MemberLookupGateway.class, id -> new MemberSnapshot(id, 1));
         mallComponents.register(
                 MemberTradeGateway.class,
                 new MemberTradeGateway() {
                     public MemberPointConfig config() {
-                        return new MemberPointConfig(
-                                deliveryPointGift, 1, 0, 2);
+                        return new MemberPointConfig(deliveryPointGift, 1, 0, 2);
                     }
 
-                    public void apply(
-                            MemberTradeChange change) {}
+                    public void apply(MemberTradeChange change) {}
                 });
-        var addressGateway =
-                new MemberDeliveryAddressGatewayImpl();
+        var addressGateway = new MemberDeliveryAddressGatewayImpl();
         ReflectionTestUtils.setField(
                 addressGateway,
                 "client",
@@ -464,75 +454,46 @@ class CheckoutFlowIntegrationTest {
                                     ? address
                                     : null;
                         });
-        mallComponents.register(
-                MemberDeliveryAddressGateway.class,
-                addressGateway);
-        var deliveryGateway =
-                new DeliveryPriceGatewayImpl();
+        mallComponents.register(MemberDeliveryAddressGateway.class, addressGateway);
+        var deliveryGateway = new DeliveryPriceGatewayImpl();
         ReflectionTestUtils.setField(
                 deliveryGateway,
                 "client",
-                new TradeDeliveryClientImpl(
-                        tradeComponents.get(
-                                DeliveryPriceService
-                                        .class)));
-        mallComponents.register(
-                DeliveryPriceGateway.class,
-                deliveryGateway);
+                new TradeDeliveryClientImpl(tradeComponents.get(DeliveryPriceService.class)));
+        mallComponents.register(DeliveryPriceGateway.class, deliveryGateway);
         mallComponents.register(LockTemplate.class, memberLocks());
         refundClient = Mockito.mock(PaymentRefundClient.class);
         Mockito.when(refundClient.channel()).thenReturn("ALIPAY");
         tradeComponents.register(
                 PaymentRefundChannelGateway.class,
                 new PaymentRefundChannelGatewayImpl(List.of(refundClient)));
-        var commentBridge =
-                new OrderCommentGatewayImpl();
-        tradeComponents.register(
-                OrderCommentGateway.class, commentBridge);
+        var commentBridge = new OrderCommentGatewayImpl();
+        tradeComponents.register(OrderCommentGateway.class, commentBridge);
         var provider =
                 new TradeOrderClientImpl(
-                        tradeComponents.get(
-                                OrderSubmissionService
-                                        .class),
+                        tradeComponents.get(OrderSubmissionService.class),
                         tradeComponents.get(OrderPersistenceService.class),
                         null,
-                        tradeComponents.get(
-                                OrderCommentService
-                                        .class),
-                        tradeComponents.get(
-                                TradeOrderGateway.class),
-                        tradeComponents.get(
-                                TradeConfigGateway.class),
-                        tradeComponents.get(
-                                PickUpStoreGateway.class));
+                        tradeComponents.get(OrderCommentService.class),
+                        tradeComponents.get(TradeOrderGateway.class),
+                        tradeComponents.get(TradeConfigGateway.class),
+                        tradeComponents.get(PickUpStoreGateway.class));
         var client =
                 new TradeOrderClient() {
-                    public OrderDTO createPriced(
-                            OrderCreateBo value) {
+                    public OrderDTO createPriced(OrderCreateBo value) {
                         return create(value);
                     }
 
-                    public OrderDTO create(
-                            OrderCreateBo value) {
+                    public OrderDTO create(OrderCreateBo value) {
                         var actual =
                                 new TradeOrderClientImpl(
-                                        tradeComponents.get(
-                                                com.lemnt.trade.application.order.service
-                                                        .OrderSubmissionService.class),
+                                        tradeComponents.get(OrderSubmissionService.class),
                                         orderPersistenceService,
                                         remotes,
-                                        tradeComponents.get(
-                                                com.lemnt.trade.application.order.service
-                                                        .OrderCommentService.class),
-                                        tradeComponents.get(
-                                                com.lemnt.trade.domain.order.gateway
-                                                        .TradeOrderGateway.class),
-                                        tradeComponents.get(
-                                                com.lemnt.trade.domain.config.gateway
-                                                        .TradeConfigGateway.class),
-                                        tradeComponents.get(
-                                                com.lemnt.trade.domain.delivery.gateway
-                                                        .PickUpStoreGateway.class));
+                                        tradeComponents.get(OrderCommentService.class),
+                                        tradeComponents.get(TradeOrderGateway.class),
+                                        tradeComponents.get(TradeConfigGateway.class),
+                                        tradeComponents.get(PickUpStoreGateway.class));
                         var saved = actual.create(value);
                         if (loseNextOrderResponse) {
                             loseNextOrderResponse = false;
@@ -541,8 +502,7 @@ class CheckoutFlowIntegrationTest {
                         return saved;
                     }
 
-                    public Long createComment(
-                            OrderCommentCreateBo value) {
+                    public Long createComment(OrderCommentCreateBo value) {
                         return provider.createComment(value);
                     }
 
@@ -553,11 +513,9 @@ class CheckoutFlowIntegrationTest {
         var orderAdapter = new OrderGatewayImpl();
         ReflectionTestUtils.setField(orderAdapter, "client", client);
         orderRpc = orderAdapter;
-        mallComponents.register(
-                OrderGateway.class, orderRpc);
+        mallComponents.register(OrderGateway.class, orderRpc);
         var commentProvider =
-                new ProductCommentClientImpl(
-                        mallComponents.get(ProductCommentService.class));
+                new ProductCommentClientImpl(mallComponents.get(ProductCommentService.class));
         ProductCommentClient commentClient =
                 new ProductCommentClient() {
                     public Long saveSystem(ProductCommentSaveBo value) {
@@ -578,8 +536,7 @@ class CheckoutFlowIntegrationTest {
                         return id;
                     }
                 };
-        ReflectionTestUtils.setField(
-                commentBridge, "client", commentClient);
+        ReflectionTestUtils.setField(commentBridge, "client", commentClient);
 
         productSkuGateway = mallComponents.get(ProductSkuGateway.class);
         productInventoryService = mallComponents.get(ProductInventoryService.class);
@@ -677,14 +634,9 @@ class CheckoutFlowIntegrationTest {
         placement =
                 new OrderPlacementService(
                         tx(
-                                new com.lemnt.mall.application.settlement.service
-                                        .SettlementPreparationService(
-                                        mallComponents.get(
-                                                com.lemnt.mall.application.promotion.service
-                                                        .ActivityPricingService.class),
-                                        mallComponents.get(
-                                                com.lemnt.mall.application.settlement.service
-                                                        .SettlementDeliveryService.class),
+                                new SettlementPreparationService(
+                                        mallComponents.get(ActivityPricingService.class),
+                                        mallComponents.get(SettlementDeliveryService.class),
                                         mallComponents.get(CartGateway.class),
                                         mallComponents.get(MemberLockGateway.class),
                                         mallComponents.get(SettlementRecordService.class),
@@ -705,12 +657,8 @@ class CheckoutFlowIntegrationTest {
                                 tradeComponents.get(AfterSaleGateway.class),
                                 tradeComponents.get(ShipmentGateway.class),
                                 tradeComponents.get(TradeOrderGateway.class),
-                                tradeComponents.get(
-                                        com.lemnt.trade.domain.delivery.gateway
-                                                .DeliveryExpressGateway.class),
-                                tradeComponents.get(
-                                        OrderLogService
-                                                .class)),
+                                tradeComponents.get(DeliveryExpressGateway.class),
+                                tradeComponents.get(OrderLogService.class)),
                         tradeSource);
         lifecycle =
                 tx(
@@ -718,28 +666,19 @@ class CheckoutFlowIntegrationTest {
                                 tradeComponents.get(InventoryConfirmationGateway.class),
                                 tradeComponents.get(OrderPersistenceService.class),
                                 tradeComponents.get(TradeOrderGateway.class),
-                                tradeComponents.get(
-                                        OrderLogService
-                                                .class)),
+                                tradeComponents.get(OrderLogService.class)),
                         tradeSource);
-        var promotionOrders =
-                Mockito.mock(
-                        PromotionOrderService.class);
-        mallComponents.register(
-                PromotionOrderService.class,
-                promotionOrders);
+        var promotionOrders = Mockito.mock(PromotionOrderService.class);
+        mallComponents.register(PromotionOrderService.class, promotionOrders);
         var handler =
                 tx(
                         new SettlementLifecycleClientImpl(
-                                mallComponents.get(
-                                        MemberTradeGateway
-                                                .class),
+                                mallComponents.get(MemberTradeGateway.class),
                                 checkoutService,
                                 orderRpc,
                                 productInventoryService,
                                 promotionOrders,
-                                new RewardGiftService(
-                                        couponIssuanceService)),
+                                new RewardGiftService(couponIssuanceService)),
                         mallSource);
         benefits =
                 new OrderBenefitsGateway() {
@@ -759,8 +698,7 @@ class CheckoutFlowIntegrationTest {
                         handler.closed(no);
                     }
 
-                    public void refunded(
-                            OrderRefundBenefits plan) {
+                    public void refunded(OrderRefundBenefits plan) {
                         if (failNextRefundBenefits) {
                             failNextRefundBenefits = false;
                             throw new IllegalStateException("模拟权益下游不可用");
@@ -795,13 +733,11 @@ class CheckoutFlowIntegrationTest {
                                 amount);
                     }
                 };
-        tradeComponents.register(
-                OrderBenefitsGateway.class, benefits);
+        tradeComponents.register(OrderBenefitsGateway.class, benefits);
         remotes =
                 new OrderRemoteService(
                         orderPersistenceService, bridge, benefits, lifecycle, rollbackMessages);
-        tradeComponents.register(
-                OrderRemoteService.class, remotes);
+        tradeComponents.register(OrderRemoteService.class, remotes);
         closer =
                 new TradeOrderCloseCmdExe(
                         tx(
@@ -810,9 +746,7 @@ class CheckoutFlowIntegrationTest {
                                         tradeOrderGateway,
                                         payments,
                                         p -> false,
-                                        tradeComponents.get(
-                                                com.lemnt.trade.application.order.service
-                                                        .OrderLogService.class)),
+                                        tradeComponents.get(OrderLogService.class)),
                                 tradeSource),
                         remotes);
         paymentCreate =
@@ -823,18 +757,13 @@ class CheckoutFlowIntegrationTest {
         notify =
                 new PaymentNotifyCmdExe(
                         tx(
-                                new com.lemnt.trade.application.payment.service
-                                        .PaymentNotificationService(
+                                new PaymentNotificationService(
                                         orderPersistenceService,
                                         tradeOrderGateway,
                                         payments,
-                                        tradeComponents.get(
-                                                com.lemnt.trade.application.order.service
-                                                        .OrderLogService.class)),
+                                        tradeComponents.get(OrderLogService.class)),
                                 tradeSource),
-                        tradeComponents.get(
-                                PayNotifyTaskService
-                                        .class));
+                        tradeComponents.get(PayNotifyTaskService.class));
         cartService.saveCart(1L, sku, 2, true);
     }
 
@@ -905,12 +834,9 @@ class CheckoutFlowIntegrationTest {
     void repricingBeforePaymentIsConsistentAndExistingPaymentPreventsFurtherChanges()
             throws Exception {
         var order = place("ADJUST-PAYMENT", null);
-        var adjustments =
-                tradeComponents.get(
-                        OrderAdjustmentService.class);
+        var adjustments = tradeComponents.get(OrderAdjustmentService.class);
         adjustments.adjustPrice(
-                new OrderAdjustPriceCmd(
-                        order.orderNo(), new BigDecimal("8.00"), 9L));
+                new OrderAdjustPriceCmd(order.orderNo(), new BigDecimal("8.00"), 9L));
         var payment = paymentCreate.execute(order.orderNo(), "ALIPAY");
         assertEquals(new BigDecimal("8.00"), payment.amount());
         assertThrows(
@@ -996,14 +922,11 @@ class CheckoutFlowIntegrationTest {
     void synchronousCouponCheckMustSucceedBeforeInventoryReservation() throws Exception {
         var original = remotes;
         var rejected =
-                Mockito.mock(
-                        OrderBenefitsGateway.class,
-                        AdditionalAnswers.delegatesTo(benefits));
+                Mockito.mock(OrderBenefitsGateway.class, AdditionalAnswers.delegatesTo(benefits));
         Mockito.doThrow(new IllegalStateException("同步核券失败"))
                 .when(rejected)
                 .verify(Mockito.anyString());
-        tradeComponents.register(
-                OrderBenefitsGateway.class, benefits);
+        tradeComponents.register(OrderBenefitsGateway.class, benefits);
         remotes =
                 new OrderRemoteService(
                         orderPersistenceService, bridge, rejected, lifecycle, rollbackMessages);
@@ -1252,9 +1175,7 @@ class CheckoutFlowIntegrationTest {
                 "UPDATE mall_coupon SET valid_from=TIMESTAMP '2000-01-01"
                         + " 00:00:00',valid_until=TIMESTAMP '2001-01-01 00:00:00' WHERE id="
                         + coupon.id());
-        assertThrows(
-                ServiceException.class,
-                () -> place("EXPIRED", coupon.id()));
+        assertThrows(ServiceException.class, () -> place("EXPIRED", coupon.id()));
         assertEquals(0, count("trade_order"));
         assertEquals("AVAILABLE", couponGateway.coupon(1L, coupon.id(), false).status());
     }
@@ -1320,15 +1241,12 @@ class CheckoutFlowIntegrationTest {
                                             new SettlementDirectCmd(
                                                     1L,
                                                     List.of(
-                                                            new com.lemnt.mall.application
-                                                                    .settlement.cmd
-                                                                    .SettlementDirectCmd.OrderLine(
+                                                            new SettlementDirectCmd.OrderLine(
                                                                     sku, 2)),
                                                     "A",
                                                     coupon.id()));
                                     return true;
-                                } catch (IllegalArgumentException
-                                        | ServiceException ex) {
+                                } catch (IllegalArgumentException | ServiceException ex) {
                                     return false;
                                 }
                             },
@@ -1338,15 +1256,12 @@ class CheckoutFlowIntegrationTest {
                                             new SettlementDirectCmd(
                                                     1L,
                                                     List.of(
-                                                            new com.lemnt.mall.application
-                                                                    .settlement.cmd
-                                                                    .SettlementDirectCmd.OrderLine(
+                                                            new SettlementDirectCmd.OrderLine(
                                                                     sku, 2)),
                                                     "B",
                                                     coupon.id()));
                                     return true;
-                                } catch (IllegalArgumentException
-                                        | ServiceException ex) {
+                                } catch (IllegalArgumentException | ServiceException ex) {
                                     return false;
                                 }
                             });
@@ -1383,20 +1298,15 @@ class CheckoutFlowIntegrationTest {
     }
 
     private Long configureDeliveryProduct() {
-        var management =
-                tradeComponents.get(
-                        DeliveryManagementService
-                                .class);
+        var management = tradeComponents.get(DeliveryManagementService.class);
         Long template =
                 management.createTemplate(
-                        new com.lemnt.trade.application.delivery.cmd
-                                .DeliveryExpressTemplateCreateCmd(
+                        new DeliveryExpressTemplateCreateCmd(
                                 "按件运费",
                                 1,
                                 0,
                                 List.of(
-                                        new com.lemnt.trade.application.delivery.cmd
-                                                .DeliveryChargeCmd(
+                                        new DeliveryChargeCmd(
                                                 null,
                                                 List.of(110101),
                                                 BigDecimal.ONE,
@@ -1404,17 +1314,11 @@ class CheckoutFlowIntegrationTest {
                                                 BigDecimal.ONE,
                                                 150)),
                                 List.of()));
-        var categories =
-                mallComponents.get(CategoryGateway.class);
+        var categories = mallComponents.get(CategoryGateway.class);
         var brands = mallComponents.get(BrandGateway.class);
         var category =
-                categories.saveCategory(
-                        new Category(
-                                null, null, "快递分类", null, 0, "ENABLED"));
-        var brand =
-                brands.saveBrand(
-                        new Brand(
-                                null, "快递品牌", null, null, 0, "ENABLED"));
+                categories.saveCategory(new Category(null, null, "快递分类", null, 0, "ENABLED"));
+        var brand = brands.saveBrand(new Brand(null, "快递品牌", null, null, 0, "ENABLED"));
         var spu =
                 mallComponents
                         .get(ProductSpuGateway.class)
@@ -1439,29 +1343,11 @@ class CheckoutFlowIntegrationTest {
                 .get(ProductSkuMapper.class)
                 .update(
                         null,
-                        Wrappers
-                                .<ProductSkuDO>
-                                        lambdaUpdate()
-                                .eq(
-                                        com.lemnt.mall.infrastructure.product.dataobject
-                                                        .ProductSkuDO
-                                                ::getId,
-                                        sku)
-                                .set(
-                                        com.lemnt.mall.infrastructure.product.dataobject
-                                                        .ProductSkuDO
-                                                ::getSpuId,
-                                        spu.id())
-                                .set(
-                                        com.lemnt.mall.infrastructure.product.dataobject
-                                                        .ProductSkuDO
-                                                ::getWeight,
-                                        new BigDecimal("1.25"))
-                                .set(
-                                        com.lemnt.mall.infrastructure.product.dataobject
-                                                        .ProductSkuDO
-                                                ::getVolume,
-                                        new BigDecimal("0.1")));
+                        Wrappers.<ProductSkuDO>lambdaUpdate()
+                                .eq(ProductSkuDO::getId, sku)
+                                .set(ProductSkuDO::getSpuId, spu.id())
+                                .set(ProductSkuDO::getWeight, new BigDecimal("1.25"))
+                                .set(ProductSkuDO::getVolume, new BigDecimal("0.1")));
         return template;
     }
 
@@ -1470,14 +1356,9 @@ class CheckoutFlowIntegrationTest {
             throws Exception {
         deliveryPointGift = true;
         configureDeliveryProduct();
-        skuProperties(
-                List.of(
-                        new ProductSkuSpec(
-                                null, "尺码", null, "L")));
+        skuProperties(List.of(new ProductSkuSpec(null, "尺码", null, "L")));
         cartService.saveCart(1L, sku, 2, true);
-        var service =
-                new SettlementService(
-                        checkoutService, orderRpc, placement, settlements);
+        var service = new SettlementService(checkoutService, orderRpc, placement, settlements);
         var cached = service.create(new SettlementQuoteQry(1L, List.of(sku), null, false, 7L));
         assertEquals(new BigDecimal("6.50"), cached.quote().delivery().deliveryPrice());
         assertEquals(new BigDecimal("26.50"), cached.quote().payableAmount());
@@ -1491,9 +1372,7 @@ class CheckoutFlowIntegrationTest {
         assertEquals("快递商品", saved.items().get(0).spuName());
         assertEquals("尺码", saved.items().get(0).specs().get(0).specName());
         assertEquals("L", saved.items().get(0).specs().get(0).specValueName());
-        deliveryAddress =
-                new MemberAddressDTO(
-                        7L, 1L, "新收件人", "13800000000", 110101L, "修改后的地址");
+        deliveryAddress = new MemberAddressDTO(7L, 1L, "新收件人", "13800000000", 110101L, "修改后的地址");
         assertEquals(receipt, service.submit(1L, cached.settlementId(), "DELIVERY-ORDER"));
         var payment = paymentCreate.execute(receipt.orderNo(), "ALIPAY");
         notify.execute(
@@ -1516,9 +1395,7 @@ class CheckoutFlowIntegrationTest {
                                 null));
         assertEquals("原始地址", shipped.address());
         assertEquals("收件人", shipped.recipientName());
-        var afterSales =
-                tradeComponents.get(
-                        AfterSaleService.class);
+        var afterSales = tradeComponents.get(AfterSaleService.class);
         var line = afterSales.items(receipt.orderNo()).get(0);
         assertEquals(new BigDecimal("26.50"), line.refundableAmount());
         var sale =
@@ -1549,16 +1426,12 @@ class CheckoutFlowIntegrationTest {
     void foreignAddressAndChangedAddressOrFreightCannotBeSubmittedFromOldQuote() throws Exception {
         Long templateId = configureDeliveryProduct();
         cartService.saveCart(1L, sku, 2, true);
-        var service =
-                new SettlementService(
-                        checkoutService, orderRpc, placement, settlements);
+        var service = new SettlementService(checkoutService, orderRpc, placement, settlements);
         assertThrows(
                 ServiceException.class,
                 () -> service.create(new SettlementQuoteQry(1L, List.of(sku), null, false, 8L)));
         var original = service.create(new SettlementQuoteQry(1L, List.of(sku), null, false, 7L));
-        deliveryAddress =
-                new MemberAddressDTO(
-                        7L, 1L, "收件人", "13800000000", 110101L, "预览后改地址");
+        deliveryAddress = new MemberAddressDTO(7L, 1L, "收件人", "13800000000", 110101L, "预览后改地址");
         assertThrows(
                 ServiceException.class,
                 () -> service.submit(1L, original.settlementId(), "CHANGED-ADDRESS"));
@@ -1566,25 +1439,12 @@ class CheckoutFlowIntegrationTest {
         assertEquals(10, productSkuGateway.findById(sku).stock());
         var fresh = service.create(new SettlementQuoteQry(1L, List.of(sku), null, false, 7L));
         tradeComponents
-                .get(
-                        com.lemnt.trade.infrastructure.delivery.mapper
-                                .DeliveryExpressTemplateChargeMapper.class)
+                .get(DeliveryExpressTemplateChargeMapper.class)
                 .update(
                         null,
-                        Wrappers
-                                .<com.lemnt.trade.infrastructure.delivery.dataobject
-                                                .DeliveryExpressTemplateChargeDO>
-                                        lambdaUpdate()
-                                .eq(
-                                        com.lemnt.trade.infrastructure.delivery.dataobject
-                                                        .DeliveryExpressTemplateChargeDO
-                                                ::getTemplateId,
-                                        templateId)
-                                .set(
-                                        com.lemnt.trade.infrastructure.delivery.dataobject
-                                                        .DeliveryExpressTemplateChargeDO
-                                                ::getStartPrice,
-                                        700));
+                        Wrappers.<DeliveryExpressTemplateChargeDO>lambdaUpdate()
+                                .eq(DeliveryExpressTemplateChargeDO::getTemplateId, templateId)
+                                .set(DeliveryExpressTemplateChargeDO::getStartPrice, 700));
         var conflict =
                 assertThrows(
                         ServiceException.class,
@@ -1596,9 +1456,7 @@ class CheckoutFlowIntegrationTest {
     @Test
     void disabledCompanyBlocksNewShipmentButNeverBlocksExistingShipmentReplay() throws Exception {
         var order = paidOrder(null);
-        var companies =
-                tradeComponents.get(
-                        DeliveryExpressGateway.class);
+        var companies = tradeComponents.get(DeliveryExpressGateway.class);
         var company = companies.byCode("SF");
         companies.update(
                 new DeliveryExpress(
@@ -1609,8 +1467,7 @@ class CheckoutFlowIntegrationTest {
                         company.sort(),
                         1));
         assertThrows(
-                ServiceException.class,
-                () -> fulfillmentService.ship(shipment(order.orderNo())));
+                ServiceException.class, () -> fulfillmentService.ship(shipment(order.orderNo())));
         assertEquals("PAID", orderPersistenceService.findByOrderNo(order.orderNo()).status());
         assertNull(shipmentGateway.shipment(order.orderNo()));
         companies.update(
@@ -1840,12 +1697,8 @@ class CheckoutFlowIntegrationTest {
                                 tradeComponents.get(AfterSaleGateway.class),
                                 tradeComponents.get(ShipmentGateway.class),
                                 failure,
-                                tradeComponents.get(
-                                        com.lemnt.trade.domain.delivery.gateway
-                                                .DeliveryExpressGateway.class),
-                                tradeComponents.get(
-                                        OrderLogService
-                                                .class)),
+                                tradeComponents.get(DeliveryExpressGateway.class),
+                                tradeComponents.get(OrderLogService.class)),
                         tradeSource);
         assertThrows(IllegalStateException.class, () -> failing.ship(shipment(order.orderNo())));
         assertNull(shipmentGateway.shipment(order.orderNo()));
@@ -2049,14 +1902,9 @@ class CheckoutFlowIntegrationTest {
         var failedPlacement =
                 new OrderPlacementService(
                         tx(
-                                new com.lemnt.mall.application.settlement.service
-                                        .SettlementPreparationService(
-                                        mallComponents.get(
-                                                com.lemnt.mall.application.promotion.service
-                                                        .ActivityPricingService.class),
-                                        mallComponents.get(
-                                                com.lemnt.mall.application.settlement.service
-                                                        .SettlementDeliveryService.class),
+                                new SettlementPreparationService(
+                                        mallComponents.get(ActivityPricingService.class),
+                                        mallComponents.get(SettlementDeliveryService.class),
                                         mallComponents.get(CartGateway.class),
                                         mallComponents.get(MemberLockGateway.class),
                                         mallComponents.get(SettlementRecordService.class),
@@ -2306,24 +2154,16 @@ class CheckoutFlowIntegrationTest {
     @Test
     void publicClaimDefaultsClosedAndDoesNotExposePrivateTemplates() {
         var t = campaign(2, new BigDecimal("2.00"));
-        assertThrows(
-                ServiceException.class,
-                () -> coupons.claim(new CouponClaimCmd(1L, t.id())));
+        assertThrows(ServiceException.class, () -> coupons.claim(new CouponClaimCmd(1L, t.id())));
         assertEquals(0, coupons.offers(new CouponPageQry(1L, 1, 20)).total());
         coupons.publicClaim(new CouponPublicClaimCmd(t.id(), true));
         assertEquals(1, coupons.offers(new CouponPageQry(1L, 1, 20)).total());
         var c = coupons.claim(new CouponClaimCmd(1L, t.id()));
-        assertThrows(
-                ServiceException.class,
-                () -> coupons.claim(new CouponClaimCmd(1L, t.id())));
+        assertThrows(ServiceException.class, () -> coupons.claim(new CouponClaimCmd(1L, t.id())));
         assertEquals(1, couponTemplateGateway.template(t.id()).issuedCount());
         coupons.publicClaim(new CouponPublicClaimCmd(t.id(), false));
-        assertThrows(
-                ServiceException.class,
-                () -> coupons.claim(new CouponClaimCmd(1L, t.id())));
-        assertThrows(
-                ServiceException.class,
-                () -> coupons.claim(new CouponClaimCmd(2L, t.id())));
+        assertThrows(ServiceException.class, () -> coupons.claim(new CouponClaimCmd(1L, t.id())));
+        assertThrows(ServiceException.class, () -> coupons.claim(new CouponClaimCmd(2L, t.id())));
         var wallet = coupons.wallet(new CouponPageQry(1L, 1, 20));
         assertEquals(1, wallet.total());
         assertTrue(wallet.records().get(0).usable());
@@ -2345,9 +2185,7 @@ class CheckoutFlowIntegrationTest {
                                 () -> {
                                     start.await();
                                     try {
-                                        coupons.claim(
-                                                new com.lemnt.mall.application.coupon.cmd
-                                                        .CouponClaimCmd(member, t.id()));
+                                        coupons.claim(new CouponClaimCmd(member, t.id()));
                                         return true;
                                     } catch (ServiceException ex) {
                                         return false;
@@ -2378,9 +2216,7 @@ class CheckoutFlowIntegrationTest {
                             + " valid_until=DATEADD('MINUTE',-1,CURRENT_TIMESTAMP) WHERE id="
                             + t.id());
         }
-        assertThrows(
-                ServiceException.class,
-                () -> coupons.claim(new CouponClaimCmd(2L, t.id())));
+        assertThrows(ServiceException.class, () -> coupons.claim(new CouponClaimCmd(2L, t.id())));
         assertTrue(coupons.wallet(new CouponPageQry(1L, 1, 20)).records().get(0).usable());
     }
 
@@ -2467,18 +2303,12 @@ class CheckoutFlowIntegrationTest {
     }
 
     private OrderPlacementService placementWith(
-            SettlementGateway orderGateway,
-            SettlementGateway abandonGateway) {
+            SettlementGateway orderGateway, SettlementGateway abandonGateway) {
         return new OrderPlacementService(
                 tx(
-                        new com.lemnt.mall.application.settlement.service
-                                .SettlementPreparationService(
-                                mallComponents.get(
-                                        com.lemnt.mall.application.promotion.service
-                                                .ActivityPricingService.class),
-                                mallComponents.get(
-                                        com.lemnt.mall.application.settlement.service
-                                                .SettlementDeliveryService.class),
+                        new SettlementPreparationService(
+                                mallComponents.get(ActivityPricingService.class),
+                                mallComponents.get(SettlementDeliveryService.class),
                                 mallComponents.get(CartGateway.class),
                                 mallComponents.get(MemberLockGateway.class),
                                 mallComponents.get(SettlementRecordService.class),
@@ -2512,9 +2342,7 @@ class CheckoutFlowIntegrationTest {
                 .thenAnswer(
                         call -> {
                             assertFalse(
-                                    org.springframework.transaction.support
-                                            .TransactionSynchronizationManager
-                                            .isActualTransactionActive());
+                                    TransactionSynchronizationManager.isActualTransactionActive());
                             return refundSuccess(call.getArgument(0));
                         });
         var create = tradeComponents.get(PaymentRefundCreateCmdExe.class);
@@ -2762,9 +2590,7 @@ class CheckoutFlowIntegrationTest {
         Mockito.when(refundClient.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
                 .thenAnswer(call -> refundSuccess(call.getArgument(0)));
         var create = tradeComponents.get(PaymentRefundCreateCmdExe.class);
-        var transaction =
-                new TransactionTemplate(
-                        new DataSourceTransactionManager(tradeSource));
+        var transaction = new TransactionTemplate(new DataSourceTransactionManager(tradeSource));
         transaction.executeWithoutResult(
                 status -> {
                     assertEquals("SUCCESS", create.execute(afterSale.refundNo()).status());
@@ -3093,9 +2919,7 @@ class CheckoutFlowIntegrationTest {
     void orderStatisticsCountOnlySuccessfulReverseTransactionsAndRemarksCanBeCleared()
             throws Exception {
         var order = paidOrder(null);
-        var statistics =
-                tradeComponents.get(
-                        OrderStatisticsQueryExe.class);
+        var statistics = tradeComponents.get(OrderStatisticsQueryExe.class);
         var initial = statistics.execute(order.orderNo());
         assertEquals(1, initial.orderCount());
         assertEquals(0, initial.afterSaleCount());
@@ -3112,16 +2936,10 @@ class CheckoutFlowIntegrationTest {
         assertEquals(1, result.afterSaleCount());
         assertEquals(new BigDecimal("10.00"), result.afterSalePrice());
         assertEquals(new BigDecimal("20.00"), result.orderPayPrice());
-        var remark =
-                tradeComponents.get(
-                        OrderRemarkUpdateCmdExe.class);
-        remark.execute(
-                new OrderRemarkUpdateCmd(
-                        order.orderNo(), "联系买家"));
+        var remark = tradeComponents.get(OrderRemarkUpdateCmdExe.class);
+        remark.execute(new OrderRemarkUpdateCmd(order.orderNo(), "联系买家"));
         assertEquals("联系买家", tradeOrderGateway.remark(order.orderNo()));
-        remark.execute(
-                new OrderRemarkUpdateCmd(
-                        order.orderNo(), ""));
+        remark.execute(new OrderRemarkUpdateCmd(order.orderNo(), ""));
         assertEquals("", tradeOrderGateway.remark(order.orderNo()));
         assertEquals("PAID", orderPersistenceService.findByOrderNo(order.orderNo()).status());
     }
@@ -3142,15 +2960,11 @@ class CheckoutFlowIntegrationTest {
         var category =
                 mallComponents
                         .get(CategoryGateway.class)
-                        .saveCategory(
-                                new Category(
-                                        null, null, "评价分类", null, 0, "ENABLED"));
+                        .saveCategory(new Category(null, null, "评价分类", null, 0, "ENABLED"));
         var brand =
                 mallComponents
                         .get(BrandGateway.class)
-                        .saveBrand(
-                                new Brand(
-                                        null, "评价品牌", null, null, 0, "ENABLED"));
+                        .saveBrand(new Brand(null, "评价品牌", null, null, 0, "ENABLED"));
         var product =
                 mallComponents
                         .get(ProductCatalogService.class)
@@ -3166,8 +2980,7 @@ class CheckoutFlowIntegrationTest {
                                                 null,
                                                 null,
                                                 List.of(
-                                                        new com.lemnt.mall.domain.product.model
-                                                                .ProductSku(
+                                                        new ProductSku(
                                                                 null,
                                                                 null,
                                                                 "COMMENT-SKU",
@@ -3177,9 +2990,7 @@ class CheckoutFlowIntegrationTest {
                                                                 null,
                                                                 Map.of(),
                                                                 null)))));
-        mallComponents
-                .get(ProductSpuGateway.class)
-                .shelf(product.id(), true);
+        mallComponents.get(ProductSpuGateway.class).shelf(product.id(), true);
         sku = product.skus().get(0).id();
         cartService.saveCart(1L, sku, 2, true);
     }
@@ -3190,8 +3001,7 @@ class CheckoutFlowIntegrationTest {
         var order = paidOrder(null);
         var comments = mallComponents.get(ProductCommentService.class);
         var cmd = new CommentCreateCmd(1L, order.orderNo(), sku, 5, "真实评价");
-        assertThrows(
-                ServiceException.class, () -> comments.create(cmd));
+        assertThrows(ServiceException.class, () -> comments.create(cmd));
         fulfillmentService.ship(shipment(order.orderNo()));
         fulfillmentService.receive(order.orderNo());
         assertThrows(
@@ -3274,9 +3084,7 @@ class CheckoutFlowIntegrationTest {
         fulfillmentService.receive(order.orderNo());
         var parentId = productSkuGateway.catalogSku(sku).spuId();
         var management = mallComponents.get(ProductManagementService.class);
-        mallComponents
-                .get(ProductSpuGateway.class)
-                .shelf(parentId, false);
+        mallComponents.get(ProductSpuGateway.class).shelf(parentId, false);
         management.recycle(parentId);
         management.delete(parentId);
         var saved =
@@ -3289,17 +3097,12 @@ class CheckoutFlowIntegrationTest {
     }
 
     /** 旧用例的数据准备改走商品售后，以第一个商品的全部数量申请。 */
-    private RefundRequest requestAfterSale(
-            RefundRequestCmd cmd) {
+    private RefundRequest requestAfterSale(RefundRequestCmd cmd) {
         var order = orderPersistenceService.findByOrderNo(cmd.orderNo());
         if (order == null) {
             throw new IllegalArgumentException("订单不存在");
         }
-        var line =
-                tradeComponents
-                        .get(TradeOrderItemGateway.class)
-                        .refundItems(order.id())
-                        .get(0);
+        var line = tradeComponents.get(TradeOrderItemGateway.class).refundItems(order.id()).get(0);
         var sale =
                 tradeComponents
                         .get(AfterSaleService.class)
@@ -3314,18 +3117,14 @@ class CheckoutFlowIntegrationTest {
         return legacyView(sale);
     }
 
-    private RefundRequest rejectAfterSale(
-            RefundRejectCmd cmd) {
+    private RefundRequest rejectAfterSale(RefundRejectCmd cmd) {
         return legacyView(
                 tradeComponents
                         .get(AfterSaleService.class)
-                        .reject(
-                                new AfterSaleRejectCmd(
-                                        cmd.refundNo(), cmd.reason())));
+                        .reject(new AfterSaleRejectCmd(cmd.refundNo(), cmd.reason())));
     }
 
-    private RefundRequest legacyView(
-            AfterSale sale) {
+    private RefundRequest legacyView(AfterSale sale) {
         return new RefundRequest(
                 sale.refundNo(),
                 sale.orderNo(),
@@ -3340,13 +3139,9 @@ class CheckoutFlowIntegrationTest {
                 sale.decidedAt());
     }
 
-    private RefundRequest approvedAfterSale(
-            RefundRequestCmd cmd) {
+    private RefundRequest approvedAfterSale(RefundRequestCmd cmd) {
         var requested = requestAfterSale(cmd);
-        return legacyView(
-                tradeComponents
-                        .get(AfterSaleService.class)
-                        .agree(requested.refundNo()));
+        return legacyView(tradeComponents.get(AfterSaleService.class).agree(requested.refundNo()));
     }
 
     /** 真正业务状态变化才生成日志，重放不重复记录。 */
@@ -3369,29 +3164,13 @@ class CheckoutFlowIntegrationTest {
         fulfillmentService.ship(shipping);
         assertThrows(
                 ServiceException.class,
-                () ->
-                        fulfillmentService.receive(
-                                order.orderNo(),
-                                TradeOperator.member(2L)));
-        fulfillmentService.receive(
-                order.orderNo(), TradeOperator.member(1L));
-        fulfillmentService.receive(
-                order.orderNo(), TradeOperator.member(1L));
+                () -> fulfillmentService.receive(order.orderNo(), TradeOperator.member(2L)));
+        fulfillmentService.receive(order.orderNo(), TradeOperator.member(1L));
+        fulfillmentService.receive(order.orderNo(), TradeOperator.member(1L));
         var header = orderPersistenceService.findByOrderNo(order.orderNo());
-        var logs =
-                tradeComponents
-                        .get(OrderLogGateway.class)
-                        .byOrderId(header.id());
-        assertEquals(
-                List.of(1, 10, 20, 30),
-                logs.stream()
-                        .map(OrderLog::operateType)
-                        .toList());
-        assertEquals(
-                List.of(0, 10, 20, 30),
-                logs.stream()
-                        .map(OrderLog::afterStatus)
-                        .toList());
+        var logs = tradeComponents.get(OrderLogGateway.class).byOrderId(header.id());
+        assertEquals(List.of(1, 10, 20, 30), logs.stream().map(OrderLog::operateType).toList());
+        assertEquals(List.of(0, 10, 20, 30), logs.stream().map(OrderLog::afterStatus).toList());
         assertEquals(55L, logs.get(2).userId());
         assertEquals(2, logs.get(2).userType());
         assertEquals(1L, logs.get(3).userId());
@@ -3402,21 +3181,12 @@ class CheckoutFlowIntegrationTest {
     @Test
     void memberCancelChecksOwnerAndRepeatedCancellationDoesNotDuplicateLog() {
         var order = place("CANCEL-LOG", null);
-        assertThrows(
-                ServiceException.class,
-                () -> closer.executeForMember(2L, order.orderNo()));
+        assertThrows(ServiceException.class, () -> closer.executeForMember(2L, order.orderNo()));
         assertTrue(closer.executeForMember(1L, order.orderNo()));
         assertTrue(closer.executeForMember(1L, order.orderNo()));
         var header = orderPersistenceService.findByOrderNo(order.orderNo());
-        var logs =
-                tradeComponents
-                        .get(OrderLogGateway.class)
-                        .byOrderId(header.id());
-        assertEquals(
-                List.of(1, 40),
-                logs.stream()
-                        .map(OrderLog::operateType)
-                        .toList());
+        var logs = tradeComponents.get(OrderLogGateway.class).byOrderId(header.id());
+        assertEquals(List.of(1, 40), logs.stream().map(OrderLog::operateType).toList());
         assertEquals(1L, logs.get(1).userId());
         assertEquals("CLOSED", header.status());
     }
@@ -3445,15 +3215,8 @@ class CheckoutFlowIntegrationTest {
         notify.execute(notification);
         notify.execute(notification);
         var header = orderPersistenceService.findByOrderNo(order.orderNo());
-        var logs =
-                tradeComponents
-                        .get(OrderLogGateway.class)
-                        .byOrderId(header.id());
-        assertEquals(
-                List.of(1, 10),
-                logs.stream()
-                        .map(OrderLog::operateType)
-                        .toList());
+        var logs = tradeComponents.get(OrderLogGateway.class).byOrderId(header.id());
+        assertEquals(List.of(1, 10), logs.stream().map(OrderLog::operateType).toList());
     }
 
     /** 退货退款各阶段按实际操作者记录源状态，回调重放不重复日志。 */
@@ -3477,20 +3240,13 @@ class CheckoutFlowIntegrationTest {
         var refund = tradeComponents.get(PaymentRefundCreateCmdExe.class);
         assertEquals("SUCCESS", refund.executeForAdmin(sale.refundNo(), 55L).status());
         assertEquals("SUCCESS", refund.executeForAdmin(sale.refundNo(), 55L).status());
-        var logs =
-                tradeComponents
-                        .get(AfterSaleLogGateway.class)
-                        .byAfterSaleId(sale.id());
+        var logs = tradeComponents.get(AfterSaleLogGateway.class).byAfterSaleId(sale.id());
         assertEquals(
                 List.of(10, 11, 20, 21, 30, 31),
-                logs.stream()
-                        .map(AfterSaleLog::operateType)
-                        .toList());
+                logs.stream().map(AfterSaleLog::operateType).toList());
         assertEquals(
                 List.of(10, 20, 30, 40, 40, 50),
-                logs.stream()
-                        .map(AfterSaleLog::afterStatus)
-                        .toList());
+                logs.stream().map(AfterSaleLog::afterStatus).toList());
         assertEquals(55L, logs.get(1).userId());
         assertEquals(2, logs.get(1).userType());
         assertEquals(1L, logs.get(2).userId());
@@ -3505,34 +3261,19 @@ class CheckoutFlowIntegrationTest {
         var order = paidOrder(null);
         var service = tradeComponents.get(AfterSaleService.class);
         var sale = service.create(itemRefund(order.orderNo(), "CANCEL-SALE", 1, "REFUND_ONLY"));
-        assertThrows(
-                ServiceException.class,
-                () -> service.cancel(2L, sale.refundNo()));
+        assertThrows(ServiceException.class, () -> service.cancel(2L, sale.refundNo()));
         service.cancel(1L, sale.refundNo());
         service.cancel(1L, sale.refundNo());
         assertEquals(2, service.items(order.orderNo()).get(0).refundableQuantity());
-        var logs =
-                tradeComponents
-                        .get(AfterSaleLogGateway.class)
-                        .byAfterSaleId(sale.id());
-        assertEquals(
-                List.of(10, 40),
-                logs.stream()
-                        .map(AfterSaleLog::operateType)
-                        .toList());
+        var logs = tradeComponents.get(AfterSaleLogGateway.class).byAfterSaleId(sale.id());
+        assertEquals(List.of(10, 40), logs.stream().map(AfterSaleLog::operateType).toList());
         assertEquals(61, logs.get(1).afterStatus());
-        assertThrows(
-                ServiceException.class,
-                () -> service.cancel(2L, sale.refundNo()));
+        assertThrows(ServiceException.class, () -> service.cancel(2L, sale.refundNo()));
         var next = service.create(itemRefund(order.orderNo(), "AFTER-CANCEL", 1, "REFUND_ONLY"));
         service.agree(next.refundNo());
-        assertThrows(
-                ServiceException.class,
-                () -> service.cancel(1L, next.refundNo()));
+        assertThrows(ServiceException.class, () -> service.cancel(1L, next.refundNo()));
         assertEquals("WAIT_REFUND", refundRequestGateway.afterSale(next.refundNo()).status());
-        assertThrows(
-                ServiceException.class,
-                () -> service.cancel(1L, "MISSING-SALE"));
+        assertThrows(ServiceException.class, () -> service.cancel(1L, "MISSING-SALE"));
     }
 
     /** 日志失败不能提交审批；真实失败回调只记录一次且不伪造退款时间。 */
@@ -3564,15 +3305,9 @@ class CheckoutFlowIntegrationTest {
         var create = tradeComponents.get(PaymentRefundCreateCmdExe.class);
         create.execute(sale.refundNo());
         create.execute(sale.refundNo());
-        var logs =
-                tradeComponents
-                        .get(AfterSaleLogGateway.class)
-                        .byAfterSaleId(sale.id());
+        var logs = tradeComponents.get(AfterSaleLogGateway.class).byAfterSaleId(sale.id());
         assertEquals(
-                List.of(10, 11, 30, 32),
-                logs.stream()
-                        .map(AfterSaleLog::operateType)
-                        .toList());
+                List.of(10, 11, 30, 32), logs.stream().map(AfterSaleLog::operateType).toList());
         assertNull(refundRequestGateway.afterSale(sale.refundNo()).refundTime());
         assertEquals("PAID", orderPersistenceService.findByOrderNo(order.orderNo()).status());
     }
@@ -3586,20 +3321,10 @@ class CheckoutFlowIntegrationTest {
                 mallSource,
                 "UPDATE mall_product_sku SET main_image='https://example.com/old.png' WHERE id="
                         + sku);
-        var dict =
-                mallComponents.get(
-                        ProductSpecService.class);
-        var spec =
-                dict.create(
-                        new ProductSpecCreateCmd(
-                                "颜色", null));
-        var option =
-                dict.createValue(
-                        new ProductSpecValueCreateCmd(
-                                spec.id(), "黑色", null));
-        var catalog =
-                mallComponents.get(
-                        ProductCatalogService.class);
+        var dict = mallComponents.get(ProductSpecService.class);
+        var spec = dict.create(new ProductSpecCreateCmd("颜色", null));
+        var option = dict.createValue(new ProductSpecValueCreateCmd(spec.id(), "黑色", null));
+        var catalog = mallComponents.get(ProductCatalogService.class);
         var originalSpu = catalog.spu(spuId);
         var originalSku = originalSpu.skus().get(0);
         var linked =
@@ -3611,9 +3336,7 @@ class CheckoutFlowIntegrationTest {
                         originalSku.price(),
                         originalSku.stock(),
                         originalSku.image(),
-                        List.of(
-                                new ProductSkuSpec(
-                                        spec.id(), null, option.id(), null)),
+                        List.of(new ProductSkuSpec(spec.id(), null, option.id(), null)),
                         originalSku.status(),
                         originalSku.weight(),
                         originalSku.volume());
@@ -3672,23 +3395,14 @@ class CheckoutFlowIntegrationTest {
                         order.delivery());
         assertThrows(
                 IllegalStateException.class,
-                () ->
-                        tradeComponents
-                                .get(
-                                        com.lemnt.trade.application.order.service
-                                                .OrderSubmissionService.class)
-                                .create(changedOrder));
+                () -> tradeComponents.get(OrderSubmissionService.class).create(changedOrder));
         sql(mallSource, "UPDATE mall_product_spu SET name='已改商品' WHERE id=" + spuId);
         sql(
                 mallSource,
                 "UPDATE mall_product_sku SET main_image='https://example.com/new.png' WHERE id="
                         + sku);
-        dict.update(
-                new ProductSpecUpdateCmd(
-                        spec.id(), "色彩", null));
-        dict.updateValue(
-                new ProductSpecValueUpdateCmd(
-                        option.id(), "白色", null));
+        dict.update(new ProductSpecUpdateCmd(spec.id(), "色彩", null));
+        dict.updateValue(new ProductSpecValueUpdateCmd(option.id(), "白色", null));
         assertEquals("白色", catalog.sku(sku).specs().get(0).specValueName());
         assertEquals(item, orderPersistenceService.findByOrderNo(order.orderNo()).items().get(0));
         var service = tradeComponents.get(AfterSaleService.class);
@@ -3713,10 +3427,7 @@ class CheckoutFlowIntegrationTest {
         var token =
                 SettlementRules.quoteToken(
                         placement.quote(new SettlementQuoteQry(1L, List.of(sku), null)));
-        skuProperties(
-                List.of(
-                        new ProductSkuSpec(
-                                null, "颜色", null, "新规格")));
+        skuProperties(List.of(new ProductSkuSpec(null, "颜色", null, "新规格")));
         var failure =
                 assertThrows(
                         IllegalStateException.class,
@@ -3732,28 +3443,14 @@ class CheckoutFlowIntegrationTest {
     @Test
     void changingOnlySpecIdsRejectsOldQuoteAndCreatesNoOrder() throws Exception {
         useCatalogSkuForReview();
-        skuProperties(
-                List.of(
-                        new ProductSkuSpec(
-                                null, "颜色", null, "黑色")));
+        skuProperties(List.of(new ProductSkuSpec(null, "颜色", null, "黑色")));
         var token =
                 SettlementRules.quoteToken(
                         placement.quote(new SettlementQuoteQry(1L, List.of(sku), null)));
-        var dict =
-                mallComponents.get(
-                        ProductSpecService.class);
-        var spec =
-                dict.create(
-                        new ProductSpecCreateCmd(
-                                "颜色", null));
-        var option =
-                dict.createValue(
-                        new ProductSpecValueCreateCmd(
-                                spec.id(), "黑色", null));
-        skuProperties(
-                List.of(
-                        new ProductSkuSpec(
-                                spec.id(), "颜色", option.id(), "黑色")));
+        var dict = mallComponents.get(ProductSpecService.class);
+        var spec = dict.create(new ProductSpecCreateCmd("颜色", null));
+        var option = dict.createValue(new ProductSpecValueCreateCmd(spec.id(), "黑色", null));
+        skuProperties(List.of(new ProductSkuSpec(spec.id(), "颜色", option.id(), "黑色")));
         assertThrows(
                 IllegalStateException.class,
                 () ->
@@ -3768,19 +3465,9 @@ class CheckoutFlowIntegrationTest {
                 .get(ProductSkuMapper.class)
                 .update(
                         null,
-                        Wrappers.lambdaUpdate(
-                                        com.lemnt.mall.infrastructure.product.dataobject
-                                                .ProductSkuDO.class)
-                                .eq(
-                                        com.lemnt.mall.infrastructure.product.dataobject
-                                                        .ProductSkuDO
-                                                ::getId,
-                                        sku)
-                                .set(
-                                        com.lemnt.mall.infrastructure.product.dataobject
-                                                        .ProductSkuDO
-                                                ::getSpecs,
-                                        JSON.toJSONString(specs)));
+                        Wrappers.lambdaUpdate(ProductSkuDO.class)
+                                .eq(ProductSkuDO::getId, sku)
+                                .set(ProductSkuDO::getSpecs, JSON.toJSONString(specs)));
     }
 
     @Test
@@ -3852,10 +3539,7 @@ class CheckoutFlowIntegrationTest {
         assertNotNull(finished.finishTime());
         comments.create(first);
         assertEquals(finished.finishTime(), orderRpc.findByOrderNo(order.orderNo()).finishTime());
-        var logs =
-                tradeComponents
-                        .get(OrderLogGateway.class)
-                        .byOrderId(order.id());
+        var logs = tradeComponents.get(OrderLogGateway.class).byOrderId(order.id());
         assertEquals(1, logs.stream().filter(log -> log.operateType() == 33).count());
         // 只去掉数据库ID及后续评价元数据，保留全部原始购买优惠和权益快照。
         var original = orderPersistenceService.findByOrderNo(order.orderNo());
@@ -3872,8 +3556,7 @@ class CheckoutFlowIntegrationTest {
                                 original.items().stream()
                                         .map(
                                                 line ->
-                                                        new com.lemnt.trade.domain.order.model
-                                                                .TradeOrderItem(
+                                                        new TradeOrderItem(
                                                                 line.productId(),
                                                                 line.productCode(),
                                                                 line.productName(),
@@ -3911,12 +3594,7 @@ class CheckoutFlowIntegrationTest {
                                 original.pricingSnapshotStatus(),
                                 original.pricingSnapshotVersion(),
                                 original.promotions()));
-        var detail =
-                tradeComponents
-                        .get(
-                                OrderDetailQueryExe
-                                        .class)
-                        .execute(order.orderNo());
+        var detail = tradeComponents.get(OrderDetailQueryExe.class).execute(order.orderNo());
         assertTrue(detail.commentStatus());
         assertEquals(finished.finishTime(), detail.finishTime());
         assertEquals(a.orderItemId(), detail.items().get(0).orderItemId());
@@ -3954,10 +3632,7 @@ class CheckoutFlowIntegrationTest {
         assertTrue(orderRpc.findByOrderNo(order.orderNo()).commentStatus());
         assertEquals(
                 1,
-                tradeComponents
-                        .get(OrderLogGateway.class)
-                        .byOrderId(order.id())
-                        .stream()
+                tradeComponents.get(OrderLogGateway.class).byOrderId(order.id()).stream()
                         .filter(log -> log.operateType() == 33)
                         .count());
         assertEquals(1, count("mall_product_comment"));
@@ -3996,10 +3671,7 @@ class CheckoutFlowIntegrationTest {
         assertFalse(orderRpc.findByOrderNo(order.orderNo()).items().get(0).commentStatus());
         assertEquals(
                 0,
-                tradeComponents
-                        .get(OrderLogGateway.class)
-                        .byOrderId(order.id())
-                        .stream()
+                tradeComponents.get(OrderLogGateway.class).byOrderId(order.id()).stream()
                         .filter(log -> log.operateType() == 33)
                         .count());
         sql(tradeSource, "ALTER TABLE trade_order DROP CONSTRAINT reject_review_done");
@@ -4013,11 +3685,8 @@ class CheckoutFlowIntegrationTest {
     private SettlementOrder completedReviewOrderWithTwoItems() {
         useCatalogSkuForReview();
         var firstSku = sku;
-        var catalog =
-                mallComponents.get(
-                        ProductCatalogService.class);
-        var spuGateway =
-                mallComponents.get(ProductSpuGateway.class);
+        var catalog = mallComponents.get(ProductCatalogService.class);
+        var spuGateway = mallComponents.get(ProductSpuGateway.class);
         var firstSpu = spuGateway.findSpu(productSkuGateway.catalogSku(firstSku).spuId());
         var second =
                 catalog.createSpu(
@@ -4092,8 +3761,7 @@ class CheckoutFlowIntegrationTest {
                                                                             line.orderItemId()))))
                             .toList();
             var ids = new HashSet<Long>();
-            for (var request : requests)
-                ids.add(request.get(10, TimeUnit.SECONDS).id());
+            for (var request : requests) ids.add(request.get(10, TimeUnit.SECONDS).id());
             assertEquals(2, ids.size());
         } finally {
             pool.shutdownNow();
@@ -4102,10 +3770,7 @@ class CheckoutFlowIntegrationTest {
         assertEquals(2, count("mall_product_comment"));
         assertEquals(
                 1,
-                tradeComponents
-                        .get(OrderLogGateway.class)
-                        .byOrderId(order.id())
-                        .stream()
+                tradeComponents.get(OrderLogGateway.class).byOrderId(order.id()).stream()
                         .filter(log -> log.operateType() == 33)
                         .count());
     }
@@ -4190,9 +3855,7 @@ class CheckoutFlowIntegrationTest {
                         true,
                         LocalDateTime.of(2000, 1, 1, 0, 0));
         // 直接验证交易持久化边界，避免绕过结算回执校验构造无效 RPC 下单请求。
-        tradeComponents
-                .get(OrderSubmissionService.class)
-                .create(fake);
+        tradeComponents.get(OrderSubmissionService.class).create(fake);
         var saved = orderRpc.findByOrderNo(fake.orderNo());
         assertNotEquals(999999L, saved.items().get(0).orderItemId());
         assertNotNull(saved.items().get(0).orderItemId());
@@ -4204,9 +3867,7 @@ class CheckoutFlowIntegrationTest {
     @Test
     void systemCommentRequiresExpiredReceiptAndKeepsOneCompletionLog() {
         var order = completedReviewOrderWithTwoItems();
-        var service =
-                tradeComponents.get(
-                        OrderCommentService.class);
+        var service = tradeComponents.get(OrderCommentService.class);
         var time = tradeOrderGateway.databaseNow();
         assertFalse(service.createSystem(order.orderNo(), time.minusDays(7)));
         assertTrue(service.createSystem(order.orderNo(), time.plusDays(1)));
@@ -4216,10 +3877,7 @@ class CheckoutFlowIntegrationTest {
         var finish = saved.finishTime();
         assertEquals(
                 1,
-                tradeComponents
-                        .get(OrderLogGateway.class)
-                        .byOrderId(order.id())
-                        .stream()
+                tradeComponents.get(OrderLogGateway.class).byOrderId(order.id()).stream()
                         .filter(v -> v.operateType() == 34)
                         .count());
         for (var line : saved.items()) {
@@ -4237,18 +3895,14 @@ class CheckoutFlowIntegrationTest {
     @Test
     void systemOriginalRetryRepairsRemoteCommitAfterLostResponse() {
         var order = completedReviewOrderWithTwoItems();
-        var service =
-                tradeComponents.get(
-                        OrderCommentService.class);
+        var service = tradeComponents.get(OrderCommentService.class);
         var cutoff = tradeOrderGateway.databaseNow().plusDays(1);
         loseNextCommentResponse = true;
         assertThrows(
                 IllegalStateException.class, () -> service.createSystem(order.orderNo(), cutoff));
         assertFalse(orderRpc.findByOrderNo(order.orderNo()).commentStatus());
         var first = order.items().get(0).orderItemId();
-        var comments =
-                mallComponents.get(
-                        ProductCommentGateway.class);
+        var comments = mallComponents.get(ProductCommentGateway.class);
         var remoteId = comments.findByOrderItem(first).id();
         assertTrue(service.createSystem(order.orderNo(), cutoff));
         assertEquals(remoteId, comments.findByOrderItem(first).id());
@@ -4264,9 +3918,7 @@ class CheckoutFlowIntegrationTest {
         failNextRefundBenefits = true;
         var executor = tradeComponents.get(PaymentRefundCreateCmdExe.class);
         assertEquals("SUCCESS", executor.execute(sale.refundNo()).status());
-        var taskGateway =
-                tradeComponents.get(
-                        PayNotifyTaskGateway.class);
+        var taskGateway = tradeComponents.get(PayNotifyTaskGateway.class);
         var task = taskGateway.findByBiz("AFTER_SALE", sale.refundNo());
         assertEquals("FAILED", task.status());
         assertEquals("REFUNDED", refundRequestGateway.afterSale(sale.refundNo()).status());

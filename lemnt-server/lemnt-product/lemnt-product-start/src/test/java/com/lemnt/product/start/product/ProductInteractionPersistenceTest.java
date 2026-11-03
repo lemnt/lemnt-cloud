@@ -4,6 +4,8 @@ import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.security.context.SecurityContextHolder;
 import com.lemnt.common.security.handler.GlobalExceptionHandler;
 import com.lemnt.common.start.config.JacksonConfig;
+import com.lemnt.product.adapter.app.product.AppProductBrowseHistoryController;
+import com.lemnt.product.adapter.app.product.AppProductFavoriteController;
 import com.lemnt.product.application.product.cmd.ProductBrowseHistoryCreateCmd;
 import com.lemnt.product.application.product.cmd.ProductFavoriteCreateCmd;
 import com.lemnt.product.application.product.qry.ProductBrowseHistoryPageQry;
@@ -22,6 +24,7 @@ import org.mockito.Mockito;
 import org.redisson.api.RLock;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tools.jackson.databind.json.JsonMapper;
@@ -212,17 +215,11 @@ class ProductInteractionPersistenceTest {
         new JacksonConfig().customizer().customize(mapperBuilder);
         var mvc =
                 MockMvcBuilders.standaloneSetup(
-                                f.components.get(
-                                        com.lemnt.product.adapter.app.product
-                                                .AppProductFavoriteController.class),
-                                f.components.get(
-                                        com.lemnt.product.adapter.app.product
-                                                .AppProductBrowseHistoryController.class))
-                        .setControllerAdvice(
-                                new GlobalExceptionHandler())
+                                f.components.get(AppProductFavoriteController.class),
+                                f.components.get(AppProductBrowseHistoryController.class))
+                        .setControllerAdvice(new GlobalExceptionHandler())
                         .setMessageConverters(
-                                new org.springframework.http.converter.json
-                                        .JacksonJsonHttpMessageConverter(mapperBuilder.build()))
+                                new JacksonJsonHttpMessageConverter(mapperBuilder.build()))
                         .build();
         mvc.perform(
                         post("/mall/app/favorites")
@@ -250,11 +247,8 @@ class ProductInteractionPersistenceTest {
     }
 
     private LockTemplate memberLocks() throws Exception {
-        var locks =
-                new ConcurrentHashMap<
-                        String, ReentrantLock>();
-        var executor =
-                Mockito.mock(RedissonLockExecutor.class);
+        var locks = new ConcurrentHashMap<String, ReentrantLock>();
+        var executor = Mockito.mock(RedissonLockExecutor.class);
         Mockito.when(executor.renewal()).thenReturn(true);
         Mockito.when(
                         executor.acquire(
@@ -266,8 +260,7 @@ class ProductInteractionPersistenceTest {
                         invocation -> {
                             var lock =
                                     locks.computeIfAbsent(
-                                            invocation.getArgument(0),
-                                            key -> new ReentrantLock());
+                                            invocation.getArgument(0), key -> new ReentrantLock());
                             if (!lock.tryLock(3, TimeUnit.SECONDS)) {
                                 return null;
                             }

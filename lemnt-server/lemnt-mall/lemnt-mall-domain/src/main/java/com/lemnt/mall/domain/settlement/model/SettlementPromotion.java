@@ -25,8 +25,6 @@ public record SettlementPromotion(
     public SettlementPromotion {
         items = items == null ? List.of() : List.copyOf(items);
         giveCouponTemplateCounts =
-                giveCouponTemplateCounts == null
-                        ? null
-                        : Map.copyOf(giveCouponTemplateCounts);
+                giveCouponTemplateCounts == null ? null : Map.copyOf(giveCouponTemplateCounts);
     }
 }

@@ -1,6 +1,5 @@
 package com.lemnt.trade.application.fulfillment.dto;
 
-import com.lemnt.trade.application.fulfillment.dto.OrderItemDTO;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

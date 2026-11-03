@@ -14,13 +14,17 @@ import java.util.List;
 public interface ProductCatalogClient {
     /** 营销管理读取当前商品，包含未上架但尚未删除的目录记录。 */
     ProductSkuBriefDTO catalogSku(Long skuId);
+
     List<ProductSkuBriefDTO> catalogSkus(Long spuId);
+
     List<ProductSkuBriefDTO> skusBySpuIds(List<Long> spuIds);
+
     ProductSpuBriefDTO findSpu(Long spuId);
+
     List<ProductSpuBriefDTO> findSpus(List<Long> spuIds);
+
     /** 按原业务号读取预占事实，供订单核实库存后处理完成状态。 */
-    StockReservationDTO reservationStatus(
-            StockReservationQueryBo query);
+    StockReservationDTO reservationStatus(StockReservationQueryBo query);
 
     /** 按冻结售后数量回补原已确认库存，原售后号保证幂等。 */
     void returnStock(String orderNo, String afterSaleNo, Long skuId, Integer quantity);

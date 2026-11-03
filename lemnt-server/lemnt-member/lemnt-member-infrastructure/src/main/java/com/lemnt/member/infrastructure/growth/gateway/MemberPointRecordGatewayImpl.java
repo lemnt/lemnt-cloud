@@ -32,8 +32,7 @@ public class MemberPointRecordGatewayImpl implements MemberPointRecordGateway {
 
     @Override
     public void save(AssetRecord record) {
-        if (!"POINT".equals(record.assetType()))
-            throw new ServiceException("账本资产类型不匹配", 400);
+        if (!"POINT".equals(record.assetType())) throw new ServiceException("账本资产类型不匹配", 400);
         mapper.insert(PointRecordConverter.toDO(record));
     }
 

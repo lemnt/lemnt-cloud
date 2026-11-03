@@ -63,14 +63,12 @@ public class ProductCommentService {
     }
 
     /** 私有RPC只接收交易已验证的订单事实，不回查持锁中的交易订单。 */
-    public ProductComment saveVerified(
-            CommentSaveCmd purchase) {
+    public ProductComment saveVerified(CommentSaveCmd purchase) {
         return savePurchase(purchase, false);
     }
 
     /** 独立私有系统入口，不能由会员HTTP输入开启空正文模式。 */
-    public ProductComment saveSystem(
-            CommentSaveCmd purchase) {
+    public ProductComment saveSystem(CommentSaveCmd purchase) {
         require(
                 purchase != null
                         && Integer.valueOf(5).equals(purchase.score())
@@ -85,8 +83,7 @@ public class ProductCommentService {
         return savePurchase(purchase, true);
     }
 
-    private ProductComment savePurchase(
-            CommentSaveCmd purchase, boolean system) {
+    private ProductComment savePurchase(CommentSaveCmd purchase, boolean system) {
         require(
                 purchase != null
                         && purchase.orderId() != null

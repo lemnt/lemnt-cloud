@@ -14,6 +14,7 @@ import com.lemnt.mall.application.product.dto.ProductSpuPageDTO;
 import com.lemnt.mall.application.product.dto.ProductSpuStatusCountDTO;
 import com.lemnt.mall.application.product.executor.*;
 import com.lemnt.mall.application.product.executor.CommentCreateCmdExe;
+import com.lemnt.mall.application.product.executor.CommentPublicPageQueryExe;
 import com.lemnt.mall.application.product.executor.ProductSpecCreateCmdExe;
 import com.lemnt.mall.application.product.executor.ProductSpecDeleteCmdExe;
 import com.lemnt.mall.application.product.executor.ProductSpecDetailQueryExe;
@@ -144,10 +145,7 @@ class ProductManagementHttpTest {
     @Test
     void spuCountsBindSharedBusinessFiltersWithoutPageOrStatusFilters() throws Exception {
         var count = mock(ProductSpuCountQueryExe.class);
-        when(count.execute(any()))
-                .thenReturn(
-                        new ProductSpuStatusCountDTO(
-                                3, 2, 1, 1, 2));
+        when(count.execute(any())).thenReturn(new ProductSpuStatusCountDTO(3, 2, 1, 1, 2));
         var controller =
                 new ProductSpuManagementController(
                         mock(ProductSpuRecycleCmdExe.class),
@@ -173,10 +171,7 @@ class ProductManagementHttpTest {
                 .andExpect(jsonPath("$.data.recycled").value(1))
                 .andExpect(jsonPath("$.data.soldOut").value(1))
                 .andExpect(jsonPath("$.data.lowStock").value(2));
-        verify(count)
-                .execute(
-                        new ProductSpuCountQry(
-                                "商品", 1L, 2L));
+        verify(count).execute(new ProductSpuCountQry("商品", 1L, 2L));
         mvc.perform(get("/mall/spus/count").param("categoryId", "0"))
                 .andExpect(status().isBadRequest());
         verifyNoMoreInteractions(count);
@@ -186,9 +181,7 @@ class ProductManagementHttpTest {
     @Test
     void stockViewBindsIndependentlyFromLifecycleStatus() throws Exception {
         var query = mock(ProductSpuPageQueryExe.class);
-        when(query.execute(any()))
-                .thenReturn(
-                        new ProductSpuPageDTO(List.of(), 0));
+        when(query.execute(any())).thenReturn(new ProductSpuPageDTO(List.of(), 0));
         var mvc =
                 MockMvcBuilders.standaloneSetup(
                                 new ProductSpuController(
@@ -202,10 +195,7 @@ class ProductManagementHttpTest {
         mvc.perform(get("/mall/spus").param("stockStatus", "LOW_STOCK").param("categoryId", "1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.total").value(0));
-        verify(query)
-                .execute(
-                        new ProductSpuPageQry(
-                                null, null, 1, 10, 1L, null, "LOW_STOCK"));
+        verify(query).execute(new ProductSpuPageQry(null, null, 1, 10, 1L, null, "LOW_STOCK"));
     }
 
     /** 页面使用既有回收、恢复、删除路径，不将false伪装为成功记录。 */
@@ -254,10 +244,7 @@ class ProductManagementHttpTest {
         var mvc =
                 MockMvcBuilders.standaloneSetup(
                                 new AppCommentController(
-                                        create,
-                                        mock(
-                                                com.lemnt.mall.application.product.executor
-                                                        .CommentPublicPageQueryExe.class)))
+                                        create, mock(CommentPublicPageQueryExe.class)))
                         .addInterceptors(new HeaderInterceptor())
                         .setMessageConverters(converter())
                         .build();

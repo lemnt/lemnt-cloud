@@ -16,11 +16,7 @@ public interface BargainRecordGateway {
 
     /** 按旧价格条件更新，保证并发助力只成功一次。 */
     boolean updatePrice(
-            Long id,
-            BigDecimal expected,
-            BigDecimal price,
-            Integer status,
-            LocalDateTime endTime);
+            Long id, BigDecimal expected, BigDecimal price, Integer status, LocalDateTime endTime);
 
     boolean bindOrder(Long id, Long orderId);
 

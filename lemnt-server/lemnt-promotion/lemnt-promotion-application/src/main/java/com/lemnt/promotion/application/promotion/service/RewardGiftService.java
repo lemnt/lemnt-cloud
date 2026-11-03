@@ -20,18 +20,22 @@ public class RewardGiftService {
 
     /** 每个模板按数量逐张发放；模板下架或名额用尽只记录告警，不阻断支付回调。 */
     public void issuePaid(SettlementOrder order) {
-        Map<Long, Integer> gifts = order.giveCouponTemplateCounts();
+        issuePaid(order.memberId(), order.orderNo(), order.giveCouponTemplateCounts());
+    }
+
+    /** 事件仅传必要的原订单身份及冻结赠券数量，不传个人资料。 */
+    public void issuePaid(Long memberId, String orderNo, Map<Long, Integer> gifts) {
         if (gifts == null || gifts.isEmpty()) {
             return;
         }
         for (var entry : gifts.entrySet()) {
             for (int index = 1; index <= entry.getValue(); index++) {
                 try {
-                    issuance.gift(order.memberId(), entry.getKey(), order.orderNo(), index);
+                    issuance.gift(memberId, entry.getKey(), orderNo, index);
                 } catch (ServiceException exception) {
                     log.warn(
                             "订单赠券未发放, orderNo={}, templateId={}, reason={}",
-                            order.orderNo(),
+                            orderNo,
                             entry.getKey(),
                             exception.getMessage());
                     break;

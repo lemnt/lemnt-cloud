@@ -15,6 +15,6 @@ public interface ProductCommentMapper extends BaseMapper<ProductCommentDO> {
     ProductCommentDO lock(Long id);
 
     /** 旧购买唯一事实检查包含逻辑删除行，防止重复投稿或猜测旧订单项。 */
-    List<ProductCommentDO>
-            legacyForLink(@Param("orderNo") String orderNo, @Param("skuId") Long skuId);
+    List<ProductCommentDO> legacyForLink(
+            @Param("orderNo") String orderNo, @Param("skuId") Long skuId);
 }

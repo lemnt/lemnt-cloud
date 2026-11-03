@@ -19,8 +19,7 @@ import java.util.List;
 public final class SeckillActivityConverter {
     private SeckillActivityConverter() {}
 
-    private static List<SeckillProductCmd> products(
-            List<SeckillProductReq> values) {
+    private static List<SeckillProductCmd> products(List<SeckillProductReq> values) {
         return values.stream()
                 .map(
                         value ->

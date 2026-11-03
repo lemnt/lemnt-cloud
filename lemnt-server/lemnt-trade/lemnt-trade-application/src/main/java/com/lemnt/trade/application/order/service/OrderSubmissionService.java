@@ -3,6 +3,7 @@ package com.lemnt.trade.application.order.service;
 import com.lemnt.trade.domain.order.model.TradeOrder;
 import com.lemnt.trade.domain.order.model.TradeOrderDelivery;
 import com.lemnt.trade.domain.order.model.TradeOrderItem;
+import com.lemnt.trade.domain.promotion.model.OrderItemPromotion;
 import com.lemnt.trade.domain.promotion.model.OrderPromotion;
 import com.lemnt.trade.domain.promotion.service.OrderPricingRules;
 
@@ -46,13 +47,10 @@ public class OrderSubmissionService {
                         purchaseDelivery(previous.delivery()), purchaseDelivery(order.delivery()))
                 || !Objects.equals(previous.originalAmount(), order.originalAmount())
                 || !Objects.equals(previous.discountAmount(), order.discountAmount())
-                || !Objects.equals(
-                        previous.deliveryOriginalPrice(), order.deliveryOriginalPrice())
-                || !Objects.equals(
-                        previous.deliveryDiscountPrice(), order.deliveryDiscountPrice())
+                || !Objects.equals(previous.deliveryOriginalPrice(), order.deliveryOriginalPrice())
+                || !Objects.equals(previous.deliveryDiscountPrice(), order.deliveryDiscountPrice())
                 || !Objects.equals(previous.adjustmentAmount(), order.adjustmentAmount())
-                || !Objects.equals(
-                        previous.pricingSnapshotStatus(), order.pricingSnapshotStatus())
+                || !Objects.equals(previous.pricingSnapshotStatus(), order.pricingSnapshotStatus())
                 || !promotionValues(previous.promotions())
                         .equals(promotionValues(order.promotions()))
                 || !purchaseItems(previous.items()).equals(purchaseItems(order.items()))) {
@@ -61,8 +59,7 @@ public class OrderSubmissionService {
     }
 
     /** 核销码由服务端生成，重试重算不应被视为内容变化。 */
-    private TradeOrderDelivery purchaseDelivery(
-            TradeOrderDelivery value) {
+    private TradeOrderDelivery purchaseDelivery(TradeOrderDelivery value) {
         return value == null
                 ? null
                 : new TradeOrderDelivery(
@@ -78,8 +75,7 @@ public class OrderSubmissionService {
     }
 
     /** 数据库主键及评价状态不属于原购买快照，不能影响下单原请求重试。 */
-    private List<TradeOrderItem> purchaseItems(
-            List<TradeOrderItem> values) {
+    private List<TradeOrderItem> purchaseItems(List<TradeOrderItem> values) {
         return values.stream()
                 .map(
                         item ->
@@ -109,8 +105,7 @@ public class OrderSubmissionService {
     }
 
     /** 原请求重试忽略数据库生成的优惠、行主键，仍核对全部计算结果和来源。 */
-    private List<OrderPromotion> promotionValues(
-            List<OrderPromotion> values) {
+    private List<OrderPromotion> promotionValues(List<OrderPromotion> values) {
         return values.stream()
                 .map(
                         p ->
@@ -131,8 +126,7 @@ public class OrderSubmissionService {
                                         p.items().stream()
                                                 .map(
                                                         v ->
-                                                                new com.lemnt.trade.domain.promotion
-                                                                        .model.OrderItemPromotion(
+                                                                new OrderItemPromotion(
                                                                         null,
                                                                         null,
                                                                         null,

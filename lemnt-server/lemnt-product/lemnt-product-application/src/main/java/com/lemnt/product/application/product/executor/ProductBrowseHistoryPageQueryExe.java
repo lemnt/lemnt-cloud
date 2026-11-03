@@ -16,9 +16,7 @@ public class ProductBrowseHistoryPageQueryExe {
     private final ProductBrowseHistoryService service;
 
     /** 委托领域应用服务完成本次用例。 */
-    public PageResult<
-                    ProductBrowseHistoryDTO>
-            execute(ProductBrowseHistoryPageQry value) {
+    public PageResult<ProductBrowseHistoryDTO> execute(ProductBrowseHistoryPageQry value) {
         return service.page(value);
     }
 }

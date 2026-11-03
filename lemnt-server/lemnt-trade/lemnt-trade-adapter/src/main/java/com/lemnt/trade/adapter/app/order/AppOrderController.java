@@ -107,19 +107,15 @@ public class AppOrderController {
         return R.ok(true);
     }
 
-    private final OrderPromotionDetailQueryExe
-            promotionQuery;
+    private final OrderPromotionDetailQueryExe promotionQuery;
 
     /** 查询冻结优惠及权益，不回查当前促销规则。 */
     @GetMapping("/{orderNo}/promotions")
     @Operation(summary = "订单优惠快照")
-    public R<AppOrderPromotionDetailRes> promotions(
-            @PathVariable String orderNo) {
+    public R<AppOrderPromotionDetailRes> promotions(@PathVariable String orderNo) {
         return R.ok(
                 OrderPromotionResConverter.toRes(
-                        promotionQuery.execute(
-                                SecurityUtils.getUserId(),
-                                orderNo)));
+                        promotionQuery.execute(SecurityUtils.getUserId(), orderNo)));
     }
 
     /** 生产使用完整查询协作者，存量测试构造仅服务原有路由。 */
@@ -131,8 +127,7 @@ public class AppOrderController {
             MemberOrderDetailQueryExe detailQuery,
             MemberOrderTrackQueryExe trackQuery,
             MemberOrderStatusCountQueryExe statusCountQuery,
-            OrderPromotionDetailQueryExe
-                    promotionQuery) {
+            OrderPromotionDetailQueryExe promotionQuery) {
         this.close = close;
         this.receive = receive;
         this.pageQuery = pageQuery;

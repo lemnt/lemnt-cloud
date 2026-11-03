@@ -15,9 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class DiyPagePageQueryExe {
     private final DiyDecorationService service;
 
-    public PageResult<
-                    DiyPageDTO>
-            execute(DiyPagePageQry qry) {
+    public PageResult<DiyPageDTO> execute(DiyPagePageQry qry) {
         return service.pagePage(qry);
     }
 }

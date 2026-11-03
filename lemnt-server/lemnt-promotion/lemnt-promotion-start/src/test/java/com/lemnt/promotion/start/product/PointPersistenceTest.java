@@ -1,13 +1,12 @@
 package com.lemnt.promotion.start.product;
 
 import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.product.domain.product.model.ProductSpu;
 import com.lemnt.promotion.application.promotion.cmd.PointActivityCreateCmd;
 import com.lemnt.promotion.application.promotion.cmd.PointActivityUpdateCmd;
 import com.lemnt.promotion.application.promotion.cmd.PointProductCmd;
 import com.lemnt.promotion.application.promotion.service.PointActivityManagementService;
-import com.lemnt.product.domain.product.model.ProductSpu;
 import com.lemnt.promotion.domain.promotion.gateway.PointProductGateway;
-import com.lemnt.promotion.domain.promotion.model.PointProduct;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,9 +76,7 @@ class PointPersistenceTest {
         var join = service.validateJoin(activityId, red, 3);
         assertEquals(100, join.point());
         assertEquals(new BigDecimal("5.00"), join.price());
-        assertThrows(
-                ServiceException.class,
-                () -> service.validateJoin(activityId, red, 4));
+        assertThrows(ServiceException.class, () -> service.validateJoin(activityId, red, 4));
     }
 
     @Test
@@ -96,9 +93,7 @@ class PointPersistenceTest {
                         .stock());
         service.increaseStock(activityId, red, 2);
         assertEquals(5, service.detail(activityId).stock());
-        assertThrows(
-                ServiceException.class,
-                () -> service.decreaseStock(activityId, red, 4));
+        assertThrows(ServiceException.class, () -> service.decreaseStock(activityId, red, 4));
     }
 
     @Test

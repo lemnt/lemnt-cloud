@@ -16,8 +16,7 @@ import java.time.Duration;
 @Component
 @ConditionalOnProperty(name = "lemnt.trade.auto-comment.enabled", havingValue = "true")
 public class TradeOrderAutoCommentScheduler {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(TradeOrderAutoCommentScheduler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TradeOrderAutoCommentScheduler.class);
     private final TradeOrderGateway orders;
     private final OrderCommentService comments;
     private final Duration expiry;

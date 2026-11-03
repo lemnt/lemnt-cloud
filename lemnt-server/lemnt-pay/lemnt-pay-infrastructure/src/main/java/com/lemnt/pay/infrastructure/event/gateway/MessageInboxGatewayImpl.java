@@ -21,6 +21,9 @@ import java.util.HexFormat;
 @RequiredArgsConstructor
 public class MessageInboxGatewayImpl implements MessageInboxGateway {
     private final MessageInboxMapper mapper;
+    @Override @Transactional(propagation=Propagation.MANDATORY,rollbackFor=Exception.class)
+    public boolean has(String consumer,String type,String key){return mapper.lockBusiness(consumer,type,key)!=null;}
+
 
     @Override
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = Exception.class)
