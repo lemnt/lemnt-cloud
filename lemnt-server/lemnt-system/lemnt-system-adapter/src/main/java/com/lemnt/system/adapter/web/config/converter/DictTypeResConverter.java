@@ -18,7 +18,7 @@ public class DictTypeResConverter {
      * DictTypeDTO List → DictTypeInfoRes List
      */
     public static List<SystemDictTypeListRes> toResListToSystemDictTypeListRes(
-            List<DictTypeDTO> list) {
+        List<DictTypeDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -37,11 +37,11 @@ public class DictTypeResConverter {
             return null;
         }
         return new SystemDictTypeListRes(
-                dto.getDictId(),
-                dto.getDictName(),
-                dto.getDictType(),
-                dto.getStatus(),
-                dto.getRemark());
+            dto.getDictId(),
+            dto.getDictName(),
+            dto.getDictType(),
+            dto.getStatus(),
+            dto.getRemark());
     }
 
     /**
@@ -52,18 +52,18 @@ public class DictTypeResConverter {
             return null;
         }
         return new SystemDictTypeGetInfoRes(
-                dto.getDictId(),
-                dto.getDictName(),
-                dto.getDictType(),
-                dto.getStatus(),
-                dto.getRemark());
+            dto.getDictId(),
+            dto.getDictName(),
+            dto.getDictType(),
+            dto.getStatus(),
+            dto.getRemark());
     }
 
     /**
      * DictTypeDTO List → DictTypeInfoRes List
      */
     public static List<SystemDictTypeOptionSelectRes> toResListToSystemDictTypeOptionSelectRes(
-            List<DictTypeDTO> list) {
+        List<DictTypeDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -78,15 +78,15 @@ public class DictTypeResConverter {
      * DictTypeDTO → DictTypeInfoRes
      */
     public static SystemDictTypeOptionSelectRes toResToSystemDictTypeOptionSelectRes(
-            DictTypeDTO dto) {
+        DictTypeDTO dto) {
         if (dto == null) {
             return null;
         }
         return new SystemDictTypeOptionSelectRes(
-                dto.getDictId(),
-                dto.getDictName(),
-                dto.getDictType(),
-                dto.getStatus(),
-                dto.getRemark());
+            dto.getDictId(),
+            dto.getDictName(),
+            dto.getDictType(),
+            dto.getStatus(),
+            dto.getRemark());
     }
 }

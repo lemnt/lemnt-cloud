@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 签到配置项查询执行器。 */
+/**
+ * 签到配置项查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberSignConfigListQueryExe {
@@ -23,8 +25,8 @@ public class MemberSignConfigListQueryExe {
      */
     public List<SignConfigDTO> execute(SignConfigListQry qry) {
         return memberSignConfigGateway.signConfigs().stream()
-                .filter(v -> !qry.enabledOnly() || v.status() == 1)
-                .map(MemberGrowthDTOConverter::toSignConfigDTO)
-                .toList();
+            .filter(v -> !qry.enabledOnly() || v.status() == 1)
+            .map(MemberGrowthDTOConverter::toSignConfigDTO)
+            .toList();
     }
 }

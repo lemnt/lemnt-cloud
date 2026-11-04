@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 原调用方兼容适配，补偿统一登记原ORDER_CLOSED事件。 */
+/**
+ * 原调用方兼容适配，补偿统一登记原ORDER_CLOSED事件。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderRollbackPublisher implements OrderRollbackGateway {

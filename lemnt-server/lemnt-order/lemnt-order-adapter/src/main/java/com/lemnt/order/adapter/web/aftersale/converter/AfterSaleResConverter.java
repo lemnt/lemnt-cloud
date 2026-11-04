@@ -12,369 +12,390 @@ import com.lemnt.order.adapter.web.aftersale.res.AfterSaleReturnRes;
 import com.lemnt.order.application.aftersale.dto.AfterSaleDTO;
 import com.lemnt.order.application.aftersale.dto.AfterSaleItemDTO;
 
-/** 售后接口独立响应转换。 */
+/**
+ * 售后接口独立响应转换。
+ */
 public final class AfterSaleResConverter {
-    private AfterSaleResConverter() {}
+    private AfterSaleResConverter() {
+    }
 
-    /** 转换售后申请接口响应。 */
+    /**
+     * 转换售后申请接口响应。
+     */
     public static AfterSaleCreateRes create(AfterSaleDTO value) {
         return new AfterSaleCreateRes(
-                value.refundNo(),
-                value.orderNo(),
-                value.requestNo(),
-                value.memberId(),
-                value.paymentNo(),
-                value.orderItemId(),
-                value.quantity(),
-                value.type(),
-                value.amount(),
-                value.reason(),
-                value.status(),
-                value.decisionReason(),
-                value.returnCarrierCode(),
-                value.returnTrackingNo(),
-                value.requestedAt(),
-                value.decidedAt(),
-                value.returnShippedAt(),
-                value.returnReceivedAt(),
-                value.id(),
-                value.orderId(),
-                value.refundTime(),
-                value.auditUserId(),
-                value.skuId(),
-                value.spuId(),
-                value.spuName(),
-                value.specs() == null
-                        ? null
-                        : value.specs().stream()
-                                .map(
-                                        snapshotProperty ->
-                                                new AfterSaleCreateRes.Spec(
-                                                        snapshotProperty.specId(),
-                                                        snapshotProperty.specName(),
-                                                        snapshotProperty.specValueId(),
-                                                        snapshotProperty.specValueName()))
-                                .toList(),
-                value.picUrl());
+            value.refundNo(),
+            value.orderNo(),
+            value.requestNo(),
+            value.memberId(),
+            value.paymentNo(),
+            value.orderItemId(),
+            value.quantity(),
+            value.type(),
+            value.amount(),
+            value.reason(),
+            value.status(),
+            value.decisionReason(),
+            value.returnCarrierCode(),
+            value.returnTrackingNo(),
+            value.requestedAt(),
+            value.decidedAt(),
+            value.returnShippedAt(),
+            value.returnReceivedAt(),
+            value.id(),
+            value.orderId(),
+            value.refundTime(),
+            value.auditUserId(),
+            value.skuId(),
+            value.spuId(),
+            value.spuName(),
+            value.specs() == null
+                ? null
+                : value.specs().stream()
+                .map(
+                    snapshotProperty ->
+                        new AfterSaleCreateRes.Spec(
+                            snapshotProperty.specId(),
+                            snapshotProperty.specName(),
+                            snapshotProperty.specValueId(),
+                            snapshotProperty.specValueName()))
+                .toList(),
+            value.picUrl());
     }
 
-    /** 转换售后分页接口响应。 */
+    /**
+     * 转换售后分页接口响应。
+     */
     public static AfterSalePageRes page(AfterSaleDTO value) {
         return new AfterSalePageRes(
-                value.refundNo(),
-                value.orderNo(),
-                value.requestNo(),
-                value.memberId(),
-                value.paymentNo(),
-                value.orderItemId(),
-                value.quantity(),
-                value.type(),
-                value.amount(),
-                value.reason(),
-                value.status(),
-                value.decisionReason(),
-                value.returnCarrierCode(),
-                value.returnTrackingNo(),
-                value.requestedAt(),
-                value.decidedAt(),
-                value.returnShippedAt(),
-                value.returnReceivedAt(),
-                value.id(),
-                value.orderId(),
-                value.refundTime(),
-                value.auditUserId(),
-                value.skuId(),
-                value.spuId(),
-                value.spuName(),
-                value.specs() == null
-                        ? null
-                        : value.specs().stream()
-                                .map(
-                                        snapshotProperty ->
-                                                new AfterSalePageRes.Spec(
-                                                        snapshotProperty.specId(),
-                                                        snapshotProperty.specName(),
-                                                        snapshotProperty.specValueId(),
-                                                        snapshotProperty.specValueName()))
-                                .toList(),
-                value.picUrl());
+            value.refundNo(),
+            value.orderNo(),
+            value.requestNo(),
+            value.memberId(),
+            value.paymentNo(),
+            value.orderItemId(),
+            value.quantity(),
+            value.type(),
+            value.amount(),
+            value.reason(),
+            value.status(),
+            value.decisionReason(),
+            value.returnCarrierCode(),
+            value.returnTrackingNo(),
+            value.requestedAt(),
+            value.decidedAt(),
+            value.returnShippedAt(),
+            value.returnReceivedAt(),
+            value.id(),
+            value.orderId(),
+            value.refundTime(),
+            value.auditUserId(),
+            value.skuId(),
+            value.spuId(),
+            value.spuName(),
+            value.specs() == null
+                ? null
+                : value.specs().stream()
+                .map(
+                    snapshotProperty ->
+                        new AfterSalePageRes.Spec(
+                            snapshotProperty.specId(),
+                            snapshotProperty.specName(),
+                            snapshotProperty.specValueId(),
+                            snapshotProperty.specValueName()))
+                .toList(),
+            value.picUrl());
     }
 
-    /** 转换售后详情接口响应。 */
+    /**
+     * 转换售后详情接口响应。
+     */
     public static AfterSaleDetailRes detail(AfterSaleDTO value) {
         return new AfterSaleDetailRes(
-                value.refundNo(),
-                value.orderNo(),
-                value.requestNo(),
-                value.memberId(),
-                value.paymentNo(),
-                value.orderItemId(),
-                value.quantity(),
-                value.type(),
-                value.amount(),
-                value.reason(),
-                value.status(),
-                value.decisionReason(),
-                value.returnCarrierCode(),
-                value.returnTrackingNo(),
-                value.requestedAt(),
-                value.decidedAt(),
-                value.returnShippedAt(),
-                value.returnReceivedAt(),
-                value.id(),
-                value.orderId(),
-                value.refundTime(),
-                value.auditUserId(),
-                value.skuId(),
-                value.spuId(),
-                value.spuName(),
-                value.specs() == null
-                        ? null
-                        : value.specs().stream()
-                                .map(
-                                        snapshotProperty ->
-                                                new AfterSaleDetailRes.Spec(
-                                                        snapshotProperty.specId(),
-                                                        snapshotProperty.specName(),
-                                                        snapshotProperty.specValueId(),
-                                                        snapshotProperty.specValueName()))
-                                .toList(),
-                value.picUrl());
+            value.refundNo(),
+            value.orderNo(),
+            value.requestNo(),
+            value.memberId(),
+            value.paymentNo(),
+            value.orderItemId(),
+            value.quantity(),
+            value.type(),
+            value.amount(),
+            value.reason(),
+            value.status(),
+            value.decisionReason(),
+            value.returnCarrierCode(),
+            value.returnTrackingNo(),
+            value.requestedAt(),
+            value.decidedAt(),
+            value.returnShippedAt(),
+            value.returnReceivedAt(),
+            value.id(),
+            value.orderId(),
+            value.refundTime(),
+            value.auditUserId(),
+            value.skuId(),
+            value.spuId(),
+            value.spuName(),
+            value.specs() == null
+                ? null
+                : value.specs().stream()
+                .map(
+                    snapshotProperty ->
+                        new AfterSaleDetailRes.Spec(
+                            snapshotProperty.specId(),
+                            snapshotProperty.specName(),
+                            snapshotProperty.specValueId(),
+                            snapshotProperty.specValueName()))
+                .toList(),
+            value.picUrl());
     }
 
-    /** 转换售后同意接口响应。 */
+    /**
+     * 转换售后同意接口响应。
+     */
     public static AfterSaleAgreeRes agree(AfterSaleDTO value) {
         return new AfterSaleAgreeRes(
-                value.refundNo(),
-                value.orderNo(),
-                value.requestNo(),
-                value.memberId(),
-                value.paymentNo(),
-                value.orderItemId(),
-                value.quantity(),
-                value.type(),
-                value.amount(),
-                value.reason(),
-                value.status(),
-                value.decisionReason(),
-                value.returnCarrierCode(),
-                value.returnTrackingNo(),
-                value.requestedAt(),
-                value.decidedAt(),
-                value.returnShippedAt(),
-                value.returnReceivedAt(),
-                value.id(),
-                value.orderId(),
-                value.refundTime(),
-                value.auditUserId(),
-                value.skuId(),
-                value.spuId(),
-                value.spuName(),
-                value.specs() == null
-                        ? null
-                        : value.specs().stream()
-                                .map(
-                                        snapshotProperty ->
-                                                new AfterSaleAgreeRes.Spec(
-                                                        snapshotProperty.specId(),
-                                                        snapshotProperty.specName(),
-                                                        snapshotProperty.specValueId(),
-                                                        snapshotProperty.specValueName()))
-                                .toList(),
-                value.picUrl());
+            value.refundNo(),
+            value.orderNo(),
+            value.requestNo(),
+            value.memberId(),
+            value.paymentNo(),
+            value.orderItemId(),
+            value.quantity(),
+            value.type(),
+            value.amount(),
+            value.reason(),
+            value.status(),
+            value.decisionReason(),
+            value.returnCarrierCode(),
+            value.returnTrackingNo(),
+            value.requestedAt(),
+            value.decidedAt(),
+            value.returnShippedAt(),
+            value.returnReceivedAt(),
+            value.id(),
+            value.orderId(),
+            value.refundTime(),
+            value.auditUserId(),
+            value.skuId(),
+            value.spuId(),
+            value.spuName(),
+            value.specs() == null
+                ? null
+                : value.specs().stream()
+                .map(
+                    snapshotProperty ->
+                        new AfterSaleAgreeRes.Spec(
+                            snapshotProperty.specId(),
+                            snapshotProperty.specName(),
+                            snapshotProperty.specValueId(),
+                            snapshotProperty.specValueName()))
+                .toList(),
+            value.picUrl());
     }
 
-    /** 转换售后拒绝接口响应。 */
+    /**
+     * 转换售后拒绝接口响应。
+     */
     public static AfterSaleRejectRes reject(AfterSaleDTO value) {
         return new AfterSaleRejectRes(
-                value.refundNo(),
-                value.orderNo(),
-                value.requestNo(),
-                value.memberId(),
-                value.paymentNo(),
-                value.orderItemId(),
-                value.quantity(),
-                value.type(),
-                value.amount(),
-                value.reason(),
-                value.status(),
-                value.decisionReason(),
-                value.returnCarrierCode(),
-                value.returnTrackingNo(),
-                value.requestedAt(),
-                value.decidedAt(),
-                value.returnShippedAt(),
-                value.returnReceivedAt(),
-                value.id(),
-                value.orderId(),
-                value.refundTime(),
-                value.auditUserId(),
-                value.skuId(),
-                value.spuId(),
-                value.spuName(),
-                value.specs() == null
-                        ? null
-                        : value.specs().stream()
-                                .map(
-                                        snapshotProperty ->
-                                                new AfterSaleRejectRes.Spec(
-                                                        snapshotProperty.specId(),
-                                                        snapshotProperty.specName(),
-                                                        snapshotProperty.specValueId(),
-                                                        snapshotProperty.specValueName()))
-                                .toList(),
-                value.picUrl());
+            value.refundNo(),
+            value.orderNo(),
+            value.requestNo(),
+            value.memberId(),
+            value.paymentNo(),
+            value.orderItemId(),
+            value.quantity(),
+            value.type(),
+            value.amount(),
+            value.reason(),
+            value.status(),
+            value.decisionReason(),
+            value.returnCarrierCode(),
+            value.returnTrackingNo(),
+            value.requestedAt(),
+            value.decidedAt(),
+            value.returnShippedAt(),
+            value.returnReceivedAt(),
+            value.id(),
+            value.orderId(),
+            value.refundTime(),
+            value.auditUserId(),
+            value.skuId(),
+            value.spuId(),
+            value.spuName(),
+            value.specs() == null
+                ? null
+                : value.specs().stream()
+                .map(
+                    snapshotProperty ->
+                        new AfterSaleRejectRes.Spec(
+                            snapshotProperty.specId(),
+                            snapshotProperty.specName(),
+                            snapshotProperty.specValueId(),
+                            snapshotProperty.specValueName()))
+                .toList(),
+            value.picUrl());
     }
 
-    /** 转换售后登记退货接口响应。 */
+    /**
+     * 转换售后登记退货接口响应。
+     */
     public static AfterSaleReturnRes returned(AfterSaleDTO value) {
         return new AfterSaleReturnRes(
-                value.refundNo(),
-                value.orderNo(),
-                value.requestNo(),
-                value.memberId(),
-                value.paymentNo(),
-                value.orderItemId(),
-                value.quantity(),
-                value.type(),
-                value.amount(),
-                value.reason(),
-                value.status(),
-                value.decisionReason(),
-                value.returnCarrierCode(),
-                value.returnTrackingNo(),
-                value.requestedAt(),
-                value.decidedAt(),
-                value.returnShippedAt(),
-                value.returnReceivedAt(),
-                value.id(),
-                value.orderId(),
-                value.refundTime(),
-                value.auditUserId(),
-                value.skuId(),
-                value.spuId(),
-                value.spuName(),
-                value.specs() == null
-                        ? null
-                        : value.specs().stream()
-                                .map(
-                                        snapshotProperty ->
-                                                new AfterSaleReturnRes.Spec(
-                                                        snapshotProperty.specId(),
-                                                        snapshotProperty.specName(),
-                                                        snapshotProperty.specValueId(),
-                                                        snapshotProperty.specValueName()))
-                                .toList(),
-                value.picUrl());
+            value.refundNo(),
+            value.orderNo(),
+            value.requestNo(),
+            value.memberId(),
+            value.paymentNo(),
+            value.orderItemId(),
+            value.quantity(),
+            value.type(),
+            value.amount(),
+            value.reason(),
+            value.status(),
+            value.decisionReason(),
+            value.returnCarrierCode(),
+            value.returnTrackingNo(),
+            value.requestedAt(),
+            value.decidedAt(),
+            value.returnShippedAt(),
+            value.returnReceivedAt(),
+            value.id(),
+            value.orderId(),
+            value.refundTime(),
+            value.auditUserId(),
+            value.skuId(),
+            value.spuId(),
+            value.spuName(),
+            value.specs() == null
+                ? null
+                : value.specs().stream()
+                .map(
+                    snapshotProperty ->
+                        new AfterSaleReturnRes.Spec(
+                            snapshotProperty.specId(),
+                            snapshotProperty.specName(),
+                            snapshotProperty.specValueId(),
+                            snapshotProperty.specValueName()))
+                .toList(),
+            value.picUrl());
     }
 
-    /** 转换售后确认收货接口响应。 */
+    /**
+     * 转换售后确认收货接口响应。
+     */
     public static AfterSaleReceiveRes receive(AfterSaleDTO value) {
         return new AfterSaleReceiveRes(
-                value.refundNo(),
-                value.orderNo(),
-                value.requestNo(),
-                value.memberId(),
-                value.paymentNo(),
-                value.orderItemId(),
-                value.quantity(),
-                value.type(),
-                value.amount(),
-                value.reason(),
-                value.status(),
-                value.decisionReason(),
-                value.returnCarrierCode(),
-                value.returnTrackingNo(),
-                value.requestedAt(),
-                value.decidedAt(),
-                value.returnShippedAt(),
-                value.returnReceivedAt(),
-                value.id(),
-                value.orderId(),
-                value.refundTime(),
-                value.auditUserId(),
-                value.skuId(),
-                value.spuId(),
-                value.spuName(),
-                value.specs() == null
-                        ? null
-                        : value.specs().stream()
-                                .map(
-                                        snapshotProperty ->
-                                                new AfterSaleReceiveRes.Spec(
-                                                        snapshotProperty.specId(),
-                                                        snapshotProperty.specName(),
-                                                        snapshotProperty.specValueId(),
-                                                        snapshotProperty.specValueName()))
-                                .toList(),
-                value.picUrl());
+            value.refundNo(),
+            value.orderNo(),
+            value.requestNo(),
+            value.memberId(),
+            value.paymentNo(),
+            value.orderItemId(),
+            value.quantity(),
+            value.type(),
+            value.amount(),
+            value.reason(),
+            value.status(),
+            value.decisionReason(),
+            value.returnCarrierCode(),
+            value.returnTrackingNo(),
+            value.requestedAt(),
+            value.decidedAt(),
+            value.returnShippedAt(),
+            value.returnReceivedAt(),
+            value.id(),
+            value.orderId(),
+            value.refundTime(),
+            value.auditUserId(),
+            value.skuId(),
+            value.spuId(),
+            value.spuName(),
+            value.specs() == null
+                ? null
+                : value.specs().stream()
+                .map(
+                    snapshotProperty ->
+                        new AfterSaleReceiveRes.Spec(
+                            snapshotProperty.specId(),
+                            snapshotProperty.specName(),
+                            snapshotProperty.specValueId(),
+                            snapshotProperty.specValueName()))
+                .toList(),
+            value.picUrl());
     }
 
-    /** 转换售后拒收接口响应。 */
+    /**
+     * 转换售后拒收接口响应。
+     */
     public static AfterSaleRefuseRes refuse(AfterSaleDTO value) {
         return new AfterSaleRefuseRes(
-                value.refundNo(),
-                value.orderNo(),
-                value.requestNo(),
-                value.memberId(),
-                value.paymentNo(),
-                value.orderItemId(),
-                value.quantity(),
-                value.type(),
-                value.amount(),
-                value.reason(),
-                value.status(),
-                value.decisionReason(),
-                value.returnCarrierCode(),
-                value.returnTrackingNo(),
-                value.requestedAt(),
-                value.decidedAt(),
-                value.returnShippedAt(),
-                value.returnReceivedAt(),
-                value.id(),
-                value.orderId(),
-                value.refundTime(),
-                value.auditUserId(),
-                value.skuId(),
-                value.spuId(),
-                value.spuName(),
-                value.specs() == null
-                        ? null
-                        : value.specs().stream()
-                                .map(
-                                        snapshotProperty ->
-                                                new AfterSaleRefuseRes.Spec(
-                                                        snapshotProperty.specId(),
-                                                        snapshotProperty.specName(),
-                                                        snapshotProperty.specValueId(),
-                                                        snapshotProperty.specValueName()))
-                                .toList(),
-                value.picUrl());
+            value.refundNo(),
+            value.orderNo(),
+            value.requestNo(),
+            value.memberId(),
+            value.paymentNo(),
+            value.orderItemId(),
+            value.quantity(),
+            value.type(),
+            value.amount(),
+            value.reason(),
+            value.status(),
+            value.decisionReason(),
+            value.returnCarrierCode(),
+            value.returnTrackingNo(),
+            value.requestedAt(),
+            value.decidedAt(),
+            value.returnShippedAt(),
+            value.returnReceivedAt(),
+            value.id(),
+            value.orderId(),
+            value.refundTime(),
+            value.auditUserId(),
+            value.skuId(),
+            value.spuId(),
+            value.spuName(),
+            value.specs() == null
+                ? null
+                : value.specs().stream()
+                .map(
+                    snapshotProperty ->
+                        new AfterSaleRefuseRes.Spec(
+                            snapshotProperty.specId(),
+                            snapshotProperty.specName(),
+                            snapshotProperty.specValueId(),
+                            snapshotProperty.specValueName()))
+                .toList(),
+            value.picUrl());
     }
 
-    /** 转换可售后商品额度。 */
+    /**
+     * 转换可售后商品额度。
+     */
     public static AfterSaleItemRes item(AfterSaleItemDTO value) {
         return new AfterSaleItemRes(
-                value.orderItemId(),
-                value.productId(),
-                value.productName(),
-                value.quantity(),
-                value.refundableQuantity(),
-                value.refundableAmount(),
-                value.spuId(),
-                value.spuName(),
-                value.specs() == null
-                        ? null
-                        : value.specs().stream()
-                                .map(
-                                        snapshotProperty ->
-                                                new AfterSaleItemRes.Spec(
-                                                        snapshotProperty.specId(),
-                                                        snapshotProperty.specName(),
-                                                        snapshotProperty.specValueId(),
-                                                        snapshotProperty.specValueName()))
-                                .toList(),
-                value.picUrl(),
-                value.refundedQuantity());
+            value.orderItemId(),
+            value.productId(),
+            value.productName(),
+            value.quantity(),
+            value.refundableQuantity(),
+            value.refundableAmount(),
+            value.spuId(),
+            value.spuName(),
+            value.specs() == null
+                ? null
+                : value.specs().stream()
+                .map(
+                    snapshotProperty ->
+                        new AfterSaleItemRes.Spec(
+                            snapshotProperty.specId(),
+                            snapshotProperty.specName(),
+                            snapshotProperty.specValueId(),
+                            snapshotProperty.specValueName()))
+                .toList(),
+            value.picUrl(),
+            value.refundedQuantity());
     }
 }

@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.*;
 import java.util.List;
 
-/** RoleMenu 持久化实现。 */
+/**
+ * RoleMenu 持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class RoleMenuGatewayImpl implements RoleMenuGateway {
@@ -55,7 +57,7 @@ public class RoleMenuGatewayImpl implements RoleMenuGateway {
      */
     private long checkMenuExistRoleRow(Long menuId) {
         return roleMenuMapper.selectCount(
-                Wrappers.<RoleMenuDO>lambdaQuery().eq(RoleMenuDO::getMenuId, menuId));
+            Wrappers.<RoleMenuDO>lambdaQuery().eq(RoleMenuDO::getMenuId, menuId));
     }
 
     /**
@@ -66,7 +68,7 @@ public class RoleMenuGatewayImpl implements RoleMenuGateway {
      */
     private int deleteRoleMenuByRoleIdRow(Long roleId) {
         return roleMenuMapper.delete(
-                Wrappers.<RoleMenuDO>lambdaQuery().eq(RoleMenuDO::getRoleId, roleId));
+            Wrappers.<RoleMenuDO>lambdaQuery().eq(RoleMenuDO::getRoleId, roleId));
     }
 
     /**
@@ -80,6 +82,6 @@ public class RoleMenuGatewayImpl implements RoleMenuGateway {
             return 0;
         }
         return roleMenuMapper.delete(
-                Wrappers.<RoleMenuDO>lambdaQuery().in(RoleMenuDO::getRoleId, roleIds));
+            Wrappers.<RoleMenuDO>lambdaQuery().in(RoleMenuDO::getRoleId, roleIds));
     }
 }

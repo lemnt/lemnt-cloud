@@ -52,7 +52,7 @@
                 <directory>../sql</directory>
                 <targetPath>pay-sql</targetPath>
             </testResource>
-            
+
             <testResource>
                 <directory>../../sql</directory>
                 <targetPath>setup-sql</targetPath>

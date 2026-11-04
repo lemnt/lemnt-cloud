@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 后台调价执行器。 */
+/**
+ * 后台调价执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderAdjustPriceCmdExe {

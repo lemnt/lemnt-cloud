@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 启用或停用支付应用。 */
+/**
+ * 启用或停用支付应用。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayAppStatusUpdateCmdExe {
@@ -26,14 +28,14 @@ public class PayAppStatusUpdateCmdExe {
             throw new IllegalArgumentException("支付应用不存在");
         }
         return apps.update(
-                new PayApp(
-                        existing.id(),
-                        existing.appKey(),
-                        existing.name(),
-                        status,
-                        existing.remark(),
-                        existing.orderNotifyUrl(),
-                        existing.refundNotifyUrl(),
-                        existing.createTime()));
+            new PayApp(
+                existing.id(),
+                existing.appKey(),
+                existing.name(),
+                status,
+                existing.remark(),
+                existing.orderNotifyUrl(),
+                existing.refundNotifyUrl(),
+                existing.createTime()));
     }
 }

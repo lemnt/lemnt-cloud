@@ -33,48 +33,48 @@ public class OrderDetailQueryExe {
         String no = OrderRules.text(value, 40);
         var order = orderPersistenceService.findByOrderNo(no);
         return order == null
-                ? null
-                : new OrderDetailDTO(
-                        no,
-                        order.memberId(),
-                        order.totalAmount(),
-                        order.status(),
-                        inventoryConfirmationGateway.inventoryConfirmed(no),
-                        refundRequestGateway.activeRefund(no),
-                        order.items().stream()
+            ? null
+            : new OrderDetailDTO(
+            no,
+            order.memberId(),
+            order.totalAmount(),
+            order.status(),
+            inventoryConfirmationGateway.inventoryConfirmed(no),
+            refundRequestGateway.activeRefund(no),
+            order.items().stream()
+                .map(
+                    item ->
+                        new OrderItemDTO(
+                            item.productId(),
+                            item.productCode(),
+                            item.productName(),
+                            item.unitPrice(),
+                            item.quantity(),
+                            item.lineAmount(),
+                            item.spuId(),
+                            item.spuName(),
+                            item.specs() == null
+                                ? null
+                                : item.specs().stream()
                                 .map(
-                                        item ->
-                                                new OrderItemDTO(
-                                                        item.productId(),
-                                                        item.productCode(),
-                                                        item.productName(),
-                                                        item.unitPrice(),
-                                                        item.quantity(),
-                                                        item.lineAmount(),
-                                                        item.spuId(),
-                                                        item.spuName(),
-                                                        item.specs() == null
-                                                                ? null
-                                                                : item.specs().stream()
-                                                                        .map(
-                                                                                snapshotProperty ->
-                                                                                        new OrderItemDTO
-                                                                                                .Spec(
-                                                                                                snapshotProperty
-                                                                                                        .specId(),
-                                                                                                snapshotProperty
-                                                                                                        .specName(),
-                                                                                                snapshotProperty
-                                                                                                        .specValueId(),
-                                                                                                snapshotProperty
-                                                                                                        .specValueName()))
-                                                                        .toList(),
-                                                        item.picUrl(),
-                                                        item.orderItemId(),
-                                                        item.commentStatus()))
+                                    snapshotProperty ->
+                                        new OrderItemDTO
+                                            .Spec(
+                                            snapshotProperty
+                                                .specId(),
+                                            snapshotProperty
+                                                .specName(),
+                                            snapshotProperty
+                                                .specValueId(),
+                                            snapshotProperty
+                                                .specValueName()))
                                 .toList(),
-                        FulfillmentDTOConverter.shipment(shipmentGateway.shipment(no)),
-                        order.commentStatus(),
-                        order.finishTime());
+                            item.picUrl(),
+                            item.orderItemId(),
+                            item.commentStatus()))
+                .toList(),
+            FulfillmentDTOConverter.shipment(shipmentGateway.shipment(no)),
+            order.commentStatus(),
+            order.finishTime());
     }
 }

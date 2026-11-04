@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 小程序自提门店列表执行器。 */
+/**
+ * 小程序自提门店列表执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class AppPickUpStoreListQueryExe {

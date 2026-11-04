@@ -9,7 +9,9 @@ import org.apache.ibatis.annotations.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** CouponTemplate 表数据访问接口。 */
+/**
+ * CouponTemplate 表数据访问接口。
+ */
 @Mapper
 public interface CouponTemplateMapper extends BaseMapper<CouponTemplateDO> {
 
@@ -33,6 +35,8 @@ public interface CouponTemplateMapper extends BaseMapper<CouponTemplateDO> {
      */
     long offerCount();
 
-    /** 获取数据库当前时间。 */
+    /**
+     * 获取数据库当前时间。
+     */
     LocalDateTime now();
 }

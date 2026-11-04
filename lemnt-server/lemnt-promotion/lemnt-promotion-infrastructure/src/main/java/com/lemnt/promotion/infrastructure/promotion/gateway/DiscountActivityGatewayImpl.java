@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 仅操作对应活动主表，简单查询使用 Lambda。 */
+/**
+ * 仅操作对应活动主表，简单查询使用 Lambda。
+ */
 @Component
 @RequiredArgsConstructor
 public class DiscountActivityGatewayImpl implements DiscountActivityGateway {
@@ -46,32 +48,32 @@ public class DiscountActivityGatewayImpl implements DiscountActivityGateway {
     @Override
     public PageResult<DiscountActivity> page(ActivityFilter filter) {
         var page =
-                mapper.selectPage(
-                        new Page<DiscountActivityDO>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.<DiscountActivityDO>lambdaQuery()
-                                .like(
-                                        filter.name() != null && !filter.name().isBlank(),
-                                        DiscountActivityDO::getName,
-                                        filter.name())
-                                .eq(
-                                        filter.status() != null,
-                                        DiscountActivityDO::getStatus,
-                                        filter.status())
-                                .orderByDesc(DiscountActivityDO::getId));
+            mapper.selectPage(
+                new Page<DiscountActivityDO>(filter.pageNum(), filter.pageSize()),
+                Wrappers.<DiscountActivityDO>lambdaQuery()
+                    .like(
+                        filter.name() != null && !filter.name().isBlank(),
+                        DiscountActivityDO::getName,
+                        filter.name())
+                    .eq(
+                        filter.status() != null,
+                        DiscountActivityDO::getStatus,
+                        filter.status())
+                    .orderByDesc(DiscountActivityDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(PromotionConverter::model).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(PromotionConverter::model).toList(),
+            page.getTotal());
     }
 
     @Override
     public List<DiscountActivity> enabled() {
         return mapper
-                .selectList(
-                        Wrappers.<DiscountActivityDO>lambdaQuery()
-                                .eq(DiscountActivityDO::getStatus, 0)
-                                .orderByDesc(DiscountActivityDO::getId))
-                .stream()
-                .map(PromotionConverter::model)
-                .toList();
+            .selectList(
+                Wrappers.<DiscountActivityDO>lambdaQuery()
+                    .eq(DiscountActivityDO::getStatus, 0)
+                    .orderByDesc(DiscountActivityDO::getId))
+            .stream()
+            .map(PromotionConverter::model)
+            .toList();
     }
 }

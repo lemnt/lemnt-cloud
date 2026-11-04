@@ -31,15 +31,15 @@ public class UserProfileQueryExe {
         Long userId = SecurityUtils.getUserId();
         User user = userGateway.selectUserById(userId);
         String roleGroup =
-                roleGateway.selectRolesByUserId(userId).stream()
-                        .map(Role::getRoleName)
-                        .collect(Collectors.joining(","));
+            roleGateway.selectRolesByUserId(userId).stream()
+                .map(Role::getRoleName)
+                .collect(Collectors.joining(","));
         Set<Long> postIds = Set.copyOf(postGateway.selectPostsByUserId(userId));
         String postGroup =
-                postGateway.selectPostAll().stream()
-                        .filter(post -> postIds.contains(post.getPostId()))
-                        .map(Post::getPostName)
-                        .collect(Collectors.joining(","));
+            postGateway.selectPostAll().stream()
+                .filter(post -> postIds.contains(post.getPostId()))
+                .map(Post::getPostName)
+                .collect(Collectors.joining(","));
         Map<String, Object> result = new HashMap<>();
         result.put("user", user);
         result.put("roleGroup", roleGroup);

@@ -94,6 +94,6 @@ public class MenuGatewayImpl implements MenuGateway {
     @Override
     public Menu checkMenuNameUnique(String menuName, Long parentId, Long excludeMenuId) {
         return MenuConverter.toEntity(
-                menuMapper.checkMenuNameUnique(menuName, parentId, excludeMenuId));
+            menuMapper.checkMenuNameUnique(menuName, parentId, excludeMenuId));
     }
 }

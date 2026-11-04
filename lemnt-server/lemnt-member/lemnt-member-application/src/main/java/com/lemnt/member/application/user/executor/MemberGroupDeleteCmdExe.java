@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 分组删除命令执行器。 */
+/**
+ * 分组删除命令执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberGroupDeleteCmdExe {

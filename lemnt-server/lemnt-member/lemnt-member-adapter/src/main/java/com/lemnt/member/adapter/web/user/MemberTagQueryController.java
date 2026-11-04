@@ -34,12 +34,12 @@ public class MemberTagQueryController {
     @Operation(summary = "tags/page分页")
     @RequiresPermissions("member:tag:query")
     public R<MemberCatalogQueryTagsPageRes> tagsPage(
-            @Valid @ModelAttribute MemberCatalogQueryTagsPageReq req) {
+        @Valid @ModelAttribute MemberCatalogQueryTagsPageReq req) {
         var page = memberTagPageQueryExe.execute(MemberReqConverter.toTagPageQry(req));
         return R.page(
-                page.getRecords().stream()
-                        .map(MemberUserResConverter::toMemberCatalogQueryTagsPageRes)
-                        .toList(),
-                page.getTotal());
+            page.getRecords().stream()
+                .map(MemberUserResConverter::toMemberCatalogQueryTagsPageRes)
+                .toList(),
+            page.getTotal());
     }
 }

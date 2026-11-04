@@ -16,7 +16,8 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 public class OperLog implements Serializable {
-    @Serial private static final long serialVersionUID = 2426966332747058951L;
+    @Serial
+    private static final long serialVersionUID = 2426966332747058951L;
 
     /**
      * 日志主键

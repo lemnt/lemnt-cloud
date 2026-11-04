@@ -5,4 +5,5 @@ import java.io.Serializable;
 /**
  * 资料查询。
  */
-public record MemberDetailQry(Long memberId) implements Serializable {}
+public record MemberDetailQry(Long memberId) implements Serializable {
+}

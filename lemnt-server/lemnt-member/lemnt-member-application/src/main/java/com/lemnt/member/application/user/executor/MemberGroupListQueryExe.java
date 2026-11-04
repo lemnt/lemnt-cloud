@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 查询分组查询执行器。 */
+/**
+ * 查询分组查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberGroupListQueryExe {
@@ -23,7 +25,7 @@ public class MemberGroupListQueryExe {
      */
     public List<GroupDTO> execute(GroupListQry qry) {
         return memberGroupGateway.groups().stream()
-                .map(MemberUserDTOConverter::toGroupDTO)
-                .toList();
+            .map(MemberUserDTOConverter::toGroupDTO)
+            .toList();
     }
 }

@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/** member_tag_link 表持久化实现。 */
+/**
+ * member_tag_link 表持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberTagLinkGatewayImpl implements MemberTagLinkGateway {
@@ -40,22 +42,24 @@ public class MemberTagLinkGatewayImpl implements MemberTagLinkGateway {
         }
     }
 
-    /** 按会员和标签编号排序，返回稳定的当前绑定。 */
+    /**
+     * 按会员和标签编号排序，返回稳定的当前绑定。
+     */
     @Override
     public Map<Long, List<Long>> memberTagsBatch(Collection<Long> memberIds) {
         if (memberIds.isEmpty()) return Map.of();
         return memberTagLinkMapper
-                .selectList(
-                        Wrappers.<MemberTagLinkDO>lambdaQuery()
-                                .in(MemberTagLinkDO::getMemberId, memberIds)
-                                .orderByAsc(MemberTagLinkDO::getMemberId)
-                                .orderByAsc(MemberTagLinkDO::getTagId))
-                .stream()
-                .collect(
-                        Collectors.groupingBy(
-                                MemberTagLinkDO::getMemberId,
-                                Collectors.mapping(
-                                        MemberTagLinkDO::getTagId, Collectors.toList())));
+            .selectList(
+                Wrappers.<MemberTagLinkDO>lambdaQuery()
+                    .in(MemberTagLinkDO::getMemberId, memberIds)
+                    .orderByAsc(MemberTagLinkDO::getMemberId)
+                    .orderByAsc(MemberTagLinkDO::getTagId))
+            .stream()
+            .collect(
+                Collectors.groupingBy(
+                    MemberTagLinkDO::getMemberId,
+                    Collectors.mapping(
+                        MemberTagLinkDO::getTagId, Collectors.toList())));
     }
 
     /**
@@ -63,14 +67,14 @@ public class MemberTagLinkGatewayImpl implements MemberTagLinkGateway {
      */
     private List<Long> memberTagsRow(Long memberId) {
         return memberTagLinkMapper
-                .selectList(
-                        Wrappers.<MemberTagLinkDO>lambdaQuery()
-                                .select(MemberTagLinkDO::getTagId)
-                                .eq(MemberTagLinkDO::getMemberId, memberId)
-                                .orderByAsc(MemberTagLinkDO::getTagId))
-                .stream()
-                .map(MemberTagLinkDO::getTagId)
-                .toList();
+            .selectList(
+                Wrappers.<MemberTagLinkDO>lambdaQuery()
+                    .select(MemberTagLinkDO::getTagId)
+                    .eq(MemberTagLinkDO::getMemberId, memberId)
+                    .orderByAsc(MemberTagLinkDO::getTagId))
+            .stream()
+            .map(MemberTagLinkDO::getTagId)
+            .toList();
     }
 
     /**
@@ -78,7 +82,7 @@ public class MemberTagLinkGatewayImpl implements MemberTagLinkGateway {
      */
     private int clearTagsRow(Long memberId) {
         return memberTagLinkMapper.delete(
-                Wrappers.<MemberTagLinkDO>lambdaQuery().eq(MemberTagLinkDO::getMemberId, memberId));
+            Wrappers.<MemberTagLinkDO>lambdaQuery().eq(MemberTagLinkDO::getMemberId, memberId));
     }
 
     /**
@@ -86,6 +90,6 @@ public class MemberTagLinkGatewayImpl implements MemberTagLinkGateway {
      */
     private int addTagRow(Long memberId, Long tagId) {
         return memberTagLinkMapper.insert(
-                new MemberTagLinkDO().setMemberId(memberId).setTagId(tagId));
+            new MemberTagLinkDO().setMemberId(memberId).setTagId(tagId));
     }
 }

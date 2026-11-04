@@ -44,37 +44,37 @@ public class AccessLogFilter implements GlobalFilter, Ordered {
         String clientIp = getClientIp(request);
 
         return chain.filter(exchange)
-                .then(
-                        Mono.fromRunnable(
-                                () -> {
-                                    long durationMs =
-                                            TimeUnit.NANOSECONDS.toMillis(
-                                                    System.nanoTime() - startTime);
-                                    ServerHttpResponse response = exchange.getResponse();
-                                    int statusCode = 0;
-                                    HttpStatusCode httpStatusCode = response.getStatusCode();
-                                    if (httpStatusCode != null) {
-                                        statusCode = httpStatusCode.value();
-                                    }
+            .then(
+                Mono.fromRunnable(
+                    () -> {
+                        long durationMs =
+                            TimeUnit.NANOSECONDS.toMillis(
+                                System.nanoTime() - startTime);
+                        ServerHttpResponse response = exchange.getResponse();
+                        int statusCode = 0;
+                        HttpStatusCode httpStatusCode = response.getStatusCode();
+                        if (httpStatusCode != null) {
+                            statusCode = httpStatusCode.value();
+                        }
 
-                                    // 结构化访问日志
-                                    log.info(
-                                            "ACCESS: traceId={}, method={}, path={}, status={}, duration={}ms, clientIp={}",
-                                            traceId,
-                                            method,
-                                            path,
-                                            statusCode,
-                                            durationMs,
-                                            clientIp);
+                        // 结构化访问日志
+                        log.info(
+                            "ACCESS: traceId={}, method={}, path={}, status={}, duration={}ms, clientIp={}",
+                            traceId,
+                            method,
+                            path,
+                            statusCode,
+                            durationMs,
+                            clientIp);
 
-                                    // 记录到 Micrometer 指标
-                                    Timer.builder("gateway.request.duration")
-                                            .tag("method", method)
-                                            .tag("status", String.valueOf(statusCode))
-                                            .description("网关请求耗时")
-                                            .register(Metrics.globalRegistry)
-                                            .record(Duration.ofMillis(durationMs));
-                                }));
+                        // 记录到 Micrometer 指标
+                        Timer.builder("gateway.request.duration")
+                            .tag("method", method)
+                            .tag("status", String.valueOf(statusCode))
+                            .description("网关请求耗时")
+                            .register(Metrics.globalRegistry)
+                            .record(Duration.ofMillis(durationMs));
+                    }));
     }
 
     /**

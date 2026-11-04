@@ -41,31 +41,31 @@ class CheckoutHttpContractTest {
     void couponValidityUsesExistingApplicationDateFormat() throws Exception {
         var create = mock(CouponTemplateCreateCmdExe.class);
         var controller =
-                new Object[] {
-                    new CouponTemplateController(
-                            mock(CouponTemplateListQueryExe.class),
-                            create,
-                            mock(CouponTemplateEnableCmdExe.class),
-                            mock(CouponTemplateUpdateCmdExe.class),
-                            mock(CouponTemplateDeleteCmdExe.class)),
-                    new CouponController(
-                            mock(CouponIssueCmdExe.class),
-                            mock(CouponRevokeCmdExe.class),
-                            mock(CouponListQueryExe.class),
-                            mock(CouponManagementPageQueryExe.class))
-                };
+            new Object[]{
+                new CouponTemplateController(
+                    mock(CouponTemplateListQueryExe.class),
+                    create,
+                    mock(CouponTemplateEnableCmdExe.class),
+                    mock(CouponTemplateUpdateCmdExe.class),
+                    mock(CouponTemplateDeleteCmdExe.class)),
+                new CouponController(
+                    mock(CouponIssueCmdExe.class),
+                    mock(CouponRevokeCmdExe.class),
+                    mock(CouponListQueryExe.class),
+                    mock(CouponManagementPageQueryExe.class))
+            };
         var mvc =
-                MockMvcBuilders.standaloneSetup(controller)
-                        .setMessageConverters(converter())
-                        .build();
+            MockMvcBuilders.standaloneSetup(controller)
+                .setMessageConverters(converter())
+                .build();
         mvc.perform(
-                        post("/mall/admin/coupon-templates")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        """
-{"code":"C1","name":"coupon","kind":"FIXED","threshold":"10.00","fixedAmount":"3.00","totalCount":100,"validFrom":"2026-10-25 00:00:00","validUntil":"2026-11-25 00:00:00"}
-"""))
-                .andExpect(status().isOk());
+                post("/mall/admin/coupon-templates")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                            {"code":"C1","name":"coupon","kind":"FIXED","threshold":"10.00","fixedAmount":"3.00","totalCount":100,"validFrom":"2026-10-25 00:00:00","validUntil":"2026-11-25 00:00:00"}
+                            """))
+            .andExpect(status().isOk());
         var command = ArgumentCaptor.forClass(CouponTemplateCreateCmd.class);
         verify(create).execute(command.capture());
         assertEquals(25, command.getValue().validFrom().getDayOfMonth());

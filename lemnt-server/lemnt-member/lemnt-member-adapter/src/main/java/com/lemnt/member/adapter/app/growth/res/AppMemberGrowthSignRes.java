@@ -11,11 +11,12 @@ import java.time.LocalDateTime;
  */
 @Schema(description = "会员SignRecord响应")
 public record AppMemberGrowthSignRes(
-        @Schema(description = "记录编号") Long id,
-        @Schema(description = "会员编号") Long memberId,
-        @Schema(description = "签到业务日期") LocalDate signDate,
-        @Schema(description = "本轮连续签到第几天") Integer day,
-        @Schema(description = "奖励积分") Long point,
-        @Schema(description = "奖励经验") Long experience,
-        @Schema(description = "真实签到时间，旧记录可能为空") LocalDateTime createTime)
-        implements Serializable {}
+    @Schema(description = "记录编号") Long id,
+    @Schema(description = "会员编号") Long memberId,
+    @Schema(description = "签到业务日期") LocalDate signDate,
+    @Schema(description = "本轮连续签到第几天") Integer day,
+    @Schema(description = "奖励积分") Long point,
+    @Schema(description = "奖励经验") Long experience,
+    @Schema(description = "真实签到时间，旧记录可能为空") LocalDateTime createTime)
+    implements Serializable {
+}

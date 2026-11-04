@@ -2,7 +2,9 @@ package com.lemnt.system.domain.auth.gateway;
 
 import java.util.List;
 
-/** UserRole 存储接口。 */
+/**
+ * UserRole 存储接口。
+ */
 public interface UserRoleGateway {
     /**
      * 新增用户角色关联

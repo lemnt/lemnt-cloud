@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.LinkedHashMap;
 
-/** 原事件成功消费的回执才代表权益完成，任一远端失败继续保留待处理。 */
+/**
+ * 原事件成功消费的回执才代表权益完成，任一远端失败继续保留待处理。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderBenefitsProgressGatewayImpl implements OrderBenefitsProgressGateway {
@@ -48,10 +50,10 @@ public class OrderBenefitsProgressGatewayImpl implements OrderBenefitsProgressGa
             return false;
         var r = products.reservationStatus(new StockReservationQueryBo(af.refundNo(), af.skuId()));
         return r != null
-                && "RETURNED".equals(r.status())
-                && r.quantity() == af.quantity()
-                && af.orderNo().equals(r.sourceNo())
-                && promotions.refundApplied(af.refundNo())
-                && members.refundApplied(af.refundNo());
+            && "RETURNED".equals(r.status())
+            && r.quantity() == af.quantity()
+            && af.orderNo().equals(r.sourceNo())
+            && promotions.refundApplied(af.refundNo())
+            && members.refundApplied(af.refundNo());
     }
 }

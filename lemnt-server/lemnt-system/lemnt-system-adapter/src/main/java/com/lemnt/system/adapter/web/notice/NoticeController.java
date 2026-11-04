@@ -25,7 +25,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-/** 通知公告接口。 */
+/**
+ * 通知公告接口。
+ */
 @Tag(name = "通知公告")
 @RestController
 @RequestMapping("/notices")
@@ -44,16 +46,16 @@ public class NoticeController {
     public R<SystemNoticeListRes> list(@Validated NoticePageReq req) {
         PageResult<NoticeDTO> result = noticePageQueryExe.execute(NoticeReqConverter.toQry(req));
         return R.page(
-                NoticeResConverter.toResListToSystemNoticeListRes(result.getRecords()),
-                result.getTotal());
+            NoticeResConverter.toResListToSystemNoticeListRes(result.getRecords()),
+            result.getTotal());
     }
 
     @Operation(summary = "根据通知公告编号获取详细信息")
     @GetMapping(value = "/{noticeId}")
     public R<SystemNoticeGetInfoRes> getInfo(@PathVariable Long noticeId) {
         return R.ok(
-                NoticeResConverter.toResToSystemNoticeGetInfoRes(
-                        noticeDetailQueryExe.execute(noticeId)));
+            NoticeResConverter.toResToSystemNoticeGetInfoRes(
+                noticeDetailQueryExe.execute(noticeId)));
     }
 
     @Operation(summary = "首页顶部公告列表")
@@ -63,9 +65,9 @@ public class NoticeController {
         Long userId = SecurityUtils.getUserId();
         Map<String, Object> result = noticeTopListQueryExe.execute(userId, 5);
         NoticeTopRes res =
-                new NoticeTopRes(
-                        NoticeResConverter.toResList((List<NoticeDTO>) result.get("list")),
-                        (Integer) result.get("unreadCount"));
+            new NoticeTopRes(
+                NoticeResConverter.toResList((List<NoticeDTO>) result.get("list")),
+                (Integer) result.get("unreadCount"));
         return R.ok(res);
     }
 

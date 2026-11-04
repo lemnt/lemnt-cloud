@@ -22,7 +22,9 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 class MemberUserRelationQueryTest {
-    /** 两名会员也每张表只取一次，重复元数据ID不变成N+1。 */
+    /**
+     * 两名会员也每张表只取一次，重复元数据ID不变成N+1。
+     */
     @Test
     void readsRelationsOncePerTableForMultipleUsers() {
         var levels = mock(MemberLevelGateway.class);
@@ -30,13 +32,13 @@ class MemberUserRelationQueryTest {
         var tags = mock(MemberTagGateway.class);
         var links = mock(MemberTagLinkGateway.class);
         when(links.memberTagsBatch(anyCollection()))
-                .thenReturn(Map.of(1L, List.of(9L, 10L), 2L, List.of(10L)));
+            .thenReturn(Map.of(1L, List.of(9L, 10L), 2L, List.of(10L)));
         when(levels.levelsByIds(anyCollection()))
-                .thenReturn(List.of(new Level(7L, "Gold", 1, 100L, 90, null, null, 1)));
+            .thenReturn(List.of(new Level(7L, "Gold", 1, 100L, 90, null, null, 1)));
         when(groups.groupsByIds(anyCollection()))
-                .thenReturn(List.of(new Group(8L, "VIP", null, 1)));
+            .thenReturn(List.of(new Group(8L, "VIP", null, 1)));
         when(tags.tagsByIds(anyCollection()))
-                .thenReturn(List.of(new Tag(9L, "A", null), new Tag(10L, "B", null)));
+            .thenReturn(List.of(new Tag(9L, "A", null), new Tag(10L, "B", null)));
         var service = new MemberUserRelationQueryService(levels, groups, tags, links);
         var result = service.enrich(List.of(user(1L), user(2L)));
         assertEquals(List.of("A", "B"), result.get(0).tagNames());
@@ -49,7 +51,9 @@ class MemberUserRelationQueryTest {
         verifyNoMoreInteractions(levels, groups, tags, links);
     }
 
-    /** 空页不做任何关联读取。 */
+    /**
+     * 空页不做任何关联读取。
+     */
     @Test
     void emptyPageReadsNoRelations() {
         var levels = mock(MemberLevelGateway.class);
@@ -57,12 +61,14 @@ class MemberUserRelationQueryTest {
         var tags = mock(MemberTagGateway.class);
         var links = mock(MemberTagLinkGateway.class);
         assertEquals(
-                List.of(),
-                new MemberUserRelationQueryService(levels, groups, tags, links).enrich(List.of()));
+            List.of(),
+            new MemberUserRelationQueryService(levels, groups, tags, links).enrich(List.of()));
         verifyNoInteractions(levels, groups, tags, links);
     }
 
-    /** 元数据缺失保留真实绑定编号，不猜名称。 */
+    /**
+     * 元数据缺失保留真实绑定编号，不猜名称。
+     */
     @Test
     void missingMetadataKeepsIdsWithoutInventedNames() {
         var levels = mock(MemberLevelGateway.class);
@@ -71,9 +77,9 @@ class MemberUserRelationQueryTest {
         var links = mock(MemberTagLinkGateway.class);
         when(links.memberTagsBatch(anyCollection())).thenReturn(Map.of(1L, List.of(9L)));
         var value =
-                new MemberUserRelationQueryService(levels, groups, tags, links)
-                        .enrich(List.of(user(1L)))
-                        .get(0);
+            new MemberUserRelationQueryService(levels, groups, tags, links)
+                .enrich(List.of(user(1L)))
+                .get(0);
         assertEquals(List.of(9L), value.tagIds());
         assertEquals(List.of(), value.tagNames());
         assertNull(value.levelName());

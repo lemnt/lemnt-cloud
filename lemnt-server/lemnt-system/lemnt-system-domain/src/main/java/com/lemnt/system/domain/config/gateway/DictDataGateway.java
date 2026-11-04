@@ -101,9 +101,13 @@ public interface DictDataGateway {
      */
     List<DictData> selectDictDataByType(String dictType);
 
-    /** 修改字典项引用的类型名称。 */
+    /**
+     * 修改字典项引用的类型名称。
+     */
     void renameType(String oldType, String newType);
 
-    /** 从数据库刷新单个字典的数据缓存。 */
+    /**
+     * 从数据库刷新单个字典的数据缓存。
+     */
     void refreshByType(String type);
 }

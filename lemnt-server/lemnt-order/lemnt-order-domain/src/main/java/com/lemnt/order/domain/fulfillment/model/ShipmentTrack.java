@@ -3,5 +3,8 @@ package com.lemnt.order.domain.fulfillment.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/** 物流轨迹事件。 */
-public record ShipmentTrack(LocalDateTime time, String description) implements Serializable {}
+/**
+ * 物流轨迹事件。
+ */
+public record ShipmentTrack(LocalDateTime time, String description) implements Serializable {
+}

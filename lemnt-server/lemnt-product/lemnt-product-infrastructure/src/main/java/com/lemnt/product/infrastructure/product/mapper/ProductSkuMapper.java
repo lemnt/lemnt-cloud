@@ -8,7 +8,9 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/** Product 表数据访问接口。 */
+/**
+ * Product 表数据访问接口。
+ */
 @Mapper
 public interface ProductSkuMapper extends BaseMapper<ProductSkuDO> {
 

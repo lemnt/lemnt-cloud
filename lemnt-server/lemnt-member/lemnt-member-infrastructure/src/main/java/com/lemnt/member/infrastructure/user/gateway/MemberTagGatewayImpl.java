@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.Collection;
 import java.util.List;
 
-/** member_tag 表持久化实现。 */
+/**
+ * member_tag 表持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberTagGatewayImpl implements MemberTagGateway {
@@ -32,10 +34,10 @@ public class MemberTagGatewayImpl implements MemberTagGateway {
     @Override
     public List<Tag> tags() {
         return memberTagMapper
-                .selectList(Wrappers.<TagDO>lambdaQuery().orderByAsc(TagDO::getId))
-                .stream()
-                .map(TagConverter::toEntity)
-                .toList();
+            .selectList(Wrappers.<TagDO>lambdaQuery().orderByAsc(TagDO::getId))
+            .stream()
+            .map(TagConverter::toEntity)
+            .toList();
     }
 
     /**
@@ -88,36 +90,44 @@ public class MemberTagGatewayImpl implements MemberTagGateway {
         return tagsCountRow(f);
     }
 
-    /** 批量关联返显，避免逐会员查询。 */
+    /**
+     * 批量关联返显，避免逐会员查询。
+     */
     @Override
     public List<Tag> tagsByIds(Collection<Long> ids) {
         if (ids.isEmpty()) return List.of();
         return memberTagMapper
-                .selectList(Wrappers.<TagDO>lambdaQuery().in(TagDO::getId, ids))
-                .stream()
-                .map(TagConverter::toEntity)
-                .toList();
+            .selectList(Wrappers.<TagDO>lambdaQuery().in(TagDO::getId, ids))
+            .stream()
+            .map(TagConverter::toEntity)
+            .toList();
     }
 
-    /** 分页和总数共用条件。 */
+    /**
+     * 分页和总数共用条件。
+     */
     private List<TagDO> tagsPageRow(TagPageFilter f) {
         return memberTagMapper
-                .selectPage(
-                        new Page<>((long) f.offset() / f.limit() + 1, f.limit(), false),
-                        conditions(f).orderByDesc(TagDO::getId))
-                .getRecords();
+            .selectPage(
+                new Page<>((long) f.offset() / f.limit() + 1, f.limit(), false),
+                conditions(f).orderByDesc(TagDO::getId))
+            .getRecords();
     }
 
-    /** 读取筛选后的总数。 */
+    /**
+     * 读取筛选后的总数。
+     */
     private long tagsCountRow(TagPageFilter f) {
         return memberTagMapper.selectCount(conditions(f));
     }
 
-    /** 分页与计数复用同一组类型安全条件。 */
+    /**
+     * 分页与计数复用同一组类型安全条件。
+     */
     private LambdaQueryWrapper<TagDO> conditions(TagPageFilter f) {
         return Wrappers.<TagDO>lambdaQuery()
-                .like(f.name() != null, TagDO::getName, f.name())
-                .ge(f.startTime() != null, TagDO::getCreateTime, f.startTime())
-                .le(f.endTime() != null, TagDO::getCreateTime, f.endTime());
+            .like(f.name() != null, TagDO::getName, f.name())
+            .ge(f.startTime() != null, TagDO::getCreateTime, f.startTime())
+            .le(f.endTime() != null, TagDO::getCreateTime, f.endTime());
     }
 }

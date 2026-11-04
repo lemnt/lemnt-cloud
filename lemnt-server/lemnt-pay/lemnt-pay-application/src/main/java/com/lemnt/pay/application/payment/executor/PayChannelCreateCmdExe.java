@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 新增支付渠道配置。 */
+/**
+ * 新增支付渠道配置。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayChannelCreateCmdExe {
@@ -34,15 +36,15 @@ public class PayChannelCreateCmdExe {
             throw new IllegalStateException("该应用下渠道编码已存在");
         }
         var value =
-                new PayChannelConfig(
-                        null,
-                        cmd.appId(),
-                        code,
-                        cmd.status(),
-                        PayConfigRules.feeRate(cmd.feeRate()),
-                        PayConfigRules.optional(cmd.remark(), 255, "备注"),
-                        PayConfigRules.config(cmd.config()),
-                        null);
+            new PayChannelConfig(
+                null,
+                cmd.appId(),
+                code,
+                cmd.status(),
+                PayConfigRules.feeRate(cmd.feeRate()),
+                PayConfigRules.optional(cmd.remark(), 255, "备注"),
+                PayConfigRules.config(cmd.config()),
+                null);
         return PayConfigDTOConverter.payChannel(channels.insert(value));
     }
 }

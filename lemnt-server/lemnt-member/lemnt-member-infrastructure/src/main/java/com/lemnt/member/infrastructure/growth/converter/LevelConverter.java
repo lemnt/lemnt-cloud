@@ -7,23 +7,24 @@ import com.lemnt.member.infrastructure.growth.dataobject.LevelDO;
  * 等级转换器。
  */
 public final class LevelConverter {
-    private LevelConverter() {}
+    private LevelConverter() {
+    }
 
     /**
      * 转换为领域对象。
      */
     public static Level toEntity(LevelDO row) {
         return row == null
-                ? null
-                : new Level(
-                        row.getId(),
-                        row.getName(),
-                        row.getLevel(),
-                        row.getExperience(),
-                        row.getDiscountPercent(),
-                        row.getIcon(),
-                        row.getBackgroundUrl(),
-                        row.getStatus());
+            ? null
+            : new Level(
+            row.getId(),
+            row.getName(),
+            row.getLevel(),
+            row.getExperience(),
+            row.getDiscountPercent(),
+            row.getIcon(),
+            row.getBackgroundUrl(),
+            row.getStatus());
     }
 
     /**

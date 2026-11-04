@@ -3,27 +3,34 @@ package com.lemnt.pay.infrastructure.payment.converter;
 import com.lemnt.pay.domain.payment.model.PayChannelConfig;
 import com.lemnt.pay.infrastructure.payment.dataobject.PayChannelConfigDO;
 
-/** 支付渠道配置与表字段转换。 */
+/**
+ * 支付渠道配置与表字段转换。
+ */
 public final class PayChannelConfigConverter {
-    private PayChannelConfigConverter() {}
+    private PayChannelConfigConverter() {
+    }
 
-    /** 读取业务对象。 */
+    /**
+     * 读取业务对象。
+     */
     public static PayChannelConfig toEntity(PayChannelConfigDO row) {
         if (row == null) {
             return null;
         }
         return new PayChannelConfig(
-                row.getId(),
-                row.getAppId(),
-                row.getCode(),
-                row.getStatus(),
-                row.getFeeRate(),
-                row.getRemark(),
-                row.getConfig(),
-                row.getCreateTime());
+            row.getId(),
+            row.getAppId(),
+            row.getCode(),
+            row.getStatus(),
+            row.getFeeRate(),
+            row.getRemark(),
+            row.getConfig(),
+            row.getCreateTime());
     }
 
-    /** 写入表字段。 */
+    /**
+     * 写入表字段。
+     */
     public static PayChannelConfigDO toDO(PayChannelConfig value) {
         var row = new PayChannelConfigDO();
         row.setId(value.id());

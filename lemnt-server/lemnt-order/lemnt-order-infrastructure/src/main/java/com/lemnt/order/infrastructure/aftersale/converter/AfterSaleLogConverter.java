@@ -3,11 +3,16 @@ package com.lemnt.order.infrastructure.aftersale.converter;
 import com.lemnt.order.domain.aftersale.model.AfterSaleLog;
 import com.lemnt.order.infrastructure.aftersale.dataobject.AfterSaleLogDO;
 
-/** 售后日志持久化转换。 */
+/**
+ * 售后日志持久化转换。
+ */
 public final class AfterSaleLogConverter {
-    private AfterSaleLogConverter() {}
+    private AfterSaleLogConverter() {
+    }
 
-    /** 转换日志写入行。 */
+    /**
+     * 转换日志写入行。
+     */
     public static AfterSaleLogDO toDO(AfterSaleLog value) {
         var row = new AfterSaleLogDO();
         row.setUserId(value.userId());
@@ -21,17 +26,19 @@ public final class AfterSaleLogConverter {
         return row;
     }
 
-    /** 转换查询结果。 */
+    /**
+     * 转换查询结果。
+     */
     public static AfterSaleLog toModel(AfterSaleLogDO row) {
         return new AfterSaleLog(
-                row.getId(),
-                row.getUserId(),
-                row.getUserType(),
-                row.getAfterSaleId(),
-                row.getBeforeStatus(),
-                row.getAfterStatus(),
-                row.getOperateType(),
-                row.getContent(),
-                row.getCreateTime());
+            row.getId(),
+            row.getUserId(),
+            row.getUserType(),
+            row.getAfterSaleId(),
+            row.getBeforeStatus(),
+            row.getAfterStatus(),
+            row.getOperateType(),
+            row.getContent(),
+            row.getCreateTime());
     }
 }

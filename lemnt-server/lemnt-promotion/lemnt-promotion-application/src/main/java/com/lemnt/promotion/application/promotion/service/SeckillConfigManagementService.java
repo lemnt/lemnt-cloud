@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalTime;
 import java.util.List;
 
-/** 秒杀时段直接管理，同一时间点只允许一个有效时段。 */
+/**
+ * 秒杀时段直接管理，同一时间点只允许一个有效时段。
+ */
 @Component
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
@@ -35,22 +37,24 @@ public class SeckillConfigManagementService {
 
     private LocalTime time(String value, String label) {
         require(
-                value != null && value.matches("^([01]\\d|2[0-3]):[0-5]\\d(:[0-5]\\d)?$"),
-                label + "格式不合法");
+            value != null && value.matches("^([01]\\d|2[0-3]):[0-5]\\d(:[0-5]\\d)?$"),
+            label + "格式不合法");
         return LocalTime.parse(value.length() == 5 ? value + ":00" : value);
     }
 
     private void validate(SeckillConfig value) {
         require(
-                value.name() != null && !value.name().isBlank() && value.name().length() <= 100,
-                "时段名称不合法");
+            value.name() != null && !value.name().isBlank() && value.name().length() <= 100,
+            "时段名称不合法");
         var start = time(value.startTime(), "开始时间");
         var end = time(value.endTime(), "结束时间");
         require(start.isBefore(end), "开始时间必须早于结束时间");
         require(value.status() != null && (value.status() == 0 || value.status() == 1), "状态不合法");
     }
 
-    /** 先锁全部时段再比较区间，避免并发创建出重叠时段。 */
+    /**
+     * 先锁全部时段再比较区间，避免并发创建出重叠时段。
+     */
     private void validateConflict(SeckillConfig value) {
         var all = configs.all();
         var start = time(value.startTime(), "开始时间");
@@ -73,13 +77,13 @@ public class SeckillConfigManagementService {
 
     public Long create(SeckillConfigCreateCmd cmd) {
         var value =
-                new SeckillConfig(
-                        null,
-                        cmd.name(),
-                        cmd.startTime(),
-                        cmd.endTime(),
-                        cmd.sliderPicUrls(),
-                        cmd.status());
+            new SeckillConfig(
+                null,
+                cmd.name(),
+                cmd.startTime(),
+                cmd.endTime(),
+                cmd.sliderPicUrls(),
+                cmd.status());
         validate(value);
         validateConflict(value);
         return configs.save(value).id();
@@ -88,13 +92,13 @@ public class SeckillConfigManagementService {
     public Boolean update(SeckillConfigUpdateCmd cmd) {
         config(cmd.id());
         var value =
-                new SeckillConfig(
-                        cmd.id(),
-                        cmd.name(),
-                        cmd.startTime(),
-                        cmd.endTime(),
-                        cmd.sliderPicUrls(),
-                        cmd.status());
+            new SeckillConfig(
+                cmd.id(),
+                cmd.name(),
+                cmd.startTime(),
+                cmd.endTime(),
+                cmd.sliderPicUrls(),
+                cmd.status());
         validate(value);
         validateConflict(value);
         configs.save(value);
@@ -108,7 +112,9 @@ public class SeckillConfigManagementService {
         return true;
     }
 
-    /** 被活动引用的时段不能删除，避免活动无法展示。 */
+    /**
+     * 被活动引用的时段不能删除，避免活动无法展示。
+     */
     public Boolean delete(Long id) {
         config(id);
         require(activities.all().stream().noneMatch(a -> a.configIds().contains(id)), "时段已关联秒杀活动");
@@ -134,32 +140,32 @@ public class SeckillConfigManagementService {
     @Transactional(readOnly = true)
     public PageResult<SeckillConfigDTO> page(SeckillConfigPageQry qry) {
         require(
-                qry.pageNum() != null
-                        && qry.pageNum() >= 1
-                        && qry.pageSize() != null
-                        && qry.pageSize() >= 1
-                        && qry.pageSize() <= 100,
-                "分页参数不合法");
+            qry.pageNum() != null
+                && qry.pageNum() >= 1
+                && qry.pageSize() != null
+                && qry.pageSize() >= 1
+                && qry.pageSize() <= 100,
+            "分页参数不合法");
         var page =
-                configs.page(
-                        new SeckillConfigFilter(
-                                qry.name(), qry.status(), qry.pageNum(), qry.pageSize()));
+            configs.page(
+                new SeckillConfigFilter(
+                    qry.name(), qry.status(), qry.pageNum(), qry.pageSize()));
         return PageResult.of(page.getRecords().stream().map(this::dto).toList(), page.getTotal());
     }
 
     private SeckillConfigDTO dto(SeckillConfig value) {
         var count =
-                (int)
-                        activities.all().stream()
-                                .filter(activity -> activity.configIds().contains(value.id()))
-                                .count();
+            (int)
+                activities.all().stream()
+                    .filter(activity -> activity.configIds().contains(value.id()))
+                    .count();
         return new SeckillConfigDTO(
-                value.id(),
-                value.name(),
-                value.startTime(),
-                value.endTime(),
-                value.sliderPicUrls(),
-                value.status(),
-                count);
+            value.id(),
+            value.name(),
+            value.startTime(),
+            value.endTime(),
+            value.sliderPicUrls(),
+            value.status(),
+            count);
     }
 }

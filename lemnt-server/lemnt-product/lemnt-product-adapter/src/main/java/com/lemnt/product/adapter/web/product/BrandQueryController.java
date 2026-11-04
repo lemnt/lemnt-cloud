@@ -21,9 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** 品牌查询补充接口。 */
+/**
+ * 品牌查询补充接口。
+ */
 @Tag(name = "品牌查询补充")
 @RestController
 @RequestMapping("/mall/brands")
@@ -32,27 +35,31 @@ public class BrandQueryController {
     private final BrandPageQueryExe brandPageQueryExe;
     private final BrandSimpleListQueryExe brandSimpleListQueryExe;
 
-    /** 品牌管理分页。 */
+    /**
+     * 品牌管理分页。
+     */
     @GetMapping("/page")
     @Operation(summary = "品牌分页")
     @RequiresPermissions("mall:brand:list")
     public R<BrandPageRes> page(@Valid @ModelAttribute BrandPageReq req) {
         var value = brandPageQueryExe.execute(ProductManagementReqConverter.brands(req));
         return R.page(
-                value.getRecords().stream().map(ProductManagementResConverter::brand).toList(),
-                value.getTotal());
+            value.getRecords().stream().map(ProductManagementResConverter::brand).toList(),
+            value.getTotal());
     }
 
-    /** 查询启用品牌供选择。 */
+    /**
+     * 查询启用品牌供选择。
+     */
     @GetMapping("/simple")
     @Operation(summary = "启用品牌选择查询")
     @RequiresPermissions("mall:brand:query")
     public R<List<BrandSimpleRes>> simple(@Valid @ModelAttribute BrandSimpleReq req) {
         return R.ok(
-                brandSimpleListQueryExe
-                        .execute(ProductManagementReqConverter.brandSimple(req))
-                        .stream()
-                        .map(ProductManagementResConverter::brandSimple)
-                        .toList());
+            brandSimpleListQueryExe
+                .execute(ProductManagementReqConverter.brandSimple(req))
+                .stream()
+                .map(ProductManagementResConverter::brandSimple)
+                .toList());
     }
 }

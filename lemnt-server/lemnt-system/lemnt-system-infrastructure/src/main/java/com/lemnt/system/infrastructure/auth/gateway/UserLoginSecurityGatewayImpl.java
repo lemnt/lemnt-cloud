@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** UserLoginSecurity 持久化实现。 */
+/**
+ * UserLoginSecurity 持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class UserLoginSecurityGatewayImpl implements UserLoginSecurityGateway {

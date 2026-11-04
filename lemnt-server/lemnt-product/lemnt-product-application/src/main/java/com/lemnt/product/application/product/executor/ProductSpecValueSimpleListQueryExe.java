@@ -13,27 +13,31 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 规格字典选择查询。 */
+/**
+ * 规格字典选择查询。
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductSpecValueSimpleListQueryExe {
     private final ProductSpecValueGateway productSpecValueGateway;
 
-    /** 限定选择条数，规格值选择必须指定真实规格项。 */
+    /**
+     * 限定选择条数，规格值选择必须指定真实规格项。
+     */
     public List<ProductSpecValueDTO> execute(ProductSpecValueSimpleListQry qry) {
         if (qry == null || qry.limit() < 1 || qry.limit() > 100) {
             throw new IllegalArgumentException("选择条数须为1至100");
         }
         ProductCatalogValidation.id(qry.specId());
         String name =
-                qry.name() == null || qry.name().isBlank()
-                        ? null
-                        : ProductCatalogValidation.text(qry.name(), 100, "名称");
+            qry.name() == null || qry.name().isBlank()
+                ? null
+                : ProductCatalogValidation.text(qry.name(), 100, "名称");
         return productSpecValueGateway
-                .page(new ProductSpecFilter(name, qry.specId(), 1, qry.limit(), null, null))
-                .getRecords()
-                .stream()
-                .map(ProductSpecDTOConverter::value)
-                .toList();
+            .page(new ProductSpecFilter(name, qry.specId(), 1, qry.limit(), null, null))
+            .getRecords()
+            .stream()
+            .map(ProductSpecDTOConverter::value)
+            .toList();
     }
 }

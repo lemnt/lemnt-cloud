@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 
-/** 公告阅读接口。 */
+/**
+ * 公告阅读接口。
+ */
 @Tag(name = "公告阅读")
 @RestController
 @RequestMapping("/notices")
@@ -32,7 +34,7 @@ public class NoticeReadController {
     @GetMapping("/read-users")
     public R<NoticeReadUserRes> readUsersList(NoticeReadUsersPageReq req) {
         PageResult<NoticeReadUserDTO> result =
-                noticeReadUserPageQueryExe.execute(NoticeReqConverter.toQry(req));
+            noticeReadUserPageQueryExe.execute(NoticeReqConverter.toQry(req));
         return R.page(NoticeReadResConverter.toResList(result.getRecords()), result.getTotal());
     }
 

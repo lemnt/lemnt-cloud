@@ -35,7 +35,9 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 生产 SQL、DO、Mapper、Gateway 验证支付应用与渠道配置，不使用内存替身。 */
+/**
+ * 生产 SQL、DO、Mapper、Gateway 验证支付应用与渠道配置，不使用内存替身。
+ */
 class PayConfigPersistenceTest {
     AnnotationConfigApplicationContext context;
     PayAppGateway apps;
@@ -55,19 +57,19 @@ class PayConfigPersistenceTest {
 
     private PayApp app(String appKey) {
         return new PayApp(
-                null,
-                appKey,
-                "商城",
-                0,
-                "备注",
-                "https://example.test/pay",
-                "https://example.test/refund",
-                null);
+            null,
+            appKey,
+            "商城",
+            0,
+            "备注",
+            "https://example.test/pay",
+            "https://example.test/refund",
+            null);
     }
 
     private PayChannelConfig channel(Long appId, String code, String config) {
         return new PayChannelConfig(
-                null, appId, code, 0, new BigDecimal("1.5"), "备注", config, null);
+            null, appId, code, 0, new BigDecimal("1.5"), "备注", config, null);
     }
 
     @Test
@@ -117,9 +119,9 @@ class PayConfigPersistenceTest {
         JdbcDataSource dataSource() {
             var source = new JdbcDataSource();
             source.setURL(
-                    "jdbc:h2:mem:pay_config_"
-                            + UUID.randomUUID()
-                            + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
+                "jdbc:h2:mem:pay_config_"
+                    + UUID.randomUUID()
+                    + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
             return source;
         }
 
@@ -127,13 +129,13 @@ class PayConfigPersistenceTest {
         Connection schema(JdbcDataSource source) throws Exception {
             var connection = source.getConnection();
             ScriptUtils.executeSqlScript(
-                    connection, new ClassPathResource("pay-sql/lemnt_pay.sql"));
+                connection, new ClassPathResource("pay-sql/lemnt_pay.sql"));
             return connection;
         }
 
         @Bean
         SqlSessionFactory sqlSessionFactory(JdbcDataSource source, Connection schema)
-                throws Exception {
+            throws Exception {
             var config = new MybatisConfiguration();
             config.setMapUnderscoreToCamelCase(true);
             var interceptor = new MybatisPlusInterceptor();
@@ -143,10 +145,10 @@ class PayConfigPersistenceTest {
             factory.setDataSource(source);
             factory.setConfiguration(config);
             factory.setGlobalConfig(
-                    new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
+                new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
             factory.setMapperLocations(
-                    new PathMatchingResourcePatternResolver()
-                            .getResources("classpath*:mapper/*.xml"));
+                new PathMatchingResourcePatternResolver()
+                    .getResources("classpath*:mapper/*.xml"));
             return factory.getObject();
         }
 

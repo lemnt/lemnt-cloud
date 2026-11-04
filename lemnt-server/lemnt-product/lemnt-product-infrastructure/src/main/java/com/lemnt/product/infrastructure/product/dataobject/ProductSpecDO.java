@@ -10,7 +10,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-/** 商品规格字典持久化对象。 */
+/**
+ * 商品规格字典持久化对象。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)

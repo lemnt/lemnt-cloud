@@ -22,10 +22,13 @@ import com.lemnt.member.application.growth.qry.AssetRecordPageQry;
 import com.lemnt.member.application.growth.qry.LevelRecordsPageQry;
 import com.lemnt.member.application.growth.qry.SignRecordPageQry;
 
-/** 会员成长权益转换器。 */
+/**
+ * 会员成长权益转换器。
+ */
 public final class MemberGrowthReqConverter {
 
-    private MemberGrowthReqConverter() {}
+    private MemberGrowthReqConverter() {
+    }
 
     /**
      * 等级。
@@ -41,7 +44,9 @@ public final class MemberGrowthReqConverter {
         return new SignConfigCreateCmd(req.day(), req.point(), req.experience(), req.status());
     }
 
-    /** 更新按可信路径ID定位，不接受天数充当ID。 */
+    /**
+     * 更新按可信路径ID定位，不接受天数充当ID。
+     */
     public static SignConfigUpdateCmd signConfig(Long id, SignConfigUpdateReq req) {
         return new SignConfigUpdateCmd(id, req.day(), req.point(), req.experience(), req.status());
     }
@@ -51,10 +56,10 @@ public final class MemberGrowthReqConverter {
      */
     public static ConfigSaveCmd config(ConfigSaveReq r) {
         return new ConfigSaveCmd(
-                r.pointTradeDeductEnable(),
-                r.pointTradeDeductUnitPrice(),
-                r.pointTradeDeductMaxPrice(),
-                r.pointTradeGivePoint());
+            r.pointTradeDeductEnable(),
+            r.pointTradeDeductUnitPrice(),
+            r.pointTradeDeductMaxPrice(),
+            r.pointTradeGivePoint());
     }
 
     /**
@@ -62,9 +67,9 @@ public final class MemberGrowthReqConverter {
      */
     public static LevelRecordsPageQry levelRecords(Long id, MemberUserLevelRecordsReq r) {
         return new LevelRecordsPageQry(
-                id,
-                (r.pageNum() == null ? 1 : r.pageNum()),
-                (r.pageSize() == null ? 20 : r.pageSize()));
+            id,
+            (r.pageNum() == null ? 1 : r.pageNum()),
+            (r.pageSize() == null ? 20 : r.pageSize()));
     }
 
     /**
@@ -72,9 +77,9 @@ public final class MemberGrowthReqConverter {
      */
     public static SignRecordPageQry signs(Long id, MemberUserSignsReq r) {
         return new SignRecordPageQry(
-                id,
-                (r.pageNum() == null ? 1 : r.pageNum()),
-                (r.pageSize() == null ? 20 : r.pageSize()));
+            id,
+            (r.pageNum() == null ? 1 : r.pageNum()),
+            (r.pageSize() == null ? 20 : r.pageSize()));
     }
 
     /**
@@ -82,22 +87,22 @@ public final class MemberGrowthReqConverter {
      */
     public static AssetRecordPageQry assets(Long id, String type, MemberUserPointsRecordsReq r) {
         return new AssetRecordPageQry(
-                id,
-                type,
-                (r.pageNum() == null ? 1 : r.pageNum()),
-                (r.pageSize() == null ? 20 : r.pageSize()));
+            id,
+            type,
+            (r.pageNum() == null ? 1 : r.pageNum()),
+            (r.pageSize() == null ? 20 : r.pageSize()));
     }
 
     /**
      * 查询会员资产记录。
      */
     public static AssetRecordPageQry assets(
-            Long id, String type, MemberUserExperienceRecordsReq r) {
+        Long id, String type, MemberUserExperienceRecordsReq r) {
         return new AssetRecordPageQry(
-                id,
-                type,
-                (r.pageNum() == null ? 1 : r.pageNum()),
-                (r.pageSize() == null ? 20 : r.pageSize()));
+            id,
+            type,
+            (r.pageNum() == null ? 1 : r.pageNum()),
+            (r.pageSize() == null ? 20 : r.pageSize()));
     }
 
     /**
@@ -119,14 +124,14 @@ public final class MemberGrowthReqConverter {
      */
     public static LevelSaveCmd level(Long id, MemberLevelCreateReq r) {
         return new LevelSaveCmd(
-                id,
-                r.name(),
-                r.level(),
-                r.experience(),
-                r.discountPercent(),
-                r.icon(),
-                r.backgroundUrl(),
-                r.status());
+            id,
+            r.name(),
+            r.level(),
+            r.experience(),
+            r.discountPercent(),
+            r.icon(),
+            r.backgroundUrl(),
+            r.status());
     }
 
     /**
@@ -134,13 +139,13 @@ public final class MemberGrowthReqConverter {
      */
     public static LevelSaveCmd level(Long id, MemberLevelUpdateReq r) {
         return new LevelSaveCmd(
-                id,
-                r.name(),
-                r.level(),
-                r.experience(),
-                r.discountPercent(),
-                r.icon(),
-                r.backgroundUrl(),
-                r.status());
+            id,
+            r.name(),
+            r.level(),
+            r.experience(),
+            r.discountPercent(),
+            r.icon(),
+            r.backgroundUrl(),
+            r.status());
     }
 }

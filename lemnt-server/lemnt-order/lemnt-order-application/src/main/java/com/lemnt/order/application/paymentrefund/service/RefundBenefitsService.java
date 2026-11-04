@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 管理重试只重投原事件，不能按当前整单状态改写旧售后的冻结权益或全退标记。 */
+/**
+ * 管理重试只重投原事件，不能按当前整单状态改写旧售后的冻结权益或全退标记。
+ */
 @Component
 @RequiredArgsConstructor
 public class RefundBenefitsService {

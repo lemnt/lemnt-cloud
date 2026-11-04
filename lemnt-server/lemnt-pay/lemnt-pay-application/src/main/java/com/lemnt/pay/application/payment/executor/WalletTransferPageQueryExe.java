@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 钱包转账分页查询。 */
+/**
+ * 钱包转账分页查询。
+ */
 @Component
 @RequiredArgsConstructor
 public class WalletTransferPageQueryExe {
@@ -28,16 +30,16 @@ public class WalletTransferPageQueryExe {
             throw new IllegalArgumentException("转账状态不合法");
         }
         var page =
-                transfers.page(
-                        new WalletTransferFilter(
-                                qry.memberId(),
-                                qry.fromMemberId(),
-                                qry.toMemberId(),
-                                status,
-                                qry.pageNum(),
-                                qry.pageSize()));
+            transfers.page(
+                new WalletTransferFilter(
+                    qry.memberId(),
+                    qry.fromMemberId(),
+                    qry.toMemberId(),
+                    status,
+                    qry.pageNum(),
+                    qry.pageSize()));
         return PageResult.of(
-                page.getRecords().stream().map(WalletTransferDTOConverter::transfer).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(WalletTransferDTOConverter::transfer).toList(),
+            page.getTotal());
     }
 }

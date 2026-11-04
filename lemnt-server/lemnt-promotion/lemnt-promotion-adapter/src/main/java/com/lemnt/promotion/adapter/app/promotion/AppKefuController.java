@@ -25,10 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** 小程序客服会话与消息。 */
+/**
+ * 小程序客服会话与消息。
+ */
 @Tag(name = "小程序客服")
 @RestController
 @RequestMapping("/mall/app/kefu")
@@ -48,17 +51,17 @@ public class AppKefuController {
     @GetMapping("/messages")
     @Operation(summary = "本人客服消息")
     public R<List<AppKefuMessageRes>> messages(
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                    LocalDateTime beforeTime,
-            @RequestParam(required = false) Integer limit) {
+        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        LocalDateTime beforeTime,
+        @RequestParam(required = false) Integer limit) {
         return R.ok(
-                messages
-                        .execute(
-                                AppKefuConverter.messages(
-                                        SecurityUtils.getUserId(), beforeTime, limit))
-                        .stream()
-                        .map(AppKefuConverter::message)
-                        .toList());
+            messages
+                .execute(
+                    AppKefuConverter.messages(
+                        SecurityUtils.getUserId(), beforeTime, limit))
+                .stream()
+                .map(AppKefuConverter::message)
+                .toList());
     }
 
     @PostMapping("/messages")

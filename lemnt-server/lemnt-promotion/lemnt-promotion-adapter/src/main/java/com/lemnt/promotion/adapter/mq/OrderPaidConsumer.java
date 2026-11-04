@@ -12,14 +12,16 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 消费失败原样抛给broker，幂等凭证只在本地业务成功时提交。 */
+/**
+ * 消费失败原样抛给broker，幂等凭证只在本地业务成功时提交。
+ */
 @Component
 @ConditionalOnProperty(name = "commerce.mq.enabled", havingValue = "true")
 @RequiredArgsConstructor
 @RocketMQMessageListener(
-        topic = CommerceEventTopics.ORDER_PAID,
-        consumerGroup = "lemnt-promotion-order-paid-v1",
-        maxReconsumeTimes = 16)
+    topic = CommerceEventTopics.ORDER_PAID,
+    consumerGroup = "lemnt-promotion-order-paid-v1",
+    maxReconsumeTimes = 16)
 public class OrderPaidConsumer implements RocketMQListener<String> {
     private final OrderPaidEventHandler handler;
 

@@ -33,9 +33,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** 秒杀时段管理入口。 */
+/**
+ * 秒杀时段管理入口。
+ */
 @RestController
 @RequestMapping("/mall/promotion/seckill-configs")
 @Tag(name = "秒杀时段")
@@ -61,7 +64,7 @@ public class SeckillConfigController {
     @Operation(summary = "修改秒杀时段")
     @RequiresPermissions("mall:promotion:update")
     public R<Boolean> update(
-            @PathVariable Long id, @Valid @RequestBody SeckillConfigUpdateReq req) {
+        @PathVariable Long id, @Valid @RequestBody SeckillConfigUpdateReq req) {
         return R.ok(update.execute(SeckillConfigConverter.update(id, req)));
     }
 
@@ -69,7 +72,7 @@ public class SeckillConfigController {
     @Operation(summary = "修改秒杀时段状态")
     @RequiresPermissions("mall:promotion:update")
     public R<Boolean> status(
-            @PathVariable Long id, @Valid @RequestBody SeckillConfigStatusReq req) {
+        @PathVariable Long id, @Valid @RequestBody SeckillConfigStatusReq req) {
         return R.ok(status.execute(id, req.status()));
     }
 
@@ -93,8 +96,8 @@ public class SeckillConfigController {
     public R<SeckillConfigRes> page(@Valid @ModelAttribute SeckillConfigPageReq req) {
         var result = page.execute(SeckillConfigConverter.page(req));
         return R.page(
-                result.getRecords().stream().map(SeckillConfigConverter::res).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(SeckillConfigConverter::res).toList(),
+            result.getTotal());
     }
 
     @GetMapping("/list")

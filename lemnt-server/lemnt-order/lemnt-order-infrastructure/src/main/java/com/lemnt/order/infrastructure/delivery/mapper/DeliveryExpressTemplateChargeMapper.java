@@ -10,4 +10,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface DeliveryExpressTemplateChargeMapper
-        extends BaseMapper<DeliveryExpressTemplateChargeDO> {}
+    extends BaseMapper<DeliveryExpressTemplateChargeDO> {
+}

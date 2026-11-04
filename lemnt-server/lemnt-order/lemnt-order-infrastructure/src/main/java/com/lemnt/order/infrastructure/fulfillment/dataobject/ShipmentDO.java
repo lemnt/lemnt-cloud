@@ -21,7 +21,8 @@ import java.time.LocalDateTime;
 @TableName("order_shipment")
 public class ShipmentDO implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.INPUT)
     private String orderNo;

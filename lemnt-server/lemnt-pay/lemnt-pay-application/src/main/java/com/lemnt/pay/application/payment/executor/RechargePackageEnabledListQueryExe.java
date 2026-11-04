@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 启用中的充值套餐，供 App 选择。 */
+/**
+ * 启用中的充值套餐，供 App 选择。
+ */
 @Component
 @RequiredArgsConstructor
 public class RechargePackageEnabledListQueryExe {

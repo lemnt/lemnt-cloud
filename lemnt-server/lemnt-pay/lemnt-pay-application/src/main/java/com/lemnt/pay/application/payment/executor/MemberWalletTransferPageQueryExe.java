@@ -11,7 +11,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** App 本人转出或转入分页。 */
+/**
+ * App 本人转出或转入分页。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberWalletTransferPageQueryExe {
@@ -23,10 +25,10 @@ public class MemberWalletTransferPageQueryExe {
         }
         PayConfigRules.page(pageNum, pageSize);
         var page =
-                transfers.page(
-                        new WalletTransferFilter(memberId, null, null, null, pageNum, pageSize));
+            transfers.page(
+                new WalletTransferFilter(memberId, null, null, null, pageNum, pageSize));
         return PageResult.of(
-                page.getRecords().stream().map(WalletTransferDTOConverter::transfer).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(WalletTransferDTOConverter::transfer).toList(),
+            page.getTotal());
     }
 }

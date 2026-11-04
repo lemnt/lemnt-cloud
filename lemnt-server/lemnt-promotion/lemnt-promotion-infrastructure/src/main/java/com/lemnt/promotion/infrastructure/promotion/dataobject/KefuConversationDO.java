@@ -8,7 +8,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/** 客服会话持久化对象。 */
+/**
+ * 客服会话持久化对象。
+ */
 @Data
 @TableName("promotion_kefu_conversation")
 public class KefuConversationDO {

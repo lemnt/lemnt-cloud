@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 小程序本人客服消息查询执行器。 */
+/**
+ * 小程序本人客服消息查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class AppKefuMessageListQueryExe {

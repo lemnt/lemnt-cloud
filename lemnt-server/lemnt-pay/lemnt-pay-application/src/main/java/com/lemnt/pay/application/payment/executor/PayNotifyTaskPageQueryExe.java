@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 派发任务分页查询。 */
+/**
+ * 派发任务分页查询。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayNotifyTaskPageQueryExe {
@@ -24,16 +26,16 @@ public class PayNotifyTaskPageQueryExe {
         }
         PayConfigRules.page(qry.pageNum(), qry.pageSize());
         var page =
-                tasks.page(
-                        new PayNotifyTaskFilter(
-                                PayConfigRules.optional(qry.type(), 16, "类型"),
-                                PayConfigRules.optional(qry.bizNo(), 40, "业务单号"),
-                                PayConfigRules.optional(qry.orderNo(), 40, "订单编号"),
-                                PayConfigRules.optional(qry.status(), 20, "状态"),
-                                qry.pageNum(),
-                                qry.pageSize()));
+            tasks.page(
+                new PayNotifyTaskFilter(
+                    PayConfigRules.optional(qry.type(), 16, "类型"),
+                    PayConfigRules.optional(qry.bizNo(), 40, "业务单号"),
+                    PayConfigRules.optional(qry.orderNo(), 40, "订单编号"),
+                    PayConfigRules.optional(qry.status(), 20, "状态"),
+                    qry.pageNum(),
+                    qry.pageSize()));
         return PageResult.of(
-                page.getRecords().stream().map(PayNotifyDTOConverter::task).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(PayNotifyDTOConverter::task).toList(),
+            page.getTotal());
     }
 }

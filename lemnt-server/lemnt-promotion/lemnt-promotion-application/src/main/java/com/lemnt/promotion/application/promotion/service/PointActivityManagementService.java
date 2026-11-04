@@ -31,7 +31,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/** 积分商城活动直接管理，同一商品只能参加一个开启的积分活动。 */
+/**
+ * 积分商城活动直接管理，同一商品只能参加一个开启的积分活动。
+ */
 @Component
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
@@ -54,13 +56,13 @@ public class PointActivityManagementService {
     }
 
     private List<PointProduct> validate(
-            Long activityId, Long spuId, Integer sort, List<PointProductCmd> lines) {
+        Long activityId, Long spuId, Integer sort, List<PointProductCmd> lines) {
         require(spus.findSpu(spuId) != null, "积分商品不存在");
         require(sort != null && sort >= 0, "排序必须为非负整数");
         require(lines != null && !lines.isEmpty(), "积分商品不能为空");
         var skuMap =
-                skus.catalogSkus(spuId).stream()
-                        .collect(Collectors.toMap(ProductSku::id, value -> value));
+            skus.catalogSkus(spuId).stream()
+                .collect(Collectors.toMap(ProductSku::id, value -> value));
         var seen = new HashSet<Long>();
         var result = new ArrayList<PointProduct>();
         for (var line : lines) {
@@ -69,26 +71,26 @@ public class PointActivityManagementService {
             require(line.exchangeCount() != null && line.exchangeCount() > 0, "可兑换次数必须大于零");
             require(line.point() != null && line.point() >= 0, "兑换积分不能为负");
             require(
-                    line.price() != null && line.price().signum() >= 0 && line.price().scale() <= 2,
-                    "补差金额不能为负且最多两位小数");
+                line.price() != null && line.price().signum() >= 0 && line.price().scale() <= 2,
+                "补差金额不能为负且最多两位小数");
             require(line.stock() != null && line.stock() >= 0, "积分商品库存不能为负");
             result.add(
-                    new PointProduct(
-                            null,
-                            activityId,
-                            spuId,
-                            line.skuId(),
-                            line.exchangeCount(),
-                            line.point(),
-                            line.price(),
-                            line.stock(),
-                            0));
+                new PointProduct(
+                    null,
+                    activityId,
+                    spuId,
+                    line.skuId(),
+                    line.exchangeCount(),
+                    line.point(),
+                    line.price(),
+                    line.stock(),
+                    0));
         }
         require(result.stream().mapToInt(PointProduct::stock).sum() > 0, "积分活动库存合计必须大于零");
         var conflicts =
-                activities.enabled().stream()
-                        .filter(other -> !Objects.equals(other.id(), activityId))
-                        .anyMatch(other -> Objects.equals(other.spuId(), spuId));
+            activities.enabled().stream()
+                .filter(other -> !Objects.equals(other.id(), activityId))
+                .anyMatch(other -> Objects.equals(other.spuId(), spuId));
         require(!conflicts, "商品已参加其他开启的积分商城活动");
         return result;
     }
@@ -97,9 +99,9 @@ public class PointActivityManagementService {
         var lines = validate(null, cmd.spuId(), cmd.sort(), cmd.products());
         var stock = lines.stream().mapToInt(PointProduct::stock).sum();
         var saved =
-                activities.save(
-                        new PointActivity(
-                                null, cmd.spuId(), 0, cmd.remark(), cmd.sort(), stock, stock));
+            activities.save(
+                new PointActivity(
+                    null, cmd.spuId(), 0, cmd.remark(), cmd.sort(), stock, stock));
         products.replace(saved.id(), lines);
         return saved.id();
     }
@@ -111,8 +113,8 @@ public class PointActivityManagementService {
         var stock = lines.stream().mapToInt(PointProduct::stock).sum();
         var totalStock = Math.max(current.totalStock(), stock);
         activities.save(
-                new PointActivity(
-                        cmd.id(), cmd.spuId(), 0, cmd.remark(), cmd.sort(), stock, totalStock));
+            new PointActivity(
+                cmd.id(), cmd.spuId(), 0, cmd.remark(), cmd.sort(), stock, totalStock));
         products.replace(cmd.id(), lines);
         return true;
     }
@@ -139,14 +141,14 @@ public class PointActivityManagementService {
     @Transactional(readOnly = true)
     public PageResult<PointActivityDTO> page(PointActivityPageQry qry) {
         require(
-                qry.pageNum() != null
-                        && qry.pageNum() >= 1
-                        && qry.pageSize() != null
-                        && qry.pageSize() >= 1
-                        && qry.pageSize() <= 100,
-                "分页参数不合法");
+            qry.pageNum() != null
+                && qry.pageNum() >= 1
+                && qry.pageSize() != null
+                && qry.pageSize() >= 1
+                && qry.pageSize() <= 100,
+            "分页参数不合法");
         var page =
-                activities.page(new PointFilter(null, qry.status(), qry.pageNum(), qry.pageSize()));
+            activities.page(new PointFilter(null, qry.status(), qry.pageNum(), qry.pageSize()));
         return PageResult.of(page.getRecords().stream().map(this::dto).toList(), page.getTotal());
     }
 
@@ -166,7 +168,9 @@ public class PointActivityManagementService {
         return dto(value);
     }
 
-    /** 下单前校验活动、限兑数量和库存后返回所需积分与补差金额。 */
+    /**
+     * 下单前校验活动、限兑数量和库存后返回所需积分与补差金额。
+     */
     @Transactional(readOnly = true)
     public PointJoinDTO validateJoin(Long activityId, Long skuId, Integer count) {
         require(count != null && count > 0, "兑换数量不合法");
@@ -177,7 +181,7 @@ public class PointActivityManagementService {
         require(count <= product.exchangeCount(), "超过可兑换次数");
         require(count <= product.stock(), "积分商品库存不足");
         return new PointJoinDTO(
-                activityId, product.point(), product.price(), product.exchangeCount());
+            activityId, product.point(), product.price(), product.exchangeCount());
     }
 
     public void decreaseStock(Long activityId, Long skuId, Integer count) {
@@ -202,35 +206,35 @@ public class PointActivityManagementService {
         var lines = products.byActivityId(value.id());
         var min = lines.stream().min(Comparator.comparing(PointProduct::point)).orElse(null);
         var market =
-                spus.findSpus(List.of(value.spuId())).stream()
-                        .flatMap(item -> skus.catalogSkus(item.id()).stream())
-                        .map(ProductSku::price)
-                        .min(BigDecimal::compareTo)
-                        .orElse(null);
+            spus.findSpus(List.of(value.spuId())).stream()
+                .flatMap(item -> skus.catalogSkus(item.id()).stream())
+                .map(ProductSku::price)
+                .min(BigDecimal::compareTo)
+                .orElse(null);
         return new PointActivityDTO(
-                value.id(),
-                value.spuId(),
-                spu == null ? null : spu.name(),
-                spu == null ? null : spu.image(),
-                value.status(),
-                value.remark(),
-                value.sort(),
-                value.stock(),
-                value.totalStock(),
-                min == null ? null : min.point(),
-                min == null ? null : min.price(),
-                market,
-                lines.stream()
-                        .map(
-                                line ->
-                                        new PointProductDTO(
-                                                line.id(),
-                                                line.skuId(),
-                                                line.spuId(),
-                                                line.exchangeCount(),
-                                                line.point(),
-                                                line.price(),
-                                                line.stock()))
-                        .toList());
+            value.id(),
+            value.spuId(),
+            spu == null ? null : spu.name(),
+            spu == null ? null : spu.image(),
+            value.status(),
+            value.remark(),
+            value.sort(),
+            value.stock(),
+            value.totalStock(),
+            min == null ? null : min.point(),
+            min == null ? null : min.price(),
+            market,
+            lines.stream()
+                .map(
+                    line ->
+                        new PointProductDTO(
+                            line.id(),
+                            line.skuId(),
+                            line.spuId(),
+                            line.exchangeCount(),
+                            line.point(),
+                            line.price(),
+                            line.stock()))
+                .toList());
     }
 }

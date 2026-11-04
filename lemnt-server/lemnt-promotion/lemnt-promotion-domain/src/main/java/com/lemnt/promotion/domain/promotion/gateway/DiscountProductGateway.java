@@ -4,7 +4,9 @@ import com.lemnt.promotion.domain.promotion.model.DiscountProduct;
 
 import java.util.List;
 
-/** 折扣活动商品表访问。 */
+/**
+ * 折扣活动商品表访问。
+ */
 public interface DiscountProductGateway {
     List<DiscountProduct> byActivities(List<Long> activityIds);
 

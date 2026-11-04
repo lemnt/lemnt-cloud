@@ -16,7 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/** 验证框架初始化信息仅包含用户、角色和权限。 */
+/**
+ * 验证框架初始化信息仅包含用户、角色和权限。
+ */
 class UserInfoQueryExeTest {
     private final UserGateway users = mock(UserGateway.class);
 

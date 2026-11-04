@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 小程序积分流水接口。 */
+/**
+ * 小程序积分流水接口。
+ */
 @Tag(name = "小程序积分流水")
 @RestController
 @RequestMapping("/app/growths")
@@ -32,13 +34,13 @@ public class AppMemberPointRecordController {
     @Operation(summary = "本人积分流水分页")
     public R<AppMemberGrowthPointRes> point(@Valid @ModelAttribute PointRecordPageReq req) {
         var page =
-                memberAssetRecordPageQueryExe.execute(
-                        MemberGrowthReqConverter.toPointRecordPageQry(
-                                SecurityUtils.getUserId(), req));
+            memberAssetRecordPageQueryExe.execute(
+                MemberGrowthReqConverter.toPointRecordPageQry(
+                    SecurityUtils.getUserId(), req));
         return R.page(
-                page.getRecords().stream()
-                        .map(MemberGrowthResConverter::toAppMemberGrowthPointRes)
-                        .toList(),
-                page.getTotal());
+            page.getRecords().stream()
+                .map(MemberGrowthResConverter::toAppMemberGrowthPointRes)
+                .toList(),
+            page.getTotal());
     }
 }

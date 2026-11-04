@@ -30,7 +30,7 @@ public class PostPageQueryExe {
         query.setPostName(qry.postName());
         query.setStatus(qry.status());
         PageResult<Post> pageResult =
-                postGateway.selectPage(query, new PageQry(qry.pageNum(), qry.pageSize()));
+            postGateway.selectPage(query, new PageQry(qry.pageNum(), qry.pageSize()));
         List<PostDTO> dtoList = PostConverter.toDTOList(pageResult.getRecords());
         return PageResult.of(dtoList, pageResult.getTotal());
     }

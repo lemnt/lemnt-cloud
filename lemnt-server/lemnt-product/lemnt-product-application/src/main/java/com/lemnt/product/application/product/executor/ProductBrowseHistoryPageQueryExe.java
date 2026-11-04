@@ -9,13 +9,17 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** BrowseHistorypage执行器。 */
+/**
+ * BrowseHistorypage执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductBrowseHistoryPageQueryExe {
     private final ProductBrowseHistoryService service;
 
-    /** 委托领域应用服务完成本次用例。 */
+    /**
+     * 委托领域应用服务完成本次用例。
+     */
     public PageResult<ProductBrowseHistoryDTO> execute(ProductBrowseHistoryPageQry value) {
         return service.page(value);
     }

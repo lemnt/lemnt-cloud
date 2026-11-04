@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 拼团活动修改执行器。 */
+/**
+ * 拼团活动修改执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class CombinationActivityUpdateCmdExe {

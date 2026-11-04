@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 小程序收银台可用的支付渠道：仅返回应用下已启用的渠道配置。 */
+/**
+ * 小程序收银台可用的支付渠道：仅返回应用下已启用的渠道配置。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberPaymentChannelQueryExe {
@@ -28,14 +30,16 @@ public class MemberPaymentChannelQueryExe {
             throw new ServiceException("支付应用不存在或已停用", 400);
         }
         return channels.listByAppId(app.id()).stream()
-                .filter(value -> Integer.valueOf(0).equals(value.status()))
-                .map(value -> channel(value.code()))
-                .filter(value -> value != null)
-                .distinct()
-                .toList();
+            .filter(value -> Integer.valueOf(0).equals(value.status()))
+            .map(value -> channel(value.code()))
+            .filter(value -> value != null)
+            .distinct()
+            .toList();
     }
 
-    /** 渠道配置创建时已校验编码，这里仍对未知编码跳过，避免展示无法支付的渠道。 */
+    /**
+     * 渠道配置创建时已校验编码，这里仍对未知编码跳过，避免展示无法支付的渠道。
+     */
     private PaymentChannelDTO channel(String code) {
         try {
             var channel = PaymentChannel.valueOf(code);

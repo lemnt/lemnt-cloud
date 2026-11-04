@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 签到汇总查询执行器。 */
+/**
+ * 签到汇总查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberSignSummaryQueryExe {
@@ -26,14 +28,14 @@ public class MemberSignSummaryQueryExe {
         var today = memberUserGateway.now().toLocalDate();
         var last = memberSignRecordGateway.lastSign(qry.memberId());
         int continuous =
-                last != null
-                                && (last.signDate().equals(today)
-                                        || last.signDate().equals(today.minusDays(1)))
-                        ? last.day()
-                        : 0;
+            last != null
+                && (last.signDate().equals(today)
+                || last.signDate().equals(today.minusDays(1)))
+                ? last.day()
+                : 0;
         return new SignSummaryDTO(
-                memberSignRecordGateway.signCount(qry.memberId()),
-                continuous,
-                last != null && last.signDate().equals(today));
+            memberSignRecordGateway.signCount(qry.memberId()),
+            continuous,
+            last != null && last.signDate().equals(today));
     }
 }

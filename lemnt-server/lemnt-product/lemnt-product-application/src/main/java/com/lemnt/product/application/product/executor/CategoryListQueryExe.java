@@ -23,7 +23,7 @@ public class CategoryListQueryExe {
      */
     public List<CategoryDTO> execute() {
         return categoryGateway.categories().stream()
-                .map(ProductCatalogDTOConverter::category)
-                .toList();
+            .map(ProductCatalogDTOConverter::category)
+            .toList();
     }
 }

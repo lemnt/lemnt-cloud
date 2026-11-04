@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** ProductInventoryService 跨表应用编排，保持原有事务和锁顺序。 */
+/**
+ * ProductInventoryService 跨表应用编排，保持原有事务和锁顺序。
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductInventoryService {
@@ -23,10 +25,10 @@ public class ProductInventoryService {
 
     private String reservationKey(String value, Long productId) {
         if (value == null
-                || value.isBlank()
-                || value.trim().length() > 40
-                || productId == null
-                || productId <= 0) {
+            || value.isBlank()
+            || value.trim().length() > 40
+            || productId == null
+            || productId <= 0) {
             throw new IllegalArgumentException("库存预占编号不合法");
         }
         return value.trim();
@@ -57,14 +59,16 @@ public class ProductInventoryService {
         }
         stockReservationGateway.insert(new StockReservation(key, productId, quantity, "RESERVED"));
         outbox.enqueue(
-                CommerceEventTopics.STOCK_PRE_RESERVED,
-                key + ":" + productId,
-                key,
-                JsonUtils.toJsonStr(new StockPreReservedEvent(key, productId, quantity)));
+            CommerceEventTopics.STOCK_PRE_RESERVED,
+            key + ":" + productId,
+            key,
+            JsonUtils.toJsonStr(new StockPreReservedEvent(key, productId, quantity)));
         return true;
     }
 
-    /** 读取时仍按SKU及原预占行顺序加锁，避免用一级缓存误判确认结果。 */
+    /**
+     * 读取时仍按SKU及原预占行顺序加锁，避免用一级缓存误判确认结果。
+     */
     @Transactional(rollbackFor = Exception.class)
     public StockReservation reservationStatus(String reservationNo, Long skuId) {
         return lockReservation(reservationKey(reservationNo, skuId), skuId);
@@ -80,7 +84,7 @@ public class ProductInventoryService {
         if (row == null) {
             // Terminal cancellation prevents a delayed RPC from reserving after order close.
             stockReservationGateway.insert(
-                    new StockReservation(key, productId, quantity, "RELEASED"));
+                new StockReservation(key, productId, quantity, "RELEASED"));
             return;
         }
         if (!quantity.equals(row.quantity())) {
@@ -97,7 +101,7 @@ public class ProductInventoryService {
             throw new IllegalStateException("已确认的库存不能直接释放");
         }
         if (!stockReservationGateway.release(key, productId)
-                || !productSkuGateway.releaseQuantity(productId, row.quantity())) {
+            || !productSkuGateway.releaseQuantity(productId, row.quantity())) {
             throw new IllegalStateException("库存释放失败");
         }
     }
@@ -130,7 +134,9 @@ public class ProductInventoryService {
         }
     }
 
-    /** 售后成功按商品数量回补，原预占行串行核对累计数量，售后编号保证重试不重复。 */
+    /**
+     * 售后成功按商品数量回补，原预占行串行核对累计数量，售后编号保证重试不重复。
+     */
     @Transactional(rollbackFor = Exception.class)
     public void returnStock(String orderNo, String refundNo, Long productId, Integer quantity) {
         reservationKey(orderNo, productId);
@@ -145,20 +151,20 @@ public class ProductInventoryService {
         var previous = stockReservationGateway.lock(key, productId);
         if (previous != null) {
             if (!"RETURNED".equals(previous.status())
-                    || !orderNo.equals(previous.sourceNo())
-                    || !quantity.equals(previous.quantity())) {
+                || !orderNo.equals(previous.sourceNo())
+                || !quantity.equals(previous.quantity())) {
                 throw new IllegalStateException("售后回补内容与原请求不一致");
             }
             return;
         }
         if ((long) stockReservationGateway.returnedQuantity(orderNo, productId) + quantity
-                > original.quantity()) {
+            > original.quantity()) {
             throw new IllegalStateException("累计回补数量超过原订单数量");
         }
         if (!productSkuGateway.releaseQuantity(productId, quantity)) {
             throw new IllegalStateException("售后库存回补失败");
         }
         stockReservationGateway.insert(
-                new StockReservation(key, productId, quantity, "RETURNED", orderNo));
+            new StockReservation(key, productId, quantity, "RETURNED", orderNo));
     }
 }

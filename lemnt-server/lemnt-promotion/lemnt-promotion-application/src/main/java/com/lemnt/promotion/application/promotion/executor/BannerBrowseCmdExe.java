@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** Banner 点击量累加执行器。 */
+/**
+ * Banner 点击量累加执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class BannerBrowseCmdExe {

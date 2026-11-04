@@ -6,11 +6,13 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 区分固定单件基准与剩余额度均摊，校验末次守恒和非法历史额度。 */
+/**
+ * 区分固定单件基准与剩余额度均摊，校验末次守恒和非法历史额度。
+ */
 class AfterSaleRefundCalculatorTest {
     private BigDecimal cash(String original, int q, int r, String refunded, int requested) {
         return AfterSaleRefundCalculator.cash(
-                new BigDecimal(original), q, r, new BigDecimal(refunded), requested);
+            new BigDecimal(original), q, r, new BigDecimal(refunded), requested);
     }
 
     @Test
@@ -57,7 +59,7 @@ class AfterSaleRefundCalculatorTest {
                 var refunded = BigDecimal.ZERO;
                 for (int previous = 0; previous < quantity; previous++) {
                     var current =
-                            AfterSaleRefundCalculator.cash(total, quantity, previous, refunded, 1);
+                        AfterSaleRefundCalculator.cash(total, quantity, previous, refunded, 1);
                     assertTrue(current.signum() >= 0);
                     refunded = refunded.add(current);
                 }

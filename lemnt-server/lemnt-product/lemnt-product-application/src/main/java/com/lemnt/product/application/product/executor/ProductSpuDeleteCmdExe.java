@@ -6,13 +6,17 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 商品删除执行器。 */
+/**
+ * 商品删除执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductSpuDeleteCmdExe {
     private final ProductManagementService catalogManagementService;
 
-    /** 执行商品管理写操作。 */
+    /**
+     * 执行商品管理写操作。
+     */
     public boolean execute(Long value) {
         return catalogManagementService.delete(value);
     }

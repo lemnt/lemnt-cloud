@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** pay_recharge_package 持久化实现。 */
+/**
+ * pay_recharge_package 持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class RechargePackageGatewayImpl implements RechargePackageGateway {
@@ -25,21 +27,21 @@ public class RechargePackageGatewayImpl implements RechargePackageGateway {
     @Override
     public PageResult<RechargePackage> page(RechargePackageFilter filter) {
         var page =
-                mapper.selectPage(
-                        new Page<RechargePackageDO>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.<RechargePackageDO>lambdaQuery()
-                                .like(
-                                        filter.name() != null && !filter.name().isBlank(),
-                                        RechargePackageDO::getName,
-                                        filter.name())
-                                .eq(
-                                        filter.status() != null,
-                                        RechargePackageDO::getStatus,
-                                        filter.status())
-                                .orderByDesc(RechargePackageDO::getId));
+            mapper.selectPage(
+                new Page<RechargePackageDO>(filter.pageNum(), filter.pageSize()),
+                Wrappers.<RechargePackageDO>lambdaQuery()
+                    .like(
+                        filter.name() != null && !filter.name().isBlank(),
+                        RechargePackageDO::getName,
+                        filter.name())
+                    .eq(
+                        filter.status() != null,
+                        RechargePackageDO::getStatus,
+                        filter.status())
+                    .orderByDesc(RechargePackageDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(RechargeConverter::toEntity).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(RechargeConverter::toEntity).toList(),
+            page.getTotal());
     }
 
     @Override
@@ -50,23 +52,23 @@ public class RechargePackageGatewayImpl implements RechargePackageGateway {
     @Override
     public List<RechargePackage> listEnabled() {
         return mapper
-                .selectList(
-                        Wrappers.<RechargePackageDO>lambdaQuery()
-                                .eq(RechargePackageDO::getStatus, 0)
-                                .orderByAsc(RechargePackageDO::getPayPrice)
-                                .orderByAsc(RechargePackageDO::getId))
-                .stream()
-                .map(RechargeConverter::toEntity)
-                .toList();
+            .selectList(
+                Wrappers.<RechargePackageDO>lambdaQuery()
+                    .eq(RechargePackageDO::getStatus, 0)
+                    .orderByAsc(RechargePackageDO::getPayPrice)
+                    .orderByAsc(RechargePackageDO::getId))
+            .stream()
+            .map(RechargeConverter::toEntity)
+            .toList();
     }
 
     @Override
     public boolean existsName(String name, Long excludeId) {
         return mapper.selectCount(
-                        Wrappers.<RechargePackageDO>lambdaQuery()
-                                .eq(RechargePackageDO::getName, name)
-                                .ne(excludeId != null, RechargePackageDO::getId, excludeId))
-                > 0;
+            Wrappers.<RechargePackageDO>lambdaQuery()
+                .eq(RechargePackageDO::getName, name)
+                .ne(excludeId != null, RechargePackageDO::getId, excludeId))
+            > 0;
     }
 
     @Override

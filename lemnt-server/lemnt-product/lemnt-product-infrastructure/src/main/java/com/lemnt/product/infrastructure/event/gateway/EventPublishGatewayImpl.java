@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** broker明确接受后才允许本地任务完成；不吞异常、不记录完整载荷。 */
+/**
+ * broker明确接受后才允许本地任务完成；不吞异常、不记录完整载荷。
+ */
 @Component
 @RequiredArgsConstructor
 public class EventPublishGatewayImpl implements EventPublishGateway {

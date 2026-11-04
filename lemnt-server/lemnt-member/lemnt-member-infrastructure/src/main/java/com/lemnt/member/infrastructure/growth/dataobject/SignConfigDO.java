@@ -10,7 +10,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/** 签到规则，天数唯一但不再承担主键。 */
+/**
+ * 签到规则，天数唯一但不再承担主键。
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("member_sign_in_config")
@@ -24,6 +26,8 @@ public class SignConfigDO extends BaseDO {
     private Long point;
     private Long experience;
 
-    /** 1启用，0停用，沿本项目状态约定。 */
+    /**
+     * 1启用，0停用，沿本项目状态约定。
+     */
     private Integer status;
 }

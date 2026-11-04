@@ -9,8 +9,9 @@ import java.io.Serializable;
  */
 @Schema(description = "会员SignConfig响应")
 public record SignConfigRes(
-        @Schema(description = "本轮连续签到第几天") Integer day,
-        @Schema(description = "奖励积分") Long point,
-        @Schema(description = "经验值或等级升级门槛") Long experience,
-        @Schema(description = "状态：1启用，0停用") Integer status)
-        implements Serializable {}
+    @Schema(description = "本轮连续签到第几天") Integer day,
+    @Schema(description = "奖励积分") Long point,
+    @Schema(description = "经验值或等级升级门槛") Long experience,
+    @Schema(description = "状态：1启用，0停用") Integer status)
+    implements Serializable {
+}

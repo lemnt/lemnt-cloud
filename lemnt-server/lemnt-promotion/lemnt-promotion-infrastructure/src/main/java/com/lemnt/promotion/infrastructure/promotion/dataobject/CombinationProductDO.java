@@ -9,7 +9,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/** 拼团活动商品持久化对象。 */
+/**
+ * 拼团活动商品持久化对象。
+ */
 @Data
 @TableName("promotion_combination_product")
 public class CombinationProductDO {

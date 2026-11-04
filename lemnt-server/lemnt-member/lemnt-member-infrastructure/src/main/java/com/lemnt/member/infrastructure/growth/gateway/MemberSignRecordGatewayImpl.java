@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
-/** member_sign_in_record 表持久化实现。 */
+/**
+ * member_sign_in_record 表持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
@@ -55,8 +57,8 @@ public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
     @Override
     public List<SignRecord> signs(Long memberId, int offset, int limit) {
         return signsRow(memberId, offset, limit).stream()
-                .map(SignRecordConverter::toEntity)
-                .toList();
+            .map(SignRecordConverter::toEntity)
+            .toList();
     }
 
     /**
@@ -73,8 +75,8 @@ public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
     @Override
     public List<SignRecord> signs(SignRecordPageFilter f) {
         return memberSignRecordMapper.signsPage(f).stream()
-                .map(SignRecordConverter::toEntity)
-                .toList();
+            .map(SignRecordConverter::toEntity)
+            .toList();
     }
 
     /**
@@ -90,9 +92,9 @@ public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
      */
     private SignRecordDO signDateRow(Long memberId, LocalDate date) {
         return memberSignRecordMapper.selectOne(
-                Wrappers.<SignRecordDO>lambdaQuery()
-                        .eq(SignRecordDO::getUserId, memberId)
-                        .eq(SignRecordDO::getSignDate, date));
+            Wrappers.<SignRecordDO>lambdaQuery()
+                .eq(SignRecordDO::getUserId, memberId)
+                .eq(SignRecordDO::getSignDate, date));
     }
 
     /**
@@ -100,10 +102,10 @@ public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
      */
     private SignRecordDO lastSignRow(Long memberId) {
         return memberSignRecordMapper.selectOne(
-                Wrappers.<SignRecordDO>lambdaQuery()
-                        .eq(SignRecordDO::getUserId, memberId)
-                        .orderByDesc(SignRecordDO::getSignDate)
-                        .last("LIMIT 1"));
+            Wrappers.<SignRecordDO>lambdaQuery()
+                .eq(SignRecordDO::getUserId, memberId)
+                .orderByDesc(SignRecordDO::getSignDate)
+                .last("LIMIT 1"));
     }
 
     /**
@@ -111,12 +113,12 @@ public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
      */
     private List<SignRecordDO> signsRow(Long memberId, int offset, int limit) {
         return memberSignRecordMapper
-                .selectPage(
-                        new Page<>((long) offset / limit + 1, limit, false),
-                        Wrappers.<SignRecordDO>lambdaQuery()
-                                .eq(SignRecordDO::getUserId, memberId)
-                                .orderByDesc(SignRecordDO::getId))
-                .getRecords();
+            .selectPage(
+                new Page<>((long) offset / limit + 1, limit, false),
+                Wrappers.<SignRecordDO>lambdaQuery()
+                    .eq(SignRecordDO::getUserId, memberId)
+                    .orderByDesc(SignRecordDO::getId))
+            .getRecords();
     }
 
     /**
@@ -124,6 +126,6 @@ public class MemberSignRecordGatewayImpl implements MemberSignRecordGateway {
      */
     private long signCountRow(Long memberId) {
         return memberSignRecordMapper.selectCount(
-                Wrappers.<SignRecordDO>lambdaQuery().eq(SignRecordDO::getUserId, memberId));
+            Wrappers.<SignRecordDO>lambdaQuery().eq(SignRecordDO::getUserId, memberId));
     }
 }

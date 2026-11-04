@@ -31,36 +31,36 @@ public class StoreProductPageQueryExe {
      */
     public StorePageDTO execute(StorePageQry q) {
         if (q == null
-                || q.pageNum() < 1
-                || q.pageNum() > 1000000
-                || q.pageSize() < 1
-                || q.pageSize() > 100) {
+            || q.pageNum() < 1
+            || q.pageNum() > 1000000
+            || q.pageSize() < 1
+            || q.pageSize() > 100) {
             throw new IllegalArgumentException("分页参数不合法");
         }
         if (q.categoryId() != null) {
             ProductCatalogValidation.id(q.categoryId());
         }
         String name =
-                q.name() == null || q.name().isBlank()
-                        ? null
-                        : ProductCatalogValidation.text(q.name(), 200, "商品名称");
+            q.name() == null || q.name().isBlank()
+                ? null
+                : ProductCatalogValidation.text(q.name(), 200, "商品名称");
         var f =
-                new StoreFilter(
-                        name, q.categoryId(), (q.pageNum() - 1) * q.pageSize(), q.pageSize());
+            new StoreFilter(
+                name, q.categoryId(), (q.pageNum() - 1) * q.pageSize(), q.pageSize());
         return new StorePageDTO(
-                productSpuGateway.products(f).stream()
-                        .map(
-                                v ->
-                                        new StoreProductDTO(
-                                                v.id(),
-                                                v.name(),
-                                                v.categoryId(),
-                                                v.brandId(),
-                                                v.image(),
-                                                money(v.minPrice()),
-                                                money(v.maxPrice()),
-                                                v.available()))
-                        .toList(),
-                productSpuGateway.storeCount(f));
+            productSpuGateway.products(f).stream()
+                .map(
+                    v ->
+                        new StoreProductDTO(
+                            v.id(),
+                            v.name(),
+                            v.categoryId(),
+                            v.brandId(),
+                            v.image(),
+                            money(v.minPrice()),
+                            money(v.maxPrice()),
+                            v.available()))
+                .toList(),
+            productSpuGateway.storeCount(f));
     }
 }

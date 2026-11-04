@@ -23,9 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** 后台物流单查询接口。 */
+/**
+ * 后台物流单查询接口。
+ */
 @Tag(name = "物流单管理")
 @RestController
 @RequestMapping("/trade/admin/shipments")
@@ -35,18 +38,22 @@ public class ShipmentQueryController {
     private final ShipmentDetailQueryExe detailQuery;
     private final ShipmentTrackListQueryExe trackQuery;
 
-    /** 分页查询物流单。 */
+    /**
+     * 分页查询物流单。
+     */
     @GetMapping
     @Operation(summary = "物流单分页")
     @RequiresPermissions("trade:shipment:list")
     public R<ShipmentPageRes> page(@Valid @ModelAttribute ShipmentPageReq req) {
         var page = pageQuery.execute(ShipmentReqConverter.page(req));
         return R.page(
-                page.getRecords().stream().map(ShipmentResConverter::page).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(ShipmentResConverter::page).toList(),
+            page.getTotal());
     }
 
-    /** 查询含收件信息的物流详情。 */
+    /**
+     * 查询含收件信息的物流详情。
+     */
     @GetMapping("/{orderNo}")
     @Operation(summary = "物流单详情")
     @RequiresPermissions("trade:shipment:query")
@@ -55,7 +62,9 @@ public class ShipmentQueryController {
         return result == null ? R.fail("物流单不存在") : R.ok(ShipmentResConverter.detail(result));
     }
 
-    /** 按本地登记运单查询真实渠道轨迹。 */
+    /**
+     * 按本地登记运单查询真实渠道轨迹。
+     */
     @GetMapping("/{orderNo}/tracks")
     @Operation(summary = "物流轨迹查询")
     @RequiresPermissions("trade:shipment:track")

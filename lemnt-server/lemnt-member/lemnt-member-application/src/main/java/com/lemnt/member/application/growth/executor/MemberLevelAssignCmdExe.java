@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 等级分配命令执行器。 */
+/**
+ * 等级分配命令执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberLevelAssignCmdExe {
@@ -19,6 +21,6 @@ public class MemberLevelAssignCmdExe {
      */
     public Boolean execute(LevelAssignCmd cmd) {
         return memberGrowthService.assignLevel(
-                cmd.memberId(), cmd.levelId(), cmd.requestNo(), cmd.reason());
+            cmd.memberId(), cmd.levelId(), cmd.requestNo(), cmd.reason());
     }
 }

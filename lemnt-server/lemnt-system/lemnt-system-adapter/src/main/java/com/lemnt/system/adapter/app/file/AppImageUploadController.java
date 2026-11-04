@@ -13,18 +13,23 @@ import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-/** 会员图片上传复用统一文件存储，身份由网关会员域校验。 */
+/**
+ * 会员图片上传复用统一文件存储，身份由网关会员域校验。
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/files/app")
 public class AppImageUploadController {
     private final FileUploadCmdExe uploads;
 
-    /** 校验图片类型、大小及文件头，不向存储传入未验证的任意文件。 */
+    /**
+     * 校验图片类型、大小及文件头，不向存储传入未验证的任意文件。
+     */
     @PostMapping(value = "/upload", consumes = "multipart/form-data")
     @RequiresLogin
     public R<ImageUploadRes> upload(@Valid @ModelAttribute ImageUploadReq req) throws IOException {
@@ -35,34 +40,34 @@ public class AppImageUploadController {
         try (var content = file.getInputStream()) {
             byte[] h = content.readNBytes(12);
             boolean valid =
-                    "image/jpeg".equals(type)
-                                    && h.length >= 3
-                                    && (h[0] & 255) == 255
-                                    && (h[1] & 255) == 216
-                                    && (h[2] & 255) == 255
-                            || "image/png".equals(type)
-                                    && h.length >= 8
-                                    && Arrays.equals(
-                                            Arrays.copyOf(h, 8),
-                                            new byte[] {(byte) 137, 80, 78, 71, 13, 10, 26, 10})
-                            || "image/webp".equals(type)
-                                    && h.length >= 12
-                                    && new String(h, 0, 4, StandardCharsets.US_ASCII).equals("RIFF")
-                                    && new String(h, 8, 4, StandardCharsets.US_ASCII)
-                                            .equals("WEBP");
+                "image/jpeg".equals(type)
+                    && h.length >= 3
+                    && (h[0] & 255) == 255
+                    && (h[1] & 255) == 216
+                    && (h[2] & 255) == 255
+                    || "image/png".equals(type)
+                    && h.length >= 8
+                    && Arrays.equals(
+                    Arrays.copyOf(h, 8),
+                    new byte[]{(byte) 137, 80, 78, 71, 13, 10, 26, 10})
+                    || "image/webp".equals(type)
+                    && h.length >= 12
+                    && new String(h, 0, 4, StandardCharsets.US_ASCII).equals("RIFF")
+                    && new String(h, 8, 4, StandardCharsets.US_ASCII)
+                    .equals("WEBP");
             if (!valid) throw new ServiceException("只支持JPEG、PNG、WebP图片", 400);
         }
         try (var content = file.getInputStream()) {
             var value =
-                    uploads.execute(
-                            new FileUploadCmd(
-                                    content,
-                                    "image."
-                                            + ("image/jpeg".equals(type)
-                                                    ? "jpg"
-                                                    : "image/png".equals(type) ? "png" : "webp"),
-                                    type,
-                                    file.getSize()));
+                uploads.execute(
+                    new FileUploadCmd(
+                        content,
+                        "image."
+                            + ("image/jpeg".equals(type)
+                            ? "jpg"
+                            : "image/png".equals(type) ? "png" : "webp"),
+                        type,
+                        file.getSize()));
             return R.ok(new ImageUploadRes(value.url()));
         }
     }

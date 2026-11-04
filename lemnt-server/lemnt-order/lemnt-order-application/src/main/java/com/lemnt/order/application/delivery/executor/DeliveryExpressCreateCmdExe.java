@@ -7,13 +7,17 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 配送新增执行器。 */
+/**
+ * 配送新增执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class DeliveryExpressCreateCmdExe {
     private final DeliveryManagementService service;
 
-    /** 执行配送操作。 */
+    /**
+     * 执行配送操作。
+     */
     public Long execute(DeliveryExpressCreateCmd cmd) {
         return service.createExpress(cmd);
     }

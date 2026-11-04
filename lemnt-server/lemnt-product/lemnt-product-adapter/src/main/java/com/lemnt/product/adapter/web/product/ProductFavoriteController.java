@@ -18,21 +18,25 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 商品收藏只读管理，按权限及显式筛选查询。 */
+/**
+ * 商品收藏只读管理，按权限及显式筛选查询。
+ */
 @RestController
 @RequestMapping("/mall/product-favorites")
 @RequiredArgsConstructor
 public class ProductFavoriteController {
     private final ProductFavoritePageQueryExe query;
 
-    /** 商品详情关联记录分页。 */
+    /**
+     * 商品详情关联记录分页。
+     */
     @GetMapping
     @Operation(summary = "商品收藏记录分页")
     @RequiresPermissions("mall:product-favorite:list")
     public R<ProductFavoritePageRes> page(@Valid @ModelAttribute ProductFavoritePageReq req) {
         var result = query.execute(ProductFavoriteReqConverter.page(req));
         return R.page(
-                result.getRecords().stream().map(ProductFavoriteResConverter::page).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(ProductFavoriteResConverter::page).toList(),
+            result.getTotal());
     }
 }

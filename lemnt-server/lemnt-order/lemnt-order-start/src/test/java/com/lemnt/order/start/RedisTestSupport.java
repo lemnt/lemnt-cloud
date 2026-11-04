@@ -17,7 +17,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-/** 仅替代 Redis 传输；保留真实 LockTemplate、事务同步和幂等网关实现。 */
+/**
+ * 仅替代 Redis 传输；保留真实 LockTemplate、事务同步和幂等网关实现。
+ */
 public final class RedisTestSupport {
     public final Map<String, String> values = new ConcurrentHashMap<>();
     public final StringRedisTemplate redis = mock(StringRedisTemplate.class);
@@ -29,33 +31,33 @@ public final class RedisTestSupport {
         when(redis.opsForValue()).thenReturn(operations);
         when(operations.get(anyString())).thenAnswer(call -> values.get(call.getArgument(0)));
         doAnswer(
-                        call -> {
-                            values.put(call.getArgument(0), call.getArgument(1));
-                            return null;
-                        })
-                .when(operations)
-                .set(anyString(), anyString(), any(Duration.class));
+            call -> {
+                values.put(call.getArgument(0), call.getArgument(1));
+                return null;
+            })
+            .when(operations)
+            .set(anyString(), anyString(), any(Duration.class));
         var mutexes = new ConcurrentHashMap<String, ReentrantLock>();
         var executor = mock(RedissonLockExecutor.class);
         when(executor.renewal()).thenReturn(true);
         when(executor.acquire(anyString(), anyString(), anyLong(), anyLong()))
-                .thenAnswer(
-                        call -> {
-                            var mutex =
-                                    mutexes.computeIfAbsent(
-                                            call.getArgument(0), key -> new ReentrantLock());
-                            return mutex.tryLock(3, TimeUnit.SECONDS) ? mock(RLock.class) : null;
-                        });
+            .thenAnswer(
+                call -> {
+                    var mutex =
+                        mutexes.computeIfAbsent(
+                            call.getArgument(0), key -> new ReentrantLock());
+                    return mutex.tryLock(3, TimeUnit.SECONDS) ? mock(RLock.class) : null;
+                });
         when(executor.releaseLock(anyString(), anyString(), any()))
-                .thenAnswer(
-                        call -> {
-                            var mutex = mutexes.get(call.<String>getArgument(0));
-                            if (mutex == null || !mutex.isHeldByCurrentThread()) {
-                                return false;
-                            }
-                            mutex.unlock();
-                            return true;
-                        });
+            .thenAnswer(
+                call -> {
+                    var mutex = mutexes.get(call.<String>getArgument(0));
+                    if (mutex == null || !mutex.isHeldByCurrentThread()) {
+                        return false;
+                    }
+                    mutex.unlock();
+                    return true;
+                });
         var properties = new Lock4jProperties();
         properties.setPrimaryExecutor(RedissonLockExecutor.class);
         locks = new LockTemplate();

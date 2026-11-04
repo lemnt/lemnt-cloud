@@ -55,26 +55,26 @@ public class DictTypeController {
     @GetMapping
     public R<SystemDictTypeListRes> list(@Validated DictTypePageReq req) {
         PageResult<DictTypeDTO> result =
-                dictTypePageQueryExe.execute(DictTypeReqConverter.toQry(req));
+            dictTypePageQueryExe.execute(DictTypeReqConverter.toQry(req));
         return R.page(
-                DictTypeResConverter.toResListToSystemDictTypeListRes(result.getRecords()),
-                result.getTotal());
+            DictTypeResConverter.toResListToSystemDictTypeListRes(result.getRecords()),
+            result.getTotal());
     }
 
     @Operation(summary = "查询字典类型详细")
     @GetMapping(value = "/{dictId}")
     public R<SystemDictTypeGetInfoRes> getInfo(@PathVariable Long dictId) {
         return R.ok(
-                DictTypeResConverter.toResToSystemDictTypeGetInfoRes(
-                        dictTypeDetailQueryExe.executeById(dictId)));
+            DictTypeResConverter.toResToSystemDictTypeGetInfoRes(
+                dictTypeDetailQueryExe.executeById(dictId)));
     }
 
     @Operation(summary = "根据字典类型查询字典数据信息")
     @GetMapping(value = "/options")
     public R<List<SystemDictTypeOptionSelectRes>> optionSelect() {
         return R.ok(
-                DictTypeResConverter.toResListToSystemDictTypeOptionSelectRes(
-                        dictTypeListAllQueryExe.execute()));
+            DictTypeResConverter.toResListToSystemDictTypeOptionSelectRes(
+                dictTypeListAllQueryExe.execute()));
     }
 
     @Operation(summary = "新增字典类型")

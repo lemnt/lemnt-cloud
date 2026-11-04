@@ -18,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 原活动下单入口，统一由订单服务执行。 */
+/**
+ * 原活动下单入口，统一由订单服务执行。
+ */
 @Tag(name = "活动订单")
 @RestController
 @RequestMapping("/mall/app/bargain")
@@ -30,9 +32,9 @@ public class AppBargainOrderController {
     @Operation(summary = "砍价成功后下单")
     public R<AppPromotionOrderRes> order(@Valid @RequestBody AppPromotionOrderCreateReq req) {
         return R.ok(
-                AppPromotionOrderConverter.res(
-                        orderPlace.execute(
-                                AppPromotionOrderConverter.cmd(
-                                        SecurityUtils.getUserId(), "BARGAIN", req))));
+            AppPromotionOrderConverter.res(
+                orderPlace.execute(
+                    AppPromotionOrderConverter.cmd(
+                        SecurityUtils.getUserId(), "BARGAIN", req))));
     }
 }

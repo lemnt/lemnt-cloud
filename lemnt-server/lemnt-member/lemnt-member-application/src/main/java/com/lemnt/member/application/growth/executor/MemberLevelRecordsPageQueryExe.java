@@ -11,7 +11,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 等级记录分页查询执行器。 */
+/**
+ * 等级记录分页查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberLevelRecordsPageQueryExe {
@@ -25,14 +27,14 @@ public class MemberLevelRecordsPageQueryExe {
         MemberRules.id(qry.memberId());
         MemberRules.page(qry.pageNum(), qry.pageSize());
         return new PageResult<>(
-                memberLevelRecordGateway
-                        .levelRecords(
-                                qry.memberId(),
-                                (qry.pageNum() - 1) * qry.pageSize(),
-                                qry.pageSize())
-                        .stream()
-                        .map(MemberGrowthDTOConverter::toLevelRecordDTO)
-                        .toList(),
-                memberLevelRecordGateway.levelRecordCount(qry.memberId()));
+            memberLevelRecordGateway
+                .levelRecords(
+                    qry.memberId(),
+                    (qry.pageNum() - 1) * qry.pageSize(),
+                    qry.pageSize())
+                .stream()
+                .map(MemberGrowthDTOConverter::toLevelRecordDTO)
+                .toList(),
+            memberLevelRecordGateway.levelRecordCount(qry.memberId()));
     }
 }

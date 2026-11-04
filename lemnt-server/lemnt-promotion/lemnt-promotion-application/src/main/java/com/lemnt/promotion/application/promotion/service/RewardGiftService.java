@@ -11,19 +11,25 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
-/** 订单支付成功后按订单快照发放满减活动赠券，重复回调不重复发放。 */
+/**
+ * 订单支付成功后按订单快照发放满减活动赠券，重复回调不重复发放。
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class RewardGiftService {
     private final CouponIssuanceService issuance;
 
-    /** 每个模板按数量逐张发放；模板下架或名额用尽只记录告警，不阻断支付回调。 */
+    /**
+     * 每个模板按数量逐张发放；模板下架或名额用尽只记录告警，不阻断支付回调。
+     */
     public void issuePaid(SettlementOrder order) {
         issuePaid(order.memberId(), order.orderNo(), order.giveCouponTemplateCounts());
     }
 
-    /** 事件仅传必要的原订单身份及冻结赠券数量，不传个人资料。 */
+    /**
+     * 事件仅传必要的原订单身份及冻结赠券数量，不传个人资料。
+     */
     public void issuePaid(Long memberId, String orderNo, Map<Long, Integer> gifts) {
         if (gifts == null || gifts.isEmpty()) {
             return;
@@ -34,10 +40,10 @@ public class RewardGiftService {
                     issuance.gift(memberId, entry.getKey(), orderNo, index);
                 } catch (ServiceException exception) {
                     log.warn(
-                            "订单赠券未发放, orderNo={}, templateId={}, reason={}",
-                            orderNo,
-                            entry.getKey(),
-                            exception.getMessage());
+                        "订单赠券未发放, orderNo={}, templateId={}, reason={}",
+                        orderNo,
+                        entry.getKey(),
+                        exception.getMessage());
                     break;
                 }
             }

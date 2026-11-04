@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 后台人工调整钱包余额。 */
+/**
+ * 后台人工调整钱包余额。
+ */
 @Component
 @RequiredArgsConstructor
 public class WalletAdjustCmdExe {
@@ -20,6 +22,6 @@ public class WalletAdjustCmdExe {
             throw new IllegalArgumentException("调整参数不合法");
         }
         return WalletDTOConverter.wallet(
-                service.adjust(memberId, cmd.requestNo(), cmd.amount(), cmd.reason()));
+            service.adjust(memberId, cmd.requestNo(), cmd.amount(), cmd.reason()));
     }
 }

@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.*;
 import java.util.List;
 
-/** RoleDept 持久化实现。 */
+/**
+ * RoleDept 持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class RoleDeptGatewayImpl implements RoleDeptGateway {
@@ -60,7 +62,7 @@ public class RoleDeptGatewayImpl implements RoleDeptGateway {
      */
     private int deleteRoleDeptByRoleIdRow(Long roleId) {
         return roleDeptMapper.delete(
-                Wrappers.<RoleDeptDO>lambdaQuery().eq(RoleDeptDO::getRoleId, roleId));
+            Wrappers.<RoleDeptDO>lambdaQuery().eq(RoleDeptDO::getRoleId, roleId));
     }
 
     /**
@@ -74,7 +76,7 @@ public class RoleDeptGatewayImpl implements RoleDeptGateway {
             return 0;
         }
         return roleDeptMapper.delete(
-                Wrappers.<RoleDeptDO>lambdaQuery().in(RoleDeptDO::getRoleId, roleIds));
+            Wrappers.<RoleDeptDO>lambdaQuery().in(RoleDeptDO::getRoleId, roleIds));
     }
 
     /**
@@ -85,6 +87,6 @@ public class RoleDeptGatewayImpl implements RoleDeptGateway {
      */
     private long selectCountRoleDeptByDeptIdRow(Long deptId) {
         return roleDeptMapper.selectCount(
-                Wrappers.<RoleDeptDO>lambdaQuery().eq(RoleDeptDO::getDeptId, deptId));
+            Wrappers.<RoleDeptDO>lambdaQuery().eq(RoleDeptDO::getDeptId, deptId));
     }
 }

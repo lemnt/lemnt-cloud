@@ -4,7 +4,9 @@ import com.lemnt.member.domain.address.model.Address;
 
 import java.util.List;
 
-/** 会员收货地址领域网关。 */
+/**
+ * 会员收货地址领域网关。
+ */
 public interface MemberAddressGateway {
 
     /**
@@ -17,7 +19,9 @@ public interface MemberAddressGateway {
      */
     Address address(Long memberId, Long id);
 
-    /** 查询本人的默认地址，不存在时返回null。 */
+    /**
+     * 查询本人的默认地址，不存在时返回null。
+     */
     Address defaultAddress(Long memberId);
 
     /**

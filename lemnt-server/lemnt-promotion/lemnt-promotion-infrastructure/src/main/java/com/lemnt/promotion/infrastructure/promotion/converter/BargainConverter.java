@@ -7,31 +7,34 @@ import com.lemnt.promotion.infrastructure.promotion.dataobject.BargainActivityDO
 import com.lemnt.promotion.infrastructure.promotion.dataobject.BargainHelpDO;
 import com.lemnt.promotion.infrastructure.promotion.dataobject.BargainRecordDO;
 
-/** 砍价领域对象与表结构转换。 */
+/**
+ * 砍价领域对象与表结构转换。
+ */
 public final class BargainConverter {
-    private BargainConverter() {}
+    private BargainConverter() {
+    }
 
     public static BargainActivity model(BargainActivityDO row) {
         if (row == null) {
             return null;
         }
         return new BargainActivity(
-                row.getId(),
-                row.getName(),
-                row.getStartTime(),
-                row.getEndTime(),
-                row.getStatus(),
-                row.getSpuId(),
-                row.getSkuId(),
-                row.getBargainFirstPrice(),
-                row.getBargainMinPrice(),
-                row.getStock(),
-                row.getTotalStock(),
-                row.getHelpMaxCount(),
-                row.getBargainCount(),
-                row.getTotalLimitCount(),
-                row.getRandomMinPrice(),
-                row.getRandomMaxPrice());
+            row.getId(),
+            row.getName(),
+            row.getStartTime(),
+            row.getEndTime(),
+            row.getStatus(),
+            row.getSpuId(),
+            row.getSkuId(),
+            row.getBargainFirstPrice(),
+            row.getBargainMinPrice(),
+            row.getStock(),
+            row.getTotalStock(),
+            row.getHelpMaxCount(),
+            row.getBargainCount(),
+            row.getTotalLimitCount(),
+            row.getRandomMinPrice(),
+            row.getRandomMaxPrice());
     }
 
     public static BargainActivityDO row(BargainActivity value) {
@@ -60,17 +63,17 @@ public final class BargainConverter {
             return null;
         }
         return new BargainRecord(
-                row.getId(),
-                row.getUserId(),
-                row.getActivityId(),
-                row.getSpuId(),
-                row.getSkuId(),
-                row.getBargainFirstPrice(),
-                row.getBargainMinPrice(),
-                row.getBargainPrice(),
-                row.getStatus(),
-                row.getEndTime(),
-                row.getOrderId());
+            row.getId(),
+            row.getUserId(),
+            row.getActivityId(),
+            row.getSpuId(),
+            row.getSkuId(),
+            row.getBargainFirstPrice(),
+            row.getBargainMinPrice(),
+            row.getBargainPrice(),
+            row.getStatus(),
+            row.getEndTime(),
+            row.getOrderId());
     }
 
     public static BargainRecordDO row(BargainRecord value) {
@@ -94,11 +97,11 @@ public final class BargainConverter {
             return null;
         }
         return new BargainHelp(
-                row.getId(),
-                row.getActivityId(),
-                row.getRecordId(),
-                row.getUserId(),
-                row.getReducePrice());
+            row.getId(),
+            row.getActivityId(),
+            row.getRecordId(),
+            row.getUserId(),
+            row.getReducePrice());
     }
 
     public static BargainHelpDO row(BargainHelp value) {

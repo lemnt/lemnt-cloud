@@ -32,7 +32,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 后台装修模板管理。 */
+/**
+ * 后台装修模板管理。
+ */
 @Tag(name = "装修模板")
 @RestController
 @RequestMapping("/mall/promotion/diy-templates")
@@ -52,8 +54,8 @@ public class DiyTemplateController {
     public R<DiyTemplateRes> page(@Valid @ModelAttribute DiyTemplatePageReq req) {
         var result = page.execute(DiyConverter.page(req));
         return R.page(
-                result.getRecords().stream().map(DiyConverter::template).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(DiyConverter::template).toList(),
+            result.getTotal());
     }
 
     @GetMapping("/{id}")

@@ -18,7 +18,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
-/** 配置源及切流开关的本地装配验证，不连接Nacos、数据库或消息中间件。 */
+/**
+ * 配置源及切流开关的本地装配验证，不连接Nacos、数据库或消息中间件。
+ */
 class CommerceConfigurationTest {
     @Test
     void serviceTemplatesRequireIndependentCredentialsAndResolveSharedMqAndRegistry() {
@@ -33,83 +35,83 @@ class CommerceConfigurationTest {
             // 数据库连接没有可误连的默认库或默认凭据。
             for (var field : List.of("url", "username", "password")) {
                 assertThrows(
-                        IllegalArgumentException.class,
-                        () -> resolver.getRequiredProperty(prefix + field));
+                    IllegalArgumentException.class,
+                    () -> resolver.getRequiredProperty(prefix + field));
             }
             String env = owner.toUpperCase();
             sources.addFirst(
-                    new MapPropertySource(
-                            "deployment",
-                            Map.of(
-                                    env + "_DB_URL",
-                                    "jdbc:mysql://localhost/lemnt_" + owner,
-                                    env + "_DB_USERNAME",
-                                    owner + "-test-user",
-                                    env + "_DB_PASSWORD",
-                                    "fixture-password",
-                                    "spring.application.name",
-                                    "lemnt-" + owner,
-                                    "NACOS_NAMESPACE",
-                                    "migration-test",
-                                    "NACOS_GROUP",
-                                    "commerce-test",
-                                    "ROCKETMQ_NAME_SERVER",
-                                    "localhost:9876")));
+                new MapPropertySource(
+                    "deployment",
+                    Map.of(
+                        env + "_DB_URL",
+                        "jdbc:mysql://localhost/lemnt_" + owner,
+                        env + "_DB_USERNAME",
+                        owner + "-test-user",
+                        env + "_DB_PASSWORD",
+                        "fixture-password",
+                        "spring.application.name",
+                        "lemnt-" + owner,
+                        "NACOS_NAMESPACE",
+                        "migration-test",
+                        "NACOS_GROUP",
+                        "commerce-test",
+                        "ROCKETMQ_NAME_SERVER",
+                        "localhost:9876")));
             assertThat(urls.add(resolver.getRequiredProperty(prefix + "url"))).isTrue();
             assertThat(resolver.getRequiredProperty(prefix + "username"))
-                    .isEqualTo(owner + "-test-user");
+                .isEqualTo(owner + "-test-user");
             assertThat(resolver.getProperty("spring.datasource.dynamic.strict", Boolean.class))
-                    .isTrue();
+                .isTrue();
             assertThat(ports.add(resolver.getProperty("dubbo.protocol.port", Integer.class)))
-                    .isTrue();
+                .isTrue();
             assertThat(resolver.getProperty("dubbo.registry.parameters.namespace"))
-                    .isEqualTo("migration-test");
+                .isEqualTo("migration-test");
             assertThat(resolver.getProperty("dubbo.registry.parameters.group"))
-                    .isEqualTo("commerce-test");
+                .isEqualTo("commerce-test");
             assertThat(resolver.getProperty("dubbo.consumer.retries", Integer.class)).isZero();
             assertThat(resolver.getProperty("rocketmq.producer.group"))
-                    .isEqualTo("lemnt-" + owner + "-commerce-producer-v1");
+                .isEqualTo("lemnt-" + owner + "-commerce-producer-v1");
             assertThat(resolver.getProperty("commerce.mq.enabled", Boolean.class)).isFalse();
             if (!"promotion".equals(owner)) {
                 assertThat(resolver.getProperty("commerce.outbox.enabled", Boolean.class))
-                        .isFalse();
+                    .isFalse();
             }
             sources.addFirst(
-                    new MapPropertySource("cutover", Map.of("COMMERCE_MQ_ENABLED", "true")));
+                new MapPropertySource("cutover", Map.of("COMMERCE_MQ_ENABLED", "true")));
             assertThat(resolver.getProperty("commerce.mq.enabled", Boolean.class)).isTrue();
         }
     }
 
-    /** 默认和显式停用均不装配副作用组件；审核后必须显式开启。 */
+    /**
+     * 默认和显式停用均不装配副作用组件；审核后必须显式开启。
+     */
     @Test
     void consumersAndOutboxRelaysRequireExplicitActivation() throws Exception {
         for (var owner : List.of("product", "promotion", "order", "pay")) {
             List<String> consumers =
-                    switch (owner) {
-                        case "product" ->
-                                List.of(
-                                        "OrderPaidConsumer",
-                                        "OrderClosedConsumer",
-                                        "AfterSaleCompletedConsumer");
-                        case "promotion" ->
-                                List.of(
-                                        "OrderPaidConsumer",
-                                        "OrderClosedConsumer",
-                                        "AfterSaleCompletedConsumer",
-                                        "OrderCompletedConsumer",
-                                        "StockPreReservedConsumer");
-                        case "order" -> List.of("PaySuccessConsumer", "PayRefundSuccessConsumer");
-                        default -> List.of("OrderClosedConsumer");
-                    };
+                switch (owner) {
+                    case "product" -> List.of(
+                        "OrderPaidConsumer",
+                        "OrderClosedConsumer",
+                        "AfterSaleCompletedConsumer");
+                    case "promotion" -> List.of(
+                        "OrderPaidConsumer",
+                        "OrderClosedConsumer",
+                        "AfterSaleCompletedConsumer",
+                        "OrderCompletedConsumer",
+                        "StockPreReservedConsumer");
+                    case "order" -> List.of("PaySuccessConsumer", "PayRefundSuccessConsumer");
+                    default -> List.of("OrderClosedConsumer");
+                };
             for (var consumer : consumers) {
                 checkActivation(
-                        Class.forName("com.lemnt." + owner + ".adapter.mq." + consumer),
-                        "commerce.mq.enabled");
+                    Class.forName("com.lemnt." + owner + ".adapter.mq." + consumer),
+                    "commerce.mq.enabled");
             }
             if ("order".equals(owner)) {
                 checkActivation(
-                        Class.forName("com.lemnt." + owner + ".start.OutboxRelayScheduler"),
-                        "commerce.outbox.enabled");
+                    Class.forName("com.lemnt." + owner + ".start.OutboxRelayScheduler"),
+                    "commerce.outbox.enabled");
             }
         }
     }
@@ -121,9 +123,9 @@ class CommerceConfigurationTest {
         }
         runner.run(context -> assertThat(context).doesNotHaveBean(component));
         runner.withPropertyValues(key + "=false")
-                .run(context -> assertThat(context).doesNotHaveBean(component));
+            .run(context -> assertThat(context).doesNotHaveBean(component));
         runner.withPropertyValues(key + "=true")
-                .run(context -> assertThat(context).hasSingleBean(component));
+            .run(context -> assertThat(context).hasSingleBean(component));
     }
 
     private <T> ApplicationContextRunner withMock(ApplicationContextRunner runner, Class<T> type) {

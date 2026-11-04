@@ -33,26 +33,26 @@ class OperLogConsumerTest {
     private final OperLogGateway gateway = mock(OperLogGateway.class);
 
     private final ApplicationContextRunner contextRunner =
-            new ApplicationContextRunner()
-                    .withUserConfiguration(ConsumerConfiguration.class)
-                    .withBean(OperLogAddCmdExe.class, () -> new OperLogAddCmdExe(gateway));
+        new ApplicationContextRunner()
+            .withUserConfiguration(ConsumerConfiguration.class)
+            .withBean(OperLogAddCmdExe.class, () -> new OperLogAddCmdExe(gateway));
 
     @Test
     void registersListenerForOperationAuditTopic() {
         contextRunner.run(
-                context -> {
-                    assertThat(context).hasSingleBean(RocketMQListener.class);
+            context -> {
+                assertThat(context).hasSingleBean(RocketMQListener.class);
 
-                    RocketMQMessageListener listener =
-                            context.getBean(RocketMQListener.class)
-                                    .getClass()
-                                    .getAnnotation(RocketMQMessageListener.class);
+                RocketMQMessageListener listener =
+                    context.getBean(RocketMQListener.class)
+                        .getClass()
+                        .getAnnotation(RocketMQMessageListener.class);
 
-                    assertThat(listener.topic()).isEqualTo(MQConstants.Topic.OPER_LOG_EVENT);
+                assertThat(listener.topic()).isEqualTo(MQConstants.Topic.OPER_LOG_EVENT);
 
-                    assertThat(listener.consumerGroup())
-                            .isEqualTo("system-operlogevent-consumer-group");
-                });
+                assertThat(listener.consumerGroup())
+                    .isEqualTo("system-operlogevent-consumer-group");
+            });
     }
 
     @Test
@@ -92,55 +92,55 @@ class OperLogConsumerTest {
         event.setCostTime(37L);
 
         contextRunner.run(
-                context -> {
-                    assertThat(context).hasSingleBean(RocketMQListener.class);
+            context -> {
+                assertThat(context).hasSingleBean(RocketMQListener.class);
 
-                    context.getBean(RocketMQListener.class).onMessage(JsonUtils.toJsonStr(event));
+                context.getBean(RocketMQListener.class).onMessage(JsonUtils.toJsonStr(event));
 
-                    ArgumentCaptor<OperLog> saved = ArgumentCaptor.forClass(OperLog.class);
+                ArgumentCaptor<OperLog> saved = ArgumentCaptor.forClass(OperLog.class);
 
-                    verify(gateway).insert(saved.capture());
+                verify(gateway).insert(saved.capture());
 
-                    assertThat(saved.getValue())
-                            .extracting(
-                                    OperLog::getTitle,
-                                    OperLog::getBusinessType,
-                                    OperLog::getMethod,
-                                    OperLog::getRequestMethod,
-                                    OperLog::getOperatorType,
-                                    OperLog::getOperName,
-                                    OperLog::getDeptName,
-                                    OperLog::getOperUrl,
-                                    OperLog::getOperIp,
-                                    OperLog::getOperParam,
-                                    OperLog::getJsonResult,
-                                    OperLog::getStatus,
-                                    OperLog::getErrorMsg,
-                                    OperLog::getOperTime,
-                                    OperLog::getCostTime)
-                            .containsExactly(
-                                    event.getTitle(),
-                                    event.getBusinessType(),
-                                    event.getMethod(),
-                                    event.getRequestMethod(),
-                                    event.getOperatorType(),
-                                    event.getOperName(),
-                                    event.getDeptName(),
-                                    event.getOperUrl(),
-                                    event.getOperIp(),
-                                    event.getOperParam(),
-                                    event.getJsonResult(),
-                                    event.getStatus(),
-                                    event.getErrorMsg(),
-                                    event.getOperTime(),
-                                    event.getCostTime());
+                assertThat(saved.getValue())
+                    .extracting(
+                        OperLog::getTitle,
+                        OperLog::getBusinessType,
+                        OperLog::getMethod,
+                        OperLog::getRequestMethod,
+                        OperLog::getOperatorType,
+                        OperLog::getOperName,
+                        OperLog::getDeptName,
+                        OperLog::getOperUrl,
+                        OperLog::getOperIp,
+                        OperLog::getOperParam,
+                        OperLog::getJsonResult,
+                        OperLog::getStatus,
+                        OperLog::getErrorMsg,
+                        OperLog::getOperTime,
+                        OperLog::getCostTime)
+                    .containsExactly(
+                        event.getTitle(),
+                        event.getBusinessType(),
+                        event.getMethod(),
+                        event.getRequestMethod(),
+                        event.getOperatorType(),
+                        event.getOperName(),
+                        event.getDeptName(),
+                        event.getOperUrl(),
+                        event.getOperIp(),
+                        event.getOperParam(),
+                        event.getJsonResult(),
+                        event.getStatus(),
+                        event.getErrorMsg(),
+                        event.getOperTime(),
+                        event.getCostTime());
 
-                    assertThat(
-                                    OperLogResConverter.toRes(
-                                                    OperLogConverter.toDTO(saved.getValue()))
-                                            .costTime())
-                            .isEqualTo(event.getCostTime());
-                });
+                assertThat(
+                    OperLogResConverter.toRes(
+                            OperLogConverter.toDTO(saved.getValue()))
+                        .costTime())
+                    .isEqualTo(event.getCostTime());
+            });
     }
 
     @Test
@@ -148,13 +148,13 @@ class OperLogConsumerTest {
         when(gateway.insert(any())).thenReturn(false);
 
         contextRunner.run(
-                context -> {
-                    assertThat(context).hasSingleBean(RocketMQListener.class);
+            context -> {
+                assertThat(context).hasSingleBean(RocketMQListener.class);
 
-                    assertThatThrownBy(
-                                    () -> context.getBean(RocketMQListener.class).onMessage("{}"))
-                            .isInstanceOf(IllegalStateException.class);
-                });
+                assertThatThrownBy(
+                    () -> context.getBean(RocketMQListener.class).onMessage("{}"))
+                    .isInstanceOf(IllegalStateException.class);
+            });
     }
 
     @Test
@@ -164,36 +164,37 @@ class OperLogConsumerTest {
         when(gateway.insert(any())).thenThrow(failure);
 
         contextRunner.run(
-                context -> {
-                    assertThat(context).hasSingleBean(RocketMQListener.class);
+            context -> {
+                assertThat(context).hasSingleBean(RocketMQListener.class);
 
-                    assertThatThrownBy(
-                                    () -> context.getBean(RocketMQListener.class).onMessage("{}"))
-                            .isSameAs(failure);
-                });
+                assertThatThrownBy(
+                    () -> context.getBean(RocketMQListener.class).onMessage("{}"))
+                    .isSameAs(failure);
+            });
     }
 
     @Test
     void invalidPayloadDoesNotWriteAnEmptyAuditRecord() {
         contextRunner.run(
-                context -> {
-                    assertThat(context).hasSingleBean(RocketMQListener.class);
+            context -> {
+                assertThat(context).hasSingleBean(RocketMQListener.class);
 
-                    assertThatThrownBy(
-                                    () -> context.getBean(RocketMQListener.class).onMessage("null"))
-                            .isInstanceOf(IllegalArgumentException.class);
+                assertThatThrownBy(
+                    () -> context.getBean(RocketMQListener.class).onMessage("null"))
+                    .isInstanceOf(IllegalArgumentException.class);
 
-                    assertThatThrownBy(
-                                    () ->
-                                            context.getBean(RocketMQListener.class)
-                                                    .onMessage("invalid-json"))
-                            .isInstanceOf(RuntimeException.class);
+                assertThatThrownBy(
+                    () ->
+                        context.getBean(RocketMQListener.class)
+                            .onMessage("invalid-json"))
+                    .isInstanceOf(RuntimeException.class);
 
-                    verifyNoInteractions(gateway);
-                });
+                verifyNoInteractions(gateway);
+            });
     }
 
     @Configuration(proxyBeanMethods = false)
     @ComponentScan("com.lemnt.system.adapter.mq")
-    static class ConsumerConfiguration {}
+    static class ConsumerConfiguration {
+    }
 }

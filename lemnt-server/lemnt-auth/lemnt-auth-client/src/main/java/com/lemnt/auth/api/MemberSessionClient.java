@@ -9,6 +9,8 @@ public interface MemberSessionClient {
      */
     Long authenticate(String accessToken);
 
-    /** 后台停用会员时同步撤销全部会员会话，不影响同ID后台用户。 */
+    /**
+     * 后台停用会员时同步撤销全部会员会话，不影响同ID后台用户。
+     */
     void revokeMemberSessions(Long memberId);
 }

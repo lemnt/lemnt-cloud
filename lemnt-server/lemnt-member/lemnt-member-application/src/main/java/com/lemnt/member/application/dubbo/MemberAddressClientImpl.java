@@ -8,7 +8,9 @@ import org.apache.dubbo.config.annotation.DubboService;
 
 import lombok.RequiredArgsConstructor;
 
-/** 地址查询在会员服务内按会员归属过滤。 */
+/**
+ * 地址查询在会员服务内按会员归属过滤。
+ */
 @DubboService
 @RequiredArgsConstructor
 public class MemberAddressClientImpl implements MemberAddressClient {
@@ -21,13 +23,13 @@ public class MemberAddressClientImpl implements MemberAddressClient {
         }
         var row = addresses.address(memberId, addressId);
         return row == null
-                ? null
-                : new MemberAddressDTO(
-                        row.id(),
-                        row.memberId(),
-                        row.name(),
-                        row.mobile(),
-                        row.areaId(),
-                        row.detailAddress());
+            ? null
+            : new MemberAddressDTO(
+            row.id(),
+            row.memberId(),
+            row.name(),
+            row.mobile(),
+            row.areaId(),
+            row.detailAddress());
     }
 }

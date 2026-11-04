@@ -9,24 +9,36 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/** pay_notify_log 数据对象。 */
+/**
+ * pay_notify_log 数据对象。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("pay_notify_log")
 public class PayNotifyLogDO extends BaseDO {
-    /** 日志编号。 */
+    /**
+     * 日志编号。
+     */
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    /** 任务编号。 */
+    /**
+     * 任务编号。
+     */
     private Long taskId;
 
-    /** 第几次尝试。 */
+    /**
+     * 第几次尝试。
+     */
     private Integer notifyTimes;
 
-    /** 结果：SUCCESS/FAILED。 */
+    /**
+     * 结果：SUCCESS/FAILED。
+     */
     private String status;
 
-    /** 响应或失败信息。 */
+    /**
+     * 响应或失败信息。
+     */
     private String response;
 }

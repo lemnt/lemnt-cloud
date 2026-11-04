@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 最近砍价记录执行器。 */
+/**
+ * 最近砍价记录执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class BargainLatestQueryExe {

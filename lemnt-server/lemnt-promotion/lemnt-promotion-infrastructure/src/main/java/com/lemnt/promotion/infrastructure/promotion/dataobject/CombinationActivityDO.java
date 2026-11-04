@@ -8,7 +8,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/** 拼团活动持久化对象。 */
+/**
+ * 拼团活动持久化对象。
+ */
 @Data
 @TableName("promotion_combination_activity")
 public class CombinationActivityDO {

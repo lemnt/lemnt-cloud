@@ -19,11 +19,11 @@ class MemberPaymentStatusQueryTest {
     final OrderPaymentGateway orderPersistenceService = mock(OrderPaymentGateway.class);
     final TradePaymentGateway payments = mock(TradePaymentGateway.class);
     final MemberPaymentStatusQueryExe query =
-            new MemberPaymentStatusQueryExe(orderPersistenceService, payments);
+        new MemberPaymentStatusQueryExe(orderPersistenceService, payments);
 
     void order(String state, Long member) {
         when(orderPersistenceService.findByOrderNo("TR1"))
-                .thenReturn(new OrderPaymentSnapshot("TR1", member, BigDecimal.TEN, state));
+            .thenReturn(new OrderPaymentSnapshot("TR1", member, BigDecimal.TEN, state));
     }
 
     PaymentRecord payment(String state, BigDecimal amount) {
@@ -70,13 +70,13 @@ class MemberPaymentStatusQueryTest {
     void inconsistentAmountsStatesAndMultipleSuccessesRequireReconciliation() {
         order("PAID", 7L);
         for (var records :
+            List.of(
+                List.<PaymentRecord>of(),
+                List.of(payment("SUCCESS", BigDecimal.ONE)),
+                List.of(payment("UNKNOWN", BigDecimal.TEN)),
                 List.of(
-                        List.<PaymentRecord>of(),
-                        List.of(payment("SUCCESS", BigDecimal.ONE)),
-                        List.of(payment("UNKNOWN", BigDecimal.TEN)),
-                        List.of(
-                                payment("SUCCESS", BigDecimal.TEN),
-                                payment("SUCCESS", BigDecimal.TEN)))) {
+                    payment("SUCCESS", BigDecimal.TEN),
+                    payment("SUCCESS", BigDecimal.TEN)))) {
             when(payments.findByOrderNo("TR1")).thenReturn(records);
             assertEquals("RECONCILE_REQUIRED", status());
         }

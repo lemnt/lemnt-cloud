@@ -7,8 +7,9 @@
         SELECT * FROM promotion_seckill_activity WHERE id=#{id} FOR UPDATE
     </select>
 
-    <select id="selectPageByFilter" resultType="com.lemnt.promotion.infrastructure.promotion.dataobject.SeckillActivityDO"
->
+    <select id="selectPageByFilter"
+            resultType="com.lemnt.promotion.infrastructure.promotion.dataobject.SeckillActivityDO"
+    >
         SELECT * FROM promotion_seckill_activity
         <where>
             <if test="name != null and name != ''">AND name LIKE CONCAT('%',#{name},'%')</if>
@@ -18,25 +19,27 @@
         ORDER BY id DESC
     </select>
 
-    <select id="selectEnabledBySpuIds" resultType="com.lemnt.promotion.infrastructure.promotion.dataobject.SeckillActivityDO"
->
+    <select id="selectEnabledBySpuIds"
+            resultType="com.lemnt.promotion.infrastructure.promotion.dataobject.SeckillActivityDO"
+    >
         SELECT * FROM promotion_seckill_activity WHERE status=0 AND spu_id IN
         <foreach collection="spuIds" item="spuId" open="(" separator="," close=")">#{spuId}</foreach>
     </select>
 
     <select id="selectAppPage" resultType="com.lemnt.promotion.infrastructure.promotion.dataobject.SeckillActivityDO"
->
+    >
         SELECT * FROM promotion_seckill_activity
         WHERE status=0 AND start_time&lt;#{now} AND end_time&gt;#{now}
         <if test="configId != null">AND CONCAT(',',config_ids,',') LIKE CONCAT('%,',#{configId},',%')</if>
         ORDER BY sort DESC,id DESC
     </select>
 
-    <select id="selectByConfigAndNow" resultType="com.lemnt.promotion.infrastructure.promotion.dataobject.SeckillActivityDO"
->
+    <select id="selectByConfigAndNow"
+            resultType="com.lemnt.promotion.infrastructure.promotion.dataobject.SeckillActivityDO"
+    >
         SELECT * FROM promotion_seckill_activity
         WHERE status=0 AND start_time&lt;#{now} AND end_time&gt;#{now}
-          AND CONCAT(',',config_ids,',') LIKE CONCAT('%,',#{configId},',%')
+        AND CONCAT(',',config_ids,',') LIKE CONCAT('%,',#{configId},',%')
         ORDER BY sort DESC,id DESC
     </select>
 </mapper>

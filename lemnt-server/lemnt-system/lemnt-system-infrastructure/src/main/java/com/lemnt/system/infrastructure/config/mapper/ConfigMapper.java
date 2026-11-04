@@ -16,7 +16,9 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface ConfigMapper extends BaseMapper<ConfigDO> {
-    /** 唯一键冲突时更新整组，创建审计保持不变。 */
+    /**
+     * 唯一键冲突时更新整组，创建审计保持不变。
+     */
     void saveBusinessConfig(@Param("value") Config value);
 
     /**

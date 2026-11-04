@@ -16,7 +16,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class MemberPointConfigHttpTest {
-    /** 读写使用实际growths路径，积分数上限不转换为金额。 */
+    /**
+     * 读写使用实际growths路径，积分数上限不转换为金额。
+     */
     @Test
     void readsAndSavesTheFourConfigurationFields() throws Exception {
         var read = mock(MemberConfigDetailQueryExe.class);
@@ -24,19 +26,19 @@ class MemberPointConfigHttpTest {
         when(read.execute(new ConfigDetailQry())).thenReturn(new ConfigDTO(true, 5, 2, 3));
         when(save.execute(new ConfigSaveCmd(false, 0, 0, 0))).thenReturn(true);
         var mvc =
-                MockMvcBuilders.standaloneSetup(new MemberPointConfigController(read, save))
-                        .setControllerAdvice(new GlobalExceptionHandler())
-                        .build();
+            MockMvcBuilders.standaloneSetup(new MemberPointConfigController(read, save))
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
         mvc.perform(get("/growths/config"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.pointTradeDeductMaxPrice").value(2));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.pointTradeDeductMaxPrice").value(2));
         mvc.perform(
-                        put("/growths/config")
-                                .contentType("application/json")
-                                .content(
-                                        "{\"pointTradeDeductEnable\":false,\"pointTradeDeductUnitPrice\":0,\"pointTradeDeductMaxPrice\":0,\"pointTradeGivePoint\":0}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").value(true));
+                put("/growths/config")
+                    .contentType("application/json")
+                    .content(
+                        "{\"pointTradeDeductEnable\":false,\"pointTradeDeductUnitPrice\":0,\"pointTradeDeductMaxPrice\":0,\"pointTradeGivePoint\":0}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data").value(true));
         verify(save).execute(new ConfigSaveCmd(false, 0, 0, 0));
     }
 }

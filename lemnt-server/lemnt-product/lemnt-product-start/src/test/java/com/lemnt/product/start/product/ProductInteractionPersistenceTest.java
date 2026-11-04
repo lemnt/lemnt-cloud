@@ -42,7 +42,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/** 生产DDL/Gateway/事务及基础锁模板；只替换Redis锁执行器传输。 */
+/**
+ * 生产DDL/Gateway/事务及基础锁模板；只替换Redis锁执行器传输。
+ */
 class ProductInteractionPersistenceTest {
     CatalogPersistenceTest f;
     ProductFavoriteService favorites;
@@ -54,7 +56,7 @@ class ProductInteractionPersistenceTest {
         f = new CatalogPersistenceTest();
         f.setup();
         ScriptUtils.executeSqlScript(
-                f.schemaConnection, new ClassPathResource("product-sql/lemnt_product.sql"));
+            f.schemaConnection, new ClassPathResource("product-sql/lemnt_product.sql"));
         f.components.register(LockTemplate.class, memberLocks());
         favorites = f.components.get(ProductFavoriteService.class);
         history = f.components.get(ProductBrowseHistoryService.class);
@@ -71,11 +73,11 @@ class ProductInteractionPersistenceTest {
     void favoriteDuplicatesOwnershipAndRecreationUseRealUniqueRows() {
         var first = favorites.create(new ProductFavoriteCreateCmd(1L, spu));
         assertEquals(
-                409,
-                assertThrows(
-                                ServiceException.class,
-                                () -> favorites.create(new ProductFavoriteCreateCmd(1L, spu)))
-                        .getCode());
+            409,
+            assertThrows(
+                ServiceException.class,
+                () -> favorites.create(new ProductFavoriteCreateCmd(1L, spu)))
+                .getCode());
         assertTrue(favorites.exists(1L, spu));
         assertFalse(favorites.exists(2L, spu));
         assertThrows(ServiceException.class, () -> favorites.remove(2L, spu));
@@ -93,22 +95,22 @@ class ProductInteractionPersistenceTest {
         var pool = Executors.newFixedThreadPool(6);
         try {
             var tasks =
-                    IntStream.range(0, 6)
-                            .mapToObj(
-                                    i ->
-                                            pool.submit(
-                                                    () -> {
-                                                        try {
-                                                            favorites.create(
-                                                                    new ProductFavoriteCreateCmd(
-                                                                            1L, spu));
-                                                            return true;
-                                                        } catch (ServiceException conflict) {
-                                                            assertEquals(409, conflict.getCode());
-                                                            return false;
-                                                        }
-                                                    }))
-                            .toList();
+                IntStream.range(0, 6)
+                    .mapToObj(
+                        i ->
+                            pool.submit(
+                                () -> {
+                                    try {
+                                        favorites.create(
+                                            new ProductFavoriteCreateCmd(
+                                                1L, spu));
+                                        return true;
+                                    } catch (ServiceException conflict) {
+                                        assertEquals(409, conflict.getCode());
+                                        return false;
+                                    }
+                                }))
+                    .toList();
             int successes = 0;
             for (var task : tasks) {
                 if (task.get(10, TimeUnit.SECONDS)) {
@@ -127,35 +129,35 @@ class ProductInteractionPersistenceTest {
     void historyReordersHidesByOwnerAndRevisitRestoresVisibility() {
         history.create(new ProductBrowseHistoryCreateCmd(1L, spu));
         var first =
-                history.page(new ProductBrowseHistoryPageQry(1L, null, false, 1, 20))
-                        .getRecords()
-                        .get(0);
+            history.page(new ProductBrowseHistoryPageQry(1L, null, false, 1, 20))
+                .getRecords()
+                .get(0);
         history.create(new ProductBrowseHistoryCreateCmd(1L, spu));
         assertNotEquals(
-                first.id(),
-                history.page(new ProductBrowseHistoryPageQry(1L, null, false, 1, 20))
-                        .getRecords()
-                        .get(0)
-                        .id());
+            first.id(),
+            history.page(new ProductBrowseHistoryPageQry(1L, null, false, 1, 20))
+                .getRecords()
+                .get(0)
+                .id());
         history.create(new ProductBrowseHistoryCreateCmd(2L, spu));
         assertThrows(RuntimeException.class, () -> history.hide(1L, List.of()));
         history.hide(1L, List.of(spu));
         assertEquals(
-                0,
-                history.page(new ProductBrowseHistoryPageQry(1L, null, false, 1, 20)).getTotal());
+            0,
+            history.page(new ProductBrowseHistoryPageQry(1L, null, false, 1, 20)).getTotal());
         assertEquals(
-                1, history.page(new ProductBrowseHistoryPageQry(1L, null, true, 1, 20)).getTotal());
+            1, history.page(new ProductBrowseHistoryPageQry(1L, null, true, 1, 20)).getTotal());
         assertEquals(
-                1,
-                history.page(new ProductBrowseHistoryPageQry(2L, null, false, 1, 20)).getTotal());
+            1,
+            history.page(new ProductBrowseHistoryPageQry(2L, null, false, 1, 20)).getTotal());
         history.create(new ProductBrowseHistoryCreateCmd(1L, spu));
         assertEquals(
-                1,
-                history.page(new ProductBrowseHistoryPageQry(1L, null, false, 1, 20)).getTotal());
+            1,
+            history.page(new ProductBrowseHistoryPageQry(1L, null, false, 1, 20)).getTotal());
         history.clear(1L);
         assertEquals(
-                1,
-                history.page(new ProductBrowseHistoryPageQry(2L, null, false, 1, 20)).getTotal());
+            1,
+            history.page(new ProductBrowseHistoryPageQry(2L, null, false, 1, 20)).getTotal());
     }
 
     @Test
@@ -171,11 +173,11 @@ class ProductInteractionPersistenceTest {
         assertNull(page.getRecords().get(0).price());
         try (var statement = f.schemaConnection.createStatement()) {
             statement.execute(
-                    "ALTER TABLE product_browse_history ADD CONSTRAINT reject_history CHECK(spu_id<>9999)");
+                "ALTER TABLE product_browse_history ADD CONSTRAINT reject_history CHECK(spu_id<>9999)");
         }
         assertThrows(
-                RuntimeException.class,
-                () -> history.create(new ProductBrowseHistoryCreateCmd(1L, 9999L)));
+            RuntimeException.class,
+            () -> history.create(new ProductBrowseHistoryCreateCmd(1L, 9999L)));
         assertEquals(page, history.page(new ProductBrowseHistoryPageQry(1L, null, false, 1, 100)));
     }
 
@@ -187,22 +189,22 @@ class ProductInteractionPersistenceTest {
         var pool = Executors.newFixedThreadPool(8);
         try {
             var tasks =
-                    LongStream.range(2000, 2030)
-                            .mapToObj(
-                                    id ->
-                                            pool.submit(
-                                                    () ->
-                                                            history.create(
-                                                                    new ProductBrowseHistoryCreateCmd(
-                                                                            1L, id))))
-                            .toList();
+                LongStream.range(2000, 2030)
+                    .mapToObj(
+                        id ->
+                            pool.submit(
+                                () ->
+                                    history.create(
+                                        new ProductBrowseHistoryCreateCmd(
+                                            1L, id))))
+                    .toList();
             for (var task : tasks) {
                 assertTrue(task.get(15, TimeUnit.SECONDS));
             }
             assertEquals(
-                    100,
-                    history.page(new ProductBrowseHistoryPageQry(1L, null, false, 1, 100))
-                            .getTotal());
+                100,
+                history.page(new ProductBrowseHistoryPageQry(1L, null, false, 1, 100))
+                    .getTotal());
         } finally {
             pool.shutdownNow();
         }
@@ -214,34 +216,34 @@ class ProductInteractionPersistenceTest {
         var mapperBuilder = JsonMapper.builder();
         new JacksonConfig().customizer().customize(mapperBuilder);
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                f.components.get(AppProductFavoriteController.class),
-                                f.components.get(AppProductBrowseHistoryController.class))
-                        .setControllerAdvice(new GlobalExceptionHandler())
-                        .setMessageConverters(
-                                new JacksonJsonHttpMessageConverter(mapperBuilder.build()))
-                        .build();
+            MockMvcBuilders.standaloneSetup(
+                    f.components.get(AppProductFavoriteController.class),
+                    f.components.get(AppProductBrowseHistoryController.class))
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .setMessageConverters(
+                    new JacksonJsonHttpMessageConverter(mapperBuilder.build()))
+                .build();
         mvc.perform(
-                        post("/mall/app/favorites")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"userId\":2,\"spuId\":" + spu + "}"))
-                .andExpect(status().isOk());
+                post("/mall/app/favorites")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"userId\":2,\"spuId\":" + spu + "}"))
+            .andExpect(status().isOk());
         assertEquals(1, favorites.count(1L));
         assertEquals(0, favorites.count(2L));
         mvc.perform(get("/mall/app/favorites").param("userId", "2"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total").value(1))
-                .andExpect(jsonPath("$.rows[0].userId").doesNotExist());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.total").value(1))
+            .andExpect(jsonPath("$.rows[0].userId").doesNotExist());
         mvc.perform(
-                        delete("/mall/app/browse-history")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"spuIds\":[]}"))
-                .andExpect(status().is(422));
+                delete("/mall/app/browse-history")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"spuIds\":[]}"))
+            .andExpect(status().is(422));
         history.create(new ProductBrowseHistoryCreateCmd(1L, spu));
         history.clear(1L);
         mvc.perform(get("/mall/app/browse-history").param("userDeleted", "true"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total").value(0));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.total").value(0));
         SecurityContextHolder.remove();
         mvc.perform(get("/mall/app/favorites")).andExpect(status().isUnauthorized());
     }
@@ -251,37 +253,37 @@ class ProductInteractionPersistenceTest {
         var executor = Mockito.mock(RedissonLockExecutor.class);
         Mockito.when(executor.renewal()).thenReturn(true);
         Mockito.when(
-                        executor.acquire(
-                                ArgumentMatchers.anyString(),
-                                ArgumentMatchers.anyString(),
-                                ArgumentMatchers.anyLong(),
-                                ArgumentMatchers.anyLong()))
-                .thenAnswer(
-                        invocation -> {
-                            var lock =
-                                    locks.computeIfAbsent(
-                                            invocation.getArgument(0), key -> new ReentrantLock());
-                            if (!lock.tryLock(3, TimeUnit.SECONDS)) {
-                                return null;
-                            }
-                            var instance = Mockito.mock(RLock.class);
-                            return instance;
-                        });
+                executor.acquire(
+                    ArgumentMatchers.anyString(),
+                    ArgumentMatchers.anyString(),
+                    ArgumentMatchers.anyLong(),
+                    ArgumentMatchers.anyLong()))
+            .thenAnswer(
+                invocation -> {
+                    var lock =
+                        locks.computeIfAbsent(
+                            invocation.getArgument(0), key -> new ReentrantLock());
+                    if (!lock.tryLock(3, TimeUnit.SECONDS)) {
+                        return null;
+                    }
+                    var instance = Mockito.mock(RLock.class);
+                    return instance;
+                });
         // LockTemplate 调用执行器解锁；测试替身显式释放对应本地锁。
         Mockito.when(
-                        executor.releaseLock(
-                                ArgumentMatchers.anyString(),
-                                ArgumentMatchers.anyString(),
-                                ArgumentMatchers.any()))
-                .thenAnswer(
-                        invocation -> {
-                            var lock = locks.get(invocation.<String>getArgument(0));
-                            if (lock == null || !lock.isHeldByCurrentThread()) {
-                                return false;
-                            }
-                            lock.unlock();
-                            return true;
-                        });
+                executor.releaseLock(
+                    ArgumentMatchers.anyString(),
+                    ArgumentMatchers.anyString(),
+                    ArgumentMatchers.any()))
+            .thenAnswer(
+                invocation -> {
+                    var lock = locks.get(invocation.<String>getArgument(0));
+                    if (lock == null || !lock.isHeldByCurrentThread()) {
+                        return false;
+                    }
+                    lock.unlock();
+                    return true;
+                });
         var properties = new Lock4jProperties();
         properties.setPrimaryExecutor(RedissonLockExecutor.class);
         var template = new LockTemplate();

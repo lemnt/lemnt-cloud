@@ -8,25 +8,25 @@ import java.time.LocalDateTime;
  * 商品聚合首期模型。
  */
 public record Product(
-        Long id,
-        String productCode,
-        String name,
-        String description,
-        String mainImage,
-        BigDecimal price,
-        Integer stock,
-        String status,
-        LocalDateTime createTime) {
+    Long id,
+    String productCode,
+    String name,
+    String description,
+    String mainImage,
+    BigDecimal price,
+    Integer stock,
+    String status,
+    LocalDateTime createTime) {
     /**
      * 创建。
      */
     public static Product create(
-            String code,
-            String name,
-            String description,
-            String image,
-            BigDecimal price,
-            Integer stock) {
+        String code,
+        String name,
+        String description,
+        String image,
+        BigDecimal price,
+        Integer stock) {
         if (code == null || code.isBlank()) {
             throw new IllegalArgumentException("商品编码不能为空");
         }
@@ -40,14 +40,14 @@ public record Product(
             throw new IllegalArgumentException("库存不能小于0");
         }
         return new Product(
-                null,
-                code.trim(),
-                name.trim(),
-                description,
-                image,
-                price.setScale(2, RoundingMode.HALF_UP),
-                stock,
-                "OFF_SHELF",
-                null);
+            null,
+            code.trim(),
+            name.trim(),
+            description,
+            image,
+            price.setScale(2, RoundingMode.HALF_UP),
+            stock,
+            "OFF_SHELF",
+            null);
     }
 }

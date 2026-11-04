@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
 /**
@@ -53,9 +54,9 @@ public class MemberSignConfigController {
     @RequiresPermissions("member:sign-in-config:query")
     public R<List<MemberConfigListRes>> list() {
         return R.ok(
-                memberSignConfigListQueryExe.execute(new SignConfigListQry(false)).stream()
-                        .map(MemberGrowthResConverter::toMemberConfigListRes)
-                        .toList());
+            memberSignConfigListQueryExe.execute(new SignConfigListQry(false)).stream()
+                .map(MemberGrowthResConverter::toMemberConfigListRes)
+                .toList());
     }
 
     @PostMapping("/signin-configs")
@@ -70,7 +71,7 @@ public class MemberSignConfigController {
     @RequiresPermissions("member:sign-in-config:update")
     public R<Boolean> update(@PathVariable Long id, @Valid @RequestBody SignConfigUpdateReq req) {
         return R.ok(
-                memberSignConfigUpdateCmdExe.execute(MemberGrowthReqConverter.signConfig(id, req)));
+            memberSignConfigUpdateCmdExe.execute(MemberGrowthReqConverter.signConfig(id, req)));
     }
 
     @DeleteMapping("/signin-configs/{id}")
@@ -85,7 +86,7 @@ public class MemberSignConfigController {
     @RequiresPermissions("member:sign-in-config:query")
     public R<MemberConfigDetailRes> detail(@PathVariable Long id) {
         return R.ok(
-                MemberGrowthResConverter.toMemberConfigDetailRes(
-                        memberSignConfigDetailQueryExe.execute(new SignConfigDetailQry(id))));
+            MemberGrowthResConverter.toMemberConfigDetailRes(
+                memberSignConfigDetailQueryExe.execute(new SignConfigDetailQry(id))));
     }
 }

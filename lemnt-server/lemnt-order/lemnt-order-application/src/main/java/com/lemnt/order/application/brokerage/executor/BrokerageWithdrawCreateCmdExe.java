@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 佣金提现申请执行器。 */
+/**
+ * 佣金提现申请执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class BrokerageWithdrawCreateCmdExe {

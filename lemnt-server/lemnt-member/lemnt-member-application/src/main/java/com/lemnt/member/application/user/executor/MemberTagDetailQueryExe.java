@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 标签详情查询执行器。 */
+/**
+ * 标签详情查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberTagDetailQueryExe {

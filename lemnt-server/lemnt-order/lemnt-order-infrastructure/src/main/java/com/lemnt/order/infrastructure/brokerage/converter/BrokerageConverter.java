@@ -7,22 +7,25 @@ import com.lemnt.order.infrastructure.brokerage.dataobject.BrokerageRecordDO;
 import com.lemnt.order.infrastructure.brokerage.dataobject.BrokerageUserDO;
 import com.lemnt.order.infrastructure.brokerage.dataobject.BrokerageWithdrawDO;
 
-/** 分销领域对象与表结构转换。 */
+/**
+ * 分销领域对象与表结构转换。
+ */
 public final class BrokerageConverter {
-    private BrokerageConverter() {}
+    private BrokerageConverter() {
+    }
 
     public static BrokerageUser user(BrokerageUserDO row) {
         if (row == null) {
             return null;
         }
         return new BrokerageUser(
-                row.getId(),
-                row.getBindUserId(),
-                row.getBindUserTime(),
-                row.getBrokerageEnabled(),
-                row.getBrokerageTime(),
-                row.getBrokeragePrice(),
-                row.getFrozenPrice());
+            row.getId(),
+            row.getBindUserId(),
+            row.getBindUserTime(),
+            row.getBrokerageEnabled(),
+            row.getBrokerageTime(),
+            row.getBrokeragePrice(),
+            row.getFrozenPrice());
     }
 
     public static BrokerageUserDO row(BrokerageUser value) {
@@ -42,20 +45,20 @@ public final class BrokerageConverter {
             return null;
         }
         return new BrokerageRecord(
-                row.getId(),
-                row.getUserId(),
-                row.getBizId(),
-                row.getBizType(),
-                row.getTitle(),
-                row.getDescription(),
-                row.getPrice(),
-                row.getTotalPrice(),
-                row.getStatus(),
-                row.getFrozenDays(),
-                row.getUnfreezeTime(),
-                row.getSourceUserLevel(),
-                row.getSourceUserId(),
-                row.getCreateTime());
+            row.getId(),
+            row.getUserId(),
+            row.getBizId(),
+            row.getBizType(),
+            row.getTitle(),
+            row.getDescription(),
+            row.getPrice(),
+            row.getTotalPrice(),
+            row.getStatus(),
+            row.getFrozenDays(),
+            row.getUnfreezeTime(),
+            row.getSourceUserLevel(),
+            row.getSourceUserId(),
+            row.getCreateTime());
     }
 
     public static BrokerageRecordDO row(BrokerageRecord value) {
@@ -82,22 +85,22 @@ public final class BrokerageConverter {
             return null;
         }
         return new BrokerageWithdraw(
-                row.getId(),
-                row.getUserId(),
-                row.getPrice(),
-                row.getFeePrice(),
-                row.getTotalPrice(),
-                row.getType(),
-                row.getUserName(),
-                row.getUserAccount(),
-                row.getQrCodeUrl(),
-                row.getBankName(),
-                row.getBankAddress(),
-                row.getStatus(),
-                row.getAuditReason(),
-                row.getAuditTime(),
-                row.getRemark(),
-                row.getCreateTime());
+            row.getId(),
+            row.getUserId(),
+            row.getPrice(),
+            row.getFeePrice(),
+            row.getTotalPrice(),
+            row.getType(),
+            row.getUserName(),
+            row.getUserAccount(),
+            row.getQrCodeUrl(),
+            row.getBankName(),
+            row.getBankAddress(),
+            row.getStatus(),
+            row.getAuditReason(),
+            row.getAuditTime(),
+            row.getRemark(),
+            row.getCreateTime());
     }
 
     public static BrokerageWithdrawDO row(BrokerageWithdraw value) {

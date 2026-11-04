@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 删除支付应用，仍有渠道配置时拒绝。 */
+/**
+ * 删除支付应用，仍有渠道配置时拒绝。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayAppDeleteCmdExe {

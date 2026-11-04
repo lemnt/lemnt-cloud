@@ -5,4 +5,5 @@ import java.io.Serializable;
 /**
  * 地址列表查询。
  */
-public record AddressListQry(Long memberId) implements Serializable {}
+public record AddressListQry(Long memberId) implements Serializable {
+}

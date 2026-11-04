@@ -7,9 +7,13 @@ import com.lemnt.order.domain.fulfillment.model.ShipmentFilter;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** Shipment 表领域存储接口。 */
+/**
+ * Shipment 表领域存储接口。
+ */
 public interface ShipmentGateway {
-    /** 分页查询物流单。 */
+    /**
+     * 分页查询物流单。
+     */
     PageResult<Shipment> page(ShipmentFilter filter);
 
     /**
@@ -27,6 +31,8 @@ public interface ShipmentGateway {
      */
     boolean receive(String orderNo, LocalDateTime time);
 
-    /** 未收货且发货时间早于截止时间的订单号，供自动收货任务使用。 */
+    /**
+     * 未收货且发货时间早于截止时间的订单号，供自动收货任务使用。
+     */
     List<String> shippedBefore(LocalDateTime cutoff, int limit);
 }

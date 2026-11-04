@@ -23,19 +23,28 @@ import java.io.Serial;
 @TableName("member_group")
 public class GroupDO extends BaseDO {
 
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
-    /** 主键编号。 */
+    /**
+     * 主键编号。
+     */
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    /** 名称。 */
+    /**
+     * 名称。
+     */
     private String name;
 
-    /** 备注。 */
+    /**
+     * 备注。
+     */
     @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String remark;
 
-    /** 状态：0停用，1启用。 */
+    /**
+     * 状态：0停用，1启用。
+     */
     private Integer status;
 }

@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 创建源定义的后台自评，会员0且不关联订单。 */
+/**
+ * 创建源定义的后台自评，会员0且不关联订单。
+ */
 @Component
 @RequiredArgsConstructor
 public class CommentSelfCreateCmdExe {
@@ -19,66 +21,68 @@ public class CommentSelfCreateCmdExe {
     private final ProductSkuGateway skus;
     private final ProductSpuGateway spus;
 
-    /** 校验输入、读取真实商品快照后保存；不调用会员或交易服务。 */
+    /**
+     * 校验输入、读取真实商品快照后保存；不调用会员或交易服务。
+     */
     public Long execute(CommentSelfCreateCmd cmd) {
         if (cmd == null
-                || cmd.skuId() == null
-                || cmd.skuId() <= 0
-                || !text(cmd.userNickname(), 80)
-                || !url(cmd.userAvatar())
-                || !text(cmd.content(), 1000)
-                || !score(cmd.descriptionScores())
-                || !score(cmd.benefitScores())
-                || (cmd.picUrls() != null
-                        && (cmd.picUrls().size() > 9
-                                || !cmd.picUrls().stream().allMatch(this::url)))) {
+            || cmd.skuId() == null
+            || cmd.skuId() <= 0
+            || !text(cmd.userNickname(), 80)
+            || !url(cmd.userAvatar())
+            || !text(cmd.content(), 1000)
+            || !score(cmd.descriptionScores())
+            || !score(cmd.benefitScores())
+            || (cmd.picUrls() != null
+            && (cmd.picUrls().size() > 9
+            || !cmd.picUrls().stream().allMatch(this::url)))) {
             throw new ServiceException("自评参数不合法", 400);
         }
         var sku = skus.catalogSku(cmd.skuId());
         var spu = sku == null ? null : spus.findSpu(sku.spuId());
         if (sku == null
-                || spu == null
-                || "DELETED".equals(sku.status())
-                || "DELETED".equals(spu.status())) {
+            || spu == null
+            || "DELETED".equals(sku.status())
+            || "DELETED".equals(spu.status())) {
             throw new ServiceException("商品或SKU不存在", 404);
         }
         var specs =
-                sku.specs().stream()
-                        .map(
-                                v ->
-                                        new ProductComment.Spec(
-                                                v.specId(),
-                                                v.specName(),
-                                                v.specValueId(),
-                                                v.specValueName()))
-                        .toList();
+            sku.specs().stream()
+                .map(
+                    v ->
+                        new ProductComment.Spec(
+                            v.specId(),
+                            v.specName(),
+                            v.specValueId(),
+                            v.specValueName()))
+                .toList();
         return comments.save(
-                        new ProductComment(
-                                null,
-                                spu.id(),
-                                sku.id(),
-                                null,
-                                0L,
-                                (cmd.descriptionScores() + cmd.benefitScores()) / 2,
-                                cmd.content().trim(),
-                                true,
-                                null,
-                                null,
-                                null,
-                                null,
-                                cmd.descriptionScores(),
-                                cmd.benefitScores(),
-                                cmd.picUrls() == null ? List.of() : cmd.picUrls(),
-                                false,
-                                cmd.userNickname().trim(),
-                                cmd.userAvatar(),
-                                null,
-                                spu.name(),
-                                sku.image(),
-                                specs,
-                                false,
-                                null))
-                .id();
+                new ProductComment(
+                    null,
+                    spu.id(),
+                    sku.id(),
+                    null,
+                    0L,
+                    (cmd.descriptionScores() + cmd.benefitScores()) / 2,
+                    cmd.content().trim(),
+                    true,
+                    null,
+                    null,
+                    null,
+                    null,
+                    cmd.descriptionScores(),
+                    cmd.benefitScores(),
+                    cmd.picUrls() == null ? List.of() : cmd.picUrls(),
+                    false,
+                    cmd.userNickname().trim(),
+                    cmd.userAvatar(),
+                    null,
+                    spu.name(),
+                    sku.image(),
+                    specs,
+                    false,
+                    null))
+            .id();
     }
 
     private boolean score(Integer value) {

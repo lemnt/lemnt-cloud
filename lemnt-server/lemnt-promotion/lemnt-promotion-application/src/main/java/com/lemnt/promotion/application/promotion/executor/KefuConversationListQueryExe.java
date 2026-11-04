@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 管理端客服会话列表执行器。 */
+/**
+ * 管理端客服会话列表执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class KefuConversationListQueryExe {

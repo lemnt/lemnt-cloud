@@ -21,9 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.io.ByteArrayOutputStream;
 
-/** 商品文件导出接口，使用项目已管理的Excel库进行同步下载。 */
+/**
+ * 商品文件导出接口，使用项目已管理的Excel库进行同步下载。
+ */
 @Tag(name = "商品导出")
 @RestController
 @RequestMapping("/mall/spus")
@@ -31,28 +34,30 @@ import java.io.ByteArrayOutputStream;
 public class ProductSpuExportController {
     private final ProductSpuExportQueryExe export;
 
-    /** 导出当前业务筛选下所有商品，具有独立导出权限。 */
+    /**
+     * 导出当前业务筛选下所有商品，具有独立导出权限。
+     */
     @GetMapping("/export")
     @Operation(summary = "导出商品Excel")
     @RequiresPermissions("mall:spu:export")
     public ResponseEntity<byte[]> export(@Valid @ModelAttribute ProductSpuExportReq req)
-            throws Exception {
+        throws Exception {
         var rows =
-                export.execute(ProductManagementReqConverter.export(req)).stream()
-                        .map(ProductManagementResConverter::export)
-                        .toList();
+            export.execute(ProductManagementReqConverter.export(req)).stream()
+                .map(ProductManagementResConverter::export)
+                .toList();
         try (var output = new ByteArrayOutputStream()) {
             EasyExcel.write(output)
-                    .autoCloseStream(false)
-                    .head(ProductSpuExportRes.class)
-                    .sheet("商品")
-                    .doWrite(rows);
+                .autoCloseStream(false)
+                .head(ProductSpuExportRes.class)
+                .sheet("商品")
+                .doWrite(rows);
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=products.xlsx")
-                    .contentType(
-                            MediaType.parseMediaType(
-                                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-                    .body(output.toByteArray());
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=products.xlsx")
+                .contentType(
+                    MediaType.parseMediaType(
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(output.toByteArray());
         }
     }
 }

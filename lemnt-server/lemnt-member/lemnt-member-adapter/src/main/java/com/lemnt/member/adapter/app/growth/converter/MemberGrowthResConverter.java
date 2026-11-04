@@ -13,26 +13,29 @@ import com.lemnt.member.application.growth.dto.SignConfigDTO;
 import com.lemnt.member.application.growth.dto.SignRecordDTO;
 import com.lemnt.member.application.growth.dto.SignSummaryDTO;
 
-/** 会员成长权益转换器。 */
+/**
+ * 会员成长权益转换器。
+ */
 public final class MemberGrowthResConverter {
 
-    private MemberGrowthResConverter() {}
+    private MemberGrowthResConverter() {
+    }
 
     /**
      * 等级。
      */
     public static LevelRes level(LevelDTO v) {
         return v == null
-                ? null
-                : new LevelRes(
-                        v.id(),
-                        v.name(),
-                        v.level(),
-                        v.experience(),
-                        v.discountPercent(),
-                        v.icon(),
-                        v.backgroundUrl(),
-                        v.status());
+            ? null
+            : new LevelRes(
+            v.id(),
+            v.name(),
+            v.level(),
+            v.experience(),
+            v.discountPercent(),
+            v.icon(),
+            v.backgroundUrl(),
+            v.status());
     }
 
     /**
@@ -54,15 +57,15 @@ public final class MemberGrowthResConverter {
      */
     public static AppMemberGrowthSignRes toAppMemberGrowthSignRes(SignRecordDTO v) {
         return v == null
-                ? null
-                : new AppMemberGrowthSignRes(
-                        v.id(),
-                        v.memberId(),
-                        v.signDate(),
-                        v.day(),
-                        v.point(),
-                        v.experience(),
-                        v.createTime());
+            ? null
+            : new AppMemberGrowthSignRes(
+            v.id(),
+            v.memberId(),
+            v.signDate(),
+            v.day(),
+            v.point(),
+            v.experience(),
+            v.createTime());
     }
 
     /**
@@ -70,15 +73,15 @@ public final class MemberGrowthResConverter {
      */
     public static AppMemberGrowthSignsRes toAppMemberGrowthSignsRes(SignRecordDTO v) {
         return v == null
-                ? null
-                : new AppMemberGrowthSignsRes(
-                        v.id(),
-                        v.memberId(),
-                        v.signDate(),
-                        v.day(),
-                        v.point(),
-                        v.experience(),
-                        v.createTime());
+            ? null
+            : new AppMemberGrowthSignsRes(
+            v.id(),
+            v.memberId(),
+            v.signDate(),
+            v.day(),
+            v.point(),
+            v.experience(),
+            v.createTime());
     }
 
     /**
@@ -86,20 +89,20 @@ public final class MemberGrowthResConverter {
      */
     public static AppMemberGrowthPointRes toAppMemberGrowthPointRes(AssetRecordDTO v) {
         return v == null
-                ? null
-                : new AppMemberGrowthPointRes(
-                        v.id(),
-                        v.memberId(),
-                        v.assetType(),
-                        v.delta(),
-                        v.balance(),
-                        v.bizType(),
-                        v.bizNo(),
-                        v.reason(),
-                        v.createTime(),
-                        v.pointBizType(),
-                        v.title(),
-                        v.description());
+            ? null
+            : new AppMemberGrowthPointRes(
+            v.id(),
+            v.memberId(),
+            v.assetType(),
+            v.delta(),
+            v.balance(),
+            v.bizType(),
+            v.bizNo(),
+            v.reason(),
+            v.createTime(),
+            v.pointBizType(),
+            v.title(),
+            v.description());
     }
 
     /**
@@ -107,19 +110,19 @@ public final class MemberGrowthResConverter {
      */
     public static AppMemberGrowthExperienceRes toAppMemberGrowthExperienceRes(AssetRecordDTO v) {
         return v == null
-                ? null
-                : new AppMemberGrowthExperienceRes(
-                        v.id(),
-                        v.memberId(),
-                        v.assetType(),
-                        v.delta(),
-                        v.balance(),
-                        v.bizType(),
-                        v.bizNo(),
-                        v.reason(),
-                        v.createTime(),
-                        v.experienceBizType(),
-                        v.title(),
-                        v.description());
+            ? null
+            : new AppMemberGrowthExperienceRes(
+            v.id(),
+            v.memberId(),
+            v.assetType(),
+            v.delta(),
+            v.balance(),
+            v.bizType(),
+            v.bizNo(),
+            v.reason(),
+            v.createTime(),
+            v.experienceBizType(),
+            v.title(),
+            v.description());
     }
 }

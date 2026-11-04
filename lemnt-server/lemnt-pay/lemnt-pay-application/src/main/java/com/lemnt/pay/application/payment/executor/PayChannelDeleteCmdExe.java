@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 删除支付渠道配置。 */
+/**
+ * 删除支付渠道配置。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayChannelDeleteCmdExe {

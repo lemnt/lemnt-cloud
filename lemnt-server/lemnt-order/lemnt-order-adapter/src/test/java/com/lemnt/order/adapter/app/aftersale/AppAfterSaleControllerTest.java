@@ -24,7 +24,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/** 本人售后只取已经认证的上下文，不接收客户端会员编号。 */
+/**
+ * 本人售后只取已经认证的上下文，不接收客户端会员编号。
+ */
 class AppAfterSaleControllerTest {
     @AfterEach
     void clear() {
@@ -32,45 +34,45 @@ class AppAfterSaleControllerTest {
     }
 
     private AppAfterSaleController controller(
-            AfterSaleCancelCmdExe cancel,
-            AfterSaleCreateCmdExe create,
-            AfterSaleReturnCmdExe returned,
-            MemberAfterSalePageQueryExe page,
-            MemberAfterSaleDetailQueryExe detail,
-            MemberAfterSaleItemListQueryExe items) {
+        AfterSaleCancelCmdExe cancel,
+        AfterSaleCreateCmdExe create,
+        AfterSaleReturnCmdExe returned,
+        MemberAfterSalePageQueryExe page,
+        MemberAfterSaleDetailQueryExe detail,
+        MemberAfterSaleItemListQueryExe items) {
         return new AppAfterSaleController(cancel, create, returned, page, detail, items);
     }
 
     private AppAfterSaleController withCancel(AfterSaleCancelCmdExe cancel) {
         return controller(
-                cancel,
-                mock(AfterSaleCreateCmdExe.class),
-                mock(AfterSaleReturnCmdExe.class),
-                mock(MemberAfterSalePageQueryExe.class),
-                mock(MemberAfterSaleDetailQueryExe.class),
-                mock(MemberAfterSaleItemListQueryExe.class));
+            cancel,
+            mock(AfterSaleCreateCmdExe.class),
+            mock(AfterSaleReturnCmdExe.class),
+            mock(MemberAfterSalePageQueryExe.class),
+            mock(MemberAfterSaleDetailQueryExe.class),
+            mock(MemberAfterSaleItemListQueryExe.class));
     }
 
     private AfterSaleDTO dto() {
         return new AfterSaleDTO(
-                "RF1",
-                "TR1",
-                "REQ1",
-                1L,
-                "P1",
-                10L,
-                1,
-                "REFUND_ONLY",
-                BigDecimal.ONE,
-                "r",
-                "REQUESTED",
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
+            "RF1",
+            "TR1",
+            "REQ1",
+            1L,
+            "P1",
+            10L,
+            1,
+            "REFUND_ONLY",
+            BigDecimal.ONE,
+            "r",
+            "REQUESTED",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
     }
 
     @Test
@@ -80,11 +82,11 @@ class AppAfterSaleControllerTest {
         when(cancel.execute(1L, "RF1")).thenReturn(true);
         var mvc = MockMvcBuilders.standaloneSetup(withCancel(cancel)).build();
         mvc.perform(
-                        post("/trade/app/after-sales/RF1/cancel")
-                                .header("X-User-Id", "999")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"memberId\":999}"))
-                .andExpect(status().isOk());
+                post("/trade/app/after-sales/RF1/cancel")
+                    .header("X-User-Id", "999")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"memberId\":999}"))
+            .andExpect(status().isOk());
         verify(cancel).execute(1L, "RF1");
         verifyNoMoreInteractions(cancel);
     }
@@ -97,15 +99,15 @@ class AppAfterSaleControllerTest {
         var detail = mock(MemberAfterSaleDetailQueryExe.class);
         when(detail.execute(1L, "RF1")).thenReturn(dto());
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                controller(
-                                        mock(AfterSaleCancelCmdExe.class),
-                                        mock(AfterSaleCreateCmdExe.class),
-                                        mock(AfterSaleReturnCmdExe.class),
-                                        mock(MemberAfterSalePageQueryExe.class),
-                                        detail,
-                                        items))
-                        .build();
+            MockMvcBuilders.standaloneSetup(
+                    controller(
+                        mock(AfterSaleCancelCmdExe.class),
+                        mock(AfterSaleCreateCmdExe.class),
+                        mock(AfterSaleReturnCmdExe.class),
+                        mock(MemberAfterSalePageQueryExe.class),
+                        detail,
+                        items))
+                .build();
         mvc.perform(get("/trade/app/orders/TR1/after-sale-items")).andExpect(status().isOk());
         mvc.perform(get("/trade/app/after-sales/RF1")).andExpect(status().isOk());
         verify(items).execute(1L, "TR1");
@@ -118,23 +120,23 @@ class AppAfterSaleControllerTest {
         var create = mock(AfterSaleCreateCmdExe.class);
         when(create.executeForMember(any(), eq(1L))).thenReturn(dto());
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                controller(
-                                        mock(AfterSaleCancelCmdExe.class),
-                                        create,
-                                        mock(AfterSaleReturnCmdExe.class),
-                                        mock(MemberAfterSalePageQueryExe.class),
-                                        mock(MemberAfterSaleDetailQueryExe.class),
-                                        mock(MemberAfterSaleItemListQueryExe.class)))
-                        .build();
+            MockMvcBuilders.standaloneSetup(
+                    controller(
+                        mock(AfterSaleCancelCmdExe.class),
+                        create,
+                        mock(AfterSaleReturnCmdExe.class),
+                        mock(MemberAfterSalePageQueryExe.class),
+                        mock(MemberAfterSaleDetailQueryExe.class),
+                        mock(MemberAfterSaleItemListQueryExe.class)))
+                .build();
         mvc.perform(
-                        post("/trade/app/orders/TR1/after-sales")
-                                .header("X-User-Id", "999")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        "{\"requestNo\":\"REQ1\",\"orderItemId\":10,\"quantity\":1,"
-                                                + "\"type\":\"REFUND_ONLY\",\"reason\":\"质量问题\",\"memberId\":999,\"amount\":\"0.01\"}"))
-                .andExpect(status().isOk());
+                post("/trade/app/orders/TR1/after-sales")
+                    .header("X-User-Id", "999")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        "{\"requestNo\":\"REQ1\",\"orderItemId\":10,\"quantity\":1,"
+                            + "\"type\":\"REFUND_ONLY\",\"reason\":\"质量问题\",\"memberId\":999,\"amount\":\"0.01\"}"))
+            .andExpect(status().isOk());
         verify(create).executeForMember(any(), eq(1L));
     }
 }

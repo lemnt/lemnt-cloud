@@ -40,37 +40,37 @@ public class MemberPaymentStatusQueryExe {
         long success = records.stream().filter(p -> "SUCCESS".equals(p.status())).count();
         boolean waiting = records.stream().anyMatch(p -> "WAITING".equals(p.status()));
         boolean paid =
-                order.status() != null
-                        && Set.of("PAID", "SHIPPED", "COMPLETED", "REFUNDED")
-                                .contains(order.status());
+            order.status() != null
+                && Set.of("PAID", "SHIPPED", "COMPLETED", "REFUNDED")
+                .contains(order.status());
         boolean invalid =
-                order.status() == null
-                        || !Set.of(
-                                        "RESERVING",
-                                        "PENDING_PAYMENT",
-                                        "PAID",
-                                        "SHIPPED",
-                                        "COMPLETED",
-                                        "REFUNDED",
-                                        "CLOSED")
-                                .contains(order.status())
-                        || records.stream()
-                                .anyMatch(
-                                        p ->
-                                                !no.equals(p.orderNo())
-                                                        || p.amount() == null
-                                                        || p.amount().compareTo(order.totalAmount())
-                                                                != 0
-                                                        || p.status() == null
-                                                        || !Set.of("SUCCESS", "WAITING", "CLOSED")
-                                                                .contains(p.status()));
+            order.status() == null
+                || !Set.of(
+                    "RESERVING",
+                    "PENDING_PAYMENT",
+                    "PAID",
+                    "SHIPPED",
+                    "COMPLETED",
+                    "REFUNDED",
+                    "CLOSED")
+                .contains(order.status())
+                || records.stream()
+                .anyMatch(
+                    p ->
+                        !no.equals(p.orderNo())
+                            || p.amount() == null
+                            || p.amount().compareTo(order.totalAmount())
+                            != 0
+                            || p.status() == null
+                            || !Set.of("SUCCESS", "WAITING", "CLOSED")
+                            .contains(p.status()));
         String state;
         if (invalid
-                || success > 1
-                || (success == 1 && !paid)
-                || (paid && success != 1)
-                || ("CLOSED".equals(order.status()) && waiting)
-                || ("RESERVING".equals(order.status()) && !records.isEmpty())) {
+            || success > 1
+            || (success == 1 && !paid)
+            || (paid && success != 1)
+            || ("CLOSED".equals(order.status()) && waiting)
+            || ("RESERVING".equals(order.status()) && !records.isEmpty())) {
             state = "RECONCILE_REQUIRED";
         } else if (success == 1) {
             state = "SUCCESS";

@@ -37,6 +37,6 @@ public class UserUpdatePwdCmdExe {
 
         // 重置密码
         return userGateway.resetUserPwd(
-                user.getUserId(), SecurityUtils.encryptPassword(cmd.newPassword()));
+            user.getUserId(), SecurityUtils.encryptPassword(cmd.newPassword()));
     }
 }

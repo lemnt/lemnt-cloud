@@ -2,5 +2,8 @@ package com.lemnt.product.application.product.qry;
 
 import java.io.Serializable;
 
-/** 在售商品选择查询。 */
-public record ProductSpuSimpleListQry(String name, int limit) implements Serializable {}
+/**
+ * 在售商品选择查询。
+ */
+public record ProductSpuSimpleListQry(String name, int limit) implements Serializable {
+}

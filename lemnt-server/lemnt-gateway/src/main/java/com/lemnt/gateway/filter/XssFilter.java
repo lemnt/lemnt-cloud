@@ -23,6 +23,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import jakarta.annotation.Resource;
+
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
@@ -36,12 +37,13 @@ import java.util.regex.Pattern;
 public class XssFilter implements GlobalFilter, Ordered {
 
     private static final Pattern XSS_PATTERN =
-            Pattern.compile(
-                    // 事件属性从单词边界开始，避免将 controls/contenteditable 误判为 on* 属性。
-                    "<script[^>]*>.*?</script>|javascript:|\\bon\\w+\\s*=",
-                    Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+        Pattern.compile(
+            // 事件属性从单词边界开始，避免将 controls/contenteditable 误判为 on* 属性。
+            "<script[^>]*>.*?</script>|javascript:|\\bon\\w+\\s*=",
+            Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
-    @Resource private XssProperties xss;
+    @Resource
+    private XssProperties xss;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -65,40 +67,40 @@ public class XssFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
         return DataBufferUtils.join(request.getBody())
-                .flatMap(
-                        buffer -> {
-                            byte[] bytes = new byte[buffer.readableByteCount()];
-                            buffer.read(bytes);
-                            DataBufferUtils.release(buffer);
-                            String body = new String(bytes, StandardCharsets.UTF_8);
-                            if (XSS_PATTERN.matcher(body).find()) {
-                                return Mono.error(
-                                        new ResponseStatusException(
-                                                HttpStatus.BAD_REQUEST, "请求包含不安全内容"));
+            .flatMap(
+                buffer -> {
+                    byte[] bytes = new byte[buffer.readableByteCount()];
+                    buffer.read(bytes);
+                    DataBufferUtils.release(buffer);
+                    String body = new String(bytes, StandardCharsets.UTF_8);
+                    if (XSS_PATTERN.matcher(body).find()) {
+                        return Mono.error(
+                            new ResponseStatusException(
+                                HttpStatus.BAD_REQUEST, "请求包含不安全内容"));
+                    }
+                    ServerHttpRequestDecorator decorator =
+                        new ServerHttpRequestDecorator(request) {
+                            @Override
+                            public Flux<DataBuffer> getBody() {
+                                return Flux.defer(
+                                    () ->
+                                        Flux.just(
+                                            exchange.getResponse()
+                                                .bufferFactory()
+                                                .wrap(bytes)));
                             }
-                            ServerHttpRequestDecorator decorator =
-                                    new ServerHttpRequestDecorator(request) {
-                                        @Override
-                                        public Flux<DataBuffer> getBody() {
-                                            return Flux.defer(
-                                                    () ->
-                                                            Flux.just(
-                                                                    exchange.getResponse()
-                                                                            .bufferFactory()
-                                                                            .wrap(bytes)));
-                                        }
 
-                                        @Override
-                                        public HttpHeaders getHeaders() {
-                                            HttpHeaders headers = new HttpHeaders();
-                                            headers.putAll(super.getHeaders());
-                                            headers.remove(HttpHeaders.CONTENT_LENGTH);
-                                            return headers;
-                                        }
-                                    };
+                            @Override
+                            public HttpHeaders getHeaders() {
+                                HttpHeaders headers = new HttpHeaders();
+                                headers.putAll(super.getHeaders());
+                                headers.remove(HttpHeaders.CONTENT_LENGTH);
+                                return headers;
+                            }
+                        };
 
-                            return chain.filter(exchange.mutate().request(decorator).build());
-                        });
+                    return chain.filter(exchange.mutate().request(decorator).build());
+                });
     }
 
     /**

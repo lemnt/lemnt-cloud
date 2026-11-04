@@ -19,10 +19,10 @@
 
     <select id="orders" resultType="com.lemnt.order.infrastructure.fulfillment.dataobject.OrderSummaryDO">
         SELECT o.order_no,o.member_id,o.total_amount,o.status,o.create_time,
-               CASE WHEN c.order_no IS NULL THEN FALSE ELSE TRUE END AS inventory_confirmed,
-               EXISTS(SELECT 1 FROM order_after_sale r WHERE r.order_no=o.order_no
-                      AND r.status IN ('REQUESTED','AWAITING_RETURN','RETURNED','WAIT_REFUND','REFUNDING')) AS active_refund,
-               s.carrier_code,s.tracking_no,s.shipped_at,s.received_at
+        CASE WHEN c.order_no IS NULL THEN FALSE ELSE TRUE END AS inventory_confirmed,
+        EXISTS(SELECT 1 FROM order_after_sale r WHERE r.order_no=o.order_no
+        AND r.status IN ('REQUESTED','AWAITING_RETURN','RETURNED','WAIT_REFUND','REFUNDING')) AS active_refund,
+        s.carrier_code,s.tracking_no,s.shipped_at,s.received_at
         FROM order_info o
         LEFT JOIN order_inventory_confirmation c ON c.order_no=o.order_no
         LEFT JOIN order_shipment s ON s.order_no=o.order_no

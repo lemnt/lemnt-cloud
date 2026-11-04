@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 支付结果下游派发：持久化任务、立即尝试、失败按退避重试。 */
+/**
+ * 支付结果下游派发：持久化任务、立即尝试、失败按退避重试。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayNotifyTaskService {
@@ -21,36 +23,42 @@ public class PayNotifyTaskService {
     private final PayNotifyTaskGateway tasks;
     private final PayNotifyDispatcher dispatcher;
 
-    /** 幂等入队，同一 type+bizNo 返回既有任务。 */
+    /**
+     * 幂等入队，同一 type+bizNo 返回既有任务。
+     */
     public PayNotifyTask enqueue(String type, String bizNo, String orderNo) {
         if (!PayNotifyType.PAY.name().equals(type)
-                && !PayNotifyType.REFUND.name().equals(type)
-                && !PayNotifyType.AFTER_SALE.name().equals(type)) {
+            && !PayNotifyType.REFUND.name().equals(type)
+            && !PayNotifyType.AFTER_SALE.name().equals(type)) {
             throw new IllegalArgumentException("派发类型不合法");
         }
         require(bizNo, 40, "业务单号");
         require(orderNo, 40, "订单编号");
         return tasks.createIfAbsent(
-                new PayNotifyTask(
-                        null,
-                        type,
-                        bizNo,
-                        orderNo,
-                        PayNotifyTaskStatus.PENDING.name(),
-                        0,
-                        MAX_NOTIFY_TIMES,
-                        null,
-                        null,
-                        null,
-                        null));
+            new PayNotifyTask(
+                null,
+                type,
+                bizNo,
+                orderNo,
+                PayNotifyTaskStatus.PENDING.name(),
+                0,
+                MAX_NOTIFY_TIMES,
+                null,
+                null,
+                null,
+                null));
     }
 
-    /** 入队并立即尝试，返回值表示本次派发是否成功。 */
+    /**
+     * 入队并立即尝试，返回值表示本次派发是否成功。
+     */
     public boolean enqueueAndAttempt(String type, String bizNo, String orderNo) {
         return attempt(enqueue(type, bizNo, orderNo).id());
     }
 
-    /** 抢占并派发一次；已成功返回 true，失败记录日志与下次时间后返回 false。 */
+    /**
+     * 抢占并派发一次；已成功返回 true，失败记录日志与下次时间后返回 false。
+     */
     public boolean attempt(Long id) {
         var task = tasks.find(id);
         if (task == null) {
@@ -65,13 +73,13 @@ public class PayNotifyTaskService {
         var startedAt = tasks.databaseNow();
         // 当前RPC超时5秒，整任务包含多个下游步骤，租约预留120秒；业务端仍必须幂等。
         boolean claimed =
-                task.executeVersion() == null
-                        ? tasks.claim(id, task.notifyTimes())
-                        : tasks.claimVersion(
-                                id,
-                                task.notifyTimes(),
-                                task.executeVersion(),
-                                startedAt.plusSeconds(120));
+            task.executeVersion() == null
+                ? tasks.claim(id, task.notifyTimes())
+                : tasks.claimVersion(
+                id,
+                task.notifyTimes(),
+                task.executeVersion(),
+                startedAt.plusSeconds(120));
         if (!claimed) {
             // 被其他执行者抢占或状态已变化，按最新状态判断是否已成功。
             var current = tasks.find(id);
@@ -82,15 +90,15 @@ public class PayNotifyTaskService {
         try {
             dispatcher.dispatch(task);
             boolean finished =
-                    task.executeVersion() == null
-                            ? tasks.finishSuccess(id, attemptNo, "OK", now)
-                            : tasks.finishVersion(
-                                    id,
-                                    task.executeVersion() + 1,
-                                    true,
-                                    "OK",
-                                    null,
-                                    tasks.databaseNow());
+                task.executeVersion() == null
+                    ? tasks.finishSuccess(id, attemptNo, "OK", now)
+                    : tasks.finishVersion(
+                    id,
+                    task.executeVersion() + 1,
+                    true,
+                    "OK",
+                    null,
+                    tasks.databaseNow());
             if (!finished) {
                 return false;
             }
@@ -103,19 +111,21 @@ public class PayNotifyTaskService {
             } else {
                 var endedAt = tasks.databaseNow();
                 tasks.finishVersion(
-                        id,
-                        task.executeVersion() + 1,
-                        false,
-                        message,
-                        endedAt.plusSeconds(delay(attemptNo)),
-                        endedAt);
+                    id,
+                    task.executeVersion() + 1,
+                    false,
+                    message,
+                    endedAt.plusSeconds(delay(attemptNo)),
+                    endedAt);
             }
             log(id, attemptNo, PayNotifyTaskStatus.FAILED.name(), message);
             return false;
         }
     }
 
-    /** 调度器批量重试到期任务，单条失败不影响其余任务。 */
+    /**
+     * 调度器批量重试到期任务，单条失败不影响其余任务。
+     */
     public int processDue(int limit) {
         var now = tasks.databaseNow();
         int processed = 0;
@@ -130,7 +140,9 @@ public class PayNotifyTaskService {
         return processed;
     }
 
-    /** 人工重发：重置次数后立即尝试，成功任务拒绝重置。 */
+    /**
+     * 人工重发：重置次数后立即尝试，成功任务拒绝重置。
+     */
     public boolean retry(Long id) {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("任务编号不合法");

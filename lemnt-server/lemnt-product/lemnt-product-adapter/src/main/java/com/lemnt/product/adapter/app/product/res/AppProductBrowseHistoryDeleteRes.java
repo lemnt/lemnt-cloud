@@ -4,7 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
-/** 浏览足迹移除响应。 */
+/**
+ * 浏览足迹移除响应。
+ */
 @Schema(description = "浏览足迹移除响应")
 public record AppProductBrowseHistoryDeleteRes(@Schema(description = "是否隐藏成功") boolean success)
-        implements Serializable {}
+    implements Serializable {
+}

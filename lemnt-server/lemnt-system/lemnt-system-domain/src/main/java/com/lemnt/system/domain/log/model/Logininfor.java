@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 public class Logininfor implements Serializable {
-    @Serial private static final long serialVersionUID = 3665044417663228374L;
+    @Serial
+    private static final long serialVersionUID = 3665044417663228374L;
 
     /**
      * 访问ID

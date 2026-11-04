@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 分类树查询接口。 */
+/**
+ * 分类树查询接口。
+ */
 @Tag(name = "分类树查询")
 @RestController
 @RequestMapping("/mall/categories")
@@ -24,14 +26,16 @@ import java.util.List;
 public class CategoryTreeController {
     private final CategoryTreeQueryExe categoryTreeQueryExe;
 
-    /** 返回真实父子分类树。 */
+    /**
+     * 返回真实父子分类树。
+     */
     @GetMapping("/tree")
     @Operation(summary = "分类树")
     @RequiresPermissions("mall:category:list")
     public R<List<CategoryTreeRes>> tree() {
         return R.ok(
-                categoryTreeQueryExe.execute().stream()
-                        .map(ProductManagementResConverter::tree)
-                        .toList());
+            categoryTreeQueryExe.execute().stream()
+                .map(ProductManagementResConverter::tree)
+                .toList());
     }
 }

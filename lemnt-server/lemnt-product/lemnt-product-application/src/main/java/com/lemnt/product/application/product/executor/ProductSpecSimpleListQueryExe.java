@@ -13,26 +13,30 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 规格字典选择查询。 */
+/**
+ * 规格字典选择查询。
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductSpecSimpleListQueryExe {
     private final ProductSpecGateway productSpecGateway;
 
-    /** 限定选择条数，规格值选择必须指定真实规格项。 */
+    /**
+     * 限定选择条数，规格值选择必须指定真实规格项。
+     */
     public List<ProductSpecDTO> execute(ProductSpecSimpleListQry qry) {
         if (qry == null || qry.limit() < 1 || qry.limit() > 100) {
             throw new IllegalArgumentException("选择条数须为1至100");
         }
         String name =
-                qry.name() == null || qry.name().isBlank()
-                        ? null
-                        : ProductCatalogValidation.text(qry.name(), 64, "名称");
+            qry.name() == null || qry.name().isBlank()
+                ? null
+                : ProductCatalogValidation.text(qry.name(), 64, "名称");
         return productSpecGateway
-                .page(new ProductSpecFilter(name, null, 1, qry.limit(), null, null))
-                .getRecords()
-                .stream()
-                .map(ProductSpecDTOConverter::property)
-                .toList();
+            .page(new ProductSpecFilter(name, null, 1, qry.limit(), null, null))
+            .getRecords()
+            .stream()
+            .map(ProductSpecDTOConverter::property)
+            .toList();
     }
 }

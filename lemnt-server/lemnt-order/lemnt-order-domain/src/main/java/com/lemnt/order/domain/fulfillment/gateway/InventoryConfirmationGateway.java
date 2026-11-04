@@ -2,7 +2,9 @@ package com.lemnt.order.domain.fulfillment.gateway;
 
 import java.time.LocalDateTime;
 
-/** InventoryConfirmation 表领域存储接口。 */
+/**
+ * InventoryConfirmation 表领域存储接口。
+ */
 public interface InventoryConfirmationGateway {
     /**
      * 库存已确认。

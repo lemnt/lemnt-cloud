@@ -30,7 +30,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 角色管理接口。 */
+/**
+ * 角色管理接口。
+ */
 @Tag(name = "角色管理")
 @RestController
 @RequestMapping("/roles")
@@ -50,8 +52,8 @@ public class RoleController {
     public R<SystemRoleListRes> list(@Validated RolePageReq req) {
         PageResult<RoleDTO> result = rolePageQueryExe.execute(RoleReqConverter.toQry(req));
         return R.page(
-                RoleResConverter.toResListToSystemRoleListRes(result.getRecords()),
-                result.getTotal());
+            RoleResConverter.toResListToSystemRoleListRes(result.getRecords()),
+            result.getTotal());
     }
 
     @Operation(summary = "根据角色编号获取详细信息")
@@ -59,7 +61,7 @@ public class RoleController {
     @GetMapping(value = "/{roleId}")
     public R<SystemRoleGetInfoRes> getInfo(@PathVariable Long roleId) {
         return R.ok(
-                RoleResConverter.toResToSystemRoleGetInfoRes(roleDetailQueryExe.execute(roleId)));
+            RoleResConverter.toResToSystemRoleGetInfoRes(roleDetailQueryExe.execute(roleId)));
     }
 
     @Operation(summary = "新增角色")
@@ -99,7 +101,7 @@ public class RoleController {
     @GetMapping("/options")
     public R<List<SystemRoleOptionselectRes>> optionselect() {
         return R.ok(
-                RoleResConverter.toResListToSystemRoleOptionselectRes(
-                        roleOptionselectQueryExe.execute()));
+            RoleResConverter.toResListToSystemRoleOptionselectRes(
+                roleOptionselectQueryExe.execute()));
     }
 }

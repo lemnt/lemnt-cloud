@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.annotation.PostConstruct;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -149,9 +150,9 @@ public class ConfigGatewayImpl implements ConfigGateway {
      */
     private ConfigDO selectConfigRow(Long configId, String configKey) {
         return configMapper.selectOne(
-                Wrappers.<ConfigDO>lambdaQuery()
-                        .eq(Objects.nonNull(configId), ConfigDO::getConfigId, configId)
-                        .eq(StringUtils.isNotBlank(configKey), ConfigDO::getConfigKey, configKey));
+            Wrappers.<ConfigDO>lambdaQuery()
+                .eq(Objects.nonNull(configId), ConfigDO::getConfigId, configId)
+                .eq(StringUtils.isNotBlank(configKey), ConfigDO::getConfigKey, configKey));
     }
 
     /**
@@ -164,12 +165,14 @@ public class ConfigGatewayImpl implements ConfigGateway {
         return checkConfigKeyUniqueRow(configKey, null);
     }
 
-    /** 排除自身后查冲突，避免已有重复数据中先查到自身而漏判。 */
+    /**
+     * 排除自身后查冲突，避免已有重复数据中先查到自身而漏判。
+     */
     private ConfigDO checkConfigKeyUniqueRow(String configKey, Long excludeConfigId) {
         return configMapper.selectOne(
-                Wrappers.<ConfigDO>lambdaQuery()
-                        .eq(ConfigDO::getConfigKey, configKey)
-                        .ne(excludeConfigId != null, ConfigDO::getConfigId, excludeConfigId)
-                        .last("limit 1"));
+            Wrappers.<ConfigDO>lambdaQuery()
+                .eq(ConfigDO::getConfigKey, configKey)
+                .ne(excludeConfigId != null, ConfigDO::getConfigId, excludeConfigId)
+                .last("limit 1"));
     }
 }

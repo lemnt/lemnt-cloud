@@ -17,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** 秒杀活动仅操作活动主表。 */
+/**
+ * 秒杀活动仅操作活动主表。
+ */
 @Component
 @RequiredArgsConstructor
 public class SeckillActivityGatewayImpl implements SeckillActivityGateway {
@@ -42,11 +44,11 @@ public class SeckillActivityGatewayImpl implements SeckillActivityGateway {
     @Override
     public boolean close(Long id) {
         return mapper.update(
-                        null,
-                        Wrappers.<SeckillActivityDO>lambdaUpdate()
-                                .eq(SeckillActivityDO::getId, id)
-                                .set(SeckillActivityDO::getStatus, 1))
-                == 1;
+            null,
+            Wrappers.<SeckillActivityDO>lambdaUpdate()
+                .eq(SeckillActivityDO::getId, id)
+                .set(SeckillActivityDO::getStatus, 1))
+            == 1;
     }
 
     @Override
@@ -57,52 +59,52 @@ public class SeckillActivityGatewayImpl implements SeckillActivityGateway {
     @Override
     public PageResult<SeckillActivity> page(SeckillFilter filter) {
         var page =
-                mapper.selectPageByFilter(
-                        new Page<SeckillActivityDO>(filter.pageNum(), filter.pageSize()),
-                        filter.name(),
-                        filter.status(),
-                        filter.configId());
+            mapper.selectPageByFilter(
+                new Page<SeckillActivityDO>(filter.pageNum(), filter.pageSize()),
+                filter.name(),
+                filter.status(),
+                filter.configId());
         return PageResult.of(
-                page.getRecords().stream().map(SeckillConverter::model).toList(), page.getTotal());
+            page.getRecords().stream().map(SeckillConverter::model).toList(), page.getTotal());
     }
 
     @Override
     public List<SeckillActivity> enabled() {
         return mapper
-                .selectList(
-                        Wrappers.<SeckillActivityDO>lambdaQuery()
-                                .eq(SeckillActivityDO::getStatus, 0)
-                                .orderByDesc(SeckillActivityDO::getId))
-                .stream()
-                .map(SeckillConverter::model)
-                .toList();
+            .selectList(
+                Wrappers.<SeckillActivityDO>lambdaQuery()
+                    .eq(SeckillActivityDO::getStatus, 0)
+                    .orderByDesc(SeckillActivityDO::getId))
+            .stream()
+            .map(SeckillConverter::model)
+            .toList();
     }
 
     @Override
     public PageResult<SeckillActivity> appPage(
-            Long configId, LocalDateTime now, int pageNum, int pageSize) {
+        Long configId, LocalDateTime now, int pageNum, int pageSize) {
         var page =
-                mapper.selectAppPage(new Page<SeckillActivityDO>(pageNum, pageSize), configId, now);
+            mapper.selectAppPage(new Page<SeckillActivityDO>(pageNum, pageSize), configId, now);
         return PageResult.of(
-                page.getRecords().stream().map(SeckillConverter::model).toList(), page.getTotal());
+            page.getRecords().stream().map(SeckillConverter::model).toList(), page.getTotal());
     }
 
     @Override
     public List<SeckillActivity> byConfigAndNow(Long configId, LocalDateTime now) {
         return mapper.selectByConfigAndNow(configId, now).stream()
-                .map(SeckillConverter::model)
-                .toList();
+            .map(SeckillConverter::model)
+            .toList();
     }
 
     @Override
     public List<SeckillActivity> all() {
         return mapper
-                .selectList(
-                        Wrappers.<SeckillActivityDO>lambdaQuery()
-                                .orderByDesc(SeckillActivityDO::getId))
-                .stream()
-                .map(SeckillConverter::model)
-                .toList();
+            .selectList(
+                Wrappers.<SeckillActivityDO>lambdaQuery()
+                    .orderByDesc(SeckillActivityDO::getId))
+            .stream()
+            .map(SeckillConverter::model)
+            .toList();
     }
 
     @Override
@@ -129,21 +131,21 @@ public class SeckillActivityGatewayImpl implements SeckillActivityGateway {
     @Override
     public boolean decreaseStock(Long id, int count) {
         return mapper.update(
-                        null,
-                        Wrappers.<SeckillActivityDO>lambdaUpdate()
-                                .eq(SeckillActivityDO::getId, id)
-                                .ge(SeckillActivityDO::getStock, count)
-                                .setDecrBy(SeckillActivityDO::getStock, count))
-                == 1;
+            null,
+            Wrappers.<SeckillActivityDO>lambdaUpdate()
+                .eq(SeckillActivityDO::getId, id)
+                .ge(SeckillActivityDO::getStock, count)
+                .setDecrBy(SeckillActivityDO::getStock, count))
+            == 1;
     }
 
     @Override
     public boolean increaseStock(Long id, int count) {
         return mapper.update(
-                        null,
-                        Wrappers.<SeckillActivityDO>lambdaUpdate()
-                                .eq(SeckillActivityDO::getId, id)
-                                .setIncrBy(SeckillActivityDO::getStock, count))
-                == 1;
+            null,
+            Wrappers.<SeckillActivityDO>lambdaUpdate()
+                .eq(SeckillActivityDO::getId, id)
+                .setIncrBy(SeckillActivityDO::getStock, count))
+            == 1;
     }
 }

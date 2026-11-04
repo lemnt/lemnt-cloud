@@ -44,11 +44,11 @@ public class AppPaymentController {
     @PostMapping("/{orderNo}/payment")
     @Operation(summary = "发起本人订单支付，金额由服务端订单确定")
     public R<AppPaymentPrepayRes> prepay(
-            @PathVariable String orderNo, @Valid @RequestBody AppPaymentCreateReq req) {
+        @PathVariable String orderNo, @Valid @RequestBody AppPaymentCreateReq req) {
         return R.ok(
-                MemberPaymentStatusConverter.prepay(
-                        paymentPrepayCmdExe.execute(
-                                MemberPaymentStatusConverter.prepay(
-                                        SecurityUtils.getUserId(), orderNo, req))));
+            MemberPaymentStatusConverter.prepay(
+                paymentPrepayCmdExe.execute(
+                    MemberPaymentStatusConverter.prepay(
+                        SecurityUtils.getUserId(), orderNo, req))));
     }
 }

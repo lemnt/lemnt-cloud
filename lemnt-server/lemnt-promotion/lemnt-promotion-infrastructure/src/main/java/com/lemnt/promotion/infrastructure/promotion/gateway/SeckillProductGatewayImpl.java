@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 秒杀活动商品仅操作活动商品表。 */
+/**
+ * 秒杀活动商品仅操作活动商品表。
+ */
 @Component
 @RequiredArgsConstructor
 public class SeckillProductGatewayImpl implements SeckillProductGateway {
@@ -22,10 +24,10 @@ public class SeckillProductGatewayImpl implements SeckillProductGateway {
     @Override
     public List<SeckillProduct> byActivityId(Long activityId) {
         return SeckillConverter.products(
-                mapper.selectList(
-                        Wrappers.<SeckillProductDO>lambdaQuery()
-                                .eq(SeckillProductDO::getActivityId, activityId)
-                                .orderByAsc(SeckillProductDO::getId)));
+            mapper.selectList(
+                Wrappers.<SeckillProductDO>lambdaQuery()
+                    .eq(SeckillProductDO::getActivityId, activityId)
+                    .orderByAsc(SeckillProductDO::getId)));
     }
 
     @Override
@@ -34,19 +36,19 @@ public class SeckillProductGatewayImpl implements SeckillProductGateway {
             return List.of();
         }
         return SeckillConverter.products(
-                mapper.selectList(
-                        Wrappers.<SeckillProductDO>lambdaQuery()
-                                .in(SeckillProductDO::getActivityId, activityIds)
-                                .orderByAsc(SeckillProductDO::getId)));
+            mapper.selectList(
+                Wrappers.<SeckillProductDO>lambdaQuery()
+                    .in(SeckillProductDO::getActivityId, activityIds)
+                    .orderByAsc(SeckillProductDO::getId)));
     }
 
     @Override
     public SeckillProduct byActivityAndSku(Long activityId, Long skuId) {
         return SeckillConverter.model(
-                mapper.selectOne(
-                        Wrappers.<SeckillProductDO>lambdaQuery()
-                                .eq(SeckillProductDO::getActivityId, activityId)
-                                .eq(SeckillProductDO::getSkuId, skuId)));
+            mapper.selectOne(
+                Wrappers.<SeckillProductDO>lambdaQuery()
+                    .eq(SeckillProductDO::getActivityId, activityId)
+                    .eq(SeckillProductDO::getSkuId, skuId)));
     }
 
     @Override
@@ -54,48 +56,48 @@ public class SeckillProductGatewayImpl implements SeckillProductGateway {
         deleteByActivity(activityId);
         for (var item : products) {
             mapper.insert(
-                    SeckillConverter.row(
-                            new SeckillProduct(
-                                    null,
-                                    activityId,
-                                    item.configIds(),
-                                    item.spuId(),
-                                    item.skuId(),
-                                    item.seckillPrice(),
-                                    item.stock(),
-                                    item.activityStatus(),
-                                    item.activityStartTime(),
-                                    item.activityEndTime())));
+                SeckillConverter.row(
+                    new SeckillProduct(
+                        null,
+                        activityId,
+                        item.configIds(),
+                        item.spuId(),
+                        item.skuId(),
+                        item.seckillPrice(),
+                        item.stock(),
+                        item.activityStatus(),
+                        item.activityStartTime(),
+                        item.activityEndTime())));
         }
     }
 
     @Override
     public void deleteByActivity(Long activityId) {
         mapper.delete(
-                Wrappers.<SeckillProductDO>lambdaQuery()
-                        .eq(SeckillProductDO::getActivityId, activityId));
+            Wrappers.<SeckillProductDO>lambdaQuery()
+                .eq(SeckillProductDO::getActivityId, activityId));
     }
 
     @Override
     public boolean decreaseStock(Long activityId, Long skuId, int count) {
         return mapper.update(
-                        null,
-                        Wrappers.<SeckillProductDO>lambdaUpdate()
-                                .eq(SeckillProductDO::getActivityId, activityId)
-                                .eq(SeckillProductDO::getSkuId, skuId)
-                                .ge(SeckillProductDO::getStock, count)
-                                .setDecrBy(SeckillProductDO::getStock, count))
-                == 1;
+            null,
+            Wrappers.<SeckillProductDO>lambdaUpdate()
+                .eq(SeckillProductDO::getActivityId, activityId)
+                .eq(SeckillProductDO::getSkuId, skuId)
+                .ge(SeckillProductDO::getStock, count)
+                .setDecrBy(SeckillProductDO::getStock, count))
+            == 1;
     }
 
     @Override
     public boolean increaseStock(Long activityId, Long skuId, int count) {
         return mapper.update(
-                        null,
-                        Wrappers.<SeckillProductDO>lambdaUpdate()
-                                .eq(SeckillProductDO::getActivityId, activityId)
-                                .eq(SeckillProductDO::getSkuId, skuId)
-                                .setIncrBy(SeckillProductDO::getStock, count))
-                == 1;
+            null,
+            Wrappers.<SeckillProductDO>lambdaUpdate()
+                .eq(SeckillProductDO::getActivityId, activityId)
+                .eq(SeckillProductDO::getSkuId, skuId)
+                .setIncrBy(SeckillProductDO::getStock, count))
+            == 1;
     }
 }

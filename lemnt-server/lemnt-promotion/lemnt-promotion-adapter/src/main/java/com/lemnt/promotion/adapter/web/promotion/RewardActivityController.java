@@ -32,7 +32,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 满减活动直接管理入口。 */
+/**
+ * 满减活动直接管理入口。
+ */
 @RestController
 @RequestMapping("/mall/promotion/reward-activities")
 @Tag(name = "满减活动")
@@ -56,7 +58,7 @@ public class RewardActivityController {
     @Operation(summary = "修改满减活动")
     @RequiresPermissions("mall:promotion:update")
     public R<Boolean> update(
-            @PathVariable Long id, @Valid @RequestBody RewardActivityUpdateReq req) {
+        @PathVariable Long id, @Valid @RequestBody RewardActivityUpdateReq req) {
         return R.ok(update.execute(RewardActivityReqConverter.update(id, req)));
     }
 
@@ -87,7 +89,7 @@ public class RewardActivityController {
     public R<RewardActivityPageRes> page(@Valid @ModelAttribute RewardActivityPageReq req) {
         var result = page.execute(RewardActivityReqConverter.page(req));
         return R.page(
-                result.getRecords().stream().map(RewardActivityResConverter::page).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(RewardActivityResConverter::page).toList(),
+            result.getTotal());
     }
 }

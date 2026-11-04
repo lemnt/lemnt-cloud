@@ -32,7 +32,9 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.Set;
 
-/** 会员成长权益应用编排，保证签到、资产流水及等级变更原子性。 */
+/**
+ * 会员成长权益应用编排，保证签到、资产流水及等级变更原子性。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberGrowthService {
@@ -47,7 +49,9 @@ public class MemberGrowthService {
     private final MemberSignRecordGateway memberSignRecordGateway;
     private final MemberUserGateway memberUserGateway;
 
-    /** 应用编排直接选择逐表网关，不保留泛化领域存储接口。 */
+    /**
+     * 应用编排直接选择逐表网关，不保留泛化领域存储接口。
+     */
     private AssetRecord assetRequest(Long memberId, String type, String code, String bizNo) {
         return switch (type) {
             case "POINT" -> pointRecords.request(memberId, code, bizNo);
@@ -56,7 +60,9 @@ public class MemberGrowthService {
         };
     }
 
-    /** 已持会员锁，写入对应账本并参加外层事务。 */
+    /**
+     * 已持会员锁，写入对应账本并参加外层事务。
+     */
     private void saveAsset(AssetRecord record) {
         switch (record.assetType()) {
             case "POINT" -> pointRecords.save(record);
@@ -65,7 +71,9 @@ public class MemberGrowthService {
         }
     }
 
-    /** 退款累计只查询原权益所属账本。 */
+    /**
+     * 退款累计只查询原权益所属账本。
+     */
     private long tradeReturns(Long memberId, String type, String code, String orderNo) {
         return switch (type) {
             case "POINT" -> pointRecords.returned(memberId, code, orderNo);
@@ -96,14 +104,14 @@ public class MemberGrowthService {
      * 由调整、等级分配或签到的外层事务统一提交，奖励失败时一并回滚。
      */
     private AssetRecord adjust(
-            Long memberId,
-            String type,
-            long delta,
-            String bizType,
-            String key,
-            String reason,
-            boolean allowZero,
-            boolean autoLevel) {
+        Long memberId,
+        String type,
+        long delta,
+        String bizType,
+        String key,
+        String reason,
+        boolean allowZero,
+        boolean autoLevel) {
         var user = lock(memberId);
         if (!Set.of("POINT", "EXPERIENCE").contains(type)) {
             throw new ServiceException("资产类型不合法", 400);
@@ -122,7 +130,7 @@ public class MemberGrowthService {
             throw new ServiceException("变更量不能为0", 400);
         }
         long balance =
-                Math.addExact("POINT".equals(type) ? user.points() : user.experience(), delta);
+            Math.addExact("POINT".equals(type) ? user.points() : user.experience(), delta);
         // 经验按源规则扣至零，流水仍保留请求变更量；积分继续校验余额。
         if ("EXPERIENCE".equals(type)) {
             balance = Math.max(balance, 0);
@@ -133,44 +141,44 @@ public class MemberGrowthService {
         var metadata = PointRecordMetadata.from(type, bizType, delta);
         var expMetadata = ExperienceRecordMetadata.from(type, bizType, delta);
         var record =
-                new AssetRecord(
-                        null,
-                        memberId,
-                        type,
-                        delta,
-                        balance,
-                        bizType,
-                        key,
-                        reason,
-                        memberUserGateway.now(),
-                        null,
-                        metadata.type(),
-                        "POINT".equals(type) ? metadata.title() : expMetadata.title(),
-                        "POINT".equals(type) ? metadata.description() : expMetadata.description(),
-                        expMetadata.type());
+            new AssetRecord(
+                null,
+                memberId,
+                type,
+                delta,
+                balance,
+                bizType,
+                key,
+                reason,
+                memberUserGateway.now(),
+                null,
+                metadata.type(),
+                "POINT".equals(type) ? metadata.title() : expMetadata.title(),
+                "POINT".equals(type) ? metadata.description() : expMetadata.description(),
+                expMetadata.type());
         saveAsset(record);
         if (autoLevel && "EXPERIENCE".equals(type)) {
             long userExperience = balance;
             var best =
-                    memberLevelGateway.levels().stream()
-                            .filter(v -> v.status() == 1 && v.experience() <= userExperience)
-                            .max(Comparator.comparing(Level::level))
-                            .orElse(null);
+                memberLevelGateway.levels().stream()
+                    .filter(v -> v.status() == 1 && v.experience() <= userExperience)
+                    .max(Comparator.comparing(Level::level))
+                    .orElse(null);
             // 无匹配的启用等级时保留原等级，仅明确匹配到不同等级才变更。
             if (best != null && !Objects.equals(best.id(), user.levelId())) {
                 memberUserGateway.assignLevel(memberId, best.id());
                 memberLevelRecordGateway.levelRecord(
-                        new LevelRecord(
-                                null,
-                                memberId,
-                                best.id(),
-                                balance,
-                                reason,
-                                memberUserGateway.now(),
-                                best.level(),
-                                best.discountPercent(),
-                                best.experience(),
-                                null));
+                    new LevelRecord(
+                        null,
+                        memberId,
+                        best.id(),
+                        balance,
+                        reason,
+                        memberUserGateway.now(),
+                        best.level(),
+                        best.discountPercent(),
+                        best.experience(),
+                        null));
             }
         }
         return assetRequest(memberId, type, bizType, key);
@@ -181,7 +189,7 @@ public class MemberGrowthService {
      */
     @Transactional(rollbackFor = Exception.class)
     public AssetRecord adjustAsset(
-            Long memberId, String type, long delta, String requestNo, String reason) {
+        Long memberId, String type, long delta, String requestNo, String reason) {
         return adjust(memberId, type, delta, "ADMIN", requestNo, reason, false, true);
     }
 
@@ -193,7 +201,7 @@ public class MemberGrowthService {
         var user = lock(memberId);
         String key = MemberRules.text(requestNo, 64);
         String audit =
-                MemberRules.text("[level=" + levelId + "] " + MemberRules.text(reason, 450), 500);
+            MemberRules.text("[level=" + levelId + "] " + MemberRules.text(reason, 450), 500);
         var previous = assetRequest(memberId, "EXPERIENCE", "ADMIN_LEVEL", key);
         if (previous != null) {
             if (!audit.equals(previous.reason())) {
@@ -211,27 +219,27 @@ public class MemberGrowthService {
         }
         long target = level == null ? 0 : level.experience();
         adjust(
-                memberId,
-                "EXPERIENCE",
-                target - user.experience(),
-                "ADMIN_LEVEL",
-                key,
-                audit,
-                true,
-                false);
+            memberId,
+            "EXPERIENCE",
+            target - user.experience(),
+            "ADMIN_LEVEL",
+            key,
+            audit,
+            true,
+            false);
         memberUserGateway.assignLevel(memberId, levelId);
         memberLevelRecordGateway.levelRecord(
-                new LevelRecord(
-                        null,
-                        memberId,
-                        levelId,
-                        target,
-                        audit,
-                        memberUserGateway.now(),
-                        level == null ? null : level.level(),
-                        level == null ? null : level.discountPercent(),
-                        target - user.experience(),
-                        level == null ? "管理员取消了等级" : "管理员调整为：" + level.name()));
+            new LevelRecord(
+                null,
+                memberId,
+                levelId,
+                target,
+                audit,
+                memberUserGateway.now(),
+                level == null ? null : level.level(),
+                level == null ? null : level.discountPercent(),
+                target - user.experience(),
+                level == null ? "管理员取消了等级" : "管理员调整为：" + level.name()));
         return true;
     }
 
@@ -246,36 +254,36 @@ public class MemberGrowthService {
         }
         String name = MemberRules.text(v.name(), 80);
         if (v.level() == null
-                || v.level() < 1
-                || v.experience() == null
-                || v.experience() < 1
-                || v.discountPercent() == null
-                || v.discountPercent() < 0
-                || v.discountPercent() > 100
-                || v.status() == null
-                || (v.status() != 0 && v.status() != 1)) {
+            || v.level() < 1
+            || v.experience() == null
+            || v.experience() < 1
+            || v.discountPercent() == null
+            || v.discountPercent() < 0
+            || v.discountPercent() > 100
+            || v.status() == null
+            || (v.status() != 0 && v.status() != 1)) {
             throw new ServiceException("等级参数不合法", 400);
         }
         for (var old : memberLevelGateway.levels()) {
             if (!Objects.equals(old.id(), v.id())) {
                 if (old.name().equals(name)
-                        || old.level().equals(v.level())
-                        || (old.level() < v.level() && old.experience() >= v.experience())
-                        || (old.level() > v.level() && old.experience() <= v.experience())) {
+                    || old.level().equals(v.level())
+                    || (old.level() < v.level() && old.experience() >= v.experience())
+                    || (old.level() > v.level() && old.experience() <= v.experience())) {
                     throw new ServiceException("等级名称、序号或经验门槛冲突", 400);
                 }
             }
         }
         return memberLevelGateway.levelSave(
-                new Level(
-                        v.id(),
-                        name,
-                        v.level(),
-                        v.experience(),
-                        v.discountPercent(),
-                        MemberRules.optional(v.icon(), 500),
-                        MemberRules.optional(v.backgroundUrl(), 500),
-                        v.status()));
+            new Level(
+                v.id(),
+                name,
+                v.level(),
+                v.experience(),
+                v.discountPercent(),
+                MemberRules.optional(v.icon(), 500),
+                MemberRules.optional(v.backgroundUrl(), 500),
+                v.status()));
     }
 
     /**
@@ -294,7 +302,9 @@ public class MemberGrowthService {
         return true;
     }
 
-    /** 创建规则，天数重复不能覆盖原奖励。 */
+    /**
+     * 创建规则，天数重复不能覆盖原奖励。
+     */
     @Transactional(rollbackFor = Exception.class)
     public Long createSignConfig(SignConfig value) {
         validateSignConfig(value);
@@ -302,10 +312,12 @@ public class MemberGrowthService {
             throw new ServiceException("签到天数已存在", 409);
         }
         return memberSignConfigGateway.create(
-                new SignConfig(value.day(), value.point(), value.experience(), value.status()));
+            new SignConfig(value.day(), value.point(), value.experience(), value.status()));
     }
 
-    /** 修改规则可调整天数，但不能占用其他规则的天数。 */
+    /**
+     * 修改规则可调整天数，但不能占用其他规则的天数。
+     */
     @Transactional(rollbackFor = Exception.class)
     public boolean updateSignConfig(SignConfig value) {
         MemberRules.id(value.id());
@@ -323,23 +335,27 @@ public class MemberGrowthService {
         return true;
     }
 
-    /** 校验规则内容，保留现有天数及奖励约束。 */
+    /**
+     * 校验规则内容，保留现有天数及奖励约束。
+     */
     private void validateSignConfig(SignConfig v) {
         if (v.day() == null
-                || v.day() < 1
-                || v.day() > 366
-                || v.point() == null
-                || v.point() < 0
-                || v.experience() == null
-                || v.experience() < 0
-                || (v.point() == 0 && v.experience() == 0)
-                || v.status() == null
-                || (v.status() != 0 && v.status() != 1)) {
+            || v.day() < 1
+            || v.day() > 366
+            || v.point() == null
+            || v.point() < 0
+            || v.experience() == null
+            || v.experience() < 0
+            || (v.point() == 0 && v.experience() == 0)
+            || v.status() == null
+            || (v.status() != 0 && v.status() != 1)) {
             throw new ServiceException("签到配置不合法", 400);
         }
     }
 
-    /** 按ID删除，不影响已发放的签到奖励。 */
+    /**
+     * 按ID删除，不影响已发放的签到奖励。
+     */
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteSignConfig(Long id) {
         MemberRules.id(id);
@@ -363,9 +379,9 @@ public class MemberGrowthService {
             throw new ServiceException("今日已签到", 409);
         }
         var configs =
-                memberSignConfigGateway.signConfigs().stream()
-                        .filter(v -> v.status() == 1)
-                        .toList();
+            memberSignConfigGateway.signConfigs().stream()
+                .filter(v -> v.status() == 1)
+                .toList();
         if (configs.isEmpty()) {
             throw new ServiceException("签到规则未启用", 409);
         }
@@ -377,42 +393,42 @@ public class MemberGrowthService {
         }
         final int current = day;
         var config =
-                configs.stream()
-                        .filter(v -> v.day() == current)
-                        .findFirst()
-                        .orElse(new SignConfig(day, 0L, 0L, 1));
+            configs.stream()
+                .filter(v -> v.day() == current)
+                .findFirst()
+                .orElse(new SignConfig(day, 0L, 0L, 1));
         var signRecordId =
-                memberSignRecordGateway.signSave(
-                        new SignRecord(
-                                null,
-                                memberId,
-                                today,
-                                day,
-                                config.point(),
-                                config.experience(),
-                                null,
-                                now));
+            memberSignRecordGateway.signSave(
+                new SignRecord(
+                    null,
+                    memberId,
+                    today,
+                    day,
+                    config.point(),
+                    config.experience(),
+                    null,
+                    now));
         if (config.point() > 0) {
             adjust(
-                    memberId,
-                    "POINT",
-                    config.point(),
-                    "SIGN_IN",
-                    signRecordId.toString(),
-                    "每日签到",
-                    false,
-                    true);
+                memberId,
+                "POINT",
+                config.point(),
+                "SIGN_IN",
+                signRecordId.toString(),
+                "每日签到",
+                false,
+                true);
         }
         if (config.experience() > 0) {
             adjust(
-                    memberId,
-                    "EXPERIENCE",
-                    config.experience(),
-                    "SIGN_IN",
-                    signRecordId.toString(),
-                    "每日签到",
-                    false,
-                    true);
+                memberId,
+                "EXPERIENCE",
+                config.experience(),
+                "SIGN_IN",
+                signRecordId.toString(),
+                "每日签到",
+                false,
+                true);
         }
         return memberSignRecordGateway.signDate(memberId, today);
     }
@@ -422,29 +438,31 @@ public class MemberGrowthService {
      */
     public boolean saveConfig(Config v) {
         if (v.pointTradeDeductEnable() == null
-                || v.pointTradeDeductUnitPrice() == null
-                || v.pointTradeDeductUnitPrice() < 0
-                || v.pointTradeDeductMaxPrice() == null
-                || v.pointTradeDeductMaxPrice() < 0
-                || v.pointTradeGivePoint() == null
-                || v.pointTradeGivePoint() < 0
-                || (v.pointTradeDeductEnable() && v.pointTradeDeductUnitPrice() == 0)) {
+            || v.pointTradeDeductUnitPrice() == null
+            || v.pointTradeDeductUnitPrice() < 0
+            || v.pointTradeDeductMaxPrice() == null
+            || v.pointTradeDeductMaxPrice() < 0
+            || v.pointTradeGivePoint() == null
+            || v.pointTradeGivePoint() < 0
+            || (v.pointTradeDeductEnable() && v.pointTradeDeductUnitPrice() == 0)) {
             throw new ServiceException("积分配置不合法", 400);
         }
         memberConfigGateway.configSave(v);
         return true;
     }
 
-    /** 订单创建、支付、关闭和售后资产写入同一会员事务，重复回调按业务编号核对。 */
+    /**
+     * 订单创建、支付、关闭和售后资产写入同一会员事务，重复回调按业务编号核对。
+     */
     @Transactional(rollbackFor = Exception.class)
     public void tradeAsset(MemberTradeAssetCmd cmd) {
         if (cmd == null
-                || cmd.usePoint() < 0
-                || cmd.givePoint() < 0
-                || cmd.paidFen() < 0
-                || cmd.refundFen() < 0
-                || cmd.refundFen() > cmd.paidFen()
-                || cmd.refundPoint() < 0) {
+            || cmd.usePoint() < 0
+            || cmd.givePoint() < 0
+            || cmd.paidFen() < 0
+            || cmd.refundFen() < 0
+            || cmd.refundFen() > cmd.paidFen()
+            || cmd.refundPoint() < 0) {
             throw new ServiceException("交易权益参数不合法", 400);
         }
         String orderNo = MemberRules.text(cmd.orderNo(), 40);
@@ -457,42 +475,42 @@ public class MemberGrowthService {
                 }
                 if (cmd.usePoint() > 0) {
                     adjust(
-                            cmd.memberId(),
-                            "POINT",
-                            -cmd.usePoint(),
-                            "TRADE_USE",
-                            orderNo,
-                            reason,
-                            false,
-                            false);
+                        cmd.memberId(),
+                        "POINT",
+                        -cmd.usePoint(),
+                        "TRADE_USE",
+                        orderNo,
+                        reason,
+                        false,
+                        false);
                 }
             }
             case "PAID" -> {
                 if (cmd.usePoint() > 0
-                        && assetRequest(cmd.memberId(), "POINT", "TRADE_USE", orderNo) == null) {
+                    && assetRequest(cmd.memberId(), "POINT", "TRADE_USE", orderNo) == null) {
                     throw new ServiceException("订单抵扣积分尚未确认", 409);
                 }
                 if (cmd.givePoint() > 0) {
                     adjust(
-                            cmd.memberId(),
-                            "POINT",
-                            cmd.givePoint(),
-                            "TRADE_GIVE",
-                            orderNo,
-                            reason,
-                            false,
-                            false);
+                        cmd.memberId(),
+                        "POINT",
+                        cmd.givePoint(),
+                        "TRADE_GIVE",
+                        orderNo,
+                        reason,
+                        false,
+                        false);
                 }
                 if (cmd.paidFen() > 0) {
                     adjust(
-                            cmd.memberId(),
-                            "EXPERIENCE",
-                            cmd.paidFen(),
-                            "TRADE_EXPERIENCE",
-                            orderNo,
-                            reason,
-                            false,
-                            true);
+                        cmd.memberId(),
+                        "EXPERIENCE",
+                        cmd.paidFen(),
+                        "TRADE_EXPERIENCE",
+                        orderNo,
+                        reason,
+                        false,
+                        true);
                 }
             }
             case "CLOSED" -> {
@@ -501,14 +519,14 @@ public class MemberGrowthService {
                 var used = assetRequest(cmd.memberId(), "POINT", "TRADE_USE", orderNo);
                 if (used != null) {
                     adjust(
-                            cmd.memberId(),
-                            "POINT",
-                            -used.delta(),
-                            "TRADE_USE_CANCEL",
-                            orderNo,
-                            reason,
-                            false,
-                            false);
+                        cmd.memberId(),
+                        "POINT",
+                        -used.delta(),
+                        "TRADE_USE_CANCEL",
+                        orderNo,
+                        reason,
+                        false,
+                        false);
                 }
             }
             case "REFUND" -> {
@@ -518,107 +536,109 @@ public class MemberGrowthService {
                         throw new ServiceException("冻结回收积分不合法", 400);
                     }
                     String frozenReason =
-                            reason
-                                    + ":"
-                                    + orderNo
-                                    + ":"
-                                    + cmd.refundFen()
-                                    + ":"
-                                    + cmd.refundPoint()
-                                    + ":"
-                                    + cmd.deductGivePoint();
+                        reason
+                            + ":"
+                            + orderNo
+                            + ":"
+                            + cmd.refundFen()
+                            + ":"
+                            + cmd.refundPoint()
+                            + ":"
+                            + cmd.deductGivePoint();
                     returnExactTradeAsset(
-                            cmd.memberId(),
-                            "POINT",
-                            "TRADE_USE",
-                            "TRADE_USE_RETURN",
-                            orderNo,
-                            refundNo,
-                            cmd.refundPoint(),
-                            false,
-                            frozenReason);
-                    returnExactTradeAsset(
-                            cmd.memberId(),
-                            "POINT",
-                            "TRADE_GIVE",
-                            "TRADE_GIVE_RETURN",
-                            orderNo,
-                            refundNo,
-                            cmd.deductGivePoint(),
-                            true,
-                            frozenReason);
-                    returnExactTradeAsset(
-                            cmd.memberId(),
-                            "EXPERIENCE",
-                            "TRADE_EXPERIENCE",
-                            "TRADE_EXPERIENCE_RETURN",
-                            orderNo,
-                            refundNo,
-                            cmd.refundFen(),
-                            true,
-                            frozenReason);
-                    break;
-                }
-                String key = refundNo;
-                String refundReason = reason + ":" + cmd.refundFen() + ":" + cmd.fullRefund();
-                returnTradeAsset(
                         cmd.memberId(),
                         "POINT",
                         "TRADE_USE",
                         "TRADE_USE_RETURN",
                         orderNo,
-                        key,
-                        cmd.refundFen(),
-                        cmd.paidFen(),
-                        cmd.fullRefund(),
-                        false,
+                        refundNo,
                         cmd.refundPoint(),
-                        refundReason);
-                returnTradeAsset(
+                        false,
+                        frozenReason);
+                    returnExactTradeAsset(
                         cmd.memberId(),
                         "POINT",
                         "TRADE_GIVE",
                         "TRADE_GIVE_RETURN",
                         orderNo,
-                        key,
-                        cmd.refundFen(),
-                        cmd.paidFen(),
-                        cmd.fullRefund(),
+                        refundNo,
+                        cmd.deductGivePoint(),
                         true,
-                        0L,
-                        refundReason);
-                returnTradeAsset(
+                        frozenReason);
+                    returnExactTradeAsset(
                         cmd.memberId(),
                         "EXPERIENCE",
                         "TRADE_EXPERIENCE",
                         "TRADE_EXPERIENCE_RETURN",
                         orderNo,
-                        key,
+                        refundNo,
                         cmd.refundFen(),
-                        cmd.paidFen(),
-                        cmd.fullRefund(),
                         true,
-                        0L,
-                        refundReason);
+                        frozenReason);
+                    break;
+                }
+                String key = refundNo;
+                String refundReason = reason + ":" + cmd.refundFen() + ":" + cmd.fullRefund();
+                returnTradeAsset(
+                    cmd.memberId(),
+                    "POINT",
+                    "TRADE_USE",
+                    "TRADE_USE_RETURN",
+                    orderNo,
+                    key,
+                    cmd.refundFen(),
+                    cmd.paidFen(),
+                    cmd.fullRefund(),
+                    false,
+                    cmd.refundPoint(),
+                    refundReason);
+                returnTradeAsset(
+                    cmd.memberId(),
+                    "POINT",
+                    "TRADE_GIVE",
+                    "TRADE_GIVE_RETURN",
+                    orderNo,
+                    key,
+                    cmd.refundFen(),
+                    cmd.paidFen(),
+                    cmd.fullRefund(),
+                    true,
+                    0L,
+                    refundReason);
+                returnTradeAsset(
+                    cmd.memberId(),
+                    "EXPERIENCE",
+                    "TRADE_EXPERIENCE",
+                    "TRADE_EXPERIENCE_RETURN",
+                    orderNo,
+                    key,
+                    cmd.refundFen(),
+                    cmd.paidFen(),
+                    cmd.fullRefund(),
+                    true,
+                    0L,
+                    refundReason);
             }
             default -> throw new ServiceException("交易权益操作不合法", 400);
         }
     }
 
-    /** 按已记录的原始权益回退；最终整单退款处理分次取整尾差，不回退其他订单权益。 */
+    /**
+     * 按已记录的原始权益回退；最终整单退款处理分次取整尾差，不回退其他订单权益。
+     */
     private void returnTradeAsset(
-            Long memberId,
-            String type,
-            String originalType,
-            String returnType,
-            String orderNo,
-            String key,
-            long refundedFen,
-            long paidFen,
-            boolean fullRefund,
-            boolean reclaim,
-            long explicitPoints,
-            String reason) {
+        Long memberId,
+        String type,
+        String originalType,
+        String returnType,
+        String orderNo,
+        String key,
+        long refundedFen,
+        long paidFen,
+        boolean fullRefund,
+        boolean reclaim,
+        long explicitPoints,
+        String reason) {
         var original = assetRequest(memberId, type, originalType, orderNo);
         if (original == null) {
             return;
@@ -626,9 +646,9 @@ public class MemberGrowthService {
         // 保留已有旧幂等号的重放；新写入关联原流水，避免40位订单号加RF超过64位。
         String legacyKey = orderNo + ":" + key;
         var previous =
-                legacyKey.length() <= 64
-                        ? assetRequest(memberId, type, returnType, legacyKey)
-                        : null;
+            legacyKey.length() <= 64
+                ? assetRequest(memberId, type, returnType, legacyKey)
+                : null;
         key = MemberRules.text("@L" + original.id() + ":" + key, 64);
         if (previous == null) {
             previous = assetRequest(memberId, type, returnType, key);
@@ -641,9 +661,9 @@ public class MemberGrowthService {
         }
         long total = Math.abs(original.delta());
         long returned =
-                Math.addExact(
-                        Math.abs(tradeReturns(memberId, type, returnType, orderNo)),
-                        Math.abs(tradeReturns(memberId, type, returnType, "@L" + original.id())));
+            Math.addExact(
+                Math.abs(tradeReturns(memberId, type, returnType, orderNo)),
+                Math.abs(tradeReturns(memberId, type, returnType, "@L" + original.id())));
         if (returned > total) {
             throw new ServiceException("历史权益回退超过原记录", 409);
         }
@@ -651,15 +671,15 @@ public class MemberGrowthService {
         if (paidFen == 0) {
             // 零元订单由交易按数量比例计算本次退回积分，整单退款返回剩余全部积分。
             planned =
-                    fullRefund
-                            ? total - returned
-                            : Math.min(Math.max(0L, explicitPoints), total - returned);
+                fullRefund
+                    ? total - returned
+                    : Math.min(Math.max(0L, explicitPoints), total - returned);
         } else {
             planned =
-                    BigInteger.valueOf(total)
-                            .multiply(BigInteger.valueOf(refundedFen))
-                            .divide(BigInteger.valueOf(paidFen))
-                            .longValueExact();
+                BigInteger.valueOf(total)
+                    .multiply(BigInteger.valueOf(refundedFen))
+                    .divide(BigInteger.valueOf(paidFen))
+                    .longValueExact();
         }
         long delta = Math.min(total - returned, planned);
         if (reclaim) {
@@ -670,17 +690,19 @@ public class MemberGrowthService {
         adjust(memberId, type, delta, returnType, key, reason, true, "EXPERIENCE".equals(type));
     }
 
-    /** 冻结方案使用原流水主键构造短幂等号，避免订单号与RF组合超过64位。 */
+    /**
+     * 冻结方案使用原流水主键构造短幂等号，避免订单号与RF组合超过64位。
+     */
     private void returnExactTradeAsset(
-            Long memberId,
-            String type,
-            String originalType,
-            String returnType,
-            String orderNo,
-            String refundNo,
-            long planned,
-            boolean reclaim,
-            String reason) {
+        Long memberId,
+        String type,
+        String originalType,
+        String returnType,
+        String orderNo,
+        String refundNo,
+        long planned,
+        boolean reclaim,
+        String reason) {
         var original = assetRequest(memberId, type, originalType, orderNo);
         if (original == null) {
             if (planned != 0) {
@@ -699,9 +721,9 @@ public class MemberGrowthService {
         }
         long total = Math.abs(original.delta());
         long returned =
-                Math.addExact(
-                        Math.abs(tradeReturns(memberId, type, returnType, orderNo)),
-                        Math.abs(tradeReturns(memberId, type, returnType, prefix)));
+            Math.addExact(
+                Math.abs(tradeReturns(memberId, type, returnType, orderNo)),
+                Math.abs(tradeReturns(memberId, type, returnType, prefix)));
         if (planned < 0 || returned > total || planned > total - returned) {
             throw new ServiceException("冻结权益超出原订单剩余额度", 409);
         }

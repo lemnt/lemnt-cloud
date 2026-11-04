@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 钱包转账详情。 */
+/**
+ * 钱包转账详情。
+ */
 @Component
 @RequiredArgsConstructor
 public class WalletTransferDetailQueryExe {
@@ -17,6 +19,6 @@ public class WalletTransferDetailQueryExe {
 
     public WalletTransferDTO execute(String transferNo) {
         return WalletTransferDTOConverter.transfer(
-                transfers.findByNo(PaymentRules.text(transferNo, 40)));
+            transfers.findByNo(PaymentRules.text(transferNo, 40)));
     }
 }

@@ -25,7 +25,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 后台自提订单与核销。 */
+/**
+ * 后台自提订单与核销。
+ */
 @Tag(name = "自提核销")
 @RestController
 @RequestMapping("/trade/admin/orders/pick-up")
@@ -40,10 +42,10 @@ public class PickUpOrderController {
     @RequiresPermissions("trade:fulfillment:update")
     public R<PickUpOrderRes> assign(@Valid @RequestBody PickUpAssignReq req) {
         return R.ok(
-                PickUpConverter.order(
-                        assign.execute(
-                                new PickUpAssignCmd(
-                                        req.orderNo(), req.storeId(), SecurityUtils.getUserId()))));
+            PickUpConverter.order(
+                assign.execute(
+                    new PickUpAssignCmd(
+                        req.orderNo(), req.storeId(), SecurityUtils.getUserId()))));
     }
 
     @GetMapping("/{code}")
@@ -58,7 +60,7 @@ public class PickUpOrderController {
     @RequiresPermissions("trade:fulfillment:update")
     public R<PickUpOrderRes> verify(@PathVariable String code) {
         return R.ok(
-                PickUpConverter.order(
-                        verify.execute(new PickUpVerifyCmd(code, SecurityUtils.getUserId()))));
+            PickUpConverter.order(
+                verify.execute(new PickUpVerifyCmd(code, SecurityUtils.getUserId()))));
     }
 }

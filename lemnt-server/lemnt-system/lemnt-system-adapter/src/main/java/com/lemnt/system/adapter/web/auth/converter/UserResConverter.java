@@ -27,21 +27,21 @@ public class UserResConverter {
             return null;
         }
         return new UserRes(
-                dto.getUserId(),
-                dto.getDeptId(),
-                dto.getUserName(),
-                dto.getNickName(),
-                dto.getEmail(),
-                dto.getPhonenumber(),
-                dto.getSex(),
-                dto.getAvatar(),
-                dto.getStatus(),
-                dto.getLoginIp(),
-                dto.getLoginDate(),
-                dto.getCreateBy(),
-                dto.getCreateTime(),
-                dto.getRoles() == null ? null : RoleResConverter.toResList(dto.getRoles()),
-                DeptResConverter.toRes(dto.getDept(), true));
+            dto.getUserId(),
+            dto.getDeptId(),
+            dto.getUserName(),
+            dto.getNickName(),
+            dto.getEmail(),
+            dto.getPhonenumber(),
+            dto.getSex(),
+            dto.getAvatar(),
+            dto.getStatus(),
+            dto.getLoginIp(),
+            dto.getLoginDate(),
+            dto.getCreateBy(),
+            dto.getCreateTime(),
+            dto.getRoles() == null ? null : RoleResConverter.toResList(dto.getRoles()),
+            DeptResConverter.toRes(dto.getDept(), true));
     }
 
     /**
@@ -66,11 +66,11 @@ public class UserResConverter {
             return null;
         }
         return new UserDetailRes(
-                toUserDetail(dto.getDetail()),
-                dto.getRoleIds(),
-                dto.getPostIds(),
-                RoleResConverter.toResList(dto.getRoles()),
-                PostResConverter.toResList(dto.getPosts()));
+            toUserDetail(dto.getDetail()),
+            dto.getRoleIds(),
+            dto.getPostIds(),
+            RoleResConverter.toResList(dto.getRoles()),
+            PostResConverter.toResList(dto.getPosts()));
     }
 
     /**
@@ -81,19 +81,19 @@ public class UserResConverter {
             return null;
         }
         return new UserDetailRes.UserDetail(
-                detail.getUserId(),
-                detail.getDeptId(),
-                detail.getUserName(),
-                detail.getNickName(),
-                detail.getEmail(),
-                detail.getPhonenumber(),
-                detail.getSex(),
-                detail.getAvatar(),
-                detail.getStatus(),
-                detail.getLoginIp(),
-                detail.getLoginDate(),
-                detail.getCreateBy(),
-                detail.getCreateTime());
+            detail.getUserId(),
+            detail.getDeptId(),
+            detail.getUserName(),
+            detail.getNickName(),
+            detail.getEmail(),
+            detail.getPhonenumber(),
+            detail.getSex(),
+            detail.getAvatar(),
+            detail.getStatus(),
+            detail.getLoginIp(),
+            detail.getLoginDate(),
+            detail.getCreateBy(),
+            detail.getCreateTime());
     }
 
     /**
@@ -118,28 +118,28 @@ public class UserResConverter {
             return null;
         }
         return new SystemUserListRes(
-                dto.getUserId(),
-                dto.getDeptId(),
-                dto.getUserName(),
-                dto.getNickName(),
-                dto.getEmail(),
-                dto.getPhonenumber(),
-                dto.getSex(),
-                dto.getAvatar(),
-                dto.getStatus(),
-                dto.getLoginIp(),
-                dto.getLoginDate(),
-                dto.getCreateBy(),
-                dto.getCreateTime(),
-                dto.getRoles() == null ? null : RoleResConverter.toResList(dto.getRoles()),
-                DeptResConverter.toRes(dto.getDept(), true));
+            dto.getUserId(),
+            dto.getDeptId(),
+            dto.getUserName(),
+            dto.getNickName(),
+            dto.getEmail(),
+            dto.getPhonenumber(),
+            dto.getSex(),
+            dto.getAvatar(),
+            dto.getStatus(),
+            dto.getLoginIp(),
+            dto.getLoginDate(),
+            dto.getCreateBy(),
+            dto.getCreateTime(),
+            dto.getRoles() == null ? null : RoleResConverter.toResList(dto.getRoles()),
+            DeptResConverter.toRes(dto.getDept(), true));
     }
 
     /**
      * UserDTO List → UserBaseInfoRes List
      */
     public static List<SystemRoleUserAllocatedListRes> toResListToSystemRoleUserAllocatedListRes(
-            List<UserDTO> list) {
+        List<UserDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -154,33 +154,33 @@ public class UserResConverter {
      * UserDTO → UserBaseInfoRes
      */
     public static SystemRoleUserAllocatedListRes toResToSystemRoleUserAllocatedListRes(
-            UserDTO dto) {
+        UserDTO dto) {
         if (dto == null) {
             return null;
         }
         return new SystemRoleUserAllocatedListRes(
-                dto.getUserId(),
-                dto.getDeptId(),
-                dto.getUserName(),
-                dto.getNickName(),
-                dto.getEmail(),
-                dto.getPhonenumber(),
-                dto.getSex(),
-                dto.getAvatar(),
-                dto.getStatus(),
-                dto.getLoginIp(),
-                dto.getLoginDate(),
-                dto.getCreateBy(),
-                dto.getCreateTime(),
-                dto.getRoles() == null ? null : RoleResConverter.toResList(dto.getRoles()),
-                DeptResConverter.toRes(dto.getDept(), true));
+            dto.getUserId(),
+            dto.getDeptId(),
+            dto.getUserName(),
+            dto.getNickName(),
+            dto.getEmail(),
+            dto.getPhonenumber(),
+            dto.getSex(),
+            dto.getAvatar(),
+            dto.getStatus(),
+            dto.getLoginIp(),
+            dto.getLoginDate(),
+            dto.getCreateBy(),
+            dto.getCreateTime(),
+            dto.getRoles() == null ? null : RoleResConverter.toResList(dto.getRoles()),
+            DeptResConverter.toRes(dto.getDept(), true));
     }
 
     /**
      * UserDTO List → UserBaseInfoRes List
      */
     public static List<SystemRoleUserUnallocatedListRes>
-            toResListToSystemRoleUserUnallocatedListRes(List<UserDTO> list) {
+    toResListToSystemRoleUserUnallocatedListRes(List<UserDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -195,25 +195,25 @@ public class UserResConverter {
      * UserDTO → UserBaseInfoRes
      */
     public static SystemRoleUserUnallocatedListRes toResToSystemRoleUserUnallocatedListRes(
-            UserDTO dto) {
+        UserDTO dto) {
         if (dto == null) {
             return null;
         }
         return new SystemRoleUserUnallocatedListRes(
-                dto.getUserId(),
-                dto.getDeptId(),
-                dto.getUserName(),
-                dto.getNickName(),
-                dto.getEmail(),
-                dto.getPhonenumber(),
-                dto.getSex(),
-                dto.getAvatar(),
-                dto.getStatus(),
-                dto.getLoginIp(),
-                dto.getLoginDate(),
-                dto.getCreateBy(),
-                dto.getCreateTime(),
-                dto.getRoles() == null ? null : RoleResConverter.toResList(dto.getRoles()),
-                DeptResConverter.toRes(dto.getDept(), true));
+            dto.getUserId(),
+            dto.getDeptId(),
+            dto.getUserName(),
+            dto.getNickName(),
+            dto.getEmail(),
+            dto.getPhonenumber(),
+            dto.getSex(),
+            dto.getAvatar(),
+            dto.getStatus(),
+            dto.getLoginIp(),
+            dto.getLoginDate(),
+            dto.getCreateBy(),
+            dto.getCreateTime(),
+            dto.getRoles() == null ? null : RoleResConverter.toResList(dto.getRoles()),
+            DeptResConverter.toRes(dto.getDept(), true));
     }
 }

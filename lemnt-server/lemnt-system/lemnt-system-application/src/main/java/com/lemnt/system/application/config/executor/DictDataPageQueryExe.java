@@ -30,7 +30,7 @@ public class DictDataPageQueryExe {
         query.setDictLabel(qry.dictLabel());
         query.setStatus(qry.status());
         PageResult<DictData> pageResult =
-                dictDataGateway.selectPage(query, new PageQry(qry.pageNum(), qry.pageSize()));
+            dictDataGateway.selectPage(query, new PageQry(qry.pageNum(), qry.pageSize()));
         List<DictDataDTO> dtoList = DictDataConverter.toDTOList(pageResult.getRecords());
         return PageResult.of(dtoList, pageResult.getTotal());
     }

@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** App 积分商城活动分页执行器。 */
+/**
+ * App 积分商城活动分页执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class PointAppPageQueryExe {

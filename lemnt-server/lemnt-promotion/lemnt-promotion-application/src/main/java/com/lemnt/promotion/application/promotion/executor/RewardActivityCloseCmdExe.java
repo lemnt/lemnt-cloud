@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 活动Close执行器。 */
+/**
+ * 活动Close执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class RewardActivityCloseCmdExe {

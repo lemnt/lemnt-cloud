@@ -7,13 +7,17 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** BrowseHistorycreate执行器。 */
+/**
+ * BrowseHistorycreate执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductBrowseHistoryCreateCmdExe {
     private final ProductBrowseHistoryService service;
 
-    /** 委托领域应用服务完成本次用例。 */
+    /**
+     * 委托领域应用服务完成本次用例。
+     */
     public boolean execute(ProductBrowseHistoryCreateCmd value) {
         return service.create(value);
     }

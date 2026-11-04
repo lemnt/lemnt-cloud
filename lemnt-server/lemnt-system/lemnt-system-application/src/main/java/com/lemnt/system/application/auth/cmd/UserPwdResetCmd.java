@@ -8,12 +8,13 @@ import java.io.Serializable;
  * @author wangxx
  */
 public record UserPwdResetCmd(
-        /**
-         * 用户ID
-         */
-        Long userId,
-        /**
-         * 密码
-         */
-        String password)
-        implements Serializable {}
+    /**
+     * 用户ID
+     */
+    Long userId,
+    /**
+     * 密码
+     */
+    String password)
+    implements Serializable {
+}

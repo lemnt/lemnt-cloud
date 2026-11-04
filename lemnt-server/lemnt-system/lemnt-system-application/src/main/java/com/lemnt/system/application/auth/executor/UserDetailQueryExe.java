@@ -44,16 +44,16 @@ public class UserDetailQueryExe {
             detail.setDetail(UserDetailConverter.toDTO(user));
             detail.setPostIds(postGateway.selectPostsByUserId(userId));
             detail.setRoleIds(
-                    user.getRoles().stream().map(Role::getRoleId).collect(Collectors.toList()));
+                user.getRoles().stream().map(Role::getRoleId).collect(Collectors.toList()));
         }
         List<Role> roleList = roleGateway.selectRoleAll();
         detail.setRoles(
-                SecurityUtils.isAdmin(userId)
-                        ? RoleConverter.toDTOList(roleList)
-                        : RoleConverter.toDTOList(
-                                roleList.stream()
-                                        .filter(r -> !r.isAdmin())
-                                        .collect(Collectors.toList())));
+            SecurityUtils.isAdmin(userId)
+                ? RoleConverter.toDTOList(roleList)
+                : RoleConverter.toDTOList(
+                roleList.stream()
+                    .filter(r -> !r.isAdmin())
+                    .collect(Collectors.toList())));
         detail.setPosts(PostConverter.toDTOList(postGateway.selectPostAll()));
         return detail;
     }

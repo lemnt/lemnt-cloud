@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-/** UserRole 持久化实现。 */
+/**
+ * UserRole 持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class UserRoleGatewayImpl implements UserRoleGateway {
@@ -64,7 +66,7 @@ public class UserRoleGatewayImpl implements UserRoleGateway {
      */
     private int deleteUserRoleByUserIdRow(Long userId) {
         return userRoleMapper.delete(
-                Wrappers.<UserRoleDO>lambdaQuery().eq(UserRoleDO::getUserId, userId));
+            Wrappers.<UserRoleDO>lambdaQuery().eq(UserRoleDO::getUserId, userId));
     }
 
     /**
@@ -78,7 +80,7 @@ public class UserRoleGatewayImpl implements UserRoleGateway {
             return 0;
         }
         return userRoleMapper.delete(
-                Wrappers.<UserRoleDO>lambdaQuery().in(UserRoleDO::getUserId, userIds));
+            Wrappers.<UserRoleDO>lambdaQuery().in(UserRoleDO::getUserId, userIds));
     }
 
     /**
@@ -90,9 +92,9 @@ public class UserRoleGatewayImpl implements UserRoleGateway {
      */
     private int deleteUserRoleInfoRow(Long userId, Long roleId) {
         return userRoleMapper.delete(
-                Wrappers.<UserRoleDO>lambdaQuery()
-                        .eq(UserRoleDO::getRoleId, roleId)
-                        .eq(UserRoleDO::getUserId, userId));
+            Wrappers.<UserRoleDO>lambdaQuery()
+                .eq(UserRoleDO::getRoleId, roleId)
+                .eq(UserRoleDO::getUserId, userId));
     }
 
     /**
@@ -107,8 +109,8 @@ public class UserRoleGatewayImpl implements UserRoleGateway {
             return 0;
         }
         return userRoleMapper.delete(
-                Wrappers.<UserRoleDO>lambdaQuery()
-                        .eq(UserRoleDO::getRoleId, roleId)
-                        .in(UserRoleDO::getUserId, userIds));
+            Wrappers.<UserRoleDO>lambdaQuery()
+                .eq(UserRoleDO::getRoleId, roleId)
+                .in(UserRoleDO::getUserId, userIds));
     }
 }

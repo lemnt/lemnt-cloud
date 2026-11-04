@@ -11,7 +11,9 @@ import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 
-/** pay_wallet_transfer 数据对象。 */
+/**
+ * pay_wallet_transfer 数据对象。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("pay_wallet_transfer")

@@ -27,22 +27,22 @@ class GatewayExceptionHandlerTest {
     @Test
     void shouldReturnServiceUnavailableWhenNoInstanceIsRegistered() {
         assertResponse(
-                new NotFoundException("Unable to find instance for lemnt-system"),
-                503,
-                "服务暂不可用，请稍后重试");
+            new NotFoundException("Unable to find instance for lemnt-system"),
+            503,
+            "服务暂不可用，请稍后重试");
     }
 
     @Test
     void shouldKeepRequestErrorAndAuthenticationStatusSeparate() {
         assertResponse(
-                new ResponseStatusException(HttpStatus.BAD_REQUEST, "请求包含不安全内容"), 400, "请求包含不安全内容");
+            new ResponseStatusException(HttpStatus.BAD_REQUEST, "请求包含不安全内容"), 400, "请求包含不安全内容");
         assertResponse(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "登录失效"), 401, "登录失效");
         assertResponse(new IllegalStateException("Unexpected failure"), 500, "内部服务器错误");
     }
 
     private void assertResponse(Throwable error, int expectedCode, String expectedMessage) {
         var exchange =
-                MockServerWebExchange.from(MockServerHttpRequest.get("/system/users/current-info"));
+            MockServerWebExchange.from(MockServerHttpRequest.get("/system/users/current-info"));
 
         handler.handle(exchange, error).block();
 

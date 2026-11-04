@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 签到配置删除命令执行器。 */
+/**
+ * 签到配置删除命令执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberSignConfigDeleteCmdExe {

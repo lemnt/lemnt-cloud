@@ -6,4 +6,5 @@ import java.util.List;
 /**
  * 营销分页数据传输对象。
  */
-public record CouponPageDTO(List<CouponOfferDTO> records, long total) implements Serializable {}
+public record CouponPageDTO(List<CouponOfferDTO> records, long total) implements Serializable {
+}

@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-/** 仅映射活动实际使用的SPU字段，其余属性保持未知，不补造商品详情。 */
+/**
+ * 仅映射活动实际使用的SPU字段，其余属性保持未知，不补造商品详情。
+ */
 @Component
 public class ProductSpuGatewayImpl implements ProductSpuGateway {
     @DubboReference(check = false, timeout = 5000, retries = 0)
@@ -24,8 +26,8 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
     @Override
     public List<ProductSpu> findSpus(List<Long> ids) {
         return ids == null || ids.isEmpty()
-                ? List.of()
-                : client.findSpus(ids).stream().map(this::from).toList();
+            ? List.of()
+            : client.findSpus(ids).stream().map(this::from).toList();
     }
 
     @Override
@@ -35,16 +37,16 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
 
     private ProductSpu from(ProductSpuBriefDTO v) {
         return v == null
-                ? null
-                : new ProductSpu(
-                        v.id(),
-                        null,
-                        v.name(),
-                        v.categoryId(),
-                        null,
-                        null,
-                        v.image(),
-                        v.status(),
-                        List.of());
+            ? null
+            : new ProductSpu(
+            v.id(),
+            null,
+            v.name(),
+            v.categoryId(),
+            null,
+            null,
+            v.image(),
+            v.status(),
+            List.of());
     }
 }

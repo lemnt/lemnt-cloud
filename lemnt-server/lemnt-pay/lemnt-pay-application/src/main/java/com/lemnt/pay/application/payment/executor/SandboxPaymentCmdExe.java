@@ -15,7 +15,9 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
-/** 沙箱收银台：会员确认后本地模拟渠道成功通知，仅在沙箱开关开启时可用。 */
+/**
+ * 沙箱收银台：会员确认后本地模拟渠道成功通知，仅在沙箱开关开启时可用。
+ */
 @Component
 @ConditionalOnProperty(prefix = "payment.sandbox", name = "enabled", havingValue = "true")
 @RequiredArgsConstructor
@@ -26,10 +28,10 @@ public class SandboxPaymentCmdExe {
 
     public String execute(Long memberId, String paymentNo) {
         if (memberId == null
-                || memberId <= 0
-                || paymentNo == null
-                || paymentNo.isBlank()
-                || paymentNo.length() > 40) {
+            || memberId <= 0
+            || paymentNo == null
+            || paymentNo.isBlank()
+            || paymentNo.length() > 40) {
             throw new ServiceException("支付单编号不合法", 400);
         }
         var payment = payments.findByPaymentNo(paymentNo);
@@ -41,29 +43,29 @@ public class SandboxPaymentCmdExe {
             throw new ServiceException("支付单不存在", 400);
         }
         if ("SUCCESS".equals(payment.status())
-                && Set.of("PAID", "SHIPPED", "COMPLETED", "REFUNDED").contains(order.status())) {
+            && Set.of("PAID", "SHIPPED", "COMPLETED", "REFUNDED").contains(order.status())) {
             return paymentNo;
         }
         if (!"WAITING".equals(payment.status())
-                || !"PENDING_PAYMENT".equals(order.status())
-                || payment.amount() == null
-                || payment.amount().signum() <= 0) {
+            || !"PENDING_PAYMENT".equals(order.status())
+            || payment.amount() == null
+            || payment.amount().signum() <= 0) {
             throw new ServiceException("支付单或订单状态不允许支付", 400);
         }
         String suffix =
-                UUID.randomUUID()
-                        .toString()
-                        .replace("-", "")
-                        .toUpperCase(Locale.ROOT)
-                        .substring(0, 24);
+            UUID.randomUUID()
+                .toString()
+                .replace("-", "")
+                .toUpperCase(Locale.ROOT)
+                .substring(0, 24);
         notify.execute(
-                new VerifiedPaymentNotification(
-                        payment.paymentNo(),
-                        payment.orderNo(),
-                        PaymentChannel.SANDBOX.name(),
-                        "SBAPP-" + suffix,
-                        payment.amount(),
-                        "NAPP-" + suffix));
+            new VerifiedPaymentNotification(
+                payment.paymentNo(),
+                payment.orderNo(),
+                PaymentChannel.SANDBOX.name(),
+                "SBAPP-" + suffix,
+                payment.amount(),
+                "NAPP-" + suffix));
         return paymentNo;
     }
 }

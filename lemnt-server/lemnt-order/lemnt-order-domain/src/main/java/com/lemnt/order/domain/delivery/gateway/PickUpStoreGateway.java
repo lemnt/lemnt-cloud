@@ -6,7 +6,9 @@ import com.lemnt.order.domain.delivery.model.PickUpStoreFilter;
 
 import java.util.List;
 
-/** 自提门店存储契约。 */
+/**
+ * 自提门店存储契约。
+ */
 public interface PickUpStoreGateway {
     PickUpStore find(Long id);
 

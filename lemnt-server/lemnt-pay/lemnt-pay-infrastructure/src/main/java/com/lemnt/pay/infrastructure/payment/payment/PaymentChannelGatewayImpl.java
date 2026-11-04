@@ -11,7 +11,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/** 按渠道路由适配器；缺失或重复适配器都明确失败，不模拟支付成功。 */
+/**
+ * 按渠道路由适配器；缺失或重复适配器都明确失败，不模拟支付成功。
+ */
 @Component
 public class PaymentChannelGatewayImpl implements PaymentChannelGateway {
     private final List<PaymentChannelAdapter> adapters;
@@ -27,11 +29,11 @@ public class PaymentChannelGatewayImpl implements PaymentChannelGateway {
 
     @Override
     public VerifiedPaymentNotification verify(
-            String channel,
-            PayChannelConfig config,
-            String body,
-            String signature,
-            String timestamp) {
+        String channel,
+        PayChannelConfig config,
+        String body,
+        String signature,
+        String timestamp) {
         return adapter(channel).verify(config, body, signature, timestamp);
     }
 

@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 小程序经验流水接口。 */
+/**
+ * 小程序经验流水接口。
+ */
 @Tag(name = "小程序经验流水")
 @RestController
 @RequestMapping("/app/growths")
@@ -31,15 +33,15 @@ public class AppMemberExperienceRecordController {
     @GetMapping("/experience-records")
     @Operation(summary = "本人经验流水分页")
     public R<AppMemberGrowthExperienceRes> experience(
-            @Valid @ModelAttribute ExperienceRecordPageReq req) {
+        @Valid @ModelAttribute ExperienceRecordPageReq req) {
         var page =
-                memberAssetRecordPageQueryExe.execute(
-                        MemberGrowthReqConverter.toExperienceRecordPageQry(
-                                SecurityUtils.getUserId(), req));
+            memberAssetRecordPageQueryExe.execute(
+                MemberGrowthReqConverter.toExperienceRecordPageQry(
+                    SecurityUtils.getUserId(), req));
         return R.page(
-                page.getRecords().stream()
-                        .map(MemberGrowthResConverter::toAppMemberGrowthExperienceRes)
-                        .toList(),
-                page.getTotal());
+            page.getRecords().stream()
+                .map(MemberGrowthResConverter::toAppMemberGrowthExperienceRes)
+                .toList(),
+            page.getTotal());
     }
 }

@@ -17,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Objects;
 
-/** 支付退款消息只触发原冻结售后完成，不能从消息或当前配置重新决定退款金额。 */
+/**
+ * 支付退款消息只触发原冻结售后完成，不能从消息或当前配置重新决定退款金额。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayRefundSuccessEventHandler {
@@ -31,28 +33,28 @@ public class PayRefundSuccessEventHandler {
         envelope.requireType(CommerceEventTopics.PAY_REFUND_SUCCESS);
         var v = JsonUtils.toBean(envelope.payload(), PayRefundSuccessEvent.class);
         if (v == null
-                || !envelope.aggregateNo().equals(v.orderNo())
-                || !envelope.businessKey().equals(v.refundNo()))
+            || !envelope.aggregateNo().equals(v.orderNo())
+            || !envelope.businessKey().equals(v.refundNo()))
             throw new IllegalArgumentException("现金退款事件标识不一致");
         if (!inbox.begin(
-                "order.pay_refund_success.v1",
-                envelope.eventNo(),
-                envelope.eventType(),
-                envelope.businessKey(),
-                envelope.payload())) return;
+            "order.pay_refund_success.v1",
+            envelope.eventNo(),
+            envelope.eventType(),
+            envelope.businessKey(),
+            envelope.payload())) return;
         var af = afterSales.afterSale(v.afterSaleNo());
         var fact = refunds.findByAfterSaleNo(v.afterSaleNo());
         if (af == null
-                || !af.memberId().equals(v.memberId())
-                || fact == null
-                || !"SUCCESS".equals(fact.status())
-                || !Objects.equals(v.refundNo(), fact.refundNo())
-                || !Objects.equals(v.orderNo(), fact.orderNo())
-                || !Objects.equals(v.paymentNo(), fact.paymentNo())
-                || !Objects.equals(v.channel(), fact.channel())
-                || !Objects.equals(v.channelRefundNo(), fact.channelRefundNo())
-                || v.amount() == null
-                || v.amount().compareTo(fact.amount()) != 0)
+            || !af.memberId().equals(v.memberId())
+            || fact == null
+            || !"SUCCESS".equals(fact.status())
+            || !Objects.equals(v.refundNo(), fact.refundNo())
+            || !Objects.equals(v.orderNo(), fact.orderNo())
+            || !Objects.equals(v.paymentNo(), fact.paymentNo())
+            || !Objects.equals(v.channel(), fact.channel())
+            || !Objects.equals(v.channelRefundNo(), fact.channelRefundNo())
+            || v.amount() == null
+            || v.amount().compareTo(fact.amount()) != 0)
             throw new IllegalStateException("现金退款事实不一致，请先对账");
         coordinator.cashSucceeded(fact);
     }

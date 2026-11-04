@@ -24,17 +24,17 @@ class AppPaymentControllerTest {
     void sessionIdentityOverridesCallerMemberAndForeignOrdersAreConcealed() throws Exception {
         var query = mock(MemberPaymentStatusQueryExe.class);
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new AppPaymentController(query, mock(PaymentPrepayCmdExe.class)))
-                        .addInterceptors(new HeaderInterceptor())
-                        .build();
+            MockMvcBuilders.standaloneSetup(
+                    new AppPaymentController(query, mock(PaymentPrepayCmdExe.class)))
+                .addInterceptors(new HeaderInterceptor())
+                .build();
         mvc.perform(
-                        get("/trade/app/orders/TR1/payment")
-                                .header("Authorization", "Bearer member")
-                                .header(SecurityConstants.HEADER_USER_ID, "7")
-                                .header("memberId", "999"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.msg").value("订单不存在"));
+                get("/trade/app/orders/TR1/payment")
+                    .header("Authorization", "Bearer member")
+                    .header(SecurityConstants.HEADER_USER_ID, "7")
+                    .header("memberId", "999"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.msg").value("订单不存在"));
         verify(query).execute(new MemberPaymentStatusQry(7L, "TR1"));
     }
 
@@ -42,13 +42,13 @@ class AppPaymentControllerTest {
     void gatewayIdentityWorksWithoutAuthorizationHeader() throws Exception {
         var query = mock(MemberPaymentStatusQueryExe.class);
         MockMvcBuilders.standaloneSetup(
-                        new AppPaymentController(query, mock(PaymentPrepayCmdExe.class)))
-                .addInterceptors(new HeaderInterceptor())
-                .build()
-                .perform(
-                        get("/trade/app/orders/TR1/payment")
-                                .header(SecurityConstants.HEADER_USER_ID, "8"))
-                .andExpect(status().isOk());
+                new AppPaymentController(query, mock(PaymentPrepayCmdExe.class)))
+            .addInterceptors(new HeaderInterceptor())
+            .build()
+            .perform(
+                get("/trade/app/orders/TR1/payment")
+                    .header(SecurityConstants.HEADER_USER_ID, "8"))
+            .andExpect(status().isOk());
         verify(query).execute(new MemberPaymentStatusQry(8L, "TR1"));
     }
 
@@ -57,28 +57,28 @@ class AppPaymentControllerTest {
         var query = mock(MemberPaymentStatusQueryExe.class);
         var prepay = mock(PaymentPrepayCmdExe.class);
         Mockito.when(prepay.execute(any()))
-                .thenReturn(
-                        new PaymentPrepayDTO(
-                                "PAY1",
-                                "TR1",
-                                "SANDBOX",
-                                new BigDecimal("8.00"),
-                                null,
-                                Map.of("paymentNo", "PAY1", "appKey", "lemnt-mall")));
+            .thenReturn(
+                new PaymentPrepayDTO(
+                    "PAY1",
+                    "TR1",
+                    "SANDBOX",
+                    new BigDecimal("8.00"),
+                    null,
+                    Map.of("paymentNo", "PAY1", "appKey", "lemnt-mall")));
         var mvc =
-                MockMvcBuilders.standaloneSetup(new AppPaymentController(query, prepay))
-                        .addInterceptors(new HeaderInterceptor())
-                        .build();
+            MockMvcBuilders.standaloneSetup(new AppPaymentController(query, prepay))
+                .addInterceptors(new HeaderInterceptor())
+                .build();
         mvc.perform(
-                        post("/trade/app/orders/TR1/payment")
-                                .header(SecurityConstants.HEADER_USER_ID, "7")
-                                .contentType("application/json")
-                                .content("{\"appKey\":\"lemnt-mall\",\"channel\":\"SANDBOX\"}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.paymentNo").value("PAY1"))
-                .andExpect(jsonPath("$.data.channel").value("SANDBOX"))
-                .andExpect(jsonPath("$.data.amount").value(8.0))
-                .andExpect(jsonPath("$.data.params.appKey").value("lemnt-mall"));
+                post("/trade/app/orders/TR1/payment")
+                    .header(SecurityConstants.HEADER_USER_ID, "7")
+                    .contentType("application/json")
+                    .content("{\"appKey\":\"lemnt-mall\",\"channel\":\"SANDBOX\"}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.paymentNo").value("PAY1"))
+            .andExpect(jsonPath("$.data.channel").value("SANDBOX"))
+            .andExpect(jsonPath("$.data.amount").value(8.0))
+            .andExpect(jsonPath("$.data.params.appKey").value("lemnt-mall"));
         verify(prepay).execute(new PaymentPrepayCmd(7L, "TR1", "lemnt-mall", "SANDBOX"));
     }
 }

@@ -2,7 +2,9 @@ package com.lemnt.member.domain.growth.model;
 
 import java.util.Set;
 
-/** 源积分枚举快照；只映射语义确定的业务，不猜测未知来源。 */
+/**
+ * 源积分枚举快照；只映射语义确定的业务，不猜测未知来源。
+ */
 public record PointRecordMetadata(Integer type, String title, String description) {
     public static PointRecordMetadata from(String assetType, String code, long delta) {
         if (!"POINT".equals(assetType)) return new PointRecordMetadata(null, null, null);
@@ -18,7 +20,9 @@ public record PointRecordMetadata(Integer type, String title, String description
         };
     }
 
-    /** 源枚举保留22；没有当前写入来源不等于非法筛选。 */
+    /**
+     * 源枚举保留22；没有当前写入来源不等于非法筛选。
+     */
     public static boolean supported(Integer type) {
         return type != null && Set.of(1, 2, 11, 12, 13, 21, 22, 23).contains(type);
     }

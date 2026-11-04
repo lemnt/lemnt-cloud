@@ -4,11 +4,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
-/** 满减活动分页请求。 */
+/**
+ * 满减活动分页请求。
+ */
 @Schema(description = "满减活动分页请求")
 public record RewardActivityPageReq(
-        @Schema(description = "活动名称") String name,
-        @Schema(description = "0 开启，1 关闭") Integer status,
-        @Schema(description = "pageNum") Integer pageNum,
-        @Schema(description = "pageSize") Integer pageSize)
-        implements Serializable {}
+    @Schema(description = "活动名称") String name,
+    @Schema(description = "0 开启，1 关闭") Integer status,
+    @Schema(description = "pageNum") Integer pageNum,
+    @Schema(description = "pageSize") Integer pageSize)
+    implements Serializable {
+}

@@ -11,7 +11,9 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-/** 传输失败不能确认成功；发送成功但CAS失败由租约恢复而不是新建事件。 */
+/**
+ * 传输失败不能确认成功；发送成功但CAS失败由租约恢复而不是新建事件。
+ */
 class EventRedeliveryTest {
     @Test
     void failedPublishRemainsRetryable() {

@@ -28,7 +28,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-/** 装修模板与页面编排：新建模板自动生成首页和我的页面，属性只做 JSON 结构校验。 */
+/**
+ * 装修模板与页面编排：新建模板自动生成首页和我的页面，属性只做 JSON 结构校验。
+ */
 @Component
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
@@ -69,9 +71,9 @@ public class DiyDecorationService {
         }
         require(values.size() <= 9, "预览图最多9张");
         require(
-                values.stream()
-                        .allMatch(item -> item != null && !item.isBlank() && item.length() <= 500),
-                "预览图地址不合法");
+            values.stream()
+                .allMatch(item -> item != null && !item.isBlank() && item.length() <= 500),
+            "预览图地址不合法");
         return values.stream().map(String::trim).toList();
     }
 
@@ -96,15 +98,15 @@ public class DiyDecorationService {
         String name = name(cmd.name());
         uniqueName(null, name);
         var saved =
-                templates.save(
-                        new DiyTemplate(
-                                null,
-                                name,
-                                false,
-                                null,
-                                cmd.remark(),
-                                previews(cmd.previewPicUrls()),
-                                EMPTY_PROPERTY));
+            templates.save(
+                new DiyTemplate(
+                    null,
+                    name,
+                    false,
+                    null,
+                    cmd.remark(),
+                    previews(cmd.previewPicUrls()),
+                    EMPTY_PROPERTY));
         createDefaultPage(saved, INDEX_PAGE);
         createDefaultPage(saved, MY_PAGE);
         return saved.id();
@@ -112,13 +114,13 @@ public class DiyDecorationService {
 
     private void createDefaultPage(DiyTemplate template, String name) {
         pages.save(
-                new DiyPage(
-                        null,
-                        template.id(),
-                        name,
-                        "模板【" + template.name() + "】自动创建",
-                        List.of(),
-                        EMPTY_PROPERTY));
+            new DiyPage(
+                null,
+                template.id(),
+                name,
+                "模板【" + template.name() + "】自动创建",
+                List.of(),
+                EMPTY_PROPERTY));
     }
 
     public Boolean updateTemplate(DiyTemplateSaveCmd cmd) {
@@ -127,18 +129,20 @@ public class DiyDecorationService {
         String name = name(cmd.name());
         uniqueName(cmd.id(), name);
         templates.save(
-                new DiyTemplate(
-                        existing.id(),
-                        name,
-                        existing.used(),
-                        existing.usedTime(),
-                        cmd.remark(),
-                        previews(cmd.previewPicUrls()),
-                        existing.property()));
+            new DiyTemplate(
+                existing.id(),
+                name,
+                existing.used(),
+                existing.usedTime(),
+                cmd.remark(),
+                previews(cmd.previewPicUrls()),
+                existing.property()));
         return true;
     }
 
-    /** 切换启用模板：先取消原模板，再启用目标模板。 */
+    /**
+     * 切换启用模板：先取消原模板，再启用目标模板。
+     */
     public Boolean useTemplate(Long id) {
         require(id != null && id > 0, "装修模板编号不合法");
         template(id);
@@ -148,25 +152,25 @@ public class DiyDecorationService {
         }
         if (used != null) {
             templates.save(
-                    new DiyTemplate(
-                            used.id(),
-                            used.name(),
-                            false,
-                            null,
-                            used.remark(),
-                            used.previewPicUrls(),
-                            used.property()));
+                new DiyTemplate(
+                    used.id(),
+                    used.name(),
+                    false,
+                    null,
+                    used.remark(),
+                    used.previewPicUrls(),
+                    used.property()));
         }
         var target = template(id);
         templates.save(
-                new DiyTemplate(
-                        target.id(),
-                        target.name(),
-                        true,
-                        LocalDateTime.now(),
-                        target.remark(),
-                        target.previewPicUrls(),
-                        target.property()));
+            new DiyTemplate(
+                target.id(),
+                target.name(),
+                true,
+                LocalDateTime.now(),
+                target.remark(),
+                target.previewPicUrls(),
+                target.property()));
         return true;
     }
 
@@ -185,25 +189,25 @@ public class DiyDecorationService {
     public PageResult<DiyTemplateDTO> templatePage(DiyTemplatePageQry qry) {
         requirePage(qry == null ? 0 : qry.pageNum(), qry == null ? 0 : qry.pageSize());
         var result =
-                templates.page(
-                        new DiyTemplateFilter(
-                                qry.name(), qry.used(), qry.pageNum(), qry.pageSize()));
+            templates.page(
+                new DiyTemplateFilter(
+                    qry.name(), qry.used(), qry.pageNum(), qry.pageSize()));
         return PageResult.of(
-                result.getRecords().stream().map(this::templateDto).toList(), result.getTotal());
+            result.getRecords().stream().map(this::templateDto).toList(), result.getTotal());
     }
 
     public Boolean updateTemplateProperty(DiyPropertyCmd cmd) {
         require(cmd != null && cmd.id() != null && cmd.id() > 0, "装修模板编号不合法");
         var existing = template(cmd.id());
         templates.save(
-                new DiyTemplate(
-                        existing.id(),
-                        existing.name(),
-                        existing.used(),
-                        existing.usedTime(),
-                        existing.remark(),
-                        existing.previewPicUrls(),
-                        property(cmd.property())));
+            new DiyTemplate(
+                existing.id(),
+                existing.name(),
+                existing.used(),
+                existing.usedTime(),
+                existing.remark(),
+                existing.previewPicUrls(),
+                property(cmd.property())));
         return true;
     }
 
@@ -213,14 +217,14 @@ public class DiyDecorationService {
         String name = name(cmd.name());
         require(pages.findByName(template.id(), name) == null, "模板下页面名称已存在");
         return pages.save(
-                        new DiyPage(
-                                null,
-                                template.id(),
-                                name,
-                                cmd.remark(),
-                                previews(cmd.previewPicUrls()),
-                                EMPTY_PROPERTY))
-                .id();
+                new DiyPage(
+                    null,
+                    template.id(),
+                    name,
+                    cmd.remark(),
+                    previews(cmd.previewPicUrls()),
+                    EMPTY_PROPERTY))
+            .id();
     }
 
     public Boolean updatePage(DiyPageSaveCmd cmd) {
@@ -231,13 +235,13 @@ public class DiyDecorationService {
         var same = pages.findByName(template.id(), name);
         require(same == null || same.id().equals(cmd.id()), "模板下页面名称已存在");
         pages.save(
-                new DiyPage(
-                        existing.id(),
-                        template.id(),
-                        name,
-                        cmd.remark(),
-                        previews(cmd.previewPicUrls()),
-                        existing.property()));
+            new DiyPage(
+                existing.id(),
+                template.id(),
+                name,
+                cmd.remark(),
+                previews(cmd.previewPicUrls()),
+                existing.property()));
         return true;
     }
 
@@ -255,24 +259,24 @@ public class DiyDecorationService {
     public PageResult<DiyPageDTO> pagePage(DiyPagePageQry qry) {
         requirePage(qry == null ? 0 : qry.pageNum(), qry == null ? 0 : qry.pageSize());
         var result =
-                pages.page(
-                        new DiyPageFilter(
-                                qry.templateId(), qry.name(), qry.pageNum(), qry.pageSize()));
+            pages.page(
+                new DiyPageFilter(
+                    qry.templateId(), qry.name(), qry.pageNum(), qry.pageSize()));
         return PageResult.of(
-                result.getRecords().stream().map(this::pageDto).toList(), result.getTotal());
+            result.getRecords().stream().map(this::pageDto).toList(), result.getTotal());
     }
 
     public Boolean updatePageProperty(DiyPropertyCmd cmd) {
         require(cmd != null && cmd.id() != null && cmd.id() > 0, "装修页面编号不合法");
         var existing = page(cmd.id());
         pages.save(
-                new DiyPage(
-                        existing.id(),
-                        existing.templateId(),
-                        existing.name(),
-                        existing.remark(),
-                        existing.previewPicUrls(),
-                        property(cmd.property())));
+            new DiyPage(
+                existing.id(),
+                existing.templateId(),
+                existing.name(),
+                existing.remark(),
+                existing.previewPicUrls(),
+                property(cmd.property())));
         return true;
     }
 
@@ -297,40 +301,40 @@ public class DiyDecorationService {
 
     private AppDiyTemplateDTO appTemplate(DiyTemplate template, List<DiyPage> pages) {
         String home =
-                pages.stream()
-                        .filter(page -> INDEX_PAGE.equals(page.name()))
-                        .map(DiyPage::property)
-                        .findFirst()
-                        .orElse(null);
+            pages.stream()
+                .filter(page -> INDEX_PAGE.equals(page.name()))
+                .map(DiyPage::property)
+                .findFirst()
+                .orElse(null);
         String user =
-                pages.stream()
-                        .filter(page -> MY_PAGE.equals(page.name()))
-                        .map(DiyPage::property)
-                        .findFirst()
-                        .orElse(null);
+            pages.stream()
+                .filter(page -> MY_PAGE.equals(page.name()))
+                .map(DiyPage::property)
+                .findFirst()
+                .orElse(null);
         return new AppDiyTemplateDTO(
-                template.id(), template.name(), template.property(), home, user);
+            template.id(), template.name(), template.property(), home, user);
     }
 
     private DiyTemplateDTO templateDto(DiyTemplate value) {
         return new DiyTemplateDTO(
-                value.id(),
-                value.name(),
-                value.used(),
-                value.usedTime(),
-                value.remark(),
-                value.previewPicUrls(),
-                value.property());
+            value.id(),
+            value.name(),
+            value.used(),
+            value.usedTime(),
+            value.remark(),
+            value.previewPicUrls(),
+            value.property());
     }
 
     private DiyPageDTO pageDto(DiyPage value) {
         return new DiyPageDTO(
-                value.id(),
-                value.templateId(),
-                value.name(),
-                value.remark(),
-                value.previewPicUrls(),
-                value.property());
+            value.id(),
+            value.templateId(),
+            value.name(),
+            value.remark(),
+            value.previewPicUrls(),
+            value.property());
     }
 
     private void requirePage(int pageNum, int pageSize) {

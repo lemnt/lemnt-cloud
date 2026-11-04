@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
-/** 订单超时关单任务，不负责消息投递或重试。 */
+/**
+ * 订单超时关单任务，不负责消息投递或重试。
+ */
 @Component
 @ConditionalOnProperty(name = "lemnt.trade.scheduler.enabled", havingValue = "true")
 public class TradeOrderScheduler {
@@ -24,7 +26,7 @@ public class TradeOrderScheduler {
      * 创建订单超时关单调度器。
      */
     public TradeOrderScheduler(
-            TradeOrderCloseCmdExe tradeOrderCloseCmdExe, TradeOrderGateway tradeOrderGateway) {
+        TradeOrderCloseCmdExe tradeOrderCloseCmdExe, TradeOrderGateway tradeOrderGateway) {
         this.tradeOrderCloseCmdExe = tradeOrderCloseCmdExe;
         this.tradeOrderGateway = tradeOrderGateway;
     }
@@ -36,12 +38,12 @@ public class TradeOrderScheduler {
     public void closeExpired() {
         LocalDateTime cutoff = tradeOrderGateway.databaseNow().minusMinutes(30);
         for (var order :
-                Stream.concat(
-                                tradeOrderGateway.findReservingCreatedBefore(cutoff, 50).stream(),
-                                tradeOrderGateway
-                                        .findPendingPaymentCreatedBefore(cutoff, 50)
-                                        .stream())
-                        .toList()) {
+            Stream.concat(
+                    tradeOrderGateway.findReservingCreatedBefore(cutoff, 50).stream(),
+                    tradeOrderGateway
+                        .findPendingPaymentCreatedBefore(cutoff, 50)
+                        .stream())
+                .toList()) {
             try {
                 tradeOrderCloseCmdExe.execute(order.orderNo());
             } catch (RuntimeException ex) {

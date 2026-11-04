@@ -10,4 +10,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface DeliveryExpressTemplateFreeMapper
-        extends BaseMapper<DeliveryExpressTemplateFreeDO> {}
+    extends BaseMapper<DeliveryExpressTemplateFreeDO> {
+}

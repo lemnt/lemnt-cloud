@@ -24,7 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 
-/** 订单履约查询接口。 */
+/**
+ * 订单履约查询接口。
+ */
 @Tag(name = "订单履约查询")
 @RestController
 @RequestMapping("/trade/admin/orders")
@@ -38,8 +40,8 @@ public class FulfillmentOrderController {
     public R<OrderSummaryRes> page(@Valid @ModelAttribute OrderPageReq req) {
         var page = orderPageQueryExe.execute(FulfillmentReqConverter.orders(req));
         return R.page(
-                page.records().stream().map(FulfillmentResConverter::summary).toList(),
-                page.total());
+            page.records().stream().map(FulfillmentResConverter::summary).toList(),
+            page.total());
     }
 
     @GetMapping("/{orderNo}")
@@ -52,7 +54,9 @@ public class FulfillmentOrderController {
 
     private final OrderPromotionDetailQueryExe promotionQuery;
 
-    /** 查询冻结优惠及权益，不回查当前促销规则。 */
+    /**
+     * 查询冻结优惠及权益，不回查当前促销规则。
+     */
     @GetMapping("/{orderNo}/promotions")
     @Operation(summary = "订单优惠快照")
     @RequiresPermissions("trade:fulfillment:query")
@@ -60,19 +64,21 @@ public class FulfillmentOrderController {
         return R.ok(OrderPromotionResConverter.toRes(promotionQuery.execute(orderNo)));
     }
 
-    /** 生产使用完整查询协作者，存量测试构造仅服务原有路由。 */
+    /**
+     * 生产使用完整查询协作者，存量测试构造仅服务原有路由。
+     */
     @Autowired
     public FulfillmentOrderController(
-            OrderPageQueryExe orderPageQueryExe,
-            OrderDetailQueryExe orderDetailQueryExe,
-            OrderPromotionDetailQueryExe promotionQuery) {
+        OrderPageQueryExe orderPageQueryExe,
+        OrderDetailQueryExe orderDetailQueryExe,
+        OrderPromotionDetailQueryExe promotionQuery) {
         this.orderPageQueryExe = orderPageQueryExe;
         this.orderDetailQueryExe = orderDetailQueryExe;
         this.promotionQuery = promotionQuery;
     }
 
     public FulfillmentOrderController(
-            OrderPageQueryExe orderPageQueryExe, OrderDetailQueryExe orderDetailQueryExe) {
+        OrderPageQueryExe orderPageQueryExe, OrderDetailQueryExe orderDetailQueryExe) {
         this(orderPageQueryExe, orderDetailQueryExe, null);
     }
 }

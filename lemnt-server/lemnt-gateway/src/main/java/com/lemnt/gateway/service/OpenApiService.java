@@ -33,10 +33,10 @@ public interface OpenApiService {
      * @param sign      签名
      */
     void verifySign(
-            String clientId,
-            String timestamp,
-            String nonce,
-            String appSecret,
-            String sign,
-            Map<String, Object> params);
+        String clientId,
+        String timestamp,
+        String nonce,
+        String appSecret,
+        String sign,
+        Map<String, Object> params);
 }

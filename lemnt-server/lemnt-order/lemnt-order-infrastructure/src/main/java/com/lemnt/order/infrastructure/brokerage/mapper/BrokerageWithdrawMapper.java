@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-/** BrokerageWithdraw 表 CRUD。 */
+/**
+ * BrokerageWithdraw 表 CRUD。
+ */
 @Mapper
 public interface BrokerageWithdrawMapper extends BaseMapper<BrokerageWithdrawDO> {
     BrokerageWithdrawDO lock(@Param("id") Long id);

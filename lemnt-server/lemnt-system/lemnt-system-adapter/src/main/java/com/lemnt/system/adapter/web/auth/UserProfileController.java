@@ -31,7 +31,9 @@ import lombok.RequiredArgsConstructor;
 import java.io.IOException;
 import java.util.Map;
 
-/** 个人资料接口。 */
+/**
+ * 个人资料接口。
+ */
 @Tag(name = "个人资料")
 @RestController
 @RequestMapping("/users")
@@ -50,10 +52,10 @@ public class UserProfileController {
     public R<UserProfileRes> profile() {
         Map<String, Object> result = userProfileQueryExe.execute();
         UserProfileRes res =
-                new UserProfileRes(
-                        UserResConverter.toRes(UserConverter.toDTO((User) result.get("user"))),
-                        (String) result.get("roleGroup"),
-                        (String) result.get("postGroup"));
+            new UserProfileRes(
+                UserResConverter.toRes(UserConverter.toDTO((User) result.get("user"))),
+                (String) result.get("roleGroup"),
+                (String) result.get("postGroup"));
         return R.ok(res);
     }
 
@@ -61,7 +63,7 @@ public class UserProfileController {
     @Log(title = "用户头像", businessType = BusinessType.UPDATE)
     @PostMapping("/profile/avatar")
     public R<UserAvatarRes> avatar(@RequestParam("avatarfile") MultipartFile file)
-            throws IOException {
+        throws IOException {
         String fileUrl = ossFileService.uploadFile(file);
         String oldAvatar = userAvatarUpdateCmdExe.execute(fileUrl);
         if (StringUtils.isNotBlank(oldAvatar)) {

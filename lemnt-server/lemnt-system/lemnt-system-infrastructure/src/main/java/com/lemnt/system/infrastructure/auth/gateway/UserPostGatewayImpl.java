@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-/** UserPost 持久化实现。 */
+/**
+ * UserPost 持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class UserPostGatewayImpl implements UserPostGateway {
@@ -57,7 +59,7 @@ public class UserPostGatewayImpl implements UserPostGateway {
      */
     private long countUserPostByIdRow(Long postId) {
         return userPostMapper.selectCount(
-                Wrappers.<UserPostDO>lambdaQuery().eq(UserPostDO::getPostId, postId));
+            Wrappers.<UserPostDO>lambdaQuery().eq(UserPostDO::getPostId, postId));
     }
 
     /**
@@ -71,7 +73,7 @@ public class UserPostGatewayImpl implements UserPostGateway {
             return 0;
         }
         return userPostMapper.delete(
-                Wrappers.<UserPostDO>lambdaQuery().eq(UserPostDO::getUserId, userId));
+            Wrappers.<UserPostDO>lambdaQuery().eq(UserPostDO::getUserId, userId));
     }
 
     /**
@@ -85,6 +87,6 @@ public class UserPostGatewayImpl implements UserPostGateway {
             return 0;
         }
         return userPostMapper.delete(
-                Wrappers.<UserPostDO>lambdaQuery().in(UserPostDO::getUserId, userIds));
+            Wrappers.<UserPostDO>lambdaQuery().in(UserPostDO::getUserId, userIds));
     }
 }

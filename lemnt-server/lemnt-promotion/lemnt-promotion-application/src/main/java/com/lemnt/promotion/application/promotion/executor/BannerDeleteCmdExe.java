@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** Banner 删除执行器。 */
+/**
+ * Banner 删除执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class BannerDeleteCmdExe {

@@ -13,7 +13,9 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/** 基础锁包管理配送维护锁，锁释放必须晚于数据库事务完成。 */
+/**
+ * 基础锁包管理配送维护锁，锁释放必须晚于数据库事务完成。
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -24,11 +26,11 @@ public class DeliveryManagementLockGatewayImpl implements DeliveryManagementLock
     @Override
     public void lock() {
         if (!TransactionSynchronizationManager.isActualTransactionActive()
-                || !TransactionSynchronizationManager.isSynchronizationActive()) {
+            || !TransactionSynchronizationManager.isSynchronizationActive()) {
             throw new IllegalStateException("配送维护锁必须在事务内获取");
         }
         if (TransactionSynchronizationManager.getSynchronizations().stream()
-                .anyMatch(ConfigurationLockCompletion.class::isInstance)) {
+            .anyMatch(ConfigurationLockCompletion.class::isInstance)) {
             return;
         }
         var lock = locks.lock(KEY, -1, 3000, RedissonLockExecutor.class);
@@ -36,12 +38,14 @@ public class DeliveryManagementLockGatewayImpl implements DeliveryManagementLock
             throw new ServiceException("配送配置正在修改，请稍后重试", 409);
         }
         TransactionSynchronizationManager.registerSynchronization(
-                new ConfigurationLockCompletion(lock, locks));
+            new ConfigurationLockCompletion(lock, locks));
     }
 
-    /** 提交和回滚均释放基础锁，业务方法返回时不提前解锁。 */
+    /**
+     * 提交和回滚均释放基础锁，业务方法返回时不提前解锁。
+     */
     private record ConfigurationLockCompletion(LockInfo lock, LockTemplate locks)
-            implements TransactionSynchronization {
+        implements TransactionSynchronization {
         @Override
         public void afterCompletion(int status) {
             if (!locks.releaseLock(lock)) {

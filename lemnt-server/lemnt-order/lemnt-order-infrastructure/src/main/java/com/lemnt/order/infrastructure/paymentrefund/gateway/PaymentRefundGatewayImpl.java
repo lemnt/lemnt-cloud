@@ -8,7 +8,9 @@ import com.lemnt.pay.client.PaymentQueryClient;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
-/** 统计及明细都由资金所属服务提供，不在订单库JOIN支付表。 */
+/**
+ * 统计及明细都由资金所属服务提供，不在订单库JOIN支付表。
+ */
 @Component
 public class PaymentRefundGatewayImpl implements PaymentRefundGateway {
     @DubboReference(check = false, timeout = 5000, retries = 0)
@@ -22,15 +24,15 @@ public class PaymentRefundGatewayImpl implements PaymentRefundGateway {
     public PaymentRefund findByAfterSaleNo(String no) {
         var v = client.refundByAfterSale(no);
         return v == null
-                ? null
-                : new PaymentRefund(
-                        v.refundNo(),
-                        v.afterSaleNo(),
-                        v.paymentNo(),
-                        v.orderNo(),
-                        v.channel(),
-                        v.amount(),
-                        v.status(),
-                        v.channelRefundNo());
+            ? null
+            : new PaymentRefund(
+            v.refundNo(),
+            v.afterSaleNo(),
+            v.paymentNo(),
+            v.orderNo(),
+            v.channel(),
+            v.amount(),
+            v.status(),
+            v.channelRefundNo());
     }
 }

@@ -95,17 +95,23 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <excludes><exclude>xdb/**</exclude></excludes>
+                <excludes>
+                    <exclude>xdb/**</exclude>
+                </excludes>
                 <filtering>true</filtering>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
-                <includes><include>**/*.xdb</include></includes>
+                <includes>
+                    <include>**/*.xdb</include>
+                </includes>
                 <filtering>false</filtering>
             </resource>
             <resource>
                 <directory>../../docs/config</directory>
-                <includes><include>commerce-gateway-routes.yaml</include></includes>
+                <includes>
+                    <include>commerce-gateway-routes.yaml</include>
+                </includes>
                 <filtering>false</filtering>
             </resource>
         </resources>
@@ -116,7 +122,9 @@
             <testResource>
                 <directory>../../work-items/module-split-migration/evidence</directory>
                 <targetPath>contracts</targetPath>
-                <includes><include>gateway-endpoint-contract.json</include></includes>
+                <includes>
+                    <include>gateway-endpoint-contract.json</include>
+                </includes>
             </testResource>
         </testResources>
         <finalName>${project.artifactId}</finalName>

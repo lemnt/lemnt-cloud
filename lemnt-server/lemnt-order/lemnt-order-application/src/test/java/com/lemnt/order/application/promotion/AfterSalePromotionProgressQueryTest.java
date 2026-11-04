@@ -17,53 +17,55 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/** 应执行权益与实际到账分开；历史冻结字段缺失只能报告未知。 */
+/**
+ * 应执行权益与实际到账分开；历史冻结字段缺失只能报告未知。
+ */
 class AfterSalePromotionProgressQueryTest {
     final AfterSaleGateway afterSales = mock(AfterSaleGateway.class);
     final TradeOrderGateway orders = mock(TradeOrderGateway.class);
     final OrderPromotionGateway promotions = mock(OrderPromotionGateway.class);
     final OrderBenefitsProgressGateway progress = mock(OrderBenefitsProgressGateway.class);
     final AfterSalePromotionDetailQueryExe query =
-            new AfterSalePromotionDetailQueryExe(afterSales, orders, promotions, progress);
+        new AfterSalePromotionDetailQueryExe(afterSales, orders, promotions, progress);
 
     AfterSale seed(boolean complete) {
         var af =
-                new AfterSale(
-                        "AF1",
-                        "O1",
-                        "REQ",
-                        7L,
-                        "P1",
-                        11L,
-                        1,
-                        "REFUND_ONLY",
-                        BigDecimal.ONE,
-                        "原因",
-                        "REFUNDED",
-                        null,
-                        null,
-                        null,
-                        LocalDateTime.now(),
-                        null,
-                        null,
-                        null,
-                        1L,
-                        7L,
-                        null,
-                        null,
-                        2L,
-                        3L,
-                        "SPU",
-                        null,
-                        null,
-                        complete ? BigDecimal.ZERO : null,
-                        complete ? BigDecimal.ZERO : null,
-                        complete ? 1L : null,
-                        complete ? 2L : null,
-                        complete ? 1 : null);
+            new AfterSale(
+                "AF1",
+                "O1",
+                "REQ",
+                7L,
+                "P1",
+                11L,
+                1,
+                "REFUND_ONLY",
+                BigDecimal.ONE,
+                "原因",
+                "REFUNDED",
+                null,
+                null,
+                null,
+                LocalDateTime.now(),
+                null,
+                null,
+                null,
+                1L,
+                7L,
+                null,
+                null,
+                2L,
+                3L,
+                "SPU",
+                null,
+                null,
+                complete ? BigDecimal.ZERO : null,
+                complete ? BigDecimal.ZERO : null,
+                complete ? 1L : null,
+                complete ? 2L : null,
+                complete ? 1 : null);
         when(afterSales.afterSale("AF1")).thenReturn(af);
         when(orders.findHeader("O1"))
-                .thenReturn(new TradeOrder(7L, "O1", 7L, BigDecimal.TEN, "PAID", List.of(), null));
+            .thenReturn(new TradeOrder(7L, "O1", 7L, BigDecimal.TEN, "PAID", List.of(), null));
         when(promotions.find(7L)).thenReturn(List.of());
         when(promotions.refunds(List.of(1L))).thenReturn(List.of());
         return af;

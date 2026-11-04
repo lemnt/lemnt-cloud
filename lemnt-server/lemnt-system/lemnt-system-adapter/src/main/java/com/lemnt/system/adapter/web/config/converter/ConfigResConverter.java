@@ -36,13 +36,13 @@ public class ConfigResConverter {
             return null;
         }
         return new SystemConfigListRes(
-                dto.getConfigId(),
-                dto.getConfigName(),
-                dto.getConfigKey(),
-                dto.getConfigValue(),
-                dto.getConfigType(),
-                dto.getRemark(),
-                dto.getCreateTime());
+            dto.getConfigId(),
+            dto.getConfigName(),
+            dto.getConfigKey(),
+            dto.getConfigValue(),
+            dto.getConfigType(),
+            dto.getRemark(),
+            dto.getCreateTime());
     }
 
     /**
@@ -53,13 +53,13 @@ public class ConfigResConverter {
             return null;
         }
         return new SystemConfigGetInfoRes(
-                dto.getConfigId(),
-                dto.getConfigName(),
-                dto.getConfigKey(),
-                dto.getConfigValue(),
-                dto.getConfigType(),
-                dto.getRemark(),
-                dto.getCreateTime());
+            dto.getConfigId(),
+            dto.getConfigName(),
+            dto.getConfigKey(),
+            dto.getConfigValue(),
+            dto.getConfigType(),
+            dto.getRemark(),
+            dto.getCreateTime());
     }
 
     /**
@@ -70,12 +70,12 @@ public class ConfigResConverter {
             return null;
         }
         return new SystemConfigGetConfigKeyRes(
-                dto.getConfigId(),
-                dto.getConfigName(),
-                dto.getConfigKey(),
-                dto.getConfigValue(),
-                dto.getConfigType(),
-                dto.getRemark(),
-                dto.getCreateTime());
+            dto.getConfigId(),
+            dto.getConfigName(),
+            dto.getConfigKey(),
+            dto.getConfigValue(),
+            dto.getConfigType(),
+            dto.getRemark(),
+            dto.getCreateTime());
     }
 }

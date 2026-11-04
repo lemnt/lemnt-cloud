@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
 
-/** 秒杀时段持久化对象。 */
+/**
+ * 秒杀时段持久化对象。
+ */
 @Data
 @TableName("promotion_seckill_config")
 public class SeckillConfigDO {

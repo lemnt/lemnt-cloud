@@ -12,14 +12,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 售后日志与申请、审批、退货、退款在同一业务事务内提交。 */
+/**
+ * 售后日志与申请、审批、退货、退款在同一业务事务内提交。
+ */
 @Component
 @RequiredArgsConstructor
 public class AfterSaleLogService {
     private final AfterSaleLogGateway logs;
     private final TradeOrderGateway orders;
 
-    /** 同一售后的失败查询重放只记一次，调用方须持有订单及售后锁。 */
+    /**
+     * 同一售后的失败查询重放只记一次，调用方须持有订单及售后锁。
+     */
     @Transactional(propagation = Propagation.MANDATORY)
     public void refundFailed(AfterSale value, TradeOperator operator) {
         if (logs.byAfterSaleId(value.id()).stream().anyMatch(log -> log.operateType() == 32))
@@ -27,32 +31,36 @@ public class AfterSaleLogService {
         record(value, "REFUNDING", "REFUNDING", 32, operator, "原路退款失败，等待核验重试");
     }
 
-    /** 使用真实售后数值主键，不以业务单号冒充关联。 */
+    /**
+     * 使用真实售后数值主键，不以业务单号冒充关联。
+     */
     @Transactional(propagation = Propagation.MANDATORY)
     public void record(
-            AfterSale value,
-            String before,
-            String after,
-            int type,
-            TradeOperator operator,
-            String content) {
+        AfterSale value,
+        String before,
+        String after,
+        int type,
+        TradeOperator operator,
+        String content) {
         if (value.id() == null) {
             throw new IllegalStateException("售后主键未写入");
         }
         logs.append(
-                new AfterSaleLog(
-                        null,
-                        operator.userId(),
-                        operator.userType(),
-                        value.id(),
-                        status(before),
-                        status(after),
-                        type,
-                        content,
-                        orders.databaseNow()));
+            new AfterSaleLog(
+                null,
+                operator.userId(),
+                operator.userType(),
+                value.id(),
+                status(before),
+                status(after),
+                type,
+                content,
+                orders.databaseNow()));
     }
 
-    /** 当前支付退款处理中仍对应芋道等待退款状态40。 */
+    /**
+     * 当前支付退款处理中仍对应芋道等待退款状态40。
+     */
     private Integer status(String value) {
         if (value == null) {
             return null;

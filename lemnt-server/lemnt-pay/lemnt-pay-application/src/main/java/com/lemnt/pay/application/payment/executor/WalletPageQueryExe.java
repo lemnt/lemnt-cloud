@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 后台钱包分页查询。 */
+/**
+ * 后台钱包分页查询。
+ */
 @Component
 @RequiredArgsConstructor
 public class WalletPageQueryExe {
@@ -25,7 +27,7 @@ public class WalletPageQueryExe {
         PayConfigRules.page(qry.pageNum(), qry.pageSize());
         var page = wallets.page(new WalletFilter(qry.memberId(), qry.pageNum(), qry.pageSize()));
         return PageResult.of(
-                page.getRecords().stream().map(WalletDTOConverter::wallet).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(WalletDTOConverter::wallet).toList(),
+            page.getTotal());
     }
 }

@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.Map;
 import java.util.Set;
 
-/** 当前用户信息接口。 */
+/**
+ * 当前用户信息接口。
+ */
 @Tag(name = "当前用户信息")
 @RestController
 @RequestMapping("/users")
@@ -33,10 +35,10 @@ public class UserInfoController {
     public R<UserInfoRes> getInfo() {
         Map<String, Object> result = userInfoQueryExe.execute();
         UserInfoRes res =
-                new UserInfoRes(
-                        UserResConverter.toRes(UserConverter.toDTO((User) result.get("user"))),
-                        (Set<String>) result.get("roles"),
-                        (Set<String>) result.get("permissions"));
+            new UserInfoRes(
+                UserResConverter.toRes(UserConverter.toDTO((User) result.get("user"))),
+                (Set<String>) result.get("roles"),
+                (Set<String>) result.get("permissions"));
         return R.ok(res);
     }
 }

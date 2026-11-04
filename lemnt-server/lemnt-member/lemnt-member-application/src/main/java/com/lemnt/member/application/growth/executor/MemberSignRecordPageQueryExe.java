@@ -11,7 +11,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 查询签到记录分页查询执行器。 */
+/**
+ * 查询签到记录分页查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberSignRecordPageQueryExe {
@@ -25,11 +27,11 @@ public class MemberSignRecordPageQueryExe {
         MemberRules.id(qry.memberId());
         MemberRules.page(qry.pageNum(), qry.pageSize());
         return new PageResult<>(
-                memberSignRecordGateway
-                        .signs(qry.memberId(), (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize())
-                        .stream()
-                        .map(MemberGrowthDTOConverter::toSignRecordDTO)
-                        .toList(),
-                memberSignRecordGateway.signCount(qry.memberId()));
+            memberSignRecordGateway
+                .signs(qry.memberId(), (qry.pageNum() - 1) * qry.pageSize(), qry.pageSize())
+                .stream()
+                .map(MemberGrowthDTOConverter::toSignRecordDTO)
+                .toList(),
+            memberSignRecordGateway.signCount(qry.memberId()));
     }
 }

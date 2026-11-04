@@ -2,7 +2,9 @@ package com.lemnt.system.domain.auth.gateway;
 
 import java.util.List;
 
-/** UserPost 存储接口。 */
+/**
+ * UserPost 存储接口。
+ */
 public interface UserPostGateway {
     /**
      * 新增用户岗位关联

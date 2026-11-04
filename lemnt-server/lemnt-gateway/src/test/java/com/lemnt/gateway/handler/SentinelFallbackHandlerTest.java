@@ -14,7 +14,7 @@ class SentinelFallbackHandlerTest {
     @Test
     void shouldReturnRateLimitCodeWithoutExpiringSession() {
         var exchange =
-                MockServerWebExchange.from(MockServerHttpRequest.get("/system/users/current-info"));
+            MockServerWebExchange.from(MockServerHttpRequest.get("/system/users/current-info"));
 
         new SentinelFallbackHandler().handle(exchange, new FlowException("gateway-flow")).block();
 

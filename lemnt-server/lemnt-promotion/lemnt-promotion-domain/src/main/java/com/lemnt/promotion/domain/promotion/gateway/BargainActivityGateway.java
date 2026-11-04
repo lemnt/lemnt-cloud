@@ -6,7 +6,9 @@ import com.lemnt.promotion.domain.promotion.model.BargainFilter;
 
 import java.util.List;
 
-/** 砍价活动存储契约。 */
+/**
+ * 砍价活动存储契约。
+ */
 public interface BargainActivityGateway {
     BargainActivity find(Long id);
 
@@ -22,9 +24,13 @@ public interface BargainActivityGateway {
 
     List<BargainActivity> all();
 
-    /** 条件扣减库存，库存不足返回 false。 */
+    /**
+     * 条件扣减库存，库存不足返回 false。
+     */
     boolean decreaseStock(Long id, int count);
 
-    /** 恢复库存。 */
+    /**
+     * 恢复库存。
+     */
     boolean increaseStock(Long id, int count);
 }

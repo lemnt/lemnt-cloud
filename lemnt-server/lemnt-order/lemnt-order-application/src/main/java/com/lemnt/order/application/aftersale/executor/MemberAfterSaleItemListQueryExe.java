@@ -11,14 +11,18 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 会员本人订单可售后额度，先核验订单归属再计算剩余额度。 */
+/**
+ * 会员本人订单可售后额度，先核验订单归属再计算剩余额度。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberAfterSaleItemListQueryExe {
     private final OrderPersistenceService persistence;
     private final AfterSaleService service;
 
-    /** 非本人订单与不存在统一返回空。 */
+    /**
+     * 非本人订单与不存在统一返回空。
+     */
     public List<AfterSaleItemDTO> execute(Long memberId, String orderNo) {
         String no = OrderRules.text(orderNo, 40);
         var order = persistence.findByOrderNo(no);

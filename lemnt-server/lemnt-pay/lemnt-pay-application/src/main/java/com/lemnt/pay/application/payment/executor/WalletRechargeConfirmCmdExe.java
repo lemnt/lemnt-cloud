@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 后台确认充值到账（暂无真实渠道，代替支付回调）。 */
+/**
+ * 后台确认充值到账（暂无真实渠道，代替支付回调）。
+ */
 @Component
 @RequiredArgsConstructor
 public class WalletRechargeConfirmCmdExe {

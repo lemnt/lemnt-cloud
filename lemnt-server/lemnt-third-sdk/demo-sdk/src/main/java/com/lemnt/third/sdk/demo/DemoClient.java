@@ -13,7 +13,7 @@ import java.time.Duration;
 public class DemoClient {
 
     private final HttpClient httpClient =
-            HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
+        HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
 
     /**
      * 发起 GET 请求，保留响应状态码与正文供调用方处理。
@@ -23,7 +23,7 @@ public class DemoClient {
      */
     public HttpResponse<String> get(URI endpoint) throws IOException, InterruptedException {
         HttpRequest request =
-                HttpRequest.newBuilder(endpoint).timeout(Duration.ofSeconds(10)).GET().build();
+            HttpRequest.newBuilder(endpoint).timeout(Duration.ofSeconds(10)).GET().build();
         return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     }
 }

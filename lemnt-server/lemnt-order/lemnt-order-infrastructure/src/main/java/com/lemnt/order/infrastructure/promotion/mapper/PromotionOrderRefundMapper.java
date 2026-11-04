@@ -5,6 +5,9 @@ import com.lemnt.order.infrastructure.promotion.dataobject.PromotionOrderRefundD
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
-/** 活动订单退款去重表 CRUD。 */
+/**
+ * 活动订单退款去重表 CRUD。
+ */
 @Mapper
-public interface PromotionOrderRefundMapper extends BaseMapper<PromotionOrderRefundDO> {}
+public interface PromotionOrderRefundMapper extends BaseMapper<PromotionOrderRefundDO> {
+}

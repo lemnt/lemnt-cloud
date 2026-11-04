@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 拼团活动仅操作活动表。 */
+/**
+ * 拼团活动仅操作活动表。
+ */
 @Component
 @RequiredArgsConstructor
 public class CombinationActivityGatewayImpl implements CombinationActivityGateway {
@@ -41,11 +43,11 @@ public class CombinationActivityGatewayImpl implements CombinationActivityGatewa
     @Override
     public boolean close(Long id) {
         return mapper.update(
-                        null,
-                        Wrappers.<CombinationActivityDO>lambdaUpdate()
-                                .eq(CombinationActivityDO::getId, id)
-                                .set(CombinationActivityDO::getStatus, 1))
-                == 1;
+            null,
+            Wrappers.<CombinationActivityDO>lambdaUpdate()
+                .eq(CombinationActivityDO::getId, id)
+                .set(CombinationActivityDO::getStatus, 1))
+            == 1;
     }
 
     @Override
@@ -56,37 +58,37 @@ public class CombinationActivityGatewayImpl implements CombinationActivityGatewa
     @Override
     public PageResult<CombinationActivity> page(CombinationFilter filter) {
         var page =
-                mapper.selectPage(
-                        new Page<CombinationActivityDO>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.<CombinationActivityDO>lambdaQuery()
-                                .like(
-                                        filter.name() != null && !filter.name().isBlank(),
-                                        CombinationActivityDO::getName,
-                                        filter.name())
-                                .eq(
-                                        filter.status() != null,
-                                        CombinationActivityDO::getStatus,
-                                        filter.status())
-                                .eq(
-                                        filter.spuId() != null,
-                                        CombinationActivityDO::getSpuId,
-                                        filter.spuId())
-                                .orderByDesc(CombinationActivityDO::getId));
+            mapper.selectPage(
+                new Page<CombinationActivityDO>(filter.pageNum(), filter.pageSize()),
+                Wrappers.<CombinationActivityDO>lambdaQuery()
+                    .like(
+                        filter.name() != null && !filter.name().isBlank(),
+                        CombinationActivityDO::getName,
+                        filter.name())
+                    .eq(
+                        filter.status() != null,
+                        CombinationActivityDO::getStatus,
+                        filter.status())
+                    .eq(
+                        filter.spuId() != null,
+                        CombinationActivityDO::getSpuId,
+                        filter.spuId())
+                    .orderByDesc(CombinationActivityDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(CombinationConverter::model).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(CombinationConverter::model).toList(),
+            page.getTotal());
     }
 
     @Override
     public List<CombinationActivity> enabled() {
         return mapper
-                .selectList(
-                        Wrappers.<CombinationActivityDO>lambdaQuery()
-                                .eq(CombinationActivityDO::getStatus, 0)
-                                .orderByDesc(CombinationActivityDO::getId))
-                .stream()
-                .map(CombinationConverter::model)
-                .toList();
+            .selectList(
+                Wrappers.<CombinationActivityDO>lambdaQuery()
+                    .eq(CombinationActivityDO::getStatus, 0)
+                    .orderByDesc(CombinationActivityDO::getId))
+            .stream()
+            .map(CombinationConverter::model)
+            .toList();
     }
 
     @Override
@@ -100,12 +102,12 @@ public class CombinationActivityGatewayImpl implements CombinationActivityGatewa
     @Override
     public List<CombinationActivity> enabledBySpu(Long spuId) {
         return mapper
-                .selectList(
-                        Wrappers.<CombinationActivityDO>lambdaQuery()
-                                .eq(CombinationActivityDO::getSpuId, spuId)
-                                .eq(CombinationActivityDO::getStatus, 0))
-                .stream()
-                .map(CombinationConverter::model)
-                .toList();
+            .selectList(
+                Wrappers.<CombinationActivityDO>lambdaQuery()
+                    .eq(CombinationActivityDO::getSpuId, spuId)
+                    .eq(CombinationActivityDO::getStatus, 0))
+            .stream()
+            .map(CombinationConverter::model)
+            .toList();
     }
 }

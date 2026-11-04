@@ -5,9 +5,12 @@ import com.lemnt.order.adapter.web.settlement.req.SettlementQuoteReq;
 import com.lemnt.order.application.settlement.cmd.SettlementOrderSubmitCmd;
 import com.lemnt.order.application.settlement.qry.SettlementQuoteQry;
 
-/** 按业务域转换接口与应用数据。 */
+/**
+ * 按业务域转换接口与应用数据。
+ */
 public final class SettlementReqConverter {
-    private SettlementReqConverter() {}
+    private SettlementReqConverter() {
+    }
 
     /**
      * 报价。
@@ -21,6 +24,6 @@ public final class SettlementReqConverter {
      */
     public static SettlementOrderSubmitCmd checkout(Long memberId, SettlementOrderSubmitReq req) {
         return new SettlementOrderSubmitCmd(
-                memberId, req.requestNo(), req.productIds(), req.couponId(), req.quoteToken());
+            memberId, req.requestNo(), req.productIds(), req.couponId(), req.quoteToken());
     }
 }

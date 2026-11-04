@@ -10,7 +10,9 @@ import com.lemnt.pay.domain.payment.model.PaymentOperator;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
-/** 所有订单校验均通过Client；RPC超时保留原业务号重试，不伪造默认快照。 */
+/**
+ * 所有订单校验均通过Client；RPC超时保留原业务号重试，不伪造默认快照。
+ */
 @Component
 public class OrderPaymentGatewayImpl implements OrderPaymentGateway {
     @DubboReference(check = false, timeout = 5000, retries = 0)
@@ -20,18 +22,18 @@ public class OrderPaymentGatewayImpl implements OrderPaymentGateway {
     public OrderPaymentSnapshot preparePayment(String no) {
         var value = client.preparePayment(no);
         return value == null
-                ? null
-                : new OrderPaymentSnapshot(
-                        value.orderNo(), value.memberId(), value.totalAmount(), value.status());
+            ? null
+            : new OrderPaymentSnapshot(
+            value.orderNo(), value.memberId(), value.totalAmount(), value.status());
     }
 
     @Override
     public OrderPaymentSnapshot findByOrderNo(String no) {
         var value = client.paymentOrder(no);
         return value == null
-                ? null
-                : new OrderPaymentSnapshot(
-                        value.orderNo(), value.memberId(), value.totalAmount(), value.status());
+            ? null
+            : new OrderPaymentSnapshot(
+            value.orderNo(), value.memberId(), value.totalAmount(), value.status());
     }
 
     @Override
@@ -48,14 +50,14 @@ public class OrderPaymentGatewayImpl implements OrderPaymentGateway {
 
     private FrozenRefundPlan from(FrozenRefundDTO value) {
         return value == null
-                ? null
-                : new FrozenRefundPlan(
-                        value.afterSaleNo(),
-                        value.orderNo(),
-                        value.memberId(),
-                        value.paymentNo(),
-                        value.amount(),
-                        value.ruleVersion(),
-                        value.status());
+            ? null
+            : new FrozenRefundPlan(
+            value.afterSaleNo(),
+            value.orderNo(),
+            value.memberId(),
+            value.paymentNo(),
+            value.amount(),
+            value.ruleVersion(),
+            value.status());
     }
 }

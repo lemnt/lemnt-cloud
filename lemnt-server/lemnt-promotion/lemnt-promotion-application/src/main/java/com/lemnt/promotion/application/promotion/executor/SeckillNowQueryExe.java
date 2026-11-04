@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** App 当前秒杀活动执行器。 */
+/**
+ * App 当前秒杀活动执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class SeckillNowQueryExe {

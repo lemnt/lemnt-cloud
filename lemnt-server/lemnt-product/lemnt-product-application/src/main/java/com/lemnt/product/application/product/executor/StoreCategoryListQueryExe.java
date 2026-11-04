@@ -22,7 +22,7 @@ public class StoreCategoryListQueryExe {
      */
     public List<StoreCategoryDTO> execute() {
         return categoryGateway.visibleCategories().stream()
-                .map(v -> new StoreCategoryDTO(v.id(), v.parentId(), v.name(), v.picUrl()))
-                .toList();
+            .map(v -> new StoreCategoryDTO(v.id(), v.parentId(), v.name(), v.picUrl()))
+            .toList();
     }
 }

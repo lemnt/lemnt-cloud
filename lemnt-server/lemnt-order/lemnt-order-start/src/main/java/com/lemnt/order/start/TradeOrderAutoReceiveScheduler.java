@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
-/** 超期未收货订单自动确认收货，逐单隔离失败。 */
+/**
+ * 超期未收货订单自动确认收货，逐单隔离失败。
+ */
 @Component
 @ConditionalOnProperty(name = "lemnt.trade.auto-receive.enabled", havingValue = "true")
 public class TradeOrderAutoReceiveScheduler {
@@ -25,10 +27,10 @@ public class TradeOrderAutoReceiveScheduler {
     private final Duration expiry;
 
     public TradeOrderAutoReceiveScheduler(
-            ShipmentGateway shipments,
-            TradeOrderGateway orders,
-            OrderFulfillmentService fulfillment,
-            @Value("${lemnt.trade.auto-receive.expire:7d}") Duration expiry) {
+        ShipmentGateway shipments,
+        TradeOrderGateway orders,
+        OrderFulfillmentService fulfillment,
+        @Value("${lemnt.trade.auto-receive.expire:7d}") Duration expiry) {
         if (expiry == null || expiry.isNegative() || expiry.isZero()) {
             throw new IllegalArgumentException("自动收货期限必须为正");
         }

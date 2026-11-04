@@ -5,24 +5,31 @@ import com.lemnt.order.infrastructure.delivery.dataobject.DeliveryExpressTemplat
 
 import com.alibaba.fastjson2.JSON;
 
-/** 运费包邮规则 与表字段转换。 */
+/**
+ * 运费包邮规则 与表字段转换。
+ */
 public final class DeliveryExpressTemplateFreeConverter {
-    private DeliveryExpressTemplateFreeConverter() {}
+    private DeliveryExpressTemplateFreeConverter() {
+    }
 
-    /** 读取业务对象。 */
+    /**
+     * 读取业务对象。
+     */
     public static DeliveryExpressTemplateFree toEntity(DeliveryExpressTemplateFreeDO row) {
         if (row == null) {
             return null;
         }
         return new DeliveryExpressTemplateFree(
-                row.getId(),
-                row.getTemplateId(),
-                JSON.parseArray(row.getAreaIds(), Integer.class),
-                row.getFreePrice(),
-                row.getFreeCount());
+            row.getId(),
+            row.getTemplateId(),
+            JSON.parseArray(row.getAreaIds(), Integer.class),
+            row.getFreePrice(),
+            row.getFreeCount());
     }
 
-    /** 写入表字段，集合列按 JSON 保存。 */
+    /**
+     * 写入表字段，集合列按 JSON 保存。
+     */
     public static DeliveryExpressTemplateFreeDO toDO(DeliveryExpressTemplateFree value) {
         var row = new DeliveryExpressTemplateFreeDO();
         row.setId(value.id());

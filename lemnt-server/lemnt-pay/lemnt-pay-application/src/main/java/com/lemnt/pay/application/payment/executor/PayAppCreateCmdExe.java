@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 新增支付应用。 */
+/**
+ * 新增支付应用。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayAppCreateCmdExe {
@@ -29,15 +31,15 @@ public class PayAppCreateCmdExe {
             throw new IllegalStateException("应用标识已存在");
         }
         var value =
-                new PayApp(
-                        null,
-                        appKey,
-                        PayConfigRules.required(cmd.name(), 64, "应用名"),
-                        cmd.status(),
-                        PayConfigRules.optional(cmd.remark(), 255, "备注"),
-                        PayConfigRules.url(cmd.orderNotifyUrl(), "支付结果回调地址"),
-                        PayConfigRules.url(cmd.refundNotifyUrl(), "退款结果回调地址"),
-                        null);
+            new PayApp(
+                null,
+                appKey,
+                PayConfigRules.required(cmd.name(), 64, "应用名"),
+                cmd.status(),
+                PayConfigRules.optional(cmd.remark(), 255, "备注"),
+                PayConfigRules.url(cmd.orderNotifyUrl(), "支付结果回调地址"),
+                PayConfigRules.url(cmd.refundNotifyUrl(), "退款结果回调地址"),
+                null);
         return PayConfigDTOConverter.payApp(apps.insert(value));
     }
 }

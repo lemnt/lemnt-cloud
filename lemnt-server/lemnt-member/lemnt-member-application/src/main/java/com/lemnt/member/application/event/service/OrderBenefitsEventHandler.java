@@ -21,7 +21,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-/** 消费凭证与积分、成长账本同事务，余额不足或前置事件未到必须回滚并重试。 */
+/**
+ * 消费凭证与积分、成长账本同事务，余额不足或前置事件未到必须回滚并重试。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderBenefitsEventHandler {
@@ -38,22 +40,22 @@ public class OrderBenefitsEventHandler {
         if (!begin(envelope, "member.order_paid.v1")) return;
         var o = original(v.orderNo(), v.memberId());
         if (!Set.of("PAID", "SHIPPED", "COMPLETED", "REFUNDED").contains(o.status())
-                || v.amount() == null
-                || v.amount().compareTo(o.amount()) != 0
-                || v.usePoint() != o.usePoint()
-                || v.givePoint() != o.givePoint()) throw new IllegalStateException("支付权益与原订单不一致");
+            || v.amount() == null
+            || v.amount().compareTo(o.amount()) != 0
+            || v.usePoint() != o.usePoint()
+            || v.givePoint() != o.givePoint()) throw new IllegalStateException("支付权益与原订单不一致");
         growth.tradeAsset(
-                new MemberTradeAssetCmd(
-                        o.memberId(),
-                        "PAID",
-                        o.orderNo(),
-                        null,
-                        o.usePoint(),
-                        o.givePoint(),
-                        fen(o),
-                        0,
-                        false,
-                        0));
+            new MemberTradeAssetCmd(
+                o.memberId(),
+                "PAID",
+                o.orderNo(),
+                null,
+                o.usePoint(),
+                o.givePoint(),
+                fen(o),
+                0,
+                false,
+                0));
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
@@ -67,25 +69,25 @@ public class OrderBenefitsEventHandler {
             throw new IllegalStateException("原订单支付权益尚未完成，请重试");
         var o = original(v.orderNo(), v.memberId());
         if (v.ruleVersion() != 1
-                || v.quantity() < 1
-                || v.amount() == null
-                || v.amount().signum() < 0
-                || v.returnUsePoint() < 0
-                || v.deductGivePoint() < 0) throw new IllegalArgumentException("冻结售后权益不合法");
+            || v.quantity() < 1
+            || v.amount() == null
+            || v.amount().signum() < 0
+            || v.returnUsePoint() < 0
+            || v.deductGivePoint() < 0) throw new IllegalArgumentException("冻结售后权益不合法");
         growth.tradeAsset(
-                new MemberTradeAssetCmd(
-                        o.memberId(),
-                        "REFUND",
-                        o.orderNo(),
-                        v.afterSaleNo(),
-                        o.usePoint(),
-                        o.givePoint(),
-                        fen(o),
-                        v.amount().movePointRight(2).longValueExact(),
-                        v.fullyRefunded(),
-                        v.returnUsePoint(),
-                        v.deductGivePoint(),
-                        v.ruleVersion()));
+            new MemberTradeAssetCmd(
+                o.memberId(),
+                "REFUND",
+                o.orderNo(),
+                v.afterSaleNo(),
+                o.usePoint(),
+                o.givePoint(),
+                fen(o),
+                v.amount().movePointRight(2).longValueExact(),
+                v.fullyRefunded(),
+                v.returnUsePoint(),
+                v.deductGivePoint(),
+                v.ruleVersion()));
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
@@ -98,17 +100,17 @@ public class OrderBenefitsEventHandler {
         var o = original(v.orderNo(), v.memberId());
         if (!"CLOSED".equals(o.status())) throw new IllegalStateException("原订单未关闭");
         growth.tradeAsset(
-                new MemberTradeAssetCmd(
-                        o.memberId(),
-                        "CLOSED",
-                        o.orderNo(),
-                        null,
-                        o.usePoint(),
-                        o.givePoint(),
-                        fen(o),
-                        0,
-                        false,
-                        0));
+            new MemberTradeAssetCmd(
+                o.memberId(),
+                "CLOSED",
+                o.orderNo(),
+                null,
+                o.usePoint(),
+                o.givePoint(),
+                fen(o),
+                0,
+                false,
+                0));
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
@@ -139,11 +141,11 @@ public class OrderBenefitsEventHandler {
     private OrderBenefitsSnapshot original(String no, Long member) {
         var v = orders.find(no);
         if (v == null
-                || !v.orderNo().equals(no)
-                || !v.memberId().equals(member)
-                || v.amount() == null
-                || v.usePoint() == null
-                || v.givePoint() == null) throw new IllegalStateException("原订单权益快照缺失");
+            || !v.orderNo().equals(no)
+            || !v.memberId().equals(member)
+            || v.amount() == null
+            || v.usePoint() == null
+            || v.givePoint() == null) throw new IllegalStateException("原订单权益快照缺失");
         return v;
     }
 }

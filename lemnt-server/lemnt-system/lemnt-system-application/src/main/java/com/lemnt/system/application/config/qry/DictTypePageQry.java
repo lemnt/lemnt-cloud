@@ -9,20 +9,21 @@ import java.time.LocalDateTime;
  * @author wangxx
  */
 public record DictTypePageQry(
-        /**
-         * 字典名称
-         */
-        String dictName,
-        /**
-         * 字典类型
-         */
-        String dictType,
-        /**
-         * 状态（1正常 2停用）
-         */
-        String status,
-        int pageNum,
-        int pageSize,
-        LocalDateTime beginTime,
-        LocalDateTime endTime)
-        implements Serializable {}
+    /**
+     * 字典名称
+     */
+    String dictName,
+    /**
+     * 字典类型
+     */
+    String dictType,
+    /**
+     * 状态（1正常 2停用）
+     */
+    String status,
+    int pageNum,
+    int pageSize,
+    LocalDateTime beginTime,
+    LocalDateTime endTime)
+    implements Serializable {
+}

@@ -9,13 +9,17 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 规格字典详情查询。 */
+/**
+ * 规格字典详情查询。
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductSpecValueDetailQueryExe {
     private final ProductSpecValueGateway productSpecValueGateway;
 
-    /** 查询单条字典。 */
+    /**
+     * 查询单条字典。
+     */
     public ProductSpecValueDTO execute(Long id) {
         ProductCatalogValidation.id(id);
         return ProductSpecDTOConverter.value(productSpecValueGateway.find(id));

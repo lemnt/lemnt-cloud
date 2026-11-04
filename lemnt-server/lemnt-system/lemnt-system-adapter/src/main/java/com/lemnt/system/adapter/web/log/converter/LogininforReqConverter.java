@@ -14,12 +14,12 @@ public class LogininforReqConverter {
             return null;
         }
         return new LogininforPageQry(
-                item.userName(),
-                item.ipaddr(),
-                item.status(),
-                item.pageNum(),
-                item.pageSize(),
-                item.beginTime(),
-                item.endTime());
+            item.userName(),
+            item.ipaddr(),
+            item.status(),
+            item.pageNum(),
+            item.pageSize(),
+            item.beginTime(),
+            item.endTime());
     }
 }

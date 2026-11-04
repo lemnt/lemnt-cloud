@@ -22,7 +22,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-/** 所有金额、积分、数量来自原订单/售后；重投复用已保存信封，不重新计算。 */
+/**
+ * 所有金额、积分、数量来自原订单/售后；重投复用已保存信封，不重新计算。
+ */
 @Component
 @RequiredArgsConstructor
 @Transactional(propagation = Propagation.MANDATORY, rollbackFor = Exception.class)
@@ -31,69 +33,69 @@ public class OrderEventGatewayImpl implements OrderEventGateway {
 
     public void paid(TradeOrder o) {
         outbox.enqueue(
-                CommerceEventTopics.ORDER_PAID,
-                o.orderNo(),
-                o.orderNo(),
-                JsonUtils.toJsonStr(
-                        new OrderPaidEvent(
-                                o.orderNo(),
-                                o.memberId(),
-                                o.totalAmount(),
-                                o.usePoint(),
-                                o.givePoint(),
-                                o.giveCouponTemplateCounts(),
-                                stock(o))));
+            CommerceEventTopics.ORDER_PAID,
+            o.orderNo(),
+            o.orderNo(),
+            JsonUtils.toJsonStr(
+                new OrderPaidEvent(
+                    o.orderNo(),
+                    o.memberId(),
+                    o.totalAmount(),
+                    o.usePoint(),
+                    o.givePoint(),
+                    o.giveCouponTemplateCounts(),
+                    stock(o))));
     }
 
     public void closed(TradeOrder o) {
         outbox.enqueue(
-                CommerceEventTopics.ORDER_CLOSED,
-                o.orderNo(),
-                o.orderNo(),
-                JsonUtils.toJsonStr(new OrderClosedEvent(o.orderNo(), o.memberId(), stock(o))));
+            CommerceEventTopics.ORDER_CLOSED,
+            o.orderNo(),
+            o.orderNo(),
+            JsonUtils.toJsonStr(new OrderClosedEvent(o.orderNo(), o.memberId(), stock(o))));
     }
 
     public void shipped(TradeOrder o) {
         outbox.enqueue(
-                CommerceEventTopics.ORDER_SHIPPED,
-                o.orderNo(),
-                o.orderNo(),
-                JsonUtils.toJsonStr(new OrderShippedEvent(o.orderNo(), o.memberId())));
+            CommerceEventTopics.ORDER_SHIPPED,
+            o.orderNo(),
+            o.orderNo(),
+            JsonUtils.toJsonStr(new OrderShippedEvent(o.orderNo(), o.memberId())));
     }
 
     public void completed(TradeOrder o) {
         outbox.enqueue(
-                CommerceEventTopics.ORDER_COMPLETED,
-                o.orderNo(),
-                o.orderNo(),
-                JsonUtils.toJsonStr(new OrderCompletedEvent(o.orderNo(), o.memberId())));
+            CommerceEventTopics.ORDER_COMPLETED,
+            o.orderNo(),
+            o.orderNo(),
+            JsonUtils.toJsonStr(new OrderCompletedEvent(o.orderNo(), o.memberId())));
     }
 
     public void afterSale(AfterSale af, TradeOrder o, boolean full) {
         if (!Integer.valueOf(1).equals(af.refundRuleVersion())
-                || af.orderItemId() == null
-                || af.skuId() == null
-                || af.quantity() == null
-                || af.returnUsePoint() == null
-                || af.deductGivePoint() == null)
+            || af.orderItemId() == null
+            || af.skuId() == null
+            || af.quantity() == null
+            || af.returnUsePoint() == null
+            || af.deductGivePoint() == null)
             throw new IllegalStateException("售后冻结方案不完整，不能按当前规则补历史");
         outbox.enqueue(
-                CommerceEventTopics.AFTER_SALE_COMPLETED,
-                af.refundNo(),
-                af.orderNo(),
-                JsonUtils.toJsonStr(
-                        new AfterSaleCompletedEvent(
-                                af.orderNo(),
-                                af.refundNo(),
-                                af.memberId(),
-                                af.orderItemId(),
-                                af.skuId(),
-                                af.quantity(),
-                                af.amount(),
-                                af.returnUsePoint(),
-                                af.deductGivePoint(),
-                                af.refundRuleVersion(),
-                                full)));
+            CommerceEventTopics.AFTER_SALE_COMPLETED,
+            af.refundNo(),
+            af.orderNo(),
+            JsonUtils.toJsonStr(
+                new AfterSaleCompletedEvent(
+                    af.orderNo(),
+                    af.refundNo(),
+                    af.memberId(),
+                    af.orderItemId(),
+                    af.skuId(),
+                    af.quantity(),
+                    af.amount(),
+                    af.returnUsePoint(),
+                    af.deductGivePoint(),
+                    af.refundRuleVersion(),
+                    full)));
     }
 
     public boolean replayAfterSale(String no) {
@@ -104,7 +106,7 @@ public class OrderEventGatewayImpl implements OrderEventGateway {
         var values = new LinkedHashMap<Long, Integer>();
         for (var item : o.items()) values.merge(item.productId(), item.quantity(), Math::addExact);
         return values.entrySet().stream()
-                .map(v -> new OrderStockLineDTO(v.getKey(), v.getValue()))
-                .toList();
+            .map(v -> new OrderStockLineDTO(v.getKey(), v.getValue()))
+            .toList();
     }
 }

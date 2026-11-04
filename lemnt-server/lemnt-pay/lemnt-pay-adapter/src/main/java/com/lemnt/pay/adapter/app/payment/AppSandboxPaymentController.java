@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
-/** 沙箱收银台支付确认，仅在 payment.sandbox.enabled=true 时可用。 */
+/**
+ * 沙箱收银台支付确认，仅在 payment.sandbox.enabled=true 时可用。
+ */
 @Tag(name = "沙箱收银台")
 @RestController
 @RequestMapping("/trade/app/payments")

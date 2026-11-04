@@ -9,15 +9,16 @@ import java.util.Map;
  * 结算报价数据传输对象。
  */
 public record SettlementQuoteDTO(
-        List<SettlementItemDTO> items,
-        BigDecimal originalAmount,
-        BigDecimal discountAmount,
-        BigDecimal payableAmount,
-        Long couponId,
-        String quoteToken,
-        long usePoint,
-        long givePoint,
-        SettlementDeliveryDTO delivery,
-        boolean freeDelivery,
-        Map<Long, Integer> giveCouponTemplateCounts)
-        implements Serializable {}
+    List<SettlementItemDTO> items,
+    BigDecimal originalAmount,
+    BigDecimal discountAmount,
+    BigDecimal payableAmount,
+    Long couponId,
+    String quoteToken,
+    long usePoint,
+    long givePoint,
+    SettlementDeliveryDTO delivery,
+    boolean freeDelivery,
+    Map<Long, Integer> giveCouponTemplateCounts)
+    implements Serializable {
+}

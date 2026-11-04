@@ -32,7 +32,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 折扣活动直接管理入口。 */
+/**
+ * 折扣活动直接管理入口。
+ */
 @RestController
 @RequestMapping("/mall/promotion/discount-activities")
 @Tag(name = "折扣活动")
@@ -56,7 +58,7 @@ public class DiscountActivityController {
     @Operation(summary = "修改折扣活动")
     @RequiresPermissions("mall:promotion:update")
     public R<Boolean> update(
-            @PathVariable Long id, @Valid @RequestBody DiscountActivityUpdateReq req) {
+        @PathVariable Long id, @Valid @RequestBody DiscountActivityUpdateReq req) {
         return R.ok(update.execute(DiscountActivityReqConverter.update(id, req)));
     }
 
@@ -87,7 +89,7 @@ public class DiscountActivityController {
     public R<DiscountActivityPageRes> page(@Valid @ModelAttribute DiscountActivityPageReq req) {
         var result = page.execute(DiscountActivityReqConverter.page(req));
         return R.page(
-                result.getRecords().stream().map(DiscountActivityResConverter::page).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(DiscountActivityResConverter::page).toList(),
+            result.getTotal());
     }
 }

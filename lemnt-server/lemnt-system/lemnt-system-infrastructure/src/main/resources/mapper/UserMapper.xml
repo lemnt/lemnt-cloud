@@ -131,7 +131,8 @@
         </if>
     </select>
 
-    <select id="selectUnallocatedList" parameterType="com.lemnt.system.domain.auth.model.User" resultMap="SysUserResult">
+    <select id="selectUnallocatedList" parameterType="com.lemnt.system.domain.auth.model.User"
+            resultMap="SysUserResult">
         SELECT DISTINCT u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
         FROM sys_user u
         LEFT JOIN sys_dept d ON u.dept_id = d.dept_id

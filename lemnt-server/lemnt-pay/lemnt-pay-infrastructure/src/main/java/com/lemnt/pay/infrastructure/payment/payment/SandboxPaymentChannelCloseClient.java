@@ -6,7 +6,9 @@ import com.lemnt.pay.domain.payment.model.PaymentRecord;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-/** 沙箱支付没有远端渠道交易，关单时直接视为已撤销。 */
+/**
+ * 沙箱支付没有远端渠道交易，关单时直接视为已撤销。
+ */
 @Component
 @ConditionalOnProperty(prefix = "payment.sandbox", name = "enabled", havingValue = "true")
 public class SandboxPaymentChannelCloseClient implements PaymentChannelCloseClient {

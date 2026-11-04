@@ -24,7 +24,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-/** 角色数据范围接口。 */
+/**
+ * 角色数据范围接口。
+ */
 @Tag(name = "角色数据范围")
 @RestController
 @RequestMapping("/roles")
@@ -40,9 +42,9 @@ public class RoleDataScopeController {
     public R<RoleDeptTreeRes> deptTree(@PathVariable("roleId") Long roleId) {
         Map<String, Object> result = roleDeptTreeQueryExe.execute(roleId);
         RoleDeptTreeRes res =
-                new RoleDeptTreeRes(
-                        (List<Long>) result.get("checkedKeys"),
-                        TreeSelectResConverter.toResList((List<TreeSelect>) result.get("depts")));
+            new RoleDeptTreeRes(
+                (List<Long>) result.get("checkedKeys"),
+                TreeSelectResConverter.toResList((List<TreeSelect>) result.get("depts")));
         return R.ok(res);
     }
 

@@ -9,7 +9,9 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/** member_sign_in_record 表数据访问接口。 */
+/**
+ * member_sign_in_record 表数据访问接口。
+ */
 @Mapper
 public interface MemberSignRecordMapper extends BaseMapper<SignRecordDO> {
 
@@ -18,6 +20,8 @@ public interface MemberSignRecordMapper extends BaseMapper<SignRecordDO> {
      */
     List<SignRecordDO> signsPage(@Param("f") SignRecordPageFilter f);
 
-    /** 总数与关联分页使用相同条件。 */
+    /**
+     * 总数与关联分页使用相同条件。
+     */
     long signsCount(@Param("f") SignRecordPageFilter f);
 }

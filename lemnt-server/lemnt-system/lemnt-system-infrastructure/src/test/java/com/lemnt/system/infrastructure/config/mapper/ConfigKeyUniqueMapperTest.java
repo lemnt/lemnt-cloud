@@ -21,12 +21,14 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-/** 修改查询排除自身，不按内置标识跳过冲突参数。 */
+/**
+ * 修改查询排除自身，不按内置标识跳过冲突参数。
+ */
 class ConfigKeyUniqueMapperTest {
     @BeforeAll
     static void initializeTable() {
         MapperBuilderAssistant assistant =
-                new MapperBuilderAssistant(new MybatisConfiguration(), "test");
+            new MapperBuilderAssistant(new MybatisConfiguration(), "test");
 
         assistant.setCurrentNamespace("test");
 
@@ -56,7 +58,7 @@ class ConfigKeyUniqueMapperTest {
             assertThat(query.getSqlSegment()).contains("config_id <>");
 
             assertThat(query.getParamNameValuePairs().values())
-                    .containsExactlyInAnyOrder("test", 2L);
+                .containsExactlyInAnyOrder("test", 2L);
 
         } else {
             assertThat(query.getSqlSegment()).doesNotContain("config_id <>");

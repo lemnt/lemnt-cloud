@@ -5,39 +5,42 @@ import com.lemnt.pay.application.payment.dto.WalletRechargeDTO;
 import com.lemnt.pay.domain.payment.model.RechargePackage;
 import com.lemnt.pay.domain.payment.model.WalletRecharge;
 
-/** 充值套餐与充值单应用输出转换。 */
+/**
+ * 充值套餐与充值单应用输出转换。
+ */
 public final class RechargeDTOConverter {
-    private RechargeDTOConverter() {}
+    private RechargeDTOConverter() {
+    }
 
     public static RechargePackageDTO packageView(RechargePackage value) {
         return value == null
-                ? null
-                : new RechargePackageDTO(
-                        value.id(),
-                        value.name(),
-                        value.payPrice(),
-                        value.bonusPrice(),
-                        value.status(),
-                        value.createTime());
+            ? null
+            : new RechargePackageDTO(
+            value.id(),
+            value.name(),
+            value.payPrice(),
+            value.bonusPrice(),
+            value.status(),
+            value.createTime());
     }
 
     public static WalletRechargeDTO recharge(WalletRecharge value) {
         return value == null
-                ? null
-                : new WalletRechargeDTO(
-                        value.id(),
-                        value.rechargeNo(),
-                        value.requestNo(),
-                        value.walletId(),
-                        value.memberId(),
-                        value.packageId(),
-                        value.payPrice(),
-                        value.bonusPrice(),
-                        value.totalPrice(),
-                        value.status(),
-                        value.channelCode(),
-                        value.paidTime(),
-                        value.refundedTime(),
-                        value.createTime());
+            ? null
+            : new WalletRechargeDTO(
+            value.id(),
+            value.rechargeNo(),
+            value.requestNo(),
+            value.walletId(),
+            value.memberId(),
+            value.packageId(),
+            value.payPrice(),
+            value.bonusPrice(),
+            value.totalPrice(),
+            value.status(),
+            value.channelCode(),
+            value.paidTime(),
+            value.refundedTime(),
+            value.createTime());
     }
 }

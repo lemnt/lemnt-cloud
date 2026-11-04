@@ -13,7 +13,9 @@ import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 
-/** 商品评价表。 */
+/**
+ * 商品评价表。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
@@ -44,5 +46,6 @@ public class ProductCommentDO extends BaseDO {
     private String skuPicUrl;
     private String skuProperties;
     private Boolean replyStatus;
-    @TableLogic private Boolean deleted;
+    @TableLogic
+    private Boolean deleted;
 }

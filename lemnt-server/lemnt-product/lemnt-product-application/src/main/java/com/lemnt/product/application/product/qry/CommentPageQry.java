@@ -3,32 +3,36 @@ package com.lemnt.product.application.product.qry;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/** 评价分页查询。 */
+/**
+ * 评价分页查询。
+ */
 public record CommentPageQry(
+    Long spuId,
+    Long memberId,
+    Integer score,
+    Boolean visible,
+    Boolean replied,
+    int pageNum,
+    int pageSize,
+    String userNickname,
+    Long orderId,
+    String spuName,
+    LocalDateTime createTimeStart,
+    LocalDateTime createTimeEnd)
+    implements Serializable {
+    /**
+     * 兼容现有筛选调用，新条件均为可选。
+     */
+    public CommentPageQry(
         Long spuId,
         Long memberId,
         Integer score,
         Boolean visible,
         Boolean replied,
         int pageNum,
-        int pageSize,
-        String userNickname,
-        Long orderId,
-        String spuName,
-        LocalDateTime createTimeStart,
-        LocalDateTime createTimeEnd)
-        implements Serializable {
-    /** 兼容现有筛选调用，新条件均为可选。 */
-    public CommentPageQry(
-            Long spuId,
-            Long memberId,
-            Integer score,
-            Boolean visible,
-            Boolean replied,
-            int pageNum,
-            int pageSize) {
+        int pageSize) {
         this(
-                spuId, memberId, score, visible, replied, pageNum, pageSize, null, null, null, null,
-                null);
+            spuId, memberId, score, visible, replied, pageNum, pageSize, null, null, null, null,
+            null);
     }
 }

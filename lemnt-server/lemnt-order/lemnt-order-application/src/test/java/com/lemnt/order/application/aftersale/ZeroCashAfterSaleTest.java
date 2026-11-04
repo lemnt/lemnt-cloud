@@ -36,7 +36,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/** 保留六个原零现金场景，使用冻结退单和订单事件验证，不伪造渠道退款。 */
+/**
+ * 保留六个原零现金场景，使用冻结退单和订单事件验证，不伪造渠道退款。
+ */
 class ZeroCashAfterSaleTest {
     final TradeOrderGateway orders = mock(TradeOrderGateway.class);
     final TradeOrderItemGateway items = mock(TradeOrderItemGateway.class);
@@ -47,111 +49,111 @@ class ZeroCashAfterSaleTest {
     final OrderEventGateway events = mock(OrderEventGateway.class);
     final AfterSalePromotionService attribution = mock(AfterSalePromotionService.class);
     final AfterSaleRefundCoordinator coordinator =
-            new AfterSaleRefundCoordinator(
-                    orders,
-                    items,
-                    afterSales,
-                    payments,
-                    refunds,
-                    inventory,
-                    mock(OrderLogService.class),
-                    mock(AfterSaleLogService.class),
-                    events,
-                    mock(ActivityOrderLifecycleService.class),
-                    mock(BrokerageService.class));
+        new AfterSaleRefundCoordinator(
+            orders,
+            items,
+            afterSales,
+            payments,
+            refunds,
+            inventory,
+            mock(OrderLogService.class),
+            mock(AfterSaleLogService.class),
+            events,
+            mock(ActivityOrderLifecycleService.class),
+            mock(BrokerageService.class));
     final PaymentGateway cash = mock(PaymentGateway.class);
     final PaymentRefundCreateCmdExe executor =
-            new PaymentRefundCreateCmdExe(coordinator, cash, refunds);
+        new PaymentRefundCreateCmdExe(coordinator, cash, refunds);
 
     TradeOrder order() {
         return new TradeOrder(
-                7L,
-                "TR0",
-                1L,
-                BigDecimal.ZERO,
-                "PAID",
-                List.of(),
-                LocalDateTime.now(),
-                100,
-                0,
-                null,
-                false,
-                null,
-                Map.of(),
-                BigDecimal.TEN,
-                BigDecimal.TEN,
-                BigDecimal.ZERO,
-                BigDecimal.ZERO,
-                BigDecimal.ZERO,
-                "COMPLETE",
-                1,
-                List.of());
+            7L,
+            "TR0",
+            1L,
+            BigDecimal.ZERO,
+            "PAID",
+            List.of(),
+            LocalDateTime.now(),
+            100,
+            0,
+            null,
+            false,
+            null,
+            Map.of(),
+            BigDecimal.TEN,
+            BigDecimal.TEN,
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            "COMPLETE",
+            1,
+            List.of());
     }
 
     TradeOrderItem line(long id, long sku, int quantity) {
         return new TradeOrderItem(
-                sku,
-                "S",
-                "商品",
-                BigDecimal.TEN,
-                quantity,
-                BigDecimal.TEN,
-                BigDecimal.ZERO,
-                BigDecimal.ZERO,
-                3L,
-                "SPU",
-                null,
-                null,
-                id,
-                false,
-                BigDecimal.TEN,
-                BigDecimal.ZERO,
-                BigDecimal.ZERO,
-                BigDecimal.ZERO,
-                100L,
-                0L,
-                0);
+            sku,
+            "S",
+            "商品",
+            BigDecimal.TEN,
+            quantity,
+            BigDecimal.TEN,
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            3L,
+            "SPU",
+            null,
+            null,
+            id,
+            false,
+            BigDecimal.TEN,
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            100L,
+            0L,
+            0);
     }
 
     OrderRefundItem refundLine(long id, long sku, int q) {
         return new OrderRefundItem(
-                id, sku, "商品", q, BigDecimal.TEN, BigDecimal.ZERO, BigDecimal.ZERO);
+            id, sku, "商品", q, BigDecimal.TEN, BigDecimal.ZERO, BigDecimal.ZERO);
     }
 
     AfterSale af(String no, long item, long sku, int quantity, String state) {
         return new AfterSale(
-                no,
-                "TR0",
-                "REQ" + no,
-                1L,
-                null,
-                item,
-                quantity,
-                "REFUND_ONLY",
-                BigDecimal.ZERO.setScale(2),
-                "原因",
-                state,
-                null,
-                null,
-                null,
-                LocalDateTime.now(),
-                null,
-                null,
-                null,
-                5L,
-                7L,
-                null,
-                null,
-                sku,
-                3L,
-                "SPU",
-                null,
-                null,
-                BigDecimal.TEN,
-                BigDecimal.ZERO,
-                50L,
-                0L,
-                1);
+            no,
+            "TR0",
+            "REQ" + no,
+            1L,
+            null,
+            item,
+            quantity,
+            "REFUND_ONLY",
+            BigDecimal.ZERO.setScale(2),
+            "原因",
+            state,
+            null,
+            null,
+            null,
+            LocalDateTime.now(),
+            null,
+            null,
+            null,
+            5L,
+            7L,
+            null,
+            null,
+            sku,
+            3L,
+            "SPU",
+            null,
+            null,
+            BigDecimal.TEN,
+            BigDecimal.ZERO,
+            50L,
+            0L,
+            1);
     }
 
     @BeforeEach
@@ -180,29 +182,29 @@ class ZeroCashAfterSaleTest {
         var saved = new AtomicReference<AfterSale>();
         when(afterSales.afterSales("TR0")).thenReturn(List.of());
         doAnswer(
-                        v -> {
-                            saved.set(v.getArgument(0));
-                            return null;
-                        })
-                .when(afterSales)
-                .saveAfterSale(any());
+            v -> {
+                saved.set(v.getArgument(0));
+                return null;
+            })
+            .when(afterSales)
+            .saveAfterSale(any());
         when(afterSales.afterSale(anyString())).thenAnswer(v -> saved.get());
         when(attribution.freeze(any(), eq(11L), eq(1), eq(0), any()))
-                .thenReturn(
-                        new AfterSalePromotionService.Plan(
-                                BigDecimal.ZERO, BigDecimal.ZERO, 50, 0, List.of()));
+            .thenReturn(
+                new AfterSalePromotionService.Plan(
+                    BigDecimal.ZERO, BigDecimal.ZERO, 50, 0, List.of()));
         var service =
-                new AfterSaleService(
-                        orders,
-                        items,
-                        afterSales,
-                        payments,
-                        mock(AfterSaleLogService.class),
-                        attribution);
+            new AfterSaleService(
+                orders,
+                items,
+                afterSales,
+                payments,
+                mock(AfterSaleLogService.class),
+                attribution);
         var v =
-                service.create(
-                        new AfterSaleCreateCmd("TR0", "REQ", 11L, 1, "REFUND_ONLY", "原因"),
-                        TradeOperator.system());
+            service.create(
+                new AfterSaleCreateCmd("TR0", "REQ", 11L, 1, "REFUND_ONLY", "原因"),
+                TradeOperator.system());
         assertEquals(BigDecimal.ZERO.setScale(2), v.amount());
         assertNull(v.paymentNo());
         assertEquals("REQUESTED", v.status());

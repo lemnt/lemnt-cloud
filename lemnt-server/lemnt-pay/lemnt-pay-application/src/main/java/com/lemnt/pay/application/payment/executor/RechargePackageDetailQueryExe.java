@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 充值套餐详情。 */
+/**
+ * 充值套餐详情。
+ */
 @Component
 @RequiredArgsConstructor
 public class RechargePackageDetailQueryExe {

@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lemnt.product.infrastructure.product.mapper.CategoryMapper">
 
-    <resultMap id="CategoryResult" type="com.lemnt.product.infrastructure.product.dataobject.CategoryDO" autoMapping="false">
+    <resultMap id="CategoryResult" type="com.lemnt.product.infrastructure.product.dataobject.CategoryDO"
+               autoMapping="false">
         <id property="id" column="id"/>
         <result property="parentId" column="parent_id"/>
         <result property="name" column="name"/>

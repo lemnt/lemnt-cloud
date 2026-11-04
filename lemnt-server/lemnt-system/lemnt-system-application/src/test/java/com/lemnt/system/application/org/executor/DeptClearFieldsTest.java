@@ -14,7 +14,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/** 完整部门编辑将空联系字段传给持久化层，同时保留原层级和状态。 */
+/**
+ * 完整部门编辑将空联系字段传给持久化层，同时保留原层级和状态。
+ */
 class DeptClearFieldsTest {
     @ParameterizedTest
     @NullAndEmptySource
@@ -28,12 +30,12 @@ class DeptClearFieldsTest {
             security.when(SecurityUtils::isAdmin).thenReturn(true);
 
             assertThat(
-                            new DeptUpdateCmdExe(gateway)
-                                    .execute(
-                                            new DeptUpdateCmd(
-                                                    200L, 100L, "0,100", "测试部门", 97, value, value,
-                                                    value, "2")))
-                    .isTrue();
+                new DeptUpdateCmdExe(gateway)
+                    .execute(
+                        new DeptUpdateCmd(
+                            200L, 100L, "0,100", "测试部门", 97, value, value,
+                            value, "2")))
+                .isTrue();
         }
         ArgumentCaptor<Dept> entity = ArgumentCaptor.forClass(Dept.class);
 

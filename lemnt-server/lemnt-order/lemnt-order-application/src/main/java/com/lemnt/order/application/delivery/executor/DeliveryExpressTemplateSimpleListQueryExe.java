@@ -10,13 +10,17 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 配送选择列表执行器。 */
+/**
+ * 配送选择列表执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class DeliveryExpressTemplateSimpleListQueryExe {
     private final DeliveryExpressTemplateGateway gateway;
 
-    /** 执行配送操作。 */
+    /**
+     * 执行配送操作。
+     */
     public List<DeliveryExpressTemplateDTO> execute() {
         return gateway.list(null).stream().map(DeliveryDTOConverter::toDTO).toList();
     }

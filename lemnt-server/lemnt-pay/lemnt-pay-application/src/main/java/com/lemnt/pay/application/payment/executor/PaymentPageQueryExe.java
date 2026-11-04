@@ -15,19 +15,23 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-/** 支付单管理查询执行器。 */
+/**
+ * 支付单管理查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class PaymentPageQueryExe {
     private final TradePaymentGateway gateway;
 
-    /** 按精确条件分页查询，不返回内部通知标识。 */
+    /**
+     * 按精确条件分页查询，不返回内部通知标识。
+     */
     public PageResult<PaymentDTO> execute(PaymentPageQry query) {
         if (query == null
-                || query.pageNum() < 1
-                || query.pageNum() > 1000000
-                || query.pageSize() < 1
-                || query.pageSize() > 100) {
+            || query.pageNum() < 1
+            || query.pageNum() > 1000000
+            || query.pageSize() < 1
+            || query.pageSize() > 100) {
             throw new IllegalArgumentException("分页参数不合法");
         }
         String paymentNo = text(query.paymentNo(), 40);
@@ -41,17 +45,17 @@ public class PaymentPageQueryExe {
             PaymentChannel.valueOf(channel);
         }
         var page =
-                gateway.page(
-                        new PaymentFilter(
-                                paymentNo,
-                                orderNo,
-                                channel,
-                                status,
-                                query.pageNum(),
-                                query.pageSize()));
+            gateway.page(
+                new PaymentFilter(
+                    paymentNo,
+                    orderNo,
+                    channel,
+                    status,
+                    query.pageNum(),
+                    query.pageSize()));
         return PageResult.of(
-                page.getRecords().stream().map(PaymentDTOConverter::toDTO).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(PaymentDTOConverter::toDTO).toList(),
+            page.getTotal());
     }
 
     private String text(String value, int max) {

@@ -17,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Locale;
 
-/** 接收渠道支付通知：先按应用解析渠道配置并验签，再提交支付结果。 */
+/**
+ * 接收渠道支付通知：先按应用解析渠道配置并验签，再提交支付结果。
+ */
 @Component
 @RequiredArgsConstructor
 public class PaymentNotifyReceiveCmdExe {
@@ -33,22 +35,22 @@ public class PaymentNotifyReceiveCmdExe {
         PayApp app = apps.findByAppKey(cmd.appKey());
         require(app != null && Integer.valueOf(0).equals(app.status()), "支付应用不存在或已停用");
         PayChannelConfig config =
-                channels.listByAppId(app.id()).stream()
-                        .filter(
-                                value ->
-                                        channel.equals(value.code())
-                                                && Integer.valueOf(0).equals(value.status()))
-                        .findFirst()
-                        .orElseThrow(() -> new ServiceException("支付渠道未启用", 400));
+            channels.listByAppId(app.id()).stream()
+                .filter(
+                    value ->
+                        channel.equals(value.code())
+                            && Integer.valueOf(0).equals(value.status()))
+                .findFirst()
+                .orElseThrow(() -> new ServiceException("支付渠道未启用", 400));
         var verified =
-                channelGateway.verify(
-                        channel, config, cmd.body(), cmd.signature(), cmd.timestamp());
+            channelGateway.verify(
+                channel, config, cmd.body(), cmd.signature(), cmd.timestamp());
         PaymentRecord payment = payments.findByPaymentNo(verified.paymentNo());
         require(
-                payment != null
-                        && channel.equals(payment.channel())
-                        && (payment.appKey() == null || app.appKey().equals(payment.appKey())),
-                "支付通知与本地支付单不匹配");
+            payment != null
+                && channel.equals(payment.channel())
+                && (payment.appKey() == null || app.appKey().equals(payment.appKey())),
+            "支付通知与本地支付单不匹配");
         notify.execute(verified);
         return verified.paymentNo();
     }
@@ -56,8 +58,8 @@ public class PaymentNotifyReceiveCmdExe {
     private String channel(String value) {
         try {
             return PaymentChannel.valueOf(
-                            value == null ? "" : value.trim().toUpperCase(Locale.ROOT))
-                    .name();
+                    value == null ? "" : value.trim().toUpperCase(Locale.ROOT))
+                .name();
         } catch (IllegalArgumentException exception) {
             throw new ServiceException("暂不支持该支付渠道", 400);
         }

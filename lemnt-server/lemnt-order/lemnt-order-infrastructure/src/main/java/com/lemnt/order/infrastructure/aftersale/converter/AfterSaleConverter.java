@@ -8,105 +8,112 @@ import com.alibaba.fastjson2.JSON;
 
 import java.util.Set;
 
-/** 售后表持久化转换。 */
+/**
+ * 售后表持久化转换。
+ */
 public final class AfterSaleConverter {
-    private AfterSaleConverter() {}
+    private AfterSaleConverter() {
+    }
 
-    /** 转换完整售后信息。 */
+    /**
+     * 转换完整售后信息。
+     */
     public static AfterSale toModel(AfterSaleDO value) {
         if (value == null) {
             return null;
         }
         var specs = OrderItemConverter.specs(value.getSpecs());
         return new AfterSale(
-                value.getRefundNo(),
-                value.getOrderNo(),
-                value.getRequestNo(),
-                value.getMemberId(),
-                value.getPaymentNo(),
-                value.getOrderItemId(),
-                value.getQuantity(),
-                value.getType(),
-                value.getAmount(),
-                value.getReason(),
-                value.getStatus(),
-                value.getDecisionReason(),
-                value.getReturnCarrierCode(),
-                value.getReturnTrackingNo(),
-                value.getRequestedAt(),
-                value.getDecidedAt(),
-                value.getReturnShippedAt(),
-                value.getReturnReceivedAt(),
-                value.getId(),
-                value.getOrderId(),
-                value.getRefundTime(),
-                value.getAuditUserId(),
-                value.getSkuId(),
-                value.getSpuId(),
-                value.getSpuName(),
-                specs == null
-                        ? null
-                        : specs.stream()
-                                .map(
-                                        snapshotProperty ->
-                                                new AfterSale.Spec(
-                                                        snapshotProperty.specId(),
-                                                        snapshotProperty.specName(),
-                                                        snapshotProperty.specValueId(),
-                                                        snapshotProperty.specValueName()))
-                                .toList(),
-                value.getPicUrl(),
-                value.getRefundDiscountAmount(),
-                value.getRefundDeliveryDiscountPrice(),
-                value.getReturnUsePoint(),
-                value.getDeductGivePoint(),
-                value.getRefundRuleVersion());
+            value.getRefundNo(),
+            value.getOrderNo(),
+            value.getRequestNo(),
+            value.getMemberId(),
+            value.getPaymentNo(),
+            value.getOrderItemId(),
+            value.getQuantity(),
+            value.getType(),
+            value.getAmount(),
+            value.getReason(),
+            value.getStatus(),
+            value.getDecisionReason(),
+            value.getReturnCarrierCode(),
+            value.getReturnTrackingNo(),
+            value.getRequestedAt(),
+            value.getDecidedAt(),
+            value.getReturnShippedAt(),
+            value.getReturnReceivedAt(),
+            value.getId(),
+            value.getOrderId(),
+            value.getRefundTime(),
+            value.getAuditUserId(),
+            value.getSkuId(),
+            value.getSpuId(),
+            value.getSpuName(),
+            specs == null
+                ? null
+                : specs.stream()
+                .map(
+                    snapshotProperty ->
+                        new AfterSale.Spec(
+                            snapshotProperty.specId(),
+                            snapshotProperty.specName(),
+                            snapshotProperty.specValueId(),
+                            snapshotProperty.specValueName()))
+                .toList(),
+            value.getPicUrl(),
+            value.getRefundDiscountAmount(),
+            value.getRefundDeliveryDiscountPrice(),
+            value.getReturnUsePoint(),
+            value.getDeductGivePoint(),
+            value.getRefundRuleVersion());
     }
 
-    /** 转换售后写入字段。 */
+    /**
+     * 转换售后写入字段。
+     */
     public static AfterSaleDO toDO(AfterSale value) {
         return new AfterSaleDO()
-                .setId(value.id())
-                .setOrderId(value.orderId())
-                .setRefundTime(value.refundTime())
-                .setAuditUserId(value.auditUserId())
-                .setSkuId(value.skuId())
-                .setSpuId(value.spuId())
-                .setSpuName(value.spuName())
-                .setSpecs(value.specs() == null ? null : JSON.toJSONString(value.specs()))
-                .setPicUrl(value.picUrl())
-                .setRefundNo(value.refundNo())
-                .setOrderNo(value.orderNo())
-                .setRequestNo(value.requestNo())
-                .setMemberId(value.memberId())
-                .setPaymentNo(value.paymentNo())
-                .setOrderItemId(value.orderItemId())
-                .setQuantity(value.quantity())
-                .setType(value.type())
-                .setAmount(value.amount())
-                .setReason(value.reason())
-                .setStatus(value.status())
-                .setDecisionReason(value.decisionReason())
-                .setRequestedAt(value.requestedAt())
-                .setDecidedAt(value.decidedAt())
-                .setReturnCarrierCode(value.returnCarrierCode())
-                .setReturnTrackingNo(value.returnTrackingNo())
-                .setReturnShippedAt(value.returnShippedAt())
-                .setReturnReceivedAt(value.returnReceivedAt())
-                .setActiveOrderNo(
-                        Set.of(
-                                                "REQUESTED",
-                                                "AWAITING_RETURN",
-                                                "RETURNED",
-                                                "WAIT_REFUND",
-                                                "REFUNDING")
-                                        .contains(value.status())
-                                ? value.orderNo()
-                                : null)
-                .setRefundDiscountAmount(value.refundDiscountAmount())
-                .setRefundDeliveryDiscountPrice(value.refundDeliveryDiscountPrice())
-                .setReturnUsePoint(value.returnUsePoint())
-                .setDeductGivePoint(value.deductGivePoint())
-                .setRefundRuleVersion(value.refundRuleVersion());
+            .setId(value.id())
+            .setOrderId(value.orderId())
+            .setRefundTime(value.refundTime())
+            .setAuditUserId(value.auditUserId())
+            .setSkuId(value.skuId())
+            .setSpuId(value.spuId())
+            .setSpuName(value.spuName())
+            .setSpecs(value.specs() == null ? null : JSON.toJSONString(value.specs()))
+            .setPicUrl(value.picUrl())
+            .setRefundNo(value.refundNo())
+            .setOrderNo(value.orderNo())
+            .setRequestNo(value.requestNo())
+            .setMemberId(value.memberId())
+            .setPaymentNo(value.paymentNo())
+            .setOrderItemId(value.orderItemId())
+            .setQuantity(value.quantity())
+            .setType(value.type())
+            .setAmount(value.amount())
+            .setReason(value.reason())
+            .setStatus(value.status())
+            .setDecisionReason(value.decisionReason())
+            .setRequestedAt(value.requestedAt())
+            .setDecidedAt(value.decidedAt())
+            .setReturnCarrierCode(value.returnCarrierCode())
+            .setReturnTrackingNo(value.returnTrackingNo())
+            .setReturnShippedAt(value.returnShippedAt())
+            .setReturnReceivedAt(value.returnReceivedAt())
+            .setActiveOrderNo(
+                Set.of(
+                        "REQUESTED",
+                        "AWAITING_RETURN",
+                        "RETURNED",
+                        "WAIT_REFUND",
+                        "REFUNDING")
+                    .contains(value.status())
+                    ? value.orderNo()
+                    : null)
+            .setRefundDiscountAmount(value.refundDiscountAmount())
+            .setRefundDeliveryDiscountPrice(value.refundDeliveryDiscountPrice())
+            .setReturnUsePoint(value.returnUsePoint())
+            .setDeductGivePoint(value.deductGivePoint())
+            .setRefundRuleVersion(value.refundRuleVersion());
     }
 }

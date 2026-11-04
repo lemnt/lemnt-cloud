@@ -10,42 +10,45 @@ import com.lemnt.promotion.application.promotion.qry.KefuMessageQry;
 
 import java.time.LocalDateTime;
 
-/** 管理端客服请求及响应转换。 */
+/**
+ * 管理端客服请求及响应转换。
+ */
 public final class KefuConverter {
-    private KefuConverter() {}
+    private KefuConverter() {
+    }
 
     public static KefuMessageSendCmd send(
-            Long conversationId, Long adminId, KefuMessageSendReq req) {
+        Long conversationId, Long adminId, KefuMessageSendReq req) {
         return new KefuMessageSendCmd(conversationId, adminId, req.content(), req.contentType());
     }
 
     public static KefuMessageQry messages(
-            Long conversationId, LocalDateTime beforeTime, Integer limit) {
+        Long conversationId, LocalDateTime beforeTime, Integer limit) {
         return new KefuMessageQry(conversationId, beforeTime, limit);
     }
 
     public static KefuConversationRes conversation(KefuConversationDTO value) {
         return new KefuConversationRes(
-                value.id(),
-                value.userId(),
-                value.nickname(),
-                value.avatar(),
-                value.lastMessageTime(),
-                value.lastMessageContent(),
-                value.lastMessageContentType(),
-                value.adminPinned(),
-                value.adminUnreadMessageCount());
+            value.id(),
+            value.userId(),
+            value.nickname(),
+            value.avatar(),
+            value.lastMessageTime(),
+            value.lastMessageContent(),
+            value.lastMessageContentType(),
+            value.adminPinned(),
+            value.adminUnreadMessageCount());
     }
 
     public static KefuMessageRes message(KefuMessageDTO value) {
         return new KefuMessageRes(
-                value.id(),
-                value.conversationId(),
-                value.senderId(),
-                value.senderType(),
-                value.contentType(),
-                value.content(),
-                value.readStatus(),
-                value.createTime());
+            value.id(),
+            value.conversationId(),
+            value.senderId(),
+            value.senderType(),
+            value.contentType(),
+            value.content(),
+            value.readStatus(),
+            value.createTime());
     }
 }

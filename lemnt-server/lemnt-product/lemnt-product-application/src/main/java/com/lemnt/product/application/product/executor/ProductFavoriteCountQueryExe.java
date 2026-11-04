@@ -7,13 +7,17 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** count执行器。 */
+/**
+ * count执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductFavoriteCountQueryExe {
     private final ProductFavoriteService service;
 
-    /** 按明确的用例边界执行。 */
+    /**
+     * 按明确的用例边界执行。
+     */
     public long execute(ProductFavoriteCountQry value) {
         return service.count(value.userId());
     }

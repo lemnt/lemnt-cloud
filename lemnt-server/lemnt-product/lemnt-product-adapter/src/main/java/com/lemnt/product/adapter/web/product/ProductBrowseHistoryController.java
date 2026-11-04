@@ -18,22 +18,26 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 浏览足迹只读管理，按权限及显式筛选查询。 */
+/**
+ * 浏览足迹只读管理，按权限及显式筛选查询。
+ */
 @RestController
 @RequestMapping("/mall/product-browse-history")
 @RequiredArgsConstructor
 public class ProductBrowseHistoryController {
     private final ProductBrowseHistoryPageQueryExe query;
 
-    /** 商品详情关联记录分页。 */
+    /**
+     * 商品详情关联记录分页。
+     */
     @GetMapping
     @Operation(summary = "商品浏览足迹记录分页")
     @RequiresPermissions("mall:product-history:list")
     public R<ProductBrowseHistoryPageRes> page(
-            @Valid @ModelAttribute ProductBrowseHistoryPageReq req) {
+        @Valid @ModelAttribute ProductBrowseHistoryPageReq req) {
         var result = query.execute(ProductBrowseHistoryReqConverter.page(req));
         return R.page(
-                result.getRecords().stream().map(ProductBrowseHistoryResConverter::page).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(ProductBrowseHistoryResConverter::page).toList(),
+            result.getTotal());
     }
 }

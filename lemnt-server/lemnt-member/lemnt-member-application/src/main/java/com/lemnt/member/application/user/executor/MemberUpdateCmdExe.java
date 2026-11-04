@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 资料更新命令执行器。 */
+/**
+ * 资料更新命令执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberUpdateCmdExe {
@@ -19,15 +21,15 @@ public class MemberUpdateCmdExe {
      */
     public Boolean execute(MemberUpdateCmd cmd) {
         return memberUserService.profileUpdate(
-                cmd.memberId(),
-                cmd.nickname(),
-                cmd.email(),
-                cmd.avatar(),
-                cmd.sex(),
-                cmd.birthday(),
-                cmd.status(),
-                cmd.mark(),
-                cmd.name(),
-                cmd.areaId());
+            cmd.memberId(),
+            cmd.nickname(),
+            cmd.email(),
+            cmd.avatar(),
+            cmd.sex(),
+            cmd.birthday(),
+            cmd.status(),
+            cmd.mark(),
+            cmd.name(),
+            cmd.areaId());
     }
 }

@@ -16,7 +16,9 @@ import java.math.BigDecimal;
 import java.util.Locale;
 import java.util.UUID;
 
-/** 钱包间转账：requestNo 幂等、按钱包编号升序加锁、双向流水。收款方需已有钱包。 */
+/**
+ * 钱包间转账：requestNo 幂等、按钱包编号升序加锁、双向流水。收款方需已有钱包。
+ */
 @Component
 @RequiredArgsConstructor
 public class WalletTransferService {
@@ -28,11 +30,11 @@ public class WalletTransferService {
 
     @Transactional(rollbackFor = Exception.class)
     public WalletTransfer transfer(
-            Long fromMemberId,
-            Long toMemberId,
-            BigDecimal amount,
-            String remark,
-            String requestNo) {
+        Long fromMemberId,
+        Long toMemberId,
+        BigDecimal amount,
+        String remark,
+        String requestNo) {
         requireMember(fromMemberId, "转出会员");
         requireMember(toMemberId, "转入会员");
         if (fromMemberId.equals(toMemberId)) {
@@ -41,7 +43,7 @@ public class WalletTransferService {
         BigDecimal value = RechargeRules.positiveMoney(amount, "转账金额");
         String request = RechargeRules.text(requestNo, 64, "请求编号");
         String note =
-                remark == null || remark.isBlank() ? null : RechargeRules.text(remark, 128, "转账备注");
+            remark == null || remark.isBlank() ? null : RechargeRules.text(remark, 128, "转账备注");
         var existing = transfers.findByRequestNo(request);
         if (existing != null) {
             return verify(existing, fromMemberId, toMemberId, value);
@@ -53,23 +55,23 @@ public class WalletTransferService {
         var fromWallet = walletService.getOrCreate(fromMemberId);
         lockBoth(fromWallet.id(), toWallet.id());
         var created =
-                transfers.createIfAbsent(
-                        new WalletTransfer(
-                                null,
-                                "TF"
-                                        + UUID.randomUUID()
-                                                .toString()
-                                                .replace("-", "")
-                                                .toUpperCase(Locale.ROOT),
-                                request,
-                                fromWallet.id(),
-                                fromMemberId,
-                                toWallet.id(),
-                                toMemberId,
-                                value,
-                                note,
-                                SUCCESS,
-                                null));
+            transfers.createIfAbsent(
+                new WalletTransfer(
+                    null,
+                    "TF"
+                        + UUID.randomUUID()
+                        .toString()
+                        .replace("-", "")
+                        .toUpperCase(Locale.ROOT),
+                    request,
+                    fromWallet.id(),
+                    fromMemberId,
+                    toWallet.id(),
+                    toMemberId,
+                    value,
+                    note,
+                    SUCCESS,
+                    null));
         if (created == null) {
             created = transfers.findByRequestNo(request);
         }
@@ -80,16 +82,18 @@ public class WalletTransferService {
     }
 
     private WalletTransfer verify(
-            WalletTransfer value, Long fromMemberId, Long toMemberId, BigDecimal amount) {
+        WalletTransfer value, Long fromMemberId, Long toMemberId, BigDecimal amount) {
         if (!value.fromMemberId().equals(fromMemberId)
-                || !value.toMemberId().equals(toMemberId)
-                || value.amount().compareTo(amount) != 0) {
+            || !value.toMemberId().equals(toMemberId)
+            || value.amount().compareTo(amount) != 0) {
             throw new IllegalStateException("请求编号已用于不同转账内容");
         }
         return value;
     }
 
-    /** 按钱包编号升序加锁，避免 A→B 与 B→A 并发死锁。 */
+    /**
+     * 按钱包编号升序加锁，避免 A→B 与 B→A 并发死锁。
+     */
     private void lockBoth(Long first, Long second) {
         if (first < second) {
             wallets.lockById(first);

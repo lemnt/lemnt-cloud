@@ -18,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 会员分组分配接口。 */
+/**
+ * 会员分组分配接口。
+ */
 @Tag(name = "会员分组分配")
 @RestController
 @RequestMapping("/member-users")

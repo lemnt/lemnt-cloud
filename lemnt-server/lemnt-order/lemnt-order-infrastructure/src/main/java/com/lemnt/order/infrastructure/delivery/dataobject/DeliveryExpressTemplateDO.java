@@ -10,25 +10,37 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/** order_delivery_express_template 数据对象。 */
+/**
+ * order_delivery_express_template 数据对象。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("order_delivery_express_template")
 public class DeliveryExpressTemplateDO extends BaseDO {
-    /** 编号。 */
+    /**
+     * 编号。
+     */
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    /** 模板名称。 */
+    /**
+     * 模板名称。
+     */
     private String name;
 
-    /** 计费方式，1 件数、2 重量千克、3 体积立方米。 */
+    /**
+     * 计费方式，1 件数、2 重量千克、3 体积立方米。
+     */
     private Integer chargeMode;
 
-    /** 排序。 */
+    /**
+     * 排序。
+     */
     private Integer sort;
 
-    /** 逻辑删除标记。 */
+    /**
+     * 逻辑删除标记。
+     */
     @TableLogic(value = "0", delval = "1")
     private Boolean deleted;
 }

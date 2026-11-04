@@ -6,7 +6,9 @@ import com.lemnt.promotion.domain.promotion.model.BannerFilter;
 
 import java.util.List;
 
-/** Banner 存储契约。 */
+/**
+ * Banner 存储契约。
+ */
 public interface BannerGateway {
     Banner find(Long id);
 
@@ -16,9 +18,13 @@ public interface BannerGateway {
 
     PageResult<Banner> page(BannerFilter filter);
 
-    /** App 列表只返回开启状态，并按排序值倒序。 */
+    /**
+     * App 列表只返回开启状态，并按排序值倒序。
+     */
     List<Banner> enabledByPosition(Integer position);
 
-    /** 点击量原子加一。 */
+    /**
+     * 点击量原子加一。
+     */
     boolean increaseBrowseCount(Long id);
 }

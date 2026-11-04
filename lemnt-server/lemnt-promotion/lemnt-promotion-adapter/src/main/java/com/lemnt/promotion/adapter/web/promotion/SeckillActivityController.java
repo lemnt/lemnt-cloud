@@ -30,7 +30,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 秒杀活动管理入口。 */
+/**
+ * 秒杀活动管理入口。
+ */
 @RestController
 @RequestMapping("/mall/promotion/seckill-activities")
 @Tag(name = "秒杀活动")
@@ -54,7 +56,7 @@ public class SeckillActivityController {
     @Operation(summary = "修改秒杀活动")
     @RequiresPermissions("mall:promotion:update")
     public R<Boolean> update(
-            @PathVariable Long id, @Valid @RequestBody SeckillActivityUpdateReq req) {
+        @PathVariable Long id, @Valid @RequestBody SeckillActivityUpdateReq req) {
         return R.ok(update.execute(SeckillActivityConverter.update(id, req)));
     }
 
@@ -85,7 +87,7 @@ public class SeckillActivityController {
     public R<SeckillActivityRes> page(@Valid @ModelAttribute SeckillActivityPageReq req) {
         var result = page.execute(SeckillActivityConverter.page(req));
         return R.page(
-                result.getRecords().stream().map(SeckillActivityConverter::res).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(SeckillActivityConverter::res).toList(),
+            result.getTotal());
     }
 }

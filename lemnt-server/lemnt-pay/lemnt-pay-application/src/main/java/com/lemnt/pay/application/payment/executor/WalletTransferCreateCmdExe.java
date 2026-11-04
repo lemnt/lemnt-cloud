@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 会员发起钱包转账。 */
+/**
+ * 会员发起钱包转账。
+ */
 @Component
 @RequiredArgsConstructor
 public class WalletTransferCreateCmdExe {
@@ -20,11 +22,11 @@ public class WalletTransferCreateCmdExe {
             throw new IllegalArgumentException("转账参数不合法");
         }
         return WalletTransferDTOConverter.transfer(
-                service.transfer(
-                        fromMemberId,
-                        cmd.toMemberId(),
-                        cmd.amount(),
-                        cmd.remark(),
-                        cmd.requestNo()));
+            service.transfer(
+                fromMemberId,
+                cmd.toMemberId(),
+                cmd.amount(),
+                cmd.remark(),
+                cmd.requestNo()));
     }
 }

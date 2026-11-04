@@ -34,7 +34,9 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 生产 SQL、DO、Mapper、Gateway 验证任务唯一、CAS 抢占、到期扫描与日志。 */
+/**
+ * 生产 SQL、DO、Mapper、Gateway 验证任务唯一、CAS 抢占、到期扫描与日志。
+ */
 class PayNotifyTaskPersistenceTest {
     AnnotationConfigApplicationContext context;
     PayNotifyTaskGateway tasks;
@@ -52,7 +54,7 @@ class PayNotifyTaskPersistenceTest {
 
     private PayNotifyTask task(String bizNo) {
         return new PayNotifyTask(
-                null, "PAY", bizNo, "TR1", "PENDING", 0, 8, null, null, null, null);
+            null, "PAY", bizNo, "TR1", "PENDING", 0, 8, null, null, null, null);
     }
 
     @Test
@@ -107,8 +109,8 @@ class PayNotifyTaskPersistenceTest {
         var reset = tasks.find(created.id());
         assertTrue(tasks.claimVersion(created.id(), 0, reset.executeVersion(), now.plusMinutes(2)));
         assertTrue(
-                tasks.finishVersion(
-                        created.id(), reset.executeVersion() + 1, true, "完成", null, now));
+            tasks.finishVersion(
+                created.id(), reset.executeVersion() + 1, true, "完成", null, now));
         assertEquals("SUCCESS", tasks.find(created.id()).status());
     }
 
@@ -121,9 +123,9 @@ class PayNotifyTaskPersistenceTest {
         JdbcDataSource dataSource() {
             var source = new JdbcDataSource();
             source.setURL(
-                    "jdbc:h2:mem:pay_notify_"
-                            + UUID.randomUUID()
-                            + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
+                "jdbc:h2:mem:pay_notify_"
+                    + UUID.randomUUID()
+                    + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
             return source;
         }
 
@@ -131,13 +133,13 @@ class PayNotifyTaskPersistenceTest {
         Connection schema(JdbcDataSource source) throws Exception {
             var connection = source.getConnection();
             ScriptUtils.executeSqlScript(
-                    connection, new ClassPathResource("pay-sql/lemnt_pay.sql"));
+                connection, new ClassPathResource("pay-sql/lemnt_pay.sql"));
             return connection;
         }
 
         @Bean
         SqlSessionFactory sqlSessionFactory(JdbcDataSource source, Connection schema)
-                throws Exception {
+            throws Exception {
             var config = new MybatisConfiguration();
             config.setMapUnderscoreToCamelCase(true);
             var interceptor = new MybatisPlusInterceptor();
@@ -147,10 +149,10 @@ class PayNotifyTaskPersistenceTest {
             factory.setDataSource(source);
             factory.setConfiguration(config);
             factory.setGlobalConfig(
-                    new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
+                new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
             factory.setMapperLocations(
-                    new PathMatchingResourcePatternResolver()
-                            .getResources("classpath*:mapper/*.xml"));
+                new PathMatchingResourcePatternResolver()
+                    .getResources("classpath*:mapper/*.xml"));
             return factory.getObject();
         }
 

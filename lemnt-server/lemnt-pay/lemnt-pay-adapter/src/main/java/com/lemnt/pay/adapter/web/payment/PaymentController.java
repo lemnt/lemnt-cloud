@@ -22,7 +22,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 后台支付单管理接口。 */
+/**
+ * 后台支付单管理接口。
+ */
 @Tag(name = "支付单管理")
 @RestController
 @RequestMapping("/trade/admin/payments")
@@ -31,18 +33,22 @@ public class PaymentController {
     private final PaymentPageQueryExe pageQuery;
     private final PaymentDetailQueryExe detailQuery;
 
-    /** 分页查询本地交易记录。 */
+    /**
+     * 分页查询本地交易记录。
+     */
     @GetMapping
     @Operation(summary = "分页查询支付单")
     @RequiresPermissions("trade:payment:list")
     public R<PaymentPageRes> page(@Valid @ModelAttribute PaymentPageReq req) {
         var page = pageQuery.execute(PaymentReqConverter.page(req));
         return R.page(
-                page.getRecords().stream().map(PaymentResConverter::page).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(PaymentResConverter::page).toList(),
+            page.getTotal());
     }
 
-    /** 查询本地交易详情。 */
+    /**
+     * 查询本地交易详情。
+     */
     @GetMapping("/{no}")
     @Operation(summary = "查询支付单详情")
     @RequiresPermissions("trade:payment:query")

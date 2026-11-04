@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 地址列表查询执行器。 */
+/**
+ * 地址列表查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberAddressListQueryExe {

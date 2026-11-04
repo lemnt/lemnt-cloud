@@ -5,7 +5,9 @@ import com.lemnt.promotion.domain.promotion.model.BargainHelp;
 
 import java.util.List;
 
-/** 砍价助力存储契约。 */
+/**
+ * 砍价助力存储契约。
+ */
 public interface BargainHelpGateway {
     BargainHelp save(BargainHelp value);
 
@@ -16,5 +18,5 @@ public interface BargainHelpGateway {
     long countByUserAndActivity(Long userId, Long activityId);
 
     PageResult<BargainHelp> page(
-            Long recordId, Long userId, Long activityId, int pageNum, int pageSize);
+        Long recordId, Long userId, Long activityId, int pageNum, int pageSize);
 }

@@ -13,10 +13,14 @@ import org.apache.ibatis.annotations.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** TradeOrder 表数据访问接口。 */
+/**
+ * TradeOrder 表数据访问接口。
+ */
 @Mapper
 public interface TradeOrderMapper extends BaseMapper<TradeOrderDO> {
-    /** 聚合订单表，避免拉取全部订单到内存。 */
+    /**
+     * 聚合订单表，避免拉取全部订单到内存。
+     */
     OrderTotalDO total(@Param("orderNo") String orderNo);
 
     /**
@@ -29,7 +33,9 @@ public interface TradeOrderMapper extends BaseMapper<TradeOrderDO> {
      */
     long orderCount(FulfillmentFilter filter);
 
-    /** 会员本人订单按状态与评价状态分组计数。 */
+    /**
+     * 会员本人订单按状态与评价状态分组计数。
+     */
     List<OrderStatusCountDO> memberStatusCounts(@Param("memberId") Long memberId);
 
     /**
@@ -41,10 +47,12 @@ public interface TradeOrderMapper extends BaseMapper<TradeOrderDO> {
      * 状态变更状态。
      */
     int transitionStatus(
-            @Param("orderNo") String orderNo,
-            @Param("expectedStatus") String expectedStatus,
-            @Param("targetStatus") String targetStatus);
+        @Param("orderNo") String orderNo,
+        @Param("expectedStatus") String expectedStatus,
+        @Param("targetStatus") String targetStatus);
 
-    /** 订单写操作共用的真实数据库行锁。 */
+    /**
+     * 订单写操作共用的真实数据库行锁。
+     */
     TradeOrderDO lockByOrderNo(@Param("orderNo") String orderNo);
 }

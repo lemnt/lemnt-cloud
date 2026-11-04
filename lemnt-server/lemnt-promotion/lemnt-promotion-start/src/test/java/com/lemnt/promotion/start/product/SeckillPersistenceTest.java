@@ -23,7 +23,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 生产 Mapper/XML 与事务代理验证秒杀时段冲突、活动库存和 App 查询。 */
+/**
+ * 生产 Mapper/XML 与事务代理验证秒杀时段冲突、活动库存和 App 查询。
+ */
 class SeckillPersistenceTest {
     CatalogPersistenceTest f;
     SeckillConfigManagementService configs;
@@ -38,20 +40,20 @@ class SeckillPersistenceTest {
         f = new CatalogPersistenceTest();
         f.setup();
         ScriptUtils.executeSqlScript(
-                f.schemaConnection, new ClassPathResource("promotion-sql/lemnt_promotion.sql"));
+            f.schemaConnection, new ClassPathResource("promotion-sql/lemnt_promotion.sql"));
         configs = f.components.get(SeckillConfigManagementService.class);
         activities = f.components.get(SeckillActivityManagementService.class);
         app = f.components.get(SeckillAppQueryService.class);
         stock = f.components.get(SeckillStockService.class);
         spu = f.create("SECKILL", f.draft("RED", 10), f.draft("BLUE", 10));
         configId =
-                configs.create(
-                        new SeckillConfigCreateCmd(
-                                "全天",
-                                "00:00:00",
-                                "23:59:59",
-                                List.of("https://example.test/banner.png"),
-                                0));
+            configs.create(
+                new SeckillConfigCreateCmd(
+                    "全天",
+                    "00:00:00",
+                    "23:59:59",
+                    List.of("https://example.test/banner.png"),
+                    0));
     }
 
     @AfterEach
@@ -62,31 +64,31 @@ class SeckillPersistenceTest {
     Long create() {
         var now = LocalDateTime.now();
         return activities.create(
-                new SeckillActivityCreateCmd(
-                        spu.id(),
-                        "限时秒杀",
-                        null,
-                        now.minusDays(1),
-                        now.plusDays(1),
-                        0,
-                        List.of(configId),
-                        10,
-                        5,
-                        List.of(
-                                new SeckillProductCmd(
-                                        spu.skus().get(0).id(), new BigDecimal("5.00"), 3),
-                                new SeckillProductCmd(
-                                        spu.skus().get(1).id(), new BigDecimal("6.00"), 2))));
+            new SeckillActivityCreateCmd(
+                spu.id(),
+                "限时秒杀",
+                null,
+                now.minusDays(1),
+                now.plusDays(1),
+                0,
+                List.of(configId),
+                10,
+                5,
+                List.of(
+                    new SeckillProductCmd(
+                        spu.skus().get(0).id(), new BigDecimal("5.00"), 3),
+                    new SeckillProductCmd(
+                        spu.skus().get(1).id(), new BigDecimal("6.00"), 2))));
     }
 
     @Test
     void overlappingConfigIsRejectedAndReferencedConfigCannotBeDeleted() {
         assertThrows(
-                ServiceException.class,
-                () ->
-                        configs.create(
-                                new SeckillConfigCreateCmd(
-                                        "重叠", "12:00:00", "13:00:00", List.of(), 0)));
+            ServiceException.class,
+            () ->
+                configs.create(
+                    new SeckillConfigCreateCmd(
+                        "重叠", "12:00:00", "13:00:00", List.of(), 0)));
         create();
         assertThrows(ServiceException.class, () -> configs.delete(configId));
         assertEquals(1, configs.detail(configId).activityCount());
@@ -101,25 +103,25 @@ class SeckillPersistenceTest {
         assertEquals(new BigDecimal("5.00"), detail.seckillPrice());
         activities.close(id);
         assertThrows(
-                ServiceException.class,
-                () ->
-                        activities.update(
-                                new SeckillActivityUpdateCmd(
-                                        id,
-                                        spu.id(),
-                                        "修改",
-                                        null,
-                                        detail.startTime(),
-                                        detail.endTime(),
-                                        0,
-                                        List.of(configId),
-                                        10,
-                                        5,
-                                        List.of(
-                                                new SeckillProductCmd(
-                                                        spu.skus().get(0).id(),
-                                                        new BigDecimal("5.00"),
-                                                        3)))));
+            ServiceException.class,
+            () ->
+                activities.update(
+                    new SeckillActivityUpdateCmd(
+                        id,
+                        spu.id(),
+                        "修改",
+                        null,
+                        detail.startTime(),
+                        detail.endTime(),
+                        0,
+                        List.of(configId),
+                        10,
+                        5,
+                        List.of(
+                            new SeckillProductCmd(
+                                spu.skus().get(0).id(),
+                                new BigDecimal("5.00"),
+                                3)))));
         assertTrue(activities.delete(id));
     }
 
@@ -140,12 +142,12 @@ class SeckillPersistenceTest {
         stock.decreaseStock(id, skuId, 2);
         assertEquals(3, activities.detail(id).stock());
         assertEquals(
-                1,
-                app.detail(id).products().stream()
-                        .filter(item -> item.skuId().equals(skuId))
-                        .findFirst()
-                        .orElseThrow()
-                        .stock());
+            1,
+            app.detail(id).products().stream()
+                .filter(item -> item.skuId().equals(skuId))
+                .findFirst()
+                .orElseThrow()
+                .stock());
         stock.increaseStock(id, skuId, 2);
         assertEquals(5, activities.detail(id).stock());
     }

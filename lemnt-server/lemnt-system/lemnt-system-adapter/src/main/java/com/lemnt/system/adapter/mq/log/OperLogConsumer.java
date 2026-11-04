@@ -18,8 +18,8 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 @RocketMQMessageListener(
-        topic = MQConstants.Topic.OPER_LOG_EVENT,
-        consumerGroup = MQConstants.Group.SYSTEM_OPER_LOG_EVENT)
+    topic = MQConstants.Topic.OPER_LOG_EVENT,
+    consumerGroup = MQConstants.Group.SYSTEM_OPER_LOG_EVENT)
 public class OperLogConsumer implements RocketMQListener<String> {
 
     private final OperLogAddCmdExe operLogAddCmdExe;
@@ -34,23 +34,23 @@ public class OperLogConsumer implements RocketMQListener<String> {
             throw new IllegalArgumentException("操作审计事件不能为空");
         }
         OperLogAddCmd cmd =
-                new OperLogAddCmd(
-                        event.getTitle(),
-                        event.getBusinessType(),
-                        event.getMethod(),
-                        event.getRequestMethod(),
-                        event.getOperatorType(),
-                        event.getOperName(),
-                        event.getDeptName(),
-                        event.getOperUrl(),
-                        event.getOperIp(),
-                        null,
-                        event.getOperParam(),
-                        event.getJsonResult(),
-                        event.getStatus(),
-                        event.getErrorMsg(),
-                        event.getOperTime(),
-                        event.getCostTime());
+            new OperLogAddCmd(
+                event.getTitle(),
+                event.getBusinessType(),
+                event.getMethod(),
+                event.getRequestMethod(),
+                event.getOperatorType(),
+                event.getOperName(),
+                event.getDeptName(),
+                event.getOperUrl(),
+                event.getOperIp(),
+                null,
+                event.getOperParam(),
+                event.getJsonResult(),
+                event.getStatus(),
+                event.getErrorMsg(),
+                event.getOperTime(),
+                event.getCostTime());
         if (!Boolean.TRUE.equals(operLogAddCmdExe.execute(cmd))) {
             throw new IllegalStateException("操作审计日志写入失败");
         }

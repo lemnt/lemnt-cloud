@@ -31,39 +31,39 @@ public class StoreProductDetailQueryExe {
         ProductCatalogValidation.id(id);
         var v = catalogService.product(id);
         return v == null
-                ? null
-                : new StoreDetailDTO(
-                        v.id(),
-                        v.name(),
-                        v.categoryId(),
-                        v.brandId(),
-                        v.description(),
-                        v.image(),
-                        v.skus().stream()
+            ? null
+            : new StoreDetailDTO(
+            v.id(),
+            v.name(),
+            v.categoryId(),
+            v.brandId(),
+            v.description(),
+            v.image(),
+            v.skus().stream()
+                .map(
+                    s ->
+                        new StoreSkuDTO(
+                            s.id(),
+                            s.name(),
+                            money(s.price()),
+                            s.stock(),
+                            s.image(),
+                            s.specs() == null
+                                ? null
+                                : s.specs().stream()
                                 .map(
-                                        s ->
-                                                new StoreSkuDTO(
-                                                        s.id(),
-                                                        s.name(),
-                                                        money(s.price()),
-                                                        s.stock(),
-                                                        s.image(),
-                                                        s.specs() == null
-                                                                ? null
-                                                                : s.specs().stream()
-                                                                        .map(
-                                                                                property ->
-                                                                                        new StoreSkuDTO
-                                                                                                .Spec(
-                                                                                                property
-                                                                                                        .specId(),
-                                                                                                property
-                                                                                                        .specName(),
-                                                                                                property
-                                                                                                        .specValueId(),
-                                                                                                property
-                                                                                                        .specValueName()))
-                                                                        .toList()))
-                                .toList());
+                                    property ->
+                                        new StoreSkuDTO
+                                            .Spec(
+                                            property
+                                                .specId(),
+                                            property
+                                                .specName(),
+                                            property
+                                                .specValueId(),
+                                            property
+                                                .specValueName()))
+                                .toList()))
+                .toList());
     }
 }

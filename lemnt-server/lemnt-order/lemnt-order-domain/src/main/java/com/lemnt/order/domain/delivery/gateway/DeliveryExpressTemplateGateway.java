@@ -6,26 +6,42 @@ import com.lemnt.order.domain.delivery.model.DeliveryExpressTemplateFilter;
 
 import java.util.List;
 
-/** order_delivery_express_template 领域存储接口。 */
+/**
+ * order_delivery_express_template 领域存储接口。
+ */
 public interface DeliveryExpressTemplateGateway {
-    /** 读取单条。 */
+    /**
+     * 读取单条。
+     */
     DeliveryExpressTemplate find(Long id);
 
-    /** 锁定记录。 */
+    /**
+     * 锁定记录。
+     */
     DeliveryExpressTemplate lock(Long id);
 
-    /** 查询管理列表。 */
+    /**
+     * 查询管理列表。
+     */
     List<DeliveryExpressTemplate> list(String name);
 
-    /** 新增记录。 */
+    /**
+     * 新增记录。
+     */
     DeliveryExpressTemplate insert(DeliveryExpressTemplate value);
 
-    /** 修改记录。 */
+    /**
+     * 修改记录。
+     */
     boolean update(DeliveryExpressTemplate value);
 
-    /** 逻辑删除。 */
+    /**
+     * 逻辑删除。
+     */
     boolean delete(Long id);
 
-    /** 分页查询。 */
+    /**
+     * 分页查询。
+     */
     PageResult<DeliveryExpressTemplate> page(DeliveryExpressTemplateFilter filter);
 }

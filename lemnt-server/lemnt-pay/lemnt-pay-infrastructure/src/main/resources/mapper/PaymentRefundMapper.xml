@@ -7,6 +7,8 @@
         WHERE refund_no=#{refundNo} AND status&lt;&gt;'SUCCESS'
     </update>
     <select id="total" resultType="com.lemnt.pay.infrastructure.paymentrefund.dataobject.PaymentRefundTotalDO">
-        SELECT COUNT(*) AS refund_count, COALESCE(SUM(amount),0) AS refund_amount FROM pay_payment_refund WHERE status='SUCCESS' <if test='orderNo != null'>AND order_no=#{orderNo}</if>
+        SELECT COUNT(*) AS refund_count, COALESCE(SUM(amount),0) AS refund_amount FROM pay_payment_refund WHERE
+        status='SUCCESS'
+        <if test='orderNo != null'>AND order_no=#{orderNo}</if>
     </select>
 </mapper>

@@ -14,29 +14,38 @@ import com.lemnt.order.application.delivery.dto.DeliveryExpressTemplateDTO;
 import com.lemnt.order.application.delivery.dto.DeliveryExpressTemplateDetailDTO;
 import com.lemnt.order.application.delivery.dto.DeliveryExpressTemplateFreeDTO;
 
-/** delivery Res 接口边界转换。 */
+/**
+ * delivery Res 接口边界转换。
+ */
 public final class DeliveryResConverter {
-    private DeliveryResConverter() {}
+    private DeliveryResConverter() {
+    }
 
-    /** 转换分页响应。 */
+    /**
+     * 转换分页响应。
+     */
     public static DeliveryExpressPageRes deliveryExpressPage(DeliveryExpressDTO value) {
         if (value == null) {
             return null;
         }
         return new DeliveryExpressPageRes(
-                value.id(), value.code(), value.name(), value.logo(), value.sort(), value.status());
+            value.id(), value.code(), value.name(), value.logo(), value.sort(), value.status());
     }
 
-    /** 转换详情响应。 */
+    /**
+     * 转换详情响应。
+     */
     public static DeliveryExpressDetailRes deliveryExpressDetail(DeliveryExpressDTO value) {
         if (value == null) {
             return null;
         }
         return new DeliveryExpressDetailRes(
-                value.id(), value.code(), value.name(), value.logo(), value.sort(), value.status());
+            value.id(), value.code(), value.name(), value.logo(), value.sort(), value.status());
     }
 
-    /** 转换选择列表响应。 */
+    /**
+     * 转换选择列表响应。
+     */
     public static DeliveryExpressSimpleRes deliveryExpressSimple(DeliveryExpressDTO value) {
         if (value == null) {
             return null;
@@ -44,60 +53,70 @@ public final class DeliveryResConverter {
         return new DeliveryExpressSimpleRes(value.id(), value.code(), value.name());
     }
 
-    /** 转换分页响应。 */
+    /**
+     * 转换分页响应。
+     */
     public static DeliveryExpressTemplatePageRes deliveryExpressTemplatePage(
-            DeliveryExpressTemplateDTO value) {
+        DeliveryExpressTemplateDTO value) {
         if (value == null) {
             return null;
         }
         return new DeliveryExpressTemplatePageRes(
-                value.id(), value.name(), value.chargeMode(), value.sort());
+            value.id(), value.name(), value.chargeMode(), value.sort());
     }
 
-    /** 转换详情响应。 */
+    /**
+     * 转换详情响应。
+     */
     public static DeliveryExpressTemplateDetailRes deliveryExpressTemplateDetail(
-            DeliveryExpressTemplateDetailDTO value) {
+        DeliveryExpressTemplateDetailDTO value) {
         if (value == null) {
             return null;
         }
         return new DeliveryExpressTemplateDetailRes(
-                value.id(),
-                value.name(),
-                value.chargeMode(),
-                value.sort(),
-                value.charges().stream().map(DeliveryResConverter::charge).toList(),
-                value.frees().stream().map(DeliveryResConverter::free).toList());
+            value.id(),
+            value.name(),
+            value.chargeMode(),
+            value.sort(),
+            value.charges().stream().map(DeliveryResConverter::charge).toList(),
+            value.frees().stream().map(DeliveryResConverter::free).toList());
     }
 
-    /** 转换选择列表响应。 */
+    /**
+     * 转换选择列表响应。
+     */
     public static DeliveryExpressTemplateSimpleRes deliveryExpressTemplateSimple(
-            DeliveryExpressTemplateDTO value) {
+        DeliveryExpressTemplateDTO value) {
         if (value == null) {
             return null;
         }
         return new DeliveryExpressTemplateSimpleRes(value.id(), value.name());
     }
 
-    /** 转换子规则。 */
+    /**
+     * 转换子规则。
+     */
     private static DeliveryChargeRes charge(DeliveryExpressTemplateChargeDTO value) {
         return new DeliveryChargeRes(
-                value.id(),
-                value.templateId(),
-                value.areaIds(),
-                value.chargeMode(),
-                value.startCount(),
-                value.startPrice(),
-                value.extraCount(),
-                value.extraPrice());
+            value.id(),
+            value.templateId(),
+            value.areaIds(),
+            value.chargeMode(),
+            value.startCount(),
+            value.startPrice(),
+            value.extraCount(),
+            value.extraPrice());
     }
 
-    /** 转换子规则。 */
+    /**
+     * 转换子规则。
+     */
     private static DeliveryFreeRes free(DeliveryExpressTemplateFreeDTO value) {
         return new DeliveryFreeRes(
-                value.id(),
-                value.templateId(),
-                value.areaIds(),
-                value.freePrice(),
-                value.freeCount());
+            value.id(),
+            value.templateId(),
+            value.areaIds(),
+            value.freePrice(),
+            value.freeCount());
     }
 }

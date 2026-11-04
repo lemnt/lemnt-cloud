@@ -4,7 +4,9 @@ import com.lemnt.promotion.domain.promotion.model.CombinationProduct;
 
 import java.util.List;
 
-/** 拼团活动商品存储契约。 */
+/**
+ * 拼团活动商品存储契约。
+ */
 public interface CombinationProductGateway {
     List<CombinationProduct> byActivityId(Long activityId);
 

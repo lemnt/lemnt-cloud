@@ -18,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 拼团记录管理入口，仅供查询。 */
+/**
+ * 拼团记录管理入口，仅供查询。
+ */
 @RestController
 @RequestMapping("/mall/promotion/combination-records")
 @Tag(name = "拼团记录")
@@ -32,7 +34,7 @@ public class CombinationRecordController {
     public R<CombinationRecordRes> page(@Valid @ModelAttribute CombinationRecordPageReq req) {
         var result = page.execute(CombinationConverter.recordPage(req));
         return R.page(
-                result.getRecords().stream().map(CombinationConverter::record).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(CombinationConverter::record).toList(),
+            result.getTotal());
     }
 }

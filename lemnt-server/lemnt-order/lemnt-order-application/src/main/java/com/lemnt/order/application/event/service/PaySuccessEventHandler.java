@@ -22,7 +22,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.Objects;
 import java.util.Set;
 
-/** 资金事实核对成功后才提交订单支付状态和权益事件，迟到资金留待对账，不能重新打开关单。 */
+/**
+ * 资金事实核对成功后才提交订单支付状态和权益事件，迟到资金留待对账，不能重新打开关单。
+ */
 @Component
 @RequiredArgsConstructor
 public class PaySuccessEventHandler {
@@ -39,30 +41,30 @@ public class PaySuccessEventHandler {
         envelope.requireType(CommerceEventTopics.PAY_SUCCESS);
         var v = JsonUtils.toBean(envelope.payload(), PaySuccessEvent.class);
         if (v == null
-                || !envelope.aggregateNo().equals(v.orderNo())
-                || !envelope.businessKey().equals(v.paymentNo()))
+            || !envelope.aggregateNo().equals(v.orderNo())
+            || !envelope.businessKey().equals(v.paymentNo()))
             throw new IllegalArgumentException("支付事件标识不一致");
         if (!inbox.begin(
-                "order.pay_success.v1",
-                envelope.eventNo(),
-                envelope.eventType(),
-                envelope.businessKey(),
-                envelope.payload())) return;
+            "order.pay_success.v1",
+            envelope.eventNo(),
+            envelope.eventType(),
+            envelope.businessKey(),
+            envelope.payload())) return;
         var order = persistence.findByOrderNoForUpdate(v.orderNo());
         var paid =
-                payments.findByOrderNo(v.orderNo()).stream()
-                        .filter(p -> "SUCCESS".equals(p.status()))
-                        .toList();
+            payments.findByOrderNo(v.orderNo()).stream()
+                .filter(p -> "SUCCESS".equals(p.status()))
+                .toList();
         if (order == null
-                || !order.memberId().equals(v.memberId())
-                || v.amount() == null
-                || v.amount().signum() <= 0
-                || v.amount().compareTo(order.totalAmount()) != 0
-                || paid.size() != 1
-                || !paid.get(0).paymentNo().equals(v.paymentNo())
-                || !Objects.equals(paid.get(0).channel(), v.channel())
-                || !Objects.equals(paid.get(0).channelTradeNo(), v.channelTradeNo())
-                || paid.get(0).amount().compareTo(v.amount()) != 0)
+            || !order.memberId().equals(v.memberId())
+            || v.amount() == null
+            || v.amount().signum() <= 0
+            || v.amount().compareTo(order.totalAmount()) != 0
+            || paid.size() != 1
+            || !paid.get(0).paymentNo().equals(v.paymentNo())
+            || !Objects.equals(paid.get(0).channel(), v.channel())
+            || !Objects.equals(paid.get(0).channelTradeNo(), v.channelTradeNo())
+            || paid.get(0).amount().compareTo(v.amount()) != 0)
             throw new IllegalStateException("资金事实与原订单不一致，请先对账");
         if (Set.of("PAID", "SHIPPED", "COMPLETED", "REFUNDED").contains(order.status()))
             throw new IllegalStateException("订单已支付但无原消费凭证，请核对历史迁移");

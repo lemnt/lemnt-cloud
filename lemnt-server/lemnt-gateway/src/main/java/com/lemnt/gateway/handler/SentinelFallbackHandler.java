@@ -20,7 +20,7 @@ public class SentinelFallbackHandler implements WebExceptionHandler {
 
     private Mono<Void> writeResponse(ServerResponse response, ServerWebExchange exchange) {
         return ServletUtils.error(
-                exchange.getResponse(), HttpStatus.TOO_MANY_REQUESTS.value(), "请求超过最大数，请稍候再试");
+            exchange.getResponse(), HttpStatus.TOO_MANY_REQUESTS.value(), "请求超过最大数，请稍候再试");
     }
 
     @Override
@@ -32,11 +32,11 @@ public class SentinelFallbackHandler implements WebExceptionHandler {
             return Mono.error(ex);
         }
         return handleBlockedRequest(exchange, ex)
-                .flatMap(response -> writeResponse(response, exchange));
+            .flatMap(response -> writeResponse(response, exchange));
     }
 
     private Mono<ServerResponse> handleBlockedRequest(
-            ServerWebExchange exchange, Throwable throwable) {
+        ServerWebExchange exchange, Throwable throwable) {
         return GatewayCallbackManager.getBlockHandler().handleRequest(exchange, throwable);
     }
 }

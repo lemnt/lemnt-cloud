@@ -61,9 +61,9 @@ public class MenuController {
     @GetMapping
     public R<List<SystemMenuListRes>> list(@Validated SystemMenuListReq req) {
         return R.ok(
-                MenuResConverter.toResListToSystemMenuListRes(
-                        menuListQueryExe.execute(
-                                MenuReqConverter.toQry(req, SecurityUtils.getUserId()))));
+            MenuResConverter.toResListToSystemMenuListRes(
+                menuListQueryExe.execute(
+                    MenuReqConverter.toQry(req, SecurityUtils.getUserId()))));
     }
 
     @Operation(summary = "根据菜单编号获取详细信息")
@@ -71,16 +71,16 @@ public class MenuController {
     @GetMapping(value = "/{menuId}")
     public R<SystemMenuGetInfoRes> getInfo(@PathVariable Long menuId) {
         return R.ok(
-                MenuResConverter.toResToSystemMenuGetInfoRes(menuDetailQueryExe.execute(menuId)));
+            MenuResConverter.toResToSystemMenuGetInfoRes(menuDetailQueryExe.execute(menuId)));
     }
 
     @Operation(summary = "获取菜单下拉树列表")
     @GetMapping("/tree-select")
     public R<List<TreeSelectRes>> treeSelect(@Validated SystemMenuTreeSelectReq req) {
         return R.ok(
-                TreeSelectResConverter.toResList(
-                        menuTreeSelectQueryExe.execute(
-                                MenuReqConverter.toQry(req, SecurityUtils.getUserId()))));
+            TreeSelectResConverter.toResList(
+                menuTreeSelectQueryExe.execute(
+                    MenuReqConverter.toQry(req, SecurityUtils.getUserId()))));
     }
 
     @Operation(summary = "加载对应角色菜单列表树")
@@ -90,9 +90,9 @@ public class MenuController {
     public R<RoleMenuTreeListRes> roleMenuTreeSelect(@PathVariable("roleId") Long roleId) {
         Map<String, Object> result = menuRoleTreeQueryExe.execute(roleId);
         RoleMenuTreeListRes res =
-                new RoleMenuTreeListRes(
-                        (List<Long>) result.get("checkedKeys"),
-                        TreeSelectResConverter.toResList((List<TreeSelect>) result.get("menus")));
+            new RoleMenuTreeListRes(
+                (List<Long>) result.get("checkedKeys"),
+                TreeSelectResConverter.toResList((List<TreeSelect>) result.get("menus")));
         return R.ok(res);
     }
 

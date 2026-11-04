@@ -19,9 +19,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UserGatewayImpl implements UserGateway {
-    @DubboReference private RemoteLogService remoteLogService;
+    @DubboReference
+    private RemoteLogService remoteLogService;
 
-    @DubboReference private RemoteUserService remoteUserService;
+    @DubboReference
+    private RemoteUserService remoteUserService;
 
     @Override
     public LoginUser getUserInfo(String username) {

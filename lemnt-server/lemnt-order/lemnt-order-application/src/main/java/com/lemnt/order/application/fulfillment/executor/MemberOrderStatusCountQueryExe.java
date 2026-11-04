@@ -7,13 +7,17 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 会员订单状态数量统计，区分待评价与已完成。 */
+/**
+ * 会员订单状态数量统计，区分待评价与已完成。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberOrderStatusCountQueryExe {
     private final TradeOrderGateway orders;
 
-    /** 一次分组查询后按订单中心分组归并。 */
+    /**
+     * 一次分组查询后按订单中心分组归并。
+     */
     public MemberOrderStatusCountDTO execute(Long memberId) {
         if (memberId == null) {
             throw new IllegalArgumentException("会员身份缺失");
@@ -52,13 +56,13 @@ public class MemberOrderStatusCountQueryExe {
             }
         }
         return new MemberOrderStatusCountDTO(
-                pendingPayment,
-                awaitingShipment,
-                awaitingReceipt,
-                awaitingComment,
-                completed,
-                closed,
-                refunded,
-                awaitingPickup);
+            pendingPayment,
+            awaitingShipment,
+            awaitingReceipt,
+            awaitingComment,
+            completed,
+            closed,
+            refunded,
+            awaitingPickup);
     }
 }

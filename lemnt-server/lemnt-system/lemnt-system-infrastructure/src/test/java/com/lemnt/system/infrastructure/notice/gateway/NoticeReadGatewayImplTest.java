@@ -26,14 +26,14 @@ class NoticeReadGatewayImplTest {
     @Test
     void shouldPreserveReadStatusFromTopListQuery() {
         when(mapper.selectNoticeListWithReadStatus(1L, 5))
-                .thenReturn(
-                        List.of(
-                                new Notice().setNoticeId(10L).setIsRead(true),
-                                new Notice().setNoticeId(11L).setIsRead(false)));
+            .thenReturn(
+                List.of(
+                    new Notice().setNoticeId(10L).setIsRead(true),
+                    new Notice().setNoticeId(11L).setIsRead(false)));
 
         assertThat(gateway.selectNoticeListWithReadStatus(1L, 5))
-                .extracting(Notice::getIsRead)
-                .containsExactly(true, false);
+            .extracting(Notice::getIsRead)
+            .containsExactly(true, false);
     }
 
     @Test
@@ -50,15 +50,15 @@ class NoticeReadGatewayImplTest {
         ArgumentCaptor<List<NoticeReadDO>> records = ArgumentCaptor.captor();
         verify(mapper).insertReadRecords(records.capture());
         assertThat(records.getValue())
-                .extracting(NoticeReadDO::getNoticeId)
-                .containsExactly(10L, 11L);
+            .extracting(NoticeReadDO::getNoticeId)
+            .containsExactly(10L, 11L);
         assertThat(records.getValue())
-                .allSatisfy(
-                        record -> {
-                            assertThat(record.getReadId()).isNull();
-                            assertThat(record.getUserId()).isEqualTo(1L);
-                            assertThat(record.getReadTime()).isNotNull();
-                        });
+            .allSatisfy(
+                record -> {
+                    assertThat(record.getReadId()).isNull();
+                    assertThat(record.getUserId()).isEqualTo(1L);
+                    assertThat(record.getReadTime()).isNotNull();
+                });
     }
 
     @Test
@@ -67,13 +67,13 @@ class NoticeReadGatewayImplTest {
 
         assertThat(gateway.markReadBatch(1L, List.of(10L))).isTrue();
         assertThat(
-                        gateway.insert(
-                                new NoticeRead()
-                                        .setReadId(1L)
-                                        .setNoticeId(10L)
-                                        .setUserId(1L)
-                                        .setReadTime(LocalDateTime.now())))
-                .isTrue();
+            gateway.insert(
+                new NoticeRead()
+                    .setReadId(1L)
+                    .setNoticeId(10L)
+                    .setUserId(1L)
+                    .setReadTime(LocalDateTime.now())))
+            .isTrue();
     }
 
     @Test

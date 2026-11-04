@@ -23,7 +23,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 支付结果派发任务管理接口。 */
+/**
+ * 支付结果派发任务管理接口。
+ */
 @Tag(name = "支付派发任务")
 @RestController
 @RequestMapping("/trade/admin/pay-notify-tasks")
@@ -33,18 +35,22 @@ public class PayNotifyTaskController {
     private final PayNotifyTaskDetailQueryExe detail;
     private final PayNotifyTaskRetryCmdExe retry;
 
-    /** 派发任务分页。 */
+    /**
+     * 派发任务分页。
+     */
     @GetMapping
     @Operation(summary = "派发任务分页")
     @RequiresPermissions("trade:pay-notify:list")
     public R<PayNotifyTaskRes> page(@Valid @ModelAttribute PayNotifyTaskPageReq req) {
         var value = page.execute(PayNotifyResConverter.page(req));
         return R.page(
-                value.getRecords().stream().map(PayNotifyResConverter::task).toList(),
-                value.getTotal());
+            value.getRecords().stream().map(PayNotifyResConverter::task).toList(),
+            value.getTotal());
     }
 
-    /** 派发任务详情与尝试日志。 */
+    /**
+     * 派发任务详情与尝试日志。
+     */
     @GetMapping("/{id}")
     @Operation(summary = "派发任务详情")
     @RequiresPermissions("trade:pay-notify:query")
@@ -53,7 +59,9 @@ public class PayNotifyTaskController {
         return value == null ? R.fail("派发任务不存在") : R.ok(PayNotifyResConverter.detail(value));
     }
 
-    /** 人工重发失败任务；本次仍失败时返回错误并保留日志。 */
+    /**
+     * 人工重发失败任务；本次仍失败时返回错误并保留日志。
+     */
     @PostMapping("/{id}/retry")
     @Operation(summary = "重发派发任务")
     @RequiresPermissions("trade:pay-notify:retry")

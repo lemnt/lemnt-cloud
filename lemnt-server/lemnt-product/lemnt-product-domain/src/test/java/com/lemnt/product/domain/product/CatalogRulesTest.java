@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CatalogRulesTest {
     ProductSku sku(String code, Map<String, String> specs) {
         return new ProductSku(
-                null, null, code, "name", new BigDecimal("12.50"), 5, null, specs, null);
+            null, null, code, "name", new BigDecimal("12.50"), 5, null, specs, null);
     }
 
     ProductSpu spu(ProductSku... skus) {
@@ -32,28 +32,28 @@ class CatalogRulesTest {
         second.put("尺寸", "M");
         second.put(" 颜色 ", "红色");
         assertEquals(
-                ProductCatalogValidation.variantKey(first),
-                ProductCatalogValidation.variantKey(second));
+            ProductCatalogValidation.variantKey(first),
+            ProductCatalogValidation.variantKey(second));
         assertNotEquals(
-                ProductCatalogValidation.variantKey(Map.of("ab", "c")),
-                ProductCatalogValidation.variantKey(Map.of("a", "bc")));
+            ProductCatalogValidation.variantKey(Map.of("ab", "c")),
+            ProductCatalogValidation.variantKey(Map.of("a", "bc")));
     }
 
     @Test
     void duplicateVariantOrCodeAndInconsistentPropertyNamesAreRejected() {
         assertThrows(
-                IllegalArgumentException.class,
-                () -> ProductCatalogValidation.newSpu(spu(sku("A", Map.of()), sku("B", Map.of()))));
+            IllegalArgumentException.class,
+            () -> ProductCatalogValidation.newSpu(spu(sku("A", Map.of()), sku("B", Map.of()))));
         assertThrows(
-                IllegalArgumentException.class,
-                () ->
-                        ProductCatalogValidation.newSpu(
-                                spu(sku("A", Map.of("颜色", "红")), sku(" A ", Map.of("颜色", "蓝")))));
+            IllegalArgumentException.class,
+            () ->
+                ProductCatalogValidation.newSpu(
+                    spu(sku("A", Map.of("颜色", "红")), sku(" A ", Map.of("颜色", "蓝")))));
         assertThrows(
-                IllegalArgumentException.class,
-                () ->
-                        ProductCatalogValidation.newSpu(
-                                spu(sku("A", Map.of("颜色", "红")), sku("B", Map.of("尺寸", "M")))));
+            IllegalArgumentException.class,
+            () ->
+                ProductCatalogValidation.newSpu(
+                    spu(sku("A", Map.of("颜色", "红")), sku("B", Map.of("尺寸", "M")))));
     }
 
     @Test
@@ -61,8 +61,8 @@ class CatalogRulesTest {
         assertEquals(new BigDecimal("1.20"), ProductCatalogValidation.price(new BigDecimal("1.2")));
         for (String value : List.of("0", "-1", "1.001", "100000000000000000.00")) {
             assertThrows(
-                    IllegalArgumentException.class,
-                    () -> ProductCatalogValidation.price(new BigDecimal(value)));
+                IllegalArgumentException.class,
+                () -> ProductCatalogValidation.price(new BigDecimal(value)));
         }
     }
 
@@ -78,11 +78,11 @@ class CatalogRulesTest {
     @Test
     void invalidAndNormalizedDuplicatePropertiesAreRejected() {
         assertThrows(
-                IllegalArgumentException.class,
-                () -> ProductCatalogValidation.specs(Map.of("a", "1", " a ", "2")));
+            IllegalArgumentException.class,
+            () -> ProductCatalogValidation.specs(Map.of("a", "1", " a ", "2")));
         assertThrows(
-                IllegalArgumentException.class,
-                () -> ProductCatalogValidation.specs(Map.of("a", " ")));
+            IllegalArgumentException.class,
+            () -> ProductCatalogValidation.specs(Map.of("a", " ")));
         assertThrows(IllegalArgumentException.class, () -> ProductCatalogValidation.newSpu(spu()));
     }
 }

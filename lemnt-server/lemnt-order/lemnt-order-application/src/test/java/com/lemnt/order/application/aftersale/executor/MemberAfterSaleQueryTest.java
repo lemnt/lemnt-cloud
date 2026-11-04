@@ -20,7 +20,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/** 会员售后查询与额度都以订单归属为前提。 */
+/**
+ * 会员售后查询与额度都以订单归属为前提。
+ */
 class MemberAfterSaleQueryTest {
     final AfterSaleGateway afterSales = mock(AfterSaleGateway.class);
     final OrderPersistenceService persistence = mock(OrderPersistenceService.class);
@@ -28,45 +30,45 @@ class MemberAfterSaleQueryTest {
     final MemberAfterSalePageQueryExe pageQuery = new MemberAfterSalePageQueryExe(afterSales);
     final MemberAfterSaleDetailQueryExe detailQuery = new MemberAfterSaleDetailQueryExe(afterSales);
     final MemberAfterSaleItemListQueryExe itemQuery =
-            new MemberAfterSaleItemListQueryExe(persistence, service);
+        new MemberAfterSaleItemListQueryExe(persistence, service);
 
     private AfterSale sale(Long memberId) {
         return new AfterSale(
-                "RF1",
-                "TR1",
-                "REQ1",
-                memberId,
-                "P1",
-                10L,
-                1,
-                "REFUND_ONLY",
-                BigDecimal.ONE,
-                "r",
-                "REQUESTED",
-                null,
-                null,
-                null,
-                LocalDateTime.now(),
-                null,
-                null,
-                null,
-                1L,
-                1L,
-                null,
-                null);
+            "RF1",
+            "TR1",
+            "REQ1",
+            memberId,
+            "P1",
+            10L,
+            1,
+            "REFUND_ONLY",
+            BigDecimal.ONE,
+            "r",
+            "REQUESTED",
+            null,
+            null,
+            null,
+            LocalDateTime.now(),
+            null,
+            null,
+            null,
+            1L,
+            1L,
+            null,
+            null);
     }
 
     private TradeOrder order(Long memberId) {
         return new TradeOrder(
-                1L,
-                "TR1",
-                memberId,
-                BigDecimal.TEN,
-                "PAID",
-                List.of(),
-                LocalDateTime.now(),
-                0L,
-                0L);
+            1L,
+            "TR1",
+            memberId,
+            BigDecimal.TEN,
+            "PAID",
+            List.of(),
+            LocalDateTime.now(),
+            0L,
+            0L);
     }
 
     @Test
@@ -82,11 +84,11 @@ class MemberAfterSaleQueryTest {
     @Test
     void pageRejectsMissingMemberAndInvalidStatus() {
         assertThrows(
-                IllegalArgumentException.class,
-                () -> pageQuery.execute(null, new MemberAfterSalePageQry(null, null, 1, 10)));
+            IllegalArgumentException.class,
+            () -> pageQuery.execute(null, new MemberAfterSalePageQry(null, null, 1, 10)));
         assertThrows(
-                IllegalArgumentException.class,
-                () -> pageQuery.execute(7L, new MemberAfterSalePageQry(null, "UNKNOWN", 1, 10)));
+            IllegalArgumentException.class,
+            () -> pageQuery.execute(7L, new MemberAfterSalePageQry(null, "UNKNOWN", 1, 10)));
         verifyNoInteractions(afterSales);
     }
 

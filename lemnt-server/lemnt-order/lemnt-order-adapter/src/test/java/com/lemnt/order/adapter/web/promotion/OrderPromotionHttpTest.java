@@ -20,7 +20,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/** 实际Controller及工程Jackson配置，校验金额字符串、分摊行和会员身份来源。 */
+/**
+ * 实际Controller及工程Jackson配置，校验金额字符串、分摊行和会员身份来源。
+ */
 class OrderPromotionHttpTest {
     OrderPromotionDetailQueryExe query = mock(OrderPromotionDetailQueryExe.class);
 
@@ -32,45 +34,45 @@ class OrderPromotionHttpTest {
 
     OrderPromotionDetailDTO result() {
         return new OrderPromotionDetailDTO(
-                "T1",
-                "COMPLETE",
-                new OrderPromotionDetailDTO.Summary(
-                        new BigDecimal("100.00"),
-                        new BigDecimal("20.00"),
-                        new BigDecimal("0.00"),
-                        new BigDecimal("0.00"),
-                        new BigDecimal("0.00"),
-                        new BigDecimal("80.00")),
-                List.of(
-                        new OrderPromotionDetailDTO.Promotion(
-                                "COUPON",
-                                "满100减20",
-                                new BigDecimal("20.00"),
-                                new BigDecimal("0.00"),
-                                0L,
-                                0L,
-                                Map.of(),
-                                List.of(
-                                        new OrderPromotionDetailDTO.Item(
-                                                11L,
-                                                new BigDecimal("20.00"),
-                                                new BigDecimal("0.00"),
-                                                0L,
-                                                0L)))));
+            "T1",
+            "COMPLETE",
+            new OrderPromotionDetailDTO.Summary(
+                new BigDecimal("100.00"),
+                new BigDecimal("20.00"),
+                new BigDecimal("0.00"),
+                new BigDecimal("0.00"),
+                new BigDecimal("0.00"),
+                new BigDecimal("80.00")),
+            List.of(
+                new OrderPromotionDetailDTO.Promotion(
+                    "COUPON",
+                    "满100减20",
+                    new BigDecimal("20.00"),
+                    new BigDecimal("0.00"),
+                    0L,
+                    0L,
+                    Map.of(),
+                    List.of(
+                        new OrderPromotionDetailDTO.Item(
+                            11L,
+                            new BigDecimal("20.00"),
+                            new BigDecimal("0.00"),
+                            0L,
+                            0L)))));
     }
 
     @Test
     void adminKeepsEnvelopeAndMoneyStrings() throws Exception {
         when(query.execute("T1")).thenReturn(result());
         var mvc =
-                MockMvcBuilders.standaloneSetup(new FulfillmentOrderController(null, null, query))
-                        .setMessageConverters(converter())
-                        .build();
+            MockMvcBuilders.standaloneSetup(new FulfillmentOrderController(null, null, query))
+                .setMessageConverters(converter())
+                .build();
         mvc.perform(get("/trade/admin/orders/T1/promotions"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data.summary.discountAmount").value("20.00"))
-                .andExpect(jsonPath("$.data.promotions[0].items[0].orderItemId").value("11"));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value(200))
+            .andExpect(jsonPath("$.data.summary.discountAmount").value("20.00"))
+            .andExpect(jsonPath("$.data.promotions[0].items[0].orderItemId").value("11"));
     }
 
     @Test
@@ -79,14 +81,14 @@ class OrderPromotionHttpTest {
         try {
             when(query.execute(7L, "T1")).thenReturn(result());
             var mvc =
-                    MockMvcBuilders.standaloneSetup(
-                                    new AppOrderController(
-                                            null, null, null, null, null, null, query))
-                            .setMessageConverters(converter())
-                            .build();
+                MockMvcBuilders.standaloneSetup(
+                        new AppOrderController(
+                            null, null, null, null, null, null, query))
+                    .setMessageConverters(converter())
+                    .build();
             mvc.perform(get("/trade/app/orders/T1/promotions").param("memberId", "8"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.data.orderNo").value("T1"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.orderNo").value("T1"));
             verify(query).execute(7L, "T1");
             verify(query, never()).execute(8L, "T1");
         } finally {

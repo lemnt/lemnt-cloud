@@ -23,8 +23,8 @@ class OrderRollbackConsumerTest {
     void remoteFailureEscapesToMqContainerForRetry() {
         doThrow(new IllegalStateException("商城补偿失败")).when(executor).execute("TR1");
         assertThrows(
-                IllegalStateException.class,
-                () -> consumer.onMessage(JsonUtils.toJsonStr(new OrderRollbackEvent("TR1"))));
+            IllegalStateException.class,
+            () -> consumer.onMessage(JsonUtils.toJsonStr(new OrderRollbackEvent("TR1"))));
     }
 
     @Test

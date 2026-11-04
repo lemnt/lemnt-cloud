@@ -27,7 +27,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-/** 用户角色授权接口。 */
+/**
+ * 用户角色授权接口。
+ */
 @Tag(name = "用户角色授权")
 @RestController
 @RequestMapping("/users")
@@ -43,9 +45,9 @@ public class UserRoleController {
     public R<UserAuthRoleRes> authRole(@PathVariable Long userId) {
         Map<String, Object> result = userRoleAuthQueryExe.execute(userId);
         UserAuthRoleRes res =
-                new UserAuthRoleRes(
-                        UserResConverter.toRes((UserDTO) result.get("user")),
-                        RoleResConverter.toResList((List<RoleDTO>) result.get("roles")));
+            new UserAuthRoleRes(
+                UserResConverter.toRes((UserDTO) result.get("user")),
+                RoleResConverter.toResList((List<RoleDTO>) result.get("roles")));
         return R.ok(res);
     }
 

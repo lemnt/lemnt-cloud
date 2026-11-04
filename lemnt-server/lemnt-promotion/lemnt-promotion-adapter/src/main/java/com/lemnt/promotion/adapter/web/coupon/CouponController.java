@@ -27,9 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** 会员优惠券接口。 */
+/**
+ * 会员优惠券接口。
+ */
 @Tag(name = "会员优惠券")
 @RestController
 @RequestMapping("/mall/admin")
@@ -45,8 +48,8 @@ public class CouponController {
     @RequiresPermissions("mall:coupon:issue")
     public R<MallCouponIssueRes> issue(@PathVariable Long memberId, @PathVariable Long templateId) {
         return R.ok(
-                CouponResConverter.couponToMallCouponIssueRes(
-                        couponIssueCmdExe.execute(new CouponIssueCmd(memberId, templateId))));
+            CouponResConverter.couponToMallCouponIssueRes(
+                couponIssueCmdExe.execute(new CouponIssueCmd(memberId, templateId))));
     }
 
     @Operation(summary = "查看目标会员优惠券，超过1000条时拒绝截断")
@@ -54,12 +57,14 @@ public class CouponController {
     @RequiresPermissions("mall:coupon:list")
     public R<List<MallCouponCouponsRes>> coupons(@PathVariable Long memberId) {
         return R.ok(
-                couponListQueryExe.execute(memberId).stream()
-                        .map(CouponResConverter::couponToMallCouponCouponsRes)
-                        .toList());
+            couponListQueryExe.execute(memberId).stream()
+                .map(CouponResConverter::couponToMallCouponCouponsRes)
+                .toList());
     }
 
-    /** 撤回会员未用或已过期券。 */
+    /**
+     * 撤回会员未用或已过期券。
+     */
     @DeleteMapping("/members/{memberId}/coupons/{couponId}")
     @Operation(summary = "撤回会员优惠券")
     @RequiresPermissions("mall:coupon:remove")
@@ -67,7 +72,9 @@ public class CouponController {
         return R.ok(couponRevokeCmdExe.execute(memberId, couponId));
     }
 
-    /** 后台持券管理可按会员、模板和状态分页查询。 */
+    /**
+     * 后台持券管理可按会员、模板和状态分页查询。
+     */
     @GetMapping("/coupons")
     @Operation(summary = "会员优惠券分页")
     @RequiresPermissions("mall:coupon:list")

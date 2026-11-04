@@ -23,14 +23,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-/** 角色授权树必须先校验角色数据范围，再读取选中菜单。 */
+/**
+ * 角色授权树必须先校验角色数据范围，再读取选中菜单。
+ */
 class MenuRoleTreeQueryExeTest {
     private final RoleGateway roles = mock(RoleGateway.class);
 
     private final MenuGateway menus = mock(MenuGateway.class);
 
     private final MenuRoleTreeQueryExe executor =
-            new MenuRoleTreeQueryExe(menus, new TreeMenuService(), new RoleDomainService(roles));
+        new MenuRoleTreeQueryExe(menus, new TreeMenuService(), new RoleDomainService(roles));
 
     @AfterEach
     void clearContext() {
@@ -42,8 +44,8 @@ class MenuRoleTreeQueryExeTest {
         when(roles.selectRoleList(any(Role.class))).thenReturn(List.of());
 
         assertThatThrownBy(() -> executor.execute(103L))
-                .isInstanceOf(ServiceException.class)
-                .hasMessageContaining("没有权限访问角色数据");
+            .isInstanceOf(ServiceException.class)
+            .hasMessageContaining("没有权限访问角色数据");
 
         verifyNoInteractions(menus);
     }

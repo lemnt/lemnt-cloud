@@ -9,20 +9,21 @@ import java.time.LocalDateTime;
  * @author wangxx
  */
 public record RolePageQry(
-        /**
-         * 角色名称
-         */
-        String roleName,
-        /**
-         * 角色权限标识
-         */
-        String roleKey,
-        /**
-         * 角色状态（1正常 2停用）
-         */
-        String status,
-        int pageNum,
-        int pageSize,
-        LocalDateTime beginTime,
-        LocalDateTime endTime)
-        implements Serializable {}
+    /**
+     * 角色名称
+     */
+    String roleName,
+    /**
+     * 角色权限标识
+     */
+    String roleKey,
+    /**
+     * 角色状态（1正常 2停用）
+     */
+    String status,
+    int pageNum,
+    int pageSize,
+    LocalDateTime beginTime,
+    LocalDateTime endTime)
+    implements Serializable {
+}

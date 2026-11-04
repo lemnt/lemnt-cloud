@@ -22,6 +22,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import jakarta.annotation.Resource;
+
 import java.nio.charset.StandardCharsets;
 import java.util.function.BiFunction;
 
@@ -32,10 +33,12 @@ import java.util.function.BiFunction;
  */
 @Component
 public class CaptchaFilter implements GlobalFilter, Ordered {
-    private static final String[] VALIDATE_URL = new String[] {"/auth/sessions/login"};
+    private static final String[] VALIDATE_URL = new String[]{"/auth/sessions/login"};
 
-    @Resource private ValidateCodeService validateCodeService;
-    @Resource private CaptchaProperties captchaProperties;
+    @Resource
+    private ValidateCodeService validateCodeService;
+    @Resource
+    private CaptchaProperties captchaProperties;
 
     private static final String CODE = "code";
 
@@ -51,16 +54,16 @@ public class CaptchaFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
         return readBody(
-                exchange,
-                (body, newExchange) -> {
-                    try {
-                        JSONObject obj = JsonUtils.toJsonObj(body);
-                        validateCodeService.checkCaptcha(obj.getString(CODE), obj.getString(UUID));
-                        return chain.filter(newExchange);
-                    } catch (Exception e) {
-                        return ServletUtils.unauthorized(exchange.getResponse(), "验证码错误");
-                    }
-                });
+            exchange,
+            (body, newExchange) -> {
+                try {
+                    JSONObject obj = JsonUtils.toJsonObj(body);
+                    validateCodeService.checkCaptcha(obj.getString(CODE), obj.getString(UUID));
+                    return chain.filter(newExchange);
+                } catch (Exception e) {
+                    return ServletUtils.unauthorized(exchange.getResponse(), "验证码错误");
+                }
+            });
     }
 
     /**
@@ -70,40 +73,40 @@ public class CaptchaFilter implements GlobalFilter, Ordered {
      * @param handler
      */
     private Mono<Void> readBody(
-            ServerWebExchange exchange, BiFunction<String, ServerWebExchange, Mono<Void>> handler) {
+        ServerWebExchange exchange, BiFunction<String, ServerWebExchange, Mono<Void>> handler) {
         return DataBufferUtils.join(exchange.getRequest().getBody())
-                .flatMap(
-                        dataBuffer -> {
-                            byte[] bytes = new byte[dataBuffer.readableByteCount()];
-                            dataBuffer.read(bytes);
-                            DataBufferUtils.release(dataBuffer);
-                            String body = new String(bytes, StandardCharsets.UTF_8);
-                            ServerHttpRequestDecorator decorator =
-                                    new ServerHttpRequestDecorator(exchange.getRequest()) {
-                                        @Override
-                                        public Flux<DataBuffer> getBody() {
-                                            return Flux.defer(
-                                                    () ->
-                                                            Flux.just(
-                                                                    exchange.getResponse()
-                                                                            .bufferFactory()
-                                                                            .wrap(bytes)));
-                                        }
+            .flatMap(
+                dataBuffer -> {
+                    byte[] bytes = new byte[dataBuffer.readableByteCount()];
+                    dataBuffer.read(bytes);
+                    DataBufferUtils.release(dataBuffer);
+                    String body = new String(bytes, StandardCharsets.UTF_8);
+                    ServerHttpRequestDecorator decorator =
+                        new ServerHttpRequestDecorator(exchange.getRequest()) {
+                            @Override
+                            public Flux<DataBuffer> getBody() {
+                                return Flux.defer(
+                                    () ->
+                                        Flux.just(
+                                            exchange.getResponse()
+                                                .bufferFactory()
+                                                .wrap(bytes)));
+                            }
 
-                                        @Override
-                                        public HttpHeaders getHeaders() {
-                                            HttpHeaders headers = new HttpHeaders();
-                                            headers.putAll(super.getHeaders());
-                                            headers.remove(HttpHeaders.CONTENT_LENGTH);
-                                            headers.setContentLength(bytes.length);
-                                            return headers;
-                                        }
-                                    };
+                            @Override
+                            public HttpHeaders getHeaders() {
+                                HttpHeaders headers = new HttpHeaders();
+                                headers.putAll(super.getHeaders());
+                                headers.remove(HttpHeaders.CONTENT_LENGTH);
+                                headers.setContentLength(bytes.length);
+                                return headers;
+                            }
+                        };
 
-                            ServerWebExchange newExchange =
-                                    exchange.mutate().request(decorator).build();
-                            return handler.apply(body, newExchange);
-                        });
+                    ServerWebExchange newExchange =
+                        exchange.mutate().request(decorator).build();
+                    return handler.apply(body, newExchange);
+                });
     }
 
     @Override

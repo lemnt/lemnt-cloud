@@ -6,7 +6,9 @@ import com.lemnt.promotion.domain.promotion.model.DiscountActivity;
 
 import java.util.List;
 
-/** DiscountActivity 活动主表访问。 */
+/**
+ * DiscountActivity 活动主表访问。
+ */
 public interface DiscountActivityGateway {
     DiscountActivity find(Long id);
 

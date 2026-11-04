@@ -135,9 +135,9 @@ public class UserGatewayImpl implements UserGateway {
      */
     private int updateUserAvatarRow(Long userId, String avatar) {
         return userMapper.update(
-                Wrappers.lambdaUpdate(UserDO.class)
-                        .eq(UserDO::getUserId, userId)
-                        .set(UserDO::getAvatar, avatar));
+            Wrappers.lambdaUpdate(UserDO.class)
+                .eq(UserDO::getUserId, userId)
+                .set(UserDO::getAvatar, avatar));
     }
 
     /**
@@ -149,9 +149,9 @@ public class UserGatewayImpl implements UserGateway {
      */
     private int updateUserStatusRow(Long userId, String status) {
         return userMapper.update(
-                Wrappers.lambdaUpdate(UserDO.class)
-                        .eq(UserDO::getUserId, userId)
-                        .set(UserDO::getStatus, status));
+            Wrappers.lambdaUpdate(UserDO.class)
+                .eq(UserDO::getUserId, userId)
+                .set(UserDO::getStatus, status));
     }
 
     /**
@@ -162,10 +162,10 @@ public class UserGatewayImpl implements UserGateway {
      */
     private int updateLoginInfoRow(UserDO user) {
         return userMapper.update(
-                Wrappers.lambdaUpdate(UserDO.class)
-                        .eq(UserDO::getUserId, user.getUserId())
-                        .set(UserDO::getLoginDate, user.getLoginDate())
-                        .set(UserDO::getLoginIp, user.getLoginIp()));
+            Wrappers.lambdaUpdate(UserDO.class)
+                .eq(UserDO::getUserId, user.getUserId())
+                .set(UserDO::getLoginDate, user.getLoginDate())
+                .set(UserDO::getLoginIp, user.getLoginIp()));
     }
 
     /**
@@ -177,10 +177,10 @@ public class UserGatewayImpl implements UserGateway {
      */
     private int resetUserPwdRow(Long userId, String password) {
         return userMapper.update(
-                Wrappers.lambdaUpdate(UserDO.class)
-                        .eq(UserDO::getUserId, userId)
-                        .set(UserDO::getPassword, password)
-                        .set(UserDO::getPwdUpdateDate, LocalDateTime.now()));
+            Wrappers.lambdaUpdate(UserDO.class)
+                .eq(UserDO::getUserId, userId)
+                .set(UserDO::getPassword, password)
+                .set(UserDO::getPwdUpdateDate, LocalDateTime.now()));
     }
 
     /**
@@ -191,7 +191,7 @@ public class UserGatewayImpl implements UserGateway {
      */
     private UserDO checkUserNameUniqueRow(String userName) {
         return userMapper.selectOne(
-                Wrappers.<UserDO>lambdaQuery().eq(UserDO::getUserName, userName).last("limit 1"));
+            Wrappers.<UserDO>lambdaQuery().eq(UserDO::getUserName, userName).last("limit 1"));
     }
 
     /**
@@ -202,9 +202,9 @@ public class UserGatewayImpl implements UserGateway {
      */
     private UserDO checkPhoneUniqueRow(String phonenumber) {
         return userMapper.selectOne(
-                Wrappers.<UserDO>lambdaQuery()
-                        .eq(UserDO::getPhonenumber, phonenumber)
-                        .last("limit 1"));
+            Wrappers.<UserDO>lambdaQuery()
+                .eq(UserDO::getPhonenumber, phonenumber)
+                .last("limit 1"));
     }
 
     /**
@@ -215,7 +215,7 @@ public class UserGatewayImpl implements UserGateway {
      */
     private UserDO checkEmailUniqueRow(String email) {
         return userMapper.selectOne(
-                Wrappers.<UserDO>lambdaQuery().eq(UserDO::getEmail, email).last("limit 1"));
+            Wrappers.<UserDO>lambdaQuery().eq(UserDO::getEmail, email).last("limit 1"));
     }
 
     /**

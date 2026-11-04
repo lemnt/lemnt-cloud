@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 标签保存命令执行器。 */
+/**
+ * 标签保存命令执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberTagSaveCmdExe {

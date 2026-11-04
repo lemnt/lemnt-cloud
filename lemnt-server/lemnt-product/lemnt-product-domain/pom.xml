@@ -23,11 +23,15 @@
     </dependencies>
     <build>
         <testResources>
-            <testResource><directory>src/test/resources</directory></testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
             <testResource>
                 <directory>${project.basedir}/../../../docs/promotion</directory>
                 <targetPath>promotion</targetPath>
-                <includes><include>pricing-vectors.json</include></includes>
+                <includes>
+                    <include>pricing-vectors.json</include>
+                </includes>
             </testResource>
         </testResources>
     </build>

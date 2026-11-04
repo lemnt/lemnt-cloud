@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 装修页面分页执行器。 */
+/**
+ * 装修页面分页执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class DiyPagePageQueryExe {

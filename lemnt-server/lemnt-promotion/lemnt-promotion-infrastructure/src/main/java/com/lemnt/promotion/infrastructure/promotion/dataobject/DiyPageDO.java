@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
 
-/** 装修页面持久化对象。 */
+/**
+ * 装修页面持久化对象。
+ */
 @Data
 @TableName("promotion_diy_page")
 public class DiyPageDO {

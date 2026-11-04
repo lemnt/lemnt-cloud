@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 管理端客服回复执行器。 */
+/**
+ * 管理端客服回复执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class KefuMessageSendCmdExe {

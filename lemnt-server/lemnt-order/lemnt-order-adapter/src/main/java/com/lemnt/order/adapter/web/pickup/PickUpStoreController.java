@@ -31,7 +31,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 后台自提门店管理。 */
+/**
+ * 后台自提门店管理。
+ */
 @Tag(name = "自提门店")
 @RestController
 @RequestMapping("/trade/admin/delivery/pick-up-stores")
@@ -50,8 +52,8 @@ public class PickUpStoreController {
     public R<PickUpStoreRes> page(@Valid @ModelAttribute PickUpStorePageReq req) {
         var result = page.execute(PickUpConverter.page(req));
         return R.page(
-                result.getRecords().stream().map(PickUpConverter::store).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(PickUpConverter::store).toList(),
+            result.getTotal());
     }
 
     @GetMapping("/{id}")

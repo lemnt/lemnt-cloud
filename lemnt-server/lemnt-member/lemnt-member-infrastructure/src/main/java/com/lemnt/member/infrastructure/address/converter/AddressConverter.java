@@ -7,22 +7,23 @@ import com.lemnt.member.infrastructure.address.dataobject.AddressDO;
  * 地址转换器。
  */
 public final class AddressConverter {
-    private AddressConverter() {}
+    private AddressConverter() {
+    }
 
     /**
      * 转换为领域对象。
      */
     public static Address toEntity(AddressDO row) {
         return row == null
-                ? null
-                : new Address(
-                        row.getId(),
-                        row.getUserId(),
-                        row.getName(),
-                        row.getMobile(),
-                        row.getAreaId(),
-                        row.getDetailAddress(),
-                        row.getDefaultStatus());
+            ? null
+            : new Address(
+            row.getId(),
+            row.getUserId(),
+            row.getName(),
+            row.getMobile(),
+            row.getAreaId(),
+            row.getDetailAddress(),
+            row.getDefaultStatus());
     }
 
     /**

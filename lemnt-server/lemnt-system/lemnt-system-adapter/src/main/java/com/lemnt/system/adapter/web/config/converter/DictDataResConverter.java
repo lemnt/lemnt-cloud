@@ -23,23 +23,23 @@ public class DictDataResConverter {
             return null;
         }
         return new DictDataRes(
-                dto.getDictCode(),
-                dto.getDictSort(),
-                dto.getDictLabel(),
-                dto.getDictValue(),
-                dto.getDictType(),
-                dto.getCssClass(),
-                dto.getListClass(),
-                dto.getIsDefault(),
-                dto.getStatus(),
-                dto.getRemark());
+            dto.getDictCode(),
+            dto.getDictSort(),
+            dto.getDictLabel(),
+            dto.getDictValue(),
+            dto.getDictType(),
+            dto.getCssClass(),
+            dto.getListClass(),
+            dto.getIsDefault(),
+            dto.getStatus(),
+            dto.getRemark());
     }
 
     /**
      * DictDataDTO List → DictDataInfoRes List
      */
     public static List<SystemDictDataListRes> toResListToSystemDictDataListRes(
-            List<DictDataDTO> list) {
+        List<DictDataDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -58,16 +58,16 @@ public class DictDataResConverter {
             return null;
         }
         return new SystemDictDataListRes(
-                dto.getDictCode(),
-                dto.getDictSort(),
-                dto.getDictLabel(),
-                dto.getDictValue(),
-                dto.getDictType(),
-                dto.getCssClass(),
-                dto.getListClass(),
-                dto.getIsDefault(),
-                dto.getStatus(),
-                dto.getRemark());
+            dto.getDictCode(),
+            dto.getDictSort(),
+            dto.getDictLabel(),
+            dto.getDictValue(),
+            dto.getDictType(),
+            dto.getCssClass(),
+            dto.getListClass(),
+            dto.getIsDefault(),
+            dto.getStatus(),
+            dto.getRemark());
     }
 
     /**
@@ -78,23 +78,23 @@ public class DictDataResConverter {
             return null;
         }
         return new SystemDictDataGetInfoRes(
-                dto.getDictCode(),
-                dto.getDictSort(),
-                dto.getDictLabel(),
-                dto.getDictValue(),
-                dto.getDictType(),
-                dto.getCssClass(),
-                dto.getListClass(),
-                dto.getIsDefault(),
-                dto.getStatus(),
-                dto.getRemark());
+            dto.getDictCode(),
+            dto.getDictSort(),
+            dto.getDictLabel(),
+            dto.getDictValue(),
+            dto.getDictType(),
+            dto.getCssClass(),
+            dto.getListClass(),
+            dto.getIsDefault(),
+            dto.getStatus(),
+            dto.getRemark());
     }
 
     /**
      * DictDataDTO List → DictDataInfoRes List
      */
     public static List<SystemDictDataDictTypeRes> toResListToSystemDictDataDictTypeRes(
-            List<DictDataDTO> list) {
+        List<DictDataDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -113,15 +113,15 @@ public class DictDataResConverter {
             return null;
         }
         return new SystemDictDataDictTypeRes(
-                dto.getDictCode(),
-                dto.getDictSort(),
-                dto.getDictLabel(),
-                dto.getDictValue(),
-                dto.getDictType(),
-                dto.getCssClass(),
-                dto.getListClass(),
-                dto.getIsDefault(),
-                dto.getStatus(),
-                dto.getRemark());
+            dto.getDictCode(),
+            dto.getDictSort(),
+            dto.getDictLabel(),
+            dto.getDictValue(),
+            dto.getDictType(),
+            dto.getCssClass(),
+            dto.getListClass(),
+            dto.getIsDefault(),
+            dto.getStatus(),
+            dto.getRemark());
     }
 }

@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 订单日志单表持久化实现。 */
+/**
+ * 订单日志单表持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderLogGatewayImpl implements OrderLogGateway {
@@ -27,12 +29,12 @@ public class OrderLogGatewayImpl implements OrderLogGateway {
     @Override
     public List<OrderLog> byOrderId(Long orderId) {
         return mapper
-                .selectList(
-                        Wrappers.<OrderLogDO>lambdaQuery()
-                                .eq(OrderLogDO::getOrderId, orderId)
-                                .orderByAsc(OrderLogDO::getId))
-                .stream()
-                .map(OrderLogConverter::toModel)
-                .toList();
+            .selectList(
+                Wrappers.<OrderLogDO>lambdaQuery()
+                    .eq(OrderLogDO::getOrderId, orderId)
+                    .orderByAsc(OrderLogDO::getId))
+            .stream()
+            .map(OrderLogConverter::toModel)
+            .toList();
     }
 }

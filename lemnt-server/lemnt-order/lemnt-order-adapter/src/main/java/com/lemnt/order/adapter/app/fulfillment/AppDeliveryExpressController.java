@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 小程序快递公司选择。 */
+/**
+ * 小程序快递公司选择。
+ */
 @Tag(name = "小程序快递公司")
 @RestController
 @RequestMapping("/trade/app/delivery")
@@ -26,11 +28,11 @@ public class AppDeliveryExpressController {
     @Operation(summary = "启用的快递公司列表")
     public R<List<AppDeliveryExpressRes>> expresses() {
         return R.ok(
-                expresses.execute().stream()
-                        .map(
-                                value ->
-                                        new AppDeliveryExpressRes(
-                                                value.id(), value.code(), value.name()))
-                        .toList());
+            expresses.execute().stream()
+                .map(
+                    value ->
+                        new AppDeliveryExpressRes(
+                            value.id(), value.code(), value.name()))
+                .toList());
     }
 }

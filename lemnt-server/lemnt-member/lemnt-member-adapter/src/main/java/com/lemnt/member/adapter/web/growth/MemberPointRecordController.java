@@ -23,7 +23,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 积分流水接口。 */
+/**
+ * 积分流水接口。
+ */
 @Tag(name = "积分流水")
 @RestController
 @RequestMapping("/member/admin")
@@ -37,15 +39,15 @@ public class MemberPointRecordController {
     @Operation(summary = "point-records分页")
     @RequiresPermissions("member:point:query")
     public R<MemberRecordPointRecordsRes> pointRecords(
-            @Valid @ModelAttribute MemberRecordPointRecordsReq req) {
+        @Valid @ModelAttribute MemberRecordPointRecordsReq req) {
         var page =
-                memberAssetRecordAllPageQueryExe.execute(
-                        MemberReqConverter.toPageQry("POINT", req));
+            memberAssetRecordAllPageQueryExe.execute(
+                MemberReqConverter.toPageQry("POINT", req));
         return R.page(
-                page.getRecords().stream()
-                        .map(MemberGrowthResConverter::toMemberRecordPointRecordsRes)
-                        .toList(),
-                page.getTotal());
+            page.getRecords().stream()
+                .map(MemberGrowthResConverter::toMemberRecordPointRecordsRes)
+                .toList(),
+            page.getTotal());
     }
 
     @GetMapping("/point-records/{id}")
@@ -53,8 +55,8 @@ public class MemberPointRecordController {
     @RequiresPermissions("member:point:query")
     public R<MemberRecordPointRecordsDetailRes> pointRecordsDetail(@PathVariable Long id) {
         return R.ok(
-                MemberGrowthResConverter.toMemberRecordPointRecordsDetailRes(
-                        memberAssetRecordDetailQueryExe.execute(
-                                new AssetRecordDetailQry("POINT", id))));
+            MemberGrowthResConverter.toMemberRecordPointRecordsDetailRes(
+                memberAssetRecordDetailQueryExe.execute(
+                    new AssetRecordDetailQry("POINT", id))));
     }
 }

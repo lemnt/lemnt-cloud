@@ -17,7 +17,9 @@ import java.math.BigDecimal;
 import java.util.Locale;
 import java.util.UUID;
 
-/** 充值下单、到账入账与退款；暂无真实渠道，到账由后台确认命令触发。 */
+/**
+ * 充值下单、到账入账与退款；暂无真实渠道，到账由后台确认命令触发。
+ */
 @Component
 @RequiredArgsConstructor
 public class RechargeService {
@@ -25,7 +27,9 @@ public class RechargeService {
     private final WalletRechargeGateway recharges;
     private final WalletService walletService;
 
-    /** 按套餐创建充值单，requestNo 幂等。 */
+    /**
+     * 按套餐创建充值单，requestNo 幂等。
+     */
     @Transactional(rollbackFor = Exception.class)
     public WalletRecharge create(Long memberId, Long packageId, String requestNo) {
         if (memberId == null || memberId <= 0) {
@@ -49,29 +53,31 @@ public class RechargeService {
         var wallet = walletService.getOrCreate(memberId);
         BigDecimal total = value.payPrice().add(value.bonusPrice()).setScale(2);
         var created =
-                new WalletRecharge(
-                        null,
-                        "RC"
-                                + UUID.randomUUID()
-                                        .toString()
-                                        .replace("-", "")
-                                        .toUpperCase(Locale.ROOT),
-                        request,
-                        wallet.id(),
-                        memberId,
-                        packageId,
-                        value.payPrice(),
-                        value.bonusPrice(),
-                        total,
-                        WalletRechargeStatus.PENDING.name(),
-                        null,
-                        null,
-                        null,
-                        null);
+            new WalletRecharge(
+                null,
+                "RC"
+                    + UUID.randomUUID()
+                    .toString()
+                    .replace("-", "")
+                    .toUpperCase(Locale.ROOT),
+                request,
+                wallet.id(),
+                memberId,
+                packageId,
+                value.payPrice(),
+                value.bonusPrice(),
+                total,
+                WalletRechargeStatus.PENDING.name(),
+                null,
+                null,
+                null,
+                null);
         return recharges.createIfAbsent(created);
     }
 
-    /** 确认到账：PENDING→PAID 并按充值单号入钱包，重复确认幂等。 */
+    /**
+     * 确认到账：PENDING→PAID 并按充值单号入钱包，重复确认幂等。
+     */
     @Transactional(rollbackFor = Exception.class)
     public WalletRecharge confirmPaid(String rechargeNo, String channelCode) {
         String no = RechargeRules.text(rechargeNo, 40, "充值单号");
@@ -85,34 +91,36 @@ public class RechargeService {
         }
         var now = recharges.databaseNow();
         var paid =
-                new WalletRecharge(
-                        current.id(),
-                        current.rechargeNo(),
-                        current.requestNo(),
-                        current.walletId(),
-                        current.memberId(),
-                        current.packageId(),
-                        current.payPrice(),
-                        current.bonusPrice(),
-                        current.totalPrice(),
-                        WalletRechargeStatus.PAID.name(),
-                        channel,
-                        now,
-                        null,
-                        current.createTime());
+            new WalletRecharge(
+                current.id(),
+                current.rechargeNo(),
+                current.requestNo(),
+                current.walletId(),
+                current.memberId(),
+                current.packageId(),
+                current.payPrice(),
+                current.bonusPrice(),
+                current.totalPrice(),
+                WalletRechargeStatus.PAID.name(),
+                channel,
+                now,
+                null,
+                current.createTime());
         if (!recharges.update(paid)) {
             throw new IllegalStateException("充值单状态已变化");
         }
         walletService.credit(
-                current.memberId(),
-                WalletBizType.RECHARGE,
-                current.rechargeNo(),
-                current.totalPrice(),
-                "充值到账");
+            current.memberId(),
+            WalletBizType.RECHARGE,
+            current.rechargeNo(),
+            current.totalPrice(),
+            "充值到账");
         return recharges.findByNo(no);
     }
 
-    /** 退款：PAID→REFUNDED 并按充值单号出账，余额不足整体回滚；重复退款幂等。 */
+    /**
+     * 退款：PAID→REFUNDED 并按充值单号出账，余额不足整体回滚；重复退款幂等。
+     */
     @Transactional(rollbackFor = Exception.class)
     public WalletRecharge refund(String rechargeNo) {
         String no = RechargeRules.text(rechargeNo, 40, "充值单号");
@@ -128,30 +136,30 @@ public class RechargeService {
         }
         var now = recharges.databaseNow();
         var refunded =
-                new WalletRecharge(
-                        current.id(),
-                        current.rechargeNo(),
-                        current.requestNo(),
-                        current.walletId(),
-                        current.memberId(),
-                        current.packageId(),
-                        current.payPrice(),
-                        current.bonusPrice(),
-                        current.totalPrice(),
-                        WalletRechargeStatus.REFUNDED.name(),
-                        current.channelCode(),
-                        current.paidTime(),
-                        now,
-                        current.createTime());
+            new WalletRecharge(
+                current.id(),
+                current.rechargeNo(),
+                current.requestNo(),
+                current.walletId(),
+                current.memberId(),
+                current.packageId(),
+                current.payPrice(),
+                current.bonusPrice(),
+                current.totalPrice(),
+                WalletRechargeStatus.REFUNDED.name(),
+                current.channelCode(),
+                current.paidTime(),
+                now,
+                current.createTime());
         if (!recharges.update(refunded)) {
             throw new IllegalStateException("充值单状态已变化");
         }
         walletService.debit(
-                current.memberId(),
-                WalletBizType.RECHARGE_REFUND,
-                current.rechargeNo(),
-                current.totalPrice(),
-                "充值退款");
+            current.memberId(),
+            WalletBizType.RECHARGE_REFUND,
+            current.rechargeNo(),
+            current.totalPrice(),
+            "充值退款");
         return recharges.findByNo(no);
     }
 }

@@ -2,7 +2,9 @@ package com.lemnt.system.domain.auth.gateway;
 
 import java.util.List;
 
-/** RoleDept 存储接口。 */
+/**
+ * RoleDept 存储接口。
+ */
 public interface RoleDeptGateway {
     /**
      * 通过角色ID删除角色部门关联
@@ -29,6 +31,8 @@ public interface RoleDeptGateway {
      */
     Boolean insertRoleDepts(Long roleId, List<Long> deptIds);
 
-    /** 统计部门关联的角色数量。 */
+    /**
+     * 统计部门关联的角色数量。
+     */
     Long selectCountRoleDeptByDeptId(Long deptId);
 }

@@ -13,14 +13,18 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 会员签到记录分页执行器。 */
+/**
+ * 会员签到记录分页执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberSignRecordAllPageQueryExe {
 
     private final MemberSignRecordGateway memberSignRecordGateway;
 
-    /** 查询签到记录分页，沿用资源归属和分页约束。 */
+    /**
+     * 查询签到记录分页，沿用资源归属和分页约束。
+     */
     public PageResult<SignRecordDTO> execute(SignRecordAllPageQry qry) {
         MemberRules.page(qry.pageNum(), qry.pageSize());
         if (qry.memberId() != null) {
@@ -29,28 +33,28 @@ public class MemberSignRecordAllPageQueryExe {
         if (qry.nickname() != null && qry.nickname().length() > 80)
             throw new ServiceException("昵称不能超过80字", 400);
         var nickname =
-                qry.nickname() == null || qry.nickname().isBlank() ? null : qry.nickname().trim();
+            qry.nickname() == null || qry.nickname().isBlank() ? null : qry.nickname().trim();
         if (qry.day() != null && qry.day() <= 0) {
             throw new ServiceException("签到天数必须为正数", 400);
         }
         if (qry.startTime() != null
-                && qry.endTime() != null
-                && qry.startTime().isAfter(qry.endTime())) {
+            && qry.endTime() != null
+            && qry.startTime().isAfter(qry.endTime())) {
             throw new ServiceException("开始时间不能晚于结束时间", 400);
         }
         var filter =
-                new SignRecordPageFilter(
-                        qry.memberId(),
-                        (qry.pageNum() - 1) * qry.pageSize(),
-                        qry.pageSize(),
-                        nickname,
-                        qry.day(),
-                        qry.startTime(),
-                        qry.endTime());
+            new SignRecordPageFilter(
+                qry.memberId(),
+                (qry.pageNum() - 1) * qry.pageSize(),
+                qry.pageSize(),
+                nickname,
+                qry.day(),
+                qry.startTime(),
+                qry.endTime());
         return new PageResult<>(
-                memberSignRecordGateway.signs(filter).stream()
-                        .map(MemberGrowthDTOConverter::toSignRecordDTO)
-                        .toList(),
-                memberSignRecordGateway.signsCount(filter));
+            memberSignRecordGateway.signs(filter).stream()
+                .map(MemberGrowthDTOConverter::toSignRecordDTO)
+                .toList(),
+            memberSignRecordGateway.signsCount(filter));
     }
 }

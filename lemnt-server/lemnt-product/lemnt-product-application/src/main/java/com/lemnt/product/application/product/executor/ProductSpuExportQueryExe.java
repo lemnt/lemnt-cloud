@@ -12,14 +12,18 @@ import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-/** 商品按当前筛选条件导出，不把当前一页当作完整结果。 */
+/**
+ * 商品按当前筛选条件导出，不把当前一页当作完整结果。
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductSpuExportQueryExe {
     private static final int MAX_EXPORT_ROWS = 10000;
     private final ProductSpuPageQueryExe pageQuery;
 
-    /** 在同一只读事务中分页读取，超限或不完整时拒绝输出截断文件。 */
+    /**
+     * 在同一只读事务中分页读取，超限或不完整时拒绝输出截断文件。
+     */
     @Transactional(readOnly = true)
     public List<ProductSpuDTO> execute(ProductSpuExportQry query) {
         if (query == null) {
@@ -30,15 +34,15 @@ public class ProductSpuExportQueryExe {
         int page = 1;
         do {
             var result =
-                    pageQuery.execute(
-                            new ProductSpuPageQry(
-                                    query.name(),
-                                    query.status(),
-                                    page++,
-                                    100,
-                                    query.categoryId(),
-                                    query.brandId(),
-                                    query.stockStatus()));
+                pageQuery.execute(
+                    new ProductSpuPageQry(
+                        query.name(),
+                        query.status(),
+                        page++,
+                        100,
+                        query.categoryId(),
+                        query.brandId(),
+                        query.stockStatus()));
             total = result.total();
             if (total > MAX_EXPORT_ROWS) {
                 throw new IllegalArgumentException("最多导出10000件商品，请缩小筛选范围");

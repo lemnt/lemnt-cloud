@@ -7,9 +7,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
-/** 校验可信报价的金额及权益守恒，不重新运行商城促销规则。 */
+/**
+ * 校验可信报价的金额及权益守恒，不重新运行商城促销规则。
+ */
 public final class OrderPricingRules {
-    private OrderPricingRules() {}
+    private OrderPricingRules() {
+    }
 
     private static final BigDecimal ZERO = BigDecimal.ZERO.setScale(2);
 
@@ -35,23 +38,23 @@ public final class OrderPricingRules {
         long pu = 0, pg = 0;
         for (var promotion : order.promotions()) {
             if (promotion.promotionKey() == null
-                    || promotion.promotionKey().isBlank()
-                    || promotion.promotionKey().length() > 96
-                    || !keys.add(promotion.promotionKey())
-                    || promotion.promotionName() == null
-                    || promotion.promotionName().isBlank()
-                    || !Set.of(
-                                    "SECKILL",
-                                    "COMBINATION",
-                                    "BARGAIN",
-                                    "POINT_EXCHANGE",
-                                    "DISCOUNT",
-                                    "REWARD",
-                                    "COUPON",
-                                    "POINT_DEDUCT",
-                                    "MEMBER_LEVEL",
-                                    "ORDER_GIFT")
-                            .contains(promotion.promotionType())) {
+                || promotion.promotionKey().isBlank()
+                || promotion.promotionKey().length() > 96
+                || !keys.add(promotion.promotionKey())
+                || promotion.promotionName() == null
+                || promotion.promotionName().isBlank()
+                || !Set.of(
+                    "SECKILL",
+                    "COMBINATION",
+                    "BARGAIN",
+                    "POINT_EXCHANGE",
+                    "DISCOUNT",
+                    "REWARD",
+                    "COUPON",
+                    "POINT_DEDUCT",
+                    "MEMBER_LEVEL",
+                    "ORDER_GIFT")
+                .contains(promotion.promotionType())) {
                 fail();
             }
             var d = ZERO;
@@ -66,8 +69,8 @@ public final class OrderPricingRules {
                     throw new IllegalArgumentException("优惠行标识不合法");
                 }
                 if (index < 0
-                        || index >= order.items().size()
-                        || !itemKeys.add(item.quoteLineKey())) {
+                    || index >= order.items().size()
+                    || !itemKeys.add(item.quoteLineKey())) {
                     fail();
                 }
                 d = d.add(money(item.discountAmount()));
@@ -75,7 +78,7 @@ public final class OrderPricingRules {
                 u = Math.addExact(u, points(item.usePoint()));
                 g = Math.addExact(g, points(item.givePoint()));
                 children.computeIfAbsent(item.quoteLineKey(), ignored -> new ArrayList<>())
-                        .add(item);
+                    .add(item);
             }
             equal(d, promotion.discountAmount());
             equal(f, promotion.deliveryDiscountPrice());
@@ -90,14 +93,14 @@ public final class OrderPricingRules {
                 fail();
             }
             promotion
-                    .giveCouponTemplateCounts()
-                    .forEach(
-                            (id, count) -> {
-                                if (id == null || id <= 0 || count == null || count <= 0) {
-                                    fail();
-                                }
-                                couponCounts.merge(id, count, Math::addExact);
-                            });
+                .giveCouponTemplateCounts()
+                .forEach(
+                    (id, count) -> {
+                        if (id == null || id <= 0 || count == null || count <= 0) {
+                            fail();
+                        }
+                        couponCounts.merge(id, count, Math::addExact);
+                    });
         }
         for (int index = 0; index < order.items().size(); index++) {
             var item = order.items().get(index);
@@ -107,27 +110,27 @@ public final class OrderPricingRules {
             var a = signed(item.adjustmentAmount());
             var p = money(item.payAmount());
             if (d.compareTo(item.lineAmount()) > 0
-                    || fd.compareTo(fo) > 0
-                    || item.refundedQuantity() == null
-                    || item.refundedQuantity() != 0) {
+                || fd.compareTo(fo) > 0
+                || item.refundedQuantity() == null
+                || item.refundedQuantity() != 0) {
                 fail();
             }
             equal(p, item.lineAmount().subtract(d).add(fo).subtract(fd).add(a));
             equal(item.deliveryPrice(), fo.subtract(fd));
             var rows = children.getOrDefault(String.valueOf(index), List.of());
             equal(
-                    d,
-                    rows.stream()
-                            .map(OrderItemPromotion::discountAmount)
-                            .reduce(ZERO, BigDecimal::add));
+                d,
+                rows.stream()
+                    .map(OrderItemPromotion::discountAmount)
+                    .reduce(ZERO, BigDecimal::add));
             equal(
-                    fd,
-                    rows.stream()
-                            .map(OrderItemPromotion::deliveryDiscountPrice)
-                            .reduce(ZERO, BigDecimal::add));
+                fd,
+                rows.stream()
+                    .map(OrderItemPromotion::deliveryDiscountPrice)
+                    .reduce(ZERO, BigDecimal::add));
             long u = points(item.usePoint()), g = points(item.givePoint());
             if (u != rows.stream().mapToLong(OrderItemPromotion::usePoint).sum()
-                    || g != rows.stream().mapToLong(OrderItemPromotion::givePoint).sum()) {
+                || g != rows.stream().mapToLong(OrderItemPromotion::givePoint).sum()) {
                 fail();
             }
             original = original.add(money(item.lineAmount()));
@@ -148,10 +151,10 @@ public final class OrderPricingRules {
         equal(pd, discount);
         equal(pf, freightDiscount);
         if (pu != use
-                || pg != give
-                || use != order.usePoint()
-                || give != order.givePoint()
-                || !couponCounts.equals(order.giveCouponTemplateCounts())) {
+            || pg != give
+            || use != order.usePoint()
+            || give != order.givePoint()
+            || !couponCounts.equals(order.giveCouponTemplateCounts())) {
             fail();
         }
     }

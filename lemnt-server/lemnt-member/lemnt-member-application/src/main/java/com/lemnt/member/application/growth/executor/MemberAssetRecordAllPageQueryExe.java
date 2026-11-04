@@ -17,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-/** 会员资产流水分页执行器。 */
+/**
+ * 会员资产流水分页执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberAssetRecordAllPageQueryExe {
@@ -25,7 +27,9 @@ public class MemberAssetRecordAllPageQueryExe {
     private final MemberPointRecordGateway pointRecords;
     private final MemberExperienceRecordGateway experienceRecords;
 
-    /** 查询资产流水分页，沿用资源归属和分页约束。 */
+    /**
+     * 查询资产流水分页，沿用资源归属和分页约束。
+     */
     public PageResult<AssetRecordDTO> execute(AssetRecordAllPageQry qry) {
         MemberRules.page(qry.pageNum(), qry.pageSize());
         if (qry.memberId() != null) {
@@ -35,42 +39,42 @@ public class MemberAssetRecordAllPageQueryExe {
             throw new ServiceException("资产类型不合法", 400);
         }
         if ((qry.nickname() != null && qry.nickname().length() > 80)
-                || (qry.bizType() != null && qry.bizType().length() > 40))
+            || (qry.bizType() != null && qry.bizType().length() > 40))
             throw new ServiceException("积分筛选条件超长", 400);
         var nickname =
-                qry.nickname() == null || qry.nickname().isBlank() ? null : qry.nickname().trim();
+            qry.nickname() == null || qry.nickname().isBlank() ? null : qry.nickname().trim();
         var bizType =
-                qry.bizType() == null || qry.bizType().isBlank() ? null : qry.bizType().trim();
+            qry.bizType() == null || qry.bizType().isBlank() ? null : qry.bizType().trim();
         if (qry.pointBizType() != null
-                && (!"POINT".equals(qry.assetType())
-                        || !PointRecordMetadata.supported(qry.pointBizType())))
+            && (!"POINT".equals(qry.assetType())
+            || !PointRecordMetadata.supported(qry.pointBizType())))
             throw new ServiceException("积分业务类型不合法", 400);
         if (qry.title() != null
-                && (qry.title().length() > 255 || !"POINT".equals(qry.assetType()))) {
+            && (qry.title().length() > 255 || !"POINT".equals(qry.assetType()))) {
             throw new ServiceException("积分标题筛选不合法", 400);
         }
         var title = qry.title() == null || qry.title().isBlank() ? null : qry.title().trim();
         var filter =
-                new AssetRecordPageFilter(
-                        qry.memberId(),
-                        qry.assetType(),
-                        (qry.pageNum() - 1) * qry.pageSize(),
-                        qry.pageSize(),
-                        nickname,
-                        bizType,
-                        qry.pointBizType(),
-                        null,
-                        null,
-                        title,
-                        null,
-                        null);
+            new AssetRecordPageFilter(
+                qry.memberId(),
+                qry.assetType(),
+                (qry.pageNum() - 1) * qry.pageSize(),
+                qry.pageSize(),
+                nickname,
+                bizType,
+                qry.pointBizType(),
+                null,
+                null,
+                title,
+                null,
+                null);
         return new PageResult<>(
-                ("POINT".equals(qry.assetType())
-                                ? pointRecords.page(filter)
-                                : experienceRecords.page(filter))
-                        .stream().map(MemberGrowthDTOConverter::toAssetRecordDTO).toList(),
-                ("POINT".equals(qry.assetType())
-                        ? pointRecords.count(filter)
-                        : experienceRecords.count(filter)));
+            ("POINT".equals(qry.assetType())
+                ? pointRecords.page(filter)
+                : experienceRecords.page(filter))
+                .stream().map(MemberGrowthDTOConverter::toAssetRecordDTO).toList(),
+            ("POINT".equals(qry.assetType())
+                ? pointRecords.count(filter)
+                : experienceRecords.count(filter)));
     }
 }

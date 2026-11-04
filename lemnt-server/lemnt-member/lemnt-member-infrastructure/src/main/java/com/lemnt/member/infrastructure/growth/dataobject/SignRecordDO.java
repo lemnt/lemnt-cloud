@@ -22,29 +22,44 @@ import java.time.LocalDate;
 @Accessors(chain = true)
 @TableName("member_sign_in_record")
 public class SignRecordDO extends BaseDO {
-    /** 后台查询关联的当前昵称，不写签到表。 */
+    /**
+     * 后台查询关联的当前昵称，不写签到表。
+     */
     @TableField(exist = false)
     private String nickname;
 
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
-    /** 主键编号。 */
+    /**
+     * 主键编号。
+     */
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    /** 会员编号。 */
+    /**
+     * 会员编号。
+     */
     private Long userId;
 
-    /** 签到日期。 */
+    /**
+     * 签到日期。
+     */
     private LocalDate signDate;
 
-    /** 连续签到周期内的天数。 */
+    /**
+     * 连续签到周期内的天数。
+     */
     @TableField("`day`")
     private Integer day;
 
-    /** 奖励积分。 */
+    /**
+     * 奖励积分。
+     */
     private Long point;
 
-    /** 经验值。 */
+    /**
+     * 经验值。
+     */
     private Long experience;
 }

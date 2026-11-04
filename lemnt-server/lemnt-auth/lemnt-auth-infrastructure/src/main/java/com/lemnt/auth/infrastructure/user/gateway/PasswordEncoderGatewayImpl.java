@@ -20,7 +20,7 @@ public class PasswordEncoderGatewayImpl implements PasswordEncoderGateway {
     @Override
     public boolean matches(String rawPassword, String encodedPassword) {
         return SecurityUtils.matchesPassword(
-                rawPassword, encodedPassword == null ? dummyHash : encodedPassword);
+            rawPassword, encodedPassword == null ? dummyHash : encodedPassword);
     }
 
     @Override

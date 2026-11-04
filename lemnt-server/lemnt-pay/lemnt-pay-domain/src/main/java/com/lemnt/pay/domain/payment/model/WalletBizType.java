@@ -1,6 +1,8 @@
 package com.lemnt.pay.domain.payment.model;
 
-/** 钱包流水业务类型。 */
+/**
+ * 钱包流水业务类型。
+ */
 public enum WalletBizType {
     RECHARGE("充值"),
     RECHARGE_REFUND("充值退款"),

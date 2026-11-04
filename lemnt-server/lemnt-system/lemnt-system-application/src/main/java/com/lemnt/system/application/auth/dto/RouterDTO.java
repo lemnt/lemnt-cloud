@@ -13,7 +13,8 @@ import java.util.List;
  */
 @Data
 public class RouterDTO implements Serializable {
-    @Serial private static final long serialVersionUID = -6472100563384356589L;
+    @Serial
+    private static final long serialVersionUID = -6472100563384356589L;
 
     /**
      * 路由名字

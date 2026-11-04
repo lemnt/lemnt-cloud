@@ -24,9 +24,9 @@ public class PaymentChannelCloseGatewayImpl implements PaymentChannelCloseGatewa
     @Override
     public boolean closeUnpaid(PaymentRecord payment) {
         var matching =
-                clients.stream()
-                        .filter(client -> client.channel().equals(payment.channel()))
-                        .toList();
+            clients.stream()
+                .filter(client -> client.channel().equals(payment.channel()))
+                .toList();
 
         // Missing or ambiguous adapters cannot authorize inventory release.
         return matching.size() == 1 && matching.get(0).closeUnpaid(payment);

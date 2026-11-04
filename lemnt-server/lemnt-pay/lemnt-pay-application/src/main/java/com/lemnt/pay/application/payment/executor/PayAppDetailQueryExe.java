@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 支付应用详情查询。 */
+/**
+ * 支付应用详情查询。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayAppDetailQueryExe {

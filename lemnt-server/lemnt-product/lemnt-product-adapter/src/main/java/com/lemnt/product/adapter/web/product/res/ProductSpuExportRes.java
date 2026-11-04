@@ -7,7 +7,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-/** 只导出当前真实商品字段，编号以文本保存，避免Excel丢失大编号精度。 */
+/**
+ * 只导出当前真实商品字段，编号以文本保存，避免Excel丢失大编号精度。
+ */
 @Data
 @AllArgsConstructor
 @ColumnWidth(24)

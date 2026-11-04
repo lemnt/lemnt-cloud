@@ -30,7 +30,7 @@ public class SettlementService {
         var value = orderPlacementService.prepareSettlement(query);
         settlementGateway.cache(value);
         return new SettlementDTO(
-                value.id(), value.expiresAt(), SettlementDTOConverter.quote(value.quote()));
+            value.id(), value.expiresAt(), SettlementDTOConverter.quote(value.quote()));
     }
 
     /**
@@ -38,9 +38,9 @@ public class SettlementService {
      */
     public SettlementReceiptDTO submit(Long memberId, String id, String requestNo) {
         var order =
-                orderPlacementService.submitSettlement(memberId, id, requestNo, settlementGateway);
+            orderPlacementService.submitSettlement(memberId, id, requestNo, settlementGateway);
         return SettlementDTOConverter.receipt(
-                settlementRecordService.receipt(order.orderNo()), order);
+            settlementRecordService.receipt(order.orderNo()), order);
     }
 
     /**
@@ -65,12 +65,12 @@ public class SettlementService {
      */
     public SettlementAbandonDTO abandon(Long memberId, String id, String requestNo) {
         var order =
-                orderPlacementService.abandonSettlement(memberId, id, requestNo, settlementGateway);
+            orderPlacementService.abandonSettlement(memberId, id, requestNo, settlementGateway);
         return new SettlementAbandonDTO(
-                order == null,
-                order == null
-                        ? null
-                        : SettlementDTOConverter.receipt(
-                                settlementRecordService.receipt(order.orderNo()), order));
+            order == null,
+            order == null
+                ? null
+                : SettlementDTOConverter.receipt(
+                settlementRecordService.receipt(order.orderNo()), order));
     }
 }

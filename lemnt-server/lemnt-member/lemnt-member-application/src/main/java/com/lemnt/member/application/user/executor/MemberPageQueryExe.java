@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 查询会员资料分页查询执行器。 */
+/**
+ * 查询会员资料分页查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberPageQueryExe {
@@ -32,31 +34,31 @@ public class MemberPageQueryExe {
         var tags = qry.tagIds() == null ? List.<Long>of() : qry.tagIds();
         tags.forEach(MemberRules::id);
         if ((qry.loginStartTime() != null
-                        && qry.loginEndTime() != null
-                        && qry.loginStartTime().isAfter(qry.loginEndTime()))
-                || (qry.createStartTime() != null
-                        && qry.createEndTime() != null
-                        && qry.createStartTime().isAfter(qry.createEndTime()))) {
+            && qry.loginEndTime() != null
+            && qry.loginStartTime().isAfter(qry.loginEndTime()))
+            || (qry.createStartTime() != null
+            && qry.createEndTime() != null
+            && qry.createStartTime().isAfter(qry.createEndTime()))) {
             throw new ServiceException("开始时间不能晚于结束时间", 400);
         }
         var filter =
-                new MemberPageFilter(
-                        MemberRules.optional(qry.mobile(), 24),
-                        MemberRules.optional(qry.email(), 254),
-                        MemberRules.optional(qry.nickname(), 80),
-                        qry.levelId(),
-                        qry.groupId(),
-                        tags.stream().distinct().toList(),
-                        qry.loginStartTime(),
-                        qry.loginEndTime(),
-                        qry.createStartTime(),
-                        qry.createEndTime(),
-                        (qry.pageNum() - 1) * qry.pageSize(),
-                        qry.pageSize());
+            new MemberPageFilter(
+                MemberRules.optional(qry.mobile(), 24),
+                MemberRules.optional(qry.email(), 254),
+                MemberRules.optional(qry.nickname(), 80),
+                qry.levelId(),
+                qry.groupId(),
+                tags.stream().distinct().toList(),
+                qry.loginStartTime(),
+                qry.loginEndTime(),
+                qry.createStartTime(),
+                qry.createEndTime(),
+                (qry.pageNum() - 1) * qry.pageSize(),
+                qry.pageSize());
         return new PageResult<>(
-                memberUserGateway.findPage(filter).stream()
-                        .map(MemberUserDTOConverter::toMemberDTO)
-                        .toList(),
-                memberUserGateway.count(filter));
+            memberUserGateway.findPage(filter).stream()
+                .map(MemberUserDTOConverter::toMemberDTO)
+                .toList(),
+            memberUserGateway.count(filter));
     }
 }

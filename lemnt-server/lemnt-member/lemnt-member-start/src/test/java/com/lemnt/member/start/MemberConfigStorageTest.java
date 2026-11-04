@@ -11,7 +11,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/** 真实业务适配器验证整组JSON，缺失或RPC故障不得伪造默认配置。 */
+/**
+ * 真实业务适配器验证整组JSON，缺失或RPC故障不得伪造默认配置。
+ */
 class MemberConfigStorageTest {
     @Test
     void roundTripsSnapshotAndPropagatesMissingAndTransportFailure() {
@@ -24,18 +26,18 @@ class MemberConfigStorageTest {
         assertEquals(value, gateway.config());
         gateway.configSave(value);
         verify(remote)
-                .saveBusinessConfig(
-                        argThat(
-                                bo ->
-                                        bo.configKey().equals("member.point.config")
-                                                && JSON.parseObject(bo.configValue(), Config.class)
-                                                        .equals(value)));
+            .saveBusinessConfig(
+                argThat(
+                    bo ->
+                        bo.configKey().equals("member.point.config")
+                            && JSON.parseObject(bo.configValue(), Config.class)
+                            .equals(value)));
         when(remote.getConfig("member.point.config"))
-                .thenThrow(new IllegalStateException("system unavailable"));
+            .thenThrow(new IllegalStateException("system unavailable"));
         assertThrows(IllegalStateException.class, gateway::config);
         doThrow(new IllegalStateException("system unavailable"))
-                .when(remote)
-                .saveBusinessConfig(any());
+            .when(remote)
+            .saveBusinessConfig(any());
         assertThrows(IllegalStateException.class, () -> gateway.configSave(value));
     }
 }

@@ -10,7 +10,11 @@
     </parent>
     <artifactId>lemnt-promotion-domain</artifactId>
     <dependencies>
-        <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><scope>test</scope></dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.lemnt</groupId>
             <artifactId>lemnt-common-domain</artifactId>
@@ -24,11 +28,15 @@
     </dependencies>
     <build>
         <testResources>
-            <testResource><directory>src/test/resources</directory></testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
             <testResource>
                 <directory>${project.basedir}/../../../docs/promotion</directory>
                 <targetPath>promotion</targetPath>
-                <includes><include>pricing-vectors.json</include></includes>
+                <includes>
+                    <include>pricing-vectors.json</include>
+                </includes>
             </testResource>
         </testResources>
     </build>

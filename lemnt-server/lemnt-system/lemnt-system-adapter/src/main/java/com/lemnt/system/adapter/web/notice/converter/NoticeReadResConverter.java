@@ -21,12 +21,12 @@ public class NoticeReadResConverter {
             return null;
         }
         return new NoticeReadUserRes(
-                dto.getUserId(),
-                dto.getUserName(),
-                dto.getNickName(),
-                dto.getDeptName(),
-                dto.getPhonenumber(),
-                dto.getReadTime());
+            dto.getUserId(),
+            dto.getUserName(),
+            dto.getNickName(),
+            dto.getDeptName(),
+            dto.getPhonenumber(),
+            dto.getReadTime());
     }
 
     /**

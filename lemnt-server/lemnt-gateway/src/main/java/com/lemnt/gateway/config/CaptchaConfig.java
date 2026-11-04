@@ -39,7 +39,7 @@ public class CaptchaConfig {
         // 图片样式 水纹com.google.code.kaptcha.impl.WaterRipple
         // 鱼眼com.google.code.kaptcha.impl.FishEyeGimpy 阴影com.google.code.kaptcha.impl.ShadowGimpy
         properties.setProperty(
-                KAPTCHA_OBSCURIFICATOR_IMPL, "com.google.code.kaptcha.impl.ShadowGimpy");
+            KAPTCHA_OBSCURIFICATOR_IMPL, "com.google.code.kaptcha.impl.ShadowGimpy");
         Config config = new Config(properties);
         defaultKaptcha.setConfig(config);
         return defaultKaptcha;
@@ -65,7 +65,7 @@ public class CaptchaConfig {
         properties.setProperty(KAPTCHA_SESSION_CONFIG_KEY, "kaptchaCodeMath");
         // 验证码文本生成器
         properties.setProperty(
-                KAPTCHA_TEXTPRODUCER_IMPL, "com.lemnt.gateway.config.KaptchaTextCreator");
+            KAPTCHA_TEXTPRODUCER_IMPL, "com.lemnt.gateway.config.KaptchaTextCreator");
         // 验证码文本字符间距 默认为2
         properties.setProperty(KAPTCHA_TEXTPRODUCER_CHAR_SPACE, "3");
         // 验证码文本字符长度 默认为5
@@ -79,7 +79,7 @@ public class CaptchaConfig {
         // 图片样式 水纹com.google.code.kaptcha.impl.WaterRipple
         // 鱼眼com.google.code.kaptcha.impl.FishEyeGimpy 阴影com.google.code.kaptcha.impl.ShadowGimpy
         properties.setProperty(
-                KAPTCHA_OBSCURIFICATOR_IMPL, "com.google.code.kaptcha.impl.ShadowGimpy");
+            KAPTCHA_OBSCURIFICATOR_IMPL, "com.google.code.kaptcha.impl.ShadowGimpy");
         Config config = new Config(properties);
         defaultKaptcha.setConfig(config);
         return defaultKaptcha;

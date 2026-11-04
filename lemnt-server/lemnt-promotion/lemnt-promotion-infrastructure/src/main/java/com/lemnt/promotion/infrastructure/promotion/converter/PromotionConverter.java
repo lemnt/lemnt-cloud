@@ -10,25 +10,28 @@ import com.lemnt.promotion.infrastructure.promotion.dataobject.RewardActivityDO;
 
 import com.alibaba.fastjson2.JSON;
 
-/** 活动领域对象与表结构转换。 */
+/**
+ * 活动领域对象与表结构转换。
+ */
 public final class PromotionConverter {
-    private PromotionConverter() {}
+    private PromotionConverter() {
+    }
 
     public static RewardActivity model(RewardActivityDO row) {
         if (row == null) {
             return null;
         }
         return new RewardActivity(
-                row.getId(),
-                row.getName(),
-                row.getStatus(),
-                row.getStartTime(),
-                row.getEndTime(),
-                row.getRemark(),
-                row.getConditionType(),
-                row.getProductScope(),
-                JSON.parseArray(row.getProductScopeValuesJson(), Long.class),
-                JSON.parseArray(row.getRulesJson(), RewardRule.class));
+            row.getId(),
+            row.getName(),
+            row.getStatus(),
+            row.getStartTime(),
+            row.getEndTime(),
+            row.getRemark(),
+            row.getConditionType(),
+            row.getProductScope(),
+            JSON.parseArray(row.getProductScopeValuesJson(), Long.class),
+            JSON.parseArray(row.getRulesJson(), RewardRule.class));
     }
 
     public static RewardActivityDO row(RewardActivity value) {
@@ -51,12 +54,12 @@ public final class PromotionConverter {
             return null;
         }
         return new DiscountActivity(
-                row.getId(),
-                row.getName(),
-                row.getStatus(),
-                row.getStartTime(),
-                row.getEndTime(),
-                row.getRemark());
+            row.getId(),
+            row.getName(),
+            row.getStatus(),
+            row.getStartTime(),
+            row.getEndTime(),
+            row.getRemark());
     }
 
     public static DiscountActivityDO row(DiscountActivity value) {
@@ -75,13 +78,13 @@ public final class PromotionConverter {
             return null;
         }
         return new DiscountProduct(
-                row.getId(),
-                row.getActivityId(),
-                row.getSpuId(),
-                row.getSkuId(),
-                row.getDiscountType(),
-                row.getDiscountPercent(),
-                row.getDiscountPrice());
+            row.getId(),
+            row.getActivityId(),
+            row.getSpuId(),
+            row.getSkuId(),
+            row.getDiscountType(),
+            row.getDiscountPercent(),
+            row.getDiscountPrice());
     }
 
     public static DiscountProductDO row(DiscountProduct value) {

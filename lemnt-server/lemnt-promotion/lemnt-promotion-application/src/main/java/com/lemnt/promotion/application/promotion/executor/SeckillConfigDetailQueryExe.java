@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 秒杀时段详情执行器。 */
+/**
+ * 秒杀时段详情执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class SeckillConfigDetailQueryExe {

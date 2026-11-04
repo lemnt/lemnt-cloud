@@ -33,10 +33,14 @@ public class TradeOrderDO extends BaseDO {
     private LocalDateTime finishTime;
     private LocalDateTime receiveTime;
 
-    /** 使用积分数量，历史未知为NULL。 */
+    /**
+     * 使用积分数量，历史未知为NULL。
+     */
     private Long usePoint;
 
-    /** 赠送积分数量，历史未知为NULL。 */
+    /**
+     * 赠送积分数量，历史未知为NULL。
+     */
     private Long givePoint;
 
     private Long addressId;
@@ -49,28 +53,44 @@ public class TradeOrderDO extends BaseDO {
     private String pickUpVerifyCode;
     private BigDecimal deliveryPrice;
 
-    /** 营销满减赠券模板及数量 JSON。 */
+    /**
+     * 营销满减赠券模板及数量 JSON。
+     */
     private String giveCouponTemplateCounts;
 
     /** 第164批冻结结果；历史未记录的值保持为空。 */
-    /** 商品原价合计，单位元，历史未知为NULL。 */
+    /**
+     * 商品原价合计，单位元，历史未知为NULL。
+     */
     private BigDecimal originalAmount;
 
-    /** 商品优惠金额，单位元，历史未知为NULL。 */
+    /**
+     * 商品优惠金额，单位元，历史未知为NULL。
+     */
     private BigDecimal discountAmount;
 
-    /** 减免前运费，单位元，历史未知为NULL。 */
+    /**
+     * 减免前运费，单位元，历史未知为NULL。
+     */
     private BigDecimal deliveryOriginalPrice;
 
-    /** 运费优惠金额，单位元，历史未知为NULL。 */
+    /**
+     * 运费优惠金额，单位元，历史未知为NULL。
+     */
     private BigDecimal deliveryDiscountPrice;
 
-    /** 人工调价差额，正加负减，单位元，历史未知为NULL。 */
+    /**
+     * 人工调价差额，正加负减，单位元，历史未知为NULL。
+     */
     private BigDecimal adjustmentAmount;
 
-    /** 金额快照完整性：COMPLETE或LEGACY_PARTIAL。 */
+    /**
+     * 金额快照完整性：COMPLETE或LEGACY_PARTIAL。
+     */
     private String pricingSnapshotStatus;
 
-    /** 支付前调价时递增的金额快照版本。 */
+    /**
+     * 支付前调价时递增的金额快照版本。
+     */
     private Integer pricingSnapshotVersion;
 }

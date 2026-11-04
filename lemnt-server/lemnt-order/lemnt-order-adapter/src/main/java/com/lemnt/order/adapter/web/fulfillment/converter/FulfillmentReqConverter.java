@@ -17,21 +17,22 @@ import com.lemnt.order.domain.order.model.TradeOperator;
  * 履约请求转换器。
  */
 public final class FulfillmentReqConverter {
-    private FulfillmentReqConverter() {}
+    private FulfillmentReqConverter() {
+    }
 
     /**
      * 发货。
      */
     public static ShipmentCreateCmd shipment(String no, ShipmentCreateReq r) {
         return new ShipmentCreateCmd(
-                no,
-                r.requestNo(),
-                r.carrierCode(),
-                r.trackingNo(),
-                r.recipientName(),
-                r.phone(),
-                r.address(),
-                TradeOperator.administrator(SecurityUtils.getUserId()));
+            no,
+            r.requestNo(),
+            r.carrierCode(),
+            r.trackingNo(),
+            r.recipientName(),
+            r.phone(),
+            r.address(),
+            TradeOperator.administrator(SecurityUtils.getUserId()));
     }
 
     /**
@@ -53,10 +54,10 @@ public final class FulfillmentReqConverter {
      */
     public static OrderPageQry orders(OrderPageReq r) {
         return new OrderPageQry(
-                r.orderNo(),
-                r.status(),
-                r.pageNum() == null ? 1 : r.pageNum(),
-                r.pageSize() == null ? 20 : r.pageSize());
+            r.orderNo(),
+            r.status(),
+            r.pageNum() == null ? 1 : r.pageNum(),
+            r.pageSize() == null ? 20 : r.pageSize());
     }
 
     /**
@@ -64,9 +65,9 @@ public final class FulfillmentReqConverter {
      */
     public static RefundPageQry refunds(RefundPageReq r) {
         return new RefundPageQry(
-                r.orderNo(),
-                r.status(),
-                r.pageNum() == null ? 1 : r.pageNum(),
-                r.pageSize() == null ? 20 : r.pageSize());
+            r.orderNo(),
+            r.status(),
+            r.pageNum() == null ? 1 : r.pageNum(),
+            r.pageSize() == null ? 20 : r.pageSize());
     }
 }

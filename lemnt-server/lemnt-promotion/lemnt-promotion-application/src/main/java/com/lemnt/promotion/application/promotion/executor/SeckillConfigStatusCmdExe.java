@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 秒杀时段状态修改执行器。 */
+/**
+ * 秒杀时段状态修改执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class SeckillConfigStatusCmdExe {

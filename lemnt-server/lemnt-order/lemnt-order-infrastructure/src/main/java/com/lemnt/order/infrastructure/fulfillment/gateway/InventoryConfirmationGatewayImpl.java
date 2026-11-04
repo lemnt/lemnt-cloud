@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
-/** InventoryConfirmation 表持久化实现。 */
+/**
+ * InventoryConfirmation 表持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class InventoryConfirmationGatewayImpl implements InventoryConfirmationGateway {
@@ -38,9 +40,9 @@ public class InventoryConfirmationGatewayImpl implements InventoryConfirmationGa
      */
     private int confirmedRow(String orderNo) {
         return inventoryConfirmationMapper
-                .selectCount(
-                        Wrappers.<InventoryConfirmationDO>lambdaQuery()
-                                .eq(InventoryConfirmationDO::getOrderNo, orderNo))
-                .intValue();
+            .selectCount(
+                Wrappers.<InventoryConfirmationDO>lambdaQuery()
+                    .eq(InventoryConfirmationDO::getOrderNo, orderNo))
+            .intValue();
     }
 }

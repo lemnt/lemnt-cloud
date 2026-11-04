@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 核销码预览执行器。 */
+/**
+ * 核销码预览执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class PickUpPreviewQueryExe {

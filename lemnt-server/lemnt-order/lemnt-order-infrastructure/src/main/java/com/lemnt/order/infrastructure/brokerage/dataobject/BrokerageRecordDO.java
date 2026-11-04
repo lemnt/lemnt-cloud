@@ -9,7 +9,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/** 佣金记录持久化对象。 */
+/**
+ * 佣金记录持久化对象。
+ */
 @Data
 @TableName("order_brokerage_record")
 public class BrokerageRecordDO {

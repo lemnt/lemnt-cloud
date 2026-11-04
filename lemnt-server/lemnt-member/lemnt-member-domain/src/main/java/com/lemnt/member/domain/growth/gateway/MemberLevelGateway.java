@@ -5,7 +5,9 @@ import com.lemnt.member.domain.growth.model.Level;
 import java.util.Collection;
 import java.util.List;
 
-/** member_level 表领域存储网关。 */
+/**
+ * member_level 表领域存储网关。
+ */
 public interface MemberLevelGateway {
 
     /**
@@ -13,7 +15,9 @@ public interface MemberLevelGateway {
      */
     List<Level> levels();
 
-    /** 按名称包含及状态查询等级。 */
+    /**
+     * 按名称包含及状态查询等级。
+     */
     List<Level> levels(String name, Integer status);
 
     /**
@@ -31,6 +35,8 @@ public interface MemberLevelGateway {
      */
     boolean levelDelete(Long id);
 
-    /** 按真实关联ID批量读取，空集合不查表。 */
+    /**
+     * 按真实关联ID批量读取，空集合不查表。
+     */
     List<Level> levelsByIds(Collection<Long> ids);
 }

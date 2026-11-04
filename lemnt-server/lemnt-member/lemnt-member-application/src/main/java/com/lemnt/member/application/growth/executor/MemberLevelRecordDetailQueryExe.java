@@ -10,14 +10,18 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 会员等级变更流水详情执行器。 */
+/**
+ * 会员等级变更流水详情执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberLevelRecordDetailQueryExe {
 
     private final MemberLevelRecordGateway memberLevelRecordGateway;
 
-    /** 查询等级变更流水详情，沿用资源归属和分页约束。 */
+    /**
+     * 查询等级变更流水详情，沿用资源归属和分页约束。
+     */
     public LevelRecordDTO execute(LevelRecordDetailQry qry) {
         MemberRules.id(qry.id());
         var record = memberLevelRecordGateway.levelsDetail(qry.id());

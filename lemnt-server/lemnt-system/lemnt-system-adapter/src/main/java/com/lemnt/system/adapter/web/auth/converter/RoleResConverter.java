@@ -24,13 +24,13 @@ public class RoleResConverter {
             return null;
         }
         return new RoleRes(
-                dto.getRoleId(),
-                dto.getRoleName(),
-                dto.getRoleKey(),
-                dto.getRoleSort(),
-                dto.getDataScope(),
-                dto.getStatus(),
-                dto.isFlag());
+            dto.getRoleId(),
+            dto.getRoleName(),
+            dto.getRoleKey(),
+            dto.getRoleSort(),
+            dto.getDataScope(),
+            dto.getStatus(),
+            dto.isFlag());
     }
 
     /**
@@ -41,13 +41,13 @@ public class RoleResConverter {
             return null;
         }
         return new RoleRes(
-                entity.getRoleId(),
-                entity.getRoleName(),
-                entity.getRoleKey(),
-                entity.getRoleSort(),
-                entity.getDataScope(),
-                entity.getStatus(),
-                entity.isFlag());
+            entity.getRoleId(),
+            entity.getRoleName(),
+            entity.getRoleKey(),
+            entity.getRoleSort(),
+            entity.getDataScope(),
+            entity.getStatus(),
+            entity.isFlag());
     }
 
     /**
@@ -86,13 +86,13 @@ public class RoleResConverter {
             return null;
         }
         return new SystemRoleListRes(
-                dto.getRoleId(),
-                dto.getRoleName(),
-                dto.getRoleKey(),
-                dto.getRoleSort(),
-                dto.getDataScope(),
-                dto.getStatus(),
-                dto.isFlag());
+            dto.getRoleId(),
+            dto.getRoleName(),
+            dto.getRoleKey(),
+            dto.getRoleSort(),
+            dto.getDataScope(),
+            dto.getStatus(),
+            dto.isFlag());
     }
 
     /**
@@ -103,13 +103,13 @@ public class RoleResConverter {
             return null;
         }
         return new SystemRoleListRes(
-                entity.getRoleId(),
-                entity.getRoleName(),
-                entity.getRoleKey(),
-                entity.getRoleSort(),
-                entity.getDataScope(),
-                entity.getStatus(),
-                entity.isFlag());
+            entity.getRoleId(),
+            entity.getRoleName(),
+            entity.getRoleKey(),
+            entity.getRoleSort(),
+            entity.getDataScope(),
+            entity.getStatus(),
+            entity.isFlag());
     }
 
     /**
@@ -120,13 +120,13 @@ public class RoleResConverter {
             return null;
         }
         return new SystemRoleGetInfoRes(
-                dto.getRoleId(),
-                dto.getRoleName(),
-                dto.getRoleKey(),
-                dto.getRoleSort(),
-                dto.getDataScope(),
-                dto.getStatus(),
-                dto.isFlag());
+            dto.getRoleId(),
+            dto.getRoleName(),
+            dto.getRoleKey(),
+            dto.getRoleSort(),
+            dto.getDataScope(),
+            dto.getStatus(),
+            dto.isFlag());
     }
 
     /**
@@ -137,20 +137,20 @@ public class RoleResConverter {
             return null;
         }
         return new SystemRoleGetInfoRes(
-                entity.getRoleId(),
-                entity.getRoleName(),
-                entity.getRoleKey(),
-                entity.getRoleSort(),
-                entity.getDataScope(),
-                entity.getStatus(),
-                entity.isFlag());
+            entity.getRoleId(),
+            entity.getRoleName(),
+            entity.getRoleKey(),
+            entity.getRoleSort(),
+            entity.getDataScope(),
+            entity.getStatus(),
+            entity.isFlag());
     }
 
     /**
      * RoleDTO List → RoleInfoRes List
      */
     public static List<SystemRoleOptionselectRes> toResListToSystemRoleOptionselectRes(
-            List<RoleDTO> list) {
+        List<RoleDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -169,13 +169,13 @@ public class RoleResConverter {
             return null;
         }
         return new SystemRoleOptionselectRes(
-                dto.getRoleId(),
-                dto.getRoleName(),
-                dto.getRoleKey(),
-                dto.getRoleSort(),
-                dto.getDataScope(),
-                dto.getStatus(),
-                dto.isFlag());
+            dto.getRoleId(),
+            dto.getRoleName(),
+            dto.getRoleKey(),
+            dto.getRoleSort(),
+            dto.getDataScope(),
+            dto.getStatus(),
+            dto.isFlag());
     }
 
     /**
@@ -186,12 +186,12 @@ public class RoleResConverter {
             return null;
         }
         return new SystemRoleOptionselectRes(
-                entity.getRoleId(),
-                entity.getRoleName(),
-                entity.getRoleKey(),
-                entity.getRoleSort(),
-                entity.getDataScope(),
-                entity.getStatus(),
-                entity.isFlag());
+            entity.getRoleId(),
+            entity.getRoleName(),
+            entity.getRoleKey(),
+            entity.getRoleSort(),
+            entity.getDataScope(),
+            entity.getStatus(),
+            entity.isFlag());
     }
 }

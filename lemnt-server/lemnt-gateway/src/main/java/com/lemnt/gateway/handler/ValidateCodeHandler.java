@@ -25,7 +25,8 @@ import java.util.Map;
 @Component
 public class ValidateCodeHandler implements HandlerFunction<ServerResponse> {
 
-    @Autowired private ValidateCodeService validateCodeService;
+    @Autowired
+    private ValidateCodeService validateCodeService;
 
     @Override
     public Mono<ServerResponse> handle(@NonNull ServerRequest serverRequest) {

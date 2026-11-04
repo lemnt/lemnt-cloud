@@ -8,7 +8,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-/** 到期佣金解冻任务，单条失败由下一次调度继续重试。 */
+/**
+ * 到期佣金解冻任务，单条失败由下一次调度继续重试。
+ */
 @Component
 @ConditionalOnProperty(name = "lemnt.trade.scheduler.enabled", havingValue = "true")
 public class BrokerageUnfreezeScheduler {

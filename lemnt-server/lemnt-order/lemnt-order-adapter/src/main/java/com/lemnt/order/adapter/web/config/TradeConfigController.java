@@ -21,7 +21,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 交易基础配置接口。 */
+/**
+ * 交易基础配置接口。
+ */
 @Tag(name = "交易基础配置")
 @RestController
 @RequestMapping("/trade/admin/config")
@@ -30,7 +32,9 @@ public class TradeConfigController {
     private final TradeConfigDetailQueryExe detail;
     private final TradeConfigUpdateCmdExe update;
 
-    /** 读取完整交易配置。 */
+    /**
+     * 读取完整交易配置。
+     */
     @GetMapping
     @Operation(summary = "查询交易配置")
     @RequiresPermissions("trade:config:query")
@@ -38,7 +42,9 @@ public class TradeConfigController {
         return R.ok(TradeConfigResConverter.tradeConfigDetail(detail.execute()));
     }
 
-    /** 保存完整交易配置。 */
+    /**
+     * 保存完整交易配置。
+     */
     @PutMapping
     @Operation(summary = "修改交易配置")
     @RequiresPermissions("trade:config:update")

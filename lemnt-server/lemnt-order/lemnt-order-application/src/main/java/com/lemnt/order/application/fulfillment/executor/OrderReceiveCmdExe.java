@@ -25,9 +25,11 @@ public class OrderReceiveCmdExe {
         return FulfillmentDTOConverter.shipment(orderFulfillmentService.receive(orderNo));
     }
 
-    /** 本人收货由领域操作明确记录会员身份。 */
+    /**
+     * 本人收货由领域操作明确记录会员身份。
+     */
     public ShipmentDTO executeForMember(Long memberId, String orderNo) {
         return FulfillmentDTOConverter.shipment(
-                orderFulfillmentService.receive(orderNo, TradeOperator.member(memberId)));
+            orderFulfillmentService.receive(orderNo, TradeOperator.member(memberId)));
     }
 }

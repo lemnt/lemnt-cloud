@@ -27,7 +27,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.LongSupplier;
 
-/** 活动组合用例的真实四库装配，会员资料及外部渠道使用可控传输。 */
+/**
+ * 活动组合用例的真实四库装配，会员资料及外部渠道使用可控传输。
+ */
 class CatalogPersistenceTest {
     CommerceTestFixture components;
     CommerceEventPump events;
@@ -43,62 +45,62 @@ class CatalogPersistenceTest {
         events = new CommerceEventPump(components);
         events.install();
         CommerceTestDefaults.install(
-                components,
-                events,
-                () -> points.getAsLong(),
-                () -> new MemberPointConfigDTO(false, 1, 0, 0),
-                () -> null);
+            components,
+            events,
+            () -> points.getAsLong(),
+            () -> new MemberPointConfigDTO(false, 1, 0, 0),
+            () -> null);
         components.register(LockTemplate.class, MemberLockTestSupport.create());
         components.register(
-                SettlementGateway.class, new MemorySettlementGateway(new ConcurrentHashMap<>()));
+            SettlementGateway.class, new MemorySettlementGateway(new ConcurrentHashMap<>()));
         catalogService = components.get(ProductCatalogService.class);
         productInventoryService = components.get(ProductInventoryService.class);
         productSkuGateway = components.get(ProductSkuGateway.class);
         productSpuGateway = components.get(ProductSpuGateway.class);
         categoryId =
-                components
-                        .get(CategoryGateway.class)
-                        .saveCategory(new Category(null, null, "分类", null, 0, "ENABLED"))
-                        .id();
+            components
+                .get(CategoryGateway.class)
+                .saveCategory(new Category(null, null, "分类", null, 0, "ENABLED"))
+                .id();
         brandId =
-                components
-                        .get(BrandGateway.class)
-                        .saveBrand(new Brand(null, "品牌", null, null, 0, "ENABLED"))
-                        .id();
+            components
+                .get(BrandGateway.class)
+                .saveBrand(new Brand(null, "品牌", null, null, 0, "ENABLED"))
+                .id();
     }
 
     ProductSku draft(String code, int stock) {
         return new ProductSku(
-                null,
-                null,
-                code,
-                "sku",
-                BigDecimal.TEN,
-                stock,
-                null,
-                Map.of("颜色", code),
-                "ON_SHELF");
+            null,
+            null,
+            code,
+            "sku",
+            BigDecimal.TEN,
+            stock,
+            null,
+            Map.of("颜色", code),
+            "ON_SHELF");
     }
 
     ProductSpu create(String code, ProductSku... skus) {
         return catalogService.createSpu(
-                ProductCatalogValidation.newSpu(
-                        new ProductSpu(
-                                null,
-                                code,
-                                "goods",
-                                categoryId,
-                                brandId,
-                                "description",
-                                null,
-                                null,
-                                List.of(skus))));
+            ProductCatalogValidation.newSpu(
+                new ProductSpu(
+                    null,
+                    code,
+                    "goods",
+                    categoryId,
+                    brandId,
+                    "description",
+                    null,
+                    null,
+                    List.of(skus))));
     }
 
     long count(String table) {
         return components
-                .jdbc(table.startsWith("product_") ? "product" : "promotion")
-                .queryForObject("SELECT COUNT(*) FROM " + table, Long.class);
+            .jdbc(table.startsWith("product_") ? "product" : "promotion")
+            .queryForObject("SELECT COUNT(*) FROM " + table, Long.class);
     }
 
     void closeSchemaConnection() throws Exception {

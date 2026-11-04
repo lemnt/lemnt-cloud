@@ -6,7 +6,9 @@ import com.lemnt.pay.client.dto.PaymentResultDTO;
 
 import java.util.List;
 
-/** 订单服务核对支付/退款的只读可信接口。 */
+/**
+ * 订单服务核对支付/退款的只读可信接口。
+ */
 public interface PaymentQueryClient {
     PaymentRefundTotalDTO refundTotal(String orderNo);
 

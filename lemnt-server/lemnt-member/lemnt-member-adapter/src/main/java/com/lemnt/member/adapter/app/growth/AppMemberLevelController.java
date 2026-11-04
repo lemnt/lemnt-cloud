@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 小程序会员等级接口。 */
+/**
+ * 小程序会员等级接口。
+ */
 @Tag(name = "小程序会员等级")
 @RestController
 @RequestMapping("/app/growths")
@@ -29,8 +31,8 @@ public class AppMemberLevelController {
     @Operation(summary = "已启用会员等级")
     public R<List<LevelRes>> levels() {
         return R.ok(
-                memberLevelListQueryExe.execute(new LevelListQry(true)).stream()
-                        .map(MemberGrowthResConverter::level)
-                        .toList());
+            memberLevelListQueryExe.execute(new LevelListQry(true)).stream()
+                .map(MemberGrowthResConverter::level)
+                .toList());
     }
 }

@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 public class DictData implements Serializable {
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 字典编码

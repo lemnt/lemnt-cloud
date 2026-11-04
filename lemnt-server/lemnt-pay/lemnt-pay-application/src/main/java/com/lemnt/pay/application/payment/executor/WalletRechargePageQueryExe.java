@@ -13,7 +13,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 充值单分页查询。 */
+/**
+ * 充值单分页查询。
+ */
 @Component
 @RequiredArgsConstructor
 public class WalletRechargePageQueryExe {
@@ -25,14 +27,14 @@ public class WalletRechargePageQueryExe {
         }
         PayConfigRules.page(qry.pageNum(), qry.pageSize());
         var page =
-                recharges.page(
-                        new WalletRechargeFilter(
-                                qry.memberId(),
-                                RechargeRules.statusText(qry.status()),
-                                qry.pageNum(),
-                                qry.pageSize()));
+            recharges.page(
+                new WalletRechargeFilter(
+                    qry.memberId(),
+                    RechargeRules.statusText(qry.status()),
+                    qry.pageNum(),
+                    qry.pageSize()));
         return PageResult.of(
-                page.getRecords().stream().map(RechargeDTOConverter::recharge).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(RechargeDTOConverter::recharge).toList(),
+            page.getTotal());
     }
 }

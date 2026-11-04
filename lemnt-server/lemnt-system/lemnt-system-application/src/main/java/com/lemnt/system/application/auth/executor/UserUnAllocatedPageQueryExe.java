@@ -28,9 +28,9 @@ public class UserUnAllocatedPageQueryExe {
         condition.setPhonenumber(qry.phonenumber());
         condition.setRoleId(qry.roleId());
         PageResult<User> pageResult =
-                userGateway.selectUnallocatedList(
-                        condition, new PageQry(qry.pageNum(), qry.pageSize()));
+            userGateway.selectUnallocatedList(
+                condition, new PageQry(qry.pageNum(), qry.pageSize()));
         return PageResult.of(
-                UserConverter.toDTOList(pageResult.getRecords()), pageResult.getTotal());
+            UserConverter.toDTOList(pageResult.getRecords()), pageResult.getTotal());
     }
 }

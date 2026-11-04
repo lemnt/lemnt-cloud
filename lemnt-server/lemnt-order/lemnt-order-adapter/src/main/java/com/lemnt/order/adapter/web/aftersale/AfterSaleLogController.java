@@ -17,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 后台售后日志查询。 */
+/**
+ * 后台售后日志查询。
+ */
 @Tag(name = "售后操作日志")
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +27,9 @@ import java.util.List;
 public class AfterSaleLogController {
     private final AfterSaleLogListQueryExe logs;
 
-    /** 与售后详情使用同一查询权限。 */
+    /**
+     * 与售后详情使用同一查询权限。
+     */
     @GetMapping("/{no}/logs")
     @Operation(summary = "查询售后操作日志")
     @RequiresPermissions("trade:after-sale:query")

@@ -26,7 +26,7 @@ public class TokenGatewayImpl implements TokenGateway {
     public TokenResult createToken(LoginUser loginUser) {
         var result = tokenService.createToken(TokenConverter.toCommon(loginUser));
         return new TokenResult(
-                (String) result.get("access_token"), (Long) result.get("expires_in"));
+            (String) result.get("access_token"), (Long) result.get("expires_in"));
     }
 
     @Override

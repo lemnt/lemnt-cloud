@@ -12,7 +12,9 @@ import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 
-/** pay_recharge_package 数据对象。 */
+/**
+ * pay_recharge_package 数据对象。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("pay_recharge_package")

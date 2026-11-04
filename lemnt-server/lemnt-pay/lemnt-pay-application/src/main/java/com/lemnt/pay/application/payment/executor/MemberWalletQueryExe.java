@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** App 本人钱包查询，首次访问创建零余额账户。 */
+/**
+ * App 本人钱包查询，首次访问创建零余额账户。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberWalletQueryExe {

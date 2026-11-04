@@ -11,4 +11,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @author wangxx
  */
 @Mapper
-public interface UserRoleMapper extends BaseMapper<UserRoleDO> {}
+public interface UserRoleMapper extends BaseMapper<UserRoleDO> {
+}

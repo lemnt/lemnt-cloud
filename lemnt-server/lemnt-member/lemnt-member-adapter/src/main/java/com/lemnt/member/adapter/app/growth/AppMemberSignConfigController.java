@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 小程序签到规则接口。 */
+/**
+ * 小程序签到规则接口。
+ */
 @Tag(name = "小程序签到规则")
 @RestController
 @RequestMapping("/app/growths")
@@ -29,8 +31,8 @@ public class AppMemberSignConfigController {
     @Operation(summary = "已启用签到规则")
     public R<List<SignConfigRes>> signConfig() {
         return R.ok(
-                memberSignConfigListQueryExe.execute(new SignConfigListQry(true)).stream()
-                        .map(MemberGrowthResConverter::signConfig)
-                        .toList());
+            memberSignConfigListQueryExe.execute(new SignConfigListQry(true)).stream()
+                .map(MemberGrowthResConverter::signConfig)
+                .toList());
     }
 }

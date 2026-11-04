@@ -8,7 +8,9 @@ import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
 
-/** Shipment 表数据访问接口。 */
+/**
+ * Shipment 表数据访问接口。
+ */
 @Mapper
 public interface ShipmentMapper extends BaseMapper<ShipmentDO> {
 

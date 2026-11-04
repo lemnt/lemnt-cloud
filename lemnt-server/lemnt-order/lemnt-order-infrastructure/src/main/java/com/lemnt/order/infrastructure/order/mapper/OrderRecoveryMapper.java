@@ -5,7 +5,9 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/** 有界恢复查询，跨表条件在XML，不读取其他服务的表。 */
+/**
+ * 有界恢复查询，跨表条件在XML，不读取其他服务的表。
+ */
 @Mapper
 public interface OrderRecoveryMapper {
     List<String> pendingPaid(@Param("size") int size);

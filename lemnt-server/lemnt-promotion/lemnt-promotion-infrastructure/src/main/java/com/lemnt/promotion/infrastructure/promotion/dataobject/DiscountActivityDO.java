@@ -8,7 +8,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/** 活动业务表持久化对象。 */
+/**
+ * 活动业务表持久化对象。
+ */
 @Data
 @TableName("promotion_discount_activity")
 public class DiscountActivityDO {

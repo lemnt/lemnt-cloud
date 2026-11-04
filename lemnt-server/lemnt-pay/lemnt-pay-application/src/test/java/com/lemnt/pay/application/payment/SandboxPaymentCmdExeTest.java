@@ -16,7 +16,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/** 沙箱支付确认只允许本人待支付支付单，成功重试幂等。 */
+/**
+ * 沙箱支付确认只允许本人待支付支付单，成功重试幂等。
+ */
 class SandboxPaymentCmdExeTest {
     final OrderPaymentGateway orders = mock(OrderPaymentGateway.class);
     final TradePaymentGateway payments = mock(TradePaymentGateway.class);
@@ -29,15 +31,15 @@ class SandboxPaymentCmdExeTest {
 
     private PaymentRecord payment(String status) {
         return new PaymentRecord(
-                1L,
-                "PAY1",
-                "TR1",
-                "SANDBOX",
-                "lemnt-mall",
-                null,
-                new BigDecimal("8.00"),
-                status,
-                null);
+            1L,
+            "PAY1",
+            "TR1",
+            "SANDBOX",
+            "lemnt-mall",
+            null,
+            new BigDecimal("8.00"),
+            status,
+            null);
     }
 
     @Test
@@ -67,17 +69,17 @@ class SandboxPaymentCmdExeTest {
         assertThrows(ServiceException.class, () -> exe.execute(7L, "PAY1"));
 
         when(payments.findByPaymentNo("PAY1"))
-                .thenReturn(
-                        new PaymentRecord(
-                                1L,
-                                "PAY1",
-                                "TR1",
-                                "ALIPAY",
-                                "lemnt-mall",
-                                null,
-                                new BigDecimal("8.00"),
-                                "WAITING",
-                                null));
+            .thenReturn(
+                new PaymentRecord(
+                    1L,
+                    "PAY1",
+                    "TR1",
+                    "ALIPAY",
+                    "lemnt-mall",
+                    null,
+                    new BigDecimal("8.00"),
+                    "WAITING",
+                    null));
         assertThrows(ServiceException.class, () -> exe.execute(7L, "PAY1"));
         verifyNoInteractions(notify);
     }

@@ -38,15 +38,15 @@ class SystemStatusContractTest {
     void shouldRejectLegacyAndInvalidAccountStatusValues() {
         try (var factory = Validation.buildDefaultValidatorFactory()) {
             var validator = factory.getValidator();
-            for (String status : new String[] {"1", "2"}) {
+            for (String status : new String[]{"1", "2"}) {
                 assertThat(validator.validate(new UserStatusUpdateReq(4L, status))).isEmpty();
             }
-            for (String status : new String[] {"0", "3", "12", ""}) {
+            for (String status : new String[]{"0", "3", "12", ""}) {
                 assertThat(validator.validate(new UserStatusUpdateReq(4L, status)))
-                        .anySatisfy(
-                                violation ->
-                                        assertThat(violation.getPropertyPath().toString())
-                                                .isEqualTo("status"));
+                    .anySatisfy(
+                        violation ->
+                            assertThat(violation.getPropertyPath().toString())
+                                .isEqualTo("status"));
             }
         }
     }

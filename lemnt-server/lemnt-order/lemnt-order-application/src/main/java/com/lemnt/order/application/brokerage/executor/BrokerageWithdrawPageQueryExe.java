@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 提现单分页执行器。 */
+/**
+ * 提现单分页执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class BrokerageWithdrawPageQueryExe {

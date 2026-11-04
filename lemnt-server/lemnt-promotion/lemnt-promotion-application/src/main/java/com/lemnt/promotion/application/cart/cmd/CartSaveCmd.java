@@ -6,4 +6,5 @@ import java.io.Serializable;
  * 购物车保存命令。
  */
 public record CartSaveCmd(Long memberId, Long productId, int quantity, boolean selected)
-        implements Serializable {}
+    implements Serializable {
+}

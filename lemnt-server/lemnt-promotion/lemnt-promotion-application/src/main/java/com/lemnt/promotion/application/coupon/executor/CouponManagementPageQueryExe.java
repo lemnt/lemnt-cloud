@@ -14,20 +14,24 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-/** 后台会员持券分页查询。 */
+/**
+ * 后台会员持券分页查询。
+ */
 @Component
 @RequiredArgsConstructor
 public class CouponManagementPageQueryExe {
     private final CouponGateway coupons;
 
-    /** 限定查询范围和分页大小，返回实际持券快照。 */
+    /**
+     * 限定查询范围和分页大小，返回实际持券快照。
+     */
     public CouponManagementPageDTO execute(CouponManagementPageQry query) {
         if (query.pageNum() < 1
-                || query.pageSize() < 1
-                || query.pageSize() > 100
-                || (query.status() != null
-                        && !Set.of("AVAILABLE", "LOCKED", "USED", "EXPIRED")
-                                .contains(query.status()))) {
+            || query.pageSize() < 1
+            || query.pageSize() > 100
+            || (query.status() != null
+            && !Set.of("AVAILABLE", "LOCKED", "USED", "EXPIRED")
+            .contains(query.status()))) {
             throw new ServiceException("持券查询参数不合法", 400);
         }
         if (query.memberId() != null) {
@@ -37,15 +41,15 @@ public class CouponManagementPageQueryExe {
             CouponRules.id(query.templateId());
         }
         var page =
-                coupons.page(
-                        new CouponFilter(
-                                query.memberId(),
-                                query.templateId(),
-                                query.status(),
-                                query.pageNum(),
-                                query.pageSize()));
+            coupons.page(
+                new CouponFilter(
+                    query.memberId(),
+                    query.templateId(),
+                    query.status(),
+                    query.pageNum(),
+                    query.pageSize()));
         return new CouponManagementPageDTO(
-                page.getRecords().stream().map(CouponDTOConverter::coupon).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(CouponDTOConverter::coupon).toList(),
+            page.getTotal());
     }
 }

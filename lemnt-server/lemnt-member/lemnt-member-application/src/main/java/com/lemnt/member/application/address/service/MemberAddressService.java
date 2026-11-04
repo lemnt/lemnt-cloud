@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 会员收货地址应用编排，保持默认地址切换的事务一致性。 */
+/**
+ * 会员收货地址应用编排，保持默认地址切换的事务一致性。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberAddressService {
@@ -52,23 +54,23 @@ public class MemberAddressService {
             throw new ServiceException("默认地址标志不能为空", 400);
         }
         if (input.id() != null
-                && memberAddressGateway.address(input.memberId(), MemberRules.id(input.id()))
-                        == null) {
+            && memberAddressGateway.address(input.memberId(), MemberRules.id(input.id()))
+            == null) {
             throw new ServiceException("地址不存在", 404);
         }
         if (input.defaultStatus()) {
             memberAddressGateway.clearDefaultAddress(input.memberId(), input.id());
         }
         Long id =
-                memberAddressGateway.saveAddress(
-                        new Address(
-                                input.id(),
-                                input.memberId(),
-                                name,
-                                mobile,
-                                input.areaId(),
-                                detail,
-                                input.defaultStatus()));
+            memberAddressGateway.saveAddress(
+                new Address(
+                    input.id(),
+                    input.memberId(),
+                    name,
+                    mobile,
+                    input.areaId(),
+                    detail,
+                    input.defaultStatus()));
         return memberAddressGateway.address(input.memberId(), id);
     }
 

@@ -9,13 +9,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 后台订单备注修改。 */
+/**
+ * 后台订单备注修改。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderRemarkUpdateCmdExe {
     private final TradeOrderGateway orders;
 
-    /** 备注修改与订单状态串行，不参与金额或库存计算。 */
+    /**
+     * 备注修改与订单状态串行，不参与金额或库存计算。
+     */
     @Transactional(rollbackFor = Exception.class)
     public boolean execute(OrderRemarkUpdateCmd cmd) {
         if (cmd == null || cmd.remark() == null || cmd.remark().length() > 500) {

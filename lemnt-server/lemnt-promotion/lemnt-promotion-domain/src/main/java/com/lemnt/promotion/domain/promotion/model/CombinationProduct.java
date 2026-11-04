@@ -4,14 +4,17 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/** 拼团活动商品，保存活动状态与时间快照。 */
+/**
+ * 拼团活动商品，保存活动状态与时间快照。
+ */
 public record CombinationProduct(
-        Long id,
-        Long activityId,
-        Long spuId,
-        Long skuId,
-        BigDecimal combinationPrice,
-        Integer activityStatus,
-        LocalDateTime activityStartTime,
-        LocalDateTime activityEndTime)
-        implements Serializable {}
+    Long id,
+    Long activityId,
+    Long spuId,
+    Long skuId,
+    BigDecimal combinationPrice,
+    Integer activityStatus,
+    LocalDateTime activityStartTime,
+    LocalDateTime activityEndTime)
+    implements Serializable {
+}

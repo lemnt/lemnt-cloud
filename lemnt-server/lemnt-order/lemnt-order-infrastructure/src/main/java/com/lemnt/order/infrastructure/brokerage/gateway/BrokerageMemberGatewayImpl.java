@@ -7,7 +7,9 @@ import com.lemnt.order.domain.brokerage.model.BrokerageMemberInfo;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
-/** 通过会员服务读取昵称头像，失败不影响佣金数据。 */
+/**
+ * 通过会员服务读取昵称头像，失败不影响佣金数据。
+ */
 @Component
 public class BrokerageMemberGatewayImpl implements BrokerageMemberGateway {
     @DubboReference(check = false)
@@ -17,7 +19,7 @@ public class BrokerageMemberGatewayImpl implements BrokerageMemberGateway {
     public BrokerageMemberInfo find(Long memberId) {
         var member = memberUserClient.getByMemberId(memberId);
         return member == null
-                ? null
-                : new BrokerageMemberInfo(member.id(), member.nickname(), member.avatar());
+            ? null
+            : new BrokerageMemberInfo(member.id(), member.nickname(), member.avatar());
     }
 }

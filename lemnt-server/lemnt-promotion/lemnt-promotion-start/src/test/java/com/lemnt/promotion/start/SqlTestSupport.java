@@ -16,17 +16,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import javax.sql.DataSource;
 
-/** 每个SqlSessionFactory只装载对应服务的Mapper，不能用混库掩盖跨域SQL。 */
+/**
+ * 每个SqlSessionFactory只装载对应服务的Mapper，不能用混库掩盖跨域SQL。
+ */
 public final class SqlTestSupport {
-    private SqlTestSupport() {}
+    private SqlTestSupport() {
+    }
 
     public static SqlSessionTemplate session(String context, DataSource source) throws Exception {
         var resources = new ArrayList<Resource>();
         for (var resource :
-                new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml")) {
+            new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml")) {
             try (var input = resource.getInputStream()) {
                 if (new String(input.readAllBytes(), StandardCharsets.UTF_8)
-                        .contains("namespace=\"com.lemnt." + context + ".infrastructure."))
+                    .contains("namespace=\"com.lemnt." + context + ".infrastructure."))
                     resources.add(resource);
             }
         }

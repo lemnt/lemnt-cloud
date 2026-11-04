@@ -8,16 +8,18 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-/** 迁移前不能提前消费订单权益；显式启用后才装配会员业务消费者。 */
+/**
+ * 迁移前不能提前消费订单权益；显式启用后才装配会员业务消费者。
+ */
 class CommerceActivationTest {
     @Test
     void orderBenefitsConsumersRequireExplicitCutoverActivation() throws Exception {
         for (var name :
-                List.of(
-                        "OrderPaidConsumer",
-                        "OrderClosedConsumer",
-                        "OrderShippedConsumer",
-                        "AfterSaleCompletedConsumer")) {
+            List.of(
+                "OrderPaidConsumer",
+                "OrderClosedConsumer",
+                "OrderShippedConsumer",
+                "AfterSaleCompletedConsumer")) {
             var component = Class.forName("com.lemnt.member.adapter.mq." + name);
             var runner = new ApplicationContextRunner().withUserConfiguration(component);
             for (var type : component.getConstructors()[0].getParameterTypes()) {
@@ -25,9 +27,9 @@ class CommerceActivationTest {
             }
             runner.run(context -> assertThat(context).doesNotHaveBean(component));
             runner.withPropertyValues("commerce.mq.enabled=false")
-                    .run(context -> assertThat(context).doesNotHaveBean(component));
+                .run(context -> assertThat(context).doesNotHaveBean(component));
             runner.withPropertyValues("commerce.mq.enabled=true")
-                    .run(context -> assertThat(context).hasSingleBean(component));
+                .run(context -> assertThat(context).hasSingleBean(component));
         }
     }
 

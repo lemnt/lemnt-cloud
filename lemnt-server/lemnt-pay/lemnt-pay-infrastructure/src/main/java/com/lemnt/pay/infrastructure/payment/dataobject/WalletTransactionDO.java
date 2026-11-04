@@ -11,33 +11,51 @@ import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 
-/** pay_wallet_transaction 数据对象。 */
+/**
+ * pay_wallet_transaction 数据对象。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("pay_wallet_transaction")
 public class WalletTransactionDO extends BaseDO {
-    /** 流水编号。 */
+    /**
+     * 流水编号。
+     */
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    /** 流水号。 */
+    /**
+     * 流水号。
+     */
     private String transactionNo;
 
-    /** 钱包编号。 */
+    /**
+     * 钱包编号。
+     */
     private Long walletId;
 
-    /** 业务类型。 */
+    /**
+     * 业务类型。
+     */
     private String bizType;
 
-    /** 业务单号。 */
+    /**
+     * 业务单号。
+     */
     private String bizNo;
 
-    /** 流水说明。 */
+    /**
+     * 流水说明。
+     */
     private String title;
 
-    /** 带符号金额，正增负减，元。 */
+    /**
+     * 带符号金额，正增负减，元。
+     */
     private BigDecimal amount;
 
-    /** 交易后可用余额，元。 */
+    /**
+     * 交易后可用余额，元。
+     */
     private BigDecimal balanceAfter;
 }

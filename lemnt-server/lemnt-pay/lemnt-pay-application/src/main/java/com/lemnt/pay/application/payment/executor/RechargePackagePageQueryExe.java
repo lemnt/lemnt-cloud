@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 充值套餐分页查询。 */
+/**
+ * 充值套餐分页查询。
+ */
 @Component
 @RequiredArgsConstructor
 public class RechargePackagePageQueryExe {
@@ -24,14 +26,14 @@ public class RechargePackagePageQueryExe {
         }
         PayConfigRules.page(qry.pageNum(), qry.pageSize());
         var page =
-                packages.page(
-                        new RechargePackageFilter(
-                                PayConfigRules.optional(qry.name(), 64, "套餐名"),
-                                qry.status(),
-                                qry.pageNum(),
-                                qry.pageSize()));
+            packages.page(
+                new RechargePackageFilter(
+                    PayConfigRules.optional(qry.name(), 64, "套餐名"),
+                    qry.status(),
+                    qry.pageNum(),
+                    qry.pageSize()));
         return PageResult.of(
-                page.getRecords().stream().map(RechargeDTOConverter::packageView).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(RechargeDTOConverter::packageView).toList(),
+            page.getTotal());
     }
 }

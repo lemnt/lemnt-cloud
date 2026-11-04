@@ -13,32 +13,35 @@ import com.lemnt.member.domain.growth.model.LevelRecord;
 import com.lemnt.member.domain.growth.model.SignConfig;
 import com.lemnt.member.domain.growth.model.SignRecord;
 
-/** 会员成长权益转换器。 */
+/**
+ * 会员成长权益转换器。
+ */
 public final class MemberGrowthDTOConverter {
 
-    private MemberGrowthDTOConverter() {}
+    private MemberGrowthDTOConverter() {
+    }
 
     /**
      * 资产记录。
      */
     public static AssetRecordDTO toAssetRecordDTO(AssetRecord v) {
         return v == null
-                ? null
-                : new AssetRecordDTO(
-                        v.id(),
-                        v.memberId(),
-                        v.assetType(),
-                        v.delta(),
-                        v.balance(),
-                        v.bizType(),
-                        v.bizNo(),
-                        v.reason(),
-                        v.createTime(),
-                        v.nickname(),
-                        v.pointBizType(),
-                        v.title(),
-                        v.description(),
-                        v.experienceBizType());
+            ? null
+            : new AssetRecordDTO(
+            v.id(),
+            v.memberId(),
+            v.assetType(),
+            v.delta(),
+            v.balance(),
+            v.bizType(),
+            v.bizNo(),
+            v.reason(),
+            v.createTime(),
+            v.nickname(),
+            v.pointBizType(),
+            v.title(),
+            v.description(),
+            v.experienceBizType());
     }
 
     /**
@@ -46,16 +49,16 @@ public final class MemberGrowthDTOConverter {
      */
     public static LevelDTO toLevelDTO(Level v) {
         return v == null
-                ? null
-                : new LevelDTO(
-                        v.id(),
-                        v.name(),
-                        v.level(),
-                        v.experience(),
-                        v.discountPercent(),
-                        v.icon(),
-                        v.backgroundUrl(),
-                        v.status());
+            ? null
+            : new LevelDTO(
+            v.id(),
+            v.name(),
+            v.level(),
+            v.experience(),
+            v.discountPercent(),
+            v.icon(),
+            v.backgroundUrl(),
+            v.status());
     }
 
     /**
@@ -63,8 +66,8 @@ public final class MemberGrowthDTOConverter {
      */
     public static SignConfigDTO toSignConfigDTO(SignConfig v) {
         return v == null
-                ? null
-                : new SignConfigDTO(v.id(), v.day(), v.point(), v.experience(), v.status());
+            ? null
+            : new SignConfigDTO(v.id(), v.day(), v.point(), v.experience(), v.status());
     }
 
     /**
@@ -72,16 +75,16 @@ public final class MemberGrowthDTOConverter {
      */
     public static SignRecordDTO toSignRecordDTO(SignRecord v) {
         return v == null
-                ? null
-                : new SignRecordDTO(
-                        v.id(),
-                        v.memberId(),
-                        v.signDate(),
-                        v.day(),
-                        v.point(),
-                        v.experience(),
-                        v.nickname(),
-                        v.createTime());
+            ? null
+            : new SignRecordDTO(
+            v.id(),
+            v.memberId(),
+            v.signDate(),
+            v.day(),
+            v.point(),
+            v.experience(),
+            v.nickname(),
+            v.createTime());
     }
 
     /**
@@ -89,18 +92,18 @@ public final class MemberGrowthDTOConverter {
      */
     public static LevelRecordDTO toLevelRecordDTO(LevelRecord v) {
         return v == null
-                ? null
-                : new LevelRecordDTO(
-                        v.id(),
-                        v.memberId(),
-                        v.levelId(),
-                        v.experience(),
-                        v.reason(),
-                        v.createTime(),
-                        v.level(),
-                        v.discountPercent(),
-                        v.recordExperience(),
-                        v.description());
+            ? null
+            : new LevelRecordDTO(
+            v.id(),
+            v.memberId(),
+            v.levelId(),
+            v.experience(),
+            v.reason(),
+            v.createTime(),
+            v.level(),
+            v.discountPercent(),
+            v.recordExperience(),
+            v.description());
     }
 
     /**
@@ -108,11 +111,11 @@ public final class MemberGrowthDTOConverter {
      */
     public static ConfigDTO toConfigDTO(Config v) {
         return v == null
-                ? null
-                : new ConfigDTO(
-                        v.pointTradeDeductEnable(),
-                        v.pointTradeDeductUnitPrice(),
-                        v.pointTradeDeductMaxPrice(),
-                        v.pointTradeGivePoint());
+            ? null
+            : new ConfigDTO(
+            v.pointTradeDeductEnable(),
+            v.pointTradeDeductUnitPrice(),
+            v.pointTradeDeductMaxPrice(),
+            v.pointTradeGivePoint());
     }
 }

@@ -38,21 +38,21 @@ class FulfillmentHttpContractTest {
         var page = mock(OrderPageQueryExe.class);
         var ship = mock(ShipmentCreateCmdExe.class);
         var controller =
-                new Object[] {
-                    new FulfillmentOrderController(page, mock(OrderDetailQueryExe.class)),
-                    new ShipmentController(ship)
-                };
+            new Object[]{
+                new FulfillmentOrderController(page, mock(OrderDetailQueryExe.class)),
+                new ShipmentController(ship)
+            };
         var mvc =
-                MockMvcBuilders.standaloneSetup(controller)
-                        .setMessageConverters(converter())
-                        .build();
+            MockMvcBuilders.standaloneSetup(controller)
+                .setMessageConverters(converter())
+                .build();
         mvc.perform(
-                        post("/trade/admin/orders/TR1/shipment")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"requestNo\":\"S1\"}"))
-                .andExpect(status().isBadRequest());
+                post("/trade/admin/orders/TR1/shipment")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"requestNo\":\"S1\"}"))
+            .andExpect(status().isBadRequest());
         mvc.perform(get("/trade/admin/orders").param("pageSize", "101"))
-                .andExpect(status().isBadRequest());
+            .andExpect(status().isBadRequest());
         verifyNoInteractions(page, ship);
     }
 
@@ -60,42 +60,42 @@ class FulfillmentHttpContractTest {
     void orderListHasNoRecipientFieldsAndAllHttpActionsDeclarePermissions() throws Exception {
         var page = mock(OrderPageQueryExe.class);
         when(page.execute(any()))
-                .thenReturn(
-                        new OrderPageDTO(
-                                List.of(
-                                        new OrderSummaryDTO(
-                                                "TR1",
-                                                1L,
-                                                new BigDecimal("17.00"),
-                                                "SHIPPED",
-                                                LocalDateTime.now(),
-                                                true,
-                                                false,
-                                                "SF",
-                                                "T1",
-                                                LocalDateTime.now(),
-                                                null)),
-                                1));
+            .thenReturn(
+                new OrderPageDTO(
+                    List.of(
+                        new OrderSummaryDTO(
+                            "TR1",
+                            1L,
+                            new BigDecimal("17.00"),
+                            "SHIPPED",
+                            LocalDateTime.now(),
+                            true,
+                            false,
+                            "SF",
+                            "T1",
+                            LocalDateTime.now(),
+                            null)),
+                    1));
         var controller =
-                new Object[] {
-                    new FulfillmentOrderController(page, mock(OrderDetailQueryExe.class)),
-                    new ShipmentController(mock(ShipmentCreateCmdExe.class))
-                };
+            new Object[]{
+                new FulfillmentOrderController(page, mock(OrderDetailQueryExe.class)),
+                new ShipmentController(mock(ShipmentCreateCmdExe.class))
+            };
         var mvc =
-                MockMvcBuilders.standaloneSetup(controller)
-                        .setMessageConverters(converter())
-                        .build();
+            MockMvcBuilders.standaloneSetup(controller)
+                .setMessageConverters(converter())
+                .build();
         mvc.perform(get("/trade/admin/orders"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.rows[0].totalAmount").value("17.00"))
-                .andExpect(jsonPath("$.rows[0].recipientName").doesNotExist())
-                .andExpect(jsonPath("$.rows[0].phone").doesNotExist())
-                .andExpect(jsonPath("$.rows[0].address").doesNotExist());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.rows[0].totalAmount").value("17.00"))
+            .andExpect(jsonPath("$.rows[0].recipientName").doesNotExist())
+            .andExpect(jsonPath("$.rows[0].phone").doesNotExist())
+            .andExpect(jsonPath("$.rows[0].address").doesNotExist());
         for (var type : List.of(FulfillmentOrderController.class, ShipmentController.class)) {
             for (var method : type.getDeclaredMethods()) {
                 if (Modifier.isPublic(method.getModifiers())) {
                     assertNotNull(
-                            method.getAnnotation(RequiresPermissions.class), method.toString());
+                        method.getAnnotation(RequiresPermissions.class), method.toString());
                 }
             }
         }

@@ -39,7 +39,7 @@ public class DeptDeleteCmdExe {
         Dept condition = new Dept();
         condition.setDeptId(deptId);
         if (!SecurityUtils.isAdmin()
-                && StringUtils.isEmpty(deptGateway.selectDeptList(condition))) {
+            && StringUtils.isEmpty(deptGateway.selectDeptList(condition))) {
             throw new ServiceException("没有权限访问部门数据！");
         }
         return deptGateway.deleteDeptById(deptId);

@@ -32,7 +32,9 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/** 商品与营销分库，验证RPC未知结果重试、关单围栏、消费回滚及本库并发约束。 */
+/**
+ * 商品与营销分库，验证RPC未知结果重试、关单围栏、消费回滚及本库并发约束。
+ */
 class PromotionResourcePersistenceTest {
     CatalogPersistenceTest fixture;
     PromotionOrderGateway orders;
@@ -51,14 +53,14 @@ class PromotionResourcePersistenceTest {
         skuId = product.skus().get(0).id();
         point = fixture.components.get(PointActivityManagementService.class);
         activityId =
-                point.create(
-                        new PointActivityCreateCmd(
-                                spuId,
-                                "资源重试",
-                                1,
-                                List.of(
-                                        new PointProductCmd(
-                                                skuId, 10, 100, new BigDecimal("1.00"), 10))));
+            point.create(
+                new PointActivityCreateCmd(
+                    spuId,
+                    "资源重试",
+                    1,
+                    List.of(
+                        new PointProductCmd(
+                            skuId, 10, 100, new BigDecimal("1.00"), 10))));
         orders = mock(PromotionOrderGateway.class);
         fixture.components.register(PromotionOrderGateway.class, orders);
         resources = fixture.components.get(PromotionResourceService.class);
@@ -72,31 +74,31 @@ class PromotionResourcePersistenceTest {
 
     void state(String state, int quantity) {
         when(orders.resources("O1"))
-                .thenReturn(
-                        new PromotionOrderResources(
-                                1L,
-                                "O1",
-                                7L,
-                                null,
-                                "POINT",
-                                activityId,
-                                null,
-                                null,
-                                List.of(new PromotionOrderResources.Line(spuId, skuId, quantity)),
-                                state));
+            .thenReturn(
+                new PromotionOrderResources(
+                    1L,
+                    "O1",
+                    7L,
+                    null,
+                    "POINT",
+                    activityId,
+                    null,
+                    null,
+                    List.of(new PromotionOrderResources.Line(spuId, skuId, quantity)),
+                    state));
     }
 
     PromotionLockBo lock(int quantity) {
         return new PromotionLockBo(
-                1L,
-                "O1",
-                7L,
-                null,
-                "POINT",
-                activityId,
-                null,
-                null,
-                List.of(new PromotionLockBo.Line(spuId, skuId, quantity)));
+            1L,
+            "O1",
+            7L,
+            null,
+            "POINT",
+            activityId,
+            null,
+            null,
+            List.of(new PromotionLockBo.Line(spuId, skuId, quantity)));
     }
 
     int stock() {
@@ -105,27 +107,27 @@ class PromotionResourcePersistenceTest {
 
     CommerceEventEnvelope refund(String eventNo, String afterSaleNo, boolean full) {
         var event =
-                new AfterSaleCompletedEvent(
-                        "O1",
-                        afterSaleNo,
-                        7L,
-                        10L,
-                        skuId,
-                        1,
-                        new BigDecimal("1.00"),
-                        50,
-                        0,
-                        1,
-                        full);
-        return new CommerceEventEnvelope(
-                eventNo,
-                "AFTER_SALE_COMPLETED",
-                1,
-                afterSaleNo,
+            new AfterSaleCompletedEvent(
                 "O1",
-                Instant.parse("2026-11-03T00:00:00Z"),
-                null,
-                JsonUtils.toJsonStr(event));
+                afterSaleNo,
+                7L,
+                10L,
+                skuId,
+                1,
+                new BigDecimal("1.00"),
+                50,
+                0,
+                1,
+                full);
+        return new CommerceEventEnvelope(
+            eventNo,
+            "AFTER_SALE_COMPLETED",
+            1,
+            afterSaleNo,
+            "O1",
+            Instant.parse("2026-11-03T00:00:00Z"),
+            null,
+            JsonUtils.toJsonStr(event));
     }
 
     @Test
@@ -189,17 +191,17 @@ class PromotionResourcePersistenceTest {
         var start = new CountDownLatch(1);
         try {
             var first =
-                    pool.submit(
-                            () -> {
-                                start.await();
-                                return resources.lock(lock(2)).status();
-                            });
+                pool.submit(
+                    () -> {
+                        start.await();
+                        return resources.lock(lock(2)).status();
+                    });
             var second =
-                    pool.submit(
-                            () -> {
-                                start.await();
-                                return resources.lock(lock(2)).status();
-                            });
+                pool.submit(
+                    () -> {
+                        start.await();
+                        return resources.lock(lock(2)).status();
+                    });
             start.countDown();
             assertEquals("LOCKED", first.get(10, TimeUnit.SECONDS));
             assertEquals("LOCKED", second.get(10, TimeUnit.SECONDS));
@@ -214,26 +216,26 @@ class PromotionResourcePersistenceTest {
         var service = fixture.components.get(ActivityManagementService.class);
         var now = LocalDateTime.now();
         var cmd =
-                new DiscountActivityCreateCmd(
-                        "并发折扣",
-                        now.minusDays(1),
-                        now.plusDays(1),
-                        null,
-                        List.of(
-                                new DiscountProduct(
-                                        null, null, spuId, skuId, "PERCENT", 8000, null)));
+            new DiscountActivityCreateCmd(
+                "并发折扣",
+                now.minusDays(1),
+                now.plusDays(1),
+                null,
+                List.of(
+                    new DiscountProduct(
+                        null, null, spuId, skuId, "PERCENT", 8000, null)));
         var pool = Executors.newFixedThreadPool(2);
         var start = new CountDownLatch(1);
         Callable<Boolean> task =
-                () -> {
-                    start.await();
-                    try {
-                        service.createDiscount(cmd);
-                        return true;
-                    } catch (ServiceException expected) {
-                        return false;
-                    }
-                };
+            () -> {
+                start.await();
+                try {
+                    service.createDiscount(cmd);
+                    return true;
+                } catch (ServiceException expected) {
+                    return false;
+                }
+            };
         try {
             var first = pool.submit(task);
             var second = pool.submit(task);

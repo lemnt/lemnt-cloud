@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 活动Page执行器。 */
+/**
+ * 活动Page执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class RewardActivityPageQueryExe {
@@ -18,7 +20,7 @@ public class RewardActivityPageQueryExe {
 
     public PageResult<RewardActivityDTO> execute(RewardActivityPageQry query) {
         return service.pageReward(
-                new ActivityFilter(
-                        query.name(), query.status(), query.pageNum(), query.pageSize()));
+            new ActivityFilter(
+                query.name(), query.status(), query.pageNum(), query.pageSize()));
     }
 }

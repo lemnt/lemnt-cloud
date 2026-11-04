@@ -23,14 +23,15 @@ import com.lemnt.product.domain.product.model.ProductSkuSpec;
  * 目录请求转换器。
  */
 public final class ProductCatalogReqConverter {
-    private ProductCatalogReqConverter() {}
+    private ProductCatalogReqConverter() {
+    }
 
     /**
      * 分类。
      */
     public static CategorySaveCmd category(Long id, CategorySaveReq req) {
         return new CategorySaveCmd(
-                id, req.parentId(), req.name(), req.picUrl(), req.sort(), req.status());
+            id, req.parentId(), req.name(), req.picUrl(), req.sort(), req.status());
     }
 
     /**
@@ -38,7 +39,7 @@ public final class ProductCatalogReqConverter {
      */
     public static BrandSaveCmd brand(Long id, BrandSaveReq req) {
         return new BrandSaveCmd(
-                id, req.name(), req.picUrl(), req.description(), req.sort(), req.status());
+            id, req.name(), req.picUrl(), req.description(), req.sort(), req.status());
     }
 
     /**
@@ -46,47 +47,47 @@ public final class ProductCatalogReqConverter {
      */
     public static ProductSpuCreateCmd create(ProductSpuCreateReq req) {
         return new ProductSpuCreateCmd(
-                req.code(),
-                req.name(),
-                req.categoryId(),
-                req.brandId(),
-                req.description(),
-                req.image(),
-                req.skus().stream()
-                        .map(
-                                s ->
-                                        new ProductSpuCreateCmd.ProductSkuDraft(
-                                                s.code(),
-                                                s.name(),
-                                                s.price(),
-                                                s.stock(),
-                                                s.image(),
-                                                s.specs() == null
-                                                        ? null
-                                                        : s.specs().stream()
-                                                                .map(
-                                                                        property ->
-                                                                                new ProductSpuCreateCmd
-                                                                                        .ProductSkuDraft
-                                                                                        .Spec(
-                                                                                        property
-                                                                                                .specId(),
-                                                                                        property
-                                                                                                .specName(),
-                                                                                        property
-                                                                                                .specValueId(),
-                                                                                        property
-                                                                                                .specValueName()))
-                                                                .toList(),
-                                                s.weight(),
-                                                s.volume()))
-                        .toList(),
-                req.deliveryTypes(),
-                req.deliveryTemplateId(),
-                req.keyword(),
-                req.introduction(),
-                req.sliderPicUrls(),
-                req.sort());
+            req.code(),
+            req.name(),
+            req.categoryId(),
+            req.brandId(),
+            req.description(),
+            req.image(),
+            req.skus().stream()
+                .map(
+                    s ->
+                        new ProductSpuCreateCmd.ProductSkuDraft(
+                            s.code(),
+                            s.name(),
+                            s.price(),
+                            s.stock(),
+                            s.image(),
+                            s.specs() == null
+                                ? null
+                                : s.specs().stream()
+                                .map(
+                                    property ->
+                                        new ProductSpuCreateCmd
+                                            .ProductSkuDraft
+                                            .Spec(
+                                            property
+                                                .specId(),
+                                            property
+                                                .specName(),
+                                            property
+                                                .specValueId(),
+                                            property
+                                                .specValueName()))
+                                .toList(),
+                            s.weight(),
+                            s.volume()))
+                .toList(),
+            req.deliveryTypes(),
+            req.deliveryTemplateId(),
+            req.keyword(),
+            req.introduction(),
+            req.sliderPicUrls(),
+            req.sort());
     }
 
     /**
@@ -94,48 +95,48 @@ public final class ProductCatalogReqConverter {
      */
     public static ProductSpuUpdateCmd update(Long id, ProductSpuUpdateReq req) {
         return new ProductSpuUpdateCmd(
-                id,
-                req.name(),
-                req.categoryId(),
-                req.brandId(),
-                req.description(),
-                req.image(),
-                req.skus().stream()
-                        .map(
-                                sku ->
-                                        new ProductSku(
-                                                sku.id(),
-                                                id,
-                                                sku.code(),
-                                                sku.name(),
-                                                sku.price(),
-                                                sku.stock(),
-                                                sku.image(),
-                                                sku.specs() == null
-                                                        ? null
-                                                        : sku.specs().stream()
-                                                                .map(
-                                                                        property ->
-                                                                                new ProductSkuSpec(
-                                                                                        property
-                                                                                                .specId(),
-                                                                                        property
-                                                                                                .specName(),
-                                                                                        property
-                                                                                                .specValueId(),
-                                                                                        property
-                                                                                                .specValueName()))
-                                                                .toList(),
-                                                "ON_SHELF",
-                                                sku.weight(),
-                                                sku.volume()))
-                        .toList(),
-                req.deliveryTypes(),
-                req.deliveryTemplateId(),
-                req.keyword(),
-                req.introduction(),
-                req.sliderPicUrls(),
-                req.sort());
+            id,
+            req.name(),
+            req.categoryId(),
+            req.brandId(),
+            req.description(),
+            req.image(),
+            req.skus().stream()
+                .map(
+                    sku ->
+                        new ProductSku(
+                            sku.id(),
+                            id,
+                            sku.code(),
+                            sku.name(),
+                            sku.price(),
+                            sku.stock(),
+                            sku.image(),
+                            sku.specs() == null
+                                ? null
+                                : sku.specs().stream()
+                                .map(
+                                    property ->
+                                        new ProductSkuSpec(
+                                            property
+                                                .specId(),
+                                            property
+                                                .specName(),
+                                            property
+                                                .specValueId(),
+                                            property
+                                                .specValueName()))
+                                .toList(),
+                            "ON_SHELF",
+                            sku.weight(),
+                            sku.volume()))
+                .toList(),
+            req.deliveryTypes(),
+            req.deliveryTemplateId(),
+            req.keyword(),
+            req.introduction(),
+            req.sliderPicUrls(),
+            req.sort());
     }
 
     /**
@@ -143,13 +144,13 @@ public final class ProductCatalogReqConverter {
      */
     public static ProductSpuPageQry page(ProductSpuPageReq req) {
         return new ProductSpuPageQry(
-                req.name(),
-                req.status(),
-                req.pageNum(),
-                req.pageSize(),
-                req.categoryId(),
-                req.brandId(),
-                req.stockStatus());
+            req.name(),
+            req.status(),
+            req.pageNum(),
+            req.pageSize(),
+            req.categoryId(),
+            req.brandId(),
+            req.stockStatus());
     }
 
     /**
@@ -164,7 +165,7 @@ public final class ProductCatalogReqConverter {
      */
     public static CategorySaveCmd category(Long id, MallCategoryCreateReq req) {
         return new CategorySaveCmd(
-                id, req.parentId(), req.name(), req.picUrl(), req.sort(), req.status());
+            id, req.parentId(), req.name(), req.picUrl(), req.sort(), req.status());
     }
 
     /**
@@ -172,7 +173,7 @@ public final class ProductCatalogReqConverter {
      */
     public static CategorySaveCmd category(Long id, MallCategoryUpdateReq req) {
         return new CategorySaveCmd(
-                id, req.parentId(), req.name(), req.picUrl(), req.sort(), req.status());
+            id, req.parentId(), req.name(), req.picUrl(), req.sort(), req.status());
     }
 
     /**
@@ -180,7 +181,7 @@ public final class ProductCatalogReqConverter {
      */
     public static BrandSaveCmd brand(Long id, MallBrandCreateReq req) {
         return new BrandSaveCmd(
-                id, req.name(), req.picUrl(), req.description(), req.sort(), req.status());
+            id, req.name(), req.picUrl(), req.description(), req.sort(), req.status());
     }
 
     /**
@@ -188,6 +189,6 @@ public final class ProductCatalogReqConverter {
      */
     public static BrandSaveCmd brand(Long id, MallBrandUpdateReq req) {
         return new BrandSaveCmd(
-                id, req.name(), req.picUrl(), req.description(), req.sort(), req.status());
+            id, req.name(), req.picUrl(), req.description(), req.sort(), req.status());
     }
 }

@@ -60,8 +60,8 @@ public class ConfigController {
     public R<SystemConfigListRes> list(ConfigPageReq req) {
         PageResult<ConfigDTO> result = configPageQueryExe.execute(ConfigReqConverter.toQry(req));
         return R.page(
-                ConfigResConverter.toResListToSystemConfigListRes(result.getRecords()),
-                result.getTotal());
+            ConfigResConverter.toResListToSystemConfigListRes(result.getRecords()),
+            result.getTotal());
     }
 
     @Operation(summary = "根据参数编号获取详细信息")
@@ -69,8 +69,8 @@ public class ConfigController {
     @GetMapping(value = "/{configId}")
     public R<SystemConfigGetInfoRes> getInfo(@PathVariable Long configId) {
         return R.ok(
-                ConfigResConverter.toResToSystemConfigGetInfoRes(
-                        configDetailQueryExe.executeById(configId)));
+            ConfigResConverter.toResToSystemConfigGetInfoRes(
+                configDetailQueryExe.executeById(configId)));
     }
 
     @Operation(summary = "根据参数键名查询参数值")
@@ -78,8 +78,8 @@ public class ConfigController {
     @GetMapping(value = "/config-key/{configKey}")
     public R<SystemConfigGetConfigKeyRes> getConfigKey(@PathVariable String configKey) {
         return R.ok(
-                ConfigResConverter.toResToSystemConfigGetConfigKeyRes(
-                        configDetailQueryExe.executeByKey(configKey)));
+            ConfigResConverter.toResToSystemConfigGetConfigKeyRes(
+                configDetailQueryExe.executeByKey(configKey)));
     }
 
     @Operation(summary = "新增参数配置")

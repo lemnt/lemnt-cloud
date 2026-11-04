@@ -7,7 +7,9 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-/** Category 表数据访问接口。 */
+/**
+ * Category 表数据访问接口。
+ */
 @Mapper
 public interface CategoryMapper extends BaseMapper<CategoryDO> {
 

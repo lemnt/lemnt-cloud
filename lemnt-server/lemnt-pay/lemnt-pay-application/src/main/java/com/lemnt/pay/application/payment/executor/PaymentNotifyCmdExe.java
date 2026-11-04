@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 支付通知先提交真实支付状态，再通过持久化任务确认库存与核券。 */
+/**
+ * 支付通知先提交真实支付状态，再通过持久化任务确认库存与核券。
+ */
 @Component
 @RequiredArgsConstructor
 public class PaymentNotifyCmdExe {
@@ -23,7 +25,7 @@ public class PaymentNotifyCmdExe {
     public void execute(VerifiedPaymentNotification notification) {
         notifications.execute(notification);
         if (!tasks.enqueueAndAttempt(
-                PayNotifyType.PAY.name(), notification.paymentNo(), notification.orderNo())) {
+            PayNotifyType.PAY.name(), notification.paymentNo(), notification.orderNo())) {
             throw new IllegalStateException("支付后处理失败，已登记重试任务");
         }
     }

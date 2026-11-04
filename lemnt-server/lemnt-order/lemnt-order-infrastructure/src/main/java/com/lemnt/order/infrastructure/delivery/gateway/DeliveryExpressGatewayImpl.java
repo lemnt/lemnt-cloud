@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** order_delivery_express 持久化实现。 */
+/**
+ * order_delivery_express 持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class DeliveryExpressGatewayImpl implements DeliveryExpressGateway {
@@ -30,26 +32,26 @@ public class DeliveryExpressGatewayImpl implements DeliveryExpressGateway {
     @Override
     public DeliveryExpress byCode(String code) {
         return DeliveryExpressConverter.toEntity(
-                mapper.selectOne(
-                        Wrappers.<DeliveryExpressDO>lambdaQuery()
-                                .eq(DeliveryExpressDO::getCode, code)));
+            mapper.selectOne(
+                Wrappers.<DeliveryExpressDO>lambdaQuery()
+                    .eq(DeliveryExpressDO::getCode, code)));
     }
 
     @Override
     public List<DeliveryExpress> list(String name, Integer status) {
         return mapper
-                .selectList(
-                        Wrappers.<DeliveryExpressDO>lambdaQuery()
-                                .like(
-                                        name != null && !name.isBlank(),
-                                        DeliveryExpressDO::getName,
-                                        name)
-                                .eq(status != null, DeliveryExpressDO::getStatus, status)
-                                .orderByAsc(DeliveryExpressDO::getSort)
-                                .orderByDesc(DeliveryExpressDO::getId))
-                .stream()
-                .map(DeliveryExpressConverter::toEntity)
-                .toList();
+            .selectList(
+                Wrappers.<DeliveryExpressDO>lambdaQuery()
+                    .like(
+                        name != null && !name.isBlank(),
+                        DeliveryExpressDO::getName,
+                        name)
+                    .eq(status != null, DeliveryExpressDO::getStatus, status)
+                    .orderByAsc(DeliveryExpressDO::getSort)
+                    .orderByDesc(DeliveryExpressDO::getId))
+            .stream()
+            .map(DeliveryExpressConverter::toEntity)
+            .toList();
     }
 
     @Override
@@ -72,21 +74,21 @@ public class DeliveryExpressGatewayImpl implements DeliveryExpressGateway {
     @Override
     public PageResult<DeliveryExpress> page(DeliveryExpressFilter filter) {
         var page =
-                mapper.selectPage(
-                        new Page<DeliveryExpressDO>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.<DeliveryExpressDO>lambdaQuery()
-                                .like(
-                                        filter.name() != null && !filter.name().isBlank(),
-                                        DeliveryExpressDO::getName,
-                                        filter.name())
-                                .eq(
-                                        filter.status() != null,
-                                        DeliveryExpressDO::getStatus,
-                                        filter.status())
-                                .orderByAsc(DeliveryExpressDO::getSort)
-                                .orderByDesc(DeliveryExpressDO::getId));
+            mapper.selectPage(
+                new Page<DeliveryExpressDO>(filter.pageNum(), filter.pageSize()),
+                Wrappers.<DeliveryExpressDO>lambdaQuery()
+                    .like(
+                        filter.name() != null && !filter.name().isBlank(),
+                        DeliveryExpressDO::getName,
+                        filter.name())
+                    .eq(
+                        filter.status() != null,
+                        DeliveryExpressDO::getStatus,
+                        filter.status())
+                    .orderByAsc(DeliveryExpressDO::getSort)
+                    .orderByDesc(DeliveryExpressDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(DeliveryExpressConverter::toEntity).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(DeliveryExpressConverter::toEntity).toList(),
+            page.getTotal());
     }
 }

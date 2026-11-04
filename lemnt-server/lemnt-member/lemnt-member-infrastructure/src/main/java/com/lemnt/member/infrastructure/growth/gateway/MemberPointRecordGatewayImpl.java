@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 只读写积分表，不跨存储查找同编号记录。 */
+/**
+ * 只读写积分表，不跨存储查找同编号记录。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberPointRecordGatewayImpl implements MemberPointRecordGateway {
@@ -23,11 +25,11 @@ public class MemberPointRecordGatewayImpl implements MemberPointRecordGateway {
     @Override
     public AssetRecord request(Long memberId, String code, String bizId) {
         return PointRecordConverter.toModel(
-                mapper.selectOne(
-                        Wrappers.lambdaQuery(PointRecordDO.class)
-                                .eq(PointRecordDO::getUserId, memberId)
-                                .eq(PointRecordDO::getBizCode, code)
-                                .eq(PointRecordDO::getBizId, bizId)));
+            mapper.selectOne(
+                Wrappers.lambdaQuery(PointRecordDO.class)
+                    .eq(PointRecordDO::getUserId, memberId)
+                    .eq(PointRecordDO::getBizCode, code)
+                    .eq(PointRecordDO::getBizId, bizId)));
     }
 
     @Override
@@ -54,14 +56,14 @@ public class MemberPointRecordGatewayImpl implements MemberPointRecordGateway {
     @Override
     public long returned(Long memberId, String code, String orderNo) {
         return mapper
-                .selectList(
-                        Wrappers.lambdaQuery(PointRecordDO.class)
-                                .eq(PointRecordDO::getUserId, memberId)
-                                .eq(PointRecordDO::getBizCode, code)
-                                .likeRight(PointRecordDO::getBizId, orderNo + ":"))
-                .stream()
-                .filter(row -> row.getBizId() != null && row.getBizId().startsWith(orderNo + ":"))
-                .mapToLong(PointRecordDO::getPoint)
-                .sum();
+            .selectList(
+                Wrappers.lambdaQuery(PointRecordDO.class)
+                    .eq(PointRecordDO::getUserId, memberId)
+                    .eq(PointRecordDO::getBizCode, code)
+                    .likeRight(PointRecordDO::getBizId, orderNo + ":"))
+            .stream()
+            .filter(row -> row.getBizId() != null && row.getBizId().startsWith(orderNo + ":"))
+            .mapToLong(PointRecordDO::getPoint)
+            .sum();
     }
 }

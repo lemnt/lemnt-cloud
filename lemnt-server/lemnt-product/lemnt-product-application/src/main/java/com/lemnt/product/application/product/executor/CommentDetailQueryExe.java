@@ -9,13 +9,17 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 商品评价详情查询。 */
+/**
+ * 商品评价详情查询。
+ */
 @Component
 @RequiredArgsConstructor
 public class CommentDetailQueryExe {
     private final ProductCommentGateway productCommentGateway;
 
-    /** 后台可查询隐藏评价，权限由管理接口控制。 */
+    /**
+     * 后台可查询隐藏评价，权限由管理接口控制。
+     */
     public ProductCommentDTO execute(Long id) {
         ProductCatalogValidation.id(id);
         return CommentDTOConverter.toDTO(productCommentGateway.find(id));

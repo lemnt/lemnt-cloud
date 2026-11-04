@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 签到创建命令执行器。 */
+/**
+ * 签到创建命令执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberSignCreateCmdExe {

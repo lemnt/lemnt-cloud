@@ -21,7 +21,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 砍价记录与助力管理入口，仅供查询。 */
+/**
+ * 砍价记录与助力管理入口，仅供查询。
+ */
 @RestController
 @RequestMapping("/mall/promotion")
 @Tag(name = "砍价记录")
@@ -36,8 +38,8 @@ public class BargainRecordController {
     public R<BargainRecordRes> records(@Valid @ModelAttribute BargainRecordPageReq req) {
         var result = records.execute(BargainConverter.recordPage(req));
         return R.page(
-                result.getRecords().stream().map(BargainConverter::record).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(BargainConverter::record).toList(),
+            result.getTotal());
     }
 
     @GetMapping("/bargain-helps")
@@ -46,7 +48,7 @@ public class BargainRecordController {
     public R<BargainHelpRes> helps(@Valid @ModelAttribute BargainHelpPageReq req) {
         var result = helps.execute(BargainConverter.helpPage(req));
         return R.page(
-                result.getRecords().stream().map(BargainConverter::help).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(BargainConverter::help).toList(),
+            result.getTotal());
     }
 }

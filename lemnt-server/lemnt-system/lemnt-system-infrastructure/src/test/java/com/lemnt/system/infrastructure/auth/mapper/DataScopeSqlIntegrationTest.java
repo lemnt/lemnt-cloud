@@ -35,7 +35,9 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/** 生产 Mapper/XML + 实际数据权限和分页拦截器 + H2 SQL 执行验证。 */
+/**
+ * 生产 Mapper/XML + 实际数据权限和分页拦截器 + H2 SQL 执行验证。
+ */
 public class DataScopeSqlIntegrationTest {
     private SqlSession session;
     private UserMapper users;
@@ -50,22 +52,22 @@ public class DataScopeSqlIntegrationTest {
         configuration.setMapUnderscoreToCamelCase(true);
         DataScopeAutoConfig scopeConfig = new DataScopeAutoConfig();
         var interceptor =
-                new MybatisPlusConfig()
-                        .mybatisPlusInterceptor(
-                                Optional.of(
-                                        scopeConfig.dataPermissionInterceptor(
-                                                scopeConfig.dataPermissionHandler())));
+            new MybatisPlusConfig()
+                .mybatisPlusInterceptor(
+                    Optional.of(
+                        scopeConfig.dataPermissionInterceptor(
+                            scopeConfig.dataPermissionHandler())));
         MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
         factory.setDataSource(source);
         factory.setConfiguration(configuration);
         factory.setPlugins(interceptor);
         factory.setMapperLocations(
-                new ClassPathResource("mapper/UserMapper.xml"),
-                new ClassPathResource("mapper/RoleMapper.xml"),
-                new ClassPathResource("mapper/DeptMapper.xml"));
+            new ClassPathResource("mapper/UserMapper.xml"),
+            new ClassPathResource("mapper/RoleMapper.xml"),
+            new ClassPathResource("mapper/DeptMapper.xml"));
         session = factory.getObject().openSession();
         try (var statement = session.getConnection().createStatement();
-                var input = getClass().getResourceAsStream("/datascope-fixture.sql")) {
+             var input = getClass().getResourceAsStream("/datascope-fixture.sql")) {
             assertThat(input).isNotNull();
             String sql = new String(input.readAllBytes(), StandardCharsets.UTF_8);
             for (String command : sql.split(";")) {
@@ -96,8 +98,8 @@ public class DataScopeSqlIntegrationTest {
 
         List<Long> ids = Arrays.stream(expected.split(",")).map(Long::valueOf).toList();
         assertThat(page.getRecords())
-                .extracting(User::getUserId)
-                .containsExactlyInAnyOrderElementsOf(ids);
+            .extracting(User::getUserId)
+            .containsExactlyInAnyOrderElementsOf(ids);
         assertThat(page.getTotal()).isEqualTo(ids.size());
     }
 
@@ -108,8 +110,8 @@ public class DataScopeSqlIntegrationTest {
         var page = users.selectPage(new Page<User>(1, 1), new User());
 
         assertThat(page.getRecords())
-                .hasSize(1)
-                .allSatisfy(user -> assertThat(user.getDeptId()).isEqualTo(10L));
+            .hasSize(1)
+            .allSatisfy(user -> assertThat(user.getDeptId()).isEqualTo(10L));
         assertThat(page.getTotal()).isEqualTo(2);
     }
 
@@ -136,8 +138,8 @@ public class DataScopeSqlIntegrationTest {
         assertThat(page.getRecords()).extracting(RoleDO::getRoleId).containsExactly(7L);
         assertThat(page.getTotal()).isEqualTo(1);
         assertThat(roles.selectRoleList(new Role()))
-                .extracting(RoleDO::getRoleId)
-                .containsExactly(7L);
+            .extracting(RoleDO::getRoleId)
+            .containsExactly(7L);
         assertThat(roles.selectRoleAll()).extracting(RoleDO::getRoleId).containsExactly(7L);
     }
 
@@ -146,8 +148,8 @@ public class DataScopeSqlIntegrationTest {
         login(100L, role(7L, "3"));
 
         assertThat(departments.selectDeptList(new Dept()))
-                .extracting("deptId")
-                .containsExactly(10L);
+            .extracting("deptId")
+            .containsExactly(10L);
     }
 
     @Test
@@ -166,7 +168,7 @@ public class DataScopeSqlIntegrationTest {
     @Test
     void scopedQueryWithoutLoginContextShouldFail() {
         assertThatThrownBy(() -> users.selectPage(new Page<User>(1, 10), new User()))
-                .hasStackTraceContaining("未获取到登录用户上下文");
+            .hasStackTraceContaining("未获取到登录用户上下文");
     }
 
     @Test
@@ -176,8 +178,8 @@ public class DataScopeSqlIntegrationTest {
         var page = users.selectPage(new Page<User>(1, 10), new User());
 
         assertThat(page.getRecords())
-                .extracting(User::getUserId)
-                .containsExactlyInAnyOrder(100L, 101L, 110L, 200L);
+            .extracting(User::getUserId)
+            .containsExactlyInAnyOrder(100L, 101L, 110L, 200L);
         assertThat(page.getTotal()).isEqualTo(4);
     }
 
@@ -185,8 +187,8 @@ public class DataScopeSqlIntegrationTest {
     void loginLookupShouldRemainAvailableWithoutUserContext() {
         assertThat(users.selectUserByUserName("outside").getUserId()).isEqualTo(200L);
         assertThat(roles.selectRolePermissionByUserId(200L))
-                .extracting(RoleDO::getRoleId)
-                .containsExactly(8L);
+            .extracting(RoleDO::getRoleId)
+            .containsExactly(8L);
     }
 
     @Test
@@ -202,27 +204,29 @@ public class DataScopeSqlIntegrationTest {
 
     private static SecurityRole role(Long id, String scope) {
         return new SecurityRole()
-                .setRoleId(id)
-                .setDataScope(scope)
-                .setStatus(UserConstants.ROLE_NORMAL);
+            .setRoleId(id)
+            .setDataScope(scope)
+            .setStatus(UserConstants.ROLE_NORMAL);
     }
 
     private static void login(Long userId, SecurityRole... roles) {
         SecurityContextHolder.set(
-                SecurityConstants.LOGIN_USER,
-                new SecurityUser()
+            SecurityConstants.LOGIN_USER,
+            new SecurityUser()
+                .setUserId(userId)
+                .setDetail(
+                    new SecurityUserDetail()
                         .setUserId(userId)
-                        .setDetail(
-                                new SecurityUserDetail()
-                                        .setUserId(userId)
-                                        .setDeptId(10L)
-                                        .setRoles(List.of(roles))));
+                        .setDeptId(10L)
+                        .setRoles(List.of(roles))));
     }
 
-    /** H2 测试库模拟 MySQL FIND_IN_SET，仅用于验证真实部门子查询的执行结果。 */
+    /**
+     * H2 测试库模拟 MySQL FIND_IN_SET，仅用于验证真实部门子查询的执行结果。
+     */
     public static int findInSet(Long value, String ancestors) {
         return ancestors == null
-                ? 0
-                : Arrays.asList(ancestors.split(",")).indexOf(String.valueOf(value)) + 1;
+            ? 0
+            : Arrays.asList(ancestors.split(",")).indexOf(String.valueOf(value)) + 1;
     }
 }

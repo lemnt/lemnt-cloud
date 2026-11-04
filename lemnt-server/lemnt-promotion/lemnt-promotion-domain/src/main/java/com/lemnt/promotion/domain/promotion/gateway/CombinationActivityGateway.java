@@ -6,7 +6,9 @@ import com.lemnt.promotion.domain.promotion.model.CombinationFilter;
 
 import java.util.List;
 
-/** 拼团活动存储契约。 */
+/**
+ * 拼团活动存储契约。
+ */
 public interface CombinationActivityGateway {
     CombinationActivity find(Long id);
 

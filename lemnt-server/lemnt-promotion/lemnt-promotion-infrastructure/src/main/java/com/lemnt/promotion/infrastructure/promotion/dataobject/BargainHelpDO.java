@@ -8,7 +8,9 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
-/** 砍价助力持久化对象。 */
+/**
+ * 砍价助力持久化对象。
+ */
 @Data
 @TableName("promotion_bargain_help")
 public class BargainHelpDO {

@@ -31,7 +31,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 后台装修页面管理。 */
+/**
+ * 后台装修页面管理。
+ */
 @Tag(name = "装修页面")
 @RestController
 @RequestMapping("/mall/promotion/diy-pages")
@@ -50,7 +52,7 @@ public class DiyPageController {
     public R<DiyPageRes> page(@Valid @ModelAttribute DiyPagePageReq req) {
         var result = page.execute(DiyConverter.page(req));
         return R.page(
-                result.getRecords().stream().map(DiyConverter::page).toList(), result.getTotal());
+            result.getRecords().stream().map(DiyConverter::page).toList(), result.getTotal());
     }
 
     @GetMapping("/{id}")

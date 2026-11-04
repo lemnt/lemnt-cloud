@@ -35,13 +35,13 @@ public class BrandSaveCmdExe {
             throw new IllegalArgumentException("排序不能小于0");
         }
         var brand =
-                new Brand(
-                        cmd.id(),
-                        ProductCatalogValidation.text(cmd.name(), 100, "品牌名称"),
-                        ProductCatalogValidation.optional(cmd.picUrl(), 500),
-                        ProductCatalogValidation.optional(cmd.description(), 2000),
-                        cmd.sort(),
-                        ProductCatalogValidation.status(cmd.status()));
+            new Brand(
+                cmd.id(),
+                ProductCatalogValidation.text(cmd.name(), 100, "品牌名称"),
+                ProductCatalogValidation.optional(cmd.picUrl(), 500),
+                ProductCatalogValidation.optional(cmd.description(), 2000),
+                cmd.sort(),
+                ProductCatalogValidation.status(cmd.status()));
         return ProductCatalogDTOConverter.brand(brandGateway.saveBrand(brand));
     }
 }

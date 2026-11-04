@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 默认地址查询执行器。 */
+/**
+ * 默认地址查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberAddressDefaultQueryExe {
@@ -24,6 +26,6 @@ public class MemberAddressDefaultQueryExe {
     public AddressDTO execute(AddressDefaultQry qry) {
         MemberRules.id(qry.memberId());
         return memberAddressQueryService.enrich(
-                memberAddressGateway.defaultAddress(qry.memberId()));
+            memberAddressGateway.defaultAddress(qry.memberId()));
     }
 }

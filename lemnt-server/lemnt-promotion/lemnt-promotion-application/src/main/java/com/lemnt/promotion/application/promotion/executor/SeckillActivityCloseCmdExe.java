@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 秒杀活动关闭执行器。 */
+/**
+ * 秒杀活动关闭执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class SeckillActivityCloseCmdExe {

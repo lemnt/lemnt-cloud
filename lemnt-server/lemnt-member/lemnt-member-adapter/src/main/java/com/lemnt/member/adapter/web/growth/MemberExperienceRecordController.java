@@ -23,7 +23,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 经验流水接口。 */
+/**
+ * 经验流水接口。
+ */
 @Tag(name = "经验流水")
 @RestController
 @RequestMapping("/member/admin")
@@ -37,25 +39,25 @@ public class MemberExperienceRecordController {
     @Operation(summary = "经验流水分页")
     @RequiresPermissions("member:experience:query")
     public R<MemberRecordExperienceRecordsRes> experienceRecords(
-            @Valid @ModelAttribute MemberRecordExperienceRecordsReq req) {
+        @Valid @ModelAttribute MemberRecordExperienceRecordsReq req) {
         var page =
-                memberExperienceRecordAllPageQueryExe.execute(
-                        MemberReqConverter.toExperiencePageQry(req));
+            memberExperienceRecordAllPageQueryExe.execute(
+                MemberReqConverter.toExperiencePageQry(req));
         return R.page(
-                page.getRecords().stream()
-                        .map(MemberGrowthResConverter::toMemberRecordExperienceRecordsRes)
-                        .toList(),
-                page.getTotal());
+            page.getRecords().stream()
+                .map(MemberGrowthResConverter::toMemberRecordExperienceRecordsRes)
+                .toList(),
+            page.getTotal());
     }
 
     @GetMapping("/experience-records/{id}")
     @Operation(summary = "experience-records详情")
     @RequiresPermissions("member:experience:query")
     public R<MemberRecordExperienceRecordsDetailRes> experienceRecordsDetail(
-            @PathVariable Long id) {
+        @PathVariable Long id) {
         return R.ok(
-                MemberGrowthResConverter.toMemberRecordExperienceRecordsDetailRes(
-                        memberAssetRecordDetailQueryExe.execute(
-                                new AssetRecordDetailQry("EXPERIENCE", id))));
+            MemberGrowthResConverter.toMemberRecordExperienceRecordsDetailRes(
+                memberAssetRecordDetailQueryExe.execute(
+                    new AssetRecordDetailQry("EXPERIENCE", id))));
     }
 }

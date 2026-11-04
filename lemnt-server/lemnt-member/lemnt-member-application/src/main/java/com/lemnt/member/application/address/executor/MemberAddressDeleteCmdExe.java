@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 地址删除命令执行器。 */
+/**
+ * 地址删除命令执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberAddressDeleteCmdExe {

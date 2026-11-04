@@ -6,4 +6,6 @@
 
 构建：从lemnt-server/pom.xml运行-pl lemnt-product/lemnt-product-start -am clean package。真实MQ、Nacos、Dubbo和HTTP验收单独记录。
 
-P5-00配置源位于`docs/config/lemnt-product.yaml`及共享`commerce-mq.yaml`。消费者由`COMMERCE_MQ_ENABLED=true`显式开启，默认关闭；Outbox Relay还需`COMMERCE_OUTBOX_ENABLED=true`。先完成旧写入方停用和原任务审核，再按[配置与切流准备](../../docs/module-split-cutover.md)启用；本批未发布配置或切流。
+P5-00配置源位于`docs/config/lemnt-product.yaml`及共享`commerce-mq.yaml`。消费者由`COMMERCE_MQ_ENABLED=true`
+显式开启，默认关闭；Outbox Relay还需`COMMERCE_OUTBOX_ENABLED=true`
+。先完成旧写入方停用和原任务审核，再按[配置与切流准备](../../docs/module-split-cutover.md)启用；本批未发布配置或切流。

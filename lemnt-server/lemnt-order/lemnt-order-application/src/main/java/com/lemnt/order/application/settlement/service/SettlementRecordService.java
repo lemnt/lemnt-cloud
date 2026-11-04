@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 本域只保存结算恢复上下文，券与活动生命周期由营销服务处理。 */
+/**
+ * 本域只保存结算恢复上下文，券与活动生命周期由营销服务处理。
+ */
 @Component
 @RequiredArgsConstructor
 public class SettlementRecordService {

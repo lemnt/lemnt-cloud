@@ -7,9 +7,10 @@ import java.math.BigDecimal;
  * merchant identity, currency, timestamp and replay protection.
  */
 public record VerifiedPaymentNotification(
-        String paymentNo,
-        String orderNo,
-        String channel,
-        String channelTradeNo,
-        BigDecimal amount,
-        String notifyId) {}
+    String paymentNo,
+    String orderNo,
+    String channel,
+    String channelTradeNo,
+    BigDecimal amount,
+    String notifyId) {
+}

@@ -12,92 +12,94 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 消费端幂等必须与业务同事务，并识别同号不同冻结载荷。 */
+/**
+ * 消费端幂等必须与业务同事务，并识别同号不同冻结载荷。
+ */
 class InboxPersistenceTest extends OutboxPersistenceTest {
     MessageInboxGateway inbox() {
         return proxy(
-                new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
-                MessageInboxGateway.class);
+            new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
+            MessageInboxGateway.class);
     }
 
     @Test
     void failedBusinessRollsBackReceiptAndAllowsOriginalEventToRetry() {
         var inbox = inbox();
         assertThrows(
-                IllegalStateException.class,
-                () ->
-                        transaction.executeWithoutResult(
-                                status -> {
-                                    assertTrue(
-                                            inbox.begin(
-                                                    "stock.refund",
-                                                    "E1",
-                                                    "AFTER_SALE_COMPLETED",
-                                                    "AF1",
-                                                    "{}"));
-                                    throw new IllegalStateException("模拟库存写入失败");
-                                }));
-        assertEquals(
-                0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
-        transaction.executeWithoutResult(
-                status ->
+            IllegalStateException.class,
+            () ->
+                transaction.executeWithoutResult(
+                    status -> {
                         assertTrue(
-                                inbox.begin(
-                                        "stock.refund",
-                                        "E1",
-                                        "AFTER_SALE_COMPLETED",
-                                        "AF1",
-                                        "{}")));
+                            inbox.begin(
+                                "stock.refund",
+                                "E1",
+                                "AFTER_SALE_COMPLETED",
+                                "AF1",
+                                "{}"));
+                        throw new IllegalStateException("模拟库存写入失败");
+                    }));
+        assertEquals(
+            0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
         transaction.executeWithoutResult(
-                status ->
-                        assertFalse(
-                                inbox.begin(
-                                        "stock.refund",
-                                        "E1",
-                                        "AFTER_SALE_COMPLETED",
-                                        "AF1",
-                                        "{}")));
+            status ->
+                assertTrue(
+                    inbox.begin(
+                        "stock.refund",
+                        "E1",
+                        "AFTER_SALE_COMPLETED",
+                        "AF1",
+                        "{}")));
+        transaction.executeWithoutResult(
+            status ->
+                assertFalse(
+                    inbox.begin(
+                        "stock.refund",
+                        "E1",
+                        "AFTER_SALE_COMPLETED",
+                        "AF1",
+                        "{}")));
     }
 
     @Test
     void businessDuplicateIsDeduplicatedButChangedContentOrEventIdentityFails() {
         var inbox = inbox();
         transaction.executeWithoutResult(
-                status ->
-                        assertTrue(
-                                inbox.begin(
-                                        "stock.refund",
-                                        "E1",
-                                        "AFTER_SALE_COMPLETED",
-                                        "AF1",
-                                        "{}")));
+            status ->
+                assertTrue(
+                    inbox.begin(
+                        "stock.refund",
+                        "E1",
+                        "AFTER_SALE_COMPLETED",
+                        "AF1",
+                        "{}")));
         transaction.executeWithoutResult(
-                status ->
-                        assertFalse(
-                                inbox.begin(
-                                        "stock.refund",
-                                        "E2",
-                                        "AFTER_SALE_COMPLETED",
-                                        "AF1",
-                                        "{}")));
+            status ->
+                assertFalse(
+                    inbox.begin(
+                        "stock.refund",
+                        "E2",
+                        "AFTER_SALE_COMPLETED",
+                        "AF1",
+                        "{}")));
         assertThrows(
-                IllegalStateException.class,
-                () ->
-                        transaction.executeWithoutResult(
-                                status ->
-                                        inbox.begin(
-                                                "stock.refund",
-                                                "E1",
-                                                "AFTER_SALE_COMPLETED",
-                                                "AF1",
-                                                "{\"quantity\":2}")));
+            IllegalStateException.class,
+            () ->
+                transaction.executeWithoutResult(
+                    status ->
+                        inbox.begin(
+                            "stock.refund",
+                            "E1",
+                            "AFTER_SALE_COMPLETED",
+                            "AF1",
+                            "{\"quantity\":2}")));
         assertThrows(
-                IllegalStateException.class,
-                () ->
-                        transaction.executeWithoutResult(
-                                status ->
-                                        inbox.begin(
-                                                "stock.refund", "E1", "ORDER_PAID", "O2", "{}")));
+            IllegalStateException.class,
+            () ->
+                transaction.executeWithoutResult(
+                    status ->
+                        inbox.begin(
+                            "stock.refund", "E1", "ORDER_PAID", "O2", "{}")));
     }
 
     @Test
@@ -108,44 +110,44 @@ class InboxPersistenceTest extends OutboxPersistenceTest {
         var pool = Executors.newFixedThreadPool(2);
         try {
             var first =
-                    pool.submit(
-                            () -> {
-                                start.await();
-                                transaction.executeWithoutResult(
-                                        status -> {
-                                            if (inbox.begin(
-                                                    "stock.refund",
-                                                    "E1",
-                                                    "AFTER_SALE_COMPLETED",
-                                                    "AF1",
-                                                    "{}"))
-                                                jdbc.update("INSERT INTO test_effect VALUES(1)");
-                                        });
-                                return true;
+                pool.submit(
+                    () -> {
+                        start.await();
+                        transaction.executeWithoutResult(
+                            status -> {
+                                if (inbox.begin(
+                                    "stock.refund",
+                                    "E1",
+                                    "AFTER_SALE_COMPLETED",
+                                    "AF1",
+                                    "{}"))
+                                    jdbc.update("INSERT INTO test_effect VALUES(1)");
                             });
+                        return true;
+                    });
             var second =
-                    pool.submit(
-                            () -> {
-                                start.await();
-                                transaction.executeWithoutResult(
-                                        status -> {
-                                            if (inbox.begin(
-                                                    "stock.refund",
-                                                    "E2",
-                                                    "AFTER_SALE_COMPLETED",
-                                                    "AF1",
-                                                    "{}"))
-                                                jdbc.update("INSERT INTO test_effect VALUES(1)");
-                                        });
-                                return true;
+                pool.submit(
+                    () -> {
+                        start.await();
+                        transaction.executeWithoutResult(
+                            status -> {
+                                if (inbox.begin(
+                                    "stock.refund",
+                                    "E2",
+                                    "AFTER_SALE_COMPLETED",
+                                    "AF1",
+                                    "{}"))
+                                    jdbc.update("INSERT INTO test_effect VALUES(1)");
                             });
+                        return true;
+                    });
             start.countDown();
             assertTrue(first.get(10, TimeUnit.SECONDS));
             assertTrue(second.get(10, TimeUnit.SECONDS));
             assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM test_effect", Integer.class));
             assertEquals(
-                    1,
-                    jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
+                1,
+                jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
         } finally {
             pool.shutdownNow();
         }

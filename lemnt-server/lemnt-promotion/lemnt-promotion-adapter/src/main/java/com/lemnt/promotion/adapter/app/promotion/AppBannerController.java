@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 小程序 Banner 展示。 */
+/**
+ * 小程序 Banner 展示。
+ */
 @Tag(name = "小程序 Banner")
 @RestController
 @RequestMapping("/mall/app/banners")

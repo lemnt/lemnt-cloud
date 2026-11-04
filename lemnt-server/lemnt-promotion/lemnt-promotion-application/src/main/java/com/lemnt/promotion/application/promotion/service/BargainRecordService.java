@@ -32,7 +32,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-/** 砍价记录：发起砍价、好友助力、成功后下单及活动到期失败。 */
+/**
+ * 砍价记录：发起砍价、好友助力、成功后下单及活动到期失败。
+ */
 @Component
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
@@ -63,30 +65,32 @@ public class BargainRecordService {
         require(userId != null && userId > 0, "会员编号不合法");
         var activity = management.requireJoinable(activityId, LocalDateTime.now());
         require(
-                records.byUserAndActivity(userId, activityId).stream()
-                        .noneMatch(item -> Objects.equals(item.status(), IN_PROGRESS)),
-                "您已有进行中的砍价");
+            records.byUserAndActivity(userId, activityId).stream()
+                .noneMatch(item -> Objects.equals(item.status(), IN_PROGRESS)),
+            "您已有进行中的砍价");
         require(
-                records.countByUserAndActivityAndStatus(userId, activityId, SUCCESS)
-                        < activity.totalLimitCount(),
-                "超过砍价限购数量");
+            records.countByUserAndActivityAndStatus(userId, activityId, SUCCESS)
+                < activity.totalLimitCount(),
+            "超过砍价限购数量");
         return records.save(
-                        new BargainRecord(
-                                null,
-                                userId,
-                                activityId,
-                                activity.spuId(),
-                                activity.skuId(),
-                                activity.bargainFirstPrice(),
-                                activity.bargainMinPrice(),
-                                activity.bargainFirstPrice(),
-                                IN_PROGRESS,
-                                null,
-                                null))
-                .id();
+                new BargainRecord(
+                    null,
+                    userId,
+                    activityId,
+                    activity.spuId(),
+                    activity.skuId(),
+                    activity.bargainFirstPrice(),
+                    activity.bargainMinPrice(),
+                    activity.bargainFirstPrice(),
+                    IN_PROGRESS,
+                    null,
+                    null))
+            .id();
     }
 
-    /** 好友助力按随机区间砍价，砍到底价或助力人数达到上限即成功。 */
+    /**
+     * 好友助力按随机区间砍价，砍到底价或助力人数达到上限即成功。
+     */
     public BargainHelpDTO help(Long userId, Long recordId) {
         require(userId != null && userId > 0, "会员编号不合法");
         var record = record(recordId);
@@ -95,8 +99,8 @@ public class BargainRecordService {
         var activity = activities.find(record.activityId());
         require(activity != null, "砍价活动不存在");
         require(
-                helps.countByUserAndActivity(userId, activity.id()) < activity.bargainCount(),
-                "帮砍次数已用完");
+            helps.countByUserAndActivity(userId, activity.id()) < activity.bargainCount(),
+            "帮砍次数已用完");
         require(record.bargainPrice().compareTo(record.bargainMinPrice()) > 0, "已砍到底价");
         require(helps.byRecordAndUser(recordId, userId) == null, "您已助力过该砍价");
         var reduce = reducePrice(activity, record.bargainPrice(), record.bargainMinPrice());
@@ -109,35 +113,39 @@ public class BargainRecordService {
         var price = record.bargainPrice().subtract(reduce);
         var count = helps.byRecordId(recordId).size();
         var success =
-                price.compareTo(record.bargainMinPrice()) <= 0
-                        || count >= activity.helpMaxCount();
+            price.compareTo(record.bargainMinPrice()) <= 0
+                || count >= activity.helpMaxCount();
         require(
-                records.updatePrice(
-                        recordId,
-                        record.bargainPrice(),
-                        price,
-                        success ? SUCCESS : IN_PROGRESS,
-                        success ? LocalDateTime.now() : null),
-                "多人同时砍价，请重试");
+            records.updatePrice(
+                recordId,
+                record.bargainPrice(),
+                price,
+                success ? SUCCESS : IN_PROGRESS,
+                success ? LocalDateTime.now() : null),
+            "多人同时砍价，请重试");
         return helpDto(help);
     }
 
-    /** 在随机区间取分，最高不超过剩余可砍金额；底价使用记录冻结值，防止活动改价篡改进行中目标。 */
+    /**
+     * 在随机区间取分，最高不超过剩余可砍金额；底价使用记录冻结值，防止活动改价篡改进行中目标。
+     */
     private BigDecimal reducePrice(
-            BargainActivity activity, BigDecimal current, BigDecimal minPrice) {
+        BargainActivity activity, BigDecimal current, BigDecimal minPrice) {
         var minCents = activity.randomMinPrice().movePointRight(2).longValueExact();
         var maxCents = activity.randomMaxPrice().movePointRight(2).longValueExact();
         var cents =
-                maxCents <= minCents
-                        ? minCents
-                        : ThreadLocalRandom.current().nextLong(minCents, maxCents + 1);
+            maxCents <= minCents
+                ? minCents
+                : ThreadLocalRandom.current().nextLong(minCents, maxCents + 1);
         var reduce = BigDecimal.valueOf(cents).movePointLeft(2);
         var remaining = current.subtract(minPrice);
         var capped = reduce.min(remaining).setScale(2, RoundingMode.DOWN);
         return capped.signum() > 0 ? capped : remaining;
     }
 
-    /** 砍价成功且未下单时允许以砍后价购买。 */
+    /**
+     * 砍价成功且未下单时允许以砍后价购买。
+     */
     @Transactional(readOnly = true)
     public BargainJoinDTO validateJoin(Long userId, Long recordId, Long skuId) {
         var record = record(recordId);
@@ -161,55 +169,57 @@ public class BargainRecordService {
         var activity = activities.find(record.activityId());
         require(activity != null, "砍价活动不存在");
         var helped =
-                userId == null ? Boolean.FALSE : helps.byRecordAndUser(recordId, userId) != null;
+            userId == null ? Boolean.FALSE : helps.byRecordAndUser(recordId, userId) != null;
         return new BargainDetailDTO(
-                activityDto(activity),
-                dto(record),
-                helps.byRecordId(recordId).stream().map(this::helpDto).toList(),
-                helped);
+            activityDto(activity),
+            dto(record),
+            helps.byRecordId(recordId).stream().map(this::helpDto).toList(),
+            helped);
     }
 
     @Transactional(readOnly = true)
     public PageResult<BargainRecordDTO> page(BargainRecordPageQry qry) {
         require(
-                qry.pageNum() != null
-                        && qry.pageNum() >= 1
-                        && qry.pageSize() != null
-                        && qry.pageSize() >= 1
-                        && qry.pageSize() <= 100,
-                "分页参数不合法");
+            qry.pageNum() != null
+                && qry.pageNum() >= 1
+                && qry.pageSize() != null
+                && qry.pageSize() >= 1
+                && qry.pageSize() <= 100,
+            "分页参数不合法");
         var page =
-                records.page(
-                        new BargainRecordFilter(
-                                qry.userId(),
-                                qry.activityId(),
-                                qry.status(),
-                                qry.pageNum(),
-                                qry.pageSize()));
+            records.page(
+                new BargainRecordFilter(
+                    qry.userId(),
+                    qry.activityId(),
+                    qry.status(),
+                    qry.pageNum(),
+                    qry.pageSize()));
         return PageResult.of(page.getRecords().stream().map(this::dto).toList(), page.getTotal());
     }
 
     @Transactional(readOnly = true)
     public PageResult<BargainHelpDTO> helpPage(BargainHelpPageQry qry) {
         require(
-                qry.pageNum() != null
-                        && qry.pageNum() >= 1
-                        && qry.pageSize() != null
-                        && qry.pageSize() >= 1
-                        && qry.pageSize() <= 100,
-                "分页参数不合法");
+            qry.pageNum() != null
+                && qry.pageNum() >= 1
+                && qry.pageSize() != null
+                && qry.pageSize() >= 1
+                && qry.pageSize() <= 100,
+            "分页参数不合法");
         var page =
-                helps.page(
-                        qry.recordId(),
-                        qry.userId(),
-                        qry.activityId(),
-                        qry.pageNum(),
-                        qry.pageSize());
+            helps.page(
+                qry.recordId(),
+                qry.userId(),
+                qry.activityId(),
+                qry.pageNum(),
+                qry.pageSize());
         return PageResult.of(
-                page.getRecords().stream().map(this::helpDto).toList(), page.getTotal());
+            page.getRecords().stream().map(this::helpDto).toList(), page.getTotal());
     }
 
-    /** 活动已结束且仍进行中的记录统一失败。 */
+    /**
+     * 活动已结束且仍进行中的记录统一失败。
+     */
     public int expire() {
         var now = LocalDateTime.now();
         var handled = 0;
@@ -219,7 +229,7 @@ public class BargainRecordService {
             }
             for (var record : records.byActivityAndStatus(activity.id(), IN_PROGRESS)) {
                 if (records.updatePrice(
-                        record.id(), record.bargainPrice(), record.bargainPrice(), FAILED, now)) {
+                    record.id(), record.bargainPrice(), record.bargainPrice(), FAILED, now)) {
                     handled++;
                 }
             }
@@ -241,51 +251,51 @@ public class BargainRecordService {
     private BargainActivityDTO activityDto(BargainActivity value) {
         var spu = spus.findSpu(value.spuId());
         return new BargainActivityDTO(
-                value.id(),
-                value.name(),
-                value.startTime(),
-                value.endTime(),
-                value.status(),
-                value.spuId(),
-                spu == null ? null : spu.name(),
-                spu == null ? null : spu.image(),
-                null,
-                value.skuId(),
-                value.bargainFirstPrice(),
-                value.bargainMinPrice(),
-                value.stock(),
-                value.totalStock(),
-                value.helpMaxCount(),
-                value.bargainCount(),
-                value.totalLimitCount(),
-                value.randomMinPrice(),
-                value.randomMaxPrice(),
-                records.userCount(value.id(), SUCCESS));
+            value.id(),
+            value.name(),
+            value.startTime(),
+            value.endTime(),
+            value.status(),
+            value.spuId(),
+            spu == null ? null : spu.name(),
+            spu == null ? null : spu.image(),
+            null,
+            value.skuId(),
+            value.bargainFirstPrice(),
+            value.bargainMinPrice(),
+            value.stock(),
+            value.totalStock(),
+            value.helpMaxCount(),
+            value.bargainCount(),
+            value.totalLimitCount(),
+            value.randomMinPrice(),
+            value.randomMaxPrice(),
+            records.userCount(value.id(), SUCCESS));
     }
 
     private BargainRecordDTO dto(BargainRecord value) {
         ProductSpu spu = spus.findSpu(value.spuId());
         return new BargainRecordDTO(
-                value.id(),
-                value.userId(),
-                value.activityId(),
-                value.spuId(),
-                spu == null ? null : spu.name(),
-                spu == null ? null : spu.image(),
-                value.skuId(),
-                value.bargainFirstPrice(),
-                value.bargainPrice(),
-                value.status(),
-                value.endTime(),
-                value.orderId());
+            value.id(),
+            value.userId(),
+            value.activityId(),
+            value.spuId(),
+            spu == null ? null : spu.name(),
+            spu == null ? null : spu.image(),
+            value.skuId(),
+            value.bargainFirstPrice(),
+            value.bargainPrice(),
+            value.status(),
+            value.endTime(),
+            value.orderId());
     }
 
     private BargainHelpDTO helpDto(BargainHelp value) {
         return new BargainHelpDTO(
-                value.id(),
-                value.activityId(),
-                value.recordId(),
-                value.userId(),
-                value.reducePrice());
+            value.id(),
+            value.activityId(),
+            value.recordId(),
+            value.userId(),
+            value.reducePrice());
     }
 }

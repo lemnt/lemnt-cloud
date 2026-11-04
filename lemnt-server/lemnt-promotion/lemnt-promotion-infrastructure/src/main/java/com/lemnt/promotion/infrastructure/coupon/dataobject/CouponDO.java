@@ -31,52 +31,84 @@ public class CouponDO extends BaseDO {
     private String status;
     private String orderNo;
 
-    /** 营销活动赠券来源订单，普通持券为空。 */
+    /**
+     * 营销活动赠券来源订单，普通持券为空。
+     */
     private String sourceOrderNo;
 
-    /** 同一来源订单、模板和会员下的赠券发放序号。 */
+    /**
+     * 同一来源订单、模板和会员下的赠券发放序号。
+     */
     private Integer giftSequence;
 
-    /** code。 */
+    /**
+     * code。
+     */
     private String code;
 
-    /** name。 */
+    /**
+     * name。
+     */
     private String name;
 
-    /** takeType。 */
+    /**
+     * takeType。
+     */
     private String takeType;
 
-    /** kind。 */
+    /**
+     * kind。
+     */
     private String kind;
 
-    /** threshold。 */
+    /**
+     * threshold。
+     */
     private BigDecimal threshold;
 
-    /** fixedAmount。 */
+    /**
+     * fixedAmount。
+     */
     private BigDecimal fixedAmount;
 
-    /** discountPercent。 */
+    /**
+     * discountPercent。
+     */
     private Integer discountPercent;
 
-    /** discountLimit。 */
+    /**
+     * discountLimit。
+     */
     private BigDecimal discountLimit;
 
-    /** 适用商品范围。 */
+    /**
+     * 适用商品范围。
+     */
     private String productScope;
 
-    /** 适用SPU或分类编号JSON。 */
+    /**
+     * 适用SPU或分类编号JSON。
+     */
     private String productScopeValues;
 
-    /** validFrom。 */
+    /**
+     * validFrom。
+     */
     private LocalDateTime validFrom;
 
-    /** validUntil。 */
+    /**
+     * validUntil。
+     */
     private LocalDateTime validUntil;
 
-    /** useTime。 */
+    /**
+     * useTime。
+     */
     private LocalDateTime useTime;
 
-    /** 逻辑删除，保留已发券历史。 */
+    /**
+     * 逻辑删除，保留已发券历史。
+     */
     @TableLogic(value = "0", delval = "1")
     private Boolean deleted;
 }

@@ -26,6 +26,8 @@ public class StockReservationDO extends BaseDO {
     private Integer quantity;
     private String status;
 
-    /** 售后回补关联的原预占订单号。 */
+    /**
+     * 售后回补关联的原预占订单号。
+     */
     private String sourceNo;
 }

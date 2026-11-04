@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 扫描只决定候选，执行时仍在原行锁下核验状态。 */
+/**
+ * 扫描只决定候选，执行时仍在原行锁下核验状态。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderRecoveryGatewayImpl implements OrderRecoveryGateway {

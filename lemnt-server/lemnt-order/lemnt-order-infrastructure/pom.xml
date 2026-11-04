@@ -10,10 +10,26 @@
     </parent>
     <artifactId>lemnt-order-infrastructure</artifactId>
     <dependencies>
-        <dependency><groupId>com.lemnt</groupId><artifactId>lemnt-common-redis</artifactId><version>1.0.0-SNAPSHOT</version></dependency>
-        <dependency><groupId>com.lemnt</groupId><artifactId>lemnt-order-client</artifactId><version>1.0.0-SNAPSHOT</version></dependency>
-        <dependency><groupId>com.lemnt</groupId><artifactId>lemnt-pay-client</artifactId><version>1.0.0-SNAPSHOT</version></dependency>
-        <dependency><groupId>com.lemnt</groupId><artifactId>lemnt-promotion-client</artifactId><version>1.0.0-SNAPSHOT</version></dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-redis</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-order-client</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-pay-client</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-promotion-client</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>com.lemnt</groupId>
             <artifactId>lemnt-common-lock</artifactId>

@@ -20,7 +20,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-/** 充值下单幂等、到账入账、退款出账与状态约束。 */
+/**
+ * 充值下单幂等、到账入账、退款出账与状态约束。
+ */
 class RechargeServiceTest {
     final RechargePackageGateway packages = mock(RechargePackageGateway.class);
     final WalletRechargeGateway recharges = mock(WalletRechargeGateway.class);
@@ -30,36 +32,36 @@ class RechargeServiceTest {
 
     private RechargePackage pkg(int status) {
         return new RechargePackage(
-                1L, "标准", new BigDecimal("100.00"), new BigDecimal("20.00"), status, null);
+            1L, "标准", new BigDecimal("100.00"), new BigDecimal("20.00"), status, null);
     }
 
     private WalletRecharge recharge(String status) {
         return new WalletRecharge(
-                5L,
-                "RC1",
-                "REQ1",
-                10L,
-                1L,
-                1L,
-                new BigDecimal("100.00"),
-                new BigDecimal("20.00"),
-                new BigDecimal("120.00"),
-                status,
-                "ALIPAY",
-                now,
-                null,
-                null);
+            5L,
+            "RC1",
+            "REQ1",
+            10L,
+            1L,
+            1L,
+            new BigDecimal("100.00"),
+            new BigDecimal("20.00"),
+            new BigDecimal("120.00"),
+            status,
+            "ALIPAY",
+            now,
+            null,
+            null);
     }
 
     private Wallet wallet() {
         return new Wallet(
-                10L,
-                1L,
-                new BigDecimal("120.00"),
-                new BigDecimal("0.00"),
-                new BigDecimal("0.00"),
-                new BigDecimal("120.00"),
-                null);
+            10L,
+            1L,
+            new BigDecimal("120.00"),
+            new BigDecimal("0.00"),
+            new BigDecimal("0.00"),
+            new BigDecimal("120.00"),
+            null);
     }
 
     @Test
@@ -86,22 +88,22 @@ class RechargeServiceTest {
         assertThrows(ServiceException.class, () -> service.create(1L, 1L, "REQ1"));
         when(packages.find(1L)).thenReturn(pkg(0));
         when(recharges.findByRequestNo("REQ1"))
-                .thenReturn(
-                        new WalletRecharge(
-                                5L,
-                                "RC1",
-                                "REQ1",
-                                10L,
-                                1L,
-                                2L,
-                                BigDecimal.ONE,
-                                BigDecimal.ZERO,
-                                BigDecimal.ONE,
-                                "PENDING",
-                                null,
-                                null,
-                                null,
-                                null));
+            .thenReturn(
+                new WalletRecharge(
+                    5L,
+                    "RC1",
+                    "REQ1",
+                    10L,
+                    1L,
+                    2L,
+                    BigDecimal.ONE,
+                    BigDecimal.ZERO,
+                    BigDecimal.ONE,
+                    "PENDING",
+                    null,
+                    null,
+                    null,
+                    null));
         assertThrows(IllegalStateException.class, () -> service.create(1L, 1L, "REQ1"));
     }
 
@@ -111,11 +113,11 @@ class RechargeServiceTest {
         when(recharges.databaseNow()).thenReturn(now);
         when(recharges.update(any())).thenReturn(true);
         when(walletService.credit(anyLong(), any(), anyString(), any(), anyString()))
-                .thenReturn(wallet());
+            .thenReturn(wallet());
         when(recharges.findByNo("RC1")).thenReturn(recharge("PAID"));
         assertEquals("PAID", service.confirmPaid("RC1", "ALIPAY").status());
         verify(walletService)
-                .credit(1L, WalletBizType.RECHARGE, "RC1", new BigDecimal("120.00"), "充值到账");
+            .credit(1L, WalletBizType.RECHARGE, "RC1", new BigDecimal("120.00"), "充值到账");
 
         reset(walletService);
         when(recharges.lockByNo("RC1")).thenReturn(recharge("PAID"));
@@ -129,11 +131,11 @@ class RechargeServiceTest {
         when(recharges.databaseNow()).thenReturn(now);
         when(recharges.update(any())).thenReturn(true);
         when(walletService.debit(anyLong(), any(), anyString(), any(), anyString()))
-                .thenReturn(wallet());
+            .thenReturn(wallet());
         when(recharges.findByNo("RC1")).thenReturn(recharge("REFUNDED"));
         assertEquals("REFUNDED", service.refund("RC1").status());
         verify(walletService)
-                .debit(1L, WalletBizType.RECHARGE_REFUND, "RC1", new BigDecimal("120.00"), "充值退款");
+            .debit(1L, WalletBizType.RECHARGE_REFUND, "RC1", new BigDecimal("120.00"), "充值退款");
 
         reset(walletService);
         when(recharges.lockByNo("RC1")).thenReturn(recharge("REFUNDED"));
@@ -150,8 +152,8 @@ class RechargeServiceTest {
         when(recharges.databaseNow()).thenReturn(now);
         when(recharges.update(any())).thenReturn(true);
         doThrow(new ServiceException("钱包余额不足", 400))
-                .when(walletService)
-                .debit(anyLong(), any(), anyString(), any(), anyString());
+            .when(walletService)
+            .debit(anyLong(), any(), anyString(), any(), anyString());
         assertThrows(ServiceException.class, () -> service.refund("RC1"));
     }
 

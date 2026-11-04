@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 订单事实驱动本地权益，消费凭证与业务效果同事务。 */
+/**
+ * 订单事实驱动本地权益，消费凭证与业务效果同事务。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderClosedEventHandler {
@@ -25,15 +27,15 @@ public class OrderClosedEventHandler {
         envelope.requireType(CommerceEventTopics.ORDER_CLOSED);
         var event = JsonUtils.toBean(envelope.payload(), OrderClosedEvent.class);
         if (event == null
-                || !envelope.aggregateNo().equals(event.orderNo())
-                || !envelope.businessKey().equals(event.orderNo()))
+            || !envelope.aggregateNo().equals(event.orderNo())
+            || !envelope.businessKey().equals(event.orderNo()))
             throw new IllegalArgumentException("事件订单或业务编号不一致");
         if (!inbox.begin(
-                "promotion.order_closed.v1",
-                envelope.eventNo(),
-                envelope.eventType(),
-                envelope.businessKey(),
-                envelope.payload())) return;
+            "promotion.order_closed.v1",
+            envelope.eventNo(),
+            envelope.eventType(),
+            envelope.businessKey(),
+            envelope.payload())) return;
         var plan = resources.plan(event.orderNo());
         if (!plan.memberId().equals(event.memberId()))
             throw new IllegalArgumentException("关单会员与原订单不符");

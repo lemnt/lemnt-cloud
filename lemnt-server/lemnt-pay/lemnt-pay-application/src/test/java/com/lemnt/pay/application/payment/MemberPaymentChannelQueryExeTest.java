@@ -15,7 +15,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/** 收银台只展示应用下已启用的渠道，未知编码不返回。 */
+/**
+ * 收银台只展示应用下已启用的渠道，未知编码不返回。
+ */
 class MemberPaymentChannelQueryExeTest {
     final PayAppGateway apps = mock(PayAppGateway.class);
     final PayChannelConfigGateway channels = mock(PayChannelConfigGateway.class);
@@ -28,14 +30,14 @@ class MemberPaymentChannelQueryExeTest {
     @Test
     void enabledChannelsAreDistinctAndUnknownCodesSkipped() {
         when(apps.findByAppKey("lemnt-mall"))
-                .thenReturn(new PayApp(1L, "lemnt-mall", "商城", 0, null, null, null, null));
+            .thenReturn(new PayApp(1L, "lemnt-mall", "商城", 0, null, null, null, null));
         when(channels.listByAppId(1L))
-                .thenReturn(
-                        List.of(
-                                config("SANDBOX", 0),
-                                config("SANDBOX", 0),
-                                config("ALIPAY", 1),
-                                config("UNKNOWN", 0)));
+            .thenReturn(
+                List.of(
+                    config("SANDBOX", 0),
+                    config("SANDBOX", 0),
+                    config("ALIPAY", 1),
+                    config("UNKNOWN", 0)));
         var result = exe.execute("lemnt-mall");
         assertEquals(1, result.size());
         assertEquals("SANDBOX", result.get(0).code());
@@ -45,7 +47,7 @@ class MemberPaymentChannelQueryExeTest {
     void missingOrDisabledAppIsRejected() {
         assertThrows(ServiceException.class, () -> exe.execute(""));
         when(apps.findByAppKey("lemnt-mall"))
-                .thenReturn(new PayApp(1L, "lemnt-mall", "商城", 1, null, null, null, null));
+            .thenReturn(new PayApp(1L, "lemnt-mall", "商城", 1, null, null, null, null));
         assertThrows(ServiceException.class, () -> exe.execute("lemnt-mall"));
         verifyNoInteractions(channels);
     }

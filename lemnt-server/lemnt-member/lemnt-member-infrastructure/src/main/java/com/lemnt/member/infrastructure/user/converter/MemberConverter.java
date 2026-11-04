@@ -7,33 +7,34 @@ import com.lemnt.member.infrastructure.user.dataobject.MemberDO;
  * 资料转换器。
  */
 public final class MemberConverter {
-    private MemberConverter() {}
+    private MemberConverter() {
+    }
 
     /**
      * 转换为领域对象。
      */
     public static Member toEntity(MemberDO row) {
         return row == null
-                ? null
-                : new Member(
-                        row.getId(),
-                        row.getNickname(),
-                        row.getMobile(),
-                        row.getEmail(),
-                        row.getAvatar(),
-                        row.getStatus(),
-                        row.getPoints(),
-                        row.getExperience(),
-                        row.getLevelId(),
-                        row.getGroupId(),
-                        row.getSex(),
-                        row.getBirthday(),
-                        row.getCreateTime(),
-                        row.getMark(),
-                        row.getName(),
-                        row.getAreaId(),
-                        row.getLoginDate(),
-                        row.getLoginIp());
+            ? null
+            : new Member(
+            row.getId(),
+            row.getNickname(),
+            row.getMobile(),
+            row.getEmail(),
+            row.getAvatar(),
+            row.getStatus(),
+            row.getPoints(),
+            row.getExperience(),
+            row.getLevelId(),
+            row.getGroupId(),
+            row.getSex(),
+            row.getBirthday(),
+            row.getCreateTime(),
+            row.getMark(),
+            row.getName(),
+            row.getAreaId(),
+            row.getLoginDate(),
+            row.getLoginIp());
     }
 
     /**

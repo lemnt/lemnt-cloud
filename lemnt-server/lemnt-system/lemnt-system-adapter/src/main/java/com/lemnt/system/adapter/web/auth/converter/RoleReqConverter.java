@@ -19,23 +19,23 @@ import com.lemnt.system.application.auth.qry.RolePageQry;
 public class RoleReqConverter {
     public static RoleAddCmd toCmd(RoleAddReq req) {
         return new RoleAddCmd(
-                req.roleName(),
-                req.roleKey(),
-                req.roleSort(),
-                req.dataScope(),
-                req.status(),
-                req.menuIds());
+            req.roleName(),
+            req.roleKey(),
+            req.roleSort(),
+            req.dataScope(),
+            req.status(),
+            req.menuIds());
     }
 
     public static RoleUpdateCmd toCmd(RoleUpdateReq req) {
         return new RoleUpdateCmd(
-                req.roleId(),
-                req.roleName(),
-                req.roleKey(),
-                req.roleSort(),
-                req.dataScope(),
-                req.status(),
-                req.menuIds());
+            req.roleId(),
+            req.roleName(),
+            req.roleKey(),
+            req.roleSort(),
+            req.dataScope(),
+            req.status(),
+            req.menuIds());
     }
 
     public static RoleDataScopeUpdateCmd toCmd(RoleDataScopeUpdateReq req) {
@@ -59,13 +59,13 @@ public class RoleReqConverter {
             return null;
         }
         return new RolePageQry(
-                item.roleName(),
-                item.roleKey(),
-                item.status(),
-                item.pageNum(),
-                item.pageSize(),
-                item.beginTime(),
-                item.endTime());
+            item.roleName(),
+            item.roleKey(),
+            item.status(),
+            item.pageNum(),
+            item.pageSize(),
+            item.beginTime(),
+            item.endTime());
     }
 
     public static RoleAuthCancelCmd toAuthCancelCmd(SystemRoleUserCancelAuthUserReq req) {

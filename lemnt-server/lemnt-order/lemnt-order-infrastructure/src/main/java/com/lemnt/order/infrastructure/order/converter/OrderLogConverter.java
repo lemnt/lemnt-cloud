@@ -3,11 +3,16 @@ package com.lemnt.order.infrastructure.order.converter;
 import com.lemnt.order.domain.order.model.OrderLog;
 import com.lemnt.order.infrastructure.order.dataobject.OrderLogDO;
 
-/** 订单日志持久化转换。 */
+/**
+ * 订单日志持久化转换。
+ */
 public final class OrderLogConverter {
-    private OrderLogConverter() {}
+    private OrderLogConverter() {
+    }
 
-    /** 转换日志写入行。 */
+    /**
+     * 转换日志写入行。
+     */
     public static OrderLogDO toDO(OrderLog value) {
         var row = new OrderLogDO();
         row.setUserId(value.userId());
@@ -21,17 +26,19 @@ public final class OrderLogConverter {
         return row;
     }
 
-    /** 转换查询结果。 */
+    /**
+     * 转换查询结果。
+     */
     public static OrderLog toModel(OrderLogDO row) {
         return new OrderLog(
-                row.getId(),
-                row.getUserId(),
-                row.getUserType(),
-                row.getOrderId(),
-                row.getBeforeStatus(),
-                row.getAfterStatus(),
-                row.getOperateType(),
-                row.getContent(),
-                row.getCreateTime());
+            row.getId(),
+            row.getUserId(),
+            row.getUserType(),
+            row.getOrderId(),
+            row.getBeforeStatus(),
+            row.getAfterStatus(),
+            row.getOperateType(),
+            row.getContent(),
+            row.getCreateTime());
     }
 }

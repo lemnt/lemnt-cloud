@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 public class MenuAddCmdExe {
     private final MenuGateway menuGateway;
 
-    /** 新增前校验同级名称，避免其他调用入口绕过业务规则。 */
+    /**
+     * 新增前校验同级名称，避免其他调用入口绕过业务规则。
+     */
     public Boolean execute(MenuAddCmd cmd) {
         if (menuGateway.checkMenuNameUnique(cmd.menuName(), cmd.parentId()) != null) {
             throw new ServiceException("新增菜单'" + cmd.menuName() + "'失败，菜单名称已存在");

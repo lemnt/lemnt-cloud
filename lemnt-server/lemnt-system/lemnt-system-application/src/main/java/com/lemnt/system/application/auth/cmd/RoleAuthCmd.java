@@ -9,12 +9,13 @@ import java.util.List;
  * @author wangxx
  */
 public record RoleAuthCmd(
-        /**
-         * 角色ID
-         */
-        Long roleId,
-        /**
-         * 用户ID列表
-         */
-        List<Long> userIds)
-        implements Serializable {}
+    /**
+     * 角色ID
+     */
+    Long roleId,
+    /**
+     * 用户ID列表
+     */
+    List<Long> userIds)
+    implements Serializable {
+}

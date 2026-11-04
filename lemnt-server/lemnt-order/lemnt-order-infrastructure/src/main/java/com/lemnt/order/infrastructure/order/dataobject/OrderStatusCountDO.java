@@ -3,7 +3,9 @@ package com.lemnt.order.infrastructure.order.dataobject;
 import lombok.Getter;
 import lombok.Setter;
 
-/** 订单状态分组计数投影。 */
+/**
+ * 订单状态分组计数投影。
+ */
 @Getter
 @Setter
 public class OrderStatusCountDO {

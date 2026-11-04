@@ -29,15 +29,15 @@ public class RemoteConfigServiceImpl implements RemoteConfigService {
     @Override
     public void saveBusinessConfig(BusinessConfigSaveBo value) {
         if (value == null
-                || !(BusinessConfigKeys.MEMBER_POINT.equals(value.configKey())
-                        || BusinessConfigKeys.TRADE.equals(value.configKey()))
-                || !JSON.isValidObject(value.configValue())) {
+            || !(BusinessConfigKeys.MEMBER_POINT.equals(value.configKey())
+            || BusinessConfigKeys.TRADE.equals(value.configKey()))
+            || !JSON.isValidObject(value.configValue())) {
             throw new ServiceException("业务配置键或JSON对象不合法", 400);
         }
         var config = new Config();
         config.setConfigKey(value.configKey());
         config.setConfigName(
-                BusinessConfigKeys.MEMBER_POINT.equals(value.configKey()) ? "积分交易配置" : "交易基础配置");
+            BusinessConfigKeys.MEMBER_POINT.equals(value.configKey()) ? "积分交易配置" : "交易基础配置");
         config.setConfigValue(value.configValue());
         config.setUpdateBy(value.operator());
         configGateway.saveBusinessConfig(config);

@@ -21,7 +21,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 
-/** pay_wallet/transaction 持久化实现。 */
+/**
+ * pay_wallet/transaction 持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class WalletGatewayImpl implements WalletGateway {
@@ -31,10 +33,10 @@ public class WalletGatewayImpl implements WalletGateway {
     @Override
     public Wallet findByMemberId(Long memberId) {
         return WalletConverter.toEntity(
-                wallets.selectOne(
-                        Wrappers.<WalletDO>lambdaQuery()
-                                .eq(WalletDO::getMemberId, memberId)
-                                .last("LIMIT 1")));
+            wallets.selectOne(
+                Wrappers.<WalletDO>lambdaQuery()
+                    .eq(WalletDO::getMemberId, memberId)
+                    .last("LIMIT 1")));
     }
 
     @Override
@@ -75,28 +77,28 @@ public class WalletGatewayImpl implements WalletGateway {
     @Override
     public PageResult<Wallet> page(WalletFilter filter) {
         var page =
-                wallets.selectPage(
-                        new Page<WalletDO>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.<WalletDO>lambdaQuery()
-                                .eq(
-                                        filter.memberId() != null,
-                                        WalletDO::getMemberId,
-                                        filter.memberId())
-                                .orderByDesc(WalletDO::getId));
+            wallets.selectPage(
+                new Page<WalletDO>(filter.pageNum(), filter.pageSize()),
+                Wrappers.<WalletDO>lambdaQuery()
+                    .eq(
+                        filter.memberId() != null,
+                        WalletDO::getMemberId,
+                        filter.memberId())
+                    .orderByDesc(WalletDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(WalletConverter::toEntity).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(WalletConverter::toEntity).toList(),
+            page.getTotal());
     }
 
     @Override
     public WalletTransaction findTransaction(Long walletId, String bizType, String bizNo) {
         return WalletConverter.toEntity(
-                transactions.selectOne(
-                        Wrappers.<WalletTransactionDO>lambdaQuery()
-                                .eq(WalletTransactionDO::getWalletId, walletId)
-                                .eq(WalletTransactionDO::getBizType, bizType)
-                                .eq(WalletTransactionDO::getBizNo, bizNo)
-                                .last("LIMIT 1")));
+            transactions.selectOne(
+                Wrappers.<WalletTransactionDO>lambdaQuery()
+                    .eq(WalletTransactionDO::getWalletId, walletId)
+                    .eq(WalletTransactionDO::getBizType, bizType)
+                    .eq(WalletTransactionDO::getBizNo, bizNo)
+                    .last("LIMIT 1")));
     }
 
     @Override
@@ -107,17 +109,17 @@ public class WalletGatewayImpl implements WalletGateway {
     @Override
     public PageResult<WalletTransaction> transactionPage(WalletTransactionFilter filter) {
         var page =
-                transactions.selectPage(
-                        new Page<WalletTransactionDO>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.<WalletTransactionDO>lambdaQuery()
-                                .eq(WalletTransactionDO::getWalletId, filter.walletId())
-                                .eq(
-                                        filter.bizType() != null,
-                                        WalletTransactionDO::getBizType,
-                                        filter.bizType())
-                                .orderByDesc(WalletTransactionDO::getId));
+            transactions.selectPage(
+                new Page<WalletTransactionDO>(filter.pageNum(), filter.pageSize()),
+                Wrappers.<WalletTransactionDO>lambdaQuery()
+                    .eq(WalletTransactionDO::getWalletId, filter.walletId())
+                    .eq(
+                        filter.bizType() != null,
+                        WalletTransactionDO::getBizType,
+                        filter.bizType())
+                    .orderByDesc(WalletTransactionDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(WalletConverter::toEntity).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(WalletConverter::toEntity).toList(),
+            page.getTotal());
     }
 }

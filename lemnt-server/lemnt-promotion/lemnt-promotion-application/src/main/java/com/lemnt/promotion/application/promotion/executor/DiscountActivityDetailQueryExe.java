@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 活动Detail执行器。 */
+/**
+ * 活动Detail执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class DiscountActivityDetailQueryExe {

@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 配置保存命令执行器。 */
+/**
+ * 配置保存命令执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberConfigSaveCmdExe {
@@ -20,10 +22,10 @@ public class MemberConfigSaveCmdExe {
      */
     public Boolean execute(ConfigSaveCmd cmd) {
         return memberGrowthService.saveConfig(
-                new Config(
-                        cmd.pointTradeDeductEnable(),
-                        cmd.pointTradeDeductUnitPrice(),
-                        cmd.pointTradeDeductMaxPrice(),
-                        cmd.pointTradeGivePoint()));
+            new Config(
+                cmd.pointTradeDeductEnable(),
+                cmd.pointTradeDeductUnitPrice(),
+                cmd.pointTradeDeductMaxPrice(),
+                cmd.pointTradeGivePoint()));
     }
 }

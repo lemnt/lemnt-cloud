@@ -30,7 +30,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 拼团活动管理入口。 */
+/**
+ * 拼团活动管理入口。
+ */
 @RestController
 @RequestMapping("/mall/promotion/combination-activities")
 @Tag(name = "拼团活动")
@@ -54,7 +56,7 @@ public class CombinationActivityController {
     @Operation(summary = "修改拼团活动")
     @RequiresPermissions("mall:promotion:update")
     public R<Boolean> update(
-            @PathVariable Long id, @Valid @RequestBody CombinationActivityUpdateReq req) {
+        @PathVariable Long id, @Valid @RequestBody CombinationActivityUpdateReq req) {
         return R.ok(update.execute(CombinationConverter.update(id, req)));
     }
 
@@ -85,7 +87,7 @@ public class CombinationActivityController {
     public R<CombinationActivityRes> page(@Valid @ModelAttribute CombinationActivityPageReq req) {
         var result = page.execute(CombinationConverter.page(req));
         return R.page(
-                result.getRecords().stream().map(CombinationConverter::activity).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(CombinationConverter::activity).toList(),
+            result.getTotal());
     }
 }

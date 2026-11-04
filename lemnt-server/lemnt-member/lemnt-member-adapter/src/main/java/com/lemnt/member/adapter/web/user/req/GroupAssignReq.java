@@ -9,4 +9,5 @@ import java.io.Serializable;
  */
 @Schema(description = "GroupAssign请求")
 public record GroupAssignReq(@Schema(description = "分组编号，可空") Long groupId)
-        implements Serializable {}
+    implements Serializable {
+}

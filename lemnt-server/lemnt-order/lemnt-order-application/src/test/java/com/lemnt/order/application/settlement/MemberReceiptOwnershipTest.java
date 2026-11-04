@@ -27,11 +27,11 @@ class MemberReceiptOwnershipTest {
         var query = new SettlementReceiptQueryExe(checkoutService, orderPersistenceService);
         assertNull(query.execute(7L, "MISSING"));
         when(orderPersistenceService.findByOrderNo("FOREIGN"))
-                .thenReturn(
-                        new SettlementOrder(
-                                1L, "FOREIGN", 8L, BigDecimal.TEN, "PAID", List.of(), null));
+            .thenReturn(
+                new SettlementOrder(
+                    1L, "FOREIGN", 8L, BigDecimal.TEN, "PAID", List.of(), null));
         assertNull(query.execute(7L, "FOREIGN"));
         verifyNoInteractions(
-                checkoutAccountGateway, checkoutCartSnapshotGateway, cartGateway, checkoutService);
+            checkoutAccountGateway, checkoutCartSnapshotGateway, cartGateway, checkoutService);
     }
 }

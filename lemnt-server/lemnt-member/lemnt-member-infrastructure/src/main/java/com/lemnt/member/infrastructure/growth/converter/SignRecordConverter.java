@@ -7,23 +7,24 @@ import com.lemnt.member.infrastructure.growth.dataobject.SignRecordDO;
  * 签到记录转换器。
  */
 public final class SignRecordConverter {
-    private SignRecordConverter() {}
+    private SignRecordConverter() {
+    }
 
     /**
      * 转换为领域对象。
      */
     public static SignRecord toEntity(SignRecordDO row) {
         return row == null
-                ? null
-                : new SignRecord(
-                        row.getId(),
-                        row.getUserId(),
-                        row.getSignDate(),
-                        row.getDay(),
-                        row.getPoint(),
-                        row.getExperience(),
-                        row.getNickname(),
-                        row.getCreateTime());
+            ? null
+            : new SignRecord(
+            row.getId(),
+            row.getUserId(),
+            row.getSignDate(),
+            row.getDay(),
+            row.getPoint(),
+            row.getExperience(),
+            row.getNickname(),
+            row.getCreateTime());
     }
 
     /**

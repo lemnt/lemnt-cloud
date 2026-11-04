@@ -8,7 +8,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/** 活动订单退款去重持久化对象。 */
+/**
+ * 活动订单退款去重持久化对象。
+ */
 @Data
 @TableName("order_activity_refund")
 public class PromotionOrderRefundDO {

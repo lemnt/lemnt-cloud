@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 拼团过期处理执行器。 */
+/**
+ * 拼团过期处理执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class CombinationExpireCmdExe {

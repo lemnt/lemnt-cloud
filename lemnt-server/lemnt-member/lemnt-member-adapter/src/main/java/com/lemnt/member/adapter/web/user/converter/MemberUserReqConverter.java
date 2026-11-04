@@ -15,27 +15,30 @@ import com.lemnt.member.application.user.cmd.TagSaveCmd;
 import com.lemnt.member.application.user.cmd.TagsAssignCmd;
 import com.lemnt.member.application.user.qry.MemberPageQry;
 
-/** 会员资料转换器。 */
+/**
+ * 会员资料转换器。
+ */
 public final class MemberUserReqConverter {
 
-    private MemberUserReqConverter() {}
+    private MemberUserReqConverter() {
+    }
 
     /**
      * 资料。
      */
     public static MemberUserUpdateCmd profile(Long id, MemberProfileUpdateReq r) {
         return new MemberUserUpdateCmd(
-                id,
-                r.nickname(),
-                r.email(),
-                r.avatar(),
-                r.sex(),
-                r.birthday(),
-                r.status(),
-                r.mark(),
-                r.name(),
-                r.areaId(),
-                r.mobile());
+            id,
+            r.nickname(),
+            r.email(),
+            r.avatar(),
+            r.sex(),
+            r.birthday(),
+            r.status(),
+            r.mark(),
+            r.name(),
+            r.areaId(),
+            r.mobile());
     }
 
     /**
@@ -71,18 +74,18 @@ public final class MemberUserReqConverter {
      */
     public static MemberPageQry profiles(MemberUserPageReq r) {
         return new MemberPageQry(
-                r.mobile(),
-                r.email(),
-                r.nickname(),
-                r.levelId(),
-                r.groupId(),
-                r.tagIds(),
-                r.loginStartTime(),
-                r.loginEndTime(),
-                r.createStartTime(),
-                r.createEndTime(),
-                r.pageNum() == null ? 1 : r.pageNum(),
-                r.pageSize() == null ? 20 : r.pageSize());
+            r.mobile(),
+            r.email(),
+            r.nickname(),
+            r.levelId(),
+            r.groupId(),
+            r.tagIds(),
+            r.loginStartTime(),
+            r.loginEndTime(),
+            r.createStartTime(),
+            r.createEndTime(),
+            r.pageNum() == null ? 1 : r.pageNum(),
+            r.pageSize() == null ? 20 : r.pageSize());
     }
 
     /**

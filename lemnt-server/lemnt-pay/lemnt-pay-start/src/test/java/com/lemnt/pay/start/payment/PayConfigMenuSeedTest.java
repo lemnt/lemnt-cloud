@@ -7,19 +7,21 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/** 支付应用与渠道菜单可重入，不覆盖既有菜单或擅自分配角色。 */
+/**
+ * 支付应用与渠道菜单可重入，不覆盖既有菜单或擅自分配角色。
+ */
 class PayConfigMenuSeedTest {
     @Test
     void seedsPayConfigPagesIdempotentlyWithoutRoleChanges() throws Exception {
         var source = new JdbcDataSource();
         source.setURL("jdbc:h2:mem:pay_config_menu;MODE=MySQL");
         try (var connection = source.getConnection();
-                var s = connection.createStatement()) {
+             var s = connection.createStatement()) {
             s.execute(
-                    "CREATE TABLE sys_menu(menu_id BIGINT AUTO_INCREMENT PRIMARY KEY,menu_name VARCHAR(100),parent_id BIGINT,order_num INT,path VARCHAR(200),component VARCHAR(200),is_frame INT,is_cache INT,menu_type CHAR(1),visible CHAR(1),status CHAR(1),perms VARCHAR(100),icon VARCHAR(100),create_by VARCHAR(64),create_time DATETIME)");
+                "CREATE TABLE sys_menu(menu_id BIGINT AUTO_INCREMENT PRIMARY KEY,menu_name VARCHAR(100),parent_id BIGINT,order_num INT,path VARCHAR(200),component VARCHAR(200),is_frame INT,is_cache INT,menu_type CHAR(1),visible CHAR(1),status CHAR(1),perms VARCHAR(100),icon VARCHAR(100),create_by VARCHAR(64),create_time DATETIME)");
             s.execute("CREATE TABLE sys_role_menu(role_id BIGINT,menu_id BIGINT)");
             s.execute(
-                    "INSERT INTO sys_menu(menu_name,parent_id,path,menu_type) VALUES('原交易名',0,'trade','M')");
+                "INSERT INTO sys_menu(menu_name,parent_id,path,menu_type) VALUES('原交易名',0,'trade','M')");
             s.execute("INSERT INTO sys_role_menu VALUES(7,1)");
             var script = new ClassPathResource("setup-sql/V20261031__trade_pay_config_menu.sql");
             ScriptUtils.executeSqlScript(connection, script);
@@ -29,8 +31,8 @@ class PayConfigMenuSeedTest {
                 assertEquals(11, r.getInt(1));
             }
             try (var r =
-                    s.executeQuery(
-                            "SELECT COUNT(*) FROM sys_menu WHERE component IN ('trade/pay-app/index','trade/pay-channel/index')")) {
+                     s.executeQuery(
+                         "SELECT COUNT(*) FROM sys_menu WHERE component IN ('trade/pay-app/index','trade/pay-channel/index')")) {
                 r.next();
                 assertEquals(2, r.getInt(1));
             }

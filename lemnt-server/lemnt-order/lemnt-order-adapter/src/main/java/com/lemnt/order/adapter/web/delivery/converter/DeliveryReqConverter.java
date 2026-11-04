@@ -17,71 +17,90 @@ import com.lemnt.order.application.delivery.cmd.DeliveryFreeCmd;
 import com.lemnt.order.application.delivery.qry.DeliveryExpressPageQry;
 import com.lemnt.order.application.delivery.qry.DeliveryExpressTemplatePageQry;
 
-/** delivery Req 接口边界转换。 */
+/**
+ * delivery Req 接口边界转换。
+ */
 public final class DeliveryReqConverter {
-    private DeliveryReqConverter() {}
+    private DeliveryReqConverter() {
+    }
 
-    /** 转换新增请求。 */
+    /**
+     * 转换新增请求。
+     */
     public static DeliveryExpressCreateCmd deliveryExpressCreate(DeliveryExpressCreateReq req) {
         return new DeliveryExpressCreateCmd(
-                req.code(), req.name(), req.logo(), req.sort(), req.status());
+            req.code(), req.name(), req.logo(), req.sort(), req.status());
     }
 
-    /** 转换修改请求。 */
+    /**
+     * 转换修改请求。
+     */
     public static DeliveryExpressUpdateCmd deliveryExpressUpdate(
-            Long id, DeliveryExpressUpdateReq req) {
+        Long id, DeliveryExpressUpdateReq req) {
         return new DeliveryExpressUpdateCmd(
-                id, req.code(), req.name(), req.logo(), req.sort(), req.status());
+            id, req.code(), req.name(), req.logo(), req.sort(), req.status());
     }
 
-    /** 转换分页请求。 */
+    /**
+     * 转换分页请求。
+     */
     public static DeliveryExpressPageQry deliveryExpressPage(DeliveryExpressPageReq req) {
         return new DeliveryExpressPageQry(req.name(), req.status(), req.pageNum(), req.pageSize());
     }
 
-    /** 转换新增请求。 */
+    /**
+     * 转换新增请求。
+     */
     public static DeliveryExpressTemplateCreateCmd deliveryExpressTemplateCreate(
-            DeliveryExpressTemplateCreateReq req) {
+        DeliveryExpressTemplateCreateReq req) {
         return new DeliveryExpressTemplateCreateCmd(
-                req.name(),
-                req.chargeMode(),
-                req.sort(),
-                req.charges().stream().map(DeliveryReqConverter::charge).toList(),
-                req.frees().stream().map(DeliveryReqConverter::free).toList());
+            req.name(),
+            req.chargeMode(),
+            req.sort(),
+            req.charges().stream().map(DeliveryReqConverter::charge).toList(),
+            req.frees().stream().map(DeliveryReqConverter::free).toList());
     }
 
-    /** 转换修改请求。 */
+    /**
+     * 转换修改请求。
+     */
     public static DeliveryExpressTemplateUpdateCmd deliveryExpressTemplateUpdate(
-            Long id, DeliveryExpressTemplateUpdateReq req) {
+        Long id, DeliveryExpressTemplateUpdateReq req) {
         return new DeliveryExpressTemplateUpdateCmd(
-                id,
-                req.name(),
-                req.chargeMode(),
-                req.sort(),
-                req.charges().stream().map(DeliveryReqConverter::charge).toList(),
-                req.frees().stream().map(DeliveryReqConverter::free).toList());
+            id,
+            req.name(),
+            req.chargeMode(),
+            req.sort(),
+            req.charges().stream().map(DeliveryReqConverter::charge).toList(),
+            req.frees().stream().map(DeliveryReqConverter::free).toList());
     }
 
-    /** 转换分页请求。 */
+    /**
+     * 转换分页请求。
+     */
     public static DeliveryExpressTemplatePageQry deliveryExpressTemplatePage(
-            DeliveryExpressTemplatePageReq req) {
+        DeliveryExpressTemplatePageReq req) {
         return new DeliveryExpressTemplatePageQry(req.name(), req.pageNum(), req.pageSize());
     }
 
-    /** 转换子规则。 */
+    /**
+     * 转换子规则。
+     */
     private static DeliveryChargeCmd charge(DeliveryChargeReq value) {
         return new DeliveryChargeCmd(
-                value.id(),
-                value.areaIds(),
-                value.startCount(),
-                value.startPrice(),
-                value.extraCount(),
-                value.extraPrice());
+            value.id(),
+            value.areaIds(),
+            value.startCount(),
+            value.startPrice(),
+            value.extraCount(),
+            value.extraPrice());
     }
 
-    /** 转换子规则。 */
+    /**
+     * 转换子规则。
+     */
     private static DeliveryFreeCmd free(DeliveryFreeReq value) {
         return new DeliveryFreeCmd(
-                value.id(), value.areaIds(), value.freePrice(), value.freeCount());
+            value.id(), value.areaIds(), value.freePrice(), value.freeCount());
     }
 }

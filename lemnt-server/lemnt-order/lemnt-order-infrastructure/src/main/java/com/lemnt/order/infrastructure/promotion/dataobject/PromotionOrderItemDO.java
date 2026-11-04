@@ -8,7 +8,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/** 活动订单商品行持久化对象。 */
+/**
+ * 活动订单商品行持久化对象。
+ */
 @Data
 @TableName("order_activity_item")
 public class PromotionOrderItemDO {

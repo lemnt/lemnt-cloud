@@ -18,21 +18,21 @@ public class NoticeReqConverter {
 
     public static NoticeAddCmd toCmd(NoticeAddReq req) {
         return new NoticeAddCmd(
-                req.noticeTitle(),
-                req.noticeType(),
-                req.noticeContent(),
-                req.status(),
-                req.remark());
+            req.noticeTitle(),
+            req.noticeType(),
+            req.noticeContent(),
+            req.status(),
+            req.remark());
     }
 
     public static NoticeUpdateCmd toCmd(NoticeUpdateReq req) {
         return new NoticeUpdateCmd(
-                req.noticeId(),
-                req.noticeTitle(),
-                req.noticeType(),
-                req.noticeContent(),
-                req.status(),
-                req.remark());
+            req.noticeId(),
+            req.noticeTitle(),
+            req.noticeType(),
+            req.noticeContent(),
+            req.status(),
+            req.remark());
     }
 
     public static NoticePageQry toQry(NoticePageReq item) {
@@ -40,13 +40,13 @@ public class NoticeReqConverter {
             return null;
         }
         return new NoticePageQry(
-                item.noticeTitle(),
-                item.noticeType(),
-                item.status(),
-                item.pageNum(),
-                item.pageSize(),
-                item.beginTime(),
-                item.endTime());
+            item.noticeTitle(),
+            item.noticeType(),
+            item.status(),
+            item.pageNum(),
+            item.pageSize(),
+            item.beginTime(),
+            item.endTime());
     }
 
     public static NoticeReadUserPageQry toQry(NoticeReadUsersPageReq item) {
@@ -54,11 +54,11 @@ public class NoticeReqConverter {
             return null;
         }
         return new NoticeReadUserPageQry(
-                item.noticeId(),
-                item.searchValue(),
-                item.pageNum(),
-                item.pageSize(),
-                item.beginTime(),
-                item.endTime());
+            item.noticeId(),
+            item.searchValue(),
+            item.pageNum(),
+            item.pageSize(),
+            item.beginTime(),
+            item.endTime());
     }
 }

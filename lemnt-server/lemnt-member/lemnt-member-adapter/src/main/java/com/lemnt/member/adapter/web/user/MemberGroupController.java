@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
 /**
@@ -52,9 +53,9 @@ public class MemberGroupController {
     @RequiresPermissions("member:group:query")
     public R<List<MemberGroupListRes>> list() {
         return R.ok(
-                memberGroupListQueryExe.execute(new GroupListQry()).stream()
-                        .map(MemberUserResConverter::toMemberGroupListRes)
-                        .toList());
+            memberGroupListQueryExe.execute(new GroupListQry()).stream()
+                .map(MemberUserResConverter::toMemberGroupListRes)
+                .toList());
     }
 
     @GetMapping("/{id}")
@@ -62,8 +63,8 @@ public class MemberGroupController {
     @RequiresPermissions("member:group:query")
     public R<MemberGroupDetailRes> detail(@PathVariable Long id) {
         return R.ok(
-                MemberUserResConverter.toMemberGroupDetailRes(
-                        memberGroupDetailQueryExe.execute(new GroupDetailQry(id))));
+            MemberUserResConverter.toMemberGroupDetailRes(
+                memberGroupDetailQueryExe.execute(new GroupDetailQry(id))));
     }
 
     @PostMapping
@@ -92,9 +93,9 @@ public class MemberGroupController {
     @RequiresPermissions("member:group:query")
     public R<List<MemberGroupSimpleRes>> simple() {
         return R.ok(
-                memberGroupListQueryExe.execute(new GroupListQry()).stream()
-                        .filter(v -> v.status() == 1)
-                        .map(MemberUserResConverter::toMemberGroupSimpleRes)
-                        .toList());
+            memberGroupListQueryExe.execute(new GroupListQry()).stream()
+                .filter(v -> v.status() == 1)
+                .map(MemberUserResConverter::toMemberGroupSimpleRes)
+                .toList());
     }
 }

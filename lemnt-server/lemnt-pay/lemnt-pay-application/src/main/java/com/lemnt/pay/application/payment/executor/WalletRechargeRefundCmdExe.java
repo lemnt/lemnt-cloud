@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 后台充值退款，余额不足时拒绝。 */
+/**
+ * 后台充值退款，余额不足时拒绝。
+ */
 @Component
 @RequiredArgsConstructor
 public class WalletRechargeRefundCmdExe {

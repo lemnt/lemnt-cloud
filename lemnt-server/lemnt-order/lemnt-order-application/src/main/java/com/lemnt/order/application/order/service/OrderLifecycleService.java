@@ -82,7 +82,7 @@ public class OrderLifecycleService {
         activities.closed(orderNo);
         events.closed(order);
         logs.record(
-                order, "PENDING_PAYMENT", "CLOSED", 41, TradeOperator.system(), "商城预占回调失败，系统取消订单");
+            order, "PENDING_PAYMENT", "CLOSED", 41, TradeOperator.system(), "商城预占回调失败，系统取消订单");
     }
 
     /**

@@ -9,7 +9,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/** 活动订单映射持久化对象。 */
+/**
+ * 活动订单映射持久化对象。
+ */
 @Data
 @TableName("order_activity")
 public class PromotionOrderDO {

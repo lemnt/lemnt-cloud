@@ -20,9 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** 会员标签关联接口。 */
+/**
+ * 会员标签关联接口。
+ */
 @Tag(name = "会员标签关联")
 @RestController
 @RequestMapping("/member-users")

@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 恢复本库事务消息；仅在该服务作为唯一业务写入方启用后运行。 */
+/**
+ * 恢复本库事务消息；仅在该服务作为唯一业务写入方启用后运行。
+ */
 @Component
 @ConditionalOnProperty(name = "commerce.outbox.enabled", havingValue = "true")
 @RequiredArgsConstructor

@@ -12,7 +12,9 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/** Spu 表数据访问接口。 */
+/**
+ * Spu 表数据访问接口。
+ */
 @Mapper
 public interface ProductSpuMapper extends BaseMapper<ProductSpuDO> {
 
@@ -36,13 +38,17 @@ public interface ProductSpuMapper extends BaseMapper<ProductSpuDO> {
      */
     Long visible(Long id);
 
-    /** 按SKU真实库存聚合进行库存分组分页，分页总数由MyBatis Plus计算。 */
+    /**
+     * 按SKU真实库存聚合进行库存分组分页，分页总数由MyBatis Plus计算。
+     */
     Page<ProductSpuDO> selectStockPage(
-            Page<ProductSpuDO> page,
-            @Param("filter") ProductCatalogFilter filter,
-            @Param("alertStock") int alertStock);
+        Page<ProductSpuDO> page,
+        @Param("filter") ProductCatalogFilter filter,
+        @Param("alertStock") int alertStock);
 
-    /** 复杂库存聚合计数；普通CRUD继续使用BaseMapper。 */
+    /**
+     * 复杂库存聚合计数；普通CRUD继续使用BaseMapper。
+     */
     long countStockSpus(
-            @Param("filter") ProductCatalogFilter filter, @Param("alertStock") int alertStock);
+        @Param("filter") ProductCatalogFilter filter, @Param("alertStock") int alertStock);
 }

@@ -124,8 +124,8 @@ public interface MenuGateway {
     /**
      * 查询同级名称冲突，修改时排除当前菜单。
      *
-     * @param menuName 菜单名称
-     * @param parentId 目标父菜单ID
+     * @param menuName      菜单名称
+     * @param parentId      目标父菜单ID
      * @param excludeMenuId 排除的菜单ID，新增时为空
      * @return 冲突菜单信息
      */

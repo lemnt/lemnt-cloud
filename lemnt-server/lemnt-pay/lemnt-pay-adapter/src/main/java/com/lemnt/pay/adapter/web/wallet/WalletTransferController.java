@@ -20,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 后台钱包转账查询。 */
+/**
+ * 后台钱包转账查询。
+ */
 @Tag(name = "钱包转账")
 @RestController
 @RequestMapping("/trade/admin/wallet-transfers")
@@ -35,8 +37,8 @@ public class WalletTransferController {
     public R<WalletTransferRes> page(@Valid @ModelAttribute WalletTransferPageReq req) {
         var value = page.execute(WalletTransferResConverter.page(req));
         return R.page(
-                value.getRecords().stream().map(WalletTransferResConverter::transfer).toList(),
-                value.getTotal());
+            value.getRecords().stream().map(WalletTransferResConverter::transfer).toList(),
+            value.getTotal());
     }
 
     @GetMapping("/{transferNo}")

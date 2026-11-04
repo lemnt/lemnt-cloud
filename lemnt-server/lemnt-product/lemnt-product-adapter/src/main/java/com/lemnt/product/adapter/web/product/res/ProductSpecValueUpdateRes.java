@@ -4,11 +4,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
-/** 规格字典修改响应。 */
+/**
+ * 规格字典修改响应。
+ */
 @Schema(description = "规格字典修改响应")
 public record ProductSpecValueUpdateRes(
-        @Schema(description = "规格值ID") Long id,
-        @Schema(description = "所属规格项ID") Long specId,
-        @Schema(description = "规格值名称") String name,
-        @Schema(description = "说明") String remark)
-        implements Serializable {}
+    @Schema(description = "规格值ID") Long id,
+    @Schema(description = "所属规格项ID") Long specId,
+    @Schema(description = "规格值名称") String name,
+    @Schema(description = "说明") String remark)
+    implements Serializable {
+}

@@ -7,32 +7,35 @@ import com.alibaba.fastjson2.JSON;
 
 import java.util.List;
 
-/** 自提门店领域对象与表结构转换。 */
+/**
+ * 自提门店领域对象与表结构转换。
+ */
 public final class PickUpStoreConverter {
-    private PickUpStoreConverter() {}
+    private PickUpStoreConverter() {
+    }
 
     public static PickUpStore model(PickUpStoreDO row) {
         if (row == null) {
             return null;
         }
         List<Long> verifyUserIds =
-                row.getVerifyUserIds() == null || row.getVerifyUserIds().isBlank()
-                        ? List.of()
-                        : JSON.parseArray(row.getVerifyUserIds(), Long.class);
+            row.getVerifyUserIds() == null || row.getVerifyUserIds().isBlank()
+                ? List.of()
+                : JSON.parseArray(row.getVerifyUserIds(), Long.class);
         return new PickUpStore(
-                row.getId(),
-                row.getName(),
-                row.getIntroduction(),
-                row.getPhone(),
-                row.getAreaId(),
-                row.getDetailAddress(),
-                row.getLogo(),
-                row.getOpeningTime(),
-                row.getClosingTime(),
-                row.getLatitude(),
-                row.getLongitude(),
-                verifyUserIds,
-                row.getStatus());
+            row.getId(),
+            row.getName(),
+            row.getIntroduction(),
+            row.getPhone(),
+            row.getAreaId(),
+            row.getDetailAddress(),
+            row.getLogo(),
+            row.getOpeningTime(),
+            row.getClosingTime(),
+            row.getLatitude(),
+            row.getLongitude(),
+            verifyUserIds,
+            row.getStatus());
     }
 
     public static PickUpStoreDO row(PickUpStore value) {

@@ -20,12 +20,12 @@ public class LogininforResConverter {
             return null;
         }
         return new LogininforRes(
-                dto.getInfoId(),
-                dto.getUserName(),
-                dto.getIpaddr(),
-                dto.getStatus(),
-                dto.getMsg(),
-                dto.getAccessTime());
+            dto.getInfoId(),
+            dto.getUserName(),
+            dto.getIpaddr(),
+            dto.getStatus(),
+            dto.getMsg(),
+            dto.getAccessTime());
     }
 
     /**

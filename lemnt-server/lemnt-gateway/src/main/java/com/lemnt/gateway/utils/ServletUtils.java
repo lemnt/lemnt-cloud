@@ -35,8 +35,8 @@ public class ServletUtils {
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         R<?> result = R.fail(code, msg);
         DataBuffer dataBuffer =
-                response.bufferFactory()
-                        .wrap(JsonUtils.toJsonStr(result).getBytes(StandardCharsets.UTF_8));
+            response.bufferFactory()
+                .wrap(JsonUtils.toJsonStr(result).getBytes(StandardCharsets.UTF_8));
         return response.writeWith(Mono.just(dataBuffer));
     }
 

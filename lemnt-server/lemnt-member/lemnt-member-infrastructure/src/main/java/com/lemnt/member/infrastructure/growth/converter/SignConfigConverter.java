@@ -7,20 +7,21 @@ import com.lemnt.member.infrastructure.growth.dataobject.SignConfigDO;
  * 签到配置转换器。
  */
 public final class SignConfigConverter {
-    private SignConfigConverter() {}
+    private SignConfigConverter() {
+    }
 
     /**
      * 转换为领域对象。
      */
     public static SignConfig toEntity(SignConfigDO row) {
         return row == null
-                ? null
-                : new SignConfig(
-                        row.getId(),
-                        row.getDay(),
-                        row.getPoint(),
-                        row.getExperience(),
-                        row.getStatus());
+            ? null
+            : new SignConfig(
+            row.getId(),
+            row.getDay(),
+            row.getPoint(),
+            row.getExperience(),
+            row.getStatus());
     }
 
     /**

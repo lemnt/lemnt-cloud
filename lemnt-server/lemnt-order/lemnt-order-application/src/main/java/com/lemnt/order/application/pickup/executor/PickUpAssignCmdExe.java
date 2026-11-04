@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 设置自提订单执行器。 */
+/**
+ * 设置自提订单执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class PickUpAssignCmdExe {

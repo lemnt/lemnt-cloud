@@ -6,9 +6,13 @@ import com.lemnt.product.domain.product.model.BrandFilter;
 
 import java.util.List;
 
-/** Brand 表领域存储接口。 */
+/**
+ * Brand 表领域存储接口。
+ */
 public interface BrandGateway {
-    /** 品牌分页，列表和总数使用相同筛选。 */
+    /**
+     * 品牌分页，列表和总数使用相同筛选。
+     */
     PageResult<Brand> page(BrandFilter filter);
 
     /**

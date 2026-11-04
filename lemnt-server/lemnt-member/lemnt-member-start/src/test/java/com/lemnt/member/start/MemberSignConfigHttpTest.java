@@ -15,7 +15,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class MemberSignConfigHttpTest {
-    /** 新增返回真实ID，修改和删除均使用路径ID，不使用day定位。 */
+    /**
+     * 新增返回真实ID，修改和删除均使用路径ID，不使用day定位。
+     */
     @Test
     void separateCreateUpdateDeleteUseRecordId() throws Exception {
         var create = mock(MemberSignConfigCreateCmdExe.class);
@@ -25,27 +27,27 @@ class MemberSignConfigHttpTest {
         when(update.execute(new SignConfigUpdateCmd(99L, 3, 5L, 0L, 0))).thenReturn(true);
         when(delete.execute(new SignConfigDeleteCmd(99L))).thenReturn(true);
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new MemberSignConfigController(
-                                        delete,
-                                        mock(MemberSignConfigDetailQueryExe.class),
-                                        create,
-                                        update,
-                                        mock(MemberSignConfigListQueryExe.class)))
-                        .setControllerAdvice(new GlobalExceptionHandler())
-                        .build();
+            MockMvcBuilders.standaloneSetup(
+                    new MemberSignConfigController(
+                        delete,
+                        mock(MemberSignConfigDetailQueryExe.class),
+                        create,
+                        update,
+                        mock(MemberSignConfigListQueryExe.class)))
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
         mvc.perform(
-                        post("/growths/signin-configs")
-                                .contentType("application/json")
-                                .content("{\"day\":7,\"point\":10,\"experience\":2,\"status\":1}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").value(99));
+                post("/growths/signin-configs")
+                    .contentType("application/json")
+                    .content("{\"day\":7,\"point\":10,\"experience\":2,\"status\":1}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data").value(99));
         mvc.perform(
-                        put("/growths/signin-configs/99")
-                                .contentType("application/json")
-                                .content("{\"day\":3,\"point\":5,\"experience\":0,\"status\":0}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").value(true));
+                put("/growths/signin-configs/99")
+                    .contentType("application/json")
+                    .content("{\"day\":3,\"point\":5,\"experience\":0,\"status\":0}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data").value(true));
         mvc.perform(delete("/growths/signin-configs/99")).andExpect(status().isOk());
         verify(create).execute(new SignConfigCreateCmd(7, 10L, 2L, 1));
         verify(update).execute(new SignConfigUpdateCmd(99L, 3, 5L, 0L, 0));

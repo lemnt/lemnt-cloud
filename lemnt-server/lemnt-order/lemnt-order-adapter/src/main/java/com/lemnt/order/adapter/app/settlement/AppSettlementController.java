@@ -27,7 +27,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 小程序结算接口。 */
+/**
+ * 小程序结算接口。
+ */
 @Tag(name = "小程序结算")
 @RestController
 @RequestMapping("/mall/app")
@@ -42,9 +44,9 @@ public class AppSettlementController {
     public R<SettlementRes> quote(@Valid @RequestBody SettlementQuoteReq req) {
         Long memberId = SecurityUtils.getUserId();
         return R.ok(
-                SettlementResConverter.convert(
-                        settlementCreateCmdExe.execute(
-                                SettlementQuoteReqConverter.quote(memberId, req))));
+            SettlementResConverter.convert(
+                settlementCreateCmdExe.execute(
+                    SettlementQuoteReqConverter.quote(memberId, req))));
     }
 
     @PostMapping("/checkout")
@@ -52,9 +54,9 @@ public class AppSettlementController {
     public R<SettlementSubmitRes> checkout(@Valid @RequestBody SettlementSubmitReq req) {
         Long memberId = SecurityUtils.getUserId();
         return R.ok(
-                SettlementQuoteResConverter.submit(
-                        settlementSubmitCmdExe.execute(
-                                SettlementReqConverter.submit(memberId, req))));
+            SettlementQuoteResConverter.submit(
+                settlementSubmitCmdExe.execute(
+                    SettlementReqConverter.submit(memberId, req))));
     }
 
     @PostMapping("/checkout/abandon")
@@ -62,8 +64,8 @@ public class AppSettlementController {
     public R<SettlementAbandonRes> abandon(@Valid @RequestBody SettlementAbandonReq req) {
         Long memberId = SecurityUtils.getUserId();
         return R.ok(
-                SettlementResConverter.abandon(
-                        settlementAbandonCmdExe.execute(
-                                SettlementReqConverter.abandon(memberId, req))));
+            SettlementResConverter.abandon(
+                settlementAbandonCmdExe.execute(
+                    SettlementReqConverter.abandon(memberId, req))));
     }
 }

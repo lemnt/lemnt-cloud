@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 管理端客服会话置顶执行器。 */
+/**
+ * 管理端客服会话置顶执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class KefuConversationPinCmdExe {

@@ -5,20 +5,23 @@ import com.lemnt.pay.domain.payment.model.WalletRecharge;
 import com.lemnt.pay.infrastructure.payment.dataobject.RechargePackageDO;
 import com.lemnt.pay.infrastructure.payment.dataobject.WalletRechargeDO;
 
-/** 充值套餐与充值单表字段转换。 */
+/**
+ * 充值套餐与充值单表字段转换。
+ */
 public final class RechargeConverter {
-    private RechargeConverter() {}
+    private RechargeConverter() {
+    }
 
     public static RechargePackage toEntity(RechargePackageDO row) {
         return row == null
-                ? null
-                : new RechargePackage(
-                        row.getId(),
-                        row.getName(),
-                        row.getPayPrice(),
-                        row.getBonusPrice(),
-                        row.getStatus(),
-                        row.getCreateTime());
+            ? null
+            : new RechargePackage(
+            row.getId(),
+            row.getName(),
+            row.getPayPrice(),
+            row.getBonusPrice(),
+            row.getStatus(),
+            row.getCreateTime());
     }
 
     public static RechargePackageDO toDO(RechargePackage value) {
@@ -33,22 +36,22 @@ public final class RechargeConverter {
 
     public static WalletRecharge toEntity(WalletRechargeDO row) {
         return row == null
-                ? null
-                : new WalletRecharge(
-                        row.getId(),
-                        row.getRechargeNo(),
-                        row.getRequestNo(),
-                        row.getWalletId(),
-                        row.getMemberId(),
-                        row.getPackageId(),
-                        row.getPayPrice(),
-                        row.getBonusPrice(),
-                        row.getTotalPrice(),
-                        row.getStatus(),
-                        row.getChannelCode(),
-                        row.getPaidTime(),
-                        row.getRefundedTime(),
-                        row.getCreateTime());
+            ? null
+            : new WalletRecharge(
+            row.getId(),
+            row.getRechargeNo(),
+            row.getRequestNo(),
+            row.getWalletId(),
+            row.getMemberId(),
+            row.getPackageId(),
+            row.getPayPrice(),
+            row.getBonusPrice(),
+            row.getTotalPrice(),
+            row.getStatus(),
+            row.getChannelCode(),
+            row.getPaidTime(),
+            row.getRefundedTime(),
+            row.getCreateTime());
     }
 
     public static WalletRechargeDO toDO(WalletRecharge value) {

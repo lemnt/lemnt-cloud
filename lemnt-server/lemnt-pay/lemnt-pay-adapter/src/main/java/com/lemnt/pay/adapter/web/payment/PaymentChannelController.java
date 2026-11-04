@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 后台支付配置展示接口。 */
+/**
+ * 后台支付配置展示接口。
+ */
 @Tag(name = "支付配置")
 @RestController
 @RequestMapping("/trade/admin/payment-channels")
@@ -24,7 +26,9 @@ import java.util.List;
 public class PaymentChannelController {
     private final PaymentChannelListQueryExe query;
 
-    /** 展示支持的支付渠道，不包含商户密钥或接入状态。 */
+    /**
+     * 展示支持的支付渠道，不包含商户密钥或接入状态。
+     */
     @GetMapping
     @Operation(summary = "查询支持的支付渠道")
     @RequiresPermissions("trade:payment-channel:list")

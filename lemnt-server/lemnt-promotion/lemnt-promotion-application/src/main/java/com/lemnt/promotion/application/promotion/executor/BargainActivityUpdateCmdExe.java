@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 砍价活动修改执行器。 */
+/**
+ * 砍价活动修改执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class BargainActivityUpdateCmdExe {

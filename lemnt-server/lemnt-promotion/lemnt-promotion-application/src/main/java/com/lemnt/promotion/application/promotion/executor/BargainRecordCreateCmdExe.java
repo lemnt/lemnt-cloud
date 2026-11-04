@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 发起砍价执行器。 */
+/**
+ * 发起砍价执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class BargainRecordCreateCmdExe {

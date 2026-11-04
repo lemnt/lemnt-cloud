@@ -30,9 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** 支付渠道配置管理接口，不返回渠道配置明文。 */
+/**
+ * 支付渠道配置管理接口，不返回渠道配置明文。
+ */
 @Tag(name = "支付渠道配置")
 @RestController
 @RequestMapping("/trade/admin/pay-channels")
@@ -45,7 +48,9 @@ public class PayChannelConfigController {
     private final PayChannelPageQueryExe page;
     private final PayChannelListByAppQueryExe listByApp;
 
-    /** 新增支付渠道配置。 */
+    /**
+     * 新增支付渠道配置。
+     */
     @PostMapping
     @Operation(summary = "新增支付渠道配置")
     @RequiresPermissions("trade:pay-channel:create")
@@ -53,7 +58,9 @@ public class PayChannelConfigController {
         return R.ok(create.execute(PayConfigReqConverter.payChannelCreate(req)).id());
     }
 
-    /** 修改支付渠道配置，配置留空保留原值。 */
+    /**
+     * 修改支付渠道配置，配置留空保留原值。
+     */
     @PutMapping("/{id}")
     @Operation(summary = "修改支付渠道配置")
     @RequiresPermissions("trade:pay-channel:update")
@@ -61,7 +68,9 @@ public class PayChannelConfigController {
         return R.ok(update.execute(PayConfigReqConverter.payChannelUpdate(id, req)));
     }
 
-    /** 删除支付渠道配置。 */
+    /**
+     * 删除支付渠道配置。
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "删除支付渠道配置")
     @RequiresPermissions("trade:pay-channel:remove")
@@ -69,7 +78,9 @@ public class PayChannelConfigController {
         return R.ok(delete.execute(id));
     }
 
-    /** 渠道配置详情，不含配置明文。 */
+    /**
+     * 渠道配置详情，不含配置明文。
+     */
     @GetMapping("/{id}")
     @Operation(summary = "支付渠道配置详情")
     @RequiresPermissions("trade:pay-channel:query")
@@ -78,23 +89,27 @@ public class PayChannelConfigController {
         return value == null ? R.fail("渠道配置不存在") : R.ok(PayConfigResConverter.payChannel(value));
     }
 
-    /** 渠道配置分页。 */
+    /**
+     * 渠道配置分页。
+     */
     @GetMapping
     @Operation(summary = "支付渠道配置分页")
     @RequiresPermissions("trade:pay-channel:list")
     public R<PayChannelConfigRes> page(@Valid @ModelAttribute PayChannelPageReq req) {
         var value = page.execute(PayConfigReqConverter.payChannelPage(req));
         return R.page(
-                value.getRecords().stream().map(PayConfigResConverter::payChannel).toList(),
-                value.getTotal());
+            value.getRecords().stream().map(PayConfigResConverter::payChannel).toList(),
+            value.getTotal());
     }
 
-    /** 查询应用下全部渠道配置，供选择使用。 */
+    /**
+     * 查询应用下全部渠道配置，供选择使用。
+     */
     @GetMapping("/by-app/{appId}")
     @Operation(summary = "应用下渠道配置")
     @RequiresPermissions("trade:pay-channel:query")
     public R<List<PayChannelConfigRes>> listByApp(@PathVariable Long appId) {
         return R.ok(
-                listByApp.execute(appId).stream().map(PayConfigResConverter::payChannel).toList());
+            listByApp.execute(appId).stream().map(PayConfigResConverter::payChannel).toList());
     }
 }

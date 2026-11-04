@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 地址保存命令执行器。 */
+/**
+ * 地址保存命令执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberAddressSaveCmdExe {
@@ -22,14 +24,14 @@ public class MemberAddressSaveCmdExe {
      */
     public AddressDTO execute(AddressSaveCmd cmd) {
         return MemberAddressDTOConverter.toAddressDTO(
-                memberAddressService.saveAddress(
-                        new Address(
-                                cmd.id(),
-                                cmd.memberId(),
-                                cmd.name(),
-                                cmd.mobile(),
-                                cmd.areaId(),
-                                cmd.detailAddress(),
-                                cmd.defaultStatus())));
+            memberAddressService.saveAddress(
+                new Address(
+                    cmd.id(),
+                    cmd.memberId(),
+                    cmd.name(),
+                    cmd.mobile(),
+                    cmd.areaId(),
+                    cmd.detailAddress(),
+                    cmd.defaultStatus())));
     }
 }

@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** member_level_record 表持久化实现。 */
+/**
+ * member_level_record 表持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberLevelRecordGatewayImpl implements MemberLevelRecordGateway {
@@ -71,27 +73,33 @@ public class MemberLevelRecordGatewayImpl implements MemberLevelRecordGateway {
         return LevelRecordConverter.toEntity(memberLevelRecordMapper.selectById(id));
     }
 
-    /** 等级记录分页，按记录编号倒序。 */
+    /**
+     * 等级记录分页，按记录编号倒序。
+     */
     private List<LevelRecordDO> levelsRow(LevelRecordPageFilter filter) {
         return memberLevelRecordMapper
-                .selectPage(
-                        new Page<>(
-                                (long) filter.offset() / filter.limit() + 1, filter.limit(), false),
-                        conditions(filter).orderByDesc(LevelRecordDO::getId))
-                .getRecords();
+            .selectPage(
+                new Page<>(
+                    (long) filter.offset() / filter.limit() + 1, filter.limit(), false),
+                conditions(filter).orderByDesc(LevelRecordDO::getId))
+            .getRecords();
     }
 
-    /** 与分页共用完全相同的筛选条件。 */
+    /**
+     * 与分页共用完全相同的筛选条件。
+     */
     private long levelsCountRow(LevelRecordPageFilter filter) {
         return memberLevelRecordMapper.selectCount(conditions(filter));
     }
 
-    /** 分页与计数复用记录当时的编号和时间，不关联当前等级配置。 */
+    /**
+     * 分页与计数复用记录当时的编号和时间，不关联当前等级配置。
+     */
     private LambdaQueryWrapper<LevelRecordDO> conditions(LevelRecordPageFilter filter) {
         return Wrappers.<LevelRecordDO>lambdaQuery()
-                .eq(filter.memberId() != null, LevelRecordDO::getUserId, filter.memberId())
-                .eq(filter.levelId() != null, LevelRecordDO::getLevelId, filter.levelId())
-                .ge(filter.startTime() != null, LevelRecordDO::getCreateTime, filter.startTime())
-                .le(filter.endTime() != null, LevelRecordDO::getCreateTime, filter.endTime());
+            .eq(filter.memberId() != null, LevelRecordDO::getUserId, filter.memberId())
+            .eq(filter.levelId() != null, LevelRecordDO::getLevelId, filter.levelId())
+            .ge(filter.startTime() != null, LevelRecordDO::getCreateTime, filter.startTime())
+            .le(filter.endTime() != null, LevelRecordDO::getCreateTime, filter.endTime());
     }
 }

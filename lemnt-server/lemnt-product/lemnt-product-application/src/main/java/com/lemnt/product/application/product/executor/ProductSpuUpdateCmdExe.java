@@ -31,21 +31,21 @@ public class ProductSpuUpdateCmdExe {
         ProductCatalogValidation.id(cmd.id());
         catalogValidationService.enabledReferences(cmd.categoryId(), cmd.brandId());
         return productCatalogService.updateSpu(
-                new ProductSpu(
-                        cmd.id(),
-                        null,
-                        ProductCatalogValidation.text(cmd.name(), 200, "商品名称"),
-                        cmd.categoryId(),
-                        cmd.brandId(),
-                        ProductCatalogValidation.optional(cmd.description(), 65535),
-                        ProductCatalogValidation.optional(cmd.image(), 500),
-                        null,
-                        cmd.skus(),
-                        cmd.deliveryTypes(),
-                        cmd.deliveryTemplateId(),
-                        cmd.keyword(),
-                        cmd.introduction(),
-                        cmd.sliderPicUrls(),
-                        cmd.sort()));
+            new ProductSpu(
+                cmd.id(),
+                null,
+                ProductCatalogValidation.text(cmd.name(), 200, "商品名称"),
+                cmd.categoryId(),
+                cmd.brandId(),
+                ProductCatalogValidation.optional(cmd.description(), 65535),
+                ProductCatalogValidation.optional(cmd.image(), 500),
+                null,
+                cmd.skus(),
+                cmd.deliveryTypes(),
+                cmd.deliveryTemplateId(),
+                cmd.keyword(),
+                cmd.introduction(),
+                cmd.sliderPicUrls(),
+                cmd.sort()));
     }
 }

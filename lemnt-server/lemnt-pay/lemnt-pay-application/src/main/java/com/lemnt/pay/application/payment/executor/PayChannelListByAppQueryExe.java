@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 查询应用下全部渠道配置，供选择使用。 */
+/**
+ * 查询应用下全部渠道配置，供选择使用。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayChannelListByAppQueryExe {

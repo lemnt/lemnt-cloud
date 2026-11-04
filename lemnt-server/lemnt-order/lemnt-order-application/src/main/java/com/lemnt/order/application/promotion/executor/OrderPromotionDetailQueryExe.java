@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 订单优惠查询只读trade快照，会员入口严格校验归属。 */
+/**
+ * 订单优惠查询只读trade快照，会员入口严格校验归属。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderPromotionDetailQueryExe {
@@ -34,40 +36,40 @@ public class OrderPromotionDetailQueryExe {
             throw new ServiceException("订单不存在", 400);
         }
         var rows =
-                promotions.find(order.id()).stream()
-                        .map(
-                                p ->
-                                        new OrderPromotionDetailDTO.Promotion(
-                                                p.promotionType(),
-                                                p.promotionName(),
-                                                p.discountAmount(),
-                                                p.deliveryDiscountPrice(),
-                                                p.usePoint(),
-                                                p.givePoint(),
-                                                p.giveCouponTemplateCounts(),
-                                                p.items().stream()
-                                                        .map(
-                                                                i ->
-                                                                        new OrderPromotionDetailDTO
-                                                                                .Item(
-                                                                                i.orderItemId(),
-                                                                                i.discountAmount(),
-                                                                                i
-                                                                                        .deliveryDiscountPrice(),
-                                                                                i.usePoint(),
-                                                                                i.givePoint()))
-                                                        .toList()))
-                        .toList();
+            promotions.find(order.id()).stream()
+                .map(
+                    p ->
+                        new OrderPromotionDetailDTO.Promotion(
+                            p.promotionType(),
+                            p.promotionName(),
+                            p.discountAmount(),
+                            p.deliveryDiscountPrice(),
+                            p.usePoint(),
+                            p.givePoint(),
+                            p.giveCouponTemplateCounts(),
+                            p.items().stream()
+                                .map(
+                                    i ->
+                                        new OrderPromotionDetailDTO
+                                            .Item(
+                                            i.orderItemId(),
+                                            i.discountAmount(),
+                                            i
+                                                .deliveryDiscountPrice(),
+                                            i.usePoint(),
+                                            i.givePoint()))
+                                .toList()))
+                .toList();
         return new OrderPromotionDetailDTO(
-                order.orderNo(),
-                order.pricingSnapshotStatus(),
-                new OrderPromotionDetailDTO.Summary(
-                        order.originalAmount(),
-                        order.discountAmount(),
-                        order.deliveryOriginalPrice(),
-                        order.deliveryDiscountPrice(),
-                        order.adjustmentAmount(),
-                        order.totalAmount()),
-                rows);
+            order.orderNo(),
+            order.pricingSnapshotStatus(),
+            new OrderPromotionDetailDTO.Summary(
+                order.originalAmount(),
+                order.discountAmount(),
+                order.deliveryOriginalPrice(),
+                order.deliveryDiscountPrice(),
+                order.adjustmentAmount(),
+                order.totalAmount()),
+            rows);
     }
 }

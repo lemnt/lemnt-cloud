@@ -7,13 +7,17 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 交易配置修改执行器。 */
+/**
+ * 交易配置修改执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class TradeConfigUpdateCmdExe {
     private final TradeConfigService service;
 
-    /** 执行交易配置操作。 */
+    /**
+     * 执行交易配置操作。
+     */
     public boolean execute(TradeConfigUpdateCmd cmd) {
         return service.update(cmd);
     }

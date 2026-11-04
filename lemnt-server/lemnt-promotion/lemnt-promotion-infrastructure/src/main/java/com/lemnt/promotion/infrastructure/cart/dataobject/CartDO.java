@@ -20,7 +20,8 @@ import java.io.Serializable;
 @TableName("promotion_cart")
 public class CartDO implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.AUTO)
     private Long id;

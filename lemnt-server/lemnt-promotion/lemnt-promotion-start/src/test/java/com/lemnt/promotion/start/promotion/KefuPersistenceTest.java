@@ -32,7 +32,9 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 生产 SQL/Gateway/事务代理验证客服会话、未读数与已读。 */
+/**
+ * 生产 SQL/Gateway/事务代理验证客服会话、未读数与已读。
+ */
 class KefuPersistenceTest {
     JdbcDataSource source;
     Connection schema;
@@ -44,7 +46,7 @@ class KefuPersistenceTest {
         source.setURL("jdbc:h2:mem:kefu_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
         schema = source.getConnection();
         ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("promotion-sql/lemnt_promotion.sql"));
+            schema, new ClassPathResource("promotion-sql/lemnt_promotion.sql"));
         var config = new MybatisConfiguration();
         config.setMapUnderscoreToCamelCase(true);
         var interceptor = new MybatisPlusInterceptor();
@@ -52,7 +54,7 @@ class KefuPersistenceTest {
         config.addInterceptor(interceptor);
         var bean = new MybatisSqlSessionFactoryBean();
         bean.setMapperLocations(
-                new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
+            new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
         bean.setDataSource(source);
         bean.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
         bean.setConfiguration(config);
@@ -60,19 +62,19 @@ class KefuPersistenceTest {
         config.addMappers("com.lemnt.promotion.infrastructure");
         var components = new TableTestComponents(new SqlSessionTemplate(factory), source);
         components.register(
-                MemberLookupGateway.class,
-                new MemberLookupGateway() {
-                    @Override
-                    public MemberSnapshot findById(Long memberId) {
-                        return new MemberSnapshot(
-                                memberId,
-                                0,
-                                100,
-                                0L,
-                                "会员" + memberId,
-                                "https://example.test/avatar.png");
-                    }
-                });
+            MemberLookupGateway.class,
+            new MemberLookupGateway() {
+                @Override
+                public MemberSnapshot findById(Long memberId) {
+                    return new MemberSnapshot(
+                        memberId,
+                        0,
+                        100,
+                        0L,
+                        "会员" + memberId,
+                        "https://example.test/avatar.png");
+                }
+            });
         service = components.get(KefuChatService.class);
     }
 
@@ -85,7 +87,7 @@ class KefuPersistenceTest {
 
     Long send(Long memberId, String text) {
         return service.appSend(
-                new AppKefuMessageSendCmd(memberId, text, KefuChatService.CONTENT_TEXT));
+            new AppKefuMessageSendCmd(memberId, text, KefuChatService.CONTENT_TEXT));
     }
 
     @Test
@@ -97,10 +99,10 @@ class KefuPersistenceTest {
         assertEquals("你好", conversation.lastMessageContent());
         assertEquals(0L, conversation.unreadCount().longValue());
         var admin =
-                service.adminList().stream()
-                        .filter(row -> row.userId().equals(1L))
-                        .findFirst()
-                        .orElseThrow();
+            service.adminList().stream()
+                .filter(row -> row.userId().equals(1L))
+                .findFirst()
+                .orElseThrow();
         assertEquals(1, admin.adminUnreadMessageCount());
         assertEquals("会员1", admin.nickname());
     }
@@ -120,10 +122,10 @@ class KefuPersistenceTest {
 
         send(2L, "另一个会员");
         var second =
-                service.adminList().stream()
-                        .filter(row -> row.userId().equals(2L))
-                        .findFirst()
-                        .orElseThrow();
+            service.adminList().stream()
+                .filter(row -> row.userId().equals(2L))
+                .findFirst()
+                .orElseThrow();
         service.adminPin(new KefuConversationPinCmd(second.id(), true));
         assertEquals(second.id(), service.adminList().get(0).id());
         service.adminRead(second.id());
@@ -145,18 +147,18 @@ class KefuPersistenceTest {
     @Test
     void invalidContentAndImageUrlAreRejected() {
         assertThrows(
-                ServiceException.class,
-                () ->
-                        service.appSend(
-                                new AppKefuMessageSendCmd(1L, " ", KefuChatService.CONTENT_TEXT)));
+            ServiceException.class,
+            () ->
+                service.appSend(
+                    new AppKefuMessageSendCmd(1L, " ", KefuChatService.CONTENT_TEXT)));
         assertThrows(
-                ServiceException.class,
-                () ->
-                        service.appSend(
-                                new AppKefuMessageSendCmd(
-                                        1L, "ftp://x", KefuChatService.CONTENT_IMAGE)));
+            ServiceException.class,
+            () ->
+                service.appSend(
+                    new AppKefuMessageSendCmd(
+                        1L, "ftp://x", KefuChatService.CONTENT_IMAGE)));
         assertThrows(
-                ServiceException.class,
-                () -> service.appSend(new AppKefuMessageSendCmd(1L, "x", 9)));
+            ServiceException.class,
+            () -> service.appSend(new AppKefuMessageSendCmd(1L, "x", 9)));
     }
 }

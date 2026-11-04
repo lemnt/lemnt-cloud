@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
 
-/** 积分商城活动持久化对象。 */
+/**
+ * 积分商城活动持久化对象。
+ */
 @Data
 @TableName("promotion_point_activity")
 public class PointActivityDO {

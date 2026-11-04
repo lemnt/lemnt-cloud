@@ -21,7 +21,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 
-/** 已登录用户共用的文件上传入口。 */
+/**
+ * 已登录用户共用的文件上传入口。
+ */
 @Tag(name = "统一文件上传")
 @RestController
 @RequestMapping("/files")
@@ -33,7 +35,7 @@ public class FileController {
     @RequiresLogin
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public R<FileUploadRes> upload(@Validated @ModelAttribute FileUploadReq req)
-            throws IOException {
+        throws IOException {
         var cmd = FileReqConverter.toCmd(req);
 
         // 存储成功或失败都关闭上传流，不将 HTTP 文件类型传入应用层。

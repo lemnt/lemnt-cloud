@@ -26,6 +26,8 @@ public interface MemberTokenGateway {
      */
     void logout(String accessToken);
 
-    /** 撤销指定会员的全部登录会话。 */
+    /**
+     * 撤销指定会员的全部登录会话。
+     */
     void revokeMemberSessions(Long memberId);
 }

@@ -5,21 +5,24 @@ import com.lemnt.pay.domain.payment.model.WalletTransaction;
 import com.lemnt.pay.infrastructure.payment.dataobject.WalletDO;
 import com.lemnt.pay.infrastructure.payment.dataobject.WalletTransactionDO;
 
-/** 钱包账户与流水表字段转换。 */
+/**
+ * 钱包账户与流水表字段转换。
+ */
 public final class WalletConverter {
-    private WalletConverter() {}
+    private WalletConverter() {
+    }
 
     public static Wallet toEntity(WalletDO row) {
         return row == null
-                ? null
-                : new Wallet(
-                        row.getId(),
-                        row.getMemberId(),
-                        row.getBalance(),
-                        row.getFreezePrice(),
-                        row.getTotalExpense(),
-                        row.getTotalRecharge(),
-                        row.getCreateTime());
+            ? null
+            : new Wallet(
+            row.getId(),
+            row.getMemberId(),
+            row.getBalance(),
+            row.getFreezePrice(),
+            row.getTotalExpense(),
+            row.getTotalRecharge(),
+            row.getCreateTime());
     }
 
     public static WalletDO toDO(Wallet value) {
@@ -35,17 +38,17 @@ public final class WalletConverter {
 
     public static WalletTransaction toEntity(WalletTransactionDO row) {
         return row == null
-                ? null
-                : new WalletTransaction(
-                        row.getId(),
-                        row.getTransactionNo(),
-                        row.getWalletId(),
-                        row.getBizType(),
-                        row.getBizNo(),
-                        row.getTitle(),
-                        row.getAmount(),
-                        row.getBalanceAfter(),
-                        row.getCreateTime());
+            ? null
+            : new WalletTransaction(
+            row.getId(),
+            row.getTransactionNo(),
+            row.getWalletId(),
+            row.getBizType(),
+            row.getBizNo(),
+            row.getTitle(),
+            row.getAmount(),
+            row.getBalanceAfter(),
+            row.getCreateTime());
     }
 
     public static WalletTransactionDO toDO(WalletTransaction value) {

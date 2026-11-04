@@ -6,7 +6,9 @@ import com.lemnt.promotion.domain.promotion.model.PointFilter;
 
 import java.util.List;
 
-/** 积分商城活动存储契约。 */
+/**
+ * 积分商城活动存储契约。
+ */
 public interface PointActivityGateway {
     PointActivity find(Long id);
 
@@ -20,7 +22,9 @@ public interface PointActivityGateway {
 
     List<PointActivity> enabled();
 
-    /** 锁定活动行，串行扣减库存。 */
+    /**
+     * 锁定活动行，串行扣减库存。
+     */
     PointActivity lockById(Long id);
 
     boolean decreaseStock(Long id, int count);

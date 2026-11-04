@@ -31,9 +31,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** 会员本人订单中心，身份仅取网关已认证上下文。 */
+/**
+ * 会员本人订单中心，身份仅取网关已认证上下文。
+ */
 @Tag(name = "会员订单中心")
 @RestController
 @RequestMapping("/trade/app/orders")
@@ -45,33 +48,39 @@ public class AppOrderController {
     private final MemberOrderTrackQueryExe trackQuery;
     private final MemberOrderStatusCountQueryExe statusCountQuery;
 
-    /** 本人订单分页，按状态或评价状态筛选。 */
+    /**
+     * 本人订单分页，按状态或评价状态筛选。
+     */
     @GetMapping
     @Operation(summary = "本人订单分页")
     public R<AppOrderSummaryRes> page(@Valid @ModelAttribute AppOrderPageReq req) {
         var page =
-                pageQuery.execute(
-                        SecurityUtils.getUserId(),
-                        new MemberOrderPageQry(
-                                req.status(),
-                                req.commentStatus(),
-                                req.pageNum() == null ? 1 : req.pageNum(),
-                                req.pageSize() == null ? 10 : req.pageSize()));
+            pageQuery.execute(
+                SecurityUtils.getUserId(),
+                new MemberOrderPageQry(
+                    req.status(),
+                    req.commentStatus(),
+                    req.pageNum() == null ? 1 : req.pageNum(),
+                    req.pageSize() == null ? 10 : req.pageSize()));
         return R.page(
-                page.getRecords().stream().map(AppOrderResConverter::summary).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(AppOrderResConverter::summary).toList(),
+            page.getTotal());
     }
 
-    /** 本人订单各状态数量，区分待评价与已完成。 */
+    /**
+     * 本人订单各状态数量，区分待评价与已完成。
+     */
     @GetMapping("/status-counts")
     @Operation(summary = "本人订单状态数量")
     public R<AppOrderStatusCountRes> statusCounts() {
         return R.ok(
-                AppOrderResConverter.statusCount(
-                        statusCountQuery.execute(SecurityUtils.getUserId())));
+            AppOrderResConverter.statusCount(
+                statusCountQuery.execute(SecurityUtils.getUserId())));
     }
 
-    /** 本人订单详情，他人订单统一返回不存在。 */
+    /**
+     * 本人订单详情，他人订单统一返回不存在。
+     */
     @GetMapping("/{orderNo}")
     @Operation(summary = "本人订单详情")
     public R<AppOrderDetailRes> detail(@PathVariable String orderNo) {
@@ -79,17 +88,21 @@ public class AppOrderController {
         return value == null ? R.fail("订单不存在") : R.ok(AppOrderResConverter.detail(value));
     }
 
-    /** 本人订单物流轨迹，仅按本地登记运单查询。 */
+    /**
+     * 本人订单物流轨迹，仅按本地登记运单查询。
+     */
     @GetMapping("/{orderNo}/tracks")
     @Operation(summary = "本人订单物流轨迹")
     public R<List<AppOrderTrackRes>> tracks(@PathVariable String orderNo) {
         var value = trackQuery.execute(SecurityUtils.getUserId(), orderNo);
         return value == null
-                ? R.fail("订单不存在")
-                : R.ok(value.stream().map(AppOrderResConverter::track).toList());
+            ? R.fail("订单不存在")
+            : R.ok(value.stream().map(AppOrderResConverter::track).toList());
     }
 
-    /** 取消本人未付款订单，库存与券统一异步回滚。 */
+    /**
+     * 取消本人未付款订单，库存与券统一异步回滚。
+     */
     @PostMapping("/{orderNo}/cancel")
     @Operation(summary = "取消本人未支付订单")
     public R<Boolean> cancel(@PathVariable String orderNo) {
@@ -99,7 +112,9 @@ public class AppOrderController {
         return R.ok(true);
     }
 
-    /** 核验订单归属后确认本人收货。 */
+    /**
+     * 核验订单归属后确认本人收货。
+     */
     @PostMapping("/{orderNo}/receive")
     @Operation(summary = "本人确认收货")
     public R<Boolean> receive(@PathVariable String orderNo) {
@@ -109,25 +124,29 @@ public class AppOrderController {
 
     private final OrderPromotionDetailQueryExe promotionQuery;
 
-    /** 查询冻结优惠及权益，不回查当前促销规则。 */
+    /**
+     * 查询冻结优惠及权益，不回查当前促销规则。
+     */
     @GetMapping("/{orderNo}/promotions")
     @Operation(summary = "订单优惠快照")
     public R<AppOrderPromotionDetailRes> promotions(@PathVariable String orderNo) {
         return R.ok(
-                OrderPromotionResConverter.toRes(
-                        promotionQuery.execute(SecurityUtils.getUserId(), orderNo)));
+            OrderPromotionResConverter.toRes(
+                promotionQuery.execute(SecurityUtils.getUserId(), orderNo)));
     }
 
-    /** 生产使用完整查询协作者，存量测试构造仅服务原有路由。 */
+    /**
+     * 生产使用完整查询协作者，存量测试构造仅服务原有路由。
+     */
     @Autowired
     public AppOrderController(
-            TradeOrderCloseCmdExe close,
-            OrderReceiveCmdExe receive,
-            MemberOrderPageQueryExe pageQuery,
-            MemberOrderDetailQueryExe detailQuery,
-            MemberOrderTrackQueryExe trackQuery,
-            MemberOrderStatusCountQueryExe statusCountQuery,
-            OrderPromotionDetailQueryExe promotionQuery) {
+        TradeOrderCloseCmdExe close,
+        OrderReceiveCmdExe receive,
+        MemberOrderPageQueryExe pageQuery,
+        MemberOrderDetailQueryExe detailQuery,
+        MemberOrderTrackQueryExe trackQuery,
+        MemberOrderStatusCountQueryExe statusCountQuery,
+        OrderPromotionDetailQueryExe promotionQuery) {
         this.close = close;
         this.receive = receive;
         this.pageQuery = pageQuery;
@@ -138,12 +157,12 @@ public class AppOrderController {
     }
 
     public AppOrderController(
-            TradeOrderCloseCmdExe close,
-            OrderReceiveCmdExe receive,
-            MemberOrderPageQueryExe pageQuery,
-            MemberOrderDetailQueryExe detailQuery,
-            MemberOrderTrackQueryExe trackQuery,
-            MemberOrderStatusCountQueryExe statusCountQuery) {
+        TradeOrderCloseCmdExe close,
+        OrderReceiveCmdExe receive,
+        MemberOrderPageQueryExe pageQuery,
+        MemberOrderDetailQueryExe detailQuery,
+        MemberOrderTrackQueryExe trackQuery,
+        MemberOrderStatusCountQueryExe statusCountQuery) {
         this(close, receive, pageQuery, detailQuery, trackQuery, statusCountQuery, null);
     }
 }

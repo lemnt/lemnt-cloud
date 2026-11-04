@@ -20,7 +20,7 @@ public class DictTypeReqConverter {
 
     public static DictTypeUpdateCmd toCmd(DictTypeUpdateReq req) {
         return new DictTypeUpdateCmd(
-                req.dictId(), req.dictName(), req.dictType(), req.status(), req.remark());
+            req.dictId(), req.dictName(), req.dictType(), req.status(), req.remark());
     }
 
     public static DictTypePageQry toQry(DictTypePageReq item) {
@@ -28,12 +28,12 @@ public class DictTypeReqConverter {
             return null;
         }
         return new DictTypePageQry(
-                item.dictName(),
-                item.dictType(),
-                item.status(),
-                item.pageNum(),
-                item.pageSize(),
-                item.beginTime(),
-                item.endTime());
+            item.dictName(),
+            item.dictType(),
+            item.status(),
+            item.pageNum(),
+            item.pageSize(),
+            item.beginTime(),
+            item.endTime());
     }
 }

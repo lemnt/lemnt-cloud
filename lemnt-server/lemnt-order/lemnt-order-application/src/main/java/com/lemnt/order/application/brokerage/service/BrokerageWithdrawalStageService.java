@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
-/** 审核通过先持久化10状态，远端结果未知时只重试入账，不能改为驳回返还佣金。 */
+/**
+ * 审核通过先持久化10状态，远端结果未知时只重试入账，不能改为驳回返还佣金。
+ */
 @Component
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
@@ -28,12 +30,12 @@ public class BrokerageWithdrawalStageService {
         if (cmd.approved()) {
             if (v.status() == 11 || v.status() == 10) return v;
             if (v.status() != 0
-                    || !withdraws.updateStatus(v.id(), 0, 10, cmd.reason(), LocalDateTime.now()))
+                || !withdraws.updateStatus(v.id(), 0, 10, cmd.reason(), LocalDateTime.now()))
                 throw new ServiceException("提现单状态不允许审核", 400);
         } else {
             if (v.status() == 20) return v;
             if (v.status() != 0
-                    || !withdraws.updateStatus(v.id(), 0, 20, cmd.reason(), LocalDateTime.now()))
+                || !withdraws.updateStatus(v.id(), 0, 20, cmd.reason(), LocalDateTime.now()))
                 throw new ServiceException("已开始入账的提现不能驳回", 400);
             brokerage.returnRejectedWithdraw(v.userId(), v.id(), v.price());
         }

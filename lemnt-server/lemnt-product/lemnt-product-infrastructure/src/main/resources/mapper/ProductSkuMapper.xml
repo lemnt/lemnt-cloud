@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lemnt.product.infrastructure.product.mapper.ProductSkuMapper">
 
-    <resultMap id="ProductSkuResult" type="com.lemnt.product.infrastructure.product.dataobject.ProductSkuDO" autoMapping="false">
+    <resultMap id="ProductSkuResult" type="com.lemnt.product.infrastructure.product.dataobject.ProductSkuDO"
+               autoMapping="false">
         <id property="id" column="id"/>
         <result property="spuId" column="spu_id"/>
         <result property="specs" column="specs"/>
@@ -23,14 +24,12 @@
     </resultMap>
 
 
-
     <sql id="productSellable">
         (spu_id IS NULL OR EXISTS (SELECT 1 FROM product_spu s JOIN product_category c ON c.id=s.category_id JOIN
         product_brand b ON b.id=s.brand_id LEFT JOIN product_category parent ON parent.id=c.parent_id WHERE
         s.id=product_sku.spu_id AND s.status='ON_SHELF' AND c.status='ENABLED' AND b.status='ENABLED' AND
         (c.parent_id IS NULL OR parent.status='ENABLED')))
     </sql>
-
 
 
     <select id="lockById" resultMap="ProductSkuResult"

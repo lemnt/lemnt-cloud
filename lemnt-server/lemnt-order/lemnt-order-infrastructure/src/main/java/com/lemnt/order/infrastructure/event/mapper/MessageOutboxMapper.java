@@ -8,7 +8,9 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/** 原子登记与租约操作；SQL集中XML，锁查询禁用缓存。 */
+/**
+ * 原子登记与租约操作；SQL集中XML，锁查询禁用缓存。
+ */
 @Mapper
 public interface MessageOutboxMapper extends BaseMapper<MessageOutboxDO> {
     int replay(@Param("type") String type, @Param("key") String key);
@@ -24,11 +26,11 @@ public interface MessageOutboxMapper extends BaseMapper<MessageOutboxDO> {
     int sent(@Param("id") long id, @Param("version") long version);
 
     int failed(
-            @Param("id") long id,
-            @Param("version") long version,
-            @Param("status") String status,
-            @Param("delay") int delay,
-            @Param("error") String error);
+        @Param("id") long id,
+        @Param("version") long version,
+        @Param("status") String status,
+        @Param("delay") int delay,
+        @Param("error") String error);
 
     int retryFailed(@Param("eventNo") String eventNo);
 }

@@ -9,17 +9,21 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 会员本人售后详情，非本人售后与不存在统一返回空。 */
+/**
+ * 会员本人售后详情，非本人售后与不存在统一返回空。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberAfterSaleDetailQueryExe {
     private final AfterSaleGateway afterSales;
 
-    /** 读取后核验归属，避免向其他会员泄露售后。 */
+    /**
+     * 读取后核验归属，避免向其他会员泄露售后。
+     */
     public AfterSaleDTO execute(Long memberId, String no) {
         var value = afterSales.afterSale(OrderRules.text(no, 40));
         return value == null || memberId == null || !memberId.equals(value.memberId())
-                ? null
-                : AfterSaleDTOConverter.toDTO(value);
+            ? null
+            : AfterSaleDTOConverter.toDTO(value);
     }
 }

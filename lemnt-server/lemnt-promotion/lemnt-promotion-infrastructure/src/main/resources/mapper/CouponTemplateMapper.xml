@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lemnt.promotion.infrastructure.coupon.mapper.CouponTemplateMapper">
 
-    <resultMap id="CouponTemplateResult" type="com.lemnt.promotion.infrastructure.coupon.dataobject.CouponTemplateDO" autoMapping="false">
+    <resultMap id="CouponTemplateResult" type="com.lemnt.promotion.infrastructure.coupon.dataobject.CouponTemplateDO"
+               autoMapping="false">
         <id property="id" column="id"/>
         <result property="code" column="code"/>
         <result property="name" column="name"/>
@@ -33,8 +34,9 @@
     </resultMap>
 
     <sql id="storefrontOffer">
-        FROM promotion_coupon_template t  WHERE
-        t.deleted=FALSE AND t.take_type='USER' AND t.enabled=TRUE AND (t.validity_type='TERM' OR t.valid_until>CURRENT_TIMESTAMP)
+        FROM promotion_coupon_template t WHERE
+        t.deleted=FALSE AND t.take_type='USER' AND t.enabled=TRUE AND (t.validity_type='TERM' OR
+        t.valid_until>CURRENT_TIMESTAMP)
     </sql>
 
     <select id="lockTemplate" resultMap="CouponTemplateResult"
@@ -43,16 +45,21 @@
     </select>
 
     <update id="takeQuota">
-        UPDATE promotion_coupon_template SET issued_count=issued_count+1 WHERE id=#{id} AND deleted=FALSE AND enabled=TRUE AND
-        (validity_type='TERM' OR valid_until>CURRENT_TIMESTAMP) AND (take_type&lt;>'USER' OR total_count=-1 OR issued_count&lt;total_count)
+        UPDATE promotion_coupon_template SET issued_count=issued_count+1 WHERE id=#{id} AND deleted=FALSE AND
+        enabled=TRUE AND
+        (validity_type='TERM' OR valid_until>CURRENT_TIMESTAMP) AND (take_type&lt;>'USER' OR total_count=-1 OR
+        issued_count&lt;total_count)
     </update>
 
     <select id="offers" resultMap="CouponTemplateResult">
-        SELECT t.*<include refid="storefrontOffer"/> ORDER BY t.id DESC LIMIT #{limit} OFFSET #{offset}
+        SELECT t.*
+        <include refid="storefrontOffer"/>
+        ORDER BY t.id DESC LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="offerCount" resultType="java.lang.Long">
-        SELECT COUNT(*)<include refid="storefrontOffer"/>
+        SELECT COUNT(*)
+        <include refid="storefrontOffer"/>
     </select>
 
     <select id="now" resultType="java.time.LocalDateTime">

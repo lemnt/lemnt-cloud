@@ -12,40 +12,42 @@ import java.util.List;
  */
 @Schema(description = "订单履约OrderDetailRes")
 public record OrderDetailRes(
-        @Schema(description = "订单编号") String orderNo,
-        @Schema(description = "会员ID") Long memberId,
-        @Schema(description = "应付金额，人民币元") BigDecimal totalAmount,
-        @Schema(
-                        description =
-                                "订单状态：RESERVING/PENDING_PAYMENT/PAID/SHIPPED/COMPLETED/CLOSED/REFUNDED")
-                String status,
-        @Schema(description = "全部订单库存是否已确认") boolean inventoryConfirmed,
-        @Schema(description = "是否有待处理退款申请") boolean activeRefund,
-        @Schema(description = "订单商品明细") List<OrderItemRes> items,
-        @Schema(description = "物流记录，包含收件人信息，仅详情权限可见") ShipmentRes shipment,
-        @Schema(description = "是否全部完成评价，历史未知为空") Boolean commentStatus,
-        @Schema(description = "全部评价确认完成时间，可空") LocalDateTime finishTime)
-        implements Serializable {
-    /** 兼容报价/历史快照，订单项和评价元数据由持久化后读取。 */
+    @Schema(description = "订单编号") String orderNo,
+    @Schema(description = "会员ID") Long memberId,
+    @Schema(description = "应付金额，人民币元") BigDecimal totalAmount,
+    @Schema(
+        description =
+            "订单状态：RESERVING/PENDING_PAYMENT/PAID/SHIPPED/COMPLETED/CLOSED/REFUNDED")
+    String status,
+    @Schema(description = "全部订单库存是否已确认") boolean inventoryConfirmed,
+    @Schema(description = "是否有待处理退款申请") boolean activeRefund,
+    @Schema(description = "订单商品明细") List<OrderItemRes> items,
+    @Schema(description = "物流记录，包含收件人信息，仅详情权限可见") ShipmentRes shipment,
+    @Schema(description = "是否全部完成评价，历史未知为空") Boolean commentStatus,
+    @Schema(description = "全部评价确认完成时间，可空") LocalDateTime finishTime)
+    implements Serializable {
+    /**
+     * 兼容报价/历史快照，订单项和评价元数据由持久化后读取。
+     */
     public OrderDetailRes(
-            String orderNo,
-            Long memberId,
-            BigDecimal totalAmount,
-            String status,
-            boolean inventoryConfirmed,
-            boolean activeRefund,
-            List<OrderItemRes> items,
-            ShipmentRes shipment) {
+        String orderNo,
+        Long memberId,
+        BigDecimal totalAmount,
+        String status,
+        boolean inventoryConfirmed,
+        boolean activeRefund,
+        List<OrderItemRes> items,
+        ShipmentRes shipment) {
         this(
-                orderNo,
-                memberId,
-                totalAmount,
-                status,
-                inventoryConfirmed,
-                activeRefund,
-                items,
-                shipment,
-                null,
-                null);
+            orderNo,
+            memberId,
+            totalAmount,
+            status,
+            inventoryConfirmed,
+            activeRefund,
+            items,
+            shipment,
+            null,
+            null);
     }
 }

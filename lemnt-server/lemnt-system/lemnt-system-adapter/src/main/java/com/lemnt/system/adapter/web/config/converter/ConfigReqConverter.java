@@ -16,21 +16,21 @@ public class ConfigReqConverter {
 
     public static ConfigAddCmd toAddCmd(ConfigAddReq req) {
         return new ConfigAddCmd(
-                req.configName(),
-                req.configKey(),
-                req.configValue(),
-                req.configType(),
-                req.remark());
+            req.configName(),
+            req.configKey(),
+            req.configValue(),
+            req.configType(),
+            req.remark());
     }
 
     public static ConfigUpdateCmd toUpdateCmd(ConfigUpdateReq req) {
         return new ConfigUpdateCmd(
-                req.configId(),
-                req.configName(),
-                req.configKey(),
-                req.configValue(),
-                req.configType(),
-                req.remark());
+            req.configId(),
+            req.configName(),
+            req.configKey(),
+            req.configValue(),
+            req.configType(),
+            req.remark());
     }
 
     public static ConfigPageQry toQry(ConfigPageReq item) {
@@ -38,12 +38,12 @@ public class ConfigReqConverter {
             return null;
         }
         return new ConfigPageQry(
-                item.configName(),
-                item.configKey(),
-                item.configType(),
-                item.beginTime(),
-                item.endTime(),
-                item.pageNum(),
-                item.pageSize());
+            item.configName(),
+            item.configKey(),
+            item.configType(),
+            item.beginTime(),
+            item.endTime(),
+            item.pageNum(),
+            item.pageSize());
     }
 }

@@ -32,7 +32,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 支付应用管理接口。 */
+/**
+ * 支付应用管理接口。
+ */
 @Tag(name = "支付应用管理")
 @RestController
 @RequestMapping("/trade/admin/pay-apps")
@@ -45,7 +47,9 @@ public class PayAppController {
     private final PayAppDetailQueryExe detail;
     private final PayAppPageQueryExe page;
 
-    /** 新增支付应用。 */
+    /**
+     * 新增支付应用。
+     */
     @PostMapping
     @Operation(summary = "新增支付应用")
     @RequiresPermissions("trade:pay-app:create")
@@ -53,7 +57,9 @@ public class PayAppController {
         return R.ok(create.execute(PayConfigReqConverter.payAppCreate(req)).id());
     }
 
-    /** 修改支付应用，应用标识不可修改。 */
+    /**
+     * 修改支付应用，应用标识不可修改。
+     */
     @PutMapping("/{id}")
     @Operation(summary = "修改支付应用")
     @RequiresPermissions("trade:pay-app:update")
@@ -61,16 +67,20 @@ public class PayAppController {
         return R.ok(update.execute(PayConfigReqConverter.payAppUpdate(id, req)));
     }
 
-    /** 启用或停用支付应用。 */
+    /**
+     * 启用或停用支付应用。
+     */
     @PutMapping("/{id}/status")
     @Operation(summary = "支付应用状态")
     @RequiresPermissions("trade:pay-app:update")
     public R<Boolean> updateStatus(
-            @PathVariable Long id, @Valid @RequestBody PayAppStatusUpdateReq req) {
+        @PathVariable Long id, @Valid @RequestBody PayAppStatusUpdateReq req) {
         return R.ok(updateStatus.execute(id, req.status()));
     }
 
-    /** 删除支付应用，仍有渠道配置时拒绝。 */
+    /**
+     * 删除支付应用，仍有渠道配置时拒绝。
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "删除支付应用")
     @RequiresPermissions("trade:pay-app:remove")
@@ -78,7 +88,9 @@ public class PayAppController {
         return R.ok(delete.execute(id));
     }
 
-    /** 支付应用详情。 */
+    /**
+     * 支付应用详情。
+     */
     @GetMapping("/{id}")
     @Operation(summary = "支付应用详情")
     @RequiresPermissions("trade:pay-app:query")
@@ -87,14 +99,16 @@ public class PayAppController {
         return value == null ? R.fail("支付应用不存在") : R.ok(PayConfigResConverter.payApp(value));
     }
 
-    /** 支付应用分页。 */
+    /**
+     * 支付应用分页。
+     */
     @GetMapping
     @Operation(summary = "支付应用分页")
     @RequiresPermissions("trade:pay-app:list")
     public R<PayAppRes> page(@Valid @ModelAttribute PayAppPageReq req) {
         var value = page.execute(PayConfigReqConverter.payAppPage(req));
         return R.page(
-                value.getRecords().stream().map(PayConfigResConverter::payApp).toList(),
-                value.getTotal());
+            value.getRecords().stream().map(PayConfigResConverter::payApp).toList(),
+            value.getTotal());
     }
 }

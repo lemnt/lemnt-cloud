@@ -17,6 +17,8 @@ public interface RemoteConfigService {
      */
     String getConfig(String configKey);
 
-    /** 保存完整业务配置组，由调用域先完成业务校验，system单次原子落库。 */
+    /**
+     * 保存完整业务配置组，由调用域先完成业务校验，system单次原子落库。
+     */
     void saveBusinessConfig(BusinessConfigSaveBo value);
 }

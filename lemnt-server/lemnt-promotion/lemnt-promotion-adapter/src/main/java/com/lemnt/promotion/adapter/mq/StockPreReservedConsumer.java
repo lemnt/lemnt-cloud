@@ -12,14 +12,16 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 消费失败原样抛给broker，幂等凭证只在本地业务成功时提交。 */
+/**
+ * 消费失败原样抛给broker，幂等凭证只在本地业务成功时提交。
+ */
 @Component
 @ConditionalOnProperty(name = "commerce.mq.enabled", havingValue = "true")
 @RequiredArgsConstructor
 @RocketMQMessageListener(
-        topic = CommerceEventTopics.STOCK_PRE_RESERVED,
-        consumerGroup = "lemnt-promotion-stock-pre-reserved-v1",
-        maxReconsumeTimes = 16)
+    topic = CommerceEventTopics.STOCK_PRE_RESERVED,
+    consumerGroup = "lemnt-promotion-stock-pre-reserved-v1",
+    maxReconsumeTimes = 16)
 public class StockPreReservedConsumer implements RocketMQListener<String> {
     private final StockPreReservedEventHandler handler;
 

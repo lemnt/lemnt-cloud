@@ -15,14 +15,14 @@ public class OperLogReqConverter {
             return null;
         }
         return new OperLogPageQry(
-                item.title(),
-                item.businessType(),
-                item.businessTypes(),
-                item.status(),
-                item.operName(),
-                item.pageNum(),
-                item.pageSize(),
-                item.beginTime(),
-                item.endTime());
+            item.title(),
+            item.businessType(),
+            item.businessTypes(),
+            item.status(),
+            item.operName(),
+            item.pageNum(),
+            item.pageSize(),
+            item.beginTime(),
+            item.endTime());
     }
 }

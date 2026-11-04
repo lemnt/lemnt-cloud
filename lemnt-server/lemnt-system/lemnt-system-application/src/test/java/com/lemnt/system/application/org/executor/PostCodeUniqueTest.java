@@ -18,7 +18,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/** 岗位新增和修改均需在写入前拒绝重复编码。 */
+/**
+ * 岗位新增和修改均需在写入前拒绝重复编码。
+ */
 class PostCodeUniqueTest {
 
     private final PostGateway gateway = mock(PostGateway.class);
@@ -28,11 +30,11 @@ class PostCodeUniqueTest {
         when(gateway.checkPostCodeUnique("test")).thenReturn(new Post());
 
         assertThatThrownBy(
-                        () ->
-                                new PostAddCmdExe(gateway)
-                                        .execute(new PostAddCmd("测试", "test", 0, "2", "备注")))
-                .isInstanceOf(ServiceException.class)
-                .hasMessageContaining("岗位编码已存在");
+            () ->
+                new PostAddCmdExe(gateway)
+                    .execute(new PostAddCmd("测试", "test", 0, "2", "备注")))
+            .isInstanceOf(ServiceException.class)
+            .hasMessageContaining("岗位编码已存在");
 
         verify(gateway, never()).insert(any());
     }
@@ -42,11 +44,11 @@ class PostCodeUniqueTest {
         when(gateway.checkPostCodeUnique("test", 5L)).thenReturn(new Post());
 
         assertThatThrownBy(
-                        () ->
-                                new PostUpdateCmdExe(gateway)
-                                        .execute(new PostUpdateCmd(5L, "测试", "test", 0, "2", "备注")))
-                .isInstanceOf(ServiceException.class)
-                .hasMessageContaining("岗位编码已存在");
+            () ->
+                new PostUpdateCmdExe(gateway)
+                    .execute(new PostUpdateCmd(5L, "测试", "test", 0, "2", "备注")))
+            .isInstanceOf(ServiceException.class)
+            .hasMessageContaining("岗位编码已存在");
 
         verify(gateway, never()).update(any());
     }
@@ -59,9 +61,9 @@ class PostCodeUniqueTest {
             when(gateway.insert(any())).thenReturn(true);
 
             assertThat(
-                            new PostAddCmdExe(gateway)
-                                    .execute(new PostAddCmd("测试", "test", 0, "2", "备注")))
-                    .isTrue();
+                new PostAddCmdExe(gateway)
+                    .execute(new PostAddCmd("测试", "test", 0, "2", "备注")))
+                .isTrue();
 
             verify(gateway).checkPostCodeUnique("test");
 
@@ -77,9 +79,9 @@ class PostCodeUniqueTest {
             when(gateway.update(any())).thenReturn(true);
 
             assertThat(
-                            new PostUpdateCmdExe(gateway)
-                                    .execute(new PostUpdateCmd(5L, "测试", "test", 0, "2", "备注")))
-                    .isTrue();
+                new PostUpdateCmdExe(gateway)
+                    .execute(new PostUpdateCmd(5L, "测试", "test", 0, "2", "备注")))
+                .isTrue();
 
             verify(gateway).checkPostCodeUnique("test", 5L);
 

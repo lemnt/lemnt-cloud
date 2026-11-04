@@ -26,7 +26,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 小程序会员签到接口。 */
+/**
+ * 小程序会员签到接口。
+ */
 @Tag(name = "小程序会员签到")
 @RestController
 @RequestMapping("/app/growths")
@@ -41,31 +43,31 @@ public class AppMemberSignRecordController {
     @Operation(summary = "本人签到汇总")
     public R<SignSummaryRes> summary() {
         return R.ok(
-                MemberGrowthResConverter.summary(
-                        memberSignSummaryQueryExe.execute(
-                                new SignSummaryQry(SecurityUtils.getUserId()))));
+            MemberGrowthResConverter.summary(
+                memberSignSummaryQueryExe.execute(
+                    new SignSummaryQry(SecurityUtils.getUserId()))));
     }
 
     @PostMapping("/signin")
     @Operation(summary = "数据库日期每日幂等签到，积分与经验同事务发放")
     public R<AppMemberGrowthSignRes> sign() {
         return R.ok(
-                MemberGrowthResConverter.toAppMemberGrowthSignRes(
-                        memberSignCreateCmdExe.execute(
-                                new SignCreateCmd(SecurityUtils.getUserId()))));
+            MemberGrowthResConverter.toAppMemberGrowthSignRes(
+                memberSignCreateCmdExe.execute(
+                    new SignCreateCmd(SecurityUtils.getUserId()))));
     }
 
     @GetMapping("/signin/records")
     @Operation(summary = "本人签到记录分页")
     public R<AppMemberGrowthSignsRes> signs(@Valid @ModelAttribute SignRecordPageReq req) {
         var page =
-                memberSignRecordPageQueryExe.execute(
-                        MemberGrowthReqConverter.toSignRecordPageQry(
-                                SecurityUtils.getUserId(), req));
+            memberSignRecordPageQueryExe.execute(
+                MemberGrowthReqConverter.toSignRecordPageQry(
+                    SecurityUtils.getUserId(), req));
         return R.page(
-                page.getRecords().stream()
-                        .map(MemberGrowthResConverter::toAppMemberGrowthSignsRes)
-                        .toList(),
-                page.getTotal());
+            page.getRecords().stream()
+                .map(MemberGrowthResConverter::toAppMemberGrowthSignsRes)
+                .toList(),
+            page.getTotal());
     }
 }

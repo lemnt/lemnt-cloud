@@ -17,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 小程序会员密码接口。 */
+/**
+ * 小程序会员密码接口。
+ */
 @Tag(name = "小程序会员密码")
 @RestController
 @RequestMapping("/app/users")
@@ -30,7 +32,7 @@ public class AppMemberPasswordController {
     @Operation(summary = "验证原密码并修改")
     public R<Boolean> password(@Valid @RequestBody PasswordChangeReq req) {
         return R.ok(
-                memberPasswordChangeCmdExe.execute(
-                        MemberUserReqConverter.password(SecurityUtils.getUserId(), req)));
+            memberPasswordChangeCmdExe.execute(
+                MemberUserReqConverter.password(SecurityUtils.getUserId(), req)));
     }
 }

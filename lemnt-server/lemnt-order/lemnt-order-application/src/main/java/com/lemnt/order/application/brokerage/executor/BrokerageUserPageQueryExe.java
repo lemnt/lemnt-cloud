@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 分销用户分页执行器。 */
+/**
+ * 分销用户分页执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class BrokerageUserPageQueryExe {

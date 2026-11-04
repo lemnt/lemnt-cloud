@@ -28,7 +28,9 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 生产 SQL/Gateway/事务代理验证 Banner 分页、位置过滤和点击量。 */
+/**
+ * 生产 SQL/Gateway/事务代理验证 Banner 分页、位置过滤和点击量。
+ */
 class BannerPersistenceTest {
     JdbcDataSource source;
     Connection schema;
@@ -40,7 +42,7 @@ class BannerPersistenceTest {
         source.setURL("jdbc:h2:mem:banner_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
         schema = source.getConnection();
         ScriptUtils.executeSqlScript(
-                schema, new ClassPathResource("promotion-sql/lemnt_promotion.sql"));
+            schema, new ClassPathResource("promotion-sql/lemnt_promotion.sql"));
         var config = new MybatisConfiguration();
         config.setMapUnderscoreToCamelCase(true);
         var interceptor = new MybatisPlusInterceptor();
@@ -48,15 +50,15 @@ class BannerPersistenceTest {
         config.addInterceptor(interceptor);
         var bean = new MybatisSqlSessionFactoryBean();
         bean.setMapperLocations(
-                new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
+            new PathMatchingResourcePatternResolver().getResources("classpath*:mapper/*.xml"));
         bean.setDataSource(source);
         bean.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
         bean.setConfiguration(config);
         var factory = bean.getObject();
         config.addMappers("com.lemnt.promotion.infrastructure");
         service =
-                new TableTestComponents(new SqlSessionTemplate(factory), source)
-                        .get(BannerManagementService.class);
+            new TableTestComponents(new SqlSessionTemplate(factory), source)
+                .get(BannerManagementService.class);
     }
 
     @AfterEach
@@ -68,14 +70,14 @@ class BannerPersistenceTest {
 
     Long create(String title, int position, int sort, int status) {
         return service.create(
-                new BannerCreateCmd(
-                        title,
-                        "/pages/store/index",
-                        "https://example.test/" + title + ".png",
-                        sort,
-                        status,
-                        position,
-                        null));
+            new BannerCreateCmd(
+                title,
+                "/pages/store/index",
+                "https://example.test/" + title + ".png",
+                sort,
+                status,
+                position,
+                null));
     }
 
     @Test
@@ -102,15 +104,15 @@ class BannerPersistenceTest {
         service.addBrowseCount(id);
         assertEquals(2, service.detail(id).browseCount());
         service.update(
-                new BannerUpdateCmd(
-                        id,
-                        "spring-new",
-                        "/pages/store/index",
-                        "https://example.test/new.png",
-                        3,
-                        1,
-                        2,
-                        "备注"));
+            new BannerUpdateCmd(
+                id,
+                "spring-new",
+                "/pages/store/index",
+                "https://example.test/new.png",
+                3,
+                1,
+                2,
+                "备注"));
         var updated = service.detail(id);
         assertEquals("spring-new", updated.title());
         assertEquals(3, updated.sort());
@@ -124,8 +126,8 @@ class BannerPersistenceTest {
     void invalidPositionStatusAndBrowseTargetAreRejected() {
         assertThrows(ServiceException.class, () -> create("bad", 6, 0, 0));
         assertThrows(
-                ServiceException.class,
-                () -> service.create(new BannerCreateCmd("bad", "/x", "https://x", 0, 2, 1, null)));
+            ServiceException.class,
+            () -> service.create(new BannerCreateCmd("bad", "/x", "https://x", 0, 2, 1, null)));
         assertThrows(ServiceException.class, () -> service.addBrowseCount(1L));
     }
 }

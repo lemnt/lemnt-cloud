@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 支付渠道配置分页查询。 */
+/**
+ * 支付渠道配置分页查询。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayChannelPageQueryExe {
@@ -24,15 +26,15 @@ public class PayChannelPageQueryExe {
         }
         PayConfigRules.page(qry.pageNum(), qry.pageSize());
         var page =
-                channels.page(
-                        new PayChannelFilter(
-                                qry.appId(),
-                                PayConfigRules.optional(qry.code(), 32, "渠道编码"),
-                                qry.status(),
-                                qry.pageNum(),
-                                qry.pageSize()));
+            channels.page(
+                new PayChannelFilter(
+                    qry.appId(),
+                    PayConfigRules.optional(qry.code(), 32, "渠道编码"),
+                    qry.status(),
+                    qry.pageNum(),
+                    qry.pageSize()));
         return PageResult.of(
-                page.getRecords().stream().map(PayConfigDTOConverter::payChannel).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(PayConfigDTOConverter::payChannel).toList(),
+            page.getTotal());
     }
 }

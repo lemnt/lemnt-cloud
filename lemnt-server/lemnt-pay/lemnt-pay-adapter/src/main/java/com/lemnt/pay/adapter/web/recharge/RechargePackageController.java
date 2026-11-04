@@ -29,7 +29,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 后台充值套餐管理。 */
+/**
+ * 后台充值套餐管理。
+ */
 @Tag(name = "充值套餐")
 @RestController
 @RequestMapping("/trade/admin/recharge-packages")
@@ -47,8 +49,8 @@ public class RechargePackageController {
     public R<RechargePackageRes> page(@Valid @ModelAttribute RechargePackagePageReq req) {
         var value = page.execute(RechargeResConverter.packagePage(req));
         return R.page(
-                value.getRecords().stream().map(RechargeResConverter::packageView).toList(),
-                value.getTotal());
+            value.getRecords().stream().map(RechargeResConverter::packageView).toList(),
+            value.getTotal());
     }
 
     @GetMapping("/{id}")
@@ -70,7 +72,7 @@ public class RechargePackageController {
     @Operation(summary = "修改充值套餐")
     @RequiresPermissions("trade:recharge-package:update")
     public R<Boolean> update(
-            @PathVariable Long id, @Valid @RequestBody RechargePackageUpdateReq req) {
+        @PathVariable Long id, @Valid @RequestBody RechargePackageUpdateReq req) {
         return R.ok(update.execute(RechargeResConverter.packageUpdate(id, req)));
     }
 

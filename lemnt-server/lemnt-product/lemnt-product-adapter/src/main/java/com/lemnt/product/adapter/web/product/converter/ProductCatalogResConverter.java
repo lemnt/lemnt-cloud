@@ -23,36 +23,37 @@ import com.lemnt.product.application.product.dto.StockAdjustmentDTO;
  * 目录响应转换器。
  */
 public final class ProductCatalogResConverter {
-    private ProductCatalogResConverter() {}
+    private ProductCatalogResConverter() {
+    }
 
     /**
      * 商品SKU。
      */
     public static ProductSkuRes sku(ProductSkuDTO value) {
         return value == null
+            ? null
+            : new ProductSkuRes(
+            value.id(),
+            value.spuId(),
+            value.code(),
+            value.name(),
+            value.price(),
+            value.stock(),
+            value.image(),
+            value.specs() == null
                 ? null
-                : new ProductSkuRes(
-                        value.id(),
-                        value.spuId(),
-                        value.code(),
-                        value.name(),
-                        value.price(),
-                        value.stock(),
-                        value.image(),
-                        value.specs() == null
-                                ? null
-                                : value.specs().stream()
-                                        .map(
-                                                property ->
-                                                        new ProductSkuRes.Spec(
-                                                                property.specId(),
-                                                                property.specName(),
-                                                                property.specValueId(),
-                                                                property.specValueName()))
-                                        .toList(),
-                        value.status(),
-                        value.weight(),
-                        value.volume());
+                : value.specs().stream()
+                .map(
+                    property ->
+                        new ProductSkuRes.Spec(
+                            property.specId(),
+                            property.specName(),
+                            property.specValueId(),
+                            property.specValueName()))
+                .toList(),
+            value.status(),
+            value.weight(),
+            value.volume());
     }
 
     /**
@@ -60,13 +61,13 @@ public final class ProductCatalogResConverter {
      */
     public static StockAdjustmentRes stockAdjustment(StockAdjustmentDTO value) {
         return value == null
-                ? null
-                : new StockAdjustmentRes(
-                        value.requestNo(),
-                        value.productId(),
-                        value.delta(),
-                        value.reason(),
-                        value.resultingStock());
+            ? null
+            : new StockAdjustmentRes(
+            value.requestNo(),
+            value.productId(),
+            value.delta(),
+            value.reason(),
+            value.resultingStock());
     }
 
     /**
@@ -74,21 +75,21 @@ public final class ProductCatalogResConverter {
      */
     public static ProductSpuPageRes spuToProductSpuPageRes(ProductSpuDTO value) {
         return value == null
-                ? null
-                : new ProductSpuPageRes(
-                        value.id(),
-                        value.code(),
-                        value.name(),
-                        value.categoryId(),
-                        value.brandId(),
-                        value.description(),
-                        value.image(),
-                        value.status(),
-                        value.skus().stream().map(ProductCatalogResConverter::sku).toList(),
-                        value.keyword(),
-                        value.introduction(),
-                        value.sliderPicUrls(),
-                        value.sort());
+            ? null
+            : new ProductSpuPageRes(
+            value.id(),
+            value.code(),
+            value.name(),
+            value.categoryId(),
+            value.brandId(),
+            value.description(),
+            value.image(),
+            value.status(),
+            value.skus().stream().map(ProductCatalogResConverter::sku).toList(),
+            value.keyword(),
+            value.introduction(),
+            value.sliderPicUrls(),
+            value.sort());
     }
 
     /**
@@ -96,23 +97,23 @@ public final class ProductCatalogResConverter {
      */
     public static ProductSpuDetailRes spuToProductSpuDetailRes(ProductSpuDTO value) {
         return value == null
-                ? null
-                : new ProductSpuDetailRes(
-                        value.id(),
-                        value.code(),
-                        value.name(),
-                        value.categoryId(),
-                        value.brandId(),
-                        value.description(),
-                        value.image(),
-                        value.status(),
-                        value.skus().stream().map(ProductCatalogResConverter::sku).toList(),
-                        value.deliveryTypes(),
-                        value.deliveryTemplateId(),
-                        value.keyword(),
-                        value.introduction(),
-                        value.sliderPicUrls(),
-                        value.sort());
+            ? null
+            : new ProductSpuDetailRes(
+            value.id(),
+            value.code(),
+            value.name(),
+            value.categoryId(),
+            value.brandId(),
+            value.description(),
+            value.image(),
+            value.status(),
+            value.skus().stream().map(ProductCatalogResConverter::sku).toList(),
+            value.deliveryTypes(),
+            value.deliveryTemplateId(),
+            value.keyword(),
+            value.introduction(),
+            value.sliderPicUrls(),
+            value.sort());
     }
 
     /**
@@ -120,23 +121,23 @@ public final class ProductCatalogResConverter {
      */
     public static ProductSpuCreateRes spuToProductSpuCreateRes(ProductSpuDTO value) {
         return value == null
-                ? null
-                : new ProductSpuCreateRes(
-                        value.id(),
-                        value.code(),
-                        value.name(),
-                        value.categoryId(),
-                        value.brandId(),
-                        value.description(),
-                        value.image(),
-                        value.status(),
-                        value.skus().stream().map(ProductCatalogResConverter::sku).toList(),
-                        value.deliveryTypes(),
-                        value.deliveryTemplateId(),
-                        value.keyword(),
-                        value.introduction(),
-                        value.sliderPicUrls(),
-                        value.sort());
+            ? null
+            : new ProductSpuCreateRes(
+            value.id(),
+            value.code(),
+            value.name(),
+            value.categoryId(),
+            value.brandId(),
+            value.description(),
+            value.image(),
+            value.status(),
+            value.skus().stream().map(ProductCatalogResConverter::sku).toList(),
+            value.deliveryTypes(),
+            value.deliveryTemplateId(),
+            value.keyword(),
+            value.introduction(),
+            value.sliderPicUrls(),
+            value.sort());
     }
 
     /**
@@ -144,14 +145,14 @@ public final class ProductCatalogResConverter {
      */
     public static MallCategoryListRes categoryToMallCategoryListRes(CategoryDTO value) {
         return value == null
-                ? null
-                : new MallCategoryListRes(
-                        value.id(),
-                        value.parentId(),
-                        value.name(),
-                        value.picUrl(),
-                        value.sort(),
-                        value.status());
+            ? null
+            : new MallCategoryListRes(
+            value.id(),
+            value.parentId(),
+            value.name(),
+            value.picUrl(),
+            value.sort(),
+            value.status());
     }
 
     /**
@@ -159,14 +160,14 @@ public final class ProductCatalogResConverter {
      */
     public static MallCategoryDetailRes categoryToMallCategoryDetailRes(CategoryDTO value) {
         return value == null
-                ? null
-                : new MallCategoryDetailRes(
-                        value.id(),
-                        value.parentId(),
-                        value.name(),
-                        value.picUrl(),
-                        value.sort(),
-                        value.status());
+            ? null
+            : new MallCategoryDetailRes(
+            value.id(),
+            value.parentId(),
+            value.name(),
+            value.picUrl(),
+            value.sort(),
+            value.status());
     }
 
     /**
@@ -174,14 +175,14 @@ public final class ProductCatalogResConverter {
      */
     public static MallCategoryCreateRes categoryToMallCategoryCreateRes(CategoryDTO value) {
         return value == null
-                ? null
-                : new MallCategoryCreateRes(
-                        value.id(),
-                        value.parentId(),
-                        value.name(),
-                        value.picUrl(),
-                        value.sort(),
-                        value.status());
+            ? null
+            : new MallCategoryCreateRes(
+            value.id(),
+            value.parentId(),
+            value.name(),
+            value.picUrl(),
+            value.sort(),
+            value.status());
     }
 
     /**
@@ -189,14 +190,14 @@ public final class ProductCatalogResConverter {
      */
     public static MallCategoryUpdateRes categoryToMallCategoryUpdateRes(CategoryDTO value) {
         return value == null
-                ? null
-                : new MallCategoryUpdateRes(
-                        value.id(),
-                        value.parentId(),
-                        value.name(),
-                        value.picUrl(),
-                        value.sort(),
-                        value.status());
+            ? null
+            : new MallCategoryUpdateRes(
+            value.id(),
+            value.parentId(),
+            value.name(),
+            value.picUrl(),
+            value.sort(),
+            value.status());
     }
 
     /**
@@ -204,14 +205,14 @@ public final class ProductCatalogResConverter {
      */
     public static MallBrandListRes brandToMallBrandListRes(BrandDTO value) {
         return value == null
-                ? null
-                : new MallBrandListRes(
-                        value.id(),
-                        value.name(),
-                        value.picUrl(),
-                        value.description(),
-                        value.sort(),
-                        value.status());
+            ? null
+            : new MallBrandListRes(
+            value.id(),
+            value.name(),
+            value.picUrl(),
+            value.description(),
+            value.sort(),
+            value.status());
     }
 
     /**
@@ -219,14 +220,14 @@ public final class ProductCatalogResConverter {
      */
     public static MallBrandDetailRes brandToMallBrandDetailRes(BrandDTO value) {
         return value == null
-                ? null
-                : new MallBrandDetailRes(
-                        value.id(),
-                        value.name(),
-                        value.picUrl(),
-                        value.description(),
-                        value.sort(),
-                        value.status());
+            ? null
+            : new MallBrandDetailRes(
+            value.id(),
+            value.name(),
+            value.picUrl(),
+            value.description(),
+            value.sort(),
+            value.status());
     }
 
     /**
@@ -234,14 +235,14 @@ public final class ProductCatalogResConverter {
      */
     public static MallBrandCreateRes brandToMallBrandCreateRes(BrandDTO value) {
         return value == null
-                ? null
-                : new MallBrandCreateRes(
-                        value.id(),
-                        value.name(),
-                        value.picUrl(),
-                        value.description(),
-                        value.sort(),
-                        value.status());
+            ? null
+            : new MallBrandCreateRes(
+            value.id(),
+            value.name(),
+            value.picUrl(),
+            value.description(),
+            value.sort(),
+            value.status());
     }
 
     /**
@@ -249,13 +250,13 @@ public final class ProductCatalogResConverter {
      */
     public static MallBrandUpdateRes brandToMallBrandUpdateRes(BrandDTO value) {
         return value == null
-                ? null
-                : new MallBrandUpdateRes(
-                        value.id(),
-                        value.name(),
-                        value.picUrl(),
-                        value.description(),
-                        value.sort(),
-                        value.status());
+            ? null
+            : new MallBrandUpdateRes(
+            value.id(),
+            value.name(),
+            value.picUrl(),
+            value.description(),
+            value.sort(),
+            value.status());
     }
 }

@@ -8,4 +8,5 @@ import java.io.Serializable;
  *
  * @author wangxx
  */
-public record TokenResult(String accessToken, Long expiresIn) implements Serializable {}
+public record TokenResult(String accessToken, Long expiresIn) implements Serializable {
+}

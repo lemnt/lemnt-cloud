@@ -46,7 +46,9 @@ public interface ConfigGateway {
      */
     Boolean insert(Config entity);
 
-    /** 依据唯一键原子保存完整业务配置组。 */
+    /**
+     * 依据唯一键原子保存完整业务配置组。
+     */
     void saveBusinessConfig(Config entity);
 
     /**
@@ -90,6 +92,8 @@ public interface ConfigGateway {
      */
     Config checkConfigKeyUnique(String configKey);
 
-    /** 校验参数键名是否唯一，修改时排除当前参数。 */
+    /**
+     * 校验参数键名是否唯一，修改时排除当前参数。
+     */
     Config checkConfigKeyUnique(String configKey, Long excludeConfigId);
 }

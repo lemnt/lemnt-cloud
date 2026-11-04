@@ -9,7 +9,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/** 分销用户持久化对象。 */
+/**
+ * 分销用户持久化对象。
+ */
 @Data
 @TableName("order_brokerage_user")
 public class BrokerageUserDO {

@@ -22,31 +22,33 @@ public class DeptResConverter {
         return toRes(dto, false);
     }
 
-    /** 旧用户详情曾直接输出DeptDTO，迁到Res后仍保留其NULL子节点。 */
+    /**
+     * 旧用户详情曾直接输出DeptDTO，迁到Res后仍保留其NULL子节点。
+     */
     public static DeptRes toRes(DeptDTO dto, boolean preserveNullChildren) {
         if (dto == null) {
             return null;
         }
         return new DeptRes(
-                dto.getDeptId(),
-                dto.getParentId(),
-                dto.getAncestors(),
-                dto.getDeptName(),
-                dto.getOrderNum(),
-                dto.getLeader(),
-                dto.getPhone(),
-                dto.getEmail(),
-                dto.getStatus(),
-                dto.getParentName(),
-                dto.getCreateBy(),
-                dto.getCreateTime(),
-                preserveNullChildren
-                        ? dto.getChildren() == null
-                                ? null
-                                : dto.getChildren().stream()
-                                        .map(child -> toRes(child, true))
-                                        .toList()
-                        : toResList(dto.getChildren()));
+            dto.getDeptId(),
+            dto.getParentId(),
+            dto.getAncestors(),
+            dto.getDeptName(),
+            dto.getOrderNum(),
+            dto.getLeader(),
+            dto.getPhone(),
+            dto.getEmail(),
+            dto.getStatus(),
+            dto.getParentName(),
+            dto.getCreateBy(),
+            dto.getCreateTime(),
+            preserveNullChildren
+                ? dto.getChildren() == null
+                ? null
+                : dto.getChildren().stream()
+                .map(child -> toRes(child, true))
+                .toList()
+                : toResList(dto.getChildren()));
     }
 
     /**
@@ -85,26 +87,26 @@ public class DeptResConverter {
             return null;
         }
         return new SystemDeptListRes(
-                dto.getDeptId(),
-                dto.getParentId(),
-                dto.getAncestors(),
-                dto.getDeptName(),
-                dto.getOrderNum(),
-                dto.getLeader(),
-                dto.getPhone(),
-                dto.getEmail(),
-                dto.getStatus(),
-                dto.getParentName(),
-                dto.getCreateBy(),
-                dto.getCreateTime(),
-                toResListToSystemDeptListRes(dto.getChildren()));
+            dto.getDeptId(),
+            dto.getParentId(),
+            dto.getAncestors(),
+            dto.getDeptName(),
+            dto.getOrderNum(),
+            dto.getLeader(),
+            dto.getPhone(),
+            dto.getEmail(),
+            dto.getStatus(),
+            dto.getParentName(),
+            dto.getCreateBy(),
+            dto.getCreateTime(),
+            toResListToSystemDeptListRes(dto.getChildren()));
     }
 
     /**
      * DeptDTO List → DeptInfoRes List
      */
     public static List<SystemDeptExcludeChildRes> toResListToSystemDeptExcludeChildRes(
-            List<DeptDTO> list) {
+        List<DeptDTO> list) {
         if (list == null) {
             return new ArrayList<>();
         }
@@ -123,19 +125,19 @@ public class DeptResConverter {
             return null;
         }
         return new SystemDeptExcludeChildRes(
-                dto.getDeptId(),
-                dto.getParentId(),
-                dto.getAncestors(),
-                dto.getDeptName(),
-                dto.getOrderNum(),
-                dto.getLeader(),
-                dto.getPhone(),
-                dto.getEmail(),
-                dto.getStatus(),
-                dto.getParentName(),
-                dto.getCreateBy(),
-                dto.getCreateTime(),
-                toResListToSystemDeptExcludeChildRes(dto.getChildren()));
+            dto.getDeptId(),
+            dto.getParentId(),
+            dto.getAncestors(),
+            dto.getDeptName(),
+            dto.getOrderNum(),
+            dto.getLeader(),
+            dto.getPhone(),
+            dto.getEmail(),
+            dto.getStatus(),
+            dto.getParentName(),
+            dto.getCreateBy(),
+            dto.getCreateTime(),
+            toResListToSystemDeptExcludeChildRes(dto.getChildren()));
     }
 
     /**
@@ -146,19 +148,19 @@ public class DeptResConverter {
             return null;
         }
         return new SystemDeptGetInfoRes(
-                dto.getDeptId(),
-                dto.getParentId(),
-                dto.getAncestors(),
-                dto.getDeptName(),
-                dto.getOrderNum(),
-                dto.getLeader(),
-                dto.getPhone(),
-                dto.getEmail(),
-                dto.getStatus(),
-                dto.getParentName(),
-                dto.getCreateBy(),
-                dto.getCreateTime(),
-                toResListToSystemDeptGetInfoRes(dto.getChildren()));
+            dto.getDeptId(),
+            dto.getParentId(),
+            dto.getAncestors(),
+            dto.getDeptName(),
+            dto.getOrderNum(),
+            dto.getLeader(),
+            dto.getPhone(),
+            dto.getEmail(),
+            dto.getStatus(),
+            dto.getParentName(),
+            dto.getCreateBy(),
+            dto.getCreateTime(),
+            toResListToSystemDeptGetInfoRes(dto.getChildren()));
     }
 
     /**

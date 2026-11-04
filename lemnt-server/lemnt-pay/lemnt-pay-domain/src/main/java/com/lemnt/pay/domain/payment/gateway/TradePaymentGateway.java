@@ -12,10 +12,14 @@ import java.util.List;
  * 交易支付领域网关。
  */
 public interface TradePaymentGateway {
-    /** 支付库内串行资金确认及退款额度，不依赖远程订单行锁。 */
+    /**
+     * 支付库内串行资金确认及退款额度，不依赖远程订单行锁。
+     */
     PaymentRecord lockByPaymentNo(String paymentNo);
 
-    /** 按条件分页查询支付单。 */
+    /**
+     * 按条件分页查询支付单。
+     */
     PageResult<PaymentRecord> page(PaymentFilter filter);
 
     /**
@@ -32,12 +36,12 @@ public interface TradePaymentGateway {
      * 创建待支付记录。memberId 来自订单可信快照，落库用于资金归属审计。
      */
     PaymentRecord createWaiting(
-            String paymentNo,
-            String orderNo,
-            Long memberId,
-            String channel,
-            String appKey,
-            BigDecimal amount);
+        String paymentNo,
+        String orderNo,
+        Long memberId,
+        String channel,
+        String appKey,
+        BigDecimal amount);
 
     /**
      * 查找按订单编号。

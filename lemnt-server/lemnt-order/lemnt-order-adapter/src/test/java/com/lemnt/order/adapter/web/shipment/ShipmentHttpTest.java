@@ -22,28 +22,28 @@ class ShipmentHttpTest {
     void shipmentListHasIndependentPaginationAndNeverIncludesRecipientData() throws Exception {
         var query = mock(ShipmentPageQueryExe.class);
         when(query.execute(any()))
-                .thenReturn(
-                        PageResult.of(
-                                List.of(
-                                        new ShipmentSummaryDTO(
-                                                "TR1", "SF", "WAY1", LocalDateTime.now(), null)),
-                                1));
+            .thenReturn(
+                PageResult.of(
+                    List.of(
+                        new ShipmentSummaryDTO(
+                            "TR1", "SF", "WAY1", LocalDateTime.now(), null)),
+                    1));
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new ShipmentQueryController(
-                                        query,
-                                        mock(ShipmentDetailQueryExe.class),
-                                        mock(ShipmentTrackListQueryExe.class)))
-                        .build();
+            MockMvcBuilders.standaloneSetup(
+                    new ShipmentQueryController(
+                        query,
+                        mock(ShipmentDetailQueryExe.class),
+                        mock(ShipmentTrackListQueryExe.class)))
+                .build();
         mvc.perform(get("/trade/admin/shipments").param("trackingNo", "WAY1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total").value(1))
-                .andExpect(jsonPath("$.rows[0].trackingNo").value("WAY1"))
-                .andExpect(jsonPath("$.rows[0].recipientName").doesNotExist())
-                .andExpect(jsonPath("$.rows[0].phone").doesNotExist());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.total").value(1))
+            .andExpect(jsonPath("$.rows[0].trackingNo").value("WAY1"))
+            .andExpect(jsonPath("$.rows[0].recipientName").doesNotExist())
+            .andExpect(jsonPath("$.rows[0].phone").doesNotExist());
         verify(query).execute(new ShipmentPageQry(null, null, "WAY1", null, 1, 20));
         mvc.perform(get("/trade/admin/shipments").param("pageSize", "101"))
-                .andExpect(status().isBadRequest());
+            .andExpect(status().isBadRequest());
         verifyNoMoreInteractions(query);
     }
 }

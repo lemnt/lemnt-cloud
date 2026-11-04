@@ -7,25 +7,26 @@ import com.lemnt.member.infrastructure.growth.dataobject.LevelRecordDO;
  * 等级记录转换器。
  */
 public final class LevelRecordConverter {
-    private LevelRecordConverter() {}
+    private LevelRecordConverter() {
+    }
 
     /**
      * 转换为领域对象。
      */
     public static LevelRecord toEntity(LevelRecordDO row) {
         return row == null
-                ? null
-                : new LevelRecord(
-                        row.getId(),
-                        row.getUserId(),
-                        row.getLevelId(),
-                        row.getUserExperience(),
-                        row.getRemark(),
-                        row.getCreateTime(),
-                        row.getLevel(),
-                        row.getDiscountPercent(),
-                        row.getExperience(),
-                        row.getDescription());
+            ? null
+            : new LevelRecord(
+            row.getId(),
+            row.getUserId(),
+            row.getLevelId(),
+            row.getUserExperience(),
+            row.getRemark(),
+            row.getCreateTime(),
+            row.getLevel(),
+            row.getDiscountPercent(),
+            row.getExperience(),
+            row.getDescription());
     }
 
     /**

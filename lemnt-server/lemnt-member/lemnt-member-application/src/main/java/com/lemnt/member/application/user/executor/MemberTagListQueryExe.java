@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 查询标签查询执行器。 */
+/**
+ * 查询标签查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberTagListQueryExe {

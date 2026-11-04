@@ -21,7 +21,9 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** pay_notify_task/log 持久化实现。 */
+/**
+ * pay_notify_task/log 持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayNotifyTaskGatewayImpl implements PayNotifyTaskGateway {
@@ -47,11 +49,11 @@ public class PayNotifyTaskGatewayImpl implements PayNotifyTaskGateway {
     @Override
     public PayNotifyTask findByBiz(String type, String bizNo) {
         return PayNotifyTaskConverter.toTask(
-                tasks.selectOne(
-                        Wrappers.<PayNotifyTaskDO>lambdaQuery()
-                                .eq(PayNotifyTaskDO::getType, type)
-                                .eq(PayNotifyTaskDO::getBizNo, bizNo)
-                                .last("LIMIT 1")));
+            tasks.selectOne(
+                Wrappers.<PayNotifyTaskDO>lambdaQuery()
+                    .eq(PayNotifyTaskDO::getType, type)
+                    .eq(PayNotifyTaskDO::getBizNo, bizNo)
+                    .last("LIMIT 1")));
     }
 
     @Override
@@ -66,7 +68,7 @@ public class PayNotifyTaskGatewayImpl implements PayNotifyTaskGateway {
 
     @Override
     public boolean finishFailed(
-            Long id, int attemptNo, String response, LocalDateTime nextTime, LocalDateTime now) {
+        Long id, int attemptNo, String response, LocalDateTime nextTime, LocalDateTime now) {
         return tasks.finishFailed(id, attemptNo, response, nextTime, now) == 1;
     }
 
@@ -78,39 +80,39 @@ public class PayNotifyTaskGatewayImpl implements PayNotifyTaskGateway {
     @Override
     public List<PayNotifyLog> logs(Long taskId) {
         return logs
-                .selectList(
-                        Wrappers.<PayNotifyLogDO>lambdaQuery()
-                                .eq(PayNotifyLogDO::getTaskId, taskId)
-                                .orderByAsc(PayNotifyLogDO::getNotifyTimes)
-                                .orderByAsc(PayNotifyLogDO::getId))
-                .stream()
-                .map(PayNotifyTaskConverter::toLog)
-                .toList();
+            .selectList(
+                Wrappers.<PayNotifyLogDO>lambdaQuery()
+                    .eq(PayNotifyLogDO::getTaskId, taskId)
+                    .orderByAsc(PayNotifyLogDO::getNotifyTimes)
+                    .orderByAsc(PayNotifyLogDO::getId))
+            .stream()
+            .map(PayNotifyTaskConverter::toLog)
+            .toList();
     }
 
     @Override
     public PageResult<PayNotifyTask> page(PayNotifyTaskFilter filter) {
         var page =
-                tasks.selectPage(
-                        new Page<PayNotifyTaskDO>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.<PayNotifyTaskDO>lambdaQuery()
-                                .eq(filter.type() != null, PayNotifyTaskDO::getType, filter.type())
-                                .eq(
-                                        filter.bizNo() != null,
-                                        PayNotifyTaskDO::getBizNo,
-                                        filter.bizNo())
-                                .eq(
-                                        filter.orderNo() != null,
-                                        PayNotifyTaskDO::getOrderNo,
-                                        filter.orderNo())
-                                .eq(
-                                        filter.status() != null,
-                                        PayNotifyTaskDO::getStatus,
-                                        filter.status())
-                                .orderByDesc(PayNotifyTaskDO::getId));
+            tasks.selectPage(
+                new Page<PayNotifyTaskDO>(filter.pageNum(), filter.pageSize()),
+                Wrappers.<PayNotifyTaskDO>lambdaQuery()
+                    .eq(filter.type() != null, PayNotifyTaskDO::getType, filter.type())
+                    .eq(
+                        filter.bizNo() != null,
+                        PayNotifyTaskDO::getBizNo,
+                        filter.bizNo())
+                    .eq(
+                        filter.orderNo() != null,
+                        PayNotifyTaskDO::getOrderNo,
+                        filter.orderNo())
+                    .eq(
+                        filter.status() != null,
+                        PayNotifyTaskDO::getStatus,
+                        filter.status())
+                    .orderByDesc(PayNotifyTaskDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(PayNotifyTaskConverter::toTask).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(PayNotifyTaskConverter::toTask).toList(),
+            page.getTotal());
     }
 
     @Override
@@ -135,13 +137,13 @@ public class PayNotifyTaskGatewayImpl implements PayNotifyTaskGateway {
 
     @Override
     public boolean finishVersion(
-            Long id,
-            long version,
-            boolean success,
-            String response,
-            LocalDateTime next,
-            LocalDateTime now) {
+        Long id,
+        long version,
+        boolean success,
+        String response,
+        LocalDateTime next,
+        LocalDateTime now) {
         return tasks.finishVersion(id, version, success ? "SUCCESS" : "FAILED", response, next, now)
-                == 1;
+            == 1;
     }
 }

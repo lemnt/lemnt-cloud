@@ -17,39 +17,39 @@ import com.lemnt.system.application.auth.qry.MenuListQry;
 public class MenuReqConverter {
     public static MenuAddCmd toCmd(MenuAddReq req) {
         return new MenuAddCmd(
-                req.menuName(),
-                req.parentId(),
-                req.orderNum(),
-                req.path(),
-                req.component(),
-                req.query(),
-                req.routeName(),
-                req.isFrame(),
-                req.isCache(),
-                req.menuType(),
-                req.visible(),
-                req.status(),
-                req.perms(),
-                req.icon());
+            req.menuName(),
+            req.parentId(),
+            req.orderNum(),
+            req.path(),
+            req.component(),
+            req.query(),
+            req.routeName(),
+            req.isFrame(),
+            req.isCache(),
+            req.menuType(),
+            req.visible(),
+            req.status(),
+            req.perms(),
+            req.icon());
     }
 
     public static MenuUpdateCmd toCmd(MenuUpdateReq req) {
         return new MenuUpdateCmd(
-                req.menuId(),
-                req.menuName(),
-                req.parentId(),
-                req.orderNum(),
-                req.path(),
-                req.component(),
-                req.query(),
-                req.routeName(),
-                req.isFrame(),
-                req.isCache(),
-                req.menuType(),
-                req.visible(),
-                req.status(),
-                req.perms(),
-                req.icon());
+            req.menuId(),
+            req.menuName(),
+            req.parentId(),
+            req.orderNum(),
+            req.path(),
+            req.component(),
+            req.query(),
+            req.routeName(),
+            req.isFrame(),
+            req.isCache(),
+            req.menuType(),
+            req.visible(),
+            req.status(),
+            req.perms(),
+            req.icon());
     }
 
     public static MenuListQry toQry(MenuListReq req, Long userId) {

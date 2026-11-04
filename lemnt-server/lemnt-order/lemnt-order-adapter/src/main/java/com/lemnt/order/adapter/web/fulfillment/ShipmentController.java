@@ -20,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 订单发货与收货接口。 */
+/**
+ * 订单发货与收货接口。
+ */
 @Tag(name = "订单发货与收货")
 @RestController
 @RequestMapping("/trade/admin/orders")
@@ -32,10 +34,10 @@ public class ShipmentController {
     @Operation(summary = "已支付且库存确认完成后登记发货，幂等且物流不可改写")
     @RequiresPermissions("trade:fulfillment:ship")
     public R<TradeShipmentShipRes> ship(
-            @PathVariable String orderNo, @Valid @RequestBody ShipmentCreateReq req) {
+        @PathVariable String orderNo, @Valid @RequestBody ShipmentCreateReq req) {
         return R.ok(
-                FulfillmentResConverter.shipmentToTradeShipmentShipRes(
-                        shipmentCreateCmdExe.execute(
-                                FulfillmentReqConverter.shipment(orderNo, req))));
+            FulfillmentResConverter.shipmentToTradeShipmentShipRes(
+                shipmentCreateCmdExe.execute(
+                    FulfillmentReqConverter.shipment(orderNo, req))));
     }
 }

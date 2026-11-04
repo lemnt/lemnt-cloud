@@ -12,7 +12,9 @@ import org.apache.dubbo.config.annotation.DubboService;
 
 import lombok.RequiredArgsConstructor;
 
-/** 远程契约转换为成长应用命令，不跨服务共享会员事务。 */
+/**
+ * 远程契约转换为成长应用命令，不跨服务共享会员事务。
+ */
 @DubboService
 @RequiredArgsConstructor
 public class MemberGrowthClientImpl implements MemberGrowthClient {
@@ -26,10 +28,10 @@ public class MemberGrowthClientImpl implements MemberGrowthClient {
             throw new ServiceException("会员积分配置未设置", 409);
         }
         return new MemberPointConfigDTO(
-                config.pointTradeDeductEnable(),
-                config.pointTradeDeductUnitPrice(),
-                config.pointTradeDeductMaxPrice(),
-                config.pointTradeGivePoint());
+            config.pointTradeDeductEnable(),
+            config.pointTradeDeductUnitPrice(),
+            config.pointTradeDeductMaxPrice(),
+            config.pointTradeGivePoint());
     }
 
     @Override
@@ -43,29 +45,31 @@ public class MemberGrowthClientImpl implements MemberGrowthClient {
     @Override
     public void applyFrozenRefund(MemberTradeAssetBo value) {
         if (value == null
-                || !"REFUND".equals(value.operation())
-                || !Integer.valueOf(1).equals(value.refundRuleVersion())
-                || value.deductGivePoint() == null) {
+            || !"REFUND".equals(value.operation())
+            || !Integer.valueOf(1).equals(value.refundRuleVersion())
+            || value.deductGivePoint() == null) {
             throw new IllegalArgumentException("冻结退款协议不合法");
         }
         apply(value);
     }
 
-    /** 两种协议统一映射完整字段，业务规则由成长领域执行。 */
+    /**
+     * 两种协议统一映射完整字段，业务规则由成长领域执行。
+     */
     private void apply(MemberTradeAssetBo v) {
         growth.tradeAsset(
-                new MemberTradeAssetCmd(
-                        v.memberId(),
-                        v.operation(),
-                        v.orderNo(),
-                        v.refundNo(),
-                        v.usePoint(),
-                        v.givePoint(),
-                        v.paidFen(),
-                        v.refundFen(),
-                        v.fullRefund(),
-                        v.refundPoint(),
-                        v.deductGivePoint(),
-                        v.refundRuleVersion()));
+            new MemberTradeAssetCmd(
+                v.memberId(),
+                v.operation(),
+                v.orderNo(),
+                v.refundNo(),
+                v.usePoint(),
+                v.givePoint(),
+                v.paidFen(),
+                v.refundFen(),
+                v.fullRefund(),
+                v.refundPoint(),
+                v.deductGivePoint(),
+                v.refundRuleVersion()));
     }
 }

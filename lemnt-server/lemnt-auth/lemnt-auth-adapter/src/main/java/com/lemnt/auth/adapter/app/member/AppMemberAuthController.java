@@ -37,26 +37,26 @@ public class AppMemberAuthController {
     @PostMapping("/login")
     @Operation(summary = "会员手机号密码登录，独立令牌域")
     public R<AuthAppMemberAuthLoginRes> login(
-            @Valid @RequestBody AuthLoginReq req,
-            @RequestHeader(value = "X-Lemnt-Login-Ip", required = false) String loginIp) {
+        @Valid @RequestBody AuthLoginReq req,
+        @RequestHeader(value = "X-Lemnt-Login-Ip", required = false) String loginIp) {
         return R.ok(
-                MemberAuthResConverter.toResToAuthAppMemberAuthLoginRes(
-                        memberAuthCmdExe.execute(MemberAuthReqConverter.toLoginCmd(req, loginIp))));
+            MemberAuthResConverter.toResToAuthAppMemberAuthLoginRes(
+                memberAuthCmdExe.execute(MemberAuthReqConverter.toLoginCmd(req, loginIp))));
     }
 
     @PostMapping("/refresh-token")
     @Operation(summary = "续期当前会员登录会话")
     public R<AuthAppMemberAuthRefreshRes> refresh(HttpServletRequest request) {
         return R.ok(
-                MemberAuthResConverter.toResToAuthAppMemberAuthRefreshRes(
-                        memberAuthCmdExe.execute(
-                                new AuthRefreshCmd(SecurityUtils.getToken(request)))));
+            MemberAuthResConverter.toResToAuthAppMemberAuthRefreshRes(
+                memberAuthCmdExe.execute(
+                    new AuthRefreshCmd(SecurityUtils.getToken(request)))));
     }
 
     @PostMapping("/logout")
     @Operation(summary = "撤销当前会员会话，重复退出幂等")
     public R<Boolean> logout(
-            @RequestHeader(value = "Authorization", required = false) String token) {
+        @RequestHeader(value = "Authorization", required = false) String token) {
         return R.ok(memberAuthCmdExe.execute(new AuthLogoutCmd(token)));
     }
 }

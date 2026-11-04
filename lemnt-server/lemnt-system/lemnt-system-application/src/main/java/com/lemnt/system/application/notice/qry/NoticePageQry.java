@@ -9,20 +9,21 @@ import java.time.LocalDateTime;
  * @author wangxx
  */
 public record NoticePageQry(
-        /**
-         * 公告标题
-         */
-        String noticeTitle,
-        /**
-         * 公告类型（1通知 2公告）
-         */
-        String noticeType,
-        /**
-         * 公告状态（1正常 2关闭）
-         */
-        String status,
-        int pageNum,
-        int pageSize,
-        LocalDateTime beginTime,
-        LocalDateTime endTime)
-        implements Serializable {}
+    /**
+     * 公告标题
+     */
+    String noticeTitle,
+    /**
+     * 公告类型（1通知 2公告）
+     */
+    String noticeType,
+    /**
+     * 公告状态（1正常 2关闭）
+     */
+    String status,
+    int pageNum,
+    int pageSize,
+    LocalDateTime beginTime,
+    LocalDateTime endTime)
+    implements Serializable {
+}

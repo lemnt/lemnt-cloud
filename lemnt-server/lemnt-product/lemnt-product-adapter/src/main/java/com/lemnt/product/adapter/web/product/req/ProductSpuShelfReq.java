@@ -3,6 +3,7 @@ package com.lemnt.product.adapter.web.product.req;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.validation.constraints.NotNull;
+
 import java.io.Serializable;
 
 /**
@@ -10,4 +11,5 @@ import java.io.Serializable;
  */
 @Schema(description = "ProductSpuShelfReq")
 public record ProductSpuShelfReq(@Schema(description = "是否上架") @NotNull Boolean onShelf)
-        implements Serializable {}
+    implements Serializable {
+}

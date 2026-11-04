@@ -9,7 +9,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/** 秒杀活动商品持久化对象。 */
+/**
+ * 秒杀活动商品持久化对象。
+ */
 @Data
 @TableName("promotion_seckill_product")
 public class SeckillProductDO {

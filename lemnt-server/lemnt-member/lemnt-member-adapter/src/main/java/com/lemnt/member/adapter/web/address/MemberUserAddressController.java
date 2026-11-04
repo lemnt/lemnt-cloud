@@ -18,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 会员地址接口。 */
+/**
+ * 会员地址接口。
+ */
 @Tag(name = "会员地址")
 @RestController
 @RequestMapping("/member-users")
@@ -32,8 +34,8 @@ public class MemberUserAddressController {
     @RequiresPermissions("member:address:query")
     public R<List<AddressRes>> addresses(@PathVariable Long id) {
         return R.ok(
-                memberAddressListQueryExe.execute(new AddressListQry(id)).stream()
-                        .map(MemberAddressResConverter::address)
-                        .toList());
+            memberAddressListQueryExe.execute(new AddressListQry(id)).stream()
+                .map(MemberAddressResConverter::address)
+                .toList());
     }
 }

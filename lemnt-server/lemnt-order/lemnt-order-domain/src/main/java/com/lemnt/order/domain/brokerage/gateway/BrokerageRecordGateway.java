@@ -8,7 +8,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** 佣金记录存储契约。 */
+/**
+ * 佣金记录存储契约。
+ */
 public interface BrokerageRecordGateway {
     BrokerageRecord find(Long id);
 
@@ -24,6 +26,8 @@ public interface BrokerageRecordGateway {
 
     boolean updateStatus(Long id, Integer expected, Integer next);
 
-    /** 按原金额 CAS 更新退款扣回累计金额，避免并发重复扣回。 */
+    /**
+     * 按原金额 CAS 更新退款扣回累计金额，避免并发重复扣回。
+     */
     boolean updatePrice(Long id, BigDecimal expected, BigDecimal next);
 }

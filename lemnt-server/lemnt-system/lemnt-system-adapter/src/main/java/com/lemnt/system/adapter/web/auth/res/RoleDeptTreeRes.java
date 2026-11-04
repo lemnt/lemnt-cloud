@@ -12,6 +12,7 @@ import java.util.List;
  */
 @Schema(description = "角色部门树列表响应")
 public record RoleDeptTreeRes(
-        @Schema(description = "已选中部门ID列表") List<Long> checkedKeys,
-        @Schema(description = "部门树列表") List<TreeSelectRes> depts)
-        implements Serializable {}
+    @Schema(description = "已选中部门ID列表") List<Long> checkedKeys,
+    @Schema(description = "部门树列表") List<TreeSelectRes> depts)
+    implements Serializable {
+}

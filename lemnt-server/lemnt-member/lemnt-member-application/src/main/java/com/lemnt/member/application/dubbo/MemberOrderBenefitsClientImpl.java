@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 只有会员本地业务成功提交后，回执才对外可见。 */
+/**
+ * 只有会员本地业务成功提交后，回执才对外可见。
+ */
 @DubboService
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
@@ -22,6 +24,6 @@ public class MemberOrderBenefitsClientImpl implements MemberOrderBenefitsClient 
 
     public boolean refundApplied(String no) {
         return inbox.has(
-                "member.after_sale_completed.v1", CommerceEventTopics.AFTER_SALE_COMPLETED, no);
+            "member.after_sale_completed.v1", CommerceEventTopics.AFTER_SALE_COMPLETED, no);
     }
 }

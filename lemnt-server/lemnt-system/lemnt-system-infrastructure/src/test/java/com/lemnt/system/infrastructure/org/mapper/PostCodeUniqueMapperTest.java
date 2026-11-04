@@ -19,13 +19,15 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-/** 验证重复编码查询绑定编码，修改排除自身且不跳过停用记录。 */
+/**
+ * 验证重复编码查询绑定编码，修改排除自身且不跳过停用记录。
+ */
 class PostCodeUniqueMapperTest {
 
     @BeforeAll
     static void initializeTableMetadata() {
         MapperBuilderAssistant assistant =
-                new MapperBuilderAssistant(new MybatisConfiguration(), "test");
+            new MapperBuilderAssistant(new MybatisConfiguration(), "test");
 
         assistant.setCurrentNamespace("test");
 
@@ -59,7 +61,7 @@ class PostCodeUniqueMapperTest {
             assertThat(query.getSqlSegment()).contains("post_id <>");
 
             assertThat(query.getParamNameValuePairs().values())
-                    .containsExactlyInAnyOrder("test", 5L);
+                .containsExactlyInAnyOrder("test", 5L);
 
         } else {
             assertThat(query.getSqlSegment()).doesNotContain("post_id <>");

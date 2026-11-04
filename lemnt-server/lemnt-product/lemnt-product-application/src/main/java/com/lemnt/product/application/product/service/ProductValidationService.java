@@ -26,9 +26,9 @@ public class ProductValidationService {
         var category = categoryGateway.category(categoryId);
         var brand = brandGateway.brand(brandId);
         if (category == null
-                || !"ENABLED".equals(category.status())
-                || brand == null
-                || !"ENABLED".equals(brand.status())) {
+            || !"ENABLED".equals(category.status())
+            || brand == null
+            || !"ENABLED".equals(brand.status())) {
             throw new IllegalArgumentException("分类或品牌不存在或已停用");
         }
         if (category.parentId() != null) {

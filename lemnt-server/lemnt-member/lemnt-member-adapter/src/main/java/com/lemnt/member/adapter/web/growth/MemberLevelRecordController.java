@@ -23,7 +23,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 等级流水接口。 */
+/**
+ * 等级流水接口。
+ */
 @Tag(name = "等级流水")
 @RestController
 @RequestMapping("/member/admin")
@@ -37,15 +39,15 @@ public class MemberLevelRecordController {
     @Operation(summary = "level-records分页")
     @RequiresPermissions("member:level:query")
     public R<MemberRecordLevelRecordsRes> levelRecords(
-            @Valid @ModelAttribute MemberRecordLevelRecordsReq req) {
+        @Valid @ModelAttribute MemberRecordLevelRecordsReq req) {
         var page =
-                memberLevelRecordAllPageQueryExe.execute(
-                        MemberReqConverter.toLevelRecordPageQry(req));
+            memberLevelRecordAllPageQueryExe.execute(
+                MemberReqConverter.toLevelRecordPageQry(req));
         return R.page(
-                page.getRecords().stream()
-                        .map(MemberGrowthResConverter::toMemberRecordLevelRecordsRes)
-                        .toList(),
-                page.getTotal());
+            page.getRecords().stream()
+                .map(MemberGrowthResConverter::toMemberRecordLevelRecordsRes)
+                .toList(),
+            page.getTotal());
     }
 
     @GetMapping("/level-records/{id}")
@@ -53,7 +55,7 @@ public class MemberLevelRecordController {
     @RequiresPermissions("member:level:query")
     public R<MemberRecordLevelRecordsDetailRes> levelRecordsDetail(@PathVariable Long id) {
         return R.ok(
-                MemberGrowthResConverter.toMemberRecordLevelRecordsDetailRes(
-                        memberLevelRecordDetailQueryExe.execute(new LevelRecordDetailQry(id))));
+            MemberGrowthResConverter.toMemberRecordLevelRecordsDetailRes(
+                memberLevelRecordDetailQueryExe.execute(new LevelRecordDetailQry(id))));
     }
 }

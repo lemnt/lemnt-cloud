@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 小程序限时折扣详情执行器。 */
+/**
+ * 小程序限时折扣详情执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class AppDiscountDetailQueryExe {

@@ -44,18 +44,18 @@ class MemberHttpContractTest {
         var defaults = mock(MemberAddressDefaultQueryExe.class);
         when(queries.execute(new AddressListQry(7L))).thenReturn(List.of());
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new AppMemberAddressController(
-                                        delete, detail, queries, save, defaults))
-                        .addInterceptors(new HeaderInterceptor())
-                        .setControllerAdvice(new GlobalExceptionHandler())
-                        .build();
+            MockMvcBuilders.standaloneSetup(
+                    new AppMemberAddressController(
+                        delete, detail, queries, save, defaults))
+                .addInterceptors(new HeaderInterceptor())
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
         mvc.perform(
-                        get("/app/addresses")
-                                .header(SecurityConstants.HEADER_USER_ID, "7")
-                                .header("memberId", "999"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").isArray());
+                get("/app/addresses")
+                    .header(SecurityConstants.HEADER_USER_ID, "7")
+                    .header("memberId", "999"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data").isArray());
         verify(queries).execute(new AddressListQry(7L));
         assertEquals(0L, SecurityUtils.getUserId(), "请求结束必须清理会员身份上下文");
         verifyNoInteractions(delete, save, detail, defaults);
@@ -65,26 +65,26 @@ class MemberHttpContractTest {
     void businessFailuresUseGlobalProblemResponse() throws Exception {
         var queries = mock(MemberAddressListQueryExe.class);
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new AppMemberAddressController(
-                                        mock(MemberAddressDeleteCmdExe.class),
-                                        mock(MemberAddressDetailQueryExe.class),
-                                        queries,
-                                        mock(MemberAddressSaveCmdExe.class),
-                                        mock(MemberAddressDefaultQueryExe.class)))
-                        .addInterceptors(new HeaderInterceptor())
-                        .setControllerAdvice(new GlobalExceptionHandler())
-                        .build();
-        for (int code : new int[] {400, 409}) {
+            MockMvcBuilders.standaloneSetup(
+                    new AppMemberAddressController(
+                        mock(MemberAddressDeleteCmdExe.class),
+                        mock(MemberAddressDetailQueryExe.class),
+                        queries,
+                        mock(MemberAddressSaveCmdExe.class),
+                        mock(MemberAddressDefaultQueryExe.class)))
+                .addInterceptors(new HeaderInterceptor())
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
+        for (int code : new int[]{400, 409}) {
             doThrow(new ServiceException("会员业务校验失败", code))
-                    .when(queries)
-                    .execute(new AddressListQry(7L));
+                .when(queries)
+                .execute(new AddressListQry(7L));
             mvc.perform(get("/app/addresses").header(SecurityConstants.HEADER_USER_ID, "7"))
-                    .andExpect(status().is(code))
-                    .andExpect(content().contentTypeCompatibleWith("application/problem+json"))
-                    .andExpect(jsonPath("$.status").value(code))
-                    .andExpect(jsonPath("$.code").value("BUSINESS_RULE_VIOLATION"))
-                    .andExpect(jsonPath("$.detail").value("会员业务校验失败"));
+                .andExpect(status().is(code))
+                .andExpect(content().contentTypeCompatibleWith("application/problem+json"))
+                .andExpect(jsonPath("$.status").value(code))
+                .andExpect(jsonPath("$.code").value("BUSINESS_RULE_VIOLATION"))
+                .andExpect(jsonPath("$.detail").value("会员业务校验失败"));
         }
     }
 
@@ -93,38 +93,38 @@ class MemberHttpContractTest {
         var assets = mock(MemberAssetRecordPageQueryExe.class);
         var signs = mock(MemberSignRecordPageQueryExe.class);
         when(assets.execute(new AssetRecordPageQry(7L, "POINT", 1, 20)))
-                .thenReturn(new PageResult<>(List.of(), 0));
+            .thenReturn(new PageResult<>(List.of(), 0));
         when(assets.execute(new AssetRecordPageQry(7L, "EXPERIENCE", 3, 25)))
-                .thenReturn(new PageResult<>(List.of(), 0));
+            .thenReturn(new PageResult<>(List.of(), 0));
         when(signs.execute(new SignRecordPageQry(7L, 2, 15)))
-                .thenReturn(new PageResult<>(List.of(), 0));
+            .thenReturn(new PageResult<>(List.of(), 0));
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new AppMemberSignRecordController(
-                                        mock(MemberSignCreateCmdExe.class),
-                                        mock(MemberSignSummaryQueryExe.class),
-                                        signs),
-                                new AppMemberPointRecordController(assets),
-                                new AppMemberExperienceRecordController(assets))
-                        .addInterceptors(new HeaderInterceptor())
-                        .setControllerAdvice(new GlobalExceptionHandler())
-                        .build();
+            MockMvcBuilders.standaloneSetup(
+                    new AppMemberSignRecordController(
+                        mock(MemberSignCreateCmdExe.class),
+                        mock(MemberSignSummaryQueryExe.class),
+                        signs),
+                    new AppMemberPointRecordController(assets),
+                    new AppMemberExperienceRecordController(assets))
+                .addInterceptors(new HeaderInterceptor())
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
         for (String uri :
-                new String[] {
-                    "/app/growths/signin/records?pageNum=2&pageSize=15",
-                    "/app/growths/point-records",
-                    "/app/growths/experience-records?pageNum=3&pageSize=25"
-                }) {
+            new String[]{
+                "/app/growths/signin/records?pageNum=2&pageSize=15",
+                "/app/growths/point-records",
+                "/app/growths/experience-records?pageNum=3&pageSize=25"
+            }) {
             mvc.perform(get(uri).header(SecurityConstants.HEADER_USER_ID, "7"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.rows").isArray());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rows").isArray());
         }
-        for (String path : new String[] {"signin/records", "point-records", "experience-records"}) {
-            for (String query : new String[] {"?pageSize=101", "?pageNum=0"}) {
+        for (String path : new String[]{"signin/records", "point-records", "experience-records"}) {
+            for (String query : new String[]{"?pageSize=101", "?pageNum=0"}) {
                 mvc.perform(
-                                get("/app/growths/" + path + query)
-                                        .header(SecurityConstants.HEADER_USER_ID, "7"))
-                        .andExpect(status().isUnprocessableEntity());
+                        get("/app/growths/" + path + query)
+                            .header(SecurityConstants.HEADER_USER_ID, "7"))
+                    .andExpect(status().isUnprocessableEntity());
             }
         }
         verify(assets).execute(new AssetRecordPageQry(7L, "POINT", 1, 20));
@@ -133,7 +133,9 @@ class MemberHttpContractTest {
         verifyNoMoreInteractions(assets, signs);
     }
 
-    /** false必须绑定为支出，外部memberId不能替换网关会员身份。 */
+    /**
+     * false必须绑定为支出，外部memberId不能替换网关会员身份。
+     */
     @Test
     void appPointFiltersKeepFalseAndTrustedMemberId() throws Exception {
         var assets = mock(MemberAssetRecordPageQueryExe.class);
@@ -141,19 +143,19 @@ class MemberHttpContractTest {
         var expected = new AssetRecordPageQry(7L, "POINT", 1, 20, false, start, start.plusHours(1));
         when(assets.execute(expected)).thenReturn(new PageResult<>(List.of(), 0));
         var mvc =
-                MockMvcBuilders.standaloneSetup(new AppMemberPointRecordController(assets))
-                        .addInterceptors(new HeaderInterceptor())
-                        .setControllerAdvice(new GlobalExceptionHandler())
-                        .build();
+            MockMvcBuilders.standaloneSetup(new AppMemberPointRecordController(assets))
+                .addInterceptors(new HeaderInterceptor())
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
         mvc.perform(
-                        get("/app/growths/point-records")
-                                .header(SecurityConstants.HEADER_USER_ID, "7")
-                                .param("memberId", "999")
-                                .param("addStatus", "false")
-                                .param("startTime", "2026-10-30 10:00:00")
-                                .param("endTime", "2026-10-30 11:00:00"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.rows").isArray());
+                get("/app/growths/point-records")
+                    .header(SecurityConstants.HEADER_USER_ID, "7")
+                    .param("memberId", "999")
+                    .param("addStatus", "false")
+                    .param("startTime", "2026-10-30 10:00:00")
+                    .param("endTime", "2026-10-30 11:00:00"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.rows").isArray());
         verify(assets).execute(expected);
         assertEquals(0L, SecurityUtils.getUserId());
     }

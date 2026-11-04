@@ -8,7 +8,9 @@ import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
 
-/** InventoryConfirmation 表数据访问接口。 */
+/**
+ * InventoryConfirmation 表数据访问接口。
+ */
 @Mapper
 public interface InventoryConfirmationMapper extends BaseMapper<InventoryConfirmationDO> {
 

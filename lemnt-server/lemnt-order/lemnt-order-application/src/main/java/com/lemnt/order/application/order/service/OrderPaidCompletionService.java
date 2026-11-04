@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-/** 远端效果确认完成后才允许发货、售后及分佣，最后本地提交不包含远程写。 */
+/**
+ * 远端效果确认完成后才允许发货、售后及分佣，最后本地提交不包含远程写。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderPaidCompletionService {

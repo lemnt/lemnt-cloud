@@ -6,12 +6,16 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+
 import java.io.Serializable;
 import java.util.List;
 
-/** 浏览足迹移除请求。 */
+/**
+ * 浏览足迹移除请求。
+ */
 @Schema(description = "浏览足迹移除请求")
 public record AppProductBrowseHistoryDeleteReq(
-        @Schema(description = "商品SPU编号，最多100项") @NotEmpty @Size(max = 100)
-                List<@NotNull @Positive Long> spuIds)
-        implements Serializable {}
+    @Schema(description = "商品SPU编号，最多100项") @NotEmpty @Size(max = 100)
+    List<@NotNull @Positive Long> spuIds)
+    implements Serializable {
+}

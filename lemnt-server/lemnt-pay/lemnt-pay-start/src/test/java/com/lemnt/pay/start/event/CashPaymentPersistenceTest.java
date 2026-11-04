@@ -33,7 +33,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/** 支付库没有任何订单/售后表，验证资金和事件原子性及退款额度。 */
+/**
+ * 支付库没有任何订单/售后表，验证资金和事件原子性及退款额度。
+ */
 class CashPaymentPersistenceTest extends OutboxPersistenceTest {
     OrderPaymentGateway orders;
     TradePaymentGateway payments;
@@ -45,31 +47,31 @@ class CashPaymentPersistenceTest extends OutboxPersistenceTest {
     void cashSetup() {
         orders = mock(OrderPaymentGateway.class);
         when(orders.findByOrderNo("O1"))
-                .thenReturn(
-                        new OrderPaymentSnapshot(
-                                "O1", 7L, new BigDecimal("10.00"), "PENDING_PAYMENT"));
+            .thenReturn(
+                new OrderPaymentSnapshot(
+                    "O1", 7L, new BigDecimal("10.00"), "PENDING_PAYMENT"));
         payments =
-                proxy(
-                        new TradePaymentGatewayImpl(session.getMapper(TradePaymentMapper.class)),
-                        TradePaymentGateway.class);
+            proxy(
+                new TradePaymentGatewayImpl(session.getMapper(TradePaymentMapper.class)),
+                TradePaymentGateway.class);
         refunds =
-                proxy(
-                        new PaymentRefundGatewayImpl(session.getMapper(PaymentRefundMapper.class)),
-                        PaymentRefundGateway.class);
+            proxy(
+                new PaymentRefundGatewayImpl(session.getMapper(PaymentRefundMapper.class)),
+                PaymentRefundGateway.class);
         notifications =
-                proxy(
-                        new PaymentNotificationService(orders, payments, outbox),
-                        PaymentNotificationService.class);
+            proxy(
+                new PaymentNotificationService(orders, payments, outbox),
+                PaymentNotificationService.class);
         refundService =
-                proxy(
-                        new PaymentRefundService(orders, payments, refunds, outbox),
-                        PaymentRefundService.class);
+            proxy(
+                new PaymentRefundService(orders, payments, refunds, outbox),
+                PaymentRefundService.class);
         payments.createWaiting("P1", "O1", 9L, "SANDBOX", "app", new BigDecimal("10.00"));
     }
 
     VerifiedPaymentNotification notice(String channelNo) {
         return new VerifiedPaymentNotification(
-                "P1", "O1", "SANDBOX", channelNo, new BigDecimal("10.00"), "NOTICE1");
+            "P1", "O1", "SANDBOX", channelNo, new BigDecimal("10.00"), "NOTICE1");
     }
 
     FrozenRefundPlan plan(String no, String amount, String state) {
@@ -85,20 +87,20 @@ class CashPaymentPersistenceTest extends OutboxPersistenceTest {
         notifications.execute(notice("CH1"));
         assertEquals("SUCCESS", payments.findByPaymentNo("P1").status());
         assertEquals(
-                1, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_outbox", Integer.class));
+            1, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_outbox", Integer.class));
         assertThrows(IllegalStateException.class, () -> notifications.execute(notice("CH2")));
         assertEquals("CH1", payments.findByPaymentNo("P1").channelTradeNo());
         assertEquals(
-                0,
-                jdbc.queryForObject(
-                        "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME IN ('ORDER_INFO','ORDER_AFTER_SALE','TRADE_ORDER')",
-                        Integer.class));
+            0,
+            jdbc.queryForObject(
+                "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME IN ('ORDER_INFO','ORDER_AFTER_SALE','TRADE_ORDER')",
+                Integer.class));
     }
 
     @Test
     void failedEventRegistrationRollsBackCashWriteInsteadOfLosingNotification() {
         transaction.executeWithoutResult(
-                status -> outbox.enqueue("PAY_SUCCESS", "P1", "O1", "{\"tampered\":true}"));
+            status -> outbox.enqueue("PAY_SUCCESS", "P1", "O1", "{\"tampered\":true}"));
         assertThrows(IllegalStateException.class, () -> notifications.execute(notice("CH1")));
         assertEquals("WAITING", payments.findByPaymentNo("P1").status());
     }
@@ -107,11 +109,11 @@ class CashPaymentPersistenceTest extends OutboxPersistenceTest {
     void genuineLatePaymentAfterOrderCloseIsRetainedForReconciliation() {
         payments.markClosed("P1");
         when(orders.findByOrderNo("O1"))
-                .thenReturn(new OrderPaymentSnapshot("O1", 7L, new BigDecimal("10.00"), "CLOSED"));
+            .thenReturn(new OrderPaymentSnapshot("O1", 7L, new BigDecimal("10.00"), "CLOSED"));
         notifications.execute(notice("CH1"));
         assertEquals("SUCCESS", payments.findByPaymentNo("P1").status());
         assertEquals(
-                1, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_outbox", Integer.class));
+            1, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_outbox", Integer.class));
     }
 
     @Test
@@ -121,22 +123,22 @@ class CashPaymentPersistenceTest extends OutboxPersistenceTest {
         var first = refundService.prepare("AF1");
         assertEquals(first.refundNo(), refundService.prepare("AF1").refundNo());
         var result =
-                new PaymentRefundResult(
-                        first.refundNo(),
-                        "P1",
-                        "SANDBOX",
-                        new BigDecimal("3.32"),
-                        "SUCCESS",
-                        "RCH1");
+            new PaymentRefundResult(
+                first.refundNo(),
+                "P1",
+                "SANDBOX",
+                new BigDecimal("3.32"),
+                "SUCCESS",
+                "RCH1");
         assertEquals("SUCCESS", refundService.complete(first, result).status());
         assertEquals("SUCCESS", refundService.complete(first, result).status());
         assertEquals(
-                1, jdbc.queryForObject("SELECT COUNT(*) FROM pay_payment_refund", Integer.class));
+            1, jdbc.queryForObject("SELECT COUNT(*) FROM pay_payment_refund", Integer.class));
         assertEquals(
-                1,
-                jdbc.queryForObject(
-                        "SELECT COUNT(*) FROM pay_message_outbox WHERE event_type='PAY_REFUND_SUCCESS'",
-                        Integer.class));
+            1,
+            jdbc.queryForObject(
+                "SELECT COUNT(*) FROM pay_message_outbox WHERE event_type='PAY_REFUND_SUCCESS'",
+                Integer.class));
         plan("AF2", "6.69", "REFUNDING");
         assertThrows(IllegalStateException.class, () -> refundService.prepare("AF2"));
         plan("AF1", "3.33", "REFUNDING");
@@ -151,115 +153,115 @@ class CashPaymentPersistenceTest extends OutboxPersistenceTest {
         assertEquals("NONE", zero.channel());
         assertEquals("SUCCESS", zero.status());
         assertEquals(
-                0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_payment_refund", Integer.class));
+            0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_payment_refund", Integer.class));
         assertEquals(
-                0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_outbox", Integer.class));
+            0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_outbox", Integer.class));
     }
 
     @Test
     void closeEventReceiptRollsBackOnWrongOwnerAndRetryClosesOnlyWaitingPayment() {
         var inbox =
-                proxy(
-                        new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
-                        MessageInboxGateway.class);
+            proxy(
+                new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
+                MessageInboxGateway.class);
         var handler =
-                proxy(
-                        new OrderClosedEventHandler(inbox, orders, payments, payment -> true),
-                        OrderClosedEventHandler.class);
+            proxy(
+                new OrderClosedEventHandler(inbox, orders, payments, payment -> true),
+                OrderClosedEventHandler.class);
         var payload = JsonUtils.toJsonStr(new OrderClosedEvent("O1", 7L, List.of()));
         var event =
-                new CommerceEventEnvelope(
-                        "EC1", "ORDER_CLOSED", 1, "O1", "O1", Instant.now(), null, payload);
+            new CommerceEventEnvelope(
+                "EC1", "ORDER_CLOSED", 1, "O1", "O1", Instant.now(), null, payload);
         when(orders.findByOrderNo("O1"))
-                .thenReturn(new OrderPaymentSnapshot("O1", 8L, new BigDecimal("10.00"), "CLOSED"));
+            .thenReturn(new OrderPaymentSnapshot("O1", 8L, new BigDecimal("10.00"), "CLOSED"));
         assertThrows(IllegalStateException.class, () -> handler.execute(event));
         assertEquals(
-                0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
+            0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
         assertEquals("WAITING", payments.findByPaymentNo("P1").status());
         when(orders.findByOrderNo("O1"))
-                .thenReturn(new OrderPaymentSnapshot("O1", 7L, new BigDecimal("10.00"), "CLOSED"));
+            .thenReturn(new OrderPaymentSnapshot("O1", 7L, new BigDecimal("10.00"), "CLOSED"));
         handler.execute(event);
         handler.execute(event);
         assertEquals("CLOSED", payments.findByPaymentNo("P1").status());
         assertEquals(
-                2, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
+            2, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
         assertEquals(
-                1,
-                jdbc.queryForObject(
-                        "SELECT COUNT(*) FROM pay_message_inbox WHERE consumer_key='pay.order.fence.v1'",
-                        Integer.class));
+            1,
+            jdbc.queryForObject(
+                "SELECT COUNT(*) FROM pay_message_inbox WHERE consumer_key='pay.order.fence.v1'",
+                Integer.class));
         assertEquals(
-                1,
-                jdbc.queryForObject(
-                        "SELECT COUNT(*) FROM pay_message_inbox WHERE consumer_key='pay.order.closed.v1'",
-                        Integer.class));
+            1,
+            jdbc.queryForObject(
+                "SELECT COUNT(*) FROM pay_message_inbox WHERE consumer_key='pay.order.closed.v1'",
+                Integer.class));
     }
 
     @Test
     void providerCloseFailureKeepsWaitingAndDoesNotCommitClosedReceipt() {
         var inbox =
-                proxy(
-                        new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
-                        MessageInboxGateway.class);
+            proxy(
+                new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
+                MessageInboxGateway.class);
         when(orders.findByOrderNo("O1"))
-                .thenReturn(new OrderPaymentSnapshot("O1", 7L, new BigDecimal("10.00"), "CLOSED"));
+            .thenReturn(new OrderPaymentSnapshot("O1", 7L, new BigDecimal("10.00"), "CLOSED"));
         var handler =
-                proxy(
-                        new OrderClosedEventHandler(inbox, orders, payments, p -> false),
-                        OrderClosedEventHandler.class);
+            proxy(
+                new OrderClosedEventHandler(inbox, orders, payments, p -> false),
+                OrderClosedEventHandler.class);
         var event =
-                new CommerceEventEnvelope(
-                        "CLOSE_FAIL",
-                        "ORDER_CLOSED",
-                        1,
-                        "O1",
-                        "O1",
-                        Instant.now(),
-                        null,
-                        JsonUtils.toJsonStr(new OrderClosedEvent("O1", 7L, List.of())));
+            new CommerceEventEnvelope(
+                "CLOSE_FAIL",
+                "ORDER_CLOSED",
+                1,
+                "O1",
+                "O1",
+                Instant.now(),
+                null,
+                JsonUtils.toJsonStr(new OrderClosedEvent("O1", 7L, List.of())));
         assertThrows(IllegalStateException.class, () -> handler.execute(event));
         assertEquals("WAITING", payments.findByPaymentNo("P1").status());
         assertEquals(
-                0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
+            0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
     }
 
     @Test
     void closedBeforeCreateFencesDelayedSnapshotWithoutInsertingPayment() {
         var inbox =
-                proxy(
-                        new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
-                        MessageInboxGateway.class);
+            proxy(
+                new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
+                MessageInboxGateway.class);
         when(orders.findByOrderNo("O2"))
-                .thenReturn(new OrderPaymentSnapshot("O2", 7L, new BigDecimal("10.00"), "CLOSED"));
+            .thenReturn(new OrderPaymentSnapshot("O2", 7L, new BigDecimal("10.00"), "CLOSED"));
         var handler =
-                proxy(
-                        new OrderClosedEventHandler(inbox, orders, payments, p -> true),
-                        OrderClosedEventHandler.class);
+            proxy(
+                new OrderClosedEventHandler(inbox, orders, payments, p -> true),
+                OrderClosedEventHandler.class);
         var event =
-                new CommerceEventEnvelope(
-                        "CLOSE_EARLY",
-                        "ORDER_CLOSED",
-                        1,
-                        "O2",
-                        "O2",
-                        Instant.now(),
-                        null,
-                        JsonUtils.toJsonStr(new OrderClosedEvent("O2", 7L, List.of())));
+            new CommerceEventEnvelope(
+                "CLOSE_EARLY",
+                "ORDER_CLOSED",
+                1,
+                "O2",
+                "O2",
+                Instant.now(),
+                null,
+                JsonUtils.toJsonStr(new OrderClosedEvent("O2", 7L, List.of())));
         handler.execute(event);
         when(orders.preparePayment("O2"))
-                .thenReturn(
-                        new OrderPaymentSnapshot(
-                                "O2", 7L, new BigDecimal("10.00"), "PENDING_PAYMENT"));
+            .thenReturn(
+                new OrderPaymentSnapshot(
+                    "O2", 7L, new BigDecimal("10.00"), "PENDING_PAYMENT"));
         var create =
-                proxy(
-                        new TradePaymentCreateCmdExe(orders, payments, inbox),
-                        TradePaymentCreateCmdExe.class);
+            proxy(
+                new TradePaymentCreateCmdExe(orders, payments, inbox),
+                TradePaymentCreateCmdExe.class);
         assertThrows(IllegalStateException.class, () -> create.execute("O2", "ALIPAY"));
         assertTrue(payments.findByOrderNo("O2").isEmpty());
         assertEquals(
-                2,
-                jdbc.queryForObject(
-                        "SELECT COUNT(*) FROM pay_message_inbox WHERE business_key='O2'",
-                        Integer.class));
+            2,
+            jdbc.queryForObject(
+                "SELECT COUNT(*) FROM pay_message_inbox WHERE business_key='O2'",
+                Integer.class));
     }
 }

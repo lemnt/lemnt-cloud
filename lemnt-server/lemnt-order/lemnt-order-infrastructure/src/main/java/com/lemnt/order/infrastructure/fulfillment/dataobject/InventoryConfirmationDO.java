@@ -12,19 +12,26 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/** order_inventory_confirmation 表数据对象。 */
+/**
+ * order_inventory_confirmation 表数据对象。
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("order_inventory_confirmation")
 public class InventoryConfirmationDO implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
-    /** 订单号。 */
+    /**
+     * 订单号。
+     */
     @TableId(type = IdType.INPUT)
     private String orderNo;
 
-    /** 库存确认时间。 */
+    /**
+     * 库存确认时间。
+     */
     private LocalDateTime confirmedAt;
 }

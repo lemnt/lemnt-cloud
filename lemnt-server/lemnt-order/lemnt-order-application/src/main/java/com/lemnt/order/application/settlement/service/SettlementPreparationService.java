@@ -53,10 +53,10 @@ public class SettlementPreparationService {
 
     private List<Long> selectedIds(List<Long> ids) {
         if (ids == null
-                || ids.isEmpty()
-                || ids.size() > 100
-                || ids.stream().anyMatch(id -> id == null || id <= 0)
-                || ids.stream().distinct().count() != ids.size()) {
+            || ids.isEmpty()
+            || ids.size() > 100
+            || ids.stream().anyMatch(id -> id == null || id <= 0)
+            || ids.stream().distinct().count() != ids.size()) {
             throw new IllegalArgumentException("结算SKU编号不合法或重复");
         }
         return ids.stream().sorted().toList();
@@ -64,9 +64,9 @@ public class SettlementPreparationService {
 
     private List<CartLine> selectedCart(Long memberId, List<Long> ids) {
         var rows =
-                cartGateway.cart(memberId).stream()
-                        .filter(row -> ids.contains(row.productId()))
-                        .toList();
+            cartGateway.cart(memberId).stream()
+                .filter(row -> ids.contains(row.productId()))
+                .toList();
         if (rows.size() != ids.size() || rows.stream().anyMatch(row -> !row.selected())) {
             throw new IllegalArgumentException("购物车商品不属于该会员或未选中");
         }
@@ -74,40 +74,40 @@ public class SettlementPreparationService {
     }
 
     private SettlementQuote price(
-            Long memberId, Map<Long, Integer> quantities, Long couponId, boolean lockCoupon) {
+        Long memberId, Map<Long, Integer> quantities, Long couponId, boolean lockCoupon) {
         return price(memberId, quantities, couponId, lockCoupon, false);
     }
 
     private SettlementQuote price(
-            Long memberId,
-            Map<Long, Integer> quantities,
-            Long couponId,
-            boolean lockCoupon,
-            boolean pointStatus) {
+        Long memberId,
+        Map<Long, Integer> quantities,
+        Long couponId,
+        boolean lockCoupon,
+        boolean pointStatus) {
         return price(memberId, quantities, couponId, lockCoupon, pointStatus, null, 1, null);
     }
 
     private SettlementQuote price(
-            Long memberId,
-            Map<Long, Integer> quantities,
-            Long couponId,
-            boolean lockCoupon,
-            boolean pointStatus,
-            Long addressId) {
+        Long memberId,
+        Map<Long, Integer> quantities,
+        Long couponId,
+        boolean lockCoupon,
+        boolean pointStatus,
+        Long addressId) {
         return price(memberId, quantities, couponId, lockCoupon, pointStatus, addressId, 1, null);
     }
 
     private SettlementQuote price(
-            Long memberId,
-            Map<Long, Integer> quantities,
-            Long couponId,
-            boolean lockCoupon,
-            boolean pointStatus,
-            Long addressId,
-            Integer deliveryType,
-            Long pickUpStoreId) {
+        Long memberId,
+        Map<Long, Integer> quantities,
+        Long couponId,
+        boolean lockCoupon,
+        boolean pointStatus,
+        Long addressId,
+        Integer deliveryType,
+        Long pickUpStoreId) {
         var snapshots =
-                productCatalogGateway.findOnShelfBatch(new ArrayList<>(quantities.keySet()));
+            productCatalogGateway.findOnShelfBatch(new ArrayList<>(quantities.keySet()));
         List<SettlementItem> items = new ArrayList<>();
         for (var entry : quantities.entrySet()) {
             var product = snapshots.get(entry.getKey());
@@ -116,30 +116,30 @@ public class SettlementPreparationService {
             }
             var unit = SettlementRules.money(product.price(), false);
             items.add(
-                    new SettlementItem(
-                            product.id(),
-                            product.productCode(),
-                            product.name(),
-                            unit,
-                            entry.getValue(),
-                            unit.multiply(BigDecimal.valueOf(entry.getValue())),
-                            null,
-                            BigDecimal.ZERO.setScale(2),
-                            product.spuId(),
-                            product.spuName(),
-                            product.specs() == null
-                                    ? null
-                                    : product.specs().stream()
-                                            .map(
-                                                    snapshotProperty ->
-                                                            new SettlementItem.Spec(
-                                                                    snapshotProperty.specId(),
-                                                                    snapshotProperty.specName(),
-                                                                    snapshotProperty.specValueId(),
-                                                                    snapshotProperty
-                                                                            .specValueName()))
-                                            .toList(),
-                            product.picUrl()));
+                new SettlementItem(
+                    product.id(),
+                    product.productCode(),
+                    product.name(),
+                    unit,
+                    entry.getValue(),
+                    unit.multiply(BigDecimal.valueOf(entry.getValue())),
+                    null,
+                    BigDecimal.ZERO.setScale(2),
+                    product.spuId(),
+                    product.spuName(),
+                    product.specs() == null
+                        ? null
+                        : product.specs().stream()
+                        .map(
+                            snapshotProperty ->
+                                new SettlementItem.Spec(
+                                    snapshotProperty.specId(),
+                                    snapshotProperty.specName(),
+                                    snapshotProperty.specValueId(),
+                                    snapshotProperty
+                                        .specValueName()))
+                        .toList(),
+                    product.picUrl()));
         }
         memberValidationService.requireActive(memberId);
         var quote = activityPricingService.price(memberId, items, couponId, pointStatus);
@@ -151,8 +151,8 @@ public class SettlementPreparationService {
             throw new IllegalArgumentException("配送方式不合法");
         }
         return addressId == null
-                ? quote
-                : deliveryService.attach(memberId, addressId, snapshots, quote);
+            ? quote
+            : deliveryService.attach(memberId, addressId, snapshots, quote);
     }
 
     private SettlementOrder existing(Long memberId, String requestNo, String fingerprint) {
@@ -166,9 +166,9 @@ public class SettlementPreparationService {
         var order = orderPersistenceService.findByOrderNo(previous.orderNo());
         if (order == null) {
             order =
-                    submissionCache.submission(previous.orderNo()) == null
-                            ? null
-                            : submissionCache.submission(previous.orderNo()).order();
+                submissionCache.submission(previous.orderNo()) == null
+                    ? null
+                    : submissionCache.submission(previous.orderNo()).order();
             if (order == null) {
                 throw new IllegalStateException("原提交快照已失效，请查询交易订单");
             }
@@ -177,66 +177,66 @@ public class SettlementPreparationService {
     }
 
     private SettlementOrder persist(
-            Long memberId,
-            String requestNo,
-            String fingerprint,
-            SettlementQuote quote,
-            List<CartReference> references) {
+        Long memberId,
+        String requestNo,
+        String fingerprint,
+        SettlementQuote quote,
+        List<CartReference> references) {
         return persist(memberId, requestNo, fingerprint, quote, false, references);
     }
 
     private SettlementOrder persist(
-            Long memberId,
-            String requestNo,
-            String fingerprint,
-            SettlementQuote quote,
-            boolean allowZero,
-            List<CartReference> references) {
+        Long memberId,
+        String requestNo,
+        String fingerprint,
+        SettlementQuote quote,
+        boolean allowZero,
+        List<CartReference> references) {
         if (!allowZero && quote.payableAmount().signum() <= 0) {
             throw new IllegalArgumentException("当前暂不支持0元结算，请更换优惠券");
         }
         String orderNo =
-                "TR"
-                        + UUID.randomUUID()
-                                .toString()
-                                .replace("-", "")
-                                .substring(0, 24)
-                                .toUpperCase(Locale.ROOT);
+            "TR"
+                + UUID.randomUUID()
+                .toString()
+                .replace("-", "")
+                .substring(0, 24)
+                .toUpperCase(Locale.ROOT);
         var order =
-                new SettlementOrder(
-                        null,
-                        orderNo,
-                        memberId,
-                        quote.payableAmount(),
-                        "RESERVING",
-                        quote.items(),
-                        null,
-                        quote.usePoint(),
-                        quote.givePoint(),
-                        quote.delivery(),
-                        null,
-                        null,
-                        quote.giveCouponTemplateCounts(),
-                        quote.originalAmount(),
-                        quote.discountAmount(),
-                        quote.deliveryOriginalPrice(),
-                        quote.deliveryDiscountPrice(),
-                        BigDecimal.ZERO.setScale(2),
-                        quote.deliveryOriginalPrice() == null ? "LEGACY_PARTIAL" : "COMPLETE",
-                        1,
-                        quote.promotions());
+            new SettlementOrder(
+                null,
+                orderNo,
+                memberId,
+                quote.payableAmount(),
+                "RESERVING",
+                quote.items(),
+                null,
+                quote.usePoint(),
+                quote.givePoint(),
+                quote.delivery(),
+                null,
+                null,
+                quote.giveCouponTemplateCounts(),
+                quote.originalAmount(),
+                quote.discountAmount(),
+                quote.deliveryOriginalPrice(),
+                quote.deliveryDiscountPrice(),
+                BigDecimal.ZERO.setScale(2),
+                quote.deliveryOriginalPrice() == null ? "LEGACY_PARTIAL" : "COMPLETE",
+                1,
+                quote.promotions());
         settlementRecordService.save(
-                new SettlementRecord(
-                        orderNo,
-                        memberId,
-                        requestNo,
-                        fingerprint,
-                        quote.originalAmount(),
-                        quote.discountAmount(),
-                        quote.payableAmount(),
-                        quote.couponId(),
-                        references),
-                order);
+            new SettlementRecord(
+                orderNo,
+                memberId,
+                requestNo,
+                fingerprint,
+                quote.originalAmount(),
+                quote.discountAmount(),
+                quote.payableAmount(),
+                quote.couponId(),
+                references),
+            order);
         return order;
     }
 
@@ -245,11 +245,11 @@ public class SettlementPreparationService {
      */
     @Transactional(rollbackFor = Exception.class)
     public SettlementPreparationResult preparePromotion(
-            Long memberId,
-            String requestNo,
-            String fingerprint,
-            Supplier<SettlementQuote> quoteSupplier,
-            List<CartReference> references) {
+        Long memberId,
+        String requestNo,
+        String fingerprint,
+        Supplier<SettlementQuote> quoteSupplier,
+        List<CartReference> references) {
         SettlementRules.id(memberId);
         String key = SettlementRules.text(requestNo, 64);
         memberLockGateway.lockMember(memberId);
@@ -260,7 +260,7 @@ public class SettlementPreparationService {
         memberValidationService.requireActive(memberId);
         var quote = quoteSupplier.get();
         return new SettlementPreparationResult(
-                persist(memberId, key, fingerprint, quote, true, references), true);
+            persist(memberId, key, fingerprint, quote, true, references), true);
     }
 
     /**
@@ -278,8 +278,8 @@ public class SettlementPreparationService {
             throw new IllegalArgumentException("结算报价令牌不合法");
         }
         String fingerprint =
-                SettlementRules.fingerprint(
-                        "CART:" + ids + ":" + cmd.couponId() + ":" + cmd.quoteToken());
+            SettlementRules.fingerprint(
+                "CART:" + ids + ":" + cmd.couponId() + ":" + cmd.quoteToken());
         memberLockGateway.lockMember(cmd.memberId());
         var previous = existing(cmd.memberId(), requestNo, fingerprint);
         if (previous != null) {
@@ -297,11 +297,11 @@ public class SettlementPreparationService {
             throw new IllegalStateException("价格或数量已变化，请重新预览并确认");
         }
         return persist(
-                cmd.memberId(),
-                requestNo,
-                fingerprint,
-                quote,
-                rows.stream().map(row -> new CartReference(row.id(), row.version())).toList());
+            cmd.memberId(),
+            requestNo,
+            fingerprint,
+            quote,
+            rows.stream().map(row -> new CartReference(row.id(), row.version())).toList());
     }
 
     /**
@@ -315,16 +315,16 @@ public class SettlementPreparationService {
         var ids = selectedIds(query.productIds());
         var quantities = new TreeMap<Long, Integer>();
         selectedCart(query.memberId(), ids)
-                .forEach(row -> quantities.put(row.productId(), row.quantity()));
+            .forEach(row -> quantities.put(row.productId(), row.quantity()));
         return price(
-                query.memberId(),
-                quantities,
-                query.couponId(),
-                false,
-                Boolean.TRUE.equals(query.pointStatus()),
-                query.addressId(),
-                query.deliveryType(),
-                query.pickUpStoreId());
+            query.memberId(),
+            quantities,
+            query.couponId(),
+            false,
+            Boolean.TRUE.equals(query.pointStatus()),
+            query.addressId(),
+            query.deliveryType(),
+            query.pickUpStoreId());
     }
 
     /**
@@ -333,18 +333,18 @@ public class SettlementPreparationService {
     @Transactional(rollbackFor = Exception.class)
     public SettlementOrder createDirect(SettlementDirectCmd cmd) {
         if (cmd == null
-                || cmd.items() == null
-                || cmd.items().isEmpty()
-                || cmd.items().size() > 100) {
+            || cmd.items() == null
+            || cmd.items().isEmpty()
+            || cmd.items().size() > 100) {
             throw new IllegalArgumentException("订单必须包含1至100项商品");
         }
         SettlementRules.id(cmd.memberId());
         var quantities = new TreeMap<Long, Integer>();
         for (var line : cmd.items()) {
             if (line == null
-                    || line.quantity() == null
-                    || line.quantity() < 1
-                    || line.quantity() > 999) {
+                || line.quantity() == null
+                || line.quantity() < 1
+                || line.quantity() > 999) {
                 throw new IllegalArgumentException("购买数量不合法");
             }
             SettlementRules.id(line.productId());
@@ -354,11 +354,11 @@ public class SettlementPreparationService {
             throw new IllegalArgumentException("同一SKU数量不能超过999");
         }
         String key =
-                cmd.requestNo() == null
-                        ? "legacy-" + UUID.randomUUID()
-                        : SettlementRules.text(cmd.requestNo(), 64);
+            cmd.requestNo() == null
+                ? "legacy-" + UUID.randomUUID()
+                : SettlementRules.text(cmd.requestNo(), 64);
         String fingerprint =
-                SettlementRules.fingerprint("DIRECT:" + quantities + ":" + cmd.couponId());
+            SettlementRules.fingerprint("DIRECT:" + quantities + ":" + cmd.couponId());
         memberLockGateway.lockMember(cmd.memberId());
         var previous = existing(cmd.memberId(), key, fingerprint);
         if (previous != null) {
@@ -366,11 +366,11 @@ public class SettlementPreparationService {
         }
         memberValidationService.requireActive(cmd.memberId());
         return persist(
-                cmd.memberId(),
-                key,
-                fingerprint,
-                price(cmd.memberId(), quantities, cmd.couponId(), true),
-                List.of());
+            cmd.memberId(),
+            key,
+            fingerprint,
+            price(cmd.memberId(), quantities, cmd.couponId(), true),
+            List.of());
     }
 
     /**
@@ -385,21 +385,21 @@ public class SettlementPreparationService {
         var quantities = new TreeMap<Long, Integer>();
         rows.forEach(row -> quantities.put(row.productId(), row.quantity()));
         var quote =
-                price(
-                        query.memberId(),
-                        quantities,
-                        query.couponId(),
-                        false,
-                        Boolean.TRUE.equals(query.pointStatus()),
-                        query.addressId(),
-                        query.deliveryType(),
-                        query.pickUpStoreId());
-        return new Settlement(
-                UUID.randomUUID().toString(),
+            price(
                 query.memberId(),
-                quote,
-                rows.stream().map(row -> new CartReference(row.id(), row.version())).toList(),
-                Instant.now().plusSeconds(900));
+                quantities,
+                query.couponId(),
+                false,
+                Boolean.TRUE.equals(query.pointStatus()),
+                query.addressId(),
+                query.deliveryType(),
+                query.pickUpStoreId());
+        return new Settlement(
+            UUID.randomUUID().toString(),
+            query.memberId(),
+            quote,
+            rows.stream().map(row -> new CartReference(row.id(), row.version())).toList(),
+            Instant.now().plusSeconds(900));
     }
 
     /**
@@ -407,7 +407,7 @@ public class SettlementPreparationService {
      */
     @Transactional(rollbackFor = Exception.class)
     public SettlementOrder submitSettlement(
-            Long memberId, String settlementId, String requestNo, SettlementGateway settlements) {
+        Long memberId, String settlementId, String requestNo, SettlementGateway settlements) {
         SettlementRules.id(memberId);
         String key = SettlementRules.text(requestNo, 64);
         String id = SettlementRules.text(settlementId, 36);
@@ -430,9 +430,9 @@ public class SettlementPreparationService {
         memberValidationService.requireActive(memberId);
         var snapshot = settlements.cached(id);
         if (snapshot == null
-                || !memberId.equals(snapshot.memberId())
-                || !id.equals(snapshot.id())
-                || !snapshot.expiresAt().isAfter(Instant.now())) {
+            || !memberId.equals(snapshot.memberId())
+            || !id.equals(snapshot.id())
+            || !snapshot.expiresAt().isAfter(Instant.now())) {
             throw new IllegalArgumentException("结算单不存在或已失效，请重新结算");
         }
         if (snapshot.references().stream().anyMatch(ref -> cartInCheckout(ref.cartId()))) {
@@ -446,15 +446,15 @@ public class SettlementPreparationService {
         quote.items().forEach(item -> quantities.put(item.productId(), item.quantity()));
         var delivery = quote.delivery();
         var current =
-                price(
-                        memberId,
-                        quantities,
-                        quote.couponId(),
-                        true,
-                        quote.usePoint() > 0,
-                        delivery == null ? null : delivery.addressId(),
-                        delivery == null ? 1 : delivery.deliveryType(),
-                        delivery == null ? null : delivery.pickUpStoreId());
+            price(
+                memberId,
+                quantities,
+                quote.couponId(),
+                true,
+                quote.usePoint() > 0,
+                delivery == null ? null : delivery.addressId(),
+                delivery == null ? 1 : delivery.deliveryType(),
+                delivery == null ? null : delivery.pickUpStoreId());
         if (!SettlementRules.quoteToken(current).equals(SettlementRules.quoteToken(quote))) {
             throw new ServiceException("商品、优惠、地址或运费已变化，请重新结算", 409);
         }
@@ -468,7 +468,7 @@ public class SettlementPreparationService {
      */
     @Transactional(rollbackFor = Exception.class)
     public SettlementOrder abandonSettlement(
-            Long memberId, String settlementId, String requestNo, SettlementGateway settlements) {
+        Long memberId, String settlementId, String requestNo, SettlementGateway settlements) {
         SettlementRules.id(memberId);
         String key = SettlementRules.text(requestNo, 64);
         String id = SettlementRules.text(settlementId, 36);
@@ -493,28 +493,32 @@ public class SettlementPreparationService {
         return null;
     }
 
-    /** 检查当前购物车是否仍被正在预占的订单使用。 */
+    /**
+     * 检查当前购物车是否仍被正在预占的订单使用。
+     */
     private boolean cartInCheckout(Long cartId) {
         return submissionCache.ordersForCart(cartId).stream()
-                .anyMatch(
-                        no -> {
-                            var order = orderPersistenceService.findByOrderNo(no);
-                            return order == null || "RESERVING".equals(order.status());
-                        });
+            .anyMatch(
+                no -> {
+                    var order = orderPersistenceService.findByOrderNo(no);
+                    return order == null || "RESERVING".equals(order.status());
+                });
     }
 
-    /** 已提交的精确版本只有原订单关闭后才能再次使用。 */
+    /**
+     * 已提交的精确版本只有原订单关闭后才能再次使用。
+     */
     private boolean cartVersionConsumed(CartReference reference) {
         return submissionCache.ordersForCart(reference.cartId()).stream()
-                .anyMatch(
-                        no -> {
-                            var context = submissionCache.submission(no);
-                            if (context == null
-                                    || !context.record().cartReferences().contains(reference)) {
-                                return false;
-                            }
-                            var order = orderPersistenceService.findByOrderNo(no);
-                            return order == null || !"CLOSED".equals(order.status());
-                        });
+            .anyMatch(
+                no -> {
+                    var context = submissionCache.submission(no);
+                    if (context == null
+                        || !context.record().cartReferences().contains(reference)) {
+                        return false;
+                    }
+                    var order = orderPersistenceService.findByOrderNo(no);
+                    return order == null || !"CLOSED".equals(order.status());
+                });
     }
 }

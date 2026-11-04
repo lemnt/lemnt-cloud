@@ -54,26 +54,26 @@ public class DictDataController {
     @GetMapping
     public R<SystemDictDataListRes> list(@Validated DictDataPageReq req) {
         PageResult<DictDataDTO> result =
-                dictDataPageQueryExe.execute(DictDataReqConverter.toQry(req));
+            dictDataPageQueryExe.execute(DictDataReqConverter.toQry(req));
         return R.page(
-                DictDataResConverter.toResListToSystemDictDataListRes(result.getRecords()),
-                result.getTotal());
+            DictDataResConverter.toResListToSystemDictDataListRes(result.getRecords()),
+            result.getTotal());
     }
 
     @Operation(summary = "查询字典数据详细")
     @GetMapping(value = "/{dictCode}")
     public R<SystemDictDataGetInfoRes> getInfo(@PathVariable Long dictCode) {
         return R.ok(
-                DictDataResConverter.toResToSystemDictDataGetInfoRes(
-                        dictDataDetailQueryExe.execute(dictCode)));
+            DictDataResConverter.toResToSystemDictDataGetInfoRes(
+                dictDataDetailQueryExe.execute(dictCode)));
     }
 
     @Operation(summary = "根据字典类型查询字典数据信息")
     @GetMapping(value = "/type/{dictType}")
     public R<List<SystemDictDataDictTypeRes>> dictType(@PathVariable String dictType) {
         return R.ok(
-                DictDataResConverter.toResListToSystemDictDataDictTypeRes(
-                        dictDataListQueryExe.execute(dictType)));
+            DictDataResConverter.toResListToSystemDictDataDictTypeRes(
+                dictDataListQueryExe.execute(dictType)));
     }
 
     @Operation(summary = "新增字典数据")

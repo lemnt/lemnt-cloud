@@ -18,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;
 import java.util.List;
 
-/** 小程序自提门店。 */
+/**
+ * 小程序自提门店。
+ */
 @Tag(name = "小程序自提门店")
 @RestController
 @RequestMapping("/trade/app/delivery/pick-up-stores")
@@ -29,11 +31,11 @@ public class AppPickUpStoreController {
     @GetMapping
     @Operation(summary = "开启中的自提门店，可按当前位置距离排序")
     public R<List<AppPickUpStoreRes>> list(
-            @RequestParam(required = false) BigDecimal latitude,
-            @RequestParam(required = false) BigDecimal longitude) {
+        @RequestParam(required = false) BigDecimal latitude,
+        @RequestParam(required = false) BigDecimal longitude) {
         return R.ok(
-                stores.execute(new AppPickUpStoreListQry(latitude, longitude)).stream()
-                        .map(AppPickUpConverter::store)
-                        .toList());
+            stores.execute(new AppPickUpStoreListQry(latitude, longitude)).stream()
+                .map(AppPickUpConverter::store)
+                .toList());
     }
 }

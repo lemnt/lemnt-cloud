@@ -21,7 +21,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 小程序商品浏览接口。 */
+/**
+ * 小程序商品浏览接口。
+ */
 @Tag(name = "小程序商品浏览")
 @RestController
 @RequestMapping("/mall/app")
@@ -35,7 +37,7 @@ public class AppProductController {
     public R<StoreProductRes> products(@Valid @ModelAttribute StorePageReq req) {
         var page = storeProductPageQueryExe.execute(StoreReqConverter.page(req));
         return R.page(
-                page.records().stream().map(StoreResConverter::product).toList(), page.total());
+            page.records().stream().map(StoreResConverter::product).toList(), page.total());
     }
 
     @GetMapping("/products/{id}")

@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 分销资格开关执行器。 */
+/**
+ * 分销资格开关执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class BrokerageEnabledCmdExe {

@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 会员本人订单详情，非本人订单与不存在统一返回空。 */
+/**
+ * 会员本人订单详情，非本人订单与不存在统一返回空。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberOrderDetailQueryExe {
@@ -17,7 +19,9 @@ public class MemberOrderDetailQueryExe {
     private final OrderPersistenceService persistence;
     private final PickUpStoreGateway pickUpStores;
 
-    /** 读取详情与下单时间后核验归属，避免向其他会员泄露订单。 */
+    /**
+     * 读取详情与下单时间后核验归属，避免向其他会员泄露订单。
+     */
     public MemberOrderDetailDTO execute(Long memberId, String orderNo) {
         String no = OrderRules.text(orderNo, 40);
         var order = persistence.findByOrderNo(no);
@@ -30,28 +34,28 @@ public class MemberOrderDetailQueryExe {
         }
         var delivery = order.delivery();
         var store =
-                delivery == null || delivery.pickUpStoreId() == null
-                        ? null
-                        : pickUpStores.find(delivery.pickUpStoreId());
+            delivery == null || delivery.pickUpStoreId() == null
+                ? null
+                : pickUpStores.find(delivery.pickUpStoreId());
         var displayStatus =
-                "PAID".equals(value.status())
-                                && delivery != null
-                                && Integer.valueOf(2).equals(delivery.deliveryType())
-                        ? "AWAITING_PICKUP"
-                        : value.status();
+            "PAID".equals(value.status())
+                && delivery != null
+                && Integer.valueOf(2).equals(delivery.deliveryType())
+                ? "AWAITING_PICKUP"
+                : value.status();
         return new MemberOrderDetailDTO(
-                value.orderNo(),
-                displayStatus,
-                value.totalAmount(),
-                order.createTime(),
-                value.activeRefund(),
-                value.items(),
-                value.shipment(),
-                value.commentStatus(),
-                value.finishTime(),
-                store == null ? null : store.name(),
-                store == null ? null : store.phone(),
-                store == null ? null : store.detailAddress(),
-                delivery == null ? null : delivery.pickUpVerifyCode());
+            value.orderNo(),
+            displayStatus,
+            value.totalAmount(),
+            order.createTime(),
+            value.activeRefund(),
+            value.items(),
+            value.shipment(),
+            value.commentStatus(),
+            value.finishTime(),
+            store == null ? null : store.name(),
+            store == null ? null : store.phone(),
+            store == null ? null : store.detailAddress(),
+            delivery == null ? null : delivery.pickUpVerifyCode());
     }
 }

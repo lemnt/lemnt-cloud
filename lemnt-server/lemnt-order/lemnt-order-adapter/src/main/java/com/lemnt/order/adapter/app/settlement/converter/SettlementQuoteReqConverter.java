@@ -3,21 +3,24 @@ package com.lemnt.order.adapter.app.settlement.converter;
 import com.lemnt.order.adapter.app.settlement.req.SettlementQuoteReq;
 import com.lemnt.order.application.settlement.cmd.SettlementCreateCmd;
 
-/** 按业务域转换接口与应用数据。 */
+/**
+ * 按业务域转换接口与应用数据。
+ */
 public final class SettlementQuoteReqConverter {
-    private SettlementQuoteReqConverter() {}
+    private SettlementQuoteReqConverter() {
+    }
 
     /**
      * 报价。
      */
     public static SettlementCreateCmd quote(Long memberId, SettlementQuoteReq req) {
         return new SettlementCreateCmd(
-                memberId,
-                req.productIds(),
-                req.couponId(),
-                req.pointStatus(),
-                req.addressId(),
-                req.deliveryType() == null ? 1 : req.deliveryType(),
-                req.pickUpStoreId());
+            memberId,
+            req.productIds(),
+            req.couponId(),
+            req.pointStatus(),
+            req.addressId(),
+            req.deliveryType() == null ? 1 : req.deliveryType(),
+            req.pickUpStoreId());
     }
 }

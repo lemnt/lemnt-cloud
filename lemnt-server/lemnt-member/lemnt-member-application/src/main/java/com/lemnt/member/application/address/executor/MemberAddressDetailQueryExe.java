@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 地址详情查询执行器。 */
+/**
+ * 地址详情查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberAddressDetailQueryExe {
@@ -25,6 +27,6 @@ public class MemberAddressDetailQueryExe {
         MemberRules.id(qry.memberId());
         MemberRules.id(qry.id());
         return memberAddressQueryService.enrich(
-                memberAddressGateway.address(qry.memberId(), qry.id()));
+            memberAddressGateway.address(qry.memberId(), qry.id()));
     }
 }

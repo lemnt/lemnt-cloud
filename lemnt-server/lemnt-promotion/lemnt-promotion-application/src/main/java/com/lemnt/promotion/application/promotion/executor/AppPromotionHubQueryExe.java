@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 小程序活动聚合查询执行器。 */
+/**
+ * 小程序活动聚合查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class AppPromotionHubQueryExe {

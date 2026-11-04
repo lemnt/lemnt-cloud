@@ -5,6 +5,9 @@ import com.lemnt.product.infrastructure.product.dataobject.ProductBrowseHistoryD
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
-/** mall_product_browse_history的基础数据访问。 */
+/**
+ * mall_product_browse_history的基础数据访问。
+ */
 @Mapper
-public interface ProductBrowseHistoryMapper extends BaseMapper<ProductBrowseHistoryDO> {}
+public interface ProductBrowseHistoryMapper extends BaseMapper<ProductBrowseHistoryDO> {
+}

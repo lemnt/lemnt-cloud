@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 查询只读中国行政区树。 */
+/**
+ * 查询只读中国行政区树。
+ */
 @Component
 @RequiredArgsConstructor
 public class AreaTreeQueryExe {
@@ -22,6 +24,6 @@ public class AreaTreeQueryExe {
 
     private AreaDTO toDTO(Area area) {
         return new AreaDTO(
-                area.id(), area.name(), area.children().stream().map(this::toDTO).toList());
+            area.id(), area.name(), area.children().stream().map(this::toDTO).toList());
     }
 }

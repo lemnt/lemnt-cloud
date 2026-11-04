@@ -25,7 +25,9 @@ public class DictTypeUpdateCmdExe {
     private final DictTypeGateway dictTypeGateway;
     private final DictDataGateway dictDataGateway;
 
-    /** 修改前检查类型冲突，保持自身类型时允许保存。 */
+    /**
+     * 修改前检查类型冲突，保持自身类型时允许保存。
+     */
     @Transactional(rollbackFor = Exception.class)
     public Boolean execute(DictTypeUpdateCmd cmd) {
         DictType existing = dictTypeGateway.checkDictTypeUnique(cmd.dictType());

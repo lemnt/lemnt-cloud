@@ -59,38 +59,38 @@ public class ProductCatalogClientImpl implements ProductCatalogClient {
 
     private ProductSpuBriefDTO spu(ProductSpu value) {
         return value == null
-                ? null
-                : new ProductSpuBriefDTO(
-                        value.id(),
-                        value.name(),
-                        value.categoryId(),
-                        value.image(),
-                        value.status());
+            ? null
+            : new ProductSpuBriefDTO(
+            value.id(),
+            value.name(),
+            value.categoryId(),
+            value.image(),
+            value.status());
     }
 
     private ProductSkuBriefDTO sku(ProductSku value) {
         return value == null
-                ? null
-                : new ProductSkuBriefDTO(
-                        value.id(),
-                        value.spuId(),
-                        value.code(),
-                        value.name(),
-                        value.price(),
-                        value.stock(),
-                        value.image(),
-                        value.specs().stream()
-                                .map(
-                                        spec ->
-                                                new ProductSnapshotDTO.Spec(
-                                                        spec.specId(),
-                                                        spec.specName(),
-                                                        spec.specValueId(),
-                                                        spec.specValueName()))
-                                .toList(),
-                        value.status(),
-                        value.weight(),
-                        value.volume());
+            ? null
+            : new ProductSkuBriefDTO(
+            value.id(),
+            value.spuId(),
+            value.code(),
+            value.name(),
+            value.price(),
+            value.stock(),
+            value.image(),
+            value.specs().stream()
+                .map(
+                    spec ->
+                        new ProductSnapshotDTO.Spec(
+                            spec.specId(),
+                            spec.specName(),
+                            spec.specValueId(),
+                            spec.specValueName()))
+                .toList(),
+            value.status(),
+            value.weight(),
+            value.volume());
     }
 
     @Override
@@ -98,13 +98,13 @@ public class ProductCatalogClientImpl implements ProductCatalogClient {
         if (query == null) throw new IllegalArgumentException("预占查询条件不能为空");
         var value = productInventoryService.reservationStatus(query.reservationNo(), query.skuId());
         return value == null
-                ? null
-                : new StockReservationDTO(
-                        value.reservationNo(),
-                        value.productId(),
-                        value.quantity(),
-                        value.status(),
-                        value.sourceNo());
+            ? null
+            : new StockReservationDTO(
+            value.reservationNo(),
+            value.productId(),
+            value.quantity(),
+            value.status(),
+            value.sourceNo());
     }
 
     @Override
@@ -123,34 +123,36 @@ public class ProductCatalogClientImpl implements ProductCatalogClient {
         return ids.stream().map(values::get).filter(Objects::nonNull).map(this::toDTO).toList();
     }
 
-    /** 远程输出与结算读取相同的可信目录快照。 */
+    /**
+     * 远程输出与结算读取相同的可信目录快照。
+     */
     private ProductSnapshotDTO toDTO(ProductSnapshot value) {
         return value == null
+            ? null
+            : new ProductSnapshotDTO(
+            value.id(),
+            value.productCode(),
+            value.name(),
+            value.price(),
+            value.stock(),
+            value.spuId(),
+            value.spuName(),
+            value.specs() == null
                 ? null
-                : new ProductSnapshotDTO(
-                        value.id(),
-                        value.productCode(),
-                        value.name(),
-                        value.price(),
-                        value.stock(),
-                        value.spuId(),
-                        value.spuName(),
-                        value.specs() == null
-                                ? null
-                                : value.specs().stream()
-                                        .map(
-                                                snapshotProperty ->
-                                                        new ProductSnapshotDTO.Spec(
-                                                                snapshotProperty.specId(),
-                                                                snapshotProperty.specName(),
-                                                                snapshotProperty.specValueId(),
-                                                                snapshotProperty.specValueName()))
-                                        .toList(),
-                        value.picUrl(),
-                        value.deliveryTypes(),
-                        value.deliveryTemplateId(),
-                        value.weight(),
-                        value.volume());
+                : value.specs().stream()
+                .map(
+                    snapshotProperty ->
+                        new ProductSnapshotDTO.Spec(
+                            snapshotProperty.specId(),
+                            snapshotProperty.specName(),
+                            snapshotProperty.specValueId(),
+                            snapshotProperty.specValueName()))
+                .toList(),
+            value.picUrl(),
+            value.deliveryTypes(),
+            value.deliveryTemplateId(),
+            value.weight(),
+            value.volume());
     }
 
     @Override

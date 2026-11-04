@@ -15,7 +15,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-/** 自动收货只处理超期物流单，单条异常不影响其余订单。 */
+/**
+ * 自动收货只处理超期物流单，单条异常不影响其余订单。
+ */
 class AutoReceiveSchedulerTest {
     final ShipmentGateway shipments = mock(ShipmentGateway.class);
     final TradeOrderGateway orders = mock(TradeOrderGateway.class);
@@ -26,11 +28,11 @@ class AutoReceiveSchedulerTest {
         when(orders.databaseNow()).thenReturn(LocalDateTime.of(2026, 11, 1, 12, 0));
         when(shipments.shippedBefore(any(), eq(50))).thenReturn(List.of("TR1", "TR2"));
         doThrow(new IllegalStateException("conflict"))
-                .when(fulfillment)
-                .receive("TR1", TradeOperator.system());
+            .when(fulfillment)
+            .receive("TR1", TradeOperator.system());
 
         new TradeOrderAutoReceiveScheduler(shipments, orders, fulfillment, Duration.ofDays(7))
-                .execute();
+            .execute();
 
         verify(fulfillment).receive("TR1", TradeOperator.system());
         verify(fulfillment).receive("TR2", TradeOperator.system());
@@ -39,9 +41,9 @@ class AutoReceiveSchedulerTest {
     @Test
     void rejectsNonPositiveExpiry() {
         assertThrows(
-                IllegalArgumentException.class,
-                () ->
-                        new TradeOrderAutoReceiveScheduler(
-                                shipments, orders, fulfillment, Duration.ZERO));
+            IllegalArgumentException.class,
+            () ->
+                new TradeOrderAutoReceiveScheduler(
+                    shipments, orders, fulfillment, Duration.ZERO));
     }
 }

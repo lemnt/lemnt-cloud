@@ -11,4 +11,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @author wangxx
  */
 @Mapper
-public interface UserPostMapper extends BaseMapper<UserPostDO> {}
+public interface UserPostMapper extends BaseMapper<UserPostDO> {
+}

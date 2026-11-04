@@ -105,7 +105,9 @@
             <testResource>
                 <directory>../../../work-items/module-split-migration/evidence</directory>
                 <targetPath>contracts</targetPath>
-                <includes><include>gateway-endpoint-contract.json</include></includes>
+                <includes>
+                    <include>gateway-endpoint-contract.json</include>
+                </includes>
             </testResource>
             <testResource>
                 <directory>../../../docs/config</directory>

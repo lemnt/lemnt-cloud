@@ -7,15 +7,16 @@ import com.lemnt.member.infrastructure.user.dataobject.TagDO;
  * 标签转换器。
  */
 public final class TagConverter {
-    private TagConverter() {}
+    private TagConverter() {
+    }
 
     /**
      * 转换为领域对象。
      */
     public static Tag toEntity(TagDO row) {
         return row == null
-                ? null
-                : new Tag(row.getId(), row.getName(), row.getRemark(), row.getCreateTime());
+            ? null
+            : new Tag(row.getId(), row.getName(), row.getRemark(), row.getCreateTime());
     }
 
     /**

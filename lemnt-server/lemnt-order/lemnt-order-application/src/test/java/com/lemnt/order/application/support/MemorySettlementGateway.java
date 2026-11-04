@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** 结算缓存的测试替身；不代表生产 Redis Lua 和网络验收。 */
+/**
+ * 结算缓存的测试替身；不代表生产 Redis Lua 和网络验收。
+ */
 public final class MemorySettlementGateway implements SettlementGateway {
     final Map<String, Settlement> previews;
     final Map<String, SettlementSubmission> submissions = new ConcurrentHashMap<>();
@@ -51,20 +53,20 @@ public final class MemorySettlementGateway implements SettlementGateway {
         }
         submissions.put(record.orderNo(), value);
         rollback(
-                () -> {
-                    submissions.remove(record.orderNo(), value);
-                    requests.remove(request, record.orderNo());
-                });
+            () -> {
+                submissions.remove(record.orderNo(), value);
+                requests.remove(request, record.orderNo());
+            });
     }
 
     public List<String> ordersForCart(Long id) {
         return submissions.values().stream()
-                .filter(
-                        value ->
-                                value.record().cartReferences().stream()
-                                        .anyMatch(ref -> ref.cartId().equals(id)))
-                .map(value -> value.record().orderNo())
-                .toList();
+            .filter(
+                value ->
+                    value.record().cartReferences().stream()
+                        .anyMatch(ref -> ref.cartId().equals(id)))
+            .map(value -> value.record().orderNo())
+            .toList();
     }
 
     public String orderNo(Long member, String id) {
@@ -99,17 +101,17 @@ public final class MemorySettlementGateway implements SettlementGateway {
     private void rollback(Runnable action) {
         if (TransactionSynchronizationManager.isSynchronizationActive()) {
             TransactionSynchronizationManager.registerSynchronization(
-                    new TransactionSynchronization() {
-                        public int getOrder() {
-                            return Integer.MIN_VALUE;
-                        }
+                new TransactionSynchronization() {
+                    public int getOrder() {
+                        return Integer.MIN_VALUE;
+                    }
 
-                        public void afterCompletion(int status) {
-                            if (status == STATUS_ROLLED_BACK) {
-                                action.run();
-                            }
+                    public void afterCompletion(int status) {
+                        if (status == STATUS_ROLLED_BACK) {
+                            action.run();
                         }
-                    });
+                    }
+                });
         }
     }
 }

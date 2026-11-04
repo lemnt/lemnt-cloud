@@ -16,7 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/** 验证实际 Mapper XML 使用数值处理器读取毫秒耗时，覆盖零、长整型及空值。 */
+/**
+ * 验证实际 Mapper XML 使用数值处理器读取毫秒耗时，覆盖零、长整型及空值。
+ */
 class OperLogCostTimeMapperTest {
 
     @ParameterizedTest
@@ -25,7 +27,7 @@ class OperLogCostTimeMapperTest {
         ResultSet resultSet = numericResultSet();
         when(resultSet.getLong("cost_time")).thenReturn(milliseconds);
         assertThat(costTimeMapping().getTypeHandler().getResult(resultSet, "cost_time"))
-                .isEqualTo(milliseconds);
+            .isEqualTo(milliseconds);
     }
 
     @Test
@@ -39,9 +41,9 @@ class OperLogCostTimeMapperTest {
         ResultSet resultSet = mock(ResultSet.class);
         // 与 MySQL 对 BIGINT 强制日期转换的失败行为一致。
         when(resultSet.getObject("cost_time", LocalDateTime.class))
-                .thenThrow(
-                        new SQLDataException(
-                                "Unsupported conversion from LONG to java.time.LocalDateTime"));
+            .thenThrow(
+                new SQLDataException(
+                    "Unsupported conversion from LONG to java.time.LocalDateTime"));
         return resultSet;
     }
 
@@ -50,14 +52,14 @@ class OperLogCostTimeMapperTest {
         String resource = "mapper/OperLogMapper.xml";
         try (InputStream input = getClass().getClassLoader().getResourceAsStream(resource)) {
             new XMLMapperBuilder(input, configuration, resource, configuration.getSqlFragments())
-                    .parse();
+                .parse();
         }
         return configuration
-                .getResultMap(OperLogMapper.class.getName() + ".SysOperLogResult")
-                .getResultMappings()
-                .stream()
-                .filter(mapping -> "costTime".equals(mapping.getProperty()))
-                .findFirst()
-                .orElseThrow();
+            .getResultMap(OperLogMapper.class.getName() + ".SysOperLogResult")
+            .getResultMappings()
+            .stream()
+            .filter(mapping -> "costTime".equals(mapping.getProperty()))
+            .findFirst()
+            .orElseThrow();
     }
 }

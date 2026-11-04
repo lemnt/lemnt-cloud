@@ -2,7 +2,8 @@ package com.lemnt.pay.domain.payment.gateway;
 
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 
-/** A true result guarantees the provider has atomically closed the unpaid payment.
+/**
+ * A true result guarantees the provider has atomically closed the unpaid payment.
  * A mere UNPAID query is insufficient: payment could succeed immediately after that query.
  */
 public interface PaymentChannelCloseGateway {

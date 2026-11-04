@@ -22,13 +22,13 @@ public class PostResConverter {
             return null;
         }
         return new PostRes(
-                dto.getPostId(),
-                dto.getPostCode(),
-                dto.getPostName(),
-                dto.getPostSort(),
-                dto.getStatus(),
-                dto.getRemark(),
-                dto.getCreateTime());
+            dto.getPostId(),
+            dto.getPostCode(),
+            dto.getPostName(),
+            dto.getPostSort(),
+            dto.getStatus(),
+            dto.getRemark(),
+            dto.getCreateTime());
     }
 
     /**
@@ -67,13 +67,13 @@ public class PostResConverter {
             return null;
         }
         return new SystemPostListRes(
-                dto.getPostId(),
-                dto.getPostCode(),
-                dto.getPostName(),
-                dto.getPostSort(),
-                dto.getStatus(),
-                dto.getRemark(),
-                dto.getCreateTime());
+            dto.getPostId(),
+            dto.getPostCode(),
+            dto.getPostName(),
+            dto.getPostSort(),
+            dto.getStatus(),
+            dto.getRemark(),
+            dto.getCreateTime());
     }
 
     /**
@@ -84,12 +84,12 @@ public class PostResConverter {
             return null;
         }
         return new SystemPostGetInfoRes(
-                dto.getPostId(),
-                dto.getPostCode(),
-                dto.getPostName(),
-                dto.getPostSort(),
-                dto.getStatus(),
-                dto.getRemark(),
-                dto.getCreateTime());
+            dto.getPostId(),
+            dto.getPostCode(),
+            dto.getPostName(),
+            dto.getPostSort(),
+            dto.getStatus(),
+            dto.getRemark(),
+            dto.getCreateTime());
     }
 }

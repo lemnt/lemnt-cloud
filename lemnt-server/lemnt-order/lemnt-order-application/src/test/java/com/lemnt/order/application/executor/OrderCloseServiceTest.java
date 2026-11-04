@@ -18,7 +18,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/** 关单原约束由订单本地事实和支付消费共同保证；订单不能直接改支付库。 */
+/**
+ * 关单原约束由订单本地事实和支付消费共同保证；订单不能直接改支付库。
+ */
 class OrderCloseServiceTest {
     final OrderPersistenceService persistence = mock(OrderPersistenceService.class);
     final TradeOrderGateway orders = mock(TradeOrderGateway.class);
@@ -26,19 +28,19 @@ class OrderCloseServiceTest {
     final OrderEventGateway events = mock(OrderEventGateway.class);
     final ActivityOrderLifecycleService activities = mock(ActivityOrderLifecycleService.class);
     final OrderCloseService closer =
-            new OrderCloseService(
-                    persistence, orders, payments, events, activities, mock(OrderLogService.class));
+        new OrderCloseService(
+            persistence, orders, payments, events, activities, mock(OrderLogService.class));
 
     void pending() {
         when(persistence.findByOrderNoForUpdate("TR1"))
-                .thenReturn(
-                        new TradeOrder(
-                                1L, "TR1", 2L, BigDecimal.TEN, "PENDING_PAYMENT", List.of(), null));
+            .thenReturn(
+                new TradeOrder(
+                    1L, "TR1", 2L, BigDecimal.TEN, "PENDING_PAYMENT", List.of(), null));
     }
 
     PaymentRecord payment(String state) {
         return new PaymentRecord(
-                1L, "PAY1", "TR1", "ALIPAY", null, null, BigDecimal.TEN, state, null);
+            1L, "PAY1", "TR1", "ALIPAY", null, null, BigDecimal.TEN, state, null);
     }
 
     @Test

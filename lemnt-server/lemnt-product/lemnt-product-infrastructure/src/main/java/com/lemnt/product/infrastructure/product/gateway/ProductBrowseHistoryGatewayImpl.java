@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** mall_product_browse_history持久化，仅通过BaseMapper与Lambda读写。 */
+/**
+ * mall_product_browse_history持久化，仅通过BaseMapper与Lambda读写。
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductBrowseHistoryGatewayImpl implements ProductBrowseHistoryGateway {
@@ -23,60 +25,60 @@ public class ProductBrowseHistoryGatewayImpl implements ProductBrowseHistoryGate
     @Override
     public void record(Long userId, Long spuId) {
         mapper.delete(
-                Wrappers.lambdaQuery(ProductBrowseHistoryDO.class)
-                        .eq(ProductBrowseHistoryDO::getUserId, userId)
-                        .eq(ProductBrowseHistoryDO::getSpuId, spuId));
+            Wrappers.lambdaQuery(ProductBrowseHistoryDO.class)
+                .eq(ProductBrowseHistoryDO::getUserId, userId)
+                .eq(ProductBrowseHistoryDO::getSpuId, spuId));
         var oldest =
-                mapper.selectPage(
-                        new Page<>(1, 1),
-                        Wrappers.lambdaQuery(ProductBrowseHistoryDO.class)
-                                .eq(ProductBrowseHistoryDO::getUserId, userId)
-                                .orderByAsc(ProductBrowseHistoryDO::getId));
+            mapper.selectPage(
+                new Page<>(1, 1),
+                Wrappers.lambdaQuery(ProductBrowseHistoryDO.class)
+                    .eq(ProductBrowseHistoryDO::getUserId, userId)
+                    .orderByAsc(ProductBrowseHistoryDO::getId));
         if (oldest.getTotal() >= 100) {
             mapper.deleteById(oldest.getRecords().get(0).getId());
         }
         mapper.insert(
-                new ProductBrowseHistoryDO()
-                        .setUserId(userId)
-                        .setSpuId(spuId)
-                        .setUserDeleted(false));
+            new ProductBrowseHistoryDO()
+                .setUserId(userId)
+                .setSpuId(spuId)
+                .setUserDeleted(false));
     }
 
     @Override
     public void hide(Long userId, List<Long> spuIds) {
         mapper.update(
-                null,
-                Wrappers.lambdaUpdate(ProductBrowseHistoryDO.class)
-                        .eq(ProductBrowseHistoryDO::getUserId, userId)
-                        .in(spuIds != null, ProductBrowseHistoryDO::getSpuId, spuIds)
-                        .set(ProductBrowseHistoryDO::getUserDeleted, true));
+            null,
+            Wrappers.lambdaUpdate(ProductBrowseHistoryDO.class)
+                .eq(ProductBrowseHistoryDO::getUserId, userId)
+                .in(spuIds != null, ProductBrowseHistoryDO::getSpuId, spuIds)
+                .set(ProductBrowseHistoryDO::getUserDeleted, true));
     }
 
     @Override
     public PageResult<ProductBrowseHistory> page(
-            Long userId, Long spuId, Boolean userDeleted, int pageNum, int pageSize) {
+        Long userId, Long spuId, Boolean userDeleted, int pageNum, int pageSize) {
         var page =
-                mapper.selectPage(
-                        new Page<>(pageNum, pageSize),
-                        Wrappers.lambdaQuery(ProductBrowseHistoryDO.class)
-                                .eq(userId != null, ProductBrowseHistoryDO::getUserId, userId)
-                                .eq(spuId != null, ProductBrowseHistoryDO::getSpuId, spuId)
-                                .eq(
-                                        userDeleted != null,
-                                        ProductBrowseHistoryDO::getUserDeleted,
-                                        userDeleted)
-                                .orderByDesc(ProductBrowseHistoryDO::getId));
+            mapper.selectPage(
+                new Page<>(pageNum, pageSize),
+                Wrappers.lambdaQuery(ProductBrowseHistoryDO.class)
+                    .eq(userId != null, ProductBrowseHistoryDO::getUserId, userId)
+                    .eq(spuId != null, ProductBrowseHistoryDO::getSpuId, spuId)
+                    .eq(
+                        userDeleted != null,
+                        ProductBrowseHistoryDO::getUserDeleted,
+                        userDeleted)
+                    .orderByDesc(ProductBrowseHistoryDO::getId));
         return PageResult.of(page.getRecords().stream().map(this::model).toList(), page.getTotal());
     }
 
     private ProductBrowseHistory model(ProductBrowseHistoryDO row) {
         return row == null
-                ? null
-                : new ProductBrowseHistory(
-                        row.getId(),
-                        row.getUserId(),
-                        row.getSpuId(),
-                        Boolean.TRUE.equals(row.getUserDeleted()),
-                        row.getCreateTime());
+            ? null
+            : new ProductBrowseHistory(
+            row.getId(),
+            row.getUserId(),
+            row.getSpuId(),
+            Boolean.TRUE.equals(row.getUserDeleted()),
+            row.getCreateTime());
     }
 }

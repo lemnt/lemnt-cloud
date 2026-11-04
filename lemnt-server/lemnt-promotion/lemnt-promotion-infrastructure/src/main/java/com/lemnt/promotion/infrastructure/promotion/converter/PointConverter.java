@@ -5,22 +5,25 @@ import com.lemnt.promotion.domain.promotion.model.PointProduct;
 import com.lemnt.promotion.infrastructure.promotion.dataobject.PointActivityDO;
 import com.lemnt.promotion.infrastructure.promotion.dataobject.PointProductDO;
 
-/** 积分商城领域对象与表结构转换。 */
+/**
+ * 积分商城领域对象与表结构转换。
+ */
 public final class PointConverter {
-    private PointConverter() {}
+    private PointConverter() {
+    }
 
     public static PointActivity model(PointActivityDO row) {
         if (row == null) {
             return null;
         }
         return new PointActivity(
-                row.getId(),
-                row.getSpuId(),
-                row.getStatus(),
-                row.getRemark(),
-                row.getSort(),
-                row.getStock(),
-                row.getTotalStock());
+            row.getId(),
+            row.getSpuId(),
+            row.getStatus(),
+            row.getRemark(),
+            row.getSort(),
+            row.getStock(),
+            row.getTotalStock());
     }
 
     public static PointActivityDO row(PointActivity value) {
@@ -40,15 +43,15 @@ public final class PointConverter {
             return null;
         }
         return new PointProduct(
-                row.getId(),
-                row.getActivityId(),
-                row.getSpuId(),
-                row.getSkuId(),
-                row.getExchangeCount(),
-                row.getPoint(),
-                row.getPrice(),
-                row.getStock(),
-                row.getActivityStatus());
+            row.getId(),
+            row.getActivityId(),
+            row.getSpuId(),
+            row.getSkuId(),
+            row.getExchangeCount(),
+            row.getPoint(),
+            row.getPrice(),
+            row.getStock(),
+            row.getActivityStatus());
     }
 
     public static PointProductDO row(PointProduct value) {

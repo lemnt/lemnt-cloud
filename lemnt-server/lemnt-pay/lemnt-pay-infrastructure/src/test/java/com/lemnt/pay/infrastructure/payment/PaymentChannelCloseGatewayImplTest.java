@@ -14,8 +14,8 @@ import static org.mockito.Mockito.*;
 
 class PaymentChannelCloseGatewayImplTest {
     final PaymentRecord payment =
-            new PaymentRecord(
-                    1L, "P1", "O1", "ALIPAY", null, null, BigDecimal.TEN, "WAITING", null);
+        new PaymentRecord(
+            1L, "P1", "O1", "ALIPAY", null, null, BigDecimal.TEN, "WAITING", null);
 
     @Test
     void missingAdapterIsFailClosed() {
@@ -29,7 +29,7 @@ class PaymentChannelCloseGatewayImplTest {
         when(first.channel()).thenReturn("ALIPAY");
         when(second.channel()).thenReturn("ALIPAY");
         assertFalse(
-                new PaymentChannelCloseGatewayImpl(List.of(first, second)).closeUnpaid(payment));
+            new PaymentChannelCloseGatewayImpl(List.of(first, second)).closeUnpaid(payment));
         verify(first, never()).closeUnpaid(any());
         verify(second, never()).closeUnpaid(any());
     }

@@ -18,7 +18,7 @@ class MemberAccountGatewayImplTest {
         var gateway = new MemberAccountGatewayImpl();
         ReflectionTestUtils.setField(gateway, "memberUserClient", client);
         when(client.getByMobile("13800000001"))
-                .thenReturn(new MemberLoginInfoDTO(7L, "13800000001", 1, "private-hash"));
+            .thenReturn(new MemberLoginInfoDTO(7L, "13800000001", 1, "private-hash"));
         when(client.getByMemberId(7L)).thenReturn(new MemberUserDTO(7L, "member", 1));
         var value = gateway.findByMobile("13800000001");
         assertEquals(7L, value.memberId());

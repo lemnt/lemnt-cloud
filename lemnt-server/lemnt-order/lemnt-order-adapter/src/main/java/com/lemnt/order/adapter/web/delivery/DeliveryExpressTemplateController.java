@@ -32,9 +32,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** 配送管理接口。 */
+/**
+ * 配送管理接口。
+ */
 @Tag(name = "运费模板管理")
 @RestController
 @RequestMapping("/trade/admin/delivery/templates")
@@ -47,7 +50,9 @@ public class DeliveryExpressTemplateController {
     private final DeliveryExpressTemplatePageQueryExe page;
     private final DeliveryExpressTemplateSimpleListQueryExe simpleList;
 
-    /** 配送新增操作。 */
+    /**
+     * 配送新增操作。
+     */
     @PostMapping
     @Operation(summary = "配送新增")
     @RequiresPermissions("trade:delivery-template:create")
@@ -55,16 +60,20 @@ public class DeliveryExpressTemplateController {
         return R.ok(create.execute(DeliveryReqConverter.deliveryExpressTemplateCreate(req)));
     }
 
-    /** 配送修改操作。 */
+    /**
+     * 配送修改操作。
+     */
     @PutMapping("/{id}")
     @Operation(summary = "配送修改")
     @RequiresPermissions("trade:delivery-template:update")
     public R<Boolean> update(
-            @PathVariable Long id, @Valid @RequestBody DeliveryExpressTemplateUpdateReq req) {
+        @PathVariable Long id, @Valid @RequestBody DeliveryExpressTemplateUpdateReq req) {
         return R.ok(update.execute(DeliveryReqConverter.deliveryExpressTemplateUpdate(id, req)));
     }
 
-    /** 配送删除操作。 */
+    /**
+     * 配送删除操作。
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "配送删除")
     @RequiresPermissions("trade:delivery-template:delete")
@@ -72,7 +81,9 @@ public class DeliveryExpressTemplateController {
         return R.ok(delete.execute(id));
     }
 
-    /** 配送详情操作。 */
+    /**
+     * 配送详情操作。
+     */
     @GetMapping("/{id}")
     @Operation(summary = "配送详情")
     @RequiresPermissions("trade:delivery-template:query")
@@ -80,28 +91,32 @@ public class DeliveryExpressTemplateController {
         return R.ok(DeliveryResConverter.deliveryExpressTemplateDetail(detail.execute(id)));
     }
 
-    /** 配送分页操作。 */
+    /**
+     * 配送分页操作。
+     */
     @GetMapping
     @Operation(summary = "配送分页")
     @RequiresPermissions("trade:delivery-template:list")
     public R<DeliveryExpressTemplatePageRes> page(
-            @Valid @ModelAttribute DeliveryExpressTemplatePageReq req) {
+        @Valid @ModelAttribute DeliveryExpressTemplatePageReq req) {
         var result = page.execute(DeliveryReqConverter.deliveryExpressTemplatePage(req));
         return R.page(
-                result.getRecords().stream()
-                        .map(DeliveryResConverter::deliveryExpressTemplatePage)
-                        .toList(),
-                result.getTotal());
+            result.getRecords().stream()
+                .map(DeliveryResConverter::deliveryExpressTemplatePage)
+                .toList(),
+            result.getTotal());
     }
 
-    /** 配送选择列表操作。 */
+    /**
+     * 配送选择列表操作。
+     */
     @GetMapping("/simple")
     @Operation(summary = "配送选择列表")
     @RequiresPermissions("trade:delivery-template:query")
     public R<List<DeliveryExpressTemplateSimpleRes>> simpleList() {
         return R.ok(
-                simpleList.execute().stream()
-                        .map(DeliveryResConverter::deliveryExpressTemplateSimple)
-                        .toList());
+            simpleList.execute().stream()
+                .map(DeliveryResConverter::deliveryExpressTemplateSimple)
+                .toList());
     }
 }

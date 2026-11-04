@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.Set;
 import java.util.TreeMap;
 
-/** 本地订单事务结束后同步调用商城，只有库存与券回滚异步发送。 */
+/**
+ * 本地订单事务结束后同步调用商城，只有库存与券回滚异步发送。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderRemoteService {
@@ -24,7 +26,9 @@ public class OrderRemoteService {
     private final PromotionResourceGateway promotions;
     private final OrderPaidCompletionService completion;
 
-    /** 同步预占全部库存，原订单重试不会重复扣减。 */
+    /**
+     * 同步预占全部库存，原订单重试不会重复扣减。
+     */
     public void reserve(String orderNo) {
         var order = orders.findByOrderNo(orderNo);
         if (order == null || order.items().isEmpty()) {
@@ -41,10 +45,10 @@ public class OrderRemoteService {
         if ("RESERVING".equals(order.status())) {
             var quantities = new TreeMap<Long, Integer>();
             order.items()
-                    .forEach(
-                            item ->
-                                    quantities.merge(
-                                            item.productId(), item.quantity(), Math::addExact));
+                .forEach(
+                    item ->
+                        quantities.merge(
+                            item.productId(), item.quantity(), Math::addExact));
             for (var item : quantities.entrySet()) {
                 if (!inventory.reserveStock(orderNo, item.getKey(), item.getValue())) {
                     lifecycle.reservationFailed(orderNo);
@@ -56,8 +60,8 @@ public class OrderRemoteService {
         }
         var current = orders.findByOrderNo(orderNo);
         if (current == null
-                || !Set.of("PENDING_PAYMENT", "PAID", "SHIPPED", "COMPLETED")
-                        .contains(current.status())) {
+            || !Set.of("PENDING_PAYMENT", "PAID", "SHIPPED", "COMPLETED")
+            .contains(current.status())) {
             if (current != null && "CLOSED".equals(current.status())) {
                 closed(orderNo);
             }
@@ -79,7 +83,9 @@ public class OrderRemoteService {
         }
     }
 
-    /** 零元订单在预占成功后直接支付并确认库存；重复调用保持幂等。 */
+    /**
+     * 零元订单在预占成功后直接支付并确认库存；重复调用保持幂等。
+     */
     public void zeroPay(String orderNo) {
         var order = orders.findByOrderNo(orderNo);
         if (order == null || order.totalAmount().signum() != 0) {
@@ -94,7 +100,9 @@ public class OrderRemoteService {
         }
     }
 
-    /** 已支付状态先提交，再同步确认库存及核券；调用失败由原支付通知重试。 */
+    /**
+     * 已支付状态先提交，再同步确认库存及核券；调用失败由原支付通知重试。
+     */
     public void paid(String orderNo) {
         var order = orders.findByOrderNo(orderNo);
         // 已退款订单重放原支付通知时，不再次确认库存和核销优惠券。
@@ -102,14 +110,16 @@ public class OrderRemoteService {
             return;
         }
         if (order == null
-                || !Set.of("PAID", "SHIPPED", "COMPLETED").contains(order.status())
-                || order.items().isEmpty()) {
+            || !Set.of("PAID", "SHIPPED", "COMPLETED").contains(order.status())
+            || order.items().isEmpty()) {
             throw new IllegalStateException("订单尚未支付或没有明细");
         }
         if (progress.paid(orderNo)) completion.finish(orderNo, promotions.paidRecord(orderNo));
     }
 
-    /** 关单后异步发送库存与优惠券的统一补偿消息。 */
+    /**
+     * 关单后异步发送库存与优惠券的统一补偿消息。
+     */
     public void closed(String orderNo) {
         var order = orders.findByOrderNo(orderNo);
         if (order == null || !"CLOSED".equals(order.status())) {

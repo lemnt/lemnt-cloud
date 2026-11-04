@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.Collection;
 import java.util.List;
 
-/** member_group 表持久化实现。 */
+/**
+ * member_group 表持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberGroupGatewayImpl implements MemberGroupGateway {
@@ -32,10 +34,10 @@ public class MemberGroupGatewayImpl implements MemberGroupGateway {
     @Override
     public List<Group> groups() {
         return memberGroupMapper
-                .selectList(Wrappers.<GroupDO>lambdaQuery().orderByAsc(GroupDO::getId))
-                .stream()
-                .map(GroupConverter::toEntity)
-                .toList();
+            .selectList(Wrappers.<GroupDO>lambdaQuery().orderByAsc(GroupDO::getId))
+            .stream()
+            .map(GroupConverter::toEntity)
+            .toList();
     }
 
     /**
@@ -88,37 +90,45 @@ public class MemberGroupGatewayImpl implements MemberGroupGateway {
         return groupsCountRow(f);
     }
 
-    /** 批量关联返显，避免逐会员查询。 */
+    /**
+     * 批量关联返显，避免逐会员查询。
+     */
     @Override
     public List<Group> groupsByIds(Collection<Long> ids) {
         if (ids.isEmpty()) return List.of();
         return memberGroupMapper
-                .selectList(Wrappers.<GroupDO>lambdaQuery().in(GroupDO::getId, ids))
-                .stream()
-                .map(GroupConverter::toEntity)
-                .toList();
+            .selectList(Wrappers.<GroupDO>lambdaQuery().in(GroupDO::getId, ids))
+            .stream()
+            .map(GroupConverter::toEntity)
+            .toList();
     }
 
-    /** 分页和总数共用条件。 */
+    /**
+     * 分页和总数共用条件。
+     */
     private List<GroupDO> groupsPageRow(GroupPageFilter f) {
         return memberGroupMapper
-                .selectPage(
-                        new Page<>((long) f.offset() / f.limit() + 1, f.limit(), false),
-                        conditions(f).orderByDesc(GroupDO::getId))
-                .getRecords();
+            .selectPage(
+                new Page<>((long) f.offset() / f.limit() + 1, f.limit(), false),
+                conditions(f).orderByDesc(GroupDO::getId))
+            .getRecords();
     }
 
-    /** 读取筛选后的总数。 */
+    /**
+     * 读取筛选后的总数。
+     */
     private long groupsCountRow(GroupPageFilter f) {
         return memberGroupMapper.selectCount(conditions(f));
     }
 
-    /** 分页与计数复用同一组类型安全条件。 */
+    /**
+     * 分页与计数复用同一组类型安全条件。
+     */
     private LambdaQueryWrapper<GroupDO> conditions(GroupPageFilter f) {
         return Wrappers.<GroupDO>lambdaQuery()
-                .like(f.name() != null, GroupDO::getName, f.name())
-                .eq(f.status() != null, GroupDO::getStatus, f.status())
-                .ge(f.startTime() != null, GroupDO::getCreateTime, f.startTime())
-                .le(f.endTime() != null, GroupDO::getCreateTime, f.endTime());
+            .like(f.name() != null, GroupDO::getName, f.name())
+            .eq(f.status() != null, GroupDO::getStatus, f.status())
+            .ge(f.startTime() != null, GroupDO::getCreateTime, f.startTime())
+            .le(f.endTime() != null, GroupDO::getCreateTime, f.endTime());
     }
 }

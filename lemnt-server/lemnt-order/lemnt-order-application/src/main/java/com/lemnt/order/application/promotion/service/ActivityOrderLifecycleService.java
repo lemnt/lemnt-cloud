@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 订单自己保存活动扩展状态与成功已退数量，营销库存由事件消费方处理。 */
+/**
+ * 订单自己保存活动扩展状态与成功已退数量，营销库存由事件消费方处理。
+ */
 @Component
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
@@ -45,18 +47,18 @@ public class ActivityOrderLifecycleService {
         var lines = items.byOrderNo(no);
         if (!lines.isEmpty()) {
             var line =
-                    lines.stream()
-                            .filter(v -> sku.equals(v.skuId()))
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalStateException("原活动商品行缺失"));
+                lines.stream()
+                    .filter(v -> sku.equals(v.skuId()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("原活动商品行缺失"));
             if (line.refundedQuantity() == null
-                    || quantity < 1
-                    || (long) line.refundedQuantity() + quantity > line.quantity()
-                    || !items.increaseRefunded(no, sku, line.refundedQuantity(), quantity))
+                || quantity < 1
+                || (long) line.refundedQuantity() + quantity > line.quantity()
+                || !items.increaseRefunded(no, sku, line.refundedQuantity(), quantity))
                 throw new IllegalStateException("活动商品已退数量冲突");
         } else if (!sku.equals(row.skuId())) throw new IllegalStateException("历史活动SKU不匹配");
         if ((long) row.refundedQuantity() + quantity > row.quantity()
-                || !orders.addRefundedQuantity(no, row.refundedQuantity(), quantity))
+            || !orders.addRefundedQuantity(no, row.refundedQuantity(), quantity))
             throw new IllegalStateException("活动累计退款数量冲突");
         if (full && !orders.markRefunded(no)) throw new IllegalStateException("活动全退状态冲突");
     }

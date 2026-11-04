@@ -1,5 +1,8 @@
 package com.lemnt.order.domain.brokerage.model;
 
-/** 佣金记录分页条件。 */
+/**
+ * 佣金记录分页条件。
+ */
 public record BrokerageRecordFilter(
-        Long userId, Integer bizType, Integer status, int pageNum, int pageSize) {}
+    Long userId, Integer bizType, Integer status, int pageNum, int pageSize) {
+}

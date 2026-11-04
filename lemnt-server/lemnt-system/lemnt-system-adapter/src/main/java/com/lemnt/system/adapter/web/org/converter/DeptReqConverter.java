@@ -16,26 +16,26 @@ public class DeptReqConverter {
 
     public static DeptAddCmd toCmd(DeptAddReq req) {
         return new DeptAddCmd(
-                req.parentId(),
-                req.deptName(),
-                req.orderNum(),
-                req.leader(),
-                req.phone(),
-                req.email(),
-                req.status());
+            req.parentId(),
+            req.deptName(),
+            req.orderNum(),
+            req.leader(),
+            req.phone(),
+            req.email(),
+            req.status());
     }
 
     public static DeptUpdateCmd toCmd(DeptUpdateReq req) {
         return new DeptUpdateCmd(
-                req.deptId(),
-                req.parentId(),
-                req.ancestors(),
-                req.deptName(),
-                req.orderNum(),
-                req.leader(),
-                req.phone(),
-                req.email(),
-                req.status());
+            req.deptId(),
+            req.parentId(),
+            req.ancestors(),
+            req.deptName(),
+            req.orderNum(),
+            req.leader(),
+            req.phone(),
+            req.email(),
+            req.status());
     }
 
     public static DeptListQry toQry(DeptListReq item) {

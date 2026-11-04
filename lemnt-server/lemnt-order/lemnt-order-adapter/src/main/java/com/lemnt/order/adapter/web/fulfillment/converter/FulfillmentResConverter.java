@@ -19,24 +19,25 @@ import com.lemnt.order.application.fulfillment.dto.ShipmentDTO;
  * 履约响应转换器。
  */
 public final class FulfillmentResConverter {
-    private FulfillmentResConverter() {}
+    private FulfillmentResConverter() {
+    }
 
     /**
      * 发货。
      */
     public static ShipmentRes shipment(ShipmentDTO v) {
         return v == null
-                ? null
-                : new ShipmentRes(
-                        v.orderNo(),
-                        v.requestNo(),
-                        v.carrierCode(),
-                        v.trackingNo(),
-                        v.recipientName(),
-                        v.phone(),
-                        v.address(),
-                        v.shippedAt(),
-                        v.receivedAt());
+            ? null
+            : new ShipmentRes(
+            v.orderNo(),
+            v.requestNo(),
+            v.carrierCode(),
+            v.trackingNo(),
+            v.recipientName(),
+            v.phone(),
+            v.address(),
+            v.shippedAt(),
+            v.receivedAt());
     }
 
     /**
@@ -44,19 +45,19 @@ public final class FulfillmentResConverter {
      */
     public static RefundRequestRes refund(RefundRequestDTO v) {
         return v == null
-                ? null
-                : new RefundRequestRes(
-                        v.refundNo(),
-                        v.orderNo(),
-                        v.requestNo(),
-                        v.memberId(),
-                        v.paymentNo(),
-                        v.amount(),
-                        v.reason(),
-                        v.status(),
-                        v.decisionReason(),
-                        v.requestedAt(),
-                        v.decidedAt());
+            ? null
+            : new RefundRequestRes(
+            v.refundNo(),
+            v.orderNo(),
+            v.requestNo(),
+            v.memberId(),
+            v.paymentNo(),
+            v.amount(),
+            v.reason(),
+            v.status(),
+            v.decisionReason(),
+            v.requestedAt(),
+            v.decidedAt());
     }
 
     /**
@@ -64,19 +65,19 @@ public final class FulfillmentResConverter {
      */
     public static OrderSummaryRes summary(OrderSummaryDTO v) {
         return v == null
-                ? null
-                : new OrderSummaryRes(
-                        v.orderNo(),
-                        v.memberId(),
-                        v.totalAmount(),
-                        v.status(),
-                        v.createTime(),
-                        v.inventoryConfirmed(),
-                        v.activeRefund(),
-                        v.carrierCode(),
-                        v.trackingNo(),
-                        v.shippedAt(),
-                        v.receivedAt());
+            ? null
+            : new OrderSummaryRes(
+            v.orderNo(),
+            v.memberId(),
+            v.totalAmount(),
+            v.status(),
+            v.createTime(),
+            v.inventoryConfirmed(),
+            v.activeRefund(),
+            v.carrierCode(),
+            v.trackingNo(),
+            v.shippedAt(),
+            v.receivedAt());
     }
 
     /**
@@ -84,112 +85,112 @@ public final class FulfillmentResConverter {
      */
     public static OrderDetailRes detail(OrderDetailDTO v) {
         return v == null
-                ? null
-                : new OrderDetailRes(
-                        v.orderNo(),
-                        v.memberId(),
-                        v.totalAmount(),
-                        v.status(),
-                        v.inventoryConfirmed(),
-                        v.activeRefund(),
-                        v.items().stream()
+            ? null
+            : new OrderDetailRes(
+            v.orderNo(),
+            v.memberId(),
+            v.totalAmount(),
+            v.status(),
+            v.inventoryConfirmed(),
+            v.activeRefund(),
+            v.items().stream()
+                .map(
+                    item ->
+                        new OrderItemRes(
+                            item.productId(),
+                            item.productCode(),
+                            item.productName(),
+                            item.unitPrice(),
+                            item.quantity(),
+                            item.lineAmount(),
+                            item.spuId(),
+                            item.spuName(),
+                            item.specs() == null
+                                ? null
+                                : item.specs().stream()
                                 .map(
-                                        item ->
-                                                new OrderItemRes(
-                                                        item.productId(),
-                                                        item.productCode(),
-                                                        item.productName(),
-                                                        item.unitPrice(),
-                                                        item.quantity(),
-                                                        item.lineAmount(),
-                                                        item.spuId(),
-                                                        item.spuName(),
-                                                        item.specs() == null
-                                                                ? null
-                                                                : item.specs().stream()
-                                                                        .map(
-                                                                                snapshotProperty ->
-                                                                                        new OrderItemRes
-                                                                                                .Spec(
-                                                                                                snapshotProperty
-                                                                                                        .specId(),
-                                                                                                snapshotProperty
-                                                                                                        .specName(),
-                                                                                                snapshotProperty
-                                                                                                        .specValueId(),
-                                                                                                snapshotProperty
-                                                                                                        .specValueName()))
-                                                                        .toList(),
-                                                        item.picUrl(),
-                                                        item.orderItemId(),
-                                                        item.commentStatus()))
+                                    snapshotProperty ->
+                                        new OrderItemRes
+                                            .Spec(
+                                            snapshotProperty
+                                                .specId(),
+                                            snapshotProperty
+                                                .specName(),
+                                            snapshotProperty
+                                                .specValueId(),
+                                            snapshotProperty
+                                                .specValueName()))
                                 .toList(),
-                        shipment(v.shipment()),
-                        v.commentStatus(),
-                        v.finishTime());
+                            item.picUrl(),
+                            item.orderItemId(),
+                            item.commentStatus()))
+                .toList(),
+            shipment(v.shipment()),
+            v.commentStatus(),
+            v.finishTime());
     }
 
     /**
      * 退款。
      */
     public static TradeRefundRequestDetailRes refundToTradeRefundRequestDetailRes(
-            RefundRequestDTO v) {
+        RefundRequestDTO v) {
         return v == null
-                ? null
-                : new TradeRefundRequestDetailRes(
-                        v.refundNo(),
-                        v.orderNo(),
-                        v.requestNo(),
-                        v.memberId(),
-                        v.paymentNo(),
-                        v.amount(),
-                        v.reason(),
-                        v.status(),
-                        v.decisionReason(),
-                        v.requestedAt(),
-                        v.decidedAt());
+            ? null
+            : new TradeRefundRequestDetailRes(
+            v.refundNo(),
+            v.orderNo(),
+            v.requestNo(),
+            v.memberId(),
+            v.paymentNo(),
+            v.amount(),
+            v.reason(),
+            v.status(),
+            v.decisionReason(),
+            v.requestedAt(),
+            v.decidedAt());
     }
 
     /**
      * 退款。
      */
     public static TradeRefundRequestRejectRes refundToTradeRefundRequestRejectRes(
-            RefundRequestDTO v) {
+        RefundRequestDTO v) {
         return v == null
-                ? null
-                : new TradeRefundRequestRejectRes(
-                        v.refundNo(),
-                        v.orderNo(),
-                        v.requestNo(),
-                        v.memberId(),
-                        v.paymentNo(),
-                        v.amount(),
-                        v.reason(),
-                        v.status(),
-                        v.decisionReason(),
-                        v.requestedAt(),
-                        v.decidedAt());
+            ? null
+            : new TradeRefundRequestRejectRes(
+            v.refundNo(),
+            v.orderNo(),
+            v.requestNo(),
+            v.memberId(),
+            v.paymentNo(),
+            v.amount(),
+            v.reason(),
+            v.status(),
+            v.decisionReason(),
+            v.requestedAt(),
+            v.decidedAt());
     }
 
     /**
      * 退款。
      */
     public static TradeOrderRefundRequestRefundRes refundToTradeOrderRefundRequestRefundRes(
-            RefundRequestDTO v) {
+        RefundRequestDTO v) {
         return v == null
-                ? null
-                : new TradeOrderRefundRequestRefundRes(
-                        v.refundNo(),
-                        v.orderNo(),
-                        v.requestNo(),
-                        v.memberId(),
-                        v.paymentNo(),
-                        v.amount(),
-                        v.reason(),
-                        v.status(),
-                        v.decisionReason(),
-                        v.requestedAt(),
-                        v.decidedAt());
+            ? null
+            : new TradeOrderRefundRequestRefundRes(
+            v.refundNo(),
+            v.orderNo(),
+            v.requestNo(),
+            v.memberId(),
+            v.paymentNo(),
+            v.amount(),
+            v.reason(),
+            v.status(),
+            v.decisionReason(),
+            v.requestedAt(),
+            v.decidedAt());
     }
 
     /**
@@ -197,17 +198,17 @@ public final class FulfillmentResConverter {
      */
     public static TradeShipmentShipRes shipmentToTradeShipmentShipRes(ShipmentDTO v) {
         return v == null
-                ? null
-                : new TradeShipmentShipRes(
-                        v.orderNo(),
-                        v.requestNo(),
-                        v.carrierCode(),
-                        v.trackingNo(),
-                        v.recipientName(),
-                        v.phone(),
-                        v.address(),
-                        v.shippedAt(),
-                        v.receivedAt());
+            ? null
+            : new TradeShipmentShipRes(
+            v.orderNo(),
+            v.requestNo(),
+            v.carrierCode(),
+            v.trackingNo(),
+            v.recipientName(),
+            v.phone(),
+            v.address(),
+            v.shippedAt(),
+            v.receivedAt());
     }
 
     /**
@@ -215,16 +216,16 @@ public final class FulfillmentResConverter {
      */
     public static TradeShipmentReceiveRes shipmentToTradeShipmentReceiveRes(ShipmentDTO v) {
         return v == null
-                ? null
-                : new TradeShipmentReceiveRes(
-                        v.orderNo(),
-                        v.requestNo(),
-                        v.carrierCode(),
-                        v.trackingNo(),
-                        v.recipientName(),
-                        v.phone(),
-                        v.address(),
-                        v.shippedAt(),
-                        v.receivedAt());
+            ? null
+            : new TradeShipmentReceiveRes(
+            v.orderNo(),
+            v.requestNo(),
+            v.carrierCode(),
+            v.trackingNo(),
+            v.recipientName(),
+            v.phone(),
+            v.address(),
+            v.shippedAt(),
+            v.receivedAt());
     }
 }

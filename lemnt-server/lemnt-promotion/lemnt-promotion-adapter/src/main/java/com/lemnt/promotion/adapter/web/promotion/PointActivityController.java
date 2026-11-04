@@ -30,7 +30,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 积分商城活动管理入口。 */
+/**
+ * 积分商城活动管理入口。
+ */
 @RestController
 @RequestMapping("/mall/promotion/point-activities")
 @Tag(name = "积分商城活动")
@@ -54,7 +56,7 @@ public class PointActivityController {
     @Operation(summary = "修改积分商城活动")
     @RequiresPermissions("mall:promotion:update")
     public R<Boolean> update(
-            @PathVariable Long id, @Valid @RequestBody PointActivityUpdateReq req) {
+        @PathVariable Long id, @Valid @RequestBody PointActivityUpdateReq req) {
         return R.ok(update.execute(PointConverter.update(id, req)));
     }
 
@@ -85,7 +87,7 @@ public class PointActivityController {
     public R<PointActivityRes> page(@Valid @ModelAttribute PointActivityPageReq req) {
         var result = page.execute(PointConverter.page(req));
         return R.page(
-                result.getRecords().stream().map(PointConverter::activity).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(PointConverter::activity).toList(),
+            result.getTotal());
     }
 }

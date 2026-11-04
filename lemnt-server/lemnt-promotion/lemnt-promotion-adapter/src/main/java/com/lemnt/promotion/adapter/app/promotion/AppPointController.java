@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
-/** 小程序积分商城入口。 */
+/**
+ * 小程序积分商城入口。
+ */
 @Tag(name = "小程序积分商城")
 @RestController
 @RequestMapping("/mall/app/point-mall")
@@ -28,12 +30,12 @@ public class AppPointController {
     @GetMapping("/activities")
     @Operation(summary = "积分商城活动分页")
     public R<AppPointActivityRes> activities(
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "20") Integer pageSize) {
+        @RequestParam(defaultValue = "1") Integer pageNum,
+        @RequestParam(defaultValue = "20") Integer pageSize) {
         var result = page.execute(pageNum, pageSize);
         return R.page(
-                result.getRecords().stream().map(AppPointConverter::activity).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(AppPointConverter::activity).toList(),
+            result.getTotal());
     }
 
     @GetMapping("/activities/{id}")

@@ -34,7 +34,7 @@ class PromotionHttpContractTest {
     CouponOffersPageQueryExe couponOffersPageQueryExe = mock(CouponOffersPageQueryExe.class);
     CouponWalletPageQueryExe couponWalletPageQueryExe = mock(CouponWalletPageQueryExe.class);
     CouponPublicTemplateListQueryExe couponPublicTemplateListQueryExe =
-            mock(CouponPublicTemplateListQueryExe.class);
+        mock(CouponPublicTemplateListQueryExe.class);
     CouponClaimCmdExe couponClaimCmdExe = mock(CouponClaimCmdExe.class);
     CartSaveCmdExe cartAddCmdExe = mock(CartSaveCmdExe.class);
     CouponPublicClaimCmdExe couponPublicClaimCmdExe = mock(CouponPublicClaimCmdExe.class);
@@ -52,80 +52,80 @@ class PromotionHttpContractTest {
     @Test
     void cartQuantityAlwaysUsesAuthoritativeMember() throws Exception {
         when(cartAddCmdExe.execute(new CartSaveCmd(7L, 8L, 2, true)))
-                .thenReturn(
-                        new CartItemDTO(
-                                1L, 8L, 2, true, 0L, "商品", "SKU", BigDecimal.TEN, 10, true));
+            .thenReturn(
+                new CartItemDTO(
+                    1L, 8L, 2, true, 0L, "商品", "SKU", BigDecimal.TEN, 10, true));
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new Object[] {
-                                    new AppCouponCenterController(
-                                            couponClaimCmdExe,
-                                            couponOffersPageQueryExe,
-                                            couponWalletPageQueryExe),
-                                    new AppCartController(
-                                            mock(CartListQueryExe.class),
-                                            cartAddCmdExe,
-                                            mock(CartDeleteCmdExe.class))
-                                })
-                        .addInterceptors(new HeaderInterceptor())
-                        .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
-                        .build();
+            MockMvcBuilders.standaloneSetup(
+                    new Object[]{
+                        new AppCouponCenterController(
+                            couponClaimCmdExe,
+                            couponOffersPageQueryExe,
+                            couponWalletPageQueryExe),
+                        new AppCartController(
+                            mock(CartListQueryExe.class),
+                            cartAddCmdExe,
+                            mock(CartDeleteCmdExe.class))
+                    })
+                .addInterceptors(new HeaderInterceptor())
+                .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
+                .build();
         mvc.perform(
-                        put("/mall/app/cart/8")
-                                .header("Authorization", "Bearer member")
-                                .header("memberId", "999")
-                                .contentType("application/json")
-                                .content(
-                                        "{\"quantity\":2,\"selected\":true,\"memberId\":999,\"price\":0}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.quantity").value(2));
+                put("/mall/app/cart/8")
+                    .header("Authorization", "Bearer member")
+                    .header("memberId", "999")
+                    .contentType("application/json")
+                    .content(
+                        "{\"quantity\":2,\"selected\":true,\"memberId\":999,\"price\":0}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.quantity").value(2));
         verify(cartAddCmdExe).execute(new CartSaveCmd(7L, 8L, 2, true));
     }
 
     @Test
     void invalidQuantityCannotReachWrite() throws Exception {
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new Object[] {
-                                    new AppCouponCenterController(
-                                            couponClaimCmdExe,
-                                            couponOffersPageQueryExe,
-                                            couponWalletPageQueryExe),
-                                    new AppCartController(
-                                            mock(CartListQueryExe.class),
-                                            cartAddCmdExe,
-                                            mock(CartDeleteCmdExe.class))
-                                })
-                        .addInterceptors(new HeaderInterceptor())
-                        .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
-                        .build();
+            MockMvcBuilders.standaloneSetup(
+                    new Object[]{
+                        new AppCouponCenterController(
+                            couponClaimCmdExe,
+                            couponOffersPageQueryExe,
+                            couponWalletPageQueryExe),
+                        new AppCartController(
+                            mock(CartListQueryExe.class),
+                            cartAddCmdExe,
+                            mock(CartDeleteCmdExe.class))
+                    })
+                .addInterceptors(new HeaderInterceptor())
+                .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
+                .build();
         mvc.perform(
-                        put("/mall/app/cart/3")
-                                .contentType("application/json")
-                                .content("{\"quantity\":1000}"))
-                .andExpect(status().isBadRequest());
+                put("/mall/app/cart/3")
+                    .contentType("application/json")
+                    .content("{\"quantity\":1000}"))
+            .andExpect(status().isBadRequest());
         verifyNoInteractions(
-                cartAddCmdExe,
-                couponClaimCmdExe,
-                couponPublicClaimCmdExe,
-                couponOffersPageQueryExe,
-                couponWalletPageQueryExe,
-                couponPublicTemplateListQueryExe);
+            cartAddCmdExe,
+            couponClaimCmdExe,
+            couponPublicClaimCmdExe,
+            couponOffersPageQueryExe,
+            couponWalletPageQueryExe,
+            couponPublicTemplateListQueryExe);
     }
 
     @Test
     void publicClaimSettingsHaveExistingAdminPermissions() throws Exception {
         assertEquals(
-                "mall:coupon-template:list",
-                PublicCouponController.class
-                        .getMethod("settings")
-                        .getAnnotation(RequiresPermissions.class)
-                        .value()[0]);
+            "mall:coupon-template:list",
+            PublicCouponController.class
+                .getMethod("settings")
+                .getAnnotation(RequiresPermissions.class)
+                .value()[0]);
         assertEquals(
-                "mall:coupon-template:edit",
-                PublicCouponController.class
-                        .getMethod("setting", Long.class, CouponPublicClaimReq.class)
-                        .getAnnotation(RequiresPermissions.class)
-                        .value()[0]);
+            "mall:coupon-template:edit",
+            PublicCouponController.class
+                .getMethod("setting", Long.class, CouponPublicClaimReq.class)
+                .getAnnotation(RequiresPermissions.class)
+                .value()[0]);
     }
 }

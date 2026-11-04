@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** mall_product_favorite持久化，仅通过BaseMapper与Lambda读写。 */
+/**
+ * mall_product_favorite持久化，仅通过BaseMapper与Lambda读写。
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductFavoriteGatewayImpl implements ProductFavoriteGateway {
@@ -21,10 +23,10 @@ public class ProductFavoriteGatewayImpl implements ProductFavoriteGateway {
     @Override
     public ProductFavorite find(Long userId, Long spuId) {
         return model(
-                mapper.selectOne(
-                        Wrappers.lambdaQuery(ProductFavoriteDO.class)
-                                .eq(ProductFavoriteDO::getUserId, userId)
-                                .eq(ProductFavoriteDO::getSpuId, spuId)));
+            mapper.selectOne(
+                Wrappers.lambdaQuery(ProductFavoriteDO.class)
+                    .eq(ProductFavoriteDO::getUserId, userId)
+                    .eq(ProductFavoriteDO::getSpuId, spuId)));
     }
 
     @Override
@@ -37,35 +39,35 @@ public class ProductFavoriteGatewayImpl implements ProductFavoriteGateway {
     @Override
     public boolean remove(Long userId, Long spuId) {
         return mapper.delete(
-                        Wrappers.lambdaQuery(ProductFavoriteDO.class)
-                                .eq(ProductFavoriteDO::getUserId, userId)
-                                .eq(ProductFavoriteDO::getSpuId, spuId))
-                == 1;
+            Wrappers.lambdaQuery(ProductFavoriteDO.class)
+                .eq(ProductFavoriteDO::getUserId, userId)
+                .eq(ProductFavoriteDO::getSpuId, spuId))
+            == 1;
     }
 
     @Override
     public long count(Long userId) {
         return mapper.selectCount(
-                Wrappers.lambdaQuery(ProductFavoriteDO.class)
-                        .eq(ProductFavoriteDO::getUserId, userId));
+            Wrappers.lambdaQuery(ProductFavoriteDO.class)
+                .eq(ProductFavoriteDO::getUserId, userId));
     }
 
     @Override
     public PageResult<ProductFavorite> page(Long userId, Long spuId, int pageNum, int pageSize) {
         var page =
-                mapper.selectPage(
-                        new Page<>(pageNum, pageSize),
-                        Wrappers.lambdaQuery(ProductFavoriteDO.class)
-                                .eq(userId != null, ProductFavoriteDO::getUserId, userId)
-                                .eq(spuId != null, ProductFavoriteDO::getSpuId, spuId)
-                                .orderByDesc(ProductFavoriteDO::getId));
+            mapper.selectPage(
+                new Page<>(pageNum, pageSize),
+                Wrappers.lambdaQuery(ProductFavoriteDO.class)
+                    .eq(userId != null, ProductFavoriteDO::getUserId, userId)
+                    .eq(spuId != null, ProductFavoriteDO::getSpuId, spuId)
+                    .orderByDesc(ProductFavoriteDO::getId));
         return PageResult.of(page.getRecords().stream().map(this::model).toList(), page.getTotal());
     }
 
     private ProductFavorite model(ProductFavoriteDO row) {
         return row == null
-                ? null
-                : new ProductFavorite(
-                        row.getId(), row.getUserId(), row.getSpuId(), row.getCreateTime());
+            ? null
+            : new ProductFavorite(
+            row.getId(), row.getUserId(), row.getSpuId(), row.getCreateTime());
     }
 }

@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 砍价到期失败执行器。 */
+/**
+ * 砍价到期失败执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class BargainExpireCmdExe {

@@ -32,9 +32,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** 配送管理接口。 */
+/**
+ * 配送管理接口。
+ */
 @Tag(name = "快递公司管理")
 @RestController
 @RequestMapping("/trade/admin/delivery/expresses")
@@ -47,7 +50,9 @@ public class DeliveryExpressController {
     private final DeliveryExpressPageQueryExe page;
     private final DeliveryExpressSimpleListQueryExe simpleList;
 
-    /** 配送新增操作。 */
+    /**
+     * 配送新增操作。
+     */
     @PostMapping
     @Operation(summary = "配送新增")
     @RequiresPermissions("trade:delivery-express:create")
@@ -55,16 +60,20 @@ public class DeliveryExpressController {
         return R.ok(create.execute(DeliveryReqConverter.deliveryExpressCreate(req)));
     }
 
-    /** 配送修改操作。 */
+    /**
+     * 配送修改操作。
+     */
     @PutMapping("/{id}")
     @Operation(summary = "配送修改")
     @RequiresPermissions("trade:delivery-express:update")
     public R<Boolean> update(
-            @PathVariable Long id, @Valid @RequestBody DeliveryExpressUpdateReq req) {
+        @PathVariable Long id, @Valid @RequestBody DeliveryExpressUpdateReq req) {
         return R.ok(update.execute(DeliveryReqConverter.deliveryExpressUpdate(id, req)));
     }
 
-    /** 配送删除操作。 */
+    /**
+     * 配送删除操作。
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "配送删除")
     @RequiresPermissions("trade:delivery-express:delete")
@@ -72,7 +81,9 @@ public class DeliveryExpressController {
         return R.ok(delete.execute(id));
     }
 
-    /** 配送详情操作。 */
+    /**
+     * 配送详情操作。
+     */
     @GetMapping("/{id}")
     @Operation(summary = "配送详情")
     @RequiresPermissions("trade:delivery-express:query")
@@ -80,27 +91,31 @@ public class DeliveryExpressController {
         return R.ok(DeliveryResConverter.deliveryExpressDetail(detail.execute(id)));
     }
 
-    /** 配送分页操作。 */
+    /**
+     * 配送分页操作。
+     */
     @GetMapping
     @Operation(summary = "配送分页")
     @RequiresPermissions("trade:delivery-express:list")
     public R<DeliveryExpressPageRes> page(@Valid @ModelAttribute DeliveryExpressPageReq req) {
         var result = page.execute(DeliveryReqConverter.deliveryExpressPage(req));
         return R.page(
-                result.getRecords().stream()
-                        .map(DeliveryResConverter::deliveryExpressPage)
-                        .toList(),
-                result.getTotal());
+            result.getRecords().stream()
+                .map(DeliveryResConverter::deliveryExpressPage)
+                .toList(),
+            result.getTotal());
     }
 
-    /** 配送选择列表操作。 */
+    /**
+     * 配送选择列表操作。
+     */
     @GetMapping("/simple")
     @Operation(summary = "配送选择列表")
     @RequiresPermissions("trade:delivery-express:query")
     public R<List<DeliveryExpressSimpleRes>> simpleList() {
         return R.ok(
-                simpleList.execute().stream()
-                        .map(DeliveryResConverter::deliveryExpressSimple)
-                        .toList());
+            simpleList.execute().stream()
+                .map(DeliveryResConverter::deliveryExpressSimple)
+                .toList());
     }
 }

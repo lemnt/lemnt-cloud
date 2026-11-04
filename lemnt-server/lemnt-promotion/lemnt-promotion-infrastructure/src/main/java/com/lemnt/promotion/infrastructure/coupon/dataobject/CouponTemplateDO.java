@@ -39,31 +39,49 @@ public class CouponTemplateDO extends BaseDO {
     private LocalDateTime validUntil;
     private Boolean enabled;
 
-    /** 领取方式：USER 会员领取，ADMIN 后台发放，REGISTER 注册赠送。 */
+    /**
+     * 领取方式：USER 会员领取，ADMIN 后台发放，REGISTER 注册赠送。
+     */
     private String takeType;
 
-    /** 使用说明。 */
+    /**
+     * 使用说明。
+     */
     private String description;
 
-    /** 每人限领数量，-1不限。 */
+    /**
+     * 每人限领数量，-1不限。
+     */
     private Integer takeLimitCount;
 
-    /** 适用商品范围。 */
+    /**
+     * 适用商品范围。
+     */
     private String productScope;
 
-    /** 适用SPU或分类编号JSON。 */
+    /**
+     * 适用SPU或分类编号JSON。
+     */
     private String productScopeValues;
 
-    /** 有效期类型。 */
+    /**
+     * 有效期类型。
+     */
     private String validityType;
 
-    /** 领取后生效天数。 */
+    /**
+     * 领取后生效天数。
+     */
     private Integer fixedStartTerm;
 
-    /** 生效后有效天数。 */
+    /**
+     * 生效后有效天数。
+     */
     private Integer fixedEndTerm;
 
-    /** 已核销数量。 */
+    /**
+     * 已核销数量。
+     */
     private Integer useCount;
 
     @TableLogic(value = "0", delval = "1")

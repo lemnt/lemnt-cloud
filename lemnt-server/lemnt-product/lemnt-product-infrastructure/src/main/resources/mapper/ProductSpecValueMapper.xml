@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lemnt.product.infrastructure.product.mapper.ProductSpecValueMapper">
 
-    <resultMap id="ProductSpecValueResult" type="com.lemnt.product.infrastructure.product.dataobject.ProductSpecValueDO" autoMapping="false">
+    <resultMap id="ProductSpecValueResult" type="com.lemnt.product.infrastructure.product.dataobject.ProductSpecValueDO"
+               autoMapping="false">
         <id property="id" column="id"/>
         <result property="specId" column="spec_id"/>
         <result property="name" column="name"/>

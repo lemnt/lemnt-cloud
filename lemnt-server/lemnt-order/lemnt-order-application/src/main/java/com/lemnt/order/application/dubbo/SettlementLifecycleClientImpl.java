@@ -14,7 +14,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/** 兼容原内部入口；权益投递统一复用订单保存的业务事件。 */
+/**
+ * 兼容原内部入口；权益投递统一复用订单保存的业务事件。
+ */
 @DubboService
 @RequiredArgsConstructor
 public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
@@ -38,26 +40,26 @@ public class SettlementLifecycleClientImpl implements CheckoutLifecycleClient {
 
     public void refunded(RefundBenefitsBo v) {
         benefits.refunded(
-                new OrderRefundBenefits(
-                        v.orderNo(),
-                        v.afterSaleNo(),
-                        v.orderItemId(),
-                        v.skuId(),
-                        v.quantity(),
-                        v.amount(),
-                        v.returnUsePoint(),
-                        v.deductGivePoint(),
-                        v.ruleVersion()));
+            new OrderRefundBenefits(
+                v.orderNo(),
+                v.afterSaleNo(),
+                v.orderItemId(),
+                v.skuId(),
+                v.quantity(),
+                v.amount(),
+                v.returnUsePoint(),
+                v.deductGivePoint(),
+                v.ruleVersion()));
     }
 
     public void refunded(String no, String refundNo, List<RefundStockBo> lines, BigDecimal amount) {
         benefits.refunded(
-                no,
-                refundNo,
-                lines.stream()
-                        .collect(
-                                Collectors.toMap(
-                                        RefundStockBo::productId, RefundStockBo::quantity)),
-                amount);
+            no,
+            refundNo,
+            lines.stream()
+                .collect(
+                    Collectors.toMap(
+                        RefundStockBo::productId, RefundStockBo::quantity)),
+            amount);
     }
 }

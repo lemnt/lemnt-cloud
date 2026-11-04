@@ -23,46 +23,48 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/** 会员订单查询在 SQL 过滤与归属核验上都不信任客户端身份。 */
+/**
+ * 会员订单查询在 SQL 过滤与归属核验上都不信任客户端身份。
+ */
 class MemberOrderQueryTest {
     final TradeOrderGateway orders = mock(TradeOrderGateway.class);
     final OrderPersistenceService persistence = mock(OrderPersistenceService.class);
     final MemberOrderPageQueryExe pageQuery = new MemberOrderPageQueryExe(orders, persistence);
     final OrderDetailQueryExe detail = mock(OrderDetailQueryExe.class);
     final MemberOrderDetailQueryExe detailQuery =
-            new MemberOrderDetailQueryExe(detail, persistence, mock(PickUpStoreGateway.class));
+        new MemberOrderDetailQueryExe(detail, persistence, mock(PickUpStoreGateway.class));
     final MemberOrderStatusCountQueryExe countQuery = new MemberOrderStatusCountQueryExe(orders);
 
     @Test
     void pageFiltersByMemberAndIncludesOrderItems() {
         var summary =
-                new OrderSummary(
-                        "TR1",
-                        7L,
-                        BigDecimal.TEN,
-                        "PAID",
-                        LocalDateTime.now(),
-                        true,
-                        false,
-                        null,
-                        null,
-                        null,
-                        null);
+            new OrderSummary(
+                "TR1",
+                7L,
+                BigDecimal.TEN,
+                "PAID",
+                LocalDateTime.now(),
+                true,
+                false,
+                null,
+                null,
+                null,
+                null);
         when(orders.orders(any())).thenReturn(new OrderPage(List.of(summary), 1L));
         when(persistence.findByOrderNo("TR1"))
-                .thenReturn(
-                        new TradeOrder(
-                                1L,
-                                "TR1",
-                                7L,
-                                BigDecimal.TEN,
-                                "PAID",
-                                List.of(
-                                        new TradeOrderItem(
-                                                5L, "P5", "商品", BigDecimal.TEN, 1, BigDecimal.TEN)),
-                                LocalDateTime.now(),
-                                0L,
-                                0L));
+            .thenReturn(
+                new TradeOrder(
+                    1L,
+                    "TR1",
+                    7L,
+                    BigDecimal.TEN,
+                    "PAID",
+                    List.of(
+                        new TradeOrderItem(
+                            5L, "P5", "商品", BigDecimal.TEN, 1, BigDecimal.TEN)),
+                    LocalDateTime.now(),
+                    0L,
+                    0L));
         var result = pageQuery.execute(7L, new MemberOrderPageQry("PAID", null, 2, 10));
         assertEquals(1, result.getRecords().size());
         assertEquals(1, result.getRecords().get(0).items().size());
@@ -77,43 +79,43 @@ class MemberOrderQueryTest {
     @Test
     void pageRejectsInvalidPagingStatusAndMissingMember() {
         assertThrows(
-                IllegalArgumentException.class,
-                () -> pageQuery.execute(null, new MemberOrderPageQry(null, null, 1, 10)));
+            IllegalArgumentException.class,
+            () -> pageQuery.execute(null, new MemberOrderPageQry(null, null, 1, 10)));
         assertThrows(
-                IllegalArgumentException.class,
-                () -> pageQuery.execute(7L, new MemberOrderPageQry(null, null, 0, 10)));
+            IllegalArgumentException.class,
+            () -> pageQuery.execute(7L, new MemberOrderPageQry(null, null, 0, 10)));
         assertThrows(
-                IllegalArgumentException.class,
-                () -> pageQuery.execute(7L, new MemberOrderPageQry("UNKNOWN", null, 1, 10)));
+            IllegalArgumentException.class,
+            () -> pageQuery.execute(7L, new MemberOrderPageQry("UNKNOWN", null, 1, 10)));
         verifyNoInteractions(orders);
     }
 
     @Test
     void detailOnlyReturnsOwnOrder() {
         when(persistence.findByOrderNo("TR1"))
-                .thenReturn(
-                        new TradeOrder(
-                                1L,
-                                "TR1",
-                                7L,
-                                BigDecimal.TEN,
-                                "PAID",
-                                List.of(),
-                                LocalDateTime.now(),
-                                0L,
-                                0L));
+            .thenReturn(
+                new TradeOrder(
+                    1L,
+                    "TR1",
+                    7L,
+                    BigDecimal.TEN,
+                    "PAID",
+                    List.of(),
+                    LocalDateTime.now(),
+                    0L,
+                    0L));
         var value =
-                new OrderDetailDTO(
-                        "TR1",
-                        7L,
-                        BigDecimal.TEN,
-                        "PAID",
-                        true,
-                        false,
-                        List.of(),
-                        null,
-                        false,
-                        null);
+            new OrderDetailDTO(
+                "TR1",
+                7L,
+                BigDecimal.TEN,
+                "PAID",
+                true,
+                false,
+                List.of(),
+                null,
+                false,
+                null);
         when(detail.execute("TR1")).thenReturn(value);
         assertNotNull(detailQuery.execute(7L, "TR1"));
         assertNull(detailQuery.execute(8L, "TR1"));
@@ -124,16 +126,16 @@ class MemberOrderQueryTest {
     @Test
     void statusCountsMapCompletedByCommentState() {
         when(orders.memberStatusCounts(7L))
-                .thenReturn(
-                        List.of(
-                                new OrderStatusCount("RESERVING", false, 1, 1),
-                                new OrderStatusCount("PENDING_PAYMENT", false, 1, 1),
-                                new OrderStatusCount("PAID", false, 1, 2),
-                                new OrderStatusCount("SHIPPED", false, 1, 3),
-                                new OrderStatusCount("COMPLETED", false, 1, 4),
-                                new OrderStatusCount("COMPLETED", true, 1, 5),
-                                new OrderStatusCount("CLOSED", false, 1, 6),
-                                new OrderStatusCount("REFUNDED", false, 1, 7)));
+            .thenReturn(
+                List.of(
+                    new OrderStatusCount("RESERVING", false, 1, 1),
+                    new OrderStatusCount("PENDING_PAYMENT", false, 1, 1),
+                    new OrderStatusCount("PAID", false, 1, 2),
+                    new OrderStatusCount("SHIPPED", false, 1, 3),
+                    new OrderStatusCount("COMPLETED", false, 1, 4),
+                    new OrderStatusCount("COMPLETED", true, 1, 5),
+                    new OrderStatusCount("CLOSED", false, 1, 6),
+                    new OrderStatusCount("REFUNDED", false, 1, 7)));
         var value = countQuery.execute(7L);
         assertEquals(2, value.pendingPayment());
         assertEquals(2, value.awaitingShipment());

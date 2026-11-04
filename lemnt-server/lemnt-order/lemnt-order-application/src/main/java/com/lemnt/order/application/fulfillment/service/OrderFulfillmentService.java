@@ -62,16 +62,16 @@ public class OrderFulfillmentService {
         }
         var delivery = order.delivery();
         String name =
-                OrderRules.text(
-                        delivery == null ? cmd.recipientName() : delivery.receiverName(), 100);
+            OrderRules.text(
+                delivery == null ? cmd.recipientName() : delivery.receiverName(), 100);
         String phone =
-                OrderRules.text(delivery == null ? cmd.phone() : delivery.receiverMobile(), 32);
+            OrderRules.text(delivery == null ? cmd.phone() : delivery.receiverMobile(), 32);
         if (!phone.matches("[+0-9() -]{5,32}")) {
             throw new IllegalArgumentException("联系电话不合法");
         }
         String address =
-                OrderRules.text(
-                        delivery == null ? cmd.address() : delivery.receiverDetailAddress(), 500);
+            OrderRules.text(
+                delivery == null ? cmd.address() : delivery.receiverDetailAddress(), 500);
         String hash = fingerprint(carrier, tracking, name, phone, address);
         var previous = shipmentGateway.shipment(orderNo);
         if (previous != null) {
@@ -84,7 +84,7 @@ public class OrderFulfillmentService {
             return previous;
         }
         if (!"PAID".equals(order.status())
-                || !inventoryConfirmationGateway.inventoryConfirmed(orderNo)) {
+            || !inventoryConfirmationGateway.inventoryConfirmed(orderNo)) {
             throw new IllegalStateException("仅已支付且库存确认完成的订单可以发货");
         }
         if (refundRequestGateway.activeRefund(orderNo)) {
@@ -95,27 +95,27 @@ public class OrderFulfillmentService {
             throw new ServiceException("快递公司不存在或已停用", 400);
         }
         shipmentGateway.saveShipment(
-                new Shipment(
-                        orderNo,
-                        requestNo,
-                        hash,
-                        carrier,
-                        tracking,
-                        name,
-                        phone,
-                        address,
-                        tradeOrderGateway.databaseNow(),
-                        null));
+            new Shipment(
+                orderNo,
+                requestNo,
+                hash,
+                carrier,
+                tracking,
+                name,
+                phone,
+                address,
+                tradeOrderGateway.databaseNow(),
+                null));
         if (!tradeOrderGateway.transitionStatus(orderNo, "PAID", "SHIPPED")) {
             throw new IllegalStateException("订单状态冲突");
         }
         logs.record(
-                order,
-                "PAID",
-                "SHIPPED",
-                20,
-                cmd.operator(),
-                "已发货，快递公司：" + carrier + "，快递单号：" + tracking);
+            order,
+            "PAID",
+            "SHIPPED",
+            20,
+            cmd.operator(),
+            "已发货，快递公司：" + carrier + "，快递单号：" + tracking);
         events.shipped(order);
         return shipmentGateway.shipment(orderNo);
     }
@@ -128,7 +128,9 @@ public class OrderFulfillmentService {
         return receive(input, TradeOperator.system());
     }
 
-    /** 会员确认本人收货，系统任务可自动收货。 */
+    /**
+     * 会员确认本人收货，系统任务可自动收货。
+     */
     @Transactional(rollbackFor = Exception.class)
     public Shipment receive(String input, TradeOperator operator) {
         String orderNo = OrderRules.text(input, 40);
@@ -151,16 +153,16 @@ public class OrderFulfillmentService {
         }
         var receivedAt = tradeOrderGateway.databaseNow();
         if (!shipmentGateway.receive(orderNo, receivedAt)
-                || !tradeOrderGateway.completeReceipt(orderNo, receivedAt)) {
+            || !tradeOrderGateway.completeReceipt(orderNo, receivedAt)) {
             throw new IllegalStateException("收货状态冲突");
         }
         logs.record(
-                order,
-                "SHIPPED",
-                "COMPLETED",
-                operator.userType() == 1 ? 30 : 31,
-                operator,
-                operator.userType() == 1 ? "用户已收货" : "系统自动确认收货");
+            order,
+            "SHIPPED",
+            "COMPLETED",
+            operator.userType() == 1 ? 30 : 31,
+            operator,
+            operator.userType() == 1 ? "用户已收货" : "系统自动确认收货");
         events.completed(order);
         return shipmentGateway.shipment(orderNo);
     }

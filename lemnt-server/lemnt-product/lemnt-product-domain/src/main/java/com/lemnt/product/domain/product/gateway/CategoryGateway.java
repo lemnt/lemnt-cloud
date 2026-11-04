@@ -4,7 +4,9 @@ import com.lemnt.product.domain.product.model.Category;
 
 import java.util.List;
 
-/** Category 表领域存储接口。 */
+/**
+ * Category 表领域存储接口。
+ */
 public interface CategoryGateway {
     /**
      * 查询分类。

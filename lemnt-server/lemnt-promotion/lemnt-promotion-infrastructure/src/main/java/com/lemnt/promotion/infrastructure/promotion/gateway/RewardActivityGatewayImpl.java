@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 仅操作对应活动主表，简单查询使用 Lambda。 */
+/**
+ * 仅操作对应活动主表，简单查询使用 Lambda。
+ */
 @Component
 @RequiredArgsConstructor
 public class RewardActivityGatewayImpl implements RewardActivityGateway {
@@ -46,32 +48,32 @@ public class RewardActivityGatewayImpl implements RewardActivityGateway {
     @Override
     public PageResult<RewardActivity> page(ActivityFilter filter) {
         var page =
-                mapper.selectPage(
-                        new Page<RewardActivityDO>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.<RewardActivityDO>lambdaQuery()
-                                .like(
-                                        filter.name() != null && !filter.name().isBlank(),
-                                        RewardActivityDO::getName,
-                                        filter.name())
-                                .eq(
-                                        filter.status() != null,
-                                        RewardActivityDO::getStatus,
-                                        filter.status())
-                                .orderByDesc(RewardActivityDO::getId));
+            mapper.selectPage(
+                new Page<RewardActivityDO>(filter.pageNum(), filter.pageSize()),
+                Wrappers.<RewardActivityDO>lambdaQuery()
+                    .like(
+                        filter.name() != null && !filter.name().isBlank(),
+                        RewardActivityDO::getName,
+                        filter.name())
+                    .eq(
+                        filter.status() != null,
+                        RewardActivityDO::getStatus,
+                        filter.status())
+                    .orderByDesc(RewardActivityDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(PromotionConverter::model).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(PromotionConverter::model).toList(),
+            page.getTotal());
     }
 
     @Override
     public List<RewardActivity> enabled() {
         return mapper
-                .selectList(
-                        Wrappers.<RewardActivityDO>lambdaQuery()
-                                .eq(RewardActivityDO::getStatus, 0)
-                                .orderByDesc(RewardActivityDO::getId))
-                .stream()
-                .map(PromotionConverter::model)
-                .toList();
+            .selectList(
+                Wrappers.<RewardActivityDO>lambdaQuery()
+                    .eq(RewardActivityDO::getStatus, 0)
+                    .orderByDesc(RewardActivityDO::getId))
+            .stream()
+            .map(PromotionConverter::model)
+            .toList();
     }
 }

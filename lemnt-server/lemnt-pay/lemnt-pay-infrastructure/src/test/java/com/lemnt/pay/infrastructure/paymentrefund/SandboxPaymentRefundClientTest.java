@@ -10,30 +10,32 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 沙箱退款必须与原支付一致，重复调用返回稳定渠道编号。 */
+/**
+ * 沙箱退款必须与原支付一致，重复调用返回稳定渠道编号。
+ */
 class SandboxPaymentRefundClientTest {
     final SandboxPaymentRefundClient client = new SandboxPaymentRefundClient();
     final PaymentRecord payment =
-            new PaymentRecord(
-                    1L,
-                    "PAY1",
-                    "TR1",
-                    "SANDBOX",
-                    "lemnt-mall",
-                    "SB-1",
-                    new BigDecimal("8.00"),
-                    "SUCCESS",
-                    "N-1");
+        new PaymentRecord(
+            1L,
+            "PAY1",
+            "TR1",
+            "SANDBOX",
+            "lemnt-mall",
+            "SB-1",
+            new BigDecimal("8.00"),
+            "SUCCESS",
+            "N-1");
     final PaymentRefund refund =
-            new PaymentRefund(
-                    "PR1",
-                    "RF1",
-                    "PAY1",
-                    "TR1",
-                    "SANDBOX",
-                    new BigDecimal("8.00"),
-                    "WAITING",
-                    null);
+        new PaymentRefund(
+            "PR1",
+            "RF1",
+            "PAY1",
+            "TR1",
+            "SANDBOX",
+            new BigDecimal("8.00"),
+            "WAITING",
+            null);
 
     @Test
     void refundReturnsStableSuccessForMatchingPayment() {
@@ -48,62 +50,62 @@ class SandboxPaymentRefundClientTest {
     @Test
     void mismatchedOrIncompletePaymentIsRejected() {
         assertThrows(
-                IllegalStateException.class,
-                () ->
-                        client.refund(
-                                new PaymentRefund(
-                                        "PR1",
-                                        "RF1",
-                                        "PAY1",
-                                        "TR1",
-                                        "ALIPAY",
-                                        new BigDecimal("8.00"),
-                                        "WAITING",
-                                        null),
-                                payment));
+            IllegalStateException.class,
+            () ->
+                client.refund(
+                    new PaymentRefund(
+                        "PR1",
+                        "RF1",
+                        "PAY1",
+                        "TR1",
+                        "ALIPAY",
+                        new BigDecimal("8.00"),
+                        "WAITING",
+                        null),
+                    payment));
         assertThrows(
-                IllegalStateException.class,
-                () ->
-                        client.refund(
-                                new PaymentRefund(
-                                        "PR1",
-                                        "RF1",
-                                        "PAY1",
-                                        "TR1",
-                                        "SANDBOX",
-                                        new BigDecimal("9.00"),
-                                        "WAITING",
-                                        null),
-                                payment));
+            IllegalStateException.class,
+            () ->
+                client.refund(
+                    new PaymentRefund(
+                        "PR1",
+                        "RF1",
+                        "PAY1",
+                        "TR1",
+                        "SANDBOX",
+                        new BigDecimal("9.00"),
+                        "WAITING",
+                        null),
+                    payment));
         assertThrows(
-                IllegalStateException.class,
-                () ->
-                        client.refund(
-                                refund,
-                                new PaymentRecord(
-                                        1L,
-                                        "PAY1",
-                                        "TR1",
-                                        "SANDBOX",
-                                        "lemnt-mall",
-                                        null,
-                                        new BigDecimal("8.00"),
-                                        "SUCCESS",
-                                        "N-1")));
+            IllegalStateException.class,
+            () ->
+                client.refund(
+                    refund,
+                    new PaymentRecord(
+                        1L,
+                        "PAY1",
+                        "TR1",
+                        "SANDBOX",
+                        "lemnt-mall",
+                        null,
+                        new BigDecimal("8.00"),
+                        "SUCCESS",
+                        "N-1")));
         assertThrows(
-                IllegalStateException.class,
-                () ->
-                        client.refund(
-                                refund,
-                                new PaymentRecord(
-                                        1L,
-                                        "PAY1",
-                                        "TR1",
-                                        "SANDBOX",
-                                        "lemnt-mall",
-                                        "SB-1",
-                                        new BigDecimal("8.00"),
-                                        "WAITING",
-                                        "N-1")));
+            IllegalStateException.class,
+            () ->
+                client.refund(
+                    refund,
+                    new PaymentRecord(
+                        1L,
+                        "PAY1",
+                        "TR1",
+                        "SANDBOX",
+                        "lemnt-mall",
+                        "SB-1",
+                        new BigDecimal("8.00"),
+                        "WAITING",
+                        "N-1")));
     }
 }

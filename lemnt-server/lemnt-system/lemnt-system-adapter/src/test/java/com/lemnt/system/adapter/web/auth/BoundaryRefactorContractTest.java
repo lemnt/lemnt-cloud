@@ -28,13 +28,15 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/** 重构HTTP边界时保留嵌套JSON、空值、查询字段和原有R分页形状。 */
+/**
+ * 重构HTTP边界时保留嵌套JSON、空值、查询字段和原有R分页形状。
+ */
 class BoundaryRefactorContractTest {
     final JsonMapper json =
-            JsonMapper.builder()
-                    .changeDefaultPropertyInclusion(
-                            inclusion -> inclusion.withValueInclusion(JsonInclude.Include.NON_NULL))
-                    .build();
+        JsonMapper.builder()
+            .changeDefaultPropertyInclusion(
+                inclusion -> inclusion.withValueInclusion(JsonInclude.Include.NON_NULL))
+            .build();
 
     @Test
     void nestedUserRolesAndDepartmentsKeepTheirOriginalJson() {
@@ -46,9 +48,9 @@ class BoundaryRefactorContractTest {
         role.setRoleId(10L);
         role.setRoleName("开发");
         user.setDept(dept);
-        for (boolean unknownChildren : new boolean[] {true, false}) {
+        for (boolean unknownChildren : new boolean[]{true, false}) {
             dept.setChildren(unknownChildren ? null : List.of());
-            for (boolean unknownRoles : new boolean[] {true, false}) {
+            for (boolean unknownRoles : new boolean[]{true, false}) {
                 user.setRoles(unknownRoles ? null : List.of(role));
                 var response = UserResConverter.toRes(user);
                 assertEquals(json.valueToTree(user.getDept()), json.valueToTree(response.dept()));
@@ -73,19 +75,19 @@ class BoundaryRefactorContractTest {
         var query = mock(DictDataPageQueryExe.class);
         when(query.execute(any())).thenReturn(PageResult.of(List.of(), 0));
         var controller =
-                new DictDataController(
-                        query,
-                        mock(DictDataDetailQueryExe.class),
-                        mock(DictDataAddCmdExe.class),
-                        mock(DictDataUpdateCmdExe.class),
-                        mock(DictDataDeleteCmdExe.class),
-                        mock(DictDataListQueryExe.class));
+            new DictDataController(
+                query,
+                mock(DictDataDetailQueryExe.class),
+                mock(DictDataAddCmdExe.class),
+                mock(DictDataUpdateCmdExe.class),
+                mock(DictDataDeleteCmdExe.class),
+                mock(DictDataListQueryExe.class));
         var mvc = MockMvcBuilders.standaloneSetup(controller).build();
         var response =
-                mvc.perform(get("/dictionary-data").param("dictType", "sample"))
-                        .andExpect(status().isOk())
-                        .andReturn()
-                        .getResponse();
+            mvc.perform(get("/dictionary-data").param("dictType", "sample"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
         var argument = ArgumentCaptor.forClass(DictDataPageQry.class);
         verify(query).execute(argument.capture());
         assertEquals("sample", argument.getValue().dictType());
@@ -93,7 +95,7 @@ class BoundaryRefactorContractTest {
         assertEquals(10, argument.getValue().pageSize());
         assertTrue(json.readTree(response.getContentAsString()).get("rows").isArray());
         mvc.perform(get("/dictionary-data").param("pageNum", "0"))
-                .andExpect(status().isBadRequest());
+            .andExpect(status().isBadRequest());
         verifyNoMoreInteractions(query);
     }
 
@@ -107,10 +109,10 @@ class BoundaryRefactorContractTest {
         when(query.execute(any())).thenReturn(List.of(tree));
         var mvc = MockMvcBuilders.standaloneSetup(new UserDeptController(query)).build();
         var response =
-                mvc.perform(get("/users/dept-tree").param("deptName", "研发").param("status", "1"))
-                        .andExpect(status().isOk())
-                        .andReturn()
-                        .getResponse();
+            mvc.perform(get("/users/dept-tree").param("deptName", "研发").param("status", "1"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
         var node = json.readTree(response.getContentAsString()).get("data").get(0);
         assertEquals("", node.get("label").asString());
         assertFalse(node.get("disabled").asBoolean());

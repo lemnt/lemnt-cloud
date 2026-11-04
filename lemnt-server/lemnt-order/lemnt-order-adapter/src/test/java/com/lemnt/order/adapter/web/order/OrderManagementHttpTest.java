@@ -42,24 +42,24 @@ class OrderManagementHttpTest {
     void emptyStatisticsKeepExactTwoDecimalMoneyAndNoFabricatedRevenue() throws Exception {
         var query = mock(OrderStatisticsQueryExe.class);
         when(query.execute(null))
-                .thenReturn(new OrderStatisticsDTO(0, BigDecimal.ZERO, 0, BigDecimal.ZERO));
+            .thenReturn(new OrderStatisticsDTO(0, BigDecimal.ZERO, 0, BigDecimal.ZERO));
         var builder = JsonMapper.builder();
         new JacksonConfig().customizer().customize(builder);
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new OrderManagementController(
-                                        query,
-                                        mock(OrderRemarkDetailQueryExe.class),
-                                        mock(OrderRemarkUpdateCmdExe.class),
-                                        mock(OrderAdjustPriceCmdExe.class),
-                                        mock(OrderAdjustAddressCmdExe.class)))
-                        .setMessageConverters(new JacksonJsonHttpMessageConverter(builder.build()))
-                        .build();
+            MockMvcBuilders.standaloneSetup(
+                    new OrderManagementController(
+                        query,
+                        mock(OrderRemarkDetailQueryExe.class),
+                        mock(OrderRemarkUpdateCmdExe.class),
+                        mock(OrderAdjustPriceCmdExe.class),
+                        mock(OrderAdjustAddressCmdExe.class)))
+                .setMessageConverters(new JacksonJsonHttpMessageConverter(builder.build()))
+                .build();
         mvc.perform(get("/trade/admin/orders/summary"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.orderCount").value(0))
-                .andExpect(jsonPath("$.data.orderPayPrice").value("0.00"))
-                .andExpect(jsonPath("$.data.afterSalePrice").value("0.00"));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.orderCount").value(0))
+            .andExpect(jsonPath("$.data.orderPayPrice").value("0.00"))
+            .andExpect(jsonPath("$.data.afterSalePrice").value("0.00"));
         verify(query).execute(null);
     }
 
@@ -68,23 +68,23 @@ class OrderManagementHttpTest {
         var price = mock(OrderAdjustPriceCmdExe.class);
         when(price.execute(any())).thenThrow(new ServiceException("订单已生成支付单，不能调价，请取消订单后重新下单", 409));
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new OrderManagementController(
-                                        mock(OrderStatisticsQueryExe.class),
-                                        mock(OrderRemarkDetailQueryExe.class),
-                                        mock(OrderRemarkUpdateCmdExe.class),
-                                        price,
-                                        mock(OrderAdjustAddressCmdExe.class)))
-                        .setControllerAdvice(new GlobalExceptionHandler())
-                        .build();
+            MockMvcBuilders.standaloneSetup(
+                    new OrderManagementController(
+                        mock(OrderStatisticsQueryExe.class),
+                        mock(OrderRemarkDetailQueryExe.class),
+                        mock(OrderRemarkUpdateCmdExe.class),
+                        price,
+                        mock(OrderAdjustAddressCmdExe.class)))
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
         mvc.perform(
-                        post("/trade/admin/orders/TR1/price-adjustment")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"totalAmount\":\"8.00\"}"))
-                .andExpect(status().isConflict())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.code").value("BUSINESS_RULE_VIOLATION"))
-                .andExpect(jsonPath("$.detail").value("订单已生成支付单，不能调价，请取消订单后重新下单"));
+                post("/trade/admin/orders/TR1/price-adjustment")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"totalAmount\":\"8.00\"}"))
+            .andExpect(status().isConflict())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(jsonPath("$.code").value("BUSINESS_RULE_VIOLATION"))
+            .andExpect(jsonPath("$.detail").value("订单已生成支付单，不能调价，请取消订单后重新下单"));
     }
 
     @Test
@@ -94,31 +94,31 @@ class OrderManagementHttpTest {
         var builder = JsonMapper.builder();
         new JacksonConfig().customizer().customize(builder);
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new OrderManagementController(
-                                        mock(OrderStatisticsQueryExe.class),
-                                        mock(OrderRemarkDetailQueryExe.class),
-                                        mock(OrderRemarkUpdateCmdExe.class),
-                                        price,
-                                        address))
-                        .setMessageConverters(new JacksonJsonHttpMessageConverter(builder.build()))
-                        .build();
+            MockMvcBuilders.standaloneSetup(
+                    new OrderManagementController(
+                        mock(OrderStatisticsQueryExe.class),
+                        mock(OrderRemarkDetailQueryExe.class),
+                        mock(OrderRemarkUpdateCmdExe.class),
+                        price,
+                        address))
+                .setMessageConverters(new JacksonJsonHttpMessageConverter(builder.build()))
+                .build();
 
         mvc.perform(
-                        post("/trade/admin/orders/TR1/price-adjustment")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"totalAmount\":\"88.00\"}"))
-                .andExpect(status().isOk());
+                post("/trade/admin/orders/TR1/price-adjustment")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"totalAmount\":\"88.00\"}"))
+            .andExpect(status().isOk());
         mvc.perform(
-                        put("/trade/admin/orders/TR1/address")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        "{\"receiverName\":\"李四\",\"receiverMobile\":\"13900000000\","
-                                                + "\"receiverAreaId\":110102,\"receiverDetailAddress\":\"新地址\"}"))
-                .andExpect(status().isOk());
+                put("/trade/admin/orders/TR1/address")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        "{\"receiverName\":\"李四\",\"receiverMobile\":\"13900000000\","
+                            + "\"receiverAreaId\":110102,\"receiverDetailAddress\":\"新地址\"}"))
+            .andExpect(status().isOk());
 
         verify(price).execute(new OrderAdjustPriceCmd("TR1", new BigDecimal("88.00"), 9L));
         verify(address)
-                .execute(new OrderAdjustAddressCmd("TR1", "李四", "13900000000", 110102L, "新地址", 9L));
+            .execute(new OrderAdjustAddressCmd("TR1", "李四", "13900000000", 110102L, "新地址", 9L));
     }
 }

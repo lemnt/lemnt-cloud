@@ -11,15 +11,23 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** TradeOrder 表领域存储接口。 */
+/**
+ * TradeOrder 表领域存储接口。
+ */
 public interface TradeOrderGateway {
-    /** 按精确订单号或全部订单统计数量与应付金额。 */
+    /**
+     * 按精确订单号或全部订单统计数量与应付金额。
+     */
     OrderTotal total(String orderNo);
 
-    /** 读取后台备注，不修改财务或履约状态。 */
+    /**
+     * 读取后台备注，不修改财务或履约状态。
+     */
     String remark(String orderNo);
 
-    /** 修改后台备注，支持空字符串清除。 */
+    /**
+     * 修改后台备注，支持空字符串清除。
+     */
     boolean updateRemark(String orderNo, String remark);
 
     /**
@@ -27,7 +35,9 @@ public interface TradeOrderGateway {
      */
     OrderPage orders(FulfillmentFilter filter);
 
-    /** 按状态与评价状态统计会员本人订单数量。 */
+    /**
+     * 按状态与评价状态统计会员本人订单数量。
+     */
     List<OrderStatusCount> memberStatusCounts(Long memberId);
 
     /**
@@ -40,30 +50,44 @@ public interface TradeOrderGateway {
      */
     boolean transitionStatus(String orderNo, String expectedStatus, String targetStatus);
 
-    /** 后台调价：仅把原金额改为新金额，调用方持有订单行锁。 */
+    /**
+     * 后台调价：仅把原金额改为新金额，调用方持有订单行锁。
+     */
     boolean updateTotalAmount(String orderNo, BigDecimal expected, BigDecimal next);
 
-    /** 后台改址：仅未发货快递单可更新收件快照。 */
+    /**
+     * 后台改址：仅未发货快递单可更新收件快照。
+     */
     boolean updateAddress(
-            String orderNo,
-            String receiverName,
-            String receiverMobile,
-            Long receiverAreaId,
-            String receiverDetailAddress);
+        String orderNo,
+        String receiverName,
+        String receiverMobile,
+        Long receiverAreaId,
+        String receiverDetailAddress);
 
-    /** 同时确认收货状态和真实收货时间，调用方持有订单锁。 */
+    /**
+     * 同时确认收货状态和真实收货时间，调用方持有订单锁。
+     */
     boolean completeReceipt(String orderNo, LocalDateTime receivedAt);
 
-    /** 将已支付订单标记为自提，写入门店和核销码。 */
+    /**
+     * 将已支付订单标记为自提，写入门店和核销码。
+     */
     boolean assignPickUp(String orderNo, Long storeId, String verifyCode);
 
-    /** 按核销码读取订单主体。 */
+    /**
+     * 按核销码读取订单主体。
+     */
     TradeOrder findHeaderByPickUpCode(String verifyCode);
 
-    /** 自提核销完成订单，调用方已持有订单锁。 */
+    /**
+     * 自提核销完成订单，调用方已持有订单锁。
+     */
     boolean completePickUp(String orderNo, LocalDateTime time);
 
-    /** 有界扫描及持锁后重新核验到期条件。 */
+    /**
+     * 有界扫描及持锁后重新核验到期条件。
+     */
     List<String> commentExpired(LocalDateTime cutoff, int limit);
 
     boolean commentExpired(String orderNo, LocalDateTime cutoff);
@@ -78,15 +102,23 @@ public interface TradeOrderGateway {
      */
     List<TradeOrder> findPendingPaymentCreatedBefore(LocalDateTime deadline, int limit);
 
-    /** 调用方已持有订单锁，保存真实评价汇总状态。 */
+    /**
+     * 调用方已持有订单锁，保存真实评价汇总状态。
+     */
     boolean updateCommentState(OrderCommentState value);
 
-    /** 保存订单主体，明细由应用层编排。 */
+    /**
+     * 保存订单主体，明细由应用层编排。
+     */
     TradeOrder saveHeader(TradeOrder order);
 
-    /** 读取订单主体。 */
+    /**
+     * 读取订单主体。
+     */
     TradeOrder findHeader(String orderNo);
 
-    /** 锁定订单主体。 */
+    /**
+     * 锁定订单主体。
+     */
     TradeOrder lockHeader(String orderNo);
 }

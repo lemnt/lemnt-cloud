@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
-/** 用户登录锁定接口。 */
+/**
+ * 用户登录锁定接口。
+ */
 @Tag(name = "用户登录锁定")
 @RestController
 @RequestMapping("/users")

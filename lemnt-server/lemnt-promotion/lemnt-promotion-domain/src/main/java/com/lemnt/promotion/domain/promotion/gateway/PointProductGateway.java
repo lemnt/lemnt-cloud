@@ -4,7 +4,9 @@ import com.lemnt.promotion.domain.promotion.model.PointProduct;
 
 import java.util.List;
 
-/** 积分商城活动商品存储契约。 */
+/**
+ * 积分商城活动商品存储契约。
+ */
 public interface PointProductGateway {
     List<PointProduct> byActivityId(Long activityId);
 
@@ -20,6 +22,8 @@ public interface PointProductGateway {
 
     boolean increaseStock(Long activityId, Long skuId, int count);
 
-    /** 关闭活动时同步商品快照状态。 */
+    /**
+     * 关闭活动时同步商品快照状态。
+     */
     void updateStatus(Long activityId, Integer status);
 }

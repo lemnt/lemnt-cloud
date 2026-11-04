@@ -17,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 后台订单日志查询。 */
+/**
+ * 后台订单日志查询。
+ */
 @Tag(name = "订单操作日志")
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +27,9 @@ import java.util.List;
 public class OrderLogController {
     private final OrderLogListQueryExe logs;
 
-    /** 仅持有订单查询权限的后台用户可读。 */
+    /**
+     * 仅持有订单查询权限的后台用户可读。
+     */
     @GetMapping("/{orderNo}/logs")
     @Operation(summary = "查询订单操作日志")
     @RequiresPermissions("trade:fulfillment:query")

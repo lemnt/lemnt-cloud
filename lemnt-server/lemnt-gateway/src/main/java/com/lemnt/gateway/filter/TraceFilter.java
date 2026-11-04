@@ -18,7 +18,8 @@ import reactor.core.publisher.Mono;
 @Component
 public class TraceFilter implements GlobalFilter, Ordered {
 
-    @Autowired private SnowflakeUtils snowflakeUtils;
+    @Autowired
+    private SnowflakeUtils snowflakeUtils;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, @NonNull GatewayFilterChain chain) {
@@ -35,7 +36,7 @@ public class TraceFilter implements GlobalFilter, Ordered {
         ServerHttpRequest newRequest = addTraceId(request, traceId);
         ServerWebExchange newExchange = exchange.mutate().request(newRequest).build();
         return chain.filter(newExchange)
-                .doFinally(signal -> MDC.remove(SecurityConstants.TRACE_ID));
+            .doFinally(signal -> MDC.remove(SecurityConstants.TRACE_ID));
     }
 
     private ServerHttpRequest addTraceId(ServerHttpRequest request, String traceId) {

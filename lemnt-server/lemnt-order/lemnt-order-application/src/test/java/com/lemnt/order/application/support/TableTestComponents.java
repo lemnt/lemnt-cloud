@@ -13,7 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 
-/** 测试夹具：装配真实按表组件和事务代理，不替代业务实现。 */
+/**
+ * 测试夹具：装配真实按表组件和事务代理，不替代业务实现。
+ */
 public final class TableTestComponents {
     private final SqlSessionTemplate session;
     private final DataSource source;
@@ -37,22 +39,22 @@ public final class TableTestComponents {
         }
         try {
             var implementation =
-                    type.isInterface()
-                            ? Class.forName(
-                                    type.getName().replace(".domain.", ".infrastructure.") + "Impl")
-                            : type;
+                type.isInterface()
+                    ? Class.forName(
+                    type.getName().replace(".domain.", ".infrastructure.") + "Impl")
+                    : type;
             var constructor =
-                    Arrays.stream(implementation.getConstructors())
-                            .max(Comparator.comparingInt(Constructor::getParameterCount))
-                            .orElseThrow();
+                Arrays.stream(implementation.getConstructors())
+                    .max(Comparator.comparingInt(Constructor::getParameterCount))
+                    .orElseThrow();
             var args = Arrays.stream(constructor.getParameterTypes()).map(this::get).toArray();
             var target = constructor.newInstance(args);
             var proxy = new ProxyFactory(target);
             proxy.setProxyTargetClass(!type.isInterface());
             proxy.addAdvice(
-                    new TransactionInterceptor(
-                            new DataSourceTransactionManager(source),
-                            new AnnotationTransactionAttributeSource()));
+                new TransactionInterceptor(
+                    new DataSourceTransactionManager(source),
+                    new AnnotationTransactionAttributeSource()));
             var value = proxy.getProxy();
             components.put(type, value);
             return type.cast(value);

@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 后台改址执行器。 */
+/**
+ * 后台改址执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderAdjustAddressCmdExe {

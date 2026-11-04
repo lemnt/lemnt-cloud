@@ -33,13 +33,15 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 public class AuthFilter implements GlobalFilter, Ordered {
 
     private static final Set<String> PUBLIC_APP_POST_PATHS =
-            Set.of(
-                    "/member/app/auth/login",
-                    "/member/app/auth/refresh-token",
-                    "/member/app/auth/logout");
+        Set.of(
+            "/member/app/auth/login",
+            "/member/app/auth/refresh-token",
+            "/member/app/auth/logout");
 
-    @Autowired private IgnoreWhiteProperties ignoreWhite;
-    @Autowired private TokenService tokenService;
+    @Autowired
+    private IgnoreWhiteProperties ignoreWhite;
+    @Autowired
+    private TokenService tokenService;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, @NonNull GatewayFilterChain chain) {
@@ -49,8 +51,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
         ServerWebExchange clean = clearIdentityHeaders(exchange);
         // 小程序公开规则单独按完整路径匹配，不受后台宽泛白名单影响。
         if (appRequest
-                ? isPublicAppRequest(request.getMethod(), path)
-                : path.startsWith("/open") || StringUtils.matches(path, ignoreWhite.getWhites())) {
+            ? isPublicAppRequest(request.getMethod(), path)
+            : path.startsWith("/open") || StringUtils.matches(path, ignoreWhite.getWhites())) {
             return chain.filter(clean);
         }
         String token = getToken(request);
@@ -58,7 +60,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
             return ServletUtils.unauthorized(exchange.getResponse(), "令牌不能为空");
         }
         String userType =
-                appRequest ? SecurityConstants.MEMBER_USER_TYPE : SecurityConstants.ADMIN_USER_TYPE;
+            appRequest ? SecurityConstants.MEMBER_USER_TYPE : SecurityConstants.ADMIN_USER_TYPE;
         SecurityUser loginUser = tokenService.getSecurityUser(token, userType);
         if (loginUser == null || loginUser.getUserId() == null) {
             return ServletUtils.unauthorized(exchange.getResponse(), "登录状态已过期或令牌无效");
@@ -76,26 +78,30 @@ public class AuthFilter implements GlobalFilter, Ordered {
         addHeader(builder, SecurityConstants.HEADER_USER_ID, loginUser.getUserId());
         addHeader(builder, SecurityConstants.HEADER_USER_NAME, loginUser.getUsername());
         String roleKey =
-                loginUser.getRoles() == null
-                        ? loginUser.getRoleKey()
-                        : String.join(",", loginUser.getRoles());
+            loginUser.getRoles() == null
+                ? loginUser.getRoleKey()
+                : String.join(",", loginUser.getRoles());
         addHeader(builder, SecurityConstants.HEADER_ROLE_KEY, roleKey);
         return chain.filter(clean.mutate().request(builder.build()).build());
     }
 
-    /** 通过完整接口路径选择会员身份域，不匹配近似前缀。 */
+    /**
+     * 通过完整接口路径选择会员身份域，不匹配近似前缀。
+     */
     private boolean isAppPath(String path) {
         return path.equals("/system/files/app/upload")
-                || path.equals("/files/app/upload")
-                || path.equals("/member/app")
-                || path.startsWith("/member/app/")
-                || path.equals("/mall/app")
-                || path.startsWith("/mall/app/")
-                || path.equals("/trade/app")
-                || path.startsWith("/trade/app/");
+            || path.equals("/files/app/upload")
+            || path.equals("/member/app")
+            || path.startsWith("/member/app/")
+            || path.equals("/mall/app")
+            || path.startsWith("/mall/app/")
+            || path.equals("/trade/app")
+            || path.startsWith("/trade/app/");
     }
 
-    /** 保留已有小程序公开读接口、登录入口。 */
+    /**
+     * 保留已有小程序公开读接口、登录入口。
+     */
     private boolean isPublicAppRequest(HttpMethod method, String path) {
         if (method == HttpMethod.POST) {
             return PUBLIC_APP_POST_PATHS.contains(path);
@@ -104,61 +110,67 @@ public class AuthFilter implements GlobalFilter, Ordered {
             return path.matches("/mall/app/banners/[1-9][0-9]{0,18}/browse");
         }
         return method == HttpMethod.GET
-                && (path.equals("/mall/app/comments")
-                        || path.equals("/mall/app/categories")
-                        || path.equals("/mall/app/products")
-                        || path.equals("/mall/app/banners")
-                        || path.equals("/mall/app/diy/template/used")
-                        || path.equals("/mall/app/promotion-hub/sections")
-                        || path.matches("/mall/app/promotion-hub/discount/[1-9][0-9]{0,18}")
-                        || path.matches("/mall/app/promotion-hub/reward/[1-9][0-9]{0,18}")
-                        || path.matches("/mall/app/diy/template/[1-9][0-9]{0,18}")
-                        || path.matches("/mall/app/diy/page/[1-9][0-9]{0,18}")
-                        || path.matches("/mall/app/products/[1-9][0-9]{0,18}"));
+            && (path.equals("/mall/app/comments")
+            || path.equals("/mall/app/categories")
+            || path.equals("/mall/app/products")
+            || path.equals("/mall/app/banners")
+            || path.equals("/mall/app/diy/template/used")
+            || path.equals("/mall/app/promotion-hub/sections")
+            || path.matches("/mall/app/promotion-hub/discount/[1-9][0-9]{0,18}")
+            || path.matches("/mall/app/promotion-hub/reward/[1-9][0-9]{0,18}")
+            || path.matches("/mall/app/diy/template/[1-9][0-9]{0,18}")
+            || path.matches("/mall/app/diy/page/[1-9][0-9]{0,18}")
+            || path.matches("/mall/app/products/[1-9][0-9]{0,18}"));
     }
 
-    /** 清除客户端身份头，身份只从已校验的公共会话写入。 */
+    /**
+     * 清除客户端身份头，身份只从已校验的公共会话写入。
+     */
     private ServerWebExchange clearIdentityHeaders(ServerWebExchange exchange) {
         ServerHttpRequest request =
-                exchange.getRequest()
-                        .mutate()
-                        .headers(
-                                headers -> {
-                                    for (String header :
-                                            Set.of(
-                                                    SecurityConstants.HEADER_USER_ID,
-                                                    SecurityConstants.HEADER_USER_KEY,
-                                                    SecurityConstants.HEADER_USER_NAME,
-                                                    SecurityConstants.HEADER_ROLE_KEY,
-                                                    SecurityConstants.HEADER_ROLE_PERMISSION,
-                                                    SecurityConstants.HEADER_LOGIN_USER,
-                                                    "X-Lemnt-Login-Ip",
-                                                    "X-Member-Id",
-                                                    "memberId")) {
-                                        headers.remove(header);
-                                    }
-                                    // 仅使用连接对端，不信任客户端转发头；代理链需要另行配置。
-                                    var remote = exchange.getRequest().getRemoteAddress();
-                                    if (remote != null && remote.getAddress() != null) {
-                                        headers.set(
-                                                "X-Lemnt-Login-Ip",
-                                                remote.getAddress()
-                                                        .getHostAddress()
-                                                        .split("%", 2)[0]);
-                                    }
-                                })
-                        .build();
+            exchange.getRequest()
+                .mutate()
+                .headers(
+                    headers -> {
+                        for (String header :
+                            Set.of(
+                                SecurityConstants.HEADER_USER_ID,
+                                SecurityConstants.HEADER_USER_KEY,
+                                SecurityConstants.HEADER_USER_NAME,
+                                SecurityConstants.HEADER_ROLE_KEY,
+                                SecurityConstants.HEADER_ROLE_PERMISSION,
+                                SecurityConstants.HEADER_LOGIN_USER,
+                                "X-Lemnt-Login-Ip",
+                                "X-Member-Id",
+                                "memberId")) {
+                            headers.remove(header);
+                        }
+                        // 仅使用连接对端，不信任客户端转发头；代理链需要另行配置。
+                        var remote = exchange.getRequest().getRemoteAddress();
+                        if (remote != null && remote.getAddress() != null) {
+                            headers.set(
+                                "X-Lemnt-Login-Ip",
+                                remote.getAddress()
+                                    .getHostAddress()
+                                    .split("%", 2)[0]);
+                        }
+                    })
+                .build();
         return exchange.mutate().request(request).build();
     }
 
-    /** 写入经过编码的可信身份信息。 */
+    /**
+     * 写入经过编码的可信身份信息。
+     */
     private void addHeader(ServerHttpRequest.Builder builder, String name, Object value) {
         if (value != null) {
             builder.header(name, ServletUtils.urlEncode(value.toString()));
         }
     }
 
-    /** 与后台保持一致，提取公共访问令牌。 */
+    /**
+     * 与后台保持一致，提取公共访问令牌。
+     */
     private String getToken(ServerHttpRequest request) {
         String token = request.getHeaders().getFirst(SecurityConstants.AUTHORIZATION_HEADER);
         if (StringUtils.isNotBlank(token) && token.startsWith(TokenConstants.PREFIX)) {
@@ -167,12 +179,14 @@ public class AuthFilter implements GlobalFilter, Ordered {
         return token;
     }
 
-    /** StripPrefix 执行后仍使用进入网关时的完整路径。 */
+    /**
+     * StripPrefix 执行后仍使用进入网关时的完整路径。
+     */
     private String getOriginalPath(ServerWebExchange exchange, ServerHttpRequest request) {
         Set<URI> originalUrls = exchange.getAttribute(GATEWAY_ORIGINAL_REQUEST_URL_ATTR);
         return originalUrls == null || originalUrls.isEmpty()
-                ? request.getURI().getPath()
-                : originalUrls.iterator().next().getPath();
+            ? request.getURI().getPath()
+            : originalUrls.iterator().next().getPath();
     }
 
     @Override

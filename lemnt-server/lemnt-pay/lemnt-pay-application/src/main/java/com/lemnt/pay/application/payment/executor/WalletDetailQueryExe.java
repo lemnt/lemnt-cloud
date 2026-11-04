@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 后台钱包详情查询，不存在返回空。 */
+/**
+ * 后台钱包详情查询，不存在返回空。
+ */
 @Component
 @RequiredArgsConstructor
 public class WalletDetailQueryExe {

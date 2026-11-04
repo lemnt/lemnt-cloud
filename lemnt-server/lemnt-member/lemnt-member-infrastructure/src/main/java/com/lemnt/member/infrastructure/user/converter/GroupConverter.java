@@ -7,20 +7,21 @@ import com.lemnt.member.infrastructure.user.dataobject.GroupDO;
  * 分组转换器。
  */
 public final class GroupConverter {
-    private GroupConverter() {}
+    private GroupConverter() {
+    }
 
     /**
      * 转换为领域对象。
      */
     public static Group toEntity(GroupDO row) {
         return row == null
-                ? null
-                : new Group(
-                        row.getId(),
-                        row.getName(),
-                        row.getRemark(),
-                        row.getStatus(),
-                        row.getCreateTime());
+            ? null
+            : new Group(
+            row.getId(),
+            row.getName(),
+            row.getRemark(),
+            row.getStatus(),
+            row.getCreateTime());
     }
 
     /**

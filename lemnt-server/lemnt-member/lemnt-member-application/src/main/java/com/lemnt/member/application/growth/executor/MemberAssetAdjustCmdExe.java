@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 资产调整命令执行器。 */
+/**
+ * 资产调整命令执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberAssetAdjustCmdExe {
@@ -21,11 +23,11 @@ public class MemberAssetAdjustCmdExe {
      */
     public AssetRecordDTO execute(AssetAdjustCmd cmd) {
         return MemberGrowthDTOConverter.toAssetRecordDTO(
-                memberGrowthService.adjustAsset(
-                        cmd.memberId(),
-                        cmd.assetType(),
-                        cmd.delta(),
-                        cmd.requestNo(),
-                        cmd.reason()));
+            memberGrowthService.adjustAsset(
+                cmd.memberId(),
+                cmd.assetType(),
+                cmd.delta(),
+                cmd.requestNo(),
+                cmd.reason()));
     }
 }

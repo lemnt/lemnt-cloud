@@ -2,21 +2,24 @@ package com.lemnt.order.domain.config.model;
 
 import java.util.List;
 
-/** 交易配置组业务对象，金额以分为单位。 */
+/**
+ * 交易配置组业务对象，金额以分为单位。
+ */
 public record TradeConfig(
-        Long id,
-        List<String> afterSaleRefundReasons,
-        List<String> afterSaleReturnReasons,
-        Boolean deliveryExpressFreeEnabled,
-        Integer deliveryExpressFreePrice,
-        Boolean deliveryPickUpEnabled,
-        Boolean brokerageEnabled,
-        Integer brokerageEnabledCondition,
-        Integer brokerageBindMode,
-        List<String> brokeragePosterUrls,
-        Integer brokerageFirstPercent,
-        Integer brokerageSecondPercent,
-        Integer brokerageWithdrawMinPrice,
-        Integer brokerageWithdrawFeePercent,
-        Integer brokerageFrozenDays,
-        List<Integer> brokerageWithdrawTypes) {}
+    Long id,
+    List<String> afterSaleRefundReasons,
+    List<String> afterSaleReturnReasons,
+    Boolean deliveryExpressFreeEnabled,
+    Integer deliveryExpressFreePrice,
+    Boolean deliveryPickUpEnabled,
+    Boolean brokerageEnabled,
+    Integer brokerageEnabledCondition,
+    Integer brokerageBindMode,
+    List<String> brokeragePosterUrls,
+    Integer brokerageFirstPercent,
+    Integer brokerageSecondPercent,
+    Integer brokerageWithdrawMinPrice,
+    Integer brokerageWithdrawFeePercent,
+    Integer brokerageFrozenDays,
+    List<Integer> brokerageWithdrawTypes) {
+}

@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 装修模板仅操作对应表。 */
+/**
+ * 装修模板仅操作对应表。
+ */
 @Component
 @RequiredArgsConstructor
 public class DiyTemplateGatewayImpl implements DiyTemplateGateway {
@@ -28,19 +30,19 @@ public class DiyTemplateGatewayImpl implements DiyTemplateGateway {
     @Override
     public DiyTemplate findByName(String name) {
         return DiyConverter.model(
-                mapper.selectOne(
-                        Wrappers.<DiyTemplateDO>lambdaQuery()
-                                .eq(DiyTemplateDO::getName, name)
-                                .last("LIMIT 1")));
+            mapper.selectOne(
+                Wrappers.<DiyTemplateDO>lambdaQuery()
+                    .eq(DiyTemplateDO::getName, name)
+                    .last("LIMIT 1")));
     }
 
     @Override
     public DiyTemplate findUsed() {
         return DiyConverter.model(
-                mapper.selectOne(
-                        Wrappers.<DiyTemplateDO>lambdaQuery()
-                                .eq(DiyTemplateDO::getUsed, true)
-                                .last("LIMIT 1")));
+            mapper.selectOne(
+                Wrappers.<DiyTemplateDO>lambdaQuery()
+                    .eq(DiyTemplateDO::getUsed, true)
+                    .last("LIMIT 1")));
     }
 
     @Override
@@ -57,17 +59,17 @@ public class DiyTemplateGatewayImpl implements DiyTemplateGateway {
     @Override
     public PageResult<DiyTemplate> page(DiyTemplateFilter filter) {
         var page =
-                mapper.selectPage(
-                        new Page<DiyTemplateDO>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.<DiyTemplateDO>lambdaQuery()
-                                .like(
-                                        filter.name() != null && !filter.name().isBlank(),
-                                        DiyTemplateDO::getName,
-                                        filter.name())
-                                .eq(filter.used() != null, DiyTemplateDO::getUsed, filter.used())
-                                .orderByDesc(DiyTemplateDO::getId));
+            mapper.selectPage(
+                new Page<DiyTemplateDO>(filter.pageNum(), filter.pageSize()),
+                Wrappers.<DiyTemplateDO>lambdaQuery()
+                    .like(
+                        filter.name() != null && !filter.name().isBlank(),
+                        DiyTemplateDO::getName,
+                        filter.name())
+                    .eq(filter.used() != null, DiyTemplateDO::getUsed, filter.used())
+                    .orderByDesc(DiyTemplateDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(DiyConverter::model).toList(), page.getTotal());
+            page.getRecords().stream().map(DiyConverter::model).toList(), page.getTotal());
     }
 
     @Override

@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.Comparator;
 import java.util.List;
 
-/** 商品库存只处理已核验的订单事件；重复、乱序或失败都不能提前提交消费凭证。 */
+/**
+ * 商品库存只处理已核验的订单事件；重复、乱序或失败都不能提前提交消费凭证。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderStockEventHandler {
@@ -77,10 +79,10 @@ public class OrderStockEventHandler {
 
     private List<OrderStockLineDTO> lines(List<OrderStockLineDTO> values) {
         if (values == null
-                || values.isEmpty()
-                || values.stream().anyMatch(v -> v.skuId() == null || v.quantity() < 1)
-                || values.stream().map(OrderStockLineDTO::skuId).distinct().count()
-                        != values.size()) throw new IllegalArgumentException("库存行不能为空或重复");
+            || values.isEmpty()
+            || values.stream().anyMatch(v -> v.skuId() == null || v.quantity() < 1)
+            || values.stream().map(OrderStockLineDTO::skuId).distinct().count()
+            != values.size()) throw new IllegalArgumentException("库存行不能为空或重复");
         return values.stream().sorted(Comparator.comparing(OrderStockLineDTO::skuId)).toList();
     }
 }

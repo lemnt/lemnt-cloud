@@ -21,7 +21,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 小程序营销活动聚合与规则详情。 */
+/**
+ * 小程序营销活动聚合与规则详情。
+ */
 @Tag(name = "小程序活动聚合")
 @RestController
 @RequestMapping("/mall/app/promotion-hub")
@@ -35,7 +37,7 @@ public class AppPromotionHubController {
     @Operation(summary = "当前进行中的营销活动聚合")
     public R<List<AppPromotionSectionRes>> sections(@RequestParam(required = false) Integer limit) {
         return R.ok(
-                sections.execute(limit).stream().map(AppPromotionHubConverter::section).toList());
+            sections.execute(limit).stream().map(AppPromotionHubConverter::section).toList());
     }
 
     @GetMapping("/discount/{id}")

@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** mall_product_spec_value表存储实现。 */
+/**
+ * mall_product_spec_value表存储实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductSpecValueGatewayImpl implements ProductSpecValueGateway {
@@ -36,12 +38,12 @@ public class ProductSpecValueGatewayImpl implements ProductSpecValueGateway {
         if (row.getId() == null) {
             productSpecValueMapper.insert(row);
         } else if (productSpecValueMapper.update(
-                        null,
-                        Wrappers.lambdaUpdate(ProductSpecValueDO.class)
-                                .eq(ProductSpecValueDO::getId, row.getId())
-                                .set(ProductSpecValueDO::getName, row.getName())
-                                .set(ProductSpecValueDO::getRemark, row.getRemark()))
-                != 1) {
+            null,
+            Wrappers.lambdaUpdate(ProductSpecValueDO.class)
+                .eq(ProductSpecValueDO::getId, row.getId())
+                .set(ProductSpecValueDO::getName, row.getName())
+                .set(ProductSpecValueDO::getRemark, row.getRemark()))
+            != 1) {
             throw new IllegalArgumentException("字典记录不存在");
         }
         return find(row.getId());
@@ -55,20 +57,20 @@ public class ProductSpecValueGatewayImpl implements ProductSpecValueGateway {
     @Override
     public PageResult<ProductSpecValue> page(ProductSpecFilter filter) {
         var page =
-                productSpecValueMapper.selectPage(
-                        new Page<>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.lambdaQuery(ProductSpecValueDO.class)
-                                .like(
-                                        filter.name() != null,
-                                        ProductSpecValueDO::getName,
-                                        filter.name())
-                                .eq(
-                                        filter.specId() != null,
-                                        ProductSpecValueDO::getSpecId,
-                                        filter.specId())
-                                .orderByDesc(ProductSpecValueDO::getId));
+            productSpecValueMapper.selectPage(
+                new Page<>(filter.pageNum(), filter.pageSize()),
+                Wrappers.lambdaQuery(ProductSpecValueDO.class)
+                    .like(
+                        filter.name() != null,
+                        ProductSpecValueDO::getName,
+                        filter.name())
+                    .eq(
+                        filter.specId() != null,
+                        ProductSpecValueDO::getSpecId,
+                        filter.specId())
+                    .orderByDesc(ProductSpecValueDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(ProductSpecValueConverter::toModel).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(ProductSpecValueConverter::toModel).toList(),
+            page.getTotal());
     }
 }

@@ -22,7 +22,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 后台支付退款交易管理接口。 */
+/**
+ * 后台支付退款交易管理接口。
+ */
 @Tag(name = "支付退单管理")
 @RestController
 @RequestMapping("/trade/admin/payment-refunds")
@@ -31,18 +33,22 @@ public class PaymentRefundController {
     private final PaymentRefundPageQueryExe pageQuery;
     private final PaymentRefundDetailQueryExe detailQuery;
 
-    /** 分页查询本地交易记录。 */
+    /**
+     * 分页查询本地交易记录。
+     */
     @GetMapping
     @Operation(summary = "分页查询支付退款交易")
     @RequiresPermissions("trade:payment-refund:list")
     public R<PaymentRefundPageRes> page(@Valid @ModelAttribute PaymentRefundPageReq req) {
         var page = pageQuery.execute(PaymentRefundReqConverter.page(req));
         return R.page(
-                page.getRecords().stream().map(PaymentRefundResConverter::page).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(PaymentRefundResConverter::page).toList(),
+            page.getTotal());
     }
 
-    /** 查询本地交易详情。 */
+    /**
+     * 查询本地交易详情。
+     */
     @GetMapping("/{no}")
     @Operation(summary = "查询支付退款交易详情")
     @RequiresPermissions("trade:payment-refund:query")

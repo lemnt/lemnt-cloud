@@ -8,13 +8,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 删除模板保留已发券权益。 */
+/**
+ * 删除模板保留已发券权益。
+ */
 @Component
 @RequiredArgsConstructor
 public class CouponTemplateDeleteCmdExe {
     private final CouponTemplateGateway templates;
 
-    /** 通过模板行锁与并发发券串行化。 */
+    /**
+     * 通过模板行锁与并发发券串行化。
+     */
     @Transactional(rollbackFor = Exception.class)
     public boolean execute(Long id) {
         CouponRules.id(id);

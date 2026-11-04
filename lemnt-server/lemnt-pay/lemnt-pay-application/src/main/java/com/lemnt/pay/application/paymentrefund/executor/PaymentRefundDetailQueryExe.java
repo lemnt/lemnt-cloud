@@ -9,13 +9,17 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 支付退款管理查询执行器。 */
+/**
+ * 支付退款管理查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class PaymentRefundDetailQueryExe {
     private final PaymentRefundGateway gateway;
 
-    /** 按交易编号查询详情。 */
+    /**
+     * 按交易编号查询详情。
+     */
     public PaymentRefundDTO execute(String no) {
         return PaymentRefundDTOConverter.toDTO(gateway.find(PaymentRules.text(no, 40)));
     }

@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 售后日志单表持久化实现。 */
+/**
+ * 售后日志单表持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class AfterSaleLogGatewayImpl implements AfterSaleLogGateway {
@@ -27,12 +29,12 @@ public class AfterSaleLogGatewayImpl implements AfterSaleLogGateway {
     @Override
     public List<AfterSaleLog> byAfterSaleId(Long afterSaleId) {
         return mapper
-                .selectList(
-                        Wrappers.<AfterSaleLogDO>lambdaQuery()
-                                .eq(AfterSaleLogDO::getAfterSaleId, afterSaleId)
-                                .orderByAsc(AfterSaleLogDO::getId))
-                .stream()
-                .map(AfterSaleLogConverter::toModel)
-                .toList();
+            .selectList(
+                Wrappers.<AfterSaleLogDO>lambdaQuery()
+                    .eq(AfterSaleLogDO::getAfterSaleId, afterSaleId)
+                    .orderByAsc(AfterSaleLogDO::getId))
+            .stream()
+            .map(AfterSaleLogConverter::toModel)
+            .toList();
     }
 }

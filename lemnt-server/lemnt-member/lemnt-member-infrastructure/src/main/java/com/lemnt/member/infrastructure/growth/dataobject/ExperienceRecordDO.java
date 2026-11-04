@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/** 源经验表字段；兼容保留原业务码和原因，不与标题混淆。 */
+/**
+ * 源经验表字段；兼容保留原业务码和原因，不与标题混淆。
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("member_experience_record")

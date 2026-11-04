@@ -13,20 +13,22 @@ import java.util.List;
  * @author wangxx
  */
 public class TreeSelectResConverter {
-    /** 仅用户部门入口保留旧领域节点的字段包含规则，其余树接口沿用TreeSelectRes。 */
+    /**
+     * 仅用户部门入口保留旧领域节点的字段包含规则，其余树接口沿用TreeSelectRes。
+     */
     public static List<UserDeptTreeRes> toUserDeptResList(List<TreeSelect> list) {
         if (list == null) {
             return null;
         }
         return list.stream()
-                .map(
-                        tree ->
-                                new UserDeptTreeRes(
-                                        tree.getId(),
-                                        tree.getLabel(),
-                                        tree.isDisabled(),
-                                        toUserDeptResList(tree.getChildren())))
-                .toList();
+            .map(
+                tree ->
+                    new UserDeptTreeRes(
+                        tree.getId(),
+                        tree.getLabel(),
+                        tree.isDisabled(),
+                        toUserDeptResList(tree.getChildren())))
+            .toList();
     }
 
     /**
@@ -37,7 +39,7 @@ public class TreeSelectResConverter {
             return null;
         }
         return new TreeSelectRes(
-                tree.getId(), tree.getLabel(), tree.isDisabled(), toResList(tree.getChildren()));
+            tree.getId(), tree.getLabel(), tree.isDisabled(), toResList(tree.getChildren()));
     }
 
     /**

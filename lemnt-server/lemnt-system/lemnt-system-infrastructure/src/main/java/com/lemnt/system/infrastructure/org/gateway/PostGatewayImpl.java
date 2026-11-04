@@ -91,7 +91,7 @@ public class PostGatewayImpl implements PostGateway {
      */
     private List<PostDO> selectPostAllRow() {
         return postMapper.selectList(
-                Wrappers.<PostDO>lambdaQuery().orderByAsc(PostDO::getPostSort));
+            Wrappers.<PostDO>lambdaQuery().orderByAsc(PostDO::getPostSort));
     }
 
     /**
@@ -102,7 +102,7 @@ public class PostGatewayImpl implements PostGateway {
      */
     private PostDO checkPostNameUniqueRow(String postName) {
         return postMapper.selectOne(
-                Wrappers.<PostDO>lambdaQuery().eq(PostDO::getPostName, postName).last("limit 1"));
+            Wrappers.<PostDO>lambdaQuery().eq(PostDO::getPostName, postName).last("limit 1"));
     }
 
     /**
@@ -115,12 +115,14 @@ public class PostGatewayImpl implements PostGateway {
         return checkPostCodeUniqueRow(postCode, null);
     }
 
-    /** 按编码检查冲突，不过滤停用岗位；修改时排除自身。 */
+    /**
+     * 按编码检查冲突，不过滤停用岗位；修改时排除自身。
+     */
     private PostDO checkPostCodeUniqueRow(String postCode, Long excludePostId) {
         return postMapper.selectOne(
-                Wrappers.<PostDO>lambdaQuery()
-                        .eq(PostDO::getPostCode, postCode)
-                        .ne(excludePostId != null, PostDO::getPostId, excludePostId)
-                        .last("limit 1"));
+            Wrappers.<PostDO>lambdaQuery()
+                .eq(PostDO::getPostCode, postCode)
+                .ne(excludePostId != null, PostDO::getPostId, excludePostId)
+                .last("limit 1"));
     }
 }

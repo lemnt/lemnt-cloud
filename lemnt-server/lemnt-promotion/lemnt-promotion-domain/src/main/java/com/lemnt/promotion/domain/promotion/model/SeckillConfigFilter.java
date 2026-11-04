@@ -1,4 +1,7 @@
 package com.lemnt.promotion.domain.promotion.model;
 
-/** 秒杀时段分页条件。 */
-public record SeckillConfigFilter(String name, Integer status, int pageNum, int pageSize) {}
+/**
+ * 秒杀时段分页条件。
+ */
+public record SeckillConfigFilter(String name, Integer status, int pageNum, int pageSize) {
+}

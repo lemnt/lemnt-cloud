@@ -39,8 +39,8 @@ public class MemberPointConfigController {
     @RequiresPermissions("member:config:query")
     public R<ConfigRes> config() {
         return R.ok(
-                MemberGrowthResConverter.config(
-                        memberConfigDetailQueryExe.execute(new ConfigDetailQry())));
+            MemberGrowthResConverter.config(
+                memberConfigDetailQueryExe.execute(new ConfigDetailQry())));
     }
 
     @PutMapping("/config")

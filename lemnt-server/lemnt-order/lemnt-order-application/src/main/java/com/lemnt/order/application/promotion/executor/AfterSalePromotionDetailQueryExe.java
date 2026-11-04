@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-/** 查询退单生成时冻结的方案，不能把计划返积分展示成已到账。 */
+/**
+ * 查询退单生成时冻结的方案，不能把计划返积分展示成已到账。
+ */
 @Component
 @RequiredArgsConstructor
 public class AfterSalePromotionDetailQueryExe {
@@ -48,48 +50,48 @@ public class AfterSalePromotionDetailQueryExe {
         var result = new ArrayList<AfterSalePromotionDetailDTO.Promotion>();
         for (var row : promotions.refunds(List.of(afterSale.id()))) {
             var header =
-                    source.stream()
-                            .filter(
-                                    p ->
-                                            p.items().stream()
-                                                    .anyMatch(
-                                                            i ->
-                                                                    i.id().equals(
-                                                                                    row
-                                                                                            .orderItemPromotionId())))
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalStateException("退款优惠来源不一致"));
+                source.stream()
+                    .filter(
+                        p ->
+                            p.items().stream()
+                                .anyMatch(
+                                    i ->
+                                        i.id().equals(
+                                            row
+                                                .orderItemPromotionId())))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("退款优惠来源不一致"));
             result.add(
-                    new AfterSalePromotionDetailDTO.Promotion(
-                            header.promotionType(),
-                            header.promotionName(),
-                            row.refundDiscountAmount(),
-                            row.refundDeliveryDiscountPrice(),
-                            row.returnUsePoint(),
-                            row.deductGivePoint()));
+                new AfterSalePromotionDetailDTO.Promotion(
+                    header.promotionType(),
+                    header.promotionName(),
+                    row.refundDiscountAmount(),
+                    row.refundDeliveryDiscountPrice(),
+                    row.returnUsePoint(),
+                    row.deductGivePoint()));
         }
         boolean complete =
-                afterSale.refundDiscountAmount() != null
-                        && afterSale.refundDeliveryDiscountPrice() != null
-                        && afterSale.returnUsePoint() != null
-                        && afterSale.deductGivePoint() != null
-                        && Integer.valueOf(1).equals(afterSale.refundRuleVersion());
+            afterSale.refundDiscountAmount() != null
+                && afterSale.refundDeliveryDiscountPrice() != null
+                && afterSale.returnUsePoint() != null
+                && afterSale.deductGivePoint() != null
+                && Integer.valueOf(1).equals(afterSale.refundRuleVersion());
         String status = "NOT_STARTED";
         if ("REFUNDED".equals(afterSale.status())) {
             status = !complete ? "UNKNOWN" : progress.refunded(afterSale) ? "SUCCESS" : "PENDING";
         }
         return new AfterSalePromotionDetailDTO(
-                afterSale.refundNo(),
-                afterSale.orderItemId(),
-                afterSale.quantity(),
-                afterSale.amount(),
-                afterSale.refundDiscountAmount(),
-                afterSale.refundDeliveryDiscountPrice(),
-                afterSale.returnUsePoint(),
-                afterSale.deductGivePoint(),
-                afterSale.refundRuleVersion(),
-                complete ? "COMPLETE" : "LEGACY_PARTIAL",
-                status,
-                result);
+            afterSale.refundNo(),
+            afterSale.orderItemId(),
+            afterSale.quantity(),
+            afterSale.amount(),
+            afterSale.refundDiscountAmount(),
+            afterSale.refundDeliveryDiscountPrice(),
+            afterSale.returnUsePoint(),
+            afterSale.deductGivePoint(),
+            afterSale.refundRuleVersion(),
+            complete ? "COMPLETE" : "LEGACY_PARTIAL",
+            status,
+            result);
     }
 }

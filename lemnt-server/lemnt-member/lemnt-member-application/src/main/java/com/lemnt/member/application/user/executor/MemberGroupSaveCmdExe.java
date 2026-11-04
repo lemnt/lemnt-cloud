@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 分组保存命令执行器。 */
+/**
+ * 分组保存命令执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberGroupSaveCmdExe {
@@ -20,6 +22,6 @@ public class MemberGroupSaveCmdExe {
      */
     public Long execute(GroupSaveCmd cmd) {
         return memberUserService.saveGroup(
-                new Group(cmd.id(), cmd.name(), cmd.remark(), cmd.status()));
+            new Group(cmd.id(), cmd.name(), cmd.remark(), cmd.status()));
     }
 }

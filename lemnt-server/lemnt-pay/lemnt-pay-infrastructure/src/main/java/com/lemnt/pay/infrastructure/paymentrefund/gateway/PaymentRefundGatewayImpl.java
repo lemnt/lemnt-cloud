@@ -17,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 
-/** 支付退款表存储实现。 */
+/**
+ * 支付退款表存储实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class PaymentRefundGatewayImpl implements PaymentRefundGateway {
@@ -32,17 +34,17 @@ public class PaymentRefundGatewayImpl implements PaymentRefundGateway {
     @Override
     public BigDecimal totalAmount(String paymentNo, String excludedRefundNo, boolean successOnly) {
         return mapper
-                .selectList(
-                        Wrappers.lambdaQuery(PaymentRefundDO.class)
-                                .eq(PaymentRefundDO::getPaymentNo, paymentNo)
-                                .ne(
-                                        excludedRefundNo != null,
-                                        PaymentRefundDO::getRefundNo,
-                                        excludedRefundNo)
-                                .eq(successOnly, PaymentRefundDO::getStatus, "SUCCESS"))
-                .stream()
-                .map(PaymentRefundDO::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            .selectList(
+                Wrappers.lambdaQuery(PaymentRefundDO.class)
+                    .eq(PaymentRefundDO::getPaymentNo, paymentNo)
+                    .ne(
+                        excludedRefundNo != null,
+                        PaymentRefundDO::getRefundNo,
+                        excludedRefundNo)
+                    .eq(successOnly, PaymentRefundDO::getStatus, "SUCCESS"))
+            .stream()
+            .map(PaymentRefundDO::getAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     @Override
@@ -53,9 +55,9 @@ public class PaymentRefundGatewayImpl implements PaymentRefundGateway {
     @Override
     public PaymentRefund findByAfterSaleNo(String afterSaleNo) {
         return PaymentRefundConverter.toModel(
-                mapper.selectOne(
-                        Wrappers.lambdaQuery(PaymentRefundDO.class)
-                                .eq(PaymentRefundDO::getAfterSaleNo, afterSaleNo)));
+            mapper.selectOne(
+                Wrappers.lambdaQuery(PaymentRefundDO.class)
+                    .eq(PaymentRefundDO::getAfterSaleNo, afterSaleNo)));
     }
 
     @Override
@@ -66,31 +68,31 @@ public class PaymentRefundGatewayImpl implements PaymentRefundGateway {
     @Override
     public boolean updateResult(PaymentRefund refund) {
         return mapper.updateResult(refund.refundNo(), refund.status(), refund.channelRefundNo())
-                == 1;
+            == 1;
     }
 
     @Override
     public PageResult<PaymentRefund> page(PaymentRefundFilter filter) {
         var page =
-                mapper.selectPage(
-                        new Page<>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.lambdaQuery(PaymentRefundDO.class)
-                                .eq(
-                                        filter.afterSaleNo() != null,
-                                        PaymentRefundDO::getAfterSaleNo,
-                                        filter.afterSaleNo())
-                                .eq(
-                                        filter.paymentNo() != null,
-                                        PaymentRefundDO::getPaymentNo,
-                                        filter.paymentNo())
-                                .eq(
-                                        filter.status() != null,
-                                        PaymentRefundDO::getStatus,
-                                        filter.status())
-                                .orderByDesc(PaymentRefundDO::getCreateTime)
-                                .orderByDesc(PaymentRefundDO::getRefundNo));
+            mapper.selectPage(
+                new Page<>(filter.pageNum(), filter.pageSize()),
+                Wrappers.lambdaQuery(PaymentRefundDO.class)
+                    .eq(
+                        filter.afterSaleNo() != null,
+                        PaymentRefundDO::getAfterSaleNo,
+                        filter.afterSaleNo())
+                    .eq(
+                        filter.paymentNo() != null,
+                        PaymentRefundDO::getPaymentNo,
+                        filter.paymentNo())
+                    .eq(
+                        filter.status() != null,
+                        PaymentRefundDO::getStatus,
+                        filter.status())
+                    .orderByDesc(PaymentRefundDO::getCreateTime)
+                    .orderByDesc(PaymentRefundDO::getRefundNo));
         return PageResult.of(
-                page.getRecords().stream().map(PaymentRefundConverter::toModel).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(PaymentRefundConverter::toModel).toList(),
+            page.getTotal());
     }
 }

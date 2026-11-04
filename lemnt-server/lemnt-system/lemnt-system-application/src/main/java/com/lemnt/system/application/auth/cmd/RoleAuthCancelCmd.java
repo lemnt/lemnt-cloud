@@ -9,16 +9,17 @@ import java.util.List;
  * @author wangxx
  */
 public record RoleAuthCancelCmd(
-        /**
-         * 角色ID
-         */
-        Long roleId,
-        /**
-         * 用户ID
-         */
-        Long userId,
-        /**
-         * 用户ID列表
-         */
-        List<Long> userIds)
-        implements Serializable {}
+    /**
+     * 角色ID
+     */
+    Long roleId,
+    /**
+     * 用户ID
+     */
+    Long userId,
+    /**
+     * 用户ID列表
+     */
+    List<Long> userIds)
+    implements Serializable {
+}

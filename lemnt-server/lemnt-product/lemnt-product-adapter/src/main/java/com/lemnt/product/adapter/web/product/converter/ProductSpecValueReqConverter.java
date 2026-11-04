@@ -9,32 +9,43 @@ import com.lemnt.product.application.product.cmd.ProductSpecValueUpdateCmd;
 import com.lemnt.product.application.product.qry.ProductSpecValuePageQry;
 import com.lemnt.product.application.product.qry.ProductSpecValueSimpleListQry;
 
-/** 规格字典请求转换。 */
+/**
+ * 规格字典请求转换。
+ */
 public final class ProductSpecValueReqConverter {
-    private ProductSpecValueReqConverter() {}
+    private ProductSpecValueReqConverter() {
+    }
 
-    /** 转换新增请求。 */
+    /**
+     * 转换新增请求。
+     */
     public static ProductSpecValueCreateCmd create(ProductSpecValueCreateReq req) {
         return new ProductSpecValueCreateCmd(req.specId(), req.name(), req.remark());
     }
 
-    /** 转换修改请求。 */
+    /**
+     * 转换修改请求。
+     */
     public static ProductSpecValueUpdateCmd update(Long id, ProductSpecValueUpdateReq req) {
         return new ProductSpecValueUpdateCmd(id, req.name(), req.remark());
     }
 
-    /** 转换分页请求。 */
+    /**
+     * 转换分页请求。
+     */
     public static ProductSpecValuePageQry page(ProductSpecValuePageReq req) {
         return new ProductSpecValuePageQry(
-                req.specId(),
-                req.name(),
-                req.pageNum() == null ? 1 : req.pageNum(),
-                req.pageSize() == null ? 20 : req.pageSize());
+            req.specId(),
+            req.name(),
+            req.pageNum() == null ? 1 : req.pageNum(),
+            req.pageSize() == null ? 20 : req.pageSize());
     }
 
-    /** 转换选择查询。 */
+    /**
+     * 转换选择查询。
+     */
     public static ProductSpecValueSimpleListQry simple(ProductSpecValueSimpleReq req) {
         return new ProductSpecValueSimpleListQry(
-                req.specId(), req.name(), req.limit() == null ? 20 : req.limit());
+            req.specId(), req.name(), req.limit() == null ? 20 : req.limit());
     }
 }

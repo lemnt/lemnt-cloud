@@ -15,7 +15,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/** 商城结算读取本地可售商品，不通过 Dubbo 调用自身。 */
+/**
+ * 商城结算读取本地可售商品，不通过 Dubbo 调用自身。
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductCatalogGatewayImpl implements ProductCatalogGateway {
@@ -32,64 +34,64 @@ public class ProductCatalogGatewayImpl implements ProductCatalogGateway {
     public Map<Long, ProductSnapshot> findOnShelfBatch(List<Long> ids) {
         var sellable = productSkuGateway.findSellableByIds(ids);
         var skus =
-                productSkuGateway.byIds(ids).stream()
-                        .collect(Collectors.toMap(row -> row.id(), row -> row));
+            productSkuGateway.byIds(ids).stream()
+                .collect(Collectors.toMap(row -> row.id(), row -> row));
         var spuIds =
-                skus.values().stream()
-                        .map(row -> row.spuId())
-                        .filter(Objects::nonNull)
-                        .distinct()
-                        .toList();
+            skus.values().stream()
+                .map(row -> row.spuId())
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
         var spus =
-                productSpuGateway.findSpus(spuIds).stream()
-                        .collect(Collectors.toMap(row -> row.id(), row -> row));
+            productSpuGateway.findSpus(spuIds).stream()
+                .collect(Collectors.toMap(row -> row.id(), row -> row));
         return sellable.stream()
-                .collect(
-                        Collectors.toMap(
-                                value -> value.id(),
-                                value -> {
-                                    var sku = skus.get(value.id());
-                                    var spu = sku == null ? null : spus.get(sku.spuId());
-                                    var specs =
-                                            sku == null
-                                                    ? List.<ProductSnapshot.Spec>of()
-                                                    : sku.specs().stream()
-                                                            .sorted(
-                                                                    Comparator.comparing(
-                                                                            property ->
-                                                                                    property
-                                                                                            .specName()))
-                                                            .map(
-                                                                    property ->
-                                                                            new ProductSnapshot
-                                                                                    .Spec(
-                                                                                    property
-                                                                                            .specId(),
-                                                                                    property
-                                                                                            .specName(),
-                                                                                    property
-                                                                                            .specValueId(),
-                                                                                    property
-                                                                                            .specValueName()))
-                                                            .toList();
-                                    return new ProductSnapshot(
-                                            value.id(),
-                                            value.productCode(),
-                                            value.name(),
-                                            value.price(),
-                                            value.stock(),
-                                            spu == null ? List.of() : spu.deliveryTypes(),
-                                            spu == null ? null : spu.deliveryTemplateId(),
-                                            sku == null ? null : sku.weight(),
-                                            sku == null ? null : sku.volume(),
-                                            sku == null ? null : sku.spuId(),
-                                            spu == null ? null : spu.name(),
-                                            specs,
-                                            sku != null
-                                                            && sku.image() != null
-                                                            && !sku.image().isBlank()
-                                                    ? sku.image()
-                                                    : spu == null ? null : spu.image());
-                                }));
+            .collect(
+                Collectors.toMap(
+                    value -> value.id(),
+                    value -> {
+                        var sku = skus.get(value.id());
+                        var spu = sku == null ? null : spus.get(sku.spuId());
+                        var specs =
+                            sku == null
+                                ? List.<ProductSnapshot.Spec>of()
+                                : sku.specs().stream()
+                                .sorted(
+                                    Comparator.comparing(
+                                        property ->
+                                            property
+                                                .specName()))
+                                .map(
+                                    property ->
+                                        new ProductSnapshot
+                                            .Spec(
+                                            property
+                                                .specId(),
+                                            property
+                                                .specName(),
+                                            property
+                                                .specValueId(),
+                                            property
+                                                .specValueName()))
+                                .toList();
+                        return new ProductSnapshot(
+                            value.id(),
+                            value.productCode(),
+                            value.name(),
+                            value.price(),
+                            value.stock(),
+                            spu == null ? List.of() : spu.deliveryTypes(),
+                            spu == null ? null : spu.deliveryTemplateId(),
+                            sku == null ? null : sku.weight(),
+                            sku == null ? null : sku.volume(),
+                            sku == null ? null : sku.spuId(),
+                            spu == null ? null : spu.name(),
+                            specs,
+                            sku != null
+                                && sku.image() != null
+                                && !sku.image().isBlank()
+                                ? sku.image()
+                                : spu == null ? null : spu.image());
+                    }));
     }
 }

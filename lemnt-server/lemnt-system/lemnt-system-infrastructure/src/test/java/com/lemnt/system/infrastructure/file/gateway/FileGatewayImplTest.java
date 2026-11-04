@@ -27,16 +27,16 @@ class FileGatewayImplTest {
         var server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
 
         server.createContext(
-                "/test-assets/",
-                exchange -> {
-                    received.set(exchange.getRequestBody().readAllBytes());
+            "/test-assets/",
+            exchange -> {
+                received.set(exchange.getRequestBody().readAllBytes());
 
-                    exchange.getResponseHeaders().set("ETag", "\"test-etag\"");
+                exchange.getResponseHeaders().set("ETag", "\"test-etag\"");
 
-                    exchange.sendResponseHeaders(200, -1);
+                exchange.sendResponseHeaders(200, -1);
 
-                    exchange.close();
-                });
+                exchange.close();
+            });
 
         server.start();
 
@@ -48,21 +48,21 @@ class FileGatewayImplTest {
             config.setUrl("https://oss.example.test");
 
             var client =
-                    MinioClient.builder()
-                            .endpoint("http://127.0.0.1:" + server.getAddress().getPort())
-                            .credentials("test-access", "test-secret")
-                            .region("us-east-1")
-                            .build();
+                MinioClient.builder()
+                    .endpoint("http://127.0.0.1:" + server.getAddress().getPort())
+                    .credentials("test-access", "test-secret")
+                    .region("us-east-1")
+                    .build();
 
             var gateway =
-                    new FileGatewayImpl(new OssFileService(config, client, new OssFileValidator()));
+                new FileGatewayImpl(new OssFileService(config, client, new OssFileValidator()));
 
-            var bytes = new byte[] {1, 2};
+            var bytes = new byte[]{1, 2};
 
             var url =
-                    gateway.upload(
-                            new UploadFile(
-                                    new ByteArrayInputStream(bytes), "image.png", "image/png", 2));
+                gateway.upload(
+                    new UploadFile(
+                        new ByteArrayInputStream(bytes), "image.png", "image/png", 2));
 
             assertTrue(url.startsWith("https://oss.example.test/test-assets/"));
 
@@ -79,15 +79,15 @@ class FileGatewayImplTest {
     void shouldDelegateStreamAndMetadataToOss() throws Exception {
         var oss = mock(OssFileService.class);
 
-        var content = new ByteArrayInputStream(new byte[] {1});
+        var content = new ByteArrayInputStream(new byte[]{1});
 
         when(oss.uploadStream(content, "image.png", "image/png", 1))
-                .thenReturn("https://oss.example.test/image.png");
+            .thenReturn("https://oss.example.test/image.png");
 
         assertEquals(
-                "https://oss.example.test/image.png",
-                new FileGatewayImpl(oss)
-                        .upload(new UploadFile(content, "image.png", "image/png", 1)));
+            "https://oss.example.test/image.png",
+            new FileGatewayImpl(oss)
+                .upload(new UploadFile(content, "image.png", "image/png", 1)));
 
         verify(oss).uploadStream(content, "image.png", "image/png", 1);
     }
@@ -96,15 +96,15 @@ class FileGatewayImplTest {
     void shouldNotReturnUrlWhenOssFails() throws Exception {
         var oss = mock(OssFileService.class);
 
-        var content = new ByteArrayInputStream(new byte[] {1});
+        var content = new ByteArrayInputStream(new byte[]{1});
 
         when(oss.uploadStream(content, "image.png", "image/png", 1))
-                .thenThrow(new IOException("存储服务不可用"));
+            .thenThrow(new IOException("存储服务不可用"));
 
         assertThrows(
-                ServiceException.class,
-                () ->
-                        new FileGatewayImpl(oss)
-                                .upload(new UploadFile(content, "image.png", "image/png", 1)));
+            ServiceException.class,
+            () ->
+                new FileGatewayImpl(oss)
+                    .upload(new UploadFile(content, "image.png", "image/png", 1)));
     }
 }

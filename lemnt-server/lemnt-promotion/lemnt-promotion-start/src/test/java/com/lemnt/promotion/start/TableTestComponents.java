@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 
-/** 测试夹具：装配真实按表组件和事务代理，不替代业务实现。 */
+/**
+ * 测试夹具：装配真实按表组件和事务代理，不替代业务实现。
+ */
 public final class TableTestComponents {
     private final SqlSessionTemplate session;
     private final DataSource source;
@@ -22,7 +24,9 @@ public final class TableTestComponents {
         this.source = source;
     }
 
-    /** 注册测试传输组件，不替代业务实现。 */
+    /**
+     * 注册测试传输组件，不替代业务实现。
+     */
     public <T> void register(Class<T> type, T value) {
         components.put(type, value);
     }
@@ -36,19 +40,19 @@ public final class TableTestComponents {
         }
         try {
             var implementation =
-                    type.isInterface()
-                            ? Class.forName(
-                                    type.getName().replace(".domain.", ".infrastructure.") + "Impl")
-                            : type;
+                type.isInterface()
+                    ? Class.forName(
+                    type.getName().replace(".domain.", ".infrastructure.") + "Impl")
+                    : type;
             var constructor = implementation.getConstructors()[0];
             var args = Arrays.stream(constructor.getParameterTypes()).map(this::get).toArray();
             var target = constructor.newInstance(args);
             var proxy = new ProxyFactory(target);
             proxy.setProxyTargetClass(!type.isInterface());
             proxy.addAdvice(
-                    new TransactionInterceptor(
-                            new DataSourceTransactionManager(source),
-                            new AnnotationTransactionAttributeSource()));
+                new TransactionInterceptor(
+                    new DataSourceTransactionManager(source),
+                    new AnnotationTransactionAttributeSource()));
             var value = proxy.getProxy();
             components.put(type, value);
             return type.cast(value);

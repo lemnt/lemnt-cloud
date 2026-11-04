@@ -25,10 +25,10 @@ public class MemberAuthCmdExe {
      */
     public MemberTokenDTO execute(AuthLoginCmd cmd) {
         return result(
-                cmd.loginIp() == null
-                        ? memberAuthenticationService.login(cmd.mobile(), cmd.password())
-                        : memberAuthenticationService.login(
-                                cmd.mobile(), cmd.password(), cmd.loginIp()));
+            cmd.loginIp() == null
+                ? memberAuthenticationService.login(cmd.mobile(), cmd.password())
+                : memberAuthenticationService.login(
+                cmd.mobile(), cmd.password(), cmd.loginIp()));
     }
 
     /**

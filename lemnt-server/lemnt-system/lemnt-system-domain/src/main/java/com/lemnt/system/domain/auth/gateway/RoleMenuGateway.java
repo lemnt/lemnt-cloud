@@ -2,7 +2,9 @@ package com.lemnt.system.domain.auth.gateway;
 
 import java.util.List;
 
-/** RoleMenu 存储接口。 */
+/**
+ * RoleMenu 存储接口。
+ */
 public interface RoleMenuGateway {
     /**
      * 通过角色ID删除角色菜单关联

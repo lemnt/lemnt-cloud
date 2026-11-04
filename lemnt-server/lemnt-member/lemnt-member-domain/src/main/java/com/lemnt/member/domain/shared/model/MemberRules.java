@@ -8,7 +8,8 @@ import java.nio.charset.StandardCharsets;
  * 会员规则。
  */
 public final class MemberRules {
-    private MemberRules() {}
+    private MemberRules() {
+    }
 
     /**
      * 编号。
@@ -53,8 +54,8 @@ public final class MemberRules {
      */
     public static void password(String value) {
         if (value == null
-                || value.length() < 10
-                || value.getBytes(StandardCharsets.UTF_8).length > 72) {
+            || value.length() < 10
+            || value.getBytes(StandardCharsets.UTF_8).length > 72) {
             throw new ServiceException("密码须至少10个字符且不超过72字节", 400);
         }
     }

@@ -23,7 +23,9 @@ public class MemberSessionClientImpl implements MemberSessionClient {
         return memberAuthenticationService.authenticate(token);
     }
 
-    /** 同步撤销会员会话，不回调会员数据库。 */
+    /**
+     * 同步撤销会员会话，不回调会员数据库。
+     */
     @Override
     public void revokeMemberSessions(Long memberId) {
         memberAuthenticationService.revokeMemberSessions(memberId);

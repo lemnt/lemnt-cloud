@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 小程序客服消息已读执行器。 */
+/**
+ * 小程序客服消息已读执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class AppKefuReadCmdExe {

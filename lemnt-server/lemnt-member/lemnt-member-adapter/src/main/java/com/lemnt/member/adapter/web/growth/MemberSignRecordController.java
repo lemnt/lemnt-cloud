@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 签到记录接口。 */
+/**
+ * 签到记录接口。
+ */
 @Tag(name = "签到记录")
 @RestController
 @RequestMapping("/member/admin")
@@ -32,14 +34,14 @@ public class MemberSignRecordController {
     @Operation(summary = "signin-records分页")
     @RequiresPermissions("member:signin:query")
     public R<MemberRecordSigninRecordsRes> signinRecords(
-            @Valid @ModelAttribute MemberRecordSigninRecordsReq req) {
+        @Valid @ModelAttribute MemberRecordSigninRecordsReq req) {
         var page =
-                memberSignRecordAllPageQueryExe.execute(
-                        MemberReqConverter.toSignRecordPageQry(req));
+            memberSignRecordAllPageQueryExe.execute(
+                MemberReqConverter.toSignRecordPageQry(req));
         return R.page(
-                page.getRecords().stream()
-                        .map(MemberGrowthResConverter::toMemberRecordSigninRecordsRes)
-                        .toList(),
-                page.getTotal());
+            page.getRecords().stream()
+                .map(MemberGrowthResConverter::toMemberRecordSigninRecordsRes)
+                .toList(),
+            page.getTotal());
     }
 }

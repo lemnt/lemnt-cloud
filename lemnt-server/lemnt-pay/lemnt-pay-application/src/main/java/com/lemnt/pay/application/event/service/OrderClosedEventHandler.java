@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
-/** 关单仅关闭仍待支付的本地尝试；真实已收款不能被关单覆盖。 */
+/**
+ * 关单仅关闭仍待支付的本地尝试；真实已收款不能被关单覆盖。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderClosedEventHandler {
@@ -30,26 +32,26 @@ public class OrderClosedEventHandler {
         envelope.requireType(CommerceEventTopics.ORDER_CLOSED);
         var event = JsonUtils.toBean(envelope.payload(), OrderClosedEvent.class);
         if (event == null
-                || !envelope.aggregateNo().equals(event.orderNo())
-                || !event.orderNo().equals(envelope.businessKey())) {
+            || !envelope.aggregateNo().equals(event.orderNo())
+            || !event.orderNo().equals(envelope.businessKey())) {
             throw new IllegalArgumentException("关单事件的订单标识不一致");
         }
         inbox.begin(
-                "pay.order.fence.v1",
-                event.orderNo(),
-                "PAYMENT_ORDER_FENCE",
-                event.orderNo(),
-                JsonUtils.toJsonStr(Map.of("orderNo", event.orderNo())));
+            "pay.order.fence.v1",
+            event.orderNo(),
+            "PAYMENT_ORDER_FENCE",
+            event.orderNo(),
+            JsonUtils.toJsonStr(Map.of("orderNo", event.orderNo())));
         if (!inbox.begin(
-                "pay.order.closed.v1",
-                envelope.eventNo(),
-                envelope.eventType(),
-                envelope.businessKey(),
-                envelope.payload())) return;
+            "pay.order.closed.v1",
+            envelope.eventNo(),
+            envelope.eventType(),
+            envelope.businessKey(),
+            envelope.payload())) return;
         var order = orders.findByOrderNo(event.orderNo());
         if (order == null
-                || !"CLOSED".equals(order.status())
-                || !order.memberId().equals(event.memberId())) {
+            || !"CLOSED".equals(order.status())
+            || !order.memberId().equals(event.memberId())) {
             throw new IllegalStateException("原订单尚未关闭或归属不一致");
         }
         for (var payment : payments.findByOrderNo(event.orderNo())) {

@@ -50,7 +50,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 生产 SQL、DO、Mapper、Gateway 验证钱包唯一账户、行锁查询与流水。 */
+/**
+ * 生产 SQL、DO、Mapper、Gateway 验证钱包唯一账户、行锁查询与流水。
+ */
 class WalletPersistenceTest {
     AnnotationConfigApplicationContext context;
     WalletGateway wallets;
@@ -80,59 +82,61 @@ class WalletPersistenceTest {
     void updateAndTransactionPagePersist() {
         var created = wallets.createIfAbsent(2L);
         var updated =
-                new Wallet(
-                        created.id(),
-                        2L,
-                        new BigDecimal("12.00"),
-                        new BigDecimal("3.00"),
-                        new BigDecimal("5.00"),
-                        new BigDecimal("10.00"),
-                        created.createTime());
+            new Wallet(
+                created.id(),
+                2L,
+                new BigDecimal("12.00"),
+                new BigDecimal("3.00"),
+                new BigDecimal("5.00"),
+                new BigDecimal("10.00"),
+                created.createTime());
         assertTrue(wallets.update(updated));
         var stored = wallets.findByMemberId(2L);
         assertEquals(new BigDecimal("12.00"), stored.balance());
         assertEquals(new BigDecimal("3.00"), stored.freezePrice());
 
         wallets.insertTransaction(
-                new WalletTransaction(
-                        null,
-                        "WT1",
-                        created.id(),
-                        "RECHARGE",
-                        "R1",
-                        "充值",
-                        new BigDecimal("10.00"),
-                        new BigDecimal("12.00"),
-                        null));
+            new WalletTransaction(
+                null,
+                "WT1",
+                created.id(),
+                "RECHARGE",
+                "R1",
+                "充值",
+                new BigDecimal("10.00"),
+                new BigDecimal("12.00"),
+                null));
         var found = wallets.findTransaction(created.id(), "RECHARGE", "R1");
         assertNotNull(found);
         assertEquals(new BigDecimal("10.00"), found.amount());
         assertEquals(
-                1,
-                wallets.transactionPage(new WalletTransactionFilter(created.id(), null, 1, 20))
-                        .getRecords()
-                        .size());
+            1,
+            wallets.transactionPage(new WalletTransactionFilter(created.id(), null, 1, 20))
+                .getRecords()
+                .size());
         assertEquals(
-                0,
-                wallets.transactionPage(new WalletTransactionFilter(created.id(), "PAYMENT", 1, 20))
-                        .getRecords()
-                        .size());
+            0,
+            wallets.transactionPage(new WalletTransactionFilter(created.id(), "PAYMENT", 1, 20))
+                .getRecords()
+                .size());
     }
 
-    /** 同一事务连续锁同一钱包时，每次必须真正执行SQL，不能命中MyBatis会话缓存。 */
+    /**
+     * 同一事务连续锁同一钱包时，每次必须真正执行SQL，不能命中MyBatis会话缓存。
+     */
     @Test
     void repeatedWalletLocksAlwaysReachDatabase() {
         var wallet = wallets.createIfAbsent(3L);
         var statements = context.getBean(LockStatements.class);
         var transaction =
-                new TransactionTemplate(context.getBean(PlatformTransactionManager.class));
+            new TransactionTemplate(context.getBean(PlatformTransactionManager.class));
         transaction.executeWithoutResult(
-                status -> {
-                    wallets.lockByMemberId(3L);
-                    wallets.lockByMemberId(3L);
-                    wallets.lockById(wallet.id());
-                    wallets.lockById(wallet.id());
-                });
+            status -> {
+                wallets.lockByMemberId(3L);
+                wallets.lockByMemberId(3L);
+                wallets.lockById(wallet.id());
+                wallets.lockById(wallet.id());
+            });
         assertEquals(4, statements.count.get());
     }
 
@@ -142,38 +146,38 @@ class WalletPersistenceTest {
         var proxy = new ProxyFactory(target);
         proxy.setProxyTargetClass(true);
         proxy.addAdvice(
-                new TransactionInterceptor(
-                        context.getBean(PlatformTransactionManager.class),
-                        new AnnotationTransactionAttributeSource()));
+            new TransactionInterceptor(
+                context.getBean(PlatformTransactionManager.class),
+                new AnnotationTransactionAttributeSource()));
         var service = (WalletService) proxy.getProxy();
         var client =
-                new WalletClientImpl(
-                        service,
-                        id -> new BrokerageWithdrawalPlan(id, 7L, new BigDecimal("9.50"), 1, 10));
+            new WalletClientImpl(
+                service,
+                id -> new BrokerageWithdrawalPlan(id, 7L, new BigDecimal("9.50"), 1, 10));
         var request = new BrokerageWithdrawalBo(11L, 7L, new BigDecimal("9.50"));
         client.creditBrokerageWithdrawal(request);
         client.creditBrokerageWithdrawal(request);
         var wallet = wallets.findByMemberId(7L);
         assertEquals(new BigDecimal("9.50"), wallet.balance());
         assertEquals(
-                1,
-                wallets.transactionPage(
-                                new WalletTransactionFilter(
-                                        wallet.id(), "BROKERAGE_WITHDRAW", 1, 20))
-                        .getTotal());
+            1,
+            wallets.transactionPage(
+                    new WalletTransactionFilter(
+                        wallet.id(), "BROKERAGE_WITHDRAW", 1, 20))
+                .getTotal());
         assertThrows(
-                IllegalStateException.class,
-                () ->
-                        client.creditBrokerageWithdrawal(
-                                new BrokerageWithdrawalBo(11L, 7L, new BigDecimal("10.00"))));
+            IllegalStateException.class,
+            () ->
+                client.creditBrokerageWithdrawal(
+                    new BrokerageWithdrawalBo(11L, 7L, new BigDecimal("10.00"))));
         assertEquals(new BigDecimal("9.50"), wallets.findByMemberId(7L).balance());
     }
 
     @Intercepts(
-            @Signature(
-                    type = StatementHandler.class,
-                    method = "prepare",
-                    args = {Connection.class, Integer.class}))
+        @Signature(
+            type = StatementHandler.class,
+            method = "prepare",
+            args = {Connection.class, Integer.class}))
     static class LockStatements implements Interceptor {
         final AtomicInteger count = new AtomicInteger();
 
@@ -196,7 +200,7 @@ class WalletPersistenceTest {
         JdbcDataSource dataSource() {
             var source = new JdbcDataSource();
             source.setURL(
-                    "jdbc:h2:mem:wallet_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
+                "jdbc:h2:mem:wallet_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
             return source;
         }
 
@@ -204,7 +208,7 @@ class WalletPersistenceTest {
         Connection schema(JdbcDataSource source) throws Exception {
             var connection = source.getConnection();
             ScriptUtils.executeSqlScript(
-                    connection, new ClassPathResource("pay-sql/lemnt_pay.sql"));
+                connection, new ClassPathResource("pay-sql/lemnt_pay.sql"));
             return connection;
         }
 
@@ -215,8 +219,8 @@ class WalletPersistenceTest {
 
         @Bean
         SqlSessionFactory sqlSessionFactory(
-                JdbcDataSource source, Connection schema, LockStatements statements)
-                throws Exception {
+            JdbcDataSource source, Connection schema, LockStatements statements)
+            throws Exception {
             var config = new MybatisConfiguration();
             config.addInterceptor(statements);
             config.setMapUnderscoreToCamelCase(true);
@@ -227,10 +231,10 @@ class WalletPersistenceTest {
             factory.setDataSource(source);
             factory.setConfiguration(config);
             factory.setGlobalConfig(
-                    new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
+                new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
             factory.setMapperLocations(
-                    new PathMatchingResourcePatternResolver()
-                            .getResources("classpath*:mapper/*.xml"));
+                new PathMatchingResourcePatternResolver()
+                    .getResources("classpath*:mapper/*.xml"));
             return factory.getObject();
         }
 

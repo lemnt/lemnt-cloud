@@ -45,10 +45,10 @@ public class NoticeReadGatewayImpl implements NoticeReadGateway {
 
     @Override
     public PageResult<NoticeReadUser> selectPageReadUsers(
-            Long noticeId, String searchValue, PageQry qry) {
+        Long noticeId, String searchValue, PageQry qry) {
         Page<NoticeDO> page = new Page<>(qry.getPageNum(), qry.getPageSize());
         IPage<NoticeReadUser> result =
-                noticeReadMapper.selectPageReadUsers(page, noticeId, searchValue);
+            noticeReadMapper.selectPageReadUsers(page, noticeId, searchValue);
         return PageResult.of(result.getRecords(), result.getTotal());
     }
 
@@ -99,9 +99,9 @@ public class NoticeReadGatewayImpl implements NoticeReadGateway {
      */
     private long selectIsReadRow(Long noticeId, Long userId) {
         return noticeReadMapper.selectCount(
-                Wrappers.<NoticeReadDO>lambdaQuery()
-                        .eq(NoticeReadDO::getNoticeId, noticeId)
-                        .eq(NoticeReadDO::getUserId, userId));
+            Wrappers.<NoticeReadDO>lambdaQuery()
+                .eq(NoticeReadDO::getNoticeId, noticeId)
+                .eq(NoticeReadDO::getUserId, userId));
     }
 
     /**
@@ -115,6 +115,6 @@ public class NoticeReadGatewayImpl implements NoticeReadGateway {
             return 0;
         }
         return noticeReadMapper.delete(
-                Wrappers.<NoticeReadDO>lambdaQuery().in(NoticeReadDO::getNoticeId, noticeIds));
+            Wrappers.<NoticeReadDO>lambdaQuery().in(NoticeReadDO::getNoticeId, noticeIds));
     }
 }

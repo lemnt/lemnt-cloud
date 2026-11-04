@@ -23,7 +23,7 @@ public class CouponTemplateListQueryExe {
      */
     public List<CouponTemplateDTO> execute() {
         return couponTemplateGateway.templates().stream()
-                .map(CouponDTOConverter::template)
-                .toList();
+            .map(CouponDTOConverter::template)
+            .toList();
     }
 }

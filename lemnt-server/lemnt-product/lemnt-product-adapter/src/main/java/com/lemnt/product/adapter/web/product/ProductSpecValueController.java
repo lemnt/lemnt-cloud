@@ -35,9 +35,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** 规格字典管理接口。 */
+/**
+ * 规格字典管理接口。
+ */
 @Tag(name = "规格值管理")
 @RestController
 @RequestMapping("/mall/spec-values")
@@ -50,30 +53,36 @@ public class ProductSpecValueController {
     private final ProductSpecValuePageQueryExe productSpecValuePageQueryExe;
     private final ProductSpecValueSimpleListQueryExe productSpecValueSimpleListQueryExe;
 
-    /** 新增字典。 */
+    /**
+     * 新增字典。
+     */
     @PostMapping
     @Operation(summary = "新增规格字典")
     @RequiresPermissions("mall:spec-value:add")
     public R<ProductSpecValueCreateRes> create(@Valid @RequestBody ProductSpecValueCreateReq req) {
         return R.ok(
-                ProductSpecValueResConverter.create(
-                        productSpecValueCreateCmdExe.execute(
-                                ProductSpecValueReqConverter.create(req))));
+            ProductSpecValueResConverter.create(
+                productSpecValueCreateCmdExe.execute(
+                    ProductSpecValueReqConverter.create(req))));
     }
 
-    /** 修改字典。 */
+    /**
+     * 修改字典。
+     */
     @PutMapping("/{id}")
     @Operation(summary = "修改规格字典")
     @RequiresPermissions("mall:spec-value:edit")
     public R<ProductSpecValueUpdateRes> update(
-            @PathVariable Long id, @Valid @RequestBody ProductSpecValueUpdateReq req) {
+        @PathVariable Long id, @Valid @RequestBody ProductSpecValueUpdateReq req) {
         return R.ok(
-                ProductSpecValueResConverter.update(
-                        productSpecValueUpdateCmdExe.execute(
-                                ProductSpecValueReqConverter.update(id, req))));
+            ProductSpecValueResConverter.update(
+                productSpecValueUpdateCmdExe.execute(
+                    ProductSpecValueReqConverter.update(id, req))));
     }
 
-    /** 删除规格值并保留SKU快照。 */
+    /**
+     * 删除规格值并保留SKU快照。
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "删除规格值并保留SKU快照")
     @RequiresPermissions("mall:spec-value:remove")
@@ -81,7 +90,9 @@ public class ProductSpecValueController {
         return R.ok(productSpecValueDeleteCmdExe.execute(id));
     }
 
-    /** 查询详情。 */
+    /**
+     * 查询详情。
+     */
     @GetMapping("/{id}")
     @Operation(summary = "规格字典详情")
     @RequiresPermissions("mall:spec-value:query")
@@ -90,28 +101,32 @@ public class ProductSpecValueController {
         return value == null ? R.fail("字典不存在") : R.ok(ProductSpecValueResConverter.detail(value));
     }
 
-    /** 分页查询。 */
+    /**
+     * 分页查询。
+     */
     @GetMapping
     @Operation(summary = "规格字典分页")
     @RequiresPermissions("mall:spec-value:list")
     public R<ProductSpecValuePageRes> page(@Valid @ModelAttribute ProductSpecValuePageReq req) {
         var value = productSpecValuePageQueryExe.execute(ProductSpecValueReqConverter.page(req));
         return R.page(
-                value.getRecords().stream().map(ProductSpecValueResConverter::page).toList(),
-                value.getTotal());
+            value.getRecords().stream().map(ProductSpecValueResConverter::page).toList(),
+            value.getTotal());
     }
 
-    /** 查询有限条选择数据。 */
+    /**
+     * 查询有限条选择数据。
+     */
     @GetMapping("/simple")
     @Operation(summary = "规格字典选择查询")
     @RequiresPermissions("mall:spec-value:query")
     public R<List<ProductSpecValueSimpleRes>> simple(
-            @Valid @ModelAttribute ProductSpecValueSimpleReq req) {
+        @Valid @ModelAttribute ProductSpecValueSimpleReq req) {
         return R.ok(
-                productSpecValueSimpleListQueryExe
-                        .execute(ProductSpecValueReqConverter.simple(req))
-                        .stream()
-                        .map(ProductSpecValueResConverter::simple)
-                        .toList());
+            productSpecValueSimpleListQueryExe
+                .execute(ProductSpecValueReqConverter.simple(req))
+                .stream()
+                .map(ProductSpecValueResConverter::simple)
+                .toList());
     }
 }

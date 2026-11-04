@@ -29,7 +29,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 小程序拼团展示入口。 */
+/**
+ * 小程序拼团展示入口。
+ */
 @Tag(name = "小程序拼团")
 @RestController
 @RequestMapping("/mall/app/combination")
@@ -46,12 +48,12 @@ public class AppCombinationController {
     @GetMapping("/activities")
     @Operation(summary = "拼团活动分页")
     public R<AppCombinationActivityRes> activities(
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "20") Integer pageSize) {
+        @RequestParam(defaultValue = "1") Integer pageNum,
+        @RequestParam(defaultValue = "20") Integer pageSize) {
         var result = page.execute(pageNum, pageSize);
         return R.page(
-                result.getRecords().stream().map(AppCombinationConverter::activity).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(AppCombinationConverter::activity).toList(),
+            result.getTotal());
     }
 
     @GetMapping("/activities/{id}")
@@ -63,42 +65,42 @@ public class AppCombinationController {
     @GetMapping("/activities/{id}/heads")
     @Operation(summary = "可参与的团长记录")
     public R<List<AppCombinationRecordRes>> heads(
-            @PathVariable Long id,
-            @RequestParam(defaultValue = "0") Integer status,
-            @RequestParam(defaultValue = "20") Integer count) {
+        @PathVariable Long id,
+        @RequestParam(defaultValue = "0") Integer status,
+        @RequestParam(defaultValue = "20") Integer count) {
         return R.ok(
-                heads.execute(id, status, count).stream()
-                        .map(AppCombinationConverter::record)
-                        .toList());
+            heads.execute(id, status, count).stream()
+                .map(AppCombinationConverter::record)
+                .toList());
     }
 
     @GetMapping("/records")
     @Operation(summary = "我的拼团记录分页")
     public R<AppCombinationRecordRes> records(
-            @RequestParam(required = false) Long activityId,
-            @RequestParam(required = false) Integer status,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "20") Integer pageSize) {
+        @RequestParam(required = false) Long activityId,
+        @RequestParam(required = false) Integer status,
+        @RequestParam(defaultValue = "1") Integer pageNum,
+        @RequestParam(defaultValue = "20") Integer pageSize) {
         var result =
-                records.execute(
-                        new CombinationRecordPageQry(
-                                SecurityUtils.getUserId(),
-                                activityId,
-                                status,
-                                null,
-                                pageNum,
-                                pageSize));
+            records.execute(
+                new CombinationRecordPageQry(
+                    SecurityUtils.getUserId(),
+                    activityId,
+                    status,
+                    null,
+                    pageNum,
+                    pageSize));
         return R.page(
-                result.getRecords().stream().map(AppCombinationConverter::record).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(AppCombinationConverter::record).toList(),
+            result.getTotal());
     }
 
     @GetMapping("/records/{id}")
     @Operation(summary = "拼团记录详情")
     public R<AppCombinationRecordDetailRes> record(@PathVariable Long id) {
         return R.ok(
-                AppCombinationConverter.recordDetail(
-                        recordDetail.execute(id, SecurityUtils.getUserId())));
+            AppCombinationConverter.recordDetail(
+                recordDetail.execute(id, SecurityUtils.getUserId())));
     }
 
     @GetMapping("/summary")

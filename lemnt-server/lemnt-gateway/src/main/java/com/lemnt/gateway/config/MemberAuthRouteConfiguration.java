@@ -16,15 +16,15 @@ public class MemberAuthRouteConfiguration {
     @Bean
     public RouteLocator memberAuthRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route(
-                        "lemnt-member-auth",
-                        route ->
-                                route.order(-10)
-                                        .path(
-                                                "/member/app/auth/login",
-                                                "/member/app/auth/refresh-token",
-                                                "/member/app/auth/logout")
-                                        .uri("lb://lemnt-auth"))
-                .build();
+            .route(
+                "lemnt-member-auth",
+                route ->
+                    route.order(-10)
+                        .path(
+                            "/member/app/auth/login",
+                            "/member/app/auth/refresh-token",
+                            "/member/app/auth/logout")
+                        .uri("lb://lemnt-auth"))
+            .build();
     }
 }

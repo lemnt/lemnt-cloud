@@ -8,7 +8,9 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
-/** 自提门店持久化对象。 */
+/**
+ * 自提门店持久化对象。
+ */
 @Data
 @TableName("order_delivery_pick_up_store")
 public class PickUpStoreDO {

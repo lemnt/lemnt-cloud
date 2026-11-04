@@ -26,13 +26,13 @@ public class CorsConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public CorsWebFilter corsFilter(
-            @Value("${gateway.cors.allowed-origins:}") List<String> allowedOrigins) {
+        @Value("${gateway.cors.allowed-origins:}") List<String> allowedOrigins) {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(
-                allowedOrigins.stream().filter(origin -> !origin.isBlank()).toList());
+            allowedOrigins.stream().filter(origin -> !origin.isBlank()).toList());
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(
-                List.of(HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_TYPE, HttpHeaders.ACCEPT));
+            List.of(HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_TYPE, HttpHeaders.ACCEPT));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(18000L);
         // 带凭据时禁止通配来源，错误配置应在启动时暴露。

@@ -20,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 会员签到记录接口。 */
+/**
+ * 会员签到记录接口。
+ */
 @Tag(name = "会员签到记录")
 @RestController
 @RequestMapping("/member-users")
@@ -33,12 +35,12 @@ public class MemberUserSignRecordController {
     @Operation(summary = "会员签到记录分页")
     @RequiresPermissions("member:sign-in-record:query")
     public R<MemberUserSignsRes> signs(
-            @PathVariable Long id, @Valid @ModelAttribute MemberUserSignsReq req) {
+        @PathVariable Long id, @Valid @ModelAttribute MemberUserSignsReq req) {
         var page = memberSignRecordPageQueryExe.execute(MemberGrowthReqConverter.signs(id, req));
         return R.page(
-                page.getRecords().stream()
-                        .map(MemberGrowthResConverter::toMemberUserSignsRes)
-                        .toList(),
-                page.getTotal());
+            page.getRecords().stream()
+                .map(MemberGrowthResConverter::toMemberUserSignsRes)
+                .toList(),
+            page.getTotal());
     }
 }

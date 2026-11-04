@@ -30,7 +30,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 用户管理接口。 */
+/**
+ * 用户管理接口。
+ */
 @Tag(name = "用户管理")
 @RestController
 @RequestMapping("/users")
@@ -49,15 +51,15 @@ public class UserController {
     public R<SystemUserListRes> list(@Validated SystemUserListReq req) {
         PageResult<UserDTO> result = userPageQueryExe.execute(UserReqConverter.toQry(req));
         return R.page(
-                UserResConverter.toResListToSystemUserListRes(result.getRecords()),
-                result.getTotal());
+            UserResConverter.toResListToSystemUserListRes(result.getRecords()),
+            result.getTotal());
     }
 
     @Operation(summary = "根据用户编号获取详细信息")
     @RequiresPermissions("system:user:query")
     @GetMapping(value = {"/options", "/{userId}"})
     public R<UserDetailRes> getDetail(
-            @PathVariable(value = "userId", required = false) Long userId) {
+        @PathVariable(value = "userId", required = false) Long userId) {
         return R.ok(UserResConverter.toDetailRes(userDetailQueryExe.execute(userId)));
     }
 

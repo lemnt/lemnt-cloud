@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 单条佣金解冻：冻结佣金转入可用佣金，CAS 防止重复解冻。 */
+/**
+ * 单条佣金解冻：冻结佣金转入可用佣金，CAS 防止重复解冻。
+ */
 @Component
 @RequiredArgsConstructor
 public class BrokerageSettlementService {
@@ -21,9 +23,9 @@ public class BrokerageSettlementService {
     public boolean unfreeze(Long recordId) {
         var record = records.find(recordId);
         if (record == null
-                || record.status() != BrokerageService.STATUS_WAIT
-                || !records.updateStatus(
-                        recordId, BrokerageService.STATUS_WAIT, BrokerageService.STATUS_SETTLED)) {
+            || record.status() != BrokerageService.STATUS_WAIT
+            || !records.updateStatus(
+            recordId, BrokerageService.STATUS_WAIT, BrokerageService.STATUS_SETTLED)) {
             return false;
         }
         var user = users.lock(record.userId());
@@ -31,14 +33,14 @@ public class BrokerageSettlementService {
             throw new IllegalStateException("冻结佣金不足，无法解冻");
         }
         BrokerageUser updated =
-                new BrokerageUser(
-                        user.id(),
-                        user.bindUserId(),
-                        user.bindUserTime(),
-                        user.brokerageEnabled(),
-                        user.brokerageTime(),
-                        user.brokeragePrice().add(record.price()),
-                        user.frozenPrice().subtract(record.price()));
+            new BrokerageUser(
+                user.id(),
+                user.bindUserId(),
+                user.bindUserTime(),
+                user.brokerageEnabled(),
+                user.brokerageTime(),
+                user.brokeragePrice().add(record.price()),
+                user.frozenPrice().subtract(record.price()));
         users.save(updated);
         return true;
     }

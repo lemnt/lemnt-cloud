@@ -5,7 +5,9 @@ import com.lemnt.member.domain.growth.model.LevelRecordPageFilter;
 
 import java.util.List;
 
-/** member_level_record 表领域存储网关。 */
+/**
+ * member_level_record 表领域存储网关。
+ */
 public interface MemberLevelRecordGateway {
 
     /**

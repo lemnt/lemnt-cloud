@@ -19,7 +19,9 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 class DeliveryManagementLockTest {
-    /** 事务提交对独立连接可见后才释放，同一事务不重复获取。 */
+    /**
+     * 事务提交对独立连接可见后才释放，同一事务不重复获取。
+     */
     @Test
     void releaseFollowsRealDatabaseCommit() {
         var source = source();
@@ -28,31 +30,33 @@ class DeliveryManagementLockTest {
         var handle = mock(LockInfo.class);
         when(locks.lock(anyString(), anyLong(), anyLong(), any())).thenReturn(handle);
         when(locks.releaseLock(handle))
-                .thenAnswer(
-                        call -> {
-                            try (var connection = source.getConnection();
-                                    var statement = connection.createStatement();
-                                    var rows =
-                                            statement.executeQuery("SELECT COUNT(*) FROM effect")) {
-                                rows.next();
-                                assertEquals(1, rows.getInt(1));
-                            }
-                            return true;
-                        });
+            .thenAnswer(
+                call -> {
+                    try (var connection = source.getConnection();
+                         var statement = connection.createStatement();
+                         var rows =
+                             statement.executeQuery("SELECT COUNT(*) FROM effect")) {
+                        rows.next();
+                        assertEquals(1, rows.getInt(1));
+                    }
+                    return true;
+                });
         var gateway = new DeliveryManagementLockGatewayImpl(locks);
         new TransactionTemplate(new DataSourceTransactionManager(source))
-                .executeWithoutResult(
-                        status -> {
-                            gateway.lock();
-                            gateway.lock();
-                            jdbc.update("INSERT INTO effect VALUES(1)");
-                            verify(locks, never()).releaseLock(any());
-                        });
+            .executeWithoutResult(
+                status -> {
+                    gateway.lock();
+                    gateway.lock();
+                    jdbc.update("INSERT INTO effect VALUES(1)");
+                    verify(locks, never()).releaseLock(any());
+                });
         verify(locks).lock("lemnt:trade:delivery:management", -1, 3000, RedissonLockExecutor.class);
         verify(locks).releaseLock(handle);
     }
 
-    /** 回滚也释放锁，非事务调用不得取锁。 */
+    /**
+     * 回滚也释放锁，非事务调用不得取锁。
+     */
     @Test
     void rejectsOutsideTransactionAndReleasesAfterRollback() {
         var locks = mock(LockTemplate.class);
@@ -62,14 +66,14 @@ class DeliveryManagementLockTest {
         var gateway = new DeliveryManagementLockGatewayImpl(locks);
         assertThrows(IllegalStateException.class, gateway::lock);
         assertThrows(
-                ServiceException.class,
-                () ->
-                        new TransactionTemplate(new DataSourceTransactionManager(source()))
-                                .executeWithoutResult(
-                                        status -> {
-                                            gateway.lock();
-                                            throw new ServiceException("回滚", 409);
-                                        }));
+            ServiceException.class,
+            () ->
+                new TransactionTemplate(new DataSourceTransactionManager(source()))
+                    .executeWithoutResult(
+                        status -> {
+                            gateway.lock();
+                            throw new ServiceException("回滚", 409);
+                        }));
         verify(locks).releaseLock(handle);
     }
 

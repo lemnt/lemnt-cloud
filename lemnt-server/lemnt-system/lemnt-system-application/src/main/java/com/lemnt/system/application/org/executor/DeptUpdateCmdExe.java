@@ -41,7 +41,7 @@ public class DeptUpdateCmdExe {
         Dept condition = new Dept();
         condition.setDeptId(deptId);
         if (!SecurityUtils.isAdmin()
-                && StringUtils.isEmpty(deptGateway.selectDeptList(condition))) {
+            && StringUtils.isEmpty(deptGateway.selectDeptList(condition))) {
             throw new ServiceException("没有权限访问部门数据！");
         }
         // 唯一性校验
@@ -51,7 +51,7 @@ public class DeptUpdateCmdExe {
         } else if (cmd.parentId().equals(deptId)) {
             throw new ServiceException("修改部门'" + cmd.deptName() + "'失败，上级部门不能是自己");
         } else if (UserConstants.DEPT_DISABLE.equals(cmd.status())
-                && deptGateway.selectNormalChildrenDeptById(deptId)) {
+            && deptGateway.selectNormalChildrenDeptById(deptId)) {
             throw new ServiceException("该部门包含未停用的子部门！");
         }
         Dept entity = new Dept();
@@ -77,16 +77,16 @@ public class DeptUpdateCmdExe {
 
         Boolean result = deptGateway.updateDept(entity);
         if (UserConstants.DEPT_NORMAL.equals(cmd.status())
-                && StringUtils.isNotEmpty(entity.getAncestors())
-                && !StringUtils.equals("0", entity.getAncestors())) {
+            && StringUtils.isNotEmpty(entity.getAncestors())
+            && !StringUtils.equals("0", entity.getAncestors())) {
             // 启用部门时，同步启用所有上级部门
             String ancestors = entity.getAncestors();
             Long[] deptIds =
-                    StringUtils.split(ancestors, ",") == null
-                            ? new Long[0]
-                            : Arrays.stream(StringUtils.split(ancestors, ","))
-                                    .map(Long::parseLong)
-                                    .toArray(Long[]::new);
+                StringUtils.split(ancestors, ",") == null
+                    ? new Long[0]
+                    : Arrays.stream(StringUtils.split(ancestors, ","))
+                    .map(Long::parseLong)
+                    .toArray(Long[]::new);
             deptGateway.updateDeptStatusNormal(deptIds);
         }
         return result;

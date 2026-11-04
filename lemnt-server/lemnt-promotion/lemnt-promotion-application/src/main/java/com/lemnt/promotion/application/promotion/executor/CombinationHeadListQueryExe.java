@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 活动可参与团长记录执行器。 */
+/**
+ * 活动可参与团长记录执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class CombinationHeadListQueryExe {

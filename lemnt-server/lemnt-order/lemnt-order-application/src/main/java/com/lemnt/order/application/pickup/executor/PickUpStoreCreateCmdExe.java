@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 自提门店新增执行器。 */
+/**
+ * 自提门店新增执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class PickUpStoreCreateCmdExe {

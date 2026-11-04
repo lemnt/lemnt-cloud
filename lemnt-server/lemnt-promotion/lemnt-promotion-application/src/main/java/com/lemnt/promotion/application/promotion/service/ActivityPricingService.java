@@ -29,7 +29,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/** 按 SKU 折扣、满减、优惠券顺序计算实付，商品原价与行实付分别保留。 */
+/**
+ * 按 SKU 折扣、满减、优惠券顺序计算实付，商品原价与行实付分别保留。
+ */
 @Component
 @RequiredArgsConstructor
 public class ActivityPricingService {
@@ -40,23 +42,27 @@ public class ActivityPricingService {
     private final ProductSkuGateway skus;
     private final ProductSpuGateway spus;
 
-    /** 使用服务器当前规则重新计算，客户端不能提交价格或优惠结果。 */
+    /**
+     * 使用服务器当前规则重新计算，客户端不能提交价格或优惠结果。
+     */
     public SettlementQuote price(
-            List<SettlementItem> items,
-            Coupon coupon,
-            LocalDateTime now,
-            int memberDiscountPercent) {
+        List<SettlementItem> items,
+        Coupon coupon,
+        LocalDateTime now,
+        int memberDiscountPercent) {
         return price(items, coupon, now, memberDiscountPercent, false, 0L);
     }
 
-    /** 积分抵扣与赠送以本次服务器配置和余额计算，并写入结算快照。 */
+    /**
+     * 积分抵扣与赠送以本次服务器配置和余额计算，并写入结算快照。
+     */
     public SettlementQuote price(
-            List<SettlementItem> items,
-            Coupon coupon,
-            LocalDateTime now,
-            int memberDiscountPercent,
-            boolean pointStatus,
-            long points) {
+        List<SettlementItem> items,
+        Coupon coupon,
+        LocalDateTime now,
+        int memberDiscountPercent,
+        boolean pointStatus,
+        long points) {
         if (memberDiscountPercent < 0 || memberDiscountPercent > 100 || points < 0) {
             throw new ServiceException("会员折扣或积分余额不合法", 400);
         }
@@ -65,30 +71,30 @@ public class ActivityPricingService {
         var trace = new ArrayList<SettlementPromotion>();
         var activeRecords = discounts.enabled();
         var active =
-                activeRecords.stream()
-                        .filter(a -> !now.isBefore(a.startTime()) && now.isBefore(a.endTime()))
-                        .map(a -> a.id())
-                        .toList();
+            activeRecords.stream()
+                .filter(a -> !now.isBefore(a.startTime()) && now.isBefore(a.endTime()))
+                .map(a -> a.id())
+                .toList();
         var configurations = products.byActivities(active);
         Map<Long, BigDecimal> remaining = new LinkedHashMap<>();
         for (var item : items) {
             var amount = item.lineAmount();
             var vip =
-                    amount.multiply(BigDecimal.valueOf(memberDiscountPercent))
-                            .divide(BigDecimal.valueOf(100), 2, RoundingMode.DOWN);
+                amount.multiply(BigDecimal.valueOf(memberDiscountPercent))
+                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.DOWN);
             var config =
-                    configurations.stream()
-                            .filter(p -> p.skuId().equals(item.productId()))
-                            .findFirst();
+                configurations.stream()
+                    .filter(p -> p.skuId().equals(item.productId()))
+                    .findFirst();
             if (config.isPresent()) {
                 var value = config.get();
                 var discounted =
-                        "PRICE".equals(value.discountType())
-                                ? amount.subtract(
-                                        value.discountPrice()
-                                                .multiply(BigDecimal.valueOf(item.quantity())))
-                                : amount.multiply(BigDecimal.valueOf(value.discountPercent()))
-                                        .divide(BigDecimal.valueOf(10000), 2, RoundingMode.DOWN);
+                    "PRICE".equals(value.discountType())
+                        ? amount.subtract(
+                        value.discountPrice()
+                            .multiply(BigDecimal.valueOf(item.quantity())))
+                        : amount.multiply(BigDecimal.valueOf(value.discountPercent()))
+                        .divide(BigDecimal.valueOf(10000), 2, RoundingMode.DOWN);
                 amount = discounted.max(BigDecimal.ZERO).min(vip);
             } else {
                 amount = vip;
@@ -98,28 +104,28 @@ public class ActivityPricingService {
                 boolean activityWins = config.isPresent() && amount.compareTo(vip) < 0;
                 var source = activityWins ? config.get().activityId() : null;
                 var name =
-                        activityWins
-                                ? activeRecords.stream()
-                                        .filter(a -> a.id().equals(source))
-                                        .map(a -> a.name())
-                                        .findFirst()
-                                        .orElseThrow()
-                                : "会员折扣";
+                    activityWins
+                        ? activeRecords.stream()
+                        .filter(a -> a.id().equals(source))
+                        .map(a -> a.name())
+                        .findFirst()
+                        .orElseThrow()
+                        : "会员折扣";
                 trace.add(
-                        SettlementPromotionSnapshots.capture(
-                                (activityWins ? "DISCOUNT:" : "MEMBER_LEVEL:") + item.productId(),
-                                activityWins ? "DISCOUNT" : "MEMBER_LEVEL",
-                                source,
-                                name,
-                                activityWins
-                                        ? "活动价与会员价取低"
-                                        : "{\"discountPercent\":" + memberDiscountPercent + "}",
-                                items,
-                                Map.of(item.productId(), item.lineAmount()),
-                                Map.of(item.productId(), amount),
-                                0,
-                                0,
-                                Map.of()));
+                    SettlementPromotionSnapshots.capture(
+                        (activityWins ? "DISCOUNT:" : "MEMBER_LEVEL:") + item.productId(),
+                        activityWins ? "DISCOUNT" : "MEMBER_LEVEL",
+                        source,
+                        name,
+                        activityWins
+                            ? "活动价与会员价取低"
+                            : "{\"discountPercent\":" + memberDiscountPercent + "}",
+                        items,
+                        Map.of(item.productId(), item.lineAmount()),
+                        Map.of(item.productId(), amount),
+                        0,
+                        0,
+                        Map.of()));
             }
         }
         // 芋道按最新匹配活动处理满减，不保留自定义优先级或最优活动枚举机制。
@@ -127,32 +133,32 @@ public class ActivityPricingService {
         boolean freeDelivery = false;
         Map<Long, Integer> giveCouponTemplateCounts = Map.of();
         var matched =
-                rewards.enabled().stream()
-                        .filter(
-                                a ->
-                                        !now.isBefore(a.startTime())
-                                                && now.isBefore(a.endTime())
-                                                && items.stream()
-                                                        .anyMatch(i -> matches(a, i.productId())))
-                        .findFirst();
+            rewards.enabled().stream()
+                .filter(
+                    a ->
+                        !now.isBefore(a.startTime())
+                            && now.isBefore(a.endTime())
+                            && items.stream()
+                            .anyMatch(i -> matches(a, i.productId())))
+                .findFirst();
         if (matched.isPresent()) {
             var activity = matched.get();
             var eligible = new LinkedHashMap<Long, BigDecimal>();
             items.stream()
-                    .filter(i -> matches(activity, i.productId()))
-                    .forEach(i -> eligible.put(i.productId(), remaining.get(i.productId())));
+                .filter(i -> matches(activity, i.productId()))
+                .forEach(i -> eligible.put(i.productId(), remaining.get(i.productId())));
             var basis =
-                    "COUNT".equals(activity.conditionType())
-                            ? BigDecimal.valueOf(
-                                    items.stream()
-                                            .filter(i -> eligible.containsKey(i.productId()))
-                                            .mapToInt(SettlementItem::quantity)
-                                            .sum())
-                            : total(eligible);
+                "COUNT".equals(activity.conditionType())
+                    ? BigDecimal.valueOf(
+                    items.stream()
+                        .filter(i -> eligible.containsKey(i.productId()))
+                        .mapToInt(SettlementItem::quantity)
+                        .sum())
+                    : total(eligible);
             var rule =
-                    activity.rules().stream()
-                            .filter(r -> basis.compareTo(r.limit()) >= 0)
-                            .max(Comparator.comparing(r -> r.limit()));
+                activity.rules().stream()
+                    .filter(r -> basis.compareTo(r.limit()) >= 0)
+                    .max(Comparator.comparing(r -> r.limit()));
             if (rule.isPresent()) {
                 var rewardBefore = new LinkedHashMap<>(eligible);
                 subtract(remaining, eligible, rule.get().discountPrice().min(total(eligible)));
@@ -161,18 +167,18 @@ public class ActivityPricingService {
                 freeDelivery = Boolean.TRUE.equals(rule.get().freeDelivery());
                 giveCouponTemplateCounts = rule.get().giveCouponTemplateCounts();
                 trace.add(
-                        SettlementPromotionSnapshots.capture(
-                                "REWARD:" + activity.id(),
-                                "REWARD",
-                                activity.id(),
-                                activity.name(),
-                                "满足档位" + rule.get().limit(),
-                                items,
-                                rewardBefore,
-                                remaining,
-                                0,
-                                rewardPoint,
-                                giveCouponTemplateCounts));
+                    SettlementPromotionSnapshots.capture(
+                        "REWARD:" + activity.id(),
+                        "REWARD",
+                        activity.id(),
+                        activity.name(),
+                        "满足档位" + rule.get().limit(),
+                        items,
+                        rewardBefore,
+                        remaining,
+                        0,
+                        rewardPoint,
+                        giveCouponTemplateCounts));
             }
         }
         if (coupon != null) {
@@ -185,133 +191,137 @@ public class ActivityPricingService {
             }
             var eligible = new LinkedHashMap<Long, BigDecimal>();
             items.stream()
-                    .filter(
-                            i ->
-                                    matches(
-                                            terms.productScope(),
-                                            terms.productScopeValues(),
-                                            i.productId()))
-                    .forEach(i -> eligible.put(i.productId(), remaining.get(i.productId())));
+                .filter(
+                    i ->
+                        matches(
+                            terms.productScope(),
+                            terms.productScopeValues(),
+                            i.productId()))
+                .forEach(i -> eligible.put(i.productId(), remaining.get(i.productId())));
             if (eligible.isEmpty()) {
                 throw new ServiceException("商品不在优惠券适用范围内", 400);
             }
             var couponBefore = new LinkedHashMap<>(eligible);
             subtract(remaining, eligible, CouponRules.discount(terms, total(eligible), now));
             trace.add(
-                    SettlementPromotionSnapshots.capture(
-                            "COUPON:" + coupon.id(),
-                            "COUPON",
-                            coupon.id(),
-                            terms.name(),
-                            terms.kind(),
-                            items,
-                            couponBefore,
-                            remaining,
-                            0,
-                            0,
-                            Map.of()));
+                SettlementPromotionSnapshots.capture(
+                    "COUPON:" + coupon.id(),
+                    "COUPON",
+                    coupon.id(),
+                    terms.name(),
+                    terms.kind(),
+                    items,
+                    couponBefore,
+                    remaining,
+                    0,
+                    0,
+                    Map.of()));
         }
         var config = memberTradeGateway.config();
         long usePoint = 0L;
         if (pointStatus && config.enabled() && config.unitPrice() > 0 && points > 0) {
             usePoint = config.maxPoints() > 0 ? Math.min(points, config.maxPoints()) : points;
             var deduction =
-                    BigDecimal.valueOf(usePoint)
-                            .multiply(BigDecimal.valueOf(config.unitPrice()))
-                            .movePointLeft(2);
+                BigDecimal.valueOf(usePoint)
+                    .multiply(BigDecimal.valueOf(config.unitPrice()))
+                    .movePointLeft(2);
             if (deduction.compareTo(total(remaining)) >= 0) {
                 throw new ServiceException("积分抵扣后实付必须大于零", 400);
             }
             var pointBefore = new LinkedHashMap<>(remaining);
             subtract(remaining, new LinkedHashMap<>(remaining), deduction);
             trace.add(
-                    SettlementPromotionSnapshots.capture(
-                            "POINT_DEDUCT",
-                            "POINT_DEDUCT",
-                            null,
-                            "积分抵扣",
-                            "{\"unitPriceFen\":" + config.unitPrice() + "}",
-                            items,
-                            pointBefore,
-                            remaining,
-                            usePoint,
-                            0,
-                            Map.of()));
+                SettlementPromotionSnapshots.capture(
+                    "POINT_DEDUCT",
+                    "POINT_DEDUCT",
+                    null,
+                    "积分抵扣",
+                    "{\"unitPriceFen\":" + config.unitPrice() + "}",
+                    items,
+                    pointBefore,
+                    remaining,
+                    usePoint,
+                    0,
+                    Map.of()));
         }
         var paid = total(remaining);
         long givePoint =
-                config.enabled() && config.givePerYuan() > 0
-                        ? paid.multiply(BigDecimal.valueOf(config.givePerYuan()))
-                                .setScale(0, RoundingMode.DOWN)
-                                .longValueExact()
-                        : 0L;
+            config.enabled() && config.givePerYuan() > 0
+                ? paid.multiply(BigDecimal.valueOf(config.givePerYuan()))
+                .setScale(0, RoundingMode.DOWN)
+                .longValueExact()
+                : 0L;
         givePoint += rewardPoint;
         var pricedItems =
-                items.stream()
-                        .map(
-                                i ->
-                                        new SettlementItem(
-                                                i.productId(),
-                                                i.productCode(),
-                                                i.productName(),
-                                                i.unitPrice(),
-                                                i.quantity(),
-                                                i.lineAmount(),
-                                                remaining.get(i.productId()),
-                                                BigDecimal.ZERO.setScale(2),
-                                                i.spuId(),
-                                                i.spuName(),
-                                                i.specs() == null
-                                                        ? null
-                                                        : i.specs().stream()
-                                                                .map(
-                                                                        snapshotProperty ->
-                                                                                new SettlementItem
-                                                                                        .Spec(
-                                                                                        snapshotProperty
-                                                                                                .specId(),
-                                                                                        snapshotProperty
-                                                                                                .specName(),
-                                                                                        snapshotProperty
-                                                                                                .specValueId(),
-                                                                                        snapshotProperty
-                                                                                                .specValueName()))
-                                                                .toList(),
-                                                i.picUrl()))
-                        .toList();
+            items.stream()
+                .map(
+                    i ->
+                        new SettlementItem(
+                            i.productId(),
+                            i.productCode(),
+                            i.productName(),
+                            i.unitPrice(),
+                            i.quantity(),
+                            i.lineAmount(),
+                            remaining.get(i.productId()),
+                            BigDecimal.ZERO.setScale(2),
+                            i.spuId(),
+                            i.spuName(),
+                            i.specs() == null
+                                ? null
+                                : i.specs().stream()
+                                .map(
+                                    snapshotProperty ->
+                                        new SettlementItem
+                                            .Spec(
+                                            snapshotProperty
+                                                .specId(),
+                                            snapshotProperty
+                                                .specName(),
+                                            snapshotProperty
+                                                .specValueId(),
+                                            snapshotProperty
+                                                .specValueName()))
+                                .toList(),
+                            i.picUrl()))
+                .toList();
         var quote =
-                new SettlementQuote(
-                        pricedItems,
-                        original,
-                        original.subtract(paid),
-                        paid,
-                        coupon == null ? null : coupon.id(),
-                        usePoint,
-                        givePoint,
-                        null,
-                        rewardPoint,
-                        freeDelivery,
-                        giveCouponTemplateCounts,
-                        trace,
-                        BigDecimal.ZERO.setScale(2),
-                        BigDecimal.ZERO.setScale(2));
+            new SettlementQuote(
+                pricedItems,
+                original,
+                original.subtract(paid),
+                paid,
+                coupon == null ? null : coupon.id(),
+                usePoint,
+                givePoint,
+                null,
+                rewardPoint,
+                freeDelivery,
+                giveCouponTemplateCounts,
+                trace,
+                BigDecimal.ZERO.setScale(2),
+                BigDecimal.ZERO.setScale(2));
         var fees = new LinkedHashMap<Long, BigDecimal>();
         items.forEach(item -> fees.put(item.productId(), BigDecimal.ZERO.setScale(2)));
         return SettlementPromotionSnapshots.finish(
-                quote,
-                pricedItems,
-                null,
-                fees,
-                givePoint - rewardPoint,
-                config.enabled() ? config.givePerYuan() : 0);
+            quote,
+            pricedItems,
+            null,
+            fees,
+            givePoint - rewardPoint,
+            config.enabled() ? config.givePerYuan() : 0);
     }
 
-    /** 范围使用商品主体和所属分类，不能把 SKU 编号当作 SPU。 */
+    /**
+     * 范围使用商品主体和所属分类，不能把 SKU 编号当作 SPU。
+     */
     private boolean matches(RewardActivity activity, Long skuId) {
         return matches(activity.productScope(), activity.productScopeValues(), skuId);
     }
 
-    /** 券与满减均以 SPU 或分类编号匹配商品范围。 */
+    /**
+     * 券与满减均以 SPU 或分类编号匹配商品范围。
+     */
     private boolean matches(String scope, List<Long> values, Long skuId) {
         if ("ALL".equals(scope)) {
             return true;
@@ -331,9 +341,11 @@ public class ActivityPricingService {
         return amounts.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    /** 按行金额累计分摊，精确到分，最后一行承担尾差，合计严格等于优惠额。 */
+    /**
+     * 按行金额累计分摊，精确到分，最后一行承担尾差，合计严格等于优惠额。
+     */
     private void subtract(
-            Map<Long, BigDecimal> target, Map<Long, BigDecimal> weights, BigDecimal discount) {
+        Map<Long, BigDecimal> target, Map<Long, BigDecimal> weights, BigDecimal discount) {
         var total = total(weights);
         if (discount.signum() == 0) {
             return;
@@ -347,8 +359,8 @@ public class ActivityPricingService {
             cumulative = cumulative.add(entry.getValue());
             var amount = discount.multiply(cumulative).divide(total, 2, RoundingMode.DOWN);
             target.put(
-                    entry.getKey(),
-                    target.get(entry.getKey()).subtract(amount.subtract(allocated)));
+                entry.getKey(),
+                target.get(entry.getKey()).subtract(amount.subtract(allocated)));
             allocated = amount;
         }
     }

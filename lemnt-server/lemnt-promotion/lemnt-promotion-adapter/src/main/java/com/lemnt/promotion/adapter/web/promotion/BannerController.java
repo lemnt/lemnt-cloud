@@ -29,7 +29,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 后台 Banner 管理。 */
+/**
+ * 后台 Banner 管理。
+ */
 @Tag(name = "Banner 管理")
 @RestController
 @RequestMapping("/mall/promotion/banners")
@@ -75,6 +77,6 @@ public class BannerController {
     public R<BannerRes> page(@Valid @ModelAttribute BannerPageReq req) {
         var result = page.execute(BannerConverter.page(req));
         return R.page(
-                result.getRecords().stream().map(BannerConverter::res).toList(), result.getTotal());
+            result.getRecords().stream().map(BannerConverter::res).toList(), result.getTotal());
     }
 }

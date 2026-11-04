@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 撤回未用券并归还模板名额。 */
+/**
+ * 撤回未用券并归还模板名额。
+ */
 @Component
 @RequiredArgsConstructor
 public class CouponRevokeCmdExe {
@@ -19,7 +21,9 @@ public class CouponRevokeCmdExe {
     private final CouponGateway coupons;
     private final CouponTemplateGateway templates;
 
-    /** 撤回与发券使用相同会员锁，持券更新和计数在同一事务内。 */
+    /**
+     * 撤回与发券使用相同会员锁，持券更新和计数在同一事务内。
+     */
     @Transactional(rollbackFor = Exception.class)
     public boolean execute(Long memberId, Long couponId) {
         CouponRules.id(memberId);

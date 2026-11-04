@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 查询标签分配命令执行器。 */
+/**
+ * 查询标签分配命令执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberTagsAssignCmdExe {

@@ -22,7 +22,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Objects;
 
-/** 活动订单本地准备：请求幂等、结算快照和活动订单映射在同一事务内保存。 */
+/**
+ * 活动订单本地准备：请求幂等、结算快照和活动订单映射在同一事务内保存。
+ */
 @Component
 @RequiredArgsConstructor
 public class PromotionOrderPreparationService {
@@ -32,7 +34,9 @@ public class PromotionOrderPreparationService {
     private final SettlementPreparationService settlements;
     private final SettlementOrderService orders;
 
-    /** 同请求编号返回原快照；活动已关闭时仍可重试原请求。 */
+    /**
+     * 同请求编号返回原快照；活动已关闭时仍可重试原请求。
+     */
     @Transactional(rollbackFor = Exception.class)
     public PreparedPromotionOrder prepare(PromotionOrderCmd cmd, String fingerprint) {
         var previous = promotionOrders.findByRequest(cmd.memberId(), cmd.requestNo());
@@ -40,16 +44,16 @@ public class PromotionOrderPreparationService {
             var order = orders.findByOrderNo(previous.orderNo());
             if (order == null) {
                 order =
-                        settlements
-                                .preparePromotion(
-                                        cmd.memberId(),
-                                        cmd.requestNo(),
-                                        fingerprint,
-                                        () -> {
-                                            throw new IllegalStateException("原提交快照已失效，请查询交易订单");
-                                        },
-                                        List.of())
-                                .order();
+                    settlements
+                        .preparePromotion(
+                            cmd.memberId(),
+                            cmd.requestNo(),
+                            fingerprint,
+                            () -> {
+                                throw new IllegalStateException("原提交快照已失效，请查询交易订单");
+                            },
+                            List.of())
+                        .order();
             }
             if ("FAILED".equals(previous.status())) {
                 promotionOrders.reopenFailed(previous.orderNo());
@@ -62,8 +66,8 @@ public class PromotionOrderPreparationService {
         }
         PromotionOrderDraft draft = pricing.price(cmd);
         SettlementPreparationResult result =
-                settlements.preparePromotion(
-                        cmd.memberId(), cmd.requestNo(), fingerprint, draft::quote, List.of());
+            settlements.preparePromotion(
+                cmd.memberId(), cmd.requestNo(), fingerprint, draft::quote, List.of());
         if (!result.created()) {
             var existing = promotionOrders.findByRequest(cmd.memberId(), cmd.requestNo());
             if (existing == null || !matches(existing, cmd)) {
@@ -73,38 +77,38 @@ public class PromotionOrderPreparationService {
         }
         try {
             var saved =
-                    promotionOrders.save(
-                            new PromotionOrder(
-                                    null,
-                                    result.order().orderNo(),
-                                    cmd.requestNo(),
-                                    cmd.memberId(),
-                                    draft.activityType(),
-                                    draft.activityId(),
-                                    draft.recordId(),
-                                    draft.headId(),
-                                    draft.skuId(),
-                                    draft.quantity(),
-                                    draft.activityPrice(),
-                                    draft.usePoint(),
-                                    0,
-                                    "CREATED",
-                                    null,
-                                    null,
-                                    null));
+                promotionOrders.save(
+                    new PromotionOrder(
+                        null,
+                        result.order().orderNo(),
+                        cmd.requestNo(),
+                        cmd.memberId(),
+                        draft.activityType(),
+                        draft.activityId(),
+                        draft.recordId(),
+                        draft.headId(),
+                        draft.skuId(),
+                        draft.quantity(),
+                        draft.activityPrice(),
+                        draft.usePoint(),
+                        0,
+                        "CREATED",
+                        null,
+                        null,
+                        null));
             promotionOrderItems.saveAll(
-                    result.order().orderNo(),
-                    draft.lines().stream()
-                            .map(
-                                    line ->
-                                            new PromotionOrderItem(
-                                                    null,
-                                                    result.order().orderNo(),
-                                                    line.skuId(),
-                                                    line.quantity(),
-                                                    line.usePoint(),
-                                                    0))
-                            .toList());
+                result.order().orderNo(),
+                draft.lines().stream()
+                    .map(
+                        line ->
+                            new PromotionOrderItem(
+                                null,
+                                result.order().orderNo(),
+                                line.skuId(),
+                                line.quantity(),
+                                line.usePoint(),
+                                0))
+                    .toList());
             return new PreparedPromotionOrder(result.order(), saved, true);
         } catch (DuplicateKeyException exception) {
             var existing = promotionOrders.findByRequest(cmd.memberId(), cmd.requestNo());
@@ -121,16 +125,16 @@ public class PromotionOrderPreparationService {
             return false;
         }
         var expected =
-                lines.stream().map(line -> line.skuId() + ":" + line.quantity()).sorted().toList();
+            lines.stream().map(line -> line.skuId() + ":" + line.quantity()).sorted().toList();
         var actual =
-                saved.stream().map(line -> line.skuId() + ":" + line.quantity()).sorted().toList();
+            saved.stream().map(line -> line.skuId() + ":" + line.quantity()).sorted().toList();
         return expected.equals(actual);
     }
 
     private boolean matches(PromotionOrder value, PromotionOrderCmd cmd) {
         if (!Objects.equals(value.activityType(), cmd.activityType())
-                || !Objects.equals(value.skuId(), cmd.skuId())
-                || !Objects.equals(value.quantity(), cmd.quantity())) {
+            || !Objects.equals(value.skuId(), cmd.skuId())
+            || !Objects.equals(value.quantity(), cmd.quantity())) {
             return false;
         }
         if ("BARGAIN".equals(cmd.activityType())) {
@@ -139,13 +143,13 @@ public class PromotionOrderPreparationService {
         if ("POINT".equals(cmd.activityType())) {
             if (promotionOrderItems.byOrderNo(value.orderNo()).isEmpty()) {
                 return Objects.equals(value.activityId(), cmd.activityId())
-                        && Objects.equals(value.skuId(), cmd.skuId())
-                        && Objects.equals(value.quantity(), cmd.quantity());
+                    && Objects.equals(value.skuId(), cmd.skuId())
+                    && Objects.equals(value.quantity(), cmd.quantity());
             }
             return Objects.equals(value.activityId(), cmd.activityId())
-                    && sameLines(value.orderNo(), cmd.lines());
+                && sameLines(value.orderNo(), cmd.lines());
         }
         return Objects.equals(value.activityId(), cmd.activityId())
-                && Objects.equals(value.headId(), cmd.headId());
+            && Objects.equals(value.headId(), cmd.headId());
     }
 }

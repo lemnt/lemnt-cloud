@@ -24,21 +24,21 @@ public class MenuResConverter {
             return null;
         }
         return new RouterRes(
-                dto.getName(),
-                dto.getPath(),
-                dto.isHidden(),
-                dto.getRedirect(),
-                dto.getComponent(),
-                dto.getQuery(),
-                dto.getAlwaysShow(),
-                dto.getMeta() == null
-                        ? null
-                        : new MetaRes(
-                                dto.getMeta().getTitle(),
-                                dto.getMeta().getIcon(),
-                                dto.getMeta().isNoCache(),
-                                dto.getMeta().getLink()),
-                toRouterResList(dto.getChildren()));
+            dto.getName(),
+            dto.getPath(),
+            dto.isHidden(),
+            dto.getRedirect(),
+            dto.getComponent(),
+            dto.getQuery(),
+            dto.getAlwaysShow(),
+            dto.getMeta() == null
+                ? null
+                : new MetaRes(
+                dto.getMeta().getTitle(),
+                dto.getMeta().getIcon(),
+                dto.getMeta().isNoCache(),
+                dto.getMeta().getLink()),
+            toRouterResList(dto.getChildren()));
     }
 
     /**
@@ -77,22 +77,22 @@ public class MenuResConverter {
             return null;
         }
         return new SystemMenuListRes(
-                dto.getMenuId(),
-                dto.getMenuName(),
-                dto.getParentId(),
-                dto.getOrderNum(),
-                dto.getPath(),
-                dto.getComponent(),
-                dto.getQuery(),
-                dto.getRouteName(),
-                dto.getIsFrame(),
-                dto.getIsCache(),
-                dto.getMenuType(),
-                dto.getVisible(),
-                dto.getStatus(),
-                dto.getPerms(),
-                dto.getIcon(),
-                toResListToSystemMenuListRes(dto.getChildren()));
+            dto.getMenuId(),
+            dto.getMenuName(),
+            dto.getParentId(),
+            dto.getOrderNum(),
+            dto.getPath(),
+            dto.getComponent(),
+            dto.getQuery(),
+            dto.getRouteName(),
+            dto.getIsFrame(),
+            dto.getIsCache(),
+            dto.getMenuType(),
+            dto.getVisible(),
+            dto.getStatus(),
+            dto.getPerms(),
+            dto.getIcon(),
+            toResListToSystemMenuListRes(dto.getChildren()));
     }
 
     /**
@@ -103,22 +103,22 @@ public class MenuResConverter {
             return null;
         }
         return new SystemMenuGetInfoRes(
-                dto.getMenuId(),
-                dto.getMenuName(),
-                dto.getParentId(),
-                dto.getOrderNum(),
-                dto.getPath(),
-                dto.getComponent(),
-                dto.getQuery(),
-                dto.getRouteName(),
-                dto.getIsFrame(),
-                dto.getIsCache(),
-                dto.getMenuType(),
-                dto.getVisible(),
-                dto.getStatus(),
-                dto.getPerms(),
-                dto.getIcon(),
-                toResListToSystemMenuGetInfoRes(dto.getChildren()));
+            dto.getMenuId(),
+            dto.getMenuName(),
+            dto.getParentId(),
+            dto.getOrderNum(),
+            dto.getPath(),
+            dto.getComponent(),
+            dto.getQuery(),
+            dto.getRouteName(),
+            dto.getIsFrame(),
+            dto.getIsCache(),
+            dto.getMenuType(),
+            dto.getVisible(),
+            dto.getStatus(),
+            dto.getPerms(),
+            dto.getIcon(),
+            toResListToSystemMenuGetInfoRes(dto.getChildren()));
     }
 
     /**

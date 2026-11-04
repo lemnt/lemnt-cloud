@@ -23,9 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** 小程序秒杀展示入口。 */
+/**
+ * 小程序秒杀展示入口。
+ */
 @Tag(name = "小程序秒杀")
 @RestController
 @RequestMapping("/mall/app/seckill")
@@ -53,8 +56,8 @@ public class AppSeckillController {
     public R<AppSeckillActivityRes> page(@Valid @ModelAttribute AppSeckillPageReq req) {
         var result = page.execute(AppSeckillConverter.page(req));
         return R.page(
-                result.getRecords().stream().map(AppSeckillConverter::activity).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(AppSeckillConverter::activity).toList(),
+            result.getTotal());
     }
 
     @GetMapping("/activities/{id}")

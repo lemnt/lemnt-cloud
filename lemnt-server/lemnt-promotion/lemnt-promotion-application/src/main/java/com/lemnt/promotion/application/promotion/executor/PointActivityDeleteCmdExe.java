@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 积分商城活动删除执行器。 */
+/**
+ * 积分商城活动删除执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class PointActivityDeleteCmdExe {

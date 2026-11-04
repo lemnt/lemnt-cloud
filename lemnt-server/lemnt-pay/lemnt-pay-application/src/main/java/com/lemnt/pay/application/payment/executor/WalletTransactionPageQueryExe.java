@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 会员钱包流水分页；无钱包时返回空页。 */
+/**
+ * 会员钱包流水分页；无钱包时返回空页。
+ */
 @Component
 @RequiredArgsConstructor
 public class WalletTransactionPageQueryExe {
@@ -42,11 +44,11 @@ public class WalletTransactionPageQueryExe {
             return PageResult.of(List.of(), 0L);
         }
         var page =
-                wallets.transactionPage(
-                        new WalletTransactionFilter(
-                                wallet.id(), bizType, qry.pageNum(), qry.pageSize()));
+            wallets.transactionPage(
+                new WalletTransactionFilter(
+                    wallet.id(), bizType, qry.pageNum(), qry.pageSize()));
         return PageResult.of(
-                page.getRecords().stream().map(WalletDTOConverter::transaction).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(WalletDTOConverter::transaction).toList(),
+            page.getTotal());
     }
 }

@@ -20,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 会员等级记录接口。 */
+/**
+ * 会员等级记录接口。
+ */
 @Tag(name = "会员等级记录")
 @RestController
 @RequestMapping("/member-users")
@@ -33,14 +35,14 @@ public class MemberUserLevelRecordController {
     @Operation(summary = "等级变更记录分页")
     @RequiresPermissions("member:level-record:query")
     public R<MemberUserLevelRecordsRes> levelRecords(
-            @PathVariable Long id, @Valid @ModelAttribute MemberUserLevelRecordsReq req) {
+        @PathVariable Long id, @Valid @ModelAttribute MemberUserLevelRecordsReq req) {
         var page =
-                memberLevelRecordsPageQueryExe.execute(
-                        MemberGrowthReqConverter.levelRecords(id, req));
+            memberLevelRecordsPageQueryExe.execute(
+                MemberGrowthReqConverter.levelRecords(id, req));
         return R.page(
-                page.getRecords().stream()
-                        .map(MemberGrowthResConverter::toMemberUserLevelRecordsRes)
-                        .toList(),
-                page.getTotal());
+            page.getRecords().stream()
+                .map(MemberGrowthResConverter::toMemberUserLevelRecordsRes)
+                .toList(),
+            page.getTotal());
     }
 }

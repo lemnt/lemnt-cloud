@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 切流审核后启用，旧服务仍是写入方时不得并行恢复业务。 */
+/**
+ * 切流审核后启用，旧服务仍是写入方时不得并行恢复业务。
+ */
 @Component
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "lemnt.order.recovery.enabled", havingValue = "true")

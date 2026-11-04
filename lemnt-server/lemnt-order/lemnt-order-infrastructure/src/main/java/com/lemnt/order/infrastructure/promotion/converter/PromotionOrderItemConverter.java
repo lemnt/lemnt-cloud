@@ -3,21 +3,24 @@ package com.lemnt.order.infrastructure.promotion.converter;
 import com.lemnt.order.domain.promotion.model.PromotionOrderItem;
 import com.lemnt.order.infrastructure.promotion.dataobject.PromotionOrderItemDO;
 
-/** 活动订单商品行转换。 */
+/**
+ * 活动订单商品行转换。
+ */
 public final class PromotionOrderItemConverter {
-    private PromotionOrderItemConverter() {}
+    private PromotionOrderItemConverter() {
+    }
 
     public static PromotionOrderItem model(PromotionOrderItemDO row) {
         if (row == null) {
             return null;
         }
         return new PromotionOrderItem(
-                row.getId(),
-                row.getOrderNo(),
-                row.getSkuId(),
-                row.getQuantity(),
-                row.getUsePoint(),
-                row.getRefundedQuantity());
+            row.getId(),
+            row.getOrderNo(),
+            row.getSkuId(),
+            row.getQuantity(),
+            row.getUsePoint(),
+            row.getRefundedQuantity());
     }
 
     public static PromotionOrderItemDO row(PromotionOrderItem value) {

@@ -21,10 +21,10 @@ class NoticeTopListQueryExeTest {
     @Test
     void shouldReturnZeroUnreadEvenWhenReadNoticesRemainInList() {
         when(gateway.selectNoticeListWithReadStatus(1L, 5))
-                .thenReturn(
-                        List.of(
-                                new Notice().setNoticeId(10L).setIsRead(true),
-                                new Notice().setNoticeId(11L).setIsRead(true)));
+            .thenReturn(
+                List.of(
+                    new Notice().setNoticeId(10L).setIsRead(true),
+                    new Notice().setNoticeId(11L).setIsRead(true)));
         when(gateway.selectUnreadCount(1L)).thenReturn(0);
 
         Map<String, Object> result = executor.execute(1L, 5);
@@ -36,10 +36,10 @@ class NoticeTopListQueryExeTest {
     @Test
     void shouldPreserveMixedReadStatusesAndCountUnreadBeyondVisibleList() {
         when(gateway.selectNoticeListWithReadStatus(1L, 5))
-                .thenReturn(
-                        List.of(
-                                new Notice().setNoticeId(10L).setIsRead(true),
-                                new Notice().setNoticeId(11L).setIsRead(false)));
+            .thenReturn(
+                List.of(
+                    new Notice().setNoticeId(10L).setIsRead(true),
+                    new Notice().setNoticeId(11L).setIsRead(false)));
         when(gateway.selectUnreadCount(1L)).thenReturn(8);
 
         Map<String, Object> result = executor.execute(1L, 5);

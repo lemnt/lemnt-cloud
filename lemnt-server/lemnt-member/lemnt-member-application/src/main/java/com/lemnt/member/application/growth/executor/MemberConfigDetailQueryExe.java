@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 配置查询执行器。 */
+/**
+ * 配置查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberConfigDetailQueryExe {

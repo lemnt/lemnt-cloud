@@ -14,19 +14,23 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-/** 支付退款管理查询执行器。 */
+/**
+ * 支付退款管理查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class PaymentRefundPageQueryExe {
     private final PaymentRefundGateway gateway;
 
-    /** 按精确条件分页查询，不返回内部通知标识。 */
+    /**
+     * 按精确条件分页查询，不返回内部通知标识。
+     */
     public PageResult<PaymentRefundDTO> execute(PaymentRefundPageQry query) {
         if (query == null
-                || query.pageNum() < 1
-                || query.pageNum() > 1000000
-                || query.pageSize() < 1
-                || query.pageSize() > 100) {
+            || query.pageNum() < 1
+            || query.pageNum() > 1000000
+            || query.pageSize() < 1
+            || query.pageSize() > 100) {
             throw new IllegalArgumentException("分页参数不合法");
         }
         String afterSaleNo = text(query.afterSaleNo(), 40);
@@ -36,12 +40,12 @@ public class PaymentRefundPageQueryExe {
             throw new IllegalArgumentException("状态参数不合法");
         }
         var page =
-                gateway.page(
-                        new PaymentRefundFilter(
-                                afterSaleNo, paymentNo, status, query.pageNum(), query.pageSize()));
+            gateway.page(
+                new PaymentRefundFilter(
+                    afterSaleNo, paymentNo, status, query.pageNum(), query.pageSize()));
         return PageResult.of(
-                page.getRecords().stream().map(PaymentRefundDTOConverter::toDTO).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(PaymentRefundDTOConverter::toDTO).toList(),
+            page.getTotal());
     }
 
     private String text(String value, int max) {

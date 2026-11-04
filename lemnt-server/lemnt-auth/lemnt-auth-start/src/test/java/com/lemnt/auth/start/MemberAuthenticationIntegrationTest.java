@@ -35,7 +35,9 @@ import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 使用 RPC 边界和真实公共密码/令牌组件，认证中心测试不启动数据库。 */
+/**
+ * 使用 RPC 边界和真实公共密码/令牌组件，认证中心测试不启动数据库。
+ */
 class MemberAuthenticationIntegrationTest {
     MemberAuthenticationService auth;
     MemberAccountGateway accounts;
@@ -55,83 +57,85 @@ class MemberAuthenticationIntegrationTest {
         properties.setSecret("test-secret-only-".repeat(5));
         jwtUtils = new JwtUtils(properties);
         Mockito.when(snowflake.generateStr())
-                .thenAnswer(invocation -> UUID.randomUUID().toString());
+            .thenAnswer(invocation -> UUID.randomUUID().toString());
         Mockito.when(
-                        redis.getObj(
-                                ArgumentMatchers.anyString(),
-                                ArgumentMatchers.eq(SecurityUser.class)))
-                .thenAnswer(invocation -> cachedSessions.get(invocation.getArgument(0)));
+                redis.getObj(
+                    ArgumentMatchers.anyString(),
+                    ArgumentMatchers.eq(SecurityUser.class)))
+            .thenAnswer(invocation -> cachedSessions.get(invocation.getArgument(0)));
         Mockito.when(redis.getObj(ArgumentMatchers.anyString(), ArgumentMatchers.eq(Integer.class)))
-                .thenAnswer(invocation -> retryCounts.get(invocation.getArgument(0)));
+            .thenAnswer(invocation -> retryCounts.get(invocation.getArgument(0)));
         Mockito.when(redis.hasKey(ArgumentMatchers.anyString()))
-                .thenAnswer(
-                        invocation ->
-                                retryCounts.containsKey(invocation.getArgument(0))
-                                        || cachedSessions.containsKey(invocation.getArgument(0)));
+            .thenAnswer(
+                invocation ->
+                    retryCounts.containsKey(invocation.getArgument(0))
+                        || cachedSessions.containsKey(invocation.getArgument(0)));
         Mockito.doAnswer(
-                        invocation -> {
-                            String key = invocation.getArgument(0);
-                            Object value = invocation.getArgument(1);
-                            if (value instanceof SecurityUser user) {
-                                cachedSessions.put(key, user);
-                            } else {
-                                retryCounts.put(key, (Integer) value);
-                            }
-                            return null;
-                        })
-                .when(redis)
-                .setObj(
-                        ArgumentMatchers.anyString(),
-                        ArgumentMatchers.any(),
-                        ArgumentMatchers.anyLong(),
-                        ArgumentMatchers.any(TimeUnit.class));
+                invocation -> {
+                    String key = invocation.getArgument(0);
+                    Object value = invocation.getArgument(1);
+                    if (value instanceof SecurityUser user) {
+                        cachedSessions.put(key, user);
+                    } else {
+                        retryCounts.put(key, (Integer) value);
+                    }
+                    return null;
+                })
+            .when(redis)
+            .setObj(
+                ArgumentMatchers.anyString(),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.anyLong(),
+                ArgumentMatchers.any(TimeUnit.class));
         Mockito.doAnswer(
-                        invocation -> {
-                            cachedSessions.remove(invocation.getArgument(0));
-                            retryCounts.remove(invocation.getArgument(0));
-                            return null;
-                        })
-                .when(redis)
-                .delete(ArgumentMatchers.anyString());
+                invocation -> {
+                    cachedSessions.remove(invocation.getArgument(0));
+                    retryCounts.remove(invocation.getArgument(0));
+                    return null;
+                })
+            .when(redis)
+            .delete(ArgumentMatchers.anyString());
         Mockito.doAnswer(
-                        invocation -> {
-                            Consumer<String> action = invocation.getArgument(1);
-                            List.copyOf(cachedSessions.keySet()).forEach(action);
-                            return null;
-                        })
-                .when(redis)
-                .scan(
-                        ArgumentMatchers.eq(CacheConstants.LOGIN_TOKEN_KEY + "*"),
-                        ArgumentMatchers.any());
+                invocation -> {
+                    Consumer<String> action = invocation.getArgument(1);
+                    List.copyOf(cachedSessions.keySet()).forEach(action);
+                    return null;
+                })
+            .when(redis)
+            .scan(
+                ArgumentMatchers.eq(CacheConstants.LOGIN_TOKEN_KEY + "*"),
+                ArgumentMatchers.any());
         Mockito.when(
-                        redis.setObjIfPresent(
-                                ArgumentMatchers.anyString(),
-                                ArgumentMatchers.any(),
-                                ArgumentMatchers.anyLong(),
-                                ArgumentMatchers.any(TimeUnit.class)))
-                .thenAnswer(
-                        invocation -> {
-                            String key = invocation.getArgument(0);
-                            SecurityUser value = invocation.getArgument(1);
-                            return cachedSessions.replace(key, value) != null;
-                        });
+                redis.setObjIfPresent(
+                    ArgumentMatchers.anyString(),
+                    ArgumentMatchers.any(),
+                    ArgumentMatchers.anyLong(),
+                    ArgumentMatchers.any(TimeUnit.class)))
+            .thenAnswer(
+                invocation -> {
+                    String key = invocation.getArgument(0);
+                    SecurityUser value = invocation.getArgument(1);
+                    return cachedSessions.replace(key, value) != null;
+                });
         accounts = Mockito.mock(MemberAccountGateway.class);
         Mockito.when(accounts.findByMobile("13800000001"))
-                .thenAnswer(
-                        invocation ->
-                                new MemberLoginInfo(
-                                        id, "13800000001", status.get(), passwordHash.get()));
+            .thenAnswer(
+                invocation ->
+                    new MemberLoginInfo(
+                        id, "13800000001", status.get(), passwordHash.get()));
         Mockito.when(accounts.findStatusByMemberId(id)).thenAnswer(invocation -> status.get());
         tokenService = new TokenService(redis, snowflake, jwtUtils);
         auth =
-                new MemberAuthenticationService(
-                        accounts,
-                        new PasswordEncoderGatewayImpl(),
-                        new LoginSecurityGatewayImpl(redis),
-                        new MemberTokenGatewayImpl(tokenService));
+            new MemberAuthenticationService(
+                accounts,
+                new PasswordEncoderGatewayImpl(),
+                new LoginSecurityGatewayImpl(redis),
+                new MemberTokenGatewayImpl(tokenService));
     }
 
-    /** 模拟会员 RPC 读取到密码更新后的登录资料。 */
+    /**
+     * 模拟会员 RPC 读取到密码更新后的登录资料。
+     */
     private void setPassword(Long memberId, String password) {
         assertEquals(id, memberId);
         passwordHash.set(new PasswordEncoderGatewayImpl().encode(password));
@@ -159,11 +163,11 @@ class MemberAuthenticationIntegrationTest {
         assertEquals(1, cachedSessions.size());
 
         assertTrue(
-                cachedSessions
-                        .keySet()
-                        .iterator()
-                        .next()
-                        .startsWith(CacheConstants.LOGIN_TOKEN_KEY));
+            cachedSessions
+                .keySet()
+                .iterator()
+                .next()
+                .startsWith(CacheConstants.LOGIN_TOKEN_KEY));
 
         assertNull(auth.authenticate("eyJ.admin.jwt"));
     }
@@ -222,7 +226,7 @@ class MemberAuthenticationIntegrationTest {
         assertEquals(id, auth.authenticate(second.accessToken()));
 
         assertThrows(
-                SecurityException.class, () -> auth.login("13800000001", "Member-password-2026"));
+            SecurityException.class, () -> auth.login("13800000001", "Member-password-2026"));
 
         assertNotNull(auth.login("13800000001", "New-password-2026"));
     }
@@ -250,10 +254,10 @@ class MemberAuthenticationIntegrationTest {
 
         for (int n = 0; n < 5; n++) {
             assertThrows(
-                    SecurityException.class, () -> auth.login("13800000001", "wrong-password"));
+                SecurityException.class, () -> auth.login("13800000001", "wrong-password"));
         }
         assertThrows(
-                SecurityException.class, () -> auth.login("13800000001", "Member-password-2026"));
+            SecurityException.class, () -> auth.login("13800000001", "Member-password-2026"));
 
         assertEquals(0, cachedSessions.size());
 
@@ -281,15 +285,15 @@ class MemberAuthenticationIntegrationTest {
     void failedTokenCreationDoesNotWriteLoginAudit() {
         var tokens = Mockito.mock(MemberTokenGateway.class);
         Mockito.when(tokens.create(id, "13800000001"))
-                .thenThrow(new IllegalStateException("会话写入失败"));
+            .thenThrow(new IllegalStateException("会话写入失败"));
         var security = Mockito.mock(LoginSecurityGateway.class);
         setPassword(id, "Member-password-2026");
         var service =
-                new MemberAuthenticationService(
-                        accounts, new PasswordEncoderGatewayImpl(), security, tokens);
+            new MemberAuthenticationService(
+                accounts, new PasswordEncoderGatewayImpl(), security, tokens);
         assertThrows(
-                IllegalStateException.class,
-                () -> service.login("13800000001", "Member-password-2026"));
+            IllegalStateException.class,
+            () -> service.login("13800000001", "Member-password-2026"));
         Mockito.verify(accounts, Mockito.never()).recordLogin(id);
     }
 
@@ -301,7 +305,9 @@ class MemberAuthenticationIntegrationTest {
         Mockito.verify(accounts).recordLogin(id, "203.0.113.7");
     }
 
-    /** 多终端撤销后网关读取不到会话，同ID管理员及其他会员不受影响。 */
+    /**
+     * 多终端撤销后网关读取不到会话，同ID管理员及其他会员不受影响。
+     */
     @Test
     void revocationRemovesAllMemberSessionsWithoutAffectingOtherIdentityDomains() {
         var first = login();
@@ -320,7 +326,9 @@ class MemberAuthenticationIntegrationTest {
         assertEquals(2, cachedSessions.size());
     }
 
-    /** 模拟刷新已经读到旧对象、随后撤销完成，SET XX不得恢复旧会话。 */
+    /**
+     * 模拟刷新已经读到旧对象、随后撤销完成，SET XX不得恢复旧会话。
+     */
     @Test
     void staleRefreshCannotResurrectRevokedSession() {
         var token = login();

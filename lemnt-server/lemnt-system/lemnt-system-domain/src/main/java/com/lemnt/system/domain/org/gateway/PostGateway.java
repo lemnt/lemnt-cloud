@@ -84,6 +84,8 @@ public interface PostGateway {
      */
     Post checkPostCodeUnique(String postCode);
 
-    /** 校验岗位编码，修改时排除当前岗位，仍检查其他存量重复记录。 */
+    /**
+     * 校验岗位编码，修改时排除当前岗位，仍检查其他存量重复记录。
+     */
     Post checkPostCodeUnique(String postCode, Long excludePostId);
 }

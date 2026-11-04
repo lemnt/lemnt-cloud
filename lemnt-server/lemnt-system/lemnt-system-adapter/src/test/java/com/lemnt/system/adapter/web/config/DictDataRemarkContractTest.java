@@ -11,7 +11,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** 从领域到 HTTP 响应完整保留备注，不伪造缺失备注。 */
+/**
+ * 从领域到 HTTP 响应完整保留备注，不伪造缺失备注。
+ */
 class DictDataRemarkContractTest {
     @ParameterizedTest
     @NullAndEmptySource

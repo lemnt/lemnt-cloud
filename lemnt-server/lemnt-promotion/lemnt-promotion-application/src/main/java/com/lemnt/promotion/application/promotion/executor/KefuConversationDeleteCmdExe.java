@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 管理端客服会话删除执行器。 */
+/**
+ * 管理端客服会话删除执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class KefuConversationDeleteCmdExe {

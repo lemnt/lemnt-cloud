@@ -36,8 +36,8 @@ public class RolePageQueryExe {
         condition.setBeginTime(qry.beginTime());
         condition.setEndTime(qry.endTime());
         PageResult<Role> pageResult =
-                roleGateway.selectPage(condition, new PageQry(qry.pageNum(), qry.pageSize()));
+            roleGateway.selectPage(condition, new PageQry(qry.pageNum(), qry.pageSize()));
         return PageResult.of(
-                RoleConverter.toDTOList(pageResult.getRecords()), pageResult.getTotal());
+            RoleConverter.toDTOList(pageResult.getRecords()), pageResult.getTotal());
     }
 }

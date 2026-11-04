@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 手动触发到期佣金解冻执行器。 */
+/**
+ * 手动触发到期佣金解冻执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class BrokerageUnfreezeCmdExe {

@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
-/** 支付渠道异步通知入口，验签通过后才提交支付结果。 */
+/**
+ * 支付渠道异步通知入口，验签通过后才提交支付结果。
+ */
 @Tag(name = "支付渠道通知")
 @RestController
 @RequestMapping("/trade/payment/notify")
@@ -26,13 +28,13 @@ public class PaymentNotifyController {
     @PostMapping("/{appKey}/{channel}")
     @Operation(summary = "接收渠道支付通知")
     public R<String> notify(
-            @PathVariable String appKey,
-            @PathVariable String channel,
-            @RequestHeader(value = "X-Pay-Signature", required = false) String signature,
-            @RequestHeader(value = "X-Pay-Timestamp", required = false) String timestamp,
-            @RequestBody String body) {
+        @PathVariable String appKey,
+        @PathVariable String channel,
+        @RequestHeader(value = "X-Pay-Signature", required = false) String signature,
+        @RequestHeader(value = "X-Pay-Timestamp", required = false) String timestamp,
+        @RequestBody String body) {
         return R.ok(
-                receive.execute(
-                        new PaymentNotifyReceiveCmd(appKey, channel, body, signature, timestamp)));
+            receive.execute(
+                new PaymentNotifyReceiveCmd(appKey, channel, body, signature, timestamp)));
     }
 }

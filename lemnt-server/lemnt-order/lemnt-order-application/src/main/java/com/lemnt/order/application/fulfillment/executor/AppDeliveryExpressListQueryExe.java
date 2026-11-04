@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 小程序退货可选快递公司，只返回启用状态。 */
+/**
+ * 小程序退货可选快递公司，只返回启用状态。
+ */
 @Component
 @RequiredArgsConstructor
 public class AppDeliveryExpressListQueryExe {
@@ -17,15 +19,15 @@ public class AppDeliveryExpressListQueryExe {
 
     public List<DeliveryExpressDTO> execute() {
         return expresses.list(null, 0).stream()
-                .map(
-                        value ->
-                                new DeliveryExpressDTO(
-                                        value.id(),
-                                        value.code(),
-                                        value.name(),
-                                        value.logo(),
-                                        value.sort(),
-                                        value.status()))
-                .toList();
+            .map(
+                value ->
+                    new DeliveryExpressDTO(
+                        value.id(),
+                        value.code(),
+                        value.name(),
+                        value.logo(),
+                        value.sort(),
+                        value.status()))
+            .toList();
     }
 }

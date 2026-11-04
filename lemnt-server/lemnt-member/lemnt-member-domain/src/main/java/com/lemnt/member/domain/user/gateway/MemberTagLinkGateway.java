@@ -4,7 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-/** member_tag_link 表领域存储网关。 */
+/**
+ * member_tag_link 表领域存储网关。
+ */
 public interface MemberTagLinkGateway {
 
     /**
@@ -17,6 +19,8 @@ public interface MemberTagLinkGateway {
      */
     void memberTags(Long memberId, List<Long> tags);
 
-    /** 批量读取会员真实标签绑定，无绑定的会员不生成虚构标签。 */
+    /**
+     * 批量读取会员真实标签绑定，无绑定的会员不生成虚构标签。
+     */
     Map<Long, List<Long>> memberTagsBatch(Collection<Long> memberIds);
 }

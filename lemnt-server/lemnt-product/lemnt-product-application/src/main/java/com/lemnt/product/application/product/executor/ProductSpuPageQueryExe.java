@@ -27,16 +27,16 @@ public class ProductSpuPageQueryExe {
      */
     public ProductSpuPageDTO execute(ProductSpuPageQry query) {
         if (query == null
-                || query.pageNum() < 1
-                || query.pageNum() > 1000000
-                || query.pageSize() < 1
-                || query.pageSize() > 100) {
+            || query.pageNum() < 1
+            || query.pageNum() > 1000000
+            || query.pageSize() < 1
+            || query.pageSize() > 100) {
             throw new IllegalArgumentException("分页参数不合法");
         }
         String name =
-                query.name() == null || query.name().isBlank()
-                        ? null
-                        : ProductCatalogValidation.text(query.name(), 200, "商品名称");
+            query.name() == null || query.name().isBlank()
+                ? null
+                : ProductCatalogValidation.text(query.name(), 200, "商品名称");
         String status = query.status() == null || query.status().isBlank() ? null : query.status();
         if (status != null && !Set.of("ON_SHELF", "OFF_SHELF", "RECYCLED").contains(status)) {
             throw new IllegalArgumentException("商品状态不合法");
@@ -55,17 +55,17 @@ public class ProductSpuPageQueryExe {
             stockStatus = ProductStockStatus.valueOf(query.stockStatus());
         }
         var page =
-                productSpuGateway.page(
-                        new ProductCatalogFilter(
-                                name,
-                                status,
-                                (query.pageNum() - 1) * query.pageSize(),
-                                query.pageSize(),
-                                query.categoryId(),
-                                query.brandId(),
-                                stockStatus));
+            productSpuGateway.page(
+                new ProductCatalogFilter(
+                    name,
+                    status,
+                    (query.pageNum() - 1) * query.pageSize(),
+                    query.pageSize(),
+                    query.categoryId(),
+                    query.brandId(),
+                    stockStatus));
         return new ProductSpuPageDTO(
-                page.records().stream().map(ProductCatalogDTOConverter::spu).toList(),
-                page.total());
+            page.records().stream().map(ProductCatalogDTOConverter::spu).toList(),
+            page.total());
     }
 }

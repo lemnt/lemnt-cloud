@@ -37,7 +37,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 后台分销用户、佣金与提现管理。 */
+/**
+ * 后台分销用户、佣金与提现管理。
+ */
 @Tag(name = "分销管理")
 @RestController
 @RequestMapping("/trade/admin/brokerage")
@@ -57,8 +59,8 @@ public class BrokerageController {
     public R<BrokerageUserRes> users(@Valid @ModelAttribute BrokerageUserPageReq req) {
         var result = users.execute(BrokerageConverter.users(req));
         return R.page(
-                result.getRecords().stream().map(BrokerageConverter::user).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(BrokerageConverter::user).toList(),
+            result.getTotal());
     }
 
     @PutMapping("/users/{id}/enabled")
@@ -81,8 +83,8 @@ public class BrokerageController {
     public R<BrokerageRecordRes> records(@Valid @ModelAttribute BrokerageRecordPageReq req) {
         var result = records.execute(BrokerageConverter.records(req));
         return R.page(
-                result.getRecords().stream().map(BrokerageConverter::record).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(BrokerageConverter::record).toList(),
+            result.getTotal());
     }
 
     @GetMapping("/withdraws")
@@ -91,15 +93,15 @@ public class BrokerageController {
     public R<BrokerageWithdrawRes> withdraws(@Valid @ModelAttribute BrokerageWithdrawPageReq req) {
         var result = withdraws.execute(BrokerageConverter.withdraws(req));
         return R.page(
-                result.getRecords().stream().map(BrokerageConverter::withdraw).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(BrokerageConverter::withdraw).toList(),
+            result.getTotal());
     }
 
     @PostMapping("/withdraws/{id}/audit")
     @Operation(summary = "审核提现")
     @RequiresPermissions("trade:brokerage:audit")
     public R<Boolean> audit(
-            @PathVariable Long id, @Valid @RequestBody BrokerageWithdrawAuditReq req) {
+        @PathVariable Long id, @Valid @RequestBody BrokerageWithdrawAuditReq req) {
         return R.ok(audit.execute(BrokerageConverter.audit(id, SecurityUtils.getUserId(), req)));
     }
 

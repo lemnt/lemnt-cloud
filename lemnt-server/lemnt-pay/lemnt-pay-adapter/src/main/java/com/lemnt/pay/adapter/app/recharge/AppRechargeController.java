@@ -24,9 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** App 充值套餐选择与本人充值单。 */
+/**
+ * App 充值套餐选择与本人充值单。
+ */
 @Tag(name = "本人充值")
 @RestController
 @RequestMapping("/trade/app")
@@ -36,14 +39,18 @@ public class AppRechargeController {
     private final WalletRechargeCreateCmdExe create;
     private final MemberWalletRechargePageQueryExe recharges;
 
-    /** 启用中的充值套餐。 */
+    /**
+     * 启用中的充值套餐。
+     */
     @GetMapping("/recharge-packages")
     @Operation(summary = "充值套餐列表")
     public R<List<RechargePackageRes>> packages() {
         return R.ok(packages.execute().stream().map(RechargeResConverter::packageView).toList());
     }
 
-    /** 按套餐创建充值单，requestNo 幂等。 */
+    /**
+     * 按套餐创建充值单，requestNo 幂等。
+     */
     @PostMapping("/wallet/recharges")
     @Operation(summary = "创建充值单")
     public R<WalletRechargeRes> create(@Valid @RequestBody AppRechargeCreateReq req) {
@@ -51,18 +58,20 @@ public class AppRechargeController {
         return R.ok(RechargeResConverter.recharge(create.execute(SecurityUtils.getUserId(), cmd)));
     }
 
-    /** 本人充值单分页。 */
+    /**
+     * 本人充值单分页。
+     */
     @GetMapping("/wallet/recharges")
     @Operation(summary = "本人充值单分页")
     public R<WalletRechargeRes> recharges(@Valid @ModelAttribute AppRechargePageReq req) {
         var value =
-                recharges.execute(
-                        SecurityUtils.getUserId(),
-                        req.status(),
-                        req.pageNum() == null ? 1 : req.pageNum(),
-                        req.pageSize() == null ? 10 : req.pageSize());
+            recharges.execute(
+                SecurityUtils.getUserId(),
+                req.status(),
+                req.pageNum() == null ? 1 : req.pageNum(),
+                req.pageSize() == null ? 10 : req.pageSize());
         return R.page(
-                value.getRecords().stream().map(RechargeResConverter::recharge).toList(),
-                value.getTotal());
+            value.getRecords().stream().map(RechargeResConverter::recharge).toList(),
+            value.getTotal());
     }
 }

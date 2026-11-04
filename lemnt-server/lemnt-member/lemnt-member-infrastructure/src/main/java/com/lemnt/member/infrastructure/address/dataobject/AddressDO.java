@@ -19,25 +19,39 @@ import lombok.experimental.Accessors;
 @TableName("member_address")
 public class AddressDO extends BaseDO {
 
-    /** 主键编号。 */
+    /**
+     * 主键编号。
+     */
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    /** 会员编号。 */
+    /**
+     * 会员编号。
+     */
     private Long userId;
 
-    /** 名称。 */
+    /**
+     * 名称。
+     */
     private String name;
 
-    /** 手机号。 */
+    /**
+     * 手机号。
+     */
     private String mobile;
 
-    /** 行政区划编号。 */
+    /**
+     * 行政区划编号。
+     */
     private Long areaId;
 
-    /** 详细地址。 */
+    /**
+     * 详细地址。
+     */
     private String detailAddress;
 
-    /** 是否为默认地址。 */
+    /**
+     * 是否为默认地址。
+     */
     private Boolean defaultStatus;
 }

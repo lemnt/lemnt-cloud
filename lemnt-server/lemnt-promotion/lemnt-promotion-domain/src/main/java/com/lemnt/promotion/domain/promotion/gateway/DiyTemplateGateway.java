@@ -4,7 +4,9 @@ import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.promotion.domain.promotion.model.DiyTemplate;
 import com.lemnt.promotion.domain.promotion.model.DiyTemplateFilter;
 
-/** 装修模板存储契约。 */
+/**
+ * 装修模板存储契约。
+ */
 public interface DiyTemplateGateway {
     DiyTemplate find(Long id);
 

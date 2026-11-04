@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 折扣商品仅操作活动商品表。 */
+/**
+ * 折扣商品仅操作活动商品表。
+ */
 @Component
 @RequiredArgsConstructor
 public class DiscountProductGatewayImpl implements DiscountProductGateway {
@@ -25,12 +27,12 @@ public class DiscountProductGatewayImpl implements DiscountProductGateway {
             return List.of();
         }
         return mapper
-                .selectList(
-                        Wrappers.<DiscountProductDO>lambdaQuery()
-                                .in(DiscountProductDO::getActivityId, activityIds))
-                .stream()
-                .map(PromotionConverter::model)
-                .toList();
+            .selectList(
+                Wrappers.<DiscountProductDO>lambdaQuery()
+                    .in(DiscountProductDO::getActivityId, activityIds))
+            .stream()
+            .map(PromotionConverter::model)
+            .toList();
     }
 
     @Override
@@ -38,22 +40,22 @@ public class DiscountProductGatewayImpl implements DiscountProductGateway {
         deleteByActivity(activityId);
         for (var item : products) {
             mapper.insert(
-                    PromotionConverter.row(
-                            new DiscountProduct(
-                                    null,
-                                    activityId,
-                                    item.spuId(),
-                                    item.skuId(),
-                                    item.discountType(),
-                                    item.discountPercent(),
-                                    item.discountPrice())));
+                PromotionConverter.row(
+                    new DiscountProduct(
+                        null,
+                        activityId,
+                        item.spuId(),
+                        item.skuId(),
+                        item.discountType(),
+                        item.discountPercent(),
+                        item.discountPrice())));
         }
     }
 
     @Override
     public void deleteByActivity(Long activityId) {
         mapper.delete(
-                Wrappers.<DiscountProductDO>lambdaQuery()
-                        .eq(DiscountProductDO::getActivityId, activityId));
+            Wrappers.<DiscountProductDO>lambdaQuery()
+                .eq(DiscountProductDO::getActivityId, activityId));
     }
 }

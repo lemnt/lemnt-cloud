@@ -28,7 +28,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 会员分销中心。 */
+/**
+ * 会员分销中心。
+ */
 @Tag(name = "会员分销")
 @RestController
 @RequestMapping("/trade/app/brokerage")
@@ -57,25 +59,25 @@ public class AppBrokerageController {
     public R<AppBrokerageRecordRes> records(@Valid @ModelAttribute AppBrokeragePageReq req) {
         var result = records.execute(AppBrokerageConverter.records(SecurityUtils.getUserId(), req));
         return R.page(
-                result.getRecords().stream().map(AppBrokerageConverter::record).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(AppBrokerageConverter::record).toList(),
+            result.getTotal());
     }
 
     @GetMapping("/withdraws")
     @Operation(summary = "本人提现记录")
     public R<AppBrokerageWithdrawRes> withdraws(@Valid @ModelAttribute AppBrokeragePageReq req) {
         var result =
-                withdraws.execute(AppBrokerageConverter.withdraws(SecurityUtils.getUserId(), req));
+            withdraws.execute(AppBrokerageConverter.withdraws(SecurityUtils.getUserId(), req));
         return R.page(
-                result.getRecords().stream().map(AppBrokerageConverter::withdraw).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(AppBrokerageConverter::withdraw).toList(),
+            result.getTotal());
     }
 
     @PostMapping("/withdraws")
     @Operation(summary = "申请佣金提现")
     public R<Long> withdraw(@Valid @RequestBody AppBrokerageWithdrawCreateReq req) {
         return R.ok(
-                withdrawCreate.execute(
-                        AppBrokerageConverter.withdraw(SecurityUtils.getUserId(), req)));
+            withdrawCreate.execute(
+                AppBrokerageConverter.withdraw(SecurityUtils.getUserId(), req)));
     }
 }

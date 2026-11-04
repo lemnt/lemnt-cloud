@@ -46,7 +46,7 @@ public class LogininforController {
     @GetMapping
     public R<LogininforRes> page(@Validated LogininforPageReq req) {
         PageResult<LogininforDTO> result =
-                logininforPageQueryExe.execute(LogininforReqConverter.toQry(req));
+            logininforPageQueryExe.execute(LogininforReqConverter.toQry(req));
         return R.page(LogininforResConverter.toResList(result.getRecords()), result.getTotal());
     }
 

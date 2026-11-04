@@ -3,9 +3,12 @@ package com.lemnt.promotion.adapter.web.cart.converter;
 import com.lemnt.promotion.adapter.web.cart.req.CartSaveReq;
 import com.lemnt.promotion.application.cart.cmd.CartSaveCmd;
 
-/** 按业务域转换接口与应用数据。 */
+/**
+ * 按业务域转换接口与应用数据。
+ */
 public final class CartReqConverter {
-    private CartReqConverter() {}
+    private CartReqConverter() {
+    }
 
     /**
      * 购物车。

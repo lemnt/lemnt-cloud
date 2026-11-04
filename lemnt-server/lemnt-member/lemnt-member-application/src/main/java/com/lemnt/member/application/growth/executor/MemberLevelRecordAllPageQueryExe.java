@@ -13,14 +13,18 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 会员等级变更流水分页执行器。 */
+/**
+ * 会员等级变更流水分页执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberLevelRecordAllPageQueryExe {
 
     private final MemberLevelRecordGateway memberLevelRecordGateway;
 
-    /** 查询等级变更流水分页，沿用资源归属和分页约束。 */
+    /**
+     * 查询等级变更流水分页，沿用资源归属和分页约束。
+     */
     public PageResult<LevelRecordDTO> execute(LevelRecordAllPageQry qry) {
         MemberRules.page(qry.pageNum(), qry.pageSize());
         if (qry.memberId() != null) {
@@ -30,22 +34,22 @@ public class MemberLevelRecordAllPageQueryExe {
             MemberRules.id(qry.levelId());
         }
         if (qry.startTime() != null
-                && qry.endTime() != null
-                && qry.startTime().isAfter(qry.endTime())) {
+            && qry.endTime() != null
+            && qry.startTime().isAfter(qry.endTime())) {
             throw new ServiceException("开始时间不能晚于结束时间", 400);
         }
         var filter =
-                new LevelRecordPageFilter(
-                        qry.memberId(),
-                        (qry.pageNum() - 1) * qry.pageSize(),
-                        qry.pageSize(),
-                        qry.levelId(),
-                        qry.startTime(),
-                        qry.endTime());
+            new LevelRecordPageFilter(
+                qry.memberId(),
+                (qry.pageNum() - 1) * qry.pageSize(),
+                qry.pageSize(),
+                qry.levelId(),
+                qry.startTime(),
+                qry.endTime());
         return new PageResult<>(
-                memberLevelRecordGateway.levels(filter).stream()
-                        .map(MemberGrowthDTOConverter::toLevelRecordDTO)
-                        .toList(),
-                memberLevelRecordGateway.levelsCount(filter));
+            memberLevelRecordGateway.levels(filter).stream()
+                .map(MemberGrowthDTOConverter::toLevelRecordDTO)
+                .toList(),
+            memberLevelRecordGateway.levelsCount(filter));
     }
 }

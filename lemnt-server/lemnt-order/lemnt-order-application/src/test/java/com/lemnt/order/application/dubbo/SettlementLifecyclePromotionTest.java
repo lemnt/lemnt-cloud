@@ -13,7 +13,9 @@ import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
-/** 原生命周期兼容入口仍完整转发，实际权益效果已由订单冻结事件负责。 */
+/**
+ * 原生命周期兼容入口仍完整转发，实际权益效果已由订单冻结事件负责。
+ */
 class SettlementLifecyclePromotionTest {
     @Test
     void lifecycleCallbacksForwardToOwnedOrderBenefits() {
@@ -30,10 +32,10 @@ class SettlementLifecyclePromotionTest {
         client.refunded("TR1", "RF1", List.of(new RefundStockBo(2L, 1)), new BigDecimal("10.00"));
         verify(benefits).refunded("TR1", "RF1", Map.of(2L, 1), new BigDecimal("10.00"));
         client.refunded(
-                new RefundBenefitsBo("TR1", "RF2", 11L, 2L, 1, new BigDecimal("5.00"), 50, 2, 1));
+            new RefundBenefitsBo("TR1", "RF2", 11L, 2L, 1, new BigDecimal("5.00"), 50, 2, 1));
         verify(benefits)
-                .refunded(
-                        new OrderRefundBenefits(
-                                "TR1", "RF2", 11L, 2L, 1, new BigDecimal("5.00"), 50, 2, 1));
+            .refunded(
+                new OrderRefundBenefits(
+                    "TR1", "RF2", 11L, 2L, 1, new BigDecimal("5.00"), 50, 2, 1));
     }
 }

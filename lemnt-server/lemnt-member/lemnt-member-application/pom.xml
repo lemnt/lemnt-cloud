@@ -12,7 +12,11 @@
     <artifactId>lemnt-member-application</artifactId>
 
     <dependencies>
-        <dependency><groupId>com.lemnt</groupId><artifactId>lemnt-order-client</artifactId><version>${project.version}</version></dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-order-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

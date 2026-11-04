@@ -9,7 +9,9 @@ import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 
-/** 本库事务消息记录，载荷为已冻结的完整信封。 */
+/**
+ * 本库事务消息记录，载荷为已冻结的完整信封。
+ */
 @Data
 @Accessors(chain = true)
 @TableName("pay_message_outbox")

@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 分销用户仅操作对应表，锁定查询使用 FOR UPDATE。 */
+/**
+ * 分销用户仅操作对应表，锁定查询使用 FOR UPDATE。
+ */
 @Component
 @RequiredArgsConstructor
 public class BrokerageUserGatewayImpl implements BrokerageUserGateway {
@@ -46,48 +48,48 @@ public class BrokerageUserGatewayImpl implements BrokerageUserGateway {
     @Override
     public boolean clearBind(Long id) {
         return mapper.update(
-                        null,
-                        Wrappers.<BrokerageUserDO>lambdaUpdate()
-                                .eq(BrokerageUserDO::getId, id)
-                                .set(BrokerageUserDO::getBindUserId, null)
-                                .set(BrokerageUserDO::getBindUserTime, null))
-                == 1;
+            null,
+            Wrappers.<BrokerageUserDO>lambdaUpdate()
+                .eq(BrokerageUserDO::getId, id)
+                .set(BrokerageUserDO::getBindUserId, null)
+                .set(BrokerageUserDO::getBindUserTime, null))
+            == 1;
     }
 
     @Override
     public PageResult<BrokerageUser> page(BrokerageUserFilter filter) {
         var page =
-                mapper.selectPage(
-                        new Page<BrokerageUserDO>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.<BrokerageUserDO>lambdaQuery()
-                                .eq(
-                                        filter.bindUserId() != null,
-                                        BrokerageUserDO::getBindUserId,
-                                        filter.bindUserId())
-                                .eq(
-                                        filter.brokerageEnabled() != null,
-                                        BrokerageUserDO::getBrokerageEnabled,
-                                        filter.brokerageEnabled())
-                                .orderByDesc(BrokerageUserDO::getId));
+            mapper.selectPage(
+                new Page<BrokerageUserDO>(filter.pageNum(), filter.pageSize()),
+                Wrappers.<BrokerageUserDO>lambdaQuery()
+                    .eq(
+                        filter.bindUserId() != null,
+                        BrokerageUserDO::getBindUserId,
+                        filter.bindUserId())
+                    .eq(
+                        filter.brokerageEnabled() != null,
+                        BrokerageUserDO::getBrokerageEnabled,
+                        filter.brokerageEnabled())
+                    .orderByDesc(BrokerageUserDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(BrokerageConverter::user).toList(), page.getTotal());
+            page.getRecords().stream().map(BrokerageConverter::user).toList(), page.getTotal());
     }
 
     @Override
     public long countChildren(Long bindUserId) {
         return mapper.selectCount(
-                Wrappers.<BrokerageUserDO>lambdaQuery()
-                        .eq(BrokerageUserDO::getBindUserId, bindUserId));
+            Wrappers.<BrokerageUserDO>lambdaQuery()
+                .eq(BrokerageUserDO::getBindUserId, bindUserId));
     }
 
     @Override
     public List<Long> childIds(Long bindUserId) {
         return mapper
-                .selectList(
-                        Wrappers.<BrokerageUserDO>lambdaQuery()
-                                .eq(BrokerageUserDO::getBindUserId, bindUserId))
-                .stream()
-                .map(BrokerageUserDO::getId)
-                .toList();
+            .selectList(
+                Wrappers.<BrokerageUserDO>lambdaQuery()
+                    .eq(BrokerageUserDO::getBindUserId, bindUserId))
+            .stream()
+            .map(BrokerageUserDO::getId)
+            .toList();
     }
 }

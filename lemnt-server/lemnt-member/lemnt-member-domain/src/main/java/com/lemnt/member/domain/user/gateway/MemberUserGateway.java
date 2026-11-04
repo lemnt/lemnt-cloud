@@ -6,7 +6,9 @@ import com.lemnt.member.domain.user.model.MemberPageFilter;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** member_user 表领域存储网关。 */
+/**
+ * member_user 表领域存储网关。
+ */
 public interface MemberUserGateway {
 
     /**
@@ -14,7 +16,9 @@ public interface MemberUserGateway {
      */
     LocalDateTime now();
 
-    /** 写入数据库确认的成功登录时间。 */
+    /**
+     * 写入数据库确认的成功登录时间。
+     */
     void recordLogin(Long memberId, LocalDateTime loginDate, String loginIp);
 
     /**
@@ -47,13 +51,19 @@ public interface MemberUserGateway {
      */
     void assignGroup(Long memberId, Long groupId);
 
-    /** 按手机号查找会员。 */
+    /**
+     * 按手机号查找会员。
+     */
     Member findByMobile(String mobile);
 
-    /** 按邮箱查找会员。 */
+    /**
+     * 按邮箱查找会员。
+     */
     Member findByEmail(String email);
 
-    /** 保存新会员，返回数据库生成的会员编号与默认资料。 */
+    /**
+     * 保存新会员，返回数据库生成的会员编号与默认资料。
+     */
     Member save(Member member);
 
     /**
@@ -66,9 +76,13 @@ public interface MemberUserGateway {
      */
     void assignLevel(Long memberId, Long levelId);
 
-    /** 读取会员密码哈希，仅供密码维护和内部登录资料查询。 */
+    /**
+     * 读取会员密码哈希，仅供密码维护和内部登录资料查询。
+     */
     String findPasswordByMemberId(Long memberId);
 
-    /** 更新 member_user 的密码字段，不改变其他会员资料。 */
+    /**
+     * 更新 member_user 的密码字段，不改变其他会员资料。
+     */
     void updatePassword(Long memberId, String password);
 }

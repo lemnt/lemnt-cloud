@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** Banner 仅操作对应表。 */
+/**
+ * Banner 仅操作对应表。
+ */
 @Component
 @RequiredArgsConstructor
 public class BannerGatewayImpl implements BannerGateway {
@@ -46,41 +48,41 @@ public class BannerGatewayImpl implements BannerGateway {
     @Override
     public PageResult<Banner> page(BannerFilter filter) {
         var page =
-                mapper.selectPage(
-                        new Page<BannerDO>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.<BannerDO>lambdaQuery()
-                                .like(
-                                        filter.title() != null && !filter.title().isBlank(),
-                                        BannerDO::getTitle,
-                                        filter.title())
-                                .eq(filter.status() != null, BannerDO::getStatus, filter.status())
-                                .orderByDesc(BannerDO::getSort)
-                                .orderByDesc(BannerDO::getId));
+            mapper.selectPage(
+                new Page<BannerDO>(filter.pageNum(), filter.pageSize()),
+                Wrappers.<BannerDO>lambdaQuery()
+                    .like(
+                        filter.title() != null && !filter.title().isBlank(),
+                        BannerDO::getTitle,
+                        filter.title())
+                    .eq(filter.status() != null, BannerDO::getStatus, filter.status())
+                    .orderByDesc(BannerDO::getSort)
+                    .orderByDesc(BannerDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(BannerConverter::model).toList(), page.getTotal());
+            page.getRecords().stream().map(BannerConverter::model).toList(), page.getTotal());
     }
 
     @Override
     public List<Banner> enabledByPosition(Integer position) {
         return mapper
-                .selectList(
-                        Wrappers.<BannerDO>lambdaQuery()
-                                .eq(BannerDO::getStatus, 0)
-                                .eq(BannerDO::getPosition, position)
-                                .orderByDesc(BannerDO::getSort)
-                                .orderByDesc(BannerDO::getId))
-                .stream()
-                .map(BannerConverter::model)
-                .toList();
+            .selectList(
+                Wrappers.<BannerDO>lambdaQuery()
+                    .eq(BannerDO::getStatus, 0)
+                    .eq(BannerDO::getPosition, position)
+                    .orderByDesc(BannerDO::getSort)
+                    .orderByDesc(BannerDO::getId))
+            .stream()
+            .map(BannerConverter::model)
+            .toList();
     }
 
     @Override
     public boolean increaseBrowseCount(Long id) {
         return mapper.update(
-                        null,
-                        Wrappers.<BannerDO>lambdaUpdate()
-                                .eq(BannerDO::getId, id)
-                                .setIncrBy(BannerDO::getBrowseCount, 1))
-                == 1;
+            null,
+            Wrappers.<BannerDO>lambdaUpdate()
+                .eq(BannerDO::getId, id)
+                .setIncrBy(BannerDO::getBrowseCount, 1))
+            == 1;
     }
 }

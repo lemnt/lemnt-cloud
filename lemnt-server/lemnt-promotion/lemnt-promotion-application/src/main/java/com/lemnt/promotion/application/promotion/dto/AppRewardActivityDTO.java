@@ -6,16 +6,18 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** 小程序满减送活动详情。 */
+/**
+ * 小程序满减送活动详情。
+ */
 public record AppRewardActivityDTO(
-        Long id,
-        String name,
-        LocalDateTime startTime,
-        LocalDateTime endTime,
-        String conditionType,
-        String productScope,
-        List<RewardRule> rules)
-        implements Serializable {
+    Long id,
+    String name,
+    LocalDateTime startTime,
+    LocalDateTime endTime,
+    String conditionType,
+    String productScope,
+    List<RewardRule> rules)
+    implements Serializable {
     public AppRewardActivityDTO {
         rules = rules == null ? List.of() : List.copyOf(rules);
     }

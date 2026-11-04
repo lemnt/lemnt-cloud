@@ -8,33 +8,34 @@
     </update>
     <update id="claimVersion">
         UPDATE pay_notify_task SET notify_times=notify_times+1, execute_version=execute_version+1,
-            lease_until=#{until}, last_execute_time=#{now}, update_time=#{now}
+        lease_until=#{until}, last_execute_time=#{now}, update_time=#{now}
         WHERE id=#{id} AND status IN ('PENDING','FAILED') AND notify_times=#{expectedTimes}
-            AND execute_version=#{version} AND notify_times &lt; max_notify_times
-            AND (lease_until IS NULL OR lease_until &lt;= #{now})
+        AND execute_version=#{version} AND notify_times &lt; max_notify_times
+        AND (lease_until IS NULL OR lease_until &lt;= #{now})
     </update>
     <update id="finishSuccess">
         UPDATE pay_notify_task SET status='SUCCESS',last_response=#{response},next_notify_time=NULL,update_time=#{now}
         WHERE id=#{id} AND notify_times=#{attemptNo}
     </update>
     <update id="finishFailed">
-        UPDATE pay_notify_task SET status='FAILED',last_response=#{response},next_notify_time=#{nextTime},update_time=#{now}
+        UPDATE pay_notify_task SET
+        status='FAILED',last_response=#{response},next_notify_time=#{nextTime},update_time=#{now}
         WHERE id=#{id} AND notify_times=#{attemptNo}
     </update>
     <update id="finishVersion">
         UPDATE pay_notify_task SET status=#{status},last_response=#{response},next_notify_time=#{next},
-            lease_until=NULL,update_time=#{now}
+        lease_until=NULL,update_time=#{now}
         WHERE id=#{id} AND execute_version=#{version} AND status IN ('PENDING','FAILED')
     </update>
     <update id="resetForRetry">
         UPDATE pay_notify_task SET status='PENDING',notify_times=0,execute_version=execute_version+1,
-            lease_until=NULL,next_notify_time=#{now},last_response=NULL,update_time=#{now}
+        lease_until=NULL,next_notify_time=#{now},last_response=NULL,update_time=#{now}
         WHERE id=#{id} AND status&lt;&gt;'SUCCESS' AND (lease_until IS NULL OR lease_until &lt;= #{now})
     </update>
     <select id="findDue" resultType="com.lemnt.pay.infrastructure.payment.dataobject.PayNotifyTaskDO">
         SELECT * FROM pay_notify_task WHERE status IN ('PENDING','FAILED')
-            AND notify_times &lt; max_notify_times AND (next_notify_time IS NULL OR next_notify_time &lt;= #{now})
-            AND (lease_until IS NULL OR lease_until &lt;= #{now}) ORDER BY id LIMIT #{limit}
+        AND notify_times &lt; max_notify_times AND (next_notify_time IS NULL OR next_notify_time &lt;= #{now})
+        AND (lease_until IS NULL OR lease_until &lt;= #{now}) ORDER BY id LIMIT #{limit}
     </select>
     <select id="databaseNow" resultType="java.time.LocalDateTime" useCache="false" flushCache="true">
         SELECT CURRENT_TIMESTAMP

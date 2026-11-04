@@ -9,7 +9,9 @@ import org.apache.dubbo.config.annotation.DubboService;
 
 import lombok.RequiredArgsConstructor;
 
-/** RPC只转交本地幂等资源编排，不跨库写订单。 */
+/**
+ * RPC只转交本地幂等资源编排，不跨库写订单。
+ */
 @DubboService
 @RequiredArgsConstructor
 public class PromotionLockClientImpl implements PromotionLockClient {

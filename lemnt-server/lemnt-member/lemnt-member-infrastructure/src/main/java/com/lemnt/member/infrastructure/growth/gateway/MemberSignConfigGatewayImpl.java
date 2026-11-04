@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 签到配置按ID管理，数据库唯一约束兜底并发天数冲突。 */
+/**
+ * 签到配置按ID管理，数据库唯一约束兜底并发天数冲突。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberSignConfigGatewayImpl implements MemberSignConfigGateway {
@@ -24,10 +26,10 @@ public class MemberSignConfigGatewayImpl implements MemberSignConfigGateway {
     @Override
     public List<SignConfig> signConfigs() {
         return mapper
-                .selectList(Wrappers.<SignConfigDO>lambdaQuery().orderByAsc(SignConfigDO::getDay))
-                .stream()
-                .map(SignConfigConverter::toEntity)
-                .toList();
+            .selectList(Wrappers.<SignConfigDO>lambdaQuery().orderByAsc(SignConfigDO::getDay))
+            .stream()
+            .map(SignConfigConverter::toEntity)
+            .toList();
     }
 
     @Override
@@ -38,8 +40,8 @@ public class MemberSignConfigGatewayImpl implements MemberSignConfigGateway {
     @Override
     public SignConfig signConfigByDay(Integer day) {
         return SignConfigConverter.toEntity(
-                mapper.selectOne(
-                        Wrappers.<SignConfigDO>lambdaQuery().eq(SignConfigDO::getDay, day)));
+            mapper.selectOne(
+                Wrappers.<SignConfigDO>lambdaQuery().eq(SignConfigDO::getDay, day)));
     }
 
     @Override

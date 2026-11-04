@@ -13,23 +13,25 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** order_delivery_express_template_charge 持久化实现。 */
+/**
+ * order_delivery_express_template_charge 持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class DeliveryExpressTemplateChargeGatewayImpl
-        implements DeliveryExpressTemplateChargeGateway {
+    implements DeliveryExpressTemplateChargeGateway {
     private final DeliveryExpressTemplateChargeMapper mapper;
 
     @Override
     public List<DeliveryExpressTemplateCharge> byTemplate(Long templateId) {
         return mapper
-                .selectList(
-                        Wrappers.<DeliveryExpressTemplateChargeDO>lambdaQuery()
-                                .eq(DeliveryExpressTemplateChargeDO::getTemplateId, templateId)
-                                .orderByAsc(DeliveryExpressTemplateChargeDO::getId))
-                .stream()
-                .map(DeliveryExpressTemplateChargeConverter::toEntity)
-                .toList();
+            .selectList(
+                Wrappers.<DeliveryExpressTemplateChargeDO>lambdaQuery()
+                    .eq(DeliveryExpressTemplateChargeDO::getTemplateId, templateId)
+                    .orderByAsc(DeliveryExpressTemplateChargeDO::getId))
+            .stream()
+            .map(DeliveryExpressTemplateChargeConverter::toEntity)
+            .toList();
     }
 
     @Override
@@ -42,8 +44,8 @@ public class DeliveryExpressTemplateChargeGatewayImpl
     @Override
     public void deleteByTemplate(Long templateId) {
         mapper.delete(
-                Wrappers.<DeliveryExpressTemplateChargeDO>lambdaQuery()
-                        .eq(DeliveryExpressTemplateChargeDO::getTemplateId, templateId));
+            Wrappers.<DeliveryExpressTemplateChargeDO>lambdaQuery()
+                .eq(DeliveryExpressTemplateChargeDO::getTemplateId, templateId));
     }
 
     @Override

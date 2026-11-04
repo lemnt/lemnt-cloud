@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
 /**
@@ -49,9 +50,9 @@ public class CategoryController {
     @RequiresPermissions("mall:category:list")
     public R<List<MallCategoryListRes>> list() {
         return R.ok(
-                categoryListQueryExe.execute().stream()
-                        .map(ProductCatalogResConverter::categoryToMallCategoryListRes)
-                        .toList());
+            categoryListQueryExe.execute().stream()
+                .map(ProductCatalogResConverter::categoryToMallCategoryListRes)
+                .toList());
     }
 
     @Operation(summary = "查询详情")
@@ -60,8 +61,8 @@ public class CategoryController {
     public R<MallCategoryDetailRes> detail(@PathVariable Long id) {
         var value = categoryDetailQueryExe.execute(id);
         return value == null
-                ? R.fail("记录不存在")
-                : R.ok(ProductCatalogResConverter.categoryToMallCategoryDetailRes(value));
+            ? R.fail("记录不存在")
+            : R.ok(ProductCatalogResConverter.categoryToMallCategoryDetailRes(value));
     }
 
     @Operation(summary = "创建")
@@ -69,19 +70,19 @@ public class CategoryController {
     @RequiresPermissions("mall:category:add")
     public R<MallCategoryCreateRes> create(@Valid @RequestBody MallCategoryCreateReq req) {
         return R.ok(
-                ProductCatalogResConverter.categoryToMallCategoryCreateRes(
-                        categorySaveCmdExe.execute(
-                                ProductCatalogReqConverter.category(null, req))));
+            ProductCatalogResConverter.categoryToMallCategoryCreateRes(
+                categorySaveCmdExe.execute(
+                    ProductCatalogReqConverter.category(null, req))));
     }
 
     @Operation(summary = "修改")
     @PutMapping("/{id}")
     @RequiresPermissions("mall:category:edit")
     public R<MallCategoryUpdateRes> update(
-            @PathVariable Long id, @Valid @RequestBody MallCategoryUpdateReq req) {
+        @PathVariable Long id, @Valid @RequestBody MallCategoryUpdateReq req) {
         return R.ok(
-                ProductCatalogResConverter.categoryToMallCategoryUpdateRes(
-                        categorySaveCmdExe.execute(ProductCatalogReqConverter.category(id, req))));
+            ProductCatalogResConverter.categoryToMallCategoryUpdateRes(
+                categorySaveCmdExe.execute(ProductCatalogReqConverter.category(id, req))));
     }
 
     @Operation(summary = "删除未被引用的记录")

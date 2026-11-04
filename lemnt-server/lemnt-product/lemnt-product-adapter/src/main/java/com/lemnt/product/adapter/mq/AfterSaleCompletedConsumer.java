@@ -12,14 +12,16 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 失败原样抛给Broker重试，业务与消费凭证不能提前提交。 */
+/**
+ * 失败原样抛给Broker重试，业务与消费凭证不能提前提交。
+ */
 @Component
 @ConditionalOnProperty(name = "commerce.mq.enabled", havingValue = "true")
 @RequiredArgsConstructor
 @RocketMQMessageListener(
-        topic = CommerceEventTopics.AFTER_SALE_COMPLETED,
-        consumerGroup = "lemnt-product-refunded-v1",
-        maxReconsumeTimes = 16)
+    topic = CommerceEventTopics.AFTER_SALE_COMPLETED,
+    consumerGroup = "lemnt-product-refunded-v1",
+    maxReconsumeTimes = 16)
 public class AfterSaleCompletedConsumer implements RocketMQListener<String> {
     private final OrderStockEventHandler handler;
 

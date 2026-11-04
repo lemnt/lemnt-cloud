@@ -12,6 +12,7 @@ import java.util.List;
  */
 @Schema(description = "用户授权角色详情响应")
 public record UserAuthRoleRes(
-        @Schema(description = "用户信息") UserRes user,
-        @Schema(description = "可授权角色列表") List<RoleRes> roles)
-        implements Serializable {}
+    @Schema(description = "用户信息") UserRes user,
+    @Schema(description = "可授权角色列表") List<RoleRes> roles)
+    implements Serializable {
+}

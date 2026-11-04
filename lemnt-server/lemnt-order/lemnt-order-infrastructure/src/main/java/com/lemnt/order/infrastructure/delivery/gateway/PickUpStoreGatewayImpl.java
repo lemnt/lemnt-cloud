@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 自提门店仅操作对应表。 */
+/**
+ * 自提门店仅操作对应表。
+ */
 @Component
 @RequiredArgsConstructor
 public class PickUpStoreGatewayImpl implements PickUpStoreGateway {
@@ -46,32 +48,32 @@ public class PickUpStoreGatewayImpl implements PickUpStoreGateway {
     @Override
     public PageResult<PickUpStore> page(PickUpStoreFilter filter) {
         var page =
-                mapper.selectPage(
-                        new Page<PickUpStoreDO>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.<PickUpStoreDO>lambdaQuery()
-                                .like(
-                                        filter.name() != null && !filter.name().isBlank(),
-                                        PickUpStoreDO::getName,
-                                        filter.name())
-                                .eq(
-                                        filter.status() != null,
-                                        PickUpStoreDO::getStatus,
-                                        filter.status())
-                                .orderByDesc(PickUpStoreDO::getId));
+            mapper.selectPage(
+                new Page<PickUpStoreDO>(filter.pageNum(), filter.pageSize()),
+                Wrappers.<PickUpStoreDO>lambdaQuery()
+                    .like(
+                        filter.name() != null && !filter.name().isBlank(),
+                        PickUpStoreDO::getName,
+                        filter.name())
+                    .eq(
+                        filter.status() != null,
+                        PickUpStoreDO::getStatus,
+                        filter.status())
+                    .orderByDesc(PickUpStoreDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(PickUpStoreConverter::model).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(PickUpStoreConverter::model).toList(),
+            page.getTotal());
     }
 
     @Override
     public List<PickUpStore> enabled() {
         return mapper
-                .selectList(
-                        Wrappers.<PickUpStoreDO>lambdaQuery()
-                                .eq(PickUpStoreDO::getStatus, 0)
-                                .orderByAsc(PickUpStoreDO::getId))
-                .stream()
-                .map(PickUpStoreConverter::model)
-                .toList();
+            .selectList(
+                Wrappers.<PickUpStoreDO>lambdaQuery()
+                    .eq(PickUpStoreDO::getStatus, 0)
+                    .orderByAsc(PickUpStoreDO::getId))
+            .stream()
+            .map(PickUpStoreConverter::model)
+            .toList();
     }
 }

@@ -57,15 +57,15 @@ public class PostController {
     public R<SystemPostListRes> list(@Validated PostPageReq req) {
         PageResult<PostDTO> result = postPageQueryExe.execute(PostReqConverter.toQry(req));
         return R.page(
-                PostResConverter.toResListToSystemPostListRes(result.getRecords()),
-                result.getTotal());
+            PostResConverter.toResListToSystemPostListRes(result.getRecords()),
+            result.getTotal());
     }
 
     @Operation(summary = "根据岗位编号获取详细信息")
     @GetMapping(value = "/{postId}")
     public R<SystemPostGetInfoRes> getInfo(@PathVariable Long postId) {
         return R.ok(
-                PostResConverter.toResToSystemPostGetInfoRes(postDetailQueryExe.execute(postId)));
+            PostResConverter.toResToSystemPostGetInfoRes(postDetailQueryExe.execute(postId)));
     }
 
     @Operation(summary = "新增岗位")

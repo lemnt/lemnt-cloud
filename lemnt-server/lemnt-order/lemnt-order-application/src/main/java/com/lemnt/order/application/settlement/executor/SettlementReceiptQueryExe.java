@@ -25,7 +25,7 @@ public class SettlementReceiptQueryExe {
     public SettlementReceiptDTO execute(String orderNo) {
         String key = SettlementRules.text(orderNo, 40);
         return SettlementDTOConverter.receipt(
-                settlementRecordService.receipt(key), orderPersistenceService.findByOrderNo(key));
+            settlementRecordService.receipt(key), orderPersistenceService.findByOrderNo(key));
     }
 
     /**

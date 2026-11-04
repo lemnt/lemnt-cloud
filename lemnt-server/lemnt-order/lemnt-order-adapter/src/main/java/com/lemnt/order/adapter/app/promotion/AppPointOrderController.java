@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 原活动下单入口，统一由订单服务执行。 */
+/**
+ * 原活动下单入口，统一由订单服务执行。
+ */
 @Tag(name = "活动订单")
 @RestController
 @RequestMapping("/mall/app/point-mall")
@@ -31,20 +33,20 @@ public class AppPointOrderController {
     @Operation(summary = "积分商城下单")
     public R<AppPromotionOrderRes> order(@Valid @RequestBody AppPromotionOrderCreateReq req) {
         return R.ok(
-                AppPromotionOrderConverter.res(
-                        orderPlace.execute(
-                                AppPromotionOrderConverter.cmd(
-                                        SecurityUtils.getUserId(), "POINT", req))));
+            AppPromotionOrderConverter.res(
+                orderPlace.execute(
+                    AppPromotionOrderConverter.cmd(
+                        SecurityUtils.getUserId(), "POINT", req))));
     }
 
     @PostMapping("/orders/batch")
     @Operation(summary = "积分商城多商品下单")
     public R<AppPromotionOrderRes> batchOrder(
-            @Valid @RequestBody AppPromotionOrderBatchCreateReq req) {
+        @Valid @RequestBody AppPromotionOrderBatchCreateReq req) {
         return R.ok(
-                AppPromotionOrderConverter.res(
-                        orderPlace.execute(
-                                AppPromotionOrderConverter.batchCmd(
-                                        SecurityUtils.getUserId(), "POINT", req))));
+            AppPromotionOrderConverter.res(
+                orderPlace.execute(
+                    AppPromotionOrderConverter.batchCmd(
+                        SecurityUtils.getUserId(), "POINT", req))));
     }
 }

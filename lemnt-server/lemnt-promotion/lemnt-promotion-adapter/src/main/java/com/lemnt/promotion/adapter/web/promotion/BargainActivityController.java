@@ -30,7 +30,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 砍价活动管理入口。 */
+/**
+ * 砍价活动管理入口。
+ */
 @RestController
 @RequestMapping("/mall/promotion/bargain-activities")
 @Tag(name = "砍价活动")
@@ -54,7 +56,7 @@ public class BargainActivityController {
     @Operation(summary = "修改砍价活动")
     @RequiresPermissions("mall:promotion:update")
     public R<Boolean> update(
-            @PathVariable Long id, @Valid @RequestBody BargainActivityUpdateReq req) {
+        @PathVariable Long id, @Valid @RequestBody BargainActivityUpdateReq req) {
         return R.ok(update.execute(BargainConverter.update(id, req)));
     }
 
@@ -85,7 +87,7 @@ public class BargainActivityController {
     public R<BargainActivityRes> page(@Valid @ModelAttribute BargainActivityPageReq req) {
         var result = page.execute(BargainConverter.page(req));
         return R.page(
-                result.getRecords().stream().map(BargainConverter::activity).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(BargainConverter::activity).toList(),
+            result.getTotal());
     }
 }

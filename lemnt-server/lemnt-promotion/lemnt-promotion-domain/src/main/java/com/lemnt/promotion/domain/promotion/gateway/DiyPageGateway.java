@@ -6,7 +6,9 @@ import com.lemnt.promotion.domain.promotion.model.DiyPageFilter;
 
 import java.util.List;
 
-/** 装修页面存储契约。 */
+/**
+ * 装修页面存储契约。
+ */
 public interface DiyPageGateway {
     DiyPage find(Long id);
 

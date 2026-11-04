@@ -29,7 +29,7 @@ public interface DeptMapper extends BaseMapper<DeptDO> {
     /**
      * 根据角色ID查询部门树信息
      *
-     * @param roleId            角色ID
+     * @param roleId 角色ID
      * @return 选中部门列表
      */
     List<Long> selectDeptListByRoleId(@Param("roleId") Long roleId);

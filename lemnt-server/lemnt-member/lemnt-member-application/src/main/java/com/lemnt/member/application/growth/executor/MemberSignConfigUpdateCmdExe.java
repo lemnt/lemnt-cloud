@@ -8,15 +8,19 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 签到配置更新执行器。 */
+/**
+ * 签到配置更新执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberSignConfigUpdateCmdExe {
     private final MemberGrowthService service;
 
-    /** 执行独立更新，不按天数覆盖。 */
+    /**
+     * 执行独立更新，不按天数覆盖。
+     */
     public Boolean execute(SignConfigUpdateCmd cmd) {
         return service.updateSignConfig(
-                new SignConfig(cmd.id(), cmd.day(), cmd.point(), cmd.experience(), cmd.status()));
+            new SignConfig(cmd.id(), cmd.day(), cmd.point(), cmd.experience(), cmd.status()));
     }
 }

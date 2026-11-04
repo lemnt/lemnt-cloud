@@ -17,179 +17,204 @@ import com.lemnt.product.application.product.dto.ProductSkuDTO;
 import com.lemnt.product.application.product.dto.ProductSpuDTO;
 import com.lemnt.product.application.product.dto.ProductSpuStatusCountDTO;
 
-/** 商品管理接口独立响应转换。 */
+/**
+ * 商品管理接口独立响应转换。
+ */
 public final class ProductManagementResConverter {
-    private ProductManagementResConverter() {}
+    private ProductManagementResConverter() {
+    }
 
-    /** 转换SKU新增响应。 */
+    /**
+     * 转换SKU新增响应。
+     */
     public static ProductSkuAddRes skuAdd(ProductSkuDTO value) {
         return new ProductSkuAddRes(
-                value.id(),
-                value.spuId(),
-                value.code(),
-                value.name(),
-                value.price(),
-                value.stock(),
-                value.image(),
-                value.specs() == null
-                        ? null
-                        : value.specs().stream()
-                                .map(
-                                        property ->
-                                                new ProductSkuAddRes.Spec(
-                                                        property.specId(),
-                                                        property.specName(),
-                                                        property.specValueId(),
-                                                        property.specValueName()))
-                                .toList(),
-                value.status());
+            value.id(),
+            value.spuId(),
+            value.code(),
+            value.name(),
+            value.price(),
+            value.stock(),
+            value.image(),
+            value.specs() == null
+                ? null
+                : value.specs().stream()
+                .map(
+                    property ->
+                        new ProductSkuAddRes.Spec(
+                            property.specId(),
+                            property.specName(),
+                            property.specValueId(),
+                            property.specValueName()))
+                .toList(),
+            value.status());
     }
 
-    /** 转换SKU详情响应。 */
+    /**
+     * 转换SKU详情响应。
+     */
     public static ProductSkuDetailRes skuDetail(ProductSkuDTO value) {
         return new ProductSkuDetailRes(
-                value.id(),
-                value.spuId(),
-                value.code(),
-                value.name(),
-                value.price(),
-                value.stock(),
-                value.image(),
-                value.specs() == null
-                        ? null
-                        : value.specs().stream()
-                                .map(
-                                        property ->
-                                                new ProductSkuDetailRes.Spec(
-                                                        property.specId(),
-                                                        property.specName(),
-                                                        property.specValueId(),
-                                                        property.specValueName()))
-                                .toList(),
-                value.status());
+            value.id(),
+            value.spuId(),
+            value.code(),
+            value.name(),
+            value.price(),
+            value.stock(),
+            value.image(),
+            value.specs() == null
+                ? null
+                : value.specs().stream()
+                .map(
+                    property ->
+                        new ProductSkuDetailRes.Spec(
+                            property.specId(),
+                            property.specName(),
+                            property.specValueId(),
+                            property.specValueName()))
+                .toList(),
+            value.status());
     }
 
-    /** 转换SKU分页响应。 */
+    /**
+     * 转换SKU分页响应。
+     */
     public static ProductSkuPageRes skuPage(ProductSkuDTO value) {
         return new ProductSkuPageRes(
-                value.id(),
-                value.spuId(),
-                value.code(),
-                value.name(),
-                value.price(),
-                value.stock(),
-                value.image(),
-                value.status());
+            value.id(),
+            value.spuId(),
+            value.code(),
+            value.name(),
+            value.price(),
+            value.stock(),
+            value.image(),
+            value.status());
     }
 
-    /** 转换品牌分页。 */
+    /**
+     * 转换品牌分页。
+     */
     public static BrandPageRes brand(BrandDTO value) {
         return new BrandPageRes(
-                value.id(),
-                value.name(),
-                value.picUrl(),
-                value.description(),
-                value.sort(),
-                value.status());
+            value.id(),
+            value.name(),
+            value.picUrl(),
+            value.description(),
+            value.sort(),
+            value.status());
     }
 
-    /** 转换品牌选择。 */
+    /**
+     * 转换品牌选择。
+     */
     public static BrandSimpleRes brandSimple(BrandDTO value) {
         return new BrandSimpleRes(value.id(), value.name());
     }
 
-    /** 转换分类树。 */
+    /**
+     * 转换分类树。
+     */
     public static CategoryTreeRes tree(CategoryTreeDTO value) {
         return new CategoryTreeRes(
-                value.id(),
-                value.name(),
-                value.picUrl(),
-                value.sort(),
-                value.status(),
-                value.children().stream().map(ProductManagementResConverter::tree).toList());
+            value.id(),
+            value.name(),
+            value.picUrl(),
+            value.sort(),
+            value.status(),
+            value.children().stream().map(ProductManagementResConverter::tree).toList());
     }
 
-    /** 转换商品状态统计。 */
+    /**
+     * 转换商品状态统计。
+     */
     public static ProductSpuCountRes count(ProductSpuStatusCountDTO value) {
         return new ProductSpuCountRes(
-                value.onShelf(),
-                value.offShelf(),
-                value.recycled(),
-                value.soldOut(),
-                value.lowStock());
+            value.onShelf(),
+            value.offShelf(),
+            value.recycled(),
+            value.soldOut(),
+            value.lowStock());
     }
 
-    /** 转换上架商品选择。 */
+    /**
+     * 转换上架商品选择。
+     */
     public static ProductSpuSimpleRes simple(ProductSpuDTO value) {
         return new ProductSpuSimpleRes(value.id(), value.code(), value.name());
     }
 
-    /** 转换批量商品详情。 */
+    /**
+     * 转换批量商品详情。
+     */
     public static ProductSpuBatchRes batch(ProductSpuDTO value) {
         return new ProductSpuBatchRes(
-                value.id(),
-                value.code(),
-                value.name(),
-                value.categoryId(),
-                value.brandId(),
-                value.description(),
-                value.image(),
-                value.status(),
-                value.skus().stream().map(ProductManagementResConverter::batchSku).toList(),
-                value.deliveryTypes(),
-                value.deliveryTemplateId(),
-                value.keyword(),
-                value.introduction(),
-                value.sliderPicUrls(),
-                value.sort());
+            value.id(),
+            value.code(),
+            value.name(),
+            value.categoryId(),
+            value.brandId(),
+            value.description(),
+            value.image(),
+            value.status(),
+            value.skus().stream().map(ProductManagementResConverter::batchSku).toList(),
+            value.deliveryTypes(),
+            value.deliveryTemplateId(),
+            value.keyword(),
+            value.introduction(),
+            value.sliderPicUrls(),
+            value.sort());
     }
 
-    /** 批量接口的SKU独立响应。 */
+    /**
+     * 批量接口的SKU独立响应。
+     */
     public static ProductSpuBatchSkuRes batchSku(ProductSkuDTO value) {
         return new ProductSpuBatchSkuRes(
-                value.id(),
-                value.spuId(),
-                value.code(),
-                value.name(),
-                value.price(),
-                value.stock(),
-                value.image(),
-                value.specs() == null
-                        ? null
-                        : value.specs().stream()
-                                .map(
-                                        property ->
-                                                new ProductSpuBatchSkuRes.Spec(
-                                                        property.specId(),
-                                                        property.specName(),
-                                                        property.specValueId(),
-                                                        property.specValueName()))
-                                .toList(),
-                value.status(),
-                value.weight(),
-                value.volume());
+            value.id(),
+            value.spuId(),
+            value.code(),
+            value.name(),
+            value.price(),
+            value.stock(),
+            value.image(),
+            value.specs() == null
+                ? null
+                : value.specs().stream()
+                .map(
+                    property ->
+                        new ProductSpuBatchSkuRes.Spec(
+                            property.specId(),
+                            property.specName(),
+                            property.specValueId(),
+                            property.specValueName()))
+                .toList(),
+            value.status(),
+            value.weight(),
+            value.volume());
     }
 
-    /** 编号转为文本，状态转换为展示名称，不向导出文件添加不存在的经营字段。 */
+    /**
+     * 编号转为文本，状态转换为展示名称，不向导出文件添加不存在的经营字段。
+     */
     public static ProductSpuExportRes export(ProductSpuDTO value) {
         String status =
-                switch (value.status()) {
-                    case "ON_SHELF" -> "上架";
-                    case "OFF_SHELF" -> "下架";
-                    case "RECYCLED" -> "回收站";
-                    default -> value.status();
-                };
+            switch (value.status()) {
+                case "ON_SHELF" -> "上架";
+                case "OFF_SHELF" -> "下架";
+                case "RECYCLED" -> "回收站";
+                default -> value.status();
+            };
         return new ProductSpuExportRes(
-                value.id().toString(),
-                value.code(),
-                value.name(),
-                value.categoryId().toString(),
-                value.brandId().toString(),
-                status,
-                value.description(),
-                value.keyword(),
-                value.introduction(),
-                value.sliderPicUrls() == null ? null : String.join("\n", value.sliderPicUrls()),
-                value.sort());
+            value.id().toString(),
+            value.code(),
+            value.name(),
+            value.categoryId().toString(),
+            value.brandId().toString(),
+            status,
+            value.description(),
+            value.keyword(),
+            value.introduction(),
+            value.sliderPicUrls() == null ? null : String.join("\n", value.sliderPicUrls()),
+            value.sort());
     }
 }

@@ -19,7 +19,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/** 小程序收银台渠道与沙箱支付 HTTP 契约。 */
+/**
+ * 小程序收银台渠道与沙箱支付 HTTP 契约。
+ */
 class AppPaymentChannelControllerTest {
     JacksonJsonHttpMessageConverter converter() {
         var builder = JsonMapper.builder();
@@ -36,15 +38,15 @@ class AppPaymentChannelControllerTest {
     void channelsAreScopedToAppKey() throws Exception {
         var query = mock(MemberPaymentChannelQueryExe.class);
         when(query.execute("lemnt-mall"))
-                .thenReturn(List.of(new PaymentChannelDTO("SANDBOX", "沙箱")));
+            .thenReturn(List.of(new PaymentChannelDTO("SANDBOX", "沙箱")));
         var mvc =
-                MockMvcBuilders.standaloneSetup(new AppPaymentChannelController(query))
-                        .setMessageConverters(converter())
-                        .build();
+            MockMvcBuilders.standaloneSetup(new AppPaymentChannelController(query))
+                .setMessageConverters(converter())
+                .build();
         mvc.perform(get("/trade/app/payment-channels").param("appKey", "lemnt-mall"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].code").value("SANDBOX"))
-                .andExpect(jsonPath("$.data[0].name").value("沙箱"));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data[0].code").value("SANDBOX"))
+            .andExpect(jsonPath("$.data[0].name").value("沙箱"));
         mvc.perform(get("/trade/app/payment-channels")).andExpect(status().isBadRequest());
     }
 
@@ -55,12 +57,12 @@ class AppPaymentChannelControllerTest {
         ObjectProvider<SandboxPaymentCmdExe> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(null);
         var mvc =
-                MockMvcBuilders.standaloneSetup(new AppSandboxPaymentController(provider))
-                        .setMessageConverters(converter())
-                        .build();
+            MockMvcBuilders.standaloneSetup(new AppSandboxPaymentController(provider))
+                .setMessageConverters(converter())
+                .build();
         mvc.perform(post("/trade/app/payments/PAY1/sandbox-pay"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.msg").value("沙箱支付未启用"));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.msg").value("沙箱支付未启用"));
     }
 
     @Test
@@ -72,11 +74,11 @@ class AppPaymentChannelControllerTest {
         ObjectProvider<SandboxPaymentCmdExe> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(exe);
         var mvc =
-                MockMvcBuilders.standaloneSetup(new AppSandboxPaymentController(provider))
-                        .setMessageConverters(converter())
-                        .build();
+            MockMvcBuilders.standaloneSetup(new AppSandboxPaymentController(provider))
+                .setMessageConverters(converter())
+                .build();
         mvc.perform(post("/trade/app/payments/PAY1/sandbox-pay"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").value("PAY1"));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data").value("PAY1"));
     }
 }

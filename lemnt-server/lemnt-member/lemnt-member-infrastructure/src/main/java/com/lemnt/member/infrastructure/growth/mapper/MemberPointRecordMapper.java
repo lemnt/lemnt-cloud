@@ -8,7 +8,9 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-/** 积分表Mapper，简单CRUD直接使用BaseMapper，关联查询用XML。 */
+/**
+ * 积分表Mapper，简单CRUD直接使用BaseMapper，关联查询用XML。
+ */
 @Mapper
 public interface MemberPointRecordMapper extends BaseMapper<PointRecordDO> {
     List<PointRecordDO> page(@Param("f") AssetRecordPageFilter filter);

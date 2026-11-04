@@ -7,26 +7,29 @@ import com.lemnt.promotion.infrastructure.promotion.dataobject.CombinationActivi
 import com.lemnt.promotion.infrastructure.promotion.dataobject.CombinationProductDO;
 import com.lemnt.promotion.infrastructure.promotion.dataobject.CombinationRecordDO;
 
-/** 拼团领域对象与表结构转换。 */
+/**
+ * 拼团领域对象与表结构转换。
+ */
 public final class CombinationConverter {
-    private CombinationConverter() {}
+    private CombinationConverter() {
+    }
 
     public static CombinationActivity model(CombinationActivityDO row) {
         if (row == null) {
             return null;
         }
         return new CombinationActivity(
-                row.getId(),
-                row.getName(),
-                row.getSpuId(),
-                row.getTotalLimitCount(),
-                row.getSingleLimitCount(),
-                row.getStartTime(),
-                row.getEndTime(),
-                row.getUserSize(),
-                row.getVirtualGroup(),
-                row.getStatus(),
-                row.getLimitDuration());
+            row.getId(),
+            row.getName(),
+            row.getSpuId(),
+            row.getTotalLimitCount(),
+            row.getSingleLimitCount(),
+            row.getStartTime(),
+            row.getEndTime(),
+            row.getUserSize(),
+            row.getVirtualGroup(),
+            row.getStatus(),
+            row.getLimitDuration());
     }
 
     public static CombinationActivityDO row(CombinationActivity value) {
@@ -50,14 +53,14 @@ public final class CombinationConverter {
             return null;
         }
         return new CombinationProduct(
-                row.getId(),
-                row.getActivityId(),
-                row.getSpuId(),
-                row.getSkuId(),
-                row.getCombinationPrice(),
-                row.getActivityStatus(),
-                row.getActivityStartTime(),
-                row.getActivityEndTime());
+            row.getId(),
+            row.getActivityId(),
+            row.getSpuId(),
+            row.getSkuId(),
+            row.getCombinationPrice(),
+            row.getActivityStatus(),
+            row.getActivityStartTime(),
+            row.getActivityEndTime());
     }
 
     public static CombinationProductDO row(CombinationProduct value) {
@@ -78,26 +81,26 @@ public final class CombinationConverter {
             return null;
         }
         return new CombinationRecord(
-                row.getId(),
-                row.getActivityId(),
-                row.getCombinationPrice(),
-                row.getSpuId(),
-                row.getSpuName(),
-                row.getPicUrl(),
-                row.getSkuId(),
-                row.getCount(),
-                row.getUserId(),
-                row.getNickname(),
-                row.getAvatar(),
-                row.getHeadId(),
-                row.getStatus(),
-                row.getOrderId(),
-                row.getUserSize(),
-                row.getUserCount(),
-                row.getVirtualGroup(),
-                row.getExpireTime(),
-                row.getStartTime(),
-                row.getEndTime());
+            row.getId(),
+            row.getActivityId(),
+            row.getCombinationPrice(),
+            row.getSpuId(),
+            row.getSpuName(),
+            row.getPicUrl(),
+            row.getSkuId(),
+            row.getCount(),
+            row.getUserId(),
+            row.getNickname(),
+            row.getAvatar(),
+            row.getHeadId(),
+            row.getStatus(),
+            row.getOrderId(),
+            row.getUserSize(),
+            row.getUserCount(),
+            row.getVirtualGroup(),
+            row.getExpireTime(),
+            row.getStartTime(),
+            row.getEndTime());
     }
 
     public static CombinationRecordDO row(CombinationRecord value) {

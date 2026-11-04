@@ -12,26 +12,28 @@ import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
-/** 营销赠券按订单快照补足数量，支付回调重试不重复发放。 */
+/**
+ * 营销赠券按订单快照补足数量，支付回调重试不重复发放。
+ */
 class RewardGiftServiceTest {
     final CouponIssuanceService issuance = mock(CouponIssuanceService.class);
     final RewardGiftService service = new RewardGiftService(issuance);
 
     SettlementOrder order() {
         return new SettlementOrder(
-                1L,
-                "TR1",
-                7L,
-                BigDecimal.TEN,
-                "PAID",
-                List.of(),
-                null,
-                0L,
-                0L,
-                null,
-                null,
-                null,
-                Map.of(3L, 2));
+            1L,
+            "TR1",
+            7L,
+            BigDecimal.TEN,
+            "PAID",
+            List.of(),
+            null,
+            0L,
+            0L,
+            null,
+            null,
+            null,
+            Map.of(3L, 2));
     }
 
     @Test

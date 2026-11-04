@@ -6,8 +6,9 @@ import java.io.Serializable;
  * 配置保存命令。
  */
 public record ConfigSaveCmd(
-        Boolean pointTradeDeductEnable,
-        Integer pointTradeDeductUnitPrice,
-        Integer pointTradeDeductMaxPrice,
-        Integer pointTradeGivePoint)
-        implements Serializable {}
+    Boolean pointTradeDeductEnable,
+    Integer pointTradeDeductUnitPrice,
+    Integer pointTradeDeductMaxPrice,
+    Integer pointTradeGivePoint)
+    implements Serializable {
+}

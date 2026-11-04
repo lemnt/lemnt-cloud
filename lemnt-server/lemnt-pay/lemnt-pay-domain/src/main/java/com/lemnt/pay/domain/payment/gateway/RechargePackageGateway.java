@@ -6,7 +6,9 @@ import com.lemnt.pay.domain.payment.model.RechargePackageFilter;
 
 import java.util.List;
 
-/** 充值套餐存储契约。 */
+/**
+ * 充值套餐存储契约。
+ */
 public interface RechargePackageGateway {
     PageResult<RechargePackage> page(RechargePackageFilter filter);
 

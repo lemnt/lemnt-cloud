@@ -30,9 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** 商品回收与选择接口。 */
+/**
+ * 商品回收与选择接口。
+ */
 @Tag(name = "商品回收与选择")
 @RestController
 @RequestMapping("/mall/spus")
@@ -45,7 +48,9 @@ public class ProductSpuManagementController {
     private final ProductSpuSimpleListQueryExe productSpuSimpleListQueryExe;
     private final ProductSpuBatchDetailQueryExe productSpuBatchDetailQueryExe;
 
-    /** 下架商品放入回收站。 */
+    /**
+     * 下架商品放入回收站。
+     */
     @PostMapping("/{id}/recycle")
     @Operation(summary = "商品放入回收站")
     @RequiresPermissions("mall:spu:edit")
@@ -53,7 +58,9 @@ public class ProductSpuManagementController {
         return R.ok(productSpuRecycleCmdExe.execute(id));
     }
 
-    /** 恢复为下架，不能直接恢复为上架。 */
+    /**
+     * 恢复为下架，不能直接恢复为上架。
+     */
     @PostMapping("/{id}/restore")
     @Operation(summary = "恢复回收站商品")
     @RequiresPermissions("mall:spu:edit")
@@ -61,7 +68,9 @@ public class ProductSpuManagementController {
         return R.ok(productSpuRestoreCmdExe.execute(id));
     }
 
-    /** 删除仍保留历史编号。 */
+    /**
+     * 删除仍保留历史编号。
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "删除回收站商品")
     @RequiresPermissions("mall:spu:remove")
@@ -69,38 +78,44 @@ public class ProductSpuManagementController {
         return R.ok(productSpuDeleteCmdExe.execute(id));
     }
 
-    /** 查询同筛选条件下各状态数量。 */
+    /**
+     * 查询同筛选条件下各状态数量。
+     */
     @GetMapping("/count")
     @Operation(summary = "商品状态统计")
     @RequiresPermissions("mall:spu:list")
     public R<ProductSpuCountRes> count(@Valid @ModelAttribute ProductSpuCountReq req) {
         return R.ok(
-                ProductManagementResConverter.count(
-                        productSpuCountQueryExe.execute(
-                                ProductManagementReqConverter.counts(req))));
+            ProductManagementResConverter.count(
+                productSpuCountQueryExe.execute(
+                    ProductManagementReqConverter.counts(req))));
     }
 
-    /** 有界上架商品选择。 */
+    /**
+     * 有界上架商品选择。
+     */
     @GetMapping("/simple")
     @Operation(summary = "上架商品选择查询")
     @RequiresPermissions("mall:spu:query")
     public R<List<ProductSpuSimpleRes>> simple(@Valid @ModelAttribute ProductSpuSimpleReq req) {
         return R.ok(
-                productSpuSimpleListQueryExe
-                        .execute(ProductManagementReqConverter.simple(req))
-                        .stream()
-                        .map(ProductManagementResConverter::simple)
-                        .toList());
+            productSpuSimpleListQueryExe
+                .execute(ProductManagementReqConverter.simple(req))
+                .stream()
+                .map(ProductManagementResConverter::simple)
+                .toList());
     }
 
-    /** 批量查询真实详情。 */
+    /**
+     * 批量查询真实详情。
+     */
     @GetMapping("/batch")
     @Operation(summary = "批量商品详情")
     @RequiresPermissions("mall:spu:query")
     public R<List<ProductSpuBatchRes>> batch(@Valid @ModelAttribute ProductSpuBatchReq req) {
         return R.ok(
-                productSpuBatchDetailQueryExe.execute(req.ids()).stream()
-                        .map(ProductManagementResConverter::batch)
-                        .toList());
+            productSpuBatchDetailQueryExe.execute(req.ids()).stream()
+                .map(ProductManagementResConverter::batch)
+                .toList());
     }
 }

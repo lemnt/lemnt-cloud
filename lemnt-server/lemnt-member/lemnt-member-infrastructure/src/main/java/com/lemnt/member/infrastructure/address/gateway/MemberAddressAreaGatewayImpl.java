@@ -12,7 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 import java.util.Map;
 
-/** 批量复用system地区数据，不复制资源或增加地区存储。 */
+/**
+ * 批量复用system地区数据，不复制资源或增加地区存储。
+ */
 @Slf4j
 @Component
 public class MemberAddressAreaGatewayImpl implements MemberAddressAreaGateway {
@@ -20,7 +22,9 @@ public class MemberAddressAreaGatewayImpl implements MemberAddressAreaGateway {
     @DubboReference(check = false)
     private RemoteAreaService remoteAreaService;
 
-    /** 地区展示暂不可用时保留地址及编号，不影响地址读取。 */
+    /**
+     * 地区展示暂不可用时保留地址及编号，不影响地址读取。
+     */
     @Override
     public Map<Long, String> names(List<Long> areaIds) {
         if (areaIds.isEmpty()) return Map.of();

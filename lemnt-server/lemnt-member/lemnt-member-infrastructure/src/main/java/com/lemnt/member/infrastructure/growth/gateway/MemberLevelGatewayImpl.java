@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.Collection;
 import java.util.List;
 
-/** member_level 表持久化实现。 */
+/**
+ * member_level 表持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberLevelGatewayImpl implements MemberLevelGateway {
@@ -30,18 +32,20 @@ public class MemberLevelGatewayImpl implements MemberLevelGateway {
         return levels(null, null);
     }
 
-    /** 管理筛选和简单列表使用同一Lambda条件，按等级升序。 */
+    /**
+     * 管理筛选和简单列表使用同一Lambda条件，按等级升序。
+     */
     @Override
     public List<Level> levels(String name, Integer status) {
         return memberLevelMapper
-                .selectList(
-                        Wrappers.<LevelDO>lambdaQuery()
-                                .like(name != null, LevelDO::getName, name)
-                                .eq(status != null, LevelDO::getStatus, status)
-                                .orderByAsc(LevelDO::getLevel))
-                .stream()
-                .map(LevelConverter::toEntity)
-                .toList();
+            .selectList(
+                Wrappers.<LevelDO>lambdaQuery()
+                    .like(name != null, LevelDO::getName, name)
+                    .eq(status != null, LevelDO::getStatus, status)
+                    .orderByAsc(LevelDO::getLevel))
+            .stream()
+            .map(LevelConverter::toEntity)
+            .toList();
     }
 
     /**
@@ -74,14 +78,16 @@ public class MemberLevelGatewayImpl implements MemberLevelGateway {
         return memberLevelMapper.levelDelete(id) == 1;
     }
 
-    /** 批量关联返显，避免逐会员查询。 */
+    /**
+     * 批量关联返显，避免逐会员查询。
+     */
     @Override
     public List<Level> levelsByIds(Collection<Long> ids) {
         if (ids.isEmpty()) return List.of();
         return memberLevelMapper
-                .selectList(Wrappers.<LevelDO>lambdaQuery().in(LevelDO::getId, ids))
-                .stream()
-                .map(LevelConverter::toEntity)
-                .toList();
+            .selectList(Wrappers.<LevelDO>lambdaQuery().in(LevelDO::getId, ids))
+            .stream()
+            .map(LevelConverter::toEntity)
+            .toList();
     }
 }

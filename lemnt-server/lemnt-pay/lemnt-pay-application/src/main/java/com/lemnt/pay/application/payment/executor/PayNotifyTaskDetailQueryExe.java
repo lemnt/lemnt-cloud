@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 派发任务详情与日志查询。 */
+/**
+ * 派发任务详情与日志查询。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayNotifyTaskDetailQueryExe {
@@ -20,9 +22,9 @@ public class PayNotifyTaskDetailQueryExe {
         }
         var task = tasks.find(id);
         return task == null
-                ? null
-                : new PayNotifyTaskDetailDTO(
-                        PayNotifyDTOConverter.task(task),
-                        tasks.logs(id).stream().map(PayNotifyDTOConverter::log).toList());
+            ? null
+            : new PayNotifyTaskDetailDTO(
+            PayNotifyDTOConverter.task(task),
+            tasks.logs(id).stream().map(PayNotifyDTOConverter::log).toList());
     }
 }

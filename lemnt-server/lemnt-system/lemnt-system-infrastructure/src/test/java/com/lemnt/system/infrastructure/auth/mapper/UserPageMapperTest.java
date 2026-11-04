@@ -28,18 +28,18 @@ class UserPageMapperTest {
         var statement = mapper().getMappedStatement(UserMapper.class.getName() + ".selectPage");
 
         var query =
-                new User().setDeptId(103L).setUserName("test").setDataScope(" AND u.user_id = 2");
+            new User().setDeptId(103L).setUserName("test").setDataScope(" AND u.user_id = 2");
 
         String sql = statement.getBoundSql(Map.of("qry", query)).getSql();
 
         assertThat(sql)
-                .contains(
-                        "d.dept_name",
-                        "LEFT JOIN sys_dept d",
-                        "u.del_flag = '0'",
-                        "u.user_name LIKE",
-                        "FIND_IN_SET")
-                .doesNotContain("AND u.user_id = 2");
+            .contains(
+                "d.dept_name",
+                "LEFT JOIN sys_dept d",
+                "u.del_flag = '0'",
+                "u.user_name LIKE",
+                "FIND_IN_SET")
+            .doesNotContain("AND u.user_id = 2");
     }
 
     @Test
@@ -67,7 +67,7 @@ class UserPageMapperTest {
         try (var rows = RowSetProvider.newFactory().createCachedRowSet()) {
             rows.setMetaData(metadata);
 
-            for (long userId : new long[] {2L, 3L}) {
+            for (long userId : new long[]{2L, 3L}) {
                 rows.moveToInsertRow();
 
                 rows.updateLong(1, userId);
@@ -101,32 +101,32 @@ class UserPageMapperTest {
             when(statement.getUpdateCount()).thenReturn(-1);
 
             var handler =
-                    new DefaultResultSetHandler(
-                            null, mapped, null, null, boundSql, RowBounds.DEFAULT);
+                new DefaultResultSetHandler(
+                    null, mapped, null, null, boundSql, RowBounds.DEFAULT);
 
             var users = handler.handleResultSets(statement);
 
             assertThat(users)
-                    .hasSize(2)
-                    .allSatisfy(user -> assertThat(user).isInstanceOf(User.class));
+                .hasSize(2)
+                .allSatisfy(user -> assertThat(user).isInstanceOf(User.class));
 
             var linked =
-                    users.stream()
-                            .map(User.class::cast)
-                            .filter(user -> user.getUserId() == 2L)
-                            .findFirst()
-                            .orElseThrow();
+                users.stream()
+                    .map(User.class::cast)
+                    .filter(user -> user.getUserId() == 2L)
+                    .findFirst()
+                    .orElseThrow();
 
             assertThat(linked.getDept().getDeptId()).isEqualTo(103L);
 
             assertThat(linked.getDept().getDeptName()).isEqualTo("测试部门");
 
             var missing =
-                    users.stream()
-                            .map(User.class::cast)
-                            .filter(user -> user.getUserId() == 3L)
-                            .findFirst()
-                            .orElseThrow();
+                users.stream()
+                    .map(User.class::cast)
+                    .filter(user -> user.getUserId() == 3L)
+                    .findFirst()
+                    .orElseThrow();
 
             assertThat(missing.getDeptId()).isEqualTo(103L);
 
@@ -143,7 +143,7 @@ class UserPageMapperTest {
             assertThat(input).isNotNull();
 
             new XMLMapperBuilder(input, configuration, resource, configuration.getSqlFragments())
-                    .parse();
+                .parse();
         }
         return configuration;
     }

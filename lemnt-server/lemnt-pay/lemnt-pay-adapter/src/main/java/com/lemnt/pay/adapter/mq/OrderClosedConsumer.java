@@ -12,14 +12,16 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 失败直接抛给broker重试，不能继承吞异常的旧BaseConsumer。 */
+/**
+ * 失败直接抛给broker重试，不能继承吞异常的旧BaseConsumer。
+ */
 @Component
 @ConditionalOnProperty(name = "commerce.mq.enabled", havingValue = "true")
 @RequiredArgsConstructor
 @RocketMQMessageListener(
-        topic = CommerceEventTopics.ORDER_CLOSED,
-        consumerGroup = "lemnt-pay-order-closed-v1",
-        maxReconsumeTimes = 16)
+    topic = CommerceEventTopics.ORDER_CLOSED,
+    consumerGroup = "lemnt-pay-order-closed-v1",
+    maxReconsumeTimes = 16)
 public class OrderClosedConsumer implements RocketMQListener<String> {
     private final OrderClosedEventHandler handler;
 

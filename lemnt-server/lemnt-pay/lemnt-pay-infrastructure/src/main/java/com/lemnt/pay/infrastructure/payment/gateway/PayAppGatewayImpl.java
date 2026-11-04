@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** pay_app 持久化实现。 */
+/**
+ * pay_app 持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayAppGatewayImpl implements PayAppGateway {
@@ -23,22 +25,22 @@ public class PayAppGatewayImpl implements PayAppGateway {
     @Override
     public PageResult<PayApp> page(PayAppFilter filter) {
         var page =
-                mapper.selectPage(
-                        new Page<PayAppDO>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.<PayAppDO>lambdaQuery()
-                                .like(
-                                        filter.appKey() != null && !filter.appKey().isBlank(),
-                                        PayAppDO::getAppKey,
-                                        filter.appKey())
-                                .like(
-                                        filter.name() != null && !filter.name().isBlank(),
-                                        PayAppDO::getName,
-                                        filter.name())
-                                .eq(filter.status() != null, PayAppDO::getStatus, filter.status())
-                                .orderByDesc(PayAppDO::getId));
+            mapper.selectPage(
+                new Page<PayAppDO>(filter.pageNum(), filter.pageSize()),
+                Wrappers.<PayAppDO>lambdaQuery()
+                    .like(
+                        filter.appKey() != null && !filter.appKey().isBlank(),
+                        PayAppDO::getAppKey,
+                        filter.appKey())
+                    .like(
+                        filter.name() != null && !filter.name().isBlank(),
+                        PayAppDO::getName,
+                        filter.name())
+                    .eq(filter.status() != null, PayAppDO::getStatus, filter.status())
+                    .orderByDesc(PayAppDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(PayAppConverter::toEntity).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(PayAppConverter::toEntity).toList(),
+            page.getTotal());
     }
 
     @Override
@@ -49,19 +51,19 @@ public class PayAppGatewayImpl implements PayAppGateway {
     @Override
     public PayApp findByAppKey(String appKey) {
         return PayAppConverter.toEntity(
-                mapper.selectOne(
-                        Wrappers.<PayAppDO>lambdaQuery()
-                                .eq(PayAppDO::getAppKey, appKey)
-                                .last("LIMIT 1")));
+            mapper.selectOne(
+                Wrappers.<PayAppDO>lambdaQuery()
+                    .eq(PayAppDO::getAppKey, appKey)
+                    .last("LIMIT 1")));
     }
 
     @Override
     public boolean existsAppKey(String appKey, Long excludeId) {
         return mapper.selectCount(
-                        Wrappers.<PayAppDO>lambdaQuery()
-                                .eq(PayAppDO::getAppKey, appKey)
-                                .ne(excludeId != null, PayAppDO::getId, excludeId))
-                > 0;
+            Wrappers.<PayAppDO>lambdaQuery()
+                .eq(PayAppDO::getAppKey, appKey)
+                .ne(excludeId != null, PayAppDO::getId, excludeId))
+            > 0;
     }
 
     @Override

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lemnt.order.infrastructure.aftersale.mapper.AfterSaleLogMapper">
-    <resultMap id="AfterSaleLogResult" type="com.lemnt.order.infrastructure.aftersale.dataobject.AfterSaleLogDO" autoMapping="false">
+    <resultMap id="AfterSaleLogResult" type="com.lemnt.order.infrastructure.aftersale.dataobject.AfterSaleLogDO"
+               autoMapping="false">
         <id property="id" column="id"/>
         <result property="userId" column="user_id"/>
         <result property="userType" column="user_type"/>

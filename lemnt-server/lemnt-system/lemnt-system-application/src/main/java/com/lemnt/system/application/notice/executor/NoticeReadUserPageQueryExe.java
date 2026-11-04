@@ -24,10 +24,10 @@ public class NoticeReadUserPageQueryExe {
 
     public PageResult<NoticeReadUserDTO> execute(NoticeReadUserPageQry qry) {
         PageResult<NoticeReadUser> result =
-                noticeReadGateway.selectPageReadUsers(
-                        qry.noticeId(),
-                        qry.searchValue(),
-                        new PageQry(qry.pageNum(), qry.pageSize()));
+            noticeReadGateway.selectPageReadUsers(
+                qry.noticeId(),
+                qry.searchValue(),
+                new PageQry(qry.pageNum(), qry.pageSize()));
         return PageResult.of(NoticeReadConverter.toDTOList(result.getRecords()), result.getTotal());
     }
 }

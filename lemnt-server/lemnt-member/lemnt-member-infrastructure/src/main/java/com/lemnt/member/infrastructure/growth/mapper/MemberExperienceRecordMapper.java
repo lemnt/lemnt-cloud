@@ -8,7 +8,9 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-/** 经验表Mapper，简单CRUD直接使用BaseMapper，关联查询用XML。 */
+/**
+ * 经验表Mapper，简单CRUD直接使用BaseMapper，关联查询用XML。
+ */
 @Mapper
 public interface MemberExperienceRecordMapper extends BaseMapper<ExperienceRecordDO> {
     List<ExperienceRecordDO> page(@Param("f") AssetRecordPageFilter filter);

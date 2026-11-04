@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 自提核销执行器。 */
+/**
+ * 自提核销执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class PickUpVerifyCmdExe {

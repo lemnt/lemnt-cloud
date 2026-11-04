@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** Banner 分页执行器。 */
+/**
+ * Banner 分页执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class BannerPageQueryExe {

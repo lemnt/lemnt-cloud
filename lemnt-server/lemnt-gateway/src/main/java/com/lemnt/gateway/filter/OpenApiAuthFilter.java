@@ -36,7 +36,8 @@ import java.util.function.BiFunction;
 @Component
 public class OpenApiAuthFilter implements GlobalFilter, Ordered {
 
-    @Autowired private OpenApiService openApiService;
+    @Autowired
+    private OpenApiService openApiService;
 
     private static final String OPEN_API_PREFIX = "/open";
 
@@ -76,30 +77,30 @@ public class OpenApiAuthFilter implements GlobalFilter, Ordered {
             try {
                 Map<String, Object> params = readQuery(request);
                 openApiService.verifySign(
-                        clientId, timestamp, nonce, client.getAppSecret(), sign, params);
+                    clientId, timestamp, nonce, client.getAppSecret(), sign, params);
             } catch (Exception e) {
                 return ServletUtils.unauthorized(exchange.getResponse(), e.getMessage());
             }
             return chain.filter(addClientHeader(exchange, client));
         } else {
             return readBody(
-                    exchange,
-                    (body, newExchange) -> {
-                        try {
-                            Map<String, Object> params = JsonUtils.toMap(body);
-                            openApiService.verifySign(
-                                    clientId,
-                                    timestamp,
-                                    nonce,
-                                    client.getAppSecret(),
-                                    sign,
-                                    params);
-                            return chain.filter(addClientHeader(newExchange, client));
-                        } catch (Exception e) {
-                            return ServletUtils.unauthorized(
-                                    newExchange.getResponse(), e.getMessage());
-                        }
-                    });
+                exchange,
+                (body, newExchange) -> {
+                    try {
+                        Map<String, Object> params = JsonUtils.toMap(body);
+                        openApiService.verifySign(
+                            clientId,
+                            timestamp,
+                            nonce,
+                            client.getAppSecret(),
+                            sign,
+                            params);
+                        return chain.filter(addClientHeader(newExchange, client));
+                    } catch (Exception e) {
+                        return ServletUtils.unauthorized(
+                            newExchange.getResponse(), e.getMessage());
+                    }
+                });
         }
     }
 
@@ -112,14 +113,14 @@ public class OpenApiAuthFilter implements GlobalFilter, Ordered {
     private Map<String, Object> readQuery(ServerHttpRequest request) {
         Map<String, Object> params = new HashMap<>();
         request.getQueryParams()
-                .forEach(
-                        (key, value) -> {
-                            if (value.size() == 1) {
-                                params.put(key, value.get(0));
-                            } else {
-                                params.put(key, value);
-                            }
-                        });
+            .forEach(
+                (key, value) -> {
+                    if (value.size() == 1) {
+                        params.put(key, value.get(0));
+                    } else {
+                        params.put(key, value);
+                    }
+                });
         return params;
     }
 
@@ -130,31 +131,31 @@ public class OpenApiAuthFilter implements GlobalFilter, Ordered {
      * @param handler
      */
     private Mono<Void> readBody(
-            ServerWebExchange exchange, BiFunction<String, ServerWebExchange, Mono<Void>> handler) {
+        ServerWebExchange exchange, BiFunction<String, ServerWebExchange, Mono<Void>> handler) {
         return DataBufferUtils.join(exchange.getRequest().getBody())
-                .flatMap(
-                        dataBuffer -> {
-                            byte[] bytes = new byte[dataBuffer.readableByteCount()];
-                            dataBuffer.read(bytes);
-                            DataBufferUtils.release(dataBuffer);
-                            String body = new String(bytes, StandardCharsets.UTF_8);
-                            ServerHttpRequestDecorator decorator =
-                                    new ServerHttpRequestDecorator(exchange.getRequest()) {
-                                        @Override
-                                        public Flux<DataBuffer> getBody() {
-                                            return Flux.defer(
-                                                    () ->
-                                                            Flux.just(
-                                                                    exchange.getResponse()
-                                                                            .bufferFactory()
-                                                                            .wrap(bytes)));
-                                        }
-                                    };
+            .flatMap(
+                dataBuffer -> {
+                    byte[] bytes = new byte[dataBuffer.readableByteCount()];
+                    dataBuffer.read(bytes);
+                    DataBufferUtils.release(dataBuffer);
+                    String body = new String(bytes, StandardCharsets.UTF_8);
+                    ServerHttpRequestDecorator decorator =
+                        new ServerHttpRequestDecorator(exchange.getRequest()) {
+                            @Override
+                            public Flux<DataBuffer> getBody() {
+                                return Flux.defer(
+                                    () ->
+                                        Flux.just(
+                                            exchange.getResponse()
+                                                .bufferFactory()
+                                                .wrap(bytes)));
+                            }
+                        };
 
-                            ServerWebExchange newExchange =
-                                    exchange.mutate().request(decorator).build();
-                            return handler.apply(body, newExchange);
-                        });
+                    ServerWebExchange newExchange =
+                        exchange.mutate().request(decorator).build();
+                    return handler.apply(body, newExchange);
+                });
     }
 
     /**
@@ -166,10 +167,10 @@ public class OpenApiAuthFilter implements GlobalFilter, Ordered {
      */
     private ServerWebExchange addClientHeader(ServerWebExchange exchange, OpenApiClient client) {
         ServerHttpRequest request =
-                exchange.getRequest()
-                        .mutate()
-                        .header(SecurityConstants.CLIENT_ID_HEADER, client.getClientId())
-                        .build();
+            exchange.getRequest()
+                .mutate()
+                .header(SecurityConstants.CLIENT_ID_HEADER, client.getClientId())
+                .build();
         return exchange.mutate().request(request).build();
     }
 

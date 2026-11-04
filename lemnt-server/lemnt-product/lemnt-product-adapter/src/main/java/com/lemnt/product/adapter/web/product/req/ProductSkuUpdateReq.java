@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -15,11 +16,12 @@ import java.math.BigDecimal;
  */
 @Schema(description = "ProductSkuUpdateReq")
 public record ProductSkuUpdateReq(
-        @Schema(description = "SKU名称") @NotBlank @Size(max = 200) String name,
-        @Schema(description = "销售价，元")
-                @NotNull
-                @DecimalMin("0.01")
-                @Digits(integer = 17, fraction = 2)
-                BigDecimal price,
-        @Schema(description = "SKU图片URL") @Size(max = 500) String image)
-        implements Serializable {}
+    @Schema(description = "SKU名称") @NotBlank @Size(max = 200) String name,
+    @Schema(description = "销售价，元")
+    @NotNull
+    @DecimalMin("0.01")
+    @Digits(integer = 17, fraction = 2)
+    BigDecimal price,
+    @Schema(description = "SKU图片URL") @Size(max = 500) String image)
+    implements Serializable {
+}

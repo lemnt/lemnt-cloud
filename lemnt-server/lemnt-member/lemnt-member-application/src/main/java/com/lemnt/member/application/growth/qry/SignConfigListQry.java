@@ -5,4 +5,5 @@ import java.io.Serializable;
 /**
  * 签到配置项查询。
  */
-public record SignConfigListQry(boolean enabledOnly) implements Serializable {}
+public record SignConfigListQry(boolean enabledOnly) implements Serializable {
+}

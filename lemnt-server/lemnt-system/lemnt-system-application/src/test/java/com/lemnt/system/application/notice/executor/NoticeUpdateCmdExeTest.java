@@ -17,7 +17,9 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/** 完整编辑提交空备注时应清除旧值，非空备注应保持原文。 */
+/**
+ * 完整编辑提交空备注时应清除旧值，非空备注应保持原文。
+ */
 class NoticeUpdateCmdExeTest {
 
     @ParameterizedTest
@@ -28,11 +30,11 @@ class NoticeUpdateCmdExeTest {
         when(gateway.update(any())).thenReturn(true);
         try (var security = mockStatic(SecurityUtils.class)) {
             assertThat(
-                            new NoticeUpdateCmdExe(gateway)
-                                    .execute(
-                                            new NoticeUpdateCmd(
-                                                    11L, "测试公告", "2", "<p>正文</p>", "2", remark)))
-                    .isTrue();
+                new NoticeUpdateCmdExe(gateway)
+                    .execute(
+                        new NoticeUpdateCmd(
+                            11L, "测试公告", "2", "<p>正文</p>", "2", remark)))
+                .isTrue();
         }
         ArgumentCaptor<Notice> entity = ArgumentCaptor.forClass(Notice.class);
         verify(gateway).update(entity.capture());

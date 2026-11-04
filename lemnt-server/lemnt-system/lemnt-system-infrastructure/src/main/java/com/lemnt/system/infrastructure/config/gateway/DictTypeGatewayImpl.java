@@ -121,7 +121,7 @@ public class DictTypeGatewayImpl implements DictTypeGateway {
      */
     private DictTypeDO selectDictTypeByTypeRow(String dictType) {
         return dictTypeMapper.selectOne(
-                Wrappers.<DictTypeDO>lambdaQuery().eq(DictTypeDO::getDictType, dictType));
+            Wrappers.<DictTypeDO>lambdaQuery().eq(DictTypeDO::getDictType, dictType));
     }
 
     /**
@@ -132,8 +132,8 @@ public class DictTypeGatewayImpl implements DictTypeGateway {
      */
     private DictTypeDO checkDictTypeUniqueRow(String dictType) {
         return dictTypeMapper.selectOne(
-                Wrappers.<DictTypeDO>lambdaQuery()
-                        .eq(DictTypeDO::getDictType, dictType)
-                        .last("limit 1"));
+            Wrappers.<DictTypeDO>lambdaQuery()
+                .eq(DictTypeDO::getDictType, dictType)
+                .last("limit 1"));
     }
 }

@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 原订单券的核销和整单退回仅在营销库执行，与本库事件消费同事务。 */
+/**
+ * 原订单券的核销和整单退回仅在营销库执行，与本库事件消费同事务。
+ */
 @Component
 @RequiredArgsConstructor
 public class CouponLifecycleService {
@@ -20,8 +22,8 @@ public class CouponLifecycleService {
     public void useCoupon(String orderNo) {
         var coupon = coupons.byOrderNo(orderNo);
         if (coupon != null
-                && coupons.useCoupon(
-                        new CouponOrderReference(coupon.memberId(), coupon.id(), orderNo))) {
+            && coupons.useCoupon(
+            new CouponOrderReference(coupon.memberId(), coupon.id(), orderNo))) {
             templates.changeCounts(coupon.templateId(), 0, 1);
         }
     }

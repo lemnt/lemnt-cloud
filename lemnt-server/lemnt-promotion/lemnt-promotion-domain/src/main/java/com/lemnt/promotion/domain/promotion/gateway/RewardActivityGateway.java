@@ -6,7 +6,9 @@ import com.lemnt.promotion.domain.promotion.model.RewardActivity;
 
 import java.util.List;
 
-/** RewardActivity 活动主表访问。 */
+/**
+ * RewardActivity 活动主表访问。
+ */
 public interface RewardActivityGateway {
     RewardActivity find(Long id);
 

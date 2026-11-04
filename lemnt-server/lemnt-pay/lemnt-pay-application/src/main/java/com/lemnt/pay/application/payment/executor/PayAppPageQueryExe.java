@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 支付应用分页查询。 */
+/**
+ * 支付应用分页查询。
+ */
 @Component
 @RequiredArgsConstructor
 public class PayAppPageQueryExe {
@@ -24,15 +26,15 @@ public class PayAppPageQueryExe {
         }
         PayConfigRules.page(qry.pageNum(), qry.pageSize());
         var page =
-                apps.page(
-                        new PayAppFilter(
-                                PayConfigRules.optional(qry.appKey(), 64, "应用标识"),
-                                PayConfigRules.optional(qry.name(), 64, "应用名"),
-                                qry.status(),
-                                qry.pageNum(),
-                                qry.pageSize()));
+            apps.page(
+                new PayAppFilter(
+                    PayConfigRules.optional(qry.appKey(), 64, "应用标识"),
+                    PayConfigRules.optional(qry.name(), 64, "应用名"),
+                    qry.status(),
+                    qry.pageNum(),
+                    qry.pageSize()));
         return PageResult.of(
-                page.getRecords().stream().map(PayConfigDTOConverter::payApp).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(PayConfigDTOConverter::payApp).toList(),
+            page.getTotal());
     }
 }

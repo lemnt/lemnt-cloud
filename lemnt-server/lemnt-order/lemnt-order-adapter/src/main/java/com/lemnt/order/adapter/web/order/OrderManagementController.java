@@ -34,7 +34,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 订单后台统计与备注管理。 */
+/**
+ * 订单后台统计与备注管理。
+ */
 @Tag(name = "订单管理")
 @RestController
 @RequestMapping("/trade/admin/orders")
@@ -46,7 +48,9 @@ public class OrderManagementController {
     private final OrderAdjustPriceCmdExe adjustPrice;
     private final OrderAdjustAddressCmdExe adjustAddress;
 
-    /** 应付与退款分别展示，避免将待处理售后当作已退款。 */
+    /**
+     * 应付与退款分别展示，避免将待处理售后当作已退款。
+     */
     @GetMapping("/summary")
     @Operation(summary = "订单管理统计")
     @RequiresPermissions("trade:order:summary")
@@ -54,7 +58,9 @@ public class OrderManagementController {
         return R.ok(OrderManagementResConverter.statistics(statistics.execute(req.orderNo())));
     }
 
-    /** 查询后台备注。 */
+    /**
+     * 查询后台备注。
+     */
     @GetMapping("/{orderNo}/remark")
     @Operation(summary = "订单备注查询")
     @RequiresPermissions("trade:order:query")
@@ -63,40 +69,46 @@ public class OrderManagementController {
         return result == null ? R.fail("订单不存在") : R.ok(OrderManagementResConverter.remark(result));
     }
 
-    /** 只修改备注，不改写报价或支付金额。 */
+    /**
+     * 只修改备注，不改写报价或支付金额。
+     */
     @PutMapping("/{orderNo}/remark")
     @Operation(summary = "修改订单备注")
     @RequiresPermissions("trade:order:remark")
     public R<Boolean> remark(
-            @PathVariable String orderNo, @Valid @RequestBody OrderRemarkUpdateReq req) {
+        @PathVariable String orderNo, @Valid @RequestBody OrderRemarkUpdateReq req) {
         return R.ok(updateRemark.execute(OrderManagementReqConverter.remark(orderNo, req)));
     }
 
-    /** 待支付订单调价，金额重分摊到商品行并写操作日志。 */
+    /**
+     * 待支付订单调价，金额重分摊到商品行并写操作日志。
+     */
     @PostMapping("/{orderNo}/price-adjustment")
     @Operation(summary = "订单调价")
     @RequiresPermissions("trade:order:update")
     public R<Boolean> adjustPrice(
-            @PathVariable String orderNo, @Valid @RequestBody OrderAdjustPriceReq req) {
+        @PathVariable String orderNo, @Valid @RequestBody OrderAdjustPriceReq req) {
         adjustPrice.execute(
-                new OrderAdjustPriceCmd(orderNo, req.totalAmount(), SecurityUtils.getUserId()));
+            new OrderAdjustPriceCmd(orderNo, req.totalAmount(), SecurityUtils.getUserId()));
         return R.ok(true);
     }
 
-    /** 未发货快递单改址，写入收件快照与操作日志。 */
+    /**
+     * 未发货快递单改址，写入收件快照与操作日志。
+     */
     @PutMapping("/{orderNo}/address")
     @Operation(summary = "订单改址")
     @RequiresPermissions("trade:order:update")
     public R<Boolean> adjustAddress(
-            @PathVariable String orderNo, @Valid @RequestBody OrderAdjustAddressReq req) {
+        @PathVariable String orderNo, @Valid @RequestBody OrderAdjustAddressReq req) {
         adjustAddress.execute(
-                new OrderAdjustAddressCmd(
-                        orderNo,
-                        req.receiverName(),
-                        req.receiverMobile(),
-                        req.receiverAreaId(),
-                        req.receiverDetailAddress(),
-                        SecurityUtils.getUserId()));
+            new OrderAdjustAddressCmd(
+                orderNo,
+                req.receiverName(),
+                req.receiverMobile(),
+                req.receiverAreaId(),
+                req.receiverDetailAddress(),
+                SecurityUtils.getUserId()));
         return R.ok(true);
     }
 }

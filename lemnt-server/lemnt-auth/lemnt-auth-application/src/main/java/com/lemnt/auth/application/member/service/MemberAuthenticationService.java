@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.nio.charset.StandardCharsets;
 
-/** 会员认证编排：RPC 读取资料，复用后台密码、重试和令牌组件。 */
+/**
+ * 会员认证编排：RPC 读取资料，复用后台密码、重试和令牌组件。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberAuthenticationService {
@@ -35,12 +37,16 @@ public class MemberAuthenticationService {
         return phone;
     }
 
-    /** 会员与后台使用不同重试键，按现有登录安全策略控制失败次数。 */
+    /**
+     * 会员与后台使用不同重试键，按现有登录安全策略控制失败次数。
+     */
     public MemberToken login(String mobile, String password) {
         return login(mobile, password, null);
     }
 
-    /** IP只由网关连接信息传入，不解析客户端代理链。 */
+    /**
+     * IP只由网关连接信息传入，不解析客户端代理链。
+     */
     public MemberToken login(String mobile, String password, String loginIp) {
         String phone = mobile(mobile);
         if (password == null || password.getBytes(StandardCharsets.UTF_8).length > 72) {
@@ -52,12 +58,12 @@ public class MemberAuthenticationService {
         }
         var account = memberAccountGateway.findByMobile(phone);
         boolean matched =
-                passwordEncoderGateway.matches(
-                        password, account == null ? null : account.passwordHash());
+            passwordEncoderGateway.matches(
+                password, account == null ? null : account.passwordHash());
         if (!matched
-                || account == null
-                || account.status() != 1
-                || !phone.equals(account.mobile())) {
+            || account == null
+            || account.status() != 1
+            || !phone.equals(account.mobile())) {
             loginSecurityGateway.incrementRetryCount(retryKey);
             throw new SecurityException("手机号或密码错误");
         }
@@ -73,19 +79,25 @@ public class MemberAuthenticationService {
         return token;
     }
 
-    /** 会员是否启用由认证服务根据查询结果判断，不增加远程判断接口。 */
+    /**
+     * 会员是否启用由认证服务根据查询结果判断，不增加远程判断接口。
+     */
     private boolean active(Long memberId) {
         return memberId != null
-                && Integer.valueOf(1).equals(memberAccountGateway.findStatusByMemberId(memberId));
+            && Integer.valueOf(1).equals(memberAccountGateway.findStatusByMemberId(memberId));
     }
 
-    /** 校验公共会员令牌，并通过会员服务读取当前状态。 */
+    /**
+     * 校验公共会员令牌，并通过会员服务读取当前状态。
+     */
     public Long authenticate(String accessToken) {
         Long memberId = memberTokenGateway.memberId(accessToken);
         return active(memberId) ? memberId : null;
     }
 
-    /** 与后台一致，续期现有访问令牌对应的 Redis 会话。 */
+    /**
+     * 与后台一致，续期现有访问令牌对应的 Redis 会话。
+     */
     public MemberToken refresh(String accessToken) {
         Long memberId = memberTokenGateway.memberId(accessToken);
         if (!active(memberId)) {
@@ -94,7 +106,9 @@ public class MemberAuthenticationService {
         return memberTokenGateway.refresh(accessToken);
     }
 
-    /** 只注销当前会员会话，不操作会员数据库。 */
+    /**
+     * 只注销当前会员会话，不操作会员数据库。
+     */
     public boolean logout(String authorization) {
         if (authorization == null || !authorization.startsWith("Bearer ")) {
             throw new SecurityException("会员会话无效");
@@ -103,7 +117,9 @@ public class MemberAuthenticationService {
         return true;
     }
 
-    /** 后台停用后撤销全部会话，仅操作令牌存储以避免回调会员事务。 */
+    /**
+     * 后台停用后撤销全部会话，仅操作令牌存储以避免回调会员事务。
+     */
     public void revokeMemberSessions(Long memberId) {
         if (memberId == null || memberId <= 0) throw new IllegalArgumentException("会员编号不合法");
         memberTokenGateway.revokeMemberSessions(memberId);

@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-/** 订单事实驱动本地权益，消费凭证与业务效果同事务。 */
+/**
+ * 订单事实驱动本地权益，消费凭证与业务效果同事务。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderCompletedEventHandler {
@@ -27,19 +29,19 @@ public class OrderCompletedEventHandler {
         envelope.requireType(CommerceEventTopics.ORDER_COMPLETED);
         var event = JsonUtils.toBean(envelope.payload(), OrderCompletedEvent.class);
         if (event == null
-                || !envelope.aggregateNo().equals(event.orderNo())
-                || !envelope.businessKey().equals(event.orderNo()))
+            || !envelope.aggregateNo().equals(event.orderNo())
+            || !envelope.businessKey().equals(event.orderNo()))
             throw new IllegalArgumentException("事件订单或业务编号不一致");
         if (!inbox.begin(
-                "promotion.order_completed.v1",
-                envelope.eventNo(),
-                envelope.eventType(),
-                envelope.businessKey(),
-                envelope.payload())) return;
+            "promotion.order_completed.v1",
+            envelope.eventNo(),
+            envelope.eventType(),
+            envelope.businessKey(),
+            envelope.payload())) return;
         var plan = resources.plan(event.orderNo());
         if (!plan.memberId().equals(event.memberId())
-                || !Set.of("COMPLETED", "REFUNDED").contains(plan.status())
-                || !"PAID".equals(resources.query(event.orderNo()).status()))
+            || !Set.of("COMPLETED", "REFUNDED").contains(plan.status())
+            || !"PAID".equals(resources.query(event.orderNo()).status()))
             throw new IllegalStateException("订单完成前置状态不一致");
         // 完成事实由本库凭证保存；原赠券在支付时发放，不另造完成奖励规则。
     }

@@ -20,23 +20,23 @@ public class OperLogResConverter {
             return null;
         }
         return new OperLogRes(
-                dto.getOperId(),
-                dto.getTitle(),
-                dto.getBusinessType(),
-                dto.getMethod(),
-                dto.getRequestMethod(),
-                dto.getOperatorType(),
-                dto.getOperName(),
-                dto.getDeptName(),
-                dto.getOperUrl(),
-                dto.getOperIp(),
-                dto.getOperLocation(),
-                dto.getOperParam(),
-                dto.getJsonResult(),
-                dto.getStatus(),
-                dto.getErrorMsg(),
-                dto.getOperTime(),
-                dto.getCostTime());
+            dto.getOperId(),
+            dto.getTitle(),
+            dto.getBusinessType(),
+            dto.getMethod(),
+            dto.getRequestMethod(),
+            dto.getOperatorType(),
+            dto.getOperName(),
+            dto.getDeptName(),
+            dto.getOperUrl(),
+            dto.getOperIp(),
+            dto.getOperLocation(),
+            dto.getOperParam(),
+            dto.getJsonResult(),
+            dto.getStatus(),
+            dto.getErrorMsg(),
+            dto.getOperTime(),
+            dto.getCostTime());
     }
 
     /**

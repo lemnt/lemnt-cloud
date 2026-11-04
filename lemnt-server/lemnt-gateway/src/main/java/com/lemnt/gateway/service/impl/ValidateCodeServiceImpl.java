@@ -17,6 +17,7 @@ import org.springframework.util.FastByteArrayOutputStream;
 import cn.hutool.core.codec.Base64;
 
 import jakarta.annotation.Resource;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
@@ -38,9 +39,12 @@ public class ValidateCodeServiceImpl implements ValidateCodeService {
     @Resource(name = "captchaProducerMath")
     private Producer captchaProducerMath;
 
-    @Resource private RedisStringService redisStringService;
-    @Resource private CaptchaProperties captchaProperties;
-    @Resource private SnowflakeUtils snowflakeUtils;
+    @Resource
+    private RedisStringService redisStringService;
+    @Resource
+    private CaptchaProperties captchaProperties;
+    @Resource
+    private SnowflakeUtils snowflakeUtils;
 
     /**
      * 生成验证码

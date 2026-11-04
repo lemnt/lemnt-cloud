@@ -12,36 +12,42 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 真实订单操作与状态在调用方同一事务内落库。 */
+/**
+ * 真实订单操作与状态在调用方同一事务内落库。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderLogService {
     private final OrderLogGateway logs;
     private final TradeOrderGateway orders;
 
-    /** 必须在业务事务内调用，日志失败时一并回滚订单状态。 */
+    /**
+     * 必须在业务事务内调用，日志失败时一并回滚订单状态。
+     */
     @Transactional(propagation = Propagation.MANDATORY)
     public void record(
-            TradeOrder order,
-            String before,
-            String after,
-            int operateType,
-            TradeOperator operator,
-            String content) {
+        TradeOrder order,
+        String before,
+        String after,
+        int operateType,
+        TradeOperator operator,
+        String content) {
         logs.append(
-                new OrderLog(
-                        null,
-                        operator.userId(),
-                        operator.userType(),
-                        order.id(),
-                        status(before),
-                        status(after),
-                        operateType,
-                        content,
-                        orders.databaseNow()));
+            new OrderLog(
+                null,
+                operator.userId(),
+                operator.userType(),
+                order.id(),
+                status(before),
+                status(after),
+                operateType,
+                content,
+                orders.databaseNow()));
     }
 
-    /** 内部预占中和待支付都对应源项目待支付状态。 */
+    /**
+     * 内部预占中和待支付都对应源项目待支付状态。
+     */
     private Integer status(String value) {
         if (value == null) {
             return null;

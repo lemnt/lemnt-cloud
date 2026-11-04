@@ -5,17 +5,20 @@ import com.lemnt.member.adapter.app.user.req.ProfileUpdateReq;
 import com.lemnt.member.application.user.cmd.MemberUpdateCmd;
 import com.lemnt.member.application.user.cmd.PasswordChangeCmd;
 
-/** 会员资料转换器。 */
+/**
+ * 会员资料转换器。
+ */
 public final class MemberUserReqConverter {
 
-    private MemberUserReqConverter() {}
+    private MemberUserReqConverter() {
+    }
 
     /**
      * 资料。
      */
     public static MemberUpdateCmd profile(Long id, ProfileUpdateReq r) {
         return new MemberUpdateCmd(
-                id, r.nickname(), r.email(), r.avatar(), r.sex(), r.birthday(), null);
+            id, r.nickname(), r.email(), r.avatar(), r.sex(), r.birthday(), null);
     }
 
     /**

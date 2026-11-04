@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 签到配置详情查询执行器。 */
+/**
+ * 签到配置详情查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberSignConfigDetailQueryExe {
@@ -23,6 +25,6 @@ public class MemberSignConfigDetailQueryExe {
     public SignConfigDTO execute(SignConfigDetailQry qry) {
         MemberRules.id(qry.id());
         return MemberGrowthDTOConverter.toSignConfigDTO(
-                memberSignConfigGateway.signConfig(qry.id()));
+            memberSignConfigGateway.signConfig(qry.id()));
     }
 }

@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/** 崩溃恢复保留原幂等号，失败留在原持久化状态供下一轮或人工排查。 */
+/**
+ * 崩溃恢复保留原幂等号，失败留在原持久化状态供下一轮或人工排查。
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j

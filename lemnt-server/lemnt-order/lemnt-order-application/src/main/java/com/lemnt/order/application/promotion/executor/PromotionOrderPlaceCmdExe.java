@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 活动订单下单执行器。 */
+/**
+ * 活动订单下单执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class PromotionOrderPlaceCmdExe {

@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
  */
 @Data
 public class TreeSelect implements Serializable {
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 节点ID
@@ -40,20 +41,21 @@ public class TreeSelect implements Serializable {
      */
     private List<TreeSelect> children;
 
-    public TreeSelect() {}
+    public TreeSelect() {
+    }
 
     public TreeSelect(Dept dept) {
         this.id = dept.getDeptId();
         this.label = dept.getDeptName();
         this.disabled = Objects.equals(UserConstants.DEPT_DISABLE, dept.getStatus());
         this.children =
-                dept.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
+            dept.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
     }
 
     public TreeSelect(Menu menu) {
         this.id = menu.getMenuId();
         this.label = menu.getMenuName();
         this.children =
-                menu.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
+            menu.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
     }
 }

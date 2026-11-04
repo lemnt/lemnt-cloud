@@ -16,17 +16,17 @@ public class PostReqConverter {
 
     public static PostAddCmd toCmd(PostAddReq req) {
         return new PostAddCmd(
-                req.postName(), req.postCode(), req.postSort(), req.status(), req.remark());
+            req.postName(), req.postCode(), req.postSort(), req.status(), req.remark());
     }
 
     public static PostUpdateCmd toCmd(PostUpdateReq req) {
         return new PostUpdateCmd(
-                req.postId(),
-                req.postName(),
-                req.postCode(),
-                req.postSort(),
-                req.status(),
-                req.remark());
+            req.postId(),
+            req.postName(),
+            req.postCode(),
+            req.postSort(),
+            req.status(),
+            req.remark());
     }
 
     public static PostPageQry toQry(PostPageReq item) {
@@ -34,12 +34,12 @@ public class PostReqConverter {
             return null;
         }
         return new PostPageQry(
-                item.postCode(),
-                item.postName(),
-                item.status(),
-                item.pageNum(),
-                item.pageSize(),
-                item.beginTime(),
-                item.endTime());
+            item.postCode(),
+            item.postName(),
+            item.status(),
+            item.pageNum(),
+            item.pageSize(),
+            item.beginTime(),
+            item.endTime());
     }
 }

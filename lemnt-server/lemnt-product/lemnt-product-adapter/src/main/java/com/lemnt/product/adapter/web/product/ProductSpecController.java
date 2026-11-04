@@ -35,9 +35,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** 规格字典管理接口。 */
+/**
+ * 规格字典管理接口。
+ */
 @Tag(name = "规格项管理")
 @RestController
 @RequestMapping("/mall/specs")
@@ -50,28 +53,34 @@ public class ProductSpecController {
     private final ProductSpecPageQueryExe productSpecPageQueryExe;
     private final ProductSpecSimpleListQueryExe productSpecSimpleListQueryExe;
 
-    /** 新增字典。 */
+    /**
+     * 新增字典。
+     */
     @PostMapping
     @Operation(summary = "新增规格字典")
     @RequiresPermissions("mall:spec:add")
     public R<ProductSpecCreateRes> create(@Valid @RequestBody ProductSpecCreateReq req) {
         return R.ok(
-                ProductSpecResConverter.create(
-                        productSpecCreateCmdExe.execute(ProductSpecReqConverter.create(req))));
+            ProductSpecResConverter.create(
+                productSpecCreateCmdExe.execute(ProductSpecReqConverter.create(req))));
     }
 
-    /** 修改字典。 */
+    /**
+     * 修改字典。
+     */
     @PutMapping("/{id}")
     @Operation(summary = "修改规格字典")
     @RequiresPermissions("mall:spec:edit")
     public R<ProductSpecUpdateRes> update(
-            @PathVariable Long id, @Valid @RequestBody ProductSpecUpdateReq req) {
+        @PathVariable Long id, @Valid @RequestBody ProductSpecUpdateReq req) {
         return R.ok(
-                ProductSpecResConverter.update(
-                        productSpecUpdateCmdExe.execute(ProductSpecReqConverter.update(id, req))));
+            ProductSpecResConverter.update(
+                productSpecUpdateCmdExe.execute(ProductSpecReqConverter.update(id, req))));
     }
 
-    /** 删除无子值的规格项。 */
+    /**
+     * 删除无子值的规格项。
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "删除无子值的规格项")
     @RequiresPermissions("mall:spec:remove")
@@ -79,7 +88,9 @@ public class ProductSpecController {
         return R.ok(productSpecDeleteCmdExe.execute(id));
     }
 
-    /** 查询详情。 */
+    /**
+     * 查询详情。
+     */
     @GetMapping("/{id}")
     @Operation(summary = "规格字典详情")
     @RequiresPermissions("mall:spec:query")
@@ -88,25 +99,29 @@ public class ProductSpecController {
         return value == null ? R.fail("字典不存在") : R.ok(ProductSpecResConverter.detail(value));
     }
 
-    /** 分页查询。 */
+    /**
+     * 分页查询。
+     */
     @GetMapping
     @Operation(summary = "规格字典分页")
     @RequiresPermissions("mall:spec:list")
     public R<ProductSpecPageRes> page(@Valid @ModelAttribute ProductSpecPageReq req) {
         var value = productSpecPageQueryExe.execute(ProductSpecReqConverter.page(req));
         return R.page(
-                value.getRecords().stream().map(ProductSpecResConverter::page).toList(),
-                value.getTotal());
+            value.getRecords().stream().map(ProductSpecResConverter::page).toList(),
+            value.getTotal());
     }
 
-    /** 查询有限条选择数据。 */
+    /**
+     * 查询有限条选择数据。
+     */
     @GetMapping("/simple")
     @Operation(summary = "规格字典选择查询")
     @RequiresPermissions("mall:spec:query")
     public R<List<ProductSpecSimpleRes>> simple(@Valid @ModelAttribute ProductSpecSimpleReq req) {
         return R.ok(
-                productSpecSimpleListQueryExe.execute(ProductSpecReqConverter.simple(req)).stream()
-                        .map(ProductSpecResConverter::simple)
-                        .toList());
+            productSpecSimpleListQueryExe.execute(ProductSpecReqConverter.simple(req)).stream()
+                .map(ProductSpecResConverter::simple)
+                .toList());
     }
 }

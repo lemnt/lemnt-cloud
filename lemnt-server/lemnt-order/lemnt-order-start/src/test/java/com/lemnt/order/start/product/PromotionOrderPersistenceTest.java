@@ -54,7 +54,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 活动订单映射、活动库存预占/恢复、拼团建团与砍价绑定的生产表事务验证。 */
+/**
+ * 活动订单映射、活动库存预占/恢复、拼团建团与砍价绑定的生产表事务验证。
+ */
 class PromotionOrderPersistenceTest {
     CatalogPersistenceTest f;
     PromotionOrderService orders;
@@ -82,20 +84,20 @@ class PromotionOrderPersistenceTest {
         var channel = Mockito.mock(PaymentRefundClient.class);
         Mockito.when(channel.channel()).thenReturn("ALIPAY");
         Mockito.when(channel.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
-                .thenAnswer(
-                        call -> {
-                            PaymentRefund r = call.getArgument(0);
-                            return new PaymentRefundResult(
-                                    r.refundNo(),
-                                    r.paymentNo(),
-                                    r.channel(),
-                                    r.amount(),
-                                    "SUCCESS",
-                                    "CHANNEL" + r.refundNo());
-                        });
+            .thenAnswer(
+                call -> {
+                    PaymentRefund r = call.getArgument(0);
+                    return new PaymentRefundResult(
+                        r.refundNo(),
+                        r.paymentNo(),
+                        r.channel(),
+                        r.amount(),
+                        "SUCCESS",
+                        "CHANNEL" + r.refundNo());
+                });
         f.components.register(
-                PaymentRefundChannelGateway.class,
-                new PaymentRefundChannelGatewayImpl(List.of(channel)));
+            PaymentRefundChannelGateway.class,
+            new PaymentRefundChannelGatewayImpl(List.of(channel)));
         orders = f.components.get(PromotionOrderService.class);
         mappings = f.components.get(PromotionOrderGateway.class);
         seckillConfigs = f.components.get(SeckillConfigManagementService.class);
@@ -108,60 +110,60 @@ class PromotionOrderPersistenceTest {
         f.productSpuGateway.shelf(spu.id(), true);
         skuId = spu.skus().get(0).id();
         seckillConfigId =
-                seckillConfigs.create(
-                        new SeckillConfigCreateCmd("全天", "00:00:00", "23:59:59", List.of(), 0));
+            seckillConfigs.create(
+                new SeckillConfigCreateCmd("全天", "00:00:00", "23:59:59", List.of(), 0));
         var now = LocalDateTime.now();
         seckillActivityId =
-                seckillActivities.create(
-                        new SeckillActivityCreateCmd(
-                                spu.id(),
-                                "秒杀",
-                                null,
-                                now.minusDays(1),
-                                now.plusDays(1),
-                                0,
-                                List.of(seckillConfigId),
-                                10,
-                                5,
-                                List.of(new SeckillProductCmd(skuId, new BigDecimal("5.00"), 5))));
+            seckillActivities.create(
+                new SeckillActivityCreateCmd(
+                    spu.id(),
+                    "秒杀",
+                    null,
+                    now.minusDays(1),
+                    now.plusDays(1),
+                    0,
+                    List.of(seckillConfigId),
+                    10,
+                    5,
+                    List.of(new SeckillProductCmd(skuId, new BigDecimal("5.00"), 5))));
         combinationActivityId =
-                combinationActivities.create(
-                        new CombinationActivityCreateCmd(
-                                "拼团",
-                                spu.id(),
-                                10,
-                                5,
-                                now.minusDays(1),
-                                now.plusDays(1),
-                                2,
-                                false,
-                                1,
-                                List.of(new CombinationProductCmd(skuId, new BigDecimal("4.00")))));
+            combinationActivities.create(
+                new CombinationActivityCreateCmd(
+                    "拼团",
+                    spu.id(),
+                    10,
+                    5,
+                    now.minusDays(1),
+                    now.plusDays(1),
+                    2,
+                    false,
+                    1,
+                    List.of(new CombinationProductCmd(skuId, new BigDecimal("4.00")))));
         bargainActivityId =
-                bargainActivities.create(
-                        new BargainActivityCreateCmd(
-                                "砍价",
-                                now.minusDays(1),
-                                now.plusDays(1),
-                                spu.id(),
-                                skuId,
-                                new BigDecimal("10.00"),
-                                new BigDecimal("8.00"),
-                                5,
-                                1,
-                                1,
-                                1,
-                                new BigDecimal("2.00"),
-                                new BigDecimal("2.00")));
+            bargainActivities.create(
+                new BargainActivityCreateCmd(
+                    "砍价",
+                    now.minusDays(1),
+                    now.plusDays(1),
+                    spu.id(),
+                    skuId,
+                    new BigDecimal("10.00"),
+                    new BigDecimal("8.00"),
+                    5,
+                    1,
+                    1,
+                    1,
+                    new BigDecimal("2.00"),
+                    new BigDecimal("2.00")));
         pointActivityId =
-                pointActivities.create(
-                        new PointActivityCreateCmd(
-                                spu.id(),
-                                null,
-                                1,
-                                List.of(
-                                        new PointProductCmd(
-                                                skuId, 5, 100, new BigDecimal("5.00"), 5))));
+            pointActivities.create(
+                new PointActivityCreateCmd(
+                    spu.id(),
+                    null,
+                    1,
+                    List.of(
+                        new PointProductCmd(
+                            skuId, 5, 100, new BigDecimal("5.00"), 5))));
     }
 
     @AfterEach
@@ -169,7 +171,8 @@ class PromotionOrderPersistenceTest {
         f.closeSchemaConnection();
     }
 
-    record PromotionRefundResult(long refundPoints) {}
+    record PromotionRefundResult(long refundPoints) {
+    }
 
     void reserved(String no, SettlementOrder ignored) {
         f.components.get(ActivityOrderLifecycleService.class).reserved(no);
@@ -180,15 +183,15 @@ class PromotionOrderPersistenceTest {
         if ("PENDING_PAYMENT".equals(order.status()) && order.totalAmount().signum() > 0) {
             var p = f.components.get(TradePaymentCreateCmdExe.class).execute(no, "ALIPAY");
             f.components
-                    .get(PaymentNotifyCmdExe.class)
-                    .execute(
-                            new VerifiedPaymentNotification(
-                                    p.paymentNo(),
-                                    no,
-                                    "ALIPAY",
-                                    "CH" + no,
-                                    order.totalAmount(),
-                                    "N" + no));
+                .get(PaymentNotifyCmdExe.class)
+                .execute(
+                    new VerifiedPaymentNotification(
+                        p.paymentNo(),
+                        no,
+                        "ALIPAY",
+                        "CH" + no,
+                        order.totalAmount(),
+                        "N" + no));
         }
         f.events.drainOrThrow();
     }
@@ -199,25 +202,25 @@ class PromotionOrderPersistenceTest {
     }
 
     PromotionRefundResult refunded(
-            String no, String request, SettlementOrder ignored, List<RefundStockBo> lines) {
+        String no, String request, SettlementOrder ignored, List<RefundStockBo> lines) {
         long points = 0;
         for (var input : lines) {
             var order = f.components.get(OrderPersistenceService.class).findByOrderNo(no);
             var item =
-                    order.items().stream()
-                            .filter(v -> v.productId().equals(input.productId()))
-                            .findFirst()
-                            .orElseThrow();
+                order.items().stream()
+                    .filter(v -> v.productId().equals(input.productId()))
+                    .findFirst()
+                    .orElseThrow();
             var service = f.components.get(AfterSaleService.class);
             var af =
-                    service.create(
-                            new AfterSaleCreateCmd(
-                                    no,
-                                    request + ":" + input.productId(),
-                                    item.orderItemId(),
-                                    input.quantity(),
-                                    "REFUND_ONLY",
-                                    "活动退款"));
+                service.create(
+                    new AfterSaleCreateCmd(
+                        no,
+                        request + ":" + input.productId(),
+                        item.orderItemId(),
+                        input.quantity(),
+                        "REFUND_ONLY",
+                        "活动退款"));
             service.agree(af.refundNo());
             f.components.get(PaymentRefundCreateCmdExe.class).execute(af.refundNo());
             f.events.drainOrThrow();
@@ -227,9 +230,9 @@ class PromotionOrderPersistenceTest {
     }
 
     PromotionOrderCmd cmd(
-            String type, Long activityId, Long recordId, int quantity, String requestNo) {
+        String type, Long activityId, Long recordId, int quantity, String requestNo) {
         return new PromotionOrderCmd(
-                1L, type, activityId, recordId, null, skuId, quantity, null, requestNo);
+            1L, type, activityId, recordId, null, skuId, quantity, null, requestNo);
     }
 
     @Test
@@ -255,8 +258,8 @@ class PromotionOrderPersistenceTest {
         assertEquals(first.orderNo(), second.orderNo());
         assertNotNull(mappings.findByRequest(1L, "REQ_IDEM").id());
         assertThrows(
-                ServiceException.class,
-                () -> orders.place(cmd("SECKILL", seckillActivityId, null, 2, "REQ_IDEM")));
+            ServiceException.class,
+            () -> orders.place(cmd("SECKILL", seckillActivityId, null, 2, "REQ_IDEM")));
     }
 
     @Test
@@ -269,29 +272,29 @@ class PromotionOrderPersistenceTest {
         assertEquals("PAID", mapping.status());
         assertNotNull(mapping.activityRecordId());
         assertEquals(
-                1,
-                f.components
-                        .get(CombinationRecordService.class)
-                        .byHead(mapping.activityRecordId())
-                        .size());
+            1,
+            f.components
+                .get(CombinationRecordService.class)
+                .byHead(mapping.activityRecordId())
+                .size());
     }
 
     @Test
     void bargainOrderBindsRecordOnReservedAndClosedRestoresStock() {
         var record =
-                bargainRecords.save(
-                        new BargainRecord(
-                                null,
-                                1L,
-                                bargainActivityId,
-                                spu.id(),
-                                skuId,
-                                new BigDecimal("10.00"),
-                                new BigDecimal("8.00"),
-                                new BigDecimal("8.00"),
-                                2,
-                                LocalDateTime.now(),
-                                null));
+            bargainRecords.save(
+                new BargainRecord(
+                    null,
+                    1L,
+                    bargainActivityId,
+                    spu.id(),
+                    skuId,
+                    new BigDecimal("10.00"),
+                    new BigDecimal("8.00"),
+                    new BigDecimal("8.00"),
+                    2,
+                    LocalDateTime.now(),
+                    null));
         var order = orders.place(cmd("BARGAIN", null, record.id(), 1, "REQ_B1"));
         assertEquals(new BigDecimal("8.00"), order.totalAmount());
         reserved(order.orderNo(), order);
@@ -316,25 +319,25 @@ class PromotionOrderPersistenceTest {
         refunded(order.orderNo(), "RF2", order, List.of(new RefundStockBo(skuId, 1)));
         assertEquals(5, pointActivities.detail(pointActivityId).stock());
         var refunded =
-                new SettlementOrder(
-                        order.id(),
-                        order.orderNo(),
-                        order.memberId(),
-                        order.totalAmount(),
-                        "REFUNDED",
-                        order.items(),
-                        order.createTime(),
-                        order.usePoint(),
-                        order.givePoint(),
-                        order.delivery());
+            new SettlementOrder(
+                order.id(),
+                order.orderNo(),
+                order.memberId(),
+                order.totalAmount(),
+                "REFUNDED",
+                order.items(),
+                order.createTime(),
+                order.usePoint(),
+                order.givePoint(),
+                order.delivery());
         assertThrows(
-                IllegalStateException.class,
-                () ->
-                        refunded(
-                                order.orderNo(),
-                                "RF3",
-                                refunded,
-                                List.of(new RefundStockBo(skuId, 2))));
+            IllegalStateException.class,
+            () ->
+                refunded(
+                    order.orderNo(),
+                    "RF3",
+                    refunded,
+                    List.of(new RefundStockBo(skuId, 2))));
         assertEquals(5, pointActivities.detail(pointActivityId).stock());
         assertEquals("REFUNDED", mappings.findByOrderNo(order.orderNo()).status());
     }
@@ -343,12 +346,12 @@ class PromotionOrderPersistenceTest {
     void zeroCashPointOrderUsesPointsAndInsufficientPointsIsRejected() {
         pointActivities.close(pointActivityId);
         var zero =
-                pointActivities.create(
-                        new PointActivityCreateCmd(
-                                spu.id(),
-                                null,
-                                1,
-                                List.of(new PointProductCmd(skuId, 5, 100, BigDecimal.ZERO, 5))));
+            pointActivities.create(
+                new PointActivityCreateCmd(
+                    spu.id(),
+                    null,
+                    1,
+                    List.of(new PointProductCmd(skuId, 5, 100, BigDecimal.ZERO, 5))));
         var order = orders.place(cmd("POINT", zero, null, 1, "REQ_ZERO"));
         assertEquals(0, order.totalAmount().signum());
         assertEquals(100L, order.usePoint());
@@ -357,62 +360,62 @@ class PromotionOrderPersistenceTest {
         assertEquals("PAID", mappings.findByOrderNo(order.orderNo()).status());
         assertEquals(4, pointActivities.detail(zero).stock());
         var refunded =
-                new SettlementOrder(
-                        order.id(),
-                        order.orderNo(),
-                        order.memberId(),
-                        order.totalAmount(),
-                        "REFUNDED",
-                        order.items(),
-                        order.createTime(),
-                        order.usePoint(),
-                        order.givePoint(),
-                        order.delivery());
+            new SettlementOrder(
+                order.id(),
+                order.orderNo(),
+                order.memberId(),
+                order.totalAmount(),
+                "REFUNDED",
+                order.items(),
+                order.createTime(),
+                order.usePoint(),
+                order.givePoint(),
+                order.delivery());
         refunded(order.orderNo(), "RF-ZERO", refunded, List.of(new RefundStockBo(skuId, 1)));
         assertEquals(5, pointActivities.detail(zero).stock());
         assertEquals("REFUNDED", mappings.findByOrderNo(order.orderNo()).status());
         var alt = f.create("POINT_ALT", f.draft("BLUE", 10));
         f.productSpuGateway.shelf(alt.id(), true);
         var lowActivity =
-                pointActivities.create(
-                        new PointActivityCreateCmd(
-                                alt.id(),
-                                null,
-                                1,
-                                List.of(
-                                        new PointProductCmd(
-                                                alt.skus().get(0).id(),
-                                                5,
-                                                100,
-                                                new BigDecimal("5.00"),
-                                                5))));
+            pointActivities.create(
+                new PointActivityCreateCmd(
+                    alt.id(),
+                    null,
+                    1,
+                    List.of(
+                        new PointProductCmd(
+                            alt.skus().get(0).id(),
+                            5,
+                            100,
+                            new BigDecimal("5.00"),
+                            5))));
         memberPoints.set(50L);
         assertThrows(
-                ServiceException.class,
-                () ->
-                        orders.place(
-                                new PromotionOrderCmd(
-                                        1L,
-                                        "POINT",
-                                        lowActivity,
-                                        null,
-                                        null,
-                                        alt.skus().get(0).id(),
-                                        2,
-                                        null,
-                                        "REQ_LOW")));
+            ServiceException.class,
+            () ->
+                orders.place(
+                    new PromotionOrderCmd(
+                        1L,
+                        "POINT",
+                        lowActivity,
+                        null,
+                        null,
+                        alt.skus().get(0).id(),
+                        2,
+                        null,
+                        "REQ_LOW")));
     }
 
     @Test
     void zeroCashPartialRefundReturnsPointsByQuantity() {
         pointActivities.close(pointActivityId);
         var zero =
-                pointActivities.create(
-                        new PointActivityCreateCmd(
-                                spu.id(),
-                                null,
-                                1,
-                                List.of(new PointProductCmd(skuId, 5, 100, BigDecimal.ZERO, 5))));
+            pointActivities.create(
+                new PointActivityCreateCmd(
+                    spu.id(),
+                    null,
+                    1,
+                    List.of(new PointProductCmd(skuId, 5, 100, BigDecimal.ZERO, 5))));
         var order = orders.place(cmd("POINT", zero, null, 2, "REQ_ZPART"));
         assertEquals(200L, order.usePoint());
         reserved(order.orderNo(), order);
@@ -423,19 +426,19 @@ class PromotionOrderPersistenceTest {
         assertEquals(4, pointActivities.detail(zero).stock());
         assertEquals("PAID", mappings.findByOrderNo(order.orderNo()).status());
         var refunded =
-                new SettlementOrder(
-                        order.id(),
-                        order.orderNo(),
-                        order.memberId(),
-                        order.totalAmount(),
-                        "REFUNDED",
-                        order.items(),
-                        order.createTime(),
-                        order.usePoint(),
-                        order.givePoint(),
-                        order.delivery());
+            new SettlementOrder(
+                order.id(),
+                order.orderNo(),
+                order.memberId(),
+                order.totalAmount(),
+                "REFUNDED",
+                order.items(),
+                order.createTime(),
+                order.usePoint(),
+                order.givePoint(),
+                order.delivery());
         var second =
-                refunded(order.orderNo(), "RF-P2", refunded, List.of(new RefundStockBo(skuId, 1)));
+            refunded(order.orderNo(), "RF-P2", refunded, List.of(new RefundStockBo(skuId, 1)));
         assertEquals(100L, second.refundPoints());
         assertEquals(5, pointActivities.detail(zero).stock());
         assertEquals("REFUNDED", mappings.findByOrderNo(order.orderNo()).status());
@@ -449,26 +452,26 @@ class PromotionOrderPersistenceTest {
         var first = multi.skus().get(0).id();
         var second = multi.skus().get(1).id();
         var activity =
-                pointActivities.create(
-                        new PointActivityCreateCmd(
-                                multi.id(),
-                                null,
-                                1,
-                                List.of(
-                                        new PointProductCmd(first, 5, 100, BigDecimal.ZERO, 5),
-                                        new PointProductCmd(second, 5, 50, BigDecimal.ZERO, 5))));
+            pointActivities.create(
+                new PointActivityCreateCmd(
+                    multi.id(),
+                    null,
+                    1,
+                    List.of(
+                        new PointProductCmd(first, 5, 100, BigDecimal.ZERO, 5),
+                        new PointProductCmd(second, 5, 50, BigDecimal.ZERO, 5))));
         var cmd =
-                PromotionOrderCmd.batch(
-                        1L,
-                        "POINT",
-                        activity,
-                        null,
-                        null,
-                        List.of(
-                                new PromotionOrderLineCmd(first, 1),
-                                new PromotionOrderLineCmd(second, 2)),
-                        null,
-                        "REQ_MULTI");
+            PromotionOrderCmd.batch(
+                1L,
+                "POINT",
+                activity,
+                null,
+                null,
+                List.of(
+                    new PromotionOrderLineCmd(first, 1),
+                    new PromotionOrderLineCmd(second, 2)),
+                null,
+                "REQ_MULTI");
         var order = orders.place(cmd);
         assertEquals(200L, order.usePoint());
         assertEquals(0, order.totalAmount().signum());
@@ -476,42 +479,42 @@ class PromotionOrderPersistenceTest {
         paid(order.orderNo(), order);
         assertEquals(7, pointActivities.detail(activity).stock());
         assertEquals(
-                4,
-                pointActivities.detail(activity).products().stream()
-                        .filter(item -> item.skuId().equals(first))
-                        .findFirst()
-                        .orElseThrow()
-                        .stock());
+            4,
+            pointActivities.detail(activity).products().stream()
+                .filter(item -> item.skuId().equals(first))
+                .findFirst()
+                .orElseThrow()
+                .stock());
         assertEquals(
-                3,
-                pointActivities.detail(activity).products().stream()
-                        .filter(item -> item.skuId().equals(second))
-                        .findFirst()
-                        .orElseThrow()
-                        .stock());
+            3,
+            pointActivities.detail(activity).products().stream()
+                .filter(item -> item.skuId().equals(second))
+                .findFirst()
+                .orElseThrow()
+                .stock());
         PromotionRefundResult result =
-                refunded(order.orderNo(), "RF-M1", order, List.of(new RefundStockBo(first, 1)));
+            refunded(order.orderNo(), "RF-M1", order, List.of(new RefundStockBo(first, 1)));
         assertEquals(100L, result.refundPoints());
         assertEquals(8, pointActivities.detail(activity).stock());
         assertEquals("PAID", mappings.findByOrderNo(order.orderNo()).status());
         var refundedOrder =
-                new SettlementOrder(
-                        order.id(),
-                        order.orderNo(),
-                        order.memberId(),
-                        order.totalAmount(),
-                        "REFUNDED",
-                        order.items(),
-                        order.createTime(),
-                        order.usePoint(),
-                        order.givePoint(),
-                        order.delivery());
+            new SettlementOrder(
+                order.id(),
+                order.orderNo(),
+                order.memberId(),
+                order.totalAmount(),
+                "REFUNDED",
+                order.items(),
+                order.createTime(),
+                order.usePoint(),
+                order.givePoint(),
+                order.delivery());
         result =
-                refunded(
-                        order.orderNo(),
-                        "RF-M2",
-                        refundedOrder,
-                        List.of(new RefundStockBo(second, 2)));
+            refunded(
+                order.orderNo(),
+                "RF-M2",
+                refundedOrder,
+                List.of(new RefundStockBo(second, 2)));
         assertEquals(100L, result.refundPoints());
         assertEquals(10, pointActivities.detail(activity).stock());
         assertEquals("REFUNDED", mappings.findByOrderNo(order.orderNo()).status());
@@ -520,9 +523,32 @@ class PromotionOrderPersistenceTest {
     @Test
     void mappingRequestNumberIsUnique() {
         var mapping =
-                new PromotionOrder(
+            new PromotionOrder(
+                null,
+                "TR-X",
+                "REQ-U",
+                1L,
+                "SECKILL",
+                seckillActivityId,
+                null,
+                null,
+                skuId,
+                1,
+                BigDecimal.ONE,
+                0L,
+                0,
+                "CREATED",
+                null,
+                null,
+                null);
+        mappings.save(mapping);
+        assertThrows(
+            DataIntegrityViolationException.class,
+            () ->
+                mappings.save(
+                    new PromotionOrder(
                         null,
-                        "TR-X",
+                        "TR-Y",
                         "REQ-U",
                         1L,
                         "SECKILL",
@@ -537,29 +563,6 @@ class PromotionOrderPersistenceTest {
                         "CREATED",
                         null,
                         null,
-                        null);
-        mappings.save(mapping);
-        assertThrows(
-                DataIntegrityViolationException.class,
-                () ->
-                        mappings.save(
-                                new PromotionOrder(
-                                        null,
-                                        "TR-Y",
-                                        "REQ-U",
-                                        1L,
-                                        "SECKILL",
-                                        seckillActivityId,
-                                        null,
-                                        null,
-                                        skuId,
-                                        1,
-                                        BigDecimal.ONE,
-                                        0L,
-                                        0,
-                                        "CREATED",
-                                        null,
-                                        null,
-                                        null)));
+                        null)));
     }
 }

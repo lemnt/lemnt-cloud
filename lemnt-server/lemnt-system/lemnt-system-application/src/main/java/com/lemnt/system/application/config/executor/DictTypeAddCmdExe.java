@@ -20,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 public class DictTypeAddCmdExe {
     private final DictTypeGateway dictTypeGateway;
 
-    /** 新增前校验类型，重复时返回明确的业务错误。 */
+    /**
+     * 新增前校验类型，重复时返回明确的业务错误。
+     */
     public Boolean execute(DictTypeAddCmd cmd) {
         if (dictTypeGateway.checkDictTypeUnique(cmd.dictType()) != null) {
             throw new ServiceException("新增字典'" + cmd.dictName() + "'失败，字典类型已存在");

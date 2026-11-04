@@ -37,7 +37,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 后台商品评价管理。 */
+/**
+ * 后台商品评价管理。
+ */
 @Tag(name = "商品评价管理")
 @RestController
 @RequestMapping("/mall/comments")
@@ -49,36 +51,42 @@ public class CommentController {
     private final CommentReplyCmdExe commentReplyCmdExe;
     private final CommentVisibleCmdExe commentVisibleCmdExe;
 
-    /** 后台自评没有会员购买关系，不进入交易评价编排。 */
+    /**
+     * 后台自评没有会员购买关系，不进入交易评价编排。
+     */
     @PostMapping
     @Operation(summary = "添加后台自评")
     @RequiresPermissions("mall:comment:create")
     public R<CommentSelfCreateRes> create(@Valid @RequestBody CommentSelfCreateReq req) {
         var id =
-                commentSelfCreateCmdExe.execute(
-                        new CommentSelfCreateCmd(
-                                req.userNickname(),
-                                req.userAvatar(),
-                                req.skuId(),
-                                req.descriptionScores(),
-                                req.benefitScores(),
-                                req.content(),
-                                req.picUrls()));
+            commentSelfCreateCmdExe.execute(
+                new CommentSelfCreateCmd(
+                    req.userNickname(),
+                    req.userAvatar(),
+                    req.skuId(),
+                    req.descriptionScores(),
+                    req.benefitScores(),
+                    req.content(),
+                    req.picUrls()));
         return R.ok(new CommentSelfCreateRes(id));
     }
 
-    /** 分页查询含隐藏内容的后台评价。 */
+    /**
+     * 分页查询含隐藏内容的后台评价。
+     */
     @GetMapping
     @Operation(summary = "商品评价分页")
     @RequiresPermissions("mall:comment:list")
     public R<CommentPageRes> page(@Valid @ModelAttribute CommentPageReq req) {
         var value = commentPageQueryExe.execute(CommentReqConverter.page(req));
         return R.page(
-                value.getRecords().stream().map(CommentResConverter::page).toList(),
-                value.getTotal());
+            value.getRecords().stream().map(CommentResConverter::page).toList(),
+            value.getTotal());
     }
 
-    /** 后台评价详情。 */
+    /**
+     * 后台评价详情。
+     */
     @GetMapping("/{id}")
     @Operation(summary = "商品评价详情")
     @RequiresPermissions("mall:comment:query")
@@ -90,26 +98,30 @@ public class CommentController {
         return R.ok(CommentResConverter.detail(value));
     }
 
-    /** 商家回复只使用当前管理员身份。 */
+    /**
+     * 商家回复只使用当前管理员身份。
+     */
     @PutMapping("/{id}/reply")
     @Operation(summary = "商家回复评价")
     @RequiresPermissions("mall:comment:reply")
     public R<CommentReplyRes> reply(
-            @PathVariable Long id, @Valid @RequestBody CommentReplyReq req) {
+        @PathVariable Long id, @Valid @RequestBody CommentReplyReq req) {
         return R.ok(
-                CommentResConverter.reply(
-                        commentReplyCmdExe.execute(
-                                CommentReqConverter.reply(id, SecurityUtils.getUserId(), req))));
+            CommentResConverter.reply(
+                commentReplyCmdExe.execute(
+                    CommentReqConverter.reply(id, SecurityUtils.getUserId(), req))));
     }
 
-    /** 设置显示或隐藏。 */
+    /**
+     * 设置显示或隐藏。
+     */
     @PutMapping("/{id}/visible")
     @Operation(summary = "显示或隐藏商品评价")
     @RequiresPermissions("mall:comment:edit")
     public R<CommentVisibleRes> visible(
-            @PathVariable Long id, @Valid @RequestBody CommentVisibleReq req) {
+        @PathVariable Long id, @Valid @RequestBody CommentVisibleReq req) {
         return R.ok(
-                new CommentVisibleRes(
-                        commentVisibleCmdExe.execute(CommentReqConverter.visible(id, req))));
+            new CommentVisibleRes(
+                commentVisibleCmdExe.execute(CommentReqConverter.visible(id, req))));
     }
 }

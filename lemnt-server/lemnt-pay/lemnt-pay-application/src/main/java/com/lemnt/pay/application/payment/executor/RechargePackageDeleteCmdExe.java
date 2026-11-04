@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 删除充值套餐，已被充值单引用时拒绝。 */
+/**
+ * 删除充值套餐，已被充值单引用时拒绝。
+ */
 @Component
 @RequiredArgsConstructor
 public class RechargePackageDeleteCmdExe {

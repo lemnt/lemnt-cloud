@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 售后先提交原计划，再在订单事务外请求现金退款；完成由资金事件核对驱动。 */
+/**
+ * 售后先提交原计划，再在订单事务外请求现金退款；完成由资金事件核对驱动。
+ */
 @Component
 @RequiredArgsConstructor
 public class PaymentRefundCreateCmdExe {
@@ -34,11 +36,11 @@ public class PaymentRefundCreateCmdExe {
         var af = coordinator.prepare(no, operator);
         if (af.amount().signum() == 0)
             return new PaymentRefundDTO(
-                    null, no, af.paymentNo(), af.orderNo(), "NONE", af.amount(), "SUCCESS", null);
+                null, no, af.paymentNo(), af.orderNo(), "NONE", af.amount(), "SUCCESS", null);
         var value =
-                "REFUNDED".equals(af.status())
-                        ? refunds.findByAfterSaleNo(no)
-                        : payments.refund(af);
+            "REFUNDED".equals(af.status())
+                ? refunds.findByAfterSaleNo(no)
+                : payments.refund(af);
         if (value == null) throw new IllegalStateException("原成功退款记录缺失，请先对账");
         if ("REFUNDED".equals(af.status()) && !"SUCCESS".equals(value.status()))
             throw new IllegalStateException("原成功退款与售后状态不一致，请先对账");
@@ -46,13 +48,13 @@ public class PaymentRefundCreateCmdExe {
         if ("SUCCESS".equals(value.status())) coordinator.cashSucceeded(value);
         if ("FAILED".equals(value.status())) coordinator.cashFailed(value, operator);
         return new PaymentRefundDTO(
-                value.refundNo(),
-                value.afterSaleNo(),
-                value.paymentNo(),
-                value.orderNo(),
-                value.channel(),
-                value.amount(),
-                value.status(),
-                value.channelRefundNo());
+            value.refundNo(),
+            value.afterSaleNo(),
+            value.paymentNo(),
+            value.orderNo(),
+            value.channel(),
+            value.amount(),
+            value.status(),
+            value.channelRefundNo());
     }
 }

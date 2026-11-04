@@ -21,29 +21,29 @@ import com.lemnt.system.application.auth.qry.UserPageQry;
 public class UserReqConverter {
     public static UserAddCmd toCmd(UserAddReq req) {
         return new UserAddCmd(
-                req.deptId(),
-                req.userName(),
-                req.nickName(),
-                req.email(),
-                req.phonenumber(),
-                req.sex(),
-                req.password(),
-                req.status(),
-                req.roleIds(),
-                req.postIds());
+            req.deptId(),
+            req.userName(),
+            req.nickName(),
+            req.email(),
+            req.phonenumber(),
+            req.sex(),
+            req.password(),
+            req.status(),
+            req.roleIds(),
+            req.postIds());
     }
 
     public static UserUpdateCmd toCmd(UserUpdateReq req) {
         return new UserUpdateCmd(
-                req.userId(),
-                req.deptId(),
-                req.nickName(),
-                req.email(),
-                req.phonenumber(),
-                req.sex(),
-                req.status(),
-                req.roleIds(),
-                req.postIds());
+            req.userId(),
+            req.deptId(),
+            req.nickName(),
+            req.email(),
+            req.phonenumber(),
+            req.sex(),
+            req.status(),
+            req.roleIds(),
+            req.postIds());
     }
 
     public static UserPwdResetCmd toCmd(UserPwdResetReq req) {
@@ -56,7 +56,7 @@ public class UserReqConverter {
 
     public static UserProfileUpdateCmd toCmd(UserProfileUpdateReq req) {
         return new UserProfileUpdateCmd(
-                req.userId(), req.nickName(), req.email(), req.phonenumber(), req.sex());
+            req.userId(), req.nickName(), req.email(), req.phonenumber(), req.sex());
     }
 
     public static UserPwdUpdateCmd toCmd(UserPwdUpdateReq req) {
@@ -72,15 +72,15 @@ public class UserReqConverter {
             return null;
         }
         return new UserPageQry(
-                item.userName(),
-                item.phonenumber(),
-                item.status(),
-                item.deptId(),
-                item.roleId(),
-                item.pageNum(),
-                item.pageSize(),
-                item.beginTime(),
-                item.endTime());
+            item.userName(),
+            item.phonenumber(),
+            item.status(),
+            item.deptId(),
+            item.roleId(),
+            item.pageNum(),
+            item.pageSize(),
+            item.beginTime(),
+            item.endTime());
     }
 
     public static UserPageQry toQry(SystemUserListReq item) {
@@ -88,15 +88,15 @@ public class UserReqConverter {
             return null;
         }
         return new UserPageQry(
-                item.userName(),
-                item.phonenumber(),
-                item.status(),
-                item.deptId(),
-                item.roleId(),
-                item.pageNum(),
-                item.pageSize(),
-                item.beginTime(),
-                item.endTime());
+            item.userName(),
+            item.phonenumber(),
+            item.status(),
+            item.deptId(),
+            item.roleId(),
+            item.pageNum(),
+            item.pageSize(),
+            item.beginTime(),
+            item.endTime());
     }
 
     public static UserPageQry toQry(SystemRoleUserAllocatedListReq item) {
@@ -104,15 +104,15 @@ public class UserReqConverter {
             return null;
         }
         return new UserPageQry(
-                item.userName(),
-                item.phonenumber(),
-                item.status(),
-                item.deptId(),
-                item.roleId(),
-                item.pageNum(),
-                item.pageSize(),
-                item.beginTime(),
-                item.endTime());
+            item.userName(),
+            item.phonenumber(),
+            item.status(),
+            item.deptId(),
+            item.roleId(),
+            item.pageNum(),
+            item.pageSize(),
+            item.beginTime(),
+            item.endTime());
     }
 
     public static UserPageQry toQry(SystemRoleUserUnallocatedListReq item) {
@@ -120,14 +120,14 @@ public class UserReqConverter {
             return null;
         }
         return new UserPageQry(
-                item.userName(),
-                item.phonenumber(),
-                item.status(),
-                item.deptId(),
-                item.roleId(),
-                item.pageNum(),
-                item.pageSize(),
-                item.beginTime(),
-                item.endTime());
+            item.userName(),
+            item.phonenumber(),
+            item.status(),
+            item.deptId(),
+            item.roleId(),
+            item.pageNum(),
+            item.pageSize(),
+            item.beginTime(),
+            item.endTime());
     }
 }

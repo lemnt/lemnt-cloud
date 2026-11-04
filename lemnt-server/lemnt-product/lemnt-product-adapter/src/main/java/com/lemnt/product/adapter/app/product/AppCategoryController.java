@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 小程序商品分类接口。 */
+/**
+ * 小程序商品分类接口。
+ */
 @Tag(name = "小程序商品分类")
 @RestController
 @RequestMapping("/mall/app")
@@ -27,8 +29,8 @@ public class AppCategoryController {
     @Operation(summary = "公开启用分类")
     public R<List<StoreCategoryRes>> categories() {
         return R.ok(
-                storeCategoryListQueryExe.execute().stream()
-                        .map(StoreResConverter::category)
-                        .toList());
+            storeCategoryListQueryExe.execute().stream()
+                .map(StoreResConverter::category)
+                .toList());
     }
 }

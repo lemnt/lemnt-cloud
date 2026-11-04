@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 拼团概要执行器。 */
+/**
+ * 拼团概要执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class CombinationSummaryQueryExe {

@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** App 秒杀时段列表执行器。 */
+/**
+ * App 秒杀时段列表执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class SeckillAppConfigListQueryExe {

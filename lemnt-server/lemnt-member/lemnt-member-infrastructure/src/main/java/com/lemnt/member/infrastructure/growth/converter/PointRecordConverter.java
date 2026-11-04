@@ -3,27 +3,30 @@ package com.lemnt.member.infrastructure.growth.converter;
 import com.lemnt.member.domain.growth.model.AssetRecord;
 import com.lemnt.member.infrastructure.growth.dataobject.PointRecordDO;
 
-/** 积分专属列与既有应用兼容投影转换。 */
+/**
+ * 积分专属列与既有应用兼容投影转换。
+ */
 public final class PointRecordConverter {
-    private PointRecordConverter() {}
+    private PointRecordConverter() {
+    }
 
     public static AssetRecord toModel(PointRecordDO v) {
         return v == null
-                ? null
-                : new AssetRecord(
-                        v.getId(),
-                        v.getUserId(),
-                        "POINT",
-                        v.getPoint(),
-                        v.getTotalPoint(),
-                        v.getBizCode(),
-                        v.getBizId(),
-                        v.getReason(),
-                        v.getCreateTime(),
-                        v.getNickname(),
-                        v.getBizType(),
-                        v.getTitle(),
-                        v.getDescription());
+            ? null
+            : new AssetRecord(
+            v.getId(),
+            v.getUserId(),
+            "POINT",
+            v.getPoint(),
+            v.getTotalPoint(),
+            v.getBizCode(),
+            v.getBizId(),
+            v.getReason(),
+            v.getCreateTime(),
+            v.getNickname(),
+            v.getBizType(),
+            v.getTitle(),
+            v.getDescription());
     }
 
     public static PointRecordDO toDO(AssetRecord v) {

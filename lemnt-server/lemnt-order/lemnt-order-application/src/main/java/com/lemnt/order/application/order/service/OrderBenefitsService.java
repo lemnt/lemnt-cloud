@@ -20,7 +20,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-/** 下单同步冻结；支付、关单和售后权益只由已提交的订单事件驱动。 */
+/**
+ * 下单同步冻结；支付、关单和售后权益只由已提交的订单事件驱动。
+ */
 @Component
 @RequiredArgsConstructor
 public class OrderBenefitsService implements OrderBenefitsGateway {
@@ -35,29 +37,29 @@ public class OrderBenefitsService implements OrderBenefitsGateway {
     public void verify(String no) {
         var order = orders.findByOrderNo(no);
         if (order == null
-                || !Set.of("RESERVING", "PENDING_PAYMENT", "PAID", "SHIPPED", "COMPLETED")
-                        .contains(order.status())) throw new IllegalStateException("订单不能继续下单");
+            || !Set.of("RESERVING", "PENDING_PAYMENT", "PAID", "SHIPPED", "COMPLETED")
+            .contains(order.status())) throw new IllegalStateException("订单不能继续下单");
         if (Set.of("RESERVING", "PENDING_PAYMENT").contains(order.status())) {
             promotion.lock(plans.plan(no));
             members.apply(
-                    new MemberTradeChange(
-                            order.memberId(),
-                            "CREATE",
-                            no,
-                            null,
-                            order.usePoint(),
-                            order.givePoint(),
-                            order.totalAmount().movePointRight(2).longValueExact(),
-                            0,
-                            false,
-                            0));
+                new MemberTradeChange(
+                    order.memberId(),
+                    "CREATE",
+                    no,
+                    null,
+                    order.usePoint(),
+                    order.givePoint(),
+                    order.totalAmount().movePointRight(2).longValueExact(),
+                    0,
+                    false,
+                    0));
         }
     }
 
     public void reserved(String no) {
         var o = orders.findByOrderNo(no);
         if (o == null
-                || !Set.of("PENDING_PAYMENT", "PAID", "SHIPPED", "COMPLETED").contains(o.status()))
+            || !Set.of("PENDING_PAYMENT", "PAID", "SHIPPED", "COMPLETED").contains(o.status()))
             throw new IllegalStateException("订单尚未完成库存预占");
         if ("PENDING_PAYMENT".equals(o.status())) records.consumeCart(no, o.memberId());
     }
@@ -79,15 +81,15 @@ public class OrderBenefitsService implements OrderBenefitsGateway {
     public void refunded(OrderRefundBenefits v) {
         var af = afterSales.afterSale(v.afterSaleNo());
         if (af == null
-                || !"REFUNDED".equals(af.status())
-                || !Objects.equals(v.orderNo(), af.orderNo())
-                || !Objects.equals(v.orderItemId(), af.orderItemId())
-                || !Objects.equals(v.skuId(), af.skuId())
-                || !Objects.equals(v.quantity(), af.quantity())
-                || v.amount().compareTo(af.amount()) != 0
-                || !Objects.equals(v.returnUsePoint(), af.returnUsePoint())
-                || !Objects.equals(v.deductGivePoint(), af.deductGivePoint())
-                || !Objects.equals(v.ruleVersion(), af.refundRuleVersion()))
+            || !"REFUNDED".equals(af.status())
+            || !Objects.equals(v.orderNo(), af.orderNo())
+            || !Objects.equals(v.orderItemId(), af.orderItemId())
+            || !Objects.equals(v.skuId(), af.skuId())
+            || !Objects.equals(v.quantity(), af.quantity())
+            || v.amount().compareTo(af.amount()) != 0
+            || !Objects.equals(v.returnUsePoint(), af.returnUsePoint())
+            || !Objects.equals(v.deductGivePoint(), af.deductGivePoint())
+            || !Objects.equals(v.ruleVersion(), af.refundRuleVersion()))
             throw new IllegalStateException("售后冻结事实不一致");
         if (!events.replayAfterSale(af.refundNo()))
             throw new IllegalStateException("原售后事件不存在或仍在发送，请核对迁移");

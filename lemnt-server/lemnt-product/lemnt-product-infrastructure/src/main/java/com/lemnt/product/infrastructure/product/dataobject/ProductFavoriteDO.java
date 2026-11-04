@@ -11,7 +11,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-/** mall_product_favorite数据对象。 */
+/**
+ * mall_product_favorite数据对象。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
@@ -23,6 +25,9 @@ public class ProductFavoriteDO extends BaseDO {
     private Long userId;
     private Long spuId;
 
-    /** 与源BaseDO一致，删除保留历史行。 */
-    @TableLogic private Boolean deleted;
+    /**
+     * 与源BaseDO一致，删除保留历史行。
+     */
+    @TableLogic
+    private Boolean deleted;
 }

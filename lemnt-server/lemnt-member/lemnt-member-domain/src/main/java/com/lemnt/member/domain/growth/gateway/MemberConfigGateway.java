@@ -2,7 +2,9 @@ package com.lemnt.member.domain.growth.gateway;
 
 import com.lemnt.member.domain.growth.model.Config;
 
-/** 积分配置组领域存储网关。 */
+/**
+ * 积分配置组领域存储网关。
+ */
 public interface MemberConfigGateway {
 
     /**

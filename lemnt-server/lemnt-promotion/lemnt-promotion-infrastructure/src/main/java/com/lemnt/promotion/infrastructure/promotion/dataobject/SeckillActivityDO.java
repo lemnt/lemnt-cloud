@@ -8,7 +8,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/** 秒杀活动持久化对象。 */
+/**
+ * 秒杀活动持久化对象。
+ */
 @Data
 @TableName("promotion_seckill_activity")
 public class SeckillActivityDO {

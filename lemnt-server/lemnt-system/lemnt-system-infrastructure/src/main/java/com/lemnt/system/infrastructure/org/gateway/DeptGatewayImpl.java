@@ -97,7 +97,7 @@ public class DeptGatewayImpl implements DeptGateway {
      */
     private long hasChildByDeptIdRow(Long deptId) {
         return deptMapper.selectCount(
-                Wrappers.<DeptDO>lambdaQuery().eq(DeptDO::getParentId, deptId).last("limit 1"));
+            Wrappers.<DeptDO>lambdaQuery().eq(DeptDO::getParentId, deptId).last("limit 1"));
     }
 
     /**
@@ -109,10 +109,10 @@ public class DeptGatewayImpl implements DeptGateway {
      */
     private DeptDO checkDeptNameUniqueRow(String deptName, Long parentId) {
         return deptMapper.selectOne(
-                Wrappers.<DeptDO>lambdaQuery()
-                        .eq(DeptDO::getDeptName, deptName)
-                        .eq(DeptDO::getParentId, parentId)
-                        .last("limit 1"));
+            Wrappers.<DeptDO>lambdaQuery()
+                .eq(DeptDO::getDeptName, deptName)
+                .eq(DeptDO::getParentId, parentId)
+                .last("limit 1"));
     }
 
     /**
@@ -122,10 +122,10 @@ public class DeptGatewayImpl implements DeptGateway {
      */
     private void updateDeptStatusNormalRow(Long[] deptIds) {
         deptMapper.update(
-                null,
-                Wrappers.<DeptDO>lambdaUpdate()
-                        .in(DeptDO::getDeptId, List.of(deptIds))
-                        .set(DeptDO::getStatus, "1"));
+            null,
+            Wrappers.<DeptDO>lambdaUpdate()
+                .in(DeptDO::getDeptId, List.of(deptIds))
+                .set(DeptDO::getStatus, "1"));
     }
 
     /**
@@ -145,9 +145,9 @@ public class DeptGatewayImpl implements DeptGateway {
      */
     private void updateDeptSortRow(DeptDO dept) {
         deptMapper.update(
-                null,
-                Wrappers.<DeptDO>lambdaUpdate()
-                        .in(DeptDO::getDeptId, dept.getDeptId())
-                        .set(DeptDO::getOrderNum, dept.getOrderNum()));
+            null,
+            Wrappers.<DeptDO>lambdaUpdate()
+                .in(DeptDO::getDeptId, dept.getDeptId())
+                .set(DeptDO::getOrderNum, dept.getOrderNum()));
     }
 }

@@ -7,13 +7,17 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** remove执行器。 */
+/**
+ * remove执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class ProductFavoriteDeleteCmdExe {
     private final ProductFavoriteService service;
 
-    /** 按明确的用例边界执行。 */
+    /**
+     * 按明确的用例边界执行。
+     */
     public boolean execute(ProductFavoriteDeleteCmd value) {
         return service.remove(value.userId(), value.spuId());
     }

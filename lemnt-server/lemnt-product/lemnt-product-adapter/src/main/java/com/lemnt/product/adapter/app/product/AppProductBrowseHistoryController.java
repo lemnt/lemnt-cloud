@@ -32,7 +32,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 当前会员浏览足迹，Token认证统一在网关。 */
+/**
+ * 当前会员浏览足迹，Token认证统一在网关。
+ */
 @RestController
 @RequestMapping("/mall/app/browse-history")
 @RequiredArgsConstructor
@@ -42,44 +44,52 @@ public class AppProductBrowseHistoryController {
     private final ProductBrowseHistoryDeleteCmdExe delete;
     private final ProductBrowseHistoryClearCmdExe clear;
 
-    /** 登录后的独立写入，不接受userId参数。 */
+    /**
+     * 登录后的独立写入，不接受userId参数。
+     */
     @PostMapping
     @Operation(summary = "记录本人最近浏览")
     public R<AppProductBrowseHistoryCreateRes> create(
-            @Valid @RequestBody AppProductBrowseHistoryCreateReq req) {
+        @Valid @RequestBody AppProductBrowseHistoryCreateReq req) {
         return R.ok(
-                new AppProductBrowseHistoryCreateRes(
-                        create.execute(ProductBrowseHistoryReqConverter.create(member(), req))));
+            new AppProductBrowseHistoryCreateRes(
+                create.execute(ProductBrowseHistoryReqConverter.create(member(), req))));
     }
 
-    /** 本人分页，不能通过Query伪造其他会员。 */
+    /**
+     * 本人分页，不能通过Query伪造其他会员。
+     */
     @GetMapping
     @Operation(summary = "本人足迹分页")
     public R<AppProductBrowseHistoryPageRes> page(
-            @Valid @ModelAttribute AppProductBrowseHistoryPageReq req) {
+        @Valid @ModelAttribute AppProductBrowseHistoryPageReq req) {
         var result = query.execute(ProductBrowseHistoryReqConverter.page(member(), req));
         return R.page(
-                result.getRecords().stream().map(ProductBrowseHistoryResConverter::page).toList(),
-                result.getTotal());
+            result.getRecords().stream().map(ProductBrowseHistoryResConverter::page).toList(),
+            result.getTotal());
     }
 
-    /** 空数组不能隐式清空。 */
+    /**
+     * 空数组不能隐式清空。
+     */
     @DeleteMapping
     @Operation(summary = "隐藏本人指定商品足迹")
     public R<AppProductBrowseHistoryDeleteRes> delete(
-            @Valid @RequestBody AppProductBrowseHistoryDeleteReq req) {
+        @Valid @RequestBody AppProductBrowseHistoryDeleteReq req) {
         return R.ok(
-                new AppProductBrowseHistoryDeleteRes(
-                        delete.execute(new ProductBrowseHistoryDeleteCmd(member(), req.spuIds()))));
+            new AppProductBrowseHistoryDeleteRes(
+                delete.execute(new ProductBrowseHistoryDeleteCmd(member(), req.spuIds()))));
     }
 
-    /** 显式清空当前会员足迹，保留后台事实。 */
+    /**
+     * 显式清空当前会员足迹，保留后台事实。
+     */
     @DeleteMapping("/clear")
     @Operation(summary = "清空本人足迹")
     public R<AppProductBrowseHistoryClearRes> clear() {
         return R.ok(
-                new AppProductBrowseHistoryClearRes(
-                        clear.execute(new ProductBrowseHistoryClearCmd(member()))));
+            new AppProductBrowseHistoryClearRes(
+                clear.execute(new ProductBrowseHistoryClearCmd(member()))));
     }
 
     private Long member() {

@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-/** 查询会员资产记录分页查询执行器。 */
+/**
+ * 查询会员资产记录分页查询执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberAssetRecordPageQueryExe {
@@ -34,38 +36,38 @@ public class MemberAssetRecordPageQueryExe {
             throw new ServiceException("资产类型不合法", 400);
         }
         if (!"POINT".equals(qry.assetType())
-                && (qry.addStatus() != null || qry.startTime() != null || qry.endTime() != null)) {
+            && (qry.addStatus() != null || qry.startTime() != null || qry.endTime() != null)) {
             throw new ServiceException("积分筛选不能用于其他资产", 400);
         }
         if (qry.startTime() != null
-                && qry.endTime() != null
-                && qry.startTime().isAfter(qry.endTime())) {
+            && qry.endTime() != null
+            && qry.startTime().isAfter(qry.endTime())) {
             throw new ServiceException("开始时间不能晚于结束时间", 400);
         }
         var filter =
-                new AssetRecordPageFilter(
-                        qry.memberId(),
-                        qry.assetType(),
-                        (qry.pageNum() - 1) * qry.pageSize(),
-                        qry.pageSize(),
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        qry.startTime(),
-                        qry.endTime(),
-                        qry.addStatus());
+            new AssetRecordPageFilter(
+                qry.memberId(),
+                qry.assetType(),
+                (qry.pageNum() - 1) * qry.pageSize(),
+                qry.pageSize(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                qry.startTime(),
+                qry.endTime(),
+                qry.addStatus());
         var records =
-                "POINT".equals(qry.assetType())
-                        ? pointRecords.page(filter)
-                        : experienceRecords.page(filter);
+            "POINT".equals(qry.assetType())
+                ? pointRecords.page(filter)
+                : experienceRecords.page(filter);
         var total =
-                "POINT".equals(qry.assetType())
-                        ? pointRecords.count(filter)
-                        : experienceRecords.count(filter);
+            "POINT".equals(qry.assetType())
+                ? pointRecords.count(filter)
+                : experienceRecords.count(filter);
         return new PageResult<>(
-                records.stream().map(MemberGrowthDTOConverter::toAssetRecordDTO).toList(), total);
+            records.stream().map(MemberGrowthDTOConverter::toAssetRecordDTO).toList(), total);
     }
 }

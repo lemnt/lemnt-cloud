@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/** 拼团过期调度；虚拟成团或整团失败由应用服务处理。 */
+/**
+ * 拼团过期调度；虚拟成团或整团失败由应用服务处理。
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor

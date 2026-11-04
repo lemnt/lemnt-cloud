@@ -12,7 +12,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/** 调度使用数据库期限且逐单隔离异常。 */
+/**
+ * 调度使用数据库期限且逐单隔离异常。
+ */
 class AutoCommentSchedulerTest {
     @Test
     void usesDatabaseDeadlineAndContinuesAfterOneFailure() {
@@ -26,7 +28,7 @@ class AutoCommentSchedulerTest {
         new TradeOrderAutoCommentScheduler(orders, comments, Duration.ofDays(7)).execute();
         verify(comments).createSystem("SECOND", cutoff);
         assertThrows(
-                IllegalArgumentException.class,
-                () -> new TradeOrderAutoCommentScheduler(orders, comments, Duration.ZERO));
+            IllegalArgumentException.class,
+            () -> new TradeOrderAutoCommentScheduler(orders, comments, Duration.ZERO));
     }
 }

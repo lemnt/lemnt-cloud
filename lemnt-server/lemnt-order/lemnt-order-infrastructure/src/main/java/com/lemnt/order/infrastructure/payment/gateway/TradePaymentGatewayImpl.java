@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/** 原支付编号是跨服务身份；没有资金库主键时保留null，不补造ID。 */
+/**
+ * 原支付编号是跨服务身份；没有资金库主键时保留null，不补造ID。
+ */
 @Component
 public class TradePaymentGatewayImpl implements TradePaymentGateway {
     @DubboReference(check = false, timeout = 5000, retries = 0)
@@ -26,16 +28,16 @@ public class TradePaymentGatewayImpl implements TradePaymentGateway {
 
     private PaymentRecord from(PaymentResultDTO v) {
         return v == null
-                ? null
-                : new PaymentRecord(
-                        null,
-                        v.paymentNo(),
-                        v.orderNo(),
-                        v.channel(),
-                        v.appKey(),
-                        v.channelTradeNo(),
-                        v.amount(),
-                        v.status(),
-                        null);
+            ? null
+            : new PaymentRecord(
+            null,
+            v.paymentNo(),
+            v.orderNo(),
+            v.channel(),
+            v.appKey(),
+            v.channelTradeNo(),
+            v.amount(),
+            v.status(),
+            null);
     }
 }

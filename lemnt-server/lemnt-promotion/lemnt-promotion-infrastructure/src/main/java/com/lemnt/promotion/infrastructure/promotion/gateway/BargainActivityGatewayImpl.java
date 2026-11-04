@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 砍价活动仅操作活动表。 */
+/**
+ * 砍价活动仅操作活动表。
+ */
 @Component
 @RequiredArgsConstructor
 public class BargainActivityGatewayImpl implements BargainActivityGateway {
@@ -41,11 +43,11 @@ public class BargainActivityGatewayImpl implements BargainActivityGateway {
     @Override
     public boolean close(Long id) {
         return mapper.update(
-                        null,
-                        Wrappers.<BargainActivityDO>lambdaUpdate()
-                                .eq(BargainActivityDO::getId, id)
-                                .set(BargainActivityDO::getStatus, 1))
-                == 1;
+            null,
+            Wrappers.<BargainActivityDO>lambdaUpdate()
+                .eq(BargainActivityDO::getId, id)
+                .set(BargainActivityDO::getStatus, 1))
+            == 1;
     }
 
     @Override
@@ -56,63 +58,63 @@ public class BargainActivityGatewayImpl implements BargainActivityGateway {
     @Override
     public PageResult<BargainActivity> page(BargainFilter filter) {
         var page =
-                mapper.selectPage(
-                        new Page<BargainActivityDO>(filter.pageNum(), filter.pageSize()),
-                        Wrappers.<BargainActivityDO>lambdaQuery()
-                                .like(
-                                        filter.name() != null && !filter.name().isBlank(),
-                                        BargainActivityDO::getName,
-                                        filter.name())
-                                .eq(
-                                        filter.status() != null,
-                                        BargainActivityDO::getStatus,
-                                        filter.status())
-                                .orderByDesc(BargainActivityDO::getId));
+            mapper.selectPage(
+                new Page<BargainActivityDO>(filter.pageNum(), filter.pageSize()),
+                Wrappers.<BargainActivityDO>lambdaQuery()
+                    .like(
+                        filter.name() != null && !filter.name().isBlank(),
+                        BargainActivityDO::getName,
+                        filter.name())
+                    .eq(
+                        filter.status() != null,
+                        BargainActivityDO::getStatus,
+                        filter.status())
+                    .orderByDesc(BargainActivityDO::getId));
         return PageResult.of(
-                page.getRecords().stream().map(BargainConverter::model).toList(), page.getTotal());
+            page.getRecords().stream().map(BargainConverter::model).toList(), page.getTotal());
     }
 
     @Override
     public List<BargainActivity> enabled() {
         return mapper
-                .selectList(
-                        Wrappers.<BargainActivityDO>lambdaQuery()
-                                .eq(BargainActivityDO::getStatus, 0)
-                                .orderByDesc(BargainActivityDO::getId))
-                .stream()
-                .map(BargainConverter::model)
-                .toList();
+            .selectList(
+                Wrappers.<BargainActivityDO>lambdaQuery()
+                    .eq(BargainActivityDO::getStatus, 0)
+                    .orderByDesc(BargainActivityDO::getId))
+            .stream()
+            .map(BargainConverter::model)
+            .toList();
     }
 
     @Override
     public List<BargainActivity> all() {
         return mapper
-                .selectList(
-                        Wrappers.<BargainActivityDO>lambdaQuery()
-                                .orderByDesc(BargainActivityDO::getId))
-                .stream()
-                .map(BargainConverter::model)
-                .toList();
+            .selectList(
+                Wrappers.<BargainActivityDO>lambdaQuery()
+                    .orderByDesc(BargainActivityDO::getId))
+            .stream()
+            .map(BargainConverter::model)
+            .toList();
     }
 
     @Override
     public boolean decreaseStock(Long id, int count) {
         return mapper.update(
-                        null,
-                        Wrappers.<BargainActivityDO>lambdaUpdate()
-                                .eq(BargainActivityDO::getId, id)
-                                .ge(BargainActivityDO::getStock, count)
-                                .setDecrBy(BargainActivityDO::getStock, count))
-                == 1;
+            null,
+            Wrappers.<BargainActivityDO>lambdaUpdate()
+                .eq(BargainActivityDO::getId, id)
+                .ge(BargainActivityDO::getStock, count)
+                .setDecrBy(BargainActivityDO::getStock, count))
+            == 1;
     }
 
     @Override
     public boolean increaseStock(Long id, int count) {
         return mapper.update(
-                        null,
-                        Wrappers.<BargainActivityDO>lambdaUpdate()
-                                .eq(BargainActivityDO::getId, id)
-                                .setIncrBy(BargainActivityDO::getStock, count))
-                == 1;
+            null,
+            Wrappers.<BargainActivityDO>lambdaUpdate()
+                .eq(BargainActivityDO::getId, id)
+                .setIncrBy(BargainActivityDO::getStock, count))
+            == 1;
     }
 }

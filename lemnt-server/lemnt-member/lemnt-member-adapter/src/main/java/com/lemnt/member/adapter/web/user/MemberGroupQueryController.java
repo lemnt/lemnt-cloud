@@ -34,12 +34,12 @@ public class MemberGroupQueryController {
     @Operation(summary = "groups/page分页")
     @RequiresPermissions("member:group:query")
     public R<MemberCatalogQueryGroupsPageRes> groupsPage(
-            @Valid @ModelAttribute MemberCatalogQueryGroupsPageReq req) {
+        @Valid @ModelAttribute MemberCatalogQueryGroupsPageReq req) {
         var page = memberGroupPageQueryExe.execute(MemberReqConverter.toGroupPageQry(req));
         return R.page(
-                page.getRecords().stream()
-                        .map(MemberUserResConverter::toMemberCatalogQueryGroupsPageRes)
-                        .toList(),
-                page.getTotal());
+            page.getRecords().stream()
+                .map(MemberUserResConverter::toMemberCatalogQueryGroupsPageRes)
+                .toList(),
+            page.getTotal());
     }
 }

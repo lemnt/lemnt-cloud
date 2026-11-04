@@ -36,19 +36,21 @@ public class MemberUserClientImpl implements MemberUserClient {
         }
         var level = member.levelId() == null ? null : memberLevelGateway.level(member.levelId());
         int percent =
-                level == null || !Integer.valueOf(1).equals(level.status())
-                        ? 100
-                        : level.discountPercent();
+            level == null || !Integer.valueOf(1).equals(level.status())
+                ? 100
+                : level.discountPercent();
         return new MemberUserDTO(
-                member.id(),
-                member.nickname(),
-                member.status(),
-                percent,
-                member.points(),
-                member.avatar());
+            member.id(),
+            member.nickname(),
+            member.status(),
+            percent,
+            member.points(),
+            member.avatar());
     }
 
-    /** 锁定会员行，在同一事务内读取会员资料和密码。 */
+    /**
+     * 锁定会员行，在同一事务内读取会员资料和密码。
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public MemberLoginInfoDTO getByMobile(String mobile) {
@@ -64,23 +66,27 @@ public class MemberUserClientImpl implements MemberUserClient {
         return new MemberLoginInfoDTO(member.id(), member.mobile(), member.status(), password);
     }
 
-    /** 兼容旧私有调用并保留事务，缺少IP时记录未知。 */
+    /**
+     * 兼容旧私有调用并保留事务，缺少IP时记录未知。
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void recordLogin(Long memberId) {
         recordLogin(memberId, null);
     }
 
-    /** 认证中心成功签发会话后记录；状态变化时拒绝并由认证端撤销会话。 */
+    /**
+     * 认证中心成功签发会话后记录；状态变化时拒绝并由认证端撤销会话。
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void recordLogin(Long memberId, String loginIp) {
         if (loginIp != null) {
             try {
                 if (loginIp.length() > 50
-                        || !loginIp.matches("[0-9a-fA-F:.]+")
-                        || (!loginIp.contains(":")
-                                && !loginIp.matches("[0-9]{1,3}(\\.[0-9]{1,3}){3}")))
+                    || !loginIp.matches("[0-9a-fA-F:.]+")
+                    || (!loginIp.contains(":")
+                    && !loginIp.matches("[0-9]{1,3}(\\.[0-9]{1,3}){3}")))
                     throw new IllegalArgumentException();
                 InetAddress.getByName(loginIp);
             } catch (Exception error) {

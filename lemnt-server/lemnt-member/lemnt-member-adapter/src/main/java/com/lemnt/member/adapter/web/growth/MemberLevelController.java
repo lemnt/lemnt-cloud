@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
 /**
@@ -54,11 +55,11 @@ public class MemberLevelController {
     @RequiresPermissions("member:level:query")
     public R<List<MemberLevelListRes>> list(@Valid @ModelAttribute MemberLevelListReq req) {
         return R.ok(
-                memberLevelListQueryExe
-                        .execute(new LevelListQry(false, req.name(), req.status()))
-                        .stream()
-                        .map(MemberGrowthResConverter::toMemberLevelListRes)
-                        .toList());
+            memberLevelListQueryExe
+                .execute(new LevelListQry(false, req.name(), req.status()))
+                .stream()
+                .map(MemberGrowthResConverter::toMemberLevelListRes)
+                .toList());
     }
 
     @GetMapping("/{id}")
@@ -66,8 +67,8 @@ public class MemberLevelController {
     @RequiresPermissions("member:level:query")
     public R<MemberLevelDetailRes> detail(@PathVariable Long id) {
         return R.ok(
-                MemberGrowthResConverter.toMemberLevelDetailRes(
-                        memberLevelDetailQueryExe.execute(new LevelDetailQry(id))));
+            MemberGrowthResConverter.toMemberLevelDetailRes(
+                memberLevelDetailQueryExe.execute(new LevelDetailQry(id))));
     }
 
     @PostMapping
@@ -96,8 +97,8 @@ public class MemberLevelController {
     @RequiresPermissions("member:level:query")
     public R<List<MemberLevelSimpleRes>> simple() {
         return R.ok(
-                memberLevelListQueryExe.execute(new LevelListQry(true)).stream()
-                        .map(MemberGrowthResConverter::toMemberLevelSimpleRes)
-                        .toList());
+            memberLevelListQueryExe.execute(new LevelListQry(true)).stream()
+                .map(MemberGrowthResConverter::toMemberLevelSimpleRes)
+                .toList());
     }
 }

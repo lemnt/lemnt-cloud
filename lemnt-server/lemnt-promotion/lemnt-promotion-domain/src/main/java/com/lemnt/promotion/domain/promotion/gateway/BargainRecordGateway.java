@@ -8,15 +8,19 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** 砍价记录存储契约。 */
+/**
+ * 砍价记录存储契约。
+ */
 public interface BargainRecordGateway {
     BargainRecord find(Long id);
 
     BargainRecord save(BargainRecord value);
 
-    /** 按旧价格条件更新，保证并发助力只成功一次。 */
+    /**
+     * 按旧价格条件更新，保证并发助力只成功一次。
+     */
     boolean updatePrice(
-            Long id, BigDecimal expected, BigDecimal price, Integer status, LocalDateTime endTime);
+        Long id, BigDecimal expected, BigDecimal price, Integer status, LocalDateTime endTime);
 
     boolean bindOrder(Long id, Long orderId);
 
@@ -32,6 +36,8 @@ public interface BargainRecordGateway {
 
     List<BargainRecord> byActivityAndStatus(Long activityId, Integer status);
 
-    /** 活动参与人数。 */
+    /**
+     * 活动参与人数。
+     */
     long userCount(Long activityId, Integer status);
 }

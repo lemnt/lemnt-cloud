@@ -41,7 +41,7 @@ public interface NoticeReadMapper extends BaseMapper<NoticeReadDO> {
      * @return 带 isRead 标记的公告列表
      */
     List<Notice> selectNoticeListWithReadStatus(
-            @Param("userId") Long userId, @Param("limit") int limit);
+        @Param("userId") Long userId, @Param("limit") int limit);
 
     /**
      * 查询已阅读某公告的用户列表
@@ -51,7 +51,7 @@ public interface NoticeReadMapper extends BaseMapper<NoticeReadDO> {
      * @return 已读用户列表
      */
     IPage<NoticeReadUser> selectPageReadUsers(
-            Page<NoticeDO> page,
-            @Param("noticeId") Long noticeId,
-            @Param("searchValue") String searchValue);
+        Page<NoticeDO> page,
+        @Param("noticeId") Long noticeId,
+        @Param("searchValue") String searchValue);
 }

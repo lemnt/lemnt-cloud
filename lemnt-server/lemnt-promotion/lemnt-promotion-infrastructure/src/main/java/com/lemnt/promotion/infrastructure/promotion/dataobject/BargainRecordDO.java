@@ -9,7 +9,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/** 砍价记录持久化对象。 */
+/**
+ * 砍价记录持久化对象。
+ */
 @Data
 @TableName("promotion_bargain_record")
 public class BargainRecordDO {

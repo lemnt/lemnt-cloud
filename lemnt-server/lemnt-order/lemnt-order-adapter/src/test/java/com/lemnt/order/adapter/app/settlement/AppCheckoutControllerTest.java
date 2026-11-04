@@ -54,53 +54,53 @@ class AppCheckoutControllerTest {
     void quoteForwardsOwnedAddressAndPointChoiceAndRejectsMissingAddress() throws Exception {
         var create = mock(SettlementCreateCmdExe.class);
         var quote =
-                new SettlementQuoteDTO(
-                        List.of(),
-                        new BigDecimal("20.00"),
-                        new BigDecimal("0.00"),
-                        new BigDecimal("26.50"),
-                        null,
-                        "digest",
-                        0L,
-                        53L,
-                        new SettlementDeliveryDTO(
-                                123L,
-                                1,
-                                "收件人",
-                                "13800000000",
-                                110101L,
-                                "地址",
-                                new BigDecimal("6.50")),
-                        false,
-                        Map.of());
+            new SettlementQuoteDTO(
+                List.of(),
+                new BigDecimal("20.00"),
+                new BigDecimal("0.00"),
+                new BigDecimal("26.50"),
+                null,
+                "digest",
+                0L,
+                53L,
+                new SettlementDeliveryDTO(
+                    123L,
+                    1,
+                    "收件人",
+                    "13800000000",
+                    110101L,
+                    "地址",
+                    new BigDecimal("6.50")),
+                false,
+                Map.of());
         when(create.execute(any()))
-                .thenReturn(
-                        new SettlementDTO(
-                                "12345678-1234-1234-1234-123456789abc",
-                                Instant.now().plusSeconds(900),
-                                quote));
+            .thenReturn(
+                new SettlementDTO(
+                    "12345678-1234-1234-1234-123456789abc",
+                    Instant.now().plusSeconds(900),
+                    quote));
         var mvc =
-                MockMvcBuilders.standaloneSetup(
-                                new AppSettlementController(
-                                        create,
-                                        mock(SettlementSubmitCmdExe.class),
-                                        mock(SettlementAbandonCmdExe.class)))
-                        .addInterceptors(new HeaderInterceptor())
-                        .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
-                        .build();
+            MockMvcBuilders.standaloneSetup(
+                    new AppSettlementController(
+                        create,
+                        mock(SettlementSubmitCmdExe.class),
+                        mock(SettlementAbandonCmdExe.class)))
+                .addInterceptors(new HeaderInterceptor())
+                .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
+                .build();
         mvc.perform(
-                        post("/mall/app/checkout/quote")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        "{\"productIds\":[5],\"addressId\":123,\"pointStatus\":true,\"memberId\":999}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.delivery.addressId").value(123));
+                post("/mall/app/checkout/quote")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        "{\"productIds\":[5],\"addressId\":123,\"pointStatus\":true,\"memberId\":999}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.delivery.addressId").value(123));
         verify(create).execute(new SettlementCreateCmd(7L, List.of(5L), null, true, 123L, 1, null));
         mvc.perform(
-                        post("/mall/app/checkout/quote")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"productIds\":[5]}"))
-                .andExpect(status().isBadRequest());
+                post("/mall/app/checkout/quote")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"productIds\":[5]}"))
+            .andExpect(status().isBadRequest());
         verifyNoMoreInteractions(create);
     }
 
@@ -109,15 +109,15 @@ class AppCheckoutControllerTest {
         var list = mock(CartListQueryExe.class);
         when(list.execute(7L)).thenReturn(List.of());
         MockMvcBuilders.standaloneSetup(
-                        new AppCartController(
-                                list, mock(CartSaveCmdExe.class), mock(CartDeleteCmdExe.class)))
-                .addInterceptors(new HeaderInterceptor())
-                .build()
-                .perform(
-                        get("/mall/app/cart")
-                                .header(SecurityConstants.HEADER_USER_ID, "7")
-                                .header("memberId", "999"))
-                .andExpect(status().isOk());
+                new AppCartController(
+                    list, mock(CartSaveCmdExe.class), mock(CartDeleteCmdExe.class)))
+            .addInterceptors(new HeaderInterceptor())
+            .build()
+            .perform(
+                get("/mall/app/cart")
+                    .header(SecurityConstants.HEADER_USER_ID, "7")
+                    .header("memberId", "999"))
+            .andExpect(status().isOk());
         verify(list).execute(7L);
         verify(list, never()).execute(999L);
     }
@@ -127,28 +127,28 @@ class AppCheckoutControllerTest {
         var list = mock(CartListQueryExe.class);
         when(list.execute(7L)).thenReturn(List.of());
         var controller =
-                new Object[] {
-                    new AppCartController(
-                            list, mock(CartSaveCmdExe.class), mock(CartDeleteCmdExe.class)),
-                    new AppCouponController(mock(CouponListQueryExe.class)),
-                    new AppSettlementController(
-                            mock(SettlementCreateCmdExe.class),
-                            mock(SettlementSubmitCmdExe.class),
-                            mock(SettlementAbandonCmdExe.class)),
-                    new AppOrderController(
-                            mock(SettlementReceiptQueryExe.class),
-                            mock(SettlementRequestDetailQueryExe.class))
-                };
+            new Object[]{
+                new AppCartController(
+                    list, mock(CartSaveCmdExe.class), mock(CartDeleteCmdExe.class)),
+                new AppCouponController(mock(CouponListQueryExe.class)),
+                new AppSettlementController(
+                    mock(SettlementCreateCmdExe.class),
+                    mock(SettlementSubmitCmdExe.class),
+                    mock(SettlementAbandonCmdExe.class)),
+                new AppOrderController(
+                    mock(SettlementReceiptQueryExe.class),
+                    mock(SettlementRequestDetailQueryExe.class))
+            };
         MockMvcBuilders.standaloneSetup(controller)
-                .addInterceptors(new HeaderInterceptor())
-                .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
-                .build()
-                .perform(
-                        get("/mall/app/cart")
-                                .header("Authorization", "Bearer member")
-                                .header("memberId", "999")
-                                .param("memberId", "999"))
-                .andExpect(status().isOk());
+            .addInterceptors(new HeaderInterceptor())
+            .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
+            .build()
+            .perform(
+                get("/mall/app/cart")
+                    .header("Authorization", "Bearer member")
+                    .header("memberId", "999")
+                    .param("memberId", "999"))
+            .andExpect(status().isOk());
         verify(list).execute(7L);
         verify(list, never()).execute(999L);
     }
@@ -157,7 +157,7 @@ class AppCheckoutControllerTest {
     void orderQueryPassesSessionIdentityToOwnershipQuery() {
         var receipt = mock(SettlementReceiptQueryExe.class);
         var controller =
-                new AppOrderController(receipt, mock(SettlementRequestDetailQueryExe.class));
+            new AppOrderController(receipt, mock(SettlementRequestDetailQueryExe.class));
         assertNull(controller.order("FOREIGN").getData());
         verify(receipt).execute(7L, "FOREIGN");
     }
@@ -166,70 +166,70 @@ class AppCheckoutControllerTest {
     void cachedSubmitRejectsLegacyPayloadAndPassesOnlySettlementIdentity() throws Exception {
         var cached = mock(SettlementSubmitCmdExe.class);
         var controller =
-                new Object[] {
-                    new AppCartController(
-                            mock(CartListQueryExe.class),
-                            mock(CartSaveCmdExe.class),
-                            mock(CartDeleteCmdExe.class)),
-                    new AppCouponController(mock(CouponListQueryExe.class)),
-                    new AppSettlementController(
-                            mock(SettlementCreateCmdExe.class),
-                            cached,
-                            mock(SettlementAbandonCmdExe.class)),
-                    new AppOrderController(
-                            mock(SettlementReceiptQueryExe.class),
-                            mock(SettlementRequestDetailQueryExe.class))
-                };
+            new Object[]{
+                new AppCartController(
+                    mock(CartListQueryExe.class),
+                    mock(CartSaveCmdExe.class),
+                    mock(CartDeleteCmdExe.class)),
+                new AppCouponController(mock(CouponListQueryExe.class)),
+                new AppSettlementController(
+                    mock(SettlementCreateCmdExe.class),
+                    cached,
+                    mock(SettlementAbandonCmdExe.class)),
+                new AppOrderController(
+                    mock(SettlementReceiptQueryExe.class),
+                    mock(SettlementRequestDetailQueryExe.class))
+            };
         var mvc =
-                MockMvcBuilders.standaloneSetup(controller)
-                        .addInterceptors(new HeaderInterceptor())
-                        .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
-                        .build();
+            MockMvcBuilders.standaloneSetup(controller)
+                .addInterceptors(new HeaderInterceptor())
+                .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
+                .build();
         mvc.perform(
-                        post("/mall/app/checkout")
-                                .header("Authorization", "Bearer member")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        "{\"requestNo\":\"R1\",\"productIds\":[\"5\"],\"quoteToken\":\"old\"}"))
-                .andExpect(status().isBadRequest());
+                post("/mall/app/checkout")
+                    .header("Authorization", "Bearer member")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        "{\"requestNo\":\"R1\",\"productIds\":[\"5\"],\"quoteToken\":\"old\"}"))
+            .andExpect(status().isBadRequest());
         verifyNoInteractions(cached);
         mvc.perform(
-                        post("/mall/app/checkout")
-                                .header("Authorization", "Bearer member")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        "{\"requestNo\":\"R1\",\"settlementId\":\"12345678-1234-1234-1234-123456789abc\",\"memberId\":999,\"amount\":0.01}"))
-                .andExpect(status().isOk());
+                post("/mall/app/checkout")
+                    .header("Authorization", "Bearer member")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        "{\"requestNo\":\"R1\",\"settlementId\":\"12345678-1234-1234-1234-123456789abc\",\"memberId\":999,\"amount\":0.01}"))
+            .andExpect(status().isOk());
         verify(cached)
-                .execute(new SettlementSubmitCmd(7L, "12345678-1234-1234-1234-123456789abc", "R1"));
+            .execute(new SettlementSubmitCmd(7L, "12345678-1234-1234-1234-123456789abc", "R1"));
     }
 
     @Test
     void requestRecoveryUsesAuthenticatedMemberNotCallerIdentity() throws Exception {
         var cached = mock(SettlementRequestDetailQueryExe.class);
         var controller =
-                new Object[] {
-                    new AppCartController(
-                            mock(CartListQueryExe.class),
-                            mock(CartSaveCmdExe.class),
-                            mock(CartDeleteCmdExe.class)),
-                    new AppCouponController(mock(CouponListQueryExe.class)),
-                    new AppSettlementController(
-                            mock(SettlementCreateCmdExe.class),
-                            mock(SettlementSubmitCmdExe.class),
-                            mock(SettlementAbandonCmdExe.class)),
-                    new AppOrderController(mock(SettlementReceiptQueryExe.class), cached)
-                };
+            new Object[]{
+                new AppCartController(
+                    mock(CartListQueryExe.class),
+                    mock(CartSaveCmdExe.class),
+                    mock(CartDeleteCmdExe.class)),
+                new AppCouponController(mock(CouponListQueryExe.class)),
+                new AppSettlementController(
+                    mock(SettlementCreateCmdExe.class),
+                    mock(SettlementSubmitCmdExe.class),
+                    mock(SettlementAbandonCmdExe.class)),
+                new AppOrderController(mock(SettlementReceiptQueryExe.class), cached)
+            };
         MockMvcBuilders.standaloneSetup(controller)
-                .addInterceptors(new HeaderInterceptor())
-                .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
-                .build()
-                .perform(
-                        get("/mall/app/checkout/requests/R1")
-                                .header("Authorization", "Bearer member")
-                                .header("memberId", "999")
-                                .param("memberId", "999"))
-                .andExpect(status().isOk());
+            .addInterceptors(new HeaderInterceptor())
+            .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
+            .build()
+            .perform(
+                get("/mall/app/checkout/requests/R1")
+                    .header("Authorization", "Bearer member")
+                    .header("memberId", "999")
+                    .param("memberId", "999"))
+            .andExpect(status().isOk());
         verify(cached).execute(new SettlementRequestDetailQry(7L, "R1"));
         verify(cached, never()).execute(new SettlementRequestDetailQry(999L, "R1"));
     }
@@ -238,37 +238,37 @@ class AppCheckoutControllerTest {
     void abandonUsesSessionMemberAndOnlySettlementIdentity() throws Exception {
         var cached = mock(SettlementAbandonCmdExe.class);
         when(cached.execute(
-                        new SettlementAbandonCmd(7L, "12345678-1234-1234-1234-123456789abc", "R1")))
-                .thenReturn(new SettlementAbandonDTO(true, null));
+            new SettlementAbandonCmd(7L, "12345678-1234-1234-1234-123456789abc", "R1")))
+            .thenReturn(new SettlementAbandonDTO(true, null));
         var controller =
-                new Object[] {
-                    new AppCartController(
-                            mock(CartListQueryExe.class),
-                            mock(CartSaveCmdExe.class),
-                            mock(CartDeleteCmdExe.class)),
-                    new AppCouponController(mock(CouponListQueryExe.class)),
-                    new AppSettlementController(
-                            mock(SettlementCreateCmdExe.class),
-                            mock(SettlementSubmitCmdExe.class),
-                            cached),
-                    new AppOrderController(
-                            mock(SettlementReceiptQueryExe.class),
-                            mock(SettlementRequestDetailQueryExe.class))
-                };
+            new Object[]{
+                new AppCartController(
+                    mock(CartListQueryExe.class),
+                    mock(CartSaveCmdExe.class),
+                    mock(CartDeleteCmdExe.class)),
+                new AppCouponController(mock(CouponListQueryExe.class)),
+                new AppSettlementController(
+                    mock(SettlementCreateCmdExe.class),
+                    mock(SettlementSubmitCmdExe.class),
+                    cached),
+                new AppOrderController(
+                    mock(SettlementReceiptQueryExe.class),
+                    mock(SettlementRequestDetailQueryExe.class))
+            };
         MockMvcBuilders.standaloneSetup(controller)
-                .addInterceptors(new HeaderInterceptor())
-                .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
-                .build()
-                .perform(
-                        post("/mall/app/checkout/abandon")
-                                .header("Authorization", "Bearer member")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(
-                                        "{\"settlementId\":\"12345678-1234-1234-1234-123456789abc\",\"requestNo\":\"R1\",\"memberId\":999}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.abandoned").value(true));
+            .addInterceptors(new HeaderInterceptor())
+            .defaultRequest(get("/").header(SecurityConstants.HEADER_USER_ID, "7"))
+            .build()
+            .perform(
+                post("/mall/app/checkout/abandon")
+                    .header("Authorization", "Bearer member")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        "{\"settlementId\":\"12345678-1234-1234-1234-123456789abc\",\"requestNo\":\"R1\",\"memberId\":999}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.abandoned").value(true));
         verify(cached)
-                .execute(
-                        new SettlementAbandonCmd(7L, "12345678-1234-1234-1234-123456789abc", "R1"));
+            .execute(
+                new SettlementAbandonCmd(7L, "12345678-1234-1234-1234-123456789abc", "R1"));
     }
 }

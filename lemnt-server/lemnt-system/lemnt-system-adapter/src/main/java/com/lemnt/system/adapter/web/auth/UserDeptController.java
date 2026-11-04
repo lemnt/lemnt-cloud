@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 用户部门选项接口。 */
+/**
+ * 用户部门选项接口。
+ */
 @Tag(name = "用户部门选项")
 @RestController
 @RequestMapping("/users")
@@ -32,7 +34,7 @@ public class UserDeptController {
     @GetMapping("/dept-tree")
     public R<List<UserDeptTreeRes>> deptTree(@Validated DeptListReq req) {
         return R.ok(
-                TreeSelectResConverter.toUserDeptResList(
-                        deptTreeQueryExe.execute(DeptReqConverter.toQry(req))));
+            TreeSelectResConverter.toUserDeptResList(
+                deptTreeQueryExe.execute(DeptReqConverter.toQry(req))));
     }
 }

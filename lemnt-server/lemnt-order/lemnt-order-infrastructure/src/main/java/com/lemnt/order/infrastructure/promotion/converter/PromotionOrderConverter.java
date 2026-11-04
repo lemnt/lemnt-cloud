@@ -3,32 +3,35 @@ package com.lemnt.order.infrastructure.promotion.converter;
 import com.lemnt.order.domain.promotion.model.PromotionOrder;
 import com.lemnt.order.infrastructure.promotion.dataobject.PromotionOrderDO;
 
-/** 活动订单映射转换。 */
+/**
+ * 活动订单映射转换。
+ */
 public final class PromotionOrderConverter {
-    private PromotionOrderConverter() {}
+    private PromotionOrderConverter() {
+    }
 
     public static PromotionOrder model(PromotionOrderDO row) {
         if (row == null) {
             return null;
         }
         return new PromotionOrder(
-                row.getId(),
-                row.getOrderNo(),
-                row.getRequestNo(),
-                row.getMemberId(),
-                row.getActivityType(),
-                row.getActivityId(),
-                row.getActivityRecordId(),
-                row.getHeadId(),
-                row.getSkuId(),
-                row.getQuantity(),
-                row.getActivityPrice(),
-                row.getUsePoint(),
-                row.getRefundedQuantity(),
-                row.getStatus(),
-                row.getFailureReason(),
-                row.getCreateTime(),
-                row.getUpdateTime());
+            row.getId(),
+            row.getOrderNo(),
+            row.getRequestNo(),
+            row.getMemberId(),
+            row.getActivityType(),
+            row.getActivityId(),
+            row.getActivityRecordId(),
+            row.getHeadId(),
+            row.getSkuId(),
+            row.getQuantity(),
+            row.getActivityPrice(),
+            row.getUsePoint(),
+            row.getRefundedQuantity(),
+            row.getStatus(),
+            row.getFailureReason(),
+            row.getCreateTime(),
+            row.getUpdateTime());
     }
 
     public static PromotionOrderDO row(PromotionOrder value) {

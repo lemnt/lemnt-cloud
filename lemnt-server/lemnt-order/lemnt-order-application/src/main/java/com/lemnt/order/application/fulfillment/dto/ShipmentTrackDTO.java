@@ -3,5 +3,8 @@ package com.lemnt.order.application.fulfillment.dto;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/** 物流轨迹查询结果。 */
-public record ShipmentTrackDTO(LocalDateTime time, String description) implements Serializable {}
+/**
+ * 物流轨迹查询结果。
+ */
+public record ShipmentTrackDTO(LocalDateTime time, String description) implements Serializable {
+}

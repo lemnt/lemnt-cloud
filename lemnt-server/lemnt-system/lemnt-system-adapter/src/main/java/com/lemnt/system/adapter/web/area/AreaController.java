@@ -12,14 +12,18 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 后台通用地区查询。 */
+/**
+ * 后台通用地区查询。
+ */
 @RestController
 @RequestMapping("/areas")
 @RequiredArgsConstructor
 public class AreaController {
     private final AreaTreeQueryExe query;
 
-    /** 已登录后台读取中国省市区树。 */
+    /**
+     * 已登录后台读取中国省市区树。
+     */
     @GetMapping("/tree")
     @RequiresLogin
     public R<List<AreaTreeRes>> tree() {

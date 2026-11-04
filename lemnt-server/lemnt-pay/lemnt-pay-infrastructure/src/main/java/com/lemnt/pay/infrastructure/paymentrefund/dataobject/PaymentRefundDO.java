@@ -12,7 +12,9 @@ import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 
-/** 支付退款交易表。 */
+/**
+ * 支付退款交易表。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)

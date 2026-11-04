@@ -24,11 +24,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 活动结算准备复用请求编号，活动价格快照不经过普通促销计价。 */
+/**
+ * 活动结算准备复用请求编号，活动价格快照不经过普通促销计价。
+ */
 class SettlementPromotionPreparationTest {
     private final PromotionPricingGateway pricing = Mockito.mock(PromotionPricingGateway.class);
     private final SettlementDeliveryService delivery =
-            Mockito.mock(SettlementDeliveryService.class);
+        Mockito.mock(SettlementDeliveryService.class);
     private final CartSnapshotGateway cart = Mockito.mock(CartSnapshotGateway.class);
     private final MemberLockGateway locks = Mockito.mock(MemberLockGateway.class);
     private final SettlementRecordService records = Mockito.mock(SettlementRecordService.class);
@@ -37,32 +39,32 @@ class SettlementPromotionPreparationTest {
     private final ProductCatalogGateway catalog = Mockito.mock(ProductCatalogGateway.class);
     private final MemberValidationService members = Mockito.mock(MemberValidationService.class);
     private final SettlementPreparationService service =
-            new SettlementPreparationService(
-                    pricing, delivery, cart, locks, records, orders, cache, catalog, members);
+        new SettlementPreparationService(
+            pricing, delivery, cart, locks, records, orders, cache, catalog, members);
 
     private SettlementQuote quote() {
         var item =
-                new SettlementItem(
-                        2L,
-                        "SKU",
-                        "商品",
-                        new BigDecimal("10.00"),
-                        1,
-                        new BigDecimal("10.00"),
-                        new BigDecimal("5.00"),
-                        BigDecimal.ZERO,
-                        3L,
-                        "SPU",
-                        null,
-                        null);
-        return new SettlementQuote(
-                List.of(item),
+            new SettlementItem(
+                2L,
+                "SKU",
+                "商品",
+                new BigDecimal("10.00"),
+                1,
                 new BigDecimal("10.00"),
                 new BigDecimal("5.00"),
-                new BigDecimal("5.00"),
+                BigDecimal.ZERO,
+                3L,
+                "SPU",
                 null,
-                100L,
-                0L);
+                null);
+        return new SettlementQuote(
+            List.of(item),
+            new BigDecimal("10.00"),
+            new BigDecimal("5.00"),
+            new BigDecimal("5.00"),
+            null,
+            100L,
+            0L);
     }
 
     @Test
@@ -74,45 +76,45 @@ class SettlementPromotionPreparationTest {
         assertEquals(new BigDecimal("5.00"), result.order().totalAmount());
         assertEquals(100L, result.order().usePoint());
         Mockito.verify(records)
-                .save(Mockito.any(SettlementRecord.class), Mockito.any(SettlementOrder.class));
+            .save(Mockito.any(SettlementRecord.class), Mockito.any(SettlementOrder.class));
     }
 
     @Test
     void repeatedRequestReturnsOriginalSnapshotWithoutPricing() {
         var previous =
-                new SettlementOrder(
-                        7L,
-                        "TR1",
-                        1L,
-                        new BigDecimal("5.00"),
-                        "PENDING_PAYMENT",
-                        quote().items(),
-                        null,
-                        100L,
-                        0L,
-                        null);
+            new SettlementOrder(
+                7L,
+                "TR1",
+                1L,
+                new BigDecimal("5.00"),
+                "PENDING_PAYMENT",
+                quote().items(),
+                null,
+                100L,
+                0L,
+                null);
         Mockito.when(records.findRequest(1L, "REQ1"))
-                .thenReturn(
-                        new SettlementRecord(
-                                "TR1",
-                                1L,
-                                "REQ1",
-                                "FP",
-                                new BigDecimal("10.00"),
-                                new BigDecimal("5.00"),
-                                new BigDecimal("5.00"),
-                                null,
-                                List.of()));
+            .thenReturn(
+                new SettlementRecord(
+                    "TR1",
+                    1L,
+                    "REQ1",
+                    "FP",
+                    new BigDecimal("10.00"),
+                    new BigDecimal("5.00"),
+                    new BigDecimal("5.00"),
+                    null,
+                    List.of()));
         Mockito.when(orders.findByOrderNo("TR1")).thenReturn(previous);
         var result =
-                service.preparePromotion(
-                        1L,
-                        "REQ1",
-                        "FP",
-                        () -> {
-                            throw new IllegalStateException("不应重新计价");
-                        },
-                        List.of());
+            service.preparePromotion(
+                1L,
+                "REQ1",
+                "FP",
+                () -> {
+                    throw new IllegalStateException("不应重新计价");
+                },
+                List.of());
         assertFalse(result.created());
         assertSame(previous, result.order());
         Mockito.verifyNoInteractions(pricing);
@@ -121,19 +123,19 @@ class SettlementPromotionPreparationTest {
     @Test
     void changedFingerprintIsRejected() {
         Mockito.when(records.findRequest(1L, "REQ1"))
-                .thenReturn(
-                        new SettlementRecord(
-                                "TR1",
-                                1L,
-                                "REQ1",
-                                "OTHER",
-                                BigDecimal.ZERO,
-                                BigDecimal.ZERO,
-                                BigDecimal.ZERO,
-                                null,
-                                List.of()));
+            .thenReturn(
+                new SettlementRecord(
+                    "TR1",
+                    1L,
+                    "REQ1",
+                    "OTHER",
+                    BigDecimal.ZERO,
+                    BigDecimal.ZERO,
+                    BigDecimal.ZERO,
+                    null,
+                    List.of()));
         assertThrows(
-                IllegalStateException.class,
-                () -> service.preparePromotion(1L, "REQ1", "FP", this::quote, List.of()));
+            IllegalStateException.class,
+            () -> service.preparePromotion(1L, "REQ1", "FP", this::quote, List.of()));
     }
 }

@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
-/** 小程序订单查询接口。 */
+/**
+ * 小程序订单查询接口。
+ */
 @Tag(name = "小程序订单查询")
 @RestController
 @RequestMapping("/mall/app")
@@ -33,8 +35,8 @@ public class AppOrderController {
         Long memberId = SecurityUtils.getUserId();
         var value = checkoutReceiptQueryExe.execute(memberId, orderNo);
         return value == null
-                ? R.fail("订单不存在")
-                : R.ok(SettlementQuoteResConverter.checkoutReceiptToMallAppOrderOrderRes(value));
+            ? R.fail("订单不存在")
+            : R.ok(SettlementQuoteResConverter.checkoutReceiptToMallAppOrderOrderRes(value));
     }
 
     @GetMapping("/checkout/requests/{requestNo}")
@@ -42,10 +44,10 @@ public class AppOrderController {
     public R<MallAppOrderRecoverRes> recover(@PathVariable String requestNo) {
         Long memberId = SecurityUtils.getUserId();
         var value =
-                settlementRequestDetailQueryExe.execute(
-                        SettlementReqConverter.request(memberId, requestNo));
+            settlementRequestDetailQueryExe.execute(
+                SettlementReqConverter.request(memberId, requestNo));
         return value == null
-                ? R.fail("暂未查到订单，请保留原请求重试或继续核验")
-                : R.ok(SettlementQuoteResConverter.checkoutReceiptToMallAppOrderRecoverRes(value));
+            ? R.fail("暂未查到订单，请保留原请求重试或继续核验")
+            : R.ok(SettlementQuoteResConverter.checkoutReceiptToMallAppOrderRecoverRes(value));
     }
 }

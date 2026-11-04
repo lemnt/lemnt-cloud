@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 只读写经验表，不跨存储查找同编号记录。 */
+/**
+ * 只读写经验表，不跨存储查找同编号记录。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberExperienceRecordGatewayImpl implements MemberExperienceRecordGateway {
@@ -23,11 +25,11 @@ public class MemberExperienceRecordGatewayImpl implements MemberExperienceRecord
     @Override
     public AssetRecord request(Long memberId, String code, String bizId) {
         return ExperienceRecordConverter.toModel(
-                mapper.selectOne(
-                        Wrappers.lambdaQuery(ExperienceRecordDO.class)
-                                .eq(ExperienceRecordDO::getUserId, memberId)
-                                .eq(ExperienceRecordDO::getBizCode, code)
-                                .eq(ExperienceRecordDO::getBizId, bizId)));
+            mapper.selectOne(
+                Wrappers.lambdaQuery(ExperienceRecordDO.class)
+                    .eq(ExperienceRecordDO::getUserId, memberId)
+                    .eq(ExperienceRecordDO::getBizCode, code)
+                    .eq(ExperienceRecordDO::getBizId, bizId)));
     }
 
     @Override
@@ -54,14 +56,14 @@ public class MemberExperienceRecordGatewayImpl implements MemberExperienceRecord
     @Override
     public long returned(Long memberId, String code, String orderNo) {
         return mapper
-                .selectList(
-                        Wrappers.lambdaQuery(ExperienceRecordDO.class)
-                                .eq(ExperienceRecordDO::getUserId, memberId)
-                                .eq(ExperienceRecordDO::getBizCode, code)
-                                .likeRight(ExperienceRecordDO::getBizId, orderNo + ":"))
-                .stream()
-                .filter(row -> row.getBizId() != null && row.getBizId().startsWith(orderNo + ":"))
-                .mapToLong(ExperienceRecordDO::getExperience)
-                .sum();
+            .selectList(
+                Wrappers.lambdaQuery(ExperienceRecordDO.class)
+                    .eq(ExperienceRecordDO::getUserId, memberId)
+                    .eq(ExperienceRecordDO::getBizCode, code)
+                    .likeRight(ExperienceRecordDO::getBizId, orderNo + ":"))
+            .stream()
+            .filter(row -> row.getBizId() != null && row.getBizId().startsWith(orderNo + ":"))
+            .mapToLong(ExperienceRecordDO::getExperience)
+            .sum();
     }
 }

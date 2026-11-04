@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 好友助力执行器。 */
+/**
+ * 好友助力执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class BargainHelpCreateCmdExe {

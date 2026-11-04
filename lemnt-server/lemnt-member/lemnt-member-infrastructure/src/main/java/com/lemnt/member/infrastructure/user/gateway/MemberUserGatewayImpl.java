@@ -17,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** member_user 表持久化实现。 */
+/**
+ * member_user 表持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberUserGatewayImpl implements MemberUserGateway {
@@ -27,15 +29,17 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
     /**
      * 获取数据库当前时间。
      */
-    /** 登录审计不通过资料更新覆盖其他字段。 */
+    /**
+     * 登录审计不通过资料更新覆盖其他字段。
+     */
     @Override
     public void recordLogin(Long memberId, LocalDateTime loginDate, String loginIp) {
         memberUserMapper.update(
-                null,
-                Wrappers.lambdaUpdate(MemberDO.class)
-                        .eq(MemberDO::getId, memberId)
-                        .set(MemberDO::getLoginDate, loginDate)
-                        .set(MemberDO::getLoginIp, loginIp));
+            null,
+            Wrappers.lambdaUpdate(MemberDO.class)
+                .eq(MemberDO::getId, memberId)
+                .set(MemberDO::getLoginDate, loginDate)
+                .set(MemberDO::getLoginIp, loginIp));
     }
 
     @Override
@@ -96,19 +100,25 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
         assignGroupRow(memberId, groupId);
     }
 
-    /** 按手机号查找会员。 */
+    /**
+     * 按手机号查找会员。
+     */
     @Override
     public Member findByMobile(String mobile) {
         return MemberConverter.toEntity(findByMobileRow(mobile));
     }
 
-    /** 按邮箱查找会员。 */
+    /**
+     * 按邮箱查找会员。
+     */
     @Override
     public Member findByEmail(String email) {
         return MemberConverter.toEntity(findByEmailRow(email));
     }
 
-    /** 保存新会员并读取数据库默认值。 */
+    /**
+     * 保存新会员并读取数据库默认值。
+     */
     @Override
     public Member save(Member member) {
         var row = MemberConverter.toDO(member);
@@ -138,13 +148,17 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
         assignLevelRow(memberId, levelId);
     }
 
-    /** 读取会员表密码，仅在应用层事务中用于登录或改密。 */
+    /**
+     * 读取会员表密码，仅在应用层事务中用于登录或改密。
+     */
     @Override
     public String findPasswordByMemberId(Long memberId) {
         return findPasswordByMemberIdRow(memberId);
     }
 
-    /** 写入由默认密码组件生成的哈希。 */
+    /**
+     * 写入由默认密码组件生成的哈希。
+     */
     @Override
     public void updatePassword(Long memberId, String password) {
         if (updatePasswordRow(memberId, password) != 1) {
@@ -157,19 +171,19 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     private int profileUpdateRow(MemberDO value) {
         return memberUserMapper.update(
-                null,
-                Wrappers.<MemberDO>lambdaUpdate()
-                        .set(MemberDO::getNickname, value.getNickname())
-                        .set(MemberDO::getMobile, value.getMobile())
-                        .set(MemberDO::getMark, value.getMark())
-                        .set(MemberDO::getName, value.getName())
-                        .set(MemberDO::getAreaId, value.getAreaId())
-                        .set(MemberDO::getEmail, value.getEmail())
-                        .set(MemberDO::getAvatar, value.getAvatar())
-                        .set(MemberDO::getStatus, value.getStatus())
-                        .set(MemberDO::getSex, value.getSex())
-                        .set(MemberDO::getBirthday, value.getBirthday())
-                        .eq(MemberDO::getId, value.getId()));
+            null,
+            Wrappers.<MemberDO>lambdaUpdate()
+                .set(MemberDO::getNickname, value.getNickname())
+                .set(MemberDO::getMobile, value.getMobile())
+                .set(MemberDO::getMark, value.getMark())
+                .set(MemberDO::getName, value.getName())
+                .set(MemberDO::getAreaId, value.getAreaId())
+                .set(MemberDO::getEmail, value.getEmail())
+                .set(MemberDO::getAvatar, value.getAvatar())
+                .set(MemberDO::getStatus, value.getStatus())
+                .set(MemberDO::getSex, value.getSex())
+                .set(MemberDO::getBirthday, value.getBirthday())
+                .eq(MemberDO::getId, value.getId()));
     }
 
     /**
@@ -177,22 +191,26 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     private int assignGroupRow(Long memberId, Long groupId) {
         return memberUserMapper.update(
-                null,
-                Wrappers.<MemberDO>lambdaUpdate()
-                        .set(MemberDO::getGroupId, groupId)
-                        .eq(MemberDO::getId, memberId));
+            null,
+            Wrappers.<MemberDO>lambdaUpdate()
+                .set(MemberDO::getGroupId, groupId)
+                .eq(MemberDO::getId, memberId));
     }
 
-    /** 按手机号查找会员。 */
+    /**
+     * 按手机号查找会员。
+     */
     private MemberDO findByMobileRow(String mobile) {
         return memberUserMapper.selectOne(
-                Wrappers.<MemberDO>lambdaQuery().eq(MemberDO::getMobile, mobile).last("LIMIT 1"));
+            Wrappers.<MemberDO>lambdaQuery().eq(MemberDO::getMobile, mobile).last("LIMIT 1"));
     }
 
-    /** 按邮箱查找会员。 */
+    /**
+     * 按邮箱查找会员。
+     */
     private MemberDO findByEmailRow(String email) {
         return memberUserMapper.selectOne(
-                Wrappers.<MemberDO>lambdaQuery().eq(MemberDO::getEmail, email).last("LIMIT 1"));
+            Wrappers.<MemberDO>lambdaQuery().eq(MemberDO::getEmail, email).last("LIMIT 1"));
     }
 
     /**
@@ -200,10 +218,10 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     private int pointsRow(Long memberId, Long balance) {
         return memberUserMapper.update(
-                null,
-                Wrappers.<MemberDO>lambdaUpdate()
-                        .set(MemberDO::getPoints, balance)
-                        .eq(MemberDO::getId, memberId));
+            null,
+            Wrappers.<MemberDO>lambdaUpdate()
+                .set(MemberDO::getPoints, balance)
+                .eq(MemberDO::getId, memberId));
     }
 
     /**
@@ -211,10 +229,10 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     private int experienceRow(Long memberId, Long balance) {
         return memberUserMapper.update(
-                null,
-                Wrappers.<MemberDO>lambdaUpdate()
-                        .set(MemberDO::getExperience, balance)
-                        .eq(MemberDO::getId, memberId));
+            null,
+            Wrappers.<MemberDO>lambdaUpdate()
+                .set(MemberDO::getExperience, balance)
+                .eq(MemberDO::getId, memberId));
     }
 
     /**
@@ -222,28 +240,32 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     private int assignLevelRow(Long memberId, Long levelId) {
         return memberUserMapper.update(
-                null,
-                Wrappers.<MemberDO>lambdaUpdate()
-                        .set(MemberDO::getLevelId, levelId)
-                        .eq(MemberDO::getId, memberId));
+            null,
+            Wrappers.<MemberDO>lambdaUpdate()
+                .set(MemberDO::getLevelId, levelId)
+                .eq(MemberDO::getId, memberId));
     }
 
-    /** 读取既有会员表中的密码哈希。 */
+    /**
+     * 读取既有会员表中的密码哈希。
+     */
     private String findPasswordByMemberIdRow(Long memberId) {
         MemberDO member =
-                memberUserMapper.selectOne(
-                        Wrappers.<MemberDO>lambdaQuery()
-                                .select(MemberDO::getId, MemberDO::getPassword)
-                                .eq(MemberDO::getId, memberId));
+            memberUserMapper.selectOne(
+                Wrappers.<MemberDO>lambdaQuery()
+                    .select(MemberDO::getId, MemberDO::getPassword)
+                    .eq(MemberDO::getId, memberId));
         return member == null ? null : member.getPassword();
     }
 
-    /** 更新既有会员表中的密码哈希。 */
+    /**
+     * 更新既有会员表中的密码哈希。
+     */
     private int updatePasswordRow(Long memberId, String password) {
         return memberUserMapper.update(
-                null,
-                Wrappers.<MemberDO>lambdaUpdate()
-                        .set(MemberDO::getPassword, password)
-                        .eq(MemberDO::getId, memberId));
+            null,
+            Wrappers.<MemberDO>lambdaUpdate()
+                .set(MemberDO::getPassword, password)
+                .eq(MemberDO::getId, memberId));
     }
 }

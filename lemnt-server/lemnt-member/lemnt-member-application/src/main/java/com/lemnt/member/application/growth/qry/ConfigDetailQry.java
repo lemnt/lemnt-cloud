@@ -5,4 +5,5 @@ import java.io.Serializable;
 /**
  * 配置查询。
  */
-public record ConfigDetailQry() implements Serializable {}
+public record ConfigDetailQry() implements Serializable {
+}

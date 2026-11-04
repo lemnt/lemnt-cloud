@@ -11,22 +11,25 @@ import com.lemnt.pay.application.payment.dto.WalletTransactionDTO;
 import com.lemnt.pay.application.payment.qry.WalletPageQry;
 import com.lemnt.pay.application.payment.qry.WalletTransactionPageQry;
 
-/** 钱包请求与响应转换。 */
+/**
+ * 钱包请求与响应转换。
+ */
 public final class WalletResConverter {
-    private WalletResConverter() {}
+    private WalletResConverter() {
+    }
 
     public static WalletPageQry page(WalletPageReq req) {
         return new WalletPageQry(
-                req.memberId(),
-                req.pageNum() == null ? 1 : req.pageNum(),
-                req.pageSize() == null ? 20 : req.pageSize());
+            req.memberId(),
+            req.pageNum() == null ? 1 : req.pageNum(),
+            req.pageSize() == null ? 20 : req.pageSize());
     }
 
     public static WalletTransactionPageQry transactions(WalletTransactionPageReq req) {
         return new WalletTransactionPageQry(
-                req.bizType(),
-                req.pageNum() == null ? 1 : req.pageNum(),
-                req.pageSize() == null ? 20 : req.pageSize());
+            req.bizType(),
+            req.pageNum() == null ? 1 : req.pageNum(),
+            req.pageSize() == null ? 20 : req.pageSize());
     }
 
     public static WalletAdjustCmd adjust(WalletAdjustReq req) {
@@ -35,27 +38,27 @@ public final class WalletResConverter {
 
     public static WalletRes wallet(WalletDTO value) {
         return value == null
-                ? null
-                : new WalletRes(
-                        value.id(),
-                        value.memberId(),
-                        value.balance(),
-                        value.freezePrice(),
-                        value.totalExpense(),
-                        value.totalRecharge(),
-                        value.createTime());
+            ? null
+            : new WalletRes(
+            value.id(),
+            value.memberId(),
+            value.balance(),
+            value.freezePrice(),
+            value.totalExpense(),
+            value.totalRecharge(),
+            value.createTime());
     }
 
     public static WalletTransactionRes transaction(WalletTransactionDTO value) {
         return value == null
-                ? null
-                : new WalletTransactionRes(
-                        value.transactionNo(),
-                        value.bizType(),
-                        value.bizNo(),
-                        value.title(),
-                        value.amount(),
-                        value.balanceAfter(),
-                        value.createTime());
+            ? null
+            : new WalletTransactionRes(
+            value.transactionNo(),
+            value.bizType(),
+            value.bizNo(),
+            value.title(),
+            value.amount(),
+            value.balanceAfter(),
+            value.createTime());
     }
 }

@@ -17,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/** Shipment 表持久化实现。 */
+/**
+ * Shipment 表持久化实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class ShipmentGatewayImpl implements ShipmentGateway {
@@ -26,25 +28,25 @@ public class ShipmentGatewayImpl implements ShipmentGateway {
     @Override
     public PageResult<Shipment> page(ShipmentFilter filter) {
         var query =
-                Wrappers.lambdaQuery(ShipmentDO.class)
-                        .eq(filter.orderNo() != null, ShipmentDO::getOrderNo, filter.orderNo())
-                        .eq(
-                                filter.carrierCode() != null,
-                                ShipmentDO::getCarrierCode,
-                                filter.carrierCode())
-                        .eq(
-                                filter.trackingNo() != null,
-                                ShipmentDO::getTrackingNo,
-                                filter.trackingNo())
-                        .isNull("SHIPPED".equals(filter.status()), ShipmentDO::getReceivedAt)
-                        .isNotNull("RECEIVED".equals(filter.status()), ShipmentDO::getReceivedAt)
-                        .orderByDesc(ShipmentDO::getShippedAt)
-                        .orderByDesc(ShipmentDO::getOrderNo);
+            Wrappers.lambdaQuery(ShipmentDO.class)
+                .eq(filter.orderNo() != null, ShipmentDO::getOrderNo, filter.orderNo())
+                .eq(
+                    filter.carrierCode() != null,
+                    ShipmentDO::getCarrierCode,
+                    filter.carrierCode())
+                .eq(
+                    filter.trackingNo() != null,
+                    ShipmentDO::getTrackingNo,
+                    filter.trackingNo())
+                .isNull("SHIPPED".equals(filter.status()), ShipmentDO::getReceivedAt)
+                .isNotNull("RECEIVED".equals(filter.status()), ShipmentDO::getReceivedAt)
+                .orderByDesc(ShipmentDO::getShippedAt)
+                .orderByDesc(ShipmentDO::getOrderNo);
         var page =
-                shipmentMapper.selectPage(new Page<>(filter.pageNum(), filter.pageSize()), query);
+            shipmentMapper.selectPage(new Page<>(filter.pageNum(), filter.pageSize()), query);
         return PageResult.of(
-                page.getRecords().stream().map(FulfillmentConverter::shipment).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(FulfillmentConverter::shipment).toList(),
+            page.getTotal());
     }
 
     @Override
@@ -74,15 +76,15 @@ public class ShipmentGatewayImpl implements ShipmentGateway {
     @Override
     public List<String> shippedBefore(LocalDateTime cutoff, int limit) {
         return shipmentMapper
-                .selectList(
-                        Wrappers.<ShipmentDO>lambdaQuery()
-                                .isNull(ShipmentDO::getReceivedAt)
-                                .le(ShipmentDO::getShippedAt, cutoff)
-                                .orderByAsc(ShipmentDO::getShippedAt)
-                                .last("LIMIT " + Math.max(limit, 1)))
-                .stream()
-                .map(ShipmentDO::getOrderNo)
-                .toList();
+            .selectList(
+                Wrappers.<ShipmentDO>lambdaQuery()
+                    .isNull(ShipmentDO::getReceivedAt)
+                    .le(ShipmentDO::getShippedAt, cutoff)
+                    .orderByAsc(ShipmentDO::getShippedAt)
+                    .last("LIMIT " + Math.max(limit, 1)))
+            .stream()
+            .map(ShipmentDO::getOrderNo)
+            .toList();
     }
 
     /**
@@ -90,7 +92,7 @@ public class ShipmentGatewayImpl implements ShipmentGateway {
      */
     private ShipmentDO shipmentRow(String orderNo) {
         return shipmentMapper.selectOne(
-                Wrappers.<ShipmentDO>lambdaQuery().eq(ShipmentDO::getOrderNo, orderNo));
+            Wrappers.<ShipmentDO>lambdaQuery().eq(ShipmentDO::getOrderNo, orderNo));
     }
 
     /**

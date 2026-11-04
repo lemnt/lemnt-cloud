@@ -8,7 +8,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/** 装修模板持久化对象。 */
+/**
+ * 装修模板持久化对象。
+ */
 @Data
 @TableName("promotion_diy_template")
 public class DiyTemplateDO {

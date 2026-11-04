@@ -138,12 +138,12 @@ executor/AdSlotEnableListQueryExe.java // 查询启用的广告位列表
 
 **查询类型：**
 
-| 查询类型 | 用途     | Qry 示例          | 返回                    |
-|----------|----------|-------------------|-------------------------|
-| `Page`   | 分页查询 | `ConfigPageQry`   | `PageResult<ConfigDTO>` |
-| `Detail` | 单个详情 | 单个 ID 可直接传参 | `ConfigDTO`           |
-| `List`   | 列表查询 | `DeptListQry`     | `List<DeptDTO>`         |
-| `Tree`   | 树结构   | `DeptTreeQry`     | `List<TreeSelect>`      |
+| 查询类型 | 用途     | Qry 示例           | 返回                    |
+|----------|----------|--------------------|-------------------------|
+| `Page`   | 分页查询 | `ConfigPageQry`    | `PageResult<ConfigDTO>` |
+| `Detail` | 单个详情 | 单个 ID 可直接传参 | `ConfigDTO`             |
+| `List`   | 列表查询 | `DeptListQry`      | `List<DeptDTO>`         |
+| `Tree`   | 树结构   | `DeptTreeQry`      | `List<TreeSelect>`      |
 
 `PageResult` 位于 `lemnt-common-domain`（`com.lemnt.common.domain.model.PageResult`）。
 
@@ -220,7 +220,8 @@ public R<AdSlotRes> detail(@PathVariable Long adSlotId) {
 
 - 新增 Req/Res 优先使用 `record` 并实现 `Serializable`
 - 每个 Req/Res 类型必须添加类级 `@Schema(description = "...")`；对需要固定模型名的类型可同时指定 `name`
-- Req/Res 的每个对外字段或 record component 必须添加 `@Schema(description = "...")`；枚举值、单位、格式不直观时在描述中写清，并按需提供 `example`
+- Req/Res 的每个对外字段或 record component 必须添加 `@Schema(description = "...")`；枚举值、单位、格式不直观时在描述中写清，并按需提供
+  `example`
 - Bean Validation 注解只放在 Req：如 `@NotNull`、`@NotBlank`、`@NotEmpty`、`@Size`
 - Controller 必须使用 `@Tag`，公开接口方法必须使用 `@Operation`
 - Application 的 Cmd/Qry/DTO、Domain 模型、Infrastructure DO 不添加 Swagger 注解
@@ -240,13 +241,13 @@ public record AdSlotAddReq(
 
 ### 每层对象职责
 
-| 层                             | 入参          | 出参   | 转换方式                                            |
-|--------------------------------|---------------|--------|-----------------------------------------------------|
-| **Adapter**（HTTP）            | `Req`         | `Res`  | ReqConverter / ResConverter                        |
-| **Application**（CQRS）        | `Cmd` / `Qry` | `DTO`  | Executor 输入输出契约                              |
-| **Domain**（领域）             | Domain Model  | Domain Model | 领域行为与契约，无 Web/持久化注解              |
-| **Infrastructure**（基础设施） | Domain Model  | Domain Model | 内部使用 DO/第三方对象，通过 Converter 隔离    |
-| **Client / Dubbo**             | `Bo`          | `DTO`  | 跨服务 RPC 契约，独立设计                          |
+| 层                             | 入参          | 出参         | 转换方式                                    |
+|--------------------------------|---------------|--------------|---------------------------------------------|
+| **Adapter**（HTTP）            | `Req`         | `Res`        | ReqConverter / ResConverter                 |
+| **Application**（CQRS）        | `Cmd` / `Qry` | `DTO`        | Executor 输入输出契约                       |
+| **Domain**（领域）             | Domain Model  | Domain Model | 领域行为与契约，无 Web/持久化注解           |
+| **Infrastructure**（基础设施） | Domain Model  | Domain Model | 内部使用 DO/第三方对象，通过 Converter 隔离 |
+| **Client / Dubbo**             | `Bo`          | `DTO`        | 跨服务 RPC 契约，独立设计                   |
 
 **绑定规则：**
 
@@ -266,24 +267,25 @@ Dubbo 接口 → Bo/DTO 独立设计
 
 ### 命名
 
-Java类型统一使用显式import和短名，包括`Map<Long, Integer>`、`implements Serializable`及静态工具调用。不在代码表达式中书写类型包路径；字符串、反射类名和XML映射中的真实包名仍需保留。
+Java类型统一使用显式import和短名，包括`Map<Long, Integer>`、`implements Serializable`
+及静态工具调用。不在代码表达式中书写类型包路径；字符串、反射类名和XML映射中的真实包名仍需保留。
 
-| 类型           | 规则                                        | 示例                 | 所属模块                              |
-|----------------|---------------------------------------------|----------------------|---------------------------------------|
-| Controller     | `{聚合}Controller`                          | `RoleController`     | adapter                               |
-| HTTP 请求      | `{聚合}{动词}Req`                           | `AdSlotAddReq`       | adapter                               |
-| HTTP 响应      | `{聚合}Res`                                 | `AdSlotRes`          | adapter                               |
-| Req/Res 转换器 | `{聚合}ReqConverter` / `{聚合}ResConverter` | `AdSlotReqConverter` | adapter                               |
-| 命令对象       | `{聚合}{动词}Cmd`                           | `ConfigAddCmd`       | application                           |
-| 查询对象       | `{聚合}{查询类型}Qry`                       | `ConfigPageQry`      | application                           |
-| 传输对象       | `{聚合}DTO`                                 | `ConfigDTO`          | application（`{domain}/dto/`）        |
-| 命令执行器     | `{聚合}{动词}CmdExe`                        | `ConfigAddCmdExe`    | application                           |
-| 查询执行器     | `{聚合}{查询类型}QueryExe`                  | `ConfigPageQueryExe` | application                           |
-| 领域实体       | `{聚合}`                                    | `Config`             | domain                                |
-| 数据对象       | `{聚合}DO`                                  | `ConfigDO`           | infrastructure                        |
-| Dubbo 接口     | `{能力}Client`；system保留旧Remote*Service | `TradeOrderClient`  | `-client` 模块；已有api包名兼容 |
-| Dubbo 出参     | `{聚合}DTO`                                 | `UserInfoDTO`        | `-client` 模块                        |
-| Dubbo 入参     | `{聚合}Bo`                                  | `UserBo`             | `-client` 模块                        |
+| 类型           | 规则                                        | 示例                 | 所属模块                        |
+|----------------|---------------------------------------------|----------------------|---------------------------------|
+| Controller     | `{聚合}Controller`                          | `RoleController`     | adapter                         |
+| HTTP 请求      | `{聚合}{动词}Req`                           | `AdSlotAddReq`       | adapter                         |
+| HTTP 响应      | `{聚合}Res`                                 | `AdSlotRes`          | adapter                         |
+| Req/Res 转换器 | `{聚合}ReqConverter` / `{聚合}ResConverter` | `AdSlotReqConverter` | adapter                         |
+| 命令对象       | `{聚合}{动词}Cmd`                           | `ConfigAddCmd`       | application                     |
+| 查询对象       | `{聚合}{查询类型}Qry`                       | `ConfigPageQry`      | application                     |
+| 传输对象       | `{聚合}DTO`                                 | `ConfigDTO`          | application（`{domain}/dto/`）  |
+| 命令执行器     | `{聚合}{动词}CmdExe`                        | `ConfigAddCmdExe`    | application                     |
+| 查询执行器     | `{聚合}{查询类型}QueryExe`                  | `ConfigPageQueryExe` | application                     |
+| 领域实体       | `{聚合}`                                    | `Config`             | domain                          |
+| 数据对象       | `{聚合}DO`                                  | `ConfigDO`           | infrastructure                  |
+| Dubbo 接口     | `{能力}Client`；system保留旧Remote*Service  | `TradeOrderClient`   | `-client` 模块；已有api包名兼容 |
+| Dubbo 出参     | `{聚合}DTO`                                 | `UserInfoDTO`        | `-client` 模块                  |
+| Dubbo 入参     | `{聚合}Bo`                                  | `UserBo`             | `-client` 模块                  |
 
 **命名要点（易错）：**
 
@@ -298,8 +300,10 @@ Java类型统一使用显式import和短名，包括`Map<Long, Integer>`、`impl
 ## MyBatis Plus 持久化规范
 
 - Mapper 按数据库表继承 `BaseMapper<DO>`；已有的插入、按主键查询、更新、删除方法直接复用，不再新增同义方法或默认包装方法。
-- 普通条件查询、分页及更新在 GatewayImpl 中使用 Lambda 条件构造器；支持的字段增减使用 `setIncrBy` / `setDecrBy`，保留原有状态和并发约束。
-- 多表关联、复杂限额条件、数据库函数、原子 upsert 等无法清晰使用 Lambda 表达的操作放在 Mapper XML；不在 Java 注解或字符串常量中编写 SQL，也不通过 `apply` / `setSql` 拼接复杂 SQL。
+- 普通条件查询、分页及更新在 GatewayImpl 中使用 Lambda 条件构造器；支持的字段增减使用 `setIncrBy` / `setDecrBy`
+  ，保留原有状态和并发约束。
+- 多表关联、复杂限额条件、数据库函数、原子 upsert 等无法清晰使用 Lambda 表达的操作放在 Mapper XML；不在 Java 注解或字符串常量中编写
+  SQL，也不通过 `apply` / `setSql` 拼接复杂 SQL。
 - 带行锁的查询在 XML 显式设置useCache="false"及flushCache="true"，避免用缓存结果代替实际加锁；同事务重复锁也必须执行SQL。
 - Mapper不放default方法和private条件构造器；条件在对应GatewayImpl复用，数据库特定操作保持XML。
 - XML 沿用 `src/main/resources/mapper/` 根目录，兼容现有配置扫描路径；联合主键使用完整 Lambda 条件，不为使用按 ID 方法虚构主键。
@@ -414,27 +418,27 @@ Controller 当前直接放在 `adapter.web.{domain}` 包下，不额外创建 `c
 
 以 lemnt-system 为例的实际依赖：
 
-| 模块                    | 依赖的内部模块                                                  |
-|-------------------------|-----------------------------------------------------------------|
-| `lemnt-system-client`         | 无（仅 `lemnt-common-client`）                                     |
+| 模块                          | 依赖的内部模块                                                              |
+|-------------------------------|-----------------------------------------------------------------------------|
+| `lemnt-system-client`         | 无（仅 `lemnt-common-client`）                                              |
 | `lemnt-system-domain`         | `lemnt-system-client`、`lemnt-common-domain`、`lemnt-common-core`           |
-| `lemnt-system-application`    | `lemnt-system-domain`、`lemnt-system-client`、`lemnt-common-application`       |
+| `lemnt-system-application`    | `lemnt-system-domain`、`lemnt-system-client`、`lemnt-common-application`    |
 | `lemnt-system-infrastructure` | `lemnt-system-domain`、`lemnt-common-mybatis`、`lemnt-common-datasource` 等 |
-| `lemnt-system-adapter`        | `lemnt-system-application`、`lemnt-common-adapter`                       |
-| `lemnt-system-start`          | `lemnt-system-adapter`、`lemnt-system-infrastructure`、`lemnt-common-start`    |
+| `lemnt-system-adapter`        | `lemnt-system-application`、`lemnt-common-adapter`                          |
+| `lemnt-system-start`          | `lemnt-system-adapter`、`lemnt-system-infrastructure`、`lemnt-common-start` |
 
 **依赖方向：** 箭头单向， **`application` 绝不依赖 `infrastructure`**。
 
 **各模块职责与依赖：**
 
-| 模块                 | 依赖                         | 说明                                                               |
-|----------------------|------------------------------|--------------------------------------------------------------------|
+| 模块                 | 依赖                         | 说明                                                                  |
+|----------------------|------------------------------|-----------------------------------------------------------------------|
 | `xxx-client`         | 无内部依赖                   | `Remote*Service` Dubbo 接口、DTO、Bo（包名 `com.lemnt.{module}.api`） |
-| `xxx-domain`         | `client`                     | Entity、Gateway 接口                                               |
-| `xxx-infrastructure` | `domain`                     | GatewayImpl、DO、Mapper                                            |
-| `xxx-application`    | `domain`                     | Cmd/Qry、Executor、`@DubboService` 实现                            |
-| `xxx-adapter`        | `application`                | Controller、Req/Res                                                |
-| `xxx-start`          | `adapter` + `infrastructure` | Spring Boot 启动类                                                 |
+| `xxx-domain`         | `client`                     | Entity、Gateway 接口                                                  |
+| `xxx-infrastructure` | `domain`                     | GatewayImpl、DO、Mapper                                               |
+| `xxx-application`    | `domain`                     | Cmd/Qry、Executor、`@DubboService` 实现                               |
+| `xxx-adapter`        | `application`                | Controller、Req/Res                                                   |
+| `xxx-start`          | `adapter` + `infrastructure` | Spring Boot 启动类                                                    |
 
 **注意：** 接口定义模块叫 `xxx-client`，不是 `xxx-api`。lemnt-auth 与 lemnt-open 目前没有 client 模块。
 
@@ -474,7 +478,8 @@ Controller 当前直接放在 `adapter.web.{domain}` 包下，不额外创建 `c
 
 ## 代码格式规范
 
-采用[统一代码规范](../docs/code-standards.md)和`scripts/format_java.py`：固定版本AOSP四空格格式、项目导入分组。格式工具保留长字符串和Javadoc正文；不手工对抗工具输出。下面示例用于说明可读性，实际换行以工具为准。
+采用[统一代码规范](../docs/code-standards.md)和`scripts/format_java.py`
+：固定版本AOSP四空格格式、项目导入分组。格式工具保留长字符串和Javadoc正文；不手工对抗工具输出。下面示例用于说明可读性，实际换行以工具为准。
 
 ### 换行
 
@@ -523,7 +528,8 @@ import org.springframework.stereotype.Component;
 
 ### import 顺序
 
-注解必须import后使用短名，例如`@Schema(...)`、`@Transactional(...)`；禁止`@io.swagger...Schema(...)`一类全限定写法。由Java格式工具一并检查和规范化。
+注解必须import后使用短名，例如`@Schema(...)`、`@Transactional(...)`；禁止`@io.swagger...Schema(...)`
+一类全限定写法。由Java格式工具一并检查和规范化。
 
 ```
 1. 内部模块（com.lemnt.*）
@@ -572,11 +578,12 @@ Bean。 **密钥缺失或不足 64 字节时应用启动直接失败**（HS512 �
 
 ### 数据库脚本（sql 目录）
 
-| 文件                | 内容                                                                                        |
-|---------------------|---------------------------------------------------------------------------------------------|
-| `lemnt_system.sql`     | 系统库表结构（`sys_*`）与初始化数据，**建表使用 DROP + CREATE**                             |
+| 文件               | 内容                                                            |
+|--------------------|-----------------------------------------------------------------|
+| `lemnt_system.sql` | 系统库表结构（`sys_*`）与初始化数据，**建表使用 DROP + CREATE** |
 
-member、product、promotion、order、pay各使用所属服务`sql/lemnt_{服务}.sql`，只含最终CREATE TABLE及必要INSERT，不用初始化文件升级旧库。旧mall/trade脚本仅供迁移清理前核对，已不属于默认构建入口。system的现有脚本不调整。详见[配置与切流准备](../docs/module-split-cutover.md)。
+member、product、promotion、order、pay各使用所属服务`sql/lemnt_{服务}.sql`，只含最终CREATE
+TABLE及必要INSERT，不用初始化文件升级旧库。旧mall/trade脚本仅供迁移清理前核对，已不属于默认构建入口。system的现有脚本不调整。详见[配置与切流准备](../docs/module-split-cutover.md)。
 
 ### 单元测试
 
@@ -599,4 +606,5 @@ member、product、promotion、order、pay各使用所属服务`sql/lemnt_{服�
 
 ## 全项目检查
 
-规范入口、数值契约、冻结快照、数据库升级与统一验证命令见[代码规范](../docs/code-standards.md)。根目录运行`python3 scripts/check_architecture.py`检查源码及POM分层、HTTP模型与Mapper规则；业务正确性仍以对应测试和实际环境证据为准。
+规范入口、数值契约、冻结快照、数据库升级与统一验证命令见[代码规范](../docs/code-standards.md)。根目录运行
+`python3 scripts/check_architecture.py`检查源码及POM分层、HTTP模型与Mapper规则；业务正确性仍以对应测试和实际环境证据为准。

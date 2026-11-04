@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-/** BrokerageUser 表 CRUD。 */
+/**
+ * BrokerageUser 表 CRUD。
+ */
 @Mapper
 public interface BrokerageUserMapper extends BaseMapper<BrokerageUserDO> {
     BrokerageUserDO lock(@Param("id") Long id);

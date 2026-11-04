@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
 
-/** Banner 持久化对象。 */
+/**
+ * Banner 持久化对象。
+ */
 @Data
 @TableName("promotion_banner")
 public class BannerDO {

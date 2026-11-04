@@ -7,4 +7,5 @@ import java.io.Serializable;
  *
  * @author wangxx
  */
-public record UnLockCmd(String password) implements Serializable {}
+public record UnLockCmd(String password) implements Serializable {
+}

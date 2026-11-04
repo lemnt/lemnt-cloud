@@ -5,6 +5,9 @@ import com.lemnt.product.infrastructure.product.dataobject.BrandDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
-/** Brand 表数据访问接口。 */
+/**
+ * Brand 表数据访问接口。
+ */
 @Mapper
-public interface BrandMapper extends BaseMapper<BrandDO> {}
+public interface BrandMapper extends BaseMapper<BrandDO> {
+}

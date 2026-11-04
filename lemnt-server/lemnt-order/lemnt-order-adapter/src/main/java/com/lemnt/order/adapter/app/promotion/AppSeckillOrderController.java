@@ -18,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
 
-/** 原活动下单入口，统一由订单服务执行。 */
+/**
+ * 原活动下单入口，统一由订单服务执行。
+ */
 @Tag(name = "活动订单")
 @RestController
 @RequestMapping("/mall/app/seckill")
@@ -30,9 +32,9 @@ public class AppSeckillOrderController {
     @Operation(summary = "秒杀活动下单")
     public R<AppPromotionOrderRes> order(@Valid @RequestBody AppPromotionOrderCreateReq req) {
         return R.ok(
-                AppPromotionOrderConverter.res(
-                        orderPlace.execute(
-                                AppPromotionOrderConverter.cmd(
-                                        SecurityUtils.getUserId(), "SECKILL", req))));
+            AppPromotionOrderConverter.res(
+                orderPlace.execute(
+                    AppPromotionOrderConverter.cmd(
+                        SecurityUtils.getUserId(), "SECKILL", req))));
     }
 }

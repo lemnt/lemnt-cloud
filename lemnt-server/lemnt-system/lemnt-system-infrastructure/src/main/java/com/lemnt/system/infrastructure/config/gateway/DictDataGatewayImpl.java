@@ -22,6 +22,7 @@ import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.annotation.PostConstruct;
+
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -101,12 +102,12 @@ public class DictDataGatewayImpl implements DictDataGateway {
         clearCache();
         List<DictDataDO> query = dictDataMapper.selectList(null);
         Map<String, List<DictDataDO>> dictDataMap =
-                query.stream().collect(Collectors.groupingBy(DictDataDO::getDictType));
+            query.stream().collect(Collectors.groupingBy(DictDataDO::getDictType));
         for (Map.Entry<String, List<DictDataDO>> entry : dictDataMap.entrySet()) {
             List<DictDataDO> sorted =
-                    entry.getValue().stream()
-                            .sorted(Comparator.comparing(DictDataDO::getDictSort))
-                            .collect(Collectors.toList());
+                entry.getValue().stream()
+                    .sorted(Comparator.comparing(DictDataDO::getDictSort))
+                    .collect(Collectors.toList());
             setDictCache(entry.getKey(), DictDataConverter.toEntityList(sorted));
         }
     }
@@ -185,13 +186,17 @@ public class DictDataGatewayImpl implements DictDataGateway {
         return CacheConstants.SYS_DICT_KEY + configKey;
     }
 
-    /** 修改字典项引用的类型名称。 */
+    /**
+     * 修改字典项引用的类型名称。
+     */
     @Override
     public void renameType(String oldType, String newType) {
         updateDictDataTypeRow(oldType, newType);
     }
 
-    /** 从数据库刷新单个字典的数据缓存。 */
+    /**
+     * 从数据库刷新单个字典的数据缓存。
+     */
     @Override
     public void refreshByType(String type) {
         setDictCache(type, DictDataConverter.toEntityList(selectDictDataByTypeRow(type)));
@@ -205,10 +210,10 @@ public class DictDataGatewayImpl implements DictDataGateway {
      */
     private List<DictDataDO> selectDictDataByTypeRow(String dictType) {
         return dictDataMapper.selectList(
-                Wrappers.<DictDataDO>lambdaQuery()
-                        .eq(DictDataDO::getDictType, dictType)
-                        .eq(DictDataDO::getStatus, "1")
-                        .orderByAsc(DictDataDO::getDictSort));
+            Wrappers.<DictDataDO>lambdaQuery()
+                .eq(DictDataDO::getDictType, dictType)
+                .eq(DictDataDO::getStatus, "1")
+                .orderByAsc(DictDataDO::getDictSort));
     }
 
     /**
@@ -220,10 +225,10 @@ public class DictDataGatewayImpl implements DictDataGateway {
      */
     private String selectDictLabelRow(String dictType, String dictValue) {
         DictDataDO dictData =
-                dictDataMapper.selectOne(
-                        Wrappers.<DictDataDO>lambdaQuery()
-                                .eq(DictDataDO::getDictType, dictType)
-                                .eq(DictDataDO::getDictValue, dictValue));
+            dictDataMapper.selectOne(
+                Wrappers.<DictDataDO>lambdaQuery()
+                    .eq(DictDataDO::getDictType, dictType)
+                    .eq(DictDataDO::getDictValue, dictValue));
         return dictData == null ? "" : dictData.getDictLabel();
     }
 
@@ -235,7 +240,7 @@ public class DictDataGatewayImpl implements DictDataGateway {
      */
     private Long countDictDataByTypeRow(String dictType) {
         return dictDataMapper.selectCount(
-                Wrappers.<DictDataDO>lambdaQuery().eq(DictDataDO::getDictType, dictType));
+            Wrappers.<DictDataDO>lambdaQuery().eq(DictDataDO::getDictType, dictType));
     }
 
     /**
@@ -246,7 +251,7 @@ public class DictDataGatewayImpl implements DictDataGateway {
      */
     private int deleteDictDataByTypeRow(String dictType) {
         return dictDataMapper.delete(
-                Wrappers.<DictDataDO>lambdaQuery().eq(DictDataDO::getDictType, dictType));
+            Wrappers.<DictDataDO>lambdaQuery().eq(DictDataDO::getDictType, dictType));
     }
 
     /**
@@ -258,9 +263,9 @@ public class DictDataGatewayImpl implements DictDataGateway {
      */
     private int updateDictDataTypeRow(String oldDictType, String newDictType) {
         return dictDataMapper.update(
-                null,
-                Wrappers.<DictDataDO>lambdaUpdate()
-                        .eq(DictDataDO::getDictType, oldDictType)
-                        .set(DictDataDO::getDictType, newDictType));
+            null,
+            Wrappers.<DictDataDO>lambdaUpdate()
+                .eq(DictDataDO::getDictType, oldDictType)
+                .set(DictDataDO::getDictType, newDictType));
     }
 }

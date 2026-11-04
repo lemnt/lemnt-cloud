@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 充值单详情。 */
+/**
+ * 充值单详情。
+ */
 @Component
 @RequiredArgsConstructor
 public class WalletRechargeDetailQueryExe {

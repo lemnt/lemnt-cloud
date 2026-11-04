@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
-/** 小程序装修模板与页面。 */
+/**
+ * 小程序装修模板与页面。
+ */
 @Tag(name = "小程序装修")
 @RestController
 @RequestMapping("/mall/app/diy")

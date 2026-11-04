@@ -19,7 +19,9 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 生产 Mapper/XML 与事务代理验证砍价发起、助力、成功和到期失败。 */
+/**
+ * 生产 Mapper/XML 与事务代理验证砍价发起、助力、成功和到期失败。
+ */
 class BargainPersistenceTest {
     CatalogPersistenceTest f;
     BargainActivityManagementService activities;
@@ -32,27 +34,27 @@ class BargainPersistenceTest {
         f = new CatalogPersistenceTest();
         f.setup();
         ScriptUtils.executeSqlScript(
-                f.schemaConnection, new ClassPathResource("promotion-sql/lemnt_promotion.sql"));
+            f.schemaConnection, new ClassPathResource("promotion-sql/lemnt_promotion.sql"));
         activities = f.components.get(BargainActivityManagementService.class);
         records = f.components.get(BargainRecordService.class);
         spu = f.create("BARGAIN", f.draft("RED", 10));
         var now = LocalDateTime.now();
         activityId =
-                activities.create(
-                        new BargainActivityCreateCmd(
-                                "砍价",
-                                now.minusDays(1),
-                                now.plusDays(1),
-                                spu.id(),
-                                spu.skus().get(0).id(),
-                                new BigDecimal("10.00"),
-                                new BigDecimal("9.00"),
-                                5,
-                                2,
-                                1,
-                                1,
-                                new BigDecimal("1.00"),
-                                new BigDecimal("1.00")));
+            activities.create(
+                new BargainActivityCreateCmd(
+                    "砍价",
+                    now.minusDays(1),
+                    now.plusDays(1),
+                    spu.id(),
+                    spu.skus().get(0).id(),
+                    new BigDecimal("10.00"),
+                    new BigDecimal("9.00"),
+                    5,
+                    2,
+                    1,
+                    1,
+                    new BigDecimal("1.00"),
+                    new BigDecimal("1.00")));
     }
 
     @AfterEach
@@ -81,21 +83,21 @@ class BargainPersistenceTest {
         assertThrows(ServiceException.class, () -> records.help(2L, id));
         var other = f.create("BARGAIN2", f.draft("BLUE", 10));
         var second =
-                activities.create(
-                        new BargainActivityCreateCmd(
-                                "另一个砍价",
-                                LocalDateTime.now().minusDays(1),
-                                LocalDateTime.now().plusDays(1),
-                                other.id(),
-                                other.skus().get(0).id(),
-                                new BigDecimal("10.00"),
-                                new BigDecimal("8.00"),
-                                5,
-                                2,
-                                1,
-                                1,
-                                new BigDecimal("1.00"),
-                                new BigDecimal("1.00")));
+            activities.create(
+                new BargainActivityCreateCmd(
+                    "另一个砍价",
+                    LocalDateTime.now().minusDays(1),
+                    LocalDateTime.now().plusDays(1),
+                    other.id(),
+                    other.skus().get(0).id(),
+                    new BigDecimal("10.00"),
+                    new BigDecimal("8.00"),
+                    5,
+                    2,
+                    1,
+                    1,
+                    new BigDecimal("1.00"),
+                    new BigDecimal("1.00")));
         records.create(3L, second);
         assertThrows(ServiceException.class, () -> records.create(3L, second));
     }
@@ -106,23 +108,23 @@ class BargainPersistenceTest {
         var gateway = f.components.get(BargainActivityGateway.class);
         var current = gateway.find(activityId);
         gateway.save(
-                new BargainActivity(
-                        current.id(),
-                        current.name(),
-                        current.startTime(),
-                        LocalDateTime.now().minusMinutes(1),
-                        current.status(),
-                        current.spuId(),
-                        current.skuId(),
-                        current.bargainFirstPrice(),
-                        current.bargainMinPrice(),
-                        current.stock(),
-                        current.totalStock(),
-                        current.helpMaxCount(),
-                        current.bargainCount(),
-                        current.totalLimitCount(),
-                        current.randomMinPrice(),
-                        current.randomMaxPrice()));
+            new BargainActivity(
+                current.id(),
+                current.name(),
+                current.startTime(),
+                LocalDateTime.now().minusMinutes(1),
+                current.status(),
+                current.spuId(),
+                current.skuId(),
+                current.bargainFirstPrice(),
+                current.bargainMinPrice(),
+                current.stock(),
+                current.totalStock(),
+                current.helpMaxCount(),
+                current.bargainCount(),
+                current.totalLimitCount(),
+                current.randomMinPrice(),
+                current.randomMaxPrice()));
         assertEquals(1, records.expire());
         assertEquals(3, records.detail(id, 1L).record().status());
     }

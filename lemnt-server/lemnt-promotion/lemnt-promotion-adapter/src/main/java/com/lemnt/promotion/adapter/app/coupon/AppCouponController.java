@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-/** 小程序持有优惠券接口。 */
+/**
+ * 小程序持有优惠券接口。
+ */
 @Tag(name = "小程序持有优惠券")
 @RestController
 @RequestMapping("/mall/app")
@@ -29,8 +31,8 @@ public class AppCouponController {
     public R<List<MallAppCouponCouponsRes>> coupons() {
         Long memberId = SecurityUtils.getUserId();
         return R.ok(
-                couponListQueryExe.execute(memberId).stream()
-                        .map(CouponResConverter::couponToMallAppCouponCouponsRes)
-                        .toList());
+            couponListQueryExe.execute(memberId).stream()
+                .map(CouponResConverter::couponToMallAppCouponCouponsRes)
+                .toList());
     }
 }

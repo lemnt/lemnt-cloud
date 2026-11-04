@@ -22,17 +22,17 @@ public class NoticeResConverter {
             return null;
         }
         return new NoticeRes(
-                dto.getNoticeId(),
-                dto.getNoticeTitle(),
-                dto.getNoticeType(),
-                dto.getNoticeContent(),
-                dto.getStatus(),
-                dto.getIsRead(),
-                dto.getCreateBy(),
-                dto.getCreateTime(),
-                dto.getUpdateBy(),
-                dto.getUpdateTime(),
-                dto.getRemark());
+            dto.getNoticeId(),
+            dto.getNoticeTitle(),
+            dto.getNoticeType(),
+            dto.getNoticeContent(),
+            dto.getStatus(),
+            dto.getIsRead(),
+            dto.getCreateBy(),
+            dto.getCreateTime(),
+            dto.getUpdateBy(),
+            dto.getUpdateTime(),
+            dto.getRemark());
     }
 
     /**
@@ -71,17 +71,17 @@ public class NoticeResConverter {
             return null;
         }
         return new SystemNoticeListRes(
-                dto.getNoticeId(),
-                dto.getNoticeTitle(),
-                dto.getNoticeType(),
-                dto.getNoticeContent(),
-                dto.getStatus(),
-                dto.getIsRead(),
-                dto.getCreateBy(),
-                dto.getCreateTime(),
-                dto.getUpdateBy(),
-                dto.getUpdateTime(),
-                dto.getRemark());
+            dto.getNoticeId(),
+            dto.getNoticeTitle(),
+            dto.getNoticeType(),
+            dto.getNoticeContent(),
+            dto.getStatus(),
+            dto.getIsRead(),
+            dto.getCreateBy(),
+            dto.getCreateTime(),
+            dto.getUpdateBy(),
+            dto.getUpdateTime(),
+            dto.getRemark());
     }
 
     /**
@@ -92,16 +92,16 @@ public class NoticeResConverter {
             return null;
         }
         return new SystemNoticeGetInfoRes(
-                dto.getNoticeId(),
-                dto.getNoticeTitle(),
-                dto.getNoticeType(),
-                dto.getNoticeContent(),
-                dto.getStatus(),
-                dto.getIsRead(),
-                dto.getCreateBy(),
-                dto.getCreateTime(),
-                dto.getUpdateBy(),
-                dto.getUpdateTime(),
-                dto.getRemark());
+            dto.getNoticeId(),
+            dto.getNoticeTitle(),
+            dto.getNoticeType(),
+            dto.getNoticeContent(),
+            dto.getStatus(),
+            dto.getIsRead(),
+            dto.getCreateBy(),
+            dto.getCreateTime(),
+            dto.getUpdateBy(),
+            dto.getUpdateTime(),
+            dto.getRemark());
     }
 }

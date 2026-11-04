@@ -9,7 +9,8 @@ import com.lemnt.order.application.settlement.dto.SettlementDTO;
  * 结算响应转换器。
  */
 public final class SettlementResConverter {
-    private SettlementResConverter() {}
+    private SettlementResConverter() {
+    }
 
     /**
      * 转换。
@@ -17,18 +18,18 @@ public final class SettlementResConverter {
     public static SettlementRes convert(SettlementDTO value) {
         var q = value.quote();
         return new SettlementRes(
-                value.settlementId(),
-                value.expiresAt().toString(),
-                q.items().stream().map(SettlementQuoteResConverter::checkoutItem).toList(),
-                q.originalAmount(),
-                q.discountAmount(),
-                q.payableAmount(),
-                q.couponId(),
-                q.usePoint(),
-                q.givePoint(),
-                SettlementQuoteResConverter.delivery(q.delivery()),
-                q.freeDelivery(),
-                q.giveCouponTemplateCounts());
+            value.settlementId(),
+            value.expiresAt().toString(),
+            q.items().stream().map(SettlementQuoteResConverter::checkoutItem).toList(),
+            q.originalAmount(),
+            q.discountAmount(),
+            q.payableAmount(),
+            q.couponId(),
+            q.usePoint(),
+            q.givePoint(),
+            SettlementQuoteResConverter.delivery(q.delivery()),
+            q.freeDelivery(),
+            q.giveCouponTemplateCounts());
     }
 
     /**
@@ -36,6 +37,6 @@ public final class SettlementResConverter {
      */
     public static SettlementAbandonRes abandon(SettlementAbandonDTO value) {
         return new SettlementAbandonRes(
-                value.abandoned(), SettlementQuoteResConverter.checkoutReceipt(value.order()));
+            value.abandoned(), SettlementQuoteResConverter.checkoutReceipt(value.order()));
     }
 }

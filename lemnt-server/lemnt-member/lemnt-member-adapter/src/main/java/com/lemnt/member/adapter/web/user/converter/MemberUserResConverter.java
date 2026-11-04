@@ -14,19 +14,22 @@ import com.lemnt.member.application.user.dto.GroupDTO;
 import com.lemnt.member.application.user.dto.MemberDTO;
 import com.lemnt.member.application.user.dto.TagDTO;
 
-/** 会员资料转换器。 */
+/**
+ * 会员资料转换器。
+ */
 public final class MemberUserResConverter {
 
-    private MemberUserResConverter() {}
+    private MemberUserResConverter() {
+    }
 
     /**
      * 分组。
      */
     public static MemberCatalogQueryGroupsPageRes toMemberCatalogQueryGroupsPageRes(GroupDTO v) {
         return v == null
-                ? null
-                : new MemberCatalogQueryGroupsPageRes(
-                        v.id(), v.name(), v.remark(), v.status(), v.createTime());
+            ? null
+            : new MemberCatalogQueryGroupsPageRes(
+            v.id(), v.name(), v.remark(), v.status(), v.createTime());
     }
 
     /**
@@ -34,8 +37,8 @@ public final class MemberUserResConverter {
      */
     public static MemberGroupListRes toMemberGroupListRes(GroupDTO v) {
         return v == null
-                ? null
-                : new MemberGroupListRes(v.id(), v.name(), v.remark(), v.status(), v.createTime());
+            ? null
+            : new MemberGroupListRes(v.id(), v.name(), v.remark(), v.status(), v.createTime());
     }
 
     /**
@@ -43,9 +46,9 @@ public final class MemberUserResConverter {
      */
     public static MemberGroupDetailRes toMemberGroupDetailRes(GroupDTO v) {
         return v == null
-                ? null
-                : new MemberGroupDetailRes(
-                        v.id(), v.name(), v.remark(), v.status(), v.createTime());
+            ? null
+            : new MemberGroupDetailRes(
+            v.id(), v.name(), v.remark(), v.status(), v.createTime());
     }
 
     /**
@@ -53,8 +56,8 @@ public final class MemberUserResConverter {
      */
     public static MemberGroupSimpleRes toMemberGroupSimpleRes(GroupDTO v) {
         return v == null
-                ? null
-                : new MemberGroupSimpleRes(v.id(), v.name(), v.remark(), v.status());
+            ? null
+            : new MemberGroupSimpleRes(v.id(), v.name(), v.remark(), v.status());
     }
 
     /**
@@ -62,8 +65,8 @@ public final class MemberUserResConverter {
      */
     public static MemberCatalogQueryTagsPageRes toMemberCatalogQueryTagsPageRes(TagDTO v) {
         return v == null
-                ? null
-                : new MemberCatalogQueryTagsPageRes(v.id(), v.name(), v.remark(), v.createTime());
+            ? null
+            : new MemberCatalogQueryTagsPageRes(v.id(), v.name(), v.remark(), v.createTime());
     }
 
     /**
@@ -71,8 +74,8 @@ public final class MemberUserResConverter {
      */
     public static MemberTagListRes toMemberTagListRes(TagDTO v) {
         return v == null
-                ? null
-                : new MemberTagListRes(v.id(), v.name(), v.remark(), v.createTime());
+            ? null
+            : new MemberTagListRes(v.id(), v.name(), v.remark(), v.createTime());
     }
 
     /**
@@ -80,8 +83,8 @@ public final class MemberUserResConverter {
      */
     public static MemberTagDetailRes toMemberTagDetailRes(TagDTO v) {
         return v == null
-                ? null
-                : new MemberTagDetailRes(v.id(), v.name(), v.remark(), v.createTime());
+            ? null
+            : new MemberTagDetailRes(v.id(), v.name(), v.remark(), v.createTime());
     }
 
     /**
@@ -96,30 +99,30 @@ public final class MemberUserResConverter {
      */
     public static MemberUserPageRes toMemberUserPageRes(MemberDTO v) {
         return v == null
-                ? null
-                : new MemberUserPageRes(
-                        v.id(),
-                        v.nickname(),
-                        v.mobile(),
-                        v.email(),
-                        v.avatar(),
-                        v.status(),
-                        v.points(),
-                        v.experience(),
-                        v.levelId(),
-                        v.groupId(),
-                        v.sex(),
-                        v.birthday(),
-                        v.createTime(),
-                        v.mark(),
-                        v.name(),
-                        v.areaId(),
-                        v.loginDate(),
-                        v.loginIp(),
-                        v.tagIds(),
-                        v.tagNames(),
-                        v.levelName(),
-                        v.groupName());
+            ? null
+            : new MemberUserPageRes(
+            v.id(),
+            v.nickname(),
+            v.mobile(),
+            v.email(),
+            v.avatar(),
+            v.status(),
+            v.points(),
+            v.experience(),
+            v.levelId(),
+            v.groupId(),
+            v.sex(),
+            v.birthday(),
+            v.createTime(),
+            v.mark(),
+            v.name(),
+            v.areaId(),
+            v.loginDate(),
+            v.loginIp(),
+            v.tagIds(),
+            v.tagNames(),
+            v.levelName(),
+            v.groupName());
     }
 
     /**
@@ -127,29 +130,29 @@ public final class MemberUserResConverter {
      */
     public static MemberUserDetailRes toMemberUserDetailRes(MemberDTO v) {
         return v == null
-                ? null
-                : new MemberUserDetailRes(
-                        v.id(),
-                        v.nickname(),
-                        v.mobile(),
-                        v.email(),
-                        v.avatar(),
-                        v.status(),
-                        v.points(),
-                        v.experience(),
-                        v.levelId(),
-                        v.groupId(),
-                        v.sex(),
-                        v.birthday(),
-                        v.createTime(),
-                        v.mark(),
-                        v.name(),
-                        v.areaId(),
-                        v.loginDate(),
-                        v.loginIp(),
-                        v.tagIds(),
-                        v.tagNames(),
-                        v.levelName(),
-                        v.groupName());
+            ? null
+            : new MemberUserDetailRes(
+            v.id(),
+            v.nickname(),
+            v.mobile(),
+            v.email(),
+            v.avatar(),
+            v.status(),
+            v.points(),
+            v.experience(),
+            v.levelId(),
+            v.groupId(),
+            v.sex(),
+            v.birthday(),
+            v.createTime(),
+            v.mark(),
+            v.name(),
+            v.areaId(),
+            v.loginDate(),
+            v.loginIp(),
+            v.tagIds(),
+            v.tagNames(),
+            v.levelName(),
+            v.groupName());
     }
 }

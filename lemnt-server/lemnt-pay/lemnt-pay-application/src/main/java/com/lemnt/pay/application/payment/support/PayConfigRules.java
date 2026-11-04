@@ -8,11 +8,14 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
-/** 支付应用与渠道配置的入参校验，统一避免各执行器重复。 */
+/**
+ * 支付应用与渠道配置的入参校验，统一避免各执行器重复。
+ */
 public final class PayConfigRules {
     private static final Pattern APP_KEY = Pattern.compile("^[A-Za-z0-9_-]{4,64}$");
 
-    private PayConfigRules() {}
+    private PayConfigRules() {
+    }
 
     public static void page(int pageNum, int pageSize) {
         if (pageNum < 1 || pageNum > 1000000 || pageSize < 1 || pageSize > 100) {
@@ -60,11 +63,13 @@ public final class PayConfigRules {
         return text;
     }
 
-    /** 只接受当前系统声明支持的渠道编码，避免存入无法识别的渠道。 */
+    /**
+     * 只接受当前系统声明支持的渠道编码，避免存入无法识别的渠道。
+     */
     public static String channelCode(String value) {
         String text = required(value, 32, "渠道编码");
         if (Arrays.stream(PaymentChannel.values())
-                .noneMatch(channel -> channel.name().equals(text))) {
+            .noneMatch(channel -> channel.name().equals(text))) {
             throw new IllegalArgumentException("不支持的渠道编码");
         }
         return text;
@@ -80,7 +85,9 @@ public final class PayConfigRules {
         return value.setScale(2, RoundingMode.DOWN);
     }
 
-    /** 渠道配置必须为 JSON 对象文本，保存为不透明字符串，不在此处解析字段含义。 */
+    /**
+     * 渠道配置必须为 JSON 对象文本，保存为不透明字符串，不在此处解析字段含义。
+     */
     public static String config(String value) {
         String text = optional(value, 4000, "渠道配置");
         if (text == null) {

@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
 /**
@@ -52,9 +53,9 @@ public class MemberTagController {
     @RequiresPermissions("member:tag:query")
     public R<List<MemberTagListRes>> list() {
         return R.ok(
-                memberTagListQueryExe.execute(new TagListQry()).stream()
-                        .map(MemberUserResConverter::toMemberTagListRes)
-                        .toList());
+            memberTagListQueryExe.execute(new TagListQry()).stream()
+                .map(MemberUserResConverter::toMemberTagListRes)
+                .toList());
     }
 
     @GetMapping("/{id}")
@@ -62,8 +63,8 @@ public class MemberTagController {
     @RequiresPermissions("member:tag:query")
     public R<MemberTagDetailRes> detail(@PathVariable Long id) {
         return R.ok(
-                MemberUserResConverter.toMemberTagDetailRes(
-                        memberTagDetailQueryExe.execute(new TagDetailQry(id))));
+            MemberUserResConverter.toMemberTagDetailRes(
+                memberTagDetailQueryExe.execute(new TagDetailQry(id))));
     }
 
     @PostMapping
@@ -92,8 +93,8 @@ public class MemberTagController {
     @RequiresPermissions("member:tag:query")
     public R<List<MemberTagSimpleRes>> simple() {
         return R.ok(
-                memberTagListQueryExe.execute(new TagListQry()).stream()
-                        .map(MemberUserResConverter::toMemberTagSimpleRes)
-                        .toList());
+            memberTagListQueryExe.execute(new TagListQry()).stream()
+                .map(MemberUserResConverter::toMemberTagSimpleRes)
+                .toList());
     }
 }

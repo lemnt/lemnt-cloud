@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** App 本人钱包流水分页，先确保钱包存在。 */
+/**
+ * App 本人钱包流水分页，先确保钱包存在。
+ */
 @Component
 @RequiredArgsConstructor
 public class MemberWalletTransactionPageQueryExe {
@@ -23,10 +25,10 @@ public class MemberWalletTransactionPageQueryExe {
             throw new IllegalArgumentException("会员编号不合法");
         }
         if (qry == null
-                || qry.pageNum() < 1
-                || qry.pageNum() > 1000000
-                || qry.pageSize() < 1
-                || qry.pageSize() > 100) {
+            || qry.pageNum() < 1
+            || qry.pageNum() > 1000000
+            || qry.pageSize() < 1
+            || qry.pageSize() > 100) {
             throw new IllegalArgumentException("分页参数不合法");
         }
         String bizType = qry.bizType() == null || qry.bizType().isBlank() ? null : qry.bizType();
@@ -39,11 +41,11 @@ public class MemberWalletTransactionPageQueryExe {
         }
         var wallet = wallets.createIfAbsent(memberId);
         var page =
-                wallets.transactionPage(
-                        new WalletTransactionFilter(
-                                wallet.id(), bizType, qry.pageNum(), qry.pageSize()));
+            wallets.transactionPage(
+                new WalletTransactionFilter(
+                    wallet.id(), bizType, qry.pageNum(), qry.pageSize()));
         return PageResult.of(
-                page.getRecords().stream().map(WalletDTOConverter::transaction).toList(),
-                page.getTotal());
+            page.getRecords().stream().map(WalletDTOConverter::transaction).toList(),
+            page.getTotal());
     }
 }

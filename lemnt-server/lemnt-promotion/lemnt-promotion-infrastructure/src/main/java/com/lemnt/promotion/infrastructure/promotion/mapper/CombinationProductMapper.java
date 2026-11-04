@@ -5,6 +5,9 @@ import com.lemnt.promotion.infrastructure.promotion.dataobject.CombinationProduc
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
-/** 拼团活动商品表 CRUD。 */
+/**
+ * 拼团活动商品表 CRUD。
+ */
 @Mapper
-public interface CombinationProductMapper extends BaseMapper<CombinationProductDO> {}
+public interface CombinationProductMapper extends BaseMapper<CombinationProductDO> {
+}

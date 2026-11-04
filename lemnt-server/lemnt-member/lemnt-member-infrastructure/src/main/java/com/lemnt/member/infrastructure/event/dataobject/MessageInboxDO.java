@@ -9,7 +9,9 @@ import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 
-/** 已成功消费的本地事务凭证，不能在业务事务之前独立提交。 */
+/**
+ * 已成功消费的本地事务凭证，不能在业务事务之前独立提交。
+ */
 @Data
 @Accessors(chain = true)
 @TableName("member_message_inbox")

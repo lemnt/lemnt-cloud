@@ -31,7 +31,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/** 秒杀活动直接管理，负责商品校验、时段冲突和库存合计。 */
+/**
+ * 秒杀活动直接管理，负责商品校验、时段冲突和库存合计。
+ */
 @Component
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
@@ -54,14 +56,16 @@ public class SeckillActivityManagementService {
         return value;
     }
 
-    /** 商品必须属于活动 SPU，价格低于原价，库存不能为负。 */
+    /**
+     * 商品必须属于活动 SPU，价格低于原价，库存不能为负。
+     */
     private List<SeckillProduct> validate(
-            Long activityId,
-            Long spuId,
-            List<Long> configIds,
-            List<SeckillProductCmd> lines,
-            LocalDateTime start,
-            LocalDateTime end) {
+        Long activityId,
+        Long spuId,
+        List<Long> configIds,
+        List<SeckillProductCmd> lines,
+        LocalDateTime start,
+        LocalDateTime end) {
         require(spus.findSpu(spuId) != null, "秒杀商品不存在");
         require(configIds != null && !configIds.isEmpty(), "秒杀时段不能为空");
         var distinct = new HashSet<>(configIds);
@@ -72,8 +76,8 @@ public class SeckillActivityManagementService {
 
         require(lines != null && !lines.isEmpty(), "秒杀商品不能为空");
         var skuMap =
-                skus.catalogSkus(spuId).stream()
-                        .collect(Collectors.toMap(ProductSku::id, sku -> sku));
+            skus.catalogSkus(spuId).stream()
+                .collect(Collectors.toMap(ProductSku::id, sku -> sku));
         var seen = new HashSet<Long>();
         var result = new ArrayList<SeckillProduct>();
         for (var line : lines) {
@@ -81,45 +85,45 @@ public class SeckillActivityManagementService {
             var sku = skuMap.get(line.skuId());
             require(sku != null, "SKU 不属于该商品");
             require(
-                    line.seckillPrice() != null
-                            && line.seckillPrice().signum() > 0
-                            && line.seckillPrice().scale() <= 2
-                            && line.seckillPrice().compareTo(sku.price()) < 0,
-                    "秒杀价必须低于原价");
+                line.seckillPrice() != null
+                    && line.seckillPrice().signum() > 0
+                    && line.seckillPrice().scale() <= 2
+                    && line.seckillPrice().compareTo(sku.price()) < 0,
+                "秒杀价必须低于原价");
             require(line.stock() != null && line.stock() >= 0, "秒杀库存不合法");
             result.add(
-                    new SeckillProduct(
-                            null,
-                            activityId,
-                            configIds,
-                            spuId,
-                            line.skuId(),
-                            line.seckillPrice(),
-                            line.stock(),
-                            0,
-                            start,
-                            end));
+                new SeckillProduct(
+                    null,
+                    activityId,
+                    configIds,
+                    spuId,
+                    line.skuId(),
+                    line.seckillPrice(),
+                    line.stock(),
+                    0,
+                    start,
+                    end));
         }
         require(result.stream().mapToInt(SeckillProduct::stock).sum() > 0, "秒杀库存合计必须大于零");
 
         var conflicts =
-                activities.enabled().stream()
-                        .filter(other -> !Objects.equals(other.id(), activityId))
-                        .filter(other -> Objects.equals(other.spuId(), spuId))
-                        .anyMatch(other -> other.configIds().stream().anyMatch(distinct::contains));
+            activities.enabled().stream()
+                .filter(other -> !Objects.equals(other.id(), activityId))
+                .filter(other -> Objects.equals(other.spuId(), spuId))
+                .anyMatch(other -> other.configIds().stream().anyMatch(distinct::contains));
         require(!conflicts, "商品在同一时段已参加其他秒杀活动");
         return result;
     }
 
     private void validateActivity(
-            Long spuId,
-            String name,
-            String remark,
-            LocalDateTime start,
-            LocalDateTime end,
-            Integer sort,
-            Integer totalLimitCount,
-            Integer singleLimitCount) {
+        Long spuId,
+        String name,
+        String remark,
+        LocalDateTime start,
+        LocalDateTime end,
+        Integer sort,
+        Integer totalLimitCount,
+        Integer singleLimitCount) {
         require(spuId != null && spuId > 0, "秒杀商品不能为空");
         require(name != null && !name.isBlank() && name.length() <= 100, "活动名称不合法");
         require(remark == null || remark.length() <= 500, "备注过长");
@@ -135,39 +139,39 @@ public class SeckillActivityManagementService {
 
     public Long create(SeckillActivityCreateCmd cmd) {
         validateActivity(
-                cmd.spuId(),
-                cmd.name(),
-                cmd.remark(),
-                cmd.startTime(),
-                cmd.endTime(),
-                cmd.sort(),
-                cmd.totalLimitCount(),
-                cmd.singleLimitCount());
+            cmd.spuId(),
+            cmd.name(),
+            cmd.remark(),
+            cmd.startTime(),
+            cmd.endTime(),
+            cmd.sort(),
+            cmd.totalLimitCount(),
+            cmd.singleLimitCount());
         var lines =
-                validate(
-                        null,
-                        cmd.spuId(),
-                        cmd.configIds(),
-                        cmd.products(),
-                        cmd.startTime(),
-                        cmd.endTime());
+            validate(
+                null,
+                cmd.spuId(),
+                cmd.configIds(),
+                cmd.products(),
+                cmd.startTime(),
+                cmd.endTime());
         var stock = sum(lines);
         var saved =
-                activities.save(
-                        new SeckillActivity(
-                                null,
-                                cmd.spuId(),
-                                cmd.name(),
-                                0,
-                                cmd.remark(),
-                                cmd.startTime(),
-                                cmd.endTime(),
-                                cmd.sort(),
-                                cmd.configIds(),
-                                cmd.totalLimitCount(),
-                                cmd.singleLimitCount(),
-                                stock,
-                                stock));
+            activities.save(
+                new SeckillActivity(
+                    null,
+                    cmd.spuId(),
+                    cmd.name(),
+                    0,
+                    cmd.remark(),
+                    cmd.startTime(),
+                    cmd.endTime(),
+                    cmd.sort(),
+                    cmd.configIds(),
+                    cmd.totalLimitCount(),
+                    cmd.singleLimitCount(),
+                    stock,
+                    stock));
         products.replace(saved.id(), lines.stream().map(line -> copy(line, saved.id())).toList());
         return saved.id();
     }
@@ -176,56 +180,56 @@ public class SeckillActivityManagementService {
         var current = activity(cmd.id());
         require(Objects.equals(current.status(), 0), "活动已关闭，不能修改");
         validateActivity(
-                cmd.spuId(),
-                cmd.name(),
-                cmd.remark(),
-                cmd.startTime(),
-                cmd.endTime(),
-                cmd.sort(),
-                cmd.totalLimitCount(),
-                cmd.singleLimitCount());
+            cmd.spuId(),
+            cmd.name(),
+            cmd.remark(),
+            cmd.startTime(),
+            cmd.endTime(),
+            cmd.sort(),
+            cmd.totalLimitCount(),
+            cmd.singleLimitCount());
         var lines =
-                validate(
-                        cmd.id(),
-                        cmd.spuId(),
-                        cmd.configIds(),
-                        cmd.products(),
-                        cmd.startTime(),
-                        cmd.endTime());
+            validate(
+                cmd.id(),
+                cmd.spuId(),
+                cmd.configIds(),
+                cmd.products(),
+                cmd.startTime(),
+                cmd.endTime());
         var stock = sum(lines);
         // 源站仅在库存增加时更新总库存，避免修改活动造成总库存回退。
         var totalStock = stock > current.totalStock() ? stock : current.totalStock();
         activities.save(
-                new SeckillActivity(
-                        cmd.id(),
-                        cmd.spuId(),
-                        cmd.name(),
-                        0,
-                        cmd.remark(),
-                        cmd.startTime(),
-                        cmd.endTime(),
-                        cmd.sort(),
-                        cmd.configIds(),
-                        cmd.totalLimitCount(),
-                        cmd.singleLimitCount(),
-                        stock,
-                        totalStock));
+            new SeckillActivity(
+                cmd.id(),
+                cmd.spuId(),
+                cmd.name(),
+                0,
+                cmd.remark(),
+                cmd.startTime(),
+                cmd.endTime(),
+                cmd.sort(),
+                cmd.configIds(),
+                cmd.totalLimitCount(),
+                cmd.singleLimitCount(),
+                stock,
+                totalStock));
         products.replace(cmd.id(), lines.stream().map(line -> copy(line, cmd.id())).toList());
         return true;
     }
 
     private SeckillProduct copy(SeckillProduct value, Long activityId) {
         return new SeckillProduct(
-                null,
-                activityId,
-                value.configIds(),
-                value.spuId(),
-                value.skuId(),
-                value.seckillPrice(),
-                value.stock(),
-                0,
-                value.activityStartTime(),
-                value.activityEndTime());
+            null,
+            activityId,
+            value.configIds(),
+            value.spuId(),
+            value.skuId(),
+            value.seckillPrice(),
+            value.stock(),
+            0,
+            value.activityStartTime(),
+            value.activityEndTime());
     }
 
     public Boolean close(Long id) {
@@ -249,20 +253,20 @@ public class SeckillActivityManagementService {
     @Transactional(readOnly = true)
     public PageResult<SeckillActivityDTO> page(SeckillActivityPageQry qry) {
         require(
-                qry.pageNum() != null
-                        && qry.pageNum() >= 1
-                        && qry.pageSize() != null
-                        && qry.pageSize() >= 1
-                        && qry.pageSize() <= 100,
-                "分页参数不合法");
+            qry.pageNum() != null
+                && qry.pageNum() >= 1
+                && qry.pageSize() != null
+                && qry.pageSize() >= 1
+                && qry.pageSize() <= 100,
+            "分页参数不合法");
         var page =
-                activities.page(
-                        new SeckillFilter(
-                                qry.name(),
-                                qry.status(),
-                                qry.configId(),
-                                qry.pageNum(),
-                                qry.pageSize()));
+            activities.page(
+                new SeckillFilter(
+                    qry.name(),
+                    qry.status(),
+                    qry.configId(),
+                    qry.pageNum(),
+                    qry.pageSize()));
         return PageResult.of(page.getRecords().stream().map(this::dto).toList(), page.getTotal());
     }
 
@@ -270,38 +274,38 @@ public class SeckillActivityManagementService {
         var spu = spus.findSpu(value.spuId());
         var lines = products.byActivityId(value.id());
         var min =
-                lines.stream()
-                        .map(SeckillProduct::seckillPrice)
-                        .min(BigDecimal::compareTo)
-                        .orElse(null);
+            lines.stream()
+                .map(SeckillProduct::seckillPrice)
+                .min(BigDecimal::compareTo)
+                .orElse(null);
         return new SeckillActivityDTO(
-                value.id(),
-                value.spuId(),
-                spu == null ? null : spu.name(),
-                spu == null ? null : spu.image(),
-                min,
-                value.name(),
-                value.status(),
-                value.remark(),
-                value.startTime(),
-                value.endTime(),
-                value.sort(),
-                value.configIds(),
-                value.totalLimitCount(),
-                value.singleLimitCount(),
-                value.stock(),
-                value.totalStock(),
-                lines.stream()
-                        .map(
-                                line ->
-                                        new SeckillProductDTO(
-                                                line.id(),
-                                                line.skuId(),
-                                                line.spuId(),
-                                                line.seckillPrice(),
-                                                line.stock(),
-                                                line.activityStartTime(),
-                                                line.activityEndTime()))
-                        .toList());
+            value.id(),
+            value.spuId(),
+            spu == null ? null : spu.name(),
+            spu == null ? null : spu.image(),
+            min,
+            value.name(),
+            value.status(),
+            value.remark(),
+            value.startTime(),
+            value.endTime(),
+            value.sort(),
+            value.configIds(),
+            value.totalLimitCount(),
+            value.singleLimitCount(),
+            value.stock(),
+            value.totalStock(),
+            lines.stream()
+                .map(
+                    line ->
+                        new SeckillProductDTO(
+                            line.id(),
+                            line.skuId(),
+                            line.spuId(),
+                            line.seckillPrice(),
+                            line.stock(),
+                            line.activityStartTime(),
+                            line.activityEndTime()))
+                .toList());
     }
 }

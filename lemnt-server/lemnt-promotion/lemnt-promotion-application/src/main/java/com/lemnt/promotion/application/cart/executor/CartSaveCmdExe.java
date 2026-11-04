@@ -40,17 +40,17 @@ public class CartSaveCmdExe {
         memberLockGateway.lockMember(cmd.memberId());
         var snapshot = productCatalogGateway.findOnShelf(cmd.productId());
         if (snapshot == null
-                && (cmd.selected()
-                        || cartGateway.cart(cmd.memberId()).stream()
-                                .noneMatch(row -> row.productId().equals(cmd.productId())))) {
+            && (cmd.selected()
+            || cartGateway.cart(cmd.memberId()).stream()
+            .noneMatch(row -> row.productId().equals(cmd.productId())))) {
             throw new IllegalArgumentException("商品不存在或已下架，只能取消已有条目的选中状态");
         }
         if (snapshot != null && (snapshot.stock() == null || cmd.quantity() > snapshot.stock())) {
             throw new IllegalStateException("数量超过当前库存");
         }
         return CartDTOConverter.cart(
-                cartService.saveCart(
-                        cmd.memberId(), cmd.productId(), cmd.quantity(), cmd.selected()),
-                snapshot);
+            cartService.saveCart(
+                cmd.memberId(), cmd.productId(), cmd.quantity(), cmd.selected()),
+            snapshot);
     }
 }

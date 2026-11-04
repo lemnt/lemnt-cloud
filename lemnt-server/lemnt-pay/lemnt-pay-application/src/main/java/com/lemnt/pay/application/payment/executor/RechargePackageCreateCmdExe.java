@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-/** 新增充值套餐。 */
+/**
+ * 新增充值套餐。
+ */
 @Component
 @RequiredArgsConstructor
 public class RechargePackageCreateCmdExe {
@@ -29,13 +31,13 @@ public class RechargePackageCreateCmdExe {
             throw new IllegalStateException("套餐名已存在");
         }
         var value =
-                new RechargePackage(
-                        null,
-                        name,
-                        RechargeRules.positiveMoney(cmd.payPrice(), "支付金额"),
-                        RechargeRules.nonNegativeMoney(cmd.bonusPrice(), "赠送金额"),
-                        cmd.status(),
-                        null);
+            new RechargePackage(
+                null,
+                name,
+                RechargeRules.positiveMoney(cmd.payPrice(), "支付金额"),
+                RechargeRules.nonNegativeMoney(cmd.bonusPrice(), "赠送金额"),
+                cmd.status(),
+                null);
         return RechargeDTOConverter.packageView(packages.insert(value));
     }
 }

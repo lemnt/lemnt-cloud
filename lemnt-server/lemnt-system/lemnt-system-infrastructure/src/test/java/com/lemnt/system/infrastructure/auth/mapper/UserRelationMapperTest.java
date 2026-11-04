@@ -31,7 +31,7 @@ class UserRelationMapperTest {
     @BeforeAll
     static void initializeTableMetadata() {
         MapperBuilderAssistant assistant =
-                new MapperBuilderAssistant(new MybatisConfiguration(), "test");
+            new MapperBuilderAssistant(new MybatisConfiguration(), "test");
 
         assistant.setCurrentNamespace("test");
 
@@ -76,8 +76,8 @@ class UserRelationMapperTest {
         assertThat(wrapper.getValue().getSqlSegment()).contains("role_id =", "user_id IN");
 
         assertThat(wrapper.getValue().getParamNameValuePairs().values())
-                .containsExactlyInAnyOrderElementsOf(
-                        multiple ? List.of(10L, 2L, 3L) : List.of(10L, 2L));
+            .containsExactlyInAnyOrderElementsOf(
+                multiple ? List.of(10L, 2L, 3L) : List.of(10L, 2L));
     }
 
     @ParameterizedTest
@@ -122,10 +122,12 @@ class UserRelationMapperTest {
         assertThat(wrapper.getSqlSegment()).contains("user_id IN");
 
         assertThat(wrapper.getParamNameValuePairs().values())
-                .containsExactlyInAnyOrderElementsOf(ids);
+            .containsExactlyInAnyOrderElementsOf(ids);
     }
 
-    /** 用户和角色编号不能因两个Long参数位置相反而撤销错误的授权。 */
+    /**
+     * 用户和角色编号不能因两个Long参数位置相反而撤销错误的授权。
+     */
     @Test
     void singleRoleRevocationBindsUserAndRoleToTheirOwnColumns() {
         UserRoleMapper mapper = mock(UserRoleMapper.class);
@@ -141,8 +143,8 @@ class UserRelationMapperTest {
 
     private void assertColumnBinding(LambdaQueryWrapper<?> query, String column, Long value) {
         var binding =
-                Pattern.compile(column + " = #\\{ew\\.paramNameValuePairs\\.([^}]+)}")
-                        .matcher(query.getSqlSegment());
+            Pattern.compile(column + " = #\\{ew\\.paramNameValuePairs\\.([^}]+)}")
+                .matcher(query.getSqlSegment());
         assertThat(binding.find()).isTrue();
         assertThat(query.getParamNameValuePairs().get(binding.group(1))).isEqualTo(value);
     }

@@ -6,13 +6,17 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 配送删除执行器。 */
+/**
+ * 配送删除执行器。
+ */
 @Component
 @RequiredArgsConstructor
 public class DeliveryExpressTemplateDeleteCmdExe {
     private final DeliveryManagementService service;
 
-    /** 执行配送操作。 */
+    /**
+     * 执行配送操作。
+     */
     public boolean execute(Long id) {
         return service.deleteTemplate(id);
     }

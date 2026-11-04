@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 public class MenuUpdateCmdExe {
     private final MenuGateway menuGateway;
 
-    /** 修改前校验目标父菜单下的名称，查询排除当前菜单。 */
+    /**
+     * 修改前校验目标父菜单下的名称，查询排除当前菜单。
+     */
     public Boolean execute(MenuUpdateCmd cmd) {
         if (menuGateway.checkMenuNameUnique(cmd.menuName(), cmd.parentId(), cmd.menuId()) != null) {
             throw new ServiceException("修改菜单'" + cmd.menuName() + "'失败，菜单名称已存在");

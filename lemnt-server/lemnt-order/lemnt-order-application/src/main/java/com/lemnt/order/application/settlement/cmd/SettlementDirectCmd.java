@@ -7,8 +7,8 @@ import java.util.List;
  * 交易订单创建命令。
  */
 public record SettlementDirectCmd(
-        Long memberId, List<OrderLine> items, String requestNo, Long couponId)
-        implements Serializable {
+    Long memberId, List<OrderLine> items, String requestNo, Long couponId)
+    implements Serializable {
     /**
      * 创建交易订单创建命令实例。
      */
@@ -19,5 +19,6 @@ public record SettlementDirectCmd(
     /**
      * 订单明细。
      */
-    public record OrderLine(Long productId, Integer quantity) {}
+    public record OrderLine(Long productId, Integer quantity) {
+    }
 }

@@ -15,28 +15,28 @@ import static org.mockito.Mockito.*;
 
 class ShipmentTrackGatewayTest {
     final Shipment shipment =
-            new Shipment(
-                    "TR1",
-                    "SHIP1",
-                    "HASH",
-                    "SF",
-                    "TRACK1",
-                    "测试收件人",
-                    "13800000000",
-                    "测试地址",
-                    LocalDateTime.now(),
-                    null);
+        new Shipment(
+            "TR1",
+            "SHIP1",
+            "HASH",
+            "SF",
+            "TRACK1",
+            "测试收件人",
+            "13800000000",
+            "测试地址",
+            LocalDateTime.now(),
+            null);
 
     @Test
     void missingOrAmbiguousProviderCannotPretendThereAreNoTracks() {
         assertThrows(
-                IllegalStateException.class,
-                () -> new ShipmentTrackGatewayImpl(List.of()).tracks(shipment));
+            IllegalStateException.class,
+            () -> new ShipmentTrackGatewayImpl(List.of()).tracks(shipment));
         var client = mock(ShipmentTrackClient.class);
         when(client.carrierCode()).thenReturn("SF");
         assertThrows(
-                IllegalStateException.class,
-                () -> new ShipmentTrackGatewayImpl(List.of(client, client)).tracks(shipment));
+            IllegalStateException.class,
+            () -> new ShipmentTrackGatewayImpl(List.of(client, client)).tracks(shipment));
         verify(client, never()).tracks(any());
     }
 

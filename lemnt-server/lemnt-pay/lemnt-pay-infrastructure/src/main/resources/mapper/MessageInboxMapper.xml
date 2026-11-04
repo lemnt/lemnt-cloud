@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lemnt.pay.infrastructure.event.mapper.MessageInboxMapper">
-    <select id="lockEvent" resultType="com.lemnt.pay.infrastructure.event.dataobject.MessageInboxDO" useCache="false" flushCache="true">
+    <select id="lockEvent" resultType="com.lemnt.pay.infrastructure.event.dataobject.MessageInboxDO" useCache="false"
+            flushCache="true">
         SELECT * FROM pay_message_inbox WHERE consumer_key=#{consumer} AND event_no=#{eventNo} FOR UPDATE
     </select>
-    <select id="lockBusiness" resultType="com.lemnt.pay.infrastructure.event.dataobject.MessageInboxDO" useCache="false" flushCache="true">
-        SELECT * FROM pay_message_inbox WHERE consumer_key=#{consumer} AND event_type=#{type} AND business_key=#{key} FOR UPDATE
+    <select id="lockBusiness" resultType="com.lemnt.pay.infrastructure.event.dataobject.MessageInboxDO" useCache="false"
+            flushCache="true">
+        SELECT * FROM pay_message_inbox WHERE consumer_key=#{consumer} AND event_type=#{type} AND business_key=#{key}
+        FOR UPDATE
     </select>
 </mapper>

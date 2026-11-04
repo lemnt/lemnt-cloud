@@ -3,18 +3,23 @@ package com.lemnt.order.adapter.web.shipment.converter;
 import com.lemnt.order.adapter.web.shipment.req.ShipmentPageReq;
 import com.lemnt.order.application.fulfillment.qry.ShipmentPageQry;
 
-/** 物流查询请求转换。 */
+/**
+ * 物流查询请求转换。
+ */
 public final class ShipmentReqConverter {
-    private ShipmentReqConverter() {}
+    private ShipmentReqConverter() {
+    }
 
-    /** 转换分页默认值。 */
+    /**
+     * 转换分页默认值。
+     */
     public static ShipmentPageQry page(ShipmentPageReq req) {
         return new ShipmentPageQry(
-                req.orderNo(),
-                req.carrierCode(),
-                req.trackingNo(),
-                req.status(),
-                req.pageNum() == null ? 1 : req.pageNum(),
-                req.pageSize() == null ? 20 : req.pageSize());
+            req.orderNo(),
+            req.carrierCode(),
+            req.trackingNo(),
+            req.status(),
+            req.pageNum() == null ? 1 : req.pageNum(),
+            req.pageSize() == null ? 20 : req.pageSize());
     }
 }

@@ -21,7 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/** 支付应用与渠道配置的校验、唯一性与密钥保留规则。 */
+/**
+ * 支付应用与渠道配置的校验、唯一性与密钥保留规则。
+ */
 class PayConfigExeTest {
     final PayAppGateway apps = mock(PayAppGateway.class);
     final PayChannelConfigGateway channels = mock(PayChannelConfigGateway.class);
@@ -41,20 +43,20 @@ class PayConfigExeTest {
     @Test
     void appCreateRejectsInvalidKeyDuplicateAndBadUrl() {
         assertThrows(
-                IllegalArgumentException.class,
-                () -> appCreate.execute(new PayAppCreateCmd("ab", "应用", 0, null, null, null)));
+            IllegalArgumentException.class,
+            () -> appCreate.execute(new PayAppCreateCmd("ab", "应用", 0, null, null, null)));
         assertThrows(
-                IllegalArgumentException.class,
-                () -> appCreate.execute(new PayAppCreateCmd("app_key", "应用", 2, null, null, null)));
+            IllegalArgumentException.class,
+            () -> appCreate.execute(new PayAppCreateCmd("app_key", "应用", 2, null, null, null)));
         assertThrows(
-                IllegalArgumentException.class,
-                () ->
-                        appCreate.execute(
-                                new PayAppCreateCmd("app_key", "应用", 0, null, "ftp://x", null)));
+            IllegalArgumentException.class,
+            () ->
+                appCreate.execute(
+                    new PayAppCreateCmd("app_key", "应用", 0, null, "ftp://x", null)));
         when(apps.existsAppKey("app_key", null)).thenReturn(true);
         assertThrows(
-                IllegalStateException.class,
-                () -> appCreate.execute(new PayAppCreateCmd("app_key", "应用", 0, null, null, null)));
+            IllegalStateException.class,
+            () -> appCreate.execute(new PayAppCreateCmd("app_key", "应用", 0, null, null, null)));
     }
 
     @Test
@@ -62,14 +64,14 @@ class PayConfigExeTest {
         when(apps.existsAppKey("app_key", null)).thenReturn(false);
         when(apps.insert(any())).thenReturn(app(9L, "app_key"));
         var value =
-                appCreate.execute(
-                        new PayAppCreateCmd(
-                                "app_key",
-                                "应用",
-                                0,
-                                "备注",
-                                "https://example.test/pay",
-                                "https://example.test/refund"));
+            appCreate.execute(
+                new PayAppCreateCmd(
+                    "app_key",
+                    "应用",
+                    0,
+                    "备注",
+                    "https://example.test/pay",
+                    "https://example.test/refund"));
         assertEquals(9L, value.id());
         ArgumentCaptor<PayApp> captor = ArgumentCaptor.forClass(PayApp.class);
         verify(apps).insert(captor.capture());
@@ -88,29 +90,29 @@ class PayConfigExeTest {
     void channelCreateRejectsMissingAppUnknownCodeAndDuplicate() {
         when(apps.find(1L)).thenReturn(null);
         assertThrows(
-                IllegalArgumentException.class,
-                () ->
-                        channelCreate.execute(
-                                new PayChannelCreateCmd(1L, "ALIPAY", 0, null, null, null)));
+            IllegalArgumentException.class,
+            () ->
+                channelCreate.execute(
+                    new PayChannelCreateCmd(1L, "ALIPAY", 0, null, null, null)));
         when(apps.find(1L)).thenReturn(app(1L, "app_key"));
         assertThrows(
-                IllegalArgumentException.class,
-                () ->
-                        channelCreate.execute(
-                                new PayChannelCreateCmd(1L, "UNION", 0, null, null, null)));
+            IllegalArgumentException.class,
+            () ->
+                channelCreate.execute(
+                    new PayChannelCreateCmd(1L, "UNION", 0, null, null, null)));
         assertThrows(
-                IllegalArgumentException.class,
-                () ->
-                        channelCreate.execute(
-                                new PayChannelCreateCmd(
-                                        1L, "ALIPAY", 0, null, null, "{not-json}")));
+            IllegalArgumentException.class,
+            () ->
+                channelCreate.execute(
+                    new PayChannelCreateCmd(
+                        1L, "ALIPAY", 0, null, null, "{not-json}")));
         when(channels.exists(1L, "ALIPAY", null)).thenReturn(true);
         assertThrows(
-                IllegalStateException.class,
-                () ->
-                        channelCreate.execute(
-                                new PayChannelCreateCmd(
-                                        1L, "ALIPAY", 0, null, null, "{\"merchant\":\"m\"}")));
+            IllegalStateException.class,
+            () ->
+                channelCreate.execute(
+                    new PayChannelCreateCmd(
+                        1L, "ALIPAY", 0, null, null, "{\"merchant\":\"m\"}")));
     }
 
     @Test
@@ -118,14 +120,14 @@ class PayConfigExeTest {
         when(apps.find(1L)).thenReturn(app(1L, "app_key"));
         when(channels.insert(any())).thenReturn(channel(5L, "{\"merchant\":\"m\"}"));
         var value =
-                channelCreate.execute(
-                        new PayChannelCreateCmd(
-                                1L,
-                                "WECHAT",
-                                0,
-                                new BigDecimal("1.5"),
-                                "备注",
-                                "{\"merchant\":\"m\"}"));
+            channelCreate.execute(
+                new PayChannelCreateCmd(
+                    1L,
+                    "WECHAT",
+                    0,
+                    new BigDecimal("1.5"),
+                    "备注",
+                    "{\"merchant\":\"m\"}"));
         assertEquals(5L, value.id());
         ArgumentCaptor<PayChannelConfig> captor = ArgumentCaptor.forClass(PayChannelConfig.class);
         verify(channels).insert(captor.capture());
@@ -149,8 +151,8 @@ class PayConfigExeTest {
         when(channels.find(5L)).thenReturn(channel(5L, "{\"secret\":\"old\"}"));
         when(channels.update(any())).thenReturn(true);
         channelUpdate.execute(
-                new PayChannelUpdateCmd(
-                        5L, 1, new BigDecimal("2.25"), "r", "{\"secret\":\"new\"}"));
+            new PayChannelUpdateCmd(
+                5L, 1, new BigDecimal("2.25"), "r", "{\"secret\":\"new\"}"));
         ArgumentCaptor<PayChannelConfig> captor = ArgumentCaptor.forClass(PayChannelConfig.class);
         verify(channels).update(captor.capture());
         assertEquals("{\"secret\":\"new\"}", captor.getValue().config());

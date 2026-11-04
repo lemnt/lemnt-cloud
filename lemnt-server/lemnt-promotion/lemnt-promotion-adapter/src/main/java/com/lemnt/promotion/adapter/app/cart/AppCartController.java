@@ -25,9 +25,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
-/** 小程序购物车接口。 */
+/**
+ * 小程序购物车接口。
+ */
 @Tag(name = "小程序购物车")
 @RestController
 @RequestMapping("/mall/app")
@@ -42,19 +45,19 @@ public class AppCartController {
     public R<List<MallAppCartCartRes>> cart() {
         Long memberId = SecurityUtils.getUserId();
         return R.ok(
-                cartListQueryExe.execute(memberId).stream()
-                        .map(CartResConverter::cartItemToMallAppCartCartRes)
-                        .toList());
+            cartListQueryExe.execute(memberId).stream()
+                .map(CartResConverter::cartItemToMallAppCartCartRes)
+                .toList());
     }
 
     @PutMapping("/cart/{productId}")
     @Operation(summary = "更新当前会员购物车，不接受客户端价格或会员身份")
     public R<MallAppCartSaveRes> save(
-            @PathVariable Long productId, @Valid @RequestBody CartSaveReq req) {
+        @PathVariable Long productId, @Valid @RequestBody CartSaveReq req) {
         Long memberId = SecurityUtils.getUserId();
         return R.ok(
-                CartResConverter.cartItemToMallAppCartSaveRes(
-                        cartSaveCmdExe.execute(CartReqConverter.cart(memberId, productId, req))));
+            CartResConverter.cartItemToMallAppCartSaveRes(
+                cartSaveCmdExe.execute(CartReqConverter.cart(memberId, productId, req))));
     }
 
     @DeleteMapping("/cart/{productId}")
