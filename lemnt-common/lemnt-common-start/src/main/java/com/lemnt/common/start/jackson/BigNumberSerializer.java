@@ -35,7 +35,7 @@ public class BigNumberSerializer extends StdSerializer<Number> {
     public void serialize(Number value, JsonGenerator gen, SerializationContext provider) {
         // BigInteger先转long会截断，必须用原整数比较；边界输出沿用既有字符串契约。
         BigInteger integer =
-                value instanceof BigInteger big ? big : BigInteger.valueOf(value.longValue());
+            value instanceof BigInteger big ? big : BigInteger.valueOf(value.longValue());
         if (integer.compareTo(MIN_SAFE_INTEGER) > 0 && integer.compareTo(MAX_SAFE_INTEGER) < 0) {
             gen.writeNumber(value.toString());
         } else {

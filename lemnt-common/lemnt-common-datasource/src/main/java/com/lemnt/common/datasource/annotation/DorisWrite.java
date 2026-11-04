@@ -13,4 +13,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @DS("doris-write")
-public @interface DorisWrite {}
+public @interface DorisWrite {
+}

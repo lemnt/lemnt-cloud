@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 public class SecurityContextHolder {
     private static final TransmittableThreadLocal<Map<String, Object>> THREAD_LOCAL =
-            new TransmittableThreadLocal<>();
+        new TransmittableThreadLocal<>();
 
     public static void set(String key, Object value) {
         Map<String, Object> map = getLocalMap();
@@ -92,9 +92,9 @@ public class SecurityContextHolder {
             return new HashSet<>();
         }
         return Arrays.stream(roleKey.split(","))
-                .filter(StringUtils::isNotBlank)
-                .map(String::trim)
-                .collect(Collectors.toSet());
+            .filter(StringUtils::isNotBlank)
+            .map(String::trim)
+            .collect(Collectors.toSet());
     }
 
     public static void setRoleKey(String roleKey) {

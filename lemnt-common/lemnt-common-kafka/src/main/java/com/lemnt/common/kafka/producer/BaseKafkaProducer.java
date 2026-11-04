@@ -23,17 +23,17 @@ public class BaseKafkaProducer {
      */
     public <T> void send(String topic, String key, T data) {
         kafkaTemplate
-                .send(topic, key, data)
-                .whenComplete(
-                        (result, ex) -> {
-                            if (ex == null) {
-                                if (log.isDebugEnabled()) {
-                                    log.debug("Kafka send success topic={}, key={}", topic, key);
-                                }
-                            } else {
-                                log.error("Kafka send failed topic={}, key={}", topic, key, ex);
-                            }
-                        });
+            .send(topic, key, data)
+            .whenComplete(
+                (result, ex) -> {
+                    if (ex == null) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Kafka send success topic={}, key={}", topic, key);
+                        }
+                    } else {
+                        log.error("Kafka send failed topic={}, key={}", topic, key, ex);
+                    }
+                });
     }
 
     /**
@@ -41,23 +41,23 @@ public class BaseKafkaProducer {
      */
     public <T> void send(KafkaMessage<T> message) {
         kafkaTemplate
-                .send(message.getTopic(), message.getKey(), message)
-                .whenComplete(
-                        (result, ex) -> {
-                            if (ex == null) {
-                                if (log.isDebugEnabled()) {
-                                    log.debug(
-                                            "Kafka send success topic={}, key={}",
-                                            message.getTopic(),
-                                            message.getKey());
-                                }
-                            } else {
-                                log.error(
-                                        "Kafka send failed topic={}, key={}",
-                                        message.getTopic(),
-                                        message.getKey(),
-                                        ex);
-                            }
-                        });
+            .send(message.getTopic(), message.getKey(), message)
+            .whenComplete(
+                (result, ex) -> {
+                    if (ex == null) {
+                        if (log.isDebugEnabled()) {
+                            log.debug(
+                                "Kafka send success topic={}, key={}",
+                                message.getTopic(),
+                                message.getKey());
+                        }
+                    } else {
+                        log.error(
+                            "Kafka send failed topic={}, key={}",
+                            message.getTopic(),
+                            message.getKey(),
+                            ex);
+                    }
+                });
     }
 }

@@ -29,11 +29,11 @@ public class OssFileValidator {
      * @throws IllegalArgumentException 文件不符合要求时抛出
      */
     public void validateFile(
-            String fileName,
-            String contentType,
-            long fileSize,
-            Integer imageMaxSize,
-            Integer videoMaxSize) {
+        String fileName,
+        String contentType,
+        long fileSize,
+        Integer imageMaxSize,
+        Integer videoMaxSize) {
         if (fileSize <= 0) {
             throw new IllegalArgumentException("无效文件");
         }
@@ -65,7 +65,7 @@ public class OssFileValidator {
                 throw new IllegalArgumentException("表格大小不能超过 " + MAX_SHEET_SIZE + " MB");
             }
             if (contentType != null
-                    && !(contentType.contains("spreadsheet") || contentType.contains("csv"))) {
+                && !(contentType.contains("spreadsheet") || contentType.contains("csv"))) {
                 throw new IllegalArgumentException("表格文件类型和内容不匹配");
             }
         } else {

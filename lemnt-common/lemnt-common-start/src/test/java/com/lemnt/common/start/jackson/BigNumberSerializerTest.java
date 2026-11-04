@@ -8,25 +8,27 @@ import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** 大整数不能先截为long再判断JS安全范围；已有边界输出格式保持兼容。 */
+/**
+ * 大整数不能先截为long再判断JS安全范围；已有边界输出格式保持兼容。
+ */
 class BigNumberSerializerTest {
     final JsonMapper json =
-            JsonMapper.builder()
-                    .addModule(
-                            new SimpleModule()
-                                    .addSerializer(BigInteger.class, BigNumberSerializer.INSTANCE)
-                                    .addSerializer(Long.class, BigNumberSerializer.INSTANCE))
-                    .build();
+        JsonMapper.builder()
+            .addModule(
+                new SimpleModule()
+                    .addSerializer(BigInteger.class, BigNumberSerializer.INSTANCE)
+                    .addSerializer(Long.class, BigNumberSerializer.INSTANCE))
+            .build();
 
     @Test
     void integersBeyondLongRangeMustRemainExactStrings() {
         for (String value :
-                new String[] {
-                    "18446744073709551616",
-                    "18446744073709551617",
-                    "-18446744073709551616",
-                    "999999999999999999999999999999999999"
-                }) {
+            new String[]{
+                "18446744073709551616",
+                "18446744073709551617",
+                "-18446744073709551616",
+                "999999999999999999999999999999999999"
+            }) {
             var integer = new BigInteger(value);
             var node = json.readTree(json.writeValueAsString(integer));
             assertTrue(node.isString(), value);

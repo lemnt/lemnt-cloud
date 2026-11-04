@@ -15,6 +15,7 @@ import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -28,18 +29,18 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor {
 
     @Override
     public boolean preHandle(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull Object handler)
-            throws Exception {
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull Object handler)
+        throws Exception {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
         // 用户上下文
         SecurityContextHolder.setUserId(
-                ServletUtils.getHeader(request, SecurityConstants.HEADER_USER_ID));
+            ServletUtils.getHeader(request, SecurityConstants.HEADER_USER_ID));
         SecurityContextHolder.setUserName(
-                ServletUtils.getHeader(request, SecurityConstants.HEADER_USER_NAME));
+            ServletUtils.getHeader(request, SecurityConstants.HEADER_USER_NAME));
         String userKey = ServletUtils.getHeader(request, SecurityConstants.HEADER_USER_KEY);
         SecurityContextHolder.setUserKey(userKey);
 
@@ -60,18 +61,18 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor {
 
     @Override
     public void afterConcurrentHandlingStarted(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull Object handler) {
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull Object handler) {
         clearContext();
     }
 
     @Override
     public void afterCompletion(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull Object handler,
-            Exception ex) {
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull Object handler,
+        Exception ex) {
         clearContext();
     }
 

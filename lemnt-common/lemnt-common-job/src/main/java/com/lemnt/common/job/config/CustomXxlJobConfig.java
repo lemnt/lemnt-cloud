@@ -21,10 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(XxlJobProperties.class)
 @ConditionalOnProperty(
-        prefix = "xxl.job.executor",
-        name = "enabled",
-        havingValue = "true",
-        matchIfMissing = true)
+    prefix = "xxl.job.executor",
+    name = "enabled",
+    havingValue = "true",
+    matchIfMissing = true)
 public class CustomXxlJobConfig {
 
     private final XxlJobProperties xxlJobProperties;

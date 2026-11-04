@@ -34,7 +34,7 @@ public class SensitiveJsonSerializer extends ValueSerializer<String> {
     public ValueSerializer<?> createContextual(SerializationContext prov, BeanProperty property) {
         Sensitive annotation = property.getAnnotation(Sensitive.class);
         if (Objects.nonNull(annotation)
-                && Objects.equals(String.class, property.getType().getRawClass())) {
+            && Objects.equals(String.class, property.getType().getRawClass())) {
             this.desensitizedType = annotation.desensitizedType();
             return this;
         }
@@ -49,7 +49,7 @@ public class SensitiveJsonSerializer extends ValueSerializer<String> {
             Set<String> roleKeys = SecurityContextHolder.getRoleKey();
             // 管理员不脱敏
             return !roleKeys.contains(RoleKeyEnum.ADMIN.getRoleKey())
-                    && !roleKeys.contains(RoleKeyEnum.SYSTEM.getRoleKey());
+                && !roleKeys.contains(RoleKeyEnum.SYSTEM.getRoleKey());
         } catch (Exception e) {
             return true;
         }

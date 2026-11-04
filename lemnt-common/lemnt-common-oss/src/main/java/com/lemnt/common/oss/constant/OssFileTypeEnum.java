@@ -7,18 +7,18 @@ package com.lemnt.common.oss.constant;
  */
 public enum OssFileTypeEnum {
     XLSX(
-            "xlsx",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "Excel 2007+"),
+        "xlsx",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Excel 2007+"),
     XLS("xls", "application/vnd.ms-excel", "Excel 97-2003"),
     CSV("csv", "text/csv", "CSV 文件"),
 
     /* ================= 文档 ================= */
     PDF("pdf", "application/pdf", "PDF 文件"),
     DOCX(
-            "docx",
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            "Word 2007+"),
+        "docx",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "Word 2007+"),
     DOC("doc", "application/msword", "Word 97-2003"),
 
     TXT("txt", "text/plain", "文本文件"),

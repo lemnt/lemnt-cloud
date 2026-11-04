@@ -69,14 +69,14 @@ public class ExcelExportAnnotationConverter {
             current = current.getSuperclass();
         }
         return fieldList.stream()
-                .filter(
-                        f ->
-                                f.isAnnotationPresent(Excel.class)
-                                        || f.isAnnotationPresent(Excels.class))
-                .filter(ExcelExportAnnotationConverter::isExportField)
-                .sorted(Comparator.comparingInt(ExcelExportAnnotationConverter::getSort))
-                .peek(f -> f.setAccessible(true))
-                .collect(Collectors.toList());
+            .filter(
+                f ->
+                    f.isAnnotationPresent(Excel.class)
+                        || f.isAnnotationPresent(Excels.class))
+            .filter(ExcelExportAnnotationConverter::isExportField)
+            .sorted(Comparator.comparingInt(ExcelExportAnnotationConverter::getSort))
+            .peek(f -> f.setAccessible(true))
+            .collect(Collectors.toList());
     }
 
     /**
@@ -127,9 +127,9 @@ public class ExcelExportAnnotationConverter {
             if (StrUtil.isNotBlank(excel.readConverterExp())) {
                 String[] pairs = excel.readConverterExp().split(",");
                 Map<String, String> map =
-                        Arrays.stream(pairs)
-                                .map(s -> s.split("="))
-                                .collect(Collectors.toMap(a -> a[0], a -> a[1]));
+                    Arrays.stream(pairs)
+                        .map(s -> s.split("="))
+                        .collect(Collectors.toMap(a -> a[0], a -> a[1]));
                 String strVal = String.valueOf(value);
                 if (map.containsKey(strVal)) {
                     return map.get(strVal);
@@ -193,8 +193,8 @@ public class ExcelExportAnnotationConverter {
         Excel excel = field.getAnnotation(Excel.class);
         if (Objects.nonNull(excel)) {
             return excel.isExport()
-                    || Objects.equals(excel.type(), Excel.Type.ALL)
-                    || Objects.equals(excel.type(), Excel.Type.EXPORT);
+                || Objects.equals(excel.type(), Excel.Type.ALL)
+                || Objects.equals(excel.type(), Excel.Type.EXPORT);
         }
         return field.isAnnotationPresent(Excels.class);
     }

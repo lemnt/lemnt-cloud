@@ -4,6 +4,7 @@ import com.lemnt.common.sensitive.annotation.Xss;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,7 +41,7 @@ public class XssValidator implements ConstraintValidator<Xss, String> {
      * 匹配 javascript: 协议
      */
     private static final Pattern JAVASCRIPT_PROTOCOL_PATTERN =
-            Pattern.compile("(?i)javascript\\s*:");
+        Pattern.compile("(?i)javascript\\s*:");
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {

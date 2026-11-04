@@ -40,14 +40,14 @@ public class JacksonConfig {
             javaTimeModule.addSerializer(BigDecimal.class, ToStringSerializer.instance);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             javaTimeModule.addSerializer(
-                    LocalDateTime.class, new LocalDateTimeSerializer(formatter));
+                LocalDateTime.class, new LocalDateTimeSerializer(formatter));
             javaTimeModule.addDeserializer(
-                    LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
+                LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
             builder.addModules(javaTimeModule);
             builder.defaultTimeZone(TimeZone.getDefault());
             // 全局配置：只过滤 null，不过滤空数组/空字符串/空对象
             builder.changeDefaultPropertyInclusion(
-                    inclusion -> inclusion.withValueInclusion(JsonInclude.Include.NON_NULL));
+                inclusion -> inclusion.withValueInclusion(JsonInclude.Include.NON_NULL));
             log.info("初始化 jackson 配置");
         };
     }

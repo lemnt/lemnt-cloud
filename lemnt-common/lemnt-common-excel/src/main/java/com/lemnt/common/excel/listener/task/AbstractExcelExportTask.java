@@ -33,8 +33,10 @@ import java.lang.reflect.ParameterizedType;
 @Slf4j
 public abstract class AbstractExcelExportTask<Q, V> implements BaseExcelExportTask {
 
-    @Autowired private BaseExcelTaskService baseExcelTaskService;
-    @Autowired private OssFileService ossFileService;
+    @Autowired
+    private BaseExcelTaskService baseExcelTaskService;
+    @Autowired
+    private OssFileService ossFileService;
 
     @Value("${upload.file-path}")
     private String filePath;
@@ -83,20 +85,20 @@ public abstract class AbstractExcelExportTask<Q, V> implements BaseExcelExportTa
     public String execute(ExcelExportTaskEvent event) throws Exception {
         Q params = JsonUtils.toBean(event.getParams(), this.qClass);
         String fileName =
-                DigestUtil.md5Hex(event.getTaskId() + event.getType() + System.currentTimeMillis())
-                        + StrPool.DOT
-                        + OssFileTypeEnum.XLSX.getSuffix();
+            DigestUtil.md5Hex(event.getTaskId() + event.getType() + System.currentTimeMillis())
+                + StrPool.DOT
+                + OssFileTypeEnum.XLSX.getSuffix();
         String exportFilePath = filePath + StrPool.SLASH + "export" + StrPool.SLASH + fileName;
         File exportFile = new File(exportFilePath);
         FileUtil.mkParentDirs(exportFile);
         ExcelStyleHandler styleHandler = new ExcelStyleHandler(this.vClass);
         ExcelColumnWidthHandler widthHandler = new ExcelColumnWidthHandler(this.vClass);
         try (ExcelWriter writer =
-                EasyExcel.write(exportFile)
-                        .head(ExcelExportAnnotationConverter.buildHead(this.vClass))
-                        .registerWriteHandler(styleHandler)
-                        .registerWriteHandler(widthHandler)
-                        .build()) {
+                 EasyExcel.write(exportFile)
+                     .head(ExcelExportAnnotationConverter.buildHead(this.vClass))
+                     .registerWriteHandler(styleHandler)
+                     .registerWriteHandler(widthHandler)
+                     .build()) {
             WriteSheet sheet = EasyExcel.writerSheet().build();
             long count = 0, totalNum = 0;
             int pageNumber = 1;
@@ -106,8 +108,8 @@ public abstract class AbstractExcelExportTask<Q, V> implements BaseExcelExportTa
                     break;
                 }
                 writer.write(
-                        ExcelExportAnnotationConverter.convertRows(data.getList(), this.vClass),
-                        sheet);
+                    ExcelExportAnnotationConverter.convertRows(data.getList(), this.vClass),
+                    sheet);
                 if (data.getList().size() < this.pageSize()) {
                     break;
                 }
@@ -124,7 +126,7 @@ public abstract class AbstractExcelExportTask<Q, V> implements BaseExcelExportTa
         }
         try (InputStream is = new FileInputStream(exportFile)) {
             return ossFileService.uploadStream(
-                    is, fileName, OssFileTypeEnum.XLSX.getContentType(), exportFile.length());
+                is, fileName, OssFileTypeEnum.XLSX.getContentType(), exportFile.length());
         } finally {
             FileUtil.del(exportFile);
         }

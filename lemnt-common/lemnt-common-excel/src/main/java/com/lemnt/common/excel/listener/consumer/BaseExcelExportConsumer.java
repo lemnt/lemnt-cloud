@@ -18,8 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BaseExcelExportConsumer<T extends ExcelExportTaskEvent> extends BaseConsumer<T> {
 
-    @Autowired private ExcelExportTaskFactory excelExportTaskFactory;
-    @Autowired private BaseExcelTaskService baseExcelTaskService;
+    @Autowired
+    private ExcelExportTaskFactory excelExportTaskFactory;
+    @Autowired
+    private BaseExcelTaskService baseExcelTaskService;
 
     @Override
     protected void handle(T message) {

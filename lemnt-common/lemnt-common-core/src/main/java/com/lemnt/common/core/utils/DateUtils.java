@@ -150,7 +150,7 @@ public class DateUtils {
      * 时间区间生成
      */
     public static List<String> generateDateTimeList(
-            LocalDate startTime, LocalDate endTime, String type) {
+        LocalDate startTime, LocalDate endTime, String type) {
         if (startTime.isAfter(endTime)) {
             throw new IllegalArgumentException("开始时间不能晚于结束时间");
         }
@@ -165,8 +165,8 @@ public class DateUtils {
                 break;
             case "MONTH":
                 for (LocalDate d = startTime.withDayOfMonth(1);
-                        !d.isAfter(endTime);
-                        d = d.plusMonths(1)) {
+                     !d.isAfter(endTime);
+                     d = d.plusMonths(1)) {
                     result.add(d.format(DateTimeFormatter.ofPattern(YYYY_MM)));
                 }
                 break;

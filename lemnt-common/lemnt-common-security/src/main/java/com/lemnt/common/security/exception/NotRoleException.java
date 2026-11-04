@@ -10,7 +10,8 @@ import java.io.Serial;
  * @author wangxx
  */
 public class NotRoleException extends RuntimeException {
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public NotRoleException(String role) {
         super(role);

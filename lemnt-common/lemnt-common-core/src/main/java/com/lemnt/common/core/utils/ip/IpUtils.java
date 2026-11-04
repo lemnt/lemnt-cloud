@@ -4,6 +4,7 @@ import com.lemnt.common.core.utils.ServletUtils;
 import com.lemnt.common.core.utils.StringUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -17,16 +18,16 @@ public class IpUtils {
     // 匹配 ip
     public static final String REGX_IP = "((" + REGX_0_255 + "\\.){3}" + REGX_0_255 + ")";
     public static final String REGX_IP_WILDCARD =
-            "(((\\*\\.){3}\\*)|("
-                    + REGX_0_255
-                    + "(\\.\\*){3})|("
-                    + REGX_0_255
-                    + "\\."
-                    + REGX_0_255
-                    + ")(\\.\\*){2}"
-                    + "|(("
-                    + REGX_0_255
-                    + "\\.){3}\\*))";
+        "(((\\*\\.){3}\\*)|("
+            + REGX_0_255
+            + "(\\.\\*){3})|("
+            + REGX_0_255
+            + "\\."
+            + REGX_0_255
+            + ")(\\.\\*){2}"
+            + "|(("
+            + REGX_0_255
+            + "\\.){3}\\*))";
     // 匹配网段
     public static final String REGX_IP_SEG = "(" + REGX_IP + "\\-" + REGX_IP + ")";
 

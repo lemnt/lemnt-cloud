@@ -21,7 +21,8 @@ import java.util.List;
 @Component
 public class BaseProducer<T> {
 
-    @Autowired private RocketMQTemplate rocketMQTemplate;
+    @Autowired
+    private RocketMQTemplate rocketMQTemplate;
 
     /**
      * 同步发送
@@ -43,9 +44,9 @@ public class BaseProducer<T> {
     public void sendListSync(String topic, List<T> payloadList) {
         rocketMQTemplate.convertAndSend(topic, JsonUtils.toJsonStr(payloadList));
         log.debug(
-                "Sync message sent to topic={} payload={}",
-                topic,
-                JsonUtils.toJsonStr(payloadList));
+            "Sync message sent to topic={} payload={}",
+            topic,
+            JsonUtils.toJsonStr(payloadList));
     }
 
     /**
@@ -56,11 +57,11 @@ public class BaseProducer<T> {
      */
     public void sendAsync(String topic, T payload) {
         rocketMQTemplate.syncSend(
-                topic, MessageBuilder.withPayload(JsonUtils.toJsonStr(payload)).build());
+            topic, MessageBuilder.withPayload(JsonUtils.toJsonStr(payload)).build());
         log.debug(
-                "Async message sending to topic={} payload={}",
-                topic,
-                JsonUtils.toJsonStr(payload));
+            "Async message sending to topic={} payload={}",
+            topic,
+            JsonUtils.toJsonStr(payload));
     }
 
     /**
@@ -71,12 +72,12 @@ public class BaseProducer<T> {
      */
     public void sendSyncDelay(String topic, T payload, long delayTime) {
         rocketMQTemplate.syncSendDelayTimeMills(
-                topic, MessageBuilder.withPayload(JsonUtils.toJsonStr(payload)).build(), delayTime);
+            topic, MessageBuilder.withPayload(JsonUtils.toJsonStr(payload)).build(), delayTime);
         log.debug(
-                "syncSendDeliverTimeMills message sending to topic={} payload={} delayTime={}",
-                topic,
-                JsonUtils.toJsonStr(payload),
-                delayTime);
+            "syncSendDeliverTimeMills message sending to topic={} payload={} delayTime={}",
+            topic,
+            JsonUtils.toJsonStr(payload),
+            delayTime);
     }
 
     /**
@@ -88,13 +89,13 @@ public class BaseProducer<T> {
      */
     public void sendListAsync(String topic, List<T> payloadList, SendCallback callback) {
         rocketMQTemplate.asyncSend(
-                topic,
-                MessageBuilder.withPayload(JsonUtils.toJsonStr(payloadList)).build(),
-                callback);
+            topic,
+            MessageBuilder.withPayload(JsonUtils.toJsonStr(payloadList)).build(),
+            callback);
         log.debug(
-                "Async message sending to topic={} payload={}",
-                topic,
-                JsonUtils.toJsonStr(payloadList));
+            "Async message sending to topic={} payload={}",
+            topic,
+            JsonUtils.toJsonStr(payloadList));
     }
 
     /**
@@ -106,12 +107,12 @@ public class BaseProducer<T> {
      */
     public void sendOrderly(String topic, T payload, String hashKey) {
         rocketMQTemplate.syncSendOrderly(
-                topic, MessageBuilder.withPayload(JsonUtils.toJsonStr(payload)).build(), hashKey);
+            topic, MessageBuilder.withPayload(JsonUtils.toJsonStr(payload)).build(), hashKey);
         log.debug(
-                "Orderly message sent to topic={} hashKey={} payload={}",
-                topic,
-                hashKey,
-                JsonUtils.toJsonStr(payload));
+            "Orderly message sent to topic={} hashKey={} payload={}",
+            topic,
+            hashKey,
+            JsonUtils.toJsonStr(payload));
     }
 
     /**
@@ -123,14 +124,14 @@ public class BaseProducer<T> {
      */
     public void sendListOrderly(String topic, List<T> payloadList, String hashKey) {
         rocketMQTemplate.syncSendOrderly(
-                topic,
-                MessageBuilder.withPayload(JsonUtils.toJsonStr(payloadList)).build(),
-                hashKey);
+            topic,
+            MessageBuilder.withPayload(JsonUtils.toJsonStr(payloadList)).build(),
+            hashKey);
         log.debug(
-                "Orderly message sent to topic={} hashKey={} payload={}",
-                topic,
-                hashKey,
-                JsonUtils.toJsonStr(payloadList));
+            "Orderly message sent to topic={} hashKey={} payload={}",
+            topic,
+            hashKey,
+            JsonUtils.toJsonStr(payloadList));
     }
 
     /**
@@ -143,10 +144,10 @@ public class BaseProducer<T> {
     public void sendWithTag(String topic, String tag, T payload) {
         rocketMQTemplate.convertAndSend(topic + ":" + tag, JsonUtils.toJsonStr(payload));
         log.debug(
-                "Message sent to topic={} tag={} payload={}",
-                topic,
-                tag,
-                JsonUtils.toJsonStr(payload));
+            "Message sent to topic={} tag={} payload={}",
+            topic,
+            tag,
+            JsonUtils.toJsonStr(payload));
     }
 
     /**
@@ -159,9 +160,9 @@ public class BaseProducer<T> {
     public void sendListWithTag(String topic, String tag, List<T> payloadList) {
         rocketMQTemplate.convertAndSend(topic + ":" + tag, JsonUtils.toJsonStr(payloadList));
         log.debug(
-                "Message sent to topic={} tag={} payload={}",
-                topic,
-                tag,
-                JsonUtils.toJsonStr(payloadList));
+            "Message sent to topic={} tag={} payload={}",
+            topic,
+            tag,
+            JsonUtils.toJsonStr(payloadList));
     }
 }

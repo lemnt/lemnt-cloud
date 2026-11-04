@@ -41,8 +41,11 @@ class ArchitectureTest(unittest.TestCase):
 
     def test_record_components_with_nested_validation_and_generics_require_schema(self):
         self.java('adapter', 'PageReq', '''package sample.adapter.req;
-@io.swagger.v3.oas.annotations.media.Schema(description="分页")
-public record PageReq(@Size(max=9) java.util.List<@Size(max=20) String> ids) {}''')
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Size;
+import java.util.List;
+@Schema(description="分页")
+public record PageReq(@Size(max=9) List<@Size(max=20) String> ids) {}''')
         self.assertEqual(['http-field-schema'], self.rules())
 
     def test_for_update_requires_both_cache_controls(self):

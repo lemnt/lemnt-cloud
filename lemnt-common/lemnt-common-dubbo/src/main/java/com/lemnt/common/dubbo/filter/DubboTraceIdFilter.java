@@ -65,24 +65,24 @@ public class DubboTraceIdFilter implements Filter {
         attachment.setAttachment(SecurityConstants.HEADER_TRACE_ID, traceId);
         // 设置用户信息到 RpcContext，传递给服务提供方
         attachment.setAttachment(
-                SecurityConstants.HEADER_USER_ID,
-                Convert.toStr(SecurityUtils.getUserId(), StringUtils.EMPTY));
+            SecurityConstants.HEADER_USER_ID,
+            Convert.toStr(SecurityUtils.getUserId(), StringUtils.EMPTY));
         attachment.setAttachment(
-                SecurityConstants.HEADER_USER_NAME,
-                Convert.toStr(SecurityUtils.getUsername(), StringUtils.EMPTY));
+            SecurityConstants.HEADER_USER_NAME,
+            Convert.toStr(SecurityUtils.getUsername(), StringUtils.EMPTY));
         attachment.setAttachment(
-                SecurityConstants.HEADER_ROLE_PERMISSION,
-                Convert.toStr(SecurityContextHolder.getPermission(), StringUtils.EMPTY));
+            SecurityConstants.HEADER_ROLE_PERMISSION,
+            Convert.toStr(SecurityContextHolder.getPermission(), StringUtils.EMPTY));
         attachment.setAttachment(
-                SecurityConstants.HEADER_ROLE_KEY,
-                Convert.toStr(String.join(",", SecurityUtils.getRoleKey()), StringUtils.EMPTY));
+            SecurityConstants.HEADER_ROLE_KEY,
+            Convert.toStr(String.join(",", SecurityUtils.getRoleKey()), StringUtils.EMPTY));
         if (Objects.isNull(SecurityUtils.getLoginUser())) {
             attachment.setAttachment(SecurityConstants.HEADER_LOGIN_USER, StringUtils.EMPTY);
         } else {
             attachment.setAttachment(
-                    SecurityConstants.HEADER_LOGIN_USER,
-                    Convert.toStr(
-                            JsonUtils.toJsonStr(SecurityUtils.getLoginUser()), StringUtils.EMPTY));
+                SecurityConstants.HEADER_LOGIN_USER,
+                Convert.toStr(
+                    JsonUtils.toJsonStr(SecurityUtils.getLoginUser()), StringUtils.EMPTY));
         }
     }
 
@@ -116,7 +116,7 @@ public class DubboTraceIdFilter implements Filter {
         String loginUser = attachment.getAttachment(SecurityConstants.HEADER_LOGIN_USER);
         if (StringUtils.isNotBlank(loginUser)) {
             SecurityContextHolder.set(
-                    SecurityConstants.LOGIN_USER, JsonUtils.toBean(loginUser, SecurityUser.class));
+                SecurityConstants.LOGIN_USER, JsonUtils.toBean(loginUser, SecurityUser.class));
         }
     }
 }

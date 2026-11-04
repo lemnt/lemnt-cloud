@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -36,9 +37,9 @@ public class TokenService {
     private final JwtUtils jwtUtils;
 
     public TokenService(
-            RedisStringService redisStringService,
-            SnowflakeUtils snowflakeUtils,
-            JwtUtils jwtUtils) {
+        RedisStringService redisStringService,
+        SnowflakeUtils snowflakeUtils,
+        JwtUtils jwtUtils) {
         this.redisStringService = redisStringService;
         this.snowflakeUtils = snowflakeUtils;
         this.jwtUtils = jwtUtils;
@@ -95,7 +96,9 @@ public class TokenService {
         return getSecurityUser(token, SecurityConstants.ADMIN_USER_TYPE);
     }
 
-    /** 按指定身份域获取会话，签名类型与缓存类型必须同时匹配。 */
+    /**
+     * 按指定身份域获取会话，签名类型与缓存类型必须同时匹配。
+     */
     public SecurityUser getSecurityUser(String token, String userType) {
         try {
             if (StringUtils.isNotBlank(token)) {
@@ -104,12 +107,12 @@ public class TokenService {
                     return null;
                 }
                 SecurityUser user =
-                        redisStringService.getObj(
-                                getTokenKey(jwtUtils.getUserKey(claims)), SecurityUser.class);
+                    redisStringService.getObj(
+                        getTokenKey(jwtUtils.getUserKey(claims)), SecurityUser.class);
                 String cachedType =
-                        user == null || user.getUserType() == null
-                                ? SecurityConstants.ADMIN_USER_TYPE
-                                : user.getUserType();
+                    user == null || user.getUserType() == null
+                        ? SecurityConstants.ADMIN_USER_TYPE
+                        : user.getUserType();
                 return user != null && userType.equals(cachedType) ? user : null;
             }
         } catch (Exception ex) {
@@ -127,8 +130,8 @@ public class TokenService {
             if (StringUtils.isNotBlank(userKey)) {
                 user = redisStringService.getObj(getTokenKey(userKey), SecurityUser.class);
                 if (user != null
-                        && user.getUserType() != null
-                        && !SecurityConstants.ADMIN_USER_TYPE.equals(user.getUserType())) {
+                    && user.getUserType() != null
+                    && !SecurityConstants.ADMIN_USER_TYPE.equals(user.getUserType())) {
                     return null;
                 }
                 return user;
@@ -155,7 +158,9 @@ public class TokenService {
         delSecurityUser(token, SecurityConstants.ADMIN_USER_TYPE);
     }
 
-    /** 仅注销指定身份域的当前会话。 */
+    /**
+     * 仅注销指定身份域的当前会话。
+     */
     public void delSecurityUser(String token, String userType) {
         if (StringUtils.isBlank(token)) {
             return;
@@ -178,7 +183,7 @@ public class TokenService {
         long expireTime = securityUser.getExpireTime();
         long currentTime = System.currentTimeMillis();
         if (expireTime - currentTime
-                <= TimeUnit.SECONDS.toMillis(CacheConstants.TOKEN_REFRESH_THRESHOLD_SECONDS)) {
+            <= TimeUnit.SECONDS.toMillis(CacheConstants.TOKEN_REFRESH_THRESHOLD_SECONDS)) {
             refreshToken(securityUser);
         }
     }
@@ -189,40 +194,44 @@ public class TokenService {
     public void refreshToken(SecurityUser securityUser) {
         securityUser.setLoginTime(System.currentTimeMillis());
         securityUser.setExpireTime(
-                securityUser.getLoginTime()
-                        + TimeUnit.SECONDS.toMillis(CacheConstants.TOKEN_TTL_SECONDS));
+            securityUser.getLoginTime()
+                + TimeUnit.SECONDS.toMillis(CacheConstants.TOKEN_TTL_SECONDS));
         String userKey = getTokenKey(securityUser.getToken());
         redisStringService.setObj(
-                userKey, securityUser, CacheConstants.TOKEN_TTL_SECONDS, TimeUnit.SECONDS);
+            userKey, securityUser, CacheConstants.TOKEN_TTL_SECONDS, TimeUnit.SECONDS);
     }
 
-    /** 认证中心按会员编号撤销会话，身份域隔离，不维护额外索引。 */
+    /**
+     * 认证中心按会员编号撤销会话，身份域隔离，不维护额外索引。
+     */
     public void revokeMemberSessions(Long memberId) {
         if (memberId == null || memberId <= 0) {
             throw new IllegalArgumentException("会员编号不合法");
         }
         redisStringService.scan(
-                CacheConstants.LOGIN_TOKEN_KEY + "*",
-                key -> {
-                    SecurityUser user = redisStringService.getObj(key, SecurityUser.class);
-                    if (user != null
-                            && SecurityConstants.MEMBER_USER_TYPE.equals(user.getUserType())
-                            && memberId.equals(user.getUserId())) {
-                        redisStringService.delete(key);
-                    }
-                });
+            CacheConstants.LOGIN_TOKEN_KEY + "*",
+            key -> {
+                SecurityUser user = redisStringService.getObj(key, SecurityUser.class);
+                if (user != null
+                    && SecurityConstants.MEMBER_USER_TYPE.equals(user.getUserType())
+                    && memberId.equals(user.getUserId())) {
+                    redisStringService.delete(key);
+                }
+            });
     }
 
-    /** 仅续期仍存在的会话，不能恢复已撤销的会话。 */
+    /**
+     * 仅续期仍存在的会话，不能恢复已撤销的会话。
+     */
     public void refreshExistingToken(SecurityUser user) {
         user.setLoginTime(System.currentTimeMillis());
         user.setExpireTime(
-                user.getLoginTime() + TimeUnit.SECONDS.toMillis(CacheConstants.TOKEN_TTL_SECONDS));
+            user.getLoginTime() + TimeUnit.SECONDS.toMillis(CacheConstants.TOKEN_TTL_SECONDS));
         if (!redisStringService.setObjIfPresent(
-                getTokenKey(user.getToken()),
-                user,
-                CacheConstants.TOKEN_TTL_SECONDS,
-                TimeUnit.SECONDS)) {
+            getTokenKey(user.getToken()),
+            user,
+            CacheConstants.TOKEN_TTL_SECONDS,
+            TimeUnit.SECONDS)) {
             throw new SecurityException("登录会话已失效");
         }
     }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PreDestroy;
+
 import java.net.InetAddress;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -31,13 +32,13 @@ public class NacosDeregister {
     private final long waitTime;
 
     public NacosDeregister(
-            @Value("${spring.cloud.nacos.discovery.server-addr}") String serverAddr,
-            @Value("${spring.cloud.nacos.discovery.namespace:}") String namespace,
-            @Value("${spring.cloud.nacos.discovery.group:DEFAULT_GROUP}") String groupName,
-            @Value("${spring.application.name}") String serviceName,
-            @Value("${server.port}") int port,
-            @Value("${lemnt.shutdown.wait-time:500}") long waitTime // 等待 Gateway / Nacos 刷新感知
-            ) {
+        @Value("${spring.cloud.nacos.discovery.server-addr}") String serverAddr,
+        @Value("${spring.cloud.nacos.discovery.namespace:}") String namespace,
+        @Value("${spring.cloud.nacos.discovery.group:DEFAULT_GROUP}") String groupName,
+        @Value("${spring.application.name}") String serviceName,
+        @Value("${server.port}") int port,
+        @Value("${lemnt.shutdown.wait-time:500}") long waitTime // 等待 Gateway / Nacos 刷新感知
+    ) {
         this.serverAddr = serverAddr;
         this.namespace = namespace;
         this.groupName = groupName;

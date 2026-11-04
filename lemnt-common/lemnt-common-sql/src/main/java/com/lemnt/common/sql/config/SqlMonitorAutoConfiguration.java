@@ -16,10 +16,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties(SqlMonitorProperties.class)
 @ConditionalOnProperty(
-        prefix = "lemnt.sql.monitor",
-        name = "enabled",
-        havingValue = "true",
-        matchIfMissing = true)
+    prefix = "lemnt.sql.monitor",
+    name = "enabled",
+    havingValue = "true",
+    matchIfMissing = true)
 public class SqlMonitorAutoConfiguration {
 
     /**
@@ -27,7 +27,7 @@ public class SqlMonitorAutoConfiguration {
      */
     @Bean
     public SlowSqlInterceptor slowSqlInterceptor(
-            SqlMonitorProperties properties, ObjectProvider<MeterRegistry> meterRegistryProvider) {
+        SqlMonitorProperties properties, ObjectProvider<MeterRegistry> meterRegistryProvider) {
         return new SlowSqlInterceptor(properties, meterRegistryProvider.getIfAvailable());
     }
 }

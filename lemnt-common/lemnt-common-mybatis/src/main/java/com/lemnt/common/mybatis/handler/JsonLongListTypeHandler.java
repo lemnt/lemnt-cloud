@@ -29,8 +29,8 @@ public class JsonLongListTypeHandler extends BaseTypeHandler<List<Long>> {
 
     @Override
     public void setNonNullParameter(
-            PreparedStatement ps, int i, List<Long> parameter, JdbcType jdbcType)
-            throws SQLException {
+        PreparedStatement ps, int i, List<Long> parameter, JdbcType jdbcType)
+        throws SQLException {
         if (CollUtil.isEmpty(parameter)) {
             ps.setString(i, "[]");
         } else {

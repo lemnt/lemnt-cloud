@@ -25,21 +25,23 @@ public class PreAuthorizeAspect {
     /**
      * 构建
      */
-    public PreAuthorizeAspect() {}
+    public PreAuthorizeAspect() {
+    }
 
     /**
      * 定义AOP签名 (切入所有使用鉴权注解的方法)
      */
     public static final String POINTCUT_SIGN =
-            " @annotation(com.lemnt.common.security.annotation.RequiresLogin) || "
-                    + "@annotation(com.lemnt.common.security.annotation.RequiresPermissions) || "
-                    + "@annotation(com.lemnt.common.security.annotation.RequiresRoles)";
+        " @annotation(com.lemnt.common.security.annotation.RequiresLogin) || "
+            + "@annotation(com.lemnt.common.security.annotation.RequiresPermissions) || "
+            + "@annotation(com.lemnt.common.security.annotation.RequiresRoles)";
 
     /**
      * 声明AOP签名
      */
     @Pointcut(POINTCUT_SIGN)
-    public void pointcut() {}
+    public void pointcut() {
+    }
 
     /**
      * 环绕切入

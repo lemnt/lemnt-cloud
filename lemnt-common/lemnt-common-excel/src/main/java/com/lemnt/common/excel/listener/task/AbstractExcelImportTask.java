@@ -31,8 +31,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public abstract class AbstractExcelImportTask<V> implements BaseExcelImportTask {
 
-    @Autowired private BaseExcelTaskService baseExcelTaskService;
-    @Autowired private OssFileService ossFileService;
+    @Autowired
+    private BaseExcelTaskService baseExcelTaskService;
+    @Autowired
+    private OssFileService ossFileService;
 
     /**
      * 导入excel的类型
@@ -64,77 +66,77 @@ public abstract class AbstractExcelImportTask<V> implements BaseExcelImportTask 
         result.setTaskId(event.getTaskId());
         try (InputStream fis = ossFileService.getFile(event.getFileUrl())) {
             EasyExcel.read(
-                            fis,
-                            new ReadListener<Map<Integer, Object>>() {
-                                private static final int BATCH_SIZE = 1000;
-                                private final List<V> dataList =
-                                        ListUtils.newArrayListWithExpectedSize(1000);
+                    fis,
+                    new ReadListener<Map<Integer, Object>>() {
+                        private static final int BATCH_SIZE = 1000;
+                        private final List<V> dataList =
+                            ListUtils.newArrayListWithExpectedSize(1000);
 
-                                @Override
-                                public void invoke(
-                                        Map<Integer, Object> data, AnalysisContext context) {
-                                    processed.incrementAndGet();
-                                    try {
-                                        V entity =
-                                                ExcelImportAnnotationConverter.convertRow(
-                                                        headMap, vClass, data);
-                                        if (Objects.nonNull(entity)) {
-                                            dataList.add(entity);
-                                        }
-                                    } catch (Exception e) {
-                                        fail.incrementAndGet();
-                                        this.appendMsg(
-                                                "第 "
-                                                        + (context.readRowHolder().getRowIndex()
-                                                                + 1)
-                                                        + " 行解析失败："
-                                                        + e.getMessage());
-                                    }
-                                    if (dataList.size() >= BATCH_SIZE) {
-                                        this.flush();
-                                    }
+                        @Override
+                        public void invoke(
+                            Map<Integer, Object> data, AnalysisContext context) {
+                            processed.incrementAndGet();
+                            try {
+                                V entity =
+                                    ExcelImportAnnotationConverter.convertRow(
+                                        headMap, vClass, data);
+                                if (Objects.nonNull(entity)) {
+                                    dataList.add(entity);
                                 }
+                            } catch (Exception e) {
+                                fail.incrementAndGet();
+                                this.appendMsg(
+                                    "第 "
+                                        + (context.readRowHolder().getRowIndex()
+                                        + 1)
+                                        + " 行解析失败："
+                                        + e.getMessage());
+                            }
+                            if (dataList.size() >= BATCH_SIZE) {
+                                this.flush();
+                            }
+                        }
 
-                                @Override
-                                public void doAfterAllAnalysed(AnalysisContext context) {
-                                    this.flush();
-                                }
+                        @Override
+                        public void doAfterAllAnalysed(AnalysisContext context) {
+                            this.flush();
+                        }
 
-                                /**
-                                 * 处理处理结果
-                                 */
-                                private void flush() {
-                                    if (CollUtil.isEmpty(dataList)) {
-                                        return;
-                                    }
-                                    try {
-                                        int count = batchSave(dataList);
-                                        success.addAndGet(count);
-                                        fail.addAndGet(dataList.size() - count);
-                                    } catch (Exception e) {
-                                        fail.addAndGet(dataList.size());
-                                        appendMsg("批量保存失败：" + e.getMessage());
-                                    } finally {
-                                        baseExcelTaskService.uploadImportProgress(
-                                                event.getTaskId(), processed.get(), success.get());
-                                        dataList.clear();
-                                    }
-                                }
+                        /**
+                         * 处理处理结果
+                         */
+                        private void flush() {
+                            if (CollUtil.isEmpty(dataList)) {
+                                return;
+                            }
+                            try {
+                                int count = batchSave(dataList);
+                                success.addAndGet(count);
+                                fail.addAndGet(dataList.size() - count);
+                            } catch (Exception e) {
+                                fail.addAndGet(dataList.size());
+                                appendMsg("批量保存失败：" + e.getMessage());
+                            } finally {
+                                baseExcelTaskService.uploadImportProgress(
+                                    event.getTaskId(), processed.get(), success.get());
+                                dataList.clear();
+                            }
+                        }
 
-                                /**
-                                 * 处理异常消息
-                                 *
-                                 * @param msg
-                                 */
-                                private void appendMsg(String msg) {
-                                    if (message.length() > 0) {
-                                        message.append("；");
-                                    }
-                                    message.append(msg);
-                                }
-                            })
-                    .sheet()
-                    .doRead();
+                        /**
+                         * 处理异常消息
+                         *
+                         * @param msg
+                         */
+                        private void appendMsg(String msg) {
+                            if (message.length() > 0) {
+                                message.append("；");
+                            }
+                            message.append(msg);
+                        }
+                    })
+                .sheet()
+                .doRead();
         } catch (Exception e) {
             result.setMessage("导入失败：" + e.getMessage());
         }

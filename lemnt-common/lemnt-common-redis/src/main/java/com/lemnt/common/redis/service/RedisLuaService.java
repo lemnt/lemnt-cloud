@@ -27,7 +27,7 @@ public class RedisLuaService extends AbstractRedisService {
     public <T> T execute(String script, Class<T> returnType, List<String> keys, List<Object> args) {
         RedisScript<T> redisScript = new DefaultRedisScript<>(script, returnType);
         return redisTemplate.execute(
-                redisScript, keys != null ? keys : Collections.emptyList(), args);
+            redisScript, keys != null ? keys : Collections.emptyList(), args);
     }
 
     /**
@@ -40,11 +40,11 @@ public class RedisLuaService extends AbstractRedisService {
      * @return 执行结果
      */
     public <T> T executeFromClasspath(
-            String classpath, Class<T> returnType, List<String> keys, List<Object> args) {
+        String classpath, Class<T> returnType, List<String> keys, List<Object> args) {
         DefaultRedisScript<T> redisScript = new DefaultRedisScript<>();
         redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource(classpath)));
         redisScript.setResultType(returnType);
         return redisTemplate.execute(
-                redisScript, keys != null ? keys : Collections.emptyList(), args);
+            redisScript, keys != null ? keys : Collections.emptyList(), args);
     }
 }

@@ -32,7 +32,7 @@ public enum RoleKeyEnum {
     }
 
     private static final Map<String, RoleKeyEnum> TYPE_MAP =
-            Arrays.stream(values()).collect(Collectors.toMap(RoleKeyEnum::getRoleKey, e -> e));
+        Arrays.stream(values()).collect(Collectors.toMap(RoleKeyEnum::getRoleKey, e -> e));
 
     public static RoleKeyEnum getByRoleKey(String roleKey) {
         if (Objects.isNull(roleKey)) {

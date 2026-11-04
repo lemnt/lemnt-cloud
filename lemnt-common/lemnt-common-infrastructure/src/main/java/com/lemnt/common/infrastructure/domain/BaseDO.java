@@ -17,7 +17,8 @@ import java.time.LocalDateTime;
 @Data
 public class BaseDO implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 创建者

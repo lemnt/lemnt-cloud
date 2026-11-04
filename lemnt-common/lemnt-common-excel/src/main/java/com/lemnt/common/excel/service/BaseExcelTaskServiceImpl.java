@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.extern.slf4j.Slf4j;
 
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -40,79 +41,80 @@ import java.util.function.Consumer;
 @Component
 public class BaseExcelTaskServiceImpl implements BaseExcelTaskService {
 
-    @DubboReference private RemoteExcelTaskService remoteExcelTaskService;
+    @DubboReference
+    private RemoteExcelTaskService remoteExcelTaskService;
     private final OssFileService ossFileService;
     private final TaskLifecycleTemplate taskLifecycle;
 
     public BaseExcelTaskServiceImpl(
-            OssFileService ossFileService, TaskLifecycleTemplate taskLifecycle) {
+        OssFileService ossFileService, TaskLifecycleTemplate taskLifecycle) {
         this.ossFileService = ossFileService;
         this.taskLifecycle = taskLifecycle;
     }
 
     @Override
     public <E> void importExcel(MultipartFile file, Class<E> cls, Consumer<List<E>> callback)
-            throws IOException {
+        throws IOException {
         Map<Integer, Field> headMap = ExcelImportAnnotationConverter.buildHeadMap(cls);
         try (InputStream fis = file.getInputStream()) {
             EasyExcel.read(
-                            fis,
-                            new ReadListener<Map<Integer, Object>>() {
-                                private final List<E> dataList =
-                                        ListUtils.newArrayListWithExpectedSize(1000);
-                                final int batchSize = 1000;
+                    fis,
+                    new ReadListener<Map<Integer, Object>>() {
+                        private final List<E> dataList =
+                            ListUtils.newArrayListWithExpectedSize(1000);
+                        final int batchSize = 1000;
 
-                                @Override
-                                public void invoke(
-                                        Map<Integer, Object> data, AnalysisContext context) {
-                                    E entity =
-                                            ExcelImportAnnotationConverter.convertRow(
-                                                    headMap, cls, data);
-                                    if (Objects.isNull(entity)) {
-                                        return;
-                                    }
-                                    dataList.add(entity);
-                                    if (dataList.size() >= batchSize) {
-                                        callback.accept(new ArrayList<>(dataList));
-                                        dataList.clear();
-                                    }
-                                }
+                        @Override
+                        public void invoke(
+                            Map<Integer, Object> data, AnalysisContext context) {
+                            E entity =
+                                ExcelImportAnnotationConverter.convertRow(
+                                    headMap, cls, data);
+                            if (Objects.isNull(entity)) {
+                                return;
+                            }
+                            dataList.add(entity);
+                            if (dataList.size() >= batchSize) {
+                                callback.accept(new ArrayList<>(dataList));
+                                dataList.clear();
+                            }
+                        }
 
-                                @Override
-                                public void doAfterAllAnalysed(AnalysisContext context) {
-                                    if (!dataList.isEmpty()) {
-                                        callback.accept(dataList);
-                                        dataList.clear();
-                                    }
-                                }
-                            })
-                    .sheet()
-                    .doRead();
+                        @Override
+                        public void doAfterAllAnalysed(AnalysisContext context) {
+                            if (!dataList.isEmpty()) {
+                                callback.accept(dataList);
+                                dataList.clear();
+                            }
+                        }
+                    })
+                .sheet()
+                .doRead();
         }
     }
 
     @Override
     public <E> void excelExport(
-            List<E> dataList, Class<E> cls, String fileName, HttpServletResponse response) {
+        List<E> dataList, Class<E> cls, String fileName, HttpServletResponse response) {
         try {
             response.reset();
             response.setContentType(
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             response.setCharacterEncoding("UTF-8");
             String encodedFileName =
-                    URLEncoder.encode(fileName, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
+                URLEncoder.encode(fileName, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
 
             response.setHeader(
-                    "Content-Disposition",
-                    "attachment;filename*=utf-8''" + encodedFileName + ".xlsx");
+                "Content-Disposition",
+                "attachment;filename*=utf-8''" + encodedFileName + ".xlsx");
             ExcelStyleHandler styleHandler = new ExcelStyleHandler(cls);
             ExcelColumnWidthHandler widthHandler = new ExcelColumnWidthHandler(cls);
             EasyExcel.write(response.getOutputStream())
-                    .head(ExcelExportAnnotationConverter.buildHead(cls))
-                    .registerWriteHandler(styleHandler)
-                    .registerWriteHandler(widthHandler)
-                    .sheet()
-                    .doWrite(ExcelExportAnnotationConverter.convertRows(dataList, cls));
+                .head(ExcelExportAnnotationConverter.buildHead(cls))
+                .registerWriteHandler(styleHandler)
+                .registerWriteHandler(widthHandler)
+                .sheet()
+                .doWrite(ExcelExportAnnotationConverter.convertRows(dataList, cls));
             response.flushBuffer();
         } catch (IOException e) {
             log.error("Excel导出失败: {}", e.getMessage(), e);

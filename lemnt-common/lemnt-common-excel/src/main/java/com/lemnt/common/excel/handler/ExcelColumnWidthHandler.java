@@ -26,12 +26,12 @@ public class ExcelColumnWidthHandler extends AbstractColumnWidthStyleStrategy {
 
     @Override
     protected void setColumnWidth(
-            WriteSheetHolder writeSheetHolder,
-            List<WriteCellData<?>> cellDataList,
-            Cell cell,
-            Head head,
-            Integer relativeRowIndex,
-            Boolean isHead) {
+        WriteSheetHolder writeSheetHolder,
+        List<WriteCellData<?>> cellDataList,
+        Cell cell,
+        Head head,
+        Integer relativeRowIndex,
+        Boolean isHead) {
         Double width = widthMap.get(cell.getColumnIndex());
         if (width != null) {
             // EasyExcel 列宽 = 字符数 * 256

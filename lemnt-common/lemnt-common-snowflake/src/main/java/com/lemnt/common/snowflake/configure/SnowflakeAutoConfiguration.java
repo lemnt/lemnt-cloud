@@ -21,19 +21,19 @@ import cn.hutool.core.lang.Snowflake;
 @EnableScheduling
 @EnableConfigurationProperties(SnowflakeProperties.class)
 @ConditionalOnProperty(
-        prefix = "snowflake",
-        name = "enabled",
-        havingValue = "true",
-        matchIfMissing = true)
+    prefix = "snowflake",
+    name = "enabled",
+    havingValue = "true",
+    matchIfMissing = true)
 @ConditionalOnClass(name = "cn.hutool.core.lang.Snowflake")
 public class SnowflakeAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
     public WorkerIdAssigner workerIdAssigner(
-            StringRedisTemplate stringRedisTemplate,
-            SnowflakeProperties properties,
-            @Value("${spring.application.name:default-service}") String serviceName) {
+        StringRedisTemplate stringRedisTemplate,
+        SnowflakeProperties properties,
+        @Value("${spring.application.name:default-service}") String serviceName) {
         return new WorkerIdAssigner(stringRedisTemplate, properties, serviceName);
     }
 

@@ -37,11 +37,11 @@ public class TaskLifecycleTemplate {
      */
     public void startTask(Long taskId) {
         execute(
-                taskId,
-                task -> {
-                    task.setStartTime(LocalDateTime.now());
-                    task.setStatus(TaskStatusEnum.DOING.getStatus());
-                });
+            taskId,
+            task -> {
+                task.setStartTime(LocalDateTime.now());
+                task.setStatus(TaskStatusEnum.DOING.getStatus());
+            });
     }
 
     /**
@@ -49,14 +49,14 @@ public class TaskLifecycleTemplate {
      */
     public void updateProgress(Long taskId, Integer count, Integer totalNum) {
         execute(
-                taskId,
-                task -> {
-                    task.setProgress(
-                            new BigDecimal(count.toString())
-                                    .divide(
-                                            new BigDecimal(totalNum.toString()),
-                                            RoundingMode.HALF_UP));
-                });
+            taskId,
+            task -> {
+                task.setProgress(
+                    new BigDecimal(count.toString())
+                        .divide(
+                            new BigDecimal(totalNum.toString()),
+                            RoundingMode.HALF_UP));
+            });
     }
 
     /**
@@ -64,14 +64,14 @@ public class TaskLifecycleTemplate {
      */
     public void updateProgress(Long taskId, Long count, Long totalNum) {
         execute(
-                taskId,
-                task -> {
-                    task.setProgress(
-                            new BigDecimal(count.toString())
-                                    .divide(
-                                            new BigDecimal(totalNum.toString()),
-                                            RoundingMode.HALF_UP));
-                });
+            taskId,
+            task -> {
+                task.setProgress(
+                    new BigDecimal(count.toString())
+                        .divide(
+                            new BigDecimal(totalNum.toString()),
+                            RoundingMode.HALF_UP));
+            });
     }
 
     /**
@@ -79,18 +79,18 @@ public class TaskLifecycleTemplate {
      */
     public void finishTask(Long taskId, String result, String message) {
         execute(
-                taskId,
-                task -> {
-                    if (TaskStatusEnum.STOP.getStatus() != task.getStatus()) {
-                        task.setStatus(TaskStatusEnum.SUCCESS.getStatus());
-                    }
-                    task.setUrl(result);
-                    task.setMessage(message);
-                    task.setProgress(BigDecimal.ONE);
-                    task.setEndTime(LocalDateTime.now());
-                    task.setDuration(
-                            DateUtils.betweenMillis(task.getEndTime(), task.getStartTime()));
-                });
+            taskId,
+            task -> {
+                if (TaskStatusEnum.STOP.getStatus() != task.getStatus()) {
+                    task.setStatus(TaskStatusEnum.SUCCESS.getStatus());
+                }
+                task.setUrl(result);
+                task.setMessage(message);
+                task.setProgress(BigDecimal.ONE);
+                task.setEndTime(LocalDateTime.now());
+                task.setDuration(
+                    DateUtils.betweenMillis(task.getEndTime(), task.getStartTime()));
+            });
     }
 
     /**
@@ -98,20 +98,20 @@ public class TaskLifecycleTemplate {
      */
     public void failTask(Long taskId, String message) {
         execute(
-                taskId,
-                task -> {
-                    task.setMessage(task.getMessage() + message);
-                    if (TaskStatusEnum.STOP.getStatus() != task.getStatus()) {
-                        task.setStatus(TaskStatusEnum.FAIL.getStatus());
-                    }
-                    task.setProgress(BigDecimal.ONE);
-                    if (Objects.isNull(task.getStartTime())) {
-                        task.setStartTime(LocalDateTime.now());
-                    }
-                    task.setEndTime(LocalDateTime.now());
-                    task.setDuration(
-                            DateUtils.betweenMillis(task.getEndTime(), task.getStartTime()));
-                });
+            taskId,
+            task -> {
+                task.setMessage(task.getMessage() + message);
+                if (TaskStatusEnum.STOP.getStatus() != task.getStatus()) {
+                    task.setStatus(TaskStatusEnum.FAIL.getStatus());
+                }
+                task.setProgress(BigDecimal.ONE);
+                if (Objects.isNull(task.getStartTime())) {
+                    task.setStartTime(LocalDateTime.now());
+                }
+                task.setEndTime(LocalDateTime.now());
+                task.setDuration(
+                    DateUtils.betweenMillis(task.getEndTime(), task.getStartTime()));
+            });
     }
 
     /**

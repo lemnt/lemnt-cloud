@@ -43,8 +43,8 @@ public class ExcelImportResultVo {
     public String buildMessage(String msg) {
         if (StringUtils.isNotBlank(msg)) {
             return String.format(
-                    "导入完成：共处理 %d 条，成功 %d 条，失败 %d 条。原因：%s",
-                    totalCount, successCount, failCount, message);
+                "导入完成：共处理 %d 条，成功 %d 条，失败 %d 条。原因：%s",
+                totalCount, successCount, failCount, message);
         }
         return String.format("导入完成：共处理 %d 条，成功 %d 条，失败 %d 条", totalCount, successCount, failCount);
     }

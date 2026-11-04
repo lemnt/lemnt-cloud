@@ -41,31 +41,31 @@ public class DataSourceMetricsBinder implements MeterBinder {
 
         Map<String, DataSource> dataSources = dynamicDataSource.getDataSources();
         dataSources.forEach(
-                (name, dataSource) -> {
-                    if (dataSource instanceof HikariDataSource hikariDataSource) {
-                        bindHikariMetrics(registry, name, hikariDataSource);
-                    }
-                });
+            (name, dataSource) -> {
+                if (dataSource instanceof HikariDataSource hikariDataSource) {
+                    bindHikariMetrics(registry, name, hikariDataSource);
+                }
+            });
     }
 
     private void bindHikariMetrics(MeterRegistry registry, String name, HikariDataSource hikari) {
         // 最大连接数
         Gauge.builder("hikaricp.connections.max", hikari, HikariDataSource::getMaximumPoolSize)
-                .tag("pool", name)
-                .description("连接池最大连接数")
-                .register(registry);
+            .tag("pool", name)
+            .description("连接池最大连接数")
+            .register(registry);
 
         // 最小空闲连接数
         Gauge.builder("hikaricp.connections.min", hikari, HikariDataSource::getMinimumIdle)
-                .tag("pool", name)
-                .description("连接池最小空闲连接数")
-                .register(registry);
+            .tag("pool", name)
+            .description("连接池最小空闲连接数")
+            .register(registry);
 
         // 连接池名称
         Gauge.builder("hikaricp.pool.info", hikari, ds -> 1)
-                .tag("pool", name)
-                .tag("jdbcUrl", hikari.getJdbcUrl() != null ? hikari.getJdbcUrl() : "unknown")
-                .description("连接池信息")
-                .register(registry);
+            .tag("pool", name)
+            .tag("jdbcUrl", hikari.getJdbcUrl() != null ? hikari.getJdbcUrl() : "unknown")
+            .description("连接池信息")
+            .register(registry);
     }
 }

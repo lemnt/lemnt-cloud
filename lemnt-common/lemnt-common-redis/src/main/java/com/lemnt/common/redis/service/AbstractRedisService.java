@@ -20,9 +20,11 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractRedisService {
 
-    @Autowired protected StringRedisTemplate redisTemplate;
+    @Autowired
+    protected StringRedisTemplate redisTemplate;
 
-    @Autowired protected RedisSerializer redisSerializer;
+    @Autowired
+    protected RedisSerializer redisSerializer;
 
     /**
      * 字符串转泛型对象
@@ -73,7 +75,9 @@ public abstract class AbstractRedisService {
         return redisTemplate.keys(pattern);
     }
 
-    /** 游标逐项处理匹配的key，避免KEYS阻塞和一次加载全部key。 */
+    /**
+     * 游标逐项处理匹配的key，避免KEYS阻塞和一次加载全部key。
+     */
     public void scan(String pattern, Consumer<String> action) {
         var options = ScanOptions.scanOptions().match(pattern).count(500).build();
         try (var cursor = redisTemplate.scan(options)) {

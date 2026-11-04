@@ -17,4 +17,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @DS("slave")
-public @interface Slave {}
+public @interface Slave {
+}

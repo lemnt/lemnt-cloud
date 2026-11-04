@@ -54,44 +54,44 @@ public class RedissonConfig {
         if (clusterNodes != null && !clusterNodes.isEmpty()) {
             // 集群模式
             String[] nodes =
-                    clusterNodes.stream()
-                            .map(String::trim)
-                            .map(n -> n.startsWith("redis://") ? n : "redis://" + n)
-                            .toArray(String[]::new);
+                clusterNodes.stream()
+                    .map(String::trim)
+                    .map(n -> n.startsWith("redis://") ? n : "redis://" + n)
+                    .toArray(String[]::new);
 
             config.useClusterServers()
-                    .addNodeAddress(nodes)
-                    .setUsername(username)
-                    .setPassword(password.isEmpty() ? null : password)
-                    .setScanInterval(2000)
-                    .setMasterConnectionPoolSize(16)
-                    .setMasterConnectionMinimumIdleSize(8)
-                    .setSlaveConnectionPoolSize(8)
-                    .setSlaveConnectionMinimumIdleSize(8)
-                    .setIdleConnectionTimeout(10000)
-                    .setConnectTimeout(10000)
-                    .setTimeout(3000);
+                .addNodeAddress(nodes)
+                .setUsername(username)
+                .setPassword(password.isEmpty() ? null : password)
+                .setScanInterval(2000)
+                .setMasterConnectionPoolSize(16)
+                .setMasterConnectionMinimumIdleSize(8)
+                .setSlaveConnectionPoolSize(8)
+                .setSlaveConnectionMinimumIdleSize(8)
+                .setIdleConnectionTimeout(10000)
+                .setConnectTimeout(10000)
+                .setTimeout(3000);
 
             log.info(
-                    "[RedissonConfig] RedissonClient initialized in cluster mode: {}",
-                    String.join(",", nodes));
+                "[RedissonConfig] RedissonClient initialized in cluster mode: {}",
+                String.join(",", nodes));
         } else {
             // 单节点模式
             String address = "redis://" + host + ":" + port;
             config.useSingleServer()
-                    .setAddress(address)
-                    .setPassword(password.isEmpty() ? null : password)
-                    .setUsername(username)
-                    .setDatabase(database)
-                    .setConnectionPoolSize(16)
-                    .setConnectionMinimumIdleSize(8)
-                    .setIdleConnectionTimeout(10000)
-                    .setConnectTimeout(10000)
-                    .setTimeout(3000);
+                .setAddress(address)
+                .setPassword(password.isEmpty() ? null : password)
+                .setUsername(username)
+                .setDatabase(database)
+                .setConnectionPoolSize(16)
+                .setConnectionMinimumIdleSize(8)
+                .setIdleConnectionTimeout(10000)
+                .setConnectTimeout(10000)
+                .setTimeout(3000);
 
             log.info(
-                    "[RedissonConfig] RedissonClient initialized in single server mode: {}",
-                    address);
+                "[RedissonConfig] RedissonClient initialized in single server mode: {}",
+                address);
         }
         return Redisson.create(config);
     }

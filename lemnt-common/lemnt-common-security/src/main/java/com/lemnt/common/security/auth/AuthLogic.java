@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
 
 import jakarta.annotation.PostConstruct;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,7 +40,8 @@ public class AuthLogic {
      */
     private static final String SUPER_ADMIN = "admin";
 
-    @Autowired public TokenService tokenService;
+    @Autowired
+    public TokenService tokenService;
 
     /**
      * Spring 容器初始化后，将当前 Bean 注入到 AuthUtil 的静态字段中，
@@ -327,11 +329,11 @@ public class AuthLogic {
      */
     public boolean hasPermi(Collection<String> authorities, String permission) {
         return authorities.stream()
-                .filter(StringUtils::hasText)
-                .anyMatch(
-                        x ->
-                                ALL_PERMISSION.equals(x)
-                                        || PatternMatchUtils.simpleMatch(x, permission));
+            .filter(StringUtils::hasText)
+            .anyMatch(
+                x ->
+                    ALL_PERMISSION.equals(x)
+                        || PatternMatchUtils.simpleMatch(x, permission));
     }
 
     /**
@@ -343,7 +345,7 @@ public class AuthLogic {
      */
     public boolean hasRole(Collection<String> roles, String role) {
         return roles.stream()
-                .filter(StringUtils::hasText)
-                .anyMatch(x -> SUPER_ADMIN.equals(x) || PatternMatchUtils.simpleMatch(x, role));
+            .filter(StringUtils::hasText)
+            .anyMatch(x -> SUPER_ADMIN.equals(x) || PatternMatchUtils.simpleMatch(x, role));
     }
 }

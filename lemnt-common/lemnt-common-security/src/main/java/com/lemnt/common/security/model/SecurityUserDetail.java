@@ -17,7 +17,8 @@ import java.util.List;
 @Accessors(chain = true)
 public class SecurityUserDetail implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 用户ID

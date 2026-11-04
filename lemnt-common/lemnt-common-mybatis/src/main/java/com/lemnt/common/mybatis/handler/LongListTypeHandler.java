@@ -27,8 +27,8 @@ public class LongListTypeHandler extends BaseTypeHandler<List<Long>> {
 
     @Override
     public void setNonNullParameter(
-            PreparedStatement ps, int i, List<Long> parameter, JdbcType jdbcType)
-            throws SQLException {
+        PreparedStatement ps, int i, List<Long> parameter, JdbcType jdbcType)
+        throws SQLException {
         // 存库时转成逗号分隔字符串
         ps.setString(i, parameter.stream().map(String::valueOf).collect(Collectors.joining(",")));
     }

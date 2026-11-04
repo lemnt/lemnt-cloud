@@ -25,7 +25,9 @@ public class JwtUtils {
 
     private final SecretKey secretKey;
 
-    /** 读取签名内的身份类型；兼容未携带该字段的历史后台令牌。 */
+    /**
+     * 读取签名内的身份类型；兼容未携带该字段的历史后台令牌。
+     */
     public String getUserType(Claims claims) {
         String userType = claims.get(SecurityConstants.USER_TYPE, String.class);
         return userType == null ? SecurityConstants.ADMIN_USER_TYPE : userType;
@@ -33,7 +35,7 @@ public class JwtUtils {
 
     public JwtUtils(TokenProperties tokenProperties) {
         this.secretKey =
-                Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8));
+            Keys.hmacShaKeyFor(tokenProperties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
     /**

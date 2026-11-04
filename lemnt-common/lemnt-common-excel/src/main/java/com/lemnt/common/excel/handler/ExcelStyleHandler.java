@@ -39,13 +39,13 @@ public class ExcelStyleHandler implements CellWriteHandler {
 
     @Override
     public void afterCellDispose(
-            WriteSheetHolder writeSheetHolder,
-            WriteTableHolder writeTableHolder,
-            List<WriteCellData<?>> cellDataList,
-            Cell cell,
-            Head head,
-            Integer relativeRowIndex,
-            Boolean isHead) {
+        WriteSheetHolder writeSheetHolder,
+        WriteTableHolder writeTableHolder,
+        List<WriteCellData<?>> cellDataList,
+        Cell cell,
+        Head head,
+        Integer relativeRowIndex,
+        Boolean isHead) {
         if (Objects.isNull(cell)) {
             return;
         }
@@ -108,7 +108,7 @@ public class ExcelStyleHandler implements CellWriteHandler {
             }
             // 统计数据
             if (excel.isStatistics()
-                    && Objects.equals(excel.cellType(), Excel.ColumnType.NUMERIC)) {
+                && Objects.equals(excel.cellType(), Excel.ColumnType.NUMERIC)) {
                 try {
                     BigDecimal number = BigDecimal.valueOf(cell.getNumericCellValue());
                     statisticsMap.merge(cell.getColumnIndex(), number, BigDecimal::add);
@@ -131,9 +131,9 @@ public class ExcelStyleHandler implements CellWriteHandler {
         DataValidationConstraint constraint = helper.createExplicitListConstraint(combo);
         // 单元格范围，这里只限制当前单元格
         CellRangeAddressList addressList =
-                new CellRangeAddressList(
-                        cell.getRowIndex(), cell.getRowIndex(),
-                        cell.getColumnIndex(), cell.getColumnIndex());
+            new CellRangeAddressList(
+                cell.getRowIndex(), cell.getRowIndex(),
+                cell.getColumnIndex(), cell.getColumnIndex());
 
         DataValidation validation = helper.createValidation(constraint, addressList);
         validation.setSuppressDropDownArrow(true);
@@ -153,9 +153,9 @@ public class ExcelStyleHandler implements CellWriteHandler {
         DataValidationConstraint constraint = helper.createCustomConstraint("TRUE");
         // 只对当前单元格生效
         CellRangeAddressList addressList =
-                new CellRangeAddressList(
-                        cell.getRowIndex(), cell.getRowIndex(),
-                        cell.getColumnIndex(), cell.getColumnIndex());
+            new CellRangeAddressList(
+                cell.getRowIndex(), cell.getRowIndex(),
+                cell.getColumnIndex(), cell.getColumnIndex());
         DataValidation validation = helper.createValidation(constraint, addressList);
         validation.createPromptBox("提示", prompt);
         validation.setShowPromptBox(true);
@@ -178,7 +178,7 @@ public class ExcelStyleHandler implements CellWriteHandler {
                 merged.setLastRow(rowIndex);
             } else {
                 this.lastSheet.addMergedRegion(
-                        new CellRangeAddress(rowIndex - 1, rowIndex, colIndex, colIndex));
+                    new CellRangeAddress(rowIndex - 1, rowIndex, colIndex, colIndex));
             }
         }
         lastRowValues.put(colIndex, currentValue);
@@ -191,9 +191,9 @@ public class ExcelStyleHandler implements CellWriteHandler {
         for (int i = 0; i < this.lastSheet.getNumMergedRegions(); i++) {
             CellRangeAddress range = this.lastSheet.getMergedRegion(i);
             if (range.getFirstColumn() <= col
-                    && range.getLastColumn() >= col
-                    && range.getFirstRow() <= row
-                    && range.getLastRow() >= row) {
+                && range.getLastColumn() >= col
+                && range.getFirstRow() <= row
+                && range.getLastRow() >= row) {
                 return range;
             }
         }

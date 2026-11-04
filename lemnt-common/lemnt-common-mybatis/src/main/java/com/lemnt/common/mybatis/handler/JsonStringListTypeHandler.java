@@ -29,8 +29,8 @@ public class JsonStringListTypeHandler extends BaseTypeHandler<List<String>> {
 
     @Override
     public void setNonNullParameter(
-            PreparedStatement ps, int i, List<String> parameter, JdbcType jdbcType)
-            throws SQLException {
+        PreparedStatement ps, int i, List<String> parameter, JdbcType jdbcType)
+        throws SQLException {
         if (CollUtil.isEmpty(parameter)) {
             ps.setString(i, "[]");
         } else {
@@ -50,7 +50,7 @@ public class JsonStringListTypeHandler extends BaseTypeHandler<List<String>> {
 
     @Override
     public List<String> getNullableResult(CallableStatement cs, int columnIndex)
-            throws SQLException {
+        throws SQLException {
         return parse(cs.getString(columnIndex));
     }
 

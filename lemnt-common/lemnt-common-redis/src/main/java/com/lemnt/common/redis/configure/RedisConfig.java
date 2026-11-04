@@ -49,10 +49,10 @@ public class RedisConfig {
     public CacheManager cacheManager() {
         CaffeineCacheManager manager = new CaffeineCacheManager();
         manager.setCaffeine(
-                Caffeine.newBuilder()
-                        .maximumSize(cacheProperties.getMaxSize())
-                        .expireAfterWrite(cacheProperties.getTtlSeconds(), TimeUnit.SECONDS)
-                        .recordStats());
+            Caffeine.newBuilder()
+                .maximumSize(cacheProperties.getMaxSize())
+                .expireAfterWrite(cacheProperties.getTtlSeconds(), TimeUnit.SECONDS)
+                .recordStats());
         return manager;
     }
 }

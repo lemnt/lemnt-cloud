@@ -16,14 +16,17 @@ import java.util.Set;
 @Accessors(chain = true)
 public class SecurityUser implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 用户唯一标识
      */
     private String token;
 
-    /** 登录身份类型，历史后台会话默认为 admin。 */
+    /**
+     * 登录身份类型，历史后台会话默认为 admin。
+     */
     private String userType;
 
     /**

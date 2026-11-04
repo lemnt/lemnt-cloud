@@ -8,7 +8,8 @@ import java.io.Serial;
  * @author wangxx
  */
 public class NotLoginException extends RuntimeException {
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public NotLoginException(String message) {
         super(message);

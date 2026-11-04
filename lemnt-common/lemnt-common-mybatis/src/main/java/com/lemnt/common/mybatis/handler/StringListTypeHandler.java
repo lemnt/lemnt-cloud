@@ -27,8 +27,8 @@ public class StringListTypeHandler extends BaseTypeHandler<List<String>> {
 
     @Override
     public void setNonNullParameter(
-            PreparedStatement ps, int i, List<String> parameter, JdbcType jdbcType)
-            throws SQLException {
+        PreparedStatement ps, int i, List<String> parameter, JdbcType jdbcType)
+        throws SQLException {
         // 存库时转成逗号分隔字符串
         ps.setString(i, parameter.stream().map(String::valueOf).collect(Collectors.joining(",")));
     }
@@ -45,7 +45,7 @@ public class StringListTypeHandler extends BaseTypeHandler<List<String>> {
 
     @Override
     public List<String> getNullableResult(CallableStatement cs, int columnIndex)
-            throws SQLException {
+        throws SQLException {
         return parse(cs.getString(columnIndex));
     }
 

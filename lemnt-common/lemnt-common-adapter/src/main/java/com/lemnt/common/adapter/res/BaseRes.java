@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 @Schema(description = "HTTP响应审计字段基类")
 public abstract class BaseRes implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 创建者

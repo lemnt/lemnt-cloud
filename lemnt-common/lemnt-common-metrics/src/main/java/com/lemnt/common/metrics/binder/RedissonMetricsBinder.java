@@ -37,7 +37,7 @@ public class RedissonMetricsBinder implements MeterBinder {
 
         // Redisson 客户端存在性指标
         Gauge.builder("redisson.client.active", () -> 1)
-                .description("Redisson 客户端是否活跃")
-                .register(registry);
+            .description("Redisson 客户端是否活跃")
+            .register(registry);
     }
 }

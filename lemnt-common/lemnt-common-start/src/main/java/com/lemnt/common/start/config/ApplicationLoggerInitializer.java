@@ -12,7 +12,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
  * @date 2025-12-01 14:52
  */
 public class ApplicationLoggerInitializer
-        implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+    implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {

@@ -71,10 +71,12 @@ public abstract class BaseConsumer<T> implements RocketMQListener<String> {
     /**
      * 处理消息
      */
-    protected void handle(T message) {}
+    protected void handle(T message) {
+    }
 
     /**
      * 处理批量消息
      */
-    protected void handleList(List<T> messages) {}
+    protected void handleList(List<T> messages) {
+    }
 }

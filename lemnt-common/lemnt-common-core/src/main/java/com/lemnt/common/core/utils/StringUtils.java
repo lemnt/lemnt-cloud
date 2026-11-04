@@ -93,7 +93,7 @@ public class StringUtils extends CommonsStringUtils {
      * 在字符串中查找第一个出现的 open 和最后一个出现的 close 之间的子字符串
      */
     public static String substringBetweenLast(
-            final String str, final String open, final String close) {
+        final String str, final String open, final String close) {
         if (isEmpty(str) || isEmpty(open) || isEmpty(close)) {
             return NULLSTR;
         }

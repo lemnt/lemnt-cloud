@@ -13,4 +13,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @DS("clickhouse")
-public @interface ClickHouse {}
+public @interface ClickHouse {
+}

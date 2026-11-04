@@ -17,4 +17,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @DS("master")
-public @interface Master {}
+public @interface Master {
+}

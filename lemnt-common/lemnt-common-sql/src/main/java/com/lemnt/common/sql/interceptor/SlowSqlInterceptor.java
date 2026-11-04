@@ -30,13 +30,13 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Intercepts({
     @Signature(
-            type = Executor.class,
-            method = "update",
-            args = {MappedStatement.class, Object.class}),
+        type = Executor.class,
+        method = "update",
+        args = {MappedStatement.class, Object.class}),
     @Signature(
-            type = Executor.class,
-            method = "query",
-            args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})
+        type = Executor.class,
+        method = "query",
+        args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})
 })
 public class SlowSqlInterceptor implements Interceptor {
 
@@ -51,15 +51,15 @@ public class SlowSqlInterceptor implements Interceptor {
         this.meterRegistry = meterRegistry;
         if (meterRegistry != null) {
             this.sqlTimer =
-                    Timer.builder("db.sql.duration")
-                            .description("SQL 执行耗时")
-                            .publishPercentiles(0.5, 0.95, 0.99)
-                            .register(meterRegistry);
+                Timer.builder("db.sql.duration")
+                    .description("SQL 执行耗时")
+                    .publishPercentiles(0.5, 0.95, 0.99)
+                    .register(meterRegistry);
 
             this.slowSqlCounter =
-                    Counter.builder("db.sql.slow.total")
-                            .description("慢 SQL 执行总次数")
-                            .register(meterRegistry);
+                Counter.builder("db.sql.slow.total")
+                    .description("慢 SQL 执行总次数")
+                    .register(meterRegistry);
         }
     }
 

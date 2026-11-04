@@ -34,9 +34,9 @@ public class AmountUtil {
         } else {
             // 2. 核心修正：除以预算后乘以100，再保留2位小数（四舍五入）
             spendingPercentage =
-                    cost.divide(budget, 4, RoundingMode.HALF_UP)
-                            .multiply(new BigDecimal("100"))
-                            .setScale(2, RoundingMode.HALF_UP);
+                cost.divide(budget, 4, RoundingMode.HALF_UP)
+                    .multiply(new BigDecimal("100"))
+                    .setScale(2, RoundingMode.HALF_UP);
         }
         return spendingPercentage;
     }

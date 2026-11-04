@@ -11,6 +11,7 @@ import com.lemnt.common.security.model.SecurityUser;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Objects;
 import java.util.Set;
 
@@ -101,8 +102,8 @@ public class SecurityUtils {
 
     public static boolean isRoleAdmin(String roleKey) {
         return StringUtils.isNotBlank(roleKey)
-                && (Objects.equals(RoleKeyEnum.ADMIN.getRoleKey(), roleKey)
-                        || Objects.equals(RoleKeyEnum.SYSTEM.getRoleKey(), roleKey));
+            && (Objects.equals(RoleKeyEnum.ADMIN.getRoleKey(), roleKey)
+            || Objects.equals(RoleKeyEnum.SYSTEM.getRoleKey(), roleKey));
     }
 
     /**
@@ -136,6 +137,6 @@ public class SecurityUtils {
     public static boolean hasAdminRole() {
         Set<String> roleKeys = getRoleKey();
         return roleKeys.contains(RoleKeyEnum.ADMIN.getRoleKey())
-                || roleKeys.contains(RoleKeyEnum.SYSTEM.getRoleKey());
+            || roleKeys.contains(RoleKeyEnum.SYSTEM.getRoleKey());
     }
 }

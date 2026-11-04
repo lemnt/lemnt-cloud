@@ -27,15 +27,16 @@ public class WorkerIdAssigner implements SmartLifecycle {
     private final SnowflakeProperties properties;
     private final String serviceName;
 
-    @Getter private int workerId;
+    @Getter
+    private int workerId;
     private String workerKey;
     private final String instanceId;
     private volatile boolean running;
 
     public WorkerIdAssigner(
-            StringRedisTemplate stringRedisTemplate,
-            SnowflakeProperties properties,
-            String serviceName) {
+        StringRedisTemplate stringRedisTemplate,
+        SnowflakeProperties properties,
+        String serviceName) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.properties = properties;
         this.serviceName = serviceName;
@@ -91,18 +92,18 @@ public class WorkerIdAssigner implements SmartLifecycle {
             // key 已过期或被其他实例抢占
             if (!instanceId.equals(currentOwner)) {
                 log.warn(
-                        "WorkerId ownership lost, re-assigning. workerId={}, expected={}, actual={}",
-                        workerId,
-                        instanceId,
-                        currentOwner);
+                    "WorkerId ownership lost, re-assigning. workerId={}, expected={}, actual={}",
+                    workerId,
+                    instanceId,
+                    currentOwner);
                 init();
                 log.warn("WorkerId re-assigned: {} | instance={}", workerId, instanceId);
                 return;
             }
             // 续期
             Boolean success =
-                    stringRedisTemplate.expire(
-                            workerKey, Duration.ofSeconds(properties.getExpireSeconds()));
+                stringRedisTemplate.expire(
+                    workerKey, Duration.ofSeconds(properties.getExpireSeconds()));
             if (!Boolean.TRUE.equals(success)) {
                 log.warn("WorkerId lease renewal failed, re-assigning. workerId={}", workerId);
                 init();
@@ -123,12 +124,12 @@ public class WorkerIdAssigner implements SmartLifecycle {
             String key = buildKey(i);
 
             Boolean success =
-                    stringRedisTemplate
-                            .opsForValue()
-                            .setIfAbsent(
-                                    key,
-                                    instanceId,
-                                    Duration.ofSeconds(properties.getExpireSeconds()));
+                stringRedisTemplate
+                    .opsForValue()
+                    .setIfAbsent(
+                        key,
+                        instanceId,
+                        Duration.ofSeconds(properties.getExpireSeconds()));
 
             if (Boolean.TRUE.equals(success)) {
                 this.workerId = i;
@@ -142,11 +143,11 @@ public class WorkerIdAssigner implements SmartLifecycle {
 
     private String buildKey(int workerId) {
         return String.format(
-                CacheConstants.SNOWFLAKE_WORKER_KEY,
-                properties.getEnv(),
-                serviceName,
-                properties.getDatacenterId(),
-                workerId);
+            CacheConstants.SNOWFLAKE_WORKER_KEY,
+            properties.getEnv(),
+            serviceName,
+            properties.getDatacenterId(),
+            workerId);
     }
 
     private String buildInstanceId() {

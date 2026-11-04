@@ -29,6 +29,7 @@ import cn.hutool.core.convert.Convert;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
@@ -65,14 +66,15 @@ public class LogAspect {
      * 计算操作消耗时间
      */
     private static final ThreadLocal<Long> TIME_THREADLOCAL =
-            new NamedThreadLocal<Long>("Cost Time");
+        new NamedThreadLocal<Long>("Cost Time");
 
     /**
      * 参数最大长度限制
      */
     private static final int PARAM_MAX_LENGTH = 2000;
 
-    @Autowired private AsyncLogService asyncLogService;
+    @Autowired
+    private AsyncLogService asyncLogService;
 
     /**
      * 处理请求前执行
@@ -104,7 +106,7 @@ public class LogAspect {
     }
 
     protected void handleLog(
-            final JoinPoint joinPoint, Log controllerLog, final Exception e, Object jsonResult) {
+        final JoinPoint joinPoint, Log controllerLog, final Exception e, Object jsonResult) {
         try {
             // *========数据库日志=========*//
             OperLogEvent addCmd = new OperLogEvent();
@@ -113,7 +115,7 @@ public class LogAspect {
             String ip = IpUtils.getIpAddr();
             addCmd.setOperIp(ip);
             addCmd.setOperUrl(
-                    StringUtils.substring(ServletUtils.getRequest().getRequestURI(), 0, 255));
+                StringUtils.substring(ServletUtils.getRequest().getRequestURI(), 0, 255));
             String username = SecurityUtils.getUsername();
             if (StringUtils.isNotBlank(username)) {
                 addCmd.setOperName(username);
@@ -122,10 +124,10 @@ public class LogAspect {
             if (e != null) {
                 addCmd.setStatus(BusinessStatus.FAIL.getCode());
                 addCmd.setErrorMsg(
-                        StringUtils.substring(
-                                Convert.toStr(e.getMessage(), ExceptionUtil.getExceptionMessage(e)),
-                                0,
-                                2000));
+                    StringUtils.substring(
+                        Convert.toStr(e.getMessage(), ExceptionUtil.getExceptionMessage(e)),
+                        0,
+                        2000));
             }
             // 设置方法名称
             String className = joinPoint.getTarget().getClass().getName();
@@ -156,22 +158,22 @@ public class LogAspect {
      * @throws Exception
      */
     public void getControllerMethodDescription(
-            JoinPoint joinPoint, Log log, OperLogEvent addCmd, Object jsonResult) throws Exception {
+        JoinPoint joinPoint, Log log, OperLogEvent addCmd, Object jsonResult) throws Exception {
         // 设置action动作
         addCmd.setBusinessType(log.businessType().ordinal());
         addCmd.setBusinessName(
-                StringUtils.defaultIfBlank(
-                        ServletUtils.getHeader(
-                                Objects.requireNonNull(ServletUtils.getRequest()),
-                                OPERATION_NAME_HEADER),
-                        log.businessName()));
+            StringUtils.defaultIfBlank(
+                ServletUtils.getHeader(
+                    Objects.requireNonNull(ServletUtils.getRequest()),
+                    OPERATION_NAME_HEADER),
+                log.businessName()));
         // 设置标题
         addCmd.setTitle(
-                StringUtils.defaultIfBlank(
-                        ServletUtils.getHeader(
-                                Objects.requireNonNull(ServletUtils.getRequest()),
-                                OPERATION_TITLE_HEADER),
-                        log.title()));
+            StringUtils.defaultIfBlank(
+                ServletUtils.getHeader(
+                    Objects.requireNonNull(ServletUtils.getRequest()),
+                    OPERATION_TITLE_HEADER),
+                log.title()));
         // 设置操作人类别
         addCmd.setOperatorType(log.operatorType().ordinal());
         // 是否需要保存request，参数和值
@@ -192,20 +194,20 @@ public class LogAspect {
      * @throws Exception 异常
      */
     private void setRequestValue(
-            JoinPoint joinPoint, OperLogEvent addCmd, String[] excludeParamNames) throws Exception {
+        JoinPoint joinPoint, OperLogEvent addCmd, String[] excludeParamNames) throws Exception {
         String requestMethod = addCmd.getRequestMethod();
         Map<?, ?> paramsMap = ServletUtils.getParamMap(ServletUtils.getRequest());
         if (StringUtils.isEmpty(paramsMap)
-                && StringUtils.equalsAny(
-                        requestMethod,
-                        HttpMethod.PUT.name(),
-                        HttpMethod.POST.name(),
-                        HttpMethod.DELETE.name())) {
+            && StringUtils.equalsAny(
+            requestMethod,
+            HttpMethod.PUT.name(),
+            HttpMethod.POST.name(),
+            HttpMethod.DELETE.name())) {
             String params = argsArrayToString(joinPoint.getArgs(), excludeParamNames);
             addCmd.setOperParam(params);
         } else {
             addCmd.setOperParam(
-                    StringUtils.substring(JsonUtils.toJsonStr(paramsMap), 0, PARAM_MAX_LENGTH));
+                StringUtils.substring(JsonUtils.toJsonStr(paramsMap), 0, PARAM_MAX_LENGTH));
         }
     }
 
@@ -256,8 +258,8 @@ public class LogAspect {
             }
         }
         return o instanceof MultipartFile
-                || o instanceof HttpServletRequest
-                || o instanceof HttpServletResponse
-                || o instanceof BindingResult;
+            || o instanceof HttpServletRequest
+            || o instanceof HttpServletResponse
+            || o instanceof BindingResult;
     }
 }

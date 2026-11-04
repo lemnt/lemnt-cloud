@@ -28,7 +28,7 @@ public class MybatisPlusConfig {
      */
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor(
-            Optional<DataPermissionInterceptor> dpiOptional) {
+        Optional<DataPermissionInterceptor> dpiOptional) {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
 
         // 可选数据权限插件
@@ -39,7 +39,7 @@ public class MybatisPlusConfig {
 
         // 分页插件，限制每页最大数量防止内存撑爆
         PaginationInnerInterceptor paginationInterceptor =
-                new PaginationInnerInterceptor(DbType.MYSQL);
+            new PaginationInnerInterceptor(DbType.MYSQL);
         // 每页最多 1000L 条
         paginationInterceptor.setMaxLimit(1000L);
         interceptor.addInnerInterceptor(paginationInterceptor);

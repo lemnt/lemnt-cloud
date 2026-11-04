@@ -20,7 +20,8 @@ public class SpringDocProperties {
     /**
      * 文档基本信息
      */
-    @NestedConfigurationProperty private InfoProperties info = new InfoProperties();
+    @NestedConfigurationProperty
+    private InfoProperties info = new InfoProperties();
 
     /**
      * <p>
@@ -45,12 +46,14 @@ public class SpringDocProperties {
         /**
          * 联系人信息
          */
-        @NestedConfigurationProperty private Contact contact = null;
+        @NestedConfigurationProperty
+        private Contact contact = null;
 
         /**
          * 许可证
          */
-        @NestedConfigurationProperty private License license = null;
+        @NestedConfigurationProperty
+        private License license = null;
 
         /**
          * 版本

@@ -7,6 +7,7 @@ import com.lemnt.common.excel.domain.vo.ExcelImportResultVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
@@ -25,7 +26,7 @@ public interface BaseExcelTaskService {
      * @return
      */
     <E> void importExcel(MultipartFile file, Class<E> cls, Consumer<List<E>> callback)
-            throws IOException;
+        throws IOException;
 
     /**
      * 同步导出
@@ -36,7 +37,7 @@ public interface BaseExcelTaskService {
      * @param response
      */
     <E> void excelExport(
-            List<E> dataList, Class<E> cls, String fileName, HttpServletResponse response);
+        List<E> dataList, Class<E> cls, String fileName, HttpServletResponse response);
 
     /**
      * 添加导入任务

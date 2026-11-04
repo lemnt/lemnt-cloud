@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
@@ -44,7 +45,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NotPermissionException.class)
     public Object handleNotPermissionException(
-            NotPermissionException e, HttpServletRequest request) {
+        NotPermissionException e, HttpServletRequest request) {
         log.warn("请求地址'{}',权限码校验失败'{}'", request.getRequestURI(), e.getMessage());
         return respond(request, FORBIDDEN, "FORBIDDEN", "没有访问权限", "没有访问权限，请联系管理员授权");
     }
@@ -63,14 +64,14 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Object handleHttpRequestMethodNotSupported(
-            HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+        HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
         log.warn("请求地址'{}',不支持'{}'请求", request.getRequestURI(), e.getMethod());
         return respond(
-                request,
-                HttpStatus.METHOD_NOT_ALLOWED.value(),
-                "METHOD_NOT_ALLOWED",
-                "请求方法不支持",
-                e.getMessage());
+            request,
+            HttpStatus.METHOD_NOT_ALLOWED.value(),
+            "METHOD_NOT_ALLOWED",
+            "请求方法不支持",
+            e.getMessage());
     }
 
     /**
@@ -82,7 +83,7 @@ public class GlobalExceptionHandler {
         Integer code = e.getCode();
         int status = isErrorStatus(code) ? code : HttpStatus.UNPROCESSABLE_ENTITY.value();
         return problem(
-                request, status, "BUSINESS_RULE_VIOLATION", "业务规则校验失败", e.getMessage(), null);
+            request, status, "BUSINESS_RULE_VIOLATION", "业务规则校验失败", e.getMessage(), null);
     }
 
     /**
@@ -90,15 +91,15 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public Object handleIllegalArgumentException(
-            IllegalArgumentException e, HttpServletRequest request) {
+        IllegalArgumentException e, HttpServletRequest request) {
         log.warn("请求参数不合法 uri={}, message={}", request.getRequestURI(), e.getMessage());
         return problem(
-                request,
-                HttpStatus.BAD_REQUEST.value(),
-                "BAD_REQUEST",
-                "请求参数错误",
-                Objects.requireNonNullElse(e.getMessage(), "请求参数不合法"),
-                null);
+            request,
+            HttpStatus.BAD_REQUEST.value(),
+            "BAD_REQUEST",
+            "请求参数错误",
+            Objects.requireNonNullElse(e.getMessage(), "请求参数不合法"),
+            null);
     }
 
     /**
@@ -106,14 +107,14 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MissingPathVariableException.class)
     public Object handleMissingPathVariableException(
-            MissingPathVariableException e, HttpServletRequest request) {
+        MissingPathVariableException e, HttpServletRequest request) {
         log.error("请求路径中缺少必需的路径变量'{}',发生系统异常.", request.getRequestURI());
         return respond(
-                request,
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "INTERNAL_ERROR",
-                "服务器内部错误",
-                "系统异常，请联系管理员");
+            request,
+            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            "INTERNAL_ERROR",
+            "服务器内部错误",
+            "系统异常，请联系管理员");
     }
 
     /**
@@ -121,7 +122,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public Object handleMissingServletRequestParameterException(
-            MissingServletRequestParameterException e, HttpServletRequest request) {
+        MissingServletRequestParameterException e, HttpServletRequest request) {
         String message = String.format("请求参数[%s]不能为空", e.getParameterName());
         return respond(request, HttpStatus.BAD_REQUEST.value(), "BAD_REQUEST", "请求参数错误", message);
     }
@@ -131,7 +132,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ResponseStatusException.class)
     public Object handleResponseStatusException(
-            ResponseStatusException e, HttpServletRequest request) {
+        ResponseStatusException e, HttpServletRequest request) {
         int status = e.getStatusCode().value();
         String detail = Objects.requireNonNullElse(e.getReason(), "请求失败");
         return respond(request, status, errorCode(status), title(status), detail);
@@ -144,11 +145,11 @@ public class GlobalExceptionHandler {
     public Object handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         log.error("运行时异常 uri={}", request.getRequestURI(), e);
         return respond(
-                request,
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "INTERNAL_ERROR",
-                "服务器内部错误",
-                "系统繁忙，请稍后重试");
+            request,
+            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            "INTERNAL_ERROR",
+            "服务器内部错误",
+            "系统繁忙，请稍后重试");
     }
 
     /**
@@ -158,11 +159,11 @@ public class GlobalExceptionHandler {
     public Object handleException(Exception e, HttpServletRequest request) {
         log.error("系统异常 uri={}", request.getRequestURI(), e);
         return respond(
-                request,
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "INTERNAL_ERROR",
-                "服务器内部错误",
-                "系统异常，请联系管理员");
+            request,
+            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            "INTERNAL_ERROR",
+            "服务器内部错误",
+            "系统异常，请联系管理员");
     }
 
     /**
@@ -176,10 +177,10 @@ public class GlobalExceptionHandler {
         FieldError error = e.getFieldError();
         String message = Objects.nonNull(error) ? error.getDefaultMessage() : "参数绑定异常";
         log.error(
-                "参数绑定异常: field={}, rejectedValue={}, message={}",
-                Objects.nonNull(error) ? error.getField() : null,
-                Objects.nonNull(error) ? error.getRejectedValue() : null,
-                message);
+            "参数绑定异常: field={}, rejectedValue={}, message={}",
+            Objects.nonNull(error) ? error.getField() : null,
+            Objects.nonNull(error) ? error.getRejectedValue() : null,
+            message);
         return validationProblem(request, message, e.getFieldErrors());
     }
 
@@ -191,49 +192,49 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Object handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException e, HttpServletRequest request) {
+        MethodArgumentNotValidException e, HttpServletRequest request) {
         FieldError error = e.getBindingResult().getFieldError();
         String message = Objects.nonNull(error) ? error.getDefaultMessage() : "参数校验失败";
         log.error(
-                "参数校验失败: field={}, rejectedValue={}, message={}",
-                Objects.nonNull(error) ? error.getField() : null,
-                Objects.nonNull(error) ? error.getRejectedValue() : null,
-                message);
+            "参数校验失败: field={}, rejectedValue={}, message={}",
+            Objects.nonNull(error) ? error.getField() : null,
+            Objects.nonNull(error) ? error.getRejectedValue() : null,
+            message);
         return validationProblem(request, message, e.getBindingResult().getFieldErrors());
     }
 
     private Object validationProblem(
-            HttpServletRequest request, String message, List<FieldError> fieldErrors) {
+        HttpServletRequest request, String message, List<FieldError> fieldErrors) {
         List<ValidationError> errors =
-                fieldErrors.stream()
-                        .map(
-                                error ->
-                                        new ValidationError(
-                                                "/" + error.getField(), error.getDefaultMessage()))
-                        .toList();
+            fieldErrors.stream()
+                .map(
+                    error ->
+                        new ValidationError(
+                            "/" + error.getField(), error.getDefaultMessage()))
+                .toList();
         return problem(
-                request,
-                HttpStatus.UNPROCESSABLE_ENTITY.value(),
-                "VALIDATION_ERROR",
-                "请求参数校验失败",
-                message,
-                errors);
+            request,
+            HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            "VALIDATION_ERROR",
+            "请求参数校验失败",
+            message,
+            errors);
     }
 
     private Object respond(
-            HttpServletRequest request, int status, String code, String title, String detail) {
+        HttpServletRequest request, int status, String code, String title, String detail) {
         return problem(request, status, code, title, detail, null);
     }
 
     private ResponseEntity<ProblemDetail> problem(
-            HttpServletRequest request,
-            int status,
-            String code,
-            String title,
-            String detail,
-            List<ValidationError> errors) {
+        HttpServletRequest request,
+        int status,
+        String code,
+        String title,
+        String detail,
+        List<ValidationError> errors) {
         ProblemDetail body =
-                ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(status), detail);
+            ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(status), detail);
         body.setType(URI.create("urn:lemnt:problem:" + code.toLowerCase().replace('_', '-')));
         body.setTitle(title);
         body.setInstance(URI.create(request.getRequestURI()));
@@ -246,8 +247,8 @@ public class GlobalExceptionHandler {
             body.setProperty("errors", errors);
         }
         return ResponseEntity.status(status)
-                .contentType(MediaType.APPLICATION_PROBLEM_JSON)
-                .body(body);
+            .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+            .body(body);
     }
 
     private boolean isErrorStatus(Integer status) {
@@ -275,6 +276,9 @@ public class GlobalExceptionHandler {
         return httpStatus == null ? "请求失败" : httpStatus.getReasonPhrase();
     }
 
-    /** 字段校验问题的稳定扩展结构。 */
-    private record ValidationError(String pointer, String message) {}
+    /**
+     * 字段校验问题的稳定扩展结构。
+     */
+    private record ValidationError(String pointer, String message) {
+    }
 }
