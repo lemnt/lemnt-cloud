@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class MessageInboxDO {
     @TableId(type = IdType.AUTO)
     private Long id;
+
     private String consumerKey;
     private String eventNo;
     private String eventType;

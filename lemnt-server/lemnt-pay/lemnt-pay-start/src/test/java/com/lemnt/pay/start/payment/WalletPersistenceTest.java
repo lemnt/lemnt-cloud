@@ -1,6 +1,10 @@
 package com.lemnt.pay.start.payment;
 
 import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
+import com.lemnt.pay.application.dubbo.WalletClientImpl;
+import com.lemnt.pay.application.payment.service.WalletService;
+import com.lemnt.pay.client.bo.BrokerageWithdrawalBo;
+import com.lemnt.pay.domain.order.model.BrokerageWithdrawalPlan;
 import com.lemnt.pay.domain.payment.gateway.WalletGateway;
 import com.lemnt.pay.domain.payment.model.Wallet;
 import com.lemnt.pay.domain.payment.model.WalletFilter;
@@ -24,6 +28,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -33,7 +38,9 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
@@ -127,6 +134,39 @@ class WalletPersistenceTest {
                     wallets.lockById(wallet.id());
                 });
         assertEquals(4, statements.count.get());
+    }
+
+    @Test
+    void approvedBrokerageWithdrawalCreditsOriginalNetExactlyOnce() {
+        var target = new WalletService(wallets);
+        var proxy = new ProxyFactory(target);
+        proxy.setProxyTargetClass(true);
+        proxy.addAdvice(
+                new TransactionInterceptor(
+                        context.getBean(PlatformTransactionManager.class),
+                        new AnnotationTransactionAttributeSource()));
+        var service = (WalletService) proxy.getProxy();
+        var client =
+                new WalletClientImpl(
+                        service,
+                        id -> new BrokerageWithdrawalPlan(id, 7L, new BigDecimal("9.50"), 1, 10));
+        var request = new BrokerageWithdrawalBo(11L, 7L, new BigDecimal("9.50"));
+        client.creditBrokerageWithdrawal(request);
+        client.creditBrokerageWithdrawal(request);
+        var wallet = wallets.findByMemberId(7L);
+        assertEquals(new BigDecimal("9.50"), wallet.balance());
+        assertEquals(
+                1,
+                wallets.transactionPage(
+                                new WalletTransactionFilter(
+                                        wallet.id(), "BROKERAGE_WITHDRAW", 1, 20))
+                        .getTotal());
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        client.creditBrokerageWithdrawal(
+                                new BrokerageWithdrawalBo(11L, 7L, new BigDecimal("10.00"))));
+        assertEquals(new BigDecimal("9.50"), wallets.findByMemberId(7L).balance());
     }
 
     @Intercepts(

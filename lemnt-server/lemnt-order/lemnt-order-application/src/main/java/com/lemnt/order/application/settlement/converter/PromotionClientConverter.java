@@ -1,9 +1,9 @@
 package com.lemnt.order.application.settlement.converter;
 
+import com.lemnt.order.client.dto.OrderItemPromotionDTO;
+import com.lemnt.order.client.dto.OrderPromotionDTO;
 import com.lemnt.order.domain.settlement.model.SettlementItemPromotion;
 import com.lemnt.order.domain.settlement.model.SettlementPromotion;
-import com.lemnt.trade.client.dto.OrderItemPromotionDTO;
-import com.lemnt.trade.client.dto.OrderPromotionDTO;
 
 /** 优惠RPC与本模块领域类型的完整边界转换。 */
 public final class PromotionClientConverter {

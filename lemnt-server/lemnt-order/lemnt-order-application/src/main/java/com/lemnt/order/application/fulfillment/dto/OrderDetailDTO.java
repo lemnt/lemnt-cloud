@@ -1,6 +1,5 @@
 package com.lemnt.order.application.fulfillment.dto;
 
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -10,10 +10,48 @@
     </parent>
     <artifactId>lemnt-order-start</artifactId>
     <dependencies>
-        <dependency><groupId>com.lemnt</groupId><artifactId>lemnt-pay-infrastructure</artifactId><version>1.0.0-SNAPSHOT</version><scope>test</scope></dependency>
-        <dependency><groupId>com.lemnt</groupId><artifactId>lemnt-pay-application</artifactId><version>1.0.0-SNAPSHOT</version><scope>test</scope></dependency>
-        <dependency><groupId>com.lemnt</groupId><artifactId>lemnt-product-infrastructure</artifactId><version>1.0.0-SNAPSHOT</version><scope>test</scope></dependency>
-        <dependency><groupId>com.lemnt</groupId><artifactId>lemnt-product-application</artifactId><version>1.0.0-SNAPSHOT</version><scope>test</scope></dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-pay-adapter</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-promotion-adapter</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-product-adapter</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-pay-infrastructure</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-pay-application</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-product-infrastructure</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-product-application</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.lemnt</groupId>
             <artifactId>lemnt-order-adapter</artifactId>
@@ -56,12 +94,30 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.lemnt</groupId><artifactId>lemnt-promotion-application</artifactId>
-            <version>1.0.0-SNAPSHOT</version><scope>test</scope>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-promotion-application</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
         <testResources>
+            <testResource>
+                <directory>../../../work-items/module-split-migration/evidence</directory>
+                <targetPath>contracts</targetPath>
+                <includes><include>gateway-endpoint-contract.json</include></includes>
+            </testResource>
+            <testResource>
+                <directory>../../../docs/config</directory>
+                <targetPath>config-sources</targetPath>
+                <includes>
+                    <include>lemnt-product.yaml</include>
+                    <include>lemnt-promotion.yaml</include>
+                    <include>lemnt-order.yaml</include>
+                    <include>lemnt-pay.yaml</include>
+                    <include>commerce-mq.yaml</include>
+                </includes>
+            </testResource>
             <testResource>
                 <directory>../sql</directory>
                 <targetPath>order-sql</targetPath>
@@ -94,7 +150,15 @@
                     <include>V20261101__trade_order_adjust_permissions.sql</include>
                 </includes>
             </testResource>
-        <testResource><directory>../../lemnt-product/sql</directory><targetPath>product-sql</targetPath></testResource><testResource><directory>../../lemnt-pay/sql</directory><targetPath>pay-sql</targetPath></testResource></testResources>
+            <testResource>
+                <directory>../../lemnt-product/sql</directory>
+                <targetPath>product-sql</targetPath>
+            </testResource>
+            <testResource>
+                <directory>../../lemnt-pay/sql</directory>
+                <targetPath>pay-sql</targetPath>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

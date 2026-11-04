@@ -18,8 +18,11 @@ public class OrderPaymentGatewayImpl implements OrderPaymentGateway {
 
     @Override
     public OrderPaymentSnapshot preparePayment(String no) {
-        var value=client.preparePayment(no);
-        return value==null?null:new OrderPaymentSnapshot(value.orderNo(),value.memberId(),value.totalAmount(),value.status());
+        var value = client.preparePayment(no);
+        return value == null
+                ? null
+                : new OrderPaymentSnapshot(
+                        value.orderNo(), value.memberId(), value.totalAmount(), value.status());
     }
 
     @Override

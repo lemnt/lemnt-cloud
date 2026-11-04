@@ -1,10 +1,17 @@
 package com.lemnt.product.start.product;
 
+import com.lemnt.common.client.event.CommerceEventEnvelope;
 import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.common.core.utils.JsonUtils;
 import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
 import com.lemnt.common.security.handler.GlobalExceptionHandler;
 import com.lemnt.common.start.config.JacksonConfig;
+import com.lemnt.order.client.dto.OrderStockLineDTO;
+import com.lemnt.order.client.event.AfterSaleCompletedEvent;
+import com.lemnt.order.client.event.OrderClosedEvent;
+import com.lemnt.order.client.event.OrderPaidEvent;
 import com.lemnt.product.adapter.web.product.ProductSpuController;
+import com.lemnt.product.application.event.service.OrderStockEventHandler;
 import com.lemnt.product.application.product.cmd.ProductSpecCreateCmd;
 import com.lemnt.product.application.product.cmd.ProductSpecUpdateCmd;
 import com.lemnt.product.application.product.cmd.ProductSpecValueCreateCmd;
@@ -78,6 +85,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1221,5 +1229,137 @@ class CatalogPersistenceTest {
                                 new ProductSpecValueUpdateCmd(option.id(), "禁止名称", null)));
         assertEquals("红", components.get(ProductSpecValueGateway.class).find(option.id()).name());
         assertEquals(before, catalogService.sku(before.id()));
+    }
+
+    private CommerceEventEnvelope stockEvent(String type, String key, String no, Object value) {
+        return new CommerceEventEnvelope(
+                "E" + UUID.randomUUID(),
+                type,
+                1,
+                key,
+                no,
+                Instant.now(),
+                null,
+                JsonUtils.toJsonStr(value));
+    }
+
+    @Test
+    void paidAndAfterSaleEventsConfirmAndReturnStockExactlyOnce() {
+        var product =
+                productSkuGateway.save(
+                        Product.create("MQ", "事件商品", null, null, BigDecimal.TEN, 10));
+        productSkuGateway.updateStatus(product.id(), "ON_SHELF");
+        assertTrue(productInventoryService.reserveStock("O1", product.id(), 4));
+        var handler = components.get(OrderStockEventHandler.class);
+        var paid =
+                stockEvent(
+                        "ORDER_PAID",
+                        "O1",
+                        "O1",
+                        new OrderPaidEvent(
+                                "O1",
+                                1L,
+                                BigDecimal.TEN,
+                                0,
+                                0,
+                                Map.of(),
+                                List.of(new OrderStockLineDTO(product.id(), 4))));
+        handler.paid(paid);
+        handler.paid(paid);
+        assertEquals(
+                "CONFIRMED",
+                productInventoryService.reservationStatus("O1", product.id()).status());
+        var af =
+                stockEvent(
+                        "AFTER_SALE_COMPLETED",
+                        "AF1",
+                        "O1",
+                        new AfterSaleCompletedEvent(
+                                "O1",
+                                "AF1",
+                                1L,
+                                11L,
+                                product.id(),
+                                1,
+                                new BigDecimal("2.50"),
+                                0,
+                                0,
+                                1,
+                                false));
+        handler.refunded(af);
+        handler.refunded(af);
+        assertEquals(7, productSkuGateway.findById(product.id()).stock());
+        assertEquals(
+                "O1", productInventoryService.reservationStatus("AF1", product.id()).sourceNo());
+    }
+
+    @Test
+    void earlyAfterSaleRollsBackReceiptUntilPaidStockHasCommitted() {
+        var product =
+                productSkuGateway.save(
+                        Product.create("EARLY", "事件商品", null, null, BigDecimal.TEN, 10));
+        productSkuGateway.updateStatus(product.id(), "ON_SHELF");
+        assertTrue(productInventoryService.reserveStock("O1", product.id(), 2));
+        var handler = components.get(OrderStockEventHandler.class);
+        var af =
+                stockEvent(
+                        "AFTER_SALE_COMPLETED",
+                        "AF1",
+                        "O1",
+                        new AfterSaleCompletedEvent(
+                                "O1",
+                                "AF1",
+                                1L,
+                                11L,
+                                product.id(),
+                                1,
+                                BigDecimal.ONE,
+                                0,
+                                0,
+                                1,
+                                false));
+        assertThrows(IllegalStateException.class, () -> handler.refunded(af));
+        assertNull(productInventoryService.reservationStatus("AF1", product.id()));
+        var paid =
+                stockEvent(
+                        "ORDER_PAID",
+                        "O1",
+                        "O1",
+                        new OrderPaidEvent(
+                                "O1",
+                                1L,
+                                BigDecimal.TEN,
+                                0,
+                                0,
+                                Map.of(),
+                                List.of(new OrderStockLineDTO(product.id(), 2))));
+        handler.paid(paid);
+        handler.refunded(af);
+        assertEquals(9, productSkuGateway.findById(product.id()).stock());
+    }
+
+    @Test
+    void orderClosedBeforeReserveKeepsCancellationFenceAndRejectsLatePaid() {
+        var product =
+                productSkuGateway.save(
+                        Product.create("CLOSED", "事件商品", null, null, BigDecimal.TEN, 10));
+        var handler = components.get(OrderStockEventHandler.class);
+        productSkuGateway.updateStatus(product.id(), "ON_SHELF");
+        var lines = List.of(new OrderStockLineDTO(product.id(), 2));
+        var closed = stockEvent("ORDER_CLOSED", "O1", "O1", new OrderClosedEvent("O1", 1L, lines));
+        handler.closed(closed);
+        handler.closed(closed);
+        assertFalse(productInventoryService.reserveStock("O1", product.id(), 2));
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        handler.paid(
+                                stockEvent(
+                                        "ORDER_PAID",
+                                        "O1",
+                                        "O1",
+                                        new OrderPaidEvent(
+                                                "O1", 1L, BigDecimal.TEN, 0, 0, Map.of(), lines))));
+        assertEquals(10, productSkuGateway.findById(product.id()).stock());
     }
 }

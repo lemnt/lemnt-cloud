@@ -10,6 +10,7 @@
     </parent>
     <artifactId>lemnt-order-adapter</artifactId>
     <dependencies>
+        <dependency><groupId>com.lemnt</groupId><artifactId>lemnt-promotion-adapter</artifactId><version>${project.version}</version><scope>test</scope></dependency>
         <dependency>
             <groupId>com.lemnt</groupId>
             <artifactId>lemnt-order-application</artifactId>

@@ -1,4 +1,5 @@
 package com.lemnt.order.application.promotion.service;
+
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.order.application.promotion.cmd.PromotionOrderCmd;
 import com.lemnt.order.application.settlement.service.SettlementOrderService;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 /** 活动下单只编排原请求与订单快照，库存和权益由所属服务处理。 */
 @Component
 @RequiredArgsConstructor
@@ -18,7 +20,11 @@ public class PromotionOrderService {
     private final PromotionOrderGateway promotionOrders;
     private final PromotionOrderPreparationService preparation;
     private final SettlementOrderService orders;
-    private void require(boolean ok,String message){if(!ok)throw new ServiceException(message,400);}
+
+    private void require(boolean ok, String message) {
+        if (!ok) throw new ServiceException(message, 400);
+    }
+
     /** 本地准备提交后同步调用交易建单，未知结果保留原请求供重试。 */
     public SettlementOrder place(PromotionOrderCmd cmd) {
         require(cmd != null && cmd.memberId() != null && cmd.memberId() > 0, "会员编号不合法");
@@ -67,5 +73,8 @@ public class PromotionOrderService {
             throw exception;
         }
     }
-    public PromotionOrder find(String no){return promotionOrders.findByOrderNo(no);}
+
+    public PromotionOrder find(String no) {
+        return promotionOrders.findByOrderNo(no);
+    }
 }

@@ -1,9 +1,9 @@
 package com.lemnt.order.start.checkout;
 
-import com.lemnt.mall.domain.settlement.gateway.SettlementGateway;
-import com.lemnt.mall.domain.settlement.model.Settlement;
-import com.lemnt.mall.domain.settlement.model.SettlementRecord;
-import com.lemnt.mall.domain.settlement.model.SettlementSubmission;
+import com.lemnt.order.domain.settlement.gateway.SettlementGateway;
+import com.lemnt.order.domain.settlement.model.Settlement;
+import com.lemnt.order.domain.settlement.model.SettlementRecord;
+import com.lemnt.order.domain.settlement.model.SettlementSubmission;
 
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -14,14 +14,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /** 结算缓存的测试替身；不代表生产 Redis Lua 和网络验收。 */
-final class MemorySettlementGateway implements SettlementGateway {
+public final class MemorySettlementGateway implements SettlementGateway {
     final Map<String, Settlement> previews;
     final Map<String, SettlementSubmission> submissions = new ConcurrentHashMap<>();
     final Map<String, String> requests = new ConcurrentHashMap<>();
     final Map<String, String> bindings = new ConcurrentHashMap<>();
     final Set<String> abandoned = ConcurrentHashMap.newKeySet();
 
-    MemorySettlementGateway(Map<String, Settlement> previews) {
+    public MemorySettlementGateway(Map<String, Settlement> previews) {
         this.previews = previews;
     }
 

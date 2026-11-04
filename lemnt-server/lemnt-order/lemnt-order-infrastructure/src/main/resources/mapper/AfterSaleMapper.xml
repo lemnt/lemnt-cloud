@@ -35,6 +35,11 @@
         <result property="updateBy" column="update_by"/>
         <result property="updateTime" column="update_time"/>
         <result property="auditUserId" column="audit_user_id"/>
+        <result property="refundDiscountAmount" column="refund_discount_amount"/>
+        <result property="refundDeliveryDiscountPrice" column="refund_delivery_discount_price"/>
+        <result property="returnUsePoint" column="return_use_point"/>
+        <result property="deductGivePoint" column="deduct_give_point"/>
+        <result property="refundRuleVersion" column="refund_rule_version"/>
     </resultMap>
     <select id="lockByNo" resultMap="AfterSaleResult" flushCache="true" useCache="false">
         SELECT * FROM order_after_sale WHERE refund_no=#{no} AND deleted=FALSE FOR UPDATE

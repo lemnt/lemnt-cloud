@@ -1,6 +1,6 @@
 package com.lemnt.order.infrastructure.settlement.converter;
 
-import com.lemnt.order.infrastructure.product.converter.SpecSnapshotJson;
+import com.lemnt.order.infrastructure.order.converter.SpecSnapshotJson;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;

@@ -228,3 +228,17 @@ CREATE TABLE IF NOT EXISTS member_experience_record (
     KEY idx_member_experience_user(user_id,id),
     FOREIGN KEY(user_id) REFERENCES member_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员经验变更流水';
+
+
+CREATE TABLE IF NOT EXISTS member_message_inbox (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+    consumer_key VARCHAR(80) NOT NULL COMMENT '稳定消费处理器标识',
+    event_no VARCHAR(64) NOT NULL COMMENT '已处理事件编号',
+    event_type VARCHAR(40) NOT NULL COMMENT '事件类型',
+    business_key VARCHAR(128) NOT NULL COMMENT '本处理器业务幂等键',
+    payload_hash CHAR(64) NOT NULL COMMENT '载荷SHA256，同键不同内容拒绝',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '消费成功时间，与业务同事务',
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_consumer_event (consumer_key, event_no),
+    UNIQUE KEY uk_consumer_business (consumer_key, event_type, business_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='本地事务消息消费幂等记录';

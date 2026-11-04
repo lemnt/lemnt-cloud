@@ -20,10 +20,12 @@ import java.util.List;
 public class PaymentQueryClientImpl implements PaymentQueryClient {
     private final TradePaymentGateway payments;
     private final PaymentRefundGateway refunds;
-    @Override public PaymentRefundTotalDTO refundTotal(String no) {
-        var value=refunds.total(no);return new PaymentRefundTotalDTO(value.refundCount(),value.refundAmount());
-    }
 
+    @Override
+    public PaymentRefundTotalDTO refundTotal(String no) {
+        var value = refunds.total(no);
+        return new PaymentRefundTotalDTO(value.refundCount(), value.refundAmount());
+    }
 
     @Override
     public List<PaymentResultDTO> findByOrderNo(String no) {

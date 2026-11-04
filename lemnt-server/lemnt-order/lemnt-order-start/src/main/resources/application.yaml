@@ -8,6 +8,7 @@ spring:
   config:
     import:
       - optional:nacos:lemnt-common.yaml
+      - optional:nacos:commerce-mq.yaml
       - optional:nacos:lemnt-order.yaml
   cloud:
     nacos:
@@ -15,6 +16,8 @@ spring:
       username: ${NACOS_USERNAME:}
       password: ${NACOS_PASSWORD:}
       config:
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
         namespace: ${NACOS_NAMESPACE:}
       discovery:
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
         namespace: ${NACOS_NAMESPACE:}

@@ -20,15 +20,21 @@ lemnt-server
 │   └── lemnt-system-start          启动引导
 ├── lemnt-member          会员、积分与账户 [9110]
 │   └── client / adapter / application / domain / infrastructure / start
-├── lemnt-mall            商品、结算与活动执行 [9120]
+├── lemnt-product         商品、库存与评价 [9140]
 │   └── client / adapter / application / domain / infrastructure / start
-├── lemnt-trade           订单、支付、售后与交易快照 [9130]
+├── lemnt-promotion       活动、优惠券与购物车 [9150]
+│   └── client / adapter / application / domain / infrastructure / start
+├── lemnt-order           结算、订单、售后、履约与分佣 [9160]
+│   └── client / adapter / application / domain / infrastructure / start
+├── lemnt-pay             支付、退款、钱包与充值 [9170]
 │   └── client / adapter / application / domain / infrastructure / start
 ├── lemnt-open            开放平台 [9300]
 │   └── ...（无 client 模块）
 └── lemnt-third-sdk       第三方 SDK
     └── demo-sdk           HTTP 调用示例
 ```
+
+旧mall/trade源码在P5清理前保留，已从默认Reactor移除；新业务只依赖所属领域与其他上下文Client。源码配置与切流边界见[配置与切流准备](../docs/module-split-cutover.md)。
 
 **注意：** 接口定义模块统一命名为 `xxx-client`，不是 `xxx-api`。lemnt-auth 与 lemnt-open 当前没有 client 模块。
 
@@ -570,7 +576,7 @@ Bean。 **密钥缺失或不足 64 字节时应用启动直接失败**（HS512 �
 |---------------------|---------------------------------------------------------------------------------------------|
 | `lemnt_system.sql`     | 系统库表结构（`sys_*`）与初始化数据，**建表使用 DROP + CREATE**                             |
 
-member、mall、trade分别只保留`sql/lemnt_member.sql`、`sql/lemnt_mall.sql`、`sql/lemnt_trade.sql`，只含最终CREATE TABLE及必要INSERT。原V*及upgrade脚本已整合移除，不用初始化文件升级旧库。system的现有脚本不调整。详见[业务库初始化](../docs/database-initialization.md)。
+member、product、promotion、order、pay各使用所属服务`sql/lemnt_{服务}.sql`，只含最终CREATE TABLE及必要INSERT，不用初始化文件升级旧库。旧mall/trade脚本仅供迁移清理前核对，已不属于默认构建入口。system的现有脚本不调整。详见[配置与切流准备](../docs/module-split-cutover.md)。
 
 ### 单元测试
 

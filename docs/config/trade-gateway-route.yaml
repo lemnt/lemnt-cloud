@@ -1,12 +1,4 @@
-# Merge this entry into existing Nacos lemnt-gateway.yaml routes; do not replace other routes.
-spring:
-  cloud:
-    gateway:
-      server:
-        webflux:
-          routes:
-            - id: lemnt-trade
-              uri: lb://lemnt-trade
-              predicates:
-                - Path=/trade/**
-              # No StripPrefix: trade controllers already include /trade.
+# 历史trade粗路由停用记录，不再导入或合并到Nacos。
+# 新网关从commerce-gateway-routes.yaml打包加载精确方法/路径，不能继续配置/trade/**回落到旧服务。
+# 发布前仅移除原trade业务粗路由及其重复定义，保留其他服务、鉴权、CORS与限流配置。
+# 实际配置发布/切流尚未执行，步骤见../module-split-cutover.md。

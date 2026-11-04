@@ -34,8 +34,12 @@ public class OrderClosedEventHandler {
                 || !event.orderNo().equals(envelope.businessKey())) {
             throw new IllegalArgumentException("关单事件的订单标识不一致");
         }
-        inbox.begin("pay.order.fence.v1",event.orderNo(),"PAYMENT_ORDER_FENCE",event.orderNo(),
-                JsonUtils.toJsonStr(Map.of("orderNo",event.orderNo())));
+        inbox.begin(
+                "pay.order.fence.v1",
+                event.orderNo(),
+                "PAYMENT_ORDER_FENCE",
+                event.orderNo(),
+                JsonUtils.toJsonStr(Map.of("orderNo", event.orderNo())));
         if (!inbox.begin(
                 "pay.order.closed.v1",
                 envelope.eventNo(),
@@ -50,7 +54,8 @@ public class OrderClosedEventHandler {
         }
         for (var payment : payments.findByOrderNo(event.orderNo())) {
             if ("WAITING".equals(payment.status())) {
-                if(!channels.closeUnpaid(payment)) throw new IllegalStateException("渠道未确认关闭原支付尝试，请重试核对");
+                if (!channels.closeUnpaid(payment))
+                    throw new IllegalStateException("渠道未确认关闭原支付尝试，请重试核对");
                 payments.markClosed(payment.paymentNo());
             }
         }

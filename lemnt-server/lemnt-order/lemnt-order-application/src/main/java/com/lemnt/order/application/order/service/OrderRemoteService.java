@@ -2,13 +2,15 @@ package com.lemnt.order.application.order.service;
 
 import com.lemnt.order.domain.inventory.gateway.InventoryGateway;
 import com.lemnt.order.domain.order.gateway.OrderBenefitsGateway;
-import com.lemnt.order.domain.order.gateway.OrderRollbackGateway;
+import com.lemnt.order.domain.order.gateway.OrderBenefitsProgressGateway;
+import com.lemnt.order.domain.order.gateway.PromotionResourceGateway;
 
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
+import java.util.TreeMap;
 
 /** 本地订单事务结束后同步调用商城，只有库存与券回滚异步发送。 */
 @Component
@@ -18,7 +20,9 @@ public class OrderRemoteService {
     private final InventoryGateway inventory;
     private final OrderBenefitsGateway benefits;
     private final OrderLifecycleService lifecycle;
-    private final OrderRollbackGateway rollback;
+    private final OrderBenefitsProgressGateway progress;
+    private final PromotionResourceGateway promotions;
+    private final OrderPaidCompletionService completion;
 
     /** 同步预占全部库存，原订单重试不会重复扣减。 */
     public void reserve(String orderNo) {
@@ -35,8 +39,14 @@ public class OrderRemoteService {
         }
         benefits.verify(orderNo);
         if ("RESERVING".equals(order.status())) {
-            for (var item : order.items()) {
-                if (!inventory.reserveStock(orderNo, item.productId(), item.quantity())) {
+            var quantities = new TreeMap<Long, Integer>();
+            order.items()
+                    .forEach(
+                            item ->
+                                    quantities.merge(
+                                            item.productId(), item.quantity(), Math::addExact));
+            for (var item : quantities.entrySet()) {
+                if (!inventory.reserveStock(orderNo, item.getKey(), item.getValue())) {
                     lifecycle.reservationFailed(orderNo);
                     closed(orderNo);
                     throw new IllegalStateException("预占库存失败，已提交库存与券回滚补偿");
@@ -96,11 +106,7 @@ public class OrderRemoteService {
                 || order.items().isEmpty()) {
             throw new IllegalStateException("订单尚未支付或没有明细");
         }
-        for (var item : order.items()) {
-            inventory.confirmStock(orderNo, item.productId());
-        }
-        benefits.paid(orderNo);
-        lifecycle.inventoryConfirmed(orderNo);
+        if (progress.paid(orderNo)) completion.finish(orderNo, promotions.paidRecord(orderNo));
     }
 
     /** 关单后异步发送库存与优惠券的统一补偿消息。 */
@@ -109,6 +115,6 @@ public class OrderRemoteService {
         if (order == null || !"CLOSED".equals(order.status())) {
             throw new IllegalStateException("订单未关闭");
         }
-        rollback.publish(orderNo);
+        benefits.closed(orderNo);
     }
 }

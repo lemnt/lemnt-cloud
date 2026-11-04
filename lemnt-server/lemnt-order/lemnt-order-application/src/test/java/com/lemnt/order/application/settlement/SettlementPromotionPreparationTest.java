@@ -1,17 +1,15 @@
 package com.lemnt.order.application.settlement;
 
 import com.lemnt.order.application.member.service.MemberValidationService;
-import com.lemnt.order.application.promotion.service.ActivityPricingService;
 import com.lemnt.order.application.settlement.service.SettlementDeliveryService;
 import com.lemnt.order.application.settlement.service.SettlementOrderService;
 import com.lemnt.order.application.settlement.service.SettlementPreparationService;
 import com.lemnt.order.application.settlement.service.SettlementRecordService;
-import com.lemnt.order.domain.cart.gateway.CartGateway;
-import com.lemnt.order.domain.coupon.gateway.CouponGateway;
-import com.lemnt.order.domain.coupon.gateway.CouponTemplateGateway;
+import com.lemnt.order.domain.cart.gateway.CartSnapshotGateway;
 import com.lemnt.order.domain.member.gateway.MemberLockGateway;
 import com.lemnt.order.domain.member.model.MemberSnapshot;
 import com.lemnt.order.domain.product.gateway.ProductCatalogGateway;
+import com.lemnt.order.domain.promotion.gateway.PromotionPricingGateway;
 import com.lemnt.order.domain.settlement.gateway.SettlementGateway;
 import com.lemnt.order.domain.settlement.model.SettlementItem;
 import com.lemnt.order.domain.settlement.model.SettlementOrder;
@@ -28,22 +26,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /** 活动结算准备复用请求编号，活动价格快照不经过普通促销计价。 */
 class SettlementPromotionPreparationTest {
-    private final ActivityPricingService pricing = Mockito.mock(ActivityPricingService.class);
+    private final PromotionPricingGateway pricing = Mockito.mock(PromotionPricingGateway.class);
     private final SettlementDeliveryService delivery =
             Mockito.mock(SettlementDeliveryService.class);
-    private final CartGateway cart = Mockito.mock(CartGateway.class);
+    private final CartSnapshotGateway cart = Mockito.mock(CartSnapshotGateway.class);
     private final MemberLockGateway locks = Mockito.mock(MemberLockGateway.class);
     private final SettlementRecordService records = Mockito.mock(SettlementRecordService.class);
-    private final CouponGateway coupons = Mockito.mock(CouponGateway.class);
-    private final CouponTemplateGateway templates = Mockito.mock(CouponTemplateGateway.class);
     private final SettlementOrderService orders = Mockito.mock(SettlementOrderService.class);
     private final SettlementGateway cache = Mockito.mock(SettlementGateway.class);
     private final ProductCatalogGateway catalog = Mockito.mock(ProductCatalogGateway.class);
     private final MemberValidationService members = Mockito.mock(MemberValidationService.class);
     private final SettlementPreparationService service =
             new SettlementPreparationService(
-                    pricing, delivery, cart, locks, records, coupons, templates, orders, cache,
-                    catalog, members);
+                    pricing, delivery, cart, locks, records, orders, cache, catalog, members);
 
     private SettlementQuote quote() {
         var item =

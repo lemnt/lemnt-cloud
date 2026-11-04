@@ -6,6 +6,7 @@ import com.lemnt.order.application.order.cmd.OrderAdjustPriceCmd;
 import com.lemnt.order.application.order.service.OrderAdjustmentService;
 import com.lemnt.order.application.order.service.OrderLogService;
 import com.lemnt.order.application.order.service.OrderPersistenceService;
+import com.lemnt.order.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderItemGateway;
 import com.lemnt.order.domain.order.model.TradeOrder;
@@ -13,6 +14,7 @@ import com.lemnt.order.domain.order.model.TradeOrderDelivery;
 import com.lemnt.order.domain.order.model.TradeOrderItem;
 import com.lemnt.order.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.order.domain.payment.model.PaymentRecord;
+import com.lemnt.order.domain.promotion.gateway.OrderPromotionGateway;
 
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +32,14 @@ class OrderAdjustmentServiceTest {
     final OrderLogService logs = mock(OrderLogService.class);
     final TradePaymentGateway payments = mock(TradePaymentGateway.class);
     final OrderAdjustmentService service =
-            new OrderAdjustmentService(orders, items, persistence, logs, payments);
+            new OrderAdjustmentService(
+                    orders,
+                    items,
+                    persistence,
+                    logs,
+                    payments,
+                    mock(OrderPromotionGateway.class),
+                    mock(MessageInboxGateway.class));
 
     TradeOrder order(String status, TradeOrderDelivery delivery) {
         return new TradeOrder(

@@ -1,14 +1,14 @@
 package com.lemnt.product.infrastructure.order.gateway;
 
+import com.lemnt.order.client.TradeOrderClient;
+import com.lemnt.order.client.bo.OrderCommentCreateBo;
 import com.lemnt.product.domain.order.gateway.OrderSnapshotGateway;
 import com.lemnt.product.domain.product.model.CommentOrderRequest;
-import com.lemnt.trade.client.TradeOrderClient;
-import com.lemnt.trade.client.bo.OrderCommentCreateBo;
 
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
-/** 过渡期消费旧订单Client；P4切换新Client，绝不依赖订单实现模块。 */
+/** 通过独立订单Client提交评价授权核验，绝不依赖订单实现模块。 */
 @Component
 public class OrderSnapshotGatewayImpl implements OrderSnapshotGateway {
     @DubboReference(check = false, timeout = 5000, retries = 0)

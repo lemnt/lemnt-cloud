@@ -6,6 +6,7 @@ import com.lemnt.order.application.order.service.OrderLogService;
 import com.lemnt.order.application.order.service.OrderPersistenceService;
 import com.lemnt.order.domain.aftersale.gateway.AfterSaleGateway;
 import com.lemnt.order.domain.delivery.gateway.DeliveryExpressGateway;
+import com.lemnt.order.domain.event.gateway.OrderEventGateway;
 import com.lemnt.order.domain.fulfillment.gateway.InventoryConfirmationGateway;
 import com.lemnt.order.domain.fulfillment.gateway.ShipmentGateway;
 import com.lemnt.order.domain.fulfillment.model.Shipment;
@@ -33,6 +34,7 @@ public class OrderFulfillmentService {
     private final TradeOrderGateway tradeOrderGateway;
     private final DeliveryExpressGateway deliveryExpressGateway;
     private final OrderLogService logs;
+    private final OrderEventGateway events;
 
     private String fingerprint(String... values) {
         StringBuilder canonical = new StringBuilder();
@@ -114,6 +116,7 @@ public class OrderFulfillmentService {
                 20,
                 cmd.operator(),
                 "已发货，快递公司：" + carrier + "，快递单号：" + tracking);
+        events.shipped(order);
         return shipmentGateway.shipment(orderNo);
     }
 
@@ -158,6 +161,7 @@ public class OrderFulfillmentService {
                 operator.userType() == 1 ? 30 : 31,
                 operator,
                 operator.userType() == 1 ? "用户已收货" : "系统自动确认收货");
+        events.completed(order);
         return shipmentGateway.shipment(orderNo);
     }
 }

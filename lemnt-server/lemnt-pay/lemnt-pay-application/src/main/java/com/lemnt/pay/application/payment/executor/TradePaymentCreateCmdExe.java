@@ -58,9 +58,14 @@ public class TradePaymentCreateCmdExe {
         if (order.totalAmount() == null || order.totalAmount().signum() <= 0)
             throw new IllegalStateException("零元订单无需创建支付单");
 
-        receipts.begin("pay.order.fence.v1",order.orderNo(),"PAYMENT_ORDER_FENCE",order.orderNo(),
-                JsonUtils.toJsonStr(Map.of("orderNo",order.orderNo())));
-        if(receipts.has("pay.order.closed.v1","ORDER_CLOSED",order.orderNo())) throw new IllegalStateException("订单已关闭，不能创建延迟支付尝试");
+        receipts.begin(
+                "pay.order.fence.v1",
+                order.orderNo(),
+                "PAYMENT_ORDER_FENCE",
+                order.orderNo(),
+                JsonUtils.toJsonStr(Map.of("orderNo", order.orderNo())));
+        if (receipts.has("pay.order.closed.v1", "ORDER_CLOSED", order.orderNo()))
+            throw new IllegalStateException("订单已关闭，不能创建延迟支付尝试");
 
         PaymentRecord existing =
                 tradePaymentGateway.findByOrderNoAndChannel(order.orderNo(), normalizedChannel);

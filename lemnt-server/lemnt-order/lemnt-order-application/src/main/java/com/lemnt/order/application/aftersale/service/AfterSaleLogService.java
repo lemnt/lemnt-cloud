@@ -19,6 +19,14 @@ public class AfterSaleLogService {
     private final AfterSaleLogGateway logs;
     private final TradeOrderGateway orders;
 
+    /** 同一售后的失败查询重放只记一次，调用方须持有订单及售后锁。 */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void refundFailed(AfterSale value, TradeOperator operator) {
+        if (logs.byAfterSaleId(value.id()).stream().anyMatch(log -> log.operateType() == 32))
+            return;
+        record(value, "REFUNDING", "REFUNDING", 32, operator, "原路退款失败，等待核验重试");
+    }
+
     /** 使用真实售后数值主键，不以业务单号冒充关联。 */
     @Transactional(propagation = Propagation.MANDATORY)
     public void record(

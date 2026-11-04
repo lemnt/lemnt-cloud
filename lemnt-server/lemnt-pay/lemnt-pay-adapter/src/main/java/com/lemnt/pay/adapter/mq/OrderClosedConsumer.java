@@ -7,12 +7,14 @@ import com.lemnt.pay.application.event.service.OrderClosedEventHandler;
 
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
 /** 失败直接抛给broker重试，不能继承吞异常的旧BaseConsumer。 */
 @Component
+@ConditionalOnProperty(name = "commerce.mq.enabled", havingValue = "true")
 @RequiredArgsConstructor
 @RocketMQMessageListener(
         topic = CommerceEventTopics.ORDER_CLOSED,

@@ -1,11 +1,11 @@
 package com.lemnt.order.application.order.service;
 
 import com.lemnt.common.core.exception.ServiceException;
-import com.lemnt.order.application.order.service.OrderPersistenceService;
+import com.lemnt.order.application.promotion.service.ActivityOrderLifecycleService;
+import com.lemnt.order.domain.event.gateway.OrderEventGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.model.TradeOperator;
 import com.lemnt.order.domain.order.model.TradeOrder;
-import com.lemnt.order.domain.payment.gateway.PaymentChannelCloseGateway;
 import com.lemnt.order.domain.payment.gateway.TradePaymentGateway;
 
 import org.springframework.stereotype.Component;
@@ -24,7 +24,8 @@ public class OrderCloseService {
     private final OrderPersistenceService orderPersistenceService;
     private final TradeOrderGateway tradeOrderGateway;
     private final TradePaymentGateway payments;
-    private final PaymentChannelCloseGateway channels;
+    private final OrderEventGateway events;
+    private final ActivityOrderLifecycleService activities;
     private final OrderLogService logs;
 
     /**
@@ -54,17 +55,8 @@ public class OrderCloseService {
         if (!Set.of("PENDING_PAYMENT", "RESERVING").contains(order.status())) {
             return false;
         }
-        for (var payment : payments.findByOrderNo(orderNo)) {
-            if ("CLOSED".equals(payment.status())) {
-                continue;
-            }
-            if (!"WAITING".equals(payment.status()) || !channels.closeUnpaid(payment)) {
-                return false;
-            }
-            if (!payments.markClosed(payment.paymentNo())) {
-                throw new IllegalStateException("支付单状态变化，请重试关单");
-            }
-        }
+        if (payments.findByOrderNo(orderNo).stream()
+                .anyMatch(v -> !Set.of("WAITING", "CLOSED").contains(v.status()))) return false;
         if (!tradeOrderGateway.transitionStatus(orderNo, order.status(), "CLOSED")) {
             return false;
         }
@@ -75,6 +67,8 @@ public class OrderCloseService {
                 operator.userType() == 1 ? 40 : 41,
                 operator,
                 operator.userType() == 1 ? "用户取消订单" : "系统取消未支付订单");
+        activities.closed(orderNo);
+        events.closed(order);
         return true;
     }
 }

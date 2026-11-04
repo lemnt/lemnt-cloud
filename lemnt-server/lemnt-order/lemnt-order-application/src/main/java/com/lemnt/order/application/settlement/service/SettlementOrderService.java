@@ -1,16 +1,14 @@
 package com.lemnt.order.application.settlement.service;
 
+import com.lemnt.order.application.settlement.converter.PromotionClientConverter;
 import com.lemnt.order.client.TradeOrderClient;
-import com.lemnt.order.client.bo.OrderCommentCreateBo;
 import com.lemnt.order.client.bo.OrderCreateBo;
 import com.lemnt.order.client.dto.OrderDTO;
 import com.lemnt.order.client.dto.OrderDeliveryDTO;
 import com.lemnt.order.client.dto.OrderItemDTO;
-import com.lemnt.order.domain.product.model.CommentOrderRequest;
 import com.lemnt.order.domain.settlement.model.SettlementDelivery;
 import com.lemnt.order.domain.settlement.model.SettlementItem;
 import com.lemnt.order.domain.settlement.model.SettlementOrder;
-import com.lemnt.order.application.settlement.converter.PromotionClientConverter;
 
 import org.springframework.stereotype.Component;
 

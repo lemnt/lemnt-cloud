@@ -85,6 +85,7 @@ public class OrderPersistenceService {
 
     /** 按原顺序锁定订单主体，调用方持有事务。 */
     public TradeOrder findByOrderNoForUpdate(String orderNo) {
-        return tradeOrderGateway.lockHeader(orderNo);
+        var locked = tradeOrderGateway.lockHeader(orderNo);
+        return locked == null ? null : findByOrderNo(orderNo);
     }
 }

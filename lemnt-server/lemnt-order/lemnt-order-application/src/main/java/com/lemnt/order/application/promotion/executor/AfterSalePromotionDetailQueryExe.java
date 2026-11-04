@@ -3,10 +3,9 @@ package com.lemnt.order.application.promotion.executor;
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.order.application.promotion.dto.AfterSalePromotionDetailDTO;
 import com.lemnt.order.domain.aftersale.gateway.AfterSaleGateway;
+import com.lemnt.order.domain.order.gateway.OrderBenefitsProgressGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.model.OrderRules;
-import com.lemnt.order.domain.payment.gateway.PayNotifyTaskGateway;
-import com.lemnt.order.domain.paymentrefund.gateway.PaymentRefundGateway;
 import com.lemnt.order.domain.promotion.gateway.OrderPromotionGateway;
 
 import org.springframework.stereotype.Component;
@@ -23,8 +22,7 @@ public class AfterSalePromotionDetailQueryExe {
     private final AfterSaleGateway afterSales;
     private final TradeOrderGateway orders;
     private final OrderPromotionGateway promotions;
-    private final PayNotifyTaskGateway tasks;
-    private final PaymentRefundGateway refunds;
+    private final OrderBenefitsProgressGateway progress;
 
     public AfterSalePromotionDetailDTO execute(String no) {
         return read(null, no);
@@ -70,21 +68,16 @@ public class AfterSalePromotionDetailQueryExe {
                             row.returnUsePoint(),
                             row.deductGivePoint()));
         }
-        String status = "NOT_STARTED";
-        if ("REFUNDED".equals(afterSale.status())) {
-            var task = tasks.findByBiz("AFTER_SALE", afterSale.refundNo());
-            if (task == null) {
-                var refund = refunds.findByAfterSaleNo(afterSale.refundNo());
-                if (refund != null) {
-                    task = tasks.findByBiz("REFUND", refund.refundNo());
-                }
-            }
-            status = task == null ? "UNKNOWN" : task.status();
-        }
         boolean complete =
                 afterSale.refundDiscountAmount() != null
+                        && afterSale.refundDeliveryDiscountPrice() != null
                         && afterSale.returnUsePoint() != null
-                        && afterSale.deductGivePoint() != null;
+                        && afterSale.deductGivePoint() != null
+                        && Integer.valueOf(1).equals(afterSale.refundRuleVersion());
+        String status = "NOT_STARTED";
+        if ("REFUNDED".equals(afterSale.status())) {
+            status = !complete ? "UNKNOWN" : progress.refunded(afterSale) ? "SUCCESS" : "PENDING";
+        }
         return new AfterSalePromotionDetailDTO(
                 afterSale.refundNo(),
                 afterSale.orderItemId(),

@@ -9,6 +9,7 @@ import com.lemnt.order.application.pickup.dto.PickUpOrderDTO;
 import com.lemnt.order.domain.aftersale.gateway.AfterSaleGateway;
 import com.lemnt.order.domain.delivery.gateway.PickUpStoreGateway;
 import com.lemnt.order.domain.delivery.model.PickUpStore;
+import com.lemnt.order.domain.event.gateway.OrderEventGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.model.TradeOperator;
 import com.lemnt.order.domain.order.model.TradeOrder;
@@ -31,6 +32,7 @@ public class PickUpOrderService {
     private final PickUpStoreGateway stores;
     private final AfterSaleGateway afterSales;
     private final OrderLogService logs;
+    private final OrderEventGateway events;
 
     private void require(boolean condition, String message) {
         if (!condition) {
@@ -102,6 +104,7 @@ public class PickUpOrderService {
                 46,
                 TradeOperator.administrator(cmd.operatorId()),
                 "自提核销完成");
+        events.completed(order);
         return dto(orderGateway.findHeaderByPickUpCode(cmd.verifyCode()), store);
     }
 

@@ -3,6 +3,7 @@ package com.lemnt.order.application.order.service;
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.order.application.order.cmd.OrderAdjustAddressCmd;
 import com.lemnt.order.application.order.cmd.OrderAdjustPriceCmd;
+import com.lemnt.order.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderItemGateway;
 import com.lemnt.order.domain.order.model.TradeOperator;
@@ -37,6 +38,7 @@ public class OrderAdjustmentService {
     private final TradePaymentGateway payments;
 
     private final OrderPromotionGateway promotions;
+    private final MessageInboxGateway inbox;
 
     @Autowired
     public OrderAdjustmentService(
@@ -45,13 +47,15 @@ public class OrderAdjustmentService {
             OrderPersistenceService persistence,
             OrderLogService logs,
             TradePaymentGateway payments,
-            OrderPromotionGateway promotions) {
+            OrderPromotionGateway promotions,
+            MessageInboxGateway inbox) {
         this.orders = orders;
         this.items = items;
         this.persistence = persistence;
         this.logs = logs;
         this.payments = payments;
         this.promotions = promotions;
+        this.inbox = inbox;
     }
 
     public OrderAdjustmentService(
@@ -60,7 +64,7 @@ public class OrderAdjustmentService {
             OrderPersistenceService persistence,
             OrderLogService logs,
             TradePaymentGateway payments) {
-        this(orders, items, persistence, logs, payments, null);
+        this(orders, items, persistence, logs, payments, null, null);
     }
 
     /** 待支付订单按新应付金额等比例重分摊到商品行，保持行实付合计等于订单金额。 */
@@ -71,8 +75,9 @@ public class OrderAdjustmentService {
         if (!"PENDING_PAYMENT".equals(order.status())) {
             throw new ServiceException("只有待支付订单可以调价", 409);
         }
-        // 支付创建也持有订单行锁；已发起的渠道金额不能通过后台调价改写。
-        if (!payments.findByOrderNo(order.orderNo()).isEmpty()) {
+        // 支付准备先在订单锁内登记凭证；跨库创建超时也不能改写渠道金额。
+        if (inbox.has("order.payment.prepare.v1", "PAYMENT_PREPARE", order.orderNo())
+                || !payments.findByOrderNo(order.orderNo()).isEmpty()) {
             throw new ServiceException("订单已生成支付单，不能调价，请取消订单后重新下单", 409);
         }
         var lines = items.items(order.id());

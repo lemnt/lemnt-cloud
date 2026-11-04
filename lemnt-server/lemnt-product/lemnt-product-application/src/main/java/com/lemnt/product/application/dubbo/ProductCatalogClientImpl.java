@@ -100,7 +100,11 @@ public class ProductCatalogClientImpl implements ProductCatalogClient {
         return value == null
                 ? null
                 : new StockReservationDTO(
-                        value.reservationNo(), value.productId(), value.quantity(), value.status());
+                        value.reservationNo(),
+                        value.productId(),
+                        value.quantity(),
+                        value.status(),
+                        value.sourceNo());
     }
 
     @Override

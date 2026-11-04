@@ -1,13 +1,20 @@
 package com.lemnt.order.client;
 
+import com.lemnt.order.client.dto.BrokerageWithdrawalDTO;
 import com.lemnt.order.client.dto.FrozenRefundDTO;
+import com.lemnt.order.client.dto.OrderBenefitsSnapshotDTO;
 import com.lemnt.order.client.dto.OrderPaymentSnapshotDTO;
 import com.lemnt.order.client.dto.OrderPromotionResourcesDTO;
 
 /** 可信内部支付/退款快照，写入协调始终由订单上下文拥有。 */
 public interface OrderSnapshotClient {
+    BrokerageWithdrawalDTO brokerageWithdrawal(Long id);
+
+    OrderBenefitsSnapshotDTO benefitsSnapshot(String orderNo);
+
     /** 持有订单锁登记支付准备凭证后返回金额，防止跨库创建支付与调价竞争。 */
     OrderPaymentSnapshotDTO preparePayment(String orderNo);
+
     /** 原订单资源计划，活动、券及数量来自持久化快照。 */
     OrderPromotionResourcesDTO promotionResources(String orderNo);
 

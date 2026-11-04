@@ -1,7 +1,6 @@
 package com.lemnt.order.application.settlement.service;
 
 import com.lemnt.common.core.exception.ServiceException;
-import com.lemnt.order.application.settlement.service.LocalDeliveryPriceService;
 import com.lemnt.order.domain.member.gateway.MemberDeliveryAddressGateway;
 import com.lemnt.order.domain.member.gateway.MemberTradeGateway;
 import com.lemnt.order.domain.product.model.ProductSnapshot;

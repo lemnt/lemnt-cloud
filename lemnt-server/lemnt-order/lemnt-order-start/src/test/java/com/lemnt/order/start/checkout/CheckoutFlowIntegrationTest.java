@@ -1,87 +1,8 @@
 package com.lemnt.order.start.checkout;
 
 import com.lemnt.common.core.exception.ServiceException;
-import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
-import com.lemnt.mall.application.cart.cmd.CartSaveCmd;
-import com.lemnt.mall.application.cart.cmd.CartSaveCmd;
-import com.lemnt.mall.application.cart.executor.CartSaveCmdExe;
-import com.lemnt.mall.application.cart.executor.CartSaveCmdExe;
-import com.lemnt.mall.application.cart.service.CartService;
-import com.lemnt.mall.application.coupon.cmd.CouponClaimCmd;
-import com.lemnt.mall.application.coupon.cmd.CouponPublicClaimCmd;
-import com.lemnt.mall.application.coupon.qry.CouponPageQry;
-import com.lemnt.mall.application.coupon.service.CouponIssuanceService;
-import com.lemnt.mall.application.coupon.service.CouponService;
-import com.lemnt.mall.application.dubbo.ProductCommentClientImpl;
-import com.lemnt.mall.application.dubbo.SettlementLifecycleClientImpl;
-import com.lemnt.mall.application.member.service.MemberValidationService;
-import com.lemnt.mall.application.product.cmd.CommentCreateCmd;
-import com.lemnt.mall.application.product.cmd.CommentReplyCmd;
-import com.lemnt.mall.application.product.cmd.CommentVisibleCmd;
-import com.lemnt.mall.application.product.cmd.ProductSpecCreateCmd;
-import com.lemnt.mall.application.product.cmd.ProductSpecUpdateCmd;
-import com.lemnt.mall.application.product.cmd.ProductSpecValueCreateCmd;
-import com.lemnt.mall.application.product.cmd.ProductSpecValueUpdateCmd;
-import com.lemnt.mall.application.product.executor.CommentPageQueryExe;
-import com.lemnt.mall.application.product.executor.CommentVisibleCmdExe;
-import com.lemnt.mall.application.product.qry.CommentPageQry;
-import com.lemnt.mall.application.product.service.ProductCatalogService;
-import com.lemnt.mall.application.product.service.ProductCommentService;
-import com.lemnt.mall.application.product.service.ProductInventoryService;
-import com.lemnt.mall.application.product.service.ProductManagementService;
-import com.lemnt.mall.application.product.service.ProductSpecService;
-import com.lemnt.mall.application.promotion.service.ActivityPricingService;
-import com.lemnt.mall.application.promotion.service.PromotionOrderService;
-import com.lemnt.mall.application.promotion.service.RewardGiftService;
-import com.lemnt.mall.application.settlement.cmd.SettlementDirectCmd;
-import com.lemnt.mall.application.settlement.cmd.SettlementOrderSubmitCmd;
-import com.lemnt.mall.application.settlement.executor.SettlementReceiptQueryExe;
-import com.lemnt.mall.application.settlement.qry.SettlementQuoteQry;
-import com.lemnt.mall.application.settlement.service.OrderPlacementService;
-import com.lemnt.mall.application.settlement.service.SettlementDeliveryService;
-import com.lemnt.mall.application.settlement.service.SettlementPreparationService;
-import com.lemnt.mall.application.settlement.service.SettlementRecordService;
-import com.lemnt.mall.application.settlement.service.SettlementService;
-import com.lemnt.mall.domain.cart.gateway.CartGateway;
-import com.lemnt.mall.domain.coupon.gateway.CouponGateway;
-import com.lemnt.mall.domain.coupon.gateway.CouponTemplateGateway;
-import com.lemnt.mall.domain.coupon.model.CouponRules;
-import com.lemnt.mall.domain.coupon.model.CouponTemplate;
-import com.lemnt.mall.domain.member.gateway.MemberDeliveryAddressGateway;
-import com.lemnt.mall.domain.member.gateway.MemberLockGateway;
-import com.lemnt.mall.domain.member.gateway.MemberLookupGateway;
-import com.lemnt.mall.domain.member.gateway.MemberTradeGateway;
-import com.lemnt.mall.domain.member.model.MemberPointConfig;
-import com.lemnt.mall.domain.member.model.MemberSnapshot;
-import com.lemnt.mall.domain.member.model.MemberTradeChange;
-import com.lemnt.mall.domain.product.gateway.BrandGateway;
-import com.lemnt.mall.domain.product.gateway.CategoryGateway;
-import com.lemnt.mall.domain.product.gateway.ProductCatalogGateway;
-import com.lemnt.mall.domain.product.gateway.ProductCommentGateway;
-import com.lemnt.mall.domain.product.gateway.ProductSkuGateway;
-import com.lemnt.mall.domain.product.gateway.ProductSpuGateway;
-import com.lemnt.mall.domain.product.model.Brand;
-import com.lemnt.mall.domain.product.model.Category;
-import com.lemnt.mall.domain.product.model.Product;
-import com.lemnt.mall.domain.product.model.ProductCatalogValidation;
-import com.lemnt.mall.domain.product.model.ProductComment;
-import com.lemnt.mall.domain.product.model.ProductSku;
-import com.lemnt.mall.domain.product.model.ProductSkuSpec;
-import com.lemnt.mall.domain.product.model.ProductSnapshot;
-import com.lemnt.mall.domain.product.model.ProductSpu;
-import com.lemnt.mall.domain.settlement.gateway.LocalDeliveryPriceService;
-import com.lemnt.mall.domain.settlement.gateway.SettlementGateway;
-import com.lemnt.mall.domain.settlement.gateway.SettlementOrderService;
-import com.lemnt.mall.domain.settlement.model.Settlement;
-import com.lemnt.mall.domain.settlement.model.SettlementOrder;
-import com.lemnt.mall.domain.settlement.model.SettlementRules;
-import com.lemnt.mall.infrastructure.member.gateway.MemberDeliveryAddressGatewayImpl;
-import com.lemnt.mall.infrastructure.product.dataobject.ProductSkuDO;
-import com.lemnt.mall.infrastructure.product.mapper.ProductSkuMapper;
-import com.lemnt.mall.infrastructure.settlement.gateway.DeliveryPriceGatewayImpl;
-import com.lemnt.mall.infrastructure.settlement.gateway.OrderGatewayImpl;
-import com.lemnt.member.client.MemberAddressClient;
 import com.lemnt.member.client.dto.MemberAddressDTO;
+import com.lemnt.member.client.dto.MemberPointConfigDTO;
 import com.lemnt.order.application.aftersale.cmd.AfterSaleCreateCmd;
 import com.lemnt.order.application.aftersale.cmd.AfterSaleRefuseCmd;
 import com.lemnt.order.application.aftersale.cmd.AfterSaleRejectCmd;
@@ -92,8 +13,6 @@ import com.lemnt.order.application.aftersale.service.AfterSaleService;
 import com.lemnt.order.application.delivery.cmd.DeliveryChargeCmd;
 import com.lemnt.order.application.delivery.cmd.DeliveryExpressTemplateCreateCmd;
 import com.lemnt.order.application.delivery.service.DeliveryManagementService;
-import com.lemnt.order.application.delivery.service.DeliveryPriceService;
-import com.lemnt.order.application.dubbo.TradeDeliveryClientImpl;
 import com.lemnt.order.application.dubbo.TradeOrderClientImpl;
 import com.lemnt.order.application.fulfillment.cmd.RefundRejectCmd;
 import com.lemnt.order.application.fulfillment.cmd.RefundRequestCmd;
@@ -105,41 +24,40 @@ import com.lemnt.order.application.fulfillment.executor.ShipmentPageQueryExe;
 import com.lemnt.order.application.fulfillment.qry.OrderPageQry;
 import com.lemnt.order.application.fulfillment.qry.ShipmentPageQry;
 import com.lemnt.order.application.fulfillment.service.OrderFulfillmentService;
+import com.lemnt.order.application.member.service.MemberValidationService;
 import com.lemnt.order.application.order.cmd.OrderAdjustPriceCmd;
 import com.lemnt.order.application.order.cmd.OrderRemarkUpdateCmd;
 import com.lemnt.order.application.order.executor.OrderRemarkUpdateCmdExe;
-import com.lemnt.order.application.order.executor.OrderRollbackCmdExe;
 import com.lemnt.order.application.order.executor.OrderStatisticsQueryExe;
 import com.lemnt.order.application.order.executor.TradeOrderCloseCmdExe;
 import com.lemnt.order.application.order.service.OrderAdjustmentService;
-import com.lemnt.order.application.order.service.OrderCloseService;
 import com.lemnt.order.application.order.service.OrderCommentService;
 import com.lemnt.order.application.order.service.OrderLifecycleService;
 import com.lemnt.order.application.order.service.OrderLogService;
 import com.lemnt.order.application.order.service.OrderPersistenceService;
 import com.lemnt.order.application.order.service.OrderRemoteService;
+import com.lemnt.order.application.order.service.OrderRollbackPublisher;
 import com.lemnt.order.application.order.service.OrderSubmissionService;
-import com.lemnt.order.application.payment.executor.MemberPaymentStatusQueryExe;
-import com.lemnt.order.application.payment.executor.PaymentNotifyCmdExe;
-import com.lemnt.order.application.payment.executor.PaymentPageQueryExe;
-import com.lemnt.order.application.payment.executor.TradePaymentCreateCmdExe;
-import com.lemnt.order.application.payment.qry.MemberPaymentStatusQry;
-import com.lemnt.order.application.payment.qry.PaymentPageQry;
-import com.lemnt.order.application.payment.service.PayNotifyTaskService;
-import com.lemnt.order.application.payment.service.PaymentNotificationService;
 import com.lemnt.order.application.paymentrefund.executor.PaymentRefundCreateCmdExe;
-import com.lemnt.order.application.paymentrefund.executor.PaymentRefundPageQueryExe;
-import com.lemnt.order.application.paymentrefund.qry.PaymentRefundPageQry;
+import com.lemnt.order.application.settlement.cmd.SettlementDirectCmd;
+import com.lemnt.order.application.settlement.cmd.SettlementOrderSubmitCmd;
+import com.lemnt.order.application.settlement.executor.SettlementReceiptQueryExe;
+import com.lemnt.order.application.settlement.qry.SettlementQuoteQry;
+import com.lemnt.order.application.settlement.service.OrderPlacementService;
+import com.lemnt.order.application.settlement.service.SettlementDeliveryService;
+import com.lemnt.order.application.settlement.service.SettlementOrderService;
+import com.lemnt.order.application.settlement.service.SettlementPreparationService;
+import com.lemnt.order.application.settlement.service.SettlementRecordService;
+import com.lemnt.order.application.settlement.service.SettlementService;
 import com.lemnt.order.client.TradeOrderClient;
 import com.lemnt.order.client.bo.OrderCommentCreateBo;
 import com.lemnt.order.client.bo.OrderCreateBo;
-import com.lemnt.order.client.bo.RefundBenefitsBo;
-import com.lemnt.order.client.bo.RefundStockBo;
 import com.lemnt.order.client.dto.OrderDTO;
 import com.lemnt.order.domain.aftersale.gateway.AfterSaleGateway;
 import com.lemnt.order.domain.aftersale.gateway.AfterSaleLogGateway;
 import com.lemnt.order.domain.aftersale.model.AfterSale;
 import com.lemnt.order.domain.aftersale.model.AfterSaleLog;
+import com.lemnt.order.domain.cart.gateway.CartSnapshotGateway;
 import com.lemnt.order.domain.config.gateway.TradeConfigGateway;
 import com.lemnt.order.domain.delivery.gateway.DeliveryExpressGateway;
 import com.lemnt.order.domain.delivery.gateway.PickUpStoreGateway;
@@ -148,49 +66,99 @@ import com.lemnt.order.domain.fulfillment.gateway.InventoryConfirmationGateway;
 import com.lemnt.order.domain.fulfillment.gateway.ShipmentGateway;
 import com.lemnt.order.domain.fulfillment.model.RefundRequest;
 import com.lemnt.order.domain.inventory.gateway.InventoryGateway;
+import com.lemnt.order.domain.member.model.MemberSnapshot;
 import com.lemnt.order.domain.order.gateway.OrderBenefitsGateway;
-import com.lemnt.order.domain.order.gateway.OrderCommentGateway;
 import com.lemnt.order.domain.order.gateway.OrderLogGateway;
 import com.lemnt.order.domain.order.gateway.OrderRollbackGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderItemGateway;
 import com.lemnt.order.domain.order.model.OrderLog;
-import com.lemnt.order.domain.order.model.OrderRefundBenefits;
 import com.lemnt.order.domain.order.model.TradeOperator;
 import com.lemnt.order.domain.order.model.TradeOrder;
 import com.lemnt.order.domain.order.model.TradeOrderItem;
-import com.lemnt.order.domain.payment.gateway.PayNotifyTaskGateway;
-import com.lemnt.order.domain.payment.gateway.TradePaymentGateway;
-import com.lemnt.order.domain.payment.model.VerifiedPaymentNotification;
-import com.lemnt.order.domain.paymentrefund.gateway.PaymentRefundChannelGateway;
-import com.lemnt.order.domain.paymentrefund.gateway.PaymentRefundGateway;
-import com.lemnt.order.domain.paymentrefund.model.PaymentRefund;
-import com.lemnt.order.domain.paymentrefund.model.PaymentRefundResult;
+import com.lemnt.order.domain.product.gateway.ProductCatalogGateway;
+import com.lemnt.order.domain.product.model.ProductSnapshot;
+import com.lemnt.order.domain.promotion.gateway.PromotionPricingGateway;
+import com.lemnt.order.domain.settlement.gateway.SettlementGateway;
+import com.lemnt.order.domain.settlement.model.Settlement;
+import com.lemnt.order.domain.settlement.model.SettlementOrder;
+import com.lemnt.order.domain.settlement.model.SettlementRules;
 import com.lemnt.order.infrastructure.delivery.dataobject.DeliveryExpressTemplateChargeDO;
 import com.lemnt.order.infrastructure.delivery.mapper.DeliveryExpressTemplateChargeMapper;
-import com.lemnt.order.infrastructure.order.gateway.OrderCommentGatewayImpl;
 import com.lemnt.order.infrastructure.order.mapper.TradeOrderMapper;
-import com.lemnt.order.infrastructure.payment.gateway.TradePaymentGatewayImpl;
-import com.lemnt.order.infrastructure.payment.mapper.TradePaymentMapper;
-import com.lemnt.order.infrastructure.paymentrefund.channel.PaymentRefundClient;
-import com.lemnt.order.infrastructure.paymentrefund.gateway.PaymentRefundChannelGatewayImpl;
-import com.lemnt.order.start.BusinessConfigTestSupport;
-import com.lemnt.order.start.TableTestComponents;
+import com.lemnt.order.infrastructure.product.gateway.ProductCatalogGatewayImpl;
 import com.lemnt.order.start.TradeOrderScheduler;
+import com.lemnt.order.start.support.CommerceEventPump;
+import com.lemnt.order.start.support.CommerceTestDefaults;
+import com.lemnt.order.start.support.CommerceTestFixture;
+import com.lemnt.pay.application.payment.executor.MemberPaymentStatusQueryExe;
+import com.lemnt.pay.application.payment.executor.PaymentNotifyCmdExe;
+import com.lemnt.pay.application.payment.executor.PaymentPageQueryExe;
+import com.lemnt.pay.application.payment.executor.TradePaymentCreateCmdExe;
+import com.lemnt.pay.application.payment.qry.MemberPaymentStatusQry;
+import com.lemnt.pay.application.payment.qry.PaymentPageQry;
+import com.lemnt.pay.application.paymentrefund.executor.PaymentRefundPageQueryExe;
+import com.lemnt.pay.application.paymentrefund.qry.PaymentRefundPageQry;
+import com.lemnt.pay.domain.payment.gateway.PaymentChannelCloseGateway;
+import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
+import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundChannelGateway;
+import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundGateway;
+import com.lemnt.pay.domain.paymentrefund.model.PaymentRefund;
+import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundResult;
+import com.lemnt.pay.infrastructure.paymentrefund.channel.PaymentRefundClient;
+import com.lemnt.pay.infrastructure.paymentrefund.gateway.PaymentRefundChannelGatewayImpl;
+import com.lemnt.product.application.product.cmd.CommentCreateCmd;
+import com.lemnt.product.application.product.cmd.CommentReplyCmd;
+import com.lemnt.product.application.product.cmd.CommentVisibleCmd;
+import com.lemnt.product.application.product.cmd.ProductSpecCreateCmd;
+import com.lemnt.product.application.product.cmd.ProductSpecUpdateCmd;
+import com.lemnt.product.application.product.cmd.ProductSpecValueCreateCmd;
+import com.lemnt.product.application.product.cmd.ProductSpecValueUpdateCmd;
+import com.lemnt.product.application.product.executor.CommentPageQueryExe;
+import com.lemnt.product.application.product.executor.CommentVisibleCmdExe;
+import com.lemnt.product.application.product.qry.CommentPageQry;
+import com.lemnt.product.application.product.service.ProductCatalogService;
+import com.lemnt.product.application.product.service.ProductCommentService;
+import com.lemnt.product.application.product.service.ProductInventoryService;
+import com.lemnt.product.application.product.service.ProductManagementService;
+import com.lemnt.product.application.product.service.ProductSpecService;
 import com.lemnt.product.client.ProductCommentClient;
-import com.lemnt.product.client.bo.ProductCommentSaveBo;
+import com.lemnt.product.domain.product.gateway.BrandGateway;
+import com.lemnt.product.domain.product.gateway.CategoryGateway;
+import com.lemnt.product.domain.product.gateway.ProductCommentGateway;
+import com.lemnt.product.domain.product.gateway.ProductSkuGateway;
+import com.lemnt.product.domain.product.gateway.ProductSpuGateway;
+import com.lemnt.product.domain.product.model.Brand;
+import com.lemnt.product.domain.product.model.Category;
+import com.lemnt.product.domain.product.model.Product;
+import com.lemnt.product.domain.product.model.ProductCatalogValidation;
+import com.lemnt.product.domain.product.model.ProductComment;
+import com.lemnt.product.domain.product.model.ProductSku;
+import com.lemnt.product.domain.product.model.ProductSkuSpec;
+import com.lemnt.product.domain.product.model.ProductSpu;
+import com.lemnt.product.infrastructure.product.dataobject.ProductSkuDO;
+import com.lemnt.product.infrastructure.product.mapper.ProductSkuMapper;
+import com.lemnt.promotion.application.cart.cmd.CartSaveCmd;
+import com.lemnt.promotion.application.cart.executor.CartSaveCmdExe;
+import com.lemnt.promotion.application.cart.service.CartService;
+import com.lemnt.promotion.application.coupon.cmd.CouponClaimCmd;
+import com.lemnt.promotion.application.coupon.cmd.CouponPublicClaimCmd;
+import com.lemnt.promotion.application.coupon.qry.CouponPageQry;
+import com.lemnt.promotion.application.coupon.service.CouponIssuanceService;
+import com.lemnt.promotion.application.coupon.service.CouponService;
+import com.lemnt.promotion.domain.cart.gateway.CartGateway;
+import com.lemnt.promotion.domain.coupon.gateway.CouponGateway;
+import com.lemnt.promotion.domain.coupon.gateway.CouponTemplateGateway;
+import com.lemnt.promotion.domain.coupon.model.CouponRules;
+import com.lemnt.promotion.domain.coupon.model.CouponTemplate;
+import com.lemnt.promotion.domain.member.gateway.MemberLockGateway;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.lock.LockTemplate;
 import com.baomidou.lock.executor.RedissonLockExecutor;
 import com.baomidou.lock.spring.boot.autoconfigure.Lock4jProperties;
-import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.core.MybatisConfiguration;
-import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -198,14 +166,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.redisson.api.RLock;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -221,18 +187,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -243,7 +208,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class CheckoutFlowIntegrationTest {
     boolean loseNextCommentResponse;
 
-    TableTestComponents tradeComponents, mallComponents;
+    CommerceTestFixture tradeComponents, mallComponents;
+    CommerceEventPump events;
     ProductSkuGateway productSkuGateway;
     ProductInventoryService productInventoryService;
     MemberLockGateway checkoutAccountGateway;
@@ -273,26 +239,12 @@ class CheckoutFlowIntegrationTest {
     OrderRemoteService remotes;
 
     class RollbackMessages implements OrderRollbackGateway {
-        final Queue<String> messages = new ConcurrentLinkedQueue<>();
-
-        public void publish(String orderNo) {
-            messages.add(orderNo);
+        public void publish(String no) {
+            tradeComponents.get(OrderRollbackPublisher.class).publish(no);
         }
 
         int execute(int limit) {
-            int completed = 0;
-            int size = Math.min(messages.size(), limit);
-            var processor = new OrderRollbackCmdExe(orderPersistenceService, benefits);
-            for (int i = 0; i < size; i++) {
-                String no = messages.remove();
-                try {
-                    processor.execute(no);
-                    completed++;
-                } catch (RuntimeException exception) {
-                    messages.add(no);
-                }
-            }
-            return completed;
+            return events.drain();
         }
     }
 
@@ -318,40 +270,7 @@ class CheckoutFlowIntegrationTest {
     boolean rejectNextReserve;
     boolean loseNextReserveResponse;
     boolean loseNextConfirmResponse;
-    Map<String, SettlementOrder> submittedOrders = new ConcurrentHashMap<>();
     Map<String, String> quoteTokens = new HashMap<>();
-
-    JdbcDataSource source() {
-        var source = new JdbcDataSource();
-        source.setURL(
-                "jdbc:h2:mem:checkout_"
-                        + UUID.randomUUID()
-                        + ";MODE=MySQL;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=10000");
-        return source;
-    }
-
-    SqlSessionTemplate template(JdbcDataSource source, Class<?>... mappers) throws Exception {
-        var config = new MybatisConfiguration();
-        var interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
-        config.addInterceptor(interceptor);
-        config.setMapUnderscoreToCamelCase(true);
-        var bean = new MybatisSqlSessionFactoryBean();
-        {
-            bean.setMapperLocations(
-                    new PathMatchingResourcePatternResolver()
-                            .getResources("classpath*:mapper/*.xml"));
-        }
-        bean.setDataSource(source);
-        bean.setConfiguration(config);
-        bean.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
-        var factory = bean.getObject();
-        config.addMappers(
-                source == tradeSource
-                        ? "com.lemnt.order.infrastructure"
-                        : "com.lemnt.mall.infrastructure");
-        return new SqlSessionTemplate(factory);
-    }
 
     @SuppressWarnings("unchecked")
     <T> T tx(T target, JdbcDataSource source) {
@@ -412,158 +331,74 @@ class CheckoutFlowIntegrationTest {
 
     @BeforeEach
     void setup() throws Exception {
-        tradeSource = source();
-        tradeSource.setURL(tradeSource.getURL() + ";INIT=SET TIME ZONE 'UTC'");
-        mallSource = source();
-        tradeSchema = tradeSource.getConnection();
-        mallSchema = mallSource.getConnection();
-        ScriptUtils.executeSqlScript(
-                tradeSchema, new ClassPathResource("order-sql/lemnt_order.sql"));
-
-        ScriptUtils.executeSqlScript(mallSchema, new ClassPathResource("order-sql/lemnt_order.sql"));
-
-        var trade = template(tradeSource);
-        var products = template(mallSource);
-        tradeComponents = new TableTestComponents(trade, tradeSource);
+        tradeComponents = new CommerceTestFixture();
+        mallComponents = tradeComponents;
+        events = new CommerceEventPump(tradeComponents);
+        events.install();
+        CommerceTestDefaults.install(
+                tradeComponents,
+                events,
+                () -> 0L,
+                () -> new MemberPointConfigDTO(deliveryPointGift, 1, 0, 2),
+                () -> deliveryAddress);
         tradeComponents.register(LockTemplate.class, memberLocks());
-        tradeComponents.register(TradeConfigGateway.class, BusinessConfigTestSupport.gateway());
+        tradeSource = tradeComponents.source("order");
+        mallSource = tradeComponents.source("promotion");
+        tradeSchema = tradeComponents.schema("order");
+        mallSchema = tradeComponents.schema("promotion");
+        events.before =
+                e -> {
+                    if ("AFTER_SALE_COMPLETED".equals(e.eventType()) && failNextRefundBenefits) {
+                        failNextRefundBenefits = false;
+                        throw new IllegalStateException("模拟权益消费者不可用");
+                    }
+                };
+        events.afterProduct =
+                e -> {
+                    if (loseNextConfirmResponse) {
+                        loseNextConfirmResponse = false;
+                        throw new IllegalStateException("库存消费已提交但确认丢失");
+                    }
+                };
+        tradeComponents.intercept(
+                (type, method, args, call) -> {
+                    var result = call.call();
+                    if (type == ProductCommentClient.class
+                            && (method.getName().equals("saveVerified")
+                                    || method.getName().equals("saveSystem"))
+                            && loseNextCommentResponse) {
+                        loseNextCommentResponse = false;
+                        throw new IllegalStateException("评价已提交但响应丢失");
+                    }
+                    return result;
+                });
         tradeComponents
                 .get(DeliveryExpressGateway.class)
                 .insert(new DeliveryExpress(null, "SF", "顺丰", null, 0, 0));
-        mallComponents = new TableTestComponents(products, mallSource);
-        mallComponents.register(MemberLookupGateway.class, id -> new MemberSnapshot(id, 1));
-        mallComponents.register(
-                MemberTradeGateway.class,
-                new MemberTradeGateway() {
-                    public MemberPointConfig config() {
-                        return new MemberPointConfig(deliveryPointGift, 1, 0, 2);
-                    }
-
-                    public void apply(MemberTradeChange change) {}
-                });
-        var addressGateway = new MemberDeliveryAddressGatewayImpl();
-        ReflectionTestUtils.setField(
-                addressGateway,
-                "client",
-                (MemberAddressClient)
-                        (owner, id) -> {
-                            var address = deliveryAddress;
-                            return address != null
-                                            && address.memberId().equals(owner)
-                                            && address.id().equals(id)
-                                    ? address
-                                    : null;
-                        });
-        mallComponents.register(MemberDeliveryAddressGateway.class, addressGateway);
-        var deliveryGateway = new DeliveryPriceGatewayImpl();
-        ReflectionTestUtils.setField(
-                deliveryGateway,
-                "client",
-                new TradeDeliveryClientImpl(tradeComponents.get(DeliveryPriceService.class)));
-        mallComponents.register(LocalDeliveryPriceService.class, deliveryGateway);
-        mallComponents.register(LockTemplate.class, memberLocks());
         refundClient = Mockito.mock(PaymentRefundClient.class);
         Mockito.when(refundClient.channel()).thenReturn("ALIPAY");
         tradeComponents.register(
                 PaymentRefundChannelGateway.class,
                 new PaymentRefundChannelGatewayImpl(List.of(refundClient)));
-        var commentBridge = new OrderCommentGatewayImpl();
-        tradeComponents.register(OrderCommentGateway.class, commentBridge);
-        var provider =
-                new TradeOrderClientImpl(
-                        tradeComponents.get(OrderSubmissionService.class),
-                        tradeComponents.get(OrderPersistenceService.class),
-                        null,
-                        tradeComponents.get(OrderCommentService.class),
-                        tradeComponents.get(TradeOrderGateway.class),
-                        tradeComponents.get(TradeConfigGateway.class),
-                        tradeComponents.get(PickUpStoreGateway.class));
-        var client =
-                new TradeOrderClient() {
-                    public OrderDTO createPriced(OrderCreateBo value) {
-                        return create(value);
-                    }
-
-                    public OrderDTO create(OrderCreateBo value) {
-                        var actual =
-                                new TradeOrderClientImpl(
-                                        tradeComponents.get(OrderSubmissionService.class),
-                                        orderPersistenceService,
-                                        remotes,
-                                        tradeComponents.get(OrderCommentService.class),
-                                        tradeComponents.get(TradeOrderGateway.class),
-                                        tradeComponents.get(TradeConfigGateway.class),
-                                        tradeComponents.get(PickUpStoreGateway.class));
-                        var saved = actual.create(value);
-                        if (loseNextOrderResponse) {
-                            loseNextOrderResponse = false;
-                            throw new IllegalStateException("交易订单已提交，但 RPC 响应丢失");
-                        }
-                        return saved;
-                    }
-
-                    public Long createComment(OrderCommentCreateBo value) {
-                        return provider.createComment(value);
-                    }
-
-                    public OrderDTO getByOrderNo(String no) {
-                        return provider.getByOrderNo(no);
-                    }
-                };
-        var orderAdapter = new OrderGatewayImpl();
-        ReflectionTestUtils.setField(orderAdapter, "client", client);
-        orderRpc = orderAdapter;
-        mallComponents.register(SettlementOrderService.class, orderRpc);
-        var commentProvider =
-                new ProductCommentClientImpl(mallComponents.get(ProductCommentService.class));
-        ProductCommentClient commentClient =
-                new ProductCommentClient() {
-                    public Long saveSystem(ProductCommentSaveBo value) {
-                        Long id = commentProvider.saveSystem(value);
-                        if (loseNextCommentResponse) {
-                            loseNextCommentResponse = false;
-                            throw new IllegalStateException("系统评价已保存响应丢失");
-                        }
-                        return id;
-                    }
-
-                    public Long saveVerified(ProductCommentSaveBo value) {
-                        Long id = commentProvider.saveVerified(value);
-                        if (loseNextCommentResponse) {
-                            loseNextCommentResponse = false;
-                            throw new IllegalStateException("评价已保存，但RPC响应丢失");
-                        }
-                        return id;
-                    }
-                };
-        ReflectionTestUtils.setField(commentBridge, "client", commentClient);
-
-        productSkuGateway = mallComponents.get(ProductSkuGateway.class);
-        productInventoryService = mallComponents.get(ProductInventoryService.class);
-        checkoutAccountGateway = mallComponents.get(MemberLockGateway.class);
-        cartGateway = mallComponents.get(CartGateway.class);
-        couponTemplateGateway = mallComponents.get(CouponTemplateGateway.class);
-        couponGateway = mallComponents.get(CouponGateway.class);
-        cartService = mallComponents.get(CartService.class);
-        couponIssuanceService = mallComponents.get(CouponIssuanceService.class);
+        productSkuGateway = tradeComponents.get(ProductSkuGateway.class);
+        productInventoryService = tradeComponents.get(ProductInventoryService.class);
+        checkoutAccountGateway = tradeComponents.get(MemberLockGateway.class);
+        cartGateway = tradeComponents.get(CartGateway.class);
+        couponTemplateGateway = tradeComponents.get(CouponTemplateGateway.class);
+        couponGateway = tradeComponents.get(CouponGateway.class);
+        cartService = tradeComponents.get(CartService.class);
+        couponIssuanceService = tradeComponents.get(CouponIssuanceService.class);
         inventoryConfirmationGateway = tradeComponents.get(InventoryConfirmationGateway.class);
         shipmentGateway = tradeComponents.get(ShipmentGateway.class);
         refundRequestGateway = tradeComponents.get(AfterSaleGateway.class);
         tradeOrderGateway = tradeComponents.get(TradeOrderGateway.class);
         orderPersistenceService = tradeComponents.get(OrderPersistenceService.class);
-
         cacheStore = new MemorySettlementGateway(settlementCache);
         settlements = cacheStore;
-        settlementOrderGateway = settlements;
-        settlementAbandonGateway = settlements;
-        mallComponents.register(SettlementGateway.class, settlements);
-        checkoutService = mallComponents.get(SettlementRecordService.class);
-
-        payments =
-                tx(
-                        new TradePaymentGatewayImpl(trade.getMapper(TradePaymentMapper.class)),
-                        tradeSource);
-
+        settlementOrderGateway = cacheStore;
+        settlementAbandonGateway = cacheStore;
+        tradeComponents.register(SettlementGateway.class, cacheStore);
+        checkoutService = tradeComponents.get(SettlementRecordService.class);
         sku =
                 productSkuGateway
                         .save(
@@ -571,16 +406,15 @@ class CheckoutFlowIntegrationTest {
                                         "SKU1", "sku", null, null, new BigDecimal("10.00"), 10))
                         .id();
         productSkuGateway.updateStatus(sku, "ON_SHELF");
+        var catalog = tradeComponents.get(ProductCatalogGatewayImpl.class);
         bridge =
                 new CatalogBridge() {
                     public ProductSnapshot findOnShelf(Long id) {
-                        return mallComponents.get(ProductCatalogGateway.class).findOnShelf(id);
+                        return catalog.findOnShelf(id);
                     }
 
                     public Map<Long, ProductSnapshot> findOnShelfBatch(List<Long> ids) {
-                        return mallComponents
-                                .get(ProductCatalogGateway.class)
-                                .findOnShelfBatch(ids);
+                        return catalog.findOnShelfBatch(ids);
                     }
 
                     public boolean reserveStock(String no, Long id, Integer quantity) {
@@ -588,193 +422,88 @@ class CheckoutFlowIntegrationTest {
                             rejectNextReserve = false;
                             return false;
                         }
-                        boolean result = productInventoryService.reserveStock(no, id, quantity);
+                        boolean result =
+                                tradeComponents.call(
+                                        () ->
+                                                productInventoryService.reserveStock(
+                                                        no, id, quantity));
                         if (loseNextReserveResponse) {
                             loseNextReserveResponse = false;
-                            throw new IllegalStateException(
-                                    "simulated lost reserve response after mall commit");
+                            throw new IllegalStateException("库存已提交但响应丢失");
                         }
                         return result;
                     }
 
-                    public void cancelReservation(String no, Long id, Integer quantity) {
-                        productInventoryService.cancelReservation(no, id, quantity);
-                    }
-
-                    public void releaseStock(String no, Long id) {
-                        productInventoryService.releaseStock(no, id);
-                    }
-
                     public void confirmStock(String no, Long id) {
-                        productInventoryService.confirmStock(no, id);
-                        if (loseNextConfirmResponse) {
-                            loseNextConfirmResponse = false;
-                            throw new IllegalStateException("确认库存已提交但RPC响应丢失");
-                        }
+                        tradeComponents.call(
+                                () -> {
+                                    productInventoryService.confirmStock(no, id);
+                                    return null;
+                                });
                     }
                 };
-        var member = new MemberValidationService(id -> new MemberSnapshot(id, 1));
-        coupons =
-                tx(
-                        new CouponService(
-                                couponIssuanceService,
-                                couponGateway,
-                                couponTemplateGateway,
-                                member),
-                        mallSource);
-        cartAdditions =
-                tx(
-                        new CartSaveCmdExe(
-                                cartGateway,
-                                mallComponents.get(MemberLockGateway.class),
-                                cartService,
-                                member,
-                                bridge),
-                        mallSource);
-        placement =
-                new OrderPlacementService(
-                        tx(
-                                new SettlementPreparationService(
-                                        mallComponents.get(ActivityPricingService.class),
-                                        mallComponents.get(SettlementDeliveryService.class),
-                                        mallComponents.get(CartGateway.class),
-                                        mallComponents.get(MemberLockGateway.class),
-                                        mallComponents.get(SettlementRecordService.class),
-                                        mallComponents.get(CouponGateway.class),
-                                        mallComponents.get(CouponTemplateGateway.class),
-                                        orderRpc,
-                                        settlements,
-                                        bridge,
-                                        member),
-                                mallSource),
-                        orderRpc);
-
-        fulfillmentService =
-                tx(
-                        new OrderFulfillmentService(
-                                tradeComponents.get(InventoryConfirmationGateway.class),
-                                tradeComponents.get(OrderPersistenceService.class),
-                                tradeComponents.get(AfterSaleGateway.class),
-                                tradeComponents.get(ShipmentGateway.class),
-                                tradeComponents.get(TradeOrderGateway.class),
-                                tradeComponents.get(DeliveryExpressGateway.class),
-                                tradeComponents.get(OrderLogService.class)),
-                        tradeSource);
-        lifecycle =
-                tx(
-                        new OrderLifecycleService(
-                                tradeComponents.get(InventoryConfirmationGateway.class),
-                                tradeComponents.get(OrderPersistenceService.class),
-                                tradeComponents.get(TradeOrderGateway.class),
-                                tradeComponents.get(OrderLogService.class)),
-                        tradeSource);
-        var promotionOrders = Mockito.mock(PromotionOrderService.class);
-        mallComponents.register(PromotionOrderService.class, promotionOrders);
-        var handler =
-                tx(
-                        new SettlementLifecycleClientImpl(
-                                mallComponents.get(MemberTradeGateway.class),
-                                checkoutService,
-                                orderRpc,
-                                productInventoryService,
-                                promotionOrders,
-                                new RewardGiftService(couponIssuanceService)),
-                        mallSource);
-        benefits =
-                new OrderBenefitsGateway() {
-                    public void verify(String no) {
-                        handler.verify(no);
-                    }
-
-                    public void reserved(String no) {
-                        handler.reserved(no);
-                    }
-
-                    public void paid(String no) {
-                        handler.paid(no);
-                    }
-
-                    public void closed(String no) {
-                        handler.closed(no);
-                    }
-
-                    public void refunded(OrderRefundBenefits plan) {
-                        if (failNextRefundBenefits) {
-                            failNextRefundBenefits = false;
-                            throw new IllegalStateException("模拟权益下游不可用");
+        tradeComponents.register(ProductCatalogGateway.class, bridge);
+        tradeComponents.register(InventoryGateway.class, bridge);
+        benefits = tradeComponents.get(OrderBenefitsGateway.class);
+        lifecycle = tradeComponents.get(OrderLifecycleService.class);
+        remotes = tradeComponents.get(OrderRemoteService.class);
+        var actual = tradeComponents.get(TradeOrderClientImpl.class);
+        var client =
+                new TradeOrderClient() {
+                    public OrderDTO create(OrderCreateBo input) {
+                        var saved = orderProvider().create(input);
+                        if (loseNextOrderResponse) {
+                            loseNextOrderResponse = false;
+                            throw new IllegalStateException("订单已提交但响应丢失");
                         }
-                        handler.refunded(
-                                new RefundBenefitsBo(
-                                        plan.orderNo(),
-                                        plan.afterSaleNo(),
-                                        plan.orderItemId(),
-                                        plan.skuId(),
-                                        plan.quantity(),
-                                        plan.amount(),
-                                        plan.returnUsePoint(),
-                                        plan.deductGivePoint(),
-                                        plan.ruleVersion()));
+                        return saved;
                     }
 
-                    public void refunded(
-                            String no,
-                            String refundNo,
-                            Map<Long, Integer> quantities,
-                            BigDecimal amount) {
-                        handler.refunded(
-                                no,
-                                refundNo,
-                                quantities.entrySet().stream()
-                                        .map(
-                                                item ->
-                                                        new RefundStockBo(
-                                                                item.getKey(), item.getValue()))
-                                        .toList(),
-                                amount);
+                    public OrderDTO createPriced(OrderCreateBo input) {
+                        var saved = orderProvider().createPriced(input);
+                        if (loseNextOrderResponse) {
+                            loseNextOrderResponse = false;
+                            throw new IllegalStateException("订单已提交但响应丢失");
+                        }
+                        return saved;
+                    }
+
+                    public Long createComment(OrderCommentCreateBo input) {
+                        return actual.createComment(input);
+                    }
+
+                    public OrderDTO getByOrderNo(String no) {
+                        return actual.getByOrderNo(no);
                     }
                 };
-        tradeComponents.register(OrderBenefitsGateway.class, benefits);
-        remotes =
-                new OrderRemoteService(
-                        orderPersistenceService, bridge, benefits, lifecycle, rollbackMessages);
-        tradeComponents.register(OrderRemoteService.class, remotes);
-        closer =
-                new TradeOrderCloseCmdExe(
-                        tx(
-                                new OrderCloseService(
-                                        orderPersistenceService,
-                                        tradeOrderGateway,
-                                        payments,
-                                        p -> false,
-                                        tradeComponents.get(OrderLogService.class)),
-                                tradeSource),
-                        remotes);
-        paymentCreate =
-                tx(
-                        new TradePaymentCreateCmdExe(
-                                tradeComponents.get(OrderPersistenceService.class), payments),
-                        tradeSource);
-        notify =
-                new PaymentNotifyCmdExe(
-                        tx(
-                                new PaymentNotificationService(
-                                        orderPersistenceService,
-                                        tradeOrderGateway,
-                                        payments,
-                                        tradeComponents.get(OrderLogService.class)),
-                                tradeSource),
-                        tradeComponents.get(PayNotifyTaskService.class));
+        tradeComponents.register(TradeOrderClient.class, client);
+        orderRpc = new SettlementOrderService(client);
+        tradeComponents.register(SettlementOrderService.class, orderRpc);
+        coupons = tradeComponents.get(CouponService.class);
+        cartAdditions = tradeComponents.get(CartSaveCmdExe.class);
+        placement = tradeComponents.get(OrderPlacementService.class);
+        fulfillmentService = tradeComponents.get(OrderFulfillmentService.class);
+        closer = tradeComponents.get(TradeOrderCloseCmdExe.class);
+        paymentCreate = tradeComponents.get(TradePaymentCreateCmdExe.class);
+        payments = tradeComponents.get(TradePaymentGateway.class);
+        notify = tradeComponents.get(PaymentNotifyCmdExe.class);
         cartService.saveCart(1L, sku, 2, true);
+    }
+
+    TradeOrderClientImpl orderProvider() {
+        return new TradeOrderClientImpl(
+                tradeComponents.get(OrderSubmissionService.class),
+                orderPersistenceService,
+                remotes,
+                tradeComponents.get(OrderCommentService.class),
+                tradeOrderGateway,
+                tradeComponents.get(TradeConfigGateway.class),
+                tradeComponents.get(PickUpStoreGateway.class));
     }
 
     @AfterEach
     void close() throws Exception {
-        if (tradeSchema != null) {
-            tradeSchema.close();
-        }
-        if (mallSchema != null) {
-            mallSchema.close();
-        }
+        if (tradeComponents != null) tradeComponents.close();
     }
 
     RollbackMessages worker() {
@@ -813,20 +542,23 @@ class CheckoutFlowIntegrationTest {
                 new SettlementOrderSubmitCmd(1L, key, List.of(sku), coupon, token));
     }
 
+    JdbcDataSource sqlSource(String sql, JdbcDataSource fallback) {
+        for (String owner : List.of("product", "promotion", "pay", "order"))
+            if (Pattern.compile("(?<![A-Za-z0-9_])" + owner + "_").matcher(sql).find())
+                return tradeComponents.source(owner);
+        return fallback;
+    }
+
     void sql(JdbcDataSource source, String sql) throws Exception {
-        try (var c = source.getConnection();
-                var s = c.createStatement()) {
-            s.execute(sql);
+        try (var c = sqlSource(sql, source).getConnection();
+                var statement = c.createStatement()) {
+            statement.execute(sql);
         }
     }
 
     long count(String table) throws Exception {
-        try (var c = (table.startsWith("mall_") ? mallSource : tradeSource).getConnection();
-                var s = c.createStatement();
-                var r = s.executeQuery("SELECT COUNT(*) FROM " + table)) {
-            r.next();
-            return r.getLong(1);
-        }
+        return new JdbcTemplate(sqlSource(table, tradeSource))
+                .queryForObject("SELECT COUNT(*) FROM " + table, Long.class);
     }
 
     /** 先调价后创建支付使用新金额；已有预支付单则在持久化前拒绝调价。 */
@@ -879,7 +611,9 @@ class CheckoutFlowIntegrationTest {
         assertEquals(8, productSkuGateway.findById(sku).stock());
         assertEquals("LOCKED", couponGateway.coupon(1L, coupon.id(), false).status());
         assertTrue(cartGateway.cart(1L).isEmpty());
-        assertTrue(rollbackMessages.messages.isEmpty());
+        assertTrue(
+                events.pendingEvents().stream()
+                        .noneMatch(e -> "ORDER_CLOSED".equals(e.eventType())));
         var payment = paymentCreate.execute(order.orderNo(), "ALIPAY");
         var notice =
                 new VerifiedPaymentNotification(
@@ -896,25 +630,33 @@ class CheckoutFlowIntegrationTest {
         assertEquals(8, productSkuGateway.findById(sku).stock());
     }
 
-    /** 库存和券在商城同一事务补偿，核券回滚失败不能先归还库存。 */
+    /** 库存与券分别在所属服务补偿；核券失败保留原消息，重试不会重复归还库存。 */
     @Test
-    void stockAndCouponRollbackCommitTogetherAndMqRetryIsIdempotent() throws Exception {
+    void independentStockAndCouponRollbackRecoversWithIdempotentMqRetry() throws Exception {
         var coupon = couponIssuanceService.issue(1L, campaign(10, BigDecimal.ONE).id());
         var order = place("ROLLBACK-ATOMIC", coupon.id());
         assertTrue(closer.execute(order.orderNo()));
         sql(
                 mallSource,
-                "ALTER TABLE mall_coupon ADD CONSTRAINT block_release CHECK(status<>'AVAILABLE')");
+                "ALTER TABLE promotion_coupon ADD CONSTRAINT block_release CHECK(status<>'AVAILABLE')");
         assertEquals(0, worker().execute(50));
-        assertEquals(8, productSkuGateway.findById(sku).stock());
+        assertEquals(10, productSkuGateway.findById(sku).stock());
         assertEquals("LOCKED", couponGateway.coupon(1L, coupon.id(), false).status());
-        sql(mallSource, "ALTER TABLE mall_coupon DROP CONSTRAINT block_release");
+        sql(mallSource, "ALTER TABLE promotion_coupon DROP CONSTRAINT block_release");
         assertEquals(1, worker().execute(50));
         assertEquals(10, productSkuGateway.findById(sku).stock());
         assertEquals("AVAILABLE", couponGateway.coupon(1L, coupon.id(), false).status());
-        rollbackMessages.publish(order.orderNo());
+        var eventNo =
+                tradeComponents
+                        .jdbc("order")
+                        .queryForObject(
+                                "SELECT event_no FROM order_message_outbox WHERE event_type='ORDER_CLOSED' AND business_key=?",
+                                String.class,
+                                order.orderNo());
+        events.replay(eventNo);
         assertEquals(1, worker().execute(50));
         assertEquals(10, productSkuGateway.findById(sku).stock());
+        assertEquals("AVAILABLE", couponGateway.coupon(1L, coupon.id(), false).status());
     }
 
     /** 同步核券失败不继续扣库存，修复后原请求可以重试。 */
@@ -929,7 +671,16 @@ class CheckoutFlowIntegrationTest {
         tradeComponents.register(OrderBenefitsGateway.class, benefits);
         remotes =
                 new OrderRemoteService(
-                        orderPersistenceService, bridge, rejected, lifecycle, rollbackMessages);
+                        orderPersistenceService,
+                        bridge,
+                        rejected,
+                        lifecycle,
+                        tradeComponents.bean(
+                                "com.lemnt.order.domain.order.gateway.OrderBenefitsProgressGateway"),
+                        tradeComponents.bean(
+                                "com.lemnt.order.domain.order.gateway.PromotionResourceGateway"),
+                        tradeComponents.bean(
+                                "com.lemnt.order.application.order.service.OrderPaidCompletionService"));
         assertThrows(IllegalStateException.class, () -> place("VERIFY-FAIL", null));
         assertEquals(10, productSkuGateway.findById(sku).stock());
         assertEquals(1, cartGateway.cart(1L).size());
@@ -944,7 +695,7 @@ class CheckoutFlowIntegrationTest {
             throws Exception {
         var order = place("REQ1", null);
         worker().execute(50);
-        sql(mallSource, "UPDATE mall_product_sku SET price=99.00 WHERE id=" + sku);
+        sql(mallSource, "UPDATE product_sku SET price=99.00 WHERE id=" + sku);
         assertEquals(order.orderNo(), place("REQ1", null).orderNo());
         assertEquals(
                 new BigDecimal("20.00"), checkoutService.receipt(order.orderNo()).payableAmount());
@@ -1085,7 +836,8 @@ class CheckoutFlowIntegrationTest {
         var payment = paymentCreate.execute(order.orderNo(), "ALIPAY");
         sql(
                 mallSource,
-                "UPDATE mall_coupon SET status='AVAILABLE',order_no=NULL WHERE id=" + coupon.id());
+                "UPDATE promotion_coupon SET status='AVAILABLE',order_no=NULL WHERE id="
+                        + coupon.id());
         var notice =
                 new VerifiedPaymentNotification(
                         payment.paymentNo(),
@@ -1110,27 +862,38 @@ class CheckoutFlowIntegrationTest {
                         + " order_no='"
                         + order.orderNo()
                         + "'");
-        try (var connection = tradeSource.getConnection();
-                var statement = connection.createStatement()) {
-            for (int i = 0; i < 50; i++) {
-                statement.execute(
-                        "INSERT INTO"
-                                + " order_info(order_no,member_id,total_amount,status,create_time)"
-                                + " VALUES('BLOCK"
-                                + i
-                                + "',1,1,'PENDING_PAYMENT',TIMESTAMP '2000-01-01 00:00:00')");
-                statement.execute(
-                        "INSERT INTO trade_payment(payment_no,order_no,channel,amount,status)"
-                                + " VALUES('PAYBLOCK"
-                                + i
-                                + "','BLOCK"
-                                + i
-                                + "','ALIPAY',1,'WAITING')");
-            }
+        for (int i = 0; i < 50; i++) {
+            sql(
+                    tradeSource,
+                    "INSERT INTO"
+                            + " order_info(order_no,member_id,total_amount,status,create_time)"
+                            + " VALUES('BLOCK"
+                            + i
+                            + "',1,1,'PENDING_PAYMENT',TIMESTAMP '2000-01-01 00:00:00')");
+            sql(
+                    tradeSource,
+                    "INSERT INTO pay_payment(payment_no,order_no,channel,amount,status)"
+                            + " VALUES('PAYBLOCK"
+                            + i
+                            + "','BLOCK"
+                            + i
+                            + "','ALIPAY',1,'WAITING')");
         }
+        tradeComponents.register(
+                PaymentChannelCloseGateway.class,
+                payment -> !payment.orderNo().startsWith("BLOCK"));
         new TradeOrderScheduler(closer, tradeOrderGateway).closeExpired();
         assertEquals("CLOSED", orderPersistenceService.findByOrderNo(order.orderNo()).status());
-        assertEquals("PENDING_PAYMENT", orderPersistenceService.findByOrderNo("BLOCK0").status());
+        assertEquals("CLOSED", orderPersistenceService.findByOrderNo("BLOCK0").status());
+        events.drain();
+        assertEquals("WAITING", payments.findByPaymentNo("PAYBLOCK0").status());
+        assertTrue(
+                events.pendingEvents().stream()
+                        .anyMatch(
+                                e ->
+                                        "ORDER_CLOSED".equals(e.eventType())
+                                                && "BLOCK0".equals(e.aggregateNo())));
+        assertEquals(10, productSkuGateway.findById(sku).stock());
     }
 
     @Test
@@ -1138,7 +901,7 @@ class CheckoutFlowIntegrationTest {
         String token =
                 SettlementRules.quoteToken(
                         placement.quote(new SettlementQuoteQry(1L, List.of(sku), null)));
-        sql(mallSource, "UPDATE mall_product_sku SET price=11.00 WHERE id=" + sku);
+        sql(mallSource, "UPDATE product_sku SET price=11.00 WHERE id=" + sku);
         assertThrows(
                 IllegalStateException.class,
                 () ->
@@ -1152,15 +915,7 @@ class CheckoutFlowIntegrationTest {
     @Test
     void unavailableCartItemCanBeDeselectedButNotNewlySelected() {
         productSkuGateway.updateStatus(sku, "OFF_SHELF");
-        var saver =
-                tx(
-                        new CartSaveCmdExe(
-                                mallComponents.get(CartGateway.class),
-                                mallComponents.get(MemberLockGateway.class),
-                                mallComponents.get(CartService.class),
-                                new MemberValidationService(id -> new MemberSnapshot(id, 1)),
-                                bridge),
-                        mallSource);
+        var saver = tradeComponents.get(CartSaveCmdExe.class);
         assertFalse(saver.execute(new CartSaveCmd(1L, sku, 2, false)).selected());
         assertThrows(
                 IllegalArgumentException.class,
@@ -1172,7 +927,7 @@ class CheckoutFlowIntegrationTest {
         var coupon = couponIssuanceService.issue(1L, campaign(10, BigDecimal.ONE).id());
         sql(
                 mallSource,
-                "UPDATE mall_coupon SET valid_from=TIMESTAMP '2000-01-01"
+                "UPDATE promotion_coupon SET valid_from=TIMESTAMP '2000-01-01"
                         + " 00:00:00',valid_until=TIMESTAMP '2001-01-01 00:00:00' WHERE id="
                         + coupon.id());
         assertThrows(ServiceException.class, () -> place("EXPIRED", coupon.id()));
@@ -1212,7 +967,7 @@ class CheckoutFlowIntegrationTest {
         var payment = paymentCreate.execute(order.orderNo(), "ALIPAY");
         sql(
                 tradeSource,
-                "UPDATE trade_payment SET amount=1.00 WHERE payment_no='"
+                "UPDATE pay_payment SET amount=1.00 WHERE payment_no='"
                         + payment.paymentNo()
                         + "'");
         var notice =
@@ -1223,7 +978,8 @@ class CheckoutFlowIntegrationTest {
                         "CH1",
                         BigDecimal.ONE,
                         "N1");
-        assertThrows(IllegalStateException.class, () -> notify.execute(notice));
+        assertThrows(IllegalArgumentException.class, () -> notify.execute(notice));
+        assertEquals("WAITING", payments.findByPaymentNo(payment.paymentNo()).status());
         assertEquals(
                 "PENDING_PAYMENT", orderPersistenceService.findByOrderNo(order.orderNo()).status());
     }
@@ -1246,7 +1002,9 @@ class CheckoutFlowIntegrationTest {
                                                     "A",
                                                     coupon.id()));
                                     return true;
-                                } catch (IllegalArgumentException | ServiceException ex) {
+                                } catch (IllegalArgumentException
+                                        | IllegalStateException
+                                        | ServiceException ex) {
                                     return false;
                                 }
                             },
@@ -1261,7 +1019,9 @@ class CheckoutFlowIntegrationTest {
                                                     "B",
                                                     coupon.id()));
                                     return true;
-                                } catch (IllegalArgumentException | ServiceException ex) {
+                                } catch (IllegalArgumentException
+                                        | IllegalStateException
+                                        | ServiceException ex) {
                                     return false;
                                 }
                             });
@@ -1272,7 +1032,30 @@ class CheckoutFlowIntegrationTest {
                 }
             }
             assertEquals(1, successes);
-            assertEquals(1, count("order_info"));
+            // 失败可能发生在报价前或资源冻结时；后者保留原订单供关单恢复。
+            long orderCount = count("order_info");
+            assertTrue(orderCount >= 1 && orderCount <= 2);
+            assertEquals(
+                    1,
+                    tradeComponents
+                            .jdbc("order")
+                            .queryForObject(
+                                    "SELECT COUNT(*) FROM order_info WHERE status='PENDING_PAYMENT'",
+                                    Long.class));
+            var winner = couponGateway.coupon(1L, coupon.id(), false).orderNo();
+            assertEquals("LOCKED", couponGateway.coupon(1L, coupon.id(), false).status());
+            var losers =
+                    tradeComponents
+                            .jdbc("order")
+                            .queryForList(
+                                    "SELECT order_no FROM order_info WHERE order_no<>?",
+                                    String.class,
+                                    winner);
+            for (var loser : losers) assertTrue(closer.execute(loser));
+            events.drainOrThrow();
+            assertEquals(winner, couponGateway.coupon(1L, coupon.id(), false).orderNo());
+            assertEquals("LOCKED", couponGateway.coupon(1L, coupon.id(), false).status());
+            assertEquals(8, productSkuGateway.findById(sku).stock());
         } finally {
             pool.shutdownNow();
         }
@@ -1570,16 +1353,16 @@ class CheckoutFlowIntegrationTest {
         var order = paidOrder(null);
         sql(
                 tradeSource,
-                "UPDATE trade_payment SET amount=1.00 WHERE order_no='" + order.orderNo() + "'");
+                "UPDATE pay_payment SET amount=1.00 WHERE order_no='" + order.orderNo() + "'");
         assertThrows(
                 IllegalStateException.class,
                 () -> requestAfterSale(new RefundRequestCmd(order.orderNo(), "R1", "原因")));
         sql(
                 tradeSource,
-                "UPDATE trade_payment SET amount=20.00 WHERE order_no='" + order.orderNo() + "'");
+                "UPDATE pay_payment SET amount=20.00 WHERE order_no='" + order.orderNo() + "'");
         sql(
                 tradeSource,
-                "INSERT INTO trade_payment(payment_no,order_no,channel,amount,status)"
+                "INSERT INTO pay_payment(payment_no,order_no,channel,amount,status)"
                         + " VALUES('DUP','"
                         + order.orderNo()
                         + "','WECHAT',20.00,'SUCCESS')");
@@ -1698,7 +1481,9 @@ class CheckoutFlowIntegrationTest {
                                 tradeComponents.get(ShipmentGateway.class),
                                 failure,
                                 tradeComponents.get(DeliveryExpressGateway.class),
-                                tradeComponents.get(OrderLogService.class)),
+                                tradeComponents.get(OrderLogService.class),
+                                tradeComponents.bean(
+                                        "com.lemnt.order.domain.event.gateway.OrderEventGateway")),
                         tradeSource);
         assertThrows(IllegalStateException.class, () -> failing.ship(shipment(order.orderNo())));
         assertNull(shipmentGateway.shipment(order.orderNo()));
@@ -1721,7 +1506,7 @@ class CheckoutFlowIntegrationTest {
     void schemaDoesNotInferStockConfirmationFromPaidStatus() throws Exception {
         var order = paidOrder(null);
         assertTrue(inventoryConfirmationGateway.inventoryConfirmed(order.orderNo()));
-        sql(tradeSource, "DROP TABLE trade_payment_refund");
+        sql(tradeSource, "DROP TABLE pay_payment_refund");
         sql(tradeSource, "DROP TABLE order_after_sale_log");
         sql(tradeSource, "DROP TABLE order_promotion_refund");
         sql(tradeSource, "DROP TABLE order_after_sale");
@@ -1841,7 +1626,7 @@ class CheckoutFlowIntegrationTest {
     @Test
     void settlementRejectsChangedPriceWithoutMutatingSnapshotOrOrder() throws Exception {
         var value = settlement();
-        sql(mallSource, "UPDATE mall_product_sku SET price=99.00 WHERE id=" + sku);
+        sql(mallSource, "UPDATE product_sku SET price=99.00 WHERE id=" + sku);
         assertThrows(
                 ServiceException.class,
                 () -> placement.submitSettlement(1L, value.id(), "S1", settlements));
@@ -1903,19 +1688,18 @@ class CheckoutFlowIntegrationTest {
                 new OrderPlacementService(
                         tx(
                                 new SettlementPreparationService(
-                                        mallComponents.get(ActivityPricingService.class),
+                                        mallComponents.get(PromotionPricingGateway.class),
                                         mallComponents.get(SettlementDeliveryService.class),
-                                        mallComponents.get(CartGateway.class),
-                                        mallComponents.get(MemberLockGateway.class),
+                                        mallComponents.get(CartSnapshotGateway.class),
+                                        mallComponents.bean(
+                                                "com.lemnt.order.domain.member.gateway.MemberLockGateway"),
                                         mallComponents.get(SettlementRecordService.class),
-                                        mallComponents.get(CouponGateway.class),
-                                        mallComponents.get(CouponTemplateGateway.class),
                                         orderRpc,
                                         failing,
                                         bridge,
                                         new MemberValidationService(
                                                 id -> new MemberSnapshot(id, 1))),
-                                mallSource),
+                                tradeSource),
                         orderRpc);
         assertThrows(
                 IllegalStateException.class,
@@ -2120,7 +1904,9 @@ class CheckoutFlowIntegrationTest {
         var order = paidOrder(null);
         var query =
                 new MemberPaymentStatusQueryExe(
-                        tradeComponents.get(OrderPersistenceService.class), payments);
+                        tradeComponents.bean(
+                                "com.lemnt.pay.domain.order.gateway.OrderPaymentGateway"),
+                        payments);
         var key = new MemberPaymentStatusQry(1L, order.orderNo());
         assertEquals("SUCCESS", query.execute(key).localPaymentStatus());
         assertFalse(query.execute(key).channelVerified());
@@ -2139,10 +1925,12 @@ class CheckoutFlowIntegrationTest {
         var stock = productSkuGateway.findById(sku).stock();
         sql(
                 tradeSource,
-                "UPDATE trade_payment SET amount=0.01 WHERE order_no='" + order.orderNo() + "'");
+                "UPDATE pay_payment SET amount=0.01 WHERE order_no='" + order.orderNo() + "'");
         var query =
                 new MemberPaymentStatusQueryExe(
-                        tradeComponents.get(OrderPersistenceService.class), payments);
+                        tradeComponents.bean(
+                                "com.lemnt.pay.domain.order.gateway.OrderPaymentGateway"),
+                        payments);
         assertEquals(
                 "RECONCILE_REQUIRED",
                 query.execute(new MemberPaymentStatusQry(1L, order.orderNo()))
@@ -2212,7 +2000,7 @@ class CheckoutFlowIntegrationTest {
         couponTemplateGateway.enableTemplate(t.id(), true);
         try (var st = mallSchema.createStatement()) {
             st.execute(
-                    "UPDATE mall_coupon_template SET"
+                    "UPDATE promotion_coupon_template SET"
                             + " valid_until=DATEADD('MINUTE',-1,CURRENT_TIMESTAMP) WHERE id="
                             + t.id());
         }
@@ -2264,13 +2052,14 @@ class CheckoutFlowIntegrationTest {
         var t = campaign(3, BigDecimal.ONE);
         coupons.publicClaim(new CouponPublicClaimCmd(t.id(), true));
         try (var st = mallSchema.createStatement()) {
-            st.execute("ALTER TABLE mall_coupon ADD CONSTRAINT reject_claim CHECK(member_id<2)");
+            st.execute(
+                    "ALTER TABLE promotion_coupon ADD CONSTRAINT reject_claim CHECK(member_id<2)");
         }
         var c = new CouponClaimCmd(2L, t.id());
         assertThrows(RuntimeException.class, () -> coupons.claim(c));
         assertEquals(0, couponTemplateGateway.template(t.id()).issuedCount());
         try (var st = mallSchema.createStatement()) {
-            st.execute("ALTER TABLE mall_coupon DROP CONSTRAINT reject_claim");
+            st.execute("ALTER TABLE promotion_coupon DROP CONSTRAINT reject_claim");
         }
         assertEquals(2L, coupons.claim(c).memberId());
         assertEquals(1, couponTemplateGateway.template(t.id()).issuedCount());
@@ -2307,18 +2096,17 @@ class CheckoutFlowIntegrationTest {
         return new OrderPlacementService(
                 tx(
                         new SettlementPreparationService(
-                                mallComponents.get(ActivityPricingService.class),
+                                mallComponents.get(PromotionPricingGateway.class),
                                 mallComponents.get(SettlementDeliveryService.class),
-                                mallComponents.get(CartGateway.class),
-                                mallComponents.get(MemberLockGateway.class),
+                                mallComponents.get(CartSnapshotGateway.class),
+                                mallComponents.bean(
+                                        "com.lemnt.order.domain.member.gateway.MemberLockGateway"),
                                 mallComponents.get(SettlementRecordService.class),
-                                mallComponents.get(CouponGateway.class),
-                                mallComponents.get(CouponTemplateGateway.class),
                                 orderRpc,
                                 (orderGateway != settlements ? orderGateway : abandonGateway),
                                 bridge,
                                 new MemberValidationService(id -> new MemberSnapshot(id, 1))),
-                        mallSource),
+                        tradeSource),
                 orderRpc);
     }
 
@@ -2354,7 +2142,7 @@ class CheckoutFlowIntegrationTest {
         assertEquals("REFUNDED", orderPersistenceService.findByOrderNo(order.orderNo()).status());
         assertEquals("SUCCESS", payments.findByPaymentNo(result.paymentNo()).status());
         assertEquals(result, create.execute(afterSale.refundNo()));
-        assertEquals(1, count("trade_payment_refund"));
+        assertEquals(1, count("pay_payment_refund"));
         Mockito.verify(refundClient, Mockito.times(1))
                 .refund(ArgumentMatchers.any(), ArgumentMatchers.any());
         assertThrows(
@@ -2404,7 +2192,7 @@ class CheckoutFlowIntegrationTest {
         var result = create.execute(afterSale.refundNo());
         assertEquals(original.refundNo(), result.refundNo());
         assertEquals("SUCCESS", result.status());
-        assertEquals(1, count("trade_payment_refund"));
+        assertEquals(1, count("pay_payment_refund"));
         Mockito.verify(refundClient, Mockito.times(1))
                 .refund(ArgumentMatchers.any(), ArgumentMatchers.any());
     }
@@ -2462,7 +2250,7 @@ class CheckoutFlowIntegrationTest {
     }
 
     @Test
-    void refundResultAndAfterSaleAndOrderUpdatesRollbackTogether() throws Exception {
+    void fundsSuccessSurvivesOrderRollbackAndOriginalRefundRepairsOrder() throws Exception {
         var order = paidOrder(null);
         var afterSale = approvedAfterSale(new RefundRequestCmd(order.orderNo(), "REFUND-5", "原因"));
         Mockito.when(refundClient.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
@@ -2473,7 +2261,7 @@ class CheckoutFlowIntegrationTest {
         var create = tradeComponents.get(PaymentRefundCreateCmdExe.class);
         assertThrows(RuntimeException.class, () -> create.execute(afterSale.refundNo()));
         assertEquals(
-                "WAITING",
+                "SUCCESS",
                 tradeComponents
                         .get(PaymentRefundGateway.class)
                         .findByAfterSaleNo(afterSale.refundNo())
@@ -2484,6 +2272,18 @@ class CheckoutFlowIntegrationTest {
         Mockito.when(refundClient.query(ArgumentMatchers.any(), ArgumentMatchers.any()))
                 .thenAnswer(call -> refundSuccess(call.getArgument(0)));
         assertEquals("SUCCESS", create.execute(afterSale.refundNo()).status());
+        events.drainOrThrow();
+        assertEquals("REFUNDED", refundRequestGateway.afterSale(afterSale.refundNo()).status());
+        assertEquals("REFUNDED", orderPersistenceService.findByOrderNo(order.orderNo()).status());
+        assertEquals(
+                2,
+                orderPersistenceService
+                        .findByOrderNo(order.orderNo())
+                        .items()
+                        .get(0)
+                        .refundedQuantity());
+        Mockito.verify(refundClient, Mockito.times(1))
+                .refund(ArgumentMatchers.any(), ArgumentMatchers.any());
     }
 
     @Test
@@ -2494,20 +2294,20 @@ class CheckoutFlowIntegrationTest {
         assertThrows(IllegalArgumentException.class, () -> create.execute("missing"));
         sql(
                 tradeSource,
-                "UPDATE trade_payment SET amount=0.01 WHERE payment_no='"
+                "UPDATE pay_payment SET amount=0.01 WHERE payment_no='"
                         + afterSale.paymentNo()
                         + "'");
         assertThrows(IllegalStateException.class, () -> create.execute(afterSale.refundNo()));
         sql(
                 tradeSource,
-                "UPDATE trade_payment SET amount="
+                "UPDATE pay_payment SET amount="
                         + afterSale.amount()
                         + " WHERE payment_no='"
                         + afterSale.paymentNo()
                         + "'");
         rejectAfterSale(new RefundRejectCmd(afterSale.refundNo(), "拒绝退款"));
         assertThrows(IllegalStateException.class, () -> create.execute(afterSale.refundNo()));
-        assertEquals(0, count("trade_payment_refund"));
+        assertEquals(0, count("pay_payment_refund"));
         Mockito.verifyNoInteractions(refundClient);
     }
 
@@ -2533,7 +2333,7 @@ class CheckoutFlowIntegrationTest {
             pool.shutdownNow();
         }
         assertEquals(1, numbers.size());
-        assertEquals(1, count("trade_payment_refund"));
+        assertEquals(1, count("pay_payment_refund"));
     }
 
     @Test
@@ -2564,7 +2364,15 @@ class CheckoutFlowIntegrationTest {
                         new PaymentRefundPageQry(
                                 afterSale.refundNo(), created.paymentNo(), "SUCCESS", 1, 20));
         assertEquals(1, refundPage.getTotal());
-        assertEquals(created, refundPage.getRecords().get(0));
+        var queriedRefund = refundPage.getRecords().get(0);
+        assertEquals(created.refundNo(), queriedRefund.refundNo());
+        assertEquals(created.afterSaleNo(), queriedRefund.afterSaleNo());
+        assertEquals(created.paymentNo(), queriedRefund.paymentNo());
+        assertEquals(created.orderNo(), queriedRefund.orderNo());
+        assertEquals(created.channel(), queriedRefund.channel());
+        assertEquals(created.amount(), queriedRefund.amount());
+        assertEquals(created.status(), queriedRefund.status());
+        assertEquals(created.channelRefundNo(), queriedRefund.channelRefundNo());
         assertEquals(
                 0,
                 refundQuery
@@ -2676,7 +2484,7 @@ class CheckoutFlowIntegrationTest {
         createRefund.execute(second.refundNo());
         assertEquals("REFUNDED", orderPersistenceService.findByOrderNo(order.orderNo()).status());
         assertEquals(0, service.items(order.orderNo()).get(0).refundableQuantity());
-        assertEquals(2, count("trade_payment_refund"));
+        assertEquals(2, count("pay_payment_refund"));
     }
 
     @Test
@@ -3191,7 +2999,7 @@ class CheckoutFlowIntegrationTest {
         assertEquals("CLOSED", header.status());
     }
 
-    /** 日志写入失败必须与订单、支付状态一并回滚。 */
+    /** 订单日志失败回滚订单本地事务，真实支付与原资金事件保留，重试仅记一次日志。 */
     @Test
     void paymentLogFailureRollsBackStateAndRetryProducesSinglePaymentLog() throws Exception {
         var order = place("LOG-FAILURE", null);
@@ -3210,8 +3018,9 @@ class CheckoutFlowIntegrationTest {
         assertThrows(RuntimeException.class, () -> notify.execute(notification));
         assertEquals(
                 "PENDING_PAYMENT", orderPersistenceService.findByOrderNo(order.orderNo()).status());
-        assertEquals("WAITING", payments.findByPaymentNo(payment.paymentNo()).status());
+        assertEquals("SUCCESS", payments.findByPaymentNo(payment.paymentNo()).status());
         sql(tradeSource, "ALTER TABLE order_log DROP CONSTRAINT reject_payment_log");
+        events.drainOrThrow();
         notify.execute(notification);
         notify.execute(notification);
         var header = orderPersistenceService.findByOrderNo(order.orderNo());
@@ -3303,6 +3112,20 @@ class CheckoutFlowIntegrationTest {
                                     null);
                         });
         var create = tradeComponents.get(PaymentRefundCreateCmdExe.class);
+        sql(
+                tradeSource,
+                "ALTER TABLE order_after_sale_log ADD CONSTRAINT reject_refund_failure_log CHECK(operate_type<>32)");
+        assertThrows(RuntimeException.class, () -> create.execute(sale.refundNo()));
+        assertEquals(
+                "FAILED",
+                tradeComponents
+                        .get(PaymentRefundGateway.class)
+                        .findByAfterSaleNo(sale.refundNo())
+                        .status());
+        assertEquals("REFUNDING", refundRequestGateway.afterSale(sale.refundNo()).status());
+        sql(
+                tradeSource,
+                "ALTER TABLE order_after_sale_log DROP CONSTRAINT reject_refund_failure_log");
         create.execute(sale.refundNo());
         create.execute(sale.refundNo());
         var logs = tradeComponents.get(AfterSaleLogGateway.class).byAfterSaleId(sale.id());
@@ -3319,8 +3142,7 @@ class CheckoutFlowIntegrationTest {
         var spuId = productSkuGateway.catalogSku(sku).spuId();
         sql(
                 mallSource,
-                "UPDATE mall_product_sku SET main_image='https://example.com/old.png' WHERE id="
-                        + sku);
+                "UPDATE product_sku SET main_image='https://example.com/old.png' WHERE id=" + sku);
         var dict = mallComponents.get(ProductSpecService.class);
         var spec = dict.create(new ProductSpecCreateCmd("颜色", null));
         var option = dict.createValue(new ProductSpecValueCreateCmd(spec.id(), "黑色", null));
@@ -3396,11 +3218,10 @@ class CheckoutFlowIntegrationTest {
         assertThrows(
                 IllegalStateException.class,
                 () -> tradeComponents.get(OrderSubmissionService.class).create(changedOrder));
-        sql(mallSource, "UPDATE mall_product_spu SET name='已改商品' WHERE id=" + spuId);
+        sql(mallSource, "UPDATE product_spu SET name='已改商品' WHERE id=" + spuId);
         sql(
                 mallSource,
-                "UPDATE mall_product_sku SET main_image='https://example.com/new.png' WHERE id="
-                        + sku);
+                "UPDATE product_sku SET main_image='https://example.com/new.png' WHERE id=" + sku);
         dict.update(new ProductSpecUpdateCmd(spec.id(), "色彩", null));
         dict.updateValue(new ProductSpecValueUpdateCmd(option.id(), "白色", null));
         assertEquals("白色", catalog.sku(sku).specs().get(0).specValueName());
@@ -3635,7 +3456,7 @@ class CheckoutFlowIntegrationTest {
                 tradeComponents.get(OrderLogGateway.class).byOrderId(order.id()).stream()
                         .filter(log -> log.operateType() == 33)
                         .count());
-        assertEquals(1, count("mall_product_comment"));
+        assertEquals(1, count("product_comment"));
     }
 
     @Test
@@ -3679,7 +3500,7 @@ class CheckoutFlowIntegrationTest {
         var finished = orderRpc.findByOrderNo(order.orderNo());
         assertTrue(finished.commentStatus());
         assertNotNull(finished.finishTime());
-        assertEquals(1, count("mall_product_comment"));
+        assertEquals(1, count("product_comment"));
     }
 
     private SettlementOrder completedReviewOrderWithTwoItems() {
@@ -3767,7 +3588,7 @@ class CheckoutFlowIntegrationTest {
             pool.shutdownNow();
         }
         assertTrue(orderRpc.findByOrderNo(order.orderNo()).commentStatus());
-        assertEquals(2, count("mall_product_comment"));
+        assertEquals(2, count("product_comment"));
         assertEquals(
                 1,
                 tradeComponents.get(OrderLogGateway.class).byOrderId(order.id()).stream()
@@ -3785,9 +3606,7 @@ class CheckoutFlowIntegrationTest {
         var actual = orderRpc.findByOrderNo(order.orderNo());
         var line = actual.items().get(0);
         sql(tradeSource, "UPDATE order_info SET comment_status=NULL WHERE id=" + order.id());
-        sql(
-                tradeSource,
-                "UPDATE order_item SET comment_status=NULL WHERE order_id=" + order.id());
+        sql(tradeSource, "UPDATE order_item SET comment_status=NULL WHERE order_id=" + order.id());
         assertNull(orderRpc.findByOrderNo(order.orderNo()).commentStatus());
         assertNull(orderRpc.findByOrderNo(order.orderNo()).items().get(0).commentStatus());
         var old =
@@ -3909,7 +3728,7 @@ class CheckoutFlowIntegrationTest {
     }
 
     @Test
-    void cashSuccessKeepsFailedBenefitsTaskAndRetryUsesFrozenPlan() throws Exception {
+    void cashSuccessKeepsPendingBenefitsEventAndRetryUsesFrozenPlan() throws Exception {
         var order = paidOrder(null);
         var service = tradeComponents.get(AfterSaleService.class);
         var sale = service.create(itemRefund(order.orderNo(), "FROZEN-RETRY", 1, "REFUND_ONLY"));
@@ -3918,14 +3737,25 @@ class CheckoutFlowIntegrationTest {
         failNextRefundBenefits = true;
         var executor = tradeComponents.get(PaymentRefundCreateCmdExe.class);
         assertEquals("SUCCESS", executor.execute(sale.refundNo()).status());
-        var taskGateway = tradeComponents.get(PayNotifyTaskGateway.class);
-        var task = taskGateway.findByBiz("AFTER_SALE", sale.refundNo());
-        assertEquals("FAILED", task.status());
+        var pending =
+                events.pendingEvents().stream()
+                        .filter(
+                                e ->
+                                        "AFTER_SALE_COMPLETED".equals(e.eventType())
+                                                && sale.refundNo().equals(e.businessKey()))
+                        .findFirst()
+                        .orElseThrow();
+        assertFalse(events.memberRefunded.contains(sale.refundNo()));
         assertEquals("REFUNDED", refundRequestGateway.afterSale(sale.refundNo()).status());
         var frozen = refundRequestGateway.afterSale(sale.refundNo());
         deliveryPointGift = true;
         assertEquals("SUCCESS", executor.execute(sale.refundNo()).status());
-        assertEquals("SUCCESS", taskGateway.find(task.id()).status());
+        assertTrue(
+                events.pendingEvents().stream()
+                        .noneMatch(e -> pending.eventNo().equals(e.eventNo())));
+        assertTrue(events.memberRefunded.contains(sale.refundNo()));
+        events.replay(pending.eventNo());
+        events.drainOrThrow();
         assertEquals(frozen.amount(), refundRequestGateway.afterSale(sale.refundNo()).amount());
         assertEquals(
                 frozen.returnUsePoint(),
@@ -3937,7 +3767,7 @@ class CheckoutFlowIntegrationTest {
                         .items()
                         .get(0)
                         .refundedQuantity());
-        assertEquals(1, count("trade_payment_refund"));
+        assertEquals(1, count("pay_payment_refund"));
         Mockito.verify(refundClient, Mockito.times(1))
                 .refund(ArgumentMatchers.any(), ArgumentMatchers.any());
     }
@@ -3996,7 +3826,7 @@ class CheckoutFlowIntegrationTest {
                     new BigDecimal(amounts[index]),
                     refundRequestGateway.afterSale(sale.refundNo()).amount());
         }
-        assertEquals(3, count("trade_payment_refund"));
+        assertEquals(3, count("pay_payment_refund"));
         assertEquals(
                 new BigDecimal("10.00"),
                 tradeComponents
@@ -4037,13 +3867,13 @@ class CheckoutFlowIntegrationTest {
             assertEquals("SUCCESS", result.status());
             if (index < 2) {
                 assertNull(result.refundNo());
-                assertEquals(0, count("trade_payment_refund"));
+                assertEquals(0, count("pay_payment_refund"));
             }
             assertEquals(
                     index == 2 ? "REFUNDED" : "PAID",
                     orderPersistenceService.findByOrderNo(order.orderNo()).status());
         }
-        assertEquals(1, count("trade_payment_refund"));
+        assertEquals(1, count("pay_payment_refund"));
         Mockito.verify(refundClient, Mockito.times(1))
                 .refund(ArgumentMatchers.any(), ArgumentMatchers.any());
     }
@@ -4102,8 +3932,7 @@ class CheckoutFlowIntegrationTest {
         var item = orderPersistenceService.findByOrderNo(order.orderNo()).items().get(0);
         sql(
                 tradeSource,
-                "UPDATE order_item SET refunded_quantity=NULL WHERE id="
-                        + item.orderItemId());
+                "UPDATE order_item SET refunded_quantity=NULL WHERE id=" + item.orderItemId());
         var quota = service.items(order.orderNo()).get(0);
         assertNull(quota.refundedQuantity());
         assertEquals(0, quota.refundableQuantity());

@@ -29,11 +29,7 @@ public class BrokerageWithdrawGatewayImpl implements BrokerageWithdrawGateway {
 
     @Override
     public BrokerageWithdraw lock(Long id) {
-        return BrokerageConverter.withdraw(
-                mapper.selectOne(
-                        Wrappers.<BrokerageWithdrawDO>lambdaQuery()
-                                .eq(BrokerageWithdrawDO::getId, id)
-                                .last("FOR UPDATE")));
+        return BrokerageConverter.withdraw(mapper.lock(id));
     }
 
     @Override

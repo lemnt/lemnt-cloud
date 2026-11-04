@@ -1,6 +1,6 @@
 # 实现计划与任务草案（已确认，执行中）
 
-未使用模版文件：项目不存在 `templates/task_template.md`。这是设计配套的任务预览；design 未确认，尚未把 task 阶段标记完成，也未开始生成业务代码。
+未使用模版文件：项目不存在 `templates/task_template.md`。设计与逐文件预览已确认，现按tasks.md执行；下方工时为确认前估算，实际进度及验证边界见code-summary.md。
 
 ## 文件范围
 

@@ -2,6 +2,11 @@ package com.lemnt.product.client.dto;
 
 import java.io.Serializable;
 
-/** 未查到返回null；不能把未知预占状态解释为已确认。 */
-public record StockReservationDTO(String reservationNo, Long skuId, int quantity, String status)
-        implements Serializable {}
+/** 原预占来源保持真实；旧契约未提供sourceNo时保留null。 */
+public record StockReservationDTO(
+        String reservationNo, Long skuId, int quantity, String status, String sourceNo)
+        implements Serializable {
+    public StockReservationDTO(String no, Long sku, int quantity, String status) {
+        this(no, sku, quantity, status, null);
+    }
+}

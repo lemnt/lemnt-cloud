@@ -199,6 +199,9 @@ public class AfterSaleService {
                 || ("RETURN_REFUND".equals(cmd.type()) && "PAID".equals(order.status()))) {
             throw new IllegalStateException("仅已支付订单可售后，退货退款须在发货后申请");
         }
+        if (!"COMPLETE".equals(order.pricingSnapshotStatus())) {
+            throw new IllegalStateException("原优惠及积分快照不完整，请先对账后再创建售后");
+        }
         var quota =
                 quotas(order).stream()
                         .filter(value -> cmd.orderItemId().equals(value.orderItemId()))

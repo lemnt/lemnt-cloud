@@ -1,6 +1,8 @@
 package com.lemnt.member.start;
 
+import com.lemnt.common.client.event.CommerceEventEnvelope;
 import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.common.core.utils.JsonUtils;
 import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
 import com.lemnt.common.security.constant.SecurityConstants;
 import com.lemnt.common.security.context.SecurityContextHolder;
@@ -21,7 +23,9 @@ import com.lemnt.member.application.address.service.MemberAddressQueryService;
 import com.lemnt.member.application.address.service.MemberAddressService;
 import com.lemnt.member.application.dubbo.MemberAddressClientImpl;
 import com.lemnt.member.application.dubbo.MemberGrowthClientImpl;
+import com.lemnt.member.application.dubbo.MemberOrderBenefitsClientImpl;
 import com.lemnt.member.application.dubbo.MemberUserClientImpl;
+import com.lemnt.member.application.event.service.OrderBenefitsEventHandler;
 import com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd;
 import com.lemnt.member.application.growth.executor.MemberAssetRecordAllPageQueryExe;
 import com.lemnt.member.application.growth.executor.MemberAssetRecordDetailQueryExe;
@@ -58,10 +62,12 @@ import com.lemnt.member.application.user.qry.MemberPageQry;
 import com.lemnt.member.application.user.qry.TagPageQry;
 import com.lemnt.member.application.user.service.MemberUserRelationQueryService;
 import com.lemnt.member.application.user.service.MemberUserService;
+import com.lemnt.member.client.MemberOrderBenefitsClient;
 import com.lemnt.member.client.MemberUserClient;
 import com.lemnt.member.domain.address.gateway.MemberAddressAreaGateway;
 import com.lemnt.member.domain.address.gateway.MemberAddressGateway;
 import com.lemnt.member.domain.address.model.Address;
+import com.lemnt.member.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.member.domain.growth.gateway.MemberConfigGateway;
 import com.lemnt.member.domain.growth.gateway.MemberExperienceRecordGateway;
 import com.lemnt.member.domain.growth.gateway.MemberLevelGateway;
@@ -74,6 +80,7 @@ import com.lemnt.member.domain.growth.model.AssetRecordPageFilter;
 import com.lemnt.member.domain.growth.model.Config;
 import com.lemnt.member.domain.growth.model.ExperienceRecordMetadata;
 import com.lemnt.member.domain.growth.model.Level;
+import com.lemnt.member.domain.growth.model.OrderBenefitsSnapshot;
 import com.lemnt.member.domain.growth.model.PointRecordMetadata;
 import com.lemnt.member.domain.growth.model.SignConfig;
 import com.lemnt.member.domain.growth.model.SignRecord;
@@ -87,6 +94,8 @@ import com.lemnt.member.domain.user.model.Member;
 import com.lemnt.member.domain.user.model.Tag;
 import com.lemnt.member.infrastructure.address.gateway.MemberAddressGatewayImpl;
 import com.lemnt.member.infrastructure.address.mapper.MemberAddressMapper;
+import com.lemnt.member.infrastructure.event.gateway.MessageInboxGatewayImpl;
+import com.lemnt.member.infrastructure.event.mapper.MessageInboxMapper;
 import com.lemnt.member.infrastructure.growth.gateway.MemberConfigGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberExperienceRecordGatewayImpl;
 import com.lemnt.member.infrastructure.growth.gateway.MemberLevelGatewayImpl;
@@ -109,6 +118,8 @@ import com.lemnt.member.infrastructure.user.mapper.MemberGroupMapper;
 import com.lemnt.member.infrastructure.user.mapper.MemberTagLinkMapper;
 import com.lemnt.member.infrastructure.user.mapper.MemberTagMapper;
 import com.lemnt.member.infrastructure.user.mapper.MemberUserMapper;
+import com.lemnt.order.client.event.AfterSaleCompletedEvent;
+import com.lemnt.order.client.event.OrderPaidEvent;
 import com.lemnt.system.api.RemoteConfigService;
 import com.lemnt.system.api.bo.BusinessConfigSaveBo;
 
@@ -129,6 +140,7 @@ import org.mockito.Mockito;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -140,9 +152,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -227,9 +242,12 @@ class MemberAccountIntegrationTest {
         var bean = new MybatisSqlSessionFactoryBean();
         bean.setDataSource(source);
         bean.setConfiguration(config);
-        bean.setMapperLocations(
-                new PathMatchingResourcePatternResolver()
-                        .getResources("classpath*:mapper/Member*Mapper.xml"));
+        var resources = new ArrayList<Resource>();
+        var resolver = new PathMatchingResourcePatternResolver();
+        resources.addAll(List.of(resolver.getResources("classpath*:mapper/Member*Mapper.xml")));
+        resources.addAll(
+                List.of(resolver.getResources("classpath*:mapper/MessageInboxMapper.xml")));
+        bean.setMapperLocations(resources.toArray(Resource[]::new));
         bean.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
         var factory = bean.getObject();
         config.addMapper(MemberAddressMapper.class);
@@ -2822,5 +2840,146 @@ class MemberAccountIntegrationTest {
         growthService.tradeAsset(refund);
         growthService.tradeAsset(refund);
         assertEquals(95L, memberUserGateway.findById(id).points());
+    }
+
+    private MessageInboxGateway eventInbox() {
+        return tx(new MessageInboxGatewayImpl(template.getMapper(MessageInboxMapper.class)));
+    }
+
+    private OrderBenefitsEventHandler eventHandler() {
+        return tx(
+                new OrderBenefitsEventHandler(
+                        eventInbox(),
+                        growthService,
+                        no ->
+                                new OrderBenefitsSnapshot(
+                                        no, id, 5L, 3L, new BigDecimal("10.00"), "PAID")));
+    }
+
+    private MemberOrderBenefitsClient eventProbe() {
+        return tx(new MemberOrderBenefitsClientImpl(eventInbox()));
+    }
+
+    private CommerceEventEnvelope memberEvent(String type, String key, Object value) {
+        return new CommerceEventEnvelope(
+                "E" + UUID.randomUUID(),
+                type,
+                1,
+                key,
+                "EVENT_ORDER",
+                Instant.now(),
+                null,
+                JsonUtils.toJsonStr(value));
+    }
+
+    private CommerceEventEnvelope paidEvent() {
+        return memberEvent(
+                "ORDER_PAID",
+                "EVENT_ORDER",
+                new OrderPaidEvent(
+                        "EVENT_ORDER", id, new BigDecimal("10.00"), 5, 3, Map.of(), List.of()));
+    }
+
+    @Test
+    void paidEventAndFrozenAfterSaleCommitReceiptsWithOriginalLedgers() {
+        growthService.adjustAsset(id, "POINT", 100, "EVENT_SEED", "初始化");
+        growthService.tradeAsset(
+                new MemberTradeAssetCmd(id, "CREATE", "EVENT_ORDER", null, 5, 3, 1000, 0, false));
+        var handler = eventHandler();
+        var paid = paidEvent();
+        handler.paid(paid);
+        handler.paid(paid);
+        assertEquals(98L, memberUserGateway.findById(id).points());
+        assertEquals(1000L, memberUserGateway.findById(id).experience());
+        var af =
+                memberEvent(
+                        "AFTER_SALE_COMPLETED",
+                        "AF1",
+                        new AfterSaleCompletedEvent(
+                                "EVENT_ORDER",
+                                "AF1",
+                                id,
+                                11L,
+                                2L,
+                                1,
+                                new BigDecimal("3.33"),
+                                1,
+                                1,
+                                1,
+                                false));
+        handler.refunded(af);
+        handler.refunded(af);
+        assertEquals(98L, memberUserGateway.findById(id).points());
+        assertEquals(667L, memberUserGateway.findById(id).experience());
+        var probe = eventProbe();
+        assertTrue(probe.paidApplied("EVENT_ORDER"));
+        assertTrue(probe.refundApplied("AF1"));
+    }
+
+    @Test
+    void earlierAfterSaleEventHasNoReceiptAndRetriesAfterPaid() {
+        growthService.adjustAsset(id, "POINT", 100, "EVENT_EARLY", "初始化");
+        growthService.tradeAsset(
+                new MemberTradeAssetCmd(id, "CREATE", "EVENT_ORDER", null, 5, 3, 1000, 0, false));
+        var handler = eventHandler();
+        var af =
+                memberEvent(
+                        "AFTER_SALE_COMPLETED",
+                        "AF1",
+                        new AfterSaleCompletedEvent(
+                                "EVENT_ORDER",
+                                "AF1",
+                                id,
+                                11L,
+                                2L,
+                                1,
+                                new BigDecimal("3.33"),
+                                1,
+                                1,
+                                1,
+                                false));
+        assertThrows(IllegalStateException.class, () -> handler.refunded(af));
+        var probe = eventProbe();
+        assertFalse(probe.refundApplied("AF1"));
+        handler.paid(paidEvent());
+        handler.refunded(af);
+        assertTrue(probe.refundApplied("AF1"));
+    }
+
+    @Test
+    void insufficientFrozenPointReclaimRollsBackInboxAndAllAssetEffects() {
+        growthService.adjustAsset(id, "POINT", 10, "EVENT_FAIL", "初始化");
+        growthService.tradeAsset(
+                new MemberTradeAssetCmd(id, "CREATE", "EVENT_ORDER", null, 5, 3, 1000, 0, false));
+        var handler = eventHandler();
+        handler.paid(paidEvent());
+        growthService.adjustAsset(id, "POINT", -8, "EVENT_SPEND", "使用积分");
+        var af =
+                memberEvent(
+                        "AFTER_SALE_COMPLETED",
+                        "AF1",
+                        new AfterSaleCompletedEvent(
+                                "EVENT_ORDER",
+                                "AF1",
+                                id,
+                                11L,
+                                2L,
+                                1,
+                                new BigDecimal("3.33"),
+                                1,
+                                2,
+                                1,
+                                false));
+        assertThrows(ServiceException.class, () -> handler.refunded(af));
+        assertEquals(0L, memberUserGateway.findById(id).points());
+        assertEquals(1000L, memberUserGateway.findById(id).experience());
+        var probe = eventProbe();
+        assertFalse(probe.refundApplied("AF1"));
+        growthService.adjustAsset(id, "POINT", 2, "EVENT_REPAIR", "补足积分");
+        handler.refunded(af);
+        handler.refunded(af);
+        assertEquals(1L, memberUserGateway.findById(id).points());
+        assertEquals(667L, memberUserGateway.findById(id).experience());
+        assertTrue(probe.refundApplied("AF1"));
     }
 }

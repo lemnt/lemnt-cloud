@@ -24,13 +24,15 @@ class SettlementControllerMappingTest {
         var scanner = new ClassPathScanningCandidateComponentProvider(false);
         scanner.addIncludeFilter(new AnnotationTypeFilter(RestController.class));
         var controllers = new ArrayList<Object>();
-        for (var definition : scanner.findCandidateComponents("com.lemnt.order.adapter")) {
-            var type = Class.forName(definition.getBeanClassName());
-            var constructor = type.getConstructors()[0];
-            var dependencies =
-                    Arrays.stream(constructor.getParameterTypes()).map(t -> mock(t)).toArray();
-            controllers.add(constructor.newInstance(dependencies));
-        }
+        for (var owner : Arrays.asList("order", "product", "promotion"))
+            for (var definition :
+                    scanner.findCandidateComponents("com.lemnt." + owner + ".adapter")) {
+                var type = Class.forName(definition.getBeanClassName());
+                var constructor = type.getConstructors()[0];
+                var dependencies =
+                        Arrays.stream(constructor.getParameterTypes()).map(t -> mock(t)).toArray();
+                controllers.add(constructor.newInstance(dependencies));
+            }
         var mvc = MockMvcBuilders.standaloneSetup(controllers.toArray()).build();
         var mappings =
                 mvc.getDispatcherServlet()
@@ -45,6 +47,7 @@ class SettlementControllerMappingTest {
                                     permission == null ? "" : String.join(",", permission.value());
                             for (var method : mapping.getMethodsCondition().getMethods()) {
                                 for (var path : mapping.getPatternValues()) {
+                                    if (!path.startsWith("/mall/")) continue;
                                     actual.add(method.name() + " " + path + " " + permissions);
                                 }
                             }

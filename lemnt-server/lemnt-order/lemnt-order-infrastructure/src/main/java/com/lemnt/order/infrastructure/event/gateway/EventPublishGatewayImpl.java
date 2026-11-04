@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EventPublishGatewayImpl implements EventPublishGateway {
     private final ObjectProvider<RocketMQTemplate> templates;
+
     @Override
     public void publish(OutboxMessage message) {
         var template = templates.getIfAvailable();

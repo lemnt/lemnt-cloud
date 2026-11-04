@@ -2,6 +2,7 @@ package com.lemnt.order.start;
 
 import com.lemnt.order.application.event.service.OutboxRelayService;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -9,9 +10,13 @@ import lombok.RequiredArgsConstructor;
 
 /** 恢复本库事务消息；仅在该服务作为唯一业务写入方启用后运行。 */
 @Component
+@ConditionalOnProperty(name = "commerce.outbox.enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class OutboxRelayScheduler {
     private final OutboxRelayService relay;
+
     @Scheduled(fixedDelayString = "${commerce.outbox.interval-ms:5000}")
-    public void execute() { relay.relay(); }
+    public void execute() {
+        relay.relay();
+    }
 }

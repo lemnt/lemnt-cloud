@@ -2195,3 +2195,28 @@
 | P5 | `lemnt-server/lemnt-trade/lemnt-trade-start/pom.xml` | 删除 | ★☆☆ | P5-03 | 5 | 所有替代文件与回归通过后清理旧模块构建/SQL入口 |
 | P5 | `lemnt-server/lemnt-trade/pom.xml` | 删除 | ★☆☆ | P5-03 | 5 | 所有替代文件与回归通过后清理旧模块构建/SQL入口 |
 | P5 | `lemnt-server/lemnt-trade/sql/lemnt_trade.sql` | 删除 | ★☆☆ | P5-03 | 5 | 所有替代文件与回归通过后清理旧模块构建/SQL入口 |
+
+
+## P4本批实际变更
+
+精确新增、修改及移位文件与校验和见`evidence/p4-order-core-tests.json`的`changes`数组。包含订单退款协调、订单支付准备、订单/商品/会员事件处理、权益进度端口、佣金钱包审核恢复、只读内部快照及相应测试。券计价测试和支付状态测试分别移至promotion、pay，运费转换测试移至order应用层；原场景保留。该核心阶段当时的旧order-start组合夹具未通过编译，不计入该阶段证据；P4-07最新验证见下文。未删除旧mall/trade模块或改动system SQL。
+
+## P4-07 实际完成记录
+
+- `lemnt-order-start/src/test/.../checkout/CheckoutFlowIntegrationTest.java`：106项场景按真实四库及事件协议适配，保留并发、丢回执、故障恢复、冻结金额与最后尾差检查。
+- `lemnt-order-start/src/test/.../product/PromotionOrderPersistenceTest.java`及`CatalogPersistenceTest.java`：9项活动订单场景使用真实订单、活动冻结、支付和售后组件。
+- `lemnt-order-start/src/test/.../support/CommerceTestFixture.java`、`CommerceEventPump.java`、`CommerceTestDefaults.java`、`MemberLockTestSupport.java`：真实库/事务/Provider装配及可控RPC、Broker和外部边界。
+- `lemnt-order-start`其余原测试、路由契约、`MemorySettlementGateway`及POM：依照新归属修正测试引用；跨上下文实现依赖仅为test scope。
+- `PaySuccessEventHandler`、`AfterSaleRefundCoordinator`、`AfterSaleLogService`、`PaymentRefundCreateCmdExe`：修复支付日志类型、保留失败退款审计及其查询重试幂等。
+- 更新订单README、支付/售后日志事务文档和工作项台账。精确源码路径、校验和及各模块报告见`evidence/p4-order-combination-tests.json`；五服务完整构建716项均通过，真实环境及P5不在此证据内。
+
+## P5-00 实际完成记录
+
+构建入口、四份Nacos服务模板与共享MQ模板、五个启动配置、15个事件消费者和3个Relay切流条件、配置装配回归及切流说明已完成，详见`evidence/p5-build-config-tests.json`的`changes`精确路径及校验和。新模板只含环境占位符；不发布运行环境。实际Client调用方扫描没有旧包或旧实现依赖，因此保留已在P1～P4切换的正确代码。默认Reactor59项validate和五服务721项完整构建/测试通过；旧目录保留至P5-04，网关端点切换仍归P5-01。
+
+## P5-01 实际完成记录
+
+- 修改ServiceRouteConfiguration及原ServiceRouteConfigurationTest，保留其他服务规则，使用真实Spring Bean与框架谓词覆盖313个端点和隐式HEAD/OPTIONS、CORS、未知方法/路径及默认改写过滤器隔离。
+- 新增docs/config/commerce-gateway-routes.yaml唯一标准源并通过gateway POM原样打包；旧mall/trade粗路由示例改作停用记录。
+- 冻结evidence/gateway-endpoint-contract.json，并新增order-start CommerceEndpointContractTest核对四个真实Controller归属与原权限；业务测试依赖不进入网关。
+- 更新README、切流文档及台账；精确文件/校验和、766项构建回归与JAR检查见evidence/p5-gateway-route-tests.json。源配置未发布，旧模块保留，P5-02及后续未执行。

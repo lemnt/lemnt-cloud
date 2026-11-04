@@ -1,0 +1,740 @@
+# 网关内置路由的唯一源，Maven原样打包，由ServiceRouteConfiguration读取。
+# 不要再将同一清单重复合入Nacos routes；发布网关前移除旧mall/trade粗路由及重复定义。
+# 保留其他auth/member/system/open动态路由、鉴权/CORS/Sentinel配置。
+# 313个显式业务端点按方法/服务分组；HEAD沿用GET，OPTIONS保留原服务探测，预检仍由CorsWebFilter处理。
+# /mall、/trade不StripPrefix，不改写查询参数或请求体。本文件没有自动发布。
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: commerce-order-delete
+              uri: lb://lemnt-order
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: DELETE
+                - name: Path
+                  args:
+                    _genkey_0: /trade/admin/delivery/expresses/{id}
+                    _genkey_1: /trade/admin/delivery/pick-up-stores/{id}
+                    _genkey_2: /trade/admin/delivery/templates/{id}
+            - id: commerce-order-get
+              uri: lb://lemnt-order
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: GET
+                    _genkey_1: HEAD
+                - name: Path
+                  args:
+                    _genkey_0: /mall/app/checkout/requests/{requestNo}
+                    _genkey_1: /mall/app/orders/{orderNo}
+                    _genkey_2: /trade/admin/after-sales
+                    _genkey_3: /trade/admin/after-sales/{no}
+                    _genkey_4: /trade/admin/after-sales/{no}/logs
+                    _genkey_5: /trade/admin/after-sales/{no}/promotions
+                    _genkey_6: /trade/admin/brokerage/records
+                    _genkey_7: /trade/admin/brokerage/users
+                    _genkey_8: /trade/admin/brokerage/withdraws
+                    _genkey_9: /trade/admin/config
+                    _genkey_10: /trade/admin/delivery/expresses
+                    _genkey_11: /trade/admin/delivery/expresses/simple
+                    _genkey_12: /trade/admin/delivery/expresses/{id}
+                    _genkey_13: /trade/admin/delivery/pick-up-stores
+                    _genkey_14: /trade/admin/delivery/pick-up-stores/{id}
+                    _genkey_15: /trade/admin/delivery/templates
+                    _genkey_16: /trade/admin/delivery/templates/simple
+                    _genkey_17: /trade/admin/delivery/templates/{id}
+                    _genkey_18: /trade/admin/orders
+                    _genkey_19: /trade/admin/orders/pick-up/{code}
+                    _genkey_20: /trade/admin/orders/summary
+                    _genkey_21: /trade/admin/orders/{orderNo}
+                    _genkey_22: /trade/admin/orders/{orderNo}/after-sale-items
+                    _genkey_23: /trade/admin/orders/{orderNo}/logs
+                    _genkey_24: /trade/admin/orders/{orderNo}/promotions
+                    _genkey_25: /trade/admin/orders/{orderNo}/remark
+                    _genkey_26: /trade/admin/shipments
+                    _genkey_27: /trade/admin/shipments/{orderNo}
+                    _genkey_28: /trade/admin/shipments/{orderNo}/tracks
+                    _genkey_29: /trade/app/after-sales
+                    _genkey_30: /trade/app/after-sales/{no}
+                    _genkey_31: /trade/app/after-sales/{no}/promotions
+                    _genkey_32: /trade/app/brokerage/records
+                    _genkey_33: /trade/app/brokerage/user
+                    _genkey_34: /trade/app/brokerage/withdraws
+                    _genkey_35: /trade/app/delivery/expresses
+                    _genkey_36: /trade/app/delivery/pick-up-stores
+                    _genkey_37: /trade/app/orders
+                    _genkey_38: /trade/app/orders/status-counts
+                    _genkey_39: /trade/app/orders/{orderNo}
+                    _genkey_40: /trade/app/orders/{orderNo}/after-sale-items
+                    _genkey_41: /trade/app/orders/{orderNo}/promotions
+                    _genkey_42: /trade/app/orders/{orderNo}/tracks
+            - id: commerce-order-options
+              uri: lb://lemnt-order
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: OPTIONS
+                - name: Path
+                  args:
+                    _genkey_0: /mall/app/bargain/orders
+                    _genkey_1: /mall/app/checkout
+                    _genkey_2: /mall/app/checkout/abandon
+                    _genkey_3: /mall/app/checkout/quote
+                    _genkey_4: /mall/app/checkout/requests/{requestNo}
+                    _genkey_5: /mall/app/combination/orders
+                    _genkey_6: /mall/app/orders/{orderNo}
+                    _genkey_7: /mall/app/point-mall/orders
+                    _genkey_8: /mall/app/point-mall/orders/batch
+                    _genkey_9: /mall/app/seckill/orders
+                    _genkey_10: /trade/admin/after-sales
+                    _genkey_11: /trade/admin/after-sales/{no}
+                    _genkey_12: /trade/admin/after-sales/{no}/agree
+                    _genkey_13: /trade/admin/after-sales/{no}/logs
+                    _genkey_14: /trade/admin/after-sales/{no}/promotions
+                    _genkey_15: /trade/admin/after-sales/{no}/receive
+                    _genkey_16: /trade/admin/after-sales/{no}/refund
+                    _genkey_17: /trade/admin/after-sales/{no}/refuse
+                    _genkey_18: /trade/admin/after-sales/{no}/reject
+                    _genkey_19: /trade/admin/after-sales/{no}/return
+                    _genkey_20: /trade/admin/brokerage/records
+                    _genkey_21: /trade/admin/brokerage/unfreeze
+                    _genkey_22: /trade/admin/brokerage/users
+                    _genkey_23: /trade/admin/brokerage/users/{id}/bind
+                    _genkey_24: /trade/admin/brokerage/users/{id}/enabled
+                    _genkey_25: /trade/admin/brokerage/withdraws
+                    _genkey_26: /trade/admin/brokerage/withdraws/{id}/audit
+                    _genkey_27: /trade/admin/config
+                    _genkey_28: /trade/admin/delivery/expresses
+                    _genkey_29: /trade/admin/delivery/expresses/simple
+                    _genkey_30: /trade/admin/delivery/expresses/{id}
+                    _genkey_31: /trade/admin/delivery/pick-up-stores
+                    _genkey_32: /trade/admin/delivery/pick-up-stores/{id}
+                    _genkey_33: /trade/admin/delivery/pick-up-stores/{id}/verify-users
+                    _genkey_34: /trade/admin/delivery/templates
+                    _genkey_35: /trade/admin/delivery/templates/simple
+                    _genkey_36: /trade/admin/delivery/templates/{id}
+                    _genkey_37: /trade/admin/orders
+                    _genkey_38: /trade/admin/orders/pick-up
+                    _genkey_39: /trade/admin/orders/pick-up/{code}
+                    _genkey_40: /trade/admin/orders/pick-up/{code}/verify
+                    _genkey_41: /trade/admin/orders/summary
+                    _genkey_42: /trade/admin/orders/{orderNo}
+                    _genkey_43: /trade/admin/orders/{orderNo}/address
+                    _genkey_44: /trade/admin/orders/{orderNo}/after-sale-items
+                    _genkey_45: /trade/admin/orders/{orderNo}/after-sales
+                    _genkey_46: /trade/admin/orders/{orderNo}/logs
+                    _genkey_47: /trade/admin/orders/{orderNo}/price-adjustment
+                    _genkey_48: /trade/admin/orders/{orderNo}/promotions
+                    _genkey_49: /trade/admin/orders/{orderNo}/remark
+                    _genkey_50: /trade/admin/orders/{orderNo}/shipment
+                    _genkey_51: /trade/admin/shipments
+                    _genkey_52: /trade/admin/shipments/{orderNo}
+                    _genkey_53: /trade/admin/shipments/{orderNo}/tracks
+                    _genkey_54: /trade/app/after-sales
+                    _genkey_55: /trade/app/after-sales/{no}
+                    _genkey_56: /trade/app/after-sales/{no}/cancel
+                    _genkey_57: /trade/app/after-sales/{no}/promotions
+                    _genkey_58: /trade/app/after-sales/{no}/return
+                    _genkey_59: /trade/app/brokerage/bind
+                    _genkey_60: /trade/app/brokerage/records
+                    _genkey_61: /trade/app/brokerage/user
+                    _genkey_62: /trade/app/brokerage/withdraws
+                    _genkey_63: /trade/app/delivery/expresses
+                    _genkey_64: /trade/app/delivery/pick-up-stores
+                    _genkey_65: /trade/app/orders
+                    _genkey_66: /trade/app/orders/status-counts
+                    _genkey_67: /trade/app/orders/{orderNo}
+                    _genkey_68: /trade/app/orders/{orderNo}/after-sale-items
+                    _genkey_69: /trade/app/orders/{orderNo}/after-sales
+                    _genkey_70: /trade/app/orders/{orderNo}/cancel
+                    _genkey_71: /trade/app/orders/{orderNo}/promotions
+                    _genkey_72: /trade/app/orders/{orderNo}/receive
+                    _genkey_73: /trade/app/orders/{orderNo}/tracks
+            - id: commerce-order-post
+              uri: lb://lemnt-order
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: POST
+                - name: Path
+                  args:
+                    _genkey_0: /mall/app/bargain/orders
+                    _genkey_1: /mall/app/checkout
+                    _genkey_2: /mall/app/checkout/abandon
+                    _genkey_3: /mall/app/checkout/quote
+                    _genkey_4: /mall/app/combination/orders
+                    _genkey_5: /mall/app/point-mall/orders
+                    _genkey_6: /mall/app/point-mall/orders/batch
+                    _genkey_7: /mall/app/seckill/orders
+                    _genkey_8: /trade/admin/after-sales/{no}/agree
+                    _genkey_9: /trade/admin/after-sales/{no}/receive
+                    _genkey_10: /trade/admin/after-sales/{no}/refund
+                    _genkey_11: /trade/admin/after-sales/{no}/refuse
+                    _genkey_12: /trade/admin/after-sales/{no}/reject
+                    _genkey_13: /trade/admin/after-sales/{no}/return
+                    _genkey_14: /trade/admin/brokerage/unfreeze
+                    _genkey_15: /trade/admin/brokerage/withdraws/{id}/audit
+                    _genkey_16: /trade/admin/delivery/expresses
+                    _genkey_17: /trade/admin/delivery/pick-up-stores
+                    _genkey_18: /trade/admin/delivery/templates
+                    _genkey_19: /trade/admin/orders/pick-up
+                    _genkey_20: /trade/admin/orders/pick-up/{code}/verify
+                    _genkey_21: /trade/admin/orders/{orderNo}/after-sales
+                    _genkey_22: /trade/admin/orders/{orderNo}/price-adjustment
+                    _genkey_23: /trade/admin/orders/{orderNo}/shipment
+                    _genkey_24: /trade/app/after-sales/{no}/cancel
+                    _genkey_25: /trade/app/after-sales/{no}/return
+                    _genkey_26: /trade/app/brokerage/bind
+                    _genkey_27: /trade/app/brokerage/withdraws
+                    _genkey_28: /trade/app/orders/{orderNo}/after-sales
+                    _genkey_29: /trade/app/orders/{orderNo}/cancel
+                    _genkey_30: /trade/app/orders/{orderNo}/receive
+            - id: commerce-order-put
+              uri: lb://lemnt-order
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: PUT
+                - name: Path
+                  args:
+                    _genkey_0: /trade/admin/brokerage/users/{id}/bind
+                    _genkey_1: /trade/admin/brokerage/users/{id}/enabled
+                    _genkey_2: /trade/admin/config
+                    _genkey_3: /trade/admin/delivery/expresses/{id}
+                    _genkey_4: /trade/admin/delivery/pick-up-stores/{id}
+                    _genkey_5: /trade/admin/delivery/pick-up-stores/{id}/verify-users
+                    _genkey_6: /trade/admin/delivery/templates/{id}
+                    _genkey_7: /trade/admin/orders/{orderNo}/address
+                    _genkey_8: /trade/admin/orders/{orderNo}/remark
+            - id: commerce-pay-delete
+              uri: lb://lemnt-pay
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: DELETE
+                - name: Path
+                  args:
+                    _genkey_0: /trade/admin/pay-apps/{id}
+                    _genkey_1: /trade/admin/pay-channels/{id}
+                    _genkey_2: /trade/admin/recharge-packages/{id}
+            - id: commerce-pay-get
+              uri: lb://lemnt-pay
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: GET
+                    _genkey_1: HEAD
+                - name: Path
+                  args:
+                    _genkey_0: /trade/admin/pay-apps
+                    _genkey_1: /trade/admin/pay-apps/{id}
+                    _genkey_2: /trade/admin/pay-channels
+                    _genkey_3: /trade/admin/pay-channels/by-app/{appId}
+                    _genkey_4: /trade/admin/pay-channels/{id}
+                    _genkey_5: /trade/admin/pay-notify-tasks
+                    _genkey_6: /trade/admin/pay-notify-tasks/{id}
+                    _genkey_7: /trade/admin/payment-channels
+                    _genkey_8: /trade/admin/payment-refunds
+                    _genkey_9: /trade/admin/payment-refunds/{no}
+                    _genkey_10: /trade/admin/payments
+                    _genkey_11: /trade/admin/payments/{no}
+                    _genkey_12: /trade/admin/recharge-packages
+                    _genkey_13: /trade/admin/recharge-packages/{id}
+                    _genkey_14: /trade/admin/wallet-recharges
+                    _genkey_15: /trade/admin/wallet-recharges/{rechargeNo}
+                    _genkey_16: /trade/admin/wallet-transfers
+                    _genkey_17: /trade/admin/wallet-transfers/{transferNo}
+                    _genkey_18: /trade/admin/wallets
+                    _genkey_19: /trade/admin/wallets/{memberId}
+                    _genkey_20: /trade/admin/wallets/{memberId}/transactions
+                    _genkey_21: /trade/app/orders/{orderNo}/payment
+                    _genkey_22: /trade/app/payment-channels
+                    _genkey_23: /trade/app/recharge-packages
+                    _genkey_24: /trade/app/wallet
+                    _genkey_25: /trade/app/wallet/recharges
+                    _genkey_26: /trade/app/wallet/transactions
+                    _genkey_27: /trade/app/wallet/transfers
+            - id: commerce-pay-options
+              uri: lb://lemnt-pay
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: OPTIONS
+                - name: Path
+                  args:
+                    _genkey_0: /trade/admin/pay-apps
+                    _genkey_1: /trade/admin/pay-apps/{id}
+                    _genkey_2: /trade/admin/pay-apps/{id}/status
+                    _genkey_3: /trade/admin/pay-channels
+                    _genkey_4: /trade/admin/pay-channels/by-app/{appId}
+                    _genkey_5: /trade/admin/pay-channels/{id}
+                    _genkey_6: /trade/admin/pay-notify-tasks
+                    _genkey_7: /trade/admin/pay-notify-tasks/{id}
+                    _genkey_8: /trade/admin/pay-notify-tasks/{id}/retry
+                    _genkey_9: /trade/admin/payment-channels
+                    _genkey_10: /trade/admin/payment-refunds
+                    _genkey_11: /trade/admin/payment-refunds/{no}
+                    _genkey_12: /trade/admin/payments
+                    _genkey_13: /trade/admin/payments/{no}
+                    _genkey_14: /trade/admin/recharge-packages
+                    _genkey_15: /trade/admin/recharge-packages/{id}
+                    _genkey_16: /trade/admin/wallet-recharges
+                    _genkey_17: /trade/admin/wallet-recharges/{rechargeNo}
+                    _genkey_18: /trade/admin/wallet-recharges/{rechargeNo}/confirm
+                    _genkey_19: /trade/admin/wallet-recharges/{rechargeNo}/refund
+                    _genkey_20: /trade/admin/wallet-transfers
+                    _genkey_21: /trade/admin/wallet-transfers/{transferNo}
+                    _genkey_22: /trade/admin/wallets
+                    _genkey_23: /trade/admin/wallets/{memberId}
+                    _genkey_24: /trade/admin/wallets/{memberId}/adjust
+                    _genkey_25: /trade/admin/wallets/{memberId}/transactions
+                    _genkey_26: /trade/app/orders/{orderNo}/payment
+                    _genkey_27: /trade/app/payment-channels
+                    _genkey_28: /trade/app/payments/{paymentNo}/sandbox-pay
+                    _genkey_29: /trade/app/recharge-packages
+                    _genkey_30: /trade/app/wallet
+                    _genkey_31: /trade/app/wallet/recharges
+                    _genkey_32: /trade/app/wallet/transactions
+                    _genkey_33: /trade/app/wallet/transfers
+                    _genkey_34: /trade/payment/notify/{appKey}/{channel}
+            - id: commerce-pay-post
+              uri: lb://lemnt-pay
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: POST
+                - name: Path
+                  args:
+                    _genkey_0: /trade/admin/pay-apps
+                    _genkey_1: /trade/admin/pay-channels
+                    _genkey_2: /trade/admin/pay-notify-tasks/{id}/retry
+                    _genkey_3: /trade/admin/recharge-packages
+                    _genkey_4: /trade/admin/wallet-recharges/{rechargeNo}/confirm
+                    _genkey_5: /trade/admin/wallet-recharges/{rechargeNo}/refund
+                    _genkey_6: /trade/admin/wallets/{memberId}/adjust
+                    _genkey_7: /trade/app/orders/{orderNo}/payment
+                    _genkey_8: /trade/app/payments/{paymentNo}/sandbox-pay
+                    _genkey_9: /trade/app/wallet/recharges
+                    _genkey_10: /trade/app/wallet/transfers
+                    _genkey_11: /trade/payment/notify/{appKey}/{channel}
+            - id: commerce-pay-put
+              uri: lb://lemnt-pay
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: PUT
+                - name: Path
+                  args:
+                    _genkey_0: /trade/admin/pay-apps/{id}
+                    _genkey_1: /trade/admin/pay-apps/{id}/status
+                    _genkey_2: /trade/admin/pay-channels/{id}
+                    _genkey_3: /trade/admin/recharge-packages/{id}
+            - id: commerce-product-delete
+              uri: lb://lemnt-product
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: DELETE
+                - name: Path
+                  args:
+                    _genkey_0: /mall/app/browse-history
+                    _genkey_1: /mall/app/browse-history/clear
+                    _genkey_2: /mall/app/favorites/{spuId:[1-9][0-9]*}
+                    _genkey_3: /mall/brands/{id}
+                    _genkey_4: /mall/categories/{id}
+                    _genkey_5: /mall/spec-values/{id}
+                    _genkey_6: /mall/specs/{id}
+                    _genkey_7: /mall/spus/{id}
+            - id: commerce-product-get
+              uri: lb://lemnt-product
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: GET
+                    _genkey_1: HEAD
+                - name: Path
+                  args:
+                    _genkey_0: /mall/app/browse-history
+                    _genkey_1: /mall/app/categories
+                    _genkey_2: /mall/app/comments
+                    _genkey_3: /mall/app/favorites
+                    _genkey_4: /mall/app/favorites/count
+                    _genkey_5: /mall/app/favorites/exists
+                    _genkey_6: /mall/app/products
+                    _genkey_7: /mall/app/products/{id}
+                    _genkey_8: /mall/brands
+                    _genkey_9: /mall/brands/page
+                    _genkey_10: /mall/brands/simple
+                    _genkey_11: /mall/brands/{id}
+                    _genkey_12: /mall/categories
+                    _genkey_13: /mall/categories/tree
+                    _genkey_14: /mall/categories/{id}
+                    _genkey_15: /mall/comments
+                    _genkey_16: /mall/comments/{id}
+                    _genkey_17: /mall/product-browse-history
+                    _genkey_18: /mall/product-favorites
+                    _genkey_19: /mall/spec-values
+                    _genkey_20: /mall/spec-values/simple
+                    _genkey_21: /mall/spec-values/{id}
+                    _genkey_22: /mall/specs
+                    _genkey_23: /mall/specs/simple
+                    _genkey_24: /mall/specs/{id}
+                    _genkey_25: /mall/spus
+                    _genkey_26: /mall/spus/batch
+                    _genkey_27: /mall/spus/count
+                    _genkey_28: /mall/spus/export
+                    _genkey_29: /mall/spus/simple
+                    _genkey_30: /mall/spus/{id}
+            - id: commerce-product-options
+              uri: lb://lemnt-product
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: OPTIONS
+                - name: Path
+                  args:
+                    _genkey_0: /mall/app/browse-history
+                    _genkey_1: /mall/app/browse-history/clear
+                    _genkey_2: /mall/app/categories
+                    _genkey_3: /mall/app/comments
+                    _genkey_4: /mall/app/favorites
+                    _genkey_5: /mall/app/favorites/count
+                    _genkey_6: /mall/app/favorites/exists
+                    _genkey_7: /mall/app/favorites/{spuId:[1-9][0-9]*}
+                    _genkey_8: /mall/app/products
+                    _genkey_9: /mall/app/products/{id}
+                    _genkey_10: /mall/brands
+                    _genkey_11: /mall/brands/page
+                    _genkey_12: /mall/brands/simple
+                    _genkey_13: /mall/brands/{id}
+                    _genkey_14: /mall/categories
+                    _genkey_15: /mall/categories/tree
+                    _genkey_16: /mall/categories/{id}
+                    _genkey_17: /mall/comments
+                    _genkey_18: /mall/comments/{id}
+                    _genkey_19: /mall/comments/{id}/reply
+                    _genkey_20: /mall/comments/{id}/visible
+                    _genkey_21: /mall/product-browse-history
+                    _genkey_22: /mall/product-favorites
+                    _genkey_23: /mall/spec-values
+                    _genkey_24: /mall/spec-values/simple
+                    _genkey_25: /mall/spec-values/{id}
+                    _genkey_26: /mall/specs
+                    _genkey_27: /mall/specs/simple
+                    _genkey_28: /mall/specs/{id}
+                    _genkey_29: /mall/spus
+                    _genkey_30: /mall/spus/batch
+                    _genkey_31: /mall/spus/count
+                    _genkey_32: /mall/spus/export
+                    _genkey_33: /mall/spus/simple
+                    _genkey_34: /mall/spus/{id}
+                    _genkey_35: /mall/spus/{id}/recycle
+                    _genkey_36: /mall/spus/{id}/restore
+                    _genkey_37: /mall/spus/{id}/shelf
+            - id: commerce-product-post
+              uri: lb://lemnt-product
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: POST
+                - name: Path
+                  args:
+                    _genkey_0: /mall/app/browse-history
+                    _genkey_1: /mall/app/comments
+                    _genkey_2: /mall/app/favorites
+                    _genkey_3: /mall/brands
+                    _genkey_4: /mall/categories
+                    _genkey_5: /mall/comments
+                    _genkey_6: /mall/spec-values
+                    _genkey_7: /mall/specs
+                    _genkey_8: /mall/spus
+                    _genkey_9: /mall/spus/{id}/recycle
+                    _genkey_10: /mall/spus/{id}/restore
+            - id: commerce-product-put
+              uri: lb://lemnt-product
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: PUT
+                - name: Path
+                  args:
+                    _genkey_0: /mall/brands/{id}
+                    _genkey_1: /mall/categories/{id}
+                    _genkey_2: /mall/comments/{id}/reply
+                    _genkey_3: /mall/comments/{id}/visible
+                    _genkey_4: /mall/spec-values/{id}
+                    _genkey_5: /mall/specs/{id}
+                    _genkey_6: /mall/spus/{id}
+                    _genkey_7: /mall/spus/{id}/shelf
+            - id: commerce-promotion-delete
+              uri: lb://lemnt-promotion
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: DELETE
+                - name: Path
+                  args:
+                    _genkey_0: /mall/admin/coupon-templates/{id}
+                    _genkey_1: /mall/admin/members/{memberId}/coupons/{couponId}
+                    _genkey_2: /mall/app/cart/{productId}
+                    _genkey_3: /mall/promotion/banners/{id}
+                    _genkey_4: /mall/promotion/bargain-activities/{id}
+                    _genkey_5: /mall/promotion/combination-activities/{id}
+                    _genkey_6: /mall/promotion/discount-activities/{id}
+                    _genkey_7: /mall/promotion/diy-pages/{id}
+                    _genkey_8: /mall/promotion/diy-templates/{id}
+                    _genkey_9: /mall/promotion/kefu-conversations/{id}
+                    _genkey_10: /mall/promotion/point-activities/{id}
+                    _genkey_11: /mall/promotion/reward-activities/{id}
+                    _genkey_12: /mall/promotion/seckill-activities/{id}
+                    _genkey_13: /mall/promotion/seckill-configs/{id}
+            - id: commerce-promotion-get
+              uri: lb://lemnt-promotion
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: GET
+                    _genkey_1: HEAD
+                - name: Path
+                  args:
+                    _genkey_0: /mall/admin/coupon-templates
+                    _genkey_1: /mall/admin/coupon-templates/public-claim
+                    _genkey_2: /mall/admin/coupons
+                    _genkey_3: /mall/admin/members/{memberId}/coupons
+                    _genkey_4: /mall/app/banners
+                    _genkey_5: /mall/app/bargain/activities
+                    _genkey_6: /mall/app/bargain/activities/{id}
+                    _genkey_7: /mall/app/bargain/activities/{id}/records
+                    _genkey_8: /mall/app/bargain/records
+                    _genkey_9: /mall/app/bargain/records/{id}
+                    _genkey_10: /mall/app/bargain/records/{id}/helps
+                    _genkey_11: /mall/app/cart
+                    _genkey_12: /mall/app/combination/activities
+                    _genkey_13: /mall/app/combination/activities/{id}
+                    _genkey_14: /mall/app/combination/activities/{id}/heads
+                    _genkey_15: /mall/app/combination/records
+                    _genkey_16: /mall/app/combination/records/{id}
+                    _genkey_17: /mall/app/combination/summary
+                    _genkey_18: /mall/app/coupon-center
+                    _genkey_19: /mall/app/coupon-wallet
+                    _genkey_20: /mall/app/coupons
+                    _genkey_21: /mall/app/diy/page/{id}
+                    _genkey_22: /mall/app/diy/template/used
+                    _genkey_23: /mall/app/diy/template/{id}
+                    _genkey_24: /mall/app/kefu/conversation
+                    _genkey_25: /mall/app/kefu/messages
+                    _genkey_26: /mall/app/point-mall/activities
+                    _genkey_27: /mall/app/point-mall/activities/{id}
+                    _genkey_28: /mall/app/promotion-hub/discount/{id}
+                    _genkey_29: /mall/app/promotion-hub/reward/{id}
+                    _genkey_30: /mall/app/promotion-hub/sections
+                    _genkey_31: /mall/app/seckill/activities
+                    _genkey_32: /mall/app/seckill/activities/{id}
+                    _genkey_33: /mall/app/seckill/configs
+                    _genkey_34: /mall/app/seckill/now
+                    _genkey_35: /mall/promotion/banners
+                    _genkey_36: /mall/promotion/banners/{id}
+                    _genkey_37: /mall/promotion/bargain-activities
+                    _genkey_38: /mall/promotion/bargain-activities/{id}
+                    _genkey_39: /mall/promotion/bargain-helps
+                    _genkey_40: /mall/promotion/bargain-records
+                    _genkey_41: /mall/promotion/combination-activities
+                    _genkey_42: /mall/promotion/combination-activities/{id}
+                    _genkey_43: /mall/promotion/combination-records
+                    _genkey_44: /mall/promotion/discount-activities
+                    _genkey_45: /mall/promotion/discount-activities/{id}
+                    _genkey_46: /mall/promotion/diy-pages
+                    _genkey_47: /mall/promotion/diy-pages/{id}
+                    _genkey_48: /mall/promotion/diy-templates
+                    _genkey_49: /mall/promotion/diy-templates/{id}
+                    _genkey_50: /mall/promotion/kefu-conversations
+                    _genkey_51: /mall/promotion/kefu-conversations/{id}
+                    _genkey_52: /mall/promotion/kefu-conversations/{id}/messages
+                    _genkey_53: /mall/promotion/point-activities
+                    _genkey_54: /mall/promotion/point-activities/{id}
+                    _genkey_55: /mall/promotion/reward-activities
+                    _genkey_56: /mall/promotion/reward-activities/{id}
+                    _genkey_57: /mall/promotion/seckill-activities
+                    _genkey_58: /mall/promotion/seckill-activities/{id}
+                    _genkey_59: /mall/promotion/seckill-configs
+                    _genkey_60: /mall/promotion/seckill-configs/list
+                    _genkey_61: /mall/promotion/seckill-configs/simple-list
+                    _genkey_62: /mall/promotion/seckill-configs/{id}
+            - id: commerce-promotion-options
+              uri: lb://lemnt-promotion
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: OPTIONS
+                - name: Path
+                  args:
+                    _genkey_0: /mall/admin/coupon-templates
+                    _genkey_1: /mall/admin/coupon-templates/public-claim
+                    _genkey_2: /mall/admin/coupon-templates/{id}
+                    _genkey_3: /mall/admin/coupon-templates/{id}/enabled
+                    _genkey_4: /mall/admin/coupon-templates/{id}/public-claim
+                    _genkey_5: /mall/admin/coupons
+                    _genkey_6: /mall/admin/members/{memberId}/coupons
+                    _genkey_7: /mall/admin/members/{memberId}/coupons/{couponId}
+                    _genkey_8: /mall/admin/members/{memberId}/coupons/{templateId}
+                    _genkey_9: /mall/app/banners
+                    _genkey_10: /mall/app/banners/{id}/browse
+                    _genkey_11: /mall/app/bargain/activities
+                    _genkey_12: /mall/app/bargain/activities/{id}
+                    _genkey_13: /mall/app/bargain/activities/{id}/records
+                    _genkey_14: /mall/app/bargain/helps
+                    _genkey_15: /mall/app/bargain/records
+                    _genkey_16: /mall/app/bargain/records/{id}
+                    _genkey_17: /mall/app/bargain/records/{id}/helps
+                    _genkey_18: /mall/app/cart
+                    _genkey_19: /mall/app/cart/{productId}
+                    _genkey_20: /mall/app/combination/activities
+                    _genkey_21: /mall/app/combination/activities/{id}
+                    _genkey_22: /mall/app/combination/activities/{id}/heads
+                    _genkey_23: /mall/app/combination/records
+                    _genkey_24: /mall/app/combination/records/{id}
+                    _genkey_25: /mall/app/combination/summary
+                    _genkey_26: /mall/app/coupon-center
+                    _genkey_27: /mall/app/coupon-center/{templateId}/claim
+                    _genkey_28: /mall/app/coupon-wallet
+                    _genkey_29: /mall/app/coupons
+                    _genkey_30: /mall/app/diy/page/{id}
+                    _genkey_31: /mall/app/diy/template/used
+                    _genkey_32: /mall/app/diy/template/{id}
+                    _genkey_33: /mall/app/kefu/conversation
+                    _genkey_34: /mall/app/kefu/messages
+                    _genkey_35: /mall/app/kefu/read
+                    _genkey_36: /mall/app/point-mall/activities
+                    _genkey_37: /mall/app/point-mall/activities/{id}
+                    _genkey_38: /mall/app/promotion-hub/discount/{id}
+                    _genkey_39: /mall/app/promotion-hub/reward/{id}
+                    _genkey_40: /mall/app/promotion-hub/sections
+                    _genkey_41: /mall/app/seckill/activities
+                    _genkey_42: /mall/app/seckill/activities/{id}
+                    _genkey_43: /mall/app/seckill/configs
+                    _genkey_44: /mall/app/seckill/now
+                    _genkey_45: /mall/promotion/banners
+                    _genkey_46: /mall/promotion/banners/{id}
+                    _genkey_47: /mall/promotion/bargain-activities
+                    _genkey_48: /mall/promotion/bargain-activities/{id}
+                    _genkey_49: /mall/promotion/bargain-activities/{id}/close
+                    _genkey_50: /mall/promotion/bargain-helps
+                    _genkey_51: /mall/promotion/bargain-records
+                    _genkey_52: /mall/promotion/combination-activities
+                    _genkey_53: /mall/promotion/combination-activities/{id}
+                    _genkey_54: /mall/promotion/combination-activities/{id}/close
+                    _genkey_55: /mall/promotion/combination-records
+                    _genkey_56: /mall/promotion/discount-activities
+                    _genkey_57: /mall/promotion/discount-activities/{id}
+                    _genkey_58: /mall/promotion/discount-activities/{id}/close
+                    _genkey_59: /mall/promotion/diy-pages
+                    _genkey_60: /mall/promotion/diy-pages/{id}
+                    _genkey_61: /mall/promotion/diy-pages/{id}/property
+                    _genkey_62: /mall/promotion/diy-templates
+                    _genkey_63: /mall/promotion/diy-templates/{id}
+                    _genkey_64: /mall/promotion/diy-templates/{id}/property
+                    _genkey_65: /mall/promotion/diy-templates/{id}/use
+                    _genkey_66: /mall/promotion/kefu-conversations
+                    _genkey_67: /mall/promotion/kefu-conversations/{id}
+                    _genkey_68: /mall/promotion/kefu-conversations/{id}/messages
+                    _genkey_69: /mall/promotion/kefu-conversations/{id}/pinned
+                    _genkey_70: /mall/promotion/kefu-conversations/{id}/read
+                    _genkey_71: /mall/promotion/point-activities
+                    _genkey_72: /mall/promotion/point-activities/{id}
+                    _genkey_73: /mall/promotion/point-activities/{id}/close
+                    _genkey_74: /mall/promotion/reward-activities
+                    _genkey_75: /mall/promotion/reward-activities/{id}
+                    _genkey_76: /mall/promotion/reward-activities/{id}/close
+                    _genkey_77: /mall/promotion/seckill-activities
+                    _genkey_78: /mall/promotion/seckill-activities/{id}
+                    _genkey_79: /mall/promotion/seckill-activities/{id}/close
+                    _genkey_80: /mall/promotion/seckill-configs
+                    _genkey_81: /mall/promotion/seckill-configs/list
+                    _genkey_82: /mall/promotion/seckill-configs/simple-list
+                    _genkey_83: /mall/promotion/seckill-configs/{id}
+                    _genkey_84: /mall/promotion/seckill-configs/{id}/status
+            - id: commerce-promotion-post
+              uri: lb://lemnt-promotion
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: POST
+                - name: Path
+                  args:
+                    _genkey_0: /mall/admin/coupon-templates
+                    _genkey_1: /mall/admin/members/{memberId}/coupons/{templateId}
+                    _genkey_2: /mall/app/bargain/helps
+                    _genkey_3: /mall/app/bargain/records
+                    _genkey_4: /mall/app/coupon-center/{templateId}/claim
+                    _genkey_5: /mall/app/kefu/messages
+                    _genkey_6: /mall/promotion/banners
+                    _genkey_7: /mall/promotion/bargain-activities
+                    _genkey_8: /mall/promotion/combination-activities
+                    _genkey_9: /mall/promotion/discount-activities
+                    _genkey_10: /mall/promotion/diy-pages
+                    _genkey_11: /mall/promotion/diy-templates
+                    _genkey_12: /mall/promotion/kefu-conversations/{id}/messages
+                    _genkey_13: /mall/promotion/point-activities
+                    _genkey_14: /mall/promotion/reward-activities
+                    _genkey_15: /mall/promotion/seckill-activities
+                    _genkey_16: /mall/promotion/seckill-configs
+            - id: commerce-promotion-put
+              uri: lb://lemnt-promotion
+              order: -8
+              predicates:
+                - name: Method
+                  args:
+                    _genkey_0: PUT
+                - name: Path
+                  args:
+                    _genkey_0: /mall/admin/coupon-templates/{id}
+                    _genkey_1: /mall/admin/coupon-templates/{id}/enabled
+                    _genkey_2: /mall/admin/coupon-templates/{id}/public-claim
+                    _genkey_3: /mall/app/banners/{id}/browse
+                    _genkey_4: /mall/app/cart/{productId}
+                    _genkey_5: /mall/app/kefu/read
+                    _genkey_6: /mall/promotion/banners/{id}
+                    _genkey_7: /mall/promotion/bargain-activities/{id}
+                    _genkey_8: /mall/promotion/bargain-activities/{id}/close
+                    _genkey_9: /mall/promotion/combination-activities/{id}
+                    _genkey_10: /mall/promotion/combination-activities/{id}/close
+                    _genkey_11: /mall/promotion/discount-activities/{id}
+                    _genkey_12: /mall/promotion/discount-activities/{id}/close
+                    _genkey_13: /mall/promotion/diy-pages/{id}
+                    _genkey_14: /mall/promotion/diy-pages/{id}/property
+                    _genkey_15: /mall/promotion/diy-templates/{id}
+                    _genkey_16: /mall/promotion/diy-templates/{id}/property
+                    _genkey_17: /mall/promotion/diy-templates/{id}/use
+                    _genkey_18: /mall/promotion/kefu-conversations/{id}/pinned
+                    _genkey_19: /mall/promotion/kefu-conversations/{id}/read
+                    _genkey_20: /mall/promotion/point-activities/{id}
+                    _genkey_21: /mall/promotion/point-activities/{id}/close
+                    _genkey_22: /mall/promotion/reward-activities/{id}
+                    _genkey_23: /mall/promotion/reward-activities/{id}/close
+                    _genkey_24: /mall/promotion/seckill-activities/{id}
+                    _genkey_25: /mall/promotion/seckill-activities/{id}/close
+                    _genkey_26: /mall/promotion/seckill-configs/{id}
+                    _genkey_27: /mall/promotion/seckill-configs/{id}/status

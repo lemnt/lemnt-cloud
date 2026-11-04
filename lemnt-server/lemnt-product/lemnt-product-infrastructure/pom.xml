@@ -53,7 +53,7 @@
         </dependency>
         <dependency>
             <groupId>com.lemnt</groupId>
-            <artifactId>lemnt-trade-client</artifactId>
+            <artifactId>lemnt-order-client</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>

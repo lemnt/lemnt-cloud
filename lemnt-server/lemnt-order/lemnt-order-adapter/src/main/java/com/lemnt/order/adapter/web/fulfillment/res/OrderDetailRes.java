@@ -1,7 +1,5 @@
 package com.lemnt.order.adapter.web.fulfillment.res;
 
-import com.lemnt.order.adapter.web.fulfillment.res.OrderItemRes;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;

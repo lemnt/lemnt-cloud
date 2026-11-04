@@ -6,14 +6,14 @@ import com.lemnt.order.application.brokerage.cmd.BrokerageWithdrawAuditCmd;
 import com.lemnt.order.application.brokerage.cmd.BrokerageWithdrawCreateCmd;
 import com.lemnt.order.application.brokerage.dto.BrokerageWithdrawDTO;
 import com.lemnt.order.application.brokerage.qry.BrokerageWithdrawPageQry;
-import com.lemnt.order.application.payment.service.WalletService;
+import com.lemnt.order.domain.brokerage.gateway.BrokerageWalletGateway;
 import com.lemnt.order.domain.brokerage.gateway.BrokerageWithdrawGateway;
 import com.lemnt.order.domain.brokerage.model.BrokerageWithdraw;
 import com.lemnt.order.domain.brokerage.model.BrokerageWithdrawFilter;
 import com.lemnt.order.domain.config.gateway.TradeConfigGateway;
-import com.lemnt.order.domain.payment.model.WalletBizType;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /** 佣金提现：申请扣除可用佣金，审核通过后钱包或手工到账，驳回返还。 */
 @Component
@@ -40,7 +39,8 @@ public class BrokerageWithdrawService {
     private final TradeConfigGateway configs;
     private final BrokerageWithdrawGateway withdraws;
     private final BrokerageService brokerage;
-    private final WalletService wallets;
+    private final BrokerageWalletGateway wallets;
+    private final BrokerageWithdrawalStageService stages;
 
     private void require(boolean condition, String message) {
         if (!condition) {
@@ -99,58 +99,14 @@ public class BrokerageWithdrawService {
         return saved.id();
     }
 
-    /** 钱包直接入账；银行卡/收款码为手工到账，审核即完成。 */
+    /** 审批本地提交后才请求钱包，崩溃或超时保留10状态并按原提现号恢复。 */
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Boolean audit(BrokerageWithdrawAuditCmd cmd) {
-        require(
-                cmd != null && cmd.id() != null && cmd.id() > 0 && cmd.approved() != null,
-                "审核参数不合法");
-        var withdraw = withdraws.lock(cmd.id());
-        require(withdraw != null, "提现单不存在");
-        if (cmd.approved()) {
-            if (withdraw.status() == STATUS_SUCCESS) {
-                return true;
-            }
-            require(withdraw.status() == STATUS_AUDITING, "提现单状态不允许审核");
-            require(
-                    withdraws.updateStatus(
-                            withdraw.id(),
-                            STATUS_AUDITING,
-                            STATUS_AUDIT_SUCCESS,
-                            cmd.reason(),
-                            LocalDateTime.now()),
-                    "提现单状态已变化");
-            BigDecimal net = withdraw.price().subtract(withdraw.feePrice());
-            if (withdraw.type() == TYPE_WALLET && net.signum() > 0) {
-                wallets.credit(
-                        withdraw.userId(),
-                        WalletBizType.BROKERAGE_WITHDRAW,
-                        "BW" + withdraw.id(),
-                        net,
-                        "佣金提现");
-            }
-            require(
-                    withdraws.updateStatus(
-                            withdraw.id(),
-                            STATUS_AUDIT_SUCCESS,
-                            STATUS_SUCCESS,
-                            cmd.reason(),
-                            LocalDateTime.now()),
-                    "提现单状态已变化");
-            return true;
-        }
-        if (withdraw.status() == STATUS_AUDIT_FAIL) {
-            return true;
-        }
-        require(withdraw.status() == STATUS_AUDITING, "提现单状态不允许审核");
-        require(
-                withdraws.updateStatus(
-                        withdraw.id(),
-                        STATUS_AUDITING,
-                        STATUS_AUDIT_FAIL,
-                        cmd.reason(),
-                        LocalDateTime.now()),
-                "提现单状态已变化");
-        brokerage.returnRejectedWithdraw(withdraw.userId(), withdraw.id(), withdraw.price());
+        var v = stages.prepare(cmd);
+        if (v.status() != STATUS_AUDIT_SUCCESS) return true;
+        var net = v.price().subtract(v.feePrice());
+        if (v.type() == TYPE_WALLET && net.signum() > 0) wallets.credit(v);
+        stages.complete(v.id());
         return true;
     }
 

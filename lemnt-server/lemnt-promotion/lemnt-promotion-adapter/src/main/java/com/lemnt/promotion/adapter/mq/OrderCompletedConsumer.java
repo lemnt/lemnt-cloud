@@ -7,12 +7,14 @@ import com.lemnt.promotion.application.event.service.OrderCompletedEventHandler;
 
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
 /** 消费失败原样抛给broker，幂等凭证只在本地业务成功时提交。 */
 @Component
+@ConditionalOnProperty(name = "commerce.mq.enabled", havingValue = "true")
 @RequiredArgsConstructor
 @RocketMQMessageListener(
         topic = CommerceEventTopics.ORDER_COMPLETED,

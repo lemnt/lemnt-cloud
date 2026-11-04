@@ -24,6 +24,12 @@ public class MessageInboxGatewayImpl implements MessageInboxGateway {
 
     @Override
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = Exception.class)
+    public boolean has(String consumer, String type, String key) {
+        return mapper.lockBusiness(consumer, type, key) != null;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.MANDATORY, rollbackFor = Exception.class)
     public boolean begin(String consumer, String eventNo, String type, String key, String payload) {
         if (consumer == null
                 || consumer.isBlank()

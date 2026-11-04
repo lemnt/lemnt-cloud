@@ -10,5 +10,9 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface MessageInboxMapper extends BaseMapper<MessageInboxDO> {
     MessageInboxDO lockEvent(@Param("consumer") String consumer, @Param("eventNo") String eventNo);
-    MessageInboxDO lockBusiness(@Param("consumer") String consumer, @Param("type") String type, @Param("key") String key);
+
+    MessageInboxDO lockBusiness(
+            @Param("consumer") String consumer,
+            @Param("type") String type,
+            @Param("key") String key);
 }

@@ -29,11 +29,7 @@ public class BrokerageUserGatewayImpl implements BrokerageUserGateway {
 
     @Override
     public BrokerageUser lock(Long id) {
-        return BrokerageConverter.user(
-                mapper.selectOne(
-                        Wrappers.<BrokerageUserDO>lambdaQuery()
-                                .eq(BrokerageUserDO::getId, id)
-                                .last("FOR UPDATE")));
+        return BrokerageConverter.user(mapper.lock(id));
     }
 
     @Override

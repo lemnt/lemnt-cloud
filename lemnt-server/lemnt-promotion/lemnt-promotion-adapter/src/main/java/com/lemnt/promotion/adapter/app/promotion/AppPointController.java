@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
-
 /** 小程序积分商城入口。 */
 @Tag(name = "小程序积分商城")
 @RestController

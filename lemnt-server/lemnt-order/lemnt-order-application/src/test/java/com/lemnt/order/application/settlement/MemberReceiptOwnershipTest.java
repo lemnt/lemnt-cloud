@@ -3,9 +3,7 @@ package com.lemnt.order.application.settlement;
 import com.lemnt.order.application.settlement.executor.SettlementReceiptQueryExe;
 import com.lemnt.order.application.settlement.service.SettlementOrderService;
 import com.lemnt.order.application.settlement.service.SettlementRecordService;
-import com.lemnt.order.domain.cart.gateway.CartGateway;
-import com.lemnt.order.domain.coupon.gateway.CouponGateway;
-import com.lemnt.order.domain.coupon.gateway.CouponTemplateGateway;
+import com.lemnt.order.domain.cart.gateway.CartSnapshotGateway;
 import com.lemnt.order.domain.member.gateway.MemberLockGateway;
 import com.lemnt.order.domain.settlement.gateway.SettlementGateway;
 import com.lemnt.order.domain.settlement.model.SettlementOrder;
@@ -21,12 +19,10 @@ import static org.mockito.Mockito.*;
 class MemberReceiptOwnershipTest {
     @Test
     void foreignAndMissingOrdersDoNotReadCheckoutDetails() {
-        CartGateway cartGateway = mock(CartGateway.class);
+        CartSnapshotGateway cartGateway = mock(CartSnapshotGateway.class);
         MemberLockGateway checkoutAccountGateway = mock(MemberLockGateway.class);
-        SettlementGateway checkoutCartGateway = mock(SettlementGateway.class);
+        SettlementGateway checkoutCartSnapshotGateway = mock(SettlementGateway.class);
         SettlementRecordService checkoutService = mock(SettlementRecordService.class);
-        CouponGateway couponGateway = mock(CouponGateway.class);
-        CouponTemplateGateway couponTemplateGateway = mock(CouponTemplateGateway.class);
         SettlementOrderService orderPersistenceService = mock(SettlementOrderService.class);
         var query = new SettlementReceiptQueryExe(checkoutService, orderPersistenceService);
         assertNull(query.execute(7L, "MISSING"));
@@ -36,11 +32,6 @@ class MemberReceiptOwnershipTest {
                                 1L, "FOREIGN", 8L, BigDecimal.TEN, "PAID", List.of(), null));
         assertNull(query.execute(7L, "FOREIGN"));
         verifyNoInteractions(
-                checkoutAccountGateway,
-                checkoutCartGateway,
-                cartGateway,
-                couponTemplateGateway,
-                couponGateway,
-                checkoutService);
+                checkoutAccountGateway, checkoutCartSnapshotGateway, cartGateway, checkoutService);
     }
 }

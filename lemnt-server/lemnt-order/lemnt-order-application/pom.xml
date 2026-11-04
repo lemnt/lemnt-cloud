@@ -10,6 +10,8 @@
     </parent>
     <artifactId>lemnt-order-application</artifactId>
     <dependencies>
+        <dependency><groupId>com.h2database</groupId><artifactId>h2</artifactId><scope>test</scope></dependency>
+        <dependency><groupId>com.lemnt</groupId><artifactId>lemnt-order-infrastructure</artifactId><version>${project.version}</version><scope>test</scope></dependency>
         <dependency><groupId>com.lemnt</groupId><artifactId>lemnt-pay-client</artifactId><version>1.0.0-SNAPSHOT</version></dependency>
         <dependency><groupId>com.lemnt</groupId><artifactId>lemnt-promotion-client</artifactId><version>1.0.0-SNAPSHOT</version></dependency>
         <dependency>
@@ -51,4 +53,5 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
+    <build><testResources><testResource><directory>src/test/resources</directory></testResource><testResource><directory>../sql</directory><targetPath>order-sql</targetPath></testResource><testResource><directory>../../sql</directory><targetPath>setup-sql</targetPath><includes><include>V20261028__trade_delivery_permissions.sql</include></includes></testResource></testResources></build>
 </project>

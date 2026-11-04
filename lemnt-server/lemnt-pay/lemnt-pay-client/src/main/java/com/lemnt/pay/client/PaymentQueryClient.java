@@ -9,6 +9,7 @@ import java.util.List;
 /** 订单服务核对支付/退款的只读可信接口。 */
 public interface PaymentQueryClient {
     PaymentRefundTotalDTO refundTotal(String orderNo);
+
     List<PaymentResultDTO> findByOrderNo(String orderNo);
 
     PaymentResultDTO find(String paymentNo);

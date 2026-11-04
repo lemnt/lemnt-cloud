@@ -39,7 +39,7 @@ def normalize_types(text):
             raise ValueError(f'类型同名冲突：{qualified}')
         imports[simple] = qualified
         line = 'import ' + qualified + ';'
-        if not qualified.startswith('java.lang.') and line not in text:
+        if qualified.rsplit('.', 1)[0] != 'java.lang' and line not in text:
             additions.add(line)
         edits.append((match.start(), match.end(), simple))
     for start, end, value in reversed(edits):

@@ -24,8 +24,10 @@ lemnt-cloud
     ├── lemnt-auth              认证中心
     ├── lemnt-system            系统管理
     ├── lemnt-member            会员与积分账户
-    ├── lemnt-mall              商品、结算与活动执行
-    ├── lemnt-trade             订单、支付与售后
+    ├── lemnt-product           商品与库存
+    ├── lemnt-promotion         活动、优惠券与购物车
+    ├── lemnt-order             结算、订单、售后与履约
+    ├── lemnt-pay               支付、退款与钱包
     ├── lemnt-open              开放接口示例
     ├── lemnt-third-sdk
     │   └── demo-sdk            Java HTTP Client 调用示例
@@ -96,9 +98,11 @@ Nacos 3.x 默认使用 `8080` 作为控制台端口，`8848` 作为服务主端�
 
 **脚本包含 `DROP TABLE`，只应用于新建或确认可以重建的数据库，不能直接用于已有业务库升级。** 数据库连接信息在 Nacos 的对应配置中设置。
 
-member、mall、trade各只保留一个建表文件，分别为`lemnt-server/lemnt-member/sql/lemnt_member.sql`、`lemnt-server/lemnt-mall/sql/lemnt_mall.sql`、`lemnt-server/lemnt-trade/sql/lemnt_trade.sql`。仅含最终建表及必要基础数据，不提供旧库升级脚本；详见[业务库初始化](docs/database-initialization.md)。system脚本维持现状。
+member、product、promotion、order、pay各有一个空库初始化文件，路径为`lemnt-server/lemnt-{服务}/sql/lemnt_{服务}.sql`，只含最终建表及必要基础数据，不用于旧库升级。旧mall/trade源码与SQL暂留供迁移核对，已从默认构建移除，待P5清理；system脚本维持现状。四服务的配置、原任务审核与切流边界见[配置与切流准备](docs/module-split-cutover.md)。
 
 ### 3. 导入 Nacos 配置
+
+四个拆分服务的配置源为`docs/config/lemnt-{product,promotion,order,pay}.yaml`和共享`commerce-mq.yaml`。仅交付模板，未自动发布；副作用开关默认关闭，P5-01网关内置313端点映射已实现，在线切流尚未执行。旧服务尚在运行时不能直接启用新写入方。
 
 配置包位于 [nacos_config_export.zip](lemnt-server/sql/nacos/nacos_config_export.zip)。导入前检查并替换数据库、Redis、文件存储、消息服务等环境地址及凭据。
 
@@ -174,7 +178,7 @@ java -jar lemnt-server/lemnt-open/lemnt-open-start/target/lemnt-open-start.jar
 | lemnt-auth | 9200 |
 | lemnt-open | 9300 |
 
-检查服务日志及 Nacos 注册状态，确认服务处于同一命名空间。网关路由配置位于 Nacos，配置包使用 `/auth/**`、`/system/**`、`/open/**` 前缀转发请求。
+检查服务日志及 Nacos 注册状态，确认服务处于同一命名空间。其他动态路由配置仍位于 Nacos，配置包使用 `/auth/**`、`/system/**`、`/open/**` 前缀转发请求。商城/交易的313个端点由[内置路由源](docs/config/commerce-gateway-routes.yaml)按方法和路径转发到四个新服务，不再配置旧服务粗路由；部署前核对[路由源与切流要求](docs/module-split-cutover.md)，不要在Nacos重复导入同一清单。
 
 ## 前端运行与部署
 

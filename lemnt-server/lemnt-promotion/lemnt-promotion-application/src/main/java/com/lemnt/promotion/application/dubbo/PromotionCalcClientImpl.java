@@ -7,15 +7,16 @@ import com.lemnt.promotion.application.promotion.cmd.PromotionOrderLineCmd;
 import com.lemnt.promotion.application.promotion.service.ActivityOrderPricingService;
 import com.lemnt.promotion.application.promotion.service.ActivityPricingService;
 import com.lemnt.promotion.client.PromotionCalcClient;
-import com.lemnt.promotion.client.bo.*;
-import com.lemnt.promotion.client.dto.*;
+import com.lemnt.promotion.client.bo.ActivityPriceBo;
+import com.lemnt.promotion.client.bo.PromotionCalculateBo;
+import com.lemnt.promotion.client.dto.ActivityQuoteDTO;
+import com.lemnt.promotion.client.dto.PromotionQuoteDTO;
 import com.lemnt.promotion.domain.coupon.gateway.CouponGateway;
 import com.lemnt.promotion.domain.coupon.gateway.CouponTemplateGateway;
 
 import org.apache.dubbo.config.annotation.DubboService;
 
 import lombok.RequiredArgsConstructor;
-
 
 /** 私有报价入口，不信任调用方传入会员折扣/积分余额，不读取订单库。 */
 @DubboService

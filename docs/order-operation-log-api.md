@@ -35,7 +35,7 @@ curl 'https://<API_HOST>/trade/admin/orders/TR1/logs' -H 'Authorization: Bearer 
 | data[].content | string | 实际操作说明；发货包含承运商和运单号 |
 | data[].createTime | datetime | 数据库同一时区，yyyy-MM-dd HH:mm:ss |
 
-当前内部RESERVING、PENDING_PAYMENT都映射源项目状态0；预占成功不另写一条0到0日志。日志与订单、支付或物流状态共用本地事务，插入失败使该状态更新回滚；重复回调、重复收货、重复关单不追加第二条操作。发货操作者来自后台认证上下文，不接受请求体传userId/userType。接口只有后台读取入口，不向App暴露内部操作日志。
+当前内部RESERVING、PENDING_PAYMENT都映射源项目状态0；预占成功不另写一条0到0日志。日志与订单或物流状态共用订单库本地事务，插入失败使订单侧状态更新及消费凭证回滚；支付库已确认的资金事实及原PAY_SUCCESS事件保留，等待原事件重试。重复回调、重复收货、重复关单不追加第二条操作。发货操作者来自后台认证上下文，不接受请求体传userId/userType。接口只有后台读取入口，不向App暴露内部操作日志。
 
 ## 2. 本人取消与确认收货
 

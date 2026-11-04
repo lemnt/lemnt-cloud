@@ -1,11 +1,14 @@
 package com.lemnt.order.application.order;
 
 import com.lemnt.order.application.order.service.OrderLifecycleService;
+import com.lemnt.order.application.order.service.OrderPaidCompletionService;
 import com.lemnt.order.application.order.service.OrderPersistenceService;
 import com.lemnt.order.application.order.service.OrderRemoteService;
 import com.lemnt.order.domain.inventory.gateway.InventoryGateway;
 import com.lemnt.order.domain.order.gateway.OrderBenefitsGateway;
+import com.lemnt.order.domain.order.gateway.OrderBenefitsProgressGateway;
 import com.lemnt.order.domain.order.gateway.OrderRollbackGateway;
+import com.lemnt.order.domain.order.gateway.PromotionResourceGateway;
 import com.lemnt.order.domain.order.model.TradeOrder;
 import com.lemnt.order.domain.order.model.TradeOrderItem;
 
@@ -25,8 +28,15 @@ class OrderRemoteServiceCallbackTest {
     private final OrderBenefitsGateway benefits = Mockito.mock(OrderBenefitsGateway.class);
     private final OrderLifecycleService lifecycle = Mockito.mock(OrderLifecycleService.class);
     private final OrderRollbackGateway rollback = Mockito.mock(OrderRollbackGateway.class);
+    private final OrderBenefitsProgressGateway progress =
+            Mockito.mock(OrderBenefitsProgressGateway.class);
+    private final PromotionResourceGateway promotions =
+            Mockito.mock(PromotionResourceGateway.class);
+    private final OrderPaidCompletionService completion =
+            Mockito.mock(OrderPaidCompletionService.class);
     private final OrderRemoteService service =
-            new OrderRemoteService(orders, inventory, benefits, lifecycle, rollback);
+            new OrderRemoteService(
+                    orders, inventory, benefits, lifecycle, progress, promotions, completion);
 
     private TradeOrder order(String status) {
         return new TradeOrder(
@@ -67,6 +77,6 @@ class OrderRemoteServiceCallbackTest {
         Mockito.doThrow(new IllegalStateException("活动库存不足")).when(benefits).reserved("TR1");
         assertThrows(IllegalStateException.class, () -> service.reserve("TR1"));
         Mockito.verify(lifecycle).reservationCallbackFailed("TR1");
-        Mockito.verify(rollback).publish("TR1");
+        Mockito.verify(benefits).closed("TR1");
     }
 }

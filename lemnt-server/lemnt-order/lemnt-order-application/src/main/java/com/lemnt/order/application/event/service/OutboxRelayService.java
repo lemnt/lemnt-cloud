@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OutboxRelayService {
     private final MessageOutboxGateway outbox;
     private final EventPublishGateway publisher;
+
     public void relay() {
         for (var message : outbox.claim(100)) {
             try {
@@ -22,7 +23,11 @@ public class OutboxRelayService {
                 if (!outbox.sent(message)) log.warn("消息投递完成时租约已失效，eventNo={}", message.eventNo());
             } catch (Exception failure) {
                 outbox.failed(message, failure.getClass().getSimpleName());
-                log.error("消息投递失败，eventNo={}, attempts={}, error={}", message.eventNo(), message.attempts(), failure.getClass().getSimpleName());
+                log.error(
+                        "消息投递失败，eventNo={}, attempts={}, error={}",
+                        message.eventNo(),
+                        message.attempts(),
+                        failure.getClass().getSimpleName());
             }
         }
     }

@@ -36,9 +36,10 @@ public class StockPreReservedEventHandler {
                 envelope.payload())) return;
         var plan = resources.plan(event.reservationNo());
         if (plan.lines().stream()
-                .noneMatch(
-                        i -> event.skuId().equals(i.skuId()) && event.quantity() == i.quantity()))
-            throw new IllegalArgumentException("库存预占与原订单资源数量不一致");
+                        .filter(i -> event.skuId().equals(i.skuId()))
+                        .mapToInt(i -> i.quantity())
+                        .sum()
+                != event.quantity()) throw new IllegalArgumentException("库存预占与原订单资源数量不一致");
         if ("NOT_LOCKED".equals(resources.query(event.reservationNo()).status()))
             throw new IllegalStateException("营销资源尚未冻结，请重试预占事实");
     }

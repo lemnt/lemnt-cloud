@@ -21,6 +21,7 @@ spring:
   config:
     import:
       - optional:nacos:lemnt-common.yaml?namespace=@profile.active@&group=DEFAULT_GROUP
+      - optional:nacos:commerce-mq.yaml?namespace=@profile.active@&group=DEFAULT_GROUP
       - optional:nacos:lemnt-member.yaml?namespace=@profile.active@&group=DEFAULT_GROUP
 dubbo:
   application:

@@ -1,6 +1,7 @@
 package com.lemnt.order.application.order.service;
 
-import com.lemnt.order.application.order.service.OrderPersistenceService;
+import com.lemnt.order.application.promotion.service.ActivityOrderLifecycleService;
+import com.lemnt.order.domain.event.gateway.OrderEventGateway;
 import com.lemnt.order.domain.fulfillment.gateway.InventoryConfirmationGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.model.TradeOperator;
@@ -22,6 +23,8 @@ public class OrderLifecycleService {
     private final OrderPersistenceService orderPersistenceService;
     private final TradeOrderGateway tradeOrderGateway;
     private final OrderLogService logs;
+    private final OrderEventGateway events;
+    private final ActivityOrderLifecycleService activities;
 
     /**
      * 库存预留成功。
@@ -35,6 +38,7 @@ public class OrderLifecycleService {
         if (!"RESERVING".equals(order.status())) {
             return;
         }
+        activities.reserved(orderNo);
         if (!tradeOrderGateway.transitionStatus(orderNo, "RESERVING", "PENDING_PAYMENT")) {
             throw new IllegalStateException("订单状态冲突");
         }
@@ -55,6 +59,8 @@ public class OrderLifecycleService {
         if (!tradeOrderGateway.transitionStatus(orderNo, "RESERVING", "CLOSED")) {
             throw new IllegalStateException("订单状态冲突");
         }
+        activities.closed(orderNo);
+        events.closed(order);
         logs.record(order, "RESERVING", "CLOSED", 41, TradeOperator.system(), "库存预占失败，系统取消订单");
     }
 
@@ -73,6 +79,8 @@ public class OrderLifecycleService {
         if (!tradeOrderGateway.transitionStatus(orderNo, "PENDING_PAYMENT", "CLOSED")) {
             throw new IllegalStateException("订单状态冲突");
         }
+        activities.closed(orderNo);
+        events.closed(order);
         logs.record(
                 order, "PENDING_PAYMENT", "CLOSED", 41, TradeOperator.system(), "商城预占回调失败，系统取消订单");
     }
@@ -86,6 +94,7 @@ public class OrderLifecycleService {
         if (order == null) {
             throw new IllegalArgumentException("订单不存在");
         }
+        if (order.totalAmount().signum() != 0) throw new IllegalStateException("只有零现金订单可自动支付");
         if ("PAID".equals(order.status())) {
             return;
         }
@@ -95,6 +104,8 @@ public class OrderLifecycleService {
         if (!tradeOrderGateway.transitionStatus(orderNo, "PENDING_PAYMENT", "PAID")) {
             throw new IllegalStateException("订单状态冲突");
         }
+        activities.paid(orderNo);
+        events.paid(order);
         logs.record(order, "PENDING_PAYMENT", "PAID", 42, TradeOperator.system(), "零元订单自动支付");
     }
 
