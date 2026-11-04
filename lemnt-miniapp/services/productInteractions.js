@@ -34,7 +34,7 @@ function createProductInteractionClient({ request, baseUrl, ready = false, getMe
     const token = getMemberToken();
     if (!token) throw Error('请先登录');
     const result = await request({
-      url: baseUrl.replace(/\/$/, '') + '/mall/app' + path,
+      url: baseUrl.replace(/\/$/, '') + '/app' + path,
       method,
       data,
       timeout: 15000,
@@ -57,7 +57,7 @@ function createProductInteractionClient({ request, baseUrl, ready = false, getMe
   }
   return {
     favorites: (pageNum) => page('/favorites', pageNum, false),
-    history: (pageNum) => page('/browse-history', pageNum, true),
+    history: (pageNum) => page('/browse-historys', pageNum, true),
     favorite: async (spuId) =>
       id(object(await call('/favorites', 'POST', { spuId: id(spuId) })).id),
     cancelFavorite: async (spuId) => success(await call('/favorites/' + id(spuId), 'DELETE')),
@@ -72,13 +72,13 @@ function createProductInteractionClient({ request, baseUrl, ready = false, getMe
       return String(integer(value));
     },
     recordBrowse: async (spuId) =>
-      success(await call('/browse-history', 'POST', { spuId: id(spuId) })),
+      success(await call('/browse-historys', 'POST', { spuId: id(spuId) })),
     deleteHistory: async (spuIds) => {
       if (!Array.isArray(spuIds) || !spuIds.length || spuIds.length > 100)
         throw Error('请选择1至100个商品');
-      return success(await call('/browse-history', 'DELETE', { spuIds: spuIds.map(id) }));
+      return success(await call('/browse-historys', 'DELETE', { spuIds: spuIds.map(id) }));
     },
-    clearHistory: async () => success(await call('/browse-history/clear', 'DELETE')),
+    clearHistory: async () => success(await call('/browse-historys/clear', 'DELETE')),
   };
 }
 module.exports = { createProductInteractionClient };

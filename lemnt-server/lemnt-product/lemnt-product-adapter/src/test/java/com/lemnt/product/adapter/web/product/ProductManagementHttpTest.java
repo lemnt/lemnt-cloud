@@ -58,22 +58,22 @@ class ProductManagementHttpTest {
             .thenReturn(PageResult.of(List.of(new ProductSpecDTO(1L, "颜色", null, null)), 1));
         var controller =
             new ProductSpecController(
+                query,
+                mock(ProductSpecSimpleListQueryExe.class),
+                mock(ProductSpecDetailQueryExe.class),
                 mock(ProductSpecCreateCmdExe.class),
                 mock(ProductSpecUpdateCmdExe.class),
-                mock(ProductSpecDeleteCmdExe.class),
-                mock(ProductSpecDetailQueryExe.class),
-                query,
-                mock(ProductSpecSimpleListQueryExe.class));
+                mock(ProductSpecDeleteCmdExe.class));
         var mvc =
             MockMvcBuilders.standaloneSetup(controller)
                 .setMessageConverters(converter())
                 .build();
-        mvc.perform(get("/product/specs").param("name", "颜色"))
+        mvc.perform(get("/specs").param("name", "颜色"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.rows[0].name").value("颜色"))
             .andExpect(jsonPath("$.total").value(1));
         verify(query).execute(new ProductSpecPageQry("颜色", 1, 20, null, null));
-        mvc.perform(get("/product/specs").param("pageSize", "101")).andExpect(status().isBadRequest());
+        mvc.perform(get("/specs").param("pageSize", "101")).andExpect(status().isBadRequest());
         verifyNoMoreInteractions(query);
     }
 
@@ -88,24 +88,24 @@ class ProductManagementHttpTest {
             .thenReturn(PageResult.of(List.of(new ProductSpecDTO(1L, "颜色", null, time)), 1));
         var controller =
             new ProductSpecController(
+                query,
+                mock(ProductSpecSimpleListQueryExe.class),
+                mock(ProductSpecDetailQueryExe.class),
                 mock(ProductSpecCreateCmdExe.class),
                 mock(ProductSpecUpdateCmdExe.class),
-                mock(ProductSpecDeleteCmdExe.class),
-                mock(ProductSpecDetailQueryExe.class),
-                query,
-                mock(ProductSpecSimpleListQueryExe.class));
+                mock(ProductSpecDeleteCmdExe.class));
         var mvc =
             MockMvcBuilders.standaloneSetup(controller)
                 .setMessageConverters(converter())
                 .build();
         mvc.perform(
-                get("/product/specs")
+                get("/specs")
                     .param("createTimeStart", "2026-10-15T12:00:00")
                     .param("createTimeEnd", "2026-10-15T12:00:00"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.rows[0].createTime").value("2026-10-15 12:00:00"));
         verify(query).execute(new ProductSpecPageQry(null, 1, 20, time, time));
-        mvc.perform(get("/product/specs").param("createTimeStart", "not-a-date"))
+        mvc.perform(get("/specs").param("createTimeStart", "not-a-date"))
             .andExpect(status().isBadRequest());
         verifyNoMoreInteractions(query);
     }
@@ -118,24 +118,24 @@ class ProductManagementHttpTest {
         when(update.execute(any())).thenReturn(new ProductSpecValueDTO(3L, 1L, "蓝", null, null));
         var controller =
             new ProductSpecValueController(
+                mock(ProductSpecValuePageQueryExe.class),
+                mock(ProductSpecValueSimpleListQueryExe.class),
+                mock(ProductSpecValueDetailQueryExe.class),
                 create,
                 update,
-                mock(ProductSpecValueDeleteCmdExe.class),
-                mock(ProductSpecValueDetailQueryExe.class),
-                mock(ProductSpecValuePageQueryExe.class),
-                mock(ProductSpecValueSimpleListQueryExe.class));
+                mock(ProductSpecValueDeleteCmdExe.class));
         var mvc =
             MockMvcBuilders.standaloneSetup(controller)
                 .setMessageConverters(converter())
                 .build();
         mvc.perform(
-                post("/product/spec-values")
+                post("/spec-values")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\"name\":\"蓝\"}"))
             .andExpect(status().isBadRequest());
         verifyNoInteractions(create);
         mvc.perform(
-                put("/product/spec-values/3")
+                put("/spec-values/3")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\"name\":\"蓝\",\"specId\":999}"))
             .andExpect(status().isOk())
@@ -151,7 +151,13 @@ class ProductManagementHttpTest {
         var count = mock(ProductSpuCountQueryExe.class);
         when(count.execute(any())).thenReturn(new ProductSpuStatusCountDTO(3, 2, 1, 1, 2));
         var controller =
-            new ProductSpuManagementController(
+            new ProductSpuController(
+                mock(ProductSpuPageQueryExe.class),
+                mock(ProductSpuDetailQueryExe.class),
+                mock(ProductSpuCreateCmdExe.class),
+                mock(ProductSpuUpdateCmdExe.class),
+                mock(ProductSpuShelfCmdExe.class),
+                mock(ProductSpuExportQueryExe.class),
                 mock(ProductSpuRecycleCmdExe.class),
                 mock(ProductSpuRestoreCmdExe.class),
                 mock(ProductSpuDeleteCmdExe.class),
@@ -163,7 +169,7 @@ class ProductManagementHttpTest {
                 .setMessageConverters(converter())
                 .build();
         mvc.perform(
-                get("/product/spus/count")
+                get("/spus/count")
                     .param("name", "商品")
                     .param("categoryId", "1")
                     .param("brandId", "2")
@@ -176,7 +182,7 @@ class ProductManagementHttpTest {
             .andExpect(jsonPath("$.data.soldOut").value(1))
             .andExpect(jsonPath("$.data.lowStock").value(2));
         verify(count).execute(new ProductSpuCountQry("商品", 1L, 2L));
-        mvc.perform(get("/product/spus/count").param("categoryId", "0"))
+        mvc.perform(get("/spus/count").param("categoryId", "0"))
             .andExpect(status().isBadRequest());
         verifyNoMoreInteractions(count);
     }
@@ -195,10 +201,17 @@ class ProductManagementHttpTest {
                         mock(ProductSpuDetailQueryExe.class),
                         mock(ProductSpuCreateCmdExe.class),
                         mock(ProductSpuUpdateCmdExe.class),
-                        mock(ProductSpuShelfCmdExe.class)))
+                        mock(ProductSpuShelfCmdExe.class),
+                        mock(ProductSpuExportQueryExe.class),
+                        mock(ProductSpuRecycleCmdExe.class),
+                        mock(ProductSpuRestoreCmdExe.class),
+                        mock(ProductSpuDeleteCmdExe.class),
+                        mock(ProductSpuCountQueryExe.class),
+                        mock(ProductSpuSimpleListQueryExe.class),
+                        mock(ProductSpuBatchDetailQueryExe.class)))
                 .setMessageConverters(converter())
                 .build();
-        mvc.perform(get("/product/spus").param("stockStatus", "LOW_STOCK").param("categoryId", "1"))
+        mvc.perform(get("/spus").param("stockStatus", "LOW_STOCK").param("categoryId", "1"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.total").value(0));
         verify(query).execute(new ProductSpuPageQry(null, null, 1, 10, 1L, null, "LOW_STOCK"));
@@ -216,7 +229,13 @@ class ProductManagementHttpTest {
         when(restore.execute(9L)).thenReturn(true);
         when(delete.execute(9L)).thenReturn(false);
         var controller =
-            new ProductSpuManagementController(
+            new ProductSpuController(
+                mock(ProductSpuPageQueryExe.class),
+                mock(ProductSpuDetailQueryExe.class),
+                mock(ProductSpuCreateCmdExe.class),
+                mock(ProductSpuUpdateCmdExe.class),
+                mock(ProductSpuShelfCmdExe.class),
+                mock(ProductSpuExportQueryExe.class),
                 recycle,
                 restore,
                 delete,
@@ -227,13 +246,13 @@ class ProductManagementHttpTest {
             MockMvcBuilders.standaloneSetup(controller)
                 .setMessageConverters(converter())
                 .build();
-        mvc.perform(post("/product/spus/9/recycle"))
+        mvc.perform(post("/spus/9/recycle"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data").value(true));
-        mvc.perform(post("/product/spus/9/restore"))
+        mvc.perform(post("/spus/9/restore"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data").value(true));
-        mvc.perform(delete("/product/spus/9"))
+        mvc.perform(delete("/spus/9"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data").value(false));
         verify(recycle).execute(9L);
@@ -257,7 +276,7 @@ class ProductManagementHttpTest {
                 .setMessageConverters(converter())
                 .build();
         mvc.perform(
-                post("/product/app/comments")
+                post("/app/comments")
                     .header(SecurityConstants.HEADER_USER_ID, "7")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
@@ -266,7 +285,7 @@ class ProductManagementHttpTest {
             .andExpect(jsonPath("$.data.id").value("1"));
         verify(create).execute(new ProductCommentCreateCmd(7L, "TR1", 9L, 5, "真实评价"));
         mvc.perform(
-                post("/product/app/comments")
+                post("/app/comments")
                     .header(SecurityConstants.HEADER_USER_ID, "7")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(

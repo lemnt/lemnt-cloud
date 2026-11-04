@@ -1,10 +1,9 @@
 package com.lemnt.product.adapter.app.product;
 
 import com.lemnt.common.core.domain.R;
-import com.lemnt.product.adapter.app.product.converter.StoreResConverter;
-import com.lemnt.product.adapter.app.product.res.StoreCategoryRes;
-import com.lemnt.product.application.product.executor.ProductCategoryListQueryExe;
-import com.lemnt.product.application.product.executor.StoreCategoryListQueryExe;
+import com.lemnt.product.adapter.app.product.converter.ProductCategoryResConverter;
+import com.lemnt.product.adapter.app.product.res.AppProductCategorySimpleRes;
+import com.lemnt.product.application.product.executor.ProductCategoryEnableListQueryExe;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,14 +23,14 @@ import java.util.List;
 @RequestMapping("/app/categories")
 @RequiredArgsConstructor
 public class AppProductCategoryController {
-    private final ProductCategoryListQueryExe categoryListQueryExe;
+    private final ProductCategoryEnableListQueryExe categoryEnableListQueryExe;
 
     @GetMapping
     @Operation(summary = "启用分类")
-    public R<List<StoreCategoryRes>> categories() {
+    public R<List<AppProductCategorySimpleRes>> categories() {
         return R.ok(
-            categoryListQueryExe.execute().stream()
-                .map(StoreResConverter::category)
+            categoryEnableListQueryExe.execute().stream()
+                .map(ProductCategoryResConverter::category)
                 .toList());
     }
 }

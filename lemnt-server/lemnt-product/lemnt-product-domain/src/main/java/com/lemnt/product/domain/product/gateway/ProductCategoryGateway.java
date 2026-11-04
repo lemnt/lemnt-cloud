@@ -14,6 +14,11 @@ public interface ProductCategoryGateway {
     List<ProductCategory> categories();
 
     /**
+     * 查询分类。
+     */
+    List<ProductCategory> listEnableCategories();
+
+    /**
      * 分类。
      */
     ProductCategory category(Long id);
@@ -27,9 +32,4 @@ public interface ProductCategoryGateway {
      * 删除分类。
      */
     boolean deleteCategory(Long id);
-
-    /**
-     * 查询分类。
-     */
-    List<ProductCategory> visibleCategories();
 }

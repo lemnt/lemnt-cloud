@@ -168,8 +168,8 @@ class SettlementControllerMappingTest {
                         GET /mall/app/promotion-hub/discount/{id}
                         GET /mall/app/promotion-hub/reward/{id}
                         DELETE /mall/app/cart/{productId}
-                        DELETE /mall/brands/{id} mall:brand:remove
-                        DELETE /mall/categories/{id} mall:category:remove
+                        DELETE /mall/brands/{id} product:brand:remove
+                        DELETE /mall/categories/{id} product:category:remove
                         GET /mall/admin/coupons mall:coupon:list
                         GET /mall/admin/coupon-templates mall:coupon-template:list
                         GET /mall/admin/coupon-templates/public-claim mall:coupon-template:list
@@ -194,60 +194,60 @@ class SettlementControllerMappingTest {
                         GET /mall/app/orders/{orderNo}
                         GET /mall/app/products
                         GET /mall/app/products/{id}
-                        GET /mall/brands mall:brand:list
-                        GET /mall/brands/{id} mall:brand:query
-                        GET /mall/categories mall:category:list
-                        GET /mall/categories/{id} mall:category:query
-                        DELETE /mall/specs/{id} mall:spec:remove
-                        DELETE /mall/spec-values/{id} mall:spec-value:remove
-                        DELETE /mall/spus/{id} mall:spu:remove
-                        GET /mall/specs mall:spec:list
-                        GET /mall/specs/simple mall:spec:query
-                        GET /mall/specs/{id} mall:spec:query
-                        GET /mall/spec-values mall:spec-value:list
-                        GET /mall/spec-values/simple mall:spec-value:query
-                        GET /mall/spec-values/{id} mall:spec-value:query
-                        GET /mall/spus/count mall:spu:list
-                        GET /mall/spus/export mall:spu:export
-                        GET /mall/spus/simple mall:spu:query
-                        GET /mall/spus/batch mall:spu:query
-                        GET /mall/brands/page mall:brand:list
-                        GET /mall/brands/simple mall:brand:query
-                        GET /mall/categories/tree mall:category:list
-                        POST /mall/comments mall:comment:create
-                        GET /mall/comments mall:comment:list
-                        GET /mall/comments/{id} mall:comment:query
-                        POST /mall/specs mall:spec:add
-                        POST /mall/spec-values mall:spec-value:add
-                        POST /mall/spus/{id}/recycle mall:spu:edit
-                        POST /mall/spus/{id}/restore mall:spu:edit
+                        GET /mall/brands product:brand:list
+                        GET /mall/brands/{id} product:brand:query
+                        GET /mall/categories product:category:list
+                        GET /mall/categories/{id} product:category:query
+                        DELETE /mall/specs/{id} product:spec:remove
+                        DELETE /mall/spec-values/{id} product:spec-value:remove
+                        DELETE /mall/spus/{id} product:spu:remove
+                        GET /mall/specs product:spec:list
+                        GET /mall/specs/simple product:spec:query
+                        GET /mall/specs/{id} product:spec:query
+                        GET /mall/spec-values product:spec-value:list
+                        GET /mall/spec-values/simple product:spec-value:query
+                        GET /mall/spec-values/{id} product:spec-value:query
+                        GET /mall/spus/count product:spu:list
+                        GET /mall/spus/export product:spu:export
+                        GET /mall/spus/simple product:spu:query
+                        GET /mall/spus/batch product:spu:query
+                        GET /mall/brands/page product:brand:list
+                        GET /mall/brands/simple product:brand:query
+                        GET /mall/categories/tree product:category:list
+                        POST /mall/comments product:comment:create
+                        GET /mall/comments product:comment:list
+                        GET /mall/comments/{id} product:comment:query
+                        POST /mall/specs product:spec:add
+                        POST /mall/spec-values product:spec-value:add
+                        POST /mall/spus/{id}/recycle product:spu:edit
+                        POST /mall/spus/{id}/restore product:spu:edit
                         GET /mall/app/comments
                         POST /mall/app/comments
-                        PUT /mall/specs/{id} mall:spec:edit
-                        PUT /mall/spec-values/{id} mall:spec-value:edit
-                        PUT /mall/comments/{id}/reply mall:comment:reply
-                        PUT /mall/comments/{id}/visible mall:comment:edit
-                        GET /mall/spus mall:spu:list
-                        GET /mall/spus/{id} mall:spu:query
+                        PUT /mall/specs/{id} product:spec:edit
+                        PUT /mall/spec-values/{id} product:spec-value:edit
+                        PUT /mall/comments/{id}/reply product:comment:reply
+                        PUT /mall/comments/{id}/visible product:comment:edit
+                        GET /mall/spus product:spu:list
+                        GET /mall/spus/{id} product:spu:query
                         POST /mall/admin/coupon-templates mall:coupon-template:add
                         POST /mall/admin/members/{memberId}/coupons/{templateId} mall:coupon:issue
                         POST /mall/app/checkout
                         POST /mall/app/checkout/abandon
                         POST /mall/app/checkout/quote
                         POST /mall/app/coupon-center/{templateId}/claim
-                        POST /mall/brands mall:brand:add
-                        POST /mall/categories mall:category:add
-                        POST /mall/spus mall:spu:add
+                        POST /mall/brands product:brand:add
+                        POST /mall/categories product:category:add
+                        POST /mall/spus product:spu:add
                         PUT /mall/admin/coupon-templates/{id} mall:coupon-template:edit
                         DELETE /mall/admin/coupon-templates/{id} mall:coupon-template:remove
                         DELETE /mall/admin/members/{memberId}/coupons/{couponId} mall:coupon:remove
                         PUT /mall/admin/coupon-templates/{id}/enabled mall:coupon-template:edit
                         PUT /mall/admin/coupon-templates/{id}/public-claim mall:coupon-template:edit
                         PUT /mall/app/cart/{productId}
-                        PUT /mall/brands/{id} mall:brand:edit
-                        PUT /mall/categories/{id} mall:category:edit
-                        PUT /mall/spus/{id} mall:spu:edit
-                        PUT /mall/spus/{id}/shelf mall:spu:edit
+                        PUT /mall/brands/{id} product:brand:edit
+                        PUT /mall/categories/{id} product:category:edit
+                        PUT /mall/spus/{id} product:spu:edit
+                        PUT /mall/spus/{id}/shelf product:spu:edit
                         """
                         .split("\n")));
         // 文本块会移除行尾空格，空权限与带权限的路由统一去掉行尾空白。

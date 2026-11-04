@@ -3,7 +3,14 @@ package com.lemnt.product.adapter.web.product;
 import com.lemnt.common.security.annotation.RequiresPermissions;
 import com.lemnt.product.application.product.cmd.ProductSpuCreateCmd;
 import com.lemnt.product.application.product.dto.ProductSpuDTO;
+import com.lemnt.product.application.product.executor.ProductSpuBatchDetailQueryExe;
+import com.lemnt.product.application.product.executor.ProductSpuCountQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpuCreateCmdExe;
+import com.lemnt.product.application.product.executor.ProductSpuDeleteCmdExe;
+import com.lemnt.product.application.product.executor.ProductSpuExportQueryExe;
+import com.lemnt.product.application.product.executor.ProductSpuRecycleCmdExe;
+import com.lemnt.product.application.product.executor.ProductSpuRestoreCmdExe;
+import com.lemnt.product.application.product.executor.ProductSpuSimpleListQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpuDetailQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpuPageQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpuShelfCmdExe;
@@ -38,7 +45,14 @@ class CatalogHttpContractTest {
             new ProductSpuDetailQueryExe(catalogService),
             create,
             mock(ProductSpuUpdateCmdExe.class),
-            mock(ProductSpuShelfCmdExe.class));
+            mock(ProductSpuShelfCmdExe.class),
+            mock(ProductSpuExportQueryExe.class),
+            mock(ProductSpuRecycleCmdExe.class),
+            mock(ProductSpuRestoreCmdExe.class),
+            mock(ProductSpuDeleteCmdExe.class),
+            mock(ProductSpuCountQueryExe.class),
+            mock(ProductSpuSimpleListQueryExe.class),
+            mock(ProductSpuBatchDetailQueryExe.class));
 
     @Test
     void pageDefaultsAndTopLevelRowsFollowExistingContract() throws Exception {
@@ -46,7 +60,7 @@ class CatalogHttpContractTest {
             .thenReturn(new ProductCatalogPage(List.of(), 0));
         MockMvcBuilders.standaloneSetup(controller)
             .build()
-            .perform(get("/product/spus"))
+            .perform(get("/spus"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.rows").isEmpty())
             .andExpect(jsonPath("$.total").value(0));
@@ -57,15 +71,15 @@ class CatalogHttpContractTest {
     @Test
     void rejectsInvalidPagingAndNestedSkuBeforeApplicationWrite() throws Exception {
         var mvc = MockMvcBuilders.standaloneSetup(controller).build();
-        mvc.perform(get("/product/spus?pageSize=101")).andExpect(status().isBadRequest());
+        mvc.perform(get("/spus?pageSize=101")).andExpect(status().isBadRequest());
         mvc.perform(
-                post("/product/spus")
+                post("/spus")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         "{\"code\":\"SP1\",\"name\":\"goods\",\"categoryId\":1,\"brandId\":1,\"skus\":[]}"))
             .andExpect(status().isBadRequest());
         mvc.perform(
-                post("/product/spus")
+                post("/spus")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         "{\"code\":\"SP1\",\"name\":\"goods\",\"categoryId\":1,\"brandId\":1,\"skus\":[{\"code\":\"S1\",\"name\":\"sku\",\"price\":1.001,\"stock\":1}]}"))
@@ -81,7 +95,7 @@ class CatalogHttpContractTest {
                     3L, "SP1", "goods", 1L, 2L, null, null, "OFF_SHELF", List.of()));
         var mvc = MockMvcBuilders.standaloneSetup(controller).build();
         mvc.perform(
-                post("/product/spus")
+                post("/spus")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
@@ -98,7 +112,7 @@ class CatalogHttpContractTest {
         assertEquals(0, captured.getValue().sort());
         assertEquals(new BigDecimal("9.25"), captured.getValue().skus().get(0).price());
         mvc.perform(
-                post("/product/spus")
+                post("/spus")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
@@ -107,7 +121,7 @@ class CatalogHttpContractTest {
                             """))
             .andExpect(status().isBadRequest());
         mvc.perform(
-                post("/product/spus")
+                post("/spus")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
@@ -117,7 +131,7 @@ class CatalogHttpContractTest {
                             """))
             .andExpect(status().isBadRequest());
         mvc.perform(
-                post("/product/spus")
+                post("/spus")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """

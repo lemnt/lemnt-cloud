@@ -2,7 +2,7 @@ package com.lemnt.product.adapter.app.product;
 
 import com.lemnt.common.core.domain.R;
 import com.lemnt.product.adapter.app.product.converter.StoreReqConverter;
-import com.lemnt.product.adapter.app.product.converter.StoreResConverter;
+import com.lemnt.product.adapter.app.product.converter.ProductCategoryResConverter;
 import com.lemnt.product.adapter.app.product.req.StorePageReq;
 import com.lemnt.product.adapter.app.product.res.StoreDetailRes;
 import com.lemnt.product.adapter.app.product.res.StoreProductRes;
@@ -37,12 +37,12 @@ public class AppProductController {
     public R<StoreProductRes> products(@Valid @ModelAttribute StorePageReq req) {
         var page = storeProductPageQueryExe.execute(StoreReqConverter.page(req));
         return R.page(
-            page.records().stream().map(StoreResConverter::product).toList(), page.total());
+            page.records().stream().map(ProductCategoryResConverter::product).toList(), page.total());
     }
 
     @GetMapping("/products/{id}")
     @Operation(summary = "公开在售商品详情；不存在及隐藏均为null")
     public R<StoreDetailRes> product(@PathVariable Long id) {
-        return R.ok(StoreResConverter.detail(storeProductDetailQueryExe.execute(id)));
+        return R.ok(ProductCategoryResConverter.detail(storeProductDetailQueryExe.execute(id)));
     }
 }

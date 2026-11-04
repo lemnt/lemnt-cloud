@@ -11,9 +11,4 @@
         <result property="sort" column="sort"/>
         <result property="status" column="status"/>
     </resultMap>
-
-    <select id="storeCatalogCategories" resultMap="CategoryResult">
-        SELECT c.id, c.parent_id, c.name, c.pic_url, c.sort, c.status FROM product_category c LEFT JOIN product_category p ON p.id=c.parent_id WHERE
-        c.status='ENABLED' AND (c.parent_id IS NULL OR p.status='ENABLED') ORDER BY c.sort,c.id LIMIT 1001
-    </select>
 </mapper>

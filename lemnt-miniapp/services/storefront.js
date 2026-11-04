@@ -90,7 +90,11 @@ function createStoreClient({ request, baseUrl, ready = false }) {
     if (!ready) throw Error('商城服务暂未启用');
     if (!/^https:\/\/[^/?#]+(?:\/[^?#]*)?$/.test(baseUrl)) throw Error('请配置合法HTTPS服务地址');
     const r = await request({
-      url: baseUrl.replace(/\/$/, '') + '/mall/app' + path,
+      url:
+        baseUrl.replace(/\/$/, '') +
+        // 商品资源已迁出/mall前缀；装修Banner仍归promotion
+        (/^\/(products|categories)(\/|$)/.test(path) ? '/app' : '/mall/app') +
+        path,
       method: 'GET',
       data,
       timeout: 15000,

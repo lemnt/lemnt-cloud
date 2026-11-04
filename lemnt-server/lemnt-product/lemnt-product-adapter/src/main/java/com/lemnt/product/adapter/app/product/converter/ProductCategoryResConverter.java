@@ -1,19 +1,16 @@
 package com.lemnt.product.adapter.app.product.converter;
 
-import com.lemnt.product.adapter.app.product.res.StoreCategoryRes;
+import com.lemnt.product.adapter.app.product.res.AppProductCategorySimpleRes;
 import com.lemnt.product.adapter.app.product.res.StoreDetailRes;
 import com.lemnt.product.adapter.app.product.res.StoreProductRes;
 import com.lemnt.product.adapter.app.product.res.StoreSkuRes;
-import com.lemnt.product.application.product.dto.StoreCategoryDTO;
-import com.lemnt.product.application.product.dto.StoreDetailDTO;
-import com.lemnt.product.application.product.dto.StoreProductDTO;
-import com.lemnt.product.application.product.dto.StoreSkuDTO;
+import com.lemnt.product.application.product.dto.*;
 
 /**
  * 门店响应转换器。
  */
-public final class StoreResConverter {
-    private StoreResConverter() {
+public final class ProductCategoryResConverter {
+    private ProductCategoryResConverter() {
     }
 
     /**
@@ -61,8 +58,8 @@ public final class StoreResConverter {
     /**
      * 分类。
      */
-    public static StoreCategoryRes category(StoreCategoryDTO v) {
-        return v == null ? null : new StoreCategoryRes(v.id(), v.parentId(), v.name(), v.picUrl());
+    public static AppProductCategorySimpleRes category(ProductCategoryDTO v) {
+        return v == null ? null : new AppProductCategorySimpleRes(v.id(), v.parentId(), v.name(), v.picUrl());
     }
 
     /**
@@ -78,6 +75,6 @@ public final class StoreResConverter {
             v.brandId(),
             v.description(),
             v.image(),
-            v.skus().stream().map(StoreResConverter::sku).toList());
+            v.skus().stream().map(ProductCategoryResConverter::sku).toList());
     }
 }

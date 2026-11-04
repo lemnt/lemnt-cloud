@@ -182,7 +182,7 @@ class ServiceRouteConfigurationTest {
             {"GET", "/system/users/current-info", "lemnt-system", "/users/current-info"},
             {"GET", "/system/areas/tree", "lemnt-system", "/areas/tree"},
             {"GET", "/system/files/app/upload", "lemnt-system", "/files/app/upload"},
-            {"GET", "/mall/app/products", "lemnt-product", "/mall/app/products"},
+            {"GET", "/app/products", "lemnt-product", "/app/products"},
             {"POST", "/trade/app/orders/NO/receive", "lemnt-order", "/trade/app/orders/NO/receive"}
         };
         for (var item : cases) {
@@ -214,7 +214,7 @@ class ServiceRouteConfigurationTest {
             List.of(
                 "/mall/unknown-resource",
                 "/trade/unknown-resource",
-                "/mall/app/products/123/extra",
+                "/app/products/123/extra",
                 "/trade/app/orders/123/payment/extra")) {
             assertTrue(matches(request("GET", path)).isEmpty(), path);
         }

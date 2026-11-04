@@ -7,30 +7,26 @@
 
 | 入口类型 | 数量 | 说明 |
 |---|---|---|
-| 管理端 HTTP `/mall/**` | 12 个 Controller / 44 端点 | `adapter/web/product`，与网关契约 product58 中的管理端部分一致 |
-| 商城 App HTTP `/mall/app/**` | 5 个 Controller / 14 端点 | `adapter/app/product` |
+| 管理端 HTTP（裸路径，无 `/mall` 前缀） | 8 个 Controller / 44 端点 | `adapter/web/product`，端点契约仍为 product58 的一部分 |
+| 商城 App HTTP `/app/**` | 5 个 Controller / 14 端点 | `adapter/app/product`；`/app` 前缀已归 product，其余服务 App 端仍走 `/mall/app/**` |
 | Dubbo 入向契约 | `ProductCatalogClientImpl` 13 方法、`ProductCommentClientImpl` 2 方法 | 契约在 `lemnt-product-client`，调用方为 order、promotion |
 | RocketMQ 消费者 | 3 个（`OrderPaidConsumer`/`OrderClosedConsumer`/`AfterSaleCompletedConsumer`） | 均受 `commerce.mq.enabled=true` 开关控制，默认关闭 |
 | RocketMQ 出站 | `StockEventGatewayImpl`（事务消息） | 预占事实经半消息+本地事务二阶段直发，无本地消息表、无中继定时任务 |
 
-## 2. 管理端链路（`/mall/**`）
+## 2. 管理端链路（裸路径，无服务前缀）
 
 | Controller | 端点 | Executor | 落到的 Gateway → 表 |
 |---|---|---|---|
-| ProductBrandController `/mall/brands` | GET、GET/{id}、POST、PUT/{id}、DELETE/{id} | ProductBrand{List,Detail,Save,Delete}Exe | ProductBrandGateway → product_brand |
-| ProductBrandQueryController `/mall/brands` | GET/page、GET/simple | ProductBrand{Page,SimpleList}QueryExe | 同上 |
-| ProductCategoryController `/mall/categories` | GET、GET/{id}、POST、PUT/{id}、DELETE/{id} | ProductCategory{List,Detail,Save,Delete}Exe | ProductCategoryGateway → product_category |
-| ProductCategoryTreeController | GET/tree | ProductCategoryTreeQueryExe | 同上（内存组树） |
-| ProductCommentController `/mall/comments` | POST、GET、GET/{id}、PUT/{id}/reply、PUT/{id}/visible | ProductComment{SelfCreate,Page,Detail,Reply,Visible}Exe | ProductCommentGateway → product_comment；SelfCreate 额外校验 SKU/SPU |
-| ProductSpecController `/mall/specs` | POST、PUT/{id}、DELETE/{id}、GET、GET/{id}、GET/simple | ProductSpec{Create,Update,Delete,Page,Detail,SimpleList}Exe | ProductSpecService/ProductSpecGateway → product_spec |
-| ProductSpecValueController `/mall/spec-values` | 同上 6 个 | ProductSpecValue{...}Exe | ProductSpecService/ProductSpecValueGateway → product_spec_value |
-| ProductSpuController `/mall/spus` | GET、GET/{id}、POST、PUT/{id}、PUT/{id}/shelf | ProductSpu{Page,Detail,Create,Update,Shelf}Exe | ProductCatalogService + ProductValidationService → product_spu/product_sku；校验引用 product_brand/product_category |
-| ProductSpuManagementController `/mall/spus` | POST/{id}/recycle、POST/{id}/restore、DELETE/{id}、GET/count、GET/simple、GET/batch | ProductSpu{Recycle,Restore,Delete,Count,SimpleList,BatchDetail}Exe | ProductManagementService / ProductSpuGateway；count 走 XML `countStockSpus`（售罄/低库存） |
-| ProductSpuExportController | GET/export | ProductSpuExportQueryExe（复用 ProductSpuPageQueryExe） | ProductSpuGateway.page → XML `selectStockPage` 或 Lambda 分页 |
-| ProductFavoriteController `/mall/product-favorites` | GET | ProductFavoritePageQueryExe | ProductFavoriteService → product_favorite |
-| ProductBrowseHistoryController `/mall/product-browse-history` | GET | ProductBrowseHistoryPageQueryExe | ProductBrowseHistoryService → product_browse_history |
+| ProductBrandController `/brands` | GET、GET/{id}、POST、PUT/{id}、DELETE/{id}、GET/page、GET/simple | ProductBrand{List,Detail,Save,Delete,Page,SimpleList}Exe | ProductBrandGateway → product_brand |
+| ProductCategoryController `/categories` | GET、GET/{id}、POST、PUT/{id}、DELETE/{id}、GET/tree | ProductCategory{List,Detail,Save,Delete,Tree}Exe | ProductCategoryGateway → product_category（tree内存组树） |
+| ProductCommentController `/comments` | POST、GET、GET/{id}、PUT/{id}/reply、PUT/{id}/visible | ProductComment{SelfCreate,Page,Detail,Reply,Visible}Exe | ProductCommentGateway → product_comment；SelfCreate 额外校验 SKU/SPU |
+| ProductSpecController `/specs` | POST、PUT/{id}、DELETE/{id}、GET、GET/{id}、GET/simple | ProductSpec{Create,Update,Delete,Page,Detail,SimpleList}Exe | ProductSpecService/ProductSpecGateway → product_spec |
+| ProductSpecValueController `/spec-values` | 同上 6 个 | ProductSpecValue{...}Exe | ProductSpecService/ProductSpecValueGateway → product_spec_value |
+| ProductSpuController `/spus` | GET、GET/{id}、POST、PUT/{id}、PUT/{id}/shelf、POST/{id}/recycle、POST/{id}/restore、DELETE/{id}、GET/count、GET/simple、GET/batch、GET/export | ProductSpu{Page,Detail,Create,Update,Shelf,Recycle,Restore,Delete,Count,SimpleList,BatchDetail,Export}Exe | ProductCatalogService/ProductValidationService/ProductManagementService → product_spu/product_sku；count 走 XML `countStockSpus`（售罄/低库存）；export 复用 PageQueryExe |
+| ProductFavoriteController `/favorites` | GET | ProductFavoritePageQueryExe | ProductFavoriteService → product_favorite |
+| ProductBrowseHistoryController `/browse-historys` | GET | ProductBrowseHistoryPageQueryExe | ProductBrowseHistoryService → product_browse_history |
 
-## 3. 商城 App 链路（`/mall/app/**`）
+## 3. 商城 App 链路（`/app/**`）
 
 | 端点 | Executor | 链路要点 |
 |---|---|---|
@@ -99,13 +95,13 @@ order 结算/下单
 ## 6. 评价链路
 
 ```
-App POST /mall/app/comments → ProductCommentCreateCmdExe → ProductCommentService
+App POST /app/comments → ProductCommentCreateCmdExe → ProductCommentService
   ├─ OrderSnapshotGatewayImpl ─@DubboReference(check=false,timeout=5000,retries=0)→ order TradeOrderClient
   │    （校验订单归属、已支付、可评价商品）
   ├─ MemberLookupGatewayImpl ─@DubboReference(check=false)→ member MemberUserClient（昵称/头像）
   ├─ ProductCommentMapper.lock  XML 行锁 FOR UPDATE（重复评价检查）
   └─ 写 product_comment（score/pic_urls/anonymous 等 28 列）
-管理端 PUT /mall/comments/{id}/visible、/reply → 同 Gateway 更新 visible/reply_*
+管理端 PUT /comments/{id}/visible、/reply → 同 Gateway 更新 visible/reply_*
 order 评价流程（`OrderCommentService`）→ Dubbo saveVerified（用户评价落库）/ saveSystem（系统自动评价）
 legacyForLink XML：存量评价绑定检查（读取 deleted 事实但不对外返回）
 ```

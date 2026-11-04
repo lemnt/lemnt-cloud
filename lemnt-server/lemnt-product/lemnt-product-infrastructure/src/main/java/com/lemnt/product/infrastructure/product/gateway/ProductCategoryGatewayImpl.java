@@ -70,24 +70,9 @@ public class ProductCategoryGatewayImpl implements ProductCategoryGateway {
     }
 
     @Override
-    /**
-     * 查询分类。
-     */
-    public List<ProductCategory> visibleCategories() {
-        var rows = categoryMapper.storeCatalogCategories();
-        if (rows.size() > 1000) {
-            throw new IllegalStateException("分类超过1000条，需要分页");
-        }
-        return rows.stream()
-            .map(
-                v ->
-                    new ProductCategory(
-                        v.getId(),
-                        v.getParentId(),
-                        v.getName(),
-                        v.getPicUrl(),
-                        v.getSort(),
-                        v.getStatus()))
-            .toList();
+    public List<ProductCategory> listEnableCategories() {
+        var rows = categoryMapper.selectList(Wrappers.<ProductCategoryDO>lambdaQuery()
+            .eq(ProductCategoryDO::getStatus, "ENABLED"));
+        return rows.stream().map(ProductCatalogConverter::category).toList();
     }
 }

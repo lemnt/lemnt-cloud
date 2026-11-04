@@ -61,7 +61,7 @@ function createCommentClient({ request, baseUrl, ready = false, getMemberToken =
     let response;
     try {
       response = await request({
-        url: baseUrl.replace(/\/$/, '') + '/mall/app/comments',
+        url: baseUrl.replace(/\/$/, '') + '/app/comments',
         method,
         data,
         timeout: 15000,

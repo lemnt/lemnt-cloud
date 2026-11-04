@@ -33,7 +33,7 @@ class ProductCatalogMenuSeedTest {
             }
             try (var rows =
                      statement.executeQuery(
-                         "SELECT COUNT(*) FROM sys_menu WHERE perms='mall:sku:stock'")) {
+                         "SELECT COUNT(*) FROM sys_menu WHERE perms='product:spu:edit'")) {
                 rows.next();
                 assertEquals(1, rows.getInt(1));
             }

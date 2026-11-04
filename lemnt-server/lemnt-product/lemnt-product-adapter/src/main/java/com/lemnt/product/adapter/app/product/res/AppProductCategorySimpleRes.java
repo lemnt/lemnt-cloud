@@ -5,10 +5,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * 门店分类响应。
+ * 分类响应。
  */
-@Schema(description = "StoreCategory公开响应")
-public record StoreCategoryRes(
+@Schema(description = "分类响应")
+public record AppProductCategorySimpleRes(
     @Schema(description = "id") Long id,
     @Schema(description = "parentId") Long parentId,
     @Schema(description = "name") String name,

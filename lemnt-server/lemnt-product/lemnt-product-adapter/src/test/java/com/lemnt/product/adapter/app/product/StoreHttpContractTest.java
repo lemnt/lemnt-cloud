@@ -4,7 +4,7 @@ import com.lemnt.product.application.product.dto.StoreDetailDTO;
 import com.lemnt.product.application.product.dto.StorePageDTO;
 import com.lemnt.product.application.product.dto.StoreProductDTO;
 import com.lemnt.product.application.product.dto.StoreSkuDTO;
-import com.lemnt.product.application.product.executor.StoreCategoryListQueryExe;
+import com.lemnt.product.application.product.executor.ProductCategoryEnableListQueryExe;
 import com.lemnt.product.application.product.executor.StoreProductDetailQueryExe;
 import com.lemnt.product.application.product.executor.StoreProductPageQueryExe;
 import com.lemnt.product.application.product.qry.StorePageQry;
@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class StoreHttpContractTest {
-    StoreCategoryListQueryExe storeCategoryListQueryExe = mock(StoreCategoryListQueryExe.class);
+    ProductCategoryEnableListQueryExe storeCategoryListQueryExe = mock(ProductCategoryEnableListQueryExe.class);
 
     StoreProductPageQueryExe storeProductPageQueryExe = mock(StoreProductPageQueryExe.class);
 

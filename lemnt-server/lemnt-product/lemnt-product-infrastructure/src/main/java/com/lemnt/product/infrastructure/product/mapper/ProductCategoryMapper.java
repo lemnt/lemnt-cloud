@@ -12,9 +12,4 @@ import java.util.List;
  */
 @Mapper
 public interface ProductCategoryMapper extends BaseMapper<ProductCategoryDO> {
-
-    /**
-     * 查询分类。
-     */
-    List<ProductCategoryDO> storeCatalogCategories();
 }

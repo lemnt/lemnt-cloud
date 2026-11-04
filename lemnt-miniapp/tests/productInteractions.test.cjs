@@ -35,7 +35,7 @@ test('收藏和足迹只走会员接口，分页读取rows/total且保留长编�
   assert.equal(page.records[0].price, null);
   assert.deepEqual(r.calls[0].data, { pageNum: 1, pageSize: 20 });
   assert.deepEqual(r.calls[0].header, { Authorization: 'Bearer one' });
-  assert.match(r.calls[0].url, /\/mall\/app\/favorites$/);
+  assert.match(r.calls[0].url, /\/app\/favorites$/);
 });
 test('收藏状态false有效，未确认写入不能显示成功，空足迹数组不清空', async () => {
   const r = client({ data: { favorite: false, success: false, count: 0 } });
@@ -54,7 +54,7 @@ test('返回期间换号拒绝旧记录，独立清空路径不传会员字段',
   });
   await assert.rejects(r.api.clearHistory(), /会员已切换/);
   assert.equal(r.calls[0].method, 'DELETE');
-  assert.match(r.calls[0].url, /browse-history\/clear$/);
+  assert.match(r.calls[0].url, /browse-historys\/clear$/);
   assert.equal(r.calls[0].data, undefined);
 });
 test('足迹隐藏与收藏取消都只传商品编号', async () => {

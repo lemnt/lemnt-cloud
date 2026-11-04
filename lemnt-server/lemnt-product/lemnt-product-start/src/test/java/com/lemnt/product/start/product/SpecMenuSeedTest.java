@@ -71,16 +71,16 @@ class SpecMenuSeedTest {
             }
             assertEquals(
                 Set.of(
-                    "mall:spec:list",
-                    "mall:spec:query",
-                    "mall:spec:add",
-                    "mall:spec:edit",
-                    "mall:spec:remove",
-                    "mall:spec-value:list",
-                    "mall:spec-value:query",
-                    "mall:spec-value:add",
-                    "mall:spec-value:edit",
-                    "mall:spec-value:remove"),
+                    "product:spec:list",
+                    "product:spec:query",
+                    "product:spec:add",
+                    "product:spec:edit",
+                    "product:spec:remove",
+                    "product:spec-value:list",
+                    "product:spec-value:query",
+                    "product:spec-value:add",
+                    "product:spec-value:edit",
+                    "product:spec-value:remove"),
                 actual);
             assertEquals(
                 1,
@@ -95,7 +95,7 @@ class SpecMenuSeedTest {
                 0,
                 count(
                     connection,
-                    "SELECT COUNT(*) FROM sys_menu WHERE perms='mall:spu:export'"));
+                    "SELECT COUNT(*) FROM sys_menu WHERE perms='product:spu:export'"));
             statement.execute(
                 "INSERT INTO sys_menu(menu_name,parent_id,component,menu_type) VALUES('商品',1,'mall/spu/index','C')");
             ScriptUtils.executeSqlScript(connection, exportScript);
@@ -104,7 +104,7 @@ class SpecMenuSeedTest {
                 1,
                 count(
                     connection,
-                    "SELECT COUNT(*) FROM sys_menu WHERE perms='mall:spu:export'"));
+                    "SELECT COUNT(*) FROM sys_menu WHERE perms='product:spu:export'"));
             assertEquals(1, count(connection, "SELECT COUNT(*) FROM sys_role_menu"));
         }
     }
