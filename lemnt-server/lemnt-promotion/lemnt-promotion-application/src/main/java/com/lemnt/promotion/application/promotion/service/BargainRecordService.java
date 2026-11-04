@@ -78,6 +78,7 @@ public class BargainRecordService {
                                 activity.spuId(),
                                 activity.skuId(),
                                 activity.bargainFirstPrice(),
+                                activity.bargainMinPrice(),
                                 activity.bargainFirstPrice(),
                                 IN_PROGRESS,
                                 null,
@@ -96,9 +97,9 @@ public class BargainRecordService {
         require(
                 helps.countByUserAndActivity(userId, activity.id()) < activity.bargainCount(),
                 "帮砍次数已用完");
-        require(record.bargainPrice().compareTo(activity.bargainMinPrice()) > 0, "已砍到底价");
+        require(record.bargainPrice().compareTo(record.bargainMinPrice()) > 0, "已砍到底价");
         require(helps.byRecordAndUser(recordId, userId) == null, "您已助力过该砍价");
-        var reduce = reducePrice(activity, record.bargainPrice());
+        var reduce = reducePrice(activity, record.bargainPrice(), record.bargainMinPrice());
         BargainHelp help;
         try {
             help = helps.save(new BargainHelp(null, activity.id(), recordId, userId, reduce));
@@ -108,7 +109,7 @@ public class BargainRecordService {
         var price = record.bargainPrice().subtract(reduce);
         var count = helps.byRecordId(recordId).size();
         var success =
-                price.compareTo(activity.bargainMinPrice()) <= 0
+                price.compareTo(record.bargainMinPrice()) <= 0
                         || count >= activity.helpMaxCount();
         require(
                 records.updatePrice(
@@ -121,8 +122,9 @@ public class BargainRecordService {
         return helpDto(help);
     }
 
-    /** 在随机区间取分，最高不超过剩余可砍金额。 */
-    private BigDecimal reducePrice(BargainActivity activity, BigDecimal current) {
+    /** 在随机区间取分，最高不超过剩余可砍金额；底价使用记录冻结值，防止活动改价篡改进行中目标。 */
+    private BigDecimal reducePrice(
+            BargainActivity activity, BigDecimal current, BigDecimal minPrice) {
         var minCents = activity.randomMinPrice().movePointRight(2).longValueExact();
         var maxCents = activity.randomMaxPrice().movePointRight(2).longValueExact();
         var cents =
@@ -130,7 +132,7 @@ public class BargainRecordService {
                         ? minCents
                         : ThreadLocalRandom.current().nextLong(minCents, maxCents + 1);
         var reduce = BigDecimal.valueOf(cents).movePointLeft(2);
-        var remaining = current.subtract(activity.bargainMinPrice());
+        var remaining = current.subtract(minPrice);
         var capped = reduce.min(remaining).setScale(2, RoundingMode.DOWN);
         return capped.signum() > 0 ? capped : remaining;
     }

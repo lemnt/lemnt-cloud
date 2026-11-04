@@ -29,10 +29,15 @@ public interface TradePaymentGateway {
     PaymentRecord findByOrderNoAndChannel(String orderNo, String channel);
 
     /**
-     * 创建待支付记录。
+     * 创建待支付记录。memberId 来自订单可信快照，落库用于资金归属审计。
      */
     PaymentRecord createWaiting(
-            String paymentNo, String orderNo, String channel, String appKey, BigDecimal amount);
+            String paymentNo,
+            String orderNo,
+            Long memberId,
+            String channel,
+            String appKey,
+            BigDecimal amount);
 
     /**
      * 查找按订单编号。

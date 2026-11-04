@@ -66,6 +66,7 @@ public final class BargainConverter {
                 row.getSpuId(),
                 row.getSkuId(),
                 row.getBargainFirstPrice(),
+                row.getBargainMinPrice(),
                 row.getBargainPrice(),
                 row.getStatus(),
                 row.getEndTime(),
@@ -80,6 +81,7 @@ public final class BargainConverter {
         row.setSpuId(value.spuId());
         row.setSkuId(value.skuId());
         row.setBargainFirstPrice(value.bargainFirstPrice());
+        row.setBargainMinPrice(value.bargainMinPrice());
         row.setBargainPrice(value.bargainPrice());
         row.setStatus(value.status());
         row.setEndTime(value.endTime());

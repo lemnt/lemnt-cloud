@@ -64,7 +64,7 @@ class CashPaymentPersistenceTest extends OutboxPersistenceTest {
                 proxy(
                         new PaymentRefundService(orders, payments, refunds, outbox),
                         PaymentRefundService.class);
-        payments.createWaiting("P1", "O1", "SANDBOX", "app", new BigDecimal("10.00"));
+        payments.createWaiting("P1", "O1", 9L, "SANDBOX", "app", new BigDecimal("10.00"));
     }
 
     VerifiedPaymentNotification notice(String channelNo) {

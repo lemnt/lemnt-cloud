@@ -80,6 +80,6 @@ public class TradePaymentCreateCmdExe {
                                 .substring(0, 24)
                                 .toUpperCase(Locale.ROOT);
         return tradePaymentGateway.createWaiting(
-                paymentNo, order.orderNo(), normalizedChannel, appKey, order.totalAmount());
+                paymentNo, order.orderNo(), order.memberId(), normalizedChannel, appKey, order.totalAmount());
     }
 }

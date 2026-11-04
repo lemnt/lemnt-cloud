@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * 交易支付数据对象。
@@ -25,10 +26,12 @@ public class TradePaymentDO extends BaseDO {
 
     private String paymentNo;
     private String orderNo;
+    private Long memberId;
     private String channel;
     private String appKey;
     private String channelTradeNo;
     private BigDecimal amount;
     private String status;
+    private LocalDateTime paidTime;
     private String notifyId;
 }

@@ -80,11 +80,17 @@ public class TradePaymentGatewayImpl implements TradePaymentGateway {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public PaymentRecord createWaiting(
-            String paymentNo, String orderNo, String channel, String appKey, BigDecimal amount) {
+            String paymentNo,
+            String orderNo,
+            Long memberId,
+            String channel,
+            String appKey,
+            BigDecimal amount) {
         TradePaymentDO row =
                 new TradePaymentDO()
                         .setPaymentNo(paymentNo)
                         .setOrderNo(orderNo)
+                        .setMemberId(memberId)
                         .setChannel(channel)
                         .setAppKey(appKey)
                         .setAmount(amount)

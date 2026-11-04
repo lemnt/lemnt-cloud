@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS product_sku (
     volume DECIMAL(18,6) NULL COMMENT '单件体积，立方米',
     price DECIMAL(19,2) NOT NULL COMMENT 'SKU销售单价，单位元',
     stock INT NOT NULL DEFAULT 0 COMMENT '当前可用库存',
-    status VARCHAR(20) NOT NULL DEFAULT 'OFF_SHELF' COMMENT '商品状态：ON_SHELF上架、OFF_SHELF下架',
+    status VARCHAR(20) NOT NULL DEFAULT 'OFF_SHELF' COMMENT '商品状态：ON_SHELF上架、OFF_SHELF下架、RECYCLED回收站、DELETED删除',
     create_by VARCHAR(64) NULL COMMENT '创建人',
     create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     update_by VARCHAR(64) NULL COMMENT '修改人',
@@ -134,12 +134,13 @@ CREATE TABLE IF NOT EXISTS product_sku (
     KEY idx_mall_product_status(status),
     CONSTRAINT chk_mall_product_price CHECK(price>0),
     CONSTRAINT chk_mall_product_stock CHECK(stock>=0),
-    spu_id BIGINT NULL COMMENT '商品SPU编号',
+    CONSTRAINT chk_sku_status CHECK(status IN ('ON_SHELF','OFF_SHELF','RECYCLED','DELETED')),
+    spu_id BIGINT NULL COMMENT '商品SPU编号；历史独立商品（legacy standalone）可为空并保持可售，新建SKU应归属SPU',
     variant_key VARCHAR(64) NULL COMMENT 'SKU规格组合唯一摘要',
     CONSTRAINT fk_mall_product_spu FOREIGN KEY(spu_id) REFERENCES product_spu(id),
     CONSTRAINT uk_mall_sku_variant UNIQUE(spu_id,variant_key),
     specs LONGTEXT NULL COMMENT '规格JSON数组，元素为specId/specName/specValueId/specValueName'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商城商品';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品SKU';
 
 CREATE TABLE IF NOT EXISTS product_comment (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键编号',
@@ -172,9 +173,14 @@ CREATE TABLE IF NOT EXISTS product_comment (
     update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     UNIQUE KEY uk_mall_comment_order_item(order_item_id),
     KEY idx_mall_comment_spu(spu_id,id),
+    KEY idx_product_comment_member(member_id,id),
+    KEY idx_product_comment_spu_visible(spu_id,visible,create_time,id),
+    KEY idx_product_comment_order(order_no,sku_id),
     CONSTRAINT fk_mall_comment_spu FOREIGN KEY(spu_id) REFERENCES product_spu(id),
     CONSTRAINT fk_mall_comment_sku FOREIGN KEY(sku_id) REFERENCES product_sku(id),
-    CONSTRAINT chk_mall_comment_score CHECK(score BETWEEN 1 AND 5)
+    CONSTRAINT chk_mall_comment_score CHECK(score BETWEEN 1 AND 5),
+    CONSTRAINT chk_comment_description_scores CHECK(description_scores IS NULL OR description_scores BETWEEN 1 AND 5),
+    CONSTRAINT chk_comment_benefit_scores CHECK(benefit_scores IS NULL OR benefit_scores BETWEEN 1 AND 5)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '商品订单评价及商家回复';
 
 CREATE TABLE IF NOT EXISTS product_message_outbox (

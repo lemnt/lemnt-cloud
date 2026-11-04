@@ -1,19 +1,24 @@
 -- lemnt_member：最终表结构初始化。仅用于建库，不提供存量升级或历史回填。
 -- 本服务没有必须预置的业务数据；菜单、字典与默认参数归system，本次保持原样。
+-- 会话由 auth+网关+Redis 承载、短信验证码与第三方登录当前不实现；
+-- 原 member_session/member_login_attempt/member_sms_*/member_social_* 六表无代码引用，已按认证边界决议移除，
+-- 相关功能复活时按现行认证设计重新建表（见 docs/yudao-missing-tables.md）。
 
 CREATE TABLE IF NOT EXISTS member_level (
     id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键编号',
     name VARCHAR(80) NOT NULL UNIQUE COMMENT '名称',
     level INT NOT NULL UNIQUE COMMENT '会员等级序号',
-    experience BIGINT NOT NULL UNIQUE COMMENT '升级所需经验门槛',
+    experience BIGINT NOT NULL COMMENT '升级所需经验门槛；多等级共享同一门槛为合法配置，不设唯一约束',
     discount_percent INT NOT NULL COMMENT '等级折扣百分比，100表示不打折',
     icon VARCHAR(500) COMMENT '图标地址',
     background_url VARCHAR(500) COMMENT '等级背景图片地址',
-    status INT NOT NULL COMMENT '等级状态：1启用、0停用',
+    status INT NOT NULL DEFAULT 1 COMMENT '等级状态：1启用、0停用',
     create_time DATETIME NULL COMMENT '创建时间',
     create_by VARCHAR(64) NULL COMMENT '创建人',
     update_time DATETIME NULL COMMENT '修改时间',
-    update_by VARCHAR(64) NULL COMMENT '修改人'
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    CONSTRAINT chk_member_level_status CHECK(status IN (0,1)),
+    CONSTRAINT chk_member_level_discount CHECK(discount_percent BETWEEN 1 AND 100)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员等级';
 
 CREATE TABLE IF NOT EXISTS member_group (
@@ -24,7 +29,8 @@ CREATE TABLE IF NOT EXISTS member_group (
     create_time DATETIME NULL COMMENT '创建时间',
     create_by VARCHAR(64) NULL COMMENT '创建人',
     update_time DATETIME NULL COMMENT '修改时间',
-    update_by VARCHAR(64) NULL COMMENT '修改人'
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    CONSTRAINT chk_member_group_status CHECK(status IN (0,1))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员分组';
 
 CREATE TABLE IF NOT EXISTS member_tag (
@@ -47,39 +53,9 @@ CREATE TABLE IF NOT EXISTS member_sign_in_config (
     create_by VARCHAR(64) NULL COMMENT '创建人',
     update_time DATETIME NULL COMMENT '修改时间',
     update_by VARCHAR(64) NULL COMMENT '修改人',
-    UNIQUE KEY uk_member_sign_config_day(`day`)
+    UNIQUE KEY uk_member_sign_config_day(`day`),
+    CONSTRAINT chk_member_sign_config_status CHECK(status IN (0,1))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员连续签到奖励规则';
-
-CREATE TABLE IF NOT EXISTS member_login_attempt (
-    login_hash VARCHAR(64) PRIMARY KEY COMMENT '登录账号摘要',
-    failures INT NOT NULL DEFAULT 0 COMMENT '登录失败次数',
-    window_start DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '登录失败计数窗口开始时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员登录失败计数';
-
-CREATE TABLE IF NOT EXISTS member_sms_challenge (
-    mobile VARCHAR(24) NOT NULL COMMENT '手机号码',
-    scene VARCHAR(40) NOT NULL COMMENT '验证码业务场景',
-    code_hash VARCHAR(64) NULL COMMENT '短信验证码摘要',
-    expires_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '到期时间',
-    attempts INT NOT NULL DEFAULT 0 COMMENT '已尝试校验次数',
-    last_sent_at DATETIME NULL COMMENT '最近短信发送时间',
-    sent_date DATE NULL COMMENT '短信发送计数日期',
-    daily_count INT NOT NULL DEFAULT 0 COMMENT '当日短信发送次数',
-    PRIMARY KEY(mobile,scene)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员短信验证码校验状态';
-
-CREATE TABLE IF NOT EXISTS member_sms_budget (
-    budget_day DATE PRIMARY KEY COMMENT '短信总预算日期',
-    requests INT NOT NULL DEFAULT 0 COMMENT '当日短信请求总数'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员短信日请求预算';
-
-CREATE TABLE IF NOT EXISTS member_social_state (
-    state_hash VARCHAR(64) PRIMARY KEY COMMENT '第三方授权状态摘要',
-    provider VARCHAR(100) NOT NULL COMMENT '第三方身份提供方',
-    purpose VARCHAR(16) NOT NULL COMMENT '第三方授权用途',
-    member_id BIGINT NULL COMMENT '会员编号',
-    expires_at DATETIME NOT NULL COMMENT '到期时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员第三方授权状态';
 
 CREATE TABLE IF NOT EXISTS member_user (
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '会员编号',
@@ -109,19 +85,10 @@ CREATE TABLE IF NOT EXISTS member_user (
     sex INT NULL COMMENT '性别：0未知、1男、2女',
     birthday DATE NULL COMMENT '出生日期',
     CONSTRAINT fk_member_level FOREIGN KEY(level_id) REFERENCES member_level(id),
-    CONSTRAINT fk_member_group FOREIGN KEY(group_id) REFERENCES member_group(id)
+    CONSTRAINT fk_member_group FOREIGN KEY(group_id) REFERENCES member_group(id),
+    CONSTRAINT chk_member_user_status CHECK(status IN (0,1)),
+    CONSTRAINT chk_member_user_sex CHECK(sex IS NULL OR sex IN (0,1,2))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会员基础信息';
-
-CREATE TABLE IF NOT EXISTS member_session (
-    id VARCHAR(36) PRIMARY KEY COMMENT '主键编号',
-    member_id BIGINT NOT NULL COMMENT '会员编号',
-    access_hash VARCHAR(64) NOT NULL UNIQUE COMMENT '访问令牌摘要',
-    refresh_hash VARCHAR(64) NOT NULL UNIQUE COMMENT '刷新令牌摘要',
-    expires_at DATETIME NOT NULL COMMENT '到期时间',
-    refresh_expires_at DATETIME NOT NULL COMMENT '刷新令牌到期时间',
-    FOREIGN KEY(member_id) REFERENCES member_user(id),
-    KEY idx_member_session_owner(member_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员访问与刷新会话';
 
 CREATE TABLE IF NOT EXISTS member_address (
     id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键编号',
@@ -180,15 +147,6 @@ CREATE TABLE IF NOT EXISTS member_sign_in_record (
     FOREIGN KEY(user_id) REFERENCES member_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员每日签到记录';
 
-CREATE TABLE IF NOT EXISTS member_social_binding (
-    provider VARCHAR(100) NOT NULL COMMENT '第三方身份提供方',
-    subject VARCHAR(200) NOT NULL COMMENT '第三方用户唯一标识',
-    member_id BIGINT NOT NULL COMMENT '会员编号',
-    PRIMARY KEY(provider,subject),
-    UNIQUE KEY uk_member_provider(member_id,provider),
-    FOREIGN KEY(member_id) REFERENCES member_user(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员第三方身份绑定';
-
 CREATE TABLE IF NOT EXISTS member_point_record (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键编号',
     user_id BIGINT NOT NULL COMMENT '会员编号',
@@ -228,7 +186,6 @@ CREATE TABLE IF NOT EXISTS member_experience_record (
     KEY idx_member_experience_user(user_id,id),
     FOREIGN KEY(user_id) REFERENCES member_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员经验变更流水';
-
 
 CREATE TABLE IF NOT EXISTS member_message_inbox (
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',

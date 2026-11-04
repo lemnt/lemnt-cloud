@@ -3,11 +3,14 @@
 CREATE TABLE IF NOT EXISTS promotion_cart (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键编号',
     member_id BIGINT NOT NULL COMMENT '会员编号',
-    product_id BIGINT NOT NULL COMMENT '商品SKU编号',
+    product_id BIGINT NOT NULL COMMENT '加入购车商品SKU编号（历史列名，实为 sku_id 语义）',
     quantity INT NOT NULL COMMENT '商品数量',
     selected BOOLEAN NOT NULL DEFAULT TRUE COMMENT '是否选中购物车商品',
     version BIGINT NOT NULL DEFAULT 0 COMMENT '购物车乐观锁版本号',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '加入时间，支撑过期清理与最近加入排序',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     UNIQUE KEY uk_trade_cart_member_product(member_id,product_id),
+    KEY idx_cart_member_create(member_id,create_time),
     CONSTRAINT chk_trade_cart_quantity CHECK(quantity BETWEEN 1 AND 999)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员购物车商品';
 
@@ -18,7 +21,7 @@ CREATE TABLE IF NOT EXISTS promotion_coupon_template (
     kind VARCHAR(16) NOT NULL COMMENT '优惠券类型：FIXED固定金额、PERCENT比例折扣',
     threshold DECIMAL(19,2) NOT NULL COMMENT '优惠使用门槛金额',
     fixed_amount DECIMAL(19,2) NULL COMMENT '固定优惠金额，单位元',
-    discount_percent INT NULL COMMENT '优惠券支付比例百分比，80表示支付原价的80%',
+    discount_percent INT NULL COMMENT '优惠券支付比例，百分比刻度：80表示支付原价的80%；与 promotion_discount_product.discount_percent 的万分比刻度互斥',
     discount_limit DECIMAL(19,2) NULL COMMENT '折扣优惠金额上限',
     total_count INT NOT NULL COMMENT '优惠券发放总名额，-1不限',
     issued_count INT NOT NULL DEFAULT 0 COMMENT '已发放优惠券数量',
@@ -43,7 +46,8 @@ CREATE TABLE IF NOT EXISTS promotion_coupon_template (
     CONSTRAINT chk_trade_coupon_template_kind CHECK(kind IN ('FIXED','PERCENT')),
     CONSTRAINT chk_trade_coupon_template_counts CHECK((total_count=-1 OR total_count>0) AND issued_count>=0 AND (take_type<>'USER' OR total_count=-1 OR issued_count<=total_count)),
     CONSTRAINT chk_trade_coupon_template_dates CHECK((validity_type='DATE' AND valid_until>valid_from) OR (validity_type='TERM' AND fixed_start_term>=0 AND fixed_end_term>0)),
-    CONSTRAINT chk_trade_coupon_template_amount CHECK(threshold>=0)
+    CONSTRAINT chk_trade_coupon_template_amount CHECK(threshold>=0),
+    CONSTRAINT chk_coupon_template_discount_percent CHECK(discount_percent IS NULL OR discount_percent BETWEEN 1 AND 100)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '优惠券模板及发放规则';
 
 CREATE TABLE IF NOT EXISTS promotion_reward_activity (
@@ -60,7 +64,8 @@ CREATE TABLE IF NOT EXISTS promotion_reward_activity (
     CONSTRAINT chk_reward_status CHECK(status IN (0,1)),
     CONSTRAINT chk_reward_time CHECK(end_time>start_time),
     CONSTRAINT chk_reward_condition CHECK(condition_type IN ('PRICE','COUNT')),
-    CONSTRAINT chk_reward_scope CHECK(product_scope IN ('ALL','SPU_IDS','CATEGORY_IDS'))
+    CONSTRAINT chk_reward_scope CHECK(product_scope IN ('ALL','SPU_IDS','CATEGORY_IDS')),
+    KEY idx_reward_activity_sweep(status,start_time,end_time)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '满减赠送活动';
 
 CREATE TABLE IF NOT EXISTS promotion_discount_activity (
@@ -70,6 +75,7 @@ CREATE TABLE IF NOT EXISTS promotion_discount_activity (
     start_time DATETIME(3) NOT NULL COMMENT '开始时间',
     end_time DATETIME(3) NOT NULL COMMENT '结束时间',
     remark VARCHAR(500) NULL COMMENT '备注说明',
+    KEY idx_discount_activity_sweep(status,start_time,end_time),
     CONSTRAINT chk_discount_status CHECK(status IN (0,1)),
     CONSTRAINT chk_discount_time CHECK(end_time>start_time)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '限时折扣活动';
@@ -99,6 +105,7 @@ CREATE TABLE IF NOT EXISTS promotion_seckill_activity (
     single_limit_count INT NULL COMMENT '单次购买数量上限',
     stock INT NOT NULL DEFAULT 0 COMMENT '当前可用库存',
     total_stock INT NOT NULL DEFAULT 0 COMMENT '活动配置总库存',
+    KEY idx_seckill_activity_sweep(status,start_time,end_time),
     CONSTRAINT chk_seckill_activity_status CHECK(status IN (0,1)),
     CONSTRAINT chk_seckill_activity_time CHECK(end_time>start_time),
     CONSTRAINT chk_seckill_activity_stock CHECK(stock>=0 AND total_stock>=0 AND stock<=total_stock)
@@ -116,6 +123,7 @@ CREATE TABLE IF NOT EXISTS promotion_combination_activity (
     virtual_group BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否允许虚拟成团',
     status INT NOT NULL DEFAULT 0 COMMENT '启停状态：0启用、1停用',
     limit_duration INT NOT NULL COMMENT '拼团有效时长，单位小时',
+    KEY idx_combination_activity_sweep(status,start_time,end_time),
     CONSTRAINT chk_combination_activity_status CHECK(status IN (0,1)),
     CONSTRAINT chk_combination_activity_time CHECK(end_time>start_time),
     CONSTRAINT chk_combination_activity_user_size CHECK(user_size>=2),
@@ -144,8 +152,9 @@ CREATE TABLE IF NOT EXISTS promotion_combination_record (
     start_time DATETIME(3) NOT NULL COMMENT '开始时间',
     end_time DATETIME(3) NULL COMMENT '结束时间',
     KEY idx_combination_record_user(user_id,activity_id),
-    KEY idx_combination_record_head(head_id,status),
+    KEY idx_combination_record_activity(activity_id,status),
     KEY idx_combination_record_expire(head_id,status,expire_time),
+    KEY idx_combination_record_sweep(status,expire_time),
     CONSTRAINT chk_combination_record_status CHECK(status IN (0,1,2)),
     CONSTRAINT chk_combination_record_count CHECK(count>0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '拼团参与记录';
@@ -167,6 +176,7 @@ CREATE TABLE IF NOT EXISTS promotion_bargain_activity (
     total_limit_count INT NOT NULL COMMENT '每会员累计购买数量上限',
     random_min_price DECIMAL(19,2) NOT NULL COMMENT '单次助力随机减免金额下限，单位元',
     random_max_price DECIMAL(19,2) NOT NULL COMMENT '单次助力随机减免金额上限，单位元',
+    KEY idx_bargain_activity_sweep(status,start_time,end_time),
     CONSTRAINT chk_bargain_activity_status CHECK(status IN (0,1)),
     CONSTRAINT chk_bargain_activity_time CHECK(end_time>start_time),
     CONSTRAINT chk_bargain_activity_price CHECK(bargain_first_price>0 AND bargain_min_price>=0 AND bargain_min_price<bargain_first_price),
@@ -182,6 +192,7 @@ CREATE TABLE IF NOT EXISTS promotion_point_activity (
     sort INT NOT NULL DEFAULT 0 COMMENT '排序值',
     stock INT NOT NULL DEFAULT 0 COMMENT '当前可用库存',
     total_stock INT NOT NULL DEFAULT 0 COMMENT '活动配置总库存',
+    KEY idx_point_activity_status(status),
     CONSTRAINT chk_point_activity_status CHECK(status IN (0,1)),
     CONSTRAINT chk_point_activity_stock CHECK(stock>=0 AND total_stock>=0 AND stock<=total_stock)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '积分商城活动';
@@ -244,7 +255,7 @@ CREATE TABLE IF NOT EXISTS promotion_diy_template (
 
 CREATE TABLE IF NOT EXISTS promotion_diy_page (
     id BIGINT NOT NULL PRIMARY KEY COMMENT '主键编号',
-    template_id BIGINT NOT NULL COMMENT '优惠券模板编号',
+    template_id BIGINT NOT NULL COMMENT '装修模板编号，关联 promotion_diy_template.id',
     name VARCHAR(100) NOT NULL COMMENT '名称',
     remark VARCHAR(255) NULL COMMENT '备注说明',
     preview_pic_urls LONGTEXT NOT NULL COMMENT '预览图片地址JSON数组',
@@ -262,7 +273,7 @@ CREATE TABLE IF NOT EXISTS promotion_coupon (
     kind VARCHAR(64) NULL COMMENT '优惠券类型：FIXED固定金额、PERCENT比例折扣',
     threshold DECIMAL(19,2) NULL COMMENT '优惠使用门槛金额',
     fixed_amount DECIMAL(19,2) NULL COMMENT '固定优惠金额，单位元',
-    discount_percent INT NULL COMMENT '领取时支付比例百分比快照',
+    discount_percent INT NULL COMMENT '领取时支付比例百分比快照，80表示支付原价的80%',
     discount_limit DECIMAL(19,2) NULL COMMENT '折扣优惠金额上限',
     product_scope VARCHAR(64) NULL COMMENT '商品适用范围：ALL全部、SPU_IDS指定SPU、CATEGORY_IDS指定分类',
     product_scope_values LONGTEXT NULL COMMENT '适用商品或分类编号JSON数组',
@@ -281,6 +292,7 @@ CREATE TABLE IF NOT EXISTS promotion_coupon (
     UNIQUE KEY uk_trade_coupon_order(order_no),
     CONSTRAINT fk_trade_coupon_template FOREIGN KEY(template_id) REFERENCES promotion_coupon_template(id),
     CONSTRAINT chk_trade_coupon_status CHECK(status IN ('AVAILABLE','LOCKED','USED','EXPIRED')),
+    CONSTRAINT chk_coupon_discount_percent CHECK(discount_percent IS NULL OR discount_percent BETWEEN 1 AND 100),
     KEY idx_trade_coupon_member_status(member_id,status),
     source_order_no VARCHAR(40) NULL COMMENT '营销赠券来源订单号',
     gift_sequence INT NULL COMMENT '同一订单、模板和会员下的赠券发放序号，从1开始',
@@ -293,7 +305,7 @@ CREATE TABLE IF NOT EXISTS promotion_discount_product (
     spu_id BIGINT NOT NULL COMMENT '商品SPU编号',
     sku_id BIGINT NOT NULL COMMENT '商品SKU编号',
     discount_type VARCHAR(16) NOT NULL COMMENT '优惠方式：PERCENT比例折扣、PRICE固定减价',
-    discount_percent INT NULL COMMENT '支付比例万分比，8000表示支付原价的80%',
+    discount_percent INT NULL COMMENT '支付比例，万分比刻度：8000表示支付原价的80%；与券表的百分比刻度互斥',
     discount_price DECIMAL(19,2) NULL COMMENT '优惠减免金额，单位元',
     UNIQUE KEY uk_discount_activity_sku(activity_id,sku_id),
     CONSTRAINT fk_discount_activity FOREIGN KEY(activity_id) REFERENCES promotion_discount_activity(id),
@@ -340,14 +352,17 @@ CREATE TABLE IF NOT EXISTS promotion_bargain_record (
     spu_id BIGINT NOT NULL COMMENT '商品SPU编号',
     sku_id BIGINT NOT NULL COMMENT '商品SKU编号',
     bargain_first_price DECIMAL(19,2) NOT NULL COMMENT '砍价起始金额，单位元',
+    bargain_min_price DECIMAL(19,2) NOT NULL COMMENT '开砍时冻结的砍价底价，单位元；达标判定以此为准，不随活动配置变更重算',
     bargain_price DECIMAL(19,2) NOT NULL COMMENT '当前砍价金额，单位元',
     status INT NOT NULL DEFAULT 1 COMMENT '砍价状态：1进行中、2成功、3失败',
     end_time DATETIME(3) NULL COMMENT '结束时间',
     order_id BIGINT NULL COMMENT '交易订单主键编号',
     KEY idx_bargain_record_user(user_id,activity_id,status),
+    KEY idx_bargain_record_activity(activity_id,status),
     CONSTRAINT fk_bargain_record_activity FOREIGN KEY(activity_id) REFERENCES promotion_bargain_activity(id),
     CONSTRAINT chk_bargain_record_status CHECK(status IN (1,2,3)),
-    CONSTRAINT chk_bargain_record_price CHECK(bargain_price>=0 AND bargain_price<=bargain_first_price)
+    CONSTRAINT chk_bargain_record_price CHECK(bargain_price>=0 AND bargain_price<=bargain_first_price),
+    CONSTRAINT chk_bargain_record_min CHECK(bargain_min_price>=0 AND bargain_min_price<=bargain_first_price)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员砍价参与记录';
 
 CREATE TABLE IF NOT EXISTS promotion_point_product (

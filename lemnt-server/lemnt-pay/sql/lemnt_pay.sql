@@ -4,11 +4,13 @@ CREATE TABLE IF NOT EXISTS pay_payment (
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
     payment_no VARCHAR(40) NOT NULL COMMENT '支付业务单号',
     order_no VARCHAR(40) NOT NULL COMMENT '交易订单业务单号',
+    member_id BIGINT NULL COMMENT '会员编号，创建支付单时来自订单可信快照写入，用于资金归属核对与审计',
     channel VARCHAR(32) NOT NULL COMMENT '支付渠道编码',
     app_key VARCHAR(64) NULL COMMENT '支付应用标识',
     channel_trade_no VARCHAR(128) NULL COMMENT '渠道支付流水号',
     amount DECIMAL(19,2) NOT NULL COMMENT '业务金额，单位元',
     status VARCHAR(20) NOT NULL DEFAULT 'WAITING' COMMENT '支付状态：WAITING待支付、SUCCESS支付成功、CLOSED已关闭',
+    paid_time DATETIME NULL COMMENT '渠道支付成功时间，仅状态迁移为SUCCESS时写入，对账基准',
     notify_id VARCHAR(128) NULL COMMENT '支付通知唯一标识',
     create_by VARCHAR(64) NULL COMMENT '创建人',
     create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -20,7 +22,9 @@ CREATE TABLE IF NOT EXISTS pay_payment (
     UNIQUE KEY uk_trade_payment_notify(notify_id),
     KEY idx_trade_payment_status(status,create_time),
     KEY idx_trade_payment_app(app_key,channel),
-    CONSTRAINT chk_trade_payment_amount CHECK(amount>0)
+    KEY idx_trade_payment_member(member_id,id),
+    CONSTRAINT chk_trade_payment_amount CHECK(amount>0),
+    CONSTRAINT chk_trade_payment_status CHECK(status IN ('WAITING','SUCCESS','CLOSED'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付单';
 
 CREATE TABLE IF NOT EXISTS pay_app (
@@ -150,7 +154,8 @@ CREATE TABLE IF NOT EXISTS pay_wallet_transaction (
     UNIQUE KEY uk_wallet_tx_biz(wallet_id,biz_type,biz_no),
     KEY idx_wallet_tx_wallet(wallet_id,id),
     CONSTRAINT fk_wallet_tx_wallet FOREIGN KEY(wallet_id) REFERENCES pay_wallet(id),
-    CONSTRAINT chk_wallet_tx_amount CHECK(amount<>0)
+    CONSTRAINT chk_wallet_tx_amount CHECK(amount<>0),
+    CONSTRAINT chk_wallet_tx_balance CHECK(balance_after>=0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会员钱包余额流水';
 
 CREATE TABLE IF NOT EXISTS pay_wallet_recharge (
@@ -177,7 +182,8 @@ CREATE TABLE IF NOT EXISTS pay_wallet_recharge (
     KEY idx_trade_wallet_recharge_member(member_id,id),
     KEY idx_trade_wallet_recharge_status(status),
     CONSTRAINT fk_wallet_recharge_wallet FOREIGN KEY(wallet_id) REFERENCES pay_wallet(id),
-    CONSTRAINT chk_wallet_recharge_total CHECK(total_price>0)
+    CONSTRAINT chk_wallet_recharge_total CHECK(total_price>0),
+    CONSTRAINT chk_wallet_recharge_conservation CHECK(total_price=pay_price+bonus_price)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会员钱包充值单';
 
 CREATE TABLE IF NOT EXISTS pay_wallet_transfer (
@@ -223,7 +229,7 @@ CREATE TABLE IF NOT EXISTS pay_payment_refund (
     KEY idx_payment_refund_payment(payment_no),
     KEY idx_payment_refund_status_time(status,create_time),
     CONSTRAINT fk_payment_refund_payment FOREIGN KEY(payment_no) REFERENCES pay_payment(payment_no),
-    CONSTRAINT chk_payment_refund_amount CHECK(amount>=0),
+    CONSTRAINT chk_payment_refund_amount CHECK(amount>0),
     CONSTRAINT chk_payment_refund_status CHECK(status IN ('WAITING','SUCCESS','FAILED'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='售后原路支付退款交易';
 

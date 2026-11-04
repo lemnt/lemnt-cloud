@@ -21,6 +21,7 @@ public class BargainRecordDO {
     private Long spuId;
     private Long skuId;
     private BigDecimal bargainFirstPrice;
+    private BigDecimal bargainMinPrice;
     private BigDecimal bargainPrice;
     private Integer status;
     private LocalDateTime endTime;

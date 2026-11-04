@@ -288,6 +288,7 @@ class PromotionOrderPersistenceTest {
                                 skuId,
                                 new BigDecimal("10.00"),
                                 new BigDecimal("8.00"),
+                                new BigDecimal("8.00"),
                                 2,
                                 LocalDateTime.now(),
                                 null));
