@@ -98,7 +98,7 @@ Nacos 3.x 默认使用 `8080` 作为控制台端口，`8848` 作为服务主端�
 
 **脚本包含 `DROP TABLE`，只应用于新建或确认可以重建的数据库，不能直接用于已有业务库升级。** 数据库连接信息在 Nacos 的对应配置中设置。
 
-member、product、promotion、order、pay各有一个空库初始化文件，路径为`lemnt-server/lemnt-{服务}/sql/lemnt_{服务}.sql`，只含最终建表及必要基础数据，不用于旧库升级。旧mall/trade源码与SQL暂留供迁移核对，已从默认构建移除，待P5清理；system脚本维持现状。四服务的配置、原任务审核与切流边界见[配置与切流准备](docs/module-split-cutover.md)。
+member、product、promotion、order、pay各有一个空库初始化文件，路径为`lemnt-server/lemnt-{服务}/sql/lemnt_{服务}.sql`，只含最终建表及必要基础数据，不用于旧库升级。旧mall/trade源码与初始化SQL已随P5清理删除，`lemnt-server/sql`下带日期的V脚本作为历史升级记录保留；system脚本维持现状。四服务的配置、原任务审核与切流边界见[配置与切流准备](docs/module-split-cutover.md)。
 
 ### 3. 导入 Nacos 配置
 

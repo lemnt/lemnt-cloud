@@ -20,11 +20,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RocketMQMessageListener(
     topic = CommerceEventTopics.AFTER_SALE_COMPLETED,
-    consumerGroup = "lemnt-product-refunded-v1",
+    consumerGroup = "lemnt-product-refunded",
     maxReconsumeTimes = 16)
 public class AfterSaleCompletedConsumer implements RocketMQListener<String> {
+
     private final OrderStockEventHandler handler;
 
+    @Override
     public void onMessage(String json) {
         var e = JsonUtils.toBean(json, CommerceEventEnvelope.class);
         if (e == null) throw new IllegalArgumentException("事件信封不能为空");

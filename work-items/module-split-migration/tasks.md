@@ -35,7 +35,7 @@
 - [x] P5-02 SQL与架构保护工具
 - [x] P5-03 清理前全量验证
 - [x] P5-04 删除旧模块
-- [ ] P5-05 清理后最终回归与文档
+- [x] P5-05 清理后最终回归与文档
 
 - [x] G-01 按用户补充要求，全部Java类型短名及显式import；覆盖implements、泛型、静态调用和跨行引用，9项格式工具测试通过。
 
@@ -44,3 +44,5 @@ P4最新检查点：P4-00～07已完成代码与自动化验证，见evidence/p4
 P5-00检查点：默认Reactor的59项validate通过，旧构建入口移除；其余源码/POM无旧包或旧依赖，五服务运行包无其他上下文实现穿透。四份Nacos模板及共享MQ模板已交付，15个消费者/3个Relay默认关闭，装配开关测试通过。五服务clean package共721项、失败/错误/跳过均0，见evidence/p5-build-config-tests.json。该阶段当时P5-01及后续待执行，最新进度见下方P5-01检查点；运行环境未发布或切流，旧目录未删除。
 
 P5-01检查点：313个显式端点均经真实谓词验证唯一新服务归属，165个HEAD和232个路径的OPTIONS保持兼容；四个新模块真实Controller的方法/路径/权限/归属一致。唯一标准YAML原样打入网关，无旧内置服务回落，不继承动态默认改写过滤器。网关、订单启动及依赖完整构建766项通过，其中网关350项，失败/错误/跳过均0；见evidence/p5-gateway-route-tests.json。P5-02及后续待执行，在线粗路由与配置未改，未切流或删除旧模块。
+
+P5-05检查点：在旧模块已删除的 HEAD a628d381、工作树干净状态下重跑整链全量回归。dependencies install、common 带测试 install、server 全Reactor不跳测试 clean package 三段 BUILD SUCCESS，60个模块，合计1242项，失败/错误/跳过均0（gateway350、order305、system147、member126、pay115、product98、promotion78、auth20、common+open3）。`check_architecture.py` 与 `check_module_split.py` 违规0（71表归属正确），三个检查工具自测7/11/9通过。回归中发现 `test_architecture.py` record夹具与新加 qualified-type 规则冲突，已改为显式import短名写法，断言与覆盖面不变。仓库级格式检查不干净：gjf判定2470/3286需重排、import顺序差异287个，且同样存在于迁移未触碰的 system/auth/gateway/common，属既有状态，本批未执行 --write、未重排无关文件。真实MySQL迁库、Nacos发布、MQ/Dubbo网络、网关在线切流及前端回归均未执行。见 evidence/p5-full-regression.json。

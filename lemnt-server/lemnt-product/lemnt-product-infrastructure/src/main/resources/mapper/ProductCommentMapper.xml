@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lemnt.product.infrastructure.product.mapper.ProductCommentMapper">
 
-    <resultMap id="ProductCommentResult" type="com.lemnt.product.infrastructure.product.dataobject.ProductCommentDO"
+    <resultMap id="productCommentResult" type="com.lemnt.product.infrastructure.product.dataobject.ProductCommentDO"
                autoMapping="false">
         <id property="id" column="id"/>
         <result property="spuId" column="spu_id"/>
@@ -34,12 +34,12 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
-    <select id="lock" resultMap="ProductCommentResult"
+    <select id="lock" resultMap="productCommentResult"
             flushCache="true" useCache="false">
         SELECT * FROM product_comment WHERE id=#{id} AND deleted=FALSE FOR UPDATE
     </select>
     <!-- 仅用于存量评价绑定检查：读取删除事实但绝不对外返回已删内容。 -->
-    <select id="legacyForLink" resultMap="ProductCommentResult">
+    <select id="legacyForLink" resultMap="productCommentResult">
         SELECT * FROM product_comment
         WHERE order_no=#{orderNo} AND sku_id=#{skuId} AND order_item_id IS NULL
     </select>

@@ -34,7 +34,7 @@ lemnt-server
     └── demo-sdk           HTTP 调用示例
 ```
 
-旧mall/trade源码在P5清理前保留，已从默认Reactor移除；新业务只依赖所属领域与其他上下文Client。源码配置与切流边界见[配置与切流准备](../docs/module-split-cutover.md)。
+旧mall/trade源码与模块已删除；新业务只依赖所属领域与其他上下文Client。源码配置与切流边界见[配置与切流准备](../docs/module-split-cutover.md)。
 
 **注意：** 接口定义模块统一命名为 `xxx-client`，不是 `xxx-api`。lemnt-auth 与 lemnt-open 当前没有 client 模块。
 
@@ -583,7 +583,7 @@ Bean。 **密钥缺失或不足 64 字节时应用启动直接失败**（HS512 �
 | `lemnt_system.sql` | 系统库表结构（`sys_*`）与初始化数据，**建表使用 DROP + CREATE** |
 
 member、product、promotion、order、pay各使用所属服务`sql/lemnt_{服务}.sql`，只含最终CREATE
-TABLE及必要INSERT，不用初始化文件升级旧库。旧mall/trade脚本仅供迁移清理前核对，已不属于默认构建入口。system的现有脚本不调整。详见[配置与切流准备](../docs/module-split-cutover.md)。
+TABLE及必要INSERT，不用初始化文件升级旧库。旧mall/trade初始化脚本已删除，`lemnt-server/sql`下带日期的V脚本仅作历史升级记录保留。system的现有脚本不调整。详见[配置与切流准备](../docs/module-split-cutover.md)。
 
 ### 单元测试
 

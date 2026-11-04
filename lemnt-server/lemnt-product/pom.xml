@@ -19,4 +19,34 @@
         <module>lemnt-product-infrastructure</module>
         <module>lemnt-product-start</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-product-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-product-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-product-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-product-infrastructure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-product-adapter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

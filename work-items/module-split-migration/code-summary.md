@@ -1,6 +1,6 @@
 # 四模块拆分代码进度
 
-整体生成进行中，P4-00～07及P5-00～01已完成代码与自动化回归，P5-02及后续待执行。
+P1～P4 与 P5-00～05 全部完成：四模块代码、网关契约、旧模块清理及清理后全量回归均已交付。真实环境迁库、Nacos发布、MQ/Dubbo网络与在线切流仍未执行。
 
 ## P1 product
 
@@ -71,3 +71,33 @@ P4-07将原普通结算106项、活动订单9项组合场景接到四套独立H2
 ## 用户补充：类型导入规范
 
 所有Java代码类型使用短名及显式import，覆盖Serializable、Map、跨行引用和静态调用。字符串/反射类名/XML按协议保留。system只同步此前的纯Java类型规范，本批不调整system业务或SQL。
+
+## P5-02～P5-04 补记
+
+`scripts/check_module_split.py` 提供模块与表归属保护（当前 product12/promotion23/order23/pay13，共71表，违规0）；旧 mall/trade 目录与初始化SQL在提交 af77e846 删除，默认 Reactor 已无该两项。这三项在 tasks.md 中已勾选，但工作项内没有对应批次的独立测试证据文件，其结果由 P5-05 的仓库级全量回归覆盖并重新归因。
+
+## P5-05 清理后全量回归
+
+在 HEAD a628d381（旧模块已删除、工作树干净）上重跑整链构建：`lemnt-dependencies` install、`lemnt-common` 带测试 install、`lemnt-server` 全 Reactor 不跳测试 clean package，三段均 BUILD SUCCESS，60个Reactor模块、MVN_EXIT=0。
+
+| 范围 | 测试数 | 失败/错误/跳过 |
+|---|---:|---|
+| gateway | 350 | 0 / 0 / 0 |
+| order | 305 | 0 / 0 / 0 |
+| system | 147 | 0 / 0 / 0 |
+| member | 126 | 0 / 0 / 0 |
+| pay | 115 | 0 / 0 / 0 |
+| product | 98 | 0 / 0 / 0 |
+| promotion | 78 | 0 / 0 / 0 |
+| auth | 20 | 0 / 0 / 0 |
+| common + open | 3 | 0 / 0 / 0 |
+
+合计 **1242 项，失败、错误、跳过均为 0**。范围含既有 system/auth/gateway/open，与 P4 的716项、P5-00 的721项口径不同，不相加。`check_architecture.py` 3042个Java主源、68个Mapper XML、86个POM，违规0；`check_module_split.py` 违规0；三个检查工具自测 7/11/9 项全部通过。证据见 evidence/p5-full-regression.json。
+
+回归中发现并修复：`scripts/test_architecture.py` 的 record 夹具原先以全限定注解和 `java.util.List` 书写，被后续新增的 qualified-type 规则命中两条，导致 `assertEqual(['http-field-schema'])` 失败。夹具改为显式import短名，断言与覆盖面不变，未删除或放宽测试。该修复被仓库提交 12671995 连带入库，本工作项未执行 commit。
+
+仓库级格式检查不干净，且**不属本批修复范围**：固定版本 gjf 判定 2470/3286 个Java文件需重排，import 分组顺序差异 287 个，分布于 product53、system52、promotion49、order48、member39、pay27、common/security/gateway/auth 共28个。差异全部仅为导入顺序，且同样出现在迁移未触碰的 system/auth/gateway/lemnt-common，属仓库既有状态——历史各批只检查当批变更文件，从未做过仓库级检查。未执行 `--write`，未对无关文件重排；如需统一，应作为独立工作项评审。
+
+回归中另记录一个待决设计问题：product_message_outbox 与 product_message_inbox 列、键与方向均不同（前者14列含投递状态机与租约，后者6列仅消费幂等凭证），不构成互相重复；但 product 发布 STOCK_PRE_RESERVED 后，唯一消费方 promotion 的 `StockPreReservedEventHandler` 不改任何业务状态、只做交叉校验，且 product 侧 `confirmStock` 在 CONFIRMED 状态已自带重复投递防护。事件链路冗余与 inbox/状态机重叠两项是否调整，待确认后另立工作项，本批未删表、未改契约。
+
+**尚未执行：** 真实MySQL建库与迁库、Nacos发布与在线旧粗路由撤除、MQ Topic与Dubbo网络及Outbox/Relay真实投递、网关在线切流与端到端HTTP验收；lemnt-ui 与 lemnt-miniapp 未运行（本工作项无前端改动，且依赖未安装）。未 commit、未 push。

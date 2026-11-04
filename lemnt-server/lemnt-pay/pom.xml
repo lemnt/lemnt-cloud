@@ -19,4 +19,34 @@
         <module>lemnt-pay-infrastructure</module>
         <module>lemnt-pay-start</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-pay-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-pay-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-pay-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-pay-infrastructure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-pay-adapter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

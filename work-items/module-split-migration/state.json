@@ -3,7 +3,7 @@
     "name": "module-split-migration",
     "description": "将 mall + trade 拆分为 product + promotion + order + pay 四个独立模块，引入 MQ 实现异步解耦",
     "createdAt": "2026-11-03T10:00:00+08:00",
-    "updatedAt": "2026-11-04T10:40:56+08:00"
+    "updatedAt": "2026-11-04T15:20:00+08:00"
   },
   "phases": {
     "entry": {
@@ -23,7 +23,7 @@
       "output": "tasks.md"
     },
     "generate": {
-      "status": "in_progress",
+      "status": "completed",
       "output": "code-summary.md"
     },
     "review": {

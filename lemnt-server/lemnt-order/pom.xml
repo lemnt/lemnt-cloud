@@ -19,4 +19,34 @@
         <module>lemnt-order-infrastructure</module>
         <module>lemnt-order-start</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-order-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-order-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-order-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-order-infrastructure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-order-adapter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
