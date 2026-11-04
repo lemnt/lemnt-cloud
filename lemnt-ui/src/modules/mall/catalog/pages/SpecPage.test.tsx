@@ -10,7 +10,7 @@ const { permissions } = vi.hoisted(() => ({ permissions: new Set<string>() }));
 vi.mock('@/shared/hooks/usePermission', () => ({
   usePermission: () => ({ can: (key: string) => permissions.has(key) }),
 }));
-function render(node: ReactNode, path = '/mall/specs') {
+function render(node: ReactNode, path = '/specs') {
   return renderToStaticMarkup(
     <MemoryRouter initialEntries={[path]}>
       <QueryClientProvider client={new QueryClient()}>
@@ -22,20 +22,20 @@ function render(node: ReactNode, path = '/mall/specs') {
 it('规格与规格值分别检查权限，不因有一方权限开放另一方', () => {
   permissions.clear();
   expect(render(<SpecPage />)).toContain('没有商品规格');
-  permissions.add('mall:spec:list');
+  permissions.add('product:spec:list');
   expect(render(<SpecPage />)).toContain('商品规格');
-  expect(render(<SpecValuePage />, '/mall/spec-values?specId=1')).toContain('没有规格值');
+  expect(render(<SpecValuePage />, '/spec-values?specId=1')).toContain('没有规格值');
 });
 it('新增和值入口按操作权限显示，非法归属参数不发请求，组件已注册', () => {
   permissions.clear();
-  permissions.add('mall:spec:list');
+  permissions.add('product:spec:list');
   expect(render(<SpecPage />)).not.toContain('新增规格');
-  permissions.add('mall:spec:add');
+  permissions.add('product:spec:add');
   expect(render(<SpecPage />)).toContain('新增规格');
-  expect(render(<SpecValuePage />, '/mall/spec-values?specId=0')).toContain('有效规格');
+  expect(render(<SpecValuePage />, '/spec-values?specId=0')).toContain('有效规格');
   permissions.clear();
-  permissions.add('mall:spec-value:list');
-  const html = render(<SpecValuePage />, '/mall/spec-values?specId=9223372036854775807');
+  permissions.add('product:spec-value:list');
+  const html = render(<SpecValuePage />, '/spec-values?specId=9223372036854775807');
   expect(html).toContain('9223372036854775807');
   expect(html).not.toContain('新增规格值');
   expect(html).not.toContain('创建时间范围');

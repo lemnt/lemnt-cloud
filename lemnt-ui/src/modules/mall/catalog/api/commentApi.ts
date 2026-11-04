@@ -81,7 +81,7 @@ async function call<T>(task: () => Promise<T>): Promise<T> {
 }
 export async function getComments(params: ProductCommentQuery) {
   return call(async () => {
-    const result = await request<unknown[]>({ url: '/mall/comments', params });
+    const result = await request<unknown[]>({ url: '/comments', params });
     if (typeof result.total !== 'number' || !Number.isSafeInteger(result.total) || result.total < 0)
       throw Error('评价总数不合法');
     return { data: list(result.rows, decodeComment), total: result.total, success: true };
@@ -89,7 +89,7 @@ export async function getComments(params: ProductCommentQuery) {
 }
 export async function getComment(id: string) {
   return call(async () =>
-    decodeComment((await request<unknown>({ url: '/mall/comments/' + decodeId(id) })).data),
+    decodeComment((await request<unknown>({ url: '/comments/' + decodeId(id) })).data),
   );
 }
 export async function replyComment(id: string, content: string) {
@@ -97,7 +97,7 @@ export async function replyComment(id: string, content: string) {
     decodeComment(
       (
         await request<unknown>({
-          url: '/mall/comments/' + decodeId(id) + '/reply',
+          url: '/comments/' + decodeId(id) + '/reply',
           method: 'PUT',
           data: { content },
         })
@@ -108,7 +108,7 @@ export async function replyComment(id: string, content: string) {
 export async function setCommentVisible(id: string, visible: boolean) {
   return call(async () => {
     const result = await request<unknown>({
-      url: '/mall/comments/' + decodeId(id) + '/visible',
+      url: '/comments/' + decodeId(id) + '/visible',
       method: 'PUT',
       data: { visible },
     });
@@ -127,7 +127,7 @@ export async function createSelfComment(data: {
   picUrls: string[];
 }) {
   return call(async () => {
-    const result = await request<unknown>({ url: '/mall/comments', method: 'POST', data });
+    const result = await request<unknown>({ url: '/comments', method: 'POST', data });
     return decodeId(object(result.data).id);
   });
 }

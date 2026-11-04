@@ -13,7 +13,7 @@ export function SpuDetailDrawer({ id, onClose }: { id?: string; onClose: () => v
   const query = useQuery({
     queryKey: catalogKeys.spu(id ?? 'none'),
     queryFn: () => getSpuDetail(id!),
-    enabled: Boolean(id) && can('mall:spu:query'),
+    enabled: Boolean(id) && can('product:spu:query'),
   });
   const columns: ProColumns<Sku>[] = [
     { title: 'SKU 编码', dataIndex: 'code' },

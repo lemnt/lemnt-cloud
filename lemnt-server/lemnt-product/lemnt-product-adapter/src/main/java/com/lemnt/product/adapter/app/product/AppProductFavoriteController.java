@@ -42,11 +42,11 @@ import jakarta.validation.Valid;
 @RequestMapping("/app/favorites")
 @RequiredArgsConstructor
 public class AppProductFavoriteController {
-    private final ProductFavoriteCreateCmdExe create;
-    private final ProductFavoritePageQueryExe query;
-    private final ProductFavoriteDeleteCmdExe delete;
-    private final ProductFavoriteExistsQueryExe exists;
-    private final ProductFavoriteCountQueryExe count;
+    private final ProductFavoriteCreateCmdExe favoriteCreateCmdExe;
+    private final ProductFavoritePageQueryExe favoritePageQueryExe;
+    private final ProductFavoriteDeleteCmdExe favoriteDeleteCmdExe;
+    private final ProductFavoriteExistsQueryExe favoriteExistsQueryExe;
+    private final ProductFavoriteCountQueryExe favoriteCountQueryExe;
 
     /**
      * 登录后的独立写入，不接受userId参数。
@@ -57,7 +57,7 @@ public class AppProductFavoriteController {
         @Valid @RequestBody AppProductFavoriteCreateReq req) {
         return R.ok(
             new AppProductFavoriteCreateRes(
-                create.execute(ProductFavoriteReqConverter.create(SecurityUtils.getUserId(), req))));
+                favoriteCreateCmdExe.execute(ProductFavoriteReqConverter.create(SecurityUtils.getUserId(), req))));
     }
 
     /**
@@ -66,7 +66,7 @@ public class AppProductFavoriteController {
     @GetMapping
     @Operation(summary = "本人收藏分页")
     public R<AppProductFavoritePageRes> page(@Valid @ModelAttribute AppProductFavoritePageReq req) {
-        var result = query.execute(ProductFavoriteReqConverter.page(SecurityUtils.getUserId(), req));
+        var result = favoritePageQueryExe.execute(ProductFavoriteReqConverter.page(SecurityUtils.getUserId(), req));
         return R.page(
             result.getRecords().stream().map(ProductFavoriteResConverter::page).toList(),
             result.getTotal());
@@ -80,7 +80,7 @@ public class AppProductFavoriteController {
     public R<AppProductFavoriteDeleteRes> delete(@PathVariable Long spuId) {
         return R.ok(
             new AppProductFavoriteDeleteRes(
-                delete.execute(new ProductFavoriteDeleteCmd(SecurityUtils.getUserId(), spuId))));
+                favoriteDeleteCmdExe.execute(new ProductFavoriteDeleteCmd(SecurityUtils.getUserId(), spuId))));
     }
 
     /**
@@ -92,7 +92,7 @@ public class AppProductFavoriteController {
         @Valid @ModelAttribute AppProductFavoriteExistsReq req) {
         return R.ok(
             new AppProductFavoriteExistsRes(
-                exists.execute(new ProductFavoriteExistsQry(SecurityUtils.getUserId(), req.spuId()))));
+                favoriteExistsQueryExe.execute(new ProductFavoriteExistsQry(SecurityUtils.getUserId(), req.spuId()))));
     }
 
     /**
@@ -103,6 +103,6 @@ public class AppProductFavoriteController {
     public R<AppProductFavoriteCountRes> count() {
         return R.ok(
             new AppProductFavoriteCountRes(
-                count.execute(new ProductFavoriteCountQry(SecurityUtils.getUserId()))));
+                favoriteCountQueryExe.execute(new ProductFavoriteCountQry(SecurityUtils.getUserId()))));
     }
 }

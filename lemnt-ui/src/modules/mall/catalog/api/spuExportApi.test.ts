@@ -20,7 +20,7 @@ it('导出使用当前筛选和库存分组，不将当前页参数传给导出�
       ...{ pageNum: 99, pageSize: 1 },
     }),
   ).toBe(blob);
-  expect(get).toHaveBeenCalledWith('/mall/spus/export', {
+  expect(get).toHaveBeenCalledWith('/spus/export', {
     params: {
       name: '商品',
       categoryId: '9223372036854775807',

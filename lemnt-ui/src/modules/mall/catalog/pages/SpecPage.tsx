@@ -32,7 +32,7 @@ export function SpecValuePage() {
 /** 两种字典各用独立接口及权限，只共享表格与编辑交互。 */
 function SpecManager({ parentId }: { parentId?: string }) {
   const valueMode = !!parentId,
-    prefix = valueMode ? 'mall:spec-value' : 'mall:spec',
+    prefix = valueMode ? 'product:spec-value' : 'product:spec',
     title = valueMode ? '规格值' : '商品规格';
   const { can } = usePermission(),
     { message } = App.useApp(),
@@ -62,7 +62,7 @@ function SpecManager({ parentId }: { parentId?: string }) {
   const parent = useQuery({
     queryKey: ['product-specs', 'parent', parentId],
     queryFn: () => api.getSpec(parentId ?? ''),
-    enabled: !!parentId && can('mall:spec:query'),
+    enabled: !!parentId && can('product:spec:query'),
   });
   const save = useMutation({
     mutationFn: (v: api.SpecValues) =>
@@ -122,10 +122,10 @@ function SpecManager({ parentId }: { parentId?: string }) {
               编辑
             </Button>
           )}
-          {!valueMode && can('mall:spec-value:list') && (
+          {!valueMode && can('product:spec-value:list') && (
             <Button
               type="link"
-              onClick={() => navigate('/mall/spec-values?specId=' + encodeURIComponent(row.id))}
+              onClick={() => navigate('/spec-values?specId=' + encodeURIComponent(row.id))}
             >
               规格值
             </Button>
@@ -165,7 +165,7 @@ function SpecManager({ parentId }: { parentId?: string }) {
         <Alert
           type="info"
           title={`所属规格：${parent.data?.name ? parent.data.name + '（' + parentId + '）' : parentId}`}
-          action={<Button onClick={() => navigate('/mall/specs')}>返回规格管理</Button>}
+          action={<Button onClick={() => navigate('/specs')}>返回规格管理</Button>}
         />
       )}
       {parent.isError && (

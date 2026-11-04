@@ -54,7 +54,7 @@ function render(status?: Spu['status'], withCounts = true) {
 it('列表拒绝无权限访问，状态数量取服务端统计且未读取时显示未知', () => {
   permissions.clear();
   expect(render()).toContain('没有商品列表权限');
-  permissions.add('mall:spu:list');
+  permissions.add('product:spu:list');
   const html = render();
   expect(html).toContain('出售中（2）');
   expect(html).toContain('仓库中（3）');
@@ -65,7 +65,7 @@ it('列表拒绝无权限访问，状态数量取服务端统计且未读取时�
 });
 it('行操作按真实行状态限制，上架不能直接回收，回收站只能恢复或删除', () => {
   permissions.clear();
-  for (const key of ['mall:spu:list', 'mall:spu:edit', 'mall:spu:query', 'mall:spu:remove'])
+  for (const key of ['product:spu:list', 'product:spu:edit', 'product:spu:query', 'product:spu:remove'])
     permissions.add(key);
   const active = render('ON_SHELF');
   expect(active).toContain('下架');
@@ -83,11 +83,11 @@ it('行操作按真实行状态限制，上架不能直接回收，回收站只�
 });
 it('编辑权限不替代删除权限，只有列表权限不出现写入按钮', () => {
   permissions.clear();
-  permissions.add('mall:spu:list');
-  permissions.add('mall:spu:edit');
+  permissions.add('product:spu:list');
+  permissions.add('product:spu:edit');
   expect(render('RECYCLED')).toContain('恢复商品');
   expect(render('RECYCLED')).not.toContain('删除商品');
-  permissions.delete('mall:spu:edit');
+  permissions.delete('product:spu:edit');
   const html = render('OFF_SHELF');
   expect(html).not.toContain('移入回收站');
   expect(html).not.toContain('新增商品');
@@ -95,9 +95,9 @@ it('编辑权限不替代删除权限，只有列表权限不出现写入按钮'
 });
 it('商品导出是独立权限，列表或编辑权限不隐式放开下载', () => {
   permissions.clear();
-  permissions.add('mall:spu:list');
-  permissions.add('mall:spu:edit');
+  permissions.add('product:spu:list');
+  permissions.add('product:spu:edit');
   expect(render()).not.toContain('导出商品');
-  permissions.add('mall:spu:export');
+  permissions.add('product:spu:export');
   expect(render()).toContain('导出商品');
 });

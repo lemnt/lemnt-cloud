@@ -4,7 +4,6 @@ import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.product.application.product.cmd.ProductCommentCreateCmd;
 import com.lemnt.product.application.product.cmd.ProductCommentReplyCmd;
 import com.lemnt.product.application.product.cmd.ProductCommentSaveCmd;
-import com.lemnt.product.domain.member.gateway.MemberLookupGateway;
 import com.lemnt.product.domain.order.gateway.OrderSnapshotGateway;
 import com.lemnt.product.domain.product.gateway.ProductCommentGateway;
 import com.lemnt.product.domain.product.gateway.ProductSkuGateway;
@@ -31,7 +30,6 @@ public class ProductCommentService {
     private final ProductCommentGateway productCommentGateway;
     private final ProductSkuGateway productSkuGateway;
     private final OrderSnapshotGateway orderGateway;
-    private final MemberLookupGateway memberLookupGateway;
 
     /**
      * 兼容HTTP入口委托交易持锁核验，只有两侧状态确认后才返回成功。
@@ -139,8 +137,6 @@ public class ProductCommentService {
         var sku = purchase.spuId() == null ? productSkuGateway.catalogSku(cmd.skuId()) : null;
         Long spuId = purchase.spuId() != null ? purchase.spuId() : sku == null ? null : sku.spuId();
         require(spuId != null, "订单商品标识不存在", 400);
-        var member = memberLookupGateway.findById(cmd.memberId());
-        require(member != null && cmd.memberId().equals(member.id()), "会员资料不存在", 404);
         var specs =
             purchase.specs() == null
                 ? null
@@ -172,8 +168,8 @@ public class ProductCommentService {
                     input.benefit(),
                     input.pictures(),
                     input.anonymous(),
-                    member.nickname(),
-                    member.avatar(),
+                    null,
+                    null,
                     purchase.orderId(),
                     purchase.spuName(),
                     purchase.skuPicUrl(),

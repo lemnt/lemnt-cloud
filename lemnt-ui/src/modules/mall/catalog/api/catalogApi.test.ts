@@ -54,12 +54,12 @@ it('规格选项使用独立字典接口，值查询必须携带规格编号', a
   });
   expect(await api.getSpecOptions('颜色')).toEqual([{ id: '9223372036854775807', name: '红色' }]);
   expect(mockedRequest).toHaveBeenLastCalledWith({
-    url: '/mall/specs/simple',
+    url: '/specs/simple',
     params: { name: '颜色', limit: 100 },
   });
   await api.getSpecValueOptions('9223372036854775807', '红');
   expect(mockedRequest).toHaveBeenLastCalledWith({
-    url: '/mall/spec-values/simple',
+    url: '/spec-values/simple',
     params: { specId: '9223372036854775807', name: '红', limit: 100 },
   });
   mockedRequest.mockResolvedValue({ code: 200, data: { id: '2', name: '已选择的值' } });
@@ -107,7 +107,7 @@ it('创建商品发送规格对象列表，不再发送临时编号映射', asyn
     },
   });
   const result = await createSpu(data);
-  expect(mockedRequest).toHaveBeenCalledWith({ url: '/mall/spus', method: 'POST', data });
+  expect(mockedRequest).toHaveBeenCalledWith({ url: '/spus', method: 'POST', data });
   expect(result.data.skus[0].specs[0].specValueName).toBe('红色');
   expect('specValueIds' in result.data.skus[0]).toBe(false);
 });
@@ -129,11 +129,11 @@ it('商品关联记录使用各自权限接口，隐藏状态false不能丢失',
   });
   const params = { spuId: '3', userDeleted: false, pageNum: 1, pageSize: 20 };
   expect((await getProductBrowseHistory(params)).data[0].userDeleted).toBe(false);
-  expect(mockedRequest).toHaveBeenLastCalledWith({ url: '/mall/product-browse-history', params });
+  expect(mockedRequest).toHaveBeenLastCalledWith({ url: '/browse-historys', params });
   expect((await getProductFavorites({ spuId: '3', pageNum: 1, pageSize: 20 })).data[0].id).toBe(
     '9223372036854775807',
   );
-  expect(mockedRequest.mock.lastCall?.[0].url).toBe('/mall/product-favorites');
+  expect(mockedRequest.mock.lastCall?.[0].url).toBe('/favorites');
 });
 
 it('商品列表和状态数量采用一致的精确分类品牌条件，计数不混入状态或分页', async () => {
@@ -142,7 +142,7 @@ it('商品列表和状态数量采用一致的精确分类品牌条件，计数�
   mockedRequest.mockResolvedValueOnce({ rows: [], total: 0 });
   await api.getSpuList({ ...filters, status: 'RECYCLED', pageNum: 2, pageSize: 20 });
   expect(mockedRequest).toHaveBeenLastCalledWith({
-    url: '/mall/spus',
+    url: '/spus',
     params: {
       ...filters,
       name: '商品',
@@ -159,7 +159,7 @@ it('商品列表和状态数量采用一致的精确分类品牌条件，计数�
     await api.getSpuStatusCounts({ ...filters, ...{ status: 'RECYCLED', pageNum: 2 } }),
   ).toEqual({ onShelf: 2, offShelf: 0, recycled: 1, soldOut: 1, lowStock: 2 });
   expect(mockedRequest).toHaveBeenLastCalledWith({
-    url: '/mall/spus/count',
+    url: '/spus/count',
     params: { ...filters, name: '商品' },
   });
   mockedRequest.mockResolvedValueOnce({
@@ -171,17 +171,17 @@ it('回收、恢复和删除调用既有路径，false或业务拒绝不报告�
   const api = await import('./catalogApi');
   mockedRequest.mockResolvedValueOnce({ data: true });
   expect(await api.recycleSpu('9')).toBe(true);
-  expect(mockedRequest).toHaveBeenLastCalledWith({ url: '/mall/spus/9/recycle', method: 'POST' });
+  expect(mockedRequest).toHaveBeenLastCalledWith({ url: '/spus/9/recycle', method: 'POST' });
   mockedRequest.mockResolvedValueOnce({ data: true });
   expect(await api.restoreSpu('9')).toBe(true);
-  expect(mockedRequest).toHaveBeenLastCalledWith({ url: '/mall/spus/9/restore', method: 'POST' });
+  expect(mockedRequest).toHaveBeenLastCalledWith({ url: '/spus/9/restore', method: 'POST' });
   mockedRequest.mockResolvedValueOnce({ data: false });
   await expect(api.deleteSpu('9')).rejects.toThrow('未成功');
   mockedRequest.mockRejectedValueOnce(Error('商品仍有库存预占，不能删除'));
   await expect(api.deleteSpu('9')).rejects.toThrow('库存预占');
   mockedRequest.mockResolvedValueOnce({ data: true });
   expect(await api.deleteSpu('9')).toBe(true);
-  expect(mockedRequest).toHaveBeenLastCalledWith({ url: '/mall/spus/9', method: 'DELETE' });
+  expect(mockedRequest).toHaveBeenLastCalledWith({ url: '/spus/9', method: 'DELETE' });
   await expect(api.recycleSpu('../9')).rejects.toThrow('编号');
   await expect(api.restoreSpu('9223372036854775808')).rejects.toThrow('范围');
 });
@@ -191,7 +191,7 @@ it('库存分组独立于上下架状态，查询与统计使用实际库存字�
   mockedRequest.mockResolvedValueOnce({ rows: [], total: 0 });
   await api.getSpuList({ stockStatus: 'SOLD_OUT', pageNum: 1, pageSize: 10 });
   expect(mockedRequest).toHaveBeenLastCalledWith({
-    url: '/mall/spus',
+    url: '/spus',
     params: {
       name: undefined,
       categoryId: undefined,

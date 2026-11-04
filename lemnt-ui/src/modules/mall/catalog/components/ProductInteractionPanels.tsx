@@ -9,7 +9,7 @@ export default function ProductInteractionPanels({ spuId }: { spuId: string }) {
   const { can } = usePermission();
   return (
     <>
-      {can('mall:product-favorite:list') && (
+      {can('product:favorite:list') && (
         <ProTable<ProductFavoriteRecord>
           headerTitle="商品收藏记录"
           rowKey="id"
@@ -31,7 +31,7 @@ export default function ProductInteractionPanels({ spuId }: { spuId: string }) {
           ]}
         />
       )}
-      {can('mall:product-history:list') && (
+      {can('product:browse-history:list') && (
         <ProTable<ProductBrowseHistoryRecord>
           headerTitle="商品浏览足迹"
           rowKey="id"

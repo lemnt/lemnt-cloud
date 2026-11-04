@@ -346,19 +346,19 @@ function BargainProductFields() {
   const skus = useQuery({
     queryKey: ['bargain', 'spu', spuId],
     queryFn: () => getSpuDetail(String(spuId)),
-    enabled: !!spuId && can('mall:spu:query'),
+    enabled: !!spuId && can('product:spu:query'),
   });
   return (
     <>
-      {!can('mall:spu:query') && <Alert type="warning" title="读取商品SKU需要商品详情权限" />}
+      {!can('product:spu:query') && <Alert type="warning" title="读取商品SKU需要商品详情权限" />}
       <ProFormSelect
         name="spuId"
         label="商品"
         showSearch
         debounceTime={300}
-        disabled={!can('mall:spu:list')}
+        disabled={!can('product:spu:list')}
         request={async ({ keyWords }) =>
-          can('mall:spu:list')
+          can('product:spu:list')
             ? (await getSpuList({ name: keyWords, pageNum: 1, pageSize: 100 })).data.map((row) => ({
                 label: row.name,
                 value: row.id,
@@ -371,7 +371,7 @@ function BargainProductFields() {
       <ProFormSelect
         name="skuId"
         label="SKU"
-        disabled={!spuId || !can('mall:spu:query') || skus.isFetching || skus.isError}
+        disabled={!spuId || !can('product:spu:query') || skus.isFetching || skus.isError}
         options={
           skus.data?.skus.map((row) => ({
             label: `${row.name}（${row.code}，${row.price}元）`,

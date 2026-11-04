@@ -378,8 +378,8 @@ function RewardFields() {
           productScope !== 'ALL' && (
             <>
               {!(productScope === 'CATEGORY_IDS'
-                ? can('mall:category:list')
-                : can('mall:spu:list')) && (
+                ? can('product:category:list')
+                : can('product:spu:list')) && (
                 <Alert type="warning" title="需要对应商品或分类查询权限后才能选择范围" />
               )}
               <ProFormSelect
@@ -391,15 +391,15 @@ function RewardFields() {
                 debounceTime={300}
                 disabled={
                   !(productScope === 'CATEGORY_IDS'
-                    ? can('mall:category:list')
-                    : can('mall:spu:list'))
+                    ? can('product:category:list')
+                    : can('product:spu:list'))
                 }
                 request={async ({ keyWords }) => {
                   if (productScope === 'CATEGORY_IDS')
-                    return can('mall:category:list')
+                    return can('product:category:list')
                       ? (await getCategoryList()).map((r) => ({ label: r.name, value: r.id }))
                       : [];
-                  return can('mall:spu:list')
+                  return can('product:spu:list')
                     ? (await getSpuList({ name: keyWords, pageNum: 1, pageSize: 100 })).data.map(
                         (r) => ({ label: r.name, value: r.id }),
                       )
@@ -439,7 +439,7 @@ function DiscountFields() {
   const { can } = usePermission();
   return (
     <>
-      {(!can('mall:spu:list') || !can('mall:spu:query')) && (
+      {(!can('product:spu:list') || !can('product:spu:query')) && (
         <Alert type="warning" title="选择活动SKU需要商品列表及详情查询权限" />
       )}
       <ProFormList
@@ -463,7 +463,7 @@ function DiscountProductFields({ index }: { index: number }) {
   const skus = useQuery({
     queryKey: ['promotion', 'spu', spuId],
     queryFn: () => getSpuDetail(spuId ?? ''),
-    enabled: !!spuId && can('mall:spu:query'),
+    enabled: !!spuId && can('product:spu:query'),
   });
   return (
     <>
@@ -472,9 +472,9 @@ function DiscountProductFields({ index }: { index: number }) {
         label="商品"
         showSearch
         debounceTime={300}
-        disabled={!can('mall:spu:list')}
+        disabled={!can('product:spu:list')}
         request={async ({ keyWords }) =>
-          can('mall:spu:list')
+          can('product:spu:list')
             ? (await getSpuList({ name: keyWords, pageNum: 1, pageSize: 100 })).data.map((r) => ({
                 label: r.name,
                 value: r.id,
@@ -494,7 +494,7 @@ function DiscountProductFields({ index }: { index: number }) {
       <ProFormSelect
         name="skuId"
         label="SKU"
-        disabled={!spuId || !can('mall:spu:query') || skus.isFetching || skus.isError}
+        disabled={!spuId || !can('product:spu:query') || skus.isFetching || skus.isError}
         options={skus.data?.skus.map((r) => ({
           label: `${r.name}（${r.code}，${r.price}元）`,
           value: r.id,

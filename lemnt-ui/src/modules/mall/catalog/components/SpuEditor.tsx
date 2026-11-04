@@ -65,12 +65,12 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
   const categories = useQuery({
     queryKey: catalogKeys.categories(),
     queryFn: getCategoryList,
-    enabled: open && can('mall:category:list'),
+    enabled: open && can('product:category:list'),
   });
   const brands = useQuery({
     queryKey: catalogKeys.brands(),
     queryFn: getBrandList,
-    enabled: open && can('mall:brand:list'),
+    enabled: open && can('product:brand:list'),
   });
   const templates = useQuery({
     queryKey: ['trade', 'delivery', 'templates', 'simple'],
@@ -130,12 +130,12 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
     },
   });
   const canSave =
-    can(value ? 'mall:spu:edit' : 'mall:spu:add') &&
-    can('mall:category:list') &&
-    can('mall:brand:list') &&
+    can(value ? 'product:spu:edit' : 'product:spu:add') &&
+    can('product:category:list') &&
+    can('product:brand:list') &&
     can('trade:delivery-template:query') &&
-    can('mall:spec:query') &&
-    can('mall:spec-value:query');
+    can('product:spec:query') &&
+    can('product:spec-value:query');
   const referenceError = categories.error ?? brands.error ?? templates.error;
   return (
     <AdminModalForm<SpuFormValues>
@@ -340,7 +340,7 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
               fieldProps={{ precision: 6, stringMode: true }}
             />
             <ProFormText name="image" label="SKU 图片 URL" rules={[{ max: 500 }]} />
-            {can('mall:spec:query') && can('mall:spec-value:query') && (
+            {can('product:spec:query') && can('product:spec-value:query') && (
               <SkuSpecFields skuIndex={field.name} />
             )}
           </>

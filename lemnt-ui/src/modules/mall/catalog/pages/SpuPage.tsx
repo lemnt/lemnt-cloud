@@ -44,22 +44,22 @@ export default function SpuPage() {
   const rows = useQuery({
     queryKey: catalogKeys.spus(query),
     queryFn: () => getSpuList(query),
-    enabled: can('mall:spu:list'),
+    enabled: can('product:spu:list'),
   });
   const counts = useQuery({
     queryKey: catalogKeys.counts(filters),
     queryFn: () => getSpuStatusCounts(filters),
-    enabled: can('mall:spu:list'),
+    enabled: can('product:spu:list'),
   });
   const categories = useQuery({
     queryKey: catalogKeys.categories(),
     queryFn: getCategoryList,
-    enabled: can('mall:spu:list') && can('mall:category:list'),
+    enabled: can('product:spu:list') && can('product:category:list'),
   });
   const brands = useQuery({
     queryKey: catalogKeys.brands(),
     queryFn: getBrandList,
-    enabled: can('mall:spu:list') && can('mall:brand:list'),
+    enabled: can('product:spu:list') && can('product:brand:list'),
   });
   const exportFile = useMutation({ mutationFn: () => exportSpus(query) });
   const shelf = useMutation({
@@ -83,7 +83,7 @@ export default function SpuPage() {
     await refresh(true);
   }
   async function edit(id: string) {
-    if (isOpening || !can('mall:spu:query') || !can('mall:spu:edit')) return;
+    if (isOpening || !can('product:spu:query') || !can('product:spu:edit')) return;
     setIsOpening(true);
     try {
       const value = await client.fetchQuery({
@@ -112,7 +112,7 @@ export default function SpuPage() {
       valueType: 'select',
       fieldProps: {
         options: categories.data?.map((v) => ({ value: v.id, label: v.name })),
-        disabled: !can('mall:category:list') || !categories.isSuccess,
+        disabled: !can('product:category:list') || !categories.isSuccess,
         showSearch: true,
         optionFilterProp: 'label',
       },
@@ -125,7 +125,7 @@ export default function SpuPage() {
       valueType: 'select',
       fieldProps: {
         options: brands.data?.map((v) => ({ value: v.id, label: v.name })),
-        disabled: !can('mall:brand:list') || !brands.isSuccess,
+        disabled: !can('product:brand:list') || !brands.isSuccess,
         showSearch: true,
         optionFilterProp: 'label',
       },
@@ -137,23 +137,23 @@ export default function SpuPage() {
       title: '操作',
       valueType: 'option',
       render: (_, row) => [
-        can('mall:spu:query') && (
+        can('product:spu:query') && (
           <Button key="detail" type="link" onClick={() => setDetailId(row.id)}>
             详情与库存
           </Button>
         ),
-        can('mall:spu:edit') && can('mall:spu:query') && row.status !== 'RECYCLED' && (
+        can('product:spu:edit') && can('product:spu:query') && row.status !== 'RECYCLED' && (
           <Button key="edit" type="link" disabled={isOpening || busy} onClick={() => edit(row.id)}>
             修改
           </Button>
         ),
-        can('mall:spu:edit') && row.status !== 'RECYCLED' && (
+        can('product:spu:edit') && row.status !== 'RECYCLED' && (
           <Popconfirm
             key="shelf"
             title={row.status === 'ON_SHELF' ? '确认下架？已预占订单仍可继续处理。' : '确认上架？'}
             disabled={busy}
             onConfirm={async () => {
-              if (busy || !can('mall:spu:edit')) return;
+              if (busy || !can('product:spu:edit')) return;
               try {
                 requireWriteSuccess(
                   (await shelf.mutateAsync({ id: row.id, onShelf: row.status !== 'ON_SHELF' }))
@@ -171,13 +171,13 @@ export default function SpuPage() {
             </Button>
           </Popconfirm>
         ),
-        can('mall:spu:edit') && row.status === 'OFF_SHELF' && (
+        can('product:spu:edit') && row.status === 'OFF_SHELF' && (
           <Popconfirm
             key="recycle"
             title="确认移入回收站？恢复后仍需重新上架。"
             disabled={busy}
             onConfirm={async () => {
-              if (busy || !can('mall:spu:edit')) return;
+              if (busy || !can('product:spu:edit')) return;
               try {
                 await recycle.mutateAsync(row.id);
                 message.success('已移入回收站');
@@ -192,13 +192,13 @@ export default function SpuPage() {
             </Button>
           </Popconfirm>
         ),
-        can('mall:spu:edit') && row.status === 'RECYCLED' && (
+        can('product:spu:edit') && row.status === 'RECYCLED' && (
           <Popconfirm
             key="restore"
             title="确认恢复商品？恢复后为下架状态。"
             disabled={busy}
             onConfirm={async () => {
-              if (busy || !can('mall:spu:edit')) return;
+              if (busy || !can('product:spu:edit')) return;
               try {
                 await restore.mutateAsync(row.id);
                 message.success('已恢复为下架');
@@ -213,13 +213,13 @@ export default function SpuPage() {
             </Button>
           </Popconfirm>
         ),
-        can('mall:spu:remove') && row.status === 'RECYCLED' && (
+        can('product:spu:remove') && row.status === 'RECYCLED' && (
           <Popconfirm
             key="remove"
             title="确认删除商品？删除后不可恢复，历史订单和库存记录保留。"
             disabled={busy}
             onConfirm={async () => {
-              if (busy || !can('mall:spu:remove')) return;
+              if (busy || !can('product:spu:remove')) return;
               try {
                 await remove.mutateAsync(row.id);
                 message.success('商品已删除');
@@ -237,7 +237,7 @@ export default function SpuPage() {
       ],
     },
   ];
-  if (!can('mall:spu:list')) return <Result status="403" title="没有商品列表权限" />;
+  if (!can('product:spu:list')) return <Result status="403" title="没有商品列表权限" />;
   return (
     <PageContainer title="商品与库存">
       {rows.isError && (
@@ -318,13 +318,13 @@ export default function SpuPage() {
           setPage({ ...page, pageNum: 1 });
         }}
         toolBarRender={() => [
-          can('mall:spu:export') && (
+          can('product:spu:export') && (
             <Button
               key="export"
               loading={exportFile.isPending}
               title="按当前筛选导出，最多10000件商品"
               onClick={async () => {
-                if (exportFile.isPending || !can('mall:spu:export')) return;
+                if (exportFile.isPending || !can('product:spu:export')) return;
                 try {
                   const blob = await exportFile.mutateAsync();
                   const url = URL.createObjectURL(blob);
@@ -354,7 +354,7 @@ export default function SpuPage() {
           >
             刷新
           </Button>,
-          can('mall:spu:add') && (
+          can('product:spu:add') && (
             <Button
               key="add"
               type="primary"

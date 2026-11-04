@@ -29,7 +29,7 @@ it('后台评价使用分页rows/total，false和长编号保留', async () => {
   expect(result.data[0].visible).toBe(false);
   expect(result.data[0].descriptionScores).toBeNull();
   expect(mockedRequest).toHaveBeenCalledWith({
-    url: '/mall/comments',
+    url: '/comments',
     params: { pageNum: 1, pageSize: 20, visible: false, replied: false },
   });
 });
@@ -47,7 +47,7 @@ it('显隐必须得到成功对象确认，回复操作者不由请求指定', a
   mockedRequest.mockResolvedValue({ data: { ...row, replyStatus: true, replyContent: '谢谢' } });
   await api.replyComment('9', '谢谢');
   expect(mockedRequest).toHaveBeenLastCalledWith({
-    url: '/mall/comments/9/reply',
+    url: '/comments/9/reply',
     method: 'PUT',
     data: { content: '谢谢' },
   });
@@ -83,7 +83,7 @@ it('组合评价筛选保留真实订单长ID、时间边界与未回复false', 
     createTimeEnd: '2026-10-29T23:59:59',
   };
   await api.getComments(query);
-  expect(mockedRequest).toHaveBeenCalledWith({ url: '/mall/comments', params: query });
+  expect(mockedRequest).toHaveBeenCalledWith({ url: '/comments', params: query });
 });
 
 it('后台自评只发送编辑字段，不伪造订单或会员编号', async () => {
@@ -98,7 +98,7 @@ it('后台自评只发送编辑字段，不伪造订单或会员编号', async (
     picUrls: [],
   };
   expect(await api.createSelfComment(data)).toBe('9223372036854775807');
-  expect(mockedRequest).toHaveBeenCalledWith({ url: '/mall/comments', method: 'POST', data });
+  expect(mockedRequest).toHaveBeenCalledWith({ url: '/comments', method: 'POST', data });
 });
 
 it('后台自评没有订单号，会员0保持源语义', () => {

@@ -33,7 +33,7 @@ export async function exportSpus(filters: SpuExportFilter): Promise<Blob> {
     return key;
   }
   try {
-    const response = await httpClient.get<Blob>('/mall/spus/export', {
+    const response = await httpClient.get<Blob>('/spus/export', {
       params: {
         name: filters.name?.trim() || undefined,
         categoryId: id(filters.categoryId),

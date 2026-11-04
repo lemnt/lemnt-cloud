@@ -134,17 +134,17 @@ export default function CommentPage() {
       title: '操作',
       valueType: 'option',
       render: (_, row) => [
-        can('mall:comment:query') ? (
+        can('product:comment:query') ? (
           <Button key="detail" type="link" disabled={busy} onClick={() => show(row)}>
             详情
           </Button>
         ) : null,
-        can('mall:comment:query') && can('mall:comment:reply') ? (
+        can('product:comment:query') && can('product:comment:reply') ? (
           <Button key="reply" type="link" disabled={busy} onClick={() => show(row, true)}>
             回复
           </Button>
         ) : null,
-        can('mall:comment:edit') ? (
+        can('product:comment:edit') ? (
           <Popconfirm
             key="visible"
             title={row.visible ? '隐藏此评价？' : '显示此评价？'}
@@ -174,13 +174,13 @@ export default function CommentPage() {
       ],
     },
   ];
-  if (!can('mall:comment:list')) return <Result status="403" title="无商品评价查询权限" />;
+  if (!can('product:comment:list')) return <Result status="403" title="无商品评价查询权限" />;
   return (
     <PageContainer title="商品评价">
       {error ? <Alert type="error" showIcon message={error} /> : null}
       <ProTable<ProductCommentRecord>
         toolBarRender={() =>
-          can('mall:comment:create')
+          can('product:comment:create')
             ? [
                 <Button
                   key="create"

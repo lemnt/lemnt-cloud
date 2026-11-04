@@ -352,14 +352,14 @@ spring:
                     _genkey_0: DELETE
                 - name: Path
                   args:
-                    _genkey_0: /mall/app/browse-history
-                    _genkey_1: /mall/app/browse-history/clear
-                    _genkey_2: /mall/app/favorites/{spuId:[1-9][0-9]*}
-                    _genkey_3: /mall/brands/{id}
-                    _genkey_4: /mall/categories/{id}
-                    _genkey_5: /mall/spec-values/{id}
-                    _genkey_6: /mall/specs/{id}
-                    _genkey_7: /mall/spus/{id}
+                    _genkey_0: /app/browse-historys
+                    _genkey_1: /app/browse-historys/clear
+                    _genkey_2: /app/favorites/{spuId:[1-9][0-9]*}
+                    _genkey_3: /brands/{id}
+                    _genkey_4: /categories/{id}
+                    _genkey_5: /spec-values/{id}
+                    _genkey_6: /specs/{id}
+                    _genkey_7: /spus/{id}
             - id: commerce-product-get
               uri: lb://lemnt-product
               order: -8
@@ -370,37 +370,37 @@ spring:
                     _genkey_1: HEAD
                 - name: Path
                   args:
-                    _genkey_0: /mall/app/browse-history
-                    _genkey_1: /mall/app/categories
-                    _genkey_2: /mall/app/comments
-                    _genkey_3: /mall/app/favorites
-                    _genkey_4: /mall/app/favorites/count
-                    _genkey_5: /mall/app/favorites/exists
-                    _genkey_6: /mall/app/products
-                    _genkey_7: /mall/app/products/{id}
-                    _genkey_8: /mall/brands
-                    _genkey_9: /mall/brands/page
-                    _genkey_10: /mall/brands/simple
-                    _genkey_11: /mall/brands/{id}
-                    _genkey_12: /mall/categories
-                    _genkey_13: /mall/categories/tree
-                    _genkey_14: /mall/categories/{id}
-                    _genkey_15: /mall/comments
-                    _genkey_16: /mall/comments/{id}
-                    _genkey_17: /mall/product-browse-history
-                    _genkey_18: /mall/product-favorites
-                    _genkey_19: /mall/spec-values
-                    _genkey_20: /mall/spec-values/simple
-                    _genkey_21: /mall/spec-values/{id}
-                    _genkey_22: /mall/specs
-                    _genkey_23: /mall/specs/simple
-                    _genkey_24: /mall/specs/{id}
-                    _genkey_25: /mall/spus
-                    _genkey_26: /mall/spus/batch
-                    _genkey_27: /mall/spus/count
-                    _genkey_28: /mall/spus/export
-                    _genkey_29: /mall/spus/simple
-                    _genkey_30: /mall/spus/{id}
+                    _genkey_0: /app/browse-historys
+                    _genkey_1: /app/categories
+                    _genkey_2: /app/comments
+                    _genkey_3: /app/favorites
+                    _genkey_4: /app/favorites/count
+                    _genkey_5: /app/favorites/exists
+                    _genkey_6: /app/products
+                    _genkey_7: /app/products/{id}
+                    _genkey_8: /brands
+                    _genkey_9: /brands/page
+                    _genkey_10: /brands/simple
+                    _genkey_11: /brands/{id}
+                    _genkey_12: /categories
+                    _genkey_13: /categories/tree
+                    _genkey_14: /categories/{id}
+                    _genkey_15: /comments
+                    _genkey_16: /comments/{id}
+                    _genkey_17: /browse-historys
+                    _genkey_18: /favorites
+                    _genkey_19: /spec-values
+                    _genkey_20: /spec-values/simple
+                    _genkey_21: /spec-values/{id}
+                    _genkey_22: /specs
+                    _genkey_23: /specs/simple
+                    _genkey_24: /specs/{id}
+                    _genkey_25: /spus
+                    _genkey_26: /spus/batch
+                    _genkey_27: /spus/count
+                    _genkey_28: /spus/export
+                    _genkey_29: /spus/simple
+                    _genkey_30: /spus/{id}
             - id: commerce-product-options
               uri: lb://lemnt-product
               order: -8
@@ -410,44 +410,44 @@ spring:
                     _genkey_0: OPTIONS
                 - name: Path
                   args:
-                    _genkey_0: /mall/app/browse-history
-                    _genkey_1: /mall/app/browse-history/clear
-                    _genkey_2: /mall/app/categories
-                    _genkey_3: /mall/app/comments
-                    _genkey_4: /mall/app/favorites
-                    _genkey_5: /mall/app/favorites/count
-                    _genkey_6: /mall/app/favorites/exists
-                    _genkey_7: /mall/app/favorites/{spuId:[1-9][0-9]*}
-                    _genkey_8: /mall/app/products
-                    _genkey_9: /mall/app/products/{id}
-                    _genkey_10: /mall/brands
-                    _genkey_11: /mall/brands/page
-                    _genkey_12: /mall/brands/simple
-                    _genkey_13: /mall/brands/{id}
-                    _genkey_14: /mall/categories
-                    _genkey_15: /mall/categories/tree
-                    _genkey_16: /mall/categories/{id}
-                    _genkey_17: /mall/comments
-                    _genkey_18: /mall/comments/{id}
-                    _genkey_19: /mall/comments/{id}/reply
-                    _genkey_20: /mall/comments/{id}/visible
-                    _genkey_21: /mall/product-browse-history
-                    _genkey_22: /mall/product-favorites
-                    _genkey_23: /mall/spec-values
-                    _genkey_24: /mall/spec-values/simple
-                    _genkey_25: /mall/spec-values/{id}
-                    _genkey_26: /mall/specs
-                    _genkey_27: /mall/specs/simple
-                    _genkey_28: /mall/specs/{id}
-                    _genkey_29: /mall/spus
-                    _genkey_30: /mall/spus/batch
-                    _genkey_31: /mall/spus/count
-                    _genkey_32: /mall/spus/export
-                    _genkey_33: /mall/spus/simple
-                    _genkey_34: /mall/spus/{id}
-                    _genkey_35: /mall/spus/{id}/recycle
-                    _genkey_36: /mall/spus/{id}/restore
-                    _genkey_37: /mall/spus/{id}/shelf
+                    _genkey_0: /app/browse-historys
+                    _genkey_1: /app/browse-historys/clear
+                    _genkey_2: /app/categories
+                    _genkey_3: /app/comments
+                    _genkey_4: /app/favorites
+                    _genkey_5: /app/favorites/count
+                    _genkey_6: /app/favorites/exists
+                    _genkey_7: /app/favorites/{spuId:[1-9][0-9]*}
+                    _genkey_8: /app/products
+                    _genkey_9: /app/products/{id}
+                    _genkey_10: /brands
+                    _genkey_11: /brands/page
+                    _genkey_12: /brands/simple
+                    _genkey_13: /brands/{id}
+                    _genkey_14: /categories
+                    _genkey_15: /categories/tree
+                    _genkey_16: /categories/{id}
+                    _genkey_17: /comments
+                    _genkey_18: /comments/{id}
+                    _genkey_19: /comments/{id}/reply
+                    _genkey_20: /comments/{id}/visible
+                    _genkey_21: /browse-historys
+                    _genkey_22: /favorites
+                    _genkey_23: /spec-values
+                    _genkey_24: /spec-values/simple
+                    _genkey_25: /spec-values/{id}
+                    _genkey_26: /specs
+                    _genkey_27: /specs/simple
+                    _genkey_28: /specs/{id}
+                    _genkey_29: /spus
+                    _genkey_30: /spus/batch
+                    _genkey_31: /spus/count
+                    _genkey_32: /spus/export
+                    _genkey_33: /spus/simple
+                    _genkey_34: /spus/{id}
+                    _genkey_35: /spus/{id}/recycle
+                    _genkey_36: /spus/{id}/restore
+                    _genkey_37: /spus/{id}/shelf
             - id: commerce-product-post
               uri: lb://lemnt-product
               order: -8
@@ -457,17 +457,17 @@ spring:
                     _genkey_0: POST
                 - name: Path
                   args:
-                    _genkey_0: /mall/app/browse-history
-                    _genkey_1: /mall/app/comments
-                    _genkey_2: /mall/app/favorites
-                    _genkey_3: /mall/brands
-                    _genkey_4: /mall/categories
-                    _genkey_5: /mall/comments
-                    _genkey_6: /mall/spec-values
-                    _genkey_7: /mall/specs
-                    _genkey_8: /mall/spus
-                    _genkey_9: /mall/spus/{id}/recycle
-                    _genkey_10: /mall/spus/{id}/restore
+                    _genkey_0: /app/browse-historys
+                    _genkey_1: /app/comments
+                    _genkey_2: /app/favorites
+                    _genkey_3: /brands
+                    _genkey_4: /categories
+                    _genkey_5: /comments
+                    _genkey_6: /spec-values
+                    _genkey_7: /specs
+                    _genkey_8: /spus
+                    _genkey_9: /spus/{id}/recycle
+                    _genkey_10: /spus/{id}/restore
             - id: commerce-product-put
               uri: lb://lemnt-product
               order: -8
@@ -477,14 +477,14 @@ spring:
                     _genkey_0: PUT
                 - name: Path
                   args:
-                    _genkey_0: /mall/brands/{id}
-                    _genkey_1: /mall/categories/{id}
-                    _genkey_2: /mall/comments/{id}/reply
-                    _genkey_3: /mall/comments/{id}/visible
-                    _genkey_4: /mall/spec-values/{id}
-                    _genkey_5: /mall/specs/{id}
-                    _genkey_6: /mall/spus/{id}
-                    _genkey_7: /mall/spus/{id}/shelf
+                    _genkey_0: /brands/{id}
+                    _genkey_1: /categories/{id}
+                    _genkey_2: /comments/{id}/reply
+                    _genkey_3: /comments/{id}/visible
+                    _genkey_4: /spec-values/{id}
+                    _genkey_5: /specs/{id}
+                    _genkey_6: /spus/{id}
+                    _genkey_7: /spus/{id}/shelf
             - id: commerce-promotion-delete
               uri: lb://lemnt-promotion
               order: -8

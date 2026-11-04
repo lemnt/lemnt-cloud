@@ -78,13 +78,13 @@ function filters(q: SpecFilter) {
 }
 /** 查询规格项分页，使用统一rows/total响应。 */
 export async function getSpecs(q: SpecFilter) {
-  const r = await request<unknown>({ url: '/mall/specs', params: filters(q) });
+  const r = await request<unknown>({ url: '/specs', params: filters(q) });
   return { records: decodeList(r.rows, spec), total: decodeTotal(r.total) };
 }
 /** 查询固定规格下的规格值分页。 */
 export async function getSpecValues(q: SpecValueFilter) {
   const r = await request<unknown>({
-    url: '/mall/spec-values',
+    url: '/spec-values',
     params: {
       name: q.name?.trim() || undefined,
       pageNum: q.pageNum,
@@ -99,13 +99,13 @@ export async function getSpecValues(q: SpecValueFilter) {
 }
 /** 查询规格详情，更新前必须读取真实记录。 */
 export async function getSpec(id: string) {
-  const row = spec((await request<unknown>({ url: '/mall/specs/' + specId(id) })).data);
+  const row = spec((await request<unknown>({ url: '/specs/' + specId(id) })).data);
   if (row.id !== specId(id)) throw Error('规格详情编号不一致');
   return row;
 }
 /** 查询规格值详情，核对所属规格。 */
 export async function getSpecValue(id: string, parentId: string) {
-  const row = specValue((await request<unknown>({ url: '/mall/spec-values/' + specId(id) })).data);
+  const row = specValue((await request<unknown>({ url: '/spec-values/' + specId(id) })).data);
   if (row.id !== specId(id) || row.specId !== specId(parentId)) throw Error('规格值详情归属不一致');
   return row;
 }
@@ -114,7 +114,7 @@ export async function saveSpec(id: string | null, values: SpecValues) {
   const row = spec(
     (
       await request<unknown>({
-        url: '/mall/specs' + (id ? '/' + specId(id) : ''),
+        url: '/specs' + (id ? '/' + specId(id) : ''),
         method: id ? 'PUT' : 'POST',
         data: fields(values, 64),
       })
@@ -130,7 +130,7 @@ export async function saveSpecValue(id: string | null, parentId: string, values:
   const row = specValue(
     (
       await request<unknown>({
-        url: '/mall/spec-values' + (id ? '/' + specId(id) : ''),
+        url: '/spec-values' + (id ? '/' + specId(id) : ''),
         method: id ? 'PUT' : 'POST',
         data: id ? body : { ...body, specId: parent },
       })
@@ -143,7 +143,7 @@ export async function saveSpecValue(id: string | null, parentId: string, values:
 /** 删除规格项；服务端仍有子值时拒绝。 */
 export async function deleteSpec(id: string) {
   if (
-    (await request<unknown>({ url: '/mall/specs/' + specId(id), method: 'DELETE' })).data !== true
+    (await request<unknown>({ url: '/specs/' + specId(id), method: 'DELETE' })).data !== true
   )
     throw Error('删除规格未成功');
   return true;
@@ -151,7 +151,7 @@ export async function deleteSpec(id: string) {
 /** 删除规格值，保留现有SKU及订单快照。 */
 export async function deleteSpecValue(id: string) {
   if (
-    (await request<unknown>({ url: '/mall/spec-values/' + specId(id), method: 'DELETE' })).data !==
+    (await request<unknown>({ url: '/spec-values/' + specId(id), method: 'DELETE' })).data !==
     true
   )
     throw Error('删除规格值未成功');
