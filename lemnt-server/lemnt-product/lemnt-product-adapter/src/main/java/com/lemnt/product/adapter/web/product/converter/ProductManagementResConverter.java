@@ -1,8 +1,8 @@
 package com.lemnt.product.adapter.web.product.converter;
 
-import com.lemnt.product.adapter.web.product.res.BrandPageRes;
-import com.lemnt.product.adapter.web.product.res.BrandSimpleRes;
-import com.lemnt.product.adapter.web.product.res.CategoryTreeRes;
+import com.lemnt.product.adapter.web.product.res.ProductBrandPageRes;
+import com.lemnt.product.adapter.web.product.res.ProductBrandSimpleRes;
+import com.lemnt.product.adapter.web.product.res.ProductCategoryTreeRes;
 import com.lemnt.product.adapter.web.product.res.ProductSkuAddRes;
 import com.lemnt.product.adapter.web.product.res.ProductSkuDetailRes;
 import com.lemnt.product.adapter.web.product.res.ProductSkuPageRes;
@@ -11,8 +11,8 @@ import com.lemnt.product.adapter.web.product.res.ProductSpuBatchSkuRes;
 import com.lemnt.product.adapter.web.product.res.ProductSpuCountRes;
 import com.lemnt.product.adapter.web.product.res.ProductSpuExportRes;
 import com.lemnt.product.adapter.web.product.res.ProductSpuSimpleRes;
-import com.lemnt.product.application.product.dto.BrandDTO;
-import com.lemnt.product.application.product.dto.CategoryTreeDTO;
+import com.lemnt.product.application.product.dto.ProductBrandDTO;
+import com.lemnt.product.application.product.dto.ProductCategoryTreeDTO;
 import com.lemnt.product.application.product.dto.ProductSkuDTO;
 import com.lemnt.product.application.product.dto.ProductSpuDTO;
 import com.lemnt.product.application.product.dto.ProductSpuStatusCountDTO;
@@ -94,8 +94,8 @@ public final class ProductManagementResConverter {
     /**
      * 转换品牌分页。
      */
-    public static BrandPageRes brand(BrandDTO value) {
-        return new BrandPageRes(
+    public static ProductBrandPageRes brand(ProductBrandDTO value) {
+        return new ProductBrandPageRes(
             value.id(),
             value.name(),
             value.picUrl(),
@@ -107,15 +107,15 @@ public final class ProductManagementResConverter {
     /**
      * 转换品牌选择。
      */
-    public static BrandSimpleRes brandSimple(BrandDTO value) {
-        return new BrandSimpleRes(value.id(), value.name());
+    public static ProductBrandSimpleRes brandSimple(ProductBrandDTO value) {
+        return new ProductBrandSimpleRes(value.id(), value.name());
     }
 
     /**
      * 转换分类树。
      */
-    public static CategoryTreeRes tree(CategoryTreeDTO value) {
-        return new CategoryTreeRes(
+    public static ProductCategoryTreeRes tree(ProductCategoryTreeDTO value) {
+        return new ProductCategoryTreeRes(
             value.id(),
             value.name(),
             value.picUrl(),

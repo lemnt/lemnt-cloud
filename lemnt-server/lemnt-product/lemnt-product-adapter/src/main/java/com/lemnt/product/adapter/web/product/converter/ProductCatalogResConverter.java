@@ -12,12 +12,12 @@ import com.lemnt.product.adapter.web.product.res.ProductSkuRes;
 import com.lemnt.product.adapter.web.product.res.ProductSpuCreateRes;
 import com.lemnt.product.adapter.web.product.res.ProductSpuDetailRes;
 import com.lemnt.product.adapter.web.product.res.ProductSpuPageRes;
-import com.lemnt.product.adapter.web.product.res.StockAdjustmentRes;
-import com.lemnt.product.application.product.dto.BrandDTO;
-import com.lemnt.product.application.product.dto.CategoryDTO;
+import com.lemnt.product.adapter.web.product.res.ProductStockAdjustmentRes;
+import com.lemnt.product.application.product.dto.ProductBrandDTO;
+import com.lemnt.product.application.product.dto.ProductCategoryDTO;
 import com.lemnt.product.application.product.dto.ProductSkuDTO;
 import com.lemnt.product.application.product.dto.ProductSpuDTO;
-import com.lemnt.product.application.product.dto.StockAdjustmentDTO;
+import com.lemnt.product.application.product.dto.ProductStockAdjustmentDTO;
 
 /**
  * 目录响应转换器。
@@ -59,10 +59,10 @@ public final class ProductCatalogResConverter {
     /**
      * 库存调整。
      */
-    public static StockAdjustmentRes stockAdjustment(StockAdjustmentDTO value) {
+    public static ProductStockAdjustmentRes stockAdjustment(ProductStockAdjustmentDTO value) {
         return value == null
             ? null
-            : new StockAdjustmentRes(
+            : new ProductStockAdjustmentRes(
             value.requestNo(),
             value.productId(),
             value.delta(),
@@ -143,7 +143,7 @@ public final class ProductCatalogResConverter {
     /**
      * 分类。
      */
-    public static MallCategoryListRes categoryToMallCategoryListRes(CategoryDTO value) {
+    public static MallCategoryListRes categoryToMallCategoryListRes(ProductCategoryDTO value) {
         return value == null
             ? null
             : new MallCategoryListRes(
@@ -158,7 +158,7 @@ public final class ProductCatalogResConverter {
     /**
      * 分类。
      */
-    public static MallCategoryDetailRes categoryToMallCategoryDetailRes(CategoryDTO value) {
+    public static MallCategoryDetailRes categoryToMallCategoryDetailRes(ProductCategoryDTO value) {
         return value == null
             ? null
             : new MallCategoryDetailRes(
@@ -173,7 +173,7 @@ public final class ProductCatalogResConverter {
     /**
      * 分类。
      */
-    public static MallCategoryCreateRes categoryToMallCategoryCreateRes(CategoryDTO value) {
+    public static MallCategoryCreateRes categoryToMallCategoryCreateRes(ProductCategoryDTO value) {
         return value == null
             ? null
             : new MallCategoryCreateRes(
@@ -188,7 +188,7 @@ public final class ProductCatalogResConverter {
     /**
      * 分类。
      */
-    public static MallCategoryUpdateRes categoryToMallCategoryUpdateRes(CategoryDTO value) {
+    public static MallCategoryUpdateRes categoryToMallCategoryUpdateRes(ProductCategoryDTO value) {
         return value == null
             ? null
             : new MallCategoryUpdateRes(
@@ -203,7 +203,7 @@ public final class ProductCatalogResConverter {
     /**
      * 品牌。
      */
-    public static MallBrandListRes brandToMallBrandListRes(BrandDTO value) {
+    public static MallBrandListRes brandToMallBrandListRes(ProductBrandDTO value) {
         return value == null
             ? null
             : new MallBrandListRes(
@@ -218,7 +218,7 @@ public final class ProductCatalogResConverter {
     /**
      * 品牌。
      */
-    public static MallBrandDetailRes brandToMallBrandDetailRes(BrandDTO value) {
+    public static MallBrandDetailRes brandToMallBrandDetailRes(ProductBrandDTO value) {
         return value == null
             ? null
             : new MallBrandDetailRes(
@@ -233,7 +233,7 @@ public final class ProductCatalogResConverter {
     /**
      * 品牌。
      */
-    public static MallBrandCreateRes brandToMallBrandCreateRes(BrandDTO value) {
+    public static MallBrandCreateRes brandToMallBrandCreateRes(ProductBrandDTO value) {
         return value == null
             ? null
             : new MallBrandCreateRes(
@@ -248,7 +248,7 @@ public final class ProductCatalogResConverter {
     /**
      * 品牌。
      */
-    public static MallBrandUpdateRes brandToMallBrandUpdateRes(BrandDTO value) {
+    public static MallBrandUpdateRes brandToMallBrandUpdateRes(ProductBrandDTO value) {
         return value == null
             ? null
             : new MallBrandUpdateRes(

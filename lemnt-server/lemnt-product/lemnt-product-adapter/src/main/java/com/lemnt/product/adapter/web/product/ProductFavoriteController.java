@@ -9,6 +9,7 @@ import com.lemnt.product.adapter.web.product.res.ProductFavoritePageRes;
 import com.lemnt.product.application.product.executor.ProductFavoritePageQueryExe;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,22 +20,23 @@ import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
 
 /**
- * 商品收藏只读管理，按权限及显式筛选查询。
+ * 商品收藏管理
  */
+@Tag(name = " 商品收藏管理")
 @RestController
-@RequestMapping("/mall/product-favorites")
+@RequestMapping("/favorites")
 @RequiredArgsConstructor
 public class ProductFavoriteController {
-    private final ProductFavoritePageQueryExe query;
+    private final ProductFavoritePageQueryExe favoritePageQueryExe;
 
     /**
      * 商品详情关联记录分页。
      */
     @GetMapping
     @Operation(summary = "商品收藏记录分页")
-    @RequiresPermissions("mall:product-favorite:list")
+    @RequiresPermissions("product:favorite:list")
     public R<ProductFavoritePageRes> page(@Valid @ModelAttribute ProductFavoritePageReq req) {
-        var result = query.execute(ProductFavoriteReqConverter.page(req));
+        var result = favoritePageQueryExe.execute(ProductFavoriteReqConverter.page(req));
         return R.page(
             result.getRecords().stream().map(ProductFavoriteResConverter::page).toList(),
             result.getTotal());

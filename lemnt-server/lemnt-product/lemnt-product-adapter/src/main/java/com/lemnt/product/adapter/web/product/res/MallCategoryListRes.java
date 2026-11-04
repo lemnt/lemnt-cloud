@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * 分类响应。
  */
-@Schema(description = "Category响应")
+@Schema(description = "ProductCategory响应")
 public record MallCategoryListRes(
     @Schema(description = "编号") Long id,
     @Schema(description = "父分类编号，根为null") Long parentId,

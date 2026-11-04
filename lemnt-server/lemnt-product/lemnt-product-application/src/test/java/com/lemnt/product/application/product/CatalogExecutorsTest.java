@@ -1,18 +1,18 @@
 package com.lemnt.product.application.product;
 
-import com.lemnt.product.application.product.cmd.CategorySaveCmd;
+import com.lemnt.product.application.product.cmd.ProductCategorySaveCmd;
 import com.lemnt.product.application.product.cmd.ProductSpuShelfCmd;
-import com.lemnt.product.application.product.executor.CategorySaveCmdExe;
+import com.lemnt.product.application.product.executor.ProductCategorySaveCmdExe;
 import com.lemnt.product.application.product.executor.ProductSpuPageQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpuShelfCmdExe;
 import com.lemnt.product.application.product.qry.ProductSpuPageQry;
 import com.lemnt.product.application.product.service.ProductCatalogService;
 import com.lemnt.product.application.product.service.ProductValidationService;
-import com.lemnt.product.domain.product.gateway.BrandGateway;
-import com.lemnt.product.domain.product.gateway.CategoryGateway;
+import com.lemnt.product.domain.product.gateway.ProductBrandGateway;
+import com.lemnt.product.domain.product.gateway.ProductCategoryGateway;
 import com.lemnt.product.domain.product.gateway.ProductSpuGateway;
-import com.lemnt.product.domain.product.model.Brand;
-import com.lemnt.product.domain.product.model.Category;
+import com.lemnt.product.domain.product.model.ProductBrand;
+import com.lemnt.product.domain.product.model.ProductCategory;
 import com.lemnt.product.domain.product.model.ProductSpu;
 
 import org.junit.jupiter.api.Test;
@@ -23,34 +23,34 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class CatalogExecutorsTest {
-    BrandGateway brandGateway = mock(BrandGateway.class);
+    ProductBrandGateway brandGateway = mock(ProductBrandGateway.class);
     ProductCatalogService catalogService = mock(ProductCatalogService.class);
-    CategoryGateway categoryGateway = mock(CategoryGateway.class);
+    ProductCategoryGateway categoryGateway = mock(ProductCategoryGateway.class);
     ProductSpuGateway productSpuGateway = mock(ProductSpuGateway.class);
     ProductValidationService validation =
         new ProductValidationService(brandGateway, categoryGateway);
 
     @Test
     void categoriesRejectThirdLevelAndReparenting() {
-        var executor = new CategorySaveCmdExe(categoryGateway);
+        var executor = new ProductCategorySaveCmdExe(categoryGateway);
         when(categoryGateway.category(2L))
-            .thenReturn(new Category(2L, 1L, "child", null, 0, "ENABLED"));
+            .thenReturn(new ProductCategory(2L, 1L, "child", null, 0, "ENABLED"));
         assertThrows(
             IllegalArgumentException.class,
-            () -> executor.execute(new CategorySaveCmd(null, 2L, "bad", null, 0, "ENABLED")));
+            () -> executor.execute(new ProductCategorySaveCmd(null, 2L, "bad", null, 0, "ENABLED")));
         assertThrows(
             IllegalArgumentException.class,
-            () -> executor.execute(new CategorySaveCmd(2L, null, "bad", null, 0, "ENABLED")));
+            () -> executor.execute(new ProductCategorySaveCmd(2L, null, "bad", null, 0, "ENABLED")));
         verify(categoryGateway, never()).saveCategory(any());
     }
 
     @Test
     void disabledParentPreventsPublishing() {
         when(categoryGateway.category(2L))
-            .thenReturn(new Category(2L, 1L, "child", null, 0, "ENABLED"));
+            .thenReturn(new ProductCategory(2L, 1L, "child", null, 0, "ENABLED"));
         when(categoryGateway.category(1L))
-            .thenReturn(new Category(1L, null, "parent", null, 0, "DISABLED"));
-        when(brandGateway.brand(3L)).thenReturn(new Brand(3L, "brand", null, null, 0, "ENABLED"));
+            .thenReturn(new ProductCategory(1L, null, "parent", null, 0, "DISABLED"));
+        when(brandGateway.brand(3L)).thenReturn(new ProductBrand(3L, "brand", null, null, 0, "ENABLED"));
         assertThrows(IllegalArgumentException.class, () -> validation.enabledReferences(2L, 3L));
     }
 

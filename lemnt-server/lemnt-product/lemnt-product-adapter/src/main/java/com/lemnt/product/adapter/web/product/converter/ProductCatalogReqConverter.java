@@ -1,7 +1,7 @@
 package com.lemnt.product.adapter.web.product.converter;
 
-import com.lemnt.product.adapter.web.product.req.BrandSaveReq;
-import com.lemnt.product.adapter.web.product.req.CategorySaveReq;
+import com.lemnt.product.adapter.web.product.req.ProductBrandSaveReq;
+import com.lemnt.product.adapter.web.product.req.ProductCategorySaveReq;
 import com.lemnt.product.adapter.web.product.req.MallBrandCreateReq;
 import com.lemnt.product.adapter.web.product.req.MallBrandUpdateReq;
 import com.lemnt.product.adapter.web.product.req.MallCategoryCreateReq;
@@ -10,8 +10,8 @@ import com.lemnt.product.adapter.web.product.req.ProductSpuCreateReq;
 import com.lemnt.product.adapter.web.product.req.ProductSpuPageReq;
 import com.lemnt.product.adapter.web.product.req.ProductSpuShelfReq;
 import com.lemnt.product.adapter.web.product.req.ProductSpuUpdateReq;
-import com.lemnt.product.application.product.cmd.BrandSaveCmd;
-import com.lemnt.product.application.product.cmd.CategorySaveCmd;
+import com.lemnt.product.application.product.cmd.ProductBrandSaveCmd;
+import com.lemnt.product.application.product.cmd.ProductCategorySaveCmd;
 import com.lemnt.product.application.product.cmd.ProductSpuCreateCmd;
 import com.lemnt.product.application.product.cmd.ProductSpuShelfCmd;
 import com.lemnt.product.application.product.cmd.ProductSpuUpdateCmd;
@@ -29,16 +29,16 @@ public final class ProductCatalogReqConverter {
     /**
      * 分类。
      */
-    public static CategorySaveCmd category(Long id, CategorySaveReq req) {
-        return new CategorySaveCmd(
+    public static ProductCategorySaveCmd category(Long id, ProductCategorySaveReq req) {
+        return new ProductCategorySaveCmd(
             id, req.parentId(), req.name(), req.picUrl(), req.sort(), req.status());
     }
 
     /**
      * 品牌。
      */
-    public static BrandSaveCmd brand(Long id, BrandSaveReq req) {
-        return new BrandSaveCmd(
+    public static ProductBrandSaveCmd brand(Long id, ProductBrandSaveReq req) {
+        return new ProductBrandSaveCmd(
             id, req.name(), req.picUrl(), req.description(), req.sort(), req.status());
     }
 
@@ -163,32 +163,32 @@ public final class ProductCatalogReqConverter {
     /**
      * 分类。
      */
-    public static CategorySaveCmd category(Long id, MallCategoryCreateReq req) {
-        return new CategorySaveCmd(
+    public static ProductCategorySaveCmd category(Long id, MallCategoryCreateReq req) {
+        return new ProductCategorySaveCmd(
             id, req.parentId(), req.name(), req.picUrl(), req.sort(), req.status());
     }
 
     /**
      * 分类。
      */
-    public static CategorySaveCmd category(Long id, MallCategoryUpdateReq req) {
-        return new CategorySaveCmd(
+    public static ProductCategorySaveCmd category(Long id, MallCategoryUpdateReq req) {
+        return new ProductCategorySaveCmd(
             id, req.parentId(), req.name(), req.picUrl(), req.sort(), req.status());
     }
 
     /**
      * 品牌。
      */
-    public static BrandSaveCmd brand(Long id, MallBrandCreateReq req) {
-        return new BrandSaveCmd(
+    public static ProductBrandSaveCmd brand(Long id, MallBrandCreateReq req) {
+        return new ProductBrandSaveCmd(
             id, req.name(), req.picUrl(), req.description(), req.sort(), req.status());
     }
 
     /**
      * 品牌。
      */
-    public static BrandSaveCmd brand(Long id, MallBrandUpdateReq req) {
-        return new BrandSaveCmd(
+    public static ProductBrandSaveCmd brand(Long id, MallBrandUpdateReq req) {
+        return new ProductBrandSaveCmd(
             id, req.name(), req.picUrl(), req.description(), req.sort(), req.status());
     }
 }

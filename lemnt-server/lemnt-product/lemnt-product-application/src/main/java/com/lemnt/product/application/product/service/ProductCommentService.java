@@ -1,15 +1,15 @@
 package com.lemnt.product.application.product.service;
 
 import com.lemnt.common.core.exception.ServiceException;
-import com.lemnt.product.application.product.cmd.CommentCreateCmd;
-import com.lemnt.product.application.product.cmd.CommentReplyCmd;
-import com.lemnt.product.application.product.cmd.CommentSaveCmd;
+import com.lemnt.product.application.product.cmd.ProductCommentCreateCmd;
+import com.lemnt.product.application.product.cmd.ProductCommentReplyCmd;
+import com.lemnt.product.application.product.cmd.ProductCommentSaveCmd;
 import com.lemnt.product.domain.member.gateway.MemberLookupGateway;
 import com.lemnt.product.domain.order.gateway.OrderSnapshotGateway;
 import com.lemnt.product.domain.product.gateway.ProductCommentGateway;
 import com.lemnt.product.domain.product.gateway.ProductSkuGateway;
-import com.lemnt.product.domain.product.model.CommentOrderLink;
-import com.lemnt.product.domain.product.model.CommentOrderRequest;
+import com.lemnt.product.domain.product.model.ProductCommentOrderLink;
+import com.lemnt.product.domain.product.model.ProductCommentOrderRequest;
 import com.lemnt.product.domain.product.model.ProductComment;
 
 import org.springframework.dao.DuplicateKeyException;
@@ -36,12 +36,12 @@ public class ProductCommentService {
     /**
      * 兼容HTTP入口委托交易持锁核验，只有两侧状态确认后才返回成功。
      */
-    public ProductComment create(CommentCreateCmd cmd) {
+    public ProductComment create(ProductCommentCreateCmd cmd) {
         validateIdentity(cmd);
         var input = normalize(cmd);
         Long id =
             orderGateway.createComment(
-                new CommentOrderRequest(
+                new ProductCommentOrderRequest(
                     cmd.memberId(),
                     cmd.orderNo().trim(),
                     cmd.skuId(),
@@ -69,14 +69,14 @@ public class ProductCommentService {
     /**
      * 私有RPC只接收交易已验证的订单事实，不回查持锁中的交易订单。
      */
-    public ProductComment saveVerified(CommentSaveCmd purchase) {
+    public ProductComment saveVerified(ProductCommentSaveCmd purchase) {
         return savePurchase(purchase, false);
     }
 
     /**
      * 独立私有系统入口，不能由会员HTTP输入开启空正文模式。
      */
-    public ProductComment saveSystem(CommentSaveCmd purchase) {
+    public ProductComment saveSystem(ProductCommentSaveCmd purchase) {
         require(
             purchase != null
                 && Integer.valueOf(5).equals(purchase.score())
@@ -91,7 +91,7 @@ public class ProductCommentService {
         return savePurchase(purchase, true);
     }
 
-    private ProductComment savePurchase(CommentSaveCmd purchase, boolean system) {
+    private ProductComment savePurchase(ProductCommentSaveCmd purchase, boolean system) {
         require(
             purchase != null
                 && purchase.orderId() != null
@@ -101,7 +101,7 @@ public class ProductCommentService {
             "真实订单项信息缺失",
             400);
         var cmd =
-            new CommentCreateCmd(
+            new ProductCommentCreateCmd(
                 purchase.memberId(),
                 purchase.orderNo(),
                 purchase.skuId(),
@@ -126,7 +126,7 @@ public class ProductCommentService {
             try {
                 require(
                     productCommentGateway.bindOrderItem(
-                        new CommentOrderLink(
+                        new ProductCommentOrderLink(
                             legacy.id(), purchase.orderId(), purchase.orderItemId())),
                     "评价订单项绑定冲突",
                     409);
@@ -185,13 +185,13 @@ public class ProductCommentService {
         }
     }
 
-    private ProductComment winner(Long orderItemId, CommentCreateCmd cmd, Input input) {
+    private ProductComment winner(Long orderItemId, ProductCommentCreateCmd cmd, Input input) {
         var saved = productCommentGateway.findByOrderItem(orderItemId);
         require(saved != null, "该订单商品已评价，不能重复评价", 409);
         return requireSame(saved, cmd, input);
     }
 
-    private void validateIdentity(CommentCreateCmd cmd) {
+    private void validateIdentity(ProductCommentCreateCmd cmd) {
         require(cmd != null, "评价不能为空", 400);
         require(cmd.memberId() != null && cmd.memberId() > 0, "请先登录", 401);
         require(cmd.skuId() != null && cmd.skuId() > 0, "SKU编号不合法", 400);
@@ -204,7 +204,7 @@ public class ProductCommentService {
             400);
     }
 
-    private ProductComment requireSame(ProductComment value, CommentCreateCmd cmd, Input input) {
+    private ProductComment requireSame(ProductComment value, ProductCommentCreateCmd cmd, Input input) {
         require(
             cmd.memberId().equals(value.memberId())
                 && cmd.skuId().equals(value.skuId())
@@ -235,11 +235,11 @@ public class ProductCommentService {
     /**
      * 两项评分取平均向下取整；旧单分输入明确作为两项相同分数。
      */
-    private Input normalize(CommentCreateCmd cmd) {
+    private Input normalize(ProductCommentCreateCmd cmd) {
         return normalize(cmd, false);
     }
 
-    private Input normalize(CommentCreateCmd cmd, boolean system) {
+    private Input normalize(ProductCommentCreateCmd cmd, boolean system) {
         Integer description = cmd.descriptionScores();
         Integer benefit = cmd.benefitScores();
         if (description == null && benefit == null) {
@@ -287,7 +287,7 @@ public class ProductCommentService {
      * 商家回复不更新评价快照；相同内容重试保留首次回复时间。
      */
     @Transactional(rollbackFor = Exception.class)
-    public ProductComment reply(CommentReplyCmd cmd) {
+    public ProductComment reply(ProductCommentReplyCmd cmd) {
         require(cmd != null && cmd.id() != null && cmd.id() > 0, "评价编号不合法", 400);
         require(cmd.operatorId() != null && cmd.operatorId() > 0, "请先登录", 401);
         require(

@@ -1,7 +1,7 @@
 package com.lemnt.product.application.product.executor;
 
 import com.lemnt.product.application.product.dto.StoreCategoryDTO;
-import com.lemnt.product.domain.product.gateway.CategoryGateway;
+import com.lemnt.product.domain.product.gateway.ProductCategoryGateway;
 
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class StoreCategoryListQueryExe {
-    private final CategoryGateway categoryGateway;
+    private final ProductCategoryGateway categoryGateway;
 
     /**
      * 执行门店目录查询。

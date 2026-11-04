@@ -3,10 +3,10 @@ package com.lemnt.product.infrastructure.product.gateway;
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.product.domain.product.gateway.ProductCommentGateway;
-import com.lemnt.product.domain.product.model.CommentFilter;
-import com.lemnt.product.domain.product.model.CommentOrderLink;
+import com.lemnt.product.domain.product.model.ProductCommentFilter;
+import com.lemnt.product.domain.product.model.ProductCommentOrderLink;
 import com.lemnt.product.domain.product.model.ProductComment;
-import com.lemnt.product.domain.product.model.PublicCommentFilter;
+import com.lemnt.product.domain.product.model.ProductPublicCommentFilter;
 import com.lemnt.product.infrastructure.product.converter.ProductCommentConverter;
 import com.lemnt.product.infrastructure.product.dataobject.ProductCommentDO;
 import com.lemnt.product.infrastructure.product.mapper.ProductCommentMapper;
@@ -76,7 +76,7 @@ public class ProductCommentGatewayImpl implements ProductCommentGateway {
     }
 
     @Override
-    public PageResult<ProductComment> page(CommentFilter filter) {
+    public PageResult<ProductComment> page(ProductCommentFilter filter) {
         var page =
             productCommentMapper.selectPage(
                 new Page<>(filter.pageNum(), filter.pageSize()),
@@ -128,7 +128,7 @@ public class ProductCommentGatewayImpl implements ProductCommentGateway {
     }
 
     @Override
-    public PageResult<ProductComment> pageVisible(PublicCommentFilter filter) {
+    public PageResult<ProductComment> pageVisible(ProductPublicCommentFilter filter) {
         var query =
             Wrappers.lambdaQuery(ProductCommentDO.class)
                 .eq(ProductCommentDO::getSpuId, filter.spuId())
@@ -155,7 +155,7 @@ public class ProductCommentGatewayImpl implements ProductCommentGateway {
     }
 
     @Override
-    public boolean bindOrderItem(CommentOrderLink value) {
+    public boolean bindOrderItem(ProductCommentOrderLink value) {
         return productCommentMapper.update(
             null,
             Wrappers.lambdaUpdate(ProductCommentDO.class)

@@ -1,13 +1,13 @@
 package com.lemnt.product.infrastructure.product.converter;
 
-import com.lemnt.product.domain.product.model.Brand;
-import com.lemnt.product.domain.product.model.Category;
+import com.lemnt.product.domain.product.model.ProductBrand;
+import com.lemnt.product.domain.product.model.ProductCategory;
 import com.lemnt.product.domain.product.model.ProductCatalogValidation;
 import com.lemnt.product.domain.product.model.ProductSku;
 import com.lemnt.product.domain.product.model.ProductSkuSpec;
 import com.lemnt.product.domain.product.model.ProductSpu;
-import com.lemnt.product.infrastructure.product.dataobject.BrandDO;
-import com.lemnt.product.infrastructure.product.dataobject.CategoryDO;
+import com.lemnt.product.infrastructure.product.dataobject.ProductBrandDO;
+import com.lemnt.product.infrastructure.product.dataobject.ProductCategoryDO;
 import com.lemnt.product.infrastructure.product.dataobject.ProductSkuDO;
 import com.lemnt.product.infrastructure.product.dataobject.ProductSpuDO;
 
@@ -25,10 +25,10 @@ public final class ProductCatalogConverter {
     /**
      * 分类。
      */
-    public static Category category(CategoryDO row) {
+    public static ProductCategory category(ProductCategoryDO row) {
         return row == null
             ? null
-            : new Category(
+            : new ProductCategory(
             row.getId(),
             row.getParentId(),
             row.getName(),
@@ -40,10 +40,10 @@ public final class ProductCatalogConverter {
     /**
      * 品牌。
      */
-    public static Brand brand(BrandDO row) {
+    public static ProductBrand brand(ProductBrandDO row) {
         return row == null
             ? null
-            : new Brand(
+            : new ProductBrand(
             row.getId(),
             row.getName(),
             row.getPicUrl(),
@@ -111,8 +111,8 @@ public final class ProductCatalogConverter {
     /**
      * 分类。
      */
-    public static CategoryDO category(Category value) {
-        var row = new CategoryDO();
+    public static ProductCategoryDO category(ProductCategory value) {
+        var row = new ProductCategoryDO();
         row.setId(value.id());
         row.setParentId(value.parentId());
         row.setName(value.name());
@@ -125,8 +125,8 @@ public final class ProductCatalogConverter {
     /**
      * 品牌。
      */
-    public static BrandDO brand(Brand value) {
-        var row = new BrandDO();
+    public static ProductBrandDO brand(ProductBrand value) {
+        var row = new ProductBrandDO();
         row.setId(value.id());
         row.setName(value.name());
         row.setPicUrl(value.picUrl());
@@ -183,6 +183,6 @@ public final class ProductCatalogConverter {
      * SKU规格仅从其JSON读取，不补字典现值或猜测旧编号。
      */
     public static List<ProductSkuSpec> specs(String json) {
-        return json == null ? List.of() : SpecSnapshotJson.read(json, ProductSkuSpec.class);
+        return json == null ? List.of() : ProductSpecSnapshotJson.read(json, ProductSkuSpec.class);
     }
 }

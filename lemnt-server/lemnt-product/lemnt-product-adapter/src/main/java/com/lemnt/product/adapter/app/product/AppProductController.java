@@ -26,7 +26,7 @@ import jakarta.validation.Valid;
  */
 @Tag(name = "小程序商品浏览")
 @RestController
-@RequestMapping("/mall/app")
+@RequestMapping("/app")
 @RequiredArgsConstructor
 public class AppProductController {
     private final StoreProductPageQueryExe storeProductPageQueryExe;

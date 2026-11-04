@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lemnt.product.infrastructure.product.mapper.StockReservationMapper">
-    <select id="lock" resultType="com.lemnt.product.infrastructure.product.dataobject.StockReservationDO"
-            useCache="false" flushCache="true">
-        SELECT * FROM product_stock_reservation
-        WHERE reservation_no=#{key} AND product_id=#{skuId} FOR UPDATE
-    </select>
-</mapper>

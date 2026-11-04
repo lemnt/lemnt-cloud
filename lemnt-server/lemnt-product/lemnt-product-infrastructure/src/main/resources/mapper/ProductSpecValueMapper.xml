@@ -14,8 +14,14 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
+    <sql id="baseColumn">
+        id, spec_id, name, remark, create_by, create_time, update_by, update_time
+    </sql>
+
     <select id="lock" resultMap="ProductSpecValueResult"
             flushCache="true" useCache="false">
-        SELECT * FROM product_spec_value WHERE id=#{id} FOR UPDATE
+        SELECT
+        <include refid="baseColumn"/>
+        FROM product_spec_value WHERE id=#{id} FOR UPDATE
     </select>
 </mapper>

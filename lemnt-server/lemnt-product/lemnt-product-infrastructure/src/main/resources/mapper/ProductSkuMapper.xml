@@ -24,6 +24,12 @@
     </resultMap>
 
 
+    <sql id="baseColumn">
+        id, spu_id, specs, variant_key, product_code, name, description, main_image, price, stock, status, create_by,
+        create_time, update_by, update_time, weight, volume
+    </sql>
+
+
     <sql id="productSellable">
         (spu_id IS NULL OR EXISTS (SELECT 1 FROM product_spu s JOIN product_category c ON c.id=s.category_id JOIN
         product_brand b ON b.id=s.brand_id LEFT JOIN product_category parent ON parent.id=c.parent_id WHERE
@@ -34,18 +40,18 @@
 
     <select id="lockById" resultMap="ProductSkuResult"
             flushCache="true" useCache="false">
-        SELECT * FROM product_sku WHERE id=#{id} FOR UPDATE
+        SELECT <include refid="baseColumn"/> FROM product_sku WHERE id=#{id} FOR UPDATE
     </select>
 
     <select id="findSellableByIds" resultMap="ProductSkuResult">
-        SELECT * FROM product_sku WHERE status='ON_SHELF' AND
+        SELECT <include refid="baseColumn"/> FROM product_sku WHERE status='ON_SHELF' AND
         <include refid="productSellable"/>
         AND id IN
         <foreach collection='ids' item='id' open='(' separator=',' close=')'>#{id}</foreach>
     </select>
 
     <select id="findSellableById" resultMap="ProductSkuResult">
-        SELECT * FROM product_sku WHERE id=#{id} AND status='ON_SHELF' AND
+        SELECT <include refid="baseColumn"/> FROM product_sku WHERE id=#{id} AND status='ON_SHELF' AND
         <include refid="productSellable"/>
     </select>
 

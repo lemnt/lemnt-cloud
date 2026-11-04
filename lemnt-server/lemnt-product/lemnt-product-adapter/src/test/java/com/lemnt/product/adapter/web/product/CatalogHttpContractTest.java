@@ -46,7 +46,7 @@ class CatalogHttpContractTest {
             .thenReturn(new ProductCatalogPage(List.of(), 0));
         MockMvcBuilders.standaloneSetup(controller)
             .build()
-            .perform(get("/mall/spus"))
+            .perform(get("/product/spus"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.rows").isEmpty())
             .andExpect(jsonPath("$.total").value(0));
@@ -57,15 +57,15 @@ class CatalogHttpContractTest {
     @Test
     void rejectsInvalidPagingAndNestedSkuBeforeApplicationWrite() throws Exception {
         var mvc = MockMvcBuilders.standaloneSetup(controller).build();
-        mvc.perform(get("/mall/spus?pageSize=101")).andExpect(status().isBadRequest());
+        mvc.perform(get("/product/spus?pageSize=101")).andExpect(status().isBadRequest());
         mvc.perform(
-                post("/mall/spus")
+                post("/product/spus")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         "{\"code\":\"SP1\",\"name\":\"goods\",\"categoryId\":1,\"brandId\":1,\"skus\":[]}"))
             .andExpect(status().isBadRequest());
         mvc.perform(
-                post("/mall/spus")
+                post("/product/spus")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         "{\"code\":\"SP1\",\"name\":\"goods\",\"categoryId\":1,\"brandId\":1,\"skus\":[{\"code\":\"S1\",\"name\":\"sku\",\"price\":1.001,\"stock\":1}]}"))
@@ -81,7 +81,7 @@ class CatalogHttpContractTest {
                     3L, "SP1", "goods", 1L, 2L, null, null, "OFF_SHELF", List.of()));
         var mvc = MockMvcBuilders.standaloneSetup(controller).build();
         mvc.perform(
-                post("/mall/spus")
+                post("/product/spus")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
@@ -98,7 +98,7 @@ class CatalogHttpContractTest {
         assertEquals(0, captured.getValue().sort());
         assertEquals(new BigDecimal("9.25"), captured.getValue().skus().get(0).price());
         mvc.perform(
-                post("/mall/spus")
+                post("/product/spus")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
@@ -107,7 +107,7 @@ class CatalogHttpContractTest {
                             """))
             .andExpect(status().isBadRequest());
         mvc.perform(
-                post("/mall/spus")
+                post("/product/spus")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
@@ -117,7 +117,7 @@ class CatalogHttpContractTest {
                             """))
             .andExpect(status().isBadRequest());
         mvc.perform(
-                post("/mall/spus")
+                post("/product/spus")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         """
@@ -133,8 +133,8 @@ class CatalogHttpContractTest {
     void everyCatalogEndpointDeclaresAnExplicitPermission() {
         for (var type :
             List.of(
-                CategoryController.class,
-                BrandController.class,
+                ProductCategoryController.class,
+                ProductBrandController.class,
                 ProductSpuController.class)) {
             for (var method : type.getDeclaredMethods()) {
                 if (!Modifier.isPublic(method.getModifiers())) {
@@ -142,7 +142,7 @@ class CatalogHttpContractTest {
                 }
                 var permissions = method.getAnnotation(RequiresPermissions.class);
                 assertNotNull(permissions, type.getName() + "#" + method.getName());
-                assertTrue(permissions.value()[0].startsWith("mall:"));
+                assertTrue(permissions.value()[0].startsWith("product:"));
             }
         }
     }

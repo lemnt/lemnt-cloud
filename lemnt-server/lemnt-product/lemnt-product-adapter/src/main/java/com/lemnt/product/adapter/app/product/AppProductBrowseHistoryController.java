@@ -33,28 +33,16 @@ import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
 
 /**
- * 当前会员浏览足迹，Token认证统一在网关。
+ * 当前会员浏览足迹
  */
 @RestController
-@RequestMapping("/mall/app/browse-history")
+@RequestMapping("/app/browse-historys")
 @RequiredArgsConstructor
 public class AppProductBrowseHistoryController {
-    private final ProductBrowseHistoryCreateCmdExe create;
-    private final ProductBrowseHistoryPageQueryExe query;
-    private final ProductBrowseHistoryDeleteCmdExe delete;
-    private final ProductBrowseHistoryClearCmdExe clear;
-
-    /**
-     * 登录后的独立写入，不接受userId参数。
-     */
-    @PostMapping
-    @Operation(summary = "记录本人最近浏览")
-    public R<AppProductBrowseHistoryCreateRes> create(
-        @Valid @RequestBody AppProductBrowseHistoryCreateReq req) {
-        return R.ok(
-            new AppProductBrowseHistoryCreateRes(
-                create.execute(ProductBrowseHistoryReqConverter.create(member(), req))));
-    }
+    private final ProductBrowseHistoryCreateCmdExe browseHistoryCreateCmdExe;
+    private final ProductBrowseHistoryPageQueryExe browseHistoryPageQueryExe;
+    private final ProductBrowseHistoryDeleteCmdExe browseHistoryDeleteCmdExe;
+    private final ProductBrowseHistoryClearCmdExe browseHistoryClearCmdExe;
 
     /**
      * 本人分页，不能通过Query伪造其他会员。
@@ -63,10 +51,22 @@ public class AppProductBrowseHistoryController {
     @Operation(summary = "本人足迹分页")
     public R<AppProductBrowseHistoryPageRes> page(
         @Valid @ModelAttribute AppProductBrowseHistoryPageReq req) {
-        var result = query.execute(ProductBrowseHistoryReqConverter.page(member(), req));
+        var result = browseHistoryPageQueryExe.execute(ProductBrowseHistoryReqConverter.page(SecurityUtils.getUserId(), req));
         return R.page(
             result.getRecords().stream().map(ProductBrowseHistoryResConverter::page).toList(),
             result.getTotal());
+    }
+
+    /**
+     * 登录后的独立写入。
+     */
+    @PostMapping
+    @Operation(summary = "记录本人最近浏览")
+    public R<AppProductBrowseHistoryCreateRes> create(
+        @Valid @RequestBody AppProductBrowseHistoryCreateReq req) {
+        return R.ok(
+            new AppProductBrowseHistoryCreateRes(
+                browseHistoryCreateCmdExe.execute(ProductBrowseHistoryReqConverter.create(SecurityUtils.getUserId(), req))));
     }
 
     /**
@@ -78,7 +78,7 @@ public class AppProductBrowseHistoryController {
         @Valid @RequestBody AppProductBrowseHistoryDeleteReq req) {
         return R.ok(
             new AppProductBrowseHistoryDeleteRes(
-                delete.execute(new ProductBrowseHistoryDeleteCmd(member(), req.spuIds()))));
+                browseHistoryDeleteCmdExe.execute(new ProductBrowseHistoryDeleteCmd(SecurityUtils.getUserId(), req.spuIds()))));
     }
 
     /**
@@ -89,14 +89,6 @@ public class AppProductBrowseHistoryController {
     public R<AppProductBrowseHistoryClearRes> clear() {
         return R.ok(
             new AppProductBrowseHistoryClearRes(
-                clear.execute(new ProductBrowseHistoryClearCmd(member()))));
-    }
-
-    private Long member() {
-        var id = SecurityUtils.getUserId();
-        if (id == null || id <= 0) {
-            throw new ServiceException("请先登录", 401);
-        }
-        return id;
+                browseHistoryClearCmdExe.execute(new ProductBrowseHistoryClearCmd(SecurityUtils.getUserId()))));
     }
 }

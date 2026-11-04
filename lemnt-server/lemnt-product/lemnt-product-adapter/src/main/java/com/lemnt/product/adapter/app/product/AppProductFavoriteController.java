@@ -1,7 +1,6 @@
 package com.lemnt.product.adapter.app.product;
 
 import com.lemnt.common.core.domain.R;
-import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.product.adapter.app.product.converter.ProductFavoriteReqConverter;
 import com.lemnt.product.adapter.app.product.converter.ProductFavoriteResConverter;
@@ -37,10 +36,10 @@ import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
 
 /**
- * 当前会员商品收藏，Token认证统一在网关。
+ * 当前会员商品收藏
  */
 @RestController
-@RequestMapping("/mall/app/favorites")
+@RequestMapping("/app/favorites")
 @RequiredArgsConstructor
 public class AppProductFavoriteController {
     private final ProductFavoriteCreateCmdExe create;
@@ -58,7 +57,7 @@ public class AppProductFavoriteController {
         @Valid @RequestBody AppProductFavoriteCreateReq req) {
         return R.ok(
             new AppProductFavoriteCreateRes(
-                create.execute(ProductFavoriteReqConverter.create(member(), req))));
+                create.execute(ProductFavoriteReqConverter.create(SecurityUtils.getUserId(), req))));
     }
 
     /**
@@ -67,7 +66,7 @@ public class AppProductFavoriteController {
     @GetMapping
     @Operation(summary = "本人收藏分页")
     public R<AppProductFavoritePageRes> page(@Valid @ModelAttribute AppProductFavoritePageReq req) {
-        var result = query.execute(ProductFavoriteReqConverter.page(member(), req));
+        var result = query.execute(ProductFavoriteReqConverter.page(SecurityUtils.getUserId(), req));
         return R.page(
             result.getRecords().stream().map(ProductFavoriteResConverter::page).toList(),
             result.getTotal());
@@ -81,7 +80,7 @@ public class AppProductFavoriteController {
     public R<AppProductFavoriteDeleteRes> delete(@PathVariable Long spuId) {
         return R.ok(
             new AppProductFavoriteDeleteRes(
-                delete.execute(new ProductFavoriteDeleteCmd(member(), spuId))));
+                delete.execute(new ProductFavoriteDeleteCmd(SecurityUtils.getUserId(), spuId))));
     }
 
     /**
@@ -93,7 +92,7 @@ public class AppProductFavoriteController {
         @Valid @ModelAttribute AppProductFavoriteExistsReq req) {
         return R.ok(
             new AppProductFavoriteExistsRes(
-                exists.execute(new ProductFavoriteExistsQry(member(), req.spuId()))));
+                exists.execute(new ProductFavoriteExistsQry(SecurityUtils.getUserId(), req.spuId()))));
     }
 
     /**
@@ -104,14 +103,6 @@ public class AppProductFavoriteController {
     public R<AppProductFavoriteCountRes> count() {
         return R.ok(
             new AppProductFavoriteCountRes(
-                count.execute(new ProductFavoriteCountQry(member()))));
-    }
-
-    private Long member() {
-        var id = SecurityUtils.getUserId();
-        if (id == null || id <= 0) {
-            throw new ServiceException("请先登录", 401);
-        }
-        return id;
+                count.execute(new ProductFavoriteCountQry(SecurityUtils.getUserId()))));
     }
 }

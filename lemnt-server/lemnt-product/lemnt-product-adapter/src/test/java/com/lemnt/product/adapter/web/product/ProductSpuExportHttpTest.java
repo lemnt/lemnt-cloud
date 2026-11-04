@@ -46,7 +46,7 @@ class ProductSpuExportHttpTest {
         var mvc = MockMvcBuilders.standaloneSetup(new ProductSpuExportController(export)).build();
         var response =
             mvc.perform(
-                    get("/mall/spus/export")
+                    get("/product/spus/export")
                         .param("name", "商品")
                         .param("categoryId", "2")
                         .param("brandId", "3")
@@ -80,7 +80,7 @@ class ProductSpuExportHttpTest {
             assertEquals("/a.png\n/b.png", sheet.getRow(1).getCell(9).getStringCellValue());
             assertEquals(12, sheet.getRow(1).getCell(10).getNumericCellValue());
         }
-        mvc.perform(get("/mall/spus/export").param("categoryId", "0"))
+        mvc.perform(get("/product/spus/export").param("categoryId", "0"))
             .andExpect(status().isBadRequest());
         verifyNoMoreInteractions(export);
     }

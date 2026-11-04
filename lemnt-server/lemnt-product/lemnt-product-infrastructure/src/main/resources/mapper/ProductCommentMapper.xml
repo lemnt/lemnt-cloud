@@ -34,13 +34,19 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
+    <sql id="baseColumn">
+        id, spu_id, sku_id, order_no, member_id, score, content, visible, reply_content, reply_user_id, reply_time,
+        description_scores, benefit_scores, pic_urls, anonymous, user_nickname, user_avatar, order_id, order_item_id,
+        spu_name, sku_pic_url, sku_properties, reply_status, deleted, create_by, create_time, update_by, update_time
+    </sql>
+
     <select id="lock" resultMap="productCommentResult"
             flushCache="true" useCache="false">
-        SELECT * FROM product_comment WHERE id=#{id} AND deleted=FALSE FOR UPDATE
+        SELECT <include refid="baseColumn"/> FROM product_comment WHERE id=#{id} AND deleted=FALSE FOR UPDATE
     </select>
     <!-- 仅用于存量评价绑定检查：读取删除事实但绝不对外返回已删内容。 -->
     <select id="legacyForLink" resultMap="productCommentResult">
-        SELECT * FROM product_comment
+        SELECT <include refid="baseColumn"/> FROM product_comment
         WHERE order_no=#{orderNo} AND sku_id=#{skuId} AND order_item_id IS NULL
     </select>
 </mapper>

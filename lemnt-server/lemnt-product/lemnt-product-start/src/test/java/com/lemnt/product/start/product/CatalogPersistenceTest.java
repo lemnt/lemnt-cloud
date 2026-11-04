@@ -18,8 +18,8 @@ import com.lemnt.product.application.product.cmd.ProductSpecValueCreateCmd;
 import com.lemnt.product.application.product.cmd.ProductSpecValueUpdateCmd;
 import com.lemnt.product.application.product.cmd.ProductSpuCreateCmd;
 import com.lemnt.product.application.product.cmd.ProductSpuUpdateCmd;
-import com.lemnt.product.application.product.executor.BrandPageQueryExe;
-import com.lemnt.product.application.product.executor.CategoryTreeQueryExe;
+import com.lemnt.product.application.product.executor.ProductBrandPageQueryExe;
+import com.lemnt.product.application.product.executor.ProductCategoryTreeQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpecPageQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpecValuePageQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpuCreateCmdExe;
@@ -28,7 +28,7 @@ import com.lemnt.product.application.product.executor.ProductSpuExportQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpuPageQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpuShelfCmdExe;
 import com.lemnt.product.application.product.executor.ProductSpuUpdateCmdExe;
-import com.lemnt.product.application.product.qry.BrandPageQry;
+import com.lemnt.product.application.product.qry.ProductBrandPageQry;
 import com.lemnt.product.application.product.qry.ProductSpecPageQry;
 import com.lemnt.product.application.product.qry.ProductSpecValuePageQry;
 import com.lemnt.product.application.product.qry.ProductSpuExportQry;
@@ -36,14 +36,15 @@ import com.lemnt.product.application.product.service.ProductCatalogService;
 import com.lemnt.product.application.product.service.ProductInventoryService;
 import com.lemnt.product.application.product.service.ProductManagementService;
 import com.lemnt.product.application.product.service.ProductSpecService;
-import com.lemnt.product.domain.product.gateway.BrandGateway;
-import com.lemnt.product.domain.product.gateway.CategoryGateway;
+import com.lemnt.product.domain.product.gateway.ProductBrandGateway;
+import com.lemnt.product.domain.product.gateway.ProductCategoryGateway;
 import com.lemnt.product.domain.product.gateway.ProductSkuGateway;
 import com.lemnt.product.domain.product.gateway.ProductSpecGateway;
 import com.lemnt.product.domain.product.gateway.ProductSpecValueGateway;
 import com.lemnt.product.domain.product.gateway.ProductSpuGateway;
-import com.lemnt.product.domain.product.model.Brand;
-import com.lemnt.product.domain.product.model.Category;
+import com.lemnt.product.domain.product.gateway.StockEventGateway;
+import com.lemnt.product.domain.product.model.ProductBrand;
+import com.lemnt.product.domain.product.model.ProductCategory;
 import com.lemnt.product.domain.product.model.Product;
 import com.lemnt.product.domain.product.model.ProductCatalogFilter;
 import com.lemnt.product.domain.product.model.ProductCatalogValidation;
@@ -54,6 +55,7 @@ import com.lemnt.product.domain.product.model.ProductSpu;
 import com.lemnt.product.domain.product.model.ProductStockStatus;
 import com.lemnt.product.domain.product.model.StoreFilter;
 import com.lemnt.product.start.TableTestComponents;
+import com.lemnt.product.start.TestStockEventGateway;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.annotation.DbType;
@@ -105,8 +107,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class CatalogPersistenceTest {
     TableTestComponents components;
-    CategoryGateway categoryGateway;
-    BrandGateway brandGateway;
+    ProductCategoryGateway categoryGateway;
+    ProductBrandGateway brandGateway;
     ProductSpuGateway productSpuGateway;
     ProductSkuGateway productSkuGateway;
     ProductCatalogService catalogService;
@@ -147,8 +149,8 @@ class CatalogPersistenceTest {
 
         var template = new SqlSessionTemplate(factory);
         components = new TableTestComponents(template, source);
-        categoryGateway = components.get(CategoryGateway.class);
-        brandGateway = components.get(BrandGateway.class);
+        categoryGateway = components.get(ProductCategoryGateway.class);
+        brandGateway = components.get(ProductBrandGateway.class);
         productSpuGateway = components.get(ProductSpuGateway.class);
         productSkuGateway = components.get(ProductSkuGateway.class);
         catalogService = components.get(ProductCatalogService.class);
@@ -156,9 +158,9 @@ class CatalogPersistenceTest {
 
         categoryId =
             categoryGateway
-                .saveCategory(new Category(null, null, "category", null, 0, "ENABLED"))
+                .saveCategory(new ProductCategory(null, null, "category", null, 0, "ENABLED"))
                 .id();
-        brandId = brandGateway.saveBrand(new Brand(null, "brand", null, null, 0, "ENABLED")).id();
+        brandId = brandGateway.saveBrand(new ProductBrand(null, "brand", null, null, 0, "ENABLED")).id();
     }
 
     @AfterEach
@@ -254,7 +256,7 @@ class CatalogPersistenceTest {
     void disablingParentOrBrandAlsoBlocksChildSkuSales() {
         Long childId =
             categoryGateway
-                .saveCategory(new Category(null, categoryId, "child", null, 0, "ENABLED"))
+                .saveCategory(new ProductCategory(null, categoryId, "child", null, 0, "ENABLED"))
                 .id();
         var draft =
             ProductCatalogValidation.newSpu(
@@ -271,11 +273,11 @@ class CatalogPersistenceTest {
         var spu = catalogService.createSpu(draft);
         Long sku = spu.skus().get(0).id();
         productSpuGateway.shelf(spu.id(), true);
-        categoryGateway.saveCategory(new Category(categoryId, null, "root", null, 0, "DISABLED"));
+        categoryGateway.saveCategory(new ProductCategory(categoryId, null, "root", null, 0, "DISABLED"));
         assertNull(productSkuGateway.findSellableById(sku));
         assertFalse(productInventoryService.reserveStock("PARENT", sku, 1));
-        categoryGateway.saveCategory(new Category(categoryId, null, "root", null, 0, "ENABLED"));
-        brandGateway.saveBrand(new Brand(brandId, "brand", null, null, 0, "DISABLED"));
+        categoryGateway.saveCategory(new ProductCategory(categoryId, null, "root", null, 0, "ENABLED"));
+        brandGateway.saveBrand(new ProductBrand(brandId, "brand", null, null, 0, "DISABLED"));
         assertNull(productSkuGateway.findSellableById(sku));
         assertFalse(productInventoryService.reserveStock("BRAND", sku, 1));
     }
@@ -301,7 +303,7 @@ class CatalogPersistenceTest {
         assertTrue(productInventoryService.reserveStock("O1", sku, 2));
         assertTrue(productInventoryService.reserveStock("O2", sku, 1));
         categoryGateway.saveCategory(
-            new Category(categoryId, null, "category", null, 0, "DISABLED"));
+            new ProductCategory(categoryId, null, "category", null, 0, "DISABLED"));
         assertNull(productSkuGateway.findSellableById(sku));
         assertFalse(productInventoryService.reserveStock("O3", sku, 1));
         productInventoryService.confirmStock("O1", sku);
@@ -312,10 +314,11 @@ class CatalogPersistenceTest {
     }
 
     @Test
-    void reservationAndFrozenEventCommitTogetherAndDuplicateDoesNotRepublish() throws Exception {
+    void reservationCommitsIndependentlyAndDuplicateDoesNotRepublish() throws Exception {
         var spu = create("EVENT", draft("EVENT-SKU", 5));
         Long sku = spu.skus().get(0).id();
         productSpuGateway.shelf(spu.id(), true);
+        var stockEvents = (TestStockEventGateway) components.get(StockEventGateway.class);
         var transaction = new TransactionTemplate(new DataSourceTransactionManager(source));
         assertThrows(
             IllegalStateException.class,
@@ -327,14 +330,20 @@ class CatalogPersistenceTest {
                                 "ROLLBACK", sku, 2));
                         throw new IllegalStateException("模拟下单准备失败");
                     }));
+        // 预占是事务消息本地短事务的独立提交，调用方回滚不级联撤销，必须由调用方补偿
+        assertEquals(3, productSkuGateway.findById(sku).stock());
+        assertEquals(1, count("product_stock_reservation"));
+        assertEquals(1, stockEvents.published().size());
+        productInventoryService.cancelReservation("ROLLBACK", sku, 2);
         assertEquals(5, productSkuGateway.findById(sku).stock());
-        assertEquals(0, count("product_stock_reservation"));
-        assertEquals(0, count("product_message_outbox"));
+        assertEquals(
+            "RELEASED", productInventoryService.reservationStatus("ROLLBACK", sku).status());
         assertTrue(productInventoryService.reserveStock("COMMIT", sku, 2));
         assertTrue(productInventoryService.reserveStock("COMMIT", sku, 2));
         assertEquals(3, productSkuGateway.findById(sku).stock());
-        assertEquals(1, count("product_stock_reservation"));
-        assertEquals(1, count("product_message_outbox"));
+        assertEquals(2, count("product_stock_reservation"));
+        // 重复请求经台账预检短路，不再发布第二条事实消息
+        assertEquals(2, stockEvents.published().size());
         assertEquals("RESERVED", productInventoryService.reservationStatus("COMMIT", sku).status());
     }
 
@@ -429,13 +438,13 @@ class CatalogPersistenceTest {
         assertTrue(productSpuGateway.products(f).get(0).available());
         assertEquals(1, catalogService.product(spu.id()).skus().size());
         categoryGateway.saveCategory(
-            new Category(categoryId, null, "category", null, 0, "DISABLED"));
+            new ProductCategory(categoryId, null, "category", null, 0, "DISABLED"));
         assertEquals(0, productSpuGateway.storeCount(f));
         assertNull(catalogService.product(spu.id()));
         assertTrue(categoryGateway.visibleCategories().isEmpty());
         categoryGateway.saveCategory(
-            new Category(categoryId, null, "category", null, 0, "ENABLED"));
-        brandGateway.saveBrand(new Brand(brandId, "brand", null, null, 0, "DISABLED"));
+            new ProductCategory(categoryId, null, "category", null, 0, "ENABLED"));
+        brandGateway.saveBrand(new ProductBrand(brandId, "brand", null, null, 0, "DISABLED"));
         assertEquals(0, productSpuGateway.storeCount(f));
         assertNull(catalogService.product(spu.id()));
     }
@@ -445,7 +454,7 @@ class CatalogPersistenceTest {
         Long parent = categoryId;
         categoryId =
             categoryGateway
-                .saveCategory(new Category(null, parent, "child", null, 1, "ENABLED"))
+                .saveCategory(new ProductCategory(null, parent, "child", null, 1, "ENABLED"))
                 .id();
         var first = draft("a", 0);
         var second =
@@ -466,7 +475,7 @@ class CatalogPersistenceTest {
         assertEquals(new BigDecimal("10.00"), productSpuGateway.products(f).get(0).minPrice());
         assertEquals(new BigDecimal("12.50"), productSpuGateway.products(f).get(0).maxPrice());
         assertEquals(0, productSpuGateway.storeCount(new StoreFilter("missing", null, 0, 20)));
-        categoryGateway.saveCategory(new Category(parent, null, "parent", null, 0, "DISABLED"));
+        categoryGateway.saveCategory(new ProductCategory(parent, null, "parent", null, 0, "DISABLED"));
         assertTrue(categoryGateway.visibleCategories().isEmpty());
         assertNull(catalogService.product(spu.id()));
         assertEquals(0, productSpuGateway.storeCount(f));
@@ -735,8 +744,8 @@ class CatalogPersistenceTest {
     void brandPaginationAndCategoryTreeExposeActualRowsWithoutListTruncation() throws Exception {
         var child =
             categoryGateway.saveCategory(
-                new Category(null, categoryId, "子类", null, 1, "ENABLED"));
-        var tree = components.get(CategoryTreeQueryExe.class).execute();
+                new ProductCategory(null, categoryId, "子类", null, 1, "ENABLED"));
+        var tree = components.get(ProductCategoryTreeQueryExe.class).execute();
         assertEquals(child.id(), tree.get(0).children().get(0).id());
         try (var connection = source.getConnection();
              var insert =
@@ -749,8 +758,8 @@ class CatalogPersistenceTest {
         }
         var page =
             components
-                .get(BrandPageQueryExe.class)
-                .execute(new BrandPageQry("品牌-", "ENABLED", 2, 20));
+                .get(ProductBrandPageQueryExe.class)
+                .execute(new ProductBrandPageQry("品牌-", "ENABLED", 2, 20));
         assertEquals(1001, page.getTotal());
         assertEquals(20, page.getRecords().size());
         assertThrows(IllegalStateException.class, () -> brandGateway.brands());

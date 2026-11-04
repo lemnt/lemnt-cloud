@@ -1,11 +1,11 @@
 package com.lemnt.product.application.product.converter;
 
-import com.lemnt.product.application.product.dto.BrandDTO;
-import com.lemnt.product.application.product.dto.CategoryDTO;
+import com.lemnt.product.application.product.dto.ProductBrandDTO;
+import com.lemnt.product.application.product.dto.ProductCategoryDTO;
 import com.lemnt.product.application.product.dto.ProductSkuDTO;
 import com.lemnt.product.application.product.dto.ProductSpuDTO;
-import com.lemnt.product.domain.product.model.Brand;
-import com.lemnt.product.domain.product.model.Category;
+import com.lemnt.product.domain.product.model.ProductBrand;
+import com.lemnt.product.domain.product.model.ProductCategory;
 import com.lemnt.product.domain.product.model.ProductSku;
 import com.lemnt.product.domain.product.model.ProductSpu;
 
@@ -19,10 +19,10 @@ public final class ProductCatalogDTOConverter {
     /**
      * 分类。
      */
-    public static CategoryDTO category(Category value) {
+    public static ProductCategoryDTO category(ProductCategory value) {
         return value == null
             ? null
-            : new CategoryDTO(
+            : new ProductCategoryDTO(
             value.id(),
             value.parentId(),
             value.name(),
@@ -34,10 +34,10 @@ public final class ProductCatalogDTOConverter {
     /**
      * 品牌。
      */
-    public static BrandDTO brand(Brand value) {
+    public static ProductBrandDTO brand(ProductBrand value) {
         return value == null
             ? null
-            : new BrandDTO(
+            : new ProductBrandDTO(
             value.id(),
             value.name(),
             value.picUrl(),

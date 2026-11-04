@@ -1,15 +1,27 @@
 package com.lemnt.order.start.support;
 
 import com.lemnt.common.client.event.CommerceEventEnvelope;
+import com.lemnt.common.client.event.CommerceEventTopics;
 import com.lemnt.common.core.utils.JsonUtils;
+import com.lemnt.product.client.event.StockPreReservedEvent;
+import com.lemnt.product.domain.product.gateway.ProductSkuGateway;
+import com.lemnt.product.domain.product.gateway.ProductStockReservationGateway;
+import com.lemnt.product.domain.product.gateway.StockEventGateway;
+import com.lemnt.product.domain.product.model.ProductStockReservation;
+
+import org.slf4j.MDC;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.lang.reflect.Proxy;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
@@ -34,7 +46,7 @@ public final class CommerceEventPump {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void install() throws Exception {
-        for (String owner : List.of("product", "order", "pay")) {
+        for (String owner : List.of("order", "pay")) {
             Class<?> type =
                 Class.forName(
                     "com.lemnt." + owner + ".domain.event.gateway.EventPublishGateway");
@@ -64,6 +76,18 @@ public final class CommerceEventPump {
                     });
             fixture.register((Class) type, publisher);
         }
+        // product 以 RocketMQ 事务消息出站（无本地消息表）：测试Broker执行同一本地事务契约，
+        // 仅当预占独立提交后才接收事实事件，回滚不发。
+        Class<?> stockType = StockEventGateway.class;
+        Object stockEvents =
+            Proxy.newProxyInstance(
+                stockType.getClassLoader(),
+                new Class<?>[] {stockType},
+                (proxy, method, args) ->
+                    method.getName().equals("publishReserved")
+                        ? publishReservation((ProductStockReservation) args[0])
+                        : null);
+        fixture.register((Class) stockType, stockEvents);
         fixture.after(
             (type, method) -> {
                 if (type.getName()
@@ -75,6 +99,52 @@ public final class CommerceEventPump {
                         "com.lemnt.order.application.paymentrefund.executor.PaymentRefundCreateCmdExe")
                     && method.getName().startsWith("execute")) drain();
             });
+    }
+
+    /**
+     * 与生产StockEventGatewayImpl相同的本地短事务：SKU行锁→台账查重→CAS扣减→登记；
+     * 提交后才生成与中继一致的信封并进入待投递队列。
+     */
+    private boolean publishReservation(ProductStockReservation draft) {
+        var skus = fixture.get(ProductSkuGateway.class);
+        var ledger = fixture.get(ProductStockReservationGateway.class);
+        var transaction =
+            new TransactionTemplate(
+                new DataSourceTransactionManager(fixture.source("product")));
+        Boolean reserved =
+            transaction.execute(
+                status -> {
+                    if (skus.lockById(draft.productId()) == null) {
+                        throw new IllegalArgumentException("商品不存在");
+                    }
+                    if (ledger.lock(draft.reservationNo(), draft.productId()) != null) {
+                        return false;
+                    }
+                    if (!skus.reserveQuantity(draft.productId(), draft.quantity())) {
+                        return false;
+                    }
+                    ledger.insert(draft);
+                    return true;
+                });
+        if (!Boolean.TRUE.equals(reserved)) {
+            return false;
+        }
+        var event =
+            new CommerceEventEnvelope(
+                UUID.randomUUID().toString(),
+                CommerceEventTopics.STOCK_PRE_RESERVED,
+                1,
+                draft.reservationNo() + ":" + draft.productId(),
+                draft.reservationNo(),
+                Instant.now(),
+                MDC.get("traceId"),
+                JsonUtils.toJsonStr(
+                    new StockPreReservedEvent(
+                        draft.reservationNo(), draft.productId(), draft.quantity())));
+        synchronized (this) {
+            pending.putIfAbsent(event.eventNo(), event);
+        }
+        return true;
     }
 
     public synchronized List<CommerceEventEnvelope> pendingEvents() {
@@ -103,7 +173,7 @@ public final class CommerceEventPump {
                 int closed = 0;
                 for (int round = 0; round < 5; round++) {
                     int sentBefore = delivered.size();
-                    for (String owner : List.of("product", "pay", "order")) {
+                    for (String owner : List.of("pay", "order")) {
                         fixture.jdbc(owner)
                             .update(
                                 "UPDATE "

@@ -5,7 +5,7 @@ import com.lemnt.product.domain.product.gateway.ProductSkuGateway;
 import com.lemnt.product.domain.product.gateway.ProductSpecGateway;
 import com.lemnt.product.domain.product.gateway.ProductSpecValueGateway;
 import com.lemnt.product.domain.product.gateway.ProductSpuGateway;
-import com.lemnt.product.domain.product.gateway.StockReservationGateway;
+import com.lemnt.product.domain.product.gateway.ProductStockReservationGateway;
 import com.lemnt.product.domain.product.model.ProductCatalogValidation;
 import com.lemnt.product.domain.product.model.ProductSku;
 import com.lemnt.product.domain.product.model.ProductSkuSpec;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class ProductCatalogService {
     private final ProductSpuGateway productSpuGateway;
     private final ProductSkuGateway productSkuGateway;
-    private final StockReservationGateway stockReservationGateway;
+    private final ProductStockReservationGateway stockReservationGateway;
     private final ProductSpecGateway productSpecGateway;
     private final ProductSpecValueGateway productSpecValueGateway;
 

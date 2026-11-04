@@ -1,12 +1,12 @@
 package com.lemnt.product.adapter.web.product.converter;
 
-import com.lemnt.product.adapter.web.product.req.BrandPageReq;
-import com.lemnt.product.adapter.web.product.req.BrandSimpleReq;
+import com.lemnt.product.adapter.web.product.req.ProductBrandPageReq;
+import com.lemnt.product.adapter.web.product.req.ProductBrandSimpleReq;
 import com.lemnt.product.adapter.web.product.req.ProductSpuCountReq;
 import com.lemnt.product.adapter.web.product.req.ProductSpuExportReq;
 import com.lemnt.product.adapter.web.product.req.ProductSpuSimpleReq;
-import com.lemnt.product.application.product.qry.BrandPageQry;
-import com.lemnt.product.application.product.qry.BrandSimpleListQry;
+import com.lemnt.product.application.product.qry.ProductBrandPageQry;
+import com.lemnt.product.application.product.qry.ProductBrandSimpleListQry;
 import com.lemnt.product.application.product.qry.ProductSpuCountQry;
 import com.lemnt.product.application.product.qry.ProductSpuExportQry;
 import com.lemnt.product.application.product.qry.ProductSpuSimpleListQry;
@@ -21,8 +21,8 @@ public final class ProductManagementReqConverter {
     /**
      * 转换品牌分页。
      */
-    public static BrandPageQry brands(BrandPageReq req) {
-        return new BrandPageQry(
+    public static ProductBrandPageQry brands(ProductBrandPageReq req) {
+        return new ProductBrandPageQry(
             req.name(),
             req.status(),
             req.pageNum() == null ? 1 : req.pageNum(),
@@ -32,8 +32,8 @@ public final class ProductManagementReqConverter {
     /**
      * 转换品牌选择。
      */
-    public static BrandSimpleListQry brandSimple(BrandSimpleReq req) {
-        return new BrandSimpleListQry(req.name(), req.limit() == null ? 20 : req.limit());
+    public static ProductBrandSimpleListQry brandSimple(ProductBrandSimpleReq req) {
+        return new ProductBrandSimpleListQry(req.name(), req.limit() == null ? 20 : req.limit());
     }
 
     /**

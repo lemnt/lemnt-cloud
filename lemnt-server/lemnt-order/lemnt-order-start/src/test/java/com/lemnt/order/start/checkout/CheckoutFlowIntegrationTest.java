@@ -108,29 +108,29 @@ import com.lemnt.pay.domain.paymentrefund.model.PaymentRefund;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundResult;
 import com.lemnt.pay.infrastructure.paymentrefund.channel.PaymentRefundClient;
 import com.lemnt.pay.infrastructure.paymentrefund.gateway.PaymentRefundChannelGatewayImpl;
-import com.lemnt.product.application.product.cmd.CommentCreateCmd;
-import com.lemnt.product.application.product.cmd.CommentReplyCmd;
-import com.lemnt.product.application.product.cmd.CommentVisibleCmd;
+import com.lemnt.product.application.product.cmd.ProductCommentCreateCmd;
+import com.lemnt.product.application.product.cmd.ProductCommentReplyCmd;
+import com.lemnt.product.application.product.cmd.ProductCommentVisibleCmd;
 import com.lemnt.product.application.product.cmd.ProductSpecCreateCmd;
 import com.lemnt.product.application.product.cmd.ProductSpecUpdateCmd;
 import com.lemnt.product.application.product.cmd.ProductSpecValueCreateCmd;
 import com.lemnt.product.application.product.cmd.ProductSpecValueUpdateCmd;
-import com.lemnt.product.application.product.executor.CommentPageQueryExe;
-import com.lemnt.product.application.product.executor.CommentVisibleCmdExe;
-import com.lemnt.product.application.product.qry.CommentPageQry;
+import com.lemnt.product.application.product.executor.ProductCommentPageQueryExe;
+import com.lemnt.product.application.product.executor.ProductCommentVisibleCmdExe;
+import com.lemnt.product.application.product.qry.ProductCommentPageQry;
 import com.lemnt.product.application.product.service.ProductCatalogService;
 import com.lemnt.product.application.product.service.ProductCommentService;
 import com.lemnt.product.application.product.service.ProductInventoryService;
 import com.lemnt.product.application.product.service.ProductManagementService;
 import com.lemnt.product.application.product.service.ProductSpecService;
 import com.lemnt.product.client.ProductCommentClient;
-import com.lemnt.product.domain.product.gateway.BrandGateway;
-import com.lemnt.product.domain.product.gateway.CategoryGateway;
+import com.lemnt.product.domain.product.gateway.ProductBrandGateway;
+import com.lemnt.product.domain.product.gateway.ProductCategoryGateway;
 import com.lemnt.product.domain.product.gateway.ProductCommentGateway;
 import com.lemnt.product.domain.product.gateway.ProductSkuGateway;
 import com.lemnt.product.domain.product.gateway.ProductSpuGateway;
-import com.lemnt.product.domain.product.model.Brand;
-import com.lemnt.product.domain.product.model.Category;
+import com.lemnt.product.domain.product.model.ProductBrand;
+import com.lemnt.product.domain.product.model.ProductCategory;
 import com.lemnt.product.domain.product.model.Product;
 import com.lemnt.product.domain.product.model.ProductCatalogValidation;
 import com.lemnt.product.domain.product.model.ProductComment;
@@ -1106,11 +1106,11 @@ class CheckoutFlowIntegrationTest {
                             BigDecimal.ONE,
                             150)),
                     List.of()));
-        var categories = mallComponents.get(CategoryGateway.class);
-        var brands = mallComponents.get(BrandGateway.class);
+        var categories = mallComponents.get(ProductCategoryGateway.class);
+        var brands = mallComponents.get(ProductBrandGateway.class);
         var category =
-            categories.saveCategory(new Category(null, null, "快递分类", null, 0, "ENABLED"));
-        var brand = brands.saveBrand(new Brand(null, "快递品牌", null, null, 0, "ENABLED"));
+            categories.saveCategory(new ProductCategory(null, null, "快递分类", null, 0, "ENABLED"));
+        var brand = brands.saveBrand(new ProductBrand(null, "快递品牌", null, null, 0, "ENABLED"));
         var spu =
             mallComponents
                 .get(ProductSpuGateway.class)
@@ -2784,12 +2784,12 @@ class CheckoutFlowIntegrationTest {
     void useCatalogSkuForReview() {
         var category =
             mallComponents
-                .get(CategoryGateway.class)
-                .saveCategory(new Category(null, null, "评价分类", null, 0, "ENABLED"));
+                .get(ProductCategoryGateway.class)
+                .saveCategory(new ProductCategory(null, null, "评价分类", null, 0, "ENABLED"));
         var brand =
             mallComponents
-                .get(BrandGateway.class)
-                .saveBrand(new Brand(null, "评价品牌", null, null, 0, "ENABLED"));
+                .get(ProductBrandGateway.class)
+                .saveBrand(new ProductBrand(null, "评价品牌", null, null, 0, "ENABLED"));
         var product =
             mallComponents
                 .get(ProductCatalogService.class)
@@ -2825,27 +2825,27 @@ class CheckoutFlowIntegrationTest {
         useCatalogSkuForReview();
         var order = paidOrder(null);
         var comments = mallComponents.get(ProductCommentService.class);
-        var cmd = new CommentCreateCmd(1L, order.orderNo(), sku, 5, "真实评价");
+        var cmd = new ProductCommentCreateCmd(1L, order.orderNo(), sku, 5, "真实评价");
         assertThrows(ServiceException.class, () -> comments.create(cmd));
         fulfillmentService.ship(shipment(order.orderNo()));
         fulfillmentService.receive(order.orderNo());
         assertThrows(
             ServiceException.class,
-            () -> comments.create(new CommentCreateCmd(2L, order.orderNo(), sku, 5, "他人订单")));
+            () -> comments.create(new ProductCommentCreateCmd(2L, order.orderNo(), sku, 5, "他人订单")));
         assertThrows(
             ServiceException.class,
             () ->
                 comments.create(
-                    new CommentCreateCmd(1L, order.orderNo(), sku + 999, 5, "错误商品")));
+                    new ProductCommentCreateCmd(1L, order.orderNo(), sku + 999, 5, "错误商品")));
         var saved = comments.create(cmd);
         assertEquals(1L, saved.memberId());
         assertEquals(saved, comments.create(cmd));
         assertThrows(
             ServiceException.class,
-            () -> comments.create(new CommentCreateCmd(1L, order.orderNo(), sku, 1, "更改原评价")));
+            () -> comments.create(new ProductCommentCreateCmd(1L, order.orderNo(), sku, 1, "更改原评价")));
         assertThrows(
             ServiceException.class,
-            () -> comments.create(new CommentCreateCmd(1L, order.orderNo(), sku, 6, "错误评分")));
+            () -> comments.create(new ProductCommentCreateCmd(1L, order.orderNo(), sku, 6, "错误评分")));
     }
 
     @Test
@@ -2856,21 +2856,21 @@ class CheckoutFlowIntegrationTest {
         fulfillmentService.ship(shipment(order.orderNo()));
         fulfillmentService.receive(order.orderNo());
         var comments = mallComponents.get(ProductCommentService.class);
-        var saved = comments.create(new CommentCreateCmd(1L, order.orderNo(), sku, 5, "已完成订单评价"));
-        var replied = comments.reply(new CommentReplyCmd(saved.id(), 99L, "感谢反馈"));
+        var saved = comments.create(new ProductCommentCreateCmd(1L, order.orderNo(), sku, 5, "已完成订单评价"));
+        var replied = comments.reply(new ProductCommentReplyCmd(saved.id(), 99L, "感谢反馈"));
         assertEquals(99L, replied.replyUserId());
-        assertEquals(replied, comments.reply(new CommentReplyCmd(saved.id(), 99L, "感谢反馈")));
+        assertEquals(replied, comments.reply(new ProductCommentReplyCmd(saved.id(), 99L, "感谢反馈")));
         mallComponents
-            .get(CommentVisibleCmdExe.class)
-            .execute(new CommentVisibleCmd(saved.id(), false));
-        var query = mallComponents.get(CommentPageQueryExe.class);
-        var page = query.execute(new CommentPageQry(saved.spuId(), 1L, 5, false, true, 1, 20));
+            .get(ProductCommentVisibleCmdExe.class)
+            .execute(new ProductCommentVisibleCmd(saved.id(), false));
+        var query = mallComponents.get(ProductCommentPageQueryExe.class);
+        var page = query.execute(new ProductCommentPageQry(saved.spuId(), 1L, 5, false, true, 1, 20));
         assertEquals(1, page.getTotal());
         assertEquals("已完成订单评价", page.getRecords().get(0).content());
         assertEquals("感谢反馈", page.getRecords().get(0).replyContent());
         assertEquals(
             0,
-            query.execute(new CommentPageQry(saved.spuId(), 1L, 5, true, null, 1, 20))
+            query.execute(new ProductCommentPageQry(saved.spuId(), 1L, 5, true, null, 1, 20))
                 .getTotal());
     }
 
@@ -2881,7 +2881,7 @@ class CheckoutFlowIntegrationTest {
         fulfillmentService.ship(shipment(order.orderNo()));
         fulfillmentService.receive(order.orderNo());
         var service = mallComponents.get(ProductCommentService.class);
-        var cmd = new CommentCreateCmd(1L, order.orderNo(), sku, 4, "重复提交只保存一次");
+        var cmd = new ProductCommentCreateCmd(1L, order.orderNo(), sku, 4, "重复提交只保存一次");
         var pool = Executors.newFixedThreadPool(2);
         try {
             var a = pool.submit(() -> service.create(cmd));
@@ -2915,7 +2915,7 @@ class CheckoutFlowIntegrationTest {
         var saved =
             mallComponents
                 .get(ProductCommentService.class)
-                .create(new CommentCreateCmd(1L, order.orderNo(), sku, 5, "历史订单仍可反馈"));
+                .create(new ProductCommentCreateCmd(1L, order.orderNo(), sku, 5, "历史订单仍可反馈"));
         assertEquals(parentId, saved.spuId());
         assertEquals("DELETED", productSkuGateway.catalogSku(sku).status());
         assertEquals("COMPLETED", orderPersistenceService.findByOrderNo(order.orderNo()).status());
@@ -3343,7 +3343,7 @@ class CheckoutFlowIntegrationTest {
         var a = order.items().get(0);
         var b = order.items().get(1);
         var first =
-            new CommentCreateCmd(
+            new ProductCommentCreateCmd(
                 1L,
                 order.orderNo(),
                 a.productId(),
@@ -3368,7 +3368,7 @@ class CheckoutFlowIntegrationTest {
                 ServiceException.class,
                 () ->
                     comments.create(
-                        new CommentCreateCmd(
+                        new ProductCommentCreateCmd(
                             1L,
                             order.orderNo(),
                             a.productId(),
@@ -3381,7 +3381,7 @@ class CheckoutFlowIntegrationTest {
                             b.orderItemId())))
                 .getCode());
         comments.create(
-            new CommentCreateCmd(
+            new ProductCommentCreateCmd(
                 1L,
                 order.orderNo(),
                 b.productId(),
@@ -3466,7 +3466,7 @@ class CheckoutFlowIntegrationTest {
         fulfillmentService.receive(order.orderNo());
         var line = orderRpc.findByOrderNo(order.orderNo()).items().get(0);
         var cmd =
-            new CommentCreateCmd(
+            new ProductCommentCreateCmd(
                 1L,
                 order.orderNo(),
                 line.productId(),
@@ -3505,7 +3505,7 @@ class CheckoutFlowIntegrationTest {
         fulfillmentService.receive(order.orderNo());
         var line = orderRpc.findByOrderNo(order.orderNo()).items().get(0);
         var cmd =
-            new CommentCreateCmd(
+            new ProductCommentCreateCmd(
                 1L,
                 order.orderNo(),
                 line.productId(),
@@ -3606,7 +3606,7 @@ class CheckoutFlowIntegrationTest {
                             pool.submit(
                                 () ->
                                     service.create(
-                                        new CommentCreateCmd(
+                                        new ProductCommentCreateCmd(
                                             1L,
                                             order.orderNo(),
                                             line.productId(),
@@ -3666,7 +3666,7 @@ class CheckoutFlowIntegrationTest {
         var repaired =
             mallComponents
                 .get(ProductCommentService.class)
-                .create(new CommentCreateCmd(1L, order.orderNo(), sku, 5, "旧购买评价"));
+                .create(new ProductCommentCreateCmd(1L, order.orderNo(), sku, 5, "旧购买评价"));
         assertEquals(old.id(), repaired.id());
         assertEquals(line.orderItemId(), repaired.orderItemId());
         assertEquals(order.id(), repaired.orderId());

@@ -72,7 +72,10 @@ class CommerceConfigurationTest {
             assertThat(resolver.getProperty("rocketmq.producer.group"))
                 .isEqualTo("lemnt-" + owner + "-commerce-producer-v1");
             assertThat(resolver.getProperty("commerce.mq.enabled", Boolean.class)).isFalse();
-            if (!"promotion".equals(owner)) {
+            if ("product".equals(owner)) {
+                // product 出站改为RocketMQ事务消息，模板不再携带Outbox中继开关
+                assertThat(resolver.getProperty("commerce.outbox.enabled", Boolean.class)).isNull();
+            } else if (!"promotion".equals(owner)) {
                 assertThat(resolver.getProperty("commerce.outbox.enabled", Boolean.class))
                     .isFalse();
             }

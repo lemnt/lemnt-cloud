@@ -1,12 +1,9 @@
 package com.lemnt.product.application.product.service;
 
-import com.lemnt.common.client.event.CommerceEventTopics;
-import com.lemnt.common.core.utils.JsonUtils;
-import com.lemnt.product.client.event.StockPreReservedEvent;
-import com.lemnt.product.domain.event.gateway.MessageOutboxGateway;
 import com.lemnt.product.domain.product.gateway.ProductSkuGateway;
-import com.lemnt.product.domain.product.gateway.StockReservationGateway;
-import com.lemnt.product.domain.product.model.StockReservation;
+import com.lemnt.product.domain.product.gateway.ProductStockReservationGateway;
+import com.lemnt.product.domain.product.gateway.StockEventGateway;
+import com.lemnt.product.domain.product.model.ProductStockReservation;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,8 +17,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductInventoryService {
     private final ProductSkuGateway productSkuGateway;
-    private final StockReservationGateway stockReservationGateway;
-    private final MessageOutboxGateway outbox;
+    private final ProductStockReservationGateway stockReservationGateway;
+    private final StockEventGateway stockEvents;
 
     private String reservationKey(String value, Long productId) {
         if (value == null
@@ -34,43 +31,47 @@ public class ProductInventoryService {
         return value.trim();
     }
 
-    private StockReservation lockReservation(String key, Long productId) {
+    private ProductStockReservation lockReservation(String key, Long productId) {
         if (productSkuGateway.lockById(productId) == null) {
             throw new IllegalArgumentException("商品不存在");
         }
         return stockReservationGateway.lock(key, productId);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    /**
+     * 预占经事务消息本地事务独立提交，本方法不在调用方事务内执行；
+     * 并发对手先行或库存不足时按台账复核结果区分幂等成功与失败。
+     */
     public boolean reserveStock(String reservationNo, Long productId, Integer quantity) {
         String key = reservationKey(reservationNo, productId);
         if (quantity == null || quantity <= 0) {
             throw new IllegalArgumentException("预占数量不合法");
         }
-        var existing = lockReservation(key, productId);
+        var existing = stockReservationGateway.find(key, productId);
         if (existing != null) {
-            if (!quantity.equals(existing.quantity())) {
-                throw new IllegalStateException("预占数量不允许变化");
-            }
-            return "RESERVED".equals(existing.status()) || "CONFIRMED".equals(existing.status());
+            return reservedOrThrow(existing, quantity);
         }
-        if (!productSkuGateway.reserveQuantity(productId, quantity)) {
-            return false;
+        if (stockEvents.publishReserved(
+            new ProductStockReservation(key, productId, quantity, "RESERVED"))) {
+            return true;
         }
-        stockReservationGateway.insert(new StockReservation(key, productId, quantity, "RESERVED"));
-        outbox.enqueue(
-            CommerceEventTopics.STOCK_PRE_RESERVED,
-            key + ":" + productId,
-            key,
-            JsonUtils.toJsonStr(new StockPreReservedEvent(key, productId, quantity)));
-        return true;
+        // 本地事务回滚后复核：并发对手已提交则按幂等语义成功，否则为库存不足
+        var raced = stockReservationGateway.find(key, productId);
+        return raced != null && reservedOrThrow(raced, quantity);
+    }
+
+    private boolean reservedOrThrow(ProductStockReservation row, Integer quantity) {
+        if (!quantity.equals(row.quantity())) {
+            throw new IllegalStateException("预占数量不允许变化");
+        }
+        return "RESERVED".equals(row.status()) || "CONFIRMED".equals(row.status());
     }
 
     /**
      * 读取时仍按SKU及原预占行顺序加锁，避免用一级缓存误判确认结果。
      */
     @Transactional(rollbackFor = Exception.class)
-    public StockReservation reservationStatus(String reservationNo, Long skuId) {
+    public ProductStockReservation reservationStatus(String reservationNo, Long skuId) {
         return lockReservation(reservationKey(reservationNo, skuId), skuId);
     }
 
@@ -84,7 +85,7 @@ public class ProductInventoryService {
         if (row == null) {
             // Terminal cancellation prevents a delayed RPC from reserving after order close.
             stockReservationGateway.insert(
-                new StockReservation(key, productId, quantity, "RELEASED"));
+                new ProductStockReservation(key, productId, quantity, "RELEASED"));
             return;
         }
         if (!quantity.equals(row.quantity())) {
@@ -93,7 +94,7 @@ public class ProductInventoryService {
         releaseLocked(key, productId, row);
     }
 
-    private void releaseLocked(String key, Long productId, StockReservation row) {
+    private void releaseLocked(String key, Long productId, ProductStockReservation row) {
         if ("RELEASED".equals(row.status())) {
             return;
         }
@@ -165,6 +166,6 @@ public class ProductInventoryService {
             throw new IllegalStateException("售后库存回补失败");
         }
         stockReservationGateway.insert(
-            new StockReservation(key, productId, quantity, "RETURNED", orderNo));
+            new ProductStockReservation(key, productId, quantity, "RETURNED", orderNo));
     }
 }

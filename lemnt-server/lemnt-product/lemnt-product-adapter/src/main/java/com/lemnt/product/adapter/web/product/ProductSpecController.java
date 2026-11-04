@@ -41,72 +41,26 @@ import java.util.List;
 /**
  * 规格字典管理接口。
  */
-@Tag(name = "规格项管理")
+@Tag(name = "商品规格项管理")
 @RestController
-@RequestMapping("/mall/specs")
+@RequestMapping("/specs")
 @RequiredArgsConstructor
 public class ProductSpecController {
-    private final ProductSpecCreateCmdExe productSpecCreateCmdExe;
-    private final ProductSpecUpdateCmdExe productSpecUpdateCmdExe;
-    private final ProductSpecDeleteCmdExe productSpecDeleteCmdExe;
-    private final ProductSpecDetailQueryExe productSpecDetailQueryExe;
-    private final ProductSpecPageQueryExe productSpecPageQueryExe;
-    private final ProductSpecSimpleListQueryExe productSpecSimpleListQueryExe;
-
-    /**
-     * 新增字典。
-     */
-    @PostMapping
-    @Operation(summary = "新增规格字典")
-    @RequiresPermissions("mall:spec:add")
-    public R<ProductSpecCreateRes> create(@Valid @RequestBody ProductSpecCreateReq req) {
-        return R.ok(
-            ProductSpecResConverter.create(
-                productSpecCreateCmdExe.execute(ProductSpecReqConverter.create(req))));
-    }
-
-    /**
-     * 修改字典。
-     */
-    @PutMapping("/{id}")
-    @Operation(summary = "修改规格字典")
-    @RequiresPermissions("mall:spec:edit")
-    public R<ProductSpecUpdateRes> update(
-        @PathVariable Long id, @Valid @RequestBody ProductSpecUpdateReq req) {
-        return R.ok(
-            ProductSpecResConverter.update(
-                productSpecUpdateCmdExe.execute(ProductSpecReqConverter.update(id, req))));
-    }
-
-    /**
-     * 删除无子值的规格项。
-     */
-    @DeleteMapping("/{id}")
-    @Operation(summary = "删除无子值的规格项")
-    @RequiresPermissions("mall:spec:remove")
-    public R<Boolean> delete(@PathVariable Long id) {
-        return R.ok(productSpecDeleteCmdExe.execute(id));
-    }
-
-    /**
-     * 查询详情。
-     */
-    @GetMapping("/{id}")
-    @Operation(summary = "规格字典详情")
-    @RequiresPermissions("mall:spec:query")
-    public R<ProductSpecDetailRes> detail(@PathVariable Long id) {
-        var value = productSpecDetailQueryExe.execute(id);
-        return value == null ? R.fail("字典不存在") : R.ok(ProductSpecResConverter.detail(value));
-    }
+    private final ProductSpecPageQueryExe specPageQueryExe;
+    private final ProductSpecSimpleListQueryExe specSimpleListQueryExe;
+    private final ProductSpecDetailQueryExe specDetailQueryExe;
+    private final ProductSpecCreateCmdExe specCreateCmdExe;
+    private final ProductSpecUpdateCmdExe specUpdateCmdExe;
+    private final ProductSpecDeleteCmdExe specDeleteCmdExe;
 
     /**
      * 分页查询。
      */
     @GetMapping
     @Operation(summary = "规格字典分页")
-    @RequiresPermissions("mall:spec:list")
+    @RequiresPermissions("product:spec:list")
     public R<ProductSpecPageRes> page(@Valid @ModelAttribute ProductSpecPageReq req) {
-        var value = productSpecPageQueryExe.execute(ProductSpecReqConverter.page(req));
+        var value = specPageQueryExe.execute(ProductSpecReqConverter.page(req));
         return R.page(
             value.getRecords().stream().map(ProductSpecResConverter::page).toList(),
             value.getTotal());
@@ -117,11 +71,57 @@ public class ProductSpecController {
      */
     @GetMapping("/simple")
     @Operation(summary = "规格字典选择查询")
-    @RequiresPermissions("mall:spec:query")
+    @RequiresPermissions("product:spec:query")
     public R<List<ProductSpecSimpleRes>> simple(@Valid @ModelAttribute ProductSpecSimpleReq req) {
         return R.ok(
-            productSpecSimpleListQueryExe.execute(ProductSpecReqConverter.simple(req)).stream()
+            specSimpleListQueryExe.execute(ProductSpecReqConverter.simple(req)).stream()
                 .map(ProductSpecResConverter::simple)
                 .toList());
+    }
+
+    /**
+     * 查询详情。
+     */
+    @GetMapping("/{id}")
+    @Operation(summary = "规格字典详情")
+    @RequiresPermissions("product:spec:query")
+    public R<ProductSpecDetailRes> detail(@PathVariable Long id) {
+        var value = specDetailQueryExe.execute(id);
+        return value == null ? R.fail("字典不存在") : R.ok(ProductSpecResConverter.detail(value));
+    }
+
+    /**
+     * 新增字典。
+     */
+    @PostMapping
+    @Operation(summary = "新增规格字典")
+    @RequiresPermissions("product:spec:add")
+    public R<ProductSpecCreateRes> create(@Valid @RequestBody ProductSpecCreateReq req) {
+        return R.ok(
+            ProductSpecResConverter.create(
+                specCreateCmdExe.execute(ProductSpecReqConverter.create(req))));
+    }
+
+    /**
+     * 修改字典。
+     */
+    @PutMapping("/{id}")
+    @Operation(summary = "修改规格字典")
+    @RequiresPermissions("product:spec:edit")
+    public R<ProductSpecUpdateRes> update(
+        @PathVariable Long id, @Valid @RequestBody ProductSpecUpdateReq req) {
+        return R.ok(
+            ProductSpecResConverter.update(
+                specUpdateCmdExe.execute(ProductSpecReqConverter.update(id, req))));
+    }
+
+    /**
+     * 删除无子值的规格项。
+     */
+    @DeleteMapping("/{id}")
+    @Operation(summary = "删除无子值的规格项")
+    @RequiresPermissions("product:spec:remove")
+    public R<Boolean> delete(@PathVariable Long id) {
+        return R.ok(specDeleteCmdExe.execute(id));
     }
 }

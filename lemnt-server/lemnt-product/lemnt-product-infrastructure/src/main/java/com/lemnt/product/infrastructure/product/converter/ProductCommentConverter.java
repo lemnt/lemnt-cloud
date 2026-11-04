@@ -86,6 +86,6 @@ public final class ProductCommentConverter {
     }
 
     private static List<ProductComment.Spec> specs(String value) {
-        return value == null ? null : SpecSnapshotJson.read(value, ProductComment.Spec.class);
+        return value == null ? null : ProductSpecSnapshotJson.read(value, ProductComment.Spec.class);
     }
 }

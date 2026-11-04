@@ -2,7 +2,7 @@ package com.lemnt.product.application.product.service;
 
 import com.lemnt.product.domain.product.gateway.ProductSkuGateway;
 import com.lemnt.product.domain.product.gateway.ProductSpuGateway;
-import com.lemnt.product.domain.product.gateway.StockReservationGateway;
+import com.lemnt.product.domain.product.gateway.ProductStockReservationGateway;
 import com.lemnt.product.domain.product.model.ProductCatalogValidation;
 import com.lemnt.product.domain.product.model.ProductSku;
 import com.lemnt.product.domain.product.model.ProductSpu;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class ProductManagementService {
     private final ProductSpuGateway productSpuGateway;
     private final ProductSkuGateway productSkuGateway;
-    private final StockReservationGateway stockReservationGateway;
+    private final ProductStockReservationGateway stockReservationGateway;
     private final ProductCatalogService catalogService;
 
     /**

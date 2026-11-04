@@ -4,8 +4,8 @@ import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.common.security.constant.SecurityConstants;
 import com.lemnt.common.security.interceptor.HeaderInterceptor;
 import com.lemnt.common.start.config.JacksonConfig;
-import com.lemnt.product.adapter.app.product.AppCommentController;
-import com.lemnt.product.application.product.cmd.CommentCreateCmd;
+import com.lemnt.product.adapter.app.product.AppProductCommentController;
+import com.lemnt.product.application.product.cmd.ProductCommentCreateCmd;
 import com.lemnt.product.application.product.cmd.ProductSpecValueUpdateCmd;
 import com.lemnt.product.application.product.dto.ProductCommentDTO;
 import com.lemnt.product.application.product.dto.ProductSpecDTO;
@@ -13,8 +13,8 @@ import com.lemnt.product.application.product.dto.ProductSpecValueDTO;
 import com.lemnt.product.application.product.dto.ProductSpuPageDTO;
 import com.lemnt.product.application.product.dto.ProductSpuStatusCountDTO;
 import com.lemnt.product.application.product.executor.*;
-import com.lemnt.product.application.product.executor.CommentCreateCmdExe;
-import com.lemnt.product.application.product.executor.CommentPublicPageQueryExe;
+import com.lemnt.product.application.product.executor.ProductCommentCreateCmdExe;
+import com.lemnt.product.application.product.executor.ProductCommentPublicPageQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpecCreateCmdExe;
 import com.lemnt.product.application.product.executor.ProductSpecDeleteCmdExe;
 import com.lemnt.product.application.product.executor.ProductSpecDetailQueryExe;
@@ -68,12 +68,12 @@ class ProductManagementHttpTest {
             MockMvcBuilders.standaloneSetup(controller)
                 .setMessageConverters(converter())
                 .build();
-        mvc.perform(get("/mall/specs").param("name", "颜色"))
+        mvc.perform(get("/product/specs").param("name", "颜色"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.rows[0].name").value("颜色"))
             .andExpect(jsonPath("$.total").value(1));
         verify(query).execute(new ProductSpecPageQry("颜色", 1, 20, null, null));
-        mvc.perform(get("/mall/specs").param("pageSize", "101")).andExpect(status().isBadRequest());
+        mvc.perform(get("/product/specs").param("pageSize", "101")).andExpect(status().isBadRequest());
         verifyNoMoreInteractions(query);
     }
 
@@ -99,13 +99,13 @@ class ProductManagementHttpTest {
                 .setMessageConverters(converter())
                 .build();
         mvc.perform(
-                get("/mall/specs")
+                get("/product/specs")
                     .param("createTimeStart", "2026-10-15T12:00:00")
                     .param("createTimeEnd", "2026-10-15T12:00:00"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.rows[0].createTime").value("2026-10-15 12:00:00"));
         verify(query).execute(new ProductSpecPageQry(null, 1, 20, time, time));
-        mvc.perform(get("/mall/specs").param("createTimeStart", "not-a-date"))
+        mvc.perform(get("/product/specs").param("createTimeStart", "not-a-date"))
             .andExpect(status().isBadRequest());
         verifyNoMoreInteractions(query);
     }
@@ -129,13 +129,13 @@ class ProductManagementHttpTest {
                 .setMessageConverters(converter())
                 .build();
         mvc.perform(
-                post("/mall/spec-values")
+                post("/product/spec-values")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\"name\":\"蓝\"}"))
             .andExpect(status().isBadRequest());
         verifyNoInteractions(create);
         mvc.perform(
-                put("/mall/spec-values/3")
+                put("/product/spec-values/3")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\"name\":\"蓝\",\"specId\":999}"))
             .andExpect(status().isOk())
@@ -163,7 +163,7 @@ class ProductManagementHttpTest {
                 .setMessageConverters(converter())
                 .build();
         mvc.perform(
-                get("/mall/spus/count")
+                get("/product/spus/count")
                     .param("name", "商品")
                     .param("categoryId", "1")
                     .param("brandId", "2")
@@ -176,7 +176,7 @@ class ProductManagementHttpTest {
             .andExpect(jsonPath("$.data.soldOut").value(1))
             .andExpect(jsonPath("$.data.lowStock").value(2));
         verify(count).execute(new ProductSpuCountQry("商品", 1L, 2L));
-        mvc.perform(get("/mall/spus/count").param("categoryId", "0"))
+        mvc.perform(get("/product/spus/count").param("categoryId", "0"))
             .andExpect(status().isBadRequest());
         verifyNoMoreInteractions(count);
     }
@@ -198,7 +198,7 @@ class ProductManagementHttpTest {
                         mock(ProductSpuShelfCmdExe.class)))
                 .setMessageConverters(converter())
                 .build();
-        mvc.perform(get("/mall/spus").param("stockStatus", "LOW_STOCK").param("categoryId", "1"))
+        mvc.perform(get("/product/spus").param("stockStatus", "LOW_STOCK").param("categoryId", "1"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.total").value(0));
         verify(query).execute(new ProductSpuPageQry(null, null, 1, 10, 1L, null, "LOW_STOCK"));
@@ -227,13 +227,13 @@ class ProductManagementHttpTest {
             MockMvcBuilders.standaloneSetup(controller)
                 .setMessageConverters(converter())
                 .build();
-        mvc.perform(post("/mall/spus/9/recycle"))
+        mvc.perform(post("/product/spus/9/recycle"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data").value(true));
-        mvc.perform(post("/mall/spus/9/restore"))
+        mvc.perform(post("/product/spus/9/restore"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data").value(true));
-        mvc.perform(delete("/mall/spus/9"))
+        mvc.perform(delete("/product/spus/9"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data").value(false));
         verify(recycle).execute(9L);
@@ -244,29 +244,29 @@ class ProductManagementHttpTest {
     @Test
     void consumerCannotChooseReviewerIdentityAndEmptyContentIsRejectedBeforeCreate()
         throws Exception {
-        var create = mock(CommentCreateCmdExe.class);
+        var create = mock(ProductCommentCreateCmdExe.class);
         when(create.execute(any()))
             .thenReturn(
                 new ProductCommentDTO(
                     1L, 3L, 9L, "TR1", 7L, 5, "真实评价", true, null, null, null, null));
         var mvc =
             MockMvcBuilders.standaloneSetup(
-                    new AppCommentController(
-                        create, mock(CommentPublicPageQueryExe.class)))
+                    new AppProductCommentController(
+                        create, mock(ProductCommentPublicPageQueryExe.class)))
                 .addInterceptors(new HeaderInterceptor())
                 .setMessageConverters(converter())
                 .build();
         mvc.perform(
-                post("/mall/app/comments")
+                post("/product/app/comments")
                     .header(SecurityConstants.HEADER_USER_ID, "7")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         "{\"memberId\":999,\"orderNo\":\"TR1\",\"skuId\":9,\"score\":5,\"content\":\"真实评价\"}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data.id").value("1"));
-        verify(create).execute(new CommentCreateCmd(7L, "TR1", 9L, 5, "真实评价"));
+        verify(create).execute(new ProductCommentCreateCmd(7L, "TR1", 9L, 5, "真实评价"));
         mvc.perform(
-                post("/mall/app/comments")
+                post("/product/app/comments")
                     .header(SecurityConstants.HEADER_USER_ID, "7")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(

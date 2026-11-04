@@ -47,13 +47,13 @@ class ProductDatabaseFixture {
         spus = components.get(ProductSpuGateway.class);
         categoryId =
             components
-                .get(CategoryGateway.class)
-                .saveCategory(new Category(null, null, "category", null, 0, "ENABLED"))
+                .get(ProductCategoryGateway.class)
+                .saveCategory(new ProductCategory(null, null, "category", null, 0, "ENABLED"))
                 .id();
         brandId =
             components
-                .get(BrandGateway.class)
-                .saveBrand(new Brand(null, "brand", null, null, 0, "ENABLED"))
+                .get(ProductBrandGateway.class)
+                .saveBrand(new ProductBrand(null, "brand", null, null, 0, "ENABLED"))
                 .id();
     }
 

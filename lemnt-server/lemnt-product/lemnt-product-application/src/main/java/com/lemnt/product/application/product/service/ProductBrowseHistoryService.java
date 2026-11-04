@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 public class ProductBrowseHistoryService {
     private final ProductBrowseHistoryGateway gateway;
     private final MemberLockGateway locks;
-    private final ProductSpuGateway spus;
-    private final ProductSkuGateway skus;
+    private final ProductSpuGateway spuGateway;
+    private final ProductSkuGateway skuGateway;
 
     /**
      * 浏览重排/裁剪必须在同一个会员锁事务内。
@@ -95,10 +95,10 @@ public class ProductBrowseHistoryService {
         }
         var ids = page.getRecords().stream().map(value -> value.spuId()).distinct().toList();
         var products =
-            spus.findSpus(ids).stream()
+            spuGateway.findSpus(ids).stream()
                 .collect(Collectors.toMap(value -> value.id(), value -> value));
         var prices =
-            skus.skusBySpuIds(ids).stream()
+            skuGateway.skusBySpuIds(ids).stream()
                 .filter(value -> value.price() != null)
                 .collect(
                     Collectors.toMap(

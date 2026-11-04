@@ -1,7 +1,7 @@
 package com.lemnt.product.application.product.service;
 
-import com.lemnt.product.domain.product.gateway.BrandGateway;
-import com.lemnt.product.domain.product.gateway.CategoryGateway;
+import com.lemnt.product.domain.product.gateway.ProductBrandGateway;
+import com.lemnt.product.domain.product.gateway.ProductCategoryGateway;
 import com.lemnt.product.domain.product.model.ProductCatalogValidation;
 
 import org.springframework.stereotype.Component;
@@ -14,8 +14,8 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class ProductValidationService {
-    private final BrandGateway brandGateway;
-    private final CategoryGateway categoryGateway;
+    private final ProductBrandGateway brandGateway;
+    private final ProductCategoryGateway categoryGateway;
 
     /**
      * 已启用引用。

@@ -1,6 +1,6 @@
 package com.lemnt.product.application.dubbo;
 
-import com.lemnt.product.application.product.cmd.CommentSaveCmd;
+import com.lemnt.product.application.product.cmd.ProductCommentSaveCmd;
 import com.lemnt.product.application.product.service.ProductCommentService;
 import com.lemnt.product.client.ProductCommentClient;
 import com.lemnt.product.client.bo.ProductCommentSaveBo;
@@ -29,7 +29,7 @@ public class ProductCommentClientImpl implements ProductCommentClient {
 
     private Long save(ProductCommentSaveBo value, boolean system) {
         var cmd =
-            new CommentSaveCmd(
+            new ProductCommentSaveCmd(
                 value.memberId(),
                 value.orderNo(),
                 value.skuId(),
@@ -43,7 +43,7 @@ public class ProductCommentClientImpl implements ProductCommentClient {
                     : value.specs().stream()
                     .map(
                         property ->
-                            new CommentSaveCmd.Spec(
+                            new ProductCommentSaveCmd.Spec(
                                 property.specId(),
                                 property.specName(),
                                 property.specValueId(),

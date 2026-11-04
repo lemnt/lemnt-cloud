@@ -49,7 +49,7 @@ P5-00/P5-01只交付源码、配置模板与自动化证据，不执行建库、
 | PAY_SUCCESS | order | lemnt-order-pay-success-v1 |
 | STOCK_PRE_RESERVED | promotion | lemnt-promotion-stock-pre-reserved-v1 |
 
-`COMMERCE_MQ_ENABLED`默认false，控制全部15个正式消费者；`COMMERCE_OUTBOX_ENABLED`默认false，控制product/order/pay三个Relay。配置缺失或显式false都不装配这些副作用组件。启用后按原Outbox记录发送，不重建事件编号或载荷。promotion只有Inbox，不新增Outbox。
+`COMMERCE_MQ_ENABLED`默认false，控制全部15个正式消费者；`COMMERCE_OUTBOX_ENABLED`默认false，控制order/pay两个Relay。配置缺失或显式false都不装配这些副作用组件。启用后按原Outbox记录发送，不重建事件编号或载荷。product出站不使用本地消息表：库存预占事实经RocketMQ事务消息（半消息+台账回查）直发，MQ不可用时预占同步失败。promotion只有Inbox，不新增Outbox。
 
 其他开关均默认关闭：`PROMOTION_SCHEDULER_ENABLED`、`ORDER_SCHEDULER_ENABLED`、`ORDER_AUTO_RECEIVE_ENABLED`、`ORDER_AUTO_COMMENT_ENABLED`、`ORDER_RECOVERY_ENABLED`、`PAY_LEGACY_NOTIFY_ENABLED`。既有`lemnt.mall.scheduler.*`与`lemnt.trade.*`配置键保持兼容，分别只在新的实际归属服务配置。order旧补偿Topic入口`lemnt.order.legacy-rollback.enabled`固定false；没有审核过历史未决任务时不得随意开启。
 

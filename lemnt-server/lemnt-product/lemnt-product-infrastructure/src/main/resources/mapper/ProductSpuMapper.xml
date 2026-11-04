@@ -32,6 +32,11 @@
         <result property="available" column="available"/>
     </resultMap>
 
+    <sql id="baseColumn">
+        id, code, name, keyword, introduction, slider_pic_urls, sort, category_id, brand_id, description, image,
+        status, delivery_types, delivery_template_id
+    </sql>
+
     <sql id="storeCatalogJoins">
         FROM product_spu s JOIN product_category c ON c.id=s.category_id LEFT JOIN product_category parent ON
         parent.id=c.parent_id JOIN product_brand b ON b.id=s.brand_id
@@ -52,7 +57,7 @@
 
     <select id="lockSpu" resultMap="ProductSpuResult"
             flushCache="true" useCache="false">
-        SELECT * FROM product_spu WHERE id=#{id} FOR UPDATE
+        SELECT <include refid="baseColumn"/> FROM product_spu WHERE id=#{id} FOR UPDATE
     </select>
 
     <select id="products" resultMap="StoreProductResult">
@@ -106,7 +111,7 @@
     </sql>
 
     <select id="selectStockPage" resultMap="ProductSpuResult">
-        SELECT s.*
+        SELECT <include refid="baseColumn"/>
         <include refid="stockViewFilter"/>
         ORDER BY s.sort DESC,s.id DESC
     </select>

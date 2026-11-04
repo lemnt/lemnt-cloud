@@ -1,10 +1,10 @@
 package com.lemnt.product.domain.product.gateway;
 
 import com.lemnt.common.domain.model.PageResult;
-import com.lemnt.product.domain.product.model.CommentFilter;
-import com.lemnt.product.domain.product.model.CommentOrderLink;
+import com.lemnt.product.domain.product.model.ProductCommentFilter;
+import com.lemnt.product.domain.product.model.ProductCommentOrderLink;
 import com.lemnt.product.domain.product.model.ProductComment;
-import com.lemnt.product.domain.product.model.PublicCommentFilter;
+import com.lemnt.product.domain.product.model.ProductPublicCommentFilter;
 
 /**
  * 商品评价表领域存储接口。
@@ -28,7 +28,7 @@ public interface ProductCommentGateway {
     /**
      * 条件绑定交易确认的旧行，不能改写已有不同归属。
      */
-    boolean bindOrderItem(CommentOrderLink value);
+    boolean bindOrderItem(ProductCommentOrderLink value);
 
     /**
      * 只查询尚未绑定ID的旧订单SKU评价，绑定前由交易核验SKU唯一性。
@@ -53,10 +53,10 @@ public interface ProductCommentGateway {
     /**
      * 公开分页固定可见，仅按商品及评分组查询。
      */
-    PageResult<ProductComment> pageVisible(PublicCommentFilter filter);
+    PageResult<ProductComment> pageVisible(ProductPublicCommentFilter filter);
 
     /**
      * 后台分页。
      */
-    PageResult<ProductComment> page(CommentFilter filter);
+    PageResult<ProductComment> page(ProductCommentFilter filter);
 }

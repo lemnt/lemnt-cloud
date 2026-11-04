@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lemnt.product.infrastructure.event.mapper.MessageInboxMapper">
-    <select id="lockEvent" resultType="com.lemnt.product.infrastructure.event.dataobject.MessageInboxDO"
+    <resultMap id="MessageInboxResult" type="com.lemnt.product.infrastructure.event.dataobject.MessageInboxDO"
+               autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="consumerKey" column="consumer_key"/>
+        <result property="eventNo" column="event_no"/>
+        <result property="eventType" column="event_type"/>
+        <result property="businessKey" column="business_key"/>
+        <result property="payloadHash" column="payload_hash"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="baseColumn">
+        id, consumer_key, event_no, event_type, business_key, payload_hash, create_time
+    </sql>
+
+    <select id="lockEvent" resultMap="MessageInboxResult"
             useCache="false" flushCache="true">
-        SELECT * FROM product_message_inbox WHERE consumer_key=#{consumer} AND event_no=#{eventNo} FOR UPDATE
+        SELECT <include refid="baseColumn"/> FROM product_message_inbox WHERE consumer_key=#{consumer} AND event_no=#{eventNo} FOR UPDATE
     </select>
-    <select id="lockBusiness" resultType="com.lemnt.product.infrastructure.event.dataobject.MessageInboxDO"
+    <select id="lockBusiness" resultMap="MessageInboxResult"
             useCache="false" flushCache="true">
-        SELECT * FROM product_message_inbox WHERE consumer_key=#{consumer} AND event_type=#{type} AND
+        SELECT <include refid="baseColumn"/> FROM product_message_inbox WHERE consumer_key=#{consumer} AND event_type=#{type} AND
         business_key=#{key} FOR UPDATE
     </select>
 </mapper>

@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * 品牌响应。
  */
-@Schema(description = "Brand响应")
+@Schema(description = "ProductBrand响应")
 public record MallBrandDetailRes(
     @Schema(description = "编号") Long id,
     @Schema(description = "名称") String name,

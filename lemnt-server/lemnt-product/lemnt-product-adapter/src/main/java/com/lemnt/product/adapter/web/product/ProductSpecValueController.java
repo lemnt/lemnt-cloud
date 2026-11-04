@@ -39,76 +39,30 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 /**
- * 规格字典管理接口。
+ * 商品规格值管理
  */
-@Tag(name = "规格值管理")
+@Tag(name = "商品规格值管理")
 @RestController
-@RequestMapping("/mall/spec-values")
+@RequestMapping("/spec-values")
 @RequiredArgsConstructor
 public class ProductSpecValueController {
-    private final ProductSpecValueCreateCmdExe productSpecValueCreateCmdExe;
-    private final ProductSpecValueUpdateCmdExe productSpecValueUpdateCmdExe;
-    private final ProductSpecValueDeleteCmdExe productSpecValueDeleteCmdExe;
-    private final ProductSpecValueDetailQueryExe productSpecValueDetailQueryExe;
-    private final ProductSpecValuePageQueryExe productSpecValuePageQueryExe;
-    private final ProductSpecValueSimpleListQueryExe productSpecValueSimpleListQueryExe;
+    private final ProductSpecValuePageQueryExe specValuePageQueryExe;
+    private final ProductSpecValueSimpleListQueryExe specValueSimpleListQueryExe;
+    private final ProductSpecValueDetailQueryExe specValueDetailQueryExe;
+    private final ProductSpecValueCreateCmdExe specValueCreateCmdExe;
+    private final ProductSpecValueUpdateCmdExe specValueUpdateCmdExe;
+    private final ProductSpecValueDeleteCmdExe specValueDeleteCmdExe;
 
-    /**
-     * 新增字典。
-     */
-    @PostMapping
-    @Operation(summary = "新增规格字典")
-    @RequiresPermissions("mall:spec-value:add")
-    public R<ProductSpecValueCreateRes> create(@Valid @RequestBody ProductSpecValueCreateReq req) {
-        return R.ok(
-            ProductSpecValueResConverter.create(
-                productSpecValueCreateCmdExe.execute(
-                    ProductSpecValueReqConverter.create(req))));
-    }
 
-    /**
-     * 修改字典。
-     */
-    @PutMapping("/{id}")
-    @Operation(summary = "修改规格字典")
-    @RequiresPermissions("mall:spec-value:edit")
-    public R<ProductSpecValueUpdateRes> update(
-        @PathVariable Long id, @Valid @RequestBody ProductSpecValueUpdateReq req) {
-        return R.ok(
-            ProductSpecValueResConverter.update(
-                productSpecValueUpdateCmdExe.execute(
-                    ProductSpecValueReqConverter.update(id, req))));
-    }
-
-    /**
-     * 删除规格值并保留SKU快照。
-     */
-    @DeleteMapping("/{id}")
-    @Operation(summary = "删除规格值并保留SKU快照")
-    @RequiresPermissions("mall:spec-value:remove")
-    public R<Boolean> delete(@PathVariable Long id) {
-        return R.ok(productSpecValueDeleteCmdExe.execute(id));
-    }
-
-    /**
-     * 查询详情。
-     */
-    @GetMapping("/{id}")
-    @Operation(summary = "规格字典详情")
-    @RequiresPermissions("mall:spec-value:query")
-    public R<ProductSpecValueDetailRes> detail(@PathVariable Long id) {
-        var value = productSpecValueDetailQueryExe.execute(id);
-        return value == null ? R.fail("字典不存在") : R.ok(ProductSpecValueResConverter.detail(value));
-    }
 
     /**
      * 分页查询。
      */
     @GetMapping
     @Operation(summary = "规格字典分页")
-    @RequiresPermissions("mall:spec-value:list")
+    @RequiresPermissions("product:spec-value:list")
     public R<ProductSpecValuePageRes> page(@Valid @ModelAttribute ProductSpecValuePageReq req) {
-        var value = productSpecValuePageQueryExe.execute(ProductSpecValueReqConverter.page(req));
+        var value = specValuePageQueryExe.execute(ProductSpecValueReqConverter.page(req));
         return R.page(
             value.getRecords().stream().map(ProductSpecValueResConverter::page).toList(),
             value.getTotal());
@@ -119,14 +73,62 @@ public class ProductSpecValueController {
      */
     @GetMapping("/simple")
     @Operation(summary = "规格字典选择查询")
-    @RequiresPermissions("mall:spec-value:query")
+    @RequiresPermissions("product:spec-value:query")
     public R<List<ProductSpecValueSimpleRes>> simple(
         @Valid @ModelAttribute ProductSpecValueSimpleReq req) {
         return R.ok(
-            productSpecValueSimpleListQueryExe
+            specValueSimpleListQueryExe
                 .execute(ProductSpecValueReqConverter.simple(req))
                 .stream()
                 .map(ProductSpecValueResConverter::simple)
                 .toList());
+    }
+
+    /**
+     * 查询详情。
+     */
+    @GetMapping("/{id}")
+    @Operation(summary = "规格字典详情")
+    @RequiresPermissions("product:spec-value:query")
+    public R<ProductSpecValueDetailRes> detail(@PathVariable Long id) {
+        var value = specValueDetailQueryExe.execute(id);
+        return value == null ? R.fail("规格字典不存在") : R.ok(ProductSpecValueResConverter.detail(value));
+    }
+    
+    /**
+     * 新增字典。
+     */
+    @PostMapping
+    @Operation(summary = "新增规格字典")
+    @RequiresPermissions("product:spec-value:add")
+    public R<ProductSpecValueCreateRes> create(@Valid @RequestBody ProductSpecValueCreateReq req) {
+        return R.ok(
+            ProductSpecValueResConverter.create(
+                specValueCreateCmdExe.execute(
+                    ProductSpecValueReqConverter.create(req))));
+    }
+
+    /**
+     * 修改字典。
+     */
+    @PutMapping("/{id}")
+    @Operation(summary = "修改规格字典")
+    @RequiresPermissions("product:spec-value:edit")
+    public R<ProductSpecValueUpdateRes> update(
+        @PathVariable Long id, @Valid @RequestBody ProductSpecValueUpdateReq req) {
+        return R.ok(
+            ProductSpecValueResConverter.update(
+                specValueUpdateCmdExe.execute(
+                    ProductSpecValueReqConverter.update(id, req))));
+    }
+
+    /**
+     * 删除规格值并保留SKU快照。
+     */
+    @DeleteMapping("/{id}")
+    @Operation(summary = "删除规格值并保留SKU快照")
+    @RequiresPermissions("product:spec-value:remove")
+    public R<Boolean> delete(@PathVariable Long id) {
+        return R.ok(specValueDeleteCmdExe.execute(id));
     }
 }

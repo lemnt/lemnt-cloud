@@ -22,20 +22,20 @@ import jakarta.validation.Valid;
  * 浏览足迹只读管理，按权限及显式筛选查询。
  */
 @RestController
-@RequestMapping("/mall/product-browse-history")
+@RequestMapping("/browse-historys")
 @RequiredArgsConstructor
 public class ProductBrowseHistoryController {
-    private final ProductBrowseHistoryPageQueryExe query;
+    private final ProductBrowseHistoryPageQueryExe browseHistoryPageQueryExe;
 
     /**
      * 商品详情关联记录分页。
      */
     @GetMapping
     @Operation(summary = "商品浏览足迹记录分页")
-    @RequiresPermissions("mall:product-history:list")
+    @RequiresPermissions("product:browse-history:list")
     public R<ProductBrowseHistoryPageRes> page(
         @Valid @ModelAttribute ProductBrowseHistoryPageReq req) {
-        var result = query.execute(ProductBrowseHistoryReqConverter.page(req));
+        var result = browseHistoryPageQueryExe.execute(ProductBrowseHistoryReqConverter.page(req));
         return R.page(
             result.getRecords().stream().map(ProductBrowseHistoryResConverter::page).toList(),
             result.getTotal());

@@ -3,7 +3,7 @@ package com.lemnt.product.infrastructure.order.gateway;
 import com.lemnt.order.client.TradeOrderClient;
 import com.lemnt.order.client.bo.OrderCommentCreateBo;
 import com.lemnt.product.domain.order.gateway.OrderSnapshotGateway;
-import com.lemnt.product.domain.product.model.CommentOrderRequest;
+import com.lemnt.product.domain.product.model.ProductCommentOrderRequest;
 
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class OrderSnapshotGatewayImpl implements OrderSnapshotGateway {
     private TradeOrderClient client;
 
     @Override
-    public Long createComment(CommentOrderRequest value) {
+    public Long createComment(ProductCommentOrderRequest value) {
         return client.createComment(
             new OrderCommentCreateBo(
                 value.memberId(),

@@ -9,12 +9,12 @@ import com.lemnt.order.start.support.CommerceTestFixture;
 import com.lemnt.order.start.support.MemberLockTestSupport;
 import com.lemnt.product.application.product.service.ProductCatalogService;
 import com.lemnt.product.application.product.service.ProductInventoryService;
-import com.lemnt.product.domain.product.gateway.BrandGateway;
-import com.lemnt.product.domain.product.gateway.CategoryGateway;
+import com.lemnt.product.domain.product.gateway.ProductBrandGateway;
+import com.lemnt.product.domain.product.gateway.ProductCategoryGateway;
 import com.lemnt.product.domain.product.gateway.ProductSkuGateway;
 import com.lemnt.product.domain.product.gateway.ProductSpuGateway;
-import com.lemnt.product.domain.product.model.Brand;
-import com.lemnt.product.domain.product.model.Category;
+import com.lemnt.product.domain.product.model.ProductBrand;
+import com.lemnt.product.domain.product.model.ProductCategory;
 import com.lemnt.product.domain.product.model.ProductCatalogValidation;
 import com.lemnt.product.domain.product.model.ProductSku;
 import com.lemnt.product.domain.product.model.ProductSpu;
@@ -59,13 +59,13 @@ class CatalogPersistenceTest {
         productSpuGateway = components.get(ProductSpuGateway.class);
         categoryId =
             components
-                .get(CategoryGateway.class)
-                .saveCategory(new Category(null, null, "分类", null, 0, "ENABLED"))
+                .get(ProductCategoryGateway.class)
+                .saveCategory(new ProductCategory(null, null, "分类", null, 0, "ENABLED"))
                 .id();
         brandId =
             components
-                .get(BrandGateway.class)
-                .saveBrand(new Brand(null, "品牌", null, null, 0, "ENABLED"))
+                .get(ProductBrandGateway.class)
+                .saveBrand(new ProductBrand(null, "品牌", null, null, 0, "ENABLED"))
                 .id();
     }
 
