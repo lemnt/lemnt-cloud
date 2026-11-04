@@ -29,32 +29,32 @@ import java.util.Objects;
 public class ProductCatalogClientImpl implements ProductCatalogClient {
     private final ProductCatalogGateway productCatalogGateway;
     private final ProductInventoryService productInventoryService;
-    private final ProductSkuGateway skus;
-    private final ProductSpuGateway spus;
+    private final ProductSkuGateway skuGateway;
+    private final ProductSpuGateway spuGateway;
 
     @Override
     public ProductSkuBriefDTO catalogSku(Long id) {
-        return sku(skus.catalogSku(id));
+        return sku(skuGateway.catalogSku(id));
     }
 
     @Override
     public List<ProductSkuBriefDTO> catalogSkus(Long spuId) {
-        return skus.catalogSkus(spuId).stream().map(this::sku).toList();
+        return skuGateway.catalogSkus(spuId).stream().map(this::sku).toList();
     }
 
     @Override
     public List<ProductSkuBriefDTO> skusBySpuIds(List<Long> ids) {
-        return skus.skusBySpuIds(ids).stream().map(this::sku).toList();
+        return skuGateway.skusBySpuIds(ids).stream().map(this::sku).toList();
     }
 
     @Override
     public ProductSpuBriefDTO findSpu(Long id) {
-        return spu(spus.findSpu(id));
+        return spu(spuGateway.findSpu(id));
     }
 
     @Override
     public List<ProductSpuBriefDTO> findSpus(List<Long> ids) {
-        return spus.findSpus(ids).stream().map(this::spu).toList();
+        return spuGateway.findSpus(ids).stream().map(this::spu).toList();
     }
 
     private ProductSpuBriefDTO spu(ProductSpu value) {

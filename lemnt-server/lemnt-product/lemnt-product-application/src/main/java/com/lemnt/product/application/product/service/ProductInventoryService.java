@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductInventoryService {
     private final ProductSkuGateway productSkuGateway;
     private final ProductStockReservationGateway stockReservationGateway;
-    private final StockEventGateway stockEvents;
+    private final StockEventGateway stockEventGateway;
 
     private String reservationKey(String value, Long productId) {
         if (value == null
@@ -51,7 +51,7 @@ public class ProductInventoryService {
         if (existing != null) {
             return reservedOrThrow(existing, quantity);
         }
-        if (stockEvents.publishReserved(
+        if (stockEventGateway.publishReserved(
             new ProductStockReservation(key, productId, quantity, "RESERVED"))) {
             return true;
         }

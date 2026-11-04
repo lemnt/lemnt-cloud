@@ -1,7 +1,6 @@
 package com.lemnt.product.application.product.executor;
 
 import com.lemnt.product.application.product.dto.ProductCategoryDTO;
-import com.lemnt.product.application.product.dto.ProductCategorySimpleDTO;
 import com.lemnt.product.domain.product.gateway.ProductCategoryGateway;
 
 import org.springframework.stereotype.Component;
