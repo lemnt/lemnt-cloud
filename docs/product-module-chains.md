@@ -87,6 +87,8 @@ order 结算/下单
   ORDER_PAID            → OrderStockEventHandler.paid    → begin(product.order_paid.v1  inbox幂等)
                         → confirmStock + sales_count 同事务累加（销量口径=支付确认件数，
                           重复事件被台账拦截只加一次；售后回补不冲减）
+                          支付确认先按SPU编号锁主体，再按SKU编号锁库存，与后台编辑保持同一锁序。
+                          历史独立SKU的spu_id为空时只确认库存，不补造SPU归属或销量。
   ORDER_CLOSED          → OrderStockEventHandler.closed  → begin(product.order_closed.v1)          → cancelReservation
                         （预占行不存在时先插终态 RELEASED，防延迟 RPC 在关单后补扣）
   AFTER_SALE_COMPLETED  → OrderStockEventHandler.refunded→ begin(...v1) 且要求 paid 已入账        → returnStock

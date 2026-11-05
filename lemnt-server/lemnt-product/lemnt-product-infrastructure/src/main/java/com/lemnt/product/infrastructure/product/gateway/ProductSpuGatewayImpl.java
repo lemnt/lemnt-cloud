@@ -172,11 +172,19 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
      */
     @Override
     public void addSales(Long spuId, int quantity) {
-        productSpuMapper.update(
-            new ProductSpuDO(),
-            Wrappers.<ProductSpuDO>lambdaUpdate()
-                .setIncrBy(ProductSpuDO::getSalesCount, quantity)
-                .eq(ProductSpuDO::getId, spuId));
+        ProductCatalogValidation.id(spuId);
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("销量累计件数必须大于0");
+        }
+        int updated =
+                productSpuMapper.update(
+                        null,
+                        Wrappers.<ProductSpuDO>lambdaUpdate()
+                                .setIncrBy(ProductSpuDO::getSalesCount, quantity)
+                                .eq(ProductSpuDO::getId, spuId));
+        if (updated != 1) {
+            throw new IllegalStateException("商品销量累计失败");
+        }
     }
 
     @Override
@@ -189,6 +197,7 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
         return row == null || row.getSalesCount() == null ? 0 : row.getSalesCount();
     }
 
+    @Override
     public List<StoreProduct> products(StoreFilter f) {
         return productSpuMapper.products(f).stream()
             .map(

@@ -45,9 +45,10 @@ class StoreHttpContractTest {
                 .build();
 
         mvc.perform(get("/app/products?name=goods&categoryId=2"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.rows[0].minPrice").value("9.99"))
-            .andExpect(jsonPath("$.total").value(1));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rows[0].minPrice").value("9.99"))
+                .andExpect(jsonPath("$.rows[0].salesCount").value(7))
+                .andExpect(jsonPath("$.total").value(1));
 
         mvc.perform(get("/app/products?pageSize=101")).andExpect(status().isBadRequest());
 
@@ -60,24 +61,23 @@ class StoreHttpContractTest {
     @Test
     void hiddenDetailDoesNotExposeAdminFields() throws Exception {
         when(storeProductDetailQueryExe.execute(1L))
-            .thenReturn(
-                new StoreDetailDTO(
-                    1L,
-                    "goods",
-                    2L,
-                    3L,
-                    "plain",
-                    null,
-                    List.of(
-                        new StoreSkuDTO(
-                            7L,
-                            "red",
-                            "10.00",
-                            3,
-                            null,
-                            List.of(
-                                new StoreSkuDTO.Spec(
-                                    2L, "颜色", 3L, "红"))))), 7)));
+                .thenReturn(
+                        new StoreDetailDTO(
+                                1L,
+                                "goods",
+                                2L,
+                                3L,
+                                "plain",
+                                null,
+                                List.of(
+                                        new StoreSkuDTO(
+                                                7L,
+                                                "red",
+                                                "10.00",
+                                                3,
+                                                null,
+                                                List.of(new StoreSkuDTO.Spec(2L, "颜色", 3L, "红")))),
+                                7));
 
         var mvc =
             MockMvcBuilders.standaloneSetup(
@@ -89,11 +89,12 @@ class StoreHttpContractTest {
                 .build();
 
         mvc.perform(get("/app/products/1"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.skus[0].specs[0].specValueName").value("红"))
-            .andExpect(jsonPath("$.data.skus[0].specs[0].specValueId").value(3))
-            .andExpect(jsonPath("$.data.code").doesNotExist())
-            .andExpect(jsonPath("$.data.skus[0].code").doesNotExist());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.skus[0].specs[0].specValueName").value("红"))
+                .andExpect(jsonPath("$.data.skus[0].specs[0].specValueId").value(3))
+                .andExpect(jsonPath("$.data.salesCount").value(7))
+                .andExpect(jsonPath("$.data.code").doesNotExist())
+                .andExpect(jsonPath("$.data.skus[0].code").doesNotExist());
 
         mvc.perform(get("/app/products/2"))
             .andExpect(status().isOk())

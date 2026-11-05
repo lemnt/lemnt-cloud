@@ -1,0 +1,38 @@
+{
+  "requirement": {
+    "name": "yudao-mall-migration-baseline",
+    "description": "芋道商城迁移基线与运行验收：以本地yudao-cloud、yudao-mall-uniapp和yudao-ui-admin-vue3源码为参考，全量盘点、分批跑通，按源码基线收敛，并在本地隔离环境验收。保留当前项目的DDD分层和外部Client仅在Infrastructure依赖的边界；不将额外增强设计混入迁移，二次开发需求单独记录。自动化测试通过与真实环境运行验收分别记录。需求草稿已由用户确认，环境及渠道条件仍待核实。",
+    "createdAt": "2026-11-05T14:50:31+08:00",
+    "updatedAt": "2026-11-05T15:27:27+08:00"
+  },
+  "phases": {
+    "entry": {
+      "status": "completed",
+      "output": null
+    },
+    "requirement": {
+      "status": "completed",
+      "output": "requirement.md"
+    },
+    "design": {
+      "status": "in_progress",
+      "output": null
+    },
+    "task": {
+      "status": "pending",
+      "output": null
+    },
+    "generate": {
+      "status": "pending",
+      "output": null
+    },
+    "review": {
+      "status": "pending",
+      "output": null
+    },
+    "retrospective": {
+      "status": "pending",
+      "output": null
+    }
+  }
+}

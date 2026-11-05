@@ -1290,10 +1290,9 @@ class CatalogPersistenceTest {
 
     @Test
     void paidAndAfterSaleEventsConfirmAndReturnStockExactlyOnce() {
-        var product =
-            productSkuGateway.save(
-                Product.create("MQ", "事件商品", null, null, BigDecimal.TEN, 10));
-        productSkuGateway.updateStatus(product.id(), "ON_SHELF");
+        var spu = create("MQ", draft("MQ-SKU", 10));
+        productSpuGateway.shelf(spu.id(), true);
+        var product = productSkuGateway.findById(spu.skus().get(0).id());
         assertTrue(productInventoryService.reserveStock("O1", product.id(), 4));
         var handler = components.get(OrderStockEventHandler.class);
         var paid =
@@ -1315,7 +1314,7 @@ class CatalogPersistenceTest {
             "CONFIRMED",
             productInventoryService.reservationStatus("O1", product.id()).status());
         // 重复paid事件被收件箱台账拦截：销量恰好累加一次
-        assertEquals(4, productSpuGateway.salesCount(product.spuId()));
+        assertEquals(4, productSpuGateway.salesCount(spu.id()));
         var af =
             stockEvent(
                 "AFTER_SALE_COMPLETED",
@@ -1337,7 +1336,7 @@ class CatalogPersistenceTest {
         handler.refunded(af);
         assertEquals(7, productSkuGateway.findById(product.id()).stock());
         // 售后回补不冲减销量
-        assertEquals(4, productSpuGateway.salesCount(product.spuId()));
+        assertEquals(4, productSpuGateway.salesCount(spu.id()));
         assertEquals(
             "O1", productInventoryService.reservationStatus("AF1", product.id()).sourceNo());
     }
