@@ -232,7 +232,7 @@ class ProductCommentFlowPersistenceTest {
                 .setMessageConverters(new JacksonJsonHttpMessageConverter(builder.build()))
                 .build();
         mvc.perform(
-                get("/mall/app/comments")
+                get("/app/comments")
                     .param("spuId", spuId.toString())
                     .param("type", "1")
                     .param("visible", "false")
@@ -244,8 +244,8 @@ class ProductCommentFlowPersistenceTest {
             .andExpect(jsonPath("$.rows[0].memberId").doesNotExist())
             .andExpect(jsonPath("$.rows[0].orderNo").doesNotExist())
             .andExpect(jsonPath("$.rows[0].replyUserId").doesNotExist());
-        mvc.perform(get("/mall/app/comments")).andExpect(status().is(422));
-        mvc.perform(get("/mall/app/comments").param("spuId", spuId.toString()))
+        mvc.perform(get("/app/comments")).andExpect(status().is(422));
+        mvc.perform(get("/app/comments").param("spuId", spuId.toString()))
             .andExpect(status().is(422));
         assertEquals(
             "真实昵称",
@@ -365,7 +365,7 @@ class ProductCommentFlowPersistenceTest {
         body.put("userNickname", "伪造昵称");
         body.put("spuName", "伪造商品");
         mvc.perform(
-                post("/mall/app/comments")
+                post("/app/comments")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(mapper.writeValueAsString(body)))
             .andExpect(status().isOk())
@@ -381,7 +381,7 @@ class ProductCommentFlowPersistenceTest {
         body.put("orderNo", "BAD-IMAGE");
         body.put("picUrls", List.of("https://example.test/has space.png"));
         mvc.perform(
-                post("/mall/app/comments")
+                post("/app/comments")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(mapper.writeValueAsString(body)))
             .andExpect(status().is(422));
@@ -611,7 +611,7 @@ class ProductCommentFlowPersistenceTest {
                 .build();
         // 仅验证HTTP绑定和业务响应，standalone不代表网关或权限切面的部署验收。
         mvc.perform(
-                get("/mall/comments")
+                get("/comments")
                     .param("userNickname", "真实")
                     .param("spuName", "购买时")
                     .param("orderId", "10")
@@ -620,15 +620,15 @@ class ProductCommentFlowPersistenceTest {
                     .param("createTimeEnd", "2027-01-01T00:00:00"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.total").value(1));
-        mvc.perform(get("/mall/comments").param("orderId", "-1")).andExpect(status().is(422));
-        mvc.perform(get("/mall/comments").param("createTimeStart", "invalid"))
+        mvc.perform(get("/comments").param("orderId", "-1")).andExpect(status().is(422));
+        mvc.perform(get("/comments").param("createTimeStart", "invalid"))
             .andExpect(status().is(422));
         mvc.perform(
-                get("/mall/comments")
+                get("/comments")
                     .param("createTimeStart", "2027-01-01T00:00:00")
                     .param("createTimeEnd", "2026-01-01T00:00:00"))
             .andExpect(status().isBadRequest());
-        mvc.perform(get("/mall/comments").param("userNickname", "字".repeat(256)))
+        mvc.perform(get("/comments").param("userNickname", "字".repeat(256)))
             .andExpect(status().is(422));
     }
 

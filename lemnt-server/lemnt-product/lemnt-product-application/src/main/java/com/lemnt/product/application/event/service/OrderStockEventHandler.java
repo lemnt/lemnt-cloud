@@ -2,11 +2,8 @@ package com.lemnt.product.application.event.service;
 
 import com.lemnt.common.client.event.CommerceEventEnvelope;
 import com.lemnt.common.client.event.CommerceEventTopics;
-import com.lemnt.common.core.utils.JsonUtils;
-import com.lemnt.order.client.dto.OrderStockLineDTO;
-import com.lemnt.order.client.event.AfterSaleCompletedEvent;
-import com.lemnt.order.client.event.OrderClosedEvent;
-import com.lemnt.order.client.event.OrderPaidEvent;
+import com.lemnt.product.domain.order.gateway.OrderEventFactsGateway;
+import com.lemnt.product.domain.order.model.OrderStockLine;
 import com.lemnt.product.application.product.service.ProductInventoryService;
 import com.lemnt.product.domain.event.gateway.MessageInboxGateway;
 
@@ -27,15 +24,15 @@ import java.util.List;
 public class OrderStockEventHandler {
     private final MessageInboxGateway inbox;
     private final ProductInventoryService inventory;
+    private final OrderEventFactsGateway orderFacts;
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public void paid(CommerceEventEnvelope e) {
         e.requireType(CommerceEventTopics.ORDER_PAID);
-        var v = JsonUtils.toBean(e.payload(), OrderPaidEvent.class);
-        if (v == null) throw new IllegalArgumentException("订单事实不能为空");
+        var v = orderFacts.paidFacts(e.payload());
         check(e, v.orderNo(), v.orderNo());
         if (!begin(e, "product.order_paid.v1")) return;
-        for (var line : lines(v.items())) {
+        for (var line : lines(v.lines())) {
             var original = inventory.reservationStatus(v.orderNo(), line.skuId());
             if (original == null || original.quantity() != line.quantity())
                 throw new IllegalStateException("原预占数量与支付事实不一致");
@@ -46,19 +43,17 @@ public class OrderStockEventHandler {
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public void closed(CommerceEventEnvelope e) {
         e.requireType(CommerceEventTopics.ORDER_CLOSED);
-        var v = JsonUtils.toBean(e.payload(), OrderClosedEvent.class);
-        if (v == null) throw new IllegalArgumentException("关单事实不能为空");
+        var v = orderFacts.closedFacts(e.payload());
         check(e, v.orderNo(), v.orderNo());
         if (!begin(e, "product.order_closed.v1")) return;
-        for (var line : lines(v.items()))
+        for (var line : lines(v.lines()))
             inventory.cancelReservation(v.orderNo(), line.skuId(), line.quantity());
     }
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public void refunded(CommerceEventEnvelope e) {
         e.requireType(CommerceEventTopics.AFTER_SALE_COMPLETED);
-        var v = JsonUtils.toBean(e.payload(), AfterSaleCompletedEvent.class);
-        if (v == null) throw new IllegalArgumentException("售后事实不能为空");
+        var v = orderFacts.afterSaleFacts(e.payload());
         check(e, v.orderNo(), v.afterSaleNo());
         if (!begin(e, "product.after_sale_completed.v1")) return;
         if (v.ruleVersion() != 1 || v.quantity() < 1 || v.skuId() == null)
@@ -77,12 +72,12 @@ public class OrderStockEventHandler {
             throw new IllegalArgumentException("事件订单或业务编号不一致");
     }
 
-    private List<OrderStockLineDTO> lines(List<OrderStockLineDTO> values) {
+    private List<OrderStockLine> lines(List<OrderStockLine> values) {
         if (values == null
             || values.isEmpty()
             || values.stream().anyMatch(v -> v.skuId() == null || v.quantity() < 1)
-            || values.stream().map(OrderStockLineDTO::skuId).distinct().count()
+            || values.stream().map(OrderStockLine::skuId).distinct().count()
             != values.size()) throw new IllegalArgumentException("库存行不能为空或重复");
-        return values.stream().sorted(Comparator.comparing(OrderStockLineDTO::skuId)).toList();
+        return values.stream().sorted(Comparator.comparing(OrderStockLine::skuId)).toList();
     }
 }

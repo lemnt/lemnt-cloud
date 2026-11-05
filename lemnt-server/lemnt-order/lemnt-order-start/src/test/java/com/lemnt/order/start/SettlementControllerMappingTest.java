@@ -49,7 +49,9 @@ class SettlementControllerMappingTest {
                         permission == null ? "" : String.join(",", permission.value());
                     for (var method : mapping.getMethodsCondition().getMethods()) {
                         for (var path : mapping.getPatternValues()) {
-                            if (!path.startsWith("/mall/")) continue;
+                            if (!path.startsWith("/mall/")
+                                && !handler.getBeanType().getName().contains(".product.adapter"))
+                                continue;
                             actual.add(method.name() + " " + path + " " + permissions);
                         }
                     }
@@ -168,86 +170,86 @@ class SettlementControllerMappingTest {
                         GET /mall/app/promotion-hub/discount/{id}
                         GET /mall/app/promotion-hub/reward/{id}
                         DELETE /mall/app/cart/{productId}
-                        DELETE /mall/brands/{id} product:brand:remove
-                        DELETE /mall/categories/{id} product:category:remove
+                        DELETE /brands/{id} product:brand:remove
+                        DELETE /categories/{id} product:category:remove
                         GET /mall/admin/coupons mall:coupon:list
                         GET /mall/admin/coupon-templates mall:coupon-template:list
                         GET /mall/admin/coupon-templates/public-claim mall:coupon-template:list
                         GET /mall/admin/members/{memberId}/coupons mall:coupon:list
                         GET /mall/app/cart
-                        GET /mall/app/favorites
-                        GET /mall/app/favorites/exists
-                        GET /mall/app/favorites/count
-                        POST /mall/app/favorites
-                        DELETE /mall/app/favorites/{spuId:[1-9][0-9]*}
-                        GET /mall/app/browse-history
-                        POST /mall/app/browse-history
-                        DELETE /mall/app/browse-history
-                        DELETE /mall/app/browse-history/clear
-                        GET /mall/product-favorites mall:product-favorite:list
-                        GET /mall/product-browse-history mall:product-history:list
-                        GET /mall/app/categories
+                        GET /app/favorites
+                        GET /app/favorites/exists
+                        GET /app/favorites/count
+                        POST /app/favorites
+                        DELETE /app/favorites/{spuId:[1-9][0-9]*}
+                        GET /app/browse-historys
+                        POST /app/browse-historys
+                        DELETE /app/browse-historys
+                        DELETE /app/browse-historys/clear
+                        GET /favorites product:favorite:list
+                        GET /browse-historys product:browse-history:list
+                        GET /app/categories
                         GET /mall/app/checkout/requests/{requestNo}
                         GET /mall/app/coupon-center
                         GET /mall/app/coupon-wallet
                         GET /mall/app/coupons
                         GET /mall/app/orders/{orderNo}
-                        GET /mall/app/products
-                        GET /mall/app/products/{id}
-                        GET /mall/brands product:brand:list
-                        GET /mall/brands/{id} product:brand:query
-                        GET /mall/categories product:category:list
-                        GET /mall/categories/{id} product:category:query
-                        DELETE /mall/specs/{id} product:spec:remove
-                        DELETE /mall/spec-values/{id} product:spec-value:remove
-                        DELETE /mall/spus/{id} product:spu:remove
-                        GET /mall/specs product:spec:list
-                        GET /mall/specs/simple product:spec:query
-                        GET /mall/specs/{id} product:spec:query
-                        GET /mall/spec-values product:spec-value:list
-                        GET /mall/spec-values/simple product:spec-value:query
-                        GET /mall/spec-values/{id} product:spec-value:query
-                        GET /mall/spus/count product:spu:list
-                        GET /mall/spus/export product:spu:export
-                        GET /mall/spus/simple product:spu:query
-                        GET /mall/spus/batch product:spu:query
-                        GET /mall/brands/page product:brand:list
-                        GET /mall/brands/simple product:brand:query
-                        GET /mall/categories/tree product:category:list
-                        POST /mall/comments product:comment:create
-                        GET /mall/comments product:comment:list
-                        GET /mall/comments/{id} product:comment:query
-                        POST /mall/specs product:spec:add
-                        POST /mall/spec-values product:spec-value:add
-                        POST /mall/spus/{id}/recycle product:spu:edit
-                        POST /mall/spus/{id}/restore product:spu:edit
-                        GET /mall/app/comments
-                        POST /mall/app/comments
-                        PUT /mall/specs/{id} product:spec:edit
-                        PUT /mall/spec-values/{id} product:spec-value:edit
-                        PUT /mall/comments/{id}/reply product:comment:reply
-                        PUT /mall/comments/{id}/visible product:comment:edit
-                        GET /mall/spus product:spu:list
-                        GET /mall/spus/{id} product:spu:query
+                        GET /app/products
+                        GET /app/products/{id}
+                        GET /brands product:brand:list
+                        GET /brands/{id} product:brand:query
+                        GET /categories product:category:list
+                        GET /categories/{id} product:category:query
+                        DELETE /specs/{id} product:spec:remove
+                        DELETE /spec-values/{id} product:spec-value:remove
+                        DELETE /spus/{id} product:spu:remove
+                        GET /specs product:spec:list
+                        GET /specs/simple product:spec:query
+                        GET /specs/{id} product:spec:query
+                        GET /spec-values product:spec-value:list
+                        GET /spec-values/simple product:spec-value:query
+                        GET /spec-values/{id} product:spec-value:query
+                        GET /spus/count product:spu:list
+                        GET /spus/export product:spu:export
+                        GET /spus/simple product:spu:query
+                        GET /spus/batch product:spu:query
+                        GET /brands/page product:brand:list
+                        GET /brands/simple product:brand:query
+                        GET /categories/tree product:category:list
+                        POST /comments product:comment:create
+                        GET /comments product:comment:list
+                        GET /comments/{id} product:comment:query
+                        POST /specs product:spec:add
+                        POST /spec-values product:spec-value:add
+                        POST /spus/{id}/recycle product:spu:edit
+                        POST /spus/{id}/restore product:spu:edit
+                        GET /app/comments
+                        POST /app/comments
+                        PUT /specs/{id} product:spec:edit
+                        PUT /spec-values/{id} product:spec-value:edit
+                        PUT /comments/{id}/reply product:comment:reply
+                        PUT /comments/{id}/visible product:comment:edit
+                        GET /spus product:spu:list
+                        GET /spus/{id} product:spu:query
                         POST /mall/admin/coupon-templates mall:coupon-template:add
                         POST /mall/admin/members/{memberId}/coupons/{templateId} mall:coupon:issue
                         POST /mall/app/checkout
                         POST /mall/app/checkout/abandon
                         POST /mall/app/checkout/quote
                         POST /mall/app/coupon-center/{templateId}/claim
-                        POST /mall/brands product:brand:add
-                        POST /mall/categories product:category:add
-                        POST /mall/spus product:spu:add
+                        POST /brands product:brand:add
+                        POST /categories product:category:add
+                        POST /spus product:spu:add
                         PUT /mall/admin/coupon-templates/{id} mall:coupon-template:edit
                         DELETE /mall/admin/coupon-templates/{id} mall:coupon-template:remove
                         DELETE /mall/admin/members/{memberId}/coupons/{couponId} mall:coupon:remove
                         PUT /mall/admin/coupon-templates/{id}/enabled mall:coupon-template:edit
                         PUT /mall/admin/coupon-templates/{id}/public-claim mall:coupon-template:edit
                         PUT /mall/app/cart/{productId}
-                        PUT /mall/brands/{id} product:brand:edit
-                        PUT /mall/categories/{id} product:category:edit
-                        PUT /mall/spus/{id} product:spu:edit
-                        PUT /mall/spus/{id}/shelf product:spu:edit
+                        PUT /brands/{id} product:brand:edit
+                        PUT /categories/{id} product:category:edit
+                        PUT /spus/{id} product:spu:edit
+                        PUT /spus/{id}/shelf product:spu:edit
                         """
                         .split("\n")));
         // 文本块会移除行尾空格，空权限与带权限的路由统一去掉行尾空白。

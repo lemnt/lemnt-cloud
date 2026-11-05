@@ -224,28 +224,28 @@ class ProductInteractionPersistenceTest {
                     new JacksonJsonHttpMessageConverter(mapperBuilder.build()))
                 .build();
         mvc.perform(
-                post("/mall/app/favorites")
+                post("/app/favorites")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\"userId\":2,\"spuId\":" + spu + "}"))
             .andExpect(status().isOk());
         assertEquals(1, favorites.count(1L));
         assertEquals(0, favorites.count(2L));
-        mvc.perform(get("/mall/app/favorites").param("userId", "2"))
+        mvc.perform(get("/app/favorites").param("userId", "2"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.total").value(1))
             .andExpect(jsonPath("$.rows[0].userId").doesNotExist());
         mvc.perform(
-                delete("/mall/app/browse-history")
+                delete("/app/browse-historys")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\"spuIds\":[]}"))
             .andExpect(status().is(422));
         history.create(new ProductBrowseHistoryCreateCmd(1L, spu));
         history.clear(1L);
-        mvc.perform(get("/mall/app/browse-history").param("userDeleted", "true"))
+        mvc.perform(get("/app/browse-historys").param("userDeleted", "true"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.total").value(0));
         SecurityContextHolder.remove();
-        mvc.perform(get("/mall/app/favorites")).andExpect(status().isUnauthorized());
+        mvc.perform(get("/app/favorites")).andExpect(status().isUnauthorized());
     }
 
     private LockTemplate memberLocks() throws Exception {

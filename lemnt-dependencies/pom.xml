@@ -453,30 +453,6 @@
                 <version>${lemnt.version}</version>
             </dependency>
 
-            <!-- 商城域跨服务契约（拆分后各服务只依赖所属Client，版本统一在此管理） -->
-            <dependency>
-                <groupId>com.lemnt</groupId>
-                <artifactId>lemnt-product-client</artifactId>
-                <version>${lemnt.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.lemnt</groupId>
-                <artifactId>lemnt-promotion-client</artifactId>
-                <version>${lemnt.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.lemnt</groupId>
-                <artifactId>lemnt-order-client</artifactId>
-                <version>${lemnt.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.lemnt</groupId>
-                <artifactId>lemnt-pay-client</artifactId>
-                <version>${lemnt.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 

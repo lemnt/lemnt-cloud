@@ -81,10 +81,12 @@ public class ProductFavoriteService {
      */
     @Transactional(readOnly = true)
     public PageResult<ProductFavoriteDTO> page(ProductFavoritePageQry qry) {
+        if (qry.userId() != null) {
+            member(qry.userId());
+        }
         if (qry.pageNum() < 1
             || qry.pageSize() < 1
             || qry.pageSize() > 100
-            || (qry.userId() != null && qry.userId() <= 0)
             || (qry.spuId() != null && qry.spuId() <= 0)) {
             throw new ServiceException("分页条件不合法", 400);
         }

@@ -48,7 +48,8 @@ class ProductPermissionSeedTest {
             try (var rows =
                      statement.executeQuery("SELECT COUNT(*) FROM sys_menu WHERE menu_type='F'")) {
                 rows.next();
-                assertEquals(22, rows.getInt(1));
+                // SKU按钮并入product:spu:*后由NOT EXISTS守卫去重：原22行合并为21行
+                assertEquals(21, rows.getInt(1));
             }
             try (var rows =
                      statement.executeQuery("SELECT COUNT(*) FROM sys_menu WHERE menu_type='C'")) {

@@ -4,6 +4,7 @@ import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.product.application.product.cmd.ProductCommentCreateCmd;
 import com.lemnt.product.application.product.cmd.ProductCommentReplyCmd;
 import com.lemnt.product.application.product.cmd.ProductCommentSaveCmd;
+import com.lemnt.product.domain.member.gateway.MemberLookupGateway;
 import com.lemnt.product.domain.order.gateway.OrderSnapshotGateway;
 import com.lemnt.product.domain.product.gateway.ProductCommentGateway;
 import com.lemnt.product.domain.product.gateway.ProductSkuGateway;
@@ -30,6 +31,7 @@ public class ProductCommentService {
     private final ProductCommentGateway productCommentGateway;
     private final ProductSkuGateway productSkuGateway;
     private final OrderSnapshotGateway orderGateway;
+    private final MemberLookupGateway members;
 
     /**
      * 兼容HTTP入口委托交易持锁核验，只有两侧状态确认后才返回成功。
@@ -134,6 +136,10 @@ public class ProductCommentService {
             }
         }
         require(purchase.allowCreate(), "订单项已经评价，不能重新投稿", 409);
+        // 与芋道口径一致：评价落库时冻结下单会员的昵称/头像快照；重试与自评路径不重读会员
+        var snapshot = members.findById(cmd.memberId());
+        require(
+            snapshot != null && cmd.memberId().equals(snapshot.id()), "会员资料不存在", 404);
         var sku = purchase.spuId() == null ? productSkuGateway.catalogSku(cmd.skuId()) : null;
         Long spuId = purchase.spuId() != null ? purchase.spuId() : sku == null ? null : sku.spuId();
         require(spuId != null, "订单商品标识不存在", 400);
@@ -168,8 +174,8 @@ public class ProductCommentService {
                     input.benefit(),
                     input.pictures(),
                     input.anonymous(),
-                    null,
-                    null,
+                    snapshot.nickname(),
+                    snapshot.avatar(),
                     purchase.orderId(),
                     purchase.spuName(),
                     purchase.skuPicUrl(),

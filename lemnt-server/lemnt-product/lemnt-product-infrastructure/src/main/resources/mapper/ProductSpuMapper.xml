@@ -38,18 +38,19 @@
     </sql>
 
     <sql id="storeCatalogJoins">
-        FROM product_spu s JOIN product_category c ON c.id=s.category_id LEFT JOIN product_category parent ON
-        parent.id=c.parent_id JOIN product_brand b ON b.id=s.brand_id
+        FROM product_spu s
     </sql>
 
+    <!-- 店面目录可见性口径与芋道一致：SPU仅受自身上下架影响，停用类目/品牌不隐藏商品；
+         "至少一个价内SKU"是本库价格聚合的结构必需，不是状态校验。 -->
     <sql id="storeCatalogVisible">
-        s.status='ON_SHELF' AND c.status='ENABLED' AND (c.parent_id IS NULL OR parent.status='ENABLED') AND
-        b.status='ENABLED' AND EXISTS(SELECT 1 FROM product_sku p WHERE p.spu_id=s.id AND
+        s.status='ON_SHELF' AND EXISTS(SELECT 1 FROM product_sku p WHERE p.spu_id=s.id AND
         p.status='ON_SHELF' AND p.price>0)
     </sql>
 
     <sql id="storeCatalogFilter">
-        <if test='categoryId != null'>AND (c.id=#{categoryId} OR c.parent_id=#{categoryId})</if>
+        <if test='categoryId != null'>AND EXISTS(SELECT 1 FROM product_category cc WHERE
+        cc.id=s.category_id AND (cc.id=#{categoryId} OR cc.parent_id=#{categoryId}))</if>
         <if
             test='name != null'>AND s.name LIKE CONCAT('%',#{name},'%')
         </if>

@@ -21,8 +21,14 @@ import com.lemnt.product.application.product.cmd.ProductSpuUpdateCmd;
 import com.lemnt.product.application.product.executor.ProductBrandPageQueryExe;
 import com.lemnt.product.application.product.executor.ProductCategoryTreeQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpecPageQueryExe;
+import com.lemnt.product.application.product.executor.ProductSpuSimpleListQueryExe;
+import com.lemnt.product.application.product.executor.ProductSpuRestoreCmdExe;
+import com.lemnt.product.application.product.executor.ProductSpuRecycleCmdExe;
+import com.lemnt.product.application.product.executor.ProductSpuCountQueryExe;
+import com.lemnt.product.application.product.executor.ProductSpuBatchDetailQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpecValuePageQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpuCreateCmdExe;
+import com.lemnt.product.application.product.executor.ProductSpuDeleteCmdExe;
 import com.lemnt.product.application.product.executor.ProductSpuDetailQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpuExportQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpuPageQueryExe;
@@ -428,7 +434,7 @@ class CatalogPersistenceTest {
     }
 
     @Test
-    void publicCatalogHidesOffShelfAndDisabledTaxonomyAndBrand() {
+    void publicCatalogVisibilityFollowsSpuShelfStateOnly() {
         var spu = create("PUBLIC", draft("a", 3));
         var f = new StoreFilter(null, null, 0, 20);
         assertEquals(0, productSpuGateway.storeCount(f));
@@ -437,16 +443,18 @@ class CatalogPersistenceTest {
         assertEquals(1, productSpuGateway.storeCount(f));
         assertTrue(productSpuGateway.products(f).get(0).available());
         assertEquals(1, catalogService.product(spu.id()).skus().size());
+        // 芋道口径：店面目录商品可见性只受SPU自身上下架影响，停用类目/品牌不隐藏商品；
+        // 分类列表仅看自身启用状态
         categoryGateway.saveCategory(
             new ProductCategory(categoryId, null, "category", null, 0, "DISABLED"));
-        assertEquals(0, productSpuGateway.storeCount(f));
-        assertNull(catalogService.product(spu.id()));
-        assertTrue(categoryGateway.visibleCategories().isEmpty());
+        assertEquals(1, productSpuGateway.storeCount(f));
+        assertNotNull(catalogService.product(spu.id()));
+        assertTrue(categoryGateway.listEnableCategories().isEmpty());
         categoryGateway.saveCategory(
             new ProductCategory(categoryId, null, "category", null, 0, "ENABLED"));
         brandGateway.saveBrand(new ProductBrand(brandId, "brand", null, null, 0, "DISABLED"));
-        assertEquals(0, productSpuGateway.storeCount(f));
-        assertNull(catalogService.product(spu.id()));
+        assertEquals(1, productSpuGateway.storeCount(f));
+        assertNotNull(catalogService.product(spu.id()));
     }
 
     @Test
@@ -475,10 +483,11 @@ class CatalogPersistenceTest {
         assertEquals(new BigDecimal("10.00"), productSpuGateway.products(f).get(0).minPrice());
         assertEquals(new BigDecimal("12.50"), productSpuGateway.products(f).get(0).maxPrice());
         assertEquals(0, productSpuGateway.storeCount(new StoreFilter("missing", null, 0, 20)));
+        // 芋道口径：父类目停用不影响子类目出现在启用列表，也不隐藏子类目下的在售商品
         categoryGateway.saveCategory(new ProductCategory(parent, null, "parent", null, 0, "DISABLED"));
-        assertTrue(categoryGateway.visibleCategories().isEmpty());
-        assertNull(catalogService.product(spu.id()));
-        assertEquals(0, productSpuGateway.storeCount(f));
+        assertFalse(categoryGateway.listEnableCategories().isEmpty());
+        assertNotNull(catalogService.product(spu.id()));
+        assertEquals(1, productSpuGateway.storeCount(f));
     }
 
     @Test
@@ -1137,7 +1146,14 @@ class CatalogPersistenceTest {
                 Mockito.mock(ProductSpuDetailQueryExe.class),
                 components.get(ProductSpuCreateCmdExe.class),
                 Mockito.mock(ProductSpuUpdateCmdExe.class),
-                Mockito.mock(ProductSpuShelfCmdExe.class));
+                Mockito.mock(ProductSpuShelfCmdExe.class),
+                Mockito.mock(ProductSpuExportQueryExe.class),
+                Mockito.mock(ProductSpuRecycleCmdExe.class),
+                Mockito.mock(ProductSpuRestoreCmdExe.class),
+                Mockito.mock(ProductSpuDeleteCmdExe.class),
+                Mockito.mock(ProductSpuCountQueryExe.class),
+                Mockito.mock(ProductSpuSimpleListQueryExe.class),
+                Mockito.mock(ProductSpuBatchDetailQueryExe.class));
         var builder = JsonMapper.builder();
         new JacksonConfig().customizer().customize(builder);
         var mapper = builder.build();
@@ -1155,7 +1171,7 @@ class CatalogPersistenceTest {
                 .formatted(categoryId, brandId, spec.id(), option.id());
         var result =
             mvc.perform(
-                    MockMvcRequestBuilders.post("/mall/spus")
+                    MockMvcRequestBuilders.post("/spus")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(payload))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -1183,7 +1199,7 @@ class CatalogPersistenceTest {
             List.of(new ProductSkuSpec(spec.id(), "接口颜色", option.id(), "红色")),
             catalogService.sku(Long.valueOf(savedId)).specs());
         mvc.perform(
-                MockMvcRequestBuilders.post("/mall/spus")
+                MockMvcRequestBuilders.post("/spus")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         payload.replace(
@@ -1191,7 +1207,7 @@ class CatalogPersistenceTest {
                             "\"specValueId\":0")))
             .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity());
         mvc.perform(
-                MockMvcRequestBuilders.post("/mall/spus")
+                MockMvcRequestBuilders.post("/spus")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         payload.replace(
