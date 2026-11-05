@@ -39,4 +39,6 @@ public class ProductSpuDO implements Serializable {
     private String status;
     private String deliveryTypes;
     private Long deliveryTemplateId;
+    /** 销量：支付确认事实累计。 */
+    private Integer salesCount;
 }

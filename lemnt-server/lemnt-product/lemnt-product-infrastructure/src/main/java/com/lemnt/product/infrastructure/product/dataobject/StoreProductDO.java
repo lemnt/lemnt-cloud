@@ -27,4 +27,6 @@ public class StoreProductDO implements Serializable {
     private BigDecimal minPrice;
     private BigDecimal maxPrice;
     private boolean available;
+    /** 销量快照。 */
+    private Integer salesCount;
 }

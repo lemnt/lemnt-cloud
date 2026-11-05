@@ -13,6 +13,7 @@ public record StoreDetailDTO(
     Long brandId,
     String description,
     String image,
-    List<StoreSkuDTO> skus)
+    List<StoreSkuDTO> skus,
+    Integer salesCount)
     implements Serializable {
 }

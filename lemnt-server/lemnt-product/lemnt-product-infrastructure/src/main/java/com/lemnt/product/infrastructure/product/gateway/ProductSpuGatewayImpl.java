@@ -171,6 +171,25 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
     /**
      * 查询商品。
      */
+    @Override
+    public void addSales(Long spuId, int quantity) {
+        productSpuMapper.update(
+            new ProductSpuDO(),
+            Wrappers.<ProductSpuDO>lambdaUpdate()
+                .setIncrBy(ProductSpuDO::getSalesCount, quantity)
+                .eq(ProductSpuDO::getId, spuId));
+    }
+
+    @Override
+    public int salesCount(Long spuId) {
+        var row =
+            productSpuMapper.selectOne(
+                Wrappers.<ProductSpuDO>lambdaQuery()
+                    .select(ProductSpuDO::getSalesCount)
+                    .eq(ProductSpuDO::getId, spuId));
+        return row == null || row.getSalesCount() == null ? 0 : row.getSalesCount();
+    }
+
     public List<StoreProduct> products(StoreFilter f) {
         return productSpuMapper.products(f).stream()
             .map(
@@ -183,7 +202,8 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
                         v.getImage(),
                         v.getMinPrice(),
                         v.getMaxPrice(),
-                        v.isAvailable()))
+                        v.isAvailable(),
+                        v.getSalesCount()))
             .toList();
     }
 

@@ -59,6 +59,16 @@ public interface ProductSpuGateway {
     List<StoreProduct> products(StoreFilter filter);
 
     /**
+     * 支付确认事实累加销量；售后回补不冲减，事件幂等由调用方收件箱台账保证。
+     */
+    void addSales(Long spuId, int quantity);
+
+    /**
+     * 读取当前销量，无行或空值按0。
+     */
+    int salesCount(Long spuId);
+
+    /**
      * 数量。
      */
     long storeCount(StoreFilter filter);

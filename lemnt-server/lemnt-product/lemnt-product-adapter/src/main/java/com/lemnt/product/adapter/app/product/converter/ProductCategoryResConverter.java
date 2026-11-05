@@ -27,7 +27,8 @@ public final class ProductCategoryResConverter {
             v.image(),
             v.minPrice(),
             v.maxPrice(),
-            v.available());
+            v.available(),
+            v.salesCount());
     }
 
     /**
@@ -75,6 +76,7 @@ public final class ProductCategoryResConverter {
             v.brandId(),
             v.description(),
             v.image(),
-            v.skus().stream().map(ProductCategoryResConverter::sku).toList());
+            v.skus().stream().map(ProductCategoryResConverter::sku).toList(),
+            v.salesCount());
     }
 }

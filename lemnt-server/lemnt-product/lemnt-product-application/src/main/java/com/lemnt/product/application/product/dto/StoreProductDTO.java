@@ -13,6 +13,7 @@ public record StoreProductDTO(
     String image,
     String minPrice,
     String maxPrice,
-    boolean available)
+    boolean available,
+    Integer salesCount)
     implements Serializable {
 }

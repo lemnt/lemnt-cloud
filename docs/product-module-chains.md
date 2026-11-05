@@ -84,7 +84,9 @@ order 结算/下单
   注意时序：stock 的物理扣减发生在预占本地事务，confirmStock 仅推进台账
   RESERVED→CONFIRMED 不再扣减；CONFIRMED 不可释放，只能经售后 returnStock 回补。
   预占独立提交、与调用方事务解耦：order 建单后续失败必须显式 cancelReservation 补偿。
-  ORDER_PAID            → OrderStockEventHandler.paid    → begin(product.order_paid.v1  inbox幂等) → confirmStock
+  ORDER_PAID            → OrderStockEventHandler.paid    → begin(product.order_paid.v1  inbox幂等)
+                        → confirmStock + sales_count 同事务累加（销量口径=支付确认件数，
+                          重复事件被台账拦截只加一次；售后回补不冲减）
   ORDER_CLOSED          → OrderStockEventHandler.closed  → begin(product.order_closed.v1)          → cancelReservation
                         （预占行不存在时先插终态 RELEASED，防延迟 RPC 在关单后补扣）
   AFTER_SALE_COMPLETED  → OrderStockEventHandler.refunded→ begin(...v1) 且要求 paid 已入账        → returnStock

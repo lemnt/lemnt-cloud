@@ -16,6 +16,7 @@ public record StoreDetailRes(
     @Schema(description = "brandId") Long brandId,
     @Schema(description = "description") String description,
     @Schema(description = "image") String image,
-    @Schema(description = "skus") List<StoreSkuRes> skus)
+    @Schema(description = "skus") List<StoreSkuRes> skus,
+    @Schema(description = "已售件数，支付确认累计") Integer salesCount)
     implements Serializable {
 }

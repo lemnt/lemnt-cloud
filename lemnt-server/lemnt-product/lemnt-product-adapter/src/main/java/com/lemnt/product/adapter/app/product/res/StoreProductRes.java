@@ -16,6 +16,7 @@ public record StoreProductRes(
     @Schema(description = "image") String image,
     @Schema(description = "最低售价（元，精确两位小数字符串）") String minPrice,
     @Schema(description = "最高售价（元，精确两位小数字符串）") String maxPrice,
-    @Schema(description = "是否存在有库存的在售规格，结算时再次核验") boolean available)
+    @Schema(description = "是否存在有库存的在售规格，结算时再次核验") boolean available,
+    @Schema(description = "已售件数，支付确认累计") Integer salesCount)
     implements Serializable {
 }

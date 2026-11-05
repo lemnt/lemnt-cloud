@@ -3,6 +3,7 @@ package com.lemnt.product.application.product.executor;
 import com.lemnt.product.application.product.dto.StoreDetailDTO;
 import com.lemnt.product.application.product.dto.StoreSkuDTO;
 import com.lemnt.product.application.product.service.ProductCatalogService;
+import com.lemnt.product.domain.product.gateway.ProductSpuGateway;
 import com.lemnt.product.domain.product.model.ProductCatalogValidation;
 
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.math.RoundingMode;
 @RequiredArgsConstructor
 public class StoreProductDetailQueryExe {
     private final ProductCatalogService catalogService;
+    private final ProductSpuGateway productSpuGateway;
 
     private String money(BigDecimal v) {
         return v.setScale(2, RoundingMode.UNNECESSARY).toPlainString();
@@ -64,6 +66,7 @@ public class StoreProductDetailQueryExe {
                                             property
                                                 .specValueName()))
                                 .toList()))
-                .toList());
+                .toList(),
+            productSpuGateway.salesCount(v.id()));
     }
 }

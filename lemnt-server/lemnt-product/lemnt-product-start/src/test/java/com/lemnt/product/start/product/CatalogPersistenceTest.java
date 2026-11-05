@@ -1314,6 +1314,8 @@ class CatalogPersistenceTest {
         assertEquals(
             "CONFIRMED",
             productInventoryService.reservationStatus("O1", product.id()).status());
+        // 重复paid事件被收件箱台账拦截：销量恰好累加一次
+        assertEquals(4, productSpuGateway.salesCount(product.spuId()));
         var af =
             stockEvent(
                 "AFTER_SALE_COMPLETED",
@@ -1334,6 +1336,8 @@ class CatalogPersistenceTest {
         handler.refunded(af);
         handler.refunded(af);
         assertEquals(7, productSkuGateway.findById(product.id()).stock());
+        // 售后回补不冲减销量
+        assertEquals(4, productSpuGateway.salesCount(product.spuId()));
         assertEquals(
             "O1", productInventoryService.reservationStatus("AF1", product.id()).sourceNo());
     }

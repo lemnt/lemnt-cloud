@@ -6,6 +6,8 @@ import com.lemnt.product.domain.order.gateway.OrderEventFactsGateway;
 import com.lemnt.product.domain.order.model.OrderStockLine;
 import com.lemnt.product.application.product.service.ProductInventoryService;
 import com.lemnt.product.domain.event.gateway.MessageInboxGateway;
+import com.lemnt.product.domain.product.gateway.ProductSkuGateway;
+import com.lemnt.product.domain.product.gateway.ProductSpuGateway;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -24,6 +26,8 @@ import java.util.List;
 public class OrderStockEventHandler {
     private final MessageInboxGateway inbox;
     private final ProductInventoryService inventory;
+    private final ProductSkuGateway productSkuGateway;
+    private final ProductSpuGateway productSpuGateway;
     private final OrderEventFactsGateway orderFacts;
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
@@ -37,6 +41,11 @@ public class OrderStockEventHandler {
             if (original == null || original.quantity() != line.quantity())
                 throw new IllegalStateException("原预占数量与支付事实不一致");
             inventory.confirmStock(v.orderNo(), line.skuId());
+            // 销量是支付确认事实的运营展示件：同事务累加；事件重复已被收件箱台账拦截
+            var sku = productSkuGateway.catalogSku(line.skuId());
+            if (sku != null) {
+                productSpuGateway.addSales(sku.spuId(), line.quantity());
+            }
         }
     }
 

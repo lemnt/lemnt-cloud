@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS product_spu (
     description TEXT NULL COMMENT '描述说明',
     image VARCHAR(500) NULL COMMENT '商品图片地址',
     status VARCHAR(20) NOT NULL DEFAULT 'OFF_SHELF' COMMENT '商品状态：ON_SHELF上架、OFF_SHELF下架、RECYCLED回收站、DELETED删除',
+    sales_count INT NOT NULL DEFAULT 0 COMMENT '销量：支付确认事实累计，售后回补不冲减',
     UNIQUE KEY uk_mall_spu_code(code),
     KEY idx_mall_spu_status(status,id),
     CONSTRAINT fk_mall_spu_category FOREIGN KEY(category_id) REFERENCES product_category(id),

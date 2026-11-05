@@ -59,7 +59,8 @@ public class StoreProductPageQueryExe {
                             v.image(),
                             money(v.minPrice()),
                             money(v.maxPrice()),
-                            v.available()))
+                            v.available(),
+                            v.salesCount()))
                 .toList(),
             productSpuGateway.storeCount(f));
     }
