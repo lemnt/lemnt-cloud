@@ -7,8 +7,8 @@
 
 | 入口类型 | 数量 | 说明 |
 |---|---|---|
-| 管理端 HTTP（裸路径，无 `/mall` 前缀） | 8 个 Controller / 44 端点 | `adapter/web/product`，端点契约仍为 product58 的一部分 |
-| 商城 App HTTP `/app/**` | 5 个 Controller / 14 端点 | `adapter/app/product`；`/app` 前缀已归 product，其余服务 App 端仍走 `/mall/app/**` |
+| 管理端 HTTP（裸路径，无 `/mall` 前缀） | 8 个 Controller / 44 端点 | `adapter/web/product`，端点契约 product57 部分 |
+| 商城 App HTTP `/app/**` | 5 个 Controller / 13 端点 | `adapter/app/product`；`/app` 前缀已归 product；**评价投稿 POST 已迁往 order 服务**（`/mall/app/comments`） |
 | Dubbo 入向契约 | `ProductCatalogClientImpl` 13 方法、`ProductCommentClientImpl` 2 方法 | 契约在 `lemnt-product-client`，调用方为 order、promotion |
 | RocketMQ 消费者 | 3 个（`OrderPaidConsumer`/`OrderClosedConsumer`/`AfterSaleCompletedConsumer`） | 均受 `commerce.mq.enabled=true` 开关控制，默认关闭 |
 | RocketMQ 出站 | `StockEventGatewayImpl`（事务消息） | 预占事实经半消息+本地事务二阶段直发，无本地消息表、无中继定时任务 |
@@ -33,7 +33,7 @@
 | GET /products（分页） | StoreProductPageQueryExe | ProductSpuGateway → XML `products`：product_spu JOIN product_category(自联父类) JOIN product_brand + EXISTS(product_sku)，口径=上架且类目/品牌启用 |
 | GET /products/{id}（详情） | StoreProductDetailQueryExe | ProductCatalogService → spu + sku 聚合 |
 | GET /categories | StoreCategoryListQueryExe | ProductCategoryGateway → XML `storeCatalogCategories`（仅启用，LIMIT 1001） |
-| POST /comments、GET /comments | ProductCommentCreateCmdExe / ProductCommentPublicPageQueryExe | 见 §6 评价链路 |
+| GET /comments | ProductCommentPublicPageQueryExe | 见 §6；投稿 POST 在 order（`AppOrderCommentController`） |
 | POST、GET、DELETE /favorites…（5 个） | ProductFavorite*Exe → ProductFavoriteService | Redis `MemberLockGateway`(LockTemplate) 锁会员-SPU 组合后写 product_favorite |
 | POST、GET、DELETE、DELETE/clear /browse-history（4 个） | ProductBrowseHistory*Exe → ProductBrowseHistoryService | 校验 SKU 后写 product_browse_history |
 
@@ -95,14 +95,17 @@ order 结算/下单
 ## 6. 评价链路
 
 ```
-App POST /app/comments → ProductCommentCreateCmdExe → ProductCommentService
-  ├─ OrderSnapshotGatewayImpl ─@DubboReference(check=false,timeout=5000,retries=0)→ order TradeOrderClient
-  │    （校验订单归属、已支付、可评价商品）
-  ├─ MemberLookupGatewayImpl ─@DubboReference(check=false)→ member MemberUserClient（昵称/头像）
-  ├─ ProductCommentMapper.lock  XML 行锁 FOR UPDATE（重复评价检查）
-  └─ 写 product_comment（score/pic_urls/anonymous 等 28 列）
+投稿（芋道拓扑：资格是订单事实，入口在交易域）
+miniapp POST /mall/app/comments → order AppOrderCommentController
+  ├─ 身份/昵称/头像快照取登录上下文（SecurityUtils，网关注入头→线程变量），请求体不可伪造
+  ├─ OrderCommentService.create：订单头行锁、本人/完成态/订单项核验
+  └─ Dubbo ProductCommentClient.saveVerified(bo 携带下单快照) → product ProductCommentService.saveVerified
+       ├─ ProductCommentMapper.lock  XML 行锁 FOR UPDATE（重复评价检查）
+       └─ 写 product_comment（score/pic_urls/anonymous/user_nickname/user_avatar…28 列）
+App GET /app/comments → ProductCommentPublicPageQueryExe（公开查询留在 product）
 管理端 PUT /comments/{id}/visible、/reply → 同 Gateway 更新 visible/reply_*
-order 评价流程（`OrderCommentService`）→ Dubbo saveVerified（用户评价落库）/ saveSystem（系统自动评价）
+order 系统评价（到期自动评价调度器）→ OrderCommentService.createSystem
+  → 按会员编号查 order 自有 MemberLookupGateway 取昵称快照 → Dubbo saveSystem → product 落库
 legacyForLink XML：存量评价绑定检查（读取 deleted 事实但不对外返回）
 ```
 

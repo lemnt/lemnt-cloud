@@ -1,4 +1,4 @@
-package com.lemnt.product.adapter.app.product.req;
+package com.lemnt.order.adapter.app.order.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -14,10 +14,10 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 会员真实订单评价请求。
+ * 会员真实订单评价请求；身份与昵称快照来自登录上下文，不接受请求体伪造。
  */
 @Schema(description = "会员真实订单评价请求")
-public record ProductCommentCreateReq(
+public record AppOrderCommentCreateReq(
     @Schema(description = "本人已完成订单编号") @NotBlank @Size(max = 40) String orderNo,
     @Schema(description = "订单内SKU编号") @NotNull @Positive Long skuId,
     @Schema(description = "兼容旧单分输入，1至5；提供两项评分时可省略") @Min(1) @Max(5) Integer score,

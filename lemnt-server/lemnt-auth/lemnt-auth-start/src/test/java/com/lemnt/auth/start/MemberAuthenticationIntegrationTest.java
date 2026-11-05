@@ -284,7 +284,7 @@ class MemberAuthenticationIntegrationTest {
     @Test
     void failedTokenCreationDoesNotWriteLoginAudit() {
         var tokens = Mockito.mock(MemberTokenGateway.class);
-        Mockito.when(tokens.create(id, "13800000001"))
+        Mockito.when(tokens.create(id, "13800000001", null, null))
             .thenThrow(new IllegalStateException("会话写入失败"));
         var security = Mockito.mock(LoginSecurityGateway.class);
         setPassword(id, "Member-password-2026");

@@ -610,7 +610,6 @@ class OrderFinancialPersistenceTest {
                 components.get(OrderSubmissionService.class),
                 orders,
                 components.get(OrderRemoteService.class),
-                mock(OrderCommentService.class),
                 components.get(TradeOrderGateway.class),
                 mock(TradeConfigGateway.class),
                 mock(PickUpStoreGateway.class));

@@ -40,7 +40,7 @@ class PickUpOrderCreateTest {
     final PickUpStoreGateway stores = mock(PickUpStoreGateway.class);
     final TradeOrderClientImpl client =
         new TradeOrderClientImpl(
-            submissions, persistence, remotes, comments, orderGateway, configs, stores);
+            submissions, persistence, remotes, orderGateway, configs, stores);
 
     TradeConfig config(boolean enabled) {
         return new TradeConfig(

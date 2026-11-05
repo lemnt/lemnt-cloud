@@ -64,7 +64,6 @@ public class OrderCommentService {
             Boolean.TRUE.equals(line.commentStatus()) || "COMPLETED".equals(order.status()),
             "只能评价本人已完成订单内的商品",
             400);
-        var member = members.findById(order.memberId());
         var verified =
             new VerifiedOrderComment(
                 order.memberId(),
@@ -150,6 +149,7 @@ public class OrderCommentService {
             if (!Boolean.FALSE.equals(line.commentStatus())) {
                 continue;
             }
+            var member = members.findById(order.memberId());
             var verified =
                 new VerifiedOrderComment(
                     order.memberId(),

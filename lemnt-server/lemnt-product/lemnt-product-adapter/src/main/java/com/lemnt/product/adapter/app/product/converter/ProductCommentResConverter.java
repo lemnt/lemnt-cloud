@@ -1,6 +1,5 @@
 package com.lemnt.product.adapter.app.product.converter;
 
-import com.lemnt.product.adapter.app.product.res.ProductCommentCreateRes;
 import com.lemnt.product.adapter.app.product.res.ProductCommentPageRes;
 import com.lemnt.product.application.product.dto.ProductCommentDTO;
 
@@ -11,12 +10,6 @@ public final class ProductCommentResConverter {
     private ProductCommentResConverter() {
     }
 
-    /**
-     * 返回稳定的评价编号。
-     */
-    public static ProductCommentCreateRes created(ProductCommentDTO value) {
-        return new ProductCommentCreateRes(value.id());
-    }
 
     /**
      * 匿名输出不携带保存时头像，不暴露后台标识。

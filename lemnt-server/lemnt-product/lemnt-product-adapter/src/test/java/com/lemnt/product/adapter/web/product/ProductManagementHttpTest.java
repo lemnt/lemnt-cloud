@@ -1,11 +1,7 @@
 package com.lemnt.product.adapter.web.product;
 
 import com.lemnt.common.domain.model.PageResult;
-import com.lemnt.common.security.constant.SecurityConstants;
-import com.lemnt.common.security.interceptor.HeaderInterceptor;
 import com.lemnt.common.start.config.JacksonConfig;
-import com.lemnt.product.adapter.app.product.AppProductCommentController;
-import com.lemnt.product.application.product.cmd.ProductCommentCreateCmd;
 import com.lemnt.product.application.product.cmd.ProductSpecValueUpdateCmd;
 import com.lemnt.product.application.product.dto.ProductCommentDTO;
 import com.lemnt.product.application.product.dto.ProductSpecDTO;
@@ -13,7 +9,6 @@ import com.lemnt.product.application.product.dto.ProductSpecValueDTO;
 import com.lemnt.product.application.product.dto.ProductSpuPageDTO;
 import com.lemnt.product.application.product.dto.ProductSpuStatusCountDTO;
 import com.lemnt.product.application.product.executor.*;
-import com.lemnt.product.application.product.executor.ProductCommentCreateCmdExe;
 import com.lemnt.product.application.product.executor.ProductCommentPublicPageQueryExe;
 import com.lemnt.product.application.product.executor.ProductSpecCreateCmdExe;
 import com.lemnt.product.application.product.executor.ProductSpecDeleteCmdExe;
@@ -260,37 +255,4 @@ class ProductManagementHttpTest {
         verify(delete).execute(9L);
     }
 
-    @Test
-    void consumerCannotChooseReviewerIdentityAndEmptyContentIsRejectedBeforeCreate()
-        throws Exception {
-        var create = mock(ProductCommentCreateCmdExe.class);
-        when(create.execute(any()))
-            .thenReturn(
-                new ProductCommentDTO(
-                    1L, 3L, 9L, "TR1", 7L, 5, "真实评价", true, null, null, null, null));
-        var mvc =
-            MockMvcBuilders.standaloneSetup(
-                    new AppProductCommentController(
-                        create, mock(ProductCommentPublicPageQueryExe.class)))
-                .addInterceptors(new HeaderInterceptor())
-                .setMessageConverters(converter())
-                .build();
-        mvc.perform(
-                post("/app/comments")
-                    .header(SecurityConstants.HEADER_USER_ID, "7")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        "{\"memberId\":999,\"orderNo\":\"TR1\",\"skuId\":9,\"score\":5,\"content\":\"真实评价\"}"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.id").value("1"));
-        verify(create).execute(new ProductCommentCreateCmd(7L, "TR1", 9L, 5, "真实评价"));
-        mvc.perform(
-                post("/app/comments")
-                    .header(SecurityConstants.HEADER_USER_ID, "7")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        "{\"orderNo\":\"TR1\",\"skuId\":9,\"score\":5,\"content\":\" \"}"))
-            .andExpect(status().isBadRequest());
-        verifyNoMoreInteractions(create);
-    }
 }

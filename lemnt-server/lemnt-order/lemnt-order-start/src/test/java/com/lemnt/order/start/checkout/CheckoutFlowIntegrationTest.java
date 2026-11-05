@@ -31,6 +31,7 @@ import com.lemnt.order.application.order.executor.OrderRemarkUpdateCmdExe;
 import com.lemnt.order.application.order.executor.OrderStatisticsQueryExe;
 import com.lemnt.order.application.order.executor.TradeOrderCloseCmdExe;
 import com.lemnt.order.application.order.service.OrderAdjustmentService;
+import com.lemnt.order.application.order.cmd.OrderCommentCreateCmd;
 import com.lemnt.order.application.order.service.OrderCommentService;
 import com.lemnt.order.application.order.service.OrderLifecycleService;
 import com.lemnt.order.application.order.service.OrderLogService;
@@ -50,7 +51,6 @@ import com.lemnt.order.application.settlement.service.SettlementPreparationServi
 import com.lemnt.order.application.settlement.service.SettlementRecordService;
 import com.lemnt.order.application.settlement.service.SettlementService;
 import com.lemnt.order.client.TradeOrderClient;
-import com.lemnt.order.client.bo.OrderCommentCreateBo;
 import com.lemnt.order.client.bo.OrderCreateBo;
 import com.lemnt.order.client.dto.OrderDTO;
 import com.lemnt.order.domain.aftersale.gateway.AfterSaleGateway;
@@ -471,10 +471,6 @@ class CheckoutFlowIntegrationTest {
                     return saved;
                 }
 
-                public Long createComment(OrderCommentCreateBo input) {
-                    return actual.createComment(input);
-                }
-
                 public OrderDTO getByOrderNo(String no) {
                     return actual.getByOrderNo(no);
                 }
@@ -498,7 +494,6 @@ class CheckoutFlowIntegrationTest {
             tradeComponents.get(OrderSubmissionService.class),
             orderPersistenceService,
             remotes,
-            tradeComponents.get(OrderCommentService.class),
             tradeOrderGateway,
             tradeComponents.get(TradeConfigGateway.class),
             tradeComponents.get(PickUpStoreGateway.class));
@@ -2820,11 +2815,54 @@ class CheckoutFlowIntegrationTest {
         cartService.saveCart(1L, sku, 2, true);
     }
 
+    /** 投稿入口迁至order后，评价写路径的测试门面：create转order核验入口并读回，reply委托product。 */
+    private ReviewFacade reviewFacade() {
+        return new ReviewFacade(
+            tradeComponents.get(OrderCommentService.class),
+            mallComponents.get(ProductCommentService.class),
+            mallComponents.get(ProductCommentGateway.class));
+    }
+
+    static final class ReviewFacade {
+        private final OrderCommentService submissions;
+        private final ProductCommentService writes;
+        private final ProductCommentGateway rows;
+
+        ReviewFacade(OrderCommentService submissions, ProductCommentService writes, ProductCommentGateway rows) {
+            this.submissions = submissions;
+            this.writes = writes;
+            this.rows = rows;
+        }
+
+        ProductComment create(ProductCommentCreateCmd cmd) {
+            var id =
+                submissions.create(
+                    new OrderCommentCreateCmd(
+                        cmd.memberId(),
+                        cmd.orderNo(),
+                        cmd.skuId(),
+                        cmd.orderItemId(),
+                        cmd.score(),
+                        cmd.content(),
+                        cmd.descriptionScores(),
+                        cmd.benefitScores(),
+                        cmd.anonymous(),
+                        cmd.picUrls(),
+                        null,
+                        null));
+            return rows.find(id);
+        }
+
+        ProductComment reply(ProductCommentReplyCmd cmd) {
+            return writes.reply(cmd);
+        }
+    }
+
     @Test
     void commentsRequireActualOwnedCompletedOrderAndCannotForgeBuyerOrProduct() throws Exception {
         useCatalogSkuForReview();
         var order = paidOrder(null);
-        var comments = mallComponents.get(ProductCommentService.class);
+        var comments = reviewFacade();
         var cmd = new ProductCommentCreateCmd(1L, order.orderNo(), sku, 5, "真实评价");
         assertThrows(ServiceException.class, () -> comments.create(cmd));
         fulfillmentService.ship(shipment(order.orderNo()));
@@ -2855,7 +2893,7 @@ class CheckoutFlowIntegrationTest {
         var order = paidOrder(null);
         fulfillmentService.ship(shipment(order.orderNo()));
         fulfillmentService.receive(order.orderNo());
-        var comments = mallComponents.get(ProductCommentService.class);
+        var comments = reviewFacade();
         var saved = comments.create(new ProductCommentCreateCmd(1L, order.orderNo(), sku, 5, "已完成订单评价"));
         var replied = comments.reply(new ProductCommentReplyCmd(saved.id(), 99L, "感谢反馈"));
         assertEquals(99L, replied.replyUserId());
@@ -2880,7 +2918,7 @@ class CheckoutFlowIntegrationTest {
         var order = paidOrder(null);
         fulfillmentService.ship(shipment(order.orderNo()));
         fulfillmentService.receive(order.orderNo());
-        var service = mallComponents.get(ProductCommentService.class);
+        var service = reviewFacade();
         var cmd = new ProductCommentCreateCmd(1L, order.orderNo(), sku, 4, "重复提交只保存一次");
         var pool = Executors.newFixedThreadPool(2);
         try {
@@ -2913,8 +2951,7 @@ class CheckoutFlowIntegrationTest {
         management.recycle(parentId);
         management.delete(parentId);
         var saved =
-            mallComponents
-                .get(ProductCommentService.class)
+            reviewFacade()
                 .create(new ProductCommentCreateCmd(1L, order.orderNo(), sku, 5, "历史订单仍可反馈"));
         assertEquals(parentId, saved.spuId());
         assertEquals("DELETED", productSkuGateway.catalogSku(sku).status());
@@ -3339,7 +3376,7 @@ class CheckoutFlowIntegrationTest {
                     line ->
                         line.orderItemId() != null
                             && Boolean.FALSE.equals(line.commentStatus())));
-        var comments = mallComponents.get(ProductCommentService.class);
+        var comments = reviewFacade();
         var a = order.items().get(0);
         var b = order.items().get(1);
         var first =
@@ -3480,12 +3517,12 @@ class CheckoutFlowIntegrationTest {
         loseNextCommentResponse = true;
         assertThrows(
             IllegalStateException.class,
-            () -> mallComponents.get(ProductCommentService.class).create(cmd));
+            () -> reviewFacade().create(cmd));
         var stored =
             mallComponents.get(ProductCommentGateway.class).findByOrderItem(line.orderItemId());
         assertNotNull(stored);
         assertFalse(orderRpc.findByOrderNo(order.orderNo()).items().get(0).commentStatus());
-        var repaired = mallComponents.get(ProductCommentService.class).create(cmd);
+        var repaired = reviewFacade().create(cmd);
         assertEquals(stored.id(), repaired.id());
         assertTrue(orderRpc.findByOrderNo(order.orderNo()).commentStatus());
         assertEquals(
@@ -3521,7 +3558,7 @@ class CheckoutFlowIntegrationTest {
             "ALTER TABLE order_info ADD CONSTRAINT reject_review_done CHECK(comment_status IS NULL OR comment_status=FALSE)");
         assertThrows(
             RuntimeException.class,
-            () -> mallComponents.get(ProductCommentService.class).create(cmd));
+            () -> reviewFacade().create(cmd));
         var saved =
             mallComponents.get(ProductCommentGateway.class).findByOrderItem(line.orderItemId());
         assertNotNull(saved);
@@ -3533,7 +3570,7 @@ class CheckoutFlowIntegrationTest {
                 .filter(log -> log.operateType() == 33)
                 .count());
         sql(tradeSource, "ALTER TABLE order_info DROP CONSTRAINT reject_review_done");
-        assertEquals(saved.id(), mallComponents.get(ProductCommentService.class).create(cmd).id());
+        assertEquals(saved.id(), reviewFacade().create(cmd).id());
         var finished = orderRpc.findByOrderNo(order.orderNo());
         assertTrue(finished.commentStatus());
         assertNotNull(finished.finishTime());
@@ -3596,7 +3633,7 @@ class CheckoutFlowIntegrationTest {
     @Test
     void concurrentDifferentItemReviewsConvergeAndCreateOneCompletionLog() throws Exception {
         var order = completedReviewOrderWithTwoItems();
-        var service = mallComponents.get(ProductCommentService.class);
+        var service = reviewFacade();
         var pool = Executors.newFixedThreadPool(2);
         try {
             var requests =
@@ -3664,8 +3701,7 @@ class CheckoutFlowIntegrationTest {
                         null,
                         null));
         var repaired =
-            mallComponents
-                .get(ProductCommentService.class)
+            reviewFacade()
                 .create(new ProductCommentCreateCmd(1L, order.orderNo(), sku, 5, "旧购买评价"));
         assertEquals(old.id(), repaired.id());
         assertEquals(line.orderItemId(), repaired.orderItemId());

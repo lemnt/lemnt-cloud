@@ -2088,14 +2088,6 @@
     "sourceLine": 41
   },
   {
-    "method": "POST",
-    "path": "/app/comments",
-    "owner": "product",
-    "permissions": "",
-    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductCommentController.java",
-    "sourceLine": 53
-  },
-  {
     "method": "GET",
     "path": "/app/favorites",
     "owner": "product",
@@ -2502,5 +2494,13 @@
     "permissions": "product:spu:edit",
     "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpuController.java",
     "sourceLine": 129
+  },
+  {
+    "method": "POST",
+    "path": "/mall/app/comments",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/order/AppOrderCommentController.java",
+    "sourceLine": 31
   }
 ]

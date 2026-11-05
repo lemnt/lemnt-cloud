@@ -26,7 +26,9 @@ public record ProductCommentSaveCmd(
     Integer descriptionScores,
     Integer benefitScores,
     Boolean anonymous,
-    List<String> picUrls)
+    List<String> picUrls,
+    String userNickname,
+    String userAvatar)
     implements Serializable {
     /**
      * 原订单规格，不从当前字典补造。

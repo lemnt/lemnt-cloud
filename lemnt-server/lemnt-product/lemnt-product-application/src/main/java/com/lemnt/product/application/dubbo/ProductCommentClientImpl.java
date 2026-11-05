@@ -56,7 +56,9 @@ public class ProductCommentClientImpl implements ProductCommentClient {
                 value.descriptionScores(),
                 value.benefitScores(),
                 value.anonymous(),
-                value.picUrls());
+                value.picUrls(),
+                value.userNickname(),
+                value.userAvatar());
         return (system ? comments.saveSystem(cmd) : comments.saveVerified(cmd)).id();
     }
 }

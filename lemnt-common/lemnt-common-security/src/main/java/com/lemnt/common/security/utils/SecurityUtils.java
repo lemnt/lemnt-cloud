@@ -28,6 +28,14 @@ public class SecurityUtils {
         return SecurityContextHolder.getUserId();
     }
 
+    public static String getNickName() {
+        return SecurityContextHolder.getNickName();
+    }
+
+    public static String getUserAvatar() {
+        return SecurityContextHolder.getUserAvatar();
+    }
+
     /**
      * 获取用户名称
      */

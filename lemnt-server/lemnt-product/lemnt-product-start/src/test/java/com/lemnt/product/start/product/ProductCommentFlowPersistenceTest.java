@@ -18,14 +18,8 @@ import com.lemnt.product.application.product.executor.ProductCommentVisibleCmdEx
 import com.lemnt.product.application.product.qry.ProductCommentPageQry;
 import com.lemnt.product.application.product.qry.ProductCommentPublicPageQry;
 import com.lemnt.product.application.product.service.ProductCommentService;
-import com.lemnt.product.domain.member.gateway.MemberLookupGateway;
-import com.lemnt.product.domain.member.model.MemberSnapshot;
-import com.lemnt.product.domain.order.gateway.OrderSnapshotGateway;
 import com.lemnt.product.domain.product.gateway.ProductCommentGateway;
-import com.lemnt.product.domain.product.model.ProductCommentOrderRequest;
 import com.lemnt.product.domain.product.model.ProductComment;
-import com.lemnt.product.domain.settlement.model.SettlementItem;
-import com.lemnt.product.domain.settlement.model.SettlementOrder;
 
 import org.junit.jupiter.api.*;
 import org.springframework.core.io.ClassPathResource;
@@ -54,10 +48,11 @@ class ProductCommentFlowPersistenceTest {
     ProductCommentService comments;
     Long spuId;
     Long skuId;
-    Map<String, SettlementOrder> orders;
-    boolean memberUnavailable;
     Map<String, Long> itemIds;
     long nextItemId;
+    // 已验证评价快照：生产由 order 从登录上下文填入并随 SaveCmd 传入，测试直接提供
+    static final String NICK = "真实昵称";
+    static final String AVATAR = "https://example.test/avatar.png";
 
     @BeforeEach
     void setup() throws Exception {
@@ -66,51 +61,7 @@ class ProductCommentFlowPersistenceTest {
         var spu = fixture.create("COMMENT", fixture.draft("红色", 5));
         spuId = spu.id();
         skuId = spu.skus().get(0).id();
-        orders = new HashMap<>();
         itemIds = new HashMap<>();
-        fixture.components.register(
-            OrderSnapshotGateway.class,
-            new OrderSnapshotGateway() {
-                public SettlementOrder save(SettlementOrder value) {
-                    throw new UnsupportedOperationException();
-                }
-
-                public SettlementOrder findByOrderNo(String no) {
-                    return orders.get(no);
-                }
-
-                public Long createComment(ProductCommentOrderRequest value) {
-                    return comments.saveVerified(
-                            new ProductCommentSaveCmd(
-                                value.memberId(),
-                                value.orderNo(),
-                                value.skuId(),
-                                10L,
-                                itemIds.get(value.orderNo()),
-                                spuId,
-                                "购买时商品",
-                                "https://example.test/old.png",
-                                List.of(
-                                    new ProductCommentSaveCmd.Spec(
-                                        8L, "颜色", 9L, "原红色")),
-                                true,
-                                true,
-                                value.score(),
-                                value.content(),
-                                value.descriptionScores(),
-                                value.benefitScores(),
-                                value.anonymous(),
-                                value.picUrls()))
-                        .id();
-                }
-            });
-        fixture.components.register(
-            MemberLookupGateway.class,
-            id -> {
-                if (memberUnavailable) throw new IllegalStateException("会员RPC不可用");
-                return new MemberSnapshot(
-                    id, 1, 100, 0L, "真实昵称", "https://example.test/avatar.png");
-            });
         comments = fixture.components.get(ProductCommentService.class);
     }
 
@@ -122,29 +73,12 @@ class ProductCommentFlowPersistenceTest {
 
     void completed(String no) {
         itemIds.put(no, ++nextItemId);
-        orders.put(
-            no,
-            new SettlementOrder(
-                10L,
-                no,
-                1L,
-                BigDecimal.TEN,
-                "COMPLETED",
-                List.of(
-                    new SettlementItem(
-                        skuId,
-                        "SKU",
-                        "购买时规格",
-                        BigDecimal.TEN,
-                        1,
-                        BigDecimal.TEN,
-                        BigDecimal.TEN,
-                        BigDecimal.ZERO,
-                        spuId,
-                        "购买时商品",
-                        List.of(new SettlementItem.Spec(8L, "颜色", 9L, "原红色")),
-                        "https://example.test/old.png")),
-                LocalDateTime.now()));
+    }
+
+    /** 投稿入口迁往 order 后，产品侧写入口即已验证事实保存。 */
+    ProductComment submit(ProductCommentCreateCmd input) {
+        return comments.saveVerified(
+            verified(input, itemIds.get(input.orderNo()), true, true));
     }
 
     ProductCommentCreateCmd cmd(String no, int description, int benefit, boolean anonymous) {
@@ -167,7 +101,7 @@ class ProductCommentFlowPersistenceTest {
         try (var statement = fixture.schemaConnection.createStatement()) {
             statement.execute("UPDATE product_spu SET name='当前已改名' WHERE id=" + spuId);
         }
-        var saved = comments.create(cmd("S1", 5, 4, true));
+        var saved = submit(cmd("S1", 5, 4, true));
         assertEquals(4, saved.score());
         assertEquals(5, saved.descriptionScores());
         assertEquals(4, saved.benefitScores());
@@ -188,35 +122,33 @@ class ProductCommentFlowPersistenceTest {
     void retriesUseSavedFullContentAndDoNotNeedNewMemberReads() {
         completed("S2");
         var original = cmd("S2", 5, 4, false);
-        var saved = comments.create(original);
-        memberUnavailable = true;
-        orders.clear();
-        assertEquals(saved, comments.create(original));
+        var saved = submit(original);
+        assertEquals(saved, submit(original));
         assertEquals(
             409,
-            assertThrows(ServiceException.class, () -> comments.create(cmd("S2", 4, 5, false)))
+            assertThrows(ServiceException.class, () -> submit(cmd("S2", 4, 5, false)))
                 .getCode());
         assertEquals(
             409,
-            assertThrows(ServiceException.class, () -> comments.create(cmd("S2", 5, 4, true)))
+            assertThrows(ServiceException.class, () -> submit(cmd("S2", 5, 4, true)))
                 .getCode());
         var different = new ProductCommentCreateCmd(1L, "S2", skuId, null, "真实评价", 5, 4, false, List.of());
         assertEquals(
             409,
-            assertThrows(ServiceException.class, () -> comments.create(different)).getCode());
+            assertThrows(ServiceException.class, () -> submit(different)).getCode());
         assertThrows(
             ServiceException.class,
-            () -> comments.create(new ProductCommentCreateCmd(2L, "S2", skuId, 4, "真实评价")));
+            () -> submit(new ProductCommentCreateCmd(2L, "S2", skuId, 4, "真实评价")));
     }
 
     @Test
     void publicPageFiltersVisibilityAndRatingGroupsAndAnonymousHttpHidesIdentity()
         throws Exception {
         for (String no : List.of("G", "M", "B", "H")) completed(no);
-        var good = comments.create(cmd("G", 5, 4, true));
-        comments.create(cmd("M", 3, 3, false));
-        comments.create(cmd("B", 1, 2, false));
-        var hidden = comments.create(cmd("H", 5, 5, false));
+        var good = submit(cmd("G", 5, 4, true));
+        submit(cmd("M", 3, 3, false));
+        submit(cmd("B", 1, 2, false));
+        var hidden = submit(cmd("H", 5, 5, false));
         fixture.components
             .get(ProductCommentVisibleCmdExe.class)
             .execute(new ProductCommentVisibleCmd(hidden.id(), false));
@@ -257,7 +189,7 @@ class ProductCommentFlowPersistenceTest {
         assertNull(fixture.components.get(ProductCommentGateway.class).lock(good.id()));
         assertEquals(
             409,
-            assertThrows(ServiceException.class, () -> comments.create(cmd("G", 5, 4, true)))
+            assertThrows(ServiceException.class, () -> submit(cmd("G", 5, 4, true)))
                 .getCode());
     }
 
@@ -270,7 +202,7 @@ class ProductCommentFlowPersistenceTest {
             var tasks =
                 IntStream.range(0, 4)
                     .mapToObj(
-                        i -> pool.submit(() -> comments.create(cmd("S3", 5, 4, false))))
+                        i -> pool.submit(() -> submit(cmd("S3", 5, 4, false))))
                     .toList();
             var id = tasks.get(0).get(10, TimeUnit.SECONDS).id();
             for (var task : tasks) assertEquals(id, task.get(10, TimeUnit.SECONDS).id());
@@ -281,20 +213,20 @@ class ProductCommentFlowPersistenceTest {
         assertThrows(
             ServiceException.class,
             () ->
-                comments.create(
+                submit(
                     new ProductCommentCreateCmd(
                         1L, "INVALID", skuId, 5, "内容", 5, 4, false, List.of())));
         assertThrows(
             ServiceException.class,
             () ->
-                comments.create(
+                submit(
                     new ProductCommentCreateCmd(
                         1L, "INVALID", skuId, null, "内容", 5, null, false,
                         List.of())));
         assertThrows(
             ServiceException.class,
             () ->
-                comments.create(
+                submit(
                     new ProductCommentCreateCmd(
                         1L,
                         "INVALID",
@@ -341,62 +273,28 @@ class ProductCommentFlowPersistenceTest {
     }
 
     @Test
-    void httpImageInputUsesSameRulesAndCannotForgeMemberOrSnapshots() throws Exception {
-        completed("HTTP");
+    void imageRulesApplyThroughSaveVerifiedAndSnapshotComesFromVerifiedFact() throws Exception {
         completed("BAD-IMAGE");
-        SecurityContextHolder.setUserId("1");
-        var builder = JsonMapper.builder();
-        new JacksonConfig().customizer().customize(builder);
-        var mapper = builder.build();
-        var mvc =
-            MockMvcBuilders.standaloneSetup(fixture.components.get(AppProductCommentController.class))
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .setMessageConverters(new JacksonJsonHttpMessageConverter(mapper))
-                .build();
-        var body = new HashMap<String, Object>();
-        body.put("orderNo", "HTTP");
-        body.put("skuId", skuId);
-        body.put("descriptionScores", 5);
-        body.put("benefitScores", 4);
-        body.put("anonymous", true);
-        body.put("content", "来自HTTP的评价");
-        body.put("picUrls", List.of("https://example.test/reviews.png"));
-        body.put("memberId", 2);
-        body.put("userNickname", "伪造昵称");
-        body.put("spuName", "伪造商品");
-        mvc.perform(
-                post("/app/comments")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(mapper.writeValueAsString(body)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.id").exists());
-        var saved =
-            fixture.components
-                .get(ProductCommentGateway.class)
-                .findByOrderItem(itemIds.get("HTTP"));
-        assertEquals(1L, saved.memberId());
-        assertEquals("真实昵称", saved.userNickname());
-        assertEquals("购买时商品", saved.spuName());
-        assertEquals(List.of("https://example.test/reviews.png"), saved.picUrls());
-        body.put("orderNo", "BAD-IMAGE");
-        body.put("picUrls", List.of("https://example.test/has space.png"));
-        mvc.perform(
-                post("/app/comments")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(mapper.writeValueAsString(body)))
-            .andExpect(status().is(422));
+        var input =
+            new ProductCommentCreateCmd(
+                1L, "BAD-IMAGE", skuId, 5, "内容", 5, 4, false,
+                List.of("https://example.test/has space.png"));
+        assertThrows(
+            ServiceException.class, () -> comments.saveVerified(verified(input, itemIds.get("BAD-IMAGE"), true, true)));
         assertNull(
             fixture.components
                 .get(ProductCommentGateway.class)
                 .findByOrderItem(itemIds.get("BAD-IMAGE")));
-        completed("RPC-FAIL");
-        memberUnavailable = true;
-        assertThrows(
-            IllegalStateException.class, () -> comments.create(cmd("RPC-FAIL", 5, 5, false)));
-        assertNull(
-            fixture.components
-                .get(ProductCommentGateway.class)
-                .findByOrderItem(itemIds.get("RPC-FAIL")));
+        completed("HTTP");
+        var saved = submit(cmd("HTTP", 5, 4, true));
+        // 昵称/头像是order核验后经SaveCmd传入的可信快照，商品改名不影响已存事实
+        try (var statement = fixture.schemaConnection.createStatement()) {
+            statement.execute("UPDATE product_spu SET name='当前已改名' WHERE id=" + spuId);
+        }
+        assertEquals(1L, saved.memberId());
+        assertEquals("真实昵称", saved.userNickname());
+        assertEquals("购买时商品", saved.spuName());
+        assertEquals(List.of("https://example.test/review.png"), saved.picUrls());
     }
 
     private ProductCommentSaveCmd verified(
@@ -410,7 +308,7 @@ class ProductCommentFlowPersistenceTest {
             spuId,
             "购买时商品",
             "https://example.test/old.png",
-            List.of(new ProductCommentSaveCmd.Spec(8L, "颜色", 9L, "红色")),
+            List.of(new ProductCommentSaveCmd.Spec(8L, "颜色", 9L, "原红色")),
             unique,
             allowCreate,
             input.score(),
@@ -418,7 +316,9 @@ class ProductCommentFlowPersistenceTest {
             input.descriptionScores(),
             input.benefitScores(),
             input.anonymous(),
-            input.picUrls());
+            input.picUrls(),
+            NICK,
+            AVATAR);
     }
 
     @Test
@@ -433,7 +333,6 @@ class ProductCommentFlowPersistenceTest {
                 new ProductComment(
                     null, spuId, skuId, "OLD", 1L, 5, "旧评价", true, null, null, null,
                     null));
-        memberUnavailable = true;
         var input = new ProductCommentCreateCmd(1L, "OLD", skuId, 5, "旧评价");
         var bound = comments.saveVerified(verified(input, itemIds.get("OLD"), true, true));
         assertEquals(old.id(), bound.id());
@@ -531,7 +430,7 @@ class ProductCommentFlowPersistenceTest {
     @Test
     void adminFiltersUseStoredSnapshotsReplyFlagAndInclusiveTimeBoundaries() throws Exception {
         completed("FILTER");
-        var saved = comments.create(cmd("FILTER", 5, 4, false));
+        var saved = submit(cmd("FILTER", 5, 4, false));
         try (var statement = fixture.schemaConnection.createStatement()) {
             statement.execute(
                 "UPDATE product_comment SET create_time='2026-10-29 10:00:00', reply_content='旧正文', reply_status=false WHERE id="
@@ -601,7 +500,7 @@ class ProductCommentFlowPersistenceTest {
     @Test
     void adminHttpBindsIndependentFilterFieldsAndRejectsInvalidRanges() throws Exception {
         completed("FILTER-HTTP");
-        comments.create(cmd("FILTER-HTTP", 5, 4, false));
+        submit(cmd("FILTER-HTTP", 5, 4, false));
         var builder = JsonMapper.builder();
         new JacksonConfig().customizer().customize(builder);
         var mvc =
@@ -634,7 +533,6 @@ class ProductCommentFlowPersistenceTest {
 
     @Test
     void selfCommentUsesSourceZeroMemberAndNoOrderAndRealProductSnapshot() {
-        memberUnavailable = true;
         var executor = fixture.components.get(ProductCommentSelfCreateCmdExe.class);
         var input =
             new ProductCommentSelfCreateCmd(

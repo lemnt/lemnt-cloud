@@ -8,6 +8,11 @@ import com.lemnt.order.client.dto.OrderDTO;
  */
 public interface TradeOrderClient {
     /**
+     * 按订单号幂等保存订单及明细。
+     */
+    OrderDTO create(OrderCreateBo order);
+
+    /**
      * 查询订单快照。
      */
     OrderDTO getByOrderNo(String orderNo);

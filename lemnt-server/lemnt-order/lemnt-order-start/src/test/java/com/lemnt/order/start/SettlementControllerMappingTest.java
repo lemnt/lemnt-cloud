@@ -224,7 +224,7 @@ class SettlementControllerMappingTest {
                         POST /spus/{id}/recycle product:spu:edit
                         POST /spus/{id}/restore product:spu:edit
                         GET /app/comments
-                        POST /app/comments
+                        POST /mall/app/comments
                         PUT /specs/{id} product:spec:edit
                         PUT /spec-values/{id} product:spec-value:edit
                         PUT /comments/{id}/reply product:comment:reply
