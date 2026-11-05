@@ -15,5 +15,7 @@ public record OrderCommentCreateCmd(
     Integer descriptionScores,
     Integer benefitScores,
     Boolean anonymous,
-    List<String> picUrls) {
+    List<String> picUrls,
+    String userNickname,
+    String userAvatar) {
 }

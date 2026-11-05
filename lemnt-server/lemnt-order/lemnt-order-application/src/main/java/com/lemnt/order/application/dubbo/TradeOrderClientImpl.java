@@ -1,13 +1,10 @@
 package com.lemnt.order.application.dubbo;
 
 import com.lemnt.order.application.dubbo.converter.PromotionClientConverter;
-import com.lemnt.order.application.order.cmd.OrderCommentCreateCmd;
-import com.lemnt.order.application.order.service.OrderCommentService;
 import com.lemnt.order.application.order.service.OrderPersistenceService;
 import com.lemnt.order.application.order.service.OrderRemoteService;
 import com.lemnt.order.application.order.service.OrderSubmissionService;
 import com.lemnt.order.client.TradeOrderClient;
-import com.lemnt.order.client.bo.OrderCommentCreateBo;
 import com.lemnt.order.client.bo.OrderCreateBo;
 import com.lemnt.order.client.dto.OrderDTO;
 import com.lemnt.order.client.dto.OrderDeliveryDTO;
@@ -41,7 +38,6 @@ public class TradeOrderClientImpl implements TradeOrderClient {
     private final OrderSubmissionService submissions;
     private final OrderPersistenceService orders;
     private final OrderRemoteService remotes;
-    private final OrderCommentService comments;
     private final TradeOrderGateway orderGateway;
     private final TradeConfigGateway configs;
     private final PickUpStoreGateway pickUpStores;
@@ -308,21 +304,6 @@ public class TradeOrderClientImpl implements TradeOrderClient {
         return to(orders.findByOrderNo(order.orderNo()));
     }
 
-    @Override
-    public Long createComment(OrderCommentCreateBo value) {
-        return comments.create(
-            new OrderCommentCreateCmd(
-                value.memberId(),
-                value.orderNo(),
-                value.skuId(),
-                value.orderItemId(),
-                value.score(),
-                value.content(),
-                value.descriptionScores(),
-                value.benefitScores(),
-                value.anonymous(),
-                value.picUrls()));
-    }
 
     @Override
     public OrderDTO getByOrderNo(String orderNo) {

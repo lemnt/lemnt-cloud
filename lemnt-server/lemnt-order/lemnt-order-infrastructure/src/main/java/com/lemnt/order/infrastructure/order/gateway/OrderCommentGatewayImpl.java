@@ -55,7 +55,9 @@ public class OrderCommentGatewayImpl implements OrderCommentGateway {
                 value.descriptionScores(),
                 value.benefitScores(),
                 value.anonymous(),
-                value.picUrls());
+                value.picUrls(),
+                value.userNickname(),
+                value.userAvatar());
         return system ? client.saveSystem(bo) : client.saveVerified(bo);
     }
 }

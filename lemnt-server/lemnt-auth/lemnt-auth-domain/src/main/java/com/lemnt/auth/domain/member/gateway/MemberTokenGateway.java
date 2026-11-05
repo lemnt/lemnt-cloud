@@ -9,7 +9,7 @@ public interface MemberTokenGateway {
     /**
      * 创建。
      */
-    MemberToken create(Long memberId, String username);
+    MemberToken create(Long memberId, String username, String nickName, String avatar);
 
     /**
      * 会员编号。

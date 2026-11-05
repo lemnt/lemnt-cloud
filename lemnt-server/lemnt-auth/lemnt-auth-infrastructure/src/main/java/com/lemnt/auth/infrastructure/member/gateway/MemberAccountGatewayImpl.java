@@ -2,6 +2,7 @@ package com.lemnt.auth.infrastructure.member.gateway;
 
 import com.lemnt.auth.domain.member.gateway.MemberAccountGateway;
 import com.lemnt.auth.domain.member.model.MemberLoginInfo;
+import com.lemnt.auth.domain.member.model.MemberProfile;
 import com.lemnt.member.client.MemberUserClient;
 
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -28,6 +29,14 @@ public class MemberAccountGatewayImpl implements MemberAccountGateway {
     public Integer findStatusByMemberId(Long memberId) {
         var member = memberUserClient.getByMemberId(memberId);
         return member == null ? null : member.status();
+    }
+
+    @Override
+    public MemberProfile findProfile(Long memberId) {
+        var member = memberUserClient.getByMemberId(memberId);
+        return member == null
+            ? null
+            : new MemberProfile(member.nickname(), member.avatar());
     }
 
     @Override

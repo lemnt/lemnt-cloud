@@ -32,6 +32,16 @@ public class SecurityConstants {
     public static final String DETAILS_USERNAME = "username";
 
     /**
+     * 会员昵称快照字段，由网关注入、供评价等写链路取用
+     */
+    public static final String DETAILS_USER_NICK_NAME = "user_nick_name";
+
+    /**
+     * 会员头像快照字段
+     */
+    public static final String DETAILS_USER_AVATAR = "user_avatar";
+
+    /**
      * 角色
      */
     public static final String ROLE_KEY = "role_key";
@@ -76,6 +86,10 @@ public class SecurityConstants {
     public static final String HEADER_USER_ID = "X-User-Id";
 
     public static final String HEADER_USER_NAME = "X-User-Name";
+
+    public static final String HEADER_USER_NICK_NAME = "X-User-Nick-Name";
+
+    public static final String HEADER_USER_AVATAR = "X-User-Avatar";
 
     public static final String HEADER_ROLE_KEY = "X-Role-Key";
 

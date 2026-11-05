@@ -68,7 +68,13 @@ public class MemberAuthenticationService {
             throw new SecurityException("手机号或密码错误");
         }
         loginSecurityGateway.clearRetryCount(retryKey);
-        var token = memberTokenGateway.create(account.memberId(), account.mobile());
+        var profile = memberAccountGateway.findProfile(account.memberId());
+        var token =
+            memberTokenGateway.create(
+                account.memberId(),
+                account.mobile(),
+                profile == null ? null : profile.nickName(),
+                profile == null ? null : profile.avatar());
         try {
             if (loginIp == null) memberAccountGateway.recordLogin(account.memberId());
             else memberAccountGateway.recordLogin(account.memberId(), loginIp);

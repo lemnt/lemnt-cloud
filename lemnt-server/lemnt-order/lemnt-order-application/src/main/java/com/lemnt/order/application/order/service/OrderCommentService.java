@@ -2,6 +2,7 @@ package com.lemnt.order.application.order.service;
 
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.order.application.order.cmd.OrderCommentCreateCmd;
+import com.lemnt.order.domain.member.gateway.MemberLookupGateway;
 import com.lemnt.order.domain.order.gateway.OrderCommentGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderItemGateway;
@@ -28,6 +29,7 @@ public class OrderCommentService {
     private final TradeOrderItemGateway items;
     private final OrderCommentGateway comments;
     private final OrderLogService logs;
+    private final MemberLookupGateway members;
 
     /**
      * 远程已保存而本地失败时，原完整内容重试修复状态，不重复评价或日志。
@@ -62,6 +64,7 @@ public class OrderCommentService {
             Boolean.TRUE.equals(line.commentStatus()) || "COMPLETED".equals(order.status()),
             "只能评价本人已完成订单内的商品",
             400);
+        var member = members.findById(order.memberId());
         var verified =
             new VerifiedOrderComment(
                 order.memberId(),
@@ -90,7 +93,9 @@ public class OrderCommentService {
                 cmd.descriptionScores(),
                 cmd.benefitScores(),
                 cmd.anonymous(),
-                cmd.picUrls());
+                cmd.picUrls(),
+                cmd.userNickname(),
+                cmd.userAvatar());
         // 商城私有保存不能回查交易，避免在订单锁内形成循环RPC。
         Long commentId = comments.saveVerified(verified);
         require(commentId != null && commentId > 0, "评价保存结果未确认", 503);
@@ -176,7 +181,9 @@ public class OrderCommentService {
                     5,
                     5,
                     false,
-                    List.of());
+                    List.of(),
+                    member == null ? null : member.nickname(),
+                    member == null ? null : member.avatar());
             Long id = comments.saveSystem(verified);
             require(
                 id != null && id > 0 && items.markCommented(order.id(), line.orderItemId()),

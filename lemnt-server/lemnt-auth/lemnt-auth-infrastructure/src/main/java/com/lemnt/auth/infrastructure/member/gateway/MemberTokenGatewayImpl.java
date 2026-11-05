@@ -24,10 +24,15 @@ public class MemberTokenGatewayImpl implements MemberTokenGateway {
     private final TokenService tokenService;
 
     @Override
-    public MemberToken create(Long memberId, String username) {
+    public MemberToken create(Long memberId, String username, String nickName, String avatar) {
         SecurityUser user = new SecurityUser();
         user.setUserType(SecurityConstants.MEMBER_USER_TYPE);
-        user.setDetail(new SecurityUserDetail().setUserId(memberId).setUserName(username));
+        user.setDetail(
+            new SecurityUserDetail()
+                .setUserId(memberId)
+                .setUserName(username)
+                .setNickName(nickName)
+                .setAvatar(avatar));
         user.setRoles(Set.of());
         user.setPermissions(Set.of());
         var token = tokenService.createToken(user);

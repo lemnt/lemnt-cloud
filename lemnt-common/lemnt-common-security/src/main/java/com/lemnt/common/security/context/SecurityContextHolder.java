@@ -70,6 +70,22 @@ public class SecurityContextHolder {
         set(SecurityConstants.DETAILS_USERNAME, username);
     }
 
+    public static String getNickName() {
+        return get(SecurityConstants.DETAILS_USER_NICK_NAME);
+    }
+
+    public static void setNickName(String nickName) {
+        set(SecurityConstants.DETAILS_USER_NICK_NAME, nickName);
+    }
+
+    public static String getUserAvatar() {
+        return get(SecurityConstants.DETAILS_USER_AVATAR);
+    }
+
+    public static void setUserAvatar(String avatar) {
+        set(SecurityConstants.DETAILS_USER_AVATAR, avatar);
+    }
+
     public static String getUserKey() {
         return get(SecurityConstants.USER_KEY);
     }

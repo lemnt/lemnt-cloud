@@ -68,6 +68,15 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (appRequest) {
             ServerHttpRequest.Builder builder = clean.getRequest().mutate();
             addHeader(builder, SecurityConstants.HEADER_USER_ID, loginUser.getUserId());
+            // 会员展示快照：登录会话已冻结昵称/头像，供评价等写链路线程变量取用
+            if (loginUser.getDetail() != null) {
+                addHeader(
+                    builder,
+                    SecurityConstants.HEADER_USER_NICK_NAME,
+                    loginUser.getDetail().getNickName());
+                addHeader(
+                    builder, SecurityConstants.HEADER_USER_AVATAR, loginUser.getDetail().getAvatar());
+            }
             return chain.filter(clean.mutate().request(builder.build()).build());
         }
         if (StringUtils.isAnyBlank(loginUser.getToken(), loginUser.getUsername())) {
@@ -137,6 +146,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
                                 SecurityConstants.HEADER_USER_ID,
                                 SecurityConstants.HEADER_USER_KEY,
                                 SecurityConstants.HEADER_USER_NAME,
+                                SecurityConstants.HEADER_USER_NICK_NAME,
+                                SecurityConstants.HEADER_USER_AVATAR,
                                 SecurityConstants.HEADER_ROLE_KEY,
                                 SecurityConstants.HEADER_ROLE_PERMISSION,
                                 SecurityConstants.HEADER_LOGIN_USER,

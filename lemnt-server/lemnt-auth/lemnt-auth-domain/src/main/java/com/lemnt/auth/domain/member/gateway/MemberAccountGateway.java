@@ -1,6 +1,7 @@
 package com.lemnt.auth.domain.member.gateway;
 
 import com.lemnt.auth.domain.member.model.MemberLoginInfo;
+import com.lemnt.auth.domain.member.model.MemberProfile;
 
 /**
  * 通过会员服务读取登录资料，认证中心不访问会员数据库。
@@ -15,6 +16,11 @@ public interface MemberAccountGateway {
      * 查询会员状态，会员不存在时返回 null。
      */
     Integer findStatusByMemberId(Long memberId);
+
+    /**
+     * 按会员编号查询展示资料快照（昵称/头像）。
+     */
+    MemberProfile findProfile(Long memberId);
 
     /**
      * 成功签发后由会员服务记录数据库登录时间。
