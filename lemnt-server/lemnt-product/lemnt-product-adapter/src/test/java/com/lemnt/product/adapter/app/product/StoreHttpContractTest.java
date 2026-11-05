@@ -32,7 +32,7 @@ class StoreHttpContractTest {
                 new StorePageDTO(
                     List.of(
                         new StoreProductDTO(
-                            1L, "goods", 2L, 3L, null, "9.99", "12.50", true)),
+                            1L, "goods", 2L, 3L, null, "9.99", "12.50", true, 7)),
                     1));
 
         var mvc =
@@ -77,7 +77,7 @@ class StoreHttpContractTest {
                             null,
                             List.of(
                                 new StoreSkuDTO.Spec(
-                                    2L, "颜色", 3L, "红"))))));
+                                    2L, "颜色", 3L, "红"))))), 7)));
 
         var mvc =
             MockMvcBuilders.standaloneSetup(

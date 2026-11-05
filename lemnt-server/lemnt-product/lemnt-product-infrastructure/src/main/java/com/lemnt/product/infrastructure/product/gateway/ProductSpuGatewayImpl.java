@@ -167,9 +167,8 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
             == 1;
     }
 
-    @Override
     /**
-     * 查询商品。
+     * 支付确认事实累加销量；售后回补不冲减，事件幂等由调用方收件箱台账保证。
      */
     @Override
     public void addSales(Long spuId, int quantity) {
