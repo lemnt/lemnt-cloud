@@ -99,16 +99,17 @@ import com.lemnt.pay.application.payment.qry.MemberPaymentStatusQry;
 import com.lemnt.pay.application.payment.qry.PaymentPageQry;
 import com.lemnt.pay.application.paymentrefund.executor.PaymentRefundPageQueryExe;
 import com.lemnt.pay.application.paymentrefund.qry.PaymentRefundPageQry;
-import com.lemnt.pay.domain.payment.gateway.PaymentChannelCloseGateway;
+import com.lemnt.pay.domain.channel.gateway.PaymentChannelCloseGateway;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
-import com.lemnt.pay.domain.payment.model.PayChannelConfig;
+import com.lemnt.pay.domain.channel.model.PayChannelConfig;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundChannelGateway;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundGateway;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefund;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundResult;
-import com.lemnt.pay.infrastructure.payment.payment.PayChannelConfigResolver;
-import com.lemnt.pay.infrastructure.paymentrefund.channel.PaymentRefundClient;
+import com.lemnt.pay.infrastructure.channel.support.PayChannelConfigResolver;
+import com.lemnt.pay.infrastructure.channel.factory.PaymentChannelFactory;
+import com.lemnt.pay.infrastructure.channel.adapter.AbstractChannelAdapter;
 import com.lemnt.pay.infrastructure.paymentrefund.gateway.PaymentRefundChannelGatewayImpl;
 import com.lemnt.product.application.product.cmd.ProductCommentCreateCmd;
 import com.lemnt.product.application.product.cmd.ProductCommentReplyCmd;
@@ -250,7 +251,7 @@ class CheckoutFlowIntegrationTest {
         }
     }
 
-    PaymentRefundClient refundClient;
+    AbstractChannelAdapter refundClient;
     TradePaymentGateway payments;
     OrderPlacementService placement;
     OrderLifecycleService lifecycle;
@@ -380,7 +381,7 @@ class CheckoutFlowIntegrationTest {
         tradeComponents
             .get(DeliveryExpressGateway.class)
             .insert(new DeliveryExpress(null, "SF", "顺丰", null, 0, 0));
-        refundClient = Mockito.mock(PaymentRefundClient.class);
+        refundClient = Mockito.mock(AbstractChannelAdapter.class);
         Mockito.when(refundClient.channel()).thenReturn("ALIPAY");
         var payChannelConfigs = Mockito.mock(PayChannelConfigResolver.class);
         Mockito.when(payChannelConfigs.resolve(Mockito.any(), Mockito.any()))
@@ -389,7 +390,9 @@ class CheckoutFlowIntegrationTest {
                     1L, 1L, "ALIPAY", 0, BigDecimal.ZERO, null, "{}", null));
         tradeComponents.register(
             PaymentRefundChannelGateway.class,
-            new PaymentRefundChannelGatewayImpl(List.of(refundClient), payChannelConfigs));
+            new PaymentRefundChannelGatewayImpl(
+                new PaymentChannelFactory(List.of(refundClient)),
+                payChannelConfigs));
         productSkuGateway = tradeComponents.get(ProductSkuGateway.class);
         productInventoryService = tradeComponents.get(ProductInventoryService.class);
         checkoutAccountGateway = tradeComponents.get(MemberLockGateway.class);
@@ -2209,7 +2212,7 @@ class CheckoutFlowIntegrationTest {
         assertThrows(
             IllegalStateException.class,
             () -> rejectAfterSale(new RefundRejectCmd(afterSale.refundNo(), "驳回")));
-        Mockito.when(refundClient.query(
+        Mockito.when(refundClient.refundQuery(
                 ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(call -> refundSuccess(call.getArgument(0)));
         var result = create.execute(afterSale.refundNo());
@@ -2295,7 +2298,7 @@ class CheckoutFlowIntegrationTest {
         assertEquals("REFUNDING", refundRequestGateway.afterSale(afterSale.refundNo()).status());
         assertEquals("PAID", orderPersistenceService.findByOrderNo(order.orderNo()).status());
         sql(tradeSource, "ALTER TABLE order_info DROP CONSTRAINT test_refund_failure");
-        Mockito.when(refundClient.query(
+        Mockito.when(refundClient.refundQuery(
                 ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(call -> refundSuccess(call.getArgument(0)));
         assertEquals("SUCCESS", create.execute(afterSale.refundNo()).status());
@@ -2335,7 +2338,10 @@ class CheckoutFlowIntegrationTest {
         rejectAfterSale(new RefundRejectCmd(afterSale.refundNo(), "拒绝退款"));
         assertThrows(IllegalStateException.class, () -> create.execute(afterSale.refundNo()));
         assertEquals(0, count("pay_payment_refund"));
-        Mockito.verifyNoInteractions(refundClient);
+        Mockito.verify(refundClient, Mockito.never())
+            .refund(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any());
+        Mockito.verify(refundClient, Mockito.never())
+            .refundQuery(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any());
     }
 
     @Test
@@ -2587,7 +2593,10 @@ class CheckoutFlowIntegrationTest {
                 tradeComponents
                     .get(PaymentRefundCreateCmdExe.class)
                     .execute(returned.refundNo()));
-        Mockito.verifyNoInteractions(refundClient);
+        Mockito.verify(refundClient, Mockito.never())
+            .refund(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any());
+        Mockito.verify(refundClient, Mockito.never())
+            .refundQuery(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any());
     }
 
     @Test

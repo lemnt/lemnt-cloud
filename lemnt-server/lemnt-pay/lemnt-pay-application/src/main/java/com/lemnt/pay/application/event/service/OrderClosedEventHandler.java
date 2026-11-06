@@ -6,7 +6,7 @@ import com.lemnt.common.core.utils.JsonUtils;
 import com.lemnt.order.client.event.OrderClosedEvent;
 import com.lemnt.pay.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
-import com.lemnt.pay.domain.payment.gateway.PaymentChannelCloseGateway;
+import com.lemnt.pay.domain.channel.gateway.PaymentChannelCloseGateway;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
 
 import org.springframework.stereotype.Component;

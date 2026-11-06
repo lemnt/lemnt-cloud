@@ -1,11 +1,12 @@
 package com.lemnt.pay.infrastructure.paymentrefund;
 
-import com.lemnt.pay.domain.payment.model.PayChannelConfig;
+import com.lemnt.pay.domain.channel.model.PayChannelConfig;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefund;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundResult;
-import com.lemnt.pay.infrastructure.payment.payment.PayChannelConfigResolver;
-import com.lemnt.pay.infrastructure.paymentrefund.channel.PaymentRefundClient;
+import com.lemnt.pay.infrastructure.channel.adapter.AbstractChannelAdapter;
+import com.lemnt.pay.infrastructure.channel.factory.PaymentChannelFactory;
+import com.lemnt.pay.infrastructure.channel.support.PayChannelConfigResolver;
 import com.lemnt.pay.infrastructure.paymentrefund.gateway.PaymentRefundChannelGatewayImpl;
 
 import org.junit.jupiter.api.Test;
@@ -30,57 +31,79 @@ class PaymentRefundChannelGatewayTest {
             1L, "P1", "TR1", "ALIPAY", null, "TX1", BigDecimal.TEN, "SUCCESS", "N1");
 
     @Test
-    void absentOrDuplicateChannelAdaptersCannotPretendRefundSucceeded() {
+    void absentChannelCannotPretendRefundSucceeded() {
+        assertThrows(
+            IllegalArgumentException.class, () -> gateway(List.of()).refund(refund, payment));
+    }
+
+    @Test
+    void duplicateChannelAdaptersFailAtStartup() {
+        var adapter = mock(AbstractChannelAdapter.class);
+        when(adapter.channel()).thenReturn("ALIPAY");
+
         assertThrows(
             IllegalStateException.class,
-            () -> gateway(List.of()).refund(refund, payment));
-        var client = mock(PaymentRefundClient.class);
-        when(client.channel()).thenReturn("ALIPAY");
-        assertThrows(
-            IllegalStateException.class,
-            () -> gateway(List.of(client, client)).refund(refund, payment));
-        verify(client, never()).query(any(), any(), any());
-        verify(client, never()).refund(any(), any(), any());
+            () -> new PaymentChannelFactory(List.of(adapter, adapter)));
     }
 
     @Test
     void missingChannelConfigCannotPretendRefundSucceeded() {
-        var client = mock(PaymentRefundClient.class);
-        when(client.channel()).thenReturn("ALIPAY");
+        var adapter = mock(AbstractChannelAdapter.class);
+        when(adapter.channel()).thenReturn("ALIPAY");
 
         assertThrows(
             IllegalStateException.class,
             () ->
-                new PaymentRefundChannelGatewayImpl(List.of(client), configs)
+                new PaymentRefundChannelGatewayImpl(
+                        new PaymentChannelFactory(List.of(adapter)), configs)
                     .refund(refund, payment));
-        verify(client, never()).query(any(), any(), any());
-        verify(client, never()).refund(any(), any(), any());
+        verify(adapter, never()).refundQuery(any(), any(), any());
+        verify(adapter, never()).refund(any(), any(), any());
     }
 
     @Test
     void unknownQueryThrowsAndCannotCauseAnotherSubmission() {
-        var client = mock(PaymentRefundClient.class);
-        when(client.channel()).thenReturn("ALIPAY");
-        when(client.query(refund, payment, config)).thenThrow(new IllegalStateException("网络超时"));
+        var adapter = mock(AbstractChannelAdapter.class);
+        when(adapter.channel()).thenReturn("ALIPAY");
+        when(adapter.refundQuery(refund, payment, config))
+            .thenThrow(new IllegalStateException("网络超时"));
+
         assertThrows(
-            IllegalStateException.class,
-            () -> gateway(List.of(client)).refund(refund, payment));
-        verify(client, never()).refund(any(), any(), any());
+            IllegalStateException.class, () -> gateway(List.of(adapter)).refund(refund, payment));
+        verify(adapter, never()).refund(any(), any(), any());
     }
 
     @Test
     void authenticatedChannelResultIsReturnedBeforeAnyResubmission() {
-        var client = mock(PaymentRefundClient.class);
-        when(client.channel()).thenReturn("ALIPAY");
+        var adapter = mock(AbstractChannelAdapter.class);
+        when(adapter.channel()).thenReturn("ALIPAY");
         var result =
             new PaymentRefundResult("PR1", "P1", "ALIPAY", BigDecimal.TEN, "SUCCESS", "RTX1");
-        when(client.query(refund, payment, config)).thenReturn(result);
-        assertEquals(result, gateway(List.of(client)).refund(refund, payment));
-        verify(client, never()).refund(any(), any(), any());
+        when(adapter.refundQuery(refund, payment, config)).thenReturn(result);
+
+        assertEquals(result, gateway(List.of(adapter)).refund(refund, payment));
+        verify(adapter, never()).refund(any(), any(), any());
     }
 
-    private PaymentRefundChannelGatewayImpl gateway(List<PaymentRefundClient> clients) {
+    @Test
+    void acceptedButInvisibleRefundStaysWaitingWithoutResubmission() {
+        var adapter = mock(AbstractChannelAdapter.class);
+        when(adapter.channel()).thenReturn("ALIPAY");
+        when(adapter.refundQuery(any(), any(), any())).thenReturn(null);
+        PaymentRefund accepted =
+            new PaymentRefund(
+                "PR1", "RF1", "P1", "TR1", "ALIPAY", BigDecimal.TEN, "WAITING", "ACCEPTED");
+
+        var result = gateway(List.of(adapter)).refund(accepted, payment);
+
+        assertEquals("WAITING", result.status());
+        assertEquals("ACCEPTED", result.channelRefundNo());
+        verify(adapter, never()).refund(any(), any(), any());
+    }
+
+    private PaymentRefundChannelGatewayImpl gateway(List<AbstractChannelAdapter> adapters) {
         when(configs.resolve(payment.appKey(), payment.channel())).thenReturn(config);
-        return new PaymentRefundChannelGatewayImpl(clients, configs);
+        return new PaymentRefundChannelGatewayImpl(
+            new PaymentChannelFactory(adapters), configs);
     }
 }

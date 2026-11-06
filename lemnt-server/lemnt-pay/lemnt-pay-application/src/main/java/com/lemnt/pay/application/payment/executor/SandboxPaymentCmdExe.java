@@ -3,7 +3,7 @@ package com.lemnt.pay.application.payment.executor;
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
-import com.lemnt.pay.domain.payment.model.PaymentChannel;
+import com.lemnt.pay.domain.channel.model.PaymentChannel;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

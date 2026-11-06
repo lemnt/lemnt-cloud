@@ -1,10 +1,14 @@
 package com.lemnt.pay.start.payment;
 
 import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
-import com.lemnt.pay.domain.payment.gateway.PayAppGateway;
-import com.lemnt.pay.domain.payment.gateway.PayChannelConfigGateway;
-import com.lemnt.pay.domain.payment.model.PayApp;
-import com.lemnt.pay.domain.payment.model.PayChannelConfig;
+import com.lemnt.pay.domain.channel.gateway.PayAppGateway;
+import com.lemnt.pay.domain.channel.gateway.PayChannelConfigGateway;
+import com.lemnt.pay.domain.channel.model.PayApp;
+import com.lemnt.pay.domain.channel.model.PayChannelConfig;
+import com.lemnt.pay.infrastructure.channel.gateway.PayAppGatewayImpl;
+import com.lemnt.pay.infrastructure.channel.gateway.PayChannelConfigGatewayImpl;
+import com.lemnt.pay.infrastructure.channel.mapper.PayAppMapper;
+import com.lemnt.pay.infrastructure.channel.mapper.PayChannelConfigMapper;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
@@ -113,8 +117,22 @@ class PayConfigPersistenceTest {
     @Configuration
     @EnableTransactionManagement(proxyTargetClass = true)
     @ComponentScan(basePackages = {"com.lemnt.pay.infrastructure.payment.gateway"})
-    @MapperScan(basePackages = {"com.lemnt.pay.infrastructure.payment.mapper"})
+    @MapperScan(
+        basePackages = {
+            "com.lemnt.pay.infrastructure.payment.mapper",
+            "com.lemnt.pay.infrastructure.channel.mapper"
+        })
     static class TestConfig {
+        @Bean
+        PayAppGateway payAppGateway(PayAppMapper mapper) {
+            return new PayAppGatewayImpl(mapper);
+        }
+
+        @Bean
+        PayChannelConfigGateway payChannelConfigGateway(PayChannelConfigMapper mapper) {
+            return new PayChannelConfigGatewayImpl(mapper);
+        }
+
         @Bean
         JdbcDataSource dataSource() {
             var source = new JdbcDataSource();

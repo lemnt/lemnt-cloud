@@ -16,13 +16,14 @@ import com.lemnt.order.domain.promotion.model.PromotionOrder;
 import com.lemnt.order.domain.settlement.model.SettlementOrder;
 import com.lemnt.pay.application.payment.executor.PaymentNotifyCmdExe;
 import com.lemnt.pay.application.payment.executor.TradePaymentCreateCmdExe;
-import com.lemnt.pay.domain.payment.model.PayChannelConfig;
+import com.lemnt.pay.domain.channel.model.PayChannelConfig;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundChannelGateway;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefund;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundResult;
-import com.lemnt.pay.infrastructure.payment.payment.PayChannelConfigResolver;
-import com.lemnt.pay.infrastructure.paymentrefund.channel.PaymentRefundClient;
+import com.lemnt.pay.infrastructure.channel.support.PayChannelConfigResolver;
+import com.lemnt.pay.infrastructure.channel.factory.PaymentChannelFactory;
+import com.lemnt.pay.infrastructure.channel.adapter.AbstractChannelAdapter;
 import com.lemnt.pay.infrastructure.paymentrefund.gateway.PaymentRefundChannelGatewayImpl;
 import com.lemnt.product.domain.product.model.ProductSpu;
 import com.lemnt.promotion.application.promotion.cmd.BargainActivityCreateCmd;
@@ -52,6 +53,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -83,7 +85,7 @@ class PromotionOrderPersistenceTest {
         f = new CatalogPersistenceTest();
         f.setup();
         f.points = memberPoints::get;
-        var channel = Mockito.mock(PaymentRefundClient.class);
+        var channel = Mockito.mock(AbstractChannelAdapter.class);
         Mockito.when(channel.channel()).thenReturn("ALIPAY");
         Mockito.when(
                 channel.refund(
@@ -106,7 +108,9 @@ class PromotionOrderPersistenceTest {
                     1L, 1L, "ALIPAY", 0, BigDecimal.ZERO, null, "{}", null));
         f.components.register(
             PaymentRefundChannelGateway.class,
-            new PaymentRefundChannelGatewayImpl(List.of(channel), payChannelConfigs));
+            new PaymentRefundChannelGatewayImpl(
+                new PaymentChannelFactory(List.of(channel)),
+                payChannelConfigs));
         orders = f.components.get(PromotionOrderService.class);
         mappings = f.components.get(PromotionOrderGateway.class);
         seckillConfigs = f.components.get(SeckillConfigManagementService.class);

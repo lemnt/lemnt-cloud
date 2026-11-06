@@ -6,12 +6,12 @@ import com.lemnt.pay.application.payment.executor.PaymentPrepayCmdExe;
 import com.lemnt.pay.application.payment.executor.TradePaymentCreateCmdExe;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
 import com.lemnt.pay.domain.order.model.OrderPaymentSnapshot;
-import com.lemnt.pay.domain.payment.gateway.PayAppGateway;
-import com.lemnt.pay.domain.payment.gateway.PayChannelConfigGateway;
+import com.lemnt.pay.domain.channel.gateway.PayAppGateway;
+import com.lemnt.pay.domain.channel.gateway.PayChannelConfigGateway;
 import com.lemnt.pay.domain.payment.gateway.PayerOpenIdGateway;
-import com.lemnt.pay.domain.payment.gateway.PaymentChannelGateway;
-import com.lemnt.pay.domain.payment.model.PayApp;
-import com.lemnt.pay.domain.payment.model.PayChannelConfig;
+import com.lemnt.pay.domain.channel.gateway.PaymentChannelGateway;
+import com.lemnt.pay.domain.channel.model.PayApp;
+import com.lemnt.pay.domain.channel.model.PayChannelConfig;
 import com.lemnt.pay.domain.payment.model.PaymentPrepay;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 

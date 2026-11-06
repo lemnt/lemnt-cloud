@@ -2,8 +2,8 @@ package com.lemnt.pay.application.payment.converter;
 
 import com.lemnt.pay.application.payment.dto.PayAppDTO;
 import com.lemnt.pay.application.payment.dto.PayChannelConfigDTO;
-import com.lemnt.pay.domain.payment.model.PayApp;
-import com.lemnt.pay.domain.payment.model.PayChannelConfig;
+import com.lemnt.pay.domain.channel.model.PayApp;
+import com.lemnt.pay.domain.channel.model.PayChannelConfig;
 
 /**
  * 支付应用与渠道配置应用输出转换。

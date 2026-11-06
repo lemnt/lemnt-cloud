@@ -7,10 +7,10 @@ import com.lemnt.pay.application.payment.executor.PayAppCreateCmdExe;
 import com.lemnt.pay.application.payment.executor.PayAppDeleteCmdExe;
 import com.lemnt.pay.application.payment.executor.PayChannelCreateCmdExe;
 import com.lemnt.pay.application.payment.executor.PayChannelUpdateCmdExe;
-import com.lemnt.pay.domain.payment.gateway.PayAppGateway;
-import com.lemnt.pay.domain.payment.gateway.PayChannelConfigGateway;
-import com.lemnt.pay.domain.payment.model.PayApp;
-import com.lemnt.pay.domain.payment.model.PayChannelConfig;
+import com.lemnt.pay.domain.channel.gateway.PayAppGateway;
+import com.lemnt.pay.domain.channel.gateway.PayChannelConfigGateway;
+import com.lemnt.pay.domain.channel.model.PayApp;
+import com.lemnt.pay.domain.channel.model.PayChannelConfig;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

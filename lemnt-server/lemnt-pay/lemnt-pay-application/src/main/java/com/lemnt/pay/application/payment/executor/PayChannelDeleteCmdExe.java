@@ -1,6 +1,6 @@
 package com.lemnt.pay.application.payment.executor;
 
-import com.lemnt.pay.domain.payment.gateway.PayChannelConfigGateway;
+import com.lemnt.pay.domain.channel.gateway.PayChannelConfigGateway;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

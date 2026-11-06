@@ -10,7 +10,7 @@ import com.lemnt.member.client.dto.MemberUserDTO;
 import com.lemnt.order.domain.config.gateway.TradeConfigGateway;
 import com.lemnt.order.start.BusinessConfigTestSupport;
 import com.lemnt.pay.application.payment.executor.PaymentPrepayCmdExe;
-import com.lemnt.pay.domain.payment.gateway.PaymentChannelCloseGateway;
+import com.lemnt.pay.domain.channel.gateway.PaymentChannelCloseGateway;
 
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;

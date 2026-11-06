@@ -5,7 +5,7 @@ import com.lemnt.pay.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
 import com.lemnt.pay.domain.order.model.OrderPaymentSnapshot;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
-import com.lemnt.pay.domain.payment.model.PaymentChannel;
+import com.lemnt.pay.domain.channel.model.PaymentChannel;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 
 import org.springframework.stereotype.Component;

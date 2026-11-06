@@ -1,7 +1,7 @@
 package com.lemnt.pay.application.payment.executor;
 
 import com.lemnt.pay.application.payment.dto.PaymentChannelDTO;
-import com.lemnt.pay.domain.payment.model.PaymentChannel;
+import com.lemnt.pay.domain.channel.model.PaymentChannel;
 
 import org.springframework.stereotype.Component;
 

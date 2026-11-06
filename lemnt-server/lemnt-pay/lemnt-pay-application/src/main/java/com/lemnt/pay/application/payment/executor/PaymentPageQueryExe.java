@@ -5,7 +5,7 @@ import com.lemnt.pay.application.payment.converter.PaymentDTOConverter;
 import com.lemnt.pay.application.payment.dto.PaymentDTO;
 import com.lemnt.pay.application.payment.qry.PaymentPageQry;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
-import com.lemnt.pay.domain.payment.model.PaymentChannel;
+import com.lemnt.pay.domain.channel.model.PaymentChannel;
 import com.lemnt.pay.domain.payment.model.PaymentFilter;
 import com.lemnt.pay.domain.payment.model.PaymentRules;
 

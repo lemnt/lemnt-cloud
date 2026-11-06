@@ -2,7 +2,7 @@ package com.lemnt.pay.application.payment.executor;
 
 import com.lemnt.pay.application.payment.converter.PayConfigDTOConverter;
 import com.lemnt.pay.application.payment.dto.PayAppDTO;
-import com.lemnt.pay.domain.payment.gateway.PayAppGateway;
+import com.lemnt.pay.domain.channel.gateway.PayAppGateway;
 
 import org.springframework.stereotype.Component;
 

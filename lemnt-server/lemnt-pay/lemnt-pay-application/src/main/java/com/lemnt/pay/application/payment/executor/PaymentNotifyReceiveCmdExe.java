@@ -2,14 +2,14 @@ package com.lemnt.pay.application.payment.executor;
 
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.pay.application.payment.cmd.PaymentNotifyReceiveCmd;
-import com.lemnt.pay.domain.payment.gateway.PayAppGateway;
-import com.lemnt.pay.domain.payment.gateway.PayChannelConfigGateway;
-import com.lemnt.pay.domain.payment.gateway.PaymentChannelGateway;
+import com.lemnt.pay.domain.channel.gateway.PayAppGateway;
+import com.lemnt.pay.domain.channel.gateway.PayChannelConfigGateway;
+import com.lemnt.pay.domain.channel.gateway.PaymentChannelGateway;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
-import com.lemnt.pay.domain.payment.model.PayApp;
-import com.lemnt.pay.domain.payment.model.PayChannelConfig;
-import com.lemnt.pay.domain.payment.model.PaymentChannel;
-import com.lemnt.pay.domain.payment.model.PaymentChannelNotification;
+import com.lemnt.pay.domain.channel.model.PayApp;
+import com.lemnt.pay.domain.channel.model.PayChannelConfig;
+import com.lemnt.pay.domain.channel.model.PaymentChannel;
+import com.lemnt.pay.domain.channel.model.PaymentChannelNotification;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 
 import org.springframework.stereotype.Component;

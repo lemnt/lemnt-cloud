@@ -1,6 +1,6 @@
 package com.lemnt.pay.application.payment.support;
 
-import com.lemnt.pay.domain.payment.model.PaymentChannel;
+import com.lemnt.pay.domain.channel.model.PaymentChannel;
 import com.lemnt.pay.domain.payment.model.WalletRechargeStatus;
 
 import java.math.BigDecimal;

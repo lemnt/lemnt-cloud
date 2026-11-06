@@ -5,8 +5,8 @@ import com.lemnt.pay.application.payment.converter.PayConfigDTOConverter;
 import com.lemnt.pay.application.payment.dto.PayChannelConfigDTO;
 import com.lemnt.pay.application.payment.qry.PayChannelPageQry;
 import com.lemnt.pay.application.payment.support.PayConfigRules;
-import com.lemnt.pay.domain.payment.gateway.PayChannelConfigGateway;
-import com.lemnt.pay.domain.payment.model.PayChannelFilter;
+import com.lemnt.pay.domain.channel.gateway.PayChannelConfigGateway;
+import com.lemnt.pay.domain.channel.model.PayChannelFilter;
 
 import org.springframework.stereotype.Component;
 

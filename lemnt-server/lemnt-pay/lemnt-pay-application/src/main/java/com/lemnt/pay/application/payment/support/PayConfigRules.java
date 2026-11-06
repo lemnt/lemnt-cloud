@@ -1,7 +1,7 @@
 package com.lemnt.pay.application.payment.support;
 
 import com.lemnt.common.core.utils.JsonUtils;
-import com.lemnt.pay.domain.payment.model.PaymentChannel;
+import com.lemnt.pay.domain.channel.model.PaymentChannel;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
