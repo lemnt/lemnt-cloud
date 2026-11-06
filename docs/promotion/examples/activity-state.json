@@ -1,0 +1,5 @@
+{
+  "requestNo": "ADMIN-pause-001",
+  "expectedRevision": 2,
+  "action": "PAUSE"
+}

@@ -1,12 +1,9 @@
 package com.lemnt.common.oss.service;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.StrUtil;
 import com.lemnt.common.core.utils.StringUtils;
 import com.lemnt.common.oss.configure.MinioConfig;
 import com.lemnt.common.oss.utils.ImageUtilsV2;
+
 import io.minio.*;
 import io.minio.errors.MinioException;
 import org.slf4j.Logger;
@@ -15,6 +12,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -44,7 +46,8 @@ public class OssFileService {
     @Value("${upload.image.max-size}")
     private Integer imageMaxSize = 2;
 
-    public OssFileService(MinioConfig minioConfig, MinioClient minioClient, OssFileValidator fileValidator) {
+    public OssFileService(
+        MinioConfig minioConfig, MinioClient minioClient, OssFileValidator fileValidator) {
         this.minioConfig = minioConfig;
         this.minioClient = minioClient;
         this.fileValidator = fileValidator;
@@ -69,7 +72,9 @@ public class OssFileService {
     /**
      * 上传流文件
      */
-    public String uploadStream(InputStream inputStream, String fileName, String contentType, long fileSize) throws IOException {
+    public String uploadStream(
+        InputStream inputStream, String fileName, String contentType, long fileSize)
+        throws IOException {
         try {
             logger.info("Uploading file: {}", fileName);
             fileValidator.validateFile(fileName, contentType, fileSize, imageMaxSize, videoMaxSize);
@@ -89,14 +94,18 @@ public class OssFileService {
     }
 
     private String uploadSmallFile(byte[] bytes, String fileName, String contentType)
-            throws IOException, MinioException, NoSuchAlgorithmException, InvalidKeyException {
+        throws IOException, MinioException, NoSuchAlgorithmException, InvalidKeyException {
         String md5 = DigestUtils.md5DigestAsHex(bytes);
         String objectName = buildObjectName(md5, fileName);
-        PutObjectArgs args = PutObjectArgs.builder()
+        PutObjectArgs args =
+            PutObjectArgs.builder()
                 .bucket(minioConfig.getBucketName())
                 .object(objectName)
                 .stream(new ByteArrayInputStream(bytes), (long) bytes.length, -1L)
-                .contentType(StrUtil.isNotBlank(contentType) ? contentType : "application/octet-stream")
+                .contentType(
+                    StrUtil.isNotBlank(contentType)
+                        ? contentType
+                        : "application/octet-stream")
                 .build();
         minioClient.putObject(args);
         logger.info("小文件 uploaded successfully: {}", objectName);
@@ -104,7 +113,7 @@ public class OssFileService {
     }
 
     private String uploadLargeFile(InputStream inputStream, String fileName, String contentType)
-            throws IOException, MinioException, NoSuchAlgorithmException, InvalidKeyException {
+        throws IOException, MinioException, NoSuchAlgorithmException, InvalidKeyException {
         File tempFile = File.createTempFile("minio-upload-", ".tmp");
         try {
             FileUtil.writeFromStream(inputStream, tempFile);
@@ -118,11 +127,15 @@ public class OssFileService {
                 }
 
                 try (InputStream in2 = FileUtil.getInputStream(tempFile)) {
-                    PutObjectArgs args = PutObjectArgs.builder()
+                    PutObjectArgs args =
+                        PutObjectArgs.builder()
                             .bucket(minioConfig.getBucketName())
                             .object(objectName)
                             .stream(in2, tempFile.length(), -1L)
-                            .contentType(StrUtil.isNotBlank(contentType) ? contentType : "application/octet-stream")
+                            .contentType(
+                                StrUtil.isNotBlank(contentType)
+                                    ? contentType
+                                    : "application/octet-stream")
                             .build();
                     minioClient.putObject(args);
                 }
@@ -140,7 +153,8 @@ public class OssFileService {
     public void deleteFile(String fileUrl) {
         try {
             String minioFile = StringUtils.substringAfter(fileUrl, minioConfig.getBucketName());
-            minioClient.removeObject(RemoveObjectArgs.builder()
+            minioClient.removeObject(
+                RemoveObjectArgs.builder()
                     .bucket(minioConfig.getBucketName())
                     .object(minioFile)
                     .build());
@@ -159,7 +173,8 @@ public class OssFileService {
         try {
             String bucketName = minioConfig.getBucketName();
             String objectName = StringUtils.substringAfter(fileUrl, bucketName + "/");
-            return minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
+            return minioClient.getObject(
+                GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
         } catch (Exception e) {
             logger.error("MinIO 获取文件失败: {}", fileUrl, e);
             throw new RuntimeException("MinIO 获取文件失败", e);
@@ -168,7 +183,11 @@ public class OssFileService {
 
     private boolean exists(String objectName) {
         try {
-            minioClient.statObject(StatObjectArgs.builder().bucket(minioConfig.getBucketName()).object(objectName).build());
+            minioClient.statObject(
+                StatObjectArgs.builder()
+                    .bucket(minioConfig.getBucketName())
+                    .object(objectName)
+                    .build());
             return true;
         } catch (Exception e) {
             return false;
@@ -189,10 +208,12 @@ public class OssFileService {
     public String getResizeUrl(String url, int width, int height) throws Exception {
         byte[] bytes = ImageUtilsV2.getInputStream(url);
         String suffix = ImageUtilsV2.getSuffix(url);
-        byte[] fileBytes = ImageUtilsV2.resizeAndSaveImage(
-                new ByteArrayInputStream(bytes),
-                width, height
-        );
-        return this.uploadStream(new ByteArrayInputStream(fileBytes), RandomUtil.randomString(18) + "." + suffix, "image/" + suffix, fileBytes.length);
+        byte[] fileBytes =
+            ImageUtilsV2.resizeAndSaveImage(new ByteArrayInputStream(bytes), width, height);
+        return this.uploadStream(
+            new ByteArrayInputStream(fileBytes),
+            RandomUtil.randomString(18) + "." + suffix,
+            "image/" + suffix,
+            fileBytes.length);
     }
 }

@@ -1,9 +1,9 @@
 package com.lemnt.common.security.config;
 
-import java.util.TimeZone;
-
 import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
+
+import java.util.TimeZone;
 
 /**
  * 系统配置

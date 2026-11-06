@@ -1,13 +1,14 @@
 package com.lemnt.system.infrastructure.config.dataobject;
 
+import com.lemnt.common.infrastructure.domain.BaseDO;
+
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.lemnt.common.infrastructure.domain.BaseDO;
 
 /**
  * 参数配置数据对象 sys_config
@@ -20,7 +21,6 @@ import com.lemnt.common.infrastructure.domain.BaseDO;
 @Accessors(chain = true)
 @TableName("sys_config")
 public class ConfigDO extends BaseDO {
-
     /**
      * 参数主键
      */

@@ -8,25 +8,25 @@ import java.io.Serializable;
  * @author wangxx
  */
 public record ConfigAddCmd(
-        /**
-         * 参数名称
-         */
-        String configName,
-        /**
-         * 参数键名
-         */
-        String configKey,
-        /**
-         * 参数键值
-         */
-        String configValue,
-        /**
-         * 系统内置（1是 0否）
-         */
-        String configType,
-        /**
-         * 备注
-         */
-        String remark
-) implements Serializable {
+    /**
+     * 参数名称
+     */
+    String configName,
+    /**
+     * 参数键名
+     */
+    String configKey,
+    /**
+     * 参数键值
+     */
+    String configValue,
+    /**
+     * 系统内置（1是 0否）
+     */
+    String configType,
+    /**
+     * 备注
+     */
+    String remark)
+    implements Serializable {
 }

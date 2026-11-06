@@ -1,12 +1,14 @@
 package com.lemnt.common.job.config;
 
 import com.lemnt.common.job.model.XxlJobProperties;
+
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * XxlJob 自动注册
@@ -18,7 +20,11 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(XxlJobProperties.class)
-@ConditionalOnProperty(prefix = "xxl.job.executor", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(
+    prefix = "xxl.job.executor",
+    name = "enabled",
+    havingValue = "true",
+    matchIfMissing = true)
 public class CustomXxlJobConfig {
 
     private final XxlJobProperties xxlJobProperties;

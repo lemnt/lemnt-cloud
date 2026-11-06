@@ -1,0 +1,15 @@
+Java17 / Maven3.9.11
+Command (repository root): mvn -o -s /tmp/member-sdk-settings.xml -B -DargLine=-javaagent:<local-byte-buddy-agent-1.18.10.jar> verify
+71 reactor projects BUILD SUCCESS; 374 tests, 0 failures/errors/skips.
+Member integration26 + HTTP2 + provider config3 + gateway5 =36 added tests. Actual V1/V2/V3 SQL and transaction proxies on H2 MySQL mode; provider behavior mocked/unconfigured, no live SMS/WeChat calls.
+Miniapp: node --test lemnt-miniapp/tests/*.test.cjs
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 124.470627
+
+React unchanged, not rerun. MySQL/Redis/Nacos/Dubbo/gateway deployment, roles, real provider and native-device validation NOT RUN. PR Draft, readiness false. No main edit, merge, deployment or live migration.

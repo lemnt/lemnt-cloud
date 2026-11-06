@@ -1,0 +1,48 @@
+[
+  {
+    "page": "member-login",
+    "events": [
+      "input",
+      "submit"
+    ]
+  },
+  {
+    "page": "member",
+    "events": [
+      "login",
+      "reload",
+      "go",
+      "input",
+      "sex",
+      "birthday",
+      "save",
+      "password",
+      "refresh",
+      "logout"
+    ]
+  },
+  {
+    "page": "member-addresses",
+    "events": [
+      "login",
+      "reload",
+      "add",
+      "edit",
+      "remove",
+      "input",
+      "toggle",
+      "save",
+      "cancel"
+    ]
+  },
+  {
+    "page": "member-benefits",
+    "events": [
+      "login",
+      "reload",
+      "sign",
+      "kind",
+      "page"
+    ]
+  }
+]

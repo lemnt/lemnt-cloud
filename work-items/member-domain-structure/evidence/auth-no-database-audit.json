@@ -1,0 +1,14 @@
+{
+  "tests": [
+    68,
+    0,
+    0,
+    0
+  ],
+  "memberSqlFilesUnchanged": [
+    "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-member/sql/V1__member.sql",
+    "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-member/sql/V2__member_account.sql",
+    "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-member/sql/V3__member_verification.sql"
+  ],
+  "authDatabaseRuntimeLibraries": []
+}

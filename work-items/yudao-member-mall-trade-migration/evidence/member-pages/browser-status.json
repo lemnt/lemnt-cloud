@@ -1,0 +1,9 @@
+{
+  "status": "BLOCKED",
+  "browserInteraction": "NOT RUN",
+  "visualQA": "NOT RUN",
+  "observed": "Playwright Chromium executable missing; install chromium --only-shell failed repeatedly because downloaded archive was invalid/truncated.",
+  "nativeCompiler": "NOT RUN",
+  "nativeDevice": "NOT RUN",
+  "realBackendProviders": "NOT RUN"
+}

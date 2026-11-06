@@ -1,10 +1,10 @@
 package com.lemnt.system.application.config.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.lemnt.system.application.config.dto.DictTypeDTO;
 import com.lemnt.system.domain.config.model.DictType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 字典类型 Entity ↔ DTO 组装器
@@ -12,7 +12,6 @@ import com.lemnt.system.domain.config.model.DictType;
  * @author wangxx
  */
 public class DictTypeConverter {
-
     public static DictTypeDTO toDTO(DictType entity) {
         if (entity == null) {
             return null;

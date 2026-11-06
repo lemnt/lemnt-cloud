@@ -1,7 +1,6 @@
 package com.lemnt.system.adapter.web.notice.converter;
 
 import com.lemnt.system.adapter.web.notice.res.NoticeReadUserRes;
-import com.lemnt.system.adapter.web.notice.res.NoticeRes;
 import com.lemnt.system.application.notice.dto.NoticeDTO;
 import com.lemnt.system.application.notice.dto.NoticeReadUserDTO;
 
@@ -14,7 +13,6 @@ import java.util.List;
  * @author wangxx
  */
 public class NoticeReadResConverter {
-
     /**
      * NoticeDTO → NoticeInfoRes
      */
@@ -23,13 +21,12 @@ public class NoticeReadResConverter {
             return null;
         }
         return new NoticeReadUserRes(
-                dto.getUserId(),
-                dto.getUserName(),
-                dto.getNickName(),
-                dto.getDeptName(),
-                dto.getPhonenumber(),
-                dto.getReadTime()
-        );
+            dto.getUserId(),
+            dto.getUserName(),
+            dto.getNickName(),
+            dto.getDeptName(),
+            dto.getPhonenumber(),
+            dto.getReadTime());
     }
 
     /**

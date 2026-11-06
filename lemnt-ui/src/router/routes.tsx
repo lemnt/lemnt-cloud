@@ -2,6 +2,168 @@ import { lazy, type ComponentType } from 'react';
 
 /** 后端 component 仅作为注册键使用，不执行任意路径导入。 */
 export const pages: Record<string, ComponentType> = {
+  'mall/spec/index': lazy(() => import('../modules/mall/catalog/pages/SpecPage')),
+  'mall/spec-value/index': lazy(() =>
+    import('../modules/mall/catalog/pages/SpecPage').then((m) => ({ default: m.SpecValuePage })),
+  ),
+  'trade/delivery/express/index': lazy(() =>
+    import('../modules/trade/delivery/pages/DeliveryPage').then((m) => ({
+      default: m.ExpressPage,
+    })),
+  ),
+  'trade/delivery/express-template/index': lazy(() =>
+    import('../modules/trade/delivery/pages/DeliveryPage').then((m) => ({
+      default: m.ExpressTemplatePage,
+    })),
+  ),
+  'trade/config/index': lazy(() => import('../modules/trade/config/pages/TradeConfigPage')),
+  'trade/pick-up-store/index': lazy(() =>
+    import('../modules/trade/pickup/pages/PickUpStorePage').then((m) => ({
+      default: m.PickUpStorePage,
+    })),
+  ),
+  'trade/pick-up-verify/index': lazy(() =>
+    import('../modules/trade/pickup/pages/PickUpVerifyPage').then((m) => ({
+      default: m.PickUpVerifyPage,
+    })),
+  ),
+  'trade/brokerage/index': lazy(() =>
+    import('../modules/trade/brokerage/pages/BrokeragePage').then((m) => ({
+      default: m.BrokeragePage,
+    })),
+  ),
+  'trade/payment/index': lazy(() =>
+    import('../modules/trade/payment/pages/PaymentPage').then((m) => ({ default: m.PaymentPage })),
+  ),
+  'trade/payment-refund/index': lazy(() =>
+    import('../modules/trade/payment/pages/PaymentPage').then((m) => ({
+      default: m.PaymentRefundPage,
+    })),
+  ),
+  'trade/payment-channel/index': lazy(() =>
+    import('../modules/trade/payment/pages/PaymentPage').then((m) => ({
+      default: m.PaymentChannelPage,
+    })),
+  ),
+  'trade/pay-app/index': lazy(() =>
+    import('../modules/trade/payment/pages/PayConfigPage').then((m) => ({ default: m.PayAppPage })),
+  ),
+  'trade/pay-channel/index': lazy(() =>
+    import('../modules/trade/payment/pages/PayConfigPage').then((m) => ({
+      default: m.PayChannelConfigPage,
+    })),
+  ),
+  'trade/pay-notify/index': lazy(() =>
+    import('../modules/trade/payment/pages/PayNotifyTaskPage').then((m) => ({
+      default: m.PayNotifyTaskPage,
+    })),
+  ),
+  'trade/wallet/index': lazy(() =>
+    import('../modules/trade/payment/pages/WalletPage').then((m) => ({ default: m.WalletPage })),
+  ),
+  'trade/recharge-package/index': lazy(() =>
+    import('../modules/trade/payment/pages/RechargePage').then((m) => ({
+      default: m.RechargePackagePage,
+    })),
+  ),
+  'trade/wallet-recharge/index': lazy(() =>
+    import('../modules/trade/payment/pages/RechargePage').then((m) => ({
+      default: m.WalletRechargePage,
+    })),
+  ),
+  'trade/wallet-transfer/index': lazy(() =>
+    import('../modules/trade/payment/pages/WalletPage').then((m) => ({
+      default: m.WalletTransferPage,
+    })),
+  ),
+  'mall/promotion/reward-activity/index': lazy(() =>
+    import('../modules/mall/promotion/pages/ActivityPage').then((m) => ({
+      default: m.RewardActivityPage,
+    })),
+  ),
+  'mall/promotion/discount-activity/index': lazy(() =>
+    import('../modules/mall/promotion/pages/ActivityPage').then((m) => ({
+      default: m.DiscountActivityPage,
+    })),
+  ),
+  'mall/promotion/seckill-config/index': lazy(() =>
+    import('../modules/mall/promotion/pages/SeckillPage').then((m) => ({
+      default: m.SeckillConfigPage,
+    })),
+  ),
+  'mall/promotion/seckill-activity/index': lazy(() =>
+    import('../modules/mall/promotion/pages/SeckillPage').then((m) => ({
+      default: m.SeckillActivityPage,
+    })),
+  ),
+  'mall/promotion/combination-activity/index': lazy(() =>
+    import('../modules/mall/promotion/pages/CombinationPage').then((m) => ({
+      default: m.CombinationActivityPage,
+    })),
+  ),
+  'mall/promotion/combination-record/index': lazy(() =>
+    import('../modules/mall/promotion/pages/CombinationPage').then((m) => ({
+      default: m.CombinationRecordPage,
+    })),
+  ),
+  'mall/promotion/bargain-activity/index': lazy(() =>
+    import('../modules/mall/promotion/pages/BargainPage').then((m) => ({
+      default: m.BargainActivityPage,
+    })),
+  ),
+  'mall/promotion/bargain-record/index': lazy(() =>
+    import('../modules/mall/promotion/pages/BargainPage').then((m) => ({
+      default: m.BargainRecordPage,
+    })),
+  ),
+  'mall/promotion/point-activity/index': lazy(() =>
+    import('../modules/mall/promotion/pages/PointPage').then((m) => ({
+      default: m.PointActivityPage,
+    })),
+  ),
+  'mall/promotion/banner/index': lazy(() =>
+    import('../modules/mall/promotion/pages/BannerPage').then((m) => ({
+      default: m.BannerPage,
+    })),
+  ),
+  'mall/promotion/kefu/index': lazy(() =>
+    import('../modules/mall/promotion/pages/KefuPage').then((m) => ({
+      default: m.KefuPage,
+    })),
+  ),
+  'mall/promotion/diy/index': lazy(() =>
+    import('../modules/mall/promotion/pages/DiyPage').then((m) => ({
+      default: m.DiyPageView,
+    })),
+  ),
+  'mall/comment/index': lazy(() => import('../modules/mall/catalog/pages/CommentPage')),
+  'member/user/index': lazy(() => import('../modules/member/account/pages/MemberUserPage')),
+  'member/level/index': lazy(() =>
+    import('../modules/member/account/pages/MemberMetadataPage').then((m) => ({
+      default: m.MemberLevelPage,
+    })),
+  ),
+  'member/group/index': lazy(() =>
+    import('../modules/member/account/pages/MemberMetadataPage').then((m) => ({
+      default: m.MemberGroupPage,
+    })),
+  ),
+  'member/tag/index': lazy(() =>
+    import('../modules/member/account/pages/MemberMetadataPage').then((m) => ({
+      default: m.MemberTagPage,
+    })),
+  ),
+  'member/record/index': lazy(() => import('../modules/member/account/pages/MemberRecordPage')),
+  'member/config/index': lazy(() => import('../modules/member/account/pages/MemberConfigPage')),
+  'mall/category/index': lazy(() => import('../modules/mall/catalog/pages/CategoryPage')),
+  'mall/brand/index': lazy(() => import('../modules/mall/catalog/pages/BrandPage')),
+  'mall/spu/index': lazy(() => import('../modules/mall/catalog/pages/SpuPage')),
+  'mall/coupon/records': lazy(() => import('../modules/mall/checkout/pages/CouponRecordPage')),
+  'mall/coupon/index': lazy(() => import('../modules/mall/checkout/pages/CouponTemplatePage')),
+  'trade/order/index': lazy(
+    () => import('../modules/trade/fulfillment/pages/OrderFulfillmentPage'),
+  ),
+  'trade/refund/index': lazy(() => import('../modules/trade/fulfillment/pages/RefundRequestPage')),
   'home/index': lazy(() => import('../modules/home/pages/HomePage')),
   'system/operlog/index': lazy(() => import('../modules/system/log/pages/OperationLogPage')),
   'system/logininfor/index': lazy(() => import('../modules/system/log/pages/LoginLogPage')),

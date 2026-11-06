@@ -2,11 +2,13 @@ package com.lemnt.common.snowflake.core;
 
 import com.lemnt.common.core.constant.CacheConstants;
 import com.lemnt.common.snowflake.properties.SnowflakeProperties;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.context.SmartLifecycle;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
@@ -31,8 +33,10 @@ public class WorkerIdAssigner implements SmartLifecycle {
     private final String instanceId;
     private volatile boolean running;
 
-    public WorkerIdAssigner(StringRedisTemplate stringRedisTemplate,
-                            SnowflakeProperties properties, String serviceName) {
+    public WorkerIdAssigner(
+        StringRedisTemplate stringRedisTemplate,
+        SnowflakeProperties properties,
+        String serviceName) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.properties = properties;
         this.serviceName = serviceName;
@@ -87,14 +91,19 @@ public class WorkerIdAssigner implements SmartLifecycle {
             String currentOwner = stringRedisTemplate.opsForValue().get(workerKey);
             // key 已过期或被其他实例抢占
             if (!instanceId.equals(currentOwner)) {
-                log.warn("WorkerId ownership lost, re-assigning. workerId={}, expected={}, actual={}",
-                        workerId, instanceId, currentOwner);
+                log.warn(
+                    "WorkerId ownership lost, re-assigning. workerId={}, expected={}, actual={}",
+                    workerId,
+                    instanceId,
+                    currentOwner);
                 init();
                 log.warn("WorkerId re-assigned: {} | instance={}", workerId, instanceId);
                 return;
             }
             // 续期
-            Boolean success = stringRedisTemplate.expire(workerKey, Duration.ofSeconds(properties.getExpireSeconds()));
+            Boolean success =
+                stringRedisTemplate.expire(
+                    workerKey, Duration.ofSeconds(properties.getExpireSeconds()));
             if (!Boolean.TRUE.equals(success)) {
                 log.warn("WorkerId lease renewal failed, re-assigning. workerId={}", workerId);
                 init();
@@ -114,11 +123,13 @@ public class WorkerIdAssigner implements SmartLifecycle {
         for (int i = 0; i < properties.getMaxWorkerId(); i++) {
             String key = buildKey(i);
 
-            Boolean success = stringRedisTemplate.opsForValue().setIfAbsent(
-                    key,
-                    instanceId,
-                    Duration.ofSeconds(properties.getExpireSeconds())
-            );
+            Boolean success =
+                stringRedisTemplate
+                    .opsForValue()
+                    .setIfAbsent(
+                        key,
+                        instanceId,
+                        Duration.ofSeconds(properties.getExpireSeconds()));
 
             if (Boolean.TRUE.equals(success)) {
                 this.workerId = i;
@@ -131,11 +142,12 @@ public class WorkerIdAssigner implements SmartLifecycle {
     }
 
     private String buildKey(int workerId) {
-        return String.format(CacheConstants.SNOWFLAKE_WORKER_KEY,
-                properties.getEnv(),
-                serviceName,
-                properties.getDatacenterId(),
-                workerId);
+        return String.format(
+            CacheConstants.SNOWFLAKE_WORKER_KEY,
+            properties.getEnv(),
+            serviceName,
+            properties.getDatacenterId(),
+            workerId);
     }
 
     private String buildInstanceId() {
@@ -147,5 +159,4 @@ public class WorkerIdAssigner implements SmartLifecycle {
             return UUID.randomUUID().toString();
         }
     }
-
 }

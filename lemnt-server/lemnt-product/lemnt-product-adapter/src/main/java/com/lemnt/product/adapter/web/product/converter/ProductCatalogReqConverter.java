@@ -1,0 +1,194 @@
+package com.lemnt.product.adapter.web.product.converter;
+
+import com.lemnt.product.adapter.web.product.req.ProductBrandSaveReq;
+import com.lemnt.product.adapter.web.product.req.ProductCategorySaveReq;
+import com.lemnt.product.adapter.web.product.req.MallBrandCreateReq;
+import com.lemnt.product.adapter.web.product.req.MallBrandUpdateReq;
+import com.lemnt.product.adapter.web.product.req.MallCategoryCreateReq;
+import com.lemnt.product.adapter.web.product.req.MallCategoryUpdateReq;
+import com.lemnt.product.adapter.web.product.req.ProductSpuCreateReq;
+import com.lemnt.product.adapter.web.product.req.ProductSpuPageReq;
+import com.lemnt.product.adapter.web.product.req.ProductSpuShelfReq;
+import com.lemnt.product.adapter.web.product.req.ProductSpuUpdateReq;
+import com.lemnt.product.application.product.cmd.ProductBrandSaveCmd;
+import com.lemnt.product.application.product.cmd.ProductCategorySaveCmd;
+import com.lemnt.product.application.product.cmd.ProductSpuCreateCmd;
+import com.lemnt.product.application.product.cmd.ProductSpuShelfCmd;
+import com.lemnt.product.application.product.cmd.ProductSpuUpdateCmd;
+import com.lemnt.product.application.product.qry.ProductSpuPageQry;
+import com.lemnt.product.domain.product.model.ProductSku;
+import com.lemnt.product.domain.product.model.ProductSkuSpec;
+
+/**
+ * 目录请求转换器。
+ */
+public final class ProductCatalogReqConverter {
+    private ProductCatalogReqConverter() {
+    }
+
+    /**
+     * 分类。
+     */
+    public static ProductCategorySaveCmd category(Long id, ProductCategorySaveReq req) {
+        return new ProductCategorySaveCmd(
+            id, req.parentId(), req.name(), req.picUrl(), req.sort(), req.status());
+    }
+
+    /**
+     * 品牌。
+     */
+    public static ProductBrandSaveCmd brand(Long id, ProductBrandSaveReq req) {
+        return new ProductBrandSaveCmd(
+            id, req.name(), req.picUrl(), req.description(), req.sort(), req.status());
+    }
+
+    /**
+     * 创建。
+     */
+    public static ProductSpuCreateCmd create(ProductSpuCreateReq req) {
+        return new ProductSpuCreateCmd(
+            req.code(),
+            req.name(),
+            req.categoryId(),
+            req.brandId(),
+            req.description(),
+            req.image(),
+            req.skus().stream()
+                .map(
+                    s ->
+                        new ProductSpuCreateCmd.ProductSkuDraft(
+                            s.code(),
+                            s.name(),
+                            s.price(),
+                            s.stock(),
+                            s.image(),
+                            s.specs() == null
+                                ? null
+                                : s.specs().stream()
+                                .map(
+                                    property ->
+                                        new ProductSpuCreateCmd
+                                            .ProductSkuDraft
+                                            .Spec(
+                                            property
+                                                .specId(),
+                                            property
+                                                .specName(),
+                                            property
+                                                .specValueId(),
+                                            property
+                                                .specValueName()))
+                                .toList(),
+                            s.weight(),
+                            s.volume()))
+                .toList(),
+            req.deliveryTypes(),
+            req.deliveryTemplateId(),
+            req.keyword(),
+            req.introduction(),
+            req.sliderPicUrls(),
+            req.sort());
+    }
+
+    /**
+     * 更新。
+     */
+    public static ProductSpuUpdateCmd update(Long id, ProductSpuUpdateReq req) {
+        return new ProductSpuUpdateCmd(
+            id,
+            req.name(),
+            req.categoryId(),
+            req.brandId(),
+            req.description(),
+            req.image(),
+            req.skus().stream()
+                .map(
+                    sku ->
+                        new ProductSku(
+                            sku.id(),
+                            id,
+                            sku.code(),
+                            sku.name(),
+                            sku.price(),
+                            sku.stock(),
+                            sku.image(),
+                            sku.specs() == null
+                                ? null
+                                : sku.specs().stream()
+                                .map(
+                                    property ->
+                                        new ProductSkuSpec(
+                                            property
+                                                .specId(),
+                                            property
+                                                .specName(),
+                                            property
+                                                .specValueId(),
+                                            property
+                                                .specValueName()))
+                                .toList(),
+                            "ON_SHELF",
+                            sku.weight(),
+                            sku.volume()))
+                .toList(),
+            req.deliveryTypes(),
+            req.deliveryTemplateId(),
+            req.keyword(),
+            req.introduction(),
+            req.sliderPicUrls(),
+            req.sort());
+    }
+
+    /**
+     * 转换分页查询或分页响应。
+     */
+    public static ProductSpuPageQry page(ProductSpuPageReq req) {
+        return new ProductSpuPageQry(
+            req.name(),
+            req.status(),
+            req.pageNum(),
+            req.pageSize(),
+            req.categoryId(),
+            req.brandId(),
+            req.stockStatus());
+    }
+
+    /**
+     * 上架状态。
+     */
+    public static ProductSpuShelfCmd shelf(Long id, ProductSpuShelfReq req) {
+        return new ProductSpuShelfCmd(id, req.onShelf());
+    }
+
+    /**
+     * 分类。
+     */
+    public static ProductCategorySaveCmd category(Long id, MallCategoryCreateReq req) {
+        return new ProductCategorySaveCmd(
+            id, req.parentId(), req.name(), req.picUrl(), req.sort(), req.status());
+    }
+
+    /**
+     * 分类。
+     */
+    public static ProductCategorySaveCmd category(Long id, MallCategoryUpdateReq req) {
+        return new ProductCategorySaveCmd(
+            id, req.parentId(), req.name(), req.picUrl(), req.sort(), req.status());
+    }
+
+    /**
+     * 品牌。
+     */
+    public static ProductBrandSaveCmd brand(Long id, MallBrandCreateReq req) {
+        return new ProductBrandSaveCmd(
+            id, req.name(), req.picUrl(), req.description(), req.sort(), req.status());
+    }
+
+    /**
+     * 品牌。
+     */
+    public static ProductBrandSaveCmd brand(Long id, MallBrandUpdateReq req) {
+        return new ProductBrandSaveCmd(
+            id, req.name(), req.picUrl(), req.description(), req.sort(), req.status());
+    }
+}

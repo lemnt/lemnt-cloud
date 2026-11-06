@@ -1,9 +1,10 @@
 package com.lemnt.common.security.config;
 
+import com.lemnt.common.security.interceptor.HeaderInterceptor;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import com.lemnt.common.security.interceptor.HeaderInterceptor;
 
 /**
  * 拦截器配置
@@ -20,9 +21,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(getHeaderInterceptor())
-                .addPathPatterns("/**")
-                .excludePathPatterns(excludeUrls)
-                .order(-10);
+            .addPathPatterns("/**")
+            .excludePathPatterns(excludeUrls)
+            .order(-10);
     }
 
     /**

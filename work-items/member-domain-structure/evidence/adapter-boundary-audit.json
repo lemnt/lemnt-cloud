@@ -1,0 +1,27 @@
+{
+  "topLevelPackages": [
+    "app",
+    "web"
+  ],
+  "domainPackages": {
+    "app": [
+      "address",
+      "growth",
+      "user"
+    ],
+    "web": [
+      "address",
+      "growth",
+      "user"
+    ]
+  },
+  "retainedHttpOperations": 67,
+  "changedHttpOperations": 0,
+  "crossEntryAdapterImports": 0,
+  "tests": {
+    "tests": 54,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

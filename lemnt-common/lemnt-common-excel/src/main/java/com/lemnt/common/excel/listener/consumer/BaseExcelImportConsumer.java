@@ -6,8 +6,10 @@ import com.lemnt.common.excel.factory.ExcelImportTaskFactory;
 import com.lemnt.common.excel.listener.task.BaseExcelImportTask;
 import com.lemnt.common.excel.service.BaseExcelTaskService;
 import com.lemnt.common.mq.consumer.BaseConsumer;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 基础表格导入消费者

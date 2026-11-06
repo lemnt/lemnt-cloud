@@ -1,8 +1,8 @@
 package com.lemnt.system.domain.org.gateway;
 
-import java.util.List;
-
 import com.lemnt.system.domain.org.model.Dept;
+
+import java.util.List;
 
 /**
  * 部门管理 Gateway 端口
@@ -10,7 +10,6 @@ import com.lemnt.system.domain.org.model.Dept;
  * @author wangxx
  */
 public interface DeptGateway {
-
     /**
      * 查询部门列表
      *
@@ -58,14 +57,6 @@ public interface DeptGateway {
      * @return 结果
      */
     Boolean hasChildByDeptId(Long deptId);
-
-    /**
-     * 查询部门是否存在用户
-     *
-     * @param deptId 部门ID
-     * @return 结果
-     */
-    Boolean checkDeptExistUser(Long deptId);
 
     /**
      * 校验部门名称是否唯一

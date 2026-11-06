@@ -1,0 +1,33 @@
+# Nacos Data ID: lemnt-product.yaml，组/命名空间与本服务启动配置保持一致。
+# 仅配置源；先核对迁移与旧写入方，再部署。连接信息必须由环境注入。
+# Redis、认证、指标等公共配置沿用lemnt-common.yaml，保留旧结算恢复键与锁命名空间。
+spring:
+  datasource:
+    dynamic:
+      primary: master
+      strict: true
+      datasource:
+        master:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: ${PRODUCT_DB_URL}
+          username: ${PRODUCT_DB_USERNAME}
+          password: ${PRODUCT_DB_PASSWORD}
+
+dubbo:
+  application:
+    name: ${spring.application.name}
+  registry:
+    address: nacos://${NACOS_SERVER_ADDR:127.0.0.1:8848}
+    username: ${NACOS_USERNAME:}
+    password: ${NACOS_PASSWORD:}
+    parameters:
+      namespace: ${NACOS_NAMESPACE:}
+      group: ${NACOS_GROUP:DEFAULT_GROUP}
+  protocol:
+    name: dubbo
+    port: ${PRODUCT_DUBBO_PORT:20884}
+  consumer:
+    # 资金/资源结果未知时由应用按原业务号查询，不做框架层隐式写重试。
+    retries: 0
+    timeout: ${DUBBO_TIMEOUT_MS:10000}
+

@@ -1,0 +1,36 @@
+{
+  "modules": {
+    "auth": {
+      "controllers": 2,
+      "tableGateways": 3,
+      "otherGateways": 6
+    },
+    "system": {
+      "controllers": 21,
+      "tableGateways": 16,
+      "otherGateways": 2
+    },
+    "mall": {
+      "controllers": 8,
+      "tableGateways": 7,
+      "otherGateways": 0
+    },
+    "trade": {
+      "controllers": 19,
+      "tableGateways": 25,
+      "otherGateways": 5
+    },
+    "open": {
+      "controllers": 1,
+      "tableGateways": 0,
+      "otherGateways": 0
+    }
+  },
+  "layerViolations": [],
+  "sharedDirectHttpReqRes": {},
+  "clientTypesChecked": 19,
+  "clientMethodContractsUnchanged": true,
+  "preservedNonHttpAdapters": [
+    "system.adapter.mq.log.OperLogConsumer"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "batch": "161-business-config-migration",
+  "date": "2026-11-02",
+  "baseRevision": "a457e0e7",
+  "configGroups": {
+    "member_config": "member.point.config",
+    "trade_config": "trade.config"
+  },
+  "tests": {
+    "system": 142,
+    "member": 119,
+    "trade": 282,
+    "mall": 45,
+    "total": 588,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "mallScope": "dependency modules only, not full mall adapter/start",
+  "storage": "sys_config LONGTEXT config_value, unique config_key, full JSON upsert",
+  "evidence": [
+    "production DDL with H2 COLLATE adaptation",
+    "production migration SQL and actual Mapper",
+    "audit and concurrent uniqueness",
+    "system transaction rollback",
+    "protected generic mutation endpoints",
+    "business Gateway JSON and RPC failure propagation",
+    "delivery lock release after commit/rollback",
+    "existing HTTP/business integration regressions"
+  ],
+  "notRun": [
+    "existing MySQL migration",
+    "cross-process Dubbo",
+    "deployed gateway/browser",
+    "Redis cluster",
+    "UI/device",
+    "real payment channels"
+  ],
+  "log": "/private/tmp/config-migration-full-tests.log",
+  "databaseChanged": false,
+  "commitPush": false
+}

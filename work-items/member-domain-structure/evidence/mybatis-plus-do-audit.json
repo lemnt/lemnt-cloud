@@ -1,0 +1,346 @@
+[
+  {
+    "module": "member",
+    "mapper": "MemberTagLinkMapper",
+    "entity": "MemberTagLinkDO",
+    "table": "member_tag_link",
+    "key": "composite",
+    "defaultMethods": 3
+  },
+  {
+    "module": "member",
+    "mapper": "MemberTagMapper",
+    "entity": "TagDO",
+    "table": "member_tag",
+    "key": "AUTO",
+    "defaultMethods": 6
+  },
+  {
+    "module": "member",
+    "mapper": "MemberUserMapper",
+    "entity": "MemberDO",
+    "table": "member_user",
+    "key": "AUTO",
+    "defaultMethods": 12
+  },
+  {
+    "module": "member",
+    "mapper": "MemberGroupMapper",
+    "entity": "GroupDO",
+    "table": "member_group",
+    "key": "AUTO",
+    "defaultMethods": 6
+  },
+  {
+    "module": "member",
+    "mapper": "MemberConfigMapper",
+    "entity": "ConfigDO",
+    "table": "member_config",
+    "key": "INPUT",
+    "defaultMethods": 2
+  },
+  {
+    "module": "member",
+    "mapper": "MemberLevelMapper",
+    "entity": "LevelDO",
+    "table": "member_level",
+    "key": "AUTO",
+    "defaultMethods": 4
+  },
+  {
+    "module": "member",
+    "mapper": "MemberSignRecordMapper",
+    "entity": "SignRecordDO",
+    "table": "member_sign_record",
+    "key": "AUTO",
+    "defaultMethods": 7
+  },
+  {
+    "module": "member",
+    "mapper": "MemberSignConfigMapper",
+    "entity": "SignConfigDO",
+    "table": "member_sign_config",
+    "key": "INPUT",
+    "defaultMethods": 2
+  },
+  {
+    "module": "member",
+    "mapper": "MemberLevelRecordMapper",
+    "entity": "LevelRecordDO",
+    "table": "member_level_record",
+    "key": "AUTO",
+    "defaultMethods": 6
+  },
+  {
+    "module": "member",
+    "mapper": "MemberAssetRecordMapper",
+    "entity": "AssetRecordDO",
+    "table": "member_asset_record",
+    "key": "AUTO",
+    "defaultMethods": 7
+  },
+  {
+    "module": "member",
+    "mapper": "MemberAddressMapper",
+    "entity": "AddressDO",
+    "table": "member_address",
+    "key": "AUTO",
+    "defaultMethods": 6
+  },
+  {
+    "module": "mall",
+    "mapper": "CategoryMapper",
+    "entity": "CategoryDO",
+    "table": "mall_category",
+    "key": "AUTO",
+    "defaultMethods": 5
+  },
+  {
+    "module": "mall",
+    "mapper": "SpuMapper",
+    "entity": "SpuDO",
+    "table": "mall_spu",
+    "key": "AUTO",
+    "defaultMethods": 6
+  },
+  {
+    "module": "mall",
+    "mapper": "BrandMapper",
+    "entity": "BrandDO",
+    "table": "mall_brand",
+    "key": "AUTO",
+    "defaultMethods": 5
+  },
+  {
+    "module": "mall",
+    "mapper": "StockAdjustmentMapper",
+    "entity": "StockAdjustmentDO",
+    "table": "mall_stock_adjustment",
+    "key": "INPUT",
+    "defaultMethods": 3
+  },
+  {
+    "module": "mall",
+    "mapper": "SkuPropertyMapper",
+    "entity": "SkuPropertyDO",
+    "table": "mall_sku_property",
+    "key": "composite",
+    "defaultMethods": 2
+  },
+  {
+    "module": "mall",
+    "mapper": "StockReservationMapper",
+    "entity": "StockReservationDO",
+    "table": "mall_stock_reservation",
+    "key": "AUTO",
+    "defaultMethods": 0
+  },
+  {
+    "module": "mall",
+    "mapper": "ProductMapper",
+    "entity": "ProductDO",
+    "table": "mall_product",
+    "key": "AUTO",
+    "defaultMethods": 0
+  },
+  {
+    "module": "trade",
+    "mapper": "PromotionMemberCounterMapper",
+    "entity": "PromotionMemberCounterDO",
+    "table": "trade_promotion_member_counter",
+    "key": "composite",
+    "defaultMethods": 0
+  },
+  {
+    "module": "trade",
+    "mapper": "PromotionUsageMapper",
+    "entity": "PromotionUsageDO",
+    "table": "trade_promotion_usage",
+    "key": "composite",
+    "defaultMethods": 1
+  },
+  {
+    "module": "trade",
+    "mapper": "PromotionCounterMapper",
+    "entity": "PromotionCounterDO",
+    "table": "trade_promotion_counter",
+    "key": "INPUT",
+    "defaultMethods": 1
+  },
+  {
+    "module": "trade",
+    "mapper": "PromotionScopeMapper",
+    "entity": "PromotionScopeDO",
+    "table": "trade_promotion_scope",
+    "key": "composite",
+    "defaultMethods": 1
+  },
+  {
+    "module": "trade",
+    "mapper": "PromotionVersionMapper",
+    "entity": "PromotionVersionDO",
+    "table": "trade_promotion_version",
+    "key": "composite",
+    "defaultMethods": 2
+  },
+  {
+    "module": "trade",
+    "mapper": "PromotionRootMapper",
+    "entity": "PromotionRootDO",
+    "table": "trade_promotion_root",
+    "key": "AUTO",
+    "defaultMethods": 3
+  },
+  {
+    "module": "trade",
+    "mapper": "PromotionRequestMapper",
+    "entity": "PromotionRequestDO",
+    "table": "trade_promotion_admin_request",
+    "key": "composite",
+    "defaultMethods": 0
+  },
+  {
+    "module": "trade",
+    "mapper": "PromotionUsageEventMapper",
+    "entity": "PromotionUsageEventDO",
+    "table": "trade_promotion_usage_event",
+    "key": "AUTO",
+    "defaultMethods": 0
+  },
+  {
+    "module": "trade",
+    "mapper": "TradeOutboxMapper",
+    "entity": "TradeOutboxDO",
+    "table": "trade_outbox",
+    "key": "AUTO",
+    "defaultMethods": 0
+  },
+  {
+    "module": "trade",
+    "mapper": "TradeOrderItemMapper",
+    "entity": "TradeOrderItemDO",
+    "table": "trade_order_item",
+    "key": "AUTO",
+    "defaultMethods": 0
+  },
+  {
+    "module": "trade",
+    "mapper": "TradeOrderMapper",
+    "entity": "TradeOrderDO",
+    "table": "trade_order",
+    "key": "AUTO",
+    "defaultMethods": 0
+  },
+  {
+    "module": "trade",
+    "mapper": "TradePaymentMapper",
+    "entity": "TradePaymentDO",
+    "table": "trade_payment",
+    "key": "AUTO",
+    "defaultMethods": 0
+  },
+  {
+    "module": "trade",
+    "mapper": "RefundRequestMapper",
+    "entity": "RefundRequestDO",
+    "table": "trade_refund_request",
+    "key": "INPUT",
+    "defaultMethods": 6
+  },
+  {
+    "module": "trade",
+    "mapper": "InventoryConfirmationMapper",
+    "entity": "InventoryConfirmationDO",
+    "table": "trade_inventory_confirmation",
+    "key": "INPUT",
+    "defaultMethods": 1
+  },
+  {
+    "module": "trade",
+    "mapper": "ShipmentMapper",
+    "entity": "ShipmentDO",
+    "table": "trade_shipment",
+    "key": "INPUT",
+    "defaultMethods": 2
+  },
+  {
+    "module": "trade",
+    "mapper": "CheckoutAccountMapper",
+    "entity": "CheckoutAccountDO",
+    "table": "trade_checkout_account",
+    "key": "INPUT",
+    "defaultMethods": 0
+  },
+  {
+    "module": "trade",
+    "mapper": "SettlementOrderMapper",
+    "entity": "SettlementOrderDO",
+    "table": "trade_settlement_order",
+    "key": "INPUT",
+    "defaultMethods": 0
+  },
+  {
+    "module": "trade",
+    "mapper": "CheckoutMapper",
+    "entity": "CheckoutDO",
+    "table": "trade_checkout",
+    "key": "INPUT",
+    "defaultMethods": 3
+  },
+  {
+    "module": "trade",
+    "mapper": "CartMapper",
+    "entity": "CartDO",
+    "table": "trade_cart",
+    "key": "AUTO",
+    "defaultMethods": 4
+  },
+  {
+    "module": "trade",
+    "mapper": "CheckoutCartMapper",
+    "entity": "CheckoutCartDO",
+    "table": "trade_checkout_cart",
+    "key": "composite",
+    "defaultMethods": 2
+  },
+  {
+    "module": "trade",
+    "mapper": "CouponMapper",
+    "entity": "CouponDO",
+    "table": "trade_coupon",
+    "key": "AUTO",
+    "defaultMethods": 9
+  },
+  {
+    "module": "trade",
+    "mapper": "CouponTemplateMapper",
+    "entity": "CouponTemplateDO",
+    "table": "trade_coupon_template",
+    "key": "AUTO",
+    "defaultMethods": 3
+  },
+  {
+    "module": "trade",
+    "mapper": "SettlementAbandonMapper",
+    "entity": "SettlementAbandonDO",
+    "table": "trade_settlement_abandon",
+    "key": "composite",
+    "defaultMethods": 1
+  },
+  {
+    "module": "trade",
+    "mapper": "CartAddRequestMapper",
+    "entity": "CartAdditionDO",
+    "table": "trade_cart_add_request",
+    "key": "composite",
+    "defaultMethods": 2
+  },
+  {
+    "module": "trade",
+    "mapper": "CouponPublicClaimMapper",
+    "entity": "CouponPublicClaimDO",
+    "table": "trade_coupon_public_claim",
+    "key": "INPUT",
+    "defaultMethods": 0
+  }
+]

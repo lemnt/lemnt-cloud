@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-29",
+  "scope": "小程序同页多商品逐项评价",
+  "tests": 108,
+  "failures": 0,
+  "skipped": 0,
+  "newTests": 5,
+  "verified": [
+    "相同SKU真实不同订单行",
+    "部分成功后只续提未确认项",
+    "未知结果冻结原输入",
+    "明确拒绝可修正",
+    "换号及在途响应拒绝",
+    "缺失/重复行ID和未知状态拒绝"
+  ],
+  "notRun": [
+    "真机",
+    "部署HTTP",
+    "后端/React本批未改动未重跑"
+  ],
+  "sha256": {
+    "lemnt-miniapp/pages/order-comment/index.wxml": "7458fc04111dea771187cf25cea8f372c2484d6bc420a9e0c12949fb2f3d8ef6",
+    "lemnt-miniapp/pages/order-comment/index.js": "ff195e2f216450f777c0198796c5c1086d32d483dabf132c25599cc207c87217",
+    "lemnt-miniapp/pages/order-comment/index.json": "13b77709c8f53e94be07e64cc6b91bc89b3a206716cc20e4e366256d4add9f14",
+    "lemnt-miniapp/tests/order-comment.test.cjs": "4128c2c413a0e446129ab3e20d1a3760d0dc3583e9333bc75e3d74a060f72c15",
+    "lemnt-miniapp/app.json": "81aa0d7aa5f59c771577b13d3823992f667750c538aa267876df2705de3a5b39",
+    "lemnt-miniapp/pages/index/index.js": "de60cbee65e627fda9d3c220f816a9e67da28783c1b4f5577381adb3acb40f35",
+    "lemnt-miniapp/pages/index/index.wxml": "068066181a2dba130cad2979c01e8db56301a10a884811df84fc96587199d29c",
+    "/tmp/order-comment-page-final-tests.log": "f5ee57832bb2f3c2fff42a24744791650853091ab30e53f31e43406f9bda08a6",
+    "/Users/wangxx/demo/yudao-mall-uniapp/pages/goods/comment/add.vue": "96511797eb9491f383acadf8855731c7221ccb59e4c3d0e92aa6f0bd90d7596c"
+  }
+}

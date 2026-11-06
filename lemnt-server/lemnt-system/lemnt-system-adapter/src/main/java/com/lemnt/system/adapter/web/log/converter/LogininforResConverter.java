@@ -1,10 +1,10 @@
 package com.lemnt.system.adapter.web.log.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.lemnt.system.adapter.web.log.res.LogininforRes;
 import com.lemnt.system.application.log.dto.LogininforDTO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 登录日志响应对象组装器
@@ -12,7 +12,6 @@ import com.lemnt.system.application.log.dto.LogininforDTO;
  * @author wangxx
  */
 public class LogininforResConverter {
-
     /**
      * LogininforDTO → LogininforInfoRes
      */
@@ -21,13 +20,12 @@ public class LogininforResConverter {
             return null;
         }
         return new LogininforRes(
-                dto.getInfoId(),
-                dto.getUserName(),
-                dto.getIpaddr(),
-                dto.getStatus(),
-                dto.getMsg(),
-                dto.getAccessTime()
-        );
+            dto.getInfoId(),
+            dto.getUserName(),
+            dto.getIpaddr(),
+            dto.getStatus(),
+            dto.getMsg(),
+            dto.getAccessTime());
     }
 
     /**

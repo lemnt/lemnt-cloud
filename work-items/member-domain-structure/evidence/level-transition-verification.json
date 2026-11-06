@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-30",
+  "design": "93-level-transition-design.md",
+  "backend": {
+    "member": {
+      "tests": 50,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "auth": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "mall": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "verified": [
+    "低于最低门槛保留原等级",
+    "仅停用配置保留等级",
+    "匹配低等级降级及同级不重复记日志",
+    "经验超额扣至零、原请求流水和重试稳定",
+    "积分不足继续拒绝"
+  ],
+  "notRun": [
+    "前端/小程序本批未改未重跑",
+    "真实数据库及部署HTTP"
+  ],
+  "remaining": [
+    "源零变更与现有拒绝行为差异",
+    "退款入口既有可退余额裁剪"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/service/MemberGrowthService.java": "39b3c53fc8b280ed46d0ed4ca2514fb9f87c4e0aab50a9664b5b295d62b8a6f4",
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java": "a6ed2231665ce66a1242e819e4f7e5e6828fd8ddf19a8cd7453aa51f21228416",
+    "/Users/wangxx/demo/yudao-cloud/yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/level/MemberLevelServiceImpl.java": "371f3b27c1724c8d9f4875bc96e58e49255c2792ce6e010ee72ee29b04432d80",
+    "/tmp/level-transition-verify.log": "240d929f3d8f89c5097cee71ed7c08b014d35233103cb835ec0d8cbb34160f23"
+  }
+}

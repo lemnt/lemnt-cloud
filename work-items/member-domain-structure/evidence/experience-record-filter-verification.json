@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-30",
+  "design": "95-experience-record-filter-design.md",
+  "backend": {
+    "member": {
+      "tests": 54,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "auth": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "mall": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "frontend": {
+    "tests": 199,
+    "build": "passed",
+    "lint": "passed",
+    "format:check": "passed",
+    "typecheck": "passed"
+  },
+  "verified": [
+    "H2组合条件与page/count一致",
+    "会员隔离和类型0/未知NULL区分",
+    "标题编号精确匹配",
+    "时间闭区间及单边",
+    "非法类型/逆序拒绝",
+    "MockMvc绑定及分页/长度验证",
+    "前端0与经验参数隔离"
+  ],
+  "notRun": [
+    "真实数据库",
+    "部署HTTP与浏览器E2E",
+    "小程序本批未改未重跑"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/req/MemberRecordExperienceRecordsReq.java": "d51ce1b0c75bcf378e9516cd9c4e24998ae0376433ff8847068fb0736362ce19",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/executor/MemberExperienceRecordAllPageQueryExe.java": "df54746947c8548e74118c1a6f6e1f3b9a0295ac05e5a66fb2d310da5d5b0f27",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/resources/mapper/MemberExperienceRecordMapper.xml": "3d2855002664979edb711e8071952062ad2aa698ce298a97bdb11adccc6d4cb4",
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java": "ca2859a3d4c34cd69051be2c726c1cf8fad906fb18e62cd6f123a11d99bb5dbb",
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberExperienceRecordHttpTest.java": "2dade78f9976aaa0f616c14884f7810c8c006906d6e569b74fbfd71d3d7c22df",
+    "lemnt-ui/src/modules/member/account/pages/MemberRecordPage.tsx": "2cd2aa55398d9db6c5091cbdf9598130ff06e573e3529e78a00cdb7534ee843e",
+    "lemnt-ui/src/modules/member/account/api/memberApi.test.ts": "7bda5d27e282e38e2aa386787a011996a1b0294f8ca002e97f30ccb3f43fe861",
+    "/tmp/experience-filter-source-verify.log": "1eeefa97a9f3edc468c40fb908fa75d27dbd2acd6849729f568995dc4ce6bd33",
+    "/tmp/experience-filter-ui-final-tests.log": "e4e1e0b835bc1ad3120859de21214d4f5213200eea3f1ced4b19cc89fb877b29"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-31",
+  "scope": "gateway cannot depend on Dubbo",
+  "source": "no Dubbo imports or references in gateway main source",
+  "dependencyTree": "no Dubbo or auth/member client matches",
+  "packagedForbiddenLibraries": [],
+  "gatewayTests": {
+    "tests": 34,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "verify": "passed",
+  "negativeCheck": "injecting lemnt-common-dubbo into temporary sibling POM rejected by BannedDependencies; temporary POM removed",
+  "logs": [
+    "/tmp/gateway-dubbo-dependency-check.log",
+    "/tmp/gateway-no-dubbo-verify.log",
+    "/tmp/gateway-no-dubbo-negative-check.log"
+  ],
+  "commit": false
+}

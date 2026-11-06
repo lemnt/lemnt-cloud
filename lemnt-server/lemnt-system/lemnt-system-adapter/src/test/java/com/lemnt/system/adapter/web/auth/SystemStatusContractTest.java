@@ -43,7 +43,10 @@ class SystemStatusContractTest {
             }
             for (String status : new String[]{"0", "3", "12", ""}) {
                 assertThat(validator.validate(new UserStatusUpdateReq(4L, status)))
-                        .anySatisfy(violation -> assertThat(violation.getPropertyPath().toString()).isEqualTo("status"));
+                    .anySatisfy(
+                        violation ->
+                            assertThat(violation.getPropertyPath().toString())
+                                .isEqualTo("status"));
             }
         }
     }

@@ -18,9 +18,9 @@ import java.io.Serializable;
 @Data
 @Accessors(chain = true)
 public class UserInfoRole implements Serializable {
-
     @Serial
     private static final long serialVersionUID = -1397036721959406735L;
+
     /**
      * 角色ID
      */

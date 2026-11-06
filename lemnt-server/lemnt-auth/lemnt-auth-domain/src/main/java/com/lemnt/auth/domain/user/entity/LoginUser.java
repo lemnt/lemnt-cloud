@@ -18,6 +18,7 @@ public class LoginUser implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -8909255772679256115L;
+
     /**
      * 用户唯一标识
      */

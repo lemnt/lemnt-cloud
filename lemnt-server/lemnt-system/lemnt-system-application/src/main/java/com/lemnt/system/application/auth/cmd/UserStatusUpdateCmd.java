@@ -8,13 +8,13 @@ import java.io.Serializable;
  * @author wangxx
  */
 public record UserStatusUpdateCmd(
-        /**
-         * 用户ID
-         */
-        Long userId,
-        /**
-         * 账号状态（1正常 2停用）
-         */
-        String status
-) implements Serializable {
+    /**
+     * 用户ID
+     */
+    Long userId,
+    /**
+     * 账号状态（1正常 2停用）
+     */
+    String status)
+    implements Serializable {
 }

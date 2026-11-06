@@ -1,0 +1,30 @@
+{
+  "version": "promotion-v1/T3",
+  "date": "2026-10-26 Asia/Shanghai",
+  "baseCommit": "35fc8ec0652404b8302785de5a82fa3fdfe742c0",
+  "status": "PASS_LOCAL_ONLY",
+  "java": "17",
+  "maven": "3.9.11",
+  "reactorProjects": 71,
+  "testSuites": 87,
+  "tests": 481,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "newTests": 26,
+  "newCoverage": {
+    "mallSql": 3,
+    "rpcProvider": 3,
+    "rpcConsumer": 5,
+    "adminHttpAndTradeSql": 14,
+    "permissionSeed": 1
+  },
+  "adminEndpoints": 6,
+  "pricingRpcMethods": 2,
+  "schemaCorrection": "revision/expectedRevision minimum0 consistent with T2 initial state;int32 JSON integer;nullable fields explicit",
+  "authorityBoundary": "MockMvc uses real AuthLogic/SecurityUser permission context and actual trade Mapper/services/proxies. Scope RPC is a test bridge;provider and consumer and actual mall SQL verified separately,not live Dubbo/session/gateway proof.",
+  "notImplemented": "T4 V2 cached checkout and order pricing snapshots,T5 worker/payment-close/outbox/compensation,T6 pages,T7 live verification",
+  "reactNative": "NOT RUN: unchanged",
+  "targetMySqlRedisNacosDubboProvidersBrowserNativeDevice": "NOT RUN",
+  "productionReady": false
+}

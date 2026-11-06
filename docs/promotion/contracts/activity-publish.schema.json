@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lemnt:promotion:design:activity-publish",
+  "title": "activity-publish（T3后台本地验证；V2购买链路未接入）",
+  "type": "object",
+  "properties": {
+    "requestNo": {
+      "type": "string",
+      "description": "幂等请求编号，重试不可改变",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"
+    },
+    "expectedRevision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2147483647,
+      "description": "当前修订号"
+    }
+  },
+  "required": [
+    "requestNo",
+    "expectedRevision"
+  ],
+  "additionalProperties": false
+}

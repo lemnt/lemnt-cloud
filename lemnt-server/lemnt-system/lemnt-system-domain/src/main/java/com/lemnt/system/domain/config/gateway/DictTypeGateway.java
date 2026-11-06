@@ -3,7 +3,6 @@ package com.lemnt.system.domain.config.gateway;
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.system.domain.config.model.DictType;
-import com.lemnt.system.domain.config.model.DictData;
 
 import java.util.List;
 
@@ -13,7 +12,6 @@ import java.util.List;
  * @author wangxx
  */
 public interface DictTypeGateway {
-
     /**
      * 根据字典类型ID查询信息
      *
@@ -71,35 +69,10 @@ public interface DictTypeGateway {
     Boolean deleteByIds(List<Long> dictIds);
 
     /**
-     * 清空字典缓存
-     */
-    void clearCache();
-
-    /**
-     * 重置字典缓存
-     */
-    void resetCache();
-
-    /**
-     * 清除指定类型的字典缓存
-     *
-     * @param dictType 字典类型
-     */
-    void clearCacheByType(String dictType);
-
-    /**
      * 校验字典类型是否唯一
      *
      * @param dictType 字典类型
      * @return 字典类型信息
      */
     DictType checkDictTypeUnique(String dictType);
-
-    /**
-     * 根据字典类型查询字典数据
-     *
-     * @param dictType 字典类型
-     * @return 字典数据集合
-     */
-    List<DictData> selectDictDataByType(String dictType);
 }

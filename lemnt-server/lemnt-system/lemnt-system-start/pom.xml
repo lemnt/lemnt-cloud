@@ -30,6 +30,24 @@
             <groupId>com.lemnt</groupId>
             <artifactId>lemnt-common-start</artifactId>
         </dependency>
+
+        <!-- 指标监控 -->
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-metrics</artifactId>
+        </dependency>
+
+        <!-- SQL监控 -->
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>lemnt-common-sql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

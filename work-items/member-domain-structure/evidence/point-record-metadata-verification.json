@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-30",
+  "backend": {
+    "lemnt-member": {
+      "tests": 37,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-auth": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-mall": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "reactTests": 194,
+  "miniappTests": 117,
+  "remaining": [
+    "独立积分表",
+    "bizType数值契约及筛选",
+    "未验证真实部署"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java": "c211d76a30870337557b5242bbe9309d7c0b3ecab948e2922e045a71d0747338",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/dto/AssetRecordDTO.java": "af7271d74df7f109fef2d22d8c7252b1da80c64b4a2a22d2c15c2fac2773bea0",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/service/MemberGrowthService.java": "d36d819dbcd89eeb7574d4354ae66118aa504e7f9eea8ac2a8c3597b84fd7800",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/resources/mapper/MemberAssetRecordMapper.xml": "b0b6a1251752bf6d367ef1be67873ea5c671882798f5fd56187a98a3bc9e8775",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/converter/AssetRecordConverter.java": "0883700fe388aae1ec065e0adc1d507c296a6416cc60c64c846b5d5c0e246381",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/dataobject/AssetRecordDO.java": "9b95944e6411df03f158d548339013f1cb0f5dfcfd72043986cfcb0a5d904afe",
+    "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/growth/model/AssetRecord.java": "988597bd5bff009890d7fdfd5d2431ad7f3c3807a9b0e15842165da5c5e716c0",
+    "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/growth/model/PointRecordMetadata.java": "17d3e984a7335886647425b13bdbd94fb1fb76424326bf51ddf4c6deef1b113f",
+    "lemnt-server/lemnt-member/sql/upgrade/point_record_metadata.sql": "1e110abeb2bd8270bfd390135983cc85262d5382cee3cf177fe4c8ca88e44135",
+    "/tmp/point-metadata-final-backend.log": "a03d1b716c5016f62a5595469cac51e86c5ac6d77cf02d6bffcd7653f17de04b",
+    "/tmp/point-metadata-ui-build.log": "06daab1517bc22933963367c3f8ab1146897043d529503389234c5618046c641",
+    "/tmp/point-metadata-ui-tests.log": "a4a462ab7df9515f4eb6186febf101126ad30fd99f58d06729d541fcdb0a49f9",
+    "/tmp/point-metadata-ui-lint.log": "d390a8c939ca60f7f656cd93d5acf81a14c2e00c6a3392b46efc2a7c89dedb55",
+    "/tmp/point-metadata-ui-format.log": "26e74b26d1158e460c922b81734e7f67f7f7e7a43a3b22670ebf3e6312be5bdf",
+    "/tmp/point-metadata-ui-typecheck.log": "9feea68862ace8f4c44266036e533929561dc11868fa49061b763cdea019070d",
+    "/tmp/point-metadata-final-mini.log": "6b4f2f0544e735063ed4c986f05b7dd2bdeab79e6800ab6a32c335853e078277"
+  }
+}

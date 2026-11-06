@@ -1,0 +1,2117 @@
+[
+  {
+    "path": "lemnt-server/lemnt-product/pom.xml",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "聚合client/domain/application/infrastructure/adapter/start六层"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-client/pom.xml",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-domain/pom.xml",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-application/pom.xml",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/pom.xml",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-adapter/pom.xml",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-start/pom.xml",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/sql/lemnt_product.sql",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "唯一初始化SQL，真实表重命名+事件可靠性表"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/Dockerfile",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "沿用已有Java启动镜像方式"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/README.md",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "本服务启动、SQL与测试说明"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/event/gateway/MessageOutboxGateway.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "本库消息持久化端口与实现"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/event/gateway/MessageOutboxGatewayImpl.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "本库消息持久化端口与实现"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/event/dataobject/MessageOutboxDO.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "显式索引/原子更新，SQL放XML"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/event/mapper/MessageOutboxMapper.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "显式索引/原子更新，SQL放XML"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/resources/mapper/MessageOutboxMapper.xml",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "租约与幂等SQL，行锁禁缓存"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/event/gateway/MessageInboxGateway.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "本库消息持久化端口与实现"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/event/gateway/MessageInboxGatewayImpl.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "本库消息持久化端口与实现"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/event/dataobject/MessageInboxDO.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "显式索引/原子更新，SQL放XML"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/event/mapper/MessageInboxMapper.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "显式索引/原子更新，SQL放XML"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/resources/mapper/MessageInboxMapper.xml",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "租约与幂等SQL，行锁禁缓存"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/event/model/OutboxMessage.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "纯Java消息状态值对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/event/gateway/EventPublishGateway.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "消息发送端口"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/event/gateway/EventPublishGatewayImpl.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "RocketMQ发布，不吞异常，不记录完整载荷"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/event/service/OutboxRelayService.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "领取租约、事务外发送、CAS完成，重试保持eventNo"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-start/src/main/java/com/lemnt/product/start/OutboxRelayScheduler.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 20,
+    "description": "恢复发布任务"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-start/src/test/java/com/lemnt/product/start/event/OutboxPersistenceTest.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "本库事务/崩溃重投/幂等与失败回滚验证"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-start/src/test/java/com/lemnt/product/start/event/InboxPersistenceTest.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "本库事务/崩溃重投/幂等与失败回滚验证"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-start/src/test/java/com/lemnt/product/start/event/EventRedeliveryTest.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "本库事务/崩溃重投/幂等与失败回滚验证"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/pom.xml",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "聚合client/domain/application/infrastructure/adapter/start六层"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-client/pom.xml",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/pom.xml",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-application/pom.xml",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/pom.xml",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/pom.xml",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-start/pom.xml",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-start/src/main/java/com/lemnt/pay/start/LemntPayApplication.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "独立启动类"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-start/src/main/resources/application.yaml",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "独立服务名/端口/Nacos导入，占位变量不保存凭据"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/sql/lemnt_pay.sql",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "唯一初始化SQL，真实表重命名+事件可靠性表"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/Dockerfile",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "沿用已有Java启动镜像方式"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/README.md",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "本服务启动、SQL与测试说明"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/src/main/java/com/lemnt/pay/domain/event/gateway/MessageOutboxGateway.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "本库消息持久化端口与实现"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/main/java/com/lemnt/pay/infrastructure/event/gateway/MessageOutboxGatewayImpl.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "本库消息持久化端口与实现"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/main/java/com/lemnt/pay/infrastructure/event/dataobject/MessageOutboxDO.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "显式索引/原子更新，SQL放XML"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/main/java/com/lemnt/pay/infrastructure/event/mapper/MessageOutboxMapper.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "显式索引/原子更新，SQL放XML"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/main/resources/mapper/MessageOutboxMapper.xml",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "租约与幂等SQL，行锁禁缓存"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/src/main/java/com/lemnt/pay/domain/event/gateway/MessageInboxGateway.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "本库消息持久化端口与实现"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/main/java/com/lemnt/pay/infrastructure/event/gateway/MessageInboxGatewayImpl.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "本库消息持久化端口与实现"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/main/java/com/lemnt/pay/infrastructure/event/dataobject/MessageInboxDO.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "显式索引/原子更新，SQL放XML"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/main/java/com/lemnt/pay/infrastructure/event/mapper/MessageInboxMapper.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "显式索引/原子更新，SQL放XML"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/main/resources/mapper/MessageInboxMapper.xml",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "租约与幂等SQL，行锁禁缓存"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/src/main/java/com/lemnt/pay/domain/event/model/OutboxMessage.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "纯Java消息状态值对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/src/main/java/com/lemnt/pay/domain/event/gateway/EventPublishGateway.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "消息发送端口"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/main/java/com/lemnt/pay/infrastructure/event/gateway/EventPublishGatewayImpl.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "RocketMQ发布，不吞异常，不记录完整载荷"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-application/src/main/java/com/lemnt/pay/application/event/service/OutboxRelayService.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "领取租约、事务外发送、CAS完成，重试保持eventNo"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-start/src/main/java/com/lemnt/pay/start/OutboxRelayScheduler.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "恢复发布任务"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-start/src/test/java/com/lemnt/pay/start/event/OutboxPersistenceTest.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "本库事务/崩溃重投/幂等与失败回滚验证"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-start/src/test/java/com/lemnt/pay/start/event/InboxPersistenceTest.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "本库事务/崩溃重投/幂等与失败回滚验证"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-start/src/test/java/com/lemnt/pay/start/event/EventRedeliveryTest.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "本库事务/崩溃重投/幂等与失败回滚验证"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/pom.xml",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "聚合client/domain/application/infrastructure/adapter/start六层"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-client/pom.xml",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-domain/pom.xml",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/pom.xml",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/pom.xml",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/pom.xml",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-start/pom.xml",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-start/src/main/java/com/lemnt/promotion/start/LemntPromotionApplication.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "独立启动类"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-start/src/main/resources/application.yaml",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "独立服务名/端口/Nacos导入，占位变量不保存凭据"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/sql/lemnt_promotion.sql",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "唯一初始化SQL，真实表重命名+事件可靠性表"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/Dockerfile",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "沿用已有Java启动镜像方式"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/README.md",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "本服务启动、SQL与测试说明"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-domain/src/main/java/com/lemnt/promotion/domain/event/gateway/MessageInboxGateway.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "本库消息持久化端口与实现"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/src/main/java/com/lemnt/promotion/infrastructure/event/gateway/MessageInboxGatewayImpl.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "本库消息持久化端口与实现"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/src/main/java/com/lemnt/promotion/infrastructure/event/dataobject/MessageInboxDO.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "显式索引/原子更新，SQL放XML"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/src/main/java/com/lemnt/promotion/infrastructure/event/mapper/MessageInboxMapper.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "显式索引/原子更新，SQL放XML"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/src/main/resources/mapper/MessageInboxMapper.xml",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 20,
+    "description": "租约与幂等SQL，行锁禁缓存"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-start/src/test/java/com/lemnt/promotion/start/event/InboxPersistenceTest.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "本库事务/崩溃重投/幂等与失败回滚验证"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-start/src/test/java/com/lemnt/promotion/start/event/EventRedeliveryTest.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "本库事务/崩溃重投/幂等与失败回滚验证"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/pom.xml",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "聚合client/domain/application/infrastructure/adapter/start六层"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-client/pom.xml",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-domain/pom.xml",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-application/pom.xml",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/pom.xml",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-adapter/pom.xml",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-start/pom.xml",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "最小分层依赖；start保留metrics/sql组件"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/sql/lemnt_order.sql",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "唯一初始化SQL，真实表重命名+事件可靠性表"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/Dockerfile",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "沿用已有Java启动镜像方式"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/README.md",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "本服务启动、SQL与测试说明"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/event/gateway/MessageOutboxGateway.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "本库消息持久化端口与实现"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/event/gateway/MessageOutboxGatewayImpl.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "本库消息持久化端口与实现"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/event/dataobject/MessageOutboxDO.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "显式索引/原子更新，SQL放XML"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/event/mapper/MessageOutboxMapper.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "显式索引/原子更新，SQL放XML"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/resources/mapper/MessageOutboxMapper.xml",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "租约与幂等SQL，行锁禁缓存"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/event/gateway/MessageInboxGateway.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "本库消息持久化端口与实现"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/event/gateway/MessageInboxGatewayImpl.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "本库消息持久化端口与实现"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/event/dataobject/MessageInboxDO.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "显式索引/原子更新，SQL放XML"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/event/mapper/MessageInboxMapper.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "显式索引/原子更新，SQL放XML"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/resources/mapper/MessageInboxMapper.xml",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "租约与幂等SQL，行锁禁缓存"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/event/model/OutboxMessage.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "纯Java消息状态值对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/event/gateway/EventPublishGateway.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "消息发送端口"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/event/gateway/EventPublishGatewayImpl.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "RocketMQ发布，不吞异常，不记录完整载荷"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/event/service/OutboxRelayService.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "领取租约、事务外发送、CAS完成，重试保持eventNo"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-start/src/main/java/com/lemnt/order/start/OutboxRelayScheduler.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "恢复发布任务"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-start/src/test/java/com/lemnt/order/start/event/OutboxPersistenceTest.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "本库事务/崩溃重投/幂等与失败回滚验证"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-start/src/test/java/com/lemnt/order/start/event/InboxPersistenceTest.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "本库事务/崩溃重投/幂等与失败回滚验证"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-start/src/test/java/com/lemnt/order/start/event/EventRedeliveryTest.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "本库事务/崩溃重投/幂等与失败回滚验证"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-client/src/main/java/com/lemnt/product/client/bo/StockReservationQueryBo.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-client/src/main/java/com/lemnt/product/client/dto/StockReservationDTO.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-client/src/main/java/com/lemnt/product/client/event/StockPreReservedEvent.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-client/src/main/java/com/lemnt/pay/client/PaymentClient.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-client/src/main/java/com/lemnt/pay/client/PaymentQueryClient.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-client/src/main/java/com/lemnt/pay/client/WalletClient.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-client/src/main/java/com/lemnt/pay/client/bo/PaymentPrepayBo.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-client/src/main/java/com/lemnt/pay/client/bo/PaymentRefundBo.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-client/src/main/java/com/lemnt/pay/client/dto/PaymentResultDTO.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-client/src/main/java/com/lemnt/pay/client/dto/PaymentRefundResultDTO.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-client/src/main/java/com/lemnt/pay/client/event/PaySuccessEvent.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-client/src/main/java/com/lemnt/pay/client/event/PayRefundSuccessEvent.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-client/src/main/java/com/lemnt/promotion/client/PromotionCalcClient.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-client/src/main/java/com/lemnt/promotion/client/PromotionLockClient.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-client/src/main/java/com/lemnt/promotion/client/CartClient.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-client/src/main/java/com/lemnt/promotion/client/bo/PromotionCalculateBo.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-client/src/main/java/com/lemnt/promotion/client/bo/PromotionLockBo.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-client/src/main/java/com/lemnt/promotion/client/bo/CartConsumeBo.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-client/src/main/java/com/lemnt/promotion/client/dto/PromotionQuoteDTO.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-client/src/main/java/com/lemnt/promotion/client/dto/PromotionLockDTO.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-client/src/main/java/com/lemnt/promotion/client/dto/CartSnapshotDTO.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-client/src/main/java/com/lemnt/order/client/OrderSnapshotClient.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-client/src/main/java/com/lemnt/order/client/bo/OrderSnapshotQueryBo.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-client/src/main/java/com/lemnt/order/client/event/OrderPaidEvent.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-client/src/main/java/com/lemnt/order/client/event/AfterSaleCompletedEvent.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-client/src/main/java/com/lemnt/order/client/event/OrderClosedEvent.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-client/src/main/java/com/lemnt/order/client/event/OrderShippedEvent.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-client/src/main/java/com/lemnt/order/client/event/OrderCompletedEvent.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "独立可序列化契约，不暴露DO/应用对象"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/aftersale/service/AfterSaleRefundCoordinator.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/event/service/PaySuccessEventHandler.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/event/service/PayRefundSuccessEventHandler.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/payment/gateway/PaymentGateway.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/promotion/gateway/PromotionPricingGateway.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/promotion/gateway/PromotionResourceGateway.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/cart/gateway/CartSnapshotGateway.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/payment/gateway/PaymentGatewayImpl.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/promotion/gateway/PromotionPricingGatewayImpl.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/promotion/gateway/PromotionResourceGatewayImpl.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/cart/gateway/CartSnapshotGatewayImpl.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/mq/PaySuccessConsumer.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/mq/PayRefundSuccessConsumer.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/promotion/AppPointOrderController.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/promotion/AppSeckillOrderController.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/promotion/AppCombinationOrderController.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/promotion/AppBargainOrderController.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-application/src/main/java/com/lemnt/pay/application/dubbo/PaymentClientImpl.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-application/src/main/java/com/lemnt/pay/application/dubbo/PaymentQueryClientImpl.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-application/src/main/java/com/lemnt/pay/application/dubbo/WalletClientImpl.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-application/src/main/java/com/lemnt/pay/application/event/service/OrderClosedEventHandler.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/mq/OrderClosedConsumer.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/dubbo/PromotionCalcClientImpl.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/dubbo/PromotionLockClientImpl.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/dubbo/CartClientImpl.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderPaidEventHandler.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/AfterSaleCompletedEventHandler.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderClosedEventHandler.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderCompletedEventHandler.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/StockPreReservedEventHandler.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/mq/OrderPaidConsumer.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/mq/AfterSaleCompletedConsumer.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/mq/OrderClosedConsumer.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/mq/OrderCompletedConsumer.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/mq/StockPreReservedConsumer.java",
+    "phase": "P3",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P3-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/order/gateway/OrderSnapshotGateway.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/order/gateway/OrderSnapshotGatewayImpl.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/event/service/OrderPaidEventHandler.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/event/service/AfterSaleCompletedEventHandler.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/event/service/OrderClosedEventHandler.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/mq/OrderPaidConsumer.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/mq/AfterSaleCompletedConsumer.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/mq/OrderClosedConsumer.java",
+    "phase": "P1",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P1-00",
+    "estimatedMinutes": 60,
+    "description": "按设计拆分本地事务与远程边界"
+  },
+  {
+    "path": "lemnt-common/lemnt-common-client/src/main/java/com/lemnt/common/client/event/CommerceEventEnvelope.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "通用事件信封，payload版本化"
+  },
+  {
+    "path": "lemnt-common/lemnt-common-client/src/main/java/com/lemnt/common/client/event/CommerceEventTopics.java",
+    "phase": "P2",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P2-00",
+    "estimatedMinutes": 20,
+    "description": "8个商业事件Topic常量"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/event/gateway/MessageInboxGateway.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "会员库消费订单冻结权益，本库inbox与积分流水同事务"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/event/gateway/MessageInboxGatewayImpl.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "会员库消费订单冻结权益，本库inbox与积分流水同事务"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/event/dataobject/MessageInboxDO.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "会员库消费订单冻结权益，本库inbox与积分流水同事务"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/event/mapper/MessageInboxMapper.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "会员库消费订单冻结权益，本库inbox与积分流水同事务"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/event/service/OrderBenefitsEventHandler.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "会员库消费订单冻结权益，本库inbox与积分流水同事务"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/resources/mapper/MessageInboxMapper.xml",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "会员事件幂等SQL"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/sql/lemnt_member.sql",
+    "phase": "P4",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "只增加member_message_inbox，不调整原业务表"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/pom.xml",
+    "phase": "P4",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "新增order-client用于消息契约"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-adapter/pom.xml",
+    "phase": "P4",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 20,
+    "description": "接入MQ监听依赖"
+  },
+  {
+    "path": "lemnt-server/pom.xml",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "更新生效入口与保护规则，历史工作项原样保留"
+  },
+  {
+    "path": "lemnt-server/lemnt-gateway/src/main/java/com/lemnt/gateway/config/ServiceRouteConfiguration.java",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "更新生效入口与保护规则，历史工作项原样保留"
+  },
+  {
+    "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/config/ServiceRouteConfigurationTest.java",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "更新生效入口与保护规则，历史工作项原样保留"
+  },
+  {
+    "path": "lemnt-server/sql/schema_comments.py",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "更新生效入口与保护规则，历史工作项原样保留"
+  },
+  {
+    "path": "lemnt-server/sql/test_schema_comments.py",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "更新生效入口与保护规则，历史工作项原样保留"
+  },
+  {
+    "path": "lemnt-server/sql/release/apply-business-sql.sh",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "更新生效入口与保护规则，历史工作项原样保留"
+  },
+  {
+    "path": "lemnt-server/sql/release/README.md",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "更新生效入口与保护规则，历史工作项原样保留"
+  },
+  {
+    "path": "docs/database-initialization.md",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "更新生效入口与保护规则，历史工作项原样保留"
+  },
+  {
+    "path": "docs/database-comments.md",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "更新生效入口与保护规则，历史工作项原样保留"
+  },
+  {
+    "path": "docs/mall-trade-boundary.md",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "更新生效入口与保护规则，历史工作项原样保留"
+  },
+  {
+    "path": "docs/mall-domain-structure.md",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "更新生效入口与保护规则，历史工作项原样保留"
+  },
+  {
+    "path": "lemnt-server/AGENTS.md",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "更新生效入口与保护规则，历史工作项原样保留"
+  },
+  {
+    "path": "README.md",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "更新生效入口与保护规则，历史工作项原样保留"
+  },
+  {
+    "path": "docs/config/lemnt-product.yaml",
+    "phase": "P5",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "Nacos源模板，仅占位符，不发布"
+  },
+  {
+    "path": "docs/config/lemnt-pay.yaml",
+    "phase": "P5",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "Nacos源模板，仅占位符，不发布"
+  },
+  {
+    "path": "docs/config/lemnt-promotion.yaml",
+    "phase": "P5",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "Nacos源模板，仅占位符，不发布"
+  },
+  {
+    "path": "docs/config/lemnt-order.yaml",
+    "phase": "P5",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "Nacos源模板，仅占位符，不发布"
+  },
+  {
+    "path": "docs/config/commerce-gateway-routes.yaml",
+    "phase": "P5",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 60,
+    "description": "旧URL逐端点路由兼容；保留auth/member/system现有规则"
+  },
+  {
+    "path": "docs/config/commerce-mq.yaml",
+    "phase": "P5",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "8Topic和消费者组/重试配置"
+  },
+  {
+    "path": "docs/module-split-cutover.md",
+    "phase": "P5",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 60,
+    "description": "真实数据只读校验、停写切流和回滚检查清单"
+  },
+  {
+    "path": "scripts/check_module_split.py",
+    "phase": "P5",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 60,
+    "description": "禁止旧包/旧业务表跨上下文访问，覆盖路由清单"
+  },
+  {
+    "path": "scripts/test_module_split.py",
+    "phase": "P5",
+    "operation": "新增",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "验证拆分检查器正反案例"
+  },
+  {
+    "path": "docs/config/mall-gateway-route.yaml",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "标注迁移后的路由或兼容任务来源"
+  },
+  {
+    "path": "docs/config/trade-gateway-route.yaml",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "标注迁移后的路由或兼容任务来源"
+  },
+  {
+    "path": "docs/config/trade-order-rollback-mq.yaml",
+    "phase": "P5",
+    "operation": "修改",
+    "complexity": "★★☆",
+    "dependsOn": "P5-00",
+    "estimatedMinutes": 20,
+    "description": "标注迁移后的路由或兼容任务来源"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/mq/OrderPaidConsumer.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按Topic分开监听，统一调用会员事件处理器"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/mq/AfterSaleCompletedConsumer.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按Topic分开监听，统一调用会员事件处理器"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/mq/OrderClosedConsumer.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按Topic分开监听，统一调用会员事件处理器"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/mq/OrderShippedConsumer.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "按Topic分开监听，统一调用会员事件处理器"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-application/src/test/java/com/lemnt/member/application/event/OrderBenefitsInboxTest.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "消费失败回滚、重投与冻结积分验证"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-application/src/test/java/com/lemnt/member/application/event/FrozenBenefitsRedeliveryTest.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "消费失败回滚、重投与冻结积分验证"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-application/src/test/java/com/lemnt/member/application/event/OrderClosedBenefitsTest.java",
+    "phase": "P4",
+    "operation": "新增",
+    "complexity": "★★★",
+    "dependsOn": "P4-00",
+    "estimatedMinutes": 60,
+    "description": "消费失败回滚、重投与冻结积分验证"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-adapter/pom.xml",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-application/pom.xml",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-client/pom.xml",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-domain/pom.xml",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/pom.xml",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-start/pom.xml",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/pom.xml",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/pom.xml",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/pom.xml",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-client/pom.xml",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/pom.xml",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/pom.xml",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-start/pom.xml",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/pom.xml",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+    "phase": "P5",
+    "operation": "删除",
+    "complexity": "★☆☆",
+    "dependsOn": "P5-03",
+    "estimatedMinutes": 5,
+    "description": "所有替代文件与回归通过后清理旧模块构建/SQL入口"
+  }
+]

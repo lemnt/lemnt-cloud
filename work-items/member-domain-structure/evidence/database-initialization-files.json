@@ -1,0 +1,691 @@
+{
+  "recordedAt": "2026-11-03T10:39:44+08:00",
+  "baseHead": "01b711aa",
+  "scope": "本批SQL/测试/资源/文档；共享mall-start POM只调整testResource，保留并行依赖变更",
+  "files": [
+    {
+      "path": "README.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/after-sale-log-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/code-standards.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/coupon-migration-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/database-comments.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/database-initialization.md",
+      "change": "A"
+    },
+    {
+      "path": "docs/delivery-checkout-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/mall-catalog-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/mall-domain-structure.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/mall-schema-consolidation.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/mall-trade-boundary.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/member-address-alignment-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/member-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/member-group-tag-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/member-level-management-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/member-level-record-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/member-point-config-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/member-point-record-filter-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/member-profile-mark-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/member-sign-config-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/member-sign-record-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/order-after-sale-logistics-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/order-item-comment-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/order-operation-log-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/order-product-snapshot-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/order-promotion-refund-migration.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/payment-management-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/product-comment-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/product-interaction-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/product-management-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/product-spec-identity-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/spec-naming-migration.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/storefront-marketing-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/trade-delivery-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/trade-fulfillment-api.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/yudao-alignment-upgrade.md",
+      "change": "M"
+    },
+    {
+      "path": "docs/yudao-migration.md",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/AGENTS.md",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/pom.xml",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/ActivityAlignmentPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/BargainPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/CatalogPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/CombinationPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/CommentFlowPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/CouponSnapshotPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/PointPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/ProductInteractionPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/PromotionOrderPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/SeckillPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/SpuOperatingMigrationTest.java",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/SpuOperatingSchemaTest.java",
+      "change": "A"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/promotion/BannerPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/promotion/DiyPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/promotion/KefuPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V10__cart_coupon_checkout.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V12__settlement_order.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V13__settlement_abandon.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V14__storefront_marketing.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V15__promotion_activity.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V16__product_management.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V17__product_interaction.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V18__promotion_seckill.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V19__promotion_combination.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V1__mall_product.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V20__promotion_bargain.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V21__promotion_point.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V22__promotion_order.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V23__promotion_order_refund.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V24__promotion_order_item.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V25__promotion_banner.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V26__promotion_kefu.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V27__promotion_diy.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V28__coupon_reward_gift.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V29__coupon_gift_sequence.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/V2__mall_catalog.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+      "change": "A"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/alignment_business_columns.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/consolidate_business_tables.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/coupon_gift_sequence.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/coupon_rule_snapshot.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/delivery_checkout_columns.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/order_item_comment_link.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/product_comment_fields.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/product_comment_self.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/product_management.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/product_sku_spec_identity.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/remove_checkout_account.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/retire_sku_spec_table.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/sku_properties_json.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/sku_specs_naming.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/sql/upgrade/spu_operating_fields.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/V1__member.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/V2__member_account.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/V3__member_verification.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/V4__member_point_record.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/V5__member_experience_record.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/lemnt_member.sql",
+      "change": "A"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/address_owner_audit.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/alignment_member_id.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/experience_record_split.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/group_tag_audit_fields.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/ledger_audit_fields.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/level_audit_fields.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/level_record_snapshot.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/member_identity.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/member_login_date.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/member_login_ip.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/member_mark.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/point_config_audit.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/point_record_metadata.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/point_record_split.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/sign_config_id.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-member/sql/upgrade/sign_record_time.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/brokerage/BrokeragePersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutFlowIntegrationTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/delivery/DeliveryPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/payment/PayConfigPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/payment/PayNotifyTaskPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/payment/RechargePersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/payment/WalletPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/payment/WalletTransferPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/pickup/PickUpPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/promotion/OrderPromotionPersistenceTest.java",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V10__pay_app_channel.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V11__pay_notify_task.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V12__member_wallet.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V13__wallet_recharge.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V14__wallet_transfer.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V15__brokerage.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V16__pickup.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V17__order_reward_gift.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V18__order_promotion_snapshot.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V1__trade_order.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V2__trade_payment.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V5__order_fulfillment.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V6__payment_refund.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V7__delivery_config.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V8__order_log.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V9__after_sale_log.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+      "change": "A"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/after_sale_identity_and_log.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/alignment_business_columns.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/delivery_checkout_columns.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/item_after_sale.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/order_aftersale_specs_naming.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/order_item_comments.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/order_management.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/order_product_snapshot.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/order_promotion_snapshot.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/order_receive_time.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/order_reward_gift.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/payment_app_key.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/payment_refund.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/pickup_store.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/remove_outbox.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/zero_cash_after_sale.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/upgrade/zero_pay_order.sql",
+      "change": "D"
+    },
+    {
+      "path": "lemnt-server/sql/schema_comments.py",
+      "change": "M"
+    },
+    {
+      "path": "lemnt-server/sql/test_schema_comments.py",
+      "change": "M"
+    },
+    {
+      "path": "work-items/member-domain-structure/164-order-promotion-implementation-plan.md",
+      "change": "M"
+    },
+    {
+      "path": "work-items/member-domain-structure/164-order-promotion-model.sql",
+      "change": "D"
+    },
+    {
+      "path": "work-items/member-domain-structure/164-order-promotion-refund-design.md",
+      "change": "M"
+    },
+    {
+      "path": "work-items/member-domain-structure/164-order-promotion-tasks-draft.md",
+      "change": "M"
+    },
+    {
+      "path": "work-items/member-domain-structure/166-database-initialization-delivery.md",
+      "change": "A"
+    },
+    {
+      "path": "work-items/member-domain-structure/README.md",
+      "change": "M"
+    },
+    {
+      "path": "work-items/member-domain-structure/code-summary.md",
+      "change": "M"
+    },
+    {
+      "path": "work-items/member-domain-structure/evidence/database-initialization-files.json",
+      "change": "A"
+    },
+    {
+      "path": "work-items/member-domain-structure/evidence/database-initialization-verification.json",
+      "change": "A"
+    },
+    {
+      "path": "work-items/member-domain-structure/state.json",
+      "change": "M"
+    },
+    {
+      "path": "work-items/member-domain-structure/tasks.md",
+      "change": "M"
+    }
+  ]
+}

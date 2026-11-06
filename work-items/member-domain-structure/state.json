@@ -1,0 +1,38 @@
+{
+  "requirement": {
+    "name": "member-domain-structure",
+    "description": "第164/165批代码与规范交付完成；第166批member/mall/trade SQL单文件整合完成，system不调整，630项后端及9项SQL工具测试通过。既有库执行与目标环境验收单列未完成；review/retrospective不自动完成。",
+    "createdAt": "2026-11-02T17:41:47+08:00",
+    "updatedAt": "2026-11-03T10:39:44+08:00"
+  },
+  "phases": {
+    "entry": {
+      "status": "completed",
+      "output": "README.md"
+    },
+    "requirement": {
+      "status": "completed",
+      "output": "164-order-promotion-refund-design.md"
+    },
+    "design": {
+      "status": "completed",
+      "output": "164-order-promotion-refund-design.md"
+    },
+    "task": {
+      "status": "completed",
+      "output": "tasks.md"
+    },
+    "generate": {
+      "status": "completed",
+      "output": "code-summary.md"
+    },
+    "review": {
+      "status": "pending",
+      "output": null
+    },
+    "retrospective": {
+      "status": "pending",
+      "output": null
+    }
+  }
+}

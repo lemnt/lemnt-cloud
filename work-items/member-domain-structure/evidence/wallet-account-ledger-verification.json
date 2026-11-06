@@ -1,0 +1,41 @@
+{
+  "batch": "138-wallet-account-ledger",
+  "date": "2026-10-31",
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-trade/lemnt-trade-start -am test",
+    "javaVersion": "17.0.17",
+    "totals": {"classes": 38, "tests": 206, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-trade-domain": {"classes": 1, "tests": 2},
+      "lemnt-trade-application": {"classes": 8, "tests": 43},
+      "lemnt-trade-infrastructure": {"classes": 4, "tests": 10},
+      "lemnt-trade-adapter": {"classes": 12, "tests": 25},
+      "lemnt-trade-start": {"classes": 13, "tests": 126}
+    },
+    "newTests": [
+      "com.lemnt.trade.application.payment.WalletServiceTest (7)",
+      "com.lemnt.trade.start.payment.WalletPersistenceTest (2, H2 production SQL/gateway)",
+      "com.lemnt.trade.start.payment.WalletMenuSeedTest (1)"
+    ]
+  },
+  "ui": {"command": "yarn test / yarn typecheck / yarn lint / yarn format:check", "tests": 277, "failures": 0, "newTests": ["walletApi.test.ts (3)"]},
+  "miniapp": {"command": "node --test tests/*.test.cjs", "tests": 138, "failures": 0, "newTests": ["wallet.test.cjs (2)"]},
+  "endpoints": [
+    "GET /trade/admin/wallets",
+    "GET /trade/admin/wallets/{memberId}",
+    "GET /trade/admin/wallets/{memberId}/transactions",
+    "POST /trade/admin/wallets/{memberId}/adjust",
+    "GET /trade/app/wallet",
+    "GET /trade/app/wallet/transactions"
+  ],
+  "invariants": [
+    "one wallet per member (unique member_id)",
+    "balance and frozen never negative",
+    "credit/debit/adjust idempotent by (wallet_id,biz_type,biz_no)",
+    "fund changes serialize on wallet row lock",
+    "freeze/unfreeze do not write balance ledger",
+    "admin adjust requires requestNo"
+  ],
+  "sql": ["lemnt-server/lemnt-trade/sql/V12__member_wallet.sql", "lemnt-server/sql/V20261031__trade_wallet_menu.sql"],
+  "deferred": ["recharge package/recharge/refund (Y06)", "transfer (Y07)", "real MySQL/Nacos/Redis/browser/device"]
+}

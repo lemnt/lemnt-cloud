@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-28",
+  "scope": "F02标准售后表、身份及审计字段、操作日志、本人取消、后台完整处理按钮；不是全量迁移完成",
+  "backend": {
+    "status": "PASS",
+    "tests": 260,
+    "failures": 0,
+    "errors": 0,
+    "cleanVerifyLog": "/tmp/aftersale-final-verify.log",
+    "finalVerifyLog": "/tmp/aftersale-verified.log"
+  },
+  "react": {
+    "status": "PASS",
+    "tests": 166,
+    "testLog": "/tmp/aftersale-ui-tests-final.log",
+    "typeAndBuildLog": "/tmp/aftersale-ui-build.log",
+    "lintLog": "/tmp/aftersale-ui-lint.log",
+    "formatLog": "/tmp/aftersale-ui-format-check.log"
+  },
+  "miniapp": {
+    "status": "PASS",
+    "tests": 81,
+    "log": "/tmp/aftersale-mini-tests-final.log",
+    "scope": "新增本人取消售后传输接口；完整App售后页面仍待迁移"
+  },
+  "localInitTables": 46,
+  "remainingBusinessTablesWithoutCorrespondingTable": 36,
+  "realDatabaseMigrationExecuted": false,
+  "realChannelSdkIntegrated": false,
+  "browserOrDeviceEndToEndRun": false,
+  "committed": false,
+  "pushed": false,
+  "fileSHA256": {
+    "lemnt-server/lemnt-trade/sql/V5__order_fulfillment.sql": "d0763ec843138b10e7e5c09fb23be15e9d33286cdd074ab9194bd06c386a9ee8",
+    "lemnt-server/lemnt-trade/sql/V6__payment_refund.sql": "98129f57153741893672dd14a3cc18bc730cb1a907bcb44dbffb295f16b02f7a",
+    "lemnt-server/lemnt-trade/sql/V9__after_sale_log.sql": "aeb56ae01c2a92f4d35bc0c4cf334ed6b74dfd72ba203b936a669c3f47929b08",
+    "lemnt-server/lemnt-trade/sql/upgrade/after_sale_identity_and_log.sql": "6b83bb4b77ea71fb30a7e2ea52060f5dd83d3d0c0d466467d6ef4366b2ceb99d",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/aftersale/service/AfterSaleService.java": "3d1fa8dfeedce12e98fae1bc63c594df025b5f0014c068b8570a7073c6ac37f6",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/aftersale/service/AfterSaleLogService.java": "e696203dbc0dbd200275ac98adb80d8c1cba26a65eae269c26ed8e0e50fb938d",
+    "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/aftersale/gateway/AfterSaleGatewayImpl.java": "2a0cfdc621f572f0510b83db20038dca6fe4ea854f3d6d4ba1588454bb983679",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java": "7d9c520aefd1f7833a34716ecb861a6c32e52fc1027726fd9bc1d07996a6709b"
+  },
+  "branch": "feat/yudao-member-mall-trade-migration",
+  "observedHEAD": "1396834b98f72d8fe872d742ca7aa8bb1e41eb6b"
+}

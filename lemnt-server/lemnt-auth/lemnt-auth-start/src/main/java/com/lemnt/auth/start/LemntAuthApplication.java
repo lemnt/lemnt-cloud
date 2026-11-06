@@ -12,7 +12,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableDubbo(scanBasePackages = "com.lemnt.auth")
 @SpringBootApplication(scanBasePackages = "com.lemnt.auth")
 public class LemntAuthApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(LemntAuthApplication.class, args);
         System.out.println("(♥◠‿◠)ﾉﾞ  认证授权中心启动成功   ლ(´ڡ`ლ)ﾞ");

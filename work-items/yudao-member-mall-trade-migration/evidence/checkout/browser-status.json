@@ -1,0 +1,7 @@
+{
+  "status": "NOT_RUN",
+  "reason": "Earlier browser launch in this runtime failed with Unix socket Operation not permitted; this slice did not rerun browser interaction or visual QA.",
+  "priorEvidence": "../catalog/browser-status.json",
+  "screenshotsProduced": [],
+  "newUiInteractionChecksExecuted": []
+}

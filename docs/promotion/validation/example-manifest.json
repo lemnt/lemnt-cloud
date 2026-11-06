@@ -1,0 +1,18 @@
+{
+  "activity-create": "activity-create",
+  "activity-update": "activity-update",
+  "activity-publish": "activity-publish",
+  "activity-state": "activity-state",
+  "quote-request": "quote-request",
+  "quote-response": "quote-response",
+  "submit-request": "submit-request",
+  "submit-response": "submit-response",
+  "abandon-response": "abandon-response",
+  "abandon-with-order": "abandon-response",
+  "order-pricing-response": "order-pricing-response",
+  "admin-result": "admin-result",
+  "admin-detail": "admin-detail",
+  "admin-page": "admin-page",
+  "empty-admin-page": "admin-page",
+  "error-response": "error-response"
+}

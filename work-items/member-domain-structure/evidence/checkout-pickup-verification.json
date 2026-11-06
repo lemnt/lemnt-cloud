@@ -1,0 +1,85 @@
+{
+  "batch": "156-checkout-pickup",
+  "date": "2026-11-01",
+  "scope": [
+    "checkout quote with deliveryType=2 and pickUpStoreId",
+    "zero delivery fee and pickup quote token binding",
+    "trade order pickup store snapshot and 8-digit verify code at creation",
+    "submit reprice keeps pickup delivery",
+    "miniapp delivery switch and store picker",
+    "app order detail pickup fields"
+  ],
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-mall/lemnt-mall-start,lemnt-trade/lemnt-trade-start -am test",
+    "totals": {"tests": 450, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-mall-domain": 10,
+      "lemnt-mall-application": 15,
+      "lemnt-mall-infrastructure": 18,
+      "lemnt-mall-adapter": 28,
+      "lemnt-mall-start": 116,
+      "lemnt-trade-domain": 2,
+      "lemnt-trade-application": 74,
+      "lemnt-trade-infrastructure": 16,
+      "lemnt-trade-adapter": 29,
+      "lemnt-trade-start": 142
+    },
+    "newTests": [
+      "com.lemnt.mall.application.settlement.PickUpSettlementTest (3)",
+      "com.lemnt.trade.application.order.PickUpOrderCreateTest (2)"
+    ]
+  },
+  "miniapp": {"tests": 176, "failures": 0, "new": "services/trade quote pickup contract, authenticated pickup store list"},
+  "ui": {"tests": 312, "failures": 0, "changed": false},
+  "gateway": {"tests": 35, "failures": 0, "changed": false},
+  "endpoints": [
+    "POST /mall/app/checkout/quote",
+    "POST /mall/app/checkout",
+    "GET /trade/app/orders/{orderNo}",
+    "GET /trade/app/delivery/pick-up-stores",
+    "POST /trade/app/orders/{orderNo}/payment",
+    "POST /trade/app/payments/{paymentNo}/sandbox-pay"
+  ],
+  "realEnvironment": {
+    "memberId": 1,
+    "pickUpStoreId": "2116709400812654594",
+    "settlementId": "cbf2cafd-948f-41d4-97db-1e6e2de5bb6c",
+    "orderNo": "TR3759C6A7A75E4455974A37CF",
+    "paymentNo": "PAYD3D8E2A6F307471D9AD5D81B",
+    "verifyCode": "38846600",
+    "assertions": [
+      "self-pickup quote returns deliveryType=2, pickUpStoreId, deliveryPrice=0.00 and payableAmount=9.00",
+      "delivery quote without address returns 422",
+      "self-pickup quote without store returns 422",
+      "order persists delivery_type=2, pick_up_store_id and an 8-digit verify code",
+      "order submit reprice accepts the pickup settlement and creates the order",
+      "sandbox payment succeeds and the order becomes PAID with pickup fields unchanged",
+      "app order detail returns pickUpStoreName, pickUpStorePhone, pickUpStoreAddress and pickUpVerifyCode"
+    ],
+    "config": {
+      "deliveryPickUpEnabledDuringAcceptance": 1,
+      "restoredAfterAcceptance": 0
+    }
+  },
+  "invalidRequests": [
+    "POST /mall/app/checkout/quote {productIds:[2]} -> 422 请选择有效的收货地址或自提门店",
+    "POST /mall/app/checkout/quote {productIds:[2],deliveryType:2} -> 422 请选择有效的收货地址或自提门店"
+  ],
+  "invariants": [
+    "delivery quote requires a member-owned address",
+    "pickup quote requires a positive store id and zero delivery fee",
+    "quote token binds delivery type and pickup store id",
+    "trade order creation requires pickup enabled and an enabled store",
+    "verify code is server-generated and excluded from idempotent retry comparison"
+  ],
+  "deferred": [
+    "store distance ordering and opening-hours validation at checkout",
+    "pickup toggle enforcement during quote instead of order creation",
+    "dedicated awaiting-pickup status",
+    "admin verify-by-code re-acceptance (covered by batch 155)",
+    "browser admin and miniapp device verification"
+  ],
+  "notes": [
+    "no business commit or push in this batch"
+  ]
+}

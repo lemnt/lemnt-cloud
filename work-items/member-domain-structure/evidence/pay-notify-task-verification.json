@@ -1,0 +1,50 @@
+{
+  "batch": "137-pay-notify-task",
+  "date": "2026-10-31",
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-trade/lemnt-trade-start -am test",
+    "javaVersion": "17.0.17",
+    "totals": {"classes": 35, "tests": 196, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-trade-domain": {"classes": 1, "tests": 2},
+      "lemnt-trade-application": {"classes": 7, "tests": 36},
+      "lemnt-trade-infrastructure": {"classes": 4, "tests": 10},
+      "lemnt-trade-adapter": {"classes": 12, "tests": 25},
+      "lemnt-trade-start": {"classes": 11, "tests": 123}
+    },
+    "newTests": [
+      "com.lemnt.trade.application.payment.PayNotifyTaskServiceTest (7)",
+      "com.lemnt.trade.start.payment.PayNotifyTaskPersistenceTest (3, H2 production SQL/gateway, CAS + due scan)",
+      "com.lemnt.trade.start.payment.PayNotifyMenuSeedTest (1)"
+    ],
+    "integration": "CheckoutFlowIntegrationTest 100/100 passed (payment success, downstream failure propagation, retry, refund success/failed/waiting)"
+  },
+  "ui": {
+    "command": "yarn test / yarn typecheck / yarn lint / yarn format:check",
+    "tests": 274,
+    "failures": 0,
+    "newTests": ["src/modules/trade/payment/api/payNotifyApi.test.ts (3)"]
+  },
+  "endpoints": [
+    "GET /trade/admin/pay-notify-tasks",
+    "GET /trade/admin/pay-notify-tasks/{id}",
+    "POST /trade/admin/pay-notify-tasks/{id}/retry"
+  ],
+  "reliability": {
+    "types": ["PAY", "REFUND"],
+    "statuses": ["PENDING", "SUCCESS", "FAILED"],
+    "maxNotifyTimes": 8,
+    "frequencySeconds": [15, 15, 30, 180, 1800, 1800, 1800, 3600],
+    "contract": "downstream failure still propagates to caller; task persisted for scheduler retry",
+    "scheduler": "lemnt.trade.pay-notify.enabled=true (disabled by default)"
+  },
+  "sql": [
+    "lemnt-server/lemnt-trade/sql/V11__pay_notify_task.sql",
+    "lemnt-server/sql/V20261031__trade_pay_notify_menu.sql"
+  ],
+  "notVerified": [
+    "real MySQL/Nacos/Redis/Dubbo/gateway/browser",
+    "real payment channel SDK callbacks (excluded by scope)",
+    "scheduler enabled in deployment"
+  ]
+}

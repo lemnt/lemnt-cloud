@@ -8,17 +8,17 @@ import java.io.Serializable;
  * @author wangxx
  */
 public record UserPwdUpdateCmd(
-        /**
-         * 用户ID
-         */
-        Long userId,
-        /**
-         * 密码
-         */
-        String oldPassword,
-        /**
-         * 新密码
-         */
-        String newPassword
-) implements Serializable {
+    /**
+     * 用户ID
+     */
+    Long userId,
+    /**
+     * 密码
+     */
+    String oldPassword,
+    /**
+     * 新密码
+     */
+    String newPassword)
+    implements Serializable {
 }

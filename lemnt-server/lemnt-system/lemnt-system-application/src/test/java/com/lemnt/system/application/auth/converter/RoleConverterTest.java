@@ -10,7 +10,8 @@ class RoleConverterTest {
 
     @Test
     void shouldPreserveRoleMetadataWithoutTreeSettings() {
-        Role role = new Role()
+        Role role =
+            new Role()
                 .setRoleId(4L)
                 .setRoleName("运营")
                 .setRoleKey("operator")
@@ -21,9 +22,11 @@ class RoleConverterTest {
 
         var result = RoleConverter.toDTO(role);
 
-        assertThat(result).usingRecursiveComparison().comparingOnlyFields(
+        assertThat(result)
+            .usingRecursiveComparison()
+            .comparingOnlyFields(
                 "roleId", "roleName", "roleKey", "roleSort", "dataScope", "status", "flag")
-                .isEqualTo(role);
+            .isEqualTo(role);
         assertThat(RoleConverter.toDTO(null)).isNull();
     }
 }

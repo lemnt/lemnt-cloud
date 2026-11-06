@@ -1,9 +1,11 @@
 package com.lemnt.system.application.notice.executor;
 
-import com.lemnt.system.domain.notice.model.NoticeRead;
 import com.lemnt.system.domain.notice.gateway.NoticeReadGateway;
-import lombok.RequiredArgsConstructor;
+import com.lemnt.system.domain.notice.model.NoticeRead;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 

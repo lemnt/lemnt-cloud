@@ -1,0 +1,65 @@
+{
+  "ProductSpuController": {
+    "retrieved": "2026-10-27",
+    "bytes": 6440,
+    "sha256": "affcaecc20c1d4394625242efe9dbd853fddd5fbb5c7a34d418cf2c36396d9d8",
+    "reference_repository": "https://gitee.com/zhijiantianya/yudao-cloud",
+    "source_class_path": "cn/iocoder/yudao/module/product/controller/admin/spu/ProductSpuController.java"
+  },
+  "ProductCategoryController": {
+    "retrieved": "2026-10-27",
+    "bytes": 3360,
+    "sha256": "46aa79b30718ef4ced022ac1eabb032a133421f52ff5ad815d60763ca7a15d5f",
+    "reference_repository": "https://gitee.com/zhijiantianya/yudao-cloud",
+    "source_class_path": "cn/iocoder/yudao/module/product/controller/admin/category/ProductCategoryController.java"
+  },
+  "ProductBrandController": {
+    "retrieved": "2026-10-27",
+    "bytes": 4053,
+    "sha256": "8d6199e3059511c685f413917d585eb6d74d9167e5d4591d6a962fa97f103d20",
+    "reference_repository": "https://gitee.com/zhijiantianya/yudao-cloud",
+    "source_class_path": "cn/iocoder/yudao/module/product/controller/admin/brand/ProductBrandController.java"
+  },
+  "ProductPropertyController": {
+    "retrieved": "2026-10-27",
+    "bytes": 3926,
+    "sha256": "ec7df9a9e8eeab0772ca3d595f928d713e75ae8832f7a9e62fb57ef99546051d",
+    "reference_repository": "https://gitee.com/zhijiantianya/yudao-cloud",
+    "source_class_path": "cn/iocoder/yudao/module/product/controller/admin/property/ProductPropertyController.java"
+  },
+  "ProductPropertyValueController": {
+    "retrieved": "2026-10-27",
+    "bytes": 4387,
+    "sha256": "5bc2866213886c5a9081959e1b437622b5a5ed9af0ac8d27c93eff89d648ec84",
+    "reference_repository": "https://gitee.com/zhijiantianya/yudao-cloud",
+    "source_class_path": "cn/iocoder/yudao/module/product/controller/admin/property/ProductPropertyValueController.java"
+  },
+  "ProductCommentController": {
+    "retrieved": "2026-10-27",
+    "bytes": 3221,
+    "sha256": "7e13dd110e97f62d4652153266c58888e8358238a2387eb7e929761a003255a6",
+    "reference_repository": "https://gitee.com/zhijiantianya/yudao-cloud",
+    "source_class_path": "cn/iocoder/yudao/module/product/controller/admin/comment/ProductCommentController.java"
+  },
+  "ProductSpuServiceImpl": {
+    "retrieved": "2026-10-27",
+    "bytes": 11975,
+    "sha256": "984669a465b3bdc4db0ce459ceb6c2b69de21db2c8044d01a917e0f1eebddf0b",
+    "reference_repository": "https://gitee.com/zhijiantianya/yudao-cloud",
+    "source_class_path": "cn/iocoder/yudao/module/product/service/spu/ProductSpuServiceImpl.java"
+  },
+  "ProductSkuServiceImpl": {
+    "retrieved": "2026-10-27",
+    "bytes": 11506,
+    "sha256": "fd41100dd68bfc520ed6a54bbd72ea0abd6e32adb802047dbdef4102fd79d6d8",
+    "reference_repository": "https://gitee.com/zhijiantianya/yudao-cloud",
+    "source_class_path": "cn/iocoder/yudao/module/product/service/sku/ProductSkuServiceImpl.java"
+  },
+  "ProductCommentServiceImpl": {
+    "retrieved": "2026-10-27",
+    "bytes": 5749,
+    "sha256": "e661f70535b1d0ca396a9a02d3e60e2bd8b093bbabdd374344a41097c1a1213d",
+    "reference_repository": "https://gitee.com/zhijiantianya/yudao-cloud",
+    "source_class_path": "cn/iocoder/yudao/module/product/service/comment/ProductCommentServiceImpl.java"
+  }
+}

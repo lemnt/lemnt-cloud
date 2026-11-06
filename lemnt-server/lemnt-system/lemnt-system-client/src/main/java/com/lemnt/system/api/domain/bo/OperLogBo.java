@@ -1,13 +1,13 @@
 package com.lemnt.system.api.domain.bo;
 
 import com.lemnt.common.api.domain.bo.BaseBO;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
-
 
 /**
  * 操作日志记录表 oper_log

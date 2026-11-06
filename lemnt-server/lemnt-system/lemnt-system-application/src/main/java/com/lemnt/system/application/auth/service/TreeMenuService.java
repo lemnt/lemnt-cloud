@@ -2,6 +2,7 @@ package com.lemnt.system.application.auth.service;
 
 import com.lemnt.system.domain.auth.model.Menu;
 import com.lemnt.system.domain.auth.model.TreeSelect;
+
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class TreeMenuService {
-
     /**
      * 构建前端所需要下拉树结构
      *
@@ -43,7 +43,6 @@ public class TreeMenuService {
         }
         return returnList;
     }
-
 
     /**
      * 递归列表

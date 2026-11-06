@@ -1,0 +1,2506 @@
+[
+  {
+    "method": "GET",
+    "path": "/mall/app/cart",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/cart/AppCartController.java",
+    "sourceLine": 40
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/app/cart/{productId}",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/cart/AppCartController.java",
+    "sourceLine": 50
+  },
+  {
+    "method": "DELETE",
+    "path": "/mall/app/cart/{productId}",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/cart/AppCartController.java",
+    "sourceLine": 60
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/coupon-center",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/coupon/AppCouponCenterController.java",
+    "sourceLine": 40
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/coupon-wallet",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/coupon/AppCouponCenterController.java",
+    "sourceLine": 54
+  },
+  {
+    "method": "POST",
+    "path": "/mall/app/coupon-center/{templateId}/claim",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/coupon/AppCouponCenterController.java",
+    "sourceLine": 68
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/coupons",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/coupon/AppCouponController.java",
+    "sourceLine": 27
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/banners",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBannerController.java",
+    "sourceLine": 31
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/app/banners/{id}/browse",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBannerController.java",
+    "sourceLine": 37
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/bargain/activities",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "sourceLine": 58
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/bargain/activities/{id}",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "sourceLine": 69
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/bargain/activities/{id}/records",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "sourceLine": 75
+  },
+  {
+    "method": "POST",
+    "path": "/mall/app/bargain/records",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "sourceLine": 87
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/bargain/records",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "sourceLine": 93
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/bargain/records/{id}",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "sourceLine": 109
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/bargain/records/{id}/helps",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "sourceLine": 116
+  },
+  {
+    "method": "POST",
+    "path": "/mall/app/bargain/helps",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "sourceLine": 128
+  },
+  {
+    "method": "POST",
+    "path": "/mall/app/bargain/orders",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "sourceLine": 135
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/combination/activities",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "sourceLine": 54
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/combination/activities/{id}",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "sourceLine": 65
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/combination/activities/{id}/heads",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "sourceLine": 71
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/combination/records",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "sourceLine": 83
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/combination/records/{id}",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "sourceLine": 104
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/combination/summary",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "sourceLine": 112
+  },
+  {
+    "method": "POST",
+    "path": "/mall/app/combination/orders",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "sourceLine": 118
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/diy/template/used",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppDiyController.java",
+    "sourceLine": 30
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/diy/template/{id}",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppDiyController.java",
+    "sourceLine": 36
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/diy/page/{id}",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppDiyController.java",
+    "sourceLine": 42
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/kefu/conversation",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppKefuController.java",
+    "sourceLine": 42
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/kefu/messages",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppKefuController.java",
+    "sourceLine": 48
+  },
+  {
+    "method": "POST",
+    "path": "/mall/app/kefu/messages",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppKefuController.java",
+    "sourceLine": 64
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/app/kefu/read",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppKefuController.java",
+    "sourceLine": 70
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/point-mall/activities",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPointController.java",
+    "sourceLine": 39
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/point-mall/activities/{id}",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPointController.java",
+    "sourceLine": 50
+  },
+  {
+    "method": "POST",
+    "path": "/mall/app/point-mall/orders",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPointController.java",
+    "sourceLine": 56
+  },
+  {
+    "method": "POST",
+    "path": "/mall/app/point-mall/orders/batch",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPointController.java",
+    "sourceLine": 66
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/promotion-hub/sections",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPromotionHubController.java",
+    "sourceLine": 34
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/promotion-hub/discount/{id}",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPromotionHubController.java",
+    "sourceLine": 41
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/promotion-hub/reward/{id}",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPromotionHubController.java",
+    "sourceLine": 47
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/seckill/configs",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppSeckillController.java",
+    "sourceLine": 47
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/seckill/now",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppSeckillController.java",
+    "sourceLine": 53
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/seckill/activities",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppSeckillController.java",
+    "sourceLine": 59
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/seckill/activities/{id}",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppSeckillController.java",
+    "sourceLine": 68
+  },
+  {
+    "method": "POST",
+    "path": "/mall/app/seckill/orders",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppSeckillController.java",
+    "sourceLine": 74
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/orders/{orderNo}",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/settlement/AppOrderController.java",
+    "sourceLine": 30
+  },
+  {
+    "method": "GET",
+    "path": "/mall/app/checkout/requests/{requestNo}",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/settlement/AppOrderController.java",
+    "sourceLine": 40
+  },
+  {
+    "method": "POST",
+    "path": "/mall/app/checkout/quote",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/settlement/AppSettlementController.java",
+    "sourceLine": 40
+  },
+  {
+    "method": "POST",
+    "path": "/mall/app/checkout",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/settlement/AppSettlementController.java",
+    "sourceLine": 50
+  },
+  {
+    "method": "POST",
+    "path": "/mall/app/checkout/abandon",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/settlement/AppSettlementController.java",
+    "sourceLine": 60
+  },
+  {
+    "method": "POST",
+    "path": "/mall/admin/members/{memberId}/coupons/{templateId}",
+    "owner": "promotion",
+    "permissions": "mall:coupon:issue",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponController.java",
+    "sourceLine": 44
+  },
+  {
+    "method": "GET",
+    "path": "/mall/admin/members/{memberId}/coupons",
+    "owner": "promotion",
+    "permissions": "mall:coupon:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponController.java",
+    "sourceLine": 53
+  },
+  {
+    "method": "DELETE",
+    "path": "/mall/admin/members/{memberId}/coupons/{couponId}",
+    "owner": "promotion",
+    "permissions": "mall:coupon:remove",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponController.java",
+    "sourceLine": 63
+  },
+  {
+    "method": "GET",
+    "path": "/mall/admin/coupons",
+    "owner": "promotion",
+    "permissions": "mall:coupon:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponController.java",
+    "sourceLine": 71
+  },
+  {
+    "method": "GET",
+    "path": "/mall/admin/coupon-templates",
+    "owner": "promotion",
+    "permissions": "mall:coupon-template:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponTemplateController.java",
+    "sourceLine": 47
+  },
+  {
+    "method": "POST",
+    "path": "/mall/admin/coupon-templates",
+    "owner": "promotion",
+    "permissions": "mall:coupon-template:add",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponTemplateController.java",
+    "sourceLine": 57
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/admin/coupon-templates/{id}/enabled",
+    "owner": "promotion",
+    "permissions": "mall:coupon-template:edit",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponTemplateController.java",
+    "sourceLine": 66
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/admin/coupon-templates/{id}",
+    "owner": "promotion",
+    "permissions": "mall:coupon-template:edit",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponTemplateController.java",
+    "sourceLine": 74
+  },
+  {
+    "method": "DELETE",
+    "path": "/mall/admin/coupon-templates/{id}",
+    "owner": "promotion",
+    "permissions": "mall:coupon-template:remove",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponTemplateController.java",
+    "sourceLine": 83
+  },
+  {
+    "method": "GET",
+    "path": "/mall/admin/coupon-templates/public-claim",
+    "owner": "promotion",
+    "permissions": "mall:coupon-template:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/PublicCouponController.java",
+    "sourceLine": 35
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/admin/coupon-templates/{id}/public-claim",
+    "owner": "promotion",
+    "permissions": "mall:coupon-template:edit",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/PublicCouponController.java",
+    "sourceLine": 42
+  },
+  {
+    "method": "POST",
+    "path": "/mall/promotion/banners",
+    "owner": "promotion",
+    "permissions": "mall:promotion:create",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BannerController.java",
+    "sourceLine": 44
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/banners/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BannerController.java",
+    "sourceLine": 51
+  },
+  {
+    "method": "DELETE",
+    "path": "/mall/promotion/banners/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:delete",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BannerController.java",
+    "sourceLine": 58
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/banners/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:query",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BannerController.java",
+    "sourceLine": 65
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/banners",
+    "owner": "promotion",
+    "permissions": "mall:promotion:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BannerController.java",
+    "sourceLine": 72
+  },
+  {
+    "method": "POST",
+    "path": "/mall/promotion/bargain-activities",
+    "owner": "promotion",
+    "permissions": "mall:promotion:create",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainActivityController.java",
+    "sourceLine": 46
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/bargain-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainActivityController.java",
+    "sourceLine": 53
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/bargain-activities/{id}/close",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainActivityController.java",
+    "sourceLine": 61
+  },
+  {
+    "method": "DELETE",
+    "path": "/mall/promotion/bargain-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:delete",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainActivityController.java",
+    "sourceLine": 68
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/bargain-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:query",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainActivityController.java",
+    "sourceLine": 75
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/bargain-activities",
+    "owner": "promotion",
+    "permissions": "mall:promotion:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainActivityController.java",
+    "sourceLine": 82
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/bargain-records",
+    "owner": "promotion",
+    "permissions": "mall:promotion:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainRecordController.java",
+    "sourceLine": 33
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/bargain-helps",
+    "owner": "promotion",
+    "permissions": "mall:promotion:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/BargainRecordController.java",
+    "sourceLine": 43
+  },
+  {
+    "method": "POST",
+    "path": "/mall/promotion/combination-activities",
+    "owner": "promotion",
+    "permissions": "mall:promotion:create",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/CombinationActivityController.java",
+    "sourceLine": 46
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/combination-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/CombinationActivityController.java",
+    "sourceLine": 53
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/combination-activities/{id}/close",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/CombinationActivityController.java",
+    "sourceLine": 61
+  },
+  {
+    "method": "DELETE",
+    "path": "/mall/promotion/combination-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:delete",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/CombinationActivityController.java",
+    "sourceLine": 68
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/combination-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:query",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/CombinationActivityController.java",
+    "sourceLine": 75
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/combination-activities",
+    "owner": "promotion",
+    "permissions": "mall:promotion:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/CombinationActivityController.java",
+    "sourceLine": 82
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/combination-records",
+    "owner": "promotion",
+    "permissions": "mall:promotion:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/CombinationRecordController.java",
+    "sourceLine": 29
+  },
+  {
+    "method": "POST",
+    "path": "/mall/promotion/discount-activities",
+    "owner": "promotion",
+    "permissions": "mall:promotion:create",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java",
+    "sourceLine": 48
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/discount-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java",
+    "sourceLine": 55
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/discount-activities/{id}/close",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java",
+    "sourceLine": 63
+  },
+  {
+    "method": "DELETE",
+    "path": "/mall/promotion/discount-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:delete",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java",
+    "sourceLine": 70
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/discount-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:query",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java",
+    "sourceLine": 77
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/discount-activities",
+    "owner": "promotion",
+    "permissions": "mall:promotion:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java",
+    "sourceLine": 84
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/diy-pages",
+    "owner": "promotion",
+    "permissions": "mall:promotion:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyPageController.java",
+    "sourceLine": 47
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/diy-pages/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:query",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyPageController.java",
+    "sourceLine": 56
+  },
+  {
+    "method": "POST",
+    "path": "/mall/promotion/diy-pages",
+    "owner": "promotion",
+    "permissions": "mall:promotion:create",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyPageController.java",
+    "sourceLine": 63
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/diy-pages/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyPageController.java",
+    "sourceLine": 70
+  },
+  {
+    "method": "DELETE",
+    "path": "/mall/promotion/diy-pages/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:delete",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyPageController.java",
+    "sourceLine": 77
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/diy-pages/{id}/property",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyPageController.java",
+    "sourceLine": 84
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/diy-templates",
+    "owner": "promotion",
+    "permissions": "mall:promotion:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyTemplateController.java",
+    "sourceLine": 49
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/diy-templates/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:query",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyTemplateController.java",
+    "sourceLine": 59
+  },
+  {
+    "method": "POST",
+    "path": "/mall/promotion/diy-templates",
+    "owner": "promotion",
+    "permissions": "mall:promotion:create",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyTemplateController.java",
+    "sourceLine": 66
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/diy-templates/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyTemplateController.java",
+    "sourceLine": 73
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/diy-templates/{id}/use",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyTemplateController.java",
+    "sourceLine": 80
+  },
+  {
+    "method": "DELETE",
+    "path": "/mall/promotion/diy-templates/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:delete",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyTemplateController.java",
+    "sourceLine": 87
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/diy-templates/{id}/property",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiyTemplateController.java",
+    "sourceLine": 94
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/kefu-conversations",
+    "owner": "promotion",
+    "permissions": "mall:promotion:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/KefuConversationController.java",
+    "sourceLine": 53
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/kefu-conversations/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:query",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/KefuConversationController.java",
+    "sourceLine": 60
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/kefu-conversations/{id}/messages",
+    "owner": "promotion",
+    "permissions": "mall:promotion:query",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/KefuConversationController.java",
+    "sourceLine": 67
+  },
+  {
+    "method": "POST",
+    "path": "/mall/promotion/kefu-conversations/{id}/messages",
+    "owner": "promotion",
+    "permissions": "mall:promotion:create",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/KefuConversationController.java",
+    "sourceLine": 81
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/kefu-conversations/{id}/read",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/KefuConversationController.java",
+    "sourceLine": 88
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/kefu-conversations/{id}/pinned",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/KefuConversationController.java",
+    "sourceLine": 95
+  },
+  {
+    "method": "DELETE",
+    "path": "/mall/promotion/kefu-conversations/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:delete",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/KefuConversationController.java",
+    "sourceLine": 103
+  },
+  {
+    "method": "POST",
+    "path": "/mall/promotion/point-activities",
+    "owner": "promotion",
+    "permissions": "mall:promotion:create",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/PointActivityController.java",
+    "sourceLine": 46
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/point-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/PointActivityController.java",
+    "sourceLine": 53
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/point-activities/{id}/close",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/PointActivityController.java",
+    "sourceLine": 61
+  },
+  {
+    "method": "DELETE",
+    "path": "/mall/promotion/point-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:delete",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/PointActivityController.java",
+    "sourceLine": 68
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/point-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:query",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/PointActivityController.java",
+    "sourceLine": 75
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/point-activities",
+    "owner": "promotion",
+    "permissions": "mall:promotion:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/PointActivityController.java",
+    "sourceLine": 82
+  },
+  {
+    "method": "POST",
+    "path": "/mall/promotion/reward-activities",
+    "owner": "promotion",
+    "permissions": "mall:promotion:create",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java",
+    "sourceLine": 48
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/reward-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java",
+    "sourceLine": 55
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/reward-activities/{id}/close",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java",
+    "sourceLine": 63
+  },
+  {
+    "method": "DELETE",
+    "path": "/mall/promotion/reward-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:delete",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java",
+    "sourceLine": 70
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/reward-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:query",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java",
+    "sourceLine": 77
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/reward-activities",
+    "owner": "promotion",
+    "permissions": "mall:promotion:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java",
+    "sourceLine": 84
+  },
+  {
+    "method": "POST",
+    "path": "/mall/promotion/seckill-activities",
+    "owner": "promotion",
+    "permissions": "mall:promotion:create",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillActivityController.java",
+    "sourceLine": 46
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/seckill-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillActivityController.java",
+    "sourceLine": 53
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/seckill-activities/{id}/close",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillActivityController.java",
+    "sourceLine": 61
+  },
+  {
+    "method": "DELETE",
+    "path": "/mall/promotion/seckill-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:delete",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillActivityController.java",
+    "sourceLine": 68
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/seckill-activities/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:query",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillActivityController.java",
+    "sourceLine": 75
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/seckill-activities",
+    "owner": "promotion",
+    "permissions": "mall:promotion:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillActivityController.java",
+    "sourceLine": 82
+  },
+  {
+    "method": "POST",
+    "path": "/mall/promotion/seckill-configs",
+    "owner": "promotion",
+    "permissions": "mall:promotion:create",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "sourceLine": 53
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/seckill-configs/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "sourceLine": 60
+  },
+  {
+    "method": "PUT",
+    "path": "/mall/promotion/seckill-configs/{id}/status",
+    "owner": "promotion",
+    "permissions": "mall:promotion:update",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "sourceLine": 68
+  },
+  {
+    "method": "DELETE",
+    "path": "/mall/promotion/seckill-configs/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:delete",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "sourceLine": 76
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/seckill-configs/{id}",
+    "owner": "promotion",
+    "permissions": "mall:promotion:query",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "sourceLine": 83
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/seckill-configs",
+    "owner": "promotion",
+    "permissions": "mall:promotion:list",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "sourceLine": 90
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/seckill-configs/list",
+    "owner": "promotion",
+    "permissions": "mall:promotion:query",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "sourceLine": 100
+  },
+  {
+    "method": "GET",
+    "path": "/mall/promotion/seckill-configs/simple-list",
+    "owner": "promotion",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/SeckillConfigController.java",
+    "sourceLine": 107
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/orders/{orderNo}/after-sale-items",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "sourceLine": 48
+  },
+  {
+    "method": "POST",
+    "path": "/trade/app/orders/{orderNo}/after-sales",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "sourceLine": 58
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/after-sales",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "sourceLine": 76
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/after-sales/{no}",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "sourceLine": 93
+  },
+  {
+    "method": "POST",
+    "path": "/trade/app/after-sales/{no}/return",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "sourceLine": 101
+  },
+  {
+    "method": "POST",
+    "path": "/trade/app/after-sales/{no}/cancel",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "sourceLine": 112
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/after-sales/{no}/promotions",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "sourceLine": 122
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/brokerage/user",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/brokerage/AppBrokerageController.java",
+    "sourceLine": 43
+  },
+  {
+    "method": "POST",
+    "path": "/trade/app/brokerage/bind",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/brokerage/AppBrokerageController.java",
+    "sourceLine": 49
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/brokerage/records",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/brokerage/AppBrokerageController.java",
+    "sourceLine": 55
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/brokerage/withdraws",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/brokerage/AppBrokerageController.java",
+    "sourceLine": 64
+  },
+  {
+    "method": "POST",
+    "path": "/trade/app/brokerage/withdraws",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/brokerage/AppBrokerageController.java",
+    "sourceLine": 74
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/delivery/expresses",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/fulfillment/AppDeliveryExpressController.java",
+    "sourceLine": 25
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/orders",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "sourceLine": 46
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/orders/status-counts",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "sourceLine": 63
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/orders/{orderNo}",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "sourceLine": 72
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/orders/{orderNo}/tracks",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "sourceLine": 80
+  },
+  {
+    "method": "POST",
+    "path": "/trade/app/orders/{orderNo}/cancel",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "sourceLine": 90
+  },
+  {
+    "method": "POST",
+    "path": "/trade/app/orders/{orderNo}/receive",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "sourceLine": 100
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/orders/{orderNo}/promotions",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "sourceLine": 111
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/payment-channels",
+    "owner": "pay",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/payment/AppPaymentChannelController.java",
+    "sourceLine": 26
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/orders/{orderNo}/payment",
+    "owner": "pay",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/payment/AppPaymentController.java",
+    "sourceLine": 36
+  },
+  {
+    "method": "POST",
+    "path": "/trade/app/orders/{orderNo}/payment",
+    "owner": "pay",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/payment/AppPaymentController.java",
+    "sourceLine": 44
+  },
+  {
+    "method": "POST",
+    "path": "/trade/app/payments/{paymentNo}/sandbox-pay",
+    "owner": "pay",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/payment/AppSandboxPaymentController.java",
+    "sourceLine": 25
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/delivery/pick-up-stores",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/pickup/AppPickUpStoreController.java",
+    "sourceLine": 29
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/recharge-packages",
+    "owner": "pay",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/recharge/AppRechargeController.java",
+    "sourceLine": 40
+  },
+  {
+    "method": "POST",
+    "path": "/trade/app/wallet/recharges",
+    "owner": "pay",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/recharge/AppRechargeController.java",
+    "sourceLine": 47
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/wallet/recharges",
+    "owner": "pay",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/recharge/AppRechargeController.java",
+    "sourceLine": 55
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/wallet",
+    "owner": "pay",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/wallet/AppWalletController.java",
+    "sourceLine": 45
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/wallet/transactions",
+    "owner": "pay",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/wallet/AppWalletController.java",
+    "sourceLine": 52
+  },
+  {
+    "method": "POST",
+    "path": "/trade/app/wallet/transfers",
+    "owner": "pay",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/wallet/AppWalletController.java",
+    "sourceLine": 69
+  },
+  {
+    "method": "GET",
+    "path": "/trade/app/wallet/transfers",
+    "owner": "pay",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/wallet/AppWalletController.java",
+    "sourceLine": 81
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/after-sales/{no}/refund",
+    "owner": "order",
+    "permissions": "trade:after-sale:refund",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "sourceLine": 66
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/orders/{orderNo}/after-sale-items",
+    "owner": "order",
+    "permissions": "trade:after-sale:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "sourceLine": 76
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/orders/{orderNo}/after-sales",
+    "owner": "order",
+    "permissions": "trade:after-sale:create",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "sourceLine": 84
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/after-sales",
+    "owner": "order",
+    "permissions": "trade:after-sale:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "sourceLine": 97
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/after-sales/{no}",
+    "owner": "order",
+    "permissions": "trade:after-sale:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "sourceLine": 108
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/after-sales/{no}/agree",
+    "owner": "order",
+    "permissions": "trade:after-sale:agree",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "sourceLine": 117
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/after-sales/{no}/reject",
+    "owner": "order",
+    "permissions": "trade:after-sale:reject",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "sourceLine": 126
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/after-sales/{no}/return",
+    "owner": "order",
+    "permissions": "trade:after-sale:return",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "sourceLine": 138
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/after-sales/{no}/receive",
+    "owner": "order",
+    "permissions": "trade:after-sale:receive",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "sourceLine": 151
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/after-sales/{no}/refuse",
+    "owner": "order",
+    "permissions": "trade:after-sale:refuse",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "sourceLine": 161
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/after-sales/{no}/promotions",
+    "owner": "order",
+    "permissions": "trade:after-sale:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "sourceLine": 176
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/after-sales/{no}/logs",
+    "owner": "order",
+    "permissions": "trade:after-sale:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleLogController.java",
+    "sourceLine": 29
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/brokerage/users",
+    "owner": "order",
+    "permissions": "trade:brokerage:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/brokerage/BrokerageController.java",
+    "sourceLine": 54
+  },
+  {
+    "method": "PUT",
+    "path": "/trade/admin/brokerage/users/{id}/enabled",
+    "owner": "order",
+    "permissions": "trade:brokerage:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/brokerage/BrokerageController.java",
+    "sourceLine": 64
+  },
+  {
+    "method": "PUT",
+    "path": "/trade/admin/brokerage/users/{id}/bind",
+    "owner": "order",
+    "permissions": "trade:brokerage:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/brokerage/BrokerageController.java",
+    "sourceLine": 71
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/brokerage/records",
+    "owner": "order",
+    "permissions": "trade:brokerage:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/brokerage/BrokerageController.java",
+    "sourceLine": 78
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/brokerage/withdraws",
+    "owner": "order",
+    "permissions": "trade:brokerage:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/brokerage/BrokerageController.java",
+    "sourceLine": 88
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/brokerage/withdraws/{id}/audit",
+    "owner": "order",
+    "permissions": "trade:brokerage:audit",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/brokerage/BrokerageController.java",
+    "sourceLine": 98
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/brokerage/unfreeze",
+    "owner": "order",
+    "permissions": "trade:brokerage:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/brokerage/BrokerageController.java",
+    "sourceLine": 106
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/config",
+    "owner": "order",
+    "permissions": "trade:config:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/config/TradeConfigController.java",
+    "sourceLine": 34
+  },
+  {
+    "method": "PUT",
+    "path": "/trade/admin/config",
+    "owner": "order",
+    "permissions": "trade:config:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/config/TradeConfigController.java",
+    "sourceLine": 42
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/delivery/expresses",
+    "owner": "order",
+    "permissions": "trade:delivery-express:create",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressController.java",
+    "sourceLine": 51
+  },
+  {
+    "method": "PUT",
+    "path": "/trade/admin/delivery/expresses/{id}",
+    "owner": "order",
+    "permissions": "trade:delivery-express:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressController.java",
+    "sourceLine": 59
+  },
+  {
+    "method": "DELETE",
+    "path": "/trade/admin/delivery/expresses/{id}",
+    "owner": "order",
+    "permissions": "trade:delivery-express:delete",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressController.java",
+    "sourceLine": 68
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/delivery/expresses/{id}",
+    "owner": "order",
+    "permissions": "trade:delivery-express:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressController.java",
+    "sourceLine": 76
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/delivery/expresses",
+    "owner": "order",
+    "permissions": "trade:delivery-express:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressController.java",
+    "sourceLine": 84
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/delivery/expresses/simple",
+    "owner": "order",
+    "permissions": "trade:delivery-express:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressController.java",
+    "sourceLine": 97
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/delivery/templates",
+    "owner": "order",
+    "permissions": "trade:delivery-template:create",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressTemplateController.java",
+    "sourceLine": 51
+  },
+  {
+    "method": "PUT",
+    "path": "/trade/admin/delivery/templates/{id}",
+    "owner": "order",
+    "permissions": "trade:delivery-template:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressTemplateController.java",
+    "sourceLine": 59
+  },
+  {
+    "method": "DELETE",
+    "path": "/trade/admin/delivery/templates/{id}",
+    "owner": "order",
+    "permissions": "trade:delivery-template:delete",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressTemplateController.java",
+    "sourceLine": 68
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/delivery/templates/{id}",
+    "owner": "order",
+    "permissions": "trade:delivery-template:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressTemplateController.java",
+    "sourceLine": 76
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/delivery/templates",
+    "owner": "order",
+    "permissions": "trade:delivery-template:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressTemplateController.java",
+    "sourceLine": 84
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/delivery/templates/simple",
+    "owner": "order",
+    "permissions": "trade:delivery-template:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressTemplateController.java",
+    "sourceLine": 98
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/orders",
+    "owner": "order",
+    "permissions": "trade:fulfillment:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/FulfillmentOrderController.java",
+    "sourceLine": 32
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/orders/{orderNo}",
+    "owner": "order",
+    "permissions": "trade:fulfillment:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/FulfillmentOrderController.java",
+    "sourceLine": 42
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/orders/{orderNo}/promotions",
+    "owner": "order",
+    "permissions": "trade:fulfillment:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/FulfillmentOrderController.java",
+    "sourceLine": 54
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/orders/{orderNo}/shipment",
+    "owner": "order",
+    "permissions": "trade:fulfillment:ship",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/ShipmentController.java",
+    "sourceLine": 31
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/orders/{orderNo}/logs",
+    "owner": "order",
+    "permissions": "trade:fulfillment:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderLogController.java",
+    "sourceLine": 29
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/orders/summary",
+    "owner": "order",
+    "permissions": "trade:order:summary",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderManagementController.java",
+    "sourceLine": 50
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/orders/{orderNo}/remark",
+    "owner": "order",
+    "permissions": "trade:order:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderManagementController.java",
+    "sourceLine": 58
+  },
+  {
+    "method": "PUT",
+    "path": "/trade/admin/orders/{orderNo}/remark",
+    "owner": "order",
+    "permissions": "trade:order:remark",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderManagementController.java",
+    "sourceLine": 67
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/orders/{orderNo}/price-adjustment",
+    "owner": "order",
+    "permissions": "trade:order:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderManagementController.java",
+    "sourceLine": 76
+  },
+  {
+    "method": "PUT",
+    "path": "/trade/admin/orders/{orderNo}/address",
+    "owner": "order",
+    "permissions": "trade:order:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderManagementController.java",
+    "sourceLine": 87
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/pay-apps",
+    "owner": "pay",
+    "permissions": "trade:pay-app:create",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payapp/PayAppController.java",
+    "sourceLine": 49
+  },
+  {
+    "method": "PUT",
+    "path": "/trade/admin/pay-apps/{id}",
+    "owner": "pay",
+    "permissions": "trade:pay-app:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payapp/PayAppController.java",
+    "sourceLine": 57
+  },
+  {
+    "method": "PUT",
+    "path": "/trade/admin/pay-apps/{id}/status",
+    "owner": "pay",
+    "permissions": "trade:pay-app:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payapp/PayAppController.java",
+    "sourceLine": 65
+  },
+  {
+    "method": "DELETE",
+    "path": "/trade/admin/pay-apps/{id}",
+    "owner": "pay",
+    "permissions": "trade:pay-app:remove",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payapp/PayAppController.java",
+    "sourceLine": 74
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/pay-apps/{id}",
+    "owner": "pay",
+    "permissions": "trade:pay-app:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payapp/PayAppController.java",
+    "sourceLine": 82
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/pay-apps",
+    "owner": "pay",
+    "permissions": "trade:pay-app:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payapp/PayAppController.java",
+    "sourceLine": 91
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/pay-channels",
+    "owner": "pay",
+    "permissions": "trade:pay-channel:create",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paychannel/PayChannelConfigController.java",
+    "sourceLine": 49
+  },
+  {
+    "method": "PUT",
+    "path": "/trade/admin/pay-channels/{id}",
+    "owner": "pay",
+    "permissions": "trade:pay-channel:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paychannel/PayChannelConfigController.java",
+    "sourceLine": 57
+  },
+  {
+    "method": "DELETE",
+    "path": "/trade/admin/pay-channels/{id}",
+    "owner": "pay",
+    "permissions": "trade:pay-channel:remove",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paychannel/PayChannelConfigController.java",
+    "sourceLine": 65
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/pay-channels/{id}",
+    "owner": "pay",
+    "permissions": "trade:pay-channel:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paychannel/PayChannelConfigController.java",
+    "sourceLine": 73
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/pay-channels",
+    "owner": "pay",
+    "permissions": "trade:pay-channel:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paychannel/PayChannelConfigController.java",
+    "sourceLine": 82
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/pay-channels/by-app/{appId}",
+    "owner": "pay",
+    "permissions": "trade:pay-channel:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paychannel/PayChannelConfigController.java",
+    "sourceLine": 93
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/payment-channels",
+    "owner": "pay",
+    "permissions": "trade:payment-channel:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payment/PaymentChannelController.java",
+    "sourceLine": 28
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/payments",
+    "owner": "pay",
+    "permissions": "trade:payment:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payment/PaymentController.java",
+    "sourceLine": 35
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/payments/{no}",
+    "owner": "pay",
+    "permissions": "trade:payment:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payment/PaymentController.java",
+    "sourceLine": 46
+  },
+  {
+    "method": "POST",
+    "path": "/trade/payment/notify/{appKey}/{channel}",
+    "owner": "pay",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payment/PaymentNotifyController.java",
+    "sourceLine": 26
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/payment-refunds",
+    "owner": "pay",
+    "permissions": "trade:payment-refund:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paymentrefund/PaymentRefundController.java",
+    "sourceLine": 35
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/payment-refunds/{no}",
+    "owner": "pay",
+    "permissions": "trade:payment-refund:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paymentrefund/PaymentRefundController.java",
+    "sourceLine": 46
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/pay-notify-tasks",
+    "owner": "pay",
+    "permissions": "trade:pay-notify:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paynotify/PayNotifyTaskController.java",
+    "sourceLine": 37
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/pay-notify-tasks/{id}",
+    "owner": "pay",
+    "permissions": "trade:pay-notify:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paynotify/PayNotifyTaskController.java",
+    "sourceLine": 48
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/pay-notify-tasks/{id}/retry",
+    "owner": "pay",
+    "permissions": "trade:pay-notify:retry",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paynotify/PayNotifyTaskController.java",
+    "sourceLine": 57
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/orders/pick-up",
+    "owner": "order",
+    "permissions": "trade:fulfillment:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpOrderController.java",
+    "sourceLine": 38
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/orders/pick-up/{code}",
+    "owner": "order",
+    "permissions": "trade:fulfillment:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpOrderController.java",
+    "sourceLine": 49
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/orders/pick-up/{code}/verify",
+    "owner": "order",
+    "permissions": "trade:fulfillment:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpOrderController.java",
+    "sourceLine": 56
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/delivery/pick-up-stores",
+    "owner": "order",
+    "permissions": "trade:pick-up-store:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpStoreController.java",
+    "sourceLine": 47
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/delivery/pick-up-stores/{id}",
+    "owner": "order",
+    "permissions": "trade:pick-up-store:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpStoreController.java",
+    "sourceLine": 57
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/delivery/pick-up-stores",
+    "owner": "order",
+    "permissions": "trade:pick-up-store:create",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpStoreController.java",
+    "sourceLine": 64
+  },
+  {
+    "method": "PUT",
+    "path": "/trade/admin/delivery/pick-up-stores/{id}",
+    "owner": "order",
+    "permissions": "trade:pick-up-store:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpStoreController.java",
+    "sourceLine": 71
+  },
+  {
+    "method": "PUT",
+    "path": "/trade/admin/delivery/pick-up-stores/{id}/verify-users",
+    "owner": "order",
+    "permissions": "trade:pick-up-store:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpStoreController.java",
+    "sourceLine": 78
+  },
+  {
+    "method": "DELETE",
+    "path": "/trade/admin/delivery/pick-up-stores/{id}",
+    "owner": "order",
+    "permissions": "trade:pick-up-store:delete",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/pickup/PickUpStoreController.java",
+    "sourceLine": 85
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/recharge-packages",
+    "owner": "pay",
+    "permissions": "trade:recharge-package:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/RechargePackageController.java",
+    "sourceLine": 44
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/recharge-packages/{id}",
+    "owner": "pay",
+    "permissions": "trade:recharge-package:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/RechargePackageController.java",
+    "sourceLine": 54
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/recharge-packages",
+    "owner": "pay",
+    "permissions": "trade:recharge-package:create",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/RechargePackageController.java",
+    "sourceLine": 62
+  },
+  {
+    "method": "PUT",
+    "path": "/trade/admin/recharge-packages/{id}",
+    "owner": "pay",
+    "permissions": "trade:recharge-package:update",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/RechargePackageController.java",
+    "sourceLine": 69
+  },
+  {
+    "method": "DELETE",
+    "path": "/trade/admin/recharge-packages/{id}",
+    "owner": "pay",
+    "permissions": "trade:recharge-package:remove",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/RechargePackageController.java",
+    "sourceLine": 77
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/wallet-recharges",
+    "owner": "pay",
+    "permissions": "trade:wallet-recharge:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/WalletRechargeController.java",
+    "sourceLine": 39
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/wallet-recharges/{rechargeNo}",
+    "owner": "pay",
+    "permissions": "trade:wallet-recharge:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/WalletRechargeController.java",
+    "sourceLine": 49
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/wallet-recharges/{rechargeNo}/confirm",
+    "owner": "pay",
+    "permissions": "trade:wallet-recharge:confirm",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/WalletRechargeController.java",
+    "sourceLine": 57
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/wallet-recharges/{rechargeNo}/refund",
+    "owner": "pay",
+    "permissions": "trade:wallet-recharge:refund",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/recharge/WalletRechargeController.java",
+    "sourceLine": 65
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/shipments",
+    "owner": "order",
+    "permissions": "trade:shipment:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/shipment/ShipmentQueryController.java",
+    "sourceLine": 39
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/shipments/{orderNo}",
+    "owner": "order",
+    "permissions": "trade:shipment:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/shipment/ShipmentQueryController.java",
+    "sourceLine": 50
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/shipments/{orderNo}/tracks",
+    "owner": "order",
+    "permissions": "trade:shipment:track",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/shipment/ShipmentQueryController.java",
+    "sourceLine": 59
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/wallets",
+    "owner": "pay",
+    "permissions": "trade:wallet:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/wallet/WalletController.java",
+    "sourceLine": 42
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/wallets/{memberId}",
+    "owner": "pay",
+    "permissions": "trade:wallet:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/wallet/WalletController.java",
+    "sourceLine": 53
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/wallets/{memberId}/transactions",
+    "owner": "pay",
+    "permissions": "trade:wallet:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/wallet/WalletController.java",
+    "sourceLine": 62
+  },
+  {
+    "method": "POST",
+    "path": "/trade/admin/wallets/{memberId}/adjust",
+    "owner": "pay",
+    "permissions": "trade:wallet:adjust",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/wallet/WalletController.java",
+    "sourceLine": 74
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/wallet-transfers",
+    "owner": "pay",
+    "permissions": "trade:wallet-transfer:list",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/wallet/WalletTransferController.java",
+    "sourceLine": 32
+  },
+  {
+    "method": "GET",
+    "path": "/trade/admin/wallet-transfers/{transferNo}",
+    "owner": "pay",
+    "permissions": "trade:wallet-transfer:query",
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/wallet/WalletTransferController.java",
+    "sourceLine": 42
+  },
+  {
+    "method": "DELETE",
+    "path": "/app/browse-historys",
+    "owner": "product",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductBrowseHistoryController.java",
+    "sourceLine": 75
+  },
+  {
+    "method": "GET",
+    "path": "/app/browse-historys",
+    "owner": "product",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductBrowseHistoryController.java",
+    "sourceLine": 50
+  },
+  {
+    "method": "POST",
+    "path": "/app/browse-historys",
+    "owner": "product",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductBrowseHistoryController.java",
+    "sourceLine": 63
+  },
+  {
+    "method": "DELETE",
+    "path": "/app/browse-historys/clear",
+    "owner": "product",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductBrowseHistoryController.java",
+    "sourceLine": 87
+  },
+  {
+    "method": "GET",
+    "path": "/app/categories",
+    "owner": "product",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductCategoryController.java",
+    "sourceLine": 28
+  },
+  {
+    "method": "GET",
+    "path": "/app/comments",
+    "owner": "product",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductCommentController.java",
+    "sourceLine": 41
+  },
+  {
+    "method": "GET",
+    "path": "/app/favorites",
+    "owner": "product",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductFavoriteController.java",
+    "sourceLine": 66
+  },
+  {
+    "method": "POST",
+    "path": "/app/favorites",
+    "owner": "product",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductFavoriteController.java",
+    "sourceLine": 54
+  },
+  {
+    "method": "GET",
+    "path": "/app/favorites/count",
+    "owner": "product",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductFavoriteController.java",
+    "sourceLine": 101
+  },
+  {
+    "method": "GET",
+    "path": "/app/favorites/exists",
+    "owner": "product",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductFavoriteController.java",
+    "sourceLine": 89
+  },
+  {
+    "method": "DELETE",
+    "path": "/app/favorites/{spuId:[1-9][0-9]*}",
+    "owner": "product",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductFavoriteController.java",
+    "sourceLine": 78
+  },
+  {
+    "method": "GET",
+    "path": "/app/products",
+    "owner": "product",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductController.java",
+    "sourceLine": 35
+  },
+  {
+    "method": "GET",
+    "path": "/app/products/{id}",
+    "owner": "product",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductController.java",
+    "sourceLine": 43
+  },
+  {
+    "method": "GET",
+    "path": "/brands",
+    "owner": "product",
+    "permissions": "product:brand:list",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductBrandController.java",
+    "sourceLine": 56
+  },
+  {
+    "method": "POST",
+    "path": "/brands",
+    "owner": "product",
+    "permissions": "product:brand:add",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductBrandController.java",
+    "sourceLine": 91
+  },
+  {
+    "method": "GET",
+    "path": "/brands/page",
+    "owner": "product",
+    "permissions": "product:brand:list",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductBrandController.java",
+    "sourceLine": 45
+  },
+  {
+    "method": "GET",
+    "path": "/brands/simple",
+    "owner": "product",
+    "permissions": "product:brand:query",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductBrandController.java",
+    "sourceLine": 68
+  },
+  {
+    "method": "DELETE",
+    "path": "/brands/{id}",
+    "owner": "product",
+    "permissions": "product:brand:remove",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductBrandController.java",
+    "sourceLine": 110
+  },
+  {
+    "method": "GET",
+    "path": "/brands/{id}",
+    "owner": "product",
+    "permissions": "product:brand:query",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductBrandController.java",
+    "sourceLine": 81
+  },
+  {
+    "method": "PUT",
+    "path": "/brands/{id}",
+    "owner": "product",
+    "permissions": "product:brand:edit",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductBrandController.java",
+    "sourceLine": 100
+  },
+  {
+    "method": "GET",
+    "path": "/browse-historys",
+    "owner": "product",
+    "permissions": "product:browse-history:list",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductBrowseHistoryController.java",
+    "sourceLine": 33
+  },
+  {
+    "method": "GET",
+    "path": "/categories",
+    "owner": "product",
+    "permissions": "product:category:list",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductCategoryController.java",
+    "sourceLine": 45
+  },
+  {
+    "method": "POST",
+    "path": "/categories",
+    "owner": "product",
+    "permissions": "product:category:add",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductCategoryController.java",
+    "sourceLine": 78
+  },
+  {
+    "method": "GET",
+    "path": "/categories/tree",
+    "owner": "product",
+    "permissions": "product:category:list",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductCategoryController.java",
+    "sourceLine": 57
+  },
+  {
+    "method": "DELETE",
+    "path": "/categories/{id}",
+    "owner": "product",
+    "permissions": "product:category:remove",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductCategoryController.java",
+    "sourceLine": 98
+  },
+  {
+    "method": "GET",
+    "path": "/categories/{id}",
+    "owner": "product",
+    "permissions": "product:category:query",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductCategoryController.java",
+    "sourceLine": 68
+  },
+  {
+    "method": "PUT",
+    "path": "/categories/{id}",
+    "owner": "product",
+    "permissions": "product:category:edit",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductCategoryController.java",
+    "sourceLine": 88
+  },
+  {
+    "method": "GET",
+    "path": "/comments",
+    "owner": "product",
+    "permissions": "product:comment:list",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductCommentController.java",
+    "sourceLine": 77
+  },
+  {
+    "method": "POST",
+    "path": "/comments",
+    "owner": "product",
+    "permissions": "product:comment:create",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductCommentController.java",
+    "sourceLine": 57
+  },
+  {
+    "method": "GET",
+    "path": "/comments/{id}",
+    "owner": "product",
+    "permissions": "product:comment:query",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductCommentController.java",
+    "sourceLine": 90
+  },
+  {
+    "method": "PUT",
+    "path": "/comments/{id}/reply",
+    "owner": "product",
+    "permissions": "product:comment:reply",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductCommentController.java",
+    "sourceLine": 104
+  },
+  {
+    "method": "PUT",
+    "path": "/comments/{id}/visible",
+    "owner": "product",
+    "permissions": "product:comment:edit",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductCommentController.java",
+    "sourceLine": 118
+  },
+  {
+    "method": "GET",
+    "path": "/favorites",
+    "owner": "product",
+    "permissions": "product:favorite:list",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductFavoriteController.java",
+    "sourceLine": 35
+  },
+  {
+    "method": "GET",
+    "path": "/spec-values",
+    "owner": "product",
+    "permissions": "product:spec-value:list",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpecValueController.java",
+    "sourceLine": 61
+  },
+  {
+    "method": "POST",
+    "path": "/spec-values",
+    "owner": "product",
+    "permissions": "product:spec-value:add",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpecValueController.java",
+    "sourceLine": 101
+  },
+  {
+    "method": "GET",
+    "path": "/spec-values/simple",
+    "owner": "product",
+    "permissions": "product:spec-value:query",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpecValueController.java",
+    "sourceLine": 74
+  },
+  {
+    "method": "DELETE",
+    "path": "/spec-values/{id}",
+    "owner": "product",
+    "permissions": "product:spec-value:remove",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpecValueController.java",
+    "sourceLine": 128
+  },
+  {
+    "method": "GET",
+    "path": "/spec-values/{id}",
+    "owner": "product",
+    "permissions": "product:spec-value:query",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpecValueController.java",
+    "sourceLine": 90
+  },
+  {
+    "method": "PUT",
+    "path": "/spec-values/{id}",
+    "owner": "product",
+    "permissions": "product:spec-value:edit",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpecValueController.java",
+    "sourceLine": 114
+  },
+  {
+    "method": "GET",
+    "path": "/specs",
+    "owner": "product",
+    "permissions": "product:spec:list",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpecController.java",
+    "sourceLine": 59
+  },
+  {
+    "method": "POST",
+    "path": "/specs",
+    "owner": "product",
+    "permissions": "product:spec:add",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpecController.java",
+    "sourceLine": 96
+  },
+  {
+    "method": "GET",
+    "path": "/specs/simple",
+    "owner": "product",
+    "permissions": "product:spec:query",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpecController.java",
+    "sourceLine": 72
+  },
+  {
+    "method": "DELETE",
+    "path": "/specs/{id}",
+    "owner": "product",
+    "permissions": "product:spec:remove",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpecController.java",
+    "sourceLine": 121
+  },
+  {
+    "method": "GET",
+    "path": "/specs/{id}",
+    "owner": "product",
+    "permissions": "product:spec:query",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpecController.java",
+    "sourceLine": 85
+  },
+  {
+    "method": "PUT",
+    "path": "/specs/{id}",
+    "owner": "product",
+    "permissions": "product:spec:edit",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpecController.java",
+    "sourceLine": 108
+  },
+  {
+    "method": "GET",
+    "path": "/spus",
+    "owner": "product",
+    "permissions": "product:spu:list",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpuController.java",
+    "sourceLine": 50
+  },
+  {
+    "method": "POST",
+    "path": "/spus",
+    "owner": "product",
+    "permissions": "product:spu:add",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpuController.java",
+    "sourceLine": 113
+  },
+  {
+    "method": "GET",
+    "path": "/spus/batch",
+    "owner": "product",
+    "permissions": "product:spu:query",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpuController.java",
+    "sourceLine": 79
+  },
+  {
+    "method": "GET",
+    "path": "/spus/count",
+    "owner": "product",
+    "permissions": "product:spu:list",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpuController.java",
+    "sourceLine": 92
+  },
+  {
+    "method": "GET",
+    "path": "/spus/export",
+    "owner": "product",
+    "permissions": "product:spu:export",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpuController.java",
+    "sourceLine": 138
+  },
+  {
+    "method": "GET",
+    "path": "/spus/simple",
+    "owner": "product",
+    "permissions": "product:spu:query",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpuController.java",
+    "sourceLine": 64
+  },
+  {
+    "method": "DELETE",
+    "path": "/spus/{id}",
+    "owner": "product",
+    "permissions": "product:spu:remove",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpuController.java",
+    "sourceLine": 185
+  },
+  {
+    "method": "GET",
+    "path": "/spus/{id}",
+    "owner": "product",
+    "permissions": "product:spu:query",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpuController.java",
+    "sourceLine": 103
+  },
+  {
+    "method": "PUT",
+    "path": "/spus/{id}",
+    "owner": "product",
+    "permissions": "product:spu:edit",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpuController.java",
+    "sourceLine": 122
+  },
+  {
+    "method": "POST",
+    "path": "/spus/{id}/recycle",
+    "owner": "product",
+    "permissions": "product:spu:edit",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpuController.java",
+    "sourceLine": 165
+  },
+  {
+    "method": "POST",
+    "path": "/spus/{id}/restore",
+    "owner": "product",
+    "permissions": "product:spu:edit",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpuController.java",
+    "sourceLine": 175
+  },
+  {
+    "method": "PUT",
+    "path": "/spus/{id}/shelf",
+    "owner": "product",
+    "permissions": "product:spu:edit",
+    "source": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpuController.java",
+    "sourceLine": 129
+  },
+  {
+    "method": "POST",
+    "path": "/mall/app/comments",
+    "owner": "order",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/order/AppOrderCommentController.java",
+    "sourceLine": 31
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "controllers": [
+    "AfterSaleController.java",
+    "ShipmentQueryController.java",
+    "OrderCloseController.java",
+    "OrderManagementController.java"
+  ],
+  "controller_layer_leaks": [],
+  "application_layer_leaks": [],
+  "missing_http_metadata": [],
+  "trade_tables": [
+    "trade_inventory_confirmation",
+    "trade_order",
+    "trade_order_item",
+    "trade_payment",
+    "trade_payment_refund",
+    "trade_refund_request",
+    "trade_shipment"
+  ],
+  "table_count": 7,
+  "payment_provider_connected": false,
+  "tracking_provider_connected": false,
+  "database_migrations_applied": false,
+  "new_admin_pages_delivered": false
+}

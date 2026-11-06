@@ -7,8 +7,10 @@ import com.lemnt.system.application.auth.dto.UserDTO;
 import com.lemnt.system.application.auth.qry.UserPageQry;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
 import com.lemnt.system.domain.auth.model.User;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 查询已分配角色用户执行器
@@ -25,9 +27,11 @@ public class UserAllocatedPageQueryExe {
         condition.setUserName(qry.userName());
         condition.setPhonenumber(qry.phonenumber());
         condition.setRoleId(qry.roleId());
-        PageResult<User> pageResult = userGateway.selectAllocatedList(
+        PageResult<User> pageResult =
+            userGateway.selectAllocatedList(
                 condition, new PageQry(qry.pageNum(), qry.pageSize()));
-        return PageResult.of(UserConverter.toDTOList(pageResult.getRecords()), pageResult.getTotal());
+        return PageResult.of(
+            UserConverter.toDTOList(pageResult.getRecords()), pageResult.getTotal());
     }
 
     /**
@@ -41,8 +45,10 @@ public class UserAllocatedPageQueryExe {
         condition.setUserName(qry.userName());
         condition.setPhonenumber(qry.phonenumber());
         condition.setRoleId(qry.roleId());
-        PageResult<User> pageResult = userGateway.selectUnallocatedList(
+        PageResult<User> pageResult =
+            userGateway.selectUnallocatedList(
                 condition, new PageQry(qry.pageNum(), qry.pageSize()));
-        return PageResult.of(UserConverter.toDTOList(pageResult.getRecords()), pageResult.getTotal());
+        return PageResult.of(
+            UserConverter.toDTOList(pageResult.getRecords()), pageResult.getTotal());
     }
 }

@@ -1,0 +1,23 @@
+server:
+  port: ${PRODUCT_PORT:9140}
+spring:
+  application:
+    name: lemnt-product
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  config:
+    import:
+      - optional:nacos:lemnt-common.yaml
+      - optional:nacos:commerce-mq.yaml
+      - optional:nacos:lemnt-product.yaml
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      username: ${NACOS_USERNAME:}
+      password: ${NACOS_PASSWORD:}
+      config:
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+        namespace: ${NACOS_NAMESPACE:}
+      discovery:
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+        namespace: ${NACOS_NAMESPACE:}

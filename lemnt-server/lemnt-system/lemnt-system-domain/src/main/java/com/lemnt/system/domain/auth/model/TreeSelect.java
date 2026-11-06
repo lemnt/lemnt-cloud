@@ -2,7 +2,7 @@ package com.lemnt.system.domain.auth.model;
 
 import com.lemnt.common.core.constant.UserConstants;
 import com.lemnt.system.domain.org.model.Dept;
-import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Data;
 
 import java.io.Serial;
@@ -39,23 +39,23 @@ public class TreeSelect implements Serializable {
     /**
      * 子节点
      */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TreeSelect> children;
 
     public TreeSelect() {
-
     }
 
     public TreeSelect(Dept dept) {
         this.id = dept.getDeptId();
         this.label = dept.getDeptName();
         this.disabled = Objects.equals(UserConstants.DEPT_DISABLE, dept.getStatus());
-        this.children = dept.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
+        this.children =
+            dept.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
     }
 
     public TreeSelect(Menu menu) {
         this.id = menu.getMenuId();
         this.label = menu.getMenuName();
-        this.children = menu.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
+        this.children =
+            menu.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
     }
 }

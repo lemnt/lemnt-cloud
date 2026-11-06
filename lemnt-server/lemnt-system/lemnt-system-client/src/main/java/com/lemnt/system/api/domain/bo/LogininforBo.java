@@ -1,10 +1,10 @@
 package com.lemnt.system.api.domain.bo;
 
 import com.lemnt.common.api.domain.bo.BaseBO;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
 
 import java.io.Serial;
 import java.time.LocalDateTime;
@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 public class LogininforBo extends BaseBO {
-
     @Serial
     private static final long serialVersionUID = 1L;
 

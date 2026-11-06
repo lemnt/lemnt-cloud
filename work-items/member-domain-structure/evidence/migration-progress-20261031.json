@@ -1,0 +1,2028 @@
+{
+  "date": "2026-10-31",
+  "scope": "Latest full-migration F01-F12 code scope; approved six-layer/domain/REST/framework adaptations respected",
+  "exclusions": [
+    "文章与文章分类",
+    "会员短信/微信认证",
+    "支付退款物流真实渠道SDK",
+    "支付演示业务及演示表"
+  ],
+  "method": {
+    "unit": "63 named business capabilities, equal applicable checkpoint weights",
+    "checkpoints": [
+      "backend",
+      "data",
+      "admin",
+      "app"
+    ],
+    "scores": {
+      "1": "本检查项核心链路已存在并有可定位实现/相关验证，未见阻断该项的已知核心缺口；不等于逐字段完全等价或部署验收",
+      "0.5": "已有对应实现，但源业务分支/字段/操作/交互缺失或本轮未完成完整等价核对，保守记部分",
+      "0": "未发现对应实现或对应检查项缺失",
+      "null": "源功能没有独立该层交互/存储需求，不计入分母"
+    },
+    "overallFormula": "sum(checkpoint scores) / count(applicable checkpoints) * 100",
+    "stateMeaning": "checks_met only means all code-stage checks in this scoped capability meet rubric, not end-to-end accepted",
+    "limitations": [
+      "静态代码/调用链及既有测试证据复核；本次没有执行全套构建或真实端到端测试",
+      "不是工时、代码行数、源文件复制率；0.5为明确的阶段分值，不代表该项实际剩余工时恰为50%",
+      "按同一功能合并多个源Controller，避免按文件数量夸大或缩小进度",
+      "源码尚有字段/契约差异，因此只能称代码阶段迁移进度，不能称完整复刻验收完成率"
+    ]
+  },
+  "summary": {
+    "units": 63,
+    "points": 90.5,
+    "applicableChecks": 214,
+    "percent": 42.3,
+    "states": {
+      "partial": 40,
+      "checks_met": 4,
+      "not_implemented": 19
+    },
+    "groups": {
+      "会员": {
+        "units": 11,
+        "points": 28.0,
+        "applicableChecks": 38,
+        "percent": 73.7,
+        "states": {
+          "partial": 10,
+          "checks_met": 1
+        }
+      },
+      "商品": {
+        "units": 8,
+        "points": 22.0,
+        "applicableChecks": 29,
+        "percent": 75.9,
+        "states": {
+          "partial": 7,
+          "checks_met": 1
+        }
+      },
+      "购物结算优惠券": {
+        "units": 6,
+        "points": 12.0,
+        "applicableChecks": 17,
+        "percent": 70.6,
+        "states": {
+          "partial": 5,
+          "checks_met": 1
+        }
+      },
+      "促销运营": {
+        "units": 13,
+        "points": 2.5,
+        "applicableChecks": 49,
+        "percent": 5.1,
+        "states": {
+          "partial": 2,
+          "not_implemented": 11
+        }
+      },
+      "订单售后物流": {
+        "units": 14,
+        "points": 23.0,
+        "applicableChecks": 43,
+        "percent": 53.5,
+        "states": {
+          "partial": 12,
+          "checks_met": 1,
+          "not_implemented": 1
+        }
+      },
+      "支付业务": {
+        "units": 7,
+        "points": 2.5,
+        "applicableChecks": 26,
+        "percent": 9.6,
+        "states": {
+          "partial": 3,
+          "not_implemented": 4
+        }
+      },
+      "统计": {
+        "units": 4,
+        "points": 0.5,
+        "applicableChecks": 12,
+        "percent": 4.2,
+        "states": {
+          "not_implemented": 3,
+          "partial": 1
+        }
+      }
+    },
+    "dimensions": {
+      "backend": {
+        "points": 31.0,
+        "applicableChecks": 63,
+        "percent": 49.2
+      },
+      "data": {
+        "points": 36.0,
+        "applicableChecks": 62,
+        "percent": 58.1
+      },
+      "admin": {
+        "points": 12.5,
+        "applicableChecks": 50,
+        "percent": 25.0
+      },
+      "app": {
+        "points": 11.0,
+        "applicableChecks": 39,
+        "percent": 28.2
+      }
+    },
+    "modules": {
+      "member": {
+        "units": 12,
+        "points": 28.0,
+        "applicableChecks": 41,
+        "percent": 68.3
+      },
+      "mall": {
+        "units": 28,
+        "points": 36.5,
+        "applicableChecks": 98,
+        "percent": 37.2
+      },
+      "trade": {
+        "units": 23,
+        "points": 26.0,
+        "applicableChecks": 75,
+        "percent": 34.7
+      }
+    }
+  },
+  "units": [
+    {
+      "id": "M01",
+      "group": "会员",
+      "name": "后台会员资料及筛选",
+      "scores": {
+        "backend": 0.5,
+        "data": 0.5,
+        "admin": 0.5,
+        "app": null
+      },
+      "gap": "注册IP/终端及部分源资料契约未对齐；已有电话、标签、等级分组及时间筛选不能算未迁移；后台memberApi中本功能部分调用仍无服务前缀，不满足本轮确认的前缀规范，待网关转发联调",
+      "sourceFiles": [
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/MemberUserController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberUserController.java",
+        "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/user/service/MemberUserService.java",
+        "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java",
+        "lemnt-ui/src/modules/member/account/pages/MemberUserPage.tsx"
+      ],
+      "points": 1.5,
+      "applicableChecks": 3,
+      "percent": 50.0,
+      "state": "partial",
+      "module": "member"
+    },
+    {
+      "id": "M02",
+      "group": "会员",
+      "name": "App资料与密码维护",
+      "scores": {
+        "backend": 0.5,
+        "data": 0.5,
+        "admin": null,
+        "app": 0.5
+      },
+      "gap": "已有本人资料及密码维护；头像交互、源剩余资料字段未完整对应；短信微信排除；去服务前缀后member.js业务路径与App Controller仍不一致，实际Nacos未核验，不能计App链路完成",
+      "sourceFiles": [
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/user/AppMemberUserController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/member/index.js",
+        "lemnt-miniapp/services/member.js",
+        "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/user/AppMemberPasswordController.java",
+        "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/user/AppMemberUserController.java"
+      ],
+      "points": 1.5,
+      "applicableChecks": 3,
+      "percent": 50.0,
+      "state": "partial",
+      "module": "member"
+    },
+    {
+      "id": "M03",
+      "group": "会员",
+      "name": "认证会话刷新退出及停用撤销",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": null,
+        "app": 1
+      },
+      "gap": "约定范围内已实现；短信微信认证不计入；真实Redis/RPC验收另列",
+      "sourceFiles": [
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/auth/AppAuthController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-common/lemnt-common-security/src/main/java/com/lemnt/common/security/service/TokenService.java",
+        "lemnt-miniapp/pages/member-login/index.js",
+        "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/member/service/MemberAuthenticationService.java",
+        "lemnt-server/lemnt-auth/lemnt-auth-infrastructure/src/main/java/com/lemnt/auth/infrastructure/member/gateway/MemberTokenGatewayImpl.java",
+        "lemnt-server/lemnt-auth/lemnt-auth-start/src/test/java/com/lemnt/auth/start/MemberAuthenticationIntegrationTest.java"
+      ],
+      "points": 3,
+      "applicableChecks": 3,
+      "percent": 100.0,
+      "state": "checks_met",
+      "module": "member"
+    },
+    {
+      "id": "M04",
+      "group": "会员",
+      "name": "收货地址与默认地址",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": 0.5,
+        "app": 0.5
+      },
+      "gap": "地址归属/审计/地区名称已补齐；App仍输入地区编号，未对齐源地区选择交互；后台memberApi中本功能部分调用仍无服务前缀，不满足本轮确认的前缀规范，待网关转发联调",
+      "sourceFiles": [
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/address/AddressController.java",
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/address/AppAddressController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/member-addresses/index.js",
+        "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/address/service/MemberAddressService.java",
+        "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/address/gateway/MemberAddressAreaGatewayImpl.java",
+        "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java",
+        "lemnt-ui/src/modules/member/account/pages/MemberUserPage.tsx"
+      ],
+      "points": 3.0,
+      "applicableChecks": 4,
+      "percent": 75.0,
+      "state": "partial",
+      "module": "member"
+    },
+    {
+      "id": "M05",
+      "group": "会员",
+      "name": "会员分组管理",
+      "scores": {
+        "backend": 0.5,
+        "data": 1,
+        "admin": 0.5,
+        "app": null
+      },
+      "gap": "CRUD/分页/分配已接入，名称唯一等源差异仍需核对；后台memberApi中本功能部分调用仍无服务前缀，不满足本轮确认的前缀规范，待网关转发联调",
+      "sourceFiles": [
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/group/MemberGroupController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberGroupController.java",
+        "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/user/service/MemberUserService.java",
+        "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java",
+        "lemnt-ui/src/modules/member/account/pages/MemberMetadataPage.tsx"
+      ],
+      "points": 2.0,
+      "applicableChecks": 3,
+      "percent": 66.7,
+      "state": "partial",
+      "module": "member"
+    },
+    {
+      "id": "M06",
+      "group": "会员",
+      "name": "会员标签管理与绑定",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": 0.5,
+        "app": null
+      },
+      "gap": "本单元核心增改删查、归属绑定、分页与引用保护已有代码及用例；后台memberApi中本功能部分调用仍无服务前缀，不满足本轮确认的前缀规范，待网关转发联调",
+      "sourceFiles": [
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/tag/MemberTagController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberTagController.java",
+        "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/user/service/MemberUserService.java",
+        "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java",
+        "lemnt-ui/src/modules/member/account/pages/MemberMetadataPage.tsx"
+      ],
+      "points": 2.5,
+      "applicableChecks": 3,
+      "percent": 83.3,
+      "state": "partial",
+      "module": "member"
+    },
+    {
+      "id": "M07",
+      "group": "会员",
+      "name": "等级配置与启用列表",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": 0.5,
+        "app": 0.5
+      },
+      "gap": "配置/列表/筛选/审计/引用删除保护已覆盖；等级变更单列；后台memberApi中本功能部分调用仍无服务前缀，不满足本轮确认的前缀规范，待网关转发联调；去服务前缀后member.js业务路径与App Controller仍不一致，实际Nacos未核验，不能计App链路完成",
+      "sourceFiles": [
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberLevelController.java",
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/level/AppMemberLevelController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/member-benefits/index.js",
+        "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberLevelController.java",
+        "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/service/MemberGrowthService.java",
+        "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java",
+        "lemnt-ui/src/modules/member/account/pages/MemberMetadataPage.tsx"
+      ],
+      "points": 3.0,
+      "applicableChecks": 4,
+      "percent": 75.0,
+      "state": "partial",
+      "module": "member"
+    },
+    {
+      "id": "M08",
+      "group": "会员",
+      "name": "手工等级调整及等级记录",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": 0.5,
+        "app": null
+      },
+      "gap": "当前等级重复调整、取消、快照、筛选和重放已覆盖；真实环境未验收；后台memberApi中本功能部分调用仍无服务前缀，不满足本轮确认的前缀规范，待网关转发联调",
+      "sourceFiles": [
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberLevelRecordController.java",
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/MemberUserController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberUserLevelController.java",
+        "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/service/MemberGrowthService.java",
+        "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java",
+        "lemnt-ui/src/modules/member/account/pages/MemberRecordPage.tsx"
+      ],
+      "points": 2.5,
+      "applicableChecks": 3,
+      "percent": 83.3,
+      "state": "partial",
+      "module": "member"
+    },
+    {
+      "id": "M09",
+      "group": "会员",
+      "name": "积分配置调整与流水",
+      "scores": {
+        "backend": 0.5,
+        "data": 1,
+        "admin": 0.5,
+        "app": 0.5
+      },
+      "gap": "配置/过滤/流水已实现；源零调整无操作等细节尚未全部收敛，不算满分；后台memberApi中本功能部分调用仍无服务前缀，不满足本轮确认的前缀规范，待网关转发联调；去服务前缀后member.js业务路径与App Controller仍不一致，实际Nacos未核验，不能计App链路完成",
+      "sourceFiles": [
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/config/MemberConfigController.java",
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/point/MemberPointRecordController.java",
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/point/AppMemberPointRecordController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/member-benefits/index.js",
+        "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberPointConfigController.java",
+        "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/service/MemberGrowthService.java",
+        "lemnt-ui/src/modules/member/account/pages/MemberConfigPage.tsx",
+        "lemnt-ui/src/modules/member/account/pages/MemberRecordPage.tsx"
+      ],
+      "points": 2.5,
+      "applicableChecks": 4,
+      "percent": 62.5,
+      "state": "partial",
+      "module": "member"
+    },
+    {
+      "id": "M10",
+      "group": "会员",
+      "name": "经验流水与自动等级计算",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": 1,
+        "app": 0.5
+      },
+      "gap": "负数归零、源流水值、等级匹配/不匹配及降级等核心场景已覆盖；去服务前缀后member.js业务路径与App Controller仍不一致，实际Nacos未核验，不能计App链路完成",
+      "sourceFiles": [
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberExperienceRecordController.java",
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/level/AppMemberExperienceRecordController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/member-benefits/index.js",
+        "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberExperienceRecordController.java",
+        "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/service/MemberGrowthService.java",
+        "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java",
+        "lemnt-ui/src/modules/member/account/pages/MemberRecordPage.tsx"
+      ],
+      "points": 3.5,
+      "applicableChecks": 4,
+      "percent": 87.5,
+      "state": "partial",
+      "module": "member"
+    },
+    {
+      "id": "M11",
+      "group": "会员",
+      "name": "签到配置签到与记录",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": 0.5,
+        "app": 0.5
+      },
+      "gap": "独立ID配置、天数唯一、签到重复冲突、奖励流水关联、查询和页面已覆盖；后台memberApi中本功能部分调用仍无服务前缀，不满足本轮确认的前缀规范，待网关转发联调；去服务前缀后member.js业务路径与App Controller仍不一致，实际Nacos未核验，不能计App链路完成",
+      "sourceFiles": [
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/signin/MemberSignInConfigController.java",
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/signin/MemberSignInRecordController.java",
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/signin/AppMemberSignInConfigController.java",
+        "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/signin/AppMemberSignInRecordController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/member-benefits/index.js",
+        "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberSignConfigController.java",
+        "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberSignRecordController.java",
+        "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/service/MemberGrowthService.java",
+        "lemnt-ui/src/modules/member/account/pages/MemberConfigPage.tsx"
+      ],
+      "points": 3.0,
+      "applicableChecks": 4,
+      "percent": 75.0,
+      "state": "partial",
+      "module": "member"
+    },
+    {
+      "id": "P01",
+      "group": "商品",
+      "name": "商品分类",
+      "scores": {
+        "backend": 0.5,
+        "data": 0.5,
+        "admin": 0.5,
+        "app": 1
+      },
+      "gap": "基础分类/树/店铺已实现，源层级与经营字段、完整管理交互仍待核对",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/category/ProductCategoryController.java",
+        "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/category/AppCategoryController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/store/index.js",
+        "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CategoryController.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductCatalogService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/CatalogPersistenceTest.java",
+        "lemnt-ui/src/modules/mall/catalog/pages/CategoryPage.tsx"
+      ],
+      "points": 2.5,
+      "applicableChecks": 4,
+      "percent": 62.5,
+      "state": "partial",
+      "module": "mall"
+    },
+    {
+      "id": "P02",
+      "group": "商品",
+      "name": "商品品牌",
+      "scores": {
+        "backend": 0.5,
+        "data": 0.5,
+        "admin": 0.5,
+        "app": null
+      },
+      "gap": "基础CRUD已有，源完整排序/状态等字段及页面未完全对应",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/brand/ProductBrandController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/BrandController.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductCatalogService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/CatalogPersistenceTest.java",
+        "lemnt-ui/src/modules/mall/catalog/pages/BrandPage.tsx"
+      ],
+      "points": 1.5,
+      "applicableChecks": 3,
+      "percent": 50.0,
+      "state": "partial",
+      "module": "mall"
+    },
+    {
+      "id": "P03",
+      "group": "商品",
+      "name": "规格及规格值字典",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": 0.5,
+        "app": null
+      },
+      "gap": "后端独立字典及SKU引用已有；后台仅选择引用，缺完整独立字典管理页面",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/property/ProductPropertyController.java",
+        "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/property/ProductPropertyValueController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecController.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecValueController.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductSpecService.java",
+        "lemnt-ui/src/modules/mall/catalog/components/SkuSpecFields.tsx"
+      ],
+      "points": 2.5,
+      "applicableChecks": 3,
+      "percent": 83.3,
+      "state": "partial",
+      "module": "mall"
+    },
+    {
+      "id": "P04",
+      "group": "商品",
+      "name": "SPU/SKU及商品经营信息",
+      "scores": {
+        "backend": 0.5,
+        "data": 0.5,
+        "admin": 0.5,
+        "app": 0.5
+      },
+      "gap": "已有真实SKU/规格JSON和订单快照；源完整经营字段、导出及详情交互仍存在差异",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/spu/ProductSpuController.java",
+        "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/spu/AppProductSpuController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/product/index.js",
+        "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuController.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductManagementService.java",
+        "lemnt-ui/src/modules/mall/catalog/components/SpuEditor.tsx",
+        "lemnt-ui/src/modules/mall/catalog/pages/SpuPage.tsx"
+      ],
+      "points": 2.0,
+      "applicableChecks": 4,
+      "percent": 50.0,
+      "state": "partial",
+      "module": "mall"
+    },
+    {
+      "id": "P05",
+      "group": "商品",
+      "name": "库存管理与预占确认释放",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": 0.5,
+        "app": null
+      },
+      "gap": "后端预占/确认/释放与台账已有；后台库存经营交互未完整对照",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/spu/ProductSpuController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductInventoryService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductManagementService.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutFlowIntegrationTest.java",
+        "lemnt-ui/src/modules/mall/catalog/pages/SpuPage.tsx"
+      ],
+      "points": 2.5,
+      "applicableChecks": 3,
+      "percent": 83.3,
+      "state": "partial",
+      "module": "mall"
+    },
+    {
+      "id": "P06",
+      "group": "商品",
+      "name": "商品评价管理与会员评价",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": 1,
+        "app": 1
+      },
+      "gap": "真实订单项、多项评价、自评、评分图片匿名、回复显隐、自动评价已覆盖约定业务；真实OSS另验",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/comment/ProductCommentController.java",
+        "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/comment/AppProductCommentController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/comments/index.js",
+        "lemnt-miniapp/pages/order-comment/index.js",
+        "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CommentController.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductCommentService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/CommentFlowPersistenceTest.java",
+        "lemnt-ui/src/modules/mall/catalog/pages/CommentPage.tsx"
+      ],
+      "points": 4,
+      "applicableChecks": 4,
+      "percent": 100.0,
+      "state": "checks_met",
+      "module": "mall"
+    },
+    {
+      "id": "P07",
+      "group": "商品",
+      "name": "商品收藏",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": 0.5,
+        "app": 1
+      },
+      "gap": "后端和App已有，后台为商品内面板，未完整对齐源独立列表交互",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/favorite/ProductFavoriteController.java",
+        "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/favorite/AppFavoriteController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/favorites/index.js",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductFavoriteService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/ProductInteractionPersistenceTest.java",
+        "lemnt-ui/src/modules/mall/catalog/components/ProductInteractionPanels.tsx"
+      ],
+      "points": 3.5,
+      "applicableChecks": 4,
+      "percent": 87.5,
+      "state": "partial",
+      "module": "mall"
+    },
+    {
+      "id": "P08",
+      "group": "商品",
+      "name": "浏览足迹",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": 0.5,
+        "app": 1
+      },
+      "gap": "重访/裁剪/隐藏/清空已有，后台面板与源完整分页交互仍有差异",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/history/ProductBrowseHistoryController.java",
+        "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/history/AppProductBrowseHistoryController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/browse-history/index.js",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductBrowseHistoryService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/ProductInteractionPersistenceTest.java",
+        "lemnt-ui/src/modules/mall/catalog/components/ProductInteractionPanels.tsx"
+      ],
+      "points": 3.5,
+      "applicableChecks": 4,
+      "percent": 87.5,
+      "state": "partial",
+      "module": "mall"
+    },
+    {
+      "id": "C01",
+      "group": "购物结算优惠券",
+      "name": "购物车",
+      "scores": {
+        "backend": 0.5,
+        "data": 1,
+        "admin": null,
+        "app": 0.5
+      },
+      "gap": "已有列表/设置数量选中/单删，缺源完整批量选中、批删、规格重置和数量汇总",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/cart/AppCartController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/index/index.js",
+        "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/cart/AppCartController.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/cart/service/CartService.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutFlowIntegrationTest.java"
+      ],
+      "points": 2.0,
+      "applicableChecks": 3,
+      "percent": 66.7,
+      "state": "partial",
+      "module": "mall"
+    },
+    {
+      "id": "C02",
+      "group": "购物结算优惠券",
+      "name": "结算计价与Redis结算单",
+      "scores": {
+        "backend": 0.5,
+        "data": 1,
+        "admin": null,
+        "app": 0.5
+      },
+      "gap": "促销/等级/积分/券/运费已接计价；完整立即购买与源结算交互/契约仍未全部对齐",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/order/AppTradeOrderController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/index/index.js",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityPricingService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementPreparationService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementService.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutFlowIntegrationTest.java"
+      ],
+      "points": 2.0,
+      "applicableChecks": 3,
+      "percent": 66.7,
+      "state": "partial",
+      "module": "mall"
+    },
+    {
+      "id": "C03",
+      "group": "购物结算优惠券",
+      "name": "优惠券模板管理",
+      "scores": {
+        "backend": 0.5,
+        "data": 1,
+        "admin": 0.5,
+        "app": null
+      },
+      "gap": "模板快照/范围/有效期等已有，源全部配置与表单操作需逐项收口",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/coupon/CouponTemplateController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponTemplateController.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/coupon/service/CouponService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/CouponSnapshotPersistenceTest.java",
+        "lemnt-ui/src/modules/mall/checkout/pages/CouponTemplatePage.tsx"
+      ],
+      "points": 2.0,
+      "applicableChecks": 3,
+      "percent": 66.7,
+      "state": "partial",
+      "module": "mall"
+    },
+    {
+      "id": "C04",
+      "group": "购物结算优惠券",
+      "name": "后台发券回收及持券管理",
+      "scores": {
+        "backend": 0.5,
+        "data": 1,
+        "admin": 0.5,
+        "app": null
+      },
+      "gap": "持券分页/发放等已有；源完整批量发券回收和查询表单仍需补齐",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/coupon/CouponController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponController.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/coupon/service/CouponIssuanceService.java",
+        "lemnt-ui/src/modules/mall/checkout/pages/CouponRecordPage.tsx",
+        "lemnt-ui/src/modules/mall/checkout/pages/CouponRecordsPanel.tsx"
+      ],
+      "points": 2.0,
+      "applicableChecks": 3,
+      "percent": 66.7,
+      "state": "partial",
+      "module": "mall"
+    },
+    {
+      "id": "C05",
+      "group": "购物结算优惠券",
+      "name": "App领券中心与本人券包",
+      "scores": {
+        "backend": 0.5,
+        "data": 1,
+        "admin": null,
+        "app": 0.5
+      },
+      "gap": "中心/领取/券包已有，单券详情、数量及源完整筛选交互未全",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/coupon/AppCouponController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/coupon/AppCouponTemplateController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/coupons/index.js",
+        "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/coupon/AppCouponCenterController.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/coupon/AppCouponController.java"
+      ],
+      "points": 2.0,
+      "applicableChecks": 3,
+      "percent": 66.7,
+      "state": "partial",
+      "module": "mall"
+    },
+    {
+      "id": "C06",
+      "group": "购物结算优惠券",
+      "name": "下单锁券支付核销关单释放",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": null,
+        "app": null
+      },
+      "gap": "约定同步锁券/核销/释放及持券快照有生产调用和测试；真实RPC另验",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/order/AppTradeOrderController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/dubbo/SettlementLifecycleClientImpl.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementRecordService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/CouponSnapshotPersistenceTest.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutFlowIntegrationTest.java"
+      ],
+      "points": 2,
+      "applicableChecks": 2,
+      "percent": 100.0,
+      "state": "checks_met",
+      "module": "mall"
+    },
+    {
+      "id": "A01",
+      "group": "促销运营",
+      "name": "满减送活动",
+      "scores": {
+        "backend": 0.5,
+        "data": 0.5,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "满减管理/结算已有；按件数、赠券赠积分包邮等源完整规则及后台/App页面未全",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/reward/RewardActivityController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/reward/AppRewardActivityController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityManagementService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityPricingService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/ActivityAlignmentPersistenceTest.java"
+      ],
+      "points": 1.0,
+      "applicableChecks": 4,
+      "percent": 25.0,
+      "state": "partial",
+      "module": "mall"
+    },
+    {
+      "id": "A02",
+      "group": "促销运营",
+      "name": "限时折扣活动",
+      "scores": {
+        "backend": 0.5,
+        "data": 1,
+        "admin": 0,
+        "app": null
+      },
+      "gap": "SKU减价/折扣和结算已接；源完整约束仍待核对，缺后台管理页",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/discount/DiscountActivityController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityManagementService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityPricingService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/ActivityAlignmentPersistenceTest.java"
+      ],
+      "points": 1.5,
+      "applicableChecks": 3,
+      "percent": 50.0,
+      "state": "partial",
+      "module": "mall"
+    },
+    {
+      "id": "A03",
+      "group": "促销运营",
+      "name": "App商品活动聚合展示",
+      "scores": {
+        "backend": 0,
+        "data": null,
+        "admin": null,
+        "app": 0
+      },
+      "gap": "没有对应活动聚合接口及App活动入口",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/activity/AppActivityController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 2,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "mall"
+    },
+    {
+      "id": "A04",
+      "group": "促销运营",
+      "name": "秒杀及秒杀时段",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "未发现对应目标业务域/表/路由和页面，未迁移",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/seckill/SeckillActivityController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/seckill/SeckillConfigController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/seckill/AppSeckillActivityController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/seckill/AppSeckillConfigController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 4,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "mall"
+    },
+    {
+      "id": "A05",
+      "group": "促销运营",
+      "name": "拼团活动及参团记录",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "未发现对应目标业务域/表/路由和页面，未迁移",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/combination/CombinationActivityController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/combination/CombinationRecordController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/combination/AppCombinationActivityController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/combination/AppCombinationRecordController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 4,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "mall"
+    },
+    {
+      "id": "A06",
+      "group": "促销运营",
+      "name": "砍价活动助力及记录",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "未发现对应目标业务域/表/路由和页面，未迁移",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/bargain/BargainActivityController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/bargain/BargainHelpController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/bargain/BargainRecordController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/bargain/AppBargainActivityController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/bargain/AppBargainHelpController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/bargain/AppBargainRecordController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 4,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "mall"
+    },
+    {
+      "id": "A07",
+      "group": "促销运营",
+      "name": "积分商城活动",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "未发现对应目标业务域/表/路由和页面，未迁移",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/point/PointActivityController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/point/AppPointActivityController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 4,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "mall"
+    },
+    {
+      "id": "A08",
+      "group": "促销运营",
+      "name": "分销关系及推广用户",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "未发现对应目标业务域/表/路由和页面，未迁移",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/brokerage/BrokerageUserController.java",
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/brokerage/AppBrokerageUserController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 4,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "mall"
+    },
+    {
+      "id": "A09",
+      "group": "促销运营",
+      "name": "佣金冻结解冻与退款回退",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "未发现对应目标业务域/表/路由和页面，未迁移",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/brokerage/BrokerageRecordController.java",
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/brokerage/AppBrokerageRecordController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 4,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "mall"
+    },
+    {
+      "id": "A10",
+      "group": "促销运营",
+      "name": "分销提现",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "未发现对应目标业务域/表/路由和页面，未迁移",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/brokerage/BrokerageWithdrawController.java",
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/brokerage/AppBrokerageWithdrawController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 4,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "mall"
+    },
+    {
+      "id": "A11",
+      "group": "促销运营",
+      "name": "Banner轮播",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "未发现对应目标业务域/表/路由和页面，未迁移",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/banner/BannerController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/banner/AppBannerController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 4,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "mall"
+    },
+    {
+      "id": "A12",
+      "group": "促销运营",
+      "name": "装修模板及页面",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "未发现对应目标业务域/表/路由和页面，未迁移",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/diy/DiyPageController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/diy/DiyTemplateController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/diy/AppDiyPageController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/diy/AppDiyTemplateController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 4,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "mall"
+    },
+    {
+      "id": "A13",
+      "group": "促销运营",
+      "name": "客服会话及消息",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "未发现对应目标业务域/表/路由和页面，未迁移",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/kefu/KeFuConversationController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/kefu/KeFuMessageController.java",
+        "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/kefu/AppKeFuMessageController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 4,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "mall"
+    },
+    {
+      "id": "T01",
+      "group": "订单售后物流",
+      "name": "后台订单管理及操作日志",
+      "scores": {
+        "backend": 0.5,
+        "data": 0.5,
+        "admin": 0.5,
+        "app": null
+      },
+      "gap": "分页详情/备注/发货/日志已有；完整调价、改址及源筛选/字段未全",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/order/TradeOrderController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/FulfillmentOrderController.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderManagementController.java",
+        "lemnt-ui/src/modules/trade/fulfillment/pages/OrderFulfillmentPage.tsx",
+        "lemnt-ui/src/modules/trade/fulfillment/pages/OrderLogPanel.tsx"
+      ],
+      "points": 1.5,
+      "applicableChecks": 3,
+      "percent": 50.0,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "T02",
+      "group": "订单售后物流",
+      "name": "App订单中心",
+      "scores": {
+        "backend": 0.5,
+        "data": 1,
+        "admin": null,
+        "app": 0
+      },
+      "gap": "App仅取消/收货，缺本人分页、分类数量、详情/删除/物流及独立订单中心页面",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/order/AppTradeOrderController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/index/index.js",
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java"
+      ],
+      "points": 1.5,
+      "applicableChecks": 3,
+      "percent": 50.0,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "T03",
+      "group": "订单售后物流",
+      "name": "同步提交与订单落库",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": null,
+        "app": 0.5
+      },
+      "gap": "同步库存预占/锁券/订单写入已有；源完整下单表单和入口仍未全",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/order/AppTradeOrderController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/index/index.js",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/OrderPlacementService.java",
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementPreparationService.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutFlowIntegrationTest.java"
+      ],
+      "points": 2.5,
+      "applicableChecks": 3,
+      "percent": 83.3,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "T04",
+      "group": "订单售后物流",
+      "name": "超时关单及补偿",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": null,
+        "app": null
+      },
+      "gap": "超时关闭、状态竞争/恢复及统一库存券释放有代码和测试，真实渠道查询后置",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/order/TradeOrderController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderCloseService.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/executor/OrderCloseServiceTest.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-start/src/main/java/com/lemnt/trade/start/TradeOrderScheduler.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutFlowIntegrationTest.java"
+      ],
+      "points": 2,
+      "applicableChecks": 2,
+      "percent": 100.0,
+      "state": "checks_met",
+      "module": "trade"
+    },
+    {
+      "id": "T05",
+      "group": "订单售后物流",
+      "name": "自动收货及自动评价",
+      "scores": {
+        "backend": 0.5,
+        "data": 1,
+        "admin": null,
+        "app": null
+      },
+      "gap": "自动评价按调度器已有；自动收货尚未发现对应任务",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/order/TradeOrderController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-trade/lemnt-trade-start/src/main/java/com/lemnt/trade/start/TradeOrderAutoCommentScheduler.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/AutoCommentSchedulerTest.java"
+      ],
+      "points": 1.5,
+      "applicableChecks": 2,
+      "percent": 75.0,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "T06",
+      "group": "订单售后物流",
+      "name": "后台售后退款退货及日志",
+      "scores": {
+        "backend": 0.5,
+        "data": 1,
+        "admin": 0.5,
+        "app": null
+      },
+      "gap": "部分退款/退货退款/审批/收货日志已有；源全部字段筛选和交互未完全对齐",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/aftersale/AfterSaleController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleLogController.java",
+        "lemnt-ui/src/modules/trade/fulfillment/pages/AfterSaleDetailPanel.tsx",
+        "lemnt-ui/src/modules/trade/fulfillment/pages/RefundRequestPage.tsx"
+      ],
+      "points": 2.0,
+      "applicableChecks": 3,
+      "percent": 66.7,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "T07",
+      "group": "订单售后物流",
+      "name": "App售后申请及售后中心",
+      "scores": {
+        "backend": 0.5,
+        "data": 1,
+        "admin": null,
+        "app": 0
+      },
+      "gap": "目前只有本人取消；申请/分页/详情/退货物流/日志及App售后页未全",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/aftersale/AppAfterSaleController.java",
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/aftersale/AppAfterSaleLogController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java"
+      ],
+      "points": 1.5,
+      "applicableChecks": 3,
+      "percent": 50.0,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "T08",
+      "group": "订单售后物流",
+      "name": "售后逆向退款交易",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": 0.5,
+        "app": null
+      },
+      "gap": "退款建单/额度/状态/回调已有，后台仅售后发起及查看子集，缺完整支付退单页；渠道SDK排除",
+      "sourceFiles": [
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/refund/PayRefundController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paymentrefund/PaymentRefundController.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/PaymentRefundService.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/test/java/com/lemnt/trade/infrastructure/paymentrefund/PaymentRefundChannelGatewayTest.java",
+        "lemnt-ui/src/modules/trade/fulfillment/pages/RefundRequestPage.tsx"
+      ],
+      "points": 2.5,
+      "applicableChecks": 3,
+      "percent": 83.3,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "T09",
+      "group": "订单售后物流",
+      "name": "退款库存券积分经验回退",
+      "scores": {
+        "backend": 0.5,
+        "data": 0.5,
+        "admin": null,
+        "app": null
+      },
+      "gap": "生产回调链已存在，旧未接通结论撤销；源所有部分退款比例/规则和失败恢复仍待逐项对齐",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/order/TradeOrderController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/dubbo/SettlementLifecycleClientImpl.java",
+        "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/dubbo/MemberGrowthClientImpl.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/RefundBenefitsService.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/gateway/OrderBenefitsGatewayImpl.java"
+      ],
+      "points": 1.0,
+      "applicableChecks": 2,
+      "percent": 50.0,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "T10",
+      "group": "订单售后物流",
+      "name": "发货物流单及轨迹查询",
+      "scores": {
+        "backend": 0.5,
+        "data": 1,
+        "admin": 0.5,
+        "app": 0
+      },
+      "gap": "后台发货和物流单接口已有，缺完整独立物流页面及App物流查询；真实轨迹渠道排除",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/order/TradeOrderController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/ShipmentController.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/shipment/ShipmentQueryController.java",
+        "lemnt-ui/src/modules/trade/fulfillment/pages/OrderFulfillmentPage.tsx"
+      ],
+      "points": 2.0,
+      "applicableChecks": 4,
+      "percent": 50.0,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "T11",
+      "group": "订单售后物流",
+      "name": "快递公司管理及选择",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "后端字典已有；未注册独立后台页，App退货快递选择链路未全",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/delivery/DeliveryExpressController.java",
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/delivery/AppDeliverExpressController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressController.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/delivery/service/DeliveryManagementService.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/delivery/DeliveryPersistenceTest.java"
+      ],
+      "points": 2,
+      "applicableChecks": 4,
+      "percent": 50.0,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "T12",
+      "group": "订单售后物流",
+      "name": "运费模板及结算运费",
+      "scores": {
+        "backend": 1,
+        "data": 1,
+        "admin": 0,
+        "app": null
+      },
+      "gap": "模板/按地区件重体积/包邮计价已接；后台只有商品模板选择，缺完整模板管理页",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/delivery/DeliveryExpressTemplateController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementDeliveryService.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressTemplateController.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/delivery/service/DeliveryManagementService.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/delivery/service/DeliveryPriceService.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/delivery/DeliveryPersistenceTest.java"
+      ],
+      "points": 2,
+      "applicableChecks": 3,
+      "percent": 66.7,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "T13",
+      "group": "订单售后物流",
+      "name": "自提门店及店员核销",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "无对应门店/店员/核销流程及页面",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/delivery/DeliveryPickUpStoreController.java",
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/delivery/AppDeliverPickUpStoreController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 4,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "trade"
+    },
+    {
+      "id": "T14",
+      "group": "订单售后物流",
+      "name": "交易配置",
+      "scores": {
+        "backend": 0.5,
+        "data": 0.5,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "配置后端部分已有，源售后原因/配送自提等完整配置和管理/App接入未全",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/config/TradeConfigController.java",
+        "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/config/AppTradeConfigController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/config/TradeConfigController.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/config/service/TradeConfigService.java"
+      ],
+      "points": 1.0,
+      "applicableChecks": 4,
+      "percent": 25.0,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "Y01",
+      "group": "支付业务",
+      "name": "支付单管理和App支付状态",
+      "scores": {
+        "backend": 0.5,
+        "data": 0.5,
+        "admin": 0,
+        "app": 0.5
+      },
+      "gap": "本地支付单/状态已有，源完整支付尝试/字段/后台支付单页与App收银台未全；SDK不计欠账",
+      "sourceFiles": [
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/order/PayOrderController.java",
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/order/AppPayOrderController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-miniapp/pages/index/index.js",
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/payment/AppPaymentController.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payment/PaymentController.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/executor/PaymentNotificationServiceTest.java"
+      ],
+      "points": 1.5,
+      "applicableChecks": 4,
+      "percent": 37.5,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "Y02",
+      "group": "支付业务",
+      "name": "支付应用管理",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": null
+      },
+      "gap": "无PayApp对应完整业务/表和后台页",
+      "sourceFiles": [
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/app/PayAppController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 3,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "trade"
+    },
+    {
+      "id": "Y03",
+      "group": "支付业务",
+      "name": "支付渠道配置及查询",
+      "scores": {
+        "backend": 0.5,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "仅支持渠道清单接口，缺源渠道配置存储和后台/App交互；实际SDK排除",
+      "sourceFiles": [
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/channel/PayChannelController.java",
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/channel/AppPayChannelController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payment/PaymentChannelController.java"
+      ],
+      "points": 0.5,
+      "applicableChecks": 4,
+      "percent": 12.5,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "Y04",
+      "group": "支付业务",
+      "name": "通知任务日志及重试管理",
+      "scores": {
+        "backend": 0.5,
+        "data": 0,
+        "admin": 0,
+        "app": null
+      },
+      "gap": "支付通知业务处理已有，但无源可靠通知任务表/日志/调度及后台管理",
+      "sourceFiles": [
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/notify/PayNotifyController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/service/PaymentNotificationService.java",
+        "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/executor/PaymentNotificationServiceTest.java"
+      ],
+      "points": 0.5,
+      "applicableChecks": 3,
+      "percent": 16.7,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "Y05",
+      "group": "支付业务",
+      "name": "钱包账户冻结及流水",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "无对应支付扩展业务域/表/后台/App页面",
+      "sourceFiles": [
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletController.java",
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletTransactionController.java",
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletController.java",
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletTransactionController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 4,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "trade"
+    },
+    {
+      "id": "Y06",
+      "group": "支付业务",
+      "name": "充值套餐充值及充值退款",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "无对应支付扩展业务域/表/后台/App页面",
+      "sourceFiles": [
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletRechargeController.java",
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletRechargePackageController.java",
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletRechargeController.java",
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletRechargePackageController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 4,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "trade"
+    },
+    {
+      "id": "Y07",
+      "group": "支付业务",
+      "name": "转账业务",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": 0
+      },
+      "gap": "无对应支付扩展业务域/表/后台/App页面",
+      "sourceFiles": [
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/transfer/PayTransferController.java",
+        "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/transfer/AppPayTransferController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 4,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "trade"
+    },
+    {
+      "id": "S01",
+      "group": "统计",
+      "name": "商品经营统计",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": null
+      },
+      "gap": "未迁移对应源统计服务/任务及经营分析页",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/product/ProductStatisticsController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 3,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "mall"
+    },
+    {
+      "id": "S02",
+      "group": "统计",
+      "name": "交易经营统计",
+      "scores": {
+        "backend": 0.5,
+        "data": 0,
+        "admin": 0,
+        "app": null
+      },
+      "gap": "交易仅现有简要订单汇总，不能替代源趋势/排行/日统计及统计页",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/trade/TradeStatisticsController.java"
+      ],
+      "evidenceFiles": [
+        "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderManagementController.java"
+      ],
+      "points": 0.5,
+      "applicableChecks": 3,
+      "percent": 16.7,
+      "state": "partial",
+      "module": "trade"
+    },
+    {
+      "id": "S03",
+      "group": "统计",
+      "name": "会员经营统计",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": null
+      },
+      "gap": "未迁移对应源统计服务/任务及经营分析页",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/member/MemberStatisticsController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 3,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "member"
+    },
+    {
+      "id": "S04",
+      "group": "统计",
+      "name": "支付经营统计",
+      "scores": {
+        "backend": 0,
+        "data": 0,
+        "admin": 0,
+        "app": null
+      },
+      "gap": "未迁移对应源统计服务/任务及经营分析页",
+      "sourceFiles": [
+        "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/pay/PayStatisticsController.java"
+      ],
+      "evidenceFiles": [],
+      "points": 0,
+      "applicableChecks": 3,
+      "percent": 0.0,
+      "state": "not_implemented",
+      "module": "trade"
+    }
+  ],
+  "unresolvedEvidenceSelectors": [],
+  "sourceControllerCoverage": {
+    "inScope": 105,
+    "assigned": 105,
+    "unassigned": []
+  },
+  "sourceRoot": "/Users/wangxx/demo/yudao-cloud",
+  "workspace": "/Users/wangxx/demo/lemnt-cloud",
+  "moduleAllocation": "认证按会员功能计入member但代码仍在auth；购物车/结算/促销归mall；支付/钱包归trade；会员统计归member、商品统计归mall、交易/支付统计归trade",
+  "frontendPrefixRule": "前端保留服务前缀；网关按各服务Controller实际路径处理转发，不能全局盲目StripPrefix；gateway禁止Dubbo",
+  "contractFindings": [
+    {
+      "caller": "/member/app/user",
+      "afterRemovingServicePrefix": "/app/user",
+      "controller": "/app/users/user",
+      "status": "business_path_mismatch"
+    },
+    {
+      "caller": "/member/app/user/password",
+      "afterRemovingServicePrefix": "/app/user/password",
+      "controller": "/app/users/user/password",
+      "status": "business_path_mismatch"
+    },
+    {
+      "caller": "/member/app/levels",
+      "afterRemovingServicePrefix": "/app/levels",
+      "controller": "/app/growths/levels",
+      "status": "business_path_mismatch"
+    },
+    {
+      "caller": "/member/app/signin/config",
+      "afterRemovingServicePrefix": "/app/signin/config",
+      "controller": "/app/growths/signin/config",
+      "status": "business_path_mismatch"
+    },
+    {
+      "caller": "/member/app/point-records",
+      "afterRemovingServicePrefix": "/app/point-records",
+      "controller": "/app/growths/point-records",
+      "status": "business_path_mismatch"
+    },
+    {
+      "caller": "/member/app/addresses",
+      "afterRemovingServicePrefix": "/app/addresses",
+      "controller": "/app/addresses",
+      "status": "prefix_forwarding_needed_not_a_business_path_mismatch"
+    },
+    {
+      "caller": "memberApi /member-users,/groups,/tags,/growth/levels,/growths/config",
+      "status": "missing_service_prefix_under_newly_confirmed_rule"
+    }
+  ],
+  "contractFindingBoundary": "仅仓库静态核对；未读取运行中Nacos配置，不能断言已部署路由一定失败；额外RewritePath可改变结果，需要联调核验",
+  "evidenceHashes": {
+    "lemnt-common/lemnt-common-security/src/main/java/com/lemnt/common/security/service/TokenService.java": "ce2bdf2baa1099484bfa5abfdef0b833b7fa96b1f6a4214c81694008f804fefa",
+    "lemnt-miniapp/pages/browse-history/index.js": "1d40a09c6be8ad77f3550e099bc845d906f4ab313f8764c85f32791366bd1099",
+    "lemnt-miniapp/pages/comments/index.js": "670556856a6be4ad3d4d883f3a3d178ee60324529691547c5ab93936c61dcf23",
+    "lemnt-miniapp/pages/coupons/index.js": "25701777e6aac8581152dac411d3f7383ae11393b6b6a5bc01c55e5bae97d342",
+    "lemnt-miniapp/pages/favorites/index.js": "b90c3abba00ab9ae31f9b6c83e98e7edafdd3a06014e3e8c1d481e036cd47839",
+    "lemnt-miniapp/pages/index/index.js": "de60cbee65e627fda9d3c220f816a9e67da28783c1b4f5577381adb3acb40f35",
+    "lemnt-miniapp/pages/member-addresses/index.js": "bdaba1fa17f9df006fca5fc1b9c965ad7fd1ee739f31848aa774a9348241a1c6",
+    "lemnt-miniapp/pages/member-benefits/index.js": "73855e2fd39f36341a9e7a7826bf7e7a729ab52520ca33fab2cf9c4eb31e56a4",
+    "lemnt-miniapp/pages/member-login/index.js": "b20662b22c98377805505b662322daaa50392cc8c14dfbe23038cb05f35f0c53",
+    "lemnt-miniapp/pages/member/index.js": "78347350f8517796261a40df26752948b6251ad2a44a134af10027c062389267",
+    "lemnt-miniapp/pages/order-comment/index.js": "a6fe7de6d796d8480aecd062781793bfc61933089d03a8bb7d8a3c9ca53f6bed",
+    "lemnt-miniapp/pages/product/index.js": "e9943da10701bc370ed327aaaacd205de1132961ff8f7cb6cf79b379d3f72132",
+    "lemnt-miniapp/pages/store/index.js": "2d500aea2691441fa0501437ef79e0089eb34ea9d6b924079db81a3b7f213f35",
+    "lemnt-miniapp/services/member.js": "b6dcedacd0a3455f67e6ecc0c8c57bfcd0eac08eddd62e73ac6f32977b3da4e0",
+    "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/member/service/MemberAuthenticationService.java": "fdf0d578a001ed998dc0a2e8734db61e2a20b31f9aa03c218a0a4ff7ada16cf2",
+    "lemnt-server/lemnt-auth/lemnt-auth-infrastructure/src/main/java/com/lemnt/auth/infrastructure/member/gateway/MemberTokenGatewayImpl.java": "fbc2aa8f8cef8f0344a322d952dd91ac750954dc634b709d8c9829a7dff20ef2",
+    "lemnt-server/lemnt-auth/lemnt-auth-start/src/test/java/com/lemnt/auth/start/MemberAuthenticationIntegrationTest.java": "55699596ddd5a7c7d335f99ccf142cd9b0b384110ffea044ad4f4b0b899e3645",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/cart/AppCartController.java": "fd8c56b04628b5eb2b44ff2a49328639f853581b1e0b79e6be8c4e6a4e4277dd",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/coupon/AppCouponCenterController.java": "951a56d1f5e1e517a3e68556fd59f938077d4d2f4b2e0ee7eb7682ced6181827",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/coupon/AppCouponController.java": "63f3a621d605100260235fc8f0c121a799ab7825b3d895272c6dd1fb15ca7c6c",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponController.java": "d080afcf181da73edcccd2137f53491ee0fb23ecca4a81566df505710d9220f0",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/coupon/CouponTemplateController.java": "0c1852e17ee448527bcff1a523905f717cb173504180b71062894d71d0eb6d38",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/BrandController.java": "42d777058f2b3b12c6270692edd3854400423f0800b2653ad689464927bc671b",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CategoryController.java": "40408792d6adbf7b29306088144ef51e4f5edee5f0816dac50d58f376135c34b",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/CommentController.java": "bf131fce20bfb332183d12430dd4263aee4bb96ca046e2b025b5fce151b6575a",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecController.java": "7265609f29e1b5e8089b352b4e256db7ef14d20dec351ea0e54f59d413b910c9",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpecValueController.java": "2b34f830c1b13e964e1c2249491340f23f046677ba4d81d53072218ee278223e",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/ProductSpuController.java": "cdc488800be2f4ae4a81ca48d0623812ec71f4ec0cc0dcef971f7f259f1691bb",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/DiscountActivityController.java": "d41f24604f405414345b103e7b4e18a93d46210c56e5a10ad40eec5b709ca9e3",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/promotion/RewardActivityController.java": "8fbe5be22dee69e2eefc759a7d8284ef5a78cd9f29a702c315fa06a342f3d5bc",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/cart/service/CartService.java": "e163459e319f8c311caaac147afbdeb95025d034d7aea1630b594f2f1e47ac75",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/coupon/service/CouponIssuanceService.java": "cba7691be2c9a04b425a59c1cf4cd83f6f1751b8ac2c9d1e92ed244c806f6e92",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/coupon/service/CouponService.java": "cf2c28d4652a6c19a6e588013c1e904e6cce72381967e4a045acd80f951b0c38",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/dubbo/SettlementLifecycleClientImpl.java": "021fda673a15f35973bc5570c4d034902c721a6d10ab38ffd754b5dafb6e4480",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductBrowseHistoryService.java": "22f8ac9e2d749e6f3e345c66d9d8dd68c01ae4593837751103639c9a4768559b",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductCatalogService.java": "78736bf374c6185317679deb1748d54bbf4a6d6424a5c44e86502c0507d8350b",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductCommentService.java": "5871dc6632b917f96a95d9b703ebd2fb7a33844b349a13fe0bfa4446abf76cd8",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductFavoriteService.java": "4005c2f8d0d3d21b5fc36f34bcacf48de0a1f638d0290fa480aee3abc8beff43",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductInventoryService.java": "e0dda178d8c6c06e6c703050fc313474b7941660fed2e1d7e8efba73c84146c4",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductManagementService.java": "02fc098f82bebb8d8c2d6700de5495da1236d6e49386d473da97e8a60257552c",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductSpecService.java": "53802dc66fccc55b6d1a93a0be6c32f6dce6a8093d566b9209f78be113ff3561",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityManagementService.java": "848329c2efe6a66adc732b2bb8b0d17f5d5323843727f739d9a49eda4765388f",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityPricingService.java": "c47860c4bb5e4441966b4a922ee20dd2f7982960d6d7766e1d3beeefdf74c825",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/OrderPlacementService.java": "c9889aff9027ed10f8193534cdc3c79ffd964f5d78fffc915855b15a2032f2c6",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementDeliveryService.java": "97be2d3dde2fcc40a967f1ce43422eb1e4a309ce94d25452cfc7e25b063e5570",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementPreparationService.java": "5573f63ef40b450676ffdad2a598313a331682b81300500384a0dc642d8576d6",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementRecordService.java": "acea88c27a079663bcfc126810b1121d0ffaf183ccaa0e46b815e28ef32d792c",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementService.java": "c34758995f92ff2f3e863b558af8bdfd4db02899498f22ca14a860342ab9ae00",
+    "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/ActivityAlignmentPersistenceTest.java": "e60b226d8657c33bd76fbd563231c55d50340ad88561de21ae57b5136bb82c36",
+    "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/CatalogPersistenceTest.java": "b5e55a4b5ed5b3e182363ed82ebc62c4699b888af3757b927754a6f558ab5496",
+    "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/CommentFlowPersistenceTest.java": "d19e6555041522b860c547aa15450302e422ab4108b1a02614a795fc25e51861",
+    "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/CouponSnapshotPersistenceTest.java": "961a942d4d16ca37396f11cb448fc2bf98fba669aca431bdbb5775b6ed9c5593",
+    "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/ProductInteractionPersistenceTest.java": "a90fa1ab7c875f73412cf609a5ce3f3c581e228e3f0f28bb826d7f0bdcfd9301",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/user/AppMemberPasswordController.java": "789cb8eaf8dc13b37a228c409fe123f517c4fbdca66cebc8693a0114beba900a",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/user/AppMemberUserController.java": "daa6d58720d6395c1d1477ea096f6c44539beea905823f794906f80c30cbf1b5",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberExperienceRecordController.java": "b6c272d2d110a526113b06fdeb74b47b6e2f8e1aea86cbf2f126dc380c140bb8",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberLevelController.java": "c6b570e480f6fcb0954c611bac2f84c05d76d58205daf7a8edc0320a3ddffb31",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberPointConfigController.java": "f4a4de6793f6aec590485561243fcb32ce44932680900e306cae13d3f6a41396",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberSignConfigController.java": "5296c7d20df4ee8dc426ea9d63b7055f5042399479775e883a7cfe555d5e0ec9",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberSignRecordController.java": "b37fdbb9b1b07df480bde46aa1da37623e1e6dc7b5ec00556ab7a29bb421c603",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberUserLevelController.java": "0567699fcd7df87e8658d62789b8b2c64e5016276a0a4a45d94630ce3442fb95",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberGroupController.java": "ca616e733bbc9e8705bb7c34705798256f678bb8a78d8aa032508d86cb91c0ab",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberTagController.java": "596cfe5338d993c2f8c5cab16f4e84f1a1e4056b09750e00596f12264f81ede6",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberUserController.java": "f486455208fbfbb5f36c9b77a35d6244a9376c13775e9daa15eefc040748568b",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/address/service/MemberAddressService.java": "4d73c3a18c8f7a1bc3956a843ad9e31b4ea2db59a1f44eae5f5b0e408f3e9fdd",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/dubbo/MemberGrowthClientImpl.java": "2155f936fe0b9d2ed1a7ae1f9cbb2f2ca201f335e07347e721f44fc252ad78ed",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/service/MemberGrowthService.java": "1f896487df1326b38370e7e4d2ad4e5114b123a24d4f32ae1398cfe95af04512",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/user/service/MemberUserService.java": "d635a291885b39d45a96bccc575be5934a988409d5b94a6817774f3a60107514",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/address/gateway/MemberAddressAreaGatewayImpl.java": "6c034050929958d42f349b42eab9258bf74f5762855ca70492fe904b77d45d38",
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java": "549515a0533cd9ae227ec8aac056d07445cca846a0089851032a9d04f7b34e8a",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java": "7d9c520aefd1f7833a34716ecb861a6c32e52fc1027726fd9bc1d07996a6709b",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java": "8c1367063e468c626a11f786bcb06ec8f784bec229ea3894f2c70394d83b03a2",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/payment/AppPaymentController.java": "77b5b0ba9e42050a93cc7dd561cf3aef4848ec01956a6a84421ba3147f3c77c7",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java": "f0a24f5689dac526289235e01fa646b48b2fe35629b68f2927ca16c980829fdd",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleLogController.java": "86285b8ec7305fe3a0bf28bb1a34beb99ba29b789fd681993afb5550c24a6725",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/config/TradeConfigController.java": "62bc36d1720b2d0957447da4367dd148d6dce4545a490d6932d7dbeb0e1ee94b",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressController.java": "4d6aa1be0ee9bf87ed12b5642887213f2394088d805d85c33d367ddd6b9608f9",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/delivery/DeliveryExpressTemplateController.java": "1512738f2200ac350d3151b798fc04a8a817e1a06ba87ad858fb1ea75518969d",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/FulfillmentOrderController.java": "0512be18697f8c330a8c64a04facf580501474ca6ab1a6e78cd52df170f15c3c",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/ShipmentController.java": "e0a61a94c510fe2429e8cc656983cc16bf4a752d9a83bb186450479abb3e23bf",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/OrderManagementController.java": "ca3fef8209ce4aa92b94ebec1d9644123ad9ba836fcfd7db1796157e1be80b30",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payment/PaymentChannelController.java": "b1cc882ce86654f0879075fba24a0e154fa79567185f1b5cfa4fd0c080b8f631",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/payment/PaymentController.java": "61e8e198ec57e214c3468f3e42133c4d7a687860c5c69c0b928e1c54adcad2fc",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paymentrefund/PaymentRefundController.java": "811f09edd04a88a19e28cfca8532c18dec2827e30013090ed257c50d3e9a24cd",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/shipment/ShipmentQueryController.java": "e9fe73372d51bc04b478d5ecf5a5775d7425e96a40f5b65a76d8b6cf1233fe8c",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/config/service/TradeConfigService.java": "7266bb8be04b61d49fbff7b3d44f816f1960dfb121b45915376feb8aab01d619",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/delivery/service/DeliveryManagementService.java": "aac5259e111f1d4372ffa8e19895d00cf299804116fe63f158602869dcc96db3",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/delivery/service/DeliveryPriceService.java": "e039f08e5abfb9695b7418bb1afeb244286774f06d8d66d96047195a1003de36",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderCloseService.java": "3f252566355fec419cae059e4f8fae54af83740b676c77bda5f05f5fcdb34714",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/service/PaymentNotificationService.java": "3a9a68496027b19d6ea07034b0819077398247eafdc9df61f2f92b56c2f9da02",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/PaymentRefundService.java": "430a5bb0d473a8144fe2f2c97ec0cb2bea074c37cf6ff01fc7caf41a2d00e6d5",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/RefundBenefitsService.java": "be8aa9be2ddeb076724d5cf839970e13ff29dd9d0ecc7e57fe672a8f3c402b7a",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/executor/OrderCloseServiceTest.java": "35488bc00fbe508056d11c5fad4bc6d11fc542c887c349a6cac3a439b9ec9453",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/executor/PaymentNotificationServiceTest.java": "93391f2fc55813f1af06d865ce3e7485b9324027e38363c4571c2cf1d2391423",
+    "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/gateway/OrderBenefitsGatewayImpl.java": "6413198afb8fee984ba8009d380740988020e32d589ce9abe9d7fa267741b0a5",
+    "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/test/java/com/lemnt/trade/infrastructure/paymentrefund/PaymentRefundChannelGatewayTest.java": "614ed8ccb9e89ccf277b0892e1cabee0f3d48a5e5b1f64e830205119b2829505",
+    "lemnt-server/lemnt-trade/lemnt-trade-start/src/main/java/com/lemnt/trade/start/TradeOrderAutoCommentScheduler.java": "ceb06547d56d551b55efc68120ee6097f3c4ddeffa31687bbaea5047dadbb353",
+    "lemnt-server/lemnt-trade/lemnt-trade-start/src/main/java/com/lemnt/trade/start/TradeOrderScheduler.java": "8e440f05175232dec24b31d7d120090a50a2503d58c6b896987e945430f36ccd",
+    "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/AutoCommentSchedulerTest.java": "f9fc709978ad6484e13418735141ed6597d3fa01d14c49ca17c34fe561db9b78",
+    "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutFlowIntegrationTest.java": "095aa77e79d833eccdcaf2eed2aa54050d005af8a89142f11f009556dce7e606",
+    "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/delivery/DeliveryPersistenceTest.java": "68dd6236e5cf0be1bbce148506a2c9c94429658265b2b49485385b031d17080c",
+    "lemnt-ui/src/modules/mall/catalog/components/ProductInteractionPanels.tsx": "af0af009ea431bc053a4b29b8adac3ebf64e768b1562c6d528d23073107c9faf",
+    "lemnt-ui/src/modules/mall/catalog/components/SkuSpecFields.tsx": "5d876d7f9b195fa8ef94821c1c1d65bc0b362e0c1985888fdf51fc045e443a51",
+    "lemnt-ui/src/modules/mall/catalog/components/SpuEditor.tsx": "871e501f1aed85a22275497c190d6a4e54e422a319bf52a7bfcd85f29160cd0f",
+    "lemnt-ui/src/modules/mall/catalog/pages/BrandPage.tsx": "5c63664404112a02a6a0c1be97208c6a000fdbf3c7ca11b6edc3531000b3cbe6",
+    "lemnt-ui/src/modules/mall/catalog/pages/CategoryPage.tsx": "46f2ef262cd80f56378a23134bea9541087e8949622ae8d5ae2c01330565c00a",
+    "lemnt-ui/src/modules/mall/catalog/pages/CommentPage.tsx": "33f1fcded42057fb4dddf14c861efde4bdf825bf330756b0a1d79ab01b33966a",
+    "lemnt-ui/src/modules/mall/catalog/pages/SpuPage.tsx": "5d430c47ef707a295c303487f717d2a1a8daabbadc49a8b6aaef26ab9f2d86e1",
+    "lemnt-ui/src/modules/mall/checkout/pages/CouponRecordPage.tsx": "6172dc6d04ea11435809b857dfa6c859f54f0de9449efbb1ca5a6c1170504041",
+    "lemnt-ui/src/modules/mall/checkout/pages/CouponRecordsPanel.tsx": "40a61a0eaa79636e8e7a296c030a67b67540caad48e92ef2a1c08444dc4321e5",
+    "lemnt-ui/src/modules/mall/checkout/pages/CouponTemplatePage.tsx": "0ce450c1aa4132c1aaba63597139025ee0538c3000675b560988e23e356bcdba",
+    "lemnt-ui/src/modules/member/account/pages/MemberConfigPage.tsx": "bf17eee0660b9271f75ea993a1db3ffea0fc168a982ba804f87bbdf1756a783c",
+    "lemnt-ui/src/modules/member/account/pages/MemberMetadataPage.tsx": "82d5da43be8067824be8ba81840fc1065c118935e1717a0d03a45153addbff01",
+    "lemnt-ui/src/modules/member/account/pages/MemberRecordPage.tsx": "8c72447992dd2cf8869b36f9ea21fe2794d24593d52c46e39c205f19347511d7",
+    "lemnt-ui/src/modules/member/account/pages/MemberUserPage.tsx": "2c80ec1c33c63f00913fd93a610ecbba57435fbc4abe365e7baad0d01b8124f8",
+    "lemnt-ui/src/modules/trade/fulfillment/pages/AfterSaleDetailPanel.tsx": "b00f427e246f0a8e979e5acae3eb1e10941bc2ef0d3aec902af7dfc3b209d67a",
+    "lemnt-ui/src/modules/trade/fulfillment/pages/OrderFulfillmentPage.tsx": "527635a6c19766eb3317f34149819177bcc070ce0b7dfa5b43886573dde1d9d0",
+    "lemnt-ui/src/modules/trade/fulfillment/pages/OrderLogPanel.tsx": "337f4223360bd6ee47c98306307d35637b1e9387f83de15a6999245209916bdd",
+    "lemnt-ui/src/modules/trade/fulfillment/pages/RefundRequestPage.tsx": "87188f98c324cb41e2353f2a11e7dd481a0c0dbd6e83ce77b1dc5731be8904ee"
+  },
+  "referenceHashes": {
+    "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/brand/ProductBrandController.java": "8d6199e3059511c685f413917d585eb6d74d9167e5d4591d6a962fa97f103d20",
+    "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/category/ProductCategoryController.java": "46aa79b30718ef4ced022ac1eabb032a133421f52ff5ad815d60763ca7a15d5f",
+    "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/comment/ProductCommentController.java": "7e13dd110e97f62d4652153266c58888e8358238a2387eb7e929761a003255a6",
+    "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/favorite/ProductFavoriteController.java": "541044ad7d355bbfffafd7d4923f0bc4f7e3c70b4ee25ab8b502a40f504e0736",
+    "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/history/ProductBrowseHistoryController.java": "a395267f6817a3399751da5d7375e736763c14e985adc6d114680eee1610bb5e",
+    "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/property/ProductPropertyController.java": "ec7df9a9e8eeab0772ca3d595f928d713e75ae8832f7a9e62fb57ef99546051d",
+    "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/property/ProductPropertyValueController.java": "5bc2866213886c5a9081959e1b437622b5a5ed9af0ac8d27c93eff89d648ec84",
+    "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/spu/ProductSpuController.java": "affcaecc20c1d4394625242efe9dbd853fddd5fbb5c7a34d418cf2c36396d9d8",
+    "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/category/AppCategoryController.java": "3da2d2fab3a56271d95da3fe5e05aa4f3b721639ed0d1376ca991e119a72924b",
+    "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/comment/AppProductCommentController.java": "e54fa16ed9eb9dbd547f87bad2f623b55c7c67e302cda8bf7e6bc0728163ee4f",
+    "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/favorite/AppFavoriteController.java": "1eedcc658607f165abdc30c3ab6db00e054e6c74b486b47cf47e091309ba382b",
+    "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/history/AppProductBrowseHistoryController.java": "21a5bc7212fad7078cb98e80229d9e5f8525bab93f258f96e3eb9d699378e766",
+    "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/spu/AppProductSpuController.java": "dc0ea734c9e57b4510a5a6248fa55b81dbcf08696fce2aac76b02d1d05cd72ea",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/banner/BannerController.java": "fe87d17a7b92ff78de7d62a7546c9dc9125602e95aa91d42177481c7e62f888e",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/bargain/BargainActivityController.java": "ac6e973f2ac3c8e9fa3eaa5168259730273aa2ef26a1443c3cb24d35cdd809c4",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/bargain/BargainHelpController.java": "7b73842cece42b543f541ea99b2b934d13598b619908aa108586c73f55912b8f",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/bargain/BargainRecordController.java": "016646e4c5b19317475a6c066586fb5ae01b22593502e4d5280974dd971ad2b7",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/combination/CombinationActivityController.java": "bc83f80617b6d41bf58031d1079f0eddf989de78071a4167d63db60d4ca98d71",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/combination/CombinationRecordController.java": "4c9d364157b1b6de6c08df4d676a6420222a480b78103c0fe7a18c3abd212e59",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/coupon/CouponController.java": "1b1085311697a283e8cfa04fb7f90a33dd535736f69534972e92d07172256d7a",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/coupon/CouponTemplateController.java": "e875cd96e7c2f003bae70bc45d0d6ad5e8fb5f610e331c3515114a4638e8fbdf",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/discount/DiscountActivityController.java": "35ddf75fc81c54e86fbed6db04dc471f6eb9947b6cd478afc22df600c1a9a940",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/diy/DiyPageController.java": "3efc0bd66099bb9a782d8f403a738d3378c14353ae7b0449abcbc16af8d76638",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/diy/DiyTemplateController.java": "63270db2851254d6edb8c6396880d164a7dd99f2f2f659828c1c707438a03667",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/kefu/KeFuConversationController.java": "fc8082297795b9583aff010544b4370f62ef5ba4833fbfd87b0321eb54d12cdf",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/kefu/KeFuMessageController.java": "ff4841ee206b07ebf12474a6096fd26bcd891ad7895703a357d5d090ba419ff7",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/point/PointActivityController.java": "c627e4f8c8b44ec176bbf67bbc3eae8048e629af79b8070b4e62ab326e0435dd",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/reward/RewardActivityController.java": "5f95d36e809c6874429d27952f5437dac452068bf23a64bc0b6808e99cbcf7a1",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/seckill/SeckillActivityController.java": "6a57c7f82dffa2266b63382cf5e1dc198e98d9253d4892315f961b6a3d022c12",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/seckill/SeckillConfigController.java": "dd5494c767a1f689337d457a5519839ea8d309b4b20d7f322d6908c9ebefb733",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/activity/AppActivityController.java": "56be305a07899a23e4cfe68146ca87ed5d89f93d3d3922674015c17649fc5dba",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/banner/AppBannerController.java": "e01c170bd199d4195e6e2d4b22a0f1eca78703030cb86782859c2d2115774541",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/bargain/AppBargainActivityController.java": "b68338e16f293f48569e2f1044d94ffe3b74462a3926ebdef52b760fdfff5b6a",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/bargain/AppBargainHelpController.java": "fea40b76554dd26c27471e1dd8ebb69978ef60634925e152cf4c87c08df7f6fa",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/bargain/AppBargainRecordController.java": "5637a10c2ad68c0ba8415537ed6a722d3b0ff16dbb77d68b4684b24193aa5c20",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/combination/AppCombinationActivityController.java": "0fbf1c88845e08d72e929baecf3371f435493b8c74079b65778e74314d90136d",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/combination/AppCombinationRecordController.java": "ea8ee5606fefcd87bd988b2b34a96e2d51c7913630b053728d4d1b67fded8055",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/coupon/AppCouponController.java": "7fab4a19c48829446e0447433eb90cc2b29ada0143e87f53edcbc7e7fa4315d5",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/coupon/AppCouponTemplateController.java": "c7db7d64b274a4b310e729a6026d03f3ebdbe14f1dadff7c66d00eed6690b160",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/diy/AppDiyPageController.java": "38b88ff71d5f6a390cfc49bc813983c7a4fb55ecc9df389e1e6be7205838aee2",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/diy/AppDiyTemplateController.java": "78103539d7e7c7a5c372342dec8687daac9ec8af16e1d7b4b34a856413b84451",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/kefu/AppKeFuMessageController.java": "8bb72c32302a1dac5192b987b9ec2a3e60db698e83a4739a58b1c0b9a1dee298",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/point/AppPointActivityController.java": "b876fe37c84749d0fa63a6699b0f2708fa789f0d9846e5533b5dd1cc5d60bd1e",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/reward/AppRewardActivityController.java": "35bbad5b3b1b97e4a6b32028c558b62f11221c34472c28e0fe187c824c7322b3",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/seckill/AppSeckillActivityController.java": "565dd61a9db9cd51a3933cf5819eef294ef5a400f5a2564a1ea6ec742148c0e8",
+    "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/seckill/AppSeckillConfigController.java": "5478add7bc469d2abf6fb0a398a23e34ac1b255cd6f33c0aebb2e17bd762f294",
+    "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/member/MemberStatisticsController.java": "5d136b483ede50caff21c7830ac70de4a6aaa158dfbaf502a4966ce69885090b",
+    "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/pay/PayStatisticsController.java": "e00a345f74b8914d2dfe7f4f953b69a9cc09dd5b96e7ba148373a22f25a7bea4",
+    "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/product/ProductStatisticsController.java": "a53d7dc6a6fd19aad18e72eb22ec5f1456c897a0642f72c42eede15e3c6c0b93",
+    "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/trade/TradeStatisticsController.java": "89ac39aa19ed3308a75f5832a65b16f4b18ec791e2b47ce66f617ec789b8a13e",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/aftersale/AfterSaleController.java": "42d471baecfb611d32798643c5b585a800e755784308c1fcd68cbccd9f061fde",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/brokerage/BrokerageRecordController.java": "797df9742b21a991266482a990fcb4d92b3f2a8abecfa7918f0d1d93379358d5",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/brokerage/BrokerageUserController.java": "5166812694bdb0f53af679b55926e77979eda8146d10b57c1ebad8b38f21ad61",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/brokerage/BrokerageWithdrawController.java": "5c6a2c9d3f75be33ce7cd0a478cb7c319938f0d3932dd84629ad28b366564ac8",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/config/TradeConfigController.java": "93d5532bae58c9b035a313181cbc7d87ea816f9eb71684ff903be4460fdc6b8d",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/delivery/DeliveryExpressController.java": "53df904d1ce910ea31580667c9dc9d61390b83ac728337920838ca1507f21122",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/delivery/DeliveryExpressTemplateController.java": "9dac9f1075b10eafdf99bc2311fe729bd10f0c22270aab6dd7b4f0994ab158e2",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/delivery/DeliveryPickUpStoreController.java": "784df64126693be49002350cf9cc7beccbc00d1499a55f9015604e98d6da4d83",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/order/TradeOrderController.java": "9e819f09142d0b34fe877b95f5692fea3ea019e3dfcfcb483055d424aa16ae3d",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/aftersale/AppAfterSaleController.java": "78514b5ceba5a60a0f0181a57ed81159e0a73fffdaa428f31cc90f2268ac5e6d",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/aftersale/AppAfterSaleLogController.java": "0fce20d4486de07d3aeed2696ca4b9c44b06e7eead39e169c8ab7f58a812c4f9",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/brokerage/AppBrokerageRecordController.java": "7f8f3ede94fe8d8ff879b3bfedc9e2b7e5243de5038c6d574d47522aa5bc7ce6",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/brokerage/AppBrokerageUserController.java": "ec2c63a28315ca4cbf807009d8fcbde965bd33c65deb9ecdb718a94c53645e0f",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/brokerage/AppBrokerageWithdrawController.java": "61945de94ba4e355ac25572ef06be1765904bcd5af77869003d8ccb2ddd1eaf1",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/cart/AppCartController.java": "a811af72d2b3a8ee8dd578ec99132454a47e0b0f25e008134420e95b860d22a0",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/config/AppTradeConfigController.java": "b36c9b7aef8ddbd0e7b46e91fe4139c2601d769f84a9b17b6806fa3f8d156d69",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/delivery/AppDeliverExpressController.java": "447b2273966d6ad0c7bd207abd6d4944dfe85f61b48a77dba462e6e4d32cf6b6",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/delivery/AppDeliverPickUpStoreController.java": "42ce18d0d58bae6145ad7fd9a225f2a9ccf7ad254bafdff41ea7de04d825e4dd",
+    "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/order/AppTradeOrderController.java": "1c7582560586d41ba02491a4d509f45ee1bfec687b5c7b044d9e6b59152107a2",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/address/AddressController.java": "cba53111b7d98e30efe6e30f3c8a92b9e385450df0ad5f21edb82458be756e50",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/config/MemberConfigController.java": "3f1889ae9b42bd971e77d5b8b4156ee805388c4fa1237e5209cebbc43089fc41",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/group/MemberGroupController.java": "e088a6fb4a018a389772ea63e102d45c4068cee099d3bc499b20af10c431377b",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberExperienceRecordController.java": "f1cbb4092e2b35b484bd126e1a75bbb43f667d5568b035626a29b636236fce93",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberLevelController.java": "1b7209cfefd686448a087597c27c0ca1192f90b915b9736db21bf0d3884dfa21",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberLevelRecordController.java": "6fdc32bd77b8d788f4d46eea27947b69557ae5055318e639e846a057beba3184",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/point/MemberPointRecordController.java": "4f17d38b7b3eb0d93970a5cf7ae953bf46a33ef97e73d6a2cc1ddba3549a1921",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/signin/MemberSignInConfigController.java": "38bd9a43ddfa437dec7135941ffc09de41a3034843cd96aad5cf20ffeb71265b",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/signin/MemberSignInRecordController.java": "8a446e1ffdad73db3127e1f458d91997aa62db9e52dcb3ae4d1d1e7d7e03466b",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/tag/MemberTagController.java": "9f5019b3b20ef0724124650b31b644ac02e6d34e68ba33e46e264bb153dd2d29",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/MemberUserController.java": "dc1f40e1ae355669d22fcb74ec485be3e3937f7287cff6450b239829bfa22f92",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/address/AppAddressController.java": "17b7138e5773f2b1814df9fd2d9e4fc5ae49dcdc7a933543d73179d76540fe89",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/auth/AppAuthController.java": "4b8603d11dd8c3ba2138cce48af2df01640eb0190a1cfbfb7ca754ecd2943845",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/level/AppMemberExperienceRecordController.java": "7db187d42573bf187332a3ea75aa877951703f294e06596feee3d962fe181639",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/level/AppMemberLevelController.java": "0a1c8981338ad539e9abe6f881e3714c85d9796c44272dfbb39fcc28a2a863ea",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/point/AppMemberPointRecordController.java": "5b1e4be3a343f27ef467a2f8baf3a5162b7ea2f29f0339bfe92f8efc7a096bfa",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/signin/AppMemberSignInConfigController.java": "4e5549bf67a83611545ea2d18812ad453305aef70a75c2a6ecb596eb2f19b0cb",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/signin/AppMemberSignInRecordController.java": "f8fadbd97f99a6547b1cafbc243b3e8419faf90d41f6ae9ef1d80471ad7aeb6f",
+    "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/user/AppMemberUserController.java": "72cd6a2a8b6ba9bd412b0d9dc2fb27e6aebbd13ce005d0c43b9ba2b2f42028e1",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/app/PayAppController.java": "7457e6b9de324fe322acb26fdb0bf015400faec1648d37d002d1fcaf727688d3",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/channel/PayChannelController.java": "1e978bef7900aee8a594295f29e85f0e82cc385d413dd050f644261522f6ec6c",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/notify/PayNotifyController.java": "d7ac868b6635caef858df9e8ed6ea423c3304ed787eb49f89fbcfcb9448d2ddc",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/order/PayOrderController.java": "c0b2432b8c9322b02bf72f7389c783de70167e9ab98e8d667a7c65deb28e4486",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/refund/PayRefundController.java": "95faadb445030b7a09f014951bf458783261671ccd3ae23970edff6b8f81ea5f",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/transfer/PayTransferController.java": "6d872d97ef3e395f4986b26d6803f99e99c51738bf1faeb0530a5ecef37bb092",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletController.java": "43db8a92532da3b6b31a0d39c96479a2d59346e6c2af6705991a7981435fceb1",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletRechargeController.java": "26e7ae544aba9456a7f0855441ec62b9e90451294900b60e79458aff305f2110",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletRechargePackageController.java": "5858bf828fa785653324f37d95c1525fa98be549d5f227cb929b831cb7aa4628",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletTransactionController.java": "2ff6958deee18ce8756063d7a4b32cfe297e5e89bf0f84b5e572f41b5b845ddc",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/channel/AppPayChannelController.java": "55a4827dd51f9f642b9ae0f5bb32853115b7ab1ac6b2b46ac1e07e2d1309708a",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/order/AppPayOrderController.java": "10c656f92fb15d6c8896ca4b3c3126f0bd7a1a4e9ab0799b19b5bde04dc1c955",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/transfer/AppPayTransferController.java": "77b60122c5f43d66e65fb9e1b69690cafe5900ef371d5a6583434b303eca55fb",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletController.java": "3f0a8cddf03db4a7e8f603ac3846c464626dab45fb973ce1ea5c84df1e035fe0",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletRechargeController.java": "95b854dfd03d87c5ff6791b4e92ea9a7ab894a52bee13cb7d239262f3d38a0b8",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletRechargePackageController.java": "0480d41c9bad63452084cddb795e9cae88613cebb6a50bd56c959bbdb7b95521",
+    "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletTransactionController.java": "2c79470ebea792f7d4ea600c19d78e9ae3d2a623a5d793c680e9a00da9f1df0c"
+  }
+}

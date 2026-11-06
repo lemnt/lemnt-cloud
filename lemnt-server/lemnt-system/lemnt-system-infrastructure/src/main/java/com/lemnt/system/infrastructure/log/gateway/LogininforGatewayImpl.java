@@ -1,17 +1,19 @@
 package com.lemnt.system.infrastructure.log.gateway;
 
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
-import com.lemnt.system.domain.log.model.Logininfor;
 import com.lemnt.system.domain.log.gateway.LogininforGateway;
+import com.lemnt.system.domain.log.model.Logininfor;
 import com.lemnt.system.infrastructure.log.converter.LogininforConverter;
 import com.lemnt.system.infrastructure.log.dataobject.LogininforDO;
 import com.lemnt.system.infrastructure.log.mapper.LogininforMapper;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import cn.hutool.core.collection.CollUtil;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -23,7 +25,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class LogininforGatewayImpl implements LogininforGateway {
-
     private final LogininforMapper logininforMapper;
 
     @Override

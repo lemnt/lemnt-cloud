@@ -9,7 +9,6 @@ import lombok.Getter;
  */
 @Getter
 public enum StatusEnum {
-
     NORMAL(1, "启用"),
     DISABLE(2, "禁用"),
     ;

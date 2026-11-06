@@ -4,8 +4,10 @@ import com.lemnt.system.application.config.converter.DictDataConverter;
 import com.lemnt.system.application.config.dto.DictDataDTO;
 import com.lemnt.system.domain.config.gateway.DictDataGateway;
 import com.lemnt.system.domain.config.model.DictData;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
