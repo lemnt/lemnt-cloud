@@ -1,0 +1,2187 @@
+{
+  "createdAt": "2026-11-06T09:36:04+08:00",
+  "status": "approved_task_breakdown_not_started",
+  "approvedPlanOperationCount": 95,
+  "fileTasks": [
+    {
+      "id": "P000",
+      "kind": "verification_or_preparation",
+      "batch": "准备",
+      "path": "work-items/yudao-mall-migration-baseline/evidence/execution-baseline.json",
+      "operation": "新增",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "记录当前HEAD、工作树、源引用指纹、文件存在性与环境授权边界，不执行构建/部署",
+      "planIndex": null
+    },
+    {
+      "id": "F001",
+      "kind": "approved_plan_file",
+      "batch": "B1a",
+      "path": "lemnt-server/lemnt-gateway/src/main/java/com/lemnt/gateway/filter/AuthFilter.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "P000"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "同步真实商品公开读/会员路径，保持身份头清理与令牌域隔离",
+      "planIndex": 1,
+      "gatePreparation": false
+    },
+    {
+      "id": "F002",
+      "kind": "approved_plan_file",
+      "batch": "B1a",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterAppRoutesTest.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F001"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "测试新路径、错方法、匿名、伪造头",
+      "planIndex": 2,
+      "gatePreparation": false
+    },
+    {
+      "id": "F003",
+      "kind": "approved_plan_file",
+      "batch": "B1a",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterDomainTest.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F001"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "会员/管理员令牌互斥覆盖新路径",
+      "planIndex": 3,
+      "gatePreparation": false
+    },
+    {
+      "id": "F004",
+      "kind": "approved_plan_file",
+      "batch": "B1a",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/ProductAppRouteContractTest.java",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F001",
+        "F002",
+        "F003"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "新增路由predicate与鉴权filter联合契约，避免只测其一",
+      "planIndex": 4,
+      "gatePreparation": false
+    },
+    {
+      "id": "F005",
+      "kind": "approved_plan_file",
+      "batch": "B1a",
+      "path": "lemnt-miniapp/services/comments.js",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "P000"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "按GET/POST选择product查询与order投稿地址",
+      "planIndex": 5,
+      "gatePreparation": false
+    },
+    {
+      "id": "F006",
+      "kind": "approved_plan_file",
+      "batch": "B1a",
+      "path": "lemnt-miniapp/tests/comments.test.cjs",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F005"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "分别断言读写URL、令牌和响应，不再只覆盖投稿",
+      "planIndex": 6,
+      "gatePreparation": false
+    },
+    {
+      "id": "F007",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-domain/src/main/java/com/lemnt/promotion/domain/event/model/InboundEventFacts.java",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "V-B1a"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "仅本上下文实际消费的typed records；字段映射见契约设计",
+      "planIndex": 7,
+      "gatePreparation": false
+    },
+    {
+      "id": "F008",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-domain/src/main/java/com/lemnt/promotion/domain/event/gateway/InboundEventGateway.java",
+      "operation": "新增",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F007"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "声明payload到本域事实的typed解析方法，不引用外部Client",
+      "planIndex": 8,
+      "gatePreparation": false
+    },
+    {
+      "id": "F009",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/src/main/java/com/lemnt/promotion/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F007",
+        "F008"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "使用外部协议类型解码并完整映射，保留版本与业务内容",
+      "planIndex": 9,
+      "gatePreparation": false
+    },
+    {
+      "id": "F010",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/src/test/java/com/lemnt/promotion/infrastructure/event/InboundEventGatewayImplTest.java",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F009"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "验证各事件金额/积分/行/业务号映射与非法载荷",
+      "planIndex": 10,
+      "gatePreparation": false
+    },
+    {
+      "id": "F011",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/AfterSaleCompletedEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F008"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "planIndex": 11,
+      "gatePreparation": false
+    },
+    {
+      "id": "F012",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderClosedEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F008"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "planIndex": 12,
+      "gatePreparation": false
+    },
+    {
+      "id": "F013",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderCompletedEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F008"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "planIndex": 13,
+      "gatePreparation": false
+    },
+    {
+      "id": "F014",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderPaidEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F008"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "planIndex": 14,
+      "gatePreparation": false
+    },
+    {
+      "id": "F015",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/StockPreReservedEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F008"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "planIndex": 15,
+      "gatePreparation": false
+    },
+    {
+      "id": "F016",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/pom.xml",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F010",
+        "F011",
+        "F012",
+        "F013",
+        "F014",
+        "F015"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "类型引用清零后删除本模块外部Client生产声明，保留本服务Client和test scope",
+      "planIndex": 16,
+      "gatePreparation": false
+    },
+    {
+      "id": "F017",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/event/model/InboundEventFacts.java",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "V-B1a"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "仅本上下文实际消费的typed records；字段映射见契约设计",
+      "planIndex": 17,
+      "gatePreparation": false
+    },
+    {
+      "id": "F018",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/event/gateway/InboundEventGateway.java",
+      "operation": "新增",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F017"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "声明payload到本域事实的typed解析方法，不引用外部Client",
+      "planIndex": 18,
+      "gatePreparation": false
+    },
+    {
+      "id": "F019",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F017",
+        "F018"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "使用外部协议类型解码并完整映射，保留版本与业务内容",
+      "planIndex": 19,
+      "gatePreparation": false
+    },
+    {
+      "id": "F020",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/test/java/com/lemnt/order/infrastructure/event/InboundEventGatewayImplTest.java",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F019"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "验证各事件金额/积分/行/业务号映射与非法载荷",
+      "planIndex": 20,
+      "gatePreparation": false
+    },
+    {
+      "id": "F021",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/event/service/PayRefundSuccessEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F018"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "planIndex": 21,
+      "gatePreparation": false
+    },
+    {
+      "id": "F022",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/event/service/PaySuccessEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F018"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "planIndex": 22,
+      "gatePreparation": false
+    },
+    {
+      "id": "F023",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/pom.xml",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F020",
+        "F021",
+        "F022"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "类型引用清零后删除本模块外部Client生产声明，保留本服务Client和test scope",
+      "planIndex": 23,
+      "gatePreparation": false
+    },
+    {
+      "id": "F024",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/src/main/java/com/lemnt/pay/domain/event/model/InboundEventFacts.java",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "V-B1a"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "仅本上下文实际消费的typed records；字段映射见契约设计",
+      "planIndex": 24,
+      "gatePreparation": false
+    },
+    {
+      "id": "F025",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/src/main/java/com/lemnt/pay/domain/event/gateway/InboundEventGateway.java",
+      "operation": "新增",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F024"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "声明payload到本域事实的typed解析方法，不引用外部Client",
+      "planIndex": 25,
+      "gatePreparation": false
+    },
+    {
+      "id": "F026",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/main/java/com/lemnt/pay/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F024",
+        "F025"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "使用外部协议类型解码并完整映射，保留版本与业务内容",
+      "planIndex": 26,
+      "gatePreparation": false
+    },
+    {
+      "id": "F027",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/test/java/com/lemnt/pay/infrastructure/event/InboundEventGatewayImplTest.java",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F026"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "验证各事件金额/积分/行/业务号映射与非法载荷",
+      "planIndex": 27,
+      "gatePreparation": false
+    },
+    {
+      "id": "F028",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-application/src/main/java/com/lemnt/pay/application/event/service/OrderClosedEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F025"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "planIndex": 28,
+      "gatePreparation": false
+    },
+    {
+      "id": "F029",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-application/pom.xml",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F027",
+        "F028"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "类型引用清零后删除本模块外部Client生产声明，保留本服务Client和test scope",
+      "planIndex": 29,
+      "gatePreparation": false
+    },
+    {
+      "id": "F030",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/event/model/InboundEventFacts.java",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "V-B1a"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "仅本上下文实际消费的typed records；字段映射见契约设计",
+      "planIndex": 30,
+      "gatePreparation": false
+    },
+    {
+      "id": "F031",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/event/gateway/InboundEventGateway.java",
+      "operation": "新增",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F030"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "声明payload到本域事实的typed解析方法，不引用外部Client",
+      "planIndex": 31,
+      "gatePreparation": false
+    },
+    {
+      "id": "F032",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F030",
+        "F031"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "使用外部协议类型解码并完整映射，保留版本与业务内容",
+      "planIndex": 32,
+      "gatePreparation": false
+    },
+    {
+      "id": "F033",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/test/java/com/lemnt/member/infrastructure/event/InboundEventGatewayImplTest.java",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F032"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "验证各事件金额/积分/行/业务号映射与非法载荷",
+      "planIndex": 33,
+      "gatePreparation": false
+    },
+    {
+      "id": "F034",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/event/service/OrderBenefitsEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F031"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "planIndex": 34,
+      "gatePreparation": false
+    },
+    {
+      "id": "F035",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-member/lemnt-member-application/pom.xml",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F033",
+        "F034"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "类型引用清零后删除本模块外部Client生产声明，保留本服务Client和test scope",
+      "planIndex": 35,
+      "gatePreparation": false
+    },
+    {
+      "id": "F036",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "scripts/check_architecture.py",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "V-B1a"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "生产/测试scope分辨及外部Client引用规则，现有合法提供者不误报",
+      "planIndex": 36,
+      "gatePreparation": false
+    },
+    {
+      "id": "F037",
+      "kind": "approved_plan_file",
+      "batch": "B1b",
+      "path": "scripts/test_architecture.py",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F036"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "生产/测试scope分辨及外部Client引用规则，现有合法提供者不误报",
+      "planIndex": 37,
+      "gatePreparation": false
+    },
+    {
+      "id": "F038",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/product/model/StoreFilter.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "V-B1a"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "补分类集合及排序白名单，兼容现有内部构造",
+      "planIndex": 38,
+      "gatePreparation": false
+    },
+    {
+      "id": "F039",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/product/gateway/ProductCategoryGateway.java",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "V-B1a"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "启用分类ids过滤及批量启用直接子分类查询契约",
+      "planIndex": 39,
+      "gatePreparation": false
+    },
+    {
+      "id": "F040",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/product/gateway/ProductCategoryGatewayImpl.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F039"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "Lambda过滤+sort/id排序；批量子类不N+1",
+      "planIndex": 40,
+      "gatePreparation": false
+    },
+    {
+      "id": "F041",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/product/gateway/ProductSpuGatewayImpl.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F038"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "转发筛选排序并完整装配已有字段，保留库存/销量写保护",
+      "planIndex": 41,
+      "gatePreparation": false
+    },
+    {
+      "id": "F042",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/resources/mapper/ProductSpuMapper.xml",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F038"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "分类IN及固定choose排序，列表/count筛选一致；不动态拼字段",
+      "planIndex": 42,
+      "gatePreparation": false
+    },
+    {
+      "id": "F043",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/qry/StorePageQry.java",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F038"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "补可选分类集合及排序参数",
+      "planIndex": 43,
+      "gatePreparation": false
+    },
+    {
+      "id": "F044",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/executor/StoreProductPageQueryExe.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F043",
+        "F038",
+        "F039",
+        "F040",
+        "F042",
+        "F041"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "输入校验、分类并集与启用直接子分类扩展",
+      "planIndex": 44,
+      "gatePreparation": false
+    },
+    {
+      "id": "F045",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/executor/ProductCategoryEnableListQueryExe.java",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F039",
+        "F040"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "支持可选ids，沿Gateway顺序输出",
+      "planIndex": 45,
+      "gatePreparation": false
+    },
+    {
+      "id": "F046",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/dto/StoreDetailDTO.java",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "V-B1a"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "透出已有SPU简介/轮播/配送，不补历史值",
+      "planIndex": 46,
+      "gatePreparation": false
+    },
+    {
+      "id": "F047",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/dto/StoreSkuDTO.java",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "V-B1a"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "透出已有重量/体积，NULL保持未知",
+      "planIndex": 47,
+      "gatePreparation": false
+    },
+    {
+      "id": "F048",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/executor/StoreProductDetailQueryExe.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F046",
+        "F047"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "组装已有SPU/SKU字段，B2a不静默改变详情失败语义",
+      "planIndex": 48,
+      "gatePreparation": false
+    },
+    {
+      "id": "F049",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/req/StorePageReq.java",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "V-B1a"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "新增optional分类集合及排序；中文Schema/校验",
+      "planIndex": 49,
+      "gatePreparation": false
+    },
+    {
+      "id": "F050",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/converter/StoreReqConverter.java",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F049",
+        "F043"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "HTTP新增参数到本域Qry，保留现有name/页码",
+      "planIndex": 50,
+      "gatePreparation": false
+    },
+    {
+      "id": "F051",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductCategoryController.java",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F045"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "可选ids绑定，查询仍公开且四字段响应保持",
+      "planIndex": 51,
+      "gatePreparation": false
+    },
+    {
+      "id": "F052",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/res/StoreDetailRes.java",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F046"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "optional展示/配送字段及中文说明",
+      "planIndex": 52,
+      "gatePreparation": false
+    },
+    {
+      "id": "F053",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/res/StoreSkuRes.java",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F047"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "重量/体积字段与单位",
+      "planIndex": 53,
+      "gatePreparation": false
+    },
+    {
+      "id": "F054",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/converter/ProductCategoryResConverter.java",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F052",
+        "F053",
+        "F046",
+        "F047"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "沿现存转换器补字段，不为名称进行无关拆分",
+      "planIndex": 54,
+      "gatePreparation": false
+    },
+    {
+      "id": "F055",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/test/java/com/lemnt/product/adapter/app/product/StoreHttpContractTest.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F038",
+        "F039",
+        "F040",
+        "F041",
+        "F042",
+        "F043",
+        "F044",
+        "F045",
+        "F046",
+        "F047",
+        "F048",
+        "F049",
+        "F050",
+        "F051",
+        "F052",
+        "F053",
+        "F054"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "真实绑定、可选参数/非法排序、NULL/字段输出",
+      "planIndex": 55,
+      "gatePreparation": false
+    },
+    {
+      "id": "F056",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-start/src/test/java/com/lemnt/product/start/product/CatalogPersistenceTest.java",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F040",
+        "F042",
+        "F041",
+        "F044",
+        "F048"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "分类/价格排序/筛选一致；保留现有库存/历史语义回归",
+      "planIndex": 56,
+      "gatePreparation": false
+    },
+    {
+      "id": "F057",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-miniapp/services/storefront.js",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F050",
+        "F054"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "扩展查询入参及已有商品字段解码，banner仍归promotion",
+      "planIndex": 57,
+      "gatePreparation": false
+    },
+    {
+      "id": "F058",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-miniapp/tests/storefront.test.cjs",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F057"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "查询字符串、精确价格、长ID及NULL",
+      "planIndex": 58,
+      "gatePreparation": false
+    },
+    {
+      "id": "F059",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-miniapp/pages/store/index.js",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F057"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "接入可选排序/分类条件；按已有页面交互增量实现",
+      "planIndex": 59,
+      "gatePreparation": false
+    },
+    {
+      "id": "F060",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-miniapp/pages/store/index.wxml",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F059"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "补必要的源选品交互，不换UI框架",
+      "planIndex": 60,
+      "gatePreparation": false
+    },
+    {
+      "id": "F061",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-miniapp/pages/product/index.js",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F057"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "使用已透出轮播/简介/配送字段",
+      "planIndex": 61,
+      "gatePreparation": false
+    },
+    {
+      "id": "F062",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-miniapp/pages/product/index.wxml",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F061"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "展示源已有资料；不把未知价格/库存补成0",
+      "planIndex": 62,
+      "gatePreparation": false
+    },
+    {
+      "id": "F063",
+      "kind": "approved_plan_file",
+      "batch": "B2a",
+      "path": "lemnt-miniapp/tests/storefrontPages.test.cjs",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F060",
+        "F062",
+        "F058"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "交互和缺省处理，Node不代表原生平台编译",
+      "planIndex": 63,
+      "gatePreparation": false
+    },
+    {
+      "id": "F064",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/sql/lemnt_product.sql",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 64,
+      "gatePreparation": false
+    },
+    {
+      "id": "F065",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/product/dataobject/ProductSpuDO.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F064"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 65,
+      "gatePreparation": false
+    },
+    {
+      "id": "F066",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/product/dataobject/ProductSkuDO.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F065"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 66,
+      "gatePreparation": false
+    },
+    {
+      "id": "F067",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/product/converter/ProductCatalogConverter.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F066"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 67,
+      "gatePreparation": false
+    },
+    {
+      "id": "F068",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/resources/mapper/ProductSpuMapper.xml",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F067",
+        "F042"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 68,
+      "gatePreparation": false
+    },
+    {
+      "id": "F069",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/resources/mapper/ProductSkuMapper.xml",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F068"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 69,
+      "gatePreparation": false
+    },
+    {
+      "id": "F070",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/product/model/ProductSpu.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F069"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 70,
+      "gatePreparation": false
+    },
+    {
+      "id": "F071",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/product/model/ProductSku.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F070"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 71,
+      "gatePreparation": false
+    },
+    {
+      "id": "F072",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/product/model/ProductCatalogValidation.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F071"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 72,
+      "gatePreparation": false
+    },
+    {
+      "id": "F073",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/service/ProductCatalogService.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F072"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 73,
+      "gatePreparation": false
+    },
+    {
+      "id": "F074",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/cmd/ProductSpuCreateCmd.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F073"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 74,
+      "gatePreparation": false
+    },
+    {
+      "id": "F075",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/cmd/ProductSpuUpdateCmd.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F074"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 75,
+      "gatePreparation": false
+    },
+    {
+      "id": "F076",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/dto/ProductSpuDTO.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F075"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 76,
+      "gatePreparation": false
+    },
+    {
+      "id": "F077",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/dto/ProductSkuDTO.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F076"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 77,
+      "gatePreparation": false
+    },
+    {
+      "id": "F078",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/converter/ProductCatalogDTOConverter.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F077"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 78,
+      "gatePreparation": false
+    },
+    {
+      "id": "F079",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/req/ProductSpuCreateReq.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F078"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 79,
+      "gatePreparation": false
+    },
+    {
+      "id": "F080",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/req/ProductSpuUpdateReq.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F079"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 80,
+      "gatePreparation": false
+    },
+    {
+      "id": "F081",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/req/ProductSkuCreateReq.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F080"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 81,
+      "gatePreparation": false
+    },
+    {
+      "id": "F082",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/converter/ProductCatalogReqConverter.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F081"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 82,
+      "gatePreparation": false
+    },
+    {
+      "id": "F083",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/converter/ProductCatalogResConverter.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F082"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 83,
+      "gatePreparation": false
+    },
+    {
+      "id": "F084",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/executor/StoreProductDetailQueryExe.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F083",
+        "F048"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "planIndex": 84,
+      "gatePreparation": false
+    },
+    {
+      "id": "F085",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-ui/src/modules/mall/catalog/components/SpuEditor.tsx",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F084"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "planIndex": 85,
+      "gatePreparation": false
+    },
+    {
+      "id": "F086",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-ui/src/modules/mall/catalog/components/SpuDetailDrawer.tsx",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F085"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "planIndex": 86,
+      "gatePreparation": false
+    },
+    {
+      "id": "F087",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-ui/src/modules/mall/catalog/components/SkuSpecFields.tsx",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F086"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "planIndex": 87,
+      "gatePreparation": false
+    },
+    {
+      "id": "F088",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-ui/src/modules/mall/catalog/api/catalogApi.ts",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F087"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "planIndex": 88,
+      "gatePreparation": false
+    },
+    {
+      "id": "F089",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-ui/src/modules/mall/catalog/api/catalogApi.test.ts",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F088"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "planIndex": 89,
+      "gatePreparation": false
+    },
+    {
+      "id": "F090",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-miniapp/services/storefront.js",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F089",
+        "F057"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "planIndex": 90,
+      "gatePreparation": false
+    },
+    {
+      "id": "F091",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-miniapp/pages/product/index.js",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F090",
+        "F061"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "planIndex": 91,
+      "gatePreparation": false
+    },
+    {
+      "id": "F092",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "lemnt-miniapp/pages/product/index.wxml",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "V-B2a",
+        "G-B2b",
+        "F091",
+        "F062"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b与V-B2a完成，补充设计含完整测试任务且无未定字段",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "planIndex": 92,
+      "gatePreparation": false
+    },
+    {
+      "id": "F093",
+      "kind": "approved_plan_file",
+      "batch": "B2b",
+      "path": "work-items/yudao-mall-migration-baseline/batch-designs/product-data.md",
+      "operation": "新增",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "P000"
+      ],
+      "status": "pending",
+      "condition": "可准备补充设计，但不能据此直接生成门控业务代码",
+      "purpose": "补逐方法/字段/恢复依据和文件清单，审核通过后才能生成相应业务代码",
+      "planIndex": 93,
+      "gatePreparation": true
+    },
+    {
+      "id": "F094",
+      "kind": "approved_plan_file",
+      "batch": "B3",
+      "path": "work-items/yudao-mall-migration-baseline/batch-designs/trade-messaging.md",
+      "operation": "新增",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "P000"
+      ],
+      "status": "pending",
+      "condition": "可准备补充设计，但不能据此直接生成门控业务代码",
+      "purpose": "补逐方法/字段/恢复依据和文件清单，审核通过后才能生成相应业务代码",
+      "planIndex": 94,
+      "gatePreparation": true
+    },
+    {
+      "id": "F095",
+      "kind": "approved_plan_file",
+      "batch": "B4",
+      "path": "work-items/yudao-mall-migration-baseline/batch-designs/promotion-member-statistics.md",
+      "operation": "新增",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟（完成前置后重估）",
+      "dependencies": [
+        "P000"
+      ],
+      "status": "pending",
+      "condition": "可准备补充设计，但不能据此直接生成门控业务代码",
+      "purpose": "补逐方法/字段/恢复依据和文件清单，审核通过后才能生成相应业务代码",
+      "planIndex": 95,
+      "gatePreparation": true
+    },
+    {
+      "id": "V-B1a",
+      "kind": "verification_or_preparation",
+      "batch": "验证",
+      "path": "work-items/yudao-mall-migration-baseline/evidence/b1a-validation.json",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "F001",
+        "F002",
+        "F003",
+        "F004",
+        "F005",
+        "F006"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "执行新路径公开/会员/错身份/防伪造与GET/POST不同URL回归，记录实际命令/退出码，不只写文件",
+      "planIndex": null
+    },
+    {
+      "id": "V-B1b",
+      "kind": "verification_or_preparation",
+      "batch": "验证",
+      "path": "work-items/yudao-mall-migration-baseline/evidence/b1b-validation.json",
+      "operation": "新增",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟",
+      "dependencies": [
+        "F007",
+        "F008",
+        "F009",
+        "F010",
+        "F011",
+        "F012",
+        "F013",
+        "F014",
+        "F015",
+        "F016",
+        "F017",
+        "F018",
+        "F019",
+        "F020",
+        "F021",
+        "F022",
+        "F023",
+        "F024",
+        "F025",
+        "F026",
+        "F027",
+        "F028",
+        "F029",
+        "F030",
+        "F031",
+        "F032",
+        "F033",
+        "F034",
+        "F035",
+        "F036",
+        "F037"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "四域事件完整映射/原事务幂等回归、生产依赖与源码引用门禁、检查器自测、全Reactor编译测试；只改协议边界",
+      "planIndex": null
+    },
+    {
+      "id": "V-B2a",
+      "kind": "verification_or_preparation",
+      "batch": "验证",
+      "path": "work-items/yudao-mall-migration-baseline/evidence/b2a-validation.json",
+      "operation": "新增",
+      "complexity": "★★★",
+      "estimate": "60–120人工作业分钟",
+      "dependencies": [
+        "F038",
+        "F039",
+        "F040",
+        "F041",
+        "F042",
+        "F043",
+        "F044",
+        "F045",
+        "F046",
+        "F047",
+        "F048",
+        "F049",
+        "F050",
+        "F051",
+        "F052",
+        "F053",
+        "F054",
+        "F055",
+        "F056",
+        "F057",
+        "F058",
+        "F059",
+        "F060",
+        "F061",
+        "F062",
+        "F063"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "真实Mapper多分类/筛选count一致/price及现有salesCount排序，分类ids与稳定排序，已有字段NULL透出、两端交互与格式回归；不假交付createTime/虚拟销量",
+      "planIndex": null
+    },
+    {
+      "id": "V-B2b",
+      "kind": "verification_or_preparation",
+      "batch": "验证",
+      "path": "work-items/yudao-mall-migration-baseline/evidence/b2b-validation.json",
+      "operation": "新增",
+      "complexity": "★★★",
+      "estimate": "前置补充设计完成后重估",
+      "dependencies": [
+        "F064",
+        "F065",
+        "F066",
+        "F067",
+        "F068",
+        "F069",
+        "F070",
+        "F071",
+        "F072",
+        "F073",
+        "F074",
+        "F075",
+        "F076",
+        "F077",
+        "F078",
+        "F079",
+        "F080",
+        "F081",
+        "F082",
+        "F083",
+        "F084",
+        "F085",
+        "F086",
+        "F087",
+        "F088",
+        "F089",
+        "F090",
+        "F091",
+        "F092"
+      ],
+      "status": "blocked",
+      "condition": "G-B2b必须包含新增测试节点；该图更新前不能执行",
+      "purpose": "按补充设计追加的测试任务完成后验证商品新字段/输入/可售/零金额链与两端；不得仅执行旧测试",
+      "planIndex": null
+    },
+    {
+      "id": "E001",
+      "kind": "verification_or_preparation",
+      "batch": "环境准备",
+      "path": "work-items/yudao-mall-migration-baseline/local-environment-preflight.md",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "P000"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "只读核对中间件/端口/版本、独立库和namespace策略、渠道条件；不启动/改已有环境",
+      "planIndex": null
+    },
+    {
+      "id": "E002",
+      "kind": "verification_or_preparation",
+      "batch": "环境准备",
+      "path": "work-items/yudao-mall-migration-baseline/local-acceptance.md",
+      "operation": "修改",
+      "complexity": "★★☆",
+      "estimate": "30–60人工作业分钟",
+      "dependencies": [
+        "E001"
+      ],
+      "status": "pending",
+      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "purpose": "将探测结果填入明确的隔离配置/启动及回退步骤，不保存凭据，不把文档存在当环境就绪",
+      "planIndex": null
+    },
+    {
+      "id": "E003",
+      "kind": "verification_or_preparation",
+      "batch": "本地验收",
+      "path": "work-items/yudao-mall-migration-baseline/evidence/local-infrastructure-validation.json",
+      "operation": "新增",
+      "complexity": "★★★",
+      "estimate": "环境条件确认后重估",
+      "dependencies": [
+        "G-ENV"
+      ],
+      "status": "blocked",
+      "condition": "G-ENV通过；无DB/中间件操作默认授权",
+      "purpose": "在授权隔离环境执行中间件/空库配置与连通性验证，记录实际命令和结果；不接生产",
+      "planIndex": null
+    },
+    {
+      "id": "E004",
+      "kind": "verification_or_preparation",
+      "batch": "本地验收",
+      "path": "work-items/yudao-mall-migration-baseline/evidence/local-startup-validation.json",
+      "operation": "新增",
+      "complexity": "★★★",
+      "estimate": "环境条件确认后重估",
+      "dependencies": [
+        "E003",
+        "V-B1a"
+      ],
+      "status": "blocked",
+      "condition": "G-ENV与隔离基础设施验证完成",
+      "purpose": "启动相关provider/网关/两端并验证实际注册、RPC/HTTP/身份；仅验证启动底座，不宣称交易迁移完成",
+      "planIndex": null
+    },
+    {
+      "id": "E005",
+      "kind": "verification_or_preparation",
+      "batch": "本地验收",
+      "path": "work-items/yudao-mall-migration-baseline/evidence/local-core-flow-validation.json",
+      "operation": "新增",
+      "complexity": "★★★",
+      "estimate": "渠道与补充任务确认后重估",
+      "dependencies": [
+        "G-CORE"
+      ],
+      "status": "blocked",
+      "condition": "G-CORE实际前置任务完成；不是设计确认即授权真实资金操作",
+      "purpose": "实际执行购买/关单/履约/评价/售后等主线与异常，记录DB/消息/页面结果，替身与真实渠道分开",
+      "planIndex": null
+    },
+    {
+      "id": "E006",
+      "kind": "verification_or_preparation",
+      "batch": "迁移收口",
+      "path": "work-items/yudao-mall-migration-baseline/evidence/full-migration-acceptance.json",
+      "operation": "新增",
+      "complexity": "★★★",
+      "estimate": "全量补充清单形成后重估",
+      "dependencies": [
+        "G-ALL"
+      ],
+      "status": "blocked",
+      "condition": "G-ALL对应的实际实现与验收全部完成",
+      "purpose": "汇总全量能力及分层证据；任何范围内未核实/未实现/未验收仍未完成，二开另列",
+      "planIndex": null
+    }
+  ],
+  "manualGates": [
+    {
+      "id": "G-B2b",
+      "kind": "manual_gate",
+      "dependencies": [
+        "F093"
+      ],
+      "status": "awaiting_future_approval",
+      "approvalRequired": true,
+      "rule": "字段/约束/历史NULL/售价零元/浏览副作用/所有新增与修改测试文件及任务已写全，用户批准",
+      "recordPath": "work-items/yudao-mall-migration-baseline/decision-log.md"
+    },
+    {
+      "id": "G-B3",
+      "kind": "manual_gate",
+      "dependencies": [
+        "F094"
+      ],
+      "status": "awaiting_future_approval",
+      "approvalRequired": true,
+      "rule": "逐事件成功/失败/未决事实、回查/业务幂等、表去留、完整代码与测试文件清单获用户批准",
+      "recordPath": "work-items/yudao-mall-migration-baseline/decision-log.md"
+    },
+    {
+      "id": "G-B4",
+      "kind": "manual_gate",
+      "dependencies": [
+        "F095"
+      ],
+      "status": "awaiting_future_approval",
+      "approvalRequired": true,
+      "rule": "47族逐方法/页面差异和完整剩余实现/测试任务已补齐并获用户批准",
+      "recordPath": "work-items/yudao-mall-migration-baseline/decision-log.md"
+    },
+    {
+      "id": "G-ENV",
+      "kind": "manual_gate",
+      "dependencies": [
+        "E002"
+      ],
+      "status": "awaiting_future_approval",
+      "approvalRequired": true,
+      "rule": "用户确认本机可丢弃/隔离实例、独立库/端口/数据目录及允许操作范围；已有业务库/积压不得操作",
+      "recordPath": "work-items/yudao-mall-migration-baseline/decision-log.md"
+    },
+    {
+      "id": "G-CORE",
+      "kind": "manual_gate",
+      "dependencies": [
+        "V-B1b",
+        "V-B2a",
+        "V-B2b",
+        "G-B3",
+        "E004"
+      ],
+      "status": "awaiting_future_approval",
+      "approvalRequired": true,
+      "rule": "B3完整实现/测试节点已追加且实际完成，核心矩阵达到可验收；支付等外部条件按实际标记；不得只凭本门控被批准跳过实现",
+      "recordPath": "work-items/yudao-mall-migration-baseline/decision-log.md"
+    },
+    {
+      "id": "G-ALL",
+      "kind": "manual_gate",
+      "dependencies": [
+        "G-B4",
+        "E005"
+      ],
+      "status": "awaiting_future_approval",
+      "approvalRequired": true,
+      "rule": "剩余全部源能力实现/回归/本地验收节点已追加并完成，所有未知/阻塞/排除有真实记录；不能以112入口数替代业务覆盖",
+      "recordPath": "work-items/yudao-mall-migration-baseline/decision-log.md"
+    }
+  ],
+  "topologicalOrder": [
+    "P000",
+    "F001",
+    "F005",
+    "F093",
+    "F094",
+    "F095",
+    "E001",
+    "F002",
+    "F003",
+    "F006",
+    "G-B2b",
+    "G-B3",
+    "G-B4",
+    "E002",
+    "F004",
+    "G-ENV",
+    "V-B1a",
+    "E003",
+    "F007",
+    "F017",
+    "F024",
+    "F030",
+    "F036",
+    "F038",
+    "F039",
+    "F046",
+    "F047",
+    "F049",
+    "E004",
+    "F008",
+    "F018",
+    "F025",
+    "F031",
+    "F037",
+    "F041",
+    "F042",
+    "F043",
+    "F040",
+    "F052",
+    "F048",
+    "F053",
+    "F009",
+    "F011",
+    "F012",
+    "F013",
+    "F014",
+    "F015",
+    "F019",
+    "F021",
+    "F022",
+    "F026",
+    "F028",
+    "F032",
+    "F034",
+    "F050",
+    "F044",
+    "F045",
+    "F054",
+    "F010",
+    "F020",
+    "F027",
+    "F033",
+    "F056",
+    "F051",
+    "F057",
+    "F016",
+    "F023",
+    "F029",
+    "F035",
+    "F055",
+    "F058",
+    "F059",
+    "F061",
+    "V-B1b",
+    "F060",
+    "F062",
+    "F063",
+    "V-B2a",
+    "F064",
+    "F065",
+    "F066",
+    "F067",
+    "F068",
+    "F069",
+    "F070",
+    "F071",
+    "F072",
+    "F073",
+    "F074",
+    "F075",
+    "F076",
+    "F077",
+    "F078",
+    "F079",
+    "F080",
+    "F081",
+    "F082",
+    "F083",
+    "F084",
+    "F085",
+    "F086",
+    "F087",
+    "F088",
+    "F089",
+    "F090",
+    "F091",
+    "F092",
+    "V-B2b",
+    "G-CORE",
+    "E005",
+    "G-ALL",
+    "E006"
+  ],
+  "scopeNote": "This graph models known files and gates, not unexamined B3/B4 implementations. Gates require explicit task-list expansion before business generation.",
+  "confirmedAt": "2026-11-06T09:43:31+08:00",
+  "confirmation": "确认任务草案",
+  "confirmationScope": "Task list, dependencies and parallel strategy only; future gates and execution prerequisites remain unchanged."
+}

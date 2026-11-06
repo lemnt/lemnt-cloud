@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-11-06T09:24:29+08:00",
+  "designSections": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "sourceControllers": 112,
+  "sourceFamilies": 47,
+  "implementationEntries": 95,
+  "readyEntries": 63,
+  "allLocalDocumentLinksValid": true,
+  "existingModifyTargetsValid": true,
+  "sourceControllerHashesStable": true,
+  "businessBuildExecuted": false,
+  "runtimeOrDdlExecuted": false,
+  "status": "document_validation_passed_implementation_plan_pending_user_confirmation"
+}
