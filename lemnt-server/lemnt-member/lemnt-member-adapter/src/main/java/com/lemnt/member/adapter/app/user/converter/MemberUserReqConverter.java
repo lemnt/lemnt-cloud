@@ -2,7 +2,9 @@ package com.lemnt.member.adapter.app.user.converter;
 
 import com.lemnt.member.adapter.app.user.req.PasswordChangeReq;
 import com.lemnt.member.adapter.app.user.req.ProfileUpdateReq;
+import com.lemnt.member.adapter.app.user.req.WechatLoginReq;
 import com.lemnt.member.application.user.cmd.MemberUpdateCmd;
+import com.lemnt.member.application.user.cmd.MemberWechatLoginCmd;
 import com.lemnt.member.application.user.cmd.PasswordChangeCmd;
 
 /**
@@ -26,5 +28,12 @@ public final class MemberUserReqConverter {
      */
     public static PasswordChangeCmd password(Long id, PasswordChangeReq r) {
         return new PasswordChangeCmd(id, r.oldPassword(), r.newPassword());
+    }
+
+    /**
+     * 会员编号取自会话，请求只带一次性登录凭证。
+     */
+    public static MemberWechatLoginCmd wechatLogin(Long id, WechatLoginReq r) {
+        return new MemberWechatLoginCmd(id, r.code());
     }
 }

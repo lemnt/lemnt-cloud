@@ -16,10 +16,12 @@ import com.lemnt.order.domain.promotion.model.PromotionOrder;
 import com.lemnt.order.domain.settlement.model.SettlementOrder;
 import com.lemnt.pay.application.payment.executor.PaymentNotifyCmdExe;
 import com.lemnt.pay.application.payment.executor.TradePaymentCreateCmdExe;
+import com.lemnt.pay.domain.payment.model.PayChannelConfig;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundChannelGateway;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefund;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundResult;
+import com.lemnt.pay.infrastructure.payment.payment.PayChannelConfigResolver;
 import com.lemnt.pay.infrastructure.paymentrefund.channel.PaymentRefundClient;
 import com.lemnt.pay.infrastructure.paymentrefund.gateway.PaymentRefundChannelGatewayImpl;
 import com.lemnt.product.domain.product.model.ProductSpu;
@@ -83,7 +85,9 @@ class PromotionOrderPersistenceTest {
         f.points = memberPoints::get;
         var channel = Mockito.mock(PaymentRefundClient.class);
         Mockito.when(channel.channel()).thenReturn("ALIPAY");
-        Mockito.when(channel.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(
+                channel.refund(
+                    ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(
                 call -> {
                     PaymentRefund r = call.getArgument(0);
@@ -95,9 +99,14 @@ class PromotionOrderPersistenceTest {
                         "SUCCESS",
                         "CHANNEL" + r.refundNo());
                 });
+        var payChannelConfigs = Mockito.mock(PayChannelConfigResolver.class);
+        Mockito.when(payChannelConfigs.resolve(Mockito.any(), Mockito.any()))
+            .thenReturn(
+                new PayChannelConfig(
+                    1L, 1L, "ALIPAY", 0, BigDecimal.ZERO, null, "{}", null));
         f.components.register(
             PaymentRefundChannelGateway.class,
-            new PaymentRefundChannelGatewayImpl(List.of(channel)));
+            new PaymentRefundChannelGatewayImpl(List.of(channel), payChannelConfigs));
         orders = f.components.get(PromotionOrderService.class);
         mappings = f.components.get(PromotionOrderGateway.class);
         seckillConfigs = f.components.get(SeckillConfigManagementService.class);

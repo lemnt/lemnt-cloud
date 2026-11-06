@@ -1,6 +1,7 @@
 package com.lemnt.pay.domain.payment.gateway;
 
 import com.lemnt.pay.domain.payment.model.PayChannelConfig;
+import com.lemnt.pay.domain.payment.model.PaymentChannelNotification;
 import com.lemnt.pay.domain.payment.model.PaymentPrepay;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
@@ -10,9 +11,9 @@ import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
  */
 public interface PaymentChannelGateway {
     /**
-     * 生成渠道预支付参数。
+     * 生成渠道预支付参数；payerOpenId 为渠道要求的付款人标识，可为空。
      */
-    PaymentPrepay prepay(PaymentRecord payment, PayChannelConfig config);
+    PaymentPrepay prepay(PaymentRecord payment, PayChannelConfig config, String payerOpenId);
 
     /**
      * 验签并转换渠道通知；验签失败不得返回已核验对象。
@@ -20,7 +21,5 @@ public interface PaymentChannelGateway {
     VerifiedPaymentNotification verify(
         String channel,
         PayChannelConfig config,
-        String body,
-        String signature,
-        String timestamp);
+        PaymentChannelNotification notification);
 }

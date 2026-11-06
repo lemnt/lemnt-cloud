@@ -79,5 +79,10 @@
             <artifactId>lemnt-common-mq</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.lemnt</groupId>
+            <artifactId>wechatpay-sdk</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

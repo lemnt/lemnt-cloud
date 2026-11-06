@@ -8,7 +8,7 @@
 
 当前会员后台与小程序页面见 [member-pages.md](member-pages.md)。下文关于 API 切片未包含界面的说明保留为 v5 历史边界；v6 已新增页面，真实联调仍待验证。
 
-短信验证码、微信登录、微信绑定及手机号授权接口已移除；仅保留密码登录。历史 V3 建表脚本不再作为部署前置条件，不执行删表操作。
+短信验证码、手机号授权接口未实现；仅保留密码登录。微信登录只提供小程序 code 换取并绑定 openid 的 `/app/wechat/login`，不签发令牌，其他微信绑定接口不提供。历史 V3 建表脚本不再作为部署前置条件，不执行删表操作。
 
 ## 边界与运行
 
@@ -23,6 +23,7 @@
 - 需要 MySQL、Redis（登录会话）、Nacos、Dubbo；网关由 AuthFilter 统一调用公共 TokenService 校验对应身份的 Redis 会话，不再有 MemberRequestSecurity，无 Dubbo 或远程HTTP校验；trade 保留 auth-client 的 `com.lemnt.auth.api.MemberSessionClient` 调用。网关须配置保留 `/member` 前缀的路由（docs/config/member-gateway-route.yaml），不可追加 StripPrefix。
 - 认证迁移：登录、签发、刷新、注销在 lemnt-auth 执行，业务请求令牌校验统一在 gateway 执行；密码登录、刷新、退出 Controller 在 auth，网关精确路由到 auth，URL 保持不变。会员资料和密码维护仍在 member。部署与共享数据库配置见 [认证迁移说明](../work-items/member-auth-migration/03-development-design.md)。
 - 各接口权限码见下文，部署须审阅角色授权；本次不自动给角色加权限。小程序 memberApiReady 仍为 false，待真实链路验证后再开启。本次不声称会员管理 React 页面、原生登录界面或生产联调完成。
+- 微信登录：小程序在支付前调用 `POST /member/app/wechat/login`，请求体 `{"code":"wx.login 返回的一次性凭证"}`；服务端用 `member.wechat.app-id` / `member.wechat.secret` 调微信 `jscode2session` 换取 openid，写入 `member_wechat` 后返回 `R<Boolean>`。接口需会员登录，openid 不返回客户端，不签发或刷新令牌；同一 openid 已属于其他会员时返回业务失败。支付服务按会员编号经 Dubbo 读取该 openid 生成 JSAPI 参数，`member.wechat.app-id` 必须与支付渠道配置的 `appId` 一致。
 
 ## 响应与错误
 

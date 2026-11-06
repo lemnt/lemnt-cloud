@@ -4,6 +4,7 @@ import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.core.utils.JsonUtils;
 import com.lemnt.pay.domain.payment.model.PayChannelConfig;
 import com.lemnt.pay.domain.payment.model.PaymentChannel;
+import com.lemnt.pay.domain.payment.model.PaymentChannelNotification;
 import com.lemnt.pay.domain.payment.model.PaymentPrepay;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
@@ -39,7 +40,8 @@ public class SandboxPaymentChannelAdapter implements PaymentChannelAdapter {
      * 沙箱不发起真实跳转，只返回客户端确认支付所需的本地参数。
      */
     @Override
-    public PaymentPrepay prepay(PaymentRecord payment, PayChannelConfig config) {
+    public PaymentPrepay prepay(
+        PaymentRecord payment, PayChannelConfig config, String payerOpenId) {
         requireConfig(config);
         String secret = secret(config);
         require(secret.length() >= MIN_SECRET_LENGTH, "沙箱渠道密钥至少16位");
@@ -58,8 +60,12 @@ public class SandboxPaymentChannelAdapter implements PaymentChannelAdapter {
 
     @Override
     public VerifiedPaymentNotification verify(
-        PayChannelConfig config, String body, String signature, String timestamp) {
+        PayChannelConfig config, PaymentChannelNotification notification) {
         requireConfig(config);
+        require(notification != null, "支付通知不能为空");
+        String body = notification.body();
+        String signature = notification.signature();
+        String timestamp = notification.timestamp();
         require(body != null && !body.isBlank(), "支付通知不能为空");
         require(signature != null && !signature.isBlank(), "支付通知签名不能为空");
         long time = time(timestamp);

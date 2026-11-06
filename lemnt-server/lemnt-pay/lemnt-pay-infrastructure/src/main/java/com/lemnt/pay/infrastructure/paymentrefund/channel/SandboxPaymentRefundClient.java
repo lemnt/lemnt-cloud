@@ -1,5 +1,6 @@
 package com.lemnt.pay.infrastructure.paymentrefund.channel;
 
+import com.lemnt.pay.domain.payment.model.PayChannelConfig;
 import com.lemnt.pay.domain.payment.model.PaymentChannel;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefund;
@@ -25,7 +26,8 @@ public class SandboxPaymentRefundClient implements PaymentRefundClient {
      * 沙箱没有远端退款单，返回空表示本地尚无渠道结果。
      */
     @Override
-    public PaymentRefundResult query(PaymentRefund refund, PaymentRecord payment) {
+    public PaymentRefundResult query(
+        PaymentRefund refund, PaymentRecord payment, PayChannelConfig config) {
         requireSandbox(refund, payment);
         return null;
     }
@@ -34,7 +36,8 @@ public class SandboxPaymentRefundClient implements PaymentRefundClient {
      * 原退款编号生成稳定的渠道退款编号，重复调用得到同一结果。
      */
     @Override
-    public PaymentRefundResult refund(PaymentRefund refund, PaymentRecord payment) {
+    public PaymentRefundResult refund(
+        PaymentRefund refund, PaymentRecord payment, PayChannelConfig config) {
         requireSandbox(refund, payment);
         String channelRefundNo = "SBR-" + refund.refundNo();
         if (channelRefundNo.length() > CHANNEL_NO_MAX) {

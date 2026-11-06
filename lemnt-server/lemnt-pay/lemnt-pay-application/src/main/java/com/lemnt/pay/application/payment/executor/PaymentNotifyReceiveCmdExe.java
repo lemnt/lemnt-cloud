@@ -9,6 +9,7 @@ import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.pay.domain.payment.model.PayApp;
 import com.lemnt.pay.domain.payment.model.PayChannelConfig;
 import com.lemnt.pay.domain.payment.model.PaymentChannel;
+import com.lemnt.pay.domain.payment.model.PaymentChannelNotification;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 
 import org.springframework.stereotype.Component;
@@ -44,7 +45,15 @@ public class PaymentNotifyReceiveCmdExe {
                 .orElseThrow(() -> new ServiceException("支付渠道未启用", 400));
         var verified =
             channelGateway.verify(
-                channel, config, cmd.body(), cmd.signature(), cmd.timestamp());
+                channel,
+                config,
+                new PaymentChannelNotification(
+                    cmd.body(),
+                    cmd.signature(),
+                    cmd.timestamp(),
+                    cmd.nonce(),
+                    cmd.serialNumber(),
+                    cmd.signType()));
         PaymentRecord payment = payments.findByPaymentNo(verified.paymentNo());
         require(
             payment != null

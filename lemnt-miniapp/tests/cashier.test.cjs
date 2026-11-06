@@ -74,6 +74,75 @@ test('收银台加载渠道、创建支付单并模拟沙箱支付', async () =>
   assert.equal(page.data.message, '支付成功');
 });
 
+const wechatPrepay = {
+  paymentNo: 'PAY1D1667178F2041E1BFD70474',
+  orderNo: 'TR1',
+  channel: 'WECHAT',
+  amount: '8.00',
+  payUrl: null,
+  params: {
+    appId: 'wx-app',
+    timeStamp: '1700000000',
+    nonceStr: 'NONCE',
+    package: 'prepay_id=wx1',
+    signType: 'RSA',
+    paySign: 'SIGN',
+  },
+};
+
+test('微信渠道先绑定会员 openid 再唤起收银台，支付结果以服务端为准', async () => {
+  const submitted = [];
+  const logins = [];
+  const payments = [];
+  const page = makePage({
+    paymentChannels: async () => [{ code: 'WECHAT', name: '微信支付' }],
+    prepay: async (input) => {
+      submitted.push(input);
+      return wechatPrepay;
+    },
+    paymentStatus: async () => status('SUCCESS'),
+  });
+  page.memberClient = {
+    wechatLogin: async (code) => {
+      logins.push(code);
+      return true;
+    },
+  };
+  global.wx.login = ({ success }) => success({ code: 'CODE1' });
+  global.wx.requestPayment = (input) => {
+    payments.push(input);
+    input.success();
+  };
+  await page.loadChannels();
+  assert.equal(page.data.channel, 'WECHAT');
+  await page.pay();
+  assert.deepEqual(logins, ['CODE1']);
+  assert.deepEqual(submitted[0], {
+    orderNo: 'TR1',
+    appKey: 'lemnt-mall',
+    channel: 'WECHAT',
+  });
+  assert.equal(payments[0].paySign, 'SIGN');
+  assert.equal(payments[0].package, 'prepay_id=wx1');
+  assert.equal(page.data.paid, true);
+  assert.equal(page.data.message, '支付成功');
+});
+
+test('微信支付取消不当作已支付', async () => {
+  const page = makePage({
+    paymentChannels: async () => [{ code: 'WECHAT', name: '微信支付' }],
+    prepay: async () => wechatPrepay,
+    paymentStatus: async () => status('WAITING'),
+  });
+  page.memberClient = { wechatLogin: async () => true };
+  global.wx.login = ({ success }) => success({ code: 'CODE1' });
+  global.wx.requestPayment = (input) => input.fail({ errMsg: 'requestPayment:fail cancel' });
+  await page.loadChannels();
+  await page.pay();
+  assert.match(page.data.error, /支付未完成/);
+  assert.equal(page.data.paid, false);
+});
+
 test('收银台拒绝非法渠道参数与非法响应', async () => {
   const page = makePage({
     paymentChannels: async () => [{ code: 'CASH', name: '现金' }],

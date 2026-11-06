@@ -22,6 +22,11 @@ public interface MemberUserClient {
     MemberLoginInfoDTO getByMobile(String mobile);
 
     /**
+     * 查询会员已绑定的微信小程序 openid，未绑定时返回 null。
+     */
+    String getWechatOpenId(Long memberId);
+
+    /**
      * 认证成功后记录登录时间，失败不能作为成功登录返回。
      */
     default void recordLogin(Long memberId) {

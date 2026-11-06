@@ -1,5 +1,6 @@
 package com.lemnt.pay.infrastructure.payment.payment;
 
+import com.lemnt.pay.domain.payment.model.PayChannelConfig;
 import com.lemnt.pay.domain.payment.model.PaymentChannel;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 
@@ -18,7 +19,7 @@ public class SandboxPaymentChannelCloseClient implements PaymentChannelCloseClie
     }
 
     @Override
-    public boolean closeUnpaid(PaymentRecord payment) {
+    public boolean closeUnpaid(PaymentRecord payment, PayChannelConfig config) {
         return PaymentChannel.SANDBOX.name().equals(payment.channel());
     }
 }

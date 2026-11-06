@@ -89,6 +89,7 @@ import com.lemnt.member.domain.user.gateway.MemberGroupGateway;
 import com.lemnt.member.domain.user.gateway.MemberTagGateway;
 import com.lemnt.member.domain.user.gateway.MemberTagLinkGateway;
 import com.lemnt.member.domain.user.gateway.MemberUserGateway;
+import com.lemnt.member.domain.user.gateway.MemberWechatGateway;
 import com.lemnt.member.domain.user.model.Group;
 import com.lemnt.member.domain.user.model.Member;
 import com.lemnt.member.domain.user.model.Tag;
@@ -114,10 +115,12 @@ import com.lemnt.member.infrastructure.user.gateway.MemberGroupGatewayImpl;
 import com.lemnt.member.infrastructure.user.gateway.MemberTagGatewayImpl;
 import com.lemnt.member.infrastructure.user.gateway.MemberTagLinkGatewayImpl;
 import com.lemnt.member.infrastructure.user.gateway.MemberUserGatewayImpl;
+import com.lemnt.member.infrastructure.user.gateway.MemberWechatGatewayImpl;
 import com.lemnt.member.infrastructure.user.mapper.MemberGroupMapper;
 import com.lemnt.member.infrastructure.user.mapper.MemberTagLinkMapper;
 import com.lemnt.member.infrastructure.user.mapper.MemberTagMapper;
 import com.lemnt.member.infrastructure.user.mapper.MemberUserMapper;
+import com.lemnt.member.infrastructure.user.mapper.MemberWechatMapper;
 import com.lemnt.order.client.event.AfterSaleCompletedEvent;
 import com.lemnt.order.client.event.OrderPaidEvent;
 import com.lemnt.system.api.RemoteConfigService;
@@ -177,6 +180,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class MemberAccountIntegrationTest {
     MemberUserGateway memberUserGateway;
+    MemberWechatGateway memberWechatGateway;
     MemberGroupGateway memberGroupGateway;
     MemberTagGateway memberTagGateway;
     MemberTagLinkGateway memberTagLinkGateway;
@@ -253,6 +257,7 @@ class MemberAccountIntegrationTest {
         bean.setGlobalConfig(new GlobalConfig().setMetaObjectHandler(new MyMetaObjectHandler()));
         var factory = bean.getObject();
         config.addMapper(MemberAddressMapper.class);
+        config.addMapper(MemberWechatMapper.class);
         if (!config.hasMapper(MemberUserMapper.class)) config.addMapper(MemberUserMapper.class);
         if (!config.hasMapper(MemberGroupMapper.class)) config.addMapper(MemberGroupMapper.class);
         if (!config.hasMapper(MemberTagMapper.class)) config.addMapper(MemberTagMapper.class);
@@ -271,6 +276,8 @@ class MemberAccountIntegrationTest {
             new MemberTagLinkGatewayImpl(template.getMapper(MemberTagLinkMapper.class));
         memberAddressGateway =
             new MemberAddressGatewayImpl(template.getMapper(MemberAddressMapper.class));
+        memberWechatGateway =
+            new MemberWechatGatewayImpl(template.getMapper(MemberWechatMapper.class));
         pointRecords =
             new MemberPointRecordGatewayImpl(template.getMapper(MemberPointRecordMapper.class));
         experienceRecords =
@@ -397,7 +404,7 @@ class MemberAccountIntegrationTest {
 
     @Test
     void memberClientKeepsItsReadOnlyProjectionAndMissingMemberContract() {
-        var client = new MemberUserClientImpl(memberUserGateway, memberLevelGateway);
+        var client = new MemberUserClientImpl(memberUserGateway, memberLevelGateway, memberWechatGateway);
         var member = client.getByMemberId(id);
         assertEquals(id, member.id());
         assertEquals("one", member.nickname());
@@ -758,7 +765,7 @@ class MemberAccountIntegrationTest {
         MemberUserClient client =
             tx(
                 (MemberUserClient)
-                    new MemberUserClientImpl(memberUserGateway, memberLevelGateway));
+                    new MemberUserClientImpl(memberUserGateway, memberLevelGateway, memberWechatGateway));
         var login = client.getByMobile("13800000001");
         assertEquals(id, login.memberId());
         assertTrue(SecurityUtils.matchesPassword("Member-password-2026", login.passwordHash()));
@@ -918,7 +925,7 @@ class MemberAccountIntegrationTest {
         MemberUserClient client =
             tx(
                 (MemberUserClient)
-                    new MemberUserClientImpl(memberUserGateway, memberLevelGateway));
+                    new MemberUserClientImpl(memberUserGateway, memberLevelGateway, memberWechatGateway));
         assertNull(memberUserGateway.findById(id).loginDate());
         var before = memberUserGateway.now();
         client.recordLogin(id);
@@ -937,7 +944,7 @@ class MemberAccountIntegrationTest {
         MemberUserClient client =
             tx(
                 (MemberUserClient)
-                    new MemberUserClientImpl(memberUserGateway, memberLevelGateway));
+                    new MemberUserClientImpl(memberUserGateway, memberLevelGateway, memberWechatGateway));
         client.recordLogin(id, "203.0.113.7");
         assertEquals("203.0.113.7", memberUserGateway.findById(id).loginIp());
         assertNotNull(memberUserGateway.findById(id).loginDate());

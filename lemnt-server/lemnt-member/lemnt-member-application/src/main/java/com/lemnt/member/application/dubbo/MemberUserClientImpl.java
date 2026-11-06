@@ -6,6 +6,7 @@ import com.lemnt.member.client.dto.MemberLoginInfoDTO;
 import com.lemnt.member.client.dto.MemberUserDTO;
 import com.lemnt.member.domain.growth.gateway.MemberLevelGateway;
 import com.lemnt.member.domain.user.gateway.MemberUserGateway;
+import com.lemnt.member.domain.user.gateway.MemberWechatGateway;
 import com.lemnt.member.domain.user.model.Member;
 
 import org.apache.dubbo.config.annotation.DubboService;
@@ -24,6 +25,7 @@ public class MemberUserClientImpl implements MemberUserClient {
 
     private final MemberUserGateway memberUserGateway;
     private final MemberLevelGateway memberLevelGateway;
+    private final MemberWechatGateway memberWechatGateway;
 
     /**
      * 根据会员编号查询跨服务基础资料。
@@ -64,6 +66,14 @@ public class MemberUserClientImpl implements MemberUserClient {
         }
         String password = memberUserGateway.findPasswordByMemberId(member.id());
         return new MemberLoginInfoDTO(member.id(), member.mobile(), member.status(), password);
+    }
+
+    /**
+     * 仅返回微信小程序标识，供支付服务生成 JSAPI 请求参数。
+     */
+    @Override
+    public String getWechatOpenId(Long memberId) {
+        return memberId == null ? null : memberWechatGateway.findOpenId(memberId);
     }
 
     /**

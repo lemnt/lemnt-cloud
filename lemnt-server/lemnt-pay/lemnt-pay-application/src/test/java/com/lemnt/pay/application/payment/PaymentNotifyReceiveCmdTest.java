@@ -10,6 +10,7 @@ import com.lemnt.pay.domain.payment.gateway.PaymentChannelGateway;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.pay.domain.payment.model.PayApp;
 import com.lemnt.pay.domain.payment.model.PayChannelConfig;
+import com.lemnt.pay.domain.payment.model.PaymentChannelNotification;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
 
@@ -61,14 +62,19 @@ class PaymentNotifyReceiveCmdTest {
             "PAY1", "TR1", "SANDBOX", "SB-1", new BigDecimal("8.00"), "N-1");
 
     private PaymentNotifyReceiveCmd cmd() {
-        return new PaymentNotifyReceiveCmd("lemnt-mall", "sandbox", "{}", "sign", "1");
+        return new PaymentNotifyReceiveCmd(
+            "lemnt-mall", "sandbox", "{}", "sign", "1", null, null, null);
+    }
+
+    private PaymentChannelNotification notification() {
+        return new PaymentChannelNotification("{}", "sign", "1", null, null, null);
     }
 
     @Test
     void verifiedNotificationIsSubmittedToPaymentPipeline() {
         when(apps.findByAppKey("lemnt-mall")).thenReturn(app);
         when(channels.listByAppId(1L)).thenReturn(List.of(config));
-        when(gateway.verify("SANDBOX", config, "{}", "sign", "1")).thenReturn(verified);
+        when(gateway.verify("SANDBOX", config, notification())).thenReturn(verified);
         when(payments.findByPaymentNo("PAY1")).thenReturn(payment);
 
         assertEquals("PAY1", exe.execute(cmd()));
@@ -79,7 +85,7 @@ class PaymentNotifyReceiveCmdTest {
     void mismatchedApplicationOrChannelKeepsLocalPaymentUntouched() {
         when(apps.findByAppKey("lemnt-mall")).thenReturn(app);
         when(channels.listByAppId(1L)).thenReturn(List.of(config));
-        when(gateway.verify(any(), any(), any(), any(), any())).thenReturn(verified);
+        when(gateway.verify(any(), any(), any())).thenReturn(verified);
         when(payments.findByPaymentNo("PAY1"))
             .thenReturn(
                 new PaymentRecord(

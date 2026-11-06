@@ -1,5 +1,6 @@
 package com.lemnt.pay.infrastructure.payment.payment;
 
+import com.lemnt.pay.domain.payment.model.PayChannelConfig;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 
 /**
@@ -14,5 +15,5 @@ public interface PaymentChannelCloseClient {
     /**
      * 关闭未支付。
      */
-    boolean closeUnpaid(PaymentRecord payment);
+    boolean closeUnpaid(PaymentRecord payment, PayChannelConfig config);
 }

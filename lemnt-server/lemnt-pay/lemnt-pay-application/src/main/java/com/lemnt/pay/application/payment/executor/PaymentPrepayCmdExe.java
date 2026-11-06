@@ -6,6 +6,7 @@ import com.lemnt.pay.application.payment.dto.PaymentPrepayDTO;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
 import com.lemnt.pay.domain.payment.gateway.PayAppGateway;
 import com.lemnt.pay.domain.payment.gateway.PayChannelConfigGateway;
+import com.lemnt.pay.domain.payment.gateway.PayerOpenIdGateway;
 import com.lemnt.pay.domain.payment.gateway.PaymentChannelGateway;
 import com.lemnt.pay.domain.payment.model.PayApp;
 import com.lemnt.pay.domain.payment.model.PayChannelConfig;
@@ -30,6 +31,7 @@ public class PaymentPrepayCmdExe {
     private final PayChannelConfigGateway channels;
     private final TradePaymentCreateCmdExe payments;
     private final PaymentChannelGateway channelGateway;
+    private final PayerOpenIdGateway payerOpenIds;
 
     public PaymentPrepayDTO execute(PaymentPrepayCmd cmd) {
         require(cmd != null && cmd.memberId() != null && cmd.memberId() > 0, "会员编号不合法");
@@ -59,7 +61,8 @@ public class PaymentPrepayCmdExe {
         PaymentRecord payment = payments.execute(order.orderNo(), channel, app.appKey());
         require(payment.appKey() == null || app.appKey().equals(payment.appKey()), "支付单已绑定其他应用");
         require("WAITING".equals(payment.status()), "支付单已关闭或已支付");
-        PaymentPrepay prepay = channelGateway.prepay(payment, config);
+        PaymentPrepay prepay =
+            channelGateway.prepay(payment, config, payerOpenId(channel, cmd.memberId()));
         return new PaymentPrepayDTO(
             prepay.paymentNo(),
             order.orderNo(),
@@ -67,6 +70,15 @@ public class PaymentPrepayCmdExe {
             payment.amount(),
             prepay.payUrl(),
             prepay.params());
+    }
+
+    /**
+     * 只有微信支付需要付款人 openid；会员未绑定时返回空，由渠道退回扫码支付。
+     */
+    private String payerOpenId(String channel, Long memberId) {
+        return PaymentChannel.WECHAT.name().equals(channel)
+            ? payerOpenIds.findOpenId(memberId)
+            : null;
     }
 
     /**

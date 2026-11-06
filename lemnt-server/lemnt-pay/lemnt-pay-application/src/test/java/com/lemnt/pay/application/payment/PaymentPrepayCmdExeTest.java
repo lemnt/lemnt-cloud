@@ -8,6 +8,7 @@ import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
 import com.lemnt.pay.domain.order.model.OrderPaymentSnapshot;
 import com.lemnt.pay.domain.payment.gateway.PayAppGateway;
 import com.lemnt.pay.domain.payment.gateway.PayChannelConfigGateway;
+import com.lemnt.pay.domain.payment.gateway.PayerOpenIdGateway;
 import com.lemnt.pay.domain.payment.gateway.PaymentChannelGateway;
 import com.lemnt.pay.domain.payment.model.PayApp;
 import com.lemnt.pay.domain.payment.model.PayChannelConfig;
@@ -33,8 +34,9 @@ class PaymentPrepayCmdExeTest {
     final PayChannelConfigGateway channels = mock(PayChannelConfigGateway.class);
     final TradePaymentCreateCmdExe payments = mock(TradePaymentCreateCmdExe.class);
     final PaymentChannelGateway gateway = mock(PaymentChannelGateway.class);
+    final PayerOpenIdGateway payerOpenIds = mock(PayerOpenIdGateway.class);
     final PaymentPrepayCmdExe exe =
-        new PaymentPrepayCmdExe(orders, apps, channels, payments, gateway);
+        new PaymentPrepayCmdExe(orders, apps, channels, payments, gateway, payerOpenIds);
 
     final PayApp app = new PayApp(1L, "lemnt-mall", "商城", 0, null, null, null, null);
     final PayChannelConfig config =
@@ -73,7 +75,7 @@ class PaymentPrepayCmdExeTest {
         when(apps.findByAppKey("lemnt-mall")).thenReturn(app);
         when(channels.listByAppId(1L)).thenReturn(List.of(config));
         when(payments.execute("TR1", "SANDBOX", "lemnt-mall")).thenReturn(payment);
-        when(gateway.prepay(payment, config))
+        when(gateway.prepay(payment, config, null))
             .thenReturn(
                 new PaymentPrepay(
                     "PAY1",
@@ -93,6 +95,49 @@ class PaymentPrepayCmdExeTest {
         assertEquals("SANDBOX", result.channel());
         assertEquals(new BigDecimal("8.00"), result.amount());
         assertEquals("lemnt-mall", result.params().get("appKey"));
+    }
+
+    @Test
+    void wechatChannelResolvesMemberOpenIdForPayer() {
+        var wechatConfig =
+            new PayChannelConfig(2L, 1L, "WECHAT", 0, BigDecimal.ZERO, null, "{}", null);
+        var wechatPayment =
+            new PaymentRecord(
+                1L,
+                "PAY1",
+                "TR1",
+                "WECHAT",
+                "lemnt-mall",
+                null,
+                new BigDecimal("8.00"),
+                "WAITING",
+                null);
+        when(orders.findByOrderNo("TR1")).thenReturn(order(7L, new BigDecimal("8.00")));
+        when(apps.findByAppKey("lemnt-mall")).thenReturn(app);
+        when(channels.listByAppId(1L)).thenReturn(List.of(wechatConfig));
+        when(payments.execute("TR1", "WECHAT", "lemnt-mall")).thenReturn(wechatPayment);
+        when(payerOpenIds.findOpenId(7L)).thenReturn("OPENID1");
+        when(gateway.prepay(wechatPayment, wechatConfig, "OPENID1"))
+            .thenReturn(new PaymentPrepay("PAY1", "WECHAT", null, Map.of()));
+
+        exe.execute(new PaymentPrepayCmd(7L, "TR1", "lemnt-mall", "wechat"));
+
+        verify(payerOpenIds).findOpenId(7L);
+        verify(gateway).prepay(wechatPayment, wechatConfig, "OPENID1");
+    }
+
+    @Test
+    void nonWechatChannelDoesNotQueryPayerOpenId() {
+        when(orders.findByOrderNo("TR1")).thenReturn(order(7L, new BigDecimal("8.00")));
+        when(apps.findByAppKey("lemnt-mall")).thenReturn(app);
+        when(channels.listByAppId(1L)).thenReturn(List.of(config));
+        when(payments.execute("TR1", "SANDBOX", "lemnt-mall")).thenReturn(payment);
+        when(gateway.prepay(payment, config, null))
+            .thenReturn(new PaymentPrepay("PAY1", "SANDBOX", null, Map.of()));
+
+        exe.execute(cmd());
+
+        verify(payerOpenIds, never()).findOpenId(any());
     }
 
     @Test

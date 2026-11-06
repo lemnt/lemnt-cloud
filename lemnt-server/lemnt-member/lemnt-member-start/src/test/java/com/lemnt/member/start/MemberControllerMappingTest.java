@@ -100,6 +100,7 @@ class MemberControllerMappingTest {
                         GET /tags/{id} member:tag:query
                         POST /app/addresses
                         POST /app/growths/signin
+                        POST /app/wechat/login
                         POST /groups member:group:create
                         POST /growth/levels member:level:create
                         POST /tags member:tag:create

@@ -28,3 +28,8 @@ dubbo:
     name: ${spring.application.name}-provider
   registry:
     address: nacos://${NACOS_HOST:127.0.0.1}:${NACOS_PORT:8848}?namespace=@profile.active@&group=DEFAULT_GROUP&username=${NACOS_USERNAME:nacos}&password=${NACOS_PASSWORD:123456}
+# 微信小程序凭证：仅用于 wx.login 的 code 换取 openid；appId 必须与支付渠道配置一致。
+member:
+  wechat:
+    app-id: ${MEMBER_WECHAT_APP_ID:}
+    secret: ${MEMBER_WECHAT_SECRET:}

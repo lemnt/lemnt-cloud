@@ -3,6 +3,30 @@ const runtime = require('../../services/orderRuntime');
 const { decodeChannels, decodePrepay } = require('../../services/payment');
 const { decodePaymentStatus } = require('../../services/paymentStatus');
 
+/** 微信登录凭证，一次性用于服务端换取 openid，客户端不保存。 */
+function loginCode() {
+  return new Promise((resolve, reject) => {
+    wx.login({
+      success: (result) => {
+        if (result && typeof result.code === 'string' && result.code) resolve(result.code);
+        else reject(new Error('微信登录失败'));
+      },
+      fail: () => reject(new Error('微信登录失败')),
+    });
+  });
+}
+
+/** 调起微信收银台；用户取消或失败都不当作已支付。 */
+function requestPayment(params) {
+  return new Promise((resolve, reject) => {
+    wx.requestPayment({
+      ...params,
+      success: () => resolve(),
+      fail: () => reject(new Error('支付未完成')),
+    });
+  });
+}
+
 Page({
   data: {
     ready: config.memberApiReady,
@@ -84,23 +108,29 @@ Page({
   pay() {
     return this.run(async () => {
       if (!this.data.channel) throw new Error('请选择支付渠道');
-      const prepay = decodePrepay(
-        await this.client.prepay({
-          orderNo: this.data.orderNo,
-          appKey: this.data.appKey,
-          channel: this.data.channel,
-        }),
-        this.data.orderNo,
-      );
+      const input = {
+        orderNo: this.data.orderNo,
+        appKey: this.data.appKey,
+        channel: this.data.channel,
+      };
+      // 微信小程序内支付需先把当前会员的 openid 绑定到会员服务，再由 pay 生成 JSAPI 参数。
+      if (input.channel === 'WECHAT') await this.memberClient.wechatLogin(await loginCode());
+      const prepay = decodePrepay(await this.client.prepay(input), this.data.orderNo);
       this.setData({
         prepay,
         message:
           prepay.channel === 'SANDBOX'
             ? '沙箱支付单已创建，请点击模拟支付'
-            : prepay.payUrl
-              ? '请在浏览器打开支付链接完成支付'
-              : '该渠道尚未接入真实支付',
+            : prepay.params.paySign
+              ? '正在唤起微信支付'
+              : prepay.payUrl
+                ? '请在浏览器打开支付链接完成支付'
+                : '该渠道尚未接入真实支付',
       });
+      if (prepay.channel === 'WECHAT' && prepay.params.paySign) {
+        await requestPayment(prepay.params);
+        await this.loadStatus();
+      }
     });
   },
   sandboxPay() {

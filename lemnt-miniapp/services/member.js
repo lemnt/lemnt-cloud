@@ -174,6 +174,12 @@ function createMemberClient({ request, baseUrl, ready = false, getSession, setSe
   return {
     passwordLogin: (phone, pwd) =>
       login('/auth/login', { mobile: mobile(phone), password: password(pwd) }),
+    /** 用 wx.login 的一次性 code 绑定当前会员的微信 openid，服务端不返回 openid。 */
+    wechatLogin: (code) => {
+      if (typeof code !== 'string' || !code.trim() || code.length > 128)
+        throw Error('微信登录凭证不合法');
+      return call('/wechat/login', 'POST', { code }).then(yes);
+    },
     async refresh() {
       const before = getSession();
       if (!before) throw Error('请先登录');

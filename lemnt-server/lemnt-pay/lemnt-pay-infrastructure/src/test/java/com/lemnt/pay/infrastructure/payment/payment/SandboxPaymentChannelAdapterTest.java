@@ -2,6 +2,7 @@ package com.lemnt.pay.infrastructure.payment.payment;
 
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.pay.domain.payment.model.PayChannelConfig;
+import com.lemnt.pay.domain.payment.model.PaymentChannelNotification;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,7 @@ class SandboxPaymentChannelAdapterTest {
 
     @Test
     void prepayReturnsLocalParamsWithoutSecret() {
-        var prepay = adapter.prepay(payment, config);
+        var prepay = adapter.prepay(payment, config, null);
         assertEquals("PAY1", prepay.paymentNo());
         assertEquals("SANDBOX", prepay.channel());
         assertEquals("lemnt-mall", prepay.params().get("appKey"));
@@ -62,7 +63,7 @@ class SandboxPaymentChannelAdapterTest {
     @Test
     void verifyAcceptsFreshSignedNotification() {
         String time = String.valueOf(System.currentTimeMillis());
-        var verified = adapter.verify(config, body(), signature(time), time);
+        var verified = adapter.verify(config, notify(body(), signature(time), time));
         assertEquals("PAY1", verified.paymentNo());
         assertEquals("TR1", verified.orderNo());
         assertEquals(new BigDecimal("8.00"), verified.amount());
@@ -76,26 +77,24 @@ class SandboxPaymentChannelAdapterTest {
             ServiceException.class,
             () ->
                 adapter.verify(
-                    config, body().replace("8.00", "9.00"), signature(time), time));
+                    config, notify(body().replace("8.00", "9.00"), signature(time), time)));
         String stale = String.valueOf(System.currentTimeMillis() - 6 * 60_000L);
         assertThrows(
             ServiceException.class,
-            () -> adapter.verify(config, body(), signature(stale), stale));
+            () -> adapter.verify(config, notify(body(), signature(stale), stale)));
         assertThrows(
             ServiceException.class,
             () ->
                 adapter.verify(
                     new PayChannelConfig(
                         1L, 1L, "SANDBOX", 0, BigDecimal.ZERO, null, "{}", null),
-                    body(),
-                    signature(time),
-                    time));
+                    notify(body(), signature(time), time)));
     }
 
     @Test
     void closeUnpaidOnlyAcceptsSandboxPayment() {
         var close = new SandboxPaymentChannelCloseClient();
-        assertTrue(close.closeUnpaid(payment));
+        assertTrue(close.closeUnpaid(payment, config));
         assertFalse(
             close.closeUnpaid(
                 new PaymentRecord(
@@ -107,6 +106,14 @@ class SandboxPaymentChannelAdapterTest {
                     null,
                     BigDecimal.TEN,
                     "WAITING",
-                    null)));
+                    null),
+                config));
+    }
+
+    /**
+     * 沙箱渠道只使用报文、签名与时间戳，其余验签材料忽略。
+     */
+    private PaymentChannelNotification notify(String body, String signature, String timestamp) {
+        return new PaymentChannelNotification(body, signature, timestamp, null, null, null);
     }
 }

@@ -101,11 +101,13 @@ import com.lemnt.pay.application.paymentrefund.executor.PaymentRefundPageQueryEx
 import com.lemnt.pay.application.paymentrefund.qry.PaymentRefundPageQry;
 import com.lemnt.pay.domain.payment.gateway.PaymentChannelCloseGateway;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.pay.domain.payment.model.PayChannelConfig;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundChannelGateway;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundGateway;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefund;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundResult;
+import com.lemnt.pay.infrastructure.payment.payment.PayChannelConfigResolver;
 import com.lemnt.pay.infrastructure.paymentrefund.channel.PaymentRefundClient;
 import com.lemnt.pay.infrastructure.paymentrefund.gateway.PaymentRefundChannelGatewayImpl;
 import com.lemnt.product.application.product.cmd.ProductCommentCreateCmd;
@@ -380,9 +382,14 @@ class CheckoutFlowIntegrationTest {
             .insert(new DeliveryExpress(null, "SF", "顺丰", null, 0, 0));
         refundClient = Mockito.mock(PaymentRefundClient.class);
         Mockito.when(refundClient.channel()).thenReturn("ALIPAY");
+        var payChannelConfigs = Mockito.mock(PayChannelConfigResolver.class);
+        Mockito.when(payChannelConfigs.resolve(Mockito.any(), Mockito.any()))
+            .thenReturn(
+                new PayChannelConfig(
+                    1L, 1L, "ALIPAY", 0, BigDecimal.ZERO, null, "{}", null));
         tradeComponents.register(
             PaymentRefundChannelGateway.class,
-            new PaymentRefundChannelGatewayImpl(List.of(refundClient)));
+            new PaymentRefundChannelGatewayImpl(List.of(refundClient), payChannelConfigs));
         productSkuGateway = tradeComponents.get(ProductSkuGateway.class);
         productInventoryService = tradeComponents.get(ProductInventoryService.class);
         checkoutAccountGateway = tradeComponents.get(MemberLockGateway.class);
@@ -1196,7 +1203,8 @@ class CheckoutFlowIntegrationTest {
                     "部分退货"));
         assertEquals(new BigDecimal("13.25"), sale.amount());
         afterSales.agree(sale.refundNo());
-        Mockito.when(refundClient.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(refundClient.refund(
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(call -> refundSuccess(call.getArgument(0)));
         var result = tradeComponents.get(PaymentRefundCreateCmdExe.class).execute(sale.refundNo());
         assertEquals("SUCCESS", result.status());
@@ -2138,7 +2146,8 @@ class CheckoutFlowIntegrationTest {
         var order = paidOrder(null);
         var afterSale =
             approvedAfterSale(new RefundRequestCmd(order.orderNo(), "REFUND-1", "不再需要"));
-        Mockito.when(refundClient.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(refundClient.refund(
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(
                 call -> {
                     assertFalse(
@@ -2156,7 +2165,7 @@ class CheckoutFlowIntegrationTest {
         assertEquals(result, create.execute(afterSale.refundNo()));
         assertEquals(1, count("pay_payment_refund"));
         Mockito.verify(refundClient, Mockito.times(1))
-            .refund(ArgumentMatchers.any(), ArgumentMatchers.any());
+            .refund(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any());
         assertThrows(
             IllegalStateException.class,
             () -> fulfillmentService.ship(shipment(order.orderNo())));
@@ -2182,7 +2191,8 @@ class CheckoutFlowIntegrationTest {
     void lostRefundResponsePreservesOneRefundAndOriginalKeyIsQueriedOnRetry() throws Exception {
         var order = paidOrder(null);
         var afterSale = approvedAfterSale(new RefundRequestCmd(order.orderNo(), "REFUND-2", "原因"));
-        Mockito.when(refundClient.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(refundClient.refund(
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenThrow(new IllegalStateException("渠道响应丢失"));
         var create = tradeComponents.get(PaymentRefundCreateCmdExe.class);
         assertThrows(IllegalStateException.class, () -> create.execute(afterSale.refundNo()));
@@ -2199,14 +2209,15 @@ class CheckoutFlowIntegrationTest {
         assertThrows(
             IllegalStateException.class,
             () -> rejectAfterSale(new RefundRejectCmd(afterSale.refundNo(), "驳回")));
-        Mockito.when(refundClient.query(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(refundClient.query(
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(call -> refundSuccess(call.getArgument(0)));
         var result = create.execute(afterSale.refundNo());
         assertEquals(original.refundNo(), result.refundNo());
         assertEquals("SUCCESS", result.status());
         assertEquals(1, count("pay_payment_refund"));
         Mockito.verify(refundClient, Mockito.times(1))
-            .refund(ArgumentMatchers.any(), ArgumentMatchers.any());
+            .refund(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any());
     }
 
     @Test
@@ -2214,7 +2225,8 @@ class CheckoutFlowIntegrationTest {
         throws Exception {
         var order = paidOrder(null);
         var afterSale = approvedAfterSale(new RefundRequestCmd(order.orderNo(), "REFUND-3", "原因"));
-        Mockito.when(refundClient.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(refundClient.refund(
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(
                 call -> {
                     PaymentRefund refund = call.getArgument(0);
@@ -2231,14 +2243,15 @@ class CheckoutFlowIntegrationTest {
         assertEquals(pending, create.execute(afterSale.refundNo()));
         assertEquals("PAID", orderPersistenceService.findByOrderNo(order.orderNo()).status());
         Mockito.verify(refundClient, Mockito.times(1))
-            .refund(ArgumentMatchers.any(), ArgumentMatchers.any());
+            .refund(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any());
     }
 
     @Test
     void invalidRefundBindingNeverMarksSuccessOrReleasesFulfillmentBlock() throws Exception {
         var order = paidOrder(null);
         var afterSale = approvedAfterSale(new RefundRequestCmd(order.orderNo(), "REFUND-4", "原因"));
-        Mockito.when(refundClient.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(refundClient.refund(
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(
                 call -> {
                     PaymentRefund refund = call.getArgument(0);
@@ -2265,7 +2278,8 @@ class CheckoutFlowIntegrationTest {
     void fundsSuccessSurvivesOrderRollbackAndOriginalRefundRepairsOrder() throws Exception {
         var order = paidOrder(null);
         var afterSale = approvedAfterSale(new RefundRequestCmd(order.orderNo(), "REFUND-5", "原因"));
-        Mockito.when(refundClient.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(refundClient.refund(
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(call -> refundSuccess(call.getArgument(0)));
         sql(
             tradeSource,
@@ -2281,7 +2295,8 @@ class CheckoutFlowIntegrationTest {
         assertEquals("REFUNDING", refundRequestGateway.afterSale(afterSale.refundNo()).status());
         assertEquals("PAID", orderPersistenceService.findByOrderNo(order.orderNo()).status());
         sql(tradeSource, "ALTER TABLE order_info DROP CONSTRAINT test_refund_failure");
-        Mockito.when(refundClient.query(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(refundClient.query(
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(call -> refundSuccess(call.getArgument(0)));
         assertEquals("SUCCESS", create.execute(afterSale.refundNo()).status());
         events.drainOrThrow();
@@ -2295,7 +2310,7 @@ class CheckoutFlowIntegrationTest {
                 .get(0)
                 .refundedQuantity());
         Mockito.verify(refundClient, Mockito.times(1))
-            .refund(ArgumentMatchers.any(), ArgumentMatchers.any());
+            .refund(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any());
     }
 
     @Test
@@ -2328,7 +2343,8 @@ class CheckoutFlowIntegrationTest {
         var order = paidOrder(null);
         var afterSale = approvedAfterSale(new RefundRequestCmd(order.orderNo(), "REFUND-7", "原因"));
         var numbers = ConcurrentHashMap.<String>newKeySet();
-        Mockito.when(refundClient.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(refundClient.refund(
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(
                 call -> {
                     PaymentRefund refund = call.getArgument(0);
@@ -2352,7 +2368,8 @@ class CheckoutFlowIntegrationTest {
     void paymentAndRefundPagesUseRealTableFiltersAndCommonPagination() throws Exception {
         var order = paidOrder(null);
         var afterSale = approvedAfterSale(new RefundRequestCmd(order.orderNo(), "REFUND-8", "原因"));
-        Mockito.when(refundClient.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(refundClient.refund(
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(call -> refundSuccess(call.getArgument(0)));
         var created =
             tradeComponents.get(PaymentRefundCreateCmdExe.class).execute(afterSale.refundNo());
@@ -2407,7 +2424,8 @@ class CheckoutFlowIntegrationTest {
     void callerRollbackDoesNotEraseChannelRefundOrItsCommittedResult() throws Exception {
         var order = paidOrder(null);
         var afterSale = approvedAfterSale(new RefundRequestCmd(order.orderNo(), "REFUND-9", "原因"));
-        Mockito.when(refundClient.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(refundClient.refund(
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(call -> refundSuccess(call.getArgument(0)));
         var create = tradeComponents.get(PaymentRefundCreateCmdExe.class);
         var transaction = new TransactionTemplate(new DataSourceTransactionManager(tradeSource));
@@ -2429,7 +2447,8 @@ class CheckoutFlowIntegrationTest {
     void confirmedChannelFailureIsRecordedWithoutPretendingOrderWasRefunded() throws Exception {
         var order = paidOrder(null);
         var afterSale = approvedAfterSale(new RefundRequestCmd(order.orderNo(), "REFUND-10", "原因"));
-        Mockito.when(refundClient.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(refundClient.refund(
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(
                 call -> {
                     PaymentRefund refund = call.getArgument(0);
@@ -2456,7 +2475,8 @@ class CheckoutFlowIntegrationTest {
     }
 
     void successfulRefundChannel() {
-        Mockito.when(refundClient.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(refundClient.refund(
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(call -> refundSuccess(call.getArgument(0)));
     }
 
@@ -3167,7 +3187,8 @@ class CheckoutFlowIntegrationTest {
         assertEquals("REQUESTED", refundRequestGateway.afterSale(sale.refundNo()).status());
         sql(tradeSource, "ALTER TABLE order_after_sale_log DROP CONSTRAINT reject_agreement_log");
         service.agree(sale.refundNo());
-        Mockito.when(refundClient.refund(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        Mockito.when(refundClient.refund(
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
             .thenAnswer(
                 call -> {
                     PaymentRefund refund = call.getArgument(0);
@@ -3842,7 +3863,7 @@ class CheckoutFlowIntegrationTest {
                 .refundedQuantity());
         assertEquals(1, count("pay_payment_refund"));
         Mockito.verify(refundClient, Mockito.times(1))
-            .refund(ArgumentMatchers.any(), ArgumentMatchers.any());
+            .refund(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any());
     }
 
     @Test
@@ -3948,7 +3969,7 @@ class CheckoutFlowIntegrationTest {
         }
         assertEquals(1, count("pay_payment_refund"));
         Mockito.verify(refundClient, Mockito.times(1))
-            .refund(ArgumentMatchers.any(), ArgumentMatchers.any());
+            .refund(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any());
     }
 
     @Test

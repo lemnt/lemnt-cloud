@@ -199,3 +199,15 @@ CREATE TABLE IF NOT EXISTS member_message_inbox (
     UNIQUE KEY uk_consumer_event (consumer_key, event_no),
     UNIQUE KEY uk_consumer_business (consumer_key, event_type, business_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='本地事务消息消费幂等记录';
+
+CREATE TABLE IF NOT EXISTS member_wechat (
+    member_id BIGINT NOT NULL COMMENT '会员编号',
+    open_id VARCHAR(64) NOT NULL COMMENT '微信小程序 openid',
+    create_time DATETIME NULL COMMENT '创建时间',
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    update_time DATETIME NULL COMMENT '修改时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    PRIMARY KEY(member_id),
+    UNIQUE KEY uk_member_wechat_open_id(open_id),
+    FOREIGN KEY(member_id) REFERENCES member_user(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员微信小程序标识';

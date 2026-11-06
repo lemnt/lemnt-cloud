@@ -40,13 +40,22 @@
 
 ## 支付发起与渠道通知
 
-1. 会员调用 `POST /trade/app/orders/{orderNo}/payment`，请求体只含 `appKey`、`channel`。服务端校验订单归属、`PENDING_PAYMENT` 状态和金额大于 0，按应用与渠道配置生成预支付参数；金额、支付单号由服务端确定。
+1. 会员调用 `POST /trade/app/orders/{orderNo}/payment`，请求体只含 `appKey`、`channel`。服务端校验订单归属、`PENDING_PAYMENT` 状态和金额大于 0，按应用与渠道配置生成预支付参数；金额、支付单号由服务端确定，微信付款人 openid 由服务端按会员编号查询，客户端不上传。
 2. 支付单以 `(order_no, channel)` 唯一并绑定 `app_key`；预支付响应不包含渠道密钥。
-3. 渠道回调 `POST /trade/payment/notify/{appKey}/{channel}` 携带 `X-Pay-Timestamp`（毫秒）和 `X-Pay-Signature`（HMAC-SHA256 十六进制）。签名原文按换行拼接：渠道、支付单号、订单号、两位小数金额、渠道交易号、通知编号、时间戳。
+3. 渠道回调 `POST /trade/payment/notify/{appKey}/{channel}` 携带验签材料：沙箱使用 `X-Pay-Timestamp`（毫秒）和 `X-Pay-Signature`（HMAC-SHA256 十六进制），签名原文按换行拼接：渠道、支付单号、订单号、两位小数金额、渠道交易号、通知编号、时间戳；微信支付使用原生 `Wechatpay-*` 请求头。
 4. 通知必须在 5 分钟时间窗内，`notifyId` 全局唯一，支付单号、渠道、应用和金额必须与本地一致；验签通过后提交支付成功、订单 PAID 并派发库存确认与权益任务。重复通知幂等，不同渠道交易号的重放被拒绝。
 5. 关单会先关闭待支付渠道交易；沙箱渠道在本地直接视为撤销。
 6. 退款沿用售后 `WAIT_REFUND → REFUNDING → REFUNDED` 状态机；沙箱退款适配器在 `payment.sandbox.enabled=true` 时本地返回成功，渠道退款编号为 `SBR-{refundNo}`，重复请求保持同一编号。
 7. 小程序收银台先按 `appKey` 查询已启用渠道，再发起支付；沙箱渠道由会员本人调用 `sandbox-pay` 本地确认，关闭沙箱开关时该接口不可用。
+
+### 微信支付（APIv3）
+
+- 渠道配置 JSON 需包含 `appId`、`mchId`、`serialNo`（商户证书序列号）、`privateKey`（apiclient_key.pem 内容）、32 位 `apiV3key`（通知解密）和 `payNotifyUrl`；缺失时发起支付直接失败，不发出无效请求。`appId` 必须与会员服务 `member.wechat.app-id` 一致，openid 才可用于本应用支付。
+- 预支付按会员是否已绑定 openid 分流：已绑定时走 JSAPI 下单并返回 `wx.requestPayment` 参数（`appId`、`timeStamp`、`nonceStr`、`package`、`signType`、`paySign`）；未绑定时走 Native 下单，返回 `params.codeUrl` 供渲染二维码。两种方式 `payUrl` 均为空，且不返回渠道密钥。openid 由会员服务在 `POST /member/app/wechat/login` 用 `wx.login` 的 code 换取并绑定到会员，支付服务按会员编号经 Dubbo 查询，不接收客户端上传的 openid。
+- 回调按 `Wechatpay-Serial`、`Wechatpay-Signature`、`Wechatpay-Timestamp`、`Wechatpay-Nonce`、`Wechatpay-Signature-Type` 验签（也接受同名 `X-Pay-*` 头），官方 SDK 解密后校验商户号、appId、币种与交易状态，金额由分换算为元；订单号随预支付 `attach` 回传，缺失即拒绝。
+- 关单只有微信返回成功、`ORDER_CLOSED` 或订单不存在时才算关闭，其余结果保持待支付并由关单事件重试。
+- 退款以本地退款单号作为 `out_refund_no` 幂等键，金额按分提交并核对渠道返回金额；`SUCCESS` 记为成功、`PROCESSING` 保持待退款、`CLOSED` 与 `ABNORMAL` 记为失败（后者需人工核对）。未配置退款通知地址，结果在下次发起退款时查询同步，查询不到才提交新退款。
+
 
 ## 表与部署
 

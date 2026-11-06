@@ -3,6 +3,7 @@ package com.lemnt.pay.infrastructure.payment.payment;
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.pay.domain.payment.gateway.PaymentChannelGateway;
 import com.lemnt.pay.domain.payment.model.PayChannelConfig;
+import com.lemnt.pay.domain.payment.model.PaymentChannelNotification;
 import com.lemnt.pay.domain.payment.model.PaymentPrepay;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
@@ -23,18 +24,17 @@ public class PaymentChannelGatewayImpl implements PaymentChannelGateway {
     }
 
     @Override
-    public PaymentPrepay prepay(PaymentRecord payment, PayChannelConfig config) {
-        return adapter(payment.channel()).prepay(payment, config);
+    public PaymentPrepay prepay(
+        PaymentRecord payment, PayChannelConfig config, String payerOpenId) {
+        return adapter(payment.channel()).prepay(payment, config, payerOpenId);
     }
 
     @Override
     public VerifiedPaymentNotification verify(
         String channel,
         PayChannelConfig config,
-        String body,
-        String signature,
-        String timestamp) {
-        return adapter(channel).verify(config, body, signature, timestamp);
+        PaymentChannelNotification notification) {
+        return adapter(channel).verify(config, notification);
     }
 
     private PaymentChannelAdapter adapter(String channel) {

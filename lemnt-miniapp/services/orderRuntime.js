@@ -1,24 +1,36 @@
 const config = require('../config');
 const { createTradeClient } = require('./trade');
+const { createMemberClient } = require('./member');
 
 function current() {
   return getApp().globalData.memberSession;
 }
 
-/** 为订单/售后页面注入 trade 客户端，身份只取会员会话令牌。 */
+/** 为订单/售后页面注入 trade 与会员客户端，身份只取会员会话令牌。 */
 function attach(page) {
+  const request = (options) =>
+    new Promise((resolve, reject) =>
+      wx.request({
+        ...options,
+        success: resolve,
+        fail: () => reject(Error('网络未确认，请刷新核验后再操作')),
+      }),
+    );
   page.client = createTradeClient({
-    request: (options) =>
-      new Promise((resolve, reject) =>
-        wx.request({
-          ...options,
-          success: resolve,
-          fail: () => reject(Error('网络未确认，请刷新核验后再操作')),
-        }),
-      ),
+    request,
     baseUrl: config.apiBaseUrl,
     ready: config.memberApiReady,
     getMemberToken: () => current()?.accessToken,
+  });
+  // 微信支付前需要绑定 openid，由会员服务承接。
+  page.memberClient = createMemberClient({
+    request,
+    baseUrl: config.apiBaseUrl,
+    ready: config.memberApiReady,
+    getSession: current,
+    setSession: (value) => {
+      getApp().globalData.memberSession = value;
+    },
   });
 }
 

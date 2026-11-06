@@ -1,5 +1,6 @@
 package com.lemnt.pay.infrastructure.paymentrefund;
 
+import com.lemnt.pay.domain.payment.model.PayChannelConfig;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefund;
 import com.lemnt.pay.infrastructure.paymentrefund.channel.SandboxPaymentRefundClient;
@@ -15,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class SandboxPaymentRefundClientTest {
     final SandboxPaymentRefundClient client = new SandboxPaymentRefundClient();
+    final PayChannelConfig config =
+        new PayChannelConfig(9L, 1L, "SANDBOX", 0, BigDecimal.ZERO, null, "{}", null);
     final PaymentRecord payment =
         new PaymentRecord(
             1L,
@@ -39,12 +42,12 @@ class SandboxPaymentRefundClientTest {
 
     @Test
     void refundReturnsStableSuccessForMatchingPayment() {
-        var result = client.refund(refund, payment);
+        var result = client.refund(refund, payment, config);
         assertEquals("SUCCESS", result.status());
         assertEquals("SBR-PR1", result.channelRefundNo());
         assertEquals(new BigDecimal("8.00"), result.amount());
-        assertEquals("SBR-PR1", client.refund(refund, payment).channelRefundNo());
-        assertNull(client.query(refund, payment));
+        assertEquals("SBR-PR1", client.refund(refund, payment, config).channelRefundNo());
+        assertNull(client.query(refund, payment, config));
     }
 
     @Test
@@ -62,7 +65,8 @@ class SandboxPaymentRefundClientTest {
                         new BigDecimal("8.00"),
                         "WAITING",
                         null),
-                    payment));
+                    payment,
+                    config));
         assertThrows(
             IllegalStateException.class,
             () ->
@@ -76,7 +80,8 @@ class SandboxPaymentRefundClientTest {
                         new BigDecimal("9.00"),
                         "WAITING",
                         null),
-                    payment));
+                    payment,
+                    config));
         assertThrows(
             IllegalStateException.class,
             () ->
@@ -91,7 +96,8 @@ class SandboxPaymentRefundClientTest {
                         null,
                         new BigDecimal("8.00"),
                         "SUCCESS",
-                        "N-1")));
+                        "N-1"),
+                    config));
         assertThrows(
             IllegalStateException.class,
             () ->
@@ -106,6 +112,7 @@ class SandboxPaymentRefundClientTest {
                         "SB-1",
                         new BigDecimal("8.00"),
                         "WAITING",
-                        "N-1")));
+                        "N-1"),
+                    config));
     }
 }
