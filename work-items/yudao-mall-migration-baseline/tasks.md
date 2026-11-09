@@ -1,13 +1,13 @@
 # 迁移基线与运行验收——正式任务清单
 
-> 日期：2026-11-06；状态：用户已确认任务范围、依赖与并行策略（2026-11-06T09:43:31+08:00），**未实施**。
-> 用户确认原文：“确认任务草案”。设计及任务拆解阶段完成，但代码生成尚未启动；确认不放开未来人工门控，不等同于代码交付或环境操作授权。
+> 日期：2026-11-06；状态：用户已确认任务范围、依赖与并行策略（2026-11-06T09:43:31+08:00）；B1a、B1b已完成自动化验证，整体迁移未完成。
+> 任务确认原文：“确认任务草案”。确认不放开未来人工门控，不等同于环境操作授权；当前执行记录见第8、9节。
 > 未使用模板文件：项目templates/task_template.md不存在，采用skill内置格式。
 
 ## 1. 数量和状态口径
 
 - 已确认计划的95条文件操作逐条映射为F001–F095，未漏项；另加11项准备/验证/环境证据任务和6个人工门控。
-- 所有代码文件任务均未执行：pending仅表示可排队，不是已满足依赖；blocked必须先补齐审批和实际前置任务。
+- 表内“初态”保留拆解时记录；当前执行状态以第8、9、10节及evidence/tasks.json为准，pending不代表依赖已经满足，blocked仍须审批和实际前置任务。
 - 32条原门控操作中，3项是可先准备的补充设计文档；其余29项商品业务文件仍受G-B2b门控。B3/B4业务实现节点尚待补充设计追加，不冒称已完成逐文件拆解。
 - 预估为文件复杂度对应的人工作业量预算，非模型运行时间、交付承诺或并行后的日历时长；受阻工作重新估算，不汇总成虚假固定工期。
 
@@ -211,7 +211,7 @@
 - B1b只做外部协议隔离，保留原事务、事件号、幂等/乱序和业务校验；不为该任务新增消息表或同步重写消息链。
 - B2a先交price和已有真实salesCount排序、启用分类与已有字段输出。createTime及虚拟销量数据未就绪前，不向客户端宣传可用的完整排序集；后续B2b同步扩展Schema/请求/实现/测试，不新增临时开关掩盖未实现。
 - 新增商品配置/价格约束、交易内部时序和消息/业务记录去留，需要对应门控；不能仅为测试绿而恢复用户否定的product会员RPC或放宽断言。
-- 自动化证据、真实MySQL/MQ/Redis、浏览器/微信工具/沙箱证据各记各的；本次只校验任务资料，不声称业务已验证。
+- 自动化证据、真实MySQL/MQ/Redis、浏览器/微信工具/沙箱证据各记各的；B1a仅做自动化契约回归，不声称真实环境已验证。
 - B2b/B3/B4的全量测试与新增接口/文件清单未补齐前，cs-generate不得自行猜测；若后续变更计划，先更新task-draft/正式tasks及其审批记录。
 
 ## 7. 确认记录与下一阶段
@@ -219,5 +219,55 @@
 - 用户确认原文：“确认任务草案”。
 - 确认时间：2026-11-06T09:43:31+08:00。
 - 已确认任务、依赖关系和并行策略保持不变，原tasks-draft.md与task-draft.json保留作确认前记录。
-- task阶段标记completed，正式产物为本文件及evidence/tasks.json。所有实施任务仍为pending或blocked，人工门控仍待后续明确批准。
-- 下一阶段可调用cs-generate，建议仅执行P000、B1a的F001–F006及V-B1a验证；当前未自动启动生成，不执行B1b及后续批次、DDL或环境变更。
+- task阶段标记completed，正式产物为本文件及evidence/tasks.json。B1a执行记录见第8节；其余实施任务保持pending或blocked，人工门控仍待后续明确批准。
+- 首轮仅执行P000、B1a的F001–F006及V-B1a验证；B1b后续确认与完成记录见第9节，未执行B2a及后续批次、DDL或环境变更。
+
+## 8. B1a执行记录（2026-11-09）
+
+用户已确认生成预览：“确认预览并执行”。执行基线HEAD为`12745a285d36869f2005d9f4ffdada93351ec1e4`，工作树初始干净，45处源码引用指纹均未变。
+
+| 任务 | 当前状态 | 实际结果 |
+|---|---|---|
+| P000 | completed | 记录执行基线、引用指纹与授权边界 |
+| F001 | completed | `/app`命名空间选择会员域；仅精确商品GET公开，删除失效旧商品公开地址 |
+| F002 | completed | 新地址、错方法、近似路径、非法ID与伪造头回归 |
+| F003 | completed | 真实JWT验证新路径的身份域互斥，后台宽泛白名单不能绕过会员鉴权 |
+| F004 | completed | 生产YAML路由谓词与AuthFilter联合契约，覆盖四类公开读及十类会员读写 |
+| F005 | completed | GET `/app/comments`、POST `/mall/app/comments`分离 |
+| F006 | completed | 分别断言读写URL/方法/令牌，未登录可读而不可投稿 |
+| V-B1a | completed | 网关365项、小程序182项全部通过；架构与JS格式、差异空白检查通过 |
+
+- 证据：[执行基线](evidence/execution-baseline.json)、[B1a自动化验证](evidence/b1a-validation.json)、[代码摘要](code-summary.md)。修复前先复现失败，再对最终代码执行完整回归。
+- 固定Java格式工具已核验SHA256，但运行被权限策略拒绝；手工保持局部风格，不声明Java自动格式检查通过。
+- B1a结束时106个文件任务：8 completed、64 pending、34 blocked；6个人工门控状态不变。generate总体仍为in_progress，不将B1a结果扩大为整个迁移已完成。
+- 未进行真实基础设施/微信工具/真机验收，未执行DDL、commit、push或修改索引。
+
+## 9. B1b执行范围补充（2026-11-09）
+
+用户已确认35文件生成预览：“确认并执行”。范围为F007–F037及以下4个必要配套文件，V-B1b在全部前置实际完成后验证；B2a及后续批次不在本轮执行范围。
+
+| 任务 | 文件 | 操作 | 依赖 | 完成条件 |
+|---|---|---|---|---|
+| B1b-T01 | `lemnt-server/lemnt-order/lemnt-order-application/src/test/java/com/lemnt/order/application/event/PaySuccessEventHandlerTest.java` | 修改 | F019、F022 | 适配解析端口注入，保留原支付业务断言 |
+| B1b-T02 | `lemnt-server/lemnt-pay/lemnt-pay-start/src/test/java/com/lemnt/pay/start/event/CashPaymentPersistenceTest.java` | 修改 | F026、F028 | 适配关单构造器，保留回滚、渠道失败及幂等断言 |
+| B1b-T03 | `lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java` | 修改 | F032、F034 | 适配会员事件构造器，保留原权益事务回归 |
+| B1b-T04 | `lemnt-server/lemnt-member/lemnt-member-infrastructure/pom.xml` | 修改 | V-B1a | 仅补映射测试所需test依赖，不新增运行时依赖 |
+
+F033依赖追加B1b-T04，V-B1b依赖追加全部4项；共110个文件任务，拓扑图已校验无环、无缺失。B1a成果按指纹保留，写入前状态及文件哈希见`evidence/b1b-execution-baseline.json`。本批仍不改变JSON协议、Topic、事务、inbox幂等键、冻结业务规则或消息表，不执行DDL、提交或修改索引。
+
+### B1b完成记录
+
+- F007–F037、B1b-T01–T04及V-B1b共36项已完成，35个代码/测试/POM/脚本文件全部落地。4个application共6处外部Client生产声明移除，原本服务Client和test scope依赖保留。
+- 四域映射测试26项通过；全服务Reactor执行`clean test`，1338项零失败、错误、跳过；脚本33项、小程序182项通过。新增版本/类型拒绝测试在解析及消费登记之前生效，原回滚、重复和乱序业务测试保留。
+- 生产源码与POM双门禁零违规；逐事件字段名/顺序与真实Client协议一致，事务注解、消费键与原payload路径保持。B1a指纹、HEAD与索引未变。
+- 证据：[B1b验证](evidence/b1b-validation.json)、[代码摘要](code-summary.md)。固定Java格式工具此前被权限策略拦截，本批未绕过或重试，自动AOSP格式验证仍未完成。
+- 当前110个文件任务：44 completed、32 pending、34 blocked；6个人工门控保持原状态。generate总体仍为in_progress，B2a及后续批次和真实环境/微信/渠道验收未执行。
+
+## 10. 基线对齐与运行验收预检（2026-11-09）
+
+- 本轮按“对齐迁移基线与运行验收”执行现有成果复核和只读环境预检，不扩展B2a业务实现或未来人工门控。
+- B1a/B1b验证证据共42条文件指纹与当前工作区一致；HEAD仍为`12745a285d36869f2005d9f4ffdada93351ec1e4`。上游三个参考目录的全量源码语义和指纹不在本轮重新核验范围，不能据此宣称全部源能力已迁移。
+- 修正design/decision-log中“待计划确认”“未实施”“当前进入cs-task”等当前态歧义，保留2026-11-06设计快照与历史测试事实。
+- E001 completed：新增[只读环境预检](local-environment-preflight.md)。默认Java11，已安装Java17；初检Docker不可达，复核已见MySQL/Redis/Nacos容器和端口，RocketMQ及业务服务未见监听。独立空库、namespace与渠道仍未核实。
+- E002 completed：更新[运行验收方案](local-acceptance.md)，按实际代码区分两套Nacos入口及服务级数据库变量，补充启动与回退边界；文档完成不代表环境已获授权或就绪。
+- 当前110个任务节点：**46 completed、30 pending、34 blocked**；6个人工门控仍全部awaiting_future_approval。generate继续in_progress，E003–E006不变，未执行DDL、配置发布、服务启动、真实资金操作或Git提交。

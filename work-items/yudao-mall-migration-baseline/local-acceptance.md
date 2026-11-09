@@ -1,6 +1,6 @@
 # 本地隔离运行与验收方案
 
-> 2026-11-06；设计资料，**以下尚未执行**。不以本文存在证明环境已安装、已连通或业务已跑通。
+> 2026-11-06设计方案；2026-11-09补充[只读环境预检](local-environment-preflight.md)。初检Docker不可达，复核时MySQL/Redis/Nacos容器及端口已出现；但隔离资源及操作范围尚未批准，RocketMQ/业务服务未见监听。**本次未执行基础设施准备、服务启动和真实业务验收**。自动化复核结果另存evidence，不以测试通过证明业务已跑通。
 > 此方案只针对当前lemnt-cloud；不运行本地芋道参考源码的构建、安装脚本或SQL。
 
 ## 1. 环境门控
@@ -11,10 +11,10 @@
 
 | 组件 | 隔离要求 | 本阶段状态 |
 |---|---|---|
-| MySQL | 独立空库；各服务数据源独立，不混库掩盖跨域访问 | 未检查、未建库、未执行DDL |
-| Redis | 专用实例或确认过隔离策略，避免污染现有会话/结算键 | 未检查 |
-| Nacos | 当前兼容版本、独立namespace/group；数据ID与实际启动导入一致 | 未检查、未发布 |
-| RocketMQ | 与当前客户端匹配；确认普通/事务消息、Topic/组/权限及回查配置 | 未检查、未启动或创建Topic |
+| MySQL | 独立空库；各服务数据源独立，不混库掩盖跨域访问 | 复核已见mysql8容器和3306监听；实际版本/独立空库未核实，未建库、未执行DDL |
+| Redis | 专用实例或确认过隔离策略，避免污染现有会话/结算键 | 复核已见redis7容器和6379监听；实际版本/隔离策略未核实 |
+| Nacos | 当前兼容版本、独立namespace/group；数据ID与实际启动导入一致 | 复核已见Nacos v3.2.1镜像及8848/9848监听；实际健康/空间未核实，未发布 |
+| RocketMQ | 与当前客户端匹配；确认普通/事务消息、Topic/组/权限及回查配置 | 9876/10911未见监听；版本/订阅未核实，未启动或创建Topic |
 | 文件/物流等 | 按实际能力需要明确本地替身与真实服务 | 未核实；替身不等于真实渠道验收 |
 | 微信工具/渠道 | AppID、允许访问域名、HTTPS、支付/退款沙箱、回调可达 | 待用户提供或确认条件 |
 
@@ -25,8 +25,8 @@
 | 类别 | 项 | 处理 |
 |---|---|---|
 | 运行时 | Java17、项目Maven/Node工具链 | 依据当前pom/package，不升级来解决迁移逻辑 |
-| 数据源 | PRODUCT/PROMOTION/ORDER/PAY/MEMBER_DB_URL、DB_USERNAME、DB_PASSWORD | 各服务模板对应独立空库；auth/system实际配置另核对 |
-| 注册配置 | NACOS_SERVER_ADDR、NACOS_NAMESPACE、NACOS_GROUP、凭据 | 所有服务与网关同一验收空间；检查网关profile占位符和服务env命名是否一致 |
+| 数据源 | 四个拆分服务分别使用`{PRODUCT\|PROMOTION\|ORDER\|PAY}_DB_URL`、`{服务}_DB_USERNAME`、`{服务}_DB_PASSWORD` | 对应独立空库；member/auth/system实际配置另核对，不假定通用DB_USERNAME生效 |
+| 注册配置 | 拆分服务使用NACOS_SERVER_ADDR/NACOS_NAMESPACE/NACOS_GROUP；gateway/auth/system/member使用NACOS_HOST/NACOS_PORT、构建profile namespace及DEFAULT_GROUP | 两套入口必须显式对齐同一批准实例/隔离空间；仅设置NACOS_NAMESPACE不能覆盖所有服务，详见只读预检 |
 | Dubbo | 服务协议端口、注册namespace/group | 使用现有服务端口变量，避免重复占用 |
 | 安全 | SECURITY_TOKEN_SECRET等 | 遵守既有HS512长度约束；auth/gateway同一安全配置；不记录值 |
 | MQ | ROCKETMQ_NAME_SERVER、生产者组、Topic/consumer-group | 不仅配置连接，还要核对事务监听器/回查与订阅 |

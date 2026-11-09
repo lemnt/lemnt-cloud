@@ -1,0 +1,211 @@
+{
+  "capturedAt": "2026-11-09T11:50:31.493204+08:00",
+  "login": "passed_using_project_configured_defaults",
+  "namespaces": [
+    {
+      "namespace": "public",
+      "namespaceShowName": "public",
+      "namespaceDesc": "Default Namespace",
+      "quota": 200,
+      "configCount": 1903,
+      "type": 0
+    },
+    {
+      "namespace": "dev",
+      "namespaceShowName": "dev",
+      "namespaceDesc": "开发",
+      "quota": 200,
+      "configCount": 84,
+      "type": 1
+    },
+    {
+      "namespace": "lemnt",
+      "namespaceShowName": "lemnt",
+      "namespaceDesc": "lemnt",
+      "quota": 200,
+      "configCount": 5,
+      "type": 1
+    }
+  ],
+  "configs": [
+    {
+      "namespaceId": "dev",
+      "dataId": "lemnt-system.yaml",
+      "groupName": "DEFAULT_GROUP",
+      "connectionFields": [
+        {
+          "path": "spring.datasource.dynamic.datasource.master.url",
+          "value": "jdbc:mysql://127.0.0.1:3306/lemnt_system?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8"
+        },
+        {
+          "path": "spring.datasource.dynamic.datasource.master.username",
+          "value": "root"
+        },
+        {
+          "path": "spring.datasource.dynamic.datasource.master.password",
+          "value": "<configured>"
+        }
+      ],
+      "contentRead": true
+    },
+    {
+      "namespaceId": "dev",
+      "dataId": "lemnt-common.yaml",
+      "groupName": "DEFAULT_GROUP",
+      "connectionFields": [
+        {
+          "path": "spring.redis.host",
+          "value": "127.0.0.1"
+        },
+        {
+          "path": "spring.redis.port",
+          "value": "6379"
+        },
+        {
+          "path": "spring.redis.password",
+          "value": "<configured>"
+        },
+        {
+          "path": "spring.redis.database",
+          "value": "0"
+        },
+        {
+          "path": "spring.data.redis.host",
+          "value": "127.0.0.1"
+        },
+        {
+          "path": "spring.data.redis.password",
+          "value": "<configured>"
+        },
+        {
+          "path": "spring.data.redis.port",
+          "value": "6379"
+        },
+        {
+          "path": "spring.data.redis.database",
+          "value": "0"
+        },
+        {
+          "path": "rocketmq.name-server",
+          "value": "192.168.150.240:9876"
+        },
+        {
+          "path": "rocketmq.producer.group",
+          "value": "lemnt-producer-group"
+        },
+        {
+          "path": "rocketmq.consumer.group",
+          "value": "lemnt-consumer-group"
+        }
+      ],
+      "contentRead": true
+    },
+    {
+      "namespaceId": "dev",
+      "dataId": "lemnt-auth.yaml",
+      "groupName": "DEFAULT_GROUP",
+      "connectionFields": [],
+      "contentRead": true
+    },
+    {
+      "namespaceId": "dev",
+      "dataId": "lemnt-gateway.yaml",
+      "groupName": "DEFAULT_GROUP",
+      "connectionFields": [],
+      "contentRead": true
+    },
+    {
+      "namespaceId": "dev",
+      "dataId": "lemnt-member.yaml",
+      "groupName": "DEFAULT_GROUP",
+      "connectionFields": [
+        {
+          "path": "spring.datasource.dynamic.datasource.master.url",
+          "value": "jdbc:mysql://127.0.0.1:3306/lemnt_member?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true"
+        },
+        {
+          "path": "spring.datasource.dynamic.datasource.master.username",
+          "value": "root"
+        },
+        {
+          "path": "spring.datasource.dynamic.datasource.master.password",
+          "value": "<configured>"
+        }
+      ],
+      "contentRead": true
+    },
+    {
+      "namespaceId": "lemnt",
+      "dataId": "lemnt-system.yaml",
+      "groupName": "DEFAULT_GROUP",
+      "connectionFields": [
+        {
+          "path": "spring.datasource.dynamic.datasource.master.url",
+          "value": "jdbc:mysql://localhost:3306/ad_system?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8"
+        },
+        {
+          "path": "spring.datasource.dynamic.datasource.master.username",
+          "value": "root"
+        },
+        {
+          "path": "spring.datasource.dynamic.datasource.master.password",
+          "value": "<configured>"
+        }
+      ],
+      "contentRead": true
+    },
+    {
+      "namespaceId": "lemnt",
+      "dataId": "lemnt-common.yaml",
+      "groupName": "DEFAULT_GROUP",
+      "connectionFields": [
+        {
+          "path": "spring.data.redis.host",
+          "value": "127.0.0.1"
+        },
+        {
+          "path": "spring.data.redis.password",
+          "value": "<configured>"
+        },
+        {
+          "path": "spring.data.redis.port",
+          "value": "6379"
+        },
+        {
+          "path": "spring.data.redis.database",
+          "value": "0"
+        },
+        {
+          "path": "rocketmq.name-server",
+          "value": "192.168.1.240:9876"
+        },
+        {
+          "path": "rocketmq.producer.group",
+          "value": "lemnt-producer-group"
+        },
+        {
+          "path": "rocketmq.consumer.group",
+          "value": "lemnt-consumer-group"
+        }
+      ],
+      "contentRead": true
+    },
+    {
+      "namespaceId": "lemnt",
+      "dataId": "lemnt-auth.yaml",
+      "groupName": "DEFAULT_GROUP",
+      "connectionFields": [],
+      "contentRead": true
+    },
+    {
+      "namespaceId": "lemnt",
+      "dataId": "lemnt-gateway.yaml",
+      "groupName": "DEFAULT_GROUP",
+      "connectionFields": [],
+      "contentRead": true
+    }
+  ],
+  "readOnly": true,
+  "secretsRecorded": false,
+  "listCoverage": "First 100 metadata items per namespace only; not a complete inventory. Only target project config metadata retained."
+}

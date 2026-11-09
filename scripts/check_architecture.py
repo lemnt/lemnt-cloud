@@ -39,9 +39,24 @@ def qualified_type_references(text):
             yield match
 
 
+def module_of(path):
+    return path.as_posix().split('/src/main/')[0].split('/')[-1]
+
+
 def layer_of(path):
-    before = path.as_posix().split('/src/main/')[0]
-    return before.split('/')[-1].split('-')[-1]
+    return module_of(path).split('-')[-1]
+
+
+def context_of(module):
+    name, _, layer = module.rpartition('-')
+    return name if layer in LAYERS else module
+
+
+def external_client_dependency(source, target):
+    return (source.split('-')[-1] != 'infrastructure'
+            and target.endswith('-client')
+            and not target.startswith('lemnt-common-')
+            and context_of(source) != context_of(target))
 
 
 def record_components(text, masked):
@@ -73,10 +88,21 @@ def scan(root):
                      if '/src/main/java/' in path.as_posix() and 'target' not in path.parts)
     contents = {path: path.read_text() for path in sorted(files)}
     classes = {}
+    class_modules = {}
     for path, text in contents.items():
         package = re.search(r'\bpackage\s+([\w.]+)\s*;', mask_java(text))
         if package:
-            classes[package.group(1) + '.' + path.stem] = layer_of(path)
+            name = package.group(1) + '.' + path.stem
+            classes[name] = layer_of(path)
+            class_modules[name] = module_of(path)
+
+    def reference_classes(name):
+        if name.endswith('.*'):
+            prefix = name[:-2]
+            return [cls for cls in classes if cls == prefix or cls.startswith(prefix + '.')]
+        while name and name not in classes:
+            name = name.rpartition('.')[0]
+        return [name] if name else []
 
     def issue(rule, path, offset, detail):
         text = contents.get(path, '')
@@ -88,17 +114,12 @@ def scan(root):
         masked = mask_java(text)
         for match in IMPORT.finditer(masked):
             name = match.group(1)
-            targets = []
-            if name.endswith('.*'):
-                targets = [target for cls, target in classes.items() if cls.startswith(name[:-1])]
-            else:
-                cls = name
-                while cls and cls not in classes:
-                    cls = cls.rpartition('.')[0]
-                if cls:
-                    targets = [classes[cls]]
-            if any(target in FORBIDDEN.get(layer, set()) for target in targets):
+            targets = reference_classes(name)
+            if any(classes[target] in FORBIDDEN.get(layer, set()) for target in targets):
                 issue('layer-import', path, match.start(), name)
+            if any(external_client_dependency(module_of(path), class_modules[target])
+                   for target in targets):
+                issue('external-client-import', path, match.start(), name)
             if layer == 'domain' and not name.startswith(('java.', 'com.lemnt.', 'lombok.')):
                 issue('domain-purity', path, match.start(), name)
             if layer == 'application' and name.startswith((
@@ -107,8 +128,13 @@ def scan(root):
                     'io.swagger.')):
                 issue('application-infrastructure', path, match.start(), name)
             if layer == 'adapter' and ('/req/' in path.as_posix() or '/res/' in path.as_posix()):
-                if any(target in {'domain', 'application', 'infrastructure'} for target in targets):
+                if any(classes[target] in {'domain', 'application', 'infrastructure'} for target in targets):
                     issue('http-model-boundary', path, match.start(), name)
+        for match in qualified_type_references(text):
+            targets = reference_classes(re.sub(r'\s+', '', match.group()))
+            if any(external_client_dependency(module_of(path), class_modules[target])
+                   for target in targets):
+                issue('external-client-import', path, match.start(), match.group())
         if layer == 'infrastructure':
             for match in re.finditer(r'@(?:org\.apache\.ibatis\.annotations\.)?(?:Select|Insert|Update|Delete)(?:Provider)?\s*\(', masked):
                 issue('sql-annotation', path, match.start(), 'SQL须放在Mapper XML')
@@ -173,6 +199,8 @@ def scan(root):
             dependencies.append(name)
             if name.split('-')[-1] in FORBIDDEN.get(layer, set()):
                 issue('pom-layer', path, 0, artifact + ' -> ' + name)
+            if external_client_dependency(artifact, name):
+                issue('pom-external-client', path, 0, artifact + ' -> ' + name)
         graph[artifact] = dependencies
     visited = set()
 

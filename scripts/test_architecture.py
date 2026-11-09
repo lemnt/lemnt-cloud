@@ -65,6 +65,73 @@ public record PageReq(@Size(max=9) List<@Size(max=20) String> ids) {}''')
         self.assertIn('pom-layer', self.rules())
         path.write_text(pom % '<scope>test</scope>')
         self.assertNotIn('pom-layer', self.rules())
+    def external_client(self):
+        path = self.root / 'lemnt-server/lemnt-remote/lemnt-remote-client/src/main/java/Event.java'
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text('package remote.api; public record Event(String orderNo) {}')
+
+    def test_external_client_import_is_only_allowed_in_infrastructure(self):
+        self.external_client()
+        for layer in ('application', 'domain', 'adapter', 'client', 'start'):
+            with self.subTest(layer=layer):
+                self.java(layer, 'Use', 'package sample;\nimport remote.api.Event;\nclass Use {}')
+                findings = scan(self.root)['violations']
+                self.assertTrue(any(f['rule'] == 'external-client-import'
+                                    and f'lemnt-demo-{layer}/' in f['path'] for f in findings))
+        self.java('infrastructure', 'Use', 'package sample;\nimport remote.api.Event;\nclass Use {}')
+        self.assertFalse(any(f['rule'] == 'external-client-import'
+                             and 'lemnt-demo-infrastructure/' in f['path']
+                             for f in scan(self.root)['violations']))
+
+    def test_external_client_wildcard_static_and_nested_imports_are_checked(self):
+        self.external_client()
+        for statement in ('remote.api.*', 'static remote.api.Event.*',
+                          'static remote.api.Event.VALUE', 'remote.api.Event.Nested'):
+            with self.subTest(statement=statement):
+                self.java('application', 'Use', f'package sample;\nimport {statement};\nclass Use {{}}')
+                self.assertIn('external-client-import', self.rules())
+
+    def test_own_and_common_client_and_test_source_remain_allowed(self):
+        self.java('client', 'OwnClient', 'package sample.api; public interface OwnClient {}')
+        common = self.root / 'lemnt-common/lemnt-common-client/src/main/java/Envelope.java'
+        common.parent.mkdir(parents=True)
+        common.write_text('package common.api; public record Envelope(String payload) {}')
+        self.java('application', 'Use', 'package sample;\nimport sample.api.OwnClient;\nimport common.api.Envelope;\nclass Use {}')
+        self.external_client()
+        test = self.root / 'lemnt-server/lemnt-demo/lemnt-demo-application/src/test/java/UseTest.java'
+        test.parent.mkdir(parents=True)
+        test.write_text('package sample;\nimport remote.api.Event;\nclass UseTest {}')
+        self.assertEqual([], self.rules())
+
+    def test_fully_qualified_external_client_reference_is_also_checked(self):
+        self.external_client()
+        self.java('application', 'Use', 'package sample; class Use { remote.api.Event event; }')
+        self.assertIn('external-client-import', self.rules())
+
+    def test_external_client_production_pom_scopes_are_rejected(self):
+        path = self.root / 'lemnt-server/lemnt-demo/lemnt-demo-application/pom.xml'
+        path.parent.mkdir(parents=True)
+        pom = '''<project xmlns="http://maven.apache.org/POM/4.0.0"><artifactId>lemnt-demo-application</artifactId>
+<dependencies><dependency><groupId>com.lemnt</groupId><artifactId>lemnt-remote-client</artifactId>%s</dependency></dependencies></project>'''
+        for scope in ('', '<scope>compile</scope>', '<scope>provided</scope>',
+                      '<scope>runtime</scope>', '<optional>true</optional>'):
+            with self.subTest(scope=scope):
+                path.write_text(pom % scope)
+                self.assertIn('pom-external-client', self.rules())
+        path.write_text(pom % '<scope>test</scope>')
+        self.assertEqual([], self.rules())
+
+    def test_own_common_and_infrastructure_client_pom_dependencies_remain_allowed(self):
+        pom = '''<project xmlns="http://maven.apache.org/POM/4.0.0"><artifactId>lemnt-demo-%s</artifactId>
+<dependencies><dependency><groupId>com.lemnt</groupId><artifactId>%s</artifactId></dependency></dependencies></project>'''
+        for layer, dependency in (('application', 'lemnt-demo-client'),
+                                  ('domain', 'lemnt-demo-client'),
+                                  ('application', 'lemnt-common-client'),
+                                  ('infrastructure', 'lemnt-remote-client')):
+            path = self.root / f'lemnt-server/lemnt-demo/lemnt-demo-{layer}/pom.xml'
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(pom % (layer, dependency))
+        self.assertEqual([], self.rules())
 
 
 if __name__ == '__main__':

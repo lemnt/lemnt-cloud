@@ -1,0 +1,270 @@
+{
+  "capturedAt": "2026-11-09T11:06:49.757875+08:00",
+  "head": "12745a285d36869f2005d9f4ffdada93351ec1e4",
+  "workingTreeBefore": " M lemnt-miniapp/services/comments.js\n M lemnt-miniapp/tests/comments.test.cjs\n M lemnt-server/lemnt-gateway/src/main/java/com/lemnt/gateway/filter/AuthFilter.java\n M lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterAppRoutesTest.java\n M lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterDomainTest.java\n M work-items/yudao-mall-migration-baseline/evidence/tasks.json\n M work-items/yudao-mall-migration-baseline/state.json\n M work-items/yudao-mall-migration-baseline/tasks.md\n?? lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/ProductAppRouteContractTest.java\n?? work-items/yudao-mall-migration-baseline/code-summary.md\n?? work-items/yudao-mall-migration-baseline/evidence/b1a-validation.json\n?? work-items/yudao-mall-migration-baseline/evidence/execution-baseline.json\n",
+  "approval": "确认并执行",
+  "scope": [
+    "F007",
+    "F008",
+    "F009",
+    "F010",
+    "F011",
+    "F012",
+    "F013",
+    "F014",
+    "F015",
+    "F016",
+    "F017",
+    "F018",
+    "F019",
+    "F020",
+    "F021",
+    "F022",
+    "F023",
+    "F024",
+    "F025",
+    "F026",
+    "F027",
+    "F028",
+    "F029",
+    "F030",
+    "F031",
+    "F032",
+    "F033",
+    "F034",
+    "F035",
+    "F036",
+    "F037",
+    "V-B1b",
+    "B1b-T01",
+    "B1b-T02",
+    "B1b-T03",
+    "B1b-T04"
+  ],
+  "files": [
+    {
+      "taskId": "F007",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-domain/src/main/java/com/lemnt/promotion/domain/event/model/InboundEventFacts.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F008",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-domain/src/main/java/com/lemnt/promotion/domain/event/gateway/InboundEventGateway.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F009",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/src/main/java/com/lemnt/promotion/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F010",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/src/test/java/com/lemnt/promotion/infrastructure/event/InboundEventGatewayImplTest.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F011",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/AfterSaleCompletedEventHandler.java",
+      "exists": true,
+      "sha256Before": "941961dadb41597d35fbded9f426dffadf50145d5b28aa1dcb5161a9b4f3bdcb"
+    },
+    {
+      "taskId": "F012",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderClosedEventHandler.java",
+      "exists": true,
+      "sha256Before": "d62cd406bcbb5624f36f920f34c57cbf06434274786f162ae6d10ff3c2d5a6c6"
+    },
+    {
+      "taskId": "F013",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderCompletedEventHandler.java",
+      "exists": true,
+      "sha256Before": "683b3d8f86620cb5985670559d5b27c2c113205dcc79d071871e8a16fdeaf119"
+    },
+    {
+      "taskId": "F014",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderPaidEventHandler.java",
+      "exists": true,
+      "sha256Before": "3a760db7a2d58968d2b6b7702434ea67c764a8cae2e2adee124e19854b66e8ff"
+    },
+    {
+      "taskId": "F015",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/StockPreReservedEventHandler.java",
+      "exists": true,
+      "sha256Before": "e4b418f2ae873d29d6be49c55488664bfb4903f2f6a26c0ea02687b6d97bb89c"
+    },
+    {
+      "taskId": "F016",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/pom.xml",
+      "exists": true,
+      "sha256Before": "624fb2ca76e85c2820219cd9484582f9ce32e74b6c416607054e852e002a889a"
+    },
+    {
+      "taskId": "F017",
+      "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/event/model/InboundEventFacts.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F018",
+      "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/event/gateway/InboundEventGateway.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F019",
+      "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F020",
+      "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/test/java/com/lemnt/order/infrastructure/event/InboundEventGatewayImplTest.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F021",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/event/service/PayRefundSuccessEventHandler.java",
+      "exists": true,
+      "sha256Before": "3ee3c769ddf09bf57636f38130f4907ee0bfe7c806b4ed68f8a76ae706c29af9"
+    },
+    {
+      "taskId": "F022",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/event/service/PaySuccessEventHandler.java",
+      "exists": true,
+      "sha256Before": "07b4acc9a79e44d8c44a4756790da9d1bc397d1592f72307213cbea135bc4403"
+    },
+    {
+      "taskId": "F023",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/pom.xml",
+      "exists": true,
+      "sha256Before": "d90be10ae9252093f2ec40039150fd65dc81395f49c6c816cc108a6e0ebf7016"
+    },
+    {
+      "taskId": "F024",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/src/main/java/com/lemnt/pay/domain/event/model/InboundEventFacts.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F025",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/src/main/java/com/lemnt/pay/domain/event/gateway/InboundEventGateway.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F026",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/main/java/com/lemnt/pay/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F027",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/test/java/com/lemnt/pay/infrastructure/event/InboundEventGatewayImplTest.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F028",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-application/src/main/java/com/lemnt/pay/application/event/service/OrderClosedEventHandler.java",
+      "exists": true,
+      "sha256Before": "e739899eeb069827190b9e037fb506f11baaa2029de535ccb5a3013cfd045367"
+    },
+    {
+      "taskId": "F029",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-application/pom.xml",
+      "exists": true,
+      "sha256Before": "f0b1ffe4778ac79a64b4be0ea8e4f7f113626b8e9f0cbc241735fd8d4637c288"
+    },
+    {
+      "taskId": "F030",
+      "path": "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/event/model/InboundEventFacts.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F031",
+      "path": "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/event/gateway/InboundEventGateway.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F032",
+      "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F033",
+      "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/test/java/com/lemnt/member/infrastructure/event/InboundEventGatewayImplTest.java",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F034",
+      "path": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/event/service/OrderBenefitsEventHandler.java",
+      "exists": true,
+      "sha256Before": "4a7519ad369ec84d2c94c6325f81ea0b9b4a376f3001924382e0fc7ce415d809"
+    },
+    {
+      "taskId": "F035",
+      "path": "lemnt-server/lemnt-member/lemnt-member-application/pom.xml",
+      "exists": true,
+      "sha256Before": "4177b54c7ef509ecbb362f883aae31e0cfb14767b1b225a71127f3e1c1115811"
+    },
+    {
+      "taskId": "F036",
+      "path": "scripts/check_architecture.py",
+      "exists": true,
+      "sha256Before": "b3e34a35dc8a44190cc29f993ef5c10b93e97e7a8456bbd59d2a2be71daeb51b"
+    },
+    {
+      "taskId": "F037",
+      "path": "scripts/test_architecture.py",
+      "exists": true,
+      "sha256Before": "950d3d76123fd153411f8ff05d50f61318b68560c8359b2d5a08ad95f4c4a487"
+    },
+    {
+      "taskId": "V-B1b",
+      "path": "work-items/yudao-mall-migration-baseline/evidence/b1b-validation.json",
+      "exists": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "B1b-T01",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/src/test/java/com/lemnt/order/application/event/PaySuccessEventHandlerTest.java",
+      "exists": true,
+      "sha256Before": "0815df92affc2baebfbf3c53ced2a34cb4a50fbbca6d904610e4c4316546a158"
+    },
+    {
+      "taskId": "B1b-T02",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-start/src/test/java/com/lemnt/pay/start/event/CashPaymentPersistenceTest.java",
+      "exists": true,
+      "sha256Before": "2202097dd1d0375df7f104d0801f1840a23d7b689806a103431c8887003e8da0"
+    },
+    {
+      "taskId": "B1b-T03",
+      "path": "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java",
+      "exists": true,
+      "sha256Before": "c438a4992b7cdf5084639d7e1539d5fe1d50c9b837c3bf2c173f38aca29588de"
+    },
+    {
+      "taskId": "B1b-T04",
+      "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/pom.xml",
+      "exists": true,
+      "sha256Before": "ecfec3845b36da1082db716d94b665fcca85ed50448974a88f4ab95388bb6deb"
+    }
+  ],
+  "authorization": {
+    "commit": false,
+    "push": false,
+    "indexChanges": false,
+    "ddl": false,
+    "productionConfiguration": false,
+    "messagingRedesign": false
+  }
+}

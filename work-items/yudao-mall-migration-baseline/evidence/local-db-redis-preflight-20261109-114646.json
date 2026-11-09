@@ -1,0 +1,33 @@
+{
+  "capturedAt": "2026-11-09T11:46:46.114583+08:00",
+  "authorizationQuote": "允许使用本地docker启动的数据库和redis",
+  "authorizationScope": "Use local Docker database and Redis; no implicit DDL, data deletion, Redis flush, Nacos/MQ changes or payment authorization",
+  "checks": [
+    {
+      "command": "docker exec mysql8 mysqladmin --protocol=tcp --host=127.0.0.1 --user=root ping",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "\u0007mysqladmin: connect to server at '127.0.0.1' failed\nerror: 'Access denied for user 'root'@'127.0.0.1' (using password: NO)'"
+    },
+    {
+      "command": "docker exec mysql8 mysql --protocol=tcp --host=127.0.0.1 --user=root --batch --skip-column-names --execute=SELECT 1",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "ERROR 1045 (28000): Access denied for user 'root'@'127.0.0.1' (using password: NO)"
+    },
+    {
+      "command": "docker exec redis7 redis-cli PING",
+      "exitCode": 0,
+      "stdout": "NOAUTH Authentication required.",
+      "stderr": ""
+    }
+  ],
+  "hostPorts": {
+    "3306": "tcp_connected",
+    "6379": "tcp_connected"
+  },
+  "ddlExecuted": false,
+  "businessDataRead": false,
+  "credentialsReadOrRecorded": false,
+  "runtimeAcceptance": "not_completed"
+}

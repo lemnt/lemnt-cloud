@@ -1,0 +1,25 @@
+{
+  "capturedAt": "2026-11-09T11:41:52.444702+08:00",
+  "checks": [
+    {
+      "command": "python3 scripts/check_architecture.py",
+      "exitCode": 0,
+      "output": "{\"javaMainFiles\": 3072, \"mapperXmlFiles\": 67, \"pomFiles\": 87, \"byLayer\": {\"adapter\": 865, \"application\": 1032, \"async\": 4, \"client\": 91, \"core\": 19, \"datascope\": 4, \"datasource\": 6, \"domain\": 416, \"dubbo\": 2, \"excel\": 25, \"gateway\": 27, \"infrastructure\": 433, \"job\": 2, \"kafka\": 6, \"lock\": 2, \"log\": 8, \"metrics\": 3, \"mq\": 4, \"mybatis\": 8, \"oss\": 10, \"redis\": 12, \"sdk\": 17, \"security\": 33, \"sensitive\": 6, \"snowflake\": 5, \"sql\": 3, \"start\": 27, \"swagger\": 2}}\n规范违规：0\n"
+    },
+    {
+      "command": "python3 scripts/check_module_split.py",
+      "exitCode": 0,
+      "output": "{\"modules\": [\"product\", \"promotion\", \"order\", \"pay\"], \"tablesByModule\": {\"product\": 11, \"promotion\": 23, \"order\": 23, \"pay\": 13}, \"totalTables\": 70}\n违规：0\n"
+    },
+    {
+      "command": "python3 -m unittest discover -s scripts -p test_*.py",
+      "exitCode": 0,
+      "output": ".................................\n----------------------------------------------------------------------\nRan 33 tests in 0.124s\n\nOK\n"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "output": ""
+    }
+  ]
+}

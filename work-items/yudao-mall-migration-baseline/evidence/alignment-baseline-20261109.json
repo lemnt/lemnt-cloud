@@ -1,0 +1,350 @@
+{
+  "capturedAt": "2026-11-09T11:42:47.803590+08:00",
+  "head": "12745a285d36869f2005d9f4ffdada93351ec1e4",
+  "scope": "Current B1a/B1b target-file fingerprints, task status and read-only local port preflight; not full upstream source audit",
+  "files": [
+    {
+      "evidence": "b1a-validation.json",
+      "path": "work-items/yudao-mall-migration-baseline/evidence/execution-baseline.json",
+      "expectedSha256": "62fa7fd99d98b7bca60c76f0c44ae5d837384927b18ee0747f619e75f674960c",
+      "actualSha256": "62fa7fd99d98b7bca60c76f0c44ae5d837384927b18ee0747f619e75f674960c",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1a-validation.json",
+      "path": "lemnt-server/lemnt-gateway/src/main/java/com/lemnt/gateway/filter/AuthFilter.java",
+      "expectedSha256": "f5110998b62712b721b97b3186cd5633a3b75245cc0292ba749d138f3a0e8c89",
+      "actualSha256": "f5110998b62712b721b97b3186cd5633a3b75245cc0292ba749d138f3a0e8c89",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1a-validation.json",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterAppRoutesTest.java",
+      "expectedSha256": "22ebeb9edaf6837ccbadc36c80d64d4b31f9021a27332c349c00d8500511ac2c",
+      "actualSha256": "22ebeb9edaf6837ccbadc36c80d64d4b31f9021a27332c349c00d8500511ac2c",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1a-validation.json",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterDomainTest.java",
+      "expectedSha256": "7099865546a2011fe949277f4d02638ef6f2a79de142cd1bfd70ad5687c76612",
+      "actualSha256": "7099865546a2011fe949277f4d02638ef6f2a79de142cd1bfd70ad5687c76612",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1a-validation.json",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/ProductAppRouteContractTest.java",
+      "expectedSha256": "ce70e1060a8d7d2f094c9ad2de449b78baf16fb9c1615d37ec285660ff5a7676",
+      "actualSha256": "ce70e1060a8d7d2f094c9ad2de449b78baf16fb9c1615d37ec285660ff5a7676",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1a-validation.json",
+      "path": "lemnt-miniapp/services/comments.js",
+      "expectedSha256": "44dbec1fa5a15ea970f5aec60ff25fd6b9abcb9ba9f6d411716accf43e2ade7e",
+      "actualSha256": "44dbec1fa5a15ea970f5aec60ff25fd6b9abcb9ba9f6d411716accf43e2ade7e",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1a-validation.json",
+      "path": "lemnt-miniapp/tests/comments.test.cjs",
+      "expectedSha256": "cc55ac9cb4bef17be455c26252190f02b713aa59d12b6118d2f47f82524adac6",
+      "actualSha256": "cc55ac9cb4bef17be455c26252190f02b713aa59d12b6118d2f47f82524adac6",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-domain/src/main/java/com/lemnt/promotion/domain/event/model/InboundEventFacts.java",
+      "expectedSha256": "c4ee936cecf5fb7a742ba89f59cfc187795db48a6d4d973b411e56dee96603a3",
+      "actualSha256": "c4ee936cecf5fb7a742ba89f59cfc187795db48a6d4d973b411e56dee96603a3",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-domain/src/main/java/com/lemnt/promotion/domain/event/gateway/InboundEventGateway.java",
+      "expectedSha256": "deb48c907ba485c523a7bc5c80a8b27301d60977d1d3be8ada42c7867a160b85",
+      "actualSha256": "deb48c907ba485c523a7bc5c80a8b27301d60977d1d3be8ada42c7867a160b85",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/src/main/java/com/lemnt/promotion/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "expectedSha256": "91be8b9def253a89a5db1fc4087b3ee23b3d90b33ff4aae1fb13957601c06ccb",
+      "actualSha256": "91be8b9def253a89a5db1fc4087b3ee23b3d90b33ff4aae1fb13957601c06ccb",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/src/test/java/com/lemnt/promotion/infrastructure/event/InboundEventGatewayImplTest.java",
+      "expectedSha256": "441ad22023b3ddc5a4c328c44906340b2a8a93b9aec1361dc16b2fbaf7095aaf",
+      "actualSha256": "441ad22023b3ddc5a4c328c44906340b2a8a93b9aec1361dc16b2fbaf7095aaf",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/AfterSaleCompletedEventHandler.java",
+      "expectedSha256": "61948252f05ac34a0efb1773b093d4530bbf813bda766d18b4f5b145367a9b11",
+      "actualSha256": "61948252f05ac34a0efb1773b093d4530bbf813bda766d18b4f5b145367a9b11",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderClosedEventHandler.java",
+      "expectedSha256": "eb5147f07da63d1873074c529e79179bf5ca950a255ccec7de07068980ac9839",
+      "actualSha256": "eb5147f07da63d1873074c529e79179bf5ca950a255ccec7de07068980ac9839",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderCompletedEventHandler.java",
+      "expectedSha256": "faa45d2844514a49ecd85593cbe942f073661e0a1482e5871f676f5efabb0b16",
+      "actualSha256": "faa45d2844514a49ecd85593cbe942f073661e0a1482e5871f676f5efabb0b16",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderPaidEventHandler.java",
+      "expectedSha256": "dad7dabdb506877aa06fb70b43f0c476d0d200aa697a6b3b6c99424382e12cf2",
+      "actualSha256": "dad7dabdb506877aa06fb70b43f0c476d0d200aa697a6b3b6c99424382e12cf2",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/StockPreReservedEventHandler.java",
+      "expectedSha256": "a851e560d7e636d4f0f11ee68112910d78a8a0b43782e5ff2acac2aba4dd83eb",
+      "actualSha256": "a851e560d7e636d4f0f11ee68112910d78a8a0b43782e5ff2acac2aba4dd83eb",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/pom.xml",
+      "expectedSha256": "5352ebf51d714460b7c2c6cee1dff616c0363bf170ad38c33c23f6b2a7770096",
+      "actualSha256": "5352ebf51d714460b7c2c6cee1dff616c0363bf170ad38c33c23f6b2a7770096",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/event/model/InboundEventFacts.java",
+      "expectedSha256": "0b46e620c3ae1e6409ec1f14262838cb9bdba749f8e00bf04843383f9d733658",
+      "actualSha256": "0b46e620c3ae1e6409ec1f14262838cb9bdba749f8e00bf04843383f9d733658",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/event/gateway/InboundEventGateway.java",
+      "expectedSha256": "56e5fb1e9be996d77acc0d8f47ebceae6011d2006b8bb016b832fcbf1b5ee310",
+      "actualSha256": "56e5fb1e9be996d77acc0d8f47ebceae6011d2006b8bb016b832fcbf1b5ee310",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "expectedSha256": "e74dd07f0c58bb3f92119c9d5dba5c7b2338da438b520ac8e63fd318432fbdfd",
+      "actualSha256": "e74dd07f0c58bb3f92119c9d5dba5c7b2338da438b520ac8e63fd318432fbdfd",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/test/java/com/lemnt/order/infrastructure/event/InboundEventGatewayImplTest.java",
+      "expectedSha256": "f49605f98fb7e536d5a32c4dd62008f35b4a6fafc796530841ccccdae193e0f1",
+      "actualSha256": "f49605f98fb7e536d5a32c4dd62008f35b4a6fafc796530841ccccdae193e0f1",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/event/service/PayRefundSuccessEventHandler.java",
+      "expectedSha256": "8392c07ec585ec98954f70a9d356f3d6aea3b3d4ee656289a227bb358319cc91",
+      "actualSha256": "8392c07ec585ec98954f70a9d356f3d6aea3b3d4ee656289a227bb358319cc91",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/event/service/PaySuccessEventHandler.java",
+      "expectedSha256": "e3aea96917a181c11fc716b96fa0b5a37b48d31298d5fd2e34de5970989e54f7",
+      "actualSha256": "e3aea96917a181c11fc716b96fa0b5a37b48d31298d5fd2e34de5970989e54f7",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/pom.xml",
+      "expectedSha256": "8dd7baa4e1886f8af8e531362366d9635146b39d85ad5ffb65f975b01c75b178",
+      "actualSha256": "8dd7baa4e1886f8af8e531362366d9635146b39d85ad5ffb65f975b01c75b178",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/src/main/java/com/lemnt/pay/domain/event/model/InboundEventFacts.java",
+      "expectedSha256": "3e5a2dbdb7810bc6d8a8bcc58dc976771633eaa0c837e259c77585e7e4b923b2",
+      "actualSha256": "3e5a2dbdb7810bc6d8a8bcc58dc976771633eaa0c837e259c77585e7e4b923b2",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/src/main/java/com/lemnt/pay/domain/event/gateway/InboundEventGateway.java",
+      "expectedSha256": "3b03aec6feb7d6c0bab38257485bac374e9878b76a7e93bc4d1874a46ad8c04d",
+      "actualSha256": "3b03aec6feb7d6c0bab38257485bac374e9878b76a7e93bc4d1874a46ad8c04d",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/main/java/com/lemnt/pay/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "expectedSha256": "e9b279b458e4e446b1956de73c5b9cd861f86ddc469205629e17c9d3a4fba471",
+      "actualSha256": "e9b279b458e4e446b1956de73c5b9cd861f86ddc469205629e17c9d3a4fba471",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/test/java/com/lemnt/pay/infrastructure/event/InboundEventGatewayImplTest.java",
+      "expectedSha256": "24e595800d3486f79a606a60183e98b41d9efad6422b44165cb26daaf81060ef",
+      "actualSha256": "24e595800d3486f79a606a60183e98b41d9efad6422b44165cb26daaf81060ef",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-application/src/main/java/com/lemnt/pay/application/event/service/OrderClosedEventHandler.java",
+      "expectedSha256": "0058e7e2719fe38befe7bca467b98afa5c915db954bea67c4f44961a0983a2da",
+      "actualSha256": "0058e7e2719fe38befe7bca467b98afa5c915db954bea67c4f44961a0983a2da",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-application/pom.xml",
+      "expectedSha256": "b27732d24526ed7c36ece952ef3d50470fc52d764ea00f1bffe31aa2062c88eb",
+      "actualSha256": "b27732d24526ed7c36ece952ef3d50470fc52d764ea00f1bffe31aa2062c88eb",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/event/model/InboundEventFacts.java",
+      "expectedSha256": "48d69327022762341bc0039b410f7e2ea86d579d3f70e95e60753f14f4938bde",
+      "actualSha256": "48d69327022762341bc0039b410f7e2ea86d579d3f70e95e60753f14f4938bde",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/event/gateway/InboundEventGateway.java",
+      "expectedSha256": "23fd0eed1a6f3003c25858781c99bb185fc43359750770f9e519945ecf88ad15",
+      "actualSha256": "23fd0eed1a6f3003c25858781c99bb185fc43359750770f9e519945ecf88ad15",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "expectedSha256": "e1ec0e09f43ebe7d6d242d5074b32af8d11a773deff56fd2e71e6ab74e8d5ca6",
+      "actualSha256": "e1ec0e09f43ebe7d6d242d5074b32af8d11a773deff56fd2e71e6ab74e8d5ca6",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/test/java/com/lemnt/member/infrastructure/event/InboundEventGatewayImplTest.java",
+      "expectedSha256": "bf16964e47fb0bc4590f6234e860dce95b134fc36cb2b82835578306a36a4a25",
+      "actualSha256": "bf16964e47fb0bc4590f6234e860dce95b134fc36cb2b82835578306a36a4a25",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/event/service/OrderBenefitsEventHandler.java",
+      "expectedSha256": "62b00acbdc4c1deb94869dcc0076d6d16a4927b93816cc7c41d0d3389489de07",
+      "actualSha256": "62b00acbdc4c1deb94869dcc0076d6d16a4927b93816cc7c41d0d3389489de07",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-member/lemnt-member-application/pom.xml",
+      "expectedSha256": "0f762e4ba43575e02d2867b37e1c61672269219a49a719482e9fd3b071e648b3",
+      "actualSha256": "0f762e4ba43575e02d2867b37e1c61672269219a49a719482e9fd3b071e648b3",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "scripts/check_architecture.py",
+      "expectedSha256": "abf94a3f5afe6b2a08c00a8cce840fa6807fc914222d425672281e56c125fb4b",
+      "actualSha256": "abf94a3f5afe6b2a08c00a8cce840fa6807fc914222d425672281e56c125fb4b",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "scripts/test_architecture.py",
+      "expectedSha256": "b6b549a58596511613feb2c6187b2356365a0b742407e7ace4f9dac1b61d573e",
+      "actualSha256": "b6b549a58596511613feb2c6187b2356365a0b742407e7ace4f9dac1b61d573e",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/src/test/java/com/lemnt/order/application/event/PaySuccessEventHandlerTest.java",
+      "expectedSha256": "65ed10e481d6cbced5f37380f4cbedaa381f9144a99d6212971fb4181f0e7cf4",
+      "actualSha256": "65ed10e481d6cbced5f37380f4cbedaa381f9144a99d6212971fb4181f0e7cf4",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-start/src/test/java/com/lemnt/pay/start/event/CashPaymentPersistenceTest.java",
+      "expectedSha256": "2de0a771e41eae977ad010c495e33df67d384bd5dc0c699b49921940a5993239",
+      "actualSha256": "2de0a771e41eae977ad010c495e33df67d384bd5dc0c699b49921940a5993239",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java",
+      "expectedSha256": "2d6648252a7686b6c8b817b4e276c1587d23546d53ff268cc76ec8fdc1f89717",
+      "actualSha256": "2d6648252a7686b6c8b817b4e276c1587d23546d53ff268cc76ec8fdc1f89717",
+      "unchanged": true
+    },
+    {
+      "evidence": "b1b-validation.json",
+      "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/pom.xml",
+      "expectedSha256": "4b78ad5460da4fdecb381ec10814e1c2b66b9afd61ca4fc36e01f49c05902fc5",
+      "actualSha256": "4b78ad5460da4fdecb381ec10814e1c2b66b9afd61ca4fc36e01f49c05902fc5",
+      "unchanged": true
+    }
+  ],
+  "fileFingerprintsUnchanged": true,
+  "taskCounts": {
+    "completed": 46,
+    "pending": 30,
+    "blocked": 34
+  },
+  "gates": {
+    "G-B2b": "awaiting_future_approval",
+    "G-B3": "awaiting_future_approval",
+    "G-B4": "awaiting_future_approval",
+    "G-ENV": "awaiting_future_approval",
+    "G-CORE": "awaiting_future_approval",
+    "G-ALL": "awaiting_future_approval"
+  },
+  "localListeningPorts": {
+    "3306": true,
+    "6379": true,
+    "8848": true,
+    "9848": true,
+    "9876": false,
+    "10911": false,
+    "8080": false,
+    "9100": false,
+    "9110": false,
+    "9140": false,
+    "9150": false,
+    "9160": false,
+    "9170": false,
+    "9200": false,
+    "5173": false
+  },
+  "portProbeExitCode": 0,
+  "runtimeAcceptance": {
+    "status": "blocked",
+    "reasons": [
+      "Docker initially inaccessible; later read-only probe found Docker 29.1.3 and mysql8/redis7/nacos-server containers, without isolation or health verification",
+      "MySQL/Redis/Nacos ports later observed; RocketMQ and application default ports still not listening; custom/remote endpoints not verified",
+      "G-ENV resource isolation and operation authorization not approved",
+      "Core flow requires B2a/B2b/B3 implementation and validation prerequisites"
+    ],
+    "databaseConnectionTested": false,
+    "middlewareStarted": false,
+    "servicesStarted": false,
+    "ddlExecuted": false,
+    "externalChannelTested": false
+  },
+  "upstreamSourceFingerprintRecheck": "not_run",
+  "javaFormatter": "not_run_prior_permission_policy_block_retained",
+  "indexDiff": ""
+}

@@ -1,6 +1,6 @@
 {
   "createdAt": "2026-11-06T09:36:04+08:00",
-  "status": "approved_task_breakdown_not_started",
+  "status": "B1a_B1b_E001_E002_completed_runtime_blocked",
   "approvedPlanOperationCount": 95,
   "fileTasks": [
     {
@@ -12,10 +12,12 @@
       "complexity": "★☆☆",
       "estimate": "10–20人工作业分钟",
       "dependencies": [],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "记录当前HEAD、工作树、源引用指纹、文件存在性与环境授权边界，不执行构建/部署",
-      "planIndex": null
+      "planIndex": null,
+      "completedAt": "2026-11-09T10:45:07.598170+08:00",
+      "executionEvidence": "evidence/execution-baseline.json"
     },
     {
       "id": "F001",
@@ -28,11 +30,13 @@
       "dependencies": [
         "P000"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "同步真实商品公开读/会员路径，保持身份头清理与令牌域隔离",
       "planIndex": 1,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T10:45:07.598170+08:00",
+      "executionEvidence": "evidence/b1a-validation.json"
     },
     {
       "id": "F002",
@@ -45,11 +49,13 @@
       "dependencies": [
         "F001"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "测试新路径、错方法、匿名、伪造头",
       "planIndex": 2,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T10:45:07.598170+08:00",
+      "executionEvidence": "evidence/b1a-validation.json"
     },
     {
       "id": "F003",
@@ -62,11 +68,13 @@
       "dependencies": [
         "F001"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "会员/管理员令牌互斥覆盖新路径",
       "planIndex": 3,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T10:45:07.598170+08:00",
+      "executionEvidence": "evidence/b1a-validation.json"
     },
     {
       "id": "F004",
@@ -81,11 +89,13 @@
         "F002",
         "F003"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "新增路由predicate与鉴权filter联合契约，避免只测其一",
       "planIndex": 4,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T10:45:07.598170+08:00",
+      "executionEvidence": "evidence/b1a-validation.json"
     },
     {
       "id": "F005",
@@ -98,11 +108,13 @@
       "dependencies": [
         "P000"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "按GET/POST选择product查询与order投稿地址",
       "planIndex": 5,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T10:45:07.598170+08:00",
+      "executionEvidence": "evidence/b1a-validation.json"
     },
     {
       "id": "F006",
@@ -115,11 +127,13 @@
       "dependencies": [
         "F005"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "分别断言读写URL、令牌和响应，不再只覆盖投稿",
       "planIndex": 6,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T10:45:07.598170+08:00",
+      "executionEvidence": "evidence/b1a-validation.json"
     },
     {
       "id": "F007",
@@ -132,11 +146,13 @@
       "dependencies": [
         "V-B1a"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "仅本上下文实际消费的typed records；字段映射见契约设计",
       "planIndex": 7,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F008",
@@ -149,11 +165,13 @@
       "dependencies": [
         "F007"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "声明payload到本域事实的typed解析方法，不引用外部Client",
       "planIndex": 8,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F009",
@@ -167,11 +185,13 @@
         "F007",
         "F008"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "使用外部协议类型解码并完整映射，保留版本与业务内容",
       "planIndex": 9,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F010",
@@ -184,11 +204,13 @@
       "dependencies": [
         "F009"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "验证各事件金额/积分/行/业务号映射与非法载荷",
       "planIndex": 10,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F011",
@@ -201,11 +223,13 @@
       "dependencies": [
         "F008"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
       "planIndex": 11,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F012",
@@ -218,11 +242,13 @@
       "dependencies": [
         "F008"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
       "planIndex": 12,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F013",
@@ -235,11 +261,13 @@
       "dependencies": [
         "F008"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
       "planIndex": 13,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F014",
@@ -252,11 +280,13 @@
       "dependencies": [
         "F008"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
       "planIndex": 14,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F015",
@@ -269,11 +299,13 @@
       "dependencies": [
         "F008"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
       "planIndex": 15,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F016",
@@ -291,11 +323,13 @@
         "F014",
         "F015"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "类型引用清零后删除本模块外部Client生产声明，保留本服务Client和test scope",
       "planIndex": 16,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F017",
@@ -308,11 +342,13 @@
       "dependencies": [
         "V-B1a"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "仅本上下文实际消费的typed records；字段映射见契约设计",
       "planIndex": 17,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F018",
@@ -325,11 +361,13 @@
       "dependencies": [
         "F017"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "声明payload到本域事实的typed解析方法，不引用外部Client",
       "planIndex": 18,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F019",
@@ -343,11 +381,13 @@
         "F017",
         "F018"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "使用外部协议类型解码并完整映射，保留版本与业务内容",
       "planIndex": 19,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F020",
@@ -360,11 +400,13 @@
       "dependencies": [
         "F019"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "验证各事件金额/积分/行/业务号映射与非法载荷",
       "planIndex": 20,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F021",
@@ -377,11 +419,13 @@
       "dependencies": [
         "F018"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
       "planIndex": 21,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F022",
@@ -394,11 +438,13 @@
       "dependencies": [
         "F018"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
       "planIndex": 22,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F023",
@@ -413,11 +459,13 @@
         "F021",
         "F022"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "类型引用清零后删除本模块外部Client生产声明，保留本服务Client和test scope",
       "planIndex": 23,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F024",
@@ -430,11 +478,13 @@
       "dependencies": [
         "V-B1a"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "仅本上下文实际消费的typed records；字段映射见契约设计",
       "planIndex": 24,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F025",
@@ -447,11 +497,13 @@
       "dependencies": [
         "F024"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "声明payload到本域事实的typed解析方法，不引用外部Client",
       "planIndex": 25,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F026",
@@ -465,11 +517,13 @@
         "F024",
         "F025"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "使用外部协议类型解码并完整映射，保留版本与业务内容",
       "planIndex": 26,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F027",
@@ -482,11 +536,13 @@
       "dependencies": [
         "F026"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "验证各事件金额/积分/行/业务号映射与非法载荷",
       "planIndex": 27,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F028",
@@ -499,11 +555,13 @@
       "dependencies": [
         "F025"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
       "planIndex": 28,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F029",
@@ -517,11 +575,13 @@
         "F027",
         "F028"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "类型引用清零后删除本模块外部Client生产声明，保留本服务Client和test scope",
       "planIndex": 29,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F030",
@@ -534,11 +594,13 @@
       "dependencies": [
         "V-B1a"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "仅本上下文实际消费的typed records；字段映射见契约设计",
       "planIndex": 30,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F031",
@@ -551,11 +613,13 @@
       "dependencies": [
         "F030"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "声明payload到本域事实的typed解析方法，不引用外部Client",
       "planIndex": 31,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F032",
@@ -569,11 +633,13 @@
         "F030",
         "F031"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "使用外部协议类型解码并完整映射，保留版本与业务内容",
       "planIndex": 32,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F033",
@@ -584,13 +650,16 @@
       "complexity": "★★☆",
       "estimate": "30–60人工作业分钟",
       "dependencies": [
-        "F032"
+        "F032",
+        "B1b-T04"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "验证各事件金额/积分/行/业务号映射与非法载荷",
       "planIndex": 33,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F034",
@@ -603,11 +672,13 @@
       "dependencies": [
         "F031"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
       "planIndex": 34,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F035",
@@ -621,11 +692,13 @@
         "F033",
         "F034"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "类型引用清零后删除本模块外部Client生产声明，保留本服务Client和test scope",
       "planIndex": 35,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F036",
@@ -638,11 +711,13 @@
       "dependencies": [
         "V-B1a"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "生产/测试scope分辨及外部Client引用规则，现有合法提供者不误报",
       "planIndex": 36,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F037",
@@ -655,11 +730,13 @@
       "dependencies": [
         "F036"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "生产/测试scope分辨及外部Client引用规则，现有合法提供者不误报",
       "planIndex": 37,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "F038",
@@ -1759,10 +1836,12 @@
         "F005",
         "F006"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "执行新路径公开/会员/错身份/防伪造与GET/POST不同URL回归，记录实际命令/退出码，不只写文件",
-      "planIndex": null
+      "planIndex": null,
+      "completedAt": "2026-11-09T10:45:07.598170+08:00",
+      "executionEvidence": "evidence/b1a-validation.json"
     },
     {
       "id": "V-B1b",
@@ -1803,12 +1882,18 @@
         "F034",
         "F035",
         "F036",
-        "F037"
+        "F037",
+        "B1b-T01",
+        "B1b-T02",
+        "B1b-T03",
+        "B1b-T04"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "四域事件完整映射/原事务幂等回归、生产依赖与源码引用门禁、检查器自测、全Reactor编译测试；只改协议边界",
-      "planIndex": null
+      "planIndex": null,
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     },
     {
       "id": "V-B2a",
@@ -1906,10 +1991,11 @@
       "dependencies": [
         "P000"
       ],
-      "status": "pending",
-      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "status": "completed",
+      "condition": "只读预检已完成；环境未就绪及未核实条件明确记录，G-ENV仍未通过",
       "purpose": "只读核对中间件/端口/版本、独立库和namespace策略、渠道条件；不启动/改已有环境",
-      "planIndex": null
+      "planIndex": null,
+      "evidence": "work-items/yudao-mall-migration-baseline/local-environment-preflight.md"
     },
     {
       "id": "E002",
@@ -1922,10 +2008,11 @@
       "dependencies": [
         "E001"
       ],
-      "status": "pending",
-      "condition": "任务草案已确认，仍须执行指令与前置完成",
+      "status": "completed",
+      "condition": "已补充只读探测、变量契约及启动/回退边界；实际资源和操作范围仍待G-ENV批准",
       "purpose": "将探测结果填入明确的隔离配置/启动及回退步骤，不保存凭据，不把文档存在当环境就绪",
-      "planIndex": null
+      "planIndex": null,
+      "evidence": "work-items/yudao-mall-migration-baseline/local-acceptance.md"
     },
     {
       "id": "E003",
@@ -1991,6 +2078,85 @@
       "condition": "G-ALL对应的实际实现与验收全部完成",
       "purpose": "汇总全量能力及分层证据；任何范围内未核实/未实现/未验收仍未完成，二开另列",
       "planIndex": null
+    },
+    {
+      "id": "B1b-T01",
+      "kind": "approved_supporting_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/src/test/java/com/lemnt/order/application/event/PaySuccessEventHandlerTest.java",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F019",
+        "F022"
+      ],
+      "status": "completed",
+      "condition": "生成预览已确认：确认并执行",
+      "purpose": "适配支付事件解析端口注入，保留原业务断言",
+      "planIndex": null,
+      "approvedAt": "2026-11-09T11:06:49.757875+08:00",
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
+    },
+    {
+      "id": "B1b-T02",
+      "kind": "approved_supporting_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-start/src/test/java/com/lemnt/pay/start/event/CashPaymentPersistenceTest.java",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F026",
+        "F028"
+      ],
+      "status": "completed",
+      "condition": "生成预览已确认：确认并执行",
+      "purpose": "适配关单事件解析端口注入，保留事务回滚和幂等断言",
+      "planIndex": null,
+      "approvedAt": "2026-11-09T11:06:49.757875+08:00",
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
+    },
+    {
+      "id": "B1b-T03",
+      "kind": "approved_supporting_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "F032",
+        "F034"
+      ],
+      "status": "completed",
+      "condition": "生成预览已确认：确认并执行",
+      "purpose": "适配会员事件解析端口注入，保留原积分事务回归",
+      "planIndex": null,
+      "approvedAt": "2026-11-09T11:06:49.757875+08:00",
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
+    },
+    {
+      "id": "B1b-T04",
+      "kind": "approved_supporting_file",
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/pom.xml",
+      "operation": "修改",
+      "complexity": "★☆☆",
+      "estimate": "10–20人工作业分钟",
+      "dependencies": [
+        "V-B1a"
+      ],
+      "status": "completed",
+      "condition": "生成预览已确认：确认并执行",
+      "purpose": "补充映射测试所需test依赖，不新增运行时依赖",
+      "planIndex": null,
+      "approvedAt": "2026-11-09T11:06:49.757875+08:00",
+      "completedAt": "2026-11-09T11:19:37.910141+08:00",
+      "executionEvidence": "evidence/b1b-validation.json"
     }
   ],
   "manualGates": [
@@ -2077,10 +2243,10 @@
     "F002",
     "F003",
     "F006",
+    "E002",
     "G-B2b",
     "G-B3",
     "G-B4",
-    "E002",
     "F004",
     "G-ENV",
     "V-B1a",
@@ -2096,17 +2262,18 @@
     "F047",
     "F049",
     "E004",
+    "B1b-T04",
     "F008",
     "F018",
     "F025",
     "F031",
     "F037",
+    "F040",
     "F041",
     "F042",
     "F043",
-    "F040",
-    "F052",
     "F048",
+    "F052",
     "F053",
     "F009",
     "F011",
@@ -2121,17 +2288,20 @@
     "F028",
     "F032",
     "F034",
-    "F050",
     "F044",
     "F045",
+    "F050",
     "F054",
     "F010",
     "F020",
     "F027",
     "F033",
-    "F056",
     "F051",
+    "F056",
     "F057",
+    "B1b-T01",
+    "B1b-T02",
+    "B1b-T03",
     "F016",
     "F023",
     "F029",
@@ -2140,9 +2310,9 @@
     "F058",
     "F059",
     "F061",
-    "V-B1b",
     "F060",
     "F062",
+    "V-B1b",
     "F063",
     "V-B2a",
     "F064",
@@ -2183,5 +2353,6 @@
   "scopeNote": "This graph models known files and gates, not unexamined B3/B4 implementations. Gates require explicit task-list expansion before business generation.",
   "confirmedAt": "2026-11-06T09:43:31+08:00",
   "confirmation": "确认任务草案",
-  "confirmationScope": "Task list, dependencies and parallel strategy only; future gates and execution prerequisites remain unchanged."
+  "confirmationScope": "Task list, dependencies and parallel strategy only; future gates and execution prerequisites remain unchanged.",
+  "updatedAt": "2026-11-09T11:43:00+08:00"
 }

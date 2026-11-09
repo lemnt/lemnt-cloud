@@ -43,6 +43,8 @@ test('公开评价按商品和评分tab分页，不发送会员Token或后台条
   const result = await x.api.page({ spuId: '2', type: 0, pageNum: 1, visible: false });
   assert.equal(result.records[0].id, row.id);
   assert.equal(result.records[0].descriptionScores, null);
+  assert.equal(x.calls[0].url, 'https://example.test/app/comments');
+  assert.equal(x.calls[0].method, 'GET');
   assert.equal(x.calls[0].header, undefined);
   assert.deepEqual(x.calls[0].data, { spuId: '2', type: 0, pageNum: 1, pageSize: 20 });
 });
@@ -52,8 +54,27 @@ test('评价写入只提交业务输入，身份快照和显示状态不能由�
     await x.api.create({ ...input, memberId: '99', visible: true, userNickname: '伪造' }),
     { id: '9' },
   );
+  assert.equal(x.calls[0].url, 'https://example.test/mall/app/comments');
+  assert.equal(x.calls[0].method, 'POST');
   assert.deepEqual(x.calls[0].data, input);
   assert.equal(x.calls[0].header.Authorization, 'Bearer member1');
+});
+test('未登录可读取公开评价，但投稿前拒绝且不发送请求', async () => {
+  const calls = [];
+  const api = createCommentClient({
+    ready: true,
+    baseUrl: 'https://example.test/',
+    request: async (request) => {
+      calls.push(request);
+      return { statusCode: 200, data: { code: 200, rows: [], total: 0 } };
+    },
+  });
+  assert.deepEqual(await api.page({ spuId: '2' }), { records: [], total: 0 });
+  assert.equal(calls[0].url, 'https://example.test/app/comments');
+  assert.equal(calls[0].method, 'GET');
+  assert.equal(calls[0].header, undefined);
+  await assert.rejects(api.create(input), /请先登录/);
+  assert.equal(calls.length, 1);
 });
 test('无效评分、图片或内容不发写请求；换号后拒绝原响应', async () => {
   const x = client(async () => ({ statusCode: 200, data: { code: 200, data: { id: '9' } } }));
