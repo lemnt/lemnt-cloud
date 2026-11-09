@@ -13,6 +13,7 @@ import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.model.TradeOrder;
 import com.lemnt.order.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.order.domain.payment.model.PaymentRecord;
+import com.lemnt.order.infrastructure.event.gateway.InboundEventGatewayImpl;
 import com.lemnt.pay.client.event.PaySuccessEvent;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +44,8 @@ class PaySuccessEventHandlerTest {
             payments,
             mock(OrderLogService.class),
             activities,
-            events);
+            events,
+            new InboundEventGatewayImpl());
     final CommerceEventEnvelope notice =
         new CommerceEventEnvelope(
             "E1",
@@ -77,6 +79,21 @@ class PaySuccessEventHandlerTest {
                     new PaymentRecord(
                         1L, "PAY1", "TR1", "ALIPAY", null, tradeNo, amount, state,
                         "N")));
+    }
+
+    @Test
+    void unsupportedVersionAndWrongTypeAreRejectedBeforePayloadDecodingOrReceipt() {
+        for (var envelope : List.of(
+            new CommerceEventEnvelope(
+                "E2", CommerceEventTopics.PAY_SUCCESS, 2, "PAY1", "TR1",
+                Instant.now(), null, "not-json"),
+            new CommerceEventEnvelope(
+                "E3", CommerceEventTopics.ORDER_PAID, 1, "PAY1", "TR1",
+                Instant.now(), null, "not-json"))) {
+            var failure = assertThrows(IllegalArgumentException.class, () -> handler.execute(envelope));
+            assertEquals("事件协议版本、类型或必要字段不合法", failure.getMessage());
+        }
+        verifyNoInteractions(inbox, persistence, payments, orders, activities, events);
     }
 
     @Test

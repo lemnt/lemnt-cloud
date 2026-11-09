@@ -2,16 +2,12 @@ package com.lemnt.member.application.event.service;
 
 import com.lemnt.common.client.event.CommerceEventEnvelope;
 import com.lemnt.common.client.event.CommerceEventTopics;
-import com.lemnt.common.core.utils.JsonUtils;
 import com.lemnt.member.application.growth.cmd.MemberTradeAssetCmd;
 import com.lemnt.member.application.growth.service.MemberGrowthService;
+import com.lemnt.member.domain.event.gateway.InboundEventGateway;
 import com.lemnt.member.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.member.domain.growth.gateway.OrderBenefitsSnapshotGateway;
 import com.lemnt.member.domain.growth.model.OrderBenefitsSnapshot;
-import com.lemnt.order.client.event.AfterSaleCompletedEvent;
-import com.lemnt.order.client.event.OrderClosedEvent;
-import com.lemnt.order.client.event.OrderPaidEvent;
-import com.lemnt.order.client.event.OrderShippedEvent;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -30,11 +26,12 @@ public class OrderBenefitsEventHandler {
     private final MessageInboxGateway inbox;
     private final MemberGrowthService growth;
     private final OrderBenefitsSnapshotGateway orders;
+    private final InboundEventGateway inboundEvents;
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public void paid(CommerceEventEnvelope envelope) {
         envelope.requireType(CommerceEventTopics.ORDER_PAID);
-        var v = JsonUtils.toBean(envelope.payload(), OrderPaidEvent.class);
+        var v = inboundEvents.paidFacts(envelope.payload());
         if (v == null) throw new IllegalArgumentException("订单事实不能为空");
         check(envelope, v.orderNo(), v.orderNo());
         if (!begin(envelope, "member.order_paid.v1")) return;
@@ -61,7 +58,7 @@ public class OrderBenefitsEventHandler {
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public void refunded(CommerceEventEnvelope envelope) {
         envelope.requireType(CommerceEventTopics.AFTER_SALE_COMPLETED);
-        var v = JsonUtils.toBean(envelope.payload(), AfterSaleCompletedEvent.class);
+        var v = inboundEvents.afterSaleFacts(envelope.payload());
         if (v == null) throw new IllegalArgumentException("售后事实不能为空");
         check(envelope, v.orderNo(), v.afterSaleNo());
         if (!begin(envelope, "member.after_sale_completed.v1")) return;
@@ -93,7 +90,7 @@ public class OrderBenefitsEventHandler {
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public void closed(CommerceEventEnvelope envelope) {
         envelope.requireType(CommerceEventTopics.ORDER_CLOSED);
-        var v = JsonUtils.toBean(envelope.payload(), OrderClosedEvent.class);
+        var v = inboundEvents.closedFacts(envelope.payload());
         if (v == null) throw new IllegalArgumentException("关单事实不能为空");
         check(envelope, v.orderNo(), v.orderNo());
         if (!begin(envelope, "member.order_closed.v1")) return;
@@ -116,7 +113,7 @@ public class OrderBenefitsEventHandler {
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public void shipped(CommerceEventEnvelope envelope) {
         envelope.requireType(CommerceEventTopics.ORDER_SHIPPED);
-        var v = JsonUtils.toBean(envelope.payload(), OrderShippedEvent.class);
+        var v = inboundEvents.shippedFacts(envelope.payload());
         if (v == null) throw new IllegalArgumentException("发货事实不能为空");
         check(envelope, v.orderNo(), v.orderNo());
         if (!begin(envelope, "member.order_shipped.v1")) return;

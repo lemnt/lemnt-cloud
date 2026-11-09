@@ -16,6 +16,7 @@ import com.lemnt.pay.domain.payment.model.PaymentOperator;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundGateway;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundResult;
+import com.lemnt.pay.infrastructure.event.gateway.InboundEventGatewayImpl;
 import com.lemnt.pay.infrastructure.event.gateway.MessageInboxGatewayImpl;
 import com.lemnt.pay.infrastructure.event.mapper.MessageInboxMapper;
 import com.lemnt.pay.infrastructure.payment.gateway.TradePaymentGatewayImpl;
@@ -166,7 +167,8 @@ class CashPaymentPersistenceTest extends OutboxPersistenceTest {
                 MessageInboxGateway.class);
         var handler =
             proxy(
-                new OrderClosedEventHandler(inbox, orders, payments, payment -> true),
+                new OrderClosedEventHandler(
+                    inbox, orders, payments, payment -> true, new InboundEventGatewayImpl()),
                 OrderClosedEventHandler.class);
         var payload = JsonUtils.toJsonStr(new OrderClosedEvent("O1", 7L, List.of()));
         var event =
@@ -207,7 +209,8 @@ class CashPaymentPersistenceTest extends OutboxPersistenceTest {
             .thenReturn(new OrderPaymentSnapshot("O1", 7L, new BigDecimal("10.00"), "CLOSED"));
         var handler =
             proxy(
-                new OrderClosedEventHandler(inbox, orders, payments, p -> false),
+                new OrderClosedEventHandler(
+                    inbox, orders, payments, p -> false, new InboundEventGatewayImpl()),
                 OrderClosedEventHandler.class);
         var event =
             new CommerceEventEnvelope(
@@ -235,7 +238,8 @@ class CashPaymentPersistenceTest extends OutboxPersistenceTest {
             .thenReturn(new OrderPaymentSnapshot("O2", 7L, new BigDecimal("10.00"), "CLOSED"));
         var handler =
             proxy(
-                new OrderClosedEventHandler(inbox, orders, payments, p -> true),
+                new OrderClosedEventHandler(
+                    inbox, orders, payments, p -> true, new InboundEventGatewayImpl()),
                 OrderClosedEventHandler.class);
         var event =
             new CommerceEventEnvelope(

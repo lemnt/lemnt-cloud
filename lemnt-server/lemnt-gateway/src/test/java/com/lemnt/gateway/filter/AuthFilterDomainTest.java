@@ -105,6 +105,11 @@ class AuthFilterDomainTest {
                 "/member/app/users/user",
                 "/trade/app/cart",
                 "/mall/app/private",
+                "/app/favorites",
+                "/app/favorites/count",
+                "/app/favorites/exists",
+                "/app/browse-historys",
+                "/app/products/1/extra",
                 "/system/files/app/upload")) {
             var exchange = request(path, adminToken());
             filter.filter(
@@ -144,23 +149,26 @@ class AuthFilterDomainTest {
             .block();
         assertTrue(adminReached.get());
         var memberReached = new AtomicBoolean();
-        filter.filter(
-                request("/trade/app/cart", memberToken),
-                exchange -> {
-                    memberReached.set(true);
-                    assertEquals(
-                        "7",
-                        exchange.getRequest()
-                            .getHeaders()
-                            .getFirst(SecurityConstants.HEADER_USER_ID));
-                    assertNull(
-                        exchange.getRequest()
-                            .getHeaders()
-                            .getFirst(SecurityConstants.HEADER_USER_KEY));
-                    return Mono.empty();
-                })
-            .block();
-        assertTrue(memberReached.get());
+        for (String path : List.of("/trade/app/cart", "/app/favorites", "/app/browse-historys")) {
+            memberReached.set(false);
+            filter.filter(
+                    request(path, memberToken),
+                    exchange -> {
+                        memberReached.set(true);
+                        assertEquals(
+                            "7",
+                            exchange.getRequest()
+                                .getHeaders()
+                                .getFirst(SecurityConstants.HEADER_USER_ID));
+                        assertNull(
+                            exchange.getRequest()
+                                .getHeaders()
+                                .getFirst(SecurityConstants.HEADER_USER_KEY));
+                        return Mono.empty();
+                    })
+                .block();
+            assertTrue(memberReached.get());
+        }
     }
 
     /**

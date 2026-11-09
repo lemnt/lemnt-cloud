@@ -2,10 +2,9 @@ package com.lemnt.promotion.application.event.service;
 
 import com.lemnt.common.client.event.CommerceEventEnvelope;
 import com.lemnt.common.client.event.CommerceEventTopics;
-import com.lemnt.common.core.utils.JsonUtils;
-import com.lemnt.order.client.event.OrderPaidEvent;
 import com.lemnt.promotion.application.promotion.service.PromotionResourceService;
 import com.lemnt.promotion.application.promotion.service.RewardGiftService;
+import com.lemnt.promotion.domain.event.gateway.InboundEventGateway;
 import com.lemnt.promotion.domain.event.gateway.MessageInboxGateway;
 
 import org.springframework.stereotype.Component;
@@ -23,11 +22,12 @@ public class OrderPaidEventHandler {
     private final MessageInboxGateway inbox;
     private final PromotionResourceService resources;
     private final RewardGiftService gifts;
+    private final InboundEventGateway inboundEvents;
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public void execute(CommerceEventEnvelope envelope) {
         envelope.requireType(CommerceEventTopics.ORDER_PAID);
-        var event = JsonUtils.toBean(envelope.payload(), OrderPaidEvent.class);
+        var event = inboundEvents.paidFacts(envelope.payload());
         if (event == null
             || !envelope.aggregateNo().equals(event.orderNo())
             || !envelope.businessKey().equals(event.orderNo()))

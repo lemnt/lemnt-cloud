@@ -23,16 +23,6 @@
         </dependency>
         <dependency>
             <groupId>com.lemnt</groupId>
-            <artifactId>lemnt-pay-client</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lemnt</groupId>
-            <artifactId>lemnt-promotion-client</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lemnt</groupId>
             <artifactId>lemnt-order-domain</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>

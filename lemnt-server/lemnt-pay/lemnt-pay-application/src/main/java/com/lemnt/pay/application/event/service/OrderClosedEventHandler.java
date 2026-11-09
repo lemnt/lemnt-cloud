@@ -3,7 +3,7 @@ package com.lemnt.pay.application.event.service;
 import com.lemnt.common.client.event.CommerceEventEnvelope;
 import com.lemnt.common.client.event.CommerceEventTopics;
 import com.lemnt.common.core.utils.JsonUtils;
-import com.lemnt.order.client.event.OrderClosedEvent;
+import com.lemnt.pay.domain.event.gateway.InboundEventGateway;
 import com.lemnt.pay.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
 import com.lemnt.pay.domain.channel.gateway.PaymentChannelCloseGateway;
@@ -26,11 +26,12 @@ public class OrderClosedEventHandler {
     private final OrderPaymentGateway orders;
     private final TradePaymentGateway payments;
     private final PaymentChannelCloseGateway channels;
+    private final InboundEventGateway inboundEvents;
 
     @Transactional(rollbackFor = Exception.class)
     public void execute(CommerceEventEnvelope envelope) {
         envelope.requireType(CommerceEventTopics.ORDER_CLOSED);
-        var event = JsonUtils.toBean(envelope.payload(), OrderClosedEvent.class);
+        var event = inboundEvents.closedFacts(envelope.payload());
         if (event == null
             || !envelope.aggregateNo().equals(event.orderNo())
             || !event.orderNo().equals(envelope.businessKey())) {

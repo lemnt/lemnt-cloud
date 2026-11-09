@@ -12,8 +12,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @EnableScheduling
 @EnableDubbo(scanBasePackages = "com.lemnt.product")
-@MapperScan(basePackages = "com.lemnt.product.infrastructure", annotationClass = Mapper.class)
 @SpringBootApplication(scanBasePackages = "com.lemnt.product")
+@MapperScan(basePackages = "com.lemnt.product.infrastructure.*.mapper")
 public class LemntProductApplication {
 
     /**

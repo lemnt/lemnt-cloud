@@ -2,16 +2,15 @@ package com.lemnt.order.application.event.service;
 
 import com.lemnt.common.client.event.CommerceEventEnvelope;
 import com.lemnt.common.client.event.CommerceEventTopics;
-import com.lemnt.common.core.utils.JsonUtils;
 import com.lemnt.order.application.order.service.OrderLogService;
 import com.lemnt.order.application.order.service.OrderPersistenceService;
 import com.lemnt.order.application.promotion.service.ActivityOrderLifecycleService;
+import com.lemnt.order.domain.event.gateway.InboundEventGateway;
 import com.lemnt.order.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.order.domain.event.gateway.OrderEventGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.model.TradeOperator;
 import com.lemnt.order.domain.payment.gateway.TradePaymentGateway;
-import com.lemnt.pay.client.event.PaySuccessEvent;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -35,11 +34,12 @@ public class PaySuccessEventHandler {
     private final OrderLogService logs;
     private final ActivityOrderLifecycleService activities;
     private final OrderEventGateway events;
+    private final InboundEventGateway inboundEvents;
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public void execute(CommerceEventEnvelope envelope) {
         envelope.requireType(CommerceEventTopics.PAY_SUCCESS);
-        var v = JsonUtils.toBean(envelope.payload(), PaySuccessEvent.class);
+        var v = inboundEvents.paymentSucceededFacts(envelope.payload());
         if (v == null
             || !envelope.aggregateNo().equals(v.orderNo())
             || !envelope.businessKey().equals(v.paymentNo()))

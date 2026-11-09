@@ -95,6 +95,7 @@ import com.lemnt.member.domain.user.model.Member;
 import com.lemnt.member.domain.user.model.Tag;
 import com.lemnt.member.infrastructure.address.gateway.MemberAddressGatewayImpl;
 import com.lemnt.member.infrastructure.address.mapper.MemberAddressMapper;
+import com.lemnt.member.infrastructure.event.gateway.InboundEventGatewayImpl;
 import com.lemnt.member.infrastructure.event.gateway.MessageInboxGatewayImpl;
 import com.lemnt.member.infrastructure.event.mapper.MessageInboxMapper;
 import com.lemnt.member.infrastructure.growth.gateway.MemberConfigGatewayImpl;
@@ -2962,7 +2963,8 @@ class MemberAccountIntegrationTest {
                 growthService,
                 no ->
                     new OrderBenefitsSnapshot(
-                        no, id, 5L, 3L, new BigDecimal("10.00"), "PAID")));
+                        no, id, 5L, 3L, new BigDecimal("10.00"), "PAID"),
+                new InboundEventGatewayImpl()));
     }
 
     private MemberOrderBenefitsClient eventProbe() {

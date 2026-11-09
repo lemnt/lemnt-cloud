@@ -2,9 +2,8 @@ package com.lemnt.promotion.application.event.service;
 
 import com.lemnt.common.client.event.CommerceEventEnvelope;
 import com.lemnt.common.client.event.CommerceEventTopics;
-import com.lemnt.common.core.utils.JsonUtils;
-import com.lemnt.product.client.event.StockPreReservedEvent;
 import com.lemnt.promotion.application.promotion.service.PromotionResourceService;
+import com.lemnt.promotion.domain.event.gateway.InboundEventGateway;
 import com.lemnt.promotion.domain.event.gateway.MessageInboxGateway;
 
 import org.springframework.stereotype.Component;
@@ -21,11 +20,12 @@ import lombok.RequiredArgsConstructor;
 public class StockPreReservedEventHandler {
     private final MessageInboxGateway inbox;
     private final PromotionResourceService resources;
+    private final InboundEventGateway inboundEvents;
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public void execute(CommerceEventEnvelope envelope) {
         envelope.requireType(CommerceEventTopics.STOCK_PRE_RESERVED);
-        var event = JsonUtils.toBean(envelope.payload(), StockPreReservedEvent.class);
+        var event = inboundEvents.stockPreReservedFacts(envelope.payload());
         if (event == null
             || !envelope.aggregateNo().equals(event.reservationNo())
             || !envelope.businessKey().equals(event.reservationNo() + ":" + event.skuId())

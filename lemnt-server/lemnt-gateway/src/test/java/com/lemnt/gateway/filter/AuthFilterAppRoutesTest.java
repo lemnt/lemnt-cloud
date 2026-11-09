@@ -42,6 +42,9 @@ class AuthFilterAppRoutesTest {
         var request =
             MockServerHttpRequest.method(HttpMethod.valueOf(method), path)
                 .header(SecurityConstants.HEADER_USER_ID, "999")
+                .header(SecurityConstants.HEADER_USER_KEY, "forged-session")
+                .header(SecurityConstants.HEADER_USER_NICK_NAME, "forged-name")
+                .header(SecurityConstants.HEADER_USER_AVATAR, "forged-avatar")
                 .header(SecurityConstants.HEADER_ROLE_PERMISSION, "*:*:*")
                 .header("X-Member-Id", "999")
                 .header("memberId", "999");
@@ -58,10 +61,10 @@ class AuthFilterAppRoutesTest {
                 {"POST", "/member/app/auth/login"},
                 {"POST", "/member/app/auth/refresh-token"},
                 {"POST", "/member/app/auth/logout"},
-                {"GET", "/mall/app/comments"},
-                {"GET", "/mall/app/categories"},
-                {"GET", "/mall/app/products"},
-                {"GET", "/mall/app/products/1"},
+                {"GET", "/app/comments"},
+                {"GET", "/app/categories"},
+                {"GET", "/app/products"},
+                {"GET", "/app/products/1"},
                 {"GET", "/mall/app/banners"},
                 {"PUT", "/mall/app/banners/1/browse"},
                 {"GET", "/mall/app/diy/template/used"},
@@ -79,6 +82,9 @@ class AuthFilterAppRoutesTest {
                         for (String header :
                             Set.of(
                                 SecurityConstants.HEADER_USER_ID,
+                                SecurityConstants.HEADER_USER_KEY,
+                                SecurityConstants.HEADER_USER_NICK_NAME,
+                                SecurityConstants.HEADER_USER_AVATAR,
                                 SecurityConstants.HEADER_ROLE_PERMISSION,
                                 "X-Member-Id",
                                 "memberId")) {
@@ -105,6 +111,27 @@ class AuthFilterAppRoutesTest {
                 {"GET", "/member/app/user"},
                 {"POST", "/files/app/upload"},
                 {"POST", "/mall/app/comments"},
+                {"GET", "/app/comments/1"},
+                {"GET", "/app/products/0"},
+                {"GET", "/app/products/-1"},
+                {"GET", "/app/products/01"},
+                {"GET", "/app/products/abc"},
+                {"GET", "/app/products/10000000000000000000"},
+                {"GET", "/app/products/1/edit"},
+                {"GET", "/app/categories/1"},
+                {"POST", "/app/products"},
+                {"POST", "/app/comments"},
+                {"HEAD", "/app/products"},
+                {"OPTIONS", "/app/products"},
+                {"DELETE", "/app/categories"},
+                {"GET", "/app/favorites"},
+                {"GET", "/app/browse-historys"},
+                {"GET", "/application/products"},
+                {"GET", "/app/products-extra"},
+                {"GET", "/mall/app/comments"},
+                {"GET", "/mall/app/categories"},
+                {"GET", "/mall/app/products"},
+                {"GET", "/mall/app/products/1"},
                 {"GET", "/mall/app/comments/1"},
                 {"GET", "/mall/app/products/0"},
                 {"GET", "/mall/app/products/1/edit"},
@@ -146,7 +173,11 @@ class AuthFilterAppRoutesTest {
                 "/files/app/upload",
                 "/member/app/user",
                 "/trade/app/cart",
-                "/mall/app/private")) {
+                "/mall/app/private",
+                "/app/favorites",
+                "/app/favorites/count",
+                "/app/favorites/exists",
+                "/app/browse-historys")) {
             filter.filter(
                     exchange("GET", path, "token"),
                     clean -> {
@@ -182,7 +213,7 @@ class AuthFilterAppRoutesTest {
                     return Mono.empty();
                 })
             .block();
-        verify(tokenService, times(4)).getSecurityUser("token", "member");
+        verify(tokenService, times(8)).getSecurityUser("token", "member");
         verify(tokenService).getSecurityUser("token", "admin");
     }
 

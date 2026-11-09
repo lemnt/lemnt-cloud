@@ -2,12 +2,11 @@ package com.lemnt.order.application.event.service;
 
 import com.lemnt.common.client.event.CommerceEventEnvelope;
 import com.lemnt.common.client.event.CommerceEventTopics;
-import com.lemnt.common.core.utils.JsonUtils;
 import com.lemnt.order.application.aftersale.service.AfterSaleRefundCoordinator;
 import com.lemnt.order.domain.aftersale.gateway.AfterSaleGateway;
+import com.lemnt.order.domain.event.gateway.InboundEventGateway;
 import com.lemnt.order.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.order.domain.paymentrefund.gateway.PaymentRefundGateway;
-import com.lemnt.pay.client.event.PayRefundSuccessEvent;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -27,11 +26,12 @@ public class PayRefundSuccessEventHandler {
     private final PaymentRefundGateway refunds;
     private final AfterSaleGateway afterSales;
     private final AfterSaleRefundCoordinator coordinator;
+    private final InboundEventGateway inboundEvents;
 
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public void execute(CommerceEventEnvelope envelope) {
         envelope.requireType(CommerceEventTopics.PAY_REFUND_SUCCESS);
-        var v = JsonUtils.toBean(envelope.payload(), PayRefundSuccessEvent.class);
+        var v = inboundEvents.refundSucceededFacts(envelope.payload());
         if (v == null
             || !envelope.aggregateNo().equals(v.orderNo())
             || !envelope.businessKey().equals(v.refundNo()))

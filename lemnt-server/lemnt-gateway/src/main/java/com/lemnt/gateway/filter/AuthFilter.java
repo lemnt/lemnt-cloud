@@ -98,7 +98,9 @@ public class AuthFilter implements GlobalFilter, Ordered {
      * 通过完整接口路径选择会员身份域，不匹配近似前缀。
      */
     private boolean isAppPath(String path) {
-        return path.equals("/system/files/app/upload")
+        return path.equals("/app")
+            || path.startsWith("/app/")
+            || path.equals("/system/files/app/upload")
             || path.equals("/files/app/upload")
             || path.equals("/member/app")
             || path.startsWith("/member/app/")
@@ -119,9 +121,9 @@ public class AuthFilter implements GlobalFilter, Ordered {
             return path.matches("/mall/app/banners/[1-9][0-9]{0,18}/browse");
         }
         return method == HttpMethod.GET
-            && (path.equals("/mall/app/comments")
-            || path.equals("/mall/app/categories")
-            || path.equals("/mall/app/products")
+            && (path.equals("/app/comments")
+            || path.equals("/app/categories")
+            || path.equals("/app/products")
             || path.equals("/mall/app/banners")
             || path.equals("/mall/app/diy/template/used")
             || path.equals("/mall/app/promotion-hub/sections")
@@ -129,7 +131,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
             || path.matches("/mall/app/promotion-hub/reward/[1-9][0-9]{0,18}")
             || path.matches("/mall/app/diy/template/[1-9][0-9]{0,18}")
             || path.matches("/mall/app/diy/page/[1-9][0-9]{0,18}")
-            || path.matches("/mall/app/products/[1-9][0-9]{0,18}"));
+            || path.matches("/app/products/[1-9][0-9]{0,18}"));
     }
 
     /**
