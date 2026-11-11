@@ -1,0 +1,16 @@
+<view class="container">
+  <view class="title">自提门店</view>
+  <view wx:if="{{!ready}}" class="notice">商城服务暂未启用。</view>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+  <view wx:for="{{stores}}" wx:key="id" class="card">
+    <view class="subtitle">{{item.name}}</view>
+    <view class="description">{{item.openingTime}} - {{item.closingTime}}<text wx:if="{{item.distanceKm}}"> · 距您 {{item.distanceKm}} km</text></view>
+    <view class="list-row">{{item.detailAddress}}</view>
+    <view class="list-row">电话：{{item.phone}}</view>
+    <view class="description" wx:if="{{item.introduction}}">{{item.introduction}}</view>
+  </view>
+  <view wx:if="{{!stores.length && !error}}" class="notice">暂无开启的自提门店。</view>
+  <button bindtap="sortByDistance" disabled="{{loading}}">按距离排序</button>
+  <button bindtap="refresh" disabled="{{loading}}">刷新</button>
+  <navigator url="/pages/store/index">返回商城</navigator>
+</view>

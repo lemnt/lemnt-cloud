@@ -1,0 +1,56 @@
+{
+  "batch": "154-fulfillment",
+  "date": "2026-11-01",
+  "scope": ["auto receive scheduler", "app return courier selection"],
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-trade/lemnt-trade-start -am test",
+    "totals": {"tests": 257, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-trade-domain": 2,
+      "lemnt-trade-application": 72,
+      "lemnt-trade-infrastructure": 16,
+      "lemnt-trade-adapter": 29,
+      "lemnt-trade-start": 138
+    },
+    "newTests": [
+      "com.lemnt.trade.start.fulfillment.AutoReceiveSchedulerTest (2)"
+    ]
+  },
+  "ui": {"tests": 308, "failures": 0},
+  "miniapp": {"tests": 173, "failures": 0},
+  "gateway": {"tests": 35, "failures": 0},
+  "endpoints": ["GET /trade/app/delivery/expresses"],
+  "config": [
+    "lemnt.trade.auto-receive.enabled",
+    "lemnt.trade.auto-receive.expire (default 7d)",
+    "lemnt.trade.auto-receive.delay-ms (default 60000)"
+  ],
+  "invariants": [
+    "auto receive only selects shipments without received time and shipped before database now minus expiry",
+    "auto receive reuses order row lock, active refund check and order log",
+    "one failed order does not stop the batch",
+    "return courier list only exposes enabled express companies"
+  ],
+  "realEnvironment": {
+    "express": {"id": 1, "code": "SF", "name": "顺丰速运"},
+    "orderNo": "TR1DBB531265B446E797201167",
+    "assertions": [
+      "shipping sets order to SHIPPED and creates shipment with SF123456789",
+      "shipped_at moved to 8 days ago",
+      "trade restart with auto-receive enabled moves order to COMPLETED",
+      "shipment received_at is populated",
+      "order log records SHIPPED->COMPLETED by system",
+      "member courier endpoint returns SF/顺丰速运"
+    ]
+  },
+  "deferred": [
+    "self-pickup stores, clerks and verification (T13)",
+    "order repricing and address change (remaining T01)",
+    "real logistics track channel and configurable auto-receive UI",
+    "browser admin and miniapp device verification"
+  ],
+  "notes": [
+    "no schema change in this batch",
+    "no business commit or push in this batch"
+  ]
+}

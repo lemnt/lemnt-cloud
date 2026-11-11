@@ -9,7 +9,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** 验证公告备注在写入和读取转换中原样传递，包含清空值。 */
+/**
+ * 验证公告备注在写入和读取转换中原样传递，包含清空值。
+ */
 class NoticeConverterTest {
 
     @ParameterizedTest

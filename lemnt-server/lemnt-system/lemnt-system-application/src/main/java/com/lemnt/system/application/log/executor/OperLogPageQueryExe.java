@@ -5,10 +5,12 @@ import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.system.application.log.converter.OperLogConverter;
 import com.lemnt.system.application.log.dto.OperLogDTO;
 import com.lemnt.system.application.log.qry.OperLogPageQry;
-import com.lemnt.system.domain.log.model.OperLog;
 import com.lemnt.system.domain.log.gateway.OperLogGateway;
-import lombok.RequiredArgsConstructor;
+import com.lemnt.system.domain.log.model.OperLog;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -20,7 +22,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class OperLogPageQueryExe {
-
     private final OperLogGateway operLogGateway;
 
     /**

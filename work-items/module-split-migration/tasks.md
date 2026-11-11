@@ -1,0 +1,48 @@
+# 模块拆分执行任务
+
+用户在生成预览后再次调用 cs-generate，确认按预览执行。设计与任务准备完成，以下代码任务按证据逐项更新。
+
+完整逐文件清单见 file-manifest.md；任务依赖、复杂度、估时和验收见 implementation-plan.md。
+
+- [x] G-00 设计、真实清单确认
+- [x] P1-00 product六层骨架
+- [x] P1-01 商品领域、数据及SQL
+- [x] P1-02 商品RPC、应用与HTTP
+- [x] P1-03 库存可靠性
+- [x] P1-04 product隔离验证
+- [x] P2-00 pay六层骨架
+- [x] P2-01 支付、钱包、退款数据
+- [x] P2-02 独立支付RPC与资金校验
+- [x] P2-03 资金事实发布
+- [x] P2-04 兼容历史任务
+- [x] P2-05 支付及钱包验证
+- [x] P3-00 promotion六层骨架
+- [x] P3-01 活动、券、购物车数据
+- [x] P3-02 定价/冻结/购物车RPC
+- [x] P3-03 应用与端点拆分
+- [x] P3-04 营销事件处理
+- [x] P3-05 营销回归
+- [x] P4-00 order六层骨架
+- [x] P4-01 订单与快照数据
+- [x] P4-02 结算与建单
+- [x] P4-03 售后冻结与现金退款协调
+- [x] P4-04 订单事件与库存确认
+- [x] P4-05 member冻结权益入口
+- [x] P4-06 履约、分佣、自提及HTTP
+- [x] P4-07 全业务组合验证
+- [x] P5-00 构建/配置源与实际调用方切换
+- [x] P5-01 网关313端点契约
+- [x] P5-02 SQL与架构保护工具
+- [x] P5-03 清理前全量验证
+- [x] P5-04 删除旧模块
+- [x] P5-05 清理后最终回归与文档
+
+- [x] G-01 按用户补充要求，全部Java类型短名及显式import；覆盖implements、泛型、静态调用和跨行引用，9项格式工具测试通过。
+
+P4最新检查点：P4-00～07已完成代码与自动化验证，见evidence/p4-order-combination-tests.json。五服务不跳过测试的clean package通过，共716项、失败/错误/跳过均0；order含start共302项。RPC/MQ和会员/外部渠道边界使用测试替身，真实环境联调及P5切换仍未执行。
+
+P5-00检查点：默认Reactor的59项validate通过，旧构建入口移除；其余源码/POM无旧包或旧依赖，五服务运行包无其他上下文实现穿透。四份Nacos模板及共享MQ模板已交付，15个消费者/3个Relay默认关闭，装配开关测试通过。五服务clean package共721项、失败/错误/跳过均0，见evidence/p5-build-config-tests.json。该阶段当时P5-01及后续待执行，最新进度见下方P5-01检查点；运行环境未发布或切流，旧目录未删除。
+
+P5-01检查点：313个显式端点均经真实谓词验证唯一新服务归属，165个HEAD和232个路径的OPTIONS保持兼容；四个新模块真实Controller的方法/路径/权限/归属一致。唯一标准YAML原样打入网关，无旧内置服务回落，不继承动态默认改写过滤器。网关、订单启动及依赖完整构建766项通过，其中网关350项，失败/错误/跳过均0；见evidence/p5-gateway-route-tests.json。P5-02及后续待执行，在线粗路由与配置未改，未切流或删除旧模块。
+
+P5-05检查点：在旧模块已删除的 HEAD a628d381、工作树干净状态下重跑整链全量回归。dependencies install、common 带测试 install、server 全Reactor不跳测试 clean package 三段 BUILD SUCCESS，60个模块，合计1242项，失败/错误/跳过均0（gateway350、order305、system147、member126、pay115、product98、promotion78、auth20、common+open3）。`check_architecture.py` 与 `check_module_split.py` 违规0（71表归属正确），三个检查工具自测7/11/9通过。回归中发现 `test_architecture.py` record夹具与新加 qualified-type 规则冲突，已改为显式import短名写法，断言与覆盖面不变。仓库级格式检查不干净：gjf判定2470/3286需重排、import顺序差异287个，且同样存在于迁移未触碰的 system/auth/gateway/common，属既有状态，本批未执行 --write、未重排无关文件。真实MySQL迁库、Nacos发布、MQ/Dubbo网络、网关在线切流及前端回归均未执行。见 evidence/p5-full-regression.json。

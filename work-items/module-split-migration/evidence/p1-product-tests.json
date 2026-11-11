@@ -1,0 +1,13 @@
+{
+  "phase": "P1",
+  "layer": "isolated SQL and module tests",
+  "result": {
+    "tests": 93,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "command": "mvn -o -f lemnt-server/pom.xml -pl lemnt-product/lemnt-product-start -am package",
+  "runtimeHTTP": false,
+  "liveDatabaseExecuted": false
+}

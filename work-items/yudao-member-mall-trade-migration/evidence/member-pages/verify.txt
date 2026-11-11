@@ -1,0 +1,6 @@
+Node22.13.0/Yarn1.22.22, frozen lockfile install (no dependency/lock changes).
+React typecheck/lint/format:check/build PASS;168 tests PASS (13 new). Existing vendor chunk >500kB warning remains.
+Native tests54 PASS (20 new). JS syntax, JSON, four new WXML structures and event bindings PASS. These are static checks, not native compilation.
+Java17/Maven3.9.11 root verify:71 projects,375 tests,0 failures/errors/skips. One actual H2 repeated member menu seed test added, no role tables/writes.
+Browser launch failed (missing executable), download failed (invalid archive); no browser/visual PASS. Native compiler/developer-tool/device and live backend/provider checks NOT RUN.
+No main edit/merge/deployment/live DB/config/role changes. PR Draft, memberApiReady=false.

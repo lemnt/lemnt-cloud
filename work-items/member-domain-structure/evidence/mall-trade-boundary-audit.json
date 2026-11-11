@@ -1,0 +1,41 @@
+{
+  "tableOwnership": {
+    "trade": [
+      "trade_inventory_confirmation",
+      "trade_order",
+      "trade_order_item",
+      "trade_outbox",
+      "trade_payment",
+      "trade_refund_request",
+      "trade_shipment"
+    ],
+    "mall": [
+      "mall_brand",
+      "mall_cart",
+      "mall_cart_add_request",
+      "mall_category",
+      "mall_checkout",
+      "mall_checkout_account",
+      "mall_checkout_cart",
+      "mall_coupon",
+      "mall_coupon_public_claim",
+      "mall_coupon_template",
+      "mall_product",
+      "mall_promotion_admin_request",
+      "mall_promotion_counter",
+      "mall_promotion_member_counter",
+      "mall_promotion_root",
+      "mall_promotion_scope",
+      "mall_promotion_usage",
+      "mall_promotion_usage_event",
+      "mall_promotion_version",
+      "mall_settlement_abandon",
+      "mall_settlement_order",
+      "mall_sku_property",
+      "mall_spu",
+      "mall_stock_adjustment",
+      "mall_stock_reservation"
+    ]
+  },
+  "crossLayerDependencies": []
+}

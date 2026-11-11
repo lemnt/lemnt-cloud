@@ -1,0 +1,77 @@
+{
+  "batch": "149-miniapp-cashier",
+  "date": "2026-11-01",
+  "scope": [
+    "miniapp payment channel query",
+    "sandbox cashier payment",
+    "order pay entry points",
+    "after-sale refund progress refresh"
+  ],
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-trade/lemnt-trade-start -am test",
+    "totals": {"tests": 250, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-trade-domain": 2,
+      "lemnt-trade-application": 72,
+      "lemnt-trade-infrastructure": 16,
+      "lemnt-trade-adapter": 29,
+      "lemnt-trade-start": 131
+    },
+    "newTests": [
+      "com.lemnt.trade.application.payment.MemberPaymentChannelQueryExeTest (2)",
+      "com.lemnt.trade.application.payment.SandboxPaymentCmdExeTest (3)",
+      "com.lemnt.trade.adapter.app.payment.AppPaymentChannelControllerTest (3)"
+    ]
+  },
+  "miniapp": {
+    "command": "node --test tests/*.test.cjs",
+    "tests": 160,
+    "failures": 0,
+    "newTests": ["payment.test.cjs (2)", "cashier.test.cjs (2)", "order-pages.test.cjs after-sale refresh (1)"]
+  },
+  "endpoints": [
+    "GET /trade/app/payment-channels?appKey=",
+    "POST /trade/app/orders/{orderNo}/payment",
+    "POST /trade/app/payments/{paymentNo}/sandbox-pay",
+    "GET /trade/app/orders/{orderNo}/payment"
+  ],
+  "pages": [
+    "pages/cashier/index (new)",
+    "pages/index/index (go pay)",
+    "pages/order-detail/index (go pay)",
+    "pages/order-list/index (go pay)",
+    "pages/seckill-detail/index (go pay)",
+    "pages/combination-detail/index (go pay)",
+    "pages/bargain-detail/index (go pay)",
+    "pages/point-mall-detail/index (go pay)",
+    "pages/after-sale-detail/index (refund progress refresh)"
+  ],
+  "realEnvironment": {
+    "appKey": "lemnt-mall",
+    "channel": "SANDBOX",
+    "channelsResponse": [{"code": "SANDBOX", "name": "沙箱"}],
+    "orderNo": "TR4858F36B71AC4CF7A588B275",
+    "paymentNo": "PAY3B925DA6C9554738A5BD056D",
+    "assertions": [
+      "cashier channel query returns only enabled SANDBOX config",
+      "prepay creates SANDBOX payment bound to lemnt-mall",
+      "sandbox-pay returns paymentNo and marks payment SUCCESS",
+      "trade order and mall promotion order become PAID",
+      "seckill stock 10->9",
+      "PAY notify task SUCCESS on first attempt",
+      "member 3 experience 0->400",
+      "repeated sandbox-pay is idempotent",
+      "foreign member sandbox-pay returns payment not found",
+      "payment status endpoint returns order PAID and localPaymentStatus SUCCESS"
+    ]
+  },
+  "deferred": [
+    "browser and real device miniapp verification",
+    "real ALIPAY/WECHAT pay SDK and redirect",
+    "member-side refund initiation (refund remains admin-triggered)"
+  ],
+  "notes": [
+    "no schema change in this batch",
+    "no business commit or push in this batch"
+  ]
+}

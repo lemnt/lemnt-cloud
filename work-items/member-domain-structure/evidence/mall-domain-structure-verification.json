@@ -1,0 +1,85 @@
+{
+  "date": "2026-10-27",
+  "business_domains": [
+    "product",
+    "cart",
+    "settlement",
+    "coupon",
+    "promotion"
+  ],
+  "member_domain": "remote member lookup, validation and member operation lock",
+  "packages": {
+    "application": [
+      "cart",
+      "coupon",
+      "dubbo",
+      "member",
+      "product",
+      "promotion",
+      "settlement"
+    ],
+    "domain": [
+      "cart",
+      "coupon",
+      "member",
+      "product",
+      "promotion",
+      "settlement"
+    ],
+    "infrastructure": [
+      "cart",
+      "coupon",
+      "member",
+      "product",
+      "promotion",
+      "settlement"
+    ],
+    "adapter": {
+      "app": [
+        "cart",
+        "coupon",
+        "product",
+        "settlement"
+      ],
+      "web": [
+        "cart",
+        "coupon",
+        "product",
+        "promotion",
+        "settlement"
+      ]
+    }
+  },
+  "boundary_violations": [],
+  "route_permission_contract_unchanged": true,
+  "public_rpc_client_changes": [],
+  "lock": {
+    "foundation": "lemnt-common-lock / LockTemplate / RedissonLockExecutor",
+    "key": "lemnt:mall:member:operation:{memberId}",
+    "expire_ms": -1,
+    "acquire_timeout_ms": 3000,
+    "release": "after database transaction completion",
+    "same_transaction_reentry": "one acquisition",
+    "old_technical_table_removed_from_initialization": true,
+    "old_database_drop_executed": false,
+    "real_redis_tested": false
+  },
+  "backend": {
+    "clean_verify": "passed",
+    "modules": 71,
+    "suites": 95,
+    "tests": 488,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "new_lock_transaction_tests": 6
+  },
+  "migration_template_tables": 17,
+  "not_executed": [
+    "actual MySQL table cleanup",
+    "live Redis renewal and network-failure acceptance",
+    "deployed HTTP/RPC end-to-end acceptance"
+  ],
+  "commit": false,
+  "push": false
+}

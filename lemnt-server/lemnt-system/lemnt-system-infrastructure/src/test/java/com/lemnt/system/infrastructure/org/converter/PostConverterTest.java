@@ -2,6 +2,7 @@ package com.lemnt.system.infrastructure.org.converter;
 
 import com.lemnt.system.domain.org.model.Post;
 import com.lemnt.system.infrastructure.org.dataobject.PostDO;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -18,6 +19,7 @@ class PostConverterTest {
     @ValueSource(strings = "岗位备注验收")
     void shouldPreserveRemarkWhenSaving(String remark) {
         Post post = new Post();
+
         post.setRemark(remark);
 
         assertThat(PostConverter.toDO(post).getRemark()).isEqualTo(remark);
@@ -28,6 +30,7 @@ class PostConverterTest {
     @ValueSource(strings = "岗位备注验收")
     void shouldPreserveRemarkWhenReading(String remark) {
         PostDO post = new PostDO();
+
         post.setRemark(remark);
 
         assertThat(PostConverter.toEntity(post).getRemark()).isEqualTo(remark);

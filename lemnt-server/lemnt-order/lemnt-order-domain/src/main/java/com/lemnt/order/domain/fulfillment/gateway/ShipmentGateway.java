@@ -1,0 +1,38 @@
+package com.lemnt.order.domain.fulfillment.gateway;
+
+import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.order.domain.fulfillment.model.Shipment;
+import com.lemnt.order.domain.fulfillment.model.ShipmentFilter;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+/**
+ * Shipment 表领域存储接口。
+ */
+public interface ShipmentGateway {
+    /**
+     * 分页查询物流单。
+     */
+    PageResult<Shipment> page(ShipmentFilter filter);
+
+    /**
+     * 发货。
+     */
+    Shipment shipment(String orderNo);
+
+    /**
+     * 保存发货。
+     */
+    void saveShipment(Shipment shipment);
+
+    /**
+     * 接收。
+     */
+    boolean receive(String orderNo, LocalDateTime time);
+
+    /**
+     * 未收货且发货时间早于截止时间的订单号，供自动收货任务使用。
+     */
+    List<String> shippedBefore(LocalDateTime cutoff, int limit);
+}

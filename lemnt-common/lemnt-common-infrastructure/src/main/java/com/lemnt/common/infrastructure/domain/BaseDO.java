@@ -1,13 +1,13 @@
 package com.lemnt.common.infrastructure.domain;
 
-import java.io.Serial;
-import java.io.Serializable;
-
-import java.time.LocalDateTime;
-
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+
 import lombok.Data;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * Entity基类

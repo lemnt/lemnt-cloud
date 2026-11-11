@@ -1,17 +1,19 @@
 package com.lemnt.common.excel.handler;
 
-import cn.hutool.core.map.MapUtil;
+import com.lemnt.common.core.annotation.Excel;
+import com.lemnt.common.core.utils.StringUtils;
+import com.lemnt.common.excel.converter.ExcelExportAnnotationConverter;
+
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
-import com.lemnt.common.core.annotation.Excel;
-import com.lemnt.common.core.utils.StringUtils;
-import com.lemnt.common.excel.converter.ExcelExportAnnotationConverter;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
+
+import cn.hutool.core.map.MapUtil;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -36,9 +38,14 @@ public class ExcelStyleHandler implements CellWriteHandler {
     }
 
     @Override
-    public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-                                 List<WriteCellData<?>> cellDataList, Cell cell, Head head,
-                                 Integer relativeRowIndex, Boolean isHead) {
+    public void afterCellDispose(
+        WriteSheetHolder writeSheetHolder,
+        WriteTableHolder writeTableHolder,
+        List<WriteCellData<?>> cellDataList,
+        Cell cell,
+        Head head,
+        Integer relativeRowIndex,
+        Boolean isHead) {
         if (Objects.isNull(cell)) {
             return;
         }
@@ -100,7 +107,8 @@ public class ExcelStyleHandler implements CellWriteHandler {
                 mergeVertically(cell);
             }
             // 统计数据
-            if (excel.isStatistics() && Objects.equals(excel.cellType(), Excel.ColumnType.NUMERIC)) {
+            if (excel.isStatistics()
+                && Objects.equals(excel.cellType(), Excel.ColumnType.NUMERIC)) {
                 try {
                     BigDecimal number = BigDecimal.valueOf(cell.getNumericCellValue());
                     statisticsMap.merge(cell.getColumnIndex(), number, BigDecimal::add);
@@ -122,10 +130,10 @@ public class ExcelStyleHandler implements CellWriteHandler {
         // 创建下拉约束
         DataValidationConstraint constraint = helper.createExplicitListConstraint(combo);
         // 单元格范围，这里只限制当前单元格
-        CellRangeAddressList addressList = new CellRangeAddressList(
+        CellRangeAddressList addressList =
+            new CellRangeAddressList(
                 cell.getRowIndex(), cell.getRowIndex(),
-                cell.getColumnIndex(), cell.getColumnIndex()
-        );
+                cell.getColumnIndex(), cell.getColumnIndex());
 
         DataValidation validation = helper.createValidation(constraint, addressList);
         validation.setSuppressDropDownArrow(true);
@@ -144,10 +152,10 @@ public class ExcelStyleHandler implements CellWriteHandler {
         // 创建约束，这里用 TRUE 表示不限制输入
         DataValidationConstraint constraint = helper.createCustomConstraint("TRUE");
         // 只对当前单元格生效
-        CellRangeAddressList addressList = new CellRangeAddressList(
+        CellRangeAddressList addressList =
+            new CellRangeAddressList(
                 cell.getRowIndex(), cell.getRowIndex(),
-                cell.getColumnIndex(), cell.getColumnIndex()
-        );
+                cell.getColumnIndex(), cell.getColumnIndex());
         DataValidation validation = helper.createValidation(constraint, addressList);
         validation.createPromptBox("提示", prompt);
         validation.setShowPromptBox(true);
@@ -169,7 +177,8 @@ public class ExcelStyleHandler implements CellWriteHandler {
             if (merged != null) {
                 merged.setLastRow(rowIndex);
             } else {
-                this.lastSheet.addMergedRegion(new CellRangeAddress(rowIndex - 1, rowIndex, colIndex, colIndex));
+                this.lastSheet.addMergedRegion(
+                    new CellRangeAddress(rowIndex - 1, rowIndex, colIndex, colIndex));
             }
         }
         lastRowValues.put(colIndex, currentValue);
@@ -181,8 +190,10 @@ public class ExcelStyleHandler implements CellWriteHandler {
     private CellRangeAddress findMergedRegion(int row, int col) {
         for (int i = 0; i < this.lastSheet.getNumMergedRegions(); i++) {
             CellRangeAddress range = this.lastSheet.getMergedRegion(i);
-            if (range.getFirstColumn() <= col && range.getLastColumn() >= col &&
-                    range.getFirstRow() <= row && range.getLastRow() >= row) {
+            if (range.getFirstColumn() <= col
+                && range.getLastColumn() >= col
+                && range.getFirstRow() <= row
+                && range.getLastRow() >= row) {
                 return range;
             }
         }

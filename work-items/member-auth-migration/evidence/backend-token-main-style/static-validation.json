@@ -1,0 +1,1603 @@
+{
+  "mainBaseline": "0a8fd937f66c3eafa5e60a547d970a50a2fdb352",
+  "sourceFilesChecked": 698,
+  "packagePathErrors": [],
+  "wildcardImportFiles": [],
+  "overlongMethodDeclarations": [],
+  "gatewayDependencyOrClassRemnants": [],
+  "formatting": {
+    "files": [
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/test/java/com/lemnt/mall/adapter/app/store/StoreHttpContractTest.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/test/java/com/lemnt/mall/adapter/web/catalog/CatalogHttpContractTest.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/test/java/com/lemnt/mall/adapter/web/catalog/CatalogSerializationTest.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/AppStoreController.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/res/StoreProductRes.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/res/StoreCategoryRes.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/res/StoreSkuRes.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/res/StorePageRes.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/res/StoreDetailRes.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/converter/StoreResConverter.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/converter/StoreReqConverter.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/req/StorePageReq.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/ProductController.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/BrandController.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/CategoryController.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/SpuController.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/SkuController.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/res/StockAdjustmentRes.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/res/SpuRes.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/res/CategoryRes.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/res/SkuRes.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/res/BrandRes.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/converter/CatalogResConverter.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/converter/CatalogReqConverter.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/req/SpuShelfReq.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/req/SpuPageReq.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/req/SkuUpdateReq.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/req/SpuCreateReq.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/req/BrandSaveReq.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/req/SkuCreateReq.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/req/SpuUpdateReq.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/req/CategorySaveReq.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/req/StockAdjustReq.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-start/src/main/java/com/lemnt/mall/start/LemntMallApplication.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/test/java/com/lemnt/mall/domain/catalog/CatalogRulesTest.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/promotion/model/CatalogPricingFacts.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/promotion/model/PromotionCatalogRules.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/promotion/gateway/PromotionCatalogGateway.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/catalog/model/CatalogPage.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/catalog/model/Category.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/catalog/model/CatalogFilter.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/catalog/model/CatalogSpu.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/catalog/model/CatalogSku.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/catalog/model/Brand.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/catalog/model/CatalogRules.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/catalog/model/StockAdjustment.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/catalog/gateway/CatalogGateway.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/model/Product.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/gateway/ProductGateway.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/store/model/StoreProduct.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/store/model/StoreFilter.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/store/gateway/StoreCatalogGateway.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/PromotionCatalogClient.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/ProductCatalogClient.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/dto/PromotionScopeValidationDTO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/dto/ProductPricingFactsDTO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/dto/ProductSnapshotDTO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/bo/PricingFactsBatchBo.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/bo/PromotionScopeValidationBo.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/test/java/com/lemnt/mall/infrastructure/catalog/CatalogMenuSeedTest.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/test/java/com/lemnt/mall/infrastructure/catalog/CatalogPersistenceTest.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/promotion/mapper/PromotionCatalogMapper.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/promotion/dataobject/PricingFactsDO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/promotion/gateway/PromotionCatalogGatewayImpl.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/catalog/converter/CatalogConverter.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/catalog/mapper/CatalogMapper.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/catalog/dataobject/SkuDO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/catalog/gateway/CatalogGatewayImpl.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/mapper/StockReservationMapper.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/mapper/ProductMapper.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/dataobject/ProductDO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/dataobject/StockReservationDO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/gateway/ProductGatewayImpl.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/store/mapper/StoreCatalogMapper.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/store/dataobject/StoreProductDO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/store/gateway/StoreCatalogGatewayImpl.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/test/java/com/lemnt/mall/application/catalog/CatalogExecutorsTest.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/test/java/com/lemnt/mall/application/dubbo/PromotionCatalogClientTest.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/cmd/ProductCreateCmd.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/dto/CategoryDTO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/dto/StockAdjustmentDTO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/dto/SpuDTO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/dto/SkuDTO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/dto/BrandDTO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/dto/SpuPageDTO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/cmd/SpuCreateCmd.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/cmd/SkuUpdateCmd.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/cmd/SpuShelfCmd.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/cmd/SpuUpdateCmd.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/cmd/CategorySaveCmd.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/cmd/BrandSaveCmd.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/cmd/StockAdjustCmd.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/converter/CatalogDTOConverter.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/qry/SpuPageQry.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/BrandDeleteCmdExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/SpuCreateCmdExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/SpuUpdateCmdExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/SpuShelfCmdExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/BrandDetailQueryExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/SkuUpdateCmdExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/BrandListQueryExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/SpuPageQueryExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/CategorySaveCmdExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/CategoryDetailQueryExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/BrandSaveCmdExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/CategoryDeleteCmdExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/SpuDetailQueryExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/CategoryListQueryExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/StockAdjustCmdExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/service/CatalogValidationService.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/executor/ProductDetailQryExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/executor/ProductStatusCmdExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/executor/ProductCreateCmdExe.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/dubbo/ProductCatalogClientImpl.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/dubbo/PromotionCatalogClientImpl.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/store/dto/StoreSkuDTO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/store/dto/StoreDetailDTO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/store/dto/StorePageDTO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/store/dto/StoreCategoryDTO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/store/dto/StoreProductDTO.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/store/qry/StorePageQry.java",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/store/executor/StoreCatalogQueryExe.java",
+      "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/config/MemberAuthRouteConfigurationTest.java",
+      "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterDomainTest.java",
+      "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/MemberRequestSecurityTest.java",
+      "lemnt-server/lemnt-gateway/src/main/java/com/lemnt/gateway/config/MemberAuthRouteConfiguration.java",
+      "lemnt-server/lemnt-gateway/src/main/java/com/lemnt/gateway/filter/MemberRequestSecurity.java",
+      "lemnt-server/lemnt-gateway/src/main/java/com/lemnt/gateway/service/RedisMemberSessionLookup.java",
+      "lemnt-server/lemnt-gateway/src/main/java/com/lemnt/gateway/service/MemberSessionLookup.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-adapter/src/test/java/com/lemnt/auth/adapter/app/member/AppMemberAuthControllerTest.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-adapter/src/main/java/com/lemnt/auth/adapter/app/member/AppMemberAuthController.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-adapter/src/main/java/com/lemnt/auth/adapter/app/member/MemberAuthExceptionHandler.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-adapter/src/main/java/com/lemnt/auth/adapter/app/member/res/MemberTokenRes.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-adapter/src/main/java/com/lemnt/auth/adapter/app/member/converter/MemberAuthReqConverter.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-adapter/src/main/java/com/lemnt/auth/adapter/app/member/converter/MemberAuthResConverter.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-adapter/src/main/java/com/lemnt/auth/adapter/app/member/req/AuthLoginReq.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-client/src/main/java/com/lemnt/auth/api/MemberSessionClient.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-client/src/main/java/com/lemnt/auth/api/MemberAuthenticationClient.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-client/src/main/java/com/lemnt/auth/api/dto/MemberTokenDTO.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-client/src/main/java/com/lemnt/auth/api/bo/MemberLoginBo.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-domain/src/main/java/com/lemnt/auth/domain/member/model/LoginAttempt.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-domain/src/main/java/com/lemnt/auth/domain/member/model/MemberToken.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-domain/src/main/java/com/lemnt/auth/domain/member/model/Credential.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-domain/src/main/java/com/lemnt/auth/domain/member/model/MemberIdentity.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-domain/src/main/java/com/lemnt/auth/domain/member/gateway/MemberAuthenticationStore.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-domain/src/main/java/com/lemnt/auth/domain/member/gateway/MemberTokenGateway.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-infrastructure/src/main/java/com/lemnt/auth/infrastructure/member/mapper/MemberAuthenticationMapper.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-infrastructure/src/main/java/com/lemnt/auth/infrastructure/member/dataobject/MemberIdentityDO.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-infrastructure/src/main/java/com/lemnt/auth/infrastructure/member/dataobject/CredentialDO.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-infrastructure/src/main/java/com/lemnt/auth/infrastructure/member/dataobject/LoginAttemptDO.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-infrastructure/src/main/java/com/lemnt/auth/infrastructure/member/gateway/MemberAuthenticationStoreImpl.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-infrastructure/src/main/java/com/lemnt/auth/infrastructure/member/gateway/MemberTokenGatewayImpl.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/member/dto/MemberTokenDTO.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/member/cmd/AuthLogoutCmd.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/member/cmd/AuthLoginCmd.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/member/cmd/AuthRefreshCmd.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/member/executor/MemberAuthCmdExe.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/member/service/MemberAuthenticationService.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/dubbo/MemberAuthenticationClientImpl.java",
+      "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/dubbo/MemberSessionClientImpl.java",
+      "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberProviderConfigurationTest.java",
+      "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java",
+      "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberMenuSeedTest.java",
+      "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberHttpContractTest.java",
+      "lemnt-server/lemnt-member/lemnt-member-start/src/main/java/com/lemnt/member/start/LemntMemberApplication.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/cmd/MemberRegisterCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/executor/MemberRegisterCmdExe.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/dubbo/MemberClientImpl.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/QrcodeDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/ConfigDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/SignSummaryDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/JsapiConfigDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/LevelDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/SignRecordDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/TagDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/AssetRecordDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/LevelRecordDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/GroupDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/SignConfigDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/MemberTokenDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/SubscribeTemplateDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/SocialStateDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/AccountPageDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/AddressDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/dto/ProfileDTO.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/WechatMobileUpdateCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/SmsSendCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/GroupSaveCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/MobileUpdateCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/TagDeleteCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/TagsAssignCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/LevelSaveCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/SocialStateCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/TagSaveCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/SmsValidateCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/SignCreateCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/SocialLoginCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/QrcodeCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/AddressDeleteCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/PasswordResetCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/AddressSaveCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/ProfileUpdateCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/SocialUnbindCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/SocialBindCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/SignConfigDeleteCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/SignConfigSaveCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/LevelAssignCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/SmsPasswordResetCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/AssetAdjustCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/GroupDeleteCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/GroupAssignCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/JsapiCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/SmsLoginCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/PasswordChangeCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/ConfigSaveCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/cmd/LevelDeleteCmd.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/converter/MemberDTOConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/SignSummaryQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/AssetsPageQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/SignConfigsQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/MemberTagsQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/AdminMemberRecordDetailQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/AddressListQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/TagDetailQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/SignsPageQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/LevelRecordsPageQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/ProfilesPageQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/LevelsQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/ConfigQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/GroupsQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/AddressDetailQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/ProfileQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/SubscribeTemplatesQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/SignConfigDetailQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/DefaultAddressQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/TagsQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/AdminMemberPageQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/SocialBindingsQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/GroupDetailQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/qry/LevelDetailQry.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/executor/MemberAccountQueryExe.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/executor/MemberAccountCmdExe.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/executor/MemberExternalCmdExe.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/executor/MemberExternalQueryExe.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/executor/MemberAuthCmdExe.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/executor/MemberAdminQueryExe.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberIdentityService.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberAuthService.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberSmsChallengeService.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberIdentityVerificationService.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberAccountService.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberSmsService.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberSocialService.java",
+      "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberSmsAccountService.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/mapper/MemberMapper.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/dataobject/MemberDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/converter/ConfigConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/converter/AssetRecordConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/converter/SignRecordConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/converter/SocialStateConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/converter/AddressConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/converter/SignConfigConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/converter/SocialBindingConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/converter/GroupConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/converter/ProfileConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/converter/LevelRecordConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/converter/SmsChallengeConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/converter/LevelConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/mapper/MemberVerificationMapper.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/mapper/MemberAccountMapper.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/mapper/MemberAdminQueryMapper.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/dataobject/SmsChallengeDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/dataobject/TagDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/dataobject/ConfigDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/dataobject/GroupDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/dataobject/AddressDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/dataobject/CredentialDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/dataobject/ProfileDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/dataobject/LevelRecordDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/dataobject/SocialStateDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/dataobject/SignRecordDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/dataobject/LevelDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/dataobject/SignConfigDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/dataobject/SocialBindingDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/dataobject/AssetRecordDO.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/gateway/MemberAccountGatewayImpl.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/gateway/MemberVerificationGatewayImpl.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/gateway/MemberAuthenticationGatewayImpl.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/gateway/MemberAdminQueryGatewayImpl.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/gateway/WxMemberSocialGateway.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/gateway/MemberPasswordGatewayImpl.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/gateway/BoundedWxRedisOps.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/gateway/AliyunMemberSmsDeliveryGateway.java",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/gateway/MemberGatewayImpl.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/AppMemberAccountController.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/AppMemberExternalController.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/AppMemberAddressController.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/res/JsapiConfigRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/res/SignSummaryRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/res/QrcodeRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/res/SocialStateRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/res/SubscribeTemplateRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/res/MemberTokenRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/MobileUpdateReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SmsSendReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/WechatMobileUpdateReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SmsValidateReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SocialStateReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SocialBindReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SocialUnbindReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/ProfileUpdateReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/AddressSaveReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/QrcodeReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SocialLoginReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SmsLoginReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/JsapiReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/PasswordChangeReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/WechatLoginReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/req/SmsPasswordResetReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/MemberController.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberGroupController.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberUserController.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberTagController.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberLevelController.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberRecordController.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberConfigController.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/TagRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/ConfigRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/GroupRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/res/LevelRecordRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/GroupSaveReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/AdminMemberPageReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/MemberCreateReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/TagSaveReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/LevelSaveReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/TagsAssignReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/AdminProfileUpdateReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/PasswordResetReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/ConfigSaveReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/GroupAssignReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/LevelAssignReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/SignConfigSaveReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/req/AssetAdjustReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/MemberAccountExceptionHandler.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/res/AssetRecordRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/res/LevelRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/res/SignRecordRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/res/AddressRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/res/AccountPageRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/res/ProfileRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/res/SignConfigRes.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/converter/MemberResConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/converter/MemberReqConverter.java",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/shared/account/req/AccountPageReq.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/model/Member.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/AssetRecord.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/SocialState.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/Profile.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/MemberToken.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/Group.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/Tag.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/SocialBinding.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/LevelRecord.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/Address.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/Credential.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/SignConfig.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/MemberAdminFilter.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/Config.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/MemberRules.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/SubscribeTemplate.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/SignRecord.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/SmsChallenge.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/JsapiConfig.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/SocialProof.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/model/Level.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/gateway/MemberVerificationGateway.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/gateway/MemberSocialGateway.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/gateway/MemberAdminQueryGateway.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/gateway/MemberAuthenticationGateway.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/account/gateway/MemberAccountGateway.java",
+      "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/gateway/MemberGateway.java",
+      "lemnt-server/lemnt-member/lemnt-member-client/src/main/java/com/lemnt/member/client/MemberClient.java",
+      "lemnt-server/lemnt-member/lemnt-member-client/src/main/java/com/lemnt/member/client/dto/MemberProfileDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/test/java/com/lemnt/trade/adapter/app/checkout/AppPaymentControllerTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/test/java/com/lemnt/trade/adapter/app/checkout/AppCheckoutControllerTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/test/java/com/lemnt/trade/adapter/web/fulfillment/FulfillmentHttpContractTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/test/java/com/lemnt/trade/adapter/web/checkout/CheckoutHttpContractTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/test/java/com/lemnt/trade/adapter/web/store/PromotionHttpContractTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/AppPaymentController.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/AppCheckoutController.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/res/SettlementRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/res/SettlementAbandonRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/res/MemberPaymentStatusRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/converter/SettlementResConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/req/SettlementSubmitReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/store/AppPromotionController.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/store/res/CartAdditionRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/store/converter/PromotionResConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/store/req/CartAddReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/TradeOutboxController.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/TradeOrderController.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/PromotionAdminAccess.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/PromotionExceptionHandler.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/PromotionAdminController.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/configuration/PromotionWebConfiguration.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/configuration/PromotionJsonConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/res/PromotionErrorRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/res/PromotionResultRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/res/PromotionOrderDiscountRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/res/PromotionRuleRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/res/PromotionPageRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/res/PromotionDraftRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/res/PromotionFullReductionRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/res/PromotionTierRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/res/PromotionDetailRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/res/PromotionScopeRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/converter/PromotionReqConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/converter/PromotionResConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/req/PromotionTierReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/req/PromotionPublishReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/req/PromotionScopeReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/req/PromotionStateChangeReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/req/PromotionDraftReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/req/PromotionDraftSaveReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/req/PromotionCreateReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/req/PromotionRuleReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/req/PromotionPageReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/AdminFulfillmentController.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/AdminRefundRequestController.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/res/OrderPageRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/res/RefundPageRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/res/ShipmentRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/res/RefundRequestRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/res/OrderSummaryRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/res/OrderDetailRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/converter/FulfillmentResConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/converter/FulfillmentReqConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/req/RefundRequestReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/req/RefundRejectReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/req/ShipmentCreateReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/req/RefundPageReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/req/OrderPageReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/AdminCartController.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/AdminCheckoutController.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/AdminCouponController.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/res/CouponTemplateRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/res/CheckoutQuoteRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/req/CheckoutSubmitReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/req/CouponTemplateCreateReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/req/CouponTemplateEnableReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/store/AdminPublicCouponController.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/store/req/CouponPublicClaimReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/res/CartItemRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/res/CheckoutReceiptRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/res/CheckoutItemRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/res/CouponRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/converter/CheckoutReqConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/converter/CheckoutResConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/req/CheckoutQuoteReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/checkout/req/CartSaveReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/store/res/PromotionPageRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/store/res/CouponOfferRes.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/store/converter/PromotionReqConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/shared/store/req/PromotionPageReq.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/promotion/PromotionPersistenceIntegrationTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/promotion/PromotionPermissionSeedTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/promotion/PromotionHttpIntegrationTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutFlowIntegrationTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutMenuSeedTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-start/src/main/java/com/lemnt/trade/start/TradeOutboxScheduler.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-start/src/main/java/com/lemnt/trade/start/LemntTradeApplication.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/test/java/com/lemnt/trade/domain/promotion/PromotionVectorsTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/test/java/com/lemnt/trade/domain/promotion/PromotionPricingTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/test/java/com/lemnt/trade/domain/checkout/CheckoutRulesTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/CatalogPricingFacts.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PromotionDraft.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PromotionUsage.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PromotionAdminRequest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PricingResult.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PromotionScope.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PromotionRoot.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/DiscountRule.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/SelectedCoupon.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PromotionFilter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/FenAmounts.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PricingLine.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PromotionVersion.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PublishedPromotion.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PromotionAdminReceipt.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PricingContext.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PromotionCounter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PricingException.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PromotionOrder.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/service/PromotionPricingService.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/service/DiscountAllocator.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/gateway/PromotionGateway.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/gateway/PromotionCatalogFactsGateway.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/fulfillment/model/RefundPage.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/fulfillment/model/Shipment.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/fulfillment/model/FulfillmentFilter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/fulfillment/model/OrderSummary.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/fulfillment/model/RefundRequest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/fulfillment/model/OrderPage.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/fulfillment/gateway/FulfillmentGateway.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/checkout/model/Settlement.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/checkout/model/CouponTemplate.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/checkout/model/CheckoutQuote.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/checkout/model/CartLine.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/checkout/model/CheckoutRules.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/checkout/model/Coupon.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/checkout/model/CheckoutRecord.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/checkout/model/CartReference.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/checkout/gateway/CheckoutGateway.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/model/ProductSnapshot.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/model/MemberSnapshot.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/model/TradeOrderItem.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/model/VerifiedPaymentNotification.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/model/PaymentRecord.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/model/TradeOrder.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/model/OutboxEvent.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/gateway/MemberSessionGateway.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/gateway/TradeOutboxGateway.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/gateway/ProductCatalogGateway.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/gateway/TradePaymentGateway.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/gateway/MemberLookupGateway.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/gateway/TradeOrderGateway.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/store/model/CartAddition.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/store/gateway/StorefrontGateway.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/test/java/com/lemnt/trade/infrastructure/promotion/PromotionCatalogFactsGatewayTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/test/java/com/lemnt/trade/infrastructure/payment/PaymentChannelCloseGatewayImplTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/test/java/com/lemnt/trade/infrastructure/member/MemberSessionGatewayImplTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/test/java/com/lemnt/trade/infrastructure/mapper/TradeOutboxMapperTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/test/java/com/lemnt/trade/infrastructure/checkout/SettlementCacheTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/promotion/converter/PromotionConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/promotion/mapper/PromotionMapper.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/promotion/gateway/PromotionGatewayImpl.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/promotion/gateway/PromotionCatalogFactsGatewayImpl.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/payment/PaymentChannelCloseGatewayImpl.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/payment/PaymentChannelCloseClient.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/member/MemberSessionGatewayImpl.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/member/MemberSessionVerifierImpl.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/mapper/TradePaymentMapper.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/mapper/TradeOutboxMapper.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/mapper/TradeOrderItemMapper.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/mapper/TradeOrderMapper.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/fulfillment/converter/FulfillmentConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/fulfillment/mapper/FulfillmentMapper.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/fulfillment/dataobject/RefundRequestDO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/fulfillment/dataobject/ShipmentDO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/fulfillment/dataobject/OrderSummaryDO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/fulfillment/gateway/FulfillmentGatewayImpl.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/checkout/converter/CheckoutConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/checkout/mapper/SettlementMapper.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/checkout/mapper/CheckoutMapper.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/checkout/dataobject/CheckoutDO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/checkout/dataobject/CouponTemplateDO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/checkout/gateway/SettlementGatewayImpl.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/checkout/gateway/CheckoutGatewayImpl.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/dataobject/TradeOrderItemDO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/dataobject/TradeOutboxDO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/dataobject/TradePaymentDO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/dataobject/TradeOrderDO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/gateway/TradeOrderGatewayImpl.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/gateway/MemberLookupGatewayImpl.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/gateway/TradeOutboxGatewayImpl.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/gateway/ProductCatalogGatewayImpl.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/gateway/TradePaymentGatewayImpl.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/store/mapper/StorefrontMapper.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/store/dataobject/CartAdditionDO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/store/gateway/StorefrontGatewayImpl.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/checkout/MemberReceiptOwnershipTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/checkout/MemberPaymentStatusQueryTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/checkout/MemberSessionServiceTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/executor/PaymentNotifyCmdExeTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/executor/TradeOutboxReplayCmdExeTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/executor/TradeOutboxDispatchExeTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/executor/TradeOrderCloseCmdExeTest.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/dto/PromotionResultDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/dto/PromotionPageDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/dto/PromotionDetailDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/dto/PromotionTierDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/dto/PromotionDraftDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/cmd/PromotionStateChangeCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/cmd/PromotionPublishCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/cmd/PromotionCreateCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/cmd/PromotionDraftSaveCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/qry/PromotionPageQry.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/PromotionPublishCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/PromotionCreateCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/PromotionStateChangeCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/PromotionDraftSaveCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/PromotionPageQueryExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/PromotionDetailQueryExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/service/PromotionAdministrationService.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/service/PromotionUsageService.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/service/PromotionDtoMapper.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/cmd/TradeOrderCreateCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/dto/ShipmentDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/dto/RefundPageDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/dto/OrderPageDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/dto/RefundRequestDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/dto/OrderDetailDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/dto/OrderSummaryDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/cmd/RefundRequestCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/cmd/RefundRejectCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/cmd/ShipmentCreateCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/converter/FulfillmentDTOConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/qry/OrderPageQry.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/qry/RefundPageQry.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/OrderReceiveCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/RefundPageQueryExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/ShipmentCreateCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/RefundDetailQueryExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/OrderPageQueryExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/OrderDetailQueryExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/RefundRejectCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/RefundRequestCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/service/OrderFulfillmentService.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/dto/SettlementAbandonDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/dto/CheckoutReceiptDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/dto/CartItemDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/dto/CouponTemplateDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/dto/SettlementDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/dto/CheckoutQuoteDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/dto/MemberPaymentStatusDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/dto/CouponDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/dto/CheckoutItemDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/cmd/CartSaveCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/cmd/CouponTemplateCreateCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/cmd/CheckoutSubmitCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/cmd/CouponIssueCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/cmd/CartDeleteCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/cmd/CouponTemplateEnableCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/converter/CheckoutDTOConverter.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/qry/CheckoutQuoteQry.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/qry/MemberPaymentStatusQry.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CouponTemplateListQueryExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CouponListQueryExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CouponTemplateCreateCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CheckoutQuoteQueryExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CartSaveCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CartDeleteCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CouponIssueCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CheckoutReceiptQueryExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/MemberPaymentStatusQueryExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CouponTemplateEnableCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CheckoutSubmitCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CartListQueryExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/service/CheckoutMemberService.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/service/OrderPlacementService.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/service/CheckoutLifecycleService.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/service/MemberSessionService.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/service/SettlementService.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/TradeOrderCloseCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/TradeOutboxReplayCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/PaymentNotifyCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/TradeOrderCreateCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/TradeOutboxDispatchExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/TradePaymentCreateCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/TradeOrderDetailQryExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/dto/PromotionPageDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/dto/CartAdditionDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/dto/CouponOfferDTO.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/cmd/CouponPublicClaimCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/cmd/CouponClaimCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/cmd/CartAddCmd.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/qry/CouponOffersPageQry.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/qry/PromotionPageQry.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/qry/CouponWalletPageQry.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/executor/StorefrontCmdExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/executor/PromotionQueryExe.java",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/service/StorefrontService.java"
+    ],
+    "count": 672,
+    "bracedStatements": 479,
+    "formatterTokenValidation": true
+  },
+  "pomFormatting": {
+    "files": [
+      "lemnt-server/lemnt-mall/pom.xml",
+      "lemnt-server/lemnt-mall/lemnt-mall-adapter/pom.xml",
+      "lemnt-server/lemnt-mall/lemnt-mall-start/pom.xml",
+      "lemnt-server/lemnt-mall/lemnt-mall-domain/pom.xml",
+      "lemnt-server/lemnt-mall/lemnt-mall-client/pom.xml",
+      "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/pom.xml",
+      "lemnt-server/lemnt-mall/lemnt-mall-application/pom.xml",
+      "lemnt-server/lemnt-member/pom.xml",
+      "lemnt-server/lemnt-member/lemnt-member-start/pom.xml",
+      "lemnt-server/lemnt-member/lemnt-member-application/pom.xml",
+      "lemnt-server/lemnt-member/lemnt-member-infrastructure/pom.xml",
+      "lemnt-server/lemnt-member/lemnt-member-adapter/pom.xml",
+      "lemnt-server/lemnt-member/lemnt-member-domain/pom.xml",
+      "lemnt-server/lemnt-member/lemnt-member-client/pom.xml",
+      "lemnt-server/lemnt-trade/pom.xml",
+      "lemnt-server/lemnt-trade/lemnt-trade-adapter/pom.xml",
+      "lemnt-server/lemnt-trade/lemnt-trade-start/pom.xml",
+      "lemnt-server/lemnt-trade/lemnt-trade-domain/pom.xml",
+      "lemnt-server/lemnt-trade/lemnt-trade-client/pom.xml",
+      "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/pom.xml",
+      "lemnt-server/lemnt-trade/lemnt-trade-application/pom.xml"
+    ],
+    "semanticXmlValidation": true
+  },
+  "dependencyFieldRenames": [
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/store/AppStoreController.java",
+      "fields": {
+        "queries": "storeCatalogQueryExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/BrandController.java",
+      "fields": {
+        "list": "brandListQueryExe",
+        "detail": "brandDetailQueryExe",
+        "save": "brandSaveCmdExe",
+        "delete": "brandDeleteCmdExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/CategoryController.java",
+      "fields": {
+        "list": "categoryListQueryExe",
+        "detail": "categoryDetailQueryExe",
+        "save": "categorySaveCmdExe",
+        "delete": "categoryDeleteCmdExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/SpuController.java",
+      "fields": {
+        "page": "spuPageQueryExe",
+        "detail": "spuDetailQueryExe",
+        "create": "spuCreateCmdExe",
+        "update": "spuUpdateCmdExe",
+        "shelf": "spuShelfCmdExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/catalog/SkuController.java",
+      "fields": {
+        "update": "skuUpdateCmdExe",
+        "stock": "stockAdjustCmdExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/promotion/gateway/PromotionCatalogGatewayImpl.java",
+      "fields": {
+        "mapper": "promotionCatalogMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/catalog/gateway/CatalogGatewayImpl.java",
+      "fields": {
+        "mapper": "catalogMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/gateway/ProductGatewayImpl.java",
+      "fields": {
+        "mapper": "productMapper",
+        "reservations": "stockReservationMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/store/gateway/StoreCatalogGatewayImpl.java",
+      "fields": {
+        "mapper": "storeCatalogMapper",
+        "catalog": "catalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/BrandDeleteCmdExe.java",
+      "fields": {
+        "gateway": "catalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/SpuCreateCmdExe.java",
+      "fields": {
+        "gateway": "catalogGateway",
+        "validation": "catalogValidationService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/SpuUpdateCmdExe.java",
+      "fields": {
+        "gateway": "catalogGateway",
+        "validation": "catalogValidationService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/SpuShelfCmdExe.java",
+      "fields": {
+        "gateway": "catalogGateway",
+        "validation": "catalogValidationService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/BrandDetailQueryExe.java",
+      "fields": {
+        "gateway": "catalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/SkuUpdateCmdExe.java",
+      "fields": {
+        "gateway": "catalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/BrandListQueryExe.java",
+      "fields": {
+        "gateway": "catalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/SpuPageQueryExe.java",
+      "fields": {
+        "gateway": "catalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/CategorySaveCmdExe.java",
+      "fields": {
+        "gateway": "catalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/CategoryDetailQueryExe.java",
+      "fields": {
+        "gateway": "catalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/BrandSaveCmdExe.java",
+      "fields": {
+        "gateway": "catalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/CategoryDeleteCmdExe.java",
+      "fields": {
+        "gateway": "catalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/SpuDetailQueryExe.java",
+      "fields": {
+        "gateway": "catalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/CategoryListQueryExe.java",
+      "fields": {
+        "gateway": "catalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/executor/StockAdjustCmdExe.java",
+      "fields": {
+        "gateway": "catalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/catalog/service/CatalogValidationService.java",
+      "fields": {
+        "gateway": "catalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/executor/ProductDetailQryExe.java",
+      "fields": {
+        "gateway": "productGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/executor/ProductStatusCmdExe.java",
+      "fields": {
+        "gateway": "productGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/executor/ProductCreateCmdExe.java",
+      "fields": {
+        "gateway": "productGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/dubbo/ProductCatalogClientImpl.java",
+      "fields": {
+        "gateway": "productGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/dubbo/PromotionCatalogClientImpl.java",
+      "fields": {
+        "gateway": "promotionCatalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/store/executor/StoreCatalogQueryExe.java",
+      "fields": {
+        "gateway": "storeCatalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-auth/lemnt-auth-adapter/src/main/java/com/lemnt/auth/adapter/app/member/AppMemberAuthController.java",
+      "fields": {
+        "commands": "memberAuthCmdExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-auth/lemnt-auth-infrastructure/src/main/java/com/lemnt/auth/infrastructure/member/gateway/MemberAuthenticationStoreImpl.java",
+      "fields": {
+        "mapper": "memberAuthenticationMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/member/executor/MemberAuthCmdExe.java",
+      "fields": {
+        "service": "memberAuthenticationService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/dubbo/MemberAuthenticationClientImpl.java",
+      "fields": {
+        "service": "memberAuthenticationService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/dubbo/MemberSessionClientImpl.java",
+      "fields": {
+        "service": "memberAuthenticationService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/executor/MemberRegisterCmdExe.java",
+      "fields": {
+        "gateway": "memberGateway",
+        "accounts": "memberAccountGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/dubbo/MemberClientImpl.java",
+      "fields": {
+        "gateway": "memberGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/executor/MemberAccountQueryExe.java",
+      "fields": {
+        "accounts": "memberAccountGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/executor/MemberAccountCmdExe.java",
+      "fields": {
+        "service": "memberAccountService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/executor/MemberExternalCmdExe.java",
+      "fields": {
+        "sms": "memberSmsAccountService",
+        "identities": "memberIdentityService",
+        "social": "memberSocialService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/executor/MemberExternalQueryExe.java",
+      "fields": {
+        "identities": "memberIdentityService",
+        "social": "memberSocialService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/executor/MemberAuthCmdExe.java",
+      "fields": {
+        "service": "memberAuthService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/executor/MemberAdminQueryExe.java",
+      "fields": {
+        "gateway": "memberAdminQueryGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberIdentityService.java",
+      "fields": {
+        "verification": "memberIdentityVerificationService",
+        "authentication": "memberAuthService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberAuthService.java",
+      "fields": {
+        "accounts": "memberAccountGateway",
+        "passwords": "memberPasswordGateway",
+        "authentication": "memberAuthenticationGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberSmsChallengeService.java",
+      "fields": {
+        "verification": "memberVerificationGateway",
+        "accounts": "memberAccountGateway",
+        "delivery": "memberSmsDeliveryGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberIdentityVerificationService.java",
+      "fields": {
+        "verification": "memberVerificationGateway",
+        "accounts": "memberAccountGateway",
+        "members": "memberGateway",
+        "authentication": "memberAuthService",
+        "sms": "memberSmsChallengeService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberAccountService.java",
+      "fields": {
+        "accounts": "memberAccountGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberSmsService.java",
+      "fields": {
+        "challenge": "memberSmsChallengeService",
+        "delivery": "memberSmsDeliveryGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberSocialService.java",
+      "fields": {
+        "identities": "memberIdentityService",
+        "provider": "memberSocialGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/account/service/MemberSmsAccountService.java",
+      "fields": {
+        "accounts": "memberAccountGateway",
+        "delivery": "memberSmsService",
+        "challenge": "memberSmsChallengeService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/gateway/MemberAccountGatewayImpl.java",
+      "fields": {
+        "mapper": "memberAccountMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/gateway/MemberVerificationGatewayImpl.java",
+      "fields": {
+        "mapper": "memberVerificationMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/gateway/MemberAdminQueryGatewayImpl.java",
+      "fields": {
+        "mapper": "memberAdminQueryMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/account/gateway/WxMemberSocialGateway.java",
+      "fields": {
+        "mini": "wxMaService",
+        "mp": "wxMpService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/gateway/MemberGatewayImpl.java",
+      "fields": {
+        "mapper": "memberMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/AppMemberAccountController.java",
+      "fields": {
+        "auth": "memberAuthService",
+        "commands": "memberAccountCmdExe",
+        "queries": "memberAccountQueryExe",
+        "authentication": "memberAuthCmdExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/AppMemberExternalController.java",
+      "fields": {
+        "auth": "memberAuthService",
+        "commands": "memberExternalCmdExe",
+        "queries": "memberExternalQueryExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/account/AppMemberAddressController.java",
+      "fields": {
+        "auth": "memberAuthService",
+        "commands": "memberAccountCmdExe",
+        "queries": "memberAccountQueryExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberGroupController.java",
+      "fields": {
+        "commands": "memberAccountCmdExe",
+        "queries": "memberAccountQueryExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberUserController.java",
+      "fields": {
+        "commands": "memberAccountCmdExe",
+        "queries": "memberAccountQueryExe",
+        "authentication": "memberAuthCmdExe",
+        "registration": "memberRegisterCmdExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberTagController.java",
+      "fields": {
+        "commands": "memberAccountCmdExe",
+        "queries": "memberAccountQueryExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberLevelController.java",
+      "fields": {
+        "commands": "memberAccountCmdExe",
+        "queries": "memberAccountQueryExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberRecordController.java",
+      "fields": {
+        "queries": "memberAdminQueryExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/account/AdminMemberConfigController.java",
+      "fields": {
+        "commands": "memberAccountCmdExe",
+        "queries": "memberAccountQueryExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/AppPaymentController.java",
+      "fields": {
+        "sessions": "memberSessionService",
+        "status": "memberPaymentStatusQueryExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/checkout/AppCheckoutController.java",
+      "fields": {
+        "sessions": "memberSessionService",
+        "list": "cartListQueryExe",
+        "save": "cartSaveCmdExe",
+        "delete": "cartDeleteCmdExe",
+        "coupons": "couponListQueryExe",
+        "quote": "checkoutQuoteQueryExe",
+        "checkout": "checkoutSubmitCmdExe",
+        "receipt": "checkoutReceiptQueryExe",
+        "settlements": "settlementService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/store/AppPromotionController.java",
+      "fields": {
+        "sessions": "memberSessionService",
+        "commands": "storefrontCmdExe",
+        "queries": "promotionQueryExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/TradeOutboxController.java",
+      "fields": {
+        "replay": "tradeOutboxReplayCmdExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/PromotionAdminController.java",
+      "fields": {
+        "create": "promotionCreateCmdExe",
+        "save": "promotionDraftSaveCmdExe",
+        "publish": "promotionPublishCmdExe",
+        "state": "promotionStateChangeCmdExe",
+        "detail": "promotionDetailQueryExe",
+        "page": "promotionPageQueryExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/AdminFulfillmentController.java",
+      "fields": {
+        "page": "orderPageQueryExe",
+        "detail": "orderDetailQueryExe",
+        "shipment": "shipmentCreateCmdExe",
+        "receive": "orderReceiveCmdExe",
+        "refund": "refundRequestCmdExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/AdminRefundRequestController.java",
+      "fields": {
+        "page": "refundPageQueryExe",
+        "detail": "refundDetailQueryExe",
+        "reject": "refundRejectCmdExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/AdminCartController.java",
+      "fields": {
+        "list": "cartListQueryExe",
+        "save": "cartSaveCmdExe",
+        "delete": "cartDeleteCmdExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/AdminCheckoutController.java",
+      "fields": {
+        "quote": "checkoutQuoteQueryExe",
+        "checkout": "checkoutSubmitCmdExe",
+        "receipt": "checkoutReceiptQueryExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/checkout/AdminCouponController.java",
+      "fields": {
+        "templates": "couponTemplateListQueryExe",
+        "create": "couponTemplateCreateCmdExe",
+        "enable": "couponTemplateEnableCmdExe",
+        "issue": "couponIssueCmdExe",
+        "coupons": "couponListQueryExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/store/AdminPublicCouponController.java",
+      "fields": {
+        "queries": "promotionQueryExe",
+        "commands": "storefrontCmdExe"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-start/src/main/java/com/lemnt/trade/start/TradeOutboxScheduler.java",
+      "fields": {
+        "dispatcher": "tradeOutboxDispatchExe",
+        "closer": "tradeOrderCloseCmdExe",
+        "orders": "tradeOrderGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/promotion/gateway/PromotionGatewayImpl.java",
+      "fields": {
+        "mapper": "promotionMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/fulfillment/gateway/FulfillmentGatewayImpl.java",
+      "fields": {
+        "mapper": "fulfillmentMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/checkout/gateway/SettlementGatewayImpl.java",
+      "fields": {
+        "mapper": "settlementMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/checkout/gateway/CheckoutGatewayImpl.java",
+      "fields": {
+        "mapper": "checkoutMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/gateway/TradeOrderGatewayImpl.java",
+      "fields": {
+        "orders": "tradeOrderMapper",
+        "items": "tradeOrderItemMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/gateway/TradeOutboxGatewayImpl.java",
+      "fields": {
+        "mapper": "tradeOutboxMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/gateway/TradePaymentGatewayImpl.java",
+      "fields": {
+        "mapper": "tradePaymentMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/store/gateway/StorefrontGatewayImpl.java",
+      "fields": {
+        "mapper": "storefrontMapper"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/PromotionPublishCmdExe.java",
+      "fields": {
+        "service": "promotionAdministrationService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/PromotionCreateCmdExe.java",
+      "fields": {
+        "service": "promotionAdministrationService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/PromotionStateChangeCmdExe.java",
+      "fields": {
+        "service": "promotionAdministrationService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/PromotionDraftSaveCmdExe.java",
+      "fields": {
+        "service": "promotionAdministrationService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/PromotionPageQueryExe.java",
+      "fields": {
+        "gateway": "promotionGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/PromotionDetailQueryExe.java",
+      "fields": {
+        "gateway": "promotionGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/service/PromotionAdministrationService.java",
+      "fields": {
+        "gateway": "promotionGateway",
+        "facts": "promotionCatalogFactsGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/service/PromotionUsageService.java",
+      "fields": {
+        "gateway": "promotionGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/OrderReceiveCmdExe.java",
+      "fields": {
+        "service": "orderFulfillmentService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/RefundPageQueryExe.java",
+      "fields": {
+        "fulfillment": "fulfillmentGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/ShipmentCreateCmdExe.java",
+      "fields": {
+        "service": "orderFulfillmentService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/RefundDetailQueryExe.java",
+      "fields": {
+        "fulfillment": "fulfillmentGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/OrderPageQueryExe.java",
+      "fields": {
+        "fulfillment": "fulfillmentGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/OrderDetailQueryExe.java",
+      "fields": {
+        "orders": "tradeOrderGateway",
+        "fulfillment": "fulfillmentGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/RefundRejectCmdExe.java",
+      "fields": {
+        "service": "orderFulfillmentService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/executor/RefundRequestCmdExe.java",
+      "fields": {
+        "service": "orderFulfillmentService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/service/OrderFulfillmentService.java",
+      "fields": {
+        "orders": "tradeOrderGateway",
+        "payments": "tradePaymentGateway",
+        "fulfillment": "fulfillmentGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CouponTemplateListQueryExe.java",
+      "fields": {
+        "checkout": "checkoutGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CouponListQueryExe.java",
+      "fields": {
+        "checkout": "checkoutGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CouponTemplateCreateCmdExe.java",
+      "fields": {
+        "checkout": "checkoutGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CheckoutQuoteQueryExe.java",
+      "fields": {
+        "placement": "orderPlacementService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CartSaveCmdExe.java",
+      "fields": {
+        "checkout": "checkoutGateway",
+        "members": "checkoutMemberService",
+        "products": "productCatalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CartDeleteCmdExe.java",
+      "fields": {
+        "checkout": "checkoutGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CouponIssueCmdExe.java",
+      "fields": {
+        "checkout": "checkoutGateway",
+        "members": "checkoutMemberService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CheckoutReceiptQueryExe.java",
+      "fields": {
+        "checkout": "checkoutGateway",
+        "orders": "tradeOrderGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/MemberPaymentStatusQueryExe.java",
+      "fields": {
+        "orders": "tradeOrderGateway",
+        "payments": "tradePaymentGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CouponTemplateEnableCmdExe.java",
+      "fields": {
+        "checkout": "checkoutGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CheckoutSubmitCmdExe.java",
+      "fields": {
+        "placement": "orderPlacementService",
+        "checkout": "checkoutGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/executor/CartListQueryExe.java",
+      "fields": {
+        "checkout": "checkoutGateway",
+        "products": "productCatalogGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/service/CheckoutMemberService.java",
+      "fields": {
+        "members": "memberLookupGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/service/OrderPlacementService.java",
+      "fields": {
+        "checkout": "checkoutGateway",
+        "orders": "tradeOrderGateway",
+        "outbox": "tradeOutboxGateway",
+        "products": "productCatalogGateway",
+        "members": "checkoutMemberService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/service/CheckoutLifecycleService.java",
+      "fields": {
+        "orders": "tradeOrderGateway",
+        "outbox": "tradeOutboxGateway",
+        "checkout": "checkoutGateway",
+        "fulfillment": "fulfillmentGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/service/MemberSessionService.java",
+      "fields": {
+        "sessions": "memberSessionGateway",
+        "members": "checkoutMemberService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/service/SettlementService.java",
+      "fields": {
+        "placement": "orderPlacementService",
+        "settlements": "settlementGateway",
+        "checkout": "checkoutGateway",
+        "orders": "tradeOrderGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/TradeOutboxReplayCmdExe.java",
+      "fields": {
+        "outbox": "tradeOutboxGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/PaymentNotifyCmdExe.java",
+      "fields": {
+        "payments": "tradePaymentGateway",
+        "orders": "tradeOrderGateway",
+        "outbox": "tradeOutboxGateway",
+        "checkout": "checkoutGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/TradeOrderCreateCmdExe.java",
+      "fields": {
+        "placement": "orderPlacementService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/TradeOutboxDispatchExe.java",
+      "fields": {
+        "outbox": "tradeOutboxGateway",
+        "orders": "tradeOrderGateway",
+        "catalog": "productCatalogGateway",
+        "lifecycle": "checkoutLifecycleService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/TradePaymentCreateCmdExe.java",
+      "fields": {
+        "orders": "tradeOrderGateway",
+        "payments": "tradePaymentGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/TradeOrderDetailQryExe.java",
+      "fields": {
+        "gateway": "tradeOrderGateway"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/executor/StorefrontCmdExe.java",
+      "fields": {
+        "service": "storefrontService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/executor/PromotionQueryExe.java",
+      "fields": {
+        "service": "storefrontService"
+      }
+    },
+    {
+      "file": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/store/service/StorefrontService.java",
+      "fields": {
+        "storefront": "storefrontGateway",
+        "checkout": "checkoutGateway",
+        "members": "checkoutMemberService",
+        "products": "productCatalogGateway"
+      }
+    }
+  ]
+}

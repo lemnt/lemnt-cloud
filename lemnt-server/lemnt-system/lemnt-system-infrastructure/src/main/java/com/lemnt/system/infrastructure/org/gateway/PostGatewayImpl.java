@@ -1,21 +1,22 @@
 package com.lemnt.system.infrastructure.org.gateway;
 
-import java.util.Arrays;
-import java.util.List;
-
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lemnt.system.infrastructure.auth.mapper.UserPostMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import com.lemnt.system.domain.org.model.Post;
 import com.lemnt.system.domain.org.gateway.PostGateway;
+import com.lemnt.system.domain.org.model.Post;
 import com.lemnt.system.infrastructure.org.converter.PostConverter;
 import com.lemnt.system.infrastructure.org.dataobject.PostDO;
 import com.lemnt.system.infrastructure.org.mapper.PostMapper;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.stereotype.Component;
+
+import cn.hutool.core.collection.CollUtil;
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * 岗位网关实现 — infrastructure 层适配器
@@ -25,9 +26,7 @@ import com.lemnt.system.infrastructure.org.mapper.PostMapper;
 @Component
 @RequiredArgsConstructor
 public class PostGatewayImpl implements PostGateway {
-
     private final PostMapper postMapper;
-    private final UserPostMapper userPostMapper;
 
     @Override
     public Post selectById(Long postId) {
@@ -49,7 +48,7 @@ public class PostGatewayImpl implements PostGateway {
 
     @Override
     public List<Post> selectPostAll() {
-        return PostConverter.toEntityList(postMapper.selectPostAll());
+        return PostConverter.toEntityList(selectPostAllRow());
     }
 
     @Override
@@ -72,21 +71,58 @@ public class PostGatewayImpl implements PostGateway {
 
     @Override
     public Post checkPostNameUnique(String postName) {
-        return PostConverter.toEntity(postMapper.checkPostNameUnique(postName));
+        return PostConverter.toEntity(checkPostNameUniqueRow(postName));
     }
 
     @Override
     public Post checkPostCodeUnique(String postCode) {
-        return PostConverter.toEntity(postMapper.checkPostCodeUnique(postCode));
+        return PostConverter.toEntity(checkPostCodeUniqueRow(postCode));
     }
 
     @Override
     public Post checkPostCodeUnique(String postCode, Long excludePostId) {
-        return PostConverter.toEntity(postMapper.checkPostCodeUnique(postCode, excludePostId));
+        return PostConverter.toEntity(checkPostCodeUniqueRow(postCode, excludePostId));
     }
 
-    @Override
-    public Long countUserPostById(Long postId) {
-        return userPostMapper.countUserPostById(postId);
+    /**
+     * 查询所有岗位
+     *
+     * @return 岗位列表
+     */
+    private List<PostDO> selectPostAllRow() {
+        return postMapper.selectList(
+            Wrappers.<PostDO>lambdaQuery().orderByAsc(PostDO::getPostSort));
+    }
+
+    /**
+     * 校验岗位名称
+     *
+     * @param postName 岗位名称
+     * @return 结果
+     */
+    private PostDO checkPostNameUniqueRow(String postName) {
+        return postMapper.selectOne(
+            Wrappers.<PostDO>lambdaQuery().eq(PostDO::getPostName, postName).last("limit 1"));
+    }
+
+    /**
+     * 校验岗位编码
+     *
+     * @param postCode 岗位编码
+     * @return 结果
+     */
+    private PostDO checkPostCodeUniqueRow(String postCode) {
+        return checkPostCodeUniqueRow(postCode, null);
+    }
+
+    /**
+     * 按编码检查冲突，不过滤停用岗位；修改时排除自身。
+     */
+    private PostDO checkPostCodeUniqueRow(String postCode, Long excludePostId) {
+        return postMapper.selectOne(
+            Wrappers.<PostDO>lambdaQuery()
+                .eq(PostDO::getPostCode, postCode)
+                .ne(excludePostId != null, PostDO::getPostId, excludePostId)
+                .last("limit 1"));
     }
 }

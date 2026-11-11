@@ -1,0 +1,94 @@
+Node 22.13.0 / Yarn 1.22.22; no npm dependency or lockfile changes.
+
+Command: yarn format:check
+yarn run v1.22.22
+$ prettier --check src vite.config.ts tsconfig.json package.json eslint.config.js prettier.config.js
+Checking formatting...
+All matched files use Prettier code style!
+Done in 2.08s.
+
+Command: yarn typecheck
+yarn run v1.22.22
+$ tsc --noEmit
+Done in 4.11s.
+
+Command: yarn lint
+yarn run v1.22.22
+$ eslint src
+Done in 5.25s.
+
+Command: yarn test
+yarn run v1.22.22
+$ vitest run
+
+ RUN  v5.0.3 /workspace/scratch/a93805a8b87c/lemnt-cloud/lemnt-ui
+
+
+ Test Files  29 passed (29)
+      Tests  148 passed (148)
+   Start at  13:59:11
+   Duration  1.15s (transform 55%, import 28%, tests 12%, worker 5%)
+
+    Isolate  29 workers spawned · ~138ms startup each (spawn + environment, per file)
+             at least ~433ms faster with isolate: false — reuses workers across files instead of one per file
+
+Done in 1.57s.
+
+Command: yarn build
+yarn run v1.22.22
+$ tsc -b && vite build
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 4517 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                  0.62 kB │ gzip:   0.36 kB
+dist/assets/default-avatar-CsN2OgRc.png      1,339.63 kB
+dist/assets/ProfilePage-DwCV-EyS.css             0.11 kB │ gzip:   0.11 kB
+dist/assets/OperationLogPage-zwuC8gl6.css        0.12 kB │ gzip:   0.12 kB
+dist/assets/HomePage-E7k8_5mG.css                0.37 kB │ gzip:   0.25 kB
+dist/assets/UserPage-B079EwWX.css                0.88 kB │ gzip:   0.39 kB
+dist/assets/FormSection-d8-mZ2Fu.css             0.98 kB │ gzip:   0.46 kB
+dist/assets/RolePage-BPeeMYz9.css                1.50 kB │ gzip:   0.59 kB
+dist/assets/NoticePage-BIzqB6TY.css              1.70 kB │ gzip:   0.48 kB
+dist/assets/index-BhK_gZS3.css                  14.49 kB │ gzip:   3.78 kB
+dist/assets/vendor-CKLYO04X.css                 27.35 kB │ gzip:   4.61 kB
+dist/assets/usePermission-DjL8-NGC.js            0.14 kB │ gzip:   0.14 kB
+dist/assets/BrandPage-CZX9ikxN.js                0.16 kB │ gzip:   0.16 kB
+dist/assets/CategoryPage-DPh8wGYS.js             0.17 kB │ gzip:   0.16 kB
+dist/assets/userKeys-_Y0tJhCK.js                 0.17 kB │ gzip:   0.12 kB
+dist/assets/constants-JKbbFDpY.js                0.21 kB │ gzip:   0.18 kB
+dist/assets/rolldown-runtime-hePW80VL.js         0.71 kB │ gzip:   0.42 kB
+dist/assets/FormSection-DR3mRi-P.js              0.72 kB │ gzip:   0.38 kB
+dist/assets/AdminModalForm-DGe_hBA9.js           0.78 kB │ gzip:   0.43 kB
+dist/assets/types-DK1Ui6Np.js                    0.89 kB │ gzip:   0.38 kB
+dist/assets/userApi-GtSDTV3U.js                  1.08 kB │ gzip:   0.42 kB
+dist/assets/HomePage-VcbmfIxa.js                 1.34 kB │ gzip:   0.80 kB
+dist/assets/LoginLogPage-B4uxXEVZ.js             3.46 kB │ gzip:   1.66 kB
+dist/assets/ConfigPage-C_xNQnN7.js               3.56 kB │ gzip:   1.63 kB
+dist/assets/CatalogTaxonomyPage-BCe4E1RV.js      3.95 kB │ gzip:   2.01 kB
+dist/assets/OperationLogPage-C4UoteAa.js         3.98 kB │ gzip:   1.87 kB
+dist/assets/PostPage-Bxx-vVMN.js                 4.64 kB │ gzip:   2.05 kB
+dist/assets/constants-Cv8smf8q.js                4.66 kB │ gzip:   1.76 kB
+dist/assets/catalogValidation-DX6jcFxz.js        4.90 kB │ gzip:   1.93 kB
+dist/assets/CouponTemplatePage-DJvV0Bwu.js       5.25 kB │ gzip:   2.40 kB
+dist/assets/DeptPage-C13kHavH.js                 5.66 kB │ gzip:   2.51 kB
+dist/assets/MenuPage-CMvY7lc_.js                 6.39 kB │ gzip:   2.78 kB
+dist/assets/ProfilePage-DC-Cn_-V.js              6.54 kB │ gzip:   2.93 kB
+dist/assets/DictPage-DcUqoARt.js                 8.29 kB │ gzip:   2.72 kB
+dist/assets/MemberCartPage-FJsJaNgP.js           9.14 kB │ gzip:   3.95 kB
+dist/assets/SpuPage-LX05QhL-.js                  9.54 kB │ gzip:   3.68 kB
+dist/assets/NoticePage-COMDwncu.js               9.80 kB │ gzip:   4.04 kB
+dist/assets/UserPage-B8tKMPFZ.js                12.93 kB │ gzip:   4.83 kB
+dist/assets/RolePage-BESOVEU7.js                13.13 kB │ gzip:   4.76 kB
+dist/assets/index-D_bIGJy6.js                   34.77 kB │ gzip:  12.99 kB
+dist/assets/vendor-BsLRGTwj.js               2,431.09 kB │ gzip: 765.87 kB
+
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1.20s
+Done in 5.88s.
+

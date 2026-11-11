@@ -2,9 +2,11 @@ package com.lemnt.common.log.service;
 
 import com.lemnt.common.log.event.OperLogEvent;
 import com.lemnt.common.log.listener.producer.OperLogProducer;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 异步调用日志服务

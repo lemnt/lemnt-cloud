@@ -1,9 +1,11 @@
 package com.lemnt.gateway.config;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.lemnt.common.core.utils.StringUtils;
 
-import jakarta.annotation.Resource;
+import com.alibaba.nacos.client.naming.event.InstancesChangeEvent;
+import com.alibaba.nacos.common.notify.Event;
+import com.alibaba.nacos.common.notify.NotifyCenter;
+import com.alibaba.nacos.common.notify.listener.Subscriber;
 import org.springdoc.core.properties.AbstractSwaggerUiConfigProperties;
 import org.springdoc.core.properties.SwaggerUiConfigProperties;
 import org.springframework.beans.factory.InitializingBean;
@@ -11,11 +13,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Configuration;
-import com.alibaba.nacos.client.naming.event.InstancesChangeEvent;
-import com.alibaba.nacos.common.notify.Event;
-import com.alibaba.nacos.common.notify.NotifyCenter;
-import com.alibaba.nacos.common.notify.listener.Subscriber;
-import com.lemnt.common.core.utils.StringUtils;
+
+import jakarta.annotation.Resource;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * SpringDoc配置类
@@ -37,7 +39,8 @@ public class SpringDocConfig implements InitializingBean {
      */
     @Override
     public void afterPropertiesSet() {
-        NotifyCenter.registerSubscriber(new SwaggerDocRegister(swaggerUiConfigProperties, discoveryClient));
+        NotifyCenter.registerSubscriber(
+            new SwaggerDocRegister(swaggerUiConfigProperties, discoveryClient));
     }
 }
 
@@ -51,9 +54,10 @@ class SwaggerDocRegister extends Subscriber<InstancesChangeEvent> {
     @Resource
     private DiscoveryClient discoveryClient;
 
-    private final static String[] EXCLUDE_ROUTES = new String[]{"lemnt-gateway"};
+    private static final String[] EXCLUDE_ROUTES = new String[]{"lemnt-gateway"};
 
-    public SwaggerDocRegister(SwaggerUiConfigProperties swaggerUiConfigProperties, DiscoveryClient discoveryClient) {
+    public SwaggerDocRegister(
+        SwaggerUiConfigProperties swaggerUiConfigProperties, DiscoveryClient discoveryClient) {
         this.swaggerUiConfigProperties = swaggerUiConfigProperties;
         this.discoveryClient = discoveryClient;
     }
@@ -65,17 +69,24 @@ class SwaggerDocRegister extends Subscriber<InstancesChangeEvent> {
      */
     @Override
     public void onEvent(InstancesChangeEvent event) {
-        Set<AbstractSwaggerUiConfigProperties.SwaggerUrl> swaggerUrlSet = discoveryClient.getServices()
-                .stream()
+        Set<AbstractSwaggerUiConfigProperties.SwaggerUrl> swaggerUrlSet =
+            discoveryClient.getServices().stream()
                 .flatMap(serviceId -> discoveryClient.getInstances(serviceId).stream())
-                .filter(instance -> !StringUtils.equalsAnyIgnoreCase(instance.getServiceId(), EXCLUDE_ROUTES))
+                .filter(
+                    instance ->
+                        !StringUtils.equalsAnyIgnoreCase(
+                            instance.getServiceId(), EXCLUDE_ROUTES))
                 .filter(instance -> !instance.getServiceId().endsWith("-provider"))
-                .map(instance -> {
-                    AbstractSwaggerUiConfigProperties.SwaggerUrl swaggerUrl = new AbstractSwaggerUiConfigProperties.SwaggerUrl();
-                    swaggerUrl.setName(instance.getServiceId());
-                    swaggerUrl.setUrl(String.format("/%s/v3/api-docs", instance.getServiceId()));
-                    return swaggerUrl;
-                })
+                .map(
+                    instance -> {
+                        AbstractSwaggerUiConfigProperties.SwaggerUrl swaggerUrl =
+                            new AbstractSwaggerUiConfigProperties.SwaggerUrl();
+                        swaggerUrl.setName(instance.getServiceId());
+                        swaggerUrl.setUrl(
+                            String.format(
+                                "/%s/v3/api-docs", instance.getServiceId()));
+                        return swaggerUrl;
+                    })
                 .collect(Collectors.toSet());
 
         swaggerUiConfigProperties.setUrls(swaggerUrlSet);

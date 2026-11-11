@@ -1,0 +1,7 @@
+{
+  "redis": "Mocked StringRedisTemplate NX/TTL operations and actual Fastjson2 serializer; no live Redis",
+  "database": "Actual V6 script, mappers, transaction proxies and H2; not target MySQL",
+  "miniapp": "Node tests + JS/JSON syntax; no WeChat compiler/device/visual QA",
+  "react": "Unchanged, not rerun",
+  "identity": "Real member verifier remains absent; readiness false"
+}

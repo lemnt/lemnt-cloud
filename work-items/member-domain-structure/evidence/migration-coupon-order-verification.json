@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-28",
+  "branch": "feat/yudao-member-mall-trade-migration",
+  "baseHEAD": "7b6a5f7223e812332aa654f89e3fd8ce0a3a3499",
+  "scope": "F01券快照与生命周期、F02订单日志和本人取消/收货；不是完整迁移完成",
+  "backend": {
+    "status": "PASS",
+    "tests": 256,
+    "failures": 0,
+    "errors": 0,
+    "log": "/tmp/migration-coupon-order-verified.log",
+    "cleanVerifyLog": "/tmp/migration-coupon-order-final.log",
+    "permissionContractsLog": "/tmp/migration-permission-contracts.log",
+    "styleAndSchemaCompileLog": "/tmp/migration-schema-compile.log"
+  },
+  "react": {
+    "status": "PASS",
+    "tests": 164,
+    "testLog": "/tmp/migration-ui-tests.log",
+    "buildLog": "/tmp/migration-ui-build-final.log",
+    "typeLog": "/tmp/migration-ui-type-final.log",
+    "lintLog": "/tmp/migration-ui-lint.log",
+    "formatLog": "/tmp/migration-ui-format-check.log"
+  },
+  "miniapp": {
+    "status": "PASS",
+    "tests": 80,
+    "log": "/tmp/migration-mini-tests.log"
+  },
+  "notRun": [
+    "real MySQL DDL",
+    "real Redis/Dubbo/MQ network",
+    "real payment/refund/logistics SDK",
+    "browser and device end-to-end acceptance"
+  ],
+  "committed": false,
+  "pushed": false,
+  "deployed": false,
+  "remainingBusinessTablesWithoutCorrespondingTable": 37,
+  "files": {
+    "lemnt-server/lemnt-mall/sql/V10__cart_coupon_checkout.sql": "f8dbadfa68d7567be896bddc8696e9560c7b3893f5ff1a939f54add962ea3b7b",
+    "lemnt-server/lemnt-mall/sql/upgrade/coupon_rule_snapshot.sql": "d526489b69642c94a267ae2f92c435c61fdb9a8337e126ee09d3fe5b7db9745b",
+    "lemnt-server/lemnt-trade/sql/V8__order_log.sql": "5169c52783ca46c8d9b29c9fbde0a9a1b8b96206e9882e3ae5211d90ba691c88",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/coupon/service/CouponIssuanceService.java": "cba7691be2c9a04b425a59c1cf4cd83f6f1751b8ac2c9d1e92ed244c806f6e92",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityPricingService.java": "ac2fe7a7ae3fda379ba7942f9cb4c04b194e9f496c19eba6bf2bc704377a8deb",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderLogService.java": "8da7ac34f644269f342e2f517ddaebb23a0d4162dfedbedf9047b04383347d3d",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java": "8c1367063e468c626a11f786bcb06ec8f784bec229ea3894f2c70394d83b03a2"
+  }
+}

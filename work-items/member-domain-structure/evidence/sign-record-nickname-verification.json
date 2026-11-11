@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-29",
+  "member": {
+    "tests": 33,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "reactTests": 192,
+  "checks": [
+    "build",
+    "typecheck",
+    "lint",
+    "format:check"
+  ],
+  "newBackendTests": 2,
+  "verified": [
+    "生产H2及XML实际关联、分页与count",
+    "会员ID昵称组合/无匹配/改名显示",
+    "HTTP绑定和超长昵称422",
+    "昵称参数仅签到请求发送"
+  ],
+  "notRun": [
+    "部署权限切面",
+    "外部路由",
+    "浏览器",
+    "小程序未改动未重跑"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java": "1cfdfcb998fa20b195291de69f93a06ae8447e2578130d978b373ff1670d9823",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/dto/SignRecordDTO.java": "a0c33a1417c080972d68a28a971df4b7107cc99609aa822364cef4decaa7210d",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/qry/SignRecordAllPageQry.java": "1796d218674f29545373d6732536f6dfcadad0bdd2ebe01a65a6221d02e04d42",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/executor/MemberSignRecordAllPageQueryExe.java": "a41622ace519f316703694184a6255d5f9b37e8ed5e6c0c0361db86045e0fee9",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/resources/mapper/MemberSignRecordMapper.xml": "9da6ea741b42c590047245c6968cfb2bc152bd5ee7317dbebd2d6713435fd960",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/mapper/MemberSignRecordMapper.java": "22a4c04d1506650bd451f7dc68d3084bcd945a8a903098f3c839132eebef3165",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/dataobject/SignRecordDO.java": "af939f8f6084a0dbedda4bf3c821c906ae6e3334a0331661643ce40fcb8cc417",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/res/MemberRecordSigninRecordsRes.java": "4bd797db70ed3364f372451e40ead24dbec701851cfdf8956f2bd0d720b9d79f",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/req/MemberRecordSigninRecordsReq.java": "ecf0146c6ab8f13b07d8c76ad14d828da9c3494f2f60b5e21aade97056bd04ce",
+    "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/growth/model/SignRecordPageFilter.java": "ca4c7482d9689d185786e6bf770b2e969dd00f31a16334bd3720dc36a1249c17",
+    "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/growth/model/SignRecord.java": "f78a7c3f49fd91254b2f2a4bed9c56c8985498651216959033d239cdbd2fbe82",
+    "/tmp/sign-nickname-final-verify.log": "5c58984913c892a4f117bace7f4548bbfa6b0687b486e6b698f574153fab8fb4",
+    "/tmp/sign-nickname-ui-build.log": "ae4ab85323b240f0fec21d4b4732cbf3b544184a3587c666931b45458eb7d2f3",
+    "/tmp/sign-nickname-ui-tests.log": "433630d2d3fe70bb307e4d5a09345213c0bc6393ec402ec7e58d1d13a4917b6b",
+    "/tmp/sign-nickname-ui-lint.log": "d390a8c939ca60f7f656cd93d5acf81a14c2e00c6a3392b46efc2a7c89dedb55",
+    "/tmp/sign-nickname-ui-format.log": "26e74b26d1158e460c922b81734e7f67f7f7e7a43a3b22670ebf3e6312be5bdf",
+    "/tmp/sign-nickname-ui-typecheck.log": "9feea68862ace8f4c44266036e533929561dc11868fa49061b763cdea019070d"
+  }
+}

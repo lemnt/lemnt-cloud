@@ -1,13 +1,14 @@
 package com.lemnt.system.infrastructure.notice.dataobject;
 
+import com.lemnt.common.infrastructure.domain.BaseDO;
+
 import com.baomidou.mybatisplus.annotation.IdType;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.experimental.Accessors;
 
-import com.lemnt.common.infrastructure.domain.BaseDO;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * 通知公告数据对象 sys_notice
@@ -20,7 +21,6 @@ import com.lemnt.common.infrastructure.domain.BaseDO;
 @Accessors(chain = true)
 @TableName("sys_notice")
 public class NoticeDO extends BaseDO {
-
     /**
      * 公告ID
      */

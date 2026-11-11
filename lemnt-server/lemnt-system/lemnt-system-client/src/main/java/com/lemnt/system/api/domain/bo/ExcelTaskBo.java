@@ -1,13 +1,14 @@
 package com.lemnt.system.api.domain.bo;
 
-import java.io.Serial;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 import com.lemnt.common.api.domain.bo.BaseBO;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serial;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * 表格任务对象 sys_excel_task
@@ -19,7 +20,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 public class ExcelTaskBo extends BaseBO {
-
     @Serial
     private static final long serialVersionUID = 1L;
 

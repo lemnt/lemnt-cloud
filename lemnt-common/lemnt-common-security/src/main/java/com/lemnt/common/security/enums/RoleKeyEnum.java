@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
  */
 @Getter
 public enum RoleKeyEnum {
-
     ADMIN("超级管理员", "admin", 1, true),
     SYSTEM("系统管理员", "system", 2, true),
     COMMON("普通用户", "common", 99, false),
@@ -33,8 +32,7 @@ public enum RoleKeyEnum {
     }
 
     private static final Map<String, RoleKeyEnum> TYPE_MAP =
-            Arrays.stream(values())
-                    .collect(Collectors.toMap(RoleKeyEnum::getRoleKey, e -> e));
+        Arrays.stream(values()).collect(Collectors.toMap(RoleKeyEnum::getRoleKey, e -> e));
 
     public static RoleKeyEnum getByRoleKey(String roleKey) {
         if (Objects.isNull(roleKey)) {

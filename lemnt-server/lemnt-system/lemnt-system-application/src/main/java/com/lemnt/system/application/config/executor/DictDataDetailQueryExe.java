@@ -1,10 +1,12 @@
 package com.lemnt.system.application.config.executor;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.system.application.config.converter.DictDataConverter;
 import com.lemnt.system.application.config.dto.DictDataDTO;
 import com.lemnt.system.domain.config.gateway.DictDataGateway;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 字典数据详情查询执行器

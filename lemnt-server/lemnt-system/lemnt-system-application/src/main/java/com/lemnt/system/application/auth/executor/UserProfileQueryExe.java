@@ -7,8 +7,10 @@ import com.lemnt.system.domain.auth.model.Role;
 import com.lemnt.system.domain.auth.model.User;
 import com.lemnt.system.domain.org.gateway.PostGateway;
 import com.lemnt.system.domain.org.model.Post;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +23,6 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class UserProfileQueryExe {
-
     private final UserGateway userGateway;
     private final RoleGateway roleGateway;
     private final PostGateway postGateway;
@@ -29,15 +30,16 @@ public class UserProfileQueryExe {
     public Map<String, Object> execute() {
         Long userId = SecurityUtils.getUserId();
         User user = userGateway.selectUserById(userId);
-        String roleGroup = roleGateway.selectRolesByUserId(userId).stream()
+        String roleGroup =
+            roleGateway.selectRolesByUserId(userId).stream()
                 .map(Role::getRoleName)
                 .collect(Collectors.joining(","));
         Set<Long> postIds = Set.copyOf(postGateway.selectPostsByUserId(userId));
-        String postGroup = postGateway.selectPostAll().stream()
+        String postGroup =
+            postGateway.selectPostAll().stream()
                 .filter(post -> postIds.contains(post.getPostId()))
                 .map(Post::getPostName)
                 .collect(Collectors.joining(","));
-
         Map<String, Object> result = new HashMap<>();
         result.put("user", user);
         result.put("roleGroup", roleGroup);

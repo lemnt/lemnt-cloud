@@ -1,11 +1,11 @@
 package com.lemnt.system.application.auth.dto;
 
 import com.lemnt.system.application.org.dto.PostDTO;
+
 import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 用户 DTO
@@ -14,7 +14,6 @@ import java.util.Set;
  */
 @Data
 public class UserDetailDTO {
-
     /**
      * 用户信息
      */

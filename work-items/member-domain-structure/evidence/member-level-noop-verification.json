@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-31",
+  "batch": "121/122",
+  "source": "MemberLevelServiceImpl.updateUserLevel",
+  "tests": {
+    "member": {
+      "tests": 108,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "auth": {
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "mall": {
+      "tests": 119,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "gateway": {
+      "tests": 34,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "common-security": {
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "businessTests": 405,
+  "reproduction": {
+    "tests": 3,
+    "failures": 3,
+    "errors": 0,
+    "log": "/tmp/member-level-noop-reproduction.log",
+    "facts": [
+      "same level reset experience from 150 to 100",
+      "already-unassigned cancellation reset experience from 50 to 0",
+      "concurrent same-level requests reset experience from 150 to 100"
+    ]
+  },
+  "verify": "passed",
+  "log": "/tmp/member-level-noop-verify.log",
+  "diffCheck": "passed",
+  "newTests": [
+    "same-level retains experience and records even after metadata changes/disabling",
+    "cancel already-unassigned is noop and does not consume unused request key",
+    "concurrent same-level requests retain experience without extra records"
+  ],
+  "relatedTestFix": "Prior RedisSessionOperationsTest now explicitly uses existing subclass MockMaker after joint-run mock handler assertions; both tests pass",
+  "limitations": [
+    "H2 transactions and Mockito test environment only",
+    "No frontend or miniapp changes or rerun",
+    "No schema changes or live database repair",
+    "No commit, push, deployment or HTTP E2E"
+  ]
+}

@@ -1,0 +1,31 @@
+<view class="container">
+  <view wx:if="{{!ready}}" class="notice">会员服务暂未启用。</view>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+  <button wx:if="{{!loggedIn}}" bindtap="login">会员登录</button>
+  <block wx:if="{{loggedIn}}">
+    <view class="card">
+      <view class="title">收银台</view>
+      <view class="list-row">订单 {{orderNo}}</view>
+      <view class="list-row" wx:if="{{status}}">订单状态：{{status.orderStatus}} · 应付 ￥{{status.payableAmount}}</view>
+      <view class="list-row" wx:if="{{prepay}}">支付单 {{prepay.paymentNo}} · {{prepay.channelLabel}} · ￥{{prepay.amount}}</view>
+    </view>
+    <view class="card" wx:if="{{!paid}}">
+      <view class="subtitle">选择支付渠道</view>
+      <view wx:if="{{!channels.length}}" class="description">该支付应用尚未配置可用渠道。</view>
+      <button wx:for="{{channels}}" wx:key="code" size="mini" data-code="{{item.code}}" bindtap="chooseChannel"
+     disabled="{{loading}}">{{item.name}}{{channel === item.code ? ' · 已选' : ''}}</button>
+      <button type="primary" bindtap="pay" disabled="{{loading || !channel}}">创建支付单</button>
+      <view wx:if="{{prepay && prepay.channel === 'SANDBOX'}}">
+        <view class="description">沙箱渠道会在本地直接确认支付，仅用于联调。</view>
+        <button type="primary" bindtap="sandboxPay" disabled="{{loading}}">模拟沙箱支付</button>
+      </view>
+      <view wx:elif="{{prepay && prepay.payUrl}}" class="description">支付链接：{{prepay.payUrl}}</view>
+      <view wx:elif="{{prepay}}" class="description">该渠道尚未接入真实支付 SDK。</view>
+    </view>
+    <view wx:if="{{message}}" class="success">{{message}}</view>
+    <view class="row">
+      <button size="mini" bindtap="refreshStatus" disabled="{{loading}}">刷新支付状态</button>
+      <button size="mini" bindtap="goOrder" disabled="{{loading}}">查看订单</button>
+    </view>
+  </block>
+</view>

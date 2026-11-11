@@ -1,0 +1,14 @@
+{
+  "tradeTables": [
+    "trade_inventory_confirmation",
+    "trade_order",
+    "trade_order_item",
+    "trade_payment",
+    "trade_refund_request",
+    "trade_shipment"
+  ],
+  "outboxMainReferences": [],
+  "mqPurpose": "order rollback only",
+  "placement": "synchronous",
+  "coupon": "locked at placement, used after payment"
+}

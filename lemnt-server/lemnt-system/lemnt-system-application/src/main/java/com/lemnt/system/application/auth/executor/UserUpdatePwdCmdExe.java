@@ -1,11 +1,13 @@
 package com.lemnt.system.application.auth.executor;
 
-import com.lemnt.system.application.auth.cmd.UserPwdUpdateCmd;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.common.security.utils.SecurityUtils;
+import com.lemnt.system.application.auth.cmd.UserPwdUpdateCmd;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
 import com.lemnt.system.domain.auth.model.User;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 用户修改个人密码命令执行器
@@ -15,7 +17,6 @@ import com.lemnt.system.domain.auth.model.User;
 @Component
 @RequiredArgsConstructor
 public class UserUpdatePwdCmdExe {
-
     private final UserGateway userGateway;
 
     public Boolean execute(UserPwdUpdateCmd cmd) {
@@ -35,6 +36,7 @@ public class UserUpdatePwdCmdExe {
         }
 
         // 重置密码
-        return userGateway.resetUserPwd(user.getUserId(), SecurityUtils.encryptPassword(cmd.newPassword()));
+        return userGateway.resetUserPwd(
+            user.getUserId(), SecurityUtils.encryptPassword(cmd.newPassword()));
     }
 }

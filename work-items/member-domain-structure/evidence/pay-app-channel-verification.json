@@ -1,0 +1,57 @@
+{
+  "batch": "136-pay-app-channel",
+  "date": "2026-10-31",
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-trade/lemnt-trade-start -am test",
+    "javaVersion": "17.0.17",
+    "totals": {"classes": 32, "tests": 185, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-trade-domain": {"classes": 1, "tests": 2},
+      "lemnt-trade-application": {"classes": 6, "tests": 29},
+      "lemnt-trade-infrastructure": {"classes": 4, "tests": 10},
+      "lemnt-trade-adapter": {"classes": 12, "tests": 25},
+      "lemnt-trade-start": {"classes": 9, "tests": 119}
+    },
+    "newTests": [
+      "com.lemnt.trade.application.payment.PayConfigExeTest (7)",
+      "com.lemnt.trade.start.payment.PayConfigPersistenceTest (3, H2 production SQL/gateway)",
+      "com.lemnt.trade.start.payment.PayConfigMenuSeedTest (1)"
+    ]
+  },
+  "ui": {
+    "command": "yarn test / yarn typecheck / yarn lint / yarn format:check",
+    "tests": 271,
+    "failures": 0,
+    "newTests": ["src/modules/trade/payment/api/payConfigApi.test.ts (5)"]
+  },
+  "endpoints": [
+    "GET /trade/admin/pay-apps",
+    "GET /trade/admin/pay-apps/{id}",
+    "POST /trade/admin/pay-apps",
+    "PUT /trade/admin/pay-apps/{id}",
+    "PUT /trade/admin/pay-apps/{id}/status",
+    "DELETE /trade/admin/pay-apps/{id}",
+    "GET /trade/admin/pay-channels",
+    "GET /trade/admin/pay-channels/{id}",
+    "GET /trade/admin/pay-channels/by-app/{appId}",
+    "POST /trade/admin/pay-channels",
+    "PUT /trade/admin/pay-channels/{id}",
+    "DELETE /trade/admin/pay-channels/{id}"
+  ],
+  "securityChecks": [
+    "channel config is never returned; response only exposes configConfigured",
+    "update with blank config keeps existing secret",
+    "appKey and channel code immutable after creation",
+    "channel code restricted to supported PaymentChannel enum",
+    "delete app rejected while channels reference it"
+  ],
+  "sql": [
+    "lemnt-server/lemnt-trade/sql/V10__pay_app_channel.sql",
+    "lemnt-server/sql/V20261031__trade_pay_config_menu.sql"
+  ],
+  "deferred": [
+    "pay notify task/log/retry (Y04) requires callback-path change; separate batch",
+    "real payment channel SDK and cashier (excluded by scope)",
+    "real MySQL/Nacos/Redis/Dubbo/gateway/browser verification"
+  ]
+}

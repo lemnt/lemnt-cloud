@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
  */
 @Getter
 public enum ExcelExportTaskEnum {
-
     SYSTEM_USER_EXPORT("userExcelExportTask", "用户导出"),
     ;
 
@@ -28,11 +27,10 @@ public enum ExcelExportTaskEnum {
     }
 
     private static final Map<String, ExcelExportTaskEnum> TYPE_MAP =
-            Arrays.stream(values())
-                    .collect(Collectors.toMap(
-                            ExcelExportTaskEnum::getBeanName,
-                            Function.identity()
-                    ));
+        Arrays.stream(values())
+            .collect(
+                Collectors.toMap(
+                    ExcelExportTaskEnum::getBeanName, Function.identity()));
 
     /**
      * 根据 beanName 获取枚举

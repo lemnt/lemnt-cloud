@@ -1,0 +1,10 @@
+# Nacos Data ID: commerce-mq.yaml；由product/promotion/order/pay/member共同导入。
+# 仅配置源，不会创建Topic或发布Nacos。先停旧写入方、审核原任务再开启消费。
+# Topic与Consumer Group由生产注解固定，清单见docs/module-split-cutover.md。
+rocketmq:
+  name-server: ${ROCKETMQ_NAME_SERVER}
+  producer:
+    group: ${spring.application.name}-commerce-producer-v1
+commerce:
+  mq:
+    enabled: ${COMMERCE_MQ_ENABLED:false}

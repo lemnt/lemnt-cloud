@@ -1,0 +1,15 @@
+<view class="container">
+  <view class="title">营销活动</view>
+  <view wx:if="{{!ready}}" class="notice">商城服务暂未启用。</view>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+  <view wx:for="{{sections}}" wx:key="type" class="card">
+    <view class="subtitle">{{item.label}}</view>
+    <view wx:for="{{item.items}}" wx:for-item="act" wx:key="id" class="list-row" data-type="{{item.type}}" data-id="{{act.id}}" bindtap="open">
+      <view>{{act.name}}</view>
+      <view class="description">{{act.startTime}} 至 {{act.endTime}}</view>
+    </view>
+  </view>
+  <view wx:if="{{!sections.length && !error}}" class="notice">当前没有进行中的营销活动。</view>
+  <button bindtap="refresh" disabled="{{loading}}">刷新</button>
+  <navigator url="/pages/store/index">返回商城</navigator>
+</view>

@@ -1,10 +1,10 @@
 package com.lemnt.system.infrastructure.auth.converter;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.lemnt.system.domain.auth.model.Role;
 import com.lemnt.system.infrastructure.auth.dataobject.RoleDO;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 角色对象转换器
@@ -12,7 +12,6 @@ import com.lemnt.system.infrastructure.auth.dataobject.RoleDO;
  * @author wangxx
  */
 public class RoleConverter {
-
     /**
      * DO → Entity
      */

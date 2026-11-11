@@ -38,6 +38,8 @@
         <module>lemnt-common-application</module>
         <module>lemnt-common-infrastructure</module>
         <module>lemnt-common-adapter</module>
+        <module>lemnt-common-metrics</module>
+        <module>lemnt-common-sql</module>
         <module>lemnt-common-start</module>
     </modules>
 

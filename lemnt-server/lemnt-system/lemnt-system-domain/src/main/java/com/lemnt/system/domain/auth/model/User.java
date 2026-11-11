@@ -1,6 +1,7 @@
 package com.lemnt.system.domain.auth.model;
 
 import com.lemnt.system.domain.org.model.Dept;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 

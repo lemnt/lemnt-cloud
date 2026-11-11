@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-28",
+  "scope": "结算/订单/售后四字段Property快照列表；完整商城迁移仍未完成",
+  "backend": {
+    "status": "PASS",
+    "tests": 274,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cleanVerifyLog": "/tmp/property-list-clean-verify.log",
+    "finalVerifyLog": "/tmp/property-list-final-verify.log"
+  },
+  "react": {
+    "status": "PASS",
+    "tests": 170,
+    "testLog": "/tmp/property-list-ui-tests.log",
+    "typeAndBuildLog": "/tmp/property-list-ui-build.log",
+    "lintLog": "/tmp/property-list-ui-lint.log",
+    "formatLog": "/tmp/property-list-ui-format-check.log"
+  },
+  "miniapp": {
+    "status": "PASS",
+    "tests": 81,
+    "log": "/tmp/property-list-mini-tests.log"
+  },
+  "localInitTables": 46,
+  "remainingBusinessTablesWithoutCorrespondingTable": 36,
+  "realDatabaseMigrationExecuted": false,
+  "realRedisDubboMqEndToEndRun": false,
+  "browserOrDeviceEndToEndRun": false,
+  "agentCommitted": false,
+  "agentPushed": false,
+  "observedHEADAtEnd": "c46b2f28f70209700b6c7e88d52f3c131d7e3a5d",
+  "headNote": "工作区存在外部提交，本代理未执行commit/push",
+  "fileSHA256": {
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/settlement/res/SettlementItemRes.java": "7adb8917d53683d39de75a915e79cd73394cd69af2173cf2938a629f6780ab5a",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/settlement/res/SettlementItemRes.java": "63ecf50b81c09a4cb333845191b693871494c9ffa4e6d71eac7a1f73d93a306d",
+    "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/SettlementItem.java": "5d00c0e2868a7e303dbaa4f3c33c73264c94993fdb40e80b4730825bde6cb069",
+    "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSnapshot.java": "26a7b4a98184d400b037ac693f73e68365f1ae141d1b6d2aa4c0d47754e76b1b",
+    "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/dto/ProductSnapshotDTO.java": "b78e7909419b78617c3aec6cf8048dddaa84f4d36a962600a365855c127497c6",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/dto/SettlementItemDTO.java": "f9f570223005c346d4dd5b58d1daa8741fff487fa49a1338b902127ddfdbde35",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/order/res/TradeOrderItemRes.java": "5705e4018c02e0d89943ba9510279e04422f13461a481c6a2bde3e222bc706e9",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/res/OrderItemRes.java": "de6522ea12901256e02739110929dfbe049941fa36331fba204195f2e7347964",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/res/AfterSaleReceiveRes.java": "7765cac94a1214fc487aba3fa91cbe7a0727f28ada9d1fc35b40dcbdbaf0d169",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/res/AfterSalePageRes.java": "6dbfa12cdbc299833a200a93d45b33d228fad0f6846d7fd1ef6e5d172eece559",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/res/AfterSaleRefuseRes.java": "d9a1a472b46adbadac355428218d5397458a87a14648951b9f5a97cdc318111e",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/res/AfterSaleRejectRes.java": "a52eefbbc4b924bc87df664043b99d9f5a52c609bbfbab17bd5b5f8c2fa30bd4",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/res/AfterSaleDetailRes.java": "cb0603e8fb10067c85b394e58266da2ee3f4c48ba7b294aff1b19adf13aba97e",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/res/AfterSaleAgreeRes.java": "8bf425321a47ba3cb6380dde19bfaa6e3d182d3e0737c31b59e929f656c8a1f2",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/res/AfterSaleReturnRes.java": "4ab8cd59bc703ec6745ae45d22359f0ad62d29c5d7cdb7cd29120062bdec8d39",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/res/AfterSaleCreateRes.java": "c79d49d12e271cce7c7175a59f8c7577c7028370220b3216fe5c4f921c851c77",
+    "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/res/AfterSaleItemRes.java": "b10992223139eb7fae85296b436ace88ebb3f3b3f01fca43b2a3199b361e73bc",
+    "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/OrderRefundItem.java": "a756852b9c005d2341c5ea57d0080c4c030704e613fe9063ea4788ecac6984e2",
+    "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrderItem.java": "950446be4f86f3c93e5e2a1c1cb1964529f5bfcdcc6f7cd4342172f17559ba8e",
+    "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/aftersale/model/AfterSale.java": "22dd0537b647bfe84ebf81df7a5fa16ddeef27923be8cb5b4613b2e438fd9f3f",
+    "lemnt-server/lemnt-trade/lemnt-trade-client/src/main/java/com/lemnt/trade/client/dto/OrderItemDTO.java": "29bec0628b2a3c9c8b47ccfa51fed973e76e55b3ab53a35699c80ae2a61e409d",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/dto/TradeOrderItemDTO.java": "b3db74edfb84f22492b21ebed09d099653c70c209d61a275c8de1c9c13fab913",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/dto/OrderItemDTO.java": "a3e2ecc9c12e5d07a02393aafa07387288dbf9dcfc43b8a007644242e7ccf2cd",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/aftersale/dto/AfterSaleItemDTO.java": "87d897f6dce254c02f7e68750d49c4a1a2dbe884fc0a09441010710a23f749d9",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/aftersale/dto/AfterSaleDTO.java": "2f3c3169fef20dc9eaa270ff9a0e322773c8b37d0c09add9bfca1dcd7955ce62",
+    "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/settlement/converter/SettlementSubmissionConverter.java": "1ae0105236811486e6a65426d0caf383b445fe13ca6c3e3525f1631f6364bf8b",
+    "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/converter/OrderItemConverter.java": "1a834f86c243569b1e6a49da8410413f0665ba2e5896375889558d353a37aff9",
+    "lemnt-ui/src/modules/mall/checkout/checkoutDecoders.ts": "ab980bf075f350c8743f5e38cd5d6a6af31e3be8d589f0b12b9534f80b70c434",
+    "lemnt-ui/src/modules/trade/fulfillment/fulfillmentDecoders.ts": "fc90ce271fb06b04dbe378380bf0574164e75ca8fbf6656a24f4b4a7d804d376"
+  },
+  "sourceSHA256": {
+    "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/dal/dataobject/order/TradeOrderItemDO.java": "cd8bbcb623ad8a85ad8fc5079db1df007a4a8f2c3344eed52008db92b68243f0",
+    "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/dal/dataobject/aftersale/AfterSaleDO.java": "f26310fd4dc417a8f8ddbdb864ee8402ba5061940e37ca8f9c433f56d70bab96"
+  }
+}

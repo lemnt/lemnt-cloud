@@ -1,0 +1,20 @@
+{
+  "phase": "P3",
+  "result": {
+    "tests": 73,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "package": "passed",
+  "scope": "production SQL and providers with isolated product/promotion data sources; transport replaced in tests",
+  "networkRPCOrMQVerified": false,
+  "resourceCases": [
+    "duplicate lock",
+    "close-before-lock fence",
+    "frozen payload conflict",
+    "missing paid predecessor rollback",
+    "concurrent duplicate lock",
+    "concurrent discount overlap"
+  ]
+}

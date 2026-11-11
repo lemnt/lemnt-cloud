@@ -1,0 +1,65 @@
+{
+  "baseCommit": "534048e67c01ace45f929262b5301e8379cd8a6f",
+  "files": [
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/DiscountRule.java",
+      "sha256": "cd98ab06b82be1268c263f645eaa7d211faf00fe4ba1a8134fdcd3a5330c0d54"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/FenAmounts.java",
+      "sha256": "ee91ce34659a243c43abca408e69fdd8c79c532a22416aa423c2d9de958299c8"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PricingContext.java",
+      "sha256": "54e93307da466dd1dccd8c0bede3e3a016451fd1b859d30393350095c1f8e714"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PricingException.java",
+      "sha256": "fb8fa562a200e86532d0e90f43488751b18876381451e8e5ebfd5e4c9b2ae3b3"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PricingLine.java",
+      "sha256": "64a27f170e01b532e2ee9966326b4416dc29230fdbe9792675cf460309c600a7"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PricingResult.java",
+      "sha256": "a7db16b2345fcabd50dbd48e0ef176860071cb87a277f3e1edc0866d77f7a9eb"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PromotionScope.java",
+      "sha256": "7c7c764a7933214efcd7c63f014c0d1d9515b866ad06d9eb51ff74647b1c4480"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/PromotionVersion.java",
+      "sha256": "dd7ec5e1e8265f3b67be3386ad9bac3e24dc05ed615fae53b8788b4acbbf186c"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/SelectedCoupon.java",
+      "sha256": "45a68e654827949fb8ced4cdaf6164d88a2440025f582f3c5ab6f023599bc3a4"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/service/DiscountAllocator.java",
+      "sha256": "a1ce9ad3de4fc27764666feaf3ad5dcfc9c34ffa570d43b8a7b8bac0470b1742"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/service/PromotionPricingService.java",
+      "sha256": "cf60c7c40811de84f66c184153662ba8d72993a9531999cf23f594423477ea87"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/test/java/com/lemnt/trade/domain/promotion/PromotionPricingTest.java",
+      "sha256": "c823e09aceffb79879337ae0ae5079e3770160ab3e0d6c07c1982ba3a87f7ecc"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/test/java/com/lemnt/trade/domain/promotion/PromotionVectorsTest.java",
+      "sha256": "0f62f0558a998b00b81fe5bcfdc357991d453761d0f0d846ac12d25728b38c74"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/pom.xml",
+      "sha256": "9ee932095cb796a8aa1cec5b29bae6594cbe13f46c59b2ebcaa309326a2ec087"
+    },
+    {
+      "path": "docs/promotion/pricing-vectors.json",
+      "sha256": "70c5896f0639d2a1c79c00023cb05b633af841ea631e0e355bffb3dbfdd0b2a8"
+    }
+  ]
+}

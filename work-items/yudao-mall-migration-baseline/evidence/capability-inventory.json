@@ -1,0 +1,2291 @@
+{
+  "capturedAt": "2026-11-06T09:08:48+08:00",
+  "targetHead": "3ea13ae8ee1d73e5c9b4696dc249691bddee5641",
+  "scope": "Controller family inventory, not endpoint completeness or business equivalence",
+  "sourceRoot": "/Users/wangxx/demo/yudao-cloud",
+  "sourceControllers": [
+    {
+      "domain": "product",
+      "side": "admin",
+      "family": "brand",
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/brand/ProductBrandController.java",
+      "classMapping": "/product/brand",
+      "classMappingLine": 26,
+      "sha256": "8d6199e3059511c685f413917d585eb6d74d9167e5d4591d6a962fa97f103d20",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "product",
+      "side": "admin",
+      "family": "category",
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/category/ProductCategoryController.java",
+      "classMapping": "/product/category",
+      "classMappingLine": 26,
+      "sha256": "46aa79b30718ef4ced022ac1eabb032a133421f52ff5ad815d60763ca7a15d5f",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "product",
+      "side": "admin",
+      "family": "comment",
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/comment/ProductCommentController.java",
+      "classMapping": "/product/comment",
+      "classMappingLine": 24,
+      "sha256": "7e13dd110e97f62d4652153266c58888e8358238a2387eb7e929761a003255a6",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "product",
+      "side": "admin",
+      "family": "favorite",
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/favorite/ProductFavoriteController.java",
+      "classMapping": "/product/favorite",
+      "classMappingLine": 30,
+      "sha256": "541044ad7d355bbfffafd7d4923f0bc4f7e3c70b4ee25ab8b502a40f504e0736",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "product",
+      "side": "admin",
+      "family": "history",
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/history/ProductBrowseHistoryController.java",
+      "classMapping": "/product/browse-history",
+      "classMappingLine": 31,
+      "sha256": "a395267f6817a3399751da5d7375e736763c14e985adc6d114680eee1610bb5e",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "product",
+      "side": "admin",
+      "family": "property",
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/property/ProductPropertyController.java",
+      "classMapping": "/product/property",
+      "classMappingLine": 27,
+      "sha256": "ec7df9a9e8eeab0772ca3d595f928d713e75ae8832f7a9e62fb57ef99546051d",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "product",
+      "side": "admin",
+      "family": "property",
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/property/ProductPropertyValueController.java",
+      "classMapping": "/product/property/value",
+      "classMappingLine": 28,
+      "sha256": "5bc2866213886c5a9081959e1b437622b5a5ed9af0ac8d27c93eff89d648ec84",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "product",
+      "side": "admin",
+      "family": "spu",
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/spu/ProductSpuController.java",
+      "classMapping": "/product/spu",
+      "classMappingLine": 37,
+      "sha256": "affcaecc20c1d4394625242efe9dbd853fddd5fbb5c7a34d418cf2c36396d9d8",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "product",
+      "side": "app",
+      "family": "category",
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/category/AppCategoryController.java",
+      "classMapping": "/product/category",
+      "classMappingLine": 28,
+      "sha256": "3da2d2fab3a56271d95da3fe5e05aa4f3b721639ed0d1376ca991e119a72924b",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "product",
+      "side": "app",
+      "family": "comment",
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/comment/AppProductCommentController.java",
+      "classMapping": "/product/comment",
+      "classMappingLine": 26,
+      "sha256": "e54fa16ed9eb9dbd547f87bad2f623b55c7c67e302cda8bf7e6bc0728163ee4f",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "product",
+      "side": "app",
+      "family": "favorite",
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/favorite/AppFavoriteController.java",
+      "classMapping": "/product/favorite",
+      "classMappingLine": 28,
+      "sha256": "1eedcc658607f165abdc30c3ab6db00e054e6c74b486b47cf47e091309ba382b",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "product",
+      "side": "app",
+      "family": "history",
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/history/AppProductBrowseHistoryController.java",
+      "classMapping": "/product/browse-history",
+      "classMappingLine": 32,
+      "sha256": "21a5bc7212fad7078cb98e80229d9e5f8525bab93f258f96e3eb9d699378e766",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "product",
+      "side": "app",
+      "family": "spu",
+      "path": "yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/spu/AppProductSpuController.java",
+      "classMapping": "/product/spu",
+      "classMappingLine": 40,
+      "sha256": "dc0ea734c9e57b4510a5a6248fa55b81dbcf08696fce2aac76b02d1d05cd72ea",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "article",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/ArticleCategoryController.java",
+      "classMapping": "/promotion/article-category",
+      "classMappingLine": 26,
+      "sha256": "7f4a071efb0ec62253ea32f6f6fc5fce776723d22ec843ee11570da1f870138a",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "article",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/ArticleController.java",
+      "classMapping": "/promotion/article",
+      "classMappingLine": 26,
+      "sha256": "cd3b996c0e582ce1a0fb38e1e5bf73703aaf67a2686d4be1e2952fbb8b8d9337",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "banner",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/banner/BannerController.java",
+      "classMapping": "/promotion/banner",
+      "classMappingLine": 26,
+      "sha256": "fe87d17a7b92ff78de7d62a7546c9dc9125602e95aa91d42177481c7e62f888e",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "bargain",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/bargain/BargainActivityController.java",
+      "classMapping": "/promotion/bargain-activity",
+      "classMappingLine": 33,
+      "sha256": "ac6e973f2ac3c8e9fa3eaa5168259730273aa2ef26a1443c3cb24d35cdd809c4",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "bargain",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/bargain/BargainHelpController.java",
+      "classMapping": "/promotion/bargain-help",
+      "classMappingLine": 30,
+      "sha256": "7b73842cece42b543f541ea99b2b934d13598b619908aa108586c73f55912b8f",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "bargain",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/bargain/BargainRecordController.java",
+      "classMapping": "/promotion/bargain-record",
+      "classMappingLine": 34,
+      "sha256": "016646e4c5b19317475a6c066586fb5ae01b22593502e4d5280974dd971ad2b7",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "combination",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/combination/CombinationActivityController.java",
+      "classMapping": "/promotion/combination-activity",
+      "classMappingLine": 38,
+      "sha256": "bc83f80617b6d41bf58031d1079f0eddf989de78071a4167d63db60d4ca98d71",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "combination",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/combination/CombinationRecordController.java",
+      "classMapping": "/promotion/combination-record",
+      "classMappingLine": 34,
+      "sha256": "4c9d364157b1b6de6c08df4d676a6420222a480b78103c0fe7a18c3abd212e59",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "coupon",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/coupon/CouponController.java",
+      "classMapping": "/promotion/coupon",
+      "classMappingLine": 33,
+      "sha256": "1b1085311697a283e8cfa04fb7f90a33dd535736f69534972e92d07172256d7a",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "coupon",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/coupon/CouponTemplateController.java",
+      "classMapping": "/promotion/coupon-template",
+      "classMappingLine": 25,
+      "sha256": "e875cd96e7c2f003bae70bc45d0d6ad5e8fb5f610e331c3515114a4638e8fbdf",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "discount",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/discount/DiscountActivityController.java",
+      "classMapping": "/promotion/discount-activity",
+      "classMappingLine": 30,
+      "sha256": "35ddf75fc81c54e86fbed6db04dc471f6eb9947b6cd478afc22df600c1a9a940",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "diy",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/diy/DiyPageController.java",
+      "classMapping": "/promotion/diy-page",
+      "classMappingLine": 25,
+      "sha256": "3efc0bd66099bb9a782d8f403a738d3378c14353ae7b0449abcbc16af8d76638",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "diy",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/diy/DiyTemplateController.java",
+      "classMapping": "/promotion/diy-template",
+      "classMappingLine": 26,
+      "sha256": "63270db2851254d6edb8c6396880d164a7dd99f2f2f659828c1c707438a03667",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "kefu",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/kefu/KeFuConversationController.java",
+      "classMapping": "/promotion/kefu-conversation",
+      "classMappingLine": 29,
+      "sha256": "fc8082297795b9583aff010544b4370f62ef5ba4833fbfd87b0321eb54d12cdf",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "kefu",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/kefu/KeFuMessageController.java",
+      "classMapping": "/promotion/kefu-message",
+      "classMappingLine": 33,
+      "sha256": "ff4841ee206b07ebf12474a6096fd26bcd891ad7895703a357d5d090ba419ff7",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "point",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/point/PointActivityController.java",
+      "classMapping": "/promotion/point-activity",
+      "classMappingLine": 36,
+      "sha256": "c627e4f8c8b44ec176bbf67bbc3eae8048e629af79b8070b4e62ab326e0435dd",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "reward",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/reward/RewardActivityController.java",
+      "classMapping": "/promotion/reward-activity",
+      "classMappingLine": 26,
+      "sha256": "5f95d36e809c6874429d27952f5437dac452068bf23a64bc0b6808e99cbcf7a1",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "seckill",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/seckill/SeckillActivityController.java",
+      "classMapping": "/promotion/seckill-activity",
+      "classMappingLine": 32,
+      "sha256": "6a57c7f82dffa2266b63382cf5e1dc198e98d9253d4892315f961b6a3d022c12",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "admin",
+      "family": "seckill",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/seckill/SeckillConfigController.java",
+      "classMapping": "/promotion/seckill-config",
+      "classMappingLine": 25,
+      "sha256": "dd5494c767a1f689337d457a5519839ea8d309b4b20d7f322d6908c9ebefb733",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "activity",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/activity/AppActivityController.java",
+      "classMapping": "/promotion/activity",
+      "classMappingLine": 30,
+      "sha256": "56be305a07899a23e4cfe68146ca87ed5d89f93d3d3922674015c17649fc5dba",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "article",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/article/AppArticleCategoryController.java",
+      "classMapping": "/promotion/article-category",
+      "classMappingLine": 23,
+      "sha256": "eaf6a0bd264f94757b25c55a9c9cfdc42483c92b8ffd80dc86aa55dbc496e253",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "article",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/article/AppArticleController.java",
+      "classMapping": "/promotion/article",
+      "classMappingLine": 29,
+      "sha256": "419dc5c67f0cf332f419bde27e6ecf4cc3348ee47307ba64389435dd9a6c6f4d",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "banner",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/banner/AppBannerController.java",
+      "classMapping": "/promotion/banner",
+      "classMappingLine": 21,
+      "sha256": "e01c170bd199d4195e6e2d4b22a0f1eca78703030cb86782859c2d2115774541",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "bargain",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/bargain/AppBargainActivityController.java",
+      "classMapping": "/promotion/bargain-activity",
+      "classMappingLine": 39,
+      "sha256": "b68338e16f293f48569e2f1044d94ffe3b74462a3926ebdef52b760fdfff5b6a",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "bargain",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/bargain/AppBargainHelpController.java",
+      "classMapping": "/promotion/bargain-help",
+      "classMappingLine": 29,
+      "sha256": "fea40b76554dd26c27471e1dd8ebb69978ef60634925e152cf4c87c08df7f6fa",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "bargain",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/bargain/AppBargainRecordController.java",
+      "classMapping": "/promotion/bargain-record",
+      "classMappingLine": 44,
+      "sha256": "5637a10c2ad68c0ba8415537ed6a722d3b0ff16dbb77d68b4684b24193aa5c20",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "combination",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/combination/AppCombinationActivityController.java",
+      "classMapping": "/promotion/combination-activity",
+      "classMappingLine": 36,
+      "sha256": "0fbf1c88845e08d72e929baecf3371f435493b8c74079b65778e74314d90136d",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "combination",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/combination/AppCombinationRecordController.java",
+      "classMapping": "/promotion/combination-record",
+      "classMappingLine": 37,
+      "sha256": "ea8ee5606fefcd87bd988b2b34a96e2d51c7913630b053728d4d1b67fded8055",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "coupon",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/coupon/AppCouponController.java",
+      "classMapping": "/promotion/coupon",
+      "classMappingLine": 31,
+      "sha256": "7fab4a19c48829446e0447433eb90cc2b29ada0143e87f53edcbc7e7fa4315d5",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "coupon",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/coupon/AppCouponTemplateController.java",
+      "classMapping": "/promotion/coupon-template",
+      "classMappingLine": 37,
+      "sha256": "c7db7d64b274a4b310e729a6026d03f3ebdbe14f1dadff7c66d00eed6690b160",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "diy",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/diy/AppDiyPageController.java",
+      "classMapping": "/promotion/diy-page",
+      "classMappingLine": 24,
+      "sha256": "38b88ff71d5f6a390cfc49bc813983c7a4fb55ecc9df389e1e6be7205838aee2",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "diy",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/diy/AppDiyTemplateController.java",
+      "classMapping": "/promotion/diy-template",
+      "classMappingLine": 29,
+      "sha256": "78103539d7e7c7a5c372342dec8687daac9ec8af16e1d7b4b34a856413b84451",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "kefu",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/kefu/AppKeFuMessageController.java",
+      "classMapping": "/promotion/kefu-message",
+      "classMappingLine": 32,
+      "sha256": "8bb72c32302a1dac5192b987b9ec2a3e60db698e83a4739a58b1c0b9a1dee298",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "point",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/point/AppPointActivityController.java",
+      "classMapping": "/promotion/point-activity",
+      "classMappingLine": 39,
+      "sha256": "b876fe37c84749d0fa63a6699b0f2708fa789f0d9846e5533b5dd1cc5d60bd1e",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "reward",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/reward/AppRewardActivityController.java",
+      "classMapping": "/promotion/reward-activity",
+      "classMappingLine": 24,
+      "sha256": "35bbad5b3b1b97e4a6b32028c558b62f11221c34472c28e0fe187c824c7322b3",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "seckill",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/seckill/AppSeckillActivityController.java",
+      "classMapping": "/promotion/seckill-activity",
+      "classMappingLine": 50,
+      "sha256": "565dd61a9db9cd51a3933cf5819eef294ef5a400f5a2564a1ea6ec742148c0e8",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "seckill",
+      "path": "yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/app/seckill/AppSeckillConfigController.java",
+      "classMapping": "/promotion/seckill-config",
+      "classMappingLine": 24,
+      "sha256": "5478add7bc469d2abf6fb0a398a23e34ac1b255cd6f33c0aebb2e17bd762f294",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "admin",
+      "family": "aftersale",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/aftersale/AfterSaleController.java",
+      "classMapping": "/trade/after-sale",
+      "classMappingLine": 41,
+      "sha256": "42d471baecfb611d32798643c5b585a800e755784308c1fcd68cbccd9f061fde",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "admin",
+      "family": "brokerage",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/brokerage/BrokerageRecordController.java",
+      "classMapping": "/trade/brokerage-record",
+      "classMappingLine": 33,
+      "sha256": "797df9742b21a991266482a990fcb4d92b3f2a8abecfa7918f0d1d93379358d5",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "admin",
+      "family": "brokerage",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/brokerage/BrokerageUserController.java",
+      "classMapping": "/trade/brokerage-user",
+      "classMappingLine": 37,
+      "sha256": "5166812694bdb0f53af679b55926e77979eda8146d10b57c1ebad8b38f21ad61",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "admin",
+      "family": "brokerage",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/brokerage/BrokerageWithdrawController.java",
+      "classMapping": "/trade/brokerage-withdraw",
+      "classMappingLine": 34,
+      "sha256": "5c6a2c9d3f75be33ce7cd0a478cb7c319938f0d3932dd84629ad28b366564ac8",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "admin",
+      "family": "config",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/config/TradeConfigController.java",
+      "classMapping": "/trade/config",
+      "classMappingLine": 23,
+      "sha256": "93d5532bae58c9b035a313181cbc7d87ea816f9eb71684ff903be4460fdc6b8d",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "admin",
+      "family": "delivery",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/delivery/DeliveryExpressController.java",
+      "classMapping": "/trade/delivery/express",
+      "classMappingLine": 30,
+      "sha256": "53df904d1ce910ea31580667c9dc9d61390b83ac728337920838ca1507f21122",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "admin",
+      "family": "delivery",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/delivery/DeliveryExpressTemplateController.java",
+      "classMapping": "/trade/delivery/express-template",
+      "classMappingLine": 25,
+      "sha256": "9dac9f1075b10eafdf99bc2311fe729bd10f0c22270aab6dd7b4f0994ab158e2",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "admin",
+      "family": "delivery",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/delivery/DeliveryPickUpStoreController.java",
+      "classMapping": "/trade/delivery/pick-up-store",
+      "classMappingLine": 31,
+      "sha256": "784df64126693be49002350cf9cc7beccbc00d1499a55f9015604e98d6da4d83",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "admin",
+      "family": "order",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/admin/order/TradeOrderController.java",
+      "classMapping": "/trade/order",
+      "classMappingLine": 37,
+      "sha256": "9e819f09142d0b34fe877b95f5692fea3ea019e3dfcfcb483055d424aa16ae3d",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "app",
+      "family": "aftersale",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/aftersale/AppAfterSaleController.java",
+      "classMapping": "/trade/after-sale",
+      "classMappingLine": 27,
+      "sha256": "78514b5ceba5a60a0f0181a57ed81159e0a73fffdaa428f31cc90f2268ac5e6d",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "app",
+      "family": "aftersale",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/aftersale/AppAfterSaleLogController.java",
+      "classMapping": "/trade/after-sale-log",
+      "classMappingLine": 30,
+      "sha256": "0fce20d4486de07d3aeed2696ca4b9c44b06e7eead39e169c8ab7f58a812c4f9",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "app",
+      "family": "brokerage",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/brokerage/AppBrokerageRecordController.java",
+      "classMapping": "/trade/brokerage-record",
+      "classMappingLine": 31,
+      "sha256": "7f8f3ede94fe8d8ff879b3bfedc9e2b7e5243de5038c6d574d47522aa5bc7ce6",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "app",
+      "family": "brokerage",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/brokerage/AppBrokerageUserController.java",
+      "classMapping": "/trade/brokerage-user",
+      "classMappingLine": 42,
+      "sha256": "ec2c63a28315ca4cbf807009d8fcbde965bd33c65deb9ecdb718a94c53645e0f",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "app",
+      "family": "brokerage",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/brokerage/AppBrokerageWithdrawController.java",
+      "classMapping": "/trade/brokerage-withdraw",
+      "classMappingLine": 35,
+      "sha256": "61945de94ba4e355ac25572ef06be1765904bcd5af77869003d8ccb2ddd1eaf1",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "app",
+      "family": "cart",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/cart/AppCartController.java",
+      "classMapping": "/trade/cart",
+      "classMappingLine": 23,
+      "sha256": "a811af72d2b3a8ee8dd578ec99132454a47e0b0f25e008134420e95b860d22a0",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "app",
+      "family": "config",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/config/AppTradeConfigController.java",
+      "classMapping": "/trade/config",
+      "classMappingLine": 26,
+      "sha256": "b36c9b7aef8ddbd0e7b46e91fe4139c2601d769f84a9b17b6806fa3f8d156d69",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "app",
+      "family": "delivery",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/delivery/AppDeliverExpressController.java",
+      "classMapping": "/trade/delivery/express",
+      "classMappingLine": 25,
+      "sha256": "447b2273966d6ad0c7bd207abd6d4944dfe85f61b48a77dba462e6e4d32cf6b6",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "app",
+      "family": "delivery",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/delivery/AppDeliverPickUpStoreController.java",
+      "classMapping": "/trade/delivery/pick-up-store",
+      "classMappingLine": 27,
+      "sha256": "42ce18d0d58bae6145ad7fd9a225f2a9ccf7ad254bafdff41ea7de04d825e4dd",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "trade",
+      "side": "app",
+      "family": "order",
+      "path": "yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/order/AppTradeOrderController.java",
+      "classMapping": "/trade/order",
+      "classMappingLine": 41,
+      "sha256": "1c7582560586d41ba02491a4d509f45ee1bfec687b5c7b044d9e6b59152107a2",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "statistics",
+      "side": "admin",
+      "family": "member",
+      "path": "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/member/MemberStatisticsController.java",
+      "classMapping": "/statistics/member",
+      "classMappingLine": 30,
+      "sha256": "5d136b483ede50caff21c7830ac70de4a6aaa158dfbaf502a4966ce69885090b",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "statistics",
+      "side": "admin",
+      "family": "pay",
+      "path": "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/pay/PayStatisticsController.java",
+      "classMapping": "/statistics/pay",
+      "classMappingLine": 21,
+      "sha256": "e00a345f74b8914d2dfe7f4f953b69a9cc09dd5b96e7ba148373a22f25a7bea4",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "statistics",
+      "side": "admin",
+      "family": "product",
+      "path": "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/product/ProductStatisticsController.java",
+      "classMapping": "/statistics/product",
+      "classMappingLine": 38,
+      "sha256": "a53d7dc6a6fd19aad18e72eb22ec5f1456c897a0642f72c42eede15e3c6c0b93",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "statistics",
+      "side": "admin",
+      "family": "trade",
+      "path": "yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/trade/TradeStatisticsController.java",
+      "classMapping": "/statistics/trade",
+      "classMappingLine": 38,
+      "sha256": "89ac39aa19ed3308a75f5832a65b16f4b18ec791e2b47ce66f617ec789b8a13e",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "admin",
+      "family": "address",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/address/AddressController.java",
+      "classMapping": "/member/address",
+      "classMappingLine": 25,
+      "sha256": "cba53111b7d98e30efe6e30f3c8a92b9e385450df0ad5f21edb82458be756e50",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "admin",
+      "family": "config",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/config/MemberConfigController.java",
+      "classMapping": "/member/config",
+      "classMappingLine": 22,
+      "sha256": "3f1889ae9b42bd971e77d5b8b4156ee805388c4fa1237e5209cebbc43089fc41",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "admin",
+      "family": "group",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/group/MemberGroupController.java",
+      "classMapping": "/member/group",
+      "classMappingLine": 25,
+      "sha256": "e088a6fb4a018a389772ea63e102d45c4068cee099d3bc499b20af10c431377b",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "admin",
+      "family": "level",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberExperienceRecordController.java",
+      "classMapping": "/member/experience-record",
+      "classMappingLine": 27,
+      "sha256": "f1cbb4092e2b35b484bd126e1a75bbb43f667d5568b035626a29b636236fce93",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "admin",
+      "family": "level",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberLevelController.java",
+      "classMapping": "/member/level",
+      "classMappingLine": 23,
+      "sha256": "1b7209cfefd686448a087597c27c0ca1192f90b915b9736db21bf0d3884dfa21",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "admin",
+      "family": "level",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/level/MemberLevelRecordController.java",
+      "classMapping": "/member/level-record",
+      "classMappingLine": 27,
+      "sha256": "6fdc32bd77b8d788f4d46eea27947b69557ae5055318e639e846a057beba3184",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "admin",
+      "family": "point",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/point/MemberPointRecordController.java",
+      "classMapping": "/member/point/record",
+      "classMappingLine": 30,
+      "sha256": "4f17d38b7b3eb0d93970a5cf7ae953bf46a33ef97e73d6a2cc1ddba3549a1921",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "admin",
+      "family": "signin",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/signin/MemberSignInConfigController.java",
+      "classMapping": "/member/sign-in/config",
+      "classMappingLine": 26,
+      "sha256": "38bd9a43ddfa437dec7135941ffc09de41a3034843cd96aad5cf20ffeb71265b",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "admin",
+      "family": "signin",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/signin/MemberSignInRecordController.java",
+      "classMapping": "/member/sign-in/record",
+      "classMappingLine": 30,
+      "sha256": "8a446e1ffdad73db3127e1f458d91997aa62db9e52dcb3ae4d1d1e7d7e03466b",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "admin",
+      "family": "tag",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/tag/MemberTagController.java",
+      "classMapping": "/member/tag",
+      "classMappingLine": 28,
+      "sha256": "9f5019b3b20ef0724124650b31b644ac02e6d34e68ba33e46e264bb153dd2d29",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "admin",
+      "family": "user",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/MemberUserController.java",
+      "classMapping": "/member/user",
+      "classMappingLine": 39,
+      "sha256": "dc1f40e1ae355669d22fcb74ec485be3e3937f7287cff6450b239829bfa22f92",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "address",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/address/AppAddressController.java",
+      "classMapping": "/member/address",
+      "classMappingLine": 25,
+      "sha256": "17b7138e5773f2b1814df9fd2d9e4fc5ae49dcdc7a933543d73179d76540fe89",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "auth",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/auth/AppAuthController.java",
+      "classMapping": "/member/auth",
+      "classMappingLine": 31,
+      "sha256": "4b8603d11dd8c3ba2138cce48af2df01640eb0190a1cfbfb7ca754ecd2943845",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "level",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/level/AppMemberExperienceRecordController.java",
+      "classMapping": "/member/experience-record",
+      "classMappingLine": 25,
+      "sha256": "7db187d42573bf187332a3ea75aa877951703f294e06596feee3d962fe181639",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "level",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/level/AppMemberLevelController.java",
+      "classMapping": "/member/level",
+      "classMappingLine": 23,
+      "sha256": "0a1c8981338ad539e9abe6f881e3714c85d9796c44272dfbb39fcc28a2a863ea",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "point",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/point/AppMemberPointRecordController.java",
+      "classMapping": "/member/point/record",
+      "classMappingLine": 27,
+      "sha256": "5b1e4be3a343f27ef467a2f8baf3a5162b7ea2f29f0339bfe92f8efc7a096bfa",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "signin",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/signin/AppMemberSignInConfigController.java",
+      "classMapping": "/member/sign-in/config",
+      "classMappingLine": 24,
+      "sha256": "4e5549bf67a83611545ea2d18812ad453305aef70a75c2a6ecb596eb2f19b0cb",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "signin",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/signin/AppMemberSignInRecordController.java",
+      "classMapping": "/member/sign-in/record",
+      "classMappingLine": 26,
+      "sha256": "f8fadbd97f99a6547b1cafbc243b3e8419faf90d41f6ae9ef1d80471ad7aeb6f",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "social",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/social/AppSocialUserController.java",
+      "classMapping": "/member/social-user",
+      "classMappingLine": 27,
+      "sha256": "4b5e8b4ae4b17e8ee72f56b882ca0b609ed50d6d230d2cd841753ac6b760b519",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "user",
+      "path": "yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/app/user/AppMemberUserController.java",
+      "classMapping": "/member/user",
+      "classMappingLine": 25,
+      "sha256": "72cd6a2a8b6ba9bd412b0d9dc2fb27e6aebbd13ce005d0c43b9ba2b2f42028e1",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "admin",
+      "family": "app",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/app/PayAppController.java",
+      "classMapping": "/pay/app",
+      "classMappingLine": 31,
+      "sha256": "7457e6b9de324fe322acb26fdb0bf015400faec1648d37d002d1fcaf727688d3",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "admin",
+      "family": "channel",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/channel/PayChannelController.java",
+      "classMapping": "/pay/channel",
+      "classMappingLine": 27,
+      "sha256": "1e978bef7900aee8a594295f29e85f0e82cc385d413dd050f644261522f6ec6c",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "admin",
+      "family": "demo",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/demo/PayDemoOrderController.java",
+      "classMapping": "/pay/demo-order",
+      "classMappingLine": 29,
+      "sha256": "41c5b42ba813e0e544f69e14e59992e957597c1bbc65f08eee75ef77167529ae",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "admin",
+      "family": "demo",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/demo/PayDemoWithdrawController.java",
+      "classMapping": "/pay/demo-withdraw",
+      "classMappingLine": 27,
+      "sha256": "e57806976764f58b0321dfbd5f9b10ed715594ad549ceff49da78ab46b3e45af",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "admin",
+      "family": "notify",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/notify/PayNotifyController.java",
+      "classMapping": "/pay/notify",
+      "classMappingLine": 45,
+      "sha256": "d7ac868b6635caef858df9e8ed6ea423c3304ed787eb49f89fbcfcb9448d2ddc",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "admin",
+      "family": "order",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/order/PayOrderController.java",
+      "classMapping": "/pay/order",
+      "classMappingLine": 48,
+      "sha256": "c0b2432b8c9322b02bf72f7389c783de70167e9ab98e8d667a7c65deb28e4486",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "admin",
+      "family": "refund",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/refund/PayRefundController.java",
+      "classMapping": "/pay/refund",
+      "classMappingLine": 37,
+      "sha256": "95faadb445030b7a09f014951bf458783261671ccd3ae23970edff6b8f81ea5f",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "admin",
+      "family": "transfer",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/transfer/PayTransferController.java",
+      "classMapping": "/pay/transfer",
+      "classMappingLine": 36,
+      "sha256": "6d872d97ef3e395f4986b26d6803f99e99c51738bf1faeb0530a5ecef37bb092",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "admin",
+      "family": "wallet",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletController.java",
+      "classMapping": "/pay/wallet",
+      "classMappingLine": 30,
+      "sha256": "43db8a92532da3b6b31a0d39c96479a2d59346e6c2af6705991a7981435fceb1",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "admin",
+      "family": "wallet",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletRechargeController.java",
+      "classMapping": "/pay/wallet-recharge",
+      "classMappingLine": 23,
+      "sha256": "26e7ae544aba9456a7f0855441ec62b9e90451294900b60e79458aff305f2110",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "admin",
+      "family": "wallet",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletRechargePackageController.java",
+      "classMapping": "/pay/wallet-recharge-package",
+      "classMappingLine": 27,
+      "sha256": "5858bf828fa785653324f37d95c1525fa98be549d5f227cb929b831cb7aa4628",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "admin",
+      "family": "wallet",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/admin/wallet/PayWalletTransactionController.java",
+      "classMapping": "/pay/wallet-transaction",
+      "classMappingLine": 26,
+      "sha256": "2ff6958deee18ce8756063d7a4b32cfe297e5e89bf0f84b5e572f41b5b845ddc",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "app",
+      "family": "channel",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/channel/AppPayChannelController.java",
+      "classMapping": "/pay/channel",
+      "classMappingLine": 24,
+      "sha256": "55a4827dd51f9f642b9ae0f5bb32853115b7ab1ac6b2b46ac1e07e2d1309708a",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "app",
+      "family": "order",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/order/AppPayOrderController.java",
+      "classMapping": "/pay/order",
+      "classMappingLine": 39,
+      "sha256": "10c656f92fb15d6c8896ca4b3c3126f0bd7a1a4e9ab0799b19b5bde04dc1c955",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "app",
+      "family": "transfer",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/transfer/AppPayTransferController.java",
+      "classMapping": "/pay/transfer",
+      "classMappingLine": 21,
+      "sha256": "77b60122c5f43d66e65fb9e1b69690cafe5900ef371d5a6583434b303eca55fb",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "app",
+      "family": "wallet",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletController.java",
+      "classMapping": "/pay/wallet",
+      "classMappingLine": 24,
+      "sha256": "3f0a8cddf03db4a7e8f603ac3846c464626dab45fb973ce1ea5c84df1e035fe0",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "app",
+      "family": "wallet",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletRechargeController.java",
+      "classMapping": "/pay/wallet-recharge",
+      "classMappingLine": 39,
+      "sha256": "95b854dfd03d87c5ff6791b4e92ea9a7ab894a52bee13cb7d239262f3d38a0b8",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "app",
+      "family": "wallet",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletRechargePackageController.java",
+      "classMapping": "/pay/wallet-recharge-package",
+      "classMappingLine": 25,
+      "sha256": "0480d41c9bad63452084cddb795e9cae88613cebb6a50bd56c959bbdb7b95521",
+      "verification": "lexical_inventory_not_business_parity"
+    },
+    {
+      "domain": "pay",
+      "side": "app",
+      "family": "wallet",
+      "path": "yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/controller/app/wallet/AppPayWalletTransactionController.java",
+      "classMapping": "/pay/wallet-transaction",
+      "classMappingLine": 34,
+      "sha256": "2c79470ebea792f7d4ea600c19d78e9ae3d2a623a5d793c680e9a00da9f1df0c",
+      "verification": "lexical_inventory_not_business_parity"
+    }
+  ],
+  "targetControllers": [
+    {
+      "domain": "product",
+      "side": "app",
+      "family": "product",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductBrowseHistoryController.java",
+      "classMapping": "/app/browse-historys",
+      "classMappingLine": 39,
+      "sha256": "4c54691ca4b0113ecf4ec5c09b02461f5ba3cc2d1ab42e1c217078bd67b5bfe8",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "product",
+      "side": "app",
+      "family": "product",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductCategoryController.java",
+      "classMapping": "/app/categories",
+      "classMappingLine": 23,
+      "sha256": "1a8927f6ae751ce24a16ee3a970a5775aa943b7705c58c81bd7a47f437564230",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "product",
+      "side": "app",
+      "family": "product",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductCommentController.java",
+      "classMapping": "/app/comments",
+      "classMappingLine": 26,
+      "sha256": "8d7f0f69e8183e32c634dc7487cf807055661c8473bae6c6ba1e5ccdb544e4fe",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "product",
+      "side": "app",
+      "family": "product",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductController.java",
+      "classMapping": "/app",
+      "classMappingLine": 29,
+      "sha256": "8143c07443130ca754850dc9f82d2e30f058a816a7af6d2987850f590a36e70d",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "product",
+      "side": "app",
+      "family": "product",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductFavoriteController.java",
+      "classMapping": "/app/favorites",
+      "classMappingLine": 42,
+      "sha256": "5241e651a6b54ce7aea0834d00e4b28aa899e5d15d9469ee5e9973f9a1a8e238",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "product",
+      "side": "web",
+      "family": "product",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductBrandController.java",
+      "classMapping": "/brands",
+      "classMappingLine": 31,
+      "sha256": "4a2a8c42c60fc30a59dd04363d3d8b66a80358e9d87a50c5f0f6cae99c7685c6",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "product",
+      "side": "web",
+      "family": "product",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductBrowseHistoryController.java",
+      "classMapping": "/browse-historys",
+      "classMappingLine": 25,
+      "sha256": "4e3b797c2998bb5631328779268c28abad1441e2b4450136f4d85e03a142fa46",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "product",
+      "side": "web",
+      "family": "product",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductCategoryController.java",
+      "classMapping": "/categories",
+      "classMappingLine": 35,
+      "sha256": "3572e416d174081693cef78c73dbbcb909a00f089bbd5c4f99fa777b4c1f8fea",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "product",
+      "side": "web",
+      "family": "product",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductCommentController.java",
+      "classMapping": "/comments",
+      "classMappingLine": 45,
+      "sha256": "7359884914c3def22158c38d9db40a8e2c4c28f5cda6c387bf7e2ecf417a8d1c",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "product",
+      "side": "web",
+      "family": "product",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductFavoriteController.java",
+      "classMapping": "/favorites",
+      "classMappingLine": 27,
+      "sha256": "2f2520efd96db08805cd37f8ed53e976cb9e5372a9a6087e84c3f442c61f22f0",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "product",
+      "side": "web",
+      "family": "product",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpecController.java",
+      "classMapping": "/specs",
+      "classMappingLine": 46,
+      "sha256": "aabc250816f62143a77809eea9ea32e7d5622e4467f8fb158f8239a34cb6dbc3",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "product",
+      "side": "web",
+      "family": "product",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpecValueController.java",
+      "classMapping": "/spec-values",
+      "classMappingLine": 46,
+      "sha256": "65824965e82c7edb476773ee65dafc49615207d5de5df8e99ecf0a0f58cd282e",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "product",
+      "side": "web",
+      "family": "product",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/ProductSpuController.java",
+      "classMapping": "/spus",
+      "classMappingLine": 33,
+      "sha256": "45151aaf3bc4d687207e2dacf8fc55d286df6bebd091b3a1601e8456425926f3",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "cart",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/app/cart/AppCartController.java",
+      "classMapping": "/mall/app",
+      "classMappingLine": 36,
+      "sha256": "c95df8d796afd20ab610edc602feb1fcda9bfb3f0957c363a9777bf3d99e10fd",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "coupon",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/app/coupon/AppCouponCenterController.java",
+      "classMapping": "/mall/app",
+      "classMappingLine": 35,
+      "sha256": "aa8b440bbfd67dd799cea4da97f741b58516d76cac346d7409cd4ade5c7a0836",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "coupon",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/app/coupon/AppCouponController.java",
+      "classMapping": "/mall/app",
+      "classMappingLine": 24,
+      "sha256": "a52376dc344ec979efa9867c6c4a7eea4bf71b15f1992431b31029b2fb2418b1",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/app/promotion/AppBannerController.java",
+      "classMapping": "/mall/app/banners",
+      "classMappingLine": 27,
+      "sha256": "66f78e322d320341ceb3f1752428e6782c63868e99e115277139982957c8bc24",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/app/promotion/AppBargainController.java",
+      "classMapping": "/mall/app/bargain",
+      "classMappingLine": 44,
+      "sha256": "536db005be0c2f7f623d07e5e8dd7a7d36fc7f2045a738c24de7a442a6b0da94",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/app/promotion/AppCombinationController.java",
+      "classMapping": "/mall/app/combination",
+      "classMappingLine": 37,
+      "sha256": "bd93131fa28a241673e541b731dd24266ae7588f02c9d5506a1a85db3dd54d00",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/app/promotion/AppDiyController.java",
+      "classMapping": "/mall/app/diy",
+      "classMappingLine": 25,
+      "sha256": "bb3f19383c3934844081dbacb03ab3f5af8671f8ed48bdab552c2bfeeefa9f34",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/app/promotion/AppKefuController.java",
+      "classMapping": "/mall/app/kefu",
+      "classMappingLine": 37,
+      "sha256": "744f94f172395d48658c44b86f4a69c6cdb29bce8f10495b565a637833eb6b9c",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/app/promotion/AppPointController.java",
+      "classMapping": "/mall/app/point-mall",
+      "classMappingLine": 24,
+      "sha256": "8a5bbf3e23924fa46d7cbdfd6d06c14ca823efcf6b9d05a438ed4a47e1a8ea6f",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/app/promotion/AppPromotionHubController.java",
+      "classMapping": "/mall/app/promotion-hub",
+      "classMappingLine": 29,
+      "sha256": "a4d7d8ea9aab461f2eb6bb534d41f39ee50cea545ab16c22ed2ae6f5a4384ab6",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "app",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/app/promotion/AppSeckillController.java",
+      "classMapping": "/mall/app/seckill",
+      "classMappingLine": 34,
+      "sha256": "6ee02346d14896e25dccc278526e8661a76be0912d6db71c11629b30fc0d6699",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "coupon",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/coupon/CouponController.java",
+      "classMapping": "/mall/admin",
+      "classMappingLine": 38,
+      "sha256": "a40f39378c3c1fa4202ff96faeafac6b74c13f6904d3d81ed691485e2672cf85",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "coupon",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/coupon/CouponTemplateController.java",
+      "classMapping": "/mall/admin",
+      "classMappingLine": 40,
+      "sha256": "50840eeb59d842de8d550743a7d24d48c84a75e4b385c20899b388a30ca90728",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "coupon",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/coupon/PublicCouponController.java",
+      "classMapping": "/mall/admin/coupon-templates",
+      "classMappingLine": 30,
+      "sha256": "f44855fb21b2c22630975e72299f3ef1cd9dbe7f8c4fdc4eea4d67994440c419",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/promotion/BannerController.java",
+      "classMapping": "/mall/promotion/banners",
+      "classMappingLine": 37,
+      "sha256": "4e09bb7f5aeb99fd9f4868333b4943d3b61d13396a0eaa8dc94ef441b58ea176",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/promotion/BargainActivityController.java",
+      "classMapping": "/mall/promotion/bargain-activities",
+      "classMappingLine": 37,
+      "sha256": "d8718d2f0d62089467c16596f02a41d38f1d3767d07ea9dbf8cd29a2aa17fde1",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/promotion/BargainRecordController.java",
+      "classMapping": "/mall/promotion",
+      "classMappingLine": 28,
+      "sha256": "52c9912a5305a238d5fcb988cc290ca3729480818fdaff184d39204ff1433d00",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/promotion/CombinationActivityController.java",
+      "classMapping": "/mall/promotion/combination-activities",
+      "classMappingLine": 37,
+      "sha256": "d1ef421ca9977419314c3db380559cf34388a821491faca6c73d550eb591c8df",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/promotion/CombinationRecordController.java",
+      "classMapping": "/mall/promotion/combination-records",
+      "classMappingLine": 25,
+      "sha256": "4ef4276354a2d116157fc945a0ed2687391573fdcef0802377c62cf0e5c37e67",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/promotion/DiscountActivityController.java",
+      "classMapping": "/mall/promotion/discount-activities",
+      "classMappingLine": 39,
+      "sha256": "72d2b2e359d8394c043920601ee238960e647780d75576d00beb264eaea957e0",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/promotion/DiyPageController.java",
+      "classMapping": "/mall/promotion/diy-pages",
+      "classMappingLine": 39,
+      "sha256": "431c1f3494e32f5cf40a8acd6e77dba8f4a9c35c978a094a78c424e1cc2be788",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/promotion/DiyTemplateController.java",
+      "classMapping": "/mall/promotion/diy-templates",
+      "classMappingLine": 40,
+      "sha256": "9fa21ff28809b73c9c0f51ea40db8d76f2a3acbcb5ed084473d88f80b01f6fe5",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/promotion/KefuConversationController.java",
+      "classMapping": "/mall/promotion/kefu-conversations",
+      "classMappingLine": 45,
+      "sha256": "1986fdf987772f9bc1263d0955a9609f27449b62955f7e02d4b40627eef12cda",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/promotion/PointActivityController.java",
+      "classMapping": "/mall/promotion/point-activities",
+      "classMappingLine": 37,
+      "sha256": "2bc622d2b6df63555ab8cbf5306942d0be68cc09136ba2e1aca9ec4ab8b226e8",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/promotion/RewardActivityController.java",
+      "classMapping": "/mall/promotion/reward-activities",
+      "classMappingLine": 39,
+      "sha256": "cba9ad88f4524d4bf3d692ac65415569e7d68a56804588ae6adf0a2d6ea611a1",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/promotion/SeckillActivityController.java",
+      "classMapping": "/mall/promotion/seckill-activities",
+      "classMappingLine": 37,
+      "sha256": "c968001ff260a2ed8a5bd17456ab9d3e787f8b48abef74d75ba2235c5b80fddf",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "promotion",
+      "side": "web",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-adapter/src/main/java/com/lemnt/promotion/adapter/web/promotion/SeckillConfigController.java",
+      "classMapping": "/mall/promotion/seckill-configs",
+      "classMappingLine": 43,
+      "sha256": "8c8818e59cae0a961cac19b09ec19cbfa0577d062f99d31da9456b7bd4c70687",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "app",
+      "family": "aftersale",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/aftersale/AppAfterSaleController.java",
+      "classMapping": "/trade/app",
+      "classMappingLine": 44,
+      "sha256": "7eb7706c2123f03c65e84a1a920b705ac51cc64e885cfc25c33122e017a51ed7",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "app",
+      "family": "brokerage",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/brokerage/AppBrokerageController.java",
+      "classMapping": "/trade/app/brokerage",
+      "classMappingLine": 36,
+      "sha256": "c5df97eebbee485fe1d1be5cb645500aa153fdc07d3dbefd866dcb22607c7649",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "app",
+      "family": "fulfillment",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/fulfillment/AppDeliveryExpressController.java",
+      "classMapping": "/trade/app/delivery",
+      "classMappingLine": 22,
+      "sha256": "cd7bca10f0995bd8bbef278a8a9d9a640e30d3e5fc0472d8fa72195a317f7594",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "app",
+      "family": "order",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/order/AppOrderCommentController.java",
+      "classMapping": "/mall/app/comments",
+      "classMappingLine": 26,
+      "sha256": "b3631da34e5036903062d26947f914dd848a67cec32ef90ad1efdfc3cc25d8a9",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "app",
+      "family": "order",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/order/AppOrderController.java",
+      "classMapping": "/trade/app/orders",
+      "classMappingLine": 42,
+      "sha256": "54e00d199bb89463041f24be90dfeb752c6abf2dbe838d9967cef0cae5d608cc",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "app",
+      "family": "pickup",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/pickup/AppPickUpStoreController.java",
+      "classMapping": "/trade/app/delivery/pick-up-stores",
+      "classMappingLine": 26,
+      "sha256": "2784f3a28d64ca2547483713cdf177236567277392538248f6b5fc7fc2d4520f",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "app",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/promotion/AppBargainOrderController.java",
+      "classMapping": "/mall/app/bargain",
+      "classMappingLine": 26,
+      "sha256": "a0f59255e296b6b59bb556c0aafd84d2c3d8fefb30e853e9a8a9b92d2b69b58e",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "app",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/promotion/AppCombinationOrderController.java",
+      "classMapping": "/mall/app/combination",
+      "classMappingLine": 26,
+      "sha256": "2049f0200d46941ba992ab1fb34a158a0c06d212cdb8dc838cf15240bc1a17bf",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "app",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/promotion/AppPointOrderController.java",
+      "classMapping": "/mall/app/point-mall",
+      "classMappingLine": 27,
+      "sha256": "d211a2c9e9b53cfb6df3375e989f8b447b29e39946f0f780bd4272928c5eb83c",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "app",
+      "family": "promotion",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/promotion/AppSeckillOrderController.java",
+      "classMapping": "/mall/app/seckill",
+      "classMappingLine": 26,
+      "sha256": "12174dc8aa6ef437d0c3727303519fbc072b6d5eee73e3fce8869b472b9875ce",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "app",
+      "family": "settlement",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/settlement/AppOrderController.java",
+      "classMapping": "/mall/app",
+      "classMappingLine": 26,
+      "sha256": "23204c8822bd1bcd747c65cf758e6ae13348221a4af315c491a0a7ea2062cc1a",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "app",
+      "family": "settlement",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/settlement/AppSettlementController.java",
+      "classMapping": "/mall/app",
+      "classMappingLine": 35,
+      "sha256": "e10cb3672416c091080bd3a16772d1b1dd872a0515117939d24825a0770d01d0",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "web",
+      "family": "aftersale",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/web/aftersale/AfterSaleController.java",
+      "classMapping": "/trade/admin",
+      "classMappingLine": 58,
+      "sha256": "d159d8c4d235fe36adad2fb5242eaea9c95a2ba3996166497cb43a6fb77da8a1",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "web",
+      "family": "aftersale",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/web/aftersale/AfterSaleLogController.java",
+      "classMapping": "/trade/admin/after-sales",
+      "classMappingLine": 26,
+      "sha256": "7de8b290b861cea5db4ca8eaba4edfab522d55e6073a254e5c8326d44f6c9c52",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "web",
+      "family": "brokerage",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/web/brokerage/BrokerageController.java",
+      "classMapping": "/trade/admin/brokerage",
+      "classMappingLine": 45,
+      "sha256": "3614344c0354d3f9c710f5c0b84f037d64fb6becfc678ead6d53ef2fe213baba",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "web",
+      "family": "config",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/web/config/TradeConfigController.java",
+      "classMapping": "/trade/admin/config",
+      "classMappingLine": 29,
+      "sha256": "e7b347f4433da511a23cc3f01f679bc46fb124eb7379cc245dbebf66139712ea",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "web",
+      "family": "delivery",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/web/delivery/DeliveryExpressController.java",
+      "classMapping": "/trade/admin/delivery/expresses",
+      "classMappingLine": 43,
+      "sha256": "47a9fc880011943d92509ca21084a336c3332e47bd3eb0ac930e65dc92e8d4ff",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "web",
+      "family": "delivery",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/web/delivery/DeliveryExpressTemplateController.java",
+      "classMapping": "/trade/admin/delivery/templates",
+      "classMappingLine": 43,
+      "sha256": "ffcd5ad718033b58f6d4c10dfbe41f712f4b0f83e32065c5e727d846abc082e2",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "web",
+      "family": "fulfillment",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/web/fulfillment/FulfillmentOrderController.java",
+      "classMapping": "/trade/admin/orders",
+      "classMappingLine": 32,
+      "sha256": "c748e1e13006429326c458c3bb5b5727eb24e74c83b8864d561b82476b377a3c",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "web",
+      "family": "fulfillment",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/web/fulfillment/ShipmentController.java",
+      "classMapping": "/trade/admin/orders",
+      "classMappingLine": 28,
+      "sha256": "54294eac45f3e58bc57d34e32641829e07389ccb0506303c737f603f598ed53c",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "web",
+      "family": "order",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/web/order/OrderLogController.java",
+      "classMapping": "/trade/admin/orders",
+      "classMappingLine": 26,
+      "sha256": "60072ced550d39c31774af0cb1451688d03190db5b16cfd99a798abc24c5023a",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "web",
+      "family": "order",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/web/order/OrderManagementController.java",
+      "classMapping": "/trade/admin/orders",
+      "classMappingLine": 42,
+      "sha256": "1ebc7d41641fa400bdc54cbd4c4087f7a349f9cfa0671e7daf4f74db01dbafde",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "web",
+      "family": "pickup",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/web/pickup/PickUpOrderController.java",
+      "classMapping": "/trade/admin/orders/pick-up",
+      "classMappingLine": 33,
+      "sha256": "388a9cf5a643802f1c75a710e555f257f70b8cdb90f45d11f587dac5d182b94d",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "web",
+      "family": "pickup",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/web/pickup/PickUpStoreController.java",
+      "classMapping": "/trade/admin/delivery/pick-up-stores",
+      "classMappingLine": 39,
+      "sha256": "c148112125e99303b909658471a691cd744126703e2c8dd2a50820f4be300205",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "order",
+      "side": "web",
+      "family": "shipment",
+      "path": "lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/web/shipment/ShipmentQueryController.java",
+      "classMapping": "/trade/admin/shipments",
+      "classMappingLine": 34,
+      "sha256": "2b390782903ec36717f0e74de9a4614690b213214d35866d8912145c8dc2135f",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "app",
+      "family": "payment",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/app/payment/AppPaymentChannelController.java",
+      "classMapping": "/trade/app/payment-channels",
+      "classMappingLine": 23,
+      "sha256": "6fe161c21534334922caa13dcaf8c42da0601277411e0503a77b721515239ca4",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "app",
+      "family": "payment",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/app/payment/AppPaymentController.java",
+      "classMapping": "/trade/app/orders",
+      "classMappingLine": 30,
+      "sha256": "4b4192c99fe10e261f42df68e9399d12a14cd7398de938a56159c2b7901049c1",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "app",
+      "family": "payment",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/app/payment/AppSandboxPaymentController.java",
+      "classMapping": "/trade/app/payments",
+      "classMappingLine": 22,
+      "sha256": "e1aae17ab322dc80341469aa6d5be2726749d37ac77ae519cf2286eaf8f3fa22",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "app",
+      "family": "recharge",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/app/recharge/AppRechargeController.java",
+      "classMapping": "/trade/app",
+      "classMappingLine": 35,
+      "sha256": "5864951725a54bc29921dc69a226abbdfdcbfc041a1357d46114816ed678d70a",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "app",
+      "family": "wallet",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/app/wallet/AppWalletController.java",
+      "classMapping": "/trade/app/wallet",
+      "classMappingLine": 38,
+      "sha256": "a0a16aa6112cca556390cc2a3c4eb49c5fde3ff884098b459619ffd48da8c0bf",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "web",
+      "family": "payapp",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/web/payapp/PayAppController.java",
+      "classMapping": "/trade/admin/pay-apps",
+      "classMappingLine": 40,
+      "sha256": "8296e6f19bf7e5b3f098b27a23e89c1ceac6c5a1c96d661c22959b7a2492e34c",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "web",
+      "family": "paychannel",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/web/paychannel/PayChannelConfigController.java",
+      "classMapping": "/trade/admin/pay-channels",
+      "classMappingLine": 41,
+      "sha256": "07f5802cf803395613b64e6de2a28911c390b4ec2fbfaa25b66aad0948c31380",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "web",
+      "family": "payment",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/web/payment/PaymentChannelController.java",
+      "classMapping": "/trade/admin/payment-channels",
+      "classMappingLine": 24,
+      "sha256": "bb36a147224f6c517bf552eb5780c975db697bdf22fba5f415fa54859296607f",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "web",
+      "family": "payment",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/web/payment/PaymentController.java",
+      "classMapping": "/trade/admin/payments",
+      "classMappingLine": 30,
+      "sha256": "ae0667ccde6152fdd5e8e019ea500c504884829a4f4986d5fe3d22e01ad06060",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "web",
+      "family": "payment",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/web/payment/PaymentNotifyController.java",
+      "classMapping": "/trade/payment/notify",
+      "classMappingLine": 23,
+      "sha256": "872100282aee4b05037889934f3f8fefe9ca66489e802c43b3aa9d1646093b97",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "web",
+      "family": "paymentrefund",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/web/paymentrefund/PaymentRefundController.java",
+      "classMapping": "/trade/admin/payment-refunds",
+      "classMappingLine": 30,
+      "sha256": "cce3f2be9819476a61823c6a8c72b6ad432490f7f016055f028b2b02fbaf08ad",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "web",
+      "family": "paynotify",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/web/paynotify/PayNotifyTaskController.java",
+      "classMapping": "/trade/admin/pay-notify-tasks",
+      "classMappingLine": 31,
+      "sha256": "2d07eed09ce958d776f9e5dcf986129814e5773b09da22453eaa39bd4adb0091",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "web",
+      "family": "recharge",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/web/recharge/RechargePackageController.java",
+      "classMapping": "/trade/admin/recharge-packages",
+      "classMappingLine": 37,
+      "sha256": "34671fb406b854d2393333a1bb979cde8deb08589af9fb94444b74fc3b569a12",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "web",
+      "family": "recharge",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/web/recharge/WalletRechargeController.java",
+      "classMapping": "/trade/admin/wallet-recharges",
+      "classMappingLine": 33,
+      "sha256": "ca92acd2598447455aba5f8338336975857ceb0a2ee1466128ae3937e3c40bdd",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "web",
+      "family": "wallet",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/web/wallet/WalletController.java",
+      "classMapping": "/trade/admin/wallets",
+      "classMappingLine": 35,
+      "sha256": "7a34bfc7af8d54abecf1fc7cb0f91c9c8941ad25680cb0ebbc6451bec2584cdd",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "pay",
+      "side": "web",
+      "family": "wallet",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/web/wallet/WalletTransferController.java",
+      "classMapping": "/trade/admin/wallet-transfers",
+      "classMappingLine": 28,
+      "sha256": "35eb00e5414dbbc192c378b39fb7a103eac0a06089b97d3b100b891deaf60e5c",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "address",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/address/AppMemberAddressController.java",
+      "classMapping": "/app/addresses",
+      "classMappingLine": 46,
+      "sha256": "30dd528ad26cef3bc45e608a57254ef49eb95acacfd7179f4e18aebc914e092c",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/growth/AppMemberExperienceRecordController.java",
+      "classMapping": "/app/growths",
+      "classMappingLine": 27,
+      "sha256": "e3c77825a3005e89060c28ea4e8a9756702a117cf27b6725e98adfd0509314b3",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/growth/AppMemberLevelController.java",
+      "classMapping": "/app/growths",
+      "classMappingLine": 24,
+      "sha256": "041e958b3b701db47b2f6528d7346022f38fd20139c7f5fece040d9e755ff2fe",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/growth/AppMemberPointRecordController.java",
+      "classMapping": "/app/growths",
+      "classMappingLine": 27,
+      "sha256": "ddf5a0afde2d8fe572ce364db5f994125bdc52c66bb4b002a02fdb45164c8929",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/growth/AppMemberSignConfigController.java",
+      "classMapping": "/app/growths",
+      "classMappingLine": 24,
+      "sha256": "2061e84025db788dc7dfa3400112607f9ae62222839082da05bf2fb435b3fac1",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/growth/AppMemberSignRecordController.java",
+      "classMapping": "/app/growths",
+      "classMappingLine": 34,
+      "sha256": "f2acdc3bc7d141dcd62d30d5dfe82243636aa7bdf24981062ac3821785db8d41",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "user",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/user/AppMemberPasswordController.java",
+      "classMapping": "/app/users",
+      "classMappingLine": 25,
+      "sha256": "85c66f06875a2b5046ed50dc27b91ce27dda4fa58b890fa5dc9981831d5871d3",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "app",
+      "family": "user",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/app/user/AppMemberUserController.java",
+      "classMapping": "/app/users",
+      "classMappingLine": 30,
+      "sha256": "1b089ee6baa89d16066e2b0389f26c343d41dc3edf6717d1cccf026b5819c136",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "address",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/address/MemberUserAddressController.java",
+      "classMapping": "/member-users",
+      "classMappingLine": 26,
+      "sha256": "9421fbd5c44f405d4b9eef82eea7c9f12171bedd7a14c01c9cd4ac3b704d07f7",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberExperienceRecordController.java",
+      "classMapping": "/member/admin",
+      "classMappingLine": 31,
+      "sha256": "78d7c44351917386adadf4efea8584fbd77cc5fc6021680a0e7a9da8306c4fce",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberLevelController.java",
+      "classMapping": "/growth/levels",
+      "classMappingLine": 44,
+      "sha256": "cd45dbb3f5523c96dc1e3a4f9d0fd08b36d60ffcf03f0f9a59cf0fb9c06be175",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberLevelRecordController.java",
+      "classMapping": "/member/admin",
+      "classMappingLine": 31,
+      "sha256": "98ebb07bb46c1cee64c4e16e83f68df9324db7a62a5fc683c871ec99331383bd",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberPointConfigController.java",
+      "classMapping": "/growths",
+      "classMappingLine": 30,
+      "sha256": "8f637824f564b29817cd4dafae59a068eb1dbe7e5f325fe48da3339cb7146ec6",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberPointRecordController.java",
+      "classMapping": "/member/admin",
+      "classMappingLine": 31,
+      "sha256": "691e57809048b5860666dee3de458a3930842fbd40e54510616a86f2cea0f234",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberSignConfigController.java",
+      "classMapping": "/growths",
+      "classMappingLine": 42,
+      "sha256": "f855759e185c4d7a9215cf947d91b24ca709757b2b415931585349bf00ef985d",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberSignRecordController.java",
+      "classMapping": "/member/admin",
+      "classMappingLine": 27,
+      "sha256": "984b35b43b771a88362e72c3250b9a84cda2386dc88de292ff37b227c35c60a6",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberUserLevelController.java",
+      "classMapping": "/member-users",
+      "classMappingLine": 26,
+      "sha256": "cf91017da42606f93ca72aa512ae35fdfcbfc656117b4a611d2fdf9b2d32bc49",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberUserLevelRecordController.java",
+      "classMapping": "/member-users",
+      "classMappingLine": 28,
+      "sha256": "1c210dd022b1f1237d6cb005d5960e934fdff79736dd52b6e7a9dd01b3b71f46",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberUserPointController.java",
+      "classMapping": "/member-users",
+      "classMappingLine": 33,
+      "sha256": "ab5b086c97b935a39871ddbfd56dff7092f99c934ddceb41e0873448a9092bd2",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "growth",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/growth/MemberUserSignRecordController.java",
+      "classMapping": "/member-users",
+      "classMappingLine": 28,
+      "sha256": "ac3908cad7c38c5cdf8aa8836da35e1e2b2e60aafbebb9f0eec21dcbd484c5d5",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "user",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberGroupController.java",
+      "classMapping": "/groups",
+      "classMappingLine": 42,
+      "sha256": "03c0e18dba13db546924f968e237c51705cd43df67055e3ac27c51179c22fb5f",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "user",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberGroupQueryController.java",
+      "classMapping": "/groups",
+      "classMappingLine": 27,
+      "sha256": "df8249d560fdc0aec15077fcb30e89e8783de089ef3a0807d59a936883d86453",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "user",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberTagController.java",
+      "classMapping": "/tags",
+      "classMappingLine": 42,
+      "sha256": "4e08654ee0bfa40d4098eca16f9f09cf7eb0fb2ce56e1716a686a0f696216d30",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "user",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberTagQueryController.java",
+      "classMapping": "/tags",
+      "classMappingLine": 27,
+      "sha256": "db25c9cded22825e1731410464935e5f93cc8daeb4b6c3683815eb20378968e3",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "user",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberUserController.java",
+      "classMapping": "/member-users",
+      "classMappingLine": 35,
+      "sha256": "3f32f30f08e456c803eff1eff887a7004ac2ea9482ca89cf6c9c507dd5acf29d",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "user",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberUserGroupController.java",
+      "classMapping": "/member-users",
+      "classMappingLine": 26,
+      "sha256": "d1de087f4b4cabe521f28cebc1d044e65d07ef499c090d0b3da8a376c7bf67c3",
+      "verification": "candidate_only"
+    },
+    {
+      "domain": "member",
+      "side": "web",
+      "family": "user",
+      "path": "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/MemberUserTagController.java",
+      "classMapping": "/member-users",
+      "classMappingLine": 31,
+      "sha256": "0a9d25691582f9b2345910662db1a461ff6b60aa639321eaf4bc161c2b3bba63",
+      "verification": "candidate_only"
+    }
+  ],
+  "sourceCounts": {
+    "product": 13,
+    "promotion": 37,
+    "trade": 19,
+    "statistics": 4,
+    "member": 20,
+    "pay": 19
+  },
+  "targetCounts": {
+    "product": 13,
+    "promotion": 27,
+    "order": 25,
+    "pay": 16,
+    "member": 27
+  },
+  "frontendDirectories": {
+    "upstreamAdminMall": {
+      "root": "/Users/wangxx/demo/yudao-ui-admin-vue3/src/api/mall",
+      "topLevel": [
+        "product",
+        "promotion",
+        "statistics",
+        "trade"
+      ]
+    },
+    "upstreamMiniapp": {
+      "root": "/Users/wangxx/demo/yudao-mall-uniapp/sheep/api",
+      "topLevel": [
+        "index.js",
+        "infra",
+        "member",
+        "migration",
+        "pay",
+        "product",
+        "promotion",
+        "system",
+        "trade"
+      ]
+    },
+    "targetUi": {
+      "root": "/Users/wangxx/demo/lemnt-cloud/lemnt-ui/src/modules",
+      "topLevel": [
+        "auth",
+        "home",
+        "mall",
+        "member",
+        "system",
+        "trade"
+      ]
+    },
+    "targetMiniapp": {
+      "root": "/Users/wangxx/demo/lemnt-cloud/lemnt-miniapp/services",
+      "topLevel": [
+        "bargain.js",
+        "brokerage.js",
+        "cartAddition.js",
+        "checkoutFlow.js",
+        "combination.js",
+        "comments.js",
+        "coupons.js",
+        "diy.js",
+        "images.js",
+        "kefu.js",
+        "member.js",
+        "memberRuntime.js",
+        "orderPromotion.js",
+        "orderRuntime.js",
+        "payment.js",
+        "paymentStatus.js",
+        "pickup.js",
+        "point.js",
+        "productInteractions.js",
+        "promotionHub.js",
+        "promotionOrder.js",
+        "promotionOrderPage.js",
+        "seckill.js",
+        "storefront.js",
+        "trade.js"
+      ]
+    }
+  }
+}

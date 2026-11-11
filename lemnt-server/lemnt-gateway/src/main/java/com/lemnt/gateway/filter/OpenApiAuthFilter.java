@@ -5,6 +5,7 @@ import com.lemnt.common.security.constant.SecurityConstants;
 import com.lemnt.gateway.model.OpenApiClient;
 import com.lemnt.gateway.service.OpenApiService;
 import com.lemnt.gateway.utils.ServletUtils;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,21 +76,31 @@ public class OpenApiAuthFilter implements GlobalFilter, Ordered {
         if (Objects.equals(HttpMethod.GET, request.getMethod())) {
             try {
                 Map<String, Object> params = readQuery(request);
-                openApiService.verifySign(clientId, timestamp, nonce, client.getAppSecret(), sign, params);
+                openApiService.verifySign(
+                    clientId, timestamp, nonce, client.getAppSecret(), sign, params);
             } catch (Exception e) {
                 return ServletUtils.unauthorized(exchange.getResponse(), e.getMessage());
             }
             return chain.filter(addClientHeader(exchange, client));
         } else {
-            return readBody(exchange, (body, newExchange) -> {
-                try {
-                    Map<String, Object> params = JsonUtils.toMap(body);
-                    openApiService.verifySign(clientId, timestamp, nonce, client.getAppSecret(), sign, params);
-                    return chain.filter(addClientHeader(newExchange, client));
-                } catch (Exception e) {
-                    return ServletUtils.unauthorized(newExchange.getResponse(), e.getMessage());
-                }
-            });
+            return readBody(
+                exchange,
+                (body, newExchange) -> {
+                    try {
+                        Map<String, Object> params = JsonUtils.toMap(body);
+                        openApiService.verifySign(
+                            clientId,
+                            timestamp,
+                            nonce,
+                            client.getAppSecret(),
+                            sign,
+                            params);
+                        return chain.filter(addClientHeader(newExchange, client));
+                    } catch (Exception e) {
+                        return ServletUtils.unauthorized(
+                            newExchange.getResponse(), e.getMessage());
+                    }
+                });
         }
     }
 
@@ -101,13 +112,15 @@ public class OpenApiAuthFilter implements GlobalFilter, Ordered {
      */
     private Map<String, Object> readQuery(ServerHttpRequest request) {
         Map<String, Object> params = new HashMap<>();
-        request.getQueryParams().forEach((key, value) -> {
-            if (value.size() == 1) {
-                params.put(key, value.get(0));
-            } else {
-                params.put(key, value);
-            }
-        });
+        request.getQueryParams()
+            .forEach(
+                (key, value) -> {
+                    if (value.size() == 1) {
+                        params.put(key, value.get(0));
+                    } else {
+                        params.put(key, value);
+                    }
+                });
         return params;
     }
 
@@ -117,26 +130,30 @@ public class OpenApiAuthFilter implements GlobalFilter, Ordered {
      * @param exchange
      * @param handler
      */
-    private Mono<Void> readBody(ServerWebExchange exchange, BiFunction<String, ServerWebExchange, Mono<Void>> handler) {
+    private Mono<Void> readBody(
+        ServerWebExchange exchange, BiFunction<String, ServerWebExchange, Mono<Void>> handler) {
         return DataBufferUtils.join(exchange.getRequest().getBody())
-                .flatMap(dataBuffer -> {
+            .flatMap(
+                dataBuffer -> {
                     byte[] bytes = new byte[dataBuffer.readableByteCount()];
                     dataBuffer.read(bytes);
                     DataBufferUtils.release(dataBuffer);
                     String body = new String(bytes, StandardCharsets.UTF_8);
                     ServerHttpRequestDecorator decorator =
-                            new ServerHttpRequestDecorator(exchange.getRequest()) {
-                                @Override
-                                public Flux<DataBuffer> getBody() {
-                                    return Flux.defer(() ->
-                                            Flux.just(exchange.getResponse()
-                                                    .bufferFactory()
-                                                    .wrap(bytes))
-                                    );
-                                }
-                            };
+                        new ServerHttpRequestDecorator(exchange.getRequest()) {
+                            @Override
+                            public Flux<DataBuffer> getBody() {
+                                return Flux.defer(
+                                    () ->
+                                        Flux.just(
+                                            exchange.getResponse()
+                                                .bufferFactory()
+                                                .wrap(bytes)));
+                            }
+                        };
 
-                    ServerWebExchange newExchange = exchange.mutate().request(decorator).build();
+                    ServerWebExchange newExchange =
+                        exchange.mutate().request(decorator).build();
                     return handler.apply(body, newExchange);
                 });
     }
@@ -150,10 +167,10 @@ public class OpenApiAuthFilter implements GlobalFilter, Ordered {
      */
     private ServerWebExchange addClientHeader(ServerWebExchange exchange, OpenApiClient client) {
         ServerHttpRequest request =
-                exchange.getRequest()
-                        .mutate()
-                        .header(SecurityConstants.CLIENT_ID_HEADER, client.getClientId())
-                        .build();
+            exchange.getRequest()
+                .mutate()
+                .header(SecurityConstants.CLIENT_ID_HEADER, client.getClientId())
+                .build();
         return exchange.mutate().request(request).build();
     }
 

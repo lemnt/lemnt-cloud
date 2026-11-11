@@ -1,0 +1,270 @@
+-- 支付服务初始化，仅用于空库。订单与售后归属通过可信RPC核实。
+
+CREATE TABLE IF NOT EXISTS pay_payment (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
+    payment_no VARCHAR(40) NOT NULL COMMENT '支付业务单号',
+    order_no VARCHAR(40) NOT NULL COMMENT '交易订单业务单号',
+    member_id BIGINT NULL COMMENT '会员编号，创建支付单时来自订单可信快照写入，用于资金归属核对与审计',
+    channel VARCHAR(32) NOT NULL COMMENT '支付渠道编码',
+    app_key VARCHAR(64) NULL COMMENT '支付应用标识',
+    channel_trade_no VARCHAR(128) NULL COMMENT '渠道支付流水号',
+    amount DECIMAL(19,2) NOT NULL COMMENT '业务金额，单位元',
+    status VARCHAR(20) NOT NULL DEFAULT 'WAITING' COMMENT '支付状态：WAITING待支付、SUCCESS支付成功、CLOSED已关闭',
+    paid_time DATETIME NULL COMMENT '渠道支付成功时间，仅状态迁移为SUCCESS时写入，对账基准',
+    notify_id VARCHAR(128) NULL COMMENT '支付通知唯一标识',
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    PRIMARY KEY(id),
+    UNIQUE KEY uk_trade_payment_no(payment_no),
+    UNIQUE KEY uk_trade_payment_order_channel(order_no,channel),
+    UNIQUE KEY uk_trade_payment_notify(notify_id),
+    KEY idx_trade_payment_status(status,create_time),
+    KEY idx_trade_payment_app(app_key,channel),
+    KEY idx_trade_payment_member(member_id,id),
+    CONSTRAINT chk_trade_payment_amount CHECK(amount>0),
+    CONSTRAINT chk_trade_payment_status CHECK(status IN ('WAITING','SUCCESS','CLOSED'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付单';
+
+CREATE TABLE IF NOT EXISTS pay_app (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
+    app_key VARCHAR(64) NOT NULL COMMENT '支付应用标识',
+    name VARCHAR(64) NOT NULL COMMENT '名称',
+    status TINYINT NOT NULL DEFAULT 0 COMMENT '启停状态：0启用、1停用',
+    remark VARCHAR(255) NULL COMMENT '备注说明',
+    order_notify_url VARCHAR(255) NULL COMMENT '支付成功业务通知地址',
+    refund_notify_url VARCHAR(255) NULL COMMENT '退款业务通知地址',
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    deleted TINYINT NOT NULL DEFAULT 0 COMMENT '是否逻辑删除，0否、1是',
+    PRIMARY KEY(id),
+    UNIQUE KEY uk_trade_pay_app_key(app_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付应用';
+
+CREATE TABLE IF NOT EXISTS pay_notify_task (
+    execute_version BIGINT NOT NULL DEFAULT 0 COMMENT '单调执行版本，领取和人工重置均递增，完成时按版本CAS',
+    lease_until DATETIME NULL COMMENT '当前执行租约到期时间，使用数据库时间，过期允许重新领取',
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
+    type VARCHAR(16) NOT NULL COMMENT '派发业务类型：PAY支付、REFUND历史退款、AFTER_SALE售后权益',
+    biz_no VARCHAR(40) NOT NULL COMMENT '业务单号',
+    order_no VARCHAR(40) NOT NULL COMMENT '交易订单业务单号',
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING' COMMENT '派发状态：PENDING待派发、SUCCESS成功、FAILED失败待重试',
+    notify_times INT NOT NULL DEFAULT 0 COMMENT '已派发尝试次数',
+    max_notify_times INT NOT NULL DEFAULT 8 COMMENT '最大派发尝试次数',
+    next_notify_time DATETIME NULL COMMENT '下次计划派发时间',
+    last_execute_time DATETIME NULL COMMENT '最近一次派发执行时间',
+    last_response VARCHAR(500) NULL COMMENT '最近一次派发结果摘要',
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    PRIMARY KEY(id),
+    UNIQUE KEY uk_trade_pay_notify_biz(type,biz_no),
+    KEY idx_trade_pay_notify_due(status,next_notify_time)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付结果下游派发任务';
+
+CREATE TABLE IF NOT EXISTS pay_wallet (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
+    member_id BIGINT NOT NULL COMMENT '会员编号',
+    balance DECIMAL(19,2) NOT NULL DEFAULT 0 COMMENT '可用余额，单位元',
+    freeze_price DECIMAL(19,2) NOT NULL DEFAULT 0 COMMENT '冻结余额，单位元',
+    total_expense DECIMAL(19,2) NOT NULL DEFAULT 0 COMMENT '累计支出金额，单位元',
+    total_recharge DECIMAL(19,2) NOT NULL DEFAULT 0 COMMENT '累计充值金额，单位元',
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    PRIMARY KEY(id),
+    UNIQUE KEY uk_trade_member_wallet(member_id),
+    CONSTRAINT chk_wallet_balance CHECK(balance>=0),
+    CONSTRAINT chk_wallet_freeze CHECK(freeze_price>=0),
+    CONSTRAINT chk_wallet_expense CHECK(total_expense>=0),
+    CONSTRAINT chk_wallet_recharge CHECK(total_recharge>=0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会员钱包账户';
+
+CREATE TABLE IF NOT EXISTS pay_recharge_package (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
+    name VARCHAR(64) NOT NULL COMMENT '名称',
+    pay_price DECIMAL(19,2) NOT NULL COMMENT '实付金额，单位元',
+    bonus_price DECIMAL(19,2) NOT NULL DEFAULT 0 COMMENT '充值赠送金额，单位元',
+    status TINYINT NOT NULL DEFAULT 0 COMMENT '启停状态：0启用、1停用',
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    deleted TINYINT NOT NULL DEFAULT 0 COMMENT '是否逻辑删除，0否、1是',
+    PRIMARY KEY(id),
+    UNIQUE KEY uk_trade_recharge_package_name(name),
+    CONSTRAINT chk_recharge_package_pay CHECK(pay_price>0),
+    CONSTRAINT chk_recharge_package_bonus CHECK(bonus_price>=0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='充值套餐';
+
+CREATE TABLE IF NOT EXISTS pay_channel (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
+    app_id BIGINT NOT NULL COMMENT '支付应用编号',
+    code VARCHAR(32) NOT NULL COMMENT '业务编码',
+    status TINYINT NOT NULL DEFAULT 0 COMMENT '启停状态：0启用、1停用',
+    fee_rate DECIMAL(6,2) NULL COMMENT '渠道手续费百分比',
+    remark VARCHAR(255) NULL COMMENT '备注说明',
+    config TEXT NULL COMMENT '支付渠道内部JSON配置，包含密钥且不对外明文返回',
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    deleted TINYINT NOT NULL DEFAULT 0 COMMENT '是否逻辑删除，0否、1是',
+    PRIMARY KEY(id),
+    UNIQUE KEY uk_trade_pay_channel(app_id,code),
+    KEY idx_trade_pay_channel_app(app_id),
+    CONSTRAINT fk_trade_pay_channel_app FOREIGN KEY(app_id) REFERENCES pay_app(id),
+    CONSTRAINT chk_trade_pay_channel_fee CHECK(fee_rate IS NULL OR (fee_rate>=0 AND fee_rate<=100))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付渠道配置';
+
+CREATE TABLE IF NOT EXISTS pay_notify_log (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
+    task_id BIGINT NOT NULL COMMENT '支付结果派发任务编号',
+    notify_times INT NOT NULL COMMENT '已派发尝试次数',
+    status VARCHAR(20) NOT NULL COMMENT '本次派发结果状态',
+    response VARCHAR(500) NULL COMMENT '本次派发结果摘要',
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    PRIMARY KEY(id),
+    KEY idx_trade_pay_notify_log_task(task_id),
+    CONSTRAINT fk_trade_pay_notify_log_task FOREIGN KEY(task_id) REFERENCES pay_notify_task(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付结果派发尝试日志';
+
+CREATE TABLE IF NOT EXISTS pay_wallet_transaction (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
+    transaction_no VARCHAR(64) NOT NULL COMMENT '钱包流水业务编号',
+    wallet_id BIGINT NOT NULL COMMENT '会员钱包编号',
+    biz_type VARCHAR(32) NOT NULL COMMENT '钱包业务类型：RECHARGE、RECHARGE_REFUND、PAYMENT、PAYMENT_REFUND、UPDATE_BALANCE、TRANSFER、BROKERAGE_WITHDRAW',
+    biz_no VARCHAR(64) NOT NULL COMMENT '业务单号',
+    title VARCHAR(128) NOT NULL COMMENT '标题',
+    amount DECIMAL(19,2) NOT NULL COMMENT '本次余额变更量，收入为正、支出为负，单位元',
+    balance_after DECIMAL(19,2) NOT NULL COMMENT '变更后可用余额，单位元',
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    PRIMARY KEY(id),
+    UNIQUE KEY uk_wallet_tx_biz(wallet_id,biz_type,biz_no),
+    KEY idx_wallet_tx_wallet(wallet_id,id),
+    CONSTRAINT fk_wallet_tx_wallet FOREIGN KEY(wallet_id) REFERENCES pay_wallet(id),
+    CONSTRAINT chk_wallet_tx_amount CHECK(amount<>0),
+    CONSTRAINT chk_wallet_tx_balance CHECK(balance_after>=0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会员钱包余额流水';
+
+CREATE TABLE IF NOT EXISTS pay_wallet_recharge (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
+    recharge_no VARCHAR(40) NOT NULL COMMENT '充值业务单号',
+    request_no VARCHAR(64) NOT NULL COMMENT '请求幂等编号',
+    wallet_id BIGINT NOT NULL COMMENT '会员钱包编号',
+    member_id BIGINT NOT NULL COMMENT '会员编号',
+    package_id BIGINT NULL COMMENT '充值套餐编号',
+    pay_price DECIMAL(19,2) NOT NULL COMMENT '实付金额，单位元',
+    bonus_price DECIMAL(19,2) NOT NULL DEFAULT 0 COMMENT '充值赠送金额，单位元',
+    total_price DECIMAL(19,2) NOT NULL COMMENT '实付与赠送合计入账金额，单位元',
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING' COMMENT '充值状态：PENDING待支付、PAID已到账、REFUNDED已退款',
+    channel_code VARCHAR(32) NULL COMMENT '支付渠道编码',
+    paid_time DATETIME NULL COMMENT '支付到账时间',
+    refunded_time DATETIME NULL COMMENT '退款完成时间',
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    PRIMARY KEY(id),
+    UNIQUE KEY uk_trade_wallet_recharge_no(recharge_no),
+    UNIQUE KEY uk_trade_wallet_recharge_request(request_no),
+    KEY idx_trade_wallet_recharge_member(member_id,id),
+    KEY idx_trade_wallet_recharge_status(status),
+    CONSTRAINT fk_wallet_recharge_wallet FOREIGN KEY(wallet_id) REFERENCES pay_wallet(id),
+    CONSTRAINT chk_wallet_recharge_total CHECK(total_price>0),
+    CONSTRAINT chk_wallet_recharge_conservation CHECK(total_price=pay_price+bonus_price)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会员钱包充值单';
+
+CREATE TABLE IF NOT EXISTS pay_wallet_transfer (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
+    transfer_no VARCHAR(40) NOT NULL COMMENT '转账业务单号',
+    request_no VARCHAR(64) NOT NULL COMMENT '请求幂等编号',
+    from_wallet_id BIGINT NOT NULL COMMENT '转出钱包编号',
+    from_member_id BIGINT NOT NULL COMMENT '转出会员编号',
+    to_wallet_id BIGINT NOT NULL COMMENT '转入钱包编号',
+    to_member_id BIGINT NOT NULL COMMENT '转入会员编号',
+    amount DECIMAL(19,2) NOT NULL COMMENT '业务金额，单位元',
+    remark VARCHAR(128) NULL COMMENT '备注说明',
+    status VARCHAR(20) NOT NULL DEFAULT 'SUCCESS' COMMENT '转账状态：SUCCESS成功，同步转出转入',
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    PRIMARY KEY(id),
+    UNIQUE KEY uk_wallet_transfer_no(transfer_no),
+    UNIQUE KEY uk_wallet_transfer_request(request_no),
+    KEY idx_wallet_transfer_from(from_member_id,id),
+    KEY idx_wallet_transfer_to(to_member_id,id),
+    CONSTRAINT fk_wallet_transfer_from FOREIGN KEY(from_wallet_id) REFERENCES pay_wallet(id),
+    CONSTRAINT fk_wallet_transfer_to FOREIGN KEY(to_wallet_id) REFERENCES pay_wallet(id),
+    CONSTRAINT chk_wallet_transfer_amount CHECK(amount>0),
+    CONSTRAINT chk_wallet_transfer_distinct CHECK(from_member_id<>to_member_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会员钱包转账';
+
+CREATE TABLE IF NOT EXISTS pay_payment_refund (
+    refund_no VARCHAR(40) NOT NULL PRIMARY KEY COMMENT '退款业务单号',
+    after_sale_no VARCHAR(40) NOT NULL COMMENT '售后业务单号',
+    payment_no VARCHAR(40) NULL COMMENT '支付业务单号',
+    order_no VARCHAR(40) NOT NULL COMMENT '交易订单业务单号',
+    channel VARCHAR(32) NOT NULL COMMENT '支付渠道编码',
+    amount DECIMAL(19,2) NOT NULL COMMENT '业务金额，单位元',
+    status VARCHAR(20) NOT NULL DEFAULT 'WAITING' COMMENT '退款状态：WAITING待退款、SUCCESS成功、FAILED失败',
+    channel_refund_no VARCHAR(128) NULL COMMENT '渠道退款流水号',
+    create_by VARCHAR(64) NULL COMMENT '创建人',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_by VARCHAR(64) NULL COMMENT '修改人',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    UNIQUE KEY uk_payment_refund_after_sale(after_sale_no),
+    KEY idx_payment_refund_payment(payment_no),
+    KEY idx_payment_refund_status_time(status,create_time),
+    CONSTRAINT fk_payment_refund_payment FOREIGN KEY(payment_no) REFERENCES pay_payment(payment_no),
+    CONSTRAINT chk_payment_refund_amount CHECK(amount>0),
+    CONSTRAINT chk_payment_refund_status CHECK(status IN ('WAITING','SUCCESS','FAILED'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='售后原路支付退款交易';
+
+CREATE TABLE IF NOT EXISTS pay_message_outbox (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+    event_no VARCHAR(64) NOT NULL COMMENT '稳定事件编号，重投不变',
+    event_type VARCHAR(40) NOT NULL COMMENT '事件类型',
+    business_key VARCHAR(128) NOT NULL COMMENT '本事件的业务幂等键',
+    aggregate_no VARCHAR(64) NOT NULL COMMENT '所属订单或支付业务编号',
+    schema_version INT NOT NULL COMMENT '事件载荷版本',
+    payload LONGTEXT NOT NULL COMMENT '冻结事件JSON，不保存凭据或完整个人资料',
+    payload_hash CHAR(64) NOT NULL COMMENT '规范化载荷SHA256，识别同键不同内容',
+    status VARCHAR(16) NOT NULL DEFAULT 'PENDING' COMMENT 'PENDING/SENDING/SENT/FAILED',
+    attempts INT NOT NULL DEFAULT 0 COMMENT '已尝试次数',
+    execute_version BIGINT NOT NULL DEFAULT 0 COMMENT '执行版本，隔离过期工作线程',
+    next_retry_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '下次允许领取时间',
+    lease_until DATETIME DEFAULT NULL COMMENT '数据库时钟计算的执行租约',
+    last_error VARCHAR(500) DEFAULT NULL COMMENT '脱敏错误摘要',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_event_no (event_no),
+    UNIQUE KEY uk_event_business (event_type, business_key),
+    KEY idx_event_retry (status, next_retry_at, lease_until)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='本地事务消息待投递记录';
+
+CREATE TABLE IF NOT EXISTS pay_message_inbox (
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+    consumer_key VARCHAR(80) NOT NULL COMMENT '稳定消费处理器标识',
+    event_no VARCHAR(64) NOT NULL COMMENT '已处理事件编号',
+    event_type VARCHAR(40) NOT NULL COMMENT '事件类型',
+    business_key VARCHAR(128) NOT NULL COMMENT '本处理器业务幂等键',
+    payload_hash CHAR(64) NOT NULL COMMENT '载荷SHA256，同键不同内容拒绝',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '消费成功时间，与业务同事务',
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_consumer_event (consumer_key, event_no),
+    UNIQUE KEY uk_consumer_business (consumer_key, event_type, business_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='本地事务消息消费幂等记录';

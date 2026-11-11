@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.pay.infrastructure.payment.mapper.WalletMapper">
+    <select id="lockByMemberId" resultType="com.lemnt.pay.infrastructure.payment.dataobject.WalletDO" useCache="false"
+            flushCache="true">
+        SELECT * FROM pay_wallet WHERE member_id=#{memberId} FOR UPDATE
+    </select>
+
+    <select id="lockById" resultType="com.lemnt.pay.infrastructure.payment.dataobject.WalletDO" useCache="false"
+            flushCache="true">
+        SELECT * FROM pay_wallet WHERE id=#{id} FOR UPDATE
+    </select>
+</mapper>

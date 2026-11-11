@@ -1,0 +1,35 @@
+{
+  "batch": "145-zero-cash-partial-refund",
+  "date": "2026-11-01",
+  "scope": ["zero-cash partial after-sale", "quantity-proportional point refund", "activity stock incremental restore"],
+  "backend": {
+    "trade": {"tests": 230, "failures": 0, "errors": 0, "skipped": 0},
+    "mall": {"tests": 167, "failures": 0, "errors": 0, "skipped": 0},
+    "member": {"tests": 118, "failures": 0, "errors": 0, "skipped": 0},
+    "newTests": [
+      "com.lemnt.trade.application.aftersale.ZeroCashAfterSaleTest (6)",
+      "PromotionOrderPersistenceTest.zeroCashPartialRefundReturnsPointsByQuantity (1)",
+      "PromotionOrderPersistenceTest.zeroCashMultiLineOrderRefundsPointsByLine (1)",
+      "MemberAccountIntegrationTest zero-cash partial refund case (updated)"
+    ]
+  },
+  "endpoints": ["POST /mall/app/point-mall/orders/batch"],
+  "sql": ["lemnt-server/lemnt-mall/sql/V24__promotion_order_item.sql"],
+  "ui": {"tests": 292, "failures": 0},
+  "miniapp": {"tests": 155, "failures": 0},
+  "invariants": [
+    "zero-cash after-sale supports quantity less than the full item quantity",
+    "zero-cash order becomes REFUNDED only when cumulative refunded quantity reaches the item quantity",
+    "each zero-cash refund creates a SUCCESS POINT payment refund with zero amount and null paymentNo",
+    "points refunded per request are the increment of floor(usePoint * cumulativeQuantity / quantity)",
+    "last refund returns the rounding remainder",
+    "point multi-line orders compute refund points per order line",
+    "activity stock restores by each refunded quantity",
+    "non-zero refunds keep cash-proportional behavior"
+  ],
+  "deferred": [
+    "multi-item zero-cash order point split",
+    "real payment channel refund semantics",
+    "real MySQL/Redis/Nacos/Dubbo/MQ/browser/device verification"
+  ]
+}

@@ -1,11 +1,12 @@
 package com.lemnt.system.api.domain.dto;
 
-import java.util.Set;
-
 import com.lemnt.common.api.domain.dto.BaseDTO;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.util.Set;
 
 /**
  * 用户信息
@@ -16,7 +17,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 public class LoginUserDTO extends BaseDTO {
-
     /**
      * 用户唯一标识
      */

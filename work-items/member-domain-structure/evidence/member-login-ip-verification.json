@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-29",
+  "backend": {
+    "lemnt-auth": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-member": {
+      "tests": 31,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-gateway": {
+      "tests": 33,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-mall": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "reactTests": 191,
+  "checks": [
+    "build",
+    "typecheck",
+    "lint",
+    "format:check"
+  ],
+  "verified": [
+    "外部同名头被网关remoteAddress覆盖",
+    "无连接地址清除伪造头",
+    "HTTP内部上下文到登录命令",
+    "成功登录传RPC连接IP",
+    "H2时间IP同时落库且非法域名拒绝",
+    "未知IP清除上次IP"
+  ],
+  "notRun": [
+    "真实MySQL升级",
+    "部署网关/反向代理链",
+    "真实Redis/Dubbo网络",
+    "浏览器"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterAppRoutesTest.java": "95b87720f5161f6fefe7e9c5be12775322cefea3220a37a388f4f37deb3ff233",
+    "lemnt-server/lemnt-gateway/src/main/java/com/lemnt/gateway/filter/AuthFilter.java": "4e14aa29dae5251de8dc2818f0429223273bab3b46028ff4bf5f6d143928b06d",
+    "lemnt-server/lemnt-auth/lemnt-auth-adapter/src/test/java/com/lemnt/auth/adapter/app/member/AppMemberAuthControllerTest.java": "c3aa093bd9f7cbda1c5ac5c37b666dab4af897754860aa11e7bb55cb82ff86a1",
+    "lemnt-server/lemnt-auth/lemnt-auth-adapter/src/main/java/com/lemnt/auth/adapter/app/member/AppMemberAuthController.java": "0032c018d369ce8ebc6430f86e8ea37eb5b02ee12807898ae14d66eeaf4be0e3",
+    "lemnt-server/lemnt-auth/lemnt-auth-adapter/src/main/java/com/lemnt/auth/adapter/app/member/converter/MemberAuthReqConverter.java": "f7944a47aed4f708d16b34c98f7e83d1cbfcd07b22e1e46dd930e8b858739fe6",
+    "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/member/cmd/AuthLoginCmd.java": "01cbf0509d18a473d594507841dcfb2df4f20221e854e94049b4b5e703bfc9bc",
+    "lemnt-server/lemnt-auth/lemnt-auth-application/src/main/java/com/lemnt/auth/application/member/service/MemberAuthenticationService.java": "bec69ad8c318a131e9b94074959d6aafde517fed58e07b11ca83fd639a3926a9",
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java": "711663b892b69ec560407499a3299919587d5f1d71c36f9bf3e189ea022ff658",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/dubbo/MemberUserClientImpl.java": "a0eacf5140a55e839ddf3e479f58492309abc60de65899c8aec456ed58b6a34b",
+    "lemnt-server/lemnt-member/lemnt-member-client/src/main/java/com/lemnt/member/client/MemberUserClient.java": "c622f8ea77b2f5444ba0bc009459fc057424461f36efb8cf412dbc0d1a832652",
+    "/tmp/member-login-ip-final.log": "55c71f311e95d719fa7e25ec4eddf992e281eb559f692ba852b69d963ad45cbe",
+    "/tmp/member-login-ip-final-verify.log": "1a0420041ec5c342be242ff8db075c6e666fa4afb76baeb7372ca4506e0d5603",
+    "/tmp/member-ip-auth-converter.log": "544cf8adefccb4cbb94fa1594fa5902cf0222868022eb6465258d7672b531a79",
+    "/tmp/member-ip-ui-build.log": "e7ac165e54c9d77c8cdc2793ba95e0f8e593453e262ea9baf595f45d32b1b50f",
+    "/tmp/member-ip-ui-tests.log": "472f6609d6d7668d5d79d2d703c7c2180e9c1eccd95db2941421dc701e2b6d73",
+    "/tmp/member-ip-ui-lint.log": "d390a8c939ca60f7f656cd93d5acf81a14c2e00c6a3392b46efc2a7c89dedb55",
+    "/tmp/member-ip-ui-format.log": "26e74b26d1158e460c922b81734e7f67f7f7e7a43a3b22670ebf3e6312be5bdf",
+    "/tmp/member-ip-ui-typecheck.log": "9feea68862ace8f4c44266036e533929561dc11868fa49061b763cdea019070d"
+  }
+}

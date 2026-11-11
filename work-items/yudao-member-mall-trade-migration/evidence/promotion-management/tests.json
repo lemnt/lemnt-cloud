@@ -1,0 +1,88 @@
+[
+  {
+    "suite": "com.lemnt.mall.application.dubbo.PromotionCatalogClientTest",
+    "tests": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      "providerValidatesSortsAndDoesNotIncludeStockInHash",
+      "providerRejectsNullDuplicatesBoundsAndUnsupportedScope",
+      "scopeExistenceIsBoundedIndependentOfAvailability"
+    ]
+  },
+  {
+    "suite": "com.lemnt.mall.infrastructure.catalog.CatalogPersistenceTest",
+    "tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      "concurrentStockDeltasDoNotLoseUpdatesOrAllowNegativeInventory",
+      "adjustmentLeavesCapacityForOutstandingReservationRelease",
+      "legacyStandaloneProductKeepsItsAvailabilityAfterCatalogExtension",
+      "additiveMigrationPreservesAnExistingProductRow",
+      "publicCatalogHidesOffShelfAndDisabledTaxonomyAndBrand",
+      "publicCatalogFiltersAncestorAndSearchWithBoundedPriceRange",
+      "promotionFactsHideDisabledTaxonomyAndOffShelfSku",
+      "concurrentDuplicateReservesAndCancelNeverDoubleDebitOrLeakInventory",
+      "pagingAndMetadataChangesNeverReplaceSkuInventory",
+      "createsVariantsAndRollsBackWholeAggregateOnDuplicateSku",
+      "disabledTaxonomyAndOffShelfBlockNewReservationsButKeepExistingReservationRecoverable",
+      "publicCatalogKeepsOutOfStockProductsButRemovesHiddenSkus",
+      "cancellationTombstoneFencesDelayedReserveAndValidatesQuantity",
+      "disablingParentOrBrandAlsoBlocksChildSkuSales",
+      "foreignKeysProtectReferencedTaxonomyIncludingOffShelfProducts",
+      "ledgerIsIdempotentRejectsChangedPayloadAndRollsBackFailedAdjustment",
+      "promotionFactsRejectOverflowAndLegacyUnmappedSku",
+      "promotionFactsUseRealSpuAndExactPriceAndKeepZeroStock"
+    ]
+  },
+  {
+    "suite": "com.lemnt.trade.infrastructure.promotion.PromotionCatalogFactsGatewayTest",
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      "allScopeSkipsRpcAndMissingTargetsAreInvalidInput",
+      "missingProviderAndTimeoutNeverFallback",
+      "malformedProtocolFactsAndDuplicateOrUnrequestedRowsReject",
+      "malformedScopeResultsOrMissingMethodFailClosed",
+      "convertsRealProtocolAndPreservesMissingSellableFacts"
+    ]
+  },
+  {
+    "suite": "com.lemnt.trade.start.promotion.PromotionHttpIntegrationTest",
+    "tests": 14,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      "conflictsMissingAndMalformedQueryUseMatchingHttpAndRCode",
+      "replaySkipsRpcAndRevisionButPermissionsStillApply",
+      "orderDiscountRoundTripsNullableCapAndAllScopeSkipsUnavailableRpc",
+      "readPermissionDoesNotGrantAnyMutationOrList",
+      "allSixRoutesUseRealWriteQueryAndImmutableVersions",
+      "scalarCoercionAndInvalidAmountsScopeWindowsReject",
+      "exhaustedRevisionFailsWithoutPublishingPartialVersion",
+      "pagedFiltersAreExactBoundedAndDeterministic",
+      "scopedConverterAndPermissionsDeclaredAndBodyBoundEnforced",
+      "missingTargetsAndRpcFailureRollBackDraftAndRequest",
+      "strictUnknownDuplicateTrailingAndWrongRuleFieldsRejectBeforeWrites",
+      "noAdminSessionOrExpiredSessionCannotUseCallerIdentity",
+      "createWireContractStartsAtZeroAndUsesActualUserInsteadOfHeader",
+      "publishRechecksScopeAndFailureLeavesNoVersionOrReceipt"
+    ]
+  },
+  {
+    "suite": "com.lemnt.trade.start.promotion.PromotionPermissionSeedTest",
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      "seedIsRepeatableHasNoPageAndNeverGrantsRoles"
+    ]
+  }
+]

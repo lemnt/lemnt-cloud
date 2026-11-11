@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-29",
+  "tests": {
+    "system": 133,
+    "gateway": 32,
+    "miniapp": 112
+  },
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "notRun": [
+    "真实OSS",
+    "路由发布",
+    "真机",
+    "React未改动未重跑"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-system/lemnt-system-adapter/src/main/java/com/lemnt/system/adapter/app/file/AppImageUploadController.java": "b274a2000fa70cb2b03640c4246ac050708c4f84b4dd7055b15821d3ff809a68",
+    "lemnt-server/lemnt-system/lemnt-system-adapter/src/main/java/com/lemnt/system/adapter/app/file/res/ImageUploadRes.java": "c2334f7f22e85c7d5d5cebfdcf995fc20e72cd8953bfc936384ab77178a49da1",
+    "lemnt-server/lemnt-system/lemnt-system-adapter/src/main/java/com/lemnt/system/adapter/app/file/req/ImageUploadReq.java": "7b022a3b7f771d27c45f83d4c358c8709d885e11c8a1437c9b46b97ef1610748",
+    "lemnt-server/lemnt-system/lemnt-system-adapter/src/test/java/com/lemnt/system/adapter/app/file/AppImageUploadControllerTest.java": "9134ba72e6f855e86efc2aed77bb16f6b3de0ae0faeb0affa249bc951f55262e",
+    "lemnt-miniapp/services/images.js": "a76b9ad0cfd2739a21b50769fe21342044078c119d268519a3e5eb262fdcccba",
+    "lemnt-miniapp/tests/images.test.cjs": "dc535683aa281b978ed50bf62265fb00591fb8cae59cf5bbfd3c526e2db1c4bc",
+    "lemnt-miniapp/pages/comment-create/index.js": "5630b11ca4d4676b1647b379739b231ff40e61bcdd67a8e10e37db4cc0f96f67",
+    "lemnt-miniapp/pages/order-comment/index.js": "b17bee64025f2be2d3ea2e786fa7520bb78ecda83ae00533e36500818c230a8b",
+    "lemnt-server/lemnt-gateway/src/main/java/com/lemnt/gateway/filter/AuthFilter.java": "7d60676244b29e1e3a1b34e882f487eb0897d560d0737773d8a5b7c3a112920b",
+    "/tmp/comment-upload-final-backend.log": "4072bcd620f7edf21ea585fdcb813579a1a15e744a4547c93e46ca212cfb2688",
+    "/tmp/comment-upload-gateway.log": "35c9e3fe2f21c3ae0baf75c3ba3b0735a784e174a9483217fd15ba203795f74e",
+    "/tmp/comment-upload-final-mini.log": "3c0a5e16d1e2725fda6e10a8b7b384a5cc2b91af852f13d09330c41ed978d652"
+  }
+}

@@ -1,0 +1,321 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lemnt:promotion:design:quote-response",
+  "title": "quote-response（拟定，尚未实现）",
+  "type": "object",
+  "properties": {
+    "settlementId": {
+      "type": "string",
+      "description": "服务端结算UUID",
+      "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
+    "pricedAtEpochMs": {
+      "type": "string",
+      "description": "UTC epoch毫秒，十进制字符串",
+      "pattern": "^[1-9][0-9]{0,18}$",
+      "format": "int64-positive"
+    },
+    "expiresAtEpochMs": {
+      "type": "string",
+      "description": "UTC epoch毫秒，十进制字符串",
+      "pattern": "^[1-9][0-9]{0,18}$",
+      "format": "int64-positive"
+    },
+    "promotionMode": {
+      "type": "string",
+      "enum": [
+        "BEST",
+        "NONE"
+      ],
+      "description": "用户确认的活动选择"
+    },
+    "pricingProtocol": {
+      "const": "PROMOTION_V2"
+    },
+    "algorithmVersion": {
+      "const": "promo-1"
+    },
+    "originalFen": {
+      "type": "string",
+      "description": "非负整数分，0..Long.MAX_VALUE",
+      "pattern": "^[1-9][0-9]{0,18}$",
+      "format": "int64-positive"
+    },
+    "campaignDiscountFen": {
+      "type": "string",
+      "description": "非负整数分，0..Long.MAX_VALUE",
+      "pattern": "^(0|[1-9][0-9]{0,18})$",
+      "format": "int64-nonnegative"
+    },
+    "couponDiscountFen": {
+      "type": "string",
+      "description": "非负整数分，0..Long.MAX_VALUE",
+      "pattern": "^(0|[1-9][0-9]{0,18})$",
+      "format": "int64-nonnegative"
+    },
+    "totalDiscountFen": {
+      "type": "string",
+      "description": "非负整数分，0..Long.MAX_VALUE",
+      "pattern": "^(0|[1-9][0-9]{0,18})$",
+      "format": "int64-nonnegative"
+    },
+    "payableFen": {
+      "type": "string",
+      "description": "非负整数分，0..Long.MAX_VALUE",
+      "pattern": "^(0|[1-9][0-9]{0,18})$",
+      "format": "int64-nonnegative"
+    },
+    "selectedCampaign": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "正整数ID，以字符串传递",
+              "pattern": "^[1-9][0-9]{0,18}$",
+              "format": "int64-positive"
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647,
+              "description": "不可变活动版本"
+            },
+            "name": {
+              "type": "string",
+              "description": "版本化活动名",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "FULL_REDUCTION",
+                "ORDER_DISCOUNT"
+              ],
+              "description": "活动类型"
+            },
+            "ruleSummary": {
+              "type": "string",
+              "description": "服务端生成的规则说明，纯文本",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "id",
+            "version",
+            "name",
+            "type",
+            "ruleSummary"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "selectedCoupon": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "正整数ID，以字符串传递",
+              "pattern": "^[1-9][0-9]{0,18}$",
+              "format": "int64-positive"
+            },
+            "templateId": {
+              "type": "string",
+              "description": "正整数ID，以字符串传递",
+              "pattern": "^[1-9][0-9]{0,18}$",
+              "format": "int64-positive"
+            },
+            "name": {
+              "type": "string",
+              "description": "优惠券名称",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "ruleSummary": {
+              "type": "string",
+              "description": "规则说明，纯文本",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "id",
+            "templateId",
+            "name",
+            "ruleSummary"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "正整数ID，以字符串传递",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "format": "int64-positive"
+          },
+          "spuId": {
+            "type": "string",
+            "description": "正整数ID，以字符串传递",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "format": "int64-positive"
+          },
+          "name": {
+            "type": "string",
+            "description": "商品展示名",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "unitPriceFen": {
+            "type": "string",
+            "description": "非负整数分，0..Long.MAX_VALUE",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "format": "int64-positive"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 999,
+            "description": "件数"
+          },
+          "grossFen": {
+            "type": "string",
+            "description": "非负整数分，0..Long.MAX_VALUE",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "format": "int64-positive"
+          },
+          "campaignDiscountFen": {
+            "type": "string",
+            "description": "非负整数分，0..Long.MAX_VALUE",
+            "pattern": "^(0|[1-9][0-9]{0,18})$",
+            "format": "int64-nonnegative"
+          },
+          "couponDiscountFen": {
+            "type": "string",
+            "description": "非负整数分，0..Long.MAX_VALUE",
+            "pattern": "^(0|[1-9][0-9]{0,18})$",
+            "format": "int64-nonnegative"
+          },
+          "payableFen": {
+            "type": "string",
+            "description": "非负整数分，0..Long.MAX_VALUE",
+            "pattern": "^(0|[1-9][0-9]{0,18})$",
+            "format": "int64-nonnegative"
+          },
+          "unitBasePayableFen": {
+            "type": "string",
+            "description": "非负整数分，0..Long.MAX_VALUE",
+            "pattern": "^(0|[1-9][0-9]{0,18})$",
+            "format": "int64-nonnegative"
+          },
+          "extraFenUnitCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 998,
+            "description": "单位实付多1分的件数，须小于quantity"
+          }
+        },
+        "required": [
+          "productId",
+          "spuId",
+          "name",
+          "unitPriceFen",
+          "quantity",
+          "grossFen",
+          "campaignDiscountFen",
+          "couponDiscountFen",
+          "payableFen",
+          "unitBasePayableFen",
+          "extraFenUnitCount"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 100
+    },
+    "submittable": {
+      "type": "boolean"
+    },
+    "blockReason": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ZERO_PAY_UNSUPPORTED"
+          ],
+          "description": "报价提交限制"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "settlementId",
+    "pricedAtEpochMs",
+    "expiresAtEpochMs",
+    "promotionMode",
+    "pricingProtocol",
+    "algorithmVersion",
+    "originalFen",
+    "campaignDiscountFen",
+    "couponDiscountFen",
+    "totalDiscountFen",
+    "payableFen",
+    "lines",
+    "submittable"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "payableFen": {
+            "const": "0"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "submittable": {
+            "const": false
+          },
+          "blockReason": {
+            "const": "ZERO_PAY_UNSUPPORTED"
+          }
+        },
+        "required": [
+          "blockReason"
+        ]
+      },
+      "else": {
+        "properties": {
+          "submittable": {
+            "const": true
+          },
+          "blockReason": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

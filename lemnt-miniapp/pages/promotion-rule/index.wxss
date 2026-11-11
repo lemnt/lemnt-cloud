@@ -1,0 +1,31 @@
+.container {
+  padding: 24rpx;
+}
+.title {
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+.subtitle {
+  font-size: 30rpx;
+  font-weight: 500;
+  margin: 16rpx 0 12rpx;
+}
+.list-row {
+  border-bottom: 1rpx solid #f0f0f0;
+  padding: 12rpx 0;
+}
+.description {
+  color: #666;
+  font-size: 24rpx;
+}
+.error {
+  color: #c62828;
+  margin: 12rpx 0;
+}

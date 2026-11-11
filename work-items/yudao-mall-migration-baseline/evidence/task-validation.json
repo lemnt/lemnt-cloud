@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-11-06T09:37:05+08:00",
+  "approvedPlanEntriesCovered": 95,
+  "fileTaskCount": 106,
+  "manualGateCount": 6,
+  "pendingFileTasks": 72,
+  "blockedFileTasks": 34,
+  "dagIsAcyclic": true,
+  "missingDependencyIds": [],
+  "sameFileWritesSerialized": true,
+  "noImplementationTaskMarkedComplete": true,
+  "businessCodeChanged": false,
+  "status": "task_draft_validated_pending_user_confirmation"
+}

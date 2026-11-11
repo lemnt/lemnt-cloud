@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-29",
+  "scope": "评价图片预览与移除",
+  "tests": 116,
+  "failures": 0,
+  "skipped": 0,
+  "newTests": 4,
+  "notRun": [
+    "真机",
+    "部署HTTP",
+    "后端与React未改动未重跑"
+  ],
+  "sha256": {
+    "lemnt-miniapp/services/images.js": "42d67677b9692d5d5d087ca5e53370452355d9fc2513a1e5e4eba365e92b5835",
+    "lemnt-miniapp/pages/comment-create/index.js": "9cbc6887757f8382912cbd0c177144e1b0eaee2b5ae3c41bcb4848f6083f0010",
+    "lemnt-miniapp/pages/comment-create/index.wxml": "8cf2080d4e04fa90b39550d960777132117ecd7976ff23755348cee68406571f",
+    "lemnt-miniapp/pages/order-comment/index.js": "a6fe7de6d796d8480aecd062781793bfc61933089d03a8bb7d8a3c9ca53f6bed",
+    "lemnt-miniapp/pages/order-comment/index.wxml": "7041c1ecdb3035d283f366c12947c609b4f933771b9743aa429a3bc349668740",
+    "lemnt-miniapp/tests/comment-images.test.cjs": "4f98320542399648d103f8840c3f845ce9b72af739fb9d0ffb201df75aa4f187",
+    "/tmp/comment-image-interaction-tests.log": "51c31d80563f0393123dcb854130618cd77bf3b90e2ccf4c15f6d74f5600aa14",
+    "/Users/wangxx/demo/yudao-mall-uniapp/sheep/components/s-uploader/upload-image.vue": "0bb86dfa7d09ec426d38641bc46fd4557256a598b0bcb0d09a76df3f806c7ac3"
+  }
+}

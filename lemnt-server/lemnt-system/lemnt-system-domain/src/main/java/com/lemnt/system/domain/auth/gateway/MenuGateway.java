@@ -1,8 +1,8 @@
 package com.lemnt.system.domain.auth.gateway;
 
-import java.util.List;
-
 import com.lemnt.system.domain.auth.model.Menu;
+
+import java.util.List;
 
 /**
  * 菜单网关 — domain 层端口
@@ -10,7 +10,6 @@ import com.lemnt.system.domain.auth.model.Menu;
  * @author wangxx
  */
 public interface MenuGateway {
-
     /**
      * 根据菜单ID查询信息
      *
@@ -125,8 +124,8 @@ public interface MenuGateway {
     /**
      * 查询同级名称冲突，修改时排除当前菜单。
      *
-     * @param menuName 菜单名称
-     * @param parentId 目标父菜单ID
+     * @param menuName      菜单名称
+     * @param parentId      目标父菜单ID
      * @param excludeMenuId 排除的菜单ID，新增时为空
      * @return 冲突菜单信息
      */

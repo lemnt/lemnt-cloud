@@ -1,0 +1,2452 @@
+{
+  "capturedAt": "2026-11-09T11:19:37.910141+08:00",
+  "scope": [
+    "F007",
+    "F008",
+    "F009",
+    "F010",
+    "F011",
+    "F012",
+    "F013",
+    "F014",
+    "F015",
+    "F016",
+    "F017",
+    "F018",
+    "F019",
+    "F020",
+    "F021",
+    "F022",
+    "F023",
+    "F024",
+    "F025",
+    "F026",
+    "F027",
+    "F028",
+    "F029",
+    "F030",
+    "F031",
+    "F032",
+    "F033",
+    "F034",
+    "F035",
+    "F036",
+    "F037",
+    "B1b-T01",
+    "B1b-T02",
+    "B1b-T03",
+    "B1b-T04",
+    "V-B1b"
+  ],
+  "status": "automated_boundary_and_regression_validation_passed",
+  "head": "12745a285d36869f2005d9f4ffdada93351ec1e4",
+  "baseline": "b1b-execution-baseline.json",
+  "approval": "确认并执行",
+  "changes": {
+    "codeTestPomScriptFiles": 35,
+    "newFiles": 16,
+    "modifiedFiles": 19,
+    "externalApplicationClientDeclarationsRemoved": 6,
+    "contexts": [
+      "promotion",
+      "order",
+      "pay",
+      "member"
+    ],
+    "originalEnvelopeVersionTypeChecksRetained": true,
+    "originalTransactionsReceiptKeysAndPayloadRetained": true,
+    "nullCollectionsPreserved": true,
+    "missingPrimitiveFieldsRejectedInsteadOfDefaulted": true
+  },
+  "verification": {
+    "architectureRed": {
+      "command": "python3 scripts/test_architecture.py",
+      "exitCode": 1,
+      "reason": "新增源码与POM门禁负例在修复前复现漏检；未放宽原断言"
+    },
+    "mappingFocused": {
+      "command": "JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home mvn -f lemnt-server/pom.xml -pl lemnt-promotion/lemnt-promotion-infrastructure,lemnt-order/lemnt-order-infrastructure,lemnt-pay/lemnt-pay-infrastructure,lemnt-member/lemnt-member-infrastructure -am -Dtest=InboundEventGatewayImplTest -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exitCode": 0,
+      "totals": {
+        "tests": 26,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "reports": [
+        {
+          "module": "lemnt-member-infrastructure",
+          "name": "com.lemnt.member.infrastructure.event.InboundEventGatewayImplTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-infrastructure",
+          "name": "com.lemnt.order.infrastructure.event.InboundEventGatewayImplTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-infrastructure",
+          "name": "com.lemnt.pay.infrastructure.event.InboundEventGatewayImplTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-infrastructure",
+          "name": "com.lemnt.promotion.infrastructure.event.InboundEventGatewayImplTest",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ]
+    },
+    "fullServerReactor": {
+      "command": "JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home mvn -f lemnt-server/pom.xml clean test",
+      "exitCode": 0,
+      "cleanBuild": true,
+      "totals": {
+        "tests": 1338,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "byModule": {
+        "lemnt-auth-adapter": {
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-auth-infrastructure": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-auth-start": {
+          "tests": 14,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-gateway": {
+          "tests": 365,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-member-infrastructure": {
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-member-start": {
+          "tests": 128,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-open-start": {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-order-adapter": {
+          "tests": 34,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-order-application": {
+          "tests": 106,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-order-domain": {
+          "tests": 11,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-order-infrastructure": {
+          "tests": 26,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-order-start": {
+          "tests": 135,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-pay-adapter": {
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-pay-application": {
+          "tests": 51,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-pay-infrastructure": {
+          "tests": 35,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-pay-start": {
+          "tests": 46,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-product-adapter": {
+          "tests": 15,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-product-application": {
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-product-domain": {
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-product-infrastructure": {
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-product-start": {
+          "tests": 73,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-promotion-adapter": {
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-promotion-application": {
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-promotion-domain": {
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-promotion-infrastructure": {
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-promotion-start": {
+          "tests": 66,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-system-adapter": {
+          "tests": 33,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-system-application": {
+          "tests": 42,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-system-infrastructure": {
+          "tests": 68,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "lemnt-system-start": {
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "wechatpay-sdk": {
+          "tests": 24,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "reports": [
+        {
+          "module": "lemnt-auth-adapter",
+          "name": "com.lemnt.auth.adapter.app.member.AppMemberAuthControllerTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-auth-infrastructure",
+          "name": "com.lemnt.auth.infrastructure.member.MemberAccountGatewayImplTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-auth-start",
+          "name": "com.lemnt.auth.start.AuthPersistenceBoundaryTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-auth-start",
+          "name": "com.lemnt.auth.start.ControllerMappingTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-auth-start",
+          "name": "com.lemnt.auth.start.MemberAuthenticationIntegrationTest",
+          "tests": 12,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-gateway",
+          "name": "com.lemnt.gateway.config.CorsConfigTest",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-gateway",
+          "name": "com.lemnt.gateway.config.MemberAuthRouteConfigurationTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-gateway",
+          "name": "com.lemnt.gateway.config.ServiceRouteConfigurationTest",
+          "tests": 316,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-gateway",
+          "name": "com.lemnt.gateway.filter.AuthFilterAppRoutesTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-gateway",
+          "name": "com.lemnt.gateway.filter.AuthFilterDomainTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-gateway",
+          "name": "com.lemnt.gateway.filter.ProductAppRouteContractTest",
+          "tests": 15,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-gateway",
+          "name": "com.lemnt.gateway.filter.XssFilterTest",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-gateway",
+          "name": "com.lemnt.gateway.handler.GatewayExceptionHandlerTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-gateway",
+          "name": "com.lemnt.gateway.handler.SentinelFallbackHandlerTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-gateway",
+          "name": "com.lemnt.gateway.utils.ServletUtilsTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-infrastructure",
+          "name": "com.lemnt.member.infrastructure.event.InboundEventGatewayImplTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.CommerceActivationTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberAccountIntegrationTest",
+          "tests": 93,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberAddressAreaQueryTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberConfigLockTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberConfigStorageTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberControllerMappingTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberExperienceRecordHttpTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberGroupTagPageHttpTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberHttpContractTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberLevelManagementHttpTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberLevelRecordHttpTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberPointConfigHttpTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberPointRecordHttpTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberSignConfigHttpTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberSignRecordHttpTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberUserFilterHttpTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberUserRelationHttpTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberUserRelationQueryTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberUserUpdateHttpTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-member-start",
+          "name": "com.lemnt.member.start.MemberWechatLoginCmdExeTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-open-start",
+          "name": "com.lemnt.open.start.ControllerMappingTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.app.aftersale.AppAfterSaleControllerTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.app.order.AppOrderCommentControllerTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.app.order.AppOrderControllerTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.app.settlement.AppCheckoutControllerTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.mq.order.OrderRollbackConsumerTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.web.aftersale.AfterSaleHttpTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.web.aftersale.AfterSaleRefundHttpTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.web.delivery.DeliveryHttpTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.web.delivery.DeliveryJsonContractTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.web.fulfillment.FulfillmentHttpContractTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.web.order.OrderManagementHttpTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.web.order.PropertySnapshotSerializationTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.web.promotion.OrderPromotionHttpTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.web.settlement.CheckoutHttpContractTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-adapter",
+          "name": "com.lemnt.order.adapter.web.shipment.ShipmentHttpTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.aftersale.ZeroCashAfterSaleTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.aftersale.executor.MemberAfterSaleQueryTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.brokerage.BrokeragePersistenceTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.delivery.DeliveryManagementLockTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.delivery.DeliveryPersistenceTest",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.dubbo.SettlementLifecyclePromotionTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.event.EventRedeliveryTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.event.InboxPersistenceTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.event.OrderFinancialPersistenceTest",
+          "tests": 16,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.event.OutboxPersistenceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.event.PaySuccessEventHandlerTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.executor.OrderCloseServiceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.fulfillment.executor.MemberOrderQueryTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.order.OrderAdjustmentServiceTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.order.OrderRemoteServiceCallbackTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.order.OrderRemoteServiceZeroPayTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.order.PickUpOrderCreateTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.pickup.PickUpPersistenceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.pickup.PickUpStoreDistanceTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.pickup.PickUpStoreHoursTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.promotion.AfterSalePromotionProgressQueryTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.promotion.OrderPromotionQueryTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.settlement.LocalDeliveryPriceServiceTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.settlement.MemberReceiptOwnershipTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.settlement.PickUpSettlementTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.settlement.SettlementDeliveryFreeShippingTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-application",
+          "name": "com.lemnt.order.application.settlement.SettlementPromotionPreparationTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-domain",
+          "name": "com.lemnt.order.domain.aftersale.service.AfterSaleRefundCalculatorTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-domain",
+          "name": "com.lemnt.order.domain.fulfillment.RefundAllocationTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-domain",
+          "name": "com.lemnt.order.domain.promotion.OrderPricingRulesTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-infrastructure",
+          "name": "com.lemnt.order.infrastructure.config.TradeConfigStorageTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-infrastructure",
+          "name": "com.lemnt.order.infrastructure.event.InboundEventGatewayImplTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-infrastructure",
+          "name": "com.lemnt.order.infrastructure.fulfillment.ShipmentTrackGatewayTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-infrastructure",
+          "name": "com.lemnt.order.infrastructure.member.MemberLockGatewayTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-infrastructure",
+          "name": "com.lemnt.order.infrastructure.order.OrderProductSnapshotTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-infrastructure",
+          "name": "com.lemnt.order.infrastructure.settlement.SettlementCacheTest",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-start",
+          "name": "com.lemnt.order.start.AutoCommentSchedulerTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-start",
+          "name": "com.lemnt.order.start.CommerceConfigurationTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-start",
+          "name": "com.lemnt.order.start.CommerceEndpointContractTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-start",
+          "name": "com.lemnt.order.start.ControllerMappingTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-start",
+          "name": "com.lemnt.order.start.SettlementControllerMappingTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-start",
+          "name": "com.lemnt.order.start.brokerage.BrokerageMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-start",
+          "name": "com.lemnt.order.start.checkout.CheckoutFlowIntegrationTest",
+          "tests": 106,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-start",
+          "name": "com.lemnt.order.start.checkout.CheckoutMenuSeedTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-start",
+          "name": "com.lemnt.order.start.delivery.DeliveryConfigMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-start",
+          "name": "com.lemnt.order.start.fulfillment.AutoReceiveSchedulerTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-start",
+          "name": "com.lemnt.order.start.pickup.PickUpMenuSeedTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-start",
+          "name": "com.lemnt.order.start.product.PromotionOrderPersistenceTest",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-start",
+          "name": "com.lemnt.order.start.promotion.FrozenRefundProtocolTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-order-start",
+          "name": "com.lemnt.order.start.promotion.OrderPromotionPersistenceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-adapter",
+          "name": "com.lemnt.pay.adapter.app.payment.AppPaymentChannelControllerTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-adapter",
+          "name": "com.lemnt.pay.adapter.app.payment.AppPaymentControllerTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-adapter",
+          "name": "com.lemnt.pay.adapter.web.payment.PaymentManagementHttpTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-application",
+          "name": "com.lemnt.pay.application.checkout.MemberPaymentStatusQueryTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-application",
+          "name": "com.lemnt.pay.application.payment.MemberPaymentChannelQueryExeTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-application",
+          "name": "com.lemnt.pay.application.payment.PayConfigExeTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-application",
+          "name": "com.lemnt.pay.application.payment.PayNotifyTaskServiceTest",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-application",
+          "name": "com.lemnt.pay.application.payment.PaymentNotifyReceiveCmdTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-application",
+          "name": "com.lemnt.pay.application.payment.PaymentPrepayCmdExeTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-application",
+          "name": "com.lemnt.pay.application.payment.RechargeServiceTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-application",
+          "name": "com.lemnt.pay.application.payment.SandboxPaymentCmdExeTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-application",
+          "name": "com.lemnt.pay.application.payment.WalletServiceTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-application",
+          "name": "com.lemnt.pay.application.payment.WalletTransferServiceTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-infrastructure",
+          "name": "com.lemnt.pay.infrastructure.channel.adapter.sandbox.SandboxChannelAdapterTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-infrastructure",
+          "name": "com.lemnt.pay.infrastructure.channel.adapter.wechatpay.WechatChannelAdapterTest",
+          "tests": 14,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-infrastructure",
+          "name": "com.lemnt.pay.infrastructure.channel.gateway.PaymentChannelCloseGatewayImplTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-infrastructure",
+          "name": "com.lemnt.pay.infrastructure.event.InboundEventGatewayImplTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-infrastructure",
+          "name": "com.lemnt.pay.infrastructure.paymentrefund.PaymentRefundChannelGatewayTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.OutboxRelaySchedulerTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.event.CashPaymentPersistenceTest",
+          "tests": 12,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.event.EventRedeliveryTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.event.InboxPersistenceTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.event.OutboxPersistenceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.payment.PayConfigMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.payment.PayConfigPersistenceTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.payment.PayNotifyMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.payment.PayNotifyTaskPersistenceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.payment.PaymentMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.payment.RechargeMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.payment.RechargePersistenceTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.payment.WalletMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.payment.WalletPersistenceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.payment.WalletTransferMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-pay-start",
+          "name": "com.lemnt.pay.start.payment.WalletTransferPersistenceTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-adapter",
+          "name": "com.lemnt.product.adapter.app.product.StoreHttpContractTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-adapter",
+          "name": "com.lemnt.product.adapter.web.product.CatalogHttpContractTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-adapter",
+          "name": "com.lemnt.product.adapter.web.product.CatalogSerializationTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-adapter",
+          "name": "com.lemnt.product.adapter.web.product.ProductManagementHttpTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-adapter",
+          "name": "com.lemnt.product.adapter.web.product.ProductSpuExportHttpTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-application",
+          "name": "com.lemnt.product.application.event.OrderStockEventHandlerSalesTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-application",
+          "name": "com.lemnt.product.application.product.CatalogExecutorsTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-application",
+          "name": "com.lemnt.product.application.product.ProductSpuExportQueryTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-domain",
+          "name": "com.lemnt.product.domain.product.ProductCatalogRulesTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-infrastructure",
+          "name": "com.lemnt.product.infrastructure.config.MapperXmlLoadingTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-infrastructure",
+          "name": "com.lemnt.product.infrastructure.product.ProductCatalogMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-infrastructure",
+          "name": "com.lemnt.product.infrastructure.product.ProductSpecSnapshotCompatibilityTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-start",
+          "name": "com.lemnt.product.start.event.InboxPersistenceTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-start",
+          "name": "com.lemnt.product.start.event.StockEventTransactionTest",
+          "tests": 12,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-start",
+          "name": "com.lemnt.product.start.product.CatalogPersistenceTest",
+          "tests": 33,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-start",
+          "name": "com.lemnt.product.start.product.ProductCommentFlowPersistenceTest",
+          "tests": 11,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-start",
+          "name": "com.lemnt.product.start.product.ProductCommentMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-start",
+          "name": "com.lemnt.product.start.product.ProductInteractionPersistenceTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-start",
+          "name": "com.lemnt.product.start.product.ProductPermissionSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-start",
+          "name": "com.lemnt.product.start.product.ProductSalesCountPersistenceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-start",
+          "name": "com.lemnt.product.start.product.SpecMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-product-start",
+          "name": "com.lemnt.product.start.product.SpuOperatingSchemaTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-adapter",
+          "name": "com.lemnt.promotion.adapter.web.coupon.PromotionHttpContractTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-application",
+          "name": "com.lemnt.promotion.application.promotion.AppPromotionHubServiceTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-application",
+          "name": "com.lemnt.promotion.application.promotion.RewardGiftServiceTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-domain",
+          "name": "com.lemnt.promotion.domain.settlement.CheckoutRulesTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-infrastructure",
+          "name": "com.lemnt.promotion.infrastructure.config.MapperXmlLoadingTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-infrastructure",
+          "name": "com.lemnt.promotion.infrastructure.event.InboundEventGatewayImplTest",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.product.ActivityAlignmentPersistenceTest",
+          "tests": 11,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.product.BargainPersistenceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.product.CombinationPersistenceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.product.CouponSnapshotPersistenceTest",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.product.PointPersistenceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.product.PromotionResourcePersistenceTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.product.SeckillPersistenceTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.promotion.BannerMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.promotion.BannerPersistenceTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.promotion.BargainMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.promotion.BusinessMenuRetirementTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.promotion.CombinationMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.promotion.DiyPersistenceTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.promotion.KefuDiyMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.promotion.KefuPersistenceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.promotion.PointMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.promotion.PromotionMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.promotion.PromotionPermissionSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-promotion-start",
+          "name": "com.lemnt.promotion.start.promotion.SeckillMenuSeedTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-adapter",
+          "name": "com.lemnt.system.adapter.app.file.AppImageUploadControllerTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-adapter",
+          "name": "com.lemnt.system.adapter.mq.log.OperLogConsumerTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-adapter",
+          "name": "com.lemnt.system.adapter.web.ConfigRoleQueryPermissionTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-adapter",
+          "name": "com.lemnt.system.adapter.web.auth.BoundaryRefactorContractTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-adapter",
+          "name": "com.lemnt.system.adapter.web.auth.RoleContractTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-adapter",
+          "name": "com.lemnt.system.adapter.web.auth.SystemStatusContractTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-adapter",
+          "name": "com.lemnt.system.adapter.web.auth.UserControllerTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-adapter",
+          "name": "com.lemnt.system.adapter.web.config.DictDataRemarkContractTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-adapter",
+          "name": "com.lemnt.system.adapter.web.file.FileControllerTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-adapter",
+          "name": "com.lemnt.system.adapter.web.org.OrgTimeContractTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-application",
+          "name": "com.lemnt.system.application.auth.converter.RoleConverterTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-application",
+          "name": "com.lemnt.system.application.auth.executor.MenuNameUniqueTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-application",
+          "name": "com.lemnt.system.application.auth.executor.MenuRoleTreeQueryExeTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-application",
+          "name": "com.lemnt.system.application.auth.executor.UserInfoQueryExeTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-application",
+          "name": "com.lemnt.system.application.auth.service.TreeMenuServiceTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-application",
+          "name": "com.lemnt.system.application.config.executor.BusinessConfigProtectionTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-application",
+          "name": "com.lemnt.system.application.config.executor.ConfigEditRegressionTest",
+          "tests": 12,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-application",
+          "name": "com.lemnt.system.application.dubbo.RemoteLogServiceImplTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-application",
+          "name": "com.lemnt.system.application.notice.executor.NoticeTopListQueryExeTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-application",
+          "name": "com.lemnt.system.application.notice.executor.NoticeUpdateCmdExeTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-application",
+          "name": "com.lemnt.system.application.org.converter.OrgTimeConverterTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-application",
+          "name": "com.lemnt.system.application.org.executor.DeptClearFieldsTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-application",
+          "name": "com.lemnt.system.application.org.executor.PostCodeUniqueTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.auth.mapper.DataScopeSqlIntegrationTest",
+          "tests": 14,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.auth.mapper.MenuNameUniqueMapperTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.auth.mapper.RoleTreeMapperTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.auth.mapper.UserPageMapperTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.auth.mapper.UserRelationMapperTest",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.config.mapper.BusinessConfigPersistenceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.config.mapper.ConfigDateFilterTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.config.mapper.ConfigKeyUniqueMapperTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.file.gateway.FileGatewayImplTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.log.mapper.OperLogCostTimeMapperTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.notice.converter.NoticeConverterTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.notice.gateway.NoticeReadGatewayImplTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.org.converter.DeptConverterTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.org.converter.PostConverterTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-infrastructure",
+          "name": "com.lemnt.system.infrastructure.org.mapper.PostCodeUniqueMapperTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-start",
+          "name": "com.lemnt.system.start.ControllerMappingTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "lemnt-system-start",
+          "name": "com.lemnt.system.start.area.AreaTreeTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "wechatpay-sdk",
+          "name": "com.lemnt.third.sdk.wechatpay.WechatCloseSupportTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "wechatpay-sdk",
+          "name": "com.lemnt.third.sdk.wechatpay.WechatJsapiPrepayTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "wechatpay-sdk",
+          "name": "com.lemnt.third.sdk.wechatpay.WechatNativePrepayTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "wechatpay-sdk",
+          "name": "com.lemnt.third.sdk.wechatpay.WechatNotificationMapperTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "wechatpay-sdk",
+          "name": "com.lemnt.third.sdk.wechatpay.WechatPayNotifyRequestTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "wechatpay-sdk",
+          "name": "com.lemnt.third.sdk.wechatpay.WechatPrepayCommandTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "wechatpay-sdk",
+          "name": "com.lemnt.third.sdk.wechatpay.WechatRefundSupportTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "wechatpay-sdk",
+          "name": "com.lemnt.third.sdk.wechatpay.config.WechatPayConfigTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ]
+    },
+    "scripts": {
+      "command": "python3 -m unittest discover -s scripts -p 'test_*.py'",
+      "exitCode": 0,
+      "tests": 33,
+      "failures": 0,
+      "architectureSelfTests": 13
+    },
+    "architectureProductionScan": {
+      "command": "python3 scripts/check_architecture.py --json /tmp/b1b-architecture.json",
+      "exitCode": 0,
+      "javaMainFiles": 3072,
+      "mapperXmlFiles": 67,
+      "pomFiles": 87,
+      "byLayer": {
+        "adapter": 865,
+        "application": 1032,
+        "async": 4,
+        "client": 91,
+        "core": 19,
+        "datascope": 4,
+        "datasource": 6,
+        "domain": 416,
+        "dubbo": 2,
+        "excel": 25,
+        "gateway": 27,
+        "infrastructure": 433,
+        "job": 2,
+        "kafka": 6,
+        "lock": 2,
+        "log": 8,
+        "metrics": 3,
+        "mq": 4,
+        "mybatis": 8,
+        "oss": 10,
+        "redis": 12,
+        "sdk": 17,
+        "security": 33,
+        "sensitive": 6,
+        "snowflake": 5,
+        "sql": 3,
+        "start": 27,
+        "swagger": 2
+      },
+      "violations": []
+    },
+    "miniapp": {
+      "command": "node --test lemnt-miniapp/tests/*.test.cjs",
+      "exitCode": 0,
+      "tests": 182,
+      "failures": 0,
+      "skipped": 0
+    },
+    "diffWhitespace": {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    "b1aFingerprintsUnchanged": true,
+    "headAndIndexUnchanged": true,
+    "protocolFieldNamesAndOrderMatched": true
+  },
+  "files": [
+    {
+      "taskId": "F007",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-domain/src/main/java/com/lemnt/promotion/domain/event/model/InboundEventFacts.java",
+      "operation": "新增",
+      "sha256": "c4ee936cecf5fb7a742ba89f59cfc187795db48a6d4d973b411e56dee96603a3"
+    },
+    {
+      "taskId": "F008",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-domain/src/main/java/com/lemnt/promotion/domain/event/gateway/InboundEventGateway.java",
+      "operation": "新增",
+      "sha256": "deb48c907ba485c523a7bc5c80a8b27301d60977d1d3be8ada42c7867a160b85"
+    },
+    {
+      "taskId": "F009",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/src/main/java/com/lemnt/promotion/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "operation": "新增",
+      "sha256": "91be8b9def253a89a5db1fc4087b3ee23b3d90b33ff4aae1fb13957601c06ccb"
+    },
+    {
+      "taskId": "F010",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/src/test/java/com/lemnt/promotion/infrastructure/event/InboundEventGatewayImplTest.java",
+      "operation": "新增",
+      "sha256": "441ad22023b3ddc5a4c328c44906340b2a8a93b9aec1361dc16b2fbaf7095aaf"
+    },
+    {
+      "taskId": "F011",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/AfterSaleCompletedEventHandler.java",
+      "operation": "修改",
+      "sha256": "61948252f05ac34a0efb1773b093d4530bbf813bda766d18b4f5b145367a9b11"
+    },
+    {
+      "taskId": "F012",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderClosedEventHandler.java",
+      "operation": "修改",
+      "sha256": "eb5147f07da63d1873074c529e79179bf5ca950a255ccec7de07068980ac9839"
+    },
+    {
+      "taskId": "F013",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderCompletedEventHandler.java",
+      "operation": "修改",
+      "sha256": "faa45d2844514a49ecd85593cbe942f073661e0a1482e5871f676f5efabb0b16"
+    },
+    {
+      "taskId": "F014",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderPaidEventHandler.java",
+      "operation": "修改",
+      "sha256": "dad7dabdb506877aa06fb70b43f0c476d0d200aa697a6b3b6c99424382e12cf2"
+    },
+    {
+      "taskId": "F015",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/StockPreReservedEventHandler.java",
+      "operation": "修改",
+      "sha256": "a851e560d7e636d4f0f11ee68112910d78a8a0b43782e5ff2acac2aba4dd83eb"
+    },
+    {
+      "taskId": "F016",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/pom.xml",
+      "operation": "修改",
+      "sha256": "5352ebf51d714460b7c2c6cee1dff616c0363bf170ad38c33c23f6b2a7770096"
+    },
+    {
+      "taskId": "F017",
+      "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/event/model/InboundEventFacts.java",
+      "operation": "新增",
+      "sha256": "0b46e620c3ae1e6409ec1f14262838cb9bdba749f8e00bf04843383f9d733658"
+    },
+    {
+      "taskId": "F018",
+      "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/event/gateway/InboundEventGateway.java",
+      "operation": "新增",
+      "sha256": "56e5fb1e9be996d77acc0d8f47ebceae6011d2006b8bb016b832fcbf1b5ee310"
+    },
+    {
+      "taskId": "F019",
+      "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "operation": "新增",
+      "sha256": "e74dd07f0c58bb3f92119c9d5dba5c7b2338da438b520ac8e63fd318432fbdfd"
+    },
+    {
+      "taskId": "F020",
+      "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/test/java/com/lemnt/order/infrastructure/event/InboundEventGatewayImplTest.java",
+      "operation": "新增",
+      "sha256": "f49605f98fb7e536d5a32c4dd62008f35b4a6fafc796530841ccccdae193e0f1"
+    },
+    {
+      "taskId": "F021",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/event/service/PayRefundSuccessEventHandler.java",
+      "operation": "修改",
+      "sha256": "8392c07ec585ec98954f70a9d356f3d6aea3b3d4ee656289a227bb358319cc91"
+    },
+    {
+      "taskId": "F022",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/event/service/PaySuccessEventHandler.java",
+      "operation": "修改",
+      "sha256": "e3aea96917a181c11fc716b96fa0b5a37b48d31298d5fd2e34de5970989e54f7"
+    },
+    {
+      "taskId": "F023",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/pom.xml",
+      "operation": "修改",
+      "sha256": "8dd7baa4e1886f8af8e531362366d9635146b39d85ad5ffb65f975b01c75b178"
+    },
+    {
+      "taskId": "F024",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/src/main/java/com/lemnt/pay/domain/event/model/InboundEventFacts.java",
+      "operation": "新增",
+      "sha256": "3e5a2dbdb7810bc6d8a8bcc58dc976771633eaa0c837e259c77585e7e4b923b2"
+    },
+    {
+      "taskId": "F025",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/src/main/java/com/lemnt/pay/domain/event/gateway/InboundEventGateway.java",
+      "operation": "新增",
+      "sha256": "3b03aec6feb7d6c0bab38257485bac374e9878b76a7e93bc4d1874a46ad8c04d"
+    },
+    {
+      "taskId": "F026",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/main/java/com/lemnt/pay/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "operation": "新增",
+      "sha256": "e9b279b458e4e446b1956de73c5b9cd861f86ddc469205629e17c9d3a4fba471"
+    },
+    {
+      "taskId": "F027",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/test/java/com/lemnt/pay/infrastructure/event/InboundEventGatewayImplTest.java",
+      "operation": "新增",
+      "sha256": "24e595800d3486f79a606a60183e98b41d9efad6422b44165cb26daaf81060ef"
+    },
+    {
+      "taskId": "F028",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-application/src/main/java/com/lemnt/pay/application/event/service/OrderClosedEventHandler.java",
+      "operation": "修改",
+      "sha256": "0058e7e2719fe38befe7bca467b98afa5c915db954bea67c4f44961a0983a2da"
+    },
+    {
+      "taskId": "F029",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-application/pom.xml",
+      "operation": "修改",
+      "sha256": "b27732d24526ed7c36ece952ef3d50470fc52d764ea00f1bffe31aa2062c88eb"
+    },
+    {
+      "taskId": "F030",
+      "path": "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/event/model/InboundEventFacts.java",
+      "operation": "新增",
+      "sha256": "48d69327022762341bc0039b410f7e2ea86d579d3f70e95e60753f14f4938bde"
+    },
+    {
+      "taskId": "F031",
+      "path": "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/event/gateway/InboundEventGateway.java",
+      "operation": "新增",
+      "sha256": "23fd0eed1a6f3003c25858781c99bb185fc43359750770f9e519945ecf88ad15"
+    },
+    {
+      "taskId": "F032",
+      "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "operation": "新增",
+      "sha256": "e1ec0e09f43ebe7d6d242d5074b32af8d11a773deff56fd2e71e6ab74e8d5ca6"
+    },
+    {
+      "taskId": "F033",
+      "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/test/java/com/lemnt/member/infrastructure/event/InboundEventGatewayImplTest.java",
+      "operation": "新增",
+      "sha256": "bf16964e47fb0bc4590f6234e860dce95b134fc36cb2b82835578306a36a4a25"
+    },
+    {
+      "taskId": "F034",
+      "path": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/event/service/OrderBenefitsEventHandler.java",
+      "operation": "修改",
+      "sha256": "62b00acbdc4c1deb94869dcc0076d6d16a4927b93816cc7c41d0d3389489de07"
+    },
+    {
+      "taskId": "F035",
+      "path": "lemnt-server/lemnt-member/lemnt-member-application/pom.xml",
+      "operation": "修改",
+      "sha256": "0f762e4ba43575e02d2867b37e1c61672269219a49a719482e9fd3b071e648b3"
+    },
+    {
+      "taskId": "F036",
+      "path": "scripts/check_architecture.py",
+      "operation": "修改",
+      "sha256": "abf94a3f5afe6b2a08c00a8cce840fa6807fc914222d425672281e56c125fb4b"
+    },
+    {
+      "taskId": "F037",
+      "path": "scripts/test_architecture.py",
+      "operation": "修改",
+      "sha256": "b6b549a58596511613feb2c6187b2356365a0b742407e7ace4f9dac1b61d573e"
+    },
+    {
+      "taskId": "B1b-T01",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/src/test/java/com/lemnt/order/application/event/PaySuccessEventHandlerTest.java",
+      "operation": "修改",
+      "sha256": "65ed10e481d6cbced5f37380f4cbedaa381f9144a99d6212971fb4181f0e7cf4"
+    },
+    {
+      "taskId": "B1b-T02",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-start/src/test/java/com/lemnt/pay/start/event/CashPaymentPersistenceTest.java",
+      "operation": "修改",
+      "sha256": "2de0a771e41eae977ad010c495e33df67d384bd5dc0c699b49921940a5993239"
+    },
+    {
+      "taskId": "B1b-T03",
+      "path": "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java",
+      "operation": "修改",
+      "sha256": "2d6648252a7686b6c8b817b4e276c1587d23546d53ff268cc76ec8fdc1f89717"
+    },
+    {
+      "taskId": "B1b-T04",
+      "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/pom.xml",
+      "operation": "修改",
+      "sha256": "4b78ad5460da4fdecb381ec10814e1c2b66b9afd61ca4fc36e01f49c05902fc5"
+    }
+  ],
+  "javaFormatter": {
+    "status": "not_run_permission_policy_blocked_in_prior_batch",
+    "detail": "固定版本格式JAR此前执行被权限策略拒绝，本批未绕过或重试，不声明自动AOSP格式验证通过。"
+  },
+  "notPerformed": [
+    "B2a及后续批次",
+    "真实Redis/MySQL/Nacos/RocketMQ及微信工具或渠道验收",
+    "DDL或生产配置发布",
+    "消息机制或表结构变更",
+    "commit/push/索引修改"
+  ],
+  "overallGenerateStatus": "in_progress"
+}

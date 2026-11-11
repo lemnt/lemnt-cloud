@@ -1,0 +1,46 @@
+{
+  "checkedOn": "2026-10-28",
+  "scope": "full backend reactor clean verify",
+  "result": "BUILD SUCCESS",
+  "counts": {
+    "tests": 493,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "log": "/tmp/mall-consolidation-full-verify.log",
+  "tables": [
+    "mall_cart",
+    "mall_cart_add_request",
+    "mall_coupon",
+    "mall_coupon_template",
+    "mall_product_brand",
+    "mall_product_category",
+    "mall_product_comment",
+    "mall_product_sku",
+    "mall_product_sku_spec",
+    "mall_product_spec",
+    "mall_product_spec_value",
+    "mall_product_spu",
+    "mall_product_stock_adjustment",
+    "mall_product_stock_reservation",
+    "mall_promotion_activity_usage",
+    "mall_promotion_activity_usage_event",
+    "mall_promotion_activity_version",
+    "mall_promotion_discount_activity",
+    "mall_promotion_member_counter",
+    "mall_promotion_reward_activity"
+  ],
+  "referenceSourceSha256": {
+    "yudao-RewardActivityDO.java": "b7eb2b9d8aaf1801f9ed0ab71974ae0ea902375fe797c79d9f3ed73f238da427",
+    "yudao-schema-DiscountActivityDO.java": "e0f00abb5169ed1ae730d1bf854abb1d1c4cb0b0ceb8ea254d289207d789d4b4",
+    "yudao-CouponTemplateDO.java": "52c840bd76320f0f918e55cc2167a57c62b7141a4f86d6c5f27bf75cb2fc3b50"
+  },
+  "limits": [
+    "H2 MySQL mode, not target MySQL upgrade validation",
+    "Redis transport mocked; Lua and Redis Cluster not executed",
+    "No production SQL/cache migration or deployment",
+    "No new frontend typed activity pages"
+  ],
+  "commitOrPush": false
+}

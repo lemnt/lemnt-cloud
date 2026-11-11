@@ -1,10 +1,10 @@
 package com.lemnt.system.infrastructure.org.converter;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.lemnt.system.domain.org.model.Dept;
 import com.lemnt.system.infrastructure.org.dataobject.DeptDO;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 部门对象转换器
@@ -12,7 +12,6 @@ import com.lemnt.system.infrastructure.org.dataobject.DeptDO;
  * @author wangxx
  */
 public class DeptConverter {
-
     /**
      * DO → Entity
      */

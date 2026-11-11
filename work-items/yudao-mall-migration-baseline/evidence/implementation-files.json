@@ -1,0 +1,768 @@
+{
+  "capturedAt": "2026-11-06T09:21:28+08:00",
+  "status": "approved_with_gates",
+  "confirmedAt": "2026-11-06T09:30:37+08:00",
+  "confirmation": "确认计划，拆解任务",
+  "entries": [
+    {
+      "batch": "B1a",
+      "path": "lemnt-server/lemnt-gateway/src/main/java/com/lemnt/gateway/filter/AuthFilter.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "同步真实商品公开读/会员路径，保持身份头清理与令牌域隔离",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1a",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterAppRoutesTest.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "测试新路径、错方法、匿名、伪造头",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1a",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterDomainTest.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "会员/管理员令牌互斥覆盖新路径",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1a",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/ProductAppRouteContractTest.java",
+      "operation": "新增",
+      "complexity": "★★",
+      "purpose": "新增路由predicate与鉴权filter联合契约，避免只测其一",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1a",
+      "path": "lemnt-miniapp/services/comments.js",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "按GET/POST选择product查询与order投稿地址",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1a",
+      "path": "lemnt-miniapp/tests/comments.test.cjs",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "分别断言读写URL、令牌和响应，不再只覆盖投稿",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-domain/src/main/java/com/lemnt/promotion/domain/event/model/InboundEventFacts.java",
+      "operation": "新增",
+      "complexity": "★★",
+      "purpose": "仅本上下文实际消费的typed records；字段映射见契约设计",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-domain/src/main/java/com/lemnt/promotion/domain/event/gateway/InboundEventGateway.java",
+      "operation": "新增",
+      "complexity": "★",
+      "purpose": "声明payload到本域事实的typed解析方法，不引用外部Client",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/src/main/java/com/lemnt/promotion/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "operation": "新增",
+      "complexity": "★★",
+      "purpose": "使用外部协议类型解码并完整映射，保留版本与业务内容",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-infrastructure/src/test/java/com/lemnt/promotion/infrastructure/event/InboundEventGatewayImplTest.java",
+      "operation": "新增",
+      "complexity": "★★",
+      "purpose": "验证各事件金额/积分/行/业务号映射与非法载荷",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/AfterSaleCompletedEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderClosedEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderCompletedEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/OrderPaidEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/src/main/java/com/lemnt/promotion/application/event/service/StockPreReservedEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-promotion/lemnt-promotion-application/pom.xml",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "类型引用清零后删除本模块外部Client生产声明，保留本服务Client和test scope",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/event/model/InboundEventFacts.java",
+      "operation": "新增",
+      "complexity": "★★",
+      "purpose": "仅本上下文实际消费的typed records；字段映射见契约设计",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-domain/src/main/java/com/lemnt/order/domain/event/gateway/InboundEventGateway.java",
+      "operation": "新增",
+      "complexity": "★",
+      "purpose": "声明payload到本域事实的typed解析方法，不引用外部Client",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/main/java/com/lemnt/order/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "operation": "新增",
+      "complexity": "★★",
+      "purpose": "使用外部协议类型解码并完整映射，保留版本与业务内容",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-infrastructure/src/test/java/com/lemnt/order/infrastructure/event/InboundEventGatewayImplTest.java",
+      "operation": "新增",
+      "complexity": "★★",
+      "purpose": "验证各事件金额/积分/行/业务号映射与非法载荷",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/event/service/PayRefundSuccessEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/event/service/PaySuccessEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-order/lemnt-order-application/pom.xml",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "类型引用清零后删除本模块外部Client生产声明，保留本服务Client和test scope",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/src/main/java/com/lemnt/pay/domain/event/model/InboundEventFacts.java",
+      "operation": "新增",
+      "complexity": "★★",
+      "purpose": "仅本上下文实际消费的typed records；字段映射见契约设计",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-domain/src/main/java/com/lemnt/pay/domain/event/gateway/InboundEventGateway.java",
+      "operation": "新增",
+      "complexity": "★",
+      "purpose": "声明payload到本域事实的typed解析方法，不引用外部Client",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/main/java/com/lemnt/pay/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "operation": "新增",
+      "complexity": "★★",
+      "purpose": "使用外部协议类型解码并完整映射，保留版本与业务内容",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-infrastructure/src/test/java/com/lemnt/pay/infrastructure/event/InboundEventGatewayImplTest.java",
+      "operation": "新增",
+      "complexity": "★★",
+      "purpose": "验证各事件金额/积分/行/业务号映射与非法载荷",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-application/src/main/java/com/lemnt/pay/application/event/service/OrderClosedEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-pay/lemnt-pay-application/pom.xml",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "类型引用清零后删除本模块外部Client生产声明，保留本服务Client和test scope",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/event/model/InboundEventFacts.java",
+      "operation": "新增",
+      "complexity": "★★",
+      "purpose": "仅本上下文实际消费的typed records；字段映射见契约设计",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/event/gateway/InboundEventGateway.java",
+      "operation": "新增",
+      "complexity": "★",
+      "purpose": "声明payload到本域事实的typed解析方法，不引用外部Client",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/event/gateway/InboundEventGatewayImpl.java",
+      "operation": "新增",
+      "complexity": "★★",
+      "purpose": "使用外部协议类型解码并完整映射，保留版本与业务内容",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/test/java/com/lemnt/member/infrastructure/event/InboundEventGatewayImplTest.java",
+      "operation": "新增",
+      "complexity": "★★",
+      "purpose": "验证各事件金额/积分/行/业务号映射与非法载荷",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/event/service/OrderBenefitsEventHandler.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "换成本域解析端口/模型；原事务、幂等与业务判定不顺带重构",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "lemnt-server/lemnt-member/lemnt-member-application/pom.xml",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "类型引用清零后删除本模块外部Client生产声明，保留本服务Client和test scope",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "scripts/check_architecture.py",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "生产/测试scope分辨及外部Client引用规则，现有合法提供者不误报",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B1b",
+      "path": "scripts/test_architecture.py",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "生产/测试scope分辨及外部Client引用规则，现有合法提供者不误报",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/product/model/StoreFilter.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "补分类集合及排序白名单，兼容现有内部构造",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/product/gateway/ProductCategoryGateway.java",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "启用分类ids过滤及批量启用直接子分类查询契约",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/product/gateway/ProductCategoryGatewayImpl.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "Lambda过滤+sort/id排序；批量子类不N+1",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/product/gateway/ProductSpuGatewayImpl.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "转发筛选排序并完整装配已有字段，保留库存/销量写保护",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/resources/mapper/ProductSpuMapper.xml",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "分类IN及固定choose排序，列表/count筛选一致；不动态拼字段",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/qry/StorePageQry.java",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "补可选分类集合及排序参数",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/executor/StoreProductPageQueryExe.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "输入校验、分类并集与启用直接子分类扩展",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/executor/ProductCategoryEnableListQueryExe.java",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "支持可选ids，沿Gateway顺序输出",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/dto/StoreDetailDTO.java",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "透出已有SPU简介/轮播/配送，不补历史值",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/dto/StoreSkuDTO.java",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "透出已有重量/体积，NULL保持未知",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/executor/StoreProductDetailQueryExe.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "组装已有SPU/SKU字段，B2a不静默改变详情失败语义",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/req/StorePageReq.java",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "新增optional分类集合及排序；中文Schema/校验",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/converter/StoreReqConverter.java",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "HTTP新增参数到本域Qry，保留现有name/页码",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/AppProductCategoryController.java",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "可选ids绑定，查询仍公开且四字段响应保持",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/res/StoreDetailRes.java",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "optional展示/配送字段及中文说明",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/res/StoreSkuRes.java",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "重量/体积字段与单位",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/converter/ProductCategoryResConverter.java",
+      "operation": "修改",
+      "complexity": "★",
+      "purpose": "沿现存转换器补字段，不为名称进行无关拆分",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/test/java/com/lemnt/product/adapter/app/product/StoreHttpContractTest.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "真实绑定、可选参数/非法排序、NULL/字段输出",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-start/src/test/java/com/lemnt/product/start/product/CatalogPersistenceTest.java",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "分类/价格排序/筛选一致；保留现有库存/历史语义回归",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-miniapp/services/storefront.js",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "扩展查询入参及已有商品字段解码，banner仍归promotion",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-miniapp/tests/storefront.test.cjs",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "查询字符串、精确价格、长ID及NULL",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-miniapp/pages/store/index.js",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "接入可选排序/分类条件；按已有页面交互增量实现",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-miniapp/pages/store/index.wxml",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "补必要的源选品交互，不换UI框架",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-miniapp/pages/product/index.js",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "使用已透出轮播/简介/配送字段",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-miniapp/pages/product/index.wxml",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "展示源已有资料；不把未知价格/库存补成0",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2a",
+      "path": "lemnt-miniapp/tests/storefrontPages.test.cjs",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "交互和缺省处理，Node不代表原生平台编译",
+      "execution": "计划确认后可拆任务"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/sql/lemnt_product.sql",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/product/dataobject/ProductSpuDO.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/product/dataobject/ProductSkuDO.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/product/converter/ProductCatalogConverter.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/resources/mapper/ProductSpuMapper.xml",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/resources/mapper/ProductSkuMapper.xml",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/product/model/ProductSpu.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/product/model/ProductSku.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-domain/src/main/java/com/lemnt/product/domain/product/model/ProductCatalogValidation.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/service/ProductCatalogService.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/cmd/ProductSpuCreateCmd.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/cmd/ProductSpuUpdateCmd.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/dto/ProductSpuDTO.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/dto/ProductSkuDTO.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/converter/ProductCatalogDTOConverter.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/req/ProductSpuCreateReq.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/req/ProductSpuUpdateReq.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/req/ProductSkuCreateReq.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/converter/ProductCatalogReqConverter.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/web/product/converter/ProductCatalogResConverter.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/main/java/com/lemnt/product/application/product/executor/StoreProductDetailQueryExe.java",
+      "operation": "修改",
+      "complexity": "★★★",
+      "purpose": "按批准字段/输入/购买/浏览方案贯通；不得仅加列或改变历史NULL",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-ui/src/modules/mall/catalog/components/SpuEditor.tsx",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-ui/src/modules/mall/catalog/components/SpuDetailDrawer.tsx",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-ui/src/modules/mall/catalog/components/SkuSpecFields.tsx",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-ui/src/modules/mall/catalog/api/catalogApi.ts",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-ui/src/modules/mall/catalog/api/catalogApi.test.ts",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-miniapp/services/storefront.js",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-miniapp/pages/product/index.js",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "lemnt-miniapp/pages/product/index.wxml",
+      "operation": "修改",
+      "complexity": "★★",
+      "purpose": "源配置/展示字段及精确金额/编号贯通，与后台/商品规则同批验证",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B2b",
+      "path": "work-items/yudao-mall-migration-baseline/batch-designs/product-data.md",
+      "operation": "新增",
+      "complexity": "★★★",
+      "purpose": "补逐方法/字段/恢复依据和文件清单，审核通过后才能生成相应业务代码",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B3",
+      "path": "work-items/yudao-mall-migration-baseline/batch-designs/trade-messaging.md",
+      "operation": "新增",
+      "complexity": "★★★",
+      "purpose": "补逐方法/字段/恢复依据和文件清单，审核通过后才能生成相应业务代码",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    },
+    {
+      "batch": "B4",
+      "path": "work-items/yudao-mall-migration-baseline/batch-designs/promotion-member-statistics.md",
+      "operation": "新增",
+      "complexity": "★★★",
+      "purpose": "补逐方法/字段/恢复依据和文件清单，审核通过后才能生成相应业务代码",
+      "execution": "前置补充设计/决定完成前禁止生成"
+    }
+  ]
+}

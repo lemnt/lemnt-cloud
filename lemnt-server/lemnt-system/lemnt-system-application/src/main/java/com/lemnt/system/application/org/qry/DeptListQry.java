@@ -8,13 +8,13 @@ import java.io.Serializable;
  * @author wangxx
  */
 public record DeptListQry(
-        /**
-         * 部门名称
-         */
-        String deptName,
-        /**
-         * 部门状态（1正常 2停用）
-         */
-        String status
-) implements Serializable {
+    /**
+     * 部门名称
+     */
+    String deptName,
+    /**
+     * 部门状态（1正常 2停用）
+     */
+    String status)
+    implements Serializable {
 }

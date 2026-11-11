@@ -1,0 +1,57 @@
+{
+  "batch": "142-promotion-order-integration",
+  "date": "2026-10-31",
+  "scope": ["F07 order processors", "seckill/combination/bargain/point order lifecycle"],
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-mall/lemnt-mall-start -am test",
+    "javaVersion": "17.0.17",
+    "totals": {"classes": 42, "tests": 165, "failures": 0, "errors": 0, "skipped": 0},
+    "trade": {"command": "mvn -f lemnt-server/pom.xml -pl lemnt-trade/lemnt-trade-start -am test", "totals": {"tests": 223, "failures": 0, "errors": 0, "skipped": 0}},
+    "modules": {
+      "lemnt-mall-domain": {"classes": 2, "tests": 10},
+      "lemnt-mall-application": {"classes": 4, "tests": 10},
+      "lemnt-mall-infrastructure": {"classes": 5, "tests": 18},
+      "lemnt-mall-adapter": {"classes": 8, "tests": 28},
+      "lemnt-mall-start": {"classes": 23, "tests": 99}
+    },
+    "newTests": [
+      "com.lemnt.mall.start.product.PromotionOrderPersistenceTest (7, H2 production SQL/gateway)",
+      "com.lemnt.mall.start.product.SettlementLifecyclePromotionTest (1)",
+      "com.lemnt.mall.application.settlement.SettlementPromotionPreparationTest (3)",
+      "com.lemnt.trade.application.order.OrderRemoteServiceCallbackTest (1)"
+    ]
+  },
+  "ui": {"command": "npm test", "files": 54, "tests": 292, "failures": 0, "newTests": []},
+  "miniapp": {
+    "command": "node --test tests/*.test.cjs",
+    "tests": 155,
+    "failures": 0,
+    "newTests": ["promotion-order.test.cjs (2)"]
+  },
+  "endpoints": [
+    "POST /mall/app/seckill/orders",
+    "POST /mall/app/combination/orders",
+    "POST /mall/app/bargain/orders",
+    "POST /mall/app/point-mall/orders"
+  ],
+  "invariants": [
+    "activity price is resolved server-side; coupons/rewards/member discounts are not stacked",
+    "requestNo is idempotent per member; conflicting content is rejected",
+    "activity stock is reserved in the synchronous trade reserved callback",
+    "closed restores activity stock only from CREATED/RESERVED and is idempotent",
+    "refund restores stock by refund quantity, deduplicated by refund_no",
+    "combination record is created on paid and bound to the trade order",
+    "bargain record is bound to the order on reserved",
+    "zero-cash point exchange is explicitly rejected in this batch"
+  ],
+  "sql": [
+    "lemnt-server/lemnt-mall/sql/V22__promotion_order.sql",
+    "lemnt-server/lemnt-mall/sql/V23__promotion_order_refund.sql"
+  ],
+  "deferred": [
+    "zero-cash point exchange and trade auto-paid status",
+    "multi-SKU selector and non-default address selection",
+    "combination group failure on full refund",
+    "real payment channel, MySQL/Redis/Nacos/Dubbo/MQ/browser/device verification"
+  ]
+}

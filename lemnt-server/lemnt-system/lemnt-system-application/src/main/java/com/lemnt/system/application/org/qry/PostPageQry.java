@@ -9,21 +9,21 @@ import java.time.LocalDateTime;
  * @author wangxx
  */
 public record PostPageQry(
-        /**
-         * 岗位编码
-         */
-        String postCode,
-        /**
-         * 岗位名称
-         */
-        String postName,
-        /**
-         * 状态（1正常 2停用）
-         */
-        String status,
-        int pageNum,
-        int pageSize,
-        LocalDateTime beginTime,
-        LocalDateTime endTime
-) implements Serializable {
+    /**
+     * 岗位编码
+     */
+    String postCode,
+    /**
+     * 岗位名称
+     */
+    String postName,
+    /**
+     * 状态（1正常 2停用）
+     */
+    String status,
+    int pageNum,
+    int pageSize,
+    LocalDateTime beginTime,
+    LocalDateTime endTime)
+    implements Serializable {
 }

@@ -1,0 +1,55 @@
+{
+  "batch": 164,
+  "recordedAt": "2026-11-03T08:12:48+08:00",
+  "scope": "代码生成与本地验证，非目标环境验收",
+  "backend": {
+    "trade": {
+      "tests": 310,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 70
+    },
+    "mall": {
+      "tests": 197,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 53
+    },
+    "member": {
+      "tests": 122,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 19
+    }
+  },
+  "backendBuild": "三服务测试后，全lemnt-server测试打包成功；日志/private/tmp/lemnt-project-backend-package.log",
+  "ui": {
+    "tests": 320,
+    "files": 64,
+    "typecheck": "passed",
+    "build": "passed",
+    "changedFileLint": "passed",
+    "changedFileFormat": "passed",
+    "fullLintAtBatch164": "blocked by preexisting BannerPage.test.tsx prefer-const",
+    "fullFormatAtBatch164": "19 preexisting files; latest全项目规范批次继续修复"
+  },
+  "miniapp": {
+    "tests": 179,
+    "failures": 0
+  },
+  "schema": {
+    "tables": 98,
+    "columns": 1100,
+    "missingComments": 0
+  },
+  "notExecuted": [
+    "现有MySQL DDL和历史回填",
+    "目标MySQL锁行为",
+    "真实网关/Dubbo/Redis/MQ/支付渠道联调",
+    "浏览器与微信开发者工具/真机验收"
+  ],
+  "committed": false
+}

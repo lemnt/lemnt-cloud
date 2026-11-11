@@ -14,5 +14,4 @@ import java.lang.annotation.*;
 @Documented
 @DS("doris")
 public @interface Doris {
-
 }

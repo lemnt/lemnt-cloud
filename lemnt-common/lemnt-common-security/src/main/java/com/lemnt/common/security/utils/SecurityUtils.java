@@ -1,15 +1,16 @@
 package com.lemnt.common.security.utils;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-import com.lemnt.common.security.enums.RoleKeyEnum;
+import com.lemnt.common.core.utils.ServletUtils;
+import com.lemnt.common.core.utils.StringUtils;
 import com.lemnt.common.security.constant.SecurityConstants;
 import com.lemnt.common.security.constant.TokenConstants;
 import com.lemnt.common.security.context.SecurityContextHolder;
+import com.lemnt.common.security.enums.RoleKeyEnum;
 import com.lemnt.common.security.model.SecurityUser;
-import com.lemnt.common.core.utils.ServletUtils;
-import com.lemnt.common.core.utils.StringUtils;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Objects;
 import java.util.Set;
@@ -25,6 +26,14 @@ public class SecurityUtils {
      */
     public static Long getUserId() {
         return SecurityContextHolder.getUserId();
+    }
+
+    public static String getNickName() {
+        return SecurityContextHolder.getNickName();
+    }
+
+    public static String getUserAvatar() {
+        return SecurityContextHolder.getUserAvatar();
     }
 
     /**
@@ -100,7 +109,9 @@ public class SecurityUtils {
     }
 
     public static boolean isRoleAdmin(String roleKey) {
-        return StringUtils.isNotBlank(roleKey) && (Objects.equals(RoleKeyEnum.ADMIN.getRoleKey(), roleKey) || Objects.equals(RoleKeyEnum.SYSTEM.getRoleKey(), roleKey));
+        return StringUtils.isNotBlank(roleKey)
+            && (Objects.equals(RoleKeyEnum.ADMIN.getRoleKey(), roleKey)
+            || Objects.equals(RoleKeyEnum.SYSTEM.getRoleKey(), roleKey));
     }
 
     /**
@@ -133,6 +144,7 @@ public class SecurityUtils {
 
     public static boolean hasAdminRole() {
         Set<String> roleKeys = getRoleKey();
-        return roleKeys.contains(RoleKeyEnum.ADMIN.getRoleKey()) || roleKeys.contains(RoleKeyEnum.SYSTEM.getRoleKey());
+        return roleKeys.contains(RoleKeyEnum.ADMIN.getRoleKey())
+            || roleKeys.contains(RoleKeyEnum.SYSTEM.getRoleKey());
     }
 }

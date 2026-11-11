@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-31",
+  "batch": "132",
+  "scope": [
+    "SPU recycle/restore/delete controls",
+    "three persisted-state tabs and server counts",
+    "same name/category/brand filters for list and counts",
+    "status actions, permissions, cache refresh and previous-page fallback",
+    "recycled state label in detail"
+  ],
+  "frontend": {
+    "tests": 260,
+    "files": 45,
+    "passed": true,
+    "build": "passed; existing large vendor chunk warning",
+    "typecheck": "passed in tsc -b build",
+    "lint": "passed",
+    "format": "passed"
+  },
+  "backendFocusedTests": {
+    "ProductManagementHttpTest": {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "CatalogPersistenceTest": {
+      "tests": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "validationLayers": [
+    "mocked frontend API contracts",
+    "React SSR with cache-provided rows for status/permission rendering",
+    "production Jackson MockMvc binding and response contracts",
+    "H2 real Mapper lifecycle constraints and reservation rollback tests"
+  ],
+  "contracts": [
+    "/mall service prefix retained",
+    "counts exclude status and pagination; exact same business filters",
+    "unknown counts shown as unknown; no made-up sold-out/warning counts",
+    "recycle only off shelf; restore leaves off shelf; remove only recycled",
+    "edit/query/remove permissions checked separately",
+    "lifecycle operations require true; service errors propagated",
+    "detail read required before edit; recycled record cannot be edited"
+  ],
+  "schemaChanged": false,
+  "realDatabaseExecuted": false,
+  "menu": "existing mall/spu/index and existing edit/remove permission definitions reused",
+  "logs": [
+    "/tmp/spu-lifecycle-ui-tests.log",
+    "/tmp/spu-lifecycle-ui-build.log",
+    "/tmp/spu-lifecycle-ui-lint.log",
+    "/tmp/spu-lifecycle-ui-format.log",
+    "/tmp/spu-lifecycle-backend.log"
+  ],
+  "gitDiffCheck": "passed",
+  "limits": [
+    "no browser clicks or deployed HTTP validation",
+    "no real MySQL/Redis/Dubbo/Nacos/channel validation",
+    "source sold-out/warning models, create-time filter, full operating fields and export remain incomplete",
+    "focused backend tests only; mini-program and full backend suite not rerun",
+    "SSR row seeds test guards and do not establish end-to-end interaction acceptance"
+  ],
+  "committed": false,
+  "pushed": false
+}

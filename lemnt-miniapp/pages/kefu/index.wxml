@@ -1,0 +1,26 @@
+<view class="container">
+  <view wx:if="{{!ready}}" class="notice">会员服务暂未启用。</view>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+  <button wx:if="{{!loggedIn}}" bindtap="login">会员登录</button>
+  <block wx:if="{{loggedIn}}">
+    <view class="card">
+      <view class="title">在线客服</view>
+      <view class="description" wx:if="{{conversation}}">最后消息：{{conversation.lastMessageContent || '暂无'}} · {{conversation.lastMessageTime || ''}}</view>
+      <view class="description" wx:if="{{conversation && conversation.unreadCount}}">未读 {{conversation.unreadCount}} 条</view>
+    </view>
+    <scroll-view scroll-y class="messages" scroll-into-view="{{messages.length ? 'm' + (messages.length - 1) : ''}}">
+      <view wx:for="{{messages}}" wx:key="id" id="m{{index}}" class="msg {{item.senderType === 2 ? 'admin' : 'mine'}}">
+        <view wx:if="{{item.contentType === 2}}" class="bubble" data-url="{{item.content}}" bindtap="goImage">{{item.content}}</view>
+        <view wx:else class="bubble">{{item.content}}</view>
+        <view class="time">{{item.senderType === 2 ? '客服' : '我'}} · {{item.createTime}}</view>
+      </view>
+      <view wx:if="{{!messages.length}}" class="description">还没有消息，发送第一条吧。</view>
+    </scroll-view>
+    <view class="card">
+      <label class="field"><text>图片地址模式</text><switch checked="{{imageMode}}" bindchange="toggleImage"/></label>
+      <textarea class="input" value="{{content}}" maxlength="2000" bindinput="input" placeholder="{{imageMode ? '输入 https 图片地址' : '输入消息'}}" disabled="{{loading}}"/>
+      <view class="row"><button type="primary" bindtap="send" disabled="{{loading}}">发送</button><button bindtap="refresh" disabled="{{loading}}">刷新</button></view>
+    </view>
+    <navigator url="/pages/member/index">返回会员中心</navigator>
+  </block>
+</view>

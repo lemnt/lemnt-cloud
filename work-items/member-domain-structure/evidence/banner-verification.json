@@ -1,0 +1,73 @@
+{
+  "batch": "150-banner",
+  "date": "2026-11-01",
+  "scope": ["banner admin CRUD", "app banner list", "banner browse count"],
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-mall/lemnt-mall-start -am test",
+    "totals": {"tests": 171, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-mall-domain": 10,
+      "lemnt-mall-application": 10,
+      "lemnt-mall-infrastructure": 18,
+      "lemnt-mall-adapter": 28,
+      "lemnt-mall-start": 105
+    },
+    "newTests": [
+      "com.lemnt.mall.start.promotion.BannerPersistenceTest (3)",
+      "com.lemnt.mall.start.promotion.BannerMenuSeedTest (1)"
+    ]
+  },
+  "ui": {"command": "npm test -- --run", "tests": 297, "failures": 0, "newTests": ["bannerApi.test.ts (2)", "BannerPage.test.tsx (3)"]},
+  "miniapp": {"command": "node --test tests/*.test.cjs", "tests": 162, "failures": 0, "newTests": ["storefront banner (1)", "store banner tap (1)"]},
+  "endpoints": [
+    "GET /mall/promotion/banners",
+    "GET /mall/promotion/banners/{id}",
+    "POST /mall/promotion/banners",
+    "PUT /mall/promotion/banners/{id}",
+    "DELETE /mall/promotion/banners/{id}",
+    "GET /mall/app/banners?position=",
+    "PUT /mall/app/banners/{id}/browse"
+  ],
+  "gateway": {
+    "test": "com.lemnt.gateway.filter.AuthFilterAppRoutesTest",
+    "rules": [
+      "GET /mall/app/banners is public",
+      "PUT /mall/app/banners/{id}/browse is public only for positive numeric id",
+      "POST /mall/app/banners still requires member token"
+    ]
+  },
+  "sql": [
+    "lemnt-server/lemnt-mall/sql/V25__promotion_banner.sql",
+    "lemnt-server/sql/V20261101__mall_banner_menu.sql"
+  ],
+  "invariants": [
+    "app list returns only enabled banners ordered by sort desc and id desc",
+    "admin update preserves browse count",
+    "browse count is incremented atomically",
+    "position must be 1..5 and status 0..1",
+    "app response exposes only id/title/url/picUrl"
+  ],
+  "realEnvironment": {
+    "bannerId": "2116676420497022978",
+    "assertions": [
+      "admin create succeeds and returns id",
+      "app list returns the enabled banner",
+      "two browse calls persist browse_count=2",
+      "disabled banner is excluded from app list",
+      "admin page filters by status=1",
+      "guest app list and browse pass the gateway after adding exact public app routes",
+      "guest browse increments browse_count to 3"
+    ]
+  },
+  "deferred": [
+    "customer service conversations and messages",
+    "diy decoration templates and pages",
+    "distribution relation, commission and withdrawal",
+    "app promotion activity aggregation",
+    "browser admin and miniapp device verification"
+  ],
+  "notes": [
+    "menu seed was applied to the acceptance system database without granting roles",
+    "no business commit or push in this batch"
+  ]
+}

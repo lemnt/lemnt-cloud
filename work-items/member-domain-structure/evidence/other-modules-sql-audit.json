@@ -1,0 +1,22 @@
+{
+  "auth": {
+    "sqlAnnotations": 8,
+    "unchanged": true
+  },
+  "system": {
+    "sqlAnnotations": 0,
+    "unchanged": true
+  },
+  "mall": {
+    "sqlAnnotations": 42,
+    "unchanged": true
+  },
+  "trade": {
+    "sqlAnnotations": 97,
+    "unchanged": true
+  },
+  "open": {
+    "sqlAnnotations": 0,
+    "unchanged": true
+  }
+}

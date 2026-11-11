@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-31",
+  "batch": "123/124",
+  "reference": "Yudao AddressServiceImpl/MemberAddressDO/MemberAddressMapper",
+  "tests": {
+    "member": {
+      "tests": 113,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "auth": {
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "mall": {
+      "tests": 119,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "gateway": {
+      "tests": 34,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "common-security": {
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "businessTests": 410,
+  "miniapp": {
+    "tests": 123,
+    "failures": 0,
+    "skipped": 0
+  },
+  "memberVerify": "passed",
+  "jointVerify": "passed",
+  "diffCheck": "passed",
+  "logs": [
+    "/tmp/member-address-member-verify.log",
+    "/tmp/member-address-verify.log",
+    "/tmp/member-address-mini.log"
+  ],
+  "newTests": [
+    "selective audit updates for default switch with different owner and ordinary address unchanged",
+    "legacy owner/audit DDL migration preserves ID/default/owner and FK with unknown audit null",
+    "missing/foreign/repeated deletion fails; deleting default does not auto-promote another address",
+    "forced insert failure rolls back previous default flag and audit",
+    "MockMvc plus real H2 address create/default/delete use trusted member context and global 404 response"
+  ],
+  "updatedTests": [
+    "more than 20 addresses allowed by source logic",
+    "foreign update/delete use 404 instead of 400/false"
+  ],
+  "schema": {
+    "table": "member_address",
+    "ownerColumn": "user_id",
+    "addedNullableColumns": [
+      "create_time",
+      "create_by",
+      "update_time",
+      "update_by"
+    ],
+    "upgrade": "lemnt-server/lemnt-member/sql/upgrade/address_owner_audit.sql",
+    "liveExecuted": false
+  },
+  "limitations": [
+    "H2 MySQL mode is not real MySQL DDL verification",
+    "No deployed HTTP/Nacos/Dubbo/Redis/browser/WeChat checks",
+    "React unchanged and not rerun",
+    "Source logical delete and final address display contract remain under comparison",
+    "No commit or push"
+  ]
+}

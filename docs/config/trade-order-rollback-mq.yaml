@@ -1,0 +1,4 @@
+# 历史trade补偿配置记录，不再作为新模块配置源，也未自动发布。
+# 正式8Topic及生产者配置见commerce-mq.yaml和../module-split-cutover.md。
+# 历史未决补偿须按原业务号审核，新旧消费者不得同时处理同一业务副作用。
+# order兼容入口lemnt.order.legacy-rollback.enabled默认关闭。

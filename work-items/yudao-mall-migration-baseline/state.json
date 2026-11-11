@@ -1,0 +1,38 @@
+{
+  "requirement": {
+    "name": "yudao-mall-migration-baseline",
+    "description": "芋道商城迁移基线与运行验收：B1a/B1b自动化已完成，E001只读预检及E002验收方案已同步；110个任务节点为46 completed、30 pending、34 blocked。真实基础设施/业务/微信/渠道验收仍未完成，6个人工门控不变；保留DDD和外部Client仅Infrastructure的生产依赖边界，不混入额外增强。",
+    "createdAt": "2026-11-05T14:50:31+08:00",
+    "updatedAt": "2026-11-09T11:43:00+08:00"
+  },
+  "phases": {
+    "entry": {
+      "status": "completed",
+      "output": null
+    },
+    "requirement": {
+      "status": "completed",
+      "output": "requirement.md"
+    },
+    "design": {
+      "status": "completed",
+      "output": "design.md"
+    },
+    "task": {
+      "status": "completed",
+      "output": "tasks.md"
+    },
+    "generate": {
+      "status": "in_progress",
+      "output": "code-summary.md"
+    },
+    "review": {
+      "status": "pending",
+      "output": null
+    },
+    "retrospective": {
+      "status": "pending",
+      "output": null
+    }
+  }
+}

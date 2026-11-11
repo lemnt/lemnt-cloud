@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.pay.infrastructure.paymentrefund.mapper.PaymentRefundMapper">
+    <update id="updateResult">
+        UPDATE pay_payment_refund
+        SET status=#{status}, channel_refund_no=#{channelRefundNo}, update_time=CURRENT_TIMESTAMP
+        WHERE refund_no=#{refundNo} AND status&lt;&gt;'SUCCESS'
+    </update>
+    <select id="total" resultType="com.lemnt.pay.infrastructure.paymentrefund.dataobject.PaymentRefundTotalDO">
+        SELECT COUNT(*) AS refund_count, COALESCE(SUM(amount),0) AS refund_amount FROM pay_payment_refund WHERE
+        status='SUCCESS'
+        <if test='orderNo != null'>AND order_no=#{orderNo}</if>
+    </select>
+</mapper>

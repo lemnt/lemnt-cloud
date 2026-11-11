@@ -1,0 +1,18 @@
+package com.lemnt.order.domain.order.gateway;
+
+import com.lemnt.order.domain.order.model.VerifiedOrderComment;
+
+/**
+ * 评价数据归商城；交易只编排真实订单项状态。
+ */
+public interface OrderCommentGateway {
+    /**
+     * 同步保存已验证购买的评价。
+     */
+    Long saveVerified(VerifiedOrderComment value);
+
+    /**
+     * 私有系统到期评价。
+     */
+    Long saveSystem(VerifiedOrderComment value);
+}

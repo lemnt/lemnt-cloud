@@ -1,0 +1,252 @@
+package com.lemnt.order.adapter.web.aftersale;
+
+import com.lemnt.common.core.domain.R;
+import com.lemnt.common.security.annotation.RequiresPermissions;
+import com.lemnt.common.security.utils.SecurityUtils;
+import com.lemnt.order.adapter.web.aftersale.converter.AfterSalePaymentResConverter;
+import com.lemnt.order.adapter.web.aftersale.converter.AfterSaleReqConverter;
+import com.lemnt.order.adapter.web.aftersale.converter.AfterSaleResConverter;
+import com.lemnt.order.adapter.web.aftersale.req.AfterSaleCreateReq;
+import com.lemnt.order.adapter.web.aftersale.req.AfterSalePageReq;
+import com.lemnt.order.adapter.web.aftersale.req.AfterSaleRefuseReq;
+import com.lemnt.order.adapter.web.aftersale.req.AfterSaleRejectReq;
+import com.lemnt.order.adapter.web.aftersale.req.AfterSaleReturnReq;
+import com.lemnt.order.adapter.web.aftersale.res.AfterSaleAgreeRes;
+import com.lemnt.order.adapter.web.aftersale.res.AfterSaleCreateRes;
+import com.lemnt.order.adapter.web.aftersale.res.AfterSaleDetailRes;
+import com.lemnt.order.adapter.web.aftersale.res.AfterSaleItemRes;
+import com.lemnt.order.adapter.web.aftersale.res.AfterSalePageRes;
+import com.lemnt.order.adapter.web.aftersale.res.AfterSaleReceiveRes;
+import com.lemnt.order.adapter.web.aftersale.res.AfterSaleRefundRes;
+import com.lemnt.order.adapter.web.aftersale.res.AfterSaleRefuseRes;
+import com.lemnt.order.adapter.web.aftersale.res.AfterSaleRejectRes;
+import com.lemnt.order.adapter.web.aftersale.res.AfterSaleReturnRes;
+import com.lemnt.order.adapter.web.promotion.converter.OrderPromotionResConverter;
+import com.lemnt.order.adapter.web.promotion.res.AfterSalePromotionDetailRes;
+import com.lemnt.order.application.aftersale.executor.AfterSaleAgreeCmdExe;
+import com.lemnt.order.application.aftersale.executor.AfterSaleCreateCmdExe;
+import com.lemnt.order.application.aftersale.executor.AfterSaleDetailQueryExe;
+import com.lemnt.order.application.aftersale.executor.AfterSaleItemListQueryExe;
+import com.lemnt.order.application.aftersale.executor.AfterSalePageQueryExe;
+import com.lemnt.order.application.aftersale.executor.AfterSaleReceiveCmdExe;
+import com.lemnt.order.application.aftersale.executor.AfterSaleRefuseCmdExe;
+import com.lemnt.order.application.aftersale.executor.AfterSaleRejectCmdExe;
+import com.lemnt.order.application.aftersale.executor.AfterSaleReturnCmdExe;
+import com.lemnt.order.application.paymentrefund.executor.PaymentRefundCreateCmdExe;
+import com.lemnt.order.application.promotion.executor.AfterSalePromotionDetailQueryExe;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
+
+import java.util.List;
+
+/**
+ * 商品售后管理接口。
+ */
+@Tag(name = "商品售后管理")
+@RestController
+@RequestMapping("/trade/admin")
+public class AfterSaleController {
+    private final AfterSaleCreateCmdExe create;
+    private final AfterSaleAgreeCmdExe agree;
+    private final AfterSaleRejectCmdExe reject;
+    private final AfterSaleReturnCmdExe returned;
+    private final AfterSaleReceiveCmdExe receive;
+    private final AfterSaleRefuseCmdExe refuse;
+    private final AfterSalePageQueryExe page;
+    private final AfterSaleDetailQueryExe detail;
+    private final AfterSaleItemListQueryExe items;
+    private final PaymentRefundCreateCmdExe refund;
+
+    /**
+     * 同意仅退款或退货已收货后发起原支付退款，状态按真实渠道结果更新。
+     */
+    @PostMapping("/after-sales/{no}/refund")
+    @Operation(summary = "确认售后原路退款")
+    @RequiresPermissions("trade:after-sale:refund")
+    public R<AfterSaleRefundRes> refund(@PathVariable String no) {
+        return R.ok(
+            AfterSalePaymentResConverter.toRes(
+                refund.executeForAdmin(no, SecurityUtils.getUserId())));
+    }
+
+    /**
+     * 查询可售后商品与额度。
+     */
+    @GetMapping("/orders/{orderNo}/after-sale-items")
+    @Operation(summary = "可售后商品额度")
+    @RequiresPermissions("trade:after-sale:query")
+    public R<List<AfterSaleItemRes>> items(@PathVariable String orderNo) {
+        return R.ok(items.execute(orderNo).stream().map(AfterSaleResConverter::item).toList());
+    }
+
+    /**
+     * 创建商品部分或全部数量的售后。
+     */
+    @PostMapping("/orders/{orderNo}/after-sales")
+    @Operation(summary = "申请商品售后")
+    @RequiresPermissions("trade:after-sale:create")
+    public R<AfterSaleCreateRes> create(
+        @PathVariable String orderNo, @Valid @RequestBody AfterSaleCreateReq req) {
+        return R.ok(
+            AfterSaleResConverter.create(
+                create.executeForAdmin(
+                    AfterSaleReqConverter.create(orderNo, req),
+                    SecurityUtils.getUserId())));
+    }
+
+    /**
+     * 分页查询售后。
+     */
+    @GetMapping("/after-sales")
+    @Operation(summary = "商品售后分页")
+    @RequiresPermissions("trade:after-sale:list")
+    public R<AfterSalePageRes> page(@Valid @ModelAttribute AfterSalePageReq req) {
+        var result = page.execute(AfterSaleReqConverter.page(req));
+        return R.page(
+            result.getRecords().stream().map(AfterSaleResConverter::page).toList(),
+            result.getTotal());
+    }
+
+    /**
+     * 查询售后详情。
+     */
+    @GetMapping("/after-sales/{no}")
+    @Operation(summary = "商品售后详情")
+    @RequiresPermissions("trade:after-sale:query")
+    public R<AfterSaleDetailRes> detail(@PathVariable String no) {
+        var value = detail.execute(no);
+        return value == null ? R.fail("售后单不存在") : R.ok(AfterSaleResConverter.detail(value));
+    }
+
+    /**
+     * 同意售后后按方式分别进入等待退货或等待退款。
+     */
+    @PostMapping("/after-sales/{no}/agree")
+    @Operation(summary = "同意商品售后")
+    @RequiresPermissions("trade:after-sale:agree")
+    public R<AfterSaleAgreeRes> agree(@PathVariable String no) {
+        return R.ok(
+            AfterSaleResConverter.agree(agree.executeForAdmin(no, SecurityUtils.getUserId())));
+    }
+
+    /**
+     * 拒绝尚未审核的申请。
+     */
+    @PostMapping("/after-sales/{no}/reject")
+    @Operation(summary = "拒绝商品售后")
+    @RequiresPermissions("trade:after-sale:reject")
+    public R<AfterSaleRejectRes> reject(
+        @PathVariable String no, @Valid @RequestBody AfterSaleRejectReq req) {
+        return R.ok(
+            AfterSaleResConverter.reject(
+                reject.executeForAdmin(
+                    AfterSaleReqConverter.reject(no, req), SecurityUtils.getUserId())));
+    }
+
+    /**
+     * 登记买家寄回的物流信息。
+     */
+    @PostMapping("/after-sales/{no}/return")
+    @Operation(summary = "登记退货运单")
+    @RequiresPermissions("trade:after-sale:return")
+    public R<AfterSaleReturnRes> returned(
+        @PathVariable String no, @Valid @RequestBody AfterSaleReturnReq req) {
+        return R.ok(
+            AfterSaleResConverter.returned(
+                returned.executeForAdmin(
+                    AfterSaleReqConverter.returned(no, req),
+                    SecurityUtils.getUserId())));
+    }
+
+    /**
+     * 确认收到退货后允许退款。
+     */
+    @PostMapping("/after-sales/{no}/receive")
+    @Operation(summary = "确认退货收货")
+    @RequiresPermissions("trade:after-sale:receive")
+    public R<AfterSaleReceiveRes> receive(@PathVariable String no) {
+        return R.ok(
+            AfterSaleResConverter.receive(
+                receive.executeForAdmin(no, SecurityUtils.getUserId())));
+    }
+
+    /**
+     * 拒收必须记录原因。
+     */
+    @PostMapping("/after-sales/{no}/refuse")
+    @Operation(summary = "拒绝退货收货")
+    @RequiresPermissions("trade:after-sale:refuse")
+    public R<AfterSaleRefuseRes> refuse(
+        @PathVariable String no, @Valid @RequestBody AfterSaleRefuseReq req) {
+        return R.ok(
+            AfterSaleResConverter.refuse(
+                refuse.executeForAdmin(
+                    AfterSaleReqConverter.refuse(no, req), SecurityUtils.getUserId())));
+    }
+
+    private final AfterSalePromotionDetailQueryExe promotionQuery;
+
+    /**
+     * 查询冻结优惠及权益，不回查当前促销规则。
+     */
+    @GetMapping("/after-sales/{no}/promotions")
+    @Operation(summary = "售后优惠归因与权益进度")
+    @RequiresPermissions("trade:after-sale:query")
+    public R<AfterSalePromotionDetailRes> promotions(@PathVariable String no) {
+        return R.ok(OrderPromotionResConverter.toRes(promotionQuery.execute(no)));
+    }
+
+    /**
+     * 生产使用完整查询协作者，存量测试构造仅服务原有路由。
+     */
+    @Autowired
+    public AfterSaleController(
+        AfterSaleCreateCmdExe create,
+        AfterSaleAgreeCmdExe agree,
+        AfterSaleRejectCmdExe reject,
+        AfterSaleReturnCmdExe returned,
+        AfterSaleReceiveCmdExe receive,
+        AfterSaleRefuseCmdExe refuse,
+        AfterSalePageQueryExe page,
+        AfterSaleDetailQueryExe detail,
+        AfterSaleItemListQueryExe items,
+        PaymentRefundCreateCmdExe refund,
+        AfterSalePromotionDetailQueryExe promotionQuery) {
+        this.create = create;
+        this.agree = agree;
+        this.reject = reject;
+        this.returned = returned;
+        this.receive = receive;
+        this.refuse = refuse;
+        this.page = page;
+        this.detail = detail;
+        this.items = items;
+        this.refund = refund;
+        this.promotionQuery = promotionQuery;
+    }
+
+    public AfterSaleController(
+        AfterSaleCreateCmdExe create,
+        AfterSaleAgreeCmdExe agree,
+        AfterSaleRejectCmdExe reject,
+        AfterSaleReturnCmdExe returned,
+        AfterSaleReceiveCmdExe receive,
+        AfterSaleRefuseCmdExe refuse,
+        AfterSalePageQueryExe page,
+        AfterSaleDetailQueryExe detail,
+        AfterSaleItemListQueryExe items,
+        PaymentRefundCreateCmdExe refund) {
+        this(create, agree, reject, returned, receive, refuse, page, detail, items, refund, null);
+    }
+}

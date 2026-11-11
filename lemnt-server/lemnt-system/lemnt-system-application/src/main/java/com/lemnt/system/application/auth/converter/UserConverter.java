@@ -1,13 +1,13 @@
 package com.lemnt.system.application.auth.converter;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.lemnt.system.application.auth.dto.RoleDTO;
 import com.lemnt.system.application.auth.dto.UserDTO;
 import com.lemnt.system.application.org.converter.DeptConverter;
 import com.lemnt.system.domain.auth.model.Role;
 import com.lemnt.system.domain.auth.model.User;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户组装器

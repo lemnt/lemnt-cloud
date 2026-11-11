@@ -1,0 +1,24 @@
+{
+  "version": "promotion-v1/T1",
+  "date": "2026-10-25 Asia/Shanghai",
+  "baseCommit": "534048e67c01ace45f929262b5301e8379cd8a6f",
+  "java": "17",
+  "maven": "3.9.11",
+  "status": "PASS",
+  "reactorProjects": 71,
+  "testSuites": 82,
+  "tests": 431,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "addedPromotionTests": 39,
+  "nestedPropertyCases": {
+    "allocation": 2000,
+    "fullPricingAndPermutation": 500,
+    "legacyJavaPercentageParity": 1500,
+    "legacyJavaFixedParity": 1500
+  },
+  "reactNative": "NOT RUN: unchanged",
+  "targetServicesProvidersBrowserDevice": "NOT RUN",
+  "productionReady": false
+}
