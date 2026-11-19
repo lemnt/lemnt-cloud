@@ -1,0 +1,132 @@
+{
+  "capturedAt": "2026-11-17T17:03:04.182121+08:00",
+  "approvalQuote": "允许导入初始化SQL",
+  "targetContainer": "mysql8",
+  "instanceNote": "This instance also hosts existing schemas (lemnt_system, lemnt_member, lemnt_mall, lemnt_trade, ad_system, nacos_server, ...); it is not a disposable instance. Isolation relies on the dedicated lemnt_migration_local_* schemas and scripts containing no USE/CREATE DATABASE.",
+  "secretsPersisted": false,
+  "beforeTableCounts": {
+    "ad_dsp": 7,
+    "ad_system": 17,
+    "ai_rec_test": 5,
+    "go_blog": 3,
+    "information_schema": 79,
+    "lemnt_blog": 3,
+    "lemnt_mall": 35,
+    "lemnt_member": 18,
+    "lemnt_migration_local_member": 0,
+    "lemnt_migration_local_order": 0,
+    "lemnt_migration_local_pay": 0,
+    "lemnt_migration_local_product": 0,
+    "lemnt_migration_local_promotion": 0,
+    "lemnt_migration_local_system": 0,
+    "lemnt_system": 17,
+    "lemnt_trade": 27,
+    "mysql": 38,
+    "nacos_server": 13,
+    "performance_schema": 111,
+    "sys": 101
+  },
+  "imported": [
+    {
+      "database": "lemnt_migration_local_system",
+      "script": "lemnt-server/sql/lemnt_system.sql",
+      "importExitCode": 0,
+      "expectedCreateTableStatements": 17,
+      "tableCountAfter": 17,
+      "status": "imported"
+    },
+    {
+      "database": "lemnt_migration_local_member",
+      "script": "lemnt-server/lemnt-member/sql/lemnt_member.sql",
+      "importExitCode": 0,
+      "expectedCreateTableStatements": 13,
+      "tableCountAfter": 13,
+      "status": "imported"
+    },
+    {
+      "database": "lemnt_migration_local_product",
+      "script": "lemnt-server/lemnt-product/sql/lemnt_product.sql",
+      "importExitCode": 0,
+      "expectedCreateTableStatements": 11,
+      "tableCountAfter": 11,
+      "status": "imported"
+    },
+    {
+      "database": "lemnt_migration_local_promotion",
+      "script": "lemnt-server/lemnt-promotion/sql/lemnt_promotion.sql",
+      "importExitCode": 0,
+      "expectedCreateTableStatements": 23,
+      "tableCountAfter": 23,
+      "status": "imported"
+    },
+    {
+      "database": "lemnt_migration_local_order",
+      "script": "lemnt-server/lemnt-order/sql/lemnt_order.sql",
+      "importExitCode": 0,
+      "expectedCreateTableStatements": 23,
+      "tableCountAfter": 23,
+      "status": "imported"
+    },
+    {
+      "database": "lemnt_migration_local_pay",
+      "script": "lemnt-server/lemnt-pay/sql/lemnt_pay.sql",
+      "importExitCode": 0,
+      "expectedCreateTableStatements": 13,
+      "tableCountAfter": 13,
+      "status": "imported"
+    }
+  ],
+  "afterTableCounts": {
+    "ad_dsp": 7,
+    "ad_system": 17,
+    "ai_rec_test": 5,
+    "go_blog": 3,
+    "information_schema": 79,
+    "lemnt_blog": 3,
+    "lemnt_mall": 35,
+    "lemnt_member": 18,
+    "lemnt_migration_local_member": 13,
+    "lemnt_migration_local_order": 23,
+    "lemnt_migration_local_pay": 13,
+    "lemnt_migration_local_product": 11,
+    "lemnt_migration_local_promotion": 23,
+    "lemnt_migration_local_system": 17,
+    "lemnt_system": 17,
+    "lemnt_trade": 27,
+    "mysql": 38,
+    "nacos_server": 13,
+    "performance_schema": 111,
+    "sys": 101
+  },
+  "verification": {
+    "allSixImported": true,
+    "nonDedicatedSchemaCountsChanged": {},
+    "newSchemasOutsideDedicated": [],
+    "dedicatedCounts": [
+      {
+        "database": "lemnt_migration_local_system",
+        "tables": 17
+      },
+      {
+        "database": "lemnt_migration_local_member",
+        "tables": 13
+      },
+      {
+        "database": "lemnt_migration_local_product",
+        "tables": 11
+      },
+      {
+        "database": "lemnt_migration_local_promotion",
+        "tables": 23
+      },
+      {
+        "database": "lemnt_migration_local_order",
+        "tables": 23
+      },
+      {
+        "database": "lemnt_migration_local_pay",
+        "tables": 13
+      }
+    ]
+  }
+}

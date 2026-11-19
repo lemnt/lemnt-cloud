@@ -33,6 +33,16 @@ export interface RefundFilter {
   pageNum: number;
   pageSize: number;
 }
+export interface PaymentTrendRange {
+  from: string;
+  to: string;
+}
+export interface PaymentTrendDay {
+  date: string;
+  payments: number;
+  paid: string;
+  recharged: string;
+}
 function record(v: unknown): Record<string, unknown> {
   if (!v || typeof v !== 'object' || Array.isArray(v)) throw Error('支付交易响应不合法');
   return v as Record<string, unknown>;
@@ -107,6 +117,22 @@ export async function getPayment(no: string) {
   return payment(
     (await request<unknown>({ url: '/trade/admin/payments/' + encodeURIComponent(no) })).data,
   );
+}
+/** 按实付到账日读取支付和充值毛额，保留两位小数。 */
+export async function getPaymentTrend({ from, to }: PaymentTrendRange): Promise<PaymentTrendDay[]> {
+  const result = await request<unknown>({
+    url: '/trade/admin/payments/trend',
+    params: { from, to },
+  });
+  return array(result.data).map((raw) => {
+    const row = record(raw);
+    return {
+      date: text(row.date),
+      payments: total(row.payments),
+      paid: money(row.paid),
+      recharged: money(row.recharged),
+    };
+  });
 }
 export async function getRefunds(q: RefundFilter) {
   const r = await request<unknown>({

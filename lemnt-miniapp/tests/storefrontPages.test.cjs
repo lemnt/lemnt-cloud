@@ -36,6 +36,22 @@ test('商品页的缺货规格不能加购，新请求数量必须合法', async
   assert.equal(calls, 0);
   assert.match(p.data.error, /超过/);
 });
+test('商品佣金结果仅展示给发起请求的会员', async () => {
+  const { p, switch: switchMember } = page('product');
+  p.member = () => getApp().globalData.memberSession?.memberId;
+  p.productId = '8';
+  p.data.product = { id: '8' };
+  let finish;
+  p.brokerage = { productCommission: async () => new Promise((resolve) => (finish = resolve)) };
+  const pending = p.estimateCommission();
+  switchMember();
+  finish({ enabled: true, min: '0.00', max: '3.25' });
+  await pending;
+  assert.equal(p.data.commission, null);
+  p.brokerage = { productCommission: async () => ({ enabled: true, min: '0.00', max: '3.25' }) };
+  await p.estimateCommission();
+  assert.equal(p.data.commission.max, '3.25');
+});
 test('原加购重试不被当前页面缺货或改价阻挡', async () => {
   const { p } = page('product');
   p.member = () => '1';
@@ -232,4 +248,84 @@ test('首页 Banner 点击只跳转站内页面，外链复制后提示', () => 
   p.banner({ currentTarget: { dataset: { url: 'https://example.test/act' } } });
   assert.deepEqual(navigations, ['/pages/seckill/index']);
   assert.deepEqual(copies, ['https://example.test/act']);
+});
+
+test('商品列表切换排序回到第一页并保留分类条件', async () => {
+  let definition;
+  global.Page = (value) => {
+    definition = value;
+  };
+  const path = require.resolve('../pages/store/index');
+  delete require.cache[path];
+  require(path);
+  const calls = [];
+  const page = {
+    ...definition,
+    data: {
+      ...definition.data,
+      categories: [
+        { id: null, name: '全部' },
+        { id: '2', name: '分类' },
+      ],
+      categoryIndex: 1,
+      pageNum: 3,
+    },
+    setData(values) {
+      Object.assign(this.data, values);
+    },
+    client: {
+      products: async (q) => {
+        calls.push(q);
+        return { records: [], total: 0 };
+      },
+    },
+  };
+  await page.sort({ detail: { value: '2' } });
+  assert.deepEqual(calls[0], {
+    name: '',
+    categoryId: '2',
+    pageNum: 1,
+    sortField: 'price',
+    sortAsc: false,
+  });
+  assert.equal(page.data.pageNum, 1);
+  assert.equal(page.data.loading, false);
+  delete global.Page;
+});
+
+test('详情加载直接承接展示资料，选择有货规格且保留未知配送参数', async () => {
+  let definition;
+  global.Page = (value) => {
+    definition = value;
+  };
+  const path = require.resolve('../pages/product/index');
+  delete require.cache[path];
+  require(path);
+  const product = {
+    id: '1',
+    introduction: '原简介',
+    sliderPicUrls: null,
+    deliveryTypes: [1, 2],
+    skus: [
+      { id: '7', stock: 0 },
+      { id: '8', stock: 2, weight: null, volume: '0.125' },
+    ],
+  };
+  const page = {
+    ...definition,
+    data: { ...definition.data },
+    productId: '1',
+    member: () => null,
+    store: { product: async () => product },
+    setData(values) {
+      Object.assign(this.data, values);
+    },
+  };
+  await page.reload();
+  assert.equal(page.data.product.introduction, '原简介');
+  assert.equal(page.data.product.sliderPicUrls, null);
+  assert.equal(page.data.skuIndex, 1);
+  assert.equal(page.data.selected.weight, null);
+  assert.equal(page.data.selected.volume, '0.125');
+  delete global.Page;
 });

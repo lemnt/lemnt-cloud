@@ -12,10 +12,11 @@ function text(value, field) {
   if (typeof value !== 'string') throw new Error(`${field}不合法`);
   return value;
 }
-function money(value) {
+/** 佣金流水变动可为负，账户余额和提现金额仍按非负金额校验。 */
+function money(value, signed = false) {
   const textValue = typeof value === 'number' ? value.toFixed(2) : value;
-  if (typeof textValue !== 'string' || !/^\d{1,17}\.\d{2}$/.test(textValue))
-    throw new Error('佣金金额不合法');
+  const pattern = signed ? /^-?\d{1,17}\.\d{2}$/ : /^\d{1,17}\.\d{2}$/;
+  if (typeof textValue !== 'string' || !pattern.test(textValue)) throw new Error('佣金金额不合法');
   return textValue;
 }
 function user(value) {
@@ -38,7 +39,7 @@ function record(value) {
     bizId: text(row.bizId, '业务编号'),
     bizType: row.bizType,
     title: text(row.title, '标题'),
-    price: money(row.price),
+    price: money(row.price, true),
     totalPrice: money(row.totalPrice),
     status: row.status,
     frozenDays: row.frozenDays == null ? null : Number(row.frozenDays),
@@ -85,6 +86,16 @@ function createBrokerageClient({ request, baseUrl, ready = false, getMemberToken
   }
   return {
     user: () => call('/user').then(user),
+    productCommission: (spuId) =>
+      call('/product-commission', 'GET', { spuId: id(spuId, '商品编号') }).then((value) => {
+        const row = object(value);
+        if (typeof row.enabled !== 'boolean') throw new Error('佣金预估响应不合法');
+        return {
+          enabled: row.enabled,
+          min: money(row.brokerageMinPrice),
+          max: money(row.brokerageMaxPrice),
+        };
+      }),
     bind: (bindUserId) => {
       if (!/^[1-9]\d{0,18}$/.test(String(bindUserId))) throw new Error('推广员编号不合法');
       return call('/bind', 'POST', { bindUserId });

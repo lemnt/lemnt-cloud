@@ -19,6 +19,8 @@ export function canRequestRefund(row: Pick<OrderSummary, 'status' | 'activeRefun
 export const fulfillmentKeys = {
   all: ['trade', 'fulfillment'] as const,
   orders: (query: object) => ['trade', 'fulfillment', 'orders', query] as const,
+  orderStatistics: (no?: string) => ['trade', 'fulfillment', 'order-statistics', no] as const,
+  orderWorkload: ['trade', 'fulfillment', 'order-workload'] as const,
   detail: (no?: string) => ['trade', 'fulfillment', 'detail', no] as const,
   refundableItems: (no?: string) => ['trade', 'fulfillment', 'refundable-items', no] as const,
   orderPromotions: (no?: string) => ['trade', 'fulfillment', 'order-promotions', no] as const,

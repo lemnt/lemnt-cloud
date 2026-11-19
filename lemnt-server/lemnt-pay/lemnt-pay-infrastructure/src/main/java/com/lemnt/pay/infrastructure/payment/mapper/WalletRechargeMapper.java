@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -22,4 +23,7 @@ public interface WalletRechargeMapper extends BaseMapper<WalletRechargeDO> {
      * 数据库当前时间。
      */
     LocalDateTime databaseNow();
+
+    /** 历史成功充值实付合计，单位元，退款后仍计入毛充值额。 */
+    BigDecimal paidRechargeTotal();
 }

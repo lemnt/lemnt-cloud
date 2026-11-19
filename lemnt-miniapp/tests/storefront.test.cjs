@@ -2,6 +2,47 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { createStoreClient, decodeOffers, decodeClaim } = require('../services/storefront');
 const { createCartAddition } = require('../services/cartAddition');
+
+test('多分类与排序完整传递，降序false不能丢失，非法条件不发送', async () => {
+  const x = store({ records: [], total: 0 });
+  await x.client.products({
+    categoryIds: ['9223372036854775807', '2'],
+    sortField: 'price',
+    sortAsc: false,
+    pageNum: 1,
+  });
+  assert.equal(x.calls[0].data.categoryIds, '9223372036854775807,2');
+  assert.equal(x.calls[0].data.sortField, 'price');
+  assert.equal(x.calls[0].data.sortAsc, false);
+  await assert.rejects(x.client.products({ sortField: 'price desc; drop table', pageNum: 1 }));
+  await assert.rejects(x.client.products({ categoryIds: ['0'], pageNum: 1 }));
+  assert.equal(x.calls.length, 1);
+});
+
+test('详情保留简介轮播配送重量体积的原值和未知NULL', async () => {
+  const value = {
+    id: '1',
+    name: '商品',
+    introduction: '简介',
+    sliderPicUrls: ['https://example.test/p.png'],
+    deliveryTypes: [1, 2],
+    deliveryTemplateId: '9223372036854775807',
+    skus: [
+      { id: '7', name: 'sku', price: '10.00', stock: 1, specs: [], weight: '1.250', volume: null },
+    ],
+  };
+  const result = await store(value).client.product('1');
+  assert.equal(result.introduction, '简介');
+  assert.deepEqual(result.sliderPicUrls, value.sliderPicUrls);
+  assert.equal(result.deliveryTemplateId, '9223372036854775807');
+  assert.equal(result.skus[0].weight, '1.250');
+  assert.equal(result.skus[0].volume, null);
+  assert.equal(
+    (await store({ ...value, introduction: null, sliderPicUrls: null }).client.product('1'))
+      .sliderPicUrls,
+    null,
+  );
+});
 function store(result) {
   const calls = [];
   const client = createStoreClient({
@@ -370,4 +411,12 @@ test('首页 Banner 只走公开接口并按位置读取', async () => {
   assert.deepEqual(x.calls[0].data, { position: 1 });
   assert.throws(() => x.client.banners(6), /位置/);
   await assert.rejects(store([{ ...row, picUrl: 'http://bad' }]).client.banners(1), /图片/);
+});
+
+test('分类按IDs查询保留长编号，空集合不会退回全量', async () => {
+  const x = store([]);
+  await x.client.categories(['9223372036854775807', '2']);
+  assert.deepEqual(x.calls[0].data, { ids: '9223372036854775807,2' });
+  await x.client.categories([]);
+  assert.deepEqual(x.calls[1].data, { ids: '' });
 });

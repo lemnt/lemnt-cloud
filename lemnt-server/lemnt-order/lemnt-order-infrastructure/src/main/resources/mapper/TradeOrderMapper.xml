@@ -17,6 +17,23 @@
         <if test="orderNo != null">WHERE order_no=#{orderNo}</if>
     </select>
 
+    <resultMap id="OrderWorkload" type="com.lemnt.order.domain.order.model.OrderWorkload">
+        <constructor>
+            <arg column="shipments" javaType="_long"/>
+            <arg column="pickups" javaType="_long"/>
+            <arg column="after_sales" javaType="_long"/>
+            <arg column="withdrawals" javaType="_long"/>
+        </constructor>
+    </resultMap>
+
+    <select id="workload" resultMap="OrderWorkload">
+        SELECT COUNT(CASE WHEN COALESCE(delivery_type,1)=1 THEN 1 END) AS shipments,
+               COUNT(CASE WHEN delivery_type=2 THEN 1 END) AS pickups,
+               (SELECT COUNT(*) FROM order_after_sale WHERE status='REQUESTED' AND deleted=FALSE) AS after_sales,
+               (SELECT COUNT(*) FROM order_brokerage_withdraw WHERE status=0) AS withdrawals
+        FROM order_info WHERE status='PAID'
+    </select>
+
     <select id="orders" resultType="com.lemnt.order.infrastructure.fulfillment.dataobject.OrderSummaryDO">
         SELECT o.order_no,o.member_id,o.total_amount,o.status,o.create_time,
         CASE WHEN c.order_no IS NULL THEN FALSE ELSE TRUE END AS inventory_confirmed,

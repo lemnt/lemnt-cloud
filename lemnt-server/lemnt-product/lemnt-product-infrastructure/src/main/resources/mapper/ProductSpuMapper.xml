@@ -19,6 +19,11 @@
         <result property="deliveryTypes" column="delivery_types"/>
         <result property="deliveryTemplateId" column="delivery_template_id"/>
         <result property="salesCount" column="sales_count"/>
+        <result property="createTime" column="create_time"/>
+        <result property="virtualSalesCount" column="virtual_sales_count"/>
+        <result property="specType" column="spec_type"/>
+        <result property="giveIntegral" column="give_integral"/>
+        <result property="subCommissionType" column="sub_commission_type"/>
     </resultMap>
 
     <resultMap id="StoreProductResult" type="com.lemnt.product.infrastructure.product.dataobject.StoreProductDO"
@@ -32,11 +37,34 @@
         <result property="maxPrice" column="max_price"/>
         <result property="available" column="available"/>
         <result property="salesCount" column="sales_count"/>
+        <result property="displaySalesCount" column="display_sales_count"/>
     </resultMap>
+
+    <resultMap id="SkuTotalsResult" type="com.lemnt.product.domain.product.model.ProductSkuTotals">
+        <constructor>
+            <arg column="spu_id" javaType="java.lang.Long"/>
+            <arg column="price" javaType="java.math.BigDecimal"/>
+            <arg column="market_price" javaType="java.math.BigDecimal"/>
+            <arg column="cost_price" javaType="java.math.BigDecimal"/>
+            <arg column="stock" javaType="_long"/>
+        </constructor>
+    </resultMap>
+
+    <select id="skuTotals" resultMap="SkuTotalsResult">
+        SELECT spu_id, MIN(price) AS price,
+               CASE WHEN COUNT(market_price)=COUNT(*) THEN MIN(market_price) END AS market_price,
+               CASE WHEN COUNT(cost_price)=COUNT(*) THEN MIN(cost_price) END AS cost_price,
+               SUM(stock) AS stock
+        FROM product_sku
+        WHERE status &lt;&gt; 'DELETED' AND spu_id IN
+        <foreach collection="spuIds" item="id" open="(" separator="," close=")">#{id}</foreach>
+        GROUP BY spu_id
+    </select>
 
     <sql id="baseColumn">
         id, code, name, keyword, introduction, slider_pic_urls, sort, category_id, brand_id, description, image,
-        status, delivery_types, delivery_template_id, sales_count
+        status, delivery_types, delivery_template_id, sales_count, create_time, virtual_sales_count, spec_type,
+        give_integral, sub_commission_type
     </sql>
 
     <sql id="storeCatalogJoins">
@@ -47,12 +75,20 @@
          "至少一个价内SKU"是本库价格聚合的结构必需，不是状态校验。 -->
     <sql id="storeCatalogVisible">
         s.status='ON_SHELF' AND EXISTS(SELECT 1 FROM product_sku p WHERE p.spu_id=s.id AND
-        p.status='ON_SHELF' AND p.price>0)
+        p.status='ON_SHELF' AND p.price>=0)
     </sql>
 
     <sql id="storeCatalogFilter">
-        <if test='categoryId != null'>AND EXISTS(SELECT 1 FROM product_category cc WHERE
-        cc.id=s.category_id AND (cc.id=#{categoryId} OR cc.parent_id=#{categoryId}))</if>
+        <choose>
+            <when test="categoryIds != null and !categoryIds.isEmpty()">
+                AND s.category_id IN
+                <foreach collection="categoryIds" item="category" open="(" separator="," close=")">#{category}</foreach>
+            </when>
+            <otherwise>
+                <if test="categoryId != null">AND EXISTS(SELECT 1 FROM product_category cc WHERE
+                    cc.id=s.category_id AND (cc.id=#{categoryId} OR cc.parent_id=#{categoryId}))</if>
+            </otherwise>
+        </choose>
         <if
             test='name != null'>AND s.name LIKE CONCAT('%',#{name},'%')
         </if>
@@ -65,17 +101,26 @@
 
     <select id="products" resultMap="StoreProductResult">
         SELECT s.id,s.name,s.category_id,s.brand_id,s.image,(SELECT MIN(p.price) FROM product_sku p WHERE
-        p.spu_id=s.id AND p.status='ON_SHELF' AND p.price>0) AS min_price,(SELECT MAX(p.price) FROM
-        product_sku p WHERE p.spu_id=s.id AND p.status='ON_SHELF' AND p.price>0) AS max_price,EXISTS(SELECT
-        1 FROM product_sku p WHERE p.spu_id=s.id AND p.status='ON_SHELF' AND p.price>0 AND p.stock>0) AS
+        p.spu_id=s.id AND p.status='ON_SHELF' AND p.price>=0) AS min_price,(SELECT MAX(p.price) FROM
+        product_sku p WHERE p.spu_id=s.id AND p.status='ON_SHELF' AND p.price>=0) AS max_price,EXISTS(SELECT
+        1 FROM product_sku p WHERE p.spu_id=s.id AND p.status='ON_SHELF' AND p.price>=0 AND p.stock>0) AS
         available,
-        s.sales_count
+        s.sales_count, (s.sales_count + s.virtual_sales_count) AS display_sales_count
         <include refid="storeCatalogJoins"/>
         WHERE
         <include refid="storeCatalogVisible"/>
         <include
             refid="storeCatalogFilter"/>
-        ORDER BY s.sort DESC,s.id DESC LIMIT #{limit} OFFSET #{offset}
+        ORDER BY
+        <choose>
+            <when test='sortField == "price"'>min_price <choose><when test="sortAsc">ASC</when><otherwise>DESC</otherwise></choose>,</when>
+            <when test='sortField == "salesCount"'>(s.sales_count + COALESCE(s.virtual_sales_count, 0)) <choose><when test="sortAsc">ASC</when><otherwise>DESC</otherwise></choose>,</when>
+            <when test='sortField == "createTime"'>
+                CASE WHEN s.create_time IS NULL THEN 1 ELSE 0 END,
+                s.create_time <choose><when test="sortAsc">ASC</when><otherwise>DESC</otherwise></choose>,
+            </when>
+        </choose>
+        s.sort DESC,s.id DESC LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="storeCatalogCount" resultType="java.lang.Long">

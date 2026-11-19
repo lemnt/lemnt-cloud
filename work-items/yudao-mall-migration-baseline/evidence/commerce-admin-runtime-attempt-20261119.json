@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-11-19T10:40:57+08:00",
+  "scope": "local gateway, auth, system, order and pay read-only business HTTP acceptance",
+  "isolatedSchemas": {
+    "system": "lemnt_migration_admin_20261119_094749_system",
+    "order": "lemnt_migration_admin_20261119_094749_order",
+    "pay": "lemnt_migration_trend_20261119_092351_pay"
+  },
+  "applicationFixes": {
+    "duplicateOrderControllerBeanName": "assigned a separate bean name to the settlement controller",
+    "focusedRegressionTestsPassed": 21,
+    "orderBootJarRebuilt": true
+  },
+  "isolatedLaunchDiagnostics": [
+    "Earlier runs identified required system upload settings and a producer template needed by system audit and Excel beans.",
+    "Dubbo accepted an IPv6 loopback bind. The default RPC port collided during concurrent startup, and system lacked a direct reference for the unused Excel task service.",
+    "The last attempt assigned separate IPv6 loopback ports and the isolated Excel reference but stopped at refused TCP connection to local Nacos on port 8848. A separate local health request also failed before HTTP."
+  ],
+  "runtimeAcceptance": "blocked",
+  "gatewayLoginVerified": false,
+  "authenticatedOrderAndPayHttpVerified": false,
+  "rocketMqVerified": false,
+  "wechatChannelVerified": false,
+  "nacosConfigsModified": false,
+  "existingBusinessSchemasModified": false
+}

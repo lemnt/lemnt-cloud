@@ -27,6 +27,8 @@ public class TradeOrderDO extends BaseDO {
     private String orderNo;
     private Long memberId;
     private BigDecimal totalAmount;
+    private BigDecimal paymentPreparedAmount;
+    private String confirmedPaymentNo;
     private String status;
     private String remark;
     private Boolean commentStatus;

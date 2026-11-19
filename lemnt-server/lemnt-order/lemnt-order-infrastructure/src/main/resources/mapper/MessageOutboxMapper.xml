@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lemnt.order.infrastructure.event.mapper.MessageOutboxMapper">
+    <sql id="activeEvents">
+        event_type IN ('ORDER_PAID','AFTER_SALE_COMPLETED','ORDER_CLOSED')
+    </sql>
     <insert id="insertIfAbsent">
         INSERT INTO
         order_message_outbox(event_no,event_type,business_key,aggregate_no,schema_version,payload,payload_hash)
@@ -14,6 +17,7 @@
     <select id="lockDue" resultType="com.lemnt.order.infrastructure.event.dataobject.MessageOutboxDO" useCache="false"
             flushCache="true">
         SELECT * FROM order_message_outbox WHERE next_retry_at &lt;= CURRENT_TIMESTAMP
+        AND <include refid="activeEvents"/>
         AND (status='PENDING' OR (status='SENDING' AND lease_until &lt;= CURRENT_TIMESTAMP))
         ORDER BY id LIMIT #{size} FOR UPDATE
     </select>
@@ -36,11 +40,13 @@
         UPDATE order_message_outbox SET status='PENDING',attempts=0,execute_version=execute_version+1,
         next_retry_at=CURRENT_TIMESTAMP,lease_until=NULL,last_error=NULL,update_time=CURRENT_TIMESTAMP
         WHERE event_no=#{eventNo} AND status='FAILED'
+        AND <include refid="activeEvents"/>
     </update>
     <update id="replay">
         UPDATE order_message_outbox SET status='PENDING',attempts=0,execute_version=execute_version+1,
         next_retry_at=CURRENT_TIMESTAMP,lease_until=NULL,last_error=NULL,update_time=CURRENT_TIMESTAMP
         WHERE event_type=#{type} AND business_key=#{key} AND
+        <include refid="activeEvents"/> AND
         (status IN ('SENT','FAILED','PENDING') OR (status='SENDING' AND lease_until &lt;= CURRENT_TIMESTAMP))
     </update>
 </mapper>

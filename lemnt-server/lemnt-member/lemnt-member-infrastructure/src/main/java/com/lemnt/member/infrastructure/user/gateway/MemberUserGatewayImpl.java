@@ -4,6 +4,8 @@ import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.member.domain.user.gateway.MemberUserGateway;
 import com.lemnt.member.domain.user.model.Member;
 import com.lemnt.member.domain.user.model.MemberPageFilter;
+import com.lemnt.member.domain.user.model.MemberStatistics.Distribution;
+import com.lemnt.member.domain.user.model.MemberStatistics.Registration;
 import com.lemnt.member.infrastructure.user.converter.MemberConverter;
 import com.lemnt.member.infrastructure.user.dataobject.MemberDO;
 import com.lemnt.member.infrastructure.user.mapper.MemberUserMapper;
@@ -35,11 +37,11 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
     @Override
     public void recordLogin(Long memberId, LocalDateTime loginDate, String loginIp) {
         memberUserMapper.update(
-            null,
-            Wrappers.lambdaUpdate(MemberDO.class)
-                .eq(MemberDO::getId, memberId)
-                .set(MemberDO::getLoginDate, loginDate)
-                .set(MemberDO::getLoginIp, loginIp));
+                null,
+                Wrappers.lambdaUpdate(MemberDO.class)
+                        .eq(MemberDO::getId, memberId)
+                        .set(MemberDO::getLoginDate, loginDate)
+                        .set(MemberDO::getLoginIp, loginIp));
     }
 
     @Override
@@ -77,6 +79,21 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
     @Override
     public long count(MemberPageFilter filter) {
         return memberUserMapper.profileCount(filter);
+    }
+
+    @Override
+    public List<Registration> countRegistrations(LocalDateTime from, LocalDateTime until) {
+        return memberUserMapper.countRegistrations(from, until);
+    }
+
+    @Override
+    public List<Distribution> countBySex() {
+        return memberUserMapper.countBySex();
+    }
+
+    @Override
+    public List<Distribution> countByArea() {
+        return memberUserMapper.countByArea();
     }
 
     /**
@@ -171,19 +188,19 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     private int profileUpdateRow(MemberDO value) {
         return memberUserMapper.update(
-            null,
-            Wrappers.<MemberDO>lambdaUpdate()
-                .set(MemberDO::getNickname, value.getNickname())
-                .set(MemberDO::getMobile, value.getMobile())
-                .set(MemberDO::getMark, value.getMark())
-                .set(MemberDO::getName, value.getName())
-                .set(MemberDO::getAreaId, value.getAreaId())
-                .set(MemberDO::getEmail, value.getEmail())
-                .set(MemberDO::getAvatar, value.getAvatar())
-                .set(MemberDO::getStatus, value.getStatus())
-                .set(MemberDO::getSex, value.getSex())
-                .set(MemberDO::getBirthday, value.getBirthday())
-                .eq(MemberDO::getId, value.getId()));
+                null,
+                Wrappers.<MemberDO>lambdaUpdate()
+                        .set(MemberDO::getNickname, value.getNickname())
+                        .set(MemberDO::getMobile, value.getMobile())
+                        .set(MemberDO::getMark, value.getMark())
+                        .set(MemberDO::getName, value.getName())
+                        .set(MemberDO::getAreaId, value.getAreaId())
+                        .set(MemberDO::getEmail, value.getEmail())
+                        .set(MemberDO::getAvatar, value.getAvatar())
+                        .set(MemberDO::getStatus, value.getStatus())
+                        .set(MemberDO::getSex, value.getSex())
+                        .set(MemberDO::getBirthday, value.getBirthday())
+                        .eq(MemberDO::getId, value.getId()));
     }
 
     /**
@@ -191,10 +208,10 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     private int assignGroupRow(Long memberId, Long groupId) {
         return memberUserMapper.update(
-            null,
-            Wrappers.<MemberDO>lambdaUpdate()
-                .set(MemberDO::getGroupId, groupId)
-                .eq(MemberDO::getId, memberId));
+                null,
+                Wrappers.<MemberDO>lambdaUpdate()
+                        .set(MemberDO::getGroupId, groupId)
+                        .eq(MemberDO::getId, memberId));
     }
 
     /**
@@ -202,7 +219,7 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     private MemberDO findByMobileRow(String mobile) {
         return memberUserMapper.selectOne(
-            Wrappers.<MemberDO>lambdaQuery().eq(MemberDO::getMobile, mobile).last("LIMIT 1"));
+                Wrappers.<MemberDO>lambdaQuery().eq(MemberDO::getMobile, mobile).last("LIMIT 1"));
     }
 
     /**
@@ -210,7 +227,7 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     private MemberDO findByEmailRow(String email) {
         return memberUserMapper.selectOne(
-            Wrappers.<MemberDO>lambdaQuery().eq(MemberDO::getEmail, email).last("LIMIT 1"));
+                Wrappers.<MemberDO>lambdaQuery().eq(MemberDO::getEmail, email).last("LIMIT 1"));
     }
 
     /**
@@ -218,10 +235,10 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     private int pointsRow(Long memberId, Long balance) {
         return memberUserMapper.update(
-            null,
-            Wrappers.<MemberDO>lambdaUpdate()
-                .set(MemberDO::getPoints, balance)
-                .eq(MemberDO::getId, memberId));
+                null,
+                Wrappers.<MemberDO>lambdaUpdate()
+                        .set(MemberDO::getPoints, balance)
+                        .eq(MemberDO::getId, memberId));
     }
 
     /**
@@ -229,10 +246,10 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     private int experienceRow(Long memberId, Long balance) {
         return memberUserMapper.update(
-            null,
-            Wrappers.<MemberDO>lambdaUpdate()
-                .set(MemberDO::getExperience, balance)
-                .eq(MemberDO::getId, memberId));
+                null,
+                Wrappers.<MemberDO>lambdaUpdate()
+                        .set(MemberDO::getExperience, balance)
+                        .eq(MemberDO::getId, memberId));
     }
 
     /**
@@ -240,10 +257,10 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     private int assignLevelRow(Long memberId, Long levelId) {
         return memberUserMapper.update(
-            null,
-            Wrappers.<MemberDO>lambdaUpdate()
-                .set(MemberDO::getLevelId, levelId)
-                .eq(MemberDO::getId, memberId));
+                null,
+                Wrappers.<MemberDO>lambdaUpdate()
+                        .set(MemberDO::getLevelId, levelId)
+                        .eq(MemberDO::getId, memberId));
     }
 
     /**
@@ -251,10 +268,10 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     private String findPasswordByMemberIdRow(Long memberId) {
         MemberDO member =
-            memberUserMapper.selectOne(
-                Wrappers.<MemberDO>lambdaQuery()
-                    .select(MemberDO::getId, MemberDO::getPassword)
-                    .eq(MemberDO::getId, memberId));
+                memberUserMapper.selectOne(
+                        Wrappers.<MemberDO>lambdaQuery()
+                                .select(MemberDO::getId, MemberDO::getPassword)
+                                .eq(MemberDO::getId, memberId));
         return member == null ? null : member.getPassword();
     }
 
@@ -263,9 +280,9 @@ public class MemberUserGatewayImpl implements MemberUserGateway {
      */
     private int updatePasswordRow(Long memberId, String password) {
         return memberUserMapper.update(
-            null,
-            Wrappers.<MemberDO>lambdaUpdate()
-                .set(MemberDO::getPassword, password)
-                .eq(MemberDO::getId, memberId));
+                null,
+                Wrappers.<MemberDO>lambdaUpdate()
+                        .set(MemberDO::getPassword, password)
+                        .eq(MemberDO::getId, memberId));
     }
 }

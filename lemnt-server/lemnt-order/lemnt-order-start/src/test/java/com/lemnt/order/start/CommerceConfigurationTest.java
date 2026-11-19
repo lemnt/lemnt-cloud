@@ -73,7 +73,7 @@ class CommerceConfigurationTest {
                 .isEqualTo("lemnt-" + owner + "-commerce-producer-v1");
             assertThat(resolver.getProperty("commerce.mq.enabled", Boolean.class)).isFalse();
             if ("product".equals(owner)) {
-                // product 出站改为RocketMQ事务消息，模板不再携带Outbox中继开关
+                // 商品预占由商品库事务提交，无出站中继
                 assertThat(resolver.getProperty("commerce.outbox.enabled", Boolean.class)).isNull();
             } else if (!"promotion".equals(owner)) {
                 assertThat(resolver.getProperty("commerce.outbox.enabled", Boolean.class))
@@ -100,9 +100,7 @@ class CommerceConfigurationTest {
                     case "promotion" -> List.of(
                         "OrderPaidConsumer",
                         "OrderClosedConsumer",
-                        "AfterSaleCompletedConsumer",
-                        "OrderCompletedConsumer",
-                        "StockPreReservedConsumer");
+                        "AfterSaleCompletedConsumer");
                     case "order" -> List.of("PaySuccessConsumer", "PayRefundSuccessConsumer");
                     default -> List.of("OrderClosedConsumer");
                 };

@@ -18,6 +18,8 @@ import { checkoutKeys } from '../../../mall/checkout/hooks/checkoutKeys';
 import { canShip, fulfillmentKeys } from '../constants';
 import {
   getOrders,
+  getOrderStatistics,
+  getOrderWorkload,
   getOrder,
   getOrderPromotions,
   getRefundableItems,
@@ -40,6 +42,20 @@ export default function OrderFulfillmentPage() {
     queryKey: fulfillmentKeys.orders(query),
     queryFn: () => getOrders(query),
     enabled: can('trade:fulfillment:list'),
+  });
+  const statisticsOrderNo = query.orderNo?.trim() || undefined;
+  const canSeeStatistics = can('trade:fulfillment:list') && can('trade:order:summary');
+  const statistics = useQuery({
+    queryKey: fulfillmentKeys.orderStatistics(statisticsOrderNo),
+    queryFn: () => getOrderStatistics(statisticsOrderNo),
+    enabled: canSeeStatistics,
+  });
+  const canSeeWorkload =
+    can('trade:fulfillment:list') && can('trade:after-sale:list') && can('trade:brokerage:list');
+  const workload = useQuery({
+    queryKey: fulfillmentKeys.orderWorkload,
+    queryFn: getOrderWorkload,
+    enabled: canSeeWorkload,
   });
   const promotions = useQuery({
     queryKey: fulfillmentKeys.orderPromotions(detailNo),
@@ -151,6 +167,73 @@ export default function OrderFulfillmentPage() {
             action={<Button onClick={() => void rows.refetch()}>重试</Button>}
           />
         )}
+        {canSeeWorkload &&
+          (workload.isError ? (
+            <Alert
+              type="error"
+              title="交易待办读取失败"
+              action={<Button onClick={() => void workload.refetch()}>重试</Button>}
+            />
+          ) : (
+            <Spin spinning={workload.isFetching}>
+              <Descriptions
+                title="交易待办"
+                size="small"
+                bordered
+                column={{ xs: 2, md: 4 }}
+                items={[
+                  { key: 'ship', label: '待发货', children: workload.data?.shipments ?? '—' },
+                  { key: 'pickup', label: '待自提', children: workload.data?.pickups ?? '—' },
+                  {
+                    key: 'afterSale',
+                    label: '售后待审核',
+                    children: workload.data?.afterSales ?? '—',
+                  },
+                  {
+                    key: 'withdraw',
+                    label: '提现待审核',
+                    children: workload.data?.withdrawals ?? '—',
+                  },
+                ]}
+              />
+            </Spin>
+          ))}
+        {canSeeStatistics && (
+          <Spin spinning={statistics.isFetching}>
+            {statistics.isError ? (
+              <Alert
+                type="error"
+                title="订单汇总读取失败"
+                action={<Button onClick={() => void statistics.refetch()}>重试</Button>}
+              />
+            ) : (
+              <Descriptions
+                size="small"
+                bordered
+                column={{ xs: 2, md: 4 }}
+                title={statisticsOrderNo ? `订单 ${statisticsOrderNo} 汇总` : '全部订单汇总'}
+                items={[
+                  { key: 'orders', label: '订单数', children: statistics.data?.orderCount ?? '—' },
+                  {
+                    key: 'pay',
+                    label: '订单应付（元）',
+                    children: statistics.data?.orderPayPrice ?? '—',
+                  },
+                  {
+                    key: 'refunds',
+                    label: '成功支付退款笔数',
+                    children: statistics.data?.afterSaleCount ?? '—',
+                  },
+                  {
+                    key: 'refund',
+                    label: '成功支付退款（元）',
+                    children: statistics.data?.afterSalePrice ?? '—',
+                  },
+                ]}
+              />
+            )}
+          </Spin>
+        )}
         <ProTable<OrderSummary>
           rowKey="orderNo"
           columns={columns}
@@ -159,7 +242,15 @@ export default function OrderFulfillmentPage() {
           scroll={{ x: 1200 }}
           options={false}
           toolBarRender={() => [
-            <Button key="refresh" loading={rows.isFetching} onClick={() => void rows.refetch()}>
+            <Button
+              key="refresh"
+              loading={rows.isFetching}
+              onClick={() => {
+                void rows.refetch();
+                if (canSeeStatistics) void statistics.refetch();
+                if (canSeeWorkload) void workload.refetch();
+              }}
+            >
               刷新
             </Button>,
           ]}

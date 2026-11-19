@@ -10,7 +10,9 @@ import com.lemnt.order.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.order.domain.event.gateway.OrderEventGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.model.TradeOperator;
+import com.lemnt.order.domain.order.model.TradeOrder;
 import com.lemnt.order.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.order.domain.payment.model.PaymentRecord;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -41,36 +44,75 @@ public class PaySuccessEventHandler {
         envelope.requireType(CommerceEventTopics.PAY_SUCCESS);
         var v = inboundEvents.paymentSucceededFacts(envelope.payload());
         if (v == null
-            || !envelope.aggregateNo().equals(v.orderNo())
-            || !envelope.businessKey().equals(v.paymentNo()))
+                || !envelope.aggregateNo().equals(v.orderNo())
+                || !envelope.businessKey().equals(v.paymentNo()))
             throw new IllegalArgumentException("支付事件标识不一致");
-        if (!inbox.begin(
-            "order.pay_success.v1",
-            envelope.eventNo(),
-            envelope.eventType(),
-            envelope.businessKey(),
-            envelope.payload())) return;
         var order = persistence.findByOrderNoForUpdate(v.orderNo());
-        var paid =
-            payments.findByOrderNo(v.orderNo()).stream()
-                .filter(p -> "SUCCESS".equals(p.status()))
-                .toList();
+        var paid = successfulPayments(v.orderNo());
         if (order == null
-            || !order.memberId().equals(v.memberId())
-            || v.amount() == null
-            || v.amount().signum() <= 0
-            || v.amount().compareTo(order.totalAmount()) != 0
-            || paid.size() != 1
-            || !paid.get(0).paymentNo().equals(v.paymentNo())
-            || !Objects.equals(paid.get(0).channel(), v.channel())
-            || !Objects.equals(paid.get(0).channelTradeNo(), v.channelTradeNo())
-            || paid.get(0).amount().compareTo(v.amount()) != 0)
+                || !order.memberId().equals(v.memberId())
+                || v.amount() == null
+                || v.amount().signum() <= 0
+                || v.amount().compareTo(order.totalAmount()) != 0
+                || paid.size() != 1
+                || !paid.get(0).paymentNo().equals(v.paymentNo())
+                || !Objects.equals(paid.get(0).channel(), v.channel())
+                || !Objects.equals(paid.get(0).channelTradeNo(), v.channelTradeNo())
+                || paid.get(0).amount().compareTo(v.amount()) != 0)
             throw new IllegalStateException("资金事实与原订单不一致，请先对账");
-        if (Set.of("PAID", "SHIPPED", "COMPLETED", "REFUNDED").contains(order.status()))
-            throw new IllegalStateException("订单已支付但无原消费凭证，请核对历史迁移");
+        if (Set.of("PAID", "SHIPPED", "COMPLETED", "REFUNDED").contains(order.status())) {
+            var confirmed = orders.confirmedPaymentNo(order.orderNo());
+            if (Objects.equals(confirmed, v.paymentNo())
+                    || (confirmed == null
+                            && inbox.has("order.pay_success.v1", "PAY_SUCCESS", v.paymentNo()))) {
+                return;
+            }
+            throw new IllegalStateException("订单已支付但缺少一致的资金确认事实，请对账");
+        }
         if (!"PENDING_PAYMENT".equals(order.status()))
             throw new IllegalStateException("真实资金到达时订单状态不允许支付，请对账处理");
-        if (!orders.transitionStatus(order.orderNo(), "PENDING_PAYMENT", "PAID"))
+        markPaid(order, paid.get(0));
+    }
+
+    /** 消息丢失时只依据支付服务的成功事实补记订单，未支付订单保持原状态。 */
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
+    public void recover(String orderNo) {
+        var payments = successfulPayments(orderNo);
+        if (payments.isEmpty()) {
+            return;
+        }
+        if (payments.size() != 1) {
+            throw new IllegalStateException("原订单有多笔成功资金，请先对账");
+        }
+        var order = persistence.findByOrderNoForUpdate(orderNo);
+        if (order == null
+                || !"PENDING_PAYMENT".equals(order.status())
+                || orders.paymentPreparedAmount(orderNo) == null) {
+            return;
+        }
+        markPaid(order, payments.get(0));
+    }
+
+    private List<PaymentRecord> successfulPayments(String orderNo) {
+        return payments.findByOrderNo(orderNo).stream()
+                .filter(payment -> "SUCCESS".equals(payment.status()))
+                .toList();
+    }
+
+    private void markPaid(TradeOrder order, PaymentRecord payment) {
+        if (!order.orderNo().equals(payment.orderNo())
+                || payment.paymentNo() == null
+                || payment.paymentNo().isBlank()
+                || payment.channel() == null
+                || payment.channel().isBlank()
+                || payment.channelTradeNo() == null
+                || payment.channelTradeNo().isBlank()
+                || payment.amount() == null
+                || payment.amount().signum() <= 0
+                || payment.amount().compareTo(order.totalAmount()) != 0) {
+            throw new IllegalStateException("资金事实与原订单不一致，请先对账");
+        }
+        if (!orders.confirmPayment(order.orderNo(), payment.paymentNo(), payment.amount()))
             throw new IllegalStateException("订单支付状态冲突");
         activities.paid(order.orderNo());
         events.paid(order);

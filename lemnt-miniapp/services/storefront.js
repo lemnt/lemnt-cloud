@@ -38,7 +38,20 @@ function product(v) {
     minPrice: money(v.minPrice),
     maxPrice: money(v.maxPrice),
     available: v.available,
+    displaySalesCount: v.displaySalesCount == null ? null : integer(v.displaySalesCount),
   };
+}
+/** 重量/体积只作展示，保留服务端小数文本；历史NULL不补零。 */
+function dimension(v) {
+  if (v == null) return null;
+  if (typeof v !== 'string' && typeof v !== 'number') throw Error('配送参数格式不合法');
+  const value = String(v);
+  if (!/^\d+(?:\.\d+)?$/.test(value)) throw Error('配送参数格式不合法');
+  return value;
+}
+function ids(values) {
+  if (!Array.isArray(values) || values.length > 100) throw Error('分类编号集合不合法');
+  return [...new Set(values.map(id))].join(',');
 }
 function detail(v, key) {
   obj(v);
@@ -49,6 +62,17 @@ function detail(v, key) {
     name: text(v.name),
     description: v.description == null ? '' : text(v.description),
     image: image(v.image),
+    displaySalesCount: v.displaySalesCount == null ? null : integer(v.displaySalesCount),
+    introduction: v.introduction == null ? null : text(v.introduction),
+    sliderPicUrls: v.sliderPicUrls == null ? null : list(v.sliderPicUrls, image).filter(Boolean),
+    deliveryTypes:
+      v.deliveryTypes == null
+        ? null
+        : list(v.deliveryTypes, (value) => {
+            if (![1, 2].includes(value)) throw Error('配送方式不合法');
+            return value;
+          }),
+    deliveryTemplateId: v.deliveryTemplateId == null ? null : id(v.deliveryTemplateId),
     skus: list(v.skus, (s) => {
       obj(s);
       const sku = id(s.id);
@@ -71,7 +95,10 @@ function detail(v, key) {
         id: sku,
         name: text(s.name),
         price: money(s.price),
+        marketPrice: s.marketPrice == null ? null : money(s.marketPrice),
         stock: integer(s.stock),
+        weight: dimension(s.weight),
+        volume: dimension(s.volume),
         image: image(s.image),
         label: pairs.length ? pairs.join(' / ') : text(s.name),
       };
@@ -85,10 +112,11 @@ function decodeBanner(v) {
   if (!pic) throw Error('Banner 图片地址不合法');
   return { id: banner, title: text(v.title), url: text(v.url), picUrl: pic };
 }
-function createStoreClient({ request, baseUrl, ready = false }) {
+function createStoreClient({ request, baseUrl, ready = false, getMemberToken = () => null }) {
   async function call(path, data) {
     if (!ready) throw Error('商城服务暂未启用');
     if (!/^https:\/\/[^/?#]+(?:\/[^?#]*)?$/.test(baseUrl)) throw Error('请配置合法HTTPS服务地址');
+    const memberToken = /^\/products\/[1-9]\d*$/.test(path) ? getMemberToken() : null;
     const r = await request({
       url:
         baseUrl.replace(/\/$/, '') +
@@ -96,6 +124,7 @@ function createStoreClient({ request, baseUrl, ready = false }) {
         (/^\/(products|categories)(\/|$)/.test(path) ? '/app' : '/mall/app') +
         path,
       method: 'GET',
+      ...(memberToken ? { header: { Authorization: 'Bearer ' + memberToken } } : {}),
       data,
       timeout: 15000,
     });
@@ -108,8 +137,8 @@ function createStoreClient({ request, baseUrl, ready = false }) {
       if (![1, 2, 3, 4, 5].includes(position)) throw Error('Banner 位置不合法');
       return call('/banners', { position }).then((v) => list(v, decodeBanner));
     },
-    categories: () =>
-      call('/categories').then((v) =>
+    categories: (values) =>
+      call('/categories', values == null ? undefined : { ids: ids(values) }).then((v) =>
         list(v, (x) => {
           obj(x);
           return {
@@ -120,11 +149,18 @@ function createStoreClient({ request, baseUrl, ready = false }) {
         }),
       ),
     products: async (q) => {
-      if (!Number.isSafeInteger(q.pageNum) || q.pageNum < 1) throw Error('页码不合法');
+      if (!Number.isSafeInteger(q.pageNum) || q.pageNum < 1 || q.pageNum > 1000000)
+        throw Error('页码不合法');
+      if (q.sortField != null && !['price', 'salesCount', 'createTime'].includes(q.sortField))
+        throw Error('排序字段不合法');
+      if (q.sortAsc != null && typeof q.sortAsc !== 'boolean') throw Error('排序方向不合法');
       return page(
         await call('/products', {
           name: q.name || undefined,
           categoryId: q.categoryId ? id(q.categoryId) : undefined,
+          ...(q.categoryIds == null ? {} : { categoryIds: ids(q.categoryIds) }),
+          ...(q.sortField == null ? {} : { sortField: q.sortField }),
+          ...(q.sortAsc == null ? {} : { sortAsc: q.sortAsc }),
           pageNum: q.pageNum,
           pageSize: 20,
         }),

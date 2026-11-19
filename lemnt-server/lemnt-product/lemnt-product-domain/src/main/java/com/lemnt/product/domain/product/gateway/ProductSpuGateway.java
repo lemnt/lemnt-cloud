@@ -68,6 +68,9 @@ public interface ProductSpuGateway {
      */
     int salesCount(Long spuId);
 
+    /** 以数据库原子增量记录一次有效详情浏览。下架竞争导致无记录时返回false。 */
+    boolean recordBrowse(Long spuId);
+
     /**
      * 数量。
      */

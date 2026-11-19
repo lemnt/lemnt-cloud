@@ -43,12 +43,16 @@ public class OrderClosedEventHandler {
             "PAYMENT_ORDER_FENCE",
             event.orderNo(),
             JsonUtils.toJsonStr(Map.of("orderNo", event.orderNo())));
-        if (!inbox.begin(
-            "pay.order.closed.v1",
-            envelope.eventNo(),
-            envelope.eventType(),
-            envelope.businessKey(),
-            envelope.payload())) return;
+        if (inbox.has("pay.order.closed.v1", CommerceEventTopics.ORDER_CLOSED, event.orderNo())) {
+            // 历史关单在同一事务提交渠道关闭及回执，仍按原载荷核验重放。
+            inbox.begin(
+                    "pay.order.closed.v1",
+                    envelope.eventNo(),
+                    envelope.eventType(),
+                    envelope.businessKey(),
+                    envelope.payload());
+            return;
+        }
         var order = orders.findByOrderNo(event.orderNo());
         if (order == null
             || !"CLOSED".equals(order.status())

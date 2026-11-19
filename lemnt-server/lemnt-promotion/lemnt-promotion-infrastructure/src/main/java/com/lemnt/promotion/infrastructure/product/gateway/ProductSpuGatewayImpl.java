@@ -26,8 +26,8 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
     @Override
     public List<ProductSpu> findSpus(List<Long> ids) {
         return ids == null || ids.isEmpty()
-            ? List.of()
-            : client.findSpus(ids).stream().map(this::from).toList();
+                ? List.of()
+                : client.findSpus(ids).stream().map(this::from).toList();
     }
 
     @Override
@@ -37,16 +37,23 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
 
     private ProductSpu from(ProductSpuBriefDTO v) {
         return v == null
-            ? null
-            : new ProductSpu(
-            v.id(),
-            null,
-            v.name(),
-            v.categoryId(),
-            null,
-            null,
-            v.image(),
-            v.status(),
-            List.of());
+                ? null
+                : new ProductSpu(
+                        v.id(),
+                        null,
+                        v.name(),
+                        v.categoryId(),
+                        null,
+                        null,
+                        v.image(),
+                        v.status(),
+                        List.of(),
+                        List.of(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        v.giveIntegral());
     }
 }

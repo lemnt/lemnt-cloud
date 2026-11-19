@@ -5,9 +5,7 @@ import com.lemnt.common.core.utils.JsonUtils;
 import com.lemnt.order.client.dto.OrderStockLineDTO;
 import com.lemnt.order.client.event.AfterSaleCompletedEvent;
 import com.lemnt.order.client.event.OrderClosedEvent;
-import com.lemnt.order.client.event.OrderCompletedEvent;
 import com.lemnt.order.client.event.OrderPaidEvent;
-import com.lemnt.order.client.event.OrderShippedEvent;
 import com.lemnt.order.domain.aftersale.model.AfterSale;
 import com.lemnt.order.domain.event.gateway.MessageOutboxGateway;
 import com.lemnt.order.domain.event.gateway.OrderEventGateway;
@@ -53,22 +51,6 @@ public class OrderEventGatewayImpl implements OrderEventGateway {
             o.orderNo(),
             o.orderNo(),
             JsonUtils.toJsonStr(new OrderClosedEvent(o.orderNo(), o.memberId(), stock(o))));
-    }
-
-    public void shipped(TradeOrder o) {
-        outbox.enqueue(
-            CommerceEventTopics.ORDER_SHIPPED,
-            o.orderNo(),
-            o.orderNo(),
-            JsonUtils.toJsonStr(new OrderShippedEvent(o.orderNo(), o.memberId())));
-    }
-
-    public void completed(TradeOrder o) {
-        outbox.enqueue(
-            CommerceEventTopics.ORDER_COMPLETED,
-            o.orderNo(),
-            o.orderNo(),
-            JsonUtils.toJsonStr(new OrderCompletedEvent(o.orderNo(), o.memberId())));
     }
 
     public void afterSale(AfterSale af, TradeOrder o, boolean full) {

@@ -11,7 +11,7 @@
 | 商城 App HTTP `/app/**` | 5 个 Controller / 13 端点 | `adapter/app/product`；`/app` 前缀已归 product；**评价投稿 POST 已迁往 order 服务**（`/mall/app/comments`） |
 | Dubbo 入向契约 | `ProductCatalogClientImpl` 13 方法、`ProductCommentClientImpl` 2 方法 | 契约在 `lemnt-product-client`，调用方为 order、promotion |
 | RocketMQ 消费者 | 3 个（`OrderPaidConsumer`/`OrderClosedConsumer`/`AfterSaleCompletedConsumer`） | 均受 `commerce.mq.enabled=true` 开关控制，默认关闭 |
-| RocketMQ 出站 | `StockEventGatewayImpl`（事务消息） | 预占事实经半消息+本地事务二阶段直发，无本地消息表、无中继定时任务 |
+| 库存预占 | `ProductInventoryService.reserveStock` | 商品库本地事务扣减并登记预占 |
 
 ## 2. 管理端链路（裸路径，无服务前缀）
 
@@ -54,46 +54,35 @@
 
 其他服务调用入口（均只依赖 `lemnt-product-client` 契约）：
 - order：`InventoryGatewayImpl`、`ProductCatalogGatewayImpl`、`OrderBenefitsProgressGatewayImpl`（reserveStock/returnStock）、`OrderCommentGatewayImpl`（saveVerified）
-- promotion：`ProductCatalogGatewayImpl`、`ProductSkuGatewayImpl`、`ProductSpuGatewayImpl`（findOnShelf 等）、`StockPreReservedEventHandler`（消费 §5 事件）
+- promotion：`ProductCatalogGatewayImpl`、`ProductSkuGatewayImpl`、`ProductSpuGatewayImpl`（findOnShelf 等）
 
 ## 5. 库存预占与事件可靠性链路（核心）
 
-> 说明：**活动库存（秒杀/拼团/积分等）的扣减发生在建单时的同步 RPC**
-> `OrderBenefitsService.promotion.lock(plan)` → `PromotionResourceService`（内部 `decreaseStock`），
-> 与商品实际库存预占同属 order 结算编排、失败即补偿；`STOCK_PRE_RESERVED` 事件是
-> product 向 promotion 的**事实核对**（预占数量==资源行数量、冻结已先行），不承担扣减职责。
-> product 出站**不使用本地消息表**：以 RocketMQ 事务消息（半消息+回查）保证与预占原子。
+活动库存由订单编排调用营销资源冻结接口处理。商品库存由订单调用商品服务在本地事务内预占，失败后按原预占号补偿。
 
 ```
 order 结算/下单
-  └─ Dubbo reserveStock ─→ ProductInventoryService.reserveStock
-        台账预检(find，无锁)：已存在→按幂等语义直接返回（数量不符抛错），不重复发消息
-        StockEventGateway.publishReserved ─ 事务消息二阶段：
-          1. 半消息先行（destination=STOCK_PRE_RESERVED，body=CommerceEventEnvelope JSON）
-          2. executeLocalTransaction 独立短事务(REQUIRES_NEW)，锁序 SKU行锁→台账：
-             ProductSkuMapper.lockById(FOR UPDATE) → 查重(并发对手已插则回滚)
-             → ProductSkuMapper.reserveStock CAS(stock>=qty 且可售)
-             → 插台账 product_stock_reservation（UK reservation_no+product_id）
-          3. 提交→COMMIT 消息对消费者可见；CAS不足/并发先行→ROLLBACK 丢弃半消息
-          4. 应答丢失由 broker 回查：checkLocalTransaction 以台账行存在为唯一事实
-             （存在→COMMIT / 不存在→ROLLBACK / 查询异常→UNKNOWN 等待再回查）
-  └─ 下游：promotion StockPreReservedEventHandler 消费（事实核对，inbox 双 UK 幂等吸收重发）
-        注意：MQ 不可用时半消息发送失败会同步阻断 reserveStock（预占入口 fail-fast，无本地暂存）
+  └─ Dubbo reserveStock → ProductInventoryService.reserveStock
+      独立商品库短事务（REQUIRES_NEW）
+      → 按 SKU 加锁 → 查询原预占行，有同量有效预占直接返回
+      → 可售且库存足够时扣减（CAS）→ 登记 product_stock_reservation
+      → 同事务提交，响应丢失时按原预占号重试
+  └─ 订单后续失败时按原预占号释放库存及营销资源。
 
 回确认（MQ 入向，commerce.mq.enabled 开关）：
   注意时序：stock 的物理扣减发生在预占本地事务，confirmStock 仅推进台账
   RESERVED→CONFIRMED 不再扣减；CONFIRMED 不可释放，只能经售后 returnStock 回补。
   预占独立提交、与调用方事务解耦：order 建单后续失败必须显式 cancelReservation 补偿。
-  ORDER_PAID            → OrderStockEventHandler.paid    → begin(product.order_paid.v1  inbox幂等)
-                        → confirmStock + sales_count 同事务累加（销量口径=支付确认件数，
-                          重复事件被台账拦截只加一次；售后回补不冲减）
+  ORDER_PAID            → OrderStockEventHandler.paid    → 库存确认、预占行销量标记及 SKU/SPU 销量同事务
+                          重放按预占行销量标记幂等，历史支付回执沿用原载荷核验。
+                          销量按支付确认件数累计，售后回补不冲减。
                           支付确认先按SPU编号锁主体，再按SKU编号锁库存，与后台编辑保持同一锁序。
-                          历史独立SKU的spu_id为空时只确认库存，不补造SPU归属或销量。
-  ORDER_CLOSED          → OrderStockEventHandler.closed  → begin(product.order_closed.v1)          → cancelReservation
-                        （预占行不存在时先插终态 RELEASED，防延迟 RPC 在关单后补扣）
-  AFTER_SALE_COMPLETED  → OrderStockEventHandler.refunded→ begin(...v1) 且要求 paid 已入账        → returnStock
-  三个 Handler 均先 MessageInboxGateway.begin(consumer_key+event_no / event_type+business_key 双 UK)
-  做消费幂等，冲突即跳过。
+                          历史独立 SKU 仍累计本 SKU 销量，SPU 汇总使用已保存的归属。
+  ORDER_CLOSED          → OrderStockEventHandler.closed  → 核验已关闭订单的会员及原 SKU 数量 → cancelReservation
+                          已释放预占幂等返回，尚未预占写入 CANCELLED 以拦截迟到的预占。
+                          历史关单回执继续核验原载荷。
+  AFTER_SALE_COMPLETED  → OrderStockEventHandler.refunded→ 核验销量已入账或历史支付回执 → returnStock
+                          售后消费回执与回补同事务保存。
 ```
 
 ## 6. 评价链路
@@ -139,15 +128,13 @@ legacyForLink XML：存量评价绑定检查（读取 deleted 事实但不对外
 |---|---|
 | 数据库行锁 | 上表 ★ 语句；扣减库存、锁台账、锁评价 |
 | CAS 版本/条件 | product_sku.reserveStock（stock>=qty）、台账状态机（RESERVED→CONFIRMED/RELEASED） |
-| 业务幂等 UK | product_stock_reservation(reservation_no, product_id)；inbox 双 UK；事务消息 eventNo 随机+businessKey 稳定，promotion inbox 吸收重复投递 |
-| 事务消息 | StockEventGatewayImpl：半消息先行，本地短事务(REQUIRES_NEW)裁决，broker 回查以台账行为事实 |
+| 业务幂等 UK | product_stock_reservation(reservation_no, product_id)；尚在使用的 Inbox 按事件编号和业务键去重 |
 | Redis 锁 | MemberLockGatewayImpl（LockTemplate）：收藏创建/删除、浏览历史写入的会员维度串行化 |
-| 消费开关 | `commerce.mq.enabled`（3 消费者默认关闭）；出站无开关（MQ 不可用则预占 fail-fast） |
-| 事务边界 | SPU 创建/更新、事件 Handler 均 `@Transactional`；预占在事务消息本地短事务独立提交，调用方失败经补偿释放，行锁在事务内真实执行 |
+| 消费开关 | `commerce.mq.enabled`（3 个商品消费者默认关闭） |
+| 事务边界 | SPU 创建/更新、事件 Handler 均 `@Transactional`；预占在商品库短事务独立提交，调用方失败经补偿释放，行锁在事务内真实执行 |
 
 ## 9. 备注（整理中发现，未改动）
 
-- `ProductStockAdjustmentDTO`/`ProductStockAdjustmentRes`/`ProductCatalogResConverter.stockAdjustment()` 当前无调用方，疑似库存调整页迁移后的遗留断链，仅提示不删除。
 - `MemberValidationService`、`Settlement*`（测试夹具）等成员/测试类不属于本次链路主链。
 
 验证：`python3 scripts/check_architecture.py`、`mvn -f lemnt-server/pom.xml -pl lemnt-product/lemnt-product-infrastructure -am test`（含 `MapperXmlLoadingTest`）、product-start 全量回归。

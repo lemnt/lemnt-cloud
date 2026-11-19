@@ -11,6 +11,7 @@ import com.lemnt.order.adapter.web.order.req.OrderRemarkUpdateReq;
 import com.lemnt.order.adapter.web.order.req.OrderStatisticsReq;
 import com.lemnt.order.adapter.web.order.res.OrderRemarkRes;
 import com.lemnt.order.adapter.web.order.res.OrderStatisticsRes;
+import com.lemnt.order.adapter.web.order.res.OrderWorkloadRes;
 import com.lemnt.order.application.order.cmd.OrderAdjustAddressCmd;
 import com.lemnt.order.application.order.cmd.OrderAdjustPriceCmd;
 import com.lemnt.order.application.order.executor.OrderAdjustAddressCmdExe;
@@ -56,6 +57,24 @@ public class OrderManagementController {
     @RequiresPermissions("trade:order:summary")
     public R<OrderStatisticsRes> statistics(@Valid @ModelAttribute OrderStatisticsReq req) {
         return R.ok(OrderManagementResConverter.statistics(statistics.execute(req.orderNo())));
+    }
+
+    /** 返回四项实时待办，要求各数据来源的列表权限。 */
+    @GetMapping("/workload")
+    @Operation(summary = "查询交易待办数量")
+    @RequiresPermissions({
+        "trade:fulfillment:list",
+        "trade:after-sale:list",
+        "trade:brokerage:list"
+    })
+    public R<OrderWorkloadRes> workload() {
+        var value = statistics.workload();
+        return R.ok(
+                new OrderWorkloadRes(
+                        value.shipments(),
+                        value.pickups(),
+                        value.afterSales(),
+                        value.withdrawals()));
     }
 
     /**

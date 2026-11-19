@@ -213,6 +213,11 @@ export function WalletRechargePage() {
   const [filters, setFilters] = useState<{ memberId?: string; status?: api.RechargeStatus }>({});
   const [page, setPage] = useState({ pageNum: 1, pageSize: 20 });
   const [selected, setSelected] = useState<string>();
+  const summary = useQuery({
+    queryKey: [prefix, 'summary'],
+    queryFn: api.getWalletRechargeSummary,
+    enabled: can(prefix + ':list'),
+  });
   const rows = useQuery({
     queryKey: [prefix, filters, page],
     queryFn: () => api.getWalletRecharges({ ...filters, ...page }),
@@ -299,6 +304,15 @@ export function WalletRechargePage() {
   const value = detail.data;
   return (
     <PageContainer title="充值单">
+      {summary.isError ? (
+        <Alert
+          type="error"
+          title="充值统计读取失败"
+          action={<Button onClick={() => summary.refetch()}>重试</Button>}
+        />
+      ) : (
+        <p>累计充值实付（退款前）：{summary.data == null ? '加载中…' : '¥' + summary.data}</p>
+      )}
       {rows.isError && (
         <Alert
           type="error"

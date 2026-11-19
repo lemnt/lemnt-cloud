@@ -39,13 +39,13 @@ public final class SettlementRules {
                 throw new IllegalArgumentException("购买数量不合法");
             }
             BigDecimal line =
-                money(item.unitPrice(), false).multiply(BigDecimal.valueOf(item.quantity()));
+                money(item.unitPrice(), true).multiply(BigDecimal.valueOf(item.quantity()));
             if (line.compareTo(item.lineAmount()) != 0) {
                 throw new IllegalArgumentException("订单行金额不匹配");
             }
             gross = gross.add(line);
         }
-        gross = money(gross, false);
+        gross = money(gross, true);
         BigDecimal discount = new BigDecimal("0.00");
         if (coupon != null) {
             if (!"AVAILABLE".equals(coupon.status())
@@ -156,6 +156,15 @@ public final class SettlementRules {
                             .append(':')
                             .append(entry.getValue()));
         }
+        // 赠积分总额相同也可能来自不同订单行，报价必须绑定每个商品的赠送值。
+        quote.promotions().stream()
+            .filter(promotion -> "PRODUCT_POINT".equals(promotion.promotionType()))
+            .sorted(Comparator.comparing(SettlementPromotion::promotionKey))
+            .forEach(promotion ->
+                value.append("|product-point:")
+                    .append(promotion.promotionKey())
+                    .append(':')
+                    .append(promotion.givePoint()));
         return fingerprint(
             value.append('|')
                 .append(quote.usePoint())

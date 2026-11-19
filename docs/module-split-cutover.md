@@ -13,7 +13,7 @@ P5-00/P5-01只交付源码、配置模板与自动化证据，不执行建库、
 
 源模板位于docs/config/，每服务显式设置`URL`、`USERNAME`、`PASSWORD`。账号只授权所属库，迁入的数据仍按`work-items/module-split-migration/table-mapping.md`保留原编号及冻结字段。初始化SQL只用于空库，不可直接应用到现有业务库；本批没有执行数据库命令。
 
-四服务按顺序导入`lemnt-common.yaml`、`commerce-mq.yaml`、本服务Data ID，使用同一`NACOS_NAMESPACE`及`NACOS_GROUP`。`NACOS_SERVER_ADDR`、`NACOS_USERNAME`、`NACOS_PASSWORD`由环境注入。member沿用既有profile命名空间和DEFAULT_GROUP，在原common/member导入之间增加commerce-mq；部署时必须核对它与四服务处于预期的同一命名空间/组。
+product、promotion、order、pay、member 均按顺序导入 `lemnt-common.yaml`、`commerce-mq.yaml` 和本服务 Data ID。promotion、order、pay 走 `NACOS_SERVER_ADDR`、`NACOS_NAMESPACE`、`NACOS_GROUP`，其 discovery 地址复用同一个 Nacos 地址。product、member 走 `NACOS_HOST`、`NACOS_PORT`、构建 profile 命名空间与 `DEFAULT_GROUP`。部署时将两套入口指向同一实例、命名空间和组。
 
 `lemnt-common.yaml`继续提供Redis、认证、指标等公共组件配置；本批不改system配置、菜单或sys_config键。新服务本地模板覆盖独立数据源和Dubbo注册信息；不复制已有默认凭据。Dubbo提供者使用新Client全类名；消费者通过所属Infrastructure Gateway调用，写操作框架重试为0，结果未知按原业务号查询/恢复。
 
@@ -29,7 +29,7 @@ P5-00/P5-01只交付源码、配置模板与自动化证据，不执行建库、
 
 ## 消息与副作用开关
 
-共享`commerce-mq.yaml`使用`ROCKETMQ_NAME_SERVER`；生产者组为`${spring.application.name}-commerce-producer-v1`。正式8个Topic为PAY_SUCCESS、PAY_REFUND_SUCCESS、ORDER_PAID、AFTER_SALE_COMPLETED、ORDER_CLOSED、ORDER_SHIPPED、ORDER_COMPLETED、STOCK_PRE_RESERVED。Topic与下列Consumer Group由生产常量/注解定义，不用新增一套不可生效的YAML映射替代。所有正式消费者最多重试16次，耗尽后由Broker死信保存；部署还须核对Broker重试/死信权限、告警与原信封重放。
+共享`commerce-mq.yaml`使用`ROCKETMQ_NAME_SERVER`；生产者组为`${spring.application.name}-commerce-producer-v1`。正式 5 个 Topic 为 PAY_SUCCESS、PAY_REFUND_SUCCESS、ORDER_PAID、AFTER_SALE_COMPLETED 和 ORDER_CLOSED。Topic与下列Consumer Group由生产常量/注解定义，不用新增一套不可生效的YAML映射替代。所有正式消费者最多重试16次，耗尽后由Broker死信保存；部署还须核对Broker重试/死信权限、告警与原信封重放。
 
 | Topic | 消费服务 | Consumer Group |
 |---|---|---|
@@ -40,16 +40,13 @@ P5-00/P5-01只交付源码、配置模板与自动化证据，不执行建库、
 | ORDER_CLOSED | pay | lemnt-pay-order-closed-v1 |
 | ORDER_CLOSED | product | lemnt-product-closed-v1 |
 | ORDER_CLOSED | promotion | lemnt-promotion-order-closed-v1 |
-| ORDER_COMPLETED | promotion | lemnt-promotion-order-completed-v1 |
 | ORDER_PAID | member | lemnt-member-paid-v1 |
 | ORDER_PAID | product | lemnt-product-paid-v1 |
 | ORDER_PAID | promotion | lemnt-promotion-order-paid-v1 |
-| ORDER_SHIPPED | member | lemnt-member-shipped-v1 |
 | PAY_REFUND_SUCCESS | order | lemnt-order-pay-refund-success-v1 |
 | PAY_SUCCESS | order | lemnt-order-pay-success-v1 |
-| STOCK_PRE_RESERVED | promotion | lemnt-promotion-stock-pre-reserved-v1 |
 
-`COMMERCE_MQ_ENABLED`默认false，控制全部15个正式消费者；`COMMERCE_OUTBOX_ENABLED`默认false，控制order/pay两个Relay。配置缺失或显式false都不装配这些副作用组件。启用后按原Outbox记录发送，不重建事件编号或载荷。product出站不使用本地消息表：库存预占事实经RocketMQ事务消息（半消息+台账回查）直发，MQ不可用时预占同步失败。promotion只有Inbox，不新增Outbox。
+`COMMERCE_MQ_ENABLED`默认false，控制全部 12 个正式消费者；`COMMERCE_OUTBOX_ENABLED`默认false，控制order/pay两个Relay。配置缺失或显式false都不装配这些副作用组件。启用后按原Outbox记录发送，不重建事件编号或载荷。商品预占由商品库本地事务提交。新版订单中继只领取表中仍有正式消费者的订单消息，历史发货和订单完成记录留供审计。升级时同步停用旧的三条生产与消费链，已有 Broker 记录留供核对。
 
 其他开关均默认关闭：`PROMOTION_SCHEDULER_ENABLED`、`ORDER_SCHEDULER_ENABLED`、`ORDER_AUTO_RECEIVE_ENABLED`、`ORDER_AUTO_COMMENT_ENABLED`、`ORDER_RECOVERY_ENABLED`、`PAY_LEGACY_NOTIFY_ENABLED`。既有`lemnt.mall.scheduler.*`与`lemnt.trade.*`配置键保持兼容，分别只在新的实际归属服务配置。order旧补偿Topic入口`lemnt.order.legacy-rollback.enabled`固定false；没有审核过历史未决任务时不得随意开启。
 

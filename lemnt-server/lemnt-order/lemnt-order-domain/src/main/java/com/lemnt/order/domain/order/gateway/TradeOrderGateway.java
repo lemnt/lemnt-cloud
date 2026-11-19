@@ -5,6 +5,7 @@ import com.lemnt.order.domain.fulfillment.model.OrderPage;
 import com.lemnt.order.domain.order.model.OrderCommentState;
 import com.lemnt.order.domain.order.model.OrderStatusCount;
 import com.lemnt.order.domain.order.model.OrderTotal;
+import com.lemnt.order.domain.order.model.OrderWorkload;
 import com.lemnt.order.domain.order.model.TradeOrder;
 
 import java.math.BigDecimal;
@@ -19,6 +20,9 @@ public interface TradeOrderGateway {
      * 按精确订单号或全部订单统计数量与应付金额。
      */
     OrderTotal total(String orderNo);
+
+    /** 同一查询观察当前待发货、待自提和待审核业务状态。 */
+    OrderWorkload workload();
 
     /**
      * 读取后台备注，不修改财务或履约状态。
@@ -50,6 +54,18 @@ public interface TradeOrderGateway {
      */
     boolean transitionStatus(String orderNo, String expectedStatus, String targetStatus);
 
+    /** 订单行锁内读取原支付准备所冻结的应付金额。 */
+    BigDecimal paymentPreparedAmount(String orderNo);
+
+    /** 首次发起支付时冻结金额，原快照不可覆盖。 */
+    boolean freezePaymentAmount(String orderNo, BigDecimal amount);
+
+    /** 查询已核验的原支付资金单号，历史未记录及零元订单为空。 */
+    String confirmedPaymentNo(String orderNo);
+
+    /** 与 PAID 状态同时保存资金单号，使用原订单锁和原应付金额核验。 */
+    boolean confirmPayment(String orderNo, String paymentNo, BigDecimal amount);
+
     /**
      * 后台调价：仅把原金额改为新金额，调用方持有订单行锁。
      */
@@ -59,11 +75,11 @@ public interface TradeOrderGateway {
      * 后台改址：仅未发货快递单可更新收件快照。
      */
     boolean updateAddress(
-        String orderNo,
-        String receiverName,
-        String receiverMobile,
-        Long receiverAreaId,
-        String receiverDetailAddress);
+            String orderNo,
+            String receiverName,
+            String receiverMobile,
+            Long receiverAreaId,
+            String receiverDetailAddress);
 
     /**
      * 同时确认收货状态和真实收货时间，调用方持有订单锁。

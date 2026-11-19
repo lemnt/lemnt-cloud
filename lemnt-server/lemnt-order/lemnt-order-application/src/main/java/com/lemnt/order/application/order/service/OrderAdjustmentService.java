@@ -44,13 +44,13 @@ public class OrderAdjustmentService {
 
     @Autowired
     public OrderAdjustmentService(
-        TradeOrderGateway orders,
-        TradeOrderItemGateway items,
-        OrderPersistenceService persistence,
-        OrderLogService logs,
-        TradePaymentGateway payments,
-        OrderPromotionGateway promotions,
-        MessageInboxGateway inbox) {
+            TradeOrderGateway orders,
+            TradeOrderItemGateway items,
+            OrderPersistenceService persistence,
+            OrderLogService logs,
+            TradePaymentGateway payments,
+            OrderPromotionGateway promotions,
+            MessageInboxGateway inbox) {
         this.orders = orders;
         this.items = items;
         this.persistence = persistence;
@@ -61,11 +61,11 @@ public class OrderAdjustmentService {
     }
 
     public OrderAdjustmentService(
-        TradeOrderGateway orders,
-        TradeOrderItemGateway items,
-        OrderPersistenceService persistence,
-        OrderLogService logs,
-        TradePaymentGateway payments) {
+            TradeOrderGateway orders,
+            TradeOrderItemGateway items,
+            OrderPersistenceService persistence,
+            OrderLogService logs,
+            TradePaymentGateway payments) {
         this(orders, items, persistence, logs, payments, null, null);
     }
 
@@ -80,16 +80,17 @@ public class OrderAdjustmentService {
             throw new ServiceException("只有待支付订单可以调价", 409);
         }
         // 支付准备先在订单锁内登记凭证；跨库创建超时也不能改写渠道金额。
-        if (inbox.has("order.payment.prepare.v1", "PAYMENT_PREPARE", order.orderNo())
-            || !payments.findByOrderNo(order.orderNo()).isEmpty()) {
+        if (orders.paymentPreparedAmount(order.orderNo()) != null
+                || inbox.has("order.payment.prepare.v1", "PAYMENT_PREPARE", order.orderNo())
+                || !payments.findByOrderNo(order.orderNo()).isEmpty()) {
             throw new ServiceException("订单已生成支付单，不能调价，请取消订单后重新下单", 409);
         }
         var lines = items.items(order.id());
         BigDecimal current =
-            lines.stream()
-                .map(TradeOrderItem::payAmount)
-                .filter(value -> value != null)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                lines.stream()
+                        .map(TradeOrderItem::payAmount)
+                        .filter(value -> value != null)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
         if (lines.isEmpty() || current.signum() <= 0) {
             throw new ServiceException("订单缺少可分摊的实付金额", 409);
         }
@@ -109,15 +110,15 @@ public class OrderAdjustmentService {
         var updated = persistence.findByOrderNo(order.orderNo());
         OrderPricingRules.validate(updated);
         logs.record(
-            updated,
-            order.status(),
-            order.status(),
-            2,
-            TradeOperator.administrator(cmd.operatorId()),
-            "后台调价："
-                + order.totalAmount().toPlainString()
-                + " → "
-                + cmd.totalAmount().toPlainString());
+                updated,
+                order.status(),
+                order.status(),
+                2,
+                TradeOperator.administrator(cmd.operatorId()),
+                "后台调价："
+                        + order.totalAmount().toPlainString()
+                        + " → "
+                        + cmd.totalAmount().toPlainString());
         return updated;
     }
 
@@ -132,25 +133,25 @@ public class OrderAdjustmentService {
             throw new ServiceException("只有未发货订单可以改址", 409);
         }
         if (order.delivery() == null
-            || !Integer.valueOf(1).equals(order.delivery().deliveryType())) {
+                || !Integer.valueOf(1).equals(order.delivery().deliveryType())) {
             throw new ServiceException("自提订单不能修改收货地址", 409);
         }
         if (!orders.updateAddress(
-            order.orderNo(),
-            cmd.receiverName(),
-            cmd.receiverMobile(),
-            cmd.receiverAreaId(),
-            cmd.receiverDetailAddress())) {
+                order.orderNo(),
+                cmd.receiverName(),
+                cmd.receiverMobile(),
+                cmd.receiverAreaId(),
+                cmd.receiverDetailAddress())) {
             throw new ServiceException("订单状态已变化，请刷新后重试", 409);
         }
         var updated = persistence.findByOrderNo(order.orderNo());
         logs.record(
-            updated,
-            order.status(),
-            order.status(),
-            11,
-            TradeOperator.administrator(cmd.operatorId()),
-            "后台修改收货地址：" + cmd.receiverName() + " " + cmd.receiverMobile());
+                updated,
+                order.status(),
+                order.status(),
+                11,
+                TradeOperator.administrator(cmd.operatorId()),
+                "后台修改收货地址：" + cmd.receiverName() + " " + cmd.receiverMobile());
         return updated;
     }
 
@@ -166,7 +167,7 @@ public class OrderAdjustmentService {
      * 按原行实付占比分摊新金额，最后一行承担尾差。
      */
     private List<BigDecimal> allocate(
-        List<TradeOrderItem> lines, BigDecimal current, BigDecimal target) {
+            List<TradeOrderItem> lines, BigDecimal current, BigDecimal target) {
         var result = new ArrayList<BigDecimal>(lines.size());
         BigDecimal allocated = BigDecimal.ZERO;
         for (int index = 0; index < lines.size(); index++) {
@@ -175,9 +176,9 @@ public class OrderAdjustmentService {
                 value = target.subtract(allocated).setScale(2, RoundingMode.UNNECESSARY);
             } else {
                 BigDecimal pay =
-                    lines.get(index).payAmount() == null
-                        ? BigDecimal.ZERO
-                        : lines.get(index).payAmount();
+                        lines.get(index).payAmount() == null
+                                ? BigDecimal.ZERO
+                                : lines.get(index).payAmount();
                 value = pay.multiply(target).divide(current, 2, RoundingMode.DOWN);
                 allocated = allocated.add(value);
             }
@@ -188,34 +189,34 @@ public class OrderAdjustmentService {
 
     private void validate(OrderAdjustPriceCmd cmd) {
         if (cmd == null
-            || cmd.orderNo() == null
-            || !cmd.orderNo().matches("[A-Za-z0-9_-]{1,40}")
-            || cmd.operatorId() == null
-            || cmd.operatorId() <= 0
-            || cmd.totalAmount() == null
-            || cmd.totalAmount().signum() <= 0
-            || cmd.totalAmount().scale() > 2
-            || cmd.totalAmount().compareTo(MAX_AMOUNT) > 0) {
+                || cmd.orderNo() == null
+                || !cmd.orderNo().matches("[A-Za-z0-9_-]{1,40}")
+                || cmd.operatorId() == null
+                || cmd.operatorId() <= 0
+                || cmd.totalAmount() == null
+                || cmd.totalAmount().signum() <= 0
+                || cmd.totalAmount().scale() > 2
+                || cmd.totalAmount().compareTo(MAX_AMOUNT) > 0) {
             throw new ServiceException("调价参数不合法", 400);
         }
     }
 
     private void validate(OrderAdjustAddressCmd cmd) {
         if (cmd == null
-            || cmd.orderNo() == null
-            || !cmd.orderNo().matches("[A-Za-z0-9_-]{1,40}")
-            || cmd.operatorId() == null
-            || cmd.operatorId() <= 0
-            || cmd.receiverName() == null
-            || cmd.receiverName().isBlank()
-            || cmd.receiverName().length() > 100
-            || cmd.receiverMobile() == null
-            || !cmd.receiverMobile().matches("[+0-9() -]{5,32}")
-            || cmd.receiverAreaId() == null
-            || cmd.receiverAreaId() <= 0
-            || cmd.receiverDetailAddress() == null
-            || cmd.receiverDetailAddress().isBlank()
-            || cmd.receiverDetailAddress().length() > 500) {
+                || cmd.orderNo() == null
+                || !cmd.orderNo().matches("[A-Za-z0-9_-]{1,40}")
+                || cmd.operatorId() == null
+                || cmd.operatorId() <= 0
+                || cmd.receiverName() == null
+                || cmd.receiverName().isBlank()
+                || cmd.receiverName().length() > 100
+                || cmd.receiverMobile() == null
+                || !cmd.receiverMobile().matches("[+0-9() -]{5,32}")
+                || cmd.receiverAreaId() == null
+                || cmd.receiverAreaId() <= 0
+                || cmd.receiverDetailAddress() == null
+                || cmd.receiverDetailAddress().isBlank()
+                || cmd.receiverDetailAddress().length() > 500) {
             throw new ServiceException("改址参数不合法", 400);
         }
     }
@@ -224,28 +225,28 @@ public class OrderAdjustmentService {
      * 只使用建单时保存的支付赠积分系数，固定满减赠礼不随调价改变。
      */
     private void repriceGift(
-        TradeOrder order, List<TradeOrderItem> lines, List<BigDecimal> paid, BigDecimal total) {
+            TradeOrder order, List<TradeOrderItem> lines, List<BigDecimal> paid, BigDecimal total) {
         if (promotions == null) {
             throw new IllegalStateException("赠积分快照服务未配置");
         }
         var normal =
-            promotions.find(order.id()).stream()
-                .filter(p -> "ORDER_GIFT".equals(p.promotionType()))
-                .findFirst();
+                promotions.find(order.id()).stream()
+                        .filter(p -> "ORDER_GIFT".equals(p.promotionType()))
+                        .findFirst();
         if (normal.isEmpty()) {
             return;
         }
         var source = normal.get();
         var matcher =
-            Pattern.compile("\"givePerYuan\"\\s*:\\s*(\\d+)").matcher(source.ruleSnapshot());
+                Pattern.compile("\"givePerYuan\"\\s*:\\s*(\\d+)").matcher(source.ruleSnapshot());
         if (!matcher.find()) {
             throw new IllegalStateException("原赠积分系数缺失");
         }
         int rate = Integer.parseInt(matcher.group(1));
         long target =
-            total.multiply(BigDecimal.valueOf(rate))
-                .setScale(0, RoundingMode.DOWN)
-                .longValueExact();
+                total.multiply(BigDecimal.valueOf(rate))
+                        .setScale(0, RoundingMode.DOWN)
+                        .longValueExact();
         var itemPoints = new LinkedHashMap<Long, Long>();
         var allocationPoints = new LinkedHashMap<Long, Long>();
         var cumulative = BigDecimal.ZERO;
@@ -254,30 +255,30 @@ public class OrderAdjustmentService {
             var line = lines.get(index);
             cumulative = cumulative.add(paid.get(index));
             long next =
-                total.signum() == 0
-                    ? 0
-                    : BigDecimal.valueOf(target)
-                    .multiply(cumulative)
-                    .divide(total, 0, RoundingMode.DOWN)
-                    .longValueExact();
+                    total.signum() == 0
+                            ? 0
+                            : BigDecimal.valueOf(target)
+                                    .multiply(cumulative)
+                                    .divide(total, 0, RoundingMode.DOWN)
+                                    .longValueExact();
             var old =
-                source.items().stream()
-                    .filter(a -> line.orderItemId().equals(a.orderItemId()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("原赠积分明细缺失"));
+                    source.items().stream()
+                            .filter(a -> line.orderItemId().equals(a.orderItemId()))
+                            .findFirst()
+                            .orElseThrow(() -> new IllegalStateException("原赠积分明细缺失"));
             itemPoints.put(
-                line.orderItemId(),
-                Math.addExact(line.givePoint() - old.givePoint(), next - allocated));
+                    line.orderItemId(),
+                    Math.addExact(line.givePoint() - old.givePoint(), next - allocated));
             allocationPoints.put(old.id(), next - allocated);
             allocated = next;
         }
         promotions.updateGift(
-            new OrderGiftAdjustment(
-                order.id(),
-                source.id(),
-                Math.addExact(order.givePoint() - source.givePoint(), target),
-                target,
-                itemPoints,
-                allocationPoints));
+                new OrderGiftAdjustment(
+                        order.id(),
+                        source.id(),
+                        Math.addExact(order.givePoint() - source.givePoint(), target),
+                        target,
+                        itemPoints,
+                        allocationPoints));
     }
 }

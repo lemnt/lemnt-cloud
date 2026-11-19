@@ -97,6 +97,30 @@ export function decodeMetadata(raw: unknown, kind: MetadataKind): MemberMetadata
     backgroundUrl: nullableText(v.backgroundUrl),
   };
 }
+
+/** 统计计数必须来自接口，空地区按未采集保留。 */
+export function decodeStatistics(raw: unknown) {
+  const result = object(raw);
+  function count(rawCount: unknown) {
+    const value = integer(rawCount);
+    if (value < 0) throw Error('会员统计人数不能为负');
+    return value;
+  }
+  function distribution(rawRow: unknown) {
+    const row = object(rawRow);
+    return { value: row.value == null ? null : integer(row.value), count: count(row.count) };
+  }
+  return {
+    registrations: list(result.registrations, (rawRow) => {
+      const row = object(rawRow);
+      const date = text(row.date);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw Error('注册统计日期不合法');
+      return { date, count: count(row.count) };
+    }),
+    sexes: list(result.sexes, distribution),
+    areas: list(result.areas, distribution),
+  };
+}
 export function decodeAddress(raw: unknown): MemberAddress {
   const v = object(raw);
   if (typeof v.defaultStatus !== 'boolean') throw Error('默认地址响应不合法');

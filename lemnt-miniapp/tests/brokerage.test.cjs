@@ -46,10 +46,23 @@ test('分销信息、绑定、记录与提现走会员接口', async () => {
         status: 0,
         createTime: 't',
       },
+      {
+        id: 4,
+        bizId: 'TR1',
+        bizType: 4,
+        title: '退款扣回佣金',
+        price: '-3.25',
+        totalPrice: '6.75',
+        status: 1,
+        createTime: 't',
+      },
     ],
-    total: 1,
+    total: 2,
   });
-  assert.equal((await x.client.records()).records[0].price, '10.00');
+  const { records } = await x.client.records();
+  assert.equal(records[0].price, '10.00');
+  assert.equal(records[1].price, '-3.25');
+  assert.equal(records[1].totalPrice, '6.75');
   x = setup({ data: 4 });
   assert.equal(await x.client.createWithdraw({ price: '4', type: 1 }), 4);
   assert.deepEqual(x.calls[0].data, {
@@ -66,6 +79,19 @@ test('分销信息、绑定、记录与提现走会员接口', async () => {
 });
 
 let definition;
+test('商品佣金单件区间保留精确金额和显式零', async () => {
+  const { client, calls } = setup({
+    data: { enabled: true, brokerageMinPrice: '0.00', brokerageMaxPrice: '3.25' },
+  });
+  assert.deepEqual(await client.productCommission('9007199254740993'), {
+    enabled: true,
+    min: '0.00',
+    max: '3.25',
+  });
+  assert.equal(calls[0].url, 'https://example.test/trade/app/brokerage/product-commission');
+  assert.deepEqual(calls[0].data, { spuId: '9007199254740993' });
+});
+
 function page() {
   delete require.cache[require.resolve('../pages/brokerage/index')];
   global.Page = (value) => {

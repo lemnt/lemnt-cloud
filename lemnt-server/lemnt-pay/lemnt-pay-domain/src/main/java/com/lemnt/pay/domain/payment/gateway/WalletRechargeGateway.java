@@ -4,6 +4,7 @@ import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.pay.domain.payment.model.WalletRecharge;
 import com.lemnt.pay.domain.payment.model.WalletRechargeFilter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -40,4 +41,7 @@ public interface WalletRechargeGateway {
      * 数据库当前时间。
      */
     LocalDateTime databaseNow();
+
+    /** 历史成功充值实付合计，单位元，退款后仍计入毛充值额。 */
+    BigDecimal paidRechargeTotal();
 }

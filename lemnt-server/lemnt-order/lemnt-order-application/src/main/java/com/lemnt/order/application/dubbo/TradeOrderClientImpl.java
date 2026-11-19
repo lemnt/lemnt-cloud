@@ -55,7 +55,6 @@ public class TradeOrderClientImpl implements TradeOrderClient {
             || value.totalAmount() == null
             || value.totalAmount().signum() < 0
             || value.totalAmount().scale() > 2
-            || (value.totalAmount().signum() == 0 && value.usePoint() <= 0)
             || value.items() == null
             || value.items().isEmpty()
             || value.items().size() > 100) {
@@ -135,7 +134,7 @@ public class TradeOrderClientImpl implements TradeOrderClient {
                 || item.quantity() < 1
                 || item.quantity() > 999
                 || item.unitPrice() == null
-                || item.unitPrice().signum() <= 0
+                || item.unitPrice().signum() < 0
                 || item.unitPrice().scale() > 2
                 || item.lineAmount() == null
                 || item.unitPrice()
@@ -192,7 +191,9 @@ public class TradeOrderClientImpl implements TradeOrderClient {
                 throw new IllegalArgumentException("商品规格重复或超过10项");
             }
         }
-        if (value.items().stream().anyMatch(item -> item.payAmount() != null)) {
+        // 零元订单也必须有可核对的逐行实付快照。
+        if (value.totalAmount().signum() == 0
+            || value.items().stream().anyMatch(item -> item.payAmount() != null)) {
             if (value.items().stream()
                 .anyMatch(
                     item ->

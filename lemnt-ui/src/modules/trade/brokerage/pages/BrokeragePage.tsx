@@ -6,7 +6,7 @@ import { usePermission } from '@/shared/hooks/usePermission';
 import * as api from '../api/brokerageApi';
 import type { BrokerageRecord, BrokerageUser, BrokerageWithdraw } from '../api/brokerageApi';
 
-const BIZ = { 1: '推广佣金', 2: '提现扣减', 3: '提现驳回' };
+const BIZ = { 1: '推广佣金', 2: '提现扣减', 3: '提现驳回', 4: '退款扣回' };
 const STATUS = { 0: '待结算', 1: '已结算', 2: '已取消' };
 const WITHDRAW_STATUS = {
   0: '审核中',
@@ -253,7 +253,7 @@ export function BrokeragePage() {
                 onSubmit={(value) => {
                   setRecordFilter({
                     userId: typeof value.userId === 'string' ? value.userId : undefined,
-                    bizType: typeof value.bizType === 'number' ? value.bizType : undefined,
+                    bizType: Object.hasOwn(BIZ, value.bizType) ? Number(value.bizType) : undefined,
                     status: typeof value.status === 'number' ? value.status : undefined,
                   });
                   setRecordPage({ ...recordPage, pageNum: 1 });

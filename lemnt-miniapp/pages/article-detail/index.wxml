@@ -1,0 +1,10 @@
+<view class="container">
+  <view wx:if="{{error}}" class="error">{{error}}<button size="mini" bindtap="load">重试</button></view>
+  <view wx:if="{{article}}" class="card">
+    <view class="title">{{article.title}}</view>
+    <view wx:if="{{article.author}}" class="description">{{article.author}}</view>
+    <image wx:if="{{article.picUrl}}" src="{{article.picUrl}}" mode="widthFix" style="width:100%"/>
+    <rich-text nodes="{{article.content}}"/>
+    <navigator wx:if="{{article.spuId}}" url="/pages/product/index?id={{article.spuId}}">查看关联商品</navigator>
+  </view>
+</view>

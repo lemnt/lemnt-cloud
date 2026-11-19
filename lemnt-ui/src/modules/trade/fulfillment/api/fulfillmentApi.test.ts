@@ -2,12 +2,38 @@ import { beforeEach, expect, it, vi } from 'vitest';
 import {
   shipOrder,
   getOrderPromotions,
+  getOrderStatistics,
+  getOrderWorkload,
   getAfterSalePromotions,
   refundAfterSale,
 } from './fulfillmentApi';
 const { mockedRequest } = vi.hoisted(() => ({ mockedRequest: vi.fn() }));
 vi.mock('@/api/request', () => ({ request: mockedRequest }));
 beforeEach(() => mockedRequest.mockReset());
+it('订单汇总以精确单号筛选并保留金额原始精度', async () => {
+  const data = {
+    orderCount: 1,
+    orderPayPrice: '9007199254740991.99',
+    afterSaleCount: 0,
+    afterSalePrice: '0.00',
+  };
+  mockedRequest.mockResolvedValueOnce({ data });
+  expect(await getOrderStatistics(' TR1 ')).toEqual(data);
+  expect(mockedRequest).toHaveBeenCalledWith({
+    url: '/trade/admin/orders/summary',
+    params: { orderNo: 'TR1' },
+  });
+  mockedRequest.mockResolvedValueOnce({ data: { ...data, orderPayPrice: 1 } });
+  await expect(getOrderStatistics()).rejects.toThrow();
+});
+it('交易待办读取独立汇总并校验四项业务计数', async () => {
+  const data = { shipments: 2, pickups: 1, afterSales: 0, withdrawals: 1 };
+  mockedRequest.mockResolvedValueOnce({ data });
+  expect(await getOrderWorkload()).toEqual(data);
+  expect(mockedRequest).toHaveBeenCalledWith({ url: '/trade/admin/orders/workload' });
+  mockedRequest.mockResolvedValueOnce({ data: { ...data, withdrawals: -1 } });
+  await expect(getOrderWorkload()).rejects.toThrow('整数');
+});
 const shipment = {
   orderNo: 'TR1',
   requestNo: 'S1',

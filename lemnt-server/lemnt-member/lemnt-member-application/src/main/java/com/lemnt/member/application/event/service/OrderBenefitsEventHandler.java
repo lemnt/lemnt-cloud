@@ -87,13 +87,13 @@ public class OrderBenefitsEventHandler {
                 v.ruleVersion()));
     }
 
+    /** 关单以积分终态流水防止迟到抵扣，原抵扣返还按订单号幂等。 */
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public void closed(CommerceEventEnvelope envelope) {
         envelope.requireType(CommerceEventTopics.ORDER_CLOSED);
         var v = inboundEvents.closedFacts(envelope.payload());
         if (v == null) throw new IllegalArgumentException("关单事实不能为空");
         check(envelope, v.orderNo(), v.orderNo());
-        if (!begin(envelope, "member.order_closed.v1")) return;
         var o = original(v.orderNo(), v.memberId());
         if (!"CLOSED".equals(o.status())) throw new IllegalStateException("原订单未关闭");
         growth.tradeAsset(
@@ -108,18 +108,6 @@ public class OrderBenefitsEventHandler {
                 0,
                 false,
                 0));
-    }
-
-    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
-    public void shipped(CommerceEventEnvelope envelope) {
-        envelope.requireType(CommerceEventTopics.ORDER_SHIPPED);
-        var v = inboundEvents.shippedFacts(envelope.payload());
-        if (v == null) throw new IllegalArgumentException("发货事实不能为空");
-        check(envelope, v.orderNo(), v.orderNo());
-        if (!begin(envelope, "member.order_shipped.v1")) return;
-        var o = original(v.orderNo(), v.memberId());
-        if (!Set.of("SHIPPED", "COMPLETED", "REFUNDED").contains(o.status()))
-            throw new IllegalStateException("原订单未发货");
     }
 
     private boolean begin(CommerceEventEnvelope e, String consumer) {

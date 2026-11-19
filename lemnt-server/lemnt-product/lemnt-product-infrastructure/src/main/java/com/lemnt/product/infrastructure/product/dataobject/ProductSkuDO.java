@@ -47,4 +47,10 @@ public class ProductSkuDO extends BaseDO {
     private String status;
     private BigDecimal weight;
     private BigDecimal volume;
+    private BigDecimal marketPrice;
+    private BigDecimal costPrice;
+    private String barCode;
+    private Long salesCount;
+    private BigDecimal firstBrokeragePrice;
+    private BigDecimal secondBrokeragePrice;
 }

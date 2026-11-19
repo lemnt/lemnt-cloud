@@ -55,4 +55,30 @@
         FOR UPDATE
     </select>
     <select id="now" resultType="java.time.LocalDateTime">SELECT CURRENT_TIMESTAMP</select>
+    <resultMap id="RegistrationMap" type="com.lemnt.member.domain.user.model.MemberStatistics$Registration">
+        <constructor>
+            <arg column="registration_day" javaType="java.time.LocalDate"/>
+            <arg column="member_count" javaType="_long"/>
+        </constructor>
+    </resultMap>
+    <resultMap id="DistributionMap" type="com.lemnt.member.domain.user.model.MemberStatistics$Distribution">
+        <constructor>
+            <arg column="profile_value" javaType="java.lang.Integer"/>
+            <arg column="member_count" javaType="_long"/>
+        </constructor>
+    </resultMap>
+    <select id="countRegistrations" resultMap="RegistrationMap">
+        SELECT CAST(create_time AS DATE) AS registration_day, COUNT(*) AS member_count
+        FROM member_user
+        WHERE create_time &gt;= #{from} AND create_time &lt; #{until}
+        GROUP BY CAST(create_time AS DATE)
+    </select>
+    <select id="countBySex" resultMap="DistributionMap">
+        SELECT COALESCE(sex, 0) AS profile_value, COUNT(*) AS member_count
+        FROM member_user GROUP BY COALESCE(sex, 0) ORDER BY profile_value
+    </select>
+    <select id="countByArea" resultMap="DistributionMap">
+        SELECT area_id AS profile_value, COUNT(*) AS member_count
+        FROM member_user GROUP BY area_id ORDER BY profile_value
+    </select>
 </mapper>

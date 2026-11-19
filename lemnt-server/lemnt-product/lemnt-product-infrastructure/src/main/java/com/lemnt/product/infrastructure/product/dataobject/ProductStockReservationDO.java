@@ -25,6 +25,7 @@ public class ProductStockReservationDO extends BaseDO {
     private Long productId;
     private Integer quantity;
     private String status;
+    private Boolean salesRecorded;
 
     /**
      * 售后回补关联的原预占订单号。

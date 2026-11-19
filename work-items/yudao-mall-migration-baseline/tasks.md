@@ -270,4 +270,83 @@ F033依赖追加B1b-T04，V-B1b依赖追加全部4项；共110个文件任务，
 - 修正design/decision-log中“待计划确认”“未实施”“当前进入cs-task”等当前态歧义，保留2026-11-06设计快照与历史测试事实。
 - E001 completed：新增[只读环境预检](local-environment-preflight.md)。默认Java11，已安装Java17；初检Docker不可达，复核已见MySQL/Redis/Nacos容器和端口，RocketMQ及业务服务未见监听。独立空库、namespace与渠道仍未核实。
 - E002 completed：更新[运行验收方案](local-acceptance.md)，按实际代码区分两套Nacos入口及服务级数据库变量，补充启动与回退边界；文档完成不代表环境已获授权或就绪。
-- 当前110个任务节点：**46 completed、30 pending、34 blocked**；6个人工门控仍全部awaiting_future_approval。generate继续in_progress，E003–E006不变，未执行DDL、配置发布、服务启动、真实资金操作或Git提交。
+- 本轮自动化复跑与真实运行验收分别记录，见[evidence/alignment-20261109-113811/commands.json](evidence/alignment-20261109-113811/commands.json)。
+- 该轮结束时110个任务节点：**46 completed、30 pending、34 blocked**；6个人工门控仍全部awaiting_future_approval。generate继续in_progress，未执行DDL、配置发布、服务启动、真实资金操作或Git提交。
+
+## 11. 本地基础设施推进（2026-11-17）
+
+用户逐条授权并记录原文：允许使用本地docker启动的数据库和redis、使用项目默认账号读取Nacos配置、允许新建空库、允许导入初始化SQL。门控按最小范围理解，未扩展为覆盖既有业务库、删除容器/数据或Nacos配置发布。
+
+| 环节 | 实际结果 |
+|---|---|
+| Nacos | 默认账号登录成功；`dev/DEFAULT_GROUP`读到common/system/auth/gateway/member配置，四个拆分服务与commerce-mq.yaml为404 |
+| MySQL/Redis认证 | 本机mysql8执行`SELECT 1`成功；redis7 `AUTH`+`PING`成功，认证阻塞解除 |
+| 专用空库 | 先查同名库均不存在，创建6个`lemnt_migration_local_*`（utf8mb4），核验初始表数为0 |
+| 初始化导入 | system 17、member 13、product 11、promotion 23、order 23、pay 13，与脚本`CREATE TABLE`数一致；`V*`历史升级脚本未执行 |
+| 共享实例核验 | 该实例另有lemnt_system/lemnt_member/lemnt_mall/lemnt_trade/ad_system/nacos_server等库；导入前后逐库表数比对，非专用库零变化、无新增库 |
+| Nacos发布 | dev/DEFAULT_GROUP新建`commerce-mq.yaml`、`lemnt-promotion/order/pay.yaml`（86→90，逐字回读一致）；`lemnt-product.yaml`经单独授权覆盖原2字节占位`a:`，数据源占位齐备，其余9个Data ID内容未变 |
+
+遗留处理完毕：早前POST误用`namespace`参数（正确名是`namespaceId`）在public产生的2份同名副本已按“删除这两份”授权清理，public回到1903、dev仍90、lemnt仍5。
+
+未完成：Nacos配置发布、Redis隔离策略、RocketMQ与支付渠道条件、服务启动、页面与业务链路操作。**E003保持blocked，G-ENV未整体通过，110个任务节点计数不变（46 completed、30 pending、34 blocked）**，generate继续in_progress。
+
+风险留痕：首次导入因客户端选项文件与SQL争夺stdin而失败，未执行DDL；改用容器内`0700`临时凭据文件完成后删除。表级内容差异未比对，后续真实写入建议改用独立容器与数据目录。
+
+
+## B2a商品查询与已有字段透出（2026-11-18）
+
+用户指令：“按照缺的补齐”。本批完成F038–F063与V-B2a，新增应用回归节点B2a-T01。当前111个文件任务为74 completed、3 pending、34 blocked；整体generate仍in_progress，未完成全量迁移。
+
+- 查询链：categoryId与categoryIds去重合并，一次批量展开启用直接子分类；price与既定salesCount升降序，false不被默认值覆盖；SQL固定分支排序、相同值用sort/id稳定排序，列表/count共用筛选。
+- 分类链：现有公开GET /app/categories增加optional ids，不新增公开路由；只返回启用分类，sort/id升序；空ids与未传ids有不同含义。
+- 详情链：已有简介、轮播、配送方式/模板和SKU重量/体积贯通DTO/Res/小程序。复用既有ProductSpuResult字段映射，补齐公开DTO/Res与页面透出；历史未知字段不补零或当前配置。
+- 小程序：商城页加入价格与销量排序，切换重置页码；详情展示轮播、简介、配送方式和选中SKU配送参数。复用既有product页面整体承接对象逻辑；所有原有页面测试保留并追加回归。
+- 计划调整：原F056所列start测试源码在当前HEAD不存在，改在infrastructure的StoreCatalogQueryTest使用真实Mapper XML和H2；F041的筛选透传、F061的页面对象承接已满足要求，验证复用而不做无效改动。新增StoreQueryTest覆盖应用分类展开/拒绝非法输入/原值投影。
+
+验证：Java17全服务Reactor `mvn -o -f lemnt-server/pom.xml clean test`通过，224个测试类报告共1273项，零失败/错误/跳过；小程序187项通过。架构和模块拆分零违规、脚本33项通过。本批Java固定版本/校验和AOSP格式和显式导入、JS/CJS Prettier及修改页WXML缩进检查通过。首次受限沙箱内Mockito agent attachment失败，经正式执行审批在沙箱外重跑成功；没有删除测试或放宽断言。
+
+本批维持SPU/SKU正价可见性、隐藏详情返回null、人民币元协议和支付确认累计销量口径；createTime与虚拟销量不在B2a伪造交付。源原有会员/营销/履约/退款分支尚需继续逐方法核对。
+
+后续仍需B2b补充设计与贯通、B3逐事件消息机制收敛、B4内容/统计及其余能力补迁；真实MySQL业务写入/MQ/RPC/HTTP/页面/微信及支付退款渠道未执行。此次未执行DDL、发布Nacos、启动服务、中间件或提交代码。完整证据：[B2a验证](evidence/b2a-validation.json)。
+
+## 2026-11-18 继续实施记录
+
+按本轮“补齐所有缺口”直接完成已确认语义的子链。B2b 已补充真实创建时间、零售价、普通零元结算、规格模式、SKU 价格和条码、虚拟销量、SKU 支付累计与商品详情浏览。B3 修复库存事务消息的取消/释放判定。B4 接入商城文章、充值实付毛额、会员注册与档案分布以及后台订单汇总。隔离 MySQL 已完成商品与文章升级和会员统计 SQL 验证。跨服务权益、其余事件机制、未覆盖统计和完整运行验收继续跟踪。见[实现记录](code-summary.md)和[数据库验证证据](evidence/mysql-gap-upgrade-20261118.json)。
+
+商品、促销、会员服务直连 HTTP 已完成阶段验收；E003/E004/E005 的完整网关、跨服务业务以及渠道验证仍需实际环境。见[服务直连证据](evidence/service-gap-http-20261118.json)。
+
+## B2b 商品赠积分与 SKU 聚合
+
+- 商品管理可维护每行赠积分，普通与活动报价写入订单行来源，改价和按行退款沿用冻结规则。新增商品库升级脚本，隔离 MySQL 已验证。
+- 后台商品分页按未删除的 SKU 聚合价格和库存，管理端显示最低售价和可用库存。历史价格缺失保持空值。
+- 定向交付通过结算集成、退款事件重放、自提、实际 Mapper 与前端回归。独立佣金、剩余消息机制与统计继续跟踪。见[实现记录](code-summary.md)。
+
+## B2b 订单行独立佣金
+
+- 商品固定配置、建单快照、按行实发与部分退款扣回已接通。补齐部分退款后按剩余佣金解冻的处理。
+- 商品和订单升级脚本通过隔离 MySQL 验证。历史佣金流水沿用原有计算及扣回方式。见[数据库验证](evidence/order-commission-mysql-20261118.json)。
+- 推广端商品佣金预估、消息机制、时序统计和完整运行验收继续跟踪。
+
+## 2026-11-19 佣金预估、入站支付事实及到账趋势
+
+- 已补齐商品详情佣金预估，覆盖商品 SKU、订单分销资格、会员网关路径和小程序。
+- B3 部分完成。订单支付准备及支付确认落业务事实，退款确认复用原售后状态，开启订单恢复调度后可补回丢失的支付确认。原消息表及尚未完成的消费和出站路径继续纳入 B3。
+- B4 部分完成。支付到账按日统计接入后台支付单，覆盖到账日期、成功笔数及精确毛额，真实 MySQL 通过。会员访问、商品和其余交易统计继续跟踪。详见[实现记录](code-summary.md)。
+- B4 交易待办四项已接入订单管理端，后端聚合、权限、实际 Mapper 与前端测试通过。日期对照、商品明细和缺少历史事实的指标继续跟踪。
+- E004 启动验收发现并修复订单 Controller Bean 名冲突，增加组件扫描回归。联合验收最后一次复跑受本机 Nacos 连接拒绝阻塞，实际登录和统计查询仍待验证。
+
+## 2026-11-19 商品销量与消费回执
+
+- B3 商品支付以原预占行记录销量事实。交易重放沿用旧凭证兼容，售后依该支付库存事实判断前置状态。
+- 营销预占、订单完成、关单以及会员发货、关单改用原订单、资源终态或积分流水处理重放。继续跟踪支付关单围栏、其余权益消费和订单、支付出站消息机制。见[实现记录](code-summary.md)。
+- 713 项 Reactor 回归通过，隔离 MySQL 升级及真实消息投递待运行环境恢复后验证。
+
+## 2026-11-19 支付与商品关单消费
+
+- B3 支付建单锁内重查最新业务状态；支付关单和商品关单改用各自业务状态重放，存量回执继续可核验。支付同单串行锁及营销退款成功查询继续跟踪。
+- 625 项 Reactor 回归及支付持久化 14 项定向复跑通过。真实组件联调仍待本地运行环境恢复。
+
+## 2026-11-19 简化交易消息与库存预占
+
+- 对照芋道的库存变化和履约动作，清理三条纯校验消息及库存事务消息中间层。保留商品库事务、业务幂等和订单补偿。历史非业务通知留供审计，当前消息拓扑见[切流说明](../../docs/module-split-cutover.md)。
+- 1151 项干净构建回归通过。真实 Broker 与渠道验收仍待本地运行环境恢复。

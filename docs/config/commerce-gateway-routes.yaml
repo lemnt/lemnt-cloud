@@ -1,7 +1,7 @@
 # 网关内置路由的唯一源，Maven原样打包，由ServiceRouteConfiguration读取。
 # 不要再将同一清单重复合入Nacos routes；发布网关前移除旧mall/trade粗路由及重复定义。
 # 保留其他auth/member/system/open动态路由、鉴权/CORS/Sentinel配置。
-# 313个显式业务端点按方法/服务分组；HEAD沿用GET，OPTIONS保留原服务探测，预检仍由CorsWebFilter处理。
+# 商城交易端点按方法和服务分组；HEAD沿用GET，OPTIONS保留原服务探测，预检仍由CorsWebFilter处理。
 # /mall、/trade不StripPrefix，不改写查询参数或请求体。本文件没有自动发布。
 spring:
   cloud:
@@ -74,6 +74,8 @@ spring:
                     _genkey_40: /trade/app/orders/{orderNo}/after-sale-items
                     _genkey_41: /trade/app/orders/{orderNo}/promotions
                     _genkey_42: /trade/app/orders/{orderNo}/tracks
+                    _genkey_43: /trade/app/brokerage/product-commission
+                    _genkey_44: /trade/admin/orders/workload
             - id: commerce-order-options
               uri: lb://lemnt-order
               order: -8
@@ -158,6 +160,8 @@ spring:
                     _genkey_72: /trade/app/orders/{orderNo}/receive
                     _genkey_73: /trade/app/orders/{orderNo}/tracks
                     _genkey_74: /mall/app/comments
+                    _genkey_75: /trade/app/brokerage/product-commission
+                    _genkey_76: /trade/admin/orders/workload
             - id: commerce-order-post
               uri: lb://lemnt-order
               order: -8
@@ -267,6 +271,7 @@ spring:
                     _genkey_25: /trade/app/wallet/recharges
                     _genkey_26: /trade/app/wallet/transactions
                     _genkey_27: /trade/app/wallet/transfers
+                    _genkey_28: /trade/admin/payments/trend
             - id: commerce-pay-options
               uri: lb://lemnt-pay
               order: -8
@@ -311,6 +316,7 @@ spring:
                     _genkey_32: /trade/app/wallet/transactions
                     _genkey_33: /trade/app/wallet/transfers
                     _genkey_34: /trade/payment/notify/{appKey}/{channel}
+                    _genkey_35: /trade/admin/payments/trend
             - id: commerce-pay-post
               uri: lb://lemnt-pay
               order: -8
@@ -509,6 +515,8 @@ spring:
                     _genkey_11: /mall/promotion/reward-activities/{id}
                     _genkey_12: /mall/promotion/seckill-activities/{id}
                     _genkey_13: /mall/promotion/seckill-configs/{id}
+                    _genkey_14: /mall/promotion/articles/{id}
+                    _genkey_15: /mall/promotion/article-categories/{id}
             - id: commerce-promotion-get
               uri: lb://lemnt-promotion
               order: -8
@@ -582,6 +590,14 @@ spring:
                     _genkey_60: /mall/promotion/seckill-configs/list
                     _genkey_61: /mall/promotion/seckill-configs/simple-list
                     _genkey_62: /mall/promotion/seckill-configs/{id}
+                    _genkey_63: /mall/promotion/articles
+                    _genkey_64: /mall/promotion/articles/{id}
+                    _genkey_65: /mall/promotion/article-categories
+                    _genkey_66: /mall/promotion/article-categories/{id}
+                    _genkey_67: /mall/promotion/article-categories/enabled
+                    _genkey_68: /mall/app/articles
+                    _genkey_69: /mall/app/articles/detail
+                    _genkey_70: /mall/app/article-categories
             - id: commerce-promotion-options
               uri: lb://lemnt-promotion
               order: -8
@@ -676,6 +692,15 @@ spring:
                     _genkey_82: /mall/promotion/seckill-configs/simple-list
                     _genkey_83: /mall/promotion/seckill-configs/{id}
                     _genkey_84: /mall/promotion/seckill-configs/{id}/status
+                    _genkey_85: /mall/promotion/articles
+                    _genkey_86: /mall/promotion/articles/{id}
+                    _genkey_87: /mall/promotion/article-categories
+                    _genkey_88: /mall/promotion/article-categories/{id}
+                    _genkey_89: /mall/promotion/article-categories/enabled
+                    _genkey_90: /mall/app/articles
+                    _genkey_91: /mall/app/articles/detail
+                    _genkey_92: /mall/app/article-categories
+                    _genkey_93: /mall/app/articles/{id}/browse
             - id: commerce-promotion-post
               uri: lb://lemnt-promotion
               order: -8
@@ -702,6 +727,8 @@ spring:
                     _genkey_14: /mall/promotion/reward-activities
                     _genkey_15: /mall/promotion/seckill-activities
                     _genkey_16: /mall/promotion/seckill-configs
+                    _genkey_17: /mall/promotion/articles
+                    _genkey_18: /mall/promotion/article-categories
             - id: commerce-promotion-put
               uri: lb://lemnt-promotion
               order: -8
@@ -739,3 +766,6 @@ spring:
                     _genkey_25: /mall/promotion/seckill-activities/{id}/close
                     _genkey_26: /mall/promotion/seckill-configs/{id}
                     _genkey_27: /mall/promotion/seckill-configs/{id}/status
+                    _genkey_28: /mall/promotion/articles/{id}
+                    _genkey_29: /mall/promotion/article-categories/{id}
+                    _genkey_30: /mall/app/articles/{id}/browse

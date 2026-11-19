@@ -90,3 +90,15 @@ it('支持渠道只保留目录字段，不添加已启用或已接通状态', a
   expect(await api.getChannels()).toEqual([{ code: 'ALIPAY', name: '支付宝' }]);
   expect(mockedRequest).toHaveBeenCalledWith({ url: '/trade/admin/payment-channels' });
 });
+it('到账趋势使用指定日期且保留账务精度', async () => {
+  const params = { from: '2026-11-01', to: '2026-11-02' };
+  const days = [
+    { date: params.from, payments: 2, paid: '9007199254740993.01', recharged: '12.34' },
+    { date: params.to, payments: 0, paid: '0.00', recharged: '0.00' },
+  ];
+  mockedRequest.mockResolvedValueOnce({ data: days });
+  expect(await api.getPaymentTrend(params)).toEqual(days);
+  expect(mockedRequest).toHaveBeenLastCalledWith({ url: '/trade/admin/payments/trend', params });
+  mockedRequest.mockResolvedValueOnce({ data: [{ ...days[0], recharged: 12.34 }] });
+  await expect(api.getPaymentTrend(params)).rejects.toThrow('文本');
+});

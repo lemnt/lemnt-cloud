@@ -75,10 +75,15 @@ function deliveryTypes(value: unknown): number[] {
     throw new Error('配送方式响应不合法');
   return value as number[];
 }
+/** SKU金额保持人民币元文本，避免管理端读取大金额丢精度。 */
+function catalogPrice(value: unknown): string {
+  const price = text(value);
+  if (!/^\d+\.\d{2}$/.test(price)) throw new Error('商品接口金额必须为两位小数字符串');
+  return price;
+}
 export function decodeSku(value: unknown): Sku {
   const row = record(value);
-  const price = text(row.price);
-  if (!/^\d+\.\d{2}$/.test(price)) throw new Error('商品接口金额必须为两位小数字符串');
+  const price = catalogPrice(row.price);
   const specs = Array.isArray(row.specs)
     ? row.specs.map((item) => {
         const property = record(item);
@@ -104,6 +109,15 @@ export function decodeSku(value: unknown): Sku {
     code: text(row.code),
     name: text(row.name),
     price,
+    ...(row.marketPrice == null ? {} : { marketPrice: catalogPrice(row.marketPrice) }),
+    ...(row.costPrice == null ? {} : { costPrice: catalogPrice(row.costPrice) }),
+    ...(row.barCode == null ? {} : { barCode: text(row.barCode) }),
+    ...(row.firstBrokeragePrice == null
+      ? {}
+      : { firstBrokeragePrice: catalogPrice(row.firstBrokeragePrice) }),
+    ...(row.secondBrokeragePrice == null
+      ? {}
+      : { secondBrokeragePrice: catalogPrice(row.secondBrokeragePrice) }),
     stock: integer(row.stock),
     weight: optionalQuantity(row.weight),
     volume: optionalQuantity(row.volume),
@@ -114,6 +128,11 @@ export function decodeSku(value: unknown): Sku {
 }
 export function decodeSpu(value: unknown): Spu {
   const row = record(value);
+  const specType = row.specType;
+  if (specType != null && typeof specType !== 'boolean') throw new Error('商品规格模式不合法');
+  const subCommissionType = row.subCommissionType;
+  if (subCommissionType != null && typeof subCommissionType !== 'boolean')
+    throw new Error('商品分佣方式不合法');
   return {
     id: decodeId(row.id),
     code: text(row.code),
@@ -122,6 +141,14 @@ export function decodeSpu(value: unknown): Spu {
     introduction: optionalText(row.introduction),
     sliderPicUrls: row.sliderPicUrls == null ? [] : decodeList(row.sliderPicUrls, text),
     sort: row.sort == null ? null : integer(row.sort),
+    ...(specType == null ? {} : { specType }),
+    ...(subCommissionType == null ? {} : { subCommissionType }),
+    ...(row.virtualSalesCount == null ? {} : { virtualSalesCount: integer(row.virtualSalesCount) }),
+    ...(row.giveIntegral == null ? {} : { giveIntegral: integer(row.giveIntegral) }),
+    ...(row.price == null ? {} : { price: catalogPrice(row.price) }),
+    ...(row.marketPrice == null ? {} : { marketPrice: catalogPrice(row.marketPrice) }),
+    ...(row.costPrice == null ? {} : { costPrice: catalogPrice(row.costPrice) }),
+    ...(row.stock == null ? {} : { stock: integer(row.stock) }),
     deliveryTypes: deliveryTypes(row.deliveryTypes),
     deliveryTemplateId: row.deliveryTemplateId == null ? null : decodeId(row.deliveryTemplateId),
     categoryId: decodeId(row.categoryId),

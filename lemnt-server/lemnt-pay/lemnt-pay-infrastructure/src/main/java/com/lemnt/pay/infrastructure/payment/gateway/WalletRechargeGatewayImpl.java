@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -39,19 +40,19 @@ public class WalletRechargeGatewayImpl implements WalletRechargeGateway {
     @Override
     public WalletRecharge findByNo(String rechargeNo) {
         return RechargeConverter.toEntity(
-            mapper.selectOne(
-                Wrappers.<WalletRechargeDO>lambdaQuery()
-                    .eq(WalletRechargeDO::getRechargeNo, rechargeNo)
-                    .last("LIMIT 1")));
+                mapper.selectOne(
+                        Wrappers.<WalletRechargeDO>lambdaQuery()
+                                .eq(WalletRechargeDO::getRechargeNo, rechargeNo)
+                                .last("LIMIT 1")));
     }
 
     @Override
     public WalletRecharge findByRequestNo(String requestNo) {
         return RechargeConverter.toEntity(
-            mapper.selectOne(
-                Wrappers.<WalletRechargeDO>lambdaQuery()
-                    .eq(WalletRechargeDO::getRequestNo, requestNo)
-                    .last("LIMIT 1")));
+                mapper.selectOne(
+                        Wrappers.<WalletRechargeDO>lambdaQuery()
+                                .eq(WalletRechargeDO::getRequestNo, requestNo)
+                                .last("LIMIT 1")));
     }
 
     @Override
@@ -67,33 +68,38 @@ public class WalletRechargeGatewayImpl implements WalletRechargeGateway {
     @Override
     public PageResult<WalletRecharge> page(WalletRechargeFilter filter) {
         var page =
-            mapper.selectPage(
-                new Page<WalletRechargeDO>(filter.pageNum(), filter.pageSize()),
-                Wrappers.<WalletRechargeDO>lambdaQuery()
-                    .eq(
-                        filter.memberId() != null,
-                        WalletRechargeDO::getMemberId,
-                        filter.memberId())
-                    .eq(
-                        filter.status() != null,
-                        WalletRechargeDO::getStatus,
-                        filter.status())
-                    .orderByDesc(WalletRechargeDO::getId));
+                mapper.selectPage(
+                        new Page<WalletRechargeDO>(filter.pageNum(), filter.pageSize()),
+                        Wrappers.<WalletRechargeDO>lambdaQuery()
+                                .eq(
+                                        filter.memberId() != null,
+                                        WalletRechargeDO::getMemberId,
+                                        filter.memberId())
+                                .eq(
+                                        filter.status() != null,
+                                        WalletRechargeDO::getStatus,
+                                        filter.status())
+                                .orderByDesc(WalletRechargeDO::getId));
         return PageResult.of(
-            page.getRecords().stream().map(RechargeConverter::toEntity).toList(),
-            page.getTotal());
+                page.getRecords().stream().map(RechargeConverter::toEntity).toList(),
+                page.getTotal());
     }
 
     @Override
     public boolean packageReferenced(Long packageId) {
         return mapper.selectCount(
-            Wrappers.<WalletRechargeDO>lambdaQuery()
-                .eq(WalletRechargeDO::getPackageId, packageId))
-            > 0;
+                        Wrappers.<WalletRechargeDO>lambdaQuery()
+                                .eq(WalletRechargeDO::getPackageId, packageId))
+                > 0;
     }
 
     @Override
     public LocalDateTime databaseNow() {
         return mapper.databaseNow();
+    }
+
+    @Override
+    public BigDecimal paidRechargeTotal() {
+        return mapper.paidRechargeTotal();
     }
 }

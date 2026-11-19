@@ -30,31 +30,31 @@ class MemberControllerMappingTest {
             var type = Class.forName(definition.getBeanClassName());
             var constructor = type.getConstructors()[0];
             var dependencies =
-                Arrays.stream(constructor.getParameterTypes()).map(t -> mock(t)).toArray();
+                    Arrays.stream(constructor.getParameterTypes()).map(t -> mock(t)).toArray();
             controllers.add(constructor.newInstance(dependencies));
         }
         var mvc = MockMvcBuilders.standaloneSetup(controllers.toArray()).build();
         var mappings =
-            mvc.getDispatcherServlet()
-                .getWebApplicationContext()
-                .getBean(RequestMappingHandlerMapping.class);
+                mvc.getDispatcherServlet()
+                        .getWebApplicationContext()
+                        .getBean(RequestMappingHandlerMapping.class);
         var actual = new TreeSet<String>();
         mappings.getHandlerMethods()
-            .forEach(
-                (mapping, handler) -> {
-                    var permission = handler.getMethodAnnotation(RequiresPermissions.class);
-                    var permissions =
-                        permission == null ? "" : String.join(",", permission.value());
-                    for (var method : mapping.getMethodsCondition().getMethods()) {
-                        for (var path : mapping.getPatternValues()) {
-                            actual.add(method.name() + " " + path + " " + permissions);
-                        }
-                    }
-                });
+                .forEach(
+                        (mapping, handler) -> {
+                            var permission = handler.getMethodAnnotation(RequiresPermissions.class);
+                            var permissions =
+                                    permission == null ? "" : String.join(",", permission.value());
+                            for (var method : mapping.getMethodsCondition().getMethods()) {
+                                for (var path : mapping.getPatternValues()) {
+                                    actual.add(method.name() + " " + path + " " + permissions);
+                                }
+                            }
+                        });
         var expected =
-            new TreeSet<>(
-                Arrays.asList(
-                    """
+                new TreeSet<>(
+                        Arrays.asList(
+                                """
                         DELETE /app/addresses/{id}
                         DELETE /groups/{id} member:group:delete
                         DELETE /growth/levels/{id} member:level:delete
@@ -82,6 +82,7 @@ class MemberControllerMappingTest {
                         GET /growths/signin-configs member:sign-in-config:query
                         GET /growths/signin-configs/{id} member:sign-in-config:query
                         GET /member-users member:user:query
+                        GET /member-users/statistics member:user:query
                         GET /member-users/{id} member:user:query
                         GET /member-users/{id}/addresses member:address:query
                         GET /member-users/{id}/level-records member:level-record:query
@@ -119,7 +120,7 @@ class MemberControllerMappingTest {
                         PUT /member-users/{id}/tags member:user:update
                         PUT /tags/{id} member:tag:update
                         """
-                        .split("\n")));
+                                        .split("\n")));
         // 文本块会移除行尾空格，空权限与带权限的路由统一去掉行尾空白。
         var normalized = new TreeSet<String>();
         actual.forEach(route -> normalized.add(route.stripTrailing()));

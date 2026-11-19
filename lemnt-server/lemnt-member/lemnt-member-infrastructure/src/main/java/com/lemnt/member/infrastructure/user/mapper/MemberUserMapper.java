@@ -1,6 +1,8 @@
 package com.lemnt.member.infrastructure.user.mapper;
 
 import com.lemnt.member.domain.user.model.MemberPageFilter;
+import com.lemnt.member.domain.user.model.MemberStatistics.Distribution;
+import com.lemnt.member.domain.user.model.MemberStatistics.Registration;
 import com.lemnt.member.infrastructure.user.dataobject.MemberDO;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -35,4 +37,14 @@ public interface MemberUserMapper extends BaseMapper<MemberDO> {
      * 与资料分页使用同一条件，不重复计算标签命中。
      */
     long profileCount(@Param("f") MemberPageFilter filter);
+
+    /** 仅聚合指定日期区间中的记录。 */
+    List<Registration> countRegistrations(
+            @Param("from") LocalDateTime from, @Param("until") LocalDateTime until);
+
+    /** 合计所有会员的性别分布。 */
+    List<Distribution> countBySex();
+
+    /** 合计所有会员的档案地区分布。 */
+    List<Distribution> countByArea();
 }

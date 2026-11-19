@@ -1,0 +1,30 @@
+{
+  "capturedAt": "2026-11-17T17:42:23.204305+08:00",
+  "approvalQuote": "覆盖它",
+  "action": "Overwrite dev/DEFAULT_GROUP/lemnt-product.yaml with docs/config template",
+  "previousContentRepr": "'a:'",
+  "previousBytes": 2,
+  "templateBytes": 1112,
+  "restoreCommand": "POST /v3/admin/cs/config with namespaceId=dev, groupName=DEFAULT_GROUP, dataId=lemnt-product.yaml, content=previous value",
+  "totalsBefore": {
+    "public": 1903,
+    "dev": 90,
+    "lemnt": 5
+  },
+  "updateResponseCode": 0,
+  "afterTotals": {
+    "public": 1903,
+    "dev": 90,
+    "lemnt": 5
+  },
+  "verification": {
+    "readBackEqualsTemplate": true,
+    "datasourcePlaceholdersPresent": true,
+    "publicDelta": 0,
+    "lemntDelta": 0,
+    "devDelta": 0,
+    "publicCopyLeaked": false,
+    "otherDevConfigsUnchanged": true
+  },
+  "status": "verified"
+}

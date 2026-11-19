@@ -3,6 +3,10 @@
 > 2026-11-06设计方案；2026-11-09补充[只读环境预检](local-environment-preflight.md)。初检Docker不可达，复核时MySQL/Redis/Nacos容器及端口已出现；但隔离资源及操作范围尚未批准，RocketMQ/业务服务未见监听。**本次未执行基础设施准备、服务启动和真实业务验收**。自动化复核结果另存evidence，不以测试通过证明业务已跑通。
 > 此方案只针对当前lemnt-cloud；不运行本地芋道参考源码的构建、安装脚本或SQL。
 
+> 2026-11-18 阶段执行记录。使用新建的 `lemnt_migration_verify_*` 验收库验证商品升级、促销文章表和系统菜单以及会员统计 SQL。商品、促销、会员启动包经回环 HTTP 验证，临时 Redis 容器已停止，网关登录、真实 Dubbo 调用、RocketMQ 与微信渠道仍待验收。见[数据库证据](evidence/mysql-gap-upgrade-20261118.json)和[服务直连证据](evidence/service-gap-http-20261118.json)。
+>
+> 2026-11-19 隔离 MySQL 验证订单支付事实列、商品佣金预估及到账趋势 SQL。联合启动尝试定位并修复订单 Controller 命名冲突，最后复跑因本机 Nacos 8848 端口拒绝连接中止。恢复调度及数据源以[订单配置](../../docs/config/lemnt-order.yaml)为准，启动新读写方前执行[订单升级脚本](../../lemnt-server/sql/upgrade/migrate_order_payment_facts.sql)。见[联合运行尝试](evidence/commerce-admin-runtime-attempt-20261119.json)。
+
 ## 1. 环境门控
 
 在cs-task/实施前记录：本机中间件是否存在、版本、端口冲突、独立数据目录、可操作权限。禁止从历史会话或默认配置推断已有权限。
@@ -11,14 +15,14 @@
 
 | 组件 | 隔离要求 | 本阶段状态 |
 |---|---|---|
-| MySQL | 独立空库；各服务数据源独立，不混库掩盖跨域访问 | 复核已见mysql8容器和3306监听；实际版本/独立空库未核实，未建库、未执行DDL |
+| MySQL | 独立空库；各服务数据源独立，不混库掩盖跨域访问 | 已见mysql8容器和3306监听；实例同时承载多个既有业务库，**非专用/可丢弃实例**；6个`lemnt_migration_local_*`空库已建并导入基础初始化脚本 |
 | Redis | 专用实例或确认过隔离策略，避免污染现有会话/结算键 | 复核已见redis7容器和6379监听；实际版本/隔离策略未核实 |
-| Nacos | 当前兼容版本、独立namespace/group；数据ID与实际启动导入一致 | 复核已见Nacos v3.2.1镜像及8848/9848监听；实际健康/空间未核实，未发布 |
+| Nacos | 当前兼容版本、独立namespace/group；数据ID与实际启动导入一致 | 已见v3.2.1及8848/9848监听；默认账号登录后dev/DEFAULT_GROUP五个拆分服务Data ID就绪（4新建86→90、product占位经授权覆盖），误写入public的2份副本已清理并核验；共用dev空间非专用验收空间 |
 | RocketMQ | 与当前客户端匹配；确认普通/事务消息、Topic/组/权限及回查配置 | 9876/10911未见监听；版本/订阅未核实，未启动或创建Topic |
 | 文件/物流等 | 按实际能力需要明确本地替身与真实服务 | 未核实；替身不等于真实渠道验收 |
 | 微信工具/渠道 | AppID、允许访问域名、HTTPS、支付/退款沙箱、回调可达 | 待用户提供或确认条件 |
 
-库名建议统一使用专用前缀，例如`lemnt_migration_local_product`等；这只是命名建议，不授权创建、改写已有库或数据库用户。
+库名统一使用`lemnt_migration_local_system|member|product|promotion|order|pay`；用户已授权新建这6个空库并导入各自基础初始化脚本。该授权不含覆盖既有业务库、执行`V*`历史升级脚本、删除库/容器或清理数据，也不含Nacos配置发布。
 
 ## 2. 配置清单（不得填秘密到版本库）
 
@@ -26,7 +30,7 @@
 |---|---|---|
 | 运行时 | Java17、项目Maven/Node工具链 | 依据当前pom/package，不升级来解决迁移逻辑 |
 | 数据源 | 四个拆分服务分别使用`{PRODUCT\|PROMOTION\|ORDER\|PAY}_DB_URL`、`{服务}_DB_USERNAME`、`{服务}_DB_PASSWORD` | 对应独立空库；member/auth/system实际配置另核对，不假定通用DB_USERNAME生效 |
-| 注册配置 | 拆分服务使用NACOS_SERVER_ADDR/NACOS_NAMESPACE/NACOS_GROUP；gateway/auth/system/member使用NACOS_HOST/NACOS_PORT、构建profile namespace及DEFAULT_GROUP | 两套入口必须显式对齐同一批准实例/隔离空间；仅设置NACOS_NAMESPACE不能覆盖所有服务，详见只读预检 |
+| 注册配置 | 拆分服务（product除外）使用`NACOS_SERVER_ADDR`/`NACOS_NAMESPACE`/`NACOS_GROUP`；gateway/auth/system/member/product使用`NACOS_HOST`/`NACOS_PORT` + 构建profile namespace | 两套入口必须显式对齐同一实例与同一空间：promotion/order/pay须设`NACOS_NAMESPACE=dev`，否则落到public；仅设SPRING_PROFILES_ACTIVE不能覆盖全部服务 |
 | Dubbo | 服务协议端口、注册namespace/group | 使用现有服务端口变量，避免重复占用 |
 | 安全 | SECURITY_TOKEN_SECRET等 | 遵守既有HS512长度约束；auth/gateway同一安全配置；不记录值 |
 | MQ | ROCKETMQ_NAME_SERVER、生产者组、Topic/consumer-group | 不仅配置连接，还要核对事务监听器/回查与订阅 |

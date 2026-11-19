@@ -19,6 +19,9 @@ public interface OrderEventFactsGateway {
      */
     OrderClosedFacts closedFacts(String payload);
 
+    /** 查询已关闭订单的原会员与预占数量，订单尚未关闭时返回空。 */
+    OrderClosedFacts findClosedOrder(String orderNo);
+
     /**
      * 解析售后完成事实。
      */

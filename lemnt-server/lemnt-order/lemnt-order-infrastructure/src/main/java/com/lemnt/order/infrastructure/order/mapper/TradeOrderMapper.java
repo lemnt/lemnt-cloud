@@ -1,6 +1,7 @@
 package com.lemnt.order.infrastructure.order.mapper;
 
 import com.lemnt.order.domain.fulfillment.model.FulfillmentFilter;
+import com.lemnt.order.domain.order.model.OrderWorkload;
 import com.lemnt.order.infrastructure.fulfillment.dataobject.OrderSummaryDO;
 import com.lemnt.order.infrastructure.order.dataobject.OrderStatusCountDO;
 import com.lemnt.order.infrastructure.order.dataobject.OrderTotalDO;
@@ -22,6 +23,9 @@ public interface TradeOrderMapper extends BaseMapper<TradeOrderDO> {
      * 聚合订单表，避免拉取全部订单到内存。
      */
     OrderTotalDO total(@Param("orderNo") String orderNo);
+
+    /** 按领域业务状态聚合当前待办。 */
+    OrderWorkload workload();
 
     /**
      * 查询订单。
@@ -47,9 +51,9 @@ public interface TradeOrderMapper extends BaseMapper<TradeOrderDO> {
      * 状态变更状态。
      */
     int transitionStatus(
-        @Param("orderNo") String orderNo,
-        @Param("expectedStatus") String expectedStatus,
-        @Param("targetStatus") String targetStatus);
+            @Param("orderNo") String orderNo,
+            @Param("expectedStatus") String expectedStatus,
+            @Param("targetStatus") String targetStatus);
 
     /**
      * 订单写操作共用的真实数据库行锁。

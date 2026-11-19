@@ -19,8 +19,6 @@ public final class InboundEventFacts {
 
     public record Closed(String orderNo, Long memberId, List<StockLine> items) {}
 
-    public record Completed(String orderNo, Long memberId) {}
-
     public record AfterSaleCompleted(
         String orderNo,
         String afterSaleNo,
@@ -33,8 +31,6 @@ public final class InboundEventFacts {
         long deductGivePoint,
         int ruleVersion,
         boolean fullyRefunded) {}
-
-    public record StockPreReserved(String reservationNo, Long skuId, int quantity) {}
 
     public record StockLine(Long skuId, int quantity) {}
 }

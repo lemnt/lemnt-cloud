@@ -21,10 +21,10 @@ public class ProductStockReservationGatewayImpl implements ProductStockReservati
     @Override
     public boolean hasActive(Long productId) {
         return stockReservationMapper.selectCount(
-            Wrappers.lambdaQuery(ProductStockReservationDO.class)
-                .eq(ProductStockReservationDO::getProductId, productId)
-                .eq(ProductStockReservationDO::getStatus, "RESERVED"))
-            > 0;
+                        Wrappers.lambdaQuery(ProductStockReservationDO.class)
+                                .eq(ProductStockReservationDO::getProductId, productId)
+                                .eq(ProductStockReservationDO::getStatus, "RESERVED"))
+                > 0;
     }
 
     /**
@@ -36,26 +36,14 @@ public class ProductStockReservationGatewayImpl implements ProductStockReservati
         return row == null ? null : toModel(row);
     }
 
-    /**
-     * 无锁读取预占记录，供幂等预检与事务消息回查使用。
-     */
-    @Override
-    public ProductStockReservation find(String key, Long productId) {
-        var row =
-            stockReservationMapper.selectOne(
-                Wrappers.lambdaQuery(ProductStockReservationDO.class)
-                    .eq(ProductStockReservationDO::getReservationNo, key)
-                    .eq(ProductStockReservationDO::getProductId, productId));
-        return row == null ? null : toModel(row);
-    }
-
     private static ProductStockReservation toModel(ProductStockReservationDO row) {
         return new ProductStockReservation(
-            row.getReservationNo(),
-            row.getProductId(),
-            row.getQuantity(),
-            row.getStatus(),
-            row.getSourceNo());
+                row.getReservationNo(),
+                row.getProductId(),
+                row.getQuantity(),
+                row.getStatus(),
+                row.getSourceNo(),
+                row.getSalesRecorded());
     }
 
     /**
@@ -64,12 +52,13 @@ public class ProductStockReservationGatewayImpl implements ProductStockReservati
     @Override
     public void insert(ProductStockReservation value) {
         stockReservationMapper.insert(
-            new ProductStockReservationDO()
-                .setReservationNo(value.reservationNo())
-                .setProductId(value.productId())
-                .setQuantity(value.quantity())
-                .setStatus(value.status())
-                .setSourceNo(value.sourceNo()));
+                new ProductStockReservationDO()
+                        .setReservationNo(value.reservationNo())
+                        .setProductId(value.productId())
+                        .setQuantity(value.quantity())
+                        .setStatus(value.status())
+                        .setSourceNo(value.sourceNo())
+                        .setSalesRecorded(value.salesRecorded()));
     }
 
     /**
@@ -78,13 +67,15 @@ public class ProductStockReservationGatewayImpl implements ProductStockReservati
     @Override
     public boolean release(String key, Long productId) {
         return stockReservationMapper.update(
-            new ProductStockReservationDO(),
-            Wrappers.<ProductStockReservationDO>lambdaUpdate()
-                .set(ProductStockReservationDO::getStatus, "RELEASED")
-                .eq(ProductStockReservationDO::getReservationNo, key)
-                .eq(ProductStockReservationDO::getProductId, productId)
-                .eq(ProductStockReservationDO::getStatus, "RESERVED"))
-            == 1;
+                        new ProductStockReservationDO(),
+                        Wrappers.<ProductStockReservationDO>lambdaUpdate()
+                                .set(
+                                        ProductStockReservationDO::getStatus,
+                                        ProductStockReservation.RELEASED_AFTER_RESERVE)
+                                .eq(ProductStockReservationDO::getReservationNo, key)
+                                .eq(ProductStockReservationDO::getProductId, productId)
+                                .eq(ProductStockReservationDO::getStatus, "RESERVED"))
+                == 1;
     }
 
     /**
@@ -93,25 +84,39 @@ public class ProductStockReservationGatewayImpl implements ProductStockReservati
     @Override
     public boolean confirm(String key, Long productId) {
         return stockReservationMapper.update(
-            new ProductStockReservationDO(),
-            Wrappers.<ProductStockReservationDO>lambdaUpdate()
-                .set(ProductStockReservationDO::getStatus, "CONFIRMED")
-                .eq(ProductStockReservationDO::getReservationNo, key)
-                .eq(ProductStockReservationDO::getProductId, productId)
-                .eq(ProductStockReservationDO::getStatus, "RESERVED"))
-            == 1;
+                        new ProductStockReservationDO(),
+                        Wrappers.<ProductStockReservationDO>lambdaUpdate()
+                                .set(ProductStockReservationDO::getStatus, "CONFIRMED")
+                                .eq(ProductStockReservationDO::getReservationNo, key)
+                                .eq(ProductStockReservationDO::getProductId, productId)
+                                .eq(ProductStockReservationDO::getStatus, "RESERVED"))
+                == 1;
+    }
+
+    @Override
+    public boolean recordSale(String key, Long productId) {
+        return stockReservationMapper.update(
+                        new ProductStockReservationDO(),
+                        Wrappers.<ProductStockReservationDO>lambdaUpdate()
+                                .set(ProductStockReservationDO::getStatus, "CONFIRMED")
+                                .set(ProductStockReservationDO::getSalesRecorded, true)
+                                .eq(ProductStockReservationDO::getReservationNo, key)
+                                .eq(ProductStockReservationDO::getProductId, productId)
+                                .in(ProductStockReservationDO::getStatus, "RESERVED", "CONFIRMED")
+                                .isNull(ProductStockReservationDO::getSalesRecorded))
+                == 1;
     }
 
     @Override
     public int returnedQuantity(String orderNo, Long productId) {
         return stockReservationMapper
-            .selectList(
-                Wrappers.<ProductStockReservationDO>lambdaQuery()
-                    .eq(ProductStockReservationDO::getSourceNo, orderNo)
-                    .eq(ProductStockReservationDO::getProductId, productId)
-                    .eq(ProductStockReservationDO::getStatus, "RETURNED"))
-            .stream()
-            .mapToInt(ProductStockReservationDO::getQuantity)
-            .sum();
+                .selectList(
+                        Wrappers.<ProductStockReservationDO>lambdaQuery()
+                                .eq(ProductStockReservationDO::getSourceNo, orderNo)
+                                .eq(ProductStockReservationDO::getProductId, productId)
+                                .eq(ProductStockReservationDO::getStatus, "RETURNED"))
+                .stream()
+                .mapToInt(ProductStockReservationDO::getQuantity)
+                .sum();
     }
 }

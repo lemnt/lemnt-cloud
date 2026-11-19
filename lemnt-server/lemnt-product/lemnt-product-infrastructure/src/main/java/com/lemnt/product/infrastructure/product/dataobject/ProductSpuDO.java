@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 商品SPU数据对象。
@@ -20,8 +21,7 @@ import java.io.Serializable;
 @TableName("product_spu")
 public class ProductSpuDO implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.AUTO)
     private Long id;
@@ -39,6 +39,16 @@ public class ProductSpuDO implements Serializable {
     private String status;
     private String deliveryTypes;
     private Long deliveryTemplateId;
+
     /** 销量：支付确认事实累计。 */
     private Integer salesCount;
+
+    private Integer virtualSalesCount;
+    private Boolean specType;
+    private Integer giveIntegral;
+    private Boolean subCommissionType;
+    private Long browseCount;
+
+    /** SPU真实创建时间，历史未知保留空值。 */
+    private LocalDateTime createTime;
 }

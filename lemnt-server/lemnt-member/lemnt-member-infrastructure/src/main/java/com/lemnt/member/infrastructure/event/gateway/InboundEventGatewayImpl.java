@@ -7,7 +7,6 @@ import com.lemnt.order.client.dto.OrderStockLineDTO;
 import com.lemnt.order.client.event.AfterSaleCompletedEvent;
 import com.lemnt.order.client.event.OrderClosedEvent;
 import com.lemnt.order.client.event.OrderPaidEvent;
-import com.lemnt.order.client.event.OrderShippedEvent;
 
 import com.alibaba.fastjson2.JSONObject;
 import org.springframework.stereotype.Component;
@@ -69,13 +68,6 @@ public class InboundEventGatewayImpl implements InboundEventGateway {
             event.deductGivePoint(),
             event.ruleVersion(),
             event.fullyRefunded());
-    }
-
-    @Override
-    public InboundEventFacts.Shipped shippedFacts(String payload) {
-        requireFields(payloadObject(payload), "orderNo", "memberId");
-        var event = JsonUtils.toBean(payload, OrderShippedEvent.class);
-        return new InboundEventFacts.Shipped(event.orderNo(), event.memberId());
     }
 
     private JSONObject payloadObject(String payload) {

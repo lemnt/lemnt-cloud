@@ -19,5 +19,6 @@ spring:
         group: ${NACOS_GROUP:DEFAULT_GROUP}
         namespace: ${NACOS_NAMESPACE:}
       discovery:
+        server-addr: ${spring.cloud.nacos.server-addr}
         group: ${NACOS_GROUP:DEFAULT_GROUP}
         namespace: ${NACOS_NAMESPACE:}

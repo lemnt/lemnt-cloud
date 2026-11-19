@@ -106,6 +106,8 @@ export default function SpuPage() {
     { title: '商品名称', dataIndex: 'name' },
     { title: '简介', dataIndex: 'introduction', search: false, ellipsis: true },
     { title: '排序', dataIndex: 'sort', search: false },
+    { title: '最低售价（元）', dataIndex: 'price', search: false },
+    { title: '可用库存', dataIndex: 'stock', search: false },
     {
       title: '分类',
       dataIndex: 'categoryId',

@@ -25,11 +25,11 @@ public class ProductCategoryGatewayImpl implements ProductCategoryGateway {
     @Override
     public List<ProductCategory> categories() {
         var rows =
-            categoryMapper.selectList(
-                Wrappers.<ProductCategoryDO>lambdaQuery()
-                    .orderByAsc(ProductCategoryDO::getSort)
-                    .orderByAsc(ProductCategoryDO::getId)
-                    .last("LIMIT 1001"));
+                categoryMapper.selectList(
+                        Wrappers.<ProductCategoryDO>lambdaQuery()
+                                .orderByAsc(ProductCategoryDO::getSort)
+                                .orderByAsc(ProductCategoryDO::getId)
+                                .last("LIMIT 1001"));
         if (rows.size() > 1000) {
             throw new IllegalStateException("分类超过1000条，请先接入分页分类维护");
         }
@@ -47,14 +47,14 @@ public class ProductCategoryGatewayImpl implements ProductCategoryGateway {
         if (value.id() == null) {
             categoryMapper.insert(row);
         } else if (categoryMapper.update(
-            null,
-            Wrappers.<ProductCategoryDO>lambdaUpdate()
-                .set(ProductCategoryDO::getName, row.getName())
-                .set(ProductCategoryDO::getPicUrl, row.getPicUrl())
-                .set(ProductCategoryDO::getSort, row.getSort())
-                .set(ProductCategoryDO::getStatus, row.getStatus())
-                .eq(ProductCategoryDO::getId, row.getId()))
-            != 1) {
+                        null,
+                        Wrappers.<ProductCategoryDO>lambdaUpdate()
+                                .set(ProductCategoryDO::getName, row.getName())
+                                .set(ProductCategoryDO::getPicUrl, row.getPicUrl())
+                                .set(ProductCategoryDO::getSort, row.getSort())
+                                .set(ProductCategoryDO::getStatus, row.getStatus())
+                                .eq(ProductCategoryDO::getId, row.getId()))
+                != 1) {
             throw new IllegalArgumentException("分类不存在");
         }
         return ProductCatalogConverter.category(row);
@@ -71,8 +71,34 @@ public class ProductCategoryGatewayImpl implements ProductCategoryGateway {
 
     @Override
     public List<ProductCategory> listEnableCategories() {
-        var rows = categoryMapper.selectList(Wrappers.<ProductCategoryDO>lambdaQuery()
-            .eq(ProductCategoryDO::getStatus, "ENABLED"));
+        return listEnableCategories(null);
+    }
+
+    @Override
+    public List<ProductCategory> listEnableCategories(List<Long> ids) {
+        if (ids != null && ids.isEmpty()) return List.of();
+        var rows =
+                categoryMapper.selectList(
+                        Wrappers.<ProductCategoryDO>lambdaQuery()
+                                .eq(ProductCategoryDO::getStatus, "ENABLED")
+                                .in(ids != null, ProductCategoryDO::getId, ids)
+                                .orderByAsc(ProductCategoryDO::getSort)
+                                .orderByAsc(ProductCategoryDO::getId));
         return rows.stream().map(ProductCatalogConverter::category).toList();
+    }
+
+    @Override
+    public List<ProductCategory> enabledChildren(List<Long> parentIds) {
+        if (parentIds.isEmpty()) return List.of();
+        return categoryMapper
+                .selectList(
+                        Wrappers.<ProductCategoryDO>lambdaQuery()
+                                .eq(ProductCategoryDO::getStatus, "ENABLED")
+                                .in(ProductCategoryDO::getParentId, parentIds)
+                                .orderByAsc(ProductCategoryDO::getSort)
+                                .orderByAsc(ProductCategoryDO::getId))
+                .stream()
+                .map(ProductCatalogConverter::category)
+                .toList();
     }
 }

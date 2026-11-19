@@ -12,7 +12,4 @@ public interface InboundEventGateway {
 
     /** 解析售后完成事实。 */
     InboundEventFacts.AfterSaleCompleted afterSaleFacts(String payload);
-
-    /** 解析订单发货事实。 */
-    InboundEventFacts.Shipped shippedFacts(String payload);
 }

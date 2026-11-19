@@ -4,6 +4,8 @@ import {
   ProFormSelect,
   ProFormList,
   ProFormDigit,
+  ProFormDependency,
+  ProFormSwitch,
 } from '@ant-design/pro-components';
 import { Alert, App } from 'antd';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -29,6 +31,11 @@ interface SkuFormValues {
   code: string;
   name: string;
   price: number;
+  marketPrice?: string;
+  costPrice?: string;
+  barCode?: string;
+  firstBrokeragePrice?: string;
+  secondBrokeragePrice?: string;
   stock: number;
   image?: string;
   specSelections?: {
@@ -47,6 +54,10 @@ interface SpuFormValues {
   introduction: string;
   sliderPictures: { url: string }[];
   sort: number;
+  virtualSalesCount?: number;
+  giveIntegral?: number;
+  subCommissionType?: boolean;
+  specType?: 'single' | 'multiple';
   categoryId: string;
   brandId: string;
   description?: string;
@@ -91,6 +102,11 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
       code: sku.code,
       name: sku.name,
       price: sku.price,
+      marketPrice: sku.marketPrice,
+      costPrice: sku.costPrice,
+      barCode: sku.barCode,
+      firstBrokeragePrice: sku.firstBrokeragePrice,
+      secondBrokeragePrice: sku.secondBrokeragePrice,
       stock: sku.stock,
       image: sku.image,
       weight: sku.weight,
@@ -115,14 +131,19 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
               introduction: values.introduction,
               sliderPicUrls: values.sliderPictures.map((row) => row.url),
               sort: values.sort,
+              virtualSalesCount: values.virtualSalesCount,
+              giveIntegral: values.giveIntegral,
+              subCommissionType: values.subCommissionType,
+              specType: values.specType == null ? undefined : values.specType === 'multiple',
               skus: values.skus.map(skuPayload),
             })
           ).data,
         );
       } else {
-        const { sliderPictures, ...fields } = values;
+        const { sliderPictures, specType, ...fields } = values;
         await createSpu({
           ...fields,
+          specType: specType == null ? undefined : specType === 'multiple',
           sliderPicUrls: sliderPictures.map((row) => row.url),
           skus: values.skus.map(skuPayload),
         });
@@ -151,6 +172,9 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
               introduction: value.introduction ?? '',
               sliderPictures: value.sliderPicUrls.map((url) => ({ url })),
               sort: value.sort ?? 0,
+              virtualSalesCount: value.virtualSalesCount ?? undefined,
+              giveIntegral: value.giveIntegral ?? undefined,
+              specType: value.specType == null ? undefined : value.specType ? 'multiple' : 'single',
               deliveryTypes: value.deliveryTypes.length ? value.deliveryTypes : [1],
               deliveryTemplateId: value.deliveryTemplateId ?? undefined,
               description: value.description ?? undefined,
@@ -169,6 +193,11 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
                     specValueName: property.specValueName,
                   })),
                 price: editablePrice(sku.price),
+                marketPrice: sku.marketPrice ?? undefined,
+                costPrice: sku.costPrice ?? undefined,
+                barCode: sku.barCode ?? undefined,
+                firstBrokeragePrice: sku.firstBrokeragePrice,
+                secondBrokeragePrice: sku.secondBrokeragePrice,
                 weight: sku.weight ?? undefined,
                 volume: sku.volume ?? undefined,
                 image: sku.image ?? undefined,
@@ -178,6 +207,10 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
               deliveryTypes: [1],
               sliderPictures: [],
               sort: 0,
+              virtualSalesCount: 0,
+              giveIntegral: 0,
+              subCommissionType: false,
+              specType: 'single',
               skus: [{ stock: 0, specSelections: [] }],
             }
       }
@@ -235,12 +268,26 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
         rules={[{ required: true, whitespace: true, max: 128 }]}
       />
       <ProFormDigit
+        name="virtualSalesCount"
+        label="虚拟展示销量"
+        min={0}
+        max={2147483647}
+        fieldProps={{ precision: 0 }}
+      />
+      <ProFormDigit
         name="sort"
         label="商品排序"
         min={0}
         max={2147483647}
         fieldProps={{ precision: 0 }}
         rules={[{ required: true }]}
+      />
+      <ProFormDigit
+        name="giveIntegral"
+        label="每个订单行赠送积分"
+        min={0}
+        max={2147483647}
+        fieldProps={{ precision: 0 }}
       />
       <ProFormSelect
         name="categoryId"
@@ -293,9 +340,18 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
         />
       </ProFormList>
       <ProFormTextArea name="description" label="商品描述" rules={[{ max: 65535 }]} />
+      <ProFormSwitch name="subCommissionType" label="按 SKU 固定分佣" />
       {value?.skus.some((sku) =>
         sku.specs.some((property) => property.specId == null || property.specValueId == null),
       ) && <Alert type="warning" title="旧商品规格尚未关联字典，请为各SKU选择对应规格后保存" />}
+      <ProFormSelect
+        name="specType"
+        label="规格模式"
+        options={[
+          { label: '单规格', value: 'single' },
+          { label: '多规格', value: 'multiple' },
+        ]}
+      />
       <ProFormList
         name="skus"
         label="SKU（规格名称须一致，每个组合唯一）"
@@ -312,11 +368,46 @@ export function SpuEditor({ value, open, onOpenChange, onSuccess }: SpuEditorPro
             <ProFormDigit
               name="price"
               label="销售价（元）"
-              min={0.01}
+              min={0}
               max={MAX_EDITABLE_PRICE}
               fieldProps={{ precision: 2 }}
               rules={[{ required: true }]}
             />
+            <ProFormDigit
+              name="marketPrice"
+              label="划线价（元）"
+              min={0}
+              fieldProps={{ precision: 2, stringMode: true }}
+            />
+            <ProFormDigit
+              name="costPrice"
+              label="成本价（元）"
+              min={0}
+              fieldProps={{ precision: 2, stringMode: true }}
+            />
+            <ProFormText name="barCode" label="商品条码" rules={[{ max: 64 }]} />
+            <ProFormDependency name={['subCommissionType']} ignoreFormListField>
+              {({ subCommissionType }) =>
+                subCommissionType === true && (
+                  <>
+                    <ProFormDigit
+                      name="firstBrokeragePrice"
+                      label="一级每件佣金（元）"
+                      min={0}
+                      placeholder="未配置按 0"
+                      fieldProps={{ precision: 2, stringMode: true }}
+                    />
+                    <ProFormDigit
+                      name="secondBrokeragePrice"
+                      label="二级每件佣金（元）"
+                      min={0}
+                      placeholder="未配置按 0"
+                      fieldProps={{ precision: 2, stringMode: true }}
+                    />
+                  </>
+                )
+              }
+            </ProFormDependency>
             <ProFormDigit
               name="stock"
               label="初始可用库存"

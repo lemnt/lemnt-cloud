@@ -1,6 +1,5 @@
 package com.lemnt.product.adapter.web.product;
 
-import com.alibaba.excel.EasyExcel;
 import com.lemnt.common.core.domain.R;
 import com.lemnt.common.security.annotation.RequiresPermissions;
 import com.lemnt.product.adapter.web.product.converter.ProductCatalogReqConverter;
@@ -11,6 +10,7 @@ import com.lemnt.product.adapter.web.product.req.*;
 import com.lemnt.product.adapter.web.product.res.*;
 import com.lemnt.product.application.product.executor.*;
 
+import com.alibaba.excel.EasyExcel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
-
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
@@ -52,10 +51,13 @@ public class ProductSpuController {
     public R<ProductSpuPageRes> page(@Valid @ModelAttribute ProductSpuPageReq req) {
         var result = spuPageQueryExe.execute(ProductCatalogReqConverter.page(req));
         return R.page(
-            result.records().stream()
-                .map(ProductCatalogResConverter::spuToProductSpuPageRes)
-                .toList(),
-            result.total());
+                result.records().stream()
+                        .map(
+                                value ->
+                                        ProductCatalogResConverter.spuToProductSpuPageRes(
+                                                value, result.skuTotals().get(value.id())))
+                        .toList(),
+                result.total());
     }
 
     /**
@@ -66,11 +68,9 @@ public class ProductSpuController {
     @RequiresPermissions("product:spu:query")
     public R<List<ProductSpuSimpleRes>> simple(@Valid @ModelAttribute ProductSpuSimpleReq req) {
         return R.ok(
-            spuSimpleListQueryExe
-                .execute(ProductManagementReqConverter.simple(req))
-                .stream()
-                .map(ProductManagementResConverter::simple)
-                .toList());
+                spuSimpleListQueryExe.execute(ProductManagementReqConverter.simple(req)).stream()
+                        .map(ProductManagementResConverter::simple)
+                        .toList());
     }
 
     /**
@@ -81,9 +81,9 @@ public class ProductSpuController {
     @RequiresPermissions("product:spu:query")
     public R<List<ProductSpuBatchRes>> batch(@Valid @ModelAttribute ProductSpuBatchReq req) {
         return R.ok(
-            spuBatchDetailQueryExe.execute(req.ids()).stream()
-                .map(ProductManagementResConverter::batch)
-                .toList());
+                spuBatchDetailQueryExe.execute(req.ids()).stream()
+                        .map(ProductManagementResConverter::batch)
+                        .toList());
     }
 
     /**
@@ -94,9 +94,8 @@ public class ProductSpuController {
     @RequiresPermissions("product:spu:list")
     public R<ProductSpuCountRes> count(@Valid @ModelAttribute ProductSpuCountReq req) {
         return R.ok(
-            ProductManagementResConverter.count(
-                spuCountQueryExe.execute(
-                    ProductManagementReqConverter.counts(req))));
+                ProductManagementResConverter.count(
+                        spuCountQueryExe.execute(ProductManagementReqConverter.counts(req))));
     }
 
     @Operation(summary = "查询SPU与全部SKU详情")
@@ -105,8 +104,8 @@ public class ProductSpuController {
     public R<ProductSpuDetailRes> detail(@PathVariable Long id) {
         var value = spuDetailQueryExe.execute(id);
         return value == null
-            ? R.fail("商品不存在")
-            : R.ok(ProductCatalogResConverter.spuToProductSpuDetailRes(value));
+                ? R.fail("商品不存在")
+                : R.ok(ProductCatalogResConverter.spuToProductSpuDetailRes(value));
     }
 
     @Operation(summary = "原子创建SPU及SKU")
@@ -114,8 +113,8 @@ public class ProductSpuController {
     @RequiresPermissions("product:spu:add")
     public R<ProductSpuCreateRes> create(@Valid @RequestBody ProductSpuCreateReq req) {
         return R.ok(
-            ProductCatalogResConverter.spuToProductSpuCreateRes(
-                spuCreateCmdExe.execute(ProductCatalogReqConverter.create(req))));
+                ProductCatalogResConverter.spuToProductSpuCreateRes(
+                        spuCreateCmdExe.execute(ProductCatalogReqConverter.create(req))));
     }
 
     @Operation(summary = "修改SPU资料，不修改SKU库存")
@@ -139,23 +138,23 @@ public class ProductSpuController {
     @Operation(summary = "导出商品Excel")
     @RequiresPermissions("product:spu:export")
     public ResponseEntity<byte[]> export(@Valid @ModelAttribute ProductSpuExportReq req)
-        throws Exception {
+            throws Exception {
         var rows =
-            spuExportQueryExe.execute(ProductManagementReqConverter.export(req)).stream()
-                .map(ProductManagementResConverter::export)
-                .toList();
+                spuExportQueryExe.execute(ProductManagementReqConverter.export(req)).stream()
+                        .map(ProductManagementResConverter::export)
+                        .toList();
         try (var output = new ByteArrayOutputStream()) {
             EasyExcel.write(output)
-                .autoCloseStream(false)
-                .head(ProductSpuExportRes.class)
-                .sheet("商品")
-                .doWrite(rows);
+                    .autoCloseStream(false)
+                    .head(ProductSpuExportRes.class)
+                    .sheet("商品")
+                    .doWrite(rows);
             return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=products.xlsx")
-                .contentType(
-                    MediaType.parseMediaType(
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-                .body(output.toByteArray());
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=products.xlsx")
+                    .contentType(
+                            MediaType.parseMediaType(
+                                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                    .body(output.toByteArray());
         }
     }
 

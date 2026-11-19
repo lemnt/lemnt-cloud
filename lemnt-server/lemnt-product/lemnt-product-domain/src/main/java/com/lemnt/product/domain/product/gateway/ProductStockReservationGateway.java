@@ -22,11 +22,6 @@ public interface ProductStockReservationGateway {
     ProductStockReservation lock(String key, Long productId);
 
     /**
-     * 无锁读取预占记录，仅用于幂等预检与事务消息回查，不承诺可重复读。
-     */
-    ProductStockReservation find(String key, Long productId);
-
-    /**
      * 保存预占或终止标记。
      */
     void insert(ProductStockReservation value);
@@ -40,4 +35,7 @@ public interface ProductStockReservationGateway {
      * 确认预占状态。
      */
     boolean confirm(String key, Long productId);
+
+    /** 确认预占并记录销量已入账，须与销量更新同事务。 */
+    boolean recordSale(String key, Long productId);
 }

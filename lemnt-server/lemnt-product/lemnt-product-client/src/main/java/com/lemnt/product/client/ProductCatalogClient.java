@@ -1,6 +1,8 @@
 package com.lemnt.product.client;
 
 import com.lemnt.product.client.bo.StockReservationQueryBo;
+import com.lemnt.product.client.dto.ProductBrokeragePriceDTO;
+import com.lemnt.product.client.dto.ProductFixedCommissionDTO;
 import com.lemnt.product.client.dto.ProductSkuBriefDTO;
 import com.lemnt.product.client.dto.ProductSnapshotDTO;
 import com.lemnt.product.client.dto.ProductSpuBriefDTO;
@@ -44,6 +46,12 @@ public interface ProductCatalogClient {
      * 查找批量上架状态。
      */
     List<ProductSnapshotDTO> findOnShelfBatch(List<Long> productIds);
+
+    /** 批量读取已开启固定分佣的 SKU，未配置的固定金额按零返回。 */
+    List<ProductFixedCommissionDTO> fixedCommissions(List<Long> skuIds);
+
+    /** 只返回上架商品及上架 SKU 的分佣预估基础。 */
+    List<ProductBrokeragePriceDTO> brokeragePrices(Long spuId);
 
     /**
      * 取消预留。

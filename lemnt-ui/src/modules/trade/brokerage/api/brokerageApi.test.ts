@@ -60,6 +60,13 @@ it('分销用户、佣金与提现走管理端路径并严格解码', async () =
   });
   mockedRequest.mockResolvedValue({ rows: [record], total: 1 });
   expect((await api.getRecords({ pageNum: 1, pageSize: 20 })).records[0].bizType).toBe(1);
+  mockedRequest.mockResolvedValue({
+    rows: [{ ...record, bizType: 4, price: '-3.25', totalPrice: '6.75' }],
+    total: 1,
+  });
+  const refund = (await api.getRecords({ pageNum: 1, pageSize: 20, bizType: 4 })).records[0];
+  expect(refund.price).toBe('-3.25');
+  expect(refund.totalPrice).toBe('6.75');
   mockedRequest.mockResolvedValue({ rows: [withdraw], total: 1 });
   expect((await api.getWithdraws({ pageNum: 1, pageSize: 20 })).records[0].status).toBe(0);
 });

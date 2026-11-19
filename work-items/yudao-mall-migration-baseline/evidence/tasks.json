@@ -1,6 +1,6 @@
 {
   "createdAt": "2026-11-06T09:36:04+08:00",
-  "status": "B1a_B1b_E001_E002_completed_runtime_blocked",
+  "status": "B1a_B1b_B2a_completed_B2b_B3_B4_partially_implemented",
   "approvedPlanOperationCount": 95,
   "fileTasks": [
     {
@@ -749,11 +749,13 @@
       "dependencies": [
         "V-B1a"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "补分类集合及排序白名单，兼容现有内部构造",
       "planIndex": 38,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F039",
@@ -766,11 +768,13 @@
       "dependencies": [
         "V-B1a"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "启用分类ids过滤及批量启用直接子分类查询契约",
       "planIndex": 39,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F040",
@@ -783,11 +787,13 @@
       "dependencies": [
         "F039"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "Lambda过滤+sort/id排序；批量子类不N+1",
       "planIndex": 40,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F041",
@@ -800,11 +806,14 @@
       "dependencies": [
         "F038"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "转发筛选排序并完整装配已有字段，保留库存/销量写保护",
       "planIndex": 41,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json",
+      "implementationNote": "复用现有实现，无需代码变更；通过筛选转发检查/详情Page回归验证。"
     },
     {
       "id": "F042",
@@ -817,11 +826,13 @@
       "dependencies": [
         "F038"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "分类IN及固定choose排序，列表/count筛选一致；不动态拼字段",
       "planIndex": 42,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F043",
@@ -834,11 +845,13 @@
       "dependencies": [
         "F038"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "补可选分类集合及排序参数",
       "planIndex": 43,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F044",
@@ -856,11 +869,13 @@
         "F042",
         "F041"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "输入校验、分类并集与启用直接子分类扩展",
       "planIndex": 44,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F045",
@@ -874,11 +889,13 @@
         "F039",
         "F040"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "支持可选ids，沿Gateway顺序输出",
       "planIndex": 45,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F046",
@@ -891,11 +908,13 @@
       "dependencies": [
         "V-B1a"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "透出已有SPU简介/轮播/配送，不补历史值",
       "planIndex": 46,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F047",
@@ -908,11 +927,13 @@
       "dependencies": [
         "V-B1a"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "透出已有重量/体积，NULL保持未知",
       "planIndex": 47,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F048",
@@ -926,11 +947,13 @@
         "F046",
         "F047"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "组装已有SPU/SKU字段，B2a不静默改变详情失败语义",
       "planIndex": 48,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F049",
@@ -943,11 +966,13 @@
       "dependencies": [
         "V-B1a"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "新增optional分类集合及排序；中文Schema/校验",
       "planIndex": 49,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F050",
@@ -961,11 +986,13 @@
         "F049",
         "F043"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "HTTP新增参数到本域Qry，保留现有name/页码",
       "planIndex": 50,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F051",
@@ -978,11 +1005,13 @@
       "dependencies": [
         "F045"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "可选ids绑定，查询仍公开且四字段响应保持",
       "planIndex": 51,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F052",
@@ -995,11 +1024,13 @@
       "dependencies": [
         "F046"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "optional展示/配送字段及中文说明",
       "planIndex": 52,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F053",
@@ -1012,11 +1043,13 @@
       "dependencies": [
         "F047"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "重量/体积字段与单位",
       "planIndex": 53,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F054",
@@ -1032,11 +1065,13 @@
         "F046",
         "F047"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "沿现存转换器补字段，不为名称进行无关拆分",
       "planIndex": 54,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F055",
@@ -1065,18 +1100,20 @@
         "F053",
         "F054"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "真实绑定、可选参数/非法排序、NULL/字段输出",
       "planIndex": 55,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F056",
       "kind": "approved_plan_file",
       "batch": "B2a",
-      "path": "lemnt-server/lemnt-product/lemnt-product-start/src/test/java/com/lemnt/product/start/product/CatalogPersistenceTest.java",
-      "operation": "修改",
+      "path": "lemnt-server/lemnt-product/lemnt-product-infrastructure/src/test/java/com/lemnt/product/infrastructure/product/StoreCatalogQueryTest.java",
+      "operation": "新增",
       "complexity": "★★☆",
       "estimate": "30–60人工作业分钟",
       "dependencies": [
@@ -1086,11 +1123,14 @@
         "F044",
         "F048"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "分类/价格排序/筛选一致；保留现有库存/历史语义回归",
       "planIndex": 56,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "planAdjustment": "原start测试源文件在当前HEAD不存在；改在已有H2依赖的infrastructure执行真实Mapper XML与分类Gateway。",
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F057",
@@ -1104,11 +1144,13 @@
         "F050",
         "F054"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "扩展查询入参及已有商品字段解码，banner仍归promotion",
       "planIndex": 57,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F058",
@@ -1121,11 +1163,13 @@
       "dependencies": [
         "F057"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "查询字符串、精确价格、长ID及NULL",
       "planIndex": 58,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F059",
@@ -1138,11 +1182,13 @@
       "dependencies": [
         "F057"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "接入可选排序/分类条件；按已有页面交互增量实现",
       "planIndex": 59,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F060",
@@ -1155,11 +1201,13 @@
       "dependencies": [
         "F059"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "补必要的源选品交互，不换UI框架",
       "planIndex": 60,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F061",
@@ -1172,11 +1220,14 @@
       "dependencies": [
         "F057"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "使用已透出轮播/简介/配送字段",
       "planIndex": 61,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json",
+      "implementationNote": "复用现有实现，无需代码变更；通过筛选转发检查/详情Page回归验证。"
     },
     {
       "id": "F062",
@@ -1189,11 +1240,13 @@
       "dependencies": [
         "F061"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "展示源已有资料；不把未知价格/库存补成0",
       "planIndex": 62,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F063",
@@ -1208,11 +1261,13 @@
         "F062",
         "F058"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "交互和缺省处理，Node不代表原生平台编译",
       "planIndex": 63,
-      "gatePreparation": false
+      "gatePreparation": false,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "F064",
@@ -1929,12 +1984,15 @@
         "F060",
         "F061",
         "F062",
-        "F063"
+        "F063",
+        "B2a-T01"
       ],
-      "status": "pending",
+      "status": "completed",
       "condition": "任务草案已确认，仍须执行指令与前置完成",
       "purpose": "真实Mapper多分类/筛选count一致/price及现有salesCount排序，分类ids与稳定排序，已有字段NULL透出、两端交互与格式回归；不假交付createTime/虚拟销量",
-      "planIndex": null
+      "planIndex": null,
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     },
     {
       "id": "V-B2b",
@@ -2157,6 +2215,23 @@
       "approvedAt": "2026-11-09T11:06:49.757875+08:00",
       "completedAt": "2026-11-09T11:19:37.910141+08:00",
       "executionEvidence": "evidence/b1b-validation.json"
+    },
+    {
+      "id": "B2a-T01",
+      "kind": "supplemental_test",
+      "batch": "B2a",
+      "path": "lemnt-server/lemnt-product/lemnt-product-application/src/test/java/com/lemnt/product/application/product/StoreQueryTest.java",
+      "operation": "新增",
+      "complexity": "★★☆",
+      "dependencies": [
+        "F044",
+        "F045",
+        "F048"
+      ],
+      "status": "completed",
+      "purpose": "分类并集/一次直接子类扩展/非法排序与ID/已有详情原值投影回归",
+      "completedAt": "2026-11-18T11:54:50.192993+08:00",
+      "executionEvidence": "evidence/b2a-validation.json"
     }
   ],
   "manualGates": [
@@ -2314,6 +2389,7 @@
     "F062",
     "V-B1b",
     "F063",
+    "B2a-T01",
     "V-B2a",
     "F064",
     "F065",
@@ -2354,5 +2430,31 @@
   "confirmedAt": "2026-11-06T09:43:31+08:00",
   "confirmation": "确认任务草案",
   "confirmationScope": "Task list, dependencies and parallel strategy only; future gates and execution prerequisites remain unchanged.",
-  "updatedAt": "2026-11-09T11:43:00+08:00"
+  "updatedAt": "2026-11-18T15:15:08+08:00",
+  "followup20261118": {
+    "scope": "商品资料和零元链、预占消息回查、商城文章、充值/会员/订单统计、启动配置",
+    "designReference": "code-summary.md",
+    "runtimeEvidence": [
+      "evidence/mysql-gap-upgrade-20261118.json",
+      "evidence/service-gap-http-20261118.json"
+    ],
+    "fullFeatureAndRuntimeAcceptance": false
+  },
+  "productGift20261118": {
+    "scope": "商品赠积分配置、订单行快照、改价与退款、SKU价格与库存聚合",
+    "scopedBackendTestsPassed": 562,
+    "pickupFollowupTestsPassed": 4,
+    "adminTestsPassed": 321,
+    "mysqlEvidence": "evidence/product-gift-mysql-20261118.json",
+    "realPaymentAndMqAcceptance": false
+  },
+  "orderCommission20261118": {
+    "scope": "商品固定佣金配置、订单行快照、支付入账、退款扣回及解冻",
+    "scopedBackendTestsPassed": 564,
+    "brokerageFollowupTestsPassed": 7,
+    "adminTestsPassed": 321,
+    "miniappTestsPassed": 188,
+    "mysqlEvidence": "evidence/order-commission-mysql-20261118.json",
+    "realPaymentAndMqAcceptance": false
+  }
 }

@@ -1,6 +1,7 @@
 package com.lemnt.order.infrastructure.order.gateway;
 
 import com.lemnt.order.domain.order.gateway.OrderRecoveryGateway;
+import com.lemnt.order.domain.order.model.PaymentRecoveryCandidate;
 import com.lemnt.order.infrastructure.order.mapper.OrderRecoveryMapper;
 
 import org.springframework.stereotype.Component;
@@ -19,6 +20,11 @@ public class OrderRecoveryGatewayImpl implements OrderRecoveryGateway {
 
     private int limit(int size) {
         return Math.min(Math.max(size, 1), 100);
+    }
+
+    @Override
+    public List<PaymentRecoveryCandidate> pendingPaymentConfirmation(long afterId, int size) {
+        return mapper.pendingPaymentConfirmation(afterId, limit(size));
     }
 
     public List<String> pendingPaid(int size) {

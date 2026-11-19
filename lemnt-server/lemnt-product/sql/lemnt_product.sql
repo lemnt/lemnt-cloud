@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS product_stock_reservation (
     source_no VARCHAR(40) NULL COMMENT '库存预占来源业务单号',
     product_id BIGINT NOT NULL COMMENT '商品SKU编号',
     quantity INT NOT NULL COMMENT '商品数量',
-    status VARCHAR(20) NOT NULL DEFAULT 'RESERVED' COMMENT '库存预占状态：RESERVED已预占、CONFIRMED已确认、RELEASED已释放',
+    status VARCHAR(20) NOT NULL DEFAULT 'RESERVED' COMMENT '库存状态：RESERVED预占、CONFIRMED确认、CANCELLED先取消、RELEASED_RESERVED实际释放、RELEASED旧释放、RETURNED售后回补',
+    sales_recorded BOOLEAN NULL COMMENT '本次支付销量已入账为1，历史与未入账记录为空',
     create_by VARCHAR(64) NULL COMMENT '创建人',
     create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     update_by VARCHAR(64) NULL COMMENT '修改人',
@@ -14,7 +15,9 @@ CREATE TABLE IF NOT EXISTS product_stock_reservation (
     PRIMARY KEY(id),
     UNIQUE KEY uk_mall_stock_reservation(reservation_no, product_id),
     KEY idx_mall_stock_reservation_status(status, update_time),
-    CONSTRAINT chk_mall_stock_reservation_quantity CHECK(quantity>0)
+    CONSTRAINT chk_mall_stock_reservation_quantity CHECK(quantity>0),
+    CONSTRAINT chk_stock_reservation_recorded_sales CHECK (
+        sales_recorded IS NULL OR (sales_recorded=TRUE AND status='CONFIRMED'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='库存预占幂等台账';
 
 CREATE TABLE IF NOT EXISTS product_category (
@@ -95,6 +98,14 @@ CREATE TABLE IF NOT EXISTS product_spu (
     image VARCHAR(500) NULL COMMENT '商品图片地址',
     status VARCHAR(20) NOT NULL DEFAULT 'OFF_SHELF' COMMENT '商品状态：ON_SHELF上架、OFF_SHELF下架、RECYCLED回收站、DELETED删除',
     sales_count INT NOT NULL DEFAULT 0 COMMENT '销量：支付确认事实累计，售后回补不冲减',
+    create_time DATETIME NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'SPU创建时间，历史未知为NULL',
+    browse_count BIGINT NOT NULL DEFAULT 0 COMMENT '本系统记录的有效商品详情浏览次数',
+    spec_type BOOLEAN NULL COMMENT 'false单规格、true多规格，历史未知NULL',
+    virtual_sales_count INT NULL COMMENT '虚拟展示销量，历史未知为NULL',
+    give_integral INT NULL COMMENT '每个订单行赠积分，历史未配置为NULL',
+    sub_commission_type BOOLEAN NULL COMMENT '是否采用SKU固定分佣，历史未配置为NULL',
+    CONSTRAINT chk_spu_virtual_sales CHECK (virtual_sales_count >= 0),
+    CONSTRAINT chk_spu_give_integral CHECK (give_integral >= 0),
     UNIQUE KEY uk_mall_spu_code(code),
     KEY idx_mall_spu_status(status,id),
     CONSTRAINT fk_mall_spu_category FOREIGN KEY(category_id) REFERENCES product_category(id),
@@ -124,6 +135,13 @@ CREATE TABLE IF NOT EXISTS product_sku (
     weight DECIMAL(18,6) NULL COMMENT '单件重量，千克',
     volume DECIMAL(18,6) NULL COMMENT '单件体积，立方米',
     price DECIMAL(19,2) NOT NULL COMMENT 'SKU销售单价，单位元',
+    market_price DECIMAL(19,2) NULL COMMENT 'SKU划线价，单位元',
+    cost_price DECIMAL(19,2) NULL COMMENT 'SKU成本价，单位元',
+    bar_code VARCHAR(64) NULL COMMENT '商品条码，与SKU编码独立',
+    sales_count BIGINT NOT NULL DEFAULT 0 COMMENT '本系统SKU支付确认累计件数，售后不冲减',
+    first_brokerage_price DECIMAL(19,2) NULL COMMENT '每件一级固定佣金，单位元',
+    second_brokerage_price DECIMAL(19,2) NULL COMMENT '每件二级固定佣金，单位元',
+    CONSTRAINT chk_product_sku_fixed_commission CHECK(first_brokerage_price>=0 AND second_brokerage_price>=0),
     stock INT NOT NULL DEFAULT 0 COMMENT '当前可用库存',
     status VARCHAR(20) NOT NULL DEFAULT 'OFF_SHELF' COMMENT '商品状态：ON_SHELF上架、OFF_SHELF下架、RECYCLED回收站、DELETED删除',
     create_by VARCHAR(64) NULL COMMENT '创建人',
@@ -133,7 +151,7 @@ CREATE TABLE IF NOT EXISTS product_sku (
     PRIMARY KEY(id),
     UNIQUE KEY uk_mall_product_code(product_code),
     KEY idx_mall_product_status(status),
-    CONSTRAINT chk_mall_product_price CHECK(price>0),
+    CONSTRAINT chk_mall_product_price CHECK(price>=0),
     CONSTRAINT chk_mall_product_stock CHECK(stock>=0),
     CONSTRAINT chk_sku_status CHECK(status IN ('ON_SHELF','OFF_SHELF','RECYCLED','DELETED')),
     spu_id BIGINT NULL COMMENT '商品SPU编号；历史独立商品（legacy standalone）可为空并保持可售，新建SKU应归属SPU',

@@ -18,7 +18,6 @@ class CommerceActivationTest {
             List.of(
                 "OrderPaidConsumer",
                 "OrderClosedConsumer",
-                "OrderShippedConsumer",
                 "AfterSaleCompletedConsumer")) {
             var component = Class.forName("com.lemnt.member.adapter.mq." + name);
             var runner = new ApplicationContextRunner().withUserConfiguration(component);

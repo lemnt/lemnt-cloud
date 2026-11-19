@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS order_info (
     order_no VARCHAR(40) NOT NULL COMMENT '交易订单业务单号',
     member_id BIGINT NOT NULL COMMENT '会员编号',
     total_amount DECIMAL(19,2) NOT NULL COMMENT '订单应付总金额，单位元',
+    payment_prepared_amount DECIMAL(19,2) NULL COMMENT '发起渠道支付前冻结的应付金额，元',
+    confirmed_payment_no VARCHAR(40) NULL COMMENT '核验后确认支付的资金单号，历史与零元单可空',
     use_point BIGINT NOT NULL DEFAULT 0 COMMENT '订单使用积分数',
     give_point BIGINT NOT NULL DEFAULT 0 COMMENT '订单赠送积分数',
     address_id BIGINT NULL COMMENT '会员收货地址编号',
@@ -39,6 +41,8 @@ CREATE TABLE IF NOT EXISTS order_info (
     KEY idx_trade_order_member_created(member_id,create_time),
     KEY idx_trade_order_status_created(status,create_time),
     CONSTRAINT chk_trade_order_total CHECK(total_amount>=0),
+    CONSTRAINT chk_order_payment_prepared_amount CHECK(
+        payment_prepared_amount IS NULL OR (payment_prepared_amount > 0 AND payment_prepared_amount = total_amount)),
     pick_up_store_id BIGINT NULL COMMENT '自提门店编号',
     pick_up_verify_code VARCHAR(8) NULL COMMENT '8位自提核销码',
     UNIQUE KEY uk_trade_order_pick_up_code(pick_up_verify_code),
@@ -187,6 +191,22 @@ CREATE TABLE IF NOT EXISTS order_item (
     CONSTRAINT chk_trade_order_item_quantity CHECK(quantity>0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='交易订单明细';
 
+CREATE TABLE IF NOT EXISTS order_brokerage_line (
+    order_item_id BIGINT NOT NULL PRIMARY KEY COMMENT '订单明细编号',
+    order_id BIGINT NOT NULL COMMENT '订单编号',
+    first_fixed DECIMAL(19,2) NULL COMMENT '建单一级每件固定佣金，元',
+    second_fixed DECIMAL(19,2) NULL COMMENT '建单二级每件固定佣金，元',
+    first_earned DECIMAL(19,2) NULL COMMENT '一级原行实发佣金，元；NULL未入账',
+    second_earned DECIMAL(19,2) NULL COMMENT '二级原行实发佣金，元；NULL未入账',
+    KEY idx_brokerage_line_order(order_id),
+    CONSTRAINT fk_brokerage_line_item FOREIGN KEY(order_item_id) REFERENCES order_item(id),
+    CONSTRAINT fk_brokerage_line_order FOREIGN KEY(order_id) REFERENCES order_info(id),
+    CONSTRAINT chk_brokerage_line_fixed CHECK(
+        (first_fixed IS NULL AND second_fixed IS NULL)
+        OR (first_fixed IS NOT NULL AND second_fixed IS NOT NULL AND first_fixed>=0 AND second_fixed>=0)),
+    CONSTRAINT chk_brokerage_line_earned CHECK(first_earned>=0 AND second_earned>=0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单行佣金配置和原入账快照';
+
 CREATE TABLE IF NOT EXISTS order_inventory_confirmation (
     order_no VARCHAR(40) NOT NULL PRIMARY KEY COMMENT '交易订单业务单号',
     confirmed_at DATETIME NOT NULL COMMENT '库存确认时间',
@@ -264,7 +284,7 @@ CREATE TABLE IF NOT EXISTS order_promotion (
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
     order_id BIGINT NOT NULL COMMENT '所属交易订单主键编号',
     promotion_key VARCHAR(96) NOT NULL COMMENT '订单内稳定优惠标识，用于重放校验与去重',
-    promotion_type VARCHAR(32) NOT NULL COMMENT '优惠来源：SECKILL、COMBINATION、BARGAIN、POINT_EXCHANGE、DISCOUNT、REWARD、COUPON、POINT_DEDUCT、MEMBER_LEVEL、ORDER_GIFT',
+    promotion_type VARCHAR(32) NOT NULL COMMENT '优惠来源：SECKILL、COMBINATION、BARGAIN、POINT_EXCHANGE、DISCOUNT、REWARD、COUPON、POINT_DEDUCT、MEMBER_LEVEL、ORDER_GIFT、PRODUCT_POINT',
     source_id BIGINT NULL COMMENT '来源活动、会员券或等级等编号，按优惠类型解释，无来源编号时为NULL',
     promotion_name VARCHAR(200) NULL COMMENT '下单时优惠名称快照，历史未知为NULL，不读取当前名称回填',
     rule_summary VARCHAR(500) NULL COMMENT '下单时优惠规则展示摘要，历史未知为NULL',

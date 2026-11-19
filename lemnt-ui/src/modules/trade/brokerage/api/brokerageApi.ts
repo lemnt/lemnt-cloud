@@ -57,9 +57,11 @@ function id(v: unknown, field = '编号'): string {
     throw Error(`${field}不合法或已丢失精度`);
   return value;
 }
-function money(v: unknown): string {
+/** 退款和提现扣减是带符号的流水金额，余额仍按非负金额校验。 */
+function money(v: unknown, signed = false): string {
   const value = typeof v === 'number' ? v.toFixed(2) : v;
-  if (typeof value !== 'string' || !/^\d{1,17}\.\d{2}$/.test(value)) throw Error('佣金金额不合法');
+  const pattern = signed ? /^-?\d{1,17}\.\d{2}$/ : /^\d{1,17}\.\d{2}$/;
+  if (typeof value !== 'string' || !pattern.test(value)) throw Error('佣金金额不合法');
   return value;
 }
 function text(v: unknown, field: string): string {
@@ -99,7 +101,7 @@ function record(raw: unknown): BrokerageRecord {
     bizType: v.bizType as number,
     title: text(v.title, '标题'),
     description: optional(v.description, '说明'),
-    price: money(v.price),
+    price: money(v.price, true),
     totalPrice: money(v.totalPrice),
     status: v.status as number,
     frozenDays: v.frozenDays == null ? null : Number(v.frozenDays),

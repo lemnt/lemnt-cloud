@@ -28,36 +28,36 @@ class ControllerMappingTest {
         var controllers = new ArrayList<Object>();
         for (var owner : Arrays.asList("order", "pay"))
             for (var definition :
-                scanner.findCandidateComponents("com.lemnt." + owner + ".adapter")) {
+                    scanner.findCandidateComponents("com.lemnt." + owner + ".adapter")) {
                 var type = Class.forName(definition.getBeanClassName());
                 var constructor = type.getConstructors()[0];
                 var dependencies =
-                    Arrays.stream(constructor.getParameterTypes()).map(t -> mock(t)).toArray();
+                        Arrays.stream(constructor.getParameterTypes()).map(t -> mock(t)).toArray();
                 controllers.add(constructor.newInstance(dependencies));
             }
         var mvc = MockMvcBuilders.standaloneSetup(controllers.toArray()).build();
         var mappings =
-            mvc.getDispatcherServlet()
-                .getWebApplicationContext()
-                .getBean(RequestMappingHandlerMapping.class);
+                mvc.getDispatcherServlet()
+                        .getWebApplicationContext()
+                        .getBean(RequestMappingHandlerMapping.class);
         var actual = new TreeSet<String>();
         mappings.getHandlerMethods()
-            .forEach(
-                (mapping, handler) -> {
-                    var permission = handler.getMethodAnnotation(RequiresPermissions.class);
-                    var permissions =
-                        permission == null ? "" : String.join(",", permission.value());
-                    for (var method : mapping.getMethodsCondition().getMethods()) {
-                        for (var path : mapping.getPatternValues()) {
-                            if (!path.startsWith("/trade/")) continue;
-                            actual.add(method.name() + " " + path + " " + permissions);
-                        }
-                    }
-                });
+                .forEach(
+                        (mapping, handler) -> {
+                            var permission = handler.getMethodAnnotation(RequiresPermissions.class);
+                            var permissions =
+                                    permission == null ? "" : String.join(",", permission.value());
+                            for (var method : mapping.getMethodsCondition().getMethods()) {
+                                for (var path : mapping.getPatternValues()) {
+                                    if (!path.startsWith("/trade/")) continue;
+                                    actual.add(method.name() + " " + path + " " + permissions);
+                                }
+                            }
+                        });
         var expected =
-            new TreeSet<>(
-                Arrays.asList(
-                    """
+                new TreeSet<>(
+                        Arrays.asList(
+                                """
                         GET /trade/admin/config trade:config:query
                         PUT /trade/admin/config trade:config:update
                         POST /trade/admin/delivery/expresses trade:delivery-express:create
@@ -74,6 +74,7 @@ class ControllerMappingTest {
                         GET /trade/admin/delivery/templates/simple trade:delivery-template:query
                         GET /trade/admin/payment-channels trade:payment-channel:list
                         GET /trade/admin/payments trade:payment:list
+                        GET /trade/admin/payments/trend trade:payment:list,trade:wallet-recharge:list
                         GET /trade/admin/payments/{no} trade:payment:query
                         GET /trade/admin/payment-refunds trade:payment-refund:list
                         GET /trade/admin/payment-refunds/{no} trade:payment-refund:query
@@ -93,6 +94,7 @@ class ControllerMappingTest {
                         POST /trade/admin/after-sales/{no}/refuse trade:after-sale:refuse
                         POST /trade/admin/after-sales/{no}/refund trade:after-sale:refund
                         GET /trade/admin/orders/summary trade:order:summary
+                        GET /trade/admin/orders/workload trade:fulfillment:list,trade:after-sale:list,trade:brokerage:list
                         GET /trade/admin/orders/{orderNo}/remark trade:order:query
                         PUT /trade/admin/orders/{orderNo}/remark trade:order:remark
                         POST /trade/admin/orders/{orderNo}/price-adjustment trade:order:update
@@ -120,6 +122,7 @@ class ControllerMappingTest {
                         GET /trade/app/brokerage/user
                         POST /trade/app/brokerage/bind
                         GET /trade/app/brokerage/records
+                        GET /trade/app/brokerage/product-commission
                         GET /trade/app/brokerage/withdraws
                         POST /trade/app/brokerage/withdraws
                         GET /trade/admin/brokerage/users trade:brokerage:list
@@ -171,6 +174,7 @@ class ControllerMappingTest {
                         PUT /trade/admin/recharge-packages/{id} trade:recharge-package:update
                         DELETE /trade/admin/recharge-packages/{id} trade:recharge-package:remove
                         GET /trade/admin/wallet-recharges trade:wallet-recharge:list
+                        GET /trade/admin/wallet-recharges/summary trade:wallet-recharge:list
                         GET /trade/admin/wallet-recharges/{rechargeNo} trade:wallet-recharge:query
                         POST /trade/admin/wallet-recharges/{rechargeNo}/confirm trade:wallet-recharge:confirm
                         POST /trade/admin/wallet-recharges/{rechargeNo}/refund trade:wallet-recharge:refund
@@ -181,9 +185,9 @@ class ControllerMappingTest {
                         GET /trade/admin/wallet-transfers/{transferNo} trade:wallet-transfer:query
                         POST /trade/app/wallet/transfers
                         GET /trade/app/wallet/transfers
-                        
+
                         """
-                        .split("\n")));
+                                        .split("\n")));
         // 文本块会移除行尾空格，空权限与带权限的路由统一去掉行尾空白。
         var normalized = new TreeSet<String>();
         actual.forEach(route -> normalized.add(route.stripTrailing()));

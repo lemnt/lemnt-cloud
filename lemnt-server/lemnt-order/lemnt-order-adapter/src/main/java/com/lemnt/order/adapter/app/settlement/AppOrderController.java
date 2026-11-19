@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
  * 小程序订单查询接口。
  */
 @Tag(name = "小程序订单查询")
-@RestController
+@RestController("appSettlementOrderController")
 @RequestMapping("/mall/app")
 @RequiredArgsConstructor
 public class AppOrderController {

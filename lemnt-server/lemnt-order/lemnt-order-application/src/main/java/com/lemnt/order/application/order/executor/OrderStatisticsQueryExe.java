@@ -1,6 +1,7 @@
 package com.lemnt.order.application.order.executor;
 
 import com.lemnt.order.application.order.dto.OrderStatisticsDTO;
+import com.lemnt.order.application.order.dto.OrderWorkloadDTO;
 import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.model.OrderRules;
 import com.lemnt.order.domain.paymentrefund.gateway.PaymentRefundGateway;
@@ -30,5 +31,12 @@ public class OrderStatisticsQueryExe {
             ordered.orderPayPrice(),
             refunded.refundCount(),
             refunded.refundAmount());
+    }
+
+    /** 待办按当前业务状态汇总，与订单列表筛选独立。 */
+    public OrderWorkloadDTO workload() {
+        var value = orders.workload();
+        return new OrderWorkloadDTO(
+                value.shipments(), value.pickups(), value.afterSales(), value.withdrawals());
     }
 }

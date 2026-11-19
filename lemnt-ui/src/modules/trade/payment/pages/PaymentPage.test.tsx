@@ -38,3 +38,12 @@ it('三个后台菜单component均已注册', () => {
   ])
     expect(pages[key]).toBeDefined();
 });
+it('到账趋势入口同时要求支付和充值列表权限', () => {
+  permissions.clear();
+  permissions.add('trade:payment:list');
+  expect(render(<PaymentPage />)).not.toContain('到账趋势');
+  permissions.add('trade:wallet-recharge:list');
+  expect(render(<PaymentPage />)).toContain('到账趋势');
+  permissions.add('trade:payment-refund:list');
+  expect(render(<PaymentRefundPage />)).not.toContain('到账趋势');
+});

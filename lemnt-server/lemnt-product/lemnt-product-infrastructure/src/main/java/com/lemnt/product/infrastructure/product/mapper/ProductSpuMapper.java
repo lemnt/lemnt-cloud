@@ -1,6 +1,7 @@
 package com.lemnt.product.infrastructure.product.mapper;
 
 import com.lemnt.product.domain.product.model.ProductCatalogFilter;
+import com.lemnt.product.domain.product.model.ProductSkuTotals;
 import com.lemnt.product.domain.product.model.StoreFilter;
 import com.lemnt.product.infrastructure.product.dataobject.ProductSpuDO;
 import com.lemnt.product.infrastructure.product.dataobject.StoreProductDO;
@@ -33,6 +34,9 @@ public interface ProductSpuMapper extends BaseMapper<ProductSpuDO> {
      */
     long storeCatalogCount(StoreFilter filter);
 
+    /** 当前页仅做一次 SKU 聚合，排除已删除的规格。 */
+    List<ProductSkuTotals> skuTotals(@Param("spuIds") List<Long> spuIds);
+
     /**
      * 可见。
      */
@@ -42,13 +46,13 @@ public interface ProductSpuMapper extends BaseMapper<ProductSpuDO> {
      * 按SKU真实库存聚合进行库存分组分页，分页总数由MyBatis Plus计算。
      */
     Page<ProductSpuDO> selectStockPage(
-        Page<ProductSpuDO> page,
-        @Param("filter") ProductCatalogFilter filter,
-        @Param("alertStock") int alertStock);
+            Page<ProductSpuDO> page,
+            @Param("filter") ProductCatalogFilter filter,
+            @Param("alertStock") int alertStock);
 
     /**
      * 复杂库存聚合计数；普通CRUD继续使用BaseMapper。
      */
     long countStockSpus(
-        @Param("filter") ProductCatalogFilter filter, @Param("alertStock") int alertStock);
+            @Param("filter") ProductCatalogFilter filter, @Param("alertStock") int alertStock);
 }

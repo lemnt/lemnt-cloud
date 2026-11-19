@@ -168,4 +168,27 @@ public class OutboxPersistenceTest {
         assertFalse(outbox.sent(failed));
         assertTrue(outbox.sent(retried));
     }
+
+    @Test
+    void retiredFulfillmentMessagesRemainStoredAndDoNotBlockActiveMessages() {
+        jdbc.update(
+                """
+                INSERT INTO order_message_outbox
+                    (event_no,event_type,business_key,aggregate_no,schema_version,payload,payload_hash,status,next_retry_at)
+                VALUES
+                    ('OLD1','ORDER_SHIPPED','O1','O1',1,'{}','legacy','PENDING',CURRENT_TIMESTAMP),
+                    ('OLD2','ORDER_COMPLETED','O1','O1',1,'{}','legacy','FAILED',CURRENT_TIMESTAMP)
+                """);
+        enqueue("{}");
+        var current = outbox.claim(1).get(0);
+        assertEquals("ORDER_PAID", current.eventType());
+        assertFalse(outbox.replay("ORDER_SHIPPED", "O1"));
+        assertFalse(outbox.retryFailed("OLD2"));
+        assertTrue(outbox.claim(1).isEmpty());
+        assertEquals(
+                2,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM order_message_outbox WHERE event_no IN ('OLD1','OLD2')",
+                        Integer.class));
+    }
 }

@@ -107,6 +107,15 @@ public final class SettlementRules {
                             .append(':')
                             .append(entry.getValue()));
         }
+        // 赠积分总额相同也可能来自不同订单行，报价必须绑定每个商品的赠送值。
+        quote.promotions().stream()
+            .filter(promotion -> "PRODUCT_POINT".equals(promotion.promotionType()))
+            .sorted(Comparator.comparing(SettlementPromotion::promotionKey))
+            .forEach(promotion ->
+                value.append("|product-point:")
+                    .append(promotion.promotionKey())
+                    .append(':')
+                    .append(promotion.givePoint()));
         return fingerprint(
             value.append('|')
                 .append(quote.usePoint())

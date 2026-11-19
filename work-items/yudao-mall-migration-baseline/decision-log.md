@@ -63,3 +63,31 @@
 - dev中的四个拆分服务配置及commerce-mq.yaml精确读取均404，共享MQ地址非本机且未连接。lemnt空间另有历史配置，未混用或改写。
 - 数据库/Redis认证问题已解除，但专用空库、Redis隔离及中间件配置操作范围仍需确认。没有DDL、业务数据查询、Redis键写入/清理、配置发布或服务启动，G-ENV不整体放行。
 - 证据：[在线配置脱敏摘录](evidence/nacos-config-read-20261109-115031.json)、[本地认证验证](evidence/nacos-local-connectivity-20261109-115150.json)。
+
+## 专用验收空库建立授权（2026-11-17）
+
+- 用户原文：“允许新建空库”，范围为上轮列出的6个`lemnt_migration_local_*`库；本项仅授权`CREATE DATABASE`，不授权DROP、建表或执行初始化脚本。
+- 在本地`mysql8`（127.0.0.1:3306）逐一先查同名库，6个均不存在，故创建6个新库（utf8mb4），核验表数量全为0；原有`lemnt_system`、`lemnt_member`、`ad_system`等未触碰。凭据仅进程内存使用。
+- 下一步初始化DDL需明确授权后执行。当前`lemnt_migration_local_*`尚未发布到任何Nacos Data ID，服务未启动；专用库就绪不等于E003完成。
+
+## 初始化SQL导入结果（2026-11-17）
+
+- 用户原文：“允许导入初始化SQL”。范围限六个基础初始化脚本落到各自专用库；`lemnt-server/sql/V*.sql`为历史升级记录，未执行。
+- 脚本核对：6个文件均无`USE`/`CREATE DATABASE`，表名不带库前缀，`DROP TABLE`只影响命令行指定的目标库。首次尝试因`--defaults-extra-file=/dev/stdin`与SQL的stdin冲突在选项解析阶段退出，**未执行任何DDL**；改用容器内0700权限临时凭据文件后成功，执行完毕即删除，凭据未进入仓库或证据。
+- 导入结果：system 17、member 13、product 11、promotion 23、order 23、pay 13，与脚本`CREATE TABLE`数一致。
+- **重要发现：该`mysql8`不是可丢弃实例**，同一实例还承载`lemnt_system`、`lemnt_member`、`lemnt_mall`、`lemnt_trade`、`ad_system`、`nacos_server`等库。导入前后逐库表数比对：非专用库**零变化**，无新增库；但表级差异未比对，共享实例仍建议后续改用独立数据目录。
+- 专用库尚未被任何Nacos Data ID引用，Redis隔离与RocketMQ未确认，服务未启动；E003保持未完成。
+- 证据：[导入前后表数比对](evidence/local-schema-initialization-20261117-170311.json)。
+
+## Nacos配置发布结果（2026-11-17）
+
+- 用户原文：“允许发布Nacos配置”。按最小范围执行：只新建dev/DEFAULT_GROUP中缺失的Data ID，内容逐字取自`docs/config`模板（数据源与MQ地址均为环境变量占位，无凭据入库），不覆盖、不删除既有配置。
+- 接口要点：`POST /nacos/v3/admin/cs/config` 的目标空间参数名是 **`namespaceId`**；传 `namespace` 会被忽略并写入 **public**。`accessToken` 须作为查询参数，放表单会返回403（内层401 User not found）。
+- 已发布到dev（4个新建，回读逐字一致，86→90）：`commerce-mq.yaml`、`lemnt-promotion.yaml`、`lemnt-order.yaml`、`lemnt-pay.yaml`；第5个`lemnt-product.yaml`经单独授权后覆盖占位（计数不变）。五个拆分服务验收配置在dev/DEFAULT_GROUP全部就绪。
+- **遗留待决**：
+  1. ~~早前用错误参数产生的两个public副本待清理~~ **已按用户“删除这两份”授权清理完毕**：删除前逐字比对模板并确认dev同名项存在，DELETE成功后public恢复1903（与本会话写入前一致），dev仍90、lemnt仍5，四个已发布Data ID回读逐字一致。
+  2. ~~`dev/DEFAULT_GROUP/lemnt-product.yaml` 为2字节占位 `a:`，未覆盖~~ **已按用户“覆盖它”授权更新**：覆盖前留档原内容`a:`（证据含回滚参数），POST后回读逐字等于模板、三个`PRODUCT_DB_*`占位齐备；dev计数仍90，public/lemnt零变化且未泄漏public副本，其余9个Data ID内容逐字节未变。
+- 发布后启动前置：promotion/order/pay须显式设 `NACOS_NAMESPACE=dev`（默认空即public），gateway/auth/system/member/product用 `NACOS_HOST/NACOS_PORT` + 构建profile dev；四个拆分服务与member还需注入 `{服务}_DB_URL/USERNAME/PASSWORD`、`ROCKETMQ_NAME_SERVER`（commerce-mq无默认值，未设会解析失败）、`SECURITY_TOKEN_SECRET`（auth与gateway同值、UTF-8至少64字节）。副作用开关默认关闭，未开启旧任务入口。
+- 另需留意的存量差异：`docs/config/commerce-mq.yaml` 注释称由 product/promotion/order/pay/member 共同导入，实际 `lemnt-product-start` 的 `config.import` 未包含该Data ID（member/promotion/order/pay 均有）。本轮未改动该文件，属迁移后续核对项。
+- 仍未完成：Redis仍共用DB 0、RocketMQ未确认、服务未启动、页面与业务链路未执行；**E003保持blocked，G-ENV未整体通过**。
+- 证据：[发布记录与计数比对](evidence/nacos-config-publication-20261117-172058.json)、[误建副本清理核验](evidence/nacos-stray-config-cleanup-20261117-172911.json)、[product配置覆盖核验](evidence/nacos-product-config-overwrite-20261117-174223.json)。

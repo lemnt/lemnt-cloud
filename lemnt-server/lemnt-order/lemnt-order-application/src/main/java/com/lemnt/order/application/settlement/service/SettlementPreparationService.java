@@ -114,7 +114,7 @@ public class SettlementPreparationService {
             if (product == null || product.stock() == null || product.stock() < entry.getValue()) {
                 throw new IllegalArgumentException("商品已下架或库存不足：" + entry.getKey());
             }
-            var unit = SettlementRules.money(product.price(), false);
+            var unit = SettlementRules.money(product.price(), true);
             items.add(
                 new SettlementItem(
                     product.id(),
@@ -182,19 +182,8 @@ public class SettlementPreparationService {
         String fingerprint,
         SettlementQuote quote,
         List<CartReference> references) {
-        return persist(memberId, requestNo, fingerprint, quote, false, references);
-    }
-
-    private SettlementOrder persist(
-        Long memberId,
-        String requestNo,
-        String fingerprint,
-        SettlementQuote quote,
-        boolean allowZero,
-        List<CartReference> references) {
-        if (!allowZero && quote.payableAmount().signum() <= 0) {
-            throw new IllegalArgumentException("当前暂不支持0元结算，请更换优惠券");
-        }
+        // 零元订单仍先持久化并完成库存预占，由订单服务按零金额确认支付。
+        SettlementRules.money(quote.payableAmount(), true);
         String orderNo =
             "TR"
                 + UUID.randomUUID()
@@ -260,7 +249,7 @@ public class SettlementPreparationService {
         memberValidationService.requireActive(memberId);
         var quote = quoteSupplier.get();
         return new SettlementPreparationResult(
-            persist(memberId, key, fingerprint, quote, true, references), true);
+            persist(memberId, key, fingerprint, quote, references), true);
     }
 
     /**

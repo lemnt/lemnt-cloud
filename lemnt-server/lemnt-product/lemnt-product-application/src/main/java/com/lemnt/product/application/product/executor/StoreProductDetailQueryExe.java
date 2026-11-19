@@ -1,7 +1,9 @@
 package com.lemnt.product.application.product.executor;
 
+import com.lemnt.product.application.product.cmd.ProductBrowseHistoryCreateCmd;
 import com.lemnt.product.application.product.dto.StoreDetailDTO;
 import com.lemnt.product.application.product.dto.StoreSkuDTO;
+import com.lemnt.product.application.product.service.ProductBrowseHistoryService;
 import com.lemnt.product.application.product.service.ProductCatalogService;
 import com.lemnt.product.domain.product.gateway.ProductSpuGateway;
 import com.lemnt.product.domain.product.model.ProductCatalogValidation;
@@ -21,6 +23,7 @@ import java.math.RoundingMode;
 public class StoreProductDetailQueryExe {
     private final ProductCatalogService catalogService;
     private final ProductSpuGateway productSpuGateway;
+    private final ProductBrowseHistoryService browseHistory;
 
     private String money(BigDecimal v) {
         return v.setScale(2, RoundingMode.UNNECESSARY).toPlainString();
@@ -29,44 +32,60 @@ public class StoreProductDetailQueryExe {
     /**
      * 执行门店目录查询。
      */
-    public StoreDetailDTO execute(Long id) {
+    public StoreDetailDTO execute(Long id, Long memberId) {
         ProductCatalogValidation.id(id);
         var v = catalogService.product(id);
-        return v == null
-            ? null
-            : new StoreDetailDTO(
-            v.id(),
-            v.name(),
-            v.categoryId(),
-            v.brandId(),
-            v.description(),
-            v.image(),
-            v.skus().stream()
-                .map(
-                    s ->
-                        new StoreSkuDTO(
-                            s.id(),
-                            s.name(),
-                            money(s.price()),
-                            s.stock(),
-                            s.image(),
-                            s.specs() == null
-                                ? null
-                                : s.specs().stream()
-                                .map(
-                                    property ->
-                                        new StoreSkuDTO
-                                            .Spec(
-                                            property
-                                                .specId(),
-                                            property
-                                                .specName(),
-                                            property
-                                                .specValueId(),
-                                            property
-                                                .specValueName()))
-                                .toList()))
-                .toList(),
-            productSpuGateway.salesCount(v.id()));
+        if (v == null || !productSpuGateway.recordBrowse(id)) {
+            return null;
+        }
+        // 公开浏览都累计次数，足迹只归属网关认证的当前会员。
+        if (memberId != null) {
+            browseHistory.create(new ProductBrowseHistoryCreateCmd(memberId, id));
+        }
+        int sales = productSpuGateway.salesCount(v.id());
+        return new StoreDetailDTO(
+                v.id(),
+                v.name(),
+                v.categoryId(),
+                v.brandId(),
+                v.description(),
+                v.image(),
+                v.skus().stream()
+                        .map(
+                                s ->
+                                        new StoreSkuDTO(
+                                                s.id(),
+                                                s.name(),
+                                                money(s.price()),
+                                                s.stock(),
+                                                s.image(),
+                                                s.specs() == null
+                                                        ? null
+                                                        : s.specs().stream()
+                                                                .map(
+                                                                        property ->
+                                                                                new StoreSkuDTO
+                                                                                        .Spec(
+                                                                                        property
+                                                                                                .specId(),
+                                                                                        property
+                                                                                                .specName(),
+                                                                                        property
+                                                                                                .specValueId(),
+                                                                                        property
+                                                                                                .specValueName()))
+                                                                .toList(),
+                                                s.weight(),
+                                                s.volume(),
+                                                s.marketPrice() == null
+                                                        ? null
+                                                        : money(s.marketPrice())))
+                        .toList(),
+                sales,
+                v.introduction(),
+                v.sliderPicUrls(),
+                v.deliveryTypes(),
+                v.deliveryTemplateId(),
+                v.virtualSalesCount() == null ? null : (long) sales + v.virtualSalesCount());
     }
 }

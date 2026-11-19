@@ -21,13 +21,51 @@
         <result property="updateTime" column="update_time"/>
         <result property="weight" column="weight"/>
         <result property="volume" column="volume"/>
+        <result property="marketPrice" column="market_price"/>
+        <result property="costPrice" column="cost_price"/>
+        <result property="barCode" column="bar_code"/>
+        <result property="salesCount" column="sales_count"/>
+        <result property="firstBrokeragePrice" column="first_brokerage_price"/>
+        <result property="secondBrokeragePrice" column="second_brokerage_price"/>
     </resultMap>
 
+    <resultMap id="FixedCommissionResult" type="com.lemnt.product.domain.product.model.ProductFixedCommission">
+        <constructor>
+            <arg column="sku_id" javaType="java.lang.Long"/>
+            <arg column="first_price" javaType="java.math.BigDecimal"/>
+            <arg column="second_price" javaType="java.math.BigDecimal"/>
+        </constructor>
+    </resultMap>
+    <resultMap id="BrokeragePriceResult" type="com.lemnt.product.domain.product.model.ProductBrokeragePrice">
+        <constructor>
+            <arg column="price" javaType="java.math.BigDecimal"/>
+            <arg column="first_fixed" javaType="java.math.BigDecimal"/>
+        </constructor>
+    </resultMap>
 
     <sql id="baseColumn">
         id, spu_id, specs, variant_key, product_code, name, description, main_image, price, stock, status, create_by,
-        create_time, update_by, update_time, weight, volume
+        create_time, update_by, update_time, weight, volume, market_price, cost_price, bar_code, sales_count,
+        first_brokerage_price, second_brokerage_price
     </sql>
+
+    <select id="fixedCommissions" resultMap="FixedCommissionResult">
+        SELECT k.id AS sku_id,
+               COALESCE(k.first_brokerage_price, 0.00) AS first_price,
+               COALESCE(k.second_brokerage_price, 0.00) AS second_price
+        FROM product_sku k
+        JOIN product_spu s ON s.id=k.spu_id
+        WHERE s.sub_commission_type=TRUE AND s.status &lt;&gt; 'DELETED' AND k.status &lt;&gt; 'DELETED'
+        AND k.id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </select>
+
+    <select id="brokeragePrices" resultMap="BrokeragePriceResult">
+        SELECT k.price,
+               CASE WHEN s.sub_commission_type=TRUE THEN COALESCE(k.first_brokerage_price, 0.00) END AS first_fixed
+        FROM product_sku k JOIN product_spu s ON s.id=k.spu_id
+        WHERE s.id=#{spuId} AND s.status='ON_SHELF' AND k.status='ON_SHELF'
+    </select>
 
 
     <sql id="productSellable">

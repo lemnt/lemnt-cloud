@@ -117,7 +117,9 @@ class OrderAdjustmentServiceTest {
                         new OrderAdjustPriceCmd(
                             "TR1", new BigDecimal("80.00"), 9L)));
         assertEquals("订单已生成支付单，不能调价，请取消订单后重新下单", exception.getMessage());
-        verifyNoInteractions(items, orders, logs);
+        verify(orders).paymentPreparedAmount("TR1");
+        verifyNoMoreInteractions(orders);
+        verifyNoInteractions(items, logs);
     }
 
     @Test

@@ -222,7 +222,7 @@ ALTER TABLE product_sku
 
 ## 10. MQ设计
 
-### 10.1 当前消息拓扑（不是新建协议）
+### 10.1 当前消息拓扑
 
 | Topic | 当前生产者 | 当前承接方 | B3需验证 |
 |---|---|---|---|
@@ -231,11 +231,8 @@ ALTER TABLE product_sku
 | ORDER_PAID | order | product/promotion/member | 库存确认、权益效果及既定销量一次 |
 | ORDER_CLOSED | order | pay/product/promotion/member | 支付关闭、库存/券/积分恢复 |
 | AFTER_SALE_COMPLETED | order | product/promotion/member | 按原单件数/冻结权益处理，不重算历史配置 |
-| ORDER_SHIPPED | order | member等实际消费者 | 规则与发货事实、不可被提前赠送 |
-| ORDER_COMPLETED | order | promotion | 拼团等完成事实 |
-| STOCK_PRE_RESERVED | product | promotion | 当前仅事实核对，不再次扣活动库存 |
 
-现有部分消费者配置最多16次重消费，耗尽转broker死信；不能把该数字自动视为所有消息/事务回查的统一策略。设计无新增Topic、消费者组、通用重试平台。
+商品预占由商品库本地事务提交；履约状态和日志在订单库保存。现有部分消费者配置最多16次重消费，耗尽转broker死信；不能把该数字自动视为所有消息/事务回查的统一策略。设计无新增Topic、消费者组、通用重试平台。
 
 ### 10.2 去本地消息表的门控
 

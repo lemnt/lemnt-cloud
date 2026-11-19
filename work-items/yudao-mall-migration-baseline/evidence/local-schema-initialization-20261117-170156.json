@@ -1,0 +1,101 @@
+{
+  "capturedAt": "2026-11-17T17:01:55.894715+08:00",
+  "approvalQuote": "允许导入初始化SQL",
+  "scope": "Base initialization script applied to its dedicated lemnt_migration_local_* database only; historical V* upgrade scripts not executed.",
+  "targetContainer": "mysql8",
+  "secretsPersisted": false,
+  "imported": [
+    {
+      "database": "lemnt_migration_local_system",
+      "script": "lemnt-server/sql/lemnt_system.sql",
+      "importExitCode": 1,
+      "expectedCreateTableStatements": 17,
+      "tableCountAfter": 0,
+      "status": "failed",
+      "errorFirstLine": "mysql: [ERROR] Found option without preceding group in config file /dev/stdin at line 1."
+    }
+  ],
+  "allSchemasAfter": [
+    {
+      "schema": "ad_dsp",
+      "tables": 7
+    },
+    {
+      "schema": "ad_system",
+      "tables": 17
+    },
+    {
+      "schema": "ai_rec_test",
+      "tables": 5
+    },
+    {
+      "schema": "go_blog",
+      "tables": 3
+    },
+    {
+      "schema": "information_schema",
+      "tables": 79
+    },
+    {
+      "schema": "lemnt_blog",
+      "tables": 3
+    },
+    {
+      "schema": "lemnt_mall",
+      "tables": 35
+    },
+    {
+      "schema": "lemnt_member",
+      "tables": 18
+    },
+    {
+      "schema": "lemnt_migration_local_member",
+      "tables": 0
+    },
+    {
+      "schema": "lemnt_migration_local_order",
+      "tables": 0
+    },
+    {
+      "schema": "lemnt_migration_local_pay",
+      "tables": 0
+    },
+    {
+      "schema": "lemnt_migration_local_product",
+      "tables": 0
+    },
+    {
+      "schema": "lemnt_migration_local_promotion",
+      "tables": 0
+    },
+    {
+      "schema": "lemnt_migration_local_system",
+      "tables": 0
+    },
+    {
+      "schema": "lemnt_system",
+      "tables": 17
+    },
+    {
+      "schema": "lemnt_trade",
+      "tables": 27
+    },
+    {
+      "schema": "mysql",
+      "tables": 38
+    },
+    {
+      "schema": "nacos_server",
+      "tables": 13
+    },
+    {
+      "schema": "performance_schema",
+      "tables": 111
+    },
+    {
+      "schema": "sys",
+      "tables": 101
+    }
+  ],
+  "existingBusinessDatabasesTableCountsUnchanged": true
+}

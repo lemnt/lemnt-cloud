@@ -2,6 +2,7 @@ import { request } from '@/api/request';
 import {
   memberId,
   decodeProfile,
+  decodeStatistics,
   decodePage,
   decodeMetadata,
   decodeAddress,
@@ -26,6 +27,24 @@ import type {
   MemberSignConfigValues,
 } from '../types';
 const user = (id: string) => `/member/member-users/${memberId(id)}`;
+
+export interface MemberStatisticsRange {
+  from: string;
+  to: string;
+}
+
+export interface MemberDistribution {
+  value: number | null;
+  count: number;
+}
+
+/** 统计使用服务端全量计数，日期只作用于注册趋势。 */
+export async function getMemberStatistics(params: MemberStatisticsRange) {
+  return decodeStatistics(
+    (await request<unknown>({ url: '/member/member-users/statistics', params })).data,
+  );
+}
+
 export async function getMembers(q: MemberUserPageQuery) {
   return decodePage(
     await request<unknown>({

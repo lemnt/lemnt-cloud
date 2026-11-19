@@ -1,5 +1,17 @@
 # 本地运行验收只读预检
 
+## 2026-11-18 在线复核
+
+使用已授权的本地Nacos读取及数据库/Redis只读操作复核：六个专用库已完成初始化，表数依次为system 17、member 13、product 11、promotion 23、order 23、pay 13，与11月17日导入记录一致。不能再将它们作为空库重新初始化。
+
+dev/DEFAULT_GROUP中的product、promotion、order、pay及commerce-mq五个配置回读均与当前docs/config模板逐字一致。模板中的数据库、Nacos及MQ变量仍须由启动环境注入；回读一致不代表数据源已切换。
+
+Redis认证及PING通过，当前公共配置仍为DB 0。未读取或写入任何Redis键。当前Docker无RocketMQ容器，9876/10911未监听；8080、9100、9110、9140–9170、9200也未监听。真实服务启动、RPC/HTTP及业务验收仍未执行。
+
+建议后续使用专用Redis实例（映射主机6380）和专用RocketMQ实例（9876/10911），避免验收服务写入共享DB 0或连接历史远端MQ。实例建立与服务启动的具体操作范围明确后，启动配置需指向六个现有专用库、统一dev空间、显式关闭旧任务与消息副作用；禁止重新导入初始化脚本。
+
+本轮未执行DDL、发布配置或启动容器/服务。证据：[在线复核](evidence/local-runtime-preflight-20261118.json)。E003/E004保持未通过。
+
 > 检查日期：2026-11-09；目标 HEAD：`12745a285d36869f2005d9f4ffdada93351ec1e4`。
 > 当前工作区已有 B1a/B1b 未提交改动。本次仅检查环境，不启动中间件、不建库、不执行 DDL、不发布 Nacos 配置、不读取凭据值。
 
@@ -28,12 +40,14 @@
 
 ### 注册配置存在两种入口，不能只设置一套变量
 
-- gateway/auth/system/member 使用 `NACOS_HOST` / `NACOS_PORT`。namespace 由构建占位符 `@profile.active@` 决定，group 为 `DEFAULT_GROUP`；配置导入 URL 也带 namespace/group。
-- product/promotion/order/pay 使用 `NACOS_SERVER_ADDR` / `NACOS_NAMESPACE` / `NACOS_GROUP`。默认 namespace 为空，不能假设自动进入旧服务使用的 `dev`。
-- 四个拆分服务的配置模板同时将上述 namespace/group 用于 Dubbo 注册。
-- 在隔离验收中，必须显式让两套入口指向同一个已批准的 Nacos 实例及隔离空间，并核对最终构建资源和实际注册结果。只设置 `SPRING_PROFILES_ACTIVE` 或 `NACOS_NAMESPACE` 不足以证明所有服务一致。
+- gateway/auth/system/member/**product** 使用 `NACOS_HOST` / `NACOS_PORT`。namespace 由构建占位符 `@profile.active@`（默认dev）决定，group 为 `DEFAULT_GROUP`；配置导入URL也带 namespace/group。
+- **promotion/order/pay** 使用 `NACOS_SERVER_ADDR` / `NACOS_NAMESPACE` / `NACOS_GROUP`，且 `config.import` 未带 namespace 参数；默认 `NACOS_NAMESPACE` 为空即 public，不会自动进入 dev。
+- 上述三个服务的配置模板同时将 namespace/group 用于 Dubbo 注册；member 的 Dubbo注册地址则由 `NACOS_HOST/NACOS_PORT` + 构建 profile 决定。
+- 隔离验收必须显式让两套入口指向同一 Nacos 实例及同一空间：设置 `NACOS_NAMESPACE=dev`（或专用空间）覆盖 promotion/order/pay，并核对最终构建资源和实际注册结果。只设 `SPRING_PROFILES_ACTIVE` 或只设 `NACOS_HOST` 不足以覆盖全部服务。
 
-来源：`lemnt-server/lemnt-gateway/src/main/resources/application.yaml`、各服务 `*-start/src/main/resources/application.yaml`、`docs/config/lemnt-{product,promotion,order,pay}.yaml`。
+来源：`lemnt-server/lemnt-{gateway,auth,system,member,product,promotion,order,pay}*/src/main/resources/application.yaml`、`docs/config/lemnt-{product,promotion,order,pay}.yaml`。
+
+> 校正说明：本节初稿曾把 product 归入 `NACOS_SERVER_ADDR` 入口，实为 `NACOS_HOST` + 构建 profile；发布配置时已按逐文件核对结果修正。
 
 ### 数据源变量按模板填写
 
@@ -72,3 +86,45 @@
 当前已通过的范围仅为本地MySQL/Redis认证连通性，不代表lemnt_system/lemnt_member存在、为空、可重建或业务运行验收通过。专用验收空库、Redis隔离、Nacos配置发布及RocketMQ仍未获完整操作授权，G-ENV及E003不自动标记完成。
 
 证据：[脱敏配置摘录](evidence/nacos-config-read-20261109-115031.json)、[只读认证检查](evidence/nacos-local-connectivity-20261109-115150.json)。
+
+## 7. 专用验收空库建立结果（2026-11-17）
+
+经“允许新建空库”授权，在本地mysql8逐一确认不存在同名库后创建6个utf8mb4空库，核验表数量全部为0：
+
+```text
+lemnt_migration_local_system
+lemnt_migration_local_member
+lemnt_migration_local_product
+lemnt_migration_local_promotion
+lemnt_migration_local_order
+lemnt_migration_local_pay
+```
+
+本轮仅执行`CREATE DATABASE`，未执行建表、初始化脚本、DROP或数据写入，也不改变已有业务库。
+
+Redis仍使用本机6379、DB 0，隔离策略未确认；RocketMQ地址仍为共享配置中的非本机值，未连接。六个库尚未被Nacos中的Data ID引用，服务未启动，E003仍未通过。
+
+证据：[空库创建结果](evidence/local-empty-databases-20261117-165815.json)。
+
+## 8. 初始化SQL导入结果（2026-11-17）
+
+经“允许导入初始化SQL”授权，六个基础脚本已分别导入对应专用库，表数与脚本`CREATE TABLE`数一致：
+
+| 专用库 | 初始化脚本 | 表数 |
+|---|---|---:|
+| `lemnt_migration_local_system` | `lemnt-server/sql/lemnt_system.sql` | 17 |
+| `lemnt_migration_local_member` | `lemnt-server/lemnt-member/sql/lemnt_member.sql` | 13 |
+| `lemnt_migration_local_product` | `lemnt-server/lemnt-product/sql/lemnt_product.sql` | 11 |
+| `lemnt_migration_local_promotion` | `lemnt-server/lemnt-promotion/sql/lemnt_promotion.sql` | 23 |
+| `lemnt_migration_local_order` | `lemnt-server/lemnt-order/sql/lemnt_order.sql` | 23 |
+| `lemnt_migration_local_pay` | `lemnt-server/lemnt-pay/sql/lemnt_pay.sql` | 13 |
+
+`lemnt-server/sql/V*.sql`是历史升级记录，不属于初始化脚本，本轮未执行。
+
+**共享实例风险**：该`mysql8`同时承载`lemnt_system`、`lemnt_member`、`lemnt_mall`、`lemnt_trade`、`ad_system`、`nacos_server`等库，不是可丢弃实例。六个脚本均无`USE`/`CREATE DATABASE`，`DROP TABLE`只作用于指定目标库；导入前后逐库表数比对显示非专用库零变化、无新增库，但**表内容与结构级差异未比对**。后续如要执行真实业务写入，建议改用独立容器与数据目录。
+
+首次导入尝试因客户端选项文件与SQL争夺stdin而失败，未执行DDL。改用容器内权限`0700`的临时凭据文件完成导入，执行后立即删除；凭据未写入仓库或证据。
+
+尚未完成：专用库未发布到任何Nacos Data ID，Redis仍共用DB 0，RocketMQ未确认，服务未启动，故**E003保持未完成**。
+
+证据：[导入前后表数比对](evidence/local-schema-initialization-20261117-170311.json)。

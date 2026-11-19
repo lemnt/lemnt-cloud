@@ -1,8 +1,8 @@
 package com.lemnt.product.infrastructure.product.converter;
 
 import com.lemnt.product.domain.product.model.ProductBrand;
-import com.lemnt.product.domain.product.model.ProductCategory;
 import com.lemnt.product.domain.product.model.ProductCatalogValidation;
+import com.lemnt.product.domain.product.model.ProductCategory;
 import com.lemnt.product.domain.product.model.ProductSku;
 import com.lemnt.product.domain.product.model.ProductSkuSpec;
 import com.lemnt.product.domain.product.model.ProductSpu;
@@ -19,22 +19,21 @@ import java.util.List;
  * 目录转换器。
  */
 public final class ProductCatalogConverter {
-    private ProductCatalogConverter() {
-    }
+    private ProductCatalogConverter() {}
 
     /**
      * 分类。
      */
     public static ProductCategory category(ProductCategoryDO row) {
         return row == null
-            ? null
-            : new ProductCategory(
-            row.getId(),
-            row.getParentId(),
-            row.getName(),
-            row.getPicUrl(),
-            row.getSort(),
-            row.getStatus());
+                ? null
+                : new ProductCategory(
+                        row.getId(),
+                        row.getParentId(),
+                        row.getName(),
+                        row.getPicUrl(),
+                        row.getSort(),
+                        row.getStatus());
     }
 
     /**
@@ -42,14 +41,14 @@ public final class ProductCatalogConverter {
      */
     public static ProductBrand brand(ProductBrandDO row) {
         return row == null
-            ? null
-            : new ProductBrand(
-            row.getId(),
-            row.getName(),
-            row.getPicUrl(),
-            row.getDescription(),
-            row.getSort(),
-            row.getStatus());
+                ? null
+                : new ProductBrand(
+                        row.getId(),
+                        row.getName(),
+                        row.getPicUrl(),
+                        row.getDescription(),
+                        row.getSort(),
+                        row.getStatus());
     }
 
     /**
@@ -57,23 +56,27 @@ public final class ProductCatalogConverter {
      */
     public static ProductSpu spu(ProductSpuDO row, List<ProductSku> skus) {
         return row == null
-            ? null
-            : new ProductSpu(
-            row.getId(),
-            row.getCode(),
-            row.getName(),
-            row.getCategoryId(),
-            row.getBrandId(),
-            row.getDescription(),
-            row.getImage(),
-            row.getStatus(),
-            skus,
-            JSON.parseArray(row.getDeliveryTypes(), Integer.class),
-            row.getDeliveryTemplateId(),
-            row.getKeyword(),
-            row.getIntroduction(),
-            JSON.parseArray(row.getSliderPicUrls(), String.class),
-            row.getSort());
+                ? null
+                : new ProductSpu(
+                        row.getId(),
+                        row.getCode(),
+                        row.getName(),
+                        row.getCategoryId(),
+                        row.getBrandId(),
+                        row.getDescription(),
+                        row.getImage(),
+                        row.getStatus(),
+                        skus,
+                        JSON.parseArray(row.getDeliveryTypes(), Integer.class),
+                        row.getDeliveryTemplateId(),
+                        row.getKeyword(),
+                        row.getIntroduction(),
+                        JSON.parseArray(row.getSliderPicUrls(), String.class),
+                        row.getSort(),
+                        row.getVirtualSalesCount(),
+                        row.getSpecType(),
+                        row.getGiveIntegral(),
+                        row.getSubCommissionType());
     }
 
     /**
@@ -85,27 +88,33 @@ public final class ProductCatalogConverter {
         }
         var values = specs(row.getSpecs());
         return new ProductSku(
-            row.getId(),
-            row.getSpuId(),
-            row.getProductCode(),
-            row.getName(),
-            row.getPrice(),
-            row.getStock(),
-            row.getMainImage(),
-            values == null
-                ? null
-                : values.stream()
-                .map(
-                    property ->
-                        new ProductSkuSpec(
-                            property.specId(),
-                            property.specName(),
-                            property.specValueId(),
-                            property.specValueName()))
-                .toList(),
-            row.getStatus(),
-            row.getWeight(),
-            row.getVolume());
+                row.getId(),
+                row.getSpuId(),
+                row.getProductCode(),
+                row.getName(),
+                row.getPrice(),
+                row.getStock(),
+                row.getMainImage(),
+                values == null
+                        ? null
+                        : values.stream()
+                                .map(
+                                        property ->
+                                                new ProductSkuSpec(
+                                                        property.specId(),
+                                                        property.specName(),
+                                                        property.specValueId(),
+                                                        property.specValueName()))
+                                .toList(),
+                row.getStatus(),
+                row.getWeight(),
+                row.getVolume(),
+                row.getMarketPrice(),
+                row.getCostPrice(),
+                row.getBarCode(),
+                row.getSalesCount(),
+                row.getFirstBrokeragePrice(),
+                row.getSecondBrokeragePrice());
     }
 
     /**
@@ -154,7 +163,11 @@ public final class ProductCatalogConverter {
         row.setKeyword(value.keyword());
         row.setIntroduction(value.introduction());
         row.setSliderPicUrls(
-            value.sliderPicUrls() == null ? null : JSON.toJSONString(value.sliderPicUrls()));
+                value.sliderPicUrls() == null ? null : JSON.toJSONString(value.sliderPicUrls()));
+        row.setVirtualSalesCount(value.virtualSalesCount());
+        row.setSpecType(value.specType());
+        row.setGiveIntegral(value.giveIntegral());
+        row.setSubCommissionType(value.subCommissionType());
         row.setSort(value.sort());
         return row;
     }
@@ -176,6 +189,11 @@ public final class ProductCatalogConverter {
         row.setVariantKey(ProductCatalogValidation.variantKey(value.specs()));
         row.setWeight(value.weight());
         row.setVolume(value.volume());
+        row.setMarketPrice(value.marketPrice());
+        row.setCostPrice(value.costPrice());
+        row.setBarCode(value.barCode());
+        row.setFirstBrokeragePrice(value.firstBrokeragePrice());
+        row.setSecondBrokeragePrice(value.secondBrokeragePrice());
         return row;
     }
 

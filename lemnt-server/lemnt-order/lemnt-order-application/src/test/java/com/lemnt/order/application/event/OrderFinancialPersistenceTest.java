@@ -16,6 +16,8 @@ import com.lemnt.order.application.event.service.PaySuccessEventHandler;
 import com.lemnt.order.application.fulfillment.cmd.ShipmentCreateCmd;
 import com.lemnt.order.application.fulfillment.service.OrderFulfillmentService;
 import com.lemnt.order.application.order.cmd.OrderAdjustPriceCmd;
+import com.lemnt.order.application.order.dto.OrderWorkloadDTO;
+import com.lemnt.order.application.order.executor.OrderStatisticsQueryExe;
 import com.lemnt.order.application.order.service.OrderAdjustmentService;
 import com.lemnt.order.application.order.service.OrderBenefitsService;
 import com.lemnt.order.application.order.service.OrderCommentService;
@@ -67,6 +69,7 @@ import com.lemnt.order.domain.payment.model.PaymentRecord;
 import com.lemnt.order.domain.paymentrefund.gateway.PaymentRefundGateway;
 import com.lemnt.order.domain.paymentrefund.model.PaymentRefund;
 import com.lemnt.order.domain.product.gateway.ProductCatalogGateway;
+import com.lemnt.order.domain.brokerage.gateway.ProductCommissionGateway;
 import com.lemnt.order.domain.promotion.gateway.PromotionPricingGateway;
 import com.lemnt.order.domain.settlement.gateway.SettlementGateway;
 import com.lemnt.order.domain.settlement.model.SettlementItem;
@@ -97,6 +100,7 @@ import java.sql.Connection;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -138,6 +142,7 @@ class OrderFinancialPersistenceTest {
         components.register(TradePaymentGateway.class, payments);
         components.register(PaymentRefundGateway.class, refunds);
         components.register(BrokerageService.class, mock(BrokerageService.class));
+        components.register(ProductCommissionGateway.class, mock(ProductCommissionGateway.class));
         orders = components.get(OrderPersistenceService.class);
         afterSales = components.get(AfterSaleService.class);
         coordinator = components.get(AfterSaleRefundCoordinator.class);
@@ -239,6 +244,36 @@ class OrderFinancialPersistenceTest {
     }
 
     @Test
+    void workloadCountsCurrentActionStatesAndIgnoresDeletedRequests() {
+        var statistics = components.get(OrderStatisticsQueryExe.class);
+        assertEquals(new OrderWorkloadDTO(0, 0, 0, 0), statistics.workload());
+        jdbc.update(
+                """
+                INSERT INTO order_info(order_no,member_id,total_amount,status,delivery_type) VALUES
+                ('EXPRESS',7,1.00,'PAID',1),('LEGACY',7,1.00,'PAID',NULL),
+                ('PICKUP',7,0.00,'PAID',2),('WAIT',7,1.00,'PENDING_PAYMENT',1),
+                ('SHIPPED',7,1.00,'SHIPPED',1),('VERIFIED',7,0.00,'COMPLETED',2)
+                """);
+        jdbc.update(
+                """
+                INSERT INTO order_after_sale
+                    (refund_no,order_no,request_no,member_id,amount,reason,status,requested_at,deleted) VALUES
+                ('AF1','EXPRESS','R1',7,1.00,'测试','REQUESTED',CURRENT_TIMESTAMP,FALSE),
+                ('AF2','LEGACY','R2',7,1.00,'测试','REQUESTED',CURRENT_TIMESTAMP,TRUE),
+                ('AF3','SHIPPED','R3',7,1.00,'测试','REFUNDED',CURRENT_TIMESTAMP,FALSE)
+                """);
+        jdbc.update(
+                """
+                INSERT INTO order_brokerage_withdraw
+                    (id,user_id,price,total_price,type,user_name,user_account,status) VALUES
+                (1,7,1.00,1.00,1,'测试','1',0),
+                (2,7,1.00,1.00,1,'测试','1',10),
+                (3,7,1.00,1.00,1,'测试','1',20)
+                """);
+        assertEquals(new OrderWorkloadDTO(2, 1, 1, 1), statistics.workload());
+    }
+
+    @Test
     void onlyOneProcessingAfterSaleAndAmountsAreFrozenAtCreation() {
         seed("O1", "10.00", 6, "PAID");
         var first = request("O1", "R1", 2);
@@ -320,6 +355,7 @@ class OrderFinancialPersistenceTest {
         components.get(PayRefundSuccessEventHandler.class).execute(event);
         assertEquals(1, orders.findByOrderNo("O1").items().get(0).refundedQuantity());
         assertEquals(1, count("order_message_outbox"));
+        assertEquals(0, count("order_message_inbox"));
     }
 
     @Test
@@ -393,7 +429,9 @@ class OrderFinancialPersistenceTest {
         components.get(PaySuccessEventHandler.class).execute(event);
         assertEquals("PAID", orders.findByOrderNo("O1").status());
         assertEquals(1, count("order_message_outbox"));
-        assertEquals(1, count("order_message_inbox"));
+        assertEquals("PO1", jdbc.queryForObject(
+            "SELECT confirmed_payment_no FROM order_info WHERE order_no='O1'", String.class));
+        assertEquals(0, count("order_message_inbox"));
     }
 
     @Test
@@ -401,6 +439,10 @@ class OrderFinancialPersistenceTest {
         seed("O1", "10.00", 1, "PENDING_PAYMENT");
         when(payments.findByOrderNo("O1")).thenReturn(List.of());
         components.get(OrderPaymentPreparationService.class).prepare("O1");
+        components.get(OrderPaymentPreparationService.class).prepare("O1");
+        assertEquals(new BigDecimal("10.00"), jdbc.queryForObject(
+            "SELECT payment_prepared_amount FROM order_info WHERE order_no='O1'", BigDecimal.class));
+        assertEquals(0, count("order_message_inbox"));
         var adjustment = components.get(OrderAdjustmentService.class);
         ReflectionTestUtils.setField(
             adjustment, "inbox", components.get(MessageInboxGateway.class));
@@ -410,6 +452,51 @@ class OrderFinancialPersistenceTest {
                 adjustment.adjustPrice(
                     new OrderAdjustPriceCmd("O1", new BigDecimal("8.00"), 9L)));
         assertEquals(new BigDecimal("10.00"), orders.findByOrderNo("O1").totalAmount());
+    }
+
+    @Test
+    void historicalPaymentPreparationPreventsPriceChangeBeforeNewFactsAreWritten() {
+        seed("O1", "10.00", 1, "PENDING_PAYMENT");
+        when(payments.findByOrderNo("O1")).thenReturn(List.of());
+        var legacy = new LinkedHashMap<String, Object>();
+        legacy.put("orderNo", "O1");
+        legacy.put("memberId", 7L);
+        legacy.put("amount", new BigDecimal("10.00"));
+        tx.executeWithoutResult(status -> components.get(MessageInboxGateway.class).begin(
+            "order.payment.prepare.v1", "PP:O1", "PAYMENT_PREPARE", "O1", JsonUtils.toJsonStr(legacy)));
+        var adjustment = components.get(OrderAdjustmentService.class);
+        ReflectionTestUtils.setField(adjustment, "inbox", components.get(MessageInboxGateway.class));
+        assertThrows(ServiceException.class, () -> adjustment.adjustPrice(
+            new OrderAdjustPriceCmd("O1", new BigDecimal("8.00"), 9L)));
+        components.get(OrderPaymentPreparationService.class).prepare("O1");
+        assertEquals(new BigDecimal("10.00"), jdbc.queryForObject(
+            "SELECT payment_prepared_amount FROM order_info WHERE order_no='O1'", BigDecimal.class));
+        assertEquals(1, count("order_message_inbox"));
+    }
+
+    @Test
+    void preparedOrderRecoversFromPaymentStoreWithoutReceivingNotification() {
+        var earlier = seed("FIRST", "25.00", 1, "PENDING_PAYMENT");
+        var confirmed = seed("SECOND", "10.00", 1, "PENDING_PAYMENT");
+        seed("NOT-PREPARED", "1.00", 1, "PENDING_PAYMENT");
+        var prep = components.get(OrderPaymentPreparationService.class);
+        prep.prepare("FIRST");
+        prep.prepare("SECOND");
+        when(payments.findByOrderNo("FIRST")).thenReturn(List.of());
+        var scan = components.get(OrderRecoveryGateway.class);
+        assertEquals("FIRST", scan.pendingPaymentConfirmation(0, 1).get(0).orderNo());
+        assertEquals("SECOND", scan.pendingPaymentConfirmation(earlier.id(), 1).get(0).orderNo());
+        assertTrue(scan.pendingPaymentConfirmation(confirmed.id(), 1).isEmpty());
+        var listener = components.get(PaySuccessEventHandler.class);
+        listener.recover("FIRST");
+        listener.recover("SECOND");
+        listener.recover("SECOND");
+        assertEquals("PENDING_PAYMENT", orders.findByOrderNo("FIRST").status());
+        assertEquals("PAID", orders.findByOrderNo("SECOND").status());
+        assertEquals("PSECOND", jdbc.queryForObject(
+            "SELECT confirmed_payment_no FROM order_info WHERE order_no='SECOND'", String.class));
+        assertEquals(1, count("order_message_outbox"));
+        assertEquals(0, count("order_message_inbox"));
     }
 
     @Test
@@ -662,37 +749,37 @@ class OrderFinancialPersistenceTest {
     }
 
     @Test
-    void shipmentAndReceiptPublishFactsWithTheirOwnedStateAndReplayExactlyOnce() {
+    void shipmentAndReceiptPersistOnceWithoutCreatingDeliveryMessages() {
         seed("O1", "10.00", 1, "PAID");
         var fulfillment = shipping();
         fulfillment.ship(shipment());
         fulfillment.ship(shipment());
         assertEquals("SHIPPED", orders.findByOrderNo("O1").status());
-        assertEquals(1, count("order_message_outbox"));
+        assertEquals(0, count("order_message_outbox"));
         var first = fulfillment.receive("O1");
         var retry = fulfillment.receive("O1");
         assertEquals(first.receivedAt(), retry.receivedAt());
         assertEquals("COMPLETED", orders.findByOrderNo("O1").status());
-        assertEquals(2, count("order_message_outbox"));
+        assertEquals(0, count("order_message_outbox"));
     }
 
     @Test
-    void shippingOrReceiptEventFailureRollsBackWaybillAndStatus() {
+    void shippingOrReceiptLogFailureRollsBackWaybillAndStatus() {
         seed("O1", "10.00", 1, "PAID");
         var fulfillment = shipping();
         jdbc.execute(
-            "ALTER TABLE order_message_outbox ADD CONSTRAINT reject_shipped CHECK (event_type <> 'ORDER_SHIPPED')");
+            "ALTER TABLE order_log ADD CONSTRAINT reject_shipped CHECK (operate_type <> 20)");
         assertThrows(RuntimeException.class, () -> fulfillment.ship(shipment()));
         assertEquals("PAID", orders.findByOrderNo("O1").status());
         assertEquals(0, count("order_shipment"));
-        jdbc.execute("ALTER TABLE order_message_outbox DROP CONSTRAINT reject_shipped");
+        jdbc.execute("ALTER TABLE order_log DROP CONSTRAINT reject_shipped");
         fulfillment.ship(shipment());
         jdbc.execute(
-            "ALTER TABLE order_message_outbox ADD CONSTRAINT reject_completed CHECK (event_type <> 'ORDER_COMPLETED')");
+            "ALTER TABLE order_log ADD CONSTRAINT reject_completed CHECK (operate_type NOT IN (30,31))");
         assertThrows(RuntimeException.class, () -> fulfillment.receive("O1"));
         assertEquals("SHIPPED", orders.findByOrderNo("O1").status());
         assertNull(components.get(ShipmentGateway.class).shipment("O1").receivedAt());
-        jdbc.execute("ALTER TABLE order_message_outbox DROP CONSTRAINT reject_completed");
+        jdbc.execute("ALTER TABLE order_log DROP CONSTRAINT reject_completed");
         fulfillment.receive("O1");
         assertEquals("COMPLETED", orders.findByOrderNo("O1").status());
     }

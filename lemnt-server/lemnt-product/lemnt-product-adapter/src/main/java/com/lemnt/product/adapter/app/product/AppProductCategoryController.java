@@ -7,12 +7,17 @@ import com.lemnt.product.application.product.executor.ProductCategoryEnableListQ
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -20,6 +25,7 @@ import java.util.List;
  */
 @Tag(name = "小程序商品分类")
 @RestController
+@Validated
 @RequestMapping("/app/categories")
 @RequiredArgsConstructor
 public class AppProductCategoryController {
@@ -27,10 +33,11 @@ public class AppProductCategoryController {
 
     @GetMapping
     @Operation(summary = "启用分类")
-    public R<List<AppProductCategorySimpleRes>> categories() {
+    public R<List<AppProductCategorySimpleRes>> categories(
+            @RequestParam(required = false) @Size(max = 100) List<@NotNull @Positive Long> ids) {
         return R.ok(
-            categoryEnableListQueryExe.execute().stream()
-                .map(ProductCategoryResConverter::category)
-                .toList());
+                categoryEnableListQueryExe.execute(ids).stream()
+                        .map(ProductCategoryResConverter::category)
+                        .toList());
     }
 }

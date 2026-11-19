@@ -32,7 +32,5 @@ public final class InboundEventFacts {
         int ruleVersion,
         boolean fullyRefunded) {}
 
-    public record Shipped(String orderNo, Long memberId) {}
-
     public record StockLine(Long skuId, int quantity) {}
 }

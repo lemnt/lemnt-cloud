@@ -1,7 +1,5 @@
 package com.lemnt.promotion.start;
 
-import com.lemnt.product.domain.product.gateway.StockEventGateway;
-
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -15,7 +13,6 @@ import javax.sql.DataSource;
 
 /**
  * 测试夹具：装配真实按表组件和事务代理，不替代业务实现。
- * 商品事务消息出站用TestStockEventGateway执行同一本地事务契约。
  */
 public final class TableTestComponents {
     private final SqlSessionTemplate session;
@@ -25,7 +22,6 @@ public final class TableTestComponents {
     public TableTestComponents(SqlSessionTemplate session, DataSource source) {
         this.session = session;
         this.source = source;
-        components.put(StockEventGateway.class, new TestStockEventGateway(this, source));
     }
 
     /**

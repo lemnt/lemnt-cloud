@@ -58,7 +58,11 @@ import com.lemnt.order.domain.aftersale.gateway.AfterSaleLogGateway;
 import com.lemnt.order.domain.aftersale.model.AfterSale;
 import com.lemnt.order.domain.aftersale.model.AfterSaleLog;
 import com.lemnt.order.domain.cart.gateway.CartSnapshotGateway;
+import com.lemnt.order.application.brokerage.service.BrokerageService;
+import com.lemnt.order.application.brokerage.executor.BrokerageProductEstimateQueryExe;
+import com.lemnt.order.domain.brokerage.gateway.OrderCommissionLineGateway;
 import com.lemnt.order.domain.config.gateway.TradeConfigGateway;
+import com.lemnt.order.domain.config.model.TradeConfig;
 import com.lemnt.order.domain.delivery.gateway.DeliveryExpressGateway;
 import com.lemnt.order.domain.delivery.gateway.PickUpStoreGateway;
 import com.lemnt.order.domain.delivery.model.DeliveryExpress;
@@ -669,6 +673,9 @@ class CheckoutFlowIntegrationTest {
         assertEquals(1, worker().execute(50));
         assertEquals(10, productSkuGateway.findById(sku).stock());
         assertEquals("AVAILABLE", couponGateway.coupon(1L, coupon.id(), false).status());
+        assertEquals(0, tradeComponents.jdbc("product").queryForObject(
+                "SELECT COUNT(*) FROM product_message_inbox WHERE consumer_key='product.order_closed.v1'",
+                Integer.class));
     }
 
     /**
@@ -830,16 +837,41 @@ class CheckoutFlowIntegrationTest {
     }
 
     @Test
-    void zeroPayableQuoteIsExplicitlyUnsupportedAtPlacementAndRollsBackLocks() throws Exception {
+    void zeroPayableQuoteConsumesCouponOnceAfterInventoryConfirmation() throws Exception {
         var coupon = couponIssuanceService.issue(1L, campaign(10, new BigDecimal("50.00")).id());
         assertEquals(
-            new BigDecimal("0.00"),
-            placement
-                .quote(new SettlementQuoteQry(1L, List.of(sku), coupon.id()))
-                .payableAmount());
-        assertThrows(IllegalArgumentException.class, () -> place("ZERO", coupon.id()));
-        assertEquals("AVAILABLE", couponGateway.coupon(1L, coupon.id(), false).status());
-        assertEquals(0, count("order_info"));
+                new BigDecimal("0.00"),
+                placement
+                        .quote(new SettlementQuoteQry(1L, List.of(sku), coupon.id()))
+                        .payableAmount());
+        var order = place("ZERO", coupon.id());
+        assertEquals("PAID", order.status());
+        assertEquals(order.orderNo(), place("ZERO", coupon.id()).orderNo());
+        events.drain();
+        assertEquals("USED", couponGateway.coupon(1L, coupon.id(), false).status());
+        assertEquals(1, count("order_info"));
+        assertTrue(payments.findByOrderNo(order.orderNo()).isEmpty());
+        assertTrue(inventoryConfirmationGateway.inventoryConfirmed(order.orderNo()));
+    }
+
+    @Test
+    void freeSkuFollowsCheckoutAndNeverCreatesCashPayment() throws Exception {
+        configureDeliveryProduct();
+        var spuId = productSkuGateway.catalogSku(sku).spuId();
+        sql(mallSource, "UPDATE product_spu SET sub_commission_type=TRUE WHERE id=" + spuId);
+        sql(mallSource, "UPDATE product_sku SET price=0,first_brokerage_price=1.25 WHERE id=" + sku);
+        var brokerage = enableTestBrokerage();
+        var order = place("FREE-SKU", null);
+        assertEquals("PAID", order.status());
+        assertEquals(new BigDecimal("0.00"), order.totalAmount());
+        assertEquals(order.orderNo(), place("FREE-SKU", null).orderNo());
+        events.drain();
+        assertEquals(8, productSkuGateway.findById(sku).stock());
+        assertEquals(2L, productSkuGateway.catalogSku(sku).salesCount());
+        assertTrue(inventoryConfirmationGateway.inventoryConfirmed(order.orderNo()));
+        assertTrue(payments.findByOrderNo(order.orderNo()).isEmpty());
+        assertEquals(new BigDecimal("2.50"), brokerage.appUser(2L).frozenPrice());
+        assertEquals(new BigDecimal("0.00"), brokerage.appUser(3L).frozenPrice());
     }
 
     @Test
@@ -1496,9 +1528,7 @@ class CheckoutFlowIntegrationTest {
                     tradeComponents.get(ShipmentGateway.class),
                     failure,
                     tradeComponents.get(DeliveryExpressGateway.class),
-                    tradeComponents.get(OrderLogService.class),
-                    tradeComponents.bean(
-                        "com.lemnt.order.domain.event.gateway.OrderEventGateway")),
+                    tradeComponents.get(OrderLogService.class)),
                 tradeSource);
         assertThrows(IllegalStateException.class, () -> failing.ship(shipment(order.orderNo())));
         assertNull(shipmentGateway.shipment(order.orderNo()));
@@ -3982,8 +4012,103 @@ class CheckoutFlowIntegrationTest {
     }
 
     @Test
+    void mixedCommissionUsesOriginalSkuTermsAndRecallsByRefundedLine() throws Exception {
+        configureDeliveryProduct();
+        var fixedSku = sku;
+        var spuId = productSkuGateway.catalogSku(fixedSku).spuId();
+        sql(mallSource, "UPDATE product_spu SET sub_commission_type=TRUE WHERE id=" + spuId);
+        sql(mallSource, "UPDATE product_sku SET first_brokerage_price=3.00,second_brokerage_price=0.00 WHERE id=" + fixedSku);
+        var rateSku = productSkuGateway.save(
+            Product.create("RATE-SKU", "全局比例商品", null, null, new BigDecimal("20.00"), 10)).id();
+        productSkuGateway.updateStatus(rateSku, "ON_SHELF");
+
+        var brokerage = enableTestBrokerage();
+
+        var order = placement.createDirect(new SettlementDirectCmd(1L, List.of(
+            new SettlementDirectCmd.OrderLine(fixedSku, 2),
+            new SettlementDirectCmd.OrderLine(rateSku, 2)), "MIXED-BROKERAGE", null));
+        var saved = orderPersistenceService.findByOrderNo(order.orderNo());
+        var fixedItem = saved.items().stream().filter(item -> item.productId().equals(fixedSku)).findFirst().orElseThrow();
+        var rateItem = saved.items().stream().filter(item -> item.productId().equals(rateSku)).findFirst().orElseThrow();
+        var snapshots = tradeComponents.get(OrderCommissionLineGateway.class);
+        var fixedLine = snapshots.lines(saved.id()).stream()
+            .filter(line -> line.orderItemId().equals(fixedItem.orderItemId())).findFirst().orElseThrow();
+        assertEquals(new BigDecimal("3.00"), fixedLine.fixed().first());
+        assertNull(fixedLine.firstEarned());
+        var estimate = tradeComponents.get(BrokerageProductEstimateQueryExe.class);
+        assertEquals(new BigDecimal("3.00"), estimate.execute(2L, spuId).min());
+        brokerage.setEnabled(8L, false);
+        assertFalse(estimate.execute(8L, spuId).enabled());
+
+        sql(mallSource, "UPDATE product_spu SET sub_commission_type=FALSE WHERE id=" + spuId);
+        assertEquals(new BigDecimal("1.00"), estimate.execute(2L, spuId).max());
+        sql(mallSource, "UPDATE product_sku SET first_brokerage_price=99.00,second_brokerage_price=80.00 WHERE id=" + fixedSku);
+        var payment = paymentCreate.execute(order.orderNo(), "ALIPAY");
+        var event = new VerifiedPaymentNotification(payment.paymentNo(), order.orderNo(),
+            "ALIPAY", "CH-MIXED", payment.amount(), "N-MIXED");
+        notify.execute(event);
+        notify.execute(event);
+        assertEquals(new BigDecimal("10.00"), brokerage.appUser(2L).frozenPrice());
+        assertEquals(new BigDecimal("2.00"), brokerage.appUser(3L).frozenPrice());
+        var paidFixed = snapshots.lines(saved.id()).stream()
+            .filter(line -> line.orderItemId().equals(fixedItem.orderItemId())).findFirst().orElseThrow();
+        assertEquals(new BigDecimal("6.00"), paidFixed.firstEarned());
+        assertEquals(new BigDecimal("0.00"), paidFixed.secondEarned());
+
+        successfulRefundChannel();
+        var sales = tradeComponents.get(AfterSaleService.class);
+        var refunds = tradeComponents.get(PaymentRefundCreateCmdExe.class);
+        var fixedRefund = sales.create(new AfterSaleCreateCmd(order.orderNo(),
+            "REFUND-MIXED-FIXED", fixedItem.orderItemId(), 1, "REFUND_ONLY", "部分退款"));
+        sales.agree(fixedRefund.refundNo());
+        assertEquals("SUCCESS", refunds.execute(fixedRefund.refundNo()).status());
+        assertEquals("SUCCESS", refunds.execute(fixedRefund.refundNo()).status());
+        assertEquals(new BigDecimal("7.00"), brokerage.appUser(2L).frozenPrice());
+        assertEquals(new BigDecimal("2.00"), brokerage.appUser(3L).frozenPrice());
+
+        var rateRefund = sales.create(new AfterSaleCreateCmd(order.orderNo(),
+            "REFUND-MIXED-RATE", rateItem.orderItemId(), 1, "REFUND_ONLY", "部分退款"));
+        sales.agree(rateRefund.refundNo());
+        assertEquals("SUCCESS", refunds.execute(rateRefund.refundNo()).status());
+        assertEquals(new BigDecimal("5.00"), brokerage.appUser(2L).frozenPrice());
+        assertEquals(new BigDecimal("1.00"), brokerage.appUser(3L).frozenPrice());
+        sql(tradeSource, "UPDATE order_brokerage_record SET unfreeze_time=DATEADD('DAY', -1, CURRENT_TIMESTAMP) WHERE biz_type=1");
+        assertEquals(2, brokerage.unfreezeDue(10));
+        assertEquals(new BigDecimal("5.00"), brokerage.appUser(2L).brokeragePrice());
+        assertEquals(new BigDecimal("1.00"), brokerage.appUser(3L).brokeragePrice());
+        assertEquals(new BigDecimal("0.00"), brokerage.appUser(2L).frozenPrice());
+        for (var item : List.of(fixedItem, rateItem)) {
+            var remaining = sales.create(new AfterSaleCreateCmd(order.orderNo(),
+                "REFUND-MIXED-LAST-" + item.orderItemId(), item.orderItemId(), 1, "REFUND_ONLY", "剩余一件"));
+            sales.agree(remaining.refundNo());
+            assertEquals("SUCCESS", refunds.execute(remaining.refundNo()).status());
+        }
+        assertEquals("REFUNDED", orderPersistenceService.findByOrderNo(order.orderNo()).status());
+        assertEquals(new BigDecimal("0.00"), brokerage.appUser(2L).frozenPrice());
+        assertEquals(new BigDecimal("0.00"), brokerage.appUser(3L).frozenPrice());
+        assertEquals(new BigDecimal("0.00"), brokerage.appUser(2L).brokeragePrice());
+        assertEquals(new BigDecimal("0.00"), brokerage.appUser(3L).brokeragePrice());
+    }
+
+    /** 建立两级可用的推广关系，固定佣金和比例行共用该配置。 */
+    private BrokerageService enableTestBrokerage() {
+        tradeComponents.get(TradeConfigGateway.class).update(
+            new TradeConfig(1L, List.of(), List.of(), false, 0, false,
+                true, 1, 3, List.of(), 10, 5, 100, 0, 3, List.of(1)));
+        var brokerage = tradeComponents.get(BrokerageService.class);
+        brokerage.setEnabled(2L, true);
+        brokerage.setEnabled(3L, true);
+        assertTrue(brokerage.bind(1L, 2L));
+        assertTrue(brokerage.bind(2L, 3L));
+        return brokerage;
+    }
+
+    @Test
     void manualAdjustmentUsesFrozenGiftRateAndPreservesPromotionAmounts() throws Exception {
         deliveryPointGift = true;
+        configureDeliveryProduct();
+        var spuId = productSkuGateway.catalogSku(sku).spuId();
+        sql(mallSource, "UPDATE product_spu SET give_integral=7 WHERE id=" + spuId);
         var order =
             placement.createDirect(
                 new SettlementDirectCmd(
@@ -3991,19 +4116,20 @@ class CheckoutFlowIntegrationTest {
                     List.of(new SettlementDirectCmd.OrderLine(sku, 2)),
                     "ADJUST-FROZEN-GIFT",
                     null));
-        assertEquals(40L, order.givePoint());
+        assertEquals(47L, order.givePoint());
         deliveryPointGift = false;
+        sql(mallSource, "UPDATE product_spu SET give_integral=90 WHERE id=" + spuId);
         var adjusted =
             tradeComponents
                 .get(OrderAdjustmentService.class)
                 .adjustPrice(
                     new OrderAdjustPriceCmd(
                         order.orderNo(), new BigDecimal("10.00"), 55L));
-        assertEquals(20L, adjusted.givePoint());
+        assertEquals(27L, adjusted.givePoint());
         assertEquals(new BigDecimal("-10.00"), adjusted.adjustmentAmount());
         assertEquals(new BigDecimal("0.00"), adjusted.discountAmount());
         assertEquals(2, adjusted.pricingSnapshotVersion());
-        assertEquals(20L, adjusted.items().get(0).givePoint());
+        assertEquals(27L, adjusted.items().get(0).givePoint());
         var gift =
             adjusted.promotions().stream()
                 .filter(p -> "ORDER_GIFT".equals(p.promotionType()))
@@ -4011,6 +4137,11 @@ class CheckoutFlowIntegrationTest {
                 .orElseThrow();
         assertEquals(20L, gift.givePoint());
         assertEquals(20L, gift.items().get(0).givePoint());
+        var productGift = adjusted.promotions().stream()
+            .filter(p -> "PRODUCT_POINT".equals(p.promotionType()))
+            .findFirst()
+            .orElseThrow();
+        assertEquals(7L, productGift.items().get(0).givePoint());
         var payment = paymentCreate.execute(order.orderNo(), "ALIPAY");
         notify.execute(
             new VerifiedPaymentNotification(
@@ -4025,7 +4156,25 @@ class CheckoutFlowIntegrationTest {
                 .get(AfterSaleService.class)
                 .create(itemRefund(order.orderNo(), "REFUND-ADJUST", 1, "REFUND_ONLY"));
         assertEquals(new BigDecimal("5.00"), sale.amount());
-        assertEquals(10L, sale.deductGivePoint());
+        assertEquals(13L, sale.deductGivePoint());
+        successfulRefundChannel();
+        var afterSales = tradeComponents.get(AfterSaleService.class);
+        var refunds = tradeComponents.get(PaymentRefundCreateCmdExe.class);
+        afterSales.agree(sale.refundNo());
+        assertEquals("SUCCESS", refunds.execute(sale.refundNo()).status());
+        assertEquals("SUCCESS", refunds.execute(sale.refundNo()).status());
+        var eventNo = tradeComponents.jdbc("order").queryForObject(
+            "SELECT event_no FROM order_message_outbox WHERE event_type='AFTER_SALE_COMPLETED' AND business_key=?",
+            String.class, sale.refundNo());
+        events.replay(eventNo);
+        events.drainOrThrow();
+        assertEquals(1, orderPersistenceService.findByOrderNo(order.orderNo()).items().get(0).refundedQuantity());
+        assertEquals(13L, refundRequestGateway.afterSale(sale.refundNo()).deductGivePoint());
+        var last = afterSales.create(itemRefund(order.orderNo(), "REFUND-ADJUST-LAST", 1, "REFUND_ONLY"));
+        assertEquals(14L, last.deductGivePoint());
+        afterSales.agree(last.refundNo());
+        assertEquals("SUCCESS", refunds.execute(last.refundNo()).status());
+        assertEquals("REFUNDED", orderPersistenceService.findByOrderNo(order.orderNo()).status());
     }
 
     @Test

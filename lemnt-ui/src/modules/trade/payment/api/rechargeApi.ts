@@ -206,3 +206,13 @@ export async function refundWalletRecharge(no: string) {
     ).data,
   );
 }
+
+/** 累计充值实付毛额，保留精确金额文本。 */
+export async function getWalletRechargeSummary() {
+  const result = await request<{ rechargePrice: string }>({
+    url: '/trade/admin/wallet-recharges/summary',
+  });
+  const value = result.data.rechargePrice;
+  if (typeof value !== 'string' || !/^\d+\.\d{2}$/.test(value)) throw Error('充值统计金额不合法');
+  return value;
+}

@@ -121,6 +121,9 @@ export const pages: Record<string, ComponentType> = {
       default: m.PointActivityPage,
     })),
   ),
+  'mall/promotion/article/index': lazy(() =>
+    import('../modules/mall/promotion/pages/ArticlePage').then((m) => ({ default: m.ArticlePage })),
+  ),
   'mall/promotion/banner/index': lazy(() =>
     import('../modules/mall/promotion/pages/BannerPage').then((m) => ({
       default: m.BannerPage,

@@ -1,5 +1,6 @@
 package com.lemnt.order.application.order.service;
 
+import com.lemnt.order.application.brokerage.service.OrderCommissionService;
 import com.lemnt.order.domain.order.model.TradeOrder;
 import com.lemnt.order.domain.order.model.TradeOrderDelivery;
 import com.lemnt.order.domain.order.model.TradeOrderItem;
@@ -22,6 +23,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class OrderSubmissionService {
     private final OrderPersistenceService orders;
+    private final OrderCommissionService commission;
 
     /**
      * 重试使用同一个订单号，订单内容不一致时拒绝。
@@ -36,6 +38,7 @@ public class OrderSubmissionService {
             return previous;
         }
         var saved = orders.save(order);
+        commission.capture(saved.id(), order.items());
         return saved;
     }
 
@@ -44,22 +47,22 @@ public class OrderSubmissionService {
      */
     public void requireSame(TradeOrder previous, TradeOrder order) {
         if (!previous.memberId().equals(order.memberId())
-            || previous.totalAmount().compareTo(order.totalAmount()) != 0
-            || previous.usePoint() != order.usePoint()
-            || previous.givePoint() != order.givePoint()
-            || !Objects.equals(
-            previous.giveCouponTemplateCounts(), order.giveCouponTemplateCounts())
-            || !Objects.equals(
-            purchaseDelivery(previous.delivery()), purchaseDelivery(order.delivery()))
-            || !Objects.equals(previous.originalAmount(), order.originalAmount())
-            || !Objects.equals(previous.discountAmount(), order.discountAmount())
-            || !Objects.equals(previous.deliveryOriginalPrice(), order.deliveryOriginalPrice())
-            || !Objects.equals(previous.deliveryDiscountPrice(), order.deliveryDiscountPrice())
-            || !Objects.equals(previous.adjustmentAmount(), order.adjustmentAmount())
-            || !Objects.equals(previous.pricingSnapshotStatus(), order.pricingSnapshotStatus())
-            || !promotionValues(previous.promotions())
-            .equals(promotionValues(order.promotions()))
-            || !purchaseItems(previous.items()).equals(purchaseItems(order.items()))) {
+                || previous.totalAmount().compareTo(order.totalAmount()) != 0
+                || previous.usePoint() != order.usePoint()
+                || previous.givePoint() != order.givePoint()
+                || !Objects.equals(
+                        previous.giveCouponTemplateCounts(), order.giveCouponTemplateCounts())
+                || !Objects.equals(
+                        purchaseDelivery(previous.delivery()), purchaseDelivery(order.delivery()))
+                || !Objects.equals(previous.originalAmount(), order.originalAmount())
+                || !Objects.equals(previous.discountAmount(), order.discountAmount())
+                || !Objects.equals(previous.deliveryOriginalPrice(), order.deliveryOriginalPrice())
+                || !Objects.equals(previous.deliveryDiscountPrice(), order.deliveryDiscountPrice())
+                || !Objects.equals(previous.adjustmentAmount(), order.adjustmentAmount())
+                || !Objects.equals(previous.pricingSnapshotStatus(), order.pricingSnapshotStatus())
+                || !promotionValues(previous.promotions())
+                        .equals(promotionValues(order.promotions()))
+                || !purchaseItems(previous.items()).equals(purchaseItems(order.items()))) {
             throw new IllegalStateException("订单号已用于不同的订单内容");
         }
     }
@@ -69,17 +72,17 @@ public class OrderSubmissionService {
      */
     private TradeOrderDelivery purchaseDelivery(TradeOrderDelivery value) {
         return value == null
-            ? null
-            : new TradeOrderDelivery(
-            value.addressId(),
-            value.deliveryType(),
-            value.receiverName(),
-            value.receiverMobile(),
-            value.receiverAreaId(),
-            value.receiverDetailAddress(),
-            value.deliveryPrice(),
-            value.pickUpStoreId(),
-            null);
+                ? null
+                : new TradeOrderDelivery(
+                        value.addressId(),
+                        value.deliveryType(),
+                        value.receiverName(),
+                        value.receiverMobile(),
+                        value.receiverAreaId(),
+                        value.receiverDetailAddress(),
+                        value.deliveryPrice(),
+                        value.pickUpStoreId(),
+                        null);
     }
 
     /**
@@ -87,31 +90,31 @@ public class OrderSubmissionService {
      */
     private List<TradeOrderItem> purchaseItems(List<TradeOrderItem> values) {
         return values.stream()
-            .map(
-                item ->
-                    new TradeOrderItem(
-                        item.productId(),
-                        item.productCode(),
-                        item.productName(),
-                        item.unitPrice(),
-                        item.quantity(),
-                        item.lineAmount(),
-                        item.payAmount(),
-                        item.deliveryPrice(),
-                        item.spuId(),
-                        item.spuName(),
-                        item.specs(),
-                        item.picUrl(),
-                        null,
-                        null,
-                        item.discountAmount(),
-                        item.deliveryOriginalPrice(),
-                        item.deliveryDiscountPrice(),
-                        item.adjustmentAmount(),
-                        item.usePoint(),
-                        item.givePoint(),
-                        null))
-            .toList();
+                .map(
+                        item ->
+                                new TradeOrderItem(
+                                        item.productId(),
+                                        item.productCode(),
+                                        item.productName(),
+                                        item.unitPrice(),
+                                        item.quantity(),
+                                        item.lineAmount(),
+                                        item.payAmount(),
+                                        item.deliveryPrice(),
+                                        item.spuId(),
+                                        item.spuName(),
+                                        item.specs(),
+                                        item.picUrl(),
+                                        null,
+                                        null,
+                                        item.discountAmount(),
+                                        item.deliveryOriginalPrice(),
+                                        item.deliveryDiscountPrice(),
+                                        item.adjustmentAmount(),
+                                        item.usePoint(),
+                                        item.givePoint(),
+                                        null))
+                .toList();
     }
 
     /**
@@ -119,35 +122,35 @@ public class OrderSubmissionService {
      */
     private List<OrderPromotion> promotionValues(List<OrderPromotion> values) {
         return values.stream()
-            .map(
-                p ->
-                    new OrderPromotion(
-                        null,
-                        null,
-                        p.promotionKey(),
-                        p.promotionType(),
-                        p.sourceId(),
-                        p.promotionName(),
-                        p.ruleSummary(),
-                        p.ruleSnapshot(),
-                        p.discountAmount(),
-                        p.deliveryDiscountPrice(),
-                        p.usePoint(),
-                        p.givePoint(),
-                        p.giveCouponTemplateCounts(),
-                        p.items().stream()
-                            .map(
-                                v ->
-                                    new OrderItemPromotion(
+                .map(
+                        p ->
+                                new OrderPromotion(
                                         null,
                                         null,
-                                        null,
-                                        v.quoteLineKey(),
-                                        v.discountAmount(),
-                                        v.deliveryDiscountPrice(),
-                                        v.usePoint(),
-                                        v.givePoint()))
-                            .toList()))
-            .toList();
+                                        p.promotionKey(),
+                                        p.promotionType(),
+                                        p.sourceId(),
+                                        p.promotionName(),
+                                        p.ruleSummary(),
+                                        p.ruleSnapshot(),
+                                        p.discountAmount(),
+                                        p.deliveryDiscountPrice(),
+                                        p.usePoint(),
+                                        p.givePoint(),
+                                        p.giveCouponTemplateCounts(),
+                                        p.items().stream()
+                                                .map(
+                                                        v ->
+                                                                new OrderItemPromotion(
+                                                                        null,
+                                                                        null,
+                                                                        null,
+                                                                        v.quoteLineKey(),
+                                                                        v.discountAmount(),
+                                                                        v.deliveryDiscountPrice(),
+                                                                        v.usePoint(),
+                                                                        v.givePoint()))
+                                                .toList()))
+                .toList();
     }
 }

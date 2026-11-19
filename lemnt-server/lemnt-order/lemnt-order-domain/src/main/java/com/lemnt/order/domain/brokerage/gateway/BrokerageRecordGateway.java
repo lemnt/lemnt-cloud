@@ -14,6 +14,9 @@ import java.util.List;
 public interface BrokerageRecordGateway {
     BrokerageRecord find(Long id);
 
+    /** 退款、解冻以同一记录为序，读取锁定后的当前状态。 */
+    BrokerageRecord lock(Long id);
+
     BrokerageRecord findByBiz(Long userId, Integer bizType, String bizId);
 
     BrokerageRecord save(BrokerageRecord value);
@@ -29,5 +32,5 @@ public interface BrokerageRecordGateway {
     /**
      * 按原金额 CAS 更新退款扣回累计金额，避免并发重复扣回。
      */
-    boolean updatePrice(Long id, BigDecimal expected, BigDecimal next);
+    boolean updatePrice(Long id, BigDecimal expected, BigDecimal next, BigDecimal totalPrice);
 }

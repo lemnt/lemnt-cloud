@@ -42,6 +42,15 @@ function integer(v: unknown): number {
     throw new Error('履约接口整数格式不合法');
   return v;
 }
+export function decodeOrderWorkload(v: unknown) {
+  const row = object(v);
+  return {
+    shipments: integer(row.shipments),
+    pickups: integer(row.pickups),
+    afterSales: integer(row.afterSales),
+    withdrawals: integer(row.withdrawals),
+  };
+}
 function state(v: unknown): CheckoutStatus {
   if (
     v !== 'RESERVING' &&
@@ -79,6 +88,16 @@ export function decodeOrder(v: unknown): OrderSummary {
     trackingNo: optional(r.trackingNo),
     shippedAt: optional(r.shippedAt),
     receivedAt: optional(r.receivedAt),
+  };
+}
+/** 订单与成功支付退款分别计数，人民币元按字符串展示。 */
+export function decodeOrderStatistics(v: unknown) {
+  const row = object(v);
+  return {
+    orderCount: integer(row.orderCount),
+    orderPayPrice: money(row.orderPayPrice),
+    afterSaleCount: integer(row.afterSaleCount),
+    afterSalePrice: money(row.afterSalePrice),
   };
 }
 export function decodeShipment(v: unknown): Shipment {

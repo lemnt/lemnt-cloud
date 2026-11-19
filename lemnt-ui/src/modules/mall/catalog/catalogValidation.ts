@@ -5,7 +5,7 @@ export function requireWriteSuccess(result: boolean) {
 
 export function editablePrice(price: string): number {
   const value = Number(price);
-  if (!Number.isFinite(value) || value <= 0 || value > MAX_EDITABLE_PRICE) {
+  if (!Number.isFinite(value) || value < 0 || value > MAX_EDITABLE_PRICE) {
     throw new Error('该价格超出管理表单的安全编辑范围，请使用精确金额的导入接口处理');
   }
   return value;

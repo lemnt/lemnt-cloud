@@ -44,9 +44,7 @@ public class MessageOutboxGatewayImpl implements MessageOutboxGateway {
         if (!Set.of(
                 CommerceEventTopics.ORDER_PAID,
                 CommerceEventTopics.AFTER_SALE_COMPLETED,
-                CommerceEventTopics.ORDER_CLOSED,
-                CommerceEventTopics.ORDER_SHIPPED,
-                CommerceEventTopics.ORDER_COMPLETED)
+                CommerceEventTopics.ORDER_CLOSED)
             .contains(type)
             || key == null
             || key.isBlank()

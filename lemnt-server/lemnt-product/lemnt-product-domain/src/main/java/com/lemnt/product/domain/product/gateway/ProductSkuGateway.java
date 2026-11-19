@@ -2,6 +2,8 @@ package com.lemnt.product.domain.product.gateway;
 
 import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.product.domain.product.model.Product;
+import com.lemnt.product.domain.product.model.ProductBrokeragePrice;
+import com.lemnt.product.domain.product.model.ProductFixedCommission;
 import com.lemnt.product.domain.product.model.ProductSku;
 import com.lemnt.product.domain.product.model.ProductSkuFilter;
 
@@ -20,6 +22,12 @@ public interface ProductSkuGateway {
      * 批量查询SPU的未删除SKU。
      */
     List<ProductSku> skusBySpuIds(List<Long> ids);
+
+    /** 读取启用了固定分佣方式的SKU，不读取订单历史。 */
+    List<ProductFixedCommission> fixedCommissions(List<Long> skuIds);
+
+    /** 按 SPU 读取当前在售规格的一级分佣预估基础。 */
+    List<ProductBrokeragePrice> brokeragePrices(Long spuId);
 
     /**
      * 管理SKU分页，不包含永久删除状态。
@@ -90,6 +98,9 @@ public interface ProductSkuGateway {
      * 归还预占库存。
      */
     boolean releaseQuantity(Long id, Integer quantity);
+
+    /** 在支付事件事务内累加SKU销量，退款保留累计值。 */
+    void addSales(Long id, int quantity);
 
     /**
      * 读取指定商品的 SKU 列表。

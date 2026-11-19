@@ -48,27 +48,27 @@ class ServiceRouteConfigurationTest {
     void setup() {
         context = new AnnotationConfigApplicationContext();
         context.registerBean(
-            PathRoutePredicateFactory.class,
-            () -> new PathRoutePredicateFactory(new WebFluxProperties()));
+                PathRoutePredicateFactory.class,
+                () -> new PathRoutePredicateFactory(new WebFluxProperties()));
         context.registerBean(MethodRoutePredicateFactory.class, MethodRoutePredicateFactory::new);
         context.registerBean(
-            StripPrefixGatewayFilterFactory.class, StripPrefixGatewayFilterFactory::new);
+                StripPrefixGatewayFilterFactory.class, StripPrefixGatewayFilterFactory::new);
         context.registerBean(RouteLocatorBuilder.class, () -> new RouteLocatorBuilder(context));
         context.registerBean(
-            ConfigurationService.class,
-            () ->
-                new ConfigurationService(
-                    context,
-                    () -> DefaultConversionService.getSharedInstance(),
-                    () -> null));
+                ConfigurationService.class,
+                () ->
+                        new ConfigurationService(
+                                context,
+                                () -> DefaultConversionService.getSharedInstance(),
+                                () -> null));
         // 动态配置中的默认过滤器不能改变这些原DSL路由的业务前缀。
         context.registerBean(
-            GatewayProperties.class,
-            () -> {
-                var properties = new GatewayProperties();
-                properties.setDefaultFilters(List.of(new FilterDefinition("StripPrefix=1")));
-                return properties;
-            });
+                GatewayProperties.class,
+                () -> {
+                    var properties = new GatewayProperties();
+                    properties.setDefaultFilters(List.of(new FilterDefinition("StripPrefix=1")));
+                    return properties;
+                });
         context.register(ServiceRouteConfiguration.class, MemberAuthRouteConfiguration.class);
         context.refresh();
         routes = new ArrayList<>();
@@ -86,28 +86,28 @@ class ServiceRouteConfigurationTest {
     @TestFactory
     Stream<DynamicTest> allOriginalEndpointsReachExactlyOneOwner() throws Exception {
         var endpoints = endpoints();
-        assertEquals(313, endpoints.size());
+        assertEquals(332, endpoints.size());
         return endpoints.stream()
-            .map(
-                endpoint ->
-                    DynamicTest.dynamicTest(
-                        endpoint.method() + " " + endpoint.path(),
-                        () -> {
-                            var exchange =
-                                request(
-                                    endpoint.method(),
-                                    concrete(endpoint.path()));
-                            var route = unique(exchange);
-                            assertEquals(
-                                "lb://lemnt-" + endpoint.owner(),
-                                route.getUri().toString());
-                            assertEquals(-8, route.getOrder());
-                            assertTrue(
-                                route.getFilters().isEmpty(),
-                                "业务端点不得StripPrefix或改写请求");
-                            assertForwarded(
-                                route, exchange, concrete(endpoint.path()));
-                        }));
+                .map(
+                        endpoint ->
+                                DynamicTest.dynamicTest(
+                                        endpoint.method() + " " + endpoint.path(),
+                                        () -> {
+                                            var exchange =
+                                                    request(
+                                                            endpoint.method(),
+                                                            concrete(endpoint.path()));
+                                            var route = unique(exchange);
+                                            assertEquals(
+                                                    "lb://lemnt-" + endpoint.owner(),
+                                                    route.getUri().toString());
+                                            assertEquals(-8, route.getOrder());
+                                            assertTrue(
+                                                    route.getFilters().isEmpty(),
+                                                    "业务端点不得StripPrefix或改写请求");
+                                            assertForwarded(
+                                                    route, exchange, concrete(endpoint.path()));
+                                        }));
     }
 
     /**
@@ -118,38 +118,38 @@ class ServiceRouteConfigurationTest {
         for (var endpoint : endpoints()) {
             if ("GET".equals(endpoint.method())) {
                 assertEquals(
-                    "lb://lemnt-" + endpoint.owner(),
-                    unique(request("HEAD", concrete(endpoint.path()))).getUri().toString());
+                        "lb://lemnt-" + endpoint.owner(),
+                        unique(request("HEAD", concrete(endpoint.path()))).getUri().toString());
             }
             assertEquals(
-                "lb://lemnt-" + endpoint.owner(),
-                unique(request("OPTIONS", concrete(endpoint.path()))).getUri().toString());
+                    "lb://lemnt-" + endpoint.owner(),
+                    unique(request("OPTIONS", concrete(endpoint.path()))).getUri().toString());
         }
         for (String path :
-            List.of(
-                "/mall/app/products",
-                "/mall/app/cart",
-                "/mall/app/point-mall/orders",
-                "/trade/app/orders/123/payment")) {
+                List.of(
+                        "/mall/app/products",
+                        "/mall/app/cart",
+                        "/mall/app/point-mall/orders",
+                        "/trade/app/orders/123/payment")) {
             var exchange =
-                MockServerWebExchange.from(
-                    MockServerHttpRequest.options("http://gateway.example" + path)
-                        .header(HttpHeaders.ORIGIN, "https://shop.example")
-                        .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "POST"));
+                    MockServerWebExchange.from(
+                            MockServerHttpRequest.options("http://gateway.example" + path)
+                                    .header(HttpHeaders.ORIGIN, "https://shop.example")
+                                    .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "POST"));
             new CorsConfig()
-                .corsFilter(List.of("https://shop.example"))
-                .filter(
-                    exchange,
-                    next -> {
-                        fail("预检不能转发到业务服务");
-                        return Mono.empty();
-                    })
-                .block();
+                    .corsFilter(List.of("https://shop.example"))
+                    .filter(
+                            exchange,
+                            next -> {
+                                fail("预检不能转发到业务服务");
+                                return Mono.empty();
+                            })
+                    .block();
             assertEquals(
-                "https://shop.example",
-                exchange.getResponse()
-                    .getHeaders()
-                    .getFirst(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN));
+                    "https://shop.example",
+                    exchange.getResponse()
+                            .getHeaders()
+                            .getFirst(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN));
         }
     }
 
@@ -157,6 +157,7 @@ class ServiceRouteConfigurationTest {
     void servicePrefixesReachActualControllerPathsWithoutChangingQuery() {
         String[][] cases = {
             {"GET", "/member/member-users", "lemnt-member", "/member-users"},
+            {"GET", "/member/member-users/statistics", "lemnt-member", "/member-users/statistics"},
             {"GET", "/member/growth/levels", "lemnt-member", "/growth/levels"},
             {"GET", "/member/growths/config", "lemnt-member", "/growths/config"},
             {"GET", "/member/groups/page", "lemnt-member", "/groups/page"},
@@ -194,50 +195,50 @@ class ServiceRouteConfigurationTest {
             assertForwarded(route, exchange, item[3]);
         }
         for (String path :
-            List.of(
-                "/membership/user",
-                "/mallish/products",
-                "/tradeoff/orders",
-                "/systematic/users")) {
+                List.of(
+                        "/membership/user",
+                        "/mallish/products",
+                        "/tradeoff/orders",
+                        "/systematic/users")) {
             assertTrue(matches(request("GET", path)).isEmpty());
         }
     }
 
     @Test
     void unknownPathsUnsupportedMethodsAndPrefixLookalikesHaveNoCommerceFallback()
-        throws Exception {
+            throws Exception {
         for (var endpoint : endpoints()) {
             assertTrue(matches(request("PATCH", concrete(endpoint.path()))).isEmpty());
             assertTrue(matches(request("TRACE", concrete(endpoint.path()))).isEmpty());
         }
         for (String path :
-            List.of(
-                "/mall/unknown-resource",
-                "/trade/unknown-resource",
-                "/app/products/123/extra",
-                "/trade/app/orders/123/payment/extra")) {
+                List.of(
+                        "/mall/unknown-resource",
+                        "/trade/unknown-resource",
+                        "/app/products/123/extra",
+                        "/trade/app/orders/123/payment/extra")) {
             assertTrue(matches(request("GET", path)).isEmpty(), path);
         }
         assertTrue(
-            routes.stream()
-                .noneMatch(
-                    r ->
-                        List.of("lb://lemnt-mall", "lb://lemnt-trade")
-                            .contains(r.getUri().toString())));
+                routes.stream()
+                        .noneMatch(
+                                r ->
+                                        List.of("lb://lemnt-mall", "lb://lemnt-trade")
+                                                .contains(r.getUri().toString())));
     }
 
     private List<Endpoint> endpoints() throws Exception {
         return JsonUtils.toList(
-            new ClassPathResource("contracts/gateway-endpoint-contract.json")
-                .getContentAsString(StandardCharsets.UTF_8),
-            Endpoint.class);
+                new ClassPathResource("contracts/gateway-endpoint-contract.json")
+                        .getContentAsString(StandardCharsets.UTF_8),
+                Endpoint.class);
     }
 
     private MockServerWebExchange request(String method, String path) {
         return MockServerWebExchange.from(
-            MockServerHttpRequest.method(
-                HttpMethod.valueOf(method),
-                path + "?pageNum=2&keyword=%E4%B8%AD%E6%96%87&ids=1%2C2"));
+                MockServerHttpRequest.method(
+                        HttpMethod.valueOf(method),
+                        path + "?pageNum=2&keyword=%E4%B8%AD%E6%96%87&ids=1%2C2"));
     }
 
     private String concrete(String path) {
@@ -246,29 +247,29 @@ class ServiceRouteConfigurationTest {
 
     private List<Route> matches(ServerWebExchange exchange) {
         return routes.stream()
-            .filter(
-                r ->
-                    Boolean.TRUE.equals(
-                        Mono.from(r.getPredicate().apply(exchange)).block()))
-            .toList();
+                .filter(
+                        r ->
+                                Boolean.TRUE.equals(
+                                        Mono.from(r.getPredicate().apply(exchange)).block()))
+                .toList();
     }
 
     private Route unique(ServerWebExchange exchange) {
         var matched = matches(exchange);
         assertEquals(
-            1,
-            matched.size(),
-            exchange.getRequest().getMethod() + " " + exchange.getRequest().getPath());
+                1,
+                matched.size(),
+                exchange.getRequest().getMethod() + " " + exchange.getRequest().getPath());
         return matched.get(0);
     }
 
     private void assertForwarded(Route route, ServerWebExchange exchange, String path) {
         var forwarded = new AtomicReference<ServerWebExchange>();
         GatewayFilterChain chain =
-            next -> {
-                forwarded.set(next);
-                return Mono.empty();
-            };
+                next -> {
+                    forwarded.set(next);
+                    return Mono.empty();
+                };
         var filters = route.getFilters();
         for (int i = filters.size() - 1; i >= 0; i--) {
             var filter = filters.get(i);
@@ -278,17 +279,16 @@ class ServiceRouteConfigurationTest {
         chain.filter(exchange).block();
         assertEquals(path, forwarded.get().getRequest().getURI().getPath());
         assertEquals(
-            exchange.getRequest().getURI().getRawQuery(),
-            forwarded.get().getRequest().getURI().getRawQuery());
+                exchange.getRequest().getURI().getRawQuery(),
+                forwarded.get().getRequest().getURI().getRawQuery());
         assertEquals(exchange.getRequest().getMethod(), forwarded.get().getRequest().getMethod());
     }
 
     public record Endpoint(
-        String method,
-        String path,
-        String owner,
-        String permissions,
-        String source,
-        Integer sourceLine) {
-    }
+            String method,
+            String path,
+            String owner,
+            String permissions,
+            String source,
+            Integer sourceLine) {}
 }

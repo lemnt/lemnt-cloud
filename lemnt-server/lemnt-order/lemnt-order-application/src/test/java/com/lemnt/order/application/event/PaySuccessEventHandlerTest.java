@@ -37,60 +37,72 @@ class PaySuccessEventHandlerTest {
     final OrderEventGateway events = mock(OrderEventGateway.class);
     final ActivityOrderLifecycleService activities = mock(ActivityOrderLifecycleService.class);
     final PaySuccessEventHandler handler =
-        new PaySuccessEventHandler(
-            inbox,
-            persistence,
-            orders,
-            payments,
-            mock(OrderLogService.class),
-            activities,
-            events,
-            new InboundEventGatewayImpl());
+            new PaySuccessEventHandler(
+                    inbox,
+                    persistence,
+                    orders,
+                    payments,
+                    mock(OrderLogService.class),
+                    activities,
+                    events,
+                    new InboundEventGatewayImpl());
     final CommerceEventEnvelope notice =
-        new CommerceEventEnvelope(
-            "E1",
-            CommerceEventTopics.PAY_SUCCESS,
-            1,
-            "PAY1",
-            "TR1",
-            Instant.now(),
-            null,
-            JsonUtils.toJsonStr(
-                new PaySuccessEvent(
-                    "PAY1", "TR1", 2L, "ALIPAY", BigDecimal.TEN, "CHANNEL1")));
+            new CommerceEventEnvelope(
+                    "E1",
+                    CommerceEventTopics.PAY_SUCCESS,
+                    1,
+                    "PAY1",
+                    "TR1",
+                    Instant.now(),
+                    null,
+                    JsonUtils.toJsonStr(
+                            new PaySuccessEvent(
+                                    "PAY1", "TR1", 2L, "ALIPAY", BigDecimal.TEN, "CHANNEL1")));
 
     @BeforeEach
     void setup() {
-        when(inbox.begin(anyString(), anyString(), anyString(), anyString(), anyString()))
-            .thenReturn(true);
         state("PENDING_PAYMENT");
         payment("SUCCESS", "CHANNEL1", BigDecimal.TEN);
     }
 
     void state(String state) {
         when(persistence.findByOrderNoForUpdate("TR1"))
-            .thenReturn(new TradeOrder(1L, "TR1", 2L, BigDecimal.TEN, state, List.of(), null));
+                .thenReturn(new TradeOrder(1L, "TR1", 2L, BigDecimal.TEN, state, List.of(), null));
     }
 
     void payment(String state, String tradeNo, BigDecimal amount) {
         when(payments.findByOrderNo("TR1"))
-            .thenReturn(
-                List.of(
-                    new PaymentRecord(
-                        1L, "PAY1", "TR1", "ALIPAY", null, tradeNo, amount, state,
-                        "N")));
+                .thenReturn(
+                        List.of(
+                                new PaymentRecord(
+                                        1L, "PAY1", "TR1", "ALIPAY", null, tradeNo, amount, state,
+                                        "N")));
     }
 
     @Test
     void unsupportedVersionAndWrongTypeAreRejectedBeforePayloadDecodingOrReceipt() {
-        for (var envelope : List.of(
-            new CommerceEventEnvelope(
-                "E2", CommerceEventTopics.PAY_SUCCESS, 2, "PAY1", "TR1",
-                Instant.now(), null, "not-json"),
-            new CommerceEventEnvelope(
-                "E3", CommerceEventTopics.ORDER_PAID, 1, "PAY1", "TR1",
-                Instant.now(), null, "not-json"))) {
-            var failure = assertThrows(IllegalArgumentException.class, () -> handler.execute(envelope));
+        for (var envelope :
+                List.of(
+                        new CommerceEventEnvelope(
+                                "E2",
+                                CommerceEventTopics.PAY_SUCCESS,
+                                2,
+                                "PAY1",
+                                "TR1",
+                                Instant.now(),
+                                null,
+                                "not-json"),
+                        new CommerceEventEnvelope(
+                                "E3",
+                                CommerceEventTopics.ORDER_PAID,
+                                1,
+                                "PAY1",
+                                "TR1",
+                                Instant.now(),
+                                null,
+                                "not-json"))) {
+            var failure =
+                    assertThrows(IllegalArgumentException.class, () -> handler.execute(envelope));
             assertEquals("事件协议版本、类型或必要字段不合法", failure.getMessage());
         }
         verifyNoInteractions(inbox, persistence, payments, orders, activities, events);
@@ -98,12 +110,12 @@ class PaySuccessEventHandlerTest {
 
     @Test
     void sameSuccessfulChannelTransactionIsIdempotentWithNewNotificationId() {
-        when(inbox.begin(anyString(), anyString(), anyString(), anyString(), anyString()))
-            .thenReturn(false);
+        when(orders.confirmedPaymentNo("TR1")).thenReturn("PAY1");
         state("PAID");
         handler.execute(notice);
         verifyNoInteractions(events);
-        verify(orders, never()).transitionStatus(any(), any(), any());
+        verify(orders, never()).confirmPayment(any(), any(), any());
+        verifyNoInteractions(inbox);
     }
 
     @Test
@@ -117,12 +129,12 @@ class PaySuccessEventHandlerTest {
 
     @Test
     void successWritesOrderAndBusinessEventInOrder() {
-        when(orders.transitionStatus("TR1", "PENDING_PAYMENT", "PAID")).thenReturn(true);
+        when(orders.confirmPayment("TR1", "PAY1", BigDecimal.TEN)).thenReturn(true);
         handler.execute(notice);
         var sequence = inOrder(persistence, payments, orders, activities, events);
         sequence.verify(persistence).findByOrderNoForUpdate("TR1");
         sequence.verify(payments).findByOrderNo("TR1");
-        sequence.verify(orders).transitionStatus("TR1", "PENDING_PAYMENT", "PAID");
+        sequence.verify(orders).confirmPayment("TR1", "PAY1", BigDecimal.TEN);
         sequence.verify(activities).paid("TR1");
         sequence.verify(events).paid(any());
     }
@@ -139,19 +151,26 @@ class PaySuccessEventHandlerTest {
             state(s);
             assertThrows(IllegalStateException.class, () -> handler.execute(notice));
         }
-        verify(orders, never()).transitionStatus(any(), any(), any());
+        verify(orders, never()).confirmPayment(any(), any(), any());
         verifyNoInteractions(events);
     }
 
     @Test
     void successfulReplayRemainsIdempotentAfterShippingAndReceipt() {
-        when(inbox.begin(anyString(), anyString(), anyString(), anyString(), anyString()))
-            .thenReturn(false);
+        when(inbox.has("order.pay_success.v1", "PAY_SUCCESS", "PAY1")).thenReturn(true);
         for (String s : List.of("SHIPPED", "COMPLETED")) {
             state(s);
             handler.execute(notice);
         }
-        verify(orders, never()).transitionStatus(any(), any(), any());
+        verify(orders, never()).confirmPayment(any(), any(), any());
         verifyNoInteractions(events);
+    }
+
+    @Test
+    void historicalInboxCannotOverrideDifferentConfirmedPaymentNumber() {
+        state("PAID");
+        when(orders.confirmedPaymentNo("TR1")).thenReturn("OTHER-PAYMENT");
+        assertThrows(IllegalStateException.class, () -> handler.execute(notice));
+        verifyNoInteractions(inbox, events);
     }
 }

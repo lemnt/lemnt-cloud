@@ -2,6 +2,8 @@ import { request } from '@/api/request';
 import {
   decodePage,
   decodeOrder,
+  decodeOrderStatistics,
+  decodeOrderWorkload,
   decodeDetail,
   decodeShipment,
   decodeRefund,
@@ -15,6 +17,23 @@ import type { OrderAddressRequest, PageQuery, ShipmentRequest } from '../types';
 const orderPath = (no: string) => `/trade/admin/orders/${encodeURIComponent(no)}`;
 export async function getOrders(params: PageQuery) {
   return decodePage(await request<unknown>({ url: '/trade/admin/orders', params }), decodeOrder);
+}
+/** 使用后端全量聚合，可按订单编号精确筛选。 */
+export async function getOrderStatistics(orderNo?: string) {
+  return decodeOrderStatistics(
+    (
+      await request<unknown>({
+        url: '/trade/admin/orders/summary',
+        params: { orderNo: orderNo?.trim() || undefined },
+      })
+    ).data,
+  );
+}
+/** 待办汇总独立于当前列表筛选。 */
+export async function getOrderWorkload() {
+  return decodeOrderWorkload(
+    (await request<unknown>({ url: '/trade/admin/orders/workload' })).data,
+  );
 }
 export async function getOrder(no: string) {
   return decodeDetail((await request<unknown>({ url: orderPath(no) })).data);

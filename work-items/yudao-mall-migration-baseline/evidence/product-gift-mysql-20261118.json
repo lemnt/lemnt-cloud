@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-11-18T14:51:15.268097+08:00",
+  "mysqlVersion": "8.0.46",
+  "schema": "lemnt_migration_gift_20261118_145112_product",
+  "checks": {
+    "historicalGiftConfigurationKeptNull": true,
+    "zeroAndPositiveGiftConfigurationSupported": true,
+    "negativeGiftConfigurationRejected": true,
+    "adminSkuPricesAndStockUseNonDeletedRowsOnly": true,
+    "incompleteCostRemainsUnknown": true
+  },
+  "existingSchemasModified": false,
+  "businessHttpVerified": false
+}

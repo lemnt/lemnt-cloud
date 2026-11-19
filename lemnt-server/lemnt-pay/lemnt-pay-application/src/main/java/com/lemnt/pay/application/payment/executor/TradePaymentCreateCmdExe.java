@@ -69,6 +69,18 @@ public class TradePaymentCreateCmdExe {
         if (receipts.has("pay.order.closed.v1", "ORDER_CLOSED", order.orderNo()))
             throw new IllegalStateException("订单已关闭，不能创建延迟支付尝试");
 
+        // 支付准备 RPC 可能早于关单消费。拿到同一支付锁后重查订单的当前状态。
+        var current = orderPersistenceService.findByOrderNo(order.orderNo());
+        if (current == null
+                || !"PENDING_PAYMENT".equals(current.status())
+                || !order.orderNo().equals(current.orderNo())
+                || order.memberId() == null
+                || !order.memberId().equals(current.memberId())
+                || current.totalAmount() == null
+                || order.totalAmount().compareTo(current.totalAmount()) != 0) {
+            throw new IllegalStateException("原订单状态或支付准备金额已变化");
+        }
+
         PaymentRecord existing =
             tradePaymentGateway.findByOrderNoAndChannel(order.orderNo(), normalizedChannel);
         if (existing != null) {

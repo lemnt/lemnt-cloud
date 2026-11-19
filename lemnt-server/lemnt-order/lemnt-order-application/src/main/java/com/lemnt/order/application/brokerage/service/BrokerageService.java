@@ -7,6 +7,7 @@ import com.lemnt.order.application.brokerage.dto.BrokerageUserDTO;
 import com.lemnt.order.application.brokerage.qry.BrokerageRecordPageQry;
 import com.lemnt.order.application.brokerage.qry.BrokerageUserPageQry;
 import com.lemnt.order.application.order.service.OrderPersistenceService;
+import com.lemnt.order.domain.aftersale.model.AfterSale;
 import com.lemnt.order.domain.brokerage.gateway.BrokerageMemberGateway;
 import com.lemnt.order.domain.brokerage.gateway.BrokerageRecordGateway;
 import com.lemnt.order.domain.brokerage.gateway.BrokerageUserGateway;
@@ -14,8 +15,10 @@ import com.lemnt.order.domain.brokerage.model.BrokerageRecord;
 import com.lemnt.order.domain.brokerage.model.BrokerageRecordFilter;
 import com.lemnt.order.domain.brokerage.model.BrokerageUser;
 import com.lemnt.order.domain.brokerage.model.BrokerageUserFilter;
+import com.lemnt.order.domain.brokerage.model.OrderCommissionLine;
 import com.lemnt.order.domain.config.gateway.TradeConfigGateway;
 import com.lemnt.order.domain.config.model.TradeConfig;
+import com.lemnt.order.domain.order.model.TradeOrder;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +30,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * 分销关系与佣金：绑定校验、订单佣金、退款取消、到期解冻和提现扣减。
@@ -53,6 +58,7 @@ public class BrokerageService {
     private final BrokerageMemberGateway members;
     private final OrderPersistenceService orders;
     private final BrokerageSettlementService settlement;
+    private final OrderCommissionService commission;
 
     private void require(boolean condition, String message) {
         if (!condition) {
@@ -77,18 +83,18 @@ public class BrokerageService {
         }
         var config = configs.get();
         boolean enabled =
-            config != null
-                && Boolean.TRUE.equals(config.brokerageEnabled())
-                && Integer.valueOf(ENABLED_ALL).equals(config.brokerageEnabledCondition());
+                config != null
+                        && Boolean.TRUE.equals(config.brokerageEnabled())
+                        && Integer.valueOf(ENABLED_ALL).equals(config.brokerageEnabledCondition());
         return users.save(
-            new BrokerageUser(
-                memberId,
-                null,
-                null,
-                enabled,
-                enabled ? LocalDateTime.now() : null,
-                ZERO,
-                ZERO));
+                new BrokerageUser(
+                        memberId,
+                        null,
+                        null,
+                        enabled,
+                        enabled ? LocalDateTime.now() : null,
+                        ZERO,
+                        ZERO));
     }
 
     public BrokerageUserDTO appUser(Long memberId) {
@@ -104,21 +110,21 @@ public class BrokerageService {
                 return true;
             }
             require(
-                Integer.valueOf(BIND_OVERRIDE).equals(config.brokerageBindMode()),
-                "已绑定推广员，不能重复绑定");
+                    Integer.valueOf(BIND_OVERRIDE).equals(config.brokerageBindMode()),
+                    "已绑定推广员，不能重复绑定");
         }
         var target = users.find(bindUserId);
         require(target != null && Boolean.TRUE.equals(target.brokerageEnabled()), "推广员不存在或未开通分销资格");
         validateNoCycle(memberId, target);
         users.save(
-            new BrokerageUser(
-                user.id(),
-                bindUserId,
-                LocalDateTime.now(),
-                user.brokerageEnabled(),
-                user.brokerageTime(),
-                user.brokeragePrice(),
-                user.frozenPrice()));
+                new BrokerageUser(
+                        user.id(),
+                        bindUserId,
+                        LocalDateTime.now(),
+                        user.brokerageEnabled(),
+                        user.brokerageTime(),
+                        user.brokeragePrice(),
+                        user.frozenPrice()));
         return true;
     }
 
@@ -136,14 +142,14 @@ public class BrokerageService {
         require(target != null && Boolean.TRUE.equals(target.brokerageEnabled()), "推广员不存在或未开通分销资格");
         validateNoCycle(memberId, target);
         users.save(
-            new BrokerageUser(
-                user.id(),
-                bindUserId,
-                LocalDateTime.now(),
-                user.brokerageEnabled(),
-                user.brokerageTime(),
-                user.brokeragePrice(),
-                user.frozenPrice()));
+                new BrokerageUser(
+                        user.id(),
+                        bindUserId,
+                        LocalDateTime.now(),
+                        user.brokerageEnabled(),
+                        user.brokerageTime(),
+                        user.brokeragePrice(),
+                        user.frozenPrice()));
         return true;
     }
 
@@ -160,52 +166,52 @@ public class BrokerageService {
         require(enabled != null, "分销资格状态不能为空");
         var user = ensure(memberId);
         users.save(
-            new BrokerageUser(
-                user.id(),
-                user.bindUserId(),
-                user.bindUserTime(),
-                enabled,
-                enabled ? LocalDateTime.now() : null,
-                user.brokeragePrice(),
-                user.frozenPrice()));
+                new BrokerageUser(
+                        user.id(),
+                        user.bindUserId(),
+                        user.bindUserTime(),
+                        enabled,
+                        enabled ? LocalDateTime.now() : null,
+                        user.brokeragePrice(),
+                        user.frozenPrice()));
         return true;
     }
 
     public PageResult<BrokerageUserDTO> pageUsers(BrokerageUserPageQry qry) {
         page(qry == null ? 0 : qry.pageNum(), qry == null ? 0 : qry.pageSize());
         var result =
-            users.page(
-                new BrokerageUserFilter(
-                    qry.bindUserId(),
-                    qry.brokerageEnabled(),
-                    qry.pageNum(),
-                    qry.pageSize()));
+                users.page(
+                        new BrokerageUserFilter(
+                                qry.bindUserId(),
+                                qry.brokerageEnabled(),
+                                qry.pageNum(),
+                                qry.pageSize()));
         return PageResult.of(
-            result.getRecords().stream().map(this::dto).toList(), result.getTotal());
+                result.getRecords().stream().map(this::dto).toList(), result.getTotal());
     }
 
     public PageResult<BrokerageRecordDTO> pageRecords(BrokerageRecordPageQry qry) {
         page(qry == null ? 0 : qry.pageNum(), qry == null ? 0 : qry.pageSize());
         require(
-            qry.bizType() == null
-                || List.of(BIZ_ORDER, BIZ_WITHDRAW, BIZ_WITHDRAW_REJECT, BIZ_ORDER_REFUND)
-                .contains(qry.bizType()),
-            "佣金业务类型不合法");
+                qry.bizType() == null
+                        || List.of(BIZ_ORDER, BIZ_WITHDRAW, BIZ_WITHDRAW_REJECT, BIZ_ORDER_REFUND)
+                                .contains(qry.bizType()),
+                "佣金业务类型不合法");
         require(
-            qry.status() == null
-                || List.of(STATUS_WAIT, STATUS_SETTLED, STATUS_CANCEL)
-                .contains(qry.status()),
-            "佣金状态不合法");
+                qry.status() == null
+                        || List.of(STATUS_WAIT, STATUS_SETTLED, STATUS_CANCEL)
+                                .contains(qry.status()),
+                "佣金状态不合法");
         var result =
-            records.page(
-                new BrokerageRecordFilter(
-                    qry.userId(),
-                    qry.bizType(),
-                    qry.status(),
-                    qry.pageNum(),
-                    qry.pageSize()));
+                records.page(
+                        new BrokerageRecordFilter(
+                                qry.userId(),
+                                qry.bizType(),
+                                qry.status(),
+                                qry.pageNum(),
+                                qry.pageSize()));
         return PageResult.of(
-            result.getRecords().stream().map(this::recordDto).toList(), result.getTotal());
+                result.getRecords().stream().map(this::recordDto).toList(), result.getTotal());
     }
 
     /**
@@ -217,7 +223,11 @@ public class BrokerageService {
             return 0;
         }
         var order = orders.findByOrderNo(orderNo);
-        if (order == null || order.totalAmount() == null || order.totalAmount().signum() <= 0) {
+        if (order == null || order.totalAmount() == null) {
+            return 0;
+        }
+        var lines = commission.lines(order.id());
+        if (lines.isEmpty() && order.totalAmount().signum() <= 0) {
             return 0;
         }
         var buyer = users.find(order.memberId());
@@ -229,56 +239,65 @@ public class BrokerageService {
             return 0;
         }
         int count =
-            credit(
-                first,
-                order.orderNo(),
-                order.totalAmount(),
-                config.brokerageFirstPercent(),
-                config.brokerageFrozenDays(),
-                1,
-                order.memberId(),
-                "获得推广佣金");
+                credit(
+                        first,
+                        order,
+                        lines,
+                        config.brokerageFirstPercent(),
+                        config.brokerageFrozenDays(),
+                        1,
+                        order.memberId(),
+                        "获得推广佣金");
         if (first.bindUserId() == null) {
             return count;
         }
         var second = users.find(first.bindUserId());
         if (second != null && Boolean.TRUE.equals(second.brokerageEnabled())) {
             count +=
-                credit(
-                    second,
-                    order.orderNo(),
-                    order.totalAmount(),
-                    config.brokerageSecondPercent(),
-                    config.brokerageFrozenDays(),
-                    2,
-                    order.memberId(),
-                    "获得二级推广佣金");
+                    credit(
+                            second,
+                            order,
+                            lines,
+                            config.brokerageSecondPercent(),
+                            config.brokerageFrozenDays(),
+                            2,
+                            order.memberId(),
+                            "获得二级推广佣金");
         }
         return count;
     }
 
     private int credit(
-        BrokerageUser user,
-        String orderNo,
-        BigDecimal amount,
-        Integer percent,
-        Integer frozenDays,
-        int level,
-        Long sourceUserId,
-        String title) {
-        if (percent == null || percent <= 0) {
+            BrokerageUser user,
+            TradeOrder order,
+            List<OrderCommissionLine> lines,
+            Integer percent,
+            Integer frozenDays,
+            int level,
+            Long sourceUserId,
+            String title) {
+        String orderNo = order.orderNo();
+        if (records.findByBiz(user.id(), BIZ_ORDER, orderNo) != null) {
             return 0;
         }
+        Map<Long, BigDecimal> amounts =
+                lines.isEmpty()
+                        ? Map.of()
+                        : commission.amounts(lines, order.items(), level, percent);
         BigDecimal price =
-            amount.multiply(BigDecimal.valueOf(percent))
-                .divide(BigDecimal.valueOf(100), 2, RoundingMode.DOWN);
-        if (price.signum() <= 0 || records.findByBiz(user.id(), BIZ_ORDER, orderNo) != null) {
+                lines.isEmpty()
+                        ? OrderCommissionService.percentage(order.totalAmount(), percent)
+                        : amounts.values().stream().reduce(ZERO, BigDecimal::add);
+        if (price.signum() <= 0) {
             return 0;
         }
         int days = frozenDays == null ? 0 : Math.max(frozenDays, 0);
         LocalDateTime now = LocalDateTime.now();
         var locked = users.lock(user.id());
         require(locked != null, "分销用户不存在");
+        if (records.findByBiz(user.id(), BIZ_ORDER, orderNo) != null) {
+            return 0;
+        }
         BigDecimal frozen = locked.frozenPrice();
         BigDecimal available = locked.brokeragePrice();
         if (days > 0) {
@@ -287,30 +306,31 @@ public class BrokerageService {
             available = available.add(price);
         }
         users.save(
-            new BrokerageUser(
-                locked.id(),
-                locked.bindUserId(),
-                locked.bindUserTime(),
-                locked.brokerageEnabled(),
-                locked.brokerageTime(),
-                available,
-                frozen));
+                new BrokerageUser(
+                        locked.id(),
+                        locked.bindUserId(),
+                        locked.bindUserTime(),
+                        locked.brokerageEnabled(),
+                        locked.brokerageTime(),
+                        available,
+                        frozen));
         records.save(
-            new BrokerageRecord(
-                null,
-                user.id(),
-                orderNo,
-                BIZ_ORDER,
-                title,
-                orderNo,
-                price,
-                available.add(frozen),
-                days > 0 ? STATUS_WAIT : STATUS_SETTLED,
-                days,
-                days > 0 ? now.plusDays(days) : null,
-                level,
-                sourceUserId,
-                now));
+                new BrokerageRecord(
+                        null,
+                        user.id(),
+                        orderNo,
+                        BIZ_ORDER,
+                        title,
+                        orderNo,
+                        price,
+                        available.add(frozen),
+                        days > 0 ? STATUS_WAIT : STATUS_SETTLED,
+                        days,
+                        days > 0 ? now.plusDays(days) : null,
+                        level,
+                        sourceUserId,
+                        now));
+        commission.recordEarned(amounts, level);
         return 1;
     }
 
@@ -319,9 +339,11 @@ public class BrokerageService {
      */
     public int cancelOrderCommission(String orderNo) {
         int count = 0;
-        for (var record : records.byBiz(BIZ_ORDER, orderNo)) {
-            if (record.status() == STATUS_CANCEL
-                || !records.updateStatus(record.id(), record.status(), STATUS_CANCEL)) {
+        for (var existing : records.byBiz(BIZ_ORDER, orderNo)) {
+            var record = records.lock(existing.id());
+            if (record == null
+                    || record.status() == STATUS_CANCEL
+                    || !records.updateStatus(record.id(), record.status(), STATUS_CANCEL)) {
                 continue;
             }
             var user = users.lock(record.userId());
@@ -332,39 +354,61 @@ public class BrokerageService {
             var deducted = deduct(user, record.status() == STATUS_WAIT, remaining);
             if (deducted.remainder().signum() != 0) {
                 log.warn(
-                    "整单退款佣金余额不足, orderNo={}, userId={}, missing={}",
-                    orderNo,
-                    record.userId(),
-                    deducted.remainder());
+                        "整单退款佣金余额不足, orderNo={}, userId={}, missing={}",
+                        orderNo,
+                        record.userId(),
+                        deducted.remainder());
             }
             count++;
         }
         return count;
     }
 
-    /**
-     * 部分退款按累计成功退款金额比例扣回已发佣金，重复回调只补差额。
-     */
+    /** 历史、纯全局比例订单按累计成功退款金额比例扣回佣金。 */
     public int recallOrderCommission(
-        String orderNo, BigDecimal refundedAmount, BigDecimal orderTotal) {
+            String orderNo, BigDecimal refundedAmount, BigDecimal orderTotal) {
         if (orderNo == null
-            || refundedAmount == null
-            || orderTotal == null
-            || refundedAmount.signum() <= 0
-            || orderTotal.signum() <= 0) {
+                || refundedAmount == null
+                || orderTotal == null
+                || refundedAmount.signum() <= 0
+                || orderTotal.signum() <= 0) {
             return 0;
         }
         BigDecimal ratioBase = refundedAmount.min(orderTotal);
+        return recall(
+                orderNo,
+                record ->
+                        record.price()
+                                .multiply(ratioBase)
+                                .divide(orderTotal, 2, RoundingMode.DOWN));
+    }
+
+    /** 独立分佣订单按各行的入账与退款快照核算，其他订单沿用历史规则。 */
+    public int recallOrderCommission(
+            TradeOrder order, List<AfterSale> history, BigDecimal refundedAmount) {
+        var lines = commission.lines(order.id());
+        if (lines.isEmpty()) {
+            return recallOrderCommission(order.orderNo(), refundedAmount, order.totalAmount());
+        }
+        var current = orders.findByOrderNo(order.orderNo());
+        return recall(
+                order.orderNo(),
+                record ->
+                        commission.recalled(
+                                lines, current.items(), history, record.sourceUserLevel()));
+    }
+
+    private int recall(String orderNo, Function<BrokerageRecord, BigDecimal> expectedAmount) {
         int count = 0;
-        for (var record : records.byBiz(BIZ_ORDER, orderNo)) {
-            if (record.status() == STATUS_CANCEL) {
+        for (var existing : records.byBiz(BIZ_ORDER, orderNo)) {
+            var record = records.lock(existing.id());
+            if (record == null || record.status() == STATUS_CANCEL) {
                 continue;
             }
-            BigDecimal expected =
-                record.price()
-                    .multiply(ratioBase)
-                    .divide(orderTotal, 2, RoundingMode.DOWN)
-                    .min(record.price());
+            BigDecimal expected = expectedAmount.apply(record);
+            if (expected.compareTo(record.price()) > 0) {
+                throw new IllegalStateException("应扣回佣金超过原实发金额");
+            }
             var reversal = records.findByBiz(record.userId(), BIZ_ORDER_REFUND, orderNo);
             BigDecimal recalled = reversal == null ? ZERO : reversal.price().negate();
             BigDecimal delta = expected.subtract(recalled);
@@ -376,10 +420,10 @@ public class BrokerageService {
             var deducted = deduct(user, record.status() == STATUS_WAIT, delta);
             if (deducted.remainder().signum() != 0) {
                 log.warn(
-                    "部分退款佣金余额不足, orderNo={}, userId={}, missing={}",
-                    orderNo,
-                    record.userId(),
-                    deducted.remainder());
+                        "部分退款佣金余额不足, orderNo={}, userId={}, missing={}",
+                        orderNo,
+                        record.userId(),
+                        deducted.remainder());
             }
             if (deducted.actual().signum() <= 0) {
                 continue;
@@ -388,22 +432,26 @@ public class BrokerageService {
             var target = deducted.user();
             if (reversal == null) {
                 records.save(
-                    new BrokerageRecord(
-                        null,
-                        record.userId(),
-                        orderNo,
-                        BIZ_ORDER_REFUND,
-                        "退款扣回佣金",
-                        "订单退款累计扣回 " + next.toPlainString(),
-                        next.negate(),
-                        target.brokeragePrice().add(target.frozenPrice()),
-                        STATUS_SETTLED,
-                        0,
-                        null,
-                        record.sourceUserLevel(),
-                        record.sourceUserId(),
-                        LocalDateTime.now()));
-            } else if (!records.updatePrice(reversal.id(), reversal.price(), next.negate())) {
+                        new BrokerageRecord(
+                                null,
+                                record.userId(),
+                                orderNo,
+                                BIZ_ORDER_REFUND,
+                                "退款扣回佣金",
+                                "订单退款累计扣回 " + next.toPlainString(),
+                                next.negate(),
+                                target.brokeragePrice().add(target.frozenPrice()),
+                                STATUS_SETTLED,
+                                0,
+                                null,
+                                record.sourceUserLevel(),
+                                record.sourceUserId(),
+                                LocalDateTime.now()));
+            } else if (!records.updatePrice(
+                    reversal.id(),
+                    reversal.price(),
+                    next.negate(),
+                    target.brokeragePrice().add(target.frozenPrice()))) {
                 throw new IllegalStateException("佣金扣回累计更新失败");
             }
             count++;
@@ -411,8 +459,7 @@ public class BrokerageService {
         return count;
     }
 
-    private record Deduction(BrokerageUser user, BigDecimal actual, BigDecimal remainder) {
-    }
+    private record Deduction(BrokerageUser user, BigDecimal actual, BigDecimal remainder) {}
 
     /**
      * 待结算佣金优先扣冻结，已结算扣可用；余额不足时只扣实际可用部分并返回差额。
@@ -429,16 +476,17 @@ public class BrokerageService {
         BigDecimal value = remaining.min(available);
         available = available.subtract(value);
         remaining = remaining.subtract(value);
-        users.save(
-            new BrokerageUser(
-                user.id(),
-                user.bindUserId(),
-                user.bindUserTime(),
-                user.brokerageEnabled(),
-                user.brokerageTime(),
-                available,
-                frozen));
-        return new Deduction(user, amount.subtract(remaining), remaining);
+        var updated =
+                new BrokerageUser(
+                        user.id(),
+                        user.bindUserId(),
+                        user.bindUserTime(),
+                        user.brokerageEnabled(),
+                        user.brokerageTime(),
+                        available,
+                        frozen);
+        users.save(updated);
+        return new Deduction(updated, amount.subtract(remaining), remaining);
     }
 
     /**
@@ -450,30 +498,30 @@ public class BrokerageService {
         require(user.brokeragePrice().compareTo(price) >= 0, "可用佣金不足");
         BigDecimal available = user.brokeragePrice().subtract(price);
         users.save(
-            new BrokerageUser(
-                user.id(),
-                user.bindUserId(),
-                user.bindUserTime(),
-                user.brokerageEnabled(),
-                user.brokerageTime(),
-                available,
-                user.frozenPrice()));
+                new BrokerageUser(
+                        user.id(),
+                        user.bindUserId(),
+                        user.bindUserTime(),
+                        user.brokerageEnabled(),
+                        user.brokerageTime(),
+                        available,
+                        user.frozenPrice()));
         records.save(
-            new BrokerageRecord(
-                null,
-                userId,
-                String.valueOf(withdrawId),
-                BIZ_WITHDRAW,
-                "提现申请",
-                "提现申请扣除佣金 " + price.toPlainString(),
-                price.negate(),
-                available.add(user.frozenPrice()),
-                STATUS_SETTLED,
-                0,
-                null,
-                null,
-                null,
-                LocalDateTime.now()));
+                new BrokerageRecord(
+                        null,
+                        userId,
+                        String.valueOf(withdrawId),
+                        BIZ_WITHDRAW,
+                        "提现申请",
+                        "提现申请扣除佣金 " + price.toPlainString(),
+                        price.negate(),
+                        available.add(user.frozenPrice()),
+                        STATUS_SETTLED,
+                        0,
+                        null,
+                        null,
+                        null,
+                        LocalDateTime.now()));
     }
 
     /**
@@ -484,30 +532,30 @@ public class BrokerageService {
         require(user != null, "分销用户不存在");
         BigDecimal available = user.brokeragePrice().add(price);
         users.save(
-            new BrokerageUser(
-                user.id(),
-                user.bindUserId(),
-                user.bindUserTime(),
-                user.brokerageEnabled(),
-                user.brokerageTime(),
-                available,
-                user.frozenPrice()));
+                new BrokerageUser(
+                        user.id(),
+                        user.bindUserId(),
+                        user.bindUserTime(),
+                        user.brokerageEnabled(),
+                        user.brokerageTime(),
+                        available,
+                        user.frozenPrice()));
         records.save(
-            new BrokerageRecord(
-                null,
-                userId,
-                String.valueOf(withdrawId),
-                BIZ_WITHDRAW_REJECT,
-                "提现申请驳回",
-                "提现申请驳回，返还佣金 " + price.toPlainString(),
-                price,
-                available.add(user.frozenPrice()),
-                STATUS_SETTLED,
-                0,
-                null,
-                null,
-                null,
-                LocalDateTime.now()));
+                new BrokerageRecord(
+                        null,
+                        userId,
+                        String.valueOf(withdrawId),
+                        BIZ_WITHDRAW_REJECT,
+                        "提现申请驳回",
+                        "提现申请驳回，返还佣金 " + price.toPlainString(),
+                        price,
+                        available.add(user.frozenPrice()),
+                        STATUS_SETTLED,
+                        0,
+                        null,
+                        null,
+                        null,
+                        LocalDateTime.now()));
     }
 
     /**
@@ -535,32 +583,32 @@ public class BrokerageService {
             second += users.countChildren(child);
         }
         return new BrokerageUserDTO(
-            value.id(),
-            value.bindUserId(),
-            bind == null ? null : bind.nickname(),
-            bind == null ? null : bind.avatar(),
-            value.brokerageEnabled(),
-            value.brokeragePrice(),
-            value.frozenPrice(),
-            first,
-            second);
+                value.id(),
+                value.bindUserId(),
+                bind == null ? null : bind.nickname(),
+                bind == null ? null : bind.avatar(),
+                value.brokerageEnabled(),
+                value.brokeragePrice(),
+                value.frozenPrice(),
+                first,
+                second);
     }
 
     private BrokerageRecordDTO recordDto(BrokerageRecord value) {
         return new BrokerageRecordDTO(
-            value.id(),
-            value.userId(),
-            value.bizId(),
-            value.bizType(),
-            value.title(),
-            value.description(),
-            value.price(),
-            value.totalPrice(),
-            value.status(),
-            value.frozenDays(),
-            value.unfreezeTime(),
-            value.sourceUserLevel(),
-            value.createTime());
+                value.id(),
+                value.userId(),
+                value.bizId(),
+                value.bizType(),
+                value.title(),
+                value.description(),
+                value.price(),
+                value.totalPrice(),
+                value.status(),
+                value.frozenDays(),
+                value.unfreezeTime(),
+                value.sourceUserLevel(),
+                value.createTime());
     }
 
     private void page(int pageNum, int pageSize) {

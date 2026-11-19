@@ -21,8 +21,7 @@ import java.util.stream.Collectors;
  * Pure rules shared by HTTP, RPC and future import use cases.
  */
 public final class ProductCatalogValidation {
-    private ProductCatalogValidation() {
-    }
+    private ProductCatalogValidation() {}
 
     /**
      * 文本。
@@ -67,8 +66,8 @@ public final class ProductCatalogValidation {
      * 价格。
      */
     public static BigDecimal price(BigDecimal amount) {
-        if (amount == null || amount.signum() <= 0 || amount.precision() - amount.scale() > 17) {
-            throw new IllegalArgumentException("价格必须大于0且不超过DECIMAL(19,2)");
+        if (amount == null || amount.signum() < 0 || amount.precision() - amount.scale() > 17) {
+            throw new IllegalArgumentException("价格不能小于0或超过DECIMAL(19,2)范围");
         }
         try {
             return amount.setScale(2, RoundingMode.UNNECESSARY);
@@ -89,12 +88,12 @@ public final class ProductCatalogValidation {
         }
         var result = new TreeMap<String, String>();
         specs.forEach(
-            (key, value) -> {
-                String normalized = text(key, 64, "规格名称");
-                if (result.put(normalized, text(value, 100, "规格值")) != null) {
-                    throw new IllegalArgumentException("规格名称重复");
-                }
-            });
+                (key, value) -> {
+                    String normalized = text(key, 64, "规格名称");
+                    if (result.put(normalized, text(value, 100, "规格值")) != null) {
+                        throw new IllegalArgumentException("规格名称重复");
+                    }
+                });
         return Collections.unmodifiableMap(result);
     }
 
@@ -104,20 +103,20 @@ public final class ProductCatalogValidation {
     public static String variantKey(Map<String, String> specs) {
         StringBuilder canonical = new StringBuilder();
         new TreeMap<>(specs(specs))
-            .forEach(
-                (key, value) ->
-                    canonical
-                        .append(key.length())
-                        .append(':')
-                        .append(key)
-                        .append(value.length())
-                        .append(':')
-                        .append(value));
+                .forEach(
+                        (key, value) ->
+                                canonical
+                                        .append(key.length())
+                                        .append(':')
+                                        .append(key)
+                                        .append(value.length())
+                                        .append(':')
+                                        .append(value));
         try {
             return HexFormat.of()
-                .formatHex(
-                    MessageDigest.getInstance("SHA-256")
-                        .digest(canonical.toString().getBytes(StandardCharsets.UTF_8)));
+                    .formatHex(
+                            MessageDigest.getInstance("SHA-256")
+                                    .digest(canonical.toString().getBytes(StandardCharsets.UTF_8)));
         } catch (NoSuchAlgorithmException impossible) {
             throw new IllegalStateException(impossible);
         }
@@ -131,11 +130,11 @@ public final class ProductCatalogValidation {
             throw new IllegalArgumentException("商品必须包含1至100个SKU");
         }
         if (input.deliveryTypes().stream()
-            .anyMatch(type -> type == null || (type != 1 && type != 2))
-            || input.deliveryTypes().stream().distinct().count() != input.deliveryTypes().size()
-            || (input.deliveryTypes().contains(1)
-            && (input.deliveryTemplateId() == null
-            || input.deliveryTemplateId() <= 0))) {
+                        .anyMatch(type -> type == null || (type != 1 && type != 2))
+                || input.deliveryTypes().stream().distinct().count() != input.deliveryTypes().size()
+                || (input.deliveryTypes().contains(1)
+                        && (input.deliveryTemplateId() == null
+                                || input.deliveryTemplateId() <= 0))) {
             throw new ServiceException("商品配送方式或运费模板不合法", 400);
         }
         id(input.categoryId());
@@ -149,13 +148,13 @@ public final class ProductCatalogValidation {
                 throw new IllegalArgumentException("SKU库存不合法");
             }
             if ((sku.weight() != null
-                && (sku.weight().signum() < 0
-                || sku.weight().scale() > 6
-                || sku.weight().precision() - sku.weight().scale() > 12))
-                || (sku.volume() != null
-                && (sku.volume().signum() < 0
-                || sku.volume().scale() > 6
-                || sku.volume().precision() - sku.volume().scale() > 12))) {
+                            && (sku.weight().signum() < 0
+                                    || sku.weight().scale() > 6
+                                    || sku.weight().precision() - sku.weight().scale() > 12))
+                    || (sku.volume() != null
+                            && (sku.volume().signum() < 0
+                                    || sku.volume().scale() > 6
+                                    || sku.volume().precision() - sku.volume().scale() > 12))) {
                 throw new ServiceException("商品重量或体积不合法", 400);
             }
             String code = text(sku.code(), 64, "SKU编码");
@@ -164,66 +163,94 @@ public final class ProductCatalogValidation {
                 throw new IllegalArgumentException("SKU编码或规格组合重复");
             }
             if (names != null
-                && !names.equals(
-                props.stream()
-                    .map(ProductSkuSpec::specName)
-                    .collect(Collectors.toSet()))) {
+                    && !names.equals(
+                            props.stream()
+                                    .map(ProductSkuSpec::specName)
+                                    .collect(Collectors.toSet()))) {
                 throw new IllegalArgumentException("同一商品的SKU必须使用相同的规格名称");
             }
             names = props.stream().map(ProductSkuSpec::specName).collect(Collectors.toSet());
             skus.add(
-                new ProductSku(
-                    sku.id(),
-                    sku.spuId(),
-                    code,
-                    text(sku.name(), 200, "SKU名称"),
-                    price(sku.price()),
-                    sku.stock(),
-                    optional(sku.image(), 500),
-                    props == null
-                        ? null
-                        : props.stream()
-                        .map(
-                            property ->
-                                new ProductSkuSpec(
-                                    property.specId(),
-                                    property.specName(),
-                                    property.specValueId(),
-                                    property.specValueName()))
-                        .toList(),
-                    "ON_SHELF",
-                    sku.weight(),
-                    sku.volume()));
+                    new ProductSku(
+                            sku.id(),
+                            sku.spuId(),
+                            code,
+                            text(sku.name(), 200, "SKU名称"),
+                            price(sku.price()),
+                            sku.stock(),
+                            optional(sku.image(), 500),
+                            props == null
+                                    ? null
+                                    : props.stream()
+                                            .map(
+                                                    property ->
+                                                            new ProductSkuSpec(
+                                                                    property.specId(),
+                                                                    property.specName(),
+                                                                    property.specValueId(),
+                                                                    property.specValueName()))
+                                            .toList(),
+                            "ON_SHELF",
+                            sku.weight(),
+                            sku.volume(),
+                            sku.marketPrice() == null ? null : price(sku.marketPrice()),
+                            sku.costPrice() == null ? null : price(sku.costPrice()),
+                            optional(sku.barCode(), 64),
+                            null,
+                            sku.firstBrokeragePrice() == null
+                                    ? null
+                                    : price(sku.firstBrokeragePrice()),
+                            sku.secondBrokeragePrice() == null
+                                    ? null
+                                    : price(sku.secondBrokeragePrice())));
+        }
+        // 单规格沿用本系统无规格值的SKU，不创建特殊字典记录。
+        if (Boolean.FALSE.equals(input.specType())
+                && (skus.size() != 1 || !skus.get(0).specs().isEmpty())) {
+            throw new IllegalArgumentException("单规格商品须包含一个无规格值的SKU");
+        }
+        if (Boolean.TRUE.equals(input.specType()) && (names == null || names.isEmpty())) {
+            throw new IllegalArgumentException("多规格商品必须选择规格值");
+        }
+        if (input.giveIntegral() != null && input.giveIntegral() < 0) {
+            throw new IllegalArgumentException("商品赠积分不能为负");
+        }
+        if (input.virtualSalesCount() != null && input.virtualSalesCount() < 0) {
+            throw new IllegalArgumentException("虚拟销量不能小于0");
         }
         if (input.sort() != null && input.sort() < 0) {
             throw new IllegalArgumentException("商品排序不能为负");
         }
         if (input.sliderPicUrls() != null
-            && (input.sliderPicUrls().size() > 5
-            || input.sliderPicUrls().stream()
-            .anyMatch(
-                url ->
-                    url == null
-                        || url.isBlank()
-                        || url.length() > 500))) {
+                && (input.sliderPicUrls().size() > 5
+                        || input.sliderPicUrls().stream()
+                                .anyMatch(
+                                        url ->
+                                                url == null
+                                                        || url.isBlank()
+                                                        || url.length() > 500))) {
             throw new IllegalArgumentException("轮播图最多5张且地址不能为空或超过500字");
         }
         return new ProductSpu(
-            null,
-            text(input.code(), 64, "SPU编码"),
-            text(input.name(), 200, "商品名称"),
-            input.categoryId(),
-            input.brandId(),
-            optional(input.description(), 65535),
-            optional(input.image(), 500),
-            "OFF_SHELF",
-            skus,
-            input.deliveryTypes(),
-            input.deliveryTemplateId(),
-            optional(input.keyword(), 255),
-            optional(input.introduction(), 128),
-            input.sliderPicUrls(),
-            input.sort());
+                null,
+                text(input.code(), 64, "SPU编码"),
+                text(input.name(), 200, "商品名称"),
+                input.categoryId(),
+                input.brandId(),
+                optional(input.description(), 65535),
+                optional(input.image(), 500),
+                "OFF_SHELF",
+                skus,
+                input.deliveryTypes(),
+                input.deliveryTemplateId(),
+                optional(input.keyword(), 255),
+                optional(input.introduction(), 128),
+                input.sliderPicUrls(),
+                input.sort(),
+                input.virtualSalesCount(),
+                input.specType(),
+                input.giveIntegral(),
+                input.subCommissionType());
     }
 
     /**
@@ -231,10 +258,10 @@ public final class ProductCatalogValidation {
      */
     public static List<Long> ids(List<Long> ids, int maximum) {
         if (ids == null
-            || ids.isEmpty()
-            || ids.size() > maximum
-            || ids.stream().anyMatch(id -> id == null || id <= 0)
-            || new HashSet<>(ids).size() != ids.size()) {
+                || ids.isEmpty()
+                || ids.size() > maximum
+                || ids.stream().anyMatch(id -> id == null || id <= 0)
+                || new HashSet<>(ids).size() != ids.size()) {
             throw new IllegalArgumentException("商品编号集合不合法");
         }
         return ids.stream().sorted().toList();
@@ -250,22 +277,22 @@ public final class ProductCatalogValidation {
         var names = new HashSet<String>();
         var ids = new HashSet<Long>();
         return values.stream()
-            .map(
-                value -> {
-                    String name = text(value.specName(), 64, "规格名称");
-                    String option = text(value.specValueName(), 100, "规格值");
-                    if (!names.add(name)
-                        || ((value.specId() == null) != (value.specValueId() == null))
-                        || (value.specId() != null
-                        && (value.specId() <= 0
-                        || value.specValueId() <= 0
-                        || !ids.add(value.specId())))) {
-                        throw new IllegalArgumentException("SKU规格重复或编号不合法");
-                    }
-                    return new ProductSkuSpec(
-                        value.specId(), name, value.specValueId(), option);
-                })
-            .toList();
+                .map(
+                        value -> {
+                            String name = text(value.specName(), 64, "规格名称");
+                            String option = text(value.specValueName(), 100, "规格值");
+                            if (!names.add(name)
+                                    || ((value.specId() == null) != (value.specValueId() == null))
+                                    || (value.specId() != null
+                                            && (value.specId() <= 0
+                                                    || value.specValueId() <= 0
+                                                    || !ids.add(value.specId())))) {
+                                throw new IllegalArgumentException("SKU规格重复或编号不合法");
+                            }
+                            return new ProductSkuSpec(
+                                    value.specId(), name, value.specValueId(), option);
+                        })
+                .toList();
     }
 
     /**

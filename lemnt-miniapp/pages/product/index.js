@@ -3,6 +3,7 @@ const config = require('../../config');
 const { createStoreClient, id } = require('../../services/storefront');
 const { createTradeClient } = require('../../services/trade');
 const { createCartAddition } = require('../../services/cartAddition');
+const { createBrokerageClient } = require('../../services/brokerage');
 Page({
   data: {
     ready: config.memberApiReady,
@@ -18,6 +19,9 @@ Page({
     favorite: false,
     favoriteKnown: false,
     interactionError: '',
+    commission: null,
+    commissionLoading: false,
+    commissionError: '',
   },
   onLoad(options) {
     const request = (o) =>
@@ -33,8 +37,15 @@ Page({
       request,
       baseUrl: config.apiBaseUrl,
       ready: config.memberApiReady,
+      getMemberToken: () => getApp().globalData.memberSession?.accessToken,
     });
     this.interactions = createProductInteractionClient({
+      request,
+      baseUrl: config.apiBaseUrl,
+      ready: config.memberApiReady,
+      getMemberToken: () => getApp().globalData.memberSession?.accessToken,
+    });
+    this.brokerage = createBrokerageClient({
       request,
       baseUrl: config.apiBaseUrl,
       ready: config.memberApiReady,
@@ -69,6 +80,8 @@ Page({
       favoriteKnown: false,
       favorite: false,
       interactionError: '',
+      commission: null,
+      commissionError: '',
       pending: null,
       success: '',
       error: this.productId ? '' : this.data.error,
@@ -91,7 +104,7 @@ Page({
   },
   async reload() {
     if (this.data.loading || !this.productId) return;
-    this.setData({ loading: true, error: '' });
+    this.setData({ loading: true, error: '', commission: null, commissionError: '' });
     try {
       const product = await this.store.product(this.productId);
       const index = Math.max(
@@ -106,7 +119,6 @@ Page({
       });
       if (this.member()) {
         try {
-          await this.interactions.recordBrowse(this.productId);
           await this.syncFavorite();
         } catch (e) {
           this.setData({ interactionError: '商品已加载，足迹或收藏状态未确认：' + e.message });
@@ -170,6 +182,21 @@ Page({
       this.setData({ favorite, favoriteKnown: true });
     } catch (e) {
       this.setData({ favoriteKnown: false, interactionError: e.message });
+    }
+  },
+  /** 预估只供当前会员查看，失败不会阻断商品浏览和加购。 */
+  async estimateCommission() {
+    const member = this.member();
+    if (!member || !this.data.product || this.data.loading || this.data.commissionLoading) return;
+    const spuId = this.productId;
+    this.setData({ commissionLoading: true, commission: null, commissionError: '' });
+    try {
+      const commission = await this.brokerage.productCommission(spuId);
+      if (this.member() === member && this.productId === spuId) this.setData({ commission });
+    } catch (e) {
+      if (this.member() === member) this.setData({ commissionError: e.message });
+    } finally {
+      this.setData({ commissionLoading: false });
     }
   },
   async favorite() {

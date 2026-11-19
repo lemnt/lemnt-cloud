@@ -14,6 +14,10 @@ it('商品分页使用 rows/total，分类使用 data', async () => {
         categoryId: 1,
         brandId: 2,
         status: 'OFF_SHELF',
+        price: '9007199254740991.99',
+        marketPrice: '9007199254740992.00',
+        costPrice: null,
+        stock: 0,
         skus: [],
       },
     ],
@@ -30,6 +34,9 @@ it('商品分页使用 rows/total，分类使用 data', async () => {
         categoryId: '1',
         brandId: '2',
         status: 'OFF_SHELF',
+        price: '9007199254740991.99',
+        marketPrice: '9007199254740992.00',
+        stock: 0,
         skus: [],
         description: null,
         image: null,
@@ -78,12 +85,15 @@ it('创建商品发送规格对象列表，不再发送临时编号映射', asyn
     categoryId: '1',
     brandId: '2',
     deliveryTypes: [],
+    subCommissionType: true,
     skus: [
       {
         code: 'SKU',
         name: '红色款',
         price: 10,
         stock: 2,
+        firstBrokeragePrice: '3.50',
+        secondBrokeragePrice: '0.00',
         specs: [{ specId: '3', specValueId: '7' }],
       },
     ],
@@ -109,6 +119,9 @@ it('创建商品发送规格对象列表，不再发送临时编号映射', asyn
   const result = await createSpu(data);
   expect(mockedRequest).toHaveBeenCalledWith({ url: '/spus', method: 'POST', data });
   expect(result.data.skus[0].specs[0].specValueName).toBe('红色');
+  expect(result.data.subCommissionType).toBe(true);
+  expect(result.data.skus[0].firstBrokeragePrice).toBe('3.50');
+  expect(result.data.skus[0].secondBrokeragePrice).toBe('0.00');
   expect('specValueIds' in result.data.skus[0]).toBe(false);
 });
 

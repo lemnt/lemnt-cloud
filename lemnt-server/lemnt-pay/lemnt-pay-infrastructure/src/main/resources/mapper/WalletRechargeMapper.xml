@@ -6,6 +6,12 @@
         SELECT * FROM pay_wallet_recharge WHERE recharge_no=#{rechargeNo} FOR UPDATE
     </select>
 
+    <select id="paidRechargeTotal" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(pay_price), 0.00)
+        FROM pay_wallet_recharge
+        WHERE status IN ('PAID', 'REFUNDED')
+    </select>
+
     <select id="databaseNow" resultType="java.time.LocalDateTime">
         SELECT CURRENT_TIMESTAMP
     </select>

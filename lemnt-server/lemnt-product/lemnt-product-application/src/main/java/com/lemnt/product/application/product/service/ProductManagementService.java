@@ -32,40 +32,44 @@ public class ProductManagementService {
     @Transactional(readOnly = true)
     public List<ProductSpu> batchDetails(List<Long> ids) {
         if (ids == null
-            || ids.isEmpty()
-            || ids.size() > 100
-            || ids.stream().anyMatch(id -> id == null || id <= 0)) {
+                || ids.isEmpty()
+                || ids.size() > 100
+                || ids.stream().anyMatch(id -> id == null || id <= 0)) {
             throw new IllegalArgumentException("商品编号须为1至100个正整数");
         }
         var requested = ids.stream().distinct().toList();
         var parents =
-            productSpuGateway.findSpus(requested).stream()
-                .collect(Collectors.toMap(ProductSpu::id, value -> value));
+                productSpuGateway.findSpus(requested).stream()
+                        .collect(Collectors.toMap(ProductSpu::id, value -> value));
         var children = productSkuGateway.skusBySpuIds(requested);
         var grouped = children.stream().collect(Collectors.groupingBy(ProductSku::spuId));
         return requested.stream()
-            .filter(parents::containsKey)
-            .map(
-                id -> {
-                    var value = parents.get(id);
-                    return new ProductSpu(
-                        value.id(),
-                        value.code(),
-                        value.name(),
-                        value.categoryId(),
-                        value.brandId(),
-                        value.description(),
-                        value.image(),
-                        value.status(),
-                        grouped.getOrDefault(id, List.of()),
-                        value.deliveryTypes(),
-                        value.deliveryTemplateId(),
-                        value.keyword(),
-                        value.introduction(),
-                        value.sliderPicUrls(),
-                        value.sort());
-                })
-            .toList();
+                .filter(parents::containsKey)
+                .map(
+                        id -> {
+                            var value = parents.get(id);
+                            return new ProductSpu(
+                                    value.id(),
+                                    value.code(),
+                                    value.name(),
+                                    value.categoryId(),
+                                    value.brandId(),
+                                    value.description(),
+                                    value.image(),
+                                    value.status(),
+                                    grouped.getOrDefault(id, List.of()),
+                                    value.deliveryTypes(),
+                                    value.deliveryTemplateId(),
+                                    value.keyword(),
+                                    value.introduction(),
+                                    value.sliderPicUrls(),
+                                    value.sort(),
+                                    value.virtualSalesCount(),
+                                    value.specType(),
+                                    value.giveIntegral(),
+                                    value.subCommissionType());
+                        })
+                .toList();
     }
 
     private ProductSpu lock(Long id) {

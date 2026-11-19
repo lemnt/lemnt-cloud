@@ -4,6 +4,7 @@ import com.lemnt.product.domain.product.gateway.ProductSpuGateway;
 import com.lemnt.product.domain.product.model.ProductCatalogFilter;
 import com.lemnt.product.domain.product.model.ProductCatalogPage;
 import com.lemnt.product.domain.product.model.ProductCatalogValidation;
+import com.lemnt.product.domain.product.model.ProductSkuTotals;
 import com.lemnt.product.domain.product.model.ProductSpu;
 import com.lemnt.product.domain.product.model.ProductSpuStatusCount;
 import com.lemnt.product.domain.product.model.ProductStockStatus;
@@ -22,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Spu 表持久化实现。
@@ -37,13 +41,13 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
             return List.of();
         }
         return productSpuMapper
-            .selectList(
-                Wrappers.lambdaQuery(ProductSpuDO.class)
-                    .in(ProductSpuDO::getId, ids)
-                    .ne(ProductSpuDO::getStatus, "DELETED"))
-            .stream()
-            .map(row -> ProductCatalogConverter.spu(row, List.of()))
-            .toList();
+                .selectList(
+                        Wrappers.lambdaQuery(ProductSpuDO.class)
+                                .in(ProductSpuDO::getId, ids)
+                                .ne(ProductSpuDO::getStatus, "DELETED"))
+                .stream()
+                .map(row -> ProductCatalogConverter.spu(row, List.of()))
+                .toList();
     }
 
     @Override
@@ -54,12 +58,12 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
     @Override
     public boolean transition(Long id, String expected, String target) {
         return productSpuMapper.update(
-            null,
-            Wrappers.lambdaUpdate(ProductSpuDO.class)
-                .eq(ProductSpuDO::getId, id)
-                .eq(ProductSpuDO::getStatus, expected)
-                .set(ProductSpuDO::getStatus, target))
-            == 1;
+                        null,
+                        Wrappers.lambdaUpdate(ProductSpuDO.class)
+                                .eq(ProductSpuDO::getId, id)
+                                .eq(ProductSpuDO::getStatus, expected)
+                                .set(ProductSpuDO::getStatus, target))
+                == 1;
     }
 
     @Override
@@ -68,103 +72,130 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
         var offShelf = new ProductCatalogFilter(name, "OFF_SHELF", 0, 1, categoryId, brandId, null);
         var recycled = new ProductCatalogFilter(name, "RECYCLED", 0, 1, categoryId, brandId, null);
         return new ProductSpuStatusCount(
-            productSpuMapper.selectCount(query(onShelf)),
-            productSpuMapper.selectCount(query(offShelf)),
-            productSpuMapper.selectCount(query(recycled)),
-            productSpuMapper.countStockSpus(
-                new ProductCatalogFilter(
-                    name, null, 0, 1, categoryId, brandId, ProductStockStatus.SOLD_OUT),
-                ProductStockStatus.ALERT_STOCK),
-            productSpuMapper.countStockSpus(
-                new ProductCatalogFilter(
-                    name,
-                    null,
-                    0,
-                    1,
-                    categoryId,
-                    brandId,
-                    ProductStockStatus.LOW_STOCK),
-                ProductStockStatus.ALERT_STOCK));
+                productSpuMapper.selectCount(query(onShelf)),
+                productSpuMapper.selectCount(query(offShelf)),
+                productSpuMapper.selectCount(query(recycled)),
+                productSpuMapper.countStockSpus(
+                        new ProductCatalogFilter(
+                                name, null, 0, 1, categoryId, brandId, ProductStockStatus.SOLD_OUT),
+                        ProductStockStatus.ALERT_STOCK),
+                productSpuMapper.countStockSpus(
+                        new ProductCatalogFilter(
+                                name,
+                                null,
+                                0,
+                                1,
+                                categoryId,
+                                brandId,
+                                ProductStockStatus.LOW_STOCK),
+                        ProductStockStatus.ALERT_STOCK));
     }
 
     @Override
     public List<ProductSpu> simpleList(String name, int limit) {
         var filter = new ProductCatalogFilter(name, "ON_SHELF", 0, limit, null, null, null);
         return productSpuMapper
-            .selectPage(
-                new Page<>(1, limit, false),
-                query(filter)
-                    .orderByDesc(ProductSpuDO::getSort)
-                    .orderByDesc(ProductSpuDO::getId))
-            .getRecords()
-            .stream()
-            .map(row -> ProductCatalogConverter.spu(row, List.of()))
-            .toList();
+                .selectPage(
+                        new Page<>(1, limit, false),
+                        query(filter)
+                                .orderByDesc(ProductSpuDO::getSort)
+                                .orderByDesc(ProductSpuDO::getId))
+                .getRecords()
+                .stream()
+                .map(row -> ProductCatalogConverter.spu(row, List.of()))
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public ProductCatalogPage page(ProductCatalogFilter filter) {
         var pagination =
-            new Page<ProductSpuDO>((long) filter.offset() / filter.limit() + 1, filter.limit());
+                new Page<ProductSpuDO>((long) filter.offset() / filter.limit() + 1, filter.limit());
         var page =
-            filter.stockStatus() == null
-                ? productSpuMapper.selectPage(
-                pagination,
-                query(filter)
-                    .orderByDesc(ProductSpuDO::getSort)
-                    .orderByDesc(ProductSpuDO::getId))
-                : productSpuMapper.selectStockPage(
-                pagination, filter, ProductStockStatus.ALERT_STOCK);
+                filter.stockStatus() == null
+                        ? productSpuMapper.selectPage(
+                                pagination,
+                                query(filter)
+                                        .orderByDesc(ProductSpuDO::getSort)
+                                        .orderByDesc(ProductSpuDO::getId))
+                        : productSpuMapper.selectStockPage(
+                                pagination, filter, ProductStockStatus.ALERT_STOCK);
         return new ProductCatalogPage(
-            page.getRecords().stream()
-                .map(row -> ProductCatalogConverter.spu(row, List.of()))
-                .toList(),
-            page.getTotal());
+                page.getRecords().stream()
+                        .map(row -> ProductCatalogConverter.spu(row, List.of()))
+                        .toList(),
+                page.getTotal(),
+                page.getRecords().isEmpty()
+                        ? Map.of()
+                        : productSpuMapper
+                                .skuTotals(
+                                        page.getRecords().stream()
+                                                .map(ProductSpuDO::getId)
+                                                .toList())
+                                .stream()
+                                .collect(
+                                        Collectors.toMap(
+                                                ProductSkuTotals::spuId, Function.identity())));
     }
 
     @Override
     public boolean updateSpu(ProductSpu value) {
         var row = ProductCatalogConverter.spu(value);
         return productSpuMapper.update(
-            null,
-            Wrappers.<ProductSpuDO>lambdaUpdate()
-                .set(ProductSpuDO::getName, row.getName())
-                .set(
-                    row.getKeyword() != null,
-                    ProductSpuDO::getKeyword,
-                    row.getKeyword())
-                .set(
-                    row.getIntroduction() != null,
-                    ProductSpuDO::getIntroduction,
-                    row.getIntroduction())
-                .set(
-                    row.getSliderPicUrls() != null,
-                    ProductSpuDO::getSliderPicUrls,
-                    row.getSliderPicUrls())
-                .set(row.getSort() != null, ProductSpuDO::getSort, row.getSort())
-                .set(ProductSpuDO::getCategoryId, row.getCategoryId())
-                .set(ProductSpuDO::getBrandId, row.getBrandId())
-                .set(ProductSpuDO::getDescription, row.getDescription())
-                .set(ProductSpuDO::getImage, row.getImage())
-                .set(ProductSpuDO::getDeliveryTypes, row.getDeliveryTypes())
-                .set(
-                    ProductSpuDO::getDeliveryTemplateId,
-                    row.getDeliveryTemplateId())
-                .eq(ProductSpuDO::getId, row.getId())
-                .in(ProductSpuDO::getStatus, "ON_SHELF", "OFF_SHELF"))
-            == 1;
+                        null,
+                        Wrappers.<ProductSpuDO>lambdaUpdate()
+                                .set(ProductSpuDO::getName, row.getName())
+                                .set(
+                                        row.getKeyword() != null,
+                                        ProductSpuDO::getKeyword,
+                                        row.getKeyword())
+                                .set(
+                                        row.getIntroduction() != null,
+                                        ProductSpuDO::getIntroduction,
+                                        row.getIntroduction())
+                                .set(
+                                        row.getSliderPicUrls() != null,
+                                        ProductSpuDO::getSliderPicUrls,
+                                        row.getSliderPicUrls())
+                                .set(row.getSort() != null, ProductSpuDO::getSort, row.getSort())
+                                .set(
+                                        row.getVirtualSalesCount() != null,
+                                        ProductSpuDO::getVirtualSalesCount,
+                                        row.getVirtualSalesCount())
+                                .set(
+                                        row.getSpecType() != null,
+                                        ProductSpuDO::getSpecType,
+                                        row.getSpecType())
+                                .set(
+                                        row.getGiveIntegral() != null,
+                                        ProductSpuDO::getGiveIntegral,
+                                        row.getGiveIntegral())
+                                .set(
+                                        row.getSubCommissionType() != null,
+                                        ProductSpuDO::getSubCommissionType,
+                                        row.getSubCommissionType())
+                                .set(ProductSpuDO::getCategoryId, row.getCategoryId())
+                                .set(ProductSpuDO::getBrandId, row.getBrandId())
+                                .set(ProductSpuDO::getDescription, row.getDescription())
+                                .set(ProductSpuDO::getImage, row.getImage())
+                                .set(ProductSpuDO::getDeliveryTypes, row.getDeliveryTypes())
+                                .set(
+                                        ProductSpuDO::getDeliveryTemplateId,
+                                        row.getDeliveryTemplateId())
+                                .eq(ProductSpuDO::getId, row.getId())
+                                .in(ProductSpuDO::getStatus, "ON_SHELF", "OFF_SHELF"))
+                == 1;
     }
 
     @Override
     public boolean shelf(Long id, boolean onShelf) {
         return productSpuMapper.update(
-            null,
-            Wrappers.<ProductSpuDO>lambdaUpdate()
-                .set(ProductSpuDO::getStatus, (onShelf ? "ON_SHELF" : "OFF_SHELF"))
-                .eq(ProductSpuDO::getId, id)
-                .in(ProductSpuDO::getStatus, "ON_SHELF", "OFF_SHELF"))
-            == 1;
+                        null,
+                        Wrappers.<ProductSpuDO>lambdaUpdate()
+                                .set(ProductSpuDO::getStatus, (onShelf ? "ON_SHELF" : "OFF_SHELF"))
+                                .eq(ProductSpuDO::getId, id)
+                                .in(ProductSpuDO::getStatus, "ON_SHELF", "OFF_SHELF"))
+                == 1;
     }
 
     /**
@@ -188,31 +219,43 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
     }
 
     @Override
+    public boolean recordBrowse(Long spuId) {
+        return productSpuMapper.update(
+                        null,
+                        Wrappers.<ProductSpuDO>lambdaUpdate()
+                                .eq(ProductSpuDO::getId, spuId)
+                                .eq(ProductSpuDO::getStatus, "ON_SHELF")
+                                .setIncrBy(ProductSpuDO::getBrowseCount, 1))
+                == 1;
+    }
+
+    @Override
     public int salesCount(Long spuId) {
         var row =
-            productSpuMapper.selectOne(
-                Wrappers.<ProductSpuDO>lambdaQuery()
-                    .select(ProductSpuDO::getSalesCount)
-                    .eq(ProductSpuDO::getId, spuId));
+                productSpuMapper.selectOne(
+                        Wrappers.<ProductSpuDO>lambdaQuery()
+                                .select(ProductSpuDO::getSalesCount)
+                                .eq(ProductSpuDO::getId, spuId));
         return row == null || row.getSalesCount() == null ? 0 : row.getSalesCount();
     }
 
     @Override
     public List<StoreProduct> products(StoreFilter f) {
         return productSpuMapper.products(f).stream()
-            .map(
-                v ->
-                    new StoreProduct(
-                        v.getId(),
-                        v.getName(),
-                        v.getCategoryId(),
-                        v.getBrandId(),
-                        v.getImage(),
-                        v.getMinPrice(),
-                        v.getMaxPrice(),
-                        v.isAvailable(),
-                        v.getSalesCount()))
-            .toList();
+                .map(
+                        v ->
+                                new StoreProduct(
+                                        v.getId(),
+                                        v.getName(),
+                                        v.getCategoryId(),
+                                        v.getBrandId(),
+                                        v.getImage(),
+                                        v.getMinPrice(),
+                                        v.getMaxPrice(),
+                                        v.isAvailable(),
+                                        v.getSalesCount(),
+                                        v.getDisplaySalesCount()))
+                .toList();
     }
 
     @Override
@@ -229,15 +272,15 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
      */
     public List<Long> existingSpuIds(List<Long> ids) {
         return productSpuMapper
-            .selectList(
-                Wrappers.<ProductSpuDO>lambdaQuery()
-                    .select(ProductSpuDO::getId)
-                    .in(ProductSpuDO::getId, ProductCatalogValidation.ids(ids, 1000))
-                    .ne(ProductSpuDO::getStatus, "DELETED")
-                    .orderByAsc(ProductSpuDO::getId))
-            .stream()
-            .map(ProductSpuDO::getId)
-            .toList();
+                .selectList(
+                        Wrappers.<ProductSpuDO>lambdaQuery()
+                                .select(ProductSpuDO::getId)
+                                .in(ProductSpuDO::getId, ProductCatalogValidation.ids(ids, 1000))
+                                .ne(ProductSpuDO::getStatus, "DELETED")
+                                .orderByAsc(ProductSpuDO::getId))
+                .stream()
+                .map(ProductSpuDO::getId)
+                .toList();
     }
 
     /**
@@ -271,10 +314,10 @@ public class ProductSpuGatewayImpl implements ProductSpuGateway {
      */
     private LambdaQueryWrapper<ProductSpuDO> query(ProductCatalogFilter filter) {
         return Wrappers.<ProductSpuDO>lambdaQuery()
-            .like(filter.name() != null, ProductSpuDO::getName, filter.name())
-            .eq(filter.status() != null, ProductSpuDO::getStatus, filter.status())
-            .ne(ProductSpuDO::getStatus, "DELETED")
-            .eq(filter.categoryId() != null, ProductSpuDO::getCategoryId, filter.categoryId())
-            .eq(filter.brandId() != null, ProductSpuDO::getBrandId, filter.brandId());
+                .like(filter.name() != null, ProductSpuDO::getName, filter.name())
+                .eq(filter.status() != null, ProductSpuDO::getStatus, filter.status())
+                .ne(ProductSpuDO::getStatus, "DELETED")
+                .eq(filter.categoryId() != null, ProductSpuDO::getCategoryId, filter.categoryId())
+                .eq(filter.brandId() != null, ProductSpuDO::getBrandId, filter.brandId());
     }
 }

@@ -16,6 +16,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AdminModalForm } from '@/shared/components/AdminModalForm';
 import { usePermission } from '@/shared/hooks/usePermission';
 import * as api from '../api/memberApi';
+import MemberStatisticsDrawer from './MemberStatisticsDrawer';
 import { memberKeys, memberStatusOptions } from '../types';
 import type {
   MemberProfile,
@@ -62,6 +63,7 @@ export default function MemberUserPage() {
   const cache = useQueryClient();
   const [query, setQuery] = useState<MemberUserPageQuery>({ pageNum: 1, pageSize: 20 });
   const [detail, setDetail] = useState<string>();
+  const [statisticsOpen, setStatisticsOpen] = useState(false);
   const [action, setAction] = useState<Action>();
   const [frozen, setFrozen] = useState<Values>();
   const users = useQuery({
@@ -224,7 +226,17 @@ export default function MemberUserPage() {
   ];
   if (!can('member:user:query')) return <Result status="403" title="没有会员查询权限" />;
   return (
-    <PageContainer title="会员管理">
+    <PageContainer
+      title="会员管理"
+      extra={<Button onClick={() => setStatisticsOpen(true)}>会员统计</Button>}
+    >
+      <MemberStatisticsDrawer
+        open={statisticsOpen}
+        onClose={() => setStatisticsOpen(false)}
+        provinces={areas.data}
+        areasLoading={areas.isPending}
+        onRetryAreas={() => areas.refetch()}
+      />
       {users.isError && (
         <Alert
           type="error"

@@ -4,9 +4,7 @@ import com.lemnt.common.core.utils.JsonUtils;
 import com.lemnt.order.client.dto.OrderStockLineDTO;
 import com.lemnt.order.client.event.AfterSaleCompletedEvent;
 import com.lemnt.order.client.event.OrderClosedEvent;
-import com.lemnt.order.client.event.OrderCompletedEvent;
 import com.lemnt.order.client.event.OrderPaidEvent;
-import com.lemnt.product.client.event.StockPreReservedEvent;
 import com.lemnt.promotion.domain.event.gateway.InboundEventGateway;
 import com.lemnt.promotion.domain.event.model.InboundEventFacts;
 
@@ -55,19 +53,6 @@ public class InboundEventGatewayImpl implements InboundEventGateway {
             event.deductGivePoint(),
             event.ruleVersion(),
             event.fullyRefunded());
-    }
-
-    @Override
-    public InboundEventFacts.Completed completedFacts(String payload) {
-        var event = parse(payload, OrderCompletedEvent.class);
-        return new InboundEventFacts.Completed(event.orderNo(), event.memberId());
-    }
-
-    @Override
-    public InboundEventFacts.StockPreReserved stockPreReservedFacts(String payload) {
-        var event = parse(payload, StockPreReservedEvent.class, "quantity");
-        return new InboundEventFacts.StockPreReserved(
-            event.reservationNo(), event.skuId(), event.quantity());
     }
 
     private <T> T parse(String payload, Class<T> type, String... primitiveFields) {

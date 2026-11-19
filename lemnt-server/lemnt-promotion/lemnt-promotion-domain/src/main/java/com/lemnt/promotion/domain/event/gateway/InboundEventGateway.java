@@ -12,10 +12,4 @@ public interface InboundEventGateway {
 
     /** 解析售后完成事实。 */
     InboundEventFacts.AfterSaleCompleted afterSaleFacts(String payload);
-
-    /** 解析订单完成事实。 */
-    InboundEventFacts.Completed completedFacts(String payload);
-
-    /** 解析库存预占事实。 */
-    InboundEventFacts.StockPreReserved stockPreReservedFacts(String payload);
 }

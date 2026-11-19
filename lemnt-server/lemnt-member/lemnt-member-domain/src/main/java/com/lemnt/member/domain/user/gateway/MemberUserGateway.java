@@ -2,6 +2,8 @@ package com.lemnt.member.domain.user.gateway;
 
 import com.lemnt.member.domain.user.model.Member;
 import com.lemnt.member.domain.user.model.MemberPageFilter;
+import com.lemnt.member.domain.user.model.MemberStatistics.Distribution;
+import com.lemnt.member.domain.user.model.MemberStatistics.Registration;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,6 +42,15 @@ public interface MemberUserGateway {
      * 统计符合资料筛选条件的会员数量。
      */
     long count(MemberPageFilter filter);
+
+    /** 按创建日期聚合，起点包含、终点排除。 */
+    List<Registration> countRegistrations(LocalDateTime from, LocalDateTime until);
+
+    /** 当前全部会员的性别分布，未设置与未知归为一组。 */
+    List<Distribution> countBySex();
+
+    /** 当前全部会员的档案地区分布，保留行政区原始编号。 */
+    List<Distribution> countByArea();
 
     /**
      * 更新会员可维护资料，保留资产与关联数据。

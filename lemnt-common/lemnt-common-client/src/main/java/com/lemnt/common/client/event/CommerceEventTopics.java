@@ -11,19 +11,13 @@ public final class CommerceEventTopics {
     public static final String ORDER_PAID = "ORDER_PAID";
     public static final String AFTER_SALE_COMPLETED = "AFTER_SALE_COMPLETED";
     public static final String ORDER_CLOSED = "ORDER_CLOSED";
-    public static final String ORDER_SHIPPED = "ORDER_SHIPPED";
-    public static final String ORDER_COMPLETED = "ORDER_COMPLETED";
-    public static final String STOCK_PRE_RESERVED = "STOCK_PRE_RESERVED";
     public static final Set<String> ALL =
         Set.of(
             PAY_SUCCESS,
             PAY_REFUND_SUCCESS,
             ORDER_PAID,
             AFTER_SALE_COMPLETED,
-            ORDER_CLOSED,
-            ORDER_SHIPPED,
-            ORDER_COMPLETED,
-            STOCK_PRE_RESERVED);
+            ORDER_CLOSED);
 
     private CommerceEventTopics() {
     }

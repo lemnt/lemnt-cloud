@@ -7,6 +7,7 @@ import com.lemnt.pay.application.event.service.OrderClosedEventHandler;
 import com.lemnt.pay.application.payment.executor.TradePaymentCreateCmdExe;
 import com.lemnt.pay.application.payment.service.PaymentNotificationService;
 import com.lemnt.pay.application.paymentrefund.service.PaymentRefundService;
+import com.lemnt.pay.domain.channel.gateway.PaymentChannelCloseGateway;
 import com.lemnt.pay.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
 import com.lemnt.pay.domain.order.model.FrozenRefundPlan;
@@ -30,6 +31,10 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -160,112 +165,206 @@ class CashPaymentPersistenceTest extends OutboxPersistenceTest {
     }
 
     @Test
-    void closeEventReceiptRollsBackOnWrongOwnerAndRetryClosesOnlyWaitingPayment() {
+    void wrongOwnerRollsBackFenceAndReplayClosesOnlyWaitingPayment() {
         var inbox =
-            proxy(
-                new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
-                MessageInboxGateway.class);
+                proxy(
+                        new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
+                        MessageInboxGateway.class);
+        var channels = mock(PaymentChannelCloseGateway.class);
+        when(channels.closeUnpaid(any())).thenReturn(true);
         var handler =
-            proxy(
-                new OrderClosedEventHandler(
-                    inbox, orders, payments, payment -> true, new InboundEventGatewayImpl()),
-                OrderClosedEventHandler.class);
+                proxy(
+                        new OrderClosedEventHandler(
+                                inbox, orders, payments, channels, new InboundEventGatewayImpl()),
+                        OrderClosedEventHandler.class);
         var payload = JsonUtils.toJsonStr(new OrderClosedEvent("O1", 7L, List.of()));
         var event =
-            new CommerceEventEnvelope(
-                "EC1", "ORDER_CLOSED", 1, "O1", "O1", Instant.now(), null, payload);
+                new CommerceEventEnvelope(
+                        "EC1", "ORDER_CLOSED", 1, "O1", "O1", Instant.now(), null, payload);
         when(orders.findByOrderNo("O1"))
-            .thenReturn(new OrderPaymentSnapshot("O1", 8L, new BigDecimal("10.00"), "CLOSED"));
+                .thenReturn(new OrderPaymentSnapshot("O1", 8L, new BigDecimal("10.00"), "CLOSED"));
         assertThrows(IllegalStateException.class, () -> handler.execute(event));
         assertEquals(
-            0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
+                0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
         assertEquals("WAITING", payments.findByPaymentNo("P1").status());
         when(orders.findByOrderNo("O1"))
-            .thenReturn(new OrderPaymentSnapshot("O1", 7L, new BigDecimal("10.00"), "CLOSED"));
+                .thenReturn(new OrderPaymentSnapshot("O1", 7L, new BigDecimal("10.00"), "CLOSED"));
         handler.execute(event);
         handler.execute(event);
+        verify(channels).closeUnpaid(any());
         assertEquals("CLOSED", payments.findByPaymentNo("P1").status());
         assertEquals(
-            2, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
+                1, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
         assertEquals(
-            1,
-            jdbc.queryForObject(
-                "SELECT COUNT(*) FROM pay_message_inbox WHERE consumer_key='pay.order.fence.v1'",
-                Integer.class));
+                1,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM pay_message_inbox WHERE consumer_key='pay.order.fence.v1'",
+                        Integer.class));
         assertEquals(
-            1,
-            jdbc.queryForObject(
-                "SELECT COUNT(*) FROM pay_message_inbox WHERE consumer_key='pay.order.closed.v1'",
-                Integer.class));
+                0,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM pay_message_inbox WHERE consumer_key='pay.order.closed.v1'",
+                        Integer.class));
     }
 
     @Test
-    void providerCloseFailureKeepsWaitingAndDoesNotCommitClosedReceipt() {
+    void providerCloseFailureKeepsWaitingAndDoesNotCommitFence() {
         var inbox =
-            proxy(
-                new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
-                MessageInboxGateway.class);
+                proxy(
+                        new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
+                        MessageInboxGateway.class);
         when(orders.findByOrderNo("O1"))
-            .thenReturn(new OrderPaymentSnapshot("O1", 7L, new BigDecimal("10.00"), "CLOSED"));
+                .thenReturn(new OrderPaymentSnapshot("O1", 7L, new BigDecimal("10.00"), "CLOSED"));
+        var channels = mock(PaymentChannelCloseGateway.class);
+        when(channels.closeUnpaid(any())).thenReturn(false, true);
         var handler =
-            proxy(
-                new OrderClosedEventHandler(
-                    inbox, orders, payments, p -> false, new InboundEventGatewayImpl()),
-                OrderClosedEventHandler.class);
+                proxy(
+                        new OrderClosedEventHandler(
+                                inbox, orders, payments, channels, new InboundEventGatewayImpl()),
+                        OrderClosedEventHandler.class);
         var event =
-            new CommerceEventEnvelope(
-                "CLOSE_FAIL",
-                "ORDER_CLOSED",
-                1,
-                "O1",
-                "O1",
-                Instant.now(),
-                null,
-                JsonUtils.toJsonStr(new OrderClosedEvent("O1", 7L, List.of())));
+                new CommerceEventEnvelope(
+                        "CLOSE_FAIL",
+                        "ORDER_CLOSED",
+                        1,
+                        "O1",
+                        "O1",
+                        Instant.now(),
+                        null,
+                        JsonUtils.toJsonStr(new OrderClosedEvent("O1", 7L, List.of())));
         assertThrows(IllegalStateException.class, () -> handler.execute(event));
         assertEquals("WAITING", payments.findByPaymentNo("P1").status());
         assertEquals(
-            0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
+                0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_message_inbox", Integer.class));
+        handler.execute(event);
+        assertEquals("CLOSED", payments.findByPaymentNo("P1").status());
     }
 
     @Test
-    void closedBeforeCreateFencesDelayedSnapshotWithoutInsertingPayment() {
+    void delayedPreparedSnapshotIsRecheckedAfterCloseCommits() throws Exception {
         var inbox =
-            proxy(
-                new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
-                MessageInboxGateway.class);
+                proxy(
+                        new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
+                        MessageInboxGateway.class);
         when(orders.findByOrderNo("O2"))
-            .thenReturn(new OrderPaymentSnapshot("O2", 7L, new BigDecimal("10.00"), "CLOSED"));
+                .thenReturn(new OrderPaymentSnapshot("O2", 7L, new BigDecimal("10.00"), "CLOSED"));
         var handler =
-            proxy(
-                new OrderClosedEventHandler(
-                    inbox, orders, payments, p -> true, new InboundEventGatewayImpl()),
-                OrderClosedEventHandler.class);
+                proxy(
+                        new OrderClosedEventHandler(
+                                inbox, orders, payments, p -> true, new InboundEventGatewayImpl()),
+                        OrderClosedEventHandler.class);
         var event =
-            new CommerceEventEnvelope(
-                "CLOSE_EARLY",
-                "ORDER_CLOSED",
-                1,
-                "O2",
-                "O2",
-                Instant.now(),
-                null,
-                JsonUtils.toJsonStr(new OrderClosedEvent("O2", 7L, List.of())));
-        handler.execute(event);
+                new CommerceEventEnvelope(
+                        "CLOSE_EARLY",
+                        "ORDER_CLOSED",
+                        1,
+                        "O2",
+                        "O2",
+                        Instant.now(),
+                        null,
+                        JsonUtils.toJsonStr(new OrderClosedEvent("O2", 7L, List.of())));
+        var prepared = new CountDownLatch(1);
+        var resume = new CountDownLatch(1);
         when(orders.preparePayment("O2"))
-            .thenReturn(
-                new OrderPaymentSnapshot(
-                    "O2", 7L, new BigDecimal("10.00"), "PENDING_PAYMENT"));
+                .thenAnswer(
+                        call -> {
+                            prepared.countDown();
+                            if (!resume.await(10, TimeUnit.SECONDS)) {
+                                throw new IllegalStateException("测试未恢复原支付请求");
+                            }
+                            return new OrderPaymentSnapshot(
+                                    "O2", 7L, new BigDecimal("10.00"), "PENDING_PAYMENT");
+                        });
         var create =
-            proxy(
-                new TradePaymentCreateCmdExe(orders, payments, inbox),
-                TradePaymentCreateCmdExe.class);
-        assertThrows(IllegalStateException.class, () -> create.execute("O2", "ALIPAY"));
+                proxy(
+                        new TradePaymentCreateCmdExe(orders, payments, inbox),
+                        TradePaymentCreateCmdExe.class);
+        var worker = Executors.newSingleThreadExecutor();
+        try {
+            var attempt = worker.submit(() -> create.execute("O2", "ALIPAY"));
+            assertTrue(prepared.await(10, TimeUnit.SECONDS));
+            handler.execute(event);
+            resume.countDown();
+            var error =
+                    assertThrows(ExecutionException.class, () -> attempt.get(10, TimeUnit.SECONDS));
+            assertInstanceOf(IllegalStateException.class, error.getCause());
+        } finally {
+            resume.countDown();
+            worker.shutdownNow();
+        }
         assertTrue(payments.findByOrderNo("O2").isEmpty());
         assertEquals(
-            2,
-            jdbc.queryForObject(
-                "SELECT COUNT(*) FROM pay_message_inbox WHERE business_key='O2'",
-                Integer.class));
+                1,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM pay_message_inbox WHERE business_key='O2'",
+                        Integer.class));
+    }
+
+    @Test
+    void availableOrderCanCreateOnePaymentAndRejectsChangedPreparedAmount() {
+        var inbox =
+                proxy(
+                        new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
+                        MessageInboxGateway.class);
+        var create =
+                proxy(
+                        new TradePaymentCreateCmdExe(orders, payments, inbox),
+                        TradePaymentCreateCmdExe.class);
+        var pending =
+                new OrderPaymentSnapshot("O3", 7L, new BigDecimal("10.00"), "PENDING_PAYMENT");
+        when(orders.preparePayment("O3")).thenReturn(pending);
+        when(orders.findByOrderNo("O3"))
+                .thenReturn(
+                        new OrderPaymentSnapshot(
+                                "O3", 7L, new BigDecimal("11.00"), "PENDING_PAYMENT"));
+        assertThrows(IllegalStateException.class, () -> create.execute("O3", "ALIPAY"));
+        assertTrue(payments.findByOrderNo("O3").isEmpty());
+        when(orders.findByOrderNo("O3")).thenReturn(pending);
+        var payment = create.execute("O3", "ALIPAY");
+        assertEquals(payment.paymentNo(), create.execute("O3", "ALIPAY").paymentNo());
+        assertEquals(1, payments.findByOrderNo("O3").size());
+    }
+
+    @Test
+    void historicalClosureStillRejectsChangedPayloadAndBlocksStaleCreation() {
+        var inbox =
+                proxy(
+                        new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
+                        MessageInboxGateway.class);
+        var handler =
+                proxy(
+                        new OrderClosedEventHandler(
+                                inbox, orders, payments, p -> true, new InboundEventGatewayImpl()),
+                        OrderClosedEventHandler.class);
+        String closed = JsonUtils.toJsonStr(new OrderClosedEvent("OLD", 7L, List.of()));
+        var original =
+                new CommerceEventEnvelope(
+                        "OLD-1", "ORDER_CLOSED", 1, "OLD", "OLD", Instant.now(), null, closed);
+        transaction.executeWithoutResult(
+                state ->
+                        inbox.begin("pay.order.closed.v1", "OLD-1", "ORDER_CLOSED", "OLD", closed));
+        handler.execute(original);
+        var differentOwner =
+                new CommerceEventEnvelope(
+                        "OLD-2",
+                        "ORDER_CLOSED",
+                        1,
+                        "OLD",
+                        "OLD",
+                        Instant.now(),
+                        null,
+                        JsonUtils.toJsonStr(new OrderClosedEvent("OLD", 8L, List.of())));
+        assertThrows(IllegalStateException.class, () -> handler.execute(differentOwner));
+        when(orders.preparePayment("OLD"))
+                .thenReturn(
+                        new OrderPaymentSnapshot(
+                                "OLD", 7L, new BigDecimal("10.00"), "PENDING_PAYMENT"));
+        var create =
+                proxy(
+                        new TradePaymentCreateCmdExe(orders, payments, inbox),
+                        TradePaymentCreateCmdExe.class);
+        assertThrows(IllegalStateException.class, () -> create.execute("OLD", "ALIPAY"));
+        assertTrue(payments.findByOrderNo("OLD").isEmpty());
+        verify(orders, never()).findByOrderNo("OLD");
     }
 }

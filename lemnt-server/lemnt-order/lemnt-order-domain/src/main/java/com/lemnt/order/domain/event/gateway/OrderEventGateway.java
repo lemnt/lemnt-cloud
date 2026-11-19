@@ -11,10 +11,6 @@ public interface OrderEventGateway {
 
     void closed(TradeOrder order);
 
-    void shipped(TradeOrder order);
-
-    void completed(TradeOrder order);
-
     void afterSale(AfterSale afterSale, TradeOrder order, boolean fullyRefunded);
 
     boolean replayAfterSale(String afterSaleNo);

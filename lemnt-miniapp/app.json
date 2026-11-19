@@ -1,6 +1,8 @@
 {
   "pages": [
     "pages/store/index",
+    "pages/articles/index",
+    "pages/article-detail/index",
     "pages/index/index",
     "pages/member/index",
     "pages/member-login/index",

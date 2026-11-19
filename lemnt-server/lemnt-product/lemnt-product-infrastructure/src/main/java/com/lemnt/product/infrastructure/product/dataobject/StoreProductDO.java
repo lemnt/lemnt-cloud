@@ -16,8 +16,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = false)
 public class StoreProductDO implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Long id;
     private String name;
@@ -27,6 +26,9 @@ public class StoreProductDO implements Serializable {
     private BigDecimal minPrice;
     private BigDecimal maxPrice;
     private boolean available;
+
     /** 销量快照。 */
     private Integer salesCount;
+
+    private Long displaySalesCount;
 }

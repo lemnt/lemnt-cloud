@@ -6,13 +6,13 @@ import com.lemnt.product.application.event.service.OrderStockEventHandler;
 import com.lemnt.product.application.product.service.ProductInventoryService;
 import com.lemnt.product.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.product.domain.order.gateway.OrderEventFactsGateway;
+import com.lemnt.product.domain.order.model.OrderClosedFacts;
 import com.lemnt.product.domain.order.model.OrderPaidFacts;
 import com.lemnt.product.domain.order.model.OrderStockLine;
 import com.lemnt.product.domain.product.gateway.ProductSkuGateway;
 import com.lemnt.product.domain.product.gateway.ProductSpuGateway;
 import com.lemnt.product.domain.product.model.ProductSku;
 import com.lemnt.product.domain.product.model.ProductSpu;
-import com.lemnt.product.domain.product.model.ProductStockReservation;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,8 +55,6 @@ class OrderStockEventHandlerSalesTest {
                         Instant.now(),
                         null,
                         "payload");
-        when(inbox.begin(anyString(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(true);
     }
 
     @Test
@@ -70,18 +68,16 @@ class OrderStockEventHandlerSalesTest {
         when(skus.catalogSku(20L)).thenReturn(sku(20L, 5L));
         when(spus.lockSpu(5L)).thenReturn(spu(5L));
         when(spus.lockSpu(8L)).thenReturn(spu(8L));
-        when(inventory.reservationStatus("ORDER", 10L)).thenReturn(reservation(10L, 2));
-        when(inventory.reservationStatus("ORDER", 20L)).thenReturn(reservation(20L, 3));
+        when(inventory.confirmSale("ORDER", 10L, 2)).thenReturn(true);
+        when(inventory.confirmSale("ORDER", 20L, 3)).thenReturn(true);
 
         handler.paid(event);
 
         var locks = inOrder(spus, inventory);
         locks.verify(spus).lockSpu(5L);
         locks.verify(spus).lockSpu(8L);
-        locks.verify(inventory).reservationStatus("ORDER", 10L);
-        locks.verify(inventory).confirmStock("ORDER", 10L);
-        locks.verify(inventory).reservationStatus("ORDER", 20L);
-        locks.verify(inventory).confirmStock("ORDER", 20L);
+        locks.verify(inventory).confirmSale("ORDER", 10L, 2);
+        locks.verify(inventory).confirmSale("ORDER", 20L, 3);
         locks.verify(spus).addSales(5L, 3);
         locks.verify(spus).addSales(8L, 2);
     }
@@ -96,13 +92,18 @@ class OrderStockEventHandlerSalesTest {
         when(skus.catalogSku(10L)).thenReturn(sku(10L, 5L));
         when(skus.catalogSku(20L)).thenReturn(sku(20L, 5L));
         when(spus.lockSpu(5L)).thenReturn(spu(5L));
-        when(inventory.reservationStatus("ORDER", 10L)).thenReturn(reservation(10L, 2));
-        when(inventory.reservationStatus("ORDER", 20L)).thenReturn(reservation(20L, 3));
+        when(inventory.confirmSale("ORDER", 10L, 2)).thenReturn(true, false);
+        when(inventory.confirmSale("ORDER", 20L, 3)).thenReturn(true, false);
 
         handler.paid(event);
+        handler.paid(event);
 
-        verify(spus).lockSpu(5L);
+        verify(spus, times(2)).lockSpu(5L);
         verify(spus).addSales(5L, 5);
+        verify(skus).addSales(10L, 2);
+        verify(skus).addSales(20L, 3);
+        verify(inbox, never())
+                .begin(anyString(), anyString(), anyString(), anyString(), anyString());
         verifyNoMoreInteractions(spus);
     }
 
@@ -111,11 +112,11 @@ class OrderStockEventHandlerSalesTest {
         when(facts.paidFacts("payload"))
                 .thenReturn(new OrderPaidFacts("ORDER", List.of(new OrderStockLine(10L, 2))));
         when(skus.catalogSku(10L)).thenReturn(sku(10L, null));
-        when(inventory.reservationStatus("ORDER", 10L)).thenReturn(reservation(10L, 2));
+        when(inventory.confirmSale("ORDER", 10L, 2)).thenReturn(true);
 
         handler.paid(event);
 
-        verify(inventory).confirmStock("ORDER", 10L);
+        verify(inventory).confirmSale("ORDER", 10L, 2);
         verifyNoInteractions(spus);
     }
 
@@ -129,6 +130,62 @@ class OrderStockEventHandlerSalesTest {
         verifyNoInteractions(inventory, spus);
     }
 
+    @Test
+    void closeVerifiesOrderStateOwnerAndAllQuantitiesBeforeReleasing() {
+        var closed =
+                new CommerceEventEnvelope(
+                        "C1",
+                        CommerceEventTopics.ORDER_CLOSED,
+                        1,
+                        "ORDER",
+                        "ORDER",
+                        Instant.now(),
+                        null,
+                        "payload");
+        var first = new OrderStockLine(10L, 2);
+        var second = new OrderStockLine(20L, 3);
+        when(facts.closedFacts("payload"))
+                .thenReturn(new OrderClosedFacts("ORDER", 1L, List.of(second, first)));
+        when(facts.findClosedOrder("ORDER"))
+                .thenReturn(
+                        null,
+                        new OrderClosedFacts("ORDER", 2L, List.of(first, second)),
+                        new OrderClosedFacts("ORDER", 1L, List.of(first)),
+                        new OrderClosedFacts("ORDER", 1L, List.of(first, second)));
+        assertThrows(IllegalStateException.class, () -> handler.closed(closed));
+        assertThrows(IllegalStateException.class, () -> handler.closed(closed));
+        assertThrows(IllegalStateException.class, () -> handler.closed(closed));
+        verifyNoInteractions(inventory);
+        handler.closed(closed);
+        var sequence = inOrder(inventory);
+        sequence.verify(inventory).cancelReservation("ORDER", 10L, 2);
+        sequence.verify(inventory).cancelReservation("ORDER", 20L, 3);
+        verify(inbox, never())
+                .begin(anyString(), anyString(), anyString(), anyString(), anyString());
+    }
+
+    @Test
+    void closeLegacyReplayVerifiesTheOldPayloadWithoutCallingOrderOrTouchingStock() {
+        var closed =
+                new CommerceEventEnvelope(
+                        "C1",
+                        CommerceEventTopics.ORDER_CLOSED,
+                        1,
+                        "ORDER",
+                        "ORDER",
+                        Instant.now(),
+                        null,
+                        "payload");
+        when(facts.closedFacts("payload"))
+                .thenReturn(new OrderClosedFacts("ORDER", 1L, List.of(new OrderStockLine(10L, 2))));
+        when(inbox.has("product.order_closed.v1", CommerceEventTopics.ORDER_CLOSED, "ORDER"))
+                .thenReturn(true);
+        handler.closed(closed);
+        verify(inbox).begin("product.order_closed.v1", "C1", "ORDER_CLOSED", "ORDER", "payload");
+        verify(facts, never()).findClosedOrder(anyString());
+        verifyNoInteractions(inventory);
+    }
+
     private ProductSku sku(Long id, Long spuId) {
         return new ProductSku(
                 id, spuId, "SKU", "商品", BigDecimal.TEN, 10, null, Map.of(), "ON_SHELF");
@@ -136,9 +193,5 @@ class OrderStockEventHandlerSalesTest {
 
     private ProductSpu spu(Long id) {
         return new ProductSpu(id, "SPU", "商品", 1L, 1L, null, null, "ON_SHELF", List.of());
-    }
-
-    private ProductStockReservation reservation(Long skuId, int quantity) {
-        return new ProductStockReservation("ORDER", skuId, quantity, "RESERVED");
     }
 }

@@ -26,6 +26,23 @@ export function SpuDetailDrawer({ id, onClose }: { id?: string; onClose: () => v
           .join(' / ') || '无规格',
     },
     { title: '价格（元）', dataIndex: 'price' },
+    { title: '划线价（元）', dataIndex: 'marketPrice' },
+    { title: '成本价（元）', dataIndex: 'costPrice' },
+    { title: '条码', dataIndex: 'barCode' },
+    ...(query.data?.subCommissionType
+      ? [
+          {
+            title: '一级每件佣金（元）',
+            dataIndex: 'firstBrokeragePrice',
+            renderText: (value: unknown) => value ?? '0.00',
+          },
+          {
+            title: '二级每件佣金（元）',
+            dataIndex: 'secondBrokeragePrice',
+            renderText: (value: unknown) => value ?? '0.00',
+          },
+        ]
+      : []),
     { title: '可用库存', dataIndex: 'stock' },
     { title: '重量（千克）', dataIndex: 'weight' },
     { title: '体积（立方米）', dataIndex: 'volume' },
@@ -52,6 +69,11 @@ export function SpuDetailDrawer({ id, onClose }: { id?: string; onClose: () => v
               { title: '关键字', dataIndex: 'keyword' },
               { title: '简介', dataIndex: 'introduction' },
               { title: '排序', dataIndex: 'sort' },
+              { title: '每个订单行赠送积分', dataIndex: 'giveIntegral' },
+              {
+                title: '分佣方式',
+                render: (_, row) => (row.subCommissionType ? 'SKU 固定' : '全局比例'),
+              },
               { title: '分类编号', dataIndex: 'categoryId' },
               { title: '品牌编号', dataIndex: 'brandId' },
               { title: '运费模板', dataIndex: 'deliveryTemplateId' },

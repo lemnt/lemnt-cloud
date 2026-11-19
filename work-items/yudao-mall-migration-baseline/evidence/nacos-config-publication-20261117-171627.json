@@ -1,0 +1,30 @@
+{
+  "capturedAt": "2026-11-17T17:16:27.340387+08:00",
+  "approvalQuote": "允许发布Nacos配置",
+  "namespaceId": "dev",
+  "groupName": "DEFAULT_GROUP",
+  "policy": "Create only Data IDs absent in dev/DEFAULT_GROUP; never overwrite or delete existing configs. Content published verbatim from docs/config (env-var placeholders, no credentials).",
+  "existingCountBefore": 86,
+  "existingMatchingBefore": [
+    "lemnt-product.yaml"
+  ],
+  "published": [
+    {
+      "dataId": "lemnt-product.yaml",
+      "status": "skipped_preexisting_not_overwritten",
+      "presentHttpStatus": 200
+    },
+    {
+      "dataId": "lemnt-promotion.yaml",
+      "source": "docs/config/lemnt-promotion.yaml",
+      "createResponseCode": 403,
+      "createMessage": "{\"code\":10001,\"message\":\"access denied\",\"data\":\"Code: 401, Message: User not found! Please check user exist or password is right!.\"}",
+      "readBackMatches": false,
+      "bytes": 1286,
+      "status": "failed"
+    }
+  ],
+  "secretsPersisted": false,
+  "existingCountAfter": 86,
+  "newDataIds": []
+}

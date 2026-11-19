@@ -4,9 +4,7 @@ import com.lemnt.common.core.utils.JsonUtils;
 import com.lemnt.order.client.dto.OrderStockLineDTO;
 import com.lemnt.order.client.event.AfterSaleCompletedEvent;
 import com.lemnt.order.client.event.OrderClosedEvent;
-import com.lemnt.order.client.event.OrderCompletedEvent;
 import com.lemnt.order.client.event.OrderPaidEvent;
-import com.lemnt.product.client.event.StockPreReservedEvent;
 import com.lemnt.promotion.domain.event.model.InboundEventFacts;
 import com.lemnt.promotion.infrastructure.event.gateway.InboundEventGatewayImpl;
 
@@ -41,20 +39,13 @@ class InboundEventGatewayImplTest {
     }
 
     @Test
-    void closedCompletedAndReservedFacts_preserveEveryField() {
+    void closedFacts_preserveEveryField() {
         var closed = gateway.closedFacts(JsonUtils.toJsonStr(
             new OrderClosedEvent("ORDER", memberId, List.of(new OrderStockLineDTO(skuId, 2)))));
         assertEquals(
             new InboundEventFacts.Closed(
                 "ORDER", memberId, List.of(new InboundEventFacts.StockLine(skuId, 2))),
             closed);
-        assertEquals(
-            new InboundEventFacts.Completed("ORDER", memberId),
-            gateway.completedFacts(JsonUtils.toJsonStr(new OrderCompletedEvent("ORDER", memberId))));
-        assertEquals(
-            new InboundEventFacts.StockPreReserved("RESERVATION", skuId, 4),
-            gateway.stockPreReservedFacts(JsonUtils.toJsonStr(
-                new StockPreReservedEvent("RESERVATION", skuId, 4))));
     }
 
     @Test
@@ -86,8 +77,6 @@ class InboundEventGatewayImplTest {
             assertThrows(RuntimeException.class, () -> gateway.paidFacts(payload));
             assertThrows(RuntimeException.class, () -> gateway.closedFacts(payload));
             assertThrows(RuntimeException.class, () -> gateway.afterSaleFacts(payload));
-            assertThrows(RuntimeException.class, () -> gateway.completedFacts(payload));
-            assertThrows(RuntimeException.class, () -> gateway.stockPreReservedFacts(payload));
         }
         assertThrows(IllegalArgumentException.class, () -> gateway.paidFacts(null));
     }
@@ -119,10 +108,6 @@ class InboundEventGatewayImplTest {
 
     @Test
     void missingQuantityOrNullStockRows_areRejectedInsteadOfInventingZero() {
-        assertThrows(IllegalArgumentException.class, () -> gateway.stockPreReservedFacts(
-            "{\"reservationNo\":\"ORDER\",\"skuId\":1}"));
-        assertThrows(IllegalArgumentException.class, () -> gateway.stockPreReservedFacts(
-            "{\"reservationNo\":\"ORDER\",\"skuId\":1,\"quantity\":null}"));
         for (String items : List.of("[{\"skuId\":1}]", "[{\"skuId\":1,\"quantity\":null}]", "[null]")) {
             assertThrows(IllegalArgumentException.class, () -> gateway.closedFacts(
                 "{\"orderNo\":\"ORDER\",\"items\":" + items + "}"));
@@ -133,8 +118,6 @@ class InboundEventGatewayImplTest {
 
     @Test
     void invalidBusinessValues_arePreservedForExistingHandlerValidation() {
-        assertEquals(-1, gateway.stockPreReservedFacts(JsonUtils.toJsonStr(
-            new StockPreReservedEvent("ORDER", skuId, -1))).quantity());
         var paid = gateway.paidFacts(JsonUtils.toJsonStr(new OrderPaidEvent(
             "ORDER", memberId, BigDecimal.valueOf(-1), -2, -3, Map.of(),
             List.of(new OrderStockLineDTO(skuId, 0)))));

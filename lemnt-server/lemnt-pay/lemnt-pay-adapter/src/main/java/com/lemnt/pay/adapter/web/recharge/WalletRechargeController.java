@@ -6,10 +6,12 @@ import com.lemnt.pay.adapter.web.recharge.converter.RechargeResConverter;
 import com.lemnt.pay.adapter.web.recharge.req.WalletRechargeConfirmReq;
 import com.lemnt.pay.adapter.web.recharge.req.WalletRechargePageReq;
 import com.lemnt.pay.adapter.web.recharge.res.WalletRechargeRes;
+import com.lemnt.pay.adapter.web.recharge.res.WalletRechargeSummaryRes;
 import com.lemnt.pay.application.payment.executor.WalletRechargeConfirmCmdExe;
 import com.lemnt.pay.application.payment.executor.WalletRechargeDetailQueryExe;
 import com.lemnt.pay.application.payment.executor.WalletRechargePageQueryExe;
 import com.lemnt.pay.application.payment.executor.WalletRechargeRefundCmdExe;
+import com.lemnt.pay.application.payment.executor.WalletRechargeSummaryQueryExe;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,6 +39,14 @@ public class WalletRechargeController {
     private final WalletRechargeDetailQueryExe detail;
     private final WalletRechargeConfirmCmdExe confirm;
     private final WalletRechargeRefundCmdExe refund;
+    private final WalletRechargeSummaryQueryExe summary;
+
+    @GetMapping("/summary")
+    @Operation(summary = "累计充值实付金额")
+    @RequiresPermissions("trade:wallet-recharge:list")
+    public R<WalletRechargeSummaryRes> summary() {
+        return R.ok(new WalletRechargeSummaryRes(summary.execute()));
+    }
 
     @GetMapping
     @Operation(summary = "充值单分页")
@@ -44,8 +54,8 @@ public class WalletRechargeController {
     public R<WalletRechargeRes> page(@Valid @ModelAttribute WalletRechargePageReq req) {
         var value = page.execute(RechargeResConverter.rechargePage(req));
         return R.page(
-            value.getRecords().stream().map(RechargeResConverter::recharge).toList(),
-            value.getTotal());
+                value.getRecords().stream().map(RechargeResConverter::recharge).toList(),
+                value.getTotal());
     }
 
     @GetMapping("/{rechargeNo}")
@@ -60,7 +70,7 @@ public class WalletRechargeController {
     @Operation(summary = "确认充值到账")
     @RequiresPermissions("trade:wallet-recharge:confirm")
     public R<WalletRechargeRes> confirm(
-        @PathVariable String rechargeNo, @Valid @RequestBody WalletRechargeConfirmReq req) {
+            @PathVariable String rechargeNo, @Valid @RequestBody WalletRechargeConfirmReq req) {
         return R.ok(RechargeResConverter.recharge(confirm.execute(rechargeNo, req.channelCode())));
     }
 

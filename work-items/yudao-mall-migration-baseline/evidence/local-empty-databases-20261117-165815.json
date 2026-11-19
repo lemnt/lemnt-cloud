@@ -1,0 +1,89 @@
+{
+  "capturedAt": "2026-11-17T16:58:11.800311+08:00",
+  "approvalQuote": "允许新建空库",
+  "targetContainer": "mysql8",
+  "targetHost": "127.0.0.1:3306",
+  "scope": "Create six dedicated empty databases only. No DROP, table creation, initialization, existing schema changes or Nacos publication.",
+  "databases": [
+    {
+      "name": "lemnt_migration_local_system",
+      "statement": "CREATE DATABASE `lemnt_migration_local_system` DEFAULT CHARACTER SET utf8mb4",
+      "exitCode": 0,
+      "status": "created"
+    },
+    {
+      "name": "lemnt_migration_local_member",
+      "statement": "CREATE DATABASE `lemnt_migration_local_member` DEFAULT CHARACTER SET utf8mb4",
+      "exitCode": 0,
+      "status": "created"
+    },
+    {
+      "name": "lemnt_migration_local_product",
+      "statement": "CREATE DATABASE `lemnt_migration_local_product` DEFAULT CHARACTER SET utf8mb4",
+      "exitCode": 0,
+      "status": "created"
+    },
+    {
+      "name": "lemnt_migration_local_promotion",
+      "statement": "CREATE DATABASE `lemnt_migration_local_promotion` DEFAULT CHARACTER SET utf8mb4",
+      "exitCode": 0,
+      "status": "created"
+    },
+    {
+      "name": "lemnt_migration_local_order",
+      "statement": "CREATE DATABASE `lemnt_migration_local_order` DEFAULT CHARACTER SET utf8mb4",
+      "exitCode": 0,
+      "status": "created"
+    },
+    {
+      "name": "lemnt_migration_local_pay",
+      "statement": "CREATE DATABASE `lemnt_migration_local_pay` DEFAULT CHARACTER SET utf8mb4",
+      "exitCode": 0,
+      "status": "created"
+    }
+  ],
+  "secretsPersisted": false,
+  "businessDataRead": false,
+  "verification": {
+    "exitCode": 0,
+    "rows": [
+      {
+        "name": "lemnt_migration_local_member",
+        "charset": "utf8mb4",
+        "collation": "utf8mb4_0900_ai_ci",
+        "tableCount": 0
+      },
+      {
+        "name": "lemnt_migration_local_order",
+        "charset": "utf8mb4",
+        "collation": "utf8mb4_0900_ai_ci",
+        "tableCount": 0
+      },
+      {
+        "name": "lemnt_migration_local_pay",
+        "charset": "utf8mb4",
+        "collation": "utf8mb4_0900_ai_ci",
+        "tableCount": 0
+      },
+      {
+        "name": "lemnt_migration_local_product",
+        "charset": "utf8mb4",
+        "collation": "utf8mb4_0900_ai_ci",
+        "tableCount": 0
+      },
+      {
+        "name": "lemnt_migration_local_promotion",
+        "charset": "utf8mb4",
+        "collation": "utf8mb4_0900_ai_ci",
+        "tableCount": 0
+      },
+      {
+        "name": "lemnt_migration_local_system",
+        "charset": "utf8mb4",
+        "collation": "utf8mb4_0900_ai_ci",
+        "tableCount": 0
+      }
+    ],
+    "allSixPresentAndEmpty": true
+  }
+}

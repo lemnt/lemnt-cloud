@@ -46,18 +46,24 @@ public class ProductCatalogService {
         var saved = productSpuGateway.insertSpu(value);
         for (var sku : value.skus()) {
             productSkuGateway.insertSku(
-                new ProductSku(
-                    null,
-                    saved.id(),
-                    sku.code(),
-                    sku.name(),
-                    sku.price(),
-                    sku.stock(),
-                    sku.image(),
-                    sku.specs(),
-                    sku.status(),
-                    sku.weight(),
-                    sku.volume()));
+                    new ProductSku(
+                            null,
+                            saved.id(),
+                            sku.code(),
+                            sku.name(),
+                            sku.price(),
+                            sku.stock(),
+                            sku.image(),
+                            sku.specs(),
+                            sku.status(),
+                            sku.weight(),
+                            sku.volume(),
+                            sku.marketPrice(),
+                            sku.costPrice(),
+                            sku.barCode(),
+                            null,
+                            sku.firstBrokeragePrice(),
+                            sku.secondBrokeragePrice()));
         }
         return spu(saved.id());
     }
@@ -74,44 +80,58 @@ public class ProductCatalogService {
         }
         // 内部历史调用未携带经营字段时保留原配置；HTTP编辑请求要求显式填写。
         value =
-            new ProductSpu(
-                value.id(),
-                value.code(),
-                value.name(),
-                value.categoryId(),
-                value.brandId(),
-                value.description(),
-                value.image(),
-                value.status(),
-                value.skus(),
-                value.deliveryTypes(),
-                value.deliveryTemplateId(),
-                value.keyword() == null ? original.keyword() : value.keyword(),
-                value.introduction() == null
-                    ? original.introduction()
-                    : value.introduction(),
-                value.sliderPicUrls() == null
-                    ? original.sliderPicUrls()
-                    : value.sliderPicUrls(),
-                value.sort() == null ? original.sort() : value.sort());
-        var validated =
-            ProductCatalogValidation.newSpu(
                 new ProductSpu(
-                    value.id(),
-                    original.code(),
-                    value.name(),
-                    value.categoryId(),
-                    value.brandId(),
-                    value.description(),
-                    value.image(),
-                    original.status(),
-                    value.skus(),
-                    value.deliveryTypes(),
-                    value.deliveryTemplateId(),
-                    value.keyword(),
-                    value.introduction(),
-                    value.sliderPicUrls(),
-                    value.sort()));
+                        value.id(),
+                        value.code(),
+                        value.name(),
+                        value.categoryId(),
+                        value.brandId(),
+                        value.description(),
+                        value.image(),
+                        value.status(),
+                        value.skus(),
+                        value.deliveryTypes(),
+                        value.deliveryTemplateId(),
+                        value.keyword() == null ? original.keyword() : value.keyword(),
+                        value.introduction() == null
+                                ? original.introduction()
+                                : value.introduction(),
+                        value.sliderPicUrls() == null
+                                ? original.sliderPicUrls()
+                                : value.sliderPicUrls(),
+                        value.sort() == null ? original.sort() : value.sort(),
+                        value.virtualSalesCount() == null
+                                ? original.virtualSalesCount()
+                                : value.virtualSalesCount(),
+                        value.specType() == null ? original.specType() : value.specType(),
+                        value.giveIntegral() == null
+                                ? original.giveIntegral()
+                                : value.giveIntegral(),
+                        value.subCommissionType() == null
+                                ? original.subCommissionType()
+                                : value.subCommissionType());
+        var validated =
+                ProductCatalogValidation.newSpu(
+                        new ProductSpu(
+                                value.id(),
+                                original.code(),
+                                value.name(),
+                                value.categoryId(),
+                                value.brandId(),
+                                value.description(),
+                                value.image(),
+                                original.status(),
+                                value.skus(),
+                                value.deliveryTypes(),
+                                value.deliveryTemplateId(),
+                                value.keyword(),
+                                value.introduction(),
+                                value.sliderPicUrls(),
+                                value.sort(),
+                                value.virtualSalesCount(),
+                                value.specType(),
+                                value.giveIntegral(),
+                                value.subCommissionType()));
         var existing = productSkuGateway.catalogSkus(value.id());
         // 整体保存时先锁定旧 SKU 并释放规格键，允许交换规格及替换旧规格。
         existing.stream().map(ProductSku::id).sorted().forEach(productSkuGateway::lockById);
@@ -120,42 +140,58 @@ public class ProductCatalogService {
         for (var sku : validated.skus()) {
             if (sku.id() == null) {
                 var saved =
-                    productSkuGateway.insertSku(
-                        new ProductSku(
-                            null,
-                            value.id(),
-                            sku.code(),
-                            sku.name(),
-                            sku.price(),
-                            sku.stock(),
-                            sku.image(),
-                            sku.specs(),
-                            "ON_SHELF",
-                            sku.weight(),
-                            sku.volume()));
+                        productSkuGateway.insertSku(
+                                new ProductSku(
+                                        null,
+                                        value.id(),
+                                        sku.code(),
+                                        sku.name(),
+                                        sku.price(),
+                                        sku.stock(),
+                                        sku.image(),
+                                        sku.specs(),
+                                        "ON_SHELF",
+                                        sku.weight(),
+                                        sku.volume(),
+                                        sku.marketPrice(),
+                                        sku.costPrice(),
+                                        sku.barCode(),
+                                        null,
+                                        sku.firstBrokeragePrice(),
+                                        sku.secondBrokeragePrice()));
             } else {
                 var old =
-                    existing.stream()
-                        .filter(item -> item.id().equals(sku.id()))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("SKU 不属于当前商品"));
+                        existing.stream()
+                                .filter(item -> item.id().equals(sku.id()))
+                                .findFirst()
+                                .orElseThrow(() -> new IllegalArgumentException("SKU 不属于当前商品"));
                 if (!retained.add(sku.id()) || !old.code().equals(sku.code())) {
                     throw new IllegalArgumentException("SKU 编号重复或编码已被修改");
                 }
                 productSkuGateway.lockById(sku.id());
                 if (!productSkuGateway.updateSku(
-                    new ProductSku(
-                        sku.id(),
-                        value.id(),
-                        sku.code(),
-                        sku.name(),
-                        sku.price(),
-                        sku.stock(),
-                        sku.image(),
-                        sku.specs(),
-                        "ON_SHELF",
-                        sku.weight(),
-                        sku.volume()))) {
+                        new ProductSku(
+                                sku.id(),
+                                value.id(),
+                                sku.code(),
+                                sku.name(),
+                                sku.price(),
+                                sku.stock(),
+                                sku.image(),
+                                sku.specs(),
+                                "ON_SHELF",
+                                sku.weight(),
+                                sku.volume(),
+                                sku.marketPrice() == null ? old.marketPrice() : sku.marketPrice(),
+                                sku.costPrice() == null ? old.costPrice() : sku.costPrice(),
+                                sku.barCode() == null ? old.barCode() : sku.barCode(),
+                                null,
+                                sku.firstBrokeragePrice() == null
+                                        ? old.firstBrokeragePrice()
+                                        : sku.firstBrokeragePrice(),
+                                sku.secondBrokeragePrice() == null
+                                        ? old.secondBrokeragePrice()
+                                        : sku.secondBrokeragePrice()))) {
                     throw new IllegalStateException("SKU 保存失败");
                 }
             }
@@ -202,60 +238,70 @@ public class ProductCatalogService {
         }
         var value = spu(id);
         return value == null
-            ? null
-            : withSkus(
-            value,
-            value.skus().stream()
-                .filter(
-                    sku ->
-                        "ON_SHELF".equals(sku.status())
-                            && sku.price() != null
-                            && sku.price().signum() > 0)
-                .toList());
+                ? null
+                : withSkus(
+                        value,
+                        value.skus().stream()
+                                .filter(
+                                        sku ->
+                                                "ON_SHELF".equals(sku.status())
+                                                        && sku.price() != null
+                                                        && sku.price().signum() >= 0)
+                                .toList());
     }
 
     private ProductSpu withSkus(ProductSpu value, List<ProductSku> skus) {
         return new ProductSpu(
-            value.id(),
-            value.code(),
-            value.name(),
-            value.categoryId(),
-            value.brandId(),
-            value.description(),
-            value.image(),
-            value.status(),
-            skus,
-            value.deliveryTypes(),
-            value.deliveryTemplateId(),
-            value.keyword(),
-            value.introduction(),
-            value.sliderPicUrls(),
-            value.sort());
+                value.id(),
+                value.code(),
+                value.name(),
+                value.categoryId(),
+                value.brandId(),
+                value.description(),
+                value.image(),
+                value.status(),
+                skus,
+                value.deliveryTypes(),
+                value.deliveryTemplateId(),
+                value.keyword(),
+                value.introduction(),
+                value.sliderPicUrls(),
+                value.sort(),
+                value.virtualSalesCount(),
+                value.specType(),
+                value.giveIntegral(),
+                value.subCommissionType());
     }
 
     private ProductSku withProperties(ProductSku value, List<ProductSkuSpec> specs) {
         return new ProductSku(
-            value.id(),
-            value.spuId(),
-            value.code(),
-            value.name(),
-            value.price(),
-            value.stock(),
-            value.image(),
-            specs == null
-                ? null
-                : specs.stream()
-                .map(
-                    property ->
-                        new ProductSkuSpec(
-                            property.specId(),
-                            property.specName(),
-                            property.specValueId(),
-                            property.specValueName()))
-                .toList(),
-            value.status(),
-            value.weight(),
-            value.volume());
+                value.id(),
+                value.spuId(),
+                value.code(),
+                value.name(),
+                value.price(),
+                value.stock(),
+                value.image(),
+                specs == null
+                        ? null
+                        : specs.stream()
+                                .map(
+                                        property ->
+                                                new ProductSkuSpec(
+                                                        property.specId(),
+                                                        property.specName(),
+                                                        property.specValueId(),
+                                                        property.specValueName()))
+                                .toList(),
+                value.status(),
+                value.weight(),
+                value.volume(),
+                value.marketPrice(),
+                value.costPrice(),
+                value.barCode(),
+                value.salesCount(),
+                value.firstBrokeragePrice(),
+                value.secondBrokeragePrice());
     }
 
     /**
@@ -263,21 +309,21 @@ public class ProductCatalogService {
      */
     private ProductSpu resolveProperties(ProductSpu value) {
         if (value == null
-            || value.skus().isEmpty()
-            || value.skus().size() > 100
-            || value.skus().stream().anyMatch(Objects::isNull)) {
+                || value.skus().isEmpty()
+                || value.skus().size() > 100
+                || value.skus().stream().anyMatch(Objects::isNull)) {
             throw new ServiceException("商品SKU不合法", 400);
         }
         var all = value.skus().stream().flatMap(sku -> sku.specs().stream()).toList();
         if (value.skus().stream().anyMatch(sku -> sku.specs().size() > 10)
-            || all.stream()
-            .anyMatch(
-                property ->
-                    (property.specId() == null)
-                        != (property.specValueId() == null)
-                        || (property.specId() != null
-                        && (property.specId() <= 0
-                        || property.specValueId() <= 0)))) {
+                || all.stream()
+                        .anyMatch(
+                                property ->
+                                        (property.specId() == null)
+                                                        != (property.specValueId() == null)
+                                                || (property.specId() != null
+                                                        && (property.specId() <= 0
+                                                                || property.specValueId() <= 0)))) {
             throw new ServiceException("商品规格编号不合法", 400);
         }
         boolean linked = all.stream().anyMatch(property -> property.specId() != null);
@@ -288,84 +334,84 @@ public class ProductCatalogService {
             throw new ServiceException("同一商品SKU必须选取相同规格项", 400);
         }
         var expected =
-            value.skus().get(0).specs().stream()
-                .map(ProductSkuSpec::specId)
-                .collect(Collectors.toSet());
+                value.skus().get(0).specs().stream()
+                        .map(ProductSkuSpec::specId)
+                        .collect(Collectors.toSet());
         for (var sku : value.skus()) {
             var selected =
-                sku.specs().stream().map(ProductSkuSpec::specId).collect(Collectors.toSet());
+                    sku.specs().stream().map(ProductSkuSpec::specId).collect(Collectors.toSet());
             if (selected.size() != sku.specs().size() || !selected.equals(expected)) {
                 throw new ServiceException("SKU规格重复或规格项集合不一致", 400);
             }
         }
         var specs = new HashMap<Long, ProductSpec>();
         new TreeSet<>(all.stream().map(ProductSkuSpec::specId).toList())
-            .forEach(
-                id -> {
-                    var spec = productSpecGateway.lock(id);
-                    if (spec == null) {
-                        throw new ServiceException("商品规格不存在", 400);
-                    }
-                    specs.put(id, spec);
-                });
+                .forEach(
+                        id -> {
+                            var spec = productSpecGateway.lock(id);
+                            if (spec == null) {
+                                throw new ServiceException("商品规格不存在", 400);
+                            }
+                            specs.put(id, spec);
+                        });
         var options = new HashMap<Long, ProductSpecValue>();
         new TreeSet<>(all.stream().map(ProductSkuSpec::specValueId).toList())
-            .forEach(
-                id -> {
-                    var option = productSpecValueGateway.lock(id);
-                    if (option == null) {
-                        throw new ServiceException("商品规格值不存在", 400);
-                    }
-                    options.put(id, option);
-                });
+                .forEach(
+                        id -> {
+                            var option = productSpecValueGateway.lock(id);
+                            if (option == null) {
+                                throw new ServiceException("商品规格值不存在", 400);
+                            }
+                            options.put(id, option);
+                        });
         var skus =
-            value.skus().stream()
-                .map(
-                    sku ->
-                        withProperties(
-                            sku,
-                            sku.specs().stream()
-                                .map(
-                                    property -> {
-                                        var spec =
-                                            specs.get(
-                                                property
-                                                    .specId());
-                                        var option =
-                                            options.get(
-                                                property
-                                                    .specValueId());
-                                        if (!spec.id()
-                                            .equals(
-                                                option
-                                                    .specId())) {
-                                            throw new ServiceException(
-                                                "规格值不属于所选规格项", 400);
-                                        }
-                                        if ((property.specName() != null
-                                            && !spec.name()
-                                            .equals(
-                                                property
-                                                    .specName()))
-                                            || (property
-                                            .specValueName()
-                                            != null
-                                            && !option.name()
-                                            .equals(
-                                                property
-                                                    .specValueName()))) {
-                                            throw new ServiceException(
-                                                "规格名称和值必须与字典一致",
-                                                400);
-                                        }
-                                        return new ProductSkuSpec(
-                                            spec.id(),
-                                            spec.name(),
-                                            option.id(),
-                                            option.name());
-                                    })
-                                .toList()))
-                .toList();
+                value.skus().stream()
+                        .map(
+                                sku ->
+                                        withProperties(
+                                                sku,
+                                                sku.specs().stream()
+                                                        .map(
+                                                                property -> {
+                                                                    var spec =
+                                                                            specs.get(
+                                                                                    property
+                                                                                            .specId());
+                                                                    var option =
+                                                                            options.get(
+                                                                                    property
+                                                                                            .specValueId());
+                                                                    if (!spec.id()
+                                                                            .equals(
+                                                                                    option
+                                                                                            .specId())) {
+                                                                        throw new ServiceException(
+                                                                                "规格值不属于所选规格项", 400);
+                                                                    }
+                                                                    if ((property.specName() != null
+                                                                                    && !spec.name()
+                                                                                            .equals(
+                                                                                                    property
+                                                                                                            .specName()))
+                                                                            || (property
+                                                                                                    .specValueName()
+                                                                                            != null
+                                                                                    && !option.name()
+                                                                                            .equals(
+                                                                                                    property
+                                                                                                            .specValueName()))) {
+                                                                        throw new ServiceException(
+                                                                                "规格名称和值必须与字典一致",
+                                                                                400);
+                                                                    }
+                                                                    return new ProductSkuSpec(
+                                                                            spec.id(),
+                                                                            spec.name(),
+                                                                            option.id(),
+                                                                            option.name());
+                                                                })
+                                                        .toList()))
+                        .toList();
         return withSkus(value, skus);
     }
 }

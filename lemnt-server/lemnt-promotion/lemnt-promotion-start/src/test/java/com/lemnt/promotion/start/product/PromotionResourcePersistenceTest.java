@@ -4,7 +4,9 @@ import com.lemnt.common.client.event.CommerceEventEnvelope;
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.core.utils.JsonUtils;
 import com.lemnt.order.client.event.AfterSaleCompletedEvent;
+import com.lemnt.order.client.event.OrderClosedEvent;
 import com.lemnt.promotion.application.event.service.AfterSaleCompletedEventHandler;
+import com.lemnt.promotion.application.event.service.OrderClosedEventHandler;
 import com.lemnt.promotion.application.promotion.cmd.DiscountActivityCreateCmd;
 import com.lemnt.promotion.application.promotion.cmd.PointActivityCreateCmd;
 import com.lemnt.promotion.application.promotion.cmd.PointProductCmd;
@@ -24,6 +26,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -160,6 +163,33 @@ class PromotionResourcePersistenceTest {
         state("RESERVING", 2);
         assertEquals("RELEASED", resources.lock(lock(2)).status());
         assertEquals(10, stock());
+    }
+
+    @Test
+    void closeEventUsesResourceTerminalStateOnRedelivery() throws Exception {
+        resources.lock(lock(2));
+        state("CLOSED", 2);
+        var handler = fixture.components.get(OrderClosedEventHandler.class);
+        long receipts = fixture.count("promotion_message_inbox");
+        handler.execute(
+                verification("ORDER_CLOSED", "O1", new OrderClosedEvent("O1", 7L, List.of())));
+        handler.execute(
+                verification("ORDER_CLOSED", "O1", new OrderClosedEvent("O1", 7L, List.of())));
+        assertEquals("RELEASED", resources.query("O1").status());
+        assertEquals(10, stock());
+        assertEquals(receipts + 1, fixture.count("promotion_message_inbox"));
+    }
+
+    private CommerceEventEnvelope verification(String type, String key, Object payload) {
+        return new CommerceEventEnvelope(
+                UUID.randomUUID().toString(),
+                type,
+                1,
+                key,
+                "O1",
+                Instant.now(),
+                null,
+                JsonUtils.toJsonStr(payload));
     }
 
     @Test

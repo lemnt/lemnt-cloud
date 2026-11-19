@@ -4,6 +4,7 @@ import { Alert, Button, Descriptions, Drawer, Result, Table } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { usePermission } from '@/shared/hooks/usePermission';
 import * as api from '../api/paymentApi';
+import PaymentTrendDrawer from './PaymentTrendDrawer';
 import type { PaymentRecord, RefundRecord, PaymentFilter, RefundFilter } from '../api/paymentApi';
 const paymentStates = { WAITING: '待支付', SUCCESS: '支付成功', CLOSED: '已关闭' };
 const refundStates = { WAITING: '退款处理中', SUCCESS: '退款成功', FAILED: '退款失败' };
@@ -24,6 +25,8 @@ function TransactionPage({ refund }: { refund: boolean }) {
   >({});
   const [page, setPage] = useState({ pageNum: 1, pageSize: 20 });
   const [selected, setSelected] = useState<string>();
+  const [trendOpen, setTrendOpen] = useState(false);
+  const canViewTrend = !refund && can('trade:payment:list') && can('trade:wallet-recharge:list');
   const rows = useQuery<{ records: (PaymentRecord | RefundRecord)[]; total: number }>({
     queryKey: ['trade-payment', refund, filters, page],
     queryFn: () =>
@@ -82,6 +85,13 @@ function TransactionPage({ refund }: { refund: boolean }) {
       <ProTable
         options={{ reload: false }}
         toolBarRender={() => [
+          ...(canViewTrend
+            ? [
+                <Button key="trend" onClick={() => setTrendOpen(true)}>
+                  到账趋势
+                </Button>,
+              ]
+            : []),
           <Button key="refresh" onClick={() => rows.refetch()} loading={rows.isFetching}>
             刷新
           </Button>,
@@ -112,6 +122,7 @@ function TransactionPage({ refund }: { refund: boolean }) {
           onChange: (pageNum, pageSize) => setPage({ pageNum, pageSize }),
         }}
       />
+      {canViewTrend && trendOpen && <PaymentTrendDrawer onClose={() => setTrendOpen(false)} />}
       <Drawer
         open={!!selected}
         title={`${title}详情`}

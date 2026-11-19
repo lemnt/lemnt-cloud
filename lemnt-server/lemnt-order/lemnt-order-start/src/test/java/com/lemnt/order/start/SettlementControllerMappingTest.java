@@ -28,39 +28,55 @@ class SettlementControllerMappingTest {
         var controllers = new ArrayList<Object>();
         for (var owner : Arrays.asList("order", "product", "promotion"))
             for (var definition :
-                scanner.findCandidateComponents("com.lemnt." + owner + ".adapter")) {
+                    scanner.findCandidateComponents("com.lemnt." + owner + ".adapter")) {
                 var type = Class.forName(definition.getBeanClassName());
                 var constructor = type.getConstructors()[0];
                 var dependencies =
-                    Arrays.stream(constructor.getParameterTypes()).map(t -> mock(t)).toArray();
+                        Arrays.stream(constructor.getParameterTypes()).map(t -> mock(t)).toArray();
                 controllers.add(constructor.newInstance(dependencies));
             }
         var mvc = MockMvcBuilders.standaloneSetup(controllers.toArray()).build();
         var mappings =
-            mvc.getDispatcherServlet()
-                .getWebApplicationContext()
-                .getBean(RequestMappingHandlerMapping.class);
+                mvc.getDispatcherServlet()
+                        .getWebApplicationContext()
+                        .getBean(RequestMappingHandlerMapping.class);
         var actual = new TreeSet<String>();
         mappings.getHandlerMethods()
-            .forEach(
-                (mapping, handler) -> {
-                    var permission = handler.getMethodAnnotation(RequiresPermissions.class);
-                    var permissions =
-                        permission == null ? "" : String.join(",", permission.value());
-                    for (var method : mapping.getMethodsCondition().getMethods()) {
-                        for (var path : mapping.getPatternValues()) {
-                            if (!path.startsWith("/mall/")
-                                && !handler.getBeanType().getName().contains(".product.adapter"))
-                                continue;
-                            actual.add(method.name() + " " + path + " " + permissions);
-                        }
-                    }
-                });
+                .forEach(
+                        (mapping, handler) -> {
+                            var permission = handler.getMethodAnnotation(RequiresPermissions.class);
+                            var permissions =
+                                    permission == null ? "" : String.join(",", permission.value());
+                            for (var method : mapping.getMethodsCondition().getMethods()) {
+                                for (var path : mapping.getPatternValues()) {
+                                    if (!path.startsWith("/mall/")
+                                            && !handler.getBeanType()
+                                                    .getName()
+                                                    .contains(".product.adapter")) continue;
+                                    actual.add(method.name() + " " + path + " " + permissions);
+                                }
+                            }
+                        });
         var expected =
-            new TreeSet<>(
-                Arrays.asList(
-                    """
+                new TreeSet<>(
+                        Arrays.asList(
+                                """
                         GET /mall/promotion/reward-activities mall:promotion:list
+                        GET /mall/promotion/articles mall:promotion:list
+                        GET /mall/promotion/articles/{id} mall:promotion:query
+                        POST /mall/promotion/articles mall:promotion:create
+                        PUT /mall/promotion/articles/{id} mall:promotion:update
+                        DELETE /mall/promotion/articles/{id} mall:promotion:delete
+                        GET /mall/promotion/article-categories mall:promotion:list
+                        GET /mall/promotion/article-categories/{id} mall:promotion:query
+                        POST /mall/promotion/article-categories mall:promotion:create
+                        PUT /mall/promotion/article-categories/{id} mall:promotion:update
+                        DELETE /mall/promotion/article-categories/{id} mall:promotion:delete
+                        GET /mall/promotion/article-categories/enabled mall:promotion:query
+                        GET /mall/app/articles
+                        GET /mall/app/articles/detail
+                        GET /mall/app/article-categories
+                        PUT /mall/app/articles/{id}/browse
                         GET /mall/promotion/reward-activities/{id} mall:promotion:query
                         POST /mall/promotion/reward-activities mall:promotion:create
                         PUT /mall/promotion/reward-activities/{id} mall:promotion:update
@@ -251,7 +267,7 @@ class SettlementControllerMappingTest {
                         PUT /spus/{id} product:spu:edit
                         PUT /spus/{id}/shelf product:spu:edit
                         """
-                        .split("\n")));
+                                        .split("\n")));
         // 文本块会移除行尾空格，空权限与带权限的路由统一去掉行尾空白。
         var normalized = new TreeSet<String>();
         actual.forEach(route -> normalized.add(route.stripTrailing()));

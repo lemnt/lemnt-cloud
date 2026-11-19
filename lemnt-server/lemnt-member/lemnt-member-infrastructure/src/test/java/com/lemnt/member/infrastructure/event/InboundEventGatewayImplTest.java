@@ -6,7 +6,6 @@ import com.lemnt.order.client.dto.OrderStockLineDTO;
 import com.lemnt.order.client.event.AfterSaleCompletedEvent;
 import com.lemnt.order.client.event.OrderClosedEvent;
 import com.lemnt.order.client.event.OrderPaidEvent;
-import com.lemnt.order.client.event.OrderShippedEvent;
 
 import com.alibaba.fastjson2.JSONException;
 import com.alibaba.fastjson2.JSONObject;
@@ -43,16 +42,13 @@ class InboundEventGatewayImplTest {
     }
 
     @Test
-    void closedAndShippedFacts_preserveIdentifiersAndStockLines() {
+    void closedFacts_preserveIdentifiersAndStockLines() {
         var closed = gateway.closedFacts(JsonUtils.toJsonStr(
             new OrderClosedEvent("O1", MEMBER_ID, List.of(new OrderStockLineDTO(SKU_ID, 3)))));
         assertEquals("O1", closed.orderNo());
         assertEquals(MEMBER_ID, closed.memberId());
         assertEquals(SKU_ID, closed.items().get(0).skuId());
         assertEquals(3, closed.items().get(0).quantity());
-        var shipped = gateway.shippedFacts(JsonUtils.toJsonStr(new OrderShippedEvent("O1", MEMBER_ID)));
-        assertEquals("O1", shipped.orderNo());
-        assertEquals(MEMBER_ID, shipped.memberId());
     }
 
     @Test
@@ -121,7 +117,6 @@ class InboundEventGatewayImplTest {
             assertThrows(IllegalArgumentException.class, () -> gateway.paidFacts(payload));
             assertThrows(IllegalArgumentException.class, () -> gateway.closedFacts(payload));
             assertThrows(IllegalArgumentException.class, () -> gateway.afterSaleFacts(payload));
-            assertThrows(IllegalArgumentException.class, () -> gateway.shippedFacts(payload));
         }
         assertThrows(IllegalArgumentException.class, () -> gateway.paidFacts("{}"));
         assertThrows(JSONException.class, () -> gateway.paidFacts("{"));
