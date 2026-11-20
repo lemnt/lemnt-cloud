@@ -17,6 +17,7 @@ public class ShutdownManager {
      * 标记实例是否处于下线状态
      */
     private volatile boolean shuttingDown = false;
+
     private final ApplicationContext context;
 
     public ShutdownManager(ApplicationContext context) {

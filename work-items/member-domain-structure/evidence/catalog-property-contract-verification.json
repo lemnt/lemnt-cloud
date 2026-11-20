@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-28",
+  "scope": "商品管理Property列表合同收敛，完整商城迁移尚未完成",
+  "backend": {
+    "status": "PASS",
+    "tests": 275,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cleanVerifyLog": "/tmp/catalog-list-clean-verify.log",
+    "finalVerifyLog": "/tmp/catalog-list-http-verify.log"
+  },
+  "react": {
+    "status": "PASS",
+    "tests": 171,
+    "testLog": "/tmp/catalog-list-ui-tests-final.log",
+    "typeAndBuildLog": "/tmp/catalog-list-ui-build-final.log",
+    "lintLog": "/tmp/catalog-list-ui-lint.log",
+    "formatLog": "/tmp/catalog-list-ui-format-check.log"
+  },
+  "miniapp": {
+    "status": "PASS",
+    "tests": 82,
+    "log": "/tmp/catalog-list-mini-tests.log"
+  },
+  "localInitTables": 46,
+  "remainingBusinessTablesWithoutCorrespondingTable": 36,
+  "realDatabaseMigrationExecuted": false,
+  "isolatedControllerToDatabaseTest": "PASS",
+  "gatewayAuthenticationOrDeployedHttpTest": "NOT_RUN",
+  "browserOrDeviceEndToEndRun": false,
+  "agentCommitted": false,
+  "agentPushed": false,
+  "observedHEADAtEnd": "c46b2f28f70209700b6c7e88d52f3c131d7e3a5d",
+  "fileSHA256": {
+    "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSku.java": "7443ad23ab110be4cc6dd0bfbff1156ece7abcc511f3bc2188e7435381e707e5",
+    "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSkuSpecGateway.java": "7ded0558550012e395de7a4f8c567433c21d32dfcaee9ca38ae653489ff018e3",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductCatalogService.java": "0844b057305306254e720e53b34c4068fa755b3ec09495049de351585f8ddb7f",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/req/ProductSkuCreateReq.java": "a05196b3f43e6b93e21f960296ecb146e3ce5aa5f9cac1a081b1c58c1b06cc02",
+    "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/CatalogPersistenceTest.java": "3e111f2f8f8cbe331d98bcf67679bfdab921d96665dc456496190ae189ba6af2",
+    "lemnt-ui/src/modules/mall/catalog/components/SpuEditor.tsx": "b101c894dd9d36142d69bcdbbd1480560181b7989fe922c0450e32264520b83c",
+    "lemnt-miniapp/services/storefront.js": "0b529160619524987a1c403af7bff723bf79a592b2f93ccb33b4278ac4926a4d"
+  },
+  "sourceSHA256": {
+    "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/service/sku/ProductSkuServiceImpl.java": "fd41100dd68bfc520ed6a54bbd72ea0abd6e32adb802047dbdef4102fd79d6d8"
+  }
+}

@@ -56,7 +56,8 @@
         ORDER BY m.parent_id, m.order_num
     </select>
 
-    <select id="selectMenuListByUserId" parameterType="com.lemnt.system.domain.auth.model.Menu" resultMap="SysMenuResult">
+    <select id="selectMenuListByUserId" parameterType="com.lemnt.system.domain.auth.model.Menu"
+            resultMap="SysMenuResult">
         SELECT DISTINCT m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.route_name,
         m.visible, m.status, IFNULL(m.perms,'') AS perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num,
         m.create_time

@@ -38,7 +38,8 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        mvc = MockMvcBuilders.standaloneSetup(controller)
+        mvc =
+            MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new GlobalRequestBindingAdvice())
                 .build();
         when(userPageQueryExe.execute(any())).thenReturn(PageResult.of(List.of(), 0L));
@@ -46,11 +47,12 @@ class UserControllerTest {
 
     @Test
     void shouldNotUseLoginUsernameHeaderAsListFilter() throws Exception {
-        mvc.perform(get("/users")
-                        .header("username", "admin")
-                        .param("pageNum", "1")
-                        .param("pageSize", "20"))
-                .andExpect(status().isOk());
+        mvc.perform(
+                get("/users")
+                    .header("username", "admin")
+                    .param("pageNum", "1")
+                    .param("pageSize", "20"))
+            .andExpect(status().isOk());
 
         ArgumentCaptor<UserPageQry> query = ArgumentCaptor.forClass(UserPageQry.class);
         verify(userPageQueryExe).execute(query.capture());
@@ -61,11 +63,12 @@ class UserControllerTest {
 
     @Test
     void shouldPreserveExplicitUsernameAndDepartmentFilters() throws Exception {
-        mvc.perform(get("/users")
-                        .header("username", "admin")
-                        .param("userName", "ry")
-                        .param("deptId", "105"))
-                .andExpect(status().isOk());
+        mvc.perform(
+                get("/users")
+                    .header("username", "admin")
+                    .param("userName", "ry")
+                    .param("deptId", "105"))
+            .andExpect(status().isOk());
 
         ArgumentCaptor<UserPageQry> query = ArgumentCaptor.forClass(UserPageQry.class);
         verify(userPageQueryExe).execute(query.capture());

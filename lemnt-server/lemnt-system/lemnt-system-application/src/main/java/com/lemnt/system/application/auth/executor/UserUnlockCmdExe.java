@@ -1,8 +1,10 @@
 package com.lemnt.system.application.auth.executor;
 
-import lombok.RequiredArgsConstructor;
+import com.lemnt.system.domain.auth.gateway.UserLoginSecurityGateway;
+
 import org.springframework.stereotype.Component;
-import com.lemnt.system.domain.auth.gateway.UserGateway;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 解锁用户命令执行器（清除登录失败次数缓存）
@@ -12,8 +14,7 @@ import com.lemnt.system.domain.auth.gateway.UserGateway;
 @Component
 @RequiredArgsConstructor
 public class UserUnlockCmdExe {
-
-    private final UserGateway userGateway;
+    private final UserLoginSecurityGateway userLoginSecurityGateway;
 
     /**
      * 解锁用户
@@ -22,7 +23,7 @@ public class UserUnlockCmdExe {
      * @return 结果
      */
     public Boolean execute(String userName) {
-        userGateway.unlockUser(userName);
+        userLoginSecurityGateway.unlockUser(userName);
         return true;
     }
 }

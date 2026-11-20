@@ -1,0 +1,16 @@
+{
+  "status": "PASS_DESIGN_ATTACHMENTS_ONLY",
+  "schemas": 15,
+  "validExamples": 16,
+  "markdownJsonExamples": 13,
+  "rejectedSchemaExamples": 13,
+  "rejectedCrossFieldDrafts": 4,
+  "goldenPricingVectors": 23,
+  "allocationPropertyCases": 2000,
+  "legacyPercentageParityCases": 1500,
+  "sourceFilesChecked": 14,
+  "runtimeJavaEngine": "NOT IMPLEMENTED",
+  "newSqlMigration": "NOT GENERATED",
+  "mavenReactNativeRerun": "NOT RUN: no runtime source change",
+  "liveIntegration": "NOT RUN"
+}

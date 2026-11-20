@@ -1,16 +1,17 @@
 package com.lemnt.system.application.auth.executor;
 
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.system.application.auth.converter.MenuConverter;
 import com.lemnt.system.application.auth.dto.MenuDTO;
 import com.lemnt.system.application.auth.qry.MenuListQry;
-import com.lemnt.system.domain.auth.model.Menu;
 import com.lemnt.system.domain.auth.gateway.MenuGateway;
+import com.lemnt.system.domain.auth.model.Menu;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * 菜单列表查询执行器
@@ -20,7 +21,6 @@ import com.lemnt.system.domain.auth.gateway.MenuGateway;
 @Component
 @RequiredArgsConstructor
 public class MenuListQueryExe {
-
     private final MenuGateway menuGateway;
 
     /**

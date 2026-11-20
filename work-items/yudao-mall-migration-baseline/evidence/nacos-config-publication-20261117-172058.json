@@ -1,0 +1,93 @@
+{
+  "capturedAt": "2026-11-17T17:20:58.299546+08:00",
+  "approvalQuote": "允许发布Nacos配置",
+  "apiNote": "POST /v3/admin/cs/config 的目标空间参数名是 namespaceId；传 namespace 会被忽略并写入 public。accessToken 需作为查询参数。",
+  "namespaceId": "dev",
+  "groupName": "DEFAULT_GROUP",
+  "totalsBefore": {
+    "public": 1905,
+    "dev": 87,
+    "lemnt": 5
+  },
+  "published": [
+    {
+      "dataId": "lemnt-promotion.yaml",
+      "action": "created",
+      "responseCode": 0,
+      "readBackMatches": true,
+      "requiredEnvVars": [
+        "DUBBO_TIMEOUT_MS",
+        "NACOS_GROUP",
+        "NACOS_NAMESPACE",
+        "NACOS_PASSWORD",
+        "NACOS_SERVER_ADDR",
+        "NACOS_USERNAME",
+        "PROMOTION_DB_PASSWORD",
+        "PROMOTION_DB_URL",
+        "PROMOTION_DB_USERNAME",
+        "PROMOTION_DUBBO_PORT",
+        "PROMOTION_SCHEDULER_ENABLED"
+      ],
+      "status": "ok"
+    },
+    {
+      "dataId": "lemnt-order.yaml",
+      "action": "created",
+      "responseCode": 0,
+      "readBackMatches": true,
+      "requiredEnvVars": [
+        "COMMERCE_OUTBOX_ENABLED",
+        "COMMERCE_OUTBOX_INTERVAL_MS",
+        "DUBBO_TIMEOUT_MS",
+        "NACOS_GROUP",
+        "NACOS_NAMESPACE",
+        "NACOS_PASSWORD",
+        "NACOS_SERVER_ADDR",
+        "NACOS_USERNAME",
+        "ORDER_AUTO_COMMENT_ENABLED",
+        "ORDER_AUTO_RECEIVE_ENABLED",
+        "ORDER_DB_PASSWORD",
+        "ORDER_DB_URL",
+        "ORDER_DB_USERNAME",
+        "ORDER_DUBBO_PORT",
+        "ORDER_RECOVERY_ENABLED",
+        "ORDER_RECOVERY_INTERVAL_MS",
+        "ORDER_SCHEDULER_ENABLED"
+      ],
+      "status": "ok"
+    },
+    {
+      "dataId": "lemnt-pay.yaml",
+      "action": "created",
+      "responseCode": 0,
+      "readBackMatches": true,
+      "requiredEnvVars": [
+        "COMMERCE_OUTBOX_ENABLED",
+        "COMMERCE_OUTBOX_INTERVAL_MS",
+        "DUBBO_TIMEOUT_MS",
+        "NACOS_GROUP",
+        "NACOS_NAMESPACE",
+        "NACOS_PASSWORD",
+        "NACOS_SERVER_ADDR",
+        "NACOS_USERNAME",
+        "PAY_DB_PASSWORD",
+        "PAY_DB_URL",
+        "PAY_DB_USERNAME",
+        "PAY_DUBBO_PORT",
+        "PAY_LEGACY_NOTIFY_ENABLED"
+      ],
+      "status": "ok"
+    }
+  ],
+  "totalsAfter": {
+    "public": 1905,
+    "dev": 90,
+    "lemnt": 5
+  },
+  "verification": {
+    "devDelta": 3,
+    "publicDelta": 0,
+    "lemntDelta": 0,
+    "allDevReadBackMatched": true
+  }
+}

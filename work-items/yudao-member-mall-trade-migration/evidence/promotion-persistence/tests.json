@@ -1,0 +1,33 @@
+{
+  "suite": "com.lemnt.trade.start.promotion.PromotionPersistenceIntegrationTest",
+  "tests": 24,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "cases": [
+    "holdReplayKeepsOriginalAndChangedBindingRejects",
+    "createRetriesOnceAndOperatorNamespacesAreIndependent",
+    "wrongHashAndReplacedVersionRejectNewHold",
+    "storedHashAndUnknownFieldsReject",
+    "terminalRequiresDurableOrderStateAndNeverReturnsUsedQuota",
+    "auditFailureRollsBackCounterUsageAndOrderStatus",
+    "releasedUsageIsIdempotentAndCannotBeResurrected",
+    "newVersionNeverResetsQuotaAndOldHoldStillFinishes",
+    "concurrentMemberLimitWithUnlimitedGlobalHasOneWinner",
+    "databaseCheckAndForeignKeysRejectInvalidWrites",
+    "quotasCountHeldAndUsedAndPartialTakeRollsBack",
+    "publishingLowerLimitAndHoldingUseTheSameRootLock",
+    "futureExpiredAndLateCallbackWindowsRespectDurableHolds",
+    "concurrentAdminReplayAndRevisionRaceHaveOneEffect",
+    "adminReplaysBeforeRevisionAndChangedContentsReject",
+    "concurrentLastGlobalSlotHasOneWinner",
+    "concurrentDuplicateTerminalsWriteOneEvent",
+    "competingPaidAndClosedTransactionsCannotBothFinish",
+    "standaloneUsageCallRequiresOuterTransaction",
+    "duplicateCodeFailureRollsBackRequestSentinel",
+    "laterOutboxFailureRollsBackOrderCounterUsageAndAudit",
+    "publishPersistsImmutableRulesScopeHashAndOriginalVersions",
+    "loweredGlobalAndMemberLimitsCannotDiscardUsage",
+    "pauseResumeArchivePreserveHeldResourcesAndVersion"
+  ]
+}

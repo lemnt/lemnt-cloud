@@ -1,0 +1,130 @@
+{
+  "checkedAt": "2026-11-18T11:33:55.817090+08:00",
+  "mode": "read_only",
+  "namespace": "dev",
+  "configs": [
+    {
+      "dataId": "lemnt-product.yaml",
+      "matchesTemplate": true,
+      "sha256": "d809e93397b36095aa5a89aca77a36a92996a7a725e9cd9a2a8d8e0cbdcb1d01",
+      "requiredVariables": [
+        "DUBBO_TIMEOUT_MS",
+        "NACOS_GROUP",
+        "NACOS_NAMESPACE",
+        "NACOS_PASSWORD",
+        "NACOS_SERVER_ADDR",
+        "NACOS_USERNAME",
+        "PRODUCT_DB_PASSWORD",
+        "PRODUCT_DB_URL",
+        "PRODUCT_DB_USERNAME",
+        "PRODUCT_DUBBO_PORT"
+      ]
+    },
+    {
+      "dataId": "lemnt-promotion.yaml",
+      "matchesTemplate": true,
+      "sha256": "10cae9a6bd3e287301fd9c728a03c2677614211dd40393e200584bf869522b56",
+      "requiredVariables": [
+        "DUBBO_TIMEOUT_MS",
+        "NACOS_GROUP",
+        "NACOS_NAMESPACE",
+        "NACOS_PASSWORD",
+        "NACOS_SERVER_ADDR",
+        "NACOS_USERNAME",
+        "PROMOTION_DB_PASSWORD",
+        "PROMOTION_DB_URL",
+        "PROMOTION_DB_USERNAME",
+        "PROMOTION_DUBBO_PORT",
+        "PROMOTION_SCHEDULER_ENABLED"
+      ]
+    },
+    {
+      "dataId": "lemnt-order.yaml",
+      "matchesTemplate": true,
+      "sha256": "add87530c4c80a2db78e155635ee15d31b04c2dd2d7b77cacd073886ba0a1040",
+      "requiredVariables": [
+        "COMMERCE_OUTBOX_ENABLED",
+        "COMMERCE_OUTBOX_INTERVAL_MS",
+        "DUBBO_TIMEOUT_MS",
+        "NACOS_GROUP",
+        "NACOS_NAMESPACE",
+        "NACOS_PASSWORD",
+        "NACOS_SERVER_ADDR",
+        "NACOS_USERNAME",
+        "ORDER_AUTO_COMMENT_ENABLED",
+        "ORDER_AUTO_RECEIVE_ENABLED",
+        "ORDER_DB_PASSWORD",
+        "ORDER_DB_URL",
+        "ORDER_DB_USERNAME",
+        "ORDER_DUBBO_PORT",
+        "ORDER_RECOVERY_ENABLED",
+        "ORDER_RECOVERY_INTERVAL_MS",
+        "ORDER_SCHEDULER_ENABLED"
+      ]
+    },
+    {
+      "dataId": "lemnt-pay.yaml",
+      "matchesTemplate": true,
+      "sha256": "e02fe90fcf771692db82ab61ad25b44a4f0bca0a4e443a227a07dc97423763c4",
+      "requiredVariables": [
+        "COMMERCE_OUTBOX_ENABLED",
+        "COMMERCE_OUTBOX_INTERVAL_MS",
+        "DUBBO_TIMEOUT_MS",
+        "NACOS_GROUP",
+        "NACOS_NAMESPACE",
+        "NACOS_PASSWORD",
+        "NACOS_SERVER_ADDR",
+        "NACOS_USERNAME",
+        "PAY_DB_PASSWORD",
+        "PAY_DB_URL",
+        "PAY_DB_USERNAME",
+        "PAY_DUBBO_PORT",
+        "PAY_LEGACY_NOTIFY_ENABLED"
+      ]
+    },
+    {
+      "dataId": "commerce-mq.yaml",
+      "matchesTemplate": true,
+      "sha256": "ea49b1974d0ffe1b9f732ec8c649d3e46bff5e6b780a581a3e800c9258c048c0",
+      "requiredVariables": [
+        "COMMERCE_MQ_ENABLED",
+        "ROCKETMQ_NAME_SERVER"
+      ]
+    }
+  ],
+  "databaseTables": {
+    "lemnt_migration_local_system": 17,
+    "lemnt_migration_local_member": 13,
+    "lemnt_migration_local_product": 11,
+    "lemnt_migration_local_promotion": 23,
+    "lemnt_migration_local_order": 23,
+    "lemnt_migration_local_pay": 13
+  },
+  "secretsPersisted": false,
+  "mysqlExitCode": 0,
+  "schemaCountsMatchInitialization": true,
+  "redis": {
+    "authenticated": true,
+    "pingPassed": true,
+    "configuredDatabase": 0,
+    "keysReadOrWritten": false
+  },
+  "ports": {
+    "9876": false,
+    "10911": false,
+    "8080": false,
+    "9100": false,
+    "9110": false,
+    "9140": false,
+    "9150": false,
+    "9160": false,
+    "9170": false,
+    "9200": false
+  },
+  "runtimeAcceptance": "not_completed",
+  "remaining": [
+    "Redis isolation must be fixed before service writes",
+    "Local RocketMQ endpoint is not yet established",
+    "Service launch variables must be supplied; Nacos templates alone do not inject values"
+  ]
+}

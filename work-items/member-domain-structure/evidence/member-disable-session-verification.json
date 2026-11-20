@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-31",
+  "batch": "119/120",
+  "scope": "disabled member session revocation via auth",
+  "tests": {
+    "member": {
+      "tests": 105,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "auth": {
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "mall": {
+      "tests": 119,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "gateway": {
+      "tests": 34,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "common-security": {
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "businessTests": 402,
+  "jointVerify": "passed",
+  "finalCommonGatewayVerify": "passed",
+  "diffCheck": "passed",
+  "logs": [
+    "/tmp/member-disable-session-verify.log",
+    "/tmp/member-disable-session-final-verify.log"
+  ],
+  "testEvidence": [
+    "H2 rollback on remote revocation failure including mobile and status",
+    "Web disable calls auth, enabled and App edits do not",
+    "Auth RPC all member sessions revoked; same-ID admin and different member remain",
+    "Reenable does not restore revoked access token",
+    "Stale refresh after revoke fails conditional SET XX",
+    "Gateway rejects previously accepted JWT after shared session deletion",
+    "Shared Redis cursor closes on callback failure and never calls KEYS",
+    "Conditional write uses serialized value and TTL"
+  ],
+  "limitations": [
+    "Redis and Dubbo are mocked; no real Redis cluster load or cursor coverage verification",
+    "No atomic transaction across SQL commit and Redis deletion",
+    "SCAN work grows with global session population",
+    "Frontend and miniapp unchanged and not rerun this batch",
+    "No DDL, commit, push or deployment"
+  ]
+}

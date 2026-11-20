@@ -1,13 +1,15 @@
 package com.lemnt.system.application.auth.service;
 
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.common.core.constant.Constants;
 import com.lemnt.common.core.constant.UserConstants;
 import com.lemnt.common.core.utils.StringUtils;
 import com.lemnt.system.domain.auth.model.Menu;
 import com.lemnt.system.domain.auth.model.Meta;
 import com.lemnt.system.domain.auth.model.Router;
+
 import org.springframework.stereotype.Component;
+
+import cn.hutool.core.collection.CollUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -15,7 +17,6 @@ import java.util.List;
 
 @Component
 public class RouterMenuService {
-
     public static final String PREMISSION_STRING = "perms[\"{0}\"]";
     public static final Long MENU_ROOT_ID = 0L;
 
@@ -28,7 +29,12 @@ public class RouterMenuService {
             router.setPath(getRouterPath(menu));
             router.setComponent(getComponent(menu));
             router.setQuery(menu.getQuery());
-            router.setMeta(new Meta(menu.getMenuName(), menu.getIcon(), StringUtils.equals("1", menu.getIsCache()), menu.getPath()));
+            router.setMeta(
+                new Meta(
+                    menu.getMenuName(),
+                    menu.getIcon(),
+                    StringUtils.equals("1", menu.getIsCache()),
+                    menu.getPath()));
             List<Menu> cMenus = menu.getChildren();
             if (CollUtil.isNotEmpty(cMenus) && UserConstants.TYPE_DIR.equals(menu.getMenuType())) {
                 router.setAlwaysShow(true);
@@ -41,7 +47,12 @@ public class RouterMenuService {
                 children.setPath(menu.getPath());
                 children.setComponent(menu.getComponent());
                 children.setName(getRouteName(menu.getRouteName(), menu.getPath()));
-                children.setMeta(new Meta(menu.getMenuName(), menu.getIcon(), StringUtils.equals("1", menu.getIsCache()), menu.getPath()));
+                children.setMeta(
+                    new Meta(
+                        menu.getMenuName(),
+                        menu.getIcon(),
+                        StringUtils.equals("1", menu.getIsCache()),
+                        menu.getPath()));
                 children.setQuery(menu.getQuery());
                 childrenList.add(children);
                 router.setChildren(childrenList);
@@ -97,13 +108,15 @@ public class RouterMenuService {
      */
     public String getRouterPath(Menu menu) {
         String routerPath = menu.getPath();
+
         // 内链打开外网方式
         if (menu.getParentId().intValue() != MENU_ROOT_ID && isInnerLink(menu)) {
             routerPath = innerLinkReplaceEach(routerPath);
         }
         // 非外链并且是一级目录（类型为目录）
-        if (MENU_ROOT_ID == menu.getParentId().intValue() && UserConstants.TYPE_DIR.equals(menu.getMenuType())
-                && UserConstants.NO_FRAME.equals(menu.getIsFrame())) {
+        if (MENU_ROOT_ID == menu.getParentId().intValue()
+            && UserConstants.TYPE_DIR.equals(menu.getMenuType())
+            && UserConstants.NO_FRAME.equals(menu.getIsFrame())) {
             routerPath = "/" + menu.getPath();
         }
         // 非外链并且是一级目录（类型为菜单）
@@ -123,7 +136,9 @@ public class RouterMenuService {
         String component = UserConstants.LAYOUT;
         if (StringUtils.isNotEmpty(menu.getComponent()) && !isMenuFrame(menu)) {
             component = menu.getComponent();
-        } else if (StringUtils.isEmpty(menu.getComponent()) && menu.getParentId().intValue() != MENU_ROOT_ID && isInnerLink(menu)) {
+        } else if (StringUtils.isEmpty(menu.getComponent())
+            && menu.getParentId().intValue() != MENU_ROOT_ID
+            && isInnerLink(menu)) {
             component = UserConstants.INNER_LINK;
         } else if (StringUtils.isEmpty(menu.getComponent()) && isParentView(menu)) {
             component = UserConstants.PARENT_VIEW;
@@ -138,8 +153,9 @@ public class RouterMenuService {
      * @return 结果
      */
     public boolean isMenuFrame(Menu menu) {
-        return menu.getParentId().intValue() == MENU_ROOT_ID && UserConstants.TYPE_MENU.equals(menu.getMenuType())
-                && menu.getIsFrame().equals(UserConstants.NO_FRAME);
+        return menu.getParentId().intValue() == MENU_ROOT_ID
+            && UserConstants.TYPE_MENU.equals(menu.getMenuType())
+            && menu.getIsFrame().equals(UserConstants.NO_FRAME);
     }
 
     /**
@@ -149,7 +165,8 @@ public class RouterMenuService {
      * @return 结果
      */
     public boolean isParentView(Menu menu) {
-        return menu.getParentId().intValue() != MENU_ROOT_ID && UserConstants.TYPE_DIR.equals(menu.getMenuType());
+        return menu.getParentId().intValue() != MENU_ROOT_ID
+            && UserConstants.TYPE_DIR.equals(menu.getMenuType());
     }
 
     /**
@@ -159,7 +176,8 @@ public class RouterMenuService {
      * @return 结果
      */
     public boolean isInnerLink(Menu menu) {
-        return menu.getIsFrame().equals(UserConstants.NO_FRAME) && StringUtils.ishttp(menu.getPath());
+        return menu.getIsFrame().equals(UserConstants.NO_FRAME)
+            && StringUtils.ishttp(menu.getPath());
     }
 
     /**
@@ -180,7 +198,6 @@ public class RouterMenuService {
         }
         return returnList;
     }
-
 
     /**
      * 递归列表
@@ -225,7 +242,9 @@ public class RouterMenuService {
      * @return 替换后的内链域名
      */
     public String innerLinkReplaceEach(String path) {
-        return StringUtils.replaceEach(path, new String[]{Constants.HTTP, Constants.HTTPS, Constants.WWW, ".", ":"},
-                new String[]{"", "", "", "/", "/"});
+        return StringUtils.replaceEach(
+            path,
+            new String[]{Constants.HTTP, Constants.HTTPS, Constants.WWW, ".", ":"},
+            new String[]{"", "", "", "/", "/"});
     }
 }

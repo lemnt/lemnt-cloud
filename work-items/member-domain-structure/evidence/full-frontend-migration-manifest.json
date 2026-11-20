@@ -1,0 +1,1867 @@
+{
+  "sourceRoot": "/Users/wangxx/demo/yudao-ui-admin-vue3",
+  "framework": "Vue 3 / Element Plus",
+  "targetFramework": "React / Ant Design",
+  "note": "源文件清单，不代表迁移完成；按页面、交互、权限、接口和验证逐项对齐。",
+  "files": [
+    {
+      "source": "src/views/mall/home/components/ComparisonCard.vue",
+      "sha256": "c52dd5a6167ba243845428ecf65cc0d96adbb2003a3f160f11eb198484723103",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/home/components/MemberStatisticsCard.vue",
+      "sha256": "741d7b74f6ec2b12b7b7d49ec7d4aa8fb1ea73bc19af25081ea186cca044804b",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/home/components/OperationDataCard.vue",
+      "sha256": "6d0a51f4ae739c6d21913fab8a5230ec0d43462b6fca0443685a9bb0d98ea45a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/home/components/ShortcutCard.vue",
+      "sha256": "194e94880daada0a06bd012d9a4b16cceab59c8c362f2cfce479b69cbf598ef2",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/home/components/TradeTrendCard.vue",
+      "sha256": "be172e77fd2126dcdb698ffa563c10b7af74ae11ecf64cc198c6f87f5dec0b73",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/home/index.vue",
+      "sha256": "71a58d66663552569b0a229ee15f9968b7cdcf2991c9d6cb53fe3ece4f90554a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/brand/BrandForm.vue",
+      "sha256": "71eb9cc2cbf8cd5e13c90074225fa1d505de73c34dcf180c65491950ba555260",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/brand/index.vue",
+      "sha256": "96adf11cd0ec671d759fd6d4660bfb96d3dc6289d36664137c6716bfc6972a7e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/category/CategoryForm.vue",
+      "sha256": "731792cfc807d1297490143a1cc1f583d4eb545a911a30c0df376a8c59dd8bbe",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/category/components/ProductCategorySelect.vue",
+      "sha256": "68dba9fcba82ba96c4f5eb0f2f974134bf506b8c6845bae0a68388fbfd647f5b",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/category/index.vue",
+      "sha256": "3b6a2875abedf9086f096acc23c1f961265f61441fada929ed98559d62eb9245",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/comment/CommentForm.vue",
+      "sha256": "77d85039e9fec6acebcf4923a14960fa95b155b62fc9f7ce3ac10d70a3fb9485",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/CommentPage.tsx",
+      "note": "后台自评已迁移，会员0且不关联订单，表单头像与图片地址输入；上传未迁移。见54-comment-self-delivery.md"
+    },
+    {
+      "source": "src/views/mall/product/comment/ReplyForm.vue",
+      "sha256": "bbaa1087d08751f34a38786c31ee1293f2d4c979e630172a2db776bb90cbcc85",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/CommentPage.tsx",
+      "note": "React评价分页、详情、图片、回复、显隐及既有筛选已接入；源虚拟创建、额外筛选/导出等未迁移，不是完整Vue页面复刻，未浏览器验收；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
+    },
+    {
+      "source": "src/views/mall/product/comment/index.vue",
+      "sha256": "8a5f420c701154f84950073c51afcad46f859e56d1dcfbe663b127de39fa4f8a",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/CommentPage.tsx",
+      "note": "后台评价分页、详情、回复、显隐及源昵称/订单ID/商品名/创建时间范围筛选已接入；其他操作缺口保留，见51-comment-filter-delivery.md；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
+    },
+    {
+      "source": "src/views/mall/product/property/PropertyForm.vue",
+      "sha256": "b37b9f594cd309269d1d9b2bbfbe220bf68dca4980acdff62a1250d9d6a1aa39",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/SpecPage.tsx",
+      "note": "131批规格/规格值管理、固定归属、名称备注、创建时间与规格项时间筛选、菜单权限已接通；API/SSR/MockMvc/H2验证，浏览器及真实部署联调待验。沿用ProductSpec/ProductSpecValue命名。"
+    },
+    {
+      "source": "src/views/mall/product/property/index.vue",
+      "sha256": "b692b4b7a70b39bdfe441b889a79acf828011092292a7a6612821b1f56e0034c",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/SpecPage.tsx",
+      "note": "131批规格/规格值管理、固定归属、名称备注、创建时间与规格项时间筛选、菜单权限已接通；API/SSR/MockMvc/H2验证，浏览器及真实部署联调待验。沿用ProductSpec/ProductSpecValue命名。"
+    },
+    {
+      "source": "src/views/mall/product/property/value/ValueForm.vue",
+      "sha256": "cb542a44578096c9f507befd8e40a1b060b33ed6972186699bb77dcd89d33c82",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/SpecPage.tsx",
+      "note": "131批规格/规格值管理、固定归属、名称备注、创建时间与规格项时间筛选、菜单权限已接通；API/SSR/MockMvc/H2验证，浏览器及真实部署联调待验。沿用ProductSpec/ProductSpecValue命名。"
+    },
+    {
+      "source": "src/views/mall/product/property/value/index.vue",
+      "sha256": "07640917f085a2f289e417e98fa951eb22fe0a39f6253b12324ebc3b025c34cf",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/SpecPage.tsx",
+      "note": "131批规格/规格值管理、固定归属、名称备注、创建时间与规格项时间筛选、菜单权限已接通；API/SSR/MockMvc/H2验证，浏览器及真实部署联调待验。沿用ProductSpec/ProductSpecValue命名。"
+    },
+    {
+      "source": "src/views/mall/product/spu/components/SkuList.vue",
+      "sha256": "e78745042bddcefe93b5795b18207cf7d6013097246e50b9227d2c3620d3dfd1",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/spu/components/SkuTableSelect.vue",
+      "sha256": "c0cf72e4c1550b717380b12d4b473bec665b64057ca65eb8f47bd59f379d0f18",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/spu/components/SpuShowcase.vue",
+      "sha256": "fdd2aed00b34e7910217519fe80078f6abe7aff3d9aa83178898ad84e2db81e5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/spu/components/SpuTableSelect.vue",
+      "sha256": "d65292b8542e32a47504017906c6e902a2cd73ed87a86391633298ac29fa06c7",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/spu/components/index.ts",
+      "sha256": "686fe7fa9470deca663b9b74dc47245d587cf7e60ebfc73b75c7e16a31066b9c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/spu/form/DeliveryForm.vue",
+      "sha256": "fb58a1c38a26c30872a7913bf08eadd46a89a4ffd00e9e0833dc3919b4c3ec5f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/spu/form/DescriptionForm.vue",
+      "sha256": "54181dab9602fdec40954185965543b79d79e75bd7e5403dec19989b2326b047",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/spu/form/InfoForm.vue",
+      "sha256": "bcb8028febf4a1116733ccffd2ad372f87ba36fcb186299cf0a3e290a03f4f18",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/components/SpuEditor.tsx",
+      "note": "134批关键字、简介、轮播图URL维护/预览、保存/详情/导出已贯通；基础分类品牌主图沿用已有能力。源上传交互和浏览器联调待补。"
+    },
+    {
+      "source": "src/views/mall/product/spu/form/OtherForm.vue",
+      "sha256": "7552e51fafba08fb94020b49c59a068c12ff4e814702aa1d3ca4eb07d88a6eee",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/components/SpuEditor.tsx",
+      "note": "134批仅补商品排序及实际分页/导出排序；赠积分、虚拟销量尚未迁移，不能将整个OtherForm视作完成。"
+    },
+    {
+      "source": "src/views/mall/product/spu/form/ProductAttributes.vue",
+      "sha256": "032a024c85f54fe49f0b5fc663353132f5e2349ae94a448b2bd56a8a10178f4b",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/spu/form/ProductPropertyAddForm.vue",
+      "sha256": "8d10e6c00ea980172b09fbd206c4535a81ac8eba0483d07e4d4ed3e991e3ee17",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/spu/form/SkuForm.vue",
+      "sha256": "87db5fe2616e48c9028362cfb5a16031c9bc109ac482a91f013e16d7db05d57f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/spu/form/index.vue",
+      "sha256": "3ef886d1eeecbdb8f8aae459adb7d70a2e4f58b4a72bd7caf119a744eb62ca42",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/product/spu/index.vue",
+      "sha256": "faa212b12d7ad781354fa5a40e8000eddcd9219a556f05b169a1bf28bcd823b2",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/SpuPage.tsx",
+      "note": "133批售罄/警戒库存真实汇总与计数、当前筛选XLSX同步导出及权限已接通；132批回收恢复删除保留。源完整经营列、库存合计展示、创建时间筛选与真实联调待补。 134批新增简介/排序展示及真实sort/id倒序，基础经营字段已保存/详情/导出贯通。"
+    },
+    {
+      "source": "src/views/mall/promotion/article/ArticleForm.vue",
+      "sha256": "b85b1a31e1717d2a983864b9b30fb08c8c8b415907a78e67055ee8c43ef9c4b5",
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
+    },
+    {
+      "source": "src/views/mall/promotion/article/category/ArticleCategoryForm.vue",
+      "sha256": "509f7f6f35056e8f28e673c91a111d976ec7df2f0a75813b4d01007e2c29ce73",
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
+    },
+    {
+      "source": "src/views/mall/promotion/article/category/index.vue",
+      "sha256": "8b4b42399ed69d767847b47647dc350453fd9f7c6c4e6d3529c7feaa3de95912",
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
+    },
+    {
+      "source": "src/views/mall/promotion/article/index.vue",
+      "sha256": "30fbcb3833beb07b7ed4c1b84f5ecb796a0c77f105b9929408d93541f155179f",
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
+    },
+    {
+      "source": "src/views/mall/promotion/banner/BannerForm.vue",
+      "sha256": "5c1bcb0e6917a2c220dd649418a0cb41ed9cf324e307b22d812494e83f932fc3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/banner/index.vue",
+      "sha256": "4226b4109060b83f4dd1c4b412e05bd82fe880c05288a430d1476d2d7683a4a9",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/bargain/activity/BargainActivityForm.vue",
+      "sha256": "19eb1ee2e9290e72aa027bb5280949caae133cd2d27472284577353ebad4adcd",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/bargain/activity/bargainActivity.data.ts",
+      "sha256": "5b1086cc1638f2de18e16e6929400890baea2ef2a8309da36e6cc9789d3380b5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/bargain/activity/index.vue",
+      "sha256": "a4ced36db107585190f7abb3594cd584b28cbfa8582ea6153c03a0f86fa966a3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/bargain/record/BargainRecordListDialog.vue",
+      "sha256": "18e7c9194ce84c9e30f17ffd392a84fa7ab68ecd41ba0fd6d649a01e8a0aa4ef",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/bargain/record/index.vue",
+      "sha256": "3da7239babb2ef420dbfca8ef1bf287244a389ab4351948efbece111ad1e7c17",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/combination/activity/CombinationActivityForm.vue",
+      "sha256": "0dc46d07cd8b5ee71fd65e7f6b68e1e7b938d4052d06666463ae9fd2ddaecf85",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/combination/activity/combinationActivity.data.ts",
+      "sha256": "498621bc4567dc0bc7c6f0402a44e413ebfe5537ec74939d4ca69d4a175611ad",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/combination/activity/index.vue",
+      "sha256": "09e8b27e5f51fe8188b8e1c33e0908f9e0893a9009fdac81bf14c2801388bb48",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/combination/components/CombinationShowcase.vue",
+      "sha256": "5dd09786f74e1077b0539e9b68e85e6a1353da17576e136b968001c6674d488c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/combination/components/CombinationTableSelect.vue",
+      "sha256": "cf4d31a8af7043edfa68fa109b010d34102050de131813435028ef4bc129e897",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/combination/record/CombinationRecordListDialog.vue",
+      "sha256": "af3d4ae6ad07bfde82bbeda660ce41717b9c775ad02ced7e402a936e74490026",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/combination/record/index.vue",
+      "sha256": "f5d14b435b52a5855adf3482021abcba96b5f5a8bac6f0ed57b0fa19753d4c71",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/components/SpuAndSkuList.vue",
+      "sha256": "54192f5ed95adacf057a9d5228c14100443085dbf8db8505067d31edda1674ca",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/components/SpuSelect.vue",
+      "sha256": "2d0219b53740f7e755c74e196c1f26f12721b9b1ea9d96ed5f79075dd0cd5b75",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/components/index.ts",
+      "sha256": "6a43e79dd491b8457b066d1c781e3f33ffd9cd6739613d8e5ee8a40ceb19fece",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/coupon/components/CouponSelect.vue",
+      "sha256": "7fed08d0a3c169ddb8df51ada0a8d57a8ba6656310d2c17afc90b2646e5a69f8",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/coupon/components/CouponSendForm.vue",
+      "sha256": "04ccd59426b4398c0dd92352e9fce8fbdc8e1bb5825460c361c5b56799622632",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/coupon/components/index.ts",
+      "sha256": "f59de9980236c213136ccf42c5dc14e21122f88b31af390ce8566ecf7121d473",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/coupon/formatter.ts",
+      "sha256": "50287a68cd9d9bd6006d0c575e956713064ef60563268d8534de4960c908293a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/coupon/index.vue",
+      "sha256": "ad59f2950ab1fe49486b3b88eb488e4c8b0f8ffabe5ff1f9768810517d2894ce",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/coupon/template/CouponTemplateForm.vue",
+      "sha256": "c9186330b8e282e6a05fdae7d7e3d903a1d210b452631870a18ff836b0ce540e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/coupon/template/index.vue",
+      "sha256": "4bd5833787f50aa11b02bc7a0b69aa86966aa1709033fe0a700475345e029961",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/discountActivity/DiscountActivityForm.vue",
+      "sha256": "2c5b151fbd58e73e03f09f0067607eb63a351615fc142136f07f1aa4963b33a2",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/promotion",
+      "note": "129两类独立管理入口、现有规则/商品选择、API/权限/状态操作及菜单接入；源赠送规则、完整时间筛选等后端差异与浏览器联调仍待完成"
+    },
+    {
+      "source": "src/views/mall/promotion/discountActivity/discountActivity.data.ts",
+      "sha256": "b9ace06b7ad6e2c9c90917ab5707bfe005a335564c59cb033d7275948c453e86",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/promotion",
+      "note": "129两类独立管理入口、现有规则/商品选择、API/权限/状态操作及菜单接入；源赠送规则、完整时间筛选等后端差异与浏览器联调仍待完成"
+    },
+    {
+      "source": "src/views/mall/promotion/discountActivity/index.vue",
+      "sha256": "0278aa3a0d09027f00242dd401154b4e4353eba6c1f609cacbe35fdc6da46720",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/promotion",
+      "note": "129两类独立管理入口、现有规则/商品选择、API/权限/状态操作及菜单接入；源赠送规则、完整时间筛选等后端差异与浏览器联调仍待完成"
+    },
+    {
+      "source": "src/views/mall/promotion/diy/page/DiyPageForm.vue",
+      "sha256": "2844e0dffebe455f2630b88255350802e53f7d3f7f62fb941a42570c2fbb3938",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/diy/page/decorate.vue",
+      "sha256": "adf95b59b1d04bd405d398b488f15feef8a344a8aeb344cf68f5c5e5af3c07d8",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/diy/page/index.vue",
+      "sha256": "d2538007a0ced797cc22b5b06784fc9eddb35dfc252826f72cef2239049fd068",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/diy/template/DiyTemplateForm.vue",
+      "sha256": "2ff424938a47ffaf9c31ddf6bd87f32f6dde59729dbdfb25db546e1e963a9858",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/diy/template/decorate.vue",
+      "sha256": "6fd33be19890d06603a8378df5b5bff0330903c956005f76d365237561f7f656",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/diy/template/index.vue",
+      "sha256": "96cedbc592952059bfbbd5f30ce128d71d27ccd1a626c8db2d53ee6c936b7f47",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/KeFuConversationList.vue",
+      "sha256": "c6d035c7e25ac4dac83086493592200715b323eb8876b1dca63feb0a0740b9e6",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/KeFuMessageList.vue",
+      "sha256": "ff1c4e6e283160db094701ac00d6f4bd0ed581d35a70769c8ad4c3c3f6c845d8",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/a.png",
+      "sha256": "5115063c9d14ccc7f4210ed18ad140d92ef5c1dc542651273f03a3c16573a3a3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/aini.png",
+      "sha256": "87211c9f180be6f821b4d68269186e34f2b677ec68787d6199001b7f32d03924",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/aixin.png",
+      "sha256": "6c3cd8b8539be9aeb84f5ecc08633e7abaf864e3958ea889830022e7aab68121",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/baiyan.png",
+      "sha256": "ba2b262f2127914cfccf26cb31d187dfa31bcc839fa70c3bb2f9544e627db5a6",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/bizui.png",
+      "sha256": "2343720a2eda7a80883556c2aadff8af378259edfa6cdbaa95a529f134135347",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/buhaoyisi.png",
+      "sha256": "8f30f95394b63109ab40795fc818f7abb5eda66ca43d13d1d2db35771cfd2549",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/bukesiyi.png",
+      "sha256": "ac51abb32e3705ce9c7bfadd0dd1c1536d6c2aadfadebd645bf4d83adfc60717",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/dajing.png",
+      "sha256": "efd927245b04918ada389b7794b502acc27164f116c66a5fa421fddb7b47ee69",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/danao.png",
+      "sha256": "2332238ece3305af428bc9f30aa5f045f7f31c686407f2abd54978e6b831dded",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/daxiao.png",
+      "sha256": "79a4f385881b4879ecb2002cc31623b4ae6e33fe69e6624eb155422df374e5ca",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/dianzan.png",
+      "sha256": "12fb48759b2efc44a43697775bd96f8cf0da1cc655a8e9f083f154eaa507a565",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/emo.png",
+      "sha256": "be81a577c8f236974af06c99b81ade4ae23701b9cb3c716f1e8e268636a39aa7",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/esi.png",
+      "sha256": "e059c7d943f8354dbfa767464752116ad2385ae7d253ba477947a9c2b1734e9d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/fadai.png",
+      "sha256": "3221e86dc74e77af570e1c5b95fd81d3209a2366ebf22ba890562fa9a99efc26",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/fankun.png",
+      "sha256": "aa9981ee66be5dec966d98d04d648c3d7cef55ca594b775938c1dd5b6c6a6420",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/feiwen.png",
+      "sha256": "2cb73dc74960485bbf114ee5e6560fd395dfea4d20287bd127482b932378990d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/fennu.png",
+      "sha256": "6f31548d7cbf2507695cba4e9b3536f0ae499e0fcc04022c1b22e9cc6883f7f5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/ganga.png",
+      "sha256": "9be5804e594fb3e152b9fae638b133b4248ce9baaa1fcbfa00544c41f8231f04",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/ganmao.png",
+      "sha256": "a3b5fd9e83d46369d9185ce140c599f10e2f974d6b048c2846dd02e896728afa",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/hanyan.png",
+      "sha256": "5e9c771bd6d767d94d394f8528ed13c74c5afde33a9b087254b6ac3d5de9f402",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/haochi.png",
+      "sha256": "254f8ebccbaedd60d6085c18e4df72a583960dff2c10e83f4ab5d2970ef27b9a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/hongxin.png",
+      "sha256": "d5f6784b5a13db37810414deecb13bcd8a31091807fe2d94a9fcfc316a17fb1e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/huaixiao.png",
+      "sha256": "f88086a2dc7472239bf1da66a5f6ab26278ab4c6edda53004ed4464a3ea08902",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/jingkong.png",
+      "sha256": "d96d7df4d9147f71991308439656a512097540f7f497617e8e29f52471fa6be2",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/jingshu.png",
+      "sha256": "3c24849b50c9bbd3c2a331ff2be34c5d4b918a5de39930c89dfe2ebc46ee0034",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/jingya.png",
+      "sha256": "f6e6c48a4100b937005236a59dd6bba89cf299251136edb3ffb176e79f40d3db",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/kaixin.png",
+      "sha256": "511418e8fb788af9568cb61946c21be2200a7c2f71eb636c534ed80338190d68",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/keai.png",
+      "sha256": "08ae2e51dfbe8a3c6160149e6faf5122b35695d7f87ac444c57d2bddf91eb9cb",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/keshui.png",
+      "sha256": "6bacdae65549bd4357c19d3e42e03892ed984ef957c6797b0b91f91fcfc9d435",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/kun.png",
+      "sha256": "15dcd868a121616d72849dbcbc760d87f3f12a96202699dd6ec018174e007513",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/lengku.png",
+      "sha256": "a6a474dc87b940f5b784f5b6388f54f286a742013d8ad9882ea8c2c8b2783782",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/liuhan.png",
+      "sha256": "f6a0824a724e3d66d34552d995cbcfe2877b373cb35f6ad2c7fc0599ff4af72a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/liukoushui.png",
+      "sha256": "98f5cb84727fa76d980781976a67ab89310c7288e16481448d848854b008b182",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/liulei.png",
+      "sha256": "a9dd2f8be7cb99fab55dffc054cfbe68c7f6e725db9d27d9364ee689c8481314",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/mengbi.png",
+      "sha256": "3d1143e41f083601912608f414129702bafd38cccd783413a15b35d7ad015975",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/mianwubiaoqing.png",
+      "sha256": "06fb54a389ccb3a850faacd4ff8bf3a1a79cfb72cbadaa9b9210ff6e81b25bdc",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/nanguo.png",
+      "sha256": "3fa4758a05d788a4f906ea132f65928ff388bfd4512032d84175fe69ad5ebf75",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/outu.png",
+      "sha256": "3729efecf1f8f0fb237276466074eac3b579a9e15980729ab4f7a13022082316",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/picture.svg",
+      "sha256": "919b85daa30912ee0e57c18cd0048048ac16e4686f2986c38aee269e7c553212",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/shengqi.png",
+      "sha256": "c1b9032843b16d75fa3d323aac80b15514f39b166e2de1cf0a94a8038d344fcb",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/shuizhuo.png",
+      "sha256": "eecb8a87fd8ba0c9c5349624cab05d85c938ba2e4ecaa00e9143dc7cd84afa63",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/tianshi.png",
+      "sha256": "9b339838d3283e41c6671e4d17630f92bb9a7aeb07ba2dc1d1f51a22b54ef0b4",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/xiaodiaoya.png",
+      "sha256": "5530fac14684dcad64ea1b19b220e3ddbac31b069e3d176307009a3dc4655451",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/xiaoku.png",
+      "sha256": "686c9672c88dade28e3084c4e43f5f4ab8413e3962694affaacbc5380b0790ec",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/xinsui.png",
+      "sha256": "6a26251e832dea0e00c89a88f0f7f1a0992167af5f9cfbd0ef2b79d01016ad83",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/xiong.png",
+      "sha256": "061dc8bbbc712f931d7453b127b00ebab9658f5a462fbb59df2444e65d6b6dfc",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/yiwen.png",
+      "sha256": "07e2c5866140136958447001d561d38103873ddd1c74cd02c89a6cca0858682a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/yun.png",
+      "sha256": "7711c9c782e85927826b568c4efc8fd30ab517cbd16c48adca9bd1e30c3d7bff",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/asserts/ziya.png",
+      "sha256": "f59c69652cbba548e09d32cf22c49eec2f19bb994726f7b682849f47ad3f646f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/index.ts",
+      "sha256": "014a5d9c1afc1b5230cd2b1a714bd606263610d6977f9ccaa99806f7eaa5e0cc",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/member/MemberInfo.vue",
+      "sha256": "cf20527f80d4d58596f4763e46644942c75e4ed59294af06756f13d7166dd904",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/member/OrderBrowsingHistory.vue",
+      "sha256": "8d031c8491e732202e10e7a82c0d64049b17c938366e849be1d6c8377c96c3bb",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/member/ProductBrowsingHistory.vue",
+      "sha256": "4ab84faa339f9fee3f451d1dd97f165fee5d91f94bd8686d395dc3d0d5cf14bd",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/message/MessageItem.vue",
+      "sha256": "9bb5157d454408305a7f9c965c9ba075aff75f18f3818cce56806534d9efe2e9",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/message/OrderItem.vue",
+      "sha256": "b217d7aafc33dbd1f54b336002253125f377568de1e9cb5d4d32cdb54938646d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/message/ProductItem.vue",
+      "sha256": "a2d611c66a359c28076815d36f88185729d3821c5c08d5e0189f990b6d14f938",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/tools/EmojiSelectPopover.vue",
+      "sha256": "6700bf0ccf73abaa5cd474c372a49298a2731feec377dca15e1b42a17df48ff0",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/tools/PictureSelectUpload.vue",
+      "sha256": "c7cd22d5389d22040c56e5b69da0f0e459f030f78d3392732c8b3f9c697427bb",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/tools/constants.ts",
+      "sha256": "994f6930d88efe413af06db4fc5310dc1402619702f1c93679c1e75b2db7a672",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/components/tools/emoji.ts",
+      "sha256": "6b7b718bc088f710cb9877b3292a3416bf3a6144bd949cc8592df3221bc3d282",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/kefu/index.vue",
+      "sha256": "40a23aad9cda5d84b9b197e9c034593cdd3e4bb52b09e427d5088dab6539c62e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/point/activity/PointActivityForm.vue",
+      "sha256": "36e5e9cd4f3abc0a3548e63ef62ff8c8163c50465611a052abc03063125dac7c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/point/activity/index.vue",
+      "sha256": "1bee48308e610e645fe99529456b9fc82502556502f16530dbe627bf06aef0cf",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/point/activity/pointActivity.data.ts",
+      "sha256": "ce4df37930fcbaea602bcc4f6bef002144231990a41c9ac6ae6baf9c7da5cda6",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/point/components/PointShowcase.vue",
+      "sha256": "3f867f7e74666e3f638db2ef11f9b21e8fdba9c9a3f8d9edc4191ddc2ce99795",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/point/components/PointTableSelect.vue",
+      "sha256": "fc0c21c9076efa1050da2304f4fc8bbf86387f1e307d58a5c405aff2a7634a6b",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/rewardActivity/RewardForm.vue",
+      "sha256": "c4baef27104e65afd667215572c930624c67dbd857a74b93d88c92fbb017ceca",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/promotion",
+      "note": "129两类独立管理入口、现有规则/商品选择、API/权限/状态操作及菜单接入；源赠送规则、完整时间筛选等后端差异与浏览器联调仍待完成"
+    },
+    {
+      "source": "src/views/mall/promotion/rewardActivity/components/RewardRule.vue",
+      "sha256": "ab16a2b37a4451144026a1aabf98833e8591b5721b75157610038563c670de0d",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/promotion",
+      "note": "129两类独立管理入口、现有规则/商品选择、API/权限/状态操作及菜单接入；源赠送规则、完整时间筛选等后端差异与浏览器联调仍待完成"
+    },
+    {
+      "source": "src/views/mall/promotion/rewardActivity/components/RewardRuleCouponSelect.vue",
+      "sha256": "9f39153bc39f6d246c7602d26b75b13f21369890ef3716535d113d0fe2d78009",
+      "state": "pending",
+      "target": null,
+      "note": "赠券选择器未迁移，现有后端赠券规则尚未接通；129只交付现有满减/折扣规则管理"
+    },
+    {
+      "source": "src/views/mall/promotion/rewardActivity/index.vue",
+      "sha256": "10fa41607de8fb50a9318572b4e6dec74db8f6f45701916bbcfbdcc62e55171b",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/promotion",
+      "note": "129两类独立管理入口、现有规则/商品选择、API/权限/状态操作及菜单接入；源赠送规则、完整时间筛选等后端差异与浏览器联调仍待完成"
+    },
+    {
+      "source": "src/views/mall/promotion/seckill/activity/SeckillActivityForm.vue",
+      "sha256": "fe24eb002dc7359e5a67e5a0dc1a0960cc10dbe1dba7ffbbaefbb1f233531724",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/seckill/activity/index.vue",
+      "sha256": "db0e5bb0fff22faaab8db054b0e6055e451c177bafe02ce960865229a5b18c3c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/seckill/activity/seckillActivity.data.ts",
+      "sha256": "117b326b13b89139b48a94e931c21a148cb9ef6db63577f900cd95f8c6c58244",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/seckill/components/SeckillShowcase.vue",
+      "sha256": "b5e164fdf647b9100381e2cb5ad660cc5e44f2731243e1fef80c7f413cc6d665",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/seckill/components/SeckillTableSelect.vue",
+      "sha256": "100f69bfc31f520f8532945098361a060d49d0541306879130aacad1ae5883d4",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/seckill/config/SeckillConfigForm.vue",
+      "sha256": "194900be77b9930635bf8c273b1f43c53aec56502a7c290beb7437b158252f9c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/promotion/seckill/config/index.vue",
+      "sha256": "d76e2cb6aa41007fd12131ef4b2d520d701e857d574118b9dc1ff99ae3358a58",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/statistics/member/components/MemberFunnelCard.vue",
+      "sha256": "65a0f47ed690a06da832c29c809f24bf996f0838d0a805885478a1bd6867b23f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/statistics/member/components/MemberTerminalCard.vue",
+      "sha256": "83c0244bb2ac43c7092105512cb1c1cf1b90816baa346cd59a2fa69aa5ea5f33",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/statistics/member/index.vue",
+      "sha256": "e53f922cb54a336bb492e48227ed9679e50d366178fc35cbe2b0dc58ff5c33ce",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/statistics/product/components/ProductRank.vue",
+      "sha256": "c892644e4ec10f232037e780c88a8c8bafc768b226558d7bbd6fcbb476b71b30",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/statistics/product/components/ProductSummary.vue",
+      "sha256": "fa0008e37c3c79b3acc4b2d66125691905fbcaa6d83b7c49005a7745ba4ea7e5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/statistics/product/index.vue",
+      "sha256": "57db3257c3e695c5594595048a86a45913da3612ae8c1c61f981bd05979fd952",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/statistics/trade/components/TradeStatisticValue.vue",
+      "sha256": "783e4f6356b4853633ae8ea227d66ddda285189ef37ba0d96176915aeab918c6",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/statistics/trade/index.vue",
+      "sha256": "88359119dfaa6d481856b5c6f144d3555de6584454a93179ed2dcfe39fc6ecdd",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/afterSale/detail/index.vue",
+      "sha256": "f6965bd9080a5c3b575df46a9c7f9d63f829a76acfd486ef33318ac3abdeab9d",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/fulfillment/pages/RefundRequestPage.tsx",
+      "note": "详情/日志、同意/拒绝/收货/拒收/退款已接；完整源字段和实际浏览器验收尚未全部完成"
+    },
+    {
+      "source": "src/views/mall/trade/afterSale/form/AfterSaleDisagreeForm.vue",
+      "sha256": "dc0d82bce28b6491631f74cf5df5e183fb9c7773daf6a91fd6592b2838d7c436",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/fulfillment/pages/RefundRequestPage.tsx",
+      "note": "详情/日志、同意/拒绝/收货/拒收/退款已接；完整源字段和实际浏览器验收尚未全部完成"
+    },
+    {
+      "source": "src/views/mall/trade/afterSale/index.vue",
+      "sha256": "c734cb7e269ff7dca721abcbd90b4d32c8b2866e4263d0239eae050d1e01bc60",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/fulfillment/pages/RefundRequestPage.tsx",
+      "note": "详情/日志、同意/拒绝/收货/拒收/退款已接；完整源字段和实际浏览器验收尚未全部完成"
+    },
+    {
+      "source": "src/views/mall/trade/brokerage/record/index.vue",
+      "sha256": "dce6b789bf6c18a48aeebd35544ed4534c4ea3091c89a340b78ef6b52917ef47",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/brokerage/user/BrokerageOrderListDialog.vue",
+      "sha256": "bc49e5803ff17df4abdc3dd18860bf018d02b3a32a368b64a794a52eca3c8f20",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/brokerage/user/BrokerageUserCreateForm.vue",
+      "sha256": "c22f6cf0c3ab4f14ef2963c4dcdb0e28b8d267edf1977fe988a232a2ada25ab2",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/brokerage/user/BrokerageUserListDialog.vue",
+      "sha256": "4e41c3eff8b2628bd6faa3408bc2a2a45a0899d9affaa575df2ea9115cb63ac4",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/brokerage/user/BrokerageUserUpdateForm.vue",
+      "sha256": "4941a5f661f8293cc51d04babb04b0642f4b87b9db571a963a585db993617404",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/brokerage/user/index.vue",
+      "sha256": "84234f1cdc4af39526954078dc930d4907b2d2da5ab0f471abdff7b30fd9a0c5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/brokerage/withdraw/BrokerageWithdrawRejectForm.vue",
+      "sha256": "571fc7828f8babab295d6187b3c2b108f1500ad6d5d079b4318cc3deca3c7854",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/brokerage/withdraw/index.vue",
+      "sha256": "e4dfb698cd04d8393f4060344d892dfeb242f27ce336ca5361dd56b6ea603623",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/config/index.vue",
+      "sha256": "1dc89d021bfe958bbded0b466dd962ab1a882f73b0e9c5b9a46b8023c8b6986d",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/config/pages/TradeConfigPage.tsx",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
+    },
+    {
+      "source": "src/views/mall/trade/delivery/express/ExpressForm.vue",
+      "sha256": "e16f0e3e4928d26a20253ba6cd83f3333d8002533f0e122b562464c5545e6c7b",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/delivery/pages/DeliveryPage.tsx",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
+    },
+    {
+      "source": "src/views/mall/trade/delivery/express/index.vue",
+      "sha256": "13c8fdec432b565b464254d2d6f6ce95ed1d4bcaf57de0b1e9a7a648e9f739fe",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/delivery/pages/DeliveryPage.tsx",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
+    },
+    {
+      "source": "src/views/mall/trade/delivery/expressTemplate/ExpressTemplateForm.vue",
+      "sha256": "dd41eae8539fef9795582b824a0e572d8a133678731534d16ec3c8cf50ac7309",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/delivery/pages/DeliveryPage.tsx",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
+    },
+    {
+      "source": "src/views/mall/trade/delivery/expressTemplate/index.vue",
+      "sha256": "67053ad156b47c0867e7bdf2e33cc1169720f2b03eefed1ff5861fa88dfcf11c",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/delivery/pages/DeliveryPage.tsx",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
+    },
+    {
+      "source": "src/views/mall/trade/delivery/pickUpOrder/index.vue",
+      "sha256": "105c926830d576709ea46a54f53264187f4787e37c735742712c2655d30d1098",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/delivery/pickUpStore/DeliveryPickUpStoreBindForm.vue",
+      "sha256": "8a74443597d01dbb8c3adb4a98a9cbaff76422c72b039ea217c13a4f2f2b5b8f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/delivery/pickUpStore/PickUpStoreForm.vue",
+      "sha256": "00bd8c1202efd351dc08bf7e1b36fa16cd5d9f192798750acc89ae3a8d570f23",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/delivery/pickUpStore/components/StoreStaffTableSelect.vue",
+      "sha256": "149a9a37c2672fde7187b834838360d3e14d2082978b06fc9ec1c89242c19386",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/delivery/pickUpStore/index.vue",
+      "sha256": "6136bba486b208803ac607c8c5928e4f4a05495a1945890e0ab7b5701afb6cfc",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/order/components/OrderTableColumn.vue",
+      "sha256": "08ce0a52c02ef815db8398a49062056421a8aab47786580fc5cbb6ef50439b34",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/order/components/index.ts",
+      "sha256": "f17dcc48f4ea5eca03eb0d5220218a990cdeb79753caa262fde0a3c70955f2ae",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/order/detail/index.vue",
+      "sha256": "8825331d406d45df0fb5133b1c5fd1db59c5bd93c13006cbd58fa0c08b95c8ba",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/order/form/OrderDeliveryForm.vue",
+      "sha256": "69a4867c17391c6f5683b3082525c6b1fbf4e98f88a2d49bcbaf2a25a06d26f7",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/order/form/OrderPickUpForm.vue",
+      "sha256": "9463fada08a167c6b2e337d50c26a2d4a2a6d120f0e1d3f1a4cddf6c9977cbba",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/order/form/OrderUpdateAddressForm.vue",
+      "sha256": "7f2b4604c1863b8ddc11e29f3de9e63aeece2ae8ca8e1a6a6503a89b6994ddd1",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/order/form/OrderUpdatePriceForm.vue",
+      "sha256": "76f5248faaa07d93ca8e028498a6b27d893e71683f58eb48267178c5c4c86a23",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/order/form/OrderUpdateRemarkForm.vue",
+      "sha256": "d0c0893995355a67ccabeb12bc6ee94753dd0d0f7df3a5cf7ad132f9cc843d7b",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/mall/trade/order/index.vue",
+      "sha256": "e19714b69c574c7eb2a4a31f0fce1770a151ade8969a9cb1acd0813e63fd03d7",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/product/brand.ts",
+      "sha256": "774e778cd0ad2093e73722d4101a502469997c2ecbfec1de24c675ebfa0c532c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/product/category.ts",
+      "sha256": "f24d7e120f86fd4a493ad81da19e090d409a5a77e68e70eef29e8c71cf474d06",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/product/comment.ts",
+      "sha256": "6be78aae8c6d436f96b4aa2a7fc4563a2aa780cf807696b30187f8aed65d5c02",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/pages/CommentPage.tsx",
+      "note": "React评价分页、详情、图片、回复、显隐及既有筛选已接入；源虚拟创建、额外筛选/导出等未迁移，不是完整Vue页面复刻，未浏览器验收；52源复核纠正：本参考无评价独立统计导出，不再作为缺口；自评、系统评价、同页多商品提交和上传仍按实际范围跟踪。"
+    },
+    {
+      "source": "src/api/mall/product/favorite.ts",
+      "sha256": "9fd8848d0b0cd096c1aa4346e7b6eccdaa1038aeac45c4aeceee6a1e482e17a2",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/mall/catalog/api/catalogApi.ts",
+      "note": "只读收藏分页嵌入商品详情权限面板；源Vue API适配为React，未部署验收"
+    },
+    {
+      "source": "src/api/mall/product/history.ts",
+      "sha256": "23cefed7d379ff3a5706eb8f281eb6fa419cbedba40d1eaa2caf5a9cf4f26e88",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/product/property.ts",
+      "sha256": "cafa85cb4cac5c79a4083aa332da6cb6d24cecb11f3ca376d0de24180f72c615",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/product/spu.ts",
+      "sha256": "7bdc41bf0ef97c6211c47b1367509975d2b7645a64b5fb55c6d37f0645380cd0",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/article/index.ts",
+      "sha256": "6a8a76ac504bfd6c9432eb1e9c3b52bd0d8ea45cfd93acb740ff7c9d22e186fa",
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章与文章分类排除，本轮代码、页面、SQL、路由和接口文档已撤回"
+    },
+    {
+      "source": "src/api/mall/promotion/articleCategory/index.ts",
+      "sha256": "058d88d152b986e2e4c11547588a06416b036c89375f6c0d09f8905c1157053c",
+      "state": "excluded_by_user",
+      "target": null,
+      "note": "2026-10-29用户明确不需要迁移文章相关代码；文章分类管理一并排除"
+    },
+    {
+      "source": "src/api/mall/promotion/banner/index.ts",
+      "sha256": "22be58e53e859e95065fa2a9738e39d7c0962b7d4765eb1e339870bb29a82d3d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/bargain/bargainActivity.ts",
+      "sha256": "dee96d0a9eec6fa2cd67d38fdb1c4bc018aff83d222f508fc59f6ab968b201ff",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/bargain/bargainHelp.ts",
+      "sha256": "39531b9e3293983da07ce8545add7ad1a66b603b869edb1b565338422861a3a8",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/bargain/bargainRecord.ts",
+      "sha256": "5a972a093ac29c38e5390dd413cd3bc0b64f25ff88b87d053ef77c746be421fa",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/combination/combinationActivity.ts",
+      "sha256": "c7ecc21bf98199f12202daf80c5f69193bb5585dfe6b49fd602653d7d7f45eed",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/combination/combinationRecord.ts",
+      "sha256": "4fdacddca2b3dcb83393c6ac7b8cd988945bc71eb08d49d1135733a9b8ba664c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/coupon/coupon.ts",
+      "sha256": "17a563bd264c6f4dc9e274eb4e237fdee067e0e3f2c56a4d3c2423196e42a961",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/coupon/couponTemplate.ts",
+      "sha256": "3c89d3ec4dd4e49c0936c13950d40e0eff74e786985603bc563c3c13ca688c62",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/discount/discountActivity.ts",
+      "sha256": "314065a564c35ec27edc4f3792a1f75fde27ec580851a6169fed9a6d533cb216",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/diy/page.ts",
+      "sha256": "ec4c3ea42553ddbd62af4410f3979fb7b72555e510c5768653f3c6949c6cf903",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/diy/template.ts",
+      "sha256": "05ed55953ff43d2ca79829f1b74adadd50e4db105be286ea5c8927b9cfa5ac81",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/kefu/conversation/index.ts",
+      "sha256": "3989d6d0e28eefa6654c44b96d6b9a19ad307317b03b9056493f63f7cfc5f425",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/kefu/message/index.ts",
+      "sha256": "f0c433369394eb85c896e0e2683508c32ec0114312ed32be6197cf3020953d06",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/point/index.ts",
+      "sha256": "47d2b70b9e0d82e91a3e6ca190cc2e71211b2fa2babc038b0de4e1d4456292b3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/reward/rewardActivity.ts",
+      "sha256": "aa31f7a0814283ad9595ef86f2e8d9fd4ac4428c59da340cc10005741d62e7a6",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/seckill/seckillActivity.ts",
+      "sha256": "aa7f214633767a9da666d5d1f29022039bd3e6f3e2b1e9ee6180b01018f161ee",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/promotion/seckill/seckillConfig.ts",
+      "sha256": "094318257fe156338dfc1b0e8608071f7e317a5cfaac6e830353498d4f2b4cf5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/statistics/common.ts",
+      "sha256": "cd521bf135b7931e58cd320f2077927ed26db5dcaed28155ffea931b6eaf65fa",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/statistics/member.ts",
+      "sha256": "298fc00e8c28205a220dd97a21d9d627554f601c0a3b38d7c0b06638a2d9c6ab",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/statistics/pay.ts",
+      "sha256": "7153c42cd2a940ee11216395b922fedd13d4393d4ee49b4a637f8c6d9bdcc9c1",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/statistics/product.ts",
+      "sha256": "2028b04738f045f56813a79c8e8960b385ac163cff192b025886c559c651326f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/statistics/trade.ts",
+      "sha256": "7376fa4b6cd46828885dc6b88bfbf0334b7841ad93d8ce182d4a1dce5f02dc7f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/trade/afterSale/index.ts",
+      "sha256": "2ffa209ae1319a23a6a0bdfb5074102764c80789098c21376150266ec2bfd963",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/trade/brokerage/record/index.ts",
+      "sha256": "e56b81c1decc8cd2a3e783d7edb5df1610e342015d74bbf2379dbea3100642b3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/trade/brokerage/user/index.ts",
+      "sha256": "578029a8953389da6904fd79d4a478a8580e1e1d4ec11998f64ce5fda4baf3ae",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/trade/brokerage/withdraw/index.ts",
+      "sha256": "c02af034ac4b7dcd23209a9d91d1c9990f43d36a5bf5d0fd6bb660fb65f245e1",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/trade/config/index.ts",
+      "sha256": "02b135c0cc9b0e768ef7b48850144f46a2afab52429f12c05c7e88ae32efe14b",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/config/api/tradeConfigApi.ts",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
+    },
+    {
+      "source": "src/api/mall/trade/delivery/express/index.ts",
+      "sha256": "8bc0cd7e7dcf2b00f85f76e7664410dc80754e21576b50c2aa99829902c882b7",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/delivery/api/deliveryApi.ts",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
+    },
+    {
+      "source": "src/api/mall/trade/delivery/expressTemplate/index.ts",
+      "sha256": "f9ca8fb52e4e79a04891a4263be845e0000e6da6d44505e9e7c4642266200a9c",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/delivery/api/deliveryApi.ts",
+      "note": "130批已接通管理页面及服务前缀API，API合同/SSR/H2验证；浏览器交互和真实联调待验。交易配置仅开放售后原因与包邮，其他配置保留原值。"
+    },
+    {
+      "source": "src/api/mall/trade/delivery/pickUpStore/index.ts",
+      "sha256": "df364a948bdffe87fe5add3a45de65dc9684aa7ab0784cce23bbd2ca32d663da",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/mall/trade/order/index.ts",
+      "sha256": "302ca69c1d0f6d99cdbd997be597356669d240045853ca318db35c29fd51ab3e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/config/index.vue",
+      "sha256": "97eb83c3b6c88c6865a44230459e787160a2d7206ae3014047e145f2a467bc88",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/group/GroupForm.vue",
+      "sha256": "61c12f33ee76145d3860baf1d75899ec080a35706a126335a97242e1b2d793e9",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/group/components/MemberGroupSelect.vue",
+      "sha256": "b0f6ed7d81a26499f4a0e295d84eff2b146e652b165722acb32961b4121f29b1",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/group/index.vue",
+      "sha256": "ec2910bbf58950f6a8baef2464d53f4f5d1bad19b99e0c26e7d3910765387e79",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/level/LevelForm.vue",
+      "sha256": "6a6b4a95332e4a8ad1a9fee494062c69a5686f0fc4293c924dd53ef2890e92de",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/level/components/MemberLevelSelect.vue",
+      "sha256": "2bb3b726308cffec6e04f05c3700aca68b7b924986f3ceb7be62f231b0ffed1e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/level/index.vue",
+      "sha256": "7da67246c42365dec75397fff86c3f86f5eca2f0a42181993f4ab94aa7fe325e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/point/record/index.vue",
+      "sha256": "aa61ec83d97f556f5604698af837dc53c5f8bb5bde120d3a07069a61fc459f8e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/signin/config/SignInConfigForm.vue",
+      "sha256": "7b4c839737cfd9e3a50e0352f2b257d0f270d66f8fc9dbb33a14b9b8b0ab2cf2",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/signin/config/index.vue",
+      "sha256": "6aeb997ed7ea05cd69c6007f82d09f7aec63ef539a2bd05bed692281ce75141a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/signin/record/index.vue",
+      "sha256": "35e289f9e95fab64789f9e52ee412fddb127276a506d282a5c61a7e12f13649c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/tag/TagForm.vue",
+      "sha256": "7be44e244ac0a6ea34ea8dfef95d3412dbf611b6f8d4b8b0aa09cae3e2560cd2",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/tag/components/MemberTagSelect.vue",
+      "sha256": "6c6b443e35e2d0abc26002fbdd8cb2b7c5fa0c28af04a7336d6a9d32421c0688",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/tag/index.vue",
+      "sha256": "13530d7e986feb17a6fa93e44573fa57d094ec547fc12bde27c623f03819d0a8",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/UserForm.vue",
+      "sha256": "0e7b724157d4dd61da7a68f6200872a57754837de345b1c08a79ad4f1fb1146b",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/member/account/pages/MemberUserPage.tsx",
+      "note": "118资料编辑接通手机号，API白名单隔离资产和关系，保留独立分组标签等级入口；源整体表单契约未完全收敛"
+    },
+    {
+      "source": "src/views/member/user/components/UserBalanceUpdateForm.vue",
+      "sha256": "6cc63a9a5cde36bb8310c2beb05169740cd428e09004d3f7defe034287359b29",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/components/UserLevelUpdateForm.vue",
+      "sha256": "04edfaa230eb6e51e3820bd23ac7b7e0b3c474e576e59c82e4e32a137746b7d5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/components/UserPointUpdateForm.vue",
+      "sha256": "3258facdecb078f729ab15abfb88756ad88475829a30808739a90ca01a5d1466",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/detail/UserAccountInfo.vue",
+      "sha256": "4582f2a6bc508199b9abf4fb3859ca9f89b0034c386a9443bddca4e7de7455c7",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/detail/UserAddressList.vue",
+      "sha256": "6503688c765e62a3a6121190040f19c93e18f66fc9a3ec6eacca88150ac86972",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/member/account/pages/MemberUserPage.tsx",
+      "note": "126真实地区全称展示，旧响应及未知保持编号，写入不提交名称；最终UI契约继续核对"
+    },
+    {
+      "source": "src/views/member/user/detail/UserAftersaleList.vue",
+      "sha256": "6748d6b71206f8ad805e73bd3de4e274fbeb020004a30b533dd64679d12daef9",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/detail/UserBalanceList.vue",
+      "sha256": "8559797513d838d855a0dbf66214f85959cdd680a096f61f868bebbe87f56e1a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/detail/UserBasicInfo.vue",
+      "sha256": "4bb86fbc9e76ea0be306c07857ef2e1273c724ffd9b1e50fb39724b19a336f3e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/detail/UserBrokerageList.vue",
+      "sha256": "aa1f11dede0df64b9cdfe7294de390860c0e0b5649056f8b3fd00b3cb9189649",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/detail/UserCouponList.vue",
+      "sha256": "bba2eeb90e962183e221039a32a1e6b8c19672333c5f1648b95bc4053dcfd262",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/detail/UserExperienceRecordList.vue",
+      "sha256": "26df7e6c26045e48dde762ad1f9119bfa7a924e3137f47513f85e4b2d33d2629",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/detail/UserFavoriteList.vue",
+      "sha256": "28842cd2afd60575559c8439935875cad2f4a6feff07ea2626563ca74a5ea04e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/detail/UserOrderList.vue",
+      "sha256": "ed325baac22977d70242a1b72842c5863a3a12fef11679f95aacc79885d52c7c",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/detail/UserPointList.vue",
+      "sha256": "f6037bebe39f92af61c878562859bb188f522ef2892a6d4b4f67b033c3a2350e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/detail/UserSignList.vue",
+      "sha256": "05af57af4ce16559019b2fdbf09cfb7adf4b387780e6c5dcfd79cef4937e0bf3",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/detail/index.vue",
+      "sha256": "7cf9e3efa0e888f52d1361c4001c5522db747e50d16c2f08fdf5e0ba65fbc330",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/member/user/index.vue",
+      "sha256": "eeb107e086e84884a359f0657f35639c62156fa66c7004837bdf882491fa9e24",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/member/address/index.ts",
+      "sha256": "c58cdfc09b1d7ebff421ddcf9e5411ab596b705b4981a62fa3b789ec02c4500d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/member/config/index.ts",
+      "sha256": "7686d78ab4774e25742eb542a8647bb5d2250f8c9639ae4631c7ae9dad36b0ca",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/member/experience-record/index.ts",
+      "sha256": "21c6b175a899c55bc7429d0b373684a0debdce8d95b7b757b892fbd29dfbfec6",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/member/group/index.ts",
+      "sha256": "431349e92c9a362db038ff09627b3eb0532790fd45a9ad4d68bd673dda58e36e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/member/level/index.ts",
+      "sha256": "3a04f0c2dbc671aa98886cd5abc40e47f82eb20379a4f312732f085c24b264fa",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/member/point/record/index.ts",
+      "sha256": "45d551f91d35a8bdb3668828448801c462641dd95ccf75255d9ee7a3c20e2353",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/member/signin/config/index.ts",
+      "sha256": "abd7d6ce6ad27e932e8ed323aa20791863405aab07e3d9ad8b2b07d12a5d42b8",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/member/signin/record/index.ts",
+      "sha256": "dae8b00e35b5d3161901dc403f3ba48f9fc4ba751f489c0a3c3e6e8d8f1a522b",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/member/tag/index.ts",
+      "sha256": "147288fc602135f656bdebfb042fab134e0249be44c07f0dd33c2d436674da8d",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/member/user/index.ts",
+      "sha256": "e7b8ba7d19fc09b48ea12bf7663d47c8d98e71091017ba54118963065ebb64e7",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/app/components/AppForm.vue",
+      "sha256": "9a8710369281fdc91795be25faee6c0c7aaf5c9274cf8e46c0d341f31e75573a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/app/components/channel/AlipayChannelForm.vue",
+      "sha256": "1f7df3a4db59578a34823474e6d046b5ee3b5b748e05633e1a397c1eef6e863a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/app/components/channel/MockChannelForm.vue",
+      "sha256": "970c0811f631c86697fe135cbac480b45add199b65c8540839d9a519d13e1524",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/app/components/channel/WalletChannelForm.vue",
+      "sha256": "8e94dfa7fc98caf6b12b8203cb3c05ef6debc0ef8707b5600daae65b3dea66d4",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/app/components/channel/WeixinChannelForm.vue",
+      "sha256": "5d19495217bf674c3dee625a8b02fd8160bdf3c9585ae070a810f14ffa880d24",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/app/index.vue",
+      "sha256": "b354fe2cd53a77044a7682ff7ef9e571b4ebd5015b4ab420963818f6be814acf",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/cashier/index.vue",
+      "sha256": "b76325b9d7b2dd455045d68b5aa9bc3d83860ebf9e79d064114c0ff05875a641",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/demo/order/index.vue",
+      "sha256": "13ab890dd5f1034ffa9894d2c3ed03f5777ed5fafdd16b25aaf27ff8287f3a74",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/demo/withdraw/DemoWithdrawForm.vue",
+      "sha256": "24dc817f3f50623021e7feede0349e92aa3cddf83599b12d3d6c484be1d3ad85",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/demo/withdraw/index.vue",
+      "sha256": "45a539927f796e8c5ebd0bd510d1a88dcbe2bd1a9893ded68b1b19343846939e",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/notify/NotifyDetail.vue",
+      "sha256": "4d158d9153f169bcf2b1e0f2dbc6d30f854b2eb2d93376e92d10ef55425a4396",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/notify/index.vue",
+      "sha256": "a81cb21b902bec5d89f9dc606708df15535c278da9119389bf2ec40f6a79ad13",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/order/OrderDetail.vue",
+      "sha256": "de13cefc070f051dffbaaf6b5d3fcf5e17457f723efcecd6abc85924db058848",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/order/index.vue",
+      "sha256": "cf972f6bb14cb4ab63a23f0ce9df9ed27c62906025f0d6395938615f706247ea",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/payment",
+      "note": "129已有支付单/支付退单分页筛选及详情管理页面和权限/菜单；创建仍走订单售后，源完整筛选导出及浏览器部署联调尚未完成"
+    },
+    {
+      "source": "src/views/pay/refund/RefundDetail.vue",
+      "sha256": "b9c004233ce1d42306b309093b0e3dd428058dd81e35c82e38f3ae3e35898526",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/refund/index.vue",
+      "sha256": "7c9e32f24ab08cef99126203e4510ab17a09a4274203811709bced21003ece3c",
+      "state": "in_progress",
+      "target": "lemnt-ui/src/modules/trade/payment",
+      "note": "129已有支付单/支付退单分页筛选及详情管理页面和权限/菜单；创建仍走订单售后，源完整筛选导出及浏览器部署联调尚未完成"
+    },
+    {
+      "source": "src/views/pay/transfer/TransferDetail.vue",
+      "sha256": "7d2d18f791fc6ee03d3c238f44f4237988a68acaa7932a4fe19ca2f0bf70c2c8",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/transfer/index.vue",
+      "sha256": "db6333963be10d492702a51786180c3436063194a602d941135878edc0cb81db",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/wallet/balance/WalletForm.vue",
+      "sha256": "87b98a28006a50ec7d6333768bd526cb0db72358bbe31fcc7a1f621edc23d3e2",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/wallet/balance/index.vue",
+      "sha256": "db9d47937a4ecf863d701bc244158019612504a76f4f3030da5ded884672ea38",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/wallet/rechargePackage/WalletRechargePackageForm.vue",
+      "sha256": "05565ed9c016d23ac5cf736cba30ff3f3bfe7413c1dbf2056cb991eaf22e2b32",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/wallet/rechargePackage/index.vue",
+      "sha256": "8f57f1aea7073c42a428c0d8ad6a8c20c1476308dafd8e084e7dc632b49074e5",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/views/pay/wallet/transaction/WalletTransactionList.vue",
+      "sha256": "b13e3c6a4cef2cb6137a36daff21f57cde0155280e9832391846e7233f10c7a6",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/pay/app/index.ts",
+      "sha256": "218053a18bbdd1ee910623e125a6cc799701791099f2bc3d9b840117d298ce70",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/pay/channel/index.ts",
+      "sha256": "d99d5575f391ca2cfd3a175e6dc6a985e659605cf12dae2d7b56ca967abcd41f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/pay/demo/order/index.ts",
+      "sha256": "c2b15f77b7d3d8d215ff3058d6c212f47fa6b2028aa937bda3db4f33b60c6422",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/pay/demo/withdraw/index.ts",
+      "sha256": "24aa50f08f837a7de737afc14075e93effcc26cf0b2d5dc46251c63865f472c0",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/pay/notify/index.ts",
+      "sha256": "b7e5aa4a5a43d6e1e2d812c997ae2861bc2a47c2afa680e1e0ea8cf29951b60f",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/pay/order/index.ts",
+      "sha256": "fcb6770c0580d7ea6bb79d98703f7504909c76a4c46addc8659fe1d380021463",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/pay/refund/index.ts",
+      "sha256": "0be1a39170674bd3ded64f41b592912249688f567264e7ac26e5ac5253894ff9",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/pay/transfer/index.ts",
+      "sha256": "c2ec27f237a1d3dd4afebb5f552caa97d2c25184bb914fcfd8b4a33fda2d2882",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/pay/wallet/balance/index.ts",
+      "sha256": "8630a4468a19ba6a535233edec7b8cd62dfe373a40d145ce1f0414f047bb6f19",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/pay/wallet/rechargePackage/index.ts",
+      "sha256": "46b57208ceed97e0583242a3d3f3ffa996fc07736a1393a1b30429f8dd70326a",
+      "state": "pending",
+      "target": null
+    },
+    {
+      "source": "src/api/pay/wallet/transaction/index.ts",
+      "sha256": "246ca85400393c2508df4a4a917e3e8acbcb24e27bb31359f5acea842947843a",
+      "state": "pending",
+      "target": null
+    }
+  ],
+  "progressMetric": {
+    "date": "2026-10-31",
+    "canonicalReport": "../127-migration-progress-recount.md",
+    "canonicalEvidence": "migration-progress-20261031.json",
+    "codeStagePercent": 42.3,
+    "note": "原file state只表示历史映射登记，不能作为功能完成率；以63单元/214适用检查项复核为当前口径"
+  }
+}

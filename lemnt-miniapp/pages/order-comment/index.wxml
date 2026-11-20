@@ -1,0 +1,21 @@
+<view class="container">
+  <view class="title">评价本单商品</view>
+  <view wx:if="{{!ready}}">服务暂未启用</view>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+  <view wx:if="{{success}}">{{success}}</view>
+  <button wx:if="{{!eligible}}" bindtap="load" disabled="{{loading || !ready}}" loading="{{loading}}">核验本人订单</button>
+  <view wx:for="{{rows}}" wx:key="orderItemId" class="card">
+    <view>{{item.productName}} · 订单项 {{item.orderItemId}}</view>
+    <view wx:if="{{item.submitted}}">已评价{{item.commentId ? '，编号 ' + item.commentId : ''}}</view>
+    <view wx:elif="{{item.commentStatus == null}}">状态未知，请刷新订单后重新进入</view>
+    <block wx:else>
+      <view wx:if="{{item.pending}}">结果未确认，已冻结原输入</view>
+      <label>描述评分（1至5）<input type="number" value="{{item.descriptionScores}}" data-index="{{index}}" data-field="descriptionScores" bindinput="input" disabled="{{loading || item.pending}}"/></label>
+      <label>服务评分（1至5）<input type="number" value="{{item.benefitScores}}" data-index="{{index}}" data-field="benefitScores" bindinput="input" disabled="{{loading || item.pending}}"/></label>
+      <label>评价正文<textarea maxlength="1000" value="{{item.content}}" data-index="{{index}}" data-field="content" bindinput="input" disabled="{{loading || item.pending}}"/></label>
+      <button bindtap="uploadImages" data-index="{{index}}" disabled="{{loading || item.pending || item.submitted}}">相册 / 拍照上传图片</button><view wx:for="{{item.imageUrls}}" wx:for-item="imageUrl" wx:for-index="imageIndex" wx:key="imageIndex"><image src="{{imageUrl}}" mode="aspectFit" data-index="{{index}}" data-url="{{imageUrl}}" bindtap="previewImages"/><button size="mini" data-index="{{index}}" data-url="{{imageUrl}}" bindtap="removeImage" disabled="{{loading || item.pending || item.submitted}}">移除图片</button></view><label>图片HTTPS地址（每行一项，最多9张）<textarea maxlength="9300" value="{{item.pictures}}" data-index="{{index}}" data-field="pictures" bindinput="input" disabled="{{loading || item.pending}}"/></label>
+      <view>匿名<switch checked="{{item.anonymous}}" data-index="{{index}}" data-field="anonymous" bindchange="input" disabled="{{loading || item.pending}}"/></view>
+    </block>
+  </view>
+  <button wx:if="{{eligible &amp;&amp; !success}}" bindtap="submit" disabled="{{loading || !ready}}" loading="{{loading}}">逐项提交 / 核验未确认项</button>
+</view>

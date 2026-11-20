@@ -1,0 +1,159 @@
+{
+  "command": "JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home /opt/homebrew/opt/maven/bin/mvn -o '-DargLine=-javaagent:/Users/wangxx/.m2/repository/org/mockito/mockito-core/5.23.0/mockito-core-5.23.0.jar' -pl lemnt-server/lemnt-auth/lemnt-auth-start,lemnt-server/lemnt-member/lemnt-member-start,lemnt-server/lemnt-gateway -am clean test",
+  "buildSuccess": true,
+  "totals": {
+    "tests": 99,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.common.security.handler.GlobalExceptionHandlerTest"
+    },
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.common.security.utils.JwtUtilsTest"
+    },
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.common.security.properties.TokenPropertiesTest"
+    },
+    {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.common.security.service.TokenServiceTest"
+    },
+    {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.common.security.interceptor.HeaderInterceptorTest"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.common.swagger.config.SpringDocAutoConfigurationTest"
+    },
+    {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.common.async.config.AsyncConfigTest"
+    },
+    {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.common.adapter.config.RequestBindingAutoConfigurationTest"
+    },
+    {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.auth.adapter.app.member.AppMemberAuthControllerTest"
+    },
+    {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.gateway.handler.GatewayExceptionHandlerTest"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.gateway.handler.SentinelFallbackHandlerTest"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.gateway.config.MemberAuthRouteConfigurationTest"
+    },
+    {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.gateway.config.CorsConfigTest"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.gateway.utils.ServletUtilsTest"
+    },
+    {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.gateway.filter.AuthFilterDomainTest"
+    },
+    {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.gateway.filter.MemberRequestSecurityTest"
+    },
+    {
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.gateway.filter.XssFilterTest"
+    },
+    {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.member.start.MemberHttpContractTest"
+    },
+    {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.member.start.MemberMenuSeedTest"
+    },
+    {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.member.start.MemberProviderConfigurationTest"
+    },
+    {
+      "tests": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "class": "com.lemnt.member.start.MemberAccountIntegrationTest"
+    }
+  ]
+}

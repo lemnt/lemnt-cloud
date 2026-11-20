@@ -1,9 +1,9 @@
 package com.lemnt.system.domain.auth.service;
 
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.common.core.exception.ServiceException;
-import com.lemnt.system.domain.auth.model.Role;
 import com.lemnt.system.domain.auth.gateway.RoleGateway;
+import com.lemnt.system.domain.auth.model.Role;
+
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -16,7 +16,6 @@ import java.util.Objects;
  */
 @RequiredArgsConstructor
 public class RoleDomainService {
-
     private final RoleGateway roleGateway;
 
     /**
@@ -92,7 +91,7 @@ public class RoleDomainService {
             Role role = new Role();
             role.setRoleId(roleId);
             List<Role> roles = roleGateway.selectRoleList(role);
-            if (CollUtil.isEmpty(roles)) {
+            if (roles == null || roles.isEmpty()) {
                 throw new ServiceException("没有权限访问角色数据！");
             }
         }

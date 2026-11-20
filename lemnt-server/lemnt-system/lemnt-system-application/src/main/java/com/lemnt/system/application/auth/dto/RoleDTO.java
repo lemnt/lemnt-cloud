@@ -34,8 +34,6 @@ public class RoleDTO {
      */
     private String dataScope;
 
-
-
     /**
      * 角色状态（1正常 2停用）
      */

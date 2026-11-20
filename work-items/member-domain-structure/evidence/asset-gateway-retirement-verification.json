@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-30",
+  "backend": {
+    "lemnt-member": {
+      "tests": 42,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-auth": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-mall": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "removed": [
+    "MemberAssetRecordGateway",
+    "MemberAssetRecordGatewayImpl"
+  ],
+  "runtimeReferenceScan": "源Java无遗留泛化网关引用",
+  "verified": [
+    "clean verify",
+    "两表错误类型写入拒绝且无新增行",
+    "非法详情类型拒绝",
+    "并发/回滚/签到/升级/退款/迁移重放回归"
+  ],
+  "notRun": [
+    "真实数据库",
+    "部署HTTP",
+    "前端/小程序未改动未重跑"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java": "171d1952ccf62b1c28f14a41e2c6a5df690dc3097c60cba43ae798e3cd888103",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/executor/MemberAssetRecordDetailQueryExe.java": "d12a0301b0dcd55a2152f85c66b57dfb3bfffe4e1ceeddf350248945c3300cc7",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/executor/MemberAssetRecordPageQueryExe.java": "339312fb5e3e35564a56636aaf883f05972673051b81ab56622b0f4558aef8fd",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/executor/MemberAssetRecordAllPageQueryExe.java": "fe4c87a1f3ecf12a33495d80680fd5e0d4c47c081ed9f1a36a0d5b8d84a520d1",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/service/MemberGrowthService.java": "ec10e7423d5d23a64ebffb8433d8cd2e484209226ed60b4ff5aaf90d1820542b",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/gateway/MemberPointRecordGatewayImpl.java": "981c8c8c2ec6d67b78abbeecb076cf6eef522844183a4c313cb5d8cd67153bea",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/gateway/MemberExperienceRecordGatewayImpl.java": "1c25af577d3413ba608815c1f66100a150db600ca18e9bb4dbbc05bd387d444e",
+    "/tmp/asset-gateway-retirement-final.log": "af51137622579d366abcb7a325f83d6dd648eb74f3293e11edcb823ddc49636e"
+  }
+}

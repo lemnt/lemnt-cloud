@@ -1,0 +1,125 @@
+{
+  "task": "P5-05 清理后最终回归与文档",
+  "executedAt": "2026-11-04T15:03:18+08:00",
+  "revision": "a628d381",
+  "workingTreeCleanBeforeAndAfter": true,
+  "toolchain": {
+    "jdk": "Temurin 17.0.17 (JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home)",
+    "maven": "Apache Maven 3.9.12",
+    "googleJavaFormat": "1.25.2 all-deps, SHA256 25157797a0a972c2290b5bc71530c4f7ad646458025e3484412a6e5a9b8c9aa6 校验通过"
+  },
+  "commands": [
+    "mvn -B -f lemnt-dependencies/pom.xml clean install -DskipTests",
+    "mvn -B -f lemnt-common/pom.xml clean install",
+    "mvn -B -f lemnt-server/pom.xml clean package",
+    "python3 scripts/check_architecture.py",
+    "python3 scripts/check_module_split.py",
+    "python3 scripts/test_architecture.py",
+    "python3 scripts/test_module_split.py",
+    "python3 scripts/test_format_java.py",
+    "python3 scripts/format_java.py --jar google-java-format-1.25.2-all-deps.jar"
+  ],
+  "build": {
+    "dependenciesInstall": "BUILD SUCCESS",
+    "commonInstallWithTests": "BUILD SUCCESS",
+    "serverReactorPackageWithoutSkippingTests": "BUILD SUCCESS",
+    "modulesInReactorSummary": 60,
+    "mvnExitCode": 0,
+    "elapsed": "15:00:08 → 15:03:18（3分10秒）"
+  },
+  "tests": {
+    "total": 1242,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "byService": {
+      "gateway": 350,
+      "order": 305,
+      "system": 147,
+      "member": 126,
+      "pay": 115,
+      "product": 98,
+      "promotion": 78,
+      "auth": 20,
+      "common": 2,
+      "open": 1
+    },
+    "note": "范围覆盖整个server Reactor（含既有system/auth/gateway/open与五个业务服务），大于P4/P5证据按五服务的716与721项，不与历史数字相加。"
+  },
+  "guardChecks": {
+    "check_architecture": {
+      "javaMainFiles": 3042,
+      "mapperXmlFiles": 68,
+      "pomFiles": 86,
+      "violations": 0
+    },
+    "check_module_split": {
+      "modules": ["product", "promotion", "order", "pay"],
+      "tablesByModule": {"product": 12, "promotion": 23, "order": 23, "pay": 13},
+      "totalTables": 71,
+      "violations": 0
+    },
+    "formatToolUnitTests": {
+      "test_architecture": "7项通过",
+      "test_module_split": "11项通过",
+      "test_format_java": "9项通过"
+    },
+    "fixMadeDuringRegression": "scripts/test_architecture.py 的 record 夹具原以全限定注解与 java.util.List 书写，被后续加入的 qualified-type 规则命中，导致断言 assertEqual(['http-field-schema']) 失败。夹具改为显式import短名写法，断言与覆盖面不变，未删除或放宽测试。该修复由仓库提交 12671995 连带入库。"
+  },
+  "cleanupVerification": {
+    "lemntMallDirectory": "不存在",
+    "lemntTradeDirectory": "不存在",
+    "deletedInCommit": "af77e846",
+    "reactorModules": ["auth", "gateway", "open", "member", "product", "order", "pay", "promotion", "system", "third-sdk"],
+    "legacyInitSqlFiles": "lemnt_mall.sql 与 lemnt_trade.sql 均已移除",
+    "perServiceInitSql": {
+      "product": {"file": "lemnt-server/lemnt-product/sql/lemnt_product.sql", "createTables": 12},
+      "promotion": {"file": "lemnt-server/lemnt-promotion/sql/lemnt_promotion.sql", "createTables": 23},
+      "order": {"file": "lemnt-server/lemnt-order/sql/lemnt_order.sql", "createTables": 23},
+      "pay": {"file": "lemnt-server/lemnt-pay/sql/lemnt_pay.sql", "createTables": 13}
+    },
+    "remainingMallTradeReferences": "仅字符串与测试断言：lemnt-server/sql 下 29 个带日期的 V 脚本（历史菜单/权限升级，保留）、@Schema example=\"lemnt-mall\"、网关测试中用于断言旧 lb://lemnt-mall 与 lb://lemnt-trade 不再生效的字面量。无 Java 包、无 POM 依赖。"
+  },
+  "notClean": {
+    "repoWideFormat": {
+      "gjfWouldReformat": "2470 / 3286 个Java文件",
+      "importOrderOrAnnotationDiff": 287,
+      "distributionByService": {
+        "product": 53,
+        "system": 52,
+        "promotion": 49,
+        "order": 48,
+        "member": 39,
+        "pay": 27,
+        "common-security": 6,
+        "gateway": 4,
+        "common-core": 2,
+        "common-excel": 2,
+        "common-sensitive": 2,
+        "common-log": 1,
+        "common-start": 1,
+        "auth": 1
+      },
+      "assessment": "287项全部只是import分组顺序差异，且同时出现在迁移未触碰的 system/auth/gateway/lemnt-common 中，属仓库既有状态。历史证据按批次只检查当批变更文件，从未做过仓库级格式检查。本批未执行 --write，未对无关文件重排。",
+      "decision": "不在P5-05范围内擅自格式化2470个文件；需要时应作为独立工作项评审。"
+    }
+  },
+  "openDesignQuestion": {
+    "raisedBy": "用户在回归进行中提出：product_message_outbox 与 product_message_inbox 是重复设计",
+    "verifiedFacts": [
+      "两表列与键不同且方向相反：outbox 14列含 status/attempts/lease_until/next_retry_at 投递状态机，唯一键 uk_event_no 与 uk_event_business；inbox 6列仅 consumer_key/event_no/event_type/business_key/payload_hash，唯一键 uk_consumer_event 与 uk_consumer_business。",
+      "product 两侧都有真实读写方：outbox 由 ProductInventoryService 发布 STOCK_PRE_RESERVED，经 OutboxRelayService/OutboxRelayScheduler 投递；inbox 由 OrderStockEventHandler 消费 ORDER_PAID/ORDER_CLOSED/AFTER_SALE_COMPLETED。",
+      "STOCK_PRE_RESERVED 的唯一消费方是 promotion 的 StockPreReservedEventHandler，该处理器不改变任何业务状态，只做 eventNo/businessKey/aggregateNo 与资源数量一致性校验后写 inbox 凭证。",
+      "product 侧 inbox 与库存状态机部分重叠：confirmStock 在 status=CONFIRMED 时直接 return，已自带重复投递防护。"
+    ],
+    "claudeAssessment": "两表互为重复这一表述不成立，但存在两处真实冗余：一是 product→promotion 的 STOCK_PRE_RESERVED 事件链路只承载交叉校验，可改为同步校验或删该消费者；二是 ORDER_PAID 上 inbox 幂等与库存状态机重复。是否调整属架构决策，P5-05 未擅自删表或改契约。",
+    "status": "待用户确认后作为独立工作项处理"
+  },
+  "notExecuted": [
+    "真实MySQL建库与迁库（四个业务库均未执行DDL）",
+    "Nacos配置发布与在线旧粗路由撤除",
+    "MQ Topic创建、Dubbo网络与Outbox/Relay真实投递",
+    "网关在线切流与HTTP端到端验收",
+    "lemnt-ui 与 lemnt-miniapp 回归（本工作项无前端改动，且两者依赖未安装，未运行）"
+  ]
+}

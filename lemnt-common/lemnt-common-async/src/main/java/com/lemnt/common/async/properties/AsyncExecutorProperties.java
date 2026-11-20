@@ -1,8 +1,10 @@
 package com.lemnt.common.async.properties;
 
 import com.lemnt.common.async.model.ExecutorConfig;
-import lombok.Data;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import lombok.Data;
 
 /**
  * 异步线程配置

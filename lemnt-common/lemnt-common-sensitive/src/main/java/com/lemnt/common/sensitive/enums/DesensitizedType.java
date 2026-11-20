@@ -1,8 +1,8 @@
 package com.lemnt.common.sensitive.enums;
 
-import java.util.function.Function;
-
 import com.lemnt.common.sensitive.utils.DesensitizedUtil;
+
+import java.util.function.Function;
 
 /**
  * 脱敏类型

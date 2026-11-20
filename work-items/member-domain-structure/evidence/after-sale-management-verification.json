@@ -1,0 +1,21 @@
+{
+  "backend": {
+    "projects": 71,
+    "tests": 465,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "admin_tests": 169,
+  "admin_checks": [
+    "typecheck",
+    "lint",
+    "format:check",
+    "build"
+  ],
+  "new_regression_tests": 17,
+  "payment_channel_end_to_end": false,
+  "shipment_tracking_end_to_end": false,
+  "target_mysql_migration_applied": false,
+  "native_tests": "not rerun; native code unchanged in this slice"
+}

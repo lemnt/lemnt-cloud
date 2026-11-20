@@ -1,0 +1,18 @@
+<view class="container">
+  <picker range="{{categories}}" range-key="name" value="{{category}}" bindchange="category" disabled="{{loading}}">
+    <view class="field">分类 · {{categories[category].name}}</view>
+  </picker>
+  <picker range="{{filters}}" value="{{filter}}" bindchange="filter" disabled="{{loading}}">
+    <view class="field">展示 · {{filters[filter]}}</view>
+  </picker>
+  <view wx:if="{{error}}" class="error">{{error}}<button size="mini" bindtap="retry">重试</button></view>
+  <view wx:elif="{{!rows.length &amp;&amp; !loading}}" class="card">暂无文章</view>
+  <navigator wx:for="{{rows}}" wx:key="id" url="/pages/article-detail/index?id={{item.id}}" class="card">
+    <view class="subtitle">{{item.title}}</view>
+    <view wx:if="{{item.introduction}}" class="description">{{item.introduction}}</view>
+  </navigator>
+  <view wx:if="{{total > 20}}" class="row">
+    <button size="mini" data-delta="-1" bindtap="turn" disabled="{{loading || pageNum === 1}}">上一页</button>
+    <button size="mini" data-delta="1" bindtap="turn" disabled="{{loading || pageNum * 20 >= total}}">下一页</button>
+  </view>
+</view>

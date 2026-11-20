@@ -15,14 +15,22 @@
         <result property="remark" column="remark"/>
     </resultMap>
 
-    <sql id="selectConfigVo">
+    <insert id="saveBusinessConfig">
+        INSERT INTO
+        sys_config(config_name,config_key,config_value,config_type,create_by,create_time,update_by,update_time)
+        VALUES(#{value.configName},#{value.configKey},#{value.configValue},'1',#{value.updateBy},CURRENT_TIMESTAMP,#{value.updateBy},CURRENT_TIMESTAMP)
+        ON DUPLICATE KEY UPDATE
+        config_value=VALUES(config_value),update_by=VALUES(update_by),update_time=CURRENT_TIMESTAMP
+    </insert>
+
+    <sql id="BaseColumns">
         config_id, config_name, config_key, config_value, config_type, create_by, create_time, update_by,
         update_time, remark
     </sql>
 
     <select id="selectPage" resultMap="SysConfigResult">
         SELECT
-        <include refid="selectConfigVo"/>
+        <include refid="BaseColumns"/>
         FROM sys_config
         <where>
             <if test="qry.configName != null and qry.configName != ''">

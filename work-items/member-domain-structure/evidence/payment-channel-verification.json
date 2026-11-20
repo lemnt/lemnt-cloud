@@ -1,0 +1,102 @@
+{
+  "batch": "147-payment-channel",
+  "date": "2026-11-01",
+  "scope": [
+    "member payment prepay",
+    "channel notify verification",
+    "sandbox payment channel",
+    "payment app key binding",
+    "paid order lifecycle acceptance"
+  ],
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-trade/lemnt-trade-start -am test",
+    "javaVersion": "17.0.17",
+    "totals": {"tests": 240, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-trade-domain": 2,
+      "lemnt-trade-application": 67,
+      "lemnt-trade-infrastructure": 14,
+      "lemnt-trade-adapter": 26,
+      "lemnt-trade-start": 131
+    },
+    "newTests": [
+      "com.lemnt.trade.infrastructure.payment.payment.SandboxPaymentChannelAdapterTest (4)",
+      "com.lemnt.trade.application.payment.PaymentPrepayCmdExeTest (3)",
+      "com.lemnt.trade.application.payment.PaymentNotifyReceiveCmdTest (2)",
+      "com.lemnt.trade.adapter.app.payment.AppPaymentControllerTest.prepayUsesSessionMemberAndReturnsChannelParams (1)"
+    ]
+  },
+  "ui": {"command": "npm test -- --run", "tests": 292, "failures": 0},
+  "endpoints": [
+    "POST /trade/app/orders/{orderNo}/payment",
+    "GET /trade/app/orders/{orderNo}/payment",
+    "POST /trade/payment/notify/{appKey}/{channel}"
+  ],
+  "sql": [
+    "lemnt-server/lemnt-trade/sql/V2__trade_payment.sql",
+    "lemnt-server/lemnt-trade/sql/upgrade/payment_app_key.sql"
+  ],
+  "security": [
+    "sandbox adapter only registered when payment.sandbox.enabled=true",
+    "missing or duplicate channel adapters fail closed",
+    "notify requires HMAC-SHA256 signature over paymentNo/orderNo/amount/channelTradeNo/notifyId/timestamp",
+    "timestamp must be within 5 minutes",
+    "notifyId is unique in trade_payment",
+    "payment is bound to the pay app and channel",
+    "hmacSecret is never returned by admin or prepay APIs"
+  ],
+  "realEnvironment": {
+    "appKey": "lemnt-mall",
+    "channel": "SANDBOX",
+    "config": "payment.sandbox.enabled=true in dev Nacos; notify path whitelisted in gateway dev Nacos",
+    "bargain": {
+      "orderNo": "TR8F5743FE0EE246BF95D07485",
+      "paymentNo": "PAY1D1667178F2041E1BFD70474",
+      "assertions": [
+        "trade order PAID with total 8.00",
+        "mall promotion order PAID",
+        "pay notify task SUCCESS on first attempt",
+        "member 1 experience 0->800",
+        "bargain record remains bound to order"
+      ]
+    },
+    "combination": {
+      "activityId": "2116576587669000193",
+      "headOrderNo": "TRABDC9A309C5946E3A83FACFD",
+      "memberOrderNo": "TR502B89490186464C86D166D6",
+      "recordId": "2116580217209966594",
+      "assertions": [
+        "both trade orders PAID",
+        "both mall promotion orders PAID",
+        "combination record status SUCCESS with userCount 2 of userSize 2",
+        "activity successCount=1",
+        "member 1 experience 1400 and member 2 experience 600"
+      ]
+    },
+    "prepayAndCancel": {
+      "orderNo": "TR9FF8F0D43B84455A9400AB92",
+      "paymentNo": "PAY2233E0DBD5EE4C8DBD6D05A1",
+      "assertions": [
+        "repeated prepay returns the same paymentNo",
+        "foreign member prepay returns order not found",
+        "cancel closes payment, trade order and mall promotion order",
+        "seckill stock restored to 10"
+      ]
+    },
+    "negative": [
+      "tampered signature returns 400",
+      "duplicate notify is idempotent",
+      "cancelling a paid order returns 400"
+    ]
+  },
+  "deferred": [
+    "real ALIPAY/WECHAT merchant adapters and credential management",
+    "sandbox refund client and channel refund acceptance",
+    "miniapp cashier interaction and device payment",
+    "channel reconciliation, refund notify and production secret encryption"
+  ],
+  "notes": [
+    "Nacos 3 admin authentication was unavailable in the acceptance environment; configs were updated in nacos_server.config_info and Nacos/trade/gateway were restarted",
+    "no business commit or push in this batch"
+  ]
+}

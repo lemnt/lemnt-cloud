@@ -135,7 +135,8 @@ public class Dept implements Serializable {
         Iterator<Dept> it = list.iterator();
         while (it.hasNext()) {
             Dept n = it.next();
-            if (n.getParentId() != null && n.getParentId().longValue() == t.getDeptId().longValue()) {
+            if (n.getParentId() != null
+                && n.getParentId().longValue() == t.getDeptId().longValue()) {
                 tlist.add(n);
             }
         }

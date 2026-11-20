@@ -8,13 +8,17 @@ import com.lemnt.system.api.domain.dto.UserInfoDTO;
 import com.lemnt.system.domain.auth.gateway.MenuGateway;
 import com.lemnt.system.domain.auth.gateway.RoleGateway;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
-import com.lemnt.system.domain.auth.model.User;
+import com.lemnt.system.domain.auth.gateway.UserPostGateway;
+import com.lemnt.system.domain.auth.gateway.UserRoleGateway;
 import com.lemnt.system.domain.auth.model.Role;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import com.lemnt.system.domain.auth.model.User;
+
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +34,8 @@ import java.util.Set;
 @DubboService
 @RequiredArgsConstructor
 public class RemoteUserServiceImpl implements RemoteUserService {
-
+    private final UserPostGateway userPostGateway;
+    private final UserRoleGateway userRoleGateway;
     private final UserGateway userGateway;
     private final RoleGateway roleGateway;
     private final MenuGateway menuGateway;
@@ -88,15 +93,15 @@ public class RemoteUserServiceImpl implements RemoteUserService {
         if (!userGateway.insertUser(entity)) {
             throw new IllegalStateException("创建用户失败");
         }
-        userGateway.insertUserRoles(entity.getUserId(), List.of(role.getRoleId()));
+        userRoleGateway.insertUserRoles(entity.getUserId(), List.of(role.getRoleId()));
         return entity.getUserId();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteUser(Long userId) {
-        userGateway.deleteUserRoleByUserId(userId);
-        userGateway.deleteUserPostByUserId(userId);
+        userRoleGateway.deleteUserRoleByUserId(userId);
+        userPostGateway.deleteUserPostByUserId(userId);
         return userGateway.deleteUserById(userId);
     }
 

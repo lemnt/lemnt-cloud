@@ -3,9 +3,11 @@ package com.lemnt.common.excel.service;
 import com.lemnt.common.excel.domain.event.ExcelExportTaskEvent;
 import com.lemnt.common.excel.domain.event.ExcelImportTaskEvent;
 import com.lemnt.common.excel.domain.vo.ExcelImportResultVo;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
@@ -23,7 +25,8 @@ public interface BaseExcelTaskService {
      * @param file
      * @return
      */
-    <E> void importExcel(MultipartFile file, Class<E> cls, Consumer<List<E>> callback) throws IOException;
+    <E> void importExcel(MultipartFile file, Class<E> cls, Consumer<List<E>> callback)
+        throws IOException;
 
     /**
      * 同步导出
@@ -33,7 +36,8 @@ public interface BaseExcelTaskService {
      * @param fileName
      * @param response
      */
-    <E> void excelExport(List<E> dataList, Class<E> cls, String fileName, HttpServletResponse response);
+    <E> void excelExport(
+        List<E> dataList, Class<E> cls, String fileName, HttpServletResponse response);
 
     /**
      * 添加导入任务
@@ -115,5 +119,4 @@ public interface BaseExcelTaskService {
      * @param message
      */
     void failExportTask(Long taskId, String message);
-
 }

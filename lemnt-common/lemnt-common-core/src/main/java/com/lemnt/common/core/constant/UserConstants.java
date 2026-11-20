@@ -84,23 +84,24 @@ public class UserConstants {
     /**
      * Layout组件标识
      */
-    public final static String LAYOUT = "Layout";
+    public static final String LAYOUT = "Layout";
 
     /**
      * ParentView组件标识
      */
-    public final static String PARENT_VIEW = "ParentView";
+    public static final String PARENT_VIEW = "ParentView";
 
     /**
      * InnerLink组件标识
      */
-    public final static String INNER_LINK = "InnerLink";
+    public static final String INNER_LINK = "InnerLink";
 
     /**
      * 校验是否唯一的返回标识
      */
-    public final static boolean UNIQUE = true;
-    public final static boolean NOT_UNIQUE = false;
+    public static final boolean UNIQUE = true;
+
+    public static final boolean NOT_UNIQUE = false;
 
     /**
      * 用户名长度限制

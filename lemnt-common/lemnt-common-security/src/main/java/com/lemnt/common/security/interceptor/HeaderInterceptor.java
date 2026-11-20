@@ -1,19 +1,20 @@
 package com.lemnt.common.security.interceptor;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
+import com.lemnt.common.core.utils.ServletUtils;
+import com.lemnt.common.core.utils.StringUtils;
+import com.lemnt.common.security.auth.AuthUtil;
 import com.lemnt.common.security.constant.SecurityConstants;
 import com.lemnt.common.security.context.SecurityContextHolder;
 import com.lemnt.common.security.model.SecurityUser;
+import com.lemnt.common.security.utils.SecurityUtils;
+
 import org.slf4j.MDC;
 import org.springframework.lang.NonNull;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
-import com.lemnt.common.core.utils.ServletUtils;
-import com.lemnt.common.core.utils.StringUtils;
-import com.lemnt.common.security.auth.AuthUtil;
-import com.lemnt.common.security.utils.SecurityUtils;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -27,13 +28,23 @@ import java.util.UUID;
 public class HeaderInterceptor implements AsyncHandlerInterceptor {
 
     @Override
-    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
+    public boolean preHandle(
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull Object handler)
+        throws Exception {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
         // 用户上下文
-        SecurityContextHolder.setUserId(ServletUtils.getHeader(request, SecurityConstants.HEADER_USER_ID));
-        SecurityContextHolder.setUserName(ServletUtils.getHeader(request, SecurityConstants.HEADER_USER_NAME));
+        SecurityContextHolder.setUserId(
+            ServletUtils.getHeader(request, SecurityConstants.HEADER_USER_ID));
+        SecurityContextHolder.setUserName(
+            ServletUtils.getHeader(request, SecurityConstants.HEADER_USER_NAME));
+        SecurityContextHolder.setNickName(
+            ServletUtils.getHeader(request, SecurityConstants.HEADER_USER_NICK_NAME));
+        SecurityContextHolder.setUserAvatar(
+            ServletUtils.getHeader(request, SecurityConstants.HEADER_USER_AVATAR));
         String userKey = ServletUtils.getHeader(request, SecurityConstants.HEADER_USER_KEY);
         SecurityContextHolder.setUserKey(userKey);
 
@@ -53,17 +64,19 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor {
     }
 
     @Override
-    public void afterConcurrentHandlingStarted(@NonNull HttpServletRequest request,
-                                               @NonNull HttpServletResponse response,
-                                               @NonNull Object handler) {
+    public void afterConcurrentHandlingStarted(
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull Object handler) {
         clearContext();
     }
 
     @Override
-    public void afterCompletion(@NonNull HttpServletRequest request,
-                                @NonNull HttpServletResponse response,
-                                @NonNull Object handler,
-                                Exception ex) {
+    public void afterCompletion(
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull Object handler,
+        Exception ex) {
         clearContext();
     }
 

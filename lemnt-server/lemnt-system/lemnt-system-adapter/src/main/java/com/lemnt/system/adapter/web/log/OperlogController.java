@@ -1,7 +1,7 @@
 package com.lemnt.system.adapter.web.log;
 
-import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.common.core.domain.R;
+import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.common.log.annotation.Log;
 import com.lemnt.common.log.enums.BusinessType;
 import com.lemnt.common.security.annotation.RequiresPermissions;
@@ -13,15 +13,17 @@ import com.lemnt.system.application.log.dto.OperLogDTO;
 import com.lemnt.system.application.log.executor.OperLogCleanCmdExe;
 import com.lemnt.system.application.log.executor.OperLogDeleteCmdExe;
 import com.lemnt.system.application.log.executor.OperLogPageQueryExe;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -35,7 +37,6 @@ import java.util.List;
 @RequestMapping("/operation-logs")
 @RequiredArgsConstructor
 public class OperlogController {
-
     private final OperLogPageQueryExe operLogPageQueryExe;
     private final OperLogDeleteCmdExe operLogDeleteCmdExe;
     private final OperLogCleanCmdExe operLogCleanCmdExe;

@@ -9,15 +9,21 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-/** 编排统一上传，不感知 OSS 实现。 */
+/**
+ * 编排统一上传，不感知 OSS 实现。
+ */
 @Component
 @RequiredArgsConstructor
 public class FileUploadCmdExe {
     private final FileGateway fileGateway;
 
-    /** 将上传命令交由存储网关处理。 */
+    /**
+     * 将上传命令交由存储网关处理。
+     */
     public FileUploadDTO execute(FileUploadCmd cmd) {
-        return new FileUploadDTO(fileGateway.upload(
-                new UploadFile(cmd.content(), cmd.fileName(), cmd.contentType(), cmd.size())));
+        return new FileUploadDTO(
+            fileGateway.upload(
+                new UploadFile(
+                    cmd.content(), cmd.fileName(), cmd.contentType(), cmd.size())));
     }
 }

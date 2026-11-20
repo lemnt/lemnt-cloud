@@ -4,8 +4,10 @@ import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
 import com.lemnt.system.domain.auth.model.User;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 当前登录用户头像更新执行器。
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class UserAvatarUpdateCmdExe {
-
     private final UserGateway userGateway;
 
     /**

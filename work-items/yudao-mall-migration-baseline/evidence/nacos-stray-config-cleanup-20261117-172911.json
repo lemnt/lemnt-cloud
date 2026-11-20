@@ -1,0 +1,75 @@
+{
+  "capturedAt": "2026-11-17T17:29:11.212399+08:00",
+  "approvalQuote": "删除这两份",
+  "target": "public/DEFAULT_GROUP copies created by this session via wrong namespaceId parameter",
+  "deleted": [
+    "commerce-mq.yaml",
+    "lemnt-promotion.yaml"
+  ],
+  "guard": [
+    {
+      "dataId": "commerce-mq.yaml",
+      "publicMatchesTemplate": true,
+      "devAlsoPresent": true
+    },
+    {
+      "dataId": "lemnt-promotion.yaml",
+      "publicMatchesTemplate": true,
+      "devAlsoPresent": true
+    }
+  ],
+  "totalsBefore": {
+    "": 1905,
+    "dev": 90,
+    "lemnt": 5
+  },
+  "totalsAfter": {
+    "": 1903,
+    "dev": 90,
+    "lemnt": 5
+  },
+  "responses": {
+    "commerce-mq.yaml": {
+      "code": 0,
+      "message": "success"
+    },
+    "lemnt-promotion.yaml": {
+      "code": 0,
+      "message": "success"
+    }
+  },
+  "verification": {
+    "publicRemaining": [
+      {
+        "dataId": "commerce-mq.yaml",
+        "present": false
+      },
+      {
+        "dataId": "lemnt-promotion.yaml",
+        "present": false
+      }
+    ],
+    "devIntact": [
+      {
+        "dataId": "commerce-mq.yaml",
+        "presentAndMatched": true
+      },
+      {
+        "dataId": "lemnt-promotion.yaml",
+        "presentAndMatched": true
+      },
+      {
+        "dataId": "lemnt-order.yaml",
+        "presentAndMatched": true
+      },
+      {
+        "dataId": "lemnt-pay.yaml",
+        "presentAndMatched": true
+      }
+    ],
+    "publicDelta": -2,
+    "devDelta": 0,
+    "lemntDelta": 0
+  },
+  "status": "verified"
+}

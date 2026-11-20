@@ -48,8 +48,7 @@ public class DateUtils {
     }
 
     public static LocalDateTime parseDateTime(String dateTimeStr) {
-        return LocalDateTime.parse(dateTimeStr,
-                DateTimeFormatter.ofPattern(YYYY_MM_DD_HH_MM_SS));
+        return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern(YYYY_MM_DD_HH_MM_SS));
     }
 
     public static LocalDateTime toLocalDateTime(long timestamp) {
@@ -57,8 +56,7 @@ public class DateUtils {
     }
 
     public static LocalDateTime toLocalDateTime(Date date) {
-        return LocalDateTime.ofInstant(
-                date.toInstant(), ZoneId.systemDefault());
+        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }
 
     public static LocalDateTime startOfDay(LocalDate date) {
@@ -138,19 +136,12 @@ public class DateUtils {
      * @deprecated 请使用 {@link #betweenDays(LocalDateTime, LocalDateTime)}，两者功能重复
      */
     @Deprecated
-    public static long differentDaysByMillisecond(LocalDateTime startTime,
-                                                  LocalDateTime endTime) {
+    public static long differentDaysByMillisecond(LocalDateTime startTime, LocalDateTime endTime) {
         if (startTime == null || endTime == null) {
             return 0;
         }
-        long startMillis = startTime
-                .atZone(ZoneId.systemDefault())
-                .toInstant()
-                .toEpochMilli();
-        long endMillis = endTime
-                .atZone(ZoneId.systemDefault())
-                .toInstant()
-                .toEpochMilli();
+        long startMillis = startTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long endMillis = endTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         long diffMillis = Math.abs(endMillis - startMillis);
         return diffMillis / (24 * 60 * 60 * 1000);
     }
@@ -159,7 +150,7 @@ public class DateUtils {
      * 时间区间生成
      */
     public static List<String> generateDateTimeList(
-            LocalDate startTime, LocalDate endTime, String type) {
+        LocalDate startTime, LocalDate endTime, String type) {
         if (startTime.isAfter(endTime)) {
             throw new IllegalArgumentException("开始时间不能晚于结束时间");
         }
@@ -191,9 +182,7 @@ public class DateUtils {
     public static List<String> generate24HoursPeriodList(LocalDate date) {
         List<String> hours = new ArrayList<>();
         LocalDate today = LocalDate.now();
-        int maxHour = date.equals(today)
-                ? LocalTime.now().getHour()
-                : 23;
+        int maxHour = date.equals(today) ? LocalTime.now().getHour() : 23;
         for (int i = 0; i <= maxHour; i++) {
             hours.add(String.format("%02d", i));
         }

@@ -1,0 +1,72 @@
+{
+  "batch": "155-pickup-store",
+  "date": "2026-11-01",
+  "scope": ["pickup store CRUD", "clerk binding", "pickup order assign", "verify code redemption", "app store list", "order pickup detail"],
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-trade/lemnt-trade-start -am test",
+    "totals": {"tests": 261, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-trade-domain": 2,
+      "lemnt-trade-application": 72,
+      "lemnt-trade-infrastructure": 16,
+      "lemnt-trade-adapter": 29,
+      "lemnt-trade-start": 142
+    },
+    "newTests": [
+      "com.lemnt.trade.start.pickup.PickUpPersistenceTest (3)",
+      "com.lemnt.trade.start.pickup.PickUpMenuSeedTest (1)"
+    ]
+  },
+  "ui": {"tests": 312, "failures": 0},
+  "miniapp": {"tests": 175, "failures": 0},
+  "gateway": {"tests": 35, "failures": 0},
+  "endpoints": [
+    "GET /trade/admin/delivery/pick-up-stores",
+    "GET /trade/admin/delivery/pick-up-stores/{id}",
+    "POST /trade/admin/delivery/pick-up-stores",
+    "PUT /trade/admin/delivery/pick-up-stores/{id}",
+    "PUT /trade/admin/delivery/pick-up-stores/{id}/verify-users",
+    "DELETE /trade/admin/delivery/pick-up-stores/{id}",
+    "POST /trade/admin/orders/pick-up",
+    "GET /trade/admin/orders/pick-up/{code}",
+    "POST /trade/admin/orders/pick-up/{code}/verify",
+    "GET /trade/app/delivery/pick-up-stores"
+  ],
+  "sql": [
+    "lemnt-server/lemnt-trade/sql/V16__pickup.sql",
+    "lemnt-server/lemnt-trade/sql/upgrade/pickup_store.sql",
+    "lemnt-server/sql/V20261101__trade_pickup_menu.sql"
+  ],
+  "invariants": [
+    "store opening time must be before closing time",
+    "clerk ids are unique and limited to 20",
+    "only enabled stores can be assigned",
+    "only paid orders without active refund can be assigned pickup",
+    "verify code is 8 digits and globally unique",
+    "only clerks bound to the store can verify",
+    "verification completes the order and writes receive time and order log"
+  ],
+  "realEnvironment": {
+    "storeId": "2116709400812654594",
+    "orderNo": "TRABDC9A309C5946E3A83FACFD",
+    "verifyCode": "48764557",
+    "assertions": [
+      "store creation and enabled app list succeed",
+      "assigning paid order returns an 8-digit code",
+      "preview returns store and order",
+      "admin 1 is rejected after clerks changed to admin 2",
+      "admin 1 verification succeeds after restoring binding",
+      "order becomes COMPLETED with receive time and delivery_type=2",
+      "app order detail returns store name, phone, address and verify code"
+    ]
+  },
+  "deferred": [
+    "checkout-time pickup store selection and distance ordering",
+    "dedicated awaiting-pickup order status",
+    "pickup receipt, store inventory and clerk app",
+    "browser admin and miniapp device verification"
+  ],
+  "notes": [
+    "no business commit or push in this batch"
+  ]
+}

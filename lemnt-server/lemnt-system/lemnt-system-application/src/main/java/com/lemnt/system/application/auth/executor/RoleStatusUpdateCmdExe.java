@@ -2,11 +2,13 @@ package com.lemnt.system.application.auth.executor;
 
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.system.application.auth.cmd.RoleStatusUpdateCmd;
-import com.lemnt.system.domain.auth.service.RoleDomainService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import com.lemnt.system.domain.auth.model.Role;
 import com.lemnt.system.domain.auth.gateway.RoleGateway;
+import com.lemnt.system.domain.auth.model.Role;
+import com.lemnt.system.domain.auth.service.RoleDomainService;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 角色状态修改命令执行器
@@ -16,7 +18,6 @@ import com.lemnt.system.domain.auth.gateway.RoleGateway;
 @Component
 @RequiredArgsConstructor
 public class RoleStatusUpdateCmdExe {
-
     private final RoleDomainService roleDomainService;
     private final RoleGateway roleGateway;
 

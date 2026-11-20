@@ -9,21 +9,21 @@ import java.time.LocalDateTime;
  * @author wangxx
  */
 public record LogininforPageQry(
-        /**
-         * 用户账号
-         */
-        String userName,
-        /**
-         * 登录IP地址
-         */
-        String ipaddr,
-        /**
-         * 登录状态（1成功 2失败）
-         */
-        String status,
-        int pageNum,
-        int pageSize,
-        LocalDateTime beginTime,
-        LocalDateTime endTime
-) implements Serializable {
+    /**
+     * 用户账号
+     */
+    String userName,
+    /**
+     * 登录IP地址
+     */
+    String ipaddr,
+    /**
+     * 登录状态（1成功 2失败）
+     */
+    String status,
+    int pageNum,
+    int pageSize,
+    LocalDateTime beginTime,
+    LocalDateTime endTime)
+    implements Serializable {
 }

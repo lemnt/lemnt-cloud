@@ -2,8 +2,9 @@ package com.lemnt.system.domain.auth.service;
 
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.core.utils.StringUtils;
-import com.lemnt.system.domain.auth.model.User;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
+import com.lemnt.system.domain.auth.model.User;
+
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -13,7 +14,6 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public class UserDomainService {
-
     private final UserGateway userGateway;
 
     /**
@@ -35,7 +35,8 @@ public class UserDomainService {
      * @throws ServiceException 已存在时抛出
      */
     public void checkPhoneUnique(String phonenumber) {
-        if (StringUtils.isNotEmpty(phonenumber) && userGateway.checkPhoneUnique(phonenumber) != null) {
+        if (StringUtils.isNotEmpty(phonenumber)
+            && userGateway.checkPhoneUnique(phonenumber) != null) {
             throw new ServiceException("手机号码'" + phonenumber + "'已存在");
         }
     }

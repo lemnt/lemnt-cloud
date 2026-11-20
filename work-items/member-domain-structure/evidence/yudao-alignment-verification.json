@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-28",
+  "referenceCommit": "8db9153bfe6bdc03baf93b74e244a2e74477c5c4",
+  "backend": {
+    "command": "mvn -o clean verify (Java 17, Mockito agent)",
+    "result": "BUILD SUCCESS",
+    "suites": 91,
+    "tests": 403,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": "/tmp/yudao-final-full-verify.log"
+  },
+  "admin": {
+    "tests": 161,
+    "typecheck": "passed as part of build",
+    "lint": "passed",
+    "format": "passed",
+    "build": "passed",
+    "buildWarning": "existing output chunk over 500 kB"
+  },
+  "miniapp": {
+    "tests": 70,
+    "failures": 0
+  },
+  "boundaries": [
+    "No real database migrations executed",
+    "No real channel SDK integration or provider end-to-end acceptance",
+    "No commit or push",
+    "H2 MySQL mode and mocked remote boundaries, not target MySQL/Redis runtime acceptance"
+  ],
+  "docs": [
+    "docs/yudao-alignment-api.md",
+    "docs/yudao-alignment-upgrade.md"
+  ]
+}

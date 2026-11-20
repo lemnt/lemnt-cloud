@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lemnt:promotion:design:submit-response",
+  "title": "submit-response（拟定，尚未实现）",
+  "type": "object",
+  "properties": {
+    "pricingProtocol": {
+      "const": "PROMOTION_V2"
+    },
+    "settlementId": {
+      "type": "string",
+      "description": "服务端结算UUID",
+      "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
+    "requestNo": {
+      "type": "string",
+      "description": "幂等请求编号，重试不可改变",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"
+    },
+    "order": {
+      "type": "object",
+      "properties": {
+        "orderNo": {
+          "type": "string",
+          "description": "订单编号",
+          "pattern": "^TR[A-Z0-9]{1,38}$"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "RESERVING",
+            "PENDING_PAYMENT",
+            "PAID",
+            "SHIPPED",
+            "COMPLETED",
+            "CLOSED"
+          ],
+          "description": "当前订单状态"
+        },
+        "originalFen": {
+          "type": "string",
+          "description": "非负整数分，0..Long.MAX_VALUE",
+          "pattern": "^[1-9][0-9]{0,18}$",
+          "format": "int64-positive"
+        },
+        "totalDiscountFen": {
+          "type": "string",
+          "description": "非负整数分，0..Long.MAX_VALUE",
+          "pattern": "^(0|[1-9][0-9]{0,18})$",
+          "format": "int64-nonnegative"
+        },
+        "payableFen": {
+          "type": "string",
+          "description": "非负整数分，0..Long.MAX_VALUE",
+          "pattern": "^[1-9][0-9]{0,18}$",
+          "format": "int64-positive"
+        }
+      },
+      "required": [
+        "orderNo",
+        "status",
+        "originalFen",
+        "totalDiscountFen",
+        "payableFen"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "pricingProtocol",
+    "settlementId",
+    "requestNo",
+    "order"
+  ],
+  "additionalProperties": false
+}

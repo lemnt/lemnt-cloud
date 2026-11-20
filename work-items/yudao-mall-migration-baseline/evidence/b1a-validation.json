@@ -1,0 +1,228 @@
+{
+  "capturedAt": "2026-11-09T10:45:07.598170+08:00",
+  "scope": [
+    "P000",
+    "F001",
+    "F002",
+    "F003",
+    "F004",
+    "F005",
+    "F006",
+    "V-B1a"
+  ],
+  "status": "automated_contract_validation_passed",
+  "head": "12745a285d36869f2005d9f4ffdada93351ec1e4",
+  "baseline": "execution-baseline.json",
+  "sourceReferenceRecheck": {
+    "total": 45,
+    "unchanged": 45
+  },
+  "red": {
+    "gateway": {
+      "command": "JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home mvn -f lemnt-server/pom.xml -pl lemnt-gateway -am -Dtest=AuthFilterAppRoutesTest,AuthFilterDomainTest,ProductAppRouteContractTest -Dsurefire.failIfNoSpecifiedTests=false test",
+      "exitCode": 1,
+      "reports": [
+        {
+          "name": "com.lemnt.gateway.filter.AuthFilterAppRoutesTest",
+          "tests": "6",
+          "failures": "3",
+          "errors": "0",
+          "skipped": "0"
+        },
+        {
+          "name": "com.lemnt.gateway.filter.AuthFilterDomainTest",
+          "tests": "4",
+          "failures": "2",
+          "errors": "0",
+          "skipped": "0"
+        },
+        {
+          "name": "com.lemnt.gateway.filter.ProductAppRouteContractTest",
+          "tests": "15",
+          "failures": "9",
+          "errors": "0",
+          "skipped": "0"
+        }
+      ],
+      "observedFailures": [
+        "新商品公开GET未放行",
+        "新商品会员路径使用管理员域且可能被宽泛后台白名单放行",
+        "小程序公开评价GET使用投稿URL"
+      ]
+    },
+    "miniapp": {
+      "command": "node --test lemnt-miniapp/tests/comments.test.cjs",
+      "exitCode": 1,
+      "tests": 11,
+      "pass": 9,
+      "fail": 2,
+      "skipped": 0
+    }
+  },
+  "green": {
+    "gateway": {
+      "command": "JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home mvn -f lemnt-server/pom.xml -pl lemnt-gateway -am test",
+      "exitCode": 0,
+      "totals": {
+        "tests": 365,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "reports": [
+        {
+          "name": "com.lemnt.gateway.config.CorsConfigTest",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.lemnt.gateway.config.MemberAuthRouteConfigurationTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.lemnt.gateway.config.ServiceRouteConfigurationTest",
+          "tests": 316,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.lemnt.gateway.filter.AuthFilterAppRoutesTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.lemnt.gateway.filter.AuthFilterDomainTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.lemnt.gateway.filter.ProductAppRouteContractTest",
+          "tests": 15,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.lemnt.gateway.filter.XssFilterTest",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.lemnt.gateway.handler.GatewayExceptionHandlerTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.lemnt.gateway.handler.SentinelFallbackHandlerTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.lemnt.gateway.utils.ServletUtilsTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ]
+    },
+    "miniappFocused": {
+      "command": "node --test lemnt-miniapp/tests/comments.test.cjs",
+      "exitCode": 0,
+      "tests": 11,
+      "pass": 11,
+      "fail": 0,
+      "skipped": 0
+    },
+    "miniappFull": {
+      "command": "node --test lemnt-miniapp/tests/*.test.cjs",
+      "exitCode": 0,
+      "tests": 182,
+      "pass": 182,
+      "fail": 0,
+      "skipped": 0
+    },
+    "architecture": {
+      "command": "python3 scripts/check_architecture.py",
+      "exitCode": 0,
+      "violations": 0
+    },
+    "javascriptFormat": {
+      "command": "lemnt-ui/node_modules/.bin/prettier --config lemnt-ui/prettier.config.js --check lemnt-miniapp/services/comments.js lemnt-miniapp/tests/comments.test.cjs",
+      "exitCode": 0
+    },
+    "diffWhitespace": {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  },
+  "javaFormat": {
+    "status": "blocked_by_permission_policy",
+    "version": "google-java-format 1.25.2 AOSP",
+    "verifiedJarSha256": "25157797a0a972c2290b5bc71530c4f7ad646458025e3484412a6e5a9b8c9aa6",
+    "exitCode": null,
+    "detail": "固定版本JAR哈希已核验；执行被自动权限策略拒绝，未绕过限制，未声明Java格式检查通过。"
+  },
+  "files": [
+    {
+      "taskId": "P000",
+      "path": "work-items/yudao-mall-migration-baseline/evidence/execution-baseline.json",
+      "sha256": "62fa7fd99d98b7bca60c76f0c44ae5d837384927b18ee0747f619e75f674960c"
+    },
+    {
+      "taskId": "F001",
+      "path": "lemnt-server/lemnt-gateway/src/main/java/com/lemnt/gateway/filter/AuthFilter.java",
+      "sha256": "f5110998b62712b721b97b3186cd5633a3b75245cc0292ba749d138f3a0e8c89"
+    },
+    {
+      "taskId": "F002",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterAppRoutesTest.java",
+      "sha256": "22ebeb9edaf6837ccbadc36c80d64d4b31f9021a27332c349c00d8500511ac2c"
+    },
+    {
+      "taskId": "F003",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterDomainTest.java",
+      "sha256": "7099865546a2011fe949277f4d02638ef6f2a79de142cd1bfd70ad5687c76612"
+    },
+    {
+      "taskId": "F004",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/ProductAppRouteContractTest.java",
+      "sha256": "ce70e1060a8d7d2f094c9ad2de449b78baf16fb9c1615d37ec285660ff5a7676"
+    },
+    {
+      "taskId": "F005",
+      "path": "lemnt-miniapp/services/comments.js",
+      "sha256": "44dbec1fa5a15ea970f5aec60ff25fd6b9abcb9ba9f6d411716accf43e2ade7e"
+    },
+    {
+      "taskId": "F006",
+      "path": "lemnt-miniapp/tests/comments.test.cjs",
+      "sha256": "cc55ac9cb4bef17be455c26252190f02b713aa59d12b6118d2f47f82524adac6"
+    }
+  ],
+  "notPerformed": [
+    "真实Nacos/Redis/MySQL/RocketMQ启动及联调",
+    "微信开发者工具和真机验收",
+    "渠道或资金操作",
+    "B1b及后续批次",
+    "DDL或生产配置发布",
+    "commit/push/git索引修改"
+  ],
+  "overallGenerateStatus": "in_progress"
+}

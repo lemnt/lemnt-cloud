@@ -1,0 +1,54 @@
+{
+  "capturedAt": "2026-11-09T11:51:49.929622+08:00",
+  "namespace": "dev",
+  "group": "DEFAULT_GROUP",
+  "secretsPersisted": false,
+  "checks": [
+    {
+      "source": "lemnt-system.yaml",
+      "operation": "SELECT 1 without selecting a business schema",
+      "exitCode": 0,
+      "passed": true,
+      "result": "1",
+      "errorCode": null
+    },
+    {
+      "source": "lemnt-member.yaml",
+      "operation": "SELECT 1 without selecting a business schema",
+      "exitCode": 0,
+      "passed": true,
+      "result": "1",
+      "errorCode": null
+    },
+    {
+      "source": "lemnt-common.yaml",
+      "operation": "AUTH then PING; no key reads/writes or SELECT",
+      "authenticated": true,
+      "passed": true
+    }
+  ],
+  "missingConfigs": [
+    {
+      "dataId": "lemnt-product.yaml",
+      "httpStatus": 404
+    },
+    {
+      "dataId": "lemnt-promotion.yaml",
+      "httpStatus": 404
+    },
+    {
+      "dataId": "lemnt-order.yaml",
+      "httpStatus": 404
+    },
+    {
+      "dataId": "lemnt-pay.yaml",
+      "httpStatus": 404
+    },
+    {
+      "dataId": "commerce-mq.yaml",
+      "httpStatus": 404
+    }
+  ],
+  "ddlExecuted": false,
+  "businessDataRead": false
+}

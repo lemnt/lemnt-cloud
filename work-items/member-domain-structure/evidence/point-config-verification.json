@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-30",
+  "design": "107-point-config-design.md",
+  "backend": {
+    "member": {
+      "tests": 81,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "auth": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "mall": {
+      "tests": 119,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "frontend": {
+    "tests": 211,
+    "build": "passed",
+    "lint": "passed",
+    "format:check": "passed",
+    "typecheck": "passed"
+  },
+  "miniapp": {
+    "tests": 123,
+    "failures": 0,
+    "skipped": 0
+  },
+  "verified": [
+    "H2首次保存/真实ID更新",
+    "并发首次保存单行",
+    "旧结构升级ID及未知审计保留",
+    "基础锁提交/回滚/失败与同事务复用",
+    "注入写入失败整体回滚并可重试",
+    "真实报价确认积分上限单位及开关",
+    "MockMvc与React路径/白名单/草稿"
+  ],
+  "notRun": [
+    "真实MySQL及Redis集群",
+    "Nacos应用",
+    "部署HTTP/浏览器E2E/微信验收"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-member/sql/V2__member_account.sql": "cc16dcbe81a29872f52cfd8f23867e36e0405ed2e7347ceef1d0b610fcc7c761",
+    "lemnt-server/lemnt-member/sql/upgrade/point_config_audit.sql": "770c3cd2d51f21f318d14e6129a4ec4f6d91f7f1f2b1316dc1d6c0ace1bc22fa",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/gateway/MemberConfigLockGatewayImpl.java": "4a7da73aa56178794fecc142b7a2a7cf3e587237da206ea2418cfc6531581d06",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/gateway/MemberConfigGatewayImpl.java": "1b35f27017f414b54c93f73ea58ed75aea1ff1ba49ad6baa2b13910c2793620b",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/service/MemberGrowthService.java": "8bfba1b4e394c1f86c01e0eff5ef03fe064798fd002182b8a3fb3740ddb7f22b",
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java": "b2454978f2427259abec53c9ce481fadfbbbb347a607d1745843d5b267960284",
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberConfigLockTest.java": "0167ba02e09287640115323cb65802756328e1f5a93f281d729726c718586cf1",
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberPointConfigHttpTest.java": "e9ff0e9c98a737517ff51998eba4743511e44d775209c919bfea236ebb047c69",
+    "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/product/ActivityAlignmentPersistenceTest.java": "e60b226d8657c33bd76fbd563231c55d50340ad88561de21ae57b5136bb82c36",
+    "lemnt-ui/src/modules/member/account/pages/MemberConfigPage.tsx": "bf17eee0660b9271f75ea993a1db3ffea0fc168a982ba804f87bbdf1756a783c",
+    "/tmp/point-config-final-verify.log": "6d8b57a7d0bef3299b6cd778be2b4fb1f183972296ec45ffdf60188606b6482e",
+    "/tmp/point-config-member-final-verify.log": "91438707e47ad0a20fba0a2205fcab352b8ba59f4631c66a3460082470b404ad",
+    "/tmp/point-config-ui-tests.log": "24ac15dcec8539692be86572e76e4f8ee87b721c714d9b77ca7307cbd6610630",
+    "/tmp/point-config-mini.log": "7bfabe3870bb1f29ef62b1c81f07c3fdf8ca9e7dc90c99642b3ac2de94507dfd"
+  }
+}

@@ -140,7 +140,9 @@ public @interface Excel {
     Type type() default Type.ALL;
 
     enum Type {
-        ALL(0), EXPORT(1), IMPORT(2);
+        ALL(0),
+        EXPORT(1),
+        IMPORT(2);
         private final int value;
 
         Type(int value) {
@@ -153,7 +155,10 @@ public @interface Excel {
     }
 
     enum ColumnType {
-        NUMERIC(0), STRING(1), IMAGE(2), TEXT(3);
+        NUMERIC(0),
+        STRING(1),
+        IMAGE(2),
+        TEXT(3);
         private final int value;
 
         ColumnType(int value) {
@@ -194,6 +199,9 @@ public @interface Excel {
      * Excel 水平对齐枚举（对应 POI HorizontalAlignment）
      */
     enum ExcelAlign {
-        CENTER, LEFT, RIGHT, GENERAL
+        CENTER,
+        LEFT,
+        RIGHT,
+        GENERAL
     }
 }

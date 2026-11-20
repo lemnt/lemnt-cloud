@@ -1,0 +1,47 @@
+{
+  "batch": "139-wallet-recharge",
+  "date": "2026-10-31",
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-trade/lemnt-trade-start -am test",
+    "javaVersion": "17.0.17",
+    "totals": {"classes": 42, "tests": 215, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-trade-domain": {"classes": 1, "tests": 2},
+      "lemnt-trade-application": {"classes": 9, "tests": 49},
+      "lemnt-trade-infrastructure": {"classes": 4, "tests": 10},
+      "lemnt-trade-adapter": {"classes": 12, "tests": 25},
+      "lemnt-trade-start": {"classes": 15, "tests": 129}
+    },
+    "newTests": [
+      "com.lemnt.trade.application.payment.RechargeServiceTest (6)",
+      "com.lemnt.trade.start.payment.RechargePersistenceTest (2, H2 production SQL/gateway)",
+      "com.lemnt.trade.start.payment.RechargeMenuSeedTest (1)"
+    ]
+  },
+  "ui": {"command": "yarn test / yarn typecheck / yarn lint / yarn format:check", "tests": 280, "failures": 0, "newTests": ["rechargeApi.test.ts (3)"]},
+  "miniapp": {"command": "node --test tests/*.test.cjs", "tests": 140, "failures": 0, "newTests": ["recharge.test.cjs (2)"]},
+  "endpoints": [
+    "GET /trade/admin/recharge-packages",
+    "GET /trade/admin/recharge-packages/{id}",
+    "POST /trade/admin/recharge-packages",
+    "PUT /trade/admin/recharge-packages/{id}",
+    "DELETE /trade/admin/recharge-packages/{id}",
+    "GET /trade/admin/wallet-recharges",
+    "GET /trade/admin/wallet-recharges/{rechargeNo}",
+    "POST /trade/admin/wallet-recharges/{rechargeNo}/confirm",
+    "POST /trade/admin/wallet-recharges/{rechargeNo}/refund",
+    "GET /trade/app/recharge-packages",
+    "POST /trade/app/wallet/recharges",
+    "GET /trade/app/wallet/recharges"
+  ],
+  "invariants": [
+    "package name unique; referenced package cannot be deleted",
+    "recharge creation idempotent by request_no",
+    "confirm paid idempotent and credits wallet once per recharge_no",
+    "refund idempotent and debits wallet once per recharge_no; insufficient balance rolls back",
+    "recharge status PENDING -> PAID -> REFUNDED"
+  ],
+  "sql": ["lemnt-server/lemnt-trade/sql/V13__wallet_recharge.sql", "lemnt-server/sql/V20261031__trade_recharge_menu.sql"],
+  "adaptation": "confirm-paid admin command stands in for real channel callback; refund is synchronous wallet debit",
+  "deferred": ["real payment channel and async channel refund", "transfer (Y07)", "real MySQL/Nacos/Redis/browser/device"]
+}

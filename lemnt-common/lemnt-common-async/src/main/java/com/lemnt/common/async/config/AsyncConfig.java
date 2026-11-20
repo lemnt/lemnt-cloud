@@ -2,7 +2,7 @@ package com.lemnt.common.async.config;
 
 import com.lemnt.common.async.model.ExecutorConfig;
 import com.lemnt.common.async.properties.AsyncExecutorProperties;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -59,10 +61,8 @@ public class AsyncConfig implements AsyncConfigurer {
      */
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return (ex, method, params) -> log.error(
-                "Async error. method={}, params={}",
-                method.getName(), params, ex
-        );
+        return (ex, method, params) ->
+            log.error("Async error. method={}, params={}", method.getName(), params, ex);
     }
 
     /**

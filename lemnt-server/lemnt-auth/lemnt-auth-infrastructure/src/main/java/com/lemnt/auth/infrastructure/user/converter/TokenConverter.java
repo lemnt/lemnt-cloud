@@ -10,7 +10,6 @@ import com.lemnt.common.security.model.SecurityUserDetail;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Token Gateway 领域实体与通用安全模型转换器
@@ -18,7 +17,6 @@ import java.util.Set;
  * @author wangxx
  */
 public class TokenConverter {
-
     /**
      * 领域 LoginUser → 通用安全 SecurityUser
      */
@@ -28,7 +26,6 @@ public class TokenConverter {
         }
 
         SecurityUser securityUser = new SecurityUser();
-
         securityUser.setToken(domain.getToken());
         securityUser.setUserId(domain.getUserId());
         securityUser.setUsername(domain.getUsername());
@@ -36,7 +33,6 @@ public class TokenConverter {
         securityUser.setExpireTime(domain.getExpireTime());
         securityUser.setIpaddr(domain.getIpaddr());
         securityUser.setRoleKey(domain.getRoleKey());
-
         if (domain.getPermissions() != null) {
             securityUser.setPermissions(new LinkedHashSet<>(domain.getPermissions()));
         }
@@ -44,7 +40,6 @@ public class TokenConverter {
             securityUser.setRoles(new LinkedHashSet<>(domain.getRoles()));
         }
         securityUser.setDetail(toCommon(domain.getDetail()));
-
         return securityUser;
     }
 
@@ -57,7 +52,6 @@ public class TokenConverter {
         }
 
         LoginUser loginUser = new LoginUser();
-
         loginUser.setToken(common.getToken());
         loginUser.setUserId(common.getUserId());
         loginUser.setUsername(common.getUsername());
@@ -65,7 +59,6 @@ public class TokenConverter {
         loginUser.setExpireTime(common.getExpireTime());
         loginUser.setIpaddr(common.getIpaddr());
         loginUser.setRoleKey(common.getRoleKey());
-
         if (common.getPermissions() != null) {
             loginUser.setPermissions(new LinkedHashSet<>(common.getPermissions()));
         }
@@ -73,7 +66,6 @@ public class TokenConverter {
             loginUser.setRoles(new LinkedHashSet<>(common.getRoles()));
         }
         loginUser.setDetail(toDomain(common.getDetail()));
-
         return loginUser;
     }
 
@@ -86,7 +78,6 @@ public class TokenConverter {
         }
 
         SecurityUserDetail detail = new SecurityUserDetail();
-
         detail.setUserName(domain.getUserName());
         detail.setUserId(domain.getUserId());
         detail.setDeptId(domain.getDeptId());
@@ -101,7 +92,6 @@ public class TokenConverter {
         detail.setLoginDate(domain.getLoginDate());
         detail.setPwdUpdateDate(domain.getPwdUpdateDate());
         detail.setRoles(toRoleList(domain.getRoles()));
-
         return detail;
     }
 
@@ -114,7 +104,6 @@ public class TokenConverter {
         }
 
         UserInfo userInfo = new UserInfo();
-
         userInfo.setUserName(detail.getUserName());
         userInfo.setUserId(detail.getUserId());
         userInfo.setDeptId(detail.getDeptId());
@@ -129,7 +118,6 @@ public class TokenConverter {
         userInfo.setLoginDate(detail.getLoginDate());
         userInfo.setPwdUpdateDate(detail.getPwdUpdateDate());
         userInfo.setRoles(toDomainList(detail.getRoles()));
-
         return userInfo;
     }
 
@@ -142,14 +130,12 @@ public class TokenConverter {
         }
 
         SecurityRole securityRole = new SecurityRole();
-
         securityRole.setRoleId(domain.getRoleId());
         securityRole.setRoleName(domain.getRoleName());
         securityRole.setRoleKey(domain.getRoleKey());
         securityRole.setRoleSort(domain.getRoleSort());
         securityRole.setDataScope(domain.getDataScope());
         securityRole.setStatus(domain.getStatus());
-
         return securityRole;
     }
 
@@ -162,14 +148,12 @@ public class TokenConverter {
         }
 
         UserInfoRole userInfoRole = new UserInfoRole();
-
         userInfoRole.setRoleId(detail.getRoleId());
         userInfoRole.setRoleName(detail.getRoleName());
         userInfoRole.setRoleKey(detail.getRoleKey());
         userInfoRole.setRoleSort(detail.getRoleSort());
         userInfoRole.setDataScope(detail.getDataScope());
         userInfoRole.setStatus(detail.getStatus());
-
         return userInfoRole;
     }
 

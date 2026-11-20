@@ -1,0 +1,18 @@
+{
+  "tableGatewayMapperTriples": [
+    "MemberAddressGateway",
+    "MemberAssetRecordGateway",
+    "MemberConfigGateway",
+    "MemberCredentialGateway",
+    "MemberGroupGateway",
+    "MemberLevelGateway",
+    "MemberLevelRecordGateway",
+    "MemberSignConfigGateway",
+    "MemberSignRecordGateway",
+    "MemberTagGateway",
+    "MemberTagLinkGateway",
+    "MemberUserGateway"
+  ],
+  "sqlAnnotationsPreserved": 68,
+  "sqlUnchanged": true
+}

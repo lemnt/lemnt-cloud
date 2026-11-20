@@ -8,6 +8,11 @@ lemnt-cloud 管理前端，使用 React、TypeScript、Vite、Ant Design / Pro C
 - 基于后端授权菜单的导航、页面缓存及首页快捷入口。
 - 用户、角色、菜单、部门、岗位、字典、参数、日志、公告和个人中心。
 - 通知、文件上传和头像裁剪等系统管理功能。
+- 会员资料、等级、标签、分组、地址与权益记录。
+- 商品目录、规格、评价、优惠券、活动与结算维护。
+- 订单履约、售后退款、支付配置、钱包、分销及自提维护。
+
+当前接口与统一规范见[代码规范](../docs/code-standards.md)，验证结果见[第165批交付](../work-items/member-domain-structure/165-project-code-standards-delivery.md)。代码提供的页面不等于已完成真实环境和权限验收。
 
 ## 环境与启动
 

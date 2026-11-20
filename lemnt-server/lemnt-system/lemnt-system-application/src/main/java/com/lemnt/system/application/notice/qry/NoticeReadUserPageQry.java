@@ -9,17 +9,17 @@ import java.time.LocalDateTime;
  * @author wangxx
  */
 public record NoticeReadUserPageQry(
-        /**
-         * 公告ID
-         */
-        Long noticeId,
-        /**
-         * 搜索关键词
-         */
-        String searchValue,
-        int pageNum,
-        int pageSize,
-        LocalDateTime beginTime,
-        LocalDateTime endTime
-) implements Serializable {
+    /**
+     * 公告ID
+     */
+    Long noticeId,
+    /**
+     * 搜索关键词
+     */
+    String searchValue,
+    int pageNum,
+    int pageSize,
+    LocalDateTime beginTime,
+    LocalDateTime endTime)
+    implements Serializable {
 }

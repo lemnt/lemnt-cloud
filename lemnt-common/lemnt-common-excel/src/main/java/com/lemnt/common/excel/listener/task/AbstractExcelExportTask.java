@@ -1,24 +1,26 @@
 package com.lemnt.common.excel.listener.task;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.text.StrPool;
-import cn.hutool.crypto.digest.DigestUtil;
 import com.lemnt.common.core.utils.JsonUtils;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.write.metadata.WriteSheet;
 import com.lemnt.common.excel.converter.ExcelExportAnnotationConverter;
-import com.lemnt.common.excel.domain.vo.ExportListVo;
 import com.lemnt.common.excel.domain.event.ExcelExportTaskEvent;
+import com.lemnt.common.excel.domain.vo.ExportListVo;
 import com.lemnt.common.excel.handler.ExcelColumnWidthHandler;
 import com.lemnt.common.excel.handler.ExcelStyleHandler;
 import com.lemnt.common.excel.service.BaseExcelTaskService;
 import com.lemnt.common.oss.constant.OssFileTypeEnum;
 import com.lemnt.common.oss.service.OssFileService;
-import lombok.extern.slf4j.Slf4j;
+
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.metadata.WriteSheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.text.StrPool;
+import cn.hutool.crypto.digest.DigestUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.lang.reflect.ParameterizedType;
@@ -35,8 +37,10 @@ public abstract class AbstractExcelExportTask<Q, V> implements BaseExcelExportTa
     private BaseExcelTaskService baseExcelTaskService;
     @Autowired
     private OssFileService ossFileService;
+
     @Value("${upload.file-path}")
     private String filePath;
+
     /**
      * 默认每页处理的大小
      */
@@ -80,16 +84,21 @@ public abstract class AbstractExcelExportTask<Q, V> implements BaseExcelExportTa
     @Override
     public String execute(ExcelExportTaskEvent event) throws Exception {
         Q params = JsonUtils.toBean(event.getParams(), this.qClass);
-        String fileName = DigestUtil.md5Hex(event.getTaskId() + event.getType() + System.currentTimeMillis()) + StrPool.DOT + OssFileTypeEnum.XLSX.getSuffix();
+        String fileName =
+            DigestUtil.md5Hex(event.getTaskId() + event.getType() + System.currentTimeMillis())
+                + StrPool.DOT
+                + OssFileTypeEnum.XLSX.getSuffix();
         String exportFilePath = filePath + StrPool.SLASH + "export" + StrPool.SLASH + fileName;
         File exportFile = new File(exportFilePath);
         FileUtil.mkParentDirs(exportFile);
         ExcelStyleHandler styleHandler = new ExcelStyleHandler(this.vClass);
         ExcelColumnWidthHandler widthHandler = new ExcelColumnWidthHandler(this.vClass);
-        try (ExcelWriter writer = EasyExcel.write(exportFile)
-                .head(ExcelExportAnnotationConverter.buildHead(this.vClass))
-                .registerWriteHandler(styleHandler)
-                .registerWriteHandler(widthHandler).build()) {
+        try (ExcelWriter writer =
+                 EasyExcel.write(exportFile)
+                     .head(ExcelExportAnnotationConverter.buildHead(this.vClass))
+                     .registerWriteHandler(styleHandler)
+                     .registerWriteHandler(widthHandler)
+                     .build()) {
             WriteSheet sheet = EasyExcel.writerSheet().build();
             long count = 0, totalNum = 0;
             int pageNumber = 1;
@@ -98,7 +107,9 @@ public abstract class AbstractExcelExportTask<Q, V> implements BaseExcelExportTa
                 if (CollUtil.isEmpty(data.getList())) {
                     break;
                 }
-                writer.write(ExcelExportAnnotationConverter.convertRows(data.getList(), this.vClass), sheet);
+                writer.write(
+                    ExcelExportAnnotationConverter.convertRows(data.getList(), this.vClass),
+                    sheet);
                 if (data.getList().size() < this.pageSize()) {
                     break;
                 }
@@ -114,7 +125,8 @@ public abstract class AbstractExcelExportTask<Q, V> implements BaseExcelExportTa
             styleHandler.appendStatisticsRow();
         }
         try (InputStream is = new FileInputStream(exportFile)) {
-            return ossFileService.uploadStream(is, fileName, OssFileTypeEnum.XLSX.getContentType(), exportFile.length());
+            return ossFileService.uploadStream(
+                is, fileName, OssFileTypeEnum.XLSX.getContentType(), exportFile.length());
         } finally {
             FileUtil.del(exportFile);
         }

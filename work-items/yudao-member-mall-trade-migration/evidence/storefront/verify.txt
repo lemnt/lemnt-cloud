@@ -1,0 +1,6 @@
+Base957c75a; Java17/Maven3.9.11 root mvn -o -s <local-settings> -B -DargLine=-javaagent:<byte-buddy-agent-1.18.10.jar> verify PASS. All71 projects,392 tests,0 failures/errors/skips.
+17 added backend tests: catalog actual SQL3,trade actual transactions8,mall HTTP2,trade HTTP3,gateway1. Includes hidden ancestor/brand/SKU visibility,out-of-stock,price range/search,closed-by-default public claim,per-member retry,quota concurrency,expiration,rollback and idempotent/concurrent/addition ledger failures/replay after deletion.
+Node22.13.0/Yarn1.22.22: React typecheck/lint/format:check/build PASS;169 tests PASS (1 added),existing vendor chunk warning retained. No dependency/lock changes.
+Native69 tests PASS (15 added): exact response/identity/pricing,immutable addition persistence/readback/retry/storage failure,account switch,pending-checkout guard,SKU availability,coupon confirmation/refresh failure. JS/JSON plus3 new WXML structures/event bindings PASS;not native compilation.
+Browser interaction/visual QA and native compiler/developer-tool/device NOT RUN. Prior browser attempt failed on missing Chromium/invalid download; no new browser PASS claimed. Target MySQL/Redis/Nacos/Dubbo/roles/providers NOT RUN.
+V8 SQL supplied,not applied live; public claim defaults off; memberApiReady=false; PR Draft. No main edit,merge,deployment or live config/role writes.

@@ -1,6 +1,7 @@
 package com.lemnt.common.adapter.res;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
  *
  * @author wangxx
  */
+@Schema(description = "HTTP响应审计字段基类")
 public abstract class BaseRes implements Serializable {
 
     @Serial
@@ -19,22 +21,26 @@ public abstract class BaseRes implements Serializable {
     /**
      * 创建者
      */
+    @Schema(description = "创建者")
     private String createBy;
 
     /**
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(description = "创建时间，yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
     /**
      * 更新者
      */
+    @Schema(description = "更新者")
     private String updateBy;
 
     /**
      * 更新时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(description = "更新时间，yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
 }

@@ -3,15 +3,14 @@ package com.lemnt.system.infrastructure.auth.mapper;
 import com.lemnt.common.datascope.annotation.DataScope;
 import com.lemnt.system.domain.auth.model.Role;
 import com.lemnt.system.infrastructure.auth.dataobject.RoleDO;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Set;
-
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * Role 数据层

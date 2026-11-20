@@ -1,0 +1,9 @@
+{
+  "status": "BLOCKED",
+  "attempt": "Playwright launch with Chrome for Testing 134.0.6998.35",
+  "reason": "process_singleton_posix.cc socket() failed: Operation not permitted; runtime Unix socket restriction",
+  "checksExecuted": [],
+  "screenshotsProduced": [],
+  "script": "browser-smoke.cjs",
+  "mode": "script uses mock HTTP, not live backend integration"
+}

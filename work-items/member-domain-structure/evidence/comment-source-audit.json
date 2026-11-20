@@ -1,0 +1,26 @@
+{
+  "kind": "static_source_audit",
+  "files": {
+    "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/admin/comment/ProductCommentController.java": "7e13dd110e97f62d4652153266c58888e8358238a2387eb7e929761a003255a6",
+    "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/service/comment/ProductCommentServiceImpl.java": "e661f70535b1d0ca396a9a02d3e60e2bd8b093bbabdd374344a41097c1a1213d",
+    "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/mysql/comment/ProductCommentMapper.java": "e56d78006e173ce57e9cc60a687f21775b4000979ef76a0d6d5752f2bc1bf005",
+    "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/convert/comment/ProductCommentConvert.java": "6d3a1047e93f2bc740a3f0bf24431209f99fa894ddc334a539ac4140510dea9e",
+    "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/service/order/TradeOrderUpdateServiceImpl.java": "8ea9b31d19285dfa11401cbaaa877fb66e4ee1754eeb5ce7bf99e10b555f9c43",
+    "/Users/wangxx/demo/yudao-ui-admin-vue3/src/views/mall/product/comment/index.vue": "8a5f420c701154f84950073c51afcad46f859e56d1dcfbe663b127de39fa4f8a",
+    "/Users/wangxx/demo/yudao-ui-admin-vue3/src/views/mall/product/comment/CommentForm.vue": "77d85039e9fec6acebcf4923a14960fa95b155b62fc9f7ce3ac10d70a3fb9485",
+    "/Users/wangxx/demo/yudao-ui-admin-vue3/src/views/mall/product/comment/ReplyForm.vue": "bbaa1087d08751f34a38786c31ee1293f2d4c979e630172a2db776bb90cbcc85",
+    "/Users/wangxx/demo/yudao-mall-uniapp/pages/goods/comment/add.vue": "96511797eb9491f383acadf8855731c7221ccb59e4c3d0e92aa6f0bd90d7596c",
+    "/Users/wangxx/demo/yudao-mall-uniapp/pages/goods/comment/list.vue": "3f13d1ae51be84f40f4bec8ecc9b2e63ada7bd64d8dd962bc52f65eaa32d99e7"
+  },
+  "notSourceGaps": [
+    "评价独立统计",
+    "评价导出"
+  ],
+  "remaining": [
+    "后台自评",
+    "系统评价",
+    "多商品同页提交",
+    "图片上传"
+  ],
+  "runtimeVerified": false
+}

@@ -2,10 +2,10 @@ package com.lemnt.gateway.handler;
 
 import com.lemnt.gateway.utils.ServletUtils;
 
-import org.springframework.cloud.gateway.support.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.webflux.error.ErrorWebExceptionHandler;
+import org.springframework.cloud.gateway.support.NotFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;

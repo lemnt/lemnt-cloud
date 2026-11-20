@@ -2,13 +2,15 @@
 
 基于 Spring Cloud 的通用微服务开发框架，保留 CQRS/DDD 分层，提供统一网关、认证、系统管理及公共组件，作为业务系统的开发底座。
 
-当前仓库包含 Java 后端工程和 React 管理前端。第三方 SDK 仅保留一个通用 HTTP 调用示例。
+当前仓库包含 Java 后端、React 管理前端和微信原生小程序。第三方 SDK 仅保留一个通用 HTTP 调用示例。
 
 ## 项目结构
 
 ```text
 lemnt-cloud
+├── AGENTS.md                   全项目规范入口
 ├── lemnt-ui                    React 管理前端
+├── lemnt-miniapp               微信原生会员端
 ├── lemnt-dependencies          统一依赖版本、构建插件和环境配置
 ├── lemnt-common                通用组件
 │   ├── lemnt-common-core        基础工具与通用常量
@@ -21,6 +23,11 @@ lemnt-cloud
     ├── lemnt-gateway           网关
     ├── lemnt-auth              认证中心
     ├── lemnt-system            系统管理
+    ├── lemnt-member            会员与积分账户
+    ├── lemnt-product           商品与库存
+    ├── lemnt-promotion         活动、优惠券与购物车
+    ├── lemnt-order             结算、订单、售后与履约
+    ├── lemnt-pay               支付、退款与钱包
     ├── lemnt-open              开放接口示例
     ├── lemnt-third-sdk
     │   └── demo-sdk            Java HTTP Client 调用示例
@@ -75,7 +82,7 @@ lemnt-cloud
 
 调用链为 `Controller → Executor → Domain Gateway → GatewayImpl`。`application` 与 `infrastructure` 都依赖 `domain`，两者不互相依赖。
 
-详细规范见 [AGENTS.md](lemnt-server/AGENTS.md)。
+统一边界、格式及检查命令见[代码规范](docs/code-standards.md)，各端规则由[根AGENTS.md](AGENTS.md)索引。
 
 ## 本地运行
 
@@ -91,7 +98,11 @@ Nacos 3.x 默认使用 `8080` 作为控制台端口，`8848` 作为服务主端�
 
 **脚本包含 `DROP TABLE`，只应用于新建或确认可以重建的数据库，不能直接用于已有业务库升级。** 数据库连接信息在 Nacos 的对应配置中设置。
 
+member、product、promotion、order、pay各有一个空库初始化文件，路径为`lemnt-server/lemnt-{服务}/sql/lemnt_{服务}.sql`，只含最终建表及必要基础数据，不用于旧库升级。旧mall/trade源码与初始化SQL已随P5清理删除，`lemnt-server/sql`下带日期的V脚本作为历史升级记录保留；system脚本维持现状。四服务的配置、原任务审核与切流边界见[配置与切流准备](docs/module-split-cutover.md)。
+
 ### 3. 导入 Nacos 配置
+
+四个拆分服务的配置源为`docs/config/lemnt-{product,promotion,order,pay}.yaml`和共享`commerce-mq.yaml`。仅交付模板，未自动发布；副作用开关默认关闭，P5-01网关内置313端点映射已实现，在线切流尚未执行。旧服务尚在运行时不能直接启用新写入方。
 
 配置包位于 [nacos_config_export.zip](lemnt-server/sql/nacos/nacos_config_export.zip)。导入前检查并替换数据库、Redis、文件存储、消息服务等环境地址及凭据。
 
@@ -167,7 +178,7 @@ java -jar lemnt-server/lemnt-open/lemnt-open-start/target/lemnt-open-start.jar
 | lemnt-auth | 9200 |
 | lemnt-open | 9300 |
 
-检查服务日志及 Nacos 注册状态，确认服务处于同一命名空间。网关路由配置位于 Nacos，配置包使用 `/auth/**`、`/system/**`、`/open/**` 前缀转发请求。
+检查服务日志及 Nacos 注册状态，确认服务处于同一命名空间。其他动态路由配置仍位于 Nacos，配置包使用 `/auth/**`、`/system/**`、`/open/**` 前缀转发请求。商城/交易的313个端点由[内置路由源](docs/config/commerce-gateway-routes.yaml)按方法和路径转发到四个新服务，不再配置旧服务粗路由；部署前核对[路由源与切流要求](docs/module-split-cutover.md)，不要在Nacos重复导入同一清单。
 
 ## 前端运行与部署
 
@@ -225,7 +236,7 @@ mvn -f lemnt-common/pom.xml test
 mvn -f lemnt-server/pom.xml test
 ```
 
-移除根聚合 POM 后的分步构建与测试尚未重新执行。文件上传校验测试已按现有 Problem Details 响应断言 HTTP 状态、错误码及错误详情。
+分步构建与测试结果按[全项目规范重构交付](work-items/member-domain-structure/165-project-code-standards-delivery.md)记录；文件上传测试会开启本地测试端口。SQL注释、规范扫描和格式检查命令见[代码规范](docs/code-standards.md)。
 
 打包成功不代表已完成真实部署验收；Nacos 3.2.1 连接、数据库、中间件、登录和接口权限等运行流程仍需在目标环境验证。
 

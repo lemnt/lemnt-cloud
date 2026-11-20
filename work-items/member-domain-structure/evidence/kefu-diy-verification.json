@@ -1,0 +1,90 @@
+{
+  "batch": "151-kefu-diy",
+  "date": "2026-11-01",
+  "scope": ["customer service conversations", "customer service messages", "diy templates", "diy pages"],
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-mall/lemnt-mall-start -am test",
+    "totals": {"tests": 181, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-mall-domain": 10,
+      "lemnt-mall-application": 10,
+      "lemnt-mall-infrastructure": 18,
+      "lemnt-mall-adapter": 28,
+      "lemnt-mall-start": 115
+    },
+    "newTests": [
+      "com.lemnt.mall.start.promotion.KefuPersistenceTest (4)",
+      "com.lemnt.mall.start.promotion.DiyPersistenceTest (5)",
+      "com.lemnt.mall.start.promotion.KefuDiyMenuSeedTest (1)"
+    ]
+  },
+  "ui": {"command": "npm test -- --run", "tests": 304, "failures": 0},
+  "miniapp": {"command": "node --test tests/*.test.cjs", "tests": 166, "failures": 0},
+  "gateway": {"command": "mvn -pl lemnt-gateway test", "tests": 35, "failures": 0},
+  "endpoints": [
+    "GET /mall/app/kefu/conversation",
+    "GET /mall/app/kefu/messages",
+    "POST /mall/app/kefu/messages",
+    "PUT /mall/app/kefu/read",
+    "GET /mall/promotion/kefu-conversations",
+    "GET /mall/promotion/kefu-conversations/{id}",
+    "GET /mall/promotion/kefu-conversations/{id}/messages",
+    "POST /mall/promotion/kefu-conversations/{id}/messages",
+    "PUT /mall/promotion/kefu-conversations/{id}/read",
+    "PUT /mall/promotion/kefu-conversations/{id}/pinned",
+    "DELETE /mall/promotion/kefu-conversations/{id}",
+    "GET /mall/promotion/diy-templates",
+    "GET /mall/promotion/diy-templates/{id}",
+    "POST /mall/promotion/diy-templates",
+    "PUT /mall/promotion/diy-templates/{id}",
+    "PUT /mall/promotion/diy-templates/{id}/use",
+    "PUT /mall/promotion/diy-templates/{id}/property",
+    "DELETE /mall/promotion/diy-templates/{id}",
+    "GET /mall/promotion/diy-pages",
+    "GET /mall/promotion/diy-pages/{id}",
+    "POST /mall/promotion/diy-pages",
+    "PUT /mall/promotion/diy-pages/{id}",
+    "PUT /mall/promotion/diy-pages/{id}/property",
+    "DELETE /mall/promotion/diy-pages/{id}",
+    "GET /mall/app/diy/template/used",
+    "GET /mall/app/diy/template/{id}",
+    "GET /mall/app/diy/page/{id}"
+  ],
+  "sql": [
+    "lemnt-server/lemnt-mall/sql/V26__promotion_kefu.sql",
+    "lemnt-server/lemnt-mall/sql/V27__promotion_diy.sql",
+    "lemnt-server/sql/V20261101__mall_kefu_menu.sql",
+    "lemnt-server/sql/V20261101__mall_diy_menu.sql"
+  ],
+  "realEnvironment": {
+    "kefuConversationId": "2116687669322543105",
+    "kefuAssertions": [
+      "member send creates conversation and admin unread becomes 1",
+      "admin list returns member nickname and last message",
+      "admin reply creates admin-sent message",
+      "member message list returns both messages in ascending order",
+      "member unread count 1 then 0 after read",
+      "admin unread count 0 after admin read",
+      "pin succeeds and delete hides conversation from admin list",
+      "member send restores admin-deleted conversation"
+    ],
+    "diyTemplateId": "2116687774633127938",
+    "diyPageId": "2116687774645710850",
+    "diyAssertions": [
+      "creating template generates 首页 and 我的 pages",
+      "home property with Carousel and TitleBar is persisted",
+      "used template endpoint returns home/user properties without login",
+      "app page endpoint returns the page property",
+      "only one template has used=true after switching",
+      "deleting a used template is rejected"
+    ]
+  },
+  "deferred": [
+    "customer service WebSocket push, upload, voice/video and product/order messages",
+    "full diy component set and visual drag editor",
+    "browser admin and miniapp device verification"
+  ],
+  "notes": [
+    "no business commit or push in this batch"
+  ]
+}

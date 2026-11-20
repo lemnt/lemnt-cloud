@@ -2,12 +2,12 @@ package com.lemnt.system.infrastructure.auth.mapper;
 
 import com.lemnt.system.domain.auth.model.Menu;
 import com.lemnt.system.infrastructure.auth.dataobject.MenuDO;
-import org.apache.ibatis.annotations.Mapper;
-
-import java.util.List;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * Menu 数据层
@@ -73,7 +73,7 @@ public interface MenuMapper extends BaseMapper<MenuDO> {
     /**
      * 根据角色ID查询菜单树信息
      *
-     * @param roleId            角色ID
+     * @param roleId 角色ID
      * @return 选中菜单列表
      */
     List<Long> selectMenuListByRoleId(@Param("roleId") Long roleId);
@@ -96,13 +96,15 @@ public interface MenuMapper extends BaseMapper<MenuDO> {
     /**
      * 校验菜单名称是否唯一
      *
-     * @param menuName 菜单名称
-     * @param parentId 父菜单ID
+     * @param menuName      菜单名称
+     * @param parentId      父菜单ID
      * @param excludeMenuId 排除的菜单ID，新增时为空
      * @return 结果
      */
-    MenuDO checkMenuNameUnique(@Param("menuName") String menuName, @Param("parentId") Long parentId,
-                              @Param("excludeMenuId") Long excludeMenuId);
+    MenuDO checkMenuNameUnique(
+        @Param("menuName") String menuName,
+        @Param("parentId") Long parentId,
+        @Param("excludeMenuId") Long excludeMenuId);
 
     /**
      * 根据路由路径或名称查询菜单信息（用于唯一性校验）
@@ -111,5 +113,6 @@ public interface MenuMapper extends BaseMapper<MenuDO> {
      * @param routeName 路由名称
      * @return 匹配的菜单列表
      */
-    List<MenuDO> selectMenusByPathOrRouteName(@Param("path") String path, @Param("routeName") String routeName);
+    List<MenuDO> selectMenusByPathOrRouteName(
+        @Param("path") String path, @Param("routeName") String routeName);
 }

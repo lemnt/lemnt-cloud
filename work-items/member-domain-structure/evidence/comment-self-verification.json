@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-29",
+  "backend": {
+    "lemnt-mall": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-trade": {
+      "tests": 155,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-member": {
+      "tests": 27,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-gateway": {
+      "tests": 32,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "reactTests": 182,
+  "reactChecks": [
+    "build",
+    "typecheck",
+    "lint",
+    "format:check"
+  ],
+  "verification": "生产H2/Mapper自评写入、无购买关联、源会员0、评分快照、非法SKU及URL；路由权限快照；前端参数和空订单解码",
+  "notRun": [
+    "真实MySQL升级",
+    "部署权限/HTTP",
+    "浏览器",
+    "小程序（未改动）"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/res/CommentSelfCreateRes.java": "d9606b3580c39f9edc65b46a0cacf9f2517c9b9112d57f9d585ca39fbdd4ad6d",
+    "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/web/product/req/CommentSelfCreateReq.java": "b11cca3a28feabf402978c8b8b651dddf179994e7f582adb8f954680fe7b44e0",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/cmd/CommentSelfCreateCmd.java": "b5288eb79abe11fbd2479eb375569ad623843bd25270cc49eef5b53a5ae9fc72",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/executor/CommentSelfCreateCmdExe.java": "5ae094bd063e3bca54d7984f035478d9213b10cdfc6642b58dcf0d9fcad1fbef",
+    "lemnt-server/lemnt-mall/sql/upgrade/product_comment_self.sql": "b258862192d5b3030e0532e67546771d52836eb8f276d13806b2d9af3c51dd4b",
+    "/tmp/self-comment-final.log": "85be6ed02caf8e8c522ad419606abc95dc1c9cdcfbc5314664a8750c809c692b",
+    "/tmp/self-comment-ui-final-test.log": "14b599cba9abf5277f5b3836abb123c5851941e0d9c3b842caaa49b26069ebf1",
+    "/tmp/self-comment-ui-final-build.log": "354c88a8be5f268bd1fe15789b5d5bc878448518b4985b7f53458b3e102aad5c",
+    "/tmp/self-comment-ui-final-lint.log": "d390a8c939ca60f7f656cd93d5acf81a14c2e00c6a3392b46efc2a7c89dedb55",
+    "/tmp/self-comment-ui-final-format.log": "26e74b26d1158e460c922b81734e7f67f7f7e7a43a3b22670ebf3e6312be5bdf",
+    "/tmp/self-comment-ui-typecheck.log": "9feea68862ace8f4c44266036e533929561dc11868fa49061b763cdea019070d"
+  }
+}

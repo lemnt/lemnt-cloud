@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-29",
+  "backend": {
+    "lemnt-member": {
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-auth": {
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-mall": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "reactTests": 186,
+  "reactChecks": [
+    "build",
+    "typecheck",
+    "lint",
+    "format:check"
+  ],
+  "notRun": [
+    "真实数据库升级",
+    "部署HTTP",
+    "浏览器",
+    "小程序未改动未重跑"
+  ],
+  "remaining": [
+    "地区名称解析",
+    "地区选择器",
+    "注册登录审计"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java": "247f7c53e4e21cd90584fd712567fa0d3a78e9ec1aa7e45ea056a096e24361d4",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/user/dto/MemberDTO.java": "cb169987841ffbb34f755de0163f86693ffa55e6ffc54e6c8d57d2809271f82f",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/user/cmd/MemberUpdateCmd.java": "f91d7c12f82a72768f8e4f742a651688e49ba8711fff45cbcfaeb55ecf4d52cf",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/user/service/MemberUserService.java": "c0bd4aa70fac1eada1d313ff35118b1e9da627d5043fccb9b16163663b2446c9",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/user/converter/MemberConverter.java": "507a68b74a6a592330997f7ac6301c182eb05681207e4dd5764c07aac2836674",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/user/mapper/MemberUserMapper.java": "698b842b44db36006756477b5de0f320ba71a1f5c898fd8c7ee540bdd2b950e4",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/user/dataobject/MemberDO.java": "fc70eab63ae6ce25583dab9839dbdba8499cb005c86f616a9d728600c7d6e8d4",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/res/MemberUserDetailRes.java": "fa8cb79fd0020702f4e947f3ea01a211e65cc90bd9be17e55f2014619c75c567",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/res/MemberUserPageRes.java": "39d694e7680599743945d6800913417b286a54b25c12a1cc20c075f86ddf5bb5",
+    "lemnt-server/lemnt-member/lemnt-member-adapter/src/main/java/com/lemnt/member/adapter/web/user/req/MemberProfileUpdateReq.java": "dd70ae6d55998917ca4dbedac5cb2519e3d137677416e649cbd509b3ade18400",
+    "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/user/model/Member.java": "8f7e41cae9a1ba0bd20fa419d7b73c20695dc1f16924b47f9edc4fefb4b7d162",
+    "/tmp/member-identity-final-backend.log": "5ba3d25463ec9f1a3f6f80111a6715e40b2e553041abac2e35a9224e48c2d759",
+    "/tmp/member-identity-ui-build.log": "c250ff15b443d626eabf033f88b2b8468594eb85844a17832c4e9152979cd091",
+    "/tmp/member-identity-ui-tests.log": "b6d197874a0aad1691668ea7702a835ea9073d7b25c55e852d05f3410ea87386",
+    "/tmp/member-identity-ui-lint.log": "d390a8c939ca60f7f656cd93d5acf81a14c2e00c6a3392b46efc2a7c89dedb55",
+    "/tmp/member-identity-ui-format.log": "26e74b26d1158e460c922b81734e7f67f7f7e7a43a3b22670ebf3e6312be5bdf",
+    "/tmp/member-identity-ui-typecheck.log": "9feea68862ace8f4c44266036e533929561dc11868fa49061b763cdea019070d",
+    "/Users/wangxx/demo/yudao-cloud/yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/controller/admin/user/vo/MemberUserBaseVO.java": "7c01bd646962066e15bb761ecb15fb293ffe54fb9dbda2ba3cbd0d26b48bd94a"
+  }
+}

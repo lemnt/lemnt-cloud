@@ -33,7 +33,8 @@ public class AmountUtil {
             spendingPercentage = BigDecimal.ZERO;
         } else {
             // 2. 核心修正：除以预算后乘以100，再保留2位小数（四舍五入）
-            spendingPercentage = cost.divide(budget, 4, RoundingMode.HALF_UP)
+            spendingPercentage =
+                cost.divide(budget, 4, RoundingMode.HALF_UP)
                     .multiply(new BigDecimal("100"))
                     .setScale(2, RoundingMode.HALF_UP);
         }
@@ -49,7 +50,6 @@ public class AmountUtil {
     public static BigDecimal intToTwoDecimal(Integer num) {
         // 处理 null：null 视为 0
         int input = num == null ? 0 : num;
-        return new BigDecimal(input)
-                .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+        return new BigDecimal(input).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
     }
 }

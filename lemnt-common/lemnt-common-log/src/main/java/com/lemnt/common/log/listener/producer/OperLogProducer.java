@@ -3,6 +3,7 @@ package com.lemnt.common.log.listener.producer;
 import com.lemnt.common.log.event.OperLogEvent;
 import com.lemnt.common.mq.constant.MQConstants;
 import com.lemnt.common.mq.producer.BaseProducer;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,5 +22,4 @@ public class OperLogProducer extends BaseProducer<OperLogEvent> {
     public void send(OperLogEvent event) {
         sendSync(MQConstants.Topic.OPER_LOG_EVENT, event);
     }
-
 }

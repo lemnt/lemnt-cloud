@@ -1,0 +1,78 @@
+{
+  "batch": "148-sandbox-refund",
+  "date": "2026-11-01",
+  "scope": [
+    "sandbox refund adapter",
+    "full refund after-sale chain",
+    "partial refund and cumulative full refund"
+  ],
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-trade/lemnt-trade-start -am test",
+    "javaVersion": "17.0.17",
+    "totals": {"tests": 242, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-trade-domain": 2,
+      "lemnt-trade-application": 67,
+      "lemnt-trade-infrastructure": 16,
+      "lemnt-trade-adapter": 26,
+      "lemnt-trade-start": 131
+    },
+    "newTests": [
+      "com.lemnt.trade.infrastructure.paymentrefund.SandboxPaymentRefundClientTest (2)"
+    ]
+  },
+  "endpoints": [
+    "GET /trade/app/orders/{orderNo}/after-sale-items",
+    "POST /trade/app/orders/{orderNo}/after-sales",
+    "POST /trade/admin/after-sales/{no}/agree",
+    "POST /trade/admin/after-sales/{no}/refund"
+  ],
+  "security": [
+    "sandbox refund client is only registered when payment.sandbox.enabled=true",
+    "refund channel, payment number, amount, payment status and channel trade number must match",
+    "channel refund number is stable for the same refund number"
+  ],
+  "realEnvironment": {
+    "fullRefund": {
+      "orderNo": "TR8F5743FE0EE246BF95D07485",
+      "afterSaleNo": "RF64e9a19413324f4296c5b5e36eed9c79",
+      "paymentRefundNo": "PRAF560D12B40449B097B66A9739E6E46F",
+      "channelRefundNo": "SBR-PRAF560D12B40449B097B66A9739E6E46F",
+      "assertions": [
+        "payment refund amount 8.00 status SUCCESS channel SANDBOX",
+        "after-sale and trade order REFUNDED",
+        "mall promotion order REFUNDED with refunded quantity 1",
+        "bargain activity stock restored 4->5",
+        "member 1 experience 1400->600",
+        "REFUND notify task SUCCESS on first attempt",
+        "repeated refund call returns the same refund record"
+      ]
+    },
+    "partialRefunds": {
+      "orderNo": "TRA28FB0CDBD09460FA97FBECF",
+      "refunds": [
+        {"afterSaleNo": "RF54d88208bf7d4b80aac1900f25c4db6e", "paymentRefundNo": "PR4CF84C0CECB543B9B0A71A1C0E79BE6E", "amount": "4.00"},
+        {"afterSaleNo": "RFc0a5c81df5604b6cbe9f90b59346cbae", "paymentRefundNo": "PR35567B491BEE4A879E468B3D0F6B569C", "amount": "4.00"}
+      ],
+      "assertions": [
+        "first partial refund keeps trade order PAID",
+        "mall promotion order refunded quantity 1 after first refund",
+        "seckill stock 8->9 after first refund",
+        "second refund marks order REFUNDED and refunded quantity 2",
+        "seckill stock restored to 10",
+        "cumulative refund amount 8.00 equals order total",
+        "member 2 experience 1400->600",
+        "both REFUND notify tasks SUCCESS on first attempt"
+      ]
+    }
+  },
+  "deferred": [
+    "real ALIPAY/WECHAT refund adapters and merchant credentials",
+    "refund channel asynchronous callback and reconciliation",
+    "miniapp after-sale payment interaction and device verification"
+  ],
+  "notes": [
+    "no schema change in this batch",
+    "no business commit or push in this batch"
+  ]
+}

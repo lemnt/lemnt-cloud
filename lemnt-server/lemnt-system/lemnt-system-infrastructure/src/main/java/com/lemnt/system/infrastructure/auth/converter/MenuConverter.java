@@ -1,10 +1,10 @@
 package com.lemnt.system.infrastructure.auth.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.lemnt.system.domain.auth.model.Menu;
 import com.lemnt.system.infrastructure.auth.dataobject.MenuDO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 菜单 DO ↔ Entity 转换器
@@ -12,7 +12,6 @@ import com.lemnt.system.infrastructure.auth.dataobject.MenuDO;
  * @author wangxx
  */
 public class MenuConverter {
-
     /**
      * DO → Entity
      */

@@ -1,0 +1,21 @@
+{
+  "AdminMemberRecordDetailQry": "MemberRecordDetailQry",
+  "AdminMemberPageQry": "MemberPageQry",
+  "MemberAdminQueryExe": "MemberQueryExe",
+  "MemberUserAdminQueryMapper": "MemberUserQueryMapper",
+  "MemberUserAdminQueryGatewayImpl": "MemberUserQueryGatewayImpl",
+  "MemberGrowthAdminQueryMapper": "MemberGrowthQueryMapper",
+  "MemberGrowthAdminQueryGatewayImpl": "MemberGrowthQueryGatewayImpl",
+  "AdminMemberGroupController": "MemberGroupController",
+  "AdminMemberUserController": "MemberUserController",
+  "AdminMemberTagController": "MemberTagController",
+  "AdminMemberCatalogQueryController": "MemberCatalogQueryController",
+  "AdminProfileUpdateReq": "MemberProfileUpdateReq",
+  "AdminMemberLevelController": "MemberLevelController",
+  "AdminMemberRecordController": "MemberRecordController",
+  "AdminMemberConfigController": "MemberConfigController",
+  "AdminMemberPageReq": "MemberPageReq",
+  "MemberUserAdminQueryGateway": "MemberUserQueryGateway",
+  "MemberAdminFilter": "MemberFilter",
+  "MemberGrowthAdminQueryGateway": "MemberGrowthQueryGateway"
+}

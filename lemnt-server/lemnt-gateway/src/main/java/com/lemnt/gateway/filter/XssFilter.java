@@ -1,9 +1,8 @@
 package com.lemnt.gateway.filter;
 
-import java.nio.charset.StandardCharsets;
-import java.util.regex.Pattern;
+import com.lemnt.common.core.utils.StringUtils;
+import com.lemnt.gateway.config.properties.XssProperties;
 
-import jakarta.annotation.Resource;
 import org.apache.commons.lang3.Strings;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -20,10 +19,13 @@ import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
-import com.lemnt.common.core.utils.StringUtils;
-import com.lemnt.gateway.config.properties.XssProperties;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import jakarta.annotation.Resource;
+
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
 
 /**
  * 跨站脚本过滤器
@@ -34,7 +36,8 @@ import reactor.core.publisher.Mono;
 @ConditionalOnProperty(value = "security.xss.enabled", havingValue = "true")
 public class XssFilter implements GlobalFilter, Ordered {
 
-    private static final Pattern XSS_PATTERN = Pattern.compile(
+    private static final Pattern XSS_PATTERN =
+        Pattern.compile(
             // 事件属性从单词边界开始，避免将 controls/contenteditable 误判为 on* 属性。
             "<script[^>]*>.*?</script>|javascript:|\\bon\\w+\\s*=",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
@@ -64,30 +67,37 @@ public class XssFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
         return DataBufferUtils.join(request.getBody())
-                .flatMap(buffer -> {
+            .flatMap(
+                buffer -> {
                     byte[] bytes = new byte[buffer.readableByteCount()];
                     buffer.read(bytes);
                     DataBufferUtils.release(buffer);
                     String body = new String(bytes, StandardCharsets.UTF_8);
                     if (XSS_PATTERN.matcher(body).find()) {
-                        return Mono.error(new ResponseStatusException(
+                        return Mono.error(
+                            new ResponseStatusException(
                                 HttpStatus.BAD_REQUEST, "请求包含不安全内容"));
                     }
-                    ServerHttpRequestDecorator decorator = new ServerHttpRequestDecorator(request) {
-                        @Override
-                        public Flux<DataBuffer> getBody() {
-                            return Flux.defer(() -> Flux.just(
-                                    exchange.getResponse().bufferFactory().wrap(bytes)));
-                        }
+                    ServerHttpRequestDecorator decorator =
+                        new ServerHttpRequestDecorator(request) {
+                            @Override
+                            public Flux<DataBuffer> getBody() {
+                                return Flux.defer(
+                                    () ->
+                                        Flux.just(
+                                            exchange.getResponse()
+                                                .bufferFactory()
+                                                .wrap(bytes)));
+                            }
 
-                        @Override
-                        public HttpHeaders getHeaders() {
-                            HttpHeaders headers = new HttpHeaders();
-                            headers.putAll(super.getHeaders());
-                            headers.remove(HttpHeaders.CONTENT_LENGTH);
-                            return headers;
-                        }
-                    };
+                            @Override
+                            public HttpHeaders getHeaders() {
+                                HttpHeaders headers = new HttpHeaders();
+                                headers.putAll(super.getHeaders());
+                                headers.remove(HttpHeaders.CONTENT_LENGTH);
+                                return headers;
+                            }
+                        };
 
                     return chain.filter(exchange.mutate().request(decorator).build());
                 });

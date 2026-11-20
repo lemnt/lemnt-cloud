@@ -1,0 +1,45 @@
+# Nacos Data ID: lemnt-pay.yaml，组/命名空间与本服务启动配置保持一致。
+# 仅配置源；先核对迁移与旧写入方，再部署。连接信息必须由环境注入。
+# Redis、认证、指标等公共配置沿用lemnt-common.yaml，保留旧结算恢复键与锁命名空间。
+spring:
+  datasource:
+    dynamic:
+      primary: master
+      strict: true
+      datasource:
+        master:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: ${PAY_DB_URL}
+          username: ${PAY_DB_USERNAME}
+          password: ${PAY_DB_PASSWORD}
+
+dubbo:
+  application:
+    name: ${spring.application.name}
+  registry:
+    address: nacos://${NACOS_SERVER_ADDR:127.0.0.1:8848}
+    username: ${NACOS_USERNAME:}
+    password: ${NACOS_PASSWORD:}
+    parameters:
+      namespace: ${NACOS_NAMESPACE:}
+      group: ${NACOS_GROUP:DEFAULT_GROUP}
+  protocol:
+    name: dubbo
+    port: ${PAY_DUBBO_PORT:20887}
+  consumer:
+    # 资金/资源结果未知时由应用按原业务号查询，不做框架层隐式写重试。
+    retries: 0
+    timeout: ${DUBBO_TIMEOUT_MS:10000}
+
+# 提交后的异步通知由到期任务扫描补偿。
+lemnt:
+  trade:
+    pay-notify:
+      enabled: ${PAY_NOTIFY_ENABLED:true}
+    payment-recovery:
+      enabled: ${PAYMENT_RECOVERY_ENABLED:true}
+
+payment:
+  app-notify:
+    # 已授权的接收端 Origin，多个以逗号分隔。
+    allowed-origins: ${PAY_APP_NOTIFY_ALLOWED_ORIGINS:}

@@ -12,7 +12,6 @@ import java.util.List;
  * @author wangxx
  */
 public interface PostGateway {
-
     /**
      * 根据岗位ID查询信息
      *
@@ -85,14 +84,8 @@ public interface PostGateway {
      */
     Post checkPostCodeUnique(String postCode);
 
-    /** 校验岗位编码，修改时排除当前岗位，仍检查其他存量重复记录。 */
-    Post checkPostCodeUnique(String postCode, Long excludePostId);
-
     /**
-     * 查询岗位被分配的用户数
-     *
-     * @param postId 岗位ID
-     * @return 结果
+     * 校验岗位编码，修改时排除当前岗位，仍检查其他存量重复记录。
      */
-    Long countUserPostById(Long postId);
+    Post checkPostCodeUnique(String postCode, Long excludePostId);
 }

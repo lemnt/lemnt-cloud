@@ -36,8 +36,7 @@ public class SafeSnowflake extends Snowflake {
             try {
                 return super.nextId();
             } catch (Exception e) {
-                log.warn("Snowflake 时钟回拨，等待 {}ms 后重试 (已等待 {}ms)",
-                        RETRY_INTERVAL_MILLIS, totalWait);
+                log.warn("Snowflake 时钟回拨，等待 {}ms 后重试 (已等待 {}ms)", RETRY_INTERVAL_MILLIS, totalWait);
                 try {
                     Thread.sleep(RETRY_INTERVAL_MILLIS);
                 } catch (InterruptedException ignored) {

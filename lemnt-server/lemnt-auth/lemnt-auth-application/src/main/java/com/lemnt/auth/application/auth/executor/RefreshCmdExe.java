@@ -1,11 +1,13 @@
 package com.lemnt.auth.application.auth.executor;
 
-import com.lemnt.auth.domain.user.gateway.TokenGateway;
 import com.lemnt.auth.domain.user.entity.LoginUser;
+import com.lemnt.auth.domain.user.gateway.TokenGateway;
 import com.lemnt.common.core.utils.StringUtils;
+
+import org.springframework.stereotype.Component;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -18,7 +20,6 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class RefreshCmdExe {
-
     private final TokenGateway tokenGateway;
 
     /**

@@ -1,0 +1,40 @@
+package com.lemnt.order.infrastructure.order.gateway;
+
+import com.lemnt.order.domain.order.gateway.OrderLogGateway;
+import com.lemnt.order.domain.order.model.OrderLog;
+import com.lemnt.order.infrastructure.order.converter.OrderLogConverter;
+import com.lemnt.order.infrastructure.order.dataobject.OrderLogDO;
+import com.lemnt.order.infrastructure.order.mapper.OrderLogMapper;
+
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
+/**
+ * 订单日志单表持久化实现。
+ */
+@Component
+@RequiredArgsConstructor
+public class OrderLogGatewayImpl implements OrderLogGateway {
+    private final OrderLogMapper mapper;
+
+    @Override
+    public void append(OrderLog value) {
+        mapper.insert(OrderLogConverter.toDO(value));
+    }
+
+    @Override
+    public List<OrderLog> byOrderId(Long orderId) {
+        return mapper
+            .selectList(
+                Wrappers.<OrderLogDO>lambdaQuery()
+                    .eq(OrderLogDO::getOrderId, orderId)
+                    .orderByAsc(OrderLogDO::getId))
+            .stream()
+            .map(OrderLogConverter::toModel)
+            .toList();
+    }
+}

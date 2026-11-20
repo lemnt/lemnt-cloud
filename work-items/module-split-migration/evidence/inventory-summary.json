@@ -1,0 +1,24 @@
+{
+  "baselineCommit": "a8753a11",
+  "generatedAt": "2026-11-03T11:14:43+08:00",
+  "status": "preview_not_executed",
+  "sourceFiles": 1935,
+  "sourceJavaMainFiles": 1768,
+  "sourceTestFiles": 128,
+  "migrationEntries": 1949,
+  "byOwner": {
+    "promotion": 599,
+    "product": 372,
+    "order": 680,
+    "pay": 298
+  },
+  "tablesByOwner": {
+    "product": 10,
+    "promotion": 22,
+    "order": 21,
+    "pay": 11
+  },
+  "crossContextImportEdges": 125,
+  "httpEndpoints": 313,
+  "newOrModifiedFiles": 235
+}

@@ -1,0 +1,52 @@
+{
+  "orderNo": "TRDESIGN001",
+  "acceptedAtEpochMs": "1792890010000",
+  "pricingProtocol": "PROMOTION_V2",
+  "algorithmVersion": "promo-1",
+  "originalFen": "3003",
+  "campaignDiscountFen": "100",
+  "couponDiscountFen": "580",
+  "totalDiscountFen": "680",
+  "payableFen": "2323",
+  "selectedCampaign": {
+    "id": "9",
+    "version": 1,
+    "name": "指定商品满25减1元",
+    "type": "FULL_REDUCTION",
+    "ruleSummary": "指定商品满25.00元减1.00元，可叠加一张指定券"
+  },
+  "selectedCoupon": {
+    "id": "5",
+    "templateId": "3",
+    "name": "80%支付券",
+    "ruleSummary": "活动后满28.00元，支付原价80%"
+  },
+  "lines": [
+    {
+      "productId": "101",
+      "spuId": "11",
+      "name": "商品A",
+      "unitPriceFen": "1001",
+      "quantity": 1,
+      "grossFen": "1001",
+      "campaignDiscountFen": "33",
+      "couponDiscountFen": "193",
+      "payableFen": "775",
+      "unitBasePayableFen": "775",
+      "extraFenUnitCount": 0
+    },
+    {
+      "productId": "102",
+      "spuId": "12",
+      "name": "商品B",
+      "unitPriceFen": "2002",
+      "quantity": 1,
+      "grossFen": "2002",
+      "campaignDiscountFen": "67",
+      "couponDiscountFen": "387",
+      "payableFen": "1548",
+      "unitBasePayableFen": "1548",
+      "extraFenUnitCount": 0
+    }
+  ]
+}

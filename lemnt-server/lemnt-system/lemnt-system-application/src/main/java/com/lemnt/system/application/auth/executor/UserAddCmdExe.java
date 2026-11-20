@@ -1,14 +1,18 @@
 package com.lemnt.system.application.auth.executor;
 
-import cn.hutool.core.collection.CollUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.system.application.auth.cmd.UserAddCmd;
-import com.lemnt.system.domain.auth.model.User;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
+import com.lemnt.system.domain.auth.gateway.UserPostGateway;
+import com.lemnt.system.domain.auth.gateway.UserRoleGateway;
+import com.lemnt.system.domain.auth.model.User;
 import com.lemnt.system.domain.auth.service.UserDomainService;
+
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import cn.hutool.core.collection.CollUtil;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 新增用户命令执行器
@@ -18,8 +22,9 @@ import com.lemnt.system.domain.auth.service.UserDomainService;
 @Component
 @RequiredArgsConstructor
 public class UserAddCmdExe {
+    private final UserPostGateway userPostGateway;
+    private final UserRoleGateway userRoleGateway;
     private final UserGateway userGateway;
-
     private final UserDomainService userDomainService;
 
     /**
@@ -46,11 +51,11 @@ public class UserAddCmdExe {
         if (result) {
             // 新增用户角色关联
             if (CollUtil.isNotEmpty(cmd.roleIds())) {
-                userGateway.insertUserRoles(entity.getUserId(), cmd.roleIds());
+                userRoleGateway.insertUserRoles(entity.getUserId(), cmd.roleIds());
             }
             // 新增用户岗位关联
             if (CollUtil.isNotEmpty(cmd.postIds())) {
-                userGateway.insertUserPosts(entity.getUserId(), cmd.postIds());
+                userPostGateway.insertUserPosts(entity.getUserId(), cmd.postIds());
             }
         }
         return result;

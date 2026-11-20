@@ -1,0 +1,13 @@
+<view class="container">
+  <view class="title">商品评价</view><view wx:if="{{!ready}}">服务暂未启用</view><view wx:if="{{error}}" class="error">{{error}}</view>
+  <picker range="{{types}}" value="{{type}}" bindchange="type" disabled="{{loading}}"><view>筛选：{{types[type]}}</view></picker>
+  <button bindtap="load" loading="{{loading}}" disabled="{{loading || !ready}}">刷新</button><view wx:if="{{!rows.length &amp;&amp; !loading}}">暂无可见评价</view>
+  <view wx:for="{{rows}}" wx:key="id" class="card">
+    <image wx:if="{{item.userAvatar}}" src="{{item.userAvatar}}" style="width:60rpx;height:60rpx"/>
+    <view>{{item.userNickname || '昵称未记录'}} · {{item.createTime}}</view><view>综合 {{item.score}}分 · 描述 {{item.descriptionScores == null ? '未记录' : item.descriptionScores}} · 服务 {{item.benefitScores == null ? '未记录' : item.benefitScores}}</view>
+    <view>{{item.spuName || ''}} {{item.skuProperties || ''}}</view><view>{{item.content}}</view>
+    <image wx:for="{{item.picUrls}}" wx:for-item="url" wx:key="*this" src="{{url}}" mode="aspectFit" style="width:180rpx;height:180rpx"/>
+    <view wx:if="{{item.replyStatus}}" class="description">商家回复：{{item.replyContent}} · {{item.replyTime}}</view>
+  </view>
+  <view>第{{pageNum}}页 · 共{{total}}条</view><button data-delta="-1" bindtap="page" disabled="{{loading || pageNum === 1}}">上一页</button><button data-delta="1" bindtap="page" disabled="{{loading || pageNum * 20 >= total}}">下一页</button>
+</view>

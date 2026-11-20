@@ -1,0 +1,74 @@
+{
+  "date": "2026-10-31",
+  "batch": "117/118",
+  "reference": "/Users/wangxx/demo/yudao-cloud/yudao-module-member/yudao-module-member-server/src/main/java/cn/iocoder/yudao/module/member/service/user/MemberUserServiceImpl.java",
+  "backend": {
+    "member": {
+      "tests": 103,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "auth": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "mall": {
+      "tests": 119,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "backendTotal": 398,
+  "react": {
+    "tests": 222,
+    "files": 35,
+    "passed": true
+  },
+  "miniapp": {
+    "tests": 123,
+    "failures": 0,
+    "skipped": 0
+  },
+  "checks": {
+    "verify": "passed",
+    "typecheck": "passed",
+    "lint": "passed",
+    "format:check": "passed",
+    "build": "passed",
+    "diff:check": "passed"
+  },
+  "logs": [
+    "/tmp/member-user-update-verify.log",
+    "/tmp/member-user-update-member-verify.log",
+    "/tmp/member-user-update-ui-tests.log",
+    "/tmp/member-user-update-ui-typecheck.log",
+    "/tmp/member-user-update-ui-lint.log",
+    "/tmp/member-user-update-ui-format.log",
+    "/tmp/member-user-update-ui-build.log",
+    "/tmp/member-user-update-mini.log"
+  ],
+  "newTests": [
+    "H2 real mobile lookup and credential/asset/relation/audit preservation",
+    "H2 invalid or occupied credentials leave original profile intact",
+    "H2 duplicate key maps to unified 409 without partial update",
+    "MockMvc separate web and App commands with injected fields",
+    "MockMvc overlong mobile and omission compatibility",
+    "React explicit mobile and omission/null/empty string request semantics"
+  ],
+  "limitations": [
+    "No real MySQL/Redis/Nacos/deployed HTTP/browser/WeChat verification",
+    "No concurrent thread race exercised; actual database unique constraint exercised",
+    "No DDL/commit/push",
+    "Source token revocation and full user contract remain in progress"
+  ]
+}

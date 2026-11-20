@@ -1,0 +1,6 @@
+# 路由现由ServiceRouteConfiguration与MemberAuthRouteConfiguration提供，无需重复注册Nacos路由。
+# 普通/member/**去掉服务前缀；已有/member/admin/**流水路径保留完整路径。
+# /member/app/auth/login、refresh-token、logout精确路由优先走auth，保留完整路径。
+# /system/**、/auth/**去掉服务前缀；/mall/**、/trade/**保留原路径。
+# 本文件仅说明代码路由，不包含覆盖或清空现有Nacos routes的配置。
+# 部署后需核对现有动态路由优先级；本批没有修改运行中Nacos，gateway不引入Dubbo。

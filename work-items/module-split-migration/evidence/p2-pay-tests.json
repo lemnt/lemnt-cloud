@@ -1,0 +1,13 @@
+{
+  "phase": "P2",
+  "layer": "isolated pay SQL and module tests",
+  "result": {
+    "tests": 107,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "package": "passed; after tests run -DskipTests package to verify new main class",
+  "liveEnvironment": false,
+  "orderProvider": "client foundation only, full provider implemented in P4"
+}

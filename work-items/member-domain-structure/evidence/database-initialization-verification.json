@@ -1,0 +1,270 @@
+{
+  "batch": 166,
+  "recordedAt": "2026-11-03T10:39:44+08:00",
+  "scope": [
+    "member",
+    "mall",
+    "trade"
+  ],
+  "systemSqlChanged": false,
+  "systemSqlFilesVerified": [
+    {
+      "path": "lemnt-server/lemnt-system/lemnt-system-infrastructure/src/test/resources/datascope-fixture.sql",
+      "sha256": "ce40c8283e0d03cca3de3b6dd566a0e4348036275ee8e2bf260d913284ed409e"
+    },
+    {
+      "path": "lemnt-server/sql/V20261025__mall_catalog_menu.sql",
+      "sha256": "8dfb361390144436b42ae61b9b6b8bb39d218a8c7dc1eba86bf75f78a75b55e1"
+    },
+    {
+      "path": "lemnt-server/sql/V20261025__mall_checkout_menu.sql",
+      "sha256": "a4ee18d2cd43e47a797fc62bdd4f06445e4216ac3b1519617c26d64556e737a7"
+    },
+    {
+      "path": "lemnt-server/sql/V20261025__member_menu.sql",
+      "sha256": "9304279ec19995596fbefea734b27428a7259f2841da7cabcc6b31c56ac37417"
+    },
+    {
+      "path": "lemnt-server/sql/V20261025__trade_fulfillment_menu.sql",
+      "sha256": "b6820fd46f10790a86b07c8e4c5d273e0e63001177941156aa40335e827ba2c7"
+    },
+    {
+      "path": "lemnt-server/sql/V20261026__mall_promotion_permissions.sql",
+      "sha256": "791cbc757075e9c339422805792e7b9e41739171ce881106d43b584046890502"
+    },
+    {
+      "path": "lemnt-server/sql/V20261027__mall_shopping_ownership.sql",
+      "sha256": "69b3eae86679d75b5b04d7fc3737e556244b2758f750f7c298a3e5a7392d1f17"
+    },
+    {
+      "path": "lemnt-server/sql/V20261027__product_management_permissions.sql",
+      "sha256": "e0f34f5e1f5fbd58e5d0b964472fa622cd18438333de922c39838801e9a7234f"
+    },
+    {
+      "path": "lemnt-server/sql/V20261027__trade_fulfillment_management_permissions.sql",
+      "sha256": "6052a0d533dc1e8d7c14da0fad6981cceb2eb2bbd8edda80320a3eb84408f937"
+    },
+    {
+      "path": "lemnt-server/sql/V20261027__trade_payment_management_permissions.sql",
+      "sha256": "68cca777f91ed83420a6f8aaf8ccd8156cff02f7c04756baf31496bdc43d4ad1"
+    },
+    {
+      "path": "lemnt-server/sql/V20261028__coupon_records_menu.sql",
+      "sha256": "edde29f7446d7e79cae4f69d53f274778ddb12711ec53e3da5110dea687fc7dd"
+    },
+    {
+      "path": "lemnt-server/sql/V20261028__retire_extra_business_menus.sql",
+      "sha256": "67580ca0d4e04c3fc784de6725e9f27d35b74f157b2ef42dd0b804372dd084ed"
+    },
+    {
+      "path": "lemnt-server/sql/V20261028__trade_delivery_permissions.sql",
+      "sha256": "7c55db0291bb655000c65b5863c8844f1c71e76ade10fa14ff6776b515870f75"
+    },
+    {
+      "path": "lemnt-server/sql/V20261029__product_comment_menu.sql",
+      "sha256": "d9b4704321656654f9e1525664851a9ede82dcf70043537cce7ccb04d15c01c1"
+    },
+    {
+      "path": "lemnt-server/sql/V20261029__product_comment_self_permission.sql",
+      "sha256": "562b6913c9bf9a5031304ff5a26537f0b11fdbc2f47840795420a995e6c28b30"
+    },
+    {
+      "path": "lemnt-server/sql/V20261029__product_interaction_permissions.sql",
+      "sha256": "8f2ce590a1a4544258e973553ac00b6158a1e4c3c28abf90c26c4e531bb24039"
+    },
+    {
+      "path": "lemnt-server/sql/V20261031__mall_bargain_menu.sql",
+      "sha256": "db0fa2f155be585b3dcc4816b42dbb2affa290b2d1a21cd259c7bd6b891e97cf"
+    },
+    {
+      "path": "lemnt-server/sql/V20261031__mall_combination_menu.sql",
+      "sha256": "d7932d809112c34638cbc7d9da1729e169916c414577b4f199599d38c6a964ec"
+    },
+    {
+      "path": "lemnt-server/sql/V20261031__mall_point_menu.sql",
+      "sha256": "73d96cd0edda7a3860af61d4c03c65aec7ad2e8c4b78fcc08a787b52621d6453"
+    },
+    {
+      "path": "lemnt-server/sql/V20261031__mall_promotion_menu.sql",
+      "sha256": "5e69bb435ad9d933d5bc8be1ae78c1b022037ea5f6a3ae2cf4e1fcd04d8708a3"
+    },
+    {
+      "path": "lemnt-server/sql/V20261031__mall_seckill_menu.sql",
+      "sha256": "4824fca1c299c978d7d32735a3d1a93b6b118597fb138b74c814c7675c6bc778"
+    },
+    {
+      "path": "lemnt-server/sql/V20261031__mall_spec_menu.sql",
+      "sha256": "e399a0fbdea74c4a2344e4eb2717e038f4674464b4993d1b1784acd852a8f834"
+    },
+    {
+      "path": "lemnt-server/sql/V20261031__mall_spu_export_permission.sql",
+      "sha256": "e776dc82c4698d67f43556ce231912bf7adaf353897411a6d3ab54dd4dcfdaba"
+    },
+    {
+      "path": "lemnt-server/sql/V20261031__trade_delivery_config_menu.sql",
+      "sha256": "9a070151f34edb6106e6a5fe10dce4bcc06e8c4c837e4af9d851d0e7c1e50641"
+    },
+    {
+      "path": "lemnt-server/sql/V20261031__trade_pay_config_menu.sql",
+      "sha256": "a157ca4132e168fb4c449df5c11b76e531753c9b1b025babca9a1b2f6f0dc821"
+    },
+    {
+      "path": "lemnt-server/sql/V20261031__trade_pay_notify_menu.sql",
+      "sha256": "0a711fd1da840e64ab3fd6fd5bb808b1c84bf31e45bfffbd3643dd82e44bf549"
+    },
+    {
+      "path": "lemnt-server/sql/V20261031__trade_payment_menu.sql",
+      "sha256": "9ab72d99567da8db3ae6e59f627e874f884a73a9f3de9ae61fa9530ab7fce6da"
+    },
+    {
+      "path": "lemnt-server/sql/V20261031__trade_recharge_menu.sql",
+      "sha256": "199f99caefb4ee914cadd967b9f1eb5b10b5abc50022e659b42f2c1bc878871c"
+    },
+    {
+      "path": "lemnt-server/sql/V20261031__trade_wallet_menu.sql",
+      "sha256": "000a1f9b588d33fe9b0f87ad2d57a71c3503a58aa846b409f1516bc7fc964e3b"
+    },
+    {
+      "path": "lemnt-server/sql/V20261031__trade_wallet_transfer_menu.sql",
+      "sha256": "54971cdd6f7c3ea52d090cb1499ee8e814793755bc0a382d27135b55af2d39a9"
+    },
+    {
+      "path": "lemnt-server/sql/V20261101__mall_banner_menu.sql",
+      "sha256": "39b63ec012e3014607bfcd9f08f4d4deaf9f4a2719727500300e816e49e60663"
+    },
+    {
+      "path": "lemnt-server/sql/V20261101__mall_diy_menu.sql",
+      "sha256": "0d5718a371b96d88b1a21881498e840c1e621b8a2851a0cf36706fd0f06a0bbe"
+    },
+    {
+      "path": "lemnt-server/sql/V20261101__mall_kefu_menu.sql",
+      "sha256": "6e60186a7c724db8dc21b4d244ee7bfc58dbceb195c798bf3a5c8093768504b8"
+    },
+    {
+      "path": "lemnt-server/sql/V20261101__trade_brokerage_menu.sql",
+      "sha256": "b69fb4bcc4d331093103ba098496d0637ec38ca1e20d6de8f7ad10907e41ef42"
+    },
+    {
+      "path": "lemnt-server/sql/V20261101__trade_order_adjust_permissions.sql",
+      "sha256": "7d649b06d4987345d577250a0e46863338df1dcc54eea8f4633cc57820964b3c"
+    },
+    {
+      "path": "lemnt-server/sql/V20261101__trade_pickup_menu.sql",
+      "sha256": "0d149e3f64649dc6bfbbb3b33c107e2544109c0a4321075c76c9a83b2a37dd50"
+    },
+    {
+      "path": "lemnt-server/sql/V20261101__trade_pickup_verify_menu.sql",
+      "sha256": "8ab32093ff4478db38c9ba09ef2ace83c92b1075bfc234bdf72e2296cf02a255"
+    },
+    {
+      "path": "lemnt-server/sql/V20261102__business_config.sql",
+      "sha256": "4105ab2a5eb68e18eba592a4de0acc84fd27d36c705dda5003e9d1c7fb96940a"
+    },
+    {
+      "path": "lemnt-server/sql/lemnt_system.sql",
+      "sha256": "9c948ff2caa0bc844123a1ea8833b6e4b4a70cf4ef5058453e8b039b5ded6b5a"
+    },
+    {
+      "path": "lemnt-server/sql/upgrade/business_config_storage.sql",
+      "sha256": "a356a5df521b4fbd17f89406e07a5136a51412bab33d2409e602fe4a0da57557"
+    },
+    {
+      "path": "lemnt-server/sql/upgrade/fix_menu_mojibake.sql",
+      "sha256": "eb5e5f6cb4cdbadf0d417565740fe8ce94f898ff16c19226c698f3d74cd8951a"
+    },
+    {
+      "path": "lemnt-server/sql/upgrade/migrate_business_config.sql",
+      "sha256": "0b3e13a92ebaaea38f03342c53f63815f4b1eda74b496b8b865e3fda36a178e1"
+    }
+  ],
+  "services": {
+    "member": {
+      "path": "lemnt-server/lemnt-member/sql/lemnt_member.sql",
+      "tables": 17,
+      "columns": 149,
+      "originalFileCount": 21,
+      "finalFileCount": 1,
+      "sha256": "24159c74007aef00f9e3d58d51090da8d6df65b57d08def4596ced0788dd079f"
+    },
+    "mall": {
+      "path": "lemnt-server/lemnt-mall/sql/lemnt_mall.sql",
+      "tables": 35,
+      "columns": 379,
+      "originalFileCount": 36,
+      "finalFileCount": 1,
+      "sha256": "2717bb94eebc5fb12f16fb4ebc3195c0d72b4d80c0c8b8042e83d5d75713fb07"
+    },
+    "trade": {
+      "path": "lemnt-server/lemnt-trade/sql/lemnt_trade.sql",
+      "tables": 29,
+      "columns": 403,
+      "originalFileCount": 33,
+      "finalFileCount": 1,
+      "sha256": "40e27cdf65861aa927d98d7d2df4114e9b8361066a996aceae1176b4ff3478da"
+    }
+  },
+  "businessTables": 81,
+  "businessColumns": 931,
+  "originalSqlFiles": 90,
+  "obsoleteSqlFilesRemovedIncludingMetadataAndDraft": 97,
+  "statementPolicy": [
+    "CREATE TABLE",
+    "INSERT INTO基础数据"
+  ],
+  "currentBusinessInsertCount": 0,
+  "comments": {
+    "projectTables": 98,
+    "projectColumns": 1100,
+    "missing": 0,
+    "sameInventoryAsBefore": true
+  },
+  "schemaComparison": {
+    "engine": "H2 MySQL mode",
+    "all81TablesEquivalent": true,
+    "compared": [
+      "column types/size/scale/null/default/identity/comment",
+      "primary keys",
+      "index columns/order/uniqueness",
+      "foreign-key columns/references/rules",
+      "check expressions"
+    ],
+    "generatedH2ConstraintNamesIgnored": true,
+    "repeatedWholeFileInitialization": true,
+    "log": "/private/tmp/lemnt166-schema-compare.log"
+  },
+  "backendTests": {
+    "trade": {
+      "tests": 311,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "mall": {
+      "tests": 197,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "member": {
+      "tests": 122,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "backendTestTotal": 630,
+  "backendBuild": "passed; first clean package found old gift-migration fixture, corrected to final unique-key test, then package passed",
+  "sqlToolTests": 9,
+  "taskTestJavaFormatting": "passed",
+  "gitDiffCheck": "passed",
+  "existingDatabaseExecution": false,
+  "targetMySqlVerification": false,
+  "assistantRanGitCommitOrPush": false,
+  "baseHead": "01b711aa",
+  "observedHead": "a8753a1174ddd04d9bbb9ec946c961dc1c0fc7a5",
+  "concurrentChanges": "另一路监控组件与依赖变更保留，不计入本批；工作区期间出现外部提交，助手未执行commit/push",
+  "logs": {
+    "backend": "/private/tmp/lemnt166-backend-final.log",
+    "schemaCompare": "/private/tmp/lemnt166-schema-compare.log"
+  }
+}

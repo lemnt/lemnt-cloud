@@ -1,0 +1,165 @@
+Actual full-root verify output summaries. Client2026-10-26 Asia/Shanghai;host log offset-07:00.
+Command: /tmp/apache-maven-3.9.11/bin/mvn -s /tmp/member-sdk-settings.xml -B -DargLine=-javaagent:/root/.m2/repository/net/bytebuddy/byte-buddy-agent/1.18.10/byte-buddy-agent-1.18.10.jar verify
+
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.294 s -- in com.lemnt.common.security.service.TokenServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.024 s -- in com.lemnt.common.security.utils.JwtUtilsTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.399 s -- in com.lemnt.common.security.properties.TokenPropertiesTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.033 s -- in com.lemnt.common.security.interceptor.HeaderInterceptorTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.022 s -- in com.lemnt.common.security.handler.GlobalExceptionHandlerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.109 s -- in com.lemnt.common.swagger.config.SpringDocAutoConfigurationTest
+[INFO] Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.281 s -- in com.lemnt.common.datascope.handler.CustomDataPermissionHandlerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.177 s -- in com.lemnt.common.oss.configure.MinioConfigRefreshTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.694 s -- in com.lemnt.common.async.config.AsyncConfigTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.004 s -- in com.lemnt.common.adapter.config.RequestBindingAutoConfigurationTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.797 s -- in com.lemnt.gateway.filter.MemberRequestSecurityTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.085 s -- in com.lemnt.gateway.filter.XssFilterTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in com.lemnt.gateway.utils.ServletUtilsTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.441 s -- in com.lemnt.gateway.config.CorsConfigTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in com.lemnt.gateway.handler.GatewayExceptionHandlerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in com.lemnt.gateway.handler.SentinelFallbackHandlerTest
+[INFO] Tests run: 26, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 21.72 s -- in com.lemnt.member.start.MemberAccountIntegrationTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.985 s -- in com.lemnt.member.start.MemberProviderConfigurationTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.234 s -- in com.lemnt.member.start.MemberHttpContractTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.076 s -- in com.lemnt.member.start.MemberMenuSeedTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.082 s -- in com.lemnt.mall.domain.catalog.CatalogRulesTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.720 s -- in com.lemnt.mall.application.dubbo.PromotionCatalogClientTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.082 s -- in com.lemnt.mall.application.catalog.CatalogExecutorsTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.652 s -- in com.lemnt.mall.adapter.web.store.StoreHttpContractTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.311 s -- in com.lemnt.mall.adapter.web.catalog.CatalogHttpContractTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in com.lemnt.mall.adapter.web.catalog.CatalogSerializationTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.371 s -- in com.lemnt.mall.infrastructure.catalog.CatalogMenuSeedTest
+[INFO] Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.959 s -- in com.lemnt.mall.infrastructure.catalog.CatalogPersistenceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.068 s -- in com.lemnt.trade.domain.checkout.CheckoutRulesTest
+[INFO] Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.551 s -- in com.lemnt.trade.domain.promotion.PromotionPricingTest
+[INFO] Tests run: 23, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.167 s -- in com.lemnt.trade.domain.promotion.PromotionVectorsTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.495 s -- in com.lemnt.trade.application.checkout.MemberSessionServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.066 s -- in com.lemnt.trade.application.checkout.MemberReceiptOwnershipTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.032 s -- in com.lemnt.trade.application.checkout.MemberPaymentStatusQueryTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s -- in com.lemnt.trade.application.executor.TradeOutboxReplayCmdExeTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.032 s -- in com.lemnt.trade.application.executor.TradeOrderCloseCmdExeTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.087 s -- in com.lemnt.trade.application.executor.TradeOutboxDispatchExeTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in com.lemnt.trade.application.executor.PaymentNotifyCmdExeTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.229 s -- in com.lemnt.trade.adapter.web.app.AppCheckoutControllerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.046 s -- in com.lemnt.trade.adapter.web.app.AppPaymentControllerTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.086 s -- in com.lemnt.trade.adapter.web.store.PromotionHttpContractTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.166 s -- in com.lemnt.trade.adapter.web.checkout.CheckoutHttpContractTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.153 s -- in com.lemnt.trade.adapter.web.fulfillment.FulfillmentHttpContractTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.069 s -- in com.lemnt.trade.infrastructure.member.MemberSessionGatewayImplTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.962 s -- in com.lemnt.trade.infrastructure.checkout.SettlementCacheTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in com.lemnt.trade.infrastructure.payment.PaymentChannelCloseGatewayImplTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.114 s -- in com.lemnt.trade.infrastructure.promotion.PromotionCatalogFactsGatewayTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.395 s -- in com.lemnt.trade.infrastructure.mapper.TradeOutboxMapperTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.367 s -- in com.lemnt.trade.start.checkout.CheckoutMenuSeedTest
+[INFO] Tests run: 56, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.454 s -- in com.lemnt.trade.start.checkout.CheckoutFlowIntegrationTest
+[INFO] Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.838 s -- in com.lemnt.trade.start.promotion.PromotionPersistenceIntegrationTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.lemnt.trade.start.promotion.PromotionPermissionSeedTest
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.231 s -- in com.lemnt.trade.start.promotion.PromotionHttpIntegrationTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.062 s -- in com.lemnt.system.application.notice.executor.NoticeUpdateCmdExeTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.037 s -- in com.lemnt.system.application.notice.executor.NoticeTopListQueryExeTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.lemnt.system.application.auth.service.TreeMenuServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.087 s -- in com.lemnt.system.application.auth.executor.MenuRoleTreeQueryExeTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in com.lemnt.system.application.auth.executor.MenuNameUniqueTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.031 s -- in com.lemnt.system.application.auth.executor.UserInfoQueryExeTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s -- in com.lemnt.system.application.auth.converter.RoleConverterTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.368 s -- in com.lemnt.system.application.config.executor.ConfigEditRegressionTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.042 s -- in com.lemnt.system.application.org.executor.PostCodeUniqueTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.057 s -- in com.lemnt.system.application.org.executor.DeptClearFieldsTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.lemnt.system.application.org.converter.OrgTimeConverterTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.136 s -- in com.lemnt.system.application.dubbo.RemoteLogServiceImplTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.241 s -- in com.lemnt.system.adapter.mq.log.OperLogConsumerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.185 s -- in com.lemnt.system.adapter.web.auth.SystemStatusContractTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.lemnt.system.adapter.web.auth.RoleContractTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.833 s -- in com.lemnt.system.adapter.web.auth.UserControllerTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.053 s -- in com.lemnt.system.adapter.web.config.DictDataRemarkContractTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.lemnt.system.adapter.web.org.OrgTimeContractTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.093 s -- in com.lemnt.system.adapter.web.file.FileControllerTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.199 s -- in com.lemnt.system.adapter.web.ConfigRoleQueryPermissionTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.180 s -- in com.lemnt.system.infrastructure.notice.converter.NoticeConverterTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.655 s -- in com.lemnt.system.infrastructure.notice.gateway.NoticeReadGatewayImplTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.354 s -- in com.lemnt.system.infrastructure.auth.mapper.RoleTreeMapperTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.303 s -- in com.lemnt.system.infrastructure.auth.mapper.UserPageMapperTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.156 s -- in com.lemnt.system.infrastructure.auth.mapper.UserRelationMapperTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.042 s -- in com.lemnt.system.infrastructure.auth.mapper.MenuNameUniqueMapperTest
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.615 s -- in com.lemnt.system.infrastructure.auth.mapper.DataScopeSqlIntegrationTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.052 s -- in com.lemnt.system.infrastructure.config.mapper.ConfigKeyUniqueMapperTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.034 s -- in com.lemnt.system.infrastructure.config.mapper.ConfigDateFilterTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.lemnt.system.infrastructure.org.converter.DeptConverterTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.lemnt.system.infrastructure.org.converter.PostConverterTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.044 s -- in com.lemnt.system.infrastructure.org.mapper.PostCodeUniqueMapperTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.415 s -- in com.lemnt.system.infrastructure.file.gateway.FileGatewayImplTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.042 s -- in com.lemnt.system.infrastructure.log.mapper.OperLogCostTimeMapperTest
+[INFO] Reactor Summary for lemnt-reactor 1.0.0-SNAPSHOT:
+[INFO] lemnt-dependencies ................................. SUCCESS [  0.246 s]
+[INFO] lemnt-common ....................................... SUCCESS [  0.005 s]
+[INFO] lemnt-common-core .................................. SUCCESS [  0.672 s]
+[INFO] lemnt-common-redis ................................. SUCCESS [  0.116 s]
+[INFO] lemnt-common-snowflake ............................. SUCCESS [  0.074 s]
+[INFO] lemnt-common-security .............................. SUCCESS [  2.731 s]
+[INFO] lemnt-common-mq .................................... SUCCESS [ 12.131 s]
+[INFO] lemnt-common-log ................................... SUCCESS [  0.053 s]
+[INFO] lemnt-common-swagger ............................... SUCCESS [  0.867 s]
+[INFO] lemnt-common-sensitive ............................. SUCCESS [  0.028 s]
+[INFO] lemnt-common-datascope ............................. SUCCESS [  1.081 s]
+[INFO] lemnt-common-datasource ............................ SUCCESS [  0.133 s]
+[INFO] lemnt-common-oss ................................... SUCCESS [  2.629 s]
+[INFO] lemnt-common-excel ................................. SUCCESS [  1.762 s]
+[INFO] lemnt-common-infrastructure ........................ SUCCESS [  0.016 s]
+[INFO] lemnt-common-mybatis ............................... SUCCESS [  0.067 s]
+[INFO] lemnt-common-dubbo ................................. SUCCESS [  0.047 s]
+[INFO] lemnt-common-job ................................... SUCCESS [  0.425 s]
+[INFO] lemnt-common-lock .................................. SUCCESS [  1.873 s]
+[INFO] lemnt-common-kafka ................................. SUCCESS [  0.615 s]
+[INFO] lemnt-common-async ................................. SUCCESS [  2.332 s]
+[INFO] lemnt-common-client ................................ SUCCESS [  0.015 s]
+[INFO] lemnt-common-domain ................................ SUCCESS [  0.018 s]
+[INFO] lemnt-common-application ........................... SUCCESS [  0.016 s]
+[INFO] lemnt-common-adapter ............................... SUCCESS [  1.627 s]
+[INFO] lemnt-common-start ................................. SUCCESS [  0.122 s]
+[INFO] lemnt-server ....................................... SUCCESS [  0.003 s]
+[INFO] lemnt-auth ......................................... SUCCESS [  0.002 s]
+[INFO] lemnt-auth-domain .................................. SUCCESS [  0.020 s]
+[INFO] lemnt-auth-application ............................. SUCCESS [  0.025 s]
+[INFO] lemnt-auth-adapter ................................. SUCCESS [  0.026 s]
+[INFO] lemnt-system ....................................... SUCCESS [  0.002 s]
+[INFO] lemnt-system-client ................................ SUCCESS [  0.018 s]
+[INFO] lemnt-auth-infrastructure .......................... SUCCESS [  0.029 s]
+[INFO] lemnt-auth-start ................................... SUCCESS [  0.294 s]
+[INFO] lemnt-member ....................................... SUCCESS [  0.003 s]
+[INFO] lemnt-member-client ................................ SUCCESS [  0.016 s]
+[INFO] lemnt-gateway ...................................... SUCCESS [  3.702 s]
+[INFO] lemnt-open ......................................... SUCCESS [  0.003 s]
+[INFO] lemnt-open-domain .................................. SUCCESS [  0.015 s]
+[INFO] lemnt-open-application ............................. SUCCESS [  0.022 s]
+[INFO] lemnt-open-infrastructure .......................... SUCCESS [  0.019 s]
+[INFO] lemnt-open-adapter ................................. SUCCESS [  0.054 s]
+[INFO] lemnt-open-start ................................... SUCCESS [  0.104 s]
+[INFO] lemnt-member-domain ................................ SUCCESS [  0.024 s]
+[INFO] lemnt-member-application ........................... SUCCESS [  0.046 s]
+[INFO] lemnt-member-adapter ............................... SUCCESS [  0.047 s]
+[INFO] lemnt-member-infrastructure ........................ SUCCESS [  1.306 s]
+[INFO] lemnt-member-start ................................. SUCCESS [ 25.018 s]
+[INFO] lemnt-mall ......................................... SUCCESS [  0.002 s]
+[INFO] lemnt-mall-client .................................. SUCCESS [  0.041 s]
+[INFO] lemnt-mall-domain .................................. SUCCESS [  1.952 s]
+[INFO] lemnt-mall-application ............................. SUCCESS [  2.901 s]
+[INFO] lemnt-mall-adapter ................................. SUCCESS [  3.782 s]
+[INFO] lemnt-mall-infrastructure .......................... SUCCESS [  3.992 s]
+[INFO] lemnt-mall-start ................................... SUCCESS [  0.812 s]
+[INFO] lemnt-trade ........................................ SUCCESS [  0.002 s]
+[INFO] lemnt-trade-client ................................. SUCCESS [  0.015 s]
+[INFO] lemnt-trade-domain ................................. SUCCESS [  2.570 s]
+[INFO] lemnt-trade-application ............................ SUCCESS [  2.529 s]
+[INFO] lemnt-trade-adapter ................................ SUCCESS [  5.028 s]
+[INFO] lemnt-trade-infrastructure ......................... SUCCESS [  4.078 s]
+[INFO] lemnt-trade-start .................................. SUCCESS [ 11.431 s]
+[INFO] lemnt-system-domain ................................ SUCCESS [  0.024 s]
+[INFO] lemnt-system-application ........................... SUCCESS [  2.773 s]
+[INFO] lemnt-system-adapter ............................... SUCCESS [  3.788 s]
+[INFO] lemnt-system-infrastructure ........................ SUCCESS [  5.078 s]
+[INFO] lemnt-system-start ................................. SUCCESS [  0.115 s]
+[INFO] lemnt-third-sdk .................................... SUCCESS [  0.004 s]
+[INFO] demo-sdk ........................................... SUCCESS [  0.012 s]
+[INFO] lemnt-reactor ...................................... SUCCESS [  0.000 s]
+[INFO] BUILD SUCCESS
+[INFO] Total time:  01:51 min
+Aggregate:71 projects,87 suites,481 tests,0 failures/errors/skips;actual exit0.

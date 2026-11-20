@@ -1,11 +1,13 @@
 package com.lemnt.common.mybatis.handler;
 
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.common.core.utils.JsonUtils;
+
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
+
+import cn.hutool.core.collection.CollUtil;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -26,7 +28,9 @@ import java.util.List;
 public class JsonLongListTypeHandler extends BaseTypeHandler<List<Long>> {
 
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, List<Long> parameter, JdbcType jdbcType) throws SQLException {
+    public void setNonNullParameter(
+        PreparedStatement ps, int i, List<Long> parameter, JdbcType jdbcType)
+        throws SQLException {
         if (CollUtil.isEmpty(parameter)) {
             ps.setString(i, "[]");
         } else {

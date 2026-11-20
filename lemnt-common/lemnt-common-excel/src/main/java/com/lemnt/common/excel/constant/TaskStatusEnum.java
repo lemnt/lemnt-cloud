@@ -9,8 +9,12 @@ import lombok.Getter;
  */
 @Getter
 public enum TaskStatusEnum {
-
-    WAITING(0), DOING(1), SUCCESS(2), FAIL(3), STOP(4), PART_FAIL(5);
+    WAITING(0),
+    DOING(1),
+    SUCCESS(2),
+    FAIL(3),
+    STOP(4),
+    PART_FAIL(5);
 
     private int status;
 
@@ -21,5 +25,4 @@ public enum TaskStatusEnum {
     public int getStatus() {
         return status;
     }
-
 }

@@ -2,6 +2,7 @@ package com.lemnt.system.infrastructure.log.mapper;
 
 import com.lemnt.system.domain.log.model.OperLog;
 import com.lemnt.system.infrastructure.log.dataobject.OperLogDO;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,7 +16,6 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface OperLogMapper extends BaseMapper<OperLogDO> {
-
     /**
      * 分页查询系统操作日志
      *

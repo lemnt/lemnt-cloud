@@ -1,10 +1,12 @@
 package com.lemnt.system.application.org.executor;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.system.application.org.converter.PostConverter;
 import com.lemnt.system.application.org.dto.PostDTO;
 import com.lemnt.system.domain.org.gateway.PostGateway;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 岗位详情查询执行器

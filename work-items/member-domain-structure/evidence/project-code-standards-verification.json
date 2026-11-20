@@ -1,0 +1,177 @@
+{
+  "batch": 165,
+  "recordedAt": "2026-11-03T09:33:29+08:00",
+  "scope": "全项目源码扫描与规范重构；非全业务逐行审计或真实环境验收",
+  "backend": {
+    "tests": {
+      "lemnt-common": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "suites": 1
+      },
+      "lemnt-trade": {
+        "tests": 311,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "suites": 70
+      },
+      "lemnt-mall": {
+        "tests": 197,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "suites": 53
+      },
+      "lemnt-member": {
+        "tests": 122,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "suites": 19
+      },
+      "lemnt-system": {
+        "tests": 147,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "suites": 40
+      },
+      "lemnt-auth": {
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "suites": 5
+      },
+      "lemnt-open": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "suites": 1
+      },
+      "lemnt-gateway": {
+        "tests": 35,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "suites": 9
+      },
+      "lemnt-third-sdk": {
+        "tests": 0,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "suites": 0
+      }
+    },
+    "renamedClassArchive": {
+      "jar": "lemnt-server/lemnt-system/lemnt-system-application/target/lemnt-system-application-1.0.0-SNAPSHOT.jar",
+      "oldClassCount": 0,
+      "newClassCount": 2
+    }
+  },
+  "backendTestTotal": 835,
+  "backendCleanPackage": "passed",
+  "commonInstall": "passed",
+  "ui": {
+    "tests": 320,
+    "files": 64,
+    "typecheck": "passed",
+    "lint": "passed",
+    "format": "passed",
+    "build": "passed",
+    "buildWarning": "existing chunks larger than 500 kB"
+  },
+  "miniapp": {
+    "tests": 179,
+    "failures": 0,
+    "format": "passed",
+    "wxmlFiles": 38,
+    "wxmlIndent": "passed",
+    "wxmlTagsAttributesAndTextIgnoringLineIndent": "equal",
+    "nativeCompile": "not_run"
+  },
+  "tools": {
+    "standardTests": 10,
+    "schemaCommentTests": 7
+  },
+  "totalTestCases": 1351,
+  "javaFormat": {
+    "sourceFiles": 3001,
+    "check": "passed",
+    "fullyQualifiedAnnotationsRemoved": 255,
+    "filesWithAnnotationChanges": 68,
+    "firstFormatAstComparisonFiles": 2996,
+    "firstFormatAstEqual": true,
+    "firstFormatAstSha256": "751967d80e8eaefeff23b714d471eec22df5c827908276d89ee3124c09f139eb",
+    "astScope": "首轮格式化，后续有意的结构/行为重构由回归覆盖"
+  },
+  "schema": {
+    "tables": 98,
+    "columns": 1100,
+    "missingComments": 0,
+    "catalogMatchesDdl": true
+  },
+  "sqlLayout": {
+    "file": "TradeOrderMapper.xml",
+    "sqlTokensAndDynamicXmlEqualToTestedVersion": true
+  },
+  "architecture": {
+    "javaMainFiles": 2797,
+    "mapperXmlFiles": 56,
+    "pomFiles": 70,
+    "byLayer": {
+      "adapter": 847,
+      "application": 989,
+      "async": 4,
+      "client": 44,
+      "core": 18,
+      "datascope": 4,
+      "datasource": 6,
+      "domain": 332,
+      "dubbo": 2,
+      "excel": 25,
+      "gateway": 26,
+      "infrastructure": 379,
+      "job": 2,
+      "kafka": 6,
+      "lock": 2,
+      "log": 8,
+      "mq": 4,
+      "mybatis": 8,
+      "oss": 10,
+      "redis": 12,
+      "sdk": 1,
+      "security": 33,
+      "sensitive": 6,
+      "snowflake": 5,
+      "start": 22,
+      "swagger": 2
+    },
+    "violations": []
+  },
+  "gitDiffCheck": "passed",
+  "head": "9586287e7bdd2d10b4e8030201c839e50fc9789e",
+  "committed": false,
+  "notVerified": [
+    "目标MySQL升级/历史回填/锁行为",
+    "真实网关与Dubbo联调",
+    "Redis/MQ/真实支付与账户线上对账",
+    "浏览器验收",
+    "微信原生编译与真机"
+  ],
+  "logs": {
+    "backend": "/private/tmp/lemnt165-server-clean-final.log",
+    "common": "/private/tmp/lemnt165-common-install.log",
+    "uiTests": "/private/tmp/lemnt165-ui-tests.log",
+    "uiLint": "/private/tmp/lemnt165-ui-lint.log",
+    "uiFormat": "/private/tmp/lemnt165-ui-format-check.log",
+    "uiBuild": "/private/tmp/lemnt165-ui-build.log",
+    "miniapp": "/private/tmp/lemnt165-mini-final.log",
+    "javaFormat": "/private/tmp/lemnt165-java-check-final.log"
+  }
+}

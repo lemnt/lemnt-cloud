@@ -1,0 +1,365 @@
+{
+  "capturedAt": "2026-11-09T10:36:52.460225+08:00",
+  "head": "12745a285d36869f2005d9f4ffdada93351ec1e4",
+  "branch": "feat/yudao-member-mall-trade-migration",
+  "workingTree": "",
+  "scope": [
+    "P000",
+    "F001",
+    "F002",
+    "F003",
+    "F004",
+    "F005",
+    "F006",
+    "V-B1a"
+  ],
+  "approval": "确认预览并执行",
+  "files": [
+    {
+      "taskId": "P000",
+      "path": "work-items/yudao-mall-migration-baseline/evidence/execution-baseline.json",
+      "operation": "新增",
+      "statusBefore": "pending",
+      "existsBefore": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F001",
+      "path": "lemnt-server/lemnt-gateway/src/main/java/com/lemnt/gateway/filter/AuthFilter.java",
+      "operation": "修改",
+      "statusBefore": "pending",
+      "existsBefore": true,
+      "sha256Before": "1b66aa51b40d3f918dd51c6cf90dc6dcb947bcbc5a95be0c339baaef47de0b3d"
+    },
+    {
+      "taskId": "F002",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterAppRoutesTest.java",
+      "operation": "修改",
+      "statusBefore": "pending",
+      "existsBefore": true,
+      "sha256Before": "1a1dededc2a8ab987b28bae8dd3e81b89faad0b498f71a0354349504e4f3080d"
+    },
+    {
+      "taskId": "F003",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterDomainTest.java",
+      "operation": "修改",
+      "statusBefore": "pending",
+      "existsBefore": true,
+      "sha256Before": "3273b84952fb7704574711d7d9b21ead53991cc3d53267f8adf2b19430003428"
+    },
+    {
+      "taskId": "F004",
+      "path": "lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/ProductAppRouteContractTest.java",
+      "operation": "新增",
+      "statusBefore": "pending",
+      "existsBefore": false,
+      "sha256Before": null
+    },
+    {
+      "taskId": "F005",
+      "path": "lemnt-miniapp/services/comments.js",
+      "operation": "修改",
+      "statusBefore": "pending",
+      "existsBefore": true,
+      "sha256Before": "b16f202ac6f1be63e0024134dec964d90824fcabf87600d5cbe3062a3db2b33a"
+    },
+    {
+      "taskId": "F006",
+      "path": "lemnt-miniapp/tests/comments.test.cjs",
+      "operation": "修改",
+      "statusBefore": "pending",
+      "existsBefore": true,
+      "sha256Before": "a9ae2828362b0f1ea17f6f4c36b5467866ca4e547bad0f71b637fe03ab19fd6a"
+    },
+    {
+      "taskId": "V-B1a",
+      "path": "work-items/yudao-mall-migration-baseline/evidence/b1a-validation.json",
+      "operation": "新增",
+      "statusBefore": "pending",
+      "existsBefore": false,
+      "sha256Before": null
+    }
+  ],
+  "referenceRecheck": [
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-gateway/src/main/java/com/lemnt/gateway/filter/AuthFilter.java",
+      "expectedSha256": "1b66aa51b40d3f918dd51c6cf90dc6dcb947bcbc5a95be0c339baaef47de0b3d",
+      "actualSha256": "1b66aa51b40d3f918dd51c6cf90dc6dcb947bcbc5a95be0c339baaef47de0b3d",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/docs/config/commerce-gateway-routes.yaml",
+      "expectedSha256": "1d9697e86788443ee7d257eb7dd1ae832c099b2c730b5701b9a741994e10be9e",
+      "actualSha256": "1d9697e86788443ee7d257eb7dd1ae832c099b2c730b5701b9a741994e10be9e",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-gateway/src/test/java/com/lemnt/gateway/filter/AuthFilterAppRoutesTest.java",
+      "expectedSha256": "1a1dededc2a8ab987b28bae8dd3e81b89faad0b498f71a0354349504e4f3080d",
+      "actualSha256": "1a1dededc2a8ab987b28bae8dd3e81b89faad0b498f71a0354349504e4f3080d",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-miniapp/services/comments.js",
+      "expectedSha256": "b16f202ac6f1be63e0024134dec964d90824fcabf87600d5cbe3062a3db2b33a",
+      "actualSha256": "b16f202ac6f1be63e0024134dec964d90824fcabf87600d5cbe3062a3db2b33a",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/work-items/module-split-migration/evidence/gateway-endpoint-contract.json",
+      "expectedSha256": "79376999bb6a0615bbc4c4da6f7cdff7b5b7cb4cf401f0f79103c71126558191",
+      "actualSha256": "79376999bb6a0615bbc4c4da6f7cdff7b5b7cb4cf401f0f79103c71126558191",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-mall-uniapp/sheep/api/product/comment.js",
+      "expectedSha256": "57750f53b3c5eeefd598f501d6a8ffaf9b63ef9e6197124ad91fd0f7e95cada1",
+      "actualSha256": "57750f53b3c5eeefd598f501d6a8ffaf9b63ef9e6197124ad91fd0f7e95cada1",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-promotion/lemnt-promotion-application/pom.xml",
+      "expectedSha256": "624fb2ca76e85c2820219cd9484582f9ce32e74b6c416607054e852e002a889a",
+      "actualSha256": "624fb2ca76e85c2820219cd9484582f9ce32e74b6c416607054e852e002a889a",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-order/lemnt-order-application/pom.xml",
+      "expectedSha256": "d90be10ae9252093f2ec40039150fd65dc81395f49c6c816cc108a6e0ebf7016",
+      "actualSha256": "d90be10ae9252093f2ec40039150fd65dc81395f49c6c816cc108a6e0ebf7016",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-pay/lemnt-pay-application/pom.xml",
+      "expectedSha256": "f0b1ffe4778ac79a64b4be0ea8e4f7f113626b8e9f0cbc241735fd8d4637c288",
+      "actualSha256": "f0b1ffe4778ac79a64b4be0ea8e4f7f113626b8e9f0cbc241735fd8d4637c288",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-member/lemnt-member-application/pom.xml",
+      "expectedSha256": "4177b54c7ef509ecbb362f883aae31e0cfb14767b1b225a71127f3e1c1115811",
+      "actualSha256": "4177b54c7ef509ecbb362f883aae31e0cfb14767b1b225a71127f3e1c1115811",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/mysql/spu/ProductSpuMapper.java",
+      "expectedSha256": "4437c6c5190f363f9921d67aef20a57b3f11b5b51c411a3f4991fc4a996133f4",
+      "actualSha256": "4437c6c5190f363f9921d67aef20a57b3f11b5b51c411a3f4991fc4a996133f4",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/spu/AppProductSpuController.java",
+      "expectedSha256": "dc0ea734c9e57b4510a5a6248fa55b81dbcf08696fce2aac76b02d1d05cd72ea",
+      "actualSha256": "dc0ea734c9e57b4510a5a6248fa55b81dbcf08696fce2aac76b02d1d05cd72ea",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/category/AppCategoryController.java",
+      "expectedSha256": "3da2d2fab3a56271d95da3fe5e05aa4f3b721639ed0d1376ca991e119a72924b",
+      "actualSha256": "3da2d2fab3a56271d95da3fe5e05aa4f3b721639ed0d1376ca991e119a72924b",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/dataobject/spu/ProductSpuDO.java",
+      "expectedSha256": "355119cfcc5585395dd32e0763fb6e767e4d73c9b3894eeb859764e5417fd8ec",
+      "actualSha256": "355119cfcc5585395dd32e0763fb6e767e4d73c9b3894eeb859764e5417fd8ec",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/dataobject/sku/ProductSkuDO.java",
+      "expectedSha256": "2147cfebf1cf5ed70b883109e2ff58ca20f8b030bfac122f1e7f91d142181fd6",
+      "actualSha256": "2147cfebf1cf5ed70b883109e2ff58ca20f8b030bfac122f1e7f91d142181fd6",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/req/StorePageReq.java",
+      "expectedSha256": "5c76b15c7f447d33de86995771b5244adab93fab2babdade413355e3f2514b7f",
+      "actualSha256": "5c76b15c7f447d33de86995771b5244adab93fab2babdade413355e3f2514b7f",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/resources/mapper/ProductSpuMapper.xml",
+      "expectedSha256": "f7c9d9f672f802a65b783318fec9607517b6b70bd1d418ef6f6a5c51ae0edbd3",
+      "actualSha256": "f7c9d9f672f802a65b783318fec9607517b6b70bd1d418ef6f6a5c51ae0edbd3",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-product/lemnt-product-adapter/src/main/java/com/lemnt/product/adapter/app/product/res/StoreDetailRes.java",
+      "expectedSha256": "283d1ef583afe05499ffbc136ffd9195f57fffe2025eaa88713604ac55ddff82",
+      "actualSha256": "283d1ef583afe05499ffbc136ffd9195f57fffe2025eaa88713604ac55ddff82",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-product/lemnt-product-infrastructure/src/main/java/com/lemnt/product/infrastructure/product/gateway/ProductCategoryGatewayImpl.java",
+      "expectedSha256": "e804aa57fe6de6462bba6155e38b7dd0940b1f2afdc26df2ba4a095d194d720a",
+      "actualSha256": "e804aa57fe6de6462bba6155e38b7dd0940b1f2afdc26df2ba4a095d194d720a",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/dal/mysql/spu/ProductSpuMapper.java",
+      "expectedSha256": "4437c6c5190f363f9921d67aef20a57b3f11b5b51c411a3f4991fc4a996133f4",
+      "actualSha256": "4437c6c5190f363f9921d67aef20a57b3f11b5b51c411a3f4991fc4a996133f4",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-product-server/src/main/java/cn/iocoder/yudao/module/product/controller/app/spu/AppProductSpuController.java",
+      "expectedSha256": "dc0ea734c9e57b4510a5a6248fa55b81dbcf08696fce2aac76b02d1d05cd72ea",
+      "actualSha256": "dc0ea734c9e57b4510a5a6248fa55b81dbcf08696fce2aac76b02d1d05cd72ea",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-product/sql/lemnt_product.sql",
+      "expectedSha256": "7588f34fb3d983f77d62a8f58317b6f28498214754c5b2f2119438cacc506d08",
+      "actualSha256": "7588f34fb3d983f77d62a8f58317b6f28498214754c5b2f2119438cacc506d08",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/service/order/TradeOrderUpdateServiceImpl.java",
+      "expectedSha256": "8ea9b31d19285dfa11401cbaaa877fb66e4ee1754eeb5ce7bf99e10b555f9c43",
+      "actualSha256": "8ea9b31d19285dfa11401cbaaa877fb66e4ee1754eeb5ce7bf99e10b555f9c43",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/service/order/handler/TradeProductSkuOrderHandler.java",
+      "expectedSha256": "47b0a618e97e2870032ae14624bdec2e362abd194a1f2a978709b2245f3cea15",
+      "actualSha256": "47b0a618e97e2870032ae14624bdec2e362abd194a1f2a978709b2245f3cea15",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/service/order/handler/TradeSeckillOrderHandler.java",
+      "expectedSha256": "db413da8e34dc6b0f0d5c7fbceb0a13030bf1bcce00cce31d9dbc5a1a5a17584",
+      "actualSha256": "db413da8e34dc6b0f0d5c7fbceb0a13030bf1bcce00cce31d9dbc5a1a5a17584",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/order/service/OrderSubmissionService.java",
+      "expectedSha256": "dd8e358732cea5d34f639a316fd9048478e1595a67d85be167edbfe6c43cfa18",
+      "actualSha256": "dd8e358732cea5d34f639a316fd9048478e1595a67d85be167edbfe6c43cfa18",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/order/service/OrderRemoteService.java",
+      "expectedSha256": "4d3073aecf47d736d144c742868280eb36595113b6a6495c0ded71abf6956851",
+      "actualSha256": "4d3073aecf47d736d144c742868280eb36595113b6a6495c0ded71abf6956851",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/order/service/OrderBenefitsService.java",
+      "expectedSha256": "39092f222758029a5133d94221fa55b943e3ca31f3c1988e475382544833922b",
+      "actualSha256": "39092f222758029a5133d94221fa55b943e3ca31f3c1988e475382544833922b",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-pay/yudao-module-pay-server/src/main/java/cn/iocoder/yudao/module/pay/service/notify/PayNotifyServiceImpl.java",
+      "expectedSha256": "6be22a60894ae92f2d0aef1af15cb79f0ec2aeaeb1f95f6cf6e08198591ff2df",
+      "actualSha256": "6be22a60894ae92f2d0aef1af15cb79f0ec2aeaeb1f95f6cf6e08198591ff2df",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-pay/lemnt-pay-application/src/main/java/com/lemnt/pay/application/payment/service/PaymentNotificationService.java",
+      "expectedSha256": "2d21517e2874aa975ee2beece7a9a4623cbd1b84e5231c464eecb80185147e91",
+      "actualSha256": "2d21517e2874aa975ee2beece7a9a4623cbd1b84e5231c464eecb80185147e91",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-order/sql/lemnt_order.sql",
+      "expectedSha256": "c126d96431acc80d47585320817b762f05ddcb2f83d4f4a114e8bb95c4c8fccf",
+      "actualSha256": "c126d96431acc80d47585320817b762f05ddcb2f83d4f4a114e8bb95c4c8fccf",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-pay/sql/lemnt_pay.sql",
+      "expectedSha256": "539cead52264993d0d664b2d4e109f1ef21990ea6403e16f08fbcdf81b7ca961",
+      "actualSha256": "539cead52264993d0d664b2d4e109f1ef21990ea6403e16f08fbcdf81b7ca961",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-pay/sql/lemnt_pay.sql",
+      "expectedSha256": "539cead52264993d0d664b2d4e109f1ef21990ea6403e16f08fbcdf81b7ca961",
+      "actualSha256": "539cead52264993d0d664b2d4e109f1ef21990ea6403e16f08fbcdf81b7ca961",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/controller/app/order/AppTradeOrderController.java",
+      "expectedSha256": "1c7582560586d41ba02491a4d509f45ee1bfec687b5c7b044d9e6b59152107a2",
+      "actualSha256": "1c7582560586d41ba02491a4d509f45ee1bfec687b5c7b044d9e6b59152107a2",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/service/order/TradeOrderUpdateServiceImpl.java",
+      "expectedSha256": "8ea9b31d19285dfa11401cbaaa877fb66e4ee1754eeb5ce7bf99e10b555f9c43",
+      "actualSha256": "8ea9b31d19285dfa11401cbaaa877fb66e4ee1754eeb5ce7bf99e10b555f9c43",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-order/lemnt-order-adapter/src/main/java/com/lemnt/order/adapter/app/order/AppOrderCommentController.java",
+      "expectedSha256": "b3631da34e5036903062d26947f914dd848a67cec32ef90ad1efdfc3cc25d8a9",
+      "actualSha256": "b3631da34e5036903062d26947f914dd848a67cec32ef90ad1efdfc3cc25d8a9",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/order/service/OrderCommentService.java",
+      "expectedSha256": "8f854cfae3e09023890b1e66dbba63b0356e6fe8fcaa3dc27b00cdc6e0b54915",
+      "actualSha256": "8f854cfae3e09023890b1e66dbba63b0356e6fe8fcaa3dc27b00cdc6e0b54915",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-promotion-server/src/main/java/cn/iocoder/yudao/module/promotion/controller/admin/article/ArticleController.java",
+      "expectedSha256": "cd3b996c0e582ce1a0fb38e1e5bf73703aaf67a2686d4be1e2952fbb8b8d9337",
+      "actualSha256": "cd3b996c0e582ce1a0fb38e1e5bf73703aaf67a2686d4be1e2952fbb8b8d9337",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-statistics-server/src/main/java/cn/iocoder/yudao/module/statistics/controller/admin/product/ProductStatisticsController.java",
+      "expectedSha256": "a53d7dc6a6fd19aad18e72eb22ec5f1456c897a0642f72c42eede15e3c6c0b93",
+      "actualSha256": "a53d7dc6a6fd19aad18e72eb22ec5f1456c897a0642f72c42eede15e3c6c0b93",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-order/lemnt-order-application/src/main/java/com/lemnt/order/application/order/executor/OrderStatisticsQueryExe.java",
+      "expectedSha256": "d43a085d3c823135e9e675d232d402e028926372cbbaec39e06a66c891ae9bb6",
+      "actualSha256": "d43a085d3c823135e9e675d232d402e028926372cbbaec39e06a66c891ae9bb6",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-server/lemnt-product/lemnt-product-start/src/main/resources/application.yaml",
+      "expectedSha256": "42664179343920adbaa5af25340154fe4655b42602cb9e5e8dbb27d27016f4bf",
+      "actualSha256": "42664179343920adbaa5af25340154fe4655b42602cb9e5e8dbb27d27016f4bf",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/docs/config/lemnt-product.yaml",
+      "expectedSha256": "d809e93397b36095aa5a89aca77a36a92996a7a725e9cd9a2a8d8e0cbdcb1d01",
+      "actualSha256": "d809e93397b36095aa5a89aca77a36a92996a7a725e9cd9a2a8d8e0cbdcb1d01",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/docs/config/commerce-mq.yaml",
+      "expectedSha256": "ea49b1974d0ffe1b9f732ec8c649d3e46bff5e6b780a581a3e800c9258c048c0",
+      "actualSha256": "ea49b1974d0ffe1b9f732ec8c649d3e46bff5e6b780a581a3e800c9258c048c0",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-miniapp/config.js",
+      "expectedSha256": "5dd278100cbc758615f5ad1f6facee6f72b2cebbe4498951d9ef223435caf4d2",
+      "actualSha256": "5dd278100cbc758615f5ad1f6facee6f72b2cebbe4498951d9ef223435caf4d2",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/wangxx/demo/lemnt-cloud/lemnt-miniapp/services/storefront.js",
+      "expectedSha256": "24416a7ced5a13ef3d6b36acce9c1e87a5d0c2210575d0b91f54858fffa5cc10",
+      "actualSha256": "24416a7ced5a13ef3d6b36acce9c1e87a5d0c2210575d0b91f54858fffa5cc10",
+      "unchanged": true
+    }
+  ],
+  "authorization": {
+    "upstreamReadOnly": true,
+    "ddl": false,
+    "deployment": false,
+    "productionConfiguration": false,
+    "commit": false,
+    "push": false,
+    "indexChanges": false
+  },
+  "runtimeAcceptance": "not_performed"
+}

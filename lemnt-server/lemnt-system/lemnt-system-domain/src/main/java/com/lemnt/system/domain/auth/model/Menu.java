@@ -113,5 +113,4 @@ public class Menu implements Serializable {
      * 用户ID
      */
     private Long userId;
-
 }

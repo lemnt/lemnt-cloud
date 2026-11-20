@@ -1,8 +1,8 @@
 package com.lemnt.system.application.org.service;
 
-import com.lemnt.common.core.utils.StringUtils;
 import com.lemnt.system.domain.auth.model.TreeSelect;
 import com.lemnt.system.domain.org.model.Dept;
+
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class TreeDeptService {
-
     /**
      * 构建前端所需要下拉树结构
      *
@@ -45,7 +44,6 @@ public class TreeDeptService {
         }
         return returnList;
     }
-
 
     /**
      * 递归列表

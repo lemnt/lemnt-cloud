@@ -1,0 +1,16 @@
+{
+  "capturedAt": "2026-11-17T17:00:50.349745+08:00",
+  "approvalQuote": "允许导入初始化SQL",
+  "scope": "Apply each service base initialization script to its dedicated lemnt_migration_local_* database only. Historical V* upgrade scripts not executed.",
+  "targetContainer": "mysql8",
+  "secretsPersisted": false,
+  "imported": [
+    {
+      "database": "lemnt_migration_local_system",
+      "status": "skipped_not_empty_or_precheck_failed",
+      "tableCountBefore": ""
+    }
+  ],
+  "existingBusinessDatabasesTouched": false,
+  "allSchemasAfter": []
+}

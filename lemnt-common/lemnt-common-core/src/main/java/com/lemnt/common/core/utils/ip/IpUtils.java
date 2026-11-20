@@ -1,11 +1,12 @@
 package com.lemnt.common.core.utils.ip;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import jakarta.servlet.http.HttpServletRequest;
-
 import com.lemnt.common.core.utils.ServletUtils;
 import com.lemnt.common.core.utils.StringUtils;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * 获取IP方法
@@ -13,12 +14,22 @@ import com.lemnt.common.core.utils.StringUtils;
  * @author wangxx
  */
 public class IpUtils {
-    public final static String REGX_0_255 = "(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)";
+    public static final String REGX_0_255 = "(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]\\d|\\d)";
     // 匹配 ip
-    public final static String REGX_IP = "((" + REGX_0_255 + "\\.){3}" + REGX_0_255 + ")";
-    public final static String REGX_IP_WILDCARD = "(((\\*\\.){3}\\*)|(" + REGX_0_255 + "(\\.\\*){3})|(" + REGX_0_255 + "\\." + REGX_0_255 + ")(\\.\\*){2}" + "|((" + REGX_0_255 + "\\.){3}\\*))";
+    public static final String REGX_IP = "((" + REGX_0_255 + "\\.){3}" + REGX_0_255 + ")";
+    public static final String REGX_IP_WILDCARD =
+        "(((\\*\\.){3}\\*)|("
+            + REGX_0_255
+            + "(\\.\\*){3})|("
+            + REGX_0_255
+            + "\\."
+            + REGX_0_255
+            + ")(\\.\\*){2}"
+            + "|(("
+            + REGX_0_255
+            + "\\.){3}\\*))";
     // 匹配网段
-    public final static String REGX_IP_SEG = "(" + REGX_IP + "\\-" + REGX_IP + ")";
+    public static final String REGX_IP_SEG = "(" + REGX_IP + "\\-" + REGX_IP + ")";
 
     /**
      * 获取客户端IP

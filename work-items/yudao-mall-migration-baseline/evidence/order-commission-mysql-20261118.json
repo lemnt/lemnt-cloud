@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-11-18T15:12:27.592349+08:00",
+  "mysqlVersion": "8.0.46",
+  "schemas": {
+    "product": "lemnt_migration_commission_20261118_151222_product",
+    "order": "lemnt_migration_commission_20261118_151222_order"
+  },
+  "checks": {
+    "productHistoricalTermsStayNull": true,
+    "batchTermsRespectProductModeAndDeletedSku": true,
+    "twoLevelFixedAmountsAndZeroFallback": true,
+    "orderLineMigrationIdempotentAndNoBackfill": true,
+    "orderLineEarnedAndForeignKeyConstraints": true
+  },
+  "existingSchemasModified": false,
+  "businessHttpVerified": false,
+  "paymentChannelVerified": false
+}

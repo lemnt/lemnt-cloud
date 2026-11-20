@@ -26,11 +26,11 @@ import java.util.stream.Collectors;
 public class IntegerListTypeHandler extends BaseTypeHandler<List<Integer>> {
 
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, List<Integer> parameter, JdbcType jdbcType) throws SQLException {
+    public void setNonNullParameter(
+        PreparedStatement ps, int i, List<Integer> parameter, JdbcType jdbcType)
+        throws SQLException {
         // 存库时转成逗号分隔字符串
-        ps.setString(i, parameter.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(",")));
+        ps.setString(i, parameter.stream().map(String::valueOf).collect(Collectors.joining(",")));
     }
 
     @Override
@@ -44,7 +44,8 @@ public class IntegerListTypeHandler extends BaseTypeHandler<List<Integer>> {
     }
 
     @Override
-    public List<Integer> getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+    public List<Integer> getNullableResult(CallableStatement cs, int columnIndex)
+        throws SQLException {
         return parse(cs.getString(columnIndex));
     }
 
@@ -52,8 +53,6 @@ public class IntegerListTypeHandler extends BaseTypeHandler<List<Integer>> {
         if (value == null || value.isEmpty()) {
             return Collections.emptyList();
         }
-        return Arrays.stream(value.split(","))
-                .map(Integer::valueOf)
-                .collect(Collectors.toList());
+        return Arrays.stream(value.split(",")).map(Integer::valueOf).collect(Collectors.toList());
     }
 }

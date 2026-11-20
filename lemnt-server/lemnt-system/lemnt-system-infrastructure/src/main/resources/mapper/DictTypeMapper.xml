@@ -14,13 +14,13 @@
         <result property="remark" column="remark"/>
     </resultMap>
 
-    <sql id="selectDictTypeVo">
+    <sql id="BaseColumns">
         dict_id, dict_name, dict_type, status, create_by, create_time, update_by, update_time, remark
     </sql>
 
     <select id="selectPage" resultMap="SysDictTypeResult">
         SELECT
-        <include refid="selectDictTypeVo"/>
+        <include refid="BaseColumns"/>
         FROM sys_dict_type
         <where>
             <if test="qry.dictName != null and qry.dictName != ''">

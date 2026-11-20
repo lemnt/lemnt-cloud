@@ -13,6 +13,7 @@
     <description>认证授权模块</description>
 
     <modules>
+        <module>lemnt-auth-client</module>
         <module>lemnt-auth-adapter</module>
         <module>lemnt-auth-domain</module>
         <module>lemnt-auth-application</module>

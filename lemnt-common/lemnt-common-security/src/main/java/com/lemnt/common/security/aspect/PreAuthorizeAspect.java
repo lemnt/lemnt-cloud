@@ -1,6 +1,9 @@
 package com.lemnt.common.security.aspect;
 
-import java.lang.reflect.Method;
+import com.lemnt.common.security.annotation.RequiresLogin;
+import com.lemnt.common.security.annotation.RequiresPermissions;
+import com.lemnt.common.security.annotation.RequiresRoles;
+import com.lemnt.common.security.auth.AuthUtil;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -8,10 +11,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-import com.lemnt.common.security.annotation.RequiresLogin;
-import com.lemnt.common.security.annotation.RequiresPermissions;
-import com.lemnt.common.security.annotation.RequiresRoles;
-import com.lemnt.common.security.auth.AuthUtil;
+
+import java.lang.reflect.Method;
 
 /**
  * 基于 Spring Aop 的注解鉴权
@@ -30,7 +31,8 @@ public class PreAuthorizeAspect {
     /**
      * 定义AOP签名 (切入所有使用鉴权注解的方法)
      */
-    public static final String POINTCUT_SIGN = " @annotation(com.lemnt.common.security.annotation.RequiresLogin) || "
+    public static final String POINTCUT_SIGN =
+        " @annotation(com.lemnt.common.security.annotation.RequiresLogin) || "
             + "@annotation(com.lemnt.common.security.annotation.RequiresPermissions) || "
             + "@annotation(com.lemnt.common.security.annotation.RequiresRoles)";
 

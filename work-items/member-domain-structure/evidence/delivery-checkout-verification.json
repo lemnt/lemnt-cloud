@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-28",
+  "design": "25-delivery-checkout-design.md v2",
+  "scope": "mall/member/trade start plus required reactor dependencies",
+  "backend": {
+    "results": {
+      "tests": 245,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "cleanVerify": "PASS before final remote amount-boundary addition",
+    "finalVerify": "PASS",
+    "log": "/tmp/delivery-chain-verified.log",
+    "finalValidationLog": "/tmp/delivery-chain-validation-test.log",
+    "finalValidation": "PASS: 4 CatalogHttpContractTest tests"
+  },
+  "admin": {
+    "tests": 162,
+    "build": "PASS",
+    "typecheck": "PASS via build",
+    "lint": "PASS",
+    "formatCheck": "PASS",
+    "warning": "existing output chunks over 500 kB"
+  },
+  "miniapp": {
+    "tests": 74,
+    "failures": 0
+  },
+  "businessEvidence": [
+    "production MyBatis/H2 and two-database mall/trade transaction proxies",
+    "real member address provider tested against production member gateway",
+    "real mall RPC adapters invoke real trade delivery/order providers directly in integration fixture",
+    "20.00 goods + 6.50 freight = 26.50 order; quantity half refund = 13.25",
+    "gift points include freight, 26.50 at 2 points/yuan -> 53",
+    "changed address/freight rejected before order; existing request retains original address",
+    "production Redis codec round-trip of freight snapshot",
+    "HTTP carries pointStatus and owned addressId, rejects missing or null invalid fields"
+  ],
+  "limits": [
+    "No real MySQL/Redis/Dubbo network runtime acceptance",
+    "Payment/refund channels are controlled test adapters, no provider SDK integration",
+    "No actual migration or deployment",
+    "No browser or WeChat developer-tool UI acceptance",
+    "No commit or push"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-28",
+  "scope": "SKU规格关系表合并到SKU JSON及字典名称同步；不是完整商城迁移完成",
+  "backend": {
+    "status": "PASS",
+    "tests": 276,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cleanVerifyLog": "/tmp/sku-json-clean-verify.log",
+    "finalVerifyLog": "/tmp/sku-json-final-verify.log",
+    "packageLog": "/tmp/sku-json-package-final.log"
+  },
+  "react": {
+    "status": "PASS",
+    "tests": 171,
+    "testLog": "/tmp/sku-json-ui-tests.log",
+    "buildLog": "/tmp/sku-json-ui-build.log",
+    "lintLog": "/tmp/sku-json-ui-lint.log",
+    "formatLog": "/tmp/sku-json-ui-format.log"
+  },
+  "miniapp": {
+    "status": "PASS",
+    "tests": 82,
+    "log": "/tmp/sku-json-mini-tests.log"
+  },
+  "localInitTables": 45,
+  "remainingBusinessTablesWithoutCorrespondingTable": 36,
+  "realMySqlMigrationExecuted": false,
+  "mySqlJsonMigrationFunctionsVerified": "NOT_RUN",
+  "browserOrDeviceEndToEndRun": false,
+  "sourceSkuDdlAvailable": false,
+  "agentCommitted": false,
+  "agentPushed": false,
+  "observedHEAD": "c46b2f28f70209700b6c7e88d52f3c131d7e3a5d",
+  "fileSHA256": {
+    "lemnt-server/lemnt-mall/sql/V2__mall_catalog.sql": "354dd88a48031e07d7fcdab1d1c74f683a3b599afb5a20f98074834054d8de8d",
+    "lemnt-server/lemnt-mall/sql/V16__product_management.sql": "46902bfd0e19b35fcd62bf8ef766b6963bd6776b5dac66e3ac1532616423ef8e",
+    "lemnt-server/lemnt-mall/sql/upgrade/sku_properties_json.sql": "4e5f311fc25c61263d8553cdd2003c566d02fef24d15c4cb7a1b769f7c660d61",
+    "lemnt-server/lemnt-mall/sql/upgrade/retire_sku_spec_table.sql": "bf98ad39865126a1b807caffe24aaa9f9314309aa7273332be29a9f985a08f0c",
+    "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/product/gateway/ProductSkuGatewayImpl.java": "a84298ca453eb475d1da3a4078ef89af032134d9b1f34e03a9a8e5d3148a2c28",
+    "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/resources/mapper/ProductSkuMapper.xml": "35d13a121e32e8e05afabe846973a5f6b0bf509871264f210b0aea53039baa2e",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductSpecService.java": "53802dc66fccc55b6d1a93a0be6c32f6dce6a8093d566b9209f78be113ff3561",
+    "lemnt-ui/src/modules/mall/catalog/components/SkuSpecFields.tsx": "5d876d7f9b195fa8ef94821c1c1d65bc0b362e0c1985888fdf51fc045e443a51"
+  }
+}

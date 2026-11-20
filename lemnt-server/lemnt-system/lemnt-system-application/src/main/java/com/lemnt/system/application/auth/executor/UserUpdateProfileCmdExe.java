@@ -2,10 +2,12 @@ package com.lemnt.system.application.auth.executor;
 
 import com.lemnt.common.security.utils.SecurityUtils;
 import com.lemnt.system.application.auth.cmd.UserProfileUpdateCmd;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import com.lemnt.system.domain.auth.model.User;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
+import com.lemnt.system.domain.auth.model.User;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 修改个人资料命令执行器

@@ -1,13 +1,14 @@
 package com.lemnt.system.infrastructure.org.dataobject;
 
+import com.lemnt.common.infrastructure.domain.BaseDO;
+
 import com.baomidou.mybatisplus.annotation.IdType;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.experimental.Accessors;
 
-import com.lemnt.common.infrastructure.domain.BaseDO;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * 岗位数据对象 sys_post
@@ -20,7 +21,6 @@ import com.lemnt.common.infrastructure.domain.BaseDO;
 @Accessors(chain = true)
 @TableName("sys_post")
 public class PostDO extends BaseDO {
-
     /**
      * 岗位序号
      */

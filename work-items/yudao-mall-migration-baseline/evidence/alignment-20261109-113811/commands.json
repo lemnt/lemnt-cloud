@@ -1,0 +1,47 @@
+[
+  {
+    "name": "server",
+    "command": "mvn -f lemnt-server/pom.xml clean test",
+    "cwd": ".",
+    "startedAt": "2026-11-09T11:38:11.053016+08:00",
+    "endedAt": "2026-11-09T11:41:46.717128+08:00",
+    "exitCode": 0,
+    "log": "work-items/yudao-mall-migration-baseline/evidence/alignment-20261109-113811/server.log"
+  },
+  {
+    "name": "miniapp",
+    "command": "npm test",
+    "cwd": "lemnt-miniapp",
+    "startedAt": "2026-11-09T11:41:46.717340+08:00",
+    "endedAt": "2026-11-09T11:41:47.366786+08:00",
+    "exitCode": 0,
+    "log": "work-items/yudao-mall-migration-baseline/evidence/alignment-20261109-113811/miniapp.log"
+  },
+  {
+    "name": "ui-typecheck",
+    "command": "yarn typecheck",
+    "cwd": "lemnt-ui",
+    "startedAt": "2026-11-09T11:41:47.366877+08:00",
+    "endedAt": "2026-11-09T11:41:51.706920+08:00",
+    "exitCode": 0,
+    "log": "work-items/yudao-mall-migration-baseline/evidence/alignment-20261109-113811/ui-typecheck.log"
+  },
+  {
+    "name": "ui-tests",
+    "command": "yarn test",
+    "cwd": "lemnt-ui",
+    "startedAt": "2026-11-09T11:41:51.707012+08:00",
+    "endedAt": "2026-11-09T11:41:59.558586+08:00",
+    "exitCode": 0,
+    "log": "work-items/yudao-mall-migration-baseline/evidence/alignment-20261109-113811/ui-tests.log"
+  },
+  {
+    "name": "ui-build",
+    "command": "yarn build",
+    "cwd": "lemnt-ui",
+    "startedAt": "2026-11-09T11:41:59.558693+08:00",
+    "endedAt": "2026-11-09T11:42:04.443001+08:00",
+    "exitCode": 0,
+    "log": "work-items/yudao-mall-migration-baseline/evidence/alignment-20261109-113811/ui-build.log"
+  }
+]

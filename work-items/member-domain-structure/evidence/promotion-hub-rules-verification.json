@@ -1,0 +1,61 @@
+{
+  "batch": "153-promotion-hub-rules",
+  "date": "2026-11-01",
+  "scope": ["app promotion aggregation", "discount public detail", "reward public detail", "reward rule gift fields"],
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-mall/lemnt-mall-start -am test",
+    "totals": {"tests": 184, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-mall-domain": 10,
+      "lemnt-mall-application": 12,
+      "lemnt-mall-infrastructure": 18,
+      "lemnt-mall-adapter": 28,
+      "lemnt-mall-start": 116
+    },
+    "newTests": [
+      "com.lemnt.mall.application.promotion.AppPromotionHubServiceTest (2)",
+      "com.lemnt.mall.start.product.ActivityAlignmentPersistenceTest.rewardRuleGiftFieldsRoundTrip (1)"
+    ]
+  },
+  "gateway": {"tests": 35, "failures": 0},
+  "ui": {"tests": 308, "failures": 0},
+  "miniapp": {"tests": 171, "failures": 0},
+  "endpoints": [
+    "GET /mall/app/promotion-hub/sections",
+    "GET /mall/app/promotion-hub/discount/{id}",
+    "GET /mall/app/promotion-hub/reward/{id}"
+  ],
+  "pages": [
+    "pages/promotion-hub/index (new)",
+    "pages/promotion-rule/index (new)",
+    "pages/store/index (entry)"
+  ],
+  "rules": [
+    "aggregation only includes enabled and currently active activities",
+    "point activity has no time window and is included by enabled status",
+    "discount/reward detail rejects closed or expired activity",
+    "reward rule JSON supports freeDelivery, point and giveCouponTemplateCounts",
+    "existing reward rule JSON without new fields remains compatible"
+  ],
+  "realEnvironment": {
+    "discountActivityId": "2116701552636563458",
+    "rewardActivityId": "2116701552884027394",
+    "sections": ["SECKILL", "COMBINATION", "BARGAIN", "POINT", "DISCOUNT", "REWARD"],
+    "assertions": [
+      "public aggregation returns six sections with active activities",
+      "public discount detail returns SKU1 8000 basis-point discount",
+      "public reward detail returns limit 5, discount 1, freeDelivery, 10 points and coupon template 1x1",
+      "admin reward detail persists the new gift fields"
+    ]
+  },
+  "deferred": [
+    "free delivery, points and coupon grants at checkout or after payment",
+    "partial refund recall of granted points/coupons",
+    "aggregation personalization, pagination and posters",
+    "browser admin and miniapp device verification"
+  ],
+  "notes": [
+    "no schema change in this batch",
+    "no business commit or push in this batch"
+  ]
+}

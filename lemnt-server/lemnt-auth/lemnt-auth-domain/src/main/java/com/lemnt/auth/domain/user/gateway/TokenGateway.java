@@ -12,7 +12,6 @@ import com.lemnt.auth.domain.user.entity.TokenResult;
  * @author wangxx
  */
 public interface TokenGateway {
-
     /**
      * 创建令牌
      *

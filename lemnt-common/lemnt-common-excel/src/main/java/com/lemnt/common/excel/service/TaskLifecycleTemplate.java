@@ -4,9 +4,11 @@ import com.lemnt.common.core.utils.DateUtils;
 import com.lemnt.common.excel.api.RemoteExcelTaskService;
 import com.lemnt.common.excel.constant.TaskStatusEnum;
 import com.lemnt.common.excel.domain.to.ExcelTaskTo;
+
+import org.springframework.stereotype.Component;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -34,64 +36,82 @@ public class TaskLifecycleTemplate {
      * 启动任务
      */
     public void startTask(Long taskId) {
-        execute(taskId, task -> {
-            task.setStartTime(LocalDateTime.now());
-            task.setStatus(TaskStatusEnum.DOING.getStatus());
-        });
+        execute(
+            taskId,
+            task -> {
+                task.setStartTime(LocalDateTime.now());
+                task.setStatus(TaskStatusEnum.DOING.getStatus());
+            });
     }
 
     /**
      * 更新导入进度
      */
     public void updateProgress(Long taskId, Integer count, Integer totalNum) {
-        execute(taskId, task -> {
-            task.setProgress(new BigDecimal(count.toString())
-                    .divide(new BigDecimal(totalNum.toString()), RoundingMode.HALF_UP));
-        });
+        execute(
+            taskId,
+            task -> {
+                task.setProgress(
+                    new BigDecimal(count.toString())
+                        .divide(
+                            new BigDecimal(totalNum.toString()),
+                            RoundingMode.HALF_UP));
+            });
     }
 
     /**
      * 更新导出进度
      */
     public void updateProgress(Long taskId, Long count, Long totalNum) {
-        execute(taskId, task -> {
-            task.setProgress(new BigDecimal(count.toString())
-                    .divide(new BigDecimal(totalNum.toString()), RoundingMode.HALF_UP));
-        });
+        execute(
+            taskId,
+            task -> {
+                task.setProgress(
+                    new BigDecimal(count.toString())
+                        .divide(
+                            new BigDecimal(totalNum.toString()),
+                            RoundingMode.HALF_UP));
+            });
     }
 
     /**
      * 完成任务（成功）
      */
     public void finishTask(Long taskId, String result, String message) {
-        execute(taskId, task -> {
-            if (TaskStatusEnum.STOP.getStatus() != task.getStatus()) {
-                task.setStatus(TaskStatusEnum.SUCCESS.getStatus());
-            }
-            task.setUrl(result);
-            task.setMessage(message);
-            task.setProgress(BigDecimal.ONE);
-            task.setEndTime(LocalDateTime.now());
-            task.setDuration(DateUtils.betweenMillis(task.getEndTime(), task.getStartTime()));
-        });
+        execute(
+            taskId,
+            task -> {
+                if (TaskStatusEnum.STOP.getStatus() != task.getStatus()) {
+                    task.setStatus(TaskStatusEnum.SUCCESS.getStatus());
+                }
+                task.setUrl(result);
+                task.setMessage(message);
+                task.setProgress(BigDecimal.ONE);
+                task.setEndTime(LocalDateTime.now());
+                task.setDuration(
+                    DateUtils.betweenMillis(task.getEndTime(), task.getStartTime()));
+            });
     }
 
     /**
      * 完成任务（失败）
      */
     public void failTask(Long taskId, String message) {
-        execute(taskId, task -> {
-            task.setMessage(task.getMessage() + message);
-            if (TaskStatusEnum.STOP.getStatus() != task.getStatus()) {
-                task.setStatus(TaskStatusEnum.FAIL.getStatus());
-            }
-            task.setProgress(BigDecimal.ONE);
-            if (Objects.isNull(task.getStartTime())) {
-                task.setStartTime(LocalDateTime.now());
-            }
-            task.setEndTime(LocalDateTime.now());
-            task.setDuration(DateUtils.betweenMillis(task.getEndTime(), task.getStartTime()));
-        });
+        execute(
+            taskId,
+            task -> {
+                task.setMessage(task.getMessage() + message);
+                if (TaskStatusEnum.STOP.getStatus() != task.getStatus()) {
+                    task.setStatus(TaskStatusEnum.FAIL.getStatus());
+                }
+                task.setProgress(BigDecimal.ONE);
+                if (Objects.isNull(task.getStartTime())) {
+                    task.setStartTime(LocalDateTime.now());
+                }
+                task.setEndTime(LocalDateTime.now());
+                task.setDuration(
+                    DateUtils.betweenMillis(task.getEndTime(), task.getStartTime()));
+            });
     }
 
     /**

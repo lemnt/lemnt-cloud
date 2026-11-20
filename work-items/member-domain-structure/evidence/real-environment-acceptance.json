@@ -1,0 +1,148 @@
+{
+  "batch": "146-real-environment-acceptance",
+  "date": "2026-11-01",
+  "scope": [
+    "promotion order lifecycle",
+    "zero-cash point order",
+    "zero-cash partial and full refund",
+    "seckill",
+    "combination",
+    "bargain",
+    "RocketMQ closed compensation"
+  ],
+  "environment": {
+    "mysql": "docker mysql8 127.0.0.1:3306 (lemnt_mall/lemnt_trade/lemnt_member/lemnt_system)",
+    "redis": "docker redis7 127.0.0.1:6379",
+    "nacos": "docker nacos-server 127.0.0.1:8848 namespace=dev",
+    "minio": "docker minio 127.0.0.1:9000",
+    "rocketmq": "192.168.150.240:9876",
+    "services": {
+      "system": 9100,
+      "auth": 9200,
+      "member": 9110,
+      "mall": 9120,
+      "trade": 9130,
+      "gateway": 8080
+    },
+    "java": "Temurin 17"
+  },
+  "seedData": {
+    "members": ["13800000901 (id=1)", "13800000902 (id=2)", "13800000903 (id=3)"],
+    "addressId": 1,
+    "spuId": 1,
+    "skuId": [1, 2],
+    "deliveryTemplateId": 1
+  },
+  "verified": [
+    {
+      "case": "zero-cash multi-line point order",
+      "orderNo": "TR808DCA436A614E7F89D7112E",
+      "activityId": "2116574869417840642",
+      "assertions": [
+        "trade_order.total_amount=0.00, use_point=200, status=PAID",
+        "mall_promotion_order.status=PAID",
+        "mall_promotion_order_item lines use_point 100/100",
+        "activity aggregate stock 10->7 after reservation",
+        "product row stock 5->4 and 5->3 after reservation"
+      ]
+    },
+    {
+      "case": "zero-cash partial refund",
+      "orderNo": "TR808DCA436A614E7F89D7112E",
+      "refundNo": "PR57A998C57E9144F984A5A22A2222E4E1",
+      "assertions": [
+        "refund channel=POINT amount=0.00 status=SUCCESS payment_no=NULL",
+        "order stays PAID after partial refund",
+        "activity aggregate stock 7->8; row 1 restores to 5, row 2 remains 3",
+        "member points 9800->9900"
+      ]
+    },
+    {
+      "case": "zero-cash full refund",
+      "orderNo": "TR808DCA436A614E7F89D7112E",
+      "refundNo": "PR082493A8410B4BB488015FF2A9D93B52",
+      "assertions": [
+        "trade order status=REFUNDED",
+        "mall_promotion_order.status=REFUNDED",
+        "point product stock restored to 5/5",
+        "member points 10000, experience 0"
+      ]
+    },
+    {
+      "case": "RocketMQ closed compensation (point cash order)",
+      "orderNo": "TR263328F3411540559CD41E9F",
+      "assertions": [
+        "trade order CLOSED",
+        "mall promotion order CLOSED after async delivery",
+        "point activity stock restored to 3/3"
+      ]
+    },
+    {
+      "case": "bargain",
+      "activityId": "2116575623813746689",
+      "recordId": "2116575647591256066",
+      "helpIds": ["2116575648669192194", "2116576050802282498"],
+      "orderNo": "TR8F5743FE0EE246BF95D07485",
+      "assertions": [
+        "two helps by member 2/3 reduce price 10.00->9.00->8.00",
+        "record status=SUCCESS with 2 help rows",
+        "trade order total_amount=8.00 status=PENDING_PAYMENT",
+        "mall promotion order RESERVED, activity stock 5->4",
+        "bargain record bound to order id 3"
+      ]
+    },
+    {
+      "case": "seckill",
+      "configId": "2116576451366703105",
+      "activityId": "2116576463161085954",
+      "orderNo": "TREBDDEC62D13546B79532A056",
+      "assertions": [
+        "configs/now/activities endpoints return slot and activity",
+        "order quantity=2 total_amount=8.00",
+        "seckill product stock 10->8",
+        "repeated requestNo returns the same orderNo",
+        "cancel closes mall promotion order and restores stock to 10"
+      ]
+    },
+    {
+      "case": "combination",
+      "activityId": "2116576587669000193",
+      "orderNo": "TR2EC65F20549141009CDEAD5D",
+      "assertions": [
+        "activities/detail/summary endpoints return activity",
+        "order quantity=1 total_amount=6.00",
+        "mall promotion order RESERVED with no record before payment",
+        "cancel closes trade and mall promotion order"
+      ]
+    }
+  ],
+  "endpoints": [
+    "GET /mall/app/seckill/configs",
+    "GET /mall/app/seckill/now",
+    "GET /mall/app/seckill/activities",
+    "POST /mall/app/seckill/orders",
+    "GET /mall/app/combination/activities",
+    "GET /mall/app/combination/activities/{id}",
+    "GET /mall/app/combination/summary",
+    "POST /mall/app/combination/orders",
+    "POST /mall/app/bargain/records",
+    "POST /mall/app/bargain/helps",
+    "GET /mall/app/bargain/records/{id}",
+    "POST /mall/app/bargain/orders",
+    "POST /mall/app/point-mall/orders/batch",
+    "POST /trade/app/orders/{orderNo}/cancel",
+    "POST /member/app/auth/login",
+    "POST /member/app/addresses"
+  ],
+  "deferred": [
+    "paid path for seckill/combination/bargain orders (no payment submit or real channel SDK)",
+    "combination group creation on paid and group success counts",
+    "browser admin UI and miniapp device verification",
+    "real payment channel refunds",
+    "fault injection for Nacos/Redis/RocketMQ outages"
+  ],
+  "notes": [
+    "closed compensation is asynchronous; a short-lived RESERVED state after cancel is expected",
+    "no business code changed and nothing committed or pushed in this batch"
+  ]
+}

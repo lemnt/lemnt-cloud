@@ -1,6 +1,7 @@
 package com.lemnt.system.api.domain.dto;
 
 import com.lemnt.common.api.domain.dto.BaseDTO;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -14,7 +15,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 public class UserInfoRoleDTO extends BaseDTO {
-
     /**
      * 角色ID
      */

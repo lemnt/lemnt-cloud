@@ -1,0 +1,74 @@
+{
+  "batch": "131",
+  "date": "2026-10-31",
+  "scope": [
+    "ProductSpec management",
+    "ProductSpecValue management under fixed parent",
+    "SKU editor dictionary refresh",
+    "existing creation time propagation; spec time filtering and descending-ID pagination"
+  ],
+  "components": [
+    "mall/spec/index",
+    "mall/spec-value/index"
+  ],
+  "frontend": {
+    "tests": 255,
+    "files": 44,
+    "passed": true,
+    "build": "passed; existing vendor chunk warning only",
+    "typecheck": "passed in tsc -b build",
+    "lint": "passed",
+    "format": "passed"
+  },
+  "backendFocusedTests": {
+    "ProductManagementHttpTest": {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "CatalogPersistenceTest": {
+      "tests": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "SpecMenuSeedTest": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "contracts": [
+    "distinct HTTP requests/responses retained; page rows/total unchanged",
+    "createTime read from existing create_time; not editable or fabricated",
+    "spec time bounds inclusive, reversed bounds rejected; values keep source name/parent filters",
+    "CRUD response records decoded; delete requires explicit true",
+    "Long IDs preserved; value creation sets parent, update cannot change parent",
+    "detail must load before editing; errors preserve draft",
+    "name/remark validated; current SKU rename and existing deletion rules retained"
+  ],
+  "sql": {
+    "path": "lemnt-server/sql/V20261031__mall_spec_menu.sql",
+    "idempotentH2Test": true,
+    "hiddenValuePage": true,
+    "roleGrantsChanged": false,
+    "realDatabaseExecuted": false
+  },
+  "logs": [
+    "/tmp/spec-ui-tests.log",
+    "/tmp/spec-ui-build.log",
+    "/tmp/spec-ui-lint.log",
+    "/tmp/spec-ui-format.log",
+    "/tmp/spec-management-backend.log"
+  ],
+  "limits": [
+    "API/SSR/MockMvc/H2 evidence only; no browser acceptance",
+    "no real MySQL/Redis/Dubbo/Nacos/deployed gateway acceptance",
+    "source mappings in_progress, not a recomputed global completion percentage"
+  ],
+  "gitDiffCheck": "passed",
+  "committed": false,
+  "pushed": false
+}

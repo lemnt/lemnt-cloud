@@ -3,6 +3,7 @@ package com.lemnt.system.infrastructure.log.dataobject;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -22,9 +23,9 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @TableName("sys_logininfor")
 public class LogininforDO implements Serializable {
-
     @Serial
     private static final long serialVersionUID = 1L;
+
     /**
      * 访问ID
      */

@@ -1,0 +1,41 @@
+{
+  "batch": "160-consistency-fixes",
+  "date": "2026-11-02",
+  "baseRevision": "a457e0e7c1382a18b63052a347a079050ffc3bfd",
+  "tests": {
+    "mall": 193,
+    "trade": 279,
+    "total": 472,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "verification": [
+    "unit tests",
+    "HTTP adapter tests",
+    "H2 MySQL-mode production SQL and mapper tests",
+    "transactional checkout/payment integration",
+    "git diff --check"
+  ],
+  "regressions": [
+    "existing payment prevents repricing before writes",
+    "repricing before payment uses new amount and callback completes",
+    "two coupons of same template, duplicate/concurrent callbacks and revoked issuance remain idempotent",
+    "legacy gift migration and unique constraint",
+    "overnight/all-day store maintenance, persistence and order creation"
+  ],
+  "migration": {
+    "newDatabase": "lemnt-server/lemnt-mall/sql/V29__coupon_gift_sequence.sql",
+    "existingDatabase": "lemnt-server/lemnt-mall/sql/upgrade/coupon_gift_sequence.sql",
+    "executedOnExistingDatabase": false,
+    "ordering": "V28 then V29, before code deployment"
+  },
+  "notRun": [
+    "real MySQL migration",
+    "deployed gateway HTTP",
+    "UI/device",
+    "real payment channels"
+  ],
+  "log": "/private/tmp/member-fixes-final-tests.log",
+  "commitPush": false
+}

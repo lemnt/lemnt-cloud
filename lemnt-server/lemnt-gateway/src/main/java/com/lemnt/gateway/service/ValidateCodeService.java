@@ -1,10 +1,10 @@
 package com.lemnt.gateway.service;
 
-import java.io.IOException;
-import java.util.Map;
-
 import com.lemnt.common.core.domain.R;
 import com.lemnt.common.security.exception.CaptchaException;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * 验证码处理

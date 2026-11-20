@@ -1,13 +1,14 @@
 package com.lemnt.common.security.properties;
 
-import java.nio.charset.StandardCharsets;
-
 import com.lemnt.common.core.utils.StringUtils;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import lombok.Data;
 
 import jakarta.annotation.PostConstruct;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 令牌配置
@@ -38,12 +39,12 @@ public class TokenProperties {
     public void validate() {
         if (StringUtils.isBlank(secret)) {
             throw new IllegalStateException(
-                    "JWT 密钥未配置：请设置 security.token.secret（或环境变量 SECURITY_TOKEN_SECRET）");
+                "JWT 密钥未配置：请设置 security.token.secret（或环境变量 SECURITY_TOKEN_SECRET）");
         }
         int length = secret.getBytes(StandardCharsets.UTF_8).length;
         if (length < MIN_SECRET_BYTES) {
             throw new IllegalStateException(
-                    "JWT 密钥长度不足：HS512 要求不少于 " + MIN_SECRET_BYTES + " 字节，当前为 " + length + " 字节");
+                "JWT 密钥长度不足：HS512 要求不少于 " + MIN_SECRET_BYTES + " 字节，当前为 " + length + " 字节");
         }
     }
 }

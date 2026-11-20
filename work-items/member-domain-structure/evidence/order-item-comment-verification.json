@@ -1,0 +1,91 @@
+{
+  "date": "2026-10-29",
+  "head": "e8aff9b9a33a2ceb84719cc55160f79ff44b323c",
+  "scope": "订单项评价联动；文章排除；未commit/push",
+  "backend": {
+    "lemnt-mall": {
+      "tests": 115,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-trade": {
+      "tests": 155,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-member": {
+      "tests": 27,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lemnt-gateway": {
+      "tests": 32,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "reactTests": 179,
+  "miniappTests": 103,
+  "reactChecks": [
+    "lint",
+    "typecheck",
+    "format:check",
+    "build"
+  ],
+  "schema": {
+    "initialTables": 47,
+    "remainingRequiredBusinessTables": 32,
+    "realUpgradeExecuted": false
+  },
+  "verified": [
+    "双H2数据库、生产业务组件与进程内RPC映射",
+    "真实行ID、部分/全部评价、并发、一次日志及时间",
+    "远程提交后响应丢失、本地回滚后的原请求修复",
+    "历史未知值、旧评价唯一绑定、歧义及删除拒绝、伪造元数据忽略"
+  ],
+  "notRun": [
+    "真实MySQL与索引升级",
+    "Redis/Dubbo网络/MQ",
+    "部署HTTP/浏览器/真机"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductComment.java": "4b4a787ce2ca80723d58e4148ad5b3a82f2273bc7c775c384eb62a46090ee74c",
+    "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/CommentOrderLink.java": "f3934b0eeb72a98dd5289de2bff5af2b742b99daaf0ac8b7e6d0b016b3598434",
+    "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/CommentOrderRequest.java": "fb7cdcea5c3886e632e18f7e50ade1ca36d3c8deda1a334afb9ab09f4edfea5e",
+    "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductCommentGateway.java": "fd549157adfdb41de4be4f070fe1eab826d4c63a83d6fcf0bed6ca43334b9914",
+    "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/ProductCommentClient.java": "90f1a7ee738de97306479163ebe6196d3b147ced058dae56fbc70eb84dedf78f",
+    "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/bo/ProductCommentSaveBo.java": "3efbe47fa25466dacf2ceb4faec85393c1c54a3429a1aa64cfd39baa83b825df",
+    "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/product/converter/ProductCommentConverter.java": "50df7518ce31b552871660949dce416ecb04ebacabb3b61492d499abbbf0b41e",
+    "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/product/mapper/ProductCommentMapper.java": "e0da92880ab22423f0bc487477d1a0fdb1e3142e338124d9fcc2cc3b344efacf",
+    "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/product/dataobject/ProductCommentDO.java": "cb7aa1e1c804d3650baa739af7540bab2cde340d7376ec9b242e756a7fd56699",
+    "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/product/gateway/ProductCommentGatewayImpl.java": "5733a7e81d5f95f64db191d5fdcac0ceaf3e1791386646cd72501a2fd3fbb43b",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/dto/ProductCommentDTO.java": "6ba13eadba10c76f70233ac793f3e3b1e63010c2c86b7f895245b32f04ed56d1",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/cmd/CommentSaveCmd.java": "7608e83b8d5688f31529a51ed5e9756379f199f21acec030ab4b632c058d45e8",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductCommentService.java": "073a306434ce945c2626923d361aebdd1fb785b8eb2b688c90d9a7f28db4de8a",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/dubbo/ProductCommentClientImpl.java": "50b1daf8d2f660a30972a850e1d15364a9ebe5c1a0a6a986c3e01dd333bd64bf",
+    "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutFlowIntegrationTest.java": "bd17ca07bb0906d7f49989a03a39986304b8783bc4f8e3bc71909dcd6c2952da",
+    "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/OrderCommentState.java": "dd640ed5c180ba5ce0d327c75f6682fb67d4b3fb1ab4f0c7d4d594aaf8533b5e",
+    "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/VerifiedOrderComment.java": "8497eb6209c9d2915a9727758ed345e23de7ba4bd3bb5c75be01141e4cc7585b",
+    "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/gateway/OrderCommentGateway.java": "8f6f161e95fe8e8cde388325a8f067df027747a7939a2151fd5637b24509a86d",
+    "lemnt-server/lemnt-trade/lemnt-trade-client/src/main/java/com/lemnt/trade/client/bo/OrderCommentCreateBo.java": "67c94e451b167e5d6ce07cc9111352fd5ed560e62fea49559913d0b316d4b5e1",
+    "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/gateway/OrderCommentGatewayImpl.java": "9ab9717dd3ba01973f2cd083eaa19437a6977c2780b03186bf0f15445c317d87",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/cmd/OrderCommentCreateCmd.java": "37c9d6407771bd9dce35c8b362245034e7017b4e0f2aabeaabb2ea14691177bd",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderCommentService.java": "8cb348181ade9cf6cd856e2312b9a969bca384a9628481d2015607448c0b346c",
+    "lemnt-server/lemnt-trade/sql/upgrade/order_item_comments.sql": "e3721e4b42f6242024c666c000f0ce3b4fbf7f9baa7611149a1aa56010b48874",
+    "lemnt-server/lemnt-mall/sql/upgrade/order_item_comment_link.sql": "5c7cda4333900cbc6503bc0aa5b6ff4454409258c5cf6f78c0a60ab935b78dd1",
+    "/Users/wangxx/demo/yudao-cloud/yudao-module-mall/yudao-module-trade-server/src/main/java/cn/iocoder/yudao/module/trade/service/order/TradeOrderUpdateServiceImpl.java": "8ea9b31d19285dfa11401cbaaa877fb66e4ee1754eeb5ce7bf99e10b555f9c43"
+  },
+  "logs": {
+    "/tmp/order-comment-final-verify.log": "7dac113bab252776166c1d4bed932e207756e7941975c09a37e5edbdd06fcfaa",
+    "/tmp/order-comment-ui-tests.log": "e56131ba80a004ab57e2e4f7a1d94f2e9b2f94948ec675a6894c742333b17302",
+    "/tmp/order-comment-ui-build.log": "ec6a6426e93c76754619cfd8f62d27a366fd34c4f7da89ee999df61bbe15ff2b",
+    "/tmp/order-comment-ui-lint.log": "d390a8c939ca60f7f656cd93d5acf81a14c2e00c6a3392b46efc2a7c89dedb55",
+    "/tmp/order-comment-ui-typecheck.log": "9feea68862ace8f4c44266036e533929561dc11868fa49061b763cdea019070d",
+    "/tmp/order-comment-ui-format.log": "26e74b26d1158e460c922b81734e7f67f7f7e7a43a3b22670ebf3e6312be5bdf",
+    "/tmp/order-comment-mini-tests.log": "4384ffb9054fa5883dd23ea04b2a43f89f66079080f222263c9559d4005a66b6"
+  }
+}

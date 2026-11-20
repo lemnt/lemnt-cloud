@@ -1,0 +1,35 @@
+{
+  "batch": "143-zero-cash-point-order",
+  "date": "2026-10-31",
+  "scope": ["0 cash point exchange", "trade zero-pay status", "member zero-cash assets"],
+  "backend": {
+    "mall": {"command": "mvn -f lemnt-server/pom.xml -pl lemnt-mall/lemnt-mall-start -am test", "tests": 165, "failures": 0, "errors": 0, "skipped": 0},
+    "trade": {"command": "mvn -f lemnt-server/pom.xml -pl lemnt-trade/lemnt-trade-start -am test", "tests": 224, "failures": 0, "errors": 0, "skipped": 0},
+    "member": {"command": "mvn -f lemnt-server/pom.xml -pl lemnt-member/lemnt-member-start -am test", "tests": 118, "failures": 0, "errors": 0, "skipped": 0},
+    "newTests": [
+      "com.lemnt.trade.application.order.OrderRemoteServiceZeroPayTest (1)",
+      "MemberAccountIntegrationTest.zeroCashPointOrderDeductsAndReturnsPointsWithoutExperience (1)",
+      "PromotionOrderPersistenceTest zero-cash case (existing test updated)"
+    ]
+  },
+  "ui": {"tests": 292, "failures": 0},
+  "miniapp": {"tests": 155, "failures": 0},
+  "sql": [
+    "lemnt-server/lemnt-trade/sql/V1__trade_order.sql (total_amount>=0)",
+    "lemnt-server/lemnt-trade/sql/upgrade/zero_pay_order.sql"
+  ],
+  "invariants": [
+    "zero amount order allowed only when usePoint>0",
+    "zero order transitions PENDING_PAYMENT -> PAID after SKU/activity reservation",
+    "paid callback runs after zero-pay and is idempotent on retry",
+    "normal checkout still rejects zero payable",
+    "zero-cash refund returns consumed points in full without cash-proportional split",
+    "zero-cash order gives no experience and no gift points"
+  ],
+  "deferred": [
+    "trade_payment record and after-sale/refund path for zero orders",
+    "quantity-proportional refund for zero-cash orders",
+    "multi-SKU and non-default address selection",
+    "real payment channel/MySQL/Redis/Dubbo/MQ/browser/device verification"
+  ]
+}

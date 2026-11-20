@@ -1,10 +1,10 @@
 package com.lemnt.system.domain.auth.gateway;
 
-import java.util.List;
-
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
 import com.lemnt.system.domain.auth.model.User;
+
+import java.util.List;
 
 /**
  * 用户管理 Gateway 端口
@@ -12,7 +12,6 @@ import com.lemnt.system.domain.auth.model.User;
  * @author wangxx
  */
 public interface UserGateway {
-
     /**
      * 根据条件分页查询用户列表
      *
@@ -145,75 +144,10 @@ public interface UserGateway {
     User checkEmailUnique(String email);
 
     /**
-     * 新增用户角色关联
+     * 查询部门是否存在用户
      *
-     * @param userId  用户ID
-     * @param roleIds 角色ID数组
+     * @param deptId 部门ID
+     * @return 结果
      */
-    void insertUserRoles(Long userId, List<Long> roleIds);
-
-    /**
-     * 新增用户岗位关联
-     *
-     * @param userId  用户ID
-     * @param postIds 岗位ID数组
-     */
-    void insertUserPosts(Long userId, List<Long> postIds);
-
-    /**
-     * 删除用户角色关联
-     *
-     * @param userId 用户ID
-     * @return 是否成功
-     */
-    Boolean deleteUserRoleByUserId(Long userId);
-
-    /**
-     * 删除用户岗位关联
-     *
-     * @param userId 用户ID
-     * @return 是否成功
-     */
-    Boolean deleteUserPostByUserId(Long userId);
-
-    /**
-     * 删除单个用户角色关联
-     *
-     * @param userId 用户ID
-     * @param roleId 角色ID
-     * @return 是否成功
-     */
-    Boolean deleteUserRoleInfo(Long userId, Long roleId);
-
-    /**
-     * 批量取消授权（同一角色下多个用户）
-     *
-     * @param roleId  角色ID
-     * @param userIds 用户ID数组
-     * @return 是否成功
-     */
-    Boolean deleteUserRoleInfosByRoleId(Long roleId, List<Long> userIds);
-
-    /**
-     * 批量删除用户角色关联
-     *
-     * @param userIds 用户ID数组
-     * @return 是否成功
-     */
-    Boolean deleteUserRoleByUserIds(List<Long> userIds);
-
-    /**
-     * 批量删除用户岗位关联
-     *
-     * @param userIds 用户ID数组
-     * @return 是否成功
-     */
-    Boolean deleteUserPostByUserIds(List<Long> userIds);
-
-    /**
-     * 解锁用户（清除登录失败次数缓存）
-     *
-     * @param userName 用户名
-     */
-    void unlockUser(String userName);
+    Boolean checkDeptExistUser(Long deptId);
 }

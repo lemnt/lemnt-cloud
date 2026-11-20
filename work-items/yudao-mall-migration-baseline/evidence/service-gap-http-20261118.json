@@ -1,0 +1,46 @@
+{
+  "checkedAt": "2026-11-18T14:30:41.807437+08:00",
+  "mode": "loopbackServiceHttp",
+  "schemas": {
+    "product": "lemnt_migration_verify_20261118_141141_product",
+    "promotion": "lemnt_migration_verify_20261118_141141_promotion",
+    "member": "lemnt_migration_verify_20261118_141141_member"
+  },
+  "results": {
+    "product": {
+      "httpPort": 49756,
+      "checks": [
+        "creationSortAndZeroPriceVisible",
+        "detailBrowseCommitted",
+        "offShelfDetailBusiness404"
+      ]
+    },
+    "promotion": {
+      "httpPort": 49897,
+      "checks": [
+        "publishedArticlePageAndDetail",
+        "articleBrowseCommitted"
+      ]
+    },
+    "member": {
+      "httpPort": 49982,
+      "checks": [
+        "memberStatisticsRejectsUnauthenticatedRequest"
+      ]
+    }
+  },
+  "localDependencyIsolation": {
+    "redis": "temporaryDockerContainer",
+    "registrationDisabled": true,
+    "mq": "disabled",
+    "nacosShutdownHookDisabled": true,
+    "nacosReadOnlyCredentialResolution": true,
+    "externalDubboCallsVerified": false
+  },
+  "priorAttempts": [
+    "Resolved the two Redis config namespaces; explicitly disabled common MQ auto-configuration.",
+    "Before excluding the common shutdown hook, member logged deregistration for the temporary port 0 which was never registered."
+  ],
+  "gatewayVerified": false,
+  "authenticatedAdminVerified": false
+}

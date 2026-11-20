@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-30",
+  "design": "101-sign-record-time-design.md",
+  "backend": {
+    "member": {
+      "tests": 66,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "auth": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "mall": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "frontend": {
+    "tests": 204,
+    "build": "passed",
+    "lint": "passed",
+    "format:check": "passed",
+    "typecheck": "passed"
+  },
+  "miniapp": {
+    "tests": 123,
+    "failures": 0,
+    "skipped": 0
+  },
+  "verified": [
+    "H2新签到真实事件时间与重试审计稳定",
+    "时间精度对齐DATETIME秒",
+    "天数/会员/昵称/时间筛选与page/count一致",
+    "时间端点/单边和未知NULL",
+    "旧表升级真实执行保留数据及未知时间",
+    "MockMvc绑定与验证",
+    "前端/小程序未知时间不补造"
+  ],
+  "notRun": [
+    "真实MySQL升级与约束验收",
+    "部署HTTP/浏览器E2E",
+    "微信开发者工具验收"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-member/sql/V2__member_account.sql": "e3106e33c0225e0f0cc12d23d3f8d9c82b2c604f6b11b4013979c072c7e53d15",
+    "lemnt-server/lemnt-member/sql/upgrade/sign_record_time.sql": "5605d3f637450431b92b892b8043c4a319423ce69ff02e2257a24dd5a9134343",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/dataobject/SignRecordDO.java": "6f3db91917fb99ea315a68cca9ee6c0299e2a662b951b4c002fdd1a4b0f9868f",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/resources/mapper/MemberSignRecordMapper.xml": "7c0efed18486ceec3fa8d2c4519fae6b1de163972f6bb7b63fefe5ef2cd4d92e",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/service/MemberGrowthService.java": "0d8b48275e9eea05f855b95b8af1001c83f65a54dc6c9914abfd10fd6e32a38c",
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java": "dd492f4e5bcba5001cdb94ec0e6858a3f606a57d37c4d7264e78996e95cab0ff",
+    "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberSignRecordHttpTest.java": "15b48e8face0891ea114b4a281362a215f1a91d9c9d4f2981ee3ac83228c14a4",
+    "lemnt-ui/src/modules/member/account/pages/MemberRecordPage.tsx": "8c72447992dd2cf8869b36f9ea21fe2794d24593d52c46e39c205f19347511d7",
+    "lemnt-miniapp/services/member.js": "d48572d5f7785316494a597823dbc9f7e002e19800783d7b7fed17e95c3a5bd0",
+    "lemnt-miniapp/pages/member-benefits/index.wxml": "2916a1b2fd00e68d7d245a7f68d128f1925bb0e80390ccee863921a60e3f7663",
+    "/tmp/sign-record-time-source-verify.log": "6194af6ee235fe29baf742a39b41a07bfa8e53981a47d013fa8d07421dda73bb",
+    "/tmp/sign-record-time-ui-tests.log": "e4bb81db32ca862777f5deac6ee9fa47d6ac5952fd6ab928f49308eff3de5110",
+    "/tmp/sign-record-time-mini.log": "37196e4dcb79b111c667d8b914950c482ee5bb6187952c8bff8a255946fb6b83"
+  }
+}

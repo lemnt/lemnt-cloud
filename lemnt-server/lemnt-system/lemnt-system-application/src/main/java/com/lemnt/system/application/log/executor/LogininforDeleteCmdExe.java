@@ -1,8 +1,10 @@
 package com.lemnt.system.application.log.executor;
 
 import com.lemnt.system.domain.log.gateway.LogininforGateway;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -14,7 +16,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class LogininforDeleteCmdExe {
-
     private final LogininforGateway logininforGateway;
 
     /**

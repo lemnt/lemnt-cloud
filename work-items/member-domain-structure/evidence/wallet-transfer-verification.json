@@ -1,0 +1,40 @@
+{
+  "batch": "140-wallet-transfer",
+  "date": "2026-10-31",
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-trade/lemnt-trade-start -am test",
+    "javaVersion": "17.0.17",
+    "totals": {"classes": 44, "tests": 222, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-trade-domain": {"classes": 1, "tests": 2},
+      "lemnt-trade-application": {"classes": 10, "tests": 54},
+      "lemnt-trade-infrastructure": {"classes": 4, "tests": 10},
+      "lemnt-trade-adapter": {"classes": 12, "tests": 25},
+      "lemnt-trade-start": {"classes": 17, "tests": 131}
+    },
+    "newTests": [
+      "com.lemnt.trade.application.payment.WalletTransferServiceTest (5)",
+      "com.lemnt.trade.start.payment.WalletTransferPersistenceTest (1, H2 production SQL/gateway)",
+      "com.lemnt.trade.start.payment.WalletTransferMenuSeedTest (1)"
+    ]
+  },
+  "ui": {"command": "yarn test / yarn typecheck / yarn lint / yarn format:check", "tests": 281, "failures": 0, "newTests": ["walletApi.test.ts transfer case (1)"]},
+  "miniapp": {"command": "node --test tests/*.test.cjs", "tests": 142, "failures": 0, "newTests": ["transfer.test.cjs (2)"]},
+  "endpoints": [
+    "GET /trade/admin/wallet-transfers",
+    "GET /trade/admin/wallet-transfers/{transferNo}",
+    "POST /trade/app/wallet/transfers",
+    "GET /trade/app/wallet/transfers"
+  ],
+  "invariants": [
+    "cannot transfer to self",
+    "receiver wallet must exist",
+    "request_no idempotent; conflicting content rejected",
+    "both wallet rows locked in ascending id order to avoid deadlock",
+    "debit and credit each write a TRANSFER ledger entry keyed by request_no",
+    "insufficient balance rolls back the whole transfer"
+  ],
+  "sql": ["lemnt-server/lemnt-trade/sql/V14__wallet_transfer.sql", "lemnt-server/sql/V20261031__trade_wallet_transfer_menu.sql"],
+  "adaptation": "wallet-to-wallet synchronous transfer with SUCCESS records; real channel payout SDK deferred",
+  "deferred": ["real channel payout and async transfer states", "real MySQL/Nacos/Redis/browser/device"]
+}

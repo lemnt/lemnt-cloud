@@ -1,0 +1,66 @@
+.container {
+  padding: 24rpx;
+}
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+.title {
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+.description {
+  color: #666;
+  font-size: 26rpx;
+  margin: 8rpx 0;
+}
+.messages {
+  height: 640rpx;
+  margin-bottom: 24rpx;
+}
+.msg {
+  margin-bottom: 20rpx;
+}
+.msg.mine {
+  text-align: right;
+}
+.msg.admin {
+  text-align: left;
+}
+.bubble {
+  display: inline-block;
+  max-width: 70%;
+  padding: 16rpx 20rpx;
+  border-radius: 12rpx;
+  background: #f0f0f0;
+  word-break: break-all;
+}
+.msg.mine .bubble {
+  background: #1677ff;
+  color: #fff;
+}
+.time {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 6rpx;
+}
+.input {
+  width: 100%;
+  min-height: 160rpx;
+  margin: 16rpx 0;
+}
+.row {
+  display: flex;
+  gap: 16rpx;
+}
+.error {
+  color: #c62828;
+  margin: 16rpx 0;
+}
+.notice {
+  color: #999;
+  margin: 16rpx 0;
+}

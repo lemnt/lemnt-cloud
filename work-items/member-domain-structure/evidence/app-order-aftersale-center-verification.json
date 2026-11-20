@@ -1,0 +1,60 @@
+{
+  "batch": "135-app-order-aftersale-center",
+  "date": "2026-10-31",
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-trade/lemnt-trade-adapter,lemnt-trade/lemnt-trade-infrastructure -am test",
+    "javaVersion": "17.0.17",
+    "totals": {
+      "classes": 29,
+      "tests": 174,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "modules": {
+      "lemnt-trade-adapter": {"classes": 12, "tests": 25},
+      "lemnt-trade-application": {"classes": 5, "tests": 22},
+      "lemnt-trade-domain": {"classes": 1, "tests": 2},
+      "lemnt-trade-infrastructure": {"classes": 4, "tests": 10},
+      "lemnt-trade-start": {"classes": 7, "tests": 115}
+    },
+    "newTests": [
+      "com.lemnt.trade.application.fulfillment.executor.MemberOrderQueryTest (4)",
+      "com.lemnt.trade.application.aftersale.executor.MemberAfterSaleQueryTest (4)",
+      "com.lemnt.trade.adapter.app.order.AppOrderControllerTest (4)",
+      "com.lemnt.trade.adapter.app.aftersale.AppAfterSaleControllerTest (3)"
+    ]
+  },
+  "miniapp": {
+    "command": "node --test tests/*.test.cjs",
+    "tests": 136,
+    "failures": 0,
+    "newFiles": [
+      "tests/order-center.test.cjs",
+      "tests/order-pages.test.cjs"
+    ]
+  },
+  "endpoints": [
+    "GET /trade/app/orders",
+    "GET /trade/app/orders/status-counts",
+    "GET /trade/app/orders/{orderNo}",
+    "GET /trade/app/orders/{orderNo}/tracks",
+    "GET /trade/app/orders/{orderNo}/after-sale-items",
+    "POST /trade/app/orders/{orderNo}/after-sales",
+    "GET /trade/app/after-sales",
+    "GET /trade/app/after-sales/{no}",
+    "POST /trade/app/after-sales/{no}/return"
+  ],
+  "securityChecks": [
+    "member id from SecurityContext only",
+    "pagination filtered by member_id in SQL",
+    "foreign and missing resources return not found",
+    "request body rejects memberId and amount",
+    "after-sale apply/return recheck ownership and state in domain"
+  ],
+  "notVerified": [
+    "real MySQL/Redis/Nacos/Dubbo/gateway deployment",
+    "browser or device end-to-end",
+    "real payment cashier and channel SDK (excluded by scope)"
+  ]
+}

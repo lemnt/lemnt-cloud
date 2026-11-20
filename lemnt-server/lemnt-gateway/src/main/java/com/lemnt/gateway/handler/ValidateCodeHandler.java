@@ -1,9 +1,9 @@
 package com.lemnt.gateway.handler;
 
-import java.io.IOException;
-import java.util.Map;
-
 import com.lemnt.common.core.domain.R;
+import com.lemnt.common.security.exception.CaptchaException;
+import com.lemnt.gateway.service.ValidateCodeService;
+
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,9 +12,10 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.HandlerFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import com.lemnt.common.security.exception.CaptchaException;
-import com.lemnt.gateway.service.ValidateCodeService;
 import reactor.core.publisher.Mono;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * 验证码获取

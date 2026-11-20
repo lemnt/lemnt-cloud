@@ -1,10 +1,10 @@
 package com.lemnt.system.application.auth.converter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.lemnt.system.application.auth.dto.MenuDTO;
 import com.lemnt.system.domain.auth.model.Menu;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 菜单 Entity ↔ DTO 组装器

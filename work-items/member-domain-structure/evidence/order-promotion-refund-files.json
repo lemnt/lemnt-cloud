@@ -1,0 +1,769 @@
+[
+  {
+    "path": "docs/order-promotion-refund-migration.md",
+    "operation": "added",
+    "sha256BeforeStandards": "e1e7bc87d9a5e95b3078cc55180027dd23887d24a9a68b40f8ed3c6ec78d83fe"
+  },
+  {
+    "path": "lemnt-miniapp/pages/after-sale-create/index.js",
+    "operation": "modified",
+    "sha256BeforeStandards": "dce80202519e7dc96625b9ec9c96d1e6ce107d08b09da0b5237d03e99babbbeb"
+  },
+  {
+    "path": "lemnt-miniapp/pages/after-sale-create/index.wxml",
+    "operation": "modified",
+    "sha256BeforeStandards": "63ebd9524223047e97fa6dc384a340d868657814630fb0bde3e146a1806d83fe"
+  },
+  {
+    "path": "lemnt-miniapp/pages/after-sale-detail/index.js",
+    "operation": "modified",
+    "sha256BeforeStandards": "c754455de11c42ab93fd200ef1b54a6fc25dde976ce1b157333d7d2a5159492d"
+  },
+  {
+    "path": "lemnt-miniapp/pages/after-sale-detail/index.wxml",
+    "operation": "modified",
+    "sha256BeforeStandards": "004a86c52c2bf18044198e82514c79b8d8f8e033884200cf54bb3e0e6ed5256f"
+  },
+  {
+    "path": "lemnt-miniapp/pages/order-detail/index.js",
+    "operation": "modified",
+    "sha256BeforeStandards": "e1cdd6abf87e82213b71341864a8ce812fd180d4058fcc8b2597679265fe0f29"
+  },
+  {
+    "path": "lemnt-miniapp/pages/order-detail/index.wxml",
+    "operation": "modified",
+    "sha256BeforeStandards": "7fdee291296584efa90e0024cb1853d474c61f750c1ecbe1c87e82f42f09512a"
+  },
+  {
+    "path": "lemnt-miniapp/services/orderPromotion.js",
+    "operation": "added",
+    "sha256BeforeStandards": "be049319d336e860a1052711307ef2784b230ce7e95fa44963cc267bf94a2d8c"
+  },
+  {
+    "path": "lemnt-miniapp/services/trade.js",
+    "operation": "modified",
+    "sha256BeforeStandards": "32964c5c315a0e96c0aa91c67bbee97db4edaefc67a917fbace4acf3f8d75f8a"
+  },
+  {
+    "path": "lemnt-miniapp/tests/order-promotion.test.cjs",
+    "operation": "added",
+    "sha256BeforeStandards": "9b6c5e4fa23e183b0b923eac33a11b0a18a7aaccbe740172e14b1e803ad09c10"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/dubbo/SettlementLifecycleClientImpl.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "4083ef832abe52ff14a2cdc35125b61630dae55486e53a5ec0be7940910d2c35"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityPricingService.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "d8a782ba6e6fb25c4eea004c69f2646320fecfbff0b4cf4a44db127aa579f4a7"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/PromotionOrderPricingService.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "81399ed5034b7d8cc5c106edb9408cd40588fd04c351b894b1dd1e450f534d6d"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/PromotionOrderService.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "2ed879a16a85e733ff97ee8eea4ad0c90fa7970de10cec33835492b0d13ab5c7"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementDeliveryService.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "492275fc3bf917d4a82535830a3828bbab4dde63581d47c56560fa6e8fa6c5af"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementPreparationService.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "7bef146af6076749705d0c8b3d68b15f0b4aea5c36d8dbaa2d9fd4732b2d328a"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementPromotionSnapshots.java",
+    "operation": "added",
+    "sha256BeforeStandards": "beb9b6c8b514abe9bcff52f57f50401d83ebb5dddc3cfe5232f82704d0057abf"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-application/src/test/java/com/lemnt/mall/application/settlement/SettlementDeliveryFreeShippingTest.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "4bab6b22b35d9a54b186168ca359a70bd5befff20ca36e193f5d67043a9c3940"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/CheckoutLifecycleClient.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "f3a303dbb5f62c9da552256e76537931ebe2b9419ee326f35ebcbf6984a25a02"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/bo/RefundBenefitsBo.java",
+    "operation": "added",
+    "sha256BeforeStandards": "f6b192d30c5cafe89f5274059406864e32a92011aa90239ae508dc2a161223b8"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/member/model/MemberTradeChange.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "462d08265a824c8618d21f6c15067b7db56d99b6aa976544f0ad47668031c765"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/SettlementItem.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "49ad5ddce090e499e2aa5aff01670d30cfc899192137f0a5768d49c1135d9f59"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/SettlementItemPromotion.java",
+    "operation": "added",
+    "sha256BeforeStandards": "7e220c67e1ca65329c4b7a0fbd29472766cdb4f7c24540231593afb9fcf4d859"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/SettlementOrder.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "a9566b32bd4b81dc743c27af138a56d4ff91e7b816ae3d3959435ca5ebc39e1f"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/SettlementPromotion.java",
+    "operation": "added",
+    "sha256BeforeStandards": "692c6ba5a71294823daa1cb73841ee999d69c17ae8b8784a1737b8b4c7ac58cc"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/SettlementQuote.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "3b2fb455ee56cc07d160097360859d7e481c80812b8cc788c6fec138cc65b3b5"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/member/gateway/MemberTradeGatewayImpl.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "ff6cd3990a2404f4ce16e3554dd28a3c81ec8d62dde5dc8469f33b593c43f3d0"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/settlement/converter/PromotionClientConverter.java",
+    "operation": "added",
+    "sha256BeforeStandards": "cca8047bf0bc489ca80d0a9b176f0dd92f2925ddbfa84c1d73e2ec6f80d22497"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/settlement/gateway/OrderGatewayImpl.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "82469f83c16bdb503d91b83d2fa2931e4ed408e7ac9e81cbeb5884639805a213"
+  },
+  {
+    "path": "lemnt-server/lemnt-mall/lemnt-mall-start/src/test/java/com/lemnt/mall/start/promotion/FrozenRefundProtocolTest.java",
+    "operation": "added",
+    "sha256BeforeStandards": "01a42d0c54404351f2e64ea0cc93bf98bfd83e7eb87280692b4be800082ce52f"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/dubbo/MemberGrowthClientImpl.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "ec61c43ae48e2f4e3f149fbb2190c479e1609662638b8259c74d80f66e20eacd"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/cmd/MemberTradeAssetCmd.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "641fc95ac74c92792c9b80fb453af8604f0270dbaa8cedf58ac1042301ed1860"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/service/MemberGrowthService.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "175bf7b3a4609bc1cad8968f39b88348a2a19d1e7cbed3b17016009350978358"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-client/src/main/java/com/lemnt/member/client/MemberGrowthClient.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "f3a0b75d68fb516e6ec1264f6e8a6d509efcc9b81cef8950eac2b4a490af5caa"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-client/src/main/java/com/lemnt/member/client/bo/MemberTradeAssetBo.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "8d3f146e60faf7a1cdff6458406a08944e7045152f2a8cb9006df93bf0ef59e1"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/gateway/MemberExperienceRecordGatewayImpl.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "20932442f83da6ac0cf2a5dca837e77c14c1afbac3926f902d4bfdd56dc7f66b"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/gateway/MemberPointRecordGatewayImpl.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "769cdd061e6293dd09e123a993e899f49e2871e9e3b5c499781575981ed5d43b"
+  },
+  {
+    "path": "lemnt-server/lemnt-member/lemnt-member-start/src/test/java/com/lemnt/member/start/MemberAccountIntegrationTest.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "e7a59048a35f1d6bd691a7c68d2e841abdc7f71f7de2cf9dbeae900bbd2785e2"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/AppAfterSaleController.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "585cda06674f6fc38303b9dc1bcb479705f4799d399fbe0d831ad8df0f2afde8"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/converter/AppAfterSaleResConverter.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "ea8582309c0e0c9606d1975d1d278a227f73455825f1229064229317d41e1576"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/aftersale/res/AppAfterSaleItemRes.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "249a8e90aa21b362287c2b874309828526a1d4485ecafbe42ac6bf4a33a9ce19"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/order/AppOrderController.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "bdd538b322c69b514913a8285d0b81a6f0b62929b984eff289105784a719090f"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/promotion/converter/OrderPromotionResConverter.java",
+    "operation": "added",
+    "sha256BeforeStandards": "b3caa4e9cf7be7d97d3cd7d9f0262a363acecc3f998002a389996e839a762994"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/promotion/res/AppAfterSalePromotionDetailRes.java",
+    "operation": "added",
+    "sha256BeforeStandards": "34229bb697bd0005f448173a7018bef8eea850254b2d116605484ed86dfac6f8"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/app/promotion/res/AppOrderPromotionDetailRes.java",
+    "operation": "added",
+    "sha256BeforeStandards": "523eb2c6863472fea1ff20d6c02b8c43800c1f457eb18f2b06bb3f2e26e09cf3"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "49b63c5658c40d6c7751621d1f5455fa793aa6565268e2340a4e4f9fad28b01d"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/converter/AfterSaleResConverter.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "aa62c6be23f6f613daa1cf06f6455183f24c390e1a972b6d574d1c8f0de7139d"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/res/AfterSaleItemRes.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "b6226e7313e3c09c3b8ac2ddfb1a0c995d340fb3672a8a9c9eab74e7bb08f39d"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/res/AfterSaleRefundRes.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "27280b2b21ba5365b9512edae695cd04e384a9cec568de733fe68aa2cba65d3c"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/fulfillment/FulfillmentOrderController.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "47afc52d6427006c9e3b456c1ace7630b236f316122131ac2d63d1a3ef71e66e"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paynotify/req/PayNotifyTaskPageReq.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "a44dd250c8e95439ae3a5ea24976ef93a359ca975c6ef7dcbbb1bbbf899c3995"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/paynotify/res/PayNotifyTaskRes.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "4d33e5184e35f5abd5d2cc8906a9010ea910ec1e4456ebec2f16069a64887935"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/converter/OrderPromotionResConverter.java",
+    "operation": "added",
+    "sha256BeforeStandards": "8a9b3cf2aa6a7ed8197ce1d814c05aafb48f1087a3a1fb41713aa531fd463470"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/res/AfterSalePromotionDetailRes.java",
+    "operation": "added",
+    "sha256BeforeStandards": "2ce93b34e52b0f90dbb1863ca378f4fcfda7c664d9e1497944a37f2d08fef7df"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/promotion/res/OrderPromotionDetailRes.java",
+    "operation": "added",
+    "sha256BeforeStandards": "3c5120561f0eceaa8eb3935af73bf8aeb3b64a351091ce30bc8c25a4ac218902"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/test/java/com/lemnt/trade/adapter/web/promotion/OrderPromotionHttpTest.java",
+    "operation": "added",
+    "sha256BeforeStandards": "e320ae4eac4306865e956ebede118faf2011e051948c812c569422b38baabc38"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/aftersale/dto/AfterSaleItemDTO.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "4a7129b2dafa349d3a0c7ab8d40411687b13224585c41ef778482bc8c263d305"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/aftersale/service/AfterSalePromotionService.java",
+    "operation": "added",
+    "sha256BeforeStandards": "9f62ba527174b74d5541fdaad931e218b3ff2a916ce7267bd46f62e057f67317"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/aftersale/service/AfterSaleService.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "4401ceb26dc6cd4e2de78a3dc0e412f9c9163204dd492652b715886247ccafa8"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/dubbo/TradeOrderClientImpl.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "5c2dc89cbf0062ac0f1d3f9b8c53d69129df17523cbd0a1c910a7855284c0200"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/dubbo/converter/PromotionClientConverter.java",
+    "operation": "added",
+    "sha256BeforeStandards": "73c5ae2750e83b5f55345ee54bbda8e45cbf8e8e01022313b21b8f68feca7040"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderAdjustmentService.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "61692b27fa74db2fe0b6083c1f9565af363e1598177044996b04519bd26f2e48"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderPersistenceService.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "cee9e4d24d8a5342b12a88382c64df51970f738706b686283a82e1ff885926e6"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderSubmissionService.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "d1de8f420f83edefa595765f55e2f524e66d9df59e94d126b4baef2f3a93f634"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/service/PayNotifyDispatcher.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "6a2fa4dbcabe16f36ab702dab641443eaab74bbdff06f1cbcd7bc670266fd385"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/service/PayNotifyTaskService.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "7d7a66fd0d3735999d36508f54229274884cb8d5084710a1ed1ec475e3976220"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/executor/PaymentRefundCreateCmdExe.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "9200a22b7b6d49eb6dbe1d3438f17ed5122f0c6f8ee2e15b8e7c7a38bd2103f7"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/PaymentRefundService.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "953f97a469783d837f117cf5315bac95e505c8dbf99a152f666058dd8e931531"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/RefundBenefitsService.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "727b5ea35ce863bb181bbf10b897f27bcbe753a9035bef3c289950c8c46cdcab"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/dto/AfterSalePromotionDetailDTO.java",
+    "operation": "added",
+    "sha256BeforeStandards": "8c80c2610af6c421de79df73aa6372864ae81bf948987480b9e5f32945888251"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/dto/OrderPromotionDetailDTO.java",
+    "operation": "added",
+    "sha256BeforeStandards": "c6bb2dab5743a306871f12a8b805b4afb88454f5fc2d133f9e7cb581915e7603"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/AfterSalePromotionDetailQueryExe.java",
+    "operation": "added",
+    "sha256BeforeStandards": "b0a05387bad35154620d41e7a7a43f64ff5c36e3cc85356191cea80ab577d428"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/OrderPromotionDetailQueryExe.java",
+    "operation": "added",
+    "sha256BeforeStandards": "5e6d566be4d7c30f393b828d2601f8fb2fe223543b10c92e91b94b9c5410260d"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/aftersale/ZeroCashAfterSaleTest.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "211cc960db472e6e144d71bad86e3e6a721f7975a7c396ec0c2ab0fd24d3e6db"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/payment/PayNotifyTaskServiceTest.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "6803f49b2553c481a01a2bc9d5af7cb129277ca25c6b806d44c06d99a5972104"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/test/java/com/lemnt/trade/application/promotion/OrderPromotionQueryTest.java",
+    "operation": "added",
+    "sha256BeforeStandards": "e042deb1a2f4200fe29e38c6f198cc3f98431e247d03fb2bbf74f3c71d00c057"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-client/src/main/java/com/lemnt/trade/client/TradeOrderClient.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "e888448691c45b009b65c7d3bae6f22fd9a9569ea7b595af9670b4f30075bbe7"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-client/src/main/java/com/lemnt/trade/client/bo/OrderCreateBo.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "1d8b147faad7029f53bd72c63a7c5dd1b35a5a220e2e06d91481d9eac512594d"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-client/src/main/java/com/lemnt/trade/client/dto/OrderDTO.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "2756a4c503d97343c0201537213e4c0cf15d7d4480f3ce2510e3a24f9a8dbc07"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-client/src/main/java/com/lemnt/trade/client/dto/OrderItemDTO.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "278b89cf77242e25c87ff546ed999c646fcd231ac9bd124fcd3d604118551350"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-client/src/main/java/com/lemnt/trade/client/dto/OrderItemPromotionDTO.java",
+    "operation": "added",
+    "sha256BeforeStandards": "9d0836f1bf27d291e297138ec36802809c11afbed3108ceb9ef83e83acc89878"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-client/src/main/java/com/lemnt/trade/client/dto/OrderPromotionDTO.java",
+    "operation": "added",
+    "sha256BeforeStandards": "1edaf6eafde234260c3c31b3e47aa9cf0850c468f3f3a4e25753a7c4e17bc81e"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/aftersale/model/AfterSale.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "bcf332736917a51db4118d7e13d6ba1ef8e7b017b9b6d236d3d1b56d052858bb"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/aftersale/service/AfterSaleRefundCalculator.java",
+    "operation": "added",
+    "sha256BeforeStandards": "1f88dd7a2f9ffd9fd2bab710ca77ae8be5b3d4ed2758c556b60c1173df8af04d"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/gateway/OrderBenefitsGateway.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "dcd3728aa94c10605bcaabb0169d87c8399a23b03a2b16189dd9ac508393f070"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/gateway/TradeOrderItemGateway.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "1f52f056eb973e066696f861dae2440e35b1c1846d5732385f656cba8e1fd750"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/OrderRefundBenefits.java",
+    "operation": "added",
+    "sha256BeforeStandards": "8756d5838a46e4c15980be5ee61b014265b4fc75e9d7ffa828db6cc4356f85da"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrder.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "3c346df6b4d3902c4e73a0ae46b7af1ad670b6059451c50a02fe827376220baf"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrderItem.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "630b734e0256c28c9a2805197790075d9131ef655239e00b4cf633fbd458a974"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/payment/gateway/PayNotifyTaskGateway.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "579a830851040075cae5def2f98665f53726b36f7fb9af059ad956e253f0b05d"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/payment/model/PayNotifyTask.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "a824eca10aa97c0eef07d0247dc9e77f612641e51dc0dbbfe1a0cb13a1fe2e1f"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/payment/model/PayNotifyType.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "76a56d1231666645cc019edeb5a6496736566f6aa66982f3f2b71bbcf0a8ff61"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/gateway/OrderPromotionGateway.java",
+    "operation": "added",
+    "sha256BeforeStandards": "2e1b1bd044eca7d8e094f2e6388bdd993028210fc1e7a35f91d1039624330417"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/OrderGiftAdjustment.java",
+    "operation": "added",
+    "sha256BeforeStandards": "a3495a354386adb16c9b6983093b5e32f1665e146236f3e38146fb1df52750f2"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/OrderItemPromotion.java",
+    "operation": "added",
+    "sha256BeforeStandards": "684ebb3939a136fdbfa1b15b7b8064d98c349189a57a10e58834982d4e268004"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/OrderPromotion.java",
+    "operation": "added",
+    "sha256BeforeStandards": "88466f95d323026e97aad0046554034af553e8580e673bbb2a4e02125b7213fb"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/model/OrderPromotionRefund.java",
+    "operation": "added",
+    "sha256BeforeStandards": "e2786d7833afdc16acb629bb2c264836bf146cba5ad45120e23c587fc4b59a50"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/promotion/service/OrderPricingRules.java",
+    "operation": "added",
+    "sha256BeforeStandards": "a176bf7140290abff1ca227fecca0f0ffe38c8dc83128f677197af7c0ba649fa"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/test/java/com/lemnt/trade/domain/aftersale/service/AfterSaleRefundCalculatorTest.java",
+    "operation": "added",
+    "sha256BeforeStandards": "78d03af711a8d65731c890680b780cec9805ead800540f279f24d78777ca04fd"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/test/java/com/lemnt/trade/domain/promotion/OrderPricingRulesTest.java",
+    "operation": "added",
+    "sha256BeforeStandards": "4cc9ecb82b67281781936300dc7c90f841b72c4b70ed912390a20928e714e76e"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/aftersale/converter/AfterSaleConverter.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "116a726de965886e4cdbd662ca0e36f5637e5c46324fc2e93cb104664d2d49ad"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/aftersale/dataobject/AfterSaleDO.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "e6bba9881b8909312846ec7df614d59093bcb900305b27ce0b17d4c0c976f668"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/aftersale/gateway/AfterSaleGatewayImpl.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "538406c7b91383d8644f9dddfbf0ab9291fc5cc73547718a85da171270cb5f58"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/converter/OrderItemConverter.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "b2089b851490c2d710ccc6108f336cd23aa8de06b8cda04e36ca914d8f20ca74"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/dataobject/TradeOrderDO.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "aebd49ab465215f4bc611c1e4c337f85865fff6f0723763f3a7de13b8d4e3cbe"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/dataobject/TradeOrderItemDO.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "880ff3edad5a4a9a153967d44968056fbb81845056f88f8a6d69f008afe6e310"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/gateway/OrderBenefitsGatewayImpl.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "87cfb8ca9518dc129662abd960edcf11f8156f4b3dce5034539126a89f6f0562"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/gateway/TradeOrderGatewayImpl.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "c3de1a90d6de0f8e2f85ce4a802e569dacd4aa92ef81dd0e7f85b76131a47399"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/gateway/TradeOrderItemGatewayImpl.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "711353075153f93ecc6d6e4d583cf62036fc405263e671ea819424a76c7571af"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/mapper/TradeOrderMapper.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "934d7ea04773214017d890c88cc35c04619dee4230fe0529efa1182348cc563d"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/payment/converter/PayNotifyTaskConverter.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "e9c8234b28520903662196cde907b3c5b27cbf7fc549ad2b5d3b3862e84bf9b0"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/payment/dataobject/PayNotifyTaskDO.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "48bf5fbc9c914246609553b086461dedbceb01f3fa89a3ff7454a38eae2330e5"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/payment/gateway/PayNotifyTaskGatewayImpl.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "c4bb3fa7632a56896b2165719c079534af078f98931d1ee9e18cc274dff11a18"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/payment/mapper/PayNotifyTaskMapper.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "9f86b60c938e0e6c0247a8dbac116d45a9bebf1bb978d6373644d6440ee3ef9f"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/promotion/converter/OrderPromotionConverter.java",
+    "operation": "added",
+    "sha256BeforeStandards": "d628f8a0da5abacd195e9d177004726fc617b71fd2f5c814dd012b9b12549be5"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/promotion/dataobject/OrderItemPromotionDO.java",
+    "operation": "added",
+    "sha256BeforeStandards": "5a0ca1781108daafcd614f33e4b7704e1a4b7cf270b4b34a864266881cd69beb"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/promotion/dataobject/OrderPromotionDO.java",
+    "operation": "added",
+    "sha256BeforeStandards": "0dcf5ef29c75ad0dd24e0c3b8b9612c4723d49ebbd0dc473e4bd246bee90ae95"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/promotion/dataobject/OrderPromotionRefundDO.java",
+    "operation": "added",
+    "sha256BeforeStandards": "87b52b850ae873aae80b5d4f166b5e1f2b78cb0c54bc4287e8a256eb0c5bb456"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/promotion/gateway/OrderPromotionGatewayImpl.java",
+    "operation": "added",
+    "sha256BeforeStandards": "97478928624d23bfe032ea44ccc3225ef4d53c5e7e622bb57cc31bd290845d9d"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/promotion/mapper/OrderItemPromotionMapper.java",
+    "operation": "added",
+    "sha256BeforeStandards": "f39c55b2b160cb98871169ce6f459c78bfd4420552411e853de34860fbfc9e02"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/promotion/mapper/OrderPromotionMapper.java",
+    "operation": "added",
+    "sha256BeforeStandards": "0f22795cb7fdcaf284c0295ed1d91f6414617209811814a1d83226707c49a70a"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/promotion/mapper/OrderPromotionRefundMapper.java",
+    "operation": "added",
+    "sha256BeforeStandards": "26743f3ded219895682055ae521033b3848238a7d2b46133bb440135089226c0"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/resources/mapper/PayNotifyTaskMapper.xml",
+    "operation": "added",
+    "sha256BeforeStandards": "1c46b9b1cc7e17115c9f8fd4a4f289e1c8d1e37676a428e1122d012bb0bb6b89"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/resources/mapper/TradeOrderLockMapper.xml",
+    "operation": "added",
+    "sha256BeforeStandards": "0b29c018ed4628409e67f245df385d348f7266a6c2a13aa8d4af38ab9f1a395f"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/ControllerMappingTest.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "cb27a7dce6854cc97686388aaa64945e37499fb9d564b3702ca4729706e9853f"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutFlowIntegrationTest.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "d47641e433a003ff8932bbb8398219461893fd7fbda640f771d9133dd785582f"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/payment/PayNotifyTaskPersistenceTest.java",
+    "operation": "modified",
+    "sha256BeforeStandards": "451560faaaa3d8997d03b8859aae8e0ab55b671287e8d4d3d8f3d512508d97fe"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/promotion/OrderPromotionPersistenceTest.java",
+    "operation": "added",
+    "sha256BeforeStandards": "f70e4e81525b936331147e3392836b4f0be7377c8d0fdec14b418938905f29fe"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/sql/V11__pay_notify_task.sql",
+    "operation": "modified",
+    "sha256BeforeStandards": "328fde7d9a237dbc00c9603c431cf6648094bf59c6ed6a30ad74f6dea5883a4f"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/sql/V18__order_promotion_snapshot.sql",
+    "operation": "added",
+    "sha256BeforeStandards": "8e39c59411a9887e15e125469341322b119dac50c2b1e9ed9ec9e5fb97735c4d"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/sql/V1__trade_order.sql",
+    "operation": "modified",
+    "sha256BeforeStandards": "376991ae334e495643ce010d3897c10311a1d7f70f5bfcbd32203ecda7a812cf"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/sql/V5__order_fulfillment.sql",
+    "operation": "modified",
+    "sha256BeforeStandards": "4856cb84bdbdfe3df96f5927b9d35de1e4fc382d76a3fb987bf135d9dec79a95"
+  },
+  {
+    "path": "lemnt-server/lemnt-trade/sql/upgrade/order_promotion_snapshot.sql",
+    "operation": "added",
+    "sha256BeforeStandards": "4cefe8d7da498da9a7a94ffec9c5889664ef8f8716a606e9ebf35c8783682204"
+  },
+  {
+    "path": "lemnt-ui/src/modules/trade/fulfillment/api/fulfillmentApi.test.ts",
+    "operation": "modified",
+    "sha256BeforeStandards": "457f0b3e9761b00c2819855c08952c9e6ac3ef84e85da29ed973c6ed5f95cdaf"
+  },
+  {
+    "path": "lemnt-ui/src/modules/trade/fulfillment/api/fulfillmentApi.ts",
+    "operation": "modified",
+    "sha256BeforeStandards": "38078f3ae43bc70912c0ef51625f77a0447acdc24c54db58eb93865eb4e9b22f"
+  },
+  {
+    "path": "lemnt-ui/src/modules/trade/fulfillment/constants.ts",
+    "operation": "modified",
+    "sha256BeforeStandards": "65bb3e3d74a156c4d40e3cabd05a654ec01ad1eb05d1d4af23f884f0b23e2de1"
+  },
+  {
+    "path": "lemnt-ui/src/modules/trade/fulfillment/fulfillmentDecoders.test.ts",
+    "operation": "modified",
+    "sha256BeforeStandards": "63abd64bce7706dfe16b45a4dcebc5f2e01e568ac1d2022a0fa00fc2cb0f5e5a"
+  },
+  {
+    "path": "lemnt-ui/src/modules/trade/fulfillment/fulfillmentDecoders.ts",
+    "operation": "modified",
+    "sha256BeforeStandards": "fb1c4bd84d0d10727adbc2e5273b5f0f89a3d9fe12c8100fcd0123444e71d021"
+  },
+  {
+    "path": "lemnt-ui/src/modules/trade/fulfillment/pages/AfterSaleDetailPanel.tsx",
+    "operation": "modified",
+    "sha256BeforeStandards": "ea492cfd435025722cd5ade5fc93524a7769d1df2dda1cb3438bc5de8e0bc756"
+  },
+  {
+    "path": "lemnt-ui/src/modules/trade/fulfillment/pages/OrderFulfillmentPage.tsx",
+    "operation": "modified",
+    "sha256BeforeStandards": "b230c7e94069961ff49c90df81ad712050eca31f94e4bb8f32da5142e3dfb2cb"
+  },
+  {
+    "path": "lemnt-ui/src/modules/trade/fulfillment/pages/RefundRequestPage.tsx",
+    "operation": "modified",
+    "sha256BeforeStandards": "89204d6eca4f651ce7754b78ac663e4b7852f0c52918ab1219fa95d510e7dc22"
+  },
+  {
+    "path": "lemnt-ui/src/modules/trade/fulfillment/types.ts",
+    "operation": "modified",
+    "sha256BeforeStandards": "52730e41fddd921f4fcf10c68800f3a045e2e2963294763b342104d0c5f5e7c8"
+  },
+  {
+    "path": "lemnt-ui/src/modules/trade/payment/api/payNotifyApi.ts",
+    "operation": "modified",
+    "sha256BeforeStandards": "de7d55b3ac9cf1af36fee52cba26fea3e6b6a76fc0f610521f8d748b119f3022"
+  },
+  {
+    "path": "lemnt-ui/src/modules/trade/payment/pages/PayNotifyTaskPage.tsx",
+    "operation": "modified",
+    "sha256BeforeStandards": "25d7c38f9fb606a478523b7abec829b6bf53b7f7edb0b23a9438fbd3b5d2b274"
+  },
+  {
+    "path": "work-items/member-domain-structure/164-order-promotion-implementation-plan.md",
+    "operation": "added",
+    "sha256BeforeStandards": "8bb485fb56b76f80f7fe6a5bbd1f6d38f45dab0cf158572ebe6a6fe211336b13"
+  },
+  {
+    "path": "work-items/member-domain-structure/164-order-promotion-model.sql",
+    "operation": "added",
+    "sha256BeforeStandards": "52aa25ed0d822483aacf5836097940d3a77aadc94d4fe01f03c2ce17b95ecd68"
+  },
+  {
+    "path": "work-items/member-domain-structure/164-order-promotion-refund-design.md",
+    "operation": "added",
+    "sha256BeforeStandards": "38a6d9f3960d25a373f78bc67d5a7ed238b801e88ce954e5c9ec883bb1c2bb9f"
+  },
+  {
+    "path": "work-items/member-domain-structure/164-order-promotion-tasks-draft.md",
+    "operation": "added",
+    "sha256BeforeStandards": "5603420a919604160a4c3eb36aee1f0accc799fb0ebb2a0e33c8666e1f0de607"
+  },
+  {
+    "path": "work-items/member-domain-structure/README.md",
+    "operation": "modified",
+    "sha256BeforeStandards": "96ef38e995b9351445748acc285b5eafcf5e4caa6759bb3e037cd2e85a82d05d"
+  },
+  {
+    "path": "work-items/member-domain-structure/state.json",
+    "operation": "added",
+    "sha256BeforeStandards": "5cae9c8ec533e4f5e3cdf96a14da0760b91e3fd5a9a73b37b1411c1706236461"
+  },
+  {
+    "path": "work-items/member-domain-structure/tasks.md",
+    "operation": "added",
+    "sha256BeforeStandards": "4dccd38505a1947e16155a416fcac4accd44a898da5b7e8da52a4191dcde048d"
+  },
+  {
+    "path": "work-items/member-domain-structure/164-order-promotion-refund-delivery.md",
+    "operation": "added"
+  },
+  {
+    "path": "work-items/member-domain-structure/evidence/order-promotion-refund-verification.json",
+    "operation": "added"
+  },
+  {
+    "path": "work-items/member-domain-structure/code-summary.md",
+    "operation": "added"
+  }
+]

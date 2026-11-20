@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-31",
+  "batch": "129",
+  "pages": [
+    "mall/promotion/reward-activity/index",
+    "mall/promotion/discount-activity/index",
+    "trade/payment/index",
+    "trade/payment-refund/index",
+    "trade/payment-channel/index"
+  ],
+  "react": {
+    "tests": 237,
+    "files": 39,
+    "passed": true
+  },
+  "backendFocusedTests": {
+    "PromotionMenuSeedTest": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "ActivityAlignmentPersistenceTest": {
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "PaymentManagementHttpTest": {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "PaymentMenuSeedTest": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "backendTestTotal": 15,
+  "checks": {
+    "build": "passed with existing chunk warning",
+    "typecheck": "passed",
+    "lint": "passed",
+    "format:check": "passed",
+    "diffCheck": "passed"
+  },
+  "menus": [
+    "lemnt-server/sql/V20261031__mall_promotion_menu.sql",
+    "lemnt-server/sql/V20261031__trade_payment_menu.sql"
+  ],
+  "logs": [
+    "/tmp/promotion-management-backend.log",
+    "/tmp/payment-management-backend.log",
+    "/tmp/payment-ui-tests.log",
+    "/tmp/payment-ui-build.log",
+    "/tmp/payment-ui-typecheck.log",
+    "/tmp/payment-ui-lint.log",
+    "/tmp/payment-ui-format.log"
+  ],
+  "limitations": [
+    "No new business tables or provider business logic changes",
+    "No browser interaction or live cross-service validation; frontend tests use API contracts and SSR",
+    "Only affected backend suites rerun; full backend and miniapp suites not repeated",
+    "Menu SQL tested in H2 only; no real database or role grants applied",
+    "Source reward gifting rules and full payment platform still incomplete",
+    "No commit/push/deployment"
+  ]
+}

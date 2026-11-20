@@ -1,0 +1,104 @@
+{
+  "batch": "163-schema-comments",
+  "date": "2026-11-02",
+  "baseRevision": "0f5055f0",
+  "schema": {
+    "system": {
+      "tables": 17,
+      "columns": 169,
+      "addedTableComments": 0,
+      "addedColumnComments": 0
+    },
+    "member": {
+      "tables": 17,
+      "columns": 149,
+      "addedTableComments": 16,
+      "addedColumnComments": 148
+    },
+    "mall": {
+      "tables": 35,
+      "columns": 379,
+      "addedTableComments": 33,
+      "addedColumnComments": 379
+    },
+    "trade": {
+      "tables": 26,
+      "columns": 343,
+      "addedTableComments": 11,
+      "addedColumnComments": 320
+    }
+  },
+  "missingComments": 0,
+  "ddlStructureUnchanged": true,
+  "existingCommentsPreserved": true,
+  "tests": {
+    "member": 119,
+    "mall": 195,
+    "trade": 283,
+    "total": 597,
+    "python": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "log": "/private/tmp/schema-comments-backend-tests.log",
+  "notRun": [],
+  "commitPush": false,
+  "liveDatabase": {
+    "date": "2026-11-02",
+    "target": "local Docker mysql8, MySQL 8.0.46",
+    "databases": [
+      "lemnt_member",
+      "lemnt_mall",
+      "lemnt_trade",
+      "lemnt_system"
+    ],
+    "appliedTableComments": 62,
+    "appliedColumnComments": 860,
+    "statements": 922,
+    "byDatabase": {
+      "lemnt_mall": {
+        "tables": 35,
+        "tableComments": 33,
+        "columnComments": 378
+      },
+      "lemnt_member": {
+        "tables": 18,
+        "tableComments": 17,
+        "columnComments": 157
+      },
+      "lemnt_system": {
+        "tables": 17,
+        "tableComments": 0,
+        "columnComments": 0
+      },
+      "lemnt_trade": {
+        "tables": 27,
+        "tableComments": 12,
+        "columnComments": 325
+      }
+    },
+    "verification": {
+      "tables": 97,
+      "columns": 1069,
+      "missingTableComments": 0,
+      "missingColumnComments": 0,
+      "columnDefinitionsUnchanged": true,
+      "tableStructuresUnchanged": true,
+      "existingCommentsPreserved": true,
+      "asciiCheckLiteralCharsetReserializedTables": [
+        "lemnt_mall.mall_coupon_template",
+        "lemnt_mall.mall_product_brand",
+        "lemnt_mall.mall_product_category",
+        "lemnt_mall.mall_product_spu",
+        "lemnt_mall.mall_promotion_discount_product",
+        "lemnt_mall.mall_promotion_order",
+        "lemnt_mall.mall_promotion_reward_activity",
+        "lemnt_trade.trade_payment_refund"
+      ]
+    },
+    "backupDirectory": "/private/tmp/lemnt-schema-comments-20261102",
+    "transport": "Docker container mysql client, credentials used only within container",
+    "otherMigrationsExecuted": false
+  }
+}

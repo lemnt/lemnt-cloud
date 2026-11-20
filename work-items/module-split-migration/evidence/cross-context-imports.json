@@ -1,0 +1,1127 @@
+[
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "line": 6,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.adapter.app.promotion.converter.AppPromotionOrderConverter",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/converter/AppPromotionOrderConverter.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "line": 9,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.adapter.app.promotion.req.AppPromotionOrderCreateReq",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/req/AppPromotionOrderCreateReq.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "line": 14,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.adapter.app.promotion.res.AppPromotionOrderRes",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/res/AppPromotionOrderRes.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppBargainController.java",
+    "line": 23,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.application.promotion.executor.PromotionOrderPlaceCmdExe",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/executor/PromotionOrderPlaceCmdExe.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "line": 6,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.adapter.app.promotion.converter.AppPromotionOrderConverter",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/converter/AppPromotionOrderConverter.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "line": 7,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.adapter.app.promotion.req.AppPromotionOrderCreateReq",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/req/AppPromotionOrderCreateReq.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "line": 13,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.adapter.app.promotion.res.AppPromotionOrderRes",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/res/AppPromotionOrderRes.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppCombinationController.java",
+    "line": 21,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.application.promotion.executor.PromotionOrderPlaceCmdExe",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/executor/PromotionOrderPlaceCmdExe.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPointController.java",
+    "line": 6,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.adapter.app.promotion.converter.AppPromotionOrderConverter",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/converter/AppPromotionOrderConverter.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPointController.java",
+    "line": 7,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.adapter.app.promotion.req.AppPromotionOrderBatchCreateReq",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/req/AppPromotionOrderBatchCreateReq.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPointController.java",
+    "line": 8,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.adapter.app.promotion.req.AppPromotionOrderCreateReq",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/req/AppPromotionOrderCreateReq.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPointController.java",
+    "line": 10,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.adapter.app.promotion.res.AppPromotionOrderRes",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/res/AppPromotionOrderRes.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppPointController.java",
+    "line": 13,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.application.promotion.executor.PromotionOrderPlaceCmdExe",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/executor/PromotionOrderPlaceCmdExe.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppSeckillController.java",
+    "line": 5,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.adapter.app.promotion.converter.AppPromotionOrderConverter",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/converter/AppPromotionOrderConverter.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppSeckillController.java",
+    "line": 7,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.adapter.app.promotion.req.AppPromotionOrderCreateReq",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/req/AppPromotionOrderCreateReq.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppSeckillController.java",
+    "line": 9,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.adapter.app.promotion.res.AppPromotionOrderRes",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/res/AppPromotionOrderRes.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-adapter/src/main/java/com/lemnt/mall/adapter/app/promotion/AppSeckillController.java",
+    "line": 14,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.application.promotion.executor.PromotionOrderPlaceCmdExe",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/executor/PromotionOrderPlaceCmdExe.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/cart/converter/CartDTOConverter.java",
+    "line": 5,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.model.ProductSnapshot",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSnapshot.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/cart/executor/CartListQueryExe.java",
+    "line": 8,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductCatalogGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductCatalogGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/cart/executor/CartSaveCmdExe.java",
+    "line": 11,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductCatalogGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductCatalogGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/dubbo/SettlementLifecycleClientImpl.java",
+    "line": 3,
+    "owner": "order",
+    "import": "com.lemnt.mall.application.product.service.ProductInventoryService",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductInventoryService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/dubbo/SettlementLifecycleClientImpl.java",
+    "line": 5,
+    "owner": "order",
+    "import": "com.lemnt.mall.application.promotion.service.RewardGiftService",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/RewardGiftService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductBrowseHistoryService.java",
+    "line": 8,
+    "owner": "product",
+    "import": "com.lemnt.mall.domain.member.gateway.MemberLockGateway",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/member/gateway/MemberLockGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductCommentService.java",
+    "line": 10,
+    "owner": "product",
+    "import": "com.lemnt.mall.domain.settlement.gateway.OrderGateway",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/gateway/OrderGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductFavoriteService.java",
+    "line": 8,
+    "owner": "product",
+    "import": "com.lemnt.mall.domain.member.gateway.MemberLockGateway",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/member/gateway/MemberLockGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityManagementService.java",
+    "line": 11,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSkuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSkuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityManagementService.java",
+    "line": 12,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSpuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSpuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityPricingService.java",
+    "line": 7,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSkuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSkuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityPricingService.java",
+    "line": 8,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSpuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSpuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityPricingService.java",
+    "line": 13,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.settlement.model.SettlementItem",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/SettlementItem.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityPricingService.java",
+    "line": 14,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.settlement.model.SettlementQuote",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/SettlementQuote.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityPricingService.java",
+    "line": 15,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.settlement.model.SettlementRules",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/SettlementRules.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/BargainActivityManagementService.java",
+    "line": 9,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSkuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSkuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/BargainActivityManagementService.java",
+    "line": 10,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSpuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSpuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/BargainActivityManagementService.java",
+    "line": 11,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.model.ProductSku",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSku.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/BargainActivityManagementService.java",
+    "line": 12,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.model.ProductSpu",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSpu.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/BargainRecordService.java",
+    "line": 12,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSpuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSpuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/BargainRecordService.java",
+    "line": 13,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.model.ProductSpu",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSpu.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/CombinationActivityManagementService.java",
+    "line": 12,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSkuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSkuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/CombinationActivityManagementService.java",
+    "line": 13,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSpuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSpuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/CombinationActivityManagementService.java",
+    "line": 14,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.model.ProductSku",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSku.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/CombinationActivityManagementService.java",
+    "line": 15,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.model.ProductSpu",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSpu.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/CombinationRecordService.java",
+    "line": 11,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSkuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSkuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/CombinationRecordService.java",
+    "line": 12,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSpuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSpuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/PointActivityManagementService.java",
+    "line": 12,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSkuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSkuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/PointActivityManagementService.java",
+    "line": 13,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSpuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSpuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/PointActivityManagementService.java",
+    "line": 14,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.model.ProductSku",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSku.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/PointActivityManagementService.java",
+    "line": 15,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.model.ProductSpu",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSpu.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/PromotionOrderPricingService.java",
+    "line": 10,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductCatalogGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductCatalogGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/PromotionOrderPricingService.java",
+    "line": 11,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.product.model.ProductSnapshot",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSnapshot.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/PromotionOrderService.java",
+    "line": 4,
+    "owner": "order",
+    "import": "com.lemnt.mall.application.promotion.cmd.CombinationRecordCreateCmd",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/cmd/CombinationRecordCreateCmd.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/PromotionOrderService.java",
+    "line": 6,
+    "owner": "order",
+    "import": "com.lemnt.mall.application.promotion.dto.PromotionRefundResult",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/dto/PromotionRefundResult.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/RewardGiftService.java",
+    "line": 5,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.settlement.model.SettlementOrder",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/SettlementOrder.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/SeckillActivityManagementService.java",
+    "line": 11,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSkuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSkuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/SeckillActivityManagementService.java",
+    "line": 12,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSpuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSpuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/SeckillActivityManagementService.java",
+    "line": 13,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.model.ProductSku",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSku.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/SeckillAppQueryService.java",
+    "line": 10,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSkuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSkuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/SeckillAppQueryService.java",
+    "line": 11,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductSpuGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductSpuGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/SeckillAppQueryService.java",
+    "line": 12,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.model.ProductSku",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSku.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/SeckillAppQueryService.java",
+    "line": 13,
+    "owner": "promotion",
+    "import": "com.lemnt.mall.domain.product.model.ProductSpu",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSpu.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementDeliveryService.java",
+    "line": 6,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.product.model.ProductSnapshot",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/model/ProductSnapshot.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementPreparationService.java",
+    "line": 4,
+    "owner": "order",
+    "import": "com.lemnt.mall.application.promotion.service.ActivityPricingService",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/promotion/service/ActivityPricingService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementPreparationService.java",
+    "line": 9,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.cart.gateway.CartGateway",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/cart/gateway/CartGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementPreparationService.java",
+    "line": 10,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.cart.model.CartLine",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/cart/model/CartLine.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementPreparationService.java",
+    "line": 11,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.cart.model.CartReference",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/cart/model/CartReference.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementPreparationService.java",
+    "line": 12,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.coupon.gateway.CouponGateway",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/coupon/gateway/CouponGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementPreparationService.java",
+    "line": 13,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.coupon.gateway.CouponTemplateGateway",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/coupon/gateway/CouponTemplateGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementPreparationService.java",
+    "line": 14,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.coupon.model.Coupon",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/coupon/model/Coupon.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementPreparationService.java",
+    "line": 16,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.product.gateway.ProductCatalogGateway",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/product/gateway/ProductCatalogGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementRecordService.java",
+    "line": 3,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.cart.gateway.CartGateway",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/cart/gateway/CartGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementRecordService.java",
+    "line": 4,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.coupon.gateway.CouponGateway",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/coupon/gateway/CouponGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementRecordService.java",
+    "line": 5,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.coupon.gateway.CouponTemplateGateway",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/coupon/gateway/CouponTemplateGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/settlement/service/SettlementRecordService.java",
+    "line": 6,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.coupon.model.CouponOrderReference",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/coupon/model/CouponOrderReference.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/Settlement.java",
+    "line": 3,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.cart.model.CartReference",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/cart/model/CartReference.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/SettlementRecord.java",
+    "line": 3,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.cart.model.CartReference",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/cart/model/CartReference.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/SettlementRules.java",
+    "line": 3,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.coupon.model.Coupon",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/coupon/model/Coupon.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/SettlementRules.java",
+    "line": 4,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.coupon.model.CouponTemplate",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/coupon/model/CouponTemplate.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/settlement/model/SettlementRules.java",
+    "line": 15,
+    "owner": "order",
+    "import": "com.lemnt.mall.domain.coupon.model.CouponRules.discount",
+    "targetOwner": "promotion",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-domain/src/main/java/com/lemnt/mall/domain/coupon/model/CouponRules.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/settlement/converter/SettlementSubmissionConverter.java",
+    "line": 3,
+    "owner": "order",
+    "import": "com.lemnt.mall.infrastructure.product.converter.SpecSnapshotJson",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-infrastructure/src/main/java/com/lemnt/mall/infrastructure/product/converter/SpecSnapshotJson.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/AfterSaleController.java",
+    "line": 33,
+    "owner": "order",
+    "import": "com.lemnt.trade.application.paymentrefund.executor.PaymentRefundCreateCmdExe",
+    "targetOwner": "pay",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/executor/PaymentRefundCreateCmdExe.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-adapter/src/main/java/com/lemnt/trade/adapter/web/aftersale/converter/AfterSalePaymentResConverter.java",
+    "line": 4,
+    "owner": "order",
+    "import": "com.lemnt.trade.application.paymentrefund.dto.PaymentRefundDTO",
+    "targetOwner": "pay",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/dto/PaymentRefundDTO.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/aftersale/service/AfterSaleService.java",
+    "line": 17,
+    "owner": "order",
+    "import": "com.lemnt.trade.domain.payment.gateway.TradePaymentGateway",
+    "targetOwner": "pay",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/payment/gateway/TradePaymentGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/brokerage/service/BrokerageWithdrawService.java",
+    "line": 9,
+    "owner": "order",
+    "import": "com.lemnt.trade.application.payment.service.WalletService",
+    "targetOwner": "pay",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/service/WalletService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/brokerage/service/BrokerageWithdrawService.java",
+    "line": 14,
+    "owner": "order",
+    "import": "com.lemnt.trade.domain.payment.model.WalletBizType",
+    "targetOwner": "pay",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/payment/model/WalletBizType.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/executor/OrderStatisticsQueryExe.java",
+    "line": 6,
+    "owner": "order",
+    "import": "com.lemnt.trade.domain.paymentrefund.gateway.PaymentRefundGateway",
+    "targetOwner": "pay",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/paymentrefund/gateway/PaymentRefundGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderAdjustmentService.java",
+    "line": 11,
+    "owner": "order",
+    "import": "com.lemnt.trade.domain.payment.gateway.TradePaymentGateway",
+    "targetOwner": "pay",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/payment/gateway/TradePaymentGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderCloseService.java",
+    "line": 8,
+    "owner": "order",
+    "import": "com.lemnt.trade.domain.payment.gateway.PaymentChannelCloseGateway",
+    "targetOwner": "pay",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/payment/gateway/PaymentChannelCloseGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderCloseService.java",
+    "line": 9,
+    "owner": "order",
+    "import": "com.lemnt.trade.domain.payment.gateway.TradePaymentGateway",
+    "targetOwner": "pay",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/payment/gateway/TradePaymentGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/executor/MemberPaymentStatusQueryExe.java",
+    "line": 3,
+    "owner": "pay",
+    "import": "com.lemnt.trade.application.order.service.OrderPersistenceService",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderPersistenceService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/executor/MemberPaymentStatusQueryExe.java",
+    "line": 6,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.model.OrderRules",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/OrderRules.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/executor/PaymentDetailQueryExe.java",
+    "line": 5,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.model.OrderRules",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/OrderRules.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/executor/PaymentPageQueryExe.java",
+    "line": 7,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.model.OrderRules",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/OrderRules.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/executor/PaymentPrepayCmdExe.java",
+    "line": 4,
+    "owner": "pay",
+    "import": "com.lemnt.trade.application.order.service.OrderPersistenceService",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderPersistenceService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/executor/SandboxPaymentCmdExe.java",
+    "line": 4,
+    "owner": "pay",
+    "import": "com.lemnt.trade.application.order.service.OrderPersistenceService",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderPersistenceService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/executor/TradePaymentCreateCmdExe.java",
+    "line": 3,
+    "owner": "pay",
+    "import": "com.lemnt.trade.application.order.service.OrderPersistenceService",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderPersistenceService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/executor/TradePaymentCreateCmdExe.java",
+    "line": 4,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.model.TradeOrder",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrder.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/executor/WalletRechargeDetailQueryExe.java",
+    "line": 5,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.model.OrderRules",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/OrderRules.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/executor/WalletTransferDetailQueryExe.java",
+    "line": 5,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.model.OrderRules",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/OrderRules.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/service/PayNotifyDispatcher.java",
+    "line": 3,
+    "owner": "pay",
+    "import": "com.lemnt.trade.application.brokerage.service.BrokerageService",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/brokerage/service/BrokerageService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/service/PayNotifyDispatcher.java",
+    "line": 4,
+    "owner": "pay",
+    "import": "com.lemnt.trade.application.order.service.OrderRemoteService",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderRemoteService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/service/PayNotifyDispatcher.java",
+    "line": 5,
+    "owner": "pay",
+    "import": "com.lemnt.trade.application.paymentrefund.service.RefundBenefitsService",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/RefundBenefitsService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/service/PaymentNotificationService.java",
+    "line": 3,
+    "owner": "pay",
+    "import": "com.lemnt.trade.application.order.service.OrderLogService",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderLogService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/service/PaymentNotificationService.java",
+    "line": 4,
+    "owner": "pay",
+    "import": "com.lemnt.trade.application.order.service.OrderPersistenceService",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderPersistenceService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/service/PaymentNotificationService.java",
+    "line": 5,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.gateway.TradeOrderGateway",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/gateway/TradeOrderGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/service/PaymentNotificationService.java",
+    "line": 6,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.model.TradeOperator",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOperator.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/payment/service/PaymentNotificationService.java",
+    "line": 7,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.model.TradeOrder",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOrder.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/executor/PaymentRefundCreateCmdExe.java",
+    "line": 7,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.model.TradeOperator",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOperator.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/executor/PaymentRefundDetailQueryExe.java",
+    "line": 5,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.model.OrderRules",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/OrderRules.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/executor/PaymentRefundPageQueryExe.java",
+    "line": 7,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.model.OrderRules",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/OrderRules.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/PaymentRefundService.java",
+    "line": 3,
+    "owner": "pay",
+    "import": "com.lemnt.trade.application.aftersale.service.AfterSaleLogService",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/aftersale/service/AfterSaleLogService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/PaymentRefundService.java",
+    "line": 4,
+    "owner": "pay",
+    "import": "com.lemnt.trade.application.order.service.OrderLogService",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderLogService.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/PaymentRefundService.java",
+    "line": 5,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.aftersale.gateway.AfterSaleGateway",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/aftersale/gateway/AfterSaleGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/PaymentRefundService.java",
+    "line": 6,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.aftersale.model.AfterSale",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/aftersale/model/AfterSale.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/PaymentRefundService.java",
+    "line": 7,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.fulfillment.gateway.InventoryConfirmationGateway",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/fulfillment/gateway/InventoryConfirmationGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/PaymentRefundService.java",
+    "line": 8,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.gateway.TradeOrderGateway",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/gateway/TradeOrderGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/PaymentRefundService.java",
+    "line": 9,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.gateway.TradeOrderItemGateway",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/gateway/TradeOrderItemGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/PaymentRefundService.java",
+    "line": 10,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.model.OrderRules",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/OrderRules.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/PaymentRefundService.java",
+    "line": 11,
+    "owner": "pay",
+    "import": "com.lemnt.trade.domain.order.model.TradeOperator",
+    "targetOwner": "order",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/model/TradeOperator.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/RefundBenefitsService.java",
+    "line": 8,
+    "owner": "order",
+    "import": "com.lemnt.trade.domain.paymentrefund.gateway.PaymentRefundGateway",
+    "targetOwner": "pay",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/paymentrefund/gateway/PaymentRefundGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/paymentrefund/service/RefundBenefitsService.java",
+    "line": 9,
+    "owner": "order",
+    "import": "com.lemnt.trade.domain.paymentrefund.model.PaymentRefund",
+    "targetOwner": "pay",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/paymentrefund/model/PaymentRefund.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/AfterSalePromotionDetailQueryExe.java",
+    "line": 8,
+    "owner": "order",
+    "import": "com.lemnt.trade.domain.payment.gateway.PayNotifyTaskGateway",
+    "targetOwner": "pay",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/payment/gateway/PayNotifyTaskGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/promotion/executor/AfterSalePromotionDetailQueryExe.java",
+    "line": 9,
+    "owner": "order",
+    "import": "com.lemnt.trade.domain.paymentrefund.gateway.PaymentRefundGateway",
+    "targetOwner": "pay",
+    "targetSource": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/paymentrefund/gateway/PaymentRefundGateway.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/inventory/gateway/InventoryGatewayImpl.java",
+    "line": 3,
+    "owner": "order",
+    "import": "com.lemnt.mall.client.ProductCatalogClient",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/ProductCatalogClient.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/gateway/OrderCommentGatewayImpl.java",
+    "line": 3,
+    "owner": "order",
+    "import": "com.lemnt.mall.client.ProductCommentClient",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/ProductCommentClient.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  },
+  {
+    "source": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/gateway/OrderCommentGatewayImpl.java",
+    "line": 4,
+    "owner": "order",
+    "import": "com.lemnt.mall.client.bo.ProductCommentSaveBo",
+    "targetOwner": "product",
+    "targetSource": "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/bo/ProductCommentSaveBo.java",
+    "resolution": "client契约+本地Gateway隔离；禁止跨上下文应用/领域依赖"
+  }
+]

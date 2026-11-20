@@ -1,16 +1,18 @@
 package com.lemnt.system.application.config.executor;
 
-import java.util.List;
-
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.system.application.config.converter.ConfigConverter;
 import com.lemnt.system.application.config.dto.ConfigDTO;
 import com.lemnt.system.application.config.qry.ConfigPageQry;
-import com.lemnt.system.domain.config.model.Config;
 import com.lemnt.system.domain.config.gateway.ConfigGateway;
+import com.lemnt.system.domain.config.model.Config;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * 参数配置分页查询执行器
@@ -35,7 +37,8 @@ public class ConfigPageQueryExe {
         query.setConfigType(qry.configType());
         query.setBeginTime(qry.beginTime());
         query.setEndTime(qry.endTime());
-        PageResult<Config> pageResult = configGateway.selectPage(query, new PageQry(qry.pageNum(), qry.pageSize()));
+        PageResult<Config> pageResult =
+            configGateway.selectPage(query, new PageQry(qry.pageNum(), qry.pageSize()));
         List<ConfigDTO> dtoList = ConfigConverter.toDTOList(pageResult.getRecords());
         return PageResult.of(dtoList, pageResult.getTotal());
     }

@@ -1,0 +1,47 @@
+{
+  "capturedAt": "2026-11-17T17:17:50.785478+08:00",
+  "approvalQuote": "允许发布Nacos配置",
+  "namespaceId": "dev",
+  "groupName": "DEFAULT_GROUP",
+  "apiNote": "accessToken必须作为查询参数传递；作为表单参数时写接口返回403（内层401 User not found）。",
+  "policy": "Create only Data IDs absent in dev/DEFAULT_GROUP. No overwrite or deletion of existing configs.",
+  "configCountBefore": 86,
+  "published": [
+    {
+      "dataId": "lemnt-promotion.yaml",
+      "source": "docs/config/lemnt-promotion.yaml",
+      "createResponseCode": 0,
+      "readBackMatches": false,
+      "bytes": 1286,
+      "requiredEnvVars": [
+        "DUBBO_TIMEOUT_MS",
+        "NACOS_GROUP",
+        "NACOS_NAMESPACE",
+        "NACOS_PASSWORD",
+        "NACOS_SERVER_ADDR",
+        "NACOS_USERNAME",
+        "PROMOTION_DB_PASSWORD",
+        "PROMOTION_DB_URL",
+        "PROMOTION_DB_USERNAME",
+        "PROMOTION_DUBBO_PORT",
+        "PROMOTION_SCHEDULER_ENABLED"
+      ],
+      "status": "failed"
+    }
+  ],
+  "skipped": [
+    {
+      "dataId": "lemnt-product.yaml",
+      "reason": "pre-existing in dev/DEFAULT_GROUP; content is a 2-byte stub, not the docs/config template",
+      "remoteContentRepr": "'a:'",
+      "templateBytes": 1112,
+      "actionRequired": "需用户确认是否覆盖"
+    }
+  ],
+  "configCountAfter": 86,
+  "verification": {
+    "createdCount": 0,
+    "allReadBackMatched": true,
+    "countDelta": 0
+  }
+}

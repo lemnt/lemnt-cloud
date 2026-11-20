@@ -1,0 +1,22 @@
+{
+  "version": "promotion-v1/T2-recovery",
+  "date": "2026-10-26 Asia/Shanghai",
+  "baseCommit": "83810ab2cc88376278c761fe10f2a54f2ba8af60",
+  "status": "PASS_LOCAL_ONLY",
+  "java": "17.0.20",
+  "maven": "3.9.11",
+  "projects": 71,
+  "suites": 83,
+  "tests": 455,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "addedSqlTransactionTests": 24,
+  "recovery": "Unpublished local00b9454 and prior evidence were removed by workspace maintenance. Reconstructed source and fresh Maven run; prior results are not reused.",
+  "fixture": "Unchanged V1+V9 DDL and actual PromotionMapper/services/Gateway/transaction proxies on H2 MySQL mode UTC; DDL connection kept open; one test explicitly advances a gateway clock. Not a target MySQL upgrade rehearsal.",
+  "locking": "Exclusive root/global/member/usage, current member-limit maximum and locking selects flush/bypass caches; no throughput claim.",
+  "notImplemented": "T3 RPC/admin HTTP,T4 V2 checkout,T5 lifecycle/compensation caller,T6 pages",
+  "reactNative": "NOT RUN: unchanged",
+  "targetMySqlRedisNacosDubboProvidersBrowserNativeDevice": "NOT RUN",
+  "productionReady": false
+}

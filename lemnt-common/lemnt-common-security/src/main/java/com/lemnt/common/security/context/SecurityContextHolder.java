@@ -1,9 +1,11 @@
 package com.lemnt.common.security.context;
 
-import cn.hutool.core.convert.Convert;
-import com.alibaba.ttl.TransmittableThreadLocal;
 import com.lemnt.common.core.utils.StringUtils;
 import com.lemnt.common.security.constant.SecurityConstants;
+
+import com.alibaba.ttl.TransmittableThreadLocal;
+
+import cn.hutool.core.convert.Convert;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,7 +18,8 @@ import java.util.stream.Collectors;
  * @author wangxx
  */
 public class SecurityContextHolder {
-    private static final TransmittableThreadLocal<Map<String, Object>> THREAD_LOCAL = new TransmittableThreadLocal<>();
+    private static final TransmittableThreadLocal<Map<String, Object>> THREAD_LOCAL =
+        new TransmittableThreadLocal<>();
 
     public static void set(String key, Object value) {
         Map<String, Object> map = getLocalMap();
@@ -67,6 +70,22 @@ public class SecurityContextHolder {
         set(SecurityConstants.DETAILS_USERNAME, username);
     }
 
+    public static String getNickName() {
+        return get(SecurityConstants.DETAILS_USER_NICK_NAME);
+    }
+
+    public static void setNickName(String nickName) {
+        set(SecurityConstants.DETAILS_USER_NICK_NAME, nickName);
+    }
+
+    public static String getUserAvatar() {
+        return get(SecurityConstants.DETAILS_USER_AVATAR);
+    }
+
+    public static void setUserAvatar(String avatar) {
+        set(SecurityConstants.DETAILS_USER_AVATAR, avatar);
+    }
+
     public static String getUserKey() {
         return get(SecurityConstants.USER_KEY);
     }
@@ -89,9 +108,9 @@ public class SecurityContextHolder {
             return new HashSet<>();
         }
         return Arrays.stream(roleKey.split(","))
-                .filter(StringUtils::isNotBlank)
-                .map(String::trim)
-                .collect(Collectors.toSet());
+            .filter(StringUtils::isNotBlank)
+            .map(String::trim)
+            .collect(Collectors.toSet());
     }
 
     public static void setRoleKey(String roleKey) {

@@ -1,0 +1,81 @@
+{
+  "batch": "152-brokerage",
+  "date": "2026-11-01",
+  "scope": ["distribution binding", "two-level order commission", "freeze/unfreeze", "refund cancellation", "withdraw audit"],
+  "backend": {
+    "command": "mvn -f lemnt-server/pom.xml -pl lemnt-trade/lemnt-trade-start -am test",
+    "totals": {"tests": 255, "failures": 0, "errors": 0, "skipped": 0},
+    "modules": {
+      "lemnt-trade-domain": 2,
+      "lemnt-trade-application": 72,
+      "lemnt-trade-infrastructure": 16,
+      "lemnt-trade-adapter": 29,
+      "lemnt-trade-start": 136
+    },
+    "newTests": [
+      "com.lemnt.trade.start.brokerage.BrokeragePersistenceTest (4)",
+      "com.lemnt.trade.start.brokerage.BrokerageMenuSeedTest (1)"
+    ]
+  },
+  "ui": {"command": "npm test -- --run", "tests": 308, "failures": 0},
+  "miniapp": {"command": "node --test tests/*.test.cjs", "tests": 168, "failures": 0},
+  "endpoints": [
+    "GET /trade/app/brokerage/user",
+    "POST /trade/app/brokerage/bind",
+    "GET /trade/app/brokerage/records",
+    "GET /trade/app/brokerage/withdraws",
+    "POST /trade/app/brokerage/withdraws",
+    "GET /trade/admin/brokerage/users",
+    "PUT /trade/admin/brokerage/users/{id}/enabled",
+    "PUT /trade/admin/brokerage/users/{id}/bind",
+    "GET /trade/admin/brokerage/records",
+    "GET /trade/admin/brokerage/withdraws",
+    "POST /trade/admin/brokerage/withdraws/{id}/audit",
+    "POST /trade/admin/brokerage/unfreeze"
+  ],
+  "sql": [
+    "lemnt-server/lemnt-trade/sql/V15__brokerage.sql",
+    "lemnt-server/sql/V20261101__trade_brokerage_menu.sql"
+  ],
+  "invariants": [
+    "binding rejects self, cycles and non-enabled promoters",
+    "only override bind mode can replace an existing promoter",
+    "order commission uses first/second percent with floor to cents",
+    "frozen days greater than zero hold commission in frozen balance",
+    "unfreeze moves frozen to available once per record",
+    "full refund cancels order commission and reverses the correct balance",
+    "withdraw deducts available commission before audit",
+    "wallet withdrawal credits price minus fee and writes BROKERAGE_WITHDRAW ledger",
+    "rejected withdrawal returns commission and writes WITHDRAW_REJECT"
+  ],
+  "realEnvironment": {
+    "config": "brokerage_enabled=1, condition=1, bind_mode=3, first=10%, second=5%, frozen_days=3, min=1.00, fee=5%, types=[1,2]",
+    "bindings": ["member 1 -> member 2", "member 2 -> member 3"],
+    "orders": [
+      {"orderNo": "TR1DBB531265B446E797201167", "amount": "8.00", "commissions": {"member2": "0.80", "member3": "0.40"}},
+      {"orderNo": "TRC5D5D06DE42344128A312EE6", "amount": "8.00", "commissions": {"member2": "0.80", "member3": "0.40"}},
+      {"orderNo": "TR371CB110AD7D45DA9B06C3D9", "amount": "8.00", "commissions": {"member2": "0.80", "member3": "0.40"}},
+      {"orderNo": "TR327B6830BDB94887819731CF", "amount": "4.00", "commissions": {"member2": "0.40", "member3": "0.20"}}
+    ],
+    "withdraw": {
+      "approvedId": "2116699260013244418",
+      "approvedResult": "available 1.60->0.60, wallet 0.95, fee 0.05, status 11",
+      "rejectedId": "2116699343798661121",
+      "rejectedResult": "available 0.40->1.40, status 20, WITHDRAW_REJECT record"
+    },
+    "refund": {
+      "orderNo": "TR327B6830BDB94887819731CF",
+      "assertions": ["order REFUNDED", "both commission records cancelled", "frozen balances return to zero", "available balances unchanged"]
+    }
+  },
+  "deferred": [
+    "multi-level distribution tree, fixed commission, product-specific commission, posters and ranking",
+    "wechat/alipay automatic transfer and failed-transfer retry",
+    "partial refund commission recall",
+    "browser admin and miniapp device verification"
+  ],
+  "notes": [
+    "trade-infrastructure now depends on lemnt-member-client for promoter nickname/avatar",
+    "no business commit or push in this batch"
+  ]
+}

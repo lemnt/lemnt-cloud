@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.lemnt</groupId>
+        <artifactId>lemnt-server</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>lemnt-product</artifactId>
+    <packaging>pom</packaging>
+    <description>Mall product bounded context</description>
+    <modules>
+        <module>lemnt-product-client</module>
+        <module>lemnt-product-adapter</module>
+        <module>lemnt-product-application</module>
+        <module>lemnt-product-domain</module>
+        <module>lemnt-product-infrastructure</module>
+        <module>lemnt-product-start</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-product-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-product-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-product-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-product-infrastructure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lemnt</groupId>
+                <artifactId>lemnt-product-adapter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

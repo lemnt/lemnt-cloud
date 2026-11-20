@@ -1,0 +1,34 @@
+{
+  "batch": "144-zero-cash-aftersale-refund",
+  "date": "2026-10-31",
+  "scope": ["zero-cash after-sale", "zero-cash payment refund record", "points refund", "activity stock restore"],
+  "backend": {
+    "trade": {"tests": 227, "failures": 0, "errors": 0, "skipped": 0},
+    "mall": {"tests": 165, "failures": 0, "errors": 0, "skipped": 0},
+    "member": {"tests": 118, "failures": 0, "errors": 0, "skipped": 0},
+    "newTests": [
+      "com.lemnt.trade.application.aftersale.ZeroCashAfterSaleTest (3)",
+      "PromotionOrderPersistenceTest zero-cash refund case (extended)"
+    ]
+  },
+  "ui": {"tests": 292, "failures": 0},
+  "miniapp": {"tests": 155, "failures": 0},
+  "sql": [
+    "lemnt-server/lemnt-trade/sql/V5__order_fulfillment.sql (payment_no nullable, amount>=0)",
+    "lemnt-server/lemnt-trade/sql/V6__payment_refund.sql (payment_no nullable, amount>=0)",
+    "lemnt-server/lemnt-trade/sql/upgrade/zero_cash_after_sale.sql"
+  ],
+  "invariants": [
+    "zero-cash after-sale has no payment record and amount 0",
+    "zero-cash after-sale only allows the full item quantity",
+    "zero refund creates a SUCCESS payment refund with channel POINT and null paymentNo",
+    "after-sale and order become REFUNDED; existing REFUND task dispatches benefits",
+    "mall refund restores activity stock and marks promotion order REFUNDED",
+    "member refund with paidFen=0 returns all consumed points and grants no experience"
+  ],
+  "deferred": [
+    "partial refund for zero-cash orders",
+    "real payment channel refund semantics",
+    "real MySQL/Redis/Nacos/Dubbo/MQ/browser/device verification"
+  ]
+}

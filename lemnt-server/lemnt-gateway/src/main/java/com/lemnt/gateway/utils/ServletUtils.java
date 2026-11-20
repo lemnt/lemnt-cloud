@@ -1,18 +1,21 @@
 package com.lemnt.gateway.utils;
 
-import com.lemnt.common.core.constant.HttpStatus;
 import com.lemnt.common.core.domain.R;
 import com.lemnt.common.core.utils.JsonUtils;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import reactor.core.publisher.Mono;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+
+import static com.lemnt.common.core.constant.HttpStatus.UNAUTHORIZED;
 
 @Slf4j
 public class ServletUtils {
@@ -21,17 +24,18 @@ public class ServletUtils {
      * 返回未授权响应
      */
     public static Mono<Void> unauthorized(ServerHttpResponse response, String msg) {
-        return error(response, HttpStatus.UNAUTHORIZED, msg);
+        return error(response, UNAUTHORIZED, msg);
     }
 
     /**
      * 保持业务状态码响应约定；只有认证失败使用 401，避免客户端误清除会话。
      */
     public static Mono<Void> error(ServerHttpResponse response, int code, String msg) {
-        response.setStatusCode(org.springframework.http.HttpStatus.OK);
+        response.setStatusCode(HttpStatus.OK);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         R<?> result = R.fail(code, msg);
-        DataBuffer dataBuffer = response.bufferFactory()
+        DataBuffer dataBuffer =
+            response.bufferFactory()
                 .wrap(JsonUtils.toJsonStr(result).getBytes(StandardCharsets.UTF_8));
         return response.writeWith(Mono.just(dataBuffer));
     }

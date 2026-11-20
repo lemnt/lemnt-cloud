@@ -1,0 +1,65 @@
+// Browser interaction/visual smoke with explicitly mocked HTTP, not a live backend test.
+const { chromium } = require(process.env.LEMNT_PLAYWRIGHT_PATH || 'playwright-core');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+(async () => {
+  const browser = await chromium.launch({ executablePath: process.env.LEMNT_CHROME_PATH, headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+  const base = process.env.LEMNT_PREVIEW_URL || 'http://127.0.0.1:4173';
+  await context.addCookies([{ name: 'Admin-Token', value: 'catalog-smoke-fixture', url: base }]);
+  const categories = [{ id: 1, name: '服装', sort: 0, status: 'ENABLED' }];
+  const brands = [{ id: 2, name: '示例品牌', sort: 0, status: 'ENABLED' }];
+  const sku = { id: 5, spuId: 3, code: 'SKU-RED-M', name: '红色 M', price: '99.00', stock: 5, properties: { 颜色: '红色', 尺寸: 'M' }, status: 'ON_SHELF' };
+  const spu = { id: 3, code: 'SPU-001', name: '商品测试样例', categoryId: 1, brandId: 2, status: 'OFF_SHELF', skus: [sku] };
+  const posts = [];
+  const page = await context.newPage();
+  const pageErrors = [];
+  page.on('pageerror', (error) => pageErrors.push(String(error)));
+  await page.route('**/dev-api/**', async (route) => {
+    const request = route.request();
+    const url = new URL(request.url());
+    const endpoint = url.pathname.replace('/dev-api', '');
+    let body;
+    if (endpoint === '/system/users/current-info') body = { code: 200, data: { user: { userId: 1, userName: 'fixture-admin' }, roles: [], permissions: ['*:*:*'] } };
+    else if (endpoint === '/system/menus/routers') body = { code: 200, data: [{ path: '/mall', meta: { title: '商城管理' }, children: [{ path: 'spu', component: 'mall/spu/index', meta: { title: '商品与库存' } }, { path: 'category', component: 'mall/category/index', meta: { title: '商品分类' } }, { path: 'brand', component: 'mall/brand/index', meta: { title: '商品品牌' } }] }] };
+    else if (endpoint === '/mall/spus') body = { code: 200, rows: [{ ...spu, skus: [] }], total: 1 };
+    else if (endpoint === '/mall/spus/3') body = { code: 200, data: spu };
+    else if (endpoint === '/mall/categories') body = { code: 200, data: categories };
+    else if (endpoint === '/mall/brands') body = { code: 200, data: brands };
+    else if (endpoint === '/mall/skus/5/stock') {
+      const payload = request.postDataJSON();
+      posts.push(payload);
+      if (posts.length === 1) body = { code: 500, msg: '模拟失败，请按相同编号重试' };
+      else { sku.stock += payload.delta; body = { code: 200, data: { ...payload, productId: 5, resultingStock: sku.stock } }; }
+    } else body = { code: 200, data: [] };
+    await route.fulfill({ contentType: 'application/json', body: JSON.stringify(body) });
+  });
+  await page.goto(base + '/mall/spu');
+  await page.getByText('商品测试样例', { exact: true }).waitFor();
+  await page.getByRole('button', { name: '新增商品', exact: true }).click();
+  await page.getByLabel('SPU 编码', { exact: true }).waitFor();
+  await page.getByText('SKU 编码', { exact: true }).waitFor();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByRole('button', { name: '取消', exact: true }).click();
+  await page.getByRole('button', { name: '详情与库存', exact: true }).click();
+  await page.getByText('SKU-RED-M', { exact: true }).waitFor();
+  await page.getByRole('button', { name: '调整库存', exact: true }).click();
+  await page.getByLabel('库存增减量', { exact: true }).fill('2');
+  await page.getByLabel('变更原因', { exact: true }).fill('补货测试');
+  await page.getByRole('dialog').getByRole('button', { name: '保存', exact: true }).click();
+  await page.getByText('Error: 模拟失败，请按相同编号重试', { exact: true }).waitFor();
+  await page.getByRole('dialog').getByRole('button', { name: '保存', exact: true }).click();
+  await page.getByText('库存调整成功，执行后库存：7', { exact: true }).waitFor();
+  assert.equal(posts.length, 2);
+  assert.deepEqual(posts[0], posts[1]);
+  assert.equal(sku.stock, 7);
+  await page.screenshot({ path: path.join(__dirname, 'spu-desktop.png'), fullPage: true });
+  await page.goto(base + '/mall/category');
+  await page.getByText('服装', { exact: true }).waitFor();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: path.join(__dirname, 'category-mobile.png'), fullPage: true });
+  assert.deepEqual(pageErrors, []);
+  fs.writeFileSync(path.join(__dirname, 'browser-result.json'), JSON.stringify({ mode: 'mock HTTP, built React app', browser: await browser.version(), checks: ['SPU list', 'create form fields', 'detail SKU rendering', 'failed stock operation retains requestNo and payload', 'retry success', 'category mobile layout', 'no page errors'], stockRequestNoStable: posts[0].requestNo === posts[1].requestNo, pageErrors }, null, 2));
+  await browser.close();
+})().catch((error) => { console.error(error); process.exitCode = 1; });

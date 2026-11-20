@@ -3,8 +3,10 @@ package com.lemnt.auth.infrastructure.user.gateway;
 import com.lemnt.auth.domain.user.gateway.LoginSecurityGateway;
 import com.lemnt.common.core.constant.CacheConstants;
 import com.lemnt.common.redis.service.RedisStringService;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 @Component
 @RequiredArgsConstructor
 public class LoginSecurityGatewayImpl implements LoginSecurityGateway {
-
     private final RedisStringService redisStringService;
 
     /**

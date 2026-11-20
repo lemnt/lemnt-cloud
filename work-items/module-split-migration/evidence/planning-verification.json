@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "scope": "planning_inventory_only",
+  "checkedAt": "2026-11-03T11:17:59+08:00",
+  "designChapters": 15,
+  "sourceFilesExist": true,
+  "migrationTargetConflicts": 0,
+  "newFileTargetConflicts": 0,
+  "tableMappings": 64,
+  "tableNameConflicts": 0,
+  "httpMethodMappingExpressions": 313,
+  "httpMappingExpressionConflicts": 0,
+  "crossDatabaseForeignKeys": 3,
+  "systemProjectChangesPlanned": 0,
+  "codeGenerationExecuted": false,
+  "databaseExecuted": false,
+  "newModuleBuildOrTestsExecuted": false,
+  "architectureBaseline": {
+    "javaMainFiles": 2804,
+    "mapperXmlFiles": 56,
+    "pomFiles": 72,
+    "violations": 0
+  }
+}

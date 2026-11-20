@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemnt.pay.infrastructure.payment.mapper.TradePaymentMapper">
+    <insert id="createWaiting">
+        INSERT INTO pay_payment(payment_no,order_no,member_id,channel,app_key,amount,status,attempt_no,expires_at_epoch_second,notify_url)
+        VALUES(#{paymentNo},#{orderNo},#{memberId},#{channel},#{appKey},#{amount},'WAITING',#{attemptNo},#{expiresAtEpochSecond},#{notifyUrl})
+        ON DUPLICATE KEY UPDATE payment_no=payment_no
+    </insert>
+    <select id="findByPaymentNo" resultType="com.lemnt.pay.infrastructure.payment.dataobject.TradePaymentDO">
+        SELECT * FROM pay_payment WHERE payment_no=#{paymentNo}
+    </select>
+    <select id="findPreferredAttempt" resultType="com.lemnt.pay.infrastructure.payment.dataobject.TradePaymentDO">
+        SELECT * FROM pay_payment WHERE order_no=#{orderNo} AND channel=#{channel}
+        ORDER BY CASE status WHEN 'SUCCESS' THEN 0 WHEN 'WAITING' THEN 1 ELSE 2 END, attempt_no DESC
+        LIMIT 1
+    </select>
+
+    <select id="databaseEpochSecond" resultType="long" useCache="false" flushCache="true">
+        SELECT UNIX_TIMESTAMP()
+    </select>
+
+    <select id="lockByPaymentNo" resultType="com.lemnt.pay.infrastructure.payment.dataobject.TradePaymentDO"
+            useCache="false" flushCache="true">
+        SELECT * FROM pay_payment WHERE payment_no=#{paymentNo} FOR UPDATE
+    </select>
+
+    <update id="markClosed">
+        UPDATE pay_payment SET status='CLOSED', update_time=CURRENT_TIMESTAMP WHERE payment_no=#{paymentNo} AND
+        status='WAITING'
+    </update>
+
+    <update id="markSuccess">
+        UPDATE pay_payment SET status='SUCCESS', paid_time=CURRENT_TIMESTAMP, channel_trade_no=#{channelTradeNo},
+        notify_id=#{notifyId}, channel_fee_rate=#{channelFeeRate}, channel_fee_amount=#{channelFeeAmount}, update_time=CURRENT_TIMESTAMP WHERE payment_no=#{paymentNo} AND order_no=#{orderNo} AND
+        channel=#{channel} AND amount=#{amount} AND status IN ('WAITING','CLOSED')
+    </update>
+</mapper>

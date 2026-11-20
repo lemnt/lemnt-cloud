@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-29",
+  "scope": "商城与交易及依赖Maven verify",
+  "tests": {
+    "mall": 118,
+    "trade": 158
+  },
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "verified": [
+    "双H2实际生产组件系统保存与到期核验",
+    "空正文5分非匿名",
+    "已完成重试不重复及34日志一次",
+    "远程已提交响应丢失后稳定ID修复",
+    "调度数据库期限及单笔异常隔离"
+  ],
+  "notRun": [
+    "生产调度配置启用",
+    "真实Dubbo网络",
+    "部署HTTP",
+    "数据库迁移",
+    "前端（未改动）"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/ProductCommentClient.java": "66dfa00f6db20579b8a2402455a7feba8ca3ac3d7f57ce324371df3d45742f35",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/product/service/ProductCommentService.java": "5871dc6632b917f96a95d9b703ebd2fb7a33844b349a13fe0bfa4446abf76cd8",
+    "lemnt-server/lemnt-mall/lemnt-mall-application/src/main/java/com/lemnt/mall/application/dubbo/ProductCommentClientImpl.java": "d1063d68fba9879450421f79c846d55fed6ab701f6057186bdda2e4da7d72a04",
+    "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/AutoCommentSchedulerTest.java": "f9fc709978ad6484e13418735141ed6597d3fa01d14c49ca17c34fe561db9b78",
+    "lemnt-server/lemnt-trade/lemnt-trade-start/src/test/java/com/lemnt/trade/start/checkout/CheckoutFlowIntegrationTest.java": "095aa77e79d833eccdcaf2eed2aa54050d005af8a89142f11f009556dce7e606",
+    "lemnt-server/lemnt-trade/lemnt-trade-start/src/main/java/com/lemnt/trade/start/TradeOrderAutoCommentScheduler.java": "ceb06547d56d551b55efc68120ee6097f3c4ddeffa31687bbaea5047dadbb353",
+    "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/gateway/OrderCommentGateway.java": "0a84b1e20b060e39405ed65c57e290795fabb04ac3786c2e21ef364a0c8d33c8",
+    "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/order/gateway/TradeOrderGateway.java": "d098150268c5088949f0765b5fe5858ae6651dfd0895c71902593541036e336e",
+    "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/gateway/TradeOrderGatewayImpl.java": "1a1b0c7cc56722f03eb4b80d797cf5b34b71fdf1f182e89d0976de26164ba5ca",
+    "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/order/gateway/OrderCommentGatewayImpl.java": "7cfa4a7727e771aeffcddca9ba52bc2400ca0ce4486fec6868d273ee7972d8a1",
+    "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/order/service/OrderCommentService.java": "ff75c5f45179316f957ba9d8fd7595e2a3b1074261f30e9452a166bdf2947444",
+    "/tmp/system-comment-final.log": "f1b0fd77ce022006ae4cf8f0c423bb55ec297ad5f1a1f8a9332ce0c8f0aab929"
+  }
+}

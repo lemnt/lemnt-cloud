@@ -1,27 +1,22 @@
 package com.lemnt.system.infrastructure.auth.gateway;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
-import com.lemnt.system.infrastructure.auth.mapper.UserRoleMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import com.lemnt.common.core.constant.CacheConstants;
-import com.lemnt.common.redis.service.RedisStringService;
-import com.lemnt.system.domain.auth.model.User;
 import com.lemnt.system.domain.auth.gateway.UserGateway;
+import com.lemnt.system.domain.auth.model.User;
 import com.lemnt.system.infrastructure.auth.converter.UserConverter;
 import com.lemnt.system.infrastructure.auth.dataobject.UserDO;
-import com.lemnt.system.infrastructure.auth.dataobject.UserPostDO;
-import com.lemnt.system.infrastructure.auth.dataobject.UserRoleDO;
 import com.lemnt.system.infrastructure.auth.mapper.UserMapper;
-import com.lemnt.system.infrastructure.auth.mapper.UserPostMapper;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 用户管理 Gateway 实现
@@ -31,11 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class UserGatewayImpl implements UserGateway {
-
     private final UserMapper userMapper;
-    private final UserPostMapper userPostMapper;
-    private final UserRoleMapper userRoleMapper;
-    private final RedisStringService redisStringService;
 
     @Override
     public PageResult<User> selectPage(User user, PageQry pageQry) {
@@ -72,6 +63,7 @@ public class UserGatewayImpl implements UserGateway {
     public Boolean insertUser(User user) {
         UserDO userDO = UserConverter.toDO(user);
         int rows = userMapper.insert(userDO);
+
         // 回填自增主键到 Entity，供调用方获取 userId
         if (rows > 0) {
             user.setUserId(userDO.getUserId());
@@ -86,22 +78,22 @@ public class UserGatewayImpl implements UserGateway {
 
     @Override
     public Boolean updateUserAvatar(Long userId, String avatar) {
-        return userMapper.updateUserAvatar(userId, avatar) > 0;
+        return updateUserAvatarRow(userId, avatar) > 0;
     }
 
     @Override
     public Boolean updateUserStatus(User user) {
-        return userMapper.updateUserStatus(user.getUserId(), user.getStatus()) > 0;
+        return updateUserStatusRow(user.getUserId(), user.getStatus()) > 0;
     }
 
     @Override
     public Boolean updateLoginInfo(User user) {
-        return userMapper.updateLoginInfo(UserConverter.toDO(user)) > 0;
+        return updateLoginInfoRow(UserConverter.toDO(user)) > 0;
     }
 
     @Override
     public Boolean resetUserPwd(Long userId, String password) {
-        return userMapper.resetUserPwd(userId, password) > 0;
+        return resetUserPwdRow(userId, password) > 0;
     }
 
     @Override
@@ -116,83 +108,123 @@ public class UserGatewayImpl implements UserGateway {
 
     @Override
     public User checkUserNameUnique(String userName) {
-        return UserConverter.toEntity(userMapper.checkUserNameUnique(userName));
+        return UserConverter.toEntity(checkUserNameUniqueRow(userName));
     }
 
     @Override
     public User checkPhoneUnique(String phonenumber) {
-        return UserConverter.toEntity(userMapper.checkPhoneUnique(phonenumber));
+        return UserConverter.toEntity(checkPhoneUniqueRow(phonenumber));
     }
 
     @Override
     public User checkEmailUnique(String email) {
-        return UserConverter.toEntity(userMapper.checkEmailUnique(email));
+        return UserConverter.toEntity(checkEmailUniqueRow(email));
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void insertUserRoles(Long userId, List<Long> roleIds) {
-        if (CollUtil.isEmpty(roleIds)) {
-            return;
-        }
-        List<UserRoleDO> list = new ArrayList<>();
-        for (Long roleId : roleIds) {
-            UserRoleDO ur = new UserRoleDO();
-            ur.setUserId(userId);
-            ur.setRoleId(roleId);
-            list.add(ur);
-        }
-        userRoleMapper.insert(list);
+    public Boolean checkDeptExistUser(Long deptId) {
+        return checkDeptExistUserRow(deptId) > 0;
     }
 
-    @Override
-    public void insertUserPosts(Long userId, List<Long> postIds) {
-        if (CollUtil.isEmpty(postIds)) {
-            return;
-        }
-        List<UserPostDO> list = new ArrayList<>();
-        for (Long postId : postIds) {
-            UserPostDO up = new UserPostDO();
-            up.setUserId(userId);
-            up.setPostId(postId);
-            list.add(up);
-        }
-        userPostMapper.insert(list);
+    /**
+     * 修改用户头像
+     *
+     * @param userId 用户ID
+     * @param avatar 头像路径
+     * @return 结果
+     */
+    private int updateUserAvatarRow(Long userId, String avatar) {
+        return userMapper.update(
+            Wrappers.lambdaUpdate(UserDO.class)
+                .eq(UserDO::getUserId, userId)
+                .set(UserDO::getAvatar, avatar));
     }
 
-    @Override
-    public Boolean deleteUserRoleByUserId(Long userId) {
-        return userRoleMapper.deleteUserRoleByUserId(userId) > 0;
+    /**
+     * 修改用户状态
+     *
+     * @param userId 用户ID
+     * @param status 状态
+     * @return 结果
+     */
+    private int updateUserStatusRow(Long userId, String status) {
+        return userMapper.update(
+            Wrappers.lambdaUpdate(UserDO.class)
+                .eq(UserDO::getUserId, userId)
+                .set(UserDO::getStatus, status));
     }
 
-    @Override
-    public Boolean deleteUserPostByUserId(Long userId) {
-        return userPostMapper.deleteUserPostByUserId(userId) > 0;
+    /**
+     * 更新用户登录信息
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    private int updateLoginInfoRow(UserDO user) {
+        return userMapper.update(
+            Wrappers.lambdaUpdate(UserDO.class)
+                .eq(UserDO::getUserId, user.getUserId())
+                .set(UserDO::getLoginDate, user.getLoginDate())
+                .set(UserDO::getLoginIp, user.getLoginIp()));
     }
 
-    @Override
-    public Boolean deleteUserRoleByUserIds(List<Long> userIds) {
-        return userRoleMapper.deleteUserRoleByUserIds(userIds) > 0;
+    /**
+     * 重置用户密码
+     *
+     * @param userId   用户ID
+     * @param password 新密码
+     * @return 结果
+     */
+    private int resetUserPwdRow(Long userId, String password) {
+        return userMapper.update(
+            Wrappers.lambdaUpdate(UserDO.class)
+                .eq(UserDO::getUserId, userId)
+                .set(UserDO::getPassword, password)
+                .set(UserDO::getPwdUpdateDate, LocalDateTime.now()));
     }
 
-    @Override
-    public Boolean deleteUserPostByUserIds(List<Long> userIds) {
-        return userPostMapper.deleteUserPostByUserIds(userIds) > 0;
+    /**
+     * 校验用户名是否唯一
+     *
+     * @param userName 用户名
+     * @return 用户信息
+     */
+    private UserDO checkUserNameUniqueRow(String userName) {
+        return userMapper.selectOne(
+            Wrappers.<UserDO>lambdaQuery().eq(UserDO::getUserName, userName).last("limit 1"));
     }
 
-    @Override
-    public Boolean deleteUserRoleInfo(Long userId, Long roleId) {
-        return userRoleMapper.deleteUserRoleInfo(userId, roleId) > 0;
+    /**
+     * 校验手机号是否唯一
+     *
+     * @param phonenumber 手机号
+     * @return 用户信息
+     */
+    private UserDO checkPhoneUniqueRow(String phonenumber) {
+        return userMapper.selectOne(
+            Wrappers.<UserDO>lambdaQuery()
+                .eq(UserDO::getPhonenumber, phonenumber)
+                .last("limit 1"));
     }
 
-    @Override
-    public Boolean deleteUserRoleInfosByRoleId(Long roleId, List<Long> userIds) {
-        return userRoleMapper.deleteUserRoleInfos(roleId, userIds) > 0;
+    /**
+     * 校验邮箱是否唯一
+     *
+     * @param email 邮箱
+     * @return 用户信息
+     */
+    private UserDO checkEmailUniqueRow(String email) {
+        return userMapper.selectOne(
+            Wrappers.<UserDO>lambdaQuery().eq(UserDO::getEmail, email).last("limit 1"));
     }
 
-    @Override
-    public void unlockUser(String userName) {
-        String cacheKey = CacheConstants.PWD_ERR_CNT_KEY + userName;
-        redisStringService.delete(cacheKey);
+    /**
+     * 查询部门是否存在用户
+     *
+     * @param deptId 部门ID
+     * @return 结果
+     */
+    private long checkDeptExistUserRow(Long deptId) {
+        return userMapper.selectCount(Wrappers.<UserDO>lambdaQuery().eq(UserDO::getDeptId, deptId));
     }
 }

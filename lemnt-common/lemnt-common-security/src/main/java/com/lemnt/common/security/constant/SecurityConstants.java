@@ -7,6 +7,21 @@ package com.lemnt.common.security.constant;
  */
 public class SecurityConstants {
     /**
+     * 服务端签发的登录身份类型，会员与后台不可互用。
+     */
+    public static final String USER_TYPE = "user_type";
+
+    /**
+     * 后台用户身份类型。
+     */
+    public static final String ADMIN_USER_TYPE = "admin";
+
+    /**
+     * 小程序会员身份类型。
+     */
+    public static final String MEMBER_USER_TYPE = "member";
+
+    /**
      * 用户ID字段
      */
     public static final String DETAILS_USER_ID = "user_id";
@@ -15,6 +30,16 @@ public class SecurityConstants {
      * 用户名字段
      */
     public static final String DETAILS_USERNAME = "username";
+
+    /**
+     * 会员昵称快照字段，由网关注入、供评价等写链路取用
+     */
+    public static final String DETAILS_USER_NICK_NAME = "user_nick_name";
+
+    /**
+     * 会员头像快照字段
+     */
+    public static final String DETAILS_USER_AVATAR = "user_avatar";
 
     /**
      * 角色
@@ -62,10 +87,13 @@ public class SecurityConstants {
 
     public static final String HEADER_USER_NAME = "X-User-Name";
 
+    public static final String HEADER_USER_NICK_NAME = "X-User-Nick-Name";
+
+    public static final String HEADER_USER_AVATAR = "X-User-Avatar";
+
     public static final String HEADER_ROLE_KEY = "X-Role-Key";
 
     public static final String HEADER_ROLE_PERMISSION = "X-Role-Permission";
 
     public static final String HEADER_LOGIN_USER = "X-Login-User";
-
 }

@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-11-18T14:11:45.649060+08:00",
+  "mysqlVersion": "8.0.46",
+  "schemas": {
+    "product": "lemnt_migration_verify_20261118_141141_product",
+    "promotion": "lemnt_migration_verify_20261118_141141_promotion",
+    "member": "lemnt_migration_verify_20261118_141141_member",
+    "system": "lemnt_migration_verify_20261118_141141_system"
+  },
+  "checks": {
+    "productUpgradeLegacyNullableAndZeroPriceCheck": true,
+    "articleUpgradeIdempotentAndForeignKey": true,
+    "articleMenuIdempotentWithoutRoleGrant": true,
+    "memberMapperSqlBoundsAndUnknownDistribution": true
+  },
+  "existingSchemasModified": false,
+  "nacosMode": "read_only",
+  "serviceHttpVerified": false
+}

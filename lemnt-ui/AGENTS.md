@@ -1151,25 +1151,15 @@ createdAt
 
 # 34. ID 类型
 
-同一业务实体 ID 类型必须统一。
-
-例如确定：
+同一业务实体在前端领域模型中统一ID类型。Long/雪花ID使用十进制字符串；后端全局序列化在安全范围内可能返回数字，必须在API解码边界校验安全整数后转为字符串，不能对大编号直接Number()。
 
 ```ts
-id: number;
-userId: number;
-noticeId: number;
+interface User {
+  userId: string;
+}
 ```
 
-后不得出现：
-
-```ts
-userId: string | number;
-```
-
-除非接口确实存在这种情况。
-
-禁止为了“兼容”随意扩大类型范围。
+既有整数字典/地区/套餐等字段保持其已验证的数字契约，不机械改成字符串。禁止为了“兼容”随意扩大为string | number；传输差异应由边界解码处理。金额、积分、历史NULL和统一检查入口见[代码规范](../docs/code-standards.md)。
 
 ---
 

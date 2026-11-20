@@ -1,8 +1,9 @@
 package com.lemnt.common.snowflake.properties;
 
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
+
+import lombok.Data;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

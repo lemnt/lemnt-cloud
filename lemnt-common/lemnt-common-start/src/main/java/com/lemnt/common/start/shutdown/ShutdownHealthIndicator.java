@@ -22,8 +22,8 @@ public class ShutdownHealthIndicator implements HealthIndicator {
     public Health health() {
         if (shutdownManager.isShuttingDown()) {
             return Health.down()
-                    .withDetail("reason", "Application is shutting down gracefully")
-                    .build();
+                .withDetail("reason", "Application is shutting down gracefully")
+                .build();
         } else {
             return Health.up().build();
         }

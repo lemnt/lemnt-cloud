@@ -1,8 +1,10 @@
 package com.lemnt.system.application.log.executor;
 
 import com.lemnt.system.domain.log.gateway.OperLogGateway;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 清空操作日志命令执行器
@@ -12,7 +14,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class OperLogCleanCmdExe {
-
     private final OperLogGateway operLogGateway;
 
     /**

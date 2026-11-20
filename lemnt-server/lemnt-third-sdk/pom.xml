@@ -17,6 +17,7 @@
 
     <modules>
         <module>demo-sdk</module>
+        <module>wechatpay-sdk</module>
     </modules>
 
 </project>

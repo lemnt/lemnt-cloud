@@ -1,0 +1,61 @@
+{
+  "baseCommit": "20ec7bd1b9de1d4d8665093009d08846997645c2",
+  "files": [
+    {
+      "path": "lemnt-dependencies/pom.xml",
+      "sha256": "dcccabd094b5d9d3b74de18f20177d06234f90ed31c8fd1c51c59e2a34414f7c"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/checkout/model/CheckoutRules.java",
+      "sha256": "abc6e37c93708a42b652347c28186ebc9c1f03c53d8fc8cd219a76b64f433d2e"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-domain/src/main/java/com/lemnt/trade/domain/model/TradeOrderItem.java",
+      "sha256": "d0a018e27a99b1fc602183d8fbee838d08ac9fd083e387a8e82e901354e744f0"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/service/OrderPlacementService.java",
+      "sha256": "6fd342c8333395ebc80f3f3b98f7b38f5c594152d8bdf577ca093a291671f614"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/checkout/service/CheckoutLifecycleService.java",
+      "sha256": "a227ced59b62f7d03dba4c0a1fe86bf64d1c4265f77be1676d5ab6f1b699a751"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-infrastructure/src/main/java/com/lemnt/trade/infrastructure/checkout/gateway/SettlementGatewayImpl.java",
+      "sha256": "708c49e00293450b45ef6ec3be03b8ec50bca6ed30d969fdb5804cc59296b61a"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/PaymentNotifyCmdExe.java",
+      "sha256": "e2cc53daf16672a3595c22070580095147085f20d3f4c793eb068562bd05c91a"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/executor/TradeOrderCloseCmdExe.java",
+      "sha256": "660c9d3d5a8b85489bddaab70f31a434fae934161747c12dadd675595db4d002"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/lemnt-trade-application/src/main/java/com/lemnt/trade/application/fulfillment/service/OrderFulfillmentService.java",
+      "sha256": "9f6224e1961779c2a65e3113d3a49fe4716f99dbcceb731025433cb1908b6634"
+    },
+    {
+      "path": "lemnt-server/lemnt-mall/lemnt-mall-client/src/main/java/com/lemnt/mall/client/dto/ProductSnapshotDTO.java",
+      "sha256": "c44db0ef7ca15e59efe1aa14638e65b02fc3736b4f05330a8d94b1102ceb5e30"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V4__cart_coupon_checkout.sql",
+      "sha256": "7adc298ad5552d19032225b323f59963bfe410b145556b5f20d6a8593e388434"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V6__settlement_order.sql",
+      "sha256": "b60304b1b9a7277a0dfada7898ef9beba044168935c1e4c203a5178cd23f917c"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V7__settlement_abandon.sql",
+      "sha256": "15e3fe89156749e7f62fde6b00ca662ab3b60075981cd6dd08b42eccb04c1715"
+    },
+    {
+      "path": "lemnt-server/lemnt-trade/sql/V8__storefront_marketing.sql",
+      "sha256": "4c1b03d9da9c782d47924aa16c6e1a3652093a7eb961107db0b07e668af5c95b"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-30",
+  "backend": {
+    "member": {
+      "tests": 46,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "auth": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "mall": {
+      "tests": 118,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "trade": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "frontend": {
+    "tests": 197,
+    "build": "passed",
+    "lint": "passed",
+    "format:check": "passed",
+    "typecheck": "passed"
+  },
+  "verified": [
+    "变更时配置快照及重试稳定",
+    "手工取消源经验差值",
+    "自动余额150与门槛100分离",
+    "H2真实旧结构升级保留数据且未知快照NULL"
+  ],
+  "notRun": [
+    "真实MySQL升级及外键索引验收",
+    "部署HTTP",
+    "小程序本批未改未重跑"
+  ],
+  "remaining": [
+    "自动无匹配等级状态机源差异",
+    "源逻辑删除及最终接口收敛"
+  ],
+  "sha256": {
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/dto/LevelRecordDTO.java": "a8beccccc47b92207142ce37d5fc935de72bcc8ddc16fccae185d5222f0b4ec9",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/qry/LevelRecordsPageQry.java": "a5f61ebbd2a2b9130cc09b34d6211ab0da5fb21b1358d1ac9664ff73f35d55c3",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/qry/LevelRecordAllPageQry.java": "66411b76e24a029eefb25a0a9f3cdff7ee72db3e7ee23e906830589d84c5d847",
+    "lemnt-server/lemnt-member/lemnt-member-application/src/main/java/com/lemnt/member/application/growth/qry/LevelRecordDetailQry.java": "d7ddc92a5cf1cdf9c96312cf401a7ecf58d5d211f7fd0d7020f46a0c9e8f11fc",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/converter/LevelRecordConverter.java": "7ec5624078b398a6072281685121decf983a0d8e828cffc2329e1f237b853b32",
+    "lemnt-server/lemnt-member/lemnt-member-infrastructure/src/main/java/com/lemnt/member/infrastructure/growth/dataobject/LevelRecordDO.java": "e9cc75051c490acc5dfc89ca8b30bc25bf171a4d31ca571734424fbac3619570",
+    "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/growth/model/LevelRecordPageFilter.java": "aae47ba7ac26eb2c8ebfd5dff6baf55aaf3aa322c678c49592781148cb113280",
+    "lemnt-server/lemnt-member/lemnt-member-domain/src/main/java/com/lemnt/member/domain/growth/model/LevelRecord.java": "e33a0951e90bc2a79ec1bf008ed0e3842ca4f44de88c675dda37e738aeff0297",
+    "lemnt-server/lemnt-member/sql/upgrade/level_record_snapshot.sql": "f53c438ddcdba17af17f939ac1b3a7fb81cefc8107a550ed602a9ab99c903d91",
+    "lemnt-server/lemnt-member/sql/V2__member_account.sql": "4dacdca6e07f276febbcc2cff6dbd1a2e428deb77946a5eeeec326b7259b5110",
+    "/tmp/level-record-final-verify.log": "98c8f0f85d808196cc321e5701411e9a235cf7e279f9cb1ded8a1fd488faa1e5",
+    "/tmp/level-record-ui-final-tests.log": "88a7e1a77f69c2e637f52127b81c5d1da36ac8e4299cd74e6bf0ba688fc0f722"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-31",
+  "batch": "130",
+  "pages": [
+    "trade/delivery/express/index",
+    "trade/delivery/express-template/index",
+    "trade/config/index"
+  ],
+  "react": {
+    "tests": 247,
+    "files": 42,
+    "passed": true
+  },
+  "backendFocusedTests": {
+    "DeliveryJsonContractTest": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "DeliveryConfigMenuSeedTest": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "DeliveryPersistenceTest": {
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "build": "passed; existing vendor chunk size warning only",
+    "typecheck": "passed via tsc -b in build",
+    "lint": "passed",
+    "format": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "contracts": [
+    "existing /trade/admin/delivery/expresses and /trade/admin/delivery/templates",
+    "existing /trade/admin/config full PUT preserves noneditable fields",
+    "existing /system/areas/tree; service prefixes retained",
+    "exact yuan text to integer fen; BigDecimal quantity text and safe Long IDs",
+    "child rule identity retained; detail read required before editing",
+    "separate page and action permissions; false response does not report success"
+  ],
+  "sql": {
+    "path": "lemnt-server/sql/V20261031__trade_delivery_config_menu.sql",
+    "h2Repeatable": true,
+    "roleGrantsChanged": false,
+    "realDatabaseExecuted": false
+  },
+  "logs": [
+    "/tmp/delivery-ui-tests.log",
+    "/tmp/delivery-ui-build.log",
+    "/tmp/delivery-ui-typecheck.log",
+    "/tmp/delivery-ui-lint.log",
+    "/tmp/delivery-ui-format.log",
+    "/tmp/delivery-management-backend.log"
+  ],
+  "limits": [
+    "API contracts/SSR/Jackson/H2 only; no browser or deployed HTTP acceptance",
+    "no real MySQL/Redis/Nacos/Dubbo or channel integration performed",
+    "trade config exposes after-sale reasons and global free shipping only; other fields preserved",
+    "pickup/brokerage workflows and delivery import/export remain incomplete",
+    "source manifest mapping is in_progress, not a new global completion percentage"
+  ],
+  "committed": false,
+  "pushed": false
+}

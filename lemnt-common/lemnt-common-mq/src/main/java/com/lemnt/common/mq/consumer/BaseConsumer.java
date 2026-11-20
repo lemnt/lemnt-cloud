@@ -1,8 +1,10 @@
 package com.lemnt.common.mq.consumer;
 
 import com.lemnt.common.core.utils.JsonUtils;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.rocketmq.spring.core.RocketMQListener;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

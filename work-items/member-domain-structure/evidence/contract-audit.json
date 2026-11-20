@@ -1,0 +1,78 @@
+{
+  "memberRoutesBefore": 83,
+  "memberRoutesAfter": 67,
+  "removedRoutes": [
+    {
+      "method": "DELETE",
+      "path": "/member/app/social/bind"
+    },
+    {
+      "method": "GET",
+      "path": "/member/app/auth/social-auth-redirect"
+    },
+    {
+      "method": "GET",
+      "path": "/member/app/social"
+    },
+    {
+      "method": "GET",
+      "path": "/member/app/social/subscribe-template-list"
+    },
+    {
+      "method": "POST",
+      "path": "/member/app/auth/create-weixin-jsapi-signature"
+    },
+    {
+      "method": "POST",
+      "path": "/member/app/auth/send-sms-code"
+    },
+    {
+      "method": "POST",
+      "path": "/member/app/auth/sms-login"
+    },
+    {
+      "method": "POST",
+      "path": "/member/app/auth/social-login"
+    },
+    {
+      "method": "POST",
+      "path": "/member/app/auth/social-state"
+    },
+    {
+      "method": "POST",
+      "path": "/member/app/auth/validate-sms-code"
+    },
+    {
+      "method": "POST",
+      "path": "/member/app/auth/weixin-mini-app-login"
+    },
+    {
+      "method": "POST",
+      "path": "/member/app/social/bind"
+    },
+    {
+      "method": "POST",
+      "path": "/member/app/social/wxa-qrcode"
+    },
+    {
+      "method": "PUT",
+      "path": "/member/app/user/mobile"
+    },
+    {
+      "method": "PUT",
+      "path": "/member/app/user/mobile-by-weixin"
+    },
+    {
+      "method": "PUT",
+      "path": "/member/app/user/reset-password"
+    }
+  ],
+  "addedRoutes": [],
+  "preservedAccountAndAdminSqlStatements": 66,
+  "backendTests": {
+    "tests": 315,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

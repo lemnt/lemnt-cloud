@@ -1,0 +1,4 @@
+{
+  "archive": "lemnt-server/lemnt-gateway/target/lemnt-gateway.jar",
+  "forbiddenDependencies": []
+}

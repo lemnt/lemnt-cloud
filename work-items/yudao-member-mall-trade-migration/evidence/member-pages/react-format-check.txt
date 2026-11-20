@@ -1,0 +1,5 @@
+yarn run v1.22.22
+$ prettier --check src vite.config.ts tsconfig.json package.json eslint.config.js prettier.config.js
+Checking formatting...
+All matched files use Prettier code style!
+Done in 1.82s.

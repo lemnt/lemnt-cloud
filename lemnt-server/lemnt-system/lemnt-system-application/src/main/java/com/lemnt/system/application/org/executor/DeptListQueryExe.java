@@ -1,14 +1,16 @@
 package com.lemnt.system.application.org.executor;
 
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.lemnt.system.application.org.converter.DeptConverter;
 import com.lemnt.system.application.org.dto.DeptDTO;
 import com.lemnt.system.application.org.qry.DeptListQry;
-import com.lemnt.system.domain.org.model.Dept;
 import com.lemnt.system.domain.org.gateway.DeptGateway;
+import com.lemnt.system.domain.org.model.Dept;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * 部门列表查询执行器

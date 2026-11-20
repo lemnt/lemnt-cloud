@@ -9,29 +9,29 @@ import java.time.LocalDateTime;
  * @author wangxx
  */
 public record UserPageQry(
-        /**
-         * 用户账号
-         */
-        String userName,
-        /**
-         * 手机号码
-         */
-        String phonenumber,
-        /**
-         * 账号状态（1正常 2停用）
-         */
-        String status,
-        /**
-         * 部门ID
-         */
-        Long deptId,
-        /**
-         * 角色ID
-         */
-        Long roleId,
-        int pageNum,
-        int pageSize,
-        LocalDateTime beginTime,
-        LocalDateTime endTime
-) implements Serializable {
+    /**
+     * 用户账号
+     */
+    String userName,
+    /**
+     * 手机号码
+     */
+    String phonenumber,
+    /**
+     * 账号状态（1正常 2停用）
+     */
+    String status,
+    /**
+     * 部门ID
+     */
+    Long deptId,
+    /**
+     * 角色ID
+     */
+    Long roleId,
+    int pageNum,
+    int pageSize,
+    LocalDateTime beginTime,
+    LocalDateTime endTime)
+    implements Serializable {
 }

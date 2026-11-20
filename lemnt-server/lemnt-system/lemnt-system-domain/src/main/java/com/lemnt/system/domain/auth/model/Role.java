@@ -49,8 +49,6 @@ public class Role implements Serializable {
      */
     private String dataScope;
 
-
-
     /**
      * 角色状态（1正常 2停用）
      */

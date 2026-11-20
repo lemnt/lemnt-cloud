@@ -1,0 +1,23 @@
+{
+  "controllers": [
+    "PaymentChannelController.java",
+    "PaymentController.java",
+    "AfterSalePaymentRefundController.java",
+    "PaymentRefundController.java"
+  ],
+  "controller_layer_leaks": [],
+  "application_layer_leaks": [],
+  "trade_tables": [
+    "trade_inventory_confirmation",
+    "trade_order",
+    "trade_order_item",
+    "trade_payment",
+    "trade_payment_refund",
+    "trade_refund_request",
+    "trade_shipment"
+  ],
+  "table_count": 7,
+  "payment_configuration_table_added": false,
+  "real_payment_channel_adapters_connected": false,
+  "database_scripts_applied": false
+}

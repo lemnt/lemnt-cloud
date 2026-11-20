@@ -1,10 +1,12 @@
 package com.lemnt.system.infrastructure.export.dataobject;
 
+import com.lemnt.common.infrastructure.domain.BaseDO;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lemnt.common.infrastructure.domain.BaseDO;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -23,7 +25,6 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "sys_excel_task")
 public class ExcelTaskDO extends BaseDO {
-
     /**
      * 任务ID
      */
@@ -80,5 +81,4 @@ public class ExcelTaskDO extends BaseDO {
      * 错误信息
      */
     private String message;
-
 }

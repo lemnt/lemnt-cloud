@@ -1,0 +1,214 @@
+export interface MemberProfile {
+  tagIds?: string[];
+  tagNames?: string[];
+  levelName?: string | null;
+  groupName?: string | null;
+  id: string;
+  nickname: string;
+  mark?: string | null;
+  name?: string | null;
+  areaId?: number | null;
+  mobile: string | null;
+  email: string | null;
+  avatar: string | null;
+  status: number;
+  points: number;
+  experience: number;
+  levelId: string | null;
+  groupId: string | null;
+  sex: number | null;
+  birthday: string | null;
+  createTime: string | null;
+  loginDate?: string | null;
+  loginIp?: string | null;
+}
+export interface MemberProfileValues {
+  mobile?: string | null;
+  nickname: string;
+  mark?: string | null;
+  name?: string | null;
+  areaId?: number | null;
+  email?: string | null;
+  avatar?: string | null;
+  sex?: number | null;
+  birthday?: string | null;
+  status?: number;
+}
+export interface MemberCreateValues extends MemberProfileValues {
+  mobile: string;
+}
+export interface MemberPage<T> {
+  records: T[];
+  total: number;
+}
+export interface MemberUserPageQuery {
+  mobile?: string;
+  email?: string;
+  nickname?: string;
+  levelId?: string;
+  groupId?: string;
+  tagIds?: string[];
+  loginStartTime?: string;
+  loginEndTime?: string;
+  createStartTime?: string;
+  createEndTime?: string;
+  pageNum: number;
+  pageSize: number;
+}
+export interface MemberPageQuery {
+  mobile?: string;
+  memberId?: string;
+  levelId?: string;
+  day?: number;
+  nickname?: string;
+  bizType?: string;
+  pointBizType?: number;
+  experienceBizType?: number;
+  bizNo?: string;
+  title?: string;
+  startTime?: string;
+  endTime?: string;
+  name?: string;
+  status?: number;
+  pageNum: number;
+  pageSize: number;
+}
+export type MetadataKind = 'levels' | 'groups' | 'tags';
+export interface LevelFilterValues {
+  name?: string;
+  status?: number;
+}
+export interface MetadataValues {
+  name: string;
+  remark?: string | null;
+  status?: number;
+  level?: number;
+  experience?: number;
+  discountPercent?: number;
+  icon?: string | null;
+  backgroundUrl?: string | null;
+}
+export interface MemberGroupPageQuery {
+  name?: string;
+  status?: number;
+  startTime?: string;
+  endTime?: string;
+  pageNum: number;
+  pageSize: number;
+}
+export interface MemberTagPageQuery {
+  name?: string;
+  startTime?: string;
+  endTime?: string;
+  pageNum: number;
+  pageSize: number;
+}
+export interface MemberMetadata extends MetadataValues {
+  createTime?: string;
+  id: string;
+}
+export interface MemberAddress {
+  id: string;
+  memberId: string;
+  name: string;
+  mobile: string;
+  areaId: string;
+  detailAddress: string;
+  defaultStatus: boolean;
+  areaName?: string | null;
+}
+export type RecordKind =
+  'point-records' | 'experience-records' | 'level-records' | 'signin-records';
+export interface MemberRecord {
+  level?: number;
+  discountPercent?: number;
+  recordExperience?: number;
+  experienceBizType?: number;
+  pointBizType?: number;
+  title?: string;
+  description?: string;
+  nickname?: string | null;
+  id: string;
+  memberId: string;
+  delta?: number;
+  balance?: number;
+  assetType?: string;
+  bizType?: string;
+  bizNo?: string;
+  reason?: string;
+  createTime?: string;
+  levelId?: string | null;
+  experience?: number;
+  point?: number;
+  signDate?: string;
+  day?: number;
+}
+export interface MemberPointConfig {
+  pointTradeDeductEnable: boolean;
+  pointTradeDeductUnitPrice: number;
+  pointTradeDeductMaxPrice: number;
+  pointTradeGivePoint: number;
+}
+export interface MemberSignConfigValues {
+  day: number;
+  point: number;
+  experience: number;
+  status: number;
+}
+export interface MemberSignConfig extends MemberSignConfigValues {
+  id: string;
+}
+export interface MemberAdjustment {
+  delta: number;
+  requestNo: string;
+  reason: string;
+}
+export const memberKeys = {
+  all: ['member-account'] as const,
+  users: (q: MemberUserPageQuery) => ['member-account', 'users', q] as const,
+  detail: (id?: string) => ['member-account', 'detail', id] as const,
+  metadata: (kind: MetadataKind) => ['member-account', 'metadata', kind] as const,
+  records: (kind: RecordKind, q: MemberPageQuery) =>
+    ['member-account', 'records', kind, q] as const,
+  config: ['member-account', 'config'] as const,
+  signs: ['member-account', 'signs'] as const,
+};
+export const memberStatusOptions = [
+  { label: '启用', value: 1 },
+  { label: '停用', value: 0 },
+];
+export const recordPermissions: Record<RecordKind, string> = {
+  'point-records': 'member:point:query',
+  'experience-records': 'member:experience:query',
+  'level-records': 'member:level:query',
+  'signin-records': 'member:signin:query',
+};
+export const recordLabels: Record<RecordKind, string> = {
+  'point-records': '积分流水',
+  'experience-records': '经验流水',
+  'level-records': '等级记录',
+  'signin-records': '签到记录',
+};
+
+/** 芋道积分业务枚举；保留尚无当前写入来源的整单奖励取消。 */
+export const pointBusinessTypeEnum = {
+  1: { text: '签到' },
+  2: { text: '管理员修改' },
+  11: { text: '订单积分抵扣' },
+  12: { text: '订单积分抵扣（整单取消）' },
+  13: { text: '订单积分抵扣（单个退款）' },
+  21: { text: '订单积分奖励' },
+  22: { text: '订单积分奖励（整单取消）' },
+  23: { text: '订单积分奖励（单个退款）' },
+};
+
+/** 芋道经验枚举，查询支持全部源类型，未知历史值不默认归管理员。 */
+export const experienceBusinessTypeEnum = {
+  0: { text: '管理员调整' },
+  1: { text: '邀新奖励' },
+  4: { text: '签到奖励' },
+  5: { text: '抽奖奖励' },
+  11: { text: '下单奖励' },
+  12: { text: '下单奖励（整单取消）' },
+  13: { text: '下单奖励（单个退款）' },
+};

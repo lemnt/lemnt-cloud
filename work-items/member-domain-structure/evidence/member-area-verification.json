@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-29",
+  "sourceResourceUnchanged": true,
+  "backend": "既有system133项verify + 新增2项源资源/HTTP测试单独通过",
+  "reactTests": 189,
+  "notRun": [
+    "路由发布",
+    "部署认证",
+    "浏览器",
+    "member服务端areaName"
+  ],
+  "sha256": {
+    "/Users/wangxx/demo/yudao-cloud/yudao-framework/yudao-spring-boot-starter-biz-ip/src/main/resources/area.csv": "9dc101f0b4a0358b77d2d318e7b953426eb8693a7020f099ab508a732e068c1a",
+    "lemnt-server/lemnt-system/lemnt-system-infrastructure/src/main/resources/area/area.csv": "9dc101f0b4a0358b77d2d318e7b953426eb8693a7020f099ab508a732e068c1a",
+    "lemnt-ui/src/modules/system/area/api/areaApi.test.ts": "6d9b5ebeaa44c476402d7b1abc487ba583587708edc121569ac8a17faa44a94b",
+    "lemnt-ui/src/modules/system/area/api/areaApi.ts": "e343a0e389414519058e26ea9ec5cd4ac7497d4be472f55e82f4f7d66d4a1dc7",
+    "lemnt-server/lemnt-system/lemnt-system-start/src/test/java/com/lemnt/system/start/area/AreaTreeTest.java": "2a198389e1128e469be81cb426d7de1bfa21e337d2e0d379c0b95e6b8658e24d",
+    "/tmp/member-area-backend.log": "eb58ddf2e1809d267aa246edabf1dff6b722b76c02fa101c68aa049ab09d5bbc",
+    "/tmp/member-area-focused.log": "25ef68104096fbf12f0ca5cade148db697e26e0d5ef25b26a2538ae1299c3bad",
+    "/tmp/member-area-ui-final-build.log": "458e265ece52e59b5669b6c96db46a23981c33982b59bec6671a89cb99fc0841",
+    "/tmp/member-area-ui-final-tests.log": "704ffd678a22bb36e987f9fd08a3ee1cc97dc8dfcfba6d6119ebaa095ee4c07e",
+    "/tmp/member-area-ui-final-lint.log": "d390a8c939ca60f7f656cd93d5acf81a14c2e00c6a3392b46efc2a7c89dedb55",
+    "/tmp/member-area-ui-final-format.log": "26e74b26d1158e460c922b81734e7f67f7f7e7a43a3b22670ebf3e6312be5bdf",
+    "/tmp/member-area-ui-typecheck.log": "9feea68862ace8f4c44266036e533929561dc11868fa49061b763cdea019070d"
+  }
+}

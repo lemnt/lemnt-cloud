@@ -1,17 +1,19 @@
 package com.lemnt.system.infrastructure.notice.gateway;
 
-import cn.hutool.core.collection.CollUtil;
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
-import com.lemnt.system.domain.notice.model.Notice;
 import com.lemnt.system.domain.notice.gateway.NoticeGateway;
+import com.lemnt.system.domain.notice.model.Notice;
 import com.lemnt.system.infrastructure.notice.converter.NoticeConverter;
 import com.lemnt.system.infrastructure.notice.dataobject.NoticeDO;
 import com.lemnt.system.infrastructure.notice.mapper.NoticeMapper;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import cn.hutool.core.collection.CollUtil;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -23,7 +25,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class NoticeGatewayImpl implements NoticeGateway {
-
     private final NoticeMapper noticeMapper;
 
     @Override

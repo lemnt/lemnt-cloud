@@ -1,19 +1,31 @@
 package com.lemnt.system.infrastructure.config.gateway;
 
-import java.util.List;
-
-import cn.hutool.core.collection.CollUtil;
+import com.lemnt.common.core.constant.CacheConstants;
+import com.lemnt.common.core.utils.JsonUtils;
+import com.lemnt.common.core.utils.StringUtils;
 import com.lemnt.common.domain.model.PageQry;
 import com.lemnt.common.domain.model.PageResult;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import com.lemnt.system.domain.config.model.DictData;
+import com.lemnt.common.redis.service.RedisStringService;
 import com.lemnt.system.domain.config.gateway.DictDataGateway;
+import com.lemnt.system.domain.config.model.DictData;
 import com.lemnt.system.infrastructure.config.converter.DictDataConverter;
 import com.lemnt.system.infrastructure.config.dataobject.DictDataDO;
 import com.lemnt.system.infrastructure.config.mapper.DictDataMapper;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.stereotype.Component;
+
+import cn.hutool.core.collection.CollUtil;
+import lombok.RequiredArgsConstructor;
+
+import jakarta.annotation.PostConstruct;
+
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 字典数据网关实现 — infrastructure 层适配器
@@ -23,7 +35,7 @@ import com.lemnt.system.infrastructure.config.mapper.DictDataMapper;
 @Component
 @RequiredArgsConstructor
 public class DictDataGatewayImpl implements DictDataGateway {
-
+    private final RedisStringService redisStringService;
     private final DictDataMapper dictDataMapper;
 
     @Override
@@ -41,7 +53,7 @@ public class DictDataGatewayImpl implements DictDataGateway {
 
     @Override
     public List<DictData> selectByType(String dictType) {
-        return DictDataConverter.toEntityList(dictDataMapper.selectDictDataByType(dictType));
+        return DictDataConverter.toEntityList(selectDictDataByTypeRow(dictType));
     }
 
     @Override
@@ -64,11 +76,196 @@ public class DictDataGatewayImpl implements DictDataGateway {
 
     @Override
     public Boolean deleteByType(String dictType) {
-        return dictDataMapper.deleteDictDataByType(dictType) > 0;
+        return deleteDictDataByTypeRow(dictType) > 0;
     }
 
     @Override
     public Long countDictDataByType(String dictType) {
-        return dictDataMapper.countDictDataByType(dictType);
+        return countDictDataByTypeRow(dictType);
+    }
+
+    /**
+     * 项目启动时，初始化字典到缓存
+     */
+    @PostConstruct
+    public void init() {
+        resetCache();
+    }
+
+    @Override
+    public void clearCache() {
+        clearDictCache();
+    }
+
+    @Override
+    public void resetCache() {
+        clearCache();
+        List<DictDataDO> query = dictDataMapper.selectList(null);
+        Map<String, List<DictDataDO>> dictDataMap =
+            query.stream().collect(Collectors.groupingBy(DictDataDO::getDictType));
+        for (Map.Entry<String, List<DictDataDO>> entry : dictDataMap.entrySet()) {
+            List<DictDataDO> sorted =
+                entry.getValue().stream()
+                    .sorted(Comparator.comparing(DictDataDO::getDictSort))
+                    .collect(Collectors.toList());
+            setDictCache(entry.getKey(), DictDataConverter.toEntityList(sorted));
+        }
+    }
+
+    @Override
+    public void clearCacheByType(String dictType) {
+        removeDictCache(dictType);
+    }
+
+    @Override
+    public List<DictData> selectDictDataByType(String dictType) {
+        List<DictData> cached = getDictCache(dictType);
+        if (CollUtil.isNotEmpty(cached)) {
+            return cached;
+        }
+        List<DictDataDO> list = selectDictDataByTypeRow(dictType);
+        if (list != null && !list.isEmpty()) {
+            setDictCache(dictType, DictDataConverter.toEntityList(list));
+        }
+        return DictDataConverter.toEntityList(list);
+    }
+
+    /**
+     * 设置字典缓存
+     *
+     * @param key          参数键
+     * @param dictDataList 字典数据列表
+     */
+    private void setDictCache(String key, List<DictData> dictDataList) {
+        if (CollectionUtils.isEmpty(dictDataList)) {
+            return;
+        }
+        redisStringService.set(getCacheKey(key), JsonUtils.toJsonStr(dictDataList));
+    }
+
+    /**
+     * 获取字典缓存
+     *
+     * @param key 参数键
+     * @return dictDatas 字典数据列表
+     */
+    private List<DictData> getDictCache(String key) {
+        String cacheValue = redisStringService.get(getCacheKey(key));
+        if (StringUtils.isNotBlank(cacheValue)) {
+            return JsonUtils.toList(cacheValue, DictData.class);
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * 删除指定字典缓存
+     *
+     * @param key 字典键
+     */
+    private void removeDictCache(String key) {
+        redisStringService.delete(getCacheKey(key));
+    }
+
+    /**
+     * 清空字典缓存
+     */
+    private void clearDictCache() {
+        Set<String> keys = redisStringService.keys(CacheConstants.SYS_DICT_KEY + "*");
+        for (String key : keys) {
+            redisStringService.delete(key);
+        }
+    }
+
+    /**
+     * 设置cache key
+     *
+     * @param configKey 参数键
+     * @return 缓存键key
+     */
+    private static String getCacheKey(String configKey) {
+        return CacheConstants.SYS_DICT_KEY + configKey;
+    }
+
+    /**
+     * 修改字典项引用的类型名称。
+     */
+    @Override
+    public void renameType(String oldType, String newType) {
+        updateDictDataTypeRow(oldType, newType);
+    }
+
+    /**
+     * 从数据库刷新单个字典的数据缓存。
+     */
+    @Override
+    public void refreshByType(String type) {
+        setDictCache(type, DictDataConverter.toEntityList(selectDictDataByTypeRow(type)));
+    }
+
+    /**
+     * 根据字典类型查询字典数据
+     *
+     * @param dictType 字典类型
+     * @return 字典数据集合信息
+     */
+    private List<DictDataDO> selectDictDataByTypeRow(String dictType) {
+        return dictDataMapper.selectList(
+            Wrappers.<DictDataDO>lambdaQuery()
+                .eq(DictDataDO::getDictType, dictType)
+                .eq(DictDataDO::getStatus, "1")
+                .orderByAsc(DictDataDO::getDictSort));
+    }
+
+    /**
+     * 根据字典类型和字典键值查询字典数据信息
+     *
+     * @param dictType  字典类型
+     * @param dictValue 字典键值
+     * @return 字典标签
+     */
+    private String selectDictLabelRow(String dictType, String dictValue) {
+        DictDataDO dictData =
+            dictDataMapper.selectOne(
+                Wrappers.<DictDataDO>lambdaQuery()
+                    .eq(DictDataDO::getDictType, dictType)
+                    .eq(DictDataDO::getDictValue, dictValue));
+        return dictData == null ? "" : dictData.getDictLabel();
+    }
+
+    /**
+     * 查询字典数据
+     *
+     * @param dictType 字典类型
+     * @return 字典数据
+     */
+    private Long countDictDataByTypeRow(String dictType) {
+        return dictDataMapper.selectCount(
+            Wrappers.<DictDataDO>lambdaQuery().eq(DictDataDO::getDictType, dictType));
+    }
+
+    /**
+     * 批量删除字典数据信息
+     *
+     * @param dictType 需要删除的字典类型
+     * @return 结果
+     */
+    private int deleteDictDataByTypeRow(String dictType) {
+        return dictDataMapper.delete(
+            Wrappers.<DictDataDO>lambdaQuery().eq(DictDataDO::getDictType, dictType));
+    }
+
+    /**
+     * 同步修改字典类型
+     *
+     * @param oldDictType 旧字典类型
+     * @param newDictType 新旧字典类型
+     * @return 结果
+     */
+    private int updateDictDataTypeRow(String oldDictType, String newDictType) {
+        return dictDataMapper.update(
+            null,
+            Wrappers.<DictDataDO>lambdaUpdate()
+                .eq(DictDataDO::getDictType, oldDictType)
+                .set(DictDataDO::getDictType, newDictType));
     }
 }
